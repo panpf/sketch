@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EasyImageLader</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+
+    <string-array name="urls_small">
+        <item>http://s1.dwstatic.com/group1/M00/AF/39/cfc4623b24057a642f6e812269175ada.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/98/47/db8bbf7cf28ac4d4ce101ed5d2683ab0.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/7B/1C/4677b2a89929cf169f7b5b363e4f250c.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/D0/E4/7757ca960d279663e647efa8d452884d.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/DA/EA/8b2a9bb7ef57cdfabbe07a0d8e92c1e6.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/5E/19/ecadd6f8ae041727ded041253d32e675.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/15/21/dec3dcf96c32e815acfa3efa4cfd21e1.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/2F/D9/0fe5a2e49fa80c3a92cc131e5fcff3e0.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/43/87/1b89c4936cb3cce0be0df103fe1b720c.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/E9/15/42bfb7777491d31354aa058f5c952125.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/49/E6/cdb51b99dfd3d9dcfe3b293fe0971aa5.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/B1/D0/ff44e0d048dfeabd8fb59c87a8990092.jpg</item>
+        <item>http://s1.dwstatic.com/group1/M00/FD/EE/2591f60c23c5c2c7134b1a1d62706469.jpg</item>
+        <item>http://cdn-img.easyicon.cn/png/10660/1066023.gif</item>
+        <item>http://cdn-img.easyicon.cn/png/10660/1066018.gif</item>
+        <item>http://cdn-img.easyicon.cn/png/10660/1066022.gif</item>
+        <item>http://cdn-img.easyicon.cn/png/10660/1066021.gif</item>
+        <item>http://cdn-img.easyicon.cn/png/10660/1066016.gif</item>
+        <item>http://cdn-img.easyicon.cn/png/10660/1066015.gif</item>
+        <item>http://cdn-img.easyicon.cn/png/10660/1066020.gif</item>
+        <item>http://cdn-img.easyicon.cn/png/10660/1066019.gif</item>
+        <item>http://cdn-img.easyicon.cn/png/10660/1066014.gif</item>
+        <item>http://cdn-img.easyicon.cn/png/10660/1066017.gif</item>
+        <item>http://tabletpcssource.com/wp-content/uploads/2011/05/android-logo.png</item>
+        <item>http://simpozia.com/pages/images/stories/windows-icon.png</item>
+        <item>http://si0.twimg.com/profile_images/1135218951/gmail_profile_icon3_normal.png</item>
+        <item>http://www.krify.net/wp-content/uploads/2011/09/Macromedia_Flash_dock_icon.png</item>
+        <item>http://cdn3.iconfinder.com/data/icons/transformers/computer.png</item>
+        <item>http://www.bandwidthblog.com/wp-content/uploads/2011/11/twitter-logo.png</item>
+        <item>http://weloveicons.s3.amazonaws.com/icons/100907_itunes1.png</item>
+        <item>http://weloveicons.s3.amazonaws.com/icons/100929_applications.png</item>
+        <item>http://www.frenchrevolutionfood.com/wp-content/uploads/2009/04/Twitter-Bird.png</item>
+        <item>http://www.desiredsoft.com/images/icon_webhosting.png</item>
+        <item>http://thecustomizewindows.com/wp-content/uploads/2011/11/Nicest-Android-Live-Wallpapers.png</item>
+        <item>http://c.wrzuta.pl/wm16596/a32f1a47002ab3a949afeb4f</item>
+        <item>http://macprovid.vo.llnwd.net/o43/hub/media/1090/6882/01_headline_Muse.jpg</item>
+    </string-array>
+    
+    <string-array name="urls_veryLarge">
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347972847713.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347722456149.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347721740895.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347721857611.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347721991346.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347722593324.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347722660211.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1680x1050/1347780863974.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347781646697.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/134779196194.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1440x900/1350487688362.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1440x900/1350487693287.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/1383719342222.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/1383719345985.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/138371938334.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/1383719386504.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/1383719393382.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/3/1680x1050/138183054666.jpg</item>
+    </string-array>
+</resources>
