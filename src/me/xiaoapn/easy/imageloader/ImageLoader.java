@@ -89,7 +89,7 @@ public class ImageLoader{
 	}
 	
 	/**
-	 * 加载图片
+	 * 加载图片，会使用默认的加载选项，你可以通过ImageLoader.getConfiguration().getDefaultOptions()来配置默认加载选项
 	 * @param url 图片下载地址
 	 * @param showImageView 显示图片的视图
 	 */
@@ -128,7 +128,7 @@ public class ImageLoader{
 	}
 	
 	/**
-	 * 加载图片
+	 * 加载图片，会使用默认的加载选项，你可以通过ImageLoader.getConfiguration().getDefaultOptions()来配置默认加载选项
 	 * @param localFile 本地图片文件，如果本地文件不存在会尝试从imageUrl下载图片并创建localFile
 	 * @param showImageView 显示图片的视图
 	 * @param url 图片下载地址，如果本地图片文件不存在将从网络获取
@@ -148,7 +148,7 @@ public class ImageLoader{
 	}
 	
 	/**
-	 * 加载图片
+	 * 加载图片，会使用默认的加载选项，你可以通过ImageLoader.getConfiguration().getDefaultOptions()来配置默认加载选项
 	 * @param localFile 本地图片文件
 	 * @param showImageView 显示图片的视图
 	 */
@@ -184,31 +184,6 @@ public class ImageLoader{
 		}
 	}
 	
-//	/**
-//	 * 尝试加载
-//	 * @param id
-//	 * @param url
-//	 * @param localCacheFile
-//	 * @param showImageView
-//	 * @param options
-//	 */
-//	void tryLoad(String id, String url, File localCacheFile, ImageView showImageView, Options options){
-//		loadingImageViewSet.add(showImageView);	//先将当前ImageView存起来
-//		if(!loadingRequestSet.contains(id)){		//如果当前图片没有正在加载
-//			if(loadRequest == null){
-//				loadRequest = ;
-//			}
-//			if(loadingRequestSet.size() < getConfiguration().getMaxThreadNumber()){	//如果尚未达到最大负荷，就开启线程加载
-//				loadingRequestSet.add(id);
-//				getConfiguration().getThreadPool().submit(new LoadTaskRunable(this, loadRequest));
-//			}else{
-//				synchronized (getConfiguration().getWaitingRequestCircle()) {	//否则，加到等待队列中
-//					getConfiguration().getWaitingRequestCircle().add(loadRequest);
-//				}
-//			}
-//		}
-//	}
-	
 	/**
 	 * 尝试加载
 	 * @param loadRequest
@@ -224,21 +199,6 @@ public class ImageLoader{
 					getConfiguration().getWaitingRequestCircle().add(loadRequest);
 				}
 			}
-		}
-	}
-	
-	/**
-	 * 清除历史
-	 */
-	public final void clearHistory(){
-		synchronized (loadingImageViewSet) {
-			loadingImageViewSet.clear();
-		}
-		synchronized (loadingRequestSet) {
-			loadingRequestSet.clear();
-		}
-		synchronized (getConfiguration().getWaitingRequestCircle()) {
-			getConfiguration().getWaitingRequestCircle().clear();
 		}
 	}
 	
@@ -281,7 +241,7 @@ public class ImageLoader{
 	 * 输出LOG
 	 * @param logContent LOG内容
 	 */
-	public void log(String logContent, boolean error){
+	void log(String logContent, boolean error){
 		if(debugMode){
 			if(error){
 				Log.e(getConfiguration().getLogTag(), logContent);
@@ -295,7 +255,7 @@ public class ImageLoader{
 	 * 输出LOG
 	 * @param logContent LOG内容
 	 */
-	public void log(String logContent){
+	void log(String logContent){
 		log(logContent, false);
 	}
 	

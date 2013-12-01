@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">EasyImageLader</string>
-    <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
 
     <string-array name="urls_small">
         <item>http://s1.dwstatic.com/group1/M00/AF/39/cfc4623b24057a642f6e812269175ada.jpg</item>

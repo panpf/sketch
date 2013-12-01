@@ -17,7 +17,6 @@ package me.xiaopan.easy.imageloader.sample;
 
 import me.xiaoapn.easy.imagelader.R;
 import me.xiaoapn.easy.imageloader.ImageLoader;
-import me.xiaoapn.easy.imageloader.OptionsFactory;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +49,7 @@ public class ImageAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int realPosition, View convertView, ViewGroup parent) {
+	public View getView(int position, View convertView, ViewGroup parent) {
 		ViewHolder viewHolder = null;
 		if(convertView == null){
 			viewHolder = new ViewHolder();
@@ -61,7 +60,7 @@ public class ImageAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
-		ImageLoader.getInstance().load(imageUrls[realPosition], viewHolder.image, OptionsFactory.getListOptions());
+		ImageLoader.getInstance().load(imageUrls[position], viewHolder.image);
 		return convertView;
 	}
 	

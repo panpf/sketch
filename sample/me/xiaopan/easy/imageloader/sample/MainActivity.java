@@ -19,36 +19,43 @@ public class MainActivity extends FragmentActivity {
 		
 		List<TitleFragment> fragments = new ArrayList<TitleFragment>();
 		
-		Bundle veryLargeListBundle = new Bundle();
-		veryLargeListBundle.putString(ImageListFragment.PARAM_REQUIRED_STRING_NAME, "超大图ListView");
-		veryLargeListBundle.putStringArray(ImageListFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_veryLarge));
-		ImageListFragment veryLargeListFragment = new ImageListFragment();
-		veryLargeListFragment.setArguments(veryLargeListBundle);
-		fragments.add(veryLargeListFragment);
+		Bundle largeListBundle = new Bundle();
+		largeListBundle.putString(ImageListFragment.PARAM_REQUIRED_STRING_NAME, "ListView（超大图）");
+		largeListBundle.putStringArray(ImageListFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_veryLarge));
+		ImageListFragment largeListFragment = new ImageListFragment();
+		largeListFragment.setArguments(largeListBundle);
+		fragments.add(largeListFragment);
+		
+		Bundle largeGridBundle = new Bundle();
+		largeGridBundle.putString(ImageGridFragment.PARAM_REQUIRED_STRING_NAME, "GridView（超大图）");
+		largeGridBundle.putStringArray(ImageGridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_veryLarge));
+		ImageGridFragment veryLargeGridFragment = new ImageGridFragment();
+		veryLargeGridFragment.setArguments(largeGridBundle);
+		fragments.add(veryLargeGridFragment);
+		
+		Bundle largeGalleryBundle = new Bundle();
+		largeGalleryBundle.putString(ImageGalleryFragment.PARAM_REQUIRED_STRING_NAME, "Gallery（超大图）");
+		largeGalleryBundle.putStringArray(ImageGalleryFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_veryLarge));
+		ImageGalleryFragment largeGalleryFragment = new ImageGalleryFragment();
+		largeGalleryFragment.setArguments(largeGalleryBundle);
+		fragments.add(largeGalleryFragment);
 		
 		Bundle smallListBundle = new Bundle();
-		smallListBundle.putString(ImageListFragment.PARAM_REQUIRED_STRING_NAME, "小图ListView");
+		smallListBundle.putString(ImageListFragment.PARAM_REQUIRED_STRING_NAME, "ListView（小图）");
 		smallListBundle.putStringArray(ImageListFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_small));
 		ImageListFragment smallListFragment = new ImageListFragment();
 		smallListFragment.setArguments(smallListBundle);
 		fragments.add(smallListFragment);
 		
-		Bundle veryLargeGridBundle = new Bundle();
-		veryLargeGridBundle.putString(ImageGridFragment.PARAM_REQUIRED_STRING_NAME, "超大图ListView");
-		veryLargeGridBundle.putStringArray(ImageGridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_veryLarge));
-		ImageGridFragment veryLargeGridFragment = new ImageGridFragment();
-		veryLargeGridFragment.setArguments(veryLargeGridBundle);
-		fragments.add(veryLargeGridFragment);
-		
 		Bundle smallGridBundle = new Bundle();
-		smallGridBundle.putString(ImageGridFragment.PARAM_REQUIRED_STRING_NAME, "小图ListView");
+		smallGridBundle.putString(ImageGridFragment.PARAM_REQUIRED_STRING_NAME, "GridView（小图）");
 		smallGridBundle.putStringArray(ImageGridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_small));
 		ImageGridFragment smallGridFragment = new ImageGridFragment();
 		smallGridFragment.setArguments(smallGridBundle);
 		fragments.add(smallGridFragment);
 		
 		Bundle galleryBundle = new Bundle();
-		galleryBundle.putString(ImageGalleryFragment.PARAM_REQUIRED_STRING_NAME, "Gallery");
+		galleryBundle.putString(ImageGalleryFragment.PARAM_REQUIRED_STRING_NAME, "Gallery（小图）");
 		galleryBundle.putStringArray(ImageGalleryFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_small));
 		ImageGalleryFragment galleryFragment = new ImageGalleryFragment();
 		galleryFragment.setArguments(galleryBundle);

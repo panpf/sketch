@@ -143,18 +143,23 @@ public class Configuration {
 	}
 	
 	/**
-	 * 获取默认加载选项，当没有单独指定加载选项时，将默认使用此加载选项
+	 * 获取默认的加载选项
 	 * @return
 	 */
 	public Options getDefaultOptions() {
 		if(defaultOptions == null){
-			defaultOptions = new Options.Builder().setCacheInLocal(true).setShowAnimationListener(new AlphaShowAnimationListener()).setBitmapLoader(new PixelsBitmapLoader()).create();
+			defaultOptions = new Options.Builder()
+			.setCachedInMemory(true)
+			.setCacheInLocal(true)
+			.setShowAnimationListener(new AlphaShowAnimationListener())
+			.setBitmapLoader(new PixelsBitmapLoader())
+			.create();
 		}
 		return defaultOptions;
 	}
 	
 	/**
-	 * 设置加载选项，当没有单独指定加载选项时，将默认使用此加载选项
+	 * 设置默认的加载选项，当使用loadByDefault()方法的时候就会使用此加载选项
 	 * @param defaultOptions
 	 */
 	public void setDefaultOptions(Options defaultOptions) {
@@ -353,7 +358,7 @@ public class Configuration {
 		}
 		
 		/**
-		 * 设置加载选项，当没有单独指定加载选项时，将默认使用此加载选项
+		 * 设置加载选项
 		 * @param defaultOptions
 		 */
 		public Builder setDefaultOptions(Options defaultOptions) {

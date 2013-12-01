@@ -18,7 +18,7 @@ package me.xiaoapn.easy.imageloader;
 /**
  * 加载选项
  */
-public class Options {
+public class Options implements Cloneable{
 	private int loadingImageResource = -1;	//正在加载时显示的图片的资源ID
 	private int loadFailureImageResource = -1;	//加载失败时显示的图片的资源ID
 	private int maxRetryCount = -1;	//最大重试次数
@@ -249,5 +249,22 @@ public class Options {
 		public Options create(){
 			return options;
 		}
+	}
+
+	/**
+	 * 将当前Options拷贝一份
+	 * @return
+	 */
+	public Options copy(){
+		return new Options.Builder()
+		.setBitmapLoader(getBitmapLoader())
+		.setCachedInMemory(isCachedInMemory())
+		.setCacheDirectory(getCacheDirectory())
+		.setCacheInLocal(isCacheInLocal())
+		.setLoadFailureImageResource(getLoadFailureImageResource())
+		.setLoadingImageResource(getLoadingImageResource())
+		.setMaxRetryCount(getMaxRetryCount())
+		.setShowAnimationListener(getShowAnimationListener())
+		.create();
 	}
 }
