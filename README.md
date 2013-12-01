@@ -1,4 +1,4 @@
-#EasyImageLoader
+# ![Logo](https://github.com/ixiaopan/EasyImageLoader/raw/master/res/drawable-hdpi/ic_launcher.png) EasyImageLoader
 
 EasyImageLoader是用在Android上的一个图片加载类库，主要用于从本地或网络加载图片并显示在ImageView上。
 
