@@ -49,4 +49,4 @@ ImageLoader.getInstance().load(imageUrls[position], viewHolder.image);
 2. ImageLoader提供了一个单例，所以没有特殊需求的话，你只须通过ImageLoader.getInstance()方法获取其实例即可。
 
 ##下载
-[easy-image-loader-1.0.0.jar](/downloads/easy-image-loader-1.0.0.jar)
+**[easy-image-loader-1.0.0.jar](https://github.com/ixiaopan/EasyImageLoader/raw/master/downloads/easy-image-loader-1.0.0.jar)**
