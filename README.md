@@ -17,7 +17,7 @@ EasyImageLoader是用在Android上的一个图片加载类库，主要用于从�
 
 ##示例
 
-###然后在Application中初始化ImagLoader
+###在Application中初始化ImagLoader
 
 ```java
 public class MyApplication extends Application {
