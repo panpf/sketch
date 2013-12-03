@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package me.xiaoapn.easy.imageloader;
 
 /**
@@ -22,6 +23,7 @@ public class Options implements Cloneable{
 	private int loadingImageResource = -1;	//正在加载时显示的图片的资源ID
 	private int loadFailureImageResource = -1;	//加载失败时显示的图片的资源ID
 	private int maxRetryCount = -1;	//最大重试次数
+	private int cachePeriodOfValidity;	//缓存有效期，单位毫秒
 	private boolean isCachedInMemory;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
 	private boolean isCacheInLocal;	//是否需要将图片缓存到本地
 	private String cacheDirectory;	//缓存目录
@@ -62,6 +64,22 @@ public class Options implements Cloneable{
 	 */
 	public void setLoadFailureImageResource(int loadFailureImageResource) {
 		this.loadFailureImageResource = loadFailureImageResource;
+	}
+	
+	/**
+	 * 获取缓存有效期，单位毫秒
+	 * @return 
+	 */
+	public int getCachePeriodOfValidity() {
+		return cachePeriodOfValidity;
+	}
+
+	/**
+	 * 设置缓存有效期，单位毫秒
+	 * @param cachePeriodOfValidity
+	 */
+	public void setCachePeriodOfValidity(int cachePeriodOfValidity) {
+		this.cachePeriodOfValidity = cachePeriodOfValidity;
 	}
 
 	/**
@@ -185,6 +203,15 @@ public class Options implements Cloneable{
 		 */
 		public Builder setLoadFailureImageResource(int loadFailureImageResource) {
 			options.setLoadFailureImageResource(loadFailureImageResource);
+			return this;
+		}
+
+		/**
+		 * 设置缓存有效期，单位毫秒
+		 * @param cachePeriodOfValidity
+		 */
+		public Builder setCachePeriodOfValidity(int cachePeriodOfValidity) {
+			options.setCachePeriodOfValidity(cachePeriodOfValidity);
 			return this;
 		}
 

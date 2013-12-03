@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package me.xiaoapn.easy.imageloader;
 
 import java.io.BufferedInputStream;
@@ -21,6 +22,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -51,17 +54,45 @@ class LoadTaskRunable implements Runnable {
 	
 	@Override
 	public void run() {
+		boolean fromLocalLoad = false;
 		if(loadRequest.getCacheFile() !=null && loadRequest.getCacheFile().exists()){
-			imageLoader.log("从本地加载图片："+loadRequest.getName());
-			loadRequest.setResultBitmap(fromLocalFileLoadBitmap(loadRequest.getCacheFile()));
-		}else if(GeneralUtils.isNotEmpty(loadRequest.getUrl())){
-			imageLoader.log("从网络加载图片："+loadRequest.getName());
-			loadRequest.setResultBitmap(fromNetworkDownload(loadRequest.getCacheFile()));
-		}else{
-			imageLoader.log("所有条件均不满足，加载结果为null："+loadRequest.getName(), true);
-			loadRequest.setResultBitmap(null);
+			fromLocalLoad = loadRequest.isLocal();
+			if(!loadRequest.isLocal()){
+				if(loadRequest.getOptions().getCachePeriodOfValidity() > 0){
+					/* 判断是否过期 */
+					Calendar calendar = new GregorianCalendar();
+					calendar.add(Calendar.MILLISECOND, -loadRequest.getOptions().getCachePeriodOfValidity());
+					boolean outOfDate = calendar.getTimeInMillis() >= loadRequest.getCacheFile().lastModified();
+					if(outOfDate){
+						loadRequest.getCacheFile().delete();
+						fromLocalLoad = false;
+						imageLoader.getConfiguration().log("缓存已过期："+loadRequest.getName());
+					}else{
+						fromLocalLoad = true;
+						imageLoader.getConfiguration().log("缓存未过期："+loadRequest.getName());
+					}
+				}else{
+					fromLocalLoad = true;
+					imageLoader.getConfiguration().log("缓存永久有效："+loadRequest.getName());
+				}
+			}else{
+				fromLocalLoad = true;
+			}
 		}
-
+		
+		if(fromLocalLoad){
+			imageLoader.getConfiguration().log("从本地加载图片："+loadRequest.getName());
+        	loadRequest.setResultBitmap(fromLocalFileLoadBitmap(loadRequest.getCacheFile()));
+		}else{
+			if(GeneralUtils.isNotEmpty(loadRequest.getUrl())){
+				imageLoader.getConfiguration().log("从网络加载图片："+loadRequest.getName());
+				loadRequest.setResultBitmap(fromNetworkDownload(loadRequest.getCacheFile()));
+			}else{
+				imageLoader.getConfiguration().log("所有条件均不满足，加载结果为null："+loadRequest.getName(), true);
+				loadRequest.setResultBitmap(null);
+			}
+		}
+		
 		/* 尝试缓存到内存中 */
 		if(loadRequest.getResultBitmap() != null && loadRequest.getOptions() != null && loadRequest.getOptions().isCachedInMemory()){
 			imageLoader.getConfiguration().getBitmapCacher().put(loadRequest.getId(), loadRequest.getResultBitmap());
@@ -84,7 +115,7 @@ class LoadTaskRunable implements Runnable {
 			}
 		}else{
 			loadRequest.getCacheFile().delete();
-			imageLoader.log("本地文件是个空文件，删除从网络加载："+loadRequest.getName(), true);
+			imageLoader.getConfiguration().log("本地文件是个空文件，删除从网络加载："+loadRequest.getName(), true);
 			return fromNetworkDownload(loadRequest.getCacheFile());
 		}
 	}
@@ -165,7 +196,7 @@ class LoadTaskRunable implements Runnable {
 				}
 				running = false;
 			} catch (Throwable e2) {
-				imageLoader.log(loadRequest.getName()+"加载失败，异常信息："+e2.toString(), true);
+				imageLoader.getConfiguration().log(loadRequest.getName()+"加载失败，异常信息："+e2.toString(), true);
 				
 				if(httpGet != null){
 					httpGet.abort();

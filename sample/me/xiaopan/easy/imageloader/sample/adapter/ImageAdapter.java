@@ -13,7 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.xiaopan.easy.imageloader.sample;
+
+package me.xiaopan.easy.imageloader.sample.adapter;
 
 import me.xiaoapn.easy.imagelader.R;
 import me.xiaoapn.easy.imageloader.ImageLoader;

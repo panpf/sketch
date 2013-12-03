@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package me.xiaoapn.easy.imageloader;
 
 import java.io.File;
@@ -32,6 +33,8 @@ class LoadRequest {
 	
 	private Options options;	//加载选项
 	private ImageView imageView;	//显示图片的视图
+	
+	private boolean local;	//本地
 
 	private Bitmap resultBitmap;	//加载结果Bitmap
 	
@@ -143,6 +146,22 @@ class LoadRequest {
 	}
 	
 	/**
+	 * 是否是本地的
+	 * @return
+	 */
+	public boolean isLocal() {
+		return local;
+	}
+
+	/**
+	 * 设置是否是本地的
+	 * @param local
+	 */
+	public void setLocal(boolean local) {
+		this.local = local;
+	}
+
+	/**
 	 * 加载请求创建器
 	 */
 	public static class Builder{
@@ -207,6 +226,15 @@ class LoadRequest {
 		 */
 		public Builder setName(String name) {
 			loadRequest.setName(name);
+			return this;
+		}
+
+		/**
+		 * 设置是否是本地的
+		 * @param local
+		 */
+		public Builder setLocal(boolean local) {
+			loadRequest.setLocal(local);
 			return this;
 		}
 		

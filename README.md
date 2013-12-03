@@ -51,4 +51,25 @@ ImageLoader.getInstance().load(imageUrls[position], viewHolder.image);
 2. ImageLoader提供了一个单例，所以没有特殊需求的话，你只须通过ImageLoader.getInstance()方法获取其实例即可。
 
 ##下载
+**[easy-image-loader-1.0.1.jar](https://github.com/ixiaopan/EasyImageLoader/raw/master/downloads/easy-image-loader-1.0.1.jar)**
+
 **[easy-image-loader-1.0.0.jar](https://github.com/ixiaopan/EasyImageLoader/raw/master/downloads/easy-image-loader-1.0.0.jar)**
+
+##License
+```java
+/*
+ * Copyright 2013 Peng fei Pan
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+```

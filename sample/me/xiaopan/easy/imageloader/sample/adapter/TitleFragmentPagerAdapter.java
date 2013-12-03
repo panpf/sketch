@@ -13,10 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.xiaopan.easy.imageloader.sample;
+
+package me.xiaopan.easy.imageloader.sample.adapter;
 
 import java.util.List;
 
+import me.xiaopan.easy.imageloader.sample.fragment.TitleFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;

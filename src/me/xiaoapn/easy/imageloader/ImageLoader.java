@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package me.xiaoapn.easy.imageloader;
 
 import java.io.File;
@@ -22,15 +23,12 @@ import java.util.HashSet;
 import java.util.Set;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.ImageView;
 
 /**
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
  */
 public class ImageLoader{
-	private static final String CHARSET_NAME_UTF8 = "UTF-8";
-	private boolean debugMode;	//调试模式，在控制台输出日志
 	private Bitmap tempCacheBitmap;	//临时存储缓存的图片
 	private Set<String> loadingRequestSet;	//正在加载的Url列表，用来防止同一个URL被重复加载
 	private Configuration configuration;	//配置
@@ -68,7 +66,7 @@ public class ImageLoader{
 	public final void load(String url, ImageView imageView, Options options){
 		if(GeneralUtils.isNotEmpty(url) && imageView != null){
 			try {
-				String id = URLEncoder.encode(url, CHARSET_NAME_UTF8);
+				String id = URLEncoder.encode(url, "UTF-8");
 				String name = url;
 				if(!tryShowImage(id, name, imageView, options)){	//尝试显示图片，如果显示失败了就尝试加载
 					tryLoad(new LoadRequest.Builder(id, url, imageView).setName(name).setCacheFile(getConfiguration().getCacheFile(imageView.getContext(), options, id)).setOptions(options).create());
@@ -108,9 +106,9 @@ public class ImageLoader{
 		if((localFile != null || GeneralUtils.isNotEmpty(url)) && imageView != null){
 			try{
 				String name = localFile.getPath();
-				String id = URLEncoder.encode(name, CHARSET_NAME_UTF8);
+				String id = URLEncoder.encode(name, "UTF-8");
 				if(!tryShowImage(id, name, imageView, options)){	//尝试显示图片，如果显示失败了就尝试加载
-					tryLoad(new LoadRequest.Builder(id, url, imageView).setName(name).setCacheFile(localFile).setOptions(options).create());
+					tryLoad(new LoadRequest.Builder(id, url, imageView).setLocal(true).setName(name).setCacheFile(localFile).setOptions(options).create());
 				}
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
@@ -167,7 +165,7 @@ public class ImageLoader{
 		//如果需要从缓存中读取，就根据地址从缓存中获取图片，如果缓存中存在相对的图片就显示，否则显示默认图片或者显示空
 		if(options != null && options.isCachedInMemory() && (tempCacheBitmap = getConfiguration().getBitmapCacher().get(id)) != null){
 			showImageView.setTag(null);	//清空绑定关系
-			log("从缓存中加载图片："+name);
+			getConfiguration().log("从缓存中加载图片："+name);
 			loadingImageViewSet.remove(showImageView);
 			showImageView.clearAnimation();
 			showImageView.setImageBitmap(tempCacheBitmap);
@@ -235,43 +233,5 @@ public class ImageLoader{
 	 */
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
-	}
-
-	/**
-	 * 输出LOG
-	 * @param logContent LOG内容
-	 */
-	void log(String logContent, boolean error){
-		if(debugMode){
-			if(error){
-				Log.e(getConfiguration().getLogTag(), logContent);
-			}else{
-				Log.d(getConfiguration().getLogTag(), logContent);
-			}
-		}
-	}
-	
-	/**
-	 * 输出LOG
-	 * @param logContent LOG内容
-	 */
-	void log(String logContent){
-		log(logContent, false);
-	}
-	
-	/**
-	 * 判断是否开启调试模式
-	 * @return
-	 */
-	public boolean isDebugMode() {
-		return debugMode;
-	}
-	
-	/**
-	 * 设置是否开启调试模式，开启调试模式后会在控制台输出LOG
-	 * @param debugMode
-	 */
-	public void setDebugMode(boolean debugMode) {
-		this.debugMode = debugMode;
 	}
 } 

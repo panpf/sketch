@@ -13,24 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.xiaopan.easy.imageloader.sample;
 
+package me.xiaopan.easy.imageloader.sample.fragment;
+
+import me.xiaopan.easy.imageloader.sample.adapter.ImageAdapter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridView;
+import android.widget.ListView;
 
-public class ImageGridFragment extends TitleFragment {
+public class ImageListFragment extends TitleFragment {
 	public static final String PARAM_REQUIRED_STRING_NAME = "PARAM_REQUIRED_STRING_NAME";
 	public static final String PARAM_REQUIRED_STRING_ARRAY_URLS = "PARAM_REQUIRED_STRING_ARRAY_URLS";
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		GridView gridView = new GridView(getActivity());
-		gridView.setNumColumns(2);
-		gridView.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS)));
-		return gridView;
+		ListView listView = new ListView(getActivity());
+		listView.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS)));
+		return listView;
 	}
 
 	@Override

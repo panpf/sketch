@@ -34,6 +34,7 @@ import org.apache.http.params.HttpProtocolParams;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.Log;
 
 /**
  * 配置
@@ -44,6 +45,7 @@ public class Configuration {
 	private int connectionTimeout = 10000;	//连接超时时间
 	private int maxConnections = 10;	//最大连接数
 	private int socketBufferSize = 8192;	//Socket缓存池大小
+	private boolean debugMode;	//调试模式，在控制台输出日志
 	private String logTag = "ImageLoader";	//LogTag
 	private String defaultCacheDirectory;	//默认的缓存目录
 	private Options defaultOptions;	//默认加载选项
@@ -309,6 +311,44 @@ public class Configuration {
 	}
 	
 	/**
+	 * 判断是否开启调试模式
+	 * @return
+	 */
+	public boolean isDebugMode() {
+		return debugMode;
+	}
+	
+	/**
+	 * 设置是否开启调试模式，开启调试模式后会在控制台输出LOG
+	 * @param debugMode
+	 */
+	public void setDebugMode(boolean debugMode) {
+		this.debugMode = debugMode;
+	}
+
+	/**
+	 * 输出LOG
+	 * @param logContent LOG内容
+	 */
+	public void log(String logContent, boolean error){
+		if(debugMode){
+			if(error){
+				Log.e(getLogTag(), logContent);
+			}else{
+				Log.d(getLogTag(), logContent);
+			}
+		}
+	}
+	
+	/**
+	 * 输出LOG
+	 * @param logContent LOG内容
+	 */
+	public void log(String logContent){
+		log(logContent, false);
+	}
+	
+	/**
 	 * ImageLoadder配置创建器
 	 */
 	public static class Builder{
@@ -414,6 +454,15 @@ public class Configuration {
 		 */
 		public Builder setSocketBufferSize(int socketBufferSize) {
 			configuration.setSocketBufferSize(socketBufferSize);
+			return this;
+		}
+		
+		/**
+		 * 设置是否开启调试模式，开启调试模式后会在控制台输出LOG
+		 * @param debugMode
+		 */
+		public Builder setDebugMode(boolean debugMode) {
+			configuration.setDebugMode(debugMode);
 			return this;
 		}
 		

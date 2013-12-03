@@ -55,7 +55,7 @@ class LoadResultHandleRunnable implements Runnable {
 								imageView.setAnimation(animation);
 							}
 							imageView.setImageBitmap(loadRequest.getResultBitmap());
-							imageLoader.log("加载成功："+loadRequest.getName());
+							imageLoader.getConfiguration().log("加载成功："+loadRequest.getName());
 						}else{
 							if(loadRequest.getOptions() != null){
 								if(loadRequest.getOptions().getLoadFailureImageResource() > 0){
@@ -66,7 +66,7 @@ class LoadResultHandleRunnable implements Runnable {
 							}else{
 								imageView.setImageBitmap(null);
 							}
-							imageLoader.log("加载失败："+loadRequest.getName(), true);
+							imageLoader.getConfiguration().log("加载失败："+loadRequest.getName(), true);
 						}
 						imageView.setTag(null);
 						iterator.remove();
