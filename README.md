@@ -2,6 +2,8 @@
 
 EasyImageLoader是用在Android上的一个图片加载类库，主要用于从本地或网络加载图片并显示在ImageView上。
 
+![sample](https://github.com/ixiaopan/EasyImageLoader/raw/master/docs/sample.gif)
+
 ##特征
 
 >* 异步加载。采用线程池（默认容量是20）来处理每一个请求，当线程池负荷已满的时候，新的加载请求会被放到一个有界等待队列（默认容量是10）中，这样就可以保证最新的请求会被及时的处理。
