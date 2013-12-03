@@ -4,7 +4,7 @@ EasyImageLoader是用在Android上的一个图片加载类库，主要用于从�
 
 ![sample](https://github.com/ixiaopan/EasyImageLoader/raw/master/docs/sample.gif)
 
-##特征
+##Features
 
 >* 异步加载。采用线程池（默认容量是20）来处理每一个请求，当线程池负荷已满的时候，新的加载请求会被放到一个有界等待队列（默认容量是10）中，这样就可以保证最新的请求会被及时的处理。
 
@@ -17,7 +17,7 @@ EasyImageLoader是用在Android上的一个图片加载类库，主要用于从�
 >* 重复下载过滤。如果两个请求的图片地址一样的话，是第二个是不会重复下载的，当第一个下载下载完成的时候会先后显示在两个请求上指定的ImageView上。
 
 
-##示例
+##Usage
 
 ###在Application中初始化ImagLoader
 
@@ -38,19 +38,19 @@ public class MyApplication extends Application {
 }
 ```
 
-###使用ImageLoader
+###在代码中使用
 
 ```java
 ImageLoader.getInstance().load(imageUrls[position], viewHolder.image);
 ```
 
-##注意事项
+###注意事项
 
 1. 在使用ImageLoader之前你最好在Application中设置一下默认Options的加载中图片和加载失败图片
 
 2. ImageLoader提供了一个单例，所以没有特殊需求的话，你只须通过ImageLoader.getInstance()方法获取其实例即可。
 
-##下载
+##Downloads
 **[easy-image-loader-1.0.1.jar](https://github.com/ixiaopan/EasyImageLoader/raw/master/downloads/easy-image-loader-1.0.1.jar)**
 
 **[easy-image-loader-1.0.0.jar](https://github.com/ixiaopan/EasyImageLoader/raw/master/downloads/easy-image-loader-1.0.0.jar)**
