@@ -259,9 +259,8 @@ public class Configuration {
 	 * @param connectionTimeout
 	 */
 	public void setConnectionTimeout(int connectionTimeout) {
-		if(GeneralUtils.setConnectionTimeout(getHttpClient(), connectionTimeout)){
-			this.connectionTimeout = connectionTimeout;
-		}
+		this.connectionTimeout = connectionTimeout;
+		GeneralUtils.setConnectionTimeout(httpClient, this.connectionTimeout);
 	}
 
 	/**
@@ -277,9 +276,8 @@ public class Configuration {
 	 * @param maxConnections
 	 */
 	public void setMaxConnections(int maxConnections) {
-		if(GeneralUtils.setMaxConnections(getHttpClient(), maxConnections)){
-			this.maxConnections = maxConnections;
-		}
+		this.maxConnections = maxConnections;
+		GeneralUtils.setMaxConnections(httpClient, this.maxConnections);
 	}
 
 	/**
@@ -295,9 +293,8 @@ public class Configuration {
 	 * @param socketBufferSize
 	 */
 	public void setSocketBufferSize(int socketBufferSize) {
-		if(GeneralUtils.setSocketBufferSize(getHttpClient(), socketBufferSize)){
-			this.socketBufferSize = socketBufferSize;
-		}
+		this.socketBufferSize = socketBufferSize;
+		GeneralUtils.setSocketBufferSize(httpClient, this.socketBufferSize);
 	}
 
 	/**

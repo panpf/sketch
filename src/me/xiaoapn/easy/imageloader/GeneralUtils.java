@@ -34,7 +34,7 @@ class GeneralUtils {
 	 * @return
 	 */
 	static boolean setConnectionTimeout(HttpClient client, int connectionTimeout){
-		if(client != null && connectionTimeout > 0){
+		if(client != null){
 			HttpParams httpParams = client.getParams();
 			ConnManagerParams.setTimeout(httpParams, connectionTimeout);
 			HttpConnectionParams.setSoTimeout(httpParams, connectionTimeout);
@@ -69,7 +69,7 @@ class GeneralUtils {
 	 * @return
 	 */
 	static boolean setMaxConnections(HttpClient client, int maxConnections){
-		if(client != null && maxConnections > 0){
+		if(client != null){
 			HttpParams httpParams = client.getParams();
 			ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(maxConnections));
 			ConnManagerParams.setMaxTotalConnections(httpParams, maxConnections);
@@ -102,7 +102,7 @@ class GeneralUtils {
 	 * @return
 	 */
 	static boolean setSocketBufferSize(HttpClient client, int socketBufferSize){
-		if(client != null && socketBufferSize > 0){
+		if(client != null){
 			HttpParams httpParams = client.getParams();
 			HttpConnectionParams.setSocketBufferSize(httpParams, socketBufferSize);
 			return true;
