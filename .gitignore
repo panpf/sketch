@@ -8,13 +8,19 @@
 # Java class files
 *.class
 
-# generated files
-bin/
-gen/
-
 # Local configuration file (sdk path, etc)
 local.properties
 
 # Eclipse project files
 #.classpath
 #.project
+.settings/
+bin/
+gen/
+
+# Idea files
+.idea/
+
+# Gradle files
+.gradle/
+build/
