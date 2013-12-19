@@ -16,7 +16,7 @@
 
 package me.xiaopan.easy.imageloader.sample.adapter;
 
-import me.xiaoapn.easy.imagelader.R;
+import me.xiaoapn.easy.imageloader.R;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import android.content.Context;
 import android.view.LayoutInflater;

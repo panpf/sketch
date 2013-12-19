@@ -19,7 +19,7 @@ package me.xiaopan.easy.imageloader.sample.activity;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xiaoapn.easy.imagelader.R;
+import me.xiaoapn.easy.imageloader.R;
 import me.xiaopan.easy.imageloader.sample.adapter.TitleFragmentPagerAdapter;
 import me.xiaopan.easy.imageloader.sample.fragment.ImageFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.ImageGalleryFragment;

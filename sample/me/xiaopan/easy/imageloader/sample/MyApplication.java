@@ -16,7 +16,7 @@
 
 package me.xiaopan.easy.imageloader.sample;
 
-import me.xiaoapn.easy.imagelader.R;
+import me.xiaoapn.easy.imageloader.R;
 import me.xiaoapn.easy.imageloader.AlphaScaleShowAnimationListener;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.Options;
