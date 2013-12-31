@@ -109,9 +109,9 @@ class LoadTaskRunable implements Runnable {
 	private Bitmap fromLocalFileLoadBitmap(File localFile){
 		if(localFile.length() > 0){
 			if(loadRequest.getOptions() != null && loadRequest.getOptions().getBitmapLoader() != null){
-				return loadRequest.getOptions().getBitmapLoader().onFromFileLoad(localFile, loadRequest.getImageView(), imageLoader);
+				return loadRequest.getOptions().getBitmapLoader().onDecodeFile(localFile, loadRequest.getImageView(), imageLoader);
 			}else{
-				return new PixelsBitmapLoader().onFromFileLoad(localFile, loadRequest.getImageView(), imageLoader);
+				return new PixelsBitmapLoader().onDecodeFile(localFile, loadRequest.getImageView(), imageLoader);
 			}
 		}else{
 			loadRequest.getCacheFile().delete();
@@ -127,9 +127,9 @@ class LoadTaskRunable implements Runnable {
 	 */
 	private Bitmap fromByteArrayLoadBitmap(byte[] byteArray){
 		if(loadRequest.getOptions() != null && loadRequest.getOptions().getBitmapLoader() != null){
-			return loadRequest.getOptions().getBitmapLoader().onFromByteArrayLoad(byteArray, loadRequest.getImageView(), imageLoader);
+			return loadRequest.getOptions().getBitmapLoader().onDecodeByteArray(byteArray, loadRequest.getImageView(), imageLoader);
 		}else{
-			return new PixelsBitmapLoader().onFromByteArrayLoad(byteArray, loadRequest.getImageView(), imageLoader);
+			return new PixelsBitmapLoader().onDecodeByteArray(byteArray, loadRequest.getImageView(), imageLoader);
 		}
 	}
 	

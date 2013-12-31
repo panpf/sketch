@@ -42,7 +42,7 @@ public class PixelsBitmapLoader implements BitmapLoader{
 	public PixelsBitmapLoader(){}
 	
 	@Override
-	public Bitmap onFromByteArrayLoad(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader) {
+	public Bitmap onDecodeByteArray(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader) {
 		if(defaultMaxNumOfPixels == 0){
 			int[] screenSize = GeneralUtils.getScreenSize(showImageView.getContext());
 			defaultMaxNumOfPixels = (screenSize[0] * screenSize[1]);
@@ -61,7 +61,7 @@ public class PixelsBitmapLoader implements BitmapLoader{
 	}
 	
 	@Override
-	public Bitmap onFromFileLoad(File localFile, ImageView showImageView, ImageLoader imageLoader) {
+	public Bitmap onDecodeFile(File localFile, ImageView showImageView, ImageLoader imageLoader) {
 		if(defaultMaxNumOfPixels == 0){
 			int[] screenSize = GeneralUtils.getScreenSize(showImageView.getContext());
 			defaultMaxNumOfPixels = (screenSize[0] * screenSize[1]);

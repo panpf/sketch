@@ -40,8 +40,8 @@ import android.util.Log;
  * 配置
  */
 public class Configuration {
-	private int maxThreadNumber = 20;	//最大线程数
-	private int maxWaitingNumber = 10;	//最大等待数
+	private int threadPoolSize = 20;	//线程池大小
+	private int waitPoolSize = 10;	//最大等待数
 	private int connectionTimeout = 10000;	//连接超时时间
 	private int maxConnections = 10;	//最大连接数
 	private int socketBufferSize = 8192;	//Socket缓存池大小
@@ -112,7 +112,7 @@ public class Configuration {
 	 * @return
 	 */
 	public int getMaxThreadNumber() {
-		return maxThreadNumber;
+		return threadPoolSize;
 	}
 
 	/**
@@ -121,7 +121,7 @@ public class Configuration {
 	 */
 	public void setMaxThreadNumber(int maxThreadNumber) {
 		if(maxThreadNumber > 0){
-			this.maxThreadNumber = maxThreadNumber;
+			this.threadPoolSize = maxThreadNumber;
 		}
 	}
 	
@@ -130,7 +130,7 @@ public class Configuration {
 	 * @return
 	 */
 	public int getMaxWaitingNumber() {
-		return maxWaitingNumber;
+		return waitPoolSize;
 	}
 
 	/**
@@ -139,7 +139,7 @@ public class Configuration {
 	 */
 	public void setMaxWaitingNumber(int maxWaitingNumber) {
 		if(maxWaitingNumber > 0){
-			this.maxWaitingNumber = maxWaitingNumber;
+			this.waitPoolSize = maxWaitingNumber;
 			getWaitingRequestCircle().setMaxSize(maxWaitingNumber);
 		}
 	}

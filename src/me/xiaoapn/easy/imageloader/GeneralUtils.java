@@ -17,6 +17,8 @@
 package me.xiaoapn.easy.imageloader;
 
 import java.io.File;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.params.ConnManagerParams;
@@ -343,5 +345,55 @@ class GeneralUtils {
 		}
 
 		return roundBitmap;
+	}
+	
+	static BitmapLoader getBitmapLoader(Options options){
+		BitmapLoader bitmapLoader = null;
+		if(options != null && options.getBitmapLoader() != null){
+			bitmapLoader = options.getBitmapLoader();
+		}else{
+			bitmapLoader = new PixelsBitmapLoader();
+		}
+		return bitmapLoader;
+	}
+	
+	/**
+	 * 判断给定文件是否可以使用
+	 * @param file
+	 * @param periodOfValidity
+	 * @param imageLoader
+	 * @param requestName
+	 * @return
+	 */
+	static boolean isAvailableOfFile(File file, int periodOfValidity, ImageLoader imageLoader, String requestName){
+		boolean available = false;
+		if(file !=null){
+			if(file.exists()){
+				if(file.length() > 0){
+					if(periodOfValidity > 0){
+						/* 判断是否过期 */
+						Calendar calendar = new GregorianCalendar();
+						calendar.add(Calendar.MILLISECOND, -periodOfValidity);
+						if(calendar.getTimeInMillis() >= file.lastModified()){
+							file.delete();
+							imageLoader.getConfiguration().log("文件已过期："+requestName);
+						}else{
+							available = true;
+							imageLoader.getConfiguration().log("文件未过期："+requestName);
+						}
+					}else{
+						available = true;
+						imageLoader.getConfiguration().log("文件永久有效："+requestName);
+					}
+				}else{
+					imageLoader.getConfiguration().log("文件长度为0："+requestName, true);
+				}
+			}else{
+				imageLoader.getConfiguration().log("文件不存在："+requestName, true);
+			}
+		}else{
+			imageLoader.getConfiguration().log("文件为null："+requestName, true);
+		}
+		return available;
 	}
 }

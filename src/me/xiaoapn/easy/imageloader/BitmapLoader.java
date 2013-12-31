@@ -31,7 +31,7 @@ public interface BitmapLoader{
 	 * @param imageLoader
 	 * @return
 	 */
-	public Bitmap onFromFileLoad(File localFile, ImageView showImageView, ImageLoader imageLoader);
+	public Bitmap onDecodeFile(File localFile, ImageView showImageView, ImageLoader imageLoader);
 	
 	/**
 	 * 从字节数组中加载
@@ -40,5 +40,5 @@ public interface BitmapLoader{
 	 * @param imageLoader
 	 * @return
 	 */
-	public Bitmap onFromByteArrayLoad(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader);
+	public Bitmap onDecodeByteArray(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader);
 }

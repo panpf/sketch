@@ -167,11 +167,13 @@ class LoadRequest {
 	public static class Builder{
 		private LoadRequest loadRequest;
 		
-		public Builder(String id, String url, ImageView imageView){
+		public Builder(String id, String name, String url, ImageView imageView, Options options){
 			loadRequest = new LoadRequest();
 			setId(id);
+			setName(name);
 			setUrl(url);
 			setImageView(imageView);
+			setOptions(options);
 		}
 		
 		/**

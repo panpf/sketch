@@ -89,7 +89,7 @@ class LoadResultHandleRunnable implements Runnable {
 			waitImageLoadRequest = imageLoader.getConfiguration().getWaitingRequestCircle().poll();
 		}
 		if(waitImageLoadRequest != null){
-			imageLoader.tryLoad(waitImageLoadRequest);
+			imageLoader.load(waitImageLoadRequest);
 		}
 	}
 }

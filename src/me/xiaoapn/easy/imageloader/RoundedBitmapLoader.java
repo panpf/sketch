@@ -41,13 +41,13 @@ public class RoundedBitmapLoader extends PixelsBitmapLoader {
 	}
 	
 	@Override
-	public Bitmap onFromFileLoad(File localFile, ImageView showImageView, ImageLoader imageLoader) {
-		return GeneralUtils.roundCorners(super.onFromFileLoad(localFile, showImageView, imageLoader), showImageView, roundPixels);
+	public Bitmap onDecodeFile(File localFile, ImageView showImageView, ImageLoader imageLoader) {
+		return GeneralUtils.roundCorners(super.onDecodeFile(localFile, showImageView, imageLoader), showImageView, roundPixels);
 	}
 
 	@Override
-	public Bitmap onFromByteArrayLoad(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader) {
-		return GeneralUtils.roundCorners(super.onFromByteArrayLoad(byteArray, showImageView, imageLoader), showImageView, roundPixels);
+	public Bitmap onDecodeByteArray(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader) {
+		return GeneralUtils.roundCorners(super.onDecodeByteArray(byteArray, showImageView, imageLoader), showImageView, roundPixels);
 	}
 
 	public int getRoundPixels() {
