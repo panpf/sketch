@@ -24,7 +24,7 @@ public class Options implements Cloneable{
 	private int loadFailureImageResource = -1;	//加载失败时显示的图片的资源ID
 	private int maxRetryCount = -1;	//最大重试次数
 	private int cachePeriodOfValidity;	//缓存有效期，单位毫秒
-	private boolean isCachedInMemory;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+	private boolean isCacheInMemory;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
 	private boolean isCacheInLocal;	//是否需要将图片缓存到本地
 	private String cacheDirectory;	//缓存目录
 	private BitmapLoader bitmapLoader;	//位图加载器
@@ -86,16 +86,16 @@ public class Options implements Cloneable{
 	 * 判断是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
 	 * @return 
 	 */
-	public boolean isCachedInMemory() {
-		return isCachedInMemory;
+	public boolean isCacheInMemory() {
+		return isCacheInMemory;
 	}
 	
 	/**
 	 * 设置是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-	 * @param isCachedInMemory 是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+	 * @param isCacheInMemory 是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
 	 */
-	public void setCachedInMemory(boolean isCachedInMemory) {
-		this.isCachedInMemory = isCachedInMemory;
+	public void setCacheInMemory(boolean isCacheInMemory) {
+		this.isCacheInMemory = isCacheInMemory;
 	}
 
 	/**
@@ -220,7 +220,7 @@ public class Options implements Cloneable{
 		 * @param isCachedInMemory 是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
 		 */
 		public Builder setCachedInMemory(boolean isCachedInMemory) {
-			options.setCachedInMemory(isCachedInMemory);
+			options.setCacheInMemory(isCachedInMemory);
 			return this;
 		}
 
@@ -285,7 +285,7 @@ public class Options implements Cloneable{
 	public Options copy(){
 		return new Options.Builder()
 		.setBitmapLoader(getBitmapLoader())
-		.setCachedInMemory(isCachedInMemory())
+		.setCachedInMemory(isCacheInMemory())
 		.setCacheDirectory(getCacheDirectory())
 		.setCacheInLocal(isCacheInLocal())
 		.setLoadFailureImageResource(getLoadFailureImageResource())

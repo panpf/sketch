@@ -50,7 +50,10 @@ class LoadResultHandleRunnable implements Runnable {
 						imageView.clearAnimation();//先清除之前所有的动画
 						//如果图片加载成功
 						if(loadRequest.getResultBitmap() != null){
-							Animation animation = loadRequest.getOptions() != null ? loadRequest.getOptions().getShowAnimationListener().onGetShowAnimation() : null;
+							Animation animation = null;
+							if(loadRequest.getOptions() != null && loadRequest.getOptions().getShowAnimationListener() != null){
+								animation = loadRequest.getOptions().getShowAnimationListener().onGetShowAnimation();
+							}
 							if(animation != null){
 								imageView.setAnimation(animation);
 							}

@@ -94,7 +94,7 @@ class LoadTaskRunable implements Runnable {
 		}
 		
 		/* 尝试缓存到内存中 */
-		if(loadRequest.getResultBitmap() != null && loadRequest.getOptions() != null && loadRequest.getOptions().isCachedInMemory()){
+		if(loadRequest.getResultBitmap() != null && loadRequest.getOptions() != null && loadRequest.getOptions().isCacheInMemory()){
 			imageLoader.getConfiguration().getBitmapCacher().put(loadRequest.getId(), loadRequest.getResultBitmap());
 		}
 		

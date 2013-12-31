@@ -163,7 +163,7 @@ public class ImageLoader{
 	 */
 	private boolean tryShowImage(String id, String name, ImageView showImageView, Options options){
 		//如果需要从缓存中读取，就根据地址从缓存中获取图片，如果缓存中存在相对的图片就显示，否则显示默认图片或者显示空
-		if(options != null && options.isCachedInMemory() && (tempCacheBitmap = getConfiguration().getBitmapCacher().get(id)) != null){
+		if(options != null && options.isCacheInMemory() && (tempCacheBitmap = getConfiguration().getBitmapCacher().get(id)) != null){
 			showImageView.setTag(null);	//清空绑定关系
 			getConfiguration().log("从缓存中加载图片："+name);
 			loadingImageViewSet.remove(showImageView);
