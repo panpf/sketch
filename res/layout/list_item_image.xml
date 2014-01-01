@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content" android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content"
+    android:padding="16dp" >
 	<ImageView 
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:id="@+id/listItem_image"
+	    android:layout_width="200dp"
+	    android:layout_height="200dp"
+	    android:id="@+id/image_listItem"
+	    android:scaleType="center"
+	    android:adjustViewBounds="true"
 	    android:contentDescription="@string/app_name"/>
 </LinearLayout>

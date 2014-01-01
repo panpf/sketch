@@ -244,8 +244,8 @@ public class ImageLoader{
 	private void exceptionHandle(ImageView imageView, Options options){
 		if(imageView != null){
 			imageView.setTag(null);
-			if(options != null && options.getLoadingImageResource() > 0){
-				imageView.setImageResource(options.getLoadingImageResource());
+			if(options != null && options.getLoadFailureImageResource() > 0){
+				imageView.setImageResource(options.getLoadFailureImageResource());
 			}else{
 				imageView.setImageDrawable(null);
 			}

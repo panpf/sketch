@@ -69,22 +69,30 @@ public class MainActivity extends FragmentActivity {
 	
 	private void set(int index){
 		Fragment fragment = null;
+		Bundle bundle = null;
 		switch(index){
 			case 0 : 
 				fragment = new GridFragment();
+				bundle = new Bundle();
+				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_grid));
 				break;
 			case 1 : 
 				fragment = new ListFragment();
+				bundle = new Bundle();
+				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_list));
 				break;
 			case 2 : 
 				fragment = new GalleryFragment();
+				bundle = new Bundle();
+				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_gallery));
 				break;
 		}
 		
 		if(fragment != null){
-			Bundle largeGalleryBundle = new Bundle();
-			largeGalleryBundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_veryLarge));
-			fragment.setArguments(largeGalleryBundle);
+			if(bundle != null){
+				
+			}
+			fragment.setArguments(bundle);
 			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_main, fragment).commit();
 		}
 	}

@@ -32,7 +32,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 
-public class ImageAdapter extends BaseAdapter {
+public class GridImageAdapter extends BaseAdapter {
 	private Context context;
 	private String[] imageUrls;
 	private int cloumn;
@@ -40,7 +40,7 @@ public class ImageAdapter extends BaseAdapter {
 	
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	public ImageAdapter(Context context, String[] imageUrls, int cloumn){
+	public GridImageAdapter(Context context, String[] imageUrls, int cloumn){
 		this.context = context;
 		this.imageUrls = imageUrls;
 		this.cloumn = cloumn;
@@ -75,8 +75,8 @@ public class ImageAdapter extends BaseAdapter {
 		ViewHolder viewHolder = null;
 		if(convertView == null){
 			viewHolder = new ViewHolder();
-			convertView = LayoutInflater.from(context).inflate(R.layout.list_item_image, null);
-			viewHolder.image = (ImageView) convertView.findViewById(R.id.listItem_image);
+			convertView = LayoutInflater.from(context).inflate(R.layout.grid_item_image, null);
+			viewHolder.image = (ImageView) convertView.findViewById(R.id.image_gridItem);
 			if(cloumn > 1){
 				viewHolder.image.setLayoutParams(new LinearLayout.LayoutParams(screenWidth/cloumn, screenWidth/cloumn));
 				viewHolder.image.setScaleType(ScaleType.CENTER_CROP);

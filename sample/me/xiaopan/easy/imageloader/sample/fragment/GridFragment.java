@@ -16,7 +16,7 @@
 
 package me.xiaopan.easy.imageloader.sample.fragment;
 
-import me.xiaopan.easy.imageloader.sample.adapter.ImageAdapter;
+import me.xiaopan.easy.imageloader.sample.adapter.GridImageAdapter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -36,7 +36,7 @@ public class GridFragment extends Fragment {
 		gridView.setNumColumns(3);
 		gridView.setVerticalSpacing(2);
 		gridView.setHorizontalSpacing(2);
-		gridView.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS), 3));
+		gridView.setAdapter(new GridImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS), 3));
 		return gridView;
 	}
 }

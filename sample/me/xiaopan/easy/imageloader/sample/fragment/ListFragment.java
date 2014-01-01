@@ -16,7 +16,8 @@
 
 package me.xiaopan.easy.imageloader.sample.fragment;
 
-import me.xiaopan.easy.imageloader.sample.adapter.ImageAdapter;
+import me.xiaoapn.easy.imageloader.R;
+import me.xiaopan.easy.imageloader.sample.adapter.ListImageAdapter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -31,7 +32,9 @@ public class ListFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		ListView listView = new ListView(getActivity());
 		listView.setBackgroundColor(Color.BLACK);
-		listView.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS), 1));
+		listView.setDivider(getResources().getDrawable(R.drawable.divider));
+		listView.setDividerHeight(1);
+		listView.setAdapter(new ListImageAdapter(getActivity(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS)));
 		return listView;
 	}
 }
