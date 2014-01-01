@@ -17,6 +17,8 @@
 package me.xiaoapn.easy.imageloader;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -39,6 +41,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.Environment;
+import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -366,34 +369,57 @@ class GeneralUtils {
 	 * @return
 	 */
 	static boolean isAvailableOfFile(File file, int periodOfValidity, ImageLoader imageLoader, String requestName){
-		boolean available = false;
-		if(file !=null){
-			if(file.exists()){
-				if(file.length() > 0){
-					if(periodOfValidity > 0){
-						/* 判断是否过期 */
-						Calendar calendar = new GregorianCalendar();
-						calendar.add(Calendar.MILLISECOND, -periodOfValidity);
-						if(calendar.getTimeInMillis() >= file.lastModified()){
-							file.delete();
-							imageLoader.getConfiguration().log("文件已过期："+requestName);
-						}else{
-							available = true;
-							imageLoader.getConfiguration().log("文件未过期："+requestName);
-						}
-					}else{
-						available = true;
-						imageLoader.getConfiguration().log("文件永久有效："+requestName);
-					}
-				}else{
-					imageLoader.getConfiguration().log("文件长度为0："+requestName, true);
-				}
-			}else{
-				imageLoader.getConfiguration().log("文件不存在："+requestName, true);
+		if(file ==null){
+			if(imageLoader.getConfiguration().isDebugMode()){
+				Log.e(imageLoader.getConfiguration().getLogTag(), "文件为null："+requestName);
 			}
-		}else{
-			imageLoader.getConfiguration().log("文件为null："+requestName, true);
+			return false;
 		}
-		return available;
+		
+		if(!file.exists()){
+			if(imageLoader.getConfiguration().isDebugMode()){
+				Log.e(imageLoader.getConfiguration().getLogTag(), "文件不存在："+requestName);
+			}
+			return false;
+		}
+		
+		if(file.length() <= 0){
+			if(imageLoader.getConfiguration().isDebugMode()){
+				Log.e(imageLoader.getConfiguration().getLogTag(), "文件长度为0："+requestName);
+			}
+			return false;
+		}
+		
+		if(periodOfValidity <= 0){
+			if(imageLoader.getConfiguration().isDebugMode()){
+				Log.d(imageLoader.getConfiguration().getLogTag(), "文件永久有效："+requestName);
+			}
+			return true;
+		}
+		
+		/* 判断是否过期 */
+		Calendar calendar = new GregorianCalendar();
+		calendar.add(Calendar.MILLISECOND, -periodOfValidity);
+		if(calendar.getTimeInMillis() >= file.lastModified()){
+			file.delete();
+			if(imageLoader.getConfiguration().isDebugMode()){
+				Log.e(imageLoader.getConfiguration().getLogTag(), "文件过期已删除："+requestName);
+			}
+			return false;
+		}else{
+			if(imageLoader.getConfiguration().isDebugMode()){
+				Log.d(imageLoader.getConfiguration().getLogTag(), "文件未过期："+requestName);
+			}
+			return true;
+		}
+	}
+	
+	static String encodeUrl(String url){
+		try {
+			return URLEncoder.encode(url, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			e.printStackTrace();
+			return url;
+		}
 	}
 }

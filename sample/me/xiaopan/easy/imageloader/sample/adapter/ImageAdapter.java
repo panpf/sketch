@@ -61,7 +61,7 @@ public class ImageAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
-		ImageLoader.getInstance().load(imageUrls[position], viewHolder.image);
+		ImageLoader.getInstance().display(imageUrls[position], viewHolder.image);
 		return convertView;
 	}
 	

@@ -18,24 +18,30 @@ package me.xiaoapn.easy.imageloader;
 
 import java.util.Iterator;
 
+import android.util.Log;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
 /**
  * 加载结果处理Runnable
  */
-class LoadResultHandleRunnable implements Runnable {
+class CompleteHandleRunnable implements Runnable {
 	private ImageLoader imageLoader;
-	private LoadRequest loadRequest;
+	private Request request;
 	
-	public LoadResultHandleRunnable(ImageLoader imageLoader, LoadRequest loadRequest){
+	public CompleteHandleRunnable(ImageLoader imageLoader, Request request){
 		this.imageLoader = imageLoader;
-		this.loadRequest = loadRequest;
+		this.request = request;
 	}
 	
 	@Override
 	public void run() {
-		/* 遍历显示视图集合，找到其绑定的地址同当前下载的地址一样的图片视图，并将结果显示到图片视图上 */
+		if(imageLoader.getConfiguration().isDebugMode()){
+			Log.e(imageLoader.getConfiguration().getLogTag()+":CompleteHandleRunnable", ":完成处理："+request.getName());
+		}
+		imageLoader.getLoadingIdSet().remove(request.getId());	//将当前下载对象从正在下载集合中删除
+		
+		/* 遍历ImageView集合，找到其绑定的地址同当前下载的地址一样的图片视图，并将结果显示到ImageView上 */
 		Iterator<ImageView> iterator = imageLoader.getLoadingImageViewSet().iterator();
 		ImageView imageView;
 		Object tagObject;
@@ -46,30 +52,34 @@ class LoadResultHandleRunnable implements Runnable {
 				//如果当前ImageView有要显示的图片，入如果没有的话就将其从等待集合中移除
 				if(tagObject != null){
 					//如果当前ImageView就是要找的
-					if(loadRequest.getId().equals(tagObject.toString())){
+					if(request.getId().equals(tagObject.toString())){
 						imageView.clearAnimation();//先清除之前所有的动画
 						//如果图片加载成功
-						if(loadRequest.getResultBitmap() != null){
+						if(request.getResultBitmap() != null){
 							Animation animation = null;
-							if(loadRequest.getOptions() != null && loadRequest.getOptions().getShowAnimationListener() != null){
-								animation = loadRequest.getOptions().getShowAnimationListener().onGetShowAnimation();
+							if(request.getOptions() != null && request.getOptions().getShowAnimationListener() != null){
+								animation = request.getOptions().getShowAnimationListener().onGetShowAnimation();
 							}
 							if(animation != null){
 								imageView.setAnimation(animation);
 							}
-							imageView.setImageBitmap(loadRequest.getResultBitmap());
-							imageLoader.getConfiguration().log("加载成功："+loadRequest.getName());
+							imageView.setImageBitmap(request.getResultBitmap());
+							if(imageLoader.getConfiguration().isDebugMode()){
+								Log.d(imageLoader.getConfiguration().getLogTag(), "加载成功："+request.getName());
+							}
 						}else{
-							if(loadRequest.getOptions() != null){
-								if(loadRequest.getOptions().getLoadFailureImageResource() > 0){
-									imageView.setImageResource(loadRequest.getOptions().getLoadFailureImageResource());
+							if(request.getOptions() != null){
+								if(request.getOptions().getLoadFailureImageResource() > 0){
+									imageView.setImageResource(request.getOptions().getLoadFailureImageResource());
 								}else{
 									imageView.setImageBitmap(null);
 								}
 							}else{
 								imageView.setImageBitmap(null);
 							}
-							imageLoader.getConfiguration().log("加载失败："+loadRequest.getName(), true);
+							if(imageLoader.getConfiguration().isDebugMode()){
+								Log.e(imageLoader.getConfiguration().getLogTag(), "加载失败："+request.getName());
+							}
 						}
 						imageView.setTag(null);
 						iterator.remove();
@@ -80,13 +90,10 @@ class LoadResultHandleRunnable implements Runnable {
 			}
 		}
 		
-		/* 将当前下载对象从正在下载集合中删除 */
-		imageLoader.getLoadingRequestSet().remove(loadRequest.getId());
-		
 		/* 从等待队列中取出等待加载的请求并尝试加载 */
-		LoadRequest waitImageLoadRequest;
-		synchronized (imageLoader.getConfiguration().getWaitingRequestCircle()) {
-			waitImageLoadRequest = imageLoader.getConfiguration().getWaitingRequestCircle().poll();
+		Request waitImageLoadRequest;
+		synchronized (imageLoader.getConfiguration().getBufferPool()) {
+			waitImageLoadRequest = imageLoader.getConfiguration().getBufferPool().poll();
 		}
 		if(waitImageLoadRequest != null){
 			imageLoader.load(waitImageLoadRequest);

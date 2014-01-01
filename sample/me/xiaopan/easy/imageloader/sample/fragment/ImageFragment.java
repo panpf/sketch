@@ -30,9 +30,9 @@ public class ImageFragment extends TitleFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_image, null);
 		ImageView imageView = (ImageView) rootView.findViewById(R.id.image1);
-		ImageLoader.getInstance().load("http://s1.dwstatic.com/group1/M00/AF/39/cfc4623b24057a642f6e812269175ada.jpg", imageView);
+		ImageLoader.getInstance().display("http://s1.dwstatic.com/group1/M00/AF/39/cfc4623b24057a642f6e812269175ada.jpg", imageView);
 		ImageView imageView2 = (ImageView) rootView.findViewById(R.id.image2);
-		ImageLoader.getInstance().load("http://s1.dwstatic.com/group1/M00/98/47/db8bbf7cf28ac4d4ce101ed5d2683ab0.jpg", imageView2);
+		ImageLoader.getInstance().display("http://s1.dwstatic.com/group1/M00/98/47/db8bbf7cf28ac4d4ce101ed5d2683ab0.jpg", imageView2);
 		return rootView;
 	}
 	

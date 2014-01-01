@@ -26,10 +26,10 @@ public class BitmapLruCacher implements BitmapCacher {
 	private LruCache<String, Bitmap> bitmapLruCache;
 	
 	public BitmapLruCacher(){
-		bitmapLruCache = new LruCache<String, Bitmap> ((int) (Runtime.getRuntime().maxMemory()/1024/8)){
+		bitmapLruCache = new LruCache<String, Bitmap> ((int) (Runtime.getRuntime().maxMemory()/8)){
 			@Override
 			protected int sizeOf(String key, Bitmap value) {
-				return value.getRowBytes() * value.getHeight() / 1024;
+				return value.getRowBytes() * value.getHeight();
 			}
 		};
 	}

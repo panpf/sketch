@@ -16,6 +16,8 @@ import org.apache.http.conn.ConnectionPoolTimeoutException;
 import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.util.EntityUtils;
 
+import android.util.Log;
+
 /**
  * 图片下载器
  */
@@ -42,6 +44,9 @@ public class ImageDownloader {
 	 * 执行
 	 */
 	public void execute(){
+		if(imageLoader.getConfiguration().isDebugMode()){
+			Log.d(imageLoader.getConfiguration().getLogTag()+":ImageDownloader", "下载开始："+requestName);
+		}
 		int numberOfLoaded = 0;	//已加载次数
 		byte[] data = null;
 		boolean running = true;
@@ -107,8 +112,6 @@ public class ImageDownloader {
 				
 				running = false;
 			} catch (Throwable e2) {
-				imageLoader.getConfiguration().log(requestName+"加载失败，异常信息："+e2.toString(), true);
-				
 				if(httpGet != null){
 					httpGet.abort();
 				}
@@ -148,6 +151,16 @@ public class ImageDownloader {
 				}else{
 					running = false;
 				}
+				
+				if(running){
+					if(imageLoader.getConfiguration().isDebugMode()){
+						Log.d(imageLoader.getConfiguration().getLogTag()+":ImageDownloader", "下载异常，重新下载："+requestName+"。异常信息："+e2.toString());
+					}
+				}else{
+					if(imageLoader.getConfiguration().isDebugMode()){
+						Log.d(imageLoader.getConfiguration().getLogTag()+":ImageDownloader", "下载异常，不再下载："+requestName+"。异常信息："+e2.toString());
+					}
+				}
 			}
 		}
 		
@@ -155,8 +168,14 @@ public class ImageDownloader {
 			case FILE : 
 				if(onCompleteListener != null){
 					if(cacheFile != null && cacheFile.exists() && cacheFile.length() > 0){
+						if(imageLoader.getConfiguration().isDebugMode()){
+							Log.d(imageLoader.getConfiguration().getLogTag()+":ImageDownloader", "下载成功："+requestName);
+						}
 						onCompleteListener.onComplete(cacheFile);
 					}else{
+						if(imageLoader.getConfiguration().isDebugMode()){
+							Log.d(imageLoader.getConfiguration().getLogTag()+":ImageDownloader", "下载失败："+requestName);
+						}
 						onCompleteListener.onFailed();
 					}
 				}
@@ -164,14 +183,31 @@ public class ImageDownloader {
 			case BYTE_ARRAY : 
 				if(onCompleteListener != null){
 					if(data != null && data.length > 0){
+						if(imageLoader.getConfiguration().isDebugMode()){
+							Log.d(imageLoader.getConfiguration().getLogTag()+":ImageDownloader", "下载成功："+requestName);
+						}
 						onCompleteListener.onComplete(data);
 					}else{
+						if(imageLoader.getConfiguration().isDebugMode()){
+							Log.d(imageLoader.getConfiguration().getLogTag()+":ImageDownloader", "下载失败："+requestName);
+						}
 						onCompleteListener.onFailed();
 					}
 				}
 				break;
+			case FAILURE : 
+				if(onCompleteListener != null){
+					if(imageLoader.getConfiguration().isDebugMode()){
+						Log.d(imageLoader.getConfiguration().getLogTag()+":ImageDownloader", "下载失败："+requestName);
+					}
+					onCompleteListener.onFailed();
+				}
+				break;
 			default : 
 				if(onCompleteListener != null){
+					if(imageLoader.getConfiguration().isDebugMode()){
+						Log.d(imageLoader.getConfiguration().getLogTag()+":ImageDownloader", "下载失败："+requestName);
+					}
 					onCompleteListener.onFailed();
 				}
 				break;

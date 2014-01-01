@@ -34,14 +34,13 @@ import org.apache.http.params.HttpProtocolParams;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.Log;
 
 /**
  * 配置
  */
 public class Configuration {
 	private int threadPoolSize = 20;	//线程池大小
-	private int waitPoolSize = 10;	//最大等待数
+	private int bufferPoolSize = 10;	//缓冲池大小
 	private int connectionTimeout = 10000;	//连接超时时间
 	private int maxConnections = 10;	//最大连接数
 	private int socketBufferSize = 8192;	//Socket缓存池大小
@@ -50,10 +49,10 @@ public class Configuration {
 	private String defaultCacheDirectory;	//默认的缓存目录
 	private Options defaultOptions;	//默认加载选项
 	private Handler handler = new Handler();;	//任务结果处理器
-	private BitmapCacher bitmapCacher;	//位图缓存器
 	private HttpClient httpClient;	//Http客户端
+	private BitmapCacher bitmapCacher;	//位图缓存器
+	private CircleList<Request> bufferPool;	//缓冲池
 	private ThreadPoolExecutor threadPool;	//线程池
-	private CircleList<LoadRequest> waitingRequestCircle;	//等待处理的加载请求
 	
 	private Configuration(){
 		
@@ -111,36 +110,36 @@ public class Configuration {
 	 * 获取最大线程数
 	 * @return
 	 */
-	public int getMaxThreadNumber() {
+	public int getThreadPoolSize() {
 		return threadPoolSize;
 	}
 
 	/**
 	 * 设置最大线程数
-	 * @param maxThreadNumber
+	 * @param threadPoolSize
 	 */
-	public void setMaxThreadNumber(int maxThreadNumber) {
-		if(maxThreadNumber > 0){
-			this.threadPoolSize = maxThreadNumber;
+	public void setThreadPoolSize(int threadPoolSize) {
+		if(threadPoolSize > 0){
+			this.threadPoolSize = threadPoolSize;
 		}
 	}
 	
 	/**
-	 * 获取最大等待数，即等待区的最大容量
+	 * 获取缓冲池大小
 	 * @return
 	 */
-	public int getMaxWaitingNumber() {
-		return waitPoolSize;
+	public int getBufferPoolSize() {
+		return bufferPoolSize;
 	}
 
 	/**
-	 * 设置最大等待数
-	 * @param maxWaitingNumber
+	 * 设置缓冲池大小
+	 * @param bufferPoolSize
 	 */
-	public void setMaxWaitingNumber(int maxWaitingNumber) {
-		if(maxWaitingNumber > 0){
-			this.waitPoolSize = maxWaitingNumber;
-			getWaitingRequestCircle().setMaxSize(maxWaitingNumber);
+	public void setBufferPoolSize(int bufferPoolSize) {
+		if(bufferPoolSize > 0){
+			this.bufferPoolSize = bufferPoolSize;
+			getBufferPool().setMaxSize(bufferPoolSize);
 		}
 	}
 	
@@ -300,14 +299,14 @@ public class Configuration {
 	}
 
 	/**
-	 * 获取等待请求集合
-	 * @return 等待请求集合
+	 * 获取缓冲池
+	 * @return 缓冲池
 	 */
-	final CircleList<LoadRequest> getWaitingRequestCircle() {
-		if(waitingRequestCircle == null){
-			waitingRequestCircle = new CircleList<LoadRequest>(getMaxWaitingNumber());//初始化等待处理的加载请求集合
+	final CircleList<Request> getBufferPool() {
+		if(bufferPool == null){
+			bufferPool = new CircleList<Request>(getBufferPoolSize());//初始化等待处理的加载请求集合
 		}
-		return waitingRequestCircle;
+		return bufferPool;
 	}
 	
 	/**
@@ -326,28 +325,6 @@ public class Configuration {
 		this.debugMode = debugMode;
 	}
 
-	/**
-	 * 输出LOG
-	 * @param logContent LOG内容
-	 */
-	public void log(String logContent, boolean error){
-		if(debugMode){
-			if(error){
-				Log.e(getLogTag(), logContent);
-			}else{
-				Log.d(getLogTag(), logContent);
-			}
-		}
-	}
-	
-	/**
-	 * 输出LOG
-	 * @param logContent LOG内容
-	 */
-	public void log(String logContent){
-		log(logContent, false);
-	}
-	
 	/**
 	 * ImageLoadder配置创建器
 	 */
@@ -381,7 +358,7 @@ public class Configuration {
 		 * @param maxThreadNumber
 		 */
 		public Builder setMaxThreadNumber(int maxThreadNumber) {
-			configuration.setMaxThreadNumber(maxThreadNumber);
+			configuration.setThreadPoolSize(maxThreadNumber);
 			return this;
 		}
 
@@ -390,7 +367,7 @@ public class Configuration {
 		 * @param maxWaitingNumber
 		 */
 		public Builder setMaxWaitingNumber(int maxWaitingNumber) {
-			configuration.setMaxWaitingNumber(maxWaitingNumber);
+			configuration.setBufferPoolSize(maxWaitingNumber);
 			return this;
 		}
 		

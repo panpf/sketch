@@ -26,6 +26,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Rect;
+import android.util.Log;
 import android.util.TypedValue;
 
 /**
@@ -88,21 +89,21 @@ class BitmapDecoder {
 		options.inJustDecodeBounds = true;
 		BitmapFactory.decodeByteArray(data, offset, length, options);
 		String log = null;
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log = "原图尺寸："+options.outWidth+"x"+options.outHeight;
 		}
 		
 		options.inSampleSize = computeSampleSize(options, minSlideLength, maxNumOfPixels);
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；inSampleSize："+options.inSampleSize;
 		}
 		
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeByteArray(data, offset, length, options);
 
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；最终尺寸："+bitmap.getWidth()+"x"+bitmap.getHeight();
-			imageLoader.getConfiguration().log(log);
+			Log.d(imageLoader.getConfiguration().getLogTag(), log);
 		}
 		
 		return bitmap;
@@ -152,21 +153,21 @@ class BitmapDecoder {
 		BitmapFactory.decodeFile(filePath, options);
 
 		String log = null;
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log = "原图尺寸："+options.outWidth+"x"+options.outHeight;
 		}
 		
 		options.inSampleSize = computeSampleSize(options, minSlideLength, maxNumOfPixels);
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；inSampleSize："+options.inSampleSize;
 		}
 		
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
 
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；最终尺寸："+bitmap.getWidth()+"x"+bitmap.getHeight();
-			imageLoader.getConfiguration().log(log);
+			Log.d(imageLoader.getConfiguration().getLogTag(), log);
 		}
 		
 		return bitmap;
@@ -196,19 +197,19 @@ class BitmapDecoder {
 		BitmapFactory.decodeFileDescriptor(fd, outPadding, options);
 
 		String log = null;
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log = "原图尺寸："+options.outWidth+"x"+options.outHeight;
 		}
 		options.inSampleSize = computeSampleSize(options, minSlideLength, maxNumOfPixels);
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；inSampleSize："+options.inSampleSize;
 		}
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeFileDescriptor(fd, outPadding, options);
 
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；最终尺寸："+bitmap.getWidth()+"x"+bitmap.getHeight();
-			imageLoader.getConfiguration().log(log);
+			Log.d(imageLoader.getConfiguration().getLogTag(), log);
 		}
 		
 		return bitmap;
@@ -238,19 +239,19 @@ class BitmapDecoder {
 		BitmapFactory.decodeResource(resource, id, options);
 
 		String log = null;
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log = "原图尺寸："+options.outWidth+"x"+options.outHeight;
 		}
 		options.inSampleSize = computeSampleSize(options, minSlideLength, maxNumOfPixels);
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；inSampleSize："+options.inSampleSize;
 		}
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeResource(resource, id, options);
 
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；最终尺寸："+bitmap.getWidth()+"x"+bitmap.getHeight();
-			imageLoader.getConfiguration().log(log);
+			Log.d(imageLoader.getConfiguration().getLogTag(), log);
 		}
 		
 		return bitmap;
@@ -283,19 +284,19 @@ class BitmapDecoder {
 		BitmapFactory.decodeResourceStream(resource, value, is, pad, options);
 
 		String log = null;
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log = "原图尺寸："+options.outWidth+"x"+options.outHeight;
 		}
 		options.inSampleSize = computeSampleSize(options, minSlideLength, maxNumOfPixels);
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；inSampleSize："+options.inSampleSize;
 		}
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeResourceStream(resource, value, is, pad, options);
 
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；最终尺寸："+bitmap.getWidth()+"x"+bitmap.getHeight();
-			imageLoader.getConfiguration().log(log);
+			Log.d(imageLoader.getConfiguration().getLogTag(), log);
 		}
 		
 		return bitmap;
@@ -316,19 +317,19 @@ class BitmapDecoder {
 		BitmapFactory.decodeStream(inputStream, outPadding, options);
 
 		String log = null;
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log = "原图尺寸："+options.outWidth+"x"+options.outHeight;
 		}
 		options.inSampleSize = computeSampleSize(options, minSlideLength, maxNumOfPixels);
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；inSampleSize："+options.inSampleSize;
 		}
 		options.inJustDecodeBounds = false;
 		Bitmap bitmap = BitmapFactory.decodeStream(inputStream, outPadding, options);
 
-		if(imageLoader != null){
+		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
 			log += "；最终尺寸："+bitmap.getWidth()+"x"+bitmap.getHeight();
-			imageLoader.getConfiguration().log(log);
+			Log.d(imageLoader.getConfiguration().getLogTag(), log);
 		}
 		
 		return bitmap;
