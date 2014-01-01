@@ -18,9 +18,8 @@ package me.xiaoapn.easy.imageloader;
 
 import java.io.File;
 
-import android.util.Log;
-
 import me.xiaoapn.easy.imageloader.ImageDownloader.OnCompleteListener;
+import android.util.Log;
 
 /**
  * 加载任务Runable

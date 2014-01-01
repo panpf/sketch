@@ -19,12 +19,13 @@ package me.xiaopan.easy.imageloader.sample.fragment;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.R;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-public class ImageFragment extends TitleFragment {
+public class ImageFragment extends Fragment {
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -34,10 +35,5 @@ public class ImageFragment extends TitleFragment {
 		ImageView imageView2 = (ImageView) rootView.findViewById(R.id.image2);
 		ImageLoader.getInstance().display("http://s1.dwstatic.com/group1/M00/98/47/db8bbf7cf28ac4d4ce101ed5d2683ab0.jpg", imageView2);
 		return rootView;
-	}
-	
-	@Override
-	public String getTitle() {
-		return "使用默认选项加载图片";
 	}
 }

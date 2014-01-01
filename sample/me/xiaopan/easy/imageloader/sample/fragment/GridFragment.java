@@ -17,25 +17,26 @@
 package me.xiaopan.easy.imageloader.sample.fragment;
 
 import me.xiaopan.easy.imageloader.sample.adapter.ImageAdapter;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.GridView;
 
-public class ImageListFragment extends TitleFragment {
-	public static final String PARAM_REQUIRED_STRING_NAME = "PARAM_REQUIRED_STRING_NAME";
+public class GridFragment extends Fragment {
 	public static final String PARAM_REQUIRED_STRING_ARRAY_URLS = "PARAM_REQUIRED_STRING_ARRAY_URLS";
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		ListView listView = new ListView(getActivity());
-		listView.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS), 1));
-		return listView;
-	}
-
-	@Override
-	public String getTitle() {
-		return getArguments().getString(PARAM_REQUIRED_STRING_NAME);
+		GridView gridView = new GridView(getActivity());
+		gridView.setBackgroundColor(Color.BLACK);
+		gridView.setPadding(0, 0, 0, 0);
+		gridView.setNumColumns(3);
+		gridView.setVerticalSpacing(2);
+		gridView.setHorizontalSpacing(2);
+		gridView.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS), 3));
+		return gridView;
 	}
 }

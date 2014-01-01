@@ -17,4 +17,19 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <!-- 列表项 -->
+    <style name="listItem" parent="@style/base_match_wrap">
+        <item name="android:paddingLeft">@dimen/base_padding_specialLarge</item>
+        <item name="android:paddingTop">@dimen/base_padding_default</item>
+        <item name="android:paddingRight">@dimen/base_padding_specialLarge</item>
+        <item name="android:paddingBottom">@dimen/base_padding_default</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:minHeight">52dp</item>
+    </style>
+
+    <!-- 文本 - 标题 -->
+    <style name="text_title" parent="@style/base_wrap_wrap">
+        <item name="android:textSize">@dimen/base_textSize_large</item>
+        <item name="android:textColor">@color/selector_text_title</item>
+    </style>
 </resources>

@@ -17,26 +17,21 @@
 package me.xiaopan.easy.imageloader.sample.fragment;
 
 import me.xiaopan.easy.imageloader.sample.adapter.ImageAdapter;
+import android.graphics.Color;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Gallery;
+import android.widget.ListView;
 
-@SuppressWarnings("deprecation")
-public class ImageGalleryFragment extends TitleFragment {
-	public static final String PARAM_REQUIRED_STRING_NAME = "PARAM_REQUIRED_STRING_NAME";
-	public static final String PARAM_REQUIRED_STRING_ARRAY_URLS = "PARAM_REQUIRED_STRING_ARRAY_URLS";
+public class ListFragment extends Fragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Gallery gallery = (Gallery) new Gallery(getActivity());
-		gallery.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS), 1));
-		return gallery;
-	}
-
-	@Override
-	public String getTitle() {
-		return getArguments().getString(PARAM_REQUIRED_STRING_NAME);
+		ListView listView = new ListView(getActivity());
+		listView.setBackgroundColor(Color.BLACK);
+		listView.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS), 1));
+		return listView;
 	}
 }

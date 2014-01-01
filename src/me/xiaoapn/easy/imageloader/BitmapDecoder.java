@@ -16,7 +16,11 @@
 
 package me.xiaoapn.easy.imageloader;
 
+import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.FileDescriptor;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -163,14 +167,26 @@ class BitmapDecoder {
 		}
 		
 		options.inJustDecodeBounds = false;
-		Bitmap bitmap = BitmapFactory.decodeFile(filePath, options);
-
-		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
-			log += "；最终尺寸："+bitmap.getWidth()+"x"+bitmap.getHeight();
-			Log.d(imageLoader.getConfiguration().getLogTag(), log);
-		}
-		
-		return bitmap;
+		FlusedInputStream flusedInputStream = null;
+		try {
+			flusedInputStream = new FlusedInputStream(new BufferedInputStream(new FileInputStream(new File(filePath))));
+			Bitmap bitmap = BitmapFactory.decodeStream(flusedInputStream, null, options);
+			if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
+				log += "；最终尺寸："+bitmap.getWidth()+"x"+bitmap.getHeight();
+				Log.d(imageLoader.getConfiguration().getLogTag(), log);
+			}
+			return bitmap;
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		} finally {
+            if (flusedInputStream != null) {
+                try {
+                	flusedInputStream.close();
+                } catch (IOException e) {
+                }
+            }
+        }
 	}
 	
 	/**

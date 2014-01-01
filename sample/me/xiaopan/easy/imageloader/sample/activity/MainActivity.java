@@ -16,75 +16,76 @@
 
 package me.xiaopan.easy.imageloader.sample.activity;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import me.xiaoapn.easy.imageloader.R;
-import me.xiaopan.easy.imageloader.sample.adapter.TitleFragmentPagerAdapter;
-import me.xiaopan.easy.imageloader.sample.fragment.ImageFragment;
-import me.xiaopan.easy.imageloader.sample.fragment.ImageGalleryFragment;
-import me.xiaopan.easy.imageloader.sample.fragment.ImageGridFragment;
-import me.xiaopan.easy.imageloader.sample.fragment.ImageListFragment;
-import me.xiaopan.easy.imageloader.sample.fragment.TitleFragment;
+import me.xiaopan.easy.imageloader.sample.adapter.StringAdapter;
+import me.xiaopan.easy.imageloader.sample.fragment.GalleryFragment;
+import me.xiaopan.easy.imageloader.sample.fragment.GridFragment;
+import me.xiaopan.easy.imageloader.sample.fragment.ListFragment;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
 
 public class MainActivity extends FragmentActivity {
-	ViewPager viewPager;
+	private DrawerLayout drawerLayout;
+	private ListView listView;
 	
+	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		viewPager = (ViewPager) findViewById(R.id.viewPager_main);
+		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_main);
+		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_left, Gravity.START);
+		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, Gravity.END);
 		
-		List<TitleFragment> fragments = new ArrayList<TitleFragment>();
+		listView = (ListView) findViewById(R.id.list_main);
+		listView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery"));
+		listView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				set(position - listView.getHeaderViewsCount());
+				drawerLayout.closeDrawers();
+			}
+		});
 		
-		Bundle largeListBundle = new Bundle();
-		largeListBundle.putString(ImageListFragment.PARAM_REQUIRED_STRING_NAME, "ListView（超大图）");
-		largeListBundle.putStringArray(ImageListFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_veryLarge));
-		ImageListFragment largeListFragment = new ImageListFragment();
-		largeListFragment.setArguments(largeListBundle);
-		fragments.add(largeListFragment);
+		set(0);
+		drawerLayout.openDrawer(Gravity.START);
+		new Handler().postDelayed(new Runnable() {
+			@Override
+			public void run() {
+				drawerLayout.closeDrawers();
+			}
+		}, 1000);
+	}
+	
+	private void set(int index){
+		Fragment fragment = null;
+		switch(index){
+			case 0 : 
+				fragment = new GridFragment();
+				break;
+			case 1 : 
+				fragment = new ListFragment();
+				break;
+			case 2 : 
+				fragment = new GalleryFragment();
+				break;
+		}
 		
-		Bundle largeGridBundle = new Bundle();
-		largeGridBundle.putString(ImageGridFragment.PARAM_REQUIRED_STRING_NAME, "GridView（超大图）");
-		largeGridBundle.putStringArray(ImageGridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_veryLarge));
-		ImageGridFragment veryLargeGridFragment = new ImageGridFragment();
-		veryLargeGridFragment.setArguments(largeGridBundle);
-		fragments.add(veryLargeGridFragment);
-		
-		Bundle largeGalleryBundle = new Bundle();
-		largeGalleryBundle.putString(ImageGalleryFragment.PARAM_REQUIRED_STRING_NAME, "Gallery（超大图）");
-		largeGalleryBundle.putStringArray(ImageGalleryFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_veryLarge));
-		ImageGalleryFragment largeGalleryFragment = new ImageGalleryFragment();
-		largeGalleryFragment.setArguments(largeGalleryBundle);
-		fragments.add(largeGalleryFragment);
-		
-		Bundle smallListBundle = new Bundle();
-		smallListBundle.putString(ImageListFragment.PARAM_REQUIRED_STRING_NAME, "ListView（小图）");
-		smallListBundle.putStringArray(ImageListFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_small));
-		ImageListFragment smallListFragment = new ImageListFragment();
-		smallListFragment.setArguments(smallListBundle);
-		fragments.add(smallListFragment);
-		
-		Bundle smallGridBundle = new Bundle();
-		smallGridBundle.putString(ImageGridFragment.PARAM_REQUIRED_STRING_NAME, "GridView（小图）");
-		smallGridBundle.putStringArray(ImageGridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_small));
-		ImageGridFragment smallGridFragment = new ImageGridFragment();
-		smallGridFragment.setArguments(smallGridBundle);
-		fragments.add(smallGridFragment);
-		
-		Bundle galleryBundle = new Bundle();
-		galleryBundle.putString(ImageGalleryFragment.PARAM_REQUIRED_STRING_NAME, "Gallery（小图）");
-		galleryBundle.putStringArray(ImageGalleryFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_small));
-		ImageGalleryFragment galleryFragment = new ImageGalleryFragment();
-		galleryFragment.setArguments(galleryBundle);
-		fragments.add(galleryFragment);
-		
-		fragments.add(new ImageFragment());
-
-		viewPager.setAdapter(new TitleFragmentPagerAdapter(getSupportFragmentManager(), fragments));
+		if(fragment != null){
+			Bundle largeGalleryBundle = new Bundle();
+			largeGalleryBundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls_veryLarge));
+			fragment.setArguments(largeGalleryBundle);
+			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_main, fragment).commit();
+		}
 	}
 }
