@@ -31,7 +31,7 @@ public class ImageGridFragment extends TitleFragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		GridView gridView = new GridView(getActivity());
 		gridView.setNumColumns(2);
-		gridView.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS)));
+		gridView.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS), 2));
 		return gridView;
 	}
 

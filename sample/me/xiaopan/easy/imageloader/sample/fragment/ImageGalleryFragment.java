@@ -31,7 +31,7 @@ public class ImageGalleryFragment extends TitleFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Gallery gallery = (Gallery) new Gallery(getActivity());
-		gallery.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS)));
+		gallery.setAdapter(new ImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS), 1));
 		return gallery;
 	}
 

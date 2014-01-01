@@ -18,20 +18,41 @@ package me.xiaopan.easy.imageloader.sample.adapter;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.R;
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Point;
+import android.os.Build;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
 
 public class ImageAdapter extends BaseAdapter {
 	private Context context;
 	private String[] imageUrls;
+	private int cloumn;
+	private int screenWidth;
 	
-	public ImageAdapter(Context context, String[] imageUrls){
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	public ImageAdapter(Context context, String[] imageUrls, int cloumn){
 		this.context = context;
 		this.imageUrls = imageUrls;
+		this.cloumn = cloumn;
+		WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+		Display display = windowManager.getDefaultDisplay();
+		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
+			screenWidth = display.getWidth();
+		}else{
+			Point point = new Point();
+			display.getSize(point);
+			screenWidth = point.x;
+		}
 	}
 
 	@Override
@@ -56,6 +77,10 @@ public class ImageAdapter extends BaseAdapter {
 			viewHolder = new ViewHolder();
 			convertView = LayoutInflater.from(context).inflate(R.layout.list_item_image, null);
 			viewHolder.image = (ImageView) convertView.findViewById(R.id.listItem_image);
+			if(cloumn > 1){
+				viewHolder.image.setLayoutParams(new LinearLayout.LayoutParams(screenWidth/cloumn, screenWidth/cloumn));
+				viewHolder.image.setScaleType(ScaleType.CENTER_CROP);
+			}
 			convertView.setTag(viewHolder);
 		}else{
 			viewHolder = (ViewHolder) convertView.getTag();
