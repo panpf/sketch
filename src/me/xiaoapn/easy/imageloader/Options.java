@@ -18,6 +18,7 @@ package me.xiaoapn.easy.imageloader;
 
 import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
 import me.xiaoapn.easy.imageloader.display.BitmapDisplayer;
+import me.xiaoapn.easy.imageloader.display.SimpleBitmapDisplayer;
 
 /**
  * 加载选项
@@ -170,6 +171,9 @@ public class Options implements Cloneable{
 	 * @return
 	 */
 	public BitmapDisplayer getBitmapDisplayer() {
+		if(bitmapDisplayer == null){
+			bitmapDisplayer = new SimpleBitmapDisplayer();
+		}
 		return bitmapDisplayer;
 	}
 

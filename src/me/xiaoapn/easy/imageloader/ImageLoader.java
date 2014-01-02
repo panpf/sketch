@@ -20,12 +20,16 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import me.xiaoapn.easy.imageloader.execute.DisplayBitmapTask;
 import me.xiaoapn.easy.imageloader.execute.FileRequest;
 import me.xiaoapn.easy.imageloader.execute.FileRequestExecuteRunnable;
 import me.xiaoapn.easy.imageloader.execute.Request;
 import me.xiaoapn.easy.imageloader.execute.UrlRequest;
 import me.xiaoapn.easy.imageloader.execute.UrlRequestExecuteRunnable;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
+import me.xiaoapn.easy.imageloader.util.ImageSize;
+import me.xiaoapn.easy.imageloader.util.ImageSizeUtils;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.ImageView;
@@ -47,6 +51,17 @@ public class ImageLoader{
 	}
 	
 	/**
+	 * 初始化
+	 * @param context
+	 */
+	public void init(Context context){
+		if(configuration != null){
+			throw new IllegalStateException("Have been initialized");
+		}
+		configuration = new Configuration.Builder(context).create();
+	}
+	
+	/**
 	 * 实例持有器
 	 */
 	private static final class ImageLoaderInstanceHolder{
@@ -59,45 +74,6 @@ public class ImageLoader{
 	 */
 	public static ImageLoader getInstance(){
 		return ImageLoaderInstanceHolder.instance;
-	}
-	
-	/**
-	 * 显示图片
-	 * @param imageUrl 图片下载地址
-	 * @param cacheFile 缓存文件
-	 * @param imageView 显示图片的视图
-	 * @param options 加载选项
-	 */
-	public void display(String imageUrl, File cacheFile, ImageView imageView, Options options){
-		if(GeneralUtils.isEmpty(imageUrl) && cacheFile == null){
-			exceptionHandle(imageView, options);
-			if(getConfiguration().isDebugMode()){
-				Log.e(getConfiguration().getLogTag(), "imageUrl和cacheFile不能同时为null");
-			}
-			return;
-		}
-		if(imageView == null){
-			exceptionHandle(imageView, options);
-			if(getConfiguration().isDebugMode()){
-				Log.e(getConfiguration().getLogTag(), "imageView不能为null");
-			}
-			return;
-		}
-		
-		UrlRequest urlRequest = new UrlRequest(GeneralUtils.encodeUrl(imageUrl), imageUrl, imageUrl, cacheFile, imageView, options);
-		if(!tryShow(urlRequest)){
-			load(urlRequest);
-		}
-	}
-	
-	/**
-	 * 显示图片
-	 * @param imageUrl 图片下载地址
-	 * @param cacheFile 缓存文件
-	 * @param imageView 显示图片的视图
-	 */
-	public void display(String imageUrl, File cacheFile, ImageView imageView){
-		display(imageUrl, cacheFile, imageView, getConfiguration().getDefaultOptions());
 	}
 	
 	/**
@@ -122,9 +98,15 @@ public class ImageLoader{
 			return;
 		}
 		
-		UrlRequest urlRequest = new UrlRequest(GeneralUtils.encodeUrl(imageUrl), imageUrl, imageUrl, null, imageView, options);
+		if(options == null){
+			options = getConfiguration().getDefaultOptions();
+		}
+		
+		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageView, getConfiguration().getMaxImageSize().getWidth(), getConfiguration().getMaxImageSize().getHeight());
+		UrlRequest urlRequest = new UrlRequest(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUrl), targetSize), imageUrl, imageUrl, null, imageView, options);
+		urlRequest.setTargetSize(targetSize);
 		if(!tryShow(urlRequest)){
-			urlRequest.setCacheFile(getConfiguration().getCacheFile(imageView.getContext(), options, urlRequest.getId()));
+			urlRequest.setCacheFile(GeneralUtils.getCacheFile(getConfiguration(), options, urlRequest.getId()));
 			load(urlRequest);
 		}
 	}
@@ -136,10 +118,8 @@ public class ImageLoader{
 	 * @param imageView 显示图片的视图
 	 */
 	public void display(String imageUrl, ImageView imageView){
-		display(imageUrl, imageView, getConfiguration().getDefaultOptions());
+		display(imageUrl, imageView, null);
 	}
-	
-
 	
 	/**
 	 * 显示图片
@@ -163,7 +143,13 @@ public class ImageLoader{
 			return;
 		}
 		
-		FileRequest urlRequest = new FileRequest(GeneralUtils.encodeUrl(imageFile.getPath()), imageFile.getPath(), imageFile, imageView, options);
+		if(options == null){
+			options = getConfiguration().getDefaultOptions();
+		}
+		
+		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageView, getConfiguration().getMaxImageSize().getWidth(), getConfiguration().getMaxImageSize().getHeight());
+		FileRequest urlRequest = new FileRequest(GeneralUtils.createId(GeneralUtils.encodeUrl(imageFile.getPath()), targetSize), imageFile.getPath(), imageFile, imageView, options);
+		urlRequest.setTargetSize(targetSize);
 		if(!tryShow(urlRequest)){
 			load(urlRequest);
 		}
@@ -175,7 +161,7 @@ public class ImageLoader{
 	 * @param imageView 显示图片的视图
 	 */
 	public void display(File imageFile, ImageView imageView){
-		display(imageFile, imageView, getConfiguration().getDefaultOptions());
+		display(imageFile, imageView, null);
 	}
 	
 	/**
@@ -191,8 +177,9 @@ public class ImageLoader{
 				loadingIdSet.remove(request.getId());
 				loadingImageViewSet.remove(request.getImageView());
 				request.getImageView().setTag(null);	//清空绑定关系
-				request.getImageView().clearAnimation();
-				request.getImageView().setImageBitmap(cacheBitmap);
+				
+				getConfiguration().getHandler().post(new DisplayBitmapTask(request.getImageView(), cacheBitmap, request.getOptions(), true));
+				
 				cacheBitmap = null;
 				if(getConfiguration().isDebugMode()){
 					Log.d(getConfiguration().getLogTag(), "从缓存中加载："+request.getName());
@@ -280,7 +267,7 @@ public class ImageLoader{
 	 */
 	public Configuration getConfiguration() {
 		if(configuration == null){
-			configuration = new Configuration.Builder().create();
+			throw new IllegalStateException("必须在使用ImageLoader之前调用ImageLoader.getInstance().init(Context)初始化，推荐在Application中调用");
 		}
 		return configuration;
 	}

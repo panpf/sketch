@@ -35,9 +35,9 @@ public class SimpleBitmapDisplayer implements BitmapDisplayer {
 	}
 
 	@Override
-	public void display(ImageView imageView, Bitmap bitmap) {
+	public void display(ImageView imageView, Bitmap bitmap, boolean isFromMemoryCache) {
 		imageView.setImageBitmap(bitmap);
-		if(animationGenerator != null){
+		if(!isFromMemoryCache && animationGenerator != null){
 			Animation animation = animationGenerator.generateAnimation();
 			if(animation != null){
 				imageView.startAnimation(animation);

@@ -26,6 +26,7 @@ public class MyApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		ImageLoader.getInstance().init(getBaseContext());
 		//初始化默认的Options，当调用ImageLoader.getInstance().load()方法却没有指定Options的时候会默认使用此Options
 		Options defaultOptions = ImageLoader.getInstance().getConfiguration().getDefaultOptions();
 		defaultOptions.setLoadingImageResource(R.drawable.image_loading);	//设置加载中显示的图片
