@@ -14,31 +14,32 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader.decode;
+package me.xiaoapn.easy.imageloader.process;
 
 import java.io.File;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.decode.PixelsBitmapLoader;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 /**
- * 圆角位图加载器，此加载器会把原始位图处理成宽高同其ImageView的宽高一样，并且还是圆角的
+ * 圆角位图解码器，此加载器会把原始位图处理成宽高同其ImageView的宽高一样，并且还是圆角的
  */
-public class RoundedBitmapLoader extends PixelsBitmapLoader {
+public class RoundedBitmapProcessor extends PixelsBitmapLoader {
 	private int roundPixels;
 	
-	public RoundedBitmapLoader(int defaultMaxNumOfPixels, int roundPixels){
+	public RoundedBitmapProcessor(int defaultMaxNumOfPixels, int roundPixels){
 		super(defaultMaxNumOfPixels);
 		this.roundPixels = roundPixels;
 	}
 	
-	public RoundedBitmapLoader(int roundPixels){
+	public RoundedBitmapProcessor(int roundPixels){
 		this.roundPixels = roundPixels;
 	}
 	
-	public RoundedBitmapLoader(){
+	public RoundedBitmapProcessor(){
 		this(18);
 	}
 	

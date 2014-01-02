@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.xiaoapn.easy.imageloader.decode;
+package me.xiaoapn.easy.imageloader.process;
 
 import java.io.File;
 
@@ -22,7 +22,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 /**
- * 位图加载器
+ * 位图解码器
  */
 public interface BitmapLoader{
 	/**
