@@ -47,12 +47,7 @@ public class RounedBitmapDisplayer implements BitmapDisplayer {
 	
 	@Override
 	public void display(ImageView imageView, Bitmap bitmap, boolean isFromMemoryCache) {
-		Bitmap roundBitmap = roundCorners(bitmap, imageView, roundPixels);
-		if(roundBitmap != bitmap && !bitmap.isRecycled()){
-			bitmap.recycle();
-		}
-		imageView.setImageBitmap(roundBitmap);
-		
+		imageView.setImageBitmap(roundCorners(bitmap, imageView, roundPixels));
 		if(!isFromMemoryCache && animationGenerator != null){
 			Animation animation = animationGenerator.generateAnimation();
 			if(animation != null){
