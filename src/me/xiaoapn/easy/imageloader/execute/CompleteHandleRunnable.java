@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.execute;
 
 import java.util.Iterator;
 
+import me.xiaoapn.easy.imageloader.ImageLoader;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.widget.ImageView;

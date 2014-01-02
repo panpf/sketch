@@ -14,17 +14,20 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.execute;
 
 import java.io.File;
 
-import me.xiaoapn.easy.imageloader.ImageDownloader.OnCompleteListener;
+import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.download.ImageDownloader;
+import me.xiaoapn.easy.imageloader.download.OnCompleteListener;
+import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import android.util.Log;
 
 /**
  * Url加载任务Runable
  */
-class UrlRequestExecuteRunnable extends RequestExecuteRunnable{
+public class UrlRequestExecuteRunnable extends RequestExecuteRunnable{
 	private ImageLoader imageLoader;	//图片加载器
 	private UrlRequest urlRequest;	//加载请求
 	

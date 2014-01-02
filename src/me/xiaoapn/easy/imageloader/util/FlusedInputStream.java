@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.util;
 
 import java.io.FilterInputStream;
 import java.io.IOException;
@@ -22,7 +22,7 @@ import java.io.InputStream;
 
 public class FlusedInputStream extends FilterInputStream {
 
-	protected FlusedInputStream(InputStream in) {
+	public FlusedInputStream(InputStream in) {
 		super(in);
 	}
 	

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.util;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 
+import me.xiaoapn.easy.imageloader.ImageLoader;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -36,7 +37,7 @@ import android.util.TypedValue;
 /**
  * 位图解码器
  */
-class BitmapDecoder {
+public class BitmapDecoder {
 	/**
 	 * 单张图片最大像素数
 	 */

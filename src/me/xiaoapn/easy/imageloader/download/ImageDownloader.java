@@ -1,4 +1,4 @@
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.download;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -6,6 +6,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
+
+import me.xiaoapn.easy.imageloader.ImageLoader;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -216,11 +218,5 @@ public class ImageDownloader {
 	
 	private enum Result{
 		FILE, BYTE_ARRAY, FAILURE;
-	}
-	
-	public interface OnCompleteListener{
-		public void onComplete(File cacheFile);
-		public void onComplete(byte[] data);
-		public void onFailed();
 	}
 }

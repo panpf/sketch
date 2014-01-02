@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.decode;
 
 import java.io.File;
 
+import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 

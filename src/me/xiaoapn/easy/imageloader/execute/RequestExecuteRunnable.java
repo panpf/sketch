@@ -1,4 +1,6 @@
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.execute;
+
+import me.xiaoapn.easy.imageloader.ImageLoader;
 
 public abstract class RequestExecuteRunnable implements Runnable{
 	private Request request;

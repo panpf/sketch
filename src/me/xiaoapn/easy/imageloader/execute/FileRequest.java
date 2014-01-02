@@ -14,16 +14,17 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.execute;
 
 import java.io.File;
 
+import me.xiaoapn.easy.imageloader.Options;
 import android.widget.ImageView;
 
 /**
  * 加载请求
  */
-class FileRequest extends Request{
+public class FileRequest extends Request{
 	private File imageFile;	//图片文件
 	
 	public FileRequest(String id, String name, File imageFile, ImageView imageView, Options options) {

@@ -20,6 +20,12 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import me.xiaoapn.easy.imageloader.execute.FileRequest;
+import me.xiaoapn.easy.imageloader.execute.FileRequestExecuteRunnable;
+import me.xiaoapn.easy.imageloader.execute.Request;
+import me.xiaoapn.easy.imageloader.execute.UrlRequest;
+import me.xiaoapn.easy.imageloader.execute.UrlRequestExecuteRunnable;
+import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.ImageView;
@@ -209,7 +215,7 @@ public class ImageLoader{
 	 * @param request
 	 * @return true：已经开始加载或正在加载；false：已经达到最大负荷
 	 */
-	void load(Request request){
+	public void load(Request request){
 		request.getImageView().setTag(request.getId());	//将ImageView和当前图片绑定，以便在下载完成后通过此ID来找到此ImageView
 		loadingImageViewSet.add(request.getImageView());	//先将当前ImageView存起来
 		
@@ -256,7 +262,7 @@ public class ImageLoader{
 	 * 获取加载中显示视图集合
 	 * @return
 	 */
-	final Set<ImageView> getLoadingImageViewSet() {
+	public final Set<ImageView> getLoadingImageViewSet() {
 		return loadingImageViewSet;
 	}
 
@@ -264,7 +270,7 @@ public class ImageLoader{
 	 * 获取加载中请求ID集合
 	 * @return
 	 */
-	final Set<String> getLoadingIdSet() {
+	public final Set<String> getLoadingIdSet() {
 		return loadingIdSet;
 	}
 

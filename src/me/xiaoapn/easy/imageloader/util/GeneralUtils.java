@@ -14,13 +14,18 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.util;
 
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+
+import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.Options;
+import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
+import me.xiaoapn.easy.imageloader.decode.PixelsBitmapLoader;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.params.ConnManagerParams;
@@ -46,7 +51,7 @@ import android.view.Display;
 import android.view.WindowManager;
 import android.widget.ImageView;
 
-class GeneralUtils {
+public class GeneralUtils {
 	
 	/**
 	 * 设置连接超时
@@ -54,7 +59,7 @@ class GeneralUtils {
 	 * @param connectionTimeout
 	 * @return
 	 */
-	static boolean setConnectionTimeout(HttpClient client, int connectionTimeout){
+	public static boolean setConnectionTimeout(HttpClient client, int connectionTimeout){
 		if(client != null){
 			HttpParams httpParams = client.getParams();
 			ConnManagerParams.setTimeout(httpParams, connectionTimeout);
@@ -72,7 +77,7 @@ class GeneralUtils {
 	 * @param connectionTimeout
 	 * @return
 	 */
-	static boolean setConnectionTimeout(HttpParams httpParams, int connectionTimeout){
+	public static boolean setConnectionTimeout(HttpParams httpParams, int connectionTimeout){
 		if(httpParams != null && connectionTimeout > 0){
 			ConnManagerParams.setTimeout(httpParams, connectionTimeout);
 			HttpConnectionParams.setSoTimeout(httpParams, connectionTimeout);
@@ -89,7 +94,7 @@ class GeneralUtils {
 	 * @param maxConnections
 	 * @return
 	 */
-	static boolean setMaxConnections(HttpClient client, int maxConnections){
+	public static boolean setMaxConnections(HttpClient client, int maxConnections){
 		if(client != null){
 			HttpParams httpParams = client.getParams();
 			ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(maxConnections));
@@ -106,7 +111,7 @@ class GeneralUtils {
 	 * @param maxConnections
 	 * @return
 	 */
-	static boolean setMaxConnections(HttpParams httpParams, int maxConnections){
+	public static boolean setMaxConnections(HttpParams httpParams, int maxConnections){
 		if(httpParams != null && maxConnections > 0){
 			ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(maxConnections));
 			ConnManagerParams.setMaxTotalConnections(httpParams, maxConnections);
@@ -122,7 +127,7 @@ class GeneralUtils {
 	 * @param socketBufferSize
 	 * @return
 	 */
-	static boolean setSocketBufferSize(HttpClient client, int socketBufferSize){
+	public static boolean setSocketBufferSize(HttpClient client, int socketBufferSize){
 		if(client != null){
 			HttpParams httpParams = client.getParams();
 			HttpConnectionParams.setSocketBufferSize(httpParams, socketBufferSize);
@@ -138,7 +143,7 @@ class GeneralUtils {
 	 * @param socketBufferSize
 	 * @return
 	 */
-	static boolean setSocketBufferSize(HttpParams httpParams, int socketBufferSize){
+	public static boolean setSocketBufferSize(HttpParams httpParams, int socketBufferSize){
 		if(httpParams != null && socketBufferSize > 0){
 			HttpConnectionParams.setSocketBufferSize(httpParams, socketBufferSize);
 			return true;
@@ -152,7 +157,7 @@ class GeneralUtils {
 	 * @param string 给定的字符串
 	 * @return 
 	 */
-	static boolean isEmpty(String string){
+	public static boolean isEmpty(String string){
 		return string == null || "".equals(string.trim());
 	}
 	
@@ -161,7 +166,7 @@ class GeneralUtils {
 	 * @param string 给定的字符串
 	 * @return 
 	 */
-	static boolean isNotEmpty(String string){
+	public static boolean isNotEmpty(String string){
 		return !isEmpty(string);
 	}
 	
@@ -169,7 +174,7 @@ class GeneralUtils {
 	 * 获取SD卡的状态
 	 * @return 
 	 */
-	static String getState(){
+	public static String getState(){
 		return Environment.getExternalStorageState();
 	}
 	
@@ -177,7 +182,7 @@ class GeneralUtils {
 	 * SD卡是否可用
 	 * @return 只有当SD卡已经安装并且准备好了才返回true
 	 */
-	static boolean isAvailable(){
+	public static boolean isAvailable(){
 		return getState().equals(Environment.MEDIA_MOUNTED);
 	}
 	
@@ -186,7 +191,7 @@ class GeneralUtils {
 	 * @param context 上下文
 	 * @return 如果SD卡可用，就返回外部缓存目录，否则返回机身自带缓存目录
 	 */
-	static File getDynamicCacheDir(Context context){
+	public static File getDynamicCacheDir(Context context){
 		if(isAvailable()){
 			File dir = context.getExternalCacheDir();
 			if(dir == null){
@@ -205,7 +210,7 @@ class GeneralUtils {
 	 */
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	static int[] getScreenSize(Context context){
+	public static int[] getScreenSize(Context context){
 		WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		Display display = windowManager.getDefaultDisplay();
 		if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
@@ -227,7 +232,7 @@ class GeneralUtils {
 	 * @param height
 	 * @return
 	 */
-	static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int roundPixels, Rect srcRect, Rect destRect, int width, int height) {
+	public static Bitmap getRoundedCornerBitmap(Bitmap bitmap, int roundPixels, Rect srcRect, Rect destRect, int width, int height) {
 		Bitmap output = Bitmap.createBitmap(width, height, Config.ARGB_8888);
 		Canvas canvas = new Canvas(output);
 
@@ -254,7 +259,7 @@ class GeneralUtils {
 	 * @param roundPixels
 	 * @return Result bitmap with rounded corners
 	 */
-	static Bitmap roundCorners(Bitmap bitmap, ImageView imageView, int roundPixels) {
+	public static Bitmap roundCorners(Bitmap bitmap, ImageView imageView, int roundPixels) {
 		Bitmap roundBitmap;
 
 		int bw = bitmap.getWidth();
@@ -350,7 +355,7 @@ class GeneralUtils {
 		return roundBitmap;
 	}
 	
-	static BitmapLoader getBitmapLoader(Options options){
+	public static BitmapLoader getBitmapLoader(Options options){
 		BitmapLoader bitmapLoader = null;
 		if(options != null && options.getBitmapLoader() != null){
 			bitmapLoader = options.getBitmapLoader();
@@ -368,7 +373,7 @@ class GeneralUtils {
 	 * @param requestName
 	 * @return
 	 */
-	static boolean isAvailableOfFile(File file, int periodOfValidity, ImageLoader imageLoader, String requestName){
+	public static boolean isAvailableOfFile(File file, int periodOfValidity, ImageLoader imageLoader, String requestName){
 		if(file ==null){
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.e(imageLoader.getConfiguration().getLogTag(), "文件为null："+requestName);
@@ -414,7 +419,7 @@ class GeneralUtils {
 		}
 	}
 	
-	static String encodeUrl(String url){
+	public static String encodeUrl(String url){
 		try {
 			return URLEncoder.encode(url, "UTF-8");
 		} catch (UnsupportedEncodingException e) {

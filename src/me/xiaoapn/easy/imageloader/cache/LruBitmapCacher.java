@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.cache;
 
 import android.graphics.Bitmap;
 import android.support.v4.util.LruCache;
@@ -22,10 +22,10 @@ import android.support.v4.util.LruCache;
 /**
  * 使用Lru算法来缓存位图
  */
-public class BitmapLruCacher implements BitmapCacher {
+public class LruBitmapCacher implements BitmapCacher {
 	private LruCache<String, Bitmap> bitmapLruCache;
 	
-	public BitmapLruCacher(){
+	public LruBitmapCacher(){
 		bitmapLruCache = new LruCache<String, Bitmap> ((int) (Runtime.getRuntime().maxMemory()/8)){
 			@Override
 			protected int sizeOf(String key, Bitmap value) {

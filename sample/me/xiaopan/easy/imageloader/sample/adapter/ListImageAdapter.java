@@ -19,7 +19,7 @@ package me.xiaopan.easy.imageloader.sample.adapter;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.Options;
 import me.xiaoapn.easy.imageloader.R;
-import me.xiaoapn.easy.imageloader.RoundedBitmapLoader;
+import me.xiaoapn.easy.imageloader.decode.RoundedBitmapLoader;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;

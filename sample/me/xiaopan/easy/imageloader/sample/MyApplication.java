@@ -16,10 +16,10 @@
 
 package me.xiaopan.easy.imageloader.sample;
 
-import me.xiaoapn.easy.imageloader.AlphaScaleShowAnimationListener;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.Options;
 import me.xiaoapn.easy.imageloader.R;
+import me.xiaoapn.easy.imageloader.display.AlphaScaleShowAnimationListener;
 import android.app.Application;
 
 public class MyApplication extends Application {

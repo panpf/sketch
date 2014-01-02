@@ -1,5 +1,7 @@
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.execute;
 
+import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import android.util.Log;
 
 

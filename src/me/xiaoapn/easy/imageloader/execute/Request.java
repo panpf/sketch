@@ -14,15 +14,16 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.execute;
 
+import me.xiaoapn.easy.imageloader.Options;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 /**
  * 加载请求
  */
-abstract class Request {
+public abstract class Request {
 	private String id;	//ID
 	private String name;	//名称，用于在输出log时区分不同的请求
 	private Options options;	//加载选项

@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.decode;
 
 import java.io.File;
+
+import me.xiaoapn.easy.imageloader.ImageLoader;
 
 import android.graphics.Bitmap;
 import android.widget.ImageView;

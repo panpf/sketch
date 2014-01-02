@@ -20,6 +20,14 @@ import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
+import me.xiaoapn.easy.imageloader.cache.BitmapCacher;
+import me.xiaoapn.easy.imageloader.cache.LruBitmapCacher;
+import me.xiaoapn.easy.imageloader.decode.PixelsBitmapLoader;
+import me.xiaoapn.easy.imageloader.display.AlphaShowAnimationListener;
+import me.xiaoapn.easy.imageloader.execute.Request;
+import me.xiaoapn.easy.imageloader.util.CircleList;
+import me.xiaoapn.easy.imageloader.util.GeneralUtils;
+
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -173,7 +181,7 @@ public class Configuration {
 	 */
 	public BitmapCacher getBitmapCacher() {
 		if(bitmapCacher == null){
-			bitmapCacher = new BitmapLruCacher();
+			bitmapCacher = new LruBitmapCacher();
 		}
 		return bitmapCacher;
 	}
@@ -208,7 +216,7 @@ public class Configuration {
 	 * 获取消息处理器
 	 * @return
 	 */
-	Handler getHandler() {
+	public Handler getHandler() {
 		return handler;
 	}
 
@@ -302,7 +310,7 @@ public class Configuration {
 	 * 获取缓冲池
 	 * @return 缓冲池
 	 */
-	final CircleList<Request> getBufferPool() {
+	public final CircleList<Request> getBufferPool() {
 		if(bufferPool == null){
 			bufferPool = new CircleList<Request>(getBufferPoolSize());//初始化等待处理的加载请求集合
 		}
