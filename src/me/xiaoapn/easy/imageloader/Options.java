@@ -18,6 +18,7 @@ package me.xiaoapn.easy.imageloader;
 
 import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
 import me.xiaoapn.easy.imageloader.display.BitmapDisplayer;
+import me.xiaoapn.easy.imageloader.process.BitmapProcessor;
 
 /**
  * 加载选项
@@ -31,7 +32,8 @@ public class Options implements Cloneable{
 	private boolean isCacheInLocal;	//是否需要将图片缓存到本地
 	private String cacheDirectory;	//缓存目录
 	private BitmapLoader bitmapLoader;	//位图加载器
-	private BitmapDisplayer bitmapDisplayer;
+	private BitmapProcessor bitmapProcessor;	//位图处理器
+	private BitmapDisplayer bitmapDisplayer;	//位图显示器
 	
 	private Options(){
 		
@@ -134,22 +136,6 @@ public class Options implements Cloneable{
 	}
 
 	/**
-	 * 获取位图显示器
-	 * @return
-	 */
-	public BitmapDisplayer getBitmapDisplayer() {
-		return bitmapDisplayer;
-	}
-
-	/**
-	 * 设置位图显示器
-	 * @param bitmapDisplayer
-	 */
-	public void setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
-		this.bitmapDisplayer = bitmapDisplayer;
-	}
-
-	/**
 	 * 获取缓存目录
 	 * @return 缓存目录
 	 */
@@ -179,6 +165,38 @@ public class Options implements Cloneable{
 	 */
 	public void setBitmapLoader(BitmapLoader bitmapHandler) {
 		this.bitmapLoader = bitmapHandler;
+	}
+	
+	/**
+	 * 获取位图处理器
+	 * @return
+	 */
+	public BitmapProcessor getBitmapProcessor() {
+		return bitmapProcessor;
+	}
+
+	/**
+	 * 设置位图处理器
+	 * @param bitmapProcessor
+	 */
+	public void setBitmapProcessor(BitmapProcessor bitmapProcessor) {
+		this.bitmapProcessor = bitmapProcessor;
+	}
+
+	/**
+	 * 获取位图显示器
+	 * @return
+	 */
+	public BitmapDisplayer getBitmapDisplayer() {
+		return bitmapDisplayer;
+	}
+
+	/**
+	 * 设置位图显示器
+	 * @param bitmapDisplayer
+	 */
+	public void setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
+		this.bitmapDisplayer = bitmapDisplayer;
 	}
 	
 	/**
@@ -246,15 +264,6 @@ public class Options implements Cloneable{
 		}
 
 		/**
-		 * 设置位图显示器
-		 * @param bitmapDisplayer
-		 */
-		public Builder setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
-			options.setBitmapDisplayer(bitmapDisplayer);
-			return this;
-		}
-
-		/**
 		 * 设置缓存目录
 		 * @param cacheDirectory 缓存目录
 		 */
@@ -269,6 +278,24 @@ public class Options implements Cloneable{
 		 */
 		public Builder setBitmapLoader(BitmapLoader bitmapHandler) {
 			options.setBitmapLoader(bitmapHandler);
+			return this;
+		}
+
+		/**
+		 * 设置位图处理器
+		 * @param bitmapProcessor
+		 */
+		public Builder setBitmapProcessor(BitmapProcessor bitmapProcessor) {
+			options.setBitmapProcessor(bitmapProcessor);
+			return this;
+		}
+
+		/**
+		 * 设置位图显示器
+		 * @param bitmapDisplayer
+		 */
+		public Builder setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
+			options.setBitmapDisplayer(bitmapDisplayer);
 			return this;
 		}
 		
