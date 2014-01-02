@@ -37,7 +37,7 @@ import android.util.TypedValue;
 /**
  * 位图超级解码器
  */
-public class BitmapSuperDecoder {
+public class BitmapDecoder {
 	/**
 	 * 单张图片最大像素数
 	 */
@@ -57,7 +57,7 @@ public class BitmapSuperDecoder {
 	 * 创建一个位图解码器，此解码器将根据最大像素数来缩小位图值合适的尺寸
 	 * @param maxNumOfPixels
 	 */
-	public BitmapSuperDecoder(int maxNumOfPixels, ImageLoader imageLoader){
+	public BitmapDecoder(int maxNumOfPixels, ImageLoader imageLoader){
 		this.maxNumOfPixels = maxNumOfPixels;
 		this.minSlideLength = -1;
 		this.imageLoader = imageLoader;
@@ -67,7 +67,7 @@ public class BitmapSuperDecoder {
 	 * 创建一个位图解码器，此解码器将根据最大像素数来缩小位图值合适的尺寸
 	 * @param maxNumOfPixels
 	 */
-	public BitmapSuperDecoder(int maxNumOfPixels){
+	public BitmapDecoder(int maxNumOfPixels){
 		this.maxNumOfPixels = maxNumOfPixels;
 		this.minSlideLength = -1;
 	}
@@ -75,7 +75,7 @@ public class BitmapSuperDecoder {
 	/**
 	 * 创建一个位图解码器，最大像素数默认为虚拟机可用最大内存的八分之一再除以4，这样可以保证图片不会太大导致内存溢出
 	 */
-	public BitmapSuperDecoder(){
+	public BitmapDecoder(){
 		this((int) (Runtime.getRuntime().maxMemory()/8/4));
 	}
 	
@@ -670,14 +670,14 @@ public class BitmapSuperDecoder {
 	 * 私有默认BitmapDecoder实例持有器
 	 */
 	private static class BitmapDecoderHolder{
-		private static final BitmapSuperDecoder INSTANCE = new BitmapSuperDecoder();
+		private static final BitmapDecoder INSTANCE = new BitmapDecoder();
 	}
 	
 	/**
 	 * 获取默认的实例，默认实例的最大像素数限制就是虚拟机最大内存的八分之一再除以4
 	 * @return
 	 */
-	public static final BitmapSuperDecoder getInstance(){
+	public static final BitmapDecoder getInstance(){
 		return BitmapDecoderHolder.INSTANCE;
 	}
 }

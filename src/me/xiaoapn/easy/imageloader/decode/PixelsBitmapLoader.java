@@ -20,7 +20,7 @@ import java.io.File;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.process.BitmapLoader;
-import me.xiaoapn.easy.imageloader.util.BitmapSuperDecoder;
+import me.xiaoapn.easy.imageloader.util.BitmapDecoder;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
@@ -61,7 +61,7 @@ public class PixelsBitmapLoader implements BitmapLoader{
 		}else{
 			currentNumOfPixels = defaultMaxNumOfPixels;
 		}
-		return new BitmapSuperDecoder(currentNumOfPixels, imageLoader).decodeByteArray(byteArray);
+		return new BitmapDecoder(currentNumOfPixels, imageLoader).decodeByteArray(byteArray);
 	}
 	
 	@Override
@@ -79,7 +79,7 @@ public class PixelsBitmapLoader implements BitmapLoader{
 		}else{
 			currentNumOfPixels = defaultMaxNumOfPixels;
 		}
-		return new BitmapSuperDecoder(currentNumOfPixels, imageLoader).decodeFile(localFile.getPath());
+		return new BitmapDecoder(currentNumOfPixels, imageLoader).decodeFile(localFile.getPath());
 	}
 
 	/**
