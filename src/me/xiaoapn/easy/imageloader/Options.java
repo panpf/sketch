@@ -287,13 +287,13 @@ public class Options implements Cloneable{
 	 */
 	public Options copy(){
 		return new Options.Builder()
-		.setBitmapLoader(getBitmapLoader())
 		.setCachedInMemory(isCacheInMemory())
 		.setCacheDirectory(getCacheDirectory())
 		.setCacheInLocal(isCacheInLocal())
 		.setLoadFailureImageResource(getLoadFailureImageResource())
 		.setLoadingImageResource(getLoadingImageResource())
 		.setMaxRetryCount(getMaxRetryCount())
+		.setBitmapLoader(getBitmapLoader())
 		.setBitmapDisplayer(getBitmapDisplayer())
 		.create();
 	}

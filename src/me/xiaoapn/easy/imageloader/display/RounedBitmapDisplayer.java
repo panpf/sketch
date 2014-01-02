@@ -17,12 +17,17 @@ public class RounedBitmapDisplayer implements BitmapDisplayer {
 	private int roundPixels;
 	private AnimationGenerator animationGenerator;
 	
-	public RounedBitmapDisplayer(AnimationGenerator animationGenerator){
+	public RounedBitmapDisplayer(int roundPixels, AnimationGenerator animationGenerator){
+		this.roundPixels = roundPixels;
 		this.animationGenerator = animationGenerator;
 	}
 	
+	public RounedBitmapDisplayer(int roundPixels){
+		this(roundPixels, new AlphaAnimationGenerator());
+	}
+	
 	public RounedBitmapDisplayer(){
-		this(new AlphaAnimationGenerator());
+		this(18, new AlphaAnimationGenerator());
 	}
 	
 	@Override
