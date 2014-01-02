@@ -6,7 +6,7 @@ import android.util.Log;
 /**
  * 文件请求执行任务
  */
-public class FileRequestExecuteRunnable implements Runnable {
+public class FileRequestExecuteRunnable extends RequestExecuteRunnable{
 	private ImageLoader imageLoader;	//图片加载器
 	private FileRequest fileRequest;	//文件请求
 	
@@ -15,6 +15,7 @@ public class FileRequestExecuteRunnable implements Runnable {
 	 * @param fileRequest 文件请求
 	 */
 	public FileRequestExecuteRunnable(ImageLoader imageLoader, FileRequest fileRequest){
+		super(imageLoader, fileRequest);
 		this.imageLoader = imageLoader;
 		this.fileRequest = fileRequest;
 	}
@@ -29,10 +30,7 @@ public class FileRequestExecuteRunnable implements Runnable {
 		}else{
 			fileRequest.setResultBitmap(null);
 		}
-		if(fileRequest.getResultBitmap() != null && fileRequest.getOptions() != null && fileRequest.getOptions().isCacheInMemory()){
-			imageLoader.getConfiguration().getBitmapCacher().put(fileRequest.getId(), fileRequest.getResultBitmap());
-		}
-		imageLoader.getConfiguration().getHandler().post(new CompleteHandleRunnable(imageLoader, fileRequest));
+		super.run();
 		if(imageLoader.getConfiguration().isDebugMode()){
 			Log.d(imageLoader.getConfiguration().getLogTag()+":FileRequestExecuteRunnable", "从本地加载成功："+fileRequest.getName());
 		}

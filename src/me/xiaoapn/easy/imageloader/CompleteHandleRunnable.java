@@ -39,7 +39,6 @@ class CompleteHandleRunnable implements Runnable {
 		if(imageLoader.getConfiguration().isDebugMode()){
 			Log.e(imageLoader.getConfiguration().getLogTag()+":CompleteHandleRunnable", ":完成处理："+request.getName());
 		}
-		imageLoader.getLoadingIdSet().remove(request.getId());	//将当前下载对象从正在下载集合中删除
 		
 		/* 遍历ImageView集合，找到其绑定的地址同当前下载的地址一样的图片视图，并将结果显示到ImageView上 */
 		Iterator<ImageView> iterator = imageLoader.getLoadingImageViewSet().iterator();

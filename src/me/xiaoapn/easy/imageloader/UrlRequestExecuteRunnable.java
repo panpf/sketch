@@ -22,9 +22,9 @@ import me.xiaoapn.easy.imageloader.ImageDownloader.OnCompleteListener;
 import android.util.Log;
 
 /**
- * 加载任务Runable
+ * Url加载任务Runable
  */
-class UrlRequestExecuteRunnable implements Runnable {
+class UrlRequestExecuteRunnable extends RequestExecuteRunnable{
 	private ImageLoader imageLoader;	//图片加载器
 	private UrlRequest urlRequest;	//加载请求
 	
@@ -33,6 +33,7 @@ class UrlRequestExecuteRunnable implements Runnable {
 	 * @param urlRequest 加载请求
 	 */
 	public UrlRequestExecuteRunnable(ImageLoader imageLoader, UrlRequest urlRequest){
+		super(imageLoader, urlRequest);
 		this.imageLoader = imageLoader;
 		this.urlRequest = urlRequest;
 	}
@@ -47,7 +48,7 @@ class UrlRequestExecuteRunnable implements Runnable {
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.i(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从本地缓存加载完成："+urlRequest.getName());
 			}
-			resultHandle();
+			UrlRequestExecuteRunnable.super.run();
 		}else{
 			if(GeneralUtils.isNotEmpty(urlRequest.getImageUrl())){
 				if(imageLoader.getConfiguration().isDebugMode()){
@@ -60,7 +61,7 @@ class UrlRequestExecuteRunnable implements Runnable {
 						if(imageLoader.getConfiguration().isDebugMode()){
 							Log.e(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从网络加载失败："+urlRequest.getName());
 						}
-						resultHandle();
+						UrlRequestExecuteRunnable.super.run();
 					}
 					
 					@Override
@@ -69,7 +70,7 @@ class UrlRequestExecuteRunnable implements Runnable {
 						if(imageLoader.getConfiguration().isDebugMode()){
 							Log.d(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从网络加载成功（Byte）："+urlRequest.getName());
 						}
-						resultHandle();
+						UrlRequestExecuteRunnable.super.run();
 					}
 					
 					@Override
@@ -78,7 +79,7 @@ class UrlRequestExecuteRunnable implements Runnable {
 						if(imageLoader.getConfiguration().isDebugMode()){
 							Log.d(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从网络加载成功（File）："+urlRequest.getName());
 						}
-						resultHandle();
+						UrlRequestExecuteRunnable.super.run();
 					}
 				}).execute();
 			}else{
@@ -86,16 +87,8 @@ class UrlRequestExecuteRunnable implements Runnable {
 				if(imageLoader.getConfiguration().isDebugMode()){
 					Log.e(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从网络加载失败，因为所有条件均不满足："+urlRequest.getName());
 				}
-				resultHandle();
+				UrlRequestExecuteRunnable.super.run();
 			}
 		}
-	}
-	
-	private void resultHandle(){
-		/* 尝试缓存到内存中 */
-		if(urlRequest.getResultBitmap() != null && urlRequest.getOptions() != null && urlRequest.getOptions().isCacheInMemory()){
-			imageLoader.getConfiguration().getBitmapCacher().put(urlRequest.getId(), urlRequest.getResultBitmap());
-		}
-		imageLoader.getConfiguration().getHandler().post(new CompleteHandleRunnable(imageLoader, urlRequest));
 	}
 }
