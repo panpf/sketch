@@ -19,7 +19,7 @@ package me.xiaopan.easy.imageloader.sample;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.Options;
 import me.xiaoapn.easy.imageloader.R;
-import me.xiaoapn.easy.imageloader.display.AlphaScaleShowAnimationListener;
+import me.xiaoapn.easy.imageloader.display.AlphaScaleBitmapDisplayer;
 import android.app.Application;
 
 public class MyApplication extends Application {
@@ -31,7 +31,7 @@ public class MyApplication extends Application {
 		Options defaultOptions = ImageLoader.getInstance().getConfiguration().getDefaultOptions();
 		defaultOptions.setLoadingImageResource(R.drawable.image_loading);	//设置加载中显示的图片
 		defaultOptions.setLoadFailureImageResource(R.drawable.image_load_failure); 	//设置加载失败时显示的图片
-		defaultOptions.setShowAnimationListener(new AlphaScaleShowAnimationListener());
+		defaultOptions.setBitmapDisplayer(new AlphaScaleBitmapDisplayer());
 		
 		ImageLoader.getInstance().getConfiguration().setDebugMode(true);
 	}

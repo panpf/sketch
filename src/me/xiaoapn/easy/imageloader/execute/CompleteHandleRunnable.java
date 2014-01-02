@@ -20,7 +20,6 @@ import java.util.Iterator;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import android.util.Log;
-import android.view.animation.Animation;
 import android.widget.ImageView;
 
 /**
@@ -56,14 +55,12 @@ class CompleteHandleRunnable implements Runnable {
 						imageView.clearAnimation();//先清除之前所有的动画
 						//如果图片加载成功
 						if(request.getResultBitmap() != null){
-							Animation animation = null;
-							if(request.getOptions() != null && request.getOptions().getShowAnimationListener() != null){
-								animation = request.getOptions().getShowAnimationListener().onGetShowAnimation();
+							if(request.getOptions() != null && request.getOptions().getBitmapDisplayer() != null){
+								request.getOptions().getBitmapDisplayer().display(imageView, request.getResultBitmap());
+							}else{
+								imageView.clearAnimation();
+								imageView.setImageBitmap(request.getResultBitmap());
 							}
-							if(animation != null){
-								imageView.setAnimation(animation);
-							}
-							imageView.setImageBitmap(request.getResultBitmap());
 							if(imageLoader.getConfiguration().isDebugMode()){
 								Log.d(imageLoader.getConfiguration().getLogTag(), "加载成功："+request.getName());
 							}

@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -16,15 +16,14 @@
 
 package me.xiaoapn.easy.imageloader.display;
 
-import android.view.animation.Animation;
+import android.graphics.Bitmap;
+import android.widget.ImageView;
 
-/**
- * 显示动画监听器
- */
-public interface ShowAnimationListener {
-	/**
-	 * 当获取显示动画，将会使用此动画来显示图片
-	 * @return
-	 */
-	public Animation onGetShowAnimation();
+public class SimpleBitmapDisplayer implements BitmapDisplayer {
+
+	@Override
+	public void display(ImageView imageView, Bitmap bitmap) {
+		imageView.clearAnimation();
+		imageView.setImageBitmap(bitmap);
+	}
 }

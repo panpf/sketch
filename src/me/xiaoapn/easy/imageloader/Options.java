@@ -17,7 +17,7 @@
 package me.xiaoapn.easy.imageloader;
 
 import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
-import me.xiaoapn.easy.imageloader.display.ShowAnimationListener;
+import me.xiaoapn.easy.imageloader.display.BitmapDisplayer;
 
 /**
  * 加载选项
@@ -31,7 +31,7 @@ public class Options implements Cloneable{
 	private boolean isCacheInLocal;	//是否需要将图片缓存到本地
 	private String cacheDirectory;	//缓存目录
 	private BitmapLoader bitmapLoader;	//位图加载器
-	private ShowAnimationListener showAnimationListener;	//显示动画
+	private BitmapDisplayer bitmapDisplayer;
 	
 	private Options(){
 		
@@ -134,19 +134,19 @@ public class Options implements Cloneable{
 	}
 
 	/**
-	 * 获取显示动画监听器
-	 * @return 显示动画监听器
+	 * 获取位图显示器
+	 * @return
 	 */
-	public ShowAnimationListener getShowAnimationListener() {
-		return showAnimationListener;
+	public BitmapDisplayer getBitmapDisplayer() {
+		return bitmapDisplayer;
 	}
 
 	/**
-	 * 设置显示动画监听器
-	 * @param showAnimationListener 显示动画监听器
+	 * 设置位图显示器
+	 * @param bitmapDisplayer
 	 */
-	public void setShowAnimationListener(ShowAnimationListener showAnimationListener) {
-		this.showAnimationListener = showAnimationListener;
+	public void setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
+		this.bitmapDisplayer = bitmapDisplayer;
 	}
 
 	/**
@@ -246,11 +246,11 @@ public class Options implements Cloneable{
 		}
 
 		/**
-		 * 设置显示动画监听器
-		 * @param showAnimationListener 显示动画监听器
+		 * 设置位图显示器
+		 * @param bitmapDisplayer
 		 */
-		public Builder setShowAnimationListener(ShowAnimationListener showAnimationListener) {
-			options.setShowAnimationListener(showAnimationListener);
+		public Builder setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
+			options.setBitmapDisplayer(bitmapDisplayer);
 			return this;
 		}
 
@@ -294,7 +294,7 @@ public class Options implements Cloneable{
 		.setLoadFailureImageResource(getLoadFailureImageResource())
 		.setLoadingImageResource(getLoadingImageResource())
 		.setMaxRetryCount(getMaxRetryCount())
-		.setShowAnimationListener(getShowAnimationListener())
+		.setBitmapDisplayer(getBitmapDisplayer())
 		.create();
 	}
 }

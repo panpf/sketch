@@ -16,20 +16,20 @@
 
 package me.xiaoapn.easy.imageloader.display;
 
+import android.graphics.Bitmap;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
+import android.widget.ImageView;
 
-/**
- * 透明度渐变显示动画监听器，可使图片在500毫秒内透明度从0.5到1.0变化
- */
-public class AlphaShowAnimationListener implements ShowAnimationListener {
+public class ScaleBitmapDisplayer implements BitmapDisplayer {
 
 	@Override
-	public Animation onGetShowAnimation() {
-		AlphaAnimation alphaAnimation = new AlphaAnimation(0.5f, 1.0f);
-		alphaAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-		alphaAnimation.setDuration(400);
-		return alphaAnimation;
+	public void display(ImageView imageView, Bitmap bitmap) {
+		ScaleAnimation scaleAnimation = new ScaleAnimation(0.5f, 1.0f, 0.5f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+		scaleAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+		scaleAnimation.setDuration(300);
+		imageView.setAnimation(scaleAnimation);
+		imageView.setImageBitmap(bitmap);
 	}
 }

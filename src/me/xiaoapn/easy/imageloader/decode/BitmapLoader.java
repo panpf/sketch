@@ -18,7 +18,6 @@ package me.xiaoapn.easy.imageloader.decode;
 import java.io.File;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
-
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 

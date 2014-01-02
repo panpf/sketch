@@ -16,20 +16,20 @@
 
 package me.xiaoapn.easy.imageloader.display;
 
+import android.graphics.Bitmap;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
+import android.view.animation.AlphaAnimation;
+import android.widget.ImageView;
 
-/**
- * 缩放显示动画，可使图片在500毫秒内从50%放大到100%
- */
-public class ScaleShowAnimationListener implements ShowAnimationListener {
+public class AlphaBitmapDisplayer implements BitmapDisplayer {
 
 	@Override
-	public Animation onGetShowAnimation() {
-		ScaleAnimation scaleAnimation = new ScaleAnimation(0.5f, 1.0f, 0.5f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-		scaleAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-		scaleAnimation.setDuration(500);
-		return scaleAnimation;
+	public void display(ImageView imageView, Bitmap bitmap) {
+		AlphaAnimation alphaAnimation = new AlphaAnimation(0.5f, 1.0f);
+		alphaAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+		alphaAnimation.setDuration(300);
+		imageView.setAnimation(alphaAnimation);
+		imageView.setImageBitmap(bitmap);
 	}
 }
+

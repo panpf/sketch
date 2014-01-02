@@ -23,7 +23,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import me.xiaoapn.easy.imageloader.cache.BitmapCacher;
 import me.xiaoapn.easy.imageloader.cache.LruBitmapCacher;
 import me.xiaoapn.easy.imageloader.decode.PixelsBitmapLoader;
-import me.xiaoapn.easy.imageloader.display.AlphaShowAnimationListener;
+import me.xiaoapn.easy.imageloader.display.AlphaBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.execute.Request;
 import me.xiaoapn.easy.imageloader.util.CircleList;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
@@ -160,7 +160,7 @@ public class Configuration {
 			defaultOptions = new Options.Builder()
 			.setCachedInMemory(true)
 			.setCacheInLocal(true)
-			.setShowAnimationListener(new AlphaShowAnimationListener())
+			.setBitmapDisplayer(new AlphaBitmapDisplayer())
 			.setBitmapLoader(new PixelsBitmapLoader())
 			.create();
 		}
