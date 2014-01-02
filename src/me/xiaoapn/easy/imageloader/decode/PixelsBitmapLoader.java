@@ -19,7 +19,6 @@ package me.xiaoapn.easy.imageloader.decode;
 import java.io.File;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
-import me.xiaoapn.easy.imageloader.process.BitmapLoader;
 import me.xiaoapn.easy.imageloader.util.BitmapDecoder;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import android.graphics.Bitmap;
@@ -46,7 +45,7 @@ public class PixelsBitmapLoader implements BitmapLoader{
 	public PixelsBitmapLoader(){}
 	
 	@Override
-	public Bitmap onDecodeByteArray(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader) {
+	public Bitmap onFromByteArrayLoad(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader) {
 		if(defaultMaxNumOfPixels == 0){
 			int[] screenSize = GeneralUtils.getScreenSize(showImageView.getContext());
 			defaultMaxNumOfPixels = (screenSize[0] * screenSize[1]);
@@ -65,7 +64,7 @@ public class PixelsBitmapLoader implements BitmapLoader{
 	}
 	
 	@Override
-	public Bitmap onDecodeFile(File localFile, ImageView showImageView, ImageLoader imageLoader) {
+	public Bitmap onFromFileLoad(File localFile, ImageView showImageView, ImageLoader imageLoader) {
 		if(defaultMaxNumOfPixels == 0){
 			int[] screenSize = GeneralUtils.getScreenSize(showImageView.getContext());
 			defaultMaxNumOfPixels = (screenSize[0] * screenSize[1]);

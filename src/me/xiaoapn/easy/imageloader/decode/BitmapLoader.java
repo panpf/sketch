@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.xiaoapn.easy.imageloader.process;
+package me.xiaoapn.easy.imageloader.decode;
 
 import java.io.File;
 
@@ -22,7 +22,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 /**
- * 位图解码器
+ * 位图加载器
  */
 public interface BitmapLoader{
 	/**
@@ -32,7 +32,7 @@ public interface BitmapLoader{
 	 * @param imageLoader
 	 * @return
 	 */
-	public Bitmap onDecodeFile(File localFile, ImageView showImageView, ImageLoader imageLoader);
+	public Bitmap onFromFileLoad(File localFile, ImageView showImageView, ImageLoader imageLoader);
 	
 	/**
 	 * 从字节数组中加载
@@ -41,5 +41,5 @@ public interface BitmapLoader{
 	 * @param imageLoader
 	 * @return
 	 */
-	public Bitmap onDecodeByteArray(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader);
+	public Bitmap onFromByteArrayLoad(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader);
 }

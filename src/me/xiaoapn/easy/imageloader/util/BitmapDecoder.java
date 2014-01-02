@@ -35,7 +35,7 @@ import android.util.Log;
 import android.util.TypedValue;
 
 /**
- * 位图超级解码器
+ * 位图解码器
  */
 public class BitmapDecoder {
 	/**

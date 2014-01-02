@@ -24,8 +24,8 @@ import java.util.GregorianCalendar;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.Options;
+import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
 import me.xiaoapn.easy.imageloader.decode.PixelsBitmapLoader;
-import me.xiaoapn.easy.imageloader.process.BitmapLoader;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.params.ConnManagerParams;

@@ -28,7 +28,7 @@ public class FileRequestExecuteRunnable extends RequestExecuteRunnable{
 			Log.d(imageLoader.getConfiguration().getLogTag()+":FileRequestExecuteRunnable", "从本地加载开始："+fileRequest.getName());
 		}
 		if(GeneralUtils.isAvailableOfFile(fileRequest.getImageFile(), 0, imageLoader, fileRequest.getName())){
-			fileRequest.setResultBitmap(GeneralUtils.getBitmapLoader(fileRequest.getOptions()).onDecodeFile(fileRequest.getImageFile(), fileRequest.getImageView(), imageLoader));
+			fileRequest.setResultBitmap(GeneralUtils.getBitmapLoader(fileRequest.getOptions()).onFromFileLoad(fileRequest.getImageFile(), fileRequest.getImageView(), imageLoader));
 		}else{
 			fileRequest.setResultBitmap(null);
 		}

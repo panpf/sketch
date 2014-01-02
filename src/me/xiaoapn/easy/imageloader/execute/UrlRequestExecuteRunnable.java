@@ -47,7 +47,7 @@ public class UrlRequestExecuteRunnable extends RequestExecuteRunnable{
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.i(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从本地缓存加载开始："+urlRequest.getName());
 			}
-			urlRequest.setResultBitmap(GeneralUtils.getBitmapLoader(urlRequest.getOptions()).onDecodeFile(urlRequest.getCacheFile(), urlRequest.getImageView(), imageLoader));
+			urlRequest.setResultBitmap(GeneralUtils.getBitmapLoader(urlRequest.getOptions()).onFromFileLoad(urlRequest.getCacheFile(), urlRequest.getImageView(), imageLoader));
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.i(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从本地缓存加载完成："+urlRequest.getName());
 			}
@@ -69,7 +69,7 @@ public class UrlRequestExecuteRunnable extends RequestExecuteRunnable{
 					
 					@Override
 					public void onComplete(byte[] data) {
-						urlRequest.setResultBitmap(GeneralUtils.getBitmapLoader(urlRequest.getOptions()).onDecodeByteArray(data, urlRequest.getImageView(), imageLoader));
+						urlRequest.setResultBitmap(GeneralUtils.getBitmapLoader(urlRequest.getOptions()).onFromByteArrayLoad(data, urlRequest.getImageView(), imageLoader));
 						if(imageLoader.getConfiguration().isDebugMode()){
 							Log.d(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从网络加载成功（Byte）："+urlRequest.getName());
 						}
@@ -78,7 +78,7 @@ public class UrlRequestExecuteRunnable extends RequestExecuteRunnable{
 					
 					@Override
 					public void onComplete(File cacheFile) {
-						urlRequest.setResultBitmap(GeneralUtils.getBitmapLoader(urlRequest.getOptions()).onDecodeFile(cacheFile, urlRequest.getImageView(), imageLoader));
+						urlRequest.setResultBitmap(GeneralUtils.getBitmapLoader(urlRequest.getOptions()).onFromFileLoad(cacheFile, urlRequest.getImageView(), imageLoader));
 						if(imageLoader.getConfiguration().isDebugMode()){
 							Log.d(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从网络加载成功（File）："+urlRequest.getName());
 						}

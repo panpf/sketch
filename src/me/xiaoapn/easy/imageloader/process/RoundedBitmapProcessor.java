@@ -25,7 +25,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 /**
- * 圆角位图解码器，此加载器会把原始位图处理成宽高同其ImageView的宽高一样，并且还是圆角的
+ * 圆角位图处理器器，此加载器会把原始位图处理成宽高同其ImageView的宽高一样，并且还是圆角的
  */
 public class RoundedBitmapProcessor extends PixelsBitmapLoader {
 	private int roundPixels;
@@ -44,13 +44,13 @@ public class RoundedBitmapProcessor extends PixelsBitmapLoader {
 	}
 	
 	@Override
-	public Bitmap onDecodeFile(File localFile, ImageView showImageView, ImageLoader imageLoader) {
-		return GeneralUtils.roundCorners(super.onDecodeFile(localFile, showImageView, imageLoader), showImageView, roundPixels);
+	public Bitmap onFromFileLoad(File localFile, ImageView showImageView, ImageLoader imageLoader) {
+		return GeneralUtils.roundCorners(super.onFromFileLoad(localFile, showImageView, imageLoader), showImageView, roundPixels);
 	}
 
 	@Override
-	public Bitmap onDecodeByteArray(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader) {
-		return GeneralUtils.roundCorners(super.onDecodeByteArray(byteArray, showImageView, imageLoader), showImageView, roundPixels);
+	public Bitmap onFromByteArrayLoad(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader) {
+		return GeneralUtils.roundCorners(super.onFromByteArrayLoad(byteArray, showImageView, imageLoader), showImageView, roundPixels);
 	}
 
 	public int getRoundPixels() {

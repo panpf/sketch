@@ -16,8 +16,8 @@
 
 package me.xiaoapn.easy.imageloader;
 
+import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
 import me.xiaoapn.easy.imageloader.display.BitmapDisplayer;
-import me.xiaoapn.easy.imageloader.process.BitmapLoader;
 
 /**
  * 加载选项
