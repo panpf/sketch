@@ -19,7 +19,7 @@ package me.xiaopan.easy.imageloader.sample.adapter;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.Options;
 import me.xiaoapn.easy.imageloader.R;
-import me.xiaoapn.easy.imageloader.process.RoundedBitmapProcessor;
+import me.xiaoapn.easy.imageloader.display.RounedBitmapDisplayer;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,7 +36,7 @@ public class ListImageAdapter extends BaseAdapter {
 		this.context = context;
 		this.imageUrls = imageUrls;
 		options = ImageLoader.getInstance().getConfiguration().getDefaultOptions().copy();
-		options.setBitmapLoader(new RoundedBitmapProcessor());
+		options.setBitmapDisplayer(new RounedBitmapDisplayer());
 	}
 
 	@Override

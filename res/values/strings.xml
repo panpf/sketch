@@ -4,7 +4,7 @@
     
     <drawable name="divider">#80FFFFFF</drawable>
     
-    <string-array name="urls_grid">
+    <string-array name="urls">
         <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg</item>
         <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1600x900/1386814415425.jpg</item>
         <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/1385432333209.jpg</item>
@@ -93,9 +93,10 @@
         <item>http://b.zol-img.com.cn/desk/bizhi/image/3/1680x1050/138183054666.jpg</item>
         <item>http://b.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=4c2802ae902397ddd6799c076fb489d4/54fbb2fb43166d22665a2edd472309f79052d24d.jpg</item>
         <item>http://f.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=d637a71ad60735fa91f04abaa86734d0/18d8bc3eb13533faffa4962faad3fd1f41345ba4.jpg</item>
-    </string-array>
-    
-    <string-array name="urls_list">
+        
+        
+        
+        
         <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/12/c0/28564810_1384238874717_800x600.jpg</item>
         <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/08/c2/28450344_1383907997812_800x600.jpg</item>
         <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/08/c2/28450360_1383908020393_800x600.jpg</item>
@@ -133,44 +134,5 @@
         <item>http://a.hiphotos.baidu.com/image/w%3D2048/sign=21b75619df54564ee565e33987e69d82/738b4710b912c8fcab2d9cc7fe039245d78821d9.jpg</item>
         <item>http://e.hiphotos.baidu.com/image/w%3D2048/sign=df72f04fc88065387beaa313a3e5a044/77c6a7efce1b9d16b19bef60f1deb48f8c546456.jpg</item>
         <item>http://c.hiphotos.baidu.com/image/w%3D2048/sign=5b3202a1f403738dde4a0b228723b151/a8ec8a13632762d01530d9bea2ec08fa513dc6a1.jpg</item>
-    </string-array>
-
-    <string-array name="urls_gallery">
-        <item>http://s1.dwstatic.com/group1/M00/AF/39/cfc4623b24057a642f6e812269175ada.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/98/47/db8bbf7cf28ac4d4ce101ed5d2683ab0.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/7B/1C/4677b2a89929cf169f7b5b363e4f250c.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/D0/E4/7757ca960d279663e647efa8d452884d.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/DA/EA/8b2a9bb7ef57cdfabbe07a0d8e92c1e6.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/5E/19/ecadd6f8ae041727ded041253d32e675.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/15/21/dec3dcf96c32e815acfa3efa4cfd21e1.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/2F/D9/0fe5a2e49fa80c3a92cc131e5fcff3e0.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/43/87/1b89c4936cb3cce0be0df103fe1b720c.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/E9/15/42bfb7777491d31354aa058f5c952125.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/49/E6/cdb51b99dfd3d9dcfe3b293fe0971aa5.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/B1/D0/ff44e0d048dfeabd8fb59c87a8990092.jpg</item>
-        <item>http://s1.dwstatic.com/group1/M00/FD/EE/2591f60c23c5c2c7134b1a1d62706469.jpg</item>
-        <item>http://cdn-img.easyicon.cn/png/10660/1066023.gif</item>
-        <item>http://cdn-img.easyicon.cn/png/10660/1066018.gif</item>
-        <item>http://cdn-img.easyicon.cn/png/10660/1066022.gif</item>
-        <item>http://cdn-img.easyicon.cn/png/10660/1066021.gif</item>
-        <item>http://cdn-img.easyicon.cn/png/10660/1066016.gif</item>
-        <item>http://cdn-img.easyicon.cn/png/10660/1066015.gif</item>
-        <item>http://cdn-img.easyicon.cn/png/10660/1066020.gif</item>
-        <item>http://cdn-img.easyicon.cn/png/10660/1066019.gif</item>
-        <item>http://cdn-img.easyicon.cn/png/10660/1066014.gif</item>
-        <item>http://cdn-img.easyicon.cn/png/10660/1066017.gif</item>
-        <item>http://tabletpcssource.com/wp-content/uploads/2011/05/android-logo.png</item>
-        <item>http://simpozia.com/pages/images/stories/windows-icon.png</item>
-        <item>http://si0.twimg.com/profile_images/1135218951/gmail_profile_icon3_normal.png</item>
-        <item>http://www.krify.net/wp-content/uploads/2011/09/Macromedia_Flash_dock_icon.png</item>
-        <item>http://cdn3.iconfinder.com/data/icons/transformers/computer.png</item>
-        <item>http://www.bandwidthblog.com/wp-content/uploads/2011/11/twitter-logo.png</item>
-        <item>http://weloveicons.s3.amazonaws.com/icons/100907_itunes1.png</item>
-        <item>http://weloveicons.s3.amazonaws.com/icons/100929_applications.png</item>
-        <item>http://www.frenchrevolutionfood.com/wp-content/uploads/2009/04/Twitter-Bird.png</item>
-        <item>http://www.desiredsoft.com/images/icon_webhosting.png</item>
-        <item>http://thecustomizewindows.com/wp-content/uploads/2011/11/Nicest-Android-Live-Wallpapers.png</item>
-        <item>http://c.wrzuta.pl/wm16596/a32f1a47002ab3a949afeb4f</item>
-        <item>http://macprovid.vo.llnwd.net/o43/hub/media/1090/6882/01_headline_Muse.jpg</item>
     </string-array>
 </resources>

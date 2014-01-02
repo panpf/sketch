@@ -16,14 +16,32 @@
 
 package me.xiaoapn.easy.imageloader.display;
 
+import me.xiaoapn.easy.imageloader.display.animation.AlphaAnimationGenerator;
+import me.xiaoapn.easy.imageloader.display.animation.AnimationGenerator;
 import android.graphics.Bitmap;
+import android.view.animation.Animation;
 import android.widget.ImageView;
 
 public class SimpleBitmapDisplayer implements BitmapDisplayer {
 
+	private AnimationGenerator animationGenerator;
+	
+	public SimpleBitmapDisplayer(AnimationGenerator animationGenerator){
+		this.animationGenerator = animationGenerator;
+	}
+	
+	public SimpleBitmapDisplayer(){
+		this(new AlphaAnimationGenerator());
+	}
+
 	@Override
 	public void display(ImageView imageView, Bitmap bitmap) {
-		imageView.clearAnimation();
 		imageView.setImageBitmap(bitmap);
+		if(animationGenerator != null){
+			Animation animation = animationGenerator.generateAnimation();
+			if(animation != null){
+				imageView.startAnimation(animation);
+			}
+		}
 	}
 }
