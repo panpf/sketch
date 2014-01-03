@@ -106,7 +106,7 @@ public class ImageLoader{
 		UrlRequest urlRequest = new UrlRequest(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUrl), targetSize), imageUrl, imageUrl, null, imageView, options);
 		urlRequest.setTargetSize(targetSize);
 		if(!tryShow(urlRequest)){
-			urlRequest.setCacheFile(GeneralUtils.getCacheFile(getConfiguration(), options, urlRequest.getId()));
+			urlRequest.setCacheFile(GeneralUtils.getCacheFile(getConfiguration(), options, urlRequest.getImageUrl()));
 			load(urlRequest);
 		}
 	}
