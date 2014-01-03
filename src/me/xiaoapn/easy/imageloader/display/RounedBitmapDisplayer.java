@@ -2,7 +2,6 @@ package me.xiaoapn.easy.imageloader.display;
 
 import me.xiaoapn.easy.imageloader.display.animation.AlphaAnimationGenerator;
 import me.xiaoapn.easy.imageloader.display.animation.AnimationGenerator;
-import me.xiaoapn.easy.imageloader.execute.LoadedFrom;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -14,27 +13,42 @@ import android.graphics.RectF;
 import android.view.animation.Animation;
 import android.widget.ImageView;
 
+/**
+ * 圆角位图显示器，在显示位图之前会将位图处理成圆角的
+ */
 public class RounedBitmapDisplayer implements BitmapDisplayer {
 	private int roundPixels;
 	private AnimationGenerator animationGenerator;
 	
+	/**
+	 * 创建一个圆角位图显示器
+	 * @param roundPixels 圆角角度
+	 * @param animationGenerator 动画生成器
+	 */
 	public RounedBitmapDisplayer(int roundPixels, AnimationGenerator animationGenerator){
 		this.roundPixels = roundPixels;
 		this.animationGenerator = animationGenerator;
 	}
 	
+	/**
+	 * 创建一个圆角位图显示器，动画生成器使用AlphaAnimationGenerator
+	 * @param roundPixels 圆角角度
+	 */
 	public RounedBitmapDisplayer(int roundPixels){
 		this(roundPixels, new AlphaAnimationGenerator());
 	}
 	
+	/**
+	 * 创建一个圆角位图显示器，圆角角度默认为18并且动画生成器使用AlphaAnimationGenerator
+	 */
 	public RounedBitmapDisplayer(){
 		this(18, new AlphaAnimationGenerator());
 	}
 	
 	@Override
-	public void display(ImageView imageView, Bitmap bitmap, LoadedFrom loadedFrom) {
+	public void display(ImageView imageView, Bitmap bitmap, boolean isFromMemoryCache) {
 		imageView.setImageBitmap(roundCorners(bitmap, imageView, roundPixels));
-		if(loadedFrom != null && loadedFrom != LoadedFrom.MEMORY_CACHE && animationGenerator != null){
+		if(!isFromMemoryCache && animationGenerator != null){
 			Animation animation = animationGenerator.generateAnimation();
 			if(animation != null){
 				imageView.startAnimation(animation);

@@ -18,7 +18,6 @@ package me.xiaoapn.easy.imageloader.display;
 
 import me.xiaoapn.easy.imageloader.display.animation.AlphaAnimationGenerator;
 import me.xiaoapn.easy.imageloader.display.animation.AnimationGenerator;
-import me.xiaoapn.easy.imageloader.execute.LoadedFrom;
 import android.graphics.Bitmap;
 import android.view.animation.Animation;
 import android.widget.ImageView;
@@ -36,9 +35,9 @@ public class SimpleBitmapDisplayer implements BitmapDisplayer {
 	}
 
 	@Override
-	public void display(ImageView imageView, Bitmap bitmap, LoadedFrom loadedFrom) {
+	public void display(ImageView imageView, Bitmap bitmap, boolean isFromMemoryCache) {
 		imageView.setImageBitmap(bitmap);
-		if(loadedFrom != null && loadedFrom != LoadedFrom.MEMORY_CACHE && animationGenerator != null){
+		if(!isFromMemoryCache && animationGenerator != null){
 			Animation animation = animationGenerator.generateAnimation();
 			if(animation != null){
 				imageView.startAnimation(animation);

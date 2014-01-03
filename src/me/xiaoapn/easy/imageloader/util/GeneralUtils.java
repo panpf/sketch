@@ -22,6 +22,7 @@ import java.net.URLEncoder;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.Options;
 import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
@@ -284,5 +285,36 @@ public class GeneralUtils {
 			e.printStackTrace();
 			return url;
 		}
+	}
+	
+
+
+	/**
+	 * 获取缓存文件，将优先考虑options指定的缓存目录，然后考虑当前configuration指定的缓存目录，然后考虑通过context获取默认的应用缓存目录，再然后就要返回null了
+	 * @param context
+	 * @param options
+	 * @param fileName
+	 * @return
+	 */
+	public static File getCacheFile(Configuration configuration, Options options, String fileName){
+		if(options != null && GeneralUtils.isNotEmpty(options.getCacheDirectory())){
+			return new File(options.getCacheDirectory() + File.separator + fileName);
+		}else if(GeneralUtils.isNotEmpty(configuration.getDefaultCacheDirectory())){
+			return new File(configuration.getDefaultCacheDirectory() + File.separator + fileName);
+		}else if(configuration.getContext() != null){
+			return new File(GeneralUtils.getDynamicCacheDir(configuration.getContext()).getPath() + File.separator + "image_loader" + File.separator + fileName);
+		}else{
+			return null;
+		}
+	}
+	
+	/**
+	 * 创建ID
+	 * @param url
+	 * @param imageSize
+	 * @return
+	 */
+	public static String createId(String url, ImageSize imageSize){
+		return new StringBuffer().append(url).append("_").append(imageSize.getWidth()).append("x").append(imageSize.getHeight()).toString();
 	}
 }
