@@ -16,7 +16,6 @@
 
 package me.xiaoapn.easy.imageloader;
 
-import java.io.File;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 
@@ -27,6 +26,7 @@ import me.xiaoapn.easy.imageloader.display.SimpleBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.execute.Request;
 import me.xiaoapn.easy.imageloader.util.CircleList;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
+import me.xiaoapn.easy.imageloader.util.ImageSize;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -42,11 +42,13 @@ import org.apache.http.params.HttpProtocolParams;
 
 import android.content.Context;
 import android.os.Handler;
+import android.util.DisplayMetrics;
 
 /**
  * 配置
  */
 public class Configuration {
+	private Context context;
 	private int threadPoolSize = 20;	//线程池大小
 	private int bufferPoolSize = 10;	//缓冲池大小
 	private int connectionTimeout = 10000;	//连接超时时间
@@ -61,11 +63,22 @@ public class Configuration {
 	private BitmapCacher bitmapCacher;	//位图缓存器
 	private CircleList<Request> bufferPool;	//缓冲池
 	private ThreadPoolExecutor threadPool;	//线程池
+	private ImageSize maxImageSize;	//最大图片尺寸
 	
-	private Configuration(){
-		
+	private Configuration(Context context){
+		this.context = context;
+		DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+		maxImageSize = new ImageSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
 	}
 	
+	/**
+	 * 获取上下文
+	 * @return
+	 */
+	public Context getContext() {
+		return context;
+	}
+
 	/**
 	 * 获取Http客户端
 	 * @return
@@ -219,25 +232,6 @@ public class Configuration {
 	public Handler getHandler() {
 		return handler;
 	}
-
-	/**
-	 * 获取缓存文件，将优先考虑options指定的缓存目录，然后考虑当前configuration指定的缓存目录，然后考虑通过context获取默认的应用缓存目录，再然后就要返回null了
-	 * @param context
-	 * @param options
-	 * @param fileName
-	 * @return
-	 */
-	public File getCacheFile(Context context, Options options, String fileName){
-		if(options != null && GeneralUtils.isNotEmpty(options.getCacheDirectory())){
-			return new File(options.getCacheDirectory() + File.separator + fileName);
-		}else if(GeneralUtils.isNotEmpty(getDefaultCacheDirectory())){
-			return new File(getDefaultCacheDirectory() + File.separator + fileName);
-		}else if(context != null){
-			return new File(GeneralUtils.getDynamicCacheDir(context).getPath() + File.separator + "image_loader" + File.separator + fileName);
-		}else{
-			return null;
-		}
-	}
 	
 	/**
 	 * 获取Log Tag
@@ -332,6 +326,24 @@ public class Configuration {
 	public void setDebugMode(boolean debugMode) {
 		this.debugMode = debugMode;
 	}
+	
+	/**
+	 * 获取最大图片尺寸
+	 * @return
+	 */
+	public ImageSize getMaxImageSize() {
+		return maxImageSize;
+	}
+
+	/**
+	 * 设置最大图片尺寸
+	 * @param maxImageSize
+	 */
+	public void setMaxImageSize(ImageSize maxImageSize) {
+		this.maxImageSize = maxImageSize;
+	}
+
+
 
 	/**
 	 * ImageLoadder配置创建器
@@ -339,8 +351,8 @@ public class Configuration {
 	public static class Builder{
 		Configuration configuration;
 		
-		public Builder(){
-			configuration = new Configuration();
+		public Builder(Context context){
+			configuration = new Configuration(context);
 		}
 
 		/**

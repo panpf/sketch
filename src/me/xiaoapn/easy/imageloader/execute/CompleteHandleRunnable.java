@@ -55,22 +55,20 @@ class CompleteHandleRunnable implements Runnable {
 						imageView.clearAnimation();//先清除之前所有的动画
 						//如果图片加载成功
 						if(request.getResultBitmap() != null){
-							if(request.getOptions() != null && request.getOptions().getBitmapDisplayer() != null){
-								request.getOptions().getBitmapDisplayer().display(imageView, request.getResultBitmap());
-							}else{
-								imageView.clearAnimation();
-								imageView.setImageBitmap(request.getResultBitmap());
-							}
+							request.setLoadedFrom(LoadedFrom.DISC_CACHE);
+							imageLoader.getConfiguration().getHandler().post(new DisplayTask(imageLoader, request));
+//							if(request.getOptions().getBitmapDisplayer() != null){
+//								request.getOptions().getBitmapDisplayer().display(imageView, request.getResultBitmap());
+//							}else{
+//								imageView.clearAnimation();
+//								imageView.setImageBitmap(request.getResultBitmap());
+//							}
 							if(imageLoader.getConfiguration().isDebugMode()){
 								Log.d(imageLoader.getConfiguration().getLogTag(), "加载成功："+request.getName());
 							}
 						}else{
-							if(request.getOptions() != null){
-								if(request.getOptions().getLoadFailureImageResource() > 0){
-									imageView.setImageResource(request.getOptions().getLoadFailureImageResource());
-								}else{
-									imageView.setImageBitmap(null);
-								}
+							if(request.getOptions().getLoadFailureImageResource() > 0){
+								imageView.setImageResource(request.getOptions().getLoadFailureImageResource());
 							}else{
 								imageView.setImageBitmap(null);
 							}

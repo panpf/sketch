@@ -20,8 +20,10 @@ import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
+import me.xiaoapn.easy.imageloader.execute.DisplayTask;
 import me.xiaoapn.easy.imageloader.execute.FileRequest;
 import me.xiaoapn.easy.imageloader.execute.FileRequestExecuteRunnable;
+import me.xiaoapn.easy.imageloader.execute.LoadedFrom;
 import me.xiaoapn.easy.imageloader.execute.Request;
 import me.xiaoapn.easy.imageloader.execute.UrlRequest;
 import me.xiaoapn.easy.imageloader.execute.UrlRequestExecuteRunnable;
@@ -69,6 +71,10 @@ public class ImageLoader{
 	 * @param options 加载选项
 	 */
 	public void display(String imageUrl, File cacheFile, ImageView imageView, Options options){
+		if(options == null){
+			options = getConfiguration().getDefaultOptions();
+		}
+		
 		if(GeneralUtils.isEmpty(imageUrl) && cacheFile == null){
 			exceptionHandle(imageView, options);
 			if(getConfiguration().isDebugMode()){
@@ -97,7 +103,7 @@ public class ImageLoader{
 	 * @param imageView 显示图片的视图
 	 */
 	public void display(String imageUrl, File cacheFile, ImageView imageView){
-		display(imageUrl, cacheFile, imageView, getConfiguration().getDefaultOptions());
+		display(imageUrl, cacheFile, imageView, null);
 	}
 	
 	/**
@@ -107,6 +113,10 @@ public class ImageLoader{
 	 * @param options 加载选项
 	 */
 	public final void display(String imageUrl, ImageView imageView, Options options){
+		if(options == null){
+			options = getConfiguration().getDefaultOptions();
+		}
+		
 		if(GeneralUtils.isEmpty(imageUrl)){
 			exceptionHandle(imageView, options);
 			if(getConfiguration().isDebugMode()){
@@ -136,7 +146,7 @@ public class ImageLoader{
 	 * @param imageView 显示图片的视图
 	 */
 	public void display(String imageUrl, ImageView imageView){
-		display(imageUrl, imageView, getConfiguration().getDefaultOptions());
+		display(imageUrl, imageView, null);
 	}
 	
 
@@ -148,6 +158,10 @@ public class ImageLoader{
 	 * @param options 加载选项
 	 */
 	public void display(File imageFile, ImageView imageView, Options options){
+		if(options == null){
+			options = getConfiguration().getDefaultOptions();
+		}
+		
 		if(imageFile == null){
 			exceptionHandle(imageView, options);
 			if(getConfiguration().isDebugMode()){
@@ -175,7 +189,7 @@ public class ImageLoader{
 	 * @param imageView 显示图片的视图
 	 */
 	public void display(File imageFile, ImageView imageView){
-		display(imageFile, imageView, getConfiguration().getDefaultOptions());
+		display(imageFile, imageView, null);
 	}
 	
 	/**
@@ -185,14 +199,17 @@ public class ImageLoader{
 	 */
 	private boolean tryShow(Request request){
 		//如果需要从缓存中读取，就尝试从缓存中读取并显示
-		if(request.getOptions() != null && request.getOptions().isCacheInMemory()){
+		if(request.getOptions().isCacheInMemory()){
 			Bitmap cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
 			if(cacheBitmap != null){
 				loadingIdSet.remove(request.getId());
 				loadingImageViewSet.remove(request.getImageView());
 				request.getImageView().setTag(null);	//清空绑定关系
-				request.getImageView().clearAnimation();
-				request.getImageView().setImageBitmap(cacheBitmap);
+//				request.getImageView().clearAnimation();
+//				request.getImageView().setImageBitmap(cacheBitmap);
+				request.setLoadedFrom(LoadedFrom.MEMORY_CACHE);
+				request.setResultBitmap(cacheBitmap);
+				getConfiguration().getHandler().post(new DisplayTask(this, request));
 				cacheBitmap = null;
 				if(getConfiguration().isDebugMode()){
 					Log.d(getConfiguration().getLogTag(), "从缓存中加载："+request.getName());
@@ -202,7 +219,7 @@ public class ImageLoader{
 		}
 		
 		//如果不从缓存中读取或者缓存中没有对应的图片，就显示默认图片
-		if(request.getOptions() != null && request.getOptions().getLoadingImageResource() > 0){
+		if(request.getOptions().getLoadingImageResource() > 0){
 			request.getImageView().setImageResource(request.getOptions().getLoadingImageResource());
 		}else{
 			request.getImageView().setImageDrawable(null);
@@ -250,7 +267,7 @@ public class ImageLoader{
 	private void exceptionHandle(ImageView imageView, Options options){
 		if(imageView != null){
 			imageView.setTag(null);
-			if(options != null && options.getLoadFailureImageResource() > 0){
+			if(options.getLoadFailureImageResource() > 0){
 				imageView.setImageResource(options.getLoadFailureImageResource());
 			}else{
 				imageView.setImageDrawable(null);

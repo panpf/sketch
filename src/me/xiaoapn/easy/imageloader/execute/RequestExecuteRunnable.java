@@ -13,12 +13,8 @@ public abstract class RequestExecuteRunnable implements Runnable{
 	
 	@Override
 	public void run() {
-		if(request.getResultBitmap() != null){
-			if(request.getOptions() != null){
-				if(request.getOptions().isCacheInMemory()){
-					imageLoader.getConfiguration().getBitmapCacher().put(request.getId(), request.getResultBitmap());
-				}
-			}
+		if(request.getResultBitmap() != null && request.getOptions().isCacheInMemory()){
+			imageLoader.getConfiguration().getBitmapCacher().put(request.getId(), request.getResultBitmap());
 		}
 		
 		//将当前下载对象从正在下载集合中删除

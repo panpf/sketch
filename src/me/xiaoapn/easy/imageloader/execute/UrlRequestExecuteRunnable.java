@@ -43,7 +43,7 @@ public class UrlRequestExecuteRunnable extends RequestExecuteRunnable{
 	
 	@Override
 	public void run() {
-		if(GeneralUtils.isAvailableOfFile(urlRequest.getCacheFile(), urlRequest.getOptions() != null?urlRequest.getOptions().getCachePeriodOfValidity():0, imageLoader, urlRequest.getName())){
+		if(GeneralUtils.isAvailableOfFile(urlRequest.getCacheFile(), urlRequest.getOptions().getCachePeriodOfValidity(), imageLoader, urlRequest.getName())){
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.i(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从本地缓存加载开始："+urlRequest.getName());
 			}

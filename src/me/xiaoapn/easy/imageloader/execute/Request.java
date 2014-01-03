@@ -28,7 +28,9 @@ public abstract class Request {
 	private String name;	//名称，用于在输出log时区分不同的请求
 	private Options options;	//加载选项
 	private ImageView imageView;	//显示图片的视图
+	
 	private Bitmap resultBitmap;	//加载结果Bitmap
+	private LoadedFrom loadedFrom;
 	
 	public Request(String id, String name, ImageView imageView, Options options) {
 		this.id = id;
@@ -115,5 +117,13 @@ public abstract class Request {
 	 */
 	public void setResultBitmap(Bitmap resultBitmap) {
 		this.resultBitmap = resultBitmap;
+	}
+
+	public LoadedFrom getLoadedFrom() {
+		return loadedFrom;
+	}
+
+	public void setLoadedFrom(LoadedFrom loadedFrom) {
+		this.loadedFrom = loadedFrom;
 	}
 }
