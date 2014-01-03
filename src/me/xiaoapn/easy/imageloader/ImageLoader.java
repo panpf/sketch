@@ -17,13 +17,13 @@
 package me.xiaoapn.easy.imageloader;
 
 import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
 
+import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
 import me.xiaoapn.easy.imageloader.execute.DisplayBitmapTask;
 import me.xiaoapn.easy.imageloader.execute.FileRequest;
 import me.xiaoapn.easy.imageloader.execute.FileRequestExecuteRunnable;
 import me.xiaoapn.easy.imageloader.execute.Request;
+import me.xiaoapn.easy.imageloader.execute.RequestExecuteRunnable;
 import me.xiaoapn.easy.imageloader.execute.UrlRequest;
 import me.xiaoapn.easy.imageloader.execute.UrlRequestExecuteRunnable;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
@@ -38,17 +38,7 @@ import android.widget.ImageView;
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
  */
 public class ImageLoader{
-	private Set<String> loadingIdSet;	//正在加载的Url列表，用来防止同一个URL被重复加载
 	private Configuration configuration;	//配置
-	private Set<ImageView> loadingImageViewSet;	//图片视图集合，这个集合里的每个尚未加载完成的视图身上都会携带有他要显示的图片的地址，当每一个图片加载完成之后都会在这个列表中遍历找到所有携带有这个这个图片的地址的视图，并把图片显示到这个视图上
-	
-	/**
-	 * 创建图片加载器
-	 */
-	public ImageLoader(){
-		loadingImageViewSet = new HashSet<ImageView>();//初始化图片视图集合
-		loadingIdSet = new HashSet<String>();//初始化加载中URL集合
-	}
 	
 	/**
 	 * 初始化
@@ -58,7 +48,7 @@ public class ImageLoader{
 		if(configuration != null){
 			throw new IllegalStateException("Have been initialized");
 		}
-		configuration = new Configuration.Builder(context).create();
+		configuration = new Configuration.Builder(context).build();
 	}
 	
 	/**
@@ -88,24 +78,25 @@ public class ImageLoader{
 		}
 		
 		if(GeneralUtils.isEmpty(imageUrl)){
-			exceptionHandle(imageView, options);
+			if(imageView != null){
+				imageView.setImageBitmap(options.getEmptyBitmap());
+			}
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), "imageUrl不能为null");
 			}
 			return;
 		}
 		if(imageView == null){
-			exceptionHandle(imageView, options);
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), "imageView不能为null");
 			}
 			return;
 		}
 		
-		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageView, getConfiguration().getMaxImageSize().getWidth(), getConfiguration().getMaxImageSize().getHeight());
+		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageView, options.getMaxImageSize().getWidth(), options.getMaxImageSize().getHeight());
 		UrlRequest urlRequest = new UrlRequest(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUrl), targetSize), imageUrl, imageUrl, null, imageView, options);
 		urlRequest.setTargetSize(targetSize);
-		if(!tryShow(urlRequest)){
+		if(!show(urlRequest)){
 			urlRequest.setCacheFile(GeneralUtils.getCacheFile(getConfiguration(), options, urlRequest.getImageUrl()));
 			load(urlRequest);
 		}
@@ -133,24 +124,25 @@ public class ImageLoader{
 		}
 		
 		if(imageFile == null){
-			exceptionHandle(imageView, options);
+			if(imageView != null){
+				imageView.setImageBitmap(options.getEmptyBitmap());
+			}
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), "imageFile不能为null");
 			}
 			return;
 		}
 		if(imageView == null){
-			exceptionHandle(imageView, options);
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), "imageView不能为null");
 			}
 			return;
 		}
 		
-		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageView, getConfiguration().getMaxImageSize().getWidth(), getConfiguration().getMaxImageSize().getHeight());
+		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageView, options.getMaxImageSize().getWidth(), options.getMaxImageSize().getHeight());
 		FileRequest urlRequest = new FileRequest(GeneralUtils.createId(GeneralUtils.encodeUrl(imageFile.getPath()), targetSize), imageFile.getPath(), imageFile, imageView, options);
 		urlRequest.setTargetSize(targetSize);
-		if(!tryShow(urlRequest)){
+		if(!show(urlRequest)){
 			load(urlRequest);
 		}
 	}
@@ -165,99 +157,50 @@ public class ImageLoader{
 	}
 	
 	/**
-	 * 尝试显示图片
+	 * 显示图片
 	 * @param request 请求
 	 * @return true：图片缓存中有图片并且已经显示了；false：缓存中没有对应的图片，需要重新加载
 	 */
-	private boolean tryShow(Request request){
-		//如果需要从缓存中读取，就尝试从缓存中读取并显示
-		if(request.getOptions().isCacheInMemory()){
-			Bitmap cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
-			if(cacheBitmap != null){
-				loadingIdSet.remove(request.getId());
-				loadingImageViewSet.remove(request.getImageView());
-				request.getImageView().setTag(null);	//清空绑定关系
-				getConfiguration().getHandler().post(new DisplayBitmapTask(request.getImageView(), cacheBitmap, request.getOptions(), true));
-				if(getConfiguration().isDebugMode()){
-					Log.d(getConfiguration().getLogTag(), "从缓存中加载："+request.getName());
-				}
-				return true;
-			}
+	private boolean show(Request request){
+		//如果不需要从缓存中读取，就直接显示默认图片并结束
+		if(!request.getOptions().getCacheConfig().isCacheInMemory()){
+			return false;
 		}
 		
-		//如果不从缓存中读取或者缓存中没有对应的图片，就显示默认图片
-		if(request.getOptions().getLoadingImageResource() > 0){
-			request.getImageView().setImageResource(request.getOptions().getLoadingImageResource());
-		}else{
-			request.getImageView().setImageDrawable(null);
+		//如果内存缓存中没有对应的Bitmap，就直接显示默认图片并结束
+		Bitmap cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
+		if(cacheBitmap == null){
+			return false;
 		}
-		return false;
+		
+		//显示图片
+		getConfiguration().getHandler().post(new DisplayBitmapTask(request.getImageView(), cacheBitmap, request.getOptions(), true));
+		if(getConfiguration().isDebugMode()){
+			Log.d(getConfiguration().getLogTag(), "从缓存中加载："+request.getName());
+		}
+		return true;
 	}
 	
 	/**
-	 * 尝试加载
+	 * 加载
 	 * @param request
 	 * @return true：已经开始加载或正在加载；false：已经达到最大负荷
 	 */
-	public void load(Request request){
-		request.getImageView().setTag(request.getId());	//将ImageView和当前图片绑定，以便在下载完成后通过此ID来找到此ImageView
-		loadingImageViewSet.add(request.getImageView());	//先将当前ImageView存起来
+	private void load(Request request){
+		RequestExecuteRunnable requestExecuteRunnable = null;
 		
-		if(!loadingIdSet.contains(request.getId())){		//如果当前图片没有正在加载
-			if(loadingIdSet.size() < getConfiguration().getThreadPoolSize()){	//如果尚未达到最大负荷，就开启线程加载
-				loadingIdSet.add(request.getId());
-				if(request instanceof FileRequest){
-					getConfiguration().getThreadPool().submit(new FileRequestExecuteRunnable(this, (FileRequest) request));
-				}else if(request instanceof UrlRequest){
-					getConfiguration().getThreadPool().submit(new UrlRequestExecuteRunnable(this, (UrlRequest) request));
-				}
-			}else{
-				synchronized (getConfiguration().getBufferPool()) {	//否则，加到等待队列中
-					getConfiguration().getBufferPool().add(request);
-				}
-				if(getConfiguration().isDebugMode()){
-					Log.w(getConfiguration().getLogTag(), "进入等待区："+request.getName());
-				}
-			}
-		}else{
-			if(getConfiguration().isDebugMode()){
-				Log.w(getConfiguration().getLogTag(), "正在加载中："+request.getName());
-			}
+		if(request instanceof FileRequest){
+			requestExecuteRunnable = new FileRequestExecuteRunnable(this, (FileRequest) request, request.getImageView());
+		}else if(request instanceof UrlRequest){
+			requestExecuteRunnable = new UrlRequestExecuteRunnable(this, (UrlRequest) request, request.getImageView());
+		}
+		
+		if(requestExecuteRunnable != null){
+			request.getImageView().setImageDrawable(new AsyncDrawable(getConfiguration().getContext().getResources(), request.getOptions().getLoadingBitmap(), requestExecuteRunnable));
+			getConfiguration().getTaskExecutor().execute(requestExecuteRunnable);
 		}
 	}
 	
-	/**
-	 * 异常处理
-	 * @param imageView
-	 * @param options
-	 */
-	private void exceptionHandle(ImageView imageView, Options options){
-		if(imageView != null){
-			imageView.setTag(null);
-			if(options.getLoadFailureImageResource() > 0){
-				imageView.setImageResource(options.getLoadFailureImageResource());
-			}else{
-				imageView.setImageDrawable(null);
-			}
-		}
-	}
-	
-	/**
-	 * 获取加载中显示视图集合
-	 * @return
-	 */
-	public final Set<ImageView> getLoadingImageViewSet() {
-		return loadingImageViewSet;
-	}
-
-	/**
-	 * 获取加载中请求ID集合
-	 * @return
-	 */
-	public final Set<String> getLoadingIdSet() {
-		return loadingIdSet;
-	}
-
 	/**
 	 * 获取配置
 	 * @return

@@ -23,6 +23,7 @@ import me.xiaoapn.easy.imageloader.download.ImageDownloader;
 import me.xiaoapn.easy.imageloader.download.OnCompleteListener;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import android.util.Log;
+import android.widget.ImageView;
 
 /**
  * Url加载任务Runable
@@ -35,19 +36,19 @@ public class UrlRequestExecuteRunnable extends RequestExecuteRunnable{
 	 * 创建一个加载图片任务
 	 * @param urlRequest 加载请求
 	 */
-	public UrlRequestExecuteRunnable(ImageLoader imageLoader, UrlRequest urlRequest){
-		super(imageLoader, urlRequest);
+	public UrlRequestExecuteRunnable(ImageLoader imageLoader, UrlRequest urlRequest, ImageView imageView){
+		super(imageLoader, urlRequest, imageView);
 		this.imageLoader = imageLoader;
 		this.urlRequest = urlRequest;
 	}
 	
 	@Override
 	public void run() {
-		if(GeneralUtils.isAvailableOfFile(urlRequest.getCacheFile(), urlRequest.getOptions().getCachePeriodOfValidity(), imageLoader, urlRequest.getName())){
+		if(GeneralUtils.isAvailableOfFile(urlRequest.getCacheFile(), urlRequest.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), imageLoader, urlRequest.getName())){
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.i(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从本地缓存加载开始："+urlRequest.getName());
 			}
-			urlRequest.setResultBitmap(GeneralUtils.getBitmapLoader(urlRequest.getOptions()).onFromFileLoad(urlRequest.getCacheFile(), urlRequest.getImageView(), imageLoader));
+			urlRequest.setResultBitmap(imageLoader.getConfiguration().getBitmapLoader().onFromFileLoad(urlRequest.getCacheFile(), urlRequest.getImageView(), imageLoader));
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.i(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从本地缓存加载完成："+urlRequest.getName());
 			}
@@ -69,7 +70,7 @@ public class UrlRequestExecuteRunnable extends RequestExecuteRunnable{
 					
 					@Override
 					public void onComplete(byte[] data) {
-						urlRequest.setResultBitmap(GeneralUtils.getBitmapLoader(urlRequest.getOptions()).onFromByteArrayLoad(data, urlRequest.getImageView(), imageLoader));
+						urlRequest.setResultBitmap(imageLoader.getConfiguration().getBitmapLoader().onFromByteArrayLoad(data, urlRequest.getImageView(), imageLoader));
 						if(imageLoader.getConfiguration().isDebugMode()){
 							Log.d(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从网络加载成功（Byte）："+urlRequest.getName());
 						}
@@ -78,7 +79,7 @@ public class UrlRequestExecuteRunnable extends RequestExecuteRunnable{
 					
 					@Override
 					public void onComplete(File cacheFile) {
-						urlRequest.setResultBitmap(GeneralUtils.getBitmapLoader(urlRequest.getOptions()).onFromFileLoad(cacheFile, urlRequest.getImageView(), imageLoader));
+						urlRequest.setResultBitmap(imageLoader.getConfiguration().getBitmapLoader().onFromFileLoad(cacheFile, urlRequest.getImageView(), imageLoader));
 						if(imageLoader.getConfiguration().isDebugMode()){
 							Log.d(imageLoader.getConfiguration().getLogTag()+":UrlRequestExecuteRunnable", "从网络加载成功（File）："+urlRequest.getName());
 						}

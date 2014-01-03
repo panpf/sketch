@@ -25,8 +25,6 @@ import java.util.GregorianCalendar;
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.Options;
-import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
-import me.xiaoapn.easy.imageloader.decode.PixelsBitmapLoader;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.params.ConnManagerParams;
@@ -214,16 +212,6 @@ public class GeneralUtils {
 		}
 	}
 	
-	public static BitmapLoader getBitmapLoader(Options options){
-		BitmapLoader bitmapLoader = null;
-		if(options != null && options.getBitmapLoader() != null){
-			bitmapLoader = options.getBitmapLoader();
-		}else{
-			bitmapLoader = new PixelsBitmapLoader();
-		}
-		return bitmapLoader;
-	}
-	
 	/**
 	 * 判断给定文件是否可以使用
 	 * @param file
@@ -297,14 +285,10 @@ public class GeneralUtils {
 	 * @return
 	 */
 	public static File getCacheFile(Configuration configuration, Options options, String fileName){
-		if(options != null && GeneralUtils.isNotEmpty(options.getCacheDirectory())){
-			return new File(options.getCacheDirectory() + File.separator + fileName);
-		}else if(GeneralUtils.isNotEmpty(configuration.getDefaultCacheDirectory())){
-			return new File(configuration.getDefaultCacheDirectory() + File.separator + fileName);
-		}else if(configuration.getContext() != null){
-			return new File(GeneralUtils.getDynamicCacheDir(configuration.getContext()).getPath() + File.separator + "image_loader" + File.separator + fileName);
+		if(options != null && GeneralUtils.isNotEmpty(options.getCacheConfig().getDiskCacheDirectory())){
+			return new File(options.getCacheConfig().getDiskCacheDirectory() + File.separator + fileName);
 		}else{
-			return null;
+			return new File(GeneralUtils.getDynamicCacheDir(configuration.getContext()).getPath() + File.separator + "image_loader" + File.separator + fileName);
 		}
 	}
 	

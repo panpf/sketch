@@ -16,15 +16,14 @@
 
 package me.xiaoapn.easy.imageloader;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
-
 import me.xiaoapn.easy.imageloader.cache.BitmapCacher;
+import me.xiaoapn.easy.imageloader.cache.CacheConfig;
 import me.xiaoapn.easy.imageloader.cache.LruBitmapCacher;
+import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
 import me.xiaoapn.easy.imageloader.decode.PixelsBitmapLoader;
 import me.xiaoapn.easy.imageloader.display.SimpleBitmapDisplayer;
-import me.xiaoapn.easy.imageloader.execute.Request;
-import me.xiaoapn.easy.imageloader.util.CircleList;
+import me.xiaoapn.easy.imageloader.execute.BaseTaskExecutor;
+import me.xiaoapn.easy.imageloader.execute.TaskExecutor;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 
@@ -42,33 +41,36 @@ import org.apache.http.params.HttpProtocolParams;
 
 import android.content.Context;
 import android.os.Handler;
-import android.util.DisplayMetrics;
+import android.os.Looper;
 
 /**
  * 配置
  */
 public class Configuration {
-	private Context context;
-	private int threadPoolSize = 20;	//线程池大小
-	private int bufferPoolSize = 10;	//缓冲池大小
-	private int connectionTimeout = 10000;	//连接超时时间
-	private int maxConnections = 10;	//最大连接数
-	private int socketBufferSize = 8192;	//Socket缓存池大小
 	private boolean debugMode;	//调试模式，在控制台输出日志
-	private String logTag = "ImageLoader";	//LogTag
-	private String defaultCacheDirectory;	//默认的缓存目录
+	private String logTag;	//LogTag
+	private Context context;	//上下文
+	private Handler handler;	//消息处理器
 	private Options defaultOptions;	//默认加载选项
-	private Handler handler = new Handler();;	//任务结果处理器
 	private HttpClient httpClient;	//Http客户端
+	private TaskExecutor taskExecutor;	//任务执行器
 	private BitmapCacher bitmapCacher;	//位图缓存器
-	private CircleList<Request> bufferPool;	//缓冲池
-	private ThreadPoolExecutor threadPool;	//线程池
-	private ImageSize maxImageSize;	//最大图片尺寸
+	private BitmapLoader bitmapLoader;	//位图加载器
 	
 	private Configuration(Context context){
+		if(Looper.myLooper() != Looper.getMainLooper()){
+			throw new IllegalStateException("你不能在异步线程中创建此对象");
+		}
+		
 		this.context = context;
-		DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-		maxImageSize = new ImageSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
+		this.logTag = ImageLoader.class.getSimpleName();
+		this.handler = new Handler();
+		this.defaultOptions = new Options.Builder()
+		.setCacheConfig(new CacheConfig.Builder().setCacheInMemory(true).setCacheInDisk(true).build())
+		.setBitmapDisplayer(new SimpleBitmapDisplayer())
+		.setMaxImageSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
+		.setMaxRetryCount(2)
+		.create();
 	}
 	
 	/**
@@ -80,103 +82,29 @@ public class Configuration {
 	}
 
 	/**
-	 * 获取Http客户端
+	 * 获取任务执行器
 	 * @return
 	 */
-	public final HttpClient getHttpClient() {
-		if(httpClient == null){
-			BasicHttpParams httpParams = new BasicHttpParams();
-			GeneralUtils.setConnectionTimeout(httpParams, connectionTimeout);
-			GeneralUtils.setMaxConnections(httpParams, maxConnections);
-			GeneralUtils.setSocketBufferSize(httpParams, socketBufferSize);
-	        HttpConnectionParams.setTcpNoDelay(httpParams, true);
-	        HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
-			SchemeRegistry schemeRegistry = new SchemeRegistry();
-			schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-			schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
-			httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams); 
+	public TaskExecutor getTaskExecutor() {
+		if(taskExecutor == null){
+			taskExecutor = new BaseTaskExecutor();
 		}
-		return httpClient;
+		return taskExecutor;
 	}
 
 	/**
-	 * 设置Http客户端
-	 * @param httpClient
+	 * 设置任务执行器
+	 * @param taskExecutor
 	 */
-	public void setHttpClient(HttpClient httpClient) {
-		this.httpClient = httpClient;
+	public void setTaskExecutor(TaskExecutor taskExecutor) {
+		this.taskExecutor = taskExecutor;
 	}
 
-    /**
-     * 获取线程池
-     * @return
-     */
-    public ThreadPoolExecutor getThreadPool() {
-        if(threadPool == null){
-            threadPool = (ThreadPoolExecutor) Executors.newCachedThreadPool();
-        }
-        return threadPool;
-    }
-    
-	/**
-	 * 设置线程池
-	 * @param threadPool
-	 */
-	public void setThreadPool(ThreadPoolExecutor threadPool) {
-		this.threadPool = threadPool;
-	}
-
-
-	/**
-	 * 获取最大线程数
-	 * @return
-	 */
-	public int getThreadPoolSize() {
-		return threadPoolSize;
-	}
-
-	/**
-	 * 设置最大线程数
-	 * @param threadPoolSize
-	 */
-	public void setThreadPoolSize(int threadPoolSize) {
-		if(threadPoolSize > 0){
-			this.threadPoolSize = threadPoolSize;
-		}
-	}
-	
-	/**
-	 * 获取缓冲池大小
-	 * @return
-	 */
-	public int getBufferPoolSize() {
-		return bufferPoolSize;
-	}
-
-	/**
-	 * 设置缓冲池大小
-	 * @param bufferPoolSize
-	 */
-	public void setBufferPoolSize(int bufferPoolSize) {
-		if(bufferPoolSize > 0){
-			this.bufferPoolSize = bufferPoolSize;
-			getBufferPool().setMaxSize(bufferPoolSize);
-		}
-	}
-	
 	/**
 	 * 获取默认的加载选项
 	 * @return
 	 */
 	public Options getDefaultOptions() {
-		if(defaultOptions == null){
-			defaultOptions = new Options.Builder()
-			.setCachedInMemory(true)
-			.setCacheInLocal(true)
-			.setBitmapLoader(new PixelsBitmapLoader())
-			.setBitmapDisplayer(new SimpleBitmapDisplayer())
-			.create();
-		}
 		return defaultOptions;
 	}
 	
@@ -208,23 +136,24 @@ public class Configuration {
 	}
 
 	/**
-	 * 获取默认的缓存目录，当没有指定单独的缓存目录时将使用此缓存目录
-	 * @return
+	 * 获取位图加载器
+	 * @return 位图加载器
 	 */
-	public String getDefaultCacheDirectory() {
-		return defaultCacheDirectory;
+	public BitmapLoader getBitmapLoader() {
+		if(bitmapLoader == null){
+			bitmapLoader = new PixelsBitmapLoader();
+		}
+		return bitmapLoader;
 	}
 
 	/**
-	 * 设置默认的缓存目录，当没有指定单独的缓存目录时将使用此缓存目录
-	 * @param defaultCacheDirectory
+	 * 设置位图加载器
+	 * @param bitmapLoader 位图加载器
 	 */
-	public void setDefaultCacheDirectory(String defaultCacheDirectory) {
-		if(GeneralUtils.isNotEmpty(defaultCacheDirectory)){
-			this.defaultCacheDirectory = defaultCacheDirectory;
-		}
+	public void setBitmapLoader(BitmapLoader bitmapLoader) {
+		this.bitmapLoader = bitmapLoader;
 	}
-	
+
 	/**
 	 * 获取消息处理器
 	 * @return
@@ -250,68 +179,6 @@ public class Configuration {
 	}
 
 	/**
-	 * 获取连接超时时间，单位毫秒
-	 * @return
-	 */
-	public int getConnectionTimeout() {
-		return connectionTimeout;
-	}
-
-	/**
-	 * 设置连接超时间，单位毫秒
-	 * @param connectionTimeout
-	 */
-	public void setConnectionTimeout(int connectionTimeout) {
-		this.connectionTimeout = connectionTimeout;
-		GeneralUtils.setConnectionTimeout(httpClient, this.connectionTimeout);
-	}
-
-	/**
-	 * 获取最大连接数
-	 * @return
-	 */
-	public int getMaxConnections() {
-		return maxConnections;
-	}
-
-	/**
-	 * 设置最大连接数
-	 * @param maxConnections
-	 */
-	public void setMaxConnections(int maxConnections) {
-		this.maxConnections = maxConnections;
-		GeneralUtils.setMaxConnections(httpClient, this.maxConnections);
-	}
-
-	/**
-	 * 获取Socket缓存池大小
-	 * @return
-	 */
-	public int getSocketBufferSize() {
-		return socketBufferSize;
-	}
-
-	/**
-	 * 设置Socket缓存池大小
-	 * @param socketBufferSize
-	 */
-	public void setSocketBufferSize(int socketBufferSize) {
-		this.socketBufferSize = socketBufferSize;
-		GeneralUtils.setSocketBufferSize(httpClient, this.socketBufferSize);
-	}
-
-	/**
-	 * 获取缓冲池
-	 * @return 缓冲池
-	 */
-	public final CircleList<Request> getBufferPool() {
-		if(bufferPool == null){
-			bufferPool = new CircleList<Request>(getBufferPoolSize());//初始化等待处理的加载请求集合
-		}
-		return bufferPool;
-	}
-	
-	/**
 	 * 判断是否开启调试模式
 	 * @return
 	 */
@@ -326,24 +193,34 @@ public class Configuration {
 	public void setDebugMode(boolean debugMode) {
 		this.debugMode = debugMode;
 	}
-	
+
 	/**
-	 * 获取最大图片尺寸
+	 * 获取Http客户端
 	 * @return
 	 */
-	public ImageSize getMaxImageSize() {
-		return maxImageSize;
+	public final HttpClient getHttpClient() {
+		if(httpClient == null){
+			BasicHttpParams httpParams = new BasicHttpParams();
+			GeneralUtils.setConnectionTimeout(httpParams, 10000);
+			GeneralUtils.setMaxConnections(httpParams, 100);
+			GeneralUtils.setSocketBufferSize(httpParams, 8192);
+	        HttpConnectionParams.setTcpNoDelay(httpParams, true);
+	        HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
+			SchemeRegistry schemeRegistry = new SchemeRegistry();
+			schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+			schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+			httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams); 
+		}
+		return httpClient;
 	}
 
 	/**
-	 * 设置最大图片尺寸
-	 * @param maxImageSize
+	 * 设置Http客户端
+	 * @param httpClient
 	 */
-	public void setMaxImageSize(ImageSize maxImageSize) {
-		this.maxImageSize = maxImageSize;
+	public void setHttpClient(HttpClient httpClient) {
+		this.httpClient = httpClient;
 	}
-
-
 
 	/**
 	 * ImageLoadder配置创建器
@@ -356,6 +233,15 @@ public class Configuration {
 		}
 
 		/**
+		 * 设置位图加载器
+		 * @param bitmapLoader 位图加载器
+		 */
+		public Builder setBitmapLoader(BitmapLoader bitmapLoader) {
+			configuration.setBitmapLoader(bitmapLoader);
+			return this;
+		}
+
+		/**
 		 * 设置Http客户端
 		 * @param httpClient
 		 */
@@ -364,33 +250,6 @@ public class Configuration {
 			return this;
 		}
 	    
-		/**
-		 * 设置线程池
-		 * @param threadPool
-		 */
-		public Builder setThreadPool(ThreadPoolExecutor threadPool) {
-			configuration.setThreadPool(threadPool);
-			return this;
-		}
-
-		/**
-		 * 设置最大线程数
-		 * @param maxThreadNumber
-		 */
-		public Builder setMaxThreadNumber(int maxThreadNumber) {
-			configuration.setThreadPoolSize(maxThreadNumber);
-			return this;
-		}
-
-		/**
-		 * 设置最大等待数
-		 * @param maxWaitingNumber
-		 */
-		public Builder setMaxWaitingNumber(int maxWaitingNumber) {
-			configuration.setBufferPoolSize(maxWaitingNumber);
-			return this;
-		}
-		
 		/**
 		 * 设置加载选项
 		 * @param defaultOptions
@@ -410,15 +269,6 @@ public class Configuration {
 		}
 
 		/**
-		 * 设置默认的缓存目录，当没有指定单独的缓存目录时将使用此缓存目录
-		 * @param defaultCacheDirectory
-		 */
-		public Builder setDefaultCacheDirectory(String defaultCacheDirectory) {
-			configuration.setDefaultCacheDirectory(defaultCacheDirectory);
-			return this;
-		}
-
-		/**
 		 * 设置Log Tag
 		 * @param logTag
 		 */
@@ -428,33 +278,6 @@ public class Configuration {
 		}
 
 		/**
-		 * 设置连接超时间，单位毫秒
-		 * @param connectionTimeout
-		 */
-		public Builder setConnectionTimeout(int connectionTimeout) {
-			configuration.setConnectionTimeout(connectionTimeout);
-			return this;
-		}
-
-		/**
-		 * 设置最大连接数
-		 * @param maxConnections
-		 */
-		public Builder setMaxConnections(int maxConnections) {
-			configuration.setMaxConnections(maxConnections);
-			return this;
-		}
-
-		/**
-		 * 设置Socket缓存池大小
-		 * @param socketBufferSize
-		 */
-		public Builder setSocketBufferSize(int socketBufferSize) {
-			configuration.setSocketBufferSize(socketBufferSize);
-			return this;
-		}
-		
-		/**
 		 * 设置是否开启调试模式，开启调试模式后会在控制台输出LOG
 		 * @param debugMode
 		 */
@@ -462,12 +285,21 @@ public class Configuration {
 			configuration.setDebugMode(debugMode);
 			return this;
 		}
+
+		/**
+		 * 设置任务执行器
+		 * @param taskExecutor
+		 */
+		public Builder setTaskExecutor(TaskExecutor taskExecutor) {
+			configuration.setTaskExecutor(taskExecutor);
+			return this;
+		}
 		
 		/**
 		 * 创建
 		 * @return
 		 */
-		public Configuration create(){
+		public Configuration build(){
 			return configuration;
 		}
 	}

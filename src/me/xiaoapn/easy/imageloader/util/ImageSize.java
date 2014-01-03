@@ -51,4 +51,8 @@ public class ImageSize {
 	public String toString() {
 		return new StringBuilder(TO_STRING_MAX_LENGHT).append(width).append(SEPARATOR).append(height).toString();
 	}
+	
+	public ImageSize copy(){
+		return new ImageSize(width, height);
+	}
 }

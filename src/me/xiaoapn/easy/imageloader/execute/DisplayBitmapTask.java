@@ -38,11 +38,7 @@ public class DisplayBitmapTask implements Runnable {
 		if(bitmap != null && !bitmap.isRecycled()){
 			options.getBitmapDisplayer().display(imageView, bitmap, isFromMemoryCache);
 		}else{
-			if(options.getLoadFailureImageResource() > 0){
-				imageView.setImageResource(options.getLoadFailureImageResource());
-			}else{
-				imageView.setImageBitmap(null);
-			}
+			imageView.setImageBitmap(options.getLoadFailureBitmap());
 		}
 	}
 }

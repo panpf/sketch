@@ -3,7 +3,7 @@ package me.xiaoapn.easy.imageloader.execute;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import android.util.Log;
-
+import android.widget.ImageView;
 
 /**
  * 文件请求执行任务
@@ -16,8 +16,8 @@ public class FileRequestExecuteRunnable extends RequestExecuteRunnable{
 	 * 创建文件请求执行任务
 	 * @param fileRequest 文件请求
 	 */
-	public FileRequestExecuteRunnable(ImageLoader imageLoader, FileRequest fileRequest){
-		super(imageLoader, fileRequest);
+	public FileRequestExecuteRunnable(ImageLoader imageLoader, FileRequest fileRequest, ImageView imageView){
+		super(imageLoader, fileRequest, imageView);
 		this.imageLoader = imageLoader;
 		this.fileRequest = fileRequest;
 	}
@@ -28,7 +28,7 @@ public class FileRequestExecuteRunnable extends RequestExecuteRunnable{
 			Log.d(imageLoader.getConfiguration().getLogTag()+":FileRequestExecuteRunnable", "从本地加载开始："+fileRequest.getName());
 		}
 		if(GeneralUtils.isAvailableOfFile(fileRequest.getImageFile(), 0, imageLoader, fileRequest.getName())){
-			fileRequest.setResultBitmap(GeneralUtils.getBitmapLoader(fileRequest.getOptions()).onFromFileLoad(fileRequest.getImageFile(), fileRequest.getImageView(), imageLoader));
+			fileRequest.setResultBitmap(imageLoader.getConfiguration().getBitmapLoader().onFromFileLoad(fileRequest.getImageFile(), fileRequest.getImageView(), imageLoader));
 		}else{
 			fileRequest.setResultBitmap(null);
 		}

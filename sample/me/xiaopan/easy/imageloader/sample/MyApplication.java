@@ -26,11 +26,11 @@ public class MyApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		
 		ImageLoader.getInstance().init(getBaseContext());
-		//初始化默认的Options，当调用ImageLoader.getInstance().load()方法却没有指定Options的时候会默认使用此Options
-		Options defaultOptions = ImageLoader.getInstance().getConfiguration().getDefaultOptions();
-		defaultOptions.setLoadingImageResource(R.drawable.image_loading);	//设置加载中显示的图片
-		defaultOptions.setLoadFailureImageResource(R.drawable.image_load_failure); 	//设置加载失败时显示的图片
 		ImageLoader.getInstance().getConfiguration().setDebugMode(true);
+		Options defaultOptions = ImageLoader.getInstance().getConfiguration().getDefaultOptions();
+		defaultOptions.setLoadingBitmap(getResources(), R.drawable.image_loading);	//设置加载中显示的图片
+		defaultOptions.setLoadFailureBitmap(getResources(), R.drawable.image_load_failure); 	//设置加载失败时显示的图片
 	}
 }

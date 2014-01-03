@@ -16,107 +16,27 @@
 
 package me.xiaoapn.easy.imageloader;
 
-import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
+import me.xiaoapn.easy.imageloader.cache.CacheConfig;
 import me.xiaoapn.easy.imageloader.display.BitmapDisplayer;
 import me.xiaoapn.easy.imageloader.display.SimpleBitmapDisplayer;
+import me.xiaoapn.easy.imageloader.util.ImageSize;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 /**
  * 加载选项
  */
-public class Options implements Cloneable{
-	private int loadingImageResource = -1;	//正在加载时显示的图片的资源ID
-	private int loadFailureImageResource = -1;	//加载失败时显示的图片的资源ID
-	private int maxRetryCount = -1;	//最大重试次数
-	private int cachePeriodOfValidity;	//缓存有效期，单位毫秒
-	private boolean isCacheInMemory;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-	private boolean isCacheInLocal;	//是否需要将图片缓存到本地
-	private String cacheDirectory;	//缓存目录
-	private BitmapLoader bitmapLoader;	//位图加载器
+public class Options{
+	private int maxRetryCount;	//最大重试次数
+	private Bitmap emptyBitmap;	//当加载地址为空时显示的图片
+	private Bitmap loadingBitmap;	//正在加载时显示的图片
+	private Bitmap loadFailureBitmap;	//加载失败时显示的图片
+	private ImageSize maxImageSize;	//最大图片尺寸
+	private CacheConfig cacheConfig;	//缓存配置
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
 	
-	private Options(){
-		
-	}
-	
-	/**
-	 * 获取正在加载时显示的图片的资源ID
-	 * @return 正在加载时显示的图片的资源ID
-	 */
-	public int getLoadingImageResource() {
-		return loadingImageResource;
-	}
-	
-	/**
-	 * 设置正在加载时显示的图片的资源ID
-	 * @param loadingImageResource 正在加载时显示的图片的资源ID
-	 */
-	public void setLoadingImageResource(int loadingImageResource) {
-		this.loadingImageResource = loadingImageResource;
-	}
-	
-	/**
-	 * 获取加载失败时显示的图片的资源ID
-	 * @return 加载失败时显示的图片的资源ID
-	 */
-	public int getLoadFailureImageResource() {
-		return loadFailureImageResource;
-	}
-
-	/**
-	 * 设置加载失败时显示的图片的资源ID
-	 * @param loadFailureImageResource 加载失败时显示的图片的资源ID
-	 */
-	public void setLoadFailureImageResource(int loadFailureImageResource) {
-		this.loadFailureImageResource = loadFailureImageResource;
-	}
-	
-	/**
-	 * 获取缓存有效期，单位毫秒
-	 * @return 
-	 */
-	public int getCachePeriodOfValidity() {
-		return cachePeriodOfValidity;
-	}
-
-	/**
-	 * 设置缓存有效期，单位毫秒
-	 * @param cachePeriodOfValidity
-	 */
-	public void setCachePeriodOfValidity(int cachePeriodOfValidity) {
-		this.cachePeriodOfValidity = cachePeriodOfValidity;
-	}
-
-	/**
-	 * 判断是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-	 * @return 
-	 */
-	public boolean isCacheInMemory() {
-		return isCacheInMemory;
-	}
-	
-	/**
-	 * 设置是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-	 * @param isCacheInMemory 是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-	 */
-	public void setCacheInMemory(boolean isCacheInMemory) {
-		this.isCacheInMemory = isCacheInMemory;
-	}
-
-	/**
-	 * 判断是否缓存到本地
-	 * @return 是否缓存到本地
-	 */
-	public boolean isCacheInLocal() {
-		return isCacheInLocal;
-	}
-
-	/**
-	 * 设置是否缓存到本地
-	 * @param isCacheInLocal 是否缓存到本地
-	 */
-	public void setCacheInLocal(boolean isCacheInLocal) {
-		this.isCacheInLocal = isCacheInLocal;
-	}
+	private Options(){}
 	
 	/**
 	 * 获取最大重试次数
@@ -135,35 +55,113 @@ public class Options implements Cloneable{
 	}
 
 	/**
-	 * 获取缓存目录
-	 * @return 缓存目录
+	 * 获取加载地址为空时显示的图片
+	 * @return
 	 */
-	public String getCacheDirectory() {
-		return cacheDirectory;
+	public Bitmap getEmptyBitmap() {
+		return emptyBitmap;
 	}
 
 	/**
-	 * 设置缓存目录
-	 * @param cacheDirectory 缓存目录
+	 * 设置加载地址为空时显示的图片
+	 * @param emptyBitmap
 	 */
-	public void setCacheDirectory(String cacheDirectory) {
-		this.cacheDirectory = cacheDirectory;
+	public void setEmptyBitmap(Bitmap emptyBitmap) {
+		this.emptyBitmap = emptyBitmap;
+	}
+	
+	/**
+	 * 设置加载地址为空时显示的图片
+	 * @param resources
+	 * @param resId
+	 */
+	public void setEmptyBitmap(Resources resources, int resId) {
+		this.emptyBitmap = BitmapFactory.decodeResource(resources, resId);
 	}
 
 	/**
-	 * 获取位图加载器
-	 * @return 位图加载器
+	 * 获取加载中图片
+	 * @return
 	 */
-	public BitmapLoader getBitmapLoader() {
-		return bitmapLoader;
+	public Bitmap getLoadingBitmap() {
+		return loadingBitmap;
 	}
 
 	/**
-	 * 设置位图加载器
-	 * @param bitmapHandler 位图加载器
+	 * 设置加载中图片
+	 * @param loadingBitmap
 	 */
-	public void setBitmapLoader(BitmapLoader bitmapHandler) {
-		this.bitmapLoader = bitmapHandler;
+	public void setLoadingBitmap(Bitmap loadingBitmap) {
+		this.loadingBitmap = loadingBitmap;
+	}
+
+	/**
+	 * 设置加载中图片
+	 * @param resources
+	 * @param resId
+	 */
+	public void setLoadingBitmap(Resources resources, int resId) {
+		this.loadingBitmap = BitmapFactory.decodeResource(resources, resId);
+	}
+
+	/**
+	 * 获取加载失败图片
+	 * @return
+	 */
+	public Bitmap getLoadFailureBitmap() {
+		return loadFailureBitmap;
+	}
+
+	/**
+	 * 设置加载失败图片
+	 * @param loadFailureBitmap
+	 */
+	public void setLoadFailureBitmap(Bitmap loadFailureBitmap) {
+		this.loadFailureBitmap = loadFailureBitmap;
+	}
+	
+	/**
+	 * 设置加载失败图片
+	 * @param resources
+	 * @param resId
+	 */
+	public void setLoadFailureBitmap(Resources resources, int resId) {
+		this.loadFailureBitmap = BitmapFactory.decodeResource(resources, resId);
+	}
+	
+	/**
+	 * 获取最大图片尺寸
+	 * @return
+	 */
+	public ImageSize getMaxImageSize() {
+		return maxImageSize;
+	}
+
+	/**
+	 * 设置最大图片尺寸
+	 * @param maxImageSize
+	 */
+	public void setMaxImageSize(ImageSize maxImageSize) {
+		this.maxImageSize = maxImageSize;
+	}
+	
+	/**
+	 * 获取缓存配置
+	 * @return
+	 */
+	public CacheConfig getCacheConfig() {
+		if(cacheConfig == null){
+			cacheConfig = new CacheConfig.Builder().build();
+		}
+		return cacheConfig;
+	}
+
+	/**
+	 * 设置缓存配置
+	 * @param cacheConfig
+	 */
+	public void setCacheConfig(CacheConfig cacheConfig) {
+		this.cacheConfig = cacheConfig;
 	}
 	
 	/**
@@ -184,6 +182,22 @@ public class Options implements Cloneable{
 	public void setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
 		this.bitmapDisplayer = bitmapDisplayer;
 	}
+
+	/**
+	 * 将当前Options拷贝一份
+	 * @return
+	 */
+	public Options copy(){
+		return new Options.Builder()
+		.setBitmapDisplayer(bitmapDisplayer)
+		.setCacheConfig(cacheConfig.copy())
+		.setEmptyBitmap(emptyBitmap)
+		.setLoadFailureBitmap(loadFailureBitmap)
+		.setLoadingBitmap(loadingBitmap)
+		.setMaxImageSize(maxImageSize.copy())
+		.setMaxRetryCount(maxRetryCount)
+		.create();
+	}
 	
 	/**
 	 * 加载选项创建器
@@ -196,51 +210,6 @@ public class Options implements Cloneable{
 		}
 		
 		/**
-		 * 设置正在加载时显示的图片的资源ID
-		 * @param loadingImageResource 正在加载时显示的图片的资源ID
-		 */
-		public Builder setLoadingImageResource(int loadingImageResource) {
-			options.setLoadingImageResource(loadingImageResource);
-			return this;
-		}
-		
-		/**
-		 * 设置加载失败时显示的图片的资源ID
-		 * @param loadFailureImageResource 加载失败时显示的图片的资源ID
-		 */
-		public Builder setLoadFailureImageResource(int loadFailureImageResource) {
-			options.setLoadFailureImageResource(loadFailureImageResource);
-			return this;
-		}
-
-		/**
-		 * 设置缓存有效期，单位毫秒
-		 * @param cachePeriodOfValidity
-		 */
-		public Builder setCachePeriodOfValidity(int cachePeriodOfValidity) {
-			options.setCachePeriodOfValidity(cachePeriodOfValidity);
-			return this;
-		}
-
-		/**
-		 * 设置是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-		 * @param isCachedInMemory 是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-		 */
-		public Builder setCachedInMemory(boolean isCachedInMemory) {
-			options.setCacheInMemory(isCachedInMemory);
-			return this;
-		}
-
-		/**
-		 * 设置是否缓存到本地
-		 * @param isCacheInLocal 是否缓存到本地
-		 */
-		public Builder setCacheInLocal(boolean isCacheInLocal) {
-			options.setCacheInLocal(isCacheInLocal);
-			return this;
-		}
-		
-		/**
 		 * 设置最大重试次数
 		 * @param maxRetryCount 最大重试次数
 		 */
@@ -250,23 +219,80 @@ public class Options implements Cloneable{
 		}
 
 		/**
-		 * 设置缓存目录
-		 * @param cacheDirectory 缓存目录
+		 * 设置缓存配置
+		 * @param cacheConfig
 		 */
-		public Builder setCacheDirectory(String cacheDirectory) {
-			options.setCacheDirectory(cacheDirectory);
+		public Builder setCacheConfig(CacheConfig cacheConfig) {
+			options.setCacheConfig(cacheConfig);
+			return this;
+		}
+		
+		/**
+		 * 设置加载地址为空时显示的图片
+		 * @param emptyBitmap
+		 */
+		public Builder setEmptyBitmap(Bitmap emptyBitmap) {
+			options.setEmptyBitmap(emptyBitmap);
+			return this;
+		}
+		
+		/**
+		 * 设置加载地址为空时显示的图片
+		 * @param resources
+		 * @param resId
+		 */
+		public Builder setEmptyBitmap(Resources resources, int resId) {
+			options.setEmptyBitmap(resources, resId);
 			return this;
 		}
 
 		/**
-		 * 设置位图加载器
-		 * @param bitmapHandler 位图加载器
+		 * 设置加载中图片
+		 * @param loadingBitmap
 		 */
-		public Builder setBitmapLoader(BitmapLoader bitmapHandler) {
-			options.setBitmapLoader(bitmapHandler);
+		public Builder setLoadingBitmap(Bitmap loadingBitmap) {
+			options.setLoadingBitmap(loadingBitmap);
 			return this;
 		}
 
+		/**
+		 * 设置加载中图片
+		 * @param resources
+		 * @param resId
+		 */
+		public Builder setLoadingBitmap(Resources resources, int resId) {
+			options.setLoadingBitmap(resources, resId);
+			return this;
+		}
+
+		/**
+		 * 设置加载失败图片
+		 * @param loadFailureBitmap
+		 */
+		public Builder setLoadFailureBitmap(Bitmap loadFailureBitmap) {
+			options.setLoadFailureBitmap(loadFailureBitmap);
+			return this;
+		}
+		
+		/**
+		 * 设置加载失败图片
+		 * @param resources
+		 * @param resId
+		 */
+		public Builder setLoadFailureBitmap(Resources resources, int resId) {
+			options.setLoadFailureBitmap(resources, resId);
+			return this;
+		}
+		
+		/**
+		 * 设置最大图片尺寸
+		 * @param maxImageSize
+		 */
+		public Builder setMaxImageSize(ImageSize maxImageSize) {
+			options.setMaxImageSize(maxImageSize);
+			return this;
+		}
+		
 		/**
 		 * 设置位图显示器
 		 * @param bitmapDisplayer
@@ -283,22 +309,5 @@ public class Options implements Cloneable{
 		public Options create(){
 			return options;
 		}
-	}
-
-	/**
-	 * 将当前Options拷贝一份
-	 * @return
-	 */
-	public Options copy(){
-		return new Options.Builder()
-		.setCachedInMemory(isCacheInMemory())
-		.setCacheDirectory(getCacheDirectory())
-		.setCacheInLocal(isCacheInLocal())
-		.setLoadFailureImageResource(getLoadFailureImageResource())
-		.setLoadingImageResource(getLoadingImageResource())
-		.setMaxRetryCount(getMaxRetryCount())
-		.setBitmapLoader(getBitmapLoader())
-		.setBitmapDisplayer(getBitmapDisplayer())
-		.create();
 	}
 }
