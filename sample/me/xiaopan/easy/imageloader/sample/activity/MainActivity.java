@@ -21,14 +21,12 @@ import me.xiaopan.easy.imageloader.sample.adapter.StringAdapter;
 import me.xiaopan.easy.imageloader.sample.fragment.GalleryFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.GridFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.ListFragment;
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -38,14 +36,13 @@ public class MainActivity extends FragmentActivity {
 	private DrawerLayout drawerLayout;
 	private ListView listView;
 	
-	@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_main);
-		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_left, Gravity.START);
-		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, Gravity.END);
+		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_left, GravityCompat.START);
+		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, GravityCompat.END);
 		
 		listView = (ListView) findViewById(R.id.list_main);
 		listView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery"));
@@ -58,7 +55,7 @@ public class MainActivity extends FragmentActivity {
 		});
 		
 		set(0);
-		drawerLayout.openDrawer(Gravity.START);
+		drawerLayout.openDrawer(GravityCompat.START);
 		new Handler().postDelayed(new Runnable() {
 			@Override
 			public void run() {
