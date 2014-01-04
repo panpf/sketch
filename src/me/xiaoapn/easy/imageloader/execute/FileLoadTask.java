@@ -34,7 +34,7 @@ public class FileLoadTask extends LoadBitmapTask{
 			BufferedInputStream inputStream = null;
 			try {
 				inputStream = new BufferedInputStream(new FileInputStream(fileRequest.getImageFile()));
-				bitmap = imageLoader.getConfiguration().getBitmapLoader().decode(inputStream, fileRequest.getTargetSize(), imageLoader, fileRequest.getName());
+				bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(inputStream, fileRequest.getTargetSize(), imageLoader, fileRequest.getName());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}finally{

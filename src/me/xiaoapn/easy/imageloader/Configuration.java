@@ -19,8 +19,8 @@ package me.xiaoapn.easy.imageloader;
 import me.xiaoapn.easy.imageloader.cache.BitmapCacher;
 import me.xiaoapn.easy.imageloader.cache.CacheConfig;
 import me.xiaoapn.easy.imageloader.cache.LruBitmapCacher;
-import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
-import me.xiaoapn.easy.imageloader.decode.SimpleBitmapLoader;
+import me.xiaoapn.easy.imageloader.decode.BitmapDecoder;
+import me.xiaoapn.easy.imageloader.decode.SimpleBitmapDecoder;
 import me.xiaoapn.easy.imageloader.display.SimpleBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.execute.BaseTaskExecutor;
 import me.xiaoapn.easy.imageloader.execute.TaskExecutor;
@@ -55,7 +55,7 @@ public class Configuration {
 	private HttpClient httpClient;	//Http客户端
 	private TaskExecutor taskExecutor;	//任务执行器
 	private BitmapCacher bitmapCacher;	//位图缓存器
-	private BitmapLoader bitmapLoader;	//位图加载器
+	private BitmapDecoder bitmapDecoder;	//位图解码器
 	
 	private Configuration(Context context){
 		if(Looper.myLooper() != Looper.getMainLooper()){
@@ -136,22 +136,22 @@ public class Configuration {
 	}
 
 	/**
-	 * 获取位图加载器
-	 * @return 位图加载器
+	 * 获取位图解码器
+	 * @return 位图解码器
 	 */
-	public BitmapLoader getBitmapLoader() {
-		if(bitmapLoader == null){
-			bitmapLoader = new SimpleBitmapLoader();
+	public BitmapDecoder getBitmapDecoder() {
+		if(bitmapDecoder == null){
+			bitmapDecoder = new SimpleBitmapDecoder();
 		}
-		return bitmapLoader;
+		return bitmapDecoder;
 	}
 
 	/**
-	 * 设置位图加载器
-	 * @param bitmapLoader 位图加载器
+	 * 设置位图解码器
+	 * @param bitmapDecoder 位图解码器
 	 */
-	public void setBitmapLoader(BitmapLoader bitmapLoader) {
-		this.bitmapLoader = bitmapLoader;
+	public void setBitmapLoader(BitmapDecoder bitmapDecoder) {
+		this.bitmapDecoder = bitmapDecoder;
 	}
 
 	/**
@@ -233,11 +233,11 @@ public class Configuration {
 		}
 
 		/**
-		 * 设置位图加载器
-		 * @param bitmapLoader 位图加载器
+		 * 设置位图解码器
+		 * @param bitmapDecoder 位图解码器
 		 */
-		public Builder setBitmapLoader(BitmapLoader bitmapLoader) {
-			configuration.setBitmapLoader(bitmapLoader);
+		public Builder setBitmapDecoder(BitmapDecoder bitmapDecoder) {
+			configuration.setBitmapLoader(bitmapDecoder);
 			return this;
 		}
 

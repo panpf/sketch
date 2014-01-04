@@ -22,16 +22,16 @@ import me.xiaoapn.easy.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 
 /**
- * 位图加载器
+ * 位图解码器
  */
-public interface BitmapLoader{
+public interface BitmapDecoder{
 	/**
 	 * 解码
-	 * @param inputStream
-	 * @param targetSize
-	 * @param imageLoader
-	 * @param name
+	 * @param inputStream 位图输入流
+	 * @param maxSize 最大尺寸
+	 * @param imageLoader 图片加载器
+	 * @param requestName 请求名称
 	 * @return
 	 */
-	public Bitmap decode(InputStream inputStream, ImageSize targetSize, ImageLoader imageLoader, String name);
+	public Bitmap decode(InputStream inputStream, ImageSize maxSize, ImageLoader imageLoader, String requestName);
 }

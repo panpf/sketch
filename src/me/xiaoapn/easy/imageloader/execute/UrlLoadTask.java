@@ -56,7 +56,7 @@ public class UrlLoadTask extends LoadBitmapTask{
 			BufferedInputStream inputStream = null;
 			try {
 				inputStream = new BufferedInputStream(new FileInputStream(urlRequest.getCacheFile()));
-				bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapLoader().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
+				bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}finally{
@@ -82,7 +82,7 @@ public class UrlLoadTask extends LoadBitmapTask{
 					@Override
 					public void onComplete(byte[] data) {
 						BufferedInputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(data));
-						bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapLoader().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
+						bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
 						try {
 							inputStream.close();
 						} catch (IOException e) {
@@ -95,7 +95,7 @@ public class UrlLoadTask extends LoadBitmapTask{
 						BufferedInputStream inputStream = null;
 						try {
 							inputStream = new BufferedInputStream(new FileInputStream(cacheFile));
-							bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapLoader().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
+							bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
 						} catch (FileNotFoundException e) {
 							e.printStackTrace();
 						}finally{
