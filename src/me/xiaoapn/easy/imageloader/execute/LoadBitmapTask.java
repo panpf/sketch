@@ -40,21 +40,19 @@ public abstract class LoadBitmapTask implements Callable<Bitmap>{
 		}
 		
 		Bitmap bitmap = loadBitmap();
-		
 		if(request.getOptions().getCacheConfig().isCacheInMemory() && bitmap != null){
 			imageLoader.getConfiguration().getBitmapCacher().put(request.getId(), bitmap);
 		}
 
 		ImageView imageView = getImageView();
-		if (imageView == null) {
+		if (imageView != null) {
+			imageLoader.getConfiguration().getHandler().post(new DisplayBitmapTask(imageLoader, imageView, bitmap, request.getOptions(), request.getName(), false));
+		}else{
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.e(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append(logName).append("：").append("已取消绑定关系").append("：").append(request.getName()).toString());
 			}
-			return null;
 		}
-		
-		imageLoader.getConfiguration().getHandler().post(new DisplayBitmapTask(imageLoader, imageView, bitmap, request.getOptions(), request.getName(), false));
-		return null;
+		return bitmap;
 	}
 	
 	/**

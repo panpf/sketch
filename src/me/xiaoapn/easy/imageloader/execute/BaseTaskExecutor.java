@@ -1,8 +1,11 @@
 package me.xiaoapn.easy.imageloader.execute;
 
+import java.util.concurrent.FutureTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+
+import android.graphics.Bitmap;
 
 /**
  * 基本的任务执行器
@@ -19,7 +22,7 @@ public class BaseTaskExecutor implements TaskExecutor {
 	}
 	
 	@Override
-	public void execute(Runnable task) {
-		threadPoolExecutor.execute(task);
+	public void execute(FutureTask<Bitmap> futureTask) {
+		threadPoolExecutor.execute(futureTask);
 	}
 }
