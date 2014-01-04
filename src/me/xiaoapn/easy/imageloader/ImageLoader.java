@@ -21,11 +21,11 @@ import java.io.File;
 import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
 import me.xiaoapn.easy.imageloader.execute.DisplayBitmapTask;
 import me.xiaoapn.easy.imageloader.execute.FileRequest;
-import me.xiaoapn.easy.imageloader.execute.FileRequestExecuteRunnable;
+import me.xiaoapn.easy.imageloader.execute.FileLoadTask;
 import me.xiaoapn.easy.imageloader.execute.Request;
-import me.xiaoapn.easy.imageloader.execute.RequestExecuteRunnable;
+import me.xiaoapn.easy.imageloader.execute.LoadBitmapTask;
 import me.xiaoapn.easy.imageloader.execute.UrlRequest;
-import me.xiaoapn.easy.imageloader.execute.UrlRequestExecuteRunnable;
+import me.xiaoapn.easy.imageloader.execute.UrlLoadTask;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.ImageSizeUtils;
@@ -97,8 +97,10 @@ public class ImageLoader{
 		UrlRequest urlRequest = new UrlRequest(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUrl), targetSize), imageUrl, imageUrl, null, imageView, options);
 		urlRequest.setTargetSize(targetSize);
 		if(!show(urlRequest)){
-			urlRequest.setCacheFile(GeneralUtils.getCacheFile(getConfiguration(), options, urlRequest.getImageUrl()));
-			load(urlRequest);
+			if(LoadBitmapTask.cancelPotentialBitmapLoadTask(this, urlRequest, imageView)){
+				urlRequest.setCacheFile(GeneralUtils.getCacheFile(getConfiguration(), options, GeneralUtils.encodeUrl(urlRequest.getImageUrl())));
+				load(urlRequest);
+			}
 		}
 	}
 	
@@ -143,7 +145,9 @@ public class ImageLoader{
 		FileRequest urlRequest = new FileRequest(GeneralUtils.createId(GeneralUtils.encodeUrl(imageFile.getPath()), targetSize), imageFile.getPath(), imageFile, imageView, options);
 		urlRequest.setTargetSize(targetSize);
 		if(!show(urlRequest)){
-			load(urlRequest);
+			if(LoadBitmapTask.cancelPotentialBitmapLoadTask(this, urlRequest, imageView)){
+				load(urlRequest);
+			}
 		}
 	}
 	
@@ -174,7 +178,7 @@ public class ImageLoader{
 		}
 		
 		//显示图片
-		getConfiguration().getHandler().post(new DisplayBitmapTask(request.getImageView(), cacheBitmap, request.getOptions(), true));
+		getConfiguration().getHandler().post(new DisplayBitmapTask(this, request.getImageView(), cacheBitmap, request.getOptions(), request.getName(), true));
 		if(getConfiguration().isDebugMode()){
 			Log.d(getConfiguration().getLogTag(), "从缓存中加载："+request.getName());
 		}
@@ -187,17 +191,17 @@ public class ImageLoader{
 	 * @return true：已经开始加载或正在加载；false：已经达到最大负荷
 	 */
 	private void load(Request request){
-		RequestExecuteRunnable requestExecuteRunnable = null;
+		LoadBitmapTask bitmapLoadTask = null;
 		
 		if(request instanceof FileRequest){
-			requestExecuteRunnable = new FileRequestExecuteRunnable(this, (FileRequest) request, request.getImageView());
+			bitmapLoadTask = new FileLoadTask(this, (FileRequest) request, request.getImageView());
 		}else if(request instanceof UrlRequest){
-			requestExecuteRunnable = new UrlRequestExecuteRunnable(this, (UrlRequest) request, request.getImageView());
+			bitmapLoadTask = new UrlLoadTask(this, (UrlRequest) request, request.getImageView());
 		}
 		
-		if(requestExecuteRunnable != null){
-			request.getImageView().setImageDrawable(new AsyncDrawable(getConfiguration().getContext().getResources(), request.getOptions().getLoadingBitmap(), requestExecuteRunnable));
-			getConfiguration().getTaskExecutor().execute(requestExecuteRunnable);
+		if(bitmapLoadTask != null){
+			request.getImageView().setImageDrawable(new AsyncDrawable(getConfiguration().getContext().getResources(), request.getOptions().getLoadingBitmap(), bitmapLoadTask));
+			getConfiguration().getTaskExecutor().execute(bitmapLoadTask.getFutureTask());
 		}
 	}
 	

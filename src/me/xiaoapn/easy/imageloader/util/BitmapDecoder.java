@@ -38,20 +38,10 @@ import android.util.TypedValue;
  * 位图解码器
  */
 public class BitmapDecoder {
-	/**
-	 * 单张图片最大像素数
-	 */
-	private int maxNumOfPixels;
-	
-	/**
-	 * 最小边长，默认为-1
-	 */
-	private int minSlideLength;
-	
-	/**
-	 * 图片加载器，用来输出LOG
-	 */
-	private ImageLoader imageLoader;
+	private int maxNumOfPixels;	//单张图片最大像素数
+	private int minSlideLength;	//最小边长，默认为-1
+	private String name;
+	private ImageLoader imageLoader;	//图片加载器，用来输出LOG
 	
 	/**
 	 * 创建一个位图解码器，此解码器将根据最大像素数来缩小位图值合适的尺寸
@@ -61,6 +51,7 @@ public class BitmapDecoder {
 		this.maxNumOfPixels = maxNumOfPixels;
 		this.minSlideLength = -1;
 		this.imageLoader = imageLoader;
+		this.name = getClass().getSimpleName();
 	}
 	
 	/**
@@ -156,25 +147,37 @@ public class BitmapDecoder {
 		}
 		options.inJustDecodeBounds = true;
 		BitmapFactory.decodeFile(filePath, options);
-
-		String log = null;
-		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
-			log = "原图尺寸："+options.outWidth+"x"+options.outHeight;
-		}
+		int outWidth = options.outWidth;
+		int outHeight = options.outHeight;
 		
 		options.inSampleSize = computeSampleSize(options, minSlideLength, maxNumOfPixels);
-		if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
-			log += "；inSampleSize："+options.inSampleSize;
-		}
-		
 		options.inJustDecodeBounds = false;
 		FlusedInputStream flusedInputStream = null;
 		try {
 			flusedInputStream = new FlusedInputStream(new BufferedInputStream(new FileInputStream(new File(filePath))));
 			Bitmap bitmap = BitmapFactory.decodeStream(flusedInputStream, null, options);
-			if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
-				log += "；最终尺寸："+bitmap.getWidth()+"x"+bitmap.getHeight();
-				Log.d(imageLoader.getConfiguration().getLogTag(), log);
+			if(bitmap != null){
+				if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
+					Log.d(
+						imageLoader.getConfiguration().getLogTag(), 
+						new StringBuffer(name)
+							.append("：").append("解码成功")
+							.append("：").append("原图尺寸").append("=").append(outWidth).append("x").append(outHeight)
+							.append("；").append("缩小").append("=").append(options.inSampleSize)
+							.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight())
+							.toString()
+					);
+				}
+			}else{
+				if(imageLoader != null && imageLoader.getConfiguration().isDebugMode()){
+					Log.w(
+						imageLoader.getConfiguration().getLogTag(), 
+						new StringBuffer(name)
+							.append("：").append("解码失败")
+							.append("：").append(filePath)
+							.toString()
+					);
+				}
 			}
 			return bitmap;
 		} catch (FileNotFoundException e) {

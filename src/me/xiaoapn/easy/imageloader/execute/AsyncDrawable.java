@@ -7,14 +7,14 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 
 public class AsyncDrawable extends BitmapDrawable {
-    private final WeakReference<RequestExecuteRunnable> bitmapWorkerTaskReference;
+    private final WeakReference<LoadBitmapTask> bitmapLoadTaskReference;
 
-    public AsyncDrawable(Resources res, Bitmap bitmap, RequestExecuteRunnable runnable) {
+    public AsyncDrawable(Resources res, Bitmap bitmap, LoadBitmapTask runnable) {
         super(res, bitmap);
-        bitmapWorkerTaskReference = new WeakReference<RequestExecuteRunnable>(runnable);
+        bitmapLoadTaskReference = new WeakReference<LoadBitmapTask>(runnable);
     }
 
-    public RequestExecuteRunnable getBitmapWorkerTask() {
-        return bitmapWorkerTaskReference.get();
+    public LoadBitmapTask getBitmapLoadTask() {
+        return bitmapLoadTaskReference.get();
     }
 }
