@@ -5,6 +5,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ImageView;
@@ -12,23 +13,25 @@ import android.widget.ImageView;
 /**
  * 加载任务
  */
-public abstract class LoadBitmapTask implements Callable<String>{
+public abstract class LoadBitmapTask implements Callable<Bitmap>{
 	private String logName;
 	private Request request;
 	private ImageLoader imageLoader;
-	private FutureTask<String> futureTask;
+	private FutureTask<Bitmap> futureTask;
 	private WeakReference<ImageView> imageViewReference;
 
 	public LoadBitmapTask(ImageLoader imageLoader, Request request, ImageView imageView) {
 		this.request = request;
 		this.logName = getClass().getSimpleName();
-		this.futureTask = new FutureTask<String>(this);
+		this.futureTask = new FutureTask<Bitmap>(this);
 		this.imageLoader = imageLoader;
 		this.imageViewReference = new WeakReference<ImageView>(imageView);
 	}
 	
+	protected abstract Bitmap loadBitmap();
+	
 	@Override
-	public String call() {
+	public Bitmap call() {
 		if(futureTask.isCancelled()){
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.e(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append(logName).append("：").append("已取消").append(request.getName()).toString());
@@ -36,8 +39,10 @@ public abstract class LoadBitmapTask implements Callable<String>{
 			return null;
 		}
 		
-		if(request.getOptions().getCacheConfig().isCacheInMemory() && request.getResultBitmap() != null){
-			imageLoader.getConfiguration().getBitmapCacher().put(request.getId(), request.getResultBitmap());
+		Bitmap bitmap = loadBitmap();
+		
+		if(request.getOptions().getCacheConfig().isCacheInMemory() && bitmap != null){
+			imageLoader.getConfiguration().getBitmapCacher().put(request.getId(), bitmap);
 		}
 
 		ImageView imageView = getImageView();
@@ -48,7 +53,7 @@ public abstract class LoadBitmapTask implements Callable<String>{
 			return null;
 		}
 		
-		imageLoader.getConfiguration().getHandler().post(new DisplayBitmapTask(imageLoader, imageView, request.getResultBitmap(), request.getOptions(), request.getName(), false));
+		imageLoader.getConfiguration().getHandler().post(new DisplayBitmapTask(imageLoader, imageView, bitmap, request.getOptions(), request.getName(), false));
 		return null;
 	}
 	
@@ -72,7 +77,7 @@ public abstract class LoadBitmapTask implements Callable<String>{
 	 * 获取FutureTask
 	 * @return
 	 */
-	public FutureTask<String> getFutureTask() {
+	public FutureTask<Bitmap> getFutureTask() {
 		return futureTask;
 	}
 

@@ -15,38 +15,18 @@
  */
 package me.xiaoapn.easy.imageloader.decode;
 
-import java.io.File;
 import java.io.InputStream;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
-import android.widget.ImageView;
 
 /**
  * 位图加载器
  */
 public interface BitmapLoader{
 	/**
-	 * 从本地文件加载
-	 * @param localFile 本地文件
-	 * @param showImageView 图片视图
-	 * @param imageLoader
-	 * @return
-	 */
-	public Bitmap onFromFileLoad(File localFile, ImageView showImageView, ImageLoader imageLoader);
-	
-	/**
-	 * 从字节数组中加载
-	 * @param byteArray
-	 * @param showImageView 图片视图
-	 * @param imageLoader
-	 * @return
-	 */
-	public Bitmap onFromByteArrayLoad(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader);
-	
-	/**
-	 * 
+	 * 解码
 	 * @param inputStream
 	 * @param targetSize
 	 * @param imageLoader

@@ -16,12 +16,18 @@
 
 package me.xiaoapn.easy.imageloader.execute;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.download.ImageDownloader;
 import me.xiaoapn.easy.imageloader.download.OnCompleteListener;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -31,7 +37,6 @@ import android.widget.ImageView;
 public class UrlLoadTask extends LoadBitmapTask{
 	private ImageLoader imageLoader;	//图片加载器
 	private UrlRequest urlRequest;	//加载请求
-	private String result;
 	
 	/**
 	 * 创建一个加载图片任务
@@ -42,15 +47,27 @@ public class UrlLoadTask extends LoadBitmapTask{
 		this.imageLoader = imageLoader;
 		this.urlRequest = urlRequest;
 	}
-	
+
 	@Override
-	public String call() {
+	protected Bitmap loadBitmap() {
+		final BitmapHolder bitmapHolder = new BitmapHolder();
+		
 		if(GeneralUtils.isAvailableOfFile(urlRequest.getCacheFile(), urlRequest.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), imageLoader, urlRequest.getName())){
-			if(imageLoader.getConfiguration().isDebugMode()){
-				Log.d(imageLoader.getConfiguration().getLogTag(), new StringBuffer(getLogName()).append("：").append("从本地缓存加载开始").append("：").append(urlRequest.getName()).toString());
+			BufferedInputStream inputStream = null;
+			try {
+				inputStream = new BufferedInputStream(new FileInputStream(urlRequest.getCacheFile()));
+				bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapLoader().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}finally{
+				if(inputStream != null){
+					try {
+						inputStream.close();
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
 			}
-			urlRequest.setResultBitmap(imageLoader.getConfiguration().getBitmapLoader().onFromFileLoad(urlRequest.getCacheFile(), urlRequest.getImageView(), imageLoader));
-			return UrlLoadTask.super.call();
 		}else{
 			if(GeneralUtils.isNotEmpty(urlRequest.getImageUrl())){
 				if(imageLoader.getConfiguration().isDebugMode()){
@@ -59,30 +76,49 @@ public class UrlLoadTask extends LoadBitmapTask{
 				new ImageDownloader(urlRequest.getName(), urlRequest.getImageUrl(), urlRequest.getCacheFile(), urlRequest.getOptions().getMaxRetryCount(), imageLoader.getConfiguration().getHttpClient(), imageLoader, new OnCompleteListener() {
 					@Override
 					public void onFailed() {
-						urlRequest.setResultBitmap(null);
-						result = UrlLoadTask.super.call();
+						
 					}
 					
 					@Override
 					public void onComplete(byte[] data) {
-						urlRequest.setResultBitmap(imageLoader.getConfiguration().getBitmapLoader().onFromByteArrayLoad(data, urlRequest.getImageView(), imageLoader));
-						result = UrlLoadTask.super.call();
+						BufferedInputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(data));
+						bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapLoader().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
+						try {
+							inputStream.close();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
 					}
 					
 					@Override
 					public void onComplete(File cacheFile) {
-						urlRequest.setResultBitmap(imageLoader.getConfiguration().getBitmapLoader().onFromFileLoad(cacheFile, urlRequest.getImageView(), imageLoader));
-						result = UrlLoadTask.super.call();
+						BufferedInputStream inputStream = null;
+						try {
+							inputStream = new BufferedInputStream(new FileInputStream(cacheFile));
+							bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapLoader().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
+						} catch (FileNotFoundException e) {
+							e.printStackTrace();
+						}finally{
+							if(inputStream != null){
+								try {
+									inputStream.close();
+								} catch (IOException e) {
+									e.printStackTrace();
+								}
+							}
+						}
 					}
 				}).execute();
-				return result;
 			}else{
 				if(imageLoader.getConfiguration().isDebugMode()){
 					Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer(getLogName()).append("：").append("所有条件均不满足").append("：").append(urlRequest.getName()).toString());
 				}
-				urlRequest.setResultBitmap(null);
-				return UrlLoadTask.super.call();
 			}
 		}
+		return bitmapHolder.bitmap;
+	}
+	
+	private class BitmapHolder{
+		Bitmap bitmap;
 	}
 }

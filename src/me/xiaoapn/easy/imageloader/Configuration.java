@@ -20,7 +20,7 @@ import me.xiaoapn.easy.imageloader.cache.BitmapCacher;
 import me.xiaoapn.easy.imageloader.cache.CacheConfig;
 import me.xiaoapn.easy.imageloader.cache.LruBitmapCacher;
 import me.xiaoapn.easy.imageloader.decode.BitmapLoader;
-import me.xiaoapn.easy.imageloader.decode.PixelsBitmapLoader;
+import me.xiaoapn.easy.imageloader.decode.SimpleBitmapLoader;
 import me.xiaoapn.easy.imageloader.display.SimpleBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.execute.BaseTaskExecutor;
 import me.xiaoapn.easy.imageloader.execute.TaskExecutor;
@@ -141,7 +141,7 @@ public class Configuration {
 	 */
 	public BitmapLoader getBitmapLoader() {
 		if(bitmapLoader == null){
-			bitmapLoader = new PixelsBitmapLoader();
+			bitmapLoader = new SimpleBitmapLoader();
 		}
 		return bitmapLoader;
 	}

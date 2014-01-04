@@ -18,7 +18,6 @@ package me.xiaoapn.easy.imageloader.execute;
 
 import me.xiaoapn.easy.imageloader.Options;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
-import android.graphics.Bitmap;
 import android.widget.ImageView;
 
 /**
@@ -28,10 +27,8 @@ public abstract class Request {
 	private String id;	//ID
 	private String name;	//名称，用于在输出log时区分不同的请求
 	private Options options;	//加载选项
-	private ImageView imageView;	//显示图片的视图
-	
 	private ImageSize targetSize;	//目标尺寸
-	private Bitmap resultBitmap;	//加载结果Bitmap
+	private ImageView imageView;	//显示图片的视图
 	
 	public Request(String id, String name, ImageView imageView, Options options) {
 		this.id = id;
@@ -104,27 +101,19 @@ public abstract class Request {
 		this.options = options;
 	}
 	
+	/**
+	 * 获取目标尺寸
+	 * @return
+	 */
 	public ImageSize getTargetSize() {
 		return targetSize;
 	}
 
+	/**
+	 * 设置目标尺寸
+	 * @param targetSize
+	 */
 	public void setTargetSize(ImageSize targetSize) {
 		this.targetSize = targetSize;
-	}
-
-	/**
-	 * 获取最终的Bitmap
-	 * @return
-	 */
-	public Bitmap getResultBitmap() {
-		return resultBitmap;
-	}
-
-	/**
-	 * 设置最终的Bitmap
-	 * @param resultBitmap
-	 */
-	public void setResultBitmap(Bitmap resultBitmap) {
-		this.resultBitmap = resultBitmap;
 	}
 }
