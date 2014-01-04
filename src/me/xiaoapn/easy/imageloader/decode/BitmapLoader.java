@@ -16,8 +16,10 @@
 package me.xiaoapn.easy.imageloader.decode;
 
 import java.io.File;
+import java.io.InputStream;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
@@ -42,4 +44,14 @@ public interface BitmapLoader{
 	 * @return
 	 */
 	public Bitmap onFromByteArrayLoad(byte[] byteArray, ImageView showImageView, ImageLoader imageLoader);
+	
+	/**
+	 * 
+	 * @param inputStream
+	 * @param targetSize
+	 * @param imageLoader
+	 * @param name
+	 * @return
+	 */
+	public Bitmap decode(InputStream inputStream, ImageSize targetSize, ImageLoader imageLoader, String name);
 }
