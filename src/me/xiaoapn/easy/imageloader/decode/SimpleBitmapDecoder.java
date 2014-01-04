@@ -41,20 +41,27 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	
 	@Override
 	public Bitmap decode(OnNewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, ImageLoader imageLoader, String requestName) {
+		Bitmap bitmap = null;
 		Options options = new Options();
+		int outWidth = 0;
+		int outHeight = 0;
 		
-		options.inJustDecodeBounds = true;
 		InputStream inputStream = onNewBitmapInputStreamListener.onNewBitmapInputStream();
-		BitmapFactory.decodeStream(inputStream, null, options);
-		IoUtils.closeSilently(inputStream);
-		int outWidth = options.outWidth;
-		int outHeight = options.outHeight;
-		
-		options.inSampleSize = calculateInSampleSize(options, targetSize.getWidth(), targetSize.getHeight());
-		options.inJustDecodeBounds = false;
-		inputStream = onNewBitmapInputStreamListener.onNewBitmapInputStream();
-		Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-		IoUtils.closeSilently(inputStream);
+		if(inputStream != null){
+			options.inJustDecodeBounds = true;
+			BitmapFactory.decodeStream(inputStream, null, options);
+			IoUtils.closeSilently(inputStream);
+			
+			inputStream = onNewBitmapInputStreamListener.onNewBitmapInputStream();
+			if(inputStream != null){
+				outWidth = options.outWidth;
+				outHeight = options.outHeight;
+				options.inSampleSize = calculateInSampleSize(options, targetSize.getWidth(), targetSize.getHeight());
+				options.inJustDecodeBounds = false;
+				bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+				IoUtils.closeSilently(inputStream);
+			}
+		}
 		
 		if(imageLoader.getConfiguration().isDebugMode()){
 			writeLog(imageLoader, requestName, bitmap != null, outWidth, outHeight, targetSize, options.inSampleSize, bitmap);

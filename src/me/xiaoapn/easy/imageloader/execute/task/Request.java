@@ -22,14 +22,25 @@ import me.xiaoapn.easy.imageloader.util.ImageSize;
 /**
  * 加载请求
  */
-public abstract class Request {
+public class Request {
 	private String id;	//ID
 	private String name;	//名称，用于在输出log时区分不同的请求
+	/**
+	 * 支持以下5种Uri
+	 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
+	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+	 * <br>String imageUri = "assets://image.png"; // from assets
+	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+	 * </blockquote>
+	 */
+	private String imageUri;
 	private Options options;	//加载选项
 	private ImageSize targetSize;	//目标尺寸
 	
-	public Request(String id, String name, Options options, ImageSize targetSize) {
+	public Request(String id, String name, String uri, Options options, ImageSize targetSize) {
 		this.id = id;
+		this.imageUri = uri;
 		this.name = name;
 		this.options = options;
 		this.targetSize = targetSize;
@@ -49,6 +60,34 @@ public abstract class Request {
 	 */
 	public void setId(String id) {
 		this.id = id;
+	}
+	
+	/**
+	 * 获取Uri，支持以下5种Uri
+	 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
+	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+	 * <br>String imageUri = "assets://image.png"; // from assets
+	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+	 * </blockquote>
+	 * @return
+	 */
+	public String getImageUri() {
+		return imageUri;
+	}
+
+	/**
+	 * 设置Uri，支持以下5种Uri
+	 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
+	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+	 * <br>String imageUri = "assets://image.png"; // from assets
+	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+	 * </blockquote>
+	 * @param imageUri
+	 */
+	public void setImageUri(String imageUri) {
+		this.imageUri = imageUri;
 	}
 
 	/**

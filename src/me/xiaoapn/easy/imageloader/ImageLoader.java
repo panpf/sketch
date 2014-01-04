@@ -20,17 +20,14 @@ import java.io.File;
 
 import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
 import me.xiaoapn.easy.imageloader.execute.task.DisplayBitmapTask;
-import me.xiaoapn.easy.imageloader.execute.task.FileLoadTask;
-import me.xiaoapn.easy.imageloader.execute.task.FileRequest;
 import me.xiaoapn.easy.imageloader.execute.task.LoadBitmapTask;
 import me.xiaoapn.easy.imageloader.execute.task.Request;
-import me.xiaoapn.easy.imageloader.execute.task.UrlLoadTask;
-import me.xiaoapn.easy.imageloader.execute.task.UrlRequest;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.ImageSizeUtils;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -68,38 +65,41 @@ public class ImageLoader{
 	
 	/**
 	 * 显示图片
-	 * @param imageUrl 图片下载地址，如果本地缓存文件不存在将从网络获取
+	 * @param imageUri 图片Uri，支持以下5种Uri
+	 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
+	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+	 * <br>String imageUri = "assets://image.png"; // from assets
+	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+	 * </blockquote>
 	 * @param imageView 显示图片的视图
 	 * @param options 加载选项
 	 */
-	public final void display(String imageUrl, ImageView imageView, Options options){
+	public final void display(String imageUri, ImageView imageView, Options options){
 		if(options == null){
 			options = getConfiguration().getDefaultOptions();
 		}
 		
-		if(GeneralUtils.isEmpty(imageUrl)){
-			if(imageView != null){
-				imageView.setImageBitmap(options.getEmptyBitmap());
-			}
-			if(getConfiguration().isDebugMode()){
-				Log.e(getConfiguration().getLogTag(), "imageUrl不能为null");
-			}
-			return;
-		}
 		if(imageView == null){
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), "imageView不能为null");
 			}
 			return;
 		}
+		if(GeneralUtils.isEmpty(imageUri)){
+			imageView.setImageBitmap(options.getEmptyBitmap());
+			if(getConfiguration().isDebugMode()){
+				Log.e(getConfiguration().getLogTag(), "imageUrl不能为null");
+			}
+			return;
+		}
 		
 		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageView, options.getMaxSize().getWidth(), options.getMaxSize().getHeight());
-		UrlRequest urlRequest = new UrlRequest(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUrl), targetSize), imageUrl, imageUrl, null, options, targetSize);
-		if(!show(urlRequest, imageView)){
-			if(LoadBitmapTask.cancelPotentialBitmapLoadTask(this, urlRequest, imageView)){
-				urlRequest.setCacheFile(GeneralUtils.getCacheFile(getConfiguration(), options, GeneralUtils.encodeUrl(urlRequest.getImageUrl())));
-				load(urlRequest, imageView);
-			}
+		Request request = new Request(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUri), targetSize), imageUri, imageUri, options, targetSize);
+		if(!show(request, imageView) && LoadBitmapTask.cancelPotentialBitmapLoadTask(this, request, imageView)){
+			LoadBitmapTask bitmapLoadTask = new LoadBitmapTask(this, request, imageView);
+			imageView.setImageDrawable(new AsyncDrawable(getConfiguration().getContext().getResources(), request.getOptions().getLoadingBitmap(), bitmapLoadTask));
+			getConfiguration().getTaskExecutor().execute(bitmapLoadTask.getFutureTask());
 		}
 	}
 	
@@ -120,33 +120,7 @@ public class ImageLoader{
 	 * @param options 加载选项
 	 */
 	public void display(File imageFile, ImageView imageView, Options options){
-		if(options == null){
-			options = getConfiguration().getDefaultOptions();
-		}
-		
-		if(imageFile == null){
-			if(imageView != null){
-				imageView.setImageBitmap(options.getEmptyBitmap());
-			}
-			if(getConfiguration().isDebugMode()){
-				Log.e(getConfiguration().getLogTag(), "imageFile不能为null");
-			}
-			return;
-		}
-		if(imageView == null){
-			if(getConfiguration().isDebugMode()){
-				Log.e(getConfiguration().getLogTag(), "imageView不能为null");
-			}
-			return;
-		}
-		
-		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageView, options.getMaxSize().getWidth(), options.getMaxSize().getHeight());
-		FileRequest urlRequest = new FileRequest(GeneralUtils.createId(GeneralUtils.encodeUrl(imageFile.getPath()), targetSize), imageFile.getPath(), imageFile, options, targetSize);
-		if(!show(urlRequest, imageView)){
-			if(LoadBitmapTask.cancelPotentialBitmapLoadTask(this, urlRequest, imageView)){
-				load(urlRequest, imageView);
-			}
-		}
+		display(Uri.fromFile(imageFile).toString(), imageView, options);
 	}
 	
 	/**
@@ -182,27 +156,6 @@ public class ImageLoader{
 			Log.d(getConfiguration().getLogTag(), "从缓存中加载："+request.getName());
 		}
 		return true;
-	}
-	
-	/**
-	 * 加载
-	 * @param request
-	 * @param imageView
-	 * @return true：已经开始加载或正在加载；false：已经达到最大负荷
-	 */
-	private void load(Request request, ImageView imageView){
-		LoadBitmapTask bitmapLoadTask = null;
-		
-		if(request instanceof FileRequest){
-			bitmapLoadTask = new FileLoadTask(this, (FileRequest) request, imageView);
-		}else if(request instanceof UrlRequest){
-			bitmapLoadTask = new UrlLoadTask(this, (UrlRequest) request, imageView);
-		}
-		
-		if(bitmapLoadTask != null){
-			imageView.setImageDrawable(new AsyncDrawable(getConfiguration().getContext().getResources(), request.getOptions().getLoadingBitmap(), bitmapLoadTask));
-			getConfiguration().getTaskExecutor().execute(bitmapLoadTask.getFutureTask());
-		}
 	}
 	
 	/**
