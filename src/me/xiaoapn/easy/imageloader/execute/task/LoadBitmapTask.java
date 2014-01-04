@@ -1,10 +1,11 @@
-package me.xiaoapn.easy.imageloader.execute;
+package me.xiaoapn.easy.imageloader.execute.task;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;

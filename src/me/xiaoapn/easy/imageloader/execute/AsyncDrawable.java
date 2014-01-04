@@ -2,6 +2,8 @@ package me.xiaoapn.easy.imageloader.execute;
 
 import java.lang.ref.WeakReference;
 
+import me.xiaoapn.easy.imageloader.execute.task.LoadBitmapTask;
+
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;

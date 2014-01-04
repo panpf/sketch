@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader.execute;
+package me.xiaoapn.easy.imageloader.execute.task;
 
 import me.xiaoapn.easy.imageloader.Options;
 import me.xiaoapn.easy.imageloader.util.ImageSize;

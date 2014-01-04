@@ -1,4 +1,4 @@
-package me.xiaoapn.easy.imageloader.execute;
+package me.xiaoapn.easy.imageloader.execute.task;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
