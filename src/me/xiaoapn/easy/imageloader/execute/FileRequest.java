@@ -19,7 +19,7 @@ package me.xiaoapn.easy.imageloader.execute;
 import java.io.File;
 
 import me.xiaoapn.easy.imageloader.Options;
-import android.widget.ImageView;
+import me.xiaoapn.easy.imageloader.util.ImageSize;
 
 /**
  * 加载请求
@@ -27,8 +27,8 @@ import android.widget.ImageView;
 public class FileRequest extends Request{
 	private File imageFile;	//图片文件
 	
-	public FileRequest(String id, String name, File imageFile, ImageView imageView, Options options) {
-		super(id, name, imageView, options);
+	public FileRequest(String id, String name, File imageFile, Options options, ImageSize targetSize) {
+		super(id, name, options, targetSize);
 		this.imageFile = imageFile;
 	}
 

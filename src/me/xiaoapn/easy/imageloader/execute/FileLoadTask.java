@@ -3,10 +3,12 @@ package me.xiaoapn.easy.imageloader.execute;
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.InputStream;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.decode.OnNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
+import me.xiaoapn.easy.imageloader.util.IoUtils;
 import android.graphics.Bitmap;
 import android.widget.ImageView;
 
@@ -31,21 +33,17 @@ public class FileLoadTask extends LoadBitmapTask{
 	protected Bitmap loadBitmap() {
 		Bitmap bitmap = null;
 		if(GeneralUtils.isAvailableOfFile(fileRequest.getImageFile(), 0, imageLoader, fileRequest.getName())){
-			BufferedInputStream inputStream = null;
-			try {
-				inputStream = new BufferedInputStream(new FileInputStream(fileRequest.getImageFile()));
-				bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(inputStream, fileRequest.getTargetSize(), imageLoader, fileRequest.getName());
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}finally{
-				if(inputStream != null){
+			bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(new OnNewBitmapInputStreamListener() {
+				@Override
+				public InputStream onNewBitmapInputStream() {
 					try {
-						inputStream.close();
-					} catch (IOException e) {
+						return new BufferedInputStream(new FileInputStream(fileRequest.getImageFile()), IoUtils.BUFFER_SIZE);
+					} catch (FileNotFoundException e) {
 						e.printStackTrace();
+						return null;
 					}
 				}
-			}
+			}, fileRequest.getTargetSize(), imageLoader, fileRequest.getName());
 		}
 		return bitmap;
 	}

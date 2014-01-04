@@ -18,7 +18,6 @@ package me.xiaoapn.easy.imageloader.execute;
 
 import me.xiaoapn.easy.imageloader.Options;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
-import android.widget.ImageView;
 
 /**
  * 加载请求
@@ -28,13 +27,12 @@ public abstract class Request {
 	private String name;	//名称，用于在输出log时区分不同的请求
 	private Options options;	//加载选项
 	private ImageSize targetSize;	//目标尺寸
-	private ImageView imageView;	//显示图片的视图
 	
-	public Request(String id, String name, ImageView imageView, Options options) {
+	public Request(String id, String name, Options options, ImageSize targetSize) {
 		this.id = id;
 		this.name = name;
 		this.options = options;
-		this.imageView = imageView;
+		this.targetSize = targetSize;
 	}
 
 	/**
@@ -69,22 +67,6 @@ public abstract class Request {
 		this.name = name;
 	}
 	
-	/**
-	 * 获取图片视图
-	 * @return 图片视图
-	 */
-	public ImageView getImageView() {
-		return imageView;
-	}
-	
-	/**
-	 * 设置图片视图
-	 * @param imageView 图片视图
-	 */
-	public void setImageView(ImageView imageView) {
-		this.imageView = imageView;
-	}
-
 	/**
 	 * 获取加载选项
 	 * @return

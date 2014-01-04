@@ -68,9 +68,9 @@ public class Configuration {
 		this.defaultOptions = new Options.Builder()
 		.setCacheConfig(new CacheConfig.Builder().setCacheInMemory(true).setCacheInDisk(true).build())
 		.setBitmapDisplayer(new SimpleBitmapDisplayer())
-		.setMaxImageSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
+		.setMaxSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
 		.setMaxRetryCount(2)
-		.create();
+		.build();
 	}
 	
 	/**

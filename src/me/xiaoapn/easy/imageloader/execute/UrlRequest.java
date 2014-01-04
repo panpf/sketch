@@ -19,7 +19,7 @@ package me.xiaoapn.easy.imageloader.execute;
 import java.io.File;
 
 import me.xiaoapn.easy.imageloader.Options;
-import android.widget.ImageView;
+import me.xiaoapn.easy.imageloader.util.ImageSize;
 
 /**
  * 加载请求
@@ -28,8 +28,8 @@ public class UrlRequest extends Request{
 	private String imageUrl;	//图片下载地址
 	private File cacheFile;	//缓存文件
 	
-	public UrlRequest(String id, String name, String imageUrl, File cacheFile, ImageView imageView, Options options) {
-		super(id, name, imageView, options);
+	public UrlRequest(String id, String name, String imageUrl, File cacheFile, Options options, ImageSize targetSize) {
+		super(id, name, options, targetSize);
 		this.imageUrl = imageUrl;
 		this.cacheFile = cacheFile;
 	}

@@ -21,12 +21,14 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
+import java.io.InputStream;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.decode.OnNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.download.ImageDownloader;
 import me.xiaoapn.easy.imageloader.download.OnCompleteListener;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
+import me.xiaoapn.easy.imageloader.util.IoUtils;
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.ImageView;
@@ -53,21 +55,17 @@ public class UrlLoadTask extends LoadBitmapTask{
 		final BitmapHolder bitmapHolder = new BitmapHolder();
 		
 		if(GeneralUtils.isAvailableOfFile(urlRequest.getCacheFile(), urlRequest.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), imageLoader, urlRequest.getName())){
-			BufferedInputStream inputStream = null;
-			try {
-				inputStream = new BufferedInputStream(new FileInputStream(urlRequest.getCacheFile()));
-				bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			}finally{
-				if(inputStream != null){
+			bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(new OnNewBitmapInputStreamListener() {
+				@Override
+				public InputStream onNewBitmapInputStream() {
 					try {
-						inputStream.close();
-					} catch (IOException e) {
+						return new BufferedInputStream(new FileInputStream(urlRequest.getCacheFile()), IoUtils.BUFFER_SIZE);
+					} catch (FileNotFoundException e) {
 						e.printStackTrace();
+						return null;
 					}
 				}
-			}
+			}, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
 		}else{
 			if(GeneralUtils.isNotEmpty(urlRequest.getImageUrl())){
 				if(imageLoader.getConfiguration().isDebugMode()){
@@ -75,38 +73,31 @@ public class UrlLoadTask extends LoadBitmapTask{
 				}
 				new ImageDownloader(urlRequest.getName(), urlRequest.getImageUrl(), urlRequest.getCacheFile(), urlRequest.getOptions().getMaxRetryCount(), imageLoader.getConfiguration().getHttpClient(), imageLoader, new OnCompleteListener() {
 					@Override
-					public void onFailed() {
-						
-					}
+					public void onFailed() {}
 					
 					@Override
-					public void onComplete(byte[] data) {
-						BufferedInputStream inputStream = new BufferedInputStream(new ByteArrayInputStream(data));
-						bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
-						try {
-							inputStream.close();
-						} catch (IOException e) {
-							e.printStackTrace();
-						}
+					public void onComplete(final byte[] data) {
+						bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(new OnNewBitmapInputStreamListener() {
+							@Override
+							public InputStream onNewBitmapInputStream() {
+								return new BufferedInputStream(new ByteArrayInputStream(data), IoUtils.BUFFER_SIZE);
+							}
+						}, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
 					}
 					
 					@Override
 					public void onComplete(File cacheFile) {
-						BufferedInputStream inputStream = null;
-						try {
-							inputStream = new BufferedInputStream(new FileInputStream(cacheFile));
-							bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(inputStream, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
-						} catch (FileNotFoundException e) {
-							e.printStackTrace();
-						}finally{
-							if(inputStream != null){
+						bitmapHolder.bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(new OnNewBitmapInputStreamListener() {
+							@Override
+							public InputStream onNewBitmapInputStream() {
 								try {
-									inputStream.close();
-								} catch (IOException e) {
+									return new BufferedInputStream(new FileInputStream(urlRequest.getCacheFile()), IoUtils.BUFFER_SIZE);
+								} catch (FileNotFoundException e) {
 									e.printStackTrace();
+									return null;
 								}
 							}
-						}
+						}, urlRequest.getTargetSize(), imageLoader, urlRequest.getName());
 					}
 				}).execute();
 			}else{

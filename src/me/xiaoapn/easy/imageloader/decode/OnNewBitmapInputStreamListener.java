@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,23 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package me.xiaoapn.easy.imageloader.decode;
 
-import me.xiaoapn.easy.imageloader.ImageLoader;
-import me.xiaoapn.easy.imageloader.util.ImageSize;
-import android.graphics.Bitmap;
+import java.io.InputStream;
 
-/**
- * 位图解码器
- */
-public interface BitmapDecoder{
+public interface OnNewBitmapInputStreamListener {
 	/**
-	 * 解码
-	 * @param onNewBitmapInputStreamListener 创建新的用来读取位图的输入流
-	 * @param targetSize 目标尺寸
-	 * @param imageLoader 图片加载器
-	 * @param requestName 请求名称
+	 * 创建新的用来读取位图的输入流，这个输入流必须是新的
 	 * @return
 	 */
-	public Bitmap decode(OnNewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, ImageLoader imageLoader, String requestName);
+	public InputStream onNewBitmapInputStream();
 }

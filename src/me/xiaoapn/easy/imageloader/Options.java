@@ -32,7 +32,7 @@ public class Options{
 	private Bitmap emptyBitmap;	//当加载地址为空时显示的图片
 	private Bitmap loadingBitmap;	//正在加载时显示的图片
 	private Bitmap loadFailureBitmap;	//加载失败时显示的图片
-	private ImageSize maxImageSize;	//最大图片尺寸
+	private ImageSize maxSize;	//最大尺寸
 	private CacheConfig cacheConfig;	//缓存配置
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
 	
@@ -130,19 +130,19 @@ public class Options{
 	}
 	
 	/**
-	 * 获取最大图片尺寸
+	 * 获取最大尺寸
 	 * @return
 	 */
-	public ImageSize getMaxImageSize() {
-		return maxImageSize;
+	public ImageSize getMaxSize() {
+		return maxSize;
 	}
 
 	/**
-	 * 设置最大图片尺寸
-	 * @param maxImageSize
+	 * 设置最大尺寸
+	 * @param maxSize
 	 */
-	public void setMaxImageSize(ImageSize maxImageSize) {
-		this.maxImageSize = maxImageSize;
+	public void setMaxSize(ImageSize maxSize) {
+		this.maxSize = maxSize;
 	}
 	
 	/**
@@ -194,9 +194,9 @@ public class Options{
 		.setEmptyBitmap(emptyBitmap)
 		.setLoadFailureBitmap(loadFailureBitmap)
 		.setLoadingBitmap(loadingBitmap)
-		.setMaxImageSize(maxImageSize.copy())
+		.setMaxSize(maxSize.copy())
 		.setMaxRetryCount(maxRetryCount)
-		.create();
+		.build();
 	}
 	
 	/**
@@ -285,11 +285,11 @@ public class Options{
 		}
 		
 		/**
-		 * 设置最大图片尺寸
-		 * @param maxImageSize
+		 * 设置最大尺寸
+		 * @param maxSize
 		 */
-		public Builder setMaxImageSize(ImageSize maxImageSize) {
-			options.setMaxImageSize(maxImageSize);
+		public Builder setMaxSize(ImageSize maxSize) {
+			options.setMaxSize(maxSize);
 			return this;
 		}
 		
@@ -306,7 +306,7 @@ public class Options{
 		 * 创建
 		 * @return
 		 */
-		public Options create(){
+		public Options build(){
 			return options;
 		}
 	}

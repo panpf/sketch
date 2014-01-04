@@ -20,6 +20,7 @@ import java.io.InputStream;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
+import me.xiaoapn.easy.imageloader.util.IoUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
@@ -39,20 +40,24 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	}
 	
 	@Override
-	public Bitmap decode(InputStream inputStream, ImageSize maxSize, ImageLoader imageLoader, String requestName) {
+	public Bitmap decode(OnNewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, ImageLoader imageLoader, String requestName) {
 		Options options = new Options();
 		
 		options.inJustDecodeBounds = true;
+		InputStream inputStream = onNewBitmapInputStreamListener.onNewBitmapInputStream();
 		BitmapFactory.decodeStream(inputStream, null, options);
+		IoUtils.closeSilently(inputStream);
 		int outWidth = options.outWidth;
 		int outHeight = options.outHeight;
 		
-		options.inSampleSize = calculateInSampleSize(options, maxSize.getWidth(), maxSize.getHeight());
+		options.inSampleSize = calculateInSampleSize(options, targetSize.getWidth(), targetSize.getHeight());
 		options.inJustDecodeBounds = false;
+		inputStream = onNewBitmapInputStreamListener.onNewBitmapInputStream();
 		Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+		IoUtils.closeSilently(inputStream);
 		
 		if(imageLoader.getConfiguration().isDebugMode()){
-			writeLog(imageLoader, requestName, bitmap != null, outWidth, outHeight, options.inSampleSize, options.outWidth, options.outHeight);
+			writeLog(imageLoader, requestName, bitmap != null, outWidth, outHeight, targetSize, options.inSampleSize, bitmap);
 		}
 		
 		return bitmap;
@@ -66,15 +71,15 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	 * @param outWidth
 	 * @param outHeight
 	 * @param inSimpleSize
-	 * @param finalWidth
-	 * @param finalHeight
+	 * @param bitmap
 	 */
-	private void writeLog(ImageLoader imageLoader, String requestName, boolean success, int outWidth, int outHeight, int inSimpleSize, int finalWidth, int finalHeight){
+	private void writeLog(ImageLoader imageLoader, String requestName, boolean success, int outWidth, int outHeight, ImageSize targetSize, int inSimpleSize, Bitmap bitmap){
 		String log = new StringBuffer(logName)
 		.append("：").append(success?"解码成功":"解码失败")
 		.append("：").append("原图尺寸").append("=").append(outWidth).append("x").append(outHeight)
+		.append("：").append("目标尺寸").append("=").append(targetSize.getWidth()).append("x").append(targetSize.getHeight())
 		.append("；").append("缩小").append("=").append(inSimpleSize)
-		.append("；").append("最终尺寸").append("=").append(finalWidth).append("x").append(finalHeight)
+		.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight())
 		.append("；").append(requestName)
 		.toString();
 		if(success){
@@ -87,19 +92,21 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	/**
 	 * 计算样本尺寸
 	 * @param options
-	 * @param maxWidth
-	 * @param maxHeight
+	 * @param targetWidth
+	 * @param targetHeight
 	 * @return
 	 */
-	public static int calculateInSampleSize(BitmapFactory.Options options, int maxWidth, int maxHeight) {
+	public static int calculateInSampleSize(BitmapFactory.Options options, int targetWidth, int targetHeight) {
 		int inSampleSize = 1;
 
-		if (options.outWidth > maxWidth || options.outHeight > maxHeight) {
-			do{
-				inSampleSize *= 2;
-			}while((options.outWidth / inSampleSize) > maxWidth || (options.outHeight / inSampleSize) > maxHeight);
-		}
-		
-		return inSampleSize;
+		final int height = options.outHeight;
+	    final int width = options.outWidth;
+	    if (height > targetHeight || width > targetWidth) {
+	        do{
+	            inSampleSize *= 2;
+	        }while ((height/inSampleSize) > targetHeight && (width/inSampleSize) > targetWidth); 
+	    }
+
+	    return inSampleSize;
 	}
 }
