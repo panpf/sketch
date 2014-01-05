@@ -27,6 +27,7 @@ import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.ImageSizeUtils;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
@@ -87,7 +88,7 @@ public class ImageLoader{
 			return;
 		}
 		if(GeneralUtils.isEmpty(imageUri)){
-			imageView.setImageBitmap(options.getEmptyBitmap());
+			imageView.setImageDrawable(options.getEmptyBitmap());
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), "imageUrl不能为null");
 			}
@@ -98,7 +99,8 @@ public class ImageLoader{
 		Request request = new Request(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUri), targetSize), imageUri, imageUri, options, targetSize);
 		if(!show(request, imageView) && LoadBitmapTask.cancelPotentialBitmapLoadTask(this, request, imageView)){
 			LoadBitmapTask bitmapLoadTask = new LoadBitmapTask(this, request, imageView);
-			imageView.setImageDrawable(new AsyncDrawable(getConfiguration().getContext().getResources(), request.getOptions().getLoadingBitmap(), bitmapLoadTask));
+			Bitmap loadingBitmap = request.getOptions().getLoadingBitmap() != null?request.getOptions().getLoadingBitmap().getBitmap():null;
+			imageView.setImageDrawable(new AsyncDrawable(getConfiguration().getContext().getResources(), loadingBitmap, bitmapLoadTask));
 			getConfiguration().getTaskExecutor().execute(bitmapLoadTask.getFutureTask());
 		}
 	}
@@ -145,7 +147,7 @@ public class ImageLoader{
 		}
 		
 		//如果内存缓存中没有对应的Bitmap，就直接显示默认图片并结束
-		Bitmap cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
+		BitmapDrawable cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
 		if(cacheBitmap == null){
 			return false;
 		}

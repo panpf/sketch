@@ -21,17 +21,17 @@ import me.xiaoapn.easy.imageloader.display.BitmapDisplayer;
 import me.xiaoapn.easy.imageloader.display.SimpleBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import android.content.res.Resources;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 
 /**
  * 加载选项
  */
 public class Options{
 	private int maxRetryCount;	//最大重试次数
-	private Bitmap emptyBitmap;	//当加载地址为空时显示的图片
-	private Bitmap loadingBitmap;	//正在加载时显示的图片
-	private Bitmap loadFailureBitmap;	//加载失败时显示的图片
+	private BitmapDrawable emptyBitmap;	//当加载地址为空时显示的图片
+	private BitmapDrawable loadingBitmap;	//正在加载时显示的图片
+	private BitmapDrawable loadFailureBitmap;	//加载失败时显示的图片
 	private ImageSize maxSize;	//最大尺寸
 	private CacheConfig cacheConfig;	//缓存配置
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
@@ -58,7 +58,7 @@ public class Options{
 	 * 获取加载地址为空时显示的图片
 	 * @return
 	 */
-	public Bitmap getEmptyBitmap() {
+	public BitmapDrawable getEmptyBitmap() {
 		return emptyBitmap;
 	}
 
@@ -66,7 +66,7 @@ public class Options{
 	 * 设置加载地址为空时显示的图片
 	 * @param emptyBitmap
 	 */
-	public void setEmptyBitmap(Bitmap emptyBitmap) {
+	public void setEmptyBitmap(BitmapDrawable emptyBitmap) {
 		this.emptyBitmap = emptyBitmap;
 	}
 	
@@ -76,14 +76,14 @@ public class Options{
 	 * @param resId
 	 */
 	public void setEmptyBitmap(Resources resources, int resId) {
-		this.emptyBitmap = BitmapFactory.decodeResource(resources, resId);
+		this.emptyBitmap = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
 	}
 
 	/**
 	 * 获取加载中图片
 	 * @return
 	 */
-	public Bitmap getLoadingBitmap() {
+	public BitmapDrawable getLoadingBitmap() {
 		return loadingBitmap;
 	}
 
@@ -91,7 +91,7 @@ public class Options{
 	 * 设置加载中图片
 	 * @param loadingBitmap
 	 */
-	public void setLoadingBitmap(Bitmap loadingBitmap) {
+	public void setLoadingBitmap(BitmapDrawable loadingBitmap) {
 		this.loadingBitmap = loadingBitmap;
 	}
 
@@ -101,14 +101,14 @@ public class Options{
 	 * @param resId
 	 */
 	public void setLoadingBitmap(Resources resources, int resId) {
-		this.loadingBitmap = BitmapFactory.decodeResource(resources, resId);
+		this.loadingBitmap = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
 	}
 
 	/**
 	 * 获取加载失败图片
 	 * @return
 	 */
-	public Bitmap getLoadFailureBitmap() {
+	public BitmapDrawable getLoadFailureBitmap() {
 		return loadFailureBitmap;
 	}
 
@@ -116,7 +116,7 @@ public class Options{
 	 * 设置加载失败图片
 	 * @param loadFailureBitmap
 	 */
-	public void setLoadFailureBitmap(Bitmap loadFailureBitmap) {
+	public void setLoadFailureBitmap(BitmapDrawable loadFailureBitmap) {
 		this.loadFailureBitmap = loadFailureBitmap;
 	}
 	
@@ -126,7 +126,7 @@ public class Options{
 	 * @param resId
 	 */
 	public void setLoadFailureBitmap(Resources resources, int resId) {
-		this.loadFailureBitmap = BitmapFactory.decodeResource(resources, resId);
+		this.loadFailureBitmap = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
 	}
 	
 	/**
@@ -231,7 +231,7 @@ public class Options{
 		 * 设置加载地址为空时显示的图片
 		 * @param emptyBitmap
 		 */
-		public Builder setEmptyBitmap(Bitmap emptyBitmap) {
+		public Builder setEmptyBitmap(BitmapDrawable emptyBitmap) {
 			options.setEmptyBitmap(emptyBitmap);
 			return this;
 		}
@@ -250,7 +250,7 @@ public class Options{
 		 * 设置加载中图片
 		 * @param loadingBitmap
 		 */
-		public Builder setLoadingBitmap(Bitmap loadingBitmap) {
+		public Builder setLoadingBitmap(BitmapDrawable loadingBitmap) {
 			options.setLoadingBitmap(loadingBitmap);
 			return this;
 		}
@@ -269,7 +269,7 @@ public class Options{
 		 * 设置加载失败图片
 		 * @param loadFailureBitmap
 		 */
-		public Builder setLoadFailureBitmap(Bitmap loadFailureBitmap) {
+		public Builder setLoadFailureBitmap(BitmapDrawable loadFailureBitmap) {
 			options.setLoadFailureBitmap(loadFailureBitmap);
 			return this;
 		}

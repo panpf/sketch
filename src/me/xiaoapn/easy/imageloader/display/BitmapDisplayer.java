@@ -1,6 +1,8 @@
 package me.xiaoapn.easy.imageloader.display;
 
-import android.graphics.Bitmap;
+import me.xiaoapn.easy.imageloader.Options;
+import android.content.res.Resources;
+import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
 /**
@@ -9,9 +11,11 @@ import android.widget.ImageView;
 public interface BitmapDisplayer {
 	/**
 	 * 显示
-	 * @param imageView 图片视图
-	 * @param bitmap 位图
-	 * @param isFromMemoryCache 当前位图是否来自内存缓存
+	 * @param resources
+	 * @param imageView
+	 * @param bitmapDrawable
+	 * @param options
+	 * @param isFromMemoryCache
 	 */
-	public void display(ImageView imageView, Bitmap bitmap, boolean isFromMemoryCache);
+	public void display(Resources resources, ImageView imageView, BitmapDrawable bitmapDrawable, Options options, boolean isFromMemoryCache);
 }

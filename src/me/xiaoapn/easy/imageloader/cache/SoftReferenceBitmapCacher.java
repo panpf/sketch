@@ -19,40 +19,40 @@ package me.xiaoapn.easy.imageloader.cache;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentHashMap;
 
-import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 
 /**
  * 使用软引用的方式来缓存位图
  */
 public class SoftReferenceBitmapCacher implements BitmapCacher {
-	private ConcurrentHashMap<String, SoftReference<Bitmap>> bitmapCacheMap;
+	private ConcurrentHashMap<String, SoftReference<BitmapDrawable>> bitmapCacheMap;
 	
 	public SoftReferenceBitmapCacher(){
-		bitmapCacheMap = new ConcurrentHashMap<String, SoftReference<Bitmap>>();
+		bitmapCacheMap = new ConcurrentHashMap<String, SoftReference<BitmapDrawable>>();
 	}
 	
 	@Override
-	public void put(String key, Bitmap bitmap) {
-		bitmapCacheMap.put(key, new SoftReference<Bitmap>(bitmap));
+	public void put(String key, BitmapDrawable bitmapDrawable) {
+		bitmapCacheMap.put(key, new SoftReference<BitmapDrawable>(bitmapDrawable));
 	}
 
 	@Override
-	public Bitmap get(String key) {
-		SoftReference<Bitmap> bitmapReference = bitmapCacheMap.get(key);
+	public BitmapDrawable get(String key) {
+		SoftReference<BitmapDrawable> bitmapReference = bitmapCacheMap.get(key);
 		if(bitmapReference != null){
-			Bitmap bitmap = bitmapReference.get();
-			if(bitmap == null){
+			BitmapDrawable bitmapDrawable = bitmapReference.get();
+			if(bitmapDrawable == null){
 				bitmapCacheMap.remove(key);
 			}
-			return bitmap;
+			return bitmapDrawable;
 		}else{
 			return null;
 		}
 	}
 
 	@Override
-	public Bitmap remove(String key) {
-		SoftReference<Bitmap> bitmapReference = bitmapCacheMap.remove(key);
+	public BitmapDrawable remove(String key) {
+		SoftReference<BitmapDrawable> bitmapReference = bitmapCacheMap.remove(key);
 		return bitmapReference != null?bitmapReference.get():null;
 	}
 

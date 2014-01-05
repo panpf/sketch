@@ -40,6 +40,7 @@ import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpProtocolParams;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -52,6 +53,7 @@ public class Configuration {
 	private Context context;	//上下文
 	private Handler handler;	//消息处理器
 	private Options defaultOptions;	//默认加载选项
+	private Resources resources;	//资源
 	private HttpClient httpClient;	//Http客户端
 	private TaskExecutor taskExecutor;	//任务执行器
 	private BitmapCacher bitmapCacher;	//位图缓存器
@@ -62,9 +64,10 @@ public class Configuration {
 			throw new IllegalStateException("你不能在异步线程中创建此对象");
 		}
 		
-		this.context = context;
 		this.logTag = ImageLoader.class.getSimpleName();
+		this.context = context;
 		this.handler = new Handler();
+		this.resources = context.getResources();
 		this.defaultOptions = new Options.Builder()
 		.setCacheConfig(new CacheConfig.Builder().setCacheInMemory(true).setCacheInDisk(true).build())
 		.setBitmapDisplayer(new SimpleBitmapDisplayer())
@@ -79,6 +82,14 @@ public class Configuration {
 	 */
 	public Context getContext() {
 		return context;
+	}
+	
+	/**
+	 * 获取资源
+	 * @return
+	 */
+	public Resources getResources() {
+		return resources;
 	}
 
 	/**

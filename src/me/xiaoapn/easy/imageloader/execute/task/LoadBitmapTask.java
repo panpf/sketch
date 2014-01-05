@@ -12,8 +12,6 @@ import java.lang.ref.WeakReference;
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
-import org.apache.http.client.HttpClient;
-
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.decode.FileNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.decode.OnNewBitmapInputStreamListener;
@@ -23,6 +21,9 @@ import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.IoUtils;
 import me.xiaoapn.easy.imageloader.util.Scheme;
+
+import org.apache.http.client.HttpClient;
+
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -88,15 +89,20 @@ public class LoadBitmapTask implements Callable<Bitmap>{
 			}
 			bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(newBitmapInputStreamListener, request.getTargetSize(), imageLoader, request.getName());
 			
+			BitmapDrawable bitmapDrawable = null;
+			if(bitmap != null){
+				bitmapDrawable = new BitmapDrawable(imageLoader.getConfiguration().getResources(), bitmap);
+			}
+			
 			/* 如果需要缓存的话就内存中的话 */
-			if(request.getOptions().getCacheConfig().isCacheInMemory() && bitmap != null){
-				imageLoader.getConfiguration().getBitmapCacher().put(request.getId(), bitmap);
+			if(request.getOptions().getCacheConfig().isCacheInMemory() && bitmapDrawable != null){
+				imageLoader.getConfiguration().getBitmapCacher().put(request.getId(), bitmapDrawable);
 			}
 			
 			//尝试取出ImageView并显示
 			ImageView imageView = getImageView();
 			if (imageView != null) {
-				imageLoader.getConfiguration().getHandler().post(new DisplayBitmapTask(imageLoader, imageView, bitmap, request.getOptions(), request.getName(), false));
+				imageLoader.getConfiguration().getHandler().post(new DisplayBitmapTask(imageLoader, imageView, bitmapDrawable, request.getOptions(), request.getName(), false));
 			}else{
 				if(imageLoader.getConfiguration().isDebugMode()){
 					Log.e(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append(logName).append("：").append("已取消绑定关系").append("：").append(request.getName()).toString());

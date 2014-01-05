@@ -16,32 +16,34 @@
 
 package me.xiaoapn.easy.imageloader.display;
 
-import me.xiaoapn.easy.imageloader.display.animation.AlphaAnimationGenerator;
-import me.xiaoapn.easy.imageloader.display.animation.AnimationGenerator;
-import android.graphics.Bitmap;
-import android.view.animation.Animation;
+import me.xiaoapn.easy.imageloader.Options;
+import me.xiaoapn.easy.imageloader.util.GeneralUtils;
+import android.annotation.TargetApi;
+import android.content.res.Resources;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
+import android.os.Build;
 import android.widget.ImageView;
 
 public class SimpleBitmapDisplayer implements BitmapDisplayer {
 
-	private AnimationGenerator animationGenerator;
-	
-	public SimpleBitmapDisplayer(AnimationGenerator animationGenerator){
-		this.animationGenerator = animationGenerator;
-	}
-	
-	public SimpleBitmapDisplayer(){
-		this(new AlphaAnimationGenerator());
-	}
-
+	@SuppressWarnings("deprecation")
+	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
-	public void display(ImageView imageView, Bitmap bitmap, boolean isFromMemoryCache) {
-		imageView.setImageBitmap(bitmap);
-		if(!isFromMemoryCache && animationGenerator != null){
-			Animation animation = animationGenerator.generateAnimation();
-			if(animation != null){
-				imageView.startAnimation(animation);
+	public void display(Resources resources, ImageView imageView, BitmapDrawable bitmapDrawable, Options options, boolean isFromMemoryCache) {
+		if(!isFromMemoryCache){
+			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(android.R.color.transparent), bitmapDrawable});
+			if(GeneralUtils.hasJellyBean()){
+				imageView.setBackground(options.getLoadingBitmap());
+			}else{
+				imageView.setBackgroundDrawable(options.getLoadingBitmap());
 			}
+			imageView.setImageDrawable(transitionDrawable);
+			transitionDrawable.startTransition(200);
+		}else{
+			imageView.setImageDrawable(bitmapDrawable);
 		}
 	}
 }

@@ -18,38 +18,38 @@ package me.xiaoapn.easy.imageloader.execute.task;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.Options;
-import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import android.widget.ImageView;
 
 public class DisplayBitmapTask implements Runnable {
 	private String name;
 	private String requestName;
-	private Bitmap bitmap;
 	private Options options;
 	private boolean isFromMemoryCache;
 	private ImageView imageView;
 	private ImageLoader imageLoader;
+	private BitmapDrawable bitmapDrawable;
 
-	public DisplayBitmapTask(ImageLoader imageLoader, ImageView imageView, Bitmap bitmap, Options options, String requestName, boolean isFromMemoryCache) {
+	public DisplayBitmapTask(ImageLoader imageLoader, ImageView imageView, BitmapDrawable bitmapDrawable, Options options, String requestName, boolean isFromMemoryCache) {
 		this.name = getClass().getSimpleName();
-		this.bitmap = bitmap;
 		this.options = options;
 		this.imageView = imageView;
 		this.requestName = requestName;
 		this.imageLoader = imageLoader;
+		this.bitmapDrawable = bitmapDrawable;
 		this.isFromMemoryCache = isFromMemoryCache;
 	}
 
 	@Override
 	public void run() {
-		if(bitmap != null && !bitmap.isRecycled()){
-			options.getBitmapDisplayer().display(imageView, bitmap, isFromMemoryCache);
+		if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
+			options.getBitmapDisplayer().display(imageLoader.getConfiguration().getResources(), imageView, bitmapDrawable, options, isFromMemoryCache);
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.i(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("显示成功").append("：").append(requestName).toString());
 			}
 		}else{
-			imageView.setImageBitmap(options.getLoadFailureBitmap());
+			imageView.setImageDrawable(options.getLoadFailureBitmap());
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.e(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("显示失败").append("：").append(requestName).toString());
 			}

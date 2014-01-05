@@ -16,7 +16,7 @@
 
 package me.xiaoapn.easy.imageloader.cache;
 
-import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 
 /**
  * 位图缓存适配器
@@ -25,24 +25,24 @@ public interface BitmapCacher {
 	/**
 	 * 放进去一个位图
 	 * @param key
-	 * @param bitmap
+	 * @param bitmapDrawable
 	 * @return
 	 */
-	public void put(String key, Bitmap bitmap);
+	public void put(String key, BitmapDrawable bitmapDrawable);
 	
 	/**
 	 * 根据给定的key获取位图
 	 * @param key
 	 * @return
 	 */
-	public Bitmap get(String key);
+	public BitmapDrawable get(String key);
 	
 	/**
 	 * 根据给定的key删除位图
 	 * @param key
 	 * @return
 	 */
-	public Bitmap remove(String key);
+	public BitmapDrawable remove(String key);
 	
 	/**
 	 * 清除所有的位图

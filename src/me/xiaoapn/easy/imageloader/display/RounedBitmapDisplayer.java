@@ -1,7 +1,7 @@
 package me.xiaoapn.easy.imageloader.display;
 
-import me.xiaoapn.easy.imageloader.display.animation.AlphaAnimationGenerator;
-import me.xiaoapn.easy.imageloader.display.animation.AnimationGenerator;
+import me.xiaoapn.easy.imageloader.Options;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -10,50 +10,34 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.view.animation.Animation;
+import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
 /**
  * 圆角位图显示器，在显示位图之前会将位图处理成圆角的
  */
-public class RounedBitmapDisplayer implements BitmapDisplayer {
+public class RounedBitmapDisplayer extends SimpleBitmapDisplayer {
 	private int roundPixels;
-	private AnimationGenerator animationGenerator;
 	
 	/**
 	 * 创建一个圆角位图显示器
 	 * @param roundPixels 圆角角度
 	 * @param animationGenerator 动画生成器
 	 */
-	public RounedBitmapDisplayer(int roundPixels, AnimationGenerator animationGenerator){
-		this.roundPixels = roundPixels;
-		this.animationGenerator = animationGenerator;
-	}
-	
-	/**
-	 * 创建一个圆角位图显示器，动画生成器使用AlphaAnimationGenerator
-	 * @param roundPixels 圆角角度
-	 */
 	public RounedBitmapDisplayer(int roundPixels){
-		this(roundPixels, new AlphaAnimationGenerator());
+		this.roundPixels = roundPixels;
 	}
 	
 	/**
 	 * 创建一个圆角位图显示器，圆角角度默认为18并且动画生成器使用AlphaAnimationGenerator
 	 */
 	public RounedBitmapDisplayer(){
-		this(18, new AlphaAnimationGenerator());
+		this(18);
 	}
 	
 	@Override
-	public void display(ImageView imageView, Bitmap bitmap, boolean isFromMemoryCache) {
-		imageView.setImageBitmap(roundCorners(bitmap, imageView, roundPixels));
-		if(!isFromMemoryCache && animationGenerator != null){
-			Animation animation = animationGenerator.generateAnimation();
-			if(animation != null){
-				imageView.startAnimation(animation);
-			}
-		}
+	public void display(Resources resources, ImageView imageView, BitmapDrawable bitmapDrawable, Options options, boolean isFromMemoryCache) {
+		super.display(resources, imageView, new BitmapDrawable(resources, roundCorners(bitmapDrawable.getBitmap(), imageView, roundPixels)), options, isFromMemoryCache);
 	}
 	
 	/**
