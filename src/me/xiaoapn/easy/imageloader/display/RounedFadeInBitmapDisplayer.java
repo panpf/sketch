@@ -1,6 +1,7 @@
 package me.xiaoapn.easy.imageloader.display;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.execute.task.Request;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -38,16 +39,39 @@ public class RounedFadeInBitmapDisplayer implements BitmapDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, boolean isFromMemoryCache, ImageLoader imageLoader) {
-		bitmapDrawable = new BitmapDrawable(imageLoader.getConfiguration().getResources(), roundCorners(bitmapDrawable.getBitmap(), imageView, roundPixels));;
+	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, ImageLoader imageLoader, Request request) {
 	
-		if(!isFromMemoryCache){
-			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(android.R.color.transparent), bitmapDrawable});
-			imageView.setImageDrawable(transitionDrawable);
-			transitionDrawable.startTransition(200);
-		}else{
-			imageView.setImageDrawable(bitmapDrawable);
+		switch(bitmapType){
+			case EMPTY : 
+				imageView.setImageDrawable(bitmapDrawable);
+				break;
+			case FAILURE : 
+				if(bitmapDrawable != null){
+					fadeIn(imageView, bitmapDrawable);
+				}else{
+					imageView.setImageDrawable(bitmapDrawable);
+				}
+				break;
+			case DISPLAY : 
+				bitmapDrawable = new BitmapDrawable(imageLoader.getConfiguration().getResources(), roundCorners(bitmapDrawable.getBitmap(), imageView, roundPixels));;
+				if(!isFromMemoryCache && bitmapDrawable != null){
+					fadeIn(imageView, bitmapDrawable);
+				}else{
+					imageView.setImageDrawable(bitmapDrawable);
+				}
+				break;
 		}
+	}
+	
+	/**
+	 * 渐入
+	 * @param imageView
+	 * @param bitmapDrawable
+	 */
+	private void fadeIn(ImageView imageView, BitmapDrawable bitmapDrawable){
+		TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(android.R.color.transparent), bitmapDrawable});
+		imageView.setImageDrawable(transitionDrawable);
+		transitionDrawable.startTransition(200);
 	}
 	
 	/**

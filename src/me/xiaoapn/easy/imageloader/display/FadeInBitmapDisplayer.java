@@ -17,6 +17,7 @@
 package me.xiaoapn.easy.imageloader.display;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.execute.task.Request;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -29,15 +30,38 @@ import android.widget.ImageView;
 public class FadeInBitmapDisplayer implements BitmapDisplayer {
 
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, boolean isFromMemoryCache, ImageLoader imageLoader) {
-		if(!isFromMemoryCache){
-			Drawable oldDrawable = imageView.getDrawable();
-			Drawable firstDrawable  = oldDrawable != null?oldDrawable:new ColorDrawable(android.R.color.transparent);
-			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{firstDrawable, bitmapDrawable});
-			imageView.setImageDrawable(transitionDrawable);
-			transitionDrawable.startTransition(200);
-		}else{
-			imageView.setImageDrawable(bitmapDrawable);
+	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, ImageLoader imageLoader, Request request) {
+		switch(bitmapType){
+			case EMPTY : 
+				imageView.setImageDrawable(bitmapDrawable);
+				break;
+			case FAILURE : 
+				if(bitmapDrawable != null){
+					fadeIn(imageView, bitmapDrawable);
+				}else{
+					imageView.setImageDrawable(bitmapDrawable);
+				}
+				break;
+			case DISPLAY : 
+				if(!isFromMemoryCache && bitmapDrawable != null){
+					fadeIn(imageView, bitmapDrawable);
+				}else{
+					imageView.setImageDrawable(bitmapDrawable);
+				}
+				break;
 		}
+	}
+	
+	/**
+	 * 渐入
+	 * @param imageView
+	 * @param bitmapDrawable
+	 */
+	private void fadeIn(ImageView imageView, BitmapDrawable bitmapDrawable){
+		Drawable oldDrawable = imageView.getDrawable();
+		Drawable firstDrawable  = oldDrawable != null?oldDrawable:new ColorDrawable(android.R.color.transparent);
+		TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{firstDrawable, bitmapDrawable});
+		imageView.setImageDrawable(transitionDrawable);
+		transitionDrawable.startTransition(200);
 	}
 }

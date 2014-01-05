@@ -15,6 +15,7 @@ import java.util.concurrent.FutureTask;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.decode.FileNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.decode.OnNewBitmapInputStreamListener;
+import me.xiaoapn.easy.imageloader.display.BitmapType;
 import me.xiaoapn.easy.imageloader.download.ImageDownloader;
 import me.xiaoapn.easy.imageloader.download.OnCompleteListener;
 import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
@@ -102,7 +103,11 @@ public class LoadBitmapTask implements Callable<Bitmap>{
 			//尝试取出ImageView并显示
 			ImageView imageView = getImageView();
 			if (imageView != null) {
-				imageLoader.getConfiguration().getHandler().post(new DisplayBitmapTask(imageLoader, imageView, bitmapDrawable, request.getOptions(), request.getName(), false));
+				if(bitmapDrawable != null){
+					imageLoader.getConfiguration().getHandler().post(new DisplayBitmapTask(imageLoader, imageView, bitmapDrawable, BitmapType.DISPLAY, false, request));
+				}else{
+					imageLoader.getConfiguration().getHandler().post(new DisplayBitmapTask(imageLoader, imageView, request.getOptions().getFailureDrawable(), BitmapType.FAILURE, false, request));
+				}
 			}else{
 				if(imageLoader.getConfiguration().isDebugMode()){
 					Log.e(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append(logName).append("：").append("已取消绑定关系").append("：").append(request.getName()).toString());

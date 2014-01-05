@@ -18,6 +18,7 @@ package me.xiaoapn.easy.imageloader;
 
 import java.io.File;
 
+import me.xiaoapn.easy.imageloader.display.BitmapType;
 import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
 import me.xiaoapn.easy.imageloader.execute.task.DisplayBitmapTask;
 import me.xiaoapn.easy.imageloader.execute.task.LoadBitmapTask;
@@ -26,7 +27,6 @@ import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.ImageSizeUtils;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.util.Log;
@@ -87,21 +87,32 @@ public class ImageLoader{
 			}
 			return;
 		}
-		if(GeneralUtils.isEmpty(imageUri)){
-			imageView.setImageDrawable(options.getEmptyDrawable());
-			if(getConfiguration().isDebugMode()){
-				Log.e(getConfiguration().getLogTag(), "imageUrl不能为null");
-			}
-			return;
-		}
+		
 		
 		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageView, options.getMaxSize().getWidth(), options.getMaxSize().getHeight());
-		Request request = new Request(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUri), targetSize), imageUri, imageUri, options, targetSize);
-		if(!show(request, imageView) && LoadBitmapTask.cancelPotentialBitmapLoadTask(this, request, imageView)){
-			LoadBitmapTask bitmapLoadTask = new LoadBitmapTask(this, request, imageView);
-			Bitmap loadingBitmap = request.getOptions().getLoadingDrawable() != null?request.getOptions().getLoadingDrawable().getBitmap():null;
-			imageView.setImageDrawable(new AsyncDrawable(getConfiguration().getContext().getResources(), loadingBitmap, bitmapLoadTask));
-			getConfiguration().getTaskExecutor().execute(bitmapLoadTask.getFutureTask());
+		Request request;
+		if(GeneralUtils.isEmpty(imageUri)){
+			request = new Request(null, String.valueOf(imageView.hashCode()), null, options, targetSize);
+			
+			getConfiguration().getHandler().post(new DisplayBitmapTask(this, imageView, options.getEmptyDrawable(), BitmapType.EMPTY, false, request));
+			if(getConfiguration().isDebugMode()){
+				Log.e(getConfiguration().getLogTag(), "imageUri不能为null");
+			}
+		}else{
+			//计算目标尺寸并创建请求
+			request = new Request(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUri), targetSize), imageUri, imageUri, options, targetSize);
+			
+			//尝试显示
+			if(!show(request, imageView) && LoadBitmapTask.cancelPotentialBitmapLoadTask(this, request, imageView)){
+				//创建加载任务并显示加载中图片
+				LoadBitmapTask bitmapLoadTask = new LoadBitmapTask(this, request, imageView);
+				BitmapDrawable loadingBitmapDrawable = request.getOptions().getLoadingDrawable();
+				AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(getConfiguration().getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, bitmapLoadTask);
+				imageView.setImageDrawable(loadingAsyncDrawable);
+				
+				//提交加载任务
+				getConfiguration().getTaskExecutor().execute(bitmapLoadTask.getFutureTask());
+			}
 		}
 	}
 	
@@ -153,7 +164,7 @@ public class ImageLoader{
 		}
 		
 		//显示图片
-		getConfiguration().getHandler().post(new DisplayBitmapTask(this, imageView, cacheBitmap, request.getOptions(), request.getName(), true));
+		getConfiguration().getHandler().post(new DisplayBitmapTask(this, imageView, cacheBitmap, BitmapType.DISPLAY, true, request));
 		if(getConfiguration().isDebugMode()){
 			Log.d(getConfiguration().getLogTag(), "从缓存中加载："+request.getName());
 		}

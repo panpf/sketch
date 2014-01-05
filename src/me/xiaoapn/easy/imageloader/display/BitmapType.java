@@ -17,5 +17,5 @@
 package me.xiaoapn.easy.imageloader.display;
 
 public enum BitmapType {
-	LOADING, EMPTY, FAILURE, SUCCESS;
+	EMPTY, FAILURE, DISPLAY;
 }
