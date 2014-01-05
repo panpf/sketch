@@ -44,7 +44,7 @@ public class DisplayBitmapTask implements Runnable {
 	@Override
 	public void run() {
 		if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
-			options.getBitmapDisplayer().display(imageLoader.getConfiguration().getResources(), imageView, bitmapDrawable, options, isFromMemoryCache);
+			options.getBitmapDisplayer().display(imageView, bitmapDrawable, isFromMemoryCache, imageLoader);
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.i(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("显示成功").append("：").append(requestName).toString());
 			}

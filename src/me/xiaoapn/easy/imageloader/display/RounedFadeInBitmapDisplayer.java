@@ -1,7 +1,6 @@
 package me.xiaoapn.easy.imageloader.display;
 
-import me.xiaoapn.easy.imageloader.Options;
-import android.content.res.Resources;
+import me.xiaoapn.easy.imageloader.ImageLoader;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -39,8 +38,8 @@ public class RounedFadeInBitmapDisplayer implements BitmapDisplayer {
 	}
 	
 	@Override
-	public void display(Resources resources, ImageView imageView, BitmapDrawable bitmapDrawable, Options options, boolean isFromMemoryCache) {
-		bitmapDrawable = new BitmapDrawable(resources, roundCorners(bitmapDrawable.getBitmap(), imageView, roundPixels));;
+	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, boolean isFromMemoryCache, ImageLoader imageLoader) {
+		bitmapDrawable = new BitmapDrawable(imageLoader.getConfiguration().getResources(), roundCorners(bitmapDrawable.getBitmap(), imageView, roundPixels));;
 	
 		if(!isFromMemoryCache){
 			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(android.R.color.transparent), bitmapDrawable});

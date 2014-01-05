@@ -16,8 +16,7 @@
 
 package me.xiaoapn.easy.imageloader.display;
 
-import me.xiaoapn.easy.imageloader.Options;
-import android.content.res.Resources;
+import me.xiaoapn.easy.imageloader.ImageLoader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -30,7 +29,7 @@ import android.widget.ImageView;
 public class FadeInBitmapDisplayer implements BitmapDisplayer {
 
 	@Override
-	public void display(Resources resources, ImageView imageView, BitmapDrawable bitmapDrawable, Options options, boolean isFromMemoryCache) {
+	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, boolean isFromMemoryCache, ImageLoader imageLoader) {
 		if(!isFromMemoryCache){
 			Drawable oldDrawable = imageView.getDrawable();
 			Drawable firstDrawable  = oldDrawable != null?oldDrawable:new ColorDrawable(android.R.color.transparent);
