@@ -49,7 +49,7 @@ public class DisplayBitmapTask implements Runnable {
 				Log.i(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("显示成功").append("：").append(requestName).toString());
 			}
 		}else{
-			imageView.setImageDrawable(options.getLoadFailureBitmap());
+			imageView.setImageDrawable(options.getLoadFailureDrawable());
 			if(imageLoader.getConfiguration().isDebugMode()){
 				Log.e(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("显示失败").append("：").append(requestName).toString());
 			}

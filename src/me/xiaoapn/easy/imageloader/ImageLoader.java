@@ -88,7 +88,7 @@ public class ImageLoader{
 			return;
 		}
 		if(GeneralUtils.isEmpty(imageUri)){
-			imageView.setImageDrawable(options.getEmptyBitmap());
+			imageView.setImageDrawable(options.getEmptyDrawable());
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), "imageUrl不能为null");
 			}
@@ -99,7 +99,7 @@ public class ImageLoader{
 		Request request = new Request(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUri), targetSize), imageUri, imageUri, options, targetSize);
 		if(!show(request, imageView) && LoadBitmapTask.cancelPotentialBitmapLoadTask(this, request, imageView)){
 			LoadBitmapTask bitmapLoadTask = new LoadBitmapTask(this, request, imageView);
-			Bitmap loadingBitmap = request.getOptions().getLoadingBitmap() != null?request.getOptions().getLoadingBitmap().getBitmap():null;
+			Bitmap loadingBitmap = request.getOptions().getLoadingDrawable() != null?request.getOptions().getLoadingDrawable().getBitmap():null;
 			imageView.setImageDrawable(new AsyncDrawable(getConfiguration().getContext().getResources(), loadingBitmap, bitmapLoadTask));
 			getConfiguration().getTaskExecutor().execute(bitmapLoadTask.getFutureTask());
 		}

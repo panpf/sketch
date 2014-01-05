@@ -29,9 +29,9 @@ import android.graphics.drawable.BitmapDrawable;
  */
 public class Options{
 	private int maxRetryCount;	//最大重试次数
-	private BitmapDrawable emptyBitmap;	//当加载地址为空时显示的图片
-	private BitmapDrawable loadingBitmap;	//正在加载时显示的图片
-	private BitmapDrawable loadFailureBitmap;	//加载失败时显示的图片
+	private BitmapDrawable emptyDrawable;	//当加载地址为空时显示的图片
+	private BitmapDrawable loadingDrawable;	//正在加载时显示的图片
+	private BitmapDrawable loadFailureDrawable;	//加载失败时显示的图片
 	private ImageSize maxSize;	//最大尺寸
 	private CacheConfig cacheConfig;	//缓存配置
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
@@ -58,16 +58,16 @@ public class Options{
 	 * 获取加载地址为空时显示的图片
 	 * @return
 	 */
-	public BitmapDrawable getEmptyBitmap() {
-		return emptyBitmap;
+	public BitmapDrawable getEmptyDrawable() {
+		return emptyDrawable;
 	}
 
 	/**
 	 * 设置加载地址为空时显示的图片
-	 * @param emptyBitmap
+	 * @param emptyDrawable
 	 */
-	public void setEmptyBitmap(BitmapDrawable emptyBitmap) {
-		this.emptyBitmap = emptyBitmap;
+	public void setEmptyDrawable(BitmapDrawable emptyDrawable) {
+		this.emptyDrawable = emptyDrawable;
 	}
 	
 	/**
@@ -75,24 +75,24 @@ public class Options{
 	 * @param resources
 	 * @param resId
 	 */
-	public void setEmptyBitmap(Resources resources, int resId) {
-		this.emptyBitmap = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
+	public void setEmptyDrawable(Resources resources, int resId) {
+		this.emptyDrawable = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
 	}
 
 	/**
 	 * 获取加载中图片
 	 * @return
 	 */
-	public BitmapDrawable getLoadingBitmap() {
-		return loadingBitmap;
+	public BitmapDrawable getLoadingDrawable() {
+		return loadingDrawable;
 	}
 
 	/**
 	 * 设置加载中图片
-	 * @param loadingBitmap
+	 * @param loadingDrawable
 	 */
-	public void setLoadingBitmap(BitmapDrawable loadingBitmap) {
-		this.loadingBitmap = loadingBitmap;
+	public void setLoadingDrawable(BitmapDrawable loadingDrawable) {
+		this.loadingDrawable = loadingDrawable;
 	}
 
 	/**
@@ -100,24 +100,24 @@ public class Options{
 	 * @param resources
 	 * @param resId
 	 */
-	public void setLoadingBitmap(Resources resources, int resId) {
-		this.loadingBitmap = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
+	public void setLoadingDrawable(Resources resources, int resId) {
+		this.loadingDrawable = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
 	}
 
 	/**
 	 * 获取加载失败图片
 	 * @return
 	 */
-	public BitmapDrawable getLoadFailureBitmap() {
-		return loadFailureBitmap;
+	public BitmapDrawable getLoadFailureDrawable() {
+		return loadFailureDrawable;
 	}
 
 	/**
 	 * 设置加载失败图片
-	 * @param loadFailureBitmap
+	 * @param loadFailureDrawable
 	 */
-	public void setLoadFailureBitmap(BitmapDrawable loadFailureBitmap) {
-		this.loadFailureBitmap = loadFailureBitmap;
+	public void setLoadFailureDrawable(BitmapDrawable loadFailureDrawable) {
+		this.loadFailureDrawable = loadFailureDrawable;
 	}
 	
 	/**
@@ -125,8 +125,8 @@ public class Options{
 	 * @param resources
 	 * @param resId
 	 */
-	public void setLoadFailureBitmap(Resources resources, int resId) {
-		this.loadFailureBitmap = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
+	public void setLoadFailureDrawable(Resources resources, int resId) {
+		this.loadFailureDrawable = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
 	}
 	
 	/**
@@ -191,9 +191,9 @@ public class Options{
 		return new Options.Builder()
 		.setBitmapDisplayer(bitmapDisplayer)
 		.setCacheConfig(cacheConfig.copy())
-		.setEmptyBitmap(emptyBitmap)
-		.setLoadFailureBitmap(loadFailureBitmap)
-		.setLoadingBitmap(loadingBitmap)
+		.setEmptyBitmap(emptyDrawable)
+		.setLoadFailureBitmap(loadFailureDrawable)
+		.setLoadingBitmap(loadingDrawable)
 		.setMaxSize(maxSize.copy())
 		.setMaxRetryCount(maxRetryCount)
 		.build();
@@ -232,7 +232,7 @@ public class Options{
 		 * @param emptyBitmap
 		 */
 		public Builder setEmptyBitmap(BitmapDrawable emptyBitmap) {
-			options.setEmptyBitmap(emptyBitmap);
+			options.setEmptyDrawable(emptyBitmap);
 			return this;
 		}
 		
@@ -242,7 +242,7 @@ public class Options{
 		 * @param resId
 		 */
 		public Builder setEmptyBitmap(Resources resources, int resId) {
-			options.setEmptyBitmap(resources, resId);
+			options.setEmptyDrawable(resources, resId);
 			return this;
 		}
 
@@ -251,7 +251,7 @@ public class Options{
 		 * @param loadingBitmap
 		 */
 		public Builder setLoadingBitmap(BitmapDrawable loadingBitmap) {
-			options.setLoadingBitmap(loadingBitmap);
+			options.setLoadingDrawable(loadingBitmap);
 			return this;
 		}
 
@@ -261,7 +261,7 @@ public class Options{
 		 * @param resId
 		 */
 		public Builder setLoadingBitmap(Resources resources, int resId) {
-			options.setLoadingBitmap(resources, resId);
+			options.setLoadingDrawable(resources, resId);
 			return this;
 		}
 
@@ -270,7 +270,7 @@ public class Options{
 		 * @param loadFailureBitmap
 		 */
 		public Builder setLoadFailureBitmap(BitmapDrawable loadFailureBitmap) {
-			options.setLoadFailureBitmap(loadFailureBitmap);
+			options.setLoadFailureDrawable(loadFailureBitmap);
 			return this;
 		}
 		
@@ -280,7 +280,7 @@ public class Options{
 		 * @param resId
 		 */
 		public Builder setLoadFailureBitmap(Resources resources, int resId) {
-			options.setLoadFailureBitmap(resources, resId);
+			options.setLoadFailureDrawable(resources, resId);
 			return this;
 		}
 		

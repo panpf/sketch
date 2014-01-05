@@ -30,8 +30,8 @@ public class MyApplication extends Application {
 		ImageLoader.getInstance().init(getBaseContext());
 		ImageLoader.getInstance().getConfiguration().setDebugMode(true);
 		Options defaultOptions = ImageLoader.getInstance().getConfiguration().getDefaultOptions();
-		defaultOptions.setLoadingBitmap(getResources(), R.drawable.image_loading);	//设置加载中显示的图片
-		defaultOptions.setLoadFailureBitmap(getResources(), R.drawable.image_load_failure); 	//设置加载失败时显示的图片
+		defaultOptions.setLoadingDrawable(getResources(), R.drawable.image_loading);	//设置加载中显示的图片
+		defaultOptions.setLoadFailureDrawable(getResources(), R.drawable.image_load_failure); 	//设置加载失败时显示的图片
 //		defaultOptions.getCacheConfig().setCacheInMemory(true);
 	}
 }
