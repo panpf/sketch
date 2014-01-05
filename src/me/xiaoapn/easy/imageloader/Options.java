@@ -59,7 +59,7 @@ public class Options{
 	 * @return
 	 */
 	public BitmapDrawable getEmptyDrawable() {
-		return emptyDrawable;
+		return emptyDrawable != null?emptyDrawable:failureDrawable;
 	}
 
 	/**

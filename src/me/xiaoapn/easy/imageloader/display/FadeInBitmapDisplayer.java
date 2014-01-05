@@ -32,9 +32,6 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 	@Override
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, ImageLoader imageLoader, Request request) {
 		switch(bitmapType){
-			case EMPTY : 
-				imageView.setImageDrawable(bitmapDrawable);
-				break;
 			case FAILURE : 
 				if(bitmapDrawable != null){
 					fadeIn(imageView, bitmapDrawable);
@@ -42,7 +39,7 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 					imageView.setImageDrawable(bitmapDrawable);
 				}
 				break;
-			case DISPLAY : 
+			case SUCCESS : 
 				if(!isFromMemoryCache && bitmapDrawable != null){
 					fadeIn(imageView, bitmapDrawable);
 				}else{

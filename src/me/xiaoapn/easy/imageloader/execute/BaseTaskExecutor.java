@@ -7,7 +7,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 
 /**
  * 基本的任务执行器
@@ -29,11 +29,11 @@ public class BaseTaskExecutor implements TaskExecutor {
 	}
 	
 	public BaseTaskExecutor(){
-		this(5, 20, 10);
+		this(5, 10, 20);
 	}
 	
 	@Override
-	public void execute(FutureTask<Bitmap> futureTask) {
+	public void execute(FutureTask<BitmapDrawable> futureTask) {
 		threadPoolExecutor.execute(futureTask);
 	}
 }

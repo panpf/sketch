@@ -40,11 +40,7 @@ public class RounedFadeInBitmapDisplayer implements BitmapDisplayer {
 	
 	@Override
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, ImageLoader imageLoader, Request request) {
-	
 		switch(bitmapType){
-			case EMPTY : 
-				imageView.setImageDrawable(bitmapDrawable);
-				break;
 			case FAILURE : 
 				if(bitmapDrawable != null){
 					fadeIn(imageView, bitmapDrawable);
@@ -52,7 +48,7 @@ public class RounedFadeInBitmapDisplayer implements BitmapDisplayer {
 					imageView.setImageDrawable(bitmapDrawable);
 				}
 				break;
-			case DISPLAY : 
+			case SUCCESS : 
 				bitmapDrawable = new BitmapDrawable(imageLoader.getConfiguration().getResources(), roundCorners(bitmapDrawable.getBitmap(), imageView, roundPixels));;
 				if(!isFromMemoryCache && bitmapDrawable != null){
 					fadeIn(imageView, bitmapDrawable);

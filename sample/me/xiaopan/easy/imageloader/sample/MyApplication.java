@@ -32,6 +32,7 @@ public class MyApplication extends Application {
 		Options defaultOptions = ImageLoader.getInstance().getConfiguration().getDefaultOptions();
 		defaultOptions.setLoadingDrawable(getResources(), R.drawable.image_loading);	//设置加载中显示的图片
 		defaultOptions.setFailureDrawable(getResources(), R.drawable.image_load_failure); 	//设置加载失败时显示的图片
-//		defaultOptions.getCacheConfig().setCacheInMemory(true);
+		defaultOptions.getCacheConfig().setCacheInMemory(false);
+		defaultOptions.getCacheConfig().setCacheInDisk(true);
 	}
 }
