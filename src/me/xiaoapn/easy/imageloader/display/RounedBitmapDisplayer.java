@@ -11,12 +11,15 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
 
 /**
  * 圆角位图显示器，在显示位图之前会将位图处理成圆角的
  */
-public class RounedBitmapDisplayer extends SimpleBitmapDisplayer {
+public class RounedBitmapDisplayer implements BitmapDisplayer {
 	private int roundPixels;
 	
 	/**
@@ -37,7 +40,15 @@ public class RounedBitmapDisplayer extends SimpleBitmapDisplayer {
 	
 	@Override
 	public void display(Resources resources, ImageView imageView, BitmapDrawable bitmapDrawable, Options options, boolean isFromMemoryCache) {
-		super.display(resources, imageView, new BitmapDrawable(resources, roundCorners(bitmapDrawable.getBitmap(), imageView, roundPixels)), options, isFromMemoryCache);
+		bitmapDrawable = new BitmapDrawable(resources, roundCorners(bitmapDrawable.getBitmap(), imageView, roundPixels));;
+	
+		if(!isFromMemoryCache){
+			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(android.R.color.transparent), bitmapDrawable});
+			imageView.setImageDrawable(transitionDrawable);
+			transitionDrawable.startTransition(200);
+		}else{
+			imageView.setImageDrawable(bitmapDrawable);
+		}
 	}
 	
 	/**

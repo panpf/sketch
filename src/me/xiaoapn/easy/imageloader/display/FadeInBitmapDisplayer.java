@@ -17,29 +17,24 @@
 package me.xiaoapn.easy.imageloader.display;
 
 import me.xiaoapn.easy.imageloader.Options;
-import me.xiaoapn.easy.imageloader.util.GeneralUtils;
-import android.annotation.TargetApi;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.os.Build;
 import android.widget.ImageView;
 
-public class SimpleBitmapDisplayer implements BitmapDisplayer {
+/**
+ * 渐入位图显示器
+ */
+public class FadeInBitmapDisplayer implements BitmapDisplayer {
 
-	@SuppressWarnings("deprecation")
-	@TargetApi(Build.VERSION_CODES.JELLY_BEAN)
 	@Override
 	public void display(Resources resources, ImageView imageView, BitmapDrawable bitmapDrawable, Options options, boolean isFromMemoryCache) {
 		if(!isFromMemoryCache){
-			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(android.R.color.transparent), bitmapDrawable});
-			if(GeneralUtils.hasJellyBean()){
-				imageView.setBackground(options.getLoadingBitmap());
-			}else{
-				imageView.setBackgroundDrawable(options.getLoadingBitmap());
-			}
+			Drawable oldDrawable = imageView.getDrawable();
+			Drawable firstDrawable  = oldDrawable != null?oldDrawable:new ColorDrawable(android.R.color.transparent);
+			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{firstDrawable, bitmapDrawable});
 			imageView.setImageDrawable(transitionDrawable);
 			transitionDrawable.startTransition(200);
 		}else{

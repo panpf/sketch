@@ -18,7 +18,7 @@ package me.xiaoapn.easy.imageloader;
 
 import me.xiaoapn.easy.imageloader.cache.CacheConfig;
 import me.xiaoapn.easy.imageloader.display.BitmapDisplayer;
-import me.xiaoapn.easy.imageloader.display.SimpleBitmapDisplayer;
+import me.xiaoapn.easy.imageloader.display.FadeInBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
@@ -170,7 +170,7 @@ public class Options{
 	 */
 	public BitmapDisplayer getBitmapDisplayer() {
 		if(bitmapDisplayer == null){
-			bitmapDisplayer = new SimpleBitmapDisplayer();
+			bitmapDisplayer = new FadeInBitmapDisplayer();
 		}
 		return bitmapDisplayer;
 	}

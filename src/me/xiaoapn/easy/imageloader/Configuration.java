@@ -21,7 +21,7 @@ import me.xiaoapn.easy.imageloader.cache.CacheConfig;
 import me.xiaoapn.easy.imageloader.cache.LruBitmapCacher;
 import me.xiaoapn.easy.imageloader.decode.BitmapDecoder;
 import me.xiaoapn.easy.imageloader.decode.SimpleBitmapDecoder;
-import me.xiaoapn.easy.imageloader.display.SimpleBitmapDisplayer;
+import me.xiaoapn.easy.imageloader.display.FadeInBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.execute.BaseTaskExecutor;
 import me.xiaoapn.easy.imageloader.execute.TaskExecutor;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
@@ -70,7 +70,7 @@ public class Configuration {
 		this.resources = context.getResources();
 		this.defaultOptions = new Options.Builder()
 		.setCacheConfig(new CacheConfig.Builder().setCacheInMemory(true).setCacheInDisk(true).build())
-		.setBitmapDisplayer(new SimpleBitmapDisplayer())
+		.setBitmapDisplayer(new FadeInBitmapDisplayer())
 		.setMaxSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
 		.setMaxRetryCount(2)
 		.build();
