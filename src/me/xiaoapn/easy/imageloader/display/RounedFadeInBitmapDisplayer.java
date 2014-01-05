@@ -19,7 +19,7 @@ import android.widget.ImageView;
 /**
  * 圆角位图显示器，在显示位图之前会将位图处理成圆角的
  */
-public class RounedBitmapDisplayer implements BitmapDisplayer {
+public class RounedFadeInBitmapDisplayer implements BitmapDisplayer {
 	private int roundPixels;
 	
 	/**
@@ -27,14 +27,14 @@ public class RounedBitmapDisplayer implements BitmapDisplayer {
 	 * @param roundPixels 圆角角度
 	 * @param animationGenerator 动画生成器
 	 */
-	public RounedBitmapDisplayer(int roundPixels){
+	public RounedFadeInBitmapDisplayer(int roundPixels){
 		this.roundPixels = roundPixels;
 	}
 	
 	/**
 	 * 创建一个圆角位图显示器，圆角角度默认为18并且动画生成器使用AlphaAnimationGenerator
 	 */
-	public RounedBitmapDisplayer(){
+	public RounedFadeInBitmapDisplayer(){
 		this(18);
 	}
 	
