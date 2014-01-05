@@ -22,7 +22,6 @@ import me.xiaopan.easy.imageloader.sample.fragment.GalleryFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.GridFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.ListFragment;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
@@ -55,13 +54,6 @@ public class MainActivity extends FragmentActivity {
 		});
 		
 		set(0);
-		drawerLayout.openDrawer(GravityCompat.START);
-		new Handler().postDelayed(new Runnable() {
-			@Override
-			public void run() {
-				drawerLayout.closeDrawers();
-			}
-		}, 1000);
 	}
 	
 	private void set(int index){
