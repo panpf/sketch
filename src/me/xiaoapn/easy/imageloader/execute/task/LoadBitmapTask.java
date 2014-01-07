@@ -17,6 +17,7 @@ import me.xiaoapn.easy.imageloader.decode.OnNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.download.ImageDownloader;
 import me.xiaoapn.easy.imageloader.download.OnCompleteListener;
 import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
+import me.xiaoapn.easy.imageloader.execute.TaskExecutor;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.IoUtils;
 import me.xiaoapn.easy.imageloader.util.Scheme;
@@ -106,13 +107,9 @@ public class LoadBitmapTask implements Callable<BitmapDrawable>{
 	}
     
 	/**
-	 * 获取FutureTask
+	 * 获取图片加载器
 	 * @return
 	 */
-	public LoadFutureTask getFutureTask() {
-		return futureTask;
-	}
-	
 	public ImageLoader getImageLoader() {
 		return imageLoader;
 	}
@@ -122,7 +119,7 @@ public class LoadBitmapTask implements Callable<BitmapDrawable>{
      */
 	public ImageView getImageView() {
         final ImageView imageView = imageViewReference.get();
-        if (this == getBitmapLoadTask(imageView)) {
+        if (this == getLoadBitmapTask(imageView)) {
             return imageView;
         }else{
         	return null;
@@ -130,14 +127,20 @@ public class LoadBitmapTask implements Callable<BitmapDrawable>{
     }
 	
 	/**
-	 * 关联ImageView
-	 * @param imageView
+	 * 取消
+	 * @param mayInterruptIfRunning
+	 * @return
 	 */
-	public void relevanceImageView(ImageView imageView){
-		if(imageView.getDrawable() != null && imageView.getDrawable() instanceof AsyncDrawable){
-			((AsyncDrawable) imageView.getDrawable()).setBitmapLoadTask(this);
-			imageViewReference = new WeakReference<ImageView>(imageView);
-		}
+	public boolean cancel(boolean mayInterruptIfRunning) {
+		return futureTask.cancel(mayInterruptIfRunning);
+	}
+	
+	/**
+	 * 执行
+	 * @param taskExecutor
+	 */
+	public void execute(TaskExecutor taskExecutor){
+		taskExecutor.execute(futureTask);
 	}
     
     /**
@@ -145,12 +148,12 @@ public class LoadBitmapTask implements Callable<BitmapDrawable>{
      * @param imageView 
      * @return 
      */
-    public static LoadBitmapTask getBitmapLoadTask(ImageView imageView) {
+    public static LoadBitmapTask getLoadBitmapTask(ImageView imageView) {
         if (imageView != null) {
             final Drawable drawable = imageView.getDrawable();
             if (drawable instanceof AsyncDrawable) {
                 final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
-                return asyncDrawable.getBitmapLoadTask();
+                return asyncDrawable.getLoadBitmapTask();
             }
         }
         return null;
@@ -162,12 +165,12 @@ public class LoadBitmapTask implements Callable<BitmapDrawable>{
      * @param imageView
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
      */
-    public static boolean cancelBitmapLoadTask(ImageLoader imageLoader, ImageView imageView) {
-        final LoadBitmapTask bitmapLoadTask = getBitmapLoadTask(imageView);
-        if (bitmapLoadTask != null) {
-            bitmapLoadTask.getFutureTask().cancel(true);
-            if (imageLoader.getConfiguration().isDebugMode()) {
-                Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append("取消加载任务").append("：").append(bitmapLoadTask.getRequest().getName()).toString());
+    public static boolean cancelLoadBitmapTask(ImageView imageView) {
+        final LoadBitmapTask loadBitmapTask = getLoadBitmapTask(imageView);
+        if (loadBitmapTask != null) {
+            loadBitmapTask.cancel(true);
+            if (loadBitmapTask.getImageLoader().getConfiguration().isDebugMode()) {
+                Log.w(loadBitmapTask.getImageLoader().getConfiguration().getLogTag(), new StringBuffer().append("取消加载任务").append("；").append(loadBitmapTask.getRequest().getName()).toString());
             }
             return true;
         }else{
@@ -183,20 +186,21 @@ public class LoadBitmapTask implements Callable<BitmapDrawable>{
      * @return true：取消成功；false：ImageView所关联的任务就是所需的无需取消
      */
     public static boolean cancelPotentialBitmapLoadTask(ImageLoader imageLoader, Request request, ImageView imageView) {
-        final LoadBitmapTask bitmapLoadTask = getBitmapLoadTask(imageView);
+        final LoadBitmapTask bitmapLoadTask = getLoadBitmapTask(imageView);
+        boolean result = true;
         if (bitmapLoadTask != null) {
             final String requestId = bitmapLoadTask.getRequest().getId();
-            if (requestId == null || !requestId.equals(request.getId())) {
-                bitmapLoadTask.getFutureTask().cancel(true);
-                if(imageLoader.getConfiguration().isDebugMode()){
-                	Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append("取消潜在的加载任务").append("：").append(bitmapLoadTask.getRequest().getName()).toString());
-                }
-            } else {
-            	bitmapLoadTask.relevanceImageView(imageView);
-                return false;
+        	if (requestId.equals(request.getId()) && bitmapLoadTask.getImageView() == imageView) {
+                result = false;
+            }else{
+            	bitmapLoadTask.cancel(true);
+            	result = true;
+            }
+            if(imageLoader.getConfiguration().isDebugMode()){
+            	Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append((result?"取消":"无需取消")+"潜在的加载任务").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(bitmapLoadTask.getRequest().getName()).toString());
             }
         }
-        return true;
+        return result;
     }
     
     /**

@@ -22,6 +22,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Build;
+import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -87,6 +88,7 @@ public class GridImageAdapter extends BaseAdapter {
 		}
 		
 		ImageLoader.getInstance().display(imageUrls[position], viewHolder.image);
+		Log.d("ImageAdapter", "Uri="+imageUrls[position]+"; ImageViewCode="+viewHolder.hashCode());
 		return convertView;
 	}
 	

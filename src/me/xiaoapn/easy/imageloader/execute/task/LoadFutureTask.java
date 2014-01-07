@@ -64,18 +64,13 @@ public class LoadFutureTask extends FutureTask<BitmapDrawable> {
 				}
 			}else{
 				if(configuration.isDebugMode()){
-					Log.e(configuration.getLogTag(), new StringBuffer().append(loadBitmapTask.getLogName()).append("：").append("已取消绑定关系").append("：").append(request.getName()).toString());
+					Log.e(configuration.getLogTag(), new StringBuffer().append(loadBitmapTask.getLogName()).append("：").append("已解除绑定关系").append("；").append(request.getName()).toString());
 				}
 			}
 		}else{
 			if(configuration.isDebugMode()){
-				Log.e(configuration.getLogTag(), new StringBuffer().append(loadBitmapTask.getLogName()).append("：").append("已取消").append(request.getName()).toString());
+				Log.e(configuration.getLogTag(), new StringBuffer().append(loadBitmapTask.getLogName()).append("：").append("已取消").append("；").append(request.getName()).toString());
 			}
 		}
-	}
-
-	@Override
-	public boolean cancel(boolean mayInterruptIfRunning) {
-		return super.cancel(mayInterruptIfRunning);
 	}
 }

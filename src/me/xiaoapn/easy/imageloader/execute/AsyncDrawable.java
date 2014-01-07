@@ -15,11 +15,7 @@ public class AsyncDrawable extends BitmapDrawable {
         bitmapLoadTaskReference = new WeakReference<LoadBitmapTask>(runnable);
     }
 
-    public LoadBitmapTask getBitmapLoadTask() {
+    public LoadBitmapTask getLoadBitmapTask() {
         return bitmapLoadTaskReference.get();
     }
-
-	public void setBitmapLoadTask(LoadBitmapTask bitmapLoadTask) {
-		this.bitmapLoadTaskReference = new WeakReference<LoadBitmapTask>(bitmapLoadTask);
-	}
 }

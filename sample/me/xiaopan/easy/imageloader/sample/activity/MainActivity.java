@@ -68,7 +68,7 @@ public class MainActivity extends FragmentActivity {
 			case 1 : 
 				fragment = new ListFragment();
 				bundle = new Bundle();
-				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls));
+				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.shuzi));
 				break;
 			case 2 : 
 				fragment = new GalleryFragment();

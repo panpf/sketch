@@ -89,7 +89,7 @@ public class ImageLoader{
 		if(GeneralUtils.isEmpty(imageUri)){
 			imageView.setImageDrawable(options.getEmptyDrawable());
 			if(getConfiguration().isDebugMode()){
-				Log.e(getConfiguration().getLogTag(), "imageUri不能为null");
+				Log.e(getConfiguration().getLogTag(), new StringBuffer().append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append("imageUri不能为null").toString());
 			}
 			return;
 		}
@@ -100,14 +100,16 @@ public class ImageLoader{
 		
 		//尝试显示
 		if(!show(request, imageView) && LoadBitmapTask.cancelPotentialBitmapLoadTask(this, request, imageView)){
-			//创建加载任务并显示加载中图片
+			//创建加载任务
 			LoadBitmapTask bitmapLoadTask = new LoadBitmapTask(this, request, imageView);
+			
+			//显示默认图片
 			BitmapDrawable loadingBitmapDrawable = request.getOptions().getLoadingDrawable();
 			AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(getConfiguration().getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, bitmapLoadTask);
 			imageView.setImageDrawable(loadingAsyncDrawable);
 			
 			//提交加载任务
-			getConfiguration().getTaskExecutor().execute(bitmapLoadTask.getFutureTask());
+			bitmapLoadTask.execute(getConfiguration().getTaskExecutor());
 		}
 	}
 	
@@ -147,24 +149,20 @@ public class ImageLoader{
 	 * @return true：图片缓存中有图片并且已经显示了；false：缓存中没有对应的图片，需要重新加载
 	 */
 	private boolean show(Request request, ImageView imageView){
-		//如果不需要从缓存中读取，就直接显示默认图片并结束
-		if(!request.getOptions().getCacheConfig().isCacheInMemory()){
-			return false;
+		if(request.getOptions().getCacheConfig().isCacheInMemory()){
+			BitmapDrawable cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
+			if(cacheBitmap != null){
+				//显示图片
+//				getConfiguration().getHandler().post(new DisplayBitmapTask(this, imageView, cacheBitmap, BitmapType.SUCCESS, true, request));
+				imageView.setImageDrawable(cacheBitmap);
+				
+				if(getConfiguration().isDebugMode()){
+					Log.d(getConfiguration().getLogTag(), new StringBuffer().append("从缓存中加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+				}
+				return true;
+			}
 		}
-		
-		//如果内存缓存中没有对应的Bitmap，就直接显示默认图片并结束
-		BitmapDrawable cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
-		if(cacheBitmap == null){
-			return false;
-		}
-		
-		//显示图片
-//		getConfiguration().getHandler().post(new DisplayBitmapTask(this, imageView, cacheBitmap, BitmapType.SUCCESS, true, request));
-		imageView.setImageDrawable(cacheBitmap);
-		if(getConfiguration().isDebugMode()){
-			Log.d(getConfiguration().getLogTag(), "从缓存中加载："+request.getName());
-		}
-		return true;
+		return false;
 	}
 	
 	/**

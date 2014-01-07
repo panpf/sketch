@@ -22,12 +22,18 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.util.Log;
 import android.widget.ImageView;
 
 /**
  * 渐入位图显示器
  */
 public class FadeInBitmapDisplayer implements BitmapDisplayer {
+	private String logName;
+	
+	public FadeInBitmapDisplayer() {
+		this.logName = getClass().getSimpleName();
+	}
 
 	@Override
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, ImageLoader imageLoader, Request request) {
@@ -38,12 +44,18 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 				}else{
 					imageView.setImageDrawable(bitmapDrawable);
 				}
+				if(imageLoader.getConfiguration().isDebugMode()){
+					Log.e(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append(logName).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+				}
 				break;
 			case SUCCESS : 
 				if(!isFromMemoryCache && bitmapDrawable != null){
 					fadeIn(imageView, bitmapDrawable);
 				}else{
 					imageView.setImageDrawable(bitmapDrawable);
+				}
+				if(imageLoader.getConfiguration().isDebugMode()){
+					Log.i(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append(logName).append("：").append("显示成功").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 				}
 				break;
 		}
