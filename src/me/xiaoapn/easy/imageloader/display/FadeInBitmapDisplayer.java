@@ -16,7 +16,7 @@
 
 package me.xiaoapn.easy.imageloader.display;
 
-import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.execute.task.Request;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -36,7 +36,7 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 	}
 
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, ImageLoader imageLoader, Request request) {
+	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, Configuration configuration, Request request) {
 		switch(bitmapType){
 			case FAILURE : 
 				if(bitmapDrawable != null){
@@ -44,8 +44,8 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 				}else{
 					imageView.setImageDrawable(bitmapDrawable);
 				}
-				if(imageLoader.getConfiguration().isDebugMode()){
-					Log.e(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append(logName).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+				if(configuration.isDebugMode()){
+					Log.e(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 				}
 				break;
 			case SUCCESS : 
@@ -54,8 +54,8 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 				}else{
 					imageView.setImageDrawable(bitmapDrawable);
 				}
-				if(imageLoader.getConfiguration().isDebugMode()){
-					Log.i(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append(logName).append("：").append("显示成功").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+				if(configuration.isDebugMode()){
+					Log.i(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示成功").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 				}
 				break;
 		}

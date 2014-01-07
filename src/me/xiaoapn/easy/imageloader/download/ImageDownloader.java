@@ -7,7 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 
-import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.Configuration;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -30,15 +30,15 @@ public class ImageDownloader {
 	private String name;
 	private String requestName;
 	private HttpClient httpClient;
-	private ImageLoader imageLoader;
+	private Configuration configuration;
 	private OnCompleteListener onCompleteListener;
 	
-	public ImageDownloader(String requestName, String url, File cacheFile, int maxRetryCount, HttpClient httpClient, ImageLoader imageLoader, OnCompleteListener onCompleteListener) {
+	public ImageDownloader(String requestName, String url, File cacheFile, int maxRetryCount, HttpClient httpClient, Configuration configuration, OnCompleteListener onCompleteListener) {
 		this.url = url;
 		this.name = getClass().getSimpleName();
 		this.cacheFile = cacheFile;
 		this.httpClient = httpClient;
-		this.imageLoader = imageLoader;
+		this.configuration = configuration;
 		this.requestName = requestName;
 		this.maxRetryCount = maxRetryCount;
 		this.onCompleteListener = onCompleteListener;
@@ -48,8 +48,8 @@ public class ImageDownloader {
 	 * 执行
 	 */
 	public void execute(){
-		if(imageLoader.getConfiguration().isDebugMode()){
-			Log.d(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("下载开始").append("：").append(requestName).toString());
+		if(configuration.isDebugMode()){
+			Log.d(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载开始").append("：").append(requestName).toString());
 		}
 		int numberOfLoaded = 0;	//已加载次数
 		byte[] data = null;
@@ -158,8 +158,8 @@ public class ImageDownloader {
 					running = false;
 				}
 				
-				if(imageLoader.getConfiguration().isDebugMode()){
-					Log.d(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("下载异常").append("：").append("requestName").append("：").append("异常信息").append("：").append(e2.toString()).append("：").append(running?"重新下载":"不再下载").toString());
+				if(configuration.isDebugMode()){
+					Log.d(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载异常").append("：").append("requestName").append("：").append("异常信息").append("：").append(e2.toString()).append("：").append(running?"重新下载":"不再下载").toString());
 				}
 			}
 		}
@@ -168,13 +168,13 @@ public class ImageDownloader {
 			case FILE : 
 				if(onCompleteListener != null){
 					if(cacheFile != null && cacheFile.exists() && cacheFile.length() > 0){
-						if(imageLoader.getConfiguration().isDebugMode()){
-							Log.d(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("下载成功").append("：").append(requestName).toString());
+						if(configuration.isDebugMode()){
+							Log.d(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载成功").append("：").append(requestName).toString());
 						}
 						onCompleteListener.onComplete(cacheFile);
 					}else{
-						if(imageLoader.getConfiguration().isDebugMode()){
-							Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("下载失败").append("：").append(requestName).toString());
+						if(configuration.isDebugMode()){
+							Log.w(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载失败").append("：").append(requestName).toString());
 						}
 						onCompleteListener.onFailed();
 					}
@@ -183,13 +183,13 @@ public class ImageDownloader {
 			case BYTE_ARRAY : 
 				if(onCompleteListener != null){
 					if(data != null && data.length > 0){
-						if(imageLoader.getConfiguration().isDebugMode()){
-							Log.d(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("下载成功").append("：").append(requestName).toString());
+						if(configuration.isDebugMode()){
+							Log.d(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载成功").append("：").append(requestName).toString());
 						}
 						onCompleteListener.onComplete(data);
 					}else{
-						if(imageLoader.getConfiguration().isDebugMode()){
-							Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("下载失败").append("：").append(requestName).toString());
+						if(configuration.isDebugMode()){
+							Log.w(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载失败").append("：").append(requestName).toString());
 						}
 						onCompleteListener.onFailed();
 					}
@@ -197,8 +197,8 @@ public class ImageDownloader {
 				break;
 			default : 
 				if(onCompleteListener != null){
-					if(imageLoader.getConfiguration().isDebugMode()){
-						Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer(name).append("：").append("下载失败").append("：").append(requestName).toString());
+					if(configuration.isDebugMode()){
+						Log.w(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载失败").append("：").append(requestName).toString());
 					}
 					onCompleteListener.onFailed();
 				}

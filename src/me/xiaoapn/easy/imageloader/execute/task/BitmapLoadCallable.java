@@ -1,3 +1,19 @@
+/*
+ * Copyright 2013 Peng fei Pan
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.xiaoapn.easy.imageloader.execute.task;
 
 import java.io.BufferedInputStream;
@@ -8,16 +24,13 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.ref.WeakReference;
 import java.util.concurrent.Callable;
 
-import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.decode.FileNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.decode.OnNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.download.ImageDownloader;
 import me.xiaoapn.easy.imageloader.download.OnCompleteListener;
-import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
-import me.xiaoapn.easy.imageloader.execute.TaskExecutor;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.IoUtils;
 import me.xiaoapn.easy.imageloader.util.Scheme;
@@ -29,32 +42,23 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
-import android.widget.ImageView;
 
-/**
- * 加载任务
- */
-public class LoadBitmapTask implements Callable<BitmapDrawable>{
+public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 	private static final String ERROR_UNSUPPORTED_SCHEME = "UIL doesn't support scheme(protocol) by default [%s]. You should implement this support yourself (BaseImageDownloader.getStreamFromOtherSource(...))";
 	private String logName;
 	private Request request;
-	private ImageLoader imageLoader;
-	private LoadFutureTask futureTask;
-	private WeakReference<ImageView> imageViewReference;
-
-	public LoadBitmapTask(ImageLoader imageLoader, Request request, ImageView imageView) {
-		this.request = request;
-		this.logName = getClass().getSimpleName();
-		this.imageLoader = imageLoader;
-		this.imageViewReference = new WeakReference<ImageView>(imageView);
-		this.futureTask = new LoadFutureTask(this);
-	}
+	private Configuration configuration;
 	
+	public BitmapLoadCallable(Request request, Configuration configuration) {
+		this.logName = getClass().getSimpleName();
+		this.request = request;
+		this.configuration = configuration;
+	}
+
 	@Override
-	public BitmapDrawable call() {
+	public BitmapDrawable call() throws Exception {
 		BitmapDrawable bitmapDrawable = null;
 		
 		final Scheme scheme = Scheme.ofUri(request.getImageUri());
@@ -63,147 +67,35 @@ public class LoadBitmapTask implements Callable<BitmapDrawable>{
 			OnNewBitmapInputStreamListener newBitmapInputStreamListener = null;
 			if(scheme == Scheme.HTTP || scheme == Scheme.HTTPS){
 				if(request.getOptions().getCacheConfig().isCacheInDisk()){
-					final File cacheFile = GeneralUtils.getCacheFile(imageLoader.getConfiguration(), request.getOptions(), GeneralUtils.encodeUrl(request.getImageUri()));
-					if(GeneralUtils.isAvailableOfFile(cacheFile, request.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), imageLoader, request.getName())){
+					final File cacheFile = GeneralUtils.getCacheFile(configuration, request.getOptions(), GeneralUtils.encodeUrl(request.getImageUri()));
+					if(GeneralUtils.isAvailableOfFile(cacheFile, request.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, request.getName())){
 						newBitmapInputStreamListener = new FileNewBitmapInputStreamListener(cacheFile);
 					}else{
-						newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(request.getName(), request.getImageUri(), cacheFile, request.getOptions().getMaxRetryCount(), imageLoader.getConfiguration().getHttpClient());
+						newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(request.getName(), request.getImageUri(), cacheFile, request.getOptions().getMaxRetryCount(), configuration.getHttpClient());
 					}
 				}else{
-					newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(request.getName(), request.getImageUri(), null, request.getOptions().getMaxRetryCount(), imageLoader.getConfiguration().getHttpClient());
+					newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(request.getName(), request.getImageUri(), null, request.getOptions().getMaxRetryCount(), configuration.getHttpClient());
 				}
 			}else{
 				newBitmapInputStreamListener = new OnNewBitmapInputStreamListener() {
 					@Override
 					public InputStream onNewBitmapInputStream() {
-						return getBitmapInputStream(imageLoader.getConfiguration().getContext(), scheme, request.getImageUri());
+						return getBitmapInputStream(configuration.getContext(), scheme, request.getImageUri());
 					}
 				};
 			}
 			
-			Bitmap bitmap = imageLoader.getConfiguration().getBitmapDecoder().decode(newBitmapInputStreamListener, request.getTargetSize(), imageLoader, request.getName());
+			Bitmap bitmap = configuration.getBitmapDecoder().decode(newBitmapInputStreamListener, request.getTargetSize(), configuration, request.getName());
 			if(bitmap != null){
-				bitmapDrawable = new BitmapDrawable(imageLoader.getConfiguration().getResources(), bitmap);
+				bitmapDrawable = new BitmapDrawable(configuration.getResources(), bitmap);
 			}
 		}
 		
 		return bitmapDrawable;
 	}
 	
-	/**
-	 * 获取Log名称
-	 * @return
-	 */
-	protected String getLogName() {
-		return logName;
-	}
-
-    /**
-     * 获取请求
-     * @return
-     */
-    public Request getRequest() {
-		return request;
-	}
-    
-	/**
-	 * 获取图片加载器
-	 * @return
-	 */
-	public ImageLoader getImageLoader() {
-		return imageLoader;
-	}
-
-	/**
-     * 获取ImageView
-     */
-	public ImageView getImageView() {
-        final ImageView imageView = imageViewReference.get();
-        if (this == getLoadBitmapTask(imageView)) {
-            return imageView;
-        }else{
-        	return null;
-        }
-    }
 	
 	/**
-	 * 取消
-	 * @param mayInterruptIfRunning
-	 * @return
-	 */
-	public boolean cancel(boolean mayInterruptIfRunning) {
-		return futureTask.cancel(mayInterruptIfRunning);
-	}
-	
-	/**
-	 * 执行
-	 * @param taskExecutor
-	 */
-	public void execute(TaskExecutor taskExecutor){
-		taskExecutor.execute(futureTask);
-	}
-    
-    /**
-     * 获取与给定ImageView关联的任务
-     * @param imageView 
-     * @return 
-     */
-    public static LoadBitmapTask getLoadBitmapTask(ImageView imageView) {
-        if (imageView != null) {
-            final Drawable drawable = imageView.getDrawable();
-            if (drawable instanceof AsyncDrawable) {
-                final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
-                return asyncDrawable.getLoadBitmapTask();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 取消加载工作
-     * @param imageLoader
-     * @param imageView
-     * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
-     */
-    public static boolean cancelLoadBitmapTask(ImageView imageView) {
-        final LoadBitmapTask loadBitmapTask = getLoadBitmapTask(imageView);
-        if (loadBitmapTask != null) {
-            loadBitmapTask.cancel(true);
-            if (loadBitmapTask.getImageLoader().getConfiguration().isDebugMode()) {
-                Log.w(loadBitmapTask.getImageLoader().getConfiguration().getLogTag(), new StringBuffer().append("取消加载任务").append("；").append(loadBitmapTask.getRequest().getName()).toString());
-            }
-            return true;
-        }else{
-        	return false;
-        }
-    }
-
-    /**
-     * 取消潜在的任务
-     * @param imageLoader
-     * @param request
-     * @param imageView
-     * @return true：取消成功；false：ImageView所关联的任务就是所需的无需取消
-     */
-    public static boolean cancelPotentialBitmapLoadTask(ImageLoader imageLoader, Request request, ImageView imageView) {
-        final LoadBitmapTask bitmapLoadTask = getLoadBitmapTask(imageView);
-        boolean result = true;
-        if (bitmapLoadTask != null) {
-            final String requestId = bitmapLoadTask.getRequest().getId();
-        	if (requestId.equals(request.getId()) && bitmapLoadTask.getImageView() == imageView) {
-                result = false;
-            }else{
-            	bitmapLoadTask.cancel(true);
-            	result = true;
-            }
-            if(imageLoader.getConfiguration().isDebugMode()){
-            	Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer().append((result?"取消":"无需取消")+"潜在的加载任务").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(bitmapLoadTask.getRequest().getName()).toString());
-            }
-        }
-        return result;
-    }
-    
-    /**
      * 获取网络输入流监听器
      * @param requestName
      * @param imageUrl
@@ -214,7 +106,7 @@ public class LoadBitmapTask implements Callable<BitmapDrawable>{
      */
     private OnNewBitmapInputStreamListener getNetNewBitmapInputStreamListener(String requestName, String imageUrl, File cacheFile, int maxRetryCount, HttpClient httpClient){
     	final NewBitmapInputStreamListenerHolder holder = new NewBitmapInputStreamListenerHolder();
-    	new ImageDownloader(requestName, imageUrl, cacheFile, maxRetryCount, httpClient, imageLoader, new OnCompleteListener() {
+    	new ImageDownloader(requestName, imageUrl, cacheFile, maxRetryCount, httpClient, configuration, new OnCompleteListener() {
 			@Override
 			public void onFailed() {}
 			
@@ -264,8 +156,8 @@ public class LoadBitmapTask implements Callable<BitmapDrawable>{
 			case DRAWABLE:
 				return getStreamFromDrawable(context, Scheme.DRAWABLE.crop(imageUri));
 			default:
-				if(imageLoader.getConfiguration().isDebugMode()){
-					Log.d(imageLoader.getConfiguration().getLogTag(), new StringBuffer(logName).append("：").append(String.format(ERROR_UNSUPPORTED_SCHEME, imageUri)).toString());
+				if(configuration.isDebugMode()){
+					Log.d(configuration.getLogTag(), new StringBuffer(logName).append("：").append(String.format(ERROR_UNSUPPORTED_SCHEME, imageUri)).toString());
 				}
 				return null;
 		}

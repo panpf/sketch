@@ -15,7 +15,7 @@
  */
 package me.xiaoapn.easy.imageloader.decode;
 
-import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 
@@ -27,9 +27,9 @@ public interface BitmapDecoder{
 	 * 解码
 	 * @param onNewBitmapInputStreamListener 创建新的用来读取位图的输入流
 	 * @param targetSize 目标尺寸
-	 * @param imageLoader 图片加载器
+	 * @param configuration 配置
 	 * @param requestName 请求名称
 	 * @return
 	 */
-	public Bitmap decode(OnNewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, ImageLoader imageLoader, String requestName);
+	public Bitmap decode(OnNewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName);
 }

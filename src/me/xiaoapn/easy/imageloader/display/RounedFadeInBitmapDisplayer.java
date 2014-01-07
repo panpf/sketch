@@ -1,6 +1,6 @@
 package me.xiaoapn.easy.imageloader.display;
 
-import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.execute.task.Request;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -39,7 +39,7 @@ public class RounedFadeInBitmapDisplayer implements BitmapDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, ImageLoader imageLoader, Request request) {
+	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, Configuration configuration, Request request) {
 		switch(bitmapType){
 			case FAILURE : 
 				if(bitmapDrawable != null){
@@ -49,7 +49,7 @@ public class RounedFadeInBitmapDisplayer implements BitmapDisplayer {
 				}
 				break;
 			case SUCCESS : 
-				bitmapDrawable = new BitmapDrawable(imageLoader.getConfiguration().getResources(), roundCorners(bitmapDrawable.getBitmap(), imageView, roundPixels));;
+				bitmapDrawable = new BitmapDrawable(configuration.getResources(), roundCorners(bitmapDrawable.getBitmap(), imageView, roundPixels));;
 				if(!isFromMemoryCache && bitmapDrawable != null){
 					fadeIn(imageView, bitmapDrawable);
 				}else{

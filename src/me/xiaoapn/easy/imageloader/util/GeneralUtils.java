@@ -23,7 +23,6 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import me.xiaoapn.easy.imageloader.Configuration;
-import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.Options;
 
 import org.apache.http.client.HttpClient;
@@ -216,35 +215,35 @@ public class GeneralUtils {
 	 * 判断给定文件是否可以使用
 	 * @param file
 	 * @param periodOfValidity
-	 * @param imageLoader
+	 * @param configuration
 	 * @param requestName
 	 * @return
 	 */
-	public static boolean isAvailableOfFile(File file, int periodOfValidity, ImageLoader imageLoader, String requestName){
+	public static boolean isAvailableOfFile(File file, int periodOfValidity, Configuration configuration, String requestName){
 		if(file ==null){
-			if(imageLoader.getConfiguration().isDebugMode()){
-				Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件为null").append("：").append(requestName).toString());
+			if(configuration.isDebugMode()){
+				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件为null").append("：").append(requestName).toString());
 			}
 			return false;
 		}
 		
 		if(!file.exists()){
-			if(imageLoader.getConfiguration().isDebugMode()){
-				Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件不存在").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
+			if(configuration.isDebugMode()){
+				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件不存在").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
 			}
 			return false;
 		}
 		
 		if(file.length() <= 0){
-			if(imageLoader.getConfiguration().isDebugMode()){
-				Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件长度为0").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
+			if(configuration.isDebugMode()){
+				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件长度为0").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
 			}
 			return false;
 		}
 		
 		if(periodOfValidity <= 0){
-			if(imageLoader.getConfiguration().isDebugMode()){
-				Log.d(imageLoader.getConfiguration().getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件永久有效").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
+			if(configuration.isDebugMode()){
+				Log.d(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件永久有效").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
 			}
 			return true;
 		}
@@ -254,14 +253,14 @@ public class GeneralUtils {
 		calendar.add(Calendar.MILLISECOND, -periodOfValidity);
 		if(calendar.getTimeInMillis() >= file.lastModified()){
 			file.delete();
-			if(imageLoader.getConfiguration().isDebugMode()){
-				Log.w(imageLoader.getConfiguration().getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件过期已删除").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
+			if(configuration.isDebugMode()){
+				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件过期已删除").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
 			}
 			return false;
 		}
 		
-		if(imageLoader.getConfiguration().isDebugMode()){
-			Log.d(imageLoader.getConfiguration().getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件未过期").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
+		if(configuration.isDebugMode()){
+			Log.d(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件未过期").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
 		}
 		return true;
 	}
@@ -274,8 +273,6 @@ public class GeneralUtils {
 			return url;
 		}
 	}
-	
-
 
 	/**
 	 * 获取缓存文件，将优先考虑options指定的缓存目录，然后考虑当前configuration指定的缓存目录，然后考虑通过context获取默认的应用缓存目录，再然后就要返回null了

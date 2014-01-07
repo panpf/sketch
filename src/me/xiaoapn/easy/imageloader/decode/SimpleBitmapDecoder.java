@@ -18,7 +18,7 @@ package me.xiaoapn.easy.imageloader.decode;
 
 import java.io.InputStream;
 
-import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.IoUtils;
 import android.graphics.Bitmap;
@@ -40,7 +40,7 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	}
 	
 	@Override
-	public Bitmap decode(OnNewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, ImageLoader imageLoader, String requestName) {
+	public Bitmap decode(OnNewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName) {
 		Bitmap bitmap = null;
 		Options options = new Options();
 		int outWidth = 0;
@@ -63,8 +63,8 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 			}
 		}
 		
-		if(imageLoader.getConfiguration().isDebugMode()){
-			writeLog(imageLoader, requestName, bitmap != null, outWidth, outHeight, targetSize, options.inSampleSize, bitmap);
+		if(configuration.isDebugMode()){
+			writeLog(configuration, requestName, bitmap != null, outWidth, outHeight, targetSize, options.inSampleSize, bitmap);
 		}
 		
 		return bitmap;
@@ -72,7 +72,7 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	
 	/**
 	 * 输出LOG
-	 * @param imageLoader
+	 * @param configuration
 	 * @param requestName
 	 * @param success
 	 * @param outWidth
@@ -80,7 +80,7 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	 * @param inSimpleSize
 	 * @param bitmap
 	 */
-	private void writeLog(ImageLoader imageLoader, String requestName, boolean success, int outWidth, int outHeight, ImageSize targetSize, int inSimpleSize, Bitmap bitmap){
+	private void writeLog(Configuration configuration, String requestName, boolean success, int outWidth, int outHeight, ImageSize targetSize, int inSimpleSize, Bitmap bitmap){
 		String log = new StringBuffer(logName)
 		.append("：").append(success?"解码成功":"解码失败")
 		.append("：").append("原图尺寸").append("=").append(outWidth).append("x").append(outHeight)
@@ -90,9 +90,9 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 		.append("；").append(requestName)
 		.toString();
 		if(success){
-			Log.d(imageLoader.getConfiguration().getLogTag(), log);
+			Log.d(configuration.getLogTag(), log);
 		}else{
-			Log.w(imageLoader.getConfiguration().getLogTag(), log);
+			Log.w(configuration.getLogTag(), log);
 		}
 	}
 	

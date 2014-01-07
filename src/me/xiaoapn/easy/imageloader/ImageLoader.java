@@ -19,7 +19,7 @@ package me.xiaoapn.easy.imageloader;
 import java.io.File;
 
 import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
-import me.xiaoapn.easy.imageloader.execute.task.LoadBitmapTask;
+import me.xiaoapn.easy.imageloader.execute.task.BitmapLoadTask;
 import me.xiaoapn.easy.imageloader.execute.task.Request;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
@@ -99,9 +99,9 @@ public class ImageLoader{
 		Request request = new Request(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUri), targetSize), imageUri, imageUri, options, targetSize);
 		
 		//尝试显示
-		if(!show(request, imageView) && LoadBitmapTask.cancelPotentialBitmapLoadTask(this, request, imageView)){
+		if(!show(request, imageView) && BitmapLoadTask.cancelPotentialBitmapLoadTask(request, imageView, getConfiguration())){
 			//创建加载任务
-			LoadBitmapTask bitmapLoadTask = new LoadBitmapTask(this, request, imageView);
+			BitmapLoadTask bitmapLoadTask = new BitmapLoadTask(request, imageView, getConfiguration());
 			
 			//显示默认图片
 			BitmapDrawable loadingBitmapDrawable = request.getOptions().getLoadingDrawable();
@@ -109,7 +109,7 @@ public class ImageLoader{
 			imageView.setImageDrawable(loadingAsyncDrawable);
 			
 			//提交加载任务
-			bitmapLoadTask.execute(getConfiguration().getTaskExecutor());
+			getConfiguration().getTaskExecutor().execute(bitmapLoadTask);
 		}
 	}
 	

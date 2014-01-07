@@ -1,6 +1,6 @@
 package me.xiaoapn.easy.imageloader.display;
 
-import me.xiaoapn.easy.imageloader.ImageLoader;
+import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.execute.task.Request;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
@@ -15,8 +15,8 @@ public interface BitmapDisplayer {
 	 * @param bitmapDrawable
 	 * @param bitmapType
 	 * @param isFromMemoryCache
-	 * @param imageLoader
+	 * @param configuration
 	 * @param request
 	 */
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, ImageLoader imageLoader, Request request);
+	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, Configuration configuration, Request request);
 }
