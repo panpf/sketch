@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader.execute.task;
+package me.xiaoapn.easy.imageloader.task;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.FutureTask;

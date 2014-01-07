@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader.execute.task;
+package me.xiaoapn.easy.imageloader.task;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
