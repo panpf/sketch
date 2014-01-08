@@ -53,12 +53,14 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 	private Request request;
 	private Configuration configuration;
 	private ReentrantLock reentrantLock;
+	private ImageViewAware imageViewAware;
 	
-	public BitmapLoadCallable(Request request, ReentrantLock reentrantLock, Configuration configuration) {
+	public BitmapLoadCallable(Request request, ImageViewAware imageViewAware, ReentrantLock reentrantLock, Configuration configuration) {
 		this.logName = getClass().getSimpleName();
 		this.request = request;
 		this.reentrantLock = reentrantLock;
 		this.configuration = configuration;
+		this.imageViewAware = imageViewAware;
 	}
 
 	@Override
@@ -94,6 +96,13 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 					
 					Bitmap bitmap = configuration.getBitmapDecoder().decode(newBitmapInputStreamListener, request.getTargetSize(), configuration, request.getName());
 					if(bitmap != null){
+						if(request.getOptions().getBitmapProcessor() != null){
+							Bitmap newBitmap = request.getOptions().getBitmapProcessor().process(bitmap, imageViewAware);
+							if(newBitmap != bitmap){
+								bitmap.recycle();
+								bitmap = newBitmap;
+							}
+						}
 						if (Utils.hasHoneycomb()) {
 		                    // Running on Honeycomb or newer, so wrap in a standard BitmapDrawable
 		                    bitmapDrawable = new BitmapDrawable(configuration.getResources(), bitmap);

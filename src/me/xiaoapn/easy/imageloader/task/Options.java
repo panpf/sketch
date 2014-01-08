@@ -14,11 +14,12 @@
  * limitations under the License.
  */
 
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.task;
 
 import me.xiaoapn.easy.imageloader.cache.CacheConfig;
 import me.xiaoapn.easy.imageloader.display.BitmapDisplayer;
 import me.xiaoapn.easy.imageloader.display.FadeInBitmapDisplayer;
+import me.xiaoapn.easy.imageloader.process.BitmapProcessor;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import android.content.res.Resources;
 import android.graphics.BitmapFactory;
@@ -34,6 +35,7 @@ public class Options{
 	private BitmapDrawable failureDrawable;	//加载失败时显示的图片
 	private ImageSize maxSize;	//最大尺寸
 	private CacheConfig cacheConfig;	//缓存配置
+	private BitmapProcessor bitmapProcessor;	//位图处理器
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
 	
 	private Options(){}
@@ -165,6 +167,22 @@ public class Options{
 	}
 	
 	/**
+	 * 获取位图处理器
+	 * @return
+	 */
+	public BitmapProcessor getBitmapProcessor() {
+		return bitmapProcessor;
+	}
+
+	/**
+	 * 设置位图处理器
+	 * @param bitmapProcessor
+	 */
+	public void setBitmapProcessor(BitmapProcessor bitmapProcessor) {
+		this.bitmapProcessor = bitmapProcessor;
+	}
+
+	/**
 	 * 获取位图显示器
 	 * @return
 	 */
@@ -290,6 +308,15 @@ public class Options{
 		 */
 		public Builder setMaxSize(ImageSize maxSize) {
 			options.setMaxSize(maxSize);
+			return this;
+		}
+
+		/**
+		 * 设置位图处理器
+		 * @param bitmapProcessor
+		 */
+		public Builder setBitmapProcessor(BitmapProcessor bitmapProcessor) {
+			options.setBitmapProcessor(bitmapProcessor);
 			return this;
 		}
 		

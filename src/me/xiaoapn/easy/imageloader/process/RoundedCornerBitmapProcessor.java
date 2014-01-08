@@ -1,7 +1,22 @@
-package me.xiaoapn.easy.imageloader.display;
+/*
+ * Copyright 2013 Peng fei Pan
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
-import me.xiaoapn.easy.imageloader.Configuration;
-import me.xiaoapn.easy.imageloader.task.Request;
+package me.xiaoapn.easy.imageloader.process;
+
+import me.xiaoapn.easy.imageloader.task.ImageViewAware;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -10,16 +25,13 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
 
 /**
- * 圆角位图显示器，在显示位图之前会将位图处理成圆角的
+ * 圆角位图处理器
  */
-public class RounedFadeInBitmapDisplayer implements BitmapDisplayer {
+public class RoundedCornerBitmapProcessor implements BitmapProcessor {
+	private static final String TAG = RoundedCornerBitmapProcessor.class.getSimpleName();
 	private int roundPixels;
 	
 	/**
@@ -27,47 +39,30 @@ public class RounedFadeInBitmapDisplayer implements BitmapDisplayer {
 	 * @param roundPixels 圆角角度
 	 * @param animationGenerator 动画生成器
 	 */
-	public RounedFadeInBitmapDisplayer(int roundPixels){
+	public RoundedCornerBitmapProcessor(int roundPixels){
 		this.roundPixels = roundPixels;
 	}
 	
 	/**
 	 * 创建一个圆角位图显示器，圆角角度默认为18并且动画生成器使用AlphaAnimationGenerator
 	 */
-	public RounedFadeInBitmapDisplayer(){
+	public RoundedCornerBitmapProcessor(){
 		this(18);
 	}
 	
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Request request, Configuration configuration) {
-		switch(bitmapType){
-			case FAILURE : 
-				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
-					fadeIn(imageView, bitmapDrawable);
-				}else{
-					imageView.setImageDrawable(null);
-				}
-				break;
-			case SUCCESS : 
-				bitmapDrawable = new BitmapDrawable(configuration.getResources(), roundCorners(bitmapDrawable.getBitmap(), imageView, roundPixels));;
-				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
-					fadeIn(imageView, bitmapDrawable);
-				}else{
-					imageView.setImageDrawable(null);
-				}
-				break;
-		}
+	public String getTag() {
+		return TAG;
 	}
-	
-	/**
-	 * 渐入
-	 * @param imageView
-	 * @param bitmapDrawable
-	 */
-	private void fadeIn(ImageView imageView, BitmapDrawable bitmapDrawable){
-		TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(android.R.color.transparent), bitmapDrawable});
-		imageView.setImageDrawable(transitionDrawable);
-		transitionDrawable.startTransition(200);
+
+	@Override
+	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware) {
+		ImageView imageView = imageViewAware.getImageView();
+		if(imageView != null){
+			return roundCorners(bitmap, imageView, roundPixels);
+		}else{
+			return bitmap;
+		}
 	}
 	
 	/**

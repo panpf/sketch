@@ -24,6 +24,7 @@ import me.xiaoapn.easy.imageloader.decode.SimpleBitmapDecoder;
 import me.xiaoapn.easy.imageloader.display.FadeInBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.execute.BaseTaskExecutor;
 import me.xiaoapn.easy.imageloader.execute.TaskExecutor;
+import me.xiaoapn.easy.imageloader.task.Options;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.Utils;
 

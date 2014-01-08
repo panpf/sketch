@@ -17,7 +17,6 @@
 package me.xiaoapn.easy.imageloader.task;
 
 import me.xiaoapn.easy.imageloader.Configuration;
-import me.xiaoapn.easy.imageloader.Options;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.Scheme;
 import me.xiaoapn.easy.imageloader.util.Utils;

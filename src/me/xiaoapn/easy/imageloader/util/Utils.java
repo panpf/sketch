@@ -23,7 +23,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import me.xiaoapn.easy.imageloader.Configuration;
-import me.xiaoapn.easy.imageloader.Options;
+import me.xiaoapn.easy.imageloader.process.BitmapProcessor;
+import me.xiaoapn.easy.imageloader.task.Options;
 
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.params.ConnManagerParams;
@@ -296,12 +297,26 @@ public class Utils {
 	
 	/**
 	 * 创建ID
-	 * @param url
-	 * @param imageSize
+	 * @param uri
+	 * @param targetSize
+	 * @param bitmapProcessor
 	 * @return
 	 */
-	public static String createId(String url, ImageSize imageSize){
-		return new StringBuffer().append(url).append("_").append(imageSize.getWidth()).append("x").append(imageSize.getHeight()).toString();
+	public static String createId(String uri, ImageSize targetSize, BitmapProcessor bitmapProcessor){
+		StringBuffer stringBuffer = new StringBuffer(uri);
+		if(targetSize != null){
+			stringBuffer.append("_")
+			.append(targetSize.getWidth())
+			.append("x")
+			.append(targetSize.getHeight());
+		}
+		if(bitmapProcessor != null){
+			String tag = bitmapProcessor.getTag();
+			if(tag != null){
+				stringBuffer.append(tag);
+			}
+		}
+		return stringBuffer.toString();
 	}
 	
     public static boolean hasFroyo() {
