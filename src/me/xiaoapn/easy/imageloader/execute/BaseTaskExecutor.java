@@ -29,7 +29,7 @@ public class BaseTaskExecutor implements TaskExecutor {
 	}
 	
 	public BaseTaskExecutor(){
-		this(1, 1, 20);
+		this(5, 10, 20);
 	}
 	
 	@Override
