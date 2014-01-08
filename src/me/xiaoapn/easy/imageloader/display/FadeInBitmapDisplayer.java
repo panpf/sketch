@@ -74,6 +74,7 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 		Drawable firstDrawable  = oldDrawable != null?oldDrawable:new ColorDrawable(android.R.color.transparent);
 		TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{firstDrawable, bitmapDrawable});
 		imageView.setImageDrawable(transitionDrawable);
+		transitionDrawable.setCrossFadeEnabled(true);
 		transitionDrawable.startTransition(200);
 	}
 }

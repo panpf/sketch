@@ -313,6 +313,7 @@ public class Utils {
 		if(bitmapProcessor != null){
 			String tag = bitmapProcessor.getTag();
 			if(tag != null){
+				stringBuffer.append("_");
 				stringBuffer.append(tag);
 			}
 		}
