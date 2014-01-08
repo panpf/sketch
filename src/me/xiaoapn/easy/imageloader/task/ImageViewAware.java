@@ -41,8 +41,8 @@ public class ImageViewAware{
 	 *
 	 * @param imageView {@link android.widget.ImageView ImageView} to work with
 	 */
-	public ImageViewAware(ImageView imageView, BitmapLoadTask bitmapLoadTask) {
-		this(imageView, bitmapLoadTask, true);
+	public ImageViewAware(ImageView imageView) {
+		this(imageView, true);
 	}
 
 	/**
@@ -58,10 +58,9 @@ public class ImageViewAware{
 	 *                            <b>false</b> - then {@link #getWidth()} and {@link #getHeight()} will <b>NOT</b>
 	 *                            consider actual size of ImageView, just layout parameters.
 	 */
-	public ImageViewAware(ImageView imageView, BitmapLoadTask bitmapLoadTask, boolean checkActualViewSize) {
+	public ImageViewAware(ImageView imageView, boolean checkActualViewSize) {
 		this.imageViewRef = new WeakReference<ImageView>(imageView);
 		this.checkActualViewSize = checkActualViewSize;
-		this.bitmapLoadTask = bitmapLoadTask;
 	}
 
 	/**
@@ -126,16 +125,24 @@ public class ImageViewAware{
 
 	public ImageView getImageView() {
 		final ImageView imageView = imageViewRef.get();
-		BitmapLoadTask newBitmapLoadTask = BitmapLoadTask.getBitmapLoadTask(imageView);
-        if (newBitmapLoadTask != null && newBitmapLoadTask == bitmapLoadTask) {
-            return imageView;
+		if (bitmapLoadTask != null) {
+			BitmapLoadTask newBitmapLoadTask = BitmapLoadTask.getBitmapLoadTask(imageView);
+            if(newBitmapLoadTask != null && newBitmapLoadTask == bitmapLoadTask){
+            	return imageView;
+            }else{
+            	return null;
+            }
         }else{
-        	return null;
+        	return imageView;
         }
 	}
 
 	public boolean isCollected() {
 		return getImageView() == null;
+	}
+	
+	public void setBitmapLoadTask(BitmapLoadTask bitmapLoadTask) {
+		this.bitmapLoadTask = bitmapLoadTask;
 	}
 
 	private static int getImageViewFieldValue(Object object, String fieldName) {

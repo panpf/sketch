@@ -33,12 +33,13 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 	private Configuration configuration;
 	private ImageViewAware imageViewAware;
 	
-	public BitmapLoadTask(Request request, ImageView imageView, ReentrantLock reentrantLock, Configuration configuration) {
+	public BitmapLoadTask(Request request, ImageViewAware imageViewAware, ReentrantLock reentrantLock, Configuration configuration) {
 		super(new BitmapLoadCallable(request, reentrantLock, configuration));
 		this.request = request;
 		this.logName = getClass().getSimpleName();
 		this.configuration = configuration;
-		this.imageViewAware = new ImageViewAware(imageView, this);
+		this.imageViewAware = imageViewAware;
+		this.imageViewAware.setBitmapLoadTask(this);
 	}
 	
 	@Override

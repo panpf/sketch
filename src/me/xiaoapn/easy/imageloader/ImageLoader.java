@@ -20,6 +20,7 @@ import java.io.File;
 
 import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
 import me.xiaoapn.easy.imageloader.task.BitmapLoadTask;
+import me.xiaoapn.easy.imageloader.task.ImageViewAware;
 import me.xiaoapn.easy.imageloader.task.Request;
 import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
@@ -95,19 +96,15 @@ public class ImageLoader{
 		}
 		
 		//计算目标尺寸并创建请求
-		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageView, options.getMaxSize().getWidth(), options.getMaxSize().getHeight());
+		ImageViewAware imageViewAware = new ImageViewAware(imageView);
+		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageViewAware, options.getMaxSize());
 		Request request = new Request(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUri), targetSize), imageUri, imageUri, options, targetSize);
 		
 		//尝试显示
 		if(request.getOptions().getCacheConfig().isCacheInMemory()){
 			BitmapDrawable cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
 			if(cacheBitmap != null){
-				//显示图片
-//				getConfiguration().getHandler().post(new BitmapDisplayTask(getConfiguration(), imageView, cacheBitmap, BitmapType.SUCCESS, true, request));
 				imageView.setImageDrawable(cacheBitmap);
-//				if(getConfiguration().isDebugMode()){
-//					Log.d(getConfiguration().getLogTag(), new StringBuffer().append("从缓存中加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
-//				}
 				return;
 			}
 		}
@@ -115,7 +112,7 @@ public class ImageLoader{
 		//尝试取消正在加载的任务
 		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(request, imageView, getConfiguration())){
 			//创建加载任务
-			BitmapLoadTask bitmapLoadTask = new BitmapLoadTask(request, imageView, getConfiguration().getTaskExecutor().getLockById(request.getId()), getConfiguration());
+			BitmapLoadTask bitmapLoadTask = new BitmapLoadTask(request, imageViewAware, getConfiguration().getTaskExecutor().getLockById(request.getId()), getConfiguration());
 			
 			//显示默认图片
 			BitmapDrawable loadingBitmapDrawable = request.getOptions().getLoadingDrawable();
