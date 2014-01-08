@@ -18,4 +18,8 @@ public interface BitmapDisplayer {
 	 * @param request
 	 */
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Request request, Configuration configuration);
+	
+	public enum BitmapType {
+		SUCCESS, FAILURE;
+	}
 }

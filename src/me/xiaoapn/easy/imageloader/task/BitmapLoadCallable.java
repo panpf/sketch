@@ -31,7 +31,7 @@ import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.decode.FileNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.decode.OnNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.download.ImageDownloader;
-import me.xiaoapn.easy.imageloader.download.OnCompleteListener;
+import me.xiaoapn.easy.imageloader.download.ImageDownloader.OnCompleteListener;
 import me.xiaoapn.easy.imageloader.util.IoUtils;
 import me.xiaoapn.easy.imageloader.util.RecyclingBitmapDrawable;
 import me.xiaoapn.easy.imageloader.util.Scheme;
@@ -125,7 +125,6 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 		
 		return bitmapDrawable;
 	}
-	
 	
 	/**
      * 获取网络输入流监听器

@@ -17,7 +17,7 @@
 package me.xiaoapn.easy.imageloader.task;
 
 import me.xiaoapn.easy.imageloader.Configuration;
-import me.xiaoapn.easy.imageloader.display.BitmapType;
+import me.xiaoapn.easy.imageloader.display.BitmapDisplayer.BitmapType;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 

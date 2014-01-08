@@ -209,4 +209,10 @@ public class ImageDownloader {
 	private enum Result{
 		FILE, BYTE_ARRAY, FAILURE;
 	}
+	
+	public interface OnCompleteListener {
+		public void onComplete(File cacheFile);
+		public void onComplete(byte[] data);
+		public void onFailed();
+	}
 }

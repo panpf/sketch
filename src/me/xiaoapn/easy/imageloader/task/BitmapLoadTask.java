@@ -20,7 +20,7 @@ import java.util.concurrent.FutureTask;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaoapn.easy.imageloader.Configuration;
-import me.xiaoapn.easy.imageloader.display.BitmapType;
+import me.xiaoapn.easy.imageloader.display.BitmapDisplayer.BitmapType;
 import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
