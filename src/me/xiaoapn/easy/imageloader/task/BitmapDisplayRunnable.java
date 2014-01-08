@@ -19,6 +19,7 @@ package me.xiaoapn.easy.imageloader.task;
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.display.BitmapType;
 import android.graphics.drawable.BitmapDrawable;
+import android.widget.ImageView;
 
 public class BitmapDisplayRunnable implements Runnable {
 	private Request request;
@@ -37,6 +38,9 @@ public class BitmapDisplayRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		request.getOptions().getBitmapDisplayer().display(imageViewAware, bitmapDrawable, bitmapType, request, configuration);
+		ImageView imageView = imageViewAware.getImageView();
+		if(imageView != null){
+			request.getOptions().getBitmapDisplayer().display(imageView, bitmapDrawable, bitmapType, request, configuration);
+		}
 	}
 }

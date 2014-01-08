@@ -17,7 +17,6 @@
 package me.xiaoapn.easy.imageloader.display;
 
 import me.xiaoapn.easy.imageloader.Configuration;
-import me.xiaoapn.easy.imageloader.task.ImageViewAware;
 import me.xiaoapn.easy.imageloader.task.Request;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -37,10 +36,8 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 	}
 
 	@Override
-	public void display(ImageViewAware imageViewAware, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Request request, Configuration configuration) {
-		ImageView imageView = imageViewAware.getImageView();
-		if(imageView != null){
-			switch(bitmapType){
+	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Request request, Configuration configuration) {
+		switch(bitmapType){
 			case FAILURE : 
 				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
 					fadeIn(imageView, bitmapDrawable);
@@ -64,7 +61,6 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 					}
 				}
 				break;
-			}
 		}
 	}
 	
