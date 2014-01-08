@@ -20,25 +20,23 @@ import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.display.BitmapType;
 import android.graphics.drawable.BitmapDrawable;
 
-public class BitmapDisplayTask implements Runnable {
+public class BitmapDisplayRunnable implements Runnable {
 	private Request request;
-	private boolean isFromMemoryCache;
-	private BitmapType bitmapType;
 	private Configuration configuration;
 	private BitmapDrawable bitmapDrawable;
+	private BitmapType bitmapType;
 	private ImageViewAware imageViewAware;
 
-	public BitmapDisplayTask(Configuration configuration, ImageViewAware imageViewAware, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, Request request) {
+	public BitmapDisplayRunnable(ImageViewAware imageViewAware, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Request request, Configuration configuration) {
 		this.request = request;
-		this.bitmapType = bitmapType;
 		this.configuration = configuration;
 		this.bitmapDrawable = bitmapDrawable;
+		this.bitmapType = bitmapType;
 		this.imageViewAware = imageViewAware;
-		this.isFromMemoryCache = isFromMemoryCache;
 	}
 
 	@Override
 	public void run() {
-		request.getOptions().getBitmapDisplayer().display(imageViewAware, bitmapDrawable, bitmapType, isFromMemoryCache, configuration, request);
+		request.getOptions().getBitmapDisplayer().display(imageViewAware, bitmapDrawable, bitmapType, request, configuration);
 	}
 }

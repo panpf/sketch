@@ -54,10 +54,10 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 			
 			//尝试取出ImageView并显示
 			if (!imageViewAware.isCollected()) {
-				if(bitmapDrawable != null){
-					configuration.getHandler().post(new BitmapDisplayTask(configuration, imageViewAware, bitmapDrawable, BitmapType.SUCCESS, false, request));
+				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
+					configuration.getHandler().post(new BitmapDisplayRunnable(imageViewAware, bitmapDrawable, BitmapType.SUCCESS, request, configuration));
 				}else{
-					configuration.getHandler().post(new BitmapDisplayTask(configuration, imageViewAware, request.getOptions().getFailureDrawable(), BitmapType.FAILURE, false, request));
+					configuration.getHandler().post(new BitmapDisplayRunnable(imageViewAware, request.getOptions().getFailureDrawable(), BitmapType.FAILURE, request, configuration));
 				}
 			}else{
 				if(configuration.isDebugMode()){

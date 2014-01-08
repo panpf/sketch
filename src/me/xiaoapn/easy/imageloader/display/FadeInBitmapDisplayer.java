@@ -37,7 +37,7 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 	}
 
 	@Override
-	public void display(ImageViewAware imageViewAware, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, Configuration configuration, Request request) {
+	public void display(ImageViewAware imageViewAware, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Request request, Configuration configuration) {
 		ImageView imageView = imageViewAware.getImageView();
 		if(imageView != null){
 			switch(bitmapType){
@@ -53,16 +53,9 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 				break;
 			case SUCCESS : 
 				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
-					if(isFromMemoryCache){
-						imageView.setImageDrawable(bitmapDrawable);
-						if(configuration.isDebugMode()){
-							Log.i(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示成功 - 内存缓存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
-						}
-					}else{
-						fadeIn(imageView, bitmapDrawable);
-						if(configuration.isDebugMode()){
-							Log.i(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
-						}
+					fadeIn(imageView, bitmapDrawable);
+					if(configuration.isDebugMode()){
+						Log.i(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 					}
 				}else{
 					imageView.setImageDrawable(null);

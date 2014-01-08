@@ -14,9 +14,8 @@ public interface BitmapDisplayer {
 	 * @param imageViewAware
 	 * @param bitmapDrawable
 	 * @param bitmapType
-	 * @param isFromMemoryCache
 	 * @param configuration
 	 * @param request
 	 */
-	public void display(ImageViewAware imageViewAware, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, Configuration configuration, Request request);
+	public void display(ImageViewAware imageViewAware, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Request request, Configuration configuration);
 }
