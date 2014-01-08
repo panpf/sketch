@@ -33,7 +33,8 @@ import android.widget.ListView;
 
 public class MainActivity extends FragmentActivity {
 	private DrawerLayout drawerLayout;
-	private ListView listView;
+	private ListView viewListView;
+	private ListView typeListView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,16 +44,24 @@ public class MainActivity extends FragmentActivity {
 		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_left, GravityCompat.START);
 		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, GravityCompat.END);
 		
-		listView = (ListView) findViewById(R.id.list_main);
-		listView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery"));
-		listView.setOnItemClickListener(new OnItemClickListener() {
+		viewListView = (ListView) findViewById(R.id.list_main_views);
+		viewListView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery", "ViewPager"));
+		viewListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				set(position - listView.getHeaderViewsCount());
+				set(position - viewListView.getHeaderViewsCount());
 				drawerLayout.closeDrawers();
 			}
 		});
 		
+		typeListView = (ListView) findViewById(R.id.list_main_types);
+		typeListView.setAdapter(new StringAdapter(getBaseContext(), "http://", "file://", "content://", "assets://", "drawable://"));
+		typeListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				drawerLayout.closeDrawers();
+			}
+		});
 		set(0);
 	}
 	

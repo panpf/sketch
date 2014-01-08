@@ -126,7 +126,13 @@ public class ImageLoader{
 	
 	/**
 	 * 显示图片
-	 * @param imageUrl 图片下载地址
+	 * @param imageUri 图片Uri，支持以下5种Uri
+	 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
+	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+	 * <br>String imageUri = "assets://image.png"; // from assets
+	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+	 * </blockquote>
 	 * @param cacheFile 缓存文件
 	 * @param imageView 显示图片的视图
 	 */
@@ -152,29 +158,6 @@ public class ImageLoader{
 	public void display(File imageFile, ImageView imageView){
 		display(imageFile, imageView, null);
 	}
-	
-//	/**
-//	 * 显示图片
-//	 * @param request 请求
-//	 * @param imageView
-//	 * @return true：图片缓存中有图片并且已经显示了；false：缓存中没有对应的图片，需要重新加载
-//	 */
-//	private boolean show(Request request, ImageView imageView){
-//		if(request.getOptions().getCacheConfig().isCacheInMemory()){
-//			BitmapDrawable cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
-//			if(cacheBitmap != null){
-//				//显示图片
-////				getConfiguration().getHandler().post(new DisplayBitmapTask(this, imageView, cacheBitmap, BitmapType.SUCCESS, true, request));
-//				imageView.setImageDrawable(cacheBitmap);
-//				
-//				if(getConfiguration().isDebugMode()){
-//					Log.d(getConfiguration().getLogTag(), new StringBuffer().append("从缓存中加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
-//				}
-//				return true;
-//			}
-//		}
-//		return false;
-//	}
 	
 	/**
 	 * 获取配置
