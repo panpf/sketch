@@ -1,14 +1,14 @@
 package me.xiaoapn.easy.imageloader.execute;
 
-import java.util.concurrent.FutureTask;
 import java.util.concurrent.locks.ReentrantLock;
 
-import android.graphics.drawable.BitmapDrawable;
+import me.xiaoapn.easy.imageloader.Configuration;
+import me.xiaoapn.easy.imageloader.task.BitmapLoadTask;
 
 /**
  * 任务执行器
  */
 public interface TaskExecutor {
-	public void execute(FutureTask<BitmapDrawable> futureTask);
+	public void execute(BitmapLoadTask bitmapLoadTask, Configuration configuration);
 	public ReentrantLock getLockById(String id);
 }

@@ -119,8 +119,8 @@ public class ImageLoader{
 			AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(getConfiguration().getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, bitmapLoadTask);
 			imageView.setImageDrawable(loadingAsyncDrawable);
 			
-			//提交加载任务
-			getConfiguration().getTaskExecutor().execute(bitmapLoadTask);
+			//提交任务
+			getConfiguration().getTaskExecutor().execute(bitmapLoadTask, getConfiguration());
 		}
 	}
 	
