@@ -1,6 +1,7 @@
 package me.xiaoapn.easy.imageloader.execute;
 
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.locks.ReentrantLock;
 
 import android.graphics.drawable.BitmapDrawable;
 
@@ -9,4 +10,5 @@ import android.graphics.drawable.BitmapDrawable;
  */
 public interface TaskExecutor {
 	public void execute(FutureTask<BitmapDrawable> futureTask);
+	public ReentrantLock getLockById(String id);
 }

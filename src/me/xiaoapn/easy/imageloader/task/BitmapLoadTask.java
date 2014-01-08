@@ -18,6 +18,7 @@ package me.xiaoapn.easy.imageloader.task;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.FutureTask;
+import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.display.BitmapType;
@@ -33,8 +34,8 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 	private Configuration configuration;
 	private WeakReference<ImageView> imageViewReference;
 	
-	public BitmapLoadTask(Request request, ImageView imageView, Configuration configuration) {
-		super(new BitmapLoadCallable(request, configuration));
+	public BitmapLoadTask(Request request, ImageView imageView, ReentrantLock reentrantLock, Configuration configuration) {
+		super(new BitmapLoadCallable(request, reentrantLock, configuration));
 		this.request = request;
 		this.logName = getClass().getSimpleName();
 		this.configuration = configuration;
@@ -49,11 +50,6 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 				bitmapDrawable = get();
 			} catch (Exception e) {
 				e.printStackTrace();
-			}
-			
-			/* 如果需要缓存的话就内存中的话 */
-			if(request.getOptions().getCacheConfig().isCacheInMemory() && bitmapDrawable != null){
-				configuration.getBitmapCacher().put(request.getId(), bitmapDrawable);
 			}
 			
 			//尝试取出ImageView并显示

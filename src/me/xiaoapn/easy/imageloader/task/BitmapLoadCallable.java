@@ -25,6 +25,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.Callable;
+import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.decode.FileNewBitmapInputStreamListener;
@@ -50,45 +51,59 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 	private String logName;
 	private Request request;
 	private Configuration configuration;
+	private ReentrantLock reentrantLock;
 	
-	public BitmapLoadCallable(Request request, Configuration configuration) {
+	public BitmapLoadCallable(Request request, ReentrantLock reentrantLock, Configuration configuration) {
 		this.logName = getClass().getSimpleName();
 		this.request = request;
+		this.reentrantLock = reentrantLock;
 		this.configuration = configuration;
 	}
 
 	@Override
 	public BitmapDrawable call() throws Exception {
 		BitmapDrawable bitmapDrawable = null;
-		
-		final Scheme scheme = Scheme.ofUri(request.getImageUri());
-		if(scheme != Scheme.UNKNOWN){
-			/* 初始化输入流获取监听器并解码图片 */
-			OnNewBitmapInputStreamListener newBitmapInputStreamListener = null;
-			if(scheme == Scheme.HTTP || scheme == Scheme.HTTPS){
-				if(request.getOptions().getCacheConfig().isCacheInDisk()){
-					final File cacheFile = GeneralUtils.getCacheFile(configuration, request.getOptions(), GeneralUtils.encodeUrl(request.getImageUri()));
-					if(GeneralUtils.isAvailableOfFile(cacheFile, request.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, request.getName())){
-						newBitmapInputStreamListener = new FileNewBitmapInputStreamListener(cacheFile);
+		reentrantLock.lock();
+		try{
+			bitmapDrawable = configuration.getBitmapCacher().get(request.getId());
+			if(bitmapDrawable == null){
+				final Scheme scheme = Scheme.ofUri(request.getImageUri());
+				if(scheme != Scheme.UNKNOWN){
+					/* 初始化输入流获取监听器并解码图片 */
+					OnNewBitmapInputStreamListener newBitmapInputStreamListener = null;
+					if(scheme == Scheme.HTTP || scheme == Scheme.HTTPS){
+						if(request.getOptions().getCacheConfig().isCacheInDisk()){
+							final File cacheFile = GeneralUtils.getCacheFile(configuration, request.getOptions(), GeneralUtils.encodeUrl(request.getImageUri()));
+							if(GeneralUtils.isAvailableOfFile(cacheFile, request.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, request.getName())){
+								newBitmapInputStreamListener = new FileNewBitmapInputStreamListener(cacheFile);
+							}else{
+								newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(request.getName(), request.getImageUri(), cacheFile, request.getOptions().getMaxRetryCount(), configuration.getHttpClient());
+							}
+						}else{
+							newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(request.getName(), request.getImageUri(), null, request.getOptions().getMaxRetryCount(), configuration.getHttpClient());
+						}
 					}else{
-						newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(request.getName(), request.getImageUri(), cacheFile, request.getOptions().getMaxRetryCount(), configuration.getHttpClient());
+						newBitmapInputStreamListener = new OnNewBitmapInputStreamListener() {
+							@Override
+							public InputStream onNewBitmapInputStream() {
+								return getBitmapInputStream(configuration.getContext(), scheme, request.getImageUri());
+							}
+						};
 					}
-				}else{
-					newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(request.getName(), request.getImageUri(), null, request.getOptions().getMaxRetryCount(), configuration.getHttpClient());
+					
+					Bitmap bitmap = configuration.getBitmapDecoder().decode(newBitmapInputStreamListener, request.getTargetSize(), configuration, request.getName());
+					if(bitmap != null){
+						bitmapDrawable = new BitmapDrawable(configuration.getResources(), bitmap);
+						if(request.getOptions().getCacheConfig().isCacheInMemory()){
+							configuration.getBitmapCacher().put(request.getId(), bitmapDrawable);
+						}
+					}
 				}
-			}else{
-				newBitmapInputStreamListener = new OnNewBitmapInputStreamListener() {
-					@Override
-					public InputStream onNewBitmapInputStream() {
-						return getBitmapInputStream(configuration.getContext(), scheme, request.getImageUri());
-					}
-				};
 			}
-			
-			Bitmap bitmap = configuration.getBitmapDecoder().decode(newBitmapInputStreamListener, request.getTargetSize(), configuration, request.getName());
-			if(bitmap != null){
-				bitmapDrawable = new BitmapDrawable(configuration.getResources(), bitmap);
-			}
+		}catch(Throwable throwable){
+			throwable.printStackTrace();
+		}finally{
+			reentrantLock.unlock();
 		}
 		
 		return bitmapDrawable;
