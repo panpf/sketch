@@ -21,7 +21,6 @@ import java.io.InputStream;
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.IoUtils;
-import me.xiaoapn.easy.imageloader.util.Utils;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -61,9 +60,9 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 				outHeight = options.outHeight;
 				options.inSampleSize = calculateInSampleSize(options, targetSize.getWidth(), targetSize.getHeight());
 				options.inJustDecodeBounds = false;
-				if (Utils.hasHoneycomb()) {
-			        addInBitmapOptions(options, configuration);
-			    }
+//				if (Utils.hasHoneycomb()) {
+//			        addInBitmapOptions(options, configuration);
+//			    }
 				bitmap = BitmapFactory.decodeStream(inputStream, null, options);
 				IoUtils.closeSilently(inputStream);
 			}
@@ -86,7 +85,7 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	    	if (configuration.getBitmapCacher() != null) {
 	    		// Try to find a bitmap to use for inBitmap.
 	    		Bitmap inBitmap = configuration.getBitmapCacher().getBitmapFromReusableSet(options);
-	    		if (inBitmap != null) {
+	    		if (inBitmap != null && !inBitmap.isRecycled()) {
 	    			// If a suitable bitmap has been found, set it as the value of
 	    			// inBitmap.
 	    			options.inBitmap = inBitmap;

@@ -95,7 +95,7 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 					}
 					
 					Bitmap bitmap = configuration.getBitmapDecoder().decode(newBitmapInputStreamListener, request.getTargetSize(), configuration, request.getName());
-					if(bitmap != null){
+					if(bitmap != null && !bitmap.isRecycled()){
 						if(request.getOptions().getBitmapProcessor() != null){
 							Bitmap newBitmap = request.getOptions().getBitmapProcessor().process(bitmap, imageViewAware);
 							if(newBitmap != bitmap){

@@ -68,7 +68,7 @@ public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
     		Bitmap item;
     		while(bitmapIterator.hasNext()){
     			item = bitmapIterator.next().get();
-    			if(item != null && item.isMutable()){
+    			if(item != null && item.isMutable() && !item.isRecycled()){
     				if(canUseForInBitmap(item, options)){
     					bitmap = item;
     					break;
