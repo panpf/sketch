@@ -16,7 +16,6 @@
 
 package me.xiaoapn.easy.imageloader.task;
 
-import java.lang.ref.WeakReference;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -32,14 +31,14 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 	private String logName;
 	private Request request;
 	private Configuration configuration;
-	private WeakReference<ImageView> imageViewReference;
+	private ImageViewAware imageViewAware;
 	
 	public BitmapLoadTask(Request request, ImageView imageView, ReentrantLock reentrantLock, Configuration configuration) {
 		super(new BitmapLoadCallable(request, reentrantLock, configuration));
 		this.request = request;
 		this.logName = getClass().getSimpleName();
 		this.configuration = configuration;
-		this.imageViewReference = new WeakReference<ImageView>(imageView);
+		this.imageViewAware = new ImageViewAware(imageView, this);
 	}
 	
 	@Override
@@ -53,12 +52,11 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 			}
 			
 			//尝试取出ImageView并显示
-			ImageView imageView = getImageView();
-			if (imageView != null) {
+			if (!imageViewAware.isCollected()) {
 				if(bitmapDrawable != null){
-					configuration.getHandler().post(new BitmapDisplayTask(configuration, imageView, bitmapDrawable, BitmapType.SUCCESS, false, request));
+					configuration.getHandler().post(new BitmapDisplayTask(configuration, imageViewAware, bitmapDrawable, BitmapType.SUCCESS, false, request));
 				}else{
-					configuration.getHandler().post(new BitmapDisplayTask(configuration, imageView, request.getOptions().getFailureDrawable(), BitmapType.FAILURE, false, request));
+					configuration.getHandler().post(new BitmapDisplayTask(configuration, imageViewAware, request.getOptions().getFailureDrawable(), BitmapType.FAILURE, false, request));
 				}
 			}else{
 				if(configuration.isDebugMode()){
@@ -72,18 +70,6 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 		}
 	}
 
-	/**
-     * 获取ImageView
-     */
-	public ImageView getImageView() {
-        final ImageView imageView = imageViewReference.get();
-        if (this == getBitmapLoadTask(imageView)) {
-            return imageView;
-        }else{
-        	return null;
-        }
-    }
-	
 	/**
 	 * 获取请求
 	 * @return
@@ -105,7 +91,7 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
      * @param imageView 
      * @return 
      */
-    public static BitmapLoadTask getBitmapLoadTask(ImageView imageView) {
+	public static BitmapLoadTask getBitmapLoadTask(ImageView imageView) {
         if (imageView != null) {
             final Drawable drawable = imageView.getDrawable();
             if (drawable instanceof AsyncDrawable) {

@@ -99,7 +99,21 @@ public class ImageLoader{
 		Request request = new Request(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUri), targetSize), imageUri, imageUri, options, targetSize);
 		
 		//尝试显示
-		if(!show(request, imageView) && BitmapLoadTask.cancelPotentialBitmapLoadTask(request, imageView, getConfiguration())){
+		if(request.getOptions().getCacheConfig().isCacheInMemory()){
+			BitmapDrawable cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
+			if(cacheBitmap != null){
+				//显示图片
+//				getConfiguration().getHandler().post(new BitmapDisplayTask(getConfiguration(), imageView, cacheBitmap, BitmapType.SUCCESS, true, request));
+				imageView.setImageDrawable(cacheBitmap);
+//				if(getConfiguration().isDebugMode()){
+//					Log.d(getConfiguration().getLogTag(), new StringBuffer().append("从缓存中加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+//				}
+				return;
+			}
+		}
+		
+		//尝试取消正在加载的任务
+		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(request, imageView, getConfiguration())){
 			//创建加载任务
 			BitmapLoadTask bitmapLoadTask = new BitmapLoadTask(request, imageView, getConfiguration().getTaskExecutor().getLockById(request.getId()), getConfiguration());
 			
@@ -142,28 +156,28 @@ public class ImageLoader{
 		display(imageFile, imageView, null);
 	}
 	
-	/**
-	 * 显示图片
-	 * @param request 请求
-	 * @param imageView
-	 * @return true：图片缓存中有图片并且已经显示了；false：缓存中没有对应的图片，需要重新加载
-	 */
-	private boolean show(Request request, ImageView imageView){
-		if(request.getOptions().getCacheConfig().isCacheInMemory()){
-			BitmapDrawable cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
-			if(cacheBitmap != null){
-				//显示图片
-//				getConfiguration().getHandler().post(new DisplayBitmapTask(this, imageView, cacheBitmap, BitmapType.SUCCESS, true, request));
-				imageView.setImageDrawable(cacheBitmap);
-				
-				if(getConfiguration().isDebugMode()){
-					Log.d(getConfiguration().getLogTag(), new StringBuffer().append("从缓存中加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
-				}
-				return true;
-			}
-		}
-		return false;
-	}
+//	/**
+//	 * 显示图片
+//	 * @param request 请求
+//	 * @param imageView
+//	 * @return true：图片缓存中有图片并且已经显示了；false：缓存中没有对应的图片，需要重新加载
+//	 */
+//	private boolean show(Request request, ImageView imageView){
+//		if(request.getOptions().getCacheConfig().isCacheInMemory()){
+//			BitmapDrawable cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
+//			if(cacheBitmap != null){
+//				//显示图片
+////				getConfiguration().getHandler().post(new DisplayBitmapTask(this, imageView, cacheBitmap, BitmapType.SUCCESS, true, request));
+//				imageView.setImageDrawable(cacheBitmap);
+//				
+//				if(getConfiguration().isDebugMode()){
+//					Log.d(getConfiguration().getLogTag(), new StringBuffer().append("从缓存中加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+//				}
+//				return true;
+//			}
+//		}
+//		return false;
+//	}
 	
 	/**
 	 * 获取配置

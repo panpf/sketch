@@ -17,6 +17,7 @@
 package me.xiaoapn.easy.imageloader.display;
 
 import me.xiaoapn.easy.imageloader.Configuration;
+import me.xiaoapn.easy.imageloader.task.ImageViewAware;
 import me.xiaoapn.easy.imageloader.task.Request;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -36,28 +37,41 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 	}
 
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, Configuration configuration, Request request) {
-		switch(bitmapType){
+	public void display(ImageViewAware imageViewAware, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, Configuration configuration, Request request) {
+		ImageView imageView = imageViewAware.getImageView();
+		if(imageView != null){
+			switch(bitmapType){
 			case FAILURE : 
-				if(bitmapDrawable != null){
+				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
 					fadeIn(imageView, bitmapDrawable);
 				}else{
-					imageView.setImageDrawable(bitmapDrawable);
+					imageView.setImageDrawable(null);
 				}
 				if(configuration.isDebugMode()){
-					Log.e(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+					Log.e(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示失败 - FAILURE").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 				}
 				break;
 			case SUCCESS : 
-				if(!isFromMemoryCache && bitmapDrawable != null){
-					fadeIn(imageView, bitmapDrawable);
+				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
+					if(isFromMemoryCache){
+						imageView.setImageDrawable(bitmapDrawable);
+						if(configuration.isDebugMode()){
+							Log.i(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示成功 - 内存缓存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+						}
+					}else{
+						fadeIn(imageView, bitmapDrawable);
+						if(configuration.isDebugMode()){
+							Log.i(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+						}
+					}
 				}else{
-					imageView.setImageDrawable(bitmapDrawable);
-				}
-				if(configuration.isDebugMode()){
-					Log.i(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示成功").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+					imageView.setImageDrawable(null);
+					if(configuration.isDebugMode()){
+						Log.e(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示失败 - SUCCESS").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+					}
 				}
 				break;
+			}
 		}
 	}
 	

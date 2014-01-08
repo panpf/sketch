@@ -1,6 +1,7 @@
 package me.xiaoapn.easy.imageloader.display;
 
 import me.xiaoapn.easy.imageloader.Configuration;
+import me.xiaoapn.easy.imageloader.task.ImageViewAware;
 import me.xiaoapn.easy.imageloader.task.Request;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -39,8 +40,10 @@ public class RounedFadeInBitmapDisplayer implements BitmapDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, Configuration configuration, Request request) {
-		switch(bitmapType){
+	public void display(ImageViewAware imageViewAware, BitmapDrawable bitmapDrawable, BitmapType bitmapType, boolean isFromMemoryCache, Configuration configuration, Request request) {
+		ImageView imageView = imageViewAware.getImageView();
+		if(imageView != null){
+			switch(bitmapType){
 			case FAILURE : 
 				if(bitmapDrawable != null){
 					fadeIn(imageView, bitmapDrawable);
@@ -56,6 +59,7 @@ public class RounedFadeInBitmapDisplayer implements BitmapDisplayer {
 					imageView.setImageDrawable(bitmapDrawable);
 				}
 				break;
+			}
 		}
 	}
 	
