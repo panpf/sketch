@@ -265,6 +265,11 @@ public class GeneralUtils {
 		return true;
 	}
 	
+	/**
+	 * 编码URL
+	 * @param url
+	 * @return
+	 */
 	public static String encodeUrl(String url){
 		try {
 			return URLEncoder.encode(url, "UTF-8");
