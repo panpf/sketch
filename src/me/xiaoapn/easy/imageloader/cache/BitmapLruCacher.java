@@ -16,16 +16,17 @@
 
 package me.xiaoapn.easy.imageloader.cache;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.drawable.BitmapDrawable;
-import android.support.v4.util.LruCache;
 
 /**
  * 使用Lru算法来缓存位图
  */
-public class LruBitmapCacher implements BitmapCacher {
-	private LruCache<String, BitmapDrawable> bitmapLruCache;
+public class BitmapLruCacher implements BitmapCacher {
+	private BitmapLruCache bitmapLruCache;
 	
-	public LruBitmapCacher(){
+	public BitmapLruCacher(){
 		bitmapLruCache = new BitmapLruCache((int) (Runtime.getRuntime().maxMemory()/8));
 	}
 	
@@ -41,6 +42,11 @@ public class LruBitmapCacher implements BitmapCacher {
 		synchronized (bitmapLruCache) {
 			return bitmapLruCache.get(key);
 		}
+	}
+
+	@Override
+	public Bitmap getBitmapFromReusableSet(Options options) {
+		return bitmapLruCache.getBitmapFromReusableSet(options);
 	}
 
 	@Override

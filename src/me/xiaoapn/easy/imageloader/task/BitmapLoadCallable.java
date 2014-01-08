@@ -32,9 +32,10 @@ import me.xiaoapn.easy.imageloader.decode.FileNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.decode.OnNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.download.ImageDownloader;
 import me.xiaoapn.easy.imageloader.download.OnCompleteListener;
-import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.IoUtils;
+import me.xiaoapn.easy.imageloader.util.RecyclingBitmapDrawable;
 import me.xiaoapn.easy.imageloader.util.Scheme;
+import me.xiaoapn.easy.imageloader.util.Utils;
 
 import org.apache.http.client.HttpClient;
 
@@ -73,8 +74,8 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 					OnNewBitmapInputStreamListener newBitmapInputStreamListener = null;
 					if(scheme == Scheme.HTTP || scheme == Scheme.HTTPS){
 						if(request.getOptions().getCacheConfig().isCacheInDisk()){
-							final File cacheFile = GeneralUtils.getCacheFile(configuration, request.getOptions(), GeneralUtils.encodeUrl(request.getImageUri()));
-							if(GeneralUtils.isAvailableOfFile(cacheFile, request.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, request.getName())){
+							final File cacheFile = Utils.getCacheFile(configuration, request.getOptions(), Utils.encodeUrl(request.getImageUri()));
+							if(Utils.isAvailableOfFile(cacheFile, request.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, request.getName())){
 								newBitmapInputStreamListener = new FileNewBitmapInputStreamListener(cacheFile);
 							}else{
 								newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(request.getName(), request.getImageUri(), cacheFile, request.getOptions().getMaxRetryCount(), configuration.getHttpClient());
@@ -93,7 +94,14 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 					
 					Bitmap bitmap = configuration.getBitmapDecoder().decode(newBitmapInputStreamListener, request.getTargetSize(), configuration, request.getName());
 					if(bitmap != null){
-						bitmapDrawable = new BitmapDrawable(configuration.getResources(), bitmap);
+						if (Utils.hasHoneycomb()) {
+		                    // Running on Honeycomb or newer, so wrap in a standard BitmapDrawable
+		                    bitmapDrawable = new BitmapDrawable(configuration.getResources(), bitmap);
+		                } else {
+		                    // Running on Gingerbread or older, so wrap in a RecyclingBitmapDrawable
+		                    // which will recycle automagically
+		                	bitmapDrawable = new RecyclingBitmapDrawable(configuration.getResources(), bitmap);
+		                }
 						if(request.getOptions().getCacheConfig().isCacheInMemory()){
 							configuration.getBitmapCacher().put(request.getId(), bitmapDrawable);
 						}

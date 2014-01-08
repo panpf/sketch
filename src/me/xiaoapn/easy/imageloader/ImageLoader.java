@@ -22,9 +22,9 @@ import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
 import me.xiaoapn.easy.imageloader.task.BitmapLoadTask;
 import me.xiaoapn.easy.imageloader.task.ImageViewAware;
 import me.xiaoapn.easy.imageloader.task.Request;
-import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.ImageSizeUtils;
+import me.xiaoapn.easy.imageloader.util.Utils;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -87,7 +87,7 @@ public class ImageLoader{
 			options = getConfiguration().getDefaultOptions();
 		}
 		
-		if(GeneralUtils.isEmpty(imageUri)){
+		if(Utils.isEmpty(imageUri)){
 			imageView.setImageDrawable(options.getEmptyDrawable());
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), new StringBuffer().append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append("imageUri不能为null").toString());
@@ -98,7 +98,7 @@ public class ImageLoader{
 		//计算目标尺寸并创建请求
 		ImageViewAware imageViewAware = new ImageViewAware(imageView);
 		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageViewAware, options.getMaxSize());
-		Request request = new Request(GeneralUtils.createId(GeneralUtils.encodeUrl(imageUri), targetSize), imageUri, imageUri, options, targetSize);
+		Request request = new Request(Utils.createId(Utils.encodeUrl(imageUri), targetSize), imageUri, imageUri, options, targetSize);
 		
 		//尝试显示
 		if(request.getOptions().getCacheConfig().isCacheInMemory()){

@@ -21,9 +21,12 @@ import java.io.InputStream;
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.IoUtils;
+import me.xiaoapn.easy.imageloader.util.Utils;
+import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
+import android.os.Build;
 import android.util.Log;
 
 /**
@@ -58,6 +61,9 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 				outHeight = options.outHeight;
 				options.inSampleSize = calculateInSampleSize(options, targetSize.getWidth(), targetSize.getHeight());
 				options.inJustDecodeBounds = false;
+				if (Utils.hasHoneycomb()) {
+			        addInBitmapOptions(options, configuration);
+			    }
 				bitmap = BitmapFactory.decodeStream(inputStream, null, options);
 				IoUtils.closeSilently(inputStream);
 			}
@@ -68,6 +74,28 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 		}
 		
 		return bitmap;
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	private void addInBitmapOptions(BitmapFactory.Options options, Configuration configuration) {
+	    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+	    	// inBitmap only works with mutable bitmaps, so force the decoder to
+	    	// return mutable bitmaps.
+	    	options.inMutable = true;
+	    	
+	    	if (configuration.getBitmapCacher() != null) {
+	    		// Try to find a bitmap to use for inBitmap.
+	    		Bitmap inBitmap = configuration.getBitmapCacher().getBitmapFromReusableSet(options);
+	    		if (inBitmap != null) {
+	    			// If a suitable bitmap has been found, set it as the value of
+	    			// inBitmap.
+	    			options.inBitmap = inBitmap;
+	    			if(configuration.isDebugMode()){
+	    				Log.w(configuration.getLogTag(), new StringBuffer(logName).append("；").append("回收利用了尚未被回收的Bitmap").toString());
+	    			}
+	    		}
+	    	}
+	    }
 	}
 	
 	/**

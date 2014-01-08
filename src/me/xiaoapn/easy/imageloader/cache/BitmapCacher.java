@@ -16,6 +16,8 @@
 
 package me.xiaoapn.easy.imageloader.cache;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 
 /**
@@ -36,6 +38,13 @@ public interface BitmapCacher {
 	 * @return
 	 */
 	public BitmapDrawable get(String key);
+	
+	/**
+	 * 获取可再度使用的Bitmap
+	 * @param options
+	 * @return
+	 */
+	public Bitmap getBitmapFromReusableSet(BitmapFactory.Options options);
 	
 	/**
 	 * 根据给定的key删除位图

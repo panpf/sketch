@@ -19,15 +19,17 @@ package me.xiaoapn.easy.imageloader.cache;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentHashMap;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.drawable.BitmapDrawable;
 
 /**
  * 使用软引用的方式来缓存位图
  */
-public class SoftReferenceBitmapCacher implements BitmapCacher {
+public class BitmapSoftReferenceCacher implements BitmapCacher {
 	private ConcurrentHashMap<String, SoftReference<BitmapDrawable>> bitmapCacheMap;
 	
-	public SoftReferenceBitmapCacher(){
+	public BitmapSoftReferenceCacher(){
 		bitmapCacheMap = new ConcurrentHashMap<String, SoftReference<BitmapDrawable>>();
 	}
 	
@@ -48,6 +50,11 @@ public class SoftReferenceBitmapCacher implements BitmapCacher {
 		}else{
 			return null;
 		}
+	}
+
+	@Override
+	public Bitmap getBitmapFromReusableSet(Options options) {
+		return null;
 	}
 
 	@Override

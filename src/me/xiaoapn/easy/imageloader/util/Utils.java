@@ -40,7 +40,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.WindowManager;
 
-public class GeneralUtils {
+public class Utils {
 	
 	/**
 	 * 设置连接超时
@@ -287,10 +287,10 @@ public class GeneralUtils {
 	 * @return
 	 */
 	public static File getCacheFile(Configuration configuration, Options options, String fileName){
-		if(options != null && GeneralUtils.isNotEmpty(options.getCacheConfig().getDiskCacheDirectory())){
+		if(options != null && Utils.isNotEmpty(options.getCacheConfig().getDiskCacheDirectory())){
 			return new File(options.getCacheConfig().getDiskCacheDirectory() + File.separator + fileName);
 		}else{
-			return new File(GeneralUtils.getDynamicCacheDir(configuration.getContext()).getPath() + File.separator + "image_loader" + File.separator + fileName);
+			return new File(Utils.getDynamicCacheDir(configuration.getContext()).getPath() + File.separator + "image_loader" + File.separator + fileName);
 		}
 	}
 	

@@ -17,15 +17,15 @@
 package me.xiaoapn.easy.imageloader;
 
 import me.xiaoapn.easy.imageloader.cache.BitmapCacher;
+import me.xiaoapn.easy.imageloader.cache.BitmapLruCacher;
 import me.xiaoapn.easy.imageloader.cache.CacheConfig;
-import me.xiaoapn.easy.imageloader.cache.LruBitmapCacher;
 import me.xiaoapn.easy.imageloader.decode.BitmapDecoder;
 import me.xiaoapn.easy.imageloader.decode.SimpleBitmapDecoder;
 import me.xiaoapn.easy.imageloader.display.FadeInBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.execute.BaseTaskExecutor;
 import me.xiaoapn.easy.imageloader.execute.TaskExecutor;
-import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
+import me.xiaoapn.easy.imageloader.util.Utils;
 
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
@@ -133,7 +133,7 @@ public class Configuration {
 	 */
 	public BitmapCacher getBitmapCacher() {
 		if(bitmapCacher == null){
-			bitmapCacher = new LruBitmapCacher();
+			bitmapCacher = new BitmapLruCacher();
 		}
 		return bitmapCacher;
 	}
@@ -212,9 +212,9 @@ public class Configuration {
 	public final HttpClient getHttpClient() {
 		if(httpClient == null){
 			BasicHttpParams httpParams = new BasicHttpParams();
-			GeneralUtils.setConnectionTimeout(httpParams, 10000);
-			GeneralUtils.setMaxConnections(httpParams, 100);
-			GeneralUtils.setSocketBufferSize(httpParams, 8192);
+			Utils.setConnectionTimeout(httpParams, 10000);
+			Utils.setMaxConnections(httpParams, 100);
+			Utils.setSocketBufferSize(httpParams, 8192);
 	        HttpConnectionParams.setTcpNoDelay(httpParams, true);
 	        HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
 			SchemeRegistry schemeRegistry = new SchemeRegistry();

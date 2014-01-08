@@ -18,9 +18,9 @@ package me.xiaoapn.easy.imageloader.task;
 
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.Options;
-import me.xiaoapn.easy.imageloader.util.GeneralUtils;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.Scheme;
+import me.xiaoapn.easy.imageloader.util.Utils;
 
 /**
  * 加载请求
@@ -150,7 +150,7 @@ public class Request {
 		boolean result = false;
 		Scheme scheme = Scheme.ofUri(imageUri);
 		if(scheme == Scheme.HTTP  || scheme == Scheme.HTTPS){
-			result = !GeneralUtils.isAvailableOfFile(GeneralUtils.getCacheFile(configuration, getOptions(), GeneralUtils.encodeUrl(getImageUri())), getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, getName());
+			result = !Utils.isAvailableOfFile(Utils.getCacheFile(configuration, getOptions(), Utils.encodeUrl(getImageUri())), getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, getName());
 		}
 		return result;
 	}
