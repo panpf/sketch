@@ -29,9 +29,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.BaseAdapter;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class GridImageAdapter extends BaseAdapter {
 	private Context context;
@@ -78,8 +79,10 @@ public class GridImageAdapter extends BaseAdapter {
 			viewHolder = new ViewHolder();
 			convertView = LayoutInflater.from(context).inflate(R.layout.grid_item_image, null);
 			viewHolder.image = (ImageView) convertView.findViewById(R.id.image_gridItem);
+			viewHolder.codeText = (TextView) convertView.findViewById(R.id.text_gridItem);
+			viewHolder.codeText.setText(""+viewHolder.image.hashCode());
 			if(cloumn > 1){
-				viewHolder.image.setLayoutParams(new LinearLayout.LayoutParams(screenWidth/cloumn, screenWidth/cloumn));
+				viewHolder.image.setLayoutParams(new FrameLayout.LayoutParams(screenWidth/cloumn, screenWidth/cloumn));
 				viewHolder.image.setScaleType(ScaleType.CENTER_CROP);
 			}
 			convertView.setTag(viewHolder);
@@ -87,12 +90,13 @@ public class GridImageAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
+		Log.w("ImageAdapter", "ImageAdapter：Uri="+imageUrls[position]+"; ImageViewCode="+viewHolder.hashCode());
 		ImageLoader.getInstance().display(imageUrls[position], viewHolder.image);
-		Log.d("ImageAdapter", "Uri="+imageUrls[position]+"; ImageViewCode="+viewHolder.hashCode());
 		return convertView;
 	}
 	
 	class ViewHolder{
 		ImageView image;
+		TextView codeText;
 	}
 }

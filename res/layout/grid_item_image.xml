@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content" android:layout_height="wrap_content">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content" android:layout_height="wrap_content">
 	<ImageView 
 	    android:layout_width="wrap_content"
 	    android:layout_height="wrap_content"
 	    android:id="@+id/image_gridItem"
 	    android:scaleType="centerCrop"
 	    android:contentDescription="@string/app_name"/>
-</LinearLayout>
+	<TextView style="@style/base_match_wrap" android:textColor="@color/base_white" android:layout_gravity="bottom" android:background="@color/base_black_translucent" android:padding="@dimen/base_padding_littleSmall" android:id="@+id/text_gridItem"/>
+</FrameLayout>

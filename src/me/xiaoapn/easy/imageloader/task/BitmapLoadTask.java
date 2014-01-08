@@ -151,7 +151,7 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
         boolean cancelled = true;
         if (potentialBitmapLoadTask != null) {
             final String requestId = potentialBitmapLoadTask.getRequest().getId();
-        	if (requestId.equals(request.getId()) && potentialBitmapLoadTask.getImageView() == imageView) {
+        	if (requestId != null && requestId.equals(request.getId())) {
                 cancelled = false;
             }else{
             	potentialBitmapLoadTask.cancel(true);
