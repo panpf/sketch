@@ -21,20 +21,31 @@ import me.xiaopan.easy.imageloader.sample.adapter.StringAdapter;
 import me.xiaopan.easy.imageloader.sample.fragment.GalleryFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.GridFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.ListFragment;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
+	private static final int REQUEST_CODE_GET_FILE = 11;
 	private DrawerLayout drawerLayout;
-	private ListView viewListView;
-	private ListView typeListView;
+	private ListView viewTypeListView;
+	private ListView uriTypeListView;
+	private String[] httpUris;
+	private String[] fileUris;
+	private String[] contentUris;
+	private String[] assetUris;
+	private String[] drawableUris;
+	private ViewType viewType;
+	private UriType uriType;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -44,54 +55,133 @@ public class MainActivity extends FragmentActivity {
 		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_left, GravityCompat.START);
 		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, GravityCompat.END);
 		
-		viewListView = (ListView) findViewById(R.id.list_main_views);
-		viewListView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery", "ViewPager"));
-		viewListView.setOnItemClickListener(new OnItemClickListener() {
+		viewTypeListView = (ListView) findViewById(R.id.list_main_views);
+		viewTypeListView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery", "ViewPager"));
+		viewTypeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				set(position - viewListView.getHeaderViewsCount());
+				switch(position - viewTypeListView.getHeaderViewsCount()){
+					case 0 : viewType = ViewType.GRID_VIEW; break;
+					case 1 : viewType = ViewType.LIST_VIEW; break;
+					case 2 : viewType = ViewType.GALLERY; break;
+					case 3 : viewType = ViewType.VIEW_PAGER; break;
+				}
+				drawerLayout.closeDrawers();
+				update();
+			}
+		});
+		
+		uriTypeListView = (ListView) findViewById(R.id.list_main_uri);
+		uriTypeListView.setAdapter(new StringAdapter(getBaseContext(), "http://", "file://", "content://", "assets://", "drawable://"));
+		uriTypeListView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				switch(position - uriTypeListView.getHeaderViewsCount()){
+					case 0 : 
+						uriType = UriType.HTTP; 
+						update();
+						break;
+					case 1 : 
+						uriType = UriType.FILE; 
+						Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+						intent.setType("image/*");
+						startActivityForResult(intent, REQUEST_CODE_GET_FILE); 
+						break;
+					case 2 : 
+						uriType = UriType.CONTENT; 
+						break;
+					case 3 : 
+						uriType = UriType.ASSETS; 
+						update();
+						break;
+					case 4 : 
+						uriType = UriType.DRAWABLE; 
+						break;
+				}
 				drawerLayout.closeDrawers();
 			}
 		});
 		
-		typeListView = (ListView) findViewById(R.id.list_main_types);
-		typeListView.setAdapter(new StringAdapter(getBaseContext(), "http://", "file://", "content://", "assets://", "drawable://"));
-		typeListView.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				drawerLayout.closeDrawers();
-			}
-		});
-		set(0);
-	}
-	
-	private void set(int index){
-		Fragment fragment = null;
-		Bundle bundle = null;
-		switch(index){
-			case 0 : 
-				fragment = new GridFragment();
-				bundle = new Bundle();
-				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls));
-				break;
-			case 1 : 
-				fragment = new ListFragment();
-				bundle = new Bundle();
-				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls));
-				break;
-			case 2 : 
-				fragment = new GalleryFragment();
-				bundle = new Bundle();
-				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getResources().getStringArray(R.array.urls));
-				break;
+		httpUris = getResources().getStringArray(R.array.urls);
+		
+		assetUris = new String[70];
+		for(int w = 0; w < assetUris.length; w++){
+			assetUris[w] = "assets://image_assets_test_"+(w+1)+".jpg";
 		}
 		
-		if(fragment != null){
-			if(bundle != null){
-				
+		drawableUris = new String[41];
+		for(int w = 0; w < drawableUris.length; w++){
+			try {
+				drawableUris[w] = "drawable://"+R.drawable.class.getField("image_drawable_test_"+(w+1)).getInt(null);
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			} catch (IllegalArgumentException e) {
+				e.printStackTrace();
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace();
 			}
-			fragment.setArguments(bundle);
-			getSupportFragmentManager().beginTransaction().replace(R.id.fragment_main, fragment).commit();
+		}
+		
+		viewType = ViewType.GRID_VIEW;
+		uriType = UriType.HTTP;
+		
+		update();
+	}
+	
+	private void update(){
+		String[] uris = null;
+		switch(uriType){
+			case HTTP : uris = httpUris; break;
+			case FILE : uris = fileUris; break;
+			case CONTENT : uris = contentUris; break;
+			case ASSETS : uris = assetUris; break;
+//			case DRAWABLE : uris = drawableUris; break;
+			default : break;
+		}
+		
+		if(uris != null && uris.length > 0){
+			Fragment fragment = null;
+			switch(viewType){
+				case GRID_VIEW : fragment = new GridFragment(); break;
+				case LIST_VIEW : fragment = new ListFragment(); break;
+				case GALLERY : fragment = new GalleryFragment(); break;
+				case VIEW_PAGER :  
+				default : break;
+			}
+			if(fragment != null){
+				Bundle bundle = new Bundle();
+				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, uris);
+				fragment.setArguments(bundle);
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_main, fragment).commit();
+			}else{
+				Toast.makeText(getBaseContext(), "还没有准备好此种模式，敬请期待！", Toast.LENGTH_SHORT).show();
+			}
+		}else{
+			Toast.makeText(getBaseContext(), "还没有准备好此种模式，敬请期待！", Toast.LENGTH_SHORT).show();
+		}
+	}
+	
+	public enum ViewType{
+		GRID_VIEW, LIST_VIEW, GALLERY, VIEW_PAGER;
+	}
+	
+	public enum UriType{
+		HTTP, FILE, CONTENT, ASSETS, DRAWABLE;
+	}
+
+	@Override
+	public void startActivityForResult(Intent intent, int requestCode) {
+		switch(requestCode){
+			case REQUEST_CODE_GET_FILE : 
+				if(intent.getData() != null){
+					String uri = intent.getData().toString();
+					Toast.makeText(getBaseContext(), uri, Toast.LENGTH_SHORT).show();
+					Log.w(MainActivity.class.getSimpleName(), uri);
+				}else{
+					Toast.makeText(getBaseContext(), "空的", Toast.LENGTH_SHORT).show();
+					Log.w(MainActivity.class.getSimpleName(), "空的");
+				}
+				break;
 		}
 	}
 }

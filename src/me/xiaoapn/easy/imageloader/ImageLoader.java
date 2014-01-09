@@ -18,7 +18,7 @@ package me.xiaoapn.easy.imageloader;
 
 import java.io.File;
 
-import me.xiaoapn.easy.imageloader.execute.AsyncDrawable;
+import me.xiaoapn.easy.imageloader.task.AsyncDrawable;
 import me.xiaoapn.easy.imageloader.task.BitmapLoadTask;
 import me.xiaoapn.easy.imageloader.task.ImageViewAware;
 import me.xiaoapn.easy.imageloader.task.Options;

@@ -12,7 +12,7 @@
             android:layout_gravity="start" 
             android:background="@color/base_white"/>
     	<ListView 
-    	    android:id="@+id/list_main_types" 
+    	    android:id="@+id/list_main_uri" 
     	    android:layout_width="150dp" 
     	    android:layout_height="fill_parent" 
             android:layout_gravity="end" 

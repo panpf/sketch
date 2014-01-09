@@ -35,15 +35,15 @@ import android.widget.ImageView.ScaleType;
 
 public class GridImageAdapter extends BaseAdapter {
 	private Context context;
-	private String[] imageUrls;
+	private String[] imageUris;
 	private int cloumn;
 	private int screenWidth;
 	
 	@SuppressWarnings("deprecation")
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	public GridImageAdapter(Context context, String[] imageUrls, int cloumn){
+	public GridImageAdapter(Context context, String[] imageUris, int cloumn){
 		this.context = context;
-		this.imageUrls = imageUrls;
+		this.imageUris = imageUris;
 		this.cloumn = cloumn;
 		WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
 		Display display = windowManager.getDefaultDisplay();
@@ -58,12 +58,12 @@ public class GridImageAdapter extends BaseAdapter {
 
 	@Override
 	public Object getItem(int position) {
-		return imageUrls[position];
+		return imageUris[position];
 	}
 
 	@Override
 	public int getCount() {
-		return imageUrls.length;
+		return imageUris.length;
 	}
 
 	@Override
@@ -87,8 +87,8 @@ public class GridImageAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
-		Log.w("ImageAdapter", "ImageAdapter：Uri="+imageUrls[position]+"; ImageViewCode="+viewHolder.hashCode());
-		ImageLoader.getInstance().display(imageUrls[position], viewHolder.image);
+		Log.w("ImageAdapter", "ImageAdapter：Uri="+imageUris[position]+"; ImageViewCode="+viewHolder.hashCode());
+		ImageLoader.getInstance().display(imageUris[position], viewHolder.image);
 		return convertView;
 	}
 	

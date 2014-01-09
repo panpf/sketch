@@ -16,7 +16,8 @@
 
 package me.xiaopan.easy.imageloader.sample.fragment;
 
-import me.xiaopan.easy.imageloader.sample.adapter.GridImageAdapter;
+import me.xiaopan.easy.imageloader.sample.adapter.GalleryImageAdapter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -30,7 +31,9 @@ public class GalleryFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Gallery gallery = (Gallery) new Gallery(getActivity());
-		gallery.setAdapter(new GridImageAdapter(getActivity(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS), 1));
+		gallery.setBackgroundColor(Color.BLACK);
+		gallery.setSpacing(0);
+		gallery.setAdapter(new GalleryImageAdapter(getActivity(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS)));
 		return gallery;
 	}
 }

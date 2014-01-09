@@ -243,11 +243,8 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 	 * @return
 	 */
 	private InputStream getStreamFromDrawable(Context context, String drawableIdString) {
-		int drawableId = Integer.parseInt(drawableIdString);
-		
-		BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(drawableId);
+		BitmapDrawable drawable = (BitmapDrawable) context.getResources().getDrawable(Integer.parseInt(drawableIdString));
 		Bitmap bitmap = drawable.getBitmap();
-
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		bitmap.compress(CompressFormat.PNG, 0, os);
 		return new ByteArrayInputStream(os.toByteArray());

@@ -21,15 +21,18 @@ public class BaseTaskExecutor implements TaskExecutor {
 	private Executor localTaskExecutor;	//本地任务执行器
 	private Map<String, ReentrantLock> uriLocks;	//uri锁池
 	
-	public BaseTaskExecutor(int corePoolSize, int maximumPoolSize, int workQueueSize){
+	public BaseTaskExecutor(Executor netTaskExecutor, Executor localTaskExecutor){
 		this.uriLocks = new WeakHashMap<String, ReentrantLock>();
 		this.taskDistributor = Executors.newCachedThreadPool();
-		this.netTaskExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(workQueueSize), new ThreadPoolExecutor.DiscardOldestPolicy());
-		this.localTaskExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(workQueueSize), new ThreadPoolExecutor.DiscardOldestPolicy());
+		this.netTaskExecutor = netTaskExecutor;
+		this.localTaskExecutor = localTaskExecutor;
 	}
 	
 	public BaseTaskExecutor(){
-		this(5, 10, 20);
+		this(
+			new ThreadPoolExecutor(1, 10, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy()), 
+			new ThreadPoolExecutor(1,   2, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy())
+		);
 	}
 	
 	@Override
