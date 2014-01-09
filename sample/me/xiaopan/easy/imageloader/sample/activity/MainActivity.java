@@ -31,6 +31,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
@@ -74,7 +75,7 @@ public class MainActivity extends FragmentActivity {
 					case 3 : viewType = ViewType.VIEW_PAGER; break;
 				}
 				drawerLayout.closeDrawers();
-				update();
+				update(true);
 			}
 		});
 		
@@ -86,7 +87,7 @@ public class MainActivity extends FragmentActivity {
 				switch(position - uriTypeListView.getHeaderViewsCount()){
 					case 0 : 
 						uriType = UriType.HTTP; 
-						update();
+						update(true);
 						break;
 					case 1 : 
 						Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -100,7 +101,7 @@ public class MainActivity extends FragmentActivity {
 						break;
 					case 3 : 
 						uriType = UriType.ASSETS; 
-						update();
+						update(true);
 						break;
 					case 4 : 
 						uriType = UriType.DRAWABLE; 
@@ -133,11 +134,11 @@ public class MainActivity extends FragmentActivity {
 		viewType = ViewType.GRID_VIEW;
 		uriType = UriType.HTTP;
 		
-		update();
+		update(false);
 	}
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void update(){
+	private void update(boolean add){
 		String[] uris = null;
 		String uriName = null;
 		switch(uriType){
@@ -168,7 +169,14 @@ public class MainActivity extends FragmentActivity {
 				Bundle bundle = new Bundle();
 				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, uris);
 				fragment.setArguments(bundle);
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_main, fragment).commitAllowingStateLoss();
+				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+				fragmentTransaction.setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out).addToBackStack(subTitle);
+				if(add){
+					fragmentTransaction.add(R.id.fragment_main, fragment);
+				}else{
+					fragmentTransaction.replace(R.id.fragment_main, fragment);
+				}
+				fragmentTransaction.commitAllowingStateLoss();
 			}else{
 				Toast.makeText(getBaseContext(), "还没有准备好此种模式，敬请期待！", Toast.LENGTH_SHORT).show();
 			}
@@ -199,7 +207,7 @@ public class MainActivity extends FragmentActivity {
 						contentUris[w] = uri;
 					}
 					uriType = UriType.CONTENT; 
-					update();
+					update(true);
 				}else{
 					Toast.makeText(getBaseContext(), "空的", Toast.LENGTH_SHORT).show();
 					Log.w(MainActivity.class.getSimpleName(), "空的");
@@ -226,7 +234,7 @@ public class MainActivity extends FragmentActivity {
                     		fileUris[w] = fileUri;
                     	}
                     	uriType = UriType.FILE; 
-                    	update();
+                    	update(true);
                     }
 				}else{
 					Toast.makeText(getBaseContext(), "空的", Toast.LENGTH_SHORT).show();
