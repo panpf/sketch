@@ -3,6 +3,7 @@ package me.xiaopan.easy.imageloader.sample.fragment;
 import me.xiaoapn.easy.imageloader.ImageLoadListener;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.R;
+import me.xiaoapn.easy.imageloader.process.ReflectionBitmapProcessor;
 import me.xiaoapn.easy.imageloader.task.Options;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -31,6 +32,7 @@ public class ImageFragment extends Fragment {
 			
 			Options options = ImageLoader.getInstance().getConfiguration().getDefaultOptions().copy();
 			options.setLoadingDrawable(null);
+			options.setBitmapProcessor(new ReflectionBitmapProcessor());
 			
 			ImageLoader.getInstance().display(uri, imageView, options, new ImageLoadListener() {
 				@Override
@@ -50,7 +52,6 @@ public class ImageFragment extends Fragment {
 				
 				@Override
 				public void onCancelled(String imageUri, ImageView imageView) {
-					progressBar.setVisibility(View.GONE);
 				}
 			});
 			return rootView;

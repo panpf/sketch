@@ -110,7 +110,7 @@ public class GridImageAdapter extends BaseAdapter {
 			
 			@Override
 			public void onCancelled(String imageUri, ImageView imageView) {
-				viewHolder.progressBar.setVisibility(View.GONE);
+				
 			}
 		});
 		return convertView;
