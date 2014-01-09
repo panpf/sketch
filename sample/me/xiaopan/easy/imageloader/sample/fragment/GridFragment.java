@@ -16,6 +16,7 @@
 
 package me.xiaopan.easy.imageloader.sample.fragment;
 
+import me.xiaoapn.easy.imageloader.R;
 import me.xiaopan.easy.imageloader.sample.adapter.GridImageAdapter;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -23,6 +24,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
 public class GridFragment extends Fragment {
@@ -37,6 +40,17 @@ public class GridFragment extends Fragment {
 		gridView.setVerticalSpacing(2);
 		gridView.setHorizontalSpacing(2);
 		gridView.setAdapter(new GridImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS), 3));
+		gridView.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+				PagerFragment pagerFragment = new PagerFragment();
+				Bundle bundle = new Bundle();
+				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS));
+				bundle.putInt(PagerFragment.PARAM_OPTIONAL_INT_CURRENT_POSITION, position);
+				pagerFragment.setArguments(bundle);
+				getFragmentManager().beginTransaction().replace(R.id.fragment_main, pagerFragment).commit();
+			}
+		});
 		return gridView;
 	}
 }

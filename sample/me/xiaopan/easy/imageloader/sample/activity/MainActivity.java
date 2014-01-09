@@ -168,7 +168,7 @@ public class MainActivity extends FragmentActivity {
 				Bundle bundle = new Bundle();
 				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, uris);
 				fragment.setArguments(bundle);
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_main, fragment).commit();
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_main, fragment).commitAllowingStateLoss();
 			}else{
 				Toast.makeText(getBaseContext(), "还没有准备好此种模式，敬请期待！", Toast.LENGTH_SHORT).show();
 			}
