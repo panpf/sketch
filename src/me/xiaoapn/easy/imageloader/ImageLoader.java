@@ -141,7 +141,8 @@ public class ImageLoader{
 	/**
 	 * 显示图片
 	 * @param imageUri 图片Uri，支持以下5种Uri
-	 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
+	 * <blockquote>
+	 *         String imageUri = "http://site.com/image.png"; // from Web
 	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
 	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
 	 * <br>String imageUri = "assets://image.png"; // from assets
@@ -150,8 +151,8 @@ public class ImageLoader{
 	 * @param cacheFile 缓存文件
 	 * @param imageView 显示图片的视图
 	 */
-	public void display(String imageUrl, ImageView imageView){
-		display(imageUrl, imageView, null);
+	public void display(String imageUri, ImageView imageView){
+		display(imageUri, imageView, null);
 	}
 	
 	/**
