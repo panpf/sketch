@@ -37,6 +37,7 @@ import android.widget.ImageView;
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
  */
 public class ImageLoader{
+	private static final String LOG_NAME= ImageLoader.class.getSimpleName();
 	private Configuration configuration;	//配置
 	
 	/**
@@ -89,10 +90,18 @@ public class ImageLoader{
 			options = getConfiguration().getDefaultOptions();
 		}
 		
-		if(Utils.isEmpty(imageUri) || Scheme.ofUri(imageUri) == Scheme.UNKNOWN){
+		if(Utils.isEmpty(imageUri)){
 			imageView.setImageDrawable(options.getEmptyDrawable());
 			if(getConfiguration().isDebugMode()){
-				Log.e(getConfiguration().getLogTag(), new StringBuffer().append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append("imageUri不能为null").toString());
+				Log.e(getConfiguration().getLogTag(), new StringBuffer(LOG_NAME).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+			}
+			return;
+		}
+		
+		if(Scheme.ofUri(imageUri) == Scheme.UNKNOWN){
+			imageView.setImageDrawable(options.getEmptyDrawable());
+			if(getConfiguration().isDebugMode()){
+				Log.e(getConfiguration().getLogTag(), new StringBuffer(LOG_NAME).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
 			return;
 		}
@@ -107,6 +116,9 @@ public class ImageLoader{
 			BitmapDrawable cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
 			if(cacheBitmap != null){
 				imageView.setImageDrawable(cacheBitmap);
+				if(getConfiguration().isDebugMode()){
+					Log.i(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("显示成功 - 内存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+				}
 				return;
 			}
 		}

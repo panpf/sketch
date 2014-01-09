@@ -32,14 +32,7 @@ import android.util.Log;
  * 位图解码器
  */
 public class SimpleBitmapDecoder implements BitmapDecoder{
-	private String logName;
-	
-	/**
-	 * 创建位图解码器
-	 */
-	public SimpleBitmapDecoder(){
-		this.logName = getClass().getSimpleName(); 
-	}
+	private static final String LOG_NAME= SimpleBitmapDecoder.class.getSimpleName();
 	
 	@Override
 	public Bitmap decode(OnNewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName) {
@@ -90,7 +83,7 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	    			// inBitmap.
 	    			options.inBitmap = inBitmap;
 	    			if(configuration.isDebugMode()){
-	    				Log.w(configuration.getLogTag(), new StringBuffer(logName).append("；").append("回收利用了尚未被回收的Bitmap").toString());
+	    				Log.w(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("回收利用了尚未被回收的Bitmap").toString());
 	    			}
 	    		}
 	    	}
@@ -108,10 +101,10 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	 * @param bitmap
 	 */
 	private void writeLog(Configuration configuration, String requestName, boolean success, int outWidth, int outHeight, ImageSize targetSize, int inSimpleSize, Bitmap bitmap){
-		String log = new StringBuffer(logName)
+		String log = new StringBuffer(LOG_NAME)
 		.append("：").append(success?"解码成功":"解码失败")
-		.append("：").append("原图尺寸").append("=").append(outWidth).append("x").append(outHeight)
-		.append("：").append("目标尺寸").append("=").append(targetSize.getWidth()).append("x").append(targetSize.getHeight())
+		.append("；").append("原图尺寸").append("=").append(outWidth).append("x").append(outHeight)
+		.append("；").append("目标尺寸").append("=").append(targetSize.getWidth()).append("x").append(targetSize.getHeight())
 		.append("；").append("缩小").append("=").append(inSimpleSize)
 		.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight())
 		.append("；").append(requestName)

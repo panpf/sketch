@@ -223,28 +223,28 @@ public class Utils {
 	public static boolean isAvailableOfFile(File file, int periodOfValidity, Configuration configuration, String requestName){
 		if(file ==null){
 			if(configuration.isDebugMode()){
-				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件为null").append("：").append(requestName).toString());
+				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件为null").append("；").append(requestName).toString());
 			}
 			return false;
 		}
 		
 		if(!file.exists()){
 			if(configuration.isDebugMode()){
-				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件不存在").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
+				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件不存在").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(requestName).toString());
 			}
 			return false;
 		}
 		
 		if(file.length() <= 0){
 			if(configuration.isDebugMode()){
-				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件长度为0").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
+				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件长度为0").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(requestName).toString());
 			}
 			return false;
 		}
 		
 		if(periodOfValidity <= 0){
 			if(configuration.isDebugMode()){
-				Log.d(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件永久有效").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
+				Log.d(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件永久有效").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(requestName).toString());
 			}
 			return true;
 		}
@@ -255,13 +255,13 @@ public class Utils {
 		if(calendar.getTimeInMillis() >= file.lastModified()){
 			file.delete();
 			if(configuration.isDebugMode()){
-				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件过期已删除").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
+				Log.w(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件过期已删除").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(requestName).toString());
 			}
 			return false;
 		}
 		
 		if(configuration.isDebugMode()){
-			Log.d(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件未过期").append("：").append("文件地址").append("=").append(file.getPath()).append("：").append(requestName).toString());
+			Log.d(configuration.getLogTag(), new StringBuffer("AvailableOfFile").append("：").append("文件未过期").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(requestName).toString());
 		}
 		return true;
 	}

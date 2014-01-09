@@ -24,10 +24,10 @@ import android.util.Log;
  * 图片下载器
  */
 public class ImageDownloader {
+	private static final String LOG_NAME= ImageDownloader.class.getSimpleName();
 	private int maxRetryCount;
 	private File cacheFile;
 	private String url;
-	private String name;
 	private String requestName;
 	private HttpClient httpClient;
 	private Configuration configuration;
@@ -35,7 +35,6 @@ public class ImageDownloader {
 	
 	public ImageDownloader(String requestName, String url, File cacheFile, int maxRetryCount, HttpClient httpClient, Configuration configuration, OnCompleteListener onCompleteListener) {
 		this.url = url;
-		this.name = getClass().getSimpleName();
 		this.cacheFile = cacheFile;
 		this.httpClient = httpClient;
 		this.configuration = configuration;
@@ -49,7 +48,7 @@ public class ImageDownloader {
 	 */
 	public void execute(){
 		if(configuration.isDebugMode()){
-			Log.d(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载开始").append("：").append(requestName).toString());
+			Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载开始").append("；").append(requestName).toString());
 		}
 		int numberOfLoaded = 0;	//已加载次数
 		byte[] data = null;
@@ -159,7 +158,7 @@ public class ImageDownloader {
 				}
 				
 				if(configuration.isDebugMode()){
-					Log.d(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载异常").append("：").append("requestName").append("：").append("异常信息").append("：").append(e2.toString()).append("：").append(running?"重新下载":"不再下载").toString());
+					Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载异常").append("；").append("requestName").append("；").append("异常信息").append("=").append(e2.toString()).append("；").append(running?"重新下载":"不再下载").toString());
 				}
 			}
 		}
@@ -169,12 +168,12 @@ public class ImageDownloader {
 				if(onCompleteListener != null){
 					if(cacheFile != null && cacheFile.exists() && cacheFile.length() > 0){
 						if(configuration.isDebugMode()){
-							Log.d(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载成功").append("：").append(requestName).toString());
+							Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载成功").append("；").append(requestName).toString());
 						}
 						onCompleteListener.onComplete(cacheFile);
 					}else{
 						if(configuration.isDebugMode()){
-							Log.w(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载失败").append("：").append(requestName).toString());
+							Log.w(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载失败").append("；").append(requestName).toString());
 						}
 						onCompleteListener.onFailed();
 					}
@@ -184,12 +183,12 @@ public class ImageDownloader {
 				if(onCompleteListener != null){
 					if(data != null && data.length > 0){
 						if(configuration.isDebugMode()){
-							Log.d(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载成功").append("：").append(requestName).toString());
+							Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载成功").append("；").append(requestName).toString());
 						}
 						onCompleteListener.onComplete(data);
 					}else{
 						if(configuration.isDebugMode()){
-							Log.w(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载失败").append("：").append(requestName).toString());
+							Log.w(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载失败").append("；").append(requestName).toString());
 						}
 						onCompleteListener.onFailed();
 					}
@@ -198,7 +197,7 @@ public class ImageDownloader {
 			default : 
 				if(onCompleteListener != null){
 					if(configuration.isDebugMode()){
-						Log.w(configuration.getLogTag(), new StringBuffer(name).append("：").append("下载失败").append("：").append(requestName).toString());
+						Log.w(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载失败").append("；").append(requestName).toString());
 					}
 					onCompleteListener.onFailed();
 				}

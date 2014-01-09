@@ -28,7 +28,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
-	private String logName;
+	private static final String LOG_NAME= BitmapLoadTask.class.getSimpleName();
 	private Request request;
 	private Configuration configuration;
 	private ImageViewAware imageViewAware;
@@ -36,7 +36,6 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 	public BitmapLoadTask(Request request, ImageViewAware imageViewAware, ReentrantLock reentrantLock, Configuration configuration) {
 		super(new BitmapLoadCallable(request, imageViewAware, reentrantLock, configuration));
 		this.request = request;
-		this.logName = getClass().getSimpleName();
 		this.configuration = configuration;
 		this.imageViewAware = imageViewAware;
 		this.imageViewAware.setBitmapLoadTask(this);
@@ -61,12 +60,12 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 				}
 			}else{
 				if(configuration.isDebugMode()){
-					Log.e(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("已解除绑定关系").append("；").append(request.getName()).toString());
+					Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("已解除绑定关系").append("；").append(request.getName()).toString());
 				}
 			}
 		}else{
 			if(configuration.isDebugMode()){
-				Log.e(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("已取消").append("；").append(request.getName()).toString());
+				Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("已取消").append("；").append(request.getName()).toString());
 			}
 		}
 	}

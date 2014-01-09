@@ -29,12 +29,8 @@ import android.widget.ImageView;
  * 渐入位图显示器
  */
 public class FadeInBitmapDisplayer implements BitmapDisplayer {
-	private String logName;
+	private static final String LOG_NAME= FadeInBitmapDisplayer.class.getSimpleName();
 	
-	public FadeInBitmapDisplayer() {
-		this.logName = getClass().getSimpleName();
-	}
-
 	@Override
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Request request, Configuration configuration) {
 		switch(bitmapType){
@@ -45,19 +41,19 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 					imageView.setImageDrawable(null);
 				}
 				if(configuration.isDebugMode()){
-					Log.e(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示失败 - FAILURE").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+					Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 				}
 				break;
 			case SUCCESS : 
 				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
 					fadeIn(imageView, bitmapDrawable);
 					if(configuration.isDebugMode()){
-						Log.i(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+						Log.i(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 					}
 				}else{
 					imageView.setImageDrawable(null);
 					if(configuration.isDebugMode()){
-						Log.e(configuration.getLogTag(), new StringBuffer().append(logName).append("：").append("显示失败 - SUCCESS").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+						Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("显示失败 - SUCCESS").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 					}
 				}
 				break;

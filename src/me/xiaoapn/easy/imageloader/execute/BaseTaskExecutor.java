@@ -25,7 +25,7 @@ public class BaseTaskExecutor implements TaskExecutor {
 		this.uriLocks = new WeakHashMap<String, ReentrantLock>();
 		this.taskDistributor = Executors.newCachedThreadPool();
 		this.netTaskExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(workQueueSize), new ThreadPoolExecutor.DiscardOldestPolicy());
-		this.localTaskExecutor = new ThreadPoolExecutor(corePoolSize, maximumPoolSize, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(workQueueSize), new ThreadPoolExecutor.DiscardOldestPolicy());
+		this.localTaskExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(workQueueSize), new ThreadPoolExecutor.DiscardOldestPolicy());
 	}
 	
 	public BaseTaskExecutor(){
