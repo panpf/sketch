@@ -99,7 +99,7 @@ public class ImageLoader{
 		}
 		
 		if(Scheme.ofUri(imageUri) == Scheme.UNKNOWN){
-			imageView.setImageDrawable(options.getEmptyDrawable());
+			imageView.setImageDrawable(options.getFailureDrawable());
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), new StringBuffer(LOG_NAME).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}

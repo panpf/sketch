@@ -181,7 +181,7 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 			case FILE:
 				return getStreamFromFile(Scheme.FILE.crop(imageUri));
 			case CONTENT:
-				return getStreamFromContent(context, Scheme.CONTENT.crop(imageUri));
+				return getStreamFromContent(context, imageUri);
 			case ASSETS:
 				return getStreamFromAssets(context, Scheme.ASSETS.crop(imageUri));
 			case DRAWABLE:

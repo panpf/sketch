@@ -22,7 +22,10 @@ import me.xiaopan.easy.imageloader.sample.fragment.GalleryFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.GridFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.ListFragment;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
@@ -35,7 +38,8 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 public class MainActivity extends FragmentActivity {
-	private static final int REQUEST_CODE_GET_FILE = 11;
+	private static final int REQUEST_CODE_CONTENT = 11;
+	private static final int REQUEST_CODE_FILE = 12;
 	private DrawerLayout drawerLayout;
 	private ListView viewTypeListView;
 	private ListView uriTypeListView;
@@ -82,13 +86,14 @@ public class MainActivity extends FragmentActivity {
 						update();
 						break;
 					case 1 : 
-						uriType = UriType.FILE; 
-						Intent intent = new Intent(Intent.ACTION_GET_CONTENT, null);
+						Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
 						intent.setType("image/*");
-						startActivityForResult(intent, REQUEST_CODE_GET_FILE); 
+						startActivityForResult(intent, REQUEST_CODE_FILE); 
 						break;
 					case 2 : 
-						uriType = UriType.CONTENT; 
+						Intent intent2 = new Intent(Intent.ACTION_GET_CONTENT);
+						intent2.setType("image/*");
+						startActivityForResult(intent2, REQUEST_CODE_CONTENT); 
 						break;
 					case 3 : 
 						uriType = UriType.ASSETS; 
@@ -152,7 +157,7 @@ public class MainActivity extends FragmentActivity {
 				Bundle bundle = new Bundle();
 				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, uris);
 				fragment.setArguments(bundle);
-				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_main, fragment).commit();
+				getSupportFragmentManager().beginTransaction().replace(R.id.fragment_main, fragment).commitAllowingStateLoss();
 			}else{
 				Toast.makeText(getBaseContext(), "还没有准备好此种模式，敬请期待！", Toast.LENGTH_SHORT).show();
 			}
@@ -168,20 +173,56 @@ public class MainActivity extends FragmentActivity {
 	public enum UriType{
 		HTTP, FILE, CONTENT, ASSETS, DRAWABLE;
 	}
-
+	
 	@Override
-	public void startActivityForResult(Intent intent, int requestCode) {
-		switch(requestCode){
-			case REQUEST_CODE_GET_FILE : 
-				if(intent.getData() != null){
-					String uri = intent.getData().toString();
-					Toast.makeText(getBaseContext(), uri, Toast.LENGTH_SHORT).show();
-					Log.w(MainActivity.class.getSimpleName(), uri);
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		if(arg1 == RESULT_OK){
+			switch(arg0){
+			case REQUEST_CODE_CONTENT : 
+				if(arg2.getData() != null){
+					String uri = arg2.getData().toString();
+					if(contentUris == null){
+						contentUris = new String[30];
+					}
+					for(int w = 0; w < contentUris.length; w++){
+						contentUris[w] = uri;
+					}
+					uriType = UriType.CONTENT; 
+					update();
 				}else{
 					Toast.makeText(getBaseContext(), "空的", Toast.LENGTH_SHORT).show();
 					Log.w(MainActivity.class.getSimpleName(), "空的");
 				}
 				break;
+			case REQUEST_CODE_FILE : 
+				if(arg2.getData() != null){
+					Uri uri = arg2.getData();
+					String filePath;
+					Cursor cursor = getContentResolver().query(uri, new String[]{ MediaStore.Images.Media.DATA }, null, null, null);
+                    if (cursor != null){
+                         cursor.moveToFirst();
+                         filePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                    }else{
+                    	filePath = null;
+                    }
+                    
+                    if(filePath != null){
+                    	String fileUri = "file://"+filePath;
+                    	if(fileUris == null){
+                    		fileUris = new String[30];
+                    	}
+                    	for(int w = 0; w < fileUris.length; w++){
+                    		fileUris[w] = fileUri;
+                    	}
+                    	uriType = UriType.FILE; 
+                    	update();
+                    }
+				}else{
+					Toast.makeText(getBaseContext(), "空的", Toast.LENGTH_SHORT).show();
+					Log.w(MainActivity.class.getSimpleName(), "空的");
+				}
+				break;
+			}
 		}
 	}
 }
