@@ -72,9 +72,10 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 				if(scheme != Scheme.UNKNOWN){
 					/* 初始化输入流获取监听器并解码图片 */
 					OnNewBitmapInputStreamListener newBitmapInputStreamListener = null;
+					File cacheFile = null;
 					if(scheme == Scheme.HTTP || scheme == Scheme.HTTPS){
 						if(request.getOptions().getCacheConfig().isCacheInDisk()){
-							final File cacheFile = Utils.getCacheFile(configuration, request.getOptions(), Utils.encodeUrl(request.getImageUri()));
+							cacheFile = Utils.getCacheFile(configuration, request.getOptions(), Utils.encodeUrl(request.getImageUri()));
 							if(Utils.isAvailableOfFile(cacheFile, request.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, request.getName())){
 								newBitmapInputStreamListener = new FileNewBitmapInputStreamListener(cacheFile);
 							}else{
@@ -102,15 +103,18 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 							}
 						}
 						if (Utils.hasHoneycomb()) {
-		                    // Running on Honeycomb or newer, so wrap in a standard BitmapDrawable
 		                    bitmapDrawable = new BitmapDrawable(configuration.getResources(), bitmap);
 		                } else {
-		                    // Running on Gingerbread or older, so wrap in a RecyclingBitmapDrawable
-		                    // which will recycle automagically
 		                	bitmapDrawable = new RecyclingBitmapDrawable(configuration.getResources(), bitmap);
 		                }
 						if(request.getOptions().getCacheConfig().isCacheInMemory()){
 							configuration.getBitmapCacher().put(request.getId(), bitmapDrawable);
+						}
+					}else{
+						if(newBitmapInputStreamListener instanceof FileNewBitmapInputStreamListener){
+							if(cacheFile != null && cacheFile.exists()){
+								cacheFile.delete();
+							}
 						}
 					}
 				}
