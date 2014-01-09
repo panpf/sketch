@@ -30,14 +30,12 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 	private static final String LOG_NAME= BitmapLoadTask.class.getSimpleName();
 	private Request request;
 	private Configuration configuration;
-	private ImageViewAware imageViewAware;
 	
-	public BitmapLoadTask(Request request, ImageViewAware imageViewAware, ReentrantLock reentrantLock, Configuration configuration) {
-		super(new BitmapLoadCallable(request, imageViewAware, reentrantLock, configuration));
+	public BitmapLoadTask(Request request, ReentrantLock reentrantLock, Configuration configuration) {
+		super(new BitmapLoadCallable(request, reentrantLock, configuration));
 		this.request = request;
 		this.configuration = configuration;
-		this.imageViewAware = imageViewAware;
-		this.imageViewAware.setBitmapLoadTask(this);
+		this.request.getImageViewAware().setBitmapLoadTask(this);
 	}
 	
 	@Override
@@ -51,20 +49,36 @@ public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 			}
 			
 			//尝试取出ImageView并显示
-			if (!imageViewAware.isCollected()) {
+			if (!request.getImageViewAware().isCollected()) {
 				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
-					configuration.getHandler().post(new BitmapDisplayRunnable(imageViewAware, bitmapDrawable, BitmapType.SUCCESS, request, configuration));
+					configuration.getHandler().post(new BitmapDisplayRunnable(request, bitmapDrawable, BitmapType.SUCCESS, configuration));
 				}else{
-					configuration.getHandler().post(new BitmapDisplayRunnable(imageViewAware, request.getOptions().getFailureDrawable(), BitmapType.FAILURE, request, configuration));
+					configuration.getHandler().post(new BitmapDisplayRunnable(request, request.getOptions().getFailureDrawable(), BitmapType.FAILURE, configuration));
 				}
 			}else{
 				if(configuration.isDebugMode()){
 					Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("已解除绑定关系").append("；").append(request.getName()).toString());
 				}
+				if(request.getImageLoadListener() != null){
+					configuration.getHandler().post(new Runnable() {
+						@Override
+						public void run() {
+							request.getImageLoadListener().onCancelled(request.getImageUri(), request.getImageViewAware().getImageView());
+						}
+					});
+				}
 			}
 		}else{
 			if(configuration.isDebugMode()){
 				Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("已取消").append("；").append(request.getName()).toString());
+			}
+			if(request.getImageLoadListener() != null){
+				configuration.getHandler().post(new Runnable() {
+					@Override
+					public void run() {
+						request.getImageLoadListener().onCancelled(request.getImageUri(), request.getImageViewAware().getImageView());
+					}
+				});
 			}
 		}
 	}

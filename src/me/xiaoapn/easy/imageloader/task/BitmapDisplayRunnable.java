@@ -23,24 +23,29 @@ import android.widget.ImageView;
 
 public class BitmapDisplayRunnable implements Runnable {
 	private Request request;
+	private BitmapType bitmapType;
 	private Configuration configuration;
 	private BitmapDrawable bitmapDrawable;
-	private BitmapType bitmapType;
-	private ImageViewAware imageViewAware;
 
-	public BitmapDisplayRunnable(ImageViewAware imageViewAware, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Request request, Configuration configuration) {
+	public BitmapDisplayRunnable(Request request, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Configuration configuration) {
 		this.request = request;
 		this.configuration = configuration;
 		this.bitmapDrawable = bitmapDrawable;
 		this.bitmapType = bitmapType;
-		this.imageViewAware = imageViewAware;
 	}
 
 	@Override
 	public void run() {
-		ImageView imageView = imageViewAware.getImageView();
+		ImageView imageView = request.getImageViewAware().getImageView();
 		if(imageView != null){
 			request.getOptions().getBitmapDisplayer().display(imageView, bitmapDrawable, bitmapType, request, configuration);
+			if(request.getImageLoadListener() != null){
+				if(bitmapType == BitmapType.SUCCESS){
+					request.getImageLoadListener().onComplete(request.getImageUri(), imageView, bitmapDrawable);
+				}else{
+					request.getImageLoadListener().onFailed(request.getImageUri(), imageView);
+				}
+			}
 		}
 	}
 }

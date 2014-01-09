@@ -76,9 +76,10 @@ public class ImageLoader{
 	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 	 * </blockquote>
 	 * @param imageView 显示图片的视图
+	 * @param imageLoadListener 加载监听器
 	 * @param options 加载选项
 	 */
-	public final void display(String imageUri, ImageView imageView, Options options){
+	public final void display(String imageUri, ImageView imageView, Options options, ImageLoadListener imageLoadListener){
 		if(imageView == null){
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), "imageView不能为null");
@@ -90,10 +91,17 @@ public class ImageLoader{
 			options = getConfiguration().getDefaultOptions();
 		}
 		
+		if(imageLoadListener != null){
+			imageLoadListener.onStarted(imageUri, imageView);
+		}
+		
 		if(Utils.isEmpty(imageUri)){
 			imageView.setImageDrawable(options.getEmptyDrawable());
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), new StringBuffer(LOG_NAME).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+			}
+			if(imageLoadListener != null){
+				imageLoadListener.onFailed(imageUri, imageView);
 			}
 			return;
 		}
@@ -103,21 +111,39 @@ public class ImageLoader{
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), new StringBuffer(LOG_NAME).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
+			if(imageLoadListener != null){
+				imageLoadListener.onFailed(imageUri, imageView);
+			}
 			return;
 		}
 		
 		//计算目标尺寸并创建请求
 		ImageViewAware imageViewAware = new ImageViewAware(imageView);
 		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageViewAware, options.getMaxSize());
-		Request request = new Request(Utils.createId(Utils.encodeUrl(imageUri), targetSize, options.getBitmapProcessor()), imageUri, imageUri, options, targetSize);
+		String requestId = Utils.createId(Utils.encodeUrl(imageUri), targetSize, options.getBitmapProcessor());
+		String requestName = imageUri;
+		
+		Request request = new Request.Builder()
+			.setId(requestId)
+			.setName(requestName)
+			.setImageUri(imageUri)
+			.setTargetSize(targetSize)
+			.setOptions(options)
+			.setImageViewAware(imageViewAware)
+			.setImageLoadListener(imageLoadListener)
+			.build();
+		request.setImageLoadListener(imageLoadListener);
 		
 		//尝试显示
 		if(request.getOptions().getCacheConfig().isCacheInMemory()){
-			BitmapDrawable cacheBitmap = getConfiguration().getBitmapCacher().get(request.getId());
-			if(cacheBitmap != null){
-				imageView.setImageDrawable(cacheBitmap);
+			BitmapDrawable cacheDrawable = getConfiguration().getBitmapCacher().get(request.getId());
+			if(cacheDrawable != null){
+				imageView.setImageDrawable(cacheDrawable);
 				if(getConfiguration().isDebugMode()){
 					Log.i(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("显示成功 - 内存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+				}
+				if(imageLoadListener != null){
+					imageLoadListener.onComplete(imageUri, imageView, cacheDrawable);
 				}
 				return;
 			}
@@ -126,7 +152,7 @@ public class ImageLoader{
 		//尝试取消正在加载的任务
 		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(request, imageView, getConfiguration())){
 			//创建加载任务
-			BitmapLoadTask bitmapLoadTask = new BitmapLoadTask(request, imageViewAware, getConfiguration().getTaskExecutor().getLockById(request.getId()), getConfiguration());
+			BitmapLoadTask bitmapLoadTask = new BitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockById(request.getId()), getConfiguration());
 			
 			//显示默认图片
 			BitmapDrawable loadingBitmapDrawable = request.getOptions().getLoadingDrawable();
@@ -148,11 +174,55 @@ public class ImageLoader{
 	 * <br>String imageUri = "assets://image.png"; // from assets
 	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 	 * </blockquote>
-	 * @param cacheFile 缓存文件
+	 * @param imageView 显示图片的视图
+	 * @param options 加载选项
+	 */
+	public void display(String imageUri, ImageView imageView, Options options){
+		display(imageUri, imageView, options, null);
+	}
+	
+	/**
+	 * 显示图片
+	 * @param imageUri 图片Uri，支持以下5种Uri
+	 * <blockquote>
+	 *         String imageUri = "http://site.com/image.png"; // from Web
+	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+	 * <br>String imageUri = "assets://image.png"; // from assets
+	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+	 * </blockquote>
+	 * @param imageView 显示图片的视图
+	 * @param imageLoadListener 加载监听器
+	 */
+	public void display(String imageUri, ImageView imageView, ImageLoadListener imageLoadListener){
+		display(imageUri, imageView, null, imageLoadListener);
+	}
+	
+	/**
+	 * 显示图片
+	 * @param imageUri 图片Uri，支持以下5种Uri
+	 * <blockquote>
+	 *         String imageUri = "http://site.com/image.png"; // from Web
+	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+	 * <br>String imageUri = "assets://image.png"; // from assets
+	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+	 * </blockquote>
 	 * @param imageView 显示图片的视图
 	 */
 	public void display(String imageUri, ImageView imageView){
-		display(imageUri, imageView, null);
+		display(imageUri, imageView, null, null);
+	}
+	
+	/**
+	 * 显示图片
+	 * @param imageFile 图片文件
+	 * @param imageView 显示图片的视图
+	 * @param options 加载选项
+	 * @param imageLoadListener 加载监听器
+	 */
+	public void display(File imageFile, ImageView imageView, Options options, ImageLoadListener imageLoadListener){
+		display(Uri.fromFile(imageFile).toString(), imageView, options, imageLoadListener);
 	}
 	
 	/**
@@ -162,7 +232,17 @@ public class ImageLoader{
 	 * @param options 加载选项
 	 */
 	public void display(File imageFile, ImageView imageView, Options options){
-		display(Uri.fromFile(imageFile).toString(), imageView, options);
+		display(Uri.fromFile(imageFile).toString(), imageView, options, null);
+	}
+	
+	/**
+	 * 显示图片
+	 * @param imageFile 图片文件
+	 * @param imageView 显示图片的视图
+	 * @param imageLoadListener 加载监听器
+	 */
+	public void display(File imageFile, ImageView imageView, ImageLoadListener imageLoadListener){
+		display(Uri.fromFile(imageFile).toString(), imageView, null, imageLoadListener);
 	}
 	
 	/**
@@ -171,7 +251,7 @@ public class ImageLoader{
 	 * @param imageView 显示图片的视图
 	 */
 	public void display(File imageFile, ImageView imageView){
-		display(imageFile, imageView, null);
+		display(imageFile, imageView, null, null);
 	}
 	
 	/**

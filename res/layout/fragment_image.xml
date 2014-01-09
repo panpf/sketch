@@ -1,18 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="horizontal" >
+    android:layout_height="fill_parent">
 	<ImageView 
-	    android:id="@+id/image1" 
-	    android:layout_width="0dp" 
-	    android:layout_height="wrap_content" 
-	    android:layout_weight="1" 
+	    android:id="@+id/image_imageFragment_image" 
+	    android:layout_width="match_parent" 
+	    android:layout_height="match_parent" 
 	    android:contentDescription="@string/app_name"/>
-	<ImageView  
-	    android:id="@+id/image2" 
-	    android:layout_width="0dp" 
+	<ProgressBar 
+	    android:layout_width="wrap_content" 
 	    android:layout_height="wrap_content" 
-	    android:layout_weight="1" 
-	    android:contentDescription="@string/app_name"/>
-</LinearLayout>
+	    android:layout_gravity="center"
+	    android:id="@+id/progress_imageFragment_progress"/>
+</FrameLayout>

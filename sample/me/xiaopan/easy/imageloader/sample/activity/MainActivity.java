@@ -22,9 +22,11 @@ import me.xiaopan.easy.imageloader.sample.fragment.GalleryFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.GridFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.ListFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.PagerFragment;
+import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
@@ -134,26 +136,35 @@ public class MainActivity extends FragmentActivity {
 		update();
 	}
 	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void update(){
 		String[] uris = null;
+		String uriName = null;
 		switch(uriType){
-			case HTTP : uris = httpUris; break;
-			case FILE : uris = fileUris; break;
-			case CONTENT : uris = contentUris; break;
-			case ASSETS : uris = assetUris; break;
-//			case DRAWABLE : uris = drawableUris; break;
+			case HTTP : uris = httpUris; uriName = "Http"; break;
+			case FILE : uris = fileUris; uriName = "File"; break;
+			case CONTENT : uris = contentUris; uriName = "Content"; break;
+			case ASSETS : uris = assetUris; uriName = "Assets"; break;
+//			case DRAWABLE : uris = drawableUris; uriName = "Drawable"; break;
 			default : break;
 		}
 		
 		if(uris != null && uris.length > 0){
 			Fragment fragment = null;
+			String viewName = null;
 			switch(viewType){
-				case GRID_VIEW : fragment = new GridFragment(); break;
-				case LIST_VIEW : fragment = new ListFragment(); break;
-				case GALLERY : fragment = new GalleryFragment(); break;
-				case VIEW_PAGER :  fragment = new PagerFragment(); break;
+				case GRID_VIEW : fragment = new GridFragment(); viewName = "GridView"; break;
+				case LIST_VIEW : fragment = new ListFragment(); viewName = "ListView"; break;
+				case GALLERY : fragment = new GalleryFragment(); viewName = "Gallery"; break;
+				case VIEW_PAGER :  fragment = new PagerFragment(); viewName = "ViewPager"; break;
 			}
 			if(fragment != null){
+				String subTitle = viewName + " " + uriName;
+				if(Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB){
+					getActionBar().setSubtitle(subTitle);
+				}else{
+					setTitle(subTitle);
+				}
 				Bundle bundle = new Bundle();
 				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, uris);
 				fragment.setArguments(bundle);

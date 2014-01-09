@@ -17,6 +17,7 @@
 package me.xiaoapn.easy.imageloader.task;
 
 import me.xiaoapn.easy.imageloader.Configuration;
+import me.xiaoapn.easy.imageloader.ImageLoadListener;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.Scheme;
 import me.xiaoapn.easy.imageloader.util.Utils;
@@ -40,13 +41,10 @@ public class Request {
 	private Options options;	//加载选项
 	private ImageSize targetSize;	//目标尺寸
 	
-	public Request(String id, String name, String uri, Options options, ImageSize targetSize) {
-		this.id = id;
-		this.imageUri = uri;
-		this.name = name;
-		this.options = options;
-		this.targetSize = targetSize;
-	}
+	private ImageViewAware imageViewAware;
+	private ImageLoadListener imageLoadListener;
+	
+	private Request() {}
 
 	/**
 	 * 获取ID
@@ -140,6 +138,22 @@ public class Request {
 		this.targetSize = targetSize;
 	}
 	
+	public ImageViewAware getImageViewAware() {
+		return imageViewAware;
+	}
+
+	public void setImageViewAware(ImageViewAware imageViewAware) {
+		this.imageViewAware = imageViewAware;
+	}
+
+	public ImageLoadListener getImageLoadListener() {
+		return imageLoadListener;
+	}
+
+	public void setImageLoadListener(ImageLoadListener imageLoadListener) {
+		this.imageLoadListener = imageLoadListener;
+	}
+
 	/**
 	 * 是否是从网络加载的
 	 * @param configuration
@@ -152,5 +166,78 @@ public class Request {
 			result = !Utils.isAvailableOfFile(Utils.getCacheFile(configuration, getOptions(), Utils.encodeUrl(getImageUri())), getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, getName());
 		}
 		return result;
+	}
+	
+	public static class Builder{
+		Request request;
+		
+		public Builder(){
+			request = new Request();
+		}
+		
+		/**
+		 * 设置ID
+		 * @param id ID
+		 */
+		public Builder setId(String id) {
+			request.setId(id);
+			return this;
+		}
+		
+		/**
+		 * 设置Uri，支持以下5种Uri
+		 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
+		 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+		 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+		 * <br>String imageUri = "assets://image.png"; // from assets
+		 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+		 * </blockquote>
+		 * @param imageUri
+		 */
+		public Builder setImageUri(String imageUri) {
+			request.setImageUri(imageUri);
+			return this;
+		}
+
+		/**
+		 * 设置名称，用于在输出log时区分不同的请求
+		 * @param name
+		 */
+		public Builder setName(String name) {
+			request.setName(name);
+			return this;
+		}
+		
+		/**
+		 * 设置加载选项
+		 * @param options
+		 */
+		public Builder setOptions(Options options) {
+			request.setOptions(options);
+			return this;
+		}
+		
+		/**
+		 * 设置目标尺寸
+		 * @param targetSize
+		 */
+		public Builder setTargetSize(ImageSize targetSize) {
+			request.setTargetSize(targetSize);
+			return this;
+		}
+		
+		public Builder setImageViewAware(ImageViewAware imageViewAware) {
+			request.setImageViewAware(imageViewAware);
+			return this;
+		}
+
+		public Builder setImageLoadListener(ImageLoadListener imageLoadListener) {
+			request.setImageLoadListener(imageLoadListener);
+			return this;
+		}
+		
+		public Request build(){
+			return request;
+		}
 	}
 }
