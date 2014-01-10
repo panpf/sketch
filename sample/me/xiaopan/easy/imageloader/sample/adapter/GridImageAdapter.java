@@ -16,13 +16,11 @@
 
 package me.xiaopan.easy.imageloader.sample.adapter;
 
-import me.xiaoapn.easy.imageloader.ImageLoadListener;
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.R;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.Display;
@@ -34,7 +32,6 @@ import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
-import android.widget.ProgressBar;
 
 public class GridImageAdapter extends BaseAdapter {
 	private Context context;
@@ -85,39 +82,17 @@ public class GridImageAdapter extends BaseAdapter {
 				viewHolder.image.setLayoutParams(new FrameLayout.LayoutParams(screenWidth/cloumn, screenWidth/cloumn));
 				viewHolder.image.setScaleType(ScaleType.CENTER_CROP);
 			}
-			viewHolder.progressBar = (ProgressBar) convertView.findViewById(R.id.progress_gridItem_progress);
 			convertView.setTag(viewHolder);
 		}else{
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
 		Log.w("ImageAdapter", "ImageAdapter：Uri="+imageUris[position]+"; ImageViewCode="+viewHolder.hashCode());
-		ImageLoader.getInstance().display(imageUris[position], viewHolder.image, new ImageLoadListener() {
-			@Override
-			public void onStarted(String imageUri, ImageView imageView) {
-				viewHolder.progressBar.setVisibility(View.VISIBLE);
-			}
-			
-			@Override
-			public void onFailed(String imageUri, ImageView imageView) {
-				viewHolder.progressBar.setVisibility(View.GONE);
-			}
-			
-			@Override
-			public void onComplete(String imageUri, ImageView imageView, BitmapDrawable drawable) {
-				viewHolder.progressBar.setVisibility(View.GONE);
-			}
-			
-			@Override
-			public void onCancelled(String imageUri, ImageView imageView) {
-				
-			}
-		});
+		ImageLoader.getInstance().display(imageUris[position], viewHolder.image);
 		return convertView;
 	}
 	
 	class ViewHolder{
 		ImageView image;
-		ProgressBar progressBar;
 	}
 }

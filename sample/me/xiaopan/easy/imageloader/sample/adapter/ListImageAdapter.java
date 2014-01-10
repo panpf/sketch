@@ -18,8 +18,7 @@ package me.xiaopan.easy.imageloader.sample.adapter;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.R;
-import me.xiaoapn.easy.imageloader.process.RoundedCornerBitmapProcessor;
-import me.xiaoapn.easy.imageloader.task.Options;
+import me.xiaopan.easy.imageloader.sample.OptionsType;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,13 +29,10 @@ import android.widget.ImageView;
 public class ListImageAdapter extends BaseAdapter {
 	private Context context;
 	private String[] imageUrls;
-	private Options options;
 	
 	public ListImageAdapter(Context context, String[] imageUrls){
 		this.context = context;
 		this.imageUrls = imageUrls;
-		options = ImageLoader.getInstance().getConfiguration().getDefaultOptions().copy();
-		options.setBitmapProcessor(new RoundedCornerBitmapProcessor());
 	}
 
 	@Override
@@ -66,8 +62,7 @@ public class ListImageAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
-//		ImageLoader.getInstance().display(imageUrls[position], viewHolder.image, options);
-		ImageLoader.getInstance().display(imageUrls[position], viewHolder.image);
+		ImageLoader.getInstance().display(imageUrls[position], viewHolder.image, OptionsType.LIST_VIEW);
 		return convertView;
 	}
 	

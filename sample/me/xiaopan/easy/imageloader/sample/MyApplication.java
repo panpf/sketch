@@ -18,6 +18,8 @@ package me.xiaopan.easy.imageloader.sample;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.R;
+import me.xiaoapn.easy.imageloader.display.ZoomInBitmapDisplayer;
+import me.xiaoapn.easy.imageloader.display.ZoomOutBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.process.ReflectionBitmapProcessor;
 import me.xiaoapn.easy.imageloader.task.Options;
 import android.app.Application;
@@ -30,9 +32,26 @@ public class MyApplication extends Application {
 		
 		ImageLoader.getInstance().init(getBaseContext());
 		ImageLoader.getInstance().getConfiguration().setDebugMode(true);
+		
 		Options defaultOptions = ImageLoader.getInstance().getConfiguration().getDefaultOptions();
 		defaultOptions.setLoadingDrawable(getResources(), R.drawable.image_loading);	//设置加载中显示的图片
 		defaultOptions.setFailureDrawable(getResources(), R.drawable.image_load_failure); 	//设置加载失败时显示的图片
+		defaultOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
 		defaultOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
+		
+		Options viewPagerOptions = defaultOptions.copy();
+		viewPagerOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
+		viewPagerOptions.setLoadingDrawable(null);
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.VIEW_PAGER, viewPagerOptions);
+		
+		Options listViewOptions = defaultOptions.copy();
+		listViewOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
+		listViewOptions.setBitmapDisplayer(new ZoomInBitmapDisplayer());
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.LIST_VIEW, listViewOptions);
+		
+		Options galleryOptions = defaultOptions.copy();
+		galleryOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
+		galleryOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.GALLERY, galleryOptions);
 	}
 }

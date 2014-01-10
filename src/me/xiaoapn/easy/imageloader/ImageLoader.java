@@ -76,8 +76,8 @@ public class ImageLoader{
 	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 	 * </blockquote>
 	 * @param imageView 显示图片的视图
-	 * @param imageLoadListener 加载监听器
 	 * @param options 加载选项
+	 * @param imageLoadListener 加载监听器
 	 */
 	public final void display(String imageUri, ImageView imageView, Options options, ImageLoadListener imageLoadListener){
 		if(imageView == null){
@@ -119,7 +119,7 @@ public class ImageLoader{
 		
 		//计算目标尺寸并创建请求
 		ImageViewAware imageViewAware = new ImageViewAware(imageView);
-		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageViewAware, options.getMaxSize());
+		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageViewAware, options.getImageMaxSize());
 		String requestId = Utils.createId(Utils.encodeUrl(imageUri), targetSize, options.getBitmapProcessor());
 		String requestName = imageUri;
 		
@@ -167,6 +167,23 @@ public class ImageLoader{
 	/**
 	 * 显示图片
 	 * @param imageUri 图片Uri，支持以下5种Uri
+	 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
+	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+	 * <br>String imageUri = "assets://image.png"; // from assets
+	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+	 * </blockquote>
+	 * @param imageView 显示图片的视图
+	 * @param optionsName 加载选项的名称，你通过getConfiguration().putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 * @param imageLoadListener 加载监听器
+	 */
+	public final void display(String imageUri, ImageView imageView, Enum<?> optionsName, ImageLoadListener imageLoadListener){
+		display(imageUri, imageView, getConfiguration().getOptions(optionsName), imageLoadListener);
+	}
+	
+	/**
+	 * 显示图片
+	 * @param imageUri 图片Uri，支持以下5种Uri
 	 * <blockquote>
 	 *         String imageUri = "http://site.com/image.png"; // from Web
 	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
@@ -192,10 +209,27 @@ public class ImageLoader{
 	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 	 * </blockquote>
 	 * @param imageView 显示图片的视图
+	 * @param optionsName 加载选项的名称，你通过getConfiguration().putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 */
+	public void display(String imageUri, ImageView imageView, Enum<?> optionsName){
+		display(imageUri, imageView, getConfiguration().getOptions(optionsName), null);
+	}
+	
+	/**
+	 * 显示图片
+	 * @param imageUri 图片Uri，支持以下5种Uri
+	 * <blockquote>
+	 *         String imageUri = "http://site.com/image.png"; // from Web
+	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+	 * <br>String imageUri = "assets://image.png"; // from assets
+	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+	 * </blockquote>
+	 * @param imageView 显示图片的视图
 	 * @param imageLoadListener 加载监听器
 	 */
 	public void display(String imageUri, ImageView imageView, ImageLoadListener imageLoadListener){
-		display(imageUri, imageView, null, imageLoadListener);
+		display(imageUri, imageView, getConfiguration().getDefaultOptions(), imageLoadListener);
 	}
 	
 	/**
@@ -211,7 +245,7 @@ public class ImageLoader{
 	 * @param imageView 显示图片的视图
 	 */
 	public void display(String imageUri, ImageView imageView){
-		display(imageUri, imageView, null, null);
+		display(imageUri, imageView, getConfiguration().getDefaultOptions(), null);
 	}
 	
 	/**
@@ -229,6 +263,17 @@ public class ImageLoader{
 	 * 显示图片
 	 * @param imageFile 图片文件
 	 * @param imageView 显示图片的视图
+	 * @param optionsName 加载选项的名称，你通过getConfiguration().putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 * @param imageLoadListener 加载监听器
+	 */
+	public void display(File imageFile, ImageView imageView, Enum<?> optionsName, ImageLoadListener imageLoadListener){
+		display(Uri.fromFile(imageFile).toString(), imageView, getConfiguration().getOptions(optionsName), imageLoadListener);
+	}
+	
+	/**
+	 * 显示图片
+	 * @param imageFile 图片文件
+	 * @param imageView 显示图片的视图
 	 * @param options 加载选项
 	 */
 	public void display(File imageFile, ImageView imageView, Options options){
@@ -239,10 +284,20 @@ public class ImageLoader{
 	 * 显示图片
 	 * @param imageFile 图片文件
 	 * @param imageView 显示图片的视图
+	 * @param optionsName 加载选项的名称，你通过getConfiguration().putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 */
+	public void display(File imageFile, ImageView imageView, Enum<?> optionsName){
+		display(Uri.fromFile(imageFile).toString(), imageView, getConfiguration().getOptions(optionsName), null);
+	}
+	
+	/**
+	 * 显示图片
+	 * @param imageFile 图片文件
+	 * @param imageView 显示图片的视图
 	 * @param imageLoadListener 加载监听器
 	 */
 	public void display(File imageFile, ImageView imageView, ImageLoadListener imageLoadListener){
-		display(Uri.fromFile(imageFile).toString(), imageView, null, imageLoadListener);
+		display(Uri.fromFile(imageFile).toString(), imageView, getConfiguration().getDefaultOptions(), imageLoadListener);
 	}
 	
 	/**
@@ -251,7 +306,7 @@ public class ImageLoader{
 	 * @param imageView 显示图片的视图
 	 */
 	public void display(File imageFile, ImageView imageView){
-		display(imageFile, imageView, null, null);
+		display(imageFile, imageView, getConfiguration().getDefaultOptions(), null);
 	}
 	
 	/**

@@ -46,7 +46,7 @@ public class ListFragment extends Fragment {
 				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS));
 				bundle.putInt(PagerFragment.PARAM_OPTIONAL_INT_CURRENT_POSITION, position - listView.getHeaderViewsCount());
 				pagerFragment.setArguments(bundle);
-				getFragmentManager().beginTransaction().setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out).add(R.id.fragment_main, pagerFragment).addToBackStack(PagerFragment.class.getSimpleName()).commit();
+				getFragmentManager().beginTransaction().setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out).add(R.id.fragment_main, pagerFragment).addToBackStack(PagerFragment.class.getSimpleName()).commitAllowingStateLoss();
 			}
 		});
 		return listView;

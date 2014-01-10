@@ -18,6 +18,7 @@ package me.xiaopan.easy.imageloader.sample.adapter;
 
 import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.R;
+import me.xiaopan.easy.imageloader.sample.OptionsType;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -61,7 +62,7 @@ public class GalleryImageAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
-		ImageLoader.getInstance().display(imageUrls[position], viewHolder.image);
+		ImageLoader.getInstance().display(imageUrls[position], viewHolder.image, OptionsType.GALLERY);
 		return convertView;
 	}
 	

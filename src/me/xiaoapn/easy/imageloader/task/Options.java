@@ -33,7 +33,7 @@ public class Options{
 	private BitmapDrawable emptyDrawable;	//当加载地址为空时显示的图片
 	private BitmapDrawable loadingDrawable;	//正在加载时显示的图片
 	private BitmapDrawable failureDrawable;	//加载失败时显示的图片
-	private ImageSize maxSize;	//最大尺寸
+	private ImageSize imageMaxSize;	//图片最大尺寸
 	private CacheConfig cacheConfig;	//缓存配置
 	private BitmapProcessor bitmapProcessor;	//位图处理器
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
@@ -135,16 +135,16 @@ public class Options{
 	 * 获取最大尺寸
 	 * @return
 	 */
-	public ImageSize getMaxSize() {
-		return maxSize;
+	public ImageSize getImageMaxSize() {
+		return imageMaxSize;
 	}
 
 	/**
 	 * 设置最大尺寸
-	 * @param maxSize
+	 * @param imageMaxSize
 	 */
-	public void setMaxSize(ImageSize maxSize) {
-		this.maxSize = maxSize;
+	public void setImageMaxSize(ImageSize imageMaxSize) {
+		this.imageMaxSize = imageMaxSize;
 	}
 	
 	/**
@@ -212,7 +212,7 @@ public class Options{
 		.setEmptyDrawable(emptyDrawable)
 		.setFailureDrawable(failureDrawable)
 		.setLoadingDrawable(loadingDrawable)
-		.setMaxSize(maxSize.copy())
+		.setMaxSize(imageMaxSize.copy())
 		.setMaxRetryCount(maxRetryCount)
 		.build();
 	}
@@ -307,7 +307,7 @@ public class Options{
 		 * @param maxSize
 		 */
 		public Builder setMaxSize(ImageSize maxSize) {
-			options.setMaxSize(maxSize);
+			options.setImageMaxSize(maxSize);
 			return this;
 		}
 

@@ -23,20 +23,23 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.util.Log;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 
 /**
- * 渐入位图显示器
+ * 放大位图显示器
  */
-public class FadeInBitmapDisplayer implements BitmapDisplayer {
-	private static final String LOG_NAME= FadeInBitmapDisplayer.class.getSimpleName();
+public class ZoomOutBitmapDisplayer implements BitmapDisplayer {
+	private static final String LOG_NAME= ZoomOutBitmapDisplayer.class.getSimpleName();
 	private int duration;
 
-	public FadeInBitmapDisplayer(int duration){
+	public ZoomOutBitmapDisplayer(int duration){
 		this.duration = duration;
 	}
 	
-	public FadeInBitmapDisplayer(){
+	public ZoomOutBitmapDisplayer(){
 		this(400);
 	}
 	
@@ -81,5 +84,10 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 		imageView.setImageDrawable(transitionDrawable);
 		transitionDrawable.setCrossFadeEnabled(true);
 		transitionDrawable.startTransition(duration);
+		
+		ScaleAnimation scaleAnimation = new ScaleAnimation(1.5f, 1.0f, 1.5f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+		scaleAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+		scaleAnimation.setDuration(duration);
+		imageView.startAnimation(scaleAnimation);
 	}
 }

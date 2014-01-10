@@ -16,6 +16,9 @@
 
 package me.xiaoapn.easy.imageloader;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import me.xiaoapn.easy.imageloader.cache.BitmapCacher;
 import me.xiaoapn.easy.imageloader.cache.BitmapLruCacher;
 import me.xiaoapn.easy.imageloader.cache.CacheConfig;
@@ -53,12 +56,12 @@ public class Configuration {
 	private String logTag;	//LogTag
 	private Context context;	//上下文
 	private Handler handler;	//消息处理器
-	private Options defaultOptions;	//默认加载选项
 	private Resources resources;	//资源
 	private HttpClient httpClient;	//Http客户端
 	private TaskExecutor taskExecutor;	//任务执行器
 	private BitmapCacher bitmapCacher;	//位图缓存器
 	private BitmapDecoder bitmapDecoder;	//位图解码器
+	private Map<Object, Options> optionsMap;
 	
 	private Configuration(Context context){
 		if(Looper.myLooper() != Looper.getMainLooper()){
@@ -69,12 +72,13 @@ public class Configuration {
 		this.context = context;
 		this.handler = new Handler();
 		this.resources = context.getResources();
-		this.defaultOptions = new Options.Builder()
+		this.optionsMap = new HashMap<Object, Options>();
+		putOptions(OptionsType.DEFAULT, new Options.Builder()
 		.setCacheConfig(new CacheConfig.Builder().setCacheInMemory(true).setCacheInDisk(true).build())
 		.setBitmapDisplayer(new FadeInBitmapDisplayer())
 		.setMaxSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
 		.setMaxRetryCount(2)
-		.build();
+		.build());
 	}
 	
 	/**
@@ -117,15 +121,15 @@ public class Configuration {
 	 * @return
 	 */
 	public Options getDefaultOptions() {
-		return defaultOptions;
+		return getOptions(OptionsType.DEFAULT);
 	}
 	
 	/**
-	 * 设置默认的加载选项，当使用loadByDefault()方法的时候就会使用此加载选项
+	 * 设置默认的加载选项
 	 * @param defaultOptions
 	 */
 	public void setDefaultOptions(Options defaultOptions) {
-		this.defaultOptions = defaultOptions;
+		putOptions(OptionsType.DEFAULT, defaultOptions);
 	}
 	
 	/**
@@ -205,6 +209,24 @@ public class Configuration {
 	public void setDebugMode(boolean debugMode) {
 		this.debugMode = debugMode;
 	}
+	
+	/**
+	 * 获取加载选项
+	 * @param optionsName
+	 * @return
+	 */
+	public Options getOptions(Enum<?> optionsName){
+		return this.optionsMap.get(optionsName);
+	}
+	
+	/**
+	 * 放入加载选项
+	 * @param optionsName
+	 * @param options
+	 */
+	public void putOptions(Enum<?> optionsName, Options options){
+		this.optionsMap.put(optionsName, options);
+	}
 
 	/**
 	 * 获取Http客户端
@@ -263,7 +285,7 @@ public class Configuration {
 		}
 	    
 		/**
-		 * 设置加载选项
+		 * 设置默认的加载选项
 		 * @param defaultOptions
 		 */
 		public Builder setDefaultOptions(Options defaultOptions) {
@@ -308,11 +330,25 @@ public class Configuration {
 		}
 		
 		/**
+		 * 放入加载选项
+		 * @param optionsName
+		 * @param options
+		 */
+		public Builder putOptions(Enum<?> optionsName, Options options){
+			configuration.putOptions(optionsName, options);
+			return this;
+		}
+		
+		/**
 		 * 创建
 		 * @return
 		 */
 		public Configuration build(){
 			return configuration;
 		}
+	}
+	
+	public enum OptionsType{
+		DEFAULT;
 	}
 }
