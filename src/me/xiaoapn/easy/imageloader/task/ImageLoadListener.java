@@ -1,4 +1,4 @@
-package me.xiaoapn.easy.imageloader;
+package me.xiaoapn.easy.imageloader.task;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;

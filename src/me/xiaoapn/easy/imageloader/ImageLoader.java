@@ -20,6 +20,7 @@ import java.io.File;
 
 import me.xiaoapn.easy.imageloader.task.AsyncDrawable;
 import me.xiaoapn.easy.imageloader.task.BitmapLoadTask;
+import me.xiaoapn.easy.imageloader.task.ImageLoadListener;
 import me.xiaoapn.easy.imageloader.task.ImageViewAware;
 import me.xiaoapn.easy.imageloader.task.Options;
 import me.xiaoapn.easy.imageloader.task.Request;

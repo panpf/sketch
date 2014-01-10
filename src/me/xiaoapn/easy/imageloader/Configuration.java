@@ -73,7 +73,7 @@ public class Configuration {
 		this.handler = new Handler();
 		this.resources = context.getResources();
 		this.optionsMap = new HashMap<Object, Options>();
-		putOptions(OptionsType.DEFAULT, new Options.Builder()
+		putOptions(OptionsDefault.DEFAULT, new Options.Builder()
 		.setCacheConfig(new CacheConfig.Builder().setCacheInMemory(true).setCacheInDisk(true).build())
 		.setBitmapDisplayer(new FadeInBitmapDisplayer())
 		.setMaxSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
@@ -121,7 +121,7 @@ public class Configuration {
 	 * @return
 	 */
 	public Options getDefaultOptions() {
-		return getOptions(OptionsType.DEFAULT);
+		return getOptions(OptionsDefault.DEFAULT);
 	}
 	
 	/**
@@ -129,7 +129,7 @@ public class Configuration {
 	 * @param defaultOptions
 	 */
 	public void setDefaultOptions(Options defaultOptions) {
-		putOptions(OptionsType.DEFAULT, defaultOptions);
+		putOptions(OptionsDefault.DEFAULT, defaultOptions);
 	}
 	
 	/**
@@ -348,7 +348,7 @@ public class Configuration {
 		}
 	}
 	
-	public enum OptionsType{
+	private enum OptionsDefault{
 		DEFAULT;
 	}
 }
