@@ -16,7 +16,6 @@
 
 package me.xiaoapn.easy.imageloader.task;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
 
 import me.xiaoapn.easy.imageloader.Configuration;
@@ -31,8 +30,8 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 	private Request request;
 	private Configuration configuration;
 	
-	public BitmapLoadTask(Request request, Configuration configuration, Callable<BitmapDrawable> callable) {
-		super(callable);
+	public BitmapLoadTask(Request request, Configuration configuration, BitmapLoadCallable bitmapLoadCallable) {
+		super(bitmapLoadCallable);
 		this.request = request;
 		this.configuration = configuration;
 		this.request.getImageViewAware().setBitmapLoadTask(this);

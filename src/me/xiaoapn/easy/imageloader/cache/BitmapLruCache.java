@@ -15,6 +15,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.v4.util.LruCache;
+import android.util.Log;
 
 public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
 	private Set<SoftReference<Bitmap>> mReusableBitmaps;
@@ -24,10 +25,12 @@ public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
 		if (Utils.hasHoneycomb()) {
 		    mReusableBitmaps = Collections.synchronizedSet(new HashSet<SoftReference<Bitmap>>());
 		}
+		Log.e("", new StringBuffer().append("最大内存").append("；").append(maxSize/1024).append("KB").toString());
 	}
 
 	@Override
 	protected int sizeOf(String key, BitmapDrawable value) {
+		Log.e("", new StringBuffer().append("最大内存").append(": ").append(maxSize()/1024).append("KB").append("；").append("已用内存").append(": ").append(size()/1024).append("KB").toString());
 		final int bitmapSize = getBitmapSize(value); 
 		return bitmapSize == 0 ? 1 : bitmapSize;
 	}
@@ -40,21 +43,6 @@ public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
 			mReusableBitmaps.add(new SoftReference<Bitmap>(oldValue.getBitmap()));
 		}
 	}
-
-	/**
-     * Get the size in bytes of a bitmap in a BitmapDrawable.
-     * @param value
-     * @return size in bytes
-     */
-    @TargetApi(12)
-    public int getBitmapSize(BitmapDrawable value) {
-        Bitmap bitmap = value.getBitmap();
-        if (Utils.hasHoneycombMR1()) {
-            return bitmap.getByteCount();
-        }else{
-        	return bitmap.getRowBytes() * bitmap.getHeight();
-        }
-    }
     
     /**
      * 获取可再度使用的Bitmap
@@ -94,6 +82,21 @@ public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
         }else{
         	// On earlier versions, the dimensions must match exactly and the inSampleSize must be 1
         	return candidate.getWidth() == targetOptions.outWidth && candidate.getHeight() == targetOptions.outHeight && targetOptions.inSampleSize == 1;
+        }
+    }
+
+	/**
+     * Get the size in bytes of a bitmap in a BitmapDrawable.
+     * @param value
+     * @return size in bytes
+     */
+    @TargetApi(12)
+    public static int getBitmapSize(BitmapDrawable value) {
+        Bitmap bitmap = value.getBitmap();
+        if (Utils.hasHoneycombMR1()) {
+            return bitmap.getByteCount();
+        }else{
+        	return bitmap.getRowBytes() * bitmap.getHeight();
         }
     }
     

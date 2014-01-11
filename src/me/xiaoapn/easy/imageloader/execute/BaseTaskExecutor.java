@@ -18,6 +18,7 @@ import android.util.Log;
  * 基本的任务执行器
  */
 public class BaseTaskExecutor implements TaskExecutor {
+	private static final String LOG_NAME= BitmapLoadTask.class.getSimpleName();
 	private Executor taskDistributor;	//任务调度器
 	private Executor netTaskExecutor;	//网络任务执行器
 	private Executor localTaskExecutor;	//本地任务执行器
@@ -44,8 +45,14 @@ public class BaseTaskExecutor implements TaskExecutor {
 			@Override
 			public void run() {
 				if(bitmapLoadTask instanceof HttpBitmapLoadTask && ((HttpBitmapLoadTask) bitmapLoadTask).isFromNetworkLoad()){
+					if(configuration.isDebugMode()){
+						Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("放到网络线程池中加载").append("；").append(bitmapLoadTask.getRequest().getName()).toString());
+					}
 					netTaskExecutor.execute(bitmapLoadTask);
 				}else{
+					if(configuration.isDebugMode()){
+						Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("放到本地线程池中加载").append("；").append(bitmapLoadTask.getRequest().getName()).toString());
+					}
 					localTaskExecutor.execute(bitmapLoadTask);
 				}
 			}
