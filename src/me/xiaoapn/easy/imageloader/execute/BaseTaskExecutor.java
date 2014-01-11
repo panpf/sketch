@@ -31,7 +31,7 @@ public class BaseTaskExecutor implements TaskExecutor {
 	public BaseTaskExecutor(){
 		this(
 			new ThreadPoolExecutor(1, 10, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy()), 
-			new ThreadPoolExecutor(1,   2, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy())
+			new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy())
 		);
 	}
 	
