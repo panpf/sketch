@@ -23,8 +23,8 @@ import android.util.Log;
 /**
  * 图片下载器
  */
-public class ImageDownloader {
-	private static final String LOG_NAME= ImageDownloader.class.getSimpleName();
+public class BaseImageDownloader {
+	private static final String LOG_NAME= BaseImageDownloader.class.getSimpleName();
 	private int maxRetryCount;
 	private File cacheFile;
 	private String url;
@@ -33,7 +33,7 @@ public class ImageDownloader {
 	private Configuration configuration;
 	private OnCompleteListener onCompleteListener;
 	
-	public ImageDownloader(String requestName, String url, File cacheFile, int maxRetryCount, HttpClient httpClient, Configuration configuration, OnCompleteListener onCompleteListener) {
+	public BaseImageDownloader(String requestName, String url, File cacheFile, int maxRetryCount, HttpClient httpClient, Configuration configuration, OnCompleteListener onCompleteListener) {
 		this.url = url;
 		this.cacheFile = cacheFile;
 		this.httpClient = httpClient;

@@ -30,8 +30,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.decode.FileNewBitmapInputStreamListener;
 import me.xiaoapn.easy.imageloader.decode.OnNewBitmapInputStreamListener;
-import me.xiaoapn.easy.imageloader.download.ImageDownloader;
-import me.xiaoapn.easy.imageloader.download.ImageDownloader.OnCompleteListener;
+import me.xiaoapn.easy.imageloader.download.BaseImageDownloader;
+import me.xiaoapn.easy.imageloader.download.BaseImageDownloader.OnCompleteListener;
 import me.xiaoapn.easy.imageloader.util.IoUtils;
 import me.xiaoapn.easy.imageloader.util.RecyclingBitmapDrawable;
 import me.xiaoapn.easy.imageloader.util.Scheme;
@@ -139,7 +139,7 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
      */
     private OnNewBitmapInputStreamListener getNetNewBitmapInputStreamListener(String requestName, String imageUrl, File cacheFile, int maxRetryCount, HttpClient httpClient){
     	final NewBitmapInputStreamListenerHolder holder = new NewBitmapInputStreamListenerHolder();
-    	new ImageDownloader(requestName, imageUrl, cacheFile, maxRetryCount, httpClient, configuration, new OnCompleteListener() {
+    	new BaseImageDownloader(requestName, imageUrl, cacheFile, maxRetryCount, httpClient, configuration, new OnCompleteListener() {
 			@Override
 			public void onFailed() {}
 			
