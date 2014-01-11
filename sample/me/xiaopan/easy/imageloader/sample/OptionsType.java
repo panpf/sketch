@@ -17,5 +17,5 @@
 package me.xiaopan.easy.imageloader.sample;
 
 public enum OptionsType {
-	LIST_VIEW, GRID_VIEW, GALLERY, VIEW_PAGER;
+	LIST_VIEW, GRID_VIEW, GALLERY, VIEW_PAGER, SIMPLE;
 }

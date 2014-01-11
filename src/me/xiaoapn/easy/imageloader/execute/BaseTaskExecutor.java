@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.task.BitmapLoadTask;
+import android.util.Log;
 
 /**
  * 基本的任务执行器
@@ -28,11 +29,12 @@ public class BaseTaskExecutor implements TaskExecutor {
 		this.localTaskExecutor = localTaskExecutor;
 	}
 	
+	public BaseTaskExecutor(Executor netTaskExecutor){
+		this(netTaskExecutor, new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy()));
+	}
+	
 	public BaseTaskExecutor(){
-		this(
-			new ThreadPoolExecutor(1, 10, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy()), 
-			new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy())
-		);
+		this(new ThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy()));
 	}
 	
 	@Override
@@ -50,11 +52,12 @@ public class BaseTaskExecutor implements TaskExecutor {
 	}
 
 	@Override
-	public ReentrantLock getLockById(String id) {
-		ReentrantLock lock = uriLocks.get(id);
+	public ReentrantLock getLockByRequestId(String requestId) {
+		Log.d("", "URI锁ID="+requestId);
+		ReentrantLock lock = uriLocks.get(requestId);
 		if (lock == null) {
 			lock = new ReentrantLock();
-			uriLocks.put(id, lock);
+			uriLocks.put(requestId, lock);
 		}
 		return lock;
 	}

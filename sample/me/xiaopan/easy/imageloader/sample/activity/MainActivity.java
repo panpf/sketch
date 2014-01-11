@@ -22,6 +22,7 @@ import me.xiaopan.easy.imageloader.sample.fragment.GalleryFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.GridFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.ListFragment;
 import me.xiaopan.easy.imageloader.sample.fragment.PagerFragment;
+import me.xiaopan.easy.imageloader.sample.fragment.SimpleImageFragment;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.database.Cursor;
@@ -64,18 +65,27 @@ public class MainActivity extends FragmentActivity {
 		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, GravityCompat.END);
 		
 		viewTypeListView = (ListView) findViewById(R.id.list_main_views);
-		viewTypeListView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery", "ViewPager"));
+		viewTypeListView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery", "ViewPager", "常规"));
 		viewTypeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				switch(position - viewTypeListView.getHeaderViewsCount()){
-					case 0 : viewType = ViewType.GRID_VIEW; break;
-					case 1 : viewType = ViewType.LIST_VIEW; break;
-					case 2 : viewType = ViewType.GALLERY; break;
-					case 3 : viewType = ViewType.VIEW_PAGER; break;
+					case 0 : viewType = ViewType.GRID_VIEW; update(true); break;
+					case 1 : viewType = ViewType.LIST_VIEW; update(true); break;
+					case 2 : viewType = ViewType.GALLERY; update(true); break;
+					case 3 : viewType = ViewType.VIEW_PAGER; update(true); break;
+					case 4 : 
+						Bundle bundle = new Bundle();
+						bundle.putString(SimpleImageFragment.PARAM_REQUIRED_IMAGE_URI, "http://file.2000fun.com/forum/forumid_124/20101114_1a1a3eef34b7c824b90fHU2q5Q8WsyA4.jpg");
+						Fragment fragment = new SimpleImageFragment();
+						fragment.setArguments(bundle);
+						FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+						fragmentTransaction.setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out).addToBackStack("");
+						fragmentTransaction.add(R.id.fragment_main, fragment);
+						fragmentTransaction.commitAllowingStateLoss();
+						break;
 				}
 				drawerLayout.closeDrawers();
-				update(true);
 			}
 		});
 		

@@ -10,5 +10,5 @@ import me.xiaoapn.easy.imageloader.task.BitmapLoadTask;
  */
 public interface TaskExecutor {
 	public void execute(BitmapLoadTask bitmapLoadTask, Configuration configuration);
-	public ReentrantLock getLockById(String id);
+	public ReentrantLock getLockByRequestId(String requestId);
 }

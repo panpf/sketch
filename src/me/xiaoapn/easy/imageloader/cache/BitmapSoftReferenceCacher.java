@@ -34,12 +34,12 @@ public class BitmapSoftReferenceCacher implements BitmapCacher {
 	}
 	
 	@Override
-	public void put(String key, BitmapDrawable bitmapDrawable) {
+	public synchronized void put(String key, BitmapDrawable bitmapDrawable) {
 		bitmapCacheMap.put(key, new SoftReference<BitmapDrawable>(bitmapDrawable));
 	}
 
 	@Override
-	public BitmapDrawable get(String key) {
+	public synchronized BitmapDrawable get(String key) {
 		SoftReference<BitmapDrawable> bitmapReference = bitmapCacheMap.get(key);
 		if(bitmapReference != null){
 			BitmapDrawable bitmapDrawable = bitmapReference.get();
@@ -53,18 +53,18 @@ public class BitmapSoftReferenceCacher implements BitmapCacher {
 	}
 
 	@Override
-	public Bitmap getBitmapFromReusableSet(Options options) {
+	public synchronized Bitmap getBitmapFromReusableSet(Options options) {
 		return null;
 	}
 
 	@Override
-	public BitmapDrawable remove(String key) {
+	public synchronized BitmapDrawable remove(String key) {
 		SoftReference<BitmapDrawable> bitmapReference = bitmapCacheMap.remove(key);
 		return bitmapReference != null?bitmapReference.get():null;
 	}
 
 	@Override
-	public void clear() {
+	public synchronized void clear() {
 		bitmapCacheMap.clear();
 	}
 }

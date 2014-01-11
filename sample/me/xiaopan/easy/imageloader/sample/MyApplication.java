@@ -53,5 +53,11 @@ public class MyApplication extends Application {
 		galleryOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
 		galleryOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
 		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.GALLERY, galleryOptions);
+		
+		Options simpleOptions = defaultOptions.copy();
+		simpleOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
+		simpleOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
+		simpleOptions.getCacheConfig().setCacheInMemory(false);
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.SIMPLE, simpleOptions);
 	}
 }

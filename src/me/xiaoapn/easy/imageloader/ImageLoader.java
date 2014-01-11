@@ -153,7 +153,7 @@ public class ImageLoader{
 		//尝试取消正在加载的任务
 		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(request, imageView, getConfiguration())){
 			//创建加载任务
-			BitmapLoadTask bitmapLoadTask = new BitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockById(request.getId()), getConfiguration());
+			BitmapLoadTask bitmapLoadTask = new BitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), getConfiguration());
 			
 			//显示默认图片
 			BitmapDrawable loadingBitmapDrawable = request.getOptions().getLoadingDrawable();

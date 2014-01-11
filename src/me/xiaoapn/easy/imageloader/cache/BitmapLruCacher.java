@@ -31,35 +31,27 @@ public class BitmapLruCacher implements BitmapCacher {
 	}
 	
 	@Override
-	public void put(String key, BitmapDrawable bitmapDrawable) {
-		synchronized (bitmapLruCache) {
-			bitmapLruCache.put(key, bitmapDrawable);
-		}
+	public synchronized void put(String key, BitmapDrawable bitmapDrawable) {
+		bitmapLruCache.put(key, bitmapDrawable);
 	}
 
 	@Override
-	public BitmapDrawable get(String key) {
-		synchronized (bitmapLruCache) {
-			return bitmapLruCache.get(key);
-		}
+	public synchronized BitmapDrawable get(String key) {
+		return bitmapLruCache.get(key);
 	}
 
 	@Override
-	public Bitmap getBitmapFromReusableSet(Options options) {
+	public synchronized Bitmap getBitmapFromReusableSet(Options options) {
 		return bitmapLruCache.getBitmapFromReusableSet(options);
 	}
 
 	@Override
-	public BitmapDrawable remove(String key) {
-		synchronized (bitmapLruCache) {
-			return bitmapLruCache.remove(key);
-		}
+	public synchronized BitmapDrawable remove(String key) {
+		return bitmapLruCache.remove(key);
 	}
 
 	@Override
-	public void clear() {
-		synchronized (bitmapLruCache) {
-			bitmapLruCache.evictAll();
-		}
+	public synchronized void clear() {
+		bitmapLruCache.evictAll();
 	}
 }
