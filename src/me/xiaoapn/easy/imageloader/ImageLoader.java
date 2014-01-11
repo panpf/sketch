@@ -49,7 +49,7 @@ public class ImageLoader{
 		if(configuration != null){
 			throw new IllegalStateException("Have been initialized");
 		}
-		configuration = new Configuration.Builder(context).build();
+		configuration = new Configuration(context);
 	}
 	
 	/**

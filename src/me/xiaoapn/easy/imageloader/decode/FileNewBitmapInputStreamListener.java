@@ -22,9 +22,9 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import me.xiaoapn.easy.imageloader.util.IoUtils;
+import me.xiaoapn.easy.imageloader.util.IOUtils;
 
-public class FileNewBitmapInputStreamListener implements OnNewBitmapInputStreamListener {
+public class FileNewBitmapInputStreamListener implements NewBitmapInputStreamListener {
 	private File file;
 	
 	public FileNewBitmapInputStreamListener(File file) {
@@ -34,7 +34,7 @@ public class FileNewBitmapInputStreamListener implements OnNewBitmapInputStreamL
 	@Override
 	public InputStream onNewBitmapInputStream() {
 		try {
-			return new BufferedInputStream(new FileInputStream(file), IoUtils.BUFFER_SIZE);
+			return new BufferedInputStream(new FileInputStream(file), IOUtils.BUFFER_SIZE);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;

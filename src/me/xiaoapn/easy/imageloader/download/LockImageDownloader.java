@@ -1,55 +1,79 @@
+/*
+ * Copyright 2013 Peng fei Pan
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.xiaoapn.easy.imageloader.download;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.net.SocketTimeoutException;
 
 import me.xiaoapn.easy.imageloader.Configuration;
+import me.xiaoapn.easy.imageloader.task.Request;
+import me.xiaoapn.easy.imageloader.util.IOUtils;
+import me.xiaoapn.easy.imageloader.util.Utils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
+import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
+import org.apache.http.conn.scheme.PlainSocketFactory;
+import org.apache.http.conn.scheme.Scheme;
+import org.apache.http.conn.scheme.SchemeRegistry;
+import org.apache.http.conn.ssl.SSLSocketFactory;
 import org.apache.http.entity.BufferedHttpEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.util.EntityUtils;
 
 import android.util.Log;
 
 /**
- * 图片下载器
+ * 支持URL锁定的下载器
  */
-public class BaseImageDownloader {
-	private static final String LOG_NAME= BaseImageDownloader.class.getSimpleName();
-	private int maxRetryCount;
-	private File cacheFile;
-	private String url;
-	private String requestName;
-	private HttpClient httpClient;
-	private Configuration configuration;
-	private OnCompleteListener onCompleteListener;
+public class LockImageDownloader implements ImageDownloader {
+	private static final String LOG_NAME = LockImageDownloader.class.getSimpleName();
+	private HttpClient httpClient;	//Http客户端
 	
-	public BaseImageDownloader(String requestName, String url, File cacheFile, int maxRetryCount, HttpClient httpClient, Configuration configuration, OnCompleteListener onCompleteListener) {
-		this.url = url;
-		this.cacheFile = cacheFile;
-		this.httpClient = httpClient;
-		this.configuration = configuration;
-		this.requestName = requestName;
-		this.maxRetryCount = maxRetryCount;
-		this.onCompleteListener = onCompleteListener;
+	public LockImageDownloader(){
+		BasicHttpParams httpParams = new BasicHttpParams();
+		Utils.setConnectionTimeout(httpParams, 10000);
+		Utils.setMaxConnections(httpParams, 100);
+		Utils.setSocketBufferSize(httpParams, 8192);
+        HttpConnectionParams.setTcpNoDelay(httpParams, true);
+        HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
+		SchemeRegistry schemeRegistry = new SchemeRegistry();
+		schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
+		schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
+		httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams); 
 	}
-	
-	/**
-	 * 执行
-	 */
-	public void execute(){
+
+	@Override
+	public void execute(Request request, File cacheFile, Configuration configuration, DownloadListener onCompleteListener) {
 		if(configuration.isDebugMode()){
-			Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载开始").append("；").append(requestName).toString());
+			Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载开始").append("；").append(request.getName()).toString());
 		}
+		
 		int numberOfLoaded = 0;	//已加载次数
 		byte[] data = null;
 		boolean running = true;
@@ -64,7 +88,7 @@ public class BaseImageDownloader {
 			BufferedOutputStream bufferedOutputStream = null;
 			
 			try {
-				httpGet = new HttpGet(url);
+				httpGet = new HttpGet(request.getImageUri());
 				HttpResponse httpResponse = httpClient.execute(httpGet);//请求数据
 				
 				//读取响应体长度，如果没有响应体长度字段或者长度为0就抛出异常
@@ -121,24 +145,8 @@ public class BaseImageDownloader {
 					httpGet.abort();
 				}
 				
-				//尝试关闭输入流
-				if(bufferedfInputStream != null){
-					try {
-						bufferedfInputStream.close();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				}
-				
-				//尝试关闭输出流
-				if(bufferedOutputStream != null){
-					try {
-						bufferedOutputStream.flush();
-						bufferedOutputStream.close();
-					} catch (IOException e1) {
-						e1.printStackTrace();
-					}
-				}
+				IOUtils.close(bufferedfInputStream);
+				IOUtils.close(bufferedOutputStream);
 				
 				//如果创建了新文件就删除
 				if(createNewFile && cacheFile != null && cacheFile.exists()){
@@ -151,14 +159,14 @@ public class BaseImageDownloader {
 				}
 				
 				//如果是请求超时异常，就尝试再请求一次
-				if((e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException) && maxRetryCount > 0){
-					running = numberOfLoaded < maxRetryCount;	//如果尚未达到最大重试次数，那么就再尝试一次
+				if((e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException) && request.getOptions().getMaxRetryCount() > 0){
+					running = numberOfLoaded < request.getOptions().getMaxRetryCount();	//如果尚未达到最大重试次数，那么就再尝试一次
 				}else{
 					running = false;
 				}
 				
 				if(configuration.isDebugMode()){
-					Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载异常").append("；").append("requestName").append("；").append("异常信息").append("=").append(e2.toString()).append("；").append(running?"重新下载":"不再下载").toString());
+					Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载异常").append("；").append(request.getName()).append("；").append("异常信息").append("=").append(e2.toString()).append("；").append(running?"重新下载":"不再下载").toString());
 				}
 			}
 		}
@@ -168,12 +176,12 @@ public class BaseImageDownloader {
 				if(onCompleteListener != null){
 					if(cacheFile != null && cacheFile.exists() && cacheFile.length() > 0){
 						if(configuration.isDebugMode()){
-							Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载成功").append("；").append(requestName).toString());
+							Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载成功").append("；").append(request.getName()).toString());
 						}
 						onCompleteListener.onComplete(cacheFile);
 					}else{
 						if(configuration.isDebugMode()){
-							Log.w(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载失败").append("；").append(requestName).toString());
+							Log.w(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载失败").append("；").append(request.getName()).toString());
 						}
 						onCompleteListener.onFailed();
 					}
@@ -183,12 +191,12 @@ public class BaseImageDownloader {
 				if(onCompleteListener != null){
 					if(data != null && data.length > 0){
 						if(configuration.isDebugMode()){
-							Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载成功").append("；").append(requestName).toString());
+							Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载成功").append("；").append(request.getName()).toString());
 						}
 						onCompleteListener.onComplete(data);
 					}else{
 						if(configuration.isDebugMode()){
-							Log.w(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载失败").append("；").append(requestName).toString());
+							Log.w(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载失败").append("；").append(request.getName()).toString());
 						}
 						onCompleteListener.onFailed();
 					}
@@ -197,7 +205,7 @@ public class BaseImageDownloader {
 			default : 
 				if(onCompleteListener != null){
 					if(configuration.isDebugMode()){
-						Log.w(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载失败").append("；").append(requestName).toString());
+						Log.w(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载失败").append("；").append(request.getName()).toString());
 					}
 					onCompleteListener.onFailed();
 				}
@@ -207,11 +215,5 @@ public class BaseImageDownloader {
 	
 	private enum Result{
 		FILE, BYTE_ARRAY, FAILURE;
-	}
-	
-	public interface OnCompleteListener {
-		public void onComplete(File cacheFile);
-		public void onComplete(byte[] data);
-		public void onFailed();
 	}
 }

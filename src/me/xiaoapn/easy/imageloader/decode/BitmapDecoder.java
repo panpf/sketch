@@ -31,5 +31,5 @@ public interface BitmapDecoder{
 	 * @param requestName 请求名称
 	 * @return
 	 */
-	public Bitmap decode(OnNewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName);
+	public Bitmap decode(NewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName);
 }

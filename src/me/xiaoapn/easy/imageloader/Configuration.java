@@ -25,24 +25,12 @@ import me.xiaoapn.easy.imageloader.cache.CacheConfig;
 import me.xiaoapn.easy.imageloader.decode.BitmapDecoder;
 import me.xiaoapn.easy.imageloader.decode.SimpleBitmapDecoder;
 import me.xiaoapn.easy.imageloader.display.FadeInBitmapDisplayer;
+import me.xiaoapn.easy.imageloader.download.ImageDownloader;
+import me.xiaoapn.easy.imageloader.download.LockImageDownloader;
 import me.xiaoapn.easy.imageloader.execute.BaseTaskExecutor;
 import me.xiaoapn.easy.imageloader.execute.TaskExecutor;
 import me.xiaoapn.easy.imageloader.task.Options;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
-import me.xiaoapn.easy.imageloader.util.Utils;
-
-import org.apache.http.HttpVersion;
-import org.apache.http.client.HttpClient;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpProtocolParams;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
@@ -57,13 +45,13 @@ public class Configuration {
 	private Context context;	//上下文
 	private Handler handler;	//消息处理器
 	private Resources resources;	//资源
-	private HttpClient httpClient;	//Http客户端
 	private TaskExecutor taskExecutor;	//任务执行器
 	private BitmapCacher bitmapCacher;	//位图缓存器
 	private BitmapDecoder bitmapDecoder;	//位图解码器
-	private Map<Object, Options> optionsMap;
+	private ImageDownloader imageDownloader;	//图片下载器
+	private Map<Object, Options> optionsMap;	//加载选项集合
 	
-	private Configuration(Context context){
+	public Configuration(Context context){
 		if(Looper.myLooper() != Looper.getMainLooper()){
 			throw new IllegalStateException("你不能在异步线程中创建此对象");
 		}
@@ -112,8 +100,9 @@ public class Configuration {
 	 * 设置任务执行器
 	 * @param taskExecutor
 	 */
-	public void setTaskExecutor(TaskExecutor taskExecutor) {
+	public Configuration setTaskExecutor(TaskExecutor taskExecutor) {
 		this.taskExecutor = taskExecutor;
+		return this;
 	}
 
 	/**
@@ -128,8 +117,9 @@ public class Configuration {
 	 * 设置默认的加载选项
 	 * @param defaultOptions
 	 */
-	public void setDefaultOptions(Options defaultOptions) {
+	public Configuration setDefaultOptions(Options defaultOptions) {
 		putOptions(OptionsDefault.DEFAULT, defaultOptions);
+		return this;
 	}
 	
 	/**
@@ -147,8 +137,9 @@ public class Configuration {
 	 * 设置位图缓存器
 	 * @param bitmapCacher
 	 */
-	public void setBitmapCacher(BitmapCacher bitmapCacher) {
+	public Configuration setBitmapCacher(BitmapCacher bitmapCacher) {
 		this.bitmapCacher = bitmapCacher;
+		return this;
 	}
 
 	/**
@@ -166,8 +157,9 @@ public class Configuration {
 	 * 设置位图解码器
 	 * @param bitmapDecoder 位图解码器
 	 */
-	public void setBitmapLoader(BitmapDecoder bitmapDecoder) {
+	public Configuration setBitmapLoader(BitmapDecoder bitmapDecoder) {
 		this.bitmapDecoder = bitmapDecoder;
+		return this;
 	}
 
 	/**
@@ -190,8 +182,9 @@ public class Configuration {
 	 * 设置Log Tag
 	 * @param logTag
 	 */
-	public void setLogTag(String logTag) {
+	public Configuration setLogTag(String logTag) {
 		this.logTag = logTag;
+		return this;
 	}
 
 	/**
@@ -206,8 +199,9 @@ public class Configuration {
 	 * 设置是否开启调试模式，开启调试模式后会在控制台输出LOG
 	 * @param debugMode
 	 */
-	public void setDebugMode(boolean debugMode) {
+	public Configuration setDebugMode(boolean debugMode) {
 		this.debugMode = debugMode;
+		return this;
 	}
 	
 	/**
@@ -224,130 +218,31 @@ public class Configuration {
 	 * @param optionsName
 	 * @param options
 	 */
-	public void putOptions(Enum<?> optionsName, Options options){
+	public Configuration putOptions(Enum<?> optionsName, Options options){
 		this.optionsMap.put(optionsName, options);
+		return this;
 	}
 
 	/**
-	 * 获取Http客户端
+	 * 获取图片下载器
 	 * @return
 	 */
-	public final HttpClient getHttpClient() {
-		if(httpClient == null){
-			BasicHttpParams httpParams = new BasicHttpParams();
-			Utils.setConnectionTimeout(httpParams, 10000);
-			Utils.setMaxConnections(httpParams, 100);
-			Utils.setSocketBufferSize(httpParams, 8192);
-	        HttpConnectionParams.setTcpNoDelay(httpParams, true);
-	        HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
-			SchemeRegistry schemeRegistry = new SchemeRegistry();
-			schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
-			schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
-			httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams); 
+	public ImageDownloader getImageDownloader() {
+		if(imageDownloader == null){
+			imageDownloader = new LockImageDownloader();
 		}
-		return httpClient;
+		return imageDownloader;
 	}
 
 	/**
-	 * 设置Http客户端
-	 * @param httpClient
+	 * 设置图片下载器
+	 * @param imageDownloader
 	 */
-	public void setHttpClient(HttpClient httpClient) {
-		this.httpClient = httpClient;
+	public Configuration setImageDownloader(ImageDownloader imageDownloader) {
+		this.imageDownloader = imageDownloader;
+		return this;
 	}
 
-	/**
-	 * ImageLoadder配置创建器
-	 */
-	public static class Builder{
-		Configuration configuration;
-		
-		public Builder(Context context){
-			configuration = new Configuration(context);
-		}
-
-		/**
-		 * 设置位图解码器
-		 * @param bitmapDecoder 位图解码器
-		 */
-		public Builder setBitmapDecoder(BitmapDecoder bitmapDecoder) {
-			configuration.setBitmapLoader(bitmapDecoder);
-			return this;
-		}
-
-		/**
-		 * 设置Http客户端
-		 * @param httpClient
-		 */
-		public Builder setHttpClient(HttpClient httpClient) {
-			configuration.setHttpClient(httpClient);
-			return this;
-		}
-	    
-		/**
-		 * 设置默认的加载选项
-		 * @param defaultOptions
-		 */
-		public Builder setDefaultOptions(Options defaultOptions) {
-			configuration.setDefaultOptions(defaultOptions);
-			return this;
-		}
-		
-		/**
-		 * 设置位图缓存器
-		 * @param bitmapCacher
-		 */
-		public Builder setBitmapCacher(BitmapCacher bitmapCacher) {
-			configuration.setBitmapCacher(bitmapCacher);
-			return this;
-		}
-
-		/**
-		 * 设置Log Tag
-		 * @param logTag
-		 */
-		public Builder setLogTag(String logTag) {
-			configuration.setLogTag(logTag);
-			return this;
-		}
-
-		/**
-		 * 设置是否开启调试模式，开启调试模式后会在控制台输出LOG
-		 * @param debugMode
-		 */
-		public Builder setDebugMode(boolean debugMode) {
-			configuration.setDebugMode(debugMode);
-			return this;
-		}
-
-		/**
-		 * 设置任务执行器
-		 * @param taskExecutor
-		 */
-		public Builder setTaskExecutor(TaskExecutor taskExecutor) {
-			configuration.setTaskExecutor(taskExecutor);
-			return this;
-		}
-		
-		/**
-		 * 放入加载选项
-		 * @param optionsName
-		 * @param options
-		 */
-		public Builder putOptions(Enum<?> optionsName, Options options){
-			configuration.putOptions(optionsName, options);
-			return this;
-		}
-		
-		/**
-		 * 创建
-		 * @return
-		 */
-		public Configuration build(){
-			return configuration;
-		}
-	}
-	
 	private enum OptionsDefault{
 		DEFAULT;
 	}

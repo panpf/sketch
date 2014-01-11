@@ -17,7 +17,6 @@ package me.xiaoapn.easy.imageloader.util;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 
 /**
@@ -26,29 +25,32 @@ import java.io.OutputStream;
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  * @since 1.0.0
  */
-public final class IoUtils {
+public final class IOUtils {
 
 	public static final int BUFFER_SIZE = 8 * 1024; // 8 KB 
 
-	private IoUtils() {
+	private IOUtils() {
 	}
 
-	public static void copyStream(InputStream is, OutputStream os) throws IOException {
-		byte[] bytes = new byte[BUFFER_SIZE];
-		while (true) {
-			int count = is.read(bytes, 0, BUFFER_SIZE);
-			if (count == -1) {
-				break;
+	/**
+	 * 关闭流
+	 * @param closeable
+	 */
+	public static void close(Closeable closeable) {
+		if(closeable != null){
+			if(closeable instanceof OutputStream){
+				try {
+					((OutputStream) closeable).flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
 			}
-			os.write(bytes, 0, count);
-		}
-	}
-
-	public static void closeSilently(Closeable closeable) {
-		try {
-			closeable.close();
-		} catch (Exception e) {
-			// Do nothing
+			
+			try {
+				closeable.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 }

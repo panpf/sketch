@@ -29,16 +29,12 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.decode.FileNewBitmapInputStreamListener;
-import me.xiaoapn.easy.imageloader.decode.OnNewBitmapInputStreamListener;
-import me.xiaoapn.easy.imageloader.download.BaseImageDownloader;
-import me.xiaoapn.easy.imageloader.download.BaseImageDownloader.OnCompleteListener;
-import me.xiaoapn.easy.imageloader.util.IoUtils;
+import me.xiaoapn.easy.imageloader.decode.NewBitmapInputStreamListener;
+import me.xiaoapn.easy.imageloader.download.ImageDownloader.DownloadListener;
+import me.xiaoapn.easy.imageloader.util.IOUtils;
 import me.xiaoapn.easy.imageloader.util.RecyclingBitmapDrawable;
 import me.xiaoapn.easy.imageloader.util.Scheme;
 import me.xiaoapn.easy.imageloader.util.Utils;
-
-import org.apache.http.client.HttpClient;
-
 import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -70,22 +66,23 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 			if(bitmapDrawable == null){
 				final Scheme scheme = Scheme.ofUri(request.getImageUri());
 				if(scheme != Scheme.UNKNOWN){
-					/* 初始化输入流获取监听器并解码图片 */
-					OnNewBitmapInputStreamListener newBitmapInputStreamListener = null;
 					File cacheFile = null;
+					
+					/* 初始化输入流 */
+					NewBitmapInputStreamListener newBitmapInputStreamListener = null;
 					if(scheme == Scheme.HTTP || scheme == Scheme.HTTPS){
 						if(request.getOptions().getCacheConfig().isCacheInDisk()){
 							cacheFile = Utils.getCacheFile(configuration, request.getOptions(), Utils.encodeUrl(request.getImageUri()));
 							if(Utils.isAvailableOfFile(cacheFile, request.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, request.getName())){
 								newBitmapInputStreamListener = new FileNewBitmapInputStreamListener(cacheFile);
 							}else{
-								newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(request.getName(), request.getImageUri(), cacheFile, request.getOptions().getMaxRetryCount(), configuration.getHttpClient());
+								newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(configuration, request, cacheFile);
 							}
 						}else{
-							newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(request.getName(), request.getImageUri(), null, request.getOptions().getMaxRetryCount(), configuration.getHttpClient());
+							newBitmapInputStreamListener = getNetNewBitmapInputStreamListener(configuration, request, null);
 						}
 					}else{
-						newBitmapInputStreamListener = new OnNewBitmapInputStreamListener() {
+						newBitmapInputStreamListener = new NewBitmapInputStreamListener() {
 							@Override
 							public InputStream onNewBitmapInputStream() {
 								return getBitmapInputStream(configuration.getContext(), scheme, request.getImageUri());
@@ -93,26 +90,26 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 						};
 					}
 					
-					Bitmap bitmap = configuration.getBitmapDecoder().decode(newBitmapInputStreamListener, request.getTargetSize(), configuration, request.getName());
-					if(bitmap != null && !bitmap.isRecycled()){
-						if(request.getOptions().getBitmapProcessor() != null){
-							Bitmap newBitmap = request.getOptions().getBitmapProcessor().process(bitmap, request.getImageViewAware());
-							if(newBitmap != bitmap){
-								bitmap.recycle();
-								bitmap = newBitmap;
+					if(newBitmapInputStreamListener != null){
+						Bitmap bitmap = configuration.getBitmapDecoder().decode(newBitmapInputStreamListener, request.getTargetSize(), configuration, request.getName());
+						if(bitmap != null && !bitmap.isRecycled()){
+							if(request.getOptions().getBitmapProcessor() != null){
+								Bitmap newBitmap = request.getOptions().getBitmapProcessor().process(bitmap, request.getImageViewAware());
+								if(newBitmap != bitmap){
+									bitmap.recycle();
+									bitmap = newBitmap;
+								}
 							}
-						}
-						if (Utils.hasHoneycomb()) {
-		                    bitmapDrawable = new BitmapDrawable(configuration.getResources(), bitmap);
-		                } else {
-		                	bitmapDrawable = new RecyclingBitmapDrawable(configuration.getResources(), bitmap);
-		                }
-						if(request.getOptions().getCacheConfig().isCacheInMemory()){
-							configuration.getBitmapCacher().put(request.getId(), bitmapDrawable);
-						}
-					}else{
-						if(newBitmapInputStreamListener instanceof FileNewBitmapInputStreamListener){
-							if(cacheFile != null && cacheFile.exists()){
+							if (Utils.hasHoneycomb()) {
+								bitmapDrawable = new BitmapDrawable(configuration.getResources(), bitmap);
+							} else {
+								bitmapDrawable = new RecyclingBitmapDrawable(configuration.getResources(), bitmap);
+							}
+							if(request.getOptions().getCacheConfig().isCacheInMemory()){
+								configuration.getBitmapCacher().put(request.getId(), bitmapDrawable);
+							}
+						}else{
+							if(newBitmapInputStreamListener instanceof FileNewBitmapInputStreamListener && cacheFile != null && cacheFile.exists()){
 								cacheFile.delete();
 							}
 						}
@@ -137,29 +134,29 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
      * @param httpClient
      * @return
      */
-    private OnNewBitmapInputStreamListener getNetNewBitmapInputStreamListener(String requestName, String imageUrl, File cacheFile, int maxRetryCount, HttpClient httpClient){
+    private NewBitmapInputStreamListener getNetNewBitmapInputStreamListener(Configuration configuration, Request request, File cacheFile){
     	final NewBitmapInputStreamListenerHolder holder = new NewBitmapInputStreamListenerHolder();
-    	new BaseImageDownloader(requestName, imageUrl, cacheFile, maxRetryCount, httpClient, configuration, new OnCompleteListener() {
+    	configuration.getImageDownloader().execute(request, cacheFile, configuration, new DownloadListener() {
 			@Override
 			public void onFailed() {}
 			
 			@Override
 			public void onComplete(final byte[] data) {
-				holder.newBitmapInputStreamListener = new OnNewBitmapInputStreamListener() {
+				holder.newBitmapInputStreamListener = new NewBitmapInputStreamListener() {
 					@Override
 					public InputStream onNewBitmapInputStream() {
-						return new BufferedInputStream(new ByteArrayInputStream(data), IoUtils.BUFFER_SIZE);
+						return new BufferedInputStream(new ByteArrayInputStream(data), IOUtils.BUFFER_SIZE);
 					}
 				};
 			}
 			
 			@Override
 			public void onComplete(final File cacheFile) {
-				holder.newBitmapInputStreamListener = new OnNewBitmapInputStreamListener() {
+				holder.newBitmapInputStreamListener = new NewBitmapInputStreamListener() {
 					@Override
 					public InputStream onNewBitmapInputStream() {
 						try {
-							return new BufferedInputStream(new FileInputStream(cacheFile), IoUtils.BUFFER_SIZE);
+							return new BufferedInputStream(new FileInputStream(cacheFile), IOUtils.BUFFER_SIZE);
 						} catch (FileNotFoundException e) {
 							e.printStackTrace();
 							return null;
@@ -167,10 +164,10 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 					}
 				};
 			}
-		}).execute();
+		});
     	return holder.newBitmapInputStreamListener;
     }
-    
+	
     /**
      * 获取位图输入流
      * @param context
@@ -253,6 +250,6 @@ public class BitmapLoadCallable implements Callable<BitmapDrawable> {
 	}
 	
 	private class NewBitmapInputStreamListenerHolder{
-		OnNewBitmapInputStreamListener newBitmapInputStreamListener;
+		NewBitmapInputStreamListener newBitmapInputStreamListener;
 	}
 }

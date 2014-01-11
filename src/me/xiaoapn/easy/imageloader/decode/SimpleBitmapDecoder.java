@@ -19,8 +19,8 @@ package me.xiaoapn.easy.imageloader.decode;
 import java.io.InputStream;
 
 import me.xiaoapn.easy.imageloader.Configuration;
+import me.xiaoapn.easy.imageloader.util.IOUtils;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
-import me.xiaoapn.easy.imageloader.util.IoUtils;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -35,7 +35,7 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	private static final String LOG_NAME= SimpleBitmapDecoder.class.getSimpleName();
 	
 	@Override
-	public Bitmap decode(OnNewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName) {
+	public Bitmap decode(NewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName) {
 		Bitmap bitmap = null;
 		Options options = new Options();
 		int outWidth = 0;
@@ -45,7 +45,7 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 		if(inputStream != null){
 			options.inJustDecodeBounds = true;
 			BitmapFactory.decodeStream(inputStream, null, options);
-			IoUtils.closeSilently(inputStream);
+			IOUtils.close(inputStream);
 			
 			inputStream = onNewBitmapInputStreamListener.onNewBitmapInputStream();
 			if(inputStream != null){
@@ -57,7 +57,7 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 //			        addInBitmapOptions(options, configuration);
 //			    }
 				bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-				IoUtils.closeSilently(inputStream);
+				IOUtils.close(inputStream);
 			}
 		}
 		
