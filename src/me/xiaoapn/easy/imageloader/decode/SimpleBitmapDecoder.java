@@ -35,19 +35,19 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 	private static final String LOG_NAME= SimpleBitmapDecoder.class.getSimpleName();
 	
 	@Override
-	public Bitmap decode(NewBitmapInputStreamListener onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName) {
+	public Bitmap decode(InputStreamCreator onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName) {
 		Bitmap bitmap = null;
 		Options options = new Options();
 		int outWidth = 0;
 		int outHeight = 0;
 		
-		InputStream inputStream = onNewBitmapInputStreamListener.onNewBitmapInputStream();
+		InputStream inputStream = onNewBitmapInputStreamListener.onCreateInputStream();
 		if(inputStream != null){
 			options.inJustDecodeBounds = true;
 			BitmapFactory.decodeStream(inputStream, null, options);
 			IOUtils.close(inputStream);
 			
-			inputStream = onNewBitmapInputStreamListener.onNewBitmapInputStream();
+			inputStream = onNewBitmapInputStreamListener.onCreateInputStream();
 			if(inputStream != null){
 				outWidth = options.outWidth;
 				outHeight = options.outHeight;

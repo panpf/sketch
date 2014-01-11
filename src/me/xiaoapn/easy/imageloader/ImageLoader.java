@@ -24,6 +24,11 @@ import me.xiaoapn.easy.imageloader.task.ImageLoadListener;
 import me.xiaoapn.easy.imageloader.task.ImageViewAware;
 import me.xiaoapn.easy.imageloader.task.Options;
 import me.xiaoapn.easy.imageloader.task.Request;
+import me.xiaoapn.easy.imageloader.task.assets.AssetsBitmapLoadTask;
+import me.xiaoapn.easy.imageloader.task.content.ContentBitmapLoadTask;
+import me.xiaoapn.easy.imageloader.task.drawable.DrawableBitmapLoadTask;
+import me.xiaoapn.easy.imageloader.task.file.FileBitmapLoadTask;
+import me.xiaoapn.easy.imageloader.task.http.HttpBitmapLoadTask;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
 import me.xiaoapn.easy.imageloader.util.ImageSizeUtils;
 import me.xiaoapn.easy.imageloader.util.Scheme;
@@ -107,7 +112,8 @@ public class ImageLoader{
 			return;
 		}
 		
-		if(Scheme.ofUri(imageUri) == Scheme.UNKNOWN){
+		Scheme scheme = Scheme.ofUri(imageUri);
+		if(scheme == Scheme.UNKNOWN){
 			imageView.setImageDrawable(options.getFailureDrawable());
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), new StringBuffer(LOG_NAME).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
@@ -133,7 +139,6 @@ public class ImageLoader{
 			.setImageViewAware(imageViewAware)
 			.setImageLoadListener(imageLoadListener)
 			.build();
-		request.setImageLoadListener(imageLoadListener);
 		
 		//尝试显示
 		if(request.getOptions().getCacheConfig().isCacheInMemory()){
@@ -152,16 +157,38 @@ public class ImageLoader{
 		
 		//尝试取消正在加载的任务
 		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(request, imageView, getConfiguration())){
-			//创建加载任务
-			BitmapLoadTask bitmapLoadTask = new BitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), getConfiguration());
+			//创建新的加载任务
+			BitmapLoadTask bitmapLoadTask = null;
+			switch(scheme){
+				case HTTP :
+				case HTTPS : 
+					bitmapLoadTask = new HttpBitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					break;
+				case FILE : 
+					bitmapLoadTask = new FileBitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					break;
+				case ASSETS : 
+					bitmapLoadTask = new AssetsBitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					break;
+				case CONTENT : 
+					bitmapLoadTask = new ContentBitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					break;
+				case DRAWABLE : 
+					bitmapLoadTask = new DrawableBitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					break;
+				default:
+					break;
+			}
 			
-			//显示默认图片
-			BitmapDrawable loadingBitmapDrawable = request.getOptions().getLoadingDrawable();
-			AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(getConfiguration().getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, bitmapLoadTask);
-			imageView.setImageDrawable(loadingAsyncDrawable);
-			
-			//提交任务
-			getConfiguration().getTaskExecutor().execute(bitmapLoadTask, getConfiguration());
+			if(bitmapLoadTask != null){
+				//显示默认图片
+				BitmapDrawable loadingBitmapDrawable = request.getOptions().getLoadingDrawable();
+				AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(getConfiguration().getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, bitmapLoadTask);
+				imageView.setImageDrawable(loadingAsyncDrawable);
+				
+				//提交任务
+				getConfiguration().getTaskExecutor().execute(bitmapLoadTask, getConfiguration());
+			}
 		}
 	}
 	

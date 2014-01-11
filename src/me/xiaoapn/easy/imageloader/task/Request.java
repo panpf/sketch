@@ -16,10 +16,7 @@
 
 package me.xiaoapn.easy.imageloader.task;
 
-import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.util.ImageSize;
-import me.xiaoapn.easy.imageloader.util.Scheme;
-import me.xiaoapn.easy.imageloader.util.Utils;
 
 /**
  * 加载请求
@@ -153,20 +150,6 @@ public class Request {
 		this.imageLoadListener = imageLoadListener;
 	}
 
-	/**
-	 * 是否是从网络加载的
-	 * @param configuration
-	 * @return
-	 */
-	public boolean isNetworkLoad(Configuration configuration){
-		boolean result = false;
-		Scheme scheme = Scheme.ofUri(imageUri);
-		if(scheme == Scheme.HTTP  || scheme == Scheme.HTTPS){
-			result = !Utils.isAvailableOfFile(Utils.getCacheFile(configuration, getOptions(), Utils.encodeUrl(getImageUri())), getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, getName());
-		}
-		return result;
-	}
-	
 	public static class Builder{
 		Request request;
 		

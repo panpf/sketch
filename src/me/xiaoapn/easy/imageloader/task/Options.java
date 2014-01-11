@@ -30,13 +30,13 @@ import android.graphics.drawable.BitmapDrawable;
  */
 public class Options{
 	private int maxRetryCount;	//最大重试次数
-	private BitmapDrawable emptyDrawable;	//当加载地址为空时显示的图片
-	private BitmapDrawable loadingDrawable;	//正在加载时显示的图片
-	private BitmapDrawable failureDrawable;	//加载失败时显示的图片
 	private ImageSize imageMaxSize;	//图片最大尺寸
 	private CacheConfig cacheConfig;	//缓存配置
 	private BitmapProcessor bitmapProcessor;	//位图处理器
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
+	private BitmapDrawable emptyDrawable;	//当加载地址为空时显示的图片
+	private BitmapDrawable loadingDrawable;	//正在加载时显示的图片
+	private BitmapDrawable failureDrawable;	//加载失败时显示的图片
 	
 	private Options(){}
 	

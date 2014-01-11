@@ -16,8 +16,8 @@
 
 package me.xiaoapn.easy.imageloader.task;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;
-import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.display.BitmapDisplayer.BitmapType;
@@ -26,13 +26,13 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ImageView;
 
-public class BitmapLoadTask extends FutureTask<BitmapDrawable> {
+public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 	private static final String LOG_NAME= BitmapLoadTask.class.getSimpleName();
 	private Request request;
 	private Configuration configuration;
 	
-	public BitmapLoadTask(Request request, ReentrantLock reentrantLock, Configuration configuration) {
-		super(new BitmapLoadCallable(request, reentrantLock, configuration));
+	public BitmapLoadTask(Request request, Configuration configuration, Callable<BitmapDrawable> callable) {
+		super(callable);
 		this.request = request;
 		this.configuration = configuration;
 		this.request.getImageViewAware().setBitmapLoadTask(this);

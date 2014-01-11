@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -13,23 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package me.xiaoapn.easy.imageloader.decode;
+
+package me.xiaoapn.easy.imageloader.task.content;
+
+import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaoapn.easy.imageloader.Configuration;
-import me.xiaoapn.easy.imageloader.util.ImageSize;
-import android.graphics.Bitmap;
+import me.xiaoapn.easy.imageloader.task.BitmapLoadTask;
+import me.xiaoapn.easy.imageloader.task.Request;
 
-/**
- * 位图解码器
- */
-public interface BitmapDecoder{
-	/**
-	 * 解码
-	 * @param onNewBitmapInputStreamListener 创建新的用来读取位图的输入流
-	 * @param targetSize 目标尺寸
-	 * @param configuration 配置
-	 * @param requestName 请求名称
-	 * @return
-	 */
-	public Bitmap decode(InputStreamCreator onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName);
+public class ContentBitmapLoadTask extends  BitmapLoadTask {
+	
+	public ContentBitmapLoadTask(Request request, ReentrantLock reentrantLock, Configuration configuration) {
+		super(request, configuration, new ContentBitmapLoadCallable(request, reentrantLock, configuration));
+	}
 }

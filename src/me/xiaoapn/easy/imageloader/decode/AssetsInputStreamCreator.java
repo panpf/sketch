@@ -16,26 +16,25 @@
 
 package me.xiaoapn.easy.imageloader.decode;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
-import me.xiaoapn.easy.imageloader.util.IOUtils;
+import android.content.Context;
 
-public class FileNewBitmapInputStreamListener implements NewBitmapInputStreamListener {
-	private File file;
+public class AssetsInputStreamCreator implements InputStreamCreator {
+	private String assetsFilePath;
+	private Context context;
 	
-	public FileNewBitmapInputStreamListener(File file) {
-		this.file = file;
+	public AssetsInputStreamCreator(Context context, String assetsFilePath) {
+		this.context = context;
+		this.assetsFilePath = assetsFilePath;
 	}
 
 	@Override
-	public InputStream onNewBitmapInputStream() {
-		try {
-			return new BufferedInputStream(new FileInputStream(file), IOUtils.BUFFER_SIZE);
-		} catch (FileNotFoundException e) {
+	public InputStream onCreateInputStream() {
+		try{
+			return context.getAssets().open(assetsFilePath);
+		}catch(IOException e){
 			e.printStackTrace();
 			return null;
 		}

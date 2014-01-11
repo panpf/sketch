@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.task.BitmapLoadTask;
+import me.xiaoapn.easy.imageloader.task.http.HttpBitmapLoadTask;
 import android.util.Log;
 
 /**
@@ -42,7 +43,7 @@ public class BaseTaskExecutor implements TaskExecutor {
 		taskDistributor.execute(new Runnable() {
 			@Override
 			public void run() {
-				if(bitmapLoadTask.getRequest().isNetworkLoad(configuration)){
+				if(bitmapLoadTask instanceof HttpBitmapLoadTask && ((HttpBitmapLoadTask) bitmapLoadTask).isFromNetworkLoad()){
 					netTaskExecutor.execute(bitmapLoadTask);
 				}else{
 					localTaskExecutor.execute(bitmapLoadTask);

@@ -18,10 +18,10 @@ package me.xiaoapn.easy.imageloader.decode;
 
 import java.io.InputStream;
 
-public interface NewBitmapInputStreamListener {
+public interface InputStreamCreator {
 	/**
 	 * 创建新的用来读取位图的输入流，这个输入流必须是新的
 	 * @return
 	 */
-	public InputStream onNewBitmapInputStream();
+	public InputStream onCreateInputStream();
 }
