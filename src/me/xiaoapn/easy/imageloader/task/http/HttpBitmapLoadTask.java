@@ -23,7 +23,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaoapn.easy.imageloader.Configuration;
 import me.xiaoapn.easy.imageloader.task.BitmapLoadTask;
-import me.xiaoapn.easy.imageloader.task.Options;
 import me.xiaoapn.easy.imageloader.task.Request;
 import me.xiaoapn.easy.imageloader.util.Utils;
 import android.util.Log;
@@ -39,11 +38,11 @@ public class HttpBitmapLoadTask extends  BitmapLoadTask {
 	}
 	
 	public boolean isFromNetworkLoad(){
-		return !isAvailableOfFile(getCacheFile(), request.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, request.getName());
+		return !isAvailableOfFile(getCacheFile(), request.getOptions().getDiskCachePeriodOfValidity(), configuration, request.getName());
 	}
 
 	public File getCacheFile() {
-		return request.getOptions().getCacheConfig().isCacheInDisk()?getCacheFile(configuration, request.getOptions(), Utils.encodeUrl(request.getImageUri())):null;
+		return request.getOptions().isEnableDiskCache()?configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), Utils.encodeUrl(request.getImageUri())):null;
 	}
 	
 	/**
@@ -100,18 +99,18 @@ public class HttpBitmapLoadTask extends  BitmapLoadTask {
 		return true;
 	}
 
-	/**
-	 * 获取缓存文件，将优先考虑options指定的缓存目录，然后考虑当前configuration指定的缓存目录，然后考虑通过context获取默认的应用缓存目录，再然后就要返回null了
-	 * @param context
-	 * @param options
-	 * @param fileName
-	 * @return
-	 */
-	public static File getCacheFile(Configuration configuration, Options options, String fileName){
-		if(options != null && Utils.isNotEmpty(options.getCacheConfig().getDiskCacheDirectory())){
-			return new File(options.getCacheConfig().getDiskCacheDirectory() + File.separator + fileName);
-		}else{
-			return new File(Utils.getDynamicCacheDir(configuration.getContext()).getPath() + File.separator + "image_loader" + File.separator + fileName);
-		}
-	}
+//	/**
+//	 * 获取缓存文件，将优先考虑options指定的缓存目录，然后考虑当前configuration指定的缓存目录，然后考虑通过context获取默认的应用缓存目录，再然后就要返回null了
+//	 * @param context
+//	 * @param options
+//	 * @param fileName
+//	 * @return
+//	 */
+//	public static File getCacheFile(Configuration configuration, Options options, String fileName){
+//		if(options != null && Utils.isNotEmpty(options.getCacheConfig().getDiskCacheDirectory())){
+//			return new File(options.getCacheConfig().getDiskCacheDirectory() + File.separator + fileName);
+//		}else{
+//			return new File(Utils.getDynamicCacheDir(configuration.getContext()).getPath() + File.separator + "image_loader" + File.separator + fileName);
+//		}
+//	}
 }

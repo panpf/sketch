@@ -39,9 +39,9 @@ public class HttpBitmapLoadCallable extends BitmapLoadCallable {
 	@Override
 	public InputStreamCreator getInputStreamCreator() {
 		if(inputStreamCreator == null){
-			if(request.getOptions().getCacheConfig().isCacheInDisk()){
-				cacheFile = HttpBitmapLoadTask.getCacheFile(configuration, request.getOptions(), Utils.encodeUrl(request.getImageUri()));
-				if(HttpBitmapLoadTask.isAvailableOfFile(cacheFile, request.getOptions().getCacheConfig().getDiskCachePeriodOfValidity(), configuration, request.getName())){
+			if(request.getOptions().isEnableDiskCache()){
+				cacheFile = configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), Utils.encodeUrl(request.getImageUri()));
+				if(HttpBitmapLoadTask.isAvailableOfFile(cacheFile, request.getOptions().getDiskCachePeriodOfValidity(), configuration, request.getName())){
 					inputStreamCreator = new FileInputStreamCreator(cacheFile);
 				}else{
 					inputStreamCreator = getNetInputStreamCreator(configuration, request, cacheFile);

@@ -39,25 +39,9 @@ public class MyApplication extends Application {
 		defaultOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
 		defaultOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
 		
-		Options viewPagerOptions = defaultOptions.copy();
-		viewPagerOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
-		viewPagerOptions.setLoadingDrawable(null);
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.VIEW_PAGER, viewPagerOptions);
-		
-		Options listViewOptions = defaultOptions.copy();
-		listViewOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
-		listViewOptions.setBitmapDisplayer(new ZoomInBitmapDisplayer());
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.LIST_VIEW, listViewOptions);
-		
-		Options galleryOptions = defaultOptions.copy();
-		galleryOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
-		galleryOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.GALLERY, galleryOptions);
-		
-		Options simpleOptions = defaultOptions.copy();
-		simpleOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
-		simpleOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
-		simpleOptions.getCacheConfig().setCacheInMemory(false);
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.SIMPLE, simpleOptions);
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.VIEW_PAGER, defaultOptions.copy().setLoadingDrawable(null));
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.LIST_VIEW, defaultOptions.copy().setBitmapDisplayer(new ZoomInBitmapDisplayer()));
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.GALLERY, defaultOptions.copy());
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.SIMPLE, defaultOptions.copy().setEnableMenoryCache(false));
 	}
 }

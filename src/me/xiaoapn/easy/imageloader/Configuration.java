@@ -21,7 +21,6 @@ import java.util.Map;
 
 import me.xiaoapn.easy.imageloader.cache.BitmapCacher;
 import me.xiaoapn.easy.imageloader.cache.BitmapLruCacher;
-import me.xiaoapn.easy.imageloader.cache.CacheConfig;
 import me.xiaoapn.easy.imageloader.decode.BitmapDecoder;
 import me.xiaoapn.easy.imageloader.decode.SimpleBitmapDecoder;
 import me.xiaoapn.easy.imageloader.display.FadeInBitmapDisplayer;
@@ -61,12 +60,13 @@ public class Configuration {
 		this.handler = new Handler();
 		this.resources = context.getResources();
 		this.optionsMap = new HashMap<Object, Options>();
-		putOptions(OptionsDefault.DEFAULT, new Options.Builder()
-		.setCacheConfig(new CacheConfig.Builder().setCacheInMemory(true).setCacheInDisk(true).build())
-		.setBitmapDisplayer(new FadeInBitmapDisplayer())
-		.setMaxSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
-		.setMaxRetryCount(2)
-		.build());
+		Options defaultOptions = new Options()
+			.setEnableMenoryCache(true)
+			.setEnableDiskCache(true)
+			.setImageMaxSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
+			.setBitmapDisplayer(new FadeInBitmapDisplayer())
+			.setMaxRetryCount(2);
+		putOptions(OptionsDefault.DEFAULT, defaultOptions);
 	}
 	
 	/**

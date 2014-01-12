@@ -64,7 +64,7 @@ public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
 					}
 					
 					//放入内存缓存中
-					if(request.getOptions().getCacheConfig().isCacheInMemory()){
+					if(request.getOptions().isEnableMenoryCache()){
 						configuration.getBitmapCacher().put(request.getId(), bitmapDrawable);
 					}
 				}else{

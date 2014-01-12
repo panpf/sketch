@@ -90,4 +90,9 @@ public class ZoomOutBitmapDisplayer implements BitmapDisplayer {
 		scaleAnimation.setDuration(duration);
 		imageView.startAnimation(scaleAnimation);
 	}
+
+	@Override
+	public BitmapDisplayer copy() {
+		return new ZoomOutBitmapDisplayer(duration);
+	}
 }

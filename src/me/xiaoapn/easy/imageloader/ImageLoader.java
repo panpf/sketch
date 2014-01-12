@@ -141,7 +141,7 @@ public class ImageLoader{
 			.build();
 		
 		//尝试显示
-		if(request.getOptions().getCacheConfig().isCacheInMemory()){
+		if(request.getOptions().isEnableMenoryCache()){
 			BitmapDrawable cacheDrawable = getConfiguration().getBitmapCacher().get(request.getId());
 			if(cacheDrawable != null){
 				imageView.setImageDrawable(cacheDrawable);

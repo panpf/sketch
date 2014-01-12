@@ -82,4 +82,9 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 		transitionDrawable.setCrossFadeEnabled(true);
 		transitionDrawable.startTransition(duration);
 	}
+
+	@Override
+	public BitmapDisplayer copy() {
+		return new FadeInBitmapDisplayer(duration);
+	}
 }

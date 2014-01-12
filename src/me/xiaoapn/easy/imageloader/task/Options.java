@@ -16,7 +16,6 @@
 
 package me.xiaoapn.easy.imageloader.task;
 
-import me.xiaoapn.easy.imageloader.cache.CacheConfig;
 import me.xiaoapn.easy.imageloader.display.BitmapDisplayer;
 import me.xiaoapn.easy.imageloader.display.FadeInBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.process.BitmapProcessor;
@@ -30,15 +29,66 @@ import android.graphics.drawable.BitmapDrawable;
  */
 public class Options{
 	private int maxRetryCount;	//最大重试次数
+	private int diskCachePeriodOfValidity;	//磁盘缓存有效期，单位毫秒
+	private boolean enableMenoryCache;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+	private boolean enableDiskCache;	//是否需要将图片缓存到磁盘
 	private ImageSize imageMaxSize;	//图片最大尺寸
-	private CacheConfig cacheConfig;	//缓存配置
 	private BitmapProcessor bitmapProcessor;	//位图处理器
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
 	private BitmapDrawable emptyDrawable;	//当加载地址为空时显示的图片
 	private BitmapDrawable loadingDrawable;	//正在加载时显示的图片
 	private BitmapDrawable failureDrawable;	//加载失败时显示的图片
 	
-	private Options(){}
+	/**
+	 * 是否将Bitmap缓存到内存中
+	 * @return
+	 */
+	public boolean isEnableMenoryCache() {
+		return enableMenoryCache;
+	}
+
+	/**
+	 * 设置是否将Bitmap缓存到内存中
+	 * @param enableMenoryCache
+	 */
+	public Options setEnableMenoryCache(boolean enableMenoryCache) {
+		this.enableMenoryCache = enableMenoryCache;
+		return this;
+	}
+
+	/**
+	 * 是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
+	 * @return
+	 */
+	public boolean isEnableDiskCache() {
+		return enableDiskCache;
+	}
+
+	/**
+	 * 设置是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
+	 * @param enableDiskCache
+	 */
+	public Options setEnableDiskCache(boolean enableDiskCache) {
+		this.enableDiskCache = enableDiskCache;
+		return this;
+	}
+
+	/**
+	 * 获取本地缓存文件的有效时间，单位毫秒
+	 * @return
+	 */
+	public int getDiskCachePeriodOfValidity() {
+		return diskCachePeriodOfValidity;
+	}
+
+	/**
+	 * 设置本地缓存文件的有效时间，单位毫秒
+	 * @param diskCachePeriodOfValidity
+	 */
+	public Options setDiskCachePeriodOfValidity(int diskCachePeriodOfValidity) {
+		this.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
+		return this;
+	}
 	
 	/**
 	 * 获取最大重试次数
@@ -52,8 +102,9 @@ public class Options{
 	 * 设置最大重试次数
 	 * @param maxRetryCount 最大重试次数
 	 */
-	public void setMaxRetryCount(int maxRetryCount) {
+	public Options setMaxRetryCount(int maxRetryCount) {
 		this.maxRetryCount = maxRetryCount;
+		return this;
 	}
 
 	/**
@@ -68,8 +119,9 @@ public class Options{
 	 * 设置加载地址为空时显示的图片
 	 * @param emptyDrawable
 	 */
-	public void setEmptyDrawable(BitmapDrawable emptyDrawable) {
+	public Options setEmptyDrawable(BitmapDrawable emptyDrawable) {
 		this.emptyDrawable = emptyDrawable;
+		return this;
 	}
 	
 	/**
@@ -77,8 +129,9 @@ public class Options{
 	 * @param resources
 	 * @param resId
 	 */
-	public void setEmptyDrawable(Resources resources, int resId) {
+	public Options setEmptyDrawable(Resources resources, int resId) {
 		this.emptyDrawable = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
+		return this;
 	}
 
 	/**
@@ -93,8 +146,9 @@ public class Options{
 	 * 设置加载中图片
 	 * @param loadingDrawable
 	 */
-	public void setLoadingDrawable(BitmapDrawable loadingDrawable) {
+	public Options setLoadingDrawable(BitmapDrawable loadingDrawable) {
 		this.loadingDrawable = loadingDrawable;
+		return this;
 	}
 
 	/**
@@ -102,8 +156,9 @@ public class Options{
 	 * @param resources
 	 * @param resId
 	 */
-	public void setLoadingDrawable(Resources resources, int resId) {
+	public Options setLoadingDrawable(Resources resources, int resId) {
 		this.loadingDrawable = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
+		return this;
 	}
 
 	/**
@@ -118,8 +173,9 @@ public class Options{
 	 * 设置加载失败图片
 	 * @param failureDrawable
 	 */
-	public void setFailureDrawable(BitmapDrawable failureDrawable) {
+	public Options setFailureDrawable(BitmapDrawable failureDrawable) {
 		this.failureDrawable = failureDrawable;
+		return this;
 	}
 	
 	/**
@@ -127,8 +183,9 @@ public class Options{
 	 * @param resources
 	 * @param resId
 	 */
-	public void setFailureDrawable(Resources resources, int resId) {
+	public Options setFailureDrawable(Resources resources, int resId) {
 		this.failureDrawable = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
+		return this;
 	}
 	
 	/**
@@ -143,27 +200,9 @@ public class Options{
 	 * 设置最大尺寸
 	 * @param imageMaxSize
 	 */
-	public void setImageMaxSize(ImageSize imageMaxSize) {
+	public Options setImageMaxSize(ImageSize imageMaxSize) {
 		this.imageMaxSize = imageMaxSize;
-	}
-	
-	/**
-	 * 获取缓存配置
-	 * @return
-	 */
-	public CacheConfig getCacheConfig() {
-		if(cacheConfig == null){
-			cacheConfig = new CacheConfig.Builder().build();
-		}
-		return cacheConfig;
-	}
-
-	/**
-	 * 设置缓存配置
-	 * @param cacheConfig
-	 */
-	public void setCacheConfig(CacheConfig cacheConfig) {
-		this.cacheConfig = cacheConfig;
+		return this;
 	}
 	
 	/**
@@ -178,8 +217,9 @@ public class Options{
 	 * 设置位图处理器
 	 * @param bitmapProcessor
 	 */
-	public void setBitmapProcessor(BitmapProcessor bitmapProcessor) {
+	public Options setBitmapProcessor(BitmapProcessor bitmapProcessor) {
 		this.bitmapProcessor = bitmapProcessor;
+		return this;
 	}
 
 	/**
@@ -197,8 +237,9 @@ public class Options{
 	 * 设置位图显示器
 	 * @param bitmapDisplayer
 	 */
-	public void setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
+	public Options setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
 		this.bitmapDisplayer = bitmapDisplayer;
+		return this;
 	}
 
 	/**
@@ -206,135 +247,16 @@ public class Options{
 	 * @return
 	 */
 	public Options copy(){
-		return new Options.Builder()
-		.setBitmapDisplayer(bitmapDisplayer)
-		.setCacheConfig(cacheConfig.copy())
+		return new Options()
+		.setMaxRetryCount(maxRetryCount)
+		.setDiskCachePeriodOfValidity(diskCachePeriodOfValidity)
+		.setEnableMenoryCache(enableMenoryCache)
+		.setEnableDiskCache(enableDiskCache)
+		.setBitmapProcessor(bitmapProcessor != null?bitmapProcessor.copy():null)
+		.setBitmapDisplayer(bitmapDisplayer != null?bitmapDisplayer.copy():null)
 		.setEmptyDrawable(emptyDrawable)
 		.setFailureDrawable(failureDrawable)
 		.setLoadingDrawable(loadingDrawable)
-		.setMaxSize(imageMaxSize.copy())
-		.setMaxRetryCount(maxRetryCount)
-		.build();
-	}
-	
-	/**
-	 * 加载选项创建器
-	 */
-	public static class Builder{
-		private Options options = null;
-		
-		public Builder(){
-			options = new Options();
-		}
-		
-		/**
-		 * 设置最大重试次数
-		 * @param maxRetryCount 最大重试次数
-		 */
-		public Builder setMaxRetryCount(int maxRetryCount) {
-			options.setMaxRetryCount(maxRetryCount);
-			return this;
-		}
-
-		/**
-		 * 设置缓存配置
-		 * @param cacheConfig
-		 */
-		public Builder setCacheConfig(CacheConfig cacheConfig) {
-			options.setCacheConfig(cacheConfig);
-			return this;
-		}
-		
-		/**
-		 * 设置加载地址为空时显示的图片
-		 * @param emptyDrawable
-		 */
-		public Builder setEmptyDrawable(BitmapDrawable emptyDrawable) {
-			options.setEmptyDrawable(emptyDrawable);
-			return this;
-		}
-		
-		/**
-		 * 设置加载地址为空时显示的图片
-		 * @param resources
-		 * @param resId
-		 */
-		public Builder setEmptyDrawable(Resources resources, int resId) {
-			options.setEmptyDrawable(resources, resId);
-			return this;
-		}
-
-		/**
-		 * 设置加载中图片
-		 * @param loadingDrawable
-		 */
-		public Builder setLoadingDrawable(BitmapDrawable loadingDrawable) {
-			options.setLoadingDrawable(loadingDrawable);
-			return this;
-		}
-
-		/**
-		 * 设置加载中图片
-		 * @param resources
-		 * @param resId
-		 */
-		public Builder setLoadingDrawable(Resources resources, int resId) {
-			options.setLoadingDrawable(resources, resId);
-			return this;
-		}
-
-		/**
-		 * 设置加载失败图片
-		 * @param failureDrawable
-		 */
-		public Builder setFailureDrawable(BitmapDrawable failureDrawable) {
-			options.setFailureDrawable(failureDrawable);
-			return this;
-		}
-		
-		/**
-		 * 设置加载失败图片
-		 * @param resources
-		 * @param resId
-		 */
-		public Builder setFailureDrawable(Resources resources, int resId) {
-			options.setFailureDrawable(resources, resId);
-			return this;
-		}
-		
-		/**
-		 * 设置最大尺寸
-		 * @param maxSize
-		 */
-		public Builder setMaxSize(ImageSize maxSize) {
-			options.setImageMaxSize(maxSize);
-			return this;
-		}
-
-		/**
-		 * 设置位图处理器
-		 * @param bitmapProcessor
-		 */
-		public Builder setBitmapProcessor(BitmapProcessor bitmapProcessor) {
-			options.setBitmapProcessor(bitmapProcessor);
-			return this;
-		}
-		
-		/**
-		 * 设置位图显示器
-		 * @param bitmapDisplayer
-		 */
-		public Builder setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
-			options.setBitmapDisplayer(bitmapDisplayer);
-			return this;
-		}
-		
-		/**
-		 * 创建
-		 * @return
-		 */
-		public Options build(){
-			return options;
-		}
+		.setImageMaxSize(imageMaxSize != null?imageMaxSize.copy():null);
 	}
 }

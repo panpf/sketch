@@ -32,6 +32,11 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
 	private int reflectionSpacing;
 	private float reflectionScale;
 	
+	/**
+	 * 创建一个倒影位图处理器
+	 * @param reflectionSpacing 倒影和图片之间的距离
+	 * @param reflectionScale 倒影的高度所占原图高度比例
+	 */
 	public ReflectionBitmapProcessor(int reflectionSpacing, float reflectionScale) {
 		this.reflectionSpacing = reflectionSpacing;
 		this.reflectionScale = reflectionScale;
@@ -89,5 +94,10 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
 		Matrix matrix = new Matrix();
 		matrix.preScale(1, -1);
 		return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+	}
+
+	@Override
+	public BitmapProcessor copy() {
+		return new ReflectionBitmapProcessor(reflectionSpacing, reflectionScale);
 	}
 }

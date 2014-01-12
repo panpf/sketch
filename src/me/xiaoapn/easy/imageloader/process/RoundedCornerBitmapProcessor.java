@@ -56,6 +56,11 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 	}
 
 	@Override
+	public BitmapProcessor copy() {
+		return new RoundedCornerBitmapProcessor(roundPixels);
+	}
+
+	@Override
 	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware) {
 		ImageView imageView = imageViewAware.getImageView();
 		if(imageView != null){

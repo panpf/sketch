@@ -19,6 +19,12 @@ public interface BitmapDisplayer {
 	 */
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Request request, Configuration configuration);
 	
+	/**
+	 * 拷贝
+	 * @return
+	 */
+	public BitmapDisplayer copy();
+	
 	public enum BitmapType {
 		SUCCESS, FAILURE;
 	}

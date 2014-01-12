@@ -16,6 +16,10 @@
 
 package me.xiaoapn.easy.imageloader.cache;
 
+import java.io.File;
+
+import me.xiaoapn.easy.imageloader.util.Utils;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.drawable.BitmapDrawable;
@@ -25,6 +29,7 @@ import android.graphics.drawable.BitmapDrawable;
  */
 public class BitmapLruCacher implements BitmapCacher {
 	private BitmapLruCache bitmapLruCache;
+	private File diskCacheDirectory;	//磁盘缓存目录
 	
 	public BitmapLruCacher(){
 		bitmapLruCache = new BitmapLruCache((int) (Runtime.getRuntime().maxMemory()/8));
@@ -51,7 +56,34 @@ public class BitmapLruCacher implements BitmapCacher {
 	}
 
 	@Override
-	public synchronized void clear() {
+	public synchronized void clearMenoryCache() {
 		bitmapLruCache.evictAll();
+	}
+
+	@Override
+	public synchronized void clearDiskCache() {
+		
+	}
+
+	@Override
+	public synchronized void clearAllCache() {
+		clearMenoryCache();
+		clearDiskCache();
+	}
+	
+	public void setDiskCacheDirectory(File diskCacheDirectory) {
+		if(diskCacheDirectory != null && !diskCacheDirectory.isDirectory()){
+			throw new IllegalArgumentException(diskCacheDirectory.getPath() + "not a directory");
+		}
+		this.diskCacheDirectory = diskCacheDirectory;
+	}
+
+	@Override
+	public synchronized File getDiskCacheFile(Context context, String fileName){
+		if(diskCacheDirectory != null){
+			return new File(diskCacheDirectory, fileName);
+		}else{
+			return new File(Utils.getDynamicCacheDir(context).getPath() + File.separator + "image_loader" + File.separator + fileName);
+		}
 	}
 }

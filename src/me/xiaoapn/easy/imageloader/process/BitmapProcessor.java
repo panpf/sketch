@@ -36,4 +36,10 @@ public interface BitmapProcessor {
 	 * @return
 	 */
 	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware);
+	
+	/**
+	 * 拷贝
+	 * @return
+	 */
+	public BitmapProcessor copy();
 }

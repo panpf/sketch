@@ -90,4 +90,9 @@ public class ZoomInBitmapDisplayer implements BitmapDisplayer {
 		scaleAnimation.setDuration(duration);
 		imageView.startAnimation(scaleAnimation);
 	}
+
+	@Override
+	public BitmapDisplayer copy() {
+		return new ZoomInBitmapDisplayer(duration);
+	}
 }

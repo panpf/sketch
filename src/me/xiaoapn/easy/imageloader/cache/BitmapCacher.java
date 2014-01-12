@@ -16,6 +16,9 @@
 
 package me.xiaoapn.easy.imageloader.cache;
 
+import java.io.File;
+
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -54,7 +57,31 @@ public interface BitmapCacher {
 	public BitmapDrawable remove(String key);
 	
 	/**
-	 * 清除所有的位图
+	 * 清除内存缓存
 	 */
-	public void clear();
+	public void clearMenoryCache();
+	
+	/**
+	 * 清除磁盘缓存
+	 */
+	public void clearDiskCache();
+	
+	/**
+	 * 清除所有缓存
+	 */
+	public void clearAllCache();
+	
+	/**
+	 * 获取缓存文件
+	 * @param context
+	 * @param fileName
+	 * @return
+	 */
+	public File getDiskCacheFile(Context context, String fileName);
+	
+	/**
+	 * 获取磁盘缓存目录
+	 * @param diskCacheDirectory
+	 */
+	public void setDiskCacheDirectory(File diskCacheDirectory);
 }
