@@ -15,7 +15,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.v4.util.LruCache;
-import android.util.Log;
 
 public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
 	private Set<SoftReference<Bitmap>> mReusableBitmaps;
@@ -25,12 +24,10 @@ public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
 		if (Utils.hasHoneycomb()) {
 		    mReusableBitmaps = Collections.synchronizedSet(new HashSet<SoftReference<Bitmap>>());
 		}
-		Log.e("", new StringBuffer().append("最大内存").append("；").append(maxSize/1024).append("KB").toString());
 	}
 
 	@Override
 	protected int sizeOf(String key, BitmapDrawable value) {
-		Log.e("", new StringBuffer().append("最大内存").append(": ").append(maxSize()/1024).append("KB").append("；").append("已用内存").append(": ").append(size()/1024).append("KB").toString());
 		final int bitmapSize = getBitmapSize(value); 
 		return bitmapSize == 0 ? 1 : bitmapSize;
 	}
