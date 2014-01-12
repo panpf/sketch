@@ -17,6 +17,7 @@
 package me.xiaoapn.easy.imageloader.cache;
 
 import java.io.File;
+import java.io.IOException;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -63,13 +64,15 @@ public interface BitmapCacher {
 	
 	/**
 	 * 清除磁盘缓存
+	 * @param context
 	 */
-	public void clearDiskCache();
+	public void clearDiskCache(Context context);
 	
 	/**
 	 * 清除所有缓存
+	 * @param context
 	 */
-	public void clearAllCache();
+	public void clearAllCache(Context context);
 	
 	/**
 	 * 获取缓存文件
@@ -84,4 +87,18 @@ public interface BitmapCacher {
 	 * @param diskCacheDirectory
 	 */
 	public void setDiskCacheDirectory(File diskCacheDirectory);
+	
+	/**
+	 * 设置磁盘缓存最大容量
+	 * @param diskCacheMaxSize
+	 */
+	public void setDiskCacheMaxSize(long diskCacheMaxSize);
+	
+	/**
+	 * 设置缓存文件长度
+	 * @param file
+	 * @param fileLength
+	 * @throws IOException
+	 */
+	public void setCacheFileLength(File file, long fileLength) throws IOException;
 }

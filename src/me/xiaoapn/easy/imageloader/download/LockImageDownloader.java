@@ -146,6 +146,9 @@ public class LockImageDownloader implements ImageDownloader {
 						throw new Exception("文件 "+cacheFile.getPath()+" 创建失败");
 					}
 					
+					//申请空间
+					configuration.getBitmapCacher().setCacheFileLength(cacheFile, fileLength);
+					
 					/* 读取数据并写入缓存文件 */
 					bufferedfInputStream = new BufferedInputStream(httpResponse.getEntity().getContent());
 					bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(cacheFile, false));

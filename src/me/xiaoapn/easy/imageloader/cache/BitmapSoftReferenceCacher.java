@@ -16,11 +16,9 @@
 
 package me.xiaoapn.easy.imageloader.cache;
 
-import java.io.File;
 import java.lang.ref.SoftReference;
 import java.util.concurrent.ConcurrentHashMap;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.drawable.BitmapDrawable;
@@ -28,7 +26,7 @@ import android.graphics.drawable.BitmapDrawable;
 /**
  * 使用软引用的方式来缓存位图
  */
-public class BitmapSoftReferenceCacher implements BitmapCacher {
+public class BitmapSoftReferenceCacher extends BitmapDiskCacher {
 	private ConcurrentHashMap<String, SoftReference<BitmapDrawable>> bitmapCacheMap;
 	
 	public BitmapSoftReferenceCacher(){
@@ -68,25 +66,5 @@ public class BitmapSoftReferenceCacher implements BitmapCacher {
 	@Override
 	public synchronized void clearMenoryCache() {
 		bitmapCacheMap.clear();
-	}
-
-	@Override
-	public synchronized void clearDiskCache() {
-		
-	}
-
-	@Override
-	public synchronized void clearAllCache() {
-		
-	}
-
-	@Override
-	public File getDiskCacheFile(Context context, String fileName) {
-		return null;
-	}
-
-	@Override
-	public void setDiskCacheDirectory(File diskCacheDirectory) {
-		
 	}
 }

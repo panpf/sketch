@@ -16,6 +16,7 @@
 package me.xiaoapn.easy.imageloader.util;
 
 import java.io.Closeable;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 
@@ -50,6 +51,24 @@ public final class IOUtils {
 				closeable.close();
 			} catch (Exception e) {
 				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * 删除给定的文件，如果当前文件是目录则会删除其包含的所有的文件或目录
+	 * @param file 给定的文件
+	 * @return 删除是否成功
+	 */
+	public static void delete(File file){
+		if(file != null){
+			if(file.isFile()){
+				file.delete();
+			}else{
+				for(File tempFile : file.listFiles()){
+					delete(tempFile);
+				}
+				file.delete();
 			}
 		}
 	}

@@ -33,6 +33,7 @@ public class FileInputStreamCreator implements InputStreamCreator {
 
 	@Override
 	public InputStream onCreateInputStream() {
+		file.setLastModified(System.currentTimeMillis());
 		try {
 			return new BufferedInputStream(new FileInputStream(file), IOUtils.BUFFER_SIZE);
 		} catch (FileNotFoundException e) {
