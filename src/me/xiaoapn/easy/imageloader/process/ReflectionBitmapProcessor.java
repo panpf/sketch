@@ -17,6 +17,7 @@
 package me.xiaoapn.easy.imageloader.process;
 
 import me.xiaoapn.easy.imageloader.task.ImageViewAware;
+import me.xiaoapn.easy.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -52,7 +53,7 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
 	}
 
 	@Override
-	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware) {
+	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware, ImageSize targetSize) {
 		return reflection(bitmap, reflectionSpacing, (int) (bitmap.getHeight()*reflectionScale));
 	}
 	

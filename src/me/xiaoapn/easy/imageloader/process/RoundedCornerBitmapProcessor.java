@@ -17,6 +17,7 @@
 package me.xiaoapn.easy.imageloader.process;
 
 import me.xiaoapn.easy.imageloader.task.ImageViewAware;
+import me.xiaoapn.easy.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -26,6 +27,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 /**
  * 圆角位图处理器
@@ -61,10 +63,10 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 	}
 
 	@Override
-	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware) {
+	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware, ImageSize targetSize) {
 		ImageView imageView = imageViewAware.getImageView();
 		if(imageView != null){
-			return roundCorners(bitmap, imageView, roundPixels);
+			return roundCorners(bitmap, imageView.getScaleType(), targetSize, roundPixels);
 		}else{
 			return bitmap;
 		}
@@ -79,88 +81,92 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 	 * @param roundPixels
 	 * @return Result bitmap with rounded corners
 	 */
-	public Bitmap roundCorners(Bitmap bitmap, ImageView imageView, int roundPixels) {
+	public Bitmap roundCorners(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize, int roundPixels) {
 		Bitmap roundBitmap;
 
-		int bw = bitmap.getWidth();
-		int bh = bitmap.getHeight();
-		int vw = imageView.getWidth();
-		int vh = imageView.getHeight();
-		if (vw <= 0) vw = bw;
-		if (vh <= 0) vh = bh;
+		int bitmapWidth = bitmap.getWidth();
+		int bitmapHeight = bitmap.getHeight();
+		int imageViewWidth = targetSize.getWidth();
+		int imageViewHeight = targetSize.getHeight();
+		if (imageViewWidth <= 0) {
+			imageViewWidth = bitmapWidth;
+		}
+		if (imageViewHeight <= 0){
+			imageViewHeight = bitmapHeight;
+		}
 
 		int width, height;
 		Rect srcRect;
 		Rect destRect;
-		switch (imageView.getScaleType()) {
+		switch (scaleType) {
 			case CENTER_INSIDE:
-				float vRation = (float) vw / vh;
-				float bRation = (float) bw / bh;
+				float vRation = (float) imageViewWidth / imageViewHeight;
+				float bRation = (float) bitmapWidth / bitmapHeight;
 				int destWidth;
 				int destHeight;
 				if (vRation > bRation) {
-					destHeight = Math.min(vh, bh);
-					destWidth = (int) (bw / ((float) bh / destHeight));
+					destHeight = Math.min(imageViewHeight, bitmapHeight);
+					destWidth = (int) (bitmapWidth / ((float) bitmapHeight / destHeight));
 				} else {
-					destWidth = Math.min(vw, bw);
-					destHeight = (int) (bh / ((float) bw / destWidth));
+					destWidth = Math.min(imageViewWidth, bitmapWidth);
+					destHeight = (int) (bitmapHeight / ((float) bitmapWidth / destWidth));
 				}
-				int x = (vw - destWidth) / 2;
-				int y = (vh - destHeight) / 2;
-				srcRect = new Rect(0, 0, bw, bh);
+				int x = (imageViewWidth - destWidth) / 2;
+				int y = (imageViewHeight - destHeight) / 2;
+				srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
 				destRect = new Rect(x, y, x + destWidth, y + destHeight);
-				width = vw;
-				height = vh;
+				width = imageViewWidth;
+				height = imageViewHeight;
 				break;
 			case FIT_CENTER:
 			case FIT_START:
 			case FIT_END:
 			default:
-				vRation = (float) vw / vh;
-				bRation = (float) bw / bh;
+				vRation = (float) imageViewWidth / imageViewHeight;
+				bRation = (float) bitmapWidth / bitmapHeight;
 				if (vRation > bRation) {
-					width = (int) (bw / ((float) bh / vh));
-					height = vh;
+					width = (int) (bitmapWidth / ((float) bitmapHeight / imageViewHeight));
+					height = imageViewHeight;
 				} else {
-					width = vw;
-					height = (int) (bh / ((float) bw / vw));
+					width = imageViewWidth;
+					height = (int) (bitmapHeight / ((float) bitmapWidth / imageViewWidth));
 				}
-				srcRect = new Rect(0, 0, bw, bh);
+				srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
 				destRect = new Rect(0, 0, width, height);
 				break;
 			case CENTER_CROP:
-				vRation = (float) vw / vh;
-				bRation = (float) bw / bh;
+				vRation = (float) imageViewWidth / imageViewHeight;
+				bRation = (float) bitmapWidth / bitmapHeight;
 				int srcWidth;
 				int srcHeight;
 				if (vRation > bRation) {
-					srcWidth = bw;
-					srcHeight = (int) (vh * ((float) bw / vw));
+					srcWidth = bitmapWidth;
+					srcHeight = (int) (imageViewHeight * ((float) bitmapWidth / imageViewWidth));
 					x = 0;
-					y = (bh - srcHeight) / 2;
+					y = (bitmapHeight - srcHeight) / 2;
 				} else {
-					srcWidth = (int) (vw * ((float) bh / vh));
-					srcHeight = bh;
-					x = (bw - srcWidth) / 2;
+					srcWidth = (int) (imageViewWidth * ((float) bitmapHeight / imageViewHeight));
+					srcHeight = bitmapHeight;
+					x = (bitmapWidth - srcWidth) / 2;
 					y = 0;
 				}
-				width = Math.min(vw, bw);
-				height = Math.min(vh, bh);
+				width = imageViewWidth;
+				height = imageViewHeight;
 				srcRect = new Rect(x, y, x + srcWidth, y + srcHeight);
 				destRect = new Rect(0, 0, width, height);
 				break;
 			case FIT_XY:
-				width = vw;
-				height = vh;
-				srcRect = new Rect(0, 0, bw, bh);
+				width = imageViewWidth;
+				height = imageViewHeight;
+				srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
 				destRect = new Rect(0, 0, width, height);
 				break;
 			case CENTER:
 			case MATRIX:
-				width = Math.min(vw, bw);
-				height = Math.min(vh, bh);
-				x = (bw - width) / 2;
-				y = (bh - height) / 2;
+				width = Math.min(imageViewWidth, bitmapWidth);
+				height = Math.min(imageViewHeight, bitmapHeight);
+				x = (bitmapWidth - width) / 2;
+				y = (bitmapHeight - height) / 2;
 				srcRect = new Rect(x, y, x + width, y + height);
 				destRect = new Rect(0, 0, width, height);
 				break;

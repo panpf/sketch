@@ -20,7 +20,7 @@ import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.R;
 import me.xiaoapn.easy.imageloader.display.ZoomInBitmapDisplayer;
 import me.xiaoapn.easy.imageloader.display.ZoomOutBitmapDisplayer;
-import me.xiaoapn.easy.imageloader.process.ReflectionBitmapProcessor;
+import me.xiaoapn.easy.imageloader.process.RoundedCornerBitmapProcessor;
 import me.xiaoapn.easy.imageloader.task.Options;
 import android.app.Application;
 
@@ -37,7 +37,7 @@ public class MyApplication extends Application {
 		defaultOptions.setLoadingDrawable(getResources(), R.drawable.image_loading);	//设置加载中显示的图片
 		defaultOptions.setFailureDrawable(getResources(), R.drawable.image_load_failure); 	//设置加载失败时显示的图片
 		defaultOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
-		defaultOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
+		defaultOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
 		
 		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.VIEW_PAGER, defaultOptions.copy().setLoadingDrawable(null));
 		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.LIST_VIEW, defaultOptions.copy().setBitmapDisplayer(new ZoomInBitmapDisplayer()));

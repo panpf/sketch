@@ -49,7 +49,7 @@ public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
 				if(bitmap != null && !bitmap.isRecycled()){
 					//处理位图
 					if(request.getOptions().getBitmapProcessor() != null){
-						Bitmap newBitmap = request.getOptions().getBitmapProcessor().process(bitmap, request.getImageViewAware());
+						Bitmap newBitmap = request.getOptions().getBitmapProcessor().process(bitmap, request.getImageViewAware(), request.getTargetSize());
 						if(newBitmap != bitmap){
 							bitmap.recycle();
 							bitmap = newBitmap;

@@ -17,6 +17,7 @@
 package me.xiaoapn.easy.imageloader.process;
 
 import me.xiaoapn.easy.imageloader.task.ImageViewAware;
+import me.xiaoapn.easy.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 
 /**
@@ -33,9 +34,10 @@ public interface BitmapProcessor {
 	 * 处理
 	 * @param bitmap
 	 * @param imageViewAware
+	 * @param targetSize
 	 * @return
 	 */
-	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware);
+	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware, ImageSize targetSize);
 	
 	/**
 	 * 拷贝
