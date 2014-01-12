@@ -32,25 +32,8 @@ import android.widget.ImageView.ScaleType;
 /**
  * 圆角位图处理器
  */
-public class RoundedCornerBitmapProcessor implements BitmapProcessor {
-	private static final String TAG = RoundedCornerBitmapProcessor.class.getSimpleName();
-	private int roundPixels;
-	
-	/**
-	 * 创建一个圆角位图显示器
-	 * @param roundPixels 圆角角度
-	 * @param animationGenerator 动画生成器
-	 */
-	public RoundedCornerBitmapProcessor(int roundPixels){
-		this.roundPixels = roundPixels;
-	}
-	
-	/**
-	 * 创建一个圆角位图显示器，圆角角度默认为18并且动画生成器使用AlphaAnimationGenerator
-	 */
-	public RoundedCornerBitmapProcessor(){
-		this(18);
-	}
+public class CircleBitmapProcessor implements BitmapProcessor {
+	private static final String TAG = CircleBitmapProcessor.class.getSimpleName();
 	
 	@Override
 	public String getTag() {
@@ -59,14 +42,14 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 
 	@Override
 	public BitmapProcessor copy() {
-		return new RoundedCornerBitmapProcessor(roundPixels);
+		return new CircleBitmapProcessor();
 	}
 
 	@Override
 	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware, ImageSize targetSize) {
 		ImageView imageView = imageViewAware.getImageView();
 		if(imageView != null){
-			return roundCorners(bitmap, imageView.getScaleType(), targetSize, roundPixels);
+			return cricle(bitmap, imageView.getScaleType(), targetSize);
 		}else{
 			return bitmap;
 		}
@@ -78,10 +61,9 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 	 * 
 	 * @param bitmap Incoming Bitmap to process
 	 * @param imageView Target {@link ImageView} to display bitmap in
-	 * @param roundPixels
 	 * @return Result bitmap with rounded corners
 	 */
-	public Bitmap roundCorners(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize, int roundPixels) {
+	public Bitmap cricle(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize) {
 		int bitmapWidth = bitmap.getWidth();
 		int bitmapHeight = bitmap.getHeight();
 		int viewWidth = targetSize.getWidth();
@@ -162,7 +144,7 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 		try {
 			Rect srcRect = new Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight);
 			Rect destRect = new Rect(destLeft, destTop, destLeft + destWidth, destTop + destHeight);
-			return getRoundedCornerBitmap(bitmap, roundPixels, srcRect, destRect, width, height);
+			return getCricleBitmap(bitmap, srcRect, destRect, width, height);
 		} catch (OutOfMemoryError e) {
 			e.printStackTrace();
 			return bitmap;
@@ -172,14 +154,13 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 	/**
 	 * 处理圆角图片
 	 * @param bitmap
-	 * @param roundPixels
 	 * @param srcRect
 	 * @param destRect
 	 * @param width
 	 * @param height
 	 * @return
 	 */
-	public Bitmap getRoundedCornerBitmap(Bitmap bitmap, int roundPixels, Rect srcRect, Rect destRect, int width, int height) {
+	public Bitmap getCricleBitmap(Bitmap bitmap, Rect srcRect, Rect destRect, int width, int height) {
 		Bitmap output = Bitmap.createBitmap(width, height, Config.ARGB_8888);
 		Canvas canvas = new Canvas(output);
 
@@ -188,20 +169,12 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 
 		paint.setAntiAlias(true);
 		canvas.drawARGB(0, 0, 0, 0);
-		paint.setColor(0xFF000000);
-		canvas.drawRoundRect(destRectF, roundPixels, roundPixels, paint);
-
+		paint.setColor(0xFFFF0000);
+		canvas.drawCircle(width/2, height/2, width < height?width/2:height/2, paint);
+		
 		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
 		canvas.drawBitmap(bitmap, srcRect, destRectF, paint);
 
 		return output;
-	}
-	
-	public int getRoundPixels() {
-		return roundPixels;
-	}
-
-	public void setRoundPixels(int roundPixels) {
-		this.roundPixels = roundPixels;
 	}
 }
