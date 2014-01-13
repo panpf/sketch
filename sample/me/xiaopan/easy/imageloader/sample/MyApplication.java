@@ -16,13 +16,13 @@
 
 package me.xiaopan.easy.imageloader.sample;
 
-import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.R;
-import me.xiaoapn.easy.imageloader.display.ZoomInBitmapDisplayer;
-import me.xiaoapn.easy.imageloader.display.ZoomOutBitmapDisplayer;
-import me.xiaoapn.easy.imageloader.process.CircleBitmapProcessor;
-import me.xiaoapn.easy.imageloader.process.ReflectionBitmapProcessor;
-import me.xiaoapn.easy.imageloader.task.Options;
+import me.xiaopan.easy.imageloader.ImageLoader;
+import me.xiaopan.easy.imageloader.display.ZoomInBitmapDisplayer;
+import me.xiaopan.easy.imageloader.display.ZoomOutBitmapDisplayer;
+import me.xiaopan.easy.imageloader.process.CircleBitmapProcessor;
+import me.xiaopan.easy.imageloader.process.ReflectionBitmapProcessor;
+import me.xiaopan.easy.imageloader.task.Options;
 import android.app.Application;
 
 public class MyApplication extends Application {

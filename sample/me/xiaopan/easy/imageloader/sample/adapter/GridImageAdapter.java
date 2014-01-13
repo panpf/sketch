@@ -16,8 +16,8 @@
 
 package me.xiaopan.easy.imageloader.sample.adapter;
 
-import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.R;
+import me.xiaopan.easy.imageloader.ImageLoader;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Point;

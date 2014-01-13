@@ -1,9 +1,9 @@
 package me.xiaopan.easy.imageloader.sample.fragment;
 
-import me.xiaoapn.easy.imageloader.ImageLoader;
 import me.xiaoapn.easy.imageloader.R;
-import me.xiaoapn.easy.imageloader.task.ImageLoadListener;
+import me.xiaopan.easy.imageloader.ImageLoader;
 import me.xiaopan.easy.imageloader.sample.OptionsType;
+import me.xiaopan.easy.imageloader.task.ImageLoadListener;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
