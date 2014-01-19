@@ -1,8 +1,8 @@
-# ![Logo](https://github.com/ixiaopan/EasyImageLoader/raw/master/res/drawable-mdpi/ic_launcher.png) EasyImageLoader
+# ![Logo](https://github.com/xiaopansky/EasyImageLoader/raw/master/res/drawable-mdpi/ic_launcher.png) EasyImageLoader
 
 EasyImageLoader是用在Android上的一个图片加载类库，主要用于从本地或网络加载图片并显示在ImageView上。
 
-![sample](https://github.com/ixiaopan/EasyImageLoader/raw/master/docs/sample.gif)
+![sample](https://github.com/xiaopansky/EasyImageLoader/raw/master/docs/sample.gif)
 
 ##Features
 
@@ -51,9 +51,7 @@ ImageLoader.getInstance().load(imageUrls[position], viewHolder.image);
 2. ImageLoader提供了一个单例，所以没有特殊需求的话，你只须通过ImageLoader.getInstance()方法获取其实例即可。
 
 ##Downloads
-**[easy-image-loader-1.0.1.jar](https://github.com/ixiaopan/EasyImageLoader/raw/master/downloads/easy-image-loader-1.0.1.jar)**
-
-**[easy-image-loader-1.0.0.jar](https://github.com/ixiaopan/EasyImageLoader/raw/master/downloads/easy-image-loader-1.0.0.jar)**
+**[android-image-loader-2.1.0.jar](https://github.com/xiaopansky/EasyImageLoader/raw/master/releases/android-image-loader-2.1.0.jar)**
 
 ##License
 ```java
