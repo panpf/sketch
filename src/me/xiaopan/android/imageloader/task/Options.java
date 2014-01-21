@@ -20,14 +20,18 @@ import me.xiaopan.android.imageloader.display.BitmapDisplayer;
 import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
 import me.xiaopan.android.imageloader.process.BitmapProcessor;
 import me.xiaopan.android.imageloader.util.ImageSize;
-import android.content.res.Resources;
+import me.xiaopan.android.imageloader.util.Utils;
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.widget.ImageView.ScaleType;
 
 /**
  * 加载选项
  */
 public class Options{
+	private Context context;
 	private int maxRetryCount;	//最大重试次数
 	private int diskCachePeriodOfValidity;	//磁盘缓存有效期，单位毫秒
 	private boolean enableMenoryCache;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
@@ -39,6 +43,15 @@ public class Options{
 	private BitmapDrawable loadingDrawable;	//正在加载时显示的图片
 	private BitmapDrawable failureDrawable;	//加载失败时显示的图片
 	
+	public Options(Context context) {
+		this.context = context;
+		setEnableMenoryCache(true)
+		.setEnableDiskCache(true)
+		.setImageMaxSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
+		.setBitmapDisplayer(new FadeInBitmapDisplayer())
+		.setMaxRetryCount(2);
+	}
+
 	/**
 	 * 是否将Bitmap缓存到内存中
 	 * @return
@@ -120,18 +133,19 @@ public class Options{
 	 * @param emptyDrawable
 	 */
 	public Options setEmptyDrawable(BitmapDrawable emptyDrawable) {
+		if(this.emptyDrawable != null && !this.emptyDrawable.getBitmap().isRecycled()){
+			this.emptyDrawable.getBitmap().recycle();
+		}
 		this.emptyDrawable = emptyDrawable;
 		return this;
 	}
 	
 	/**
 	 * 设置加载地址为空时显示的图片
-	 * @param resources
 	 * @param resId
 	 */
-	public Options setEmptyDrawable(Resources resources, int resId) {
-		this.emptyDrawable = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
-		return this;
+	public Options setEmptyDrawable(int resId) {
+		return setEmptyDrawable(new BitmapDrawable(context.getResources(), BitmapFactory.decodeResource(context.getResources(), resId)));
 	}
 
 	/**
@@ -144,21 +158,22 @@ public class Options{
 
 	/**
 	 * 设置加载中图片
-	 * @param loadingDrawable
+	 * @param newLoadingDrawable
 	 */
-	public Options setLoadingDrawable(BitmapDrawable loadingDrawable) {
-		this.loadingDrawable = loadingDrawable;
+	public Options setLoadingDrawable(BitmapDrawable newLoadingDrawable) {
+		if(this.loadingDrawable != null && !this.loadingDrawable.getBitmap().isRecycled()){
+			this.loadingDrawable.getBitmap().recycle();
+		}
+		this.loadingDrawable = newLoadingDrawable;
 		return this;
 	}
 
 	/**
 	 * 设置加载中图片
-	 * @param resources
 	 * @param resId
 	 */
-	public Options setLoadingDrawable(Resources resources, int resId) {
-		this.loadingDrawable = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
-		return this;
+	public Options setLoadingDrawable(int resId) {
+		return setLoadingDrawable(new BitmapDrawable(context.getResources(), BitmapFactory.decodeResource(context.getResources(), resId)));
 	}
 
 	/**
@@ -174,18 +189,19 @@ public class Options{
 	 * @param failureDrawable
 	 */
 	public Options setFailureDrawable(BitmapDrawable failureDrawable) {
+		if(this.failureDrawable != null && !this.failureDrawable.getBitmap().isRecycled()){
+			this.failureDrawable.getBitmap().recycle();
+		}
 		this.failureDrawable = failureDrawable;
 		return this;
 	}
 	
 	/**
 	 * 设置加载失败图片
-	 * @param resources
 	 * @param resId
 	 */
-	public Options setFailureDrawable(Resources resources, int resId) {
-		this.failureDrawable = new BitmapDrawable(resources, BitmapFactory.decodeResource(resources, resId));
-		return this;
+	public Options setFailureDrawable(int resId) {
+		return setFailureDrawable(new BitmapDrawable(context.getResources(), BitmapFactory.decodeResource(context.getResources(), resId)));
 	}
 	
 	/**
@@ -247,16 +263,49 @@ public class Options{
 	 * @return
 	 */
 	public Options copy(){
-		return new Options()
+		return new Options(context)
 		.setMaxRetryCount(maxRetryCount)
 		.setDiskCachePeriodOfValidity(diskCachePeriodOfValidity)
 		.setEnableMenoryCache(enableMenoryCache)
 		.setEnableDiskCache(enableDiskCache)
 		.setBitmapProcessor(bitmapProcessor != null?bitmapProcessor.copy():null)
 		.setBitmapDisplayer(bitmapDisplayer != null?bitmapDisplayer.copy():null)
-		.setEmptyDrawable(emptyDrawable)
-		.setFailureDrawable(failureDrawable)
-		.setLoadingDrawable(loadingDrawable)
+		.setEmptyDrawable(emptyDrawable != null?new BitmapDrawable(context.getResources(), Utils.bitmapCopy(emptyDrawable.getBitmap())):null)
+		.setFailureDrawable(failureDrawable != null?new BitmapDrawable(context.getResources(), Utils.bitmapCopy(failureDrawable.getBitmap())):null)
+		.setLoadingDrawable(loadingDrawable != null?new BitmapDrawable(context.getResources(), Utils.bitmapCopy(loadingDrawable.getBitmap())):null)
 		.setImageMaxSize(imageMaxSize != null?imageMaxSize.copy():null);
+	}
+	
+	/**
+	 * 使用已设定的BitmapProcessor处理EmptyDrawable、FailureDrawable、LoadingDrawable
+	 * @return
+	 */
+	public Options processDrawables(){
+		if(bitmapProcessor != null){
+			if(emptyDrawable != null){
+				Bitmap oldBitmap = emptyDrawable.getBitmap();
+				Bitmap newBitmap = bitmapProcessor.process(oldBitmap, ScaleType.CENTER_CROP, new ImageSize(oldBitmap.getWidth(), oldBitmap.getHeight()));
+				if(newBitmap != oldBitmap){
+					setEmptyDrawable(new BitmapDrawable(context.getResources(), newBitmap));
+				}
+			}
+			
+			if(loadingDrawable != null){
+				Bitmap oldBitmap = loadingDrawable.getBitmap();
+				Bitmap newBitmap = bitmapProcessor.process(oldBitmap, ScaleType.CENTER_CROP, new ImageSize(oldBitmap.getWidth(), oldBitmap.getHeight()));
+				if(newBitmap != oldBitmap){
+					setLoadingDrawable(new BitmapDrawable(context.getResources(), newBitmap));
+				}
+			}
+			
+			if(failureDrawable != null){
+				Bitmap oldBitmap = failureDrawable.getBitmap();
+				Bitmap newBitmap = bitmapProcessor.process(oldBitmap, ScaleType.CENTER_CROP, new ImageSize(oldBitmap.getWidth(), oldBitmap.getHeight()));
+				if(newBitmap != oldBitmap){
+					setFailureDrawable(new BitmapDrawable(context.getResources(), newBitmap));
+				}
+			}
+		}
+		return this;
 	}
 }

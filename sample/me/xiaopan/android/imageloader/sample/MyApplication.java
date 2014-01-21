@@ -18,10 +18,10 @@ package me.xiaopan.android.imageloader.sample;
 
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.display.ZoomInBitmapDisplayer;
 import me.xiaopan.android.imageloader.display.ZoomOutBitmapDisplayer;
 import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
 import me.xiaopan.android.imageloader.process.ReflectionBitmapProcessor;
+import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
 import me.xiaopan.android.imageloader.task.Options;
 import android.app.Application;
 
@@ -34,15 +34,32 @@ public class MyApplication extends Application {
 		ImageLoader.getInstance().init(getBaseContext());
 		ImageLoader.getInstance().getConfiguration().setDebugMode(true);
 		
-		Options defaultOptions = ImageLoader.getInstance().getConfiguration().getDefaultOptions();
-		defaultOptions.setLoadingDrawable(getResources(), R.drawable.image_loading);	//设置加载中显示的图片
-		defaultOptions.setFailureDrawable(getResources(), R.drawable.image_load_failure); 	//设置加载失败时显示的图片
-		defaultOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
-		defaultOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
+		Options defaultOptions = ImageLoader.getInstance().getConfiguration().getDefaultOptions()
+			.setLoadingDrawable(R.drawable.image_loading)
+			.setFailureDrawable(R.drawable.image_load_failure)
+			.setBitmapProcessor(new ReflectionBitmapProcessor());
+
+		Options viewPagerOptions = defaultOptions.copy()
+			.setLoadingDrawable(null)
+			.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
 		
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.VIEW_PAGER, defaultOptions.copy().setLoadingDrawable(null));
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.LIST_VIEW, defaultOptions.copy().setBitmapProcessor(new CircleBitmapProcessor()).setBitmapDisplayer(new ZoomInBitmapDisplayer()));
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.GALLERY, defaultOptions.copy());
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.SIMPLE, defaultOptions.copy().setEnableMenoryCache(false));
+		Options listOptions = defaultOptions.copy()
+			.setBitmapProcessor(new CircleBitmapProcessor())
+			.processDrawables();
+
+		Options galleryOptions = defaultOptions.copy()
+			.setBitmapProcessor(new RoundedCornerBitmapProcessor())
+			.processDrawables();
+		
+		Options simpleOptions = defaultOptions.copy()
+			.setEnableMenoryCache(false)
+			.setBitmapProcessor(null);
+		
+		defaultOptions.processDrawables();
+		
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.VIEW_PAGER, viewPagerOptions);
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.LIST_VIEW, listOptions);
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.GALLERY, galleryOptions);
+		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.SIMPLE, simpleOptions);
 	}
 }

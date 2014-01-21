@@ -51,7 +51,7 @@ ImageLoader.getInstance().load(imageUrls[position], viewHolder.image);
 2. ImageLoader提供了一个单例，所以没有特殊需求的话，你只须通过ImageLoader.getInstance()方法获取其实例即可。
 
 ##Downloads
-**[android-image-loader-2.1.0.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.1.0.jar)**
+**[android-image-loader-2.1.1.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.1.1.jar)**
 
 ##License
 ```java

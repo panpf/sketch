@@ -29,7 +29,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 
 /**
- * 放大位图显示器
+ * 由大到小位图显示器
  */
 public class ZoomOutBitmapDisplayer implements BitmapDisplayer {
 	private static final String LOG_NAME= ZoomOutBitmapDisplayer.class.getSimpleName();

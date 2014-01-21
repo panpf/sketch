@@ -25,6 +25,8 @@ import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 import me.xiaopan.android.imageloader.util.Utils;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
 	protected Request request;
@@ -49,7 +51,8 @@ public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
 				if(bitmap != null && !bitmap.isRecycled()){
 					//处理位图
 					if(request.getOptions().getBitmapProcessor() != null){
-						Bitmap newBitmap = request.getOptions().getBitmapProcessor().process(bitmap, request.getImageViewAware(), request.getTargetSize());
+						ImageView imageView = request.getImageViewAware().getImageView();
+						Bitmap newBitmap = request.getOptions().getBitmapProcessor().process(bitmap, imageView != null?imageView.getScaleType():ScaleType.CENTER_CROP, request.getTargetSize());
 						if(newBitmap != bitmap){
 							bitmap.recycle();
 							bitmap = newBitmap;

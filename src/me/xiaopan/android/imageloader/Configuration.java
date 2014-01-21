@@ -23,13 +23,11 @@ import me.xiaopan.android.imageloader.cache.BitmapCacher;
 import me.xiaopan.android.imageloader.cache.BitmapLruCacher;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.decode.SimpleBitmapDecoder;
-import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
 import me.xiaopan.android.imageloader.download.ImageDownloader;
 import me.xiaopan.android.imageloader.download.LockImageDownloader;
 import me.xiaopan.android.imageloader.execute.BaseTaskExecutor;
 import me.xiaopan.android.imageloader.execute.TaskExecutor;
 import me.xiaopan.android.imageloader.task.Options;
-import me.xiaopan.android.imageloader.util.ImageSize;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Handler;
@@ -60,13 +58,6 @@ public class Configuration {
 		this.handler = new Handler();
 		this.resources = context.getResources();
 		this.optionsMap = new HashMap<Object, Options>();
-		Options defaultOptions = new Options()
-			.setEnableMenoryCache(true)
-			.setEnableDiskCache(true)
-			.setImageMaxSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
-			.setBitmapDisplayer(new FadeInBitmapDisplayer())
-			.setMaxRetryCount(2);
-		putOptions(OptionsDefault.DEFAULT, defaultOptions);
 	}
 	
 	/**
@@ -110,7 +101,12 @@ public class Configuration {
 	 * @return
 	 */
 	public Options getDefaultOptions() {
-		return getOptions(OptionsDefault.DEFAULT);
+		Options defaultOptions = getOptions(OptionsDefault.DEFAULT);
+		if(defaultOptions == null){
+			defaultOptions = new Options(context);
+			setDefaultOptions(defaultOptions);
+		}
+		return defaultOptions;
 	}
 	
 	/**

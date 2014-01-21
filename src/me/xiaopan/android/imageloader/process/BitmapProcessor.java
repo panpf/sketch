@@ -16,9 +16,9 @@
 
 package me.xiaopan.android.imageloader.process;
 
-import me.xiaopan.android.imageloader.task.ImageViewAware;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
+import android.widget.ImageView.ScaleType;
 
 /**
  * 位图处理器
@@ -33,11 +33,11 @@ public interface BitmapProcessor {
 	/**
 	 * 处理
 	 * @param bitmap
-	 * @param imageViewAware
+	 * @param scaleType
 	 * @param targetSize
 	 * @return
 	 */
-	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware, ImageSize targetSize);
+	public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize);
 	
 	/**
 	 * 拷贝

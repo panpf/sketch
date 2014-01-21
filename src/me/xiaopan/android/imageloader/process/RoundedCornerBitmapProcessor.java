@@ -16,7 +16,6 @@
 
 package me.xiaopan.android.imageloader.process;
 
-import me.xiaopan.android.imageloader.task.ImageViewAware;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -63,13 +62,17 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 	}
 
 	@Override
-	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware, ImageSize targetSize) {
-		ImageView imageView = imageViewAware.getImageView();
-		if(imageView != null){
-			return roundCorners(bitmap, imageView.getScaleType(), targetSize, roundPixels);
-		}else{
-			return bitmap;
+	public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize) {
+		if(bitmap == null){
+			return null;
 		}
+		if(scaleType == null){
+			scaleType = ScaleType.CENTER_CROP;
+		}
+		if(targetSize == null){
+			targetSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+		}
+		return roundCorners(bitmap, scaleType, targetSize, roundPixels);
 	}
 	
 	/**

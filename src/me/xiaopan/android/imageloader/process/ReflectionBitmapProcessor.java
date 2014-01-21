@@ -16,7 +16,6 @@
 
 package me.xiaopan.android.imageloader.process;
 
-import me.xiaopan.android.imageloader.task.ImageViewAware;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -27,6 +26,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader.TileMode;
+import android.widget.ImageView.ScaleType;
 
 public class ReflectionBitmapProcessor implements BitmapProcessor {
 	private static final String TAG = ReflectionBitmapProcessor.class.getSimpleName();;
@@ -53,7 +53,16 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
 	}
 
 	@Override
-	public Bitmap process(Bitmap bitmap, ImageViewAware imageViewAware, ImageSize targetSize) {
+	public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize) {
+		if(bitmap == null){
+			return null;
+		}
+		if(scaleType == null){
+			scaleType = ScaleType.CENTER_CROP;
+		}
+		if(targetSize == null){
+			targetSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+		}
 		return reflection(bitmap, reflectionSpacing, (int) (bitmap.getHeight()*reflectionScale));
 	}
 	
