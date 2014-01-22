@@ -21,9 +21,10 @@ import me.xiaopan.android.imageloader.sample.adapter.StringAdapter;
 import me.xiaopan.android.imageloader.sample.fragment.GalleryFragment;
 import me.xiaopan.android.imageloader.sample.fragment.GridFragment;
 import me.xiaopan.android.imageloader.sample.fragment.ListFragment;
-import me.xiaopan.android.imageloader.sample.fragment.ViewPagerFragment;
 import me.xiaopan.android.imageloader.sample.fragment.SimpleImageFragment;
+import me.xiaopan.android.imageloader.sample.fragment.ViewPagerFragment;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -226,16 +227,7 @@ public class MainActivity extends FragmentActivity {
 				break;
 			case REQUEST_CODE_FILE : 
 				if(arg2.getData() != null){
-					Uri uri = arg2.getData();
-					String filePath;
-					Cursor cursor = getContentResolver().query(uri, new String[]{ MediaStore.Images.Media.DATA }, null, null, null);
-                    if (cursor != null){
-                         cursor.moveToFirst();
-                         filePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                    }else{
-                    	filePath = null;
-                    }
-                    
+					String filePath = getPathByUri(getBaseContext(), arg2.getData());
                     if(filePath != null){
                     	String fileUri = "file://"+filePath;
                     	if(fileUris == null){
@@ -246,6 +238,9 @@ public class MainActivity extends FragmentActivity {
                     	}
                     	uriType = UriType.FILE; 
                     	update(true);
+                    }else{
+                    	Toast.makeText(getBaseContext(), "没有取到文件地址，请使用系统自带的图库应用来选择文件", Toast.LENGTH_SHORT).show();
+    					Log.w(MainActivity.class.getSimpleName(), "没有取到文件地址，请使用系统自带的图库应用来选择文件："+arg2.getData().toString());
                     }
 				}else{
 					Toast.makeText(getBaseContext(), "空的", Toast.LENGTH_SHORT).show();
@@ -254,5 +249,22 @@ public class MainActivity extends FragmentActivity {
 				break;
 			}
 		}
+	}
+	
+	/**
+	 * 根据Uri获取路径
+	 * @param context
+	 * @param uri
+	 * @return
+	 */
+	public static String getPathByUri(Context context, Uri uri){
+		String filePath = null;
+		Cursor cursor = context.getContentResolver().query(uri, new String[]{ MediaStore.Images.Media.DATA }, null, null, null);
+        if (cursor != null){
+             cursor.moveToFirst();
+             filePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+             cursor.close();
+        }
+        return filePath;
 	}
 }
