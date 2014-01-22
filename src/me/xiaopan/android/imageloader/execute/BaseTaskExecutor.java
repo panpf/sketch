@@ -11,6 +11,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
+import me.xiaopan.android.imageloader.task.drawable.DrawableBitmapLoadTask;
 import me.xiaopan.android.imageloader.task.http.HttpBitmapLoadTask;
 import android.util.Log;
 
@@ -44,7 +45,7 @@ public class BaseTaskExecutor implements TaskExecutor {
 		taskDistributor.execute(new Runnable() {
 			@Override
 			public void run() {
-				if(bitmapLoadTask instanceof HttpBitmapLoadTask && ((HttpBitmapLoadTask) bitmapLoadTask).isFromNetworkLoad()){
+				if(bitmapLoadTask instanceof DrawableBitmapLoadTask || (bitmapLoadTask instanceof HttpBitmapLoadTask && ((HttpBitmapLoadTask) bitmapLoadTask).isFromNetworkLoad())){
 					if(configuration.isDebugMode()){
 						Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("放到网络线程池中加载").append("；").append(bitmapLoadTask.getRequest().getName()).toString());
 					}

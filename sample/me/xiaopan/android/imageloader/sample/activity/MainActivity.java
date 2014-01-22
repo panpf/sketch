@@ -21,7 +21,7 @@ import me.xiaopan.android.imageloader.sample.adapter.StringAdapter;
 import me.xiaopan.android.imageloader.sample.fragment.GalleryFragment;
 import me.xiaopan.android.imageloader.sample.fragment.GridFragment;
 import me.xiaopan.android.imageloader.sample.fragment.ListFragment;
-import me.xiaopan.android.imageloader.sample.fragment.PagerFragment;
+import me.xiaopan.android.imageloader.sample.fragment.ViewPagerFragment;
 import me.xiaopan.android.imageloader.sample.fragment.SimpleImageFragment;
 import android.annotation.TargetApi;
 import android.content.Intent;
@@ -115,6 +115,7 @@ public class MainActivity extends FragmentActivity {
 						break;
 					case 4 : 
 						uriType = UriType.DRAWABLE; 
+						update(true);
 						break;
 				}
 				drawerLayout.closeDrawers();
@@ -128,7 +129,7 @@ public class MainActivity extends FragmentActivity {
 			assetUris[w] = "assets://image_assets_test_"+(w+1)+".jpg";
 		}
 		
-		drawableUris = new String[41];
+		drawableUris = new String[6];
 		for(int w = 0; w < drawableUris.length; w++){
 			try {
 				drawableUris[w] = "drawable://"+R.drawable.class.getField("image_drawable_test_"+(w+1)).getInt(null);
@@ -156,7 +157,7 @@ public class MainActivity extends FragmentActivity {
 			case FILE : uris = fileUris; uriName = "File"; break;
 			case CONTENT : uris = contentUris; uriName = "Content"; break;
 			case ASSETS : uris = assetUris; uriName = "Assets"; break;
-//			case DRAWABLE : uris = drawableUris; uriName = "Drawable"; break;
+			case DRAWABLE : uris = drawableUris; uriName = "Drawable"; break;
 			default : break;
 		}
 		
@@ -167,7 +168,7 @@ public class MainActivity extends FragmentActivity {
 				case GRID_VIEW : fragment = new GridFragment(); viewName = "GridView"; break;
 				case LIST_VIEW : fragment = new ListFragment(); viewName = "ListView"; break;
 				case GALLERY : fragment = new GalleryFragment(); viewName = "Gallery"; break;
-				case VIEW_PAGER :  fragment = new PagerFragment(); viewName = "ViewPager"; break;
+				case VIEW_PAGER :  fragment = new ViewPagerFragment(); viewName = "ViewPager"; break;
 			}
 			if(fragment != null){
 				String subTitle = viewName + " " + uriName;
