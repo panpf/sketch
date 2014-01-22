@@ -145,7 +145,7 @@ public class Options{
 	 * @param resId
 	 */
 	public Options setEmptyDrawable(int resId) {
-		return setEmptyDrawable(new BitmapDrawable(context.getResources(), BitmapFactory.decodeResource(context.getResources(), resId)));
+		return setEmptyDrawable(new BitmapDrawable(context.getResources(), Utils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), resId))));
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class Options{
 	 * @param resId
 	 */
 	public Options setLoadingDrawable(int resId) {
-		return setLoadingDrawable(new BitmapDrawable(context.getResources(), BitmapFactory.decodeResource(context.getResources(), resId)));
+		return setLoadingDrawable(new BitmapDrawable(context.getResources(), Utils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), resId))));
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class Options{
 	 * @param resId
 	 */
 	public Options setFailureDrawable(int resId) {
-		return setFailureDrawable(new BitmapDrawable(context.getResources(), BitmapFactory.decodeResource(context.getResources(), resId)));
+		return setFailureDrawable(new BitmapDrawable(context.getResources(), Utils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), resId))));
 	}
 	
 	/**

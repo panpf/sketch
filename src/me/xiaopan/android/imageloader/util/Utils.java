@@ -276,6 +276,9 @@ public class Utils {
     public static Bitmap bitmapCopy(Bitmap bitmap){
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		bitmap.compress(CompressFormat.PNG, 0, os);
-		return BitmapFactory.decodeStream(new ByteArrayInputStream(os.toByteArray()));
+		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(os.toByteArray());
+		Bitmap newBitmap = BitmapFactory.decodeStream(byteArrayInputStream);
+		IOUtils.close(byteArrayInputStream);
+		return newBitmap;
     }
 }
