@@ -61,9 +61,9 @@ public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
 					
 					//创建BitmapDrawable
 					if (ImageLoaderUtils.hasHoneycomb()) {
-						bitmapDrawable = new BitmapDrawable(configuration.getResources(), bitmap);
+						bitmapDrawable = new BitmapDrawable(configuration.getContext().getResources(), bitmap);
 					} else {
-						bitmapDrawable = new RecyclingBitmapDrawable(configuration.getResources(), bitmap);
+						bitmapDrawable = new RecyclingBitmapDrawable(configuration.getContext().getResources(), bitmap);
 					}
 					
 					//放入内存缓存中

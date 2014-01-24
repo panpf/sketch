@@ -29,7 +29,6 @@ import me.xiaopan.android.imageloader.execute.BaseTaskExecutor;
 import me.xiaopan.android.imageloader.execute.TaskExecutor;
 import me.xiaopan.android.imageloader.task.Options;
 import android.content.Context;
-import android.content.res.Resources;
 import android.os.Handler;
 import android.os.Looper;
 
@@ -41,7 +40,6 @@ public class Configuration {
 	private String logTag;	//LogTag
 	private Context context;	//上下文
 	private Handler handler;	//消息处理器
-	private Resources resources;	//资源
 	private TaskExecutor taskExecutor;	//任务执行器
 	private BitmapCacher bitmapCacher;	//位图缓存器
 	private BitmapDecoder bitmapDecoder;	//位图解码器
@@ -56,7 +54,6 @@ public class Configuration {
 		this.logTag = ImageLoader.class.getSimpleName();
 		this.context = context;
 		this.handler = new Handler();
-		this.resources = context.getResources();
 		this.optionsMap = new HashMap<Object, Options>();
 	}
 	
@@ -68,14 +65,6 @@ public class Configuration {
 		return context;
 	}
 	
-	/**
-	 * 获取资源
-	 * @return
-	 */
-	public Resources getResources() {
-		return resources;
-	}
-
 	/**
 	 * 获取任务执行器
 	 * @return

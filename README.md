@@ -2,56 +2,42 @@
 
 Android-ImageLoader是用在Android上的一个图片加载类库，主要用于从本地或网络加载图片并显示在ImageView上。
 
-![sample](https://github.com/xiaopansky/Android-ImageLoader/raw/master/docs/sample.gif)
-
 ##Features
 
->* 异步加载。采用线程池（默认容量是20）来处理每一个请求，当线程池负荷已满的时候，新的加载请求会被放到一个有界等待队列（默认容量是10）中，这样就可以保证最新的请求会被及时的处理。
+>* 异步加载。采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
 
->* 支持缓存。支持在本地或内存中（默认采用lru算法来缓存Bitmap，且最大容量为可用内存的八分之一）缓存图片数据，并且可定义缓存有效期。
+>* 支持缓存。支持在本地或内存中缓存图片，内存缓存采用Android扩展包中的LruCache来缓存，且最大容量为可用内存的八分之一，本地缓存可定义有效期，和最大容量（超过最大容量时或当前存储不够用时会自动根据活跃度清除不活跃的本地缓存文件）。
 
->* 强大的自定义功能。通过Options类你可以自定义每一个请求的动画、默认图片、加载失败图片、图片加载处理器、超时重试次数、缓存目录等功能。
+>* 强大的自定义功能。通过Configuration类你可以自定义缓存器、解码器以及下载器；通过Options类你可以自定义缓存策略、Bitmap处理器、Bitmap显示器、以及不同状态时的图片。
 
 >* 支持ViewHolder。即使你在ListView中使用了ViewHolder也依然可以使用ImageLoader来加载图片，并且图片显示绝对不会混乱。
 
->* 重复下载过滤。如果两个请求的图片地址一样的话，是第二个是不会重复下载的，当第一个下载下载完成的时候会先后显示在两个请求上指定的ImageView上。
+>* 重复下载过滤。如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
 
 
 ##Usage
 
-###在Application中初始化ImagLoader
-
+###1.初始化ImageLoader
+你需要在使用之前调用
 ```java
-public class MyApplication extends Application {
-
-	@Override
-	public void onCreate() {
-		super.onCreate();
-		//初始化默认的Options，当调用ImageLoader.getInstance().load()方法却没有指定Options的时候会默认使用此Options
-		Options defaultOptions = ImageLoader.getInstance().getConfiguration().getDefaultOptions();
-		defaultOptions.setLoadingImageResource(R.drawable.image_loading);	//设置加载中显示的图片
-		defaultOptions.setLoadFailureImageResource(R.drawable.image_load_failure); 	//设置加载失败时显示的图片
-		defaultOptions.setShowAnimationListener(new AlphaScaleShowAnimationListener());
-		
-		ImageLoader.getInstance().setDebugMode(true);
-	}
-}
+ImageLoader.getInstance().init(getBaseContext());
 ```
+来初始化ImageLoader，推荐在Application中初始化。
 
-###在代码中使用
-
+###2.显示图片
+你可以在任何地方调用以下代码来显示图片
 ```java
-ImageLoader.getInstance().load(imageUrls[position], viewHolder.image);
+ImageLoader.getInstance().display(imageUri, imageView);
 ```
-
-###注意事项
-
-1. 在使用ImageLoader之前你最好在Application中设置一下默认Options的加载中图片和加载失败图片
-
-2. ImageLoader提供了一个单例，所以没有特殊需求的话，你只须通过ImageLoader.getInstance()方法获取其实例即可。
+不管你是在Adapter的getView()中调用还是在Activity的onCrate()中调用都不会显示混乱。
 
 ##Downloads
 **[android-image-loader-2.1.1.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.1.1.jar)**
+
+**[android-image-loader-2.1.1-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.1.1-with-src.jar)**
+
+##Extend
+
 
 ##License
 ```java
