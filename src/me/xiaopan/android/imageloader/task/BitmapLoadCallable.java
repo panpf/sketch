@@ -21,8 +21,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
-import me.xiaopan.android.imageloader.util.Utils;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
@@ -60,7 +60,7 @@ public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
 					}
 					
 					//创建BitmapDrawable
-					if (Utils.hasHoneycomb()) {
+					if (ImageLoaderUtils.hasHoneycomb()) {
 						bitmapDrawable = new BitmapDrawable(configuration.getResources(), bitmap);
 					} else {
 						bitmapDrawable = new RecyclingBitmapDrawable(configuration.getResources(), bitmap);

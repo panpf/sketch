@@ -29,10 +29,10 @@ import me.xiaopan.android.imageloader.task.content.ContentBitmapLoadTask;
 import me.xiaopan.android.imageloader.task.drawable.DrawableBitmapLoadTask;
 import me.xiaopan.android.imageloader.task.file.FileBitmapLoadTask;
 import me.xiaopan.android.imageloader.task.http.HttpBitmapLoadTask;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import me.xiaopan.android.imageloader.util.ImageSizeUtils;
 import me.xiaopan.android.imageloader.util.Scheme;
-import me.xiaopan.android.imageloader.util.Utils;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
@@ -101,7 +101,7 @@ public class ImageLoader{
 			imageLoadListener.onStarted(imageUri, imageView);
 		}
 		
-		if(Utils.isEmpty(imageUri)){
+		if(ImageLoaderUtils.isEmpty(imageUri)){
 			imageView.setImageDrawable(options.getEmptyDrawable());
 			if(getConfiguration().isDebugMode()){
 				Log.e(getConfiguration().getLogTag(), new StringBuffer(LOG_NAME).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
@@ -127,7 +127,7 @@ public class ImageLoader{
 		//计算目标尺寸并创建请求
 		ImageViewAware imageViewAware = new ImageViewAware(imageView);
 		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageViewAware, options.getImageMaxSize());
-		String requestId = Utils.createId(Utils.encodeUrl(imageUri), targetSize, options.getBitmapProcessor());
+		String requestId = ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(imageUri), targetSize, options.getBitmapProcessor());
 		String requestName = imageUri;
 		
 		Request request = new Request.Builder()

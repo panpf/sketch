@@ -26,7 +26,7 @@ import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.download.ImageDownloader.DownloadListener;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
 import me.xiaopan.android.imageloader.task.Request;
-import me.xiaopan.android.imageloader.util.Utils;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 
 public class HttpBitmapLoadCallable extends BitmapLoadCallable {
 	private File cacheFile = null;
@@ -40,7 +40,7 @@ public class HttpBitmapLoadCallable extends BitmapLoadCallable {
 	public InputStreamCreator getInputStreamCreator() {
 		if(inputStreamCreator == null){
 			if(request.getOptions().isEnableDiskCache()){
-				cacheFile = configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), Utils.encodeUrl(request.getImageUri()));
+				cacheFile = configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(request.getImageUri()));
 				if(HttpBitmapLoadTask.isAvailableOfFile(cacheFile, request.getOptions().getDiskCachePeriodOfValidity(), configuration, request.getName())){
 					inputStreamCreator = new FileInputStreamCreator(cacheFile);
 				}else{

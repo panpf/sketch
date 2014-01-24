@@ -24,7 +24,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import me.xiaopan.android.imageloader.util.IOUtils;
-import me.xiaopan.android.imageloader.util.Utils;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -66,7 +66,7 @@ public abstract class BitmapDiskCacher implements BitmapCacher {
 		if(diskCacheDirectory != null){
 			return new File(diskCacheDirectory, fileName);
 		}else{
-			return new File(Utils.getDynamicCacheDir(context).getPath() + File.separator + DEFAULT_DIRECTORY_NAME + File.separator + fileName);
+			return new File(ImageLoaderUtils.getDynamicCacheDir(context).getPath() + File.separator + DEFAULT_DIRECTORY_NAME + File.separator + fileName);
 		}
 	}
 	

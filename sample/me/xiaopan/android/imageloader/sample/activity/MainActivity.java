@@ -182,8 +182,9 @@ public class MainActivity extends FragmentActivity {
 				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, uris);
 				fragment.setArguments(bundle);
 				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-				fragmentTransaction.setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out).addToBackStack(subTitle);
+				fragmentTransaction.setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out);
 				if(add){
+					fragmentTransaction.addToBackStack(subTitle);
 					fragmentTransaction.add(R.id.fragment_main, fragment);
 				}else{
 					fragmentTransaction.replace(R.id.fragment_main, fragment);

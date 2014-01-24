@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.Request;
 import me.xiaopan.android.imageloader.util.IOUtils;
-import me.xiaopan.android.imageloader.util.Utils;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -62,9 +62,9 @@ public class LockImageDownloader implements ImageDownloader {
 	public LockImageDownloader(){
 		this.urlLocks = new WeakHashMap<String, ReentrantLock>();
 		BasicHttpParams httpParams = new BasicHttpParams();
-		Utils.setConnectionTimeout(httpParams, 10000);
-		Utils.setMaxConnections(httpParams, 100);
-		Utils.setSocketBufferSize(httpParams, 8192);
+		ImageLoaderUtils.setConnectionTimeout(httpParams, 10000);
+		ImageLoaderUtils.setMaxConnections(httpParams, 100);
+		ImageLoaderUtils.setSocketBufferSize(httpParams, 8192);
         HttpConnectionParams.setTcpNoDelay(httpParams, true);
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
 		SchemeRegistry schemeRegistry = new SchemeRegistry();

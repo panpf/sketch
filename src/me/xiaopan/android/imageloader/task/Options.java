@@ -19,8 +19,8 @@ package me.xiaopan.android.imageloader.task;
 import me.xiaopan.android.imageloader.display.BitmapDisplayer;
 import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
 import me.xiaopan.android.imageloader.process.BitmapProcessor;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
-import me.xiaopan.android.imageloader.util.Utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -145,7 +145,7 @@ public class Options{
 	 * @param resId
 	 */
 	public Options setEmptyDrawable(int resId) {
-		return setEmptyDrawable(new BitmapDrawable(context.getResources(), Utils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), resId))));
+		return setEmptyDrawable(new BitmapDrawable(context.getResources(), ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), resId))));
 	}
 
 	/**
@@ -173,7 +173,7 @@ public class Options{
 	 * @param resId
 	 */
 	public Options setLoadingDrawable(int resId) {
-		return setLoadingDrawable(new BitmapDrawable(context.getResources(), Utils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), resId))));
+		return setLoadingDrawable(new BitmapDrawable(context.getResources(), ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), resId))));
 	}
 
 	/**
@@ -201,7 +201,7 @@ public class Options{
 	 * @param resId
 	 */
 	public Options setFailureDrawable(int resId) {
-		return setFailureDrawable(new BitmapDrawable(context.getResources(), Utils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), resId))));
+		return setFailureDrawable(new BitmapDrawable(context.getResources(), ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), resId))));
 	}
 	
 	/**
@@ -270,9 +270,9 @@ public class Options{
 		.setEnableDiskCache(enableDiskCache)
 		.setBitmapProcessor(bitmapProcessor != null?bitmapProcessor.copy():null)
 		.setBitmapDisplayer(bitmapDisplayer != null?bitmapDisplayer.copy():null)
-		.setEmptyDrawable(emptyDrawable != null?new BitmapDrawable(context.getResources(), Utils.bitmapCopy(emptyDrawable.getBitmap())):null)
-		.setFailureDrawable(failureDrawable != null?new BitmapDrawable(context.getResources(), Utils.bitmapCopy(failureDrawable.getBitmap())):null)
-		.setLoadingDrawable(loadingDrawable != null?new BitmapDrawable(context.getResources(), Utils.bitmapCopy(loadingDrawable.getBitmap())):null)
+		.setEmptyDrawable(emptyDrawable != null?new BitmapDrawable(context.getResources(), ImageLoaderUtils.bitmapCopy(emptyDrawable.getBitmap())):null)
+		.setFailureDrawable(failureDrawable != null?new BitmapDrawable(context.getResources(), ImageLoaderUtils.bitmapCopy(failureDrawable.getBitmap())):null)
+		.setLoadingDrawable(loadingDrawable != null?new BitmapDrawable(context.getResources(), ImageLoaderUtils.bitmapCopy(loadingDrawable.getBitmap())):null)
 		.setImageMaxSize(imageMaxSize != null?imageMaxSize.copy():null);
 	}
 	

@@ -24,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
 import me.xiaopan.android.imageloader.task.Request;
-import me.xiaopan.android.imageloader.util.Utils;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.util.Log;
 
 public class HttpBitmapLoadTask extends  BitmapLoadTask {
@@ -42,7 +42,7 @@ public class HttpBitmapLoadTask extends  BitmapLoadTask {
 	}
 
 	public File getCacheFile() {
-		return request.getOptions().isEnableDiskCache()?configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), Utils.encodeUrl(request.getImageUri())):null;
+		return request.getOptions().isEnableDiskCache()?configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(request.getImageUri())):null;
 	}
 	
 	/**

@@ -6,8 +6,8 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
-import me.xiaopan.android.imageloader.util.Utils;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -21,7 +21,7 @@ public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
 	
 	public BitmapLruCache(int maxSize) {
 		super(maxSize);
-		if (Utils.hasHoneycomb()) {
+		if (ImageLoaderUtils.hasHoneycomb()) {
 		    mReusableBitmaps = Collections.synchronizedSet(new HashSet<SoftReference<Bitmap>>());
 		}
 	}
@@ -36,7 +36,7 @@ public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
 	protected void entryRemoved(boolean evicted, String key, BitmapDrawable oldValue, BitmapDrawable newValue) {
 		if(RecyclingBitmapDrawable.class.isInstance(oldValue)){
 			((RecyclingBitmapDrawable) oldValue).setIsCached(false);
-		}else if(Utils.hasHoneycomb()){
+		}else if(ImageLoaderUtils.hasHoneycomb()){
 			mReusableBitmaps.add(new SoftReference<Bitmap>(oldValue.getBitmap()));
 		}
 	}
@@ -90,7 +90,7 @@ public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
     @TargetApi(12)
     public static int getBitmapSize(BitmapDrawable value) {
         Bitmap bitmap = value.getBitmap();
-        if (Utils.hasHoneycombMR1()) {
+        if (ImageLoaderUtils.hasHoneycombMR1()) {
             return bitmap.getByteCount();
         }else{
         	return bitmap.getRowBytes() * bitmap.getHeight();

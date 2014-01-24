@@ -16,8 +16,6 @@
 
 package me.xiaopan.android.imageloader.util;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -33,15 +31,13 @@ import org.apache.http.params.HttpParams;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
-import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Build;
 import android.os.Environment;
 import android.view.Display;
 import android.view.WindowManager;
 
-public class Utils {
+public class ImageLoaderUtils {
 	
 	/**
 	 * 设置连接超时
@@ -274,11 +270,6 @@ public class Utils {
     }
     
     public static Bitmap bitmapCopy(Bitmap bitmap){
-		ByteArrayOutputStream os = new ByteArrayOutputStream();
-		bitmap.compress(CompressFormat.PNG, 0, os);
-		ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(os.toByteArray());
-		Bitmap newBitmap = BitmapFactory.decodeStream(byteArrayInputStream);
-		IOUtils.close(byteArrayInputStream);
-		return newBitmap;
+		return bitmap.copy(bitmap.getConfig(), true);
     }
 }
