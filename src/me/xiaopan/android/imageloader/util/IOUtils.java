@@ -61,12 +61,15 @@ public final class IOUtils {
 	 * @return 删除是否成功
 	 */
 	public static void delete(File file){
-		if(file != null){
+		if(file != null && file.exists()){
 			if(file.isFile()){
 				file.delete();
 			}else{
-				for(File tempFile : file.listFiles()){
-					delete(tempFile);
+				File[] files = file.listFiles();
+				if(files != null){
+					for(File tempFile : files){
+						delete(tempFile);
+					}
 				}
 				file.delete();
 			}
