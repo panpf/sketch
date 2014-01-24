@@ -40,6 +40,15 @@ ImageLoader.getInstance().display(imageUri, imageView);
 **[android-image-loader-2.1.1-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.1.1-with-src.jar)**
 
 ##Extend
+>* 使用Options
+>* 自定义任务执行器（TaskExecutor）
+>* 自定义图片缓存器（BitmapCacher）
+>* 自定义图片解码器（BitmapDecoder）
+>* 自定义图片下载器（ImageDownloader）
+>* 自定义图片处理器（BitmapProcessor）
+>* 自定义图片显示器（BitmapDisplayer）
+
+具体使用方式可以查看源码中的示例程序
 
 
 ##License
