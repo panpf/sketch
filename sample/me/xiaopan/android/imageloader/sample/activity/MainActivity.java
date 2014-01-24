@@ -174,9 +174,9 @@ public class MainActivity extends FragmentActivity {
 			if(fragment != null){
 				String subTitle = viewName + " " + uriName;
 				if(Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB){
-					getActionBar().setSubtitle(subTitle);
+//					getActionBar().setSubtitle(subTitle);
 				}else{
-					setTitle(subTitle);
+//					setTitle(subTitle);
 				}
 				Bundle bundle = new Bundle();
 				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, uris);
