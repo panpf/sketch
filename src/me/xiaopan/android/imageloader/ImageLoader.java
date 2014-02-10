@@ -51,10 +51,9 @@ public class ImageLoader{
 	 * @param context
 	 */
 	public void init(Context context){
-		if(configuration != null){
-			throw new IllegalStateException("Have been initialized");
+		if(configuration == null){
+			configuration = new Configuration(context);
 		}
-		configuration = new Configuration(context);
 	}
 	
 	/**

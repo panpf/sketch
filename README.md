@@ -35,9 +35,9 @@ ImageLoader.getInstance().display(imageUri, imageView);
 不管你是在Adapter的getView()中调用还是在Activity的onCrate()中调用都不会显示混乱。
 
 ##Downloads
-**[android-image-loader-2.1.1.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.1.1.jar)**
+**[android-image-loader-2.1.2.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.1.2.jar)**
 
-**[android-image-loader-2.1.1-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.1.1-with-src.jar)**
+**[android-image-loader-2.1.2-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.1.2-with-src.jar)**
 
 ##Extend
 >* 使用Options
