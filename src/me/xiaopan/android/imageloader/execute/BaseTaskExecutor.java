@@ -62,7 +62,6 @@ public class BaseTaskExecutor implements TaskExecutor {
 
 	@Override
 	public ReentrantLock getLockByRequestId(String requestId) {
-		Log.d("", "URI锁ID="+requestId);
 		ReentrantLock lock = uriLocks.get(requestId);
 		if (lock == null) {
 			lock = new ReentrantLock();
