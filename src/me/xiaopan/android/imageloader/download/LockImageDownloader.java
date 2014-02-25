@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.Request;
-import me.xiaopan.android.imageloader.util.IOUtils;
+import me.xiaopan.android.imageloader.util.LoadIOUtils;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 
 import org.apache.http.Header;
@@ -171,8 +171,8 @@ public class LockImageDownloader implements ImageDownloader {
 			} catch (Throwable e2) {
 				e2.printStackTrace();
 				if(httpGet != null) httpGet.abort();
-				IOUtils.close(bufferedfInputStream);
-				IOUtils.close(bufferedOutputStream);
+				LoadIOUtils.close(bufferedfInputStream);
+				LoadIOUtils.close(bufferedOutputStream);
 				if(createNewFile && cacheFile != null && cacheFile.exists()) cacheFile.delete();	//如果创建了新文件就删除
 				if(parentDir != null && parentDir.exists()) parentDir.delete();	//如果创建了新目录就删除
 				running = ((e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException) && request.getOptions().getMaxRetryCount() > 0)?numberOfLoaded < request.getOptions().getMaxRetryCount():false;	//如果尚未达到最大重试次数，那么就再尝试一次

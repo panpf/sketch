@@ -18,6 +18,7 @@ package me.xiaopan.android.imageloader.sample.adapter;
 
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.sample.OptionsType;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Point;
@@ -88,7 +89,7 @@ public class GridImageAdapter extends BaseAdapter {
 		}
 		
 		Log.w("ImageAdapter", "ImageAdapter：Uri="+imageUris[position]+"; ImageViewCode="+viewHolder.hashCode());
-		ImageLoader.getInstance(context).display(imageUris[position], viewHolder.image);
+		ImageLoader.getInstance(context).display(imageUris[position], viewHolder.image, OptionsType.DEFAULT);
 		return convertView;
 	}
 	

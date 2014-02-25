@@ -47,7 +47,11 @@ public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
 			bitmapDrawable = configuration.getBitmapCacher().get(request.getId());	//先尝试从缓存中去取对应的位图
 			if(bitmapDrawable == null){
 				//解码
-				Bitmap bitmap = configuration.getBitmapDecoder().decode(getInputStreamCreator(), request.getTargetSize(), configuration, request.getName());
+				InputStreamCreator inputStreamCreator = getInputStreamCreator();
+				Bitmap bitmap = null;
+				if(inputStreamCreator != null){
+					bitmap = configuration.getBitmapDecoder().decode(inputStreamCreator, request.getTargetSize(), configuration, request.getName());
+				}
 				if(bitmap != null && !bitmap.isRecycled()){
 					//处理位图
 					if(request.getOptions().getBitmapProcessor() != null){

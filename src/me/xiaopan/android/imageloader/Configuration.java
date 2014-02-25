@@ -86,28 +86,6 @@ public class Configuration {
 	}
 
 	/**
-	 * 获取默认的加载选项
-	 * @return
-	 */
-	public Options getDefaultOptions() {
-		Options defaultOptions = getOptions(OptionsDefault.DEFAULT);
-		if(defaultOptions == null){
-			defaultOptions = new Options(context);
-			setDefaultOptions(defaultOptions);
-		}
-		return defaultOptions;
-	}
-	
-	/**
-	 * 设置默认的加载选项
-	 * @param defaultOptions
-	 */
-	public Configuration setDefaultOptions(Options defaultOptions) {
-		putOptions(OptionsDefault.DEFAULT, defaultOptions);
-		return this;
-	}
-	
-	/**
 	 * 获取位图缓存器
 	 * @return
 	 */
@@ -226,9 +204,5 @@ public class Configuration {
 	public Configuration setImageDownloader(ImageDownloader imageDownloader) {
 		this.imageDownloader = imageDownloader;
 		return this;
-	}
-
-	private enum OptionsDefault{
-		DEFAULT;
 	}
 }

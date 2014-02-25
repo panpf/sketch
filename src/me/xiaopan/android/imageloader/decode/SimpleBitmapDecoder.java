@@ -19,7 +19,7 @@ package me.xiaopan.android.imageloader.decode;
 import java.io.InputStream;
 
 import me.xiaopan.android.imageloader.Configuration;
-import me.xiaopan.android.imageloader.util.IOUtils;
+import me.xiaopan.android.imageloader.util.LoadIOUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
@@ -45,7 +45,7 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 		if(inputStream != null){
 			options.inJustDecodeBounds = true;
 			BitmapFactory.decodeStream(inputStream, null, options);
-			IOUtils.close(inputStream);
+			LoadIOUtils.close(inputStream);
 			
 			inputStream = onNewBitmapInputStreamListener.onCreateInputStream();
 			if(inputStream != null){
@@ -57,7 +57,7 @@ public class SimpleBitmapDecoder implements BitmapDecoder{
 //			        addInBitmapOptions(options, configuration);
 //			    }
 				bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-				IOUtils.close(inputStream);
+				LoadIOUtils.close(inputStream);
 			}
 		}
 		

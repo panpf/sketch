@@ -31,34 +31,27 @@ public class MyApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		
+		long time = System.currentTimeMillis();
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().setDebugMode(true);
 		
-		Options defaultOptions = ImageLoader.getInstance(getBaseContext()).getConfiguration().getDefaultOptions()
-			.setLoadingDrawable(R.drawable.image_loading)
-			.setFailureDrawable(R.drawable.image_load_failure)
+		Options defaultOptions = new Options(getBaseContext())
+			.setLoadingDrawableResId(R.drawable.image_loading)
+			.setFailureDrawableResId(R.drawable.image_load_failure)
 			.setBitmapProcessor(new ReflectionBitmapProcessor());
+		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.DEFAULT, defaultOptions);
 
-		Options viewPagerOptions = defaultOptions.copy()
-			.setLoadingDrawable(null)
-			.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
-		
-		Options listOptions = defaultOptions.copy()
-			.setBitmapProcessor(new CircleBitmapProcessor())
-			.processDrawables();
-
-		Options galleryOptions = defaultOptions.copy()
-			.setBitmapProcessor(new RoundedCornerBitmapProcessor())
-			.processDrawables();
-		
-		Options simpleOptions = defaultOptions.copy()
-			.setEnableMenoryCache(false)
-			.setBitmapProcessor(null);
-		
-		defaultOptions.processDrawables();
-		
+		Options viewPagerOptions = defaultOptions.copy().setLoadingDrawableResId(-1).setBitmapDisplayer(new ZoomOutBitmapDisplayer());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.VIEW_PAGER, viewPagerOptions);
+		
+		Options listOptions = defaultOptions.copy().setBitmapProcessor(new CircleBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.LIST_VIEW, listOptions);
+
+		Options galleryOptions = defaultOptions.copy().setBitmapProcessor(new RoundedCornerBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.GALLERY, galleryOptions);
+		
+		Options simpleOptions = defaultOptions.copy().setEnableMenoryCache(false).setBitmapProcessor(null);
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.SIMPLE, simpleOptions);
+		
+		System.out.println("初始化耗时："+(System.currentTimeMillis()-time)+"毫秒");
 	}
 }

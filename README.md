@@ -17,30 +17,31 @@ Android-ImageLoader是用在Android上的一个图片加载类库，主要用于
 
 >* 重复下载过滤。如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
 
-
 ##Usage
 
-###1.初始化ImageLoader
-你需要在使用之前调用
+###1.定义加载选项
 ```java
-ImageLoader.getInstance().init(getBaseContext());
+Options defaultOptions = new Options(getBaseContext())
+	.setLoadingDrawableResId(R.drawable.image_loading)
+	.setFailureDrawableResId(R.drawable.image_load_failure)
+	.setBitmapProcessor(new ReflectionBitmapProcessor());
 ```
-来初始化ImageLoader，推荐在Application中初始化。
 
 ###2.显示图片
 你可以在任何地方调用以下代码来显示图片
 ```java
-ImageLoader.getInstance().display(imageUri, imageView);
+ImageLoader.getInstance(getContext()).display(imageUri, imageView, defaultOptions);
 ```
 不管你是在Adapter的getView()中调用还是在Activity的onCrate()中调用都不会显示混乱。
 
 ##Downloads
-**[android-image-loader-2.1.2.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.1.2.jar)**
+**[android-image-loader-2.2.0.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.2.0.jar)**
 
-**[android-image-loader-2.1.2-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.1.2-with-src.jar)**
+**[android-image-loader-2.2.0-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.2.0-with-src.jar)**
 
 ##Extend
 >* 使用Options
+>* 利用Configuration().putOptions()来管理多个Options
 >* 自定义任务执行器（TaskExecutor）
 >* 自定义图片缓存器（BitmapCacher）
 >* 自定义图片解码器（BitmapDecoder）
@@ -49,7 +50,6 @@ ImageLoader.getInstance().display(imageUri, imageView);
 >* 自定义图片显示器（BitmapDisplayer）
 
 具体使用方式可以查看源码中的示例程序
-
 
 ##License
 ```java

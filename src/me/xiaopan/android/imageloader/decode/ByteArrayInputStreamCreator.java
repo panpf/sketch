@@ -20,7 +20,7 @@ import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import me.xiaopan.android.imageloader.util.IOUtils;
+import me.xiaopan.android.imageloader.util.LoadIOUtils;
 
 public class ByteArrayInputStreamCreator implements InputStreamCreator {
 	private byte[] data;
@@ -31,6 +31,6 @@ public class ByteArrayInputStreamCreator implements InputStreamCreator {
 
 	@Override
 	public InputStream onCreateInputStream() {
-		return new BufferedInputStream(new ByteArrayInputStream(data), IOUtils.BUFFER_SIZE);
+		return new BufferedInputStream(new ByteArrayInputStream(data), LoadIOUtils.BUFFER_SIZE);
 	}
 }

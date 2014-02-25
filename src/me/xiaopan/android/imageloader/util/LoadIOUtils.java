@@ -26,11 +26,11 @@ import java.io.OutputStream;
  * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
  * @since 1.0.0
  */
-public final class IOUtils {
+public final class LoadIOUtils {
 
 	public static final int BUFFER_SIZE = 8 * 1024; // 8 KB 
 
-	private IOUtils() {
+	private LoadIOUtils() {
 	}
 
 	/**
