@@ -62,7 +62,7 @@ public class GalleryImageAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
-		ImageLoader.getInstance().display(imageUrls[position], viewHolder.image, OptionsType.GALLERY);
+		ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, OptionsType.GALLERY);
 		return convertView;
 	}
 	

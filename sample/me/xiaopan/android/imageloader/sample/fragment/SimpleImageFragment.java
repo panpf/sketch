@@ -26,7 +26,7 @@ public class SimpleImageFragment extends Fragment {
 		if(uri != null){
 			View rootView = inflater.inflate(R.layout.fragment_simple_image, null);
 			final ProgressBar progressBar1 = (ProgressBar) rootView.findViewById(R.id.progress_simpleImage_1);
-			ImageLoader.getInstance().display(uri, (ImageView) rootView.findViewById(R.id.image_simpleImage_1), OptionsType.SIMPLE, new ImageLoadListener() {
+			ImageLoader.getInstance(getActivity()).display(uri, (ImageView) rootView.findViewById(R.id.image_simpleImage_1), OptionsType.SIMPLE, new ImageLoadListener() {
 				@Override
 				public void onStarted(String imageUri, ImageView imageView) {
 					progressBar1.setVisibility(View.VISIBLE);
@@ -48,7 +48,7 @@ public class SimpleImageFragment extends Fragment {
 			});
 			
 			final ProgressBar progressBar2 = (ProgressBar) rootView.findViewById(R.id.progress_simpleImage_2);
-			ImageLoader.getInstance().display(uri, (ImageView) rootView.findViewById(R.id.image_simpleImage_2), OptionsType.SIMPLE, new ImageLoadListener() {
+			ImageLoader.getInstance(getActivity()).display(uri, (ImageView) rootView.findViewById(R.id.image_simpleImage_2), OptionsType.SIMPLE, new ImageLoadListener() {
 				@Override
 				public void onStarted(String imageUri, ImageView imageView) {
 					progressBar2.setVisibility(View.VISIBLE);

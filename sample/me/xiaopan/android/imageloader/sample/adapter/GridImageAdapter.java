@@ -88,7 +88,7 @@ public class GridImageAdapter extends BaseAdapter {
 		}
 		
 		Log.w("ImageAdapter", "ImageAdapter：Uri="+imageUris[position]+"; ImageViewCode="+viewHolder.hashCode());
-		ImageLoader.getInstance().display(imageUris[position], viewHolder.image);
+		ImageLoader.getInstance(context).display(imageUris[position], viewHolder.image);
 		return convertView;
 	}
 	

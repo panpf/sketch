@@ -31,10 +31,9 @@ public class MyApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 		
-		ImageLoader.getInstance().init(getBaseContext());
-		ImageLoader.getInstance().getConfiguration().setDebugMode(true);
+		ImageLoader.getInstance(getBaseContext()).getConfiguration().setDebugMode(true);
 		
-		Options defaultOptions = ImageLoader.getInstance().getConfiguration().getDefaultOptions()
+		Options defaultOptions = ImageLoader.getInstance(getBaseContext()).getConfiguration().getDefaultOptions()
 			.setLoadingDrawable(R.drawable.image_loading)
 			.setFailureDrawable(R.drawable.image_load_failure)
 			.setBitmapProcessor(new ReflectionBitmapProcessor());
@@ -57,9 +56,9 @@ public class MyApplication extends Application {
 		
 		defaultOptions.processDrawables();
 		
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.VIEW_PAGER, viewPagerOptions);
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.LIST_VIEW, listOptions);
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.GALLERY, galleryOptions);
-		ImageLoader.getInstance().getConfiguration().putOptions(OptionsType.SIMPLE, simpleOptions);
+		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.VIEW_PAGER, viewPagerOptions);
+		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.LIST_VIEW, listOptions);
+		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.GALLERY, galleryOptions);
+		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.SIMPLE, simpleOptions);
 	}
 }

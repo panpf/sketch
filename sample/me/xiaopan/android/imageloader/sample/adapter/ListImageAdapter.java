@@ -62,7 +62,7 @@ public class ListImageAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
-		ImageLoader.getInstance().display(imageUrls[position], viewHolder.image, OptionsType.LIST_VIEW);
+		ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, OptionsType.LIST_VIEW);
 		return convertView;
 	}
 	

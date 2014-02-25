@@ -43,32 +43,24 @@ import android.widget.ImageView;
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
  */
 public class ImageLoader{
+	private static ImageLoader instance; 
 	private static final String LOG_NAME= ImageLoader.class.getSimpleName();
 	private Configuration configuration;	//配置
 	
-	/**
-	 * 初始化
-	 * @param context
-	 */
-	public void init(Context context){
-		if(configuration == null){
-			configuration = new Configuration(context);
-		}
-	}
-	
-	/**
-	 * 实例持有器
-	 */
-	private static final class ImageLoaderInstanceHolder{
-		private static ImageLoader instance = new ImageLoader();
+	public ImageLoader(Context context){
+		configuration = new Configuration(context);
 	}
 	
 	/**
 	 * 获取图片加载器的实例
+	 * @param context
 	 * @return 图片加载器的实例
 	 */
-	public static ImageLoader getInstance(){
-		return ImageLoaderInstanceHolder.instance;
+	public static ImageLoader getInstance(Context context){
+		if(instance == null){
+			instance = new ImageLoader(context);
+		}
+		return instance;
 	}
 	
 	/**
@@ -86,14 +78,14 @@ public class ImageLoader{
 	 */
 	public final void display(String imageUri, ImageView imageView, Options options, ImageLoadListener imageLoadListener){
 		if(imageView == null){
-			if(getConfiguration().isDebugMode()){
-				Log.e(getConfiguration().getLogTag(), "imageView不能为null");
+			if(configuration.isDebugMode()){
+				Log.e(configuration.getLogTag(), "imageView不能为null");
 			}
 			return;
 		}
 
 		if(options == null){
-			options = getConfiguration().getDefaultOptions();
+			options = configuration.getDefaultOptions();
 		}
 		
 		if(imageLoadListener != null){
@@ -102,8 +94,8 @@ public class ImageLoader{
 		
 		if(ImageLoaderUtils.isEmpty(imageUri)){
 			imageView.setImageDrawable(options.getEmptyDrawable());
-			if(getConfiguration().isDebugMode()){
-				Log.e(getConfiguration().getLogTag(), new StringBuffer(LOG_NAME).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+			if(configuration.isDebugMode()){
+				Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
 			if(imageLoadListener != null){
 				imageLoadListener.onFailed(imageUri, imageView);
@@ -114,8 +106,8 @@ public class ImageLoader{
 		Scheme scheme = Scheme.ofUri(imageUri);
 		if(scheme == Scheme.UNKNOWN){
 			imageView.setImageDrawable(options.getFailureDrawable());
-			if(getConfiguration().isDebugMode()){
-				Log.e(getConfiguration().getLogTag(), new StringBuffer(LOG_NAME).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+			if(configuration.isDebugMode()){
+				Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
 			if(imageLoadListener != null){
 				imageLoadListener.onFailed(imageUri, imageView);
@@ -141,10 +133,10 @@ public class ImageLoader{
 		
 		//尝试显示
 		if(request.getOptions().isEnableMenoryCache()){
-			BitmapDrawable cacheDrawable = getConfiguration().getBitmapCacher().get(request.getId());
+			BitmapDrawable cacheDrawable = configuration.getBitmapCacher().get(request.getId());
 			if(cacheDrawable != null){
 				imageView.setImageDrawable(cacheDrawable);
-				if(getConfiguration().isDebugMode()){
+				if(configuration.isDebugMode()){
 					Log.i(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("显示成功 - 内存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 				}
 				if(imageLoadListener != null){
@@ -155,25 +147,25 @@ public class ImageLoader{
 		}
 		
 		//尝试取消正在加载的任务
-		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(request, imageView, getConfiguration())){
+		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(request, imageView, configuration)){
 			//创建新的加载任务
 			BitmapLoadTask bitmapLoadTask = null;
 			switch(scheme){
 				case HTTP :
 				case HTTPS : 
-					bitmapLoadTask = new HttpBitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					bitmapLoadTask = new HttpBitmapLoadTask(request, configuration.getTaskExecutor().getLockByRequestId(request.getId()), configuration);
 					break;
 				case FILE : 
-					bitmapLoadTask = new FileBitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					bitmapLoadTask = new FileBitmapLoadTask(request, configuration.getTaskExecutor().getLockByRequestId(request.getId()), configuration);
 					break;
 				case ASSETS : 
-					bitmapLoadTask = new AssetsBitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					bitmapLoadTask = new AssetsBitmapLoadTask(request, configuration.getTaskExecutor().getLockByRequestId(request.getId()), configuration);
 					break;
 				case CONTENT : 
-					bitmapLoadTask = new ContentBitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					bitmapLoadTask = new ContentBitmapLoadTask(request, configuration.getTaskExecutor().getLockByRequestId(request.getId()), configuration);
 					break;
 				case DRAWABLE : 
-					bitmapLoadTask = new DrawableBitmapLoadTask(request, getConfiguration().getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					bitmapLoadTask = new DrawableBitmapLoadTask(request, configuration.getTaskExecutor().getLockByRequestId(request.getId()), configuration);
 					break;
 				default:
 					break;
@@ -182,11 +174,11 @@ public class ImageLoader{
 			if(bitmapLoadTask != null){
 				//显示默认图片
 				BitmapDrawable loadingBitmapDrawable = request.getOptions().getLoadingDrawable();
-				AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(getConfiguration().getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, bitmapLoadTask);
+				AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, bitmapLoadTask);
 				imageView.setImageDrawable(loadingAsyncDrawable);
 				
 				//提交任务
-				getConfiguration().getTaskExecutor().execute(bitmapLoadTask, getConfiguration());
+				configuration.getTaskExecutor().execute(bitmapLoadTask, configuration);
 			}
 		}
 	}
@@ -201,11 +193,11 @@ public class ImageLoader{
 	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 	 * </blockquote>
 	 * @param imageView 显示图片的视图
-	 * @param optionsName 加载选项的名称，你通过getConfiguration().putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 * @param optionsName 加载选项的名称，你通过configuration.putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
 	 * @param imageLoadListener 加载监听器
 	 */
 	public final void display(String imageUri, ImageView imageView, Enum<?> optionsName, ImageLoadListener imageLoadListener){
-		display(imageUri, imageView, getConfiguration().getOptions(optionsName), imageLoadListener);
+		display(imageUri, imageView, configuration.getOptions(optionsName), imageLoadListener);
 	}
 	
 	/**
@@ -236,10 +228,10 @@ public class ImageLoader{
 	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 	 * </blockquote>
 	 * @param imageView 显示图片的视图
-	 * @param optionsName 加载选项的名称，你通过getConfiguration().putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 * @param optionsName 加载选项的名称，你通过configuration.putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
 	 */
 	public void display(String imageUri, ImageView imageView, Enum<?> optionsName){
-		display(imageUri, imageView, getConfiguration().getOptions(optionsName), null);
+		display(imageUri, imageView, configuration.getOptions(optionsName), null);
 	}
 	
 	/**
@@ -256,7 +248,7 @@ public class ImageLoader{
 	 * @param imageLoadListener 加载监听器
 	 */
 	public void display(String imageUri, ImageView imageView, ImageLoadListener imageLoadListener){
-		display(imageUri, imageView, getConfiguration().getDefaultOptions(), imageLoadListener);
+		display(imageUri, imageView, configuration.getDefaultOptions(), imageLoadListener);
 	}
 	
 	/**
@@ -272,7 +264,7 @@ public class ImageLoader{
 	 * @param imageView 显示图片的视图
 	 */
 	public void display(String imageUri, ImageView imageView){
-		display(imageUri, imageView, getConfiguration().getDefaultOptions(), null);
+		display(imageUri, imageView, configuration.getDefaultOptions(), null);
 	}
 	
 	/**
@@ -290,11 +282,11 @@ public class ImageLoader{
 	 * 显示图片
 	 * @param imageFile 图片文件
 	 * @param imageView 显示图片的视图
-	 * @param optionsName 加载选项的名称，你通过getConfiguration().putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 * @param optionsName 加载选项的名称，你通过configuration.putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
 	 * @param imageLoadListener 加载监听器
 	 */
 	public void display(File imageFile, ImageView imageView, Enum<?> optionsName, ImageLoadListener imageLoadListener){
-		display(Uri.fromFile(imageFile).toString(), imageView, getConfiguration().getOptions(optionsName), imageLoadListener);
+		display(Uri.fromFile(imageFile).toString(), imageView, configuration.getOptions(optionsName), imageLoadListener);
 	}
 	
 	/**
@@ -311,10 +303,10 @@ public class ImageLoader{
 	 * 显示图片
 	 * @param imageFile 图片文件
 	 * @param imageView 显示图片的视图
-	 * @param optionsName 加载选项的名称，你通过getConfiguration().putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 * @param optionsName 加载选项的名称，你通过configuration.putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
 	 */
 	public void display(File imageFile, ImageView imageView, Enum<?> optionsName){
-		display(Uri.fromFile(imageFile).toString(), imageView, getConfiguration().getOptions(optionsName), null);
+		display(Uri.fromFile(imageFile).toString(), imageView, configuration.getOptions(optionsName), null);
 	}
 	
 	/**
@@ -324,7 +316,7 @@ public class ImageLoader{
 	 * @param imageLoadListener 加载监听器
 	 */
 	public void display(File imageFile, ImageView imageView, ImageLoadListener imageLoadListener){
-		display(Uri.fromFile(imageFile).toString(), imageView, getConfiguration().getDefaultOptions(), imageLoadListener);
+		display(Uri.fromFile(imageFile).toString(), imageView, configuration.getDefaultOptions(), imageLoadListener);
 	}
 	
 	/**
@@ -333,7 +325,7 @@ public class ImageLoader{
 	 * @param imageView 显示图片的视图
 	 */
 	public void display(File imageFile, ImageView imageView){
-		display(imageFile, imageView, getConfiguration().getDefaultOptions(), null);
+		display(imageFile, imageView, configuration.getDefaultOptions(), null);
 	}
 	
 	/**
@@ -341,17 +333,6 @@ public class ImageLoader{
 	 * @return
 	 */
 	public Configuration getConfiguration() {
-		if(configuration == null){
-			throw new IllegalStateException("必须在使用ImageLoader之前调用ImageLoader.getInstance().init(Context)初始化，推荐在Application中调用");
-		}
 		return configuration;
-	}
-	
-	/**
-	 * 设置配置
-	 * @param configuration
-	 */
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
 	}
 } 

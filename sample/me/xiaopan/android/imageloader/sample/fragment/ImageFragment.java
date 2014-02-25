@@ -29,7 +29,7 @@ public class ImageFragment extends Fragment {
 			
 			final ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.progress_imageFragment_progress);
 			
-			ImageLoader.getInstance().display(uri, imageView, OptionsType.VIEW_PAGER, new ImageLoadListener() {
+			ImageLoader.getInstance(getActivity()).display(uri, imageView, OptionsType.VIEW_PAGER, new ImageLoadListener() {
 				@Override
 				public void onStarted(String imageUri, ImageView imageView) {
 					progressBar.setVisibility(View.VISIBLE);
