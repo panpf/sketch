@@ -39,7 +39,7 @@ ImageLoader.getInstance(getContext()).display(imageUri, imageView, defaultOption
 **[android-image-loader-2.2.0-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.2.0-with-src.jar)**
 
 ##Extend
-###使用Options
+###1.使用Options
 ```java
 Options defaultOptions2 = new Options(getBaseContext())
 	.setEmptyDrawableResId(R.drawable.image_load_failure)	//设置当uri为空时显示的图片
@@ -69,19 +69,104 @@ public Options(Context context) {
 }
 ```
 
-###利用Configuration().putOptions()来管理多个Options
+###2.利用Configuration().putOptions()来管理多个Options
+当你有多个Options的时候你要怎么去管理并方便的使用呢？别担心我已经为你提供了一个绝对可行的解决方案。
 
-###自定义任务执行器（TaskExecutor）
+首先你需要定义一个枚举类来作为Options的标签，如下：
+```java
+public enum OptionsType {
+	/**
+	 * 默认的
+	 */
+	DEFAULT, 
+	
+	/**
+	 * ListView用的
+	 */
+	LIST_VIEW, 
+	
+	/**
+	 * GridView用的
+	 */
+	GRID_VIEW, 
+	
+	/**
+	 * Gallery用的
+	 */
+	GALLERY, 
+	
+	/**
+	 * ViewPager用的
+	 */
+	VIEW_PAGER;
+}
+```
+然后定义多个Options，且通过ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(Enum<?> enum, Options options)方法将Options和Enum绑定并放进Configuratin中
+```java
+Options defaultOptions = new Options(getBaseContext())
+	.setLoadingDrawableResId(R.drawable.image_loading)
+	.setFailureDrawableResId(R.drawable.image_load_failure)
+	.setBitmapProcessor(new ReflectionBitmapProcessor());
+ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.DEFAULT, defaultOptions);
 
-###自定义图片缓存器（BitmapCacher）
+Options listOptions = new Options(getBaseContext())
+	.setLoadingDrawableResId(R.drawable.image_loading)
+	.setFailureDrawableResId(R.drawable.image_load_failure)
+	.setBitmapProcessor(new CircleBitmapProcessor());
+ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.LIST_VIEW, listOptions);
 
-###自定义图片解码器（BitmapDecoder）
+Options gridOptions = new Options(getBaseContext())
+	.setLoadingDrawableResId(R.drawable.image_loading)
+	.setFailureDrawableResId(R.drawable.image_load_failure)
+	.setEnableMenoryCache(false)
+	.setBitmapProcessor(null);
+ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.SIMPLE, gridOptions);
 
-###自定义图片下载器（ImageDownloader）
+Options galleryOptions = new Options(getBaseContext())
+	.setLoadingDrawableResId(R.drawable.image_loading)
+	.setFailureDrawableResId(R.drawable.image_load_failure)
+	.setBitmapProcessor(new RoundedCornerBitmapProcessor());
+ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.GALLERY, galleryOptions);
 
-###自定义图片处理器（BitmapProcessor）
+Options viewPagerOptions = new Options(getBaseContext())
+	.setFailureDrawableResId(R.drawable.image_load_failure)
+	.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
+ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.VIEW_PAGER, viewPagerOptions);
+```
+然后在使用的时候就可以调用``ImageLoader.getInstance(context).display(String imageUri, ImageView imageView, Enum<?> optionsName)``方法来传入对应的枚举来显示图片了，ImageLoader会根据你传入的枚举从Configuration中取出对应的Options。
+```java
+ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, OptionsType.GALLERY);
+```
+注意：如果无法从Configuration中获取Options的话ImageLoader就会创建一个默认的Options来继续加载，如下所示：
+```java
+if(options == null){
+	options = new Options(configuration.getContext());
+}
+```
 
-###自定义图片显示器（BitmapDisplayer）
+###3.自定义TaskExecutor（任务执行器）
+默认采用的是BaseTaskExecutor，那么先介绍下BaseTaskExecutor的特性吧
+>* 首先BaseTaskExecutor将任务分成了两种，一种是耗时较长的需要从网络下载图片的``网络任务``，另一种是从本地加载的``本地任务``。这两种任务会分别放在不同的线程池中执行，``网络任务线程池``核心线程数5个，最大线程数``10``个，而``本地任务线程池``则是核心线程数1个，最大线程数也是``1``个，这样一来可以保证不会因为网络任务而堵塞了本地任务的加载，并且本地任务可以一个一个加载。
+>* 任务等待区采用的是有界队列，长度是20，这样可以保证在能够及时记载最新的任务。
+
+如果你了解了BaseTaskExecutor的特性后依然感觉BaseTaskExecutor无法满足你的需求的话，你可以通过实现TaskExecutor接口来自定义你的TaskExecutor，不过建议你在动手实现之前先参考一下BaseTaskExecutor。
+
+自定义好你的TaskExecutor后你只需调用``ImageLoader.getInstance(getBaseContext()).getConfiguration().setTaskExecutor(TaskExecutor taskExecutor)``方法应用即可。
+
+###4.自定义BitmapCacher（图片缓存器）
+
+
+###5.自定义BitmapDecoder（图片解码器）
+
+
+###6.自定义ImageDownloader（图片下载器）
+
+
+###7.自定义BitmapProcessor（图片处理器）
+
+
+###8.自定义BitmapDisplayer（图片显示器）
+
 
 具体使用方式可以查看源码中的示例程序
 

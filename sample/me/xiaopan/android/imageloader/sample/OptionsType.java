@@ -17,5 +17,33 @@
 package me.xiaopan.android.imageloader.sample;
 
 public enum OptionsType {
-	DEFAULT, LIST_VIEW, GRID_VIEW, GALLERY, VIEW_PAGER, SIMPLE;
+	/**
+	 * 默认的
+	 */
+	DEFAULT, 
+	
+	/**
+	 * ListView用的
+	 */
+	LIST_VIEW, 
+	
+	/**
+	 * GridView用的
+	 */
+	GRID_VIEW, 
+	
+	/**
+	 * Gallery用的
+	 */
+	GALLERY, 
+	
+	/**
+	 * ViewPager用的
+	 */
+	VIEW_PAGER, 
+	
+	/**
+	 * 
+	 */
+	SIMPLE;
 }
