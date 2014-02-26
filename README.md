@@ -23,8 +23,7 @@ Android-ImageLoader是用在Android上的一个图片加载类库，主要用于
 ```java
 Options defaultOptions = new Options(getBaseContext())
 	.setLoadingDrawableResId(R.drawable.image_loading)
-	.setFailureDrawableResId(R.drawable.image_load_failure)
-	.setBitmapProcessor(new ReflectionBitmapProcessor());
+	.setFailureDrawableResId(R.drawable.image_load_failure);
 ```
 
 ###2.显示图片
@@ -40,16 +39,53 @@ ImageLoader.getInstance(getContext()).display(imageUri, imageView, defaultOption
 **[android-image-loader-2.2.0-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.2.0-with-src.jar)**
 
 ##Extend
->* 使用Options
->* 利用Configuration().putOptions()来管理多个Options
->* 自定义任务执行器（TaskExecutor）
->* 自定义图片缓存器（BitmapCacher）
->* 自定义图片解码器（BitmapDecoder）
->* 自定义图片下载器（ImageDownloader）
->* 自定义图片处理器（BitmapProcessor）
->* 自定义图片显示器（BitmapDisplayer）
+###使用Options
+```java
+Options defaultOptions2 = new Options(getBaseContext())
+	.setEmptyDrawableResId(R.drawable.image_load_failure)	//设置当uri为空时显示的图片
+	.setLoadingDrawableResId(R.drawable.image_loading)	//设置当正在加载显示的图片
+	.setFailureDrawableResId(R.drawable.image_load_failure)	//设置当加载失败时显示的图片
+	.setEnableMenoryCache(true)	//开启内存缓存，开启后会采用Lru算法将Bitmap缓存在内存中，以便重复利用
+	.setEnableDiskCache(true)	//开启硬盘缓存，开启后会先将图片下载到本地，然后再加载到内存中
+	.setDiskCachePeriodOfValidity(1000 * 60 * 60 * 24)	//设置硬盘缓存有效期为24小时，24小时过后将重新下载图片
+	.setImageMaxSize(new ImageSize(getBaseContext().getResources().getDisplayMetrics().widthPixels, getBaseContext().getResources().getDisplayMetrics().heightPixels))	//设置加载到内存中的图片的最大尺寸，如果原图的尺寸大于最大尺寸，在读取的时候就会缩小至合适的尺寸再读取
+	.setMaxRetryCount(2)	//设置最大重试次数，当连接超时时会再次尝试下载
+	.setBitmapProcessor(new ReflectionBitmapProcessor())	//设置Bitmap处理器，当图片从本地读取内存中后会使用BitmapProcessor将图片处理一下，因此你可以通过BitmapProcessor将图片处理成任何你想要的效果
+	.setBitmapDisplayer(new FadeInBitmapDisplayer());	//设置图片显示器，在处理完图片之后会调用BitmapDisplayer来显示图片，因此你可以通过BitmapDisplayer自定义任何你想要的方式来显示图片
+```
+另外Options默认的配置是：
+>* 默认开启内存缓存和硬盘缓存
+>* 默认图片最大尺寸为当前设备屏幕的尺寸
+>* 默认图片处理器为FadeInBitmapDisplayer（渐入效果）
+>* 默认最大重试次数为2
+
+```java
+public Options(Context context) {
+	setEnableMenoryCache(true)
+	.setEnableDiskCache(true)
+	.setImageMaxSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
+	.setBitmapDisplayer(new FadeInBitmapDisplayer())
+	.setMaxRetryCount(2);
+}
+```
+
+###利用Configuration().putOptions()来管理多个Options
+
+###自定义任务执行器（TaskExecutor）
+
+###自定义图片缓存器（BitmapCacher）
+
+###自定义图片解码器（BitmapDecoder）
+
+###自定义图片下载器（ImageDownloader）
+
+###自定义图片处理器（BitmapProcessor）
+
+###自定义图片显示器（BitmapDisplayer）
 
 具体使用方式可以查看源码中的示例程序
+
+##Change Log
 
 ##License
 ```java
