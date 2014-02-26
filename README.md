@@ -54,10 +54,10 @@ Options defaultOptions2 = new Options(getBaseContext())
 	.setBitmapDisplayer(new FadeInBitmapDisplayer());	//设置图片显示器，在处理完图片之后会调用BitmapDisplayer来显示图片，因此你可以通过BitmapDisplayer自定义任何你想要的方式来显示图片
 ```
 另外Options默认的配置是：
->* 默认开启内存缓存和硬盘缓存
->* 默认图片最大尺寸为当前设备屏幕的尺寸
->* 默认图片处理器为FadeInBitmapDisplayer（渐入效果）
->* 默认最大重试次数为2
+>* 开启内存缓存和硬盘缓存
+>* 图片最大尺寸为当前设备屏幕的尺寸
+>* 图片处理器为FadeInBitmapDisplayer（渐入效果）
+>* 最大重试次数为2
 
 ```java
 public Options(Context context) {
