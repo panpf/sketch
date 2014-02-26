@@ -119,7 +119,6 @@ Options gridOptions = new Options(getBaseContext())
 	.setLoadingDrawableResId(R.drawable.image_loading)
 	.setFailureDrawableResId(R.drawable.image_load_failure)
 	.setEnableMenoryCache(false)
-	.setBitmapProcessor(null);
 ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.SIMPLE, gridOptions);
 
 Options galleryOptions = new Options(getBaseContext())
