@@ -4,7 +4,6 @@ import android.graphics.drawable.BitmapDrawable;
 
 class DrawableHolder {
 	private int resId;	//当正在加载时显示的图片
-	private boolean waitProcess;
 	private BitmapDrawable drawable;	//当加载地址为空时显示的图片
 	
 	public DrawableHolder(int resId) {
@@ -20,14 +19,6 @@ class DrawableHolder {
 
 	public void setResId(int resId) {
 		this.resId = resId;
-	}
-
-	public boolean isWaitProcess() {
-		return waitProcess;
-	}
-
-	public void setWaitProcess(boolean waitProcess) {
-		this.waitProcess = waitProcess;
 	}
 
 	public BitmapDrawable getDrawable() {

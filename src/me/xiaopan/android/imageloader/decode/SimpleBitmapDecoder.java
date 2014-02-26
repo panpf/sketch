@@ -19,8 +19,8 @@ package me.xiaopan.android.imageloader.decode;
 import java.io.InputStream;
 
 import me.xiaopan.android.imageloader.Configuration;
-import me.xiaopan.android.imageloader.util.LoadIOUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
+import me.xiaopan.android.imageloader.util.LoadIOUtils;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;

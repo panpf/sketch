@@ -128,25 +128,18 @@ public class Options{
 	 * @return
 	 */
 	public BitmapDrawable getEmptyDrawable() {
-		if(emptyDrawableHolder.getDrawable() == null){
-			Bitmap oldBitmap = null;
-			if(emptyDrawableHolder.getResId() > 0){
-				oldBitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), emptyDrawableHolder.getResId()));
+		if(emptyDrawableHolder.getDrawable() == null && emptyDrawableHolder.getResId() > 0){
+			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), emptyDrawableHolder.getResId()));
+			if(bitmap != null){
+				if(bitmapProcessor != null){
+					Bitmap newBitmap = bitmapProcessor.process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
+					if(newBitmap != bitmap){
+						bitmap.recycle();
+						bitmap = newBitmap;
+					}
+				}
+				emptyDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
 			}
-			if(oldBitmap != null){
-				emptyDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), oldBitmap));
-			}
-		}
-		if(emptyDrawableHolder.getDrawable() != null && emptyDrawableHolder.isWaitProcess() && bitmapProcessor != null){
-			Bitmap oldBitmap = emptyDrawableHolder.getDrawable().getBitmap();
-			Bitmap newBitmap = bitmapProcessor.process(oldBitmap, ScaleType.CENTER_CROP, new ImageSize(oldBitmap.getWidth(), oldBitmap.getHeight()));
-			if(newBitmap != oldBitmap){
-				oldBitmap.recycle();
-				emptyDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), newBitmap));
-			}else{
-				emptyDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), oldBitmap));
-			}
-			emptyDrawableHolder.setWaitProcess(false);
 		}
 		return emptyDrawableHolder.getDrawable();
 	}
@@ -157,7 +150,6 @@ public class Options{
 	 */
 	public Options setEmptyDrawableResId(int resId) {
 		emptyDrawableHolder.setResId(resId);
-		emptyDrawableHolder.setWaitProcess(true);
 		if(emptyDrawableHolder.getDrawable() != null){
 			if(!emptyDrawableHolder.getDrawable().getBitmap().isRecycled()){
 				emptyDrawableHolder.getDrawable().getBitmap().recycle();
@@ -172,25 +164,18 @@ public class Options{
 	 * @return
 	 */
 	public BitmapDrawable getLoadingDrawable() {
-		if(loadingDrawableHolder.getDrawable() == null){
-			Bitmap oldBitmap = null;
-			if(loadingDrawableHolder.getResId() > 0){
-				oldBitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), loadingDrawableHolder.getResId()));
+		if(loadingDrawableHolder.getDrawable() == null && loadingDrawableHolder.getResId() > 0){
+			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), loadingDrawableHolder.getResId()));
+			if(bitmap != null){
+				if(bitmapProcessor != null){
+					Bitmap newBitmap = bitmapProcessor.process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
+					if(newBitmap != bitmap){
+						bitmap.recycle();
+						bitmap = newBitmap;
+					}
+				}
+				loadingDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
 			}
-			if(oldBitmap != null){
-				loadingDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), oldBitmap));
-			}
-		}
-		if(loadingDrawableHolder.getDrawable() != null && loadingDrawableHolder.isWaitProcess() && bitmapProcessor != null){
-			Bitmap oldBitmap = loadingDrawableHolder.getDrawable().getBitmap();
-			Bitmap newBitmap = bitmapProcessor.process(oldBitmap, ScaleType.CENTER_CROP, new ImageSize(oldBitmap.getWidth(), oldBitmap.getHeight()));
-			if(newBitmap != oldBitmap){
-				oldBitmap.recycle();
-				loadingDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), newBitmap));
-			}else{
-				loadingDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), oldBitmap));
-			}
-			loadingDrawableHolder.setWaitProcess(false);
 		}
 		return loadingDrawableHolder.getDrawable();
 	}
@@ -201,7 +186,6 @@ public class Options{
 	 */
 	public Options setLoadingDrawableResId(int resId) {
 		loadingDrawableHolder.setResId(resId);
-		loadingDrawableHolder.setWaitProcess(true);
 		if(loadingDrawableHolder.getDrawable() != null){
 			if(!loadingDrawableHolder.getDrawable().getBitmap().isRecycled()){
 				loadingDrawableHolder.getDrawable().getBitmap().recycle();
@@ -216,25 +200,18 @@ public class Options{
 	 * @return
 	 */
 	public BitmapDrawable getFailureDrawable() {
-		if(failureDrawableHolder.getDrawable() == null){
-			Bitmap oldBitmap = null;
-			if(failureDrawableHolder.getResId() > 0){
-				oldBitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), failureDrawableHolder.getResId()));
+		if(failureDrawableHolder.getDrawable() == null && failureDrawableHolder.getResId() > 0){
+			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), failureDrawableHolder.getResId()));
+			if(bitmap != null){
+				if(bitmapProcessor != null){
+					Bitmap newBitmap = bitmapProcessor.process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
+					if(newBitmap != bitmap){
+						bitmap.recycle();
+						bitmap = newBitmap;
+					}
+				}
+				failureDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
 			}
-			if(oldBitmap != null){
-				failureDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), oldBitmap));
-			}
-		}
-		if(failureDrawableHolder.getDrawable() != null && failureDrawableHolder.isWaitProcess() && bitmapProcessor != null){
-			Bitmap oldBitmap = failureDrawableHolder.getDrawable().getBitmap();
-			Bitmap newBitmap = bitmapProcessor.process(oldBitmap, ScaleType.CENTER_CROP, new ImageSize(oldBitmap.getWidth(), oldBitmap.getHeight()));
-			if(newBitmap != oldBitmap){
-				oldBitmap.recycle();
-				failureDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), newBitmap));
-			}else{
-				failureDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), oldBitmap));
-			}
-			failureDrawableHolder.setWaitProcess(false);
 		}
 		return failureDrawableHolder.getDrawable();
 	}
@@ -245,7 +222,6 @@ public class Options{
 	 */
 	public Options setFailureDrawableResId(int resId) {
 		failureDrawableHolder.setResId(resId);
-		failureDrawableHolder.setWaitProcess(true);
 		if(failureDrawableHolder.getDrawable() != null){
 			if(!failureDrawableHolder.getDrawable().getBitmap().isRecycled()){
 				failureDrawableHolder.getDrawable().getBitmap().recycle();
@@ -286,6 +262,9 @@ public class Options{
 	 */
 	public Options setBitmapProcessor(BitmapProcessor bitmapProcessor) {
 		this.bitmapProcessor = bitmapProcessor;
+		emptyDrawableHolder.setDrawable(null);
+		loadingDrawableHolder.setDrawable(null);
+		failureDrawableHolder.setDrawable(null);
 		return this;
 	}
 

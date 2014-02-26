@@ -27,8 +27,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.Request;
-import me.xiaopan.android.imageloader.util.LoadIOUtils;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
+import me.xiaopan.android.imageloader.util.LoadIOUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;

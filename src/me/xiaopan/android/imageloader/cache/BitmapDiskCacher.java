@@ -23,8 +23,8 @@ import java.io.RandomAccessFile;
 import java.util.Arrays;
 import java.util.Comparator;
 
-import me.xiaopan.android.imageloader.util.LoadIOUtils;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
+import me.xiaopan.android.imageloader.util.LoadIOUtils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
