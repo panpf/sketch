@@ -132,7 +132,7 @@ Options viewPagerOptions = new Options(getBaseContext())
 	.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
 ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(OptionsType.VIEW_PAGER, viewPagerOptions);
 ```
-然后在使用的时候就可以调用``ImageLoader.getInstance(context).display(String imageUri, ImageView imageView, Enum<?> optionsName)``方法来传入对应的枚举来显示图片了，ImageLoader会根据你传入的枚举从Configuration中取出对应的Options。
+然后在使用的时候就可以调用ImageLoader.getInstance(context).display(String imageUri, ImageView imageView, Enum<?> optionsName)方法来传入对应的枚举来显示图片了，ImageLoader会根据你传入的枚举从Configuration中取出对应的Options。
 ```java
 ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, OptionsType.GALLERY);
 ```
@@ -146,11 +146,9 @@ if(options == null){
 ###3.自定义TaskExecutor（任务执行器）
 默认采用的是BaseTaskExecutor，那么先介绍下BaseTaskExecutor的特性吧
 >* 首先BaseTaskExecutor将任务分成了两种，一种是耗时较长的需要从网络下载图片的``网络任务``，另一种是从本地加载的``本地任务``。这两种任务会分别放在不同的线程池中执行，``网络任务线程池``核心线程数5个，最大线程数``10``个，而``本地任务线程池``则是核心线程数1个，最大线程数也是``1``个，这样一来可以保证不会因为网络任务而堵塞了本地任务的加载，并且本地任务可以一个一个加载。
->* 任务等待区采用的是有界队列，长度是20，这样可以保证在能够及时记载最新的任务。
+>* 任务等待区采用的是有界队列，长度是20，这样可以保证在能够及时加载最新的任务。
 
-如果你了解了BaseTaskExecutor的特性后依然感觉BaseTaskExecutor无法满足你的需求的话，你可以通过实现TaskExecutor接口来自定义你的TaskExecutor，不过建议你在动手实现之前先参考一下BaseTaskExecutor。
-
-自定义好你的TaskExecutor后你只需调用``ImageLoader.getInstance(getBaseContext()).getConfiguration().setTaskExecutor(TaskExecutor taskExecutor)``方法应用即可。
+如果你了解了BaseTaskExecutor的特性后依然感觉BaseTaskExecutor无法满足你的需求的话，你可以通过实现TaskExecutor接口来自定义你的TaskExecutor，不过建议你在动手实现之前先参考一下BaseTaskExecutor。自定义好你的TaskExecutor后你只需调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setTaskExecutor(TaskExecutor taskExecutor)方法应用即可。
 
 ###4.自定义BitmapCacher（图片缓存器）
 
