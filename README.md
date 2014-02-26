@@ -56,7 +56,7 @@ Options defaultOptions2 = new Options(getBaseContext())
 另外Options默认的配置是：
 >* 开启内存缓存和硬盘缓存
 >* 图片最大尺寸为当前设备屏幕的尺寸
->* 图片处理器为FadeInBitmapDisplayer（渐入效果）
+>* 图片显示器为FadeInBitmapDisplayer（渐入效果）
 >* 最大重试次数为2
 
 ```java
