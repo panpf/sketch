@@ -2,7 +2,7 @@
 
 Android-ImageLoader是用在Android上的一个图片加载类库，主要用于从本地或网络加载图片并显示在ImageView上，最低兼容Android2.2
 
-![sample](https://github.com/xiaopansky/Android-ImageLoader/raw/master/docs/sample.png)
+![sample](https://github.com/xiaopansky/Android-ImageLoader/raw/master/docs/sample.jpg)
 
 ##Features
 
