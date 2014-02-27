@@ -28,6 +28,9 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader.TileMode;
 import android.widget.ImageView.ScaleType;
 
+/**
+ * 倒影位图处理器
+ */
 public class ReflectionBitmapProcessor implements BitmapProcessor {
 	private static final String TAG = ReflectionBitmapProcessor.class.getSimpleName();;
 	private int reflectionSpacing;

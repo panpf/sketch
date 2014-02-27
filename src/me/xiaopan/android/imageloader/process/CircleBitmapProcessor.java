@@ -29,7 +29,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
 /**
- * 圆角位图处理器
+ * 圆形位图处理器
  */
 public class CircleBitmapProcessor implements BitmapProcessor {
 	private static final String TAG = CircleBitmapProcessor.class.getSimpleName();

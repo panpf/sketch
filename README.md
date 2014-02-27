@@ -145,27 +145,42 @@ if(options == null){
 
 ###3.自定义TaskExecutor（任务执行器）
 默认采用的是BaseTaskExecutor，那么先介绍下BaseTaskExecutor的特性吧
->* 首先BaseTaskExecutor将任务分成了两种，一种是耗时较长的需要从网络下载图片的``网络任务``，另一种是从本地加载的``本地任务``。这两种任务会分别放在不同的线程池中执行，``网络任务线程池``核心线程数5个，最大线程数``10``个，而``本地任务线程池``则是核心线程数1个，最大线程数也是``1``个，这样一来可以保证不会因为网络任务而堵塞了本地任务的加载，并且本地任务可以一个一个加载。
+>* 首先BaseTaskExecutor将任务分成了两种，一种是耗时较长的需要从网络下载图片的``网络任务``，另一种是从本地加载的``本地任务``。这两种任务会分别放在不同的线程池中执行，``网络任务线程池``核心线程数``5``个，最大线程数``10``个，而``本地任务线程池``则是核心线程数``1``个，最大线程数也是``1``个，这样一来可以保证不会因为网络任务而堵塞了本地任务的加载，并且本地任务可以一个一个加载。
 >* 任务等待区采用的是有界队列，长度是20，这样可以保证在能够及时加载最新的任务。
 
-如果你了解了BaseTaskExecutor的特性后依然感觉BaseTaskExecutor无法满足你的需求的话，你可以通过实现TaskExecutor接口来自定义你的TaskExecutor，不过建议你在动手实现之前先参考一下BaseTaskExecutor。自定义好你的TaskExecutor后你只需调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setTaskExecutor(TaskExecutor taskExecutor)方法应用即可。
+如果你了解了BaseTaskExecutor的特性后依然感觉BaseTaskExecutor无法满足你的需求的话，你可以通过实现TaskExecutor接口来自定义你的TaskExecutor，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setTaskExecutor(TaskExecutor taskExecutor)方法应用即可，不过建议你在动手实现之前先参考一下BaseTaskExecutor。
 
 ###4.自定义BitmapCacher（图片缓存器）
+BitmapCacher是用来缓存Bitmap的，包括内存缓存和硬盘缓存，ImageLoader提供了以下两种缓存实现共选择：
+>* BitmapLruCacher：内存缓存部分采用LRU（近期最少使用）算法来缓存Bimtap，硬盘缓存部分两者都一样；
+>* BitmapSoftReferenceCacher：内存缓存部分采用软引用的方式来缓存Bitmap，硬盘缓存部分两者都一样。由于从Android4.0起虚拟机将变得异常活跃，所以此种缓存方法已经失去了其应有的作用，所以不建议使用。
 
+默认采用的是BitmapLruCacher，如果你想自定义的话只需实现BitmapCacher接口，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setBitmapCacher(BitmapCacher bitmapCacher)方法应用即可，同样建议在动手实现之前先参考一下BitmapLruCacher。
 
 ###5.自定义BitmapDecoder（图片解码器）
-
+BitmapDecoder是用来解码Bitmap的，默认的实现是BaseBitmapDecoder，如果你想自定义的话只需实现BitmapDecoder接口，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setBitmapLoader(BitmapDecoder bitmapDecoder)方法应用即可，同样建议在动手实现之前先参考一下BaseBitmapDecoder。
 
 ###6.自定义ImageDownloader（图片下载器）
-
+ImageDownloader是用来下载图片的，默认的实现是LockImageDownloader，其唯一的特点就是能够避免同一个URI重复下载。实现原理很简单，LockImageDownloader会为每一个URI生成一个锁，执行下载的时候会先去尝试获取锁，如果这时候这个锁被别人用着，那么就会等待别人执行完释放之后才能继续执行，同样在获取到锁之后或先在本地检查一下是否已经下载好了。如果你想自定义的haunted只需实现ImageDownloader接口，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setImageDownloader(ImageDownloader imageDownloader)方法应用即可，同样建议在动手实现之前先参考一下LockImageDownloader。
 
 ###7.自定义BitmapProcessor（图片处理器）
+BitmapProcessor是用来在BitmapDecoder解码完图片之后在对图片进行处理的，因此你可以利用BitmapProcessor将图片处理成任何你想要的效果。ImageLoader默认提供了三种BitmapProcessor供你使用：
+>* CircleBitmapProcessor：圆形图片处理器，可以将图片处理成圆形的，如第二张示例图片所示；
+>* ReflectionBitmapProcessor：倒影图片处理器，可以将图片处理成倒影效果的，如第一张示例图所示。另外倒影的高度以及倒影的距离都可以通过构造函数来自定义；
+>* RoundedCornerBitmapProcessor：圆角图片处理器，可以将图片处理成圆角的。另外圆角的半径可以通过构造函数来自定义；
 
+如果你想自定义的话只需实现BitmapProcessor接口，然后调用Options.setBitmapProcessor(BitmapProcessor bitmapProcessor)应用即可，另外有几点需要注意：
+>* BitmapProcessor接口有一个叫getTag()的方法，此方法的目的是获取一个能够标识当前BitmapProcessor的字符串用来组装图片的缓存ID。如果本地同一张图片使用不同的BitmapProcessor处理的话，最后的效果是不一样的，那么在内存中的缓存ID就不能一样，所以你要保证getTag()方法返回的字符串一定是独一无二的；
+>* 通过BitmapProcessor的process()方法传进去的Bitmap在你处理完之后你无需释放它，ImageLoader会去处理的；
+>* 在处理的过程中如果你多次创建了新的Bitmap，那么在你用完之后一定要记得释放。
 
 ###8.自定义BitmapDisplayer（图片显示器）
+BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer来以不同的动画来显示图片，默认提供以下三种：
+>* FadeInBitmapDisplayer： 渐入效果。
+>* ZoomInBitmapDisplayer：渐入且由小到大效果。
+>* ZoomOutBitmapDisplayer：渐入且由大到小效果。
 
-
-具体使用方式可以查看源码中的示例程序
+如果你想自定义的话只需实现BitmapDisplayer接口，然后调用Options.setBitmapDisplayer(BitmapDisplayer bitmapDisplayer)应用即可。
 
 ##Change Log
 

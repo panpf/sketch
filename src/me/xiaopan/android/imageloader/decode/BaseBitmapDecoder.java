@@ -31,8 +31,8 @@ import android.util.Log;
 /**
  * 位图解码器
  */
-public class SimpleBitmapDecoder implements BitmapDecoder{
-	private static final String LOG_NAME= SimpleBitmapDecoder.class.getSimpleName();
+public class BaseBitmapDecoder implements BitmapDecoder{
+	private static final String LOG_NAME= BaseBitmapDecoder.class.getSimpleName();
 	
 	@Override
 	public Bitmap decode(InputStreamCreator onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName) {

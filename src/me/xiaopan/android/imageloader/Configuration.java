@@ -21,8 +21,8 @@ import java.util.Map;
 
 import me.xiaopan.android.imageloader.cache.BitmapCacher;
 import me.xiaopan.android.imageloader.cache.BitmapLruCacher;
+import me.xiaopan.android.imageloader.decode.BaseBitmapDecoder;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
-import me.xiaopan.android.imageloader.decode.SimpleBitmapDecoder;
 import me.xiaopan.android.imageloader.download.ImageDownloader;
 import me.xiaopan.android.imageloader.download.LockImageDownloader;
 import me.xiaopan.android.imageloader.execute.BaseTaskExecutor;
@@ -111,7 +111,7 @@ public class Configuration {
 	 */
 	public BitmapDecoder getBitmapDecoder() {
 		if(bitmapDecoder == null){
-			bitmapDecoder = new SimpleBitmapDecoder();
+			bitmapDecoder = new BaseBitmapDecoder();
 		}
 		return bitmapDecoder;
 	}
