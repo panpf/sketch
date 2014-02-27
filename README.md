@@ -194,8 +194,7 @@ BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer�
 ##License
 ```java
 /*
- * Copyright 2014 Peng fei Pan
- * Copyright 2013 Peng fei Pan
+ * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
