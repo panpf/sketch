@@ -1,9 +1,8 @@
 # ![Logo](https://github.com/xiaopansky/Android-ImageLoader/raw/master/res/drawable-mdpi/ic_launcher.png) Android-ImageLoader
 
-Android-ImageLoader是用在Android上的一个图片加载类库，主要用于从本地或网络加载图片并显示在ImageView上。
+Android-ImageLoader是用在Android上的一个图片加载类库，主要用于从本地或网络加载图片并显示在ImageView上，最低兼容Android2.2
 
-![sample1](https://github.com/xiaopansky/Android-ImageLoader/raw/master/docs/sample1.png)
-![sample2](https://github.com/xiaopansky/Android-ImageLoader/raw/master/docs/sample2.png)
+![sample](https://github.com/xiaopansky/Android-ImageLoader/raw/master/docs/sample.png)
 
 ##Features
 
@@ -160,9 +159,9 @@ ImageDownloader是用来下载图片的，默认的实现是LockImageDownloader�
 
 ###7.自定义BitmapProcessor（图片处理器）
 BitmapProcessor是用来在BitmapDecoder解码完图片之后在对图片进行处理的，因此你可以利用BitmapProcessor将图片处理成任何你想要的效果。ImageLoader默认提供了三种BitmapProcessor供你使用：
->* CircleBitmapProcessor：圆形图片处理器，可以将图片处理成圆形的，如第二张示例图片所示；
->* ReflectionBitmapProcessor：倒影图片处理器，可以将图片处理成倒影效果的，如第一张示例图所示。另外倒影的高度以及倒影的距离都可以通过构造函数来自定义；
->* RoundedCornerBitmapProcessor：圆角图片处理器，可以将图片处理成圆角的。另外圆角的半径可以通过构造函数来自定义；
+>* CircleBitmapProcessor：圆形图片处理器，可以将图片处理成圆形的，如示例图所示；
+>* ReflectionBitmapProcessor：倒影图片处理器，可以将图片处理成倒影效果的，如示例图所示。另外倒影的高度以及倒影的距离都可以通过构造函数来自定义；
+>* RoundedCornerBitmapProcessor：圆角图片处理器，可以将图片处理成圆角的，如示例图所示。另外圆角的半径可以通过构造函数来自定义；
 
 如果你想自定义的话只需实现BitmapProcessor接口，然后调用Options.setBitmapProcessor(BitmapProcessor bitmapProcessor)应用即可，另外有几点需要注意：
 >* BitmapProcessor接口有一个叫getTag()的方法，此方法的目的是获取一个能够标识当前BitmapProcessor的字符串用来组装图片的缓存ID。如果本地同一张图片使用不同的BitmapProcessor处理的话，最后的效果是不一样的，那么在内存中的缓存ID就不能一样，所以你要保证getTag()方法返回的字符串一定是独一无二的；
