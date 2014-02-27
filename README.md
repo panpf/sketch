@@ -33,11 +33,6 @@ ImageLoader.getInstance(getContext()).display(imageUri, imageView, defaultOption
 ```
 不管你是在Adapter的getView()中调用还是在Activity的onCrate()中调用都不会显示混乱。
 
-##Downloads
-**[android-image-loader-2.2.0.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.2.0.jar)**
-
-**[android-image-loader-2.2.0-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.2.0-with-src.jar)**
-
 ##Extend
 ###1.使用Options
 ```java
@@ -182,11 +177,24 @@ BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer�
 
 如果你想自定义的话只需实现BitmapDisplayer接口，然后调用Options.setBitmapDisplayer(BitmapDisplayer bitmapDisplayer)应用即可。
 
+##Downloads
+**[android-image-loader-2.2.1.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.2.1.jar)**
+
+**[android-image-loader-2.2.1-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.2.1-with-src.jar)**
+
 ##Change Log
+###2.2.1
+>* 更新版权信息
+>* 重命名SimpleBitmapDecoder为BaseBitmapDecoder
+
+###2.2.0
+>* 去掉初始化方法（init(Context)），不再需要初始化
+>* getInstance()方法增加Context参数，初始化的工作移到了这里
 
 ##License
 ```java
 /*
+ * Copyright 2014 Peng fei Pan
  * Copyright 2013 Peng fei Pan
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
