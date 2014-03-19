@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.task;
+package me.xiaopan.android.imageloader.task.display;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;

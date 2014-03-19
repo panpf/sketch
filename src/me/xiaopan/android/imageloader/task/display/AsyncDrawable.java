@@ -14,34 +14,24 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.task;
+package me.xiaopan.android.imageloader.task.display;
 
+import java.lang.ref.WeakReference;
+
+import me.xiaopan.android.imageloader.task.BitmapLoadTask;
+import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 
-class DrawableHolder {
-	private int resId;	//当正在加载时显示的图片
-	private BitmapDrawable drawable;	//当加载地址为空时显示的图片
-	
-	public DrawableHolder(int resId) {
-		this.resId = resId;
-	}
-	
-	public DrawableHolder() {
-	}
+public class AsyncDrawable extends BitmapDrawable {
+    private WeakReference<BitmapLoadTask> bitmapLoadTaskReference;
 
-	public int getResId() {
-		return resId;
-	}
+    public AsyncDrawable(Resources res, Bitmap bitmap, BitmapLoadTask runnable) {
+        super(res, bitmap);
+        bitmapLoadTaskReference = new WeakReference<BitmapLoadTask>(runnable);
+    }
 
-	public void setResId(int resId) {
-		this.resId = resId;
-	}
-
-	public BitmapDrawable getDrawable() {
-		return drawable;
-	}
-
-	public void setDrawable(BitmapDrawable drawable) {
-		this.drawable = drawable;
-	}
+    public BitmapLoadTask getBitmapLoadTask() {
+        return bitmapLoadTaskReference.get();
+    }
 }

@@ -18,17 +18,17 @@ package me.xiaopan.android.imageloader;
 
 import java.io.File;
 
-import me.xiaopan.android.imageloader.task.AsyncDrawable;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
-import me.xiaopan.android.imageloader.task.DisplayListener;
-import me.xiaopan.android.imageloader.task.DisplayOptions;
-import me.xiaopan.android.imageloader.task.DisplayRequest;
-import me.xiaopan.android.imageloader.task.ImageViewAware;
-import me.xiaopan.android.imageloader.task.impl.AssetsBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.impl.ContentBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.impl.DrawableBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.impl.FileBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.impl.HttpBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.display.AssetsBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.display.AsyncDrawable;
+import me.xiaopan.android.imageloader.task.display.ContentBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.display.DisplayListener;
+import me.xiaopan.android.imageloader.task.display.DisplayOptions;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
+import me.xiaopan.android.imageloader.task.display.DrawableBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.display.FileBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.display.HttpBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.display.ImageViewAware;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import me.xiaopan.android.imageloader.util.ImageSizeUtils;

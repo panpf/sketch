@@ -14,33 +14,31 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.task.impl;
+package me.xiaopan.android.imageloader.task.display;
 
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.Configuration;
-import me.xiaopan.android.imageloader.decode.AssetsInputStreamCreator;
+import me.xiaopan.android.imageloader.decode.ContentInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
-import me.xiaopan.android.imageloader.task.DisplayRequest;
-import me.xiaopan.android.imageloader.util.Scheme;
 
-public class AssetsBitmapLoadTask extends  BitmapLoadTask {
+public class ContentBitmapLoadTask extends  BitmapLoadTask {
 	
-	public AssetsBitmapLoadTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
-		super(displayRequest, configuration, new AssetsBitmapLoadCallable(displayRequest, reentrantLock, configuration));
+	public ContentBitmapLoadTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
+		super(displayRequest, configuration, new ContentBitmapLoadCallable(displayRequest, reentrantLock, configuration));
 	}
 	
-	private static class AssetsBitmapLoadCallable extends BitmapLoadCallable {
+	private static class ContentBitmapLoadCallable extends BitmapLoadCallable {
 		
-		public AssetsBitmapLoadCallable(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
+		public ContentBitmapLoadCallable(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
 			super(displayRequest, reentrantLock, configuration);
 		}
 
 		@Override
 		public InputStreamCreator getInputStreamCreator() {
-			return new AssetsInputStreamCreator(configuration.getContext(), Scheme.ASSETS.crop(displayRequest.getImageUri()));
+			return new ContentInputStreamCreator(configuration.getContext(), displayRequest.getImageUri());
 		}
 
 		@Override

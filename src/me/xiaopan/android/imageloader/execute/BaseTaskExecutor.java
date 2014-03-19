@@ -28,8 +28,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
-import me.xiaopan.android.imageloader.task.impl.DrawableBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.impl.HttpBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.display.DrawableBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.display.HttpBitmapLoadTask;
 import android.util.Log;
 
 /**

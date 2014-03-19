@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.task;
+package me.xiaopan.android.imageloader.task.display;
 
 import me.xiaopan.android.imageloader.display.BitmapDisplayer;
 import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
@@ -304,5 +304,26 @@ public class DisplayOptions{
 		.setFailureDrawableResId(failureDrawableHolder.getResId())
 		.setLoadingDrawableResId(loadingDrawableHolder.getResId())
 		.setMaxImageSize(maxImageSize != null?maxImageSize.copy():null);
+	}
+	
+	private class DrawableHolder {
+		private int resId;	//当正在加载时显示的图片
+		private BitmapDrawable drawable;	//当加载地址为空时显示的图片
+		
+		public int getResId() {
+			return resId;
+		}
+
+		public void setResId(int resId) {
+			this.resId = resId;
+		}
+
+		public BitmapDrawable getDrawable() {
+			return drawable;
+		}
+
+		public void setDrawable(BitmapDrawable drawable) {
+			this.drawable = drawable;
+		}
 	}
 }

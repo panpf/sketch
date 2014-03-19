@@ -19,7 +19,7 @@ package me.xiaopan.android.imageloader.download;
 import java.io.File;
 
 import me.xiaopan.android.imageloader.Configuration;
-import me.xiaopan.android.imageloader.task.DisplayRequest;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 
 /**
  * 图片下载器

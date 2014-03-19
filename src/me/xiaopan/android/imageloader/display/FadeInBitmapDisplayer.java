@@ -18,7 +18,7 @@ package me.xiaopan.android.imageloader.display;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.DisplayRequest;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;

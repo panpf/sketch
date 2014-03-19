@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.task.impl;
+package me.xiaopan.android.imageloader.task.display;
 
 import java.io.File;
 import java.util.concurrent.locks.ReentrantLock;
@@ -24,7 +24,6 @@ import me.xiaopan.android.imageloader.decode.FileInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
-import me.xiaopan.android.imageloader.task.DisplayRequest;
 import me.xiaopan.android.imageloader.util.Scheme;
 
 public class FileBitmapLoadTask extends  BitmapLoadTask {

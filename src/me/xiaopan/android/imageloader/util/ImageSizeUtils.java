@@ -16,7 +16,7 @@
 
 package me.xiaopan.android.imageloader.util;
 
-import me.xiaopan.android.imageloader.task.ImageViewAware;
+import me.xiaopan.android.imageloader.task.display.ImageViewAware;
 import android.graphics.BitmapFactory;
 
 /**

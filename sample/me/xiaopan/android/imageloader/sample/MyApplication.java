@@ -22,7 +22,7 @@ import me.xiaopan.android.imageloader.display.ZoomOutBitmapDisplayer;
 import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
 import me.xiaopan.android.imageloader.process.ReflectionBitmapProcessor;
 import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
-import me.xiaopan.android.imageloader.task.DisplayOptions;
+import me.xiaopan.android.imageloader.task.display.DisplayOptions;
 import android.app.Application;
 
 public class MyApplication extends Application {

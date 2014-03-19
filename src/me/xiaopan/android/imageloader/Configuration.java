@@ -27,7 +27,7 @@ import me.xiaopan.android.imageloader.download.ImageDownloader;
 import me.xiaopan.android.imageloader.download.LockImageDownloader;
 import me.xiaopan.android.imageloader.execute.BaseTaskExecutor;
 import me.xiaopan.android.imageloader.execute.TaskExecutor;
-import me.xiaopan.android.imageloader.task.DisplayOptions;
+import me.xiaopan.android.imageloader.task.display.DisplayOptions;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;

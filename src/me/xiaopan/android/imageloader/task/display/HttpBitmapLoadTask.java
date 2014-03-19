@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.task.impl;
+package me.xiaopan.android.imageloader.task.display;
 
 import java.io.File;
 import java.util.Calendar;
@@ -29,7 +29,6 @@ import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.download.ImageDownloader.DownloadListener;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
-import me.xiaopan.android.imageloader.task.DisplayRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.util.Log;
 

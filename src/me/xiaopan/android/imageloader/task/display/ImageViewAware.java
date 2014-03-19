@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.task;
+package me.xiaopan.android.imageloader.task.display;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 
+import me.xiaopan.android.imageloader.task.BitmapLoadTask;
 import me.xiaopan.android.imageloader.util.ViewScaleType;
 import android.view.ViewGroup;
 import android.widget.ImageView;

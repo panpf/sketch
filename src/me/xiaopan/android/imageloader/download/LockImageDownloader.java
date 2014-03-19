@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.DisplayRequest;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.LoadIOUtils;
 

@@ -1,4 +1,4 @@
-package me.xiaopan.android.imageloader.download;
+package me.xiaopan.android.imageloader.task.download;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.FutureTask;

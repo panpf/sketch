@@ -21,6 +21,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 import android.graphics.Bitmap;
