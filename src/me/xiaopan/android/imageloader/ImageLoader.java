@@ -117,12 +117,10 @@ public class ImageLoader{
 		//计算目标尺寸并创建请求
 		ImageViewHolder imageViewHolder = new ImageViewHolder(imageView);
 		ImageSize targetSize = ImageSize.defineTargetSizeForView(imageViewHolder, displayOptions.getMaxImageSize());
-		String requestId = ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(imageUri), targetSize, displayOptions.getBitmapProcessor());
-		String requestName = imageUri;
 		
 		DisplayRequest displayRequest = new DisplayRequest();
-		displayRequest.setId(requestId);
-		displayRequest.setName(requestName);
+		displayRequest.setId(ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(imageUri), targetSize, displayOptions.getBitmapProcessor()));
+		displayRequest.setName(imageUri);
 		displayRequest.setImageUri(imageUri);
 		displayRequest.setTargetSize(targetSize);
 		displayRequest.setConfiguration(configuration);
