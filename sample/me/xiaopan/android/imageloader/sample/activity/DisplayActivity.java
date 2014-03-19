@@ -43,7 +43,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class MainActivity extends FragmentActivity {
+public class DisplayActivity extends FragmentActivity {
 	private static final int REQUEST_CODE_CONTENT = 11;
 	private static final int REQUEST_CODE_FILE = 12;
 	private DrawerLayout drawerLayout;
@@ -60,12 +60,12 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_main);
-		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_main);
+		setContentView(R.layout.activity_display);
+		drawerLayout = (DrawerLayout) findViewById(R.id.drawer_display);
 		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_left, GravityCompat.START);
 		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, GravityCompat.END);
 		
-		viewTypeListView = (ListView) findViewById(R.id.list_main_views);
+		viewTypeListView = (ListView) findViewById(R.id.list_display_views);
 		viewTypeListView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery", "ViewPager", "常规"));
 		viewTypeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -82,7 +82,7 @@ public class MainActivity extends FragmentActivity {
 						fragment.setArguments(bundle);
 						FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 						fragmentTransaction.setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out).addToBackStack("");
-						fragmentTransaction.add(R.id.fragment_main, fragment);
+						fragmentTransaction.add(R.id.fragment_display, fragment);
 						fragmentTransaction.commitAllowingStateLoss();
 						break;
 				}
@@ -90,7 +90,7 @@ public class MainActivity extends FragmentActivity {
 			}
 		});
 		
-		uriTypeListView = (ListView) findViewById(R.id.list_main_uri);
+		uriTypeListView = (ListView) findViewById(R.id.list_display_uri);
 		uriTypeListView.setAdapter(new StringAdapter(getBaseContext(), "http://", "file://", "content://", "assets://", "drawable://"));
 		uriTypeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
@@ -185,9 +185,9 @@ public class MainActivity extends FragmentActivity {
 				fragmentTransaction.setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out);
 				if(add){
 					fragmentTransaction.addToBackStack(subTitle);
-					fragmentTransaction.add(R.id.fragment_main, fragment);
+					fragmentTransaction.add(R.id.fragment_display, fragment);
 				}else{
-					fragmentTransaction.replace(R.id.fragment_main, fragment);
+					fragmentTransaction.replace(R.id.fragment_display, fragment);
 				}
 				fragmentTransaction.commitAllowingStateLoss();
 			}else{
@@ -223,7 +223,7 @@ public class MainActivity extends FragmentActivity {
 					update(true);
 				}else{
 					Toast.makeText(getBaseContext(), "空的", Toast.LENGTH_SHORT).show();
-					Log.w(MainActivity.class.getSimpleName(), "空的");
+					Log.w(DisplayActivity.class.getSimpleName(), "空的");
 				}
 				break;
 			case REQUEST_CODE_FILE : 
@@ -241,11 +241,11 @@ public class MainActivity extends FragmentActivity {
                     	update(true);
                     }else{
                     	Toast.makeText(getBaseContext(), "没有取到文件地址，请使用系统自带的图库应用来选择文件", Toast.LENGTH_SHORT).show();
-    					Log.w(MainActivity.class.getSimpleName(), "没有取到文件地址，请使用系统自带的图库应用来选择文件："+arg2.getData().toString());
+    					Log.w(DisplayActivity.class.getSimpleName(), "没有取到文件地址，请使用系统自带的图库应用来选择文件："+arg2.getData().toString());
                     }
 				}else{
 					Toast.makeText(getBaseContext(), "空的", Toast.LENGTH_SHORT).show();
-					Log.w(MainActivity.class.getSimpleName(), "空的");
+					Log.w(DisplayActivity.class.getSimpleName(), "空的");
 				}
 				break;
 			}

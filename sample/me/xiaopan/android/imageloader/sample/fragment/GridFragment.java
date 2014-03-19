@@ -48,7 +48,7 @@ public class GridFragment extends Fragment {
 				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS));
 				bundle.putInt(ViewPagerFragment.PARAM_OPTIONAL_INT_CURRENT_POSITION, position);
 				viewPagerFragment.setArguments(bundle);
-				getFragmentManager().beginTransaction().setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out).add(R.id.fragment_main, viewPagerFragment).addToBackStack(ViewPagerFragment.class.getSimpleName()).commitAllowingStateLoss();
+				getFragmentManager().beginTransaction().setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out).add(R.id.fragment_display, viewPagerFragment).addToBackStack(ViewPagerFragment.class.getSimpleName()).commitAllowingStateLoss();
 			}
 		});
 		return gridView;

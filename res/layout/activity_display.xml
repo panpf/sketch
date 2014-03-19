@@ -1,18 +1,17 @@
-<!-- 图片加载器页面 -->
 <merge xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent">
-    <android.support.v4.widget.DrawerLayout android:id="@+id/drawer_main" android:layout_width="fill_parent" android:layout_height="fill_parent">
+    <android.support.v4.widget.DrawerLayout android:id="@+id/drawer_display" android:layout_width="fill_parent" android:layout_height="fill_parent">
         <FrameLayout 
-            android:id="@+id/fragment_main" 
+            android:id="@+id/fragment_display" 
             android:layout_width="fill_parent" 
             android:layout_height="fill_parent" />
         <ListView 
-            android:id="@+id/list_main_views" 
+            android:id="@+id/list_display_views" 
             android:layout_width="150dp" 
             android:layout_height="fill_parent" 
             android:layout_gravity="start" 
             android:background="@color/white"/>
     	<ListView 
-    	    android:id="@+id/list_main_uri" 
+    	    android:id="@+id/list_display_uri" 
     	    android:layout_width="150dp" 
     	    android:layout_height="fill_parent" 
             android:layout_gravity="end" 

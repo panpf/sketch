@@ -15,7 +15,7 @@ public class DownloadRequest extends TaskRequest{
 	private DownloadListener downloadListener;
 	private int maxRetryCount;	//最大重试次数
 	
-	private DownloadRequest(String url, File saveFile, DownloadListener downloadListener) {
+	public DownloadRequest(String url, File saveFile, DownloadListener downloadListener) {
 		this.url = url;
 		this.saveFile = saveFile;
 		this.downloadListener = downloadListener;

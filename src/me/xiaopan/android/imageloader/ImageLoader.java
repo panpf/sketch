@@ -29,6 +29,9 @@ import me.xiaopan.android.imageloader.task.display.DrawableBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.FileBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.ImageViewHolder;
+import me.xiaopan.android.imageloader.task.download.DownloadRequest;
+import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
+import me.xiaopan.android.imageloader.task.download.DownloadTask;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import me.xiaopan.android.imageloader.util.Scheme;
@@ -281,8 +284,9 @@ public class ImageLoader{
 	/**
 	 * 下载
 	 */
-	public void download(){
-		
+	public void download(String imageUrl, DownloadListener downloadListener){
+		File cacheFile = configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(imageUrl));
+		getConfiguration().getTaskExecutor().execute(new DownloadTask(new DownloadRequest(imageUrl, cacheFile, downloadListener)), configuration);
 	}
 	
 	/**
