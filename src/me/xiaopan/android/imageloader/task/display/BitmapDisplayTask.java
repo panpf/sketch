@@ -14,27 +14,23 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.task;
-
-import java.util.concurrent.FutureTask;
+package me.xiaopan.android.imageloader.task.display;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.display.BitmapDisplayer.BitmapType;
-import me.xiaopan.android.imageloader.task.display.AsyncDrawable;
-import me.xiaopan.android.imageloader.task.display.BitmapDisplayRunnable;
-import me.xiaopan.android.imageloader.task.display.DisplayRequest;
+import me.xiaopan.android.imageloader.task.Task;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ImageView;
 
-public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
-	private static final String NAME= BitmapLoadTask.class.getSimpleName();
+public abstract class BitmapDisplayTask extends Task {
+	private static final String NAME= BitmapDisplayTask.class.getSimpleName();
 	private DisplayRequest displayRequest;
 	
-	public BitmapLoadTask(DisplayRequest displayRequest, BitmapLoadCallable bitmapLoadCallable) {
-		super(bitmapLoadCallable);
+	public BitmapDisplayTask(DisplayRequest displayRequest, BitmapDisplayCallable bitmapLoadCallable) {
+		super(displayRequest, bitmapLoadCallable);
 		this.displayRequest = displayRequest;
 		this.displayRequest.getImageViewHolder().setBitmapLoadTask(this);
 	}
@@ -44,7 +40,7 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 		if(!isCancelled()){
 			BitmapDrawable bitmapDrawable = null;
 			try {
-				bitmapDrawable = get();
+				bitmapDrawable = (BitmapDrawable) get();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -105,7 +101,7 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
      * @param imageView 
      * @return 
      */
-	public static BitmapLoadTask getBitmapLoadTask(ImageView imageView) {
+	public static BitmapDisplayTask getBitmapLoadTask(ImageView imageView) {
         if (imageView != null) {
             final Drawable drawable = imageView.getDrawable();
             if (drawable instanceof AsyncDrawable) {
@@ -123,7 +119,7 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
      */
     public static boolean cancelBitmapLoadTask(ImageView imageView) {
-        final BitmapLoadTask bitmapLoadTask = getBitmapLoadTask(imageView);
+        final BitmapDisplayTask bitmapLoadTask = getBitmapLoadTask(imageView);
         if (bitmapLoadTask != null) {
             bitmapLoadTask.cancel(true);
             if (bitmapLoadTask.getConfiguration().isDebugMode()) {
@@ -142,7 +138,7 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
      * @return true：取消成功；false：ImageView所关联的任务就是所需的无需取消
      */
     public static boolean cancelPotentialBitmapLoadTask(DisplayRequest displayRequest, ImageView imageView) {
-        final BitmapLoadTask potentialBitmapLoadTask = getBitmapLoadTask(imageView);
+        final BitmapDisplayTask potentialBitmapLoadTask = getBitmapLoadTask(imageView);
         boolean cancelled = true;
         if (potentialBitmapLoadTask != null) {
             final String requestId = potentialBitmapLoadTask.getDisplayRequest().getId();

@@ -18,16 +18,14 @@ package me.xiaopan.android.imageloader.task.display;
 
 import me.xiaopan.android.imageloader.decode.ContentInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
-import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
-import me.xiaopan.android.imageloader.task.BitmapLoadTask;
 
-public class ContentBitmapDisplayTask extends  BitmapLoadTask {
+public class ContentBitmapDisplayTask extends  BitmapDisplayTask {
 	
 	public ContentBitmapDisplayTask(DisplayRequest displayRequest) {
 		super(displayRequest, new ContentBitmapLoadCallable(displayRequest));
 	}
 	
-	private static class ContentBitmapLoadCallable extends BitmapLoadCallable {
+	private static class ContentBitmapLoadCallable extends BitmapDisplayCallable {
 		
 		public ContentBitmapLoadCallable(DisplayRequest displayRequest) {
 			super(displayRequest);

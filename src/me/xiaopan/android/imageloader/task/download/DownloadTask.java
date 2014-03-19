@@ -1,16 +1,17 @@
 package me.xiaopan.android.imageloader.task.download;
 
 import java.io.File;
-import java.util.concurrent.FutureTask;
+
+import me.xiaopan.android.imageloader.task.Task;
 
 /**
  * 下载任务
  */
-public class DownloadTask extends FutureTask<Object>{
+public class DownloadTask extends Task{
 	private DownloadRequest downloadRequest;
 	
 	public DownloadTask(DownloadRequest downloadRequest) {
-		super(new DownloadCallable(downloadRequest));
+		super(downloadRequest, new DownloadCallable(downloadRequest));
 		this.downloadRequest = downloadRequest;
 	}
 	

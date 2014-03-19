@@ -24,13 +24,11 @@ import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.ByteArrayInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.FileInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
-import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
-import me.xiaopan.android.imageloader.task.BitmapLoadTask;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.util.Log;
 
-public class HttpBitmapDisplayTask extends  BitmapLoadTask {
+public class HttpBitmapDisplayTask extends  BitmapDisplayTask {
 	private DisplayRequest displayRequest;
 	
 	public HttpBitmapDisplayTask(DisplayRequest displayRequest) {
@@ -98,7 +96,7 @@ public class HttpBitmapDisplayTask extends  BitmapLoadTask {
 		return true;
 	}
 	
-	private static class HttpBitmapLoadCallable extends BitmapLoadCallable {
+	private static class HttpBitmapLoadCallable extends BitmapDisplayCallable {
 		private File cacheFile = null;
 		private InputStreamCreator inputStreamCreator = null;
 		

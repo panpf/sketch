@@ -20,7 +20,6 @@ import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 
-import me.xiaopan.android.imageloader.task.BitmapLoadTask;
 import me.xiaopan.android.imageloader.util.ViewScaleType;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -31,7 +30,7 @@ import android.widget.ImageView;
 public class ImageViewHolder{
 	protected Reference<ImageView> imageViewRef;
 	protected boolean checkActualViewSize;
-	private BitmapLoadTask bitmapLoadTask;
+	private BitmapDisplayTask bitmapLoadTask;
 
 	public ImageViewHolder(ImageView imageView) {
 		this(imageView, true);
@@ -109,7 +108,7 @@ public class ImageViewHolder{
 	public ImageView getImageView() {
 		final ImageView imageView = imageViewRef.get();
 		if (bitmapLoadTask != null) {
-			BitmapLoadTask newBitmapLoadTask = BitmapLoadTask.getBitmapLoadTask(imageView);
+			BitmapDisplayTask newBitmapLoadTask = BitmapDisplayTask.getBitmapLoadTask(imageView);
             if(newBitmapLoadTask != null && newBitmapLoadTask == bitmapLoadTask){
             	return imageView;
             }else{
@@ -124,7 +123,7 @@ public class ImageViewHolder{
 		return getImageView() == null;
 	}
 	
-	public void setBitmapLoadTask(BitmapLoadTask bitmapLoadTask) {
+	public void setBitmapLoadTask(BitmapDisplayTask bitmapLoadTask) {
 		this.bitmapLoadTask = bitmapLoadTask;
 	}
 

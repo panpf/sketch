@@ -14,12 +14,11 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.task;
+package me.xiaopan.android.imageloader.task.display;
 
 import java.util.concurrent.Callable;
 
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
-import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 import android.graphics.Bitmap;
@@ -27,15 +26,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
+public abstract class BitmapDisplayCallable implements Callable<Object> {
 	protected DisplayRequest displayRequest;
 	
-	public BitmapLoadCallable(DisplayRequest displayRequest) {
+	public BitmapDisplayCallable(DisplayRequest displayRequest) {
 		this.displayRequest = displayRequest;
 	}
 
 	@Override
-	public BitmapDrawable call() throws Exception {
+	public Object call() throws Exception {
 		if(displayRequest.getReentrantLock() != null){
 			displayRequest.getReentrantLock().lock();	//先获取锁，防止重复执行请求
 		}

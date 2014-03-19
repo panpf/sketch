@@ -27,7 +27,8 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.BitmapLoadTask;
+import me.xiaopan.android.imageloader.task.Task;
+import me.xiaopan.android.imageloader.task.display.BitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.DrawableBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
 import android.util.Log;
@@ -36,7 +37,7 @@ import android.util.Log;
  * 基本的任务执行器
  */
 public class BaseTaskExecutor implements TaskExecutor {
-	private static final String NAME= BitmapLoadTask.class.getSimpleName();
+	private static final String NAME= BitmapDisplayTask.class.getSimpleName();
 	private Executor taskDistributor;	//任务调度器
 	private Executor netTaskExecutor;	//网络任务执行器
 	private Executor localTaskExecutor;	//本地任务执行器
@@ -58,20 +59,20 @@ public class BaseTaskExecutor implements TaskExecutor {
 	}
 	
 	@Override
-	public void execute(final BitmapLoadTask bitmapLoadTask, final Configuration configuration) {
+	public void execute(final Task futureTask, final Configuration configuration) {
 		taskDistributor.execute(new Runnable() {
 			@Override
 			public void run() {
-				if(bitmapLoadTask instanceof DrawableBitmapDisplayTask || (bitmapLoadTask instanceof HttpBitmapDisplayTask && ((HttpBitmapDisplayTask) bitmapLoadTask).isFromNetworkLoad())){
+				if(futureTask instanceof DrawableBitmapDisplayTask || (futureTask instanceof HttpBitmapDisplayTask && ((HttpBitmapDisplayTask) futureTask).isFromNetworkLoad())){
 					if(configuration.isDebugMode()){
-						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("放到网络线程池中加载").append("；").append(bitmapLoadTask.getDisplayRequest().getName()).toString());
+						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("放到网络线程池中加载").append("；").append(futureTask.getTaskRequest().getName()).toString());
 					}
-					netTaskExecutor.execute(bitmapLoadTask);
+					netTaskExecutor.execute(futureTask);
 				}else{
 					if(configuration.isDebugMode()){
-						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("放到本地线程池中加载").append("；").append(bitmapLoadTask.getDisplayRequest().getName()).toString());
+						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("放到本地线程池中加载").append("；").append(futureTask.getTaskRequest().getName()).toString());
 					}
-					localTaskExecutor.execute(bitmapLoadTask);
+					localTaskExecutor.execute(futureTask);
 				}
 			}
 		});

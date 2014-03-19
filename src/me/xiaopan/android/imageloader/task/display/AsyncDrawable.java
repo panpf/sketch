@@ -18,20 +18,19 @@ package me.xiaopan.android.imageloader.task.display;
 
 import java.lang.ref.WeakReference;
 
-import me.xiaopan.android.imageloader.task.BitmapLoadTask;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 
 public class AsyncDrawable extends BitmapDrawable {
-    private WeakReference<BitmapLoadTask> bitmapLoadTaskReference;
+    private WeakReference<BitmapDisplayTask> bitmapLoadTaskReference;
 
-    public AsyncDrawable(Resources res, Bitmap bitmap, BitmapLoadTask runnable) {
+    public AsyncDrawable(Resources res, Bitmap bitmap, BitmapDisplayTask runnable) {
         super(res, bitmap);
-        bitmapLoadTaskReference = new WeakReference<BitmapLoadTask>(runnable);
+        bitmapLoadTaskReference = new WeakReference<BitmapDisplayTask>(runnable);
     }
 
-    public BitmapLoadTask getBitmapLoadTask() {
+    public BitmapDisplayTask getBitmapLoadTask() {
         return bitmapLoadTaskReference.get();
     }
 }

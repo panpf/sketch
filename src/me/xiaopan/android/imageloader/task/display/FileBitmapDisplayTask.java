@@ -20,17 +20,15 @@ import java.io.File;
 
 import me.xiaopan.android.imageloader.decode.FileInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
-import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
-import me.xiaopan.android.imageloader.task.BitmapLoadTask;
 import me.xiaopan.android.imageloader.util.Scheme;
 
-public class FileBitmapDisplayTask extends  BitmapLoadTask {
+public class FileBitmapDisplayTask extends  BitmapDisplayTask {
 	
 	public FileBitmapDisplayTask(DisplayRequest displayRequest) {
 		super(displayRequest, new FileBitmapLoadCallable(displayRequest));
 	}
 	
-	private static class FileBitmapLoadCallable extends BitmapLoadCallable {
+	private static class FileBitmapLoadCallable extends BitmapDisplayCallable {
 		
 		public FileBitmapLoadCallable(DisplayRequest displayRequest) {
 			super(displayRequest);

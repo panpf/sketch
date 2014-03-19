@@ -19,6 +19,7 @@ package me.xiaopan.android.imageloader.task.display;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.Configuration;
+import me.xiaopan.android.imageloader.task.TaskRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
@@ -26,9 +27,7 @@ import android.widget.ImageView;
 /**
  * 显示请求
  */
-public class DisplayRequest {
-	private String id;	//ID
-	private String name;	//名称
+public class DisplayRequest extends TaskRequest{
 	private String imageUri;	//Uri
 	private ImageSize targetSize;	//目标尺寸
 	private Configuration configuration;	//配置
@@ -36,40 +35,6 @@ public class DisplayRequest {
 	private DisplayListener displayListener;	//监听器
 	private DisplayOptions displayOptions;	//显示选项
 	private ImageViewHolder imageViewHolder;	//ImageView持有器
-	
-	/**
-	 * 获取ID
-	 * @return ID
-	 */
-	public String getId() {
-		return id;
-	}
-	
-	/**
-	 * 设置ID
-	 * @param id ID
-	 */
-	public DisplayRequest setId(String id) {
-		this.id = id;
-		return this;
-	}
-
-	/**
-	 * 获取名称，用于在输出log时区分不同的请求
-	 * @return
-	 */
-	public String getName() {
-		return name;
-	}
-
-	/**
-	 * 设置名称，用于在输出log时区分不同的请求
-	 * @param name
-	 */
-	public DisplayRequest setName(String name) {
-		this.name = name;
-		return this;
-	}
 	
 	/**
 	 * 获取Uri，支持以下5种Uri

@@ -18,9 +18,9 @@ package me.xiaopan.android.imageloader;
 
 import java.io.File;
 
-import me.xiaopan.android.imageloader.task.BitmapLoadTask;
 import me.xiaopan.android.imageloader.task.display.AssetsBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.AsyncDrawable;
+import me.xiaopan.android.imageloader.task.display.BitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.ContentBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.DisplayOptions;
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
@@ -146,9 +146,9 @@ public class ImageLoader{
 		}
 		
 		//尝试取消正在加载的任务
-		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(displayRequest, imageView)){
+		if(BitmapDisplayTask.cancelPotentialBitmapLoadTask(displayRequest, imageView)){
 			//创建新的加载任务
-			BitmapLoadTask bitmapLoadTask = null;
+			BitmapDisplayTask bitmapLoadTask = null;
 			switch(scheme){
 				case HTTP :
 				case HTTPS : 

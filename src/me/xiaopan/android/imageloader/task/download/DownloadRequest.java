@@ -3,13 +3,12 @@ package me.xiaopan.android.imageloader.task.download;
 import java.io.File;
 
 import me.xiaopan.android.imageloader.Configuration;
+import me.xiaopan.android.imageloader.task.TaskRequest;
 
 /**
  * 下载请求
  */
-public class DownloadRequest {
-	private String id;
-	private String name;
+public class DownloadRequest extends TaskRequest{
 	private String url;
 	private File saveFile;
 	private Configuration configuration;	//配置
@@ -22,22 +21,6 @@ public class DownloadRequest {
 		this.downloadListener = downloadListener;
 	}
 	
-	public String getId() {
-		return id;
-	}
-
-	public void setId(String id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getUrl() {
 		return url;
 	}
