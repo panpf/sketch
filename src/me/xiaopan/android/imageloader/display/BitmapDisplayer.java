@@ -16,7 +16,6 @@
 
 package me.xiaopan.android.imageloader.display;
 
-import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
@@ -30,10 +29,9 @@ public interface BitmapDisplayer {
 	 * @param imageView
 	 * @param bitmapDrawable
 	 * @param bitmapType
-	 * @param configuration
 	 * @param displayRequest
 	 */
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest, Configuration configuration);
+	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest);
 	
 	/**
 	 * 拷贝

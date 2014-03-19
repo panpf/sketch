@@ -16,9 +16,6 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import java.util.concurrent.locks.ReentrantLock;
-
-import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.decode.DrawableInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
@@ -27,19 +24,19 @@ import me.xiaopan.android.imageloader.util.Scheme;
 
 public class DrawableBitmapDisplayTask extends  BitmapLoadTask {
 	
-	public DrawableBitmapDisplayTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
-		super(displayRequest, configuration, new DrawableBitmapLoadCallable(displayRequest, reentrantLock, configuration));
+	public DrawableBitmapDisplayTask(DisplayRequest displayRequest) {
+		super(displayRequest, new DrawableBitmapLoadCallable(displayRequest));
 	}
 	
 	private static class DrawableBitmapLoadCallable extends BitmapLoadCallable {
 		
-		public DrawableBitmapLoadCallable(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
-			super(displayRequest, reentrantLock, configuration);
+		public DrawableBitmapLoadCallable(DisplayRequest displayRequest) {
+			super(displayRequest);
 		}
 
 		@Override
 		public InputStreamCreator getInputStreamCreator() {
-			return new DrawableInputStreamCreator(configuration.getContext(), Scheme.DRAWABLE.crop(displayRequest.getImageUri()));
+			return new DrawableInputStreamCreator(displayRequest.getConfiguration().getContext(), Scheme.DRAWABLE.crop(displayRequest.getImageUri()));
 		}
 
 		@Override

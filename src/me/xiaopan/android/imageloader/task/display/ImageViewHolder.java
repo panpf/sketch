@@ -26,41 +26,22 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 /**
- * Wrapper for Android {@link android.widget.ImageView ImageView}. Keeps weak reference of ImageView to prevent memory
- * leaks.
- *
- * @author Sergey Tarasevich (nostra13[at]gmail[dot]com)
- * @since 1.9.0
+ * ImageView持有器，以弱引用的方式持有关联的ImageView
  */
-public class ImageViewAware{
+public class ImageViewHolder{
 	protected Reference<ImageView> imageViewRef;
 	protected boolean checkActualViewSize;
 	private BitmapLoadTask bitmapLoadTask;
 
-	/**
-	 * Constructor.
-	 * References {@link #ImageViewAware(android.widget.ImageView, boolean) ImageViewAware(imageView, true)}.
-	 *
-	 * @param imageView {@link android.widget.ImageView ImageView} to work with
-	 */
-	public ImageViewAware(ImageView imageView) {
+	public ImageViewHolder(ImageView imageView) {
 		this(imageView, true);
 	}
 
 	/**
-	 * Constructor
-	 *
-	 * @param imageView           {@link android.widget.ImageView ImageView} to work with
-	 * @param checkActualViewSize <b>true</b> - then {@link #getWidth()} and {@link #getHeight()} will check actual
-	 *                            size of ImageView. It can cause known issues like
-	 *                            <a href="https://github.com/nostra13/Android-Universal-Image-Loader/issues/376">this</a>.
-	 *                            But it helps to save memory because memory cache keeps bitmaps of actual (less in
-	 *                            general) size.
-	 *                            <p/>
-	 *                            <b>false</b> - then {@link #getWidth()} and {@link #getHeight()} will <b>NOT</b>
-	 *                            consider actual size of ImageView, just layout parameters.
+	 * @param imageView
+	 * @param checkActualViewSize 是否调用getWidth()或getHeight()来确定ImageView的实际大小，这样有助于节省内存
 	 */
-	public ImageViewAware(ImageView imageView, boolean checkActualViewSize) {
+	public ImageViewHolder(ImageView imageView, boolean checkActualViewSize) {
 		this.imageViewRef = new WeakReference<ImageView>(imageView);
 		this.checkActualViewSize = checkActualViewSize;
 	}

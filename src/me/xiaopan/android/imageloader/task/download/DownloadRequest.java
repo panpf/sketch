@@ -6,6 +6,8 @@ import java.io.File;
  * 下载请求
  */
 public class DownloadRequest {
+	private String id;
+	private String name;
 	private String url;
 	private File saveFile;
 	private DownloadListener downloadListener;
@@ -14,6 +16,22 @@ public class DownloadRequest {
 		this.url = url;
 		this.saveFile = saveFile;
 		this.downloadListener = downloadListener;
+	}
+	
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getUrl() {

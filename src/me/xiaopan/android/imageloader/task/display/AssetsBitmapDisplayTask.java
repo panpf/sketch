@@ -16,9 +16,6 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import java.util.concurrent.locks.ReentrantLock;
-
-import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.decode.AssetsInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
@@ -27,19 +24,19 @@ import me.xiaopan.android.imageloader.util.Scheme;
 
 public class AssetsBitmapDisplayTask extends  BitmapLoadTask {
 	
-	public AssetsBitmapDisplayTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
-		super(displayRequest, configuration, new AssetsBitmapLoadCallable(displayRequest, reentrantLock, configuration));
+	public AssetsBitmapDisplayTask(DisplayRequest displayRequest) {
+		super(displayRequest, new AssetsBitmapLoadCallable(displayRequest));
 	}
 	
 	private static class AssetsBitmapLoadCallable extends BitmapLoadCallable {
 		
-		public AssetsBitmapLoadCallable(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
-			super(displayRequest, reentrantLock, configuration);
+		public AssetsBitmapLoadCallable(DisplayRequest displayRequest) {
+			super(displayRequest);
 		}
 
 		@Override
 		public InputStreamCreator getInputStreamCreator() {
-			return new AssetsInputStreamCreator(configuration.getContext(), Scheme.ASSETS.crop(displayRequest.getImageUri()));
+			return new AssetsInputStreamCreator(displayRequest.getConfiguration().getContext(), Scheme.ASSETS.crop(displayRequest.getImageUri()));
 		}
 
 		@Override

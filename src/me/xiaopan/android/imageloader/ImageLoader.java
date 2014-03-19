@@ -28,7 +28,7 @@ import me.xiaopan.android.imageloader.task.display.DisplayRequest.DisplayListene
 import me.xiaopan.android.imageloader.task.display.DrawableBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.FileBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
-import me.xiaopan.android.imageloader.task.display.ImageViewAware;
+import me.xiaopan.android.imageloader.task.display.ImageViewHolder;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import me.xiaopan.android.imageloader.util.ImageSizeUtils;
@@ -116,18 +116,20 @@ public class ImageLoader{
 		}
 		
 		//计算目标尺寸并创建请求
-		ImageViewAware imageViewAware = new ImageViewAware(imageView);
-		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageViewAware, displayOptions.getMaxImageSize());
+		ImageViewHolder imageViewHolder = new ImageViewHolder(imageView);
+		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageViewHolder, displayOptions.getMaxImageSize());
 		String requestId = ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(imageUri), targetSize, displayOptions.getBitmapProcessor());
 		String requestName = imageUri;
 		
-		DisplayRequest displayRequest = new DisplayRequest(imageViewAware);
+		DisplayRequest displayRequest = new DisplayRequest();
 		displayRequest.setId(requestId);
 		displayRequest.setName(requestName);
 		displayRequest.setImageUri(imageUri);
 		displayRequest.setTargetSize(targetSize);
-		displayRequest.setDisplayOptions(displayOptions);
+		displayRequest.setConfiguration(configuration);
 		displayRequest.setDisplayListener(displayListener);
+		displayRequest.setDisplayOptions(displayOptions);
+		displayRequest.setImageViewHolder(imageViewHolder);
 		
 		//尝试显示
 		if(displayRequest.getDisplayOptions().isEnableMenoryCache()){
@@ -145,25 +147,30 @@ public class ImageLoader{
 		}
 		
 		//尝试取消正在加载的任务
-		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(displayRequest, imageView, configuration)){
+		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(displayRequest, imageView)){
 			//创建新的加载任务
 			BitmapLoadTask bitmapLoadTask = null;
 			switch(scheme){
 				case HTTP :
 				case HTTPS : 
-					bitmapLoadTask = new HttpBitmapDisplayTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
+					displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+					bitmapLoadTask = new HttpBitmapDisplayTask(displayRequest);
 					break;
 				case FILE : 
-					bitmapLoadTask = new FileBitmapDisplayTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
+					displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+					bitmapLoadTask = new FileBitmapDisplayTask(displayRequest);
 					break;
 				case ASSETS : 
-					bitmapLoadTask = new AssetsBitmapDisplayTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
+					displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+					bitmapLoadTask = new AssetsBitmapDisplayTask(displayRequest);
 					break;
 				case CONTENT : 
-					bitmapLoadTask = new ContentBitmapDisplayTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
+					displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+					bitmapLoadTask = new ContentBitmapDisplayTask(displayRequest);
 					break;
 				case DRAWABLE : 
-					bitmapLoadTask = new DrawableBitmapDisplayTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
+					displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+					bitmapLoadTask = new DrawableBitmapDisplayTask(displayRequest);
 					break;
 				default:
 					break;

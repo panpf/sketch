@@ -16,7 +16,6 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.display.BitmapDisplayer.BitmapType;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
@@ -24,21 +23,19 @@ import android.widget.ImageView;
 public class BitmapDisplayRunnable implements Runnable {
 	private DisplayRequest displayRequest;
 	private BitmapType bitmapType;
-	private Configuration configuration;
 	private BitmapDrawable bitmapDrawable;
 
-	public BitmapDisplayRunnable(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Configuration configuration) {
+	public BitmapDisplayRunnable(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, BitmapType bitmapType) {
 		this.displayRequest = displayRequest;
-		this.configuration = configuration;
 		this.bitmapDrawable = bitmapDrawable;
 		this.bitmapType = bitmapType;
 	}
 
 	@Override
 	public void run() {
-		ImageView imageView = displayRequest.getImageViewAware().getImageView();
+		ImageView imageView = displayRequest.getImageViewHolder().getImageView();
 		if(imageView != null){
-			displayRequest.getDisplayOptions().getBitmapDisplayer().display(imageView, bitmapDrawable, bitmapType, displayRequest, configuration);
+			displayRequest.getDisplayOptions().getBitmapDisplayer().display(imageView, bitmapDrawable, bitmapType, displayRequest);
 			if(displayRequest.getDisplayListener() != null){
 				if(bitmapType == BitmapType.SUCCESS){
 					displayRequest.getDisplayListener().onComplete(displayRequest.getImageUri(), imageView, bitmapDrawable);

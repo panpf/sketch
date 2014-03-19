@@ -16,9 +16,6 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import java.util.concurrent.locks.ReentrantLock;
-
-import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.decode.ContentInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
@@ -26,19 +23,19 @@ import me.xiaopan.android.imageloader.task.BitmapLoadTask;
 
 public class ContentBitmapDisplayTask extends  BitmapLoadTask {
 	
-	public ContentBitmapDisplayTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
-		super(displayRequest, configuration, new ContentBitmapLoadCallable(displayRequest, reentrantLock, configuration));
+	public ContentBitmapDisplayTask(DisplayRequest displayRequest) {
+		super(displayRequest, new ContentBitmapLoadCallable(displayRequest));
 	}
 	
 	private static class ContentBitmapLoadCallable extends BitmapLoadCallable {
 		
-		public ContentBitmapLoadCallable(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
-			super(displayRequest, reentrantLock, configuration);
+		public ContentBitmapLoadCallable(DisplayRequest displayRequest) {
+			super(displayRequest);
 		}
 
 		@Override
 		public InputStreamCreator getInputStreamCreator() {
-			return new ContentInputStreamCreator(configuration.getContext(), displayRequest.getImageUri());
+			return new ContentInputStreamCreator(displayRequest.getConfiguration().getContext(), displayRequest.getImageUri());
 		}
 
 		@Override

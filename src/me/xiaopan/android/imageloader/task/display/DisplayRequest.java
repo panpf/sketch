@@ -16,6 +16,9 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
+import java.util.concurrent.locks.ReentrantLock;
+
+import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
@@ -25,27 +28,15 @@ import android.widget.ImageView;
  */
 public class DisplayRequest {
 	private String id;	//ID
-	private String name;	//名称，用于在输出log时区分不同的请求
-	/**
-	 * 支持以下5种Uri
-	 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
-	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
-	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
-	 * <br>String imageUri = "assets://image.png"; // from assets
-	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-	 * </blockquote>
-	 */
-	private String imageUri;
-	private DisplayOptions displayOptions;	//显示选项
+	private String name;	//名称
+	private String imageUri;	//Uri
 	private ImageSize targetSize;	//目标尺寸
+	private Configuration configuration;	//配置
+	private ReentrantLock reentrantLock;	//执行锁
+	private DisplayListener displayListener;	//监听器
+	private DisplayOptions displayOptions;	//显示选项
+	private ImageViewHolder imageViewHolder;	//ImageView持有器
 	
-	private ImageViewAware imageViewAware;
-	private DisplayListener displayListener;
-	
-	public DisplayRequest(ImageViewAware imageViewAware) {
-		this.imageViewAware = imageViewAware;
-	}
-
 	/**
 	 * 获取ID
 	 * @return ID
@@ -60,6 +51,23 @@ public class DisplayRequest {
 	 */
 	public DisplayRequest setId(String id) {
 		this.id = id;
+		return this;
+	}
+
+	/**
+	 * 获取名称，用于在输出log时区分不同的请求
+	 * @return
+	 */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * 设置名称，用于在输出log时区分不同的请求
+	 * @param name
+	 */
+	public DisplayRequest setName(String name) {
+		this.name = name;
 		return this;
 	}
 	
@@ -91,21 +99,70 @@ public class DisplayRequest {
 		this.imageUri = imageUri;
 		return this;
 	}
-
+	
 	/**
-	 * 获取名称，用于在输出log时区分不同的请求
+	 * 获取目标尺寸
 	 * @return
 	 */
-	public String getName() {
-		return name;
+	public ImageSize getTargetSize() {
+		return targetSize;
 	}
 
 	/**
-	 * 设置名称，用于在输出log时区分不同的请求
-	 * @param name
+	 * 设置目标尺寸
+	 * @param targetSize
 	 */
-	public DisplayRequest setName(String name) {
-		this.name = name;
+	public DisplayRequest setTargetSize(ImageSize targetSize) {
+		this.targetSize = targetSize;
+		return this;
+	}
+
+	/**
+	 * 获取配置
+	 * @return
+	 */
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	/**
+	 * 设置配置
+	 * @param configuration
+	 */
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+
+	/**
+	 * 获取同步锁
+	 * @return
+	 */
+	public ReentrantLock getReentrantLock() {
+		return reentrantLock;
+	}
+
+	/**
+	 * 设置同步锁
+	 * @param reentrantLock
+	 */
+	public void setReentrantLock(ReentrantLock reentrantLock) {
+		this.reentrantLock = reentrantLock;
+	}
+
+	/**
+	 * 获取显示监听器
+	 * @return
+	 */
+	public DisplayListener getDisplayListener() {
+		return displayListener;
+	}
+
+	/**
+	 * 设置显示监听器
+	 * @param imageLoadListener
+	 */
+	public DisplayRequest setDisplayListener(DisplayListener imageLoadListener) {
+		this.displayListener = imageLoadListener;
 		return this;
 	}
 	
@@ -127,45 +184,19 @@ public class DisplayRequest {
 	}
 	
 	/**
-	 * 获取目标尺寸
+	 * 获取ImageView持有器
 	 * @return
 	 */
-	public ImageSize getTargetSize() {
-		return targetSize;
+	public ImageViewHolder getImageViewHolder() {
+		return imageViewHolder;
 	}
 
 	/**
-	 * 设置目标尺寸
-	 * @param targetSize
+	 * 设置ImageView持有器
+	 * @param imageViewHolder
 	 */
-	public DisplayRequest setTargetSize(ImageSize targetSize) {
-		this.targetSize = targetSize;
-		return this;
-	}
-	
-	/**
-	 * 获取ImageViewAware
-	 * @return
-	 */
-	public ImageViewAware getImageViewAware() {
-		return imageViewAware;
-	}
-
-	/**
-	 * 获取显示监听器
-	 * @return
-	 */
-	public DisplayListener getDisplayListener() {
-		return displayListener;
-	}
-
-	/**
-	 * 设置显示监听器
-	 * @param imageLoadListener
-	 */
-	public DisplayRequest setDisplayListener(DisplayListener imageLoadListener) {
-		this.displayListener = imageLoadListener;
-		return this;
+	public void setImageViewHolder(ImageViewHolder imageViewHolder) {
+		this.imageViewHolder = imageViewHolder;
 	}
 
 	/**

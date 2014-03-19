@@ -19,9 +19,7 @@ package me.xiaopan.android.imageloader.task.display;
 import java.io.File;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.concurrent.locks.ReentrantLock;
 
-import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.ByteArrayInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.FileInputStreamCreator;
@@ -33,73 +31,69 @@ import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.util.Log;
 
 public class HttpBitmapDisplayTask extends  BitmapLoadTask {
-	private DisplayRequest request;
-	private Configuration configuration;
+	private DisplayRequest displayRequest;
 	
-	public HttpBitmapDisplayTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
-		super(displayRequest, configuration, new HttpBitmapLoadCallable(displayRequest, reentrantLock, configuration));
-		this.request = displayRequest;
-		this.configuration = configuration;
+	public HttpBitmapDisplayTask(DisplayRequest displayRequest) {
+		super(displayRequest, new HttpBitmapLoadCallable(displayRequest));
+		this.displayRequest = displayRequest;
 	}
 	
 	public boolean isFromNetworkLoad(){
-		return !isAvailableOfFile(getCacheFile(), request.getDisplayOptions().getDiskCachePeriodOfValidity(), configuration, request.getName());
+		return !isAvailableOfFile(getCacheFile(), displayRequest);
 	}
 
 	public File getCacheFile() {
-		return request.getDisplayOptions().isEnableDiskCache()?configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(request.getImageUri())):null;
+		return displayRequest.getDisplayOptions().isEnableDiskCache()?displayRequest.getConfiguration().getBitmapCacher().getDiskCacheFile(displayRequest.getConfiguration().getContext(), ImageLoaderUtils.encodeUrl(displayRequest.getImageUri())):null;
 	}
 	
 	/**
 	 * 判断给定文件是否可以使用
 	 * @param file
-	 * @param periodOfValidity
-	 * @param configuration
-	 * @param requestName
+	 * @param displayRequest
 	 * @return
 	 */
-	public static boolean isAvailableOfFile(File file, int periodOfValidity, Configuration configuration, String requestName){
+	public static boolean isAvailableOfFile(File file, DisplayRequest displayRequest){
 		if(file ==null){
-			if(configuration.isDebugMode()){
-				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件为null").append("；").append(requestName).toString());
+			if(displayRequest.getConfiguration().isDebugMode()){
+				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件为null").append("；").append(displayRequest.getName()).toString());
 			}
 			return false;
 		}
 		
 		if(!file.exists()){
-			if(configuration.isDebugMode()){
-				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件不存在").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(requestName).toString());
+			if(displayRequest.getConfiguration().isDebugMode()){
+				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件不存在").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(displayRequest.getName()).toString());
 			}
 			return false;
 		}
 		
 		if(file.length() <= 0){
-			if(configuration.isDebugMode()){
-				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件长度为0").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(requestName).toString());
+			if(displayRequest.getConfiguration().isDebugMode()){
+				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件长度为0").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(displayRequest.getName()).toString());
 			}
 			return false;
 		}
 		
-		if(periodOfValidity <= 0){
-			if(configuration.isDebugMode()){
-				Log.d(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件永久有效").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(requestName).toString());
+		if(displayRequest.getDisplayOptions().getDiskCachePeriodOfValidity() <= 0){
+			if(displayRequest.getConfiguration().isDebugMode()){
+				Log.d(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件永久有效").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(displayRequest.getName()).toString());
 			}
 			return true;
 		}
 		
 		/* 判断是否过期 */
 		Calendar calendar = new GregorianCalendar();
-		calendar.add(Calendar.MILLISECOND, -periodOfValidity);
+		calendar.add(Calendar.MILLISECOND, -displayRequest.getDisplayOptions().getDiskCachePeriodOfValidity());
 		if(calendar.getTimeInMillis() >= file.lastModified()){
 			file.delete();
-			if(configuration.isDebugMode()){
-				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件过期已删除").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(requestName).toString());
+			if(displayRequest.getConfiguration().isDebugMode()){
+				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件过期已删除").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(displayRequest.getName()).toString());
 			}
 			return false;
 		}
 		
-		if(configuration.isDebugMode()){
-			Log.d(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件未过期").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(requestName).toString());
+		if(displayRequest.getConfiguration().isDebugMode()){
+			Log.d(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件未过期").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(displayRequest.getName()).toString());
 		}
 		return true;
 	}
@@ -108,22 +102,22 @@ public class HttpBitmapDisplayTask extends  BitmapLoadTask {
 		private File cacheFile = null;
 		private InputStreamCreator inputStreamCreator = null;
 		
-		public HttpBitmapLoadCallable(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
-			super(displayRequest, reentrantLock, configuration);
+		public HttpBitmapLoadCallable(DisplayRequest displayRequest) {
+			super(displayRequest);
 		}
 
 		@Override
 		public InputStreamCreator getInputStreamCreator() {
 			if(inputStreamCreator == null){
 				if(displayRequest.getDisplayOptions().isEnableDiskCache()){
-					cacheFile = configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(displayRequest.getImageUri()));
-					if(HttpBitmapDisplayTask.isAvailableOfFile(cacheFile, displayRequest.getDisplayOptions().getDiskCachePeriodOfValidity(), configuration, displayRequest.getName())){
+					cacheFile = displayRequest.getConfiguration().getBitmapCacher().getDiskCacheFile(displayRequest.getConfiguration().getContext(), ImageLoaderUtils.encodeUrl(displayRequest.getImageUri()));
+					if(HttpBitmapDisplayTask.isAvailableOfFile(cacheFile, displayRequest)){
 						inputStreamCreator = new FileInputStreamCreator(cacheFile);
 					}else{
-						inputStreamCreator = getNetInputStreamCreator(configuration, displayRequest, cacheFile);
+						inputStreamCreator = getNetInputStreamCreator(displayRequest, cacheFile);
 					}
 				}else{
-					inputStreamCreator = getNetInputStreamCreator(configuration, displayRequest, null);
+					inputStreamCreator = getNetInputStreamCreator(displayRequest, null);
 				}
 			}
 			return inputStreamCreator;
@@ -145,9 +139,9 @@ public class HttpBitmapDisplayTask extends  BitmapLoadTask {
 	     * @param httpClient
 	     * @return
 	     */
-	    private InputStreamCreator getNetInputStreamCreator(Configuration configuration, DisplayRequest displayRequest, File cacheFile){
+	    private InputStreamCreator getNetInputStreamCreator(DisplayRequest displayRequest, File cacheFile){
 	    	final NetInputStreamCreatorHolder holder = new NetInputStreamCreatorHolder();
-	    	configuration.getImageDownloader().execute(displayRequest, cacheFile, configuration, new DownloadListener() {
+	    	displayRequest.getConfiguration().getImageDownloader().execute(displayRequest, cacheFile, new DownloadListener() {
 				@Override
 				public void onFailed() {}
 				

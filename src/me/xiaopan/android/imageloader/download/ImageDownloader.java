@@ -18,7 +18,6 @@ package me.xiaopan.android.imageloader.download;
 
 import java.io.File;
 
-import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
 
@@ -30,8 +29,7 @@ public interface ImageDownloader {
 	 * 执行
 	 * @param displayRequest
 	 * @param cacheFile
-	 * @param configuration
 	 * @param onCompleteListener
 	 */
-	public void execute(DisplayRequest displayRequest, File cacheFile, Configuration configuration, DownloadListener onCompleteListener);
+	public void execute(DisplayRequest displayRequest, File cacheFile, DownloadListener onCompleteListener);
 }

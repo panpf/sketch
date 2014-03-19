@@ -25,7 +25,6 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
@@ -85,7 +84,7 @@ public class LockImageDownloader implements ImageDownloader {
 	}
 
 	@Override
-	public void execute(DisplayRequest displayRequest, File cacheFile, Configuration configuration, DownloadListener onCompleteListener) {
+	public void execute(DisplayRequest displayRequest, File cacheFile, DownloadListener onCompleteListener) {
 		boolean running = true;
 		boolean exists = false;
 		Result result = Result.FAILURE;
@@ -97,12 +96,12 @@ public class LockImageDownloader implements ImageDownloader {
 			if(exists = cacheFile.exists()){
 				running = false;
 				result = Result.FILE;
-				if(configuration.isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("文件已存在，无需下载").append("；").append(displayRequest.getName()).toString());
+				if(displayRequest.getConfiguration().isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("文件已存在，无需下载").append("；").append(displayRequest.getName()).toString());
 			}else{
-				if(configuration.isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载开始").append("；").append(displayRequest.getName()).toString());
+				if(displayRequest.getConfiguration().isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载开始").append("；").append(displayRequest.getName()).toString());
 			}
 		}else{
-			if(configuration.isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载开始").append("；").append(displayRequest.getName()).toString());
+			if(displayRequest.getConfiguration().isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载开始").append("；").append(displayRequest.getName()).toString());
 		}
 		
 		long fileLength = 0;
@@ -149,7 +148,7 @@ public class LockImageDownloader implements ImageDownloader {
 					}
 					
 					//申请空间
-					configuration.getBitmapCacher().setCacheFileLength(cacheFile, fileLength);
+					displayRequest.getConfiguration().getBitmapCacher().setCacheFileLength(cacheFile, fileLength);
 					
 					/* 读取数据并写入缓存文件 */
 					bufferedfInputStream = new BufferedInputStream(httpResponse.getEntity().getContent());
@@ -179,7 +178,7 @@ public class LockImageDownloader implements ImageDownloader {
 				if(parentDir != null && parentDir.exists()) parentDir.delete();	//如果创建了新目录就删除
 				running = ((e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException) && displayRequest.getDisplayOptions().getMaxRetryCount() > 0)?numberOfLoaded < displayRequest.getDisplayOptions().getMaxRetryCount():false;	//如果尚未达到最大重试次数，那么就再尝试一次
 				
-				if(configuration.isDebugMode()){
+				if(displayRequest.getConfiguration().isDebugMode()){
 					Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载异常").append("；").append(displayRequest.getName()).append("；").append("异常信息").append("=").append(e2.toString()).append("；").append(running?"重新下载":"不再下载").toString());
 				}
 			}
@@ -193,10 +192,10 @@ public class LockImageDownloader implements ImageDownloader {
 			case FILE : 
 				if(onCompleteListener != null){
 					if(cacheFile != null && cacheFile.exists() && (exists || (fileLength >0 && cacheFile.length() == fileLength))){
-						if(configuration.isDebugMode() && !exists) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - FILE").append("；").append(displayRequest.getName()).toString());
+						if(displayRequest.getConfiguration().isDebugMode() && !exists) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - FILE").append("；").append(displayRequest.getName()).toString());
 						onCompleteListener.onComplete(cacheFile);
 					}else{
-						if(configuration.isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - FILE").append("；").append(displayRequest.getName()).toString());
+						if(displayRequest.getConfiguration().isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - FILE").append("；").append(displayRequest.getName()).toString());
 						onCompleteListener.onFailed();
 					}
 				}
@@ -204,17 +203,17 @@ public class LockImageDownloader implements ImageDownloader {
 			case BYTE_ARRAY : 
 				if(onCompleteListener != null){
 					if(data != null && (exists || (fileLength >0 && data.length == fileLength))){
-						if(configuration.isDebugMode() && !exists) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - BYTE_ARRAY").append("；").append(displayRequest.getName()).toString());
+						if(displayRequest.getConfiguration().isDebugMode() && !exists) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - BYTE_ARRAY").append("；").append(displayRequest.getName()).toString());
 						onCompleteListener.onComplete(data);
 					}else{
-						if(configuration.isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - BYTE_ARRAY").append("；").append(displayRequest.getName()).toString());
+						if(displayRequest.getConfiguration().isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - BYTE_ARRAY").append("；").append(displayRequest.getName()).toString());
 						onCompleteListener.onFailed();
 					}
 				}
 				break;
 			default : 
 				if(onCompleteListener != null){
-					if(configuration.isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败").append("；").append(displayRequest.getName()).toString());
+					if(displayRequest.getConfiguration().isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败").append("；").append(displayRequest.getName()).toString());
 					onCompleteListener.onFailed();
 				}
 				break;
