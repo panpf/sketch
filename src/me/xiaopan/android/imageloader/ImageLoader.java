@@ -121,14 +121,13 @@ public class ImageLoader{
 		String requestId = ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(imageUri), targetSize, displayOptions.getBitmapProcessor());
 		String requestName = imageUri;
 		
-		DisplayRequest displayRequest = new DisplayRequest.Builder(imageViewAware)
-			.setId(requestId)
-			.setName(requestName)
-			.setImageUri(imageUri)
-			.setTargetSize(targetSize)
-			.setDisplayOptions(displayOptions)
-			.setDisplayListener(displayListener)
-			.build();
+		DisplayRequest displayRequest = new DisplayRequest(imageViewAware);
+		displayRequest.setId(requestId);
+		displayRequest.setName(requestName);
+		displayRequest.setImageUri(imageUri);
+		displayRequest.setTargetSize(targetSize);
+		displayRequest.setDisplayOptions(displayOptions);
+		displayRequest.setDisplayListener(displayListener);
 		
 		//尝试显示
 		if(displayRequest.getDisplayOptions().isEnableMenoryCache()){
