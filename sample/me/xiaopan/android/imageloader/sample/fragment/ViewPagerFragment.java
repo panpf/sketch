@@ -1,5 +1,6 @@
 package me.xiaopan.android.imageloader.sample.fragment;
 
+import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.sample.adapter.ImageFragmentAdapter;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -15,10 +16,10 @@ public class ViewPagerFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		ViewPager viewPager = new ViewPager(getActivity());
-		viewPager.setId(444754121);
+		viewPager.setId(R.id.viewPlayer);
 		viewPager.setBackgroundColor(Color.BLACK);
 		if(getArguments() != null){
-			viewPager.setAdapter(new ImageFragmentAdapter(getFragmentManager(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS)));
+			viewPager.setAdapter(new ImageFragmentAdapter(getChildFragmentManager(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS)));
 			viewPager.setCurrentItem(getArguments().getInt(PARAM_OPTIONAL_INT_CURRENT_POSITION, 0));
 		}
 		return viewPager;

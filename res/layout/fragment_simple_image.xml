@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" style="@style/base_match_match_vertical" android:background="@color/base_black">
-	<FrameLayout style="@style/base_wrap_wrap">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" style="@style/match_match_vertical" android:background="@color/black">
+	<FrameLayout style="@style/wrap_wrap">
 		<ImageView 
 		    android:id="@+id/image_simpleImage_1" 
 		    android:layout_width="100dp"
@@ -13,7 +13,7 @@
 		    android:layout_gravity="center"/>
 	</FrameLayout>
 	
-	<FrameLayout style="@style/base_wrap_wrap">
+	<FrameLayout style="@style/wrap_wrap">
 		<ImageView 
 		    android:id="@+id/image_simpleImage_2" 
 		    android:layout_width="200dp"

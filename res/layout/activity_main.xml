@@ -10,13 +10,13 @@
             android:layout_width="150dp" 
             android:layout_height="fill_parent" 
             android:layout_gravity="start" 
-            android:background="@color/base_white"/>
+            android:background="@color/white"/>
     	<ListView 
     	    android:id="@+id/list_main_uri" 
     	    android:layout_width="150dp" 
     	    android:layout_height="fill_parent" 
             android:layout_gravity="end" 
-            android:background="@color/base_white"/>
+            android:background="@color/white"/>
     </android.support.v4.widget.DrawerLayout>
     <include layout="@layout/include_shadow_down"/>
 </merge>
