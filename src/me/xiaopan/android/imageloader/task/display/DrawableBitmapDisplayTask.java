@@ -19,26 +19,27 @@ package me.xiaopan.android.imageloader.task.display;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.Configuration;
-import me.xiaopan.android.imageloader.decode.ContentInputStreamCreator;
+import me.xiaopan.android.imageloader.decode.DrawableInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
+import me.xiaopan.android.imageloader.util.Scheme;
 
-public class ContentBitmapLoadTask extends  BitmapLoadTask {
+public class DrawableBitmapDisplayTask extends  BitmapLoadTask {
 	
-	public ContentBitmapLoadTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
-		super(displayRequest, configuration, new ContentBitmapLoadCallable(displayRequest, reentrantLock, configuration));
+	public DrawableBitmapDisplayTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
+		super(displayRequest, configuration, new DrawableBitmapLoadCallable(displayRequest, reentrantLock, configuration));
 	}
 	
-	private static class ContentBitmapLoadCallable extends BitmapLoadCallable {
+	private static class DrawableBitmapLoadCallable extends BitmapLoadCallable {
 		
-		public ContentBitmapLoadCallable(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
+		public DrawableBitmapLoadCallable(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
 			super(displayRequest, reentrantLock, configuration);
 		}
 
 		@Override
 		public InputStreamCreator getInputStreamCreator() {
-			return new ContentInputStreamCreator(configuration.getContext(), displayRequest.getImageUri());
+			return new DrawableInputStreamCreator(configuration.getContext(), Scheme.DRAWABLE.crop(displayRequest.getImageUri()));
 		}
 
 		@Override

@@ -19,15 +19,15 @@ package me.xiaopan.android.imageloader;
 import java.io.File;
 
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
-import me.xiaopan.android.imageloader.task.display.AssetsBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.display.AssetsBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.AsyncDrawable;
-import me.xiaopan.android.imageloader.task.display.ContentBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.display.ContentBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.DisplayListener;
 import me.xiaopan.android.imageloader.task.display.DisplayOptions;
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
-import me.xiaopan.android.imageloader.task.display.DrawableBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.display.FileBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.display.HttpBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.display.DrawableBitmapDisplayTask;
+import me.xiaopan.android.imageloader.task.display.FileBitmapDisplayTask;
+import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.ImageViewAware;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
@@ -152,19 +152,19 @@ public class ImageLoader{
 			switch(scheme){
 				case HTTP :
 				case HTTPS : 
-					bitmapLoadTask = new HttpBitmapLoadTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
+					bitmapLoadTask = new HttpBitmapDisplayTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
 					break;
 				case FILE : 
-					bitmapLoadTask = new FileBitmapLoadTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
+					bitmapLoadTask = new FileBitmapDisplayTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
 					break;
 				case ASSETS : 
-					bitmapLoadTask = new AssetsBitmapLoadTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
+					bitmapLoadTask = new AssetsBitmapDisplayTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
 					break;
 				case CONTENT : 
-					bitmapLoadTask = new ContentBitmapLoadTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
+					bitmapLoadTask = new ContentBitmapDisplayTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
 					break;
 				case DRAWABLE : 
-					bitmapLoadTask = new DrawableBitmapLoadTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
+					bitmapLoadTask = new DrawableBitmapDisplayTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
 					break;
 				default:
 					break;
@@ -279,6 +279,13 @@ public class ImageLoader{
 	 * 下载
 	 */
 	public void download(){
+		
+	}
+	
+	/**
+	 * 加载
+	 */
+	public void load(){
 		
 	}
 	

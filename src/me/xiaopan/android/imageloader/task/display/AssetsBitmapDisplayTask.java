@@ -25,9 +25,9 @@ import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
 import me.xiaopan.android.imageloader.util.Scheme;
 
-public class AssetsBitmapLoadTask extends  BitmapLoadTask {
+public class AssetsBitmapDisplayTask extends  BitmapLoadTask {
 	
-	public AssetsBitmapLoadTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
+	public AssetsBitmapDisplayTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
 		super(displayRequest, configuration, new AssetsBitmapLoadCallable(displayRequest, reentrantLock, configuration));
 	}
 	

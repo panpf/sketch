@@ -26,17 +26,17 @@ import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.ByteArrayInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.FileInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
-import me.xiaopan.android.imageloader.download.ImageDownloader.DownloadListener;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
+import me.xiaopan.android.imageloader.task.download.DownloadListener;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.util.Log;
 
-public class HttpBitmapLoadTask extends  BitmapLoadTask {
+public class HttpBitmapDisplayTask extends  BitmapLoadTask {
 	private DisplayRequest request;
 	private Configuration configuration;
 	
-	public HttpBitmapLoadTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
+	public HttpBitmapDisplayTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
 		super(displayRequest, configuration, new HttpBitmapLoadCallable(displayRequest, reentrantLock, configuration));
 		this.request = displayRequest;
 		this.configuration = configuration;
@@ -117,7 +117,7 @@ public class HttpBitmapLoadTask extends  BitmapLoadTask {
 			if(inputStreamCreator == null){
 				if(displayRequest.getDisplayOptions().isEnableDiskCache()){
 					cacheFile = configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(displayRequest.getImageUri()));
-					if(HttpBitmapLoadTask.isAvailableOfFile(cacheFile, displayRequest.getDisplayOptions().getDiskCachePeriodOfValidity(), configuration, displayRequest.getName())){
+					if(HttpBitmapDisplayTask.isAvailableOfFile(cacheFile, displayRequest.getDisplayOptions().getDiskCachePeriodOfValidity(), configuration, displayRequest.getName())){
 						inputStreamCreator = new FileInputStreamCreator(cacheFile);
 					}else{
 						inputStreamCreator = getNetInputStreamCreator(configuration, displayRequest, cacheFile);

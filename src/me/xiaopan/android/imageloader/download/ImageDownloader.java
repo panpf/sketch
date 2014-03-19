@@ -20,6 +20,7 @@ import java.io.File;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
+import me.xiaopan.android.imageloader.task.download.DownloadListener;
 
 /**
  * 图片下载器
@@ -33,26 +34,4 @@ public interface ImageDownloader {
 	 * @param onCompleteListener
 	 */
 	public void execute(DisplayRequest displayRequest, File cacheFile, Configuration configuration, DownloadListener onCompleteListener);
-	
-	/**
-	 * 下载监听器
-	 */
-	public interface DownloadListener {
-		/**
-		 * 当下载完成
-		 * @param cacheFile
-		 */
-		public void onComplete(File cacheFile);
-		
-		/**
-		 * 当下载完成
-		 * @param data
-		 */
-		public void onComplete(byte[] data);
-		
-		/**
-		 * 当下载失败
-		 */
-		public void onFailed();
-	}
 }
