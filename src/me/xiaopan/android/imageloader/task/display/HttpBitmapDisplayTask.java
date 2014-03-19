@@ -28,7 +28,7 @@ import me.xiaopan.android.imageloader.decode.FileInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
-import me.xiaopan.android.imageloader.task.download.DownloadListener;
+import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.util.Log;
 

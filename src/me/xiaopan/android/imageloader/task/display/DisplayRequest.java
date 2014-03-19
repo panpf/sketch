@@ -17,6 +17,8 @@
 package me.xiaopan.android.imageloader.task.display;
 
 import me.xiaopan.android.imageloader.util.ImageSize;
+import android.graphics.drawable.BitmapDrawable;
+import android.widget.ImageView;
 
 /**
  * 显示请求
@@ -231,5 +233,15 @@ public class DisplayRequest {
 		public DisplayRequest build(){
 			return request;
 		}
+	}
+	
+	/**
+	 * 显示监听器
+	 */
+	public interface DisplayListener {
+		public void onStarted(String imageUri, ImageView imageView);
+		public void onFailed(String imageUri, ImageView imageView);
+		public void onComplete(String imageUri, ImageView imageView, BitmapDrawable drawable);
+		public void onCancelled(String imageUri, ImageView imageView);
 	}
 }

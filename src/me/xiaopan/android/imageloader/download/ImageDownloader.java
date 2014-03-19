@@ -20,7 +20,7 @@ import java.io.File;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
-import me.xiaopan.android.imageloader.task.download.DownloadListener;
+import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
 
 /**
  * 图片下载器
