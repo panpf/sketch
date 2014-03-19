@@ -38,11 +38,11 @@ public class HttpBitmapLoadTask extends  BitmapLoadTask {
 	}
 	
 	public boolean isFromNetworkLoad(){
-		return !isAvailableOfFile(getCacheFile(), request.getOptions().getDiskCachePeriodOfValidity(), configuration, request.getName());
+		return !isAvailableOfFile(getCacheFile(), request.getDisplayOptions().getDiskCachePeriodOfValidity(), configuration, request.getName());
 	}
 
 	public File getCacheFile() {
-		return request.getOptions().isEnableDiskCache()?configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(request.getImageUri())):null;
+		return request.getDisplayOptions().isEnableDiskCache()?configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(request.getImageUri())):null;
 	}
 	
 	/**

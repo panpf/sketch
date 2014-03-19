@@ -175,7 +175,7 @@ public class LockImageDownloader implements ImageDownloader {
 				LoadIOUtils.close(bufferedOutputStream);
 				if(createNewFile && cacheFile != null && cacheFile.exists()) cacheFile.delete();	//如果创建了新文件就删除
 				if(parentDir != null && parentDir.exists()) parentDir.delete();	//如果创建了新目录就删除
-				running = ((e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException) && request.getOptions().getMaxRetryCount() > 0)?numberOfLoaded < request.getOptions().getMaxRetryCount():false;	//如果尚未达到最大重试次数，那么就再尝试一次
+				running = ((e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException) && request.getDisplayOptions().getMaxRetryCount() > 0)?numberOfLoaded < request.getDisplayOptions().getMaxRetryCount():false;	//如果尚未达到最大重试次数，那么就再尝试一次
 				
 				if(configuration.isDebugMode()){
 					Log.d(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("下载异常").append("；").append(request.getName()).append("；").append("异常信息").append("=").append(e2.toString()).append("；").append(running?"重新下载":"不再下载").toString());

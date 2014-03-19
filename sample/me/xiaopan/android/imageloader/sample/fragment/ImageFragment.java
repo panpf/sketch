@@ -2,7 +2,7 @@ package me.xiaopan.android.imageloader.sample.fragment;
 
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.sample.OptionsType;
+import me.xiaopan.android.imageloader.sample.DisplayOptionsType;
 import me.xiaopan.android.imageloader.task.ImageLoadListener;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
@@ -29,7 +29,7 @@ public class ImageFragment extends Fragment {
 			
 			final ProgressBar progressBar = (ProgressBar) rootView.findViewById(R.id.progress_imageFragment_progress);
 			
-			ImageLoader.getInstance(getActivity()).display(uri, imageView, OptionsType.VIEW_PAGER, new ImageLoadListener() {
+			ImageLoader.getInstance(getActivity()).display(uri, imageView, DisplayOptionsType.VIEW_PAGER, new ImageLoadListener() {
 				@Override
 				public void onStarted(String imageUri, ImageView imageView) {
 					progressBar.setVisibility(View.VISIBLE);

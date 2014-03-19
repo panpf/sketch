@@ -20,9 +20,9 @@ import java.io.File;
 
 import me.xiaopan.android.imageloader.task.AsyncDrawable;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
+import me.xiaopan.android.imageloader.task.DisplayOptions;
 import me.xiaopan.android.imageloader.task.ImageLoadListener;
 import me.xiaopan.android.imageloader.task.ImageViewAware;
-import me.xiaopan.android.imageloader.task.Options;
 import me.xiaopan.android.imageloader.task.Request;
 import me.xiaopan.android.imageloader.task.assets.AssetsBitmapLoadTask;
 import me.xiaopan.android.imageloader.task.content.ContentBitmapLoadTask;
@@ -73,10 +73,10 @@ public class ImageLoader{
 	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 	 * </blockquote>
 	 * @param imageView 显示图片的视图
-	 * @param options 加载选项
+	 * @param displayOptions 显示选项
 	 * @param imageLoadListener 加载监听器
 	 */
-	public final void display(String imageUri, ImageView imageView, Options options, ImageLoadListener imageLoadListener){
+	public final void display(String imageUri, ImageView imageView, DisplayOptions displayOptions, ImageLoadListener imageLoadListener){
 		if(imageView == null){
 			if(configuration.isDebugMode()){
 				Log.e(configuration.getLogTag(), "imageView不能为null");
@@ -84,8 +84,8 @@ public class ImageLoader{
 			return;
 		}
 
-		if(options == null){
-			options = new Options(configuration.getContext());
+		if(displayOptions == null){
+			displayOptions = new DisplayOptions(configuration.getContext());
 		}
 		
 		if(imageLoadListener != null){
@@ -93,7 +93,7 @@ public class ImageLoader{
 		}
 		
 		if(ImageLoaderUtils.isEmpty(imageUri)){
-			imageView.setImageDrawable(options.getEmptyDrawable());
+			imageView.setImageDrawable(displayOptions.getEmptyDrawable());
 			if(configuration.isDebugMode()){
 				Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
@@ -105,7 +105,7 @@ public class ImageLoader{
 		
 		Scheme scheme = Scheme.ofUri(imageUri);
 		if(scheme == Scheme.UNKNOWN){
-			imageView.setImageDrawable(options.getFailureDrawable());
+			imageView.setImageDrawable(displayOptions.getFailureDrawable());
 			if(configuration.isDebugMode()){
 				Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
@@ -117,8 +117,8 @@ public class ImageLoader{
 		
 		//计算目标尺寸并创建请求
 		ImageViewAware imageViewAware = new ImageViewAware(imageView);
-		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageViewAware, options.getImageMaxSize());
-		String requestId = ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(imageUri), targetSize, options.getBitmapProcessor());
+		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageViewAware, displayOptions.getMaxImageSize());
+		String requestId = ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(imageUri), targetSize, displayOptions.getBitmapProcessor());
 		String requestName = imageUri;
 		
 		Request request = new Request.Builder()
@@ -126,13 +126,13 @@ public class ImageLoader{
 			.setName(requestName)
 			.setImageUri(imageUri)
 			.setTargetSize(targetSize)
-			.setOptions(options)
+			.setDisplayOptions(displayOptions)
 			.setImageViewAware(imageViewAware)
 			.setImageLoadListener(imageLoadListener)
 			.build();
 		
 		//尝试显示
-		if(request.getOptions().isEnableMenoryCache()){
+		if(request.getDisplayOptions().isEnableMenoryCache()){
 			BitmapDrawable cacheDrawable = configuration.getBitmapCacher().get(request.getId());
 			if(cacheDrawable != null){
 				imageView.setImageDrawable(cacheDrawable);
@@ -173,7 +173,7 @@ public class ImageLoader{
 			
 			if(bitmapLoadTask != null){
 				//显示默认图片
-				BitmapDrawable loadingBitmapDrawable = request.getOptions().getLoadingDrawable();
+				BitmapDrawable loadingBitmapDrawable = request.getDisplayOptions().getLoadingDrawable();
 				AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, bitmapLoadTask);
 				imageView.setImageDrawable(loadingAsyncDrawable);
 				
@@ -193,11 +193,11 @@ public class ImageLoader{
 	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 	 * </blockquote>
 	 * @param imageView 显示图片的视图
-	 * @param optionsName 加载选项的名称，你通过configuration.putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 * @param displayOptionsName 显示选项的名称，你通过configuration.putDisplayOptions()方法放进去的DisplayOptions在这里指定一样的名称就可以直接使用
 	 * @param imageLoadListener 加载监听器
 	 */
-	public final void display(String imageUri, ImageView imageView, Enum<?> optionsName, ImageLoadListener imageLoadListener){
-		display(imageUri, imageView, configuration.getOptions(optionsName), imageLoadListener);
+	public final void display(String imageUri, ImageView imageView, Enum<?> displayOptionsName, ImageLoadListener imageLoadListener){
+		display(imageUri, imageView, configuration.getDisplayOptions(displayOptionsName), imageLoadListener);
 	}
 	
 	/**
@@ -211,10 +211,10 @@ public class ImageLoader{
 	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 	 * </blockquote>
 	 * @param imageView 显示图片的视图
-	 * @param options 加载选项
+	 * @param displayOptions 显示选项
 	 */
-	public void display(String imageUri, ImageView imageView, Options options){
-		display(imageUri, imageView, options, null);
+	public void display(String imageUri, ImageView imageView, DisplayOptions displayOptions){
+		display(imageUri, imageView, displayOptions, null);
 	}
 	
 	/**
@@ -228,52 +228,52 @@ public class ImageLoader{
 	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 	 * </blockquote>
 	 * @param imageView 显示图片的视图
-	 * @param optionsName 加载选项的名称，你通过configuration.putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 * @param displayOptionsName 显示选项的名称，你通过configuration.putDisplayOptions()方法放进去的DisplayOptions在这里指定一样的名称就可以直接使用
 	 */
-	public void display(String imageUri, ImageView imageView, Enum<?> optionsName){
-		display(imageUri, imageView, configuration.getOptions(optionsName), null);
+	public void display(String imageUri, ImageView imageView, Enum<?> displayOptionsName){
+		display(imageUri, imageView, configuration.getDisplayOptions(displayOptionsName), null);
 	}
 	
 	/**
 	 * 显示图片
 	 * @param imageFile 图片文件
 	 * @param imageView 显示图片的视图
-	 * @param options 加载选项
+	 * @param displayOptions 显示选项
 	 * @param imageLoadListener 加载监听器
 	 */
-	public void display(File imageFile, ImageView imageView, Options options, ImageLoadListener imageLoadListener){
-		display(Uri.fromFile(imageFile).toString(), imageView, options, imageLoadListener);
+	public void display(File imageFile, ImageView imageView, DisplayOptions displayOptions, ImageLoadListener imageLoadListener){
+		display(Uri.fromFile(imageFile).toString(), imageView, displayOptions, imageLoadListener);
 	}
 	
 	/**
 	 * 显示图片
 	 * @param imageFile 图片文件
 	 * @param imageView 显示图片的视图
-	 * @param optionsName 加载选项的名称，你通过configuration.putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 * @param displayOptionsName 显示选项的名称，你通过configuration.putDisplayOptions()方法放进去的DisplayOptions在这里指定一样的名称就可以直接使用
 	 * @param imageLoadListener 加载监听器
 	 */
-	public void display(File imageFile, ImageView imageView, Enum<?> optionsName, ImageLoadListener imageLoadListener){
-		display(Uri.fromFile(imageFile).toString(), imageView, configuration.getOptions(optionsName), imageLoadListener);
+	public void display(File imageFile, ImageView imageView, Enum<?> displayOptionsName, ImageLoadListener imageLoadListener){
+		display(Uri.fromFile(imageFile).toString(), imageView, configuration.getDisplayOptions(displayOptionsName), imageLoadListener);
 	}
 	
 	/**
 	 * 显示图片
 	 * @param imageFile 图片文件
 	 * @param imageView 显示图片的视图
-	 * @param options 加载选项
+	 * @param displayOptions 显示选项
 	 */
-	public void display(File imageFile, ImageView imageView, Options options){
-		display(Uri.fromFile(imageFile).toString(), imageView, options, null);
+	public void display(File imageFile, ImageView imageView, DisplayOptions displayOptions){
+		display(Uri.fromFile(imageFile).toString(), imageView, displayOptions, null);
 	}
 	
 	/**
 	 * 显示图片
 	 * @param imageFile 图片文件
 	 * @param imageView 显示图片的视图
-	 * @param optionsName 加载选项的名称，你通过configuration.putOptions()方法放进去的Options在这里指定一样的名称就可以直接使用
+	 * @param displayOptionsName 显示选项的名称，你通过configuration.putDisplayOptions()方法放进去的DisplayOptions在这里指定一样的名称就可以直接使用
 	 */
-	public void display(File imageFile, ImageView imageView, Enum<?> optionsName){
-		display(Uri.fromFile(imageFile).toString(), imageView, configuration.getOptions(optionsName), null);
+	public void display(File imageFile, ImageView imageView, Enum<?> displayOptionsName){
+		display(Uri.fromFile(imageFile).toString(), imageView, configuration.getDisplayOptions(displayOptionsName), null);
 	}
 	
 	/**

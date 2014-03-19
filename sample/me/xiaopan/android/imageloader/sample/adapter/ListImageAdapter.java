@@ -18,7 +18,7 @@ package me.xiaopan.android.imageloader.sample.adapter;
 
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.sample.OptionsType;
+import me.xiaopan.android.imageloader.sample.DisplayOptionsType;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +62,7 @@ public class ListImageAdapter extends BaseAdapter {
 			viewHolder = (ViewHolder) convertView.getTag();
 		}
 		
-		ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, OptionsType.LIST_VIEW);
+		ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, DisplayOptionsType.LIST_VIEW);
 		return convertView;
 	}
 	

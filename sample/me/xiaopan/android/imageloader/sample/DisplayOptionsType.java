@@ -16,12 +16,7 @@
 
 package me.xiaopan.android.imageloader.sample;
 
-public enum OptionsType {
-	/**
-	 * 默认的
-	 */
-	DEFAULT, 
-	
+public enum DisplayOptionsType {
 	/**
 	 * ListView用的
 	 */

@@ -54,9 +54,9 @@ public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
 				}
 				if(bitmap != null && !bitmap.isRecycled()){
 					//处理位图
-					if(request.getOptions().getBitmapProcessor() != null){
+					if(request.getDisplayOptions().getBitmapProcessor() != null){
 						ImageView imageView = request.getImageViewAware().getImageView();
-						Bitmap newBitmap = request.getOptions().getBitmapProcessor().process(bitmap, imageView != null?imageView.getScaleType():ScaleType.CENTER_CROP, request.getTargetSize());
+						Bitmap newBitmap = request.getDisplayOptions().getBitmapProcessor().process(bitmap, imageView != null?imageView.getScaleType():ScaleType.CENTER_CROP, request.getTargetSize());
 						if(newBitmap != bitmap){
 							bitmap.recycle();
 							bitmap = newBitmap;
@@ -71,7 +71,7 @@ public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
 					}
 					
 					//放入内存缓存中
-					if(request.getOptions().isEnableMenoryCache()){
+					if(request.getDisplayOptions().isEnableMenoryCache()){
 						configuration.getBitmapCacher().put(request.getId(), bitmapDrawable);
 					}
 				}else{

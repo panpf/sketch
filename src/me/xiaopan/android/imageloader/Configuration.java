@@ -27,7 +27,7 @@ import me.xiaopan.android.imageloader.download.ImageDownloader;
 import me.xiaopan.android.imageloader.download.LockImageDownloader;
 import me.xiaopan.android.imageloader.execute.BaseTaskExecutor;
 import me.xiaopan.android.imageloader.execute.TaskExecutor;
-import me.xiaopan.android.imageloader.task.Options;
+import me.xiaopan.android.imageloader.task.DisplayOptions;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -44,7 +44,7 @@ public class Configuration {
 	private BitmapCacher bitmapCacher;	//位图缓存器
 	private BitmapDecoder bitmapDecoder;	//位图解码器
 	private ImageDownloader imageDownloader;	//图片下载器
-	private Map<Object, Options> optionsMap;	//加载选项集合
+	private Map<Object, DisplayOptions> displayOptionsMap;	//显示选项集合
 	
 	public Configuration(Context context){
 		if(Looper.myLooper() != Looper.getMainLooper()){
@@ -54,7 +54,7 @@ public class Configuration {
 		this.logTag = ImageLoader.class.getSimpleName();
 		this.context = context;
 		this.handler = new Handler();
-		this.optionsMap = new HashMap<Object, Options>();
+		this.displayOptionsMap = new HashMap<Object, DisplayOptions>();
 	}
 	
 	/**
@@ -168,21 +168,21 @@ public class Configuration {
 	}
 	
 	/**
-	 * 获取加载选项
+	 * 获取显示选项
 	 * @param optionsName
 	 * @return
 	 */
-	public Options getOptions(Enum<?> optionsName){
-		return this.optionsMap.get(optionsName);
+	public DisplayOptions getDisplayOptions(Enum<?> optionsName){
+		return this.displayOptionsMap.get(optionsName);
 	}
 	
 	/**
-	 * 放入加载选项
+	 * 放入显示选项
 	 * @param optionsName
-	 * @param options
+	 * @param displayOptions
 	 */
-	public Configuration putOptions(Enum<?> optionsName, Options options){
-		this.optionsMap.put(optionsName, options);
+	public Configuration putDisplayOptions(Enum<?> optionsName, DisplayOptions displayOptions){
+		this.displayOptionsMap.put(optionsName, displayOptions);
 		return this;
 	}
 

@@ -34,7 +34,7 @@ public class Request {
 	 * </blockquote>
 	 */
 	private String imageUri;
-	private Options options;	//加载选项
+	private DisplayOptions displayOptions;	//显示选项
 	private ImageSize targetSize;	//目标尺寸
 	
 	private ImageViewAware imageViewAware;
@@ -103,19 +103,19 @@ public class Request {
 	}
 	
 	/**
-	 * 获取加载选项
+	 * 获取显示选项
 	 * @return
 	 */
-	public Options getOptions() {
-		return options;
+	public DisplayOptions getDisplayOptions() {
+		return displayOptions;
 	}
 
 	/**
-	 * 设置加载选项
-	 * @param options
+	 * 设置显示选项
+	 * @param displayOptions
 	 */
-	public void setOptions(Options options) {
-		this.options = options;
+	public void setDisplayOptions(DisplayOptions displayOptions) {
+		this.displayOptions = displayOptions;
 	}
 	
 	/**
@@ -191,11 +191,11 @@ public class Request {
 		}
 		
 		/**
-		 * 设置加载选项
-		 * @param options
+		 * 设置显示选项
+		 * @param displayOptions
 		 */
-		public Builder setOptions(Options options) {
-			request.setOptions(options);
+		public Builder setDisplayOptions(DisplayOptions displayOptions) {
+			request.setDisplayOptions(displayOptions);
 			return this;
 		}
 		

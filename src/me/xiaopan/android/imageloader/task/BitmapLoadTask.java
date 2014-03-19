@@ -52,7 +52,7 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
 					configuration.getHandler().post(new BitmapDisplayRunnable(request, bitmapDrawable, BitmapType.SUCCESS, configuration));
 				}else{
-					configuration.getHandler().post(new BitmapDisplayRunnable(request, request.getOptions().getFailureDrawable(), BitmapType.FAILURE, configuration));
+					configuration.getHandler().post(new BitmapDisplayRunnable(request, request.getDisplayOptions().getFailureDrawable(), BitmapType.FAILURE, configuration));
 				}
 			}else{
 				if(configuration.isDebugMode()){

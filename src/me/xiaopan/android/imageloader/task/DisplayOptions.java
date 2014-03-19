@@ -28,29 +28,29 @@ import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView.ScaleType;
 
 /**
- * 加载选项
+ * 显示选项
  */
-public class Options{
+public class DisplayOptions{
 	private Context context;	//上下文
 	private int maxRetryCount;	//最大重试次数
 	private int diskCachePeriodOfValidity;	//磁盘缓存有效期，单位毫秒
 	private boolean enableMenoryCache;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
 	private boolean enableDiskCache;	//是否需要将图片缓存到磁盘
-	private ImageSize imageMaxSize;	//图片最大尺寸
+	private ImageSize maxImageSize;	//最大图片尺寸
 	private BitmapProcessor bitmapProcessor;	//位图处理器
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
 	private DrawableHolder emptyDrawableHolder;	//当uri为空时显示的图片
 	private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
 	private DrawableHolder failureDrawableHolder;	//当加载失败时显示的图片
 	
-	public Options(Context context) {
+	public DisplayOptions(Context context) {
 		this.context = context;
 		this.emptyDrawableHolder = new DrawableHolder();
 		this.loadingDrawableHolder = new DrawableHolder();
 		this.failureDrawableHolder = new DrawableHolder();
 		setEnableMenoryCache(true)
 		.setEnableDiskCache(true)
-		.setImageMaxSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
+		.setMaxImageSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
 		.setBitmapDisplayer(new FadeInBitmapDisplayer())
 		.setMaxRetryCount(2);
 	}
@@ -67,7 +67,7 @@ public class Options{
 	 * 设置是否将Bitmap缓存到内存中
 	 * @param enableMenoryCache
 	 */
-	public Options setEnableMenoryCache(boolean enableMenoryCache) {
+	public DisplayOptions setEnableMenoryCache(boolean enableMenoryCache) {
 		this.enableMenoryCache = enableMenoryCache;
 		return this;
 	}
@@ -84,7 +84,7 @@ public class Options{
 	 * 设置是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
 	 * @param enableDiskCache
 	 */
-	public Options setEnableDiskCache(boolean enableDiskCache) {
+	public DisplayOptions setEnableDiskCache(boolean enableDiskCache) {
 		this.enableDiskCache = enableDiskCache;
 		return this;
 	}
@@ -101,7 +101,7 @@ public class Options{
 	 * 设置本地缓存文件的有效时间，单位毫秒
 	 * @param diskCachePeriodOfValidity
 	 */
-	public Options setDiskCachePeriodOfValidity(int diskCachePeriodOfValidity) {
+	public DisplayOptions setDiskCachePeriodOfValidity(int diskCachePeriodOfValidity) {
 		this.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
 		return this;
 	}
@@ -118,7 +118,7 @@ public class Options{
 	 * 设置最大重试次数
 	 * @param maxRetryCount 最大重试次数
 	 */
-	public Options setMaxRetryCount(int maxRetryCount) {
+	public DisplayOptions setMaxRetryCount(int maxRetryCount) {
 		this.maxRetryCount = maxRetryCount;
 		return this;
 	}
@@ -148,7 +148,7 @@ public class Options{
 	 * 设置加载地址为空时显示的图片
 	 * @param resId
 	 */
-	public Options setEmptyDrawableResId(int resId) {
+	public DisplayOptions setEmptyDrawableResId(int resId) {
 		emptyDrawableHolder.setResId(resId);
 		if(emptyDrawableHolder.getDrawable() != null){
 			if(!emptyDrawableHolder.getDrawable().getBitmap().isRecycled()){
@@ -184,7 +184,7 @@ public class Options{
 	 * 设置加载中图片
 	 * @param resId
 	 */
-	public Options setLoadingDrawableResId(int resId) {
+	public DisplayOptions setLoadingDrawableResId(int resId) {
 		loadingDrawableHolder.setResId(resId);
 		if(loadingDrawableHolder.getDrawable() != null){
 			if(!loadingDrawableHolder.getDrawable().getBitmap().isRecycled()){
@@ -220,7 +220,7 @@ public class Options{
 	 * 设置加载失败图片
 	 * @param resId
 	 */
-	public Options setFailureDrawableResId(int resId) {
+	public DisplayOptions setFailureDrawableResId(int resId) {
 		failureDrawableHolder.setResId(resId);
 		if(failureDrawableHolder.getDrawable() != null){
 			if(!failureDrawableHolder.getDrawable().getBitmap().isRecycled()){
@@ -235,16 +235,16 @@ public class Options{
 	 * 获取最大尺寸
 	 * @return
 	 */
-	public ImageSize getImageMaxSize() {
-		return imageMaxSize;
+	public ImageSize getMaxImageSize() {
+		return maxImageSize;
 	}
 
 	/**
 	 * 设置最大尺寸
-	 * @param imageMaxSize
+	 * @param maxImageSize
 	 */
-	public Options setImageMaxSize(ImageSize imageMaxSize) {
-		this.imageMaxSize = imageMaxSize;
+	public DisplayOptions setMaxImageSize(ImageSize maxImageSize) {
+		this.maxImageSize = maxImageSize;
 		return this;
 	}
 	
@@ -260,7 +260,7 @@ public class Options{
 	 * 设置位图处理器
 	 * @param bitmapProcessor
 	 */
-	public Options setBitmapProcessor(BitmapProcessor bitmapProcessor) {
+	public DisplayOptions setBitmapProcessor(BitmapProcessor bitmapProcessor) {
 		this.bitmapProcessor = bitmapProcessor;
 		emptyDrawableHolder.setDrawable(null);
 		loadingDrawableHolder.setDrawable(null);
@@ -283,17 +283,17 @@ public class Options{
 	 * 设置位图显示器
 	 * @param bitmapDisplayer
 	 */
-	public Options setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
+	public DisplayOptions setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
 		this.bitmapDisplayer = bitmapDisplayer;
 		return this;
 	}
 
 	/**
-	 * 将当前Options拷贝一份
+	 * 将当前的DisplayOptions拷贝一份
 	 * @return
 	 */
-	public Options copy(){
-		return new Options(context)
+	public DisplayOptions copy(){
+		return new DisplayOptions(context)
 		.setMaxRetryCount(maxRetryCount)
 		.setDiskCachePeriodOfValidity(diskCachePeriodOfValidity)
 		.setEnableMenoryCache(enableMenoryCache)
@@ -303,6 +303,6 @@ public class Options{
 		.setEmptyDrawableResId(emptyDrawableHolder.getResId())
 		.setFailureDrawableResId(failureDrawableHolder.getResId())
 		.setLoadingDrawableResId(loadingDrawableHolder.getResId())
-		.setImageMaxSize(imageMaxSize != null?imageMaxSize.copy():null);
+		.setMaxImageSize(maxImageSize != null?maxImageSize.copy():null);
 	}
 }
