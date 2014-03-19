@@ -38,9 +38,11 @@ public class Request {
 	private ImageSize targetSize;	//目标尺寸
 	
 	private ImageViewAware imageViewAware;
-	private ImageLoadListener imageLoadListener;
+	private DisplayListener displayListener;
 	
-	private Request() {}
+	private Request(ImageViewAware imageViewAware) {
+		this.imageViewAware = imageViewAware;
+	}
 
 	/**
 	 * 获取ID
@@ -134,27 +136,35 @@ public class Request {
 		this.targetSize = targetSize;
 	}
 	
+	/**
+	 * 获取ImageViewAware
+	 * @return
+	 */
 	public ImageViewAware getImageViewAware() {
 		return imageViewAware;
 	}
 
-	public void setImageViewAware(ImageViewAware imageViewAware) {
-		this.imageViewAware = imageViewAware;
+	/**
+	 * 获取显示监听器
+	 * @return
+	 */
+	public DisplayListener getDisplayListener() {
+		return displayListener;
 	}
 
-	public ImageLoadListener getImageLoadListener() {
-		return imageLoadListener;
-	}
-
-	public void setImageLoadListener(ImageLoadListener imageLoadListener) {
-		this.imageLoadListener = imageLoadListener;
+	/**
+	 * 设置显示监听器
+	 * @param imageLoadListener
+	 */
+	public void setDisplayListener(DisplayListener imageLoadListener) {
+		this.displayListener = imageLoadListener;
 	}
 
 	public static class Builder{
 		Request request;
 		
-		public Builder(){
-			request = new Request();
+		public Builder(ImageViewAware imageViewAware){
+			request = new Request(imageViewAware);
 		}
 		
 		/**
@@ -208,13 +218,13 @@ public class Request {
 			return this;
 		}
 		
-		public Builder setImageViewAware(ImageViewAware imageViewAware) {
-			request.setImageViewAware(imageViewAware);
-			return this;
-		}
-
-		public Builder setImageLoadListener(ImageLoadListener imageLoadListener) {
-			request.setImageLoadListener(imageLoadListener);
+		/**
+		 * 设置显示监听器
+		 * @param displayListener
+		 * @return
+		 */
+		public Builder setDisplayListener(DisplayListener displayListener) {
+			request.setDisplayListener(displayListener);
 			return this;
 		}
 		

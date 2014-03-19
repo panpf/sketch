@@ -59,11 +59,11 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 				if(configuration.isDebugMode()){
 					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("已解除绑定关系").append("；").append(request.getName()).toString());
 				}
-				if(request.getImageLoadListener() != null){
+				if(request.getDisplayListener() != null){
 					configuration.getHandler().post(new Runnable() {
 						@Override
 						public void run() {
-							request.getImageLoadListener().onCancelled(request.getImageUri(), request.getImageViewAware().getImageView());
+							request.getDisplayListener().onCancelled(request.getImageUri(), request.getImageViewAware().getImageView());
 						}
 					});
 				}
@@ -72,11 +72,11 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 			if(configuration.isDebugMode()){
 				Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("已取消").append("；").append(request.getName()).toString());
 			}
-			if(request.getImageLoadListener() != null){
+			if(request.getDisplayListener() != null){
 				configuration.getHandler().post(new Runnable() {
 					@Override
 					public void run() {
-						request.getImageLoadListener().onCancelled(request.getImageUri(), request.getImageViewAware().getImageView());
+						request.getDisplayListener().onCancelled(request.getImageUri(), request.getImageViewAware().getImageView());
 					}
 				});
 			}

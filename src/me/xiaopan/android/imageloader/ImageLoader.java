@@ -21,7 +21,7 @@ import java.io.File;
 import me.xiaopan.android.imageloader.task.AsyncDrawable;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
 import me.xiaopan.android.imageloader.task.DisplayOptions;
-import me.xiaopan.android.imageloader.task.ImageLoadListener;
+import me.xiaopan.android.imageloader.task.DisplayListener;
 import me.xiaopan.android.imageloader.task.ImageViewAware;
 import me.xiaopan.android.imageloader.task.Request;
 import me.xiaopan.android.imageloader.task.assets.AssetsBitmapLoadTask;
@@ -74,9 +74,9 @@ public class ImageLoader{
 	 * </blockquote>
 	 * @param imageView 显示图片的视图
 	 * @param displayOptions 显示选项
-	 * @param imageLoadListener 加载监听器
+	 * @param displayListener 显示监听器
 	 */
-	public final void display(String imageUri, ImageView imageView, DisplayOptions displayOptions, ImageLoadListener imageLoadListener){
+	public final void display(String imageUri, ImageView imageView, DisplayOptions displayOptions, DisplayListener displayListener){
 		if(imageView == null){
 			if(configuration.isDebugMode()){
 				Log.e(ImageLoader.LOG_TAG, "imageView不能为null");
@@ -88,8 +88,8 @@ public class ImageLoader{
 			displayOptions = new DisplayOptions(configuration.getContext());
 		}
 		
-		if(imageLoadListener != null){
-			imageLoadListener.onStarted(imageUri, imageView);
+		if(displayListener != null){
+			displayListener.onStarted(imageUri, imageView);
 		}
 		
 		if(ImageLoaderUtils.isEmpty(imageUri)){
@@ -97,8 +97,8 @@ public class ImageLoader{
 			if(configuration.isDebugMode()){
 				Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
-			if(imageLoadListener != null){
-				imageLoadListener.onFailed(imageUri, imageView);
+			if(displayListener != null){
+				displayListener.onFailed(imageUri, imageView);
 			}
 			return;
 		}
@@ -109,8 +109,8 @@ public class ImageLoader{
 			if(configuration.isDebugMode()){
 				Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
-			if(imageLoadListener != null){
-				imageLoadListener.onFailed(imageUri, imageView);
+			if(displayListener != null){
+				displayListener.onFailed(imageUri, imageView);
 			}
 			return;
 		}
@@ -121,14 +121,13 @@ public class ImageLoader{
 		String requestId = ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(imageUri), targetSize, displayOptions.getBitmapProcessor());
 		String requestName = imageUri;
 		
-		Request request = new Request.Builder()
+		Request request = new Request.Builder(imageViewAware)
 			.setId(requestId)
 			.setName(requestName)
 			.setImageUri(imageUri)
 			.setTargetSize(targetSize)
 			.setDisplayOptions(displayOptions)
-			.setImageViewAware(imageViewAware)
-			.setImageLoadListener(imageLoadListener)
+			.setDisplayListener(displayListener)
 			.build();
 		
 		//尝试显示
@@ -139,8 +138,8 @@ public class ImageLoader{
 				if(configuration.isDebugMode()){
 					Log.i(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("显示成功 - 内存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 				}
-				if(imageLoadListener != null){
-					imageLoadListener.onComplete(imageUri, imageView, cacheDrawable);
+				if(displayListener != null){
+					displayListener.onComplete(imageUri, imageView, cacheDrawable);
 				}
 				return;
 			}
@@ -194,10 +193,10 @@ public class ImageLoader{
 	 * </blockquote>
 	 * @param imageView 显示图片的视图
 	 * @param displayOptionsName 显示选项的名称，你通过configuration.putDisplayOptions()方法放进去的DisplayOptions在这里指定一样的名称就可以直接使用
-	 * @param imageLoadListener 加载监听器
+	 * @param displayListener 显示监听器
 	 */
-	public final void display(String imageUri, ImageView imageView, Enum<?> displayOptionsName, ImageLoadListener imageLoadListener){
-		display(imageUri, imageView, configuration.getDisplayOptions(displayOptionsName), imageLoadListener);
+	public final void display(String imageUri, ImageView imageView, Enum<?> displayOptionsName, DisplayListener displayListener){
+		display(imageUri, imageView, configuration.getDisplayOptions(displayOptionsName), displayListener);
 	}
 	
 	/**
@@ -239,10 +238,10 @@ public class ImageLoader{
 	 * @param imageFile 图片文件
 	 * @param imageView 显示图片的视图
 	 * @param displayOptions 显示选项
-	 * @param imageLoadListener 加载监听器
+	 * @param displayListener 显示监听器
 	 */
-	public void display(File imageFile, ImageView imageView, DisplayOptions displayOptions, ImageLoadListener imageLoadListener){
-		display(Uri.fromFile(imageFile).toString(), imageView, displayOptions, imageLoadListener);
+	public void display(File imageFile, ImageView imageView, DisplayOptions displayOptions, DisplayListener displayListener){
+		display(Uri.fromFile(imageFile).toString(), imageView, displayOptions, displayListener);
 	}
 	
 	/**
@@ -250,10 +249,10 @@ public class ImageLoader{
 	 * @param imageFile 图片文件
 	 * @param imageView 显示图片的视图
 	 * @param displayOptionsName 显示选项的名称，你通过configuration.putDisplayOptions()方法放进去的DisplayOptions在这里指定一样的名称就可以直接使用
-	 * @param imageLoadListener 加载监听器
+	 * @param displayListener 显示监听器
 	 */
-	public void display(File imageFile, ImageView imageView, Enum<?> displayOptionsName, ImageLoadListener imageLoadListener){
-		display(Uri.fromFile(imageFile).toString(), imageView, configuration.getDisplayOptions(displayOptionsName), imageLoadListener);
+	public void display(File imageFile, ImageView imageView, Enum<?> displayOptionsName, DisplayListener displayListener){
+		display(Uri.fromFile(imageFile).toString(), imageView, configuration.getDisplayOptions(displayOptionsName), displayListener);
 	}
 	
 	/**
@@ -274,6 +273,13 @@ public class ImageLoader{
 	 */
 	public void display(File imageFile, ImageView imageView, Enum<?> displayOptionsName){
 		display(Uri.fromFile(imageFile).toString(), imageView, configuration.getDisplayOptions(displayOptionsName), null);
+	}
+	
+	/**
+	 * 下载
+	 */
+	public void download(){
+		
 	}
 	
 	/**

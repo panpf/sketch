@@ -3,7 +3,7 @@ package me.xiaopan.android.imageloader.sample.fragment;
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.sample.DisplayOptionsType;
-import me.xiaopan.android.imageloader.task.ImageLoadListener;
+import me.xiaopan.android.imageloader.task.DisplayListener;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,7 +26,7 @@ public class SimpleImageFragment extends Fragment {
 		if(uri != null){
 			View rootView = inflater.inflate(R.layout.fragment_simple_image, null);
 			final ProgressBar progressBar1 = (ProgressBar) rootView.findViewById(R.id.progress_simpleImage_1);
-			ImageLoader.getInstance(getActivity()).display(uri, (ImageView) rootView.findViewById(R.id.image_simpleImage_1), DisplayOptionsType.SIMPLE, new ImageLoadListener() {
+			ImageLoader.getInstance(getActivity()).display(uri, (ImageView) rootView.findViewById(R.id.image_simpleImage_1), DisplayOptionsType.SIMPLE, new DisplayListener() {
 				@Override
 				public void onStarted(String imageUri, ImageView imageView) {
 					progressBar1.setVisibility(View.VISIBLE);
@@ -48,7 +48,7 @@ public class SimpleImageFragment extends Fragment {
 			});
 			
 			final ProgressBar progressBar2 = (ProgressBar) rootView.findViewById(R.id.progress_simpleImage_2);
-			ImageLoader.getInstance(getActivity()).display(uri, (ImageView) rootView.findViewById(R.id.image_simpleImage_2), DisplayOptionsType.SIMPLE, new ImageLoadListener() {
+			ImageLoader.getInstance(getActivity()).display(uri, (ImageView) rootView.findViewById(R.id.image_simpleImage_2), DisplayOptionsType.SIMPLE, new DisplayListener() {
 				@Override
 				public void onStarted(String imageUri, ImageView imageView) {
 					progressBar2.setVisibility(View.VISIBLE);
