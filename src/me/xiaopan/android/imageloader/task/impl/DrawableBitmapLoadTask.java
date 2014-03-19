@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.task.drawable;
+package me.xiaopan.android.imageloader.task.impl;
 
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -22,22 +22,30 @@ import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.decode.DrawableInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
-import me.xiaopan.android.imageloader.task.Request;
+import me.xiaopan.android.imageloader.task.BitmapLoadTask;
+import me.xiaopan.android.imageloader.task.DisplayRequest;
 import me.xiaopan.android.imageloader.util.Scheme;
 
-public class DrawableBitmapLoadCallable extends BitmapLoadCallable {
+public class DrawableBitmapLoadTask extends  BitmapLoadTask {
 	
-	public DrawableBitmapLoadCallable(Request request, ReentrantLock reentrantLock, Configuration configuration) {
-		super(request, reentrantLock, configuration);
+	public DrawableBitmapLoadTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
+		super(displayRequest, configuration, new DrawableBitmapLoadCallable(displayRequest, reentrantLock, configuration));
 	}
-
-	@Override
-	public InputStreamCreator getInputStreamCreator() {
-		return new DrawableInputStreamCreator(configuration.getContext(), Scheme.DRAWABLE.crop(request.getImageUri()));
-	}
-
-	@Override
-	public void onFailed() {
+	
+	private static class DrawableBitmapLoadCallable extends BitmapLoadCallable {
 		
+		public DrawableBitmapLoadCallable(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
+			super(displayRequest, reentrantLock, configuration);
+		}
+
+		@Override
+		public InputStreamCreator getInputStreamCreator() {
+			return new DrawableInputStreamCreator(configuration.getContext(), Scheme.DRAWABLE.crop(displayRequest.getImageUri()));
+		}
+
+		@Override
+		public void onFailed() {
+			
+		}
 	}
 }

@@ -27,7 +27,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.Request;
+import me.xiaopan.android.imageloader.task.DisplayRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.LoadIOUtils;
 
@@ -84,24 +84,24 @@ public class LockImageDownloader implements ImageDownloader {
 	}
 
 	@Override
-	public void execute(Request request, File cacheFile, Configuration configuration, DownloadListener onCompleteListener) {
+	public void execute(DisplayRequest displayRequest, File cacheFile, Configuration configuration, DownloadListener onCompleteListener) {
 		boolean running = true;
 		boolean exists = false;
 		Result result = Result.FAILURE;
 		ReentrantLock urlLock = null;
 		
 		if(cacheFile != null){
-			urlLock = getUrlLock(request.getImageUri());
+			urlLock = getUrlLock(displayRequest.getImageUri());
 			urlLock.lock();
 			if(exists = cacheFile.exists()){
 				running = false;
 				result = Result.FILE;
-				if(configuration.isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("文件已存在，无需下载").append("；").append(request.getName()).toString());
+				if(configuration.isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("文件已存在，无需下载").append("；").append(displayRequest.getName()).toString());
 			}else{
-				if(configuration.isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载开始").append("；").append(request.getName()).toString());
+				if(configuration.isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载开始").append("；").append(displayRequest.getName()).toString());
 			}
 		}else{
-			if(configuration.isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载开始").append("；").append(request.getName()).toString());
+			if(configuration.isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载开始").append("；").append(displayRequest.getName()).toString());
 		}
 		
 		long fileLength = 0;
@@ -116,7 +116,7 @@ public class LockImageDownloader implements ImageDownloader {
 			BufferedOutputStream bufferedOutputStream = null;
 			
 			try {
-				httpGet = new HttpGet(request.getImageUri());
+				httpGet = new HttpGet(displayRequest.getImageUri());
 				HttpResponse httpResponse = httpClient.execute(httpGet);//请求数据
 				
 				//读取响应体长度，如果没有响应体长度字段或者长度为0就抛出异常
@@ -176,10 +176,10 @@ public class LockImageDownloader implements ImageDownloader {
 				LoadIOUtils.close(bufferedOutputStream);
 				if(createNewFile && cacheFile != null && cacheFile.exists()) cacheFile.delete();	//如果创建了新文件就删除
 				if(parentDir != null && parentDir.exists()) parentDir.delete();	//如果创建了新目录就删除
-				running = ((e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException) && request.getDisplayOptions().getMaxRetryCount() > 0)?numberOfLoaded < request.getDisplayOptions().getMaxRetryCount():false;	//如果尚未达到最大重试次数，那么就再尝试一次
+				running = ((e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException) && displayRequest.getDisplayOptions().getMaxRetryCount() > 0)?numberOfLoaded < displayRequest.getDisplayOptions().getMaxRetryCount():false;	//如果尚未达到最大重试次数，那么就再尝试一次
 				
 				if(configuration.isDebugMode()){
-					Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载异常").append("；").append(request.getName()).append("；").append("异常信息").append("=").append(e2.toString()).append("；").append(running?"重新下载":"不再下载").toString());
+					Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载异常").append("；").append(displayRequest.getName()).append("；").append("异常信息").append("=").append(e2.toString()).append("；").append(running?"重新下载":"不再下载").toString());
 				}
 			}
 		}
@@ -192,10 +192,10 @@ public class LockImageDownloader implements ImageDownloader {
 			case FILE : 
 				if(onCompleteListener != null){
 					if(cacheFile != null && cacheFile.exists() && (exists || (fileLength >0 && cacheFile.length() == fileLength))){
-						if(configuration.isDebugMode() && !exists) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - FILE").append("；").append(request.getName()).toString());
+						if(configuration.isDebugMode() && !exists) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - FILE").append("；").append(displayRequest.getName()).toString());
 						onCompleteListener.onComplete(cacheFile);
 					}else{
-						if(configuration.isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - FILE").append("；").append(request.getName()).toString());
+						if(configuration.isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - FILE").append("；").append(displayRequest.getName()).toString());
 						onCompleteListener.onFailed();
 					}
 				}
@@ -203,17 +203,17 @@ public class LockImageDownloader implements ImageDownloader {
 			case BYTE_ARRAY : 
 				if(onCompleteListener != null){
 					if(data != null && (exists || (fileLength >0 && data.length == fileLength))){
-						if(configuration.isDebugMode() && !exists) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - BYTE_ARRAY").append("；").append(request.getName()).toString());
+						if(configuration.isDebugMode() && !exists) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - BYTE_ARRAY").append("；").append(displayRequest.getName()).toString());
 						onCompleteListener.onComplete(data);
 					}else{
-						if(configuration.isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - BYTE_ARRAY").append("；").append(request.getName()).toString());
+						if(configuration.isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - BYTE_ARRAY").append("；").append(displayRequest.getName()).toString());
 						onCompleteListener.onFailed();
 					}
 				}
 				break;
 			default : 
 				if(onCompleteListener != null){
-					if(configuration.isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败").append("；").append(request.getName()).toString());
+					if(configuration.isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败").append("；").append(displayRequest.getName()).toString());
 					onCompleteListener.onFailed();
 				}
 				break;

@@ -18,7 +18,7 @@ package me.xiaopan.android.imageloader.display;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.Request;
+import me.xiaopan.android.imageloader.task.DisplayRequest;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -42,7 +42,7 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Request request, Configuration configuration) {
+	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest, Configuration configuration) {
 		switch(bitmapType){
 			case FAILURE : 
 				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
@@ -51,19 +51,19 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 					imageView.setImageDrawable(null);
 				}
 				if(configuration.isDebugMode()){
-					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
 				}
 				break;
 			case SUCCESS : 
 				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
 					fadeIn(imageView, bitmapDrawable);
 					if(configuration.isDebugMode()){
-						Log.i(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+						Log.i(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
 					}
 				}else{
 					imageView.setImageDrawable(null);
 					if(configuration.isDebugMode()){
-						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败 - SUCCESS").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败 - SUCCESS").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
 					}
 				}
 				break;

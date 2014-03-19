@@ -20,15 +20,15 @@ import java.io.File;
 
 import me.xiaopan.android.imageloader.task.AsyncDrawable;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
-import me.xiaopan.android.imageloader.task.DisplayOptions;
 import me.xiaopan.android.imageloader.task.DisplayListener;
+import me.xiaopan.android.imageloader.task.DisplayOptions;
+import me.xiaopan.android.imageloader.task.DisplayRequest;
 import me.xiaopan.android.imageloader.task.ImageViewAware;
-import me.xiaopan.android.imageloader.task.Request;
-import me.xiaopan.android.imageloader.task.assets.AssetsBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.content.ContentBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.drawable.DrawableBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.file.FileBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.http.HttpBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.impl.AssetsBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.impl.ContentBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.impl.DrawableBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.impl.FileBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.impl.HttpBitmapLoadTask;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import me.xiaopan.android.imageloader.util.ImageSizeUtils;
@@ -121,7 +121,7 @@ public class ImageLoader{
 		String requestId = ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(imageUri), targetSize, displayOptions.getBitmapProcessor());
 		String requestName = imageUri;
 		
-		Request request = new Request.Builder(imageViewAware)
+		DisplayRequest displayRequest = new DisplayRequest.Builder(imageViewAware)
 			.setId(requestId)
 			.setName(requestName)
 			.setImageUri(imageUri)
@@ -131,12 +131,12 @@ public class ImageLoader{
 			.build();
 		
 		//尝试显示
-		if(request.getDisplayOptions().isEnableMenoryCache()){
-			BitmapDrawable cacheDrawable = configuration.getBitmapCacher().get(request.getId());
+		if(displayRequest.getDisplayOptions().isEnableMenoryCache()){
+			BitmapDrawable cacheDrawable = configuration.getBitmapCacher().get(displayRequest.getId());
 			if(cacheDrawable != null){
 				imageView.setImageDrawable(cacheDrawable);
 				if(configuration.isDebugMode()){
-					Log.i(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("显示成功 - 内存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+					Log.i(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("显示成功 - 内存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
 				}
 				if(displayListener != null){
 					displayListener.onComplete(imageUri, imageView, cacheDrawable);
@@ -146,25 +146,25 @@ public class ImageLoader{
 		}
 		
 		//尝试取消正在加载的任务
-		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(request, imageView, configuration)){
+		if(BitmapLoadTask.cancelPotentialBitmapLoadTask(displayRequest, imageView, configuration)){
 			//创建新的加载任务
 			BitmapLoadTask bitmapLoadTask = null;
 			switch(scheme){
 				case HTTP :
 				case HTTPS : 
-					bitmapLoadTask = new HttpBitmapLoadTask(request, configuration.getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					bitmapLoadTask = new HttpBitmapLoadTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
 					break;
 				case FILE : 
-					bitmapLoadTask = new FileBitmapLoadTask(request, configuration.getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					bitmapLoadTask = new FileBitmapLoadTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
 					break;
 				case ASSETS : 
-					bitmapLoadTask = new AssetsBitmapLoadTask(request, configuration.getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					bitmapLoadTask = new AssetsBitmapLoadTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
 					break;
 				case CONTENT : 
-					bitmapLoadTask = new ContentBitmapLoadTask(request, configuration.getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					bitmapLoadTask = new ContentBitmapLoadTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
 					break;
 				case DRAWABLE : 
-					bitmapLoadTask = new DrawableBitmapLoadTask(request, configuration.getTaskExecutor().getLockByRequestId(request.getId()), configuration);
+					bitmapLoadTask = new DrawableBitmapLoadTask(displayRequest, configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()), configuration);
 					break;
 				default:
 					break;
@@ -172,7 +172,7 @@ public class ImageLoader{
 			
 			if(bitmapLoadTask != null){
 				//显示默认图片
-				BitmapDrawable loadingBitmapDrawable = request.getDisplayOptions().getLoadingDrawable();
+				BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getLoadingDrawable();
 				AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, bitmapLoadTask);
 				imageView.setImageDrawable(loadingAsyncDrawable);
 				

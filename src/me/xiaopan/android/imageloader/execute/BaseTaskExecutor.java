@@ -28,8 +28,8 @@ import java.util.concurrent.locks.ReentrantLock;
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.BitmapLoadTask;
-import me.xiaopan.android.imageloader.task.drawable.DrawableBitmapLoadTask;
-import me.xiaopan.android.imageloader.task.http.HttpBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.impl.DrawableBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.impl.HttpBitmapLoadTask;
 import android.util.Log;
 
 /**
@@ -64,12 +64,12 @@ public class BaseTaskExecutor implements TaskExecutor {
 			public void run() {
 				if(bitmapLoadTask instanceof DrawableBitmapLoadTask || (bitmapLoadTask instanceof HttpBitmapLoadTask && ((HttpBitmapLoadTask) bitmapLoadTask).isFromNetworkLoad())){
 					if(configuration.isDebugMode()){
-						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("放到网络线程池中加载").append("；").append(bitmapLoadTask.getRequest().getName()).toString());
+						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("放到网络线程池中加载").append("；").append(bitmapLoadTask.getDisplayRequest().getName()).toString());
 					}
 					netTaskExecutor.execute(bitmapLoadTask);
 				}else{
 					if(configuration.isDebugMode()){
-						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("放到本地线程池中加载").append("；").append(bitmapLoadTask.getRequest().getName()).toString());
+						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("放到本地线程池中加载").append("；").append(bitmapLoadTask.getDisplayRequest().getName()).toString());
 					}
 					localTaskExecutor.execute(bitmapLoadTask);
 				}

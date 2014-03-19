@@ -28,14 +28,14 @@ import android.widget.ImageView;
 
 public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 	private static final String NAME= BitmapLoadTask.class.getSimpleName();
-	private Request request;
+	private DisplayRequest displayRequest;
 	private Configuration configuration;
 	
-	public BitmapLoadTask(Request request, Configuration configuration, BitmapLoadCallable bitmapLoadCallable) {
+	public BitmapLoadTask(DisplayRequest displayRequest, Configuration configuration, BitmapLoadCallable bitmapLoadCallable) {
 		super(bitmapLoadCallable);
-		this.request = request;
+		this.displayRequest = displayRequest;
 		this.configuration = configuration;
-		this.request.getImageViewAware().setBitmapLoadTask(this);
+		this.displayRequest.getImageViewAware().setBitmapLoadTask(this);
 	}
 	
 	@Override
@@ -49,34 +49,34 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 			}
 			
 			//尝试取出ImageView并显示
-			if (!request.getImageViewAware().isCollected()) {
+			if (!displayRequest.getImageViewAware().isCollected()) {
 				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
-					configuration.getHandler().post(new BitmapDisplayRunnable(request, bitmapDrawable, BitmapType.SUCCESS, configuration));
+					configuration.getHandler().post(new BitmapDisplayRunnable(displayRequest, bitmapDrawable, BitmapType.SUCCESS, configuration));
 				}else{
-					configuration.getHandler().post(new BitmapDisplayRunnable(request, request.getDisplayOptions().getFailureDrawable(), BitmapType.FAILURE, configuration));
+					configuration.getHandler().post(new BitmapDisplayRunnable(displayRequest, displayRequest.getDisplayOptions().getFailureDrawable(), BitmapType.FAILURE, configuration));
 				}
 			}else{
 				if(configuration.isDebugMode()){
-					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("已解除绑定关系").append("；").append(request.getName()).toString());
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("已解除绑定关系").append("；").append(displayRequest.getName()).toString());
 				}
-				if(request.getDisplayListener() != null){
+				if(displayRequest.getDisplayListener() != null){
 					configuration.getHandler().post(new Runnable() {
 						@Override
 						public void run() {
-							request.getDisplayListener().onCancelled(request.getImageUri(), request.getImageViewAware().getImageView());
+							displayRequest.getDisplayListener().onCancelled(displayRequest.getImageUri(), displayRequest.getImageViewAware().getImageView());
 						}
 					});
 				}
 			}
 		}else{
 			if(configuration.isDebugMode()){
-				Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("已取消").append("；").append(request.getName()).toString());
+				Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("已取消").append("；").append(displayRequest.getName()).toString());
 			}
-			if(request.getDisplayListener() != null){
+			if(displayRequest.getDisplayListener() != null){
 				configuration.getHandler().post(new Runnable() {
 					@Override
 					public void run() {
-						request.getDisplayListener().onCancelled(request.getImageUri(), request.getImageViewAware().getImageView());
+						displayRequest.getDisplayListener().onCancelled(displayRequest.getImageUri(), displayRequest.getImageViewAware().getImageView());
 					}
 				});
 			}
@@ -87,8 +87,8 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 	 * 获取请求
 	 * @return
 	 */
-	public Request getRequest() {
-		return request;
+	public DisplayRequest getDisplayRequest() {
+		return displayRequest;
 	}
 
 	/**
@@ -126,7 +126,7 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
         if (bitmapLoadTask != null) {
             bitmapLoadTask.cancel(true);
             if (bitmapLoadTask.getConfiguration().isDebugMode()) {
-                Log.w(ImageLoader.LOG_TAG, new StringBuffer().append("取消加载任务").append("；").append(bitmapLoadTask.getRequest().getName()).toString());
+                Log.w(ImageLoader.LOG_TAG, new StringBuffer().append("取消加载任务").append("；").append(bitmapLoadTask.getDisplayRequest().getName()).toString());
             }
             return true;
         }else{
@@ -141,11 +141,11 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
      * @param configuration
      * @return true：取消成功；false：ImageView所关联的任务就是所需的无需取消
      */
-    public static boolean cancelPotentialBitmapLoadTask(Request request, ImageView imageView, Configuration configuration) {
+    public static boolean cancelPotentialBitmapLoadTask(DisplayRequest request, ImageView imageView, Configuration configuration) {
         final BitmapLoadTask potentialBitmapLoadTask = getBitmapLoadTask(imageView);
         boolean cancelled = true;
         if (potentialBitmapLoadTask != null) {
-            final String requestId = potentialBitmapLoadTask.getRequest().getId();
+            final String requestId = potentialBitmapLoadTask.getDisplayRequest().getId();
         	if (requestId != null && requestId.equals(request.getId())) {
                 cancelled = false;
             }else{
@@ -153,7 +153,7 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
             	cancelled = true;
             }
             if(configuration.isDebugMode()){
-            	Log.w(ImageLoader.LOG_TAG, new StringBuffer().append((cancelled?"取消":"无需取消")+"潜在的加载任务").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(potentialBitmapLoadTask.getRequest().getName()).toString());
+            	Log.w(ImageLoader.LOG_TAG, new StringBuffer().append((cancelled?"取消":"无需取消")+"潜在的加载任务").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(potentialBitmapLoadTask.getDisplayRequest().getName()).toString());
             }
         }
         return cancelled;

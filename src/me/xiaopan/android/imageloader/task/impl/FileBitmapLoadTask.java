@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.task.file;
+package me.xiaopan.android.imageloader.task.impl;
 
 import java.io.File;
 import java.util.concurrent.locks.ReentrantLock;
@@ -23,22 +23,30 @@ import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.decode.FileInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.task.BitmapLoadCallable;
-import me.xiaopan.android.imageloader.task.Request;
+import me.xiaopan.android.imageloader.task.BitmapLoadTask;
+import me.xiaopan.android.imageloader.task.DisplayRequest;
 import me.xiaopan.android.imageloader.util.Scheme;
 
-public class FileBitmapLoadCallable extends BitmapLoadCallable {
+public class FileBitmapLoadTask extends  BitmapLoadTask {
 	
-	public FileBitmapLoadCallable(Request request, ReentrantLock reentrantLock, Configuration configuration) {
-		super(request, reentrantLock, configuration);
+	public FileBitmapLoadTask(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
+		super(displayRequest, configuration, new FileBitmapLoadCallable(displayRequest, reentrantLock, configuration));
 	}
-
-	@Override
-	public InputStreamCreator getInputStreamCreator() {
-		return new FileInputStreamCreator(new File(Scheme.FILE.crop(request.getImageUri())));
-	}
-
-	@Override
-	public void onFailed() {
+	
+	private static class FileBitmapLoadCallable extends BitmapLoadCallable {
 		
+		public FileBitmapLoadCallable(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
+			super(displayRequest, reentrantLock, configuration);
+		}
+
+		@Override
+		public InputStreamCreator getInputStreamCreator() {
+			return new FileInputStreamCreator(new File(Scheme.FILE.crop(displayRequest.getImageUri())));
+		}
+
+		@Override
+		public void onFailed() {
+			
+		}
 	}
 }

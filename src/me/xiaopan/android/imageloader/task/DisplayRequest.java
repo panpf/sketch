@@ -19,9 +19,9 @@ package me.xiaopan.android.imageloader.task;
 import me.xiaopan.android.imageloader.util.ImageSize;
 
 /**
- * 加载请求
+ * 显示请求
  */
-public class Request {
+public class DisplayRequest {
 	private String id;	//ID
 	private String name;	//名称，用于在输出log时区分不同的请求
 	/**
@@ -40,7 +40,7 @@ public class Request {
 	private ImageViewAware imageViewAware;
 	private DisplayListener displayListener;
 	
-	private Request(ImageViewAware imageViewAware) {
+	private DisplayRequest(ImageViewAware imageViewAware) {
 		this.imageViewAware = imageViewAware;
 	}
 
@@ -161,10 +161,10 @@ public class Request {
 	}
 
 	public static class Builder{
-		Request request;
+		DisplayRequest request;
 		
 		public Builder(ImageViewAware imageViewAware){
-			request = new Request(imageViewAware);
+			request = new DisplayRequest(imageViewAware);
 		}
 		
 		/**
@@ -228,7 +228,7 @@ public class Request {
 			return this;
 		}
 		
-		public Request build(){
+		public DisplayRequest build(){
 			return request;
 		}
 	}

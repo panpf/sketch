@@ -19,6 +19,9 @@ package me.xiaopan.android.imageloader.task;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
+/**
+ * 显示监听器
+ */
 public interface DisplayListener {
 	public void onStarted(String imageUri, ImageView imageView);
 	public void onFailed(String imageUri, ImageView imageView);

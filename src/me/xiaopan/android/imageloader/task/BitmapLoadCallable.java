@@ -29,12 +29,12 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
 public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
-	protected Request request;
+	protected DisplayRequest displayRequest;
 	protected Configuration configuration;
 	protected ReentrantLock reentrantLock;
 	
-	public BitmapLoadCallable(Request request, ReentrantLock reentrantLock, Configuration configuration) {
-		this.request = request;
+	public BitmapLoadCallable(DisplayRequest displayRequest, ReentrantLock reentrantLock, Configuration configuration) {
+		this.displayRequest = displayRequest;
 		this.reentrantLock = reentrantLock;
 		this.configuration = configuration;
 	}
@@ -44,19 +44,19 @@ public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
 		reentrantLock.lock();	//先获取锁，防止重复执行请求
 		BitmapDrawable bitmapDrawable = null;
 		try{
-			bitmapDrawable = configuration.getBitmapCacher().get(request.getId());	//先尝试从缓存中去取对应的位图
+			bitmapDrawable = configuration.getBitmapCacher().get(displayRequest.getId());	//先尝试从缓存中去取对应的位图
 			if(bitmapDrawable == null){
 				//解码
 				InputStreamCreator inputStreamCreator = getInputStreamCreator();
 				Bitmap bitmap = null;
 				if(inputStreamCreator != null){
-					bitmap = configuration.getBitmapDecoder().decode(inputStreamCreator, request.getTargetSize(), configuration, request.getName());
+					bitmap = configuration.getBitmapDecoder().decode(inputStreamCreator, displayRequest.getTargetSize(), configuration, displayRequest.getName());
 				}
 				if(bitmap != null && !bitmap.isRecycled()){
 					//处理位图
-					if(request.getDisplayOptions().getBitmapProcessor() != null){
-						ImageView imageView = request.getImageViewAware().getImageView();
-						Bitmap newBitmap = request.getDisplayOptions().getBitmapProcessor().process(bitmap, imageView != null?imageView.getScaleType():ScaleType.CENTER_CROP, request.getTargetSize());
+					if(displayRequest.getDisplayOptions().getBitmapProcessor() != null){
+						ImageView imageView = displayRequest.getImageViewAware().getImageView();
+						Bitmap newBitmap = displayRequest.getDisplayOptions().getBitmapProcessor().process(bitmap, imageView != null?imageView.getScaleType():ScaleType.CENTER_CROP, displayRequest.getTargetSize());
 						if(newBitmap != bitmap){
 							bitmap.recycle();
 							bitmap = newBitmap;
@@ -71,8 +71,8 @@ public abstract class BitmapLoadCallable implements Callable<BitmapDrawable> {
 					}
 					
 					//放入内存缓存中
-					if(request.getDisplayOptions().isEnableMenoryCache()){
-						configuration.getBitmapCacher().put(request.getId(), bitmapDrawable);
+					if(displayRequest.getDisplayOptions().isEnableMenoryCache()){
+						configuration.getBitmapCacher().put(displayRequest.getId(), bitmapDrawable);
 					}
 				}else{
 					onFailed();

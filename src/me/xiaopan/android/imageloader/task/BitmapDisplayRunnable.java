@@ -22,13 +22,13 @@ import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
 public class BitmapDisplayRunnable implements Runnable {
-	private Request request;
+	private DisplayRequest displayRequest;
 	private BitmapType bitmapType;
 	private Configuration configuration;
 	private BitmapDrawable bitmapDrawable;
 
-	public BitmapDisplayRunnable(Request request, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Configuration configuration) {
-		this.request = request;
+	public BitmapDisplayRunnable(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, BitmapType bitmapType, Configuration configuration) {
+		this.displayRequest = displayRequest;
 		this.configuration = configuration;
 		this.bitmapDrawable = bitmapDrawable;
 		this.bitmapType = bitmapType;
@@ -36,14 +36,14 @@ public class BitmapDisplayRunnable implements Runnable {
 
 	@Override
 	public void run() {
-		ImageView imageView = request.getImageViewAware().getImageView();
+		ImageView imageView = displayRequest.getImageViewAware().getImageView();
 		if(imageView != null){
-			request.getDisplayOptions().getBitmapDisplayer().display(imageView, bitmapDrawable, bitmapType, request, configuration);
-			if(request.getDisplayListener() != null){
+			displayRequest.getDisplayOptions().getBitmapDisplayer().display(imageView, bitmapDrawable, bitmapType, displayRequest, configuration);
+			if(displayRequest.getDisplayListener() != null){
 				if(bitmapType == BitmapType.SUCCESS){
-					request.getDisplayListener().onComplete(request.getImageUri(), imageView, bitmapDrawable);
+					displayRequest.getDisplayListener().onComplete(displayRequest.getImageUri(), imageView, bitmapDrawable);
 				}else{
-					request.getDisplayListener().onFailed(request.getImageUri(), imageView);
+					displayRequest.getDisplayListener().onFailed(displayRequest.getImageUri(), imageView);
 				}
 			}
 		}
