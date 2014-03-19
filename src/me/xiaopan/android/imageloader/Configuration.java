@@ -37,7 +37,6 @@ import android.os.Looper;
  */
 public class Configuration {
 	private boolean debugMode;	//调试模式，在控制台输出日志
-	private String logTag;	//LogTag
 	private Context context;	//上下文
 	private Handler handler;	//消息处理器
 	private TaskExecutor taskExecutor;	//任务执行器
@@ -51,7 +50,6 @@ public class Configuration {
 			throw new IllegalStateException("你不能在异步线程中创建此对象");
 		}
 		
-		this.logTag = ImageLoader.class.getSimpleName();
 		this.context = context;
 		this.handler = new Handler();
 		this.displayOptionsMap = new HashMap<Object, DisplayOptions>();
@@ -133,23 +131,6 @@ public class Configuration {
 		return handler;
 	}
 	
-	/**
-	 * 获取Log Tag
-	 * @return
-	 */
-	public String getLogTag() {
-		return logTag;
-	}
-
-	/**
-	 * 设置Log Tag
-	 * @param logTag
-	 */
-	public Configuration setLogTag(String logTag) {
-		this.logTag = logTag;
-		return this;
-	}
-
 	/**
 	 * 判断是否开启调试模式
 	 * @return

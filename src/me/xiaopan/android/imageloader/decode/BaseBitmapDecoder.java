@@ -19,6 +19,7 @@ package me.xiaopan.android.imageloader.decode;
 import java.io.InputStream;
 
 import me.xiaopan.android.imageloader.Configuration;
+import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import me.xiaopan.android.imageloader.util.LoadIOUtils;
 import android.annotation.TargetApi;
@@ -32,7 +33,7 @@ import android.util.Log;
  * 位图解码器
  */
 public class BaseBitmapDecoder implements BitmapDecoder{
-	private static final String LOG_NAME= BaseBitmapDecoder.class.getSimpleName();
+	private static final String NAME= BaseBitmapDecoder.class.getSimpleName();
 	
 	@Override
 	public Bitmap decode(InputStreamCreator onNewBitmapInputStreamListener, ImageSize targetSize, Configuration configuration, String requestName) {
@@ -53,7 +54,7 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 				outHeight = options.outHeight;
 				options.inSampleSize = calculateInSampleSize(options, targetSize.getWidth(), targetSize.getHeight());
 				options.inJustDecodeBounds = false;
-//				if (Utils.hasHoneycomb()) {
+//				if (ImageLoaderUtils.hasHoneycomb()) {
 //			        addInBitmapOptions(options, configuration);
 //			    }
 				bitmap = BitmapFactory.decodeStream(inputStream, null, options);
@@ -83,7 +84,7 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 	    			// inBitmap.
 	    			options.inBitmap = inBitmap;
 	    			if(configuration.isDebugMode()){
-	    				Log.w(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("回收利用了尚未被回收的Bitmap").toString());
+	    				Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("回收利用了尚未被回收的Bitmap").toString());
 	    			}
 	    		}
 	    	}
@@ -101,7 +102,7 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 	 * @param bitmap
 	 */
 	private void writeLog(Configuration configuration, String requestName, boolean success, int outWidth, int outHeight, ImageSize targetSize, int inSimpleSize, Bitmap bitmap){
-		StringBuffer stringBuffer = new StringBuffer(LOG_NAME)
+		StringBuffer stringBuffer = new StringBuffer(NAME)
 		.append("：").append(success?"解码成功":"解码失败")
 		.append("；").append("原图尺寸").append("=").append(outWidth).append("x").append(outHeight)
 		.append("；").append("目标尺寸").append("=").append(targetSize.getWidth()).append("x").append(targetSize.getHeight())
@@ -112,9 +113,9 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 		stringBuffer.append("；").append(requestName);
 		String log = stringBuffer.toString();
 		if(success){
-			Log.d(configuration.getLogTag(), log);
+			Log.d(ImageLoader.LOG_TAG, log);
 		}else{
-			Log.w(configuration.getLogTag(), log);
+			Log.w(ImageLoader.LOG_TAG, log);
 		}
 	}
 	

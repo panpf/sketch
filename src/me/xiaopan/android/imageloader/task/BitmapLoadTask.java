@@ -19,6 +19,7 @@ package me.xiaopan.android.imageloader.task;
 import java.util.concurrent.FutureTask;
 
 import me.xiaopan.android.imageloader.Configuration;
+import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.display.BitmapDisplayer.BitmapType;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -26,7 +27,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
-	private static final String LOG_NAME= BitmapLoadTask.class.getSimpleName();
+	private static final String NAME= BitmapLoadTask.class.getSimpleName();
 	private Request request;
 	private Configuration configuration;
 	
@@ -56,7 +57,7 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 				}
 			}else{
 				if(configuration.isDebugMode()){
-					Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("已解除绑定关系").append("；").append(request.getName()).toString());
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("已解除绑定关系").append("；").append(request.getName()).toString());
 				}
 				if(request.getImageLoadListener() != null){
 					configuration.getHandler().post(new Runnable() {
@@ -69,7 +70,7 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
 			}
 		}else{
 			if(configuration.isDebugMode()){
-				Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("已取消").append("；").append(request.getName()).toString());
+				Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("已取消").append("；").append(request.getName()).toString());
 			}
 			if(request.getImageLoadListener() != null){
 				configuration.getHandler().post(new Runnable() {
@@ -125,7 +126,7 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
         if (bitmapLoadTask != null) {
             bitmapLoadTask.cancel(true);
             if (bitmapLoadTask.getConfiguration().isDebugMode()) {
-                Log.w(bitmapLoadTask.getConfiguration().getLogTag(), new StringBuffer().append("取消加载任务").append("；").append(bitmapLoadTask.getRequest().getName()).toString());
+                Log.w(ImageLoader.LOG_TAG, new StringBuffer().append("取消加载任务").append("；").append(bitmapLoadTask.getRequest().getName()).toString());
             }
             return true;
         }else{
@@ -152,7 +153,7 @@ public abstract class BitmapLoadTask extends FutureTask<BitmapDrawable> {
             	cancelled = true;
             }
             if(configuration.isDebugMode()){
-            	Log.w(configuration.getLogTag(), new StringBuffer().append((cancelled?"取消":"无需取消")+"潜在的加载任务").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(potentialBitmapLoadTask.getRequest().getName()).toString());
+            	Log.w(ImageLoader.LOG_TAG, new StringBuffer().append((cancelled?"取消":"无需取消")+"潜在的加载任务").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(potentialBitmapLoadTask.getRequest().getName()).toString());
             }
         }
         return cancelled;

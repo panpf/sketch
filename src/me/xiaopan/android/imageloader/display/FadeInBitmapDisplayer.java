@@ -17,6 +17,7 @@
 package me.xiaopan.android.imageloader.display;
 
 import me.xiaopan.android.imageloader.Configuration;
+import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.Request;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -29,7 +30,7 @@ import android.widget.ImageView;
  * 渐入位图显示器
  */
 public class FadeInBitmapDisplayer implements BitmapDisplayer {
-	private static final String LOG_NAME= FadeInBitmapDisplayer.class.getSimpleName();
+	private static final String NAME= FadeInBitmapDisplayer.class.getSimpleName();
 	private int duration;
 
 	public FadeInBitmapDisplayer(int duration){
@@ -50,19 +51,19 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 					imageView.setImageDrawable(null);
 				}
 				if(configuration.isDebugMode()){
-					Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 				}
 				break;
 			case SUCCESS : 
 				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
 					fadeIn(imageView, bitmapDrawable);
 					if(configuration.isDebugMode()){
-						Log.i(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+						Log.i(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 					}
 				}else{
 					imageView.setImageDrawable(null);
 					if(configuration.isDebugMode()){
-						Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("显示失败 - SUCCESS").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败 - SUCCESS").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 					}
 				}
 				break;

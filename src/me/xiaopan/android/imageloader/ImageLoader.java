@@ -43,8 +43,8 @@ import android.widget.ImageView;
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
  */
 public class ImageLoader{
+	public static final String LOG_TAG= ImageLoader.class.getSimpleName();
 	private static ImageLoader instance; 
-	private static final String LOG_NAME= ImageLoader.class.getSimpleName();
 	private Configuration configuration;	//配置
 	
 	public ImageLoader(Context context){
@@ -79,7 +79,7 @@ public class ImageLoader{
 	public final void display(String imageUri, ImageView imageView, DisplayOptions displayOptions, ImageLoadListener imageLoadListener){
 		if(imageView == null){
 			if(configuration.isDebugMode()){
-				Log.e(configuration.getLogTag(), "imageView不能为null");
+				Log.e(ImageLoader.LOG_TAG, "imageView不能为null");
 			}
 			return;
 		}
@@ -95,7 +95,7 @@ public class ImageLoader{
 		if(ImageLoaderUtils.isEmpty(imageUri)){
 			imageView.setImageDrawable(displayOptions.getEmptyDrawable());
 			if(configuration.isDebugMode()){
-				Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+				Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
 			if(imageLoadListener != null){
 				imageLoadListener.onFailed(imageUri, imageView);
@@ -107,7 +107,7 @@ public class ImageLoader{
 		if(scheme == Scheme.UNKNOWN){
 			imageView.setImageDrawable(displayOptions.getFailureDrawable());
 			if(configuration.isDebugMode()){
-				Log.e(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+				Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
 			if(imageLoadListener != null){
 				imageLoadListener.onFailed(imageUri, imageView);
@@ -137,7 +137,7 @@ public class ImageLoader{
 			if(cacheDrawable != null){
 				imageView.setImageDrawable(cacheDrawable);
 				if(configuration.isDebugMode()){
-					Log.i(configuration.getLogTag(), new StringBuffer(LOG_NAME).append("：").append("显示成功 - 内存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
+					Log.i(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("显示成功 - 内存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(request.getName()).toString());
 				}
 				if(imageLoadListener != null){
 					imageLoadListener.onComplete(imageUri, imageView, cacheDrawable);
