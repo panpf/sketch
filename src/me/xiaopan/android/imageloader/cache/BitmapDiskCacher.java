@@ -24,7 +24,6 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-import me.xiaopan.android.imageloader.util.LoadIOUtils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
@@ -37,9 +36,9 @@ public abstract class BitmapDiskCacher implements BitmapCacher {
 	
 	@Override
 	public synchronized void clearDiskCache(Context context) {
-		LoadIOUtils.delete(diskCacheDirectory);
-		LoadIOUtils.delete(new File(context.getCacheDir(), DEFAULT_DIRECTORY_NAME));
-		LoadIOUtils.delete(new File(context.getExternalCacheDir(), DEFAULT_DIRECTORY_NAME));
+		ImageLoaderUtils.delete(diskCacheDirectory);
+		ImageLoaderUtils.delete(new File(context.getCacheDir(), DEFAULT_DIRECTORY_NAME));
+		ImageLoaderUtils.delete(new File(context.getExternalCacheDir(), DEFAULT_DIRECTORY_NAME));
 	}
 
 	@Override
@@ -104,7 +103,7 @@ public abstract class BitmapDiskCacher implements BitmapCacher {
 				e.printStackTrace();
 				throw e;
 			}finally{
-				LoadIOUtils.close(randomAccessFile);
+				ImageLoaderUtils.close(randomAccessFile);
 			}
 		}else{
 			throw new FileNotFoundException(cacheFile.getPath());

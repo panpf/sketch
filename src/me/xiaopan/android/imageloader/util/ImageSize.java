@@ -16,6 +16,8 @@
 
 package me.xiaopan.android.imageloader.util;
 
+import me.xiaopan.android.imageloader.task.display.ImageViewHolder;
+
 /**
  * Present width and height values
  * 
@@ -69,6 +71,21 @@ public class ImageSize {
 	}
 	
 	public ImageSize copy(){
+		return new ImageSize(width, height);
+	}
+
+	/**
+	 * Defines target size for image aware view. Size is defined by target
+	 * {@link com.nostra13.universalimageloader.core.imageaware.ImageAware view} parameters, configuration
+	 * parameters or device display dimensions.<br />
+	 */
+	public static ImageSize defineTargetSizeForView(ImageViewHolder imageAware, ImageSize maxImageSize) {
+		int width = imageAware.getWidth();
+		if (width <= 0) width = maxImageSize.getWidth();
+
+		int height = imageAware.getHeight();
+		if (height <= 0) height = maxImageSize.getHeight();
+
 		return new ImageSize(width, height);
 	}
 }

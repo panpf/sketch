@@ -2,6 +2,8 @@ package me.xiaopan.android.imageloader.task.download;
 
 import java.io.File;
 
+import me.xiaopan.android.imageloader.Configuration;
+
 /**
  * 下载请求
  */
@@ -10,7 +12,9 @@ public class DownloadRequest {
 	private String name;
 	private String url;
 	private File saveFile;
+	private Configuration configuration;	//配置
 	private DownloadListener downloadListener;
+	private int maxRetryCount;	//最大重试次数
 	
 	private DownloadRequest(String url, File saveFile, DownloadListener downloadListener) {
 		this.url = url;
@@ -50,6 +54,14 @@ public class DownloadRequest {
 		this.saveFile = saveFile;
 	}
 	
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
+	}
+
 	public DownloadListener getDownloadListener() {
 		return downloadListener;
 	}
@@ -58,6 +70,14 @@ public class DownloadRequest {
 		this.downloadListener = downloadListener;
 	}
 	
+	public int getMaxRetryCount() {
+		return maxRetryCount;
+	}
+
+	public void setMaxRetryCount(int maxRetryCount) {
+		this.maxRetryCount = maxRetryCount;
+	}
+
 	/**
 	 * 下载监听器
 	 */

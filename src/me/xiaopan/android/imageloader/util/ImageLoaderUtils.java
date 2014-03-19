@@ -16,7 +16,11 @@
 
 package me.xiaopan.android.imageloader.util;
 
+import java.io.Closeable;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -38,6 +42,22 @@ import android.view.Display;
 import android.view.WindowManager;
 
 public class ImageLoaderUtils {
+	
+	public static final boolean createFile(File file){
+		//如果缓存文件不存在就尝试创建
+		if(!file.exists()){
+			File parentDir = file.getParentFile();
+			if(!parentDir.exists()){
+				parentDir.mkdirs();
+			}
+			try {
+				file.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		return file.exists();
+	}
 	
 	/**
 	 * 设置连接超时
@@ -272,4 +292,57 @@ public class ImageLoaderUtils {
     public static Bitmap bitmapCopy(Bitmap bitmap){
 		return bitmap.copy(bitmap.getConfig(), true);
     }
+
+	public static final int BUFFER_SIZE = 8 * 1024; // 8 KB 
+
+	public static final void copy(InputStream inputStream, OutputStream outputStream) throws IOException{
+		int readNumber;	//读取到的字节的数量
+		byte[] cacheBytes = new byte[1024];//数据缓存区
+		while((readNumber = inputStream.read(cacheBytes)) != -1){
+			outputStream.write(cacheBytes, 0, readNumber);
+		}
+	}
+
+	/**
+	 * 关闭流
+	 * @param closeable
+	 */
+	public static void close(Closeable closeable) {
+		if(closeable != null){
+			if(closeable instanceof OutputStream){
+				try {
+					((OutputStream) closeable).flush();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			try {
+				closeable.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	/**
+	 * 删除给定的文件，如果当前文件是目录则会删除其包含的所有的文件或目录
+	 * @param file 给定的文件
+	 * @return 删除是否成功
+	 */
+	public static void delete(File file){
+		if(file != null && file.exists()){
+			if(file.isFile()){
+				file.delete();
+			}else{
+				File[] files = file.listFiles();
+				if(files != null){
+					for(File tempFile : files){
+						delete(tempFile);
+					}
+				}
+				file.delete();
+			}
+		}
+	}
 }

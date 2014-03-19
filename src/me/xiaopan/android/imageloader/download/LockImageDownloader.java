@@ -29,7 +29,6 @@ import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-import me.xiaopan.android.imageloader.util.LoadIOUtils;
 
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
@@ -63,7 +62,7 @@ public class LockImageDownloader implements ImageDownloader {
 	public LockImageDownloader(){
 		this.urlLocks = new WeakHashMap<String, ReentrantLock>();
 		BasicHttpParams httpParams = new BasicHttpParams();
-		ImageLoaderUtils.setConnectionTimeout(httpParams, 10000);
+		ImageLoaderUtils.setConnectionTimeout(httpParams, 20000);
 		ImageLoaderUtils.setMaxConnections(httpParams, 100);
 		ImageLoaderUtils.setSocketBufferSize(httpParams, 8192);
         HttpConnectionParams.setTcpNoDelay(httpParams, true);
@@ -172,8 +171,8 @@ public class LockImageDownloader implements ImageDownloader {
 			} catch (Throwable e2) {
 				e2.printStackTrace();
 				if(httpGet != null) httpGet.abort();
-				LoadIOUtils.close(bufferedfInputStream);
-				LoadIOUtils.close(bufferedOutputStream);
+				ImageLoaderUtils.close(bufferedfInputStream);
+				ImageLoaderUtils.close(bufferedOutputStream);
 				if(createNewFile && cacheFile != null && cacheFile.exists()) cacheFile.delete();	//如果创建了新文件就删除
 				if(parentDir != null && parentDir.exists()) parentDir.delete();	//如果创建了新目录就删除
 				running = ((e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException) && displayRequest.getDisplayOptions().getMaxRetryCount() > 0)?numberOfLoaded < displayRequest.getDisplayOptions().getMaxRetryCount():false;	//如果尚未达到最大重试次数，那么就再尝试一次

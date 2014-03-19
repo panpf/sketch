@@ -20,7 +20,7 @@ import java.io.InputStream;
 
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
-import me.xiaopan.android.imageloader.util.LoadIOUtils;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -45,7 +45,7 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 		if(inputStream != null){
 			options.inJustDecodeBounds = true;
 			BitmapFactory.decodeStream(inputStream, null, options);
-			LoadIOUtils.close(inputStream);
+			ImageLoaderUtils.close(inputStream);
 			
 			inputStream = onNewBitmapInputStreamListener.onCreateInputStream();
 			if(inputStream != null){
@@ -57,7 +57,7 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 //			        addInBitmapOptions(displayRequest, options);
 //			    }
 				bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-				LoadIOUtils.close(inputStream);
+				ImageLoaderUtils.close(inputStream);
 			}
 		}
 		

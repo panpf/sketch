@@ -22,7 +22,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import me.xiaopan.android.imageloader.util.LoadIOUtils;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 
 public class FileInputStreamCreator implements InputStreamCreator {
 	private File file;
@@ -35,7 +35,7 @@ public class FileInputStreamCreator implements InputStreamCreator {
 	public InputStream onCreateInputStream() {
 		file.setLastModified(System.currentTimeMillis());
 		try {
-			return new BufferedInputStream(new FileInputStream(file), LoadIOUtils.BUFFER_SIZE);
+			return new BufferedInputStream(new FileInputStream(file), ImageLoaderUtils.BUFFER_SIZE);
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 			return null;

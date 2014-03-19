@@ -31,7 +31,6 @@ import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.ImageViewHolder;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
-import me.xiaopan.android.imageloader.util.ImageSizeUtils;
 import me.xiaopan.android.imageloader.util.Scheme;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
@@ -117,7 +116,7 @@ public class ImageLoader{
 		
 		//计算目标尺寸并创建请求
 		ImageViewHolder imageViewHolder = new ImageViewHolder(imageView);
-		ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageViewHolder, displayOptions.getMaxImageSize());
+		ImageSize targetSize = ImageSize.defineTargetSizeForView(imageViewHolder, displayOptions.getMaxImageSize());
 		String requestId = ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(imageUri), targetSize, displayOptions.getBitmapProcessor());
 		String requestName = imageUri;
 		
