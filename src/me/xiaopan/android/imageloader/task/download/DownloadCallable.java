@@ -98,7 +98,12 @@ public class DownloadCallable implements Callable<Object>{
 					downloadRequest.getSaveFile().delete();
 				}
 				
-				boolean isRetry = ((e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException) && downloadRequest.getMaxRetryCount() > 0)?numberOfLoaded < downloadRequest.getMaxRetryCount():false;	//如果尚未达到最大重试次数，那么就再尝试一次
+				boolean isRetry = false;	//如果尚未达到最大重试次数，那么就再尝试一次
+				if(e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException){
+					if(downloadRequest.getDownloadOptions() != null && downloadRequest.getDownloadOptions().getMaxRetryCount() > 0){
+						isRetry = numberOfLoaded < downloadRequest.getDownloadOptions().getMaxRetryCount();
+					}
+				}
 				
 				if(downloadRequest.getConfiguration().isDebugMode()){
 					Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载异常").append("；").append(downloadRequest.getName()).append("；").append("异常信息").append("=").append(e2.toString()).append("；").append(isRetry?"重新下载":"不再下载").toString());

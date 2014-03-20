@@ -8,17 +8,15 @@ import me.xiaopan.android.imageloader.task.TaskRequest;
  * 下载请求
  */
 public class DownloadRequest extends TaskRequest{
-	private int maxRetryCount;	//最大重试次数
 	private String url;
 	private File saveFile;
+	private DownloadOptions downloadOptions;
 	private DownloadListener downloadListener;
 	
-	public DownloadRequest(String url, File saveFile, DownloadListener downloadListener) {
+	public DownloadRequest(String url) {
 		this.url = url;
-		this.saveFile = saveFile;
-		this.downloadListener = downloadListener;
 	}
-	
+
 	public String getUrl() {
 		return url;
 	}
@@ -35,6 +33,14 @@ public class DownloadRequest extends TaskRequest{
 		this.saveFile = saveFile;
 	}
 
+	public DownloadOptions getDownloadOptions() {
+		return downloadOptions;
+	}
+
+	public void setDownloadOptions(DownloadOptions downloadOptions) {
+		this.downloadOptions = downloadOptions;
+	}
+
 	public DownloadListener getDownloadListener() {
 		return downloadListener;
 	}
@@ -43,14 +49,6 @@ public class DownloadRequest extends TaskRequest{
 		this.downloadListener = downloadListener;
 	}
 	
-	public int getMaxRetryCount() {
-		return maxRetryCount;
-	}
-
-	public void setMaxRetryCount(int maxRetryCount) {
-		this.maxRetryCount = maxRetryCount;
-	}
-
 	/**
 	 * 下载监听器
 	 */

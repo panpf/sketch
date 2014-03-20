@@ -29,6 +29,7 @@ import me.xiaopan.android.imageloader.task.display.DrawableBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.FileBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.ImageViewHolder;
+import me.xiaopan.android.imageloader.task.download.DownloadOptions;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
 import me.xiaopan.android.imageloader.task.download.DownloadTask;
@@ -284,15 +285,25 @@ public class ImageLoader{
 	/**
 	 * 下载
 	 */
-	public void download(String imageUrl, DownloadListener downloadListener){
-		File cacheFile = configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(imageUrl));
-		DownloadRequest downloadRequest = new DownloadRequest(imageUrl, cacheFile, downloadListener);
-		downloadRequest.setName(imageUrl);
+	public void download(String url, DownloadOptions downloadOptions, DownloadListener downloadListener){
+		File cacheFile = configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(url));
+		DownloadRequest downloadRequest = new DownloadRequest(url);
+		downloadRequest.setDownloadListener(downloadListener);
+		downloadRequest.setSaveFile(cacheFile);
+		downloadRequest.setDownloadOptions(downloadOptions);
+		downloadRequest.setName(url);
 		downloadRequest.setConfiguration(configuration);
 		if(downloadListener != null){
 			downloadListener.onStart();
 		}
 		getConfiguration().getTaskExecutor().execute(new DownloadTask(downloadRequest), configuration);
+	}
+	
+	/**
+	 * 下载
+	 */
+	public void download(String url, DownloadListener downloadListener){
+		download(url, null, downloadListener);
 	}
 	
 	/**
