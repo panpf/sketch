@@ -146,7 +146,7 @@ public abstract class BitmapDisplayTask extends Task {
         		potentialDisplayRequest.cancel(true);
             	cancelled = true;
             }
-            if(displayRequest.getConfiguration().isDebugMode()){
+            if(potentialDisplayRequest.getConfiguration().isDebugMode()){
             	Log.w(ImageLoader.LOG_TAG, new StringBuffer().append((cancelled?"取消":"无需取消")+"潜在的加载任务").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(potentialDisplayRequest.getName()).toString());
             }
         }

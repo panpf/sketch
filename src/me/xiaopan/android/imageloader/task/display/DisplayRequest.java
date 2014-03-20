@@ -33,7 +33,8 @@ public class DisplayRequest extends TaskRequest{
 	private DisplayOptions displayOptions;	//显示选项
 	private ImageViewHolder imageViewHolder;	//ImageView持有器
 	
-	public DisplayRequest(String uri) {
+	public DisplayRequest(String id, String uri) {
+		setId(id);
 		setUri(uri);
 	}
 	

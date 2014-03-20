@@ -74,60 +74,42 @@ public class ImageLoader{
 	 * @param displayListener 显示监听器
 	 */
 	public final void display(String uri, ImageView imageView, DisplayOptions displayOptions, DisplayListener displayListener){
+		//过滤掉空的ImageView
 		if(imageView == null){
-			if(configuration.isDebugMode()){
-				Log.e(ImageLoader.LOG_TAG, "imageView不能为null");
-			}
-			return;
+			throw new IllegalArgumentException("imageView不能为null");
 		}
 
+		//初始化一下
+		if(displayListener != null) displayListener.onStarted(uri, imageView);
 		if(displayOptions == null){
 			displayOptions = new DisplayOptions(configuration.getContext());
 		}
 		
-		if(displayListener != null){
-			displayListener.onStarted(uri, imageView);
-		}
-		
+		//过滤掉空的URI
 		if(ImageLoaderUtils.isEmpty(uri)){
 			imageView.setImageDrawable(displayOptions.getEmptyDrawable());
-			if(configuration.isDebugMode()){
-				Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
-			}
-			if(displayListener != null){
-				displayListener.onFailed(uri, imageView);
-			}
+			if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("uri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+			if(displayListener != null) displayListener.onFailed(uri, imageView);
 			return;
 		}
 		
+		//过滤掉非法的URI
 		Scheme scheme = Scheme.ofUri(uri);
 		if(scheme == Scheme.UNKNOWN){
 			imageView.setImageDrawable(displayOptions.getFailureDrawable());
-			if(configuration.isDebugMode()){
-				Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(uri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
-			}
-			if(displayListener != null){
-				displayListener.onFailed(uri, imageView);
-			}
+			if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(uri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+			if(displayListener != null) displayListener.onFailed(uri, imageView);
 			return;
 		}
 		
 		//计算目标尺寸并创建请求
 		ImageViewHolder imageViewHolder = new ImageViewHolder(imageView);
 		ImageSize targetSize = ImageSize.defineTargetSizeForView(imageViewHolder, displayOptions.getMaxImageSize());
-		
-		DisplayRequest displayRequest = new DisplayRequest(uri);
-		displayRequest.setId(ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(uri), targetSize, displayOptions.getBitmapProcessor()));
+		DisplayRequest displayRequest = new DisplayRequest(ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(uri), targetSize, displayOptions.getBitmapProcessor()), uri);
 		displayRequest.setName(uri);
-		displayRequest.setTargetSize(targetSize);
-		displayRequest.setConfiguration(configuration);
-		displayRequest.setDisplayListener(displayListener);
-		displayRequest.setDisplayOptions(displayOptions);
-		imageViewHolder.setDisplayRequest(displayRequest);
-		displayRequest.setImageViewHolder(imageViewHolder);
 		
 		//尝试显示
-		if(displayRequest.getDisplayOptions().isEnableMenoryCache()){
+		if(displayOptions.isEnableMenoryCache()){
 			BitmapDrawable cacheDrawable = configuration.getBitmapCacher().get(displayRequest.getId());
 			if(cacheDrawable != null){
 				imageView.setImageDrawable(cacheDrawable);
@@ -141,44 +123,24 @@ public class ImageLoader{
 			}
 		}
 		
-		//尝试取消正在加载的任务
+		//尝试取消正在加载的请求
 		if(!BitmapDisplayTask.cancelPotentialDisplayRequest(displayRequest, imageView)){
 			return;
 		}
 		
-		//创建新的加载任务
-//		BitmapDisplayTask bitmapLoadTask = null;
-//		switch(scheme){
-//		case HTTP :
-//		case HTTPS : 
-//			displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-//			bitmapLoadTask = new HttpBitmapDisplayTask(displayRequest);
-//			break;
-//		case FILE : 
-//			displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-//			bitmapLoadTask = new FileBitmapDisplayTask(displayRequest);
-//			break;
-//		case ASSETS : 
-//			displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-//			bitmapLoadTask = new AssetsBitmapDisplayTask(displayRequest);
-//			break;
-//		case CONTENT : 
-//			displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-//			bitmapLoadTask = new ContentBitmapDisplayTask(displayRequest);
-//			break;
-//		case DRAWABLE : 
-//			displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-//			bitmapLoadTask = new DrawableBitmapDisplayTask(displayRequest);
-//			break;
-//		default:
-//			break;
-//		}
+		//初始化请求
+		displayRequest.setTargetSize(targetSize);
+		displayRequest.setConfiguration(configuration);
+		displayRequest.setDisplayListener(displayListener);
+		displayRequest.setDisplayOptions(displayOptions);
+		imageViewHolder.setDisplayRequest(displayRequest);
+		displayRequest.setImageViewHolder(imageViewHolder);
+
+		//显示默认图片
+		BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getLoadingDrawable();
+		imageView.setImageDrawable(new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, displayRequest));
 		
-//		if(bitmapLoadTask != null){
-			BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getLoadingDrawable();
-			AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, displayRequest);
-			imageView.setImageDrawable(loadingAsyncDrawable);
-//		}
+		//执行请求
 		configuration.getTaskExecutor().execute(displayRequest);
 	}
 	
