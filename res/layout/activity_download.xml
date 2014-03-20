@@ -1,0 +1,17 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent">
+    <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent">
+        <ImageView
+            style="@style/match_match" 
+            android:id="@+id/image_download" 
+            android:contentDescription="@string/app_name"/>
+        <ProgressBar 
+            style="?android:attr/progressBarStyleHorizontal" 
+            android:id="@+id/progressBar_download"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:max="100"
+            android:layout_gravity="center"
+            />
+    </FrameLayout>
+    <include layout="@layout/include_shadow_down"/>
+</merge>

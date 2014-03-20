@@ -152,6 +152,19 @@ public class HttpBitmapDisplayTask extends  BitmapDisplayTask {
 				public void onComplete(final File cacheFile) {
 					holder.inputStreamCreator = new FileInputStreamCreator(cacheFile);
 				}
+
+				@Override
+				public void onStart() {
+					// TODO Auto-generated method stub
+					
+				}
+
+				@Override
+				public void onUpdateProgress(long totalLength,
+						long completedLength) {
+					// TODO Auto-generated method stub
+					
+				}
 			});
 	    	return holder.inputStreamCreator;
 	    }

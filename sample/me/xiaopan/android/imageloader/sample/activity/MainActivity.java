@@ -15,7 +15,6 @@ public class MainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		getWindow().setBackgroundDrawableResource(android.R.color.black);
 		listView = new ListView(getBaseContext());
 		setContentView(listView);
 		

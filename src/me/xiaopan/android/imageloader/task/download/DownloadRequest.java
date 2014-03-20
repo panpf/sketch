@@ -66,6 +66,18 @@ public class DownloadRequest extends TaskRequest{
 	 */
 	public interface DownloadListener {
 		/**
+		 * 开始下载
+		 */
+		public void onStart();
+		
+		/**
+		 * 更新下载进度
+		 * @param totalLength
+		 * @param completedLength
+		 */
+		public void onUpdateProgress(long totalLength, long completedLength);
+		
+		/**
 		 * 当下载完成
 		 * @param cacheFile
 		 */

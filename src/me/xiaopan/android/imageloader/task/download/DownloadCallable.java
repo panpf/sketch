@@ -5,6 +5,9 @@ import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -75,12 +78,12 @@ public class DownloadCallable implements Callable<Object>{
 				if(ImageLoaderUtils.createFile(downloadRequest.getSaveFile())){
 					downloadRequest.getConfiguration().getBitmapCacher().setCacheFileLength(downloadRequest.getSaveFile(), fileLength);
 					bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(downloadRequest.getSaveFile(), false));
-					ImageLoaderUtils.copy(bufferedfInputStream, bufferedOutputStream);
+					copy(bufferedfInputStream, bufferedOutputStream, fileLength);
 					result = downloadRequest.getSaveFile();
 				}else{
 					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 					bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
-					ImageLoaderUtils.copy(bufferedfInputStream, bufferedOutputStream);
+					copy(bufferedfInputStream, bufferedOutputStream, fileLength);
 					result = byteArrayOutputStream.toByteArray();
 				}
 				break;
@@ -89,9 +92,6 @@ public class DownloadCallable implements Callable<Object>{
 				if(httpGet != null){
 					httpGet.abort();
 				}
-				
-				ImageLoaderUtils.close(bufferedfInputStream);
-				ImageLoaderUtils.close(bufferedOutputStream);
 				
 				//删除文件
 				if(downloadRequest.getSaveFile() != null && downloadRequest.getSaveFile().exists()){
@@ -107,6 +107,9 @@ public class DownloadCallable implements Callable<Object>{
 				if(!isRetry){
 					break;
 				}
+			}finally{
+				ImageLoaderUtils.close(bufferedfInputStream);
+				ImageLoaderUtils.close(bufferedOutputStream);
 			}
 		}
 		return result;
@@ -163,5 +166,18 @@ public class DownloadCallable implements Callable<Object>{
 			urlLocks.put(url, urlLock);
 		}
 		return urlLock;
+	}
+
+	private void copy(InputStream inputStream, OutputStream outputStream, long totalLength) throws IOException{
+		int readNumber;	//读取到的字节的数量
+		long completedLength = 0;
+		byte[] cacheBytes = new byte[1024];//数据缓存区
+		while((readNumber = inputStream.read(cacheBytes)) != -1){
+			completedLength += readNumber;
+			outputStream.write(cacheBytes, 0, readNumber);
+			if(downloadRequest.getDownloadListener() != null){
+				downloadRequest.getDownloadListener().onUpdateProgress(totalLength, completedLength);
+			}
+		}
 	}
 }

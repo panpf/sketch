@@ -19,7 +19,6 @@ package me.xiaopan.android.imageloader.util;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -294,14 +293,6 @@ public class ImageLoaderUtils {
     }
 
 	public static final int BUFFER_SIZE = 8 * 1024; // 8 KB 
-
-	public static final void copy(InputStream inputStream, OutputStream outputStream) throws IOException{
-		int readNumber;	//读取到的字节的数量
-		byte[] cacheBytes = new byte[1024];//数据缓存区
-		while((readNumber = inputStream.read(cacheBytes)) != -1){
-			outputStream.write(cacheBytes, 0, readNumber);
-		}
-	}
 
 	/**
 	 * 关闭流

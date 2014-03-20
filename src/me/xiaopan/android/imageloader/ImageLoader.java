@@ -286,7 +286,12 @@ public class ImageLoader{
 	 */
 	public void download(String imageUrl, DownloadListener downloadListener){
 		File cacheFile = configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(imageUrl));
-		getConfiguration().getTaskExecutor().execute(new DownloadTask(new DownloadRequest(imageUrl, cacheFile, downloadListener)), configuration);
+		DownloadRequest downloadRequest = new DownloadRequest(imageUrl, cacheFile, downloadListener);
+		downloadRequest.setConfiguration(configuration);
+		if(downloadListener != null){
+			downloadListener.onStart();
+		}
+		getConfiguration().getTaskExecutor().execute(new DownloadTask(downloadRequest), configuration);
 	}
 	
 	/**
