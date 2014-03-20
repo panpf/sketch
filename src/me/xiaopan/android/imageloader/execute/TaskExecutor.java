@@ -16,8 +16,6 @@
 
 package me.xiaopan.android.imageloader.execute;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 import me.xiaopan.android.imageloader.task.TaskRequest;
 
 /**
@@ -25,5 +23,4 @@ import me.xiaopan.android.imageloader.task.TaskRequest;
  */
 public interface TaskExecutor {
 	public void execute(TaskRequest taskRequest);
-	public ReentrantLock getLockByRequestId(String requestId);
 }

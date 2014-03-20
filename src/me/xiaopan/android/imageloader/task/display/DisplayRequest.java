@@ -16,8 +16,6 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 import me.xiaopan.android.imageloader.task.TaskRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.drawable.BitmapDrawable;
@@ -28,7 +26,6 @@ import android.widget.ImageView;
  */
 public class DisplayRequest extends TaskRequest{
 	private ImageSize targetSize;	//目标尺寸
-	private ReentrantLock reentrantLock;	//执行锁
 	private DisplayListener displayListener;	//监听器
 	private DisplayOptions displayOptions;	//显示选项
 	private ImageViewHolder imageViewHolder;	//ImageView持有器
@@ -55,22 +52,6 @@ public class DisplayRequest extends TaskRequest{
 	}
 
 	/**
-	 * 获取同步锁
-	 * @return
-	 */
-	public ReentrantLock getReentrantLock() {
-		return reentrantLock;
-	}
-
-	/**
-	 * 设置同步锁
-	 * @param reentrantLock
-	 */
-	public void setReentrantLock(ReentrantLock reentrantLock) {
-		this.reentrantLock = reentrantLock;
-	}
-
-	/**
 	 * 获取显示监听器
 	 * @return
 	 */
@@ -80,10 +61,10 @@ public class DisplayRequest extends TaskRequest{
 
 	/**
 	 * 设置显示监听器
-	 * @param imageLoadListener
+	 * @param displayListener
 	 */
-	public void setDisplayListener(DisplayListener imageLoadListener) {
-		this.displayListener = imageLoadListener;
+	public void setDisplayListener(DisplayListener displayListener) {
+		this.displayListener = displayListener;
 	}
 	
 	/**

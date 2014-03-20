@@ -17,14 +17,10 @@
 package me.xiaopan.android.imageloader.execute;
 
 import java.io.File;
-import java.util.Map;
-import java.util.WeakHashMap;
 import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.TaskRequest;
@@ -36,6 +32,7 @@ import me.xiaopan.android.imageloader.task.display.FileBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.task.download.DownloadTask;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import me.xiaopan.android.imageloader.util.Scheme;
 import android.util.Log;
 
@@ -47,17 +44,19 @@ public class BaseTaskExecutor implements TaskExecutor {
 	private Executor taskDispatchExecutor;	//任务调度执行器
 	private Executor netTaskExecutor;	//网络任务执行器
 	private Executor localTaskExecutor;	//本地任务执行器
-	private Map<String, ReentrantLock> uriLocks;	//uri锁池
 	
-	public BaseTaskExecutor(Executor netTaskExecutor, Executor localTaskExecutor){
-		this.uriLocks = new WeakHashMap<String, ReentrantLock>();
-		this.taskDispatchExecutor = Executors.newCachedThreadPool();
+	public BaseTaskExecutor(Executor taskDispatchExecutor, Executor netTaskExecutor, Executor localTaskExecutor){
+		this.taskDispatchExecutor = taskDispatchExecutor;
 		this.netTaskExecutor = netTaskExecutor;
 		this.localTaskExecutor = localTaskExecutor;
 	}
 	
 	public BaseTaskExecutor(Executor netTaskExecutor){
-		this(netTaskExecutor, new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy()));
+		this(
+			new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy()),
+			netTaskExecutor, 
+			new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy())
+		);
 	}
 	
 	public BaseTaskExecutor(){
@@ -70,82 +69,93 @@ public class BaseTaskExecutor implements TaskExecutor {
 			@Override
 			public void run() {
 				if(taskRequest instanceof DownloadRequest){
-					File cacheFile = taskRequest.getConfiguration().getBitmapCacher().getCacheFile(taskRequest);
-					taskRequest.setCacheFile(cacheFile);
-					if(cacheFile != null && cacheFile.exists()){
-						localTaskExecutor.execute(new DownloadTask((DownloadRequest) taskRequest));
-						if(taskRequest.getConfiguration().isDebugMode()){
-							Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DOWNLOAD - 本地").append("；").append(taskRequest.getName()).toString());
-						}
-					}else{
-						netTaskExecutor.execute(new DownloadTask((DownloadRequest) taskRequest));
-						if(taskRequest.getConfiguration().isDebugMode()){
-							Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DOWNLOAD - 网络").append("；").append(taskRequest.getName()).toString());
-						}
-					}
+					executeDownloadRequest((DownloadRequest) taskRequest);
+				}else if(taskRequest instanceof LoadRequest){
+					executeLoadRequest((LoadRequest) taskRequest);
 				}else if(taskRequest instanceof DisplayRequest){
-					Scheme scheme = Scheme.ofUri(taskRequest.getUri());
-					switch(scheme){
-						case HTTP :
-						case HTTPS : 
-//							displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-							File cacheFile = taskRequest.getConfiguration().getBitmapCacher().getCacheFile(taskRequest);
-							taskRequest.setCacheFile(cacheFile);
-							if(cacheFile != null && cacheFile.exists()){
-								localTaskExecutor.execute(new HttpBitmapDisplayTask((DisplayRequest) taskRequest));
-								if(taskRequest.getConfiguration().isDebugMode()){
-									Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP - 本地").append("；").append(taskRequest.getName()).toString());
-								}
-							}else{
-								netTaskExecutor.execute(new HttpBitmapDisplayTask((DisplayRequest) taskRequest));
-								if(taskRequest.getConfiguration().isDebugMode()){
-									Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP - 网络").append("；").append(taskRequest.getName()).toString());
-								}
-							}
-							break;
-						case FILE : 
-//							displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-							localTaskExecutor.execute(new FileBitmapDisplayTask((DisplayRequest) taskRequest));
-							if(taskRequest.getConfiguration().isDebugMode()){
-								Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("FILE - 本地").append("；").append(taskRequest.getName()).toString());
-							}
-							break;
-						case ASSETS : 
-//							displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-							localTaskExecutor.execute(new AssetsBitmapDisplayTask((DisplayRequest) taskRequest));
-							if(taskRequest.getConfiguration().isDebugMode()){
-								Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("ASSETS - 本地").append("；").append(taskRequest.getName()).toString());
-							}
-							break;
-						case CONTENT : 
-//							displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-							localTaskExecutor.execute(new ContentBitmapDisplayTask((DisplayRequest) taskRequest));
-							if(taskRequest.getConfiguration().isDebugMode()){
-								Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("CONTENT - 本地").append("；").append(taskRequest.getName()).toString());
-							}
-							break;
-						case DRAWABLE : 
-//							displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-							localTaskExecutor.execute(new DrawableBitmapDisplayTask((DisplayRequest) taskRequest));
-							if(taskRequest.getConfiguration().isDebugMode()){
-								Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DRAWABLE - 本地").append("；").append(taskRequest.getName()).toString());
-							}
-							break;
-						default:
-							break;
-					}
+					executeDisplayRequest((DisplayRequest) taskRequest);
 				}
 			}
 		});
 	}
-
-	@Override
-	public ReentrantLock getLockByRequestId(String requestId) {
-		ReentrantLock lock = uriLocks.get(requestId);
-		if (lock == null) {
-			lock = new ReentrantLock();
-			uriLocks.put(requestId, lock);
+	
+	/**
+	 * 执行下载请求
+	 * @param downloadRequest
+	 */
+	private void executeDownloadRequest(DownloadRequest downloadRequest){
+		File cacheFile = downloadRequest.getConfiguration().getBitmapCacher().getCacheFile(downloadRequest);
+		downloadRequest.setCacheFile(cacheFile);
+		if(cacheFile != null && cacheFile.exists()){
+			localTaskExecutor.execute(new DownloadTask((DownloadRequest) downloadRequest));
+			if(downloadRequest.getConfiguration().isDebugMode()){
+				Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DOWNLOAD - 本地").append("；").append(downloadRequest.getName()).toString());
+			}
+		}else{
+			netTaskExecutor.execute(new DownloadTask((DownloadRequest) downloadRequest));
+			if(downloadRequest.getConfiguration().isDebugMode()){
+				Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DOWNLOAD - 网络").append("；").append(downloadRequest.getName()).toString());
+			}
 		}
-		return lock;
+	}
+	
+	/**
+	 * 执行加载请求
+	 * @param loadRequest
+	 */
+	private void executeLoadRequest(LoadRequest loadRequest){
+		
+	}
+	
+	/**
+	 * 执行显示请求
+	 * @param displayRequest
+	 */
+	private void executeDisplayRequest(DisplayRequest displayRequest){
+		Scheme scheme = Scheme.ofUri(displayRequest.getUri());
+		switch(scheme){
+			case HTTP :
+			case HTTPS : 
+				File cacheFile = displayRequest.getConfiguration().getBitmapCacher().getCacheFile(displayRequest);
+				displayRequest.setCacheFile(cacheFile);
+				if(cacheFile != null && cacheFile.exists()){
+					localTaskExecutor.execute(new HttpBitmapDisplayTask((DisplayRequest) displayRequest));
+					if(displayRequest.getConfiguration().isDebugMode()){
+						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP - 本地").append("；").append(displayRequest.getName()).toString());
+					}
+				}else{
+					netTaskExecutor.execute(new HttpBitmapDisplayTask((DisplayRequest) displayRequest));
+					if(displayRequest.getConfiguration().isDebugMode()){
+						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP - 网络").append("；").append(displayRequest.getName()).toString());
+					}
+				}
+				break;
+			case FILE : 
+				localTaskExecutor.execute(new FileBitmapDisplayTask((DisplayRequest) displayRequest));
+				if(displayRequest.getConfiguration().isDebugMode()){
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("FILE - 本地").append("；").append(displayRequest.getName()).toString());
+				}
+				break;
+			case ASSETS : 
+				localTaskExecutor.execute(new AssetsBitmapDisplayTask((DisplayRequest) displayRequest));
+				if(displayRequest.getConfiguration().isDebugMode()){
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("ASSETS - 本地").append("；").append(displayRequest.getName()).toString());
+				}
+				break;
+			case CONTENT : 
+				localTaskExecutor.execute(new ContentBitmapDisplayTask((DisplayRequest) displayRequest));
+				if(displayRequest.getConfiguration().isDebugMode()){
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("CONTENT - 本地").append("；").append(displayRequest.getName()).toString());
+				}
+				break;
+			case DRAWABLE : 
+				localTaskExecutor.execute(new DrawableBitmapDisplayTask((DisplayRequest) displayRequest));
+				if(displayRequest.getConfiguration().isDebugMode()){
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DRAWABLE - 本地").append("；").append(displayRequest.getName()).toString());
+				}
+				break;
+			default:
+				break;
+		}
 	}
 }

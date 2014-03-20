@@ -35,9 +35,6 @@ public abstract class BitmapDisplayCallable implements Callable<Object> {
 
 	@Override
 	public Object call() throws Exception {
-		if(displayRequest.getReentrantLock() != null){
-			displayRequest.getReentrantLock().lock();	//先获取锁，防止重复执行请求
-		}
 		BitmapDrawable bitmapDrawable = null;
 		try{
 			bitmapDrawable = displayRequest.getConfiguration().getBitmapCacher().get(displayRequest.getId());	//先尝试从缓存中去取对应的位图
@@ -76,10 +73,6 @@ public abstract class BitmapDisplayCallable implements Callable<Object> {
 			}
 		}catch(Throwable throwable){
 			throwable.printStackTrace();
-		}finally{
-			if(displayRequest.getReentrantLock() != null){
-				displayRequest.getReentrantLock().unlock();	//释放锁
-			}
 		}
 		return bitmapDrawable;
 	}
