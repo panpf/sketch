@@ -19,7 +19,7 @@ package me.xiaopan.android.imageloader.decode;
 import java.io.InputStream;
 
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.display.DisplayRequest;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
@@ -35,7 +35,7 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 	private static final String NAME= BaseBitmapDecoder.class.getSimpleName();
 	
 	@Override
-	public Bitmap decode(DisplayRequest displayRequest,  InputStreamCreator onNewBitmapInputStreamListener) {
+	public Bitmap decode(LoadRequest loadRequest,  InputStreamCreator onNewBitmapInputStreamListener) {
 		Bitmap bitmap = null;
 		Options options = new Options();
 		int outWidth = 0;
@@ -51,38 +51,38 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 			if(inputStream != null){
 				outWidth = options.outWidth;
 				outHeight = options.outHeight;
-				options.inSampleSize = calculateInSampleSize(options, displayRequest.getTargetSize().getWidth(), displayRequest.getTargetSize().getHeight());
+				options.inSampleSize = calculateInSampleSize(options, loadRequest.getTargetSize().getWidth(), loadRequest.getTargetSize().getHeight());
 				options.inJustDecodeBounds = false;
 //				if (ImageLoaderUtils.hasHoneycomb()) {
-//			        addInBitmapOptions(displayRequest, options);
+//			        addInBitmapOptions(loadRequest, options);
 //			    }
 				bitmap = BitmapFactory.decodeStream(inputStream, null, options);
 				ImageLoaderUtils.close(inputStream);
 			}
 		}
 		
-		if(displayRequest.getConfiguration().isDebugMode()){
-			writeLog(displayRequest, bitmap != null, outWidth, outHeight, options.inSampleSize, bitmap);
+		if(loadRequest.getConfiguration().isDebugMode()){
+			writeLog(loadRequest, bitmap != null, outWidth, outHeight, options.inSampleSize, bitmap);
 		}
 		
 		return bitmap;
 	}
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void addInBitmapOptions(DisplayRequest displayRequest, BitmapFactory.Options options) {
+	private void addInBitmapOptions(LoadRequest loadRequest, BitmapFactory.Options options) {
 	    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
 	    	// inBitmap only works with mutable bitmaps, so force the decoder to
 	    	// return mutable bitmaps.
 	    	options.inMutable = true;
 	    	
-	    	if (displayRequest.getConfiguration().getBitmapCacher() != null) {
+	    	if (loadRequest.getConfiguration().getBitmapCacher() != null) {
 	    		// Try to find a bitmap to use for inBitmap.
-	    		Bitmap inBitmap = displayRequest.getConfiguration().getBitmapCacher().getBitmapFromReusableSet(options);
+	    		Bitmap inBitmap = loadRequest.getConfiguration().getBitmapCacher().getBitmapFromReusableSet(options);
 	    		if (inBitmap != null && !inBitmap.isRecycled()) {
 	    			// If a suitable bitmap has been found, set it as the value of
 	    			// inBitmap.
 	    			options.inBitmap = inBitmap;
-	    			if(displayRequest.getConfiguration().isDebugMode()){
+	    			if(loadRequest.getConfiguration().isDebugMode()){
 	    				Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("回收利用了尚未被回收的Bitmap").toString());
 	    			}
 	    		}
@@ -92,23 +92,23 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 	
 	/**
 	 * 输出LOG
-	 * @param displayRequest
+	 * @param loadRequest
 	 * @param success
 	 * @param outWidth
 	 * @param outHeight
 	 * @param inSimpleSize
 	 * @param bitmap
 	 */
-	private void writeLog(DisplayRequest displayRequest, boolean success, int outWidth, int outHeight, int inSimpleSize, Bitmap bitmap){
+	private void writeLog(LoadRequest loadRequest, boolean success, int outWidth, int outHeight, int inSimpleSize, Bitmap bitmap){
 		StringBuffer stringBuffer = new StringBuffer(NAME)
 		.append("：").append(success?"解码成功":"解码失败")
 		.append("；").append("原图尺寸").append("=").append(outWidth).append("x").append(outHeight)
-		.append("；").append("目标尺寸").append("=").append(displayRequest.getTargetSize().getWidth()).append("x").append(displayRequest.getTargetSize().getHeight())
+		.append("；").append("目标尺寸").append("=").append(loadRequest.getTargetSize().getWidth()).append("x").append(loadRequest.getTargetSize().getHeight())
 		.append("；").append("缩小").append("=").append(inSimpleSize);
 		if(bitmap != null){
 			stringBuffer.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
 		}
-		stringBuffer.append("；").append(displayRequest.getName());
+		stringBuffer.append("；").append(loadRequest.getName());
 		String log = stringBuffer.toString();
 		if(success){
 			Log.d(ImageLoader.LOG_TAG, log);

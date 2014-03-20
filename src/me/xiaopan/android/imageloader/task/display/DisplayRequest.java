@@ -16,92 +16,57 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import me.xiaopan.android.imageloader.task.TaskRequest;
-import me.xiaopan.android.imageloader.util.ImageSize;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
 /**
  * 显示请求
  */
-public class DisplayRequest extends TaskRequest{
-	private ImageSize targetSize;	//目标尺寸
+public class DisplayRequest extends LoadRequest{
+	private String id;	//ID
 	private DisplayListener displayListener;	//监听器
 	private DisplayOptions displayOptions;	//显示选项
 	private ImageViewHolder imageViewHolder;	//ImageView持有器
 	
 	public DisplayRequest(String id, String uri) {
+		super(uri);
 		setId(id);
-		setUri(uri);
 	}
 	
-	/**
-	 * 获取目标尺寸
-	 * @return
-	 */
-	public ImageSize getTargetSize() {
-		return targetSize;
+	public String getId() {
+		return id;
 	}
-
-	/**
-	 * 设置目标尺寸
-	 * @param targetSize
-	 */
-	public void setTargetSize(ImageSize targetSize) {
-		this.targetSize = targetSize;
+	
+	public void setId(String id) {
+		this.id = id;
 	}
-
-	/**
-	 * 获取显示监听器
-	 * @return
-	 */
+	
 	public DisplayListener getDisplayListener() {
 		return displayListener;
 	}
 
-	/**
-	 * 设置显示监听器
-	 * @param displayListener
-	 */
 	public void setDisplayListener(DisplayListener displayListener) {
 		this.displayListener = displayListener;
 	}
 	
-	/**
-	 * 获取显示选项
-	 * @return
-	 */
 	public DisplayOptions getDisplayOptions() {
 		return displayOptions;
 	}
 
-	/**
-	 * 设置显示选项
-	 * @param displayOptions
-	 */
 	public void setDisplayOptions(DisplayOptions displayOptions) {
 		this.displayOptions = displayOptions;
+		setLoadOptions(displayOptions);
 	}
 	
-	/**
-	 * 获取ImageView持有器
-	 * @return
-	 */
 	public ImageViewHolder getImageViewHolder() {
 		return imageViewHolder;
 	}
 
-	/**
-	 * 设置ImageView持有器
-	 * @param imageViewHolder
-	 */
 	public void setImageViewHolder(ImageViewHolder imageViewHolder) {
 		this.imageViewHolder = imageViewHolder;
 	}
 
-	/**
-	 * 显示监听器
-	 */
 	public interface DisplayListener {
 		public void onStarted(String imageUri, ImageView imageView);
 		public void onFailed(String imageUri, ImageView imageView);

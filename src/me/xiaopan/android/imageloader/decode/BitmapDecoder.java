@@ -16,7 +16,7 @@
 
 package me.xiaopan.android.imageloader.decode;
 
-import me.xiaopan.android.imageloader.task.display.DisplayRequest;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import android.graphics.Bitmap;
 
 /**
@@ -25,9 +25,9 @@ import android.graphics.Bitmap;
 public interface BitmapDecoder{
 	/**
 	 * 解码
-	 * @param displayRequest
+	 * @param loadRequest
 	 * @param onNewBitmapInputStreamListener 创建新的用来读取位图的输入流
 	 * @return
 	 */
-	public Bitmap decode(DisplayRequest displayRequest,  InputStreamCreator onNewBitmapInputStreamListener);
+	public Bitmap decode(LoadRequest loadRequest,  InputStreamCreator onNewBitmapInputStreamListener);
 }

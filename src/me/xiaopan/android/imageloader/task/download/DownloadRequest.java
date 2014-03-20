@@ -3,6 +3,7 @@ package me.xiaopan.android.imageloader.task.download;
 import java.io.File;
 
 import me.xiaopan.android.imageloader.task.TaskRequest;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
 
 /**
  * 下载请求
@@ -12,7 +13,7 @@ public class DownloadRequest extends TaskRequest{
 	private DownloadListener downloadListener;
 	
 	public DownloadRequest(String uri) {
-		setUri(uri);
+		super(uri);
 	}
 
 	public DownloadOptions getDownloadOptions() {
@@ -39,6 +40,16 @@ public class DownloadRequest extends TaskRequest{
 	@Override
 	public int getDiskCachePeriodOfValidity() {
 		return downloadOptions != null?downloadOptions.getDiskCachePeriodOfValidity():0;
+	}
+	
+	public static final DownloadRequest valueOf(LoadRequest loadRequest, DownloadListener downloadListener){
+		DownloadRequest downloadRequest = new DownloadRequest(loadRequest.getUri());
+		downloadRequest.setCacheFile(loadRequest.getCacheFile());
+		downloadRequest.setConfiguration(loadRequest.getConfiguration());
+		downloadRequest.setDownloadListener(downloadListener);
+		downloadRequest.setDownloadOptions(DownloadOptions.valueOf(loadRequest.getLoadOptions()));
+		downloadRequest.setName(loadRequest.getUri());
+		return downloadRequest;
 	}
 	
 	/**

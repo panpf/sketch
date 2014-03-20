@@ -20,6 +20,7 @@ import me.xiaopan.android.imageloader.process.BitmapProcessor;
 import me.xiaopan.android.imageloader.task.TaskOptions;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.content.Context;
+import android.widget.ImageView.ScaleType;
 
 /**
  * 显示选项
@@ -28,43 +29,37 @@ public class LoadOptions extends TaskOptions{
 	private Context context;	//上下文
 	private ImageSize maxImageSize;	//最大图片尺寸
 	private BitmapProcessor bitmapProcessor;	//位图处理器
+	private ScaleType scaleType;
 	
 	public LoadOptions(Context context) {
 		this.context = context;
 		setMaxImageSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels));
 	}
 
-	/**
-	 * 获取最大尺寸
-	 * @return
-	 */
 	public ImageSize getMaxImageSize() {
 		return maxImageSize;
 	}
 
-	/**
-	 * 设置最大尺寸
-	 * @param maxImageSize
-	 */
 	public LoadOptions setMaxImageSize(ImageSize maxImageSize) {
 		this.maxImageSize = maxImageSize;
 		return this;
 	}
 	
-	/**
-	 * 获取位图处理器
-	 * @return
-	 */
 	public BitmapProcessor getBitmapProcessor() {
 		return bitmapProcessor;
 	}
 
-	/**
-	 * 设置位图处理器
-	 * @param bitmapProcessor
-	 */
 	public LoadOptions setBitmapProcessor(BitmapProcessor bitmapProcessor) {
 		this.bitmapProcessor = bitmapProcessor;
+		return this;
+	}
+
+	public ScaleType getScaleType() {
+		return scaleType;
+	}
+
+	public LoadOptions setScaleType(ScaleType scaleType) {
+		this.scaleType = scaleType;
 		return this;
 	}
 
@@ -80,6 +75,7 @@ public class LoadOptions extends TaskOptions{
 		.setEnableDiskCache(isEnableDiskCache());
 		
 		loadOptions.setBitmapProcessor(bitmapProcessor != null?bitmapProcessor.copy():null)
+		.setScaleType(scaleType)
 		.setMaxImageSize(maxImageSize != null?maxImageSize.copy():null);
 		return loadOptions;
 	}

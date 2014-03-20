@@ -6,7 +6,7 @@ import me.xiaopan.android.imageloader.task.Task;
 
 public class FileBitmapLoadTask extends Task {
 
-	public FileBitmapLoadTask(LoadRequest loadRequest, Callable<Object> callable) {
+	public FileBitmapLoadTask(LoadRequest loadRequest) {
 		super(loadRequest, new FileBitmapLoadCallable(loadRequest));
 	}
 	

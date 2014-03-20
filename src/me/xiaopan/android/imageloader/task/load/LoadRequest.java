@@ -28,9 +28,8 @@ public class LoadRequest extends TaskRequest{
 	private LoadListener loadListener;	//监听器
 	private LoadOptions loadOptions;	//显示选项
 	
-	public LoadRequest(String id, String uri) {
-		setId(id);
-		setUri(uri);
+	public LoadRequest(String uri) {
+		super(uri);
 	}
 	
 	/**
@@ -69,7 +68,7 @@ public class LoadRequest extends TaskRequest{
 	 * 获取加载选项
 	 * @return
 	 */
-	public LoadOptions getDisplayOptions() {
+	public LoadOptions getLoadOptions() {
 		return loadOptions;
 	}
 

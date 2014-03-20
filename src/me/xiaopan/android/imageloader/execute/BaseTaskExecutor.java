@@ -31,7 +31,10 @@ import me.xiaopan.android.imageloader.task.display.DrawableBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.FileBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
+import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
 import me.xiaopan.android.imageloader.task.download.DownloadTask;
+import me.xiaopan.android.imageloader.task.load.FileBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.load.LoadDownloadListener;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import me.xiaopan.android.imageloader.util.Scheme;
 import android.util.Log;
@@ -104,7 +107,32 @@ public class BaseTaskExecutor implements TaskExecutor {
 	 * @param loadRequest
 	 */
 	private void executeLoadRequest(LoadRequest loadRequest){
-		
+		Scheme scheme = Scheme.ofUri(loadRequest.getUri());
+		switch(scheme){
+			case HTTP :
+			case HTTPS : 
+				File cacheFile = loadRequest.getConfiguration().getBitmapCacher().getCacheFile(loadRequest);
+				loadRequest.setCacheFile(cacheFile);
+				if(cacheFile != null && cacheFile.exists()){
+					localTaskExecutor.execute(new FileBitmapLoadTask((LoadRequest) loadRequest));
+					if(loadRequest.getConfiguration().isDebugMode()){
+						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP - 本地").append("；").append(loadRequest.getName()).toString());
+					}
+				}else{
+					execute(DownloadRequest.valueOf(loadRequest, new LoadDownloadListener()));
+				}
+				break;
+			case FILE : 
+				break;
+			case ASSETS : 
+				break;
+			case CONTENT : 
+				break;
+			case DRAWABLE : 
+				break;
+			default:
+				break;
+		}
 	}
 	
 	/**

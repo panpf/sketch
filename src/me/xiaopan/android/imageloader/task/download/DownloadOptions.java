@@ -17,6 +17,7 @@
 package me.xiaopan.android.imageloader.task.download;
 
 import me.xiaopan.android.imageloader.task.TaskOptions;
+import me.xiaopan.android.imageloader.task.load.LoadOptions;
 
 /**
  * 下载选项
@@ -32,5 +33,17 @@ public class DownloadOptions extends TaskOptions{
 		.setMaxRetryCount(getMaxRetryCount())
 		.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
 		.setEnableDiskCache(isEnableDiskCache());
+	}
+	
+	public static final DownloadOptions valueOf(LoadOptions loadOptions){
+		if(loadOptions != null){
+			DownloadOptions downloadOptions = new DownloadOptions();
+			downloadOptions.setDiskCachePeriodOfValidity(loadOptions.getDiskCachePeriodOfValidity());
+			downloadOptions.setEnableDiskCache(loadOptions.isEnableDiskCache());
+			downloadOptions.setMaxRetryCount(loadOptions.getMaxRetryCount());
+			return downloadOptions;
+		}else{
+			return null;
+		}
 	}
 }
