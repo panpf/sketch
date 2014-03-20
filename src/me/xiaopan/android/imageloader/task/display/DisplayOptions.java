@@ -19,6 +19,7 @@ package me.xiaopan.android.imageloader.task.display;
 import me.xiaopan.android.imageloader.display.BitmapDisplayer;
 import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
 import me.xiaopan.android.imageloader.process.BitmapProcessor;
+import me.xiaopan.android.imageloader.task.TaskOptions;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.content.Context;
@@ -30,12 +31,9 @@ import android.widget.ImageView.ScaleType;
 /**
  * 显示选项
  */
-public class DisplayOptions{
+public class DisplayOptions extends TaskOptions{
 	private Context context;	//上下文
-	private int maxRetryCount;	//最大重试次数
-	private int diskCachePeriodOfValidity;	//磁盘缓存有效期，单位毫秒
-	private boolean enableMenoryCache;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-	private boolean enableDiskCache;	//是否需要将图片缓存到磁盘
+	private boolean enableMenoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
 	private ImageSize maxImageSize;	//最大图片尺寸
 	private BitmapProcessor bitmapProcessor;	//位图处理器
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
@@ -48,11 +46,8 @@ public class DisplayOptions{
 		this.emptyDrawableHolder = new DrawableHolder();
 		this.loadingDrawableHolder = new DrawableHolder();
 		this.failureDrawableHolder = new DrawableHolder();
-		setEnableMenoryCache(true)
-		.setEnableDiskCache(true)
-		.setMaxImageSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
-		.setBitmapDisplayer(new FadeInBitmapDisplayer())
-		.setMaxRetryCount(2);
+		setMaxImageSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
+		.setBitmapDisplayer(new FadeInBitmapDisplayer());
 	}
 
 	/**
@@ -69,57 +64,6 @@ public class DisplayOptions{
 	 */
 	public DisplayOptions setEnableMenoryCache(boolean enableMenoryCache) {
 		this.enableMenoryCache = enableMenoryCache;
-		return this;
-	}
-
-	/**
-	 * 是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
-	 * @return
-	 */
-	public boolean isEnableDiskCache() {
-		return enableDiskCache;
-	}
-
-	/**
-	 * 设置是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
-	 * @param enableDiskCache
-	 */
-	public DisplayOptions setEnableDiskCache(boolean enableDiskCache) {
-		this.enableDiskCache = enableDiskCache;
-		return this;
-	}
-
-	/**
-	 * 获取本地缓存文件的有效时间，单位毫秒
-	 * @return
-	 */
-	public int getDiskCachePeriodOfValidity() {
-		return diskCachePeriodOfValidity;
-	}
-
-	/**
-	 * 设置本地缓存文件的有效时间，单位毫秒
-	 * @param diskCachePeriodOfValidity
-	 */
-	public DisplayOptions setDiskCachePeriodOfValidity(int diskCachePeriodOfValidity) {
-		this.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
-		return this;
-	}
-	
-	/**
-	 * 获取最大重试次数
-	 * @return 最大重试次数
-	 */
-	public int getMaxRetryCount() {
-		return maxRetryCount;
-	}
-	
-	/**
-	 * 设置最大重试次数
-	 * @param maxRetryCount 最大重试次数
-	 */
-	public DisplayOptions setMaxRetryCount(int maxRetryCount) {
-		this.maxRetryCount = maxRetryCount;
 		return this;
 	}
 
@@ -293,17 +237,20 @@ public class DisplayOptions{
 	 * @return
 	 */
 	public DisplayOptions copy(){
-		return new DisplayOptions(context)
-		.setMaxRetryCount(maxRetryCount)
-		.setDiskCachePeriodOfValidity(diskCachePeriodOfValidity)
-		.setEnableMenoryCache(enableMenoryCache)
-		.setEnableDiskCache(enableDiskCache)
+		DisplayOptions displayOptions = new DisplayOptions(context);
+		
+		displayOptions.setMaxRetryCount(getMaxRetryCount())
+		.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
+		.setEnableDiskCache(isEnableDiskCache());
+		
+		displayOptions.setEnableMenoryCache(enableMenoryCache)
 		.setBitmapProcessor(bitmapProcessor != null?bitmapProcessor.copy():null)
 		.setBitmapDisplayer(bitmapDisplayer != null?bitmapDisplayer.copy():null)
 		.setEmptyDrawableResId(emptyDrawableHolder.getResId())
 		.setFailureDrawableResId(failureDrawableHolder.getResId())
 		.setLoadingDrawableResId(loadingDrawableHolder.getResId())
 		.setMaxImageSize(maxImageSize != null?maxImageSize.copy():null);
+		return displayOptions;
 	}
 	
 	private class DrawableHolder {

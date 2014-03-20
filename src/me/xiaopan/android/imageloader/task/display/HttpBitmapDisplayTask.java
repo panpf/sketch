@@ -17,105 +17,38 @@
 package me.xiaopan.android.imageloader.task.display;
 
 import java.io.File;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
-import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.ByteArrayInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.FileInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-import android.util.Log;
 
 public class HttpBitmapDisplayTask extends  BitmapDisplayTask {
-	private DisplayRequest displayRequest;
 	
 	public HttpBitmapDisplayTask(DisplayRequest displayRequest) {
 		super(displayRequest, new HttpBitmapLoadCallable(displayRequest));
-		this.displayRequest = displayRequest;
-	}
-	
-	public boolean isFromNetworkLoad(){
-		return !isAvailableOfFile(getCacheFile(), displayRequest);
-	}
-
-	public File getCacheFile() {
-		return displayRequest.getDisplayOptions().isEnableDiskCache()?displayRequest.getConfiguration().getBitmapCacher().getDiskCacheFile(displayRequest.getConfiguration().getContext(), ImageLoaderUtils.encodeUrl(displayRequest.getUri())):null;
-	}
-	
-	/**
-	 * 判断给定文件是否可以使用
-	 * @param file
-	 * @param displayRequest
-	 * @return
-	 */
-	public static boolean isAvailableOfFile(File file, DisplayRequest displayRequest){
-		if(file ==null){
-			if(displayRequest.getConfiguration().isDebugMode()){
-				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件为null").append("；").append(displayRequest.getName()).toString());
-			}
-			return false;
-		}
-		
-		if(!file.exists()){
-			if(displayRequest.getConfiguration().isDebugMode()){
-				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件不存在").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(displayRequest.getName()).toString());
-			}
-			return false;
-		}
-		
-		if(file.length() <= 0){
-			if(displayRequest.getConfiguration().isDebugMode()){
-				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件长度为0").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(displayRequest.getName()).toString());
-			}
-			return false;
-		}
-		
-		if(displayRequest.getDisplayOptions().getDiskCachePeriodOfValidity() <= 0){
-			if(displayRequest.getConfiguration().isDebugMode()){
-				Log.d(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件永久有效").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(displayRequest.getName()).toString());
-			}
-			return true;
-		}
-		
-		/* 判断是否过期 */
-		Calendar calendar = new GregorianCalendar();
-		calendar.add(Calendar.MILLISECOND, -displayRequest.getDisplayOptions().getDiskCachePeriodOfValidity());
-		if(calendar.getTimeInMillis() >= file.lastModified()){
-			file.delete();
-			if(displayRequest.getConfiguration().isDebugMode()){
-				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件过期已删除").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(displayRequest.getName()).toString());
-			}
-			return false;
-		}
-		
-		if(displayRequest.getConfiguration().isDebugMode()){
-			Log.d(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件未过期").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(displayRequest.getName()).toString());
-		}
-		return true;
 	}
 	
 	private static class HttpBitmapLoadCallable extends BitmapDisplayCallable {
-		private File cacheFile = null;
+		private DisplayRequest displayRequest;
 		private InputStreamCreator inputStreamCreator = null;
 		
 		public HttpBitmapLoadCallable(DisplayRequest displayRequest) {
 			super(displayRequest);
+			this.displayRequest = displayRequest;
 		}
 
 		@Override
 		public InputStreamCreator getInputStreamCreator() {
 			if(inputStreamCreator == null){
 				if(displayRequest.getDisplayOptions().isEnableDiskCache()){
-					cacheFile = displayRequest.getConfiguration().getBitmapCacher().getDiskCacheFile(displayRequest.getConfiguration().getContext(), ImageLoaderUtils.encodeUrl(displayRequest.getUri()));
-					if(HttpBitmapDisplayTask.isAvailableOfFile(cacheFile, displayRequest)){
-						inputStreamCreator = new FileInputStreamCreator(cacheFile);
+					if(displayRequest.getCacheFile() != null && displayRequest.getCacheFile().exists()){
+						inputStreamCreator = new FileInputStreamCreator(displayRequest.getCacheFile());
 					}else{
-						inputStreamCreator = getNetInputStreamCreator(displayRequest, cacheFile);
+						inputStreamCreator = getNetInputStreamCreator(displayRequest);
 					}
 				}else{
-					inputStreamCreator = getNetInputStreamCreator(displayRequest, null);
+					inputStreamCreator = getNetInputStreamCreator(displayRequest);
 				}
 			}
 			return inputStreamCreator;
@@ -123,23 +56,19 @@ public class HttpBitmapDisplayTask extends  BitmapDisplayTask {
 
 		@Override
 		public void onFailed() {
-			if(inputStreamCreator instanceof FileInputStreamCreator && cacheFile != null && cacheFile.exists()){
-				cacheFile.delete();
+			if(inputStreamCreator instanceof FileInputStreamCreator && displayRequest.getCacheFile() != null && displayRequest.getCacheFile().exists()){
+				displayRequest.getCacheFile().delete();
 			}
 		}
 		
 		/**
 	     * 获取网络输入流监听器
-	     * @param requestName
-	     * @param imageUrl
-	     * @param cacheFile
-	     * @param maxRetryCount
-	     * @param httpClient
+	     * @param displayRequest
 	     * @return
 	     */
-	    private InputStreamCreator getNetInputStreamCreator(DisplayRequest displayRequest, File cacheFile){
+	    private InputStreamCreator getNetInputStreamCreator(DisplayRequest displayRequest){
 	    	final NetInputStreamCreatorHolder holder = new NetInputStreamCreatorHolder();
-	    	displayRequest.getConfiguration().getImageDownloader().execute(displayRequest, cacheFile, new DownloadListener() {
+	    	displayRequest.getConfiguration().getImageDownloader().execute(displayRequest, new DownloadListener() {
 				@Override
 				public void onFailed() {}
 				
@@ -155,14 +84,11 @@ public class HttpBitmapDisplayTask extends  BitmapDisplayTask {
 
 				@Override
 				public void onStart() {
-					// TODO Auto-generated method stub
 					
 				}
 
 				@Override
-				public void onUpdateProgress(long totalLength,
-						long completedLength) {
-					// TODO Auto-generated method stub
+				public void onUpdateProgress(long totalLength, long completedLength) {
 					
 				}
 			});

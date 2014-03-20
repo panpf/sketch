@@ -76,14 +76,6 @@ public interface BitmapCacher {
 	public void clearAllCache(Context context);
 	
 	/**
-	 * 获取缓存文件
-	 * @param context
-	 * @param fileName
-	 * @return
-	 */
-	public File getDiskCacheFile(Context context, String fileName);
-	
-	/**
 	 * 获取磁盘缓存目录
 	 * @param diskCacheDirectory
 	 */

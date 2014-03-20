@@ -241,15 +241,25 @@ public class ImageLoader{
 	 * 下载
 	 */
 	public void download(String url, DownloadOptions downloadOptions, DownloadListener downloadListener){
-		DownloadRequest downloadRequest = new DownloadRequest(url);
-		downloadRequest.setDownloadListener(downloadListener);
-		downloadRequest.setCacheFile(configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(url)));
-		downloadRequest.setDownloadOptions(downloadOptions);
-		downloadRequest.setName(url);
-		downloadRequest.setConfiguration(configuration);
+		//过滤掉空的URI
+		if(ImageLoaderUtils.isEmpty(url)){
+			if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("url不能为null或空").toString());
+			if(downloadListener != null) downloadListener.onFailed();
+			return;
+		}
+		
 		if(downloadListener != null){
 			downloadListener.onStart();
 		}
+		
+		//初始化下载请求
+		DownloadRequest downloadRequest = new DownloadRequest(url);
+		downloadRequest.setName(url);
+		downloadRequest.setConfiguration(configuration);
+		downloadRequest.setDownloadListener(downloadListener);
+		downloadRequest.setDownloadOptions(downloadOptions != null?downloadOptions:new DownloadOptions());
+		
+		//执行请求
 		getConfiguration().getTaskExecutor().execute(downloadRequest);
 	}
 	

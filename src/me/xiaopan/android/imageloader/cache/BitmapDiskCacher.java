@@ -66,15 +66,6 @@ public abstract class BitmapDiskCacher implements BitmapCacher {
 	}
 
 	@Override
-	public File getDiskCacheFile(Context context, String fileName){
-		if(diskCacheDirectory != null){
-			return new File(diskCacheDirectory, fileName);
-		}else{
-			return new File(ImageLoaderUtils.getDynamicCacheDir(context).getPath() + File.separator + DEFAULT_DIRECTORY_NAME + File.separator + fileName);
-		}
-	}
-	
-	@Override
 	public synchronized void setCacheFileLength(File cacheFile, long cacheFileLength) throws IOException{
 		if(cacheFile.exists()){
 			/* 尝试腾出足够的空间 */
@@ -181,6 +172,7 @@ public abstract class BitmapDiskCacher implements BitmapCacher {
 			file = new File(ImageLoaderUtils.getDynamicCacheDir(taskRequest.getConfiguration().getContext()).getPath() + File.separator + DEFAULT_DIRECTORY_NAME + File.separator + ImageLoaderUtils.encodeUrl(taskRequest.getUri()));
 		}
 		
+		//是否存在
 		if(!file.exists()){
 			if(taskRequest.getConfiguration().isDebugMode()){
 				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件不存在").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(taskRequest.getName()).toString());
@@ -188,7 +180,8 @@ public abstract class BitmapDiskCacher implements BitmapCacher {
 			return file;
 		}
 		
-		if(file.length() <= 0){
+		//长度是否正常
+		if(file.length() == 0){
 			file.delete();
 			if(taskRequest.getConfiguration().isDebugMode()){
 				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件长度为0已删除").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(taskRequest.getName()).toString());
@@ -196,6 +189,7 @@ public abstract class BitmapDiskCacher implements BitmapCacher {
 			return file;
 		}
 		
+		//是否永久有效
 		if(taskRequest.getDiskCachePeriodOfValidity() <= 0){
 			if(taskRequest.getConfiguration().isDebugMode()){
 				Log.d(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件永久有效").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(taskRequest.getName()).toString());
@@ -203,7 +197,7 @@ public abstract class BitmapDiskCacher implements BitmapCacher {
 			return file;
 		}
 		
-		/* 判断是否过期 */
+		//是否过期
 		Calendar calendar = new GregorianCalendar();
 		calendar.add(Calendar.MILLISECOND, -taskRequest.getDiskCachePeriodOfValidity());
 		if(calendar.getTimeInMillis() >= file.lastModified()){
@@ -217,7 +211,6 @@ public abstract class BitmapDiskCacher implements BitmapCacher {
 		if(taskRequest.getConfiguration().isDebugMode()){
 			Log.d(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件未过期").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(taskRequest.getName()).toString());
 		}
-		
 		return file;
 	}
 }

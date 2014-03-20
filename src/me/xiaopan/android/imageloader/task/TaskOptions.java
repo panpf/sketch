@@ -22,7 +22,7 @@ package me.xiaopan.android.imageloader.task;
 public abstract class TaskOptions{
 	private int maxRetryCount = 2;	//最大重试次数
 	private int diskCachePeriodOfValidity;	//磁盘缓存有效期，单位毫秒
-	private boolean enableDiskCache;	//是否开启磁盘缓存
+	private boolean enableDiskCache = true;	//是否开启磁盘缓存
 	
 	/**
 	 * 是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载

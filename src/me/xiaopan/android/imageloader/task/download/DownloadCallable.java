@@ -3,7 +3,6 @@ package me.xiaopan.android.imageloader.task.download;
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -55,8 +54,15 @@ public class DownloadCallable implements Callable<Object>{
 	
 	private Object download(){
 		//如果已经存在就直接返回原文件
-		if(check(downloadRequest.getCacheFile())){
+		if(downloadRequest.getCacheFile() != null && downloadRequest.getCacheFile().exists()){
+			if(downloadRequest.getConfiguration().isDebugMode()){
+				Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("文件已存在，无需下载").append("；").append(downloadRequest.getName()).toString());
+			}
 			return downloadRequest.getCacheFile();
+		}
+		
+		if(downloadRequest.getConfiguration().isDebugMode()){
+			Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载开始").append("；").append(downloadRequest.getName()).toString());
 		}
 		
 		Object result = null;
@@ -75,16 +81,22 @@ public class DownloadCallable implements Callable<Object>{
 				
 				//读取数据
 				bufferedfInputStream = new BufferedInputStream(httpResponse.getEntity().getContent());
-				if(ImageLoaderUtils.createFile(downloadRequest.getCacheFile())){
+				if(downloadRequest.getCacheFile() != null && ImageLoaderUtils.createFile(downloadRequest.getCacheFile())){
 					downloadRequest.getConfiguration().getBitmapCacher().setCacheFileLength(downloadRequest.getCacheFile(), fileLength);
 					bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(downloadRequest.getCacheFile(), false));
 					copy(bufferedfInputStream, bufferedOutputStream, fileLength);
 					result = downloadRequest.getCacheFile();
+					if(downloadRequest.getConfiguration().isDebugMode()){
+						Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - FILE").append("；").append(downloadRequest.getName()).toString());
+					}
 				}else{
 					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 					bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
 					copy(bufferedfInputStream, bufferedOutputStream, fileLength);
 					result = byteArrayOutputStream.toByteArray();
+					if(downloadRequest.getConfiguration().isDebugMode()){
+						Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - BYTE_ARRAY").append("；").append(downloadRequest.getName()).toString());
+					}
 				}
 				break;
 			} catch (Throwable e2) {
@@ -118,24 +130,6 @@ public class DownloadCallable implements Callable<Object>{
 			}
 		}
 		return result;
-	}
-	
-	/**
-	 * 检查要下载的文件是否已存在
-	 * @return 是否继续下载
-	 */
-	private boolean check(File file){
-		if(file != null && file.exists()){
-			if(downloadRequest.getConfiguration().isDebugMode()){
-				Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("文件已存在，无需下载").append("；").append(downloadRequest.getName()).toString());
-			}
-			return true;
-		}else{
-			if(downloadRequest.getConfiguration().isDebugMode()){
-				Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载开始").append("；").append(downloadRequest.getName()).toString());
-			}
-			return false;
-		}
 	}
 	
 	private static DefaultHttpClient getHttpClient(){

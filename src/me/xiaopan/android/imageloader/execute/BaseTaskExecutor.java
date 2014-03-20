@@ -70,9 +70,18 @@ public class BaseTaskExecutor implements TaskExecutor {
 			@Override
 			public void run() {
 				if(taskRequest instanceof DownloadRequest){
-					netTaskExecutor.execute(new DownloadTask((DownloadRequest) taskRequest));
-					if(taskRequest.getConfiguration().isDebugMode()){
-						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DOWNLOAD - 网络").append("；").append(taskRequest.getName()).toString());
+					File cacheFile = taskRequest.getConfiguration().getBitmapCacher().getCacheFile(taskRequest);
+					taskRequest.setCacheFile(cacheFile);
+					if(cacheFile != null && cacheFile.exists()){
+						localTaskExecutor.execute(new DownloadTask((DownloadRequest) taskRequest));
+						if(taskRequest.getConfiguration().isDebugMode()){
+							Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DOWNLOAD - 本地").append("；").append(taskRequest.getName()).toString());
+						}
+					}else{
+						netTaskExecutor.execute(new DownloadTask((DownloadRequest) taskRequest));
+						if(taskRequest.getConfiguration().isDebugMode()){
+							Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DOWNLOAD - 网络").append("；").append(taskRequest.getName()).toString());
+						}
 					}
 				}else if(taskRequest instanceof DisplayRequest){
 					Scheme scheme = Scheme.ofUri(taskRequest.getUri());
@@ -81,6 +90,7 @@ public class BaseTaskExecutor implements TaskExecutor {
 						case HTTPS : 
 //							displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
 							File cacheFile = taskRequest.getConfiguration().getBitmapCacher().getCacheFile(taskRequest);
+							taskRequest.setCacheFile(cacheFile);
 							if(cacheFile != null && cacheFile.exists()){
 								localTaskExecutor.execute(new HttpBitmapDisplayTask((DisplayRequest) taskRequest));
 								if(taskRequest.getConfiguration().isDebugMode()){

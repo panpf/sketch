@@ -83,16 +83,16 @@ public class LockImageDownloader implements ImageDownloader {
 	}
 
 	@Override
-	public void execute(DisplayRequest displayRequest, File cacheFile, DownloadListener onCompleteListener) {
+	public void execute(DisplayRequest displayRequest, DownloadListener onCompleteListener) {
 		boolean running = true;
 		boolean exists = false;
 		Result result = Result.FAILURE;
 		ReentrantLock urlLock = null;
 		
-		if(cacheFile != null){
+		if(displayRequest.getCacheFile() != null){
 			urlLock = getUrlLock(displayRequest.getUri());
 			urlLock.lock();
-			if(exists = cacheFile.exists()){
+			if(exists = displayRequest.getCacheFile().exists()){
 				running = false;
 				result = Result.FILE;
 				if(displayRequest.getConfiguration().isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("文件已存在，无需下载").append("；").append(displayRequest.getName()).toString());
@@ -129,29 +129,29 @@ public class LockImageDownloader implements ImageDownloader {
 					throw new Exception("文件长度为0");
 				}
 				
-				if(cacheFile != null){
+				if(displayRequest.getCacheFile() != null){
 					//如果缓存文件不存在就尝试创建
-					if(!cacheFile.exists()){
-						parentDir = cacheFile.getParentFile();
+					if(!displayRequest.getCacheFile().exists()){
+						parentDir = displayRequest.getCacheFile().getParentFile();
 						if(!parentDir.exists()){
 							parentDir.mkdirs();
 						}else{
 							parentDir = null;
 						}
-						createNewFile = cacheFile.createNewFile();
+						createNewFile = displayRequest.getCacheFile().createNewFile();
 					}
 					
 					//如果依然没有创建成功，就抛出异常
-					if(!cacheFile.exists()){
-						throw new Exception("文件 "+cacheFile.getPath()+" 创建失败");
+					if(!displayRequest.getCacheFile().exists()){
+						throw new Exception("文件 "+displayRequest.getCacheFile().getPath()+" 创建失败");
 					}
 					
 					//申请空间
-					displayRequest.getConfiguration().getBitmapCacher().setCacheFileLength(cacheFile, fileLength);
+					displayRequest.getConfiguration().getBitmapCacher().setCacheFileLength(displayRequest.getCacheFile(), fileLength);
 					
 					/* 读取数据并写入缓存文件 */
 					bufferedfInputStream = new BufferedInputStream(httpResponse.getEntity().getContent());
-					bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(cacheFile, false));
+					bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(displayRequest.getCacheFile(), false));
 					int readNumber;	//读取到的字节的数量
 					byte[] cacheBytes = new byte[1024];//数据缓存区
 					while((readNumber = bufferedfInputStream.read(cacheBytes)) != -1){
@@ -173,7 +173,7 @@ public class LockImageDownloader implements ImageDownloader {
 				if(httpGet != null) httpGet.abort();
 				ImageLoaderUtils.close(bufferedfInputStream);
 				ImageLoaderUtils.close(bufferedOutputStream);
-				if(createNewFile && cacheFile != null && cacheFile.exists()) cacheFile.delete();	//如果创建了新文件就删除
+				if(createNewFile && displayRequest.getCacheFile() != null && displayRequest.getCacheFile().exists()) displayRequest.getCacheFile().delete();	//如果创建了新文件就删除
 				if(parentDir != null && parentDir.exists()) parentDir.delete();	//如果创建了新目录就删除
 				running = ((e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException) && displayRequest.getDisplayOptions().getMaxRetryCount() > 0)?numberOfLoaded < displayRequest.getDisplayOptions().getMaxRetryCount():false;	//如果尚未达到最大重试次数，那么就再尝试一次
 				
@@ -190,9 +190,9 @@ public class LockImageDownloader implements ImageDownloader {
 		switch(result){
 			case FILE : 
 				if(onCompleteListener != null){
-					if(cacheFile != null && cacheFile.exists() && (exists || (fileLength >0 && cacheFile.length() == fileLength))){
+					if(displayRequest.getCacheFile() != null && displayRequest.getCacheFile().exists() && (exists || (fileLength >0 && displayRequest.getCacheFile().length() == fileLength))){
 						if(displayRequest.getConfiguration().isDebugMode() && !exists) Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - FILE").append("；").append(displayRequest.getName()).toString());
-						onCompleteListener.onComplete(cacheFile);
+						onCompleteListener.onComplete(displayRequest.getCacheFile());
 					}else{
 						if(displayRequest.getConfiguration().isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - FILE").append("；").append(displayRequest.getName()).toString());
 						onCompleteListener.onFailed();
