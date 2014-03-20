@@ -30,7 +30,7 @@ import android.widget.ImageView;
 public class ImageViewHolder{
 	protected Reference<ImageView> imageViewRef;
 	protected boolean checkActualViewSize;
-	private BitmapDisplayTask bitmapLoadTask;
+	private DisplayRequest displayRequest;
 
 	public ImageViewHolder(ImageView imageView) {
 		this(imageView, true);
@@ -107,9 +107,9 @@ public class ImageViewHolder{
 
 	public ImageView getImageView() {
 		final ImageView imageView = imageViewRef.get();
-		if (bitmapLoadTask != null) {
-			BitmapDisplayTask newBitmapLoadTask = BitmapDisplayTask.getBitmapLoadTask(imageView);
-            if(newBitmapLoadTask != null && newBitmapLoadTask == bitmapLoadTask){
+		if (displayRequest != null) {
+			DisplayRequest holderDisplayRequest = BitmapDisplayTask.getDisplayRequest(imageView);
+            if(holderDisplayRequest != null && holderDisplayRequest == displayRequest){
             	return imageView;
             }else{
             	return null;
@@ -123,8 +123,8 @@ public class ImageViewHolder{
 		return getImageView() == null;
 	}
 	
-	public void setBitmapLoadTask(BitmapDisplayTask bitmapLoadTask) {
-		this.bitmapLoadTask = bitmapLoadTask;
+	public void setDisplayRequest(DisplayRequest displayRequest) {
+		this.displayRequest = displayRequest;
 	}
 
 	private static int getImageViewFieldValue(Object object, String fieldName) {

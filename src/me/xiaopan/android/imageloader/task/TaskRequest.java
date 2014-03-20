@@ -6,6 +6,8 @@ import me.xiaopan.android.imageloader.Configuration;
 public class TaskRequest {
 	private String name;	//名称
 	private Configuration configuration;	//配置
+	private Task task;	//执行当前请求的任务，由于一个请求可能辗转被好几个任务处理
+	private boolean canceled;
 
 	/**
 	 * 获取名称，用于在输出log时区分不同的请求
@@ -38,4 +40,34 @@ public class TaskRequest {
 	public void setConfiguration(Configuration configuration) {
 		this.configuration = configuration;
 	}
+
+	/**
+	 * 设置当前任务
+	 * @param task
+	 */
+	public void setTask(Task task) {
+		this.task = task;
+	}
+
+	/**
+	 * 是否已经取消
+	 * @return
+	 */
+	public boolean isCanceled() {
+		return canceled;
+	}
+
+    /**
+     * 取消请求
+     * @param mayInterruptIfRunning
+     * @return
+     */
+    public boolean cancel(boolean mayInterruptIfRunning) {
+    	canceled = true;
+    	if(task != null){
+    		return task.cancel(mayInterruptIfRunning);
+    	}else{
+    		return true;
+    	}
+    }
 }

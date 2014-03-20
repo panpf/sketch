@@ -130,6 +130,7 @@ public class ImageLoader{
 		displayRequest.setConfiguration(configuration);
 		displayRequest.setDisplayListener(displayListener);
 		displayRequest.setDisplayOptions(displayOptions);
+		imageViewHolder.setDisplayRequest(displayRequest);
 		displayRequest.setImageViewHolder(imageViewHolder);
 		
 		//尝试显示
@@ -179,11 +180,10 @@ public class ImageLoader{
 			
 			if(bitmapLoadTask != null){
 				//显示默认图片
+				displayRequest.setTask(bitmapLoadTask);
 				BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getLoadingDrawable();
-				AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, bitmapLoadTask);
+				AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, displayRequest);
 				imageView.setImageDrawable(loadingAsyncDrawable);
-				
-				//提交任务
 				configuration.getTaskExecutor().execute(bitmapLoadTask, configuration);
 			}
 		}

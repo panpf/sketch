@@ -32,7 +32,6 @@ public abstract class BitmapDisplayTask extends Task {
 	public BitmapDisplayTask(DisplayRequest displayRequest, BitmapDisplayCallable bitmapLoadCallable) {
 		super(displayRequest, bitmapLoadCallable);
 		this.displayRequest = displayRequest;
-		this.displayRequest.getImageViewHolder().setBitmapLoadTask(this);
 	}
 	
 	@Override
@@ -101,29 +100,28 @@ public abstract class BitmapDisplayTask extends Task {
      * @param imageView 
      * @return 
      */
-	public static BitmapDisplayTask getBitmapLoadTask(ImageView imageView) {
+	public static DisplayRequest getDisplayRequest(ImageView imageView) {
         if (imageView != null) {
             final Drawable drawable = imageView.getDrawable();
             if (drawable instanceof AsyncDrawable) {
-                final AsyncDrawable asyncDrawable = (AsyncDrawable) drawable;
-                return asyncDrawable.getBitmapLoadTask();
+                return ((AsyncDrawable) drawable).getDisplayRequest();
             }
         }
         return null;
     }
 
     /**
-     * 取消加载工作
+     * 取消显示请求
      * @param imageLoader
      * @param imageView
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
      */
-    public static boolean cancelBitmapLoadTask(ImageView imageView) {
-        final BitmapDisplayTask bitmapLoadTask = getBitmapLoadTask(imageView);
-        if (bitmapLoadTask != null) {
-            bitmapLoadTask.cancel(true);
-            if (bitmapLoadTask.getConfiguration().isDebugMode()) {
-                Log.w(ImageLoader.LOG_TAG, new StringBuffer().append("取消加载任务").append("；").append(bitmapLoadTask.getDisplayRequest().getName()).toString());
+    public static boolean cancelDisplayRequest(ImageView imageView) {
+        final DisplayRequest displayRequest = getDisplayRequest(imageView);
+        if (displayRequest != null) {
+    		displayRequest.cancel(true);
+            if (displayRequest.getConfiguration().isDebugMode()) {
+                Log.w(ImageLoader.LOG_TAG, new StringBuffer().append("取消加载任务").append("；").append(displayRequest.getName()).toString());
             }
             return true;
         }else{
@@ -138,18 +136,18 @@ public abstract class BitmapDisplayTask extends Task {
      * @return true：取消成功；false：ImageView所关联的任务就是所需的无需取消
      */
     public static boolean cancelPotentialBitmapLoadTask(DisplayRequest displayRequest, ImageView imageView) {
-        final BitmapDisplayTask potentialBitmapLoadTask = getBitmapLoadTask(imageView);
+        final DisplayRequest potentialDisplayRequest = getDisplayRequest(imageView);
         boolean cancelled = true;
-        if (potentialBitmapLoadTask != null) {
-            final String requestId = potentialBitmapLoadTask.getDisplayRequest().getId();
+        if (potentialDisplayRequest != null) {
+            final String requestId = potentialDisplayRequest.getId();
         	if (requestId != null && requestId.equals(displayRequest.getId())) {
                 cancelled = false;
             }else{
-            	potentialBitmapLoadTask.cancel(true);
+        		potentialDisplayRequest.cancel(true);
             	cancelled = true;
             }
             if(displayRequest.getConfiguration().isDebugMode()){
-            	Log.w(ImageLoader.LOG_TAG, new StringBuffer().append((cancelled?"取消":"无需取消")+"潜在的加载任务").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(potentialBitmapLoadTask.getDisplayRequest().getName()).toString());
+            	Log.w(ImageLoader.LOG_TAG, new StringBuffer().append((cancelled?"取消":"无需取消")+"潜在的加载任务").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(potentialDisplayRequest.getName()).toString());
             }
         }
         return cancelled;
