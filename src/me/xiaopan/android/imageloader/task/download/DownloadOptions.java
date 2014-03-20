@@ -22,4 +22,15 @@ import me.xiaopan.android.imageloader.task.TaskOptions;
  * 下载选项
  */
 public class DownloadOptions extends TaskOptions{
+
+	/**
+	 * 将当前的DownloadOptions拷贝一份
+	 * @return
+	 */
+	public DownloadOptions copy(){
+		return (DownloadOptions) new DownloadOptions()
+		.setMaxRetryCount(getMaxRetryCount())
+		.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
+		.setEnableDiskCache(isEnableDiskCache());
+	}
 }

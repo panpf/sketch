@@ -9,6 +9,7 @@ public abstract class Task extends FutureTask<Object> {
 	public Task(TaskRequest taskRequest, Callable<Object> callable) {
 		super(callable);
 		this.taskRequest = taskRequest;
+		this.taskRequest.setTask(this);
 	}
 
 	public TaskRequest getTaskRequest() {

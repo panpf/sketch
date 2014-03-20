@@ -28,9 +28,12 @@ import java.util.concurrent.locks.ReentrantLock;
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.Task;
+import me.xiaopan.android.imageloader.task.TaskRequest;
 import me.xiaopan.android.imageloader.task.display.BitmapDisplayTask;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import me.xiaopan.android.imageloader.task.display.DrawableBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
+import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.task.download.DownloadTask;
 import android.util.Log;
 
@@ -74,6 +77,20 @@ public class BaseTaskExecutor implements TaskExecutor {
 				}else if(configuration.isDebugMode()){
 					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("放到本地线程池中加载").append("；").append(futureTask.getTaskRequest().getName()).toString());
 					localTaskExecutor.execute(futureTask);
+				}
+			}
+		});
+	}
+
+	@Override
+	public void execute(final TaskRequest taskRequest) {
+		taskDispatchExecutor.execute(new Runnable() {
+			@Override
+			public void run() {
+				if(taskRequest instanceof DownloadRequest){
+					netTaskExecutor.execute(new DownloadTask((DownloadRequest) taskRequest));
+				}else if(taskRequest instanceof DisplayRequest){
+					
 				}
 			}
 		});

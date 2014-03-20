@@ -2,12 +2,11 @@ package me.xiaopan.android.imageloader.task;
 
 import me.xiaopan.android.imageloader.Configuration;
 
-
-public class TaskRequest {
+public abstract class TaskRequest {
+	private boolean canceled;	//是否已经取消
+	private Task task;	//执行当前请求的任务，由于一个请求可能辗转被好几个任务处理
 	private String name;	//名称
 	private Configuration configuration;	//配置
-	private Task task;	//执行当前请求的任务，由于一个请求可能辗转被好几个任务处理
-	private boolean canceled;
 
 	/**
 	 * 获取名称，用于在输出log时区分不同的请求

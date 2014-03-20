@@ -130,12 +130,12 @@ public abstract class BitmapDisplayTask extends Task {
     }
 
     /**
-     * 取消潜在的任务
+     * 取消潜在的请求
      * @param displayRequest
      * @param imageView
      * @return true：取消成功；false：ImageView所关联的任务就是所需的无需取消
      */
-    public static boolean cancelPotentialBitmapLoadTask(DisplayRequest displayRequest, ImageView imageView) {
+    public static boolean cancelPotentialDisplayRequest(DisplayRequest displayRequest, ImageView imageView) {
         final DisplayRequest potentialDisplayRequest = getDisplayRequest(imageView);
         boolean cancelled = true;
         if (potentialDisplayRequest != null) {
