@@ -19,6 +19,7 @@ package me.xiaopan.android.imageloader.cache;
 import java.io.File;
 import java.io.IOException;
 
+import me.xiaopan.android.imageloader.task.TaskRequest;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -101,4 +102,11 @@ public interface BitmapCacher {
 	 * @throws IOException
 	 */
 	public void setCacheFileLength(File file, long fileLength) throws IOException;
+	
+	/**
+	 * 获取缓存文件
+	 * @param taskRequest
+	 * @return
+	 */
+	public File getCacheFile(TaskRequest taskRequest);
 }

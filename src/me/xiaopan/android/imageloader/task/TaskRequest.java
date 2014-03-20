@@ -1,5 +1,7 @@
 package me.xiaopan.android.imageloader.task;
 
+import java.io.File;
+
 import me.xiaopan.android.imageloader.Configuration;
 
 public abstract class TaskRequest {
@@ -7,6 +9,7 @@ public abstract class TaskRequest {
 	private String id;	//ID
 	private String uri;	//Uri
 	private String name;	//名称，用于在输出LOG的时候区分不同的请求
+	private File cacheFile;	//缓存文件
 	private Task task;	//执行当前请求的任务，由于一个请求可能辗转被好几个任务处理
 	private Configuration configuration;	//配置
 	
@@ -42,6 +45,14 @@ public abstract class TaskRequest {
 		this.configuration = configuration;
 	}
 
+	public File getCacheFile() {
+		return cacheFile;
+	}
+	
+	public void setCacheFile(File cacheFile) {
+		this.cacheFile = cacheFile;
+	}
+
 	public void setTask(Task task) {
 		this.task = task;
 	}
@@ -58,4 +69,7 @@ public abstract class TaskRequest {
     		return true;
     	}
     }
+    
+    public abstract boolean isEnableDiskCache();
+    public abstract int getDiskCachePeriodOfValidity();
 }

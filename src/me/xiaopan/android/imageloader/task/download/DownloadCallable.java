@@ -55,8 +55,8 @@ public class DownloadCallable implements Callable<Object>{
 	
 	private Object download(){
 		//如果已经存在就直接返回原文件
-		if(check(downloadRequest.getSaveFile())){
-			return downloadRequest.getSaveFile();
+		if(check(downloadRequest.getCacheFile())){
+			return downloadRequest.getCacheFile();
 		}
 		
 		Object result = null;
@@ -75,11 +75,11 @@ public class DownloadCallable implements Callable<Object>{
 				
 				//读取数据
 				bufferedfInputStream = new BufferedInputStream(httpResponse.getEntity().getContent());
-				if(ImageLoaderUtils.createFile(downloadRequest.getSaveFile())){
-					downloadRequest.getConfiguration().getBitmapCacher().setCacheFileLength(downloadRequest.getSaveFile(), fileLength);
-					bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(downloadRequest.getSaveFile(), false));
+				if(ImageLoaderUtils.createFile(downloadRequest.getCacheFile())){
+					downloadRequest.getConfiguration().getBitmapCacher().setCacheFileLength(downloadRequest.getCacheFile(), fileLength);
+					bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(downloadRequest.getCacheFile(), false));
 					copy(bufferedfInputStream, bufferedOutputStream, fileLength);
-					result = downloadRequest.getSaveFile();
+					result = downloadRequest.getCacheFile();
 				}else{
 					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 					bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
@@ -94,8 +94,8 @@ public class DownloadCallable implements Callable<Object>{
 				}
 				
 				//删除文件
-				if(downloadRequest.getSaveFile() != null && downloadRequest.getSaveFile().exists()){
-					downloadRequest.getSaveFile().delete();
+				if(downloadRequest.getCacheFile() != null && downloadRequest.getCacheFile().exists()){
+					downloadRequest.getCacheFile().delete();
 				}
 				
 				boolean isRetry = false;	//如果尚未达到最大重试次数，那么就再尝试一次

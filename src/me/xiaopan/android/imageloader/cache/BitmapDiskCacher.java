@@ -21,13 +21,18 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Comparator;
+import java.util.GregorianCalendar;
 
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.task.TaskRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.StatFs;
+import android.util.Log;
 
 public abstract class BitmapDiskCacher implements BitmapCacher {
 	private static final String DEFAULT_DIRECTORY_NAME = "image_loader";
@@ -161,5 +166,58 @@ public abstract class BitmapDiskCacher implements BitmapCacher {
 		public int compare(File lhs, File rhs) {
 			return (int) (lhs.lastModified() - rhs.lastModified());
 		}
+	}
+
+	@Override
+	public File getCacheFile(TaskRequest taskRequest) {
+		if(!taskRequest.isEnableDiskCache()){
+			return null;
+		}
+		
+		File file = null;
+		if(diskCacheDirectory != null){
+			file = new File(diskCacheDirectory, ImageLoaderUtils.encodeUrl(taskRequest.getUri()));
+		}else{
+			file = new File(ImageLoaderUtils.getDynamicCacheDir(taskRequest.getConfiguration().getContext()).getPath() + File.separator + DEFAULT_DIRECTORY_NAME + File.separator + ImageLoaderUtils.encodeUrl(taskRequest.getUri()));
+		}
+		
+		if(!file.exists()){
+			if(taskRequest.getConfiguration().isDebugMode()){
+				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件不存在").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(taskRequest.getName()).toString());
+			}
+			return file;
+		}
+		
+		if(file.length() <= 0){
+			file.delete();
+			if(taskRequest.getConfiguration().isDebugMode()){
+				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件长度为0已删除").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(taskRequest.getName()).toString());
+			}
+			return file;
+		}
+		
+		if(taskRequest.getDiskCachePeriodOfValidity() <= 0){
+			if(taskRequest.getConfiguration().isDebugMode()){
+				Log.d(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件永久有效").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(taskRequest.getName()).toString());
+			}
+			return file;
+		}
+		
+		/* 判断是否过期 */
+		Calendar calendar = new GregorianCalendar();
+		calendar.add(Calendar.MILLISECOND, -taskRequest.getDiskCachePeriodOfValidity());
+		if(calendar.getTimeInMillis() >= file.lastModified()){
+			file.delete();
+			if(taskRequest.getConfiguration().isDebugMode()){
+				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件过期已删除").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(taskRequest.getName()).toString());
+			}
+			return file;
+		}
+		
+		if(taskRequest.getConfiguration().isDebugMode()){
+			Log.d(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件未过期").append("；").append("文件地址").append("=").append(file.getPath()).append("；").append(taskRequest.getName()).toString());
+		}
+		
+		return file;
 	}
 }

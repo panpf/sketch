@@ -8,20 +8,11 @@ import me.xiaopan.android.imageloader.task.TaskRequest;
  * 下载请求
  */
 public class DownloadRequest extends TaskRequest{
-	private File saveFile;
 	private DownloadOptions downloadOptions;
 	private DownloadListener downloadListener;
 	
 	public DownloadRequest(String uri) {
 		setUri(uri);
-	}
-
-	public File getSaveFile() {
-		return saveFile;
-	}
-	
-	public void setSaveFile(File saveFile) {
-		this.saveFile = saveFile;
 	}
 
 	public DownloadOptions getDownloadOptions() {
@@ -38,6 +29,16 @@ public class DownloadRequest extends TaskRequest{
 	
 	public void setDownloadListener(DownloadListener downloadListener) {
 		this.downloadListener = downloadListener;
+	}
+
+	@Override
+	public boolean isEnableDiskCache() {
+		return downloadOptions != null?downloadOptions.isEnableDiskCache():false;
+	}
+
+	@Override
+	public int getDiskCachePeriodOfValidity() {
+		return downloadOptions != null?downloadOptions.getDiskCachePeriodOfValidity():0;
 	}
 	
 	/**

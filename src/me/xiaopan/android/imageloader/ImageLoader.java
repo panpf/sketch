@@ -18,16 +18,11 @@ package me.xiaopan.android.imageloader;
 
 import java.io.File;
 
-import me.xiaopan.android.imageloader.task.display.AssetsBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.AsyncDrawable;
 import me.xiaopan.android.imageloader.task.display.BitmapDisplayTask;
-import me.xiaopan.android.imageloader.task.display.ContentBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.DisplayOptions;
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import me.xiaopan.android.imageloader.task.display.DisplayRequest.DisplayListener;
-import me.xiaopan.android.imageloader.task.display.DrawableBitmapDisplayTask;
-import me.xiaopan.android.imageloader.task.display.FileBitmapDisplayTask;
-import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.ImageViewHolder;
 import me.xiaopan.android.imageloader.task.download.DownloadOptions;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
@@ -147,44 +142,44 @@ public class ImageLoader{
 		}
 		
 		//尝试取消正在加载的任务
-		if(BitmapDisplayTask.cancelPotentialDisplayRequest(displayRequest, imageView)){
-			//创建新的加载任务
-			BitmapDisplayTask bitmapLoadTask = null;
-			switch(scheme){
-				case HTTP :
-				case HTTPS : 
-					displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-					bitmapLoadTask = new HttpBitmapDisplayTask(displayRequest);
-					break;
-				case FILE : 
-					displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-					bitmapLoadTask = new FileBitmapDisplayTask(displayRequest);
-					break;
-				case ASSETS : 
-					displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-					bitmapLoadTask = new AssetsBitmapDisplayTask(displayRequest);
-					break;
-				case CONTENT : 
-					displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-					bitmapLoadTask = new ContentBitmapDisplayTask(displayRequest);
-					break;
-				case DRAWABLE : 
-					displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
-					bitmapLoadTask = new DrawableBitmapDisplayTask(displayRequest);
-					break;
-				default:
-					break;
-			}
-			
-			if(bitmapLoadTask != null){
-				//显示默认图片
-				displayRequest.setTask(bitmapLoadTask);
-				BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getLoadingDrawable();
-				AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, displayRequest);
-				imageView.setImageDrawable(loadingAsyncDrawable);
-				configuration.getTaskExecutor().execute(bitmapLoadTask, configuration);
-			}
+		if(!BitmapDisplayTask.cancelPotentialDisplayRequest(displayRequest, imageView)){
+			return;
 		}
+		
+		//创建新的加载任务
+//		BitmapDisplayTask bitmapLoadTask = null;
+//		switch(scheme){
+//		case HTTP :
+//		case HTTPS : 
+//			displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+//			bitmapLoadTask = new HttpBitmapDisplayTask(displayRequest);
+//			break;
+//		case FILE : 
+//			displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+//			bitmapLoadTask = new FileBitmapDisplayTask(displayRequest);
+//			break;
+//		case ASSETS : 
+//			displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+//			bitmapLoadTask = new AssetsBitmapDisplayTask(displayRequest);
+//			break;
+//		case CONTENT : 
+//			displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+//			bitmapLoadTask = new ContentBitmapDisplayTask(displayRequest);
+//			break;
+//		case DRAWABLE : 
+//			displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+//			bitmapLoadTask = new DrawableBitmapDisplayTask(displayRequest);
+//			break;
+//		default:
+//			break;
+//		}
+		
+//		if(bitmapLoadTask != null){
+			BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getLoadingDrawable();
+			AsyncDrawable loadingAsyncDrawable = new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, displayRequest);
+			imageView.setImageDrawable(loadingAsyncDrawable);
+//		}
+		configuration.getTaskExecutor().execute(displayRequest);
 	}
 	
 	/**
@@ -286,7 +281,7 @@ public class ImageLoader{
 	public void download(String url, DownloadOptions downloadOptions, DownloadListener downloadListener){
 		DownloadRequest downloadRequest = new DownloadRequest(url);
 		downloadRequest.setDownloadListener(downloadListener);
-		downloadRequest.setSaveFile(configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(url)));
+		downloadRequest.setCacheFile(configuration.getBitmapCacher().getDiskCacheFile(configuration.getContext(), ImageLoaderUtils.encodeUrl(url)));
 		downloadRequest.setDownloadOptions(downloadOptions);
 		downloadRequest.setName(url);
 		downloadRequest.setConfiguration(configuration);

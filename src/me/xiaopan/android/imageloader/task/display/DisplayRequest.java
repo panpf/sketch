@@ -126,4 +126,14 @@ public class DisplayRequest extends TaskRequest{
 		public void onComplete(String imageUri, ImageView imageView, BitmapDrawable drawable);
 		public void onCancelled(String imageUri, ImageView imageView);
 	}
+
+	@Override
+	public boolean isEnableDiskCache() {
+		return displayOptions != null?displayOptions.isEnableDiskCache():false;
+	}
+
+	@Override
+	public int getDiskCachePeriodOfValidity() {
+		return displayOptions != null?displayOptions.getDiskCachePeriodOfValidity():0;
+	}
 }
