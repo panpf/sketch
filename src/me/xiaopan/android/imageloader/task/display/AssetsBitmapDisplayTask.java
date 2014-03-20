@@ -34,7 +34,7 @@ public class AssetsBitmapDisplayTask extends  BitmapDisplayTask {
 
 		@Override
 		public InputStreamCreator getInputStreamCreator() {
-			return new AssetsInputStreamCreator(displayRequest.getConfiguration().getContext(), Scheme.ASSETS.crop(displayRequest.getImageUri()));
+			return new AssetsInputStreamCreator(displayRequest.getConfiguration().getContext(), Scheme.ASSETS.crop(displayRequest.getUri()));
 		}
 
 		@Override

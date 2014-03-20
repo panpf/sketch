@@ -41,7 +41,7 @@ public class HttpBitmapDisplayTask extends  BitmapDisplayTask {
 	}
 
 	public File getCacheFile() {
-		return displayRequest.getDisplayOptions().isEnableDiskCache()?displayRequest.getConfiguration().getBitmapCacher().getDiskCacheFile(displayRequest.getConfiguration().getContext(), ImageLoaderUtils.encodeUrl(displayRequest.getImageUri())):null;
+		return displayRequest.getDisplayOptions().isEnableDiskCache()?displayRequest.getConfiguration().getBitmapCacher().getDiskCacheFile(displayRequest.getConfiguration().getContext(), ImageLoaderUtils.encodeUrl(displayRequest.getUri())):null;
 	}
 	
 	/**
@@ -108,7 +108,7 @@ public class HttpBitmapDisplayTask extends  BitmapDisplayTask {
 		public InputStreamCreator getInputStreamCreator() {
 			if(inputStreamCreator == null){
 				if(displayRequest.getDisplayOptions().isEnableDiskCache()){
-					cacheFile = displayRequest.getConfiguration().getBitmapCacher().getDiskCacheFile(displayRequest.getConfiguration().getContext(), ImageLoaderUtils.encodeUrl(displayRequest.getImageUri()));
+					cacheFile = displayRequest.getConfiguration().getBitmapCacher().getDiskCacheFile(displayRequest.getConfiguration().getContext(), ImageLoaderUtils.encodeUrl(displayRequest.getUri()));
 					if(HttpBitmapDisplayTask.isAvailableOfFile(cacheFile, displayRequest)){
 						inputStreamCreator = new FileInputStreamCreator(cacheFile);
 					}else{

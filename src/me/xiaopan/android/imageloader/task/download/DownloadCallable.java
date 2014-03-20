@@ -46,7 +46,7 @@ public class DownloadCallable implements Callable<Object>{
 
 	@Override
 	public Object call() throws Exception {
-		ReentrantLock urlLock = getUrlLock(downloadRequest.getUrl());
+		ReentrantLock urlLock = getUrlLock(downloadRequest.getUri());
 		urlLock.lock();
 		Object result = download();
 		urlLock.unlock();
@@ -69,7 +69,7 @@ public class DownloadCallable implements Callable<Object>{
 			BufferedOutputStream bufferedOutputStream = null;
 			try {
 				//发送请求
-				httpGet = new HttpGet(downloadRequest.getUrl());
+				httpGet = new HttpGet(downloadRequest.getUri());
 				HttpResponse httpResponse = defaultHttpClient.execute(httpGet);
 				long fileLength = getLength(httpResponse);
 				

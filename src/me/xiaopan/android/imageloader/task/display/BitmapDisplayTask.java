@@ -59,7 +59,7 @@ public abstract class BitmapDisplayTask extends Task {
 					displayRequest.getConfiguration().getHandler().post(new Runnable() {
 						@Override
 						public void run() {
-							displayRequest.getDisplayListener().onCancelled(displayRequest.getImageUri(), displayRequest.getImageViewHolder().getImageView());
+							displayRequest.getDisplayListener().onCancelled(displayRequest.getUri(), displayRequest.getImageViewHolder().getImageView());
 						}
 					});
 				}
@@ -72,7 +72,7 @@ public abstract class BitmapDisplayTask extends Task {
 				displayRequest.getConfiguration().getHandler().post(new Runnable() {
 					@Override
 					public void run() {
-						displayRequest.getDisplayListener().onCancelled(displayRequest.getImageUri(), displayRequest.getImageViewHolder().getImageView());
+						displayRequest.getDisplayListener().onCancelled(displayRequest.getUri(), displayRequest.getImageViewHolder().getImageView());
 					}
 				});
 			}

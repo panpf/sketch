@@ -36,7 +36,7 @@ public class FileBitmapDisplayTask extends  BitmapDisplayTask {
 
 		@Override
 		public InputStreamCreator getInputStreamCreator() {
-			return new FileInputStreamCreator(new File(Scheme.FILE.crop(displayRequest.getImageUri())));
+			return new FileInputStreamCreator(new File(Scheme.FILE.crop(displayRequest.getUri())));
 		}
 
 		@Override

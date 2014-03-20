@@ -27,57 +27,14 @@ import android.widget.ImageView;
  * 显示请求
  */
 public class DisplayRequest extends TaskRequest{
-	private String id;	//ID
-	private String imageUri;	//Uri
 	private ImageSize targetSize;	//目标尺寸
 	private ReentrantLock reentrantLock;	//执行锁
 	private DisplayListener displayListener;	//监听器
 	private DisplayOptions displayOptions;	//显示选项
 	private ImageViewHolder imageViewHolder;	//ImageView持有器
 	
-	/**
-	 * 获取ID
-	 * @return ID
-	 */
-	public String getId() {
-		return id;
-	}
-	
-	/**
-	 * 设置ID
-	 * @param id ID
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
-	
-	/**
-	 * 获取Uri，支持以下5种Uri
-	 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
-	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
-	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
-	 * <br>String imageUri = "assets://image.png"; // from assets
-	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-	 * </blockquote>
-	 * @return
-	 */
-	public String getImageUri() {
-		return imageUri;
-	}
-
-	/**
-	 * 设置Uri，支持以下5种Uri
-	 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
-	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
-	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
-	 * <br>String imageUri = "assets://image.png"; // from assets
-	 * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-	 * </blockquote>
-	 * @param imageUri
-	 */
-	public DisplayRequest setImageUri(String imageUri) {
-		this.imageUri = imageUri;
-		return this;
+	public DisplayRequest(String uri) {
+		setUri(uri);
 	}
 	
 	/**
@@ -92,9 +49,8 @@ public class DisplayRequest extends TaskRequest{
 	 * 设置目标尺寸
 	 * @param targetSize
 	 */
-	public DisplayRequest setTargetSize(ImageSize targetSize) {
+	public void setTargetSize(ImageSize targetSize) {
 		this.targetSize = targetSize;
-		return this;
 	}
 
 	/**
@@ -125,9 +81,8 @@ public class DisplayRequest extends TaskRequest{
 	 * 设置显示监听器
 	 * @param imageLoadListener
 	 */
-	public DisplayRequest setDisplayListener(DisplayListener imageLoadListener) {
+	public void setDisplayListener(DisplayListener imageLoadListener) {
 		this.displayListener = imageLoadListener;
-		return this;
 	}
 	
 	/**
@@ -142,9 +97,8 @@ public class DisplayRequest extends TaskRequest{
 	 * 设置显示选项
 	 * @param displayOptions
 	 */
-	public DisplayRequest setDisplayOptions(DisplayOptions displayOptions) {
+	public void setDisplayOptions(DisplayOptions displayOptions) {
 		this.displayOptions = displayOptions;
-		return this;
 	}
 	
 	/**

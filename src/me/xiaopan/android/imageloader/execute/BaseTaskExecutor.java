@@ -90,7 +90,31 @@ public class BaseTaskExecutor implements TaskExecutor {
 				if(taskRequest instanceof DownloadRequest){
 					netTaskExecutor.execute(new DownloadTask((DownloadRequest) taskRequest));
 				}else if(taskRequest instanceof DisplayRequest){
-					
+//					switch(scheme){
+//						case HTTP :
+//						case HTTPS : 
+//							displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+//							bitmapLoadTask = new HttpBitmapDisplayTask(displayRequest);
+//							break;
+//						case FILE : 
+//							displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+//							bitmapLoadTask = new FileBitmapDisplayTask(displayRequest);
+//							break;
+//						case ASSETS : 
+//							displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+//							bitmapLoadTask = new AssetsBitmapDisplayTask(displayRequest);
+//							break;
+//						case CONTENT : 
+//							displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+//							bitmapLoadTask = new ContentBitmapDisplayTask(displayRequest);
+//							break;
+//						case DRAWABLE : 
+//							displayRequest.setReentrantLock(configuration.getTaskExecutor().getLockByRequestId(displayRequest.getId()));
+//							bitmapLoadTask = new DrawableBitmapDisplayTask(displayRequest);
+//							break;
+//						default:
+//							break;
+//					}
 				}
 			}
 		});

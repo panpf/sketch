@@ -67,7 +67,7 @@ public class ImageLoader{
 	
 	/**
 	 * 显示图片
-	 * @param imageUri 图片Uri，支持以下5种Uri
+	 * @param uri 图片Uri，支持以下5种Uri
 	 * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
 	 * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
 	 * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
@@ -78,7 +78,7 @@ public class ImageLoader{
 	 * @param displayOptions 显示选项
 	 * @param displayListener 显示监听器
 	 */
-	public final void display(String imageUri, ImageView imageView, DisplayOptions displayOptions, DisplayListener displayListener){
+	public final void display(String uri, ImageView imageView, DisplayOptions displayOptions, DisplayListener displayListener){
 		if(imageView == null){
 			if(configuration.isDebugMode()){
 				Log.e(ImageLoader.LOG_TAG, "imageView不能为null");
@@ -91,28 +91,28 @@ public class ImageLoader{
 		}
 		
 		if(displayListener != null){
-			displayListener.onStarted(imageUri, imageView);
+			displayListener.onStarted(uri, imageView);
 		}
 		
-		if(ImageLoaderUtils.isEmpty(imageUri)){
+		if(ImageLoaderUtils.isEmpty(uri)){
 			imageView.setImageDrawable(displayOptions.getEmptyDrawable());
 			if(configuration.isDebugMode()){
 				Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
 			if(displayListener != null){
-				displayListener.onFailed(imageUri, imageView);
+				displayListener.onFailed(uri, imageView);
 			}
 			return;
 		}
 		
-		Scheme scheme = Scheme.ofUri(imageUri);
+		Scheme scheme = Scheme.ofUri(uri);
 		if(scheme == Scheme.UNKNOWN){
 			imageView.setImageDrawable(displayOptions.getFailureDrawable());
 			if(configuration.isDebugMode()){
-				Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+				Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(uri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
 			}
 			if(displayListener != null){
-				displayListener.onFailed(imageUri, imageView);
+				displayListener.onFailed(uri, imageView);
 			}
 			return;
 		}
@@ -121,10 +121,9 @@ public class ImageLoader{
 		ImageViewHolder imageViewHolder = new ImageViewHolder(imageView);
 		ImageSize targetSize = ImageSize.defineTargetSizeForView(imageViewHolder, displayOptions.getMaxImageSize());
 		
-		DisplayRequest displayRequest = new DisplayRequest();
-		displayRequest.setId(ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(imageUri), targetSize, displayOptions.getBitmapProcessor()));
-		displayRequest.setName(imageUri);
-		displayRequest.setImageUri(imageUri);
+		DisplayRequest displayRequest = new DisplayRequest(uri);
+		displayRequest.setId(ImageLoaderUtils.createId(ImageLoaderUtils.encodeUrl(uri), targetSize, displayOptions.getBitmapProcessor()));
+		displayRequest.setName(uri);
 		displayRequest.setTargetSize(targetSize);
 		displayRequest.setConfiguration(configuration);
 		displayRequest.setDisplayListener(displayListener);
@@ -141,7 +140,7 @@ public class ImageLoader{
 					Log.i(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("显示成功 - 内存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
 				}
 				if(displayListener != null){
-					displayListener.onComplete(imageUri, imageView, cacheDrawable);
+					displayListener.onComplete(uri, imageView, cacheDrawable);
 				}
 				return;
 			}

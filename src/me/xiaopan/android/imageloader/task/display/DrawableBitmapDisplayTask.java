@@ -34,7 +34,7 @@ public class DrawableBitmapDisplayTask extends  BitmapDisplayTask {
 
 		@Override
 		public InputStreamCreator getInputStreamCreator() {
-			return new DrawableInputStreamCreator(displayRequest.getConfiguration().getContext(), Scheme.DRAWABLE.crop(displayRequest.getImageUri()));
+			return new DrawableInputStreamCreator(displayRequest.getConfiguration().getContext(), Scheme.DRAWABLE.crop(displayRequest.getUri()));
 		}
 
 		@Override

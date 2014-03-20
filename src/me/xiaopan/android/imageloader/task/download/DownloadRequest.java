@@ -8,23 +8,14 @@ import me.xiaopan.android.imageloader.task.TaskRequest;
  * 下载请求
  */
 public class DownloadRequest extends TaskRequest{
-	private String url;
 	private File saveFile;
 	private DownloadOptions downloadOptions;
 	private DownloadListener downloadListener;
 	
-	public DownloadRequest(String url) {
-		this.url = url;
+	public DownloadRequest(String uri) {
+		setUri(uri);
 	}
 
-	public String getUrl() {
-		return url;
-	}
-	
-	public void setUrl(String url) {
-		this.url = url;
-	}
-	
 	public File getSaveFile() {
 		return saveFile;
 	}

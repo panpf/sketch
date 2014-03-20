@@ -33,7 +33,7 @@ public class ContentBitmapDisplayTask extends  BitmapDisplayTask {
 
 		@Override
 		public InputStreamCreator getInputStreamCreator() {
-			return new ContentInputStreamCreator(displayRequest.getConfiguration().getContext(), displayRequest.getImageUri());
+			return new ContentInputStreamCreator(displayRequest.getConfiguration().getContext(), displayRequest.getUri());
 		}
 
 		@Override

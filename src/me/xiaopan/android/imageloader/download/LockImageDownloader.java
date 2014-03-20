@@ -90,7 +90,7 @@ public class LockImageDownloader implements ImageDownloader {
 		ReentrantLock urlLock = null;
 		
 		if(cacheFile != null){
-			urlLock = getUrlLock(displayRequest.getImageUri());
+			urlLock = getUrlLock(displayRequest.getUri());
 			urlLock.lock();
 			if(exists = cacheFile.exists()){
 				running = false;
@@ -115,7 +115,7 @@ public class LockImageDownloader implements ImageDownloader {
 			BufferedOutputStream bufferedOutputStream = null;
 			
 			try {
-				httpGet = new HttpGet(displayRequest.getImageUri());
+				httpGet = new HttpGet(displayRequest.getUri());
 				HttpResponse httpResponse = httpClient.execute(httpGet);//请求数据
 				
 				//读取响应体长度，如果没有响应体长度字段或者长度为0就抛出异常
