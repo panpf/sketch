@@ -2,18 +2,16 @@ package me.xiaopan.android.imageloader.task.download;
 
 import java.io.File;
 
-import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 
 /**
  * 下载请求
  */
 public class DownloadRequest extends TaskRequest{
+	private int maxRetryCount;	//最大重试次数
 	private String url;
 	private File saveFile;
-	private Configuration configuration;	//配置
 	private DownloadListener downloadListener;
-	private int maxRetryCount;	//最大重试次数
 	
 	public DownloadRequest(String url, File saveFile, DownloadListener downloadListener) {
 		this.url = url;
@@ -35,14 +33,6 @@ public class DownloadRequest extends TaskRequest{
 	
 	public void setSaveFile(File saveFile) {
 		this.saveFile = saveFile;
-	}
-	
-	public Configuration getConfiguration() {
-		return configuration;
-	}
-
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
 	}
 
 	public DownloadListener getDownloadListener() {

@@ -1,25 +1,11 @@
 package me.xiaopan.android.imageloader.task;
 
+import me.xiaopan.android.imageloader.Configuration;
+
 
 public class TaskRequest {
-	private String id;	//ID
 	private String name;	//名称
-	
-	/**
-	 * 获取ID
-	 * @return ID
-	 */
-	public String getId() {
-		return id;
-	}
-	
-	/**
-	 * 设置ID
-	 * @param id ID
-	 */
-	public void setId(String id) {
-		this.id = id;
-	}
+	private Configuration configuration;	//配置
 
 	/**
 	 * 获取名称，用于在输出log时区分不同的请求
@@ -35,5 +21,21 @@ public class TaskRequest {
 	 */
 	public void setName(String name) {
 		this.name = name;
+	}
+
+	/**
+	 * 获取配置
+	 * @return
+	 */
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	/**
+	 * 设置配置
+	 * @param configuration
+	 */
+	public void setConfiguration(Configuration configuration) {
+		this.configuration = configuration;
 	}
 }

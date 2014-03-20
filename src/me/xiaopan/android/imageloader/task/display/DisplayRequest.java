@@ -18,7 +18,6 @@ package me.xiaopan.android.imageloader.task.display;
 
 import java.util.concurrent.locks.ReentrantLock;
 
-import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.drawable.BitmapDrawable;
@@ -28,13 +27,29 @@ import android.widget.ImageView;
  * 显示请求
  */
 public class DisplayRequest extends TaskRequest{
+	private String id;	//ID
 	private String imageUri;	//Uri
 	private ImageSize targetSize;	//目标尺寸
-	private Configuration configuration;	//配置
 	private ReentrantLock reentrantLock;	//执行锁
 	private DisplayListener displayListener;	//监听器
 	private DisplayOptions displayOptions;	//显示选项
 	private ImageViewHolder imageViewHolder;	//ImageView持有器
+	
+	/**
+	 * 获取ID
+	 * @return ID
+	 */
+	public String getId() {
+		return id;
+	}
+	
+	/**
+	 * 设置ID
+	 * @param id ID
+	 */
+	public void setId(String id) {
+		this.id = id;
+	}
 	
 	/**
 	 * 获取Uri，支持以下5种Uri
@@ -80,22 +95,6 @@ public class DisplayRequest extends TaskRequest{
 	public DisplayRequest setTargetSize(ImageSize targetSize) {
 		this.targetSize = targetSize;
 		return this;
-	}
-
-	/**
-	 * 获取配置
-	 * @return
-	 */
-	public Configuration getConfiguration() {
-		return configuration;
-	}
-
-	/**
-	 * 设置配置
-	 * @param configuration
-	 */
-	public void setConfiguration(Configuration configuration) {
-		this.configuration = configuration;
 	}
 
 	/**
