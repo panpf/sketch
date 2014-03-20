@@ -36,7 +36,11 @@ public class LoadOptions extends TaskOptions{
 		setMaxImageSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels));
 	}
 
-	public ImageSize getMaxImageSize() {
+    public Context getContext() {
+        return context;
+    }
+
+    public ImageSize getMaxImageSize() {
 		return maxImageSize;
 	}
 

@@ -20,6 +20,7 @@ import me.xiaopan.android.imageloader.display.BitmapDisplayer;
 import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
 import me.xiaopan.android.imageloader.process.BitmapProcessor;
 import me.xiaopan.android.imageloader.task.TaskOptions;
+import me.xiaopan.android.imageloader.task.load.LoadOptions;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.content.Context;
@@ -31,23 +32,19 @@ import android.widget.ImageView.ScaleType;
 /**
  * 显示选项
  */
-public class DisplayOptions extends TaskOptions{
-	private Context context;	//上下文
+public class DisplayOptions extends LoadOptions {
 	private boolean enableMenoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-	private ImageSize maxImageSize;	//最大图片尺寸
-	private BitmapProcessor bitmapProcessor;	//位图处理器
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
 	private DrawableHolder emptyDrawableHolder;	//当uri为空时显示的图片
 	private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
 	private DrawableHolder failureDrawableHolder;	//当加载失败时显示的图片
 	
 	public DisplayOptions(Context context) {
-		this.context = context;
+		super(context);
+		this.bitmapDisplayer = new FadeInBitmapDisplayer();
 		this.emptyDrawableHolder = new DrawableHolder();
 		this.loadingDrawableHolder = new DrawableHolder();
 		this.failureDrawableHolder = new DrawableHolder();
-		setMaxImageSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels))
-		.setBitmapDisplayer(new FadeInBitmapDisplayer());
 	}
 
 	/**
@@ -73,16 +70,16 @@ public class DisplayOptions extends TaskOptions{
 	 */
 	public BitmapDrawable getEmptyDrawable() {
 		if(emptyDrawableHolder.getDrawable() == null && emptyDrawableHolder.getResId() > 0){
-			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), emptyDrawableHolder.getResId()));
+			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(getContext().getResources(), emptyDrawableHolder.getResId()));
 			if(bitmap != null){
-				if(bitmapProcessor != null){
-					Bitmap newBitmap = bitmapProcessor.process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
+				if(getBitmapProcessor() != null){
+					Bitmap newBitmap = getBitmapProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
 					if(newBitmap != bitmap){
 						bitmap.recycle();
 						bitmap = newBitmap;
 					}
 				}
-				emptyDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
+				emptyDrawableHolder.setDrawable(new BitmapDrawable(getContext().getResources(), bitmap));
 			}
 		}
 		return emptyDrawableHolder.getDrawable();
@@ -109,16 +106,16 @@ public class DisplayOptions extends TaskOptions{
 	 */
 	public BitmapDrawable getLoadingDrawable() {
 		if(loadingDrawableHolder.getDrawable() == null && loadingDrawableHolder.getResId() > 0){
-			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), loadingDrawableHolder.getResId()));
+			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(getContext().getResources(), loadingDrawableHolder.getResId()));
 			if(bitmap != null){
-				if(bitmapProcessor != null){
-					Bitmap newBitmap = bitmapProcessor.process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
+				if(getBitmapProcessor() != null){
+					Bitmap newBitmap = getBitmapProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
 					if(newBitmap != bitmap){
 						bitmap.recycle();
 						bitmap = newBitmap;
 					}
 				}
-				loadingDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
+				loadingDrawableHolder.setDrawable(new BitmapDrawable(getContext().getResources(), bitmap));
 			}
 		}
 		return loadingDrawableHolder.getDrawable();
@@ -145,16 +142,16 @@ public class DisplayOptions extends TaskOptions{
 	 */
 	public BitmapDrawable getFailureDrawable() {
 		if(failureDrawableHolder.getDrawable() == null && failureDrawableHolder.getResId() > 0){
-			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), failureDrawableHolder.getResId()));
+			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(getContext().getResources(), failureDrawableHolder.getResId()));
 			if(bitmap != null){
-				if(bitmapProcessor != null){
-					Bitmap newBitmap = bitmapProcessor.process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
+				if(getBitmapProcessor() != null){
+					Bitmap newBitmap = getBitmapProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
 					if(newBitmap != bitmap){
 						bitmap.recycle();
 						bitmap = newBitmap;
 					}
 				}
-				failureDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
+				failureDrawableHolder.setDrawable(new BitmapDrawable(getContext().getResources(), bitmap));
 			}
 		}
 		return failureDrawableHolder.getDrawable();
@@ -176,36 +173,12 @@ public class DisplayOptions extends TaskOptions{
 	}
 	
 	/**
-	 * 获取最大尺寸
-	 * @return
-	 */
-	public ImageSize getMaxImageSize() {
-		return maxImageSize;
-	}
-
-	/**
-	 * 设置最大尺寸
-	 * @param maxImageSize
-	 */
-	public DisplayOptions setMaxImageSize(ImageSize maxImageSize) {
-		this.maxImageSize = maxImageSize;
-		return this;
-	}
-	
-	/**
-	 * 获取位图处理器
-	 * @return
-	 */
-	public BitmapProcessor getBitmapProcessor() {
-		return bitmapProcessor;
-	}
-
-	/**
 	 * 设置位图处理器
 	 * @param bitmapProcessor
 	 */
+    @Override
 	public DisplayOptions setBitmapProcessor(BitmapProcessor bitmapProcessor) {
-		this.bitmapProcessor = bitmapProcessor;
+		super.setBitmapProcessor(bitmapProcessor);
 		emptyDrawableHolder.setDrawable(null);
 		loadingDrawableHolder.setDrawable(null);
 		failureDrawableHolder.setDrawable(null);
@@ -237,19 +210,19 @@ public class DisplayOptions extends TaskOptions{
 	 * @return
 	 */
 	public DisplayOptions copy(){
-		DisplayOptions displayOptions = new DisplayOptions(context);
+		DisplayOptions displayOptions = new DisplayOptions(getContext());
 		
 		displayOptions.setMaxRetryCount(getMaxRetryCount())
 		.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
 		.setEnableDiskCache(isEnableDiskCache());
 		
 		displayOptions.setEnableMenoryCache(enableMenoryCache)
-		.setBitmapProcessor(bitmapProcessor != null?bitmapProcessor.copy():null)
+		.setBitmapProcessor(getBitmapProcessor() != null?getBitmapProcessor().copy():null)
 		.setBitmapDisplayer(bitmapDisplayer != null?bitmapDisplayer.copy():null)
 		.setEmptyDrawableResId(emptyDrawableHolder.getResId())
 		.setFailureDrawableResId(failureDrawableHolder.getResId())
 		.setLoadingDrawableResId(loadingDrawableHolder.getResId())
-		.setMaxImageSize(maxImageSize != null?maxImageSize.copy():null);
+		.setMaxImageSize(getMaxImageSize() != null?getMaxImageSize().copy():null);
 		return displayOptions;
 	}
 	
