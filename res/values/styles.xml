@@ -32,6 +32,12 @@
         <item name="android:textSize">@dimen/textSize_large</item>
         <item name="android:textColor">@color/selector_text_title</item>
     </style>
+
+    <!-- 文本 - 标题 -->
+    <style name="text_title_black" parent="@style/wrap_wrap">
+        <item name="android:textSize">@dimen/textSize_large</item>
+        <item name="android:textColor">@color/selector_text_title_black</item>
+    </style>
     
     <!-- 宽充满 - 高充满 -->
     <style name="match_match">
