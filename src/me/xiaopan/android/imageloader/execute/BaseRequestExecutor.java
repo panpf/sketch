@@ -106,7 +106,7 @@ public class BaseRequestExecutor implements RequestExecutor {
 				File cacheFile = loadRequest.getConfiguration().getBitmapCacher().getCacheFile(loadRequest);
                 loadRequest.setCacheFile(cacheFile);
                 if(cacheFile != null && cacheFile.exists()){
-                    localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new CacheFileInputStreamCreator(cacheFile, loadRequest))));
+                    localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new CacheFileOnDecodeListener(cacheFile, loadRequest))));
                     if(loadRequest.getConfiguration().isDebugMode()){
                         Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("LOAD - HTTP - 本地").append("；").append(loadRequest.getName()).toString());
                     }
@@ -118,25 +118,25 @@ public class BaseRequestExecutor implements RequestExecutor {
                 }
 				break;
 			case FILE :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new FileInputStreamCreator(new File(Scheme.FILE.crop(loadRequest.getUri())), loadRequest))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new FileOnDecodeListener(new File(Scheme.FILE.crop(loadRequest.getUri())), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("LOAD - FILE").append("；").append(loadRequest.getName()).toString());
                 }
 				break;
 			case ASSETS :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new AssetsInputStreamCreator(Scheme.ASSETS.crop(loadRequest.getUri()), loadRequest))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new AssetsOnDecodeListener(Scheme.ASSETS.crop(loadRequest.getUri()), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("LOAD - ASSETS").append("；").append(loadRequest.getName()).toString());
                 }
 				break;
 			case CONTENT :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ContentInputStreamCreator(loadRequest.getUri(), loadRequest))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ContentOnDecodeListener(loadRequest.getUri(), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("LOAD - CONTENT").append("；").append(loadRequest.getName()).toString());
                 }
 				break;
 			case DRAWABLE :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new DrawableInputStreamCreator(Scheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new DrawableOnDecodeListener(Scheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("LOAD - DRAWABLE").append("；").append(loadRequest.getName()).toString());
                 }

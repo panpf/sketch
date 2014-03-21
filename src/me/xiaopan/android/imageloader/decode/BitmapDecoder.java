@@ -21,7 +21,6 @@ import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import android.graphics.Bitmap;
 
 import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * 位图解码器
@@ -30,12 +29,12 @@ public interface BitmapDecoder{
 	/**
 	 * 解码
 	 * @param loadRequest
-	 * @param inputStreamCreator 创建新的用来读取位图的输入流
+	 * @param onDecodeListener 回调解码
 	 * @return
 	 */
-	public Bitmap decode(LoadRequest loadRequest,  InputStreamCreator inputStreamCreator) throws IOException;
+	public Bitmap decode(LoadRequest loadRequest,  OnDecodeListener onDecodeListener) throws IOException;
 
-    public interface InputStreamCreator {
+    public interface OnDecodeListener {
         /**
          * 解码
          * @param options

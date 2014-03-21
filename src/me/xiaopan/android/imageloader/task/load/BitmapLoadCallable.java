@@ -23,32 +23,32 @@ import java.util.concurrent.Callable;
 
 public class BitmapLoadCallable implements Callable<Object> {
 	protected LoadRequest loadRequest;
-    private BitmapDecoder.InputStreamCreator inputStreamCreator;
+    private BitmapDecoder.OnDecodeListener onDecodeListener;
 	
-	public BitmapLoadCallable(LoadRequest displayRequest, BitmapDecoder.InputStreamCreator inputStreamCreator) {
+	public BitmapLoadCallable(LoadRequest displayRequest, BitmapDecoder.OnDecodeListener onDecodeListener) {
 		this.loadRequest = displayRequest;
-        this.inputStreamCreator = inputStreamCreator;
+        this.onDecodeListener = onDecodeListener;
 	}
 
 	@Override
 	public Object call() throws Exception {
 		Bitmap bitmap = null;
 		try{
-			//解码
-            bitmap = loadRequest.getConfiguration().getBitmapDecoder().decode(loadRequest, inputStreamCreator);
+            //解码
+            bitmap = loadRequest.getConfiguration().getBitmapDecoder().decode(loadRequest, onDecodeListener);
 
-			//处理位图
-			if(bitmap != null && !bitmap.isRecycled()){
-                inputStreamCreator.onDecodeSuccess();
+            //处理位图
+            if(bitmap != null && !bitmap.isRecycled()){
+                onDecodeListener.onDecodeSuccess();
                 if(loadRequest.getLoadOptions().getBitmapProcessor() != null){
-					Bitmap newBitmap = loadRequest.getLoadOptions().getBitmapProcessor().process(bitmap, loadRequest.getScaleType(), loadRequest.getMaxImageSize());
-					if(newBitmap != bitmap){
-						bitmap.recycle();
-						bitmap = newBitmap;
-					}
-				}
-			}else{
-                inputStreamCreator.onDecodeFailure();
+                    Bitmap newBitmap = loadRequest.getLoadOptions().getBitmapProcessor().process(bitmap, loadRequest.getScaleType(), loadRequest.getMaxImageSize());
+                    if(newBitmap != bitmap){
+                        bitmap.recycle();
+                        bitmap = newBitmap;
+                    }
+                }
+            }else{
+                onDecodeListener.onDecodeFailure();
                 bitmap = null;
             }
 		}catch(Throwable throwable){

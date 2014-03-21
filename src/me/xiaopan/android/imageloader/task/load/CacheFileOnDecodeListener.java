@@ -22,46 +22,34 @@ import android.util.Log;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.task.TaskRequest;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 
-public class AssetsInputStreamCreator implements BitmapDecoder.InputStreamCreator {
-    private static final String NAME = AssetsInputStreamCreator.class.getSimpleName();
-	private String assetsFilePath;
+public class CacheFileOnDecodeListener implements BitmapDecoder.OnDecodeListener {
+    private static final String NAME = CacheFileOnDecodeListener.class.getSimpleName();
+	private File file;
     private TaskRequest taskRequest;
-	
-	public AssetsInputStreamCreator(String assetsFilePath, TaskRequest taskRequest) {
-		this.assetsFilePath = assetsFilePath;
-		this.taskRequest = taskRequest;
+
+	public CacheFileOnDecodeListener(File file, TaskRequest taskRequest) {
+		this.file = file;
+        this.taskRequest = taskRequest;
 	}
 
     @Override
     public Bitmap onDecode(BitmapFactory.Options options) {
-        InputStream inputStream = null;
-        try {
-            inputStream = taskRequest.getConfiguration().getContext().getAssets().open(assetsFilePath);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Bitmap bitmap = null;
-        if(inputStream != null){
-            bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-            ImageLoaderUtils.close(inputStream);
-        }
-        return bitmap;
+        return BitmapFactory.decodeFile(file.getPath(), options);
     }
 
     @Override
     public void onDecodeSuccess() {
-
+        file.setLastModified(System.currentTimeMillis());
     }
 
     @Override
     public void onDecodeFailure() {
+//        file.delete();
         if(taskRequest.getConfiguration().isDebugMode()){
-            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(assetsFilePath).toString());
+            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败，已删除缓存文件").append("：").append(file.getPath()).toString());
         }
     }
 }

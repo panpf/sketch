@@ -16,18 +16,11 @@
 
 package me.xiaopan.android.imageloader.decode;
 
-import java.io.IOException;
-import java.io.InputStream;
-
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
-import me.xiaopan.android.imageloader.util.FlusedInputStream;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
-import android.os.Build;
 import android.util.Log;
 
 /**
@@ -37,11 +30,11 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 	private static final String NAME= BaseBitmapDecoder.class.getSimpleName();
 	
 	@Override
-	public Bitmap decode(LoadRequest loadRequest, InputStreamCreator inputStreamCreator){
+	public Bitmap decode(LoadRequest loadRequest, OnDecodeListener onDecodeListener){
         //解码原图尺寸并计算缩放比例
         Options options = new Options();
         options.inJustDecodeBounds = true;
-        inputStreamCreator.onDecode(options);
+        onDecodeListener.onDecode(options);
         int outWidth = options.outWidth;
         int outHeight = options.outHeight;
         if(loadRequest.getMaxImageSize() != null){
@@ -53,7 +46,7 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 //        if (ImageLoaderUtils.hasHoneycomb()) {
 //            addInBitmapOptions(loadRequest, options);
 //        }
-        Bitmap bitmap = inputStreamCreator.onDecode(options);
+        Bitmap bitmap = onDecodeListener.onDecode(options);
 
         if(loadRequest.getConfiguration().isDebugMode()){
             writeLog(loadRequest, bitmap != null, outWidth, outHeight, options.inSampleSize, bitmap);

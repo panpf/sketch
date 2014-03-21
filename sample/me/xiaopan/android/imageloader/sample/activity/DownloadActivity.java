@@ -89,7 +89,7 @@ public class DownloadActivity extends Activity {
 
         ImageLoader.getInstance(getBaseContext()).load(uri, null, new LoadRequest.LoadListener() {
             @Override
-            public void onStart() {
+             public void onStart() {
                 progressBar.setVisibility(View.VISIBLE);
             }
 

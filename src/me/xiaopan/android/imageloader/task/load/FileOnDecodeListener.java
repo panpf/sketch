@@ -24,16 +24,13 @@ import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 
-public class CacheFileInputStreamCreator implements BitmapDecoder.InputStreamCreator {
-    private static final String NAME = CacheFileInputStreamCreator.class.getSimpleName();
+public class FileOnDecodeListener implements BitmapDecoder.OnDecodeListener {
+    private static final String NAME = FileOnDecodeListener.class.getSimpleName();
 	private File file;
     private TaskRequest taskRequest;
-
-	public CacheFileInputStreamCreator(File file, TaskRequest taskRequest) {
+	
+	public FileOnDecodeListener(File file, TaskRequest taskRequest) {
 		this.file = file;
         this.taskRequest = taskRequest;
 	}
@@ -45,14 +42,13 @@ public class CacheFileInputStreamCreator implements BitmapDecoder.InputStreamCre
 
     @Override
     public void onDecodeSuccess() {
-        file.setLastModified(System.currentTimeMillis());
+
     }
 
     @Override
     public void onDecodeFailure() {
-//        file.delete();
         if(taskRequest.getConfiguration().isDebugMode()){
-            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败，已删除缓存文件").append("：").append(file.getPath()).toString());
+            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(file.getPath()).toString());
         }
     }
 }
