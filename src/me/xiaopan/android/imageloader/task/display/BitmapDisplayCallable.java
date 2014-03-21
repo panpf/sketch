@@ -49,7 +49,7 @@ public abstract class BitmapDisplayCallable implements Callable<Object> {
 					//处理位图
 					if(displayRequest.getDisplayOptions().getBitmapProcessor() != null){
 						ImageView imageView = displayRequest.getImageViewHolder().getImageView();
-						Bitmap newBitmap = displayRequest.getDisplayOptions().getBitmapProcessor().process(bitmap, imageView != null?imageView.getScaleType():ScaleType.CENTER_CROP, displayRequest.getTargetSize());
+						Bitmap newBitmap = displayRequest.getDisplayOptions().getBitmapProcessor().process(bitmap, displayRequest.getScaleType(), displayRequest.getTargetSize());
 						if(newBitmap != bitmap){
 							bitmap.recycle();
 							bitmap = newBitmap;

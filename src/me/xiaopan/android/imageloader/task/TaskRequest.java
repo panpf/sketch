@@ -15,8 +15,12 @@ public abstract class TaskRequest {
 	public TaskRequest(String uri){
 		this.uri = uri;
 	}
-	
-	public String getUri() {
+
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    public String getUri() {
 		return uri;
 	}
 

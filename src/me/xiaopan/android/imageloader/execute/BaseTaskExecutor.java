@@ -22,6 +22,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import android.net.Uri;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 import me.xiaopan.android.imageloader.task.display.AssetsBitmapDisplayTask;
@@ -71,20 +72,20 @@ public class BaseTaskExecutor implements TaskExecutor {
 		taskDispatchExecutor.execute(new Runnable() {
 			@Override
 			public void run() {
-				if(taskRequest instanceof DownloadRequest){
-					executeDownloadRequest((DownloadRequest) taskRequest);
-				}else if(taskRequest instanceof LoadRequest){
+				if(taskRequest instanceof DisplayRequest){
+                    executeDisplayRequest((DisplayRequest) taskRequest);
+                }else if(taskRequest instanceof LoadRequest){
 					executeLoadRequest((LoadRequest) taskRequest);
-				}else if(taskRequest instanceof DisplayRequest){
-					executeDisplayRequest((DisplayRequest) taskRequest);
-				}
-			}
+				}else if(taskRequest instanceof DownloadRequest){
+                    executeDownloadRequest((DownloadRequest) taskRequest);
+                }
+            }
 		});
 	}
 	
 	/**
 	 * 执行下载请求
-	 * @param downloadRequest
+	 * @param downloadRequest 下载请求
 	 */
 	private void executeDownloadRequest(DownloadRequest downloadRequest){
 		File cacheFile = downloadRequest.getConfiguration().getBitmapCacher().getCacheFile(downloadRequest);
@@ -104,7 +105,7 @@ public class BaseTaskExecutor implements TaskExecutor {
 	
 	/**
 	 * 执行加载请求
-	 * @param loadRequest
+	 * @param loadRequest 记载请求
 	 */
 	private void executeLoadRequest(LoadRequest loadRequest){
 		Scheme scheme = Scheme.ofUri(loadRequest.getUri());
@@ -112,15 +113,15 @@ public class BaseTaskExecutor implements TaskExecutor {
 			case HTTP :
 			case HTTPS : 
 				File cacheFile = loadRequest.getConfiguration().getBitmapCacher().getCacheFile(loadRequest);
-				loadRequest.setCacheFile(cacheFile);
-				if(cacheFile != null && cacheFile.exists()){
-					localTaskExecutor.execute(new FileBitmapLoadTask((LoadRequest) loadRequest));
-					if(loadRequest.getConfiguration().isDebugMode()){
-						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP - 本地").append("；").append(loadRequest.getName()).toString());
-					}
-				}else{
-					execute(DownloadRequest.valueOf(loadRequest, new LoadDownloadListener()));
-				}
+                loadRequest.setCacheFile(cacheFile);
+                if(cacheFile != null && cacheFile.exists()){
+                    localTaskExecutor.execute(new FileBitmapLoadTask(loadRequest));
+                    if(loadRequest.getConfiguration().isDebugMode()){
+                        Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP").append(" - ").append("本地").append("；").append(loadRequest.getName()).toString());
+                    }
+                }else{
+                    execute(DownloadRequest.valueOf(loadRequest, new LoadDownloadListener()));
+                }
 				break;
 			case FILE : 
 				break;
@@ -137,7 +138,7 @@ public class BaseTaskExecutor implements TaskExecutor {
 	
 	/**
 	 * 执行显示请求
-	 * @param displayRequest
+	 * @param displayRequest 显示请求
 	 */
 	private void executeDisplayRequest(DisplayRequest displayRequest){
 		Scheme scheme = Scheme.ofUri(displayRequest.getUri());
@@ -146,40 +147,38 @@ public class BaseTaskExecutor implements TaskExecutor {
 			case HTTPS : 
 				File cacheFile = displayRequest.getConfiguration().getBitmapCacher().getCacheFile(displayRequest);
 				displayRequest.setCacheFile(cacheFile);
-				if(cacheFile != null && cacheFile.exists()){
-					localTaskExecutor.execute(new HttpBitmapDisplayTask((DisplayRequest) displayRequest));
-					if(displayRequest.getConfiguration().isDebugMode()){
-						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP - 本地").append("；").append(displayRequest.getName()).toString());
-					}
-				}else{
-					netTaskExecutor.execute(new HttpBitmapDisplayTask((DisplayRequest) displayRequest));
-					if(displayRequest.getConfiguration().isDebugMode()){
-						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP - 网络").append("；").append(displayRequest.getName()).toString());
-					}
-				}
+				boolean local = cacheFile != null && cacheFile.exists();
+                if(local){
+                    localTaskExecutor.execute(new FileBitmapDisplayTask(displayRequest));
+                }else{
+                    netTaskExecutor.execute(new HttpBitmapDisplayTask(displayRequest));
+                }
+                if(displayRequest.getConfiguration().isDebugMode()){
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP").append(" - ").append(local?"本地":"网络").append("；").append(displayRequest.getName()).toString());
+                }
 				break;
 			case FILE : 
-				localTaskExecutor.execute(new FileBitmapDisplayTask((DisplayRequest) displayRequest));
+				localTaskExecutor.execute(new FileBitmapDisplayTask(displayRequest));
 				if(displayRequest.getConfiguration().isDebugMode()){
-					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("FILE - 本地").append("；").append(displayRequest.getName()).toString());
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("FILE").append("；").append(displayRequest.getName()).toString());
 				}
 				break;
 			case ASSETS : 
-				localTaskExecutor.execute(new AssetsBitmapDisplayTask((DisplayRequest) displayRequest));
+				localTaskExecutor.execute(new AssetsBitmapDisplayTask(displayRequest));
 				if(displayRequest.getConfiguration().isDebugMode()){
-					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("ASSETS - 本地").append("；").append(displayRequest.getName()).toString());
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("ASSETS").append("；").append(displayRequest.getName()).toString());
 				}
 				break;
 			case CONTENT : 
-				localTaskExecutor.execute(new ContentBitmapDisplayTask((DisplayRequest) displayRequest));
+				localTaskExecutor.execute(new ContentBitmapDisplayTask(displayRequest));
 				if(displayRequest.getConfiguration().isDebugMode()){
-					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("CONTENT - 本地").append("；").append(displayRequest.getName()).toString());
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("CONTENT").append("；").append(displayRequest.getName()).toString());
 				}
 				break;
 			case DRAWABLE : 
-				localTaskExecutor.execute(new DrawableBitmapDisplayTask((DisplayRequest) displayRequest));
+				localTaskExecutor.execute(new DrawableBitmapDisplayTask(displayRequest));
 				if(displayRequest.getConfiguration().isDebugMode()){
-					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DRAWABLE - 本地").append("；").append(displayRequest.getName()).toString());
+					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DRAWABLE").append("；").append(displayRequest.getName()).toString());
 				}
 				break;
 			default:

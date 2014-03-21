@@ -28,6 +28,7 @@ public class DisplayRequest extends LoadRequest{
 	private DisplayListener displayListener;	//监听器
 	private DisplayOptions displayOptions;	//显示选项
 	private ImageViewHolder imageViewHolder;	//ImageView持有器
+    private ImageView.ScaleType scaleType;  //缩放方式
 	
 	public DisplayRequest(String id, String uri) {
 		super(uri);
@@ -67,7 +68,16 @@ public class DisplayRequest extends LoadRequest{
 		this.imageViewHolder = imageViewHolder;
 	}
 
-	public interface DisplayListener {
+    @Override
+    public ImageView.ScaleType getScaleType() {
+        return scaleType;
+    }
+
+    public void setScaleType(ImageView.ScaleType scaleType) {
+        this.scaleType = scaleType;
+    }
+
+    public interface DisplayListener {
 		public void onStarted(String imageUri, ImageView imageView);
 		public void onFailed(String imageUri, ImageView imageView);
 		public void onComplete(String imageUri, ImageView imageView, BitmapDrawable drawable);

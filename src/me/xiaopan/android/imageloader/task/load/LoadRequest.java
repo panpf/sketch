@@ -16,6 +16,7 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
+import android.widget.ImageView;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
@@ -89,7 +90,11 @@ public class LoadRequest extends TaskRequest{
 	public int getDiskCachePeriodOfValidity() {
 		return loadOptions != null?loadOptions.getDiskCachePeriodOfValidity():0;
 	}
-	
+
+    public ImageView.ScaleType getScaleType() {
+        return loadOptions != null?loadOptions.getScaleType(): ImageView.ScaleType.CENTER_CROP;
+    }
+
 	/**
 	 * 加载监听器
 	 */

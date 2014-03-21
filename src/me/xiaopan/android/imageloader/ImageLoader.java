@@ -27,6 +27,8 @@ import me.xiaopan.android.imageloader.task.display.ImageViewHolder;
 import me.xiaopan.android.imageloader.task.download.DownloadOptions;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
+import me.xiaopan.android.imageloader.task.load.LoadOptions;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import me.xiaopan.android.imageloader.util.Scheme;
@@ -50,7 +52,7 @@ public class ImageLoader{
 	
 	/**
 	 * 获取图片加载器的实例
-	 * @param context
+	 * @param context 用来初始化配置
 	 * @return 图片加载器的实例
 	 */
 	public static ImageLoader getInstance(Context context){
@@ -135,6 +137,7 @@ public class ImageLoader{
 		displayRequest.setDisplayOptions(displayOptions);
 		imageViewHolder.setDisplayRequest(displayRequest);
 		displayRequest.setImageViewHolder(imageViewHolder);
+        displayRequest.setScaleType(imageView.getScaleType());
 
 		//显示默认图片
 		BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getLoadingDrawable();
@@ -236,16 +239,17 @@ public class ImageLoader{
 	public void display(File imageFile, ImageView imageView, Enum<?> displayOptionsName){
 		display(Uri.fromFile(imageFile).toString(), imageView, configuration.getDisplayOptions(displayOptionsName), null);
 	}
-	
-	/**
-	 * 下载
-	 */
+
+    /**
+     * 下载
+     * @param url 只支持HTTP
+     * @param downloadOptions 配置缓存以及失败重试等选项
+     * @param downloadListener 监听下载过程
+     */
 	public void download(String url, DownloadOptions downloadOptions, DownloadListener downloadListener){
 		//过滤掉空的URI
 		if(ImageLoaderUtils.isEmpty(url)){
-			if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("url不能为null或空").toString());
-			if(downloadListener != null) downloadListener.onFailed();
-			return;
+            throw new IllegalArgumentException("url不能为null或空");
 		}
 		
 		if(downloadListener != null){
@@ -262,24 +266,35 @@ public class ImageLoader{
 		//执行请求
 		getConfiguration().getTaskExecutor().execute(downloadRequest);
 	}
-	
-	/**
-	 * 下载
-	 */
+
+    /**
+     * 下载
+     * @param url 只支持HTTP
+     * @param downloadListener 监听下载过程
+     */
 	public void download(String url, DownloadListener downloadListener){
 		download(url, null, downloadListener);
 	}
-	
-	/**
-	 * 加载
-	 */
-	public void load(){
+
+    /**
+     * 加载
+     * @param uri 支持以下5种Uri
+     * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
+     * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+     * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+     * <br>String imageUri = "assets://image.png"; // from assets
+     * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+     * </blockquote>
+     * @param loadOptions 配置缓存、失败重试、最大尺寸以及处理器
+     * @param loadListener 监听加载过程
+     */
+	public void load(String uri, LoadOptions loadOptions, LoadRequest.LoadListener loadListener){
 		
 	}
 	
 	/**
 	 * 获取配置
-	 * @return
+	 * @return ImageLoader配置
 	 */
 	public Configuration getConfiguration() {
 		return configuration;

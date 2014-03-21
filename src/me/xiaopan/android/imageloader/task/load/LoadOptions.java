@@ -28,8 +28,8 @@ import android.widget.ImageView.ScaleType;
 public class LoadOptions extends TaskOptions{
 	private Context context;	//上下文
 	private ImageSize maxImageSize;	//最大图片尺寸
+    private ScaleType scaleType;
 	private BitmapProcessor bitmapProcessor;	//位图处理器
-	private ScaleType scaleType;
 	
 	public LoadOptions(Context context) {
 		this.context = context;
@@ -48,6 +48,15 @@ public class LoadOptions extends TaskOptions{
 		this.maxImageSize = maxImageSize;
 		return this;
 	}
+
+    public ScaleType getScaleType() {
+        return scaleType;
+    }
+
+    public LoadOptions setScaleType(ScaleType scaleType) {
+        this.scaleType = scaleType;
+        return this;
+    }
 	
 	public BitmapProcessor getBitmapProcessor() {
 		return bitmapProcessor;
@@ -55,15 +64,6 @@ public class LoadOptions extends TaskOptions{
 
 	public LoadOptions setBitmapProcessor(BitmapProcessor bitmapProcessor) {
 		this.bitmapProcessor = bitmapProcessor;
-		return this;
-	}
-
-	public ScaleType getScaleType() {
-		return scaleType;
-	}
-
-	public LoadOptions setScaleType(ScaleType scaleType) {
-		this.scaleType = scaleType;
 		return this;
 	}
 
@@ -78,8 +78,8 @@ public class LoadOptions extends TaskOptions{
 		.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
 		.setEnableDiskCache(isEnableDiskCache());
 		
-		loadOptions.setBitmapProcessor(bitmapProcessor != null?bitmapProcessor.copy():null)
-		.setScaleType(scaleType)
+		loadOptions.setBitmapProcessor(bitmapProcessor != null ? bitmapProcessor.copy() : null)
+        .setScaleType(scaleType)
 		.setMaxImageSize(maxImageSize != null?maxImageSize.copy():null);
 		return loadOptions;
 	}
