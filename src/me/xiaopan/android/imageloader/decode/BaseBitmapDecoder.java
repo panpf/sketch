@@ -16,6 +16,7 @@
 
 package me.xiaopan.android.imageloader.decode;
 
+import java.io.IOException;
 import java.io.InputStream;
 
 import me.xiaopan.android.imageloader.ImageLoader;
@@ -35,21 +36,25 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 	private static final String NAME= BaseBitmapDecoder.class.getSimpleName();
 	
 	@Override
-	public Bitmap decode(LoadRequest loadRequest,  InputStreamCreator onNewBitmapInputStreamListener) {
+	public Bitmap decode(LoadRequest loadRequest, InputStreamCreator inputStreamCreator){
 		Bitmap bitmap = null;
 		Options options = new Options();
 		int outWidth = 0;
 		int outHeight = 0;
 		
-		InputStream inputStream = onNewBitmapInputStreamListener.onCreateInputStream();
+		InputStream inputStream = inputStreamCreator.onCreateInputStream();
 		if(inputStream != null){
 			options.inJustDecodeBounds = true;
 			BitmapFactory.decodeStream(inputStream, null, options);
-			ImageLoaderUtils.close(inputStream);
-			
-			inputStream = onNewBitmapInputStreamListener.onCreateInputStream();
+            try {
+                inputStream.reset();
+            } catch (IOException e) {
+                e.printStackTrace();
+                ImageLoaderUtils.close(inputStream);
+			    inputStream = inputStreamCreator.onCreateInputStream();
+            }
 			if(inputStream != null){
-				outWidth = options.outWidth;
+                outWidth = options.outWidth;
 				outHeight = options.outHeight;
 				options.inSampleSize = calculateInSampleSize(options, loadRequest.getMaxImageSize().getWidth(), loadRequest.getMaxImageSize().getHeight());
 				options.inJustDecodeBounds = false;
