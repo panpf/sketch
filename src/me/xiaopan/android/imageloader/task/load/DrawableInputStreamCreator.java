@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.decode;
+package me.xiaopan.android.imageloader.task.load;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -24,8 +24,9 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.CompressFormat;
 import android.graphics.drawable.BitmapDrawable;
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 
-public class DrawableInputStreamCreator implements InputStreamCreator {
+public class DrawableInputStreamCreator implements BitmapDecoder.InputStreamCreator {
 	private String drawableIdString;
 	private Context context;
 	

@@ -29,9 +29,10 @@ public class DownloadOptions extends TaskOptions{
 	 * @return
 	 */
 	public DownloadOptions copy(){
-		return (DownloadOptions) new DownloadOptions()
-		.setMaxRetryCount(getMaxRetryCount())
-		.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
-		.setEnableDiskCache(isEnableDiskCache());
+        DownloadOptions downloadOptions = new DownloadOptions();
+        downloadOptions.setMaxRetryCount(getMaxRetryCount());
+        downloadOptions.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity());
+        downloadOptions.setEnableDiskCache(isEnableDiskCache());
+		return downloadOptions;
 	}
 }

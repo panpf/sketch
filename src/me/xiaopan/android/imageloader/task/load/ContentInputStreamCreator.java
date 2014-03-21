@@ -14,27 +14,32 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.decode;
+package me.xiaopan.android.imageloader.task.load;
 
-import java.io.IOException;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.net.Uri;
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 
-public class AssetsInputStreamCreator implements InputStreamCreator {
-	private String assetsFilePath;
+public class ContentInputStreamCreator implements BitmapDecoder.InputStreamCreator {
+	private String contentUri;
 	private Context context;
 	
-	public AssetsInputStreamCreator(Context context, String assetsFilePath) {
+	public ContentInputStreamCreator(Context context, String contentUri) {
 		this.context = context;
-		this.assetsFilePath = assetsFilePath;
+		this.contentUri = contentUri;
 	}
 
 	@Override
 	public InputStream onCreateInputStream() {
 		try{
-			return context.getAssets().open(assetsFilePath);
-		}catch(IOException e){
+			ContentResolver res = context.getContentResolver();
+			Uri uri = Uri.parse(contentUri);
+			return res.openInputStream(uri);
+		}catch(FileNotFoundException e){
 			e.printStackTrace();
 			return null;
 		}

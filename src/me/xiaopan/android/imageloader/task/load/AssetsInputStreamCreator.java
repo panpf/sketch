@@ -14,14 +14,30 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.decode;
+package me.xiaopan.android.imageloader.task.load;
 
+import java.io.IOException;
 import java.io.InputStream;
 
-public interface InputStreamCreator {
-	/**
-	 * 创建新的用来读取位图的输入流，这个输入流必须是新的
-	 * @return
-	 */
-	public InputStream onCreateInputStream();
+import android.content.Context;
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
+
+public class AssetsInputStreamCreator implements BitmapDecoder.InputStreamCreator {
+	private String assetsFilePath;
+	private Context context;
+	
+	public AssetsInputStreamCreator(Context context, String assetsFilePath) {
+		this.context = context;
+		this.assetsFilePath = assetsFilePath;
+	}
+
+	@Override
+	public InputStream onCreateInputStream() {
+		try{
+			return context.getAssets().open(assetsFilePath);
+		}catch(IOException e){
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

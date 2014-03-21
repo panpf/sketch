@@ -36,9 +36,8 @@ public abstract class TaskOptions{
 	 * 设置是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
 	 * @param enableDiskCache
 	 */
-	public TaskOptions setEnableDiskCache(boolean enableDiskCache) {
+	public void setEnableDiskCache(boolean enableDiskCache) {
 		this.enableDiskCache = enableDiskCache;
-		return this;
 	}
 
 	/**
@@ -53,9 +52,8 @@ public abstract class TaskOptions{
 	 * 设置本地缓存文件的有效时间，单位毫秒
 	 * @param diskCachePeriodOfValidity
 	 */
-	public TaskOptions setDiskCachePeriodOfValidity(int diskCachePeriodOfValidity) {
+	public void setDiskCachePeriodOfValidity(int diskCachePeriodOfValidity) {
 		this.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
-		return this;
 	}
 	
 	/**
@@ -70,8 +68,7 @@ public abstract class TaskOptions{
 	 * 设置最大重试次数
 	 * @param maxRetryCount 最大重试次数
 	 */
-	public TaskOptions setMaxRetryCount(int maxRetryCount) {
+	public void setMaxRetryCount(int maxRetryCount) {
 		this.maxRetryCount = maxRetryCount;
-		return this;
 	}
 }

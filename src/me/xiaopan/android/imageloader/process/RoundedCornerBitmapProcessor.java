@@ -32,20 +32,19 @@ import android.widget.ImageView.ScaleType;
  * 圆角位图处理器
  */
 public class RoundedCornerBitmapProcessor implements BitmapProcessor {
-	private static final String TAG = RoundedCornerBitmapProcessor.class.getSimpleName();
+	private static final String NAME = RoundedCornerBitmapProcessor.class.getSimpleName();
 	private int roundPixels;
 	
 	/**
 	 * 创建一个圆角位图显示器
-	 * @param roundPixels 圆角角度
-	 * @param animationGenerator 动画生成器
+	 * @param roundPixels 圆角度数
 	 */
 	public RoundedCornerBitmapProcessor(int roundPixels){
 		this.roundPixels = roundPixels;
 	}
 	
 	/**
-	 * 创建一个圆角位图显示器，圆角角度默认为18并且动画生成器使用AlphaAnimationGenerator
+	 * 创建一个圆角位图显示器，圆角角度默认为18
 	 */
 	public RoundedCornerBitmapProcessor(){
 		this(18);
@@ -53,7 +52,7 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 	
 	@Override
 	public String getTag() {
-		return TAG;
+		return NAME;
 	}
 
 	@Override
@@ -80,8 +79,9 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 	 * This method <b>doesn't display</b> result bitmap in {@link ImageView}
 	 * 
 	 * @param bitmap Incoming Bitmap to process
-	 * @param imageView Target {@link ImageView} to display bitmap in
-	 * @param roundPixels
+	 * @param scaleType 缩放类型
+	 * @param targetSize 目标尺寸
+	 * @param roundPixels 圆角度数
 	 * @return Result bitmap with rounded corners
 	 */
 	public Bitmap roundCorners(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize, int roundPixels) {
@@ -174,13 +174,12 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 	
 	/**
 	 * 处理圆角图片
-	 * @param bitmap
-	 * @param roundPixels
-	 * @param srcRect
-	 * @param destRect
-	 * @param width
-	 * @param height
-	 * @return
+     * @param bitmap 要处理的图片
+     * @param srcRect 源矩形
+     * @param destRect 目标矩形
+     * @param width 宽
+     * @param height 高
+     * @return 新的圆角图片
 	 */
 	public Bitmap getRoundedCornerBitmap(Bitmap bitmap, int roundPixels, Rect srcRect, Rect destRect, int width, int height) {
 		Bitmap output = Bitmap.createBitmap(width, height, Config.ARGB_8888);

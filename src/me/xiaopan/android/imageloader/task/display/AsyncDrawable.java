@@ -21,6 +21,8 @@ import java.lang.ref.WeakReference;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 
 public class AsyncDrawable extends BitmapDrawable {
     private WeakReference<DisplayRequest> displayRequestWeakReference;
@@ -32,5 +34,20 @@ public class AsyncDrawable extends BitmapDrawable {
 
     public DisplayRequest getDisplayRequest() {
         return displayRequestWeakReference.get();
+    }
+
+    /**
+     * 获取与给定ImageView所持有的DisplayRequst
+     * @param imageView ImageView
+     * @return 给定ImageView所持有的DisplayRequst
+     */
+    public static DisplayRequest getDisplayRequestByAsyncDrawable(ImageView imageView) {
+        if (imageView != null) {
+            final Drawable drawable = imageView.getDrawable();
+            if (drawable instanceof AsyncDrawable) {
+                return ((AsyncDrawable) drawable).getDisplayRequest();
+            }
+        }
+        return null;
     }
 }

@@ -32,11 +32,11 @@ import android.widget.ImageView.ScaleType;
  * 圆形位图处理器
  */
 public class CircleBitmapProcessor implements BitmapProcessor {
-	private static final String TAG = CircleBitmapProcessor.class.getSimpleName();
+	private static final String NAME = CircleBitmapProcessor.class.getSimpleName();
 	
 	@Override
 	public String getTag() {
-		return TAG;
+		return NAME;
 	}
 
 	@Override
@@ -58,14 +58,6 @@ public class CircleBitmapProcessor implements BitmapProcessor {
 		return cricle(bitmap, scaleType, targetSize);
 	}
 	
-	/**
-	 * Process incoming {@linkplain Bitmap} to make rounded corners according to target {@link ImageView}.<br />
-	 * This method <b>doesn't display</b> result bitmap in {@link ImageView}
-	 * 
-	 * @param bitmap Incoming Bitmap to process
-	 * @param imageView Target {@link ImageView} to display bitmap in
-	 * @return Result bitmap with rounded corners
-	 */
 	public Bitmap cricle(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize) {
 		int bitmapWidth = bitmap.getWidth();
 		int bitmapHeight = bitmap.getHeight();
@@ -155,13 +147,13 @@ public class CircleBitmapProcessor implements BitmapProcessor {
 	}
 	
 	/**
-	 * 处理圆角图片
-	 * @param bitmap
-	 * @param srcRect
-	 * @param destRect
-	 * @param width
-	 * @param height
-	 * @return
+	 * 处理圆形图片
+	 * @param bitmap 要处理的图片
+	 * @param srcRect 源矩形
+	 * @param destRect 目标矩形
+	 * @param width 宽
+	 * @param height 高
+	 * @return 新的圆形图片
 	 */
 	public Bitmap getCricleBitmap(Bitmap bitmap, Rect srcRect, Rect destRect, int width, int height) {
 		Bitmap output = Bitmap.createBitmap(width, height, Config.ARGB_8888);

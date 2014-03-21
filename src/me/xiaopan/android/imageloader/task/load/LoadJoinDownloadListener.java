@@ -1,18 +1,16 @@
 package me.xiaopan.android.imageloader.task.load;
 
-import me.xiaopan.android.imageloader.decode.ByteArrayInputStreamCreator;
-import me.xiaopan.android.imageloader.decode.FileInputStreamCreator;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
 
 import java.io.File;
 import java.util.concurrent.Executor;
 
-public class LoadDownloadListener implements DownloadListener {
+public class LoadJoinDownloadListener implements DownloadListener {
 
     private Executor executor;
     private LoadRequest loadRequest;
 
-    public LoadDownloadListener(Executor executor, LoadRequest loadRequest) {
+    public LoadJoinDownloadListener(Executor executor, LoadRequest loadRequest) {
         this.executor = executor;
         this.loadRequest = loadRequest;
     }

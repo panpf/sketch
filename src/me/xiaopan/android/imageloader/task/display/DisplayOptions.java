@@ -33,14 +33,16 @@ import android.widget.ImageView.ScaleType;
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
+    private Context context;
 	private boolean enableMenoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+    private ImageSize maxImageSize;	//最大图片尺寸
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
 	private DrawableHolder emptyDrawableHolder;	//当uri为空时显示的图片
 	private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
 	private DrawableHolder failureDrawableHolder;	//当加载失败时显示的图片
 	
 	public DisplayOptions(Context context) {
-		super(context);
+        this.context = context;
 		this.bitmapDisplayer = new FadeInBitmapDisplayer();
 		this.emptyDrawableHolder = new DrawableHolder();
 		this.loadingDrawableHolder = new DrawableHolder();
@@ -59,10 +61,17 @@ public class DisplayOptions extends LoadOptions {
 	 * 设置是否将Bitmap缓存到内存中
 	 * @param enableMenoryCache
 	 */
-	public DisplayOptions setEnableMenoryCache(boolean enableMenoryCache) {
+	public void setEnableMenoryCache(boolean enableMenoryCache) {
 		this.enableMenoryCache = enableMenoryCache;
-		return this;
 	}
+
+    public ImageSize getMaxImageSize() {
+		return maxImageSize;
+	}
+
+    public void setMaxImageSize(ImageSize maxImageSize) {
+        this.maxImageSize = maxImageSize;
+    }
 
 	/**
 	 * 获取加载地址为空时显示的图片
@@ -70,7 +79,7 @@ public class DisplayOptions extends LoadOptions {
 	 */
 	public BitmapDrawable getEmptyDrawable() {
 		if(emptyDrawableHolder.getDrawable() == null && emptyDrawableHolder.getResId() > 0){
-			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(getContext().getResources(), emptyDrawableHolder.getResId()));
+			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), emptyDrawableHolder.getResId()));
 			if(bitmap != null){
 				if(getBitmapProcessor() != null){
 					Bitmap newBitmap = getBitmapProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
@@ -79,7 +88,7 @@ public class DisplayOptions extends LoadOptions {
 						bitmap = newBitmap;
 					}
 				}
-				emptyDrawableHolder.setDrawable(new BitmapDrawable(getContext().getResources(), bitmap));
+				emptyDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
 			}
 		}
 		return emptyDrawableHolder.getDrawable();
@@ -89,7 +98,7 @@ public class DisplayOptions extends LoadOptions {
 	 * 设置加载地址为空时显示的图片
 	 * @param resId
 	 */
-	public DisplayOptions setEmptyDrawableResId(int resId) {
+	public void setEmptyDrawableResId(int resId) {
 		emptyDrawableHolder.setResId(resId);
 		if(emptyDrawableHolder.getDrawable() != null){
 			if(!emptyDrawableHolder.getDrawable().getBitmap().isRecycled()){
@@ -97,7 +106,6 @@ public class DisplayOptions extends LoadOptions {
 			}
 			emptyDrawableHolder.setDrawable(null);
 		}
-		return this;
 	}
 
 	/**
@@ -106,7 +114,7 @@ public class DisplayOptions extends LoadOptions {
 	 */
 	public BitmapDrawable getLoadingDrawable() {
 		if(loadingDrawableHolder.getDrawable() == null && loadingDrawableHolder.getResId() > 0){
-			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(getContext().getResources(), loadingDrawableHolder.getResId()));
+			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), loadingDrawableHolder.getResId()));
 			if(bitmap != null){
 				if(getBitmapProcessor() != null){
 					Bitmap newBitmap = getBitmapProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
@@ -115,7 +123,7 @@ public class DisplayOptions extends LoadOptions {
 						bitmap = newBitmap;
 					}
 				}
-				loadingDrawableHolder.setDrawable(new BitmapDrawable(getContext().getResources(), bitmap));
+				loadingDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
 			}
 		}
 		return loadingDrawableHolder.getDrawable();
@@ -125,7 +133,7 @@ public class DisplayOptions extends LoadOptions {
 	 * 设置加载中图片
 	 * @param resId
 	 */
-	public DisplayOptions setLoadingDrawableResId(int resId) {
+	public void setLoadingDrawableResId(int resId) {
 		loadingDrawableHolder.setResId(resId);
 		if(loadingDrawableHolder.getDrawable() != null){
 			if(!loadingDrawableHolder.getDrawable().getBitmap().isRecycled()){
@@ -133,7 +141,6 @@ public class DisplayOptions extends LoadOptions {
 			}
 			loadingDrawableHolder.setDrawable(null);
 		}
-		return this;
 	}
 
 	/**
@@ -142,7 +149,7 @@ public class DisplayOptions extends LoadOptions {
 	 */
 	public BitmapDrawable getFailureDrawable() {
 		if(failureDrawableHolder.getDrawable() == null && failureDrawableHolder.getResId() > 0){
-			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(getContext().getResources(), failureDrawableHolder.getResId()));
+			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), failureDrawableHolder.getResId()));
 			if(bitmap != null){
 				if(getBitmapProcessor() != null){
 					Bitmap newBitmap = getBitmapProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
@@ -151,7 +158,7 @@ public class DisplayOptions extends LoadOptions {
 						bitmap = newBitmap;
 					}
 				}
-				failureDrawableHolder.setDrawable(new BitmapDrawable(getContext().getResources(), bitmap));
+				failureDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
 			}
 		}
 		return failureDrawableHolder.getDrawable();
@@ -161,7 +168,7 @@ public class DisplayOptions extends LoadOptions {
 	 * 设置加载失败图片
 	 * @param resId
 	 */
-	public DisplayOptions setFailureDrawableResId(int resId) {
+	public void setFailureDrawableResId(int resId) {
 		failureDrawableHolder.setResId(resId);
 		if(failureDrawableHolder.getDrawable() != null){
 			if(!failureDrawableHolder.getDrawable().getBitmap().isRecycled()){
@@ -169,7 +176,6 @@ public class DisplayOptions extends LoadOptions {
 			}
 			failureDrawableHolder.setDrawable(null);
 		}
-		return this;
 	}
 	
 	/**
@@ -177,12 +183,11 @@ public class DisplayOptions extends LoadOptions {
 	 * @param bitmapProcessor
 	 */
     @Override
-	public DisplayOptions setBitmapProcessor(BitmapProcessor bitmapProcessor) {
+	public void setBitmapProcessor(BitmapProcessor bitmapProcessor) {
 		super.setBitmapProcessor(bitmapProcessor);
 		emptyDrawableHolder.setDrawable(null);
 		loadingDrawableHolder.setDrawable(null);
 		failureDrawableHolder.setDrawable(null);
-		return this;
 	}
 
 	/**
@@ -200,9 +205,8 @@ public class DisplayOptions extends LoadOptions {
 	 * 设置位图显示器
 	 * @param bitmapDisplayer
 	 */
-	public DisplayOptions setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
+	public void setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
 		this.bitmapDisplayer = bitmapDisplayer;
-		return this;
 	}
 
 	/**
@@ -210,19 +214,17 @@ public class DisplayOptions extends LoadOptions {
 	 * @return
 	 */
 	public DisplayOptions copy(){
-		DisplayOptions displayOptions = new DisplayOptions(getContext());
-		
-		displayOptions.setMaxRetryCount(getMaxRetryCount())
-		.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
-		.setEnableDiskCache(isEnableDiskCache());
-		
-		displayOptions.setEnableMenoryCache(enableMenoryCache)
-		.setBitmapProcessor(getBitmapProcessor() != null?getBitmapProcessor().copy():null)
-		.setBitmapDisplayer(bitmapDisplayer != null?bitmapDisplayer.copy():null)
-		.setEmptyDrawableResId(emptyDrawableHolder.getResId())
-		.setFailureDrawableResId(failureDrawableHolder.getResId())
-		.setLoadingDrawableResId(loadingDrawableHolder.getResId())
-		.setMaxImageSize(getMaxImageSize() != null?getMaxImageSize().copy():null);
+		DisplayOptions displayOptions = new DisplayOptions(context);
+		displayOptions.setMaxRetryCount(getMaxRetryCount());
+        displayOptions.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity());
+        displayOptions.setEnableDiskCache(isEnableDiskCache());
+		displayOptions.setEnableMenoryCache(enableMenoryCache);
+        displayOptions.setBitmapProcessor(getBitmapProcessor() != null?getBitmapProcessor().copy():null);
+        displayOptions.setBitmapDisplayer(bitmapDisplayer != null?bitmapDisplayer.copy():null);
+        displayOptions.setEmptyDrawableResId(emptyDrawableHolder.getResId());
+        displayOptions.setFailureDrawableResId(failureDrawableHolder.getResId());
+        displayOptions.setLoadingDrawableResId(loadingDrawableHolder.getResId());
+        displayOptions.setMaxImageSize(getMaxImageSize() != null?getMaxImageSize().copy():null);
 		return displayOptions;
 	}
 	

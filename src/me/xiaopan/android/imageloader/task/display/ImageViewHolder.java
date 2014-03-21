@@ -108,7 +108,7 @@ public class ImageViewHolder{
 	public ImageView getImageView() {
 		final ImageView imageView = imageViewRef.get();
 		if (displayRequest != null) {
-			DisplayRequest holderDisplayRequest = BitmapDisplayTask.getDisplayRequest(imageView);
+			DisplayRequest holderDisplayRequest = AsyncDrawable.getDisplayRequestByAsyncDrawable(imageView);
             if(holderDisplayRequest != null && holderDisplayRequest == displayRequest){
             	return imageView;
             }else{

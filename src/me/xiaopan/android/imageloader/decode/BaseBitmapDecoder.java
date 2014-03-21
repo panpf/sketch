@@ -68,27 +68,27 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 		return bitmap;
 	}
 	
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void addInBitmapOptions(LoadRequest loadRequest, BitmapFactory.Options options) {
-	    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
-	    	// inBitmap only works with mutable bitmaps, so force the decoder to
-	    	// return mutable bitmaps.
-	    	options.inMutable = true;
-	    	
-	    	if (loadRequest.getConfiguration().getBitmapCacher() != null) {
-	    		// Try to find a bitmap to use for inBitmap.
-	    		Bitmap inBitmap = loadRequest.getConfiguration().getBitmapCacher().getBitmapFromReusableSet(options);
-	    		if (inBitmap != null && !inBitmap.isRecycled()) {
-	    			// If a suitable bitmap has been found, set it as the value of
-	    			// inBitmap.
-	    			options.inBitmap = inBitmap;
-	    			if(loadRequest.getConfiguration().isDebugMode()){
-	    				Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("回收利用了尚未被回收的Bitmap").toString());
-	    			}
-	    		}
-	    	}
-	    }
-	}
+//	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+//	private void addInBitmapOptions(LoadRequest loadRequest, BitmapFactory.Options options) {
+//	    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+//	    	// inBitmap only works with mutable bitmaps, so force the decoder to
+//	    	// return mutable bitmaps.
+//	    	options.inMutable = true;
+//
+//	    	if (loadRequest.getConfiguration().getBitmapCacher() != null) {
+//	    		// Try to find a bitmap to use for inBitmap.
+//	    		Bitmap inBitmap = loadRequest.getConfiguration().getBitmapCacher().getBitmapFromReusableSet(options);
+//	    		if (inBitmap != null && !inBitmap.isRecycled()) {
+//	    			// If a suitable bitmap has been found, set it as the value of
+//	    			// inBitmap.
+//	    			options.inBitmap = inBitmap;
+//	    			if(loadRequest.getConfiguration().isDebugMode()){
+//	    				Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("回收利用了尚未被回收的Bitmap").toString());
+//	    			}
+//	    		}
+//	    	}
+//	    }
+//	}
 	
 	/**
 	 * 输出LOG

@@ -14,23 +14,32 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.decode;
+package me.xiaopan.android.imageloader.task.load;
 
 import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 
-public class ByteArrayInputStreamCreator implements InputStreamCreator {
-	private byte[] data;
+public class FileInputStreamCreator implements BitmapDecoder.InputStreamCreator {
+	private File file;
 	
-	public ByteArrayInputStreamCreator(byte[] data) {
-		this.data = data;
+	public FileInputStreamCreator(File file) {
+		this.file = file;
 	}
 
 	@Override
 	public InputStream onCreateInputStream() {
-		return new BufferedInputStream(new ByteArrayInputStream(data), ImageLoaderUtils.BUFFER_SIZE);
+		file.setLastModified(System.currentTimeMillis());
+		try {
+			return new BufferedInputStream(new FileInputStream(file), ImageLoaderUtils.BUFFER_SIZE);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

@@ -17,9 +17,6 @@
 package me.xiaopan.android.imageloader.task.load;
 
 import android.widget.ImageView;
-import me.xiaopan.android.imageloader.task.TaskRequest;
-import me.xiaopan.android.imageloader.task.display.DisplayLoadListener;
-import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
@@ -38,7 +35,7 @@ public class LoadRequest extends DownloadRequest{
 	
 	/**
 	 * 获取目标尺寸
-	 * @return
+	 * @return 目标尺寸
 	 */
 	public ImageSize getTargetSize() {
 		return targetSize;
@@ -46,7 +43,7 @@ public class LoadRequest extends DownloadRequest{
 
 	/**
 	 * 设置目标尺寸
-	 * @param targetSize
+	 * @param targetSize 目标尺寸
 	 */
 	public void setTargetSize(ImageSize targetSize) {
 		this.targetSize = targetSize;
@@ -54,7 +51,7 @@ public class LoadRequest extends DownloadRequest{
 
 	/**
 	 * 获取加载监听器
-	 * @return
+	 * @return 加载监听器
 	 */
 	public LoadListener getLoadListener() {
 		return loadListener;
@@ -62,7 +59,7 @@ public class LoadRequest extends DownloadRequest{
 
 	/**
 	 * 设置加载监听器
-	 * @param loadListener
+	 * @param loadListener 加载监听器
 	 */
 	public LoadRequest setLoadListener(LoadListener loadListener) {
 		this.loadListener = loadListener;
@@ -71,7 +68,7 @@ public class LoadRequest extends DownloadRequest{
 	
 	/**
 	 * 获取加载选项
-	 * @return
+	 * @return 加载选项
 	 */
 	public LoadOptions getLoadOptions() {
 		return loadOptions;
@@ -79,13 +76,17 @@ public class LoadRequest extends DownloadRequest{
 
 	/**
 	 * 设置加载选项，同时也设置下载选项
-	 * @param loadOptions
+	 * @param loadOptions 加载选项
 	 */
 	public void setLoadOptions(LoadOptions loadOptions) {
 		this.loadOptions = loadOptions;
         setDownloadOptions(loadOptions);
 	}
 
+    /**
+     * 获取缩放类型
+     * @return
+     */
     public ImageView.ScaleType getScaleType() {
         return loadOptions != null?loadOptions.getScaleType(): ImageView.ScaleType.CENTER_CROP;
     }

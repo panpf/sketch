@@ -25,8 +25,8 @@ import me.xiaopan.android.imageloader.decode.BaseBitmapDecoder;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.download.ImageDownloader;
 import me.xiaopan.android.imageloader.download.LockImageDownloader;
-import me.xiaopan.android.imageloader.execute.BaseTaskExecutor;
-import me.xiaopan.android.imageloader.execute.TaskExecutor;
+import me.xiaopan.android.imageloader.execute.BaseRequestExecutor;
+import me.xiaopan.android.imageloader.execute.RequestExecutor;
 import me.xiaopan.android.imageloader.task.display.DisplayOptions;
 import android.content.Context;
 import android.os.Handler;
@@ -39,7 +39,7 @@ public class Configuration {
 	private boolean debugMode;	//调试模式，在控制台输出日志
 	private Context context;	//上下文
 	private Handler handler;	//消息处理器
-	private TaskExecutor taskExecutor;	//任务执行器
+	private RequestExecutor requestExecutor;	//请求执行器
 	private BitmapCacher bitmapCacher;	//位图缓存器
 	private BitmapDecoder bitmapDecoder;	//位图解码器
 	private ImageDownloader imageDownloader;	//图片下载器
@@ -64,22 +64,22 @@ public class Configuration {
 	}
 	
 	/**
-	 * 获取任务执行器
+	 * 获取请求执行器
 	 * @return
 	 */
-	public TaskExecutor getTaskExecutor() {
-		if(taskExecutor == null){
-			taskExecutor = new BaseTaskExecutor();
+	public RequestExecutor getRequestExecutor() {
+		if(requestExecutor == null){
+			requestExecutor = new BaseRequestExecutor();
 		}
-		return taskExecutor;
+		return requestExecutor;
 	}
 
 	/**
-	 * 设置任务执行器
-	 * @param taskExecutor
+	 * 设置请求执行器
+	 * @param requestExecutor
 	 */
-	public Configuration setTaskExecutor(TaskExecutor taskExecutor) {
-		this.taskExecutor = taskExecutor;
+	public Configuration setRequestExecutor(RequestExecutor requestExecutor) {
+		this.requestExecutor = requestExecutor;
 		return this;
 	}
 
@@ -118,7 +118,7 @@ public class Configuration {
 	 * 设置位图解码器
 	 * @param bitmapDecoder 位图解码器
 	 */
-	public Configuration setBitmapLoader(BitmapDecoder bitmapDecoder) {
+	public Configuration setBitmapDecoder(BitmapDecoder bitmapDecoder) {
 		this.bitmapDecoder = bitmapDecoder;
 		return this;
 	}

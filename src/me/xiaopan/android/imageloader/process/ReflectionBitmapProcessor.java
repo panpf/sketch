@@ -32,7 +32,7 @@ import android.widget.ImageView.ScaleType;
  * 倒影位图处理器
  */
 public class ReflectionBitmapProcessor implements BitmapProcessor {
-	private static final String TAG = ReflectionBitmapProcessor.class.getSimpleName();;
+	private static final String NAME = ReflectionBitmapProcessor.class.getSimpleName();;
 	private int reflectionSpacing;
 	private float reflectionScale;
 	
@@ -52,7 +52,7 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
 
 	@Override
 	public String getTag() {
-		return TAG;
+		return NAME;
 	}
 
 	@Override

@@ -12,12 +12,12 @@ import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 /**
  * Created by xiaopan on 2014/3/21 0021.
  */
-public class DisplayLoadListener implements LoadRequest.LoadListener{
-    private static String NAME= DisplayLoadListener.class.getSimpleName();
+public class DisplayJoinLoadListener implements LoadRequest.LoadListener{
+    private static String NAME= DisplayJoinLoadListener.class.getSimpleName();
 
     private DisplayRequest displayRequest;
 
-    public DisplayLoadListener(DisplayRequest displayRequest) {
+    public DisplayJoinLoadListener(DisplayRequest displayRequest) {
         this.displayRequest = displayRequest;
     }
 
@@ -43,18 +43,25 @@ public class DisplayLoadListener implements LoadRequest.LoadListener{
 
         //显示
         if (!displayRequest.getImageViewHolder().isCollected()) {
-            displayRequest.getConfiguration().getHandler().post(new BitmapDisplayRunnable(displayRequest, bitmapDrawable, BitmapDisplayer.BitmapType.SUCCESS));
+            displayRequest.getConfiguration().getHandler().post(new DisplayRunnable(displayRequest, bitmapDrawable, BitmapDisplayer.BitmapType.SUCCESS));
         }else{
-            onCancel();
+            if(displayRequest.getDisplayListener() != null){
+                displayRequest.getConfiguration().getHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        displayRequest.getDisplayListener().onCancel();
+                    }
+                });
+            }
             if(displayRequest.getConfiguration().isDebugMode()){
-                Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("已解除绑定关系").append("；").append(displayRequest.getName()).toString());
+                Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("已解除绑定关系").append("；").append(displayRequest.getName()).toString());
             }
         }
     }
 
     @Override
     public void onFailure() {
-        displayRequest.getConfiguration().getHandler().post(new BitmapDisplayRunnable(displayRequest, displayRequest.getDisplayOptions().getFailureDrawable(), BitmapDisplayer.BitmapType.FAILURE));
+        displayRequest.getConfiguration().getHandler().post(new DisplayRunnable(displayRequest, displayRequest.getDisplayOptions().getFailureDrawable(), BitmapDisplayer.BitmapType.FAILURE));
     }
 
     @Override
@@ -66,6 +73,9 @@ public class DisplayLoadListener implements LoadRequest.LoadListener{
                     displayRequest.getDisplayListener().onCancel();
                 }
             });
+        }
+        if(displayRequest.getConfiguration().isDebugMode()){
+            Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("已取消").append("；").append(displayRequest.getName()).toString());
         }
     }
 }

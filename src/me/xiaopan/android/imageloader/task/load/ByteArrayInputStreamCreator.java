@@ -14,13 +14,24 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.execute;
+package me.xiaopan.android.imageloader.task.load;
 
-import me.xiaopan.android.imageloader.task.TaskRequest;
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 
-/**
- * 任务执行器
- */
-public interface TaskExecutor {
-	public void execute(TaskRequest taskRequest);
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
+
+public class ByteArrayInputStreamCreator implements BitmapDecoder.InputStreamCreator {
+	private byte[] data;
+	
+	public ByteArrayInputStreamCreator(byte[] data) {
+		this.data = data;
+	}
+
+	@Override
+	public InputStream onCreateInputStream() {
+		return new BufferedInputStream(new ByteArrayInputStream(data), ImageLoaderUtils.BUFFER_SIZE);
+	}
 }

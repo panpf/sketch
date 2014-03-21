@@ -20,12 +20,12 @@ import me.xiaopan.android.imageloader.display.BitmapDisplayer.BitmapType;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
-public class BitmapDisplayRunnable implements Runnable {
+public class DisplayRunnable implements Runnable {
 	private DisplayRequest displayRequest;
 	private BitmapType bitmapType;
 	private BitmapDrawable bitmapDrawable;
 
-	public BitmapDisplayRunnable(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, BitmapType bitmapType) {
+	public DisplayRunnable(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, BitmapType bitmapType) {
 		this.displayRequest = displayRequest;
 		this.bitmapDrawable = bitmapDrawable;
 		this.bitmapType = bitmapType;

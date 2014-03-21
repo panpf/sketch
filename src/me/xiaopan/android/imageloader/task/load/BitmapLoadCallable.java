@@ -19,13 +19,13 @@ package me.xiaopan.android.imageloader.task.load;
 import java.util.concurrent.Callable;
 
 import android.graphics.Bitmap;
-import me.xiaopan.android.imageloader.decode.InputStreamCreator;
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 
 public class BitmapLoadCallable implements Callable<Object> {
 	protected LoadRequest loadRequest;
-    private InputStreamCreator inputStreamCreator;
+    private BitmapDecoder.InputStreamCreator inputStreamCreator;
 	
-	public BitmapLoadCallable(LoadRequest displayRequest, InputStreamCreator inputStreamCreator) {
+	public BitmapLoadCallable(LoadRequest displayRequest, BitmapDecoder.InputStreamCreator inputStreamCreator) {
 		this.loadRequest = displayRequest;
         this.inputStreamCreator = inputStreamCreator;
 	}

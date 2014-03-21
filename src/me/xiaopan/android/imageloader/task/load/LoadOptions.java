@@ -28,45 +28,23 @@ import android.widget.ImageView.ScaleType;
  * 显示选项
  */
 public class LoadOptions extends DownloadOptions{
-	private Context context;	//上下文
-	private ImageSize maxImageSize;	//最大图片尺寸
     private ScaleType scaleType;
 	private BitmapProcessor bitmapProcessor;	//位图处理器
 	
-	public LoadOptions(Context context) {
-		this.context = context;
-		setMaxImageSize(new ImageSize(context.getResources().getDisplayMetrics().widthPixels, context.getResources().getDisplayMetrics().heightPixels));
-	}
-
-    public Context getContext() {
-        return context;
-    }
-
-    public ImageSize getMaxImageSize() {
-		return maxImageSize;
-	}
-
-	public LoadOptions setMaxImageSize(ImageSize maxImageSize) {
-		this.maxImageSize = maxImageSize;
-		return this;
-	}
-
     public ScaleType getScaleType() {
         return scaleType;
     }
 
-    public LoadOptions setScaleType(ScaleType scaleType) {
+    public void setScaleType(ScaleType scaleType) {
         this.scaleType = scaleType;
-        return this;
     }
 	
 	public BitmapProcessor getBitmapProcessor() {
 		return bitmapProcessor;
 	}
 
-	public LoadOptions setBitmapProcessor(BitmapProcessor bitmapProcessor) {
+	public void setBitmapProcessor(BitmapProcessor bitmapProcessor) {
 		this.bitmapProcessor = bitmapProcessor;
-		return this;
 	}
 
 	/**
@@ -74,15 +52,12 @@ public class LoadOptions extends DownloadOptions{
 	 * @return
 	 */
 	public LoadOptions copy(){
-		LoadOptions loadOptions = new LoadOptions(context);
-		
-		loadOptions.setMaxRetryCount(getMaxRetryCount())
-		.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
-		.setEnableDiskCache(isEnableDiskCache());
-		
-		loadOptions.setBitmapProcessor(bitmapProcessor != null ? bitmapProcessor.copy() : null)
-        .setScaleType(scaleType)
-		.setMaxImageSize(maxImageSize != null?maxImageSize.copy():null);
+		LoadOptions loadOptions = new LoadOptions();
+		loadOptions.setMaxRetryCount(getMaxRetryCount());
+        loadOptions.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity());
+        loadOptions.setEnableDiskCache(isEnableDiskCache());
+		loadOptions.setBitmapProcessor(bitmapProcessor != null ? bitmapProcessor.copy() : null);
+        loadOptions.setScaleType(scaleType);
 		return loadOptions;
 	}
 }

@@ -29,7 +29,7 @@ public class BitmapLoadTask extends Task {
 	
 	@Override
 	protected void done() {
-		if(isCancelled()){
+        if(isCancelled()){
 			if(loadRequest.getLoadListener() != null){
 				loadRequest.getLoadListener().onCancel();
 			}
