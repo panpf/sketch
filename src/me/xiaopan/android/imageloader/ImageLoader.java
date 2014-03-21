@@ -82,7 +82,7 @@ public class ImageLoader{
 		}
 
 		//初始化一下
-		if(displayListener != null) displayListener.onStarted(uri, imageView);
+		if(displayListener != null) displayListener.onStart();
 		if(displayOptions == null){
 			displayOptions = new DisplayOptions(configuration.getContext());
 		}
@@ -91,7 +91,7 @@ public class ImageLoader{
 		if(ImageLoaderUtils.isEmpty(uri)){
 			imageView.setImageDrawable(displayOptions.getEmptyDrawable());
 			if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("uri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
-			if(displayListener != null) displayListener.onFailed(uri, imageView);
+			if(displayListener != null) displayListener.onFailure();
 			return;
 		}
 		
@@ -100,7 +100,7 @@ public class ImageLoader{
 		if(scheme == Scheme.UNKNOWN){
 			imageView.setImageDrawable(displayOptions.getFailureDrawable());
 			if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(uri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
-			if(displayListener != null) displayListener.onFailed(uri, imageView);
+			if(displayListener != null) displayListener.onFailure();
 			return;
 		}
 		

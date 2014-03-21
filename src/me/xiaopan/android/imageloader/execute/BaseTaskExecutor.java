@@ -28,12 +28,7 @@ import me.xiaopan.android.imageloader.decode.ContentInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.DrawableInputStreamCreator;
 import me.xiaopan.android.imageloader.decode.FileInputStreamCreator;
 import me.xiaopan.android.imageloader.task.TaskRequest;
-import me.xiaopan.android.imageloader.task.display.AssetsBitmapDisplayTask;
-import me.xiaopan.android.imageloader.task.display.ContentBitmapDisplayTask;
-import me.xiaopan.android.imageloader.task.display.DisplayRequest;
-import me.xiaopan.android.imageloader.task.display.DrawableBitmapDisplayTask;
-import me.xiaopan.android.imageloader.task.display.FileBitmapDisplayTask;
-import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
+import me.xiaopan.android.imageloader.task.display.*;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.task.download.DownloadTask;
 import me.xiaopan.android.imageloader.task.load.BitmapLoadCallable;
@@ -94,12 +89,12 @@ public class BaseTaskExecutor implements TaskExecutor {
 		File cacheFile = downloadRequest.getConfiguration().getBitmapCacher().getCacheFile(downloadRequest);
 		downloadRequest.setCacheFile(cacheFile);
 		if(cacheFile != null && cacheFile.exists()){
-			localTaskExecutor.execute(new DownloadTask((DownloadRequest) downloadRequest));
+			localTaskExecutor.execute(new DownloadTask(downloadRequest));
 			if(downloadRequest.getConfiguration().isDebugMode()){
 				Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DOWNLOAD - 本地").append("；").append(downloadRequest.getName()).toString());
 			}
 		}else{
-			netTaskExecutor.execute(new DownloadTask((DownloadRequest) downloadRequest));
+			netTaskExecutor.execute(new DownloadTask(downloadRequest));
 			if(downloadRequest.getConfiguration().isDebugMode()){
 				Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DOWNLOAD - 网络").append("；").append(downloadRequest.getName()).toString());
 			}
@@ -123,7 +118,7 @@ public class BaseTaskExecutor implements TaskExecutor {
                         Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP").append(" - ").append("本地").append("；").append(loadRequest.getName()).toString());
                     }
                 }else{
-                    execute(DownloadRequest.valueOf(loadRequest, new LoadDownloadListener(localTaskExecutor, loadRequest)));
+                    netTaskExecutor.execute(new DownloadTask(loadRequest.setDownloadListener(new LoadDownloadListener(localTaskExecutor, loadRequest))));
                 }
 				break;
 			case FILE :
@@ -157,56 +152,6 @@ public class BaseTaskExecutor implements TaskExecutor {
 				break;
 		}
 	}
-
-    /**
-     * 执行显示请求
-     * @param displayRequest 显示请求
-     */
-    private void newExecuteDisplayRequest(DisplayRequest displayRequest){
-        Scheme scheme = Scheme.ofUri(displayRequest.getUri());
-        switch(scheme){
-            case HTTP :
-            case HTTPS :
-                File cacheFile = displayRequest.getConfiguration().getBitmapCacher().getCacheFile(displayRequest);
-                displayRequest.setCacheFile(cacheFile);
-                boolean local = cacheFile != null && cacheFile.exists();
-                if(local){
-                    localTaskExecutor.execute(new FileBitmapDisplayTask(displayRequest));
-                }else{
-                    netTaskExecutor.execute(new HttpBitmapDisplayTask(displayRequest));
-                }
-                if(displayRequest.getConfiguration().isDebugMode()){
-                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP").append(" - ").append(local?"本地":"网络").append("；").append(displayRequest.getName()).toString());
-                }
-                break;
-            case FILE :
-                localTaskExecutor.execute(new FileBitmapDisplayTask(displayRequest));
-                if(displayRequest.getConfiguration().isDebugMode()){
-                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("FILE").append("；").append(displayRequest.getName()).toString());
-                }
-                break;
-            case ASSETS :
-                localTaskExecutor.execute(new AssetsBitmapDisplayTask(displayRequest));
-                if(displayRequest.getConfiguration().isDebugMode()){
-                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("ASSETS").append("；").append(displayRequest.getName()).toString());
-                }
-                break;
-            case CONTENT :
-                localTaskExecutor.execute(new ContentBitmapDisplayTask(displayRequest));
-                if(displayRequest.getConfiguration().isDebugMode()){
-                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("CONTENT").append("；").append(displayRequest.getName()).toString());
-                }
-                break;
-            case DRAWABLE :
-                localTaskExecutor.execute(new DrawableBitmapDisplayTask(displayRequest));
-                if(displayRequest.getConfiguration().isDebugMode()){
-                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DRAWABLE").append("；").append(displayRequest.getName()).toString());
-                }
-                break;
-            default:
-                break;
-        }
-    }
 	
 	/**
 	 * 执行显示请求
@@ -226,7 +171,7 @@ public class BaseTaskExecutor implements TaskExecutor {
                     netTaskExecutor.execute(new HttpBitmapDisplayTask(displayRequest));
                 }
                 if(displayRequest.getConfiguration().isDebugMode()){
-                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP").append(" - ").append(local?"本地":"网络").append("；").append(displayRequest.getName()).toString());
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP").append(" - ").append(local ? "本地" : "网络").append("；").append(displayRequest.getName()).toString());
                 }
 				break;
 			case FILE : 
@@ -257,4 +202,12 @@ public class BaseTaskExecutor implements TaskExecutor {
 				break;
 		}
 	}
+
+    /**
+     * 执行显示请求
+     * @param displayRequest 显示请求
+     */
+    private void newExecuteDisplayRequest(DisplayRequest displayRequest){
+        executeLoadRequest(displayRequest.setLoadListener(new DisplayLoadListener(displayRequest)));
+    }
 }

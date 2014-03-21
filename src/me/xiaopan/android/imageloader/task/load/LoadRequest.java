@@ -18,13 +18,16 @@ package me.xiaopan.android.imageloader.task.load;
 
 import android.widget.ImageView;
 import me.xiaopan.android.imageloader.task.TaskRequest;
+import me.xiaopan.android.imageloader.task.display.DisplayLoadListener;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
+import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 
 /**
  * 加载请求
  */
-public class LoadRequest extends TaskRequest{
+public class LoadRequest extends DownloadRequest{
 	private ImageSize targetSize;	//目标尺寸
 	private LoadListener loadListener;	//监听器
 	private LoadOptions loadOptions;	//显示选项
@@ -61,8 +64,9 @@ public class LoadRequest extends TaskRequest{
 	 * 设置加载监听器
 	 * @param loadListener
 	 */
-	public void setLoadListener(LoadListener loadListener) {
+	public LoadRequest setLoadListener(LoadListener loadListener) {
 		this.loadListener = loadListener;
+        return this;
 	}
 	
 	/**
@@ -74,21 +78,12 @@ public class LoadRequest extends TaskRequest{
 	}
 
 	/**
-	 * 设置加载选项
+	 * 设置加载选项，同时也设置下载选项
 	 * @param loadOptions
 	 */
 	public void setLoadOptions(LoadOptions loadOptions) {
 		this.loadOptions = loadOptions;
-	}
-
-	@Override
-	public boolean isEnableDiskCache() {
-		return loadOptions != null?loadOptions.isEnableDiskCache():false;
-	}
-
-	@Override
-	public int getDiskCachePeriodOfValidity() {
-		return loadOptions != null?loadOptions.getDiskCachePeriodOfValidity():0;
+        setDownloadOptions(loadOptions);
 	}
 
     public ImageView.ScaleType getScaleType() {
@@ -100,8 +95,8 @@ public class LoadRequest extends TaskRequest{
 	 */
 	public interface LoadListener {
 		public void onStart();
-		public void onFailure();
 		public void onComplete(Bitmap bitmap);
+        public void onFailure();
 		public void onCancel();
 	}
 }

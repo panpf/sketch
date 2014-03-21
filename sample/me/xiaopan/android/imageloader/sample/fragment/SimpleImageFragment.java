@@ -28,12 +28,12 @@ public class SimpleImageFragment extends Fragment {
 			final ProgressBar progressBar1 = (ProgressBar) rootView.findViewById(R.id.progress_simpleImage_1);
 			ImageLoader.getInstance(getActivity()).display(uri, (ImageView) rootView.findViewById(R.id.image_simpleImage_1), DisplayOptionsType.SIMPLE, new DisplayListener() {
 				@Override
-				public void onStarted(String imageUri, ImageView imageView) {
+				public void onStart() {
 					progressBar1.setVisibility(View.VISIBLE);
 				}
 				
 				@Override
-				public void onFailed(String imageUri, ImageView imageView) {
+				public void onFailure() {
 					progressBar1.setVisibility(View.GONE);
 				}
 				
@@ -43,19 +43,19 @@ public class SimpleImageFragment extends Fragment {
 				}
 				
 				@Override
-				public void onCancelled(String imageUri, ImageView imageView) {
+				public void onCancel() {
 				}
 			});
 			
 			final ProgressBar progressBar2 = (ProgressBar) rootView.findViewById(R.id.progress_simpleImage_2);
 			ImageLoader.getInstance(getActivity()).display(uri, (ImageView) rootView.findViewById(R.id.image_simpleImage_2), DisplayOptionsType.SIMPLE, new DisplayListener() {
 				@Override
-				public void onStarted(String imageUri, ImageView imageView) {
+				public void onStart() {
 					progressBar2.setVisibility(View.VISIBLE);
 				}
 				
 				@Override
-				public void onFailed(String imageUri, ImageView imageView) {
+				public void onFailure() {
 					progressBar2.setVisibility(View.GONE);
 				}
 				
@@ -65,7 +65,7 @@ public class SimpleImageFragment extends Fragment {
 				}
 				
 				@Override
-				public void onCancelled(String imageUri, ImageView imageView) {
+				public void onCancel() {
 				}
 			});
 			return rootView;

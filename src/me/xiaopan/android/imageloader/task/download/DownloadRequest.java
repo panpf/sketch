@@ -28,8 +28,9 @@ public class DownloadRequest extends TaskRequest{
 		return downloadListener;
 	}
 	
-	public void setDownloadListener(DownloadListener downloadListener) {
+	public DownloadRequest setDownloadListener(DownloadListener downloadListener) {
 		this.downloadListener = downloadListener;
+        return this;
 	}
 
 	@Override
@@ -40,16 +41,6 @@ public class DownloadRequest extends TaskRequest{
 	@Override
 	public int getDiskCachePeriodOfValidity() {
 		return downloadOptions != null?downloadOptions.getDiskCachePeriodOfValidity():0;
-	}
-	
-	public static final DownloadRequest valueOf(LoadRequest loadRequest, DownloadListener downloadListener){
-		DownloadRequest downloadRequest = new DownloadRequest(loadRequest.getUri());
-		downloadRequest.setCacheFile(loadRequest.getCacheFile());
-		downloadRequest.setConfiguration(loadRequest.getConfiguration());
-		downloadRequest.setDownloadListener(downloadListener);
-		downloadRequest.setDownloadOptions(DownloadOptions.valueOf(loadRequest.getLoadOptions()));
-		downloadRequest.setName(loadRequest.getUri());
-		return downloadRequest;
 	}
 	
 	/**

@@ -34,16 +34,4 @@ public class DownloadOptions extends TaskOptions{
 		.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
 		.setEnableDiskCache(isEnableDiskCache());
 	}
-	
-	public static final DownloadOptions valueOf(LoadOptions loadOptions){
-		if(loadOptions != null){
-			DownloadOptions downloadOptions = new DownloadOptions();
-			downloadOptions.setDiskCachePeriodOfValidity(loadOptions.getDiskCachePeriodOfValidity());
-			downloadOptions.setEnableDiskCache(loadOptions.isEnableDiskCache());
-			downloadOptions.setMaxRetryCount(loadOptions.getMaxRetryCount());
-			return downloadOptions;
-		}else{
-			return null;
-		}
-	}
 }

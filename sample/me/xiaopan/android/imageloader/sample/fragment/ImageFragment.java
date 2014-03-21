@@ -31,12 +31,12 @@ public class ImageFragment extends Fragment {
 			
 			ImageLoader.getInstance(getActivity()).display(uri, imageView, DisplayOptionsType.VIEW_PAGER, new DisplayListener() {
 				@Override
-				public void onStarted(String imageUri, ImageView imageView) {
+				public void onStart() {
 					progressBar.setVisibility(View.VISIBLE);
 				}
 				
 				@Override
-				public void onFailed(String imageUri, ImageView imageView) {
+				public void onFailure() {
 					progressBar.setVisibility(View.GONE);
 				}
 				
@@ -46,7 +46,7 @@ public class ImageFragment extends Fragment {
 				}
 				
 				@Override
-				public void onCancelled(String imageUri, ImageView imageView) {
+				public void onCancel() {
 				}
 			});
 			return rootView;

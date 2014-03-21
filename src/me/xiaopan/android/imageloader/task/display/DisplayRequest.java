@@ -78,19 +78,9 @@ public class DisplayRequest extends LoadRequest{
     }
 
     public interface DisplayListener {
-		public void onStarted(String imageUri, ImageView imageView);
-		public void onFailed(String imageUri, ImageView imageView);
-		public void onComplete(String imageUri, ImageView imageView, BitmapDrawable drawable);
-		public void onCancelled(String imageUri, ImageView imageView);
-	}
-
-	@Override
-	public boolean isEnableDiskCache() {
-		return displayOptions != null?displayOptions.isEnableDiskCache():false;
-	}
-
-	@Override
-	public int getDiskCachePeriodOfValidity() {
-		return displayOptions != null?displayOptions.getDiskCachePeriodOfValidity():0;
-	}
+        public void onStart();
+        public void onFailure();
+        public void onComplete(String imageUri, ImageView imageView, BitmapDrawable drawable);
+        public void onCancel();
+    }
 }

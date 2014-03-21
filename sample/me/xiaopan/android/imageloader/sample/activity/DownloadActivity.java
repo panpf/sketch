@@ -76,6 +76,11 @@ public class DownloadActivity extends Activity {
 					}
 				});
 			}
-		});
+
+            @Override
+            public void onCancel() {
+
+            }
+        });
 	}
 }

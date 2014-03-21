@@ -40,7 +40,7 @@ public class BitmapDisplayRunnable implements Runnable {
 				if(bitmapType == BitmapType.SUCCESS){
 					displayRequest.getDisplayListener().onComplete(displayRequest.getUri(), imageView, bitmapDrawable);
 				}else{
-					displayRequest.getDisplayListener().onFailed(displayRequest.getUri(), imageView);
+					displayRequest.getDisplayListener().onFailure();
 				}
 			}
 		}

@@ -59,7 +59,7 @@ public abstract class BitmapDisplayTask extends Task {
 					displayRequest.getConfiguration().getHandler().post(new Runnable() {
 						@Override
 						public void run() {
-							displayRequest.getDisplayListener().onCancelled(displayRequest.getUri(), displayRequest.getImageViewHolder().getImageView());
+							displayRequest.getDisplayListener().onCancel();
 						}
 					});
 				}
@@ -72,7 +72,7 @@ public abstract class BitmapDisplayTask extends Task {
 				displayRequest.getConfiguration().getHandler().post(new Runnable() {
 					@Override
 					public void run() {
-						displayRequest.getDisplayListener().onCancelled(displayRequest.getUri(), displayRequest.getImageViewHolder().getImageView());
+						displayRequest.getDisplayListener().onCancel();
 					}
 				});
 			}
@@ -112,7 +112,6 @@ public abstract class BitmapDisplayTask extends Task {
 
     /**
      * 取消显示请求
-     * @param imageLoader
      * @param imageView
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
      */

@@ -18,6 +18,8 @@ package me.xiaopan.android.imageloader.task.load;
 
 import me.xiaopan.android.imageloader.process.BitmapProcessor;
 import me.xiaopan.android.imageloader.task.TaskOptions;
+import me.xiaopan.android.imageloader.task.display.DisplayOptions;
+import me.xiaopan.android.imageloader.task.download.DownloadOptions;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.content.Context;
 import android.widget.ImageView.ScaleType;
@@ -25,7 +27,7 @@ import android.widget.ImageView.ScaleType;
 /**
  * 显示选项
  */
-public class LoadOptions extends TaskOptions{
+public class LoadOptions extends DownloadOptions{
 	private Context context;	//上下文
 	private ImageSize maxImageSize;	//最大图片尺寸
     private ScaleType scaleType;
