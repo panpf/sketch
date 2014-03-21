@@ -19,7 +19,7 @@ package me.xiaopan.android.imageloader.task.load;
 import me.xiaopan.android.imageloader.task.Task;
 import android.graphics.Bitmap;
 
-public abstract class BitmapLoadTask extends Task {
+public class BitmapLoadTask extends Task {
 	private LoadRequest loadRequest;
 	
 	public BitmapLoadTask(LoadRequest loadRequest, BitmapLoadCallable bitmapLoadCallable) {
@@ -29,24 +29,24 @@ public abstract class BitmapLoadTask extends Task {
 	
 	@Override
 	protected void done() {
-		if(!isCancelled()){
+		if(isCancelled()){
+			if(loadRequest.getLoadListener() != null){
+				loadRequest.getLoadListener().onCancel();
+			}
+		}else{
 			Bitmap bitmap = null;
 			try {
 				bitmap = (Bitmap) get();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 			if(loadRequest.getLoadListener() != null){
 				if(bitmap != null && !bitmap.isRecycled()){
 					loadRequest.getLoadListener().onComplete(bitmap);
 				}else{
 					loadRequest.getLoadListener().onFailure();
 				}
-			}
-		}else{
-			if(loadRequest.getLoadListener() != null){
-				loadRequest.getLoadListener().onCancel();
 			}
 		}
 	}

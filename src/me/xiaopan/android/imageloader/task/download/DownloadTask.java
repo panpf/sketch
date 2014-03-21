@@ -17,14 +17,18 @@ public class DownloadTask extends Task{
 	
 	@Override
 	protected void done() {
-		if(!isCancelled()){
+		if(isCancelled()){
+            if(downloadRequest.getDownloadListener() != null){
+                downloadRequest.getDownloadListener().onCancel();
+            }
+		}else{
 			Object result = null;
 			try {
 				result = get();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 			if(downloadRequest.getDownloadListener() != null){
 				if(result != null){
 					if(result.getClass().isAssignableFrom(File.class)){
@@ -33,9 +37,9 @@ public class DownloadTask extends Task{
 						downloadRequest.getDownloadListener().onComplete((byte[]) result);
 					}
 				}else{
-					downloadRequest.getDownloadListener().onFailed();
+					downloadRequest.getDownloadListener().onFailure();
 				}
 			}
-		}
+        }
 	}
 }

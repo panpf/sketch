@@ -24,7 +24,6 @@ import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 
 public abstract class BitmapDisplayCallable implements Callable<Object> {
 	protected DisplayRequest displayRequest;

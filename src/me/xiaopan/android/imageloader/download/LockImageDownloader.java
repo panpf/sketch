@@ -195,7 +195,7 @@ public class LockImageDownloader implements ImageDownloader {
 						onCompleteListener.onComplete(displayRequest.getCacheFile());
 					}else{
 						if(displayRequest.getConfiguration().isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - FILE").append("；").append(displayRequest.getName()).toString());
-						onCompleteListener.onFailed();
+						onCompleteListener.onFailure();
 					}
 				}
 				break;
@@ -206,14 +206,14 @@ public class LockImageDownloader implements ImageDownloader {
 						onCompleteListener.onComplete(data);
 					}else{
 						if(displayRequest.getConfiguration().isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - BYTE_ARRAY").append("；").append(displayRequest.getName()).toString());
-						onCompleteListener.onFailed();
+						onCompleteListener.onFailure();
 					}
 				}
 				break;
 			default : 
 				if(onCompleteListener != null){
 					if(displayRequest.getConfiguration().isDebugMode()) Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败").append("；").append(displayRequest.getName()).toString());
-					onCompleteListener.onFailed();
+					onCompleteListener.onFailure();
 				}
 				break;
 		}

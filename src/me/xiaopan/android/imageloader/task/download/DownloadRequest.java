@@ -83,6 +83,11 @@ public class DownloadRequest extends TaskRequest{
 		/**
 		 * 当下载失败
 		 */
-		public void onFailed();
+		public void onFailure();
+
+        /**
+         * 当下载取消
+         */
+        public void onCancel();
 	}
 }

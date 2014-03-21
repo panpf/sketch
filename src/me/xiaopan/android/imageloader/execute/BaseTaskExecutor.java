@@ -22,8 +22,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import android.net.Uri;
 import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.decode.AssetsInputStreamCreator;
+import me.xiaopan.android.imageloader.decode.ContentInputStreamCreator;
+import me.xiaopan.android.imageloader.decode.DrawableInputStreamCreator;
+import me.xiaopan.android.imageloader.decode.FileInputStreamCreator;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 import me.xiaopan.android.imageloader.task.display.AssetsBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.ContentBitmapDisplayTask;
@@ -32,9 +35,9 @@ import me.xiaopan.android.imageloader.task.display.DrawableBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.FileBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.display.HttpBitmapDisplayTask;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
-import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
 import me.xiaopan.android.imageloader.task.download.DownloadTask;
-import me.xiaopan.android.imageloader.task.load.FileBitmapLoadTask;
+import me.xiaopan.android.imageloader.task.load.BitmapLoadCallable;
+import me.xiaopan.android.imageloader.task.load.BitmapLoadTask;
 import me.xiaopan.android.imageloader.task.load.LoadDownloadListener;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import me.xiaopan.android.imageloader.util.Scheme;
@@ -73,7 +76,7 @@ public class BaseTaskExecutor implements TaskExecutor {
 			@Override
 			public void run() {
 				if(taskRequest instanceof DisplayRequest){
-                    executeDisplayRequest((DisplayRequest) taskRequest);
+                    newExecuteDisplayRequest((DisplayRequest) taskRequest);
                 }else if(taskRequest instanceof LoadRequest){
 					executeLoadRequest((LoadRequest) taskRequest);
 				}else if(taskRequest instanceof DownloadRequest){
@@ -115,26 +118,95 @@ public class BaseTaskExecutor implements TaskExecutor {
 				File cacheFile = loadRequest.getConfiguration().getBitmapCacher().getCacheFile(loadRequest);
                 loadRequest.setCacheFile(cacheFile);
                 if(cacheFile != null && cacheFile.exists()){
-                    localTaskExecutor.execute(new FileBitmapLoadTask(loadRequest));
+                    localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new FileInputStreamCreator(cacheFile))));
                     if(loadRequest.getConfiguration().isDebugMode()){
                         Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP").append(" - ").append("本地").append("；").append(loadRequest.getName()).toString());
                     }
                 }else{
-                    execute(DownloadRequest.valueOf(loadRequest, new LoadDownloadListener()));
+                    execute(DownloadRequest.valueOf(loadRequest, new LoadDownloadListener(localTaskExecutor, loadRequest)));
                 }
 				break;
-			case FILE : 
+			case FILE :
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new FileInputStreamCreator(new File(Scheme.FILE.crop(loadRequest.getUri()))))));
+                if(loadRequest.getConfiguration().isDebugMode()){
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("FILE").append("；").append(loadRequest.getName()).toString());
+                }
 				break;
-			case ASSETS : 
+			case ASSETS :
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new AssetsInputStreamCreator(loadRequest.getConfiguration().getContext(), Scheme.ASSETS.crop(loadRequest.getUri())))));
+                if(loadRequest.getConfiguration().isDebugMode()){
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("ASSETS").append("；").append(loadRequest.getName()).toString());
+                }
 				break;
-			case CONTENT : 
+			case CONTENT :
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ContentInputStreamCreator(loadRequest.getConfiguration().getContext(), loadRequest.getUri()))));
+                if(loadRequest.getConfiguration().isDebugMode()){
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("CONTENT").append("；").append(loadRequest.getName()).toString());
+                }
 				break;
-			case DRAWABLE : 
-				break;
+			case DRAWABLE :
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new DrawableInputStreamCreator(loadRequest.getConfiguration().getContext(), Scheme.DRAWABLE.crop(loadRequest.getUri())))));
+                if(loadRequest.getConfiguration().isDebugMode()){
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DRAWABLE").append("；").append(loadRequest.getName()).toString());
+                }
+                break;
 			default:
+                if(loadRequest.getConfiguration().isDebugMode()){
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("未知的协议格式").append("：").append(loadRequest.getUri()).toString());
+                }
 				break;
 		}
 	}
+
+    /**
+     * 执行显示请求
+     * @param displayRequest 显示请求
+     */
+    private void newExecuteDisplayRequest(DisplayRequest displayRequest){
+        Scheme scheme = Scheme.ofUri(displayRequest.getUri());
+        switch(scheme){
+            case HTTP :
+            case HTTPS :
+                File cacheFile = displayRequest.getConfiguration().getBitmapCacher().getCacheFile(displayRequest);
+                displayRequest.setCacheFile(cacheFile);
+                boolean local = cacheFile != null && cacheFile.exists();
+                if(local){
+                    localTaskExecutor.execute(new FileBitmapDisplayTask(displayRequest));
+                }else{
+                    netTaskExecutor.execute(new HttpBitmapDisplayTask(displayRequest));
+                }
+                if(displayRequest.getConfiguration().isDebugMode()){
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("HTTP").append(" - ").append(local?"本地":"网络").append("；").append(displayRequest.getName()).toString());
+                }
+                break;
+            case FILE :
+                localTaskExecutor.execute(new FileBitmapDisplayTask(displayRequest));
+                if(displayRequest.getConfiguration().isDebugMode()){
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("FILE").append("；").append(displayRequest.getName()).toString());
+                }
+                break;
+            case ASSETS :
+                localTaskExecutor.execute(new AssetsBitmapDisplayTask(displayRequest));
+                if(displayRequest.getConfiguration().isDebugMode()){
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("ASSETS").append("；").append(displayRequest.getName()).toString());
+                }
+                break;
+            case CONTENT :
+                localTaskExecutor.execute(new ContentBitmapDisplayTask(displayRequest));
+                if(displayRequest.getConfiguration().isDebugMode()){
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("CONTENT").append("；").append(displayRequest.getName()).toString());
+                }
+                break;
+            case DRAWABLE :
+                localTaskExecutor.execute(new DrawableBitmapDisplayTask(displayRequest));
+                if(displayRequest.getConfiguration().isDebugMode()){
+                    Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("DRAWABLE").append("；").append(displayRequest.getName()).toString());
+                }
+                break;
+            default:
+                break;
+        }
+    }
 	
 	/**
 	 * 执行显示请求

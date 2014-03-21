@@ -70,9 +70,14 @@ public class HttpBitmapDisplayTask extends  BitmapDisplayTask {
 	    	final NetInputStreamCreatorHolder holder = new NetInputStreamCreatorHolder();
 	    	displayRequest.getConfiguration().getImageDownloader().execute(displayRequest, new DownloadListener() {
 				@Override
-				public void onFailed() {}
-				
-				@Override
+				public void onFailure() {}
+
+                @Override
+                public void onCancel() {
+
+                }
+
+                @Override
 				public void onComplete(final byte[] data) {
 					holder.inputStreamCreator = new ByteArrayInputStreamCreator(data);
 				}

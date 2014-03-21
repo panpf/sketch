@@ -18,14 +18,16 @@ package me.xiaopan.android.imageloader.task.load;
 
 import java.util.concurrent.Callable;
 
-import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 import android.graphics.Bitmap;
+import me.xiaopan.android.imageloader.decode.InputStreamCreator;
 
-public abstract class BitmapLoadCallable implements Callable<Object> {
+public class BitmapLoadCallable implements Callable<Object> {
 	protected LoadRequest loadRequest;
+    private InputStreamCreator inputStreamCreator;
 	
-	public BitmapLoadCallable(LoadRequest displayRequest) {
+	public BitmapLoadCallable(LoadRequest displayRequest, InputStreamCreator inputStreamCreator) {
 		this.loadRequest = displayRequest;
+        this.inputStreamCreator = inputStreamCreator;
 	}
 
 	@Override
@@ -33,7 +35,6 @@ public abstract class BitmapLoadCallable implements Callable<Object> {
 		Bitmap bitmap = null;
 		try{
 			//解码
-			InputStreamCreator inputStreamCreator = getInputStreamCreator();
 			if(inputStreamCreator != null){
 				bitmap = loadRequest.getConfiguration().getBitmapDecoder().decode(loadRequest, inputStreamCreator);
 			}
@@ -47,12 +48,12 @@ public abstract class BitmapLoadCallable implements Callable<Object> {
 						bitmap = newBitmap;
 					}
 				}
-			}
+			}else{
+                bitmap = null;
+            }
 		}catch(Throwable throwable){
 			throwable.printStackTrace();
 		}
 		return bitmap;
 	}
-	
-	public abstract InputStreamCreator getInputStreamCreator();
 }

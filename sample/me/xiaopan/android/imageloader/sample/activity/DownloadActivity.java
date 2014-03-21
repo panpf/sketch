@@ -67,7 +67,7 @@ public class DownloadActivity extends Activity {
 			}
 			
 			@Override
-			public void onFailed() {
+			public void onFailure() {
 				runOnUiThread(new Runnable() {
 					@Override
 					public void run() {
