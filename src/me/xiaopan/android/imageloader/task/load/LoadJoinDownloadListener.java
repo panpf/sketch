@@ -22,17 +22,19 @@ public class LoadJoinDownloadListener implements DownloadListener {
 
 	@Override
 	public void onUpdateProgress(long totalLength, long completedLength) {
-
+        if(loadRequest.getLoadListener() != null){
+            loadRequest.getLoadListener().onUpdateProgress(totalLength, completedLength);
+        }
 	}
 
     @Override
     public void onComplete(File cacheFile) {
-        executor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new FileInputStreamCreator(cacheFile))));
+        executor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new CacheFileInputStreamCreator(cacheFile, loadRequest))));
     }
 
     @Override
     public void onComplete(byte[] data) {
-        executor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ByteArrayInputStreamCreator(data))));
+        executor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ByteArrayInputStreamCreator(data, loadRequest))));
     }
 
 	@Override

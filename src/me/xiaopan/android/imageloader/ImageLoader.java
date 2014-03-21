@@ -114,7 +114,6 @@ public class ImageLoader{
         //初始化请求
         LoadRequest loadRequest = new LoadRequest(uri);
         loadRequest.setLoadListener(loadListener);
-//        loadRequest.setTargetSize();
         loadRequest.setName(uri);
         loadRequest.setLoadOptions(loadOptions);
         loadRequest.setConfiguration(configuration);
@@ -176,9 +175,9 @@ public class ImageLoader{
             BitmapDrawable cacheDrawable = configuration.getBitmapCacher().get(displayRequest.getId());
             if(cacheDrawable != null){
                 imageView.setImageDrawable(cacheDrawable);
-                if(configuration.isDebugMode()){
-                    Log.i(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("显示成功 - 内存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
-                }
+//                if(configuration.isDebugMode()){
+//                    Log.i(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("显示成功 - 内存").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
+//                }
                 if(displayListener != null){
                     displayListener.onComplete(uri, imageView, cacheDrawable);
                 }

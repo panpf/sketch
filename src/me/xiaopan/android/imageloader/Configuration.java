@@ -23,8 +23,6 @@ import me.xiaopan.android.imageloader.cache.BitmapCacher;
 import me.xiaopan.android.imageloader.cache.BitmapLruCacher;
 import me.xiaopan.android.imageloader.decode.BaseBitmapDecoder;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
-import me.xiaopan.android.imageloader.download.ImageDownloader;
-import me.xiaopan.android.imageloader.download.LockImageDownloader;
 import me.xiaopan.android.imageloader.execute.BaseRequestExecutor;
 import me.xiaopan.android.imageloader.execute.RequestExecutor;
 import me.xiaopan.android.imageloader.task.display.DisplayOptions;
@@ -42,7 +40,6 @@ public class Configuration {
 	private RequestExecutor requestExecutor;	//请求执行器
 	private BitmapCacher bitmapCacher;	//位图缓存器
 	private BitmapDecoder bitmapDecoder;	//位图解码器
-	private ImageDownloader imageDownloader;	//图片下载器
 	private Map<Object, DisplayOptions> displayOptionsMap;	//显示选项集合
 	
 	public Configuration(Context context){
@@ -164,26 +161,6 @@ public class Configuration {
 	 */
 	public Configuration putDisplayOptions(Enum<?> optionsName, DisplayOptions displayOptions){
 		this.displayOptionsMap.put(optionsName, displayOptions);
-		return this;
-	}
-
-	/**
-	 * 获取图片下载器
-	 * @return
-	 */
-	public ImageDownloader getImageDownloader() {
-		if(imageDownloader == null){
-			imageDownloader = new LockImageDownloader();
-		}
-		return imageDownloader;
-	}
-
-	/**
-	 * 设置图片下载器
-	 * @param imageDownloader
-	 */
-	public Configuration setImageDownloader(ImageDownloader imageDownloader) {
-		this.imageDownloader = imageDownloader;
 		return this;
 	}
 }

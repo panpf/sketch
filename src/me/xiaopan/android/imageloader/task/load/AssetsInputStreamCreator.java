@@ -16,28 +16,52 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
+import me.xiaopan.android.imageloader.task.TaskRequest;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-import android.content.Context;
-import me.xiaopan.android.imageloader.decode.BitmapDecoder;
-
 public class AssetsInputStreamCreator implements BitmapDecoder.InputStreamCreator {
+    private static final String NAME = AssetsInputStreamCreator.class.getSimpleName();
 	private String assetsFilePath;
-	private Context context;
+    private TaskRequest taskRequest;
 	
-	public AssetsInputStreamCreator(Context context, String assetsFilePath) {
-		this.context = context;
+	public AssetsInputStreamCreator(String assetsFilePath, TaskRequest taskRequest) {
 		this.assetsFilePath = assetsFilePath;
+		this.taskRequest = taskRequest;
 	}
 
-	@Override
-	public InputStream onCreateInputStream() {
-		try{
-			return context.getAssets().open(assetsFilePath);
-		}catch(IOException e){
-			e.printStackTrace();
-			return null;
-		}
-	}
+    @Override
+    public Bitmap onDecode(BitmapFactory.Options options) {
+        InputStream inputStream = null;
+        try {
+            inputStream = taskRequest.getConfiguration().getContext().getAssets().open(assetsFilePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Bitmap bitmap = null;
+        if(inputStream != null){
+            bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+            ImageLoaderUtils.close(inputStream);
+        }
+        return bitmap;
+    }
+
+    @Override
+    public void onDecodeSuccess() {
+
+    }
+
+    @Override
+    public void onDecodeFailure() {
+        if(taskRequest.getConfiguration().isDebugMode()){
+            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(assetsFilePath).toString());
+        }
+    }
 }

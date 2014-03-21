@@ -27,6 +27,11 @@ public class DisplayJoinLoadListener implements LoadRequest.LoadListener{
     }
 
     @Override
+    public void onUpdateProgress(long totalLength, long completedLength) {
+
+    }
+
+    @Override
     public void onComplete(Bitmap bitmap) {
         //创建BitmapDrawable
         BitmapDrawable bitmapDrawable;

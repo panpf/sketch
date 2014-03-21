@@ -16,8 +16,8 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
-import me.xiaopan.android.imageloader.task.Task;
 import android.graphics.Bitmap;
+import me.xiaopan.android.imageloader.task.Task;
 
 public class BitmapLoadTask extends Task {
 	private LoadRequest loadRequest;

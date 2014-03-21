@@ -16,6 +16,7 @@
 
 package me.xiaopan.android.imageloader.decode;
 
+import android.graphics.BitmapFactory;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import android.graphics.Bitmap;
 
@@ -36,9 +37,20 @@ public interface BitmapDecoder{
 
     public interface InputStreamCreator {
         /**
-         * 创建新的用来读取位图的输入流，这个输入流必须是新的
+         * 解码
+         * @param options
          * @return
          */
-        public InputStream onCreateInputStream();
+        public Bitmap onDecode(BitmapFactory.Options options);
+
+        /**
+         * 解码成功
+         */
+        public void onDecodeSuccess();
+
+        /**
+         * 解码失败
+         */
+        public void onDecodeFailure();
     }
 }

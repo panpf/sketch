@@ -44,7 +44,7 @@ public class DownloadCallable implements Callable<Object>{
 	}
 
 	@Override
-	public Object call() throws Exception {
+	public Object call(){
 		ReentrantLock urlLock = getUrlLock(downloadRequest.getUri());
 		urlLock.lock();
 		Object result = download();
@@ -85,18 +85,34 @@ public class DownloadCallable implements Callable<Object>{
 					downloadRequest.getConfiguration().getBitmapCacher().setCacheFileLength(downloadRequest.getCacheFile(), fileLength);
 					bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(downloadRequest.getCacheFile(), false));
 					copy(bufferedfInputStream, bufferedOutputStream, fileLength);
-					result = downloadRequest.getCacheFile();
-					if(downloadRequest.getConfiguration().isDebugMode()){
-						Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - FILE").append("；").append(downloadRequest.getName()).toString());
-					}
+                    if(downloadRequest.getCacheFile().length() == fileLength){
+					    result = downloadRequest.getCacheFile();
+                        if(downloadRequest.getConfiguration().isDebugMode()){
+                            Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - FILE").append("；").append(downloadRequest.getName()).toString());
+                        }
+                    }else{
+                        downloadRequest.getCacheFile().delete();
+                        result = null;
+                        if(downloadRequest.getConfiguration().isDebugMode()){
+                            Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - FILE - 文件长度不匹配").append("；").append(downloadRequest.getName()).toString());
+                        }
+                    }
 				}else{
 					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 					bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
 					copy(bufferedfInputStream, bufferedOutputStream, fileLength);
-					result = byteArrayOutputStream.toByteArray();
-					if(downloadRequest.getConfiguration().isDebugMode()){
-						Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - BYTE_ARRAY").append("；").append(downloadRequest.getName()).toString());
-					}
+					byte[] data = byteArrayOutputStream.toByteArray();
+                    if(data.length == fileLength){
+                        result = data;
+                        if(downloadRequest.getConfiguration().isDebugMode()){
+                            Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - BYTE_ARRAY").append("；").append(downloadRequest.getName()).toString());
+                        }
+                    }else{
+                        result = null;
+                        if(downloadRequest.getConfiguration().isDebugMode()){
+                            Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载失败 - BYTE_ARRAY - 数据长度不匹配").append("；").append(downloadRequest.getName()).toString());
+                        }
+                    }
 				}
 				break;
 			} catch (Throwable e2) {
@@ -167,7 +183,7 @@ public class DownloadCallable implements Callable<Object>{
 		return urlLock;
 	}
 
-	private void copy(InputStream inputStream, OutputStream outputStream, long totalLength) throws IOException{
+	private long copy(InputStream inputStream, OutputStream outputStream, long totalLength) throws IOException{
 		int readNumber;	//读取到的字节的数量
 		long completedLength = 0;
 		byte[] cacheBytes = new byte[1024];//数据缓存区
@@ -178,5 +194,7 @@ public class DownloadCallable implements Callable<Object>{
 				downloadRequest.getDownloadListener().onUpdateProgress(totalLength, completedLength);
 			}
 		}
+        outputStream.flush();
+        return completedLength;
 	}
 }

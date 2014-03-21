@@ -16,32 +16,55 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
+import android.content.ContentResolver;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.util.Log;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
+import me.xiaopan.android.imageloader.task.TaskRequest;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
+
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.net.Uri;
-import me.xiaopan.android.imageloader.decode.BitmapDecoder;
-
 public class ContentInputStreamCreator implements BitmapDecoder.InputStreamCreator {
+    private static final String NAME = ContentInputStreamCreator.class.getSimpleName();
 	private String contentUri;
-	private Context context;
+	private TaskRequest taskRequest;
 	
-	public ContentInputStreamCreator(Context context, String contentUri) {
-		this.context = context;
+	public ContentInputStreamCreator(String contentUri, TaskRequest taskRequest) {
 		this.contentUri = contentUri;
+		this.taskRequest = taskRequest;
 	}
 
-	@Override
-	public InputStream onCreateInputStream() {
-		try{
-			ContentResolver res = context.getContentResolver();
-			Uri uri = Uri.parse(contentUri);
-			return res.openInputStream(uri);
-		}catch(FileNotFoundException e){
-			e.printStackTrace();
-			return null;
-		}
-	}
+    @Override
+    public Bitmap onDecode(BitmapFactory.Options options) {
+        InputStream inputStream = null;
+        try {
+            inputStream = taskRequest.getConfiguration().getContext().getContentResolver().openInputStream(Uri.parse(contentUri));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        Bitmap bitmap = null;
+        if(inputStream != null){
+            bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+            ImageLoaderUtils.close(inputStream);
+        }
+        return bitmap;
+    }
+
+    @Override
+    public void onDecodeSuccess() {
+
+    }
+
+    @Override
+    public void onDecodeFailure() {
+        if(taskRequest.getConfiguration().isDebugMode()){
+            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(contentUri).toString());
+        }
+    }
 }

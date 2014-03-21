@@ -16,30 +16,42 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
-import java.io.BufferedInputStream;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
+import me.xiaopan.android.imageloader.task.TaskRequest;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import me.xiaopan.android.imageloader.decode.BitmapDecoder;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-
 public class FileInputStreamCreator implements BitmapDecoder.InputStreamCreator {
+    private static final String NAME = FileInputStreamCreator.class.getSimpleName();
 	private File file;
+    private TaskRequest taskRequest;
 	
-	public FileInputStreamCreator(File file) {
+	public FileInputStreamCreator(File file, TaskRequest taskRequest) {
 		this.file = file;
+        this.taskRequest = taskRequest;
 	}
 
-	@Override
-	public InputStream onCreateInputStream() {
-		file.setLastModified(System.currentTimeMillis());
-		try {
-			return new BufferedInputStream(new FileInputStream(file), ImageLoaderUtils.BUFFER_SIZE);
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-			return null;
-		}
-	}
+    @Override
+    public Bitmap onDecode(BitmapFactory.Options options) {
+        return BitmapFactory.decodeFile(file.getPath(), options);
+    }
+
+    @Override
+    public void onDecodeSuccess() {
+
+    }
+
+    @Override
+    public void onDecodeFailure() {
+        if(taskRequest.getConfiguration().isDebugMode()){
+            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(file.getPath()).toString());
+        }
+    }
 }

@@ -17,47 +17,42 @@
 package me.xiaopan.android.imageloader.task.load;
 
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-public class DrawableInputStreamCreator implements BitmapDecoder.InputStreamCreator {
-    private static final String NAME = DrawableInputStreamCreator.class.getSimpleName();
-	private String drawableIdString;
+public class CacheFileInputStreamCreator implements BitmapDecoder.InputStreamCreator {
+    private static final String NAME = CacheFileInputStreamCreator.class.getSimpleName();
+	private File file;
     private TaskRequest taskRequest;
-	
-	public DrawableInputStreamCreator(String drawableIdString, TaskRequest taskRequest) {
-		this.drawableIdString = drawableIdString;
+
+	public CacheFileInputStreamCreator(File file, TaskRequest taskRequest) {
+		this.file = file;
         this.taskRequest = taskRequest;
 	}
 
     @Override
     public Bitmap onDecode(BitmapFactory.Options options) {
-//        BitmapDrawable drawable = (BitmapDrawable) taskRequest.getConfiguration().getContext().getResources().getDrawable(Integer.parseInt(drawableIdString));
-//        Bitmap bitmap = drawable.getBitmap();
-//        ByteArrayOutputStream os = new ByteArrayOutputStream();
-//        bitmap.compress(CompressFormat.PNG, 0, os);
-//        return new ByteArrayInputStream(os.toByteArray());
-        return BitmapFactory.decodeResource(taskRequest.getConfiguration().getContext().getResources(), Integer.valueOf(drawableIdString), options);
+        return BitmapFactory.decodeFile(file.getPath(), options);
     }
 
     @Override
     public void onDecodeSuccess() {
-
+        file.setLastModified(System.currentTimeMillis());
     }
 
     @Override
     public void onDecodeFailure() {
+//        file.delete();
         if(taskRequest.getConfiguration().isDebugMode()){
-            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(drawableIdString).toString());
+            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败，已删除缓存文件").append("：").append(file.getPath()).toString());
         }
     }
 }

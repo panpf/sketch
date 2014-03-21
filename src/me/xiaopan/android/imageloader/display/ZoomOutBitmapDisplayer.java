@@ -32,7 +32,7 @@ import android.widget.ImageView;
  * 由大到小位图显示器
  */
 public class ZoomOutBitmapDisplayer implements BitmapDisplayer {
-	private static final String NAME= ZoomOutBitmapDisplayer.class.getSimpleName();
+//	private static final String NAME= ZoomOutBitmapDisplayer.class.getSimpleName();
 	private int duration;
 
 	public ZoomOutBitmapDisplayer(int duration){
@@ -52,21 +52,21 @@ public class ZoomOutBitmapDisplayer implements BitmapDisplayer {
 				}else{
 					imageView.setImageDrawable(null);
 				}
-				if(displayRequest.getConfiguration().isDebugMode()){
-					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
-				}
+//				if(displayRequest.getConfiguration().isDebugMode()){
+//					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
+//				}
 				break;
 			case SUCCESS : 
 				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
 					fadeIn(imageView, bitmapDrawable);
-					if(displayRequest.getConfiguration().isDebugMode()){
-						Log.i(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
-					}
+//					if(displayRequest.getConfiguration().isDebugMode()){
+//						Log.i(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
+//					}
 				}else{
 					imageView.setImageDrawable(null);
-					if(displayRequest.getConfiguration().isDebugMode()){
-						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败 - SUCCESS").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
-					}
+//					if(displayRequest.getConfiguration().isDebugMode()){
+//						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败 - SUCCESS").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
+//					}
 				}
 				break;
 		}

@@ -304,14 +304,14 @@ public class ImageLoaderUtils {
 				try {
 					((OutputStream) closeable).flush();
 				} catch (IOException e) {
-					e.printStackTrace();
+//					e.printStackTrace();
 				}
 			}
 			
 			try {
 				closeable.close();
 			} catch (Exception e) {
-				e.printStackTrace();
+//				e.printStackTrace();
 			}
 		}
 	}

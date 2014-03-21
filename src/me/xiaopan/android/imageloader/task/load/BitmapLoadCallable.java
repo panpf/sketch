@@ -16,10 +16,10 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
-import java.util.concurrent.Callable;
-
 import android.graphics.Bitmap;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
+
+import java.util.concurrent.Callable;
 
 public class BitmapLoadCallable implements Callable<Object> {
 	protected LoadRequest loadRequest;
@@ -35,13 +35,12 @@ public class BitmapLoadCallable implements Callable<Object> {
 		Bitmap bitmap = null;
 		try{
 			//解码
-			if(inputStreamCreator != null){
-				bitmap = loadRequest.getConfiguration().getBitmapDecoder().decode(loadRequest, inputStreamCreator);
-			}
+            bitmap = loadRequest.getConfiguration().getBitmapDecoder().decode(loadRequest, inputStreamCreator);
 
 			//处理位图
 			if(bitmap != null && !bitmap.isRecycled()){
-				if(loadRequest.getLoadOptions().getBitmapProcessor() != null){
+                inputStreamCreator.onDecodeSuccess();
+                if(loadRequest.getLoadOptions().getBitmapProcessor() != null){
 					Bitmap newBitmap = loadRequest.getLoadOptions().getBitmapProcessor().process(bitmap, loadRequest.getScaleType(), loadRequest.getMaxImageSize());
 					if(newBitmap != bitmap){
 						bitmap.recycle();
@@ -49,6 +48,7 @@ public class BitmapLoadCallable implements Callable<Object> {
 					}
 				}
 			}else{
+                inputStreamCreator.onDecodeFailure();
                 bitmap = null;
             }
 		}catch(Throwable throwable){

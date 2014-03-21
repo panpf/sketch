@@ -16,22 +16,40 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
-import java.io.BufferedInputStream;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
+import me.xiaopan.android.imageloader.task.TaskRequest;
+
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
-import me.xiaopan.android.imageloader.decode.BitmapDecoder;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-
 public class ByteArrayInputStreamCreator implements BitmapDecoder.InputStreamCreator {
+    private static final String NAME = ByteArrayInputStreamCreator.class.getSimpleName();
 	private byte[] data;
+    private TaskRequest taskRequest;
 	
-	public ByteArrayInputStreamCreator(byte[] data) {
+	public ByteArrayInputStreamCreator(byte[] data, TaskRequest taskRequest) {
 		this.data = data;
+        this.taskRequest = taskRequest;
 	}
 
-	@Override
-	public InputStream onCreateInputStream() {
-		return new BufferedInputStream(new ByteArrayInputStream(data), ImageLoaderUtils.BUFFER_SIZE);
-	}
+    @Override
+    public Bitmap onDecode(BitmapFactory.Options options) {
+        return BitmapFactory.decodeByteArray(data, 0, data.length, options);
+    }
+
+    @Override
+    public void onDecodeSuccess() {
+
+    }
+
+    @Override
+    public void onDecodeFailure() {
+        if(taskRequest.getConfiguration().isDebugMode()){
+            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(taskRequest.getName()).toString());
+        }
+    }
 }

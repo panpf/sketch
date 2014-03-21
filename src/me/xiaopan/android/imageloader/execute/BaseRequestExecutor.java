@@ -23,18 +23,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.load.AssetsInputStreamCreator;
-import me.xiaopan.android.imageloader.task.load.ContentInputStreamCreator;
-import me.xiaopan.android.imageloader.task.load.DrawableInputStreamCreator;
-import me.xiaopan.android.imageloader.task.load.FileInputStreamCreator;
+import me.xiaopan.android.imageloader.task.load.*;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 import me.xiaopan.android.imageloader.task.display.*;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.task.download.DownloadTask;
-import me.xiaopan.android.imageloader.task.load.BitmapLoadCallable;
-import me.xiaopan.android.imageloader.task.load.BitmapLoadTask;
-import me.xiaopan.android.imageloader.task.load.LoadJoinDownloadListener;
-import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import me.xiaopan.android.imageloader.util.Scheme;
 import android.util.Log;
 
@@ -113,7 +106,7 @@ public class BaseRequestExecutor implements RequestExecutor {
 				File cacheFile = loadRequest.getConfiguration().getBitmapCacher().getCacheFile(loadRequest);
                 loadRequest.setCacheFile(cacheFile);
                 if(cacheFile != null && cacheFile.exists()){
-                    localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new FileInputStreamCreator(cacheFile))));
+                    localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new CacheFileInputStreamCreator(cacheFile, loadRequest))));
                     if(loadRequest.getConfiguration().isDebugMode()){
                         Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("LOAD - HTTP - 本地").append("；").append(loadRequest.getName()).toString());
                     }
@@ -125,25 +118,25 @@ public class BaseRequestExecutor implements RequestExecutor {
                 }
 				break;
 			case FILE :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new FileInputStreamCreator(new File(Scheme.FILE.crop(loadRequest.getUri()))))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new FileInputStreamCreator(new File(Scheme.FILE.crop(loadRequest.getUri())), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("LOAD - FILE").append("；").append(loadRequest.getName()).toString());
                 }
 				break;
 			case ASSETS :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new AssetsInputStreamCreator(loadRequest.getConfiguration().getContext(), Scheme.ASSETS.crop(loadRequest.getUri())))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new AssetsInputStreamCreator(Scheme.ASSETS.crop(loadRequest.getUri()), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("LOAD - ASSETS").append("；").append(loadRequest.getName()).toString());
                 }
 				break;
 			case CONTENT :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ContentInputStreamCreator(loadRequest.getConfiguration().getContext(), loadRequest.getUri()))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ContentInputStreamCreator(loadRequest.getUri(), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("LOAD - CONTENT").append("；").append(loadRequest.getName()).toString());
                 }
 				break;
 			case DRAWABLE :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new DrawableInputStreamCreator(loadRequest.getConfiguration().getContext(), Scheme.DRAWABLE.crop(loadRequest.getUri())))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new DrawableInputStreamCreator(Scheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("LOAD - DRAWABLE").append("；").append(loadRequest.getName()).toString());
                 }
