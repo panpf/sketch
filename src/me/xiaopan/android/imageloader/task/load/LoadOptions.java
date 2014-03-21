@@ -29,6 +29,7 @@ import android.widget.ImageView.ScaleType;
  */
 public class LoadOptions extends DownloadOptions{
     private ScaleType scaleType;
+    private ImageSize maxImageSize;	//最大图片尺寸
 	private BitmapProcessor bitmapProcessor;	//位图处理器
 	
     public ScaleType getScaleType() {
@@ -37,6 +38,14 @@ public class LoadOptions extends DownloadOptions{
 
     public void setScaleType(ScaleType scaleType) {
         this.scaleType = scaleType;
+    }
+
+    public ImageSize getMaxImageSize() {
+        return maxImageSize;
+    }
+
+    public void setMaxImageSize(ImageSize maxImageSize) {
+        this.maxImageSize = maxImageSize;
     }
 	
 	public BitmapProcessor getBitmapProcessor() {

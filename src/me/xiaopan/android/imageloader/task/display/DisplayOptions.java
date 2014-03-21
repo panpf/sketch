@@ -16,6 +16,7 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
+import android.util.DisplayMetrics;
 import me.xiaopan.android.imageloader.display.BitmapDisplayer;
 import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
 import me.xiaopan.android.imageloader.process.BitmapProcessor;
@@ -35,7 +36,6 @@ import android.widget.ImageView.ScaleType;
 public class DisplayOptions extends LoadOptions {
     private Context context;
 	private boolean enableMenoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-    private ImageSize maxImageSize;	//最大图片尺寸
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
 	private DrawableHolder emptyDrawableHolder;	//当uri为空时显示的图片
 	private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
@@ -47,6 +47,8 @@ public class DisplayOptions extends LoadOptions {
 		this.emptyDrawableHolder = new DrawableHolder();
 		this.loadingDrawableHolder = new DrawableHolder();
 		this.failureDrawableHolder = new DrawableHolder();
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        super.setMaxImageSize(new ImageSize(displayMetrics.widthPixels, displayMetrics.heightPixels));
 	}
 
 	/**
@@ -64,14 +66,6 @@ public class DisplayOptions extends LoadOptions {
 	public void setEnableMenoryCache(boolean enableMenoryCache) {
 		this.enableMenoryCache = enableMenoryCache;
 	}
-
-    public ImageSize getMaxImageSize() {
-		return maxImageSize;
-	}
-
-    public void setMaxImageSize(ImageSize maxImageSize) {
-        this.maxImageSize = maxImageSize;
-    }
 
 	/**
 	 * 获取加载地址为空时显示的图片
@@ -224,7 +218,7 @@ public class DisplayOptions extends LoadOptions {
         displayOptions.setEmptyDrawableResId(emptyDrawableHolder.getResId());
         displayOptions.setFailureDrawableResId(failureDrawableHolder.getResId());
         displayOptions.setLoadingDrawableResId(loadingDrawableHolder.getResId());
-        displayOptions.setMaxImageSize(getMaxImageSize() != null?getMaxImageSize().copy():null);
+        displayOptions.setMaxImageSize(getMaxImageSize() != null ? getMaxImageSize().copy() : null);
 		return displayOptions;
 	}
 	

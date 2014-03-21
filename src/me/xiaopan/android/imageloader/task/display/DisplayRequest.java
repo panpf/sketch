@@ -19,17 +19,19 @@ package me.xiaopan.android.imageloader.task.display;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
+import me.xiaopan.android.imageloader.util.ImageSize;
 
 /**
  * 显示请求
  */
 public class DisplayRequest extends LoadRequest{
 	private String id;	//ID
+    private ImageSize targetSize;	//目标尺寸
 	private DisplayListener displayListener;	//监听器
 	private DisplayOptions displayOptions;	//显示选项
 	private ImageViewHolder imageViewHolder;	//ImageView持有器
     private ImageView.ScaleType scaleType;  //缩放方式
-	
+
 	public DisplayRequest(String id, String uri) {
 		super(uri);
 		setId(id);
@@ -42,6 +44,14 @@ public class DisplayRequest extends LoadRequest{
 	public void setId(String id) {
 		this.id = id;
 	}
+
+    /**
+     * 设置目标尺寸
+     * @param targetSize 目标尺寸
+     */
+    public void setTargetSize(ImageSize targetSize) {
+        this.targetSize = targetSize;
+    }
 	
 	public DisplayListener getDisplayListener() {
 		return displayListener;
@@ -71,6 +81,11 @@ public class DisplayRequest extends LoadRequest{
     @Override
     public ImageView.ScaleType getScaleType() {
         return scaleType;
+    }
+
+    @Override
+    public ImageSize getMaxImageSize() {
+        return targetSize;
     }
 
     public void setScaleType(ImageView.ScaleType scaleType) {

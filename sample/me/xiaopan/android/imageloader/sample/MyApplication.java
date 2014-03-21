@@ -33,34 +33,34 @@ public class MyApplication extends Application {
 		
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().setDebugMode(true);
 		
-		DisplayOptions gridDisplayOptions = new DisplayOptions(getBaseContext())
-			.setLoadingDrawableResId(R.drawable.image_loading)
-			.setFailureDrawableResId(R.drawable.image_load_failure)
-			.setBitmapProcessor(new ReflectionBitmapProcessor());
+		DisplayOptions gridDisplayOptions = new DisplayOptions(getBaseContext());
+        gridDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
+        gridDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
+        gridDisplayOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putDisplayOptions(DisplayOptionsType.GRID_VIEW, gridDisplayOptions);
 
-		DisplayOptions viewPagerDisplayOptions = new DisplayOptions(getBaseContext())
-			.setFailureDrawableResId(R.drawable.image_load_failure)
-			.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
+		DisplayOptions viewPagerDisplayOptions = new DisplayOptions(getBaseContext());
+        viewPagerDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
+        viewPagerDisplayOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putDisplayOptions(DisplayOptionsType.VIEW_PAGER, viewPagerDisplayOptions);
 		
-		DisplayOptions listDisplayOptions = new DisplayOptions(getBaseContext())
-			.setLoadingDrawableResId(R.drawable.image_loading)
-			.setFailureDrawableResId(R.drawable.image_load_failure)
-			.setBitmapProcessor(new CircleBitmapProcessor());
+		DisplayOptions listDisplayOptions = new DisplayOptions(getBaseContext());
+        listDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
+        listDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
+        listDisplayOptions.setBitmapProcessor(new CircleBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putDisplayOptions(DisplayOptionsType.LIST_VIEW, listDisplayOptions);
 
-		DisplayOptions galleryDisplayOptions = new DisplayOptions(getBaseContext())
-			.setLoadingDrawableResId(R.drawable.image_loading)
-			.setFailureDrawableResId(R.drawable.image_load_failure)
-			.setBitmapProcessor(new RoundedCornerBitmapProcessor());
+		DisplayOptions galleryDisplayOptions = new DisplayOptions(getBaseContext());
+        galleryDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
+        galleryDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
+        galleryDisplayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putDisplayOptions(DisplayOptionsType.GALLERY, galleryDisplayOptions);
 		
-		DisplayOptions simpleDisplayOptions = new DisplayOptions(getBaseContext())
-			.setLoadingDrawableResId(R.drawable.image_loading)
-			.setFailureDrawableResId(R.drawable.image_load_failure)
-			.setEnableMenoryCache(false)
-			.setBitmapProcessor(null);
+		DisplayOptions simpleDisplayOptions = new DisplayOptions(getBaseContext());
+        simpleDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
+        simpleDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
+        simpleDisplayOptions.setEnableMenoryCache(false);
+        simpleDisplayOptions.setBitmapProcessor(null);
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putDisplayOptions(DisplayOptionsType.SIMPLE, simpleDisplayOptions);
 	}
 }

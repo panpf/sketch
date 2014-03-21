@@ -25,28 +25,11 @@ import android.graphics.Bitmap;
  * 加载请求
  */
 public class LoadRequest extends DownloadRequest{
-	private ImageSize targetSize;	//目标尺寸
 	private LoadListener loadListener;	//监听器
 	private LoadOptions loadOptions;	//显示选项
 	
 	public LoadRequest(String uri) {
 		super(uri);
-	}
-	
-	/**
-	 * 获取目标尺寸
-	 * @return 目标尺寸
-	 */
-	public ImageSize getTargetSize() {
-		return targetSize;
-	}
-
-	/**
-	 * 设置目标尺寸
-	 * @param targetSize 目标尺寸
-	 */
-	public void setTargetSize(ImageSize targetSize) {
-		this.targetSize = targetSize;
 	}
 
 	/**
@@ -89,6 +72,10 @@ public class LoadRequest extends DownloadRequest{
      */
     public ImageView.ScaleType getScaleType() {
         return loadOptions != null?loadOptions.getScaleType(): ImageView.ScaleType.CENTER_CROP;
+    }
+
+    public ImageSize getMaxImageSize() {
+        return loadOptions != null?loadOptions.getMaxImageSize():null;
     }
 
 	/**

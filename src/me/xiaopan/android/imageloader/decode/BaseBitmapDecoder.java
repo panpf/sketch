@@ -51,7 +51,7 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 			if(inputStream != null){
 				outWidth = options.outWidth;
 				outHeight = options.outHeight;
-				options.inSampleSize = calculateInSampleSize(options, loadRequest.getTargetSize().getWidth(), loadRequest.getTargetSize().getHeight());
+				options.inSampleSize = calculateInSampleSize(options, loadRequest.getMaxImageSize().getWidth(), loadRequest.getMaxImageSize().getHeight());
 				options.inJustDecodeBounds = false;
 //				if (ImageLoaderUtils.hasHoneycomb()) {
 //			        addInBitmapOptions(loadRequest, options);
@@ -103,7 +103,7 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 		StringBuffer stringBuffer = new StringBuffer(NAME)
 		.append("：").append(success?"解码成功":"解码失败")
 		.append("；").append("原图尺寸").append("=").append(outWidth).append("x").append(outHeight)
-		.append("；").append("目标尺寸").append("=").append(loadRequest.getTargetSize().getWidth()).append("x").append(loadRequest.getTargetSize().getHeight())
+		.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxImageSize().getWidth()).append("x").append(loadRequest.getMaxImageSize().getHeight())
 		.append("；").append("缩小").append("=").append(inSimpleSize);
 		if(bitmap != null){
 			stringBuffer.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
