@@ -16,17 +16,11 @@
 
 package me.xiaopan.android.imageloader.process;
 
-import me.xiaopan.android.imageloader.util.ImageSize;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Canvas;
-import android.graphics.LinearGradient;
-import android.graphics.Matrix;
-import android.graphics.Paint;
+import android.graphics.*;
 import android.graphics.PorterDuff.Mode;
-import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader.TileMode;
 import android.widget.ImageView.ScaleType;
+import me.xiaopan.android.imageloader.util.ImageSize;
 
 /**
  * 倒影位图处理器
@@ -60,12 +54,6 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
 		if(bitmap == null){
 			return null;
 		}
-		if(scaleType == null){
-			scaleType = ScaleType.CENTER_CROP;
-		}
-		if(targetSize == null){
-			targetSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
-		}
 		return reflection(bitmap, reflectionSpacing, (int) (bitmap.getHeight()*reflectionScale));
 	}
 	
@@ -81,7 +69,7 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
 
 		/* 获取倒影图片，并创建一张宽度与原图相同，但高度等于原图的高度加上间距加上倒影的高度的图片，并创建画布。画布分为上中下三部分，上：是原图；中：是原图与倒影的间距；下：是倒影 */
 		Bitmap reflectionImage = reverseByVertical(bitmap);//
-		Bitmap bitmapWithReflection = Bitmap.createBitmap(width, height + reflectionSpacing + reflectionHeight, Config.ARGB_8888);
+		Bitmap bitmapWithReflection = Bitmap.createBitmap(width, height + reflectionSpacing + reflectionHeight, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(bitmapWithReflection);
 		
 		/* 将原图画到画布的上半部分，将倒影画到画布的下半部分，倒影与画布顶部的间距是原图的高度加上原图与倒影之间的间距 */

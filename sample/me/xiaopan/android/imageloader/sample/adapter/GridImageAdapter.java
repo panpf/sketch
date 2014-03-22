@@ -16,23 +16,18 @@
 
 package me.xiaopan.android.imageloader.sample.adapter;
 
-import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.sample.DisplayOptionsType;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Build;
-import android.util.Log;
-import android.view.Display;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
+import android.view.*;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.sample.DisplayOptionsType;
 
 public class GridImageAdapter extends BaseAdapter {
 	private Context context;

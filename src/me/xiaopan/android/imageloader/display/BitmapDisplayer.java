@@ -16,9 +16,9 @@
 
 package me.xiaopan.android.imageloader.display;
 
-import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 
 /**
  * 位图显示器

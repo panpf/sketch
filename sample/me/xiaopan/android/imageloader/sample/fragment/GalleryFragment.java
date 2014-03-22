@@ -16,8 +16,6 @@
 
 package me.xiaopan.android.imageloader.sample.fragment;
 
-import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.sample.adapter.GalleryImageAdapter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -27,6 +25,8 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.sample.adapter.GalleryImageAdapter;
 
 @SuppressWarnings("deprecation")
 public class GalleryFragment extends Fragment {

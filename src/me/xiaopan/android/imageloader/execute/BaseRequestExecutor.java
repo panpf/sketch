@@ -16,20 +16,21 @@
 
 package me.xiaopan.android.imageloader.execute;
 
+import android.util.Log;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.task.TaskRequest;
+import me.xiaopan.android.imageloader.task.display.DisplayJoinLoadListener;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
+import me.xiaopan.android.imageloader.task.download.DownloadRequest;
+import me.xiaopan.android.imageloader.task.download.DownloadTask;
+import me.xiaopan.android.imageloader.task.load.*;
+import me.xiaopan.android.imageloader.util.Scheme;
+
 import java.io.File;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
-
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.load.*;
-import me.xiaopan.android.imageloader.task.TaskRequest;
-import me.xiaopan.android.imageloader.task.display.*;
-import me.xiaopan.android.imageloader.task.download.DownloadRequest;
-import me.xiaopan.android.imageloader.task.download.DownloadTask;
-import me.xiaopan.android.imageloader.util.Scheme;
-import android.util.Log;
 
 /**
  * 基本的任务执行器

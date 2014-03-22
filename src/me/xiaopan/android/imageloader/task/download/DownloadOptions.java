@@ -17,7 +17,6 @@
 package me.xiaopan.android.imageloader.task.download;
 
 import me.xiaopan.android.imageloader.task.TaskOptions;
-import me.xiaopan.android.imageloader.task.load.LoadOptions;
 
 /**
  * 下载选项

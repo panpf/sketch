@@ -16,26 +16,24 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import android.util.DisplayMetrics;
-import me.xiaopan.android.imageloader.display.BitmapDisplayer;
-import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
-import me.xiaopan.android.imageloader.process.BitmapProcessor;
-import me.xiaopan.android.imageloader.task.TaskOptions;
-import me.xiaopan.android.imageloader.task.load.LoadOptions;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-import me.xiaopan.android.imageloader.util.ImageSize;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import android.util.DisplayMetrics;
 import android.widget.ImageView.ScaleType;
+import me.xiaopan.android.imageloader.display.BitmapDisplayer;
+import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
+import me.xiaopan.android.imageloader.process.BitmapProcessor;
+import me.xiaopan.android.imageloader.task.load.LoadOptions;
+import me.xiaopan.android.imageloader.util.ImageSize;
 
 /**
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
     private Context context;
-	private boolean enableMenoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+	private boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
 	private DrawableHolder emptyDrawableHolder;	//当uri为空时显示的图片
 	private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
@@ -53,33 +51,33 @@ public class DisplayOptions extends LoadOptions {
 
 	/**
 	 * 是否将Bitmap缓存到内存中
-	 * @return
+	 * @return true：会将解码得到的Bitmap缓存到内存中，并在显示的时候首先从内存中去取
 	 */
-	public boolean isEnableMenoryCache() {
-		return enableMenoryCache;
+	public boolean isEnableMemoryCache() {
+		return enableMemoryCache;
 	}
 
 	/**
 	 * 设置是否将Bitmap缓存到内存中
-	 * @param enableMenoryCache
+	 * @param enableMemoryCache true：会将解码得到的Bitmap缓存到内存中，并在显示的时候首先从内存中去取
 	 */
-	public void setEnableMenoryCache(boolean enableMenoryCache) {
-		this.enableMenoryCache = enableMenoryCache;
+	public void setEnableMemoryCache(boolean enableMemoryCache) {
+		this.enableMemoryCache = enableMemoryCache;
 	}
 
 	/**
-	 * 获取加载地址为空时显示的图片
-	 * @return
+	 * 获取加载地址为空时显示的图片，此图片是经过BitmapProcessor处理之后的
+	 * @return 当uri为null或空时显示的图片
 	 */
 	public BitmapDrawable getEmptyDrawable() {
 		if(emptyDrawableHolder.getDrawable() == null && emptyDrawableHolder.getResId() > 0){
-			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), emptyDrawableHolder.getResId()));
+			Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), emptyDrawableHolder.getResId());
 			if(bitmap != null){
 				if(getBitmapProcessor() != null){
 					Bitmap newBitmap = getBitmapProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
 					if(newBitmap != bitmap){
 						bitmap.recycle();
-						bitmap = newBitmap;
+                        bitmap = newBitmap;
 					}
 				}
 				emptyDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
@@ -89,8 +87,8 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 设置加载地址为空时显示的图片
-	 * @param resId
+	 * 设置加载地址为空时显示的图片的资源ID，此图片在通过get方法返回之前会经过BitmapProcessor处理
+	 * @param resId 当uri为null或空是显示的图片的资源ID
 	 */
 	public void setEmptyDrawableResId(int resId) {
 		emptyDrawableHolder.setResId(resId);
@@ -103,19 +101,19 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 获取加载中图片
-	 * @return
+	 * 获取加载中图片，此图片是经过BitmapProcessor处理之后的
+	 * @return 正在加载时显示的图片
 	 */
 	public BitmapDrawable getLoadingDrawable() {
 		if(loadingDrawableHolder.getDrawable() == null && loadingDrawableHolder.getResId() > 0){
-			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), loadingDrawableHolder.getResId()));
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), loadingDrawableHolder.getResId());
 			if(bitmap != null){
 				if(getBitmapProcessor() != null){
 					Bitmap newBitmap = getBitmapProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
-					if(newBitmap != bitmap){
-						bitmap.recycle();
-						bitmap = newBitmap;
-					}
+                    if(newBitmap != bitmap){
+                        bitmap.recycle();
+                        bitmap = newBitmap;
+                    }
 				}
 				loadingDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
 			}
@@ -124,8 +122,8 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 设置加载中图片
-	 * @param resId
+	 * 设置加载中图片的资源ID，此图片在通过get方法返回之前会经过BitmapProcessor处理
+	 * @param resId 在加载时显示的图片的资源ID
 	 */
 	public void setLoadingDrawableResId(int resId) {
 		loadingDrawableHolder.setResId(resId);
@@ -138,12 +136,12 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 获取加载失败图片
-	 * @return
+	 * 获取加载失败图片，此图片是经过BitmapProcessor处理之后的
+	 * @return 加载失败时显示的图片
 	 */
 	public BitmapDrawable getFailureDrawable() {
 		if(failureDrawableHolder.getDrawable() == null && failureDrawableHolder.getResId() > 0){
-			Bitmap bitmap = ImageLoaderUtils.bitmapCopy(BitmapFactory.decodeResource(context.getResources(), failureDrawableHolder.getResId()));
+			Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), failureDrawableHolder.getResId());
 			if(bitmap != null){
 				if(getBitmapProcessor() != null){
 					Bitmap newBitmap = getBitmapProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
@@ -159,8 +157,8 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 设置加载失败图片
-	 * @param resId
+	 * 设置加载失败图片的资源ID，此图片在通过get方法返回之前会经过BitmapProcessor处理
+	 * @param resId 在加载失败时显示的图片
 	 */
 	public void setFailureDrawableResId(int resId) {
 		failureDrawableHolder.setResId(resId);
@@ -171,22 +169,10 @@ public class DisplayOptions extends LoadOptions {
 			failureDrawableHolder.setDrawable(null);
 		}
 	}
-	
-	/**
-	 * 设置位图处理器
-	 * @param bitmapProcessor
-	 */
-    @Override
-	public void setBitmapProcessor(BitmapProcessor bitmapProcessor) {
-		super.setBitmapProcessor(bitmapProcessor);
-		emptyDrawableHolder.setDrawable(null);
-		loadingDrawableHolder.setDrawable(null);
-		failureDrawableHolder.setDrawable(null);
-	}
 
 	/**
 	 * 获取位图显示器
-	 * @return
+	 * @return 图片显示器，用来最后关头显示图片
 	 */
 	public BitmapDisplayer getBitmapDisplayer() {
 		if(bitmapDisplayer == null){
@@ -197,22 +183,30 @@ public class DisplayOptions extends LoadOptions {
 
 	/**
 	 * 设置位图显示器
-	 * @param bitmapDisplayer
+	 * @param bitmapDisplayer 图片显示器，用来最后关头显示图片
 	 */
 	public void setBitmapDisplayer(BitmapDisplayer bitmapDisplayer) {
 		this.bitmapDisplayer = bitmapDisplayer;
 	}
 
+    @Override
+    public void setBitmapProcessor(BitmapProcessor bitmapProcessor) {
+        super.setBitmapProcessor(bitmapProcessor);
+        emptyDrawableHolder.setDrawable(null);
+        loadingDrawableHolder.setDrawable(null);
+        failureDrawableHolder.setDrawable(null);
+    }
+
 	/**
 	 * 将当前的DisplayOptions拷贝一份
-	 * @return
+	 * @return DisplayOptions
 	 */
 	public DisplayOptions copy(){
 		DisplayOptions displayOptions = new DisplayOptions(context);
 		displayOptions.setMaxRetryCount(getMaxRetryCount());
         displayOptions.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity());
         displayOptions.setEnableDiskCache(isEnableDiskCache());
-		displayOptions.setEnableMenoryCache(enableMenoryCache);
+		displayOptions.setEnableMemoryCache(enableMemoryCache);
         displayOptions.setBitmapProcessor(getBitmapProcessor() != null?getBitmapProcessor().copy():null);
         displayOptions.setBitmapDisplayer(bitmapDisplayer != null?bitmapDisplayer.copy():null);
         displayOptions.setEmptyDrawableResId(emptyDrawableHolder.getResId());

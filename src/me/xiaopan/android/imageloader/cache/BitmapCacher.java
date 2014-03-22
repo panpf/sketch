@@ -16,14 +16,14 @@
 
 package me.xiaopan.android.imageloader.cache;
 
-import java.io.File;
-import java.io.IOException;
-
-import me.xiaopan.android.imageloader.task.TaskRequest;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
+import me.xiaopan.android.imageloader.task.TaskRequest;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * 位图缓存适配器

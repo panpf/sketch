@@ -16,9 +16,9 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import me.xiaopan.android.imageloader.display.BitmapDisplayer.BitmapType;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
+import me.xiaopan.android.imageloader.display.BitmapDisplayer.BitmapType;
 
 public class DisplayRunnable implements Runnable {
 	private DisplayRequest displayRequest;

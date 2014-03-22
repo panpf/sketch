@@ -16,9 +16,9 @@
 
 package me.xiaopan.android.imageloader.process;
 
-import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 import android.widget.ImageView.ScaleType;
+import me.xiaopan.android.imageloader.util.ImageSize;
 
 /**
  * 位图处理器

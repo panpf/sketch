@@ -16,9 +16,9 @@
 
 package me.xiaopan.android.imageloader.decode;
 
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
-import android.graphics.Bitmap;
 
 import java.io.IOException;
 

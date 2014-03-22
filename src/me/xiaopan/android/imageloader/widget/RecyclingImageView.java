@@ -16,12 +16,12 @@
 
 package me.xiaopan.android.imageloader.widget;
 
-import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
+import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 
 /**
  * Sub-class of ImageView which automatically notifies the drawable when it is

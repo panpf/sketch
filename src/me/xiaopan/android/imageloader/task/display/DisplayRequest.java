@@ -16,9 +16,10 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
+import me.xiaopan.android.imageloader.process.BitmapProcessor;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
 
 /**
@@ -90,6 +91,31 @@ public class DisplayRequest extends LoadRequest{
 
     public void setScaleType(ImageView.ScaleType scaleType) {
         this.scaleType = scaleType;
+    }
+
+    /**
+     * 创建ID
+     * @param uri
+     * @param targetSize
+     * @param bitmapProcessor
+     * @return
+     */
+    public static String createId(String uri, ImageSize targetSize, BitmapProcessor bitmapProcessor){
+        StringBuffer stringBuffer = new StringBuffer(uri);
+        if(targetSize != null){
+            stringBuffer.append("_");
+            stringBuffer.append(targetSize.getWidth());
+            stringBuffer.append("x");
+            stringBuffer.append(targetSize.getHeight());
+        }
+        if(bitmapProcessor != null){
+            String tag = bitmapProcessor.getTag();
+            if(tag != null){
+                stringBuffer.append("_");
+                stringBuffer.append(tag);
+            }
+        }
+        return stringBuffer.toString();
     }
 
     public interface DisplayListener {

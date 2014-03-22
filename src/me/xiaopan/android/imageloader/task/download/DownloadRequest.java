@@ -1,9 +1,8 @@
 package me.xiaopan.android.imageloader.task.download;
 
-import java.io.File;
-
 import me.xiaopan.android.imageloader.task.TaskRequest;
-import me.xiaopan.android.imageloader.task.load.LoadRequest;
+
+import java.io.File;
 
 /**
  * 下载请求

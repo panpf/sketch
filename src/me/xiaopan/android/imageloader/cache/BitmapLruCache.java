@@ -16,14 +16,6 @@
 
 package me.xiaopan.android.imageloader.cache;
 
-import java.lang.ref.SoftReference;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -31,54 +23,59 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.v4.util.LruCache;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
+import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
+
+import java.lang.ref.SoftReference;
+import java.util.Set;
 
 public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
 	private Set<SoftReference<Bitmap>> mReusableBitmaps;
-	
+
 	public BitmapLruCache(int maxSize) {
 		super(maxSize);
-		if (ImageLoaderUtils.hasHoneycomb()) {
-		    mReusableBitmaps = Collections.synchronizedSet(new HashSet<SoftReference<Bitmap>>());
-		}
+//		if (ImageLoaderUtils.hasHoneycomb()) {
+//		    mReusableBitmaps = Collections.synchronizedSet(new HashSet<SoftReference<Bitmap>>());
+//		}
 	}
 
 	@Override
 	protected int sizeOf(String key, BitmapDrawable value) {
-		final int bitmapSize = getBitmapSize(value); 
-		return bitmapSize == 0 ? 1 : bitmapSize;
+		final int bitmapSize = getBitmapSize(value);
+        return bitmapSize == 0 ? 1 : bitmapSize;
 	}
 	
     @Override
 	protected void entryRemoved(boolean evicted, String key, BitmapDrawable oldValue, BitmapDrawable newValue) {
-		if(RecyclingBitmapDrawable.class.isInstance(oldValue)){
+        if(RecyclingBitmapDrawable.class.isInstance(oldValue)){
 			((RecyclingBitmapDrawable) oldValue).setIsCached(false);
-		}else if(ImageLoaderUtils.hasHoneycomb()){
-			mReusableBitmaps.add(new SoftReference<Bitmap>(oldValue.getBitmap()));
+//		}else if(ImageLoaderUtils.hasHoneycomb()){
+//			mReusableBitmaps.add(new SoftReference<Bitmap>(oldValue.getBitmap()));
 		}
 	}
     
     /**
      * 获取可再度使用的Bitmap
-     * @param options
-     * @return
+     * @param options 解码选项，用于判定Bitmap是否可用
+     * @return 匹配的可用的Bitmap
      */
     public Bitmap getBitmapFromReusableSet(BitmapFactory.Options options){
     	Bitmap bitmap = null;
-    	if(mReusableBitmaps != null && !mReusableBitmaps.isEmpty()){
-    		Iterator<SoftReference<Bitmap>> bitmapIterator = mReusableBitmaps.iterator();
-    		Bitmap item;
-    		while(bitmapIterator.hasNext()){
-    			item = bitmapIterator.next().get();
-    			if(item != null && item.isMutable() && !item.isRecycled()){
-    				if(canUseForInBitmap(item, options)){
-    					bitmap = item;
-    					break;
-    				}
-    			}else{
-    				bitmapIterator.remove();
-    			}
-    		}
-    	}
+//    	if(mReusableBitmaps != null && !mReusableBitmaps.isEmpty()){
+//    		Iterator<SoftReference<Bitmap>> bitmapIterator = mReusableBitmaps.iterator();
+//    		Bitmap item;
+//    		while(bitmapIterator.hasNext()){
+//    			item = bitmapIterator.next().get();
+//    			if(item != null && item.isMutable() && !item.isRecycled()){
+//    				if(canUseForInBitmap(item, options)){
+//    					bitmap = item;
+//    					break;
+//    				}
+//    			}else{
+//    				bitmapIterator.remove();
+//    			}
+//    		}
+//    	}
     	return bitmap;
     }
     
@@ -100,12 +97,12 @@ public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
 
 	/**
      * Get the size in bytes of a bitmap in a BitmapDrawable.
-     * @param value
+     * @param bitmapDrawable 待计算大小的图片
      * @return size in bytes
      */
     @TargetApi(12)
-    public static int getBitmapSize(BitmapDrawable value) {
-        Bitmap bitmap = value.getBitmap();
+    public static int getBitmapSize(BitmapDrawable bitmapDrawable) {
+        Bitmap bitmap = bitmapDrawable.getBitmap();
         if (ImageLoaderUtils.hasHoneycombMR1()) {
             return bitmap.getByteCount();
         }else{

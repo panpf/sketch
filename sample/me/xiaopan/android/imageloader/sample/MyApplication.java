@@ -16,6 +16,7 @@
 
 package me.xiaopan.android.imageloader.sample;
 
+import android.app.Application;
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.display.ZoomOutBitmapDisplayer;
@@ -23,7 +24,6 @@ import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
 import me.xiaopan.android.imageloader.process.ReflectionBitmapProcessor;
 import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
 import me.xiaopan.android.imageloader.task.display.DisplayOptions;
-import android.app.Application;
 
 public class MyApplication extends Application {
 
@@ -37,30 +37,30 @@ public class MyApplication extends Application {
         gridDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
         gridDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
         gridDisplayOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
-		ImageLoader.getInstance(getBaseContext()).getConfiguration().putDisplayOptions(DisplayOptionsType.GRID_VIEW, gridDisplayOptions);
+		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GRID_VIEW, gridDisplayOptions);
 
 		DisplayOptions viewPagerDisplayOptions = new DisplayOptions(getBaseContext());
         viewPagerDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
         viewPagerDisplayOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
-		ImageLoader.getInstance(getBaseContext()).getConfiguration().putDisplayOptions(DisplayOptionsType.VIEW_PAGER, viewPagerDisplayOptions);
+		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.VIEW_PAGER, viewPagerDisplayOptions);
 		
 		DisplayOptions listDisplayOptions = new DisplayOptions(getBaseContext());
         listDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
         listDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
         listDisplayOptions.setBitmapProcessor(new CircleBitmapProcessor());
-		ImageLoader.getInstance(getBaseContext()).getConfiguration().putDisplayOptions(DisplayOptionsType.LIST_VIEW, listDisplayOptions);
+		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.LIST_VIEW, listDisplayOptions);
 
 		DisplayOptions galleryDisplayOptions = new DisplayOptions(getBaseContext());
         galleryDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
         galleryDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
         galleryDisplayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
-		ImageLoader.getInstance(getBaseContext()).getConfiguration().putDisplayOptions(DisplayOptionsType.GALLERY, galleryDisplayOptions);
+		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GALLERY, galleryDisplayOptions);
 		
 		DisplayOptions simpleDisplayOptions = new DisplayOptions(getBaseContext());
         simpleDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
         simpleDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
-        simpleDisplayOptions.setEnableMenoryCache(false);
+        simpleDisplayOptions.setEnableMemoryCache(false);
         simpleDisplayOptions.setBitmapProcessor(null);
-		ImageLoader.getInstance(getBaseContext()).getConfiguration().putDisplayOptions(DisplayOptionsType.SIMPLE, simpleDisplayOptions);
+		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.SIMPLE, simpleDisplayOptions);
 	}
 }

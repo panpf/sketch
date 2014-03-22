@@ -16,14 +16,12 @@
 
 package me.xiaopan.android.imageloader.display;
 
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.util.Log;
 import android.widget.ImageView;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 
 /**
  * 渐入位图显示器

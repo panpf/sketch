@@ -1,6 +1,5 @@
 package me.xiaopan.android.imageloader.sample.activity;
 
-import me.xiaopan.android.imageloader.sample.adapter.BlackStringAdapter;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,6 +7,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import me.xiaopan.android.imageloader.sample.adapter.BlackStringAdapter;
 
 public class MainActivity extends Activity {
 	private ListView listView;

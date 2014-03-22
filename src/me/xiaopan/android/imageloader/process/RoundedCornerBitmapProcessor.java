@@ -16,17 +16,10 @@
 
 package me.xiaopan.android.imageloader.process;
 
-import me.xiaopan.android.imageloader.util.ImageSize;
-import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
-import android.graphics.RectF;
+import android.graphics.*;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
+import me.xiaopan.android.imageloader.util.ImageSize;
 
 /**
  * 圆角位图处理器
@@ -182,7 +175,7 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
      * @return 新的圆角图片
 	 */
 	public Bitmap getRoundedCornerBitmap(Bitmap bitmap, int roundPixels, Rect srcRect, Rect destRect, int width, int height) {
-		Bitmap output = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+		Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(output);
 
 		final Paint paint = new Paint();

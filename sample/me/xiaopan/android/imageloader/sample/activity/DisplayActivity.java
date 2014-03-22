@@ -16,13 +16,6 @@
 
 package me.xiaopan.android.imageloader.sample.activity;
 
-import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.sample.adapter.StringAdapter;
-import me.xiaopan.android.imageloader.sample.fragment.GalleryFragment;
-import me.xiaopan.android.imageloader.sample.fragment.GridFragment;
-import me.xiaopan.android.imageloader.sample.fragment.ListFragment;
-import me.xiaopan.android.imageloader.sample.fragment.SimpleImageFragment;
-import me.xiaopan.android.imageloader.sample.fragment.ViewPagerFragment;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -42,6 +35,9 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.Toast;
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.sample.adapter.StringAdapter;
+import me.xiaopan.android.imageloader.sample.fragment.*;
 
 public class DisplayActivity extends FragmentActivity {
 	private static final int REQUEST_CODE_CONTENT = 11;

@@ -1,9 +1,5 @@
 package me.xiaopan.android.imageloader.sample.fragment;
 
-import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.sample.DisplayOptionsType;
-import me.xiaopan.android.imageloader.task.display.DisplayRequest.DisplayListener;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -12,6 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.sample.DisplayOptionsType;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest.DisplayListener;
 
 public class ImageFragment extends Fragment {
 	public static final String PARAM_REQUIRED_IMAGE_URI = "PARAM_REQUIRED_IMAGE_URI";

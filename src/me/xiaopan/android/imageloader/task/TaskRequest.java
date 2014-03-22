@@ -1,8 +1,8 @@
 package me.xiaopan.android.imageloader.task;
 
-import java.io.File;
-
 import me.xiaopan.android.imageloader.Configuration;
+
+import java.io.File;
 
 public abstract class TaskRequest {
 	private boolean canceled;	//是否已经取消

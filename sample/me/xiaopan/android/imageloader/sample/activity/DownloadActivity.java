@@ -1,19 +1,14 @@
 package me.xiaopan.android.imageloader.sample.activity;
 
-import java.io.File;
-
-import android.graphics.Bitmap;
-import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
 import android.app.Activity;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
 
 public class DownloadActivity extends Activity {
@@ -87,7 +82,7 @@ public class DownloadActivity extends Activity {
 //            }
 //        });
 
-        ImageLoader.getInstance(getBaseContext()).load(uri, null, new LoadRequest.LoadListener() {
+        ImageLoader.getInstance(getBaseContext()).load(uri, new LoadRequest.LoadListener() {
             @Override
              public void onStart() {
                 progressBar.setVisibility(View.VISIBLE);

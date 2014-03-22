@@ -16,13 +16,13 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import me.xiaopan.android.imageloader.util.ViewScaleType;
+
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
-
-import me.xiaopan.android.imageloader.util.ViewScaleType;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 
 /**
  * ImageView持有器，以弱引用的方式持有关联的ImageView

@@ -16,19 +16,19 @@
 
 package me.xiaopan.android.imageloader;
 
-import java.util.HashMap;
-import java.util.Map;
-
+import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 import me.xiaopan.android.imageloader.cache.BitmapCacher;
 import me.xiaopan.android.imageloader.cache.BitmapLruCacher;
 import me.xiaopan.android.imageloader.decode.BaseBitmapDecoder;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.execute.BaseRequestExecutor;
 import me.xiaopan.android.imageloader.execute.RequestExecutor;
-import me.xiaopan.android.imageloader.task.display.DisplayOptions;
-import android.content.Context;
-import android.os.Handler;
-import android.os.Looper;
+import me.xiaopan.android.imageloader.task.TaskOptions;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 配置
@@ -40,7 +40,7 @@ public class Configuration {
 	private RequestExecutor requestExecutor;	//请求执行器
 	private BitmapCacher bitmapCacher;	//位图缓存器
 	private BitmapDecoder bitmapDecoder;	//位图解码器
-	private Map<Object, DisplayOptions> displayOptionsMap;	//显示选项集合
+	private Map<Object, TaskOptions> optionsMap;	//显示选项集合
 	
 	public Configuration(Context context){
 		if(Looper.myLooper() != Looper.getMainLooper()){
@@ -49,7 +49,7 @@ public class Configuration {
 		
 		this.context = context;
 		this.handler = new Handler();
-		this.displayOptionsMap = new HashMap<Object, DisplayOptions>();
+		this.optionsMap = new HashMap<Object, TaskOptions>();
 	}
 	
 	/**
@@ -146,21 +146,21 @@ public class Configuration {
 	}
 	
 	/**
-	 * 获取显示选项
-	 * @param optionsName
+	 * 获取选项
+	 * @param optionsName 选项名称
 	 * @return
 	 */
-	public DisplayOptions getDisplayOptions(Enum<?> optionsName){
-		return this.displayOptionsMap.get(optionsName);
+	public TaskOptions getOptions(Enum<?> optionsName){
+		return this.optionsMap.get(optionsName);
 	}
 	
 	/**
-	 * 放入显示选项
-	 * @param optionsName
-	 * @param displayOptions
+	 * 放入选项
+	 * @param optionsName 选项名称
+	 * @param options 选项
 	 */
-	public Configuration putDisplayOptions(Enum<?> optionsName, DisplayOptions displayOptions){
-		this.displayOptionsMap.put(optionsName, displayOptions);
+	public Configuration putOptions(Enum<?> optionsName, TaskOptions options){
+		this.optionsMap.put(optionsName, options);
 		return this;
 	}
 }

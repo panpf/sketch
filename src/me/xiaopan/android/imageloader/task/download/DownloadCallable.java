@@ -1,27 +1,16 @@
 package me.xiaopan.android.imageloader.task.download;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.SocketTimeoutException;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.Callable;
-import java.util.concurrent.locks.ReentrantLock;
-
+import android.util.Log;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
+import org.apache.http.conn.params.ConnManagerParams;
+import org.apache.http.conn.params.ConnPerRouteBean;
 import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
@@ -32,9 +21,17 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpProtocolParams;
 
-import android.util.Log;
+import java.io.*;
+import java.net.SocketTimeoutException;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class DownloadCallable implements Callable<Object>{
+    private static final int DEFAULT_CONNECTION_TIME_OUT = 2000;
+    private static final int DEFAULT_MAX_CONNECTIONS = 10;
+    private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
 	private static final String NAME = DownloadCallable.class.getSimpleName();
 	private static final Map<String, ReentrantLock> urlLocks = new WeakHashMap<String, ReentrantLock>();
 	private DownloadRequest downloadRequest;
@@ -51,7 +48,11 @@ public class DownloadCallable implements Callable<Object>{
 		urlLock.unlock();
 		return result;
 	}
-	
+
+    /**
+     * 下载
+     * @return 下载结果，可能是一个File也可能是一个byte[]
+     */
 	private Object download(){
 		//如果已经存在就直接返回原文件
 		if(downloadRequest.getCacheFile() != null && downloadRequest.getCacheFile().exists()){
@@ -67,7 +68,7 @@ public class DownloadCallable implements Callable<Object>{
 		
 		Object result = null;
 		int numberOfLoaded = 0;	//已加载次数
-		DefaultHttpClient defaultHttpClient = getHttpClient();
+		DefaultHttpClient defaultHttpClient = createHttpClient();
 		while(true){
 			numberOfLoaded++;//加载次数加1
 			HttpGet httpGet = null;
@@ -77,7 +78,7 @@ public class DownloadCallable implements Callable<Object>{
 				//发送请求
 				httpGet = new HttpGet(downloadRequest.getUri());
 				HttpResponse httpResponse = defaultHttpClient.execute(httpGet);
-				long fileLength = getLength(httpResponse);
+				long fileLength = parseContentLength(httpResponse);
 				
 				//读取数据
 				bufferedfInputStream = new BufferedInputStream(httpResponse.getEntity().getContent());
@@ -147,12 +148,34 @@ public class DownloadCallable implements Callable<Object>{
 		}
 		return result;
 	}
-	
-	private static DefaultHttpClient getHttpClient(){
+
+    private long copy(InputStream inputStream, OutputStream outputStream, long totalLength) throws IOException{
+        int readNumber;	//读取到的字节的数量
+        long completedLength = 0;
+        byte[] cacheBytes = new byte[1024];//数据缓存区
+        while((readNumber = inputStream.read(cacheBytes)) != -1){
+            completedLength += readNumber;
+            outputStream.write(cacheBytes, 0, readNumber);
+            if(downloadRequest.getDownloadListener() != null){
+                downloadRequest.getDownloadListener().onUpdateProgress(totalLength, completedLength);
+            }
+        }
+        outputStream.flush();
+        return completedLength;
+    }
+
+    /**
+     * 创建一个HTTP客户端
+     * @return HTTP客户端
+     */
+	private static DefaultHttpClient createHttpClient(){
 		BasicHttpParams httpParams = new BasicHttpParams();
-		ImageLoaderUtils.setConnectionTimeout(httpParams, 20000);
-		ImageLoaderUtils.setMaxConnections(httpParams, 100);
-		ImageLoaderUtils.setSocketBufferSize(httpParams, 8192);
+        ConnManagerParams.setTimeout(httpParams, DEFAULT_CONNECTION_TIME_OUT);
+        HttpConnectionParams.setSoTimeout(httpParams, DEFAULT_CONNECTION_TIME_OUT);
+        HttpConnectionParams.setConnectionTimeout(httpParams, DEFAULT_CONNECTION_TIME_OUT);
+        ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(DEFAULT_MAX_CONNECTIONS));
+        ConnManagerParams.setMaxTotalConnections(httpParams, DEFAULT_MAX_CONNECTIONS);
+        HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
         HttpConnectionParams.setTcpNoDelay(httpParams, true);
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
 		SchemeRegistry schemeRegistry = new SchemeRegistry();
@@ -160,41 +183,37 @@ public class DownloadCallable implements Callable<Object>{
 		schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
 		return new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams); 
 	}
-	
-	private static long getLength(HttpResponse httpResponse) throws Exception{
+
+    /**
+     * 解析内容长度
+     * @param httpResponse http响应
+     * @return 内容长度
+     * @throws Exception
+     */
+	private static long parseContentLength(HttpResponse httpResponse) throws Exception{
 		Header[] contentTypeString = httpResponse.getHeaders("Content-Length");
-		if(contentTypeString.length <= 0){
-			throw new Exception("在Http响应中没有取到Content-Length参数");
-		}
-		
-		long fileLength = Long.valueOf(contentTypeString[0].getValue());
-		if(fileLength <= 0){
-			throw new Exception("文件长度为0");
-		}
+        if(contentTypeString.length <= 0){
+            throw new Exception("在Http响应中没有取到Content-Length参数");
+        }
+
+        long fileLength = Long.valueOf(contentTypeString[0].getValue());
+        if(fileLength <= 0){
+            throw new Exception("文件长度为0");
+        }
 		return fileLength;
 	}
-	
-	private static final ReentrantLock getUrlLock(String url){
+
+    /**
+     * 获取一个URL锁，通过此锁可以过滤重复下载
+     * @param url 下载地址
+     * @return URL锁
+     */
+	private static ReentrantLock getUrlLock(String url){
 		ReentrantLock urlLock = urlLocks.get(url);
 		if(urlLock == null){
 			urlLock = new ReentrantLock();
 			urlLocks.put(url, urlLock);
 		}
 		return urlLock;
-	}
-
-	private long copy(InputStream inputStream, OutputStream outputStream, long totalLength) throws IOException{
-		int readNumber;	//读取到的字节的数量
-		long completedLength = 0;
-		byte[] cacheBytes = new byte[1024];//数据缓存区
-		while((readNumber = inputStream.read(cacheBytes)) != -1){
-			completedLength += readNumber;
-			outputStream.write(cacheBytes, 0, readNumber);
-			if(downloadRequest.getDownloadListener() != null){
-				downloadRequest.getDownloadListener().onUpdateProgress(totalLength, completedLength);
-			}
-		}
-        outputStream.flush();
-        return completedLength;
 	}
 }
