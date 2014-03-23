@@ -15,11 +15,10 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
-        <item name="android:windowBackground">@color/black</item>
     </style>
 
-    <!-- 列表项 -->
-    <style name="listItem" parent="@style/match_wrap">
+    <!-- 项 -->
+    <style name="item" parent="@style/match_wrap">
         <item name="android:paddingLeft">@dimen/padding_specialLarge</item>
         <item name="android:paddingTop">@dimen/padding_default</item>
         <item name="android:paddingRight">@dimen/padding_specialLarge</item>
@@ -28,18 +27,6 @@
         <item name="android:minHeight">52dp</item>
     </style>
 
-    <!-- 文本 - 标题 -->
-    <style name="text_title" parent="@style/wrap_wrap">
-        <item name="android:textSize">@dimen/textSize_large</item>
-        <item name="android:textColor">@color/selector_text_title</item>
-    </style>
-
-    <!-- 文本 - 标题 -->
-    <style name="text_title_black" parent="@style/wrap_wrap">
-        <item name="android:textSize">@dimen/textSize_large</item>
-        <item name="android:textColor">@color/selector_text_title_black</item>
-    </style>
-    
     <!-- 宽充满 - 高充满 -->
     <style name="match_match">
        	<item name="android:layout_width">match_parent</item>

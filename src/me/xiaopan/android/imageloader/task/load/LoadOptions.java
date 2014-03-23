@@ -25,7 +25,7 @@ import me.xiaopan.android.imageloader.util.ImageSize;
  * 显示选项
  */
 public class LoadOptions extends DownloadOptions{
-    private ScaleType scaleType;
+    private ScaleType scaleType = ScaleType.FIT_CENTER;
     private ImageSize maxImageSize;	//最大图片尺寸
 	private BitmapProcessor bitmapProcessor;	//位图处理器
 	

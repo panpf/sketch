@@ -1,30 +1,31 @@
 package me.xiaopan.android.imageloader.sample.activity;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.sample.adapter.BlackStringAdapter;
 
-public class MainActivity extends Activity {
-	private ListView listView;
+public class MainActivity extends ListActivity {
+
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		listView = new ListView(getBaseContext());
-		setContentView(listView);
+		setContentView(R.layout.activity_list);
 		
-		listView.setAdapter(new BlackStringAdapter(getBaseContext(), new String[]{"download", "load", "display"}));
-		
-		listView.setOnItemClickListener(new OnItemClickListener() {
+		getListView().setAdapter(new BlackStringAdapter(getBaseContext(), new String[]{"download", "load", "display", "多次加载同一张图片"}));
+
+        getListView().setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Class<?> targetClass = null;
-				switch(position - listView.getHeaderViewsCount()){
+				switch(position - getListView().getHeaderViewsCount()){
 					case 0 : 
 						targetClass = DownloadActivity.class;
 						break;

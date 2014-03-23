@@ -1,17 +1,43 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent">
-    <FrameLayout android:layout_width="match_parent" android:layout_height="match_parent">
-        <ImageView
-            style="@style/match_match" 
-            android:id="@+id/image_download" 
-            android:contentDescription="@string/app_name"/>
-        <ProgressBar 
-            style="?android:attr/progressBarStyleHorizontal" 
-            android:id="@+id/progressBar_download"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:max="100"
-            android:layout_gravity="center"
-            />
-    </FrameLayout>
+    <android.support.v4.widget.DrawerLayout style="@style/match_match" android:id="@+id/drawer_download">
+        <FrameLayout style="@style/match_match">
+            <ImageView
+                style="@style/match_match"
+                android:id="@+id/image_download"
+                android:contentDescription="@string/app_name"/>
+            <ProgressBar
+                style="?android:attr/progressBarStyleHorizontal"
+                android:id="@+id/progressBar_download"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:max="100"
+                android:layout_gravity="center"/>
+        </FrameLayout>
+
+        <LinearLayout
+            android:layout_width="180dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/white"
+            android:layout_gravity="start">
+            <LinearLayout style="@style/item">
+                <TextView style="@style/weight_wrap" android:text="硬盘缓存"/>
+                <ToggleButton style="@style/wrap_wrap" android:id="@+id/toggle_download_diskCache"/>
+            </LinearLayout>
+            <include layout="@layout/include_line_gray"/>
+
+            <LinearLayout style="@style/item">
+                <TextView style="@style/wrap_wrap" android:text="有效期"/>
+                <EditText
+                    style="@style/weight_wrap"
+                    android:id="@+id/edit_download_periodOfValidity"
+                    android:maxLength="19"
+                    android:inputType="number"/>
+                <TextView style="@style/wrap_wrap" android:text="毫秒"/>
+            </LinearLayout>
+            <include layout="@layout/include_line_gray"/>
+        </LinearLayout>
+    </android.support.v4.widget.DrawerLayout>
+
     <include layout="@layout/include_shadow_down"/>
 </merge>

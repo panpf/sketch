@@ -21,7 +21,7 @@ package me.xiaopan.android.imageloader.task;
  */
 public abstract class TaskOptions{
 	private int maxRetryCount = 2;	//最大重试次数
-	private int diskCachePeriodOfValidity;	//磁盘缓存有效期，单位毫秒
+	private long diskCachePeriodOfValidity;	//磁盘缓存有效期，单位毫秒
 	private boolean enableDiskCache = true;	//是否开启磁盘缓存
 	
 	/**
@@ -44,7 +44,7 @@ public abstract class TaskOptions{
 	 * 获取本地缓存文件的有效时间，单位毫秒
 	 * @return
 	 */
-	public int getDiskCachePeriodOfValidity() {
+	public long getDiskCachePeriodOfValidity() {
 		return diskCachePeriodOfValidity;
 	}
 
@@ -52,7 +52,7 @@ public abstract class TaskOptions{
 	 * 设置本地缓存文件的有效时间，单位毫秒
 	 * @param diskCachePeriodOfValidity
 	 */
-	public void setDiskCachePeriodOfValidity(int diskCachePeriodOfValidity) {
+	public void setDiskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
 		this.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
 	}
 	

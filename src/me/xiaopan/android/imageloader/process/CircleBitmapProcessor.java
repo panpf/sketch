@@ -24,144 +24,59 @@ import me.xiaopan.android.imageloader.util.ImageSize;
  * 圆形位图处理器
  */
 public class CircleBitmapProcessor implements BitmapProcessor {
-	private static final String NAME = CircleBitmapProcessor.class.getSimpleName();
-	
-	@Override
-	public String getTag() {
-		return NAME;
-	}
+    private static final String NAME = CircleBitmapProcessor.class.getSimpleName();
 
-	@Override
-	public BitmapProcessor copy() {
-		return new CircleBitmapProcessor();
-	}
+    @Override
+    public String getTag() {
+        return NAME;
+    }
 
-	@Override
-	public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize) {
-		if(bitmap == null){
-			return null;
-		}
-		if(scaleType == null){
-			scaleType = ScaleType.CENTER_CROP;
-		}
-		if(targetSize == null){
-			targetSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
-		}
-		return cricle(bitmap, scaleType, targetSize);
-	}
-	
-	public Bitmap cricle(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize) {
-		int bitmapWidth = bitmap.getWidth();
-		int bitmapHeight = bitmap.getHeight();
-		int viewWidth = targetSize.getWidth();
-		int viewHeight = targetSize.getHeight();
-		if (viewWidth <= 0) {
-			viewWidth = bitmapWidth;
-		}
-		if (viewHeight <= 0){
-			viewHeight = bitmapHeight;
-		}
+    @Override
+    public BitmapProcessor copy() {
+        return new CircleBitmapProcessor();
+    }
 
-		int srcLeft = 0;
-		int srcTop = 0;
-		int srcWidth = bitmapWidth;
-		int srcHeight = bitmapHeight;
-		int destLeft = 0;
-		int destTop = 0;
-		int destWidth = viewWidth;
-		int destHeight = viewHeight;
-		int width = viewWidth;
-		int height = viewHeight;
-		float viewScale = (float) viewWidth / viewHeight;
-		float bitmapScale = (float) bitmapWidth / bitmapHeight;
-		switch (scaleType) {
-			case CENTER_INSIDE:
-				if (viewScale > bitmapScale) {
-					destHeight = Math.min(viewHeight, bitmapHeight);
-					destWidth = (int) (bitmapWidth / ((float) bitmapHeight / destHeight));
-				} else {
-					destWidth = Math.min(viewWidth, bitmapWidth);
-					destHeight = (int) (bitmapHeight / ((float) bitmapWidth / destWidth));
-				}
-				destLeft = (viewWidth - destWidth) / 2;
-				destTop = (viewHeight - destHeight) / 2;
-				break;
-			case FIT_CENTER:
-			case FIT_START:
-			case FIT_END:
-			default:
-				if (viewScale > bitmapScale) {
-					width = (int) (bitmapWidth / ((float) bitmapHeight / viewHeight));
-					height = viewHeight;
-				} else {
-					width = viewWidth;
-					height = (int) (bitmapHeight / ((float) bitmapWidth / viewWidth));
-				}
-				srcWidth = bitmapWidth;
-				srcHeight = bitmapHeight;
-				destWidth = width;
-				destHeight = height;
-				break;
-			case CENTER_CROP:
-				if(viewScale > bitmapScale){
-					srcWidth = bitmapWidth;
-					srcHeight = (int) (viewHeight * ((float) bitmapWidth / viewWidth));
-					srcLeft = 0;
-					srcTop = (bitmapHeight - srcHeight) / 2;
-				}else if(viewScale < bitmapScale){
-					srcWidth = (int) (viewWidth * ((float) bitmapHeight / viewHeight));
-					srcHeight = bitmapHeight;
-					srcLeft = (bitmapWidth - srcWidth) / 2;
-					srcTop = 0;
-				}
-				break;
-			case CENTER:
-			case MATRIX:
-				width = Math.min(viewWidth, bitmapWidth);
-				height = Math.min(viewHeight, bitmapHeight);
-				srcLeft = (bitmapWidth - width) / 2;
-				srcTop = (bitmapHeight - height) / 2;
-				srcWidth = width;
-				srcHeight = height;
-				destWidth = width;
-				destHeight = height;
-				break;
-		}
-		
-		try {
-			Rect srcRect = new Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight);
-			Rect destRect = new Rect(destLeft, destTop, destLeft + destWidth, destTop + destHeight);
-			return getCricleBitmap(bitmap, srcRect, destRect, width, height);
-		} catch (OutOfMemoryError e) {
-			e.printStackTrace();
-			return bitmap;
-		}
-	}
-	
-	/**
-	 * 处理圆形图片
-	 * @param bitmap 要处理的图片
-	 * @param srcRect 源矩形
-	 * @param destRect 目标矩形
-	 * @param width 宽
-	 * @param height 高
-	 * @return 新的圆形图片
-	 */
-	public Bitmap getCricleBitmap(Bitmap bitmap, Rect srcRect, Rect destRect, int width, int height) {
-		Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-		Canvas canvas = new Canvas(output);
+    @Override
+    public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize) {
+        if (bitmap == null) return null;
+        if (scaleType == null) scaleType = ScaleType.FIT_CENTER;
+        if (targetSize == null) targetSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+        int slidLlength = targetSize.getWidth() > targetSize.getHeight() ? targetSize.getHeight() : targetSize.getWidth();
 
-		final Paint paint = new Paint();
-		final RectF destRectF = new RectF(destRect);
+        Bitmap output = Bitmap.createBitmap(slidLlength, slidLlength, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(0xFFFF0000);
+        canvas.drawCircle(slidLlength / 2, slidLlength / 2, slidLlength / 2, paint);
 
-		paint.setAntiAlias(true);
-		canvas.drawARGB(0, 0, 0, 0);
-		paint.setColor(0xFFFF0000);
-		canvas.drawCircle(width/2, height/2, width < height?width/2:height/2, paint);
-		
-		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-		canvas.drawBitmap(bitmap, srcRect, destRectF, paint);
+        Rect srcRect;
+        if (scaleType == ScaleType.FIT_START) {
+            if (bitmap.getWidth() > bitmap.getHeight()) {
+                srcRect = new Rect(0, 0, bitmap.getHeight(), bitmap.getHeight());
+            } else {
+                srcRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getWidth());
+            }
+        } else if (scaleType == ScaleType.FIT_END) {
+            if (bitmap.getWidth() > bitmap.getHeight()) {
+                srcRect = new Rect(bitmap.getWidth() - bitmap.getHeight(), 0, bitmap.getWidth(), bitmap.getHeight());
+            } else {
+                srcRect = new Rect(0, bitmap.getHeight() - bitmap.getWidth(), bitmap.getWidth(), bitmap.getHeight());
+            }
+        } else {
+            if (bitmap.getWidth() > bitmap.getHeight()) {
+                int left = (bitmap.getWidth() - bitmap.getHeight()) / 2;
+                srcRect = new Rect(left, 0, bitmap.getHeight() + left, bitmap.getHeight());
+            } else {
+                int top = (bitmap.getHeight() - bitmap.getWidth()) / 2;
+                srcRect = new Rect(0, top, bitmap.getWidth(), bitmap.getWidth() + top);
+            }
+        }
 
-		return output;
-	}
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, slidLlength, slidLlength), paint);
+
+        return output;
+    }
 }

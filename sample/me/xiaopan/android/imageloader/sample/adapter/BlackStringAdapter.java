@@ -64,7 +64,7 @@ public class BlackStringAdapter extends BaseAdapter {
 		ViewHolder viewHolder = null;
 		if(convertView == null){
 			viewHolder = new ViewHolder();
-			convertView = LayoutInflater.from(context).inflate(R.layout.list_item_text_black, null);
+			convertView = LayoutInflater.from(context).inflate(R.layout.list_item_text, null);
 			viewHolder.text = (TextView) convertView.findViewById(R.id.text_textItem_text);
 			convertView.setTag(viewHolder);
 		}else{

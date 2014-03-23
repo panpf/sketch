@@ -66,5 +66,5 @@ public abstract class TaskRequest {
     }
     
     public abstract boolean isEnableDiskCache();
-    public abstract int getDiskCachePeriodOfValidity();
+    public abstract long getDiskCachePeriodOfValidity();
 }

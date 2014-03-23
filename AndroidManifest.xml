@@ -21,8 +21,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="me.xiaopan.android.imageloader.sample.activity.DownloadActivity"/>
-        <activity android:name="me.xiaopan.android.imageloader.sample.activity.LoadActivity"/>
-        <activity android:name="me.xiaopan.android.imageloader.sample.activity.DisplayActivity"/>
+        <activity android:name="me.xiaopan.android.imageloader.sample.activity.DownloadActivity" android:label="@string/activity_titel_download"/>
+        <activity android:name="me.xiaopan.android.imageloader.sample.activity.LoadActivity" android:label="@string/activity_titel_load"/>
+        <activity android:name="me.xiaopan.android.imageloader.sample.activity.DisplayActivity" android:label="@string/activity_titel_display"/>
     </application>
 </manifest>

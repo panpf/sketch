@@ -59,7 +59,7 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 			return null;
 		}
 		if(scaleType == null){
-			scaleType = ScaleType.CENTER_CROP;
+			scaleType = ScaleType.FIT_CENTER;
 		}
 		if(targetSize == null){
 			targetSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());

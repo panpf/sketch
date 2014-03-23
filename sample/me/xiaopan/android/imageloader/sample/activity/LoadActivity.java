@@ -1,7 +1,212 @@
 package me.xiaopan.android.imageloader.sample.activity;
 
 import android.app.Activity;
+import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
+import android.view.View;
+import android.widget.*;
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
+import me.xiaopan.android.imageloader.process.ReflectionBitmapProcessor;
+import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
+import me.xiaopan.android.imageloader.task.load.LoadOptions;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
 
-public class LoadActivity extends Activity{
+public class LoadActivity extends Activity {
+    private EditText periodOfValidityEdit;
+    private ImageView imageView;
+    private ProgressBar progressBar;
+    private ToggleButton diskCacheToggleButton;
+    private DrawerLayout drawerLayout;
+    private Spinner processorSpinner;
+    private Spinner scaleTypeSpinner;
 
+    private LoadOptions loadOptions;
+//    private String uri = "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347718813.jpg";
+    private String uri = "http://a.hiphotos.baidu.com/image/w%3D2048/sign=21b75619df54564ee565e33987e69d82/738b4710b912c8fcab2d9cc7fe039245d78821d9.jpg";
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_load);
+        periodOfValidityEdit = (EditText) findViewById(R.id.edit_load_periodOfValidity);
+        diskCacheToggleButton = (ToggleButton) findViewById(R.id.toggle_load_diskCache);
+        imageView = (ImageView) findViewById(R.id.image_load);
+        progressBar = (ProgressBar) findViewById(R.id.progressBar_load);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_load);
+        processorSpinner = (Spinner) findViewById(R.id.spinner_load_processor);
+        scaleTypeSpinner = (Spinner) findViewById(R.id.spinner_load_scaleType);
+
+        drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_left, GravityCompat.START);
+        drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, GravityCompat.END);
+        drawerLayout.openDrawer(Gravity.START);
+
+        loadOptions = new LoadOptions();
+        periodOfValidityEdit.setText("" + loadOptions.getDiskCachePeriodOfValidity());
+
+        diskCacheToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                loadOptions.setEnableDiskCache(isChecked);
+                periodOfValidityEdit.setEnabled(isChecked);
+            }
+        });
+        diskCacheToggleButton.setChecked(loadOptions.isEnableDiskCache());
+
+        processorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        loadOptions.setBitmapProcessor(null);
+                        break;
+                    case 1:
+                        loadOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
+                        break;
+                    case 2:
+                        loadOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
+                        break;
+                    case 3:
+                        loadOptions.setBitmapProcessor(new CircleBitmapProcessor());
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        scaleTypeSpinner.setSelection(3);
+        scaleTypeSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                switch (position) {
+                    case 0:
+                        loadOptions.setScaleType(ImageView.ScaleType.MATRIX);
+                        break;
+                    case 1:
+                        loadOptions.setScaleType(ImageView.ScaleType.FIT_XY);
+                        break;
+                    case 2:
+                        loadOptions.setScaleType(ImageView.ScaleType.FIT_START);
+                        break;
+                    case 3:
+                        loadOptions.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                        break;
+                    case 4:
+                        loadOptions.setScaleType(ImageView.ScaleType.FIT_END);
+                        break;
+                    case 5:
+                        loadOptions.setScaleType(ImageView.ScaleType.CENTER);
+                        break;
+                    case 6:
+                        loadOptions.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                        break;
+                    case 7:
+                        loadOptions.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        periodOfValidityEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                String text = periodOfValidityEdit.getEditableText().toString().trim();
+                if (text != null && !"".equals(text)) {
+                    loadOptions.setDiskCachePeriodOfValidity(Long.valueOf(text));
+                } else {
+                    loadOptions.setDiskCachePeriodOfValidity(0);
+                }
+            }
+        });
+
+        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View view, float v) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View view) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View view) {
+                ImageLoader.getInstance(getBaseContext()).load(uri, loadOptions, new LoadRequest.LoadListener() {
+                    @Override
+                    public void onStart() {
+                        progressBar.setVisibility(View.VISIBLE);
+                        imageView.setImageBitmap(null);
+                    }
+
+                    @Override
+                    public void onUpdateProgress(final long totalLength, final long completedLength) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setProgress((int) (((float) completedLength / totalLength) * 100));
+                                progressBar.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onComplete(final Bitmap bitmap) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.setImageBitmap(bitmap);
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getBaseContext(), "加载失败", Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancel() {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onDrawerStateChanged(int i) {
+
+            }
+        });
+    }
 }

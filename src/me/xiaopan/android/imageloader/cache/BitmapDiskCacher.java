@@ -199,7 +199,7 @@ public abstract class BitmapDiskCacher implements BitmapCacher {
 		
 		//是否过期
 		Calendar calendar = new GregorianCalendar();
-		calendar.add(Calendar.MILLISECOND, -taskRequest.getDiskCachePeriodOfValidity());
+		calendar.add(Calendar.MILLISECOND, (int) -taskRequest.getDiskCachePeriodOfValidity());
 		if(calendar.getTimeInMillis() >= file.lastModified()){
 			file.delete();
 			if(taskRequest.getConfiguration().isDebugMode()){

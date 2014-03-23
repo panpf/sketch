@@ -1,128 +1,153 @@
 package me.xiaopan.android.imageloader.sample.activity;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
-import android.widget.Toast;
+import android.widget.*;
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.load.LoadRequest;
+import me.xiaopan.android.imageloader.task.download.DownloadOptions;
+import me.xiaopan.android.imageloader.task.download.DownloadRequest;
+
+import java.io.File;
 
 public class DownloadActivity extends Activity {
+    private EditText periodOfValidityEdit;
 	private ImageView imageView;
 	private ProgressBar progressBar;
-	
+    private ToggleButton diskCacheToggleButton;
+    private DrawerLayout drawerLayout;
+
+    private DownloadOptions downloadOptions;
+    private String uri = "http://tupian.enterdesk.com/2013/xll/0112/taiqiumeinv/taiqiumeinv%20(3).jpg.680.510.jpg";
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
 		setContentView(R.layout.activity_download);
-		
+        periodOfValidityEdit = (EditText) findViewById(R.id.edit_download_periodOfValidity);
+        diskCacheToggleButton = (ToggleButton) findViewById(R.id.toggle_download_diskCache);
 		imageView = (ImageView) findViewById(R.id.image_download);
 		progressBar = (ProgressBar) findViewById(R.id.progressBar_download);
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_download);
 
-//        String uri = "http://tupian.enterdesk.com/2013/xll/0112/taiqiumeinv/taiqiumeinv%20(3).jpg.680.510.jpg";
-        String uri = "http://a.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=3bb4f63f58afa40f3cc6cade9d52382c/c8177f3e6709c93d388b4ffa9d3df8dcd1005445.jpg";
-//        ImageLoader.getInstance(getBaseContext()).download(uri, new DownloadListener() {
-//				@Override
-//			public void onStart() {
-//				progressBar.setVisibility(View.VISIBLE);
-//			}
-//
-//			@Override
-//			public void onUpdateProgress(final long totalLength, final long completedLength) {
-//				runOnUiThread(new Runnable() {
-//					@Override
-//					public void run() {
-//						progressBar.setProgress((int) (((float)completedLength/totalLength) * 100));
-//						progressBar.setVisibility(View.VISIBLE);
-//					}
-//				});
-//			}
-//
-//			@Override
-//			public void onComplete(final byte[] data) {
-//				runOnUiThread(new Runnable() {
-//					@Override
-//					public void run() {
-//						imageView.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-//						progressBar.setVisibility(View.GONE);
-//					}
-//				});
-//			}
-//
-//			@Override
-//			public void onComplete(final File cacheFile) {
-//				runOnUiThread(new Runnable() {
-//					@Override
-//					public void run() {
-//						imageView.setImageURI(Uri.fromFile(cacheFile));
-//						progressBar.setVisibility(View.GONE);
-//					}
-//				});
-//			}
-//
-//			@Override
-//			public void onFailure() {
-//				runOnUiThread(new Runnable() {
-//					@Override
-//					public void run() {
-//						Toast.makeText(getBaseContext(), "下载失败", Toast.LENGTH_SHORT).show();
-//						progressBar.setVisibility(View.GONE);
-//					}
-//				});
-//			}
-//
-//            @Override
-//            public void onCancel() {
-//
-//            }
-//        });
+        drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_left, GravityCompat.START);
+        drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, GravityCompat.END);
+        drawerLayout.openDrawer(Gravity.START);
 
-        ImageLoader.getInstance(getBaseContext()).load(uri, new LoadRequest.LoadListener() {
+        downloadOptions = new DownloadOptions();
+        periodOfValidityEdit.setText("" + downloadOptions.getDiskCachePeriodOfValidity());
+
+        diskCacheToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-             public void onStart() {
-                progressBar.setVisibility(View.VISIBLE);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                downloadOptions.setEnableDiskCache(isChecked);
+                periodOfValidityEdit.setEnabled(isChecked);
+            }
+        });
+        diskCacheToggleButton.setChecked(downloadOptions.isEnableDiskCache());
+
+        periodOfValidityEdit.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
-            public void onUpdateProgress(final long totalLength, final long completedLength) {
-				runOnUiThread(new Runnable() {
-					@Override
-					public void run() {
-						progressBar.setProgress((int) (((float)completedLength/totalLength) * 100));
-						progressBar.setVisibility(View.VISIBLE);
-					}
-				});
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
             }
 
             @Override
-            public void onComplete(final Bitmap bitmap) {
-                runOnUiThread(new Runnable() {
+            public void afterTextChanged(Editable s) {
+                String text = periodOfValidityEdit.getEditableText().toString().trim();
+                if(text != null && !"".equals(text)){
+                    downloadOptions.setDiskCachePeriodOfValidity(Long.valueOf(text));
+                }else{
+                    downloadOptions.setDiskCachePeriodOfValidity(0);
+                }
+            }
+        });
+
+        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View view, float v) {
+
+            }
+
+            @Override
+            public void onDrawerOpened(View view) {
+
+            }
+
+            @Override
+            public void onDrawerClosed(View view) {
+                ImageLoader.getInstance(getBaseContext()).download(uri, downloadOptions, new DownloadRequest.DownloadListener() {
                     @Override
-                    public void run() {
-                        imageView.setImageBitmap(bitmap);
-                        progressBar.setVisibility(View.GONE);
+                    public void onStart() {
+                        progressBar.setVisibility(View.VISIBLE);
+                        imageView.setImageBitmap(null);
+                    }
+
+                    @Override
+                    public void onUpdateProgress(final long totalLength, final long completedLength) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setProgress((int) (((float)completedLength/totalLength) * 100));
+                                progressBar.setVisibility(View.VISIBLE);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onComplete(final byte[] data) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onComplete(final File cacheFile) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.setImageURI(Uri.fromFile(cacheFile));
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onFailure() {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(getBaseContext(), "下载失败", Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCancel() {
+
                     }
                 });
             }
 
             @Override
-            public void onFailure() {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getBaseContext(), "下载失败", Toast.LENGTH_SHORT).show();
-                        progressBar.setVisibility(View.GONE);
-                    }
-                });
-            }
-
-            @Override
-            public void onCancel() {
+            public void onDrawerStateChanged(int i) {
 
             }
         });

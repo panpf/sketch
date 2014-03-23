@@ -38,7 +38,7 @@ public class DownloadRequest extends TaskRequest{
 	}
 
 	@Override
-	public int getDiskCachePeriodOfValidity() {
+	public long getDiskCachePeriodOfValidity() {
 		return downloadOptions != null?downloadOptions.getDiskCachePeriodOfValidity():0;
 	}
 	
