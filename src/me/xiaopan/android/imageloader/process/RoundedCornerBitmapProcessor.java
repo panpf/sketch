@@ -55,141 +55,59 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 
 	@Override
 	public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize) {
-		if(bitmap == null){
-			return null;
-		}
-		if(scaleType == null){
-			scaleType = ScaleType.FIT_CENTER;
-		}
-		if(targetSize == null){
-			targetSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
-		}
-		return roundCorners(bitmap, scaleType, targetSize, roundPixels);
-	}
-	
-	/**
-	 * Process incoming {@linkplain Bitmap} to make rounded corners according to target {@link ImageView}.<br />
-	 * This method <b>doesn't display</b> result bitmap in {@link ImageView}
-	 * 
-	 * @param bitmap Incoming Bitmap to process
-	 * @param scaleType 缩放类型
-	 * @param targetSize 目标尺寸
-	 * @param roundPixels 圆角度数
-	 * @return Result bitmap with rounded corners
-	 */
-	public Bitmap roundCorners(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize, int roundPixels) {
-		int bitmapWidth = bitmap.getWidth();
-		int bitmapHeight = bitmap.getHeight();
-		int viewWidth = targetSize.getWidth();
-		int viewHeight = targetSize.getHeight();
-		if (viewWidth <= 0) {
-			viewWidth = bitmapWidth;
-		}
-		if (viewHeight <= 0){
-			viewHeight = bitmapHeight;
-		}
+		if(bitmap == null) return null;
+		if(scaleType == null) scaleType = ScaleType.FIT_CENTER;
+		if(targetSize == null) targetSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
 
-		int srcLeft = 0;
-		int srcTop = 0;
-		int srcWidth = bitmapWidth;
-		int srcHeight = bitmapHeight;
-		int destLeft = 0;
-		int destTop = 0;
-		int destWidth = viewWidth;
-		int destHeight = viewHeight;
-		int width = viewWidth;
-		int height = viewHeight;
-		float viewScale = (float) viewWidth / viewHeight;
-		float bitmapScale = (float) bitmapWidth / bitmapHeight;
-		switch (scaleType) {
-			case CENTER_INSIDE:
-				if (viewScale > bitmapScale) {
-					destHeight = Math.min(viewHeight, bitmapHeight);
-					destWidth = (int) (bitmapWidth / ((float) bitmapHeight / destHeight));
-				} else {
-					destWidth = Math.min(viewWidth, bitmapWidth);
-					destHeight = (int) (bitmapHeight / ((float) bitmapWidth / destWidth));
-				}
-				destLeft = (viewWidth - destWidth) / 2;
-				destTop = (viewHeight - destHeight) / 2;
-				break;
-			case FIT_CENTER:
-			case FIT_START:
-			case FIT_END:
-			default:
-				if (viewScale > bitmapScale) {
-					width = (int) (bitmapWidth / ((float) bitmapHeight / viewHeight));
-					height = viewHeight;
-				} else {
-					width = viewWidth;
-					height = (int) (bitmapHeight / ((float) bitmapWidth / viewWidth));
-				}
-				srcWidth = bitmapWidth;
-				srcHeight = bitmapHeight;
-				destWidth = width;
-				destHeight = height;
-				break;
-			case CENTER_CROP:
-				if(viewScale > bitmapScale){
-					srcWidth = bitmapWidth;
-					srcHeight = (int) (viewHeight * ((float) bitmapWidth / viewWidth));
-					srcLeft = 0;
-					srcTop = (bitmapHeight - srcHeight) / 2;
-				}else if(viewScale < bitmapScale){
-					srcWidth = (int) (viewWidth * ((float) bitmapHeight / viewHeight));
-					srcHeight = bitmapHeight;
-					srcLeft = (bitmapWidth - srcWidth) / 2;
-					srcTop = 0;
-				}
-				break;
-			case CENTER:
-			case MATRIX:
-				width = Math.min(viewWidth, bitmapWidth);
-				height = Math.min(viewHeight, bitmapHeight);
-				srcLeft = (bitmapWidth - width) / 2;
-				srcTop = (bitmapHeight - height) / 2;
-				srcWidth = width;
-				srcHeight = height;
-				destWidth = width;
-				destHeight = height;
-				break;
-		}
-		
-		try {
-			Rect srcRect = new Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight);
-			Rect destRect = new Rect(destLeft, destTop, destLeft + destWidth, destTop + destHeight);
-			return getRoundedCornerBitmap(bitmap, roundPixels, srcRect, destRect, width, height);
-		} catch (OutOfMemoryError e) {
-			e.printStackTrace();
-			return bitmap;
-		}
-	}
-	
-	/**
-	 * 处理圆角图片
-     * @param bitmap 要处理的图片
-     * @param srcRect 源矩形
-     * @param destRect 目标矩形
-     * @param width 宽
-     * @param height 高
-     * @return 新的圆角图片
-	 */
-	public Bitmap getRoundedCornerBitmap(Bitmap bitmap, int roundPixels, Rect srcRect, Rect destRect, int width, int height) {
-		Bitmap output = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-		Canvas canvas = new Canvas(output);
+        Bitmap output = Bitmap.createBitmap(targetSize.getWidth(), targetSize.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+        Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        canvas.drawARGB(0, 0, 0, 0);
+        paint.setColor(0xFFFF0000);
+        canvas.drawRoundRect(new RectF(0, 0, targetSize.getWidth(), targetSize.getHeight()), roundPixels, roundPixels, paint);
 
-		final Paint paint = new Paint();
-		final RectF destRectF = new RectF(destRect);
+        float scale;
+        if(Math.abs(bitmap.getWidth() - targetSize.getWidth()) < Math.abs(bitmap.getHeight() - targetSize.getHeight())){
+            scale = (float) bitmap.getWidth()/targetSize.getWidth();
+            if((int)(targetSize.getHeight()*scale) > bitmap.getHeight()){
+                scale = (float) bitmap.getHeight()/targetSize.getHeight();
+            }
+        }else{
+            scale = (float) bitmap.getHeight()/targetSize.getHeight();
+            if((int)(targetSize.getWidth()*scale) > bitmap.getWidth()){
+                scale = (float) bitmap.getWidth()/targetSize.getWidth();
+            }
+        }
+        int srcWidth = (int)(targetSize.getWidth()*scale);
+        int srcHeight = (int)(targetSize.getHeight()*scale);
+        int srcLeft;
+        int srcTop;
+        if (scaleType == ScaleType.FIT_START) {
+            srcLeft = 0;
+            srcTop = 0;
+        } else if (scaleType == ScaleType.FIT_END) {
+            if(bitmap.getWidth() > bitmap.getHeight()){
+                srcLeft = bitmap.getWidth() - srcWidth;
+                srcTop = 0;
+            }else{
+                srcLeft = 0;
+                srcTop = bitmap.getHeight() - srcHeight;
+            }
+        } else {
+            if(bitmap.getWidth() > bitmap.getHeight()){
+                srcLeft = (bitmap.getWidth() - srcWidth)/2;
+                srcTop = 0;
+            }else{
+                srcLeft = 0;
+                srcTop = (bitmap.getHeight() - srcHeight)/2;
+            }
+        }
 
-		paint.setAntiAlias(true);
-		canvas.drawARGB(0, 0, 0, 0);
-		paint.setColor(0xFF000000);
-		canvas.drawRoundRect(destRectF, roundPixels, roundPixels, paint);
+        paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
+        canvas.drawBitmap(bitmap, new Rect(srcLeft, srcTop, srcLeft+srcWidth, srcTop+srcHeight), new RectF(0, 0, targetSize.getWidth(), targetSize.getHeight()), paint);
 
-		paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-		canvas.drawBitmap(bitmap, srcRect, destRectF, paint);
-
-		return output;
+        return output;
 	}
 	
 	public int getRoundPixels() {

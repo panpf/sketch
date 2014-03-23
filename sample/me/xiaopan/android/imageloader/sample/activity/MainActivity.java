@@ -19,7 +19,7 @@ public class MainActivity extends ListActivity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_list);
 		
-		getListView().setAdapter(new BlackStringAdapter(getBaseContext(), new String[]{"download", "load", "display", "多次加载同一张图片"}));
+		getListView().setAdapter(new BlackStringAdapter(getBaseContext(), new String[]{"download", "load", "display", "同一张图片应用于不同场景"}));
 
         getListView().setOnItemClickListener(new OnItemClickListener() {
 			@Override

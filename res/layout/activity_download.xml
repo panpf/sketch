@@ -14,29 +14,30 @@
                 android:layout_gravity="center"/>
         </FrameLayout>
 
-        <LinearLayout
-            android:layout_width="180dp"
+        <ScrollView
+            android:layout_width="200dp"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:background="@color/white"
-            android:layout_gravity="start">
-            <LinearLayout style="@style/item">
-                <TextView style="@style/weight_wrap" android:text="硬盘缓存"/>
-                <ToggleButton style="@style/wrap_wrap" android:id="@+id/toggle_download_diskCache"/>
-            </LinearLayout>
-            <include layout="@layout/include_line_gray"/>
+            android:layout_gravity="start"
+            android:background="@color/white">
+            <LinearLayout style="@style/match_wrap_vertical">
+                <LinearLayout style="@style/item">
+                    <TextView style="@style/weight_wrap" android:text="硬盘缓存"/>
+                    <ToggleButton style="@style/wrap_wrap" android:id="@+id/toggle_download_diskCache"/>
+                </LinearLayout>
+                <include layout="@layout/include_line_gray"/>
 
-            <LinearLayout style="@style/item">
-                <TextView style="@style/wrap_wrap" android:text="有效期"/>
-                <EditText
-                    style="@style/weight_wrap"
-                    android:id="@+id/edit_download_periodOfValidity"
-                    android:maxLength="19"
-                    android:inputType="number"/>
-                <TextView style="@style/wrap_wrap" android:text="毫秒"/>
+                <LinearLayout style="@style/item">
+                    <TextView style="@style/wrap_wrap" android:text="有效期"/>
+                    <EditText
+                        style="@style/weight_wrap"
+                        android:id="@+id/edit_download_periodOfValidity"
+                        android:maxLength="19"
+                        android:inputType="number"/>
+                    <TextView style="@style/wrap_wrap" android:text="毫秒"/>
+                </LinearLayout>
+                <include layout="@layout/include_line_gray"/>
             </LinearLayout>
-            <include layout="@layout/include_line_gray"/>
-        </LinearLayout>
+        </ScrollView>
     </android.support.v4.widget.DrawerLayout>
 
     <include layout="@layout/include_shadow_down"/>
