@@ -23,19 +23,19 @@ import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 
-public class ByteArrayOnDecodeListener implements BitmapDecoder.OnDecodeListener {
-    private static final String NAME = ByteArrayOnDecodeListener.class.getSimpleName();
-	private byte[] data;
+public class DrawableDecodeListener implements BitmapDecoder.DecodeListener {
+    private static final String NAME = DrawableDecodeListener.class.getSimpleName();
+	private String drawableIdString;
     private TaskRequest taskRequest;
 	
-	public ByteArrayOnDecodeListener(byte[] data, TaskRequest taskRequest) {
-		this.data = data;
+	public DrawableDecodeListener(String drawableIdString, TaskRequest taskRequest) {
+		this.drawableIdString = drawableIdString;
         this.taskRequest = taskRequest;
 	}
 
     @Override
     public Bitmap onDecode(BitmapFactory.Options options) {
-        return BitmapFactory.decodeByteArray(data, 0, data.length, options);
+        return BitmapFactory.decodeResource(taskRequest.getConfiguration().getContext().getResources(), Integer.valueOf(drawableIdString), options);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ByteArrayOnDecodeListener implements BitmapDecoder.OnDecodeListener
     @Override
     public void onDecodeFailure() {
         if(taskRequest.getConfiguration().isDebugMode()){
-            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(taskRequest.getName()).toString());
+            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(drawableIdString).toString());
         }
     }
 }

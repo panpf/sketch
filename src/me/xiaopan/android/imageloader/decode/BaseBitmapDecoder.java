@@ -34,11 +34,11 @@ public class BaseBitmapDecoder implements BitmapDecoder{
 	private static final String NAME= BaseBitmapDecoder.class.getSimpleName();
 	
 	@Override
-	public Bitmap decode(LoadRequest loadRequest, OnDecodeListener onDecodeListener){
+	public Bitmap decode(LoadRequest loadRequest, DecodeListener decodeListener){
         //解码原图尺寸并计算缩放比例
         Options options = new Options();
         options.inJustDecodeBounds = true;
-        onDecodeListener.onDecode(options);
+        decodeListener.onDecode(options);
         Point originalSize = new Point(options.outWidth, options.outHeight);
         if(loadRequest.getMaxImageSize() != null){
             options.inSampleSize = calculateInSampleSize(options, loadRequest.getMaxImageSize().getWidth(), loadRequest.getMaxImageSize().getHeight());
@@ -49,7 +49,7 @@ public class BaseBitmapDecoder implements BitmapDecoder{
         if (ImageLoaderUtils.hasHoneycomb()) {
             addInBitmapOptions(loadRequest, options);
         }
-        Bitmap bitmap = onDecodeListener.onDecode(options);
+        Bitmap bitmap = decodeListener.onDecode(options);
 
         //输出LOG
         if(loadRequest.getConfiguration().isDebugMode()){

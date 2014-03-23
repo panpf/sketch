@@ -29,12 +29,15 @@ public interface BitmapDecoder{
 	/**
 	 * 解码
 	 * @param loadRequest
-	 * @param onDecodeListener 回调解码
+	 * @param decodeListener 回调解码
 	 * @return
 	 */
-	public Bitmap decode(LoadRequest loadRequest,  OnDecodeListener onDecodeListener) throws IOException;
+	public Bitmap decode(LoadRequest loadRequest,  DecodeListener decodeListener) throws IOException;
 
-    public interface OnDecodeListener {
+    /**
+     * 解码监听器
+     */
+    public interface DecodeListener {
         /**
          * 解码
          * @param options

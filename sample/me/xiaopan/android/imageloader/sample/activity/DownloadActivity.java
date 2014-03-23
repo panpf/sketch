@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.xiaopan.android.imageloader.sample.activity;
 
 import android.app.Activity;
@@ -13,6 +29,7 @@ import android.view.View;
 import android.widget.*;
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.task.download.DownloadListener;
 import me.xiaopan.android.imageloader.task.download.DownloadOptions;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 
@@ -88,7 +105,7 @@ public class DownloadActivity extends Activity {
 
             @Override
             public void onDrawerClosed(View view) {
-                ImageLoader.getInstance(getBaseContext()).download(uri, downloadOptions, new DownloadRequest.DownloadListener() {
+                ImageLoader.getInstance(getBaseContext()).download(uri, downloadOptions, new DownloadListener() {
                     @Override
                     public void onStart() {
                         progressBar.setVisibility(View.VISIBLE);
@@ -100,7 +117,7 @@ public class DownloadActivity extends Activity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                progressBar.setProgress((int) (((float)completedLength/totalLength) * 100));
+                                progressBar.setProgress((int) (((float) completedLength / totalLength) * 100));
                                 progressBar.setVisibility(View.VISIBLE);
                             }
                         });

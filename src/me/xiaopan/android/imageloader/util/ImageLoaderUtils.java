@@ -24,6 +24,8 @@ import java.io.*;
 import java.net.URLEncoder;
 
 public class ImageLoaderUtils {
+
+    public static final int BUFFER_SIZE = 8*1024;
 	
 	/**
 	 * 判断给定的字符串是否为null或者是空的

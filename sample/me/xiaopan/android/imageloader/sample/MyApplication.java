@@ -1,5 +1,5 @@
 /*
- * Copyright 2013 Peng fei Pan
+ * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
  * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,31 +34,31 @@ public class MyApplication extends Application {
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().setDebugMode(true);
 		
 		DisplayOptions gridDisplayOptions = new DisplayOptions(getBaseContext());
-        gridDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
-        gridDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
+        gridDisplayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+        gridDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
         gridDisplayOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GRID_VIEW, gridDisplayOptions);
 
 		DisplayOptions viewPagerDisplayOptions = new DisplayOptions(getBaseContext());
-        viewPagerDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
+        viewPagerDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
         viewPagerDisplayOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.VIEW_PAGER, viewPagerDisplayOptions);
 		
 		DisplayOptions listDisplayOptions = new DisplayOptions(getBaseContext());
-        listDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
-        listDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
+        listDisplayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+        listDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
         listDisplayOptions.setBitmapProcessor(new CircleBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.LIST_VIEW, listDisplayOptions);
 
 		DisplayOptions galleryDisplayOptions = new DisplayOptions(getBaseContext());
-        galleryDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
-        galleryDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
+        galleryDisplayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+        galleryDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
         galleryDisplayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GALLERY, galleryDisplayOptions);
 		
 		DisplayOptions simpleDisplayOptions = new DisplayOptions(getBaseContext());
-        simpleDisplayOptions.setLoadingDrawableResId(R.drawable.image_loading);
-        simpleDisplayOptions.setFailureDrawableResId(R.drawable.image_load_failure);
+        simpleDisplayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+        simpleDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
         simpleDisplayOptions.setEnableMemoryCache(false);
         simpleDisplayOptions.setBitmapProcessor(null);
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.SIMPLE, simpleDisplayOptions);

@@ -21,14 +21,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
-import me.xiaopan.android.imageloader.task.display.AsyncDrawable;
-import me.xiaopan.android.imageloader.task.display.DisplayOptions;
-import me.xiaopan.android.imageloader.task.display.DisplayRequest;
-import me.xiaopan.android.imageloader.task.display.DisplayRequest.DisplayListener;
-import me.xiaopan.android.imageloader.task.display.ImageViewHolder;
+import me.xiaopan.android.imageloader.task.display.*;
+import me.xiaopan.android.imageloader.task.download.DownloadListener;
 import me.xiaopan.android.imageloader.task.download.DownloadOptions;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
-import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
+import me.xiaopan.android.imageloader.task.load.LoadListener;
 import me.xiaopan.android.imageloader.task.load.LoadOptions;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
@@ -115,7 +112,7 @@ public class ImageLoader{
      * @param loadOptions 配置缓存、失败重试、最大尺寸以及处理器
      * @param loadListener 监听加载过程
      */
-	public void load(String uri, LoadOptions loadOptions, LoadRequest.LoadListener loadListener){
+	public void load(String uri, LoadOptions loadOptions, LoadListener loadListener){
         //初始化参数
         if(ImageLoaderUtils.isEmpty(uri)) throw new IllegalArgumentException("uri不能为null或空");
         if(loadListener != null) loadListener.onStart();
@@ -144,7 +141,7 @@ public class ImageLoader{
      * @param loadOptionsName 加载选项的名称，你通过configuration.putOptions()方法放进去的LoadOptions在这里指定一样的名称就可以直接使用
      * @param loadListener 监听加载过程
      */
-    public void load(String uri, Enum<?> loadOptionsName, LoadRequest.LoadListener loadListener){
+    public void load(String uri, Enum<?> loadOptionsName, LoadListener loadListener){
         load(uri, (LoadOptions) configuration.getOptions(loadOptionsName), loadListener);
     }
 
@@ -159,7 +156,7 @@ public class ImageLoader{
      * </blockquote>
      * @param loadListener 监听加载过程
      */
-    public void load(String uri, LoadRequest.LoadListener loadListener){
+    public void load(String uri, LoadListener loadListener){
         load(uri, new LoadOptions(), loadListener);
     }
 
@@ -177,16 +174,10 @@ public class ImageLoader{
      * @param displayListener 显示监听器
      */
     public final void display(String uri, ImageView imageView, DisplayOptions displayOptions, DisplayListener displayListener){
-        //过滤掉空的ImageView
-        if(imageView == null){
-            throw new IllegalArgumentException("imageView不能为null");
-        }
-
-        //初始化一下
+        //初始化参数
+        if(imageView == null) throw new IllegalArgumentException("imageView不能为null");
         if(displayListener != null) displayListener.onStart();
-        if(displayOptions == null){
-            displayOptions = new DisplayOptions(configuration.getContext());
-        }
+        if(displayOptions == null) displayOptions = new DisplayOptions(configuration.getContext());
 
         //过滤掉空的URI
         if(ImageLoaderUtils.isEmpty(uri)){
@@ -238,7 +229,7 @@ public class ImageLoader{
         displayRequest.setScaleType(imageView.getScaleType());
 
         //显示默认图片
-        BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getLoadingDrawable();
+        BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getDisplayingDrawable();
         imageView.setImageDrawable(new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, displayRequest));
 
         //执行请求

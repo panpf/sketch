@@ -16,7 +16,6 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
-import android.graphics.Bitmap;
 import android.widget.ImageView;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
@@ -77,21 +76,4 @@ public class LoadRequest extends DownloadRequest{
     public ImageSize getMaxImageSize() {
         return loadOptions != null?loadOptions.getMaxImageSize():null;
     }
-
-	/**
-	 * 加载监听器
-	 */
-	public interface LoadListener {
-		public void onStart();
-
-        /**
-         * 更新下载进度
-         * @param totalLength
-         * @param completedLength
-         */
-        public void onUpdateProgress(long totalLength, long completedLength);
-		public void onComplete(Bitmap bitmap);
-        public void onFailure();
-		public void onCancel();
-	}
 }

@@ -18,40 +18,26 @@ package me.xiaopan.android.imageloader.task.load;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.util.Log;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.task.TaskRequest;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.File;
 
-public class ContentOnDecodeListener implements BitmapDecoder.OnDecodeListener {
-    private static final String NAME = ContentOnDecodeListener.class.getSimpleName();
-	private String contentUri;
-	private TaskRequest taskRequest;
+public class FileDecodeListener implements BitmapDecoder.DecodeListener {
+    private static final String NAME = FileDecodeListener.class.getSimpleName();
+	private File file;
+    private TaskRequest taskRequest;
 	
-	public ContentOnDecodeListener(String contentUri, TaskRequest taskRequest) {
-		this.contentUri = contentUri;
-		this.taskRequest = taskRequest;
+	public FileDecodeListener(File file, TaskRequest taskRequest) {
+		this.file = file;
+        this.taskRequest = taskRequest;
 	}
 
     @Override
     public Bitmap onDecode(BitmapFactory.Options options) {
-        InputStream inputStream = null;
-        try {
-            inputStream = taskRequest.getConfiguration().getContext().getContentResolver().openInputStream(Uri.parse(contentUri));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Bitmap bitmap = null;
-        if(inputStream != null){
-            bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-            ImageLoaderUtils.close(inputStream);
-        }
-        return bitmap;
+        return BitmapFactory.decodeFile(file.getPath(), options);
     }
 
     @Override
@@ -62,7 +48,7 @@ public class ContentOnDecodeListener implements BitmapDecoder.OnDecodeListener {
     @Override
     public void onDecodeFailure() {
         if(taskRequest.getConfiguration().isDebugMode()){
-            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(contentUri).toString());
+            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(file.getPath()).toString());
         }
     }
 }

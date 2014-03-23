@@ -1,6 +1,6 @@
 package me.xiaopan.android.imageloader.task.load;
 
-import me.xiaopan.android.imageloader.task.download.DownloadRequest.DownloadListener;
+import me.xiaopan.android.imageloader.task.download.DownloadListener;
 
 import java.io.File;
 import java.util.concurrent.Executor;
@@ -29,12 +29,12 @@ public class LoadJoinDownloadListener implements DownloadListener {
 
     @Override
     public void onComplete(File cacheFile) {
-        executor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new CacheFileOnDecodeListener(cacheFile, loadRequest))));
+        executor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest))));
     }
 
     @Override
     public void onComplete(byte[] data) {
-        executor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ByteArrayOnDecodeListener(data, loadRequest))));
+        executor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ByteArrayDecodeListener(data, loadRequest))));
     }
 
 	@Override

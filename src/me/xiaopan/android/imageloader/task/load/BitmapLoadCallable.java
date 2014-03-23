@@ -23,9 +23,9 @@ import java.util.concurrent.Callable;
 
 public class BitmapLoadCallable implements Callable<Object> {
 	protected LoadRequest loadRequest;
-    private BitmapDecoder.OnDecodeListener onDecodeListener;
+    private BitmapDecoder.DecodeListener onDecodeListener;
 	
-	public BitmapLoadCallable(LoadRequest displayRequest, BitmapDecoder.OnDecodeListener onDecodeListener) {
+	public BitmapLoadCallable(LoadRequest displayRequest, BitmapDecoder.DecodeListener onDecodeListener) {
 		this.loadRequest = displayRequest;
         this.onDecodeListener = onDecodeListener;
 	}

@@ -16,7 +16,6 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 import me.xiaopan.android.imageloader.process.BitmapProcessor;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
@@ -116,12 +115,5 @@ public class DisplayRequest extends LoadRequest{
             }
         }
         return stringBuffer.toString();
-    }
-
-    public interface DisplayListener {
-        public void onStart();
-        public void onFailure();
-        public void onComplete(String imageUri, ImageView imageView, BitmapDrawable drawable);
-        public void onCancel();
     }
 }

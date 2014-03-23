@@ -21,14 +21,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.util.Log;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.display.BitmapDisplayer;
-import me.xiaopan.android.imageloader.task.load.LoadRequest;
+import me.xiaopan.android.imageloader.task.load.LoadListener;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 
-/**
- * Created by xiaopan on 2014/3/21 0021.
- */
-public class DisplayJoinLoadListener implements LoadRequest.LoadListener{
+public class DisplayJoinLoadListener implements LoadListener {
     private static String NAME= DisplayJoinLoadListener.class.getSimpleName();
     private DisplayRequest displayRequest;
 
@@ -42,8 +39,15 @@ public class DisplayJoinLoadListener implements LoadRequest.LoadListener{
     }
 
     @Override
-    public void onUpdateProgress(long totalLength, long completedLength) {
-
+    public void onUpdateProgress(final long totalLength, final long completedLength) {
+        if(displayRequest.getDisplayListener() != null){
+            displayRequest.getConfiguration().getHandler().post(new Runnable() {
+                @Override
+                public void run() {
+                    displayRequest.getDisplayListener().onUpdateProgress(totalLength, completedLength);
+                }
+            });
+        }
     }
 
     @Override

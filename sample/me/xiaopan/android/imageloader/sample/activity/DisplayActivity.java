@@ -62,7 +62,7 @@ public class DisplayActivity extends FragmentActivity {
 		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, GravityCompat.END);
 		
 		viewTypeListView = (ListView) findViewById(R.id.list_display_views);
-		viewTypeListView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery", "ViewPager", "常规"));
+		viewTypeListView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery", "ViewPager"));
 		viewTypeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -71,16 +71,6 @@ public class DisplayActivity extends FragmentActivity {
 					case 1 : viewType = ViewType.LIST_VIEW; update(true); break;
 					case 2 : viewType = ViewType.GALLERY; update(true); break;
 					case 3 : viewType = ViewType.VIEW_PAGER; update(true); break;
-					case 4 : 
-						Bundle bundle = new Bundle();
-						bundle.putString(SimpleImageFragment.PARAM_REQUIRED_IMAGE_URI, "http://file.2000fun.com/forum/forumid_124/20101114_1a1a3eef34b7c824b90fHU2q5Q8WsyA4.jpg");
-						Fragment fragment = new SimpleImageFragment();
-						fragment.setArguments(bundle);
-						FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-						fragmentTransaction.setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out).addToBackStack("");
-						fragmentTransaction.add(R.id.fragment_display, fragment);
-						fragmentTransaction.commitAllowingStateLoss();
-						break;
 				}
 				drawerLayout.closeDrawers();
 			}
@@ -169,11 +159,6 @@ public class DisplayActivity extends FragmentActivity {
 			}
 			if(fragment != null){
 				String subTitle = viewName + " " + uriName;
-				if(Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB){
-//					getActionBar().setSubtitle(subTitle);
-				}else{
-//					setTitle(subTitle);
-				}
 				Bundle bundle = new Bundle();
 				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, uris);
 				fragment.setArguments(bundle);
@@ -195,11 +180,11 @@ public class DisplayActivity extends FragmentActivity {
 	}
 	
 	public enum ViewType{
-		GRID_VIEW, LIST_VIEW, GALLERY, VIEW_PAGER;
+		GRID_VIEW, LIST_VIEW, GALLERY, VIEW_PAGER,
 	}
 	
 	public enum UriType{
-		HTTP, FILE, CONTENT, ASSETS, DRAWABLE;
+		HTTP, FILE, CONTENT, ASSETS, DRAWABLE,
 	}
 	
 	@Override
@@ -250,9 +235,6 @@ public class DisplayActivity extends FragmentActivity {
 	
 	/**
 	 * 根据Uri获取路径
-	 * @param context
-	 * @param uri
-	 * @return
 	 */
 	public static String getPathByUri(Context context, Uri uri){
 		String filePath = null;

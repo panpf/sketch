@@ -23,24 +23,19 @@ import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 
-public class DrawableOnDecodeListener implements BitmapDecoder.OnDecodeListener {
-    private static final String NAME = DrawableOnDecodeListener.class.getSimpleName();
-	private String drawableIdString;
+public class ByteArrayDecodeListener implements BitmapDecoder.DecodeListener {
+    private static final String NAME = ByteArrayDecodeListener.class.getSimpleName();
+	private byte[] data;
     private TaskRequest taskRequest;
 	
-	public DrawableOnDecodeListener(String drawableIdString, TaskRequest taskRequest) {
-		this.drawableIdString = drawableIdString;
+	public ByteArrayDecodeListener(byte[] data, TaskRequest taskRequest) {
+		this.data = data;
         this.taskRequest = taskRequest;
 	}
 
     @Override
     public Bitmap onDecode(BitmapFactory.Options options) {
-//        BitmapDrawable drawable = (BitmapDrawable) taskRequest.getConfiguration().getContext().getResources().getDrawable(Integer.parseInt(drawableIdString));
-//        Bitmap bitmap = drawable.getBitmap();
-//        ByteArrayOutputStream os = new ByteArrayOutputStream();
-//        bitmap.compress(CompressFormat.PNG, 0, os);
-//        return new ByteArrayInputStream(os.toByteArray());
-        return BitmapFactory.decodeResource(taskRequest.getConfiguration().getContext().getResources(), Integer.valueOf(drawableIdString), options);
+        return BitmapFactory.decodeByteArray(data, 0, data.length, options);
     }
 
     @Override
@@ -51,7 +46,7 @@ public class DrawableOnDecodeListener implements BitmapDecoder.OnDecodeListener 
     @Override
     public void onDecodeFailure() {
         if(taskRequest.getConfiguration().isDebugMode()){
-            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(drawableIdString).toString());
+            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(taskRequest.getName()).toString());
         }
     }
 }

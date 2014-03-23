@@ -27,12 +27,12 @@ import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import java.io.IOException;
 import java.io.InputStream;
 
-public class AssetsOnDecodeListener implements BitmapDecoder.OnDecodeListener {
-    private static final String NAME = AssetsOnDecodeListener.class.getSimpleName();
+public class AssetsDecodeListener implements BitmapDecoder.DecodeListener {
+    private static final String NAME = AssetsDecodeListener.class.getSimpleName();
 	private String assetsFilePath;
     private TaskRequest taskRequest;
 	
-	public AssetsOnDecodeListener(String assetsFilePath, TaskRequest taskRequest) {
+	public AssetsDecodeListener(String assetsFilePath, TaskRequest taskRequest) {
 		this.assetsFilePath = assetsFilePath;
 		this.taskRequest = taskRequest;
 	}

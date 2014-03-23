@@ -36,14 +36,14 @@ public class DisplayOptions extends LoadOptions {
 	private boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
 	private BitmapDisplayer bitmapDisplayer;	//位图显示器
 	private DrawableHolder emptyDrawableHolder;	//当uri为空时显示的图片
-	private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
+	private DrawableHolder displayingDrawableHolder;	//当正在加载时显示的图片
 	private DrawableHolder failureDrawableHolder;	//当加载失败时显示的图片
 	
 	public DisplayOptions(Context context) {
         this.context = context;
 		this.bitmapDisplayer = new FadeInBitmapDisplayer();
 		this.emptyDrawableHolder = new DrawableHolder();
-		this.loadingDrawableHolder = new DrawableHolder();
+		this.displayingDrawableHolder = new DrawableHolder();
 		this.failureDrawableHolder = new DrawableHolder();
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         super.setMaxImageSize(new ImageSize(displayMetrics.widthPixels, displayMetrics.heightPixels));
@@ -101,12 +101,12 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 获取加载中图片，此图片是经过BitmapProcessor处理之后的
-	 * @return 正在加载时显示的图片
+	 * 获取显示中图片，此图片是经过BitmapProcessor处理之后的
+	 * @return 正在显示时显示的图片
 	 */
-	public BitmapDrawable getLoadingDrawable() {
-		if(loadingDrawableHolder.getDrawable() == null && loadingDrawableHolder.getResId() > 0){
-            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), loadingDrawableHolder.getResId());
+	public BitmapDrawable getDisplayingDrawable() {
+		if(displayingDrawableHolder.getDrawable() == null && displayingDrawableHolder.getResId() > 0){
+            Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), displayingDrawableHolder.getResId());
 			if(bitmap != null){
 				if(getBitmapProcessor() != null){
 					Bitmap newBitmap = getBitmapProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
@@ -115,10 +115,10 @@ public class DisplayOptions extends LoadOptions {
                         bitmap = newBitmap;
                     }
 				}
-				loadingDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
+				displayingDrawableHolder.setDrawable(new BitmapDrawable(context.getResources(), bitmap));
 			}
 		}
-		return loadingDrawableHolder.getDrawable();
+		return displayingDrawableHolder.getDrawable();
 	}
 
 	/**
@@ -126,12 +126,12 @@ public class DisplayOptions extends LoadOptions {
 	 * @param resId 在加载时显示的图片的资源ID
 	 */
 	public void setLoadingDrawableResId(int resId) {
-		loadingDrawableHolder.setResId(resId);
-		if(loadingDrawableHolder.getDrawable() != null){
-			if(!loadingDrawableHolder.getDrawable().getBitmap().isRecycled()){
-				loadingDrawableHolder.getDrawable().getBitmap().recycle();
+		displayingDrawableHolder.setResId(resId);
+		if(displayingDrawableHolder.getDrawable() != null){
+			if(!displayingDrawableHolder.getDrawable().getBitmap().isRecycled()){
+				displayingDrawableHolder.getDrawable().getBitmap().recycle();
 			}
-			loadingDrawableHolder.setDrawable(null);
+			displayingDrawableHolder.setDrawable(null);
 		}
 	}
 
@@ -193,7 +193,7 @@ public class DisplayOptions extends LoadOptions {
     public void setBitmapProcessor(BitmapProcessor bitmapProcessor) {
         super.setBitmapProcessor(bitmapProcessor);
         emptyDrawableHolder.setDrawable(null);
-        loadingDrawableHolder.setDrawable(null);
+        displayingDrawableHolder.setDrawable(null);
         failureDrawableHolder.setDrawable(null);
     }
 
@@ -211,7 +211,7 @@ public class DisplayOptions extends LoadOptions {
         displayOptions.setBitmapDisplayer(bitmapDisplayer != null?bitmapDisplayer.copy():null);
         displayOptions.setEmptyDrawableResId(emptyDrawableHolder.getResId());
         displayOptions.setFailureDrawableResId(failureDrawableHolder.getResId());
-        displayOptions.setLoadingDrawableResId(loadingDrawableHolder.getResId());
+        displayOptions.setLoadingDrawableResId(displayingDrawableHolder.getResId());
         displayOptions.setMaxImageSize(getMaxImageSize() != null ? getMaxImageSize().copy() : null);
 		return displayOptions;
 	}

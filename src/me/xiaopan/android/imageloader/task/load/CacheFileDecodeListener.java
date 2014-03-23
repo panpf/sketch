@@ -25,12 +25,12 @@ import me.xiaopan.android.imageloader.task.TaskRequest;
 
 import java.io.File;
 
-public class FileOnDecodeListener implements BitmapDecoder.OnDecodeListener {
-    private static final String NAME = FileOnDecodeListener.class.getSimpleName();
+public class CacheFileDecodeListener implements BitmapDecoder.DecodeListener {
+    private static final String NAME = CacheFileDecodeListener.class.getSimpleName();
 	private File file;
     private TaskRequest taskRequest;
-	
-	public FileOnDecodeListener(File file, TaskRequest taskRequest) {
+
+	public CacheFileDecodeListener(File file, TaskRequest taskRequest) {
 		this.file = file;
         this.taskRequest = taskRequest;
 	}
@@ -42,13 +42,14 @@ public class FileOnDecodeListener implements BitmapDecoder.OnDecodeListener {
 
     @Override
     public void onDecodeSuccess() {
-
+        file.setLastModified(System.currentTimeMillis());
     }
 
     @Override
     public void onDecodeFailure() {
+//        file.delete();
         if(taskRequest.getConfiguration().isDebugMode()){
-            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(file.getPath()).toString());
+            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败，已删除缓存文件").append("：").append(file.getPath()).toString());
         }
     }
 }
