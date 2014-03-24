@@ -46,7 +46,7 @@
         </LinearLayout>
 
         <LinearLayout style="@style/match_wrap" android:layout_marginTop="2px">
-            <FrameLayout style="@style/wrap_wrap">
+            <FrameLayout style="@style/weight_wrap">
                 <ImageView
                     android:id="@+id/image_normal_21"
                     android:layout_width="200dp"
@@ -60,7 +60,7 @@
                     android:layout_gravity="center"/>
             </FrameLayout>
 
-            <FrameLayout style="@style/wrap_wrap" android:layout_marginLeft="2px">
+            <FrameLayout style="@style/weight_wrap" android:layout_marginLeft="2px">
                 <ImageView
                     android:id="@+id/image_normal_22"
                     android:layout_width="200dp"
