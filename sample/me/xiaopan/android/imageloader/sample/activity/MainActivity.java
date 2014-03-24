@@ -16,14 +16,14 @@
 
 package me.xiaopan.android.imageloader.sample.activity;
 
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.sample.adapter.BlackStringAdapter;
 import android.app.ListActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.sample.adapter.BlackStringAdapter;
 
 public class MainActivity extends ListActivity {
 

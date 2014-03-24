@@ -16,12 +16,16 @@
 
 package me.xiaopan.android.imageloader.util;
 
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
-
-import java.io.*;
-import java.net.URLEncoder;
 
 public class ImageLoaderUtils {
 

@@ -16,6 +16,14 @@
 
 package me.xiaopan.android.imageloader.sample.activity;
 
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
+import me.xiaopan.android.imageloader.process.ReflectionBitmapProcessor;
+import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
+import me.xiaopan.android.imageloader.task.load.LoadListener;
+import me.xiaopan.android.imageloader.task.load.LoadOptions;
+import me.xiaopan.android.imageloader.util.ImageSize;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -25,16 +33,14 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.*;
-import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
-import me.xiaopan.android.imageloader.process.ReflectionBitmapProcessor;
-import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
-import me.xiaopan.android.imageloader.task.load.LoadListener;
-import me.xiaopan.android.imageloader.task.load.LoadOptions;
-import me.xiaopan.android.imageloader.task.load.LoadRequest;
-import me.xiaopan.android.imageloader.util.ImageSize;
+import android.widget.AdapterView;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Spinner;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class LoadActivity extends Activity {
     private EditText periodOfValidityEdit;

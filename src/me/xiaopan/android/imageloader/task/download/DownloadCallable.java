@@ -16,9 +16,22 @@
 
 package me.xiaopan.android.imageloader.task.download;
 
-import android.util.Log;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.SocketTimeoutException;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.Callable;
+import java.util.concurrent.locks.ReentrantLock;
+
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
+
 import org.apache.http.Header;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -37,12 +50,7 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpProtocolParams;
 
-import java.io.*;
-import java.net.SocketTimeoutException;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.Callable;
-import java.util.concurrent.locks.ReentrantLock;
+import android.util.Log;
 
 public class DownloadCallable implements Callable<Object>{
     private static final int DEFAULT_CONNECTION_TIME_OUT = 2000;

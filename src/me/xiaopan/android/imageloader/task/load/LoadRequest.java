@@ -16,9 +16,9 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
-import android.widget.ImageView;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
+import android.widget.ImageView;
 
 /**
  * 加载请求

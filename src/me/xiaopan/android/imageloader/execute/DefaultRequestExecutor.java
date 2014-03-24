@@ -16,38 +16,46 @@
 
 package me.xiaopan.android.imageloader.execute;
 
-import android.util.Log;
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.TaskRequest;
-import me.xiaopan.android.imageloader.task.display.DisplayJoinLoadListener;
-import me.xiaopan.android.imageloader.task.display.DisplayRequest;
-import me.xiaopan.android.imageloader.task.download.DownloadRequest;
-import me.xiaopan.android.imageloader.task.download.DownloadTask;
-import me.xiaopan.android.imageloader.task.load.*;
-import me.xiaopan.android.imageloader.util.Scheme;
-
 import java.io.File;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.task.TaskRequest;
+import me.xiaopan.android.imageloader.task.display.DisplayJoinLoadListener;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
+import me.xiaopan.android.imageloader.task.download.DownloadRequest;
+import me.xiaopan.android.imageloader.task.download.DownloadTask;
+import me.xiaopan.android.imageloader.task.load.AssetsDecodeListener;
+import me.xiaopan.android.imageloader.task.load.BitmapLoadCallable;
+import me.xiaopan.android.imageloader.task.load.BitmapLoadTask;
+import me.xiaopan.android.imageloader.task.load.CacheFileDecodeListener;
+import me.xiaopan.android.imageloader.task.load.ContentDecodeListener;
+import me.xiaopan.android.imageloader.task.load.DrawableDecodeListener;
+import me.xiaopan.android.imageloader.task.load.FileDecodeListener;
+import me.xiaopan.android.imageloader.task.load.LoadJoinDownloadListener;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
+import me.xiaopan.android.imageloader.util.Scheme;
+import android.util.Log;
+
 /**
- * 基本的任务执行器
+ * 默认的请求执行器
  */
-public class BaseRequestExecutor implements RequestExecutor {
-	private static final String NAME= BaseRequestExecutor.class.getSimpleName();
+public class DefaultRequestExecutor implements RequestExecutor {
+	private static final String NAME= DefaultRequestExecutor.class.getSimpleName();
 	private Executor taskDispatchExecutor;	//任务调度执行器
 	private Executor netTaskExecutor;	//网络任务执行器
 	private Executor localTaskExecutor;	//本地任务执行器
 	
-	public BaseRequestExecutor(Executor taskDispatchExecutor, Executor netTaskExecutor, Executor localTaskExecutor){
+	public DefaultRequestExecutor(Executor taskDispatchExecutor, Executor netTaskExecutor, Executor localTaskExecutor){
 		this.taskDispatchExecutor = taskDispatchExecutor;
 		this.netTaskExecutor = netTaskExecutor;
 		this.localTaskExecutor = localTaskExecutor;
 	}
 	
-	public BaseRequestExecutor(Executor netTaskExecutor){
+	public DefaultRequestExecutor(Executor netTaskExecutor){
 		this(
 			new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy()),
 			netTaskExecutor, 
@@ -55,7 +63,7 @@ public class BaseRequestExecutor implements RequestExecutor {
 		);
 	}
 	
-	public BaseRequestExecutor(){
+	public DefaultRequestExecutor(){
 		this(new ThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy()));
 	}
 	

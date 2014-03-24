@@ -16,9 +16,15 @@
 
 package me.xiaopan.android.imageloader.process;
 
-import android.graphics.*;
-import android.widget.ImageView.ScaleType;
 import me.xiaopan.android.imageloader.util.ImageSize;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.widget.ImageView.ScaleType;
 
 /**
  * 圆角位图处理器

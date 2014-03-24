@@ -16,14 +16,14 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.util.Log;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.display.BitmapDisplayer;
 import me.xiaopan.android.imageloader.task.load.LoadListener;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.util.Log;
 
 public class DisplayJoinLoadListener implements LoadListener {
     private static String NAME= DisplayJoinLoadListener.class.getSimpleName();

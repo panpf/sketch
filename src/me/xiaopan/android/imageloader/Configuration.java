@@ -16,19 +16,19 @@
 
 package me.xiaopan.android.imageloader;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import me.xiaopan.android.imageloader.cache.BitmapCacher;
+import me.xiaopan.android.imageloader.cache.BitmapLruCacher;
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
+import me.xiaopan.android.imageloader.decode.DefaultBitmapDecoder;
+import me.xiaopan.android.imageloader.execute.DefaultRequestExecutor;
+import me.xiaopan.android.imageloader.execute.RequestExecutor;
+import me.xiaopan.android.imageloader.task.TaskOptions;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
-import me.xiaopan.android.imageloader.cache.BitmapCacher;
-import me.xiaopan.android.imageloader.cache.BitmapLruCacher;
-import me.xiaopan.android.imageloader.decode.BaseBitmapDecoder;
-import me.xiaopan.android.imageloader.decode.BitmapDecoder;
-import me.xiaopan.android.imageloader.execute.BaseRequestExecutor;
-import me.xiaopan.android.imageloader.execute.RequestExecutor;
-import me.xiaopan.android.imageloader.task.TaskOptions;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * 配置
@@ -66,7 +66,7 @@ public class Configuration {
 	 */
 	public RequestExecutor getRequestExecutor() {
 		if(requestExecutor == null){
-			requestExecutor = new BaseRequestExecutor();
+			requestExecutor = new DefaultRequestExecutor();
 		}
 		return requestExecutor;
 	}
@@ -106,7 +106,7 @@ public class Configuration {
 	 */
 	public BitmapDecoder getBitmapDecoder() {
 		if(bitmapDecoder == null){
-			bitmapDecoder = new BaseBitmapDecoder();
+			bitmapDecoder = new DefaultBitmapDecoder();
 		}
 		return bitmapDecoder;
 	}

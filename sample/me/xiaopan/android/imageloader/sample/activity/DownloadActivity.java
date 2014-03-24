@@ -16,6 +16,12 @@
 
 package me.xiaopan.android.imageloader.sample.activity;
 
+import java.io.File;
+
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.task.download.DownloadListener;
+import me.xiaopan.android.imageloader.task.download.DownloadOptions;
 import android.app.Activity;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -26,14 +32,12 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.*;
-import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.download.DownloadListener;
-import me.xiaopan.android.imageloader.task.download.DownloadOptions;
-import me.xiaopan.android.imageloader.task.download.DownloadRequest;
-
-import java.io.File;
+import android.widget.CompoundButton;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.Toast;
+import android.widget.ToggleButton;
 
 public class DownloadActivity extends Activity {
     private EditText periodOfValidityEdit;

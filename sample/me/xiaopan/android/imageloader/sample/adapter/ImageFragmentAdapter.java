@@ -16,11 +16,11 @@
 
 package me.xiaopan.android.imageloader.sample.adapter;
 
+import me.xiaopan.android.imageloader.sample.fragment.ImageFragment;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import me.xiaopan.android.imageloader.sample.fragment.ImageFragment;
 
 public class ImageFragmentAdapter extends FragmentStatePagerAdapter {
 	private String[] uris;

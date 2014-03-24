@@ -16,11 +16,16 @@
 
 package me.xiaopan.android.imageloader.process;
 
-import android.graphics.*;
+import me.xiaopan.android.imageloader.util.ImageSize;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.LinearGradient;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader.TileMode;
 import android.widget.ImageView.ScaleType;
-import me.xiaopan.android.imageloader.util.ImageSize;
 
 /**
  * 倒影位图处理器

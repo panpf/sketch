@@ -16,10 +16,10 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
-import android.widget.ImageView;
 import me.xiaopan.android.imageloader.process.BitmapProcessor;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
+import android.widget.ImageView;
 
 /**
  * 显示请求

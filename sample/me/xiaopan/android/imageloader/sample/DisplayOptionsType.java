@@ -35,10 +35,5 @@ public enum DisplayOptionsType {
 	/**
 	 * ViewPager用的
 	 */
-	VIEW_PAGER, 
-	
-	/**
-	 * 
-	 */
-	SIMPLE;
+	VIEW_PAGER,
 }

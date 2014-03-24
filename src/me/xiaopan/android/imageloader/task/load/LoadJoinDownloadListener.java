@@ -1,9 +1,9 @@
 package me.xiaopan.android.imageloader.task.load;
 
-import me.xiaopan.android.imageloader.task.download.DownloadListener;
-
 import java.io.File;
 import java.util.concurrent.Executor;
+
+import me.xiaopan.android.imageloader.task.download.DownloadListener;
 
 public class LoadJoinDownloadListener implements DownloadListener {
 

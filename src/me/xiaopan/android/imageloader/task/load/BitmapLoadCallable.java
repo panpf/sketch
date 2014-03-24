@@ -16,10 +16,10 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
-import android.graphics.Bitmap;
-import me.xiaopan.android.imageloader.decode.BitmapDecoder;
-
 import java.util.concurrent.Callable;
+
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
+import android.graphics.Bitmap;
 
 public class BitmapLoadCallable implements Callable<Object> {
 	protected LoadRequest loadRequest;

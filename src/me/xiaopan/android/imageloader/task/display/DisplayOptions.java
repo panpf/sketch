@@ -16,17 +16,17 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
+import me.xiaopan.android.imageloader.display.BitmapDisplayer;
+import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
+import me.xiaopan.android.imageloader.process.BitmapProcessor;
+import me.xiaopan.android.imageloader.task.load.LoadOptions;
+import me.xiaopan.android.imageloader.util.ImageSize;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.util.DisplayMetrics;
 import android.widget.ImageView.ScaleType;
-import me.xiaopan.android.imageloader.display.BitmapDisplayer;
-import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
-import me.xiaopan.android.imageloader.process.BitmapProcessor;
-import me.xiaopan.android.imageloader.task.load.LoadOptions;
-import me.xiaopan.android.imageloader.util.ImageSize;
 
 /**
  * 显示选项

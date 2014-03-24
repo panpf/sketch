@@ -16,13 +16,6 @@
 
 package me.xiaopan.android.imageloader.sample.activity;
 
-import android.app.Activity;
-import android.graphics.drawable.BitmapDrawable;
-import android.os.Bundle;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.display.ZoomInBitmapDisplayer;
@@ -30,9 +23,15 @@ import me.xiaopan.android.imageloader.display.ZoomOutBitmapDisplayer;
 import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
 import me.xiaopan.android.imageloader.process.ReflectionBitmapProcessor;
 import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
-import me.xiaopan.android.imageloader.sample.DisplayOptionsType;
 import me.xiaopan.android.imageloader.task.display.DisplayListener;
 import me.xiaopan.android.imageloader.task.display.DisplayOptions;
+import android.app.Activity;
+import android.graphics.drawable.BitmapDrawable;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
 
 /**
  * Created by Xiaopan on 2014/3/23 0023.

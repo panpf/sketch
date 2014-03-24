@@ -16,6 +16,8 @@
 
 package me.xiaopan.android.imageloader.cache;
 
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
+import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
@@ -23,14 +25,9 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.v4.util.LruCache;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
-
-import java.lang.ref.SoftReference;
-import java.util.Set;
 
 public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
-	private Set<SoftReference<Bitmap>> mReusableBitmaps;
+//	private Set<SoftReference<Bitmap>> mReusableBitmaps;
 
 	public BitmapLruCache(int maxSize) {
 		super(maxSize);

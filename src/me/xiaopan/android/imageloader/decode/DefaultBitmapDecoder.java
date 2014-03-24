@@ -16,6 +16,9 @@
 
 package me.xiaopan.android.imageloader.decode;
 
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,15 +26,12 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.Log;
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.load.LoadRequest;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 
 /**
- * 位图解码器
+ * 默认的位图解码器
  */
-public class BaseBitmapDecoder implements BitmapDecoder{
-	private static final String NAME= BaseBitmapDecoder.class.getSimpleName();
+public class DefaultBitmapDecoder implements BitmapDecoder{
+	private static final String NAME= DefaultBitmapDecoder.class.getSimpleName();
 	
 	@Override
 	public Bitmap decode(LoadRequest loadRequest, DecodeListener decodeListener){

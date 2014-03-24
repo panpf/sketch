@@ -16,15 +16,6 @@
 
 package me.xiaopan.android.imageloader.cache;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.os.Build;
-import android.os.StatFs;
-import android.util.Log;
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.TaskRequest;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -33,6 +24,15 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Comparator;
 import java.util.GregorianCalendar;
+
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.task.TaskRequest;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
+import android.annotation.TargetApi;
+import android.content.Context;
+import android.os.Build;
+import android.os.StatFs;
+import android.util.Log;
 
 public abstract class BitmapDiskCacher implements BitmapCacher {
 	private static final String DEFAULT_DIRECTORY_NAME = "image_loader";

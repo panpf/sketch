@@ -16,15 +16,15 @@
 
 package me.xiaopan.android.imageloader.sample.adapter;
 
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.sample.DisplayOptionsType;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.sample.DisplayOptionsType;
 
 public class ListImageAdapter extends BaseAdapter {
 	private Context context;

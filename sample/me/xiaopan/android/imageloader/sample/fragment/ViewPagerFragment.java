@@ -16,6 +16,8 @@
 
 package me.xiaopan.android.imageloader.sample.fragment;
 
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.sample.adapter.ImageFragmentAdapter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -23,8 +25,6 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.sample.adapter.ImageFragmentAdapter;
 
 public class ViewPagerFragment extends Fragment {
 	public static final String PARAM_OPTIONAL_INT_CURRENT_POSITION = "PARAM_OPTIONAL_INT_CURRENT_POSITION";;

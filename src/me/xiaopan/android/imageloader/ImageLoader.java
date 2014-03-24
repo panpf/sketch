@@ -16,12 +16,13 @@
 
 package me.xiaopan.android.imageloader;
 
-import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.util.Log;
-import android.widget.ImageView;
-import me.xiaopan.android.imageloader.task.display.*;
+import java.io.File;
+
+import me.xiaopan.android.imageloader.task.display.AsyncDrawable;
+import me.xiaopan.android.imageloader.task.display.DisplayListener;
+import me.xiaopan.android.imageloader.task.display.DisplayOptions;
+import me.xiaopan.android.imageloader.task.display.DisplayRequest;
+import me.xiaopan.android.imageloader.task.display.ImageViewHolder;
 import me.xiaopan.android.imageloader.task.download.DownloadListener;
 import me.xiaopan.android.imageloader.task.download.DownloadOptions;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
@@ -31,8 +32,11 @@ import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import me.xiaopan.android.imageloader.util.Scheme;
-
-import java.io.File;
+import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
+import android.util.Log;
+import android.widget.ImageView;
 
 /**
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存

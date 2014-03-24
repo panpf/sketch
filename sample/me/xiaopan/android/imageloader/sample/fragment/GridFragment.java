@@ -16,6 +16,8 @@
 
 package me.xiaopan.android.imageloader.sample.fragment;
 
+import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.sample.adapter.GridImageAdapter;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -25,8 +27,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
-import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.sample.adapter.GridImageAdapter;
 
 public class GridFragment extends Fragment {
 	public static final String PARAM_REQUIRED_STRING_ARRAY_URLS = "PARAM_REQUIRED_STRING_ARRAY_URLS";

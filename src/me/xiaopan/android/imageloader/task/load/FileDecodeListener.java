@@ -16,14 +16,14 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
+import java.io.File;
+
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.task.TaskRequest;
-
-import java.io.File;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.util.Log;
 
 public class FileDecodeListener implements BitmapDecoder.DecodeListener {
     private static final String NAME = FileDecodeListener.class.getSimpleName();

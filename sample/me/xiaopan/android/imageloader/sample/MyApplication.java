@@ -16,7 +16,6 @@
 
 package me.xiaopan.android.imageloader.sample;
 
-import android.app.Application;
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.display.ZoomOutBitmapDisplayer;
@@ -24,6 +23,7 @@ import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
 import me.xiaopan.android.imageloader.process.ReflectionBitmapProcessor;
 import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
 import me.xiaopan.android.imageloader.task.display.DisplayOptions;
+import android.app.Application;
 
 public class MyApplication extends Application {
 
@@ -55,12 +55,5 @@ public class MyApplication extends Application {
         galleryDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
         galleryDisplayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GALLERY, galleryDisplayOptions);
-		
-		DisplayOptions simpleDisplayOptions = new DisplayOptions(getBaseContext());
-        simpleDisplayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
-        simpleDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
-        simpleDisplayOptions.setEnableMemoryCache(false);
-        simpleDisplayOptions.setBitmapProcessor(null);
-		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.SIMPLE, simpleDisplayOptions);
 	}
 }

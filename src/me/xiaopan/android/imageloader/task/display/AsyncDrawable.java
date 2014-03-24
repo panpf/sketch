@@ -16,13 +16,13 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
+import java.lang.ref.WeakReference;
+
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
-
-import java.lang.ref.WeakReference;
 
 public class AsyncDrawable extends BitmapDrawable {
     private WeakReference<DisplayRequest> displayRequestWeakReference;

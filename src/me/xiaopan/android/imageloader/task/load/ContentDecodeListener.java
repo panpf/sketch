@@ -16,17 +16,17 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.util.Log;
+import java.io.IOException;
+import java.io.InputStream;
+
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-
-import java.io.IOException;
-import java.io.InputStream;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.util.Log;
 
 public class ContentDecodeListener implements BitmapDecoder.DecodeListener {
     private static final String NAME = ContentDecodeListener.class.getSimpleName();

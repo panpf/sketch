@@ -16,11 +16,11 @@
 
 package me.xiaopan.android.imageloader.decode;
 
+import java.io.IOException;
+
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import me.xiaopan.android.imageloader.task.load.LoadRequest;
-
-import java.io.IOException;
 
 /**
  * 位图解码器

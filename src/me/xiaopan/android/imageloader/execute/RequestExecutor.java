@@ -19,7 +19,7 @@ package me.xiaopan.android.imageloader.execute;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 
 /**
- * 任务执行器
+ * 请求执行器
  */
 public interface RequestExecutor {
 	public void execute(TaskRequest taskRequest);
