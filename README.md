@@ -35,15 +35,24 @@ displayOptions.setFailureDrawableResId(R.drawable.image_failure);   //设置当�
 ###2.调用display()方法显示图片
 你可以在任何地方调用以下代码来显示图片
 ```java
-ImageLoader.getInstance(getContext()).display(imageUri, imageView, displayOptions);
+ImageLoader.getInstance(getBaseContext()).display("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg", findViewById(R.id.image_main), displayOptions);
 ```
 不管你是在Adapter的getView()中使用了ViewHolder还是在Activity的onCrate()中调用都不会显示混乱。
 
 ##Advanced
-###1.自定义DisplayOptions
+
+###1.URI类型
+URI支持以下五种类型
+>* "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
+>* "file:///mnt/sdcard/image.png"; // from SD card
+>* "content://media/external/audio/albumart/13"; // from content provider
+>* "assets://image.png"; // from assets
+>* "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+
+###2.自定义DisplayOptions
 ```java
 DisplayOptions displayOptions = new DisplayOptions(getBaseContext());
-displayOptions.setEmptyDrawableResId(R.drawable.image_failure);	//设置当uri为空时显示的图片
+displayOptions.setEmptyDrawableResId(R.drawable.image_failure);    //设置当uri为空时显示的图片
 displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);	//设置默认图片
 displayOptions.setFailureDrawableResId(R.drawable.image_failure);	//设置当加载失败时显示的图片
 displayOptions.setEnableMemoryCache(true);	//开启内存缓存，开启后会采用Lru算法将Bitmap缓存在内存中，以便重复利用
@@ -61,7 +70,7 @@ displayOptions.setBitmapDisplayer(new FadeInBitmapDisplayer());	//设置图片�
 >* 图片显示器为FadeInBitmapDisplayer（渐入效果）
 >* 最大重试次数为2
 
-###2.利用Configuration().putOptions()来管理多个DisplayOptions
+###3.利用Configuration().putOptions()来管理多个DisplayOptions
 当你有多个DisplayOptions的时候你要怎么去管理并方便的使用呢？别担心我已经为你提供了一个绝对可行的解决方案。
 
 首先你需要定义一个枚举类来作为Options的标签，如下：
@@ -119,7 +128,7 @@ ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, 
 ```
 注意：如果无法从Configuration中获取DisplayOptions的话ImageLoader就会创建一个默认的DisplayOptions。
 
-###3.自定义RequestExecutor（请求执行器）
+###4.自定义RequestExecutor（请求执行器）
 默认采用的是DefaultRequestExecutor，其包含三个线程池
 >* 网络任务线程池：主要用来执行比较耗时的下载任务，核心线程数``5``个，最大线程数``10``；
 >* 本地任务线程池：用来执行本地任务，例如assets、drawable、缓存图片等。核心线程数``1``个，最大线程数也是``1``个，这样一来本地任务可以一个一个加载；
@@ -129,17 +138,17 @@ ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, 
 
 如果你了解DefaultRequestExecutor的特性后依然感觉无法满足你的需求的话，你可以通过实现RequestExecutor接口来自定义，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setRequstExecutor(RequestExecutor requestExecutor)方法应用即可，不过建议你在动手实现之前先参考一下DefaultRequestExecutor。
 
-###4.自定义BitmapCacher（图片缓存器）
+###5.自定义BitmapCacher（图片缓存器）
 BitmapCacher是用来缓存Bitmap的，包括内存缓存和硬盘缓存，ImageLoader提供了以下两种缓存实现共选择：
 >* BitmapLruCacher：内存缓存部分采用LRU（近期最少使用）算法来缓存Bimtap，硬盘缓存部分两者都一样；
 >* BitmapSoftReferenceCacher：内存缓存部分采用软引用的方式来缓存Bitmap，硬盘缓存部分两者都一样。由于从Android4.0起虚拟机将变得异常活跃，所以此种缓存方法已经失去了其应有的作用，所以不建议使用。
 
 默认采用的是BitmapLruCacher，如果你想自定义的话只需实现BitmapCacher接口，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setBitmapCacher(BitmapCacher bitmapCacher)方法应用即可，同样建议在动手实现之前先参考一下BitmapLruCacher。
 
-###5.自定义BitmapDecoder（图片解码器）
+###6.自定义BitmapDecoder（图片解码器）
 BitmapDecoder是用来解码Bitmap的，默认的实现是DefaultBitmapDecoder，如果你想自定义的话只需实现BitmapDecoder接口，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setBitmapLoader(BitmapDecoder bitmapDecoder)方法应用即可，同样建议在动手实现之前先参考一下DefaultBitmapDecoder。
 
-###6.自定义BitmapProcessor（图片处理器）
+###7.自定义BitmapProcessor（图片处理器）
 BitmapProcessor是用来在BitmapDecoder解码完图片之后在对图片进行处理的，因此你可以利用BitmapProcessor将图片处理成任何你想要的效果。ImageLoader默认提供了三种BitmapProcessor供你使用：
 >* CircleBitmapProcessor：圆形图片处理器，可以将图片处理成圆形的，如示例图所示；
 >* ReflectionBitmapProcessor：倒影图片处理器，可以将图片处理成倒影效果的，如示例图所示。另外倒影的高度以及倒影的距离都可以通过构造函数来自定义；
@@ -150,7 +159,7 @@ BitmapProcessor是用来在BitmapDecoder解码完图片之后在对图片进行�
 >* 通过BitmapProcessor的process()方法传进去的Bitmap在你处理完之后你无需释放它，ImageLoader会去处理的；
 >* 在处理的过程中如果你多次创建了新的Bitmap，那么在你用完之后一定要记得释放。
 
-###7.自定义BitmapDisplayer（图片显示器）
+###8.自定义BitmapDisplayer（图片显示器）
 BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer来以不同的动画来显示图片，默认提供以下三种：
 >* FadeInBitmapDisplayer： 渐入效果。
 >* ZoomInBitmapDisplayer：渐入且由小到大效果。
