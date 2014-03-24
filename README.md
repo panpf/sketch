@@ -35,7 +35,7 @@ displayOptions.setFailureDrawableResId(R.drawable.image_failure);   //设置当�
 ###2.调用display()方法显示图片
 你可以在任何地方调用以下代码来显示图片
 ```java
-ImageLoader.getInstance(getContext()).display(imageUri, imageView, defaultOptions);
+ImageLoader.getInstance(getContext()).display(imageUri, imageView, displayOptions);
 ```
 不管你是在Adapter的getView()中使用了ViewHolder还是在Activity的onCrate()中调用都不会显示混乱。
 
@@ -44,7 +44,7 @@ ImageLoader.getInstance(getContext()).display(imageUri, imageView, defaultOption
 ```java
 DisplayOptions displayOptions = new DisplayOptions(getBaseContext());
 displayOptions.setEmptyDrawableResId(R.drawable.image_failure);	//设置当uri为空时显示的图片
-displayOptions.setLoadingDrawableResId(R.drawable.image_displaying);	//设置默认图片
+displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);	//设置默认图片
 displayOptions.setFailureDrawableResId(R.drawable.image_failure);	//设置当加载失败时显示的图片
 displayOptions.setEnableMemoryCache(true);	//开启内存缓存，开启后会采用Lru算法将Bitmap缓存在内存中，以便重复利用
 displayOptions.setEnableDiskCache(true);	//开启硬盘缓存，开启后会先将图片下载到本地，然后再加载到内存中
@@ -91,7 +91,7 @@ public enum DisplayOptionsType {
 然后定义多个DisplayOptions，且通过ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(Enum<?> enum, Options options)方法将DisplayOptions和Enum绑定并放进Configuratin中
 ```java
 DisplayOptions gridDisplayOptions = new DisplayOptions(getBaseContext());
-gridDisplayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+gridDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
 gridDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
 gridDisplayOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
 ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GRID_VIEW, gridDisplayOptions);
@@ -102,13 +102,13 @@ viewPagerDisplayOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
 ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.VIEW_PAGER, viewPagerDisplayOptions);
 		
 DisplayOptions listDisplayOptions = new DisplayOptions(getBaseContext());
-listDisplayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+listDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
 listDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
 listDisplayOptions.setBitmapProcessor(new CircleBitmapProcessor());
 ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.LIST_VIEW, listDisplayOptions);
 
 DisplayOptions galleryDisplayOptions = new DisplayOptions(getBaseContext());
-galleryDisplayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+galleryDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
 galleryDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
 galleryDisplayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
 ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GALLERY, galleryDisplayOptions);
@@ -117,7 +117,7 @@ ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayO
 ```java
 ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, OptionsType.GALLERY);
 ```
-注意：如果无法从Configuration中获取Options的话ImageLoader就会创建一个默认的Options。
+注意：如果无法从Configuration中获取DisplayOptions的话ImageLoader就会创建一个默认的DisplayOptions。
 
 ###3.自定义RequestExecutor（请求执行器）
 默认采用的是DefaultRequestExecutor，其包含三个线程池

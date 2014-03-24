@@ -20,7 +20,7 @@ gen/
 
 # Idea files
 .idea/
-*.iml
+#*.iml
 
 # Gradle files
 .gradle/

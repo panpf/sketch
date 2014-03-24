@@ -110,28 +110,28 @@ public class NormalActivity extends Activity{
         displayOptions.setEnableMemoryCache(false);
         switch (position){
             case 11 :
-                displayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+                displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
                 displayOptions.setFailureDrawableResId(R.drawable.image_failure);
                 displayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
                 break;
             case 12 :
-                displayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+                displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
                 displayOptions.setFailureDrawableResId(R.drawable.image_failure);
                 displayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
                 break;
             case 13 :
-                displayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+                displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
                 displayOptions.setFailureDrawableResId(R.drawable.image_failure);
                 displayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
                 break;
             case 21 :
-                displayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+                displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
                 displayOptions.setFailureDrawableResId(R.drawable.image_failure);
                 displayOptions.setBitmapProcessor(new CircleBitmapProcessor());
                 displayOptions.setBitmapDisplayer(new ZoomInBitmapDisplayer());
                 break;
             case 22 :
-                displayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+                displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
                 displayOptions.setFailureDrawableResId(R.drawable.image_failure);
                 displayOptions.setBitmapProcessor(new CircleBitmapProcessor());
                 displayOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());

@@ -66,8 +66,8 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 获取加载地址为空时显示的图片，此图片是经过BitmapProcessor处理之后的
-	 * @return 当uri为null或空时显示的图片
+	 * 获取uri为null或空时显示的图片，此图片是经过BitmapProcessor处理之后的
+	 * @return uri为null或空时显示的图片
 	 */
 	public BitmapDrawable getEmptyDrawable() {
 		if(emptyDrawableHolder.getDrawable() == null && emptyDrawableHolder.getResId() > 0){
@@ -87,8 +87,8 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 设置加载地址为空时显示的图片的资源ID，此图片在通过get方法返回之前会经过BitmapProcessor处理
-	 * @param resId 当uri为null或空是显示的图片的资源ID
+	 * 设置uri为null或空时显示的图片的资源ID，此图片在通过get方法返回之前会经过BitmapProcessor处理
+	 * @param resId uri为null或空是显示的图片的资源ID
 	 */
 	public void setEmptyDrawableResId(int resId) {
 		emptyDrawableHolder.setResId(resId);
@@ -101,8 +101,8 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 获取显示中图片，此图片是经过BitmapProcessor处理之后的
-	 * @return 正在显示时显示的图片
+	 * 获取默认图片，此图片是经过BitmapProcessor处理之后的
+	 * @return 默认图片
 	 */
 	public BitmapDrawable getDisplayingDrawable() {
 		if(displayingDrawableHolder.getDrawable() == null && displayingDrawableHolder.getResId() > 0){
@@ -122,10 +122,10 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 设置加载中图片的资源ID，此图片在通过get方法返回之前会经过BitmapProcessor处理
-	 * @param resId 在加载时显示的图片的资源ID
+	 * 设置默认图片的资源ID，此图片在通过get方法返回之前会经过BitmapProcessor处理
+	 * @param resId 默认图片的资源ID
 	 */
-	public void setLoadingDrawableResId(int resId) {
+	public void setDisplayingDrawableResId(int resId) {
 		displayingDrawableHolder.setResId(resId);
 		if(displayingDrawableHolder.getDrawable() != null){
 			if(!displayingDrawableHolder.getDrawable().getBitmap().isRecycled()){
@@ -136,8 +136,8 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 获取加载失败图片，此图片是经过BitmapProcessor处理之后的
-	 * @return 加载失败时显示的图片
+	 * 获取显示失败时显示的图片，此图片是经过BitmapProcessor处理之后的
+	 * @return 显示失败时显示的图片
 	 */
 	public BitmapDrawable getFailureDrawable() {
 		if(failureDrawableHolder.getDrawable() == null && failureDrawableHolder.getResId() > 0){
@@ -157,8 +157,8 @@ public class DisplayOptions extends LoadOptions {
 	}
 
 	/**
-	 * 设置加载失败图片的资源ID，此图片在通过get方法返回之前会经过BitmapProcessor处理
-	 * @param resId 在加载失败时显示的图片
+	 * 设置显示失败时显示的图片的资源ID，此图片在通过get方法返回之前会经过BitmapProcessor处理
+	 * @param resId 在显示失败时显示的图片的资源ID
 	 */
 	public void setFailureDrawableResId(int resId) {
 		failureDrawableHolder.setResId(resId);
@@ -211,7 +211,7 @@ public class DisplayOptions extends LoadOptions {
         displayOptions.setBitmapDisplayer(bitmapDisplayer != null?bitmapDisplayer.copy():null);
         displayOptions.setEmptyDrawableResId(emptyDrawableHolder.getResId());
         displayOptions.setFailureDrawableResId(failureDrawableHolder.getResId());
-        displayOptions.setLoadingDrawableResId(displayingDrawableHolder.getResId());
+        displayOptions.setDisplayingDrawableResId(displayingDrawableHolder.getResId());
         displayOptions.setMaxImageSize(getMaxImageSize() != null ? getMaxImageSize().copy() : null);
 		return displayOptions;
 	}

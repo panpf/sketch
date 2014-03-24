@@ -34,7 +34,7 @@ public class MyApplication extends Application {
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().setDebugMode(true);
 		
 		DisplayOptions gridDisplayOptions = new DisplayOptions(getBaseContext());
-        gridDisplayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+        gridDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
         gridDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
         gridDisplayOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GRID_VIEW, gridDisplayOptions);
@@ -45,13 +45,13 @@ public class MyApplication extends Application {
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.VIEW_PAGER, viewPagerDisplayOptions);
 		
 		DisplayOptions listDisplayOptions = new DisplayOptions(getBaseContext());
-        listDisplayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+        listDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
         listDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
         listDisplayOptions.setBitmapProcessor(new CircleBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.LIST_VIEW, listDisplayOptions);
 
 		DisplayOptions galleryDisplayOptions = new DisplayOptions(getBaseContext());
-        galleryDisplayOptions.setLoadingDrawableResId(R.drawable.image_displaying);
+        galleryDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
         galleryDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
         galleryDisplayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
 		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GALLERY, galleryDisplayOptions);
