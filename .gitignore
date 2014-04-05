@@ -1,6 +1,7 @@
 # built application files
-*.apk
+#*.apk
 *.ap_
+proguard_logs/
 
 # files for the dex VM
 *.dex
