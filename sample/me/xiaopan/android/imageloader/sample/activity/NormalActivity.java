@@ -16,6 +16,10 @@
 
 package me.xiaopan.android.imageloader.sample.activity;
 
+import android.content.Intent;
+import android.net.Uri;
+import android.view.Menu;
+import android.view.MenuItem;
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.display.ZoomInBitmapDisplayer;
@@ -95,7 +99,7 @@ public class NormalActivity extends Activity{
 
             @Override
             public void onUpdateProgress(long totalLength, long completedLength) {
-                progressBar.setProgress((int) (((float)completedLength/totalLength) * 100));
+                progressBar.setProgress((int) (((float) completedLength / totalLength) * 100));
                 progressBar.setVisibility(View.VISIBLE);
             }
 
@@ -142,5 +146,21 @@ public class NormalActivity extends Activity{
                 break;
         }
         return displayOptions;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_all, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch(item.getItemId()){
+            case R.id.menu_all_github :
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.url_github))));
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

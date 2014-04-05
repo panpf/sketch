@@ -4,6 +4,7 @@
     <string name="activity_titel_download">Image Download</string>
     <string name="activity_titel_load">Image Load</string>
     <string name="activity_titel_display">Image Display</string>
+	<string name="url_github">http://github.com/xiaopansky/Android-ImageLoader</string>
 
     <drawable name="divider">#80FFFFFF</drawable>
 

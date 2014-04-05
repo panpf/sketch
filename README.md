@@ -16,6 +16,11 @@ Android-ImageLoader是用在Android上的一个图片加载类库，主要用于
 
 >* 重复下载过滤。如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
 
+## Sample Application
+**[Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)**
+
+**[Github](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/Android-ImageLoader-2.3.0.apk)**
+
 ##Usage
 
 ImageLodaer有三个最主要的方法
