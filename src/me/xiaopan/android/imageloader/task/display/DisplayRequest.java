@@ -36,11 +36,19 @@ public class DisplayRequest extends LoadRequest{
 		super(uri);
 		setId(id);
 	}
-	
+
+    /**
+     * 获取ID，此ID用来在内存缓存Bitmap时作为其KEY
+     * @return ID
+     */
 	public String getId() {
 		return id;
 	}
-	
+
+    /**
+     * 设置ID
+     * @param id 此ID用来在内存缓存Bitmap时作为其KEY
+     */
 	public void setId(String id) {
 		this.id = id;
 	}
@@ -52,28 +60,52 @@ public class DisplayRequest extends LoadRequest{
     public void setTargetSize(ImageSize targetSize) {
         this.targetSize = targetSize;
     }
-	
+
+    /**
+     * 获取显示监听器
+     * @return 显示监听器
+     */
 	public DisplayListener getDisplayListener() {
 		return displayListener;
 	}
 
+    /**
+     * 设置显示监听器
+     * @param displayListener 显示监听器
+     */
 	public void setDisplayListener(DisplayListener displayListener) {
 		this.displayListener = displayListener;
 	}
-	
+
+    /**
+     * 获取显示选项
+     * @return 显示选项
+     */
 	public DisplayOptions getDisplayOptions() {
 		return displayOptions;
 	}
 
+    /**
+     * 设置显示选项
+     * @param displayOptions 显示选项
+     */
 	public void setDisplayOptions(DisplayOptions displayOptions) {
 		this.displayOptions = displayOptions;
 		setLoadOptions(displayOptions);
 	}
-	
+
+    /**
+     * 获取ImageView持有器
+     * @return ImageView持有器
+     */
 	public ImageViewHolder getImageViewHolder() {
 		return imageViewHolder;
 	}
 
+    /**
+     * 设置ImageView持有器
+     * @param imageViewHolder ImageView持有器
+     */
 	public void setImageViewHolder(ImageViewHolder imageViewHolder) {
 		this.imageViewHolder = imageViewHolder;
 	}
@@ -84,20 +116,20 @@ public class DisplayRequest extends LoadRequest{
     }
 
     @Override
-    public ImageSize getMaxImageSize() {
+    public ImageSize getMaxSize() {
         return targetSize;
     }
 
+    /**
+     * 设置缩放方式
+     * @param scaleType 缩放方式
+     */
     public void setScaleType(ImageView.ScaleType scaleType) {
         this.scaleType = scaleType;
     }
 
     /**
-     * 创建ID
-     * @param uri
-     * @param targetSize
-     * @param bitmapProcessor
-     * @return
+     * 生成ID
      */
     public static String createId(String uri, ImageSize targetSize, BitmapProcessor bitmapProcessor){
         StringBuffer stringBuffer = new StringBuffer(uri);

@@ -47,21 +47,12 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 				}else{
 					imageView.setImageDrawable(null);
 				}
-//				if(displayRequest.getConfiguration().isDebugMode()){
-//					Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
-//				}
 				break;
 			case SUCCESS : 
 				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
 					fadeIn(imageView, bitmapDrawable);
-//					if(displayRequest.getConfiguration().isDebugMode()){
-//						Log.i(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示成功 - 新加载").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
-//					}
 				}else{
 					imageView.setImageDrawable(null);
-//					if(displayRequest.getConfiguration().isDebugMode()){
-//						Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("显示失败 - SUCCESS").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(displayRequest.getName()).toString());
-//					}
 				}
 				break;
 		}
@@ -69,8 +60,6 @@ public class FadeInBitmapDisplayer implements BitmapDisplayer {
 	
 	/**
 	 * 渐入
-	 * @param imageView
-	 * @param bitmapDrawable
 	 */
 	private void fadeIn(ImageView imageView, BitmapDrawable bitmapDrawable){
 		Drawable oldDrawable = imageView.getDrawable();

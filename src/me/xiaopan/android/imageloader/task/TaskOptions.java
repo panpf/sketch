@@ -25,35 +25,37 @@ public abstract class TaskOptions{
 	private boolean enableDiskCache = true;	//是否开启磁盘缓存
 	
 	/**
-	 * 是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
-	 * @return
+	 * 是否将网络上的图片缓存到本地
+	 * @return 是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
 	 */
 	public boolean isEnableDiskCache() {
 		return enableDiskCache;
 	}
 
 	/**
-	 * 设置是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
-	 * @param enableDiskCache
+	 * 设置是否将网络上的图片缓存到本地
+	 * @param enableDiskCache 是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
 	 */
-	public void setEnableDiskCache(boolean enableDiskCache) {
+	public TaskOptions setEnableDiskCache(boolean enableDiskCache) {
 		this.enableDiskCache = enableDiskCache;
+        return this;
 	}
 
 	/**
-	 * 获取本地缓存文件的有效时间，单位毫秒
-	 * @return
+	 * 获取本地缓存文件的有效时间
+	 * @return 本地缓存文件的有效时间，单位毫秒
 	 */
 	public long getDiskCachePeriodOfValidity() {
 		return diskCachePeriodOfValidity;
 	}
 
 	/**
-	 * 设置本地缓存文件的有效时间，单位毫秒
-	 * @param diskCachePeriodOfValidity
+	 * 设置本地缓存文件的有效时间
+	 * @param diskCachePeriodOfValidity 本地缓存文件的有效时间，单位毫秒
 	 */
-	public void setDiskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
+	public TaskOptions setDiskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
 		this.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
+        return this;
 	}
 	
 	/**
@@ -68,7 +70,13 @@ public abstract class TaskOptions{
 	 * 设置最大重试次数
 	 * @param maxRetryCount 最大重试次数
 	 */
-	public void setMaxRetryCount(int maxRetryCount) {
+	public TaskOptions setMaxRetryCount(int maxRetryCount) {
 		this.maxRetryCount = maxRetryCount;
+        return this;
 	}
+
+    /**
+     * 拷贝一份
+     */
+    public abstract TaskOptions copy();
 }

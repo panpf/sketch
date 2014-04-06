@@ -40,8 +40,8 @@ public class DefaultBitmapDecoder implements BitmapDecoder{
         options.inJustDecodeBounds = true;
         decodeListener.onDecode(options);
         Point originalSize = new Point(options.outWidth, options.outHeight);
-        if(loadRequest.getMaxImageSize() != null){
-            options.inSampleSize = calculateInSampleSize(options, loadRequest.getMaxImageSize().getWidth(), loadRequest.getMaxImageSize().getHeight());
+        if(loadRequest.getMaxSize() != null){
+            options.inSampleSize = calculateInSampleSize(options, loadRequest.getMaxSize().getWidth(), loadRequest.getMaxSize().getHeight());
         }
 
         //解码
@@ -54,9 +54,9 @@ public class DefaultBitmapDecoder implements BitmapDecoder{
         //输出LOG
         if(loadRequest.getConfiguration().isDebugMode()){
             StringBuffer stringBuffer = new StringBuffer(NAME).append("：").append(bitmap != null?"解码成功":"解码失败");
-            if(bitmap != null && loadRequest.getMaxImageSize() != null){
+            if(bitmap != null && loadRequest.getMaxSize() != null){
                 stringBuffer.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                stringBuffer.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxImageSize().getWidth()).append("x").append(loadRequest.getMaxImageSize().getHeight());
+                stringBuffer.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                 stringBuffer.append("；").append("缩放比例").append("=").append(options.inSampleSize);
                 stringBuffer.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
             }

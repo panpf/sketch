@@ -54,7 +54,7 @@ public class Configuration {
 	
 	/**
 	 * 获取上下文
-	 * @return
+	 * @return 上下文
 	 */
 	public Context getContext() {
 		return context;
@@ -62,7 +62,7 @@ public class Configuration {
 	
 	/**
 	 * 获取请求执行器
-	 * @return
+	 * @return 请求执行器
 	 */
 	public RequestExecutor getRequestExecutor() {
 		if(requestExecutor == null){
@@ -73,7 +73,7 @@ public class Configuration {
 
 	/**
 	 * 设置请求执行器
-	 * @param requestExecutor
+	 * @param requestExecutor 请求执行器
 	 */
 	public Configuration setRequestExecutor(RequestExecutor requestExecutor) {
 		this.requestExecutor = requestExecutor;
@@ -82,7 +82,7 @@ public class Configuration {
 
 	/**
 	 * 获取位图缓存器
-	 * @return
+	 * @return 位图缓存器
 	 */
 	public BitmapCacher getBitmapCacher() {
 		if(bitmapCacher == null){
@@ -93,7 +93,7 @@ public class Configuration {
 	
 	/**
 	 * 设置位图缓存器
-	 * @param bitmapCacher
+	 * @param bitmapCacher 位图缓存器
 	 */
 	public Configuration setBitmapCacher(BitmapCacher bitmapCacher) {
 		this.bitmapCacher = bitmapCacher;
@@ -122,23 +122,23 @@ public class Configuration {
 
 	/**
 	 * 获取消息处理器
-	 * @return
+	 * @return 消息处理器，用来实现在主线程显示图片
 	 */
 	public Handler getHandler() {
 		return handler;
 	}
 	
 	/**
-	 * 判断是否开启调试模式
-	 * @return
+	 * 是否开启调试模式
+	 * @return 是否开启调试模式，开启调试模式后会在控制台输出LOG
 	 */
 	public boolean isDebugMode() {
 		return debugMode;
 	}
 	
 	/**
-	 * 设置是否开启调试模式，开启调试模式后会在控制台输出LOG
-	 * @param debugMode
+	 * 设置是否开启调试模式
+	 * @param debugMode 是否开启调试模式，开启调试模式后会在控制台输出LOG
 	 */
 	public Configuration setDebugMode(boolean debugMode) {
 		this.debugMode = debugMode;
@@ -148,7 +148,7 @@ public class Configuration {
 	/**
 	 * 获取选项
 	 * @param optionsName 选项名称
-	 * @return
+	 * @return 选项
 	 */
 	public TaskOptions getOptions(Enum<?> optionsName){
 		return this.optionsMap.get(optionsName);

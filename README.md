@@ -17,9 +17,9 @@ Android-ImageLoader是用在Android上的一个图片加载类库，主要用于
 >* 重复下载过滤。如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
 
 ## Sample Application
-**[Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)**
+**[Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)**
 
-**[Github](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/Android-ImageLoader-2.3.0.apk)**
+**[Download it on Github](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/Android-ImageLoader-2.3.0.apk)**
 
 ##Usage
 
@@ -33,8 +33,8 @@ ImageLodaer有三个最主要的方法
 ###1.定义显示选项
 ```java
 DisplayOptions displayOptions = new DisplayOptions(getBaseContext());
-displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying); //设置默认图片
-displayOptions.setFailureDrawableResId(R.drawable.image_failure);   //设置当显示失败时显示的图片
+displayOptions.setLoadingDrawable(R.drawable.image_displaying); //设置默认图片
+displayOptions.setLoadFailDrawable(R.drawable.image_failure);   //设置加载失败时显示的图片
 ```
 
 ###2.调用display()方法显示图片
@@ -56,18 +56,18 @@ URI支持以下五种类型
 
 ###2.自定义DisplayOptions
 ```java
-DisplayOptions displayOptions = new DisplayOptions(getBaseContext());
-displayOptions.setEmptyDrawableResId(R.drawable.image_failure);    //设置当uri为空时显示的图片
-displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);	//设置默认图片
-displayOptions.setFailureDrawableResId(R.drawable.image_failure);	//设置当加载失败时显示的图片
-displayOptions.setEnableMemoryCache(true);	//开启内存缓存，开启后会采用Lru算法将Bitmap缓存在内存中，以便重复利用
-displayOptions.setEnableDiskCache(true);	//开启硬盘缓存，开启后会先将图片下载到本地，然后再加载到内存中
-displayOptions.setDiskCachePeriodOfValidity(1000 * 60 * 60 * 24);	//设置硬盘缓存有效期为24小时，24小时过后将重新下载图片
-DisplayMetrics displayMetrics = getBaseContext().getResources().getDisplayMetrics();
-displayOptions.setMaxImageSize(new ImageSize(displayMetrics.widthPixels, displayMetrics.heightPixels));	//设置加载到内存中的图片的最大尺寸，如果原图的尺寸大于最大尺寸，在读取的时候就会缩小至合适的尺寸再读取
-displayOptions.setMaxRetryCount(2);	//设置最大重试次数，当连接超时时会再次尝试下载
-displayOptions.setBitmapProcessor(new ReflectionBitmapProcessor());	//设置Bitmap处理器，当图片从本地读取内存中后会使用BitmapProcessor将图片处理一下，你可以通过BitmapProcessor将图片处理成任何你想要的效果
-displayOptions.setBitmapDisplayer(new FadeInBitmapDisplayer());	//设置图片显示器，在处理完图片之后会调用BitmapDisplayer来显示图片，你可以通过BitmapDisplayer自定义任何你想要的方式来显示图片
+DisplayOptions displayOptions = new DisplayOptions(getBaseContext())
+.setEmptyUriDrawable(R.drawable.image_failure)    //设置当uri为空时显示的图片
+.setLoadingDrawable(R.drawable.image_displaying)	//设置默认图片
+.setLoadFailDrawable(R.drawable.image_failure)	//设置当加载失败时显示的图片
+.setEnableMemoryCache(true)	//开启内存缓存，开启后会采用Lru算法将Bitmap缓存在内存中，以便重复利用
+.setEnableDiskCache(true)	//开启硬盘缓存，开启后会先将图片下载到本地，然后再加载到内存中
+.setDiskCachePeriodOfValidity(1000 * 60 * 60 * 24)	//设置硬盘缓存有效期为24小时，24小时过后将重新下载图片
+ displayMetrics = getBaseContext().getResources().getDisplayMetrics()
+.setMaxSize(new ImageSize(displayMetrics.widthPixels, displayMetrics.heightPixels))	//设置加载到内存中的图片的最大尺寸，如果原图的尺寸大于最大尺寸，在读取的时候就会缩小至合适的尺寸再读取
+.setMaxRetryCount(2)	//设置最大重试次数，当连接超时时会再次尝试下载
+.setProcessor(new ReflectionBitmapProcessor())	//设置Bitmap处理器，当图片从本地读取内存中后会使用BitmapProcessor将图片处理一下，你可以通过BitmapProcessor将图片处理成任何你想要的效果
+.setDisplayer(new FadeInBitmapDisplayer());	//设置图片显示器，在处理完图片之后会调用BitmapDisplayer来显示图片，你可以通过BitmapDisplayer自定义任何你想要的方式来显示图片
 ```
 另外DisplayOptions默认的配置是：
 >* 开启内存缓存和硬盘缓存
@@ -104,28 +104,22 @@ public enum DisplayOptionsType {
 ```
 然后定义多个DisplayOptions，且通过ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(Enum<?> enum, Options options)方法将DisplayOptions和Enum绑定并放进Configuratin中
 ```java
-DisplayOptions gridDisplayOptions = new DisplayOptions(getBaseContext());
-gridDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
-gridDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
-gridDisplayOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
-ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GRID_VIEW, gridDisplayOptions);
-
-DisplayOptions viewPagerDisplayOptions = new DisplayOptions(getBaseContext());
-viewPagerDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
-viewPagerDisplayOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
-ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.VIEW_PAGER, viewPagerDisplayOptions);
-		
-DisplayOptions listDisplayOptions = new DisplayOptions(getBaseContext());
-listDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
-listDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
-listDisplayOptions.setBitmapProcessor(new CircleBitmapProcessor());
-ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.LIST_VIEW, listDisplayOptions);
-
-DisplayOptions galleryDisplayOptions = new DisplayOptions(getBaseContext());
-galleryDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
-galleryDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
-galleryDisplayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
-ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GALLERY, galleryDisplayOptions);
+ImageLoader.getInstance(getBaseContext()).getConfiguration()
+    .putOptions(DisplayOptionsType.GRID_VIEW, new DisplayOptions(getBaseContext())
+        .setLoadingDrawable(R.drawable.image_loading)
+        .setLoadFailDrawable(R.drawable.image_load_fail)
+        .setProcessor(new ReflectionBitmapProcessor()))
+    .putOptions(DisplayOptionsType.VIEW_PAGER, new DisplayOptions(getBaseContext())
+        .setLoadFailDrawable(R.drawable.image_load_fail)
+        .setDisplayer(new ZoomOutBitmapDisplayer()))
+    .putOptions(DisplayOptionsType.LIST_VIEW, new DisplayOptions(getBaseContext())
+        .setLoadingDrawable(R.drawable.image_loading)
+        .setLoadFailDrawable(R.drawable.image_load_fail)
+        .setProcessor(new CircleBitmapProcessor()))
+    .putOptions(DisplayOptionsType.GALLERY, new DisplayOptions(getBaseContext())
+        .setLoadingDrawable(R.drawable.image_loading)
+        .setLoadFailDrawable(R.drawable.image_load_fail)
+        .setProcessor(new RoundedCornerBitmapProcessor()));
 ```
 然后在使用的时候就可以调用ImageLoader.getInstance(context).display(String imageUri, ImageView imageView, Enum<?> optionsName)方法来传入对应的枚举来显示图片了，ImageLoader会根据你传入的枚举从Configuration中取出对应的DisplayOptions。
 ```java
@@ -159,7 +153,7 @@ BitmapProcessor是用来在BitmapDecoder解码完图片之后在对图片进行�
 >* ReflectionBitmapProcessor：倒影图片处理器，可以将图片处理成倒影效果的，如示例图所示。另外倒影的高度以及倒影的距离都可以通过构造函数来自定义；
 >* RoundedCornerBitmapProcessor：圆角图片处理器，可以将图片处理成圆角的，如示例图所示。另外圆角的半径可以通过构造函数来自定义
 
-如果你想自定义的话只需实现BitmapProcessor接口，然后调用Options.setBitmapProcessor(BitmapProcessor bitmapProcessor)应用即可，另外有几点需要注意：
+如果你想自定义的话只需实现BitmapProcessor接口，然后调用Options.setBitmapProcessor(BitmapProcessor processor)应用即可，另外有几点需要注意：
 >* BitmapProcessor接口有一个叫getTag()的方法，此方法的目的是获取一个能够标识当前BitmapProcessor的字符串用来组装图片的缓存ID。如果本地同一张图片使用不同的BitmapProcessor处理的话，最后的效果是不一样的，那么在内存中的缓存ID就不能一样，所以你要保证getTag()方法返回的字符串一定是独一无二的；
 >* 通过BitmapProcessor的process()方法传进去的Bitmap在你处理完之后你无需释放它，ImageLoader会去处理的；
 >* 在处理的过程中如果你多次创建了新的Bitmap，那么在你用完之后一定要记得释放。
@@ -170,16 +164,19 @@ BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer�
 >* ZoomInBitmapDisplayer：渐入且由小到大效果。
 >* ZoomOutBitmapDisplayer：渐入且由大到小效果。
 
-如果你想自定义的话只需实现BitmapDisplayer接口，然后调用Options.setBitmapDisplayer(BitmapDisplayer bitmapDisplayer)应用即可。
+如果你想自定义的话只需实现BitmapDisplayer接口，然后调用Options.setBitmapDisplayer(BitmapDisplayer displayer)应用即可。
 
 ###你还可以参考示例程序来更加直观的了解使用方式
 
 ##Downloads
-**[android-image-loader-2.3.0.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.0.jar)**
+**[android-image-loader-2.3.1.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.1.jar)**
 
-**[android-image-loader-2.3.0-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.0-with-src.jar)**
+**[android-image-loader-2.3.1-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.1-with-src.jar)**
 
 ##Change Log
+###2.3.1
+>* 本次更新主要是重命名一些方法和参数，以及补充一下注释，详情请参考示例代码
+
 ###2.3.0
 >* 重新梳理代码处理逻辑
 >* 增加load()和download()方法

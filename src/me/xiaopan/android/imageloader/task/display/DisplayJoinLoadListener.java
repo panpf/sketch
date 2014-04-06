@@ -85,7 +85,7 @@ public class DisplayJoinLoadListener implements LoadListener {
 
     @Override
     public void onFailure() {
-        displayRequest.getConfiguration().getHandler().post(new DisplayRunnable(displayRequest, displayRequest.getDisplayOptions().getFailureDrawable(), BitmapDisplayer.BitmapType.FAILURE));
+        displayRequest.getConfiguration().getHandler().post(new DisplayRunnable(displayRequest, displayRequest.getDisplayOptions().getLoadFailDrawable(), BitmapDisplayer.BitmapType.FAILURE));
     }
 
     @Override

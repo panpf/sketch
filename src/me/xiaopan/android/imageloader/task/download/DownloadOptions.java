@@ -23,15 +23,29 @@ import me.xiaopan.android.imageloader.task.TaskOptions;
  */
 public class DownloadOptions extends TaskOptions{
 
-	/**
-	 * 将当前的DownloadOptions拷贝一份
-	 * @return
-	 */
+    @Override
+    public DownloadOptions setEnableDiskCache(boolean enableDiskCache) {
+        super.setEnableDiskCache(enableDiskCache);
+        return this;
+    }
+
+    @Override
+    public DownloadOptions setDiskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
+        super.setDiskCachePeriodOfValidity(diskCachePeriodOfValidity);
+        return this;
+    }
+
+    @Override
+    public DownloadOptions setMaxRetryCount(int maxRetryCount) {
+        super.setMaxRetryCount(maxRetryCount);
+        return this;
+    }
+
+    @Override
 	public DownloadOptions copy(){
-        DownloadOptions downloadOptions = new DownloadOptions();
-        downloadOptions.setMaxRetryCount(getMaxRetryCount());
-        downloadOptions.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity());
-        downloadOptions.setEnableDiskCache(isEnableDiskCache());
-		return downloadOptions;
+        return new DownloadOptions()
+            .setMaxRetryCount(getMaxRetryCount())
+            .setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
+            .setEnableDiskCache(isEnableDiskCache());
 	}
 }

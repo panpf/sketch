@@ -30,30 +30,22 @@ public class MyApplication extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		
-		ImageLoader.getInstance(getBaseContext()).getConfiguration().setDebugMode(true);
-		
-		DisplayOptions gridDisplayOptions = new DisplayOptions(getBaseContext());
-        gridDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
-        gridDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
-        gridDisplayOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
-		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GRID_VIEW, gridDisplayOptions);
 
-		DisplayOptions viewPagerDisplayOptions = new DisplayOptions(getBaseContext());
-        viewPagerDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
-        viewPagerDisplayOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
-		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.VIEW_PAGER, viewPagerDisplayOptions);
-		
-		DisplayOptions listDisplayOptions = new DisplayOptions(getBaseContext());
-        listDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
-        listDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
-        listDisplayOptions.setBitmapProcessor(new CircleBitmapProcessor());
-		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.LIST_VIEW, listDisplayOptions);
-
-		DisplayOptions galleryDisplayOptions = new DisplayOptions(getBaseContext());
-        galleryDisplayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
-        galleryDisplayOptions.setFailureDrawableResId(R.drawable.image_failure);
-        galleryDisplayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
-		ImageLoader.getInstance(getBaseContext()).getConfiguration().putOptions(DisplayOptionsType.GALLERY, galleryDisplayOptions);
+        ImageLoader.getInstance(getBaseContext()).getConfiguration().setDebugMode(true) //开启Debug，在控制台输出LOG
+        .putOptions(DisplayOptionsType.GRID_VIEW, new DisplayOptions(getBaseContext())
+            .setLoadingDrawable(R.drawable.image_loading)
+            .setLoadFailDrawable(R.drawable.image_load_fail)
+            .setProcessor(new ReflectionBitmapProcessor()))
+        .putOptions(DisplayOptionsType.VIEW_PAGER, new DisplayOptions(getBaseContext())
+            .setLoadFailDrawable(R.drawable.image_load_fail)
+            .setDisplayer(new ZoomOutBitmapDisplayer()))
+        .putOptions(DisplayOptionsType.LIST_VIEW, new DisplayOptions(getBaseContext())
+            .setLoadingDrawable(R.drawable.image_loading)
+            .setLoadFailDrawable(R.drawable.image_load_fail)
+            .setProcessor(new CircleBitmapProcessor()))
+        .putOptions(DisplayOptionsType.GALLERY, new DisplayOptions(getBaseContext())
+            .setLoadingDrawable(R.drawable.image_loading)
+            .setLoadFailDrawable(R.drawable.image_load_fail)
+            .setProcessor(new RoundedCornerBitmapProcessor()));
 	}
 }

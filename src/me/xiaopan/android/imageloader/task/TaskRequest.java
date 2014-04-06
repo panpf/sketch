@@ -74,11 +74,7 @@ public abstract class TaskRequest {
 
     public boolean cancel(boolean mayInterruptIfRunning) {
     	canceled = true;
-    	if(task != null){
-    		return task.cancel(mayInterruptIfRunning);
-    	}else{
-    		return true;
-    	}
+        return task == null || task.cancel(mayInterruptIfRunning);
     }
     
     public abstract boolean isEnableDiskCache();

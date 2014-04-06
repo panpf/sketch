@@ -16,10 +16,6 @@
 
 package me.xiaopan.android.imageloader.sample.activity;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.view.Menu;
-import android.view.MenuItem;
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.display.ZoomInBitmapDisplayer;
@@ -30,8 +26,12 @@ import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
 import me.xiaopan.android.imageloader.task.display.DisplayListener;
 import me.xiaopan.android.imageloader.task.display.DisplayOptions;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -114,35 +114,35 @@ public class NormalActivity extends Activity{
         displayOptions.setEnableMemoryCache(false);
         switch (position){
             case 11 :
-                displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
-                displayOptions.setFailureDrawableResId(R.drawable.image_failure);
-                displayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
+                displayOptions.setLoadingDrawable(R.drawable.image_loading);
+                displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setProcessor(new RoundedCornerBitmapProcessor());
                 break;
             case 12 :
-                displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
-                displayOptions.setFailureDrawableResId(R.drawable.image_failure);
-                displayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
+                displayOptions.setLoadingDrawable(R.drawable.image_loading);
+                displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setProcessor(new RoundedCornerBitmapProcessor());
                 break;
             case 13 :
-                displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
-                displayOptions.setFailureDrawableResId(R.drawable.image_failure);
-                displayOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
+                displayOptions.setLoadingDrawable(R.drawable.image_loading);
+                displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setProcessor(new RoundedCornerBitmapProcessor());
                 break;
             case 21 :
-                displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
-                displayOptions.setFailureDrawableResId(R.drawable.image_failure);
-                displayOptions.setBitmapProcessor(new CircleBitmapProcessor());
-                displayOptions.setBitmapDisplayer(new ZoomInBitmapDisplayer());
+                displayOptions.setLoadingDrawable(R.drawable.image_loading);
+                displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setProcessor(new CircleBitmapProcessor());
+                displayOptions.setDisplayer(new ZoomInBitmapDisplayer());
                 break;
             case 22 :
-                displayOptions.setDisplayingDrawableResId(R.drawable.image_displaying);
-                displayOptions.setFailureDrawableResId(R.drawable.image_failure);
-                displayOptions.setBitmapProcessor(new CircleBitmapProcessor());
-                displayOptions.setBitmapDisplayer(new ZoomOutBitmapDisplayer());
+                displayOptions.setLoadingDrawable(R.drawable.image_loading);
+                displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setProcessor(new CircleBitmapProcessor());
+                displayOptions.setDisplayer(new ZoomOutBitmapDisplayer());
                 break;
             case 31 :
-                displayOptions.setFailureDrawableResId(R.drawable.image_failure);
-                displayOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
+                displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setProcessor(new ReflectionBitmapProcessor());
                 break;
         }
         return displayOptions;

@@ -29,18 +29,35 @@ public class DownloadRequest extends TaskRequest{
 		super(uri);
 	}
 
+    /**
+     * 获取下载选项
+     * @return 下载选项
+     */
 	public DownloadOptions getDownloadOptions() {
 		return downloadOptions;
 	}
 
-	public void setDownloadOptions(DownloadOptions downloadOptions) {
+    /**
+     * 设置下载选项
+     * @param downloadOptions 下载选项
+     */
+	public DownloadRequest setDownloadOptions(DownloadOptions downloadOptions) {
 		this.downloadOptions = downloadOptions;
+        return this;
 	}
 
+    /**
+     * 获取下载监听器
+     * @return 下载监听器
+     */
 	public DownloadListener getDownloadListener() {
 		return downloadListener;
 	}
-	
+
+    /**
+     * 设置下载监听器
+     * @param downloadListener 下载监听器
+     */
 	public DownloadRequest setDownloadListener(DownloadListener downloadListener) {
 		this.downloadListener = downloadListener;
         return this;
@@ -48,7 +65,7 @@ public class DownloadRequest extends TaskRequest{
 
 	@Override
 	public boolean isEnableDiskCache() {
-		return downloadOptions != null?downloadOptions.isEnableDiskCache():false;
+		return downloadOptions != null && downloadOptions.isEnableDiskCache();
 	}
 
 	@Override

@@ -185,7 +185,7 @@ public class ImageLoader{
 
         //过滤掉空的URI
         if(ImageLoaderUtils.isEmpty(uri)){
-            imageView.setImageDrawable(displayOptions.getEmptyDrawable());
+            imageView.setImageDrawable(displayOptions.getEmptyUriDrawable());
             if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("uri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
             if(displayListener != null) displayListener.onFailure();
             return;
@@ -194,7 +194,7 @@ public class ImageLoader{
         //过滤掉未知协议的URI
         Scheme scheme = Scheme.ofUri(uri);
         if(scheme == Scheme.UNKNOWN){
-            imageView.setImageDrawable(displayOptions.getFailureDrawable());
+            imageView.setImageDrawable(displayOptions.getLoadFailDrawable());
             if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(uri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
             if(displayListener != null) displayListener.onFailure();
             return;
@@ -202,8 +202,8 @@ public class ImageLoader{
 
         //计算目标尺寸并创建请求
         ImageViewHolder imageViewHolder = new ImageViewHolder(imageView);
-        ImageSize targetSize = ImageSize.defineTargetSizeForView(imageViewHolder, displayOptions.getMaxImageSize());
-        DisplayRequest displayRequest = new DisplayRequest(DisplayRequest.createId(ImageLoaderUtils.encodeUrl(uri), targetSize, displayOptions.getBitmapProcessor()), uri);
+        ImageSize targetSize = ImageSize.defineTargetSizeForView(imageViewHolder, displayOptions.getMaxSize());
+        DisplayRequest displayRequest = new DisplayRequest(DisplayRequest.createId(ImageLoaderUtils.encodeUrl(uri), targetSize, displayOptions.getProcessor()), uri);
         displayRequest.setName(uri);
 
         //尝试显示
@@ -230,10 +230,10 @@ public class ImageLoader{
         displayRequest.setDisplayOptions(displayOptions);
         imageViewHolder.setDisplayRequest(displayRequest);
         displayRequest.setImageViewHolder(imageViewHolder);
-        displayRequest.setScaleType(imageView.getScaleType());
+        displayRequest.setScaleType(displayOptions.getScaleType()!=null?displayOptions.getScaleType():imageView.getScaleType());
 
         //显示默认图片
-        BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getDisplayingDrawable();
+        BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getLoadingDrawable();
         imageView.setImageDrawable(new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, displayRequest));
 
         //执行请求

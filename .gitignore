@@ -26,3 +26,5 @@ gen/
 # Gradle files
 .gradle/
 build/
+/out
+/out2

@@ -24,19 +24,19 @@ import android.widget.ImageView;
  */
 public interface DisplayListener {
     /**
-     * 显示开始
+     * 开始
      */
     public void onStart();
 
     /**
-     * 更新显示进度
+     * 更新加载进度
      * @param totalLength 总长度
      * @param completedLength 已完成长度
      */
     public void onUpdateProgress(long totalLength, long completedLength);
 
     /**
-     * 显示完成
+     * 完成
      * @param uri 地址
      * @param imageView 视图
      * @param drawable 图片
@@ -44,12 +44,12 @@ public interface DisplayListener {
     public void onComplete(String uri, ImageView imageView, BitmapDrawable drawable);
 
     /**
-     * 显示失败
+     * 加载失败
      */
     public void onFailure();
 
     /**
-     * 显示取消
+     * 取消
      */
     public void onCancel();
 }

@@ -67,13 +67,17 @@ public class LoadRequest extends DownloadRequest{
 
     /**
      * 获取缩放类型
-     * @return
+     * @return 缩放类型
      */
     public ImageView.ScaleType getScaleType() {
         return loadOptions != null?loadOptions.getScaleType(): ImageView.ScaleType.CENTER_CROP;
     }
 
-    public ImageSize getMaxImageSize() {
-        return loadOptions != null?loadOptions.getMaxImageSize():null;
+    /**
+     * 获取最大尺寸
+     * @return 最大尺寸
+     */
+    public ImageSize getMaxSize() {
+        return loadOptions != null?loadOptions.getMaxSize():null;
     }
 }

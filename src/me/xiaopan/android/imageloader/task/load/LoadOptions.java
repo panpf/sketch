@@ -25,45 +25,88 @@ import android.widget.ImageView.ScaleType;
  * 显示选项
  */
 public class LoadOptions extends DownloadOptions{
-    private ScaleType scaleType = ScaleType.FIT_CENTER;
-    private ImageSize maxImageSize;	//最大图片尺寸
-	private BitmapProcessor bitmapProcessor;	//位图处理器
-	
+    private ScaleType scaleType = ScaleType.FIT_CENTER; //图片缩放方式，在处理图片的时候会用到
+    private ImageSize maxSize;	//最大图片尺寸
+	private BitmapProcessor processor;	//位图处理器
+
+    /**
+     * 获取缩放方式
+     * @return 图片缩放方式，在处理图片的时候会用到
+     */
     public ScaleType getScaleType() {
         return scaleType;
     }
 
-    public void setScaleType(ScaleType scaleType) {
+    /**
+     * 设置图片缩放方式
+     * @param scaleType 图片缩放方式，在处理图片的时候会用到
+     */
+    public LoadOptions setScaleType(ScaleType scaleType) {
         this.scaleType = scaleType;
+        return this;
     }
 
-    public ImageSize getMaxImageSize() {
-        return maxImageSize;
+    /**
+     * 获取图片最大尺寸
+     * @return 图片最大尺寸，将会根据最大尺寸在读取图片的时候适当的缩放
+     */
+    public ImageSize getMaxSize() {
+        return maxSize;
     }
 
-    public void setMaxImageSize(ImageSize maxImageSize) {
-        this.maxImageSize = maxImageSize;
+    /**
+     * 设置图片最大尺寸
+     * @param maxSize 图片最大尺寸，将会根据最大尺寸在读取图片的时候适当的缩放
+     */
+    public LoadOptions setMaxSize(ImageSize maxSize) {
+        this.maxSize = maxSize;
+        return this;
     }
-	
-	public BitmapProcessor getBitmapProcessor() {
-		return bitmapProcessor;
+
+    /**
+     * 获取图片处理器
+     * @return 图片处理器，在敬爱那个图片读到内存中之后会使用此处理器将图片处理一下，使之可以变成您想要的效果
+     */
+	public BitmapProcessor getProcessor() {
+		return processor;
 	}
 
-	public void setBitmapProcessor(BitmapProcessor bitmapProcessor) {
-		this.bitmapProcessor = bitmapProcessor;
+    /**
+     * 设置图片处理器
+     * @param processor 图片处理器，在将图片读到内存中之后会使用此处理器将图片处理一下，使之可以变成您想要的效果
+     */
+	public LoadOptions setProcessor(BitmapProcessor processor) {
+		this.processor = processor;
+        return this;
 	}
 
-	/**
-	 * 将当前的DisplayOptions拷贝一份
-	 * @return
-	 */
+    @Override
+    public LoadOptions setEnableDiskCache(boolean enableDiskCache) {
+        super.setEnableDiskCache(enableDiskCache);
+        return this;
+    }
+
+    @Override
+    public LoadOptions setDiskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
+        super.setDiskCachePeriodOfValidity(diskCachePeriodOfValidity);
+        return this;
+    }
+
+    @Override
+    public LoadOptions setMaxRetryCount(int maxRetryCount) {
+        super.setMaxRetryCount(maxRetryCount);
+        return this;
+    }
+
+    @Override
 	public LoadOptions copy(){
-		LoadOptions loadOptions = new LoadOptions();
-		loadOptions.setMaxRetryCount(getMaxRetryCount());
-        loadOptions.setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity());
-        loadOptions.setEnableDiskCache(isEnableDiskCache());
-		loadOptions.setBitmapProcessor(bitmapProcessor != null ? bitmapProcessor.copy() : null);
-        loadOptions.setScaleType(scaleType);
-		return loadOptions;
+        return new LoadOptions()
+            .setMaxRetryCount(getMaxRetryCount())
+            .setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
+            .setEnableDiskCache(isEnableDiskCache())
+
+            .setScaleType(scaleType)
+            .setMaxSize(maxSize != null ? maxSize.copy() : null)
+            .setProcessor(processor != null ? processor.copy() : null);
 	}
 }

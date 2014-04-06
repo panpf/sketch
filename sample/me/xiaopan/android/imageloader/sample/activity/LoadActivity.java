@@ -16,10 +16,6 @@
 
 package me.xiaopan.android.imageloader.sample.activity;
 
-import android.content.Intent;
-import android.net.Uri;
-import android.view.Menu;
-import android.view.MenuItem;
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
@@ -29,13 +25,17 @@ import me.xiaopan.android.imageloader.task.load.LoadListener;
 import me.xiaopan.android.imageloader.task.load.LoadOptions;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.CompoundButton;
@@ -101,16 +101,16 @@ public class LoadActivity extends Activity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        loadOptions.setBitmapProcessor(null);
+                        loadOptions.setProcessor(null);
                         break;
                     case 1:
-                        loadOptions.setBitmapProcessor(new ReflectionBitmapProcessor());
+                        loadOptions.setProcessor(new ReflectionBitmapProcessor());
                         break;
                     case 2:
-                        loadOptions.setBitmapProcessor(new RoundedCornerBitmapProcessor());
+                        loadOptions.setProcessor(new RoundedCornerBitmapProcessor());
                         break;
                     case 3:
-                        loadOptions.setBitmapProcessor(new CircleBitmapProcessor());
+                        loadOptions.setProcessor(new CircleBitmapProcessor());
                         break;
                 }
                 reload = true;
@@ -199,9 +199,9 @@ public class LoadActivity extends Activity {
                 String maxWidthString = maxWidthEditText.getEditableText().toString().trim();
                 String maxHeightString = maxHeightEditText.getEditableText().toString().trim();
                 if (maxWidthString != null && !"".equals(maxWidthString) && maxHeightString != null && !"".equals(maxHeightString)) {
-                    loadOptions.setMaxImageSize(new ImageSize(Integer.valueOf(maxWidthString), Integer.valueOf(maxHeightString)));
+                    loadOptions.setMaxSize(new ImageSize(Integer.valueOf(maxWidthString), Integer.valueOf(maxHeightString)));
                 } else {
-                    loadOptions.setMaxImageSize(null);
+                    loadOptions.setMaxSize(null);
                 }
                 reload = true;
             }
@@ -223,9 +223,9 @@ public class LoadActivity extends Activity {
                 String maxWidthString = maxWidthEditText.getEditableText().toString().trim();
                 String maxHeightString = maxHeightEditText.getEditableText().toString().trim();
                 if (maxWidthString != null && !"".equals(maxWidthString) && maxHeightString != null && !"".equals(maxHeightString)) {
-                    loadOptions.setMaxImageSize(new ImageSize(Integer.valueOf(maxWidthString), Integer.valueOf(maxHeightString)));
+                    loadOptions.setMaxSize(new ImageSize(Integer.valueOf(maxWidthString), Integer.valueOf(maxHeightString)));
                 } else {
-                    loadOptions.setMaxImageSize(null);
+                    loadOptions.setMaxSize(null);
                 }
                 reload = true;
             }

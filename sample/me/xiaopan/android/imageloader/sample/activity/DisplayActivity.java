@@ -16,8 +16,6 @@
 
 package me.xiaopan.android.imageloader.sample.activity;
 
-import android.view.Menu;
-import android.view.MenuItem;
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.sample.adapter.StringAdapter;
 import me.xiaopan.android.imageloader.sample.fragment.GalleryFragment;
@@ -38,6 +36,8 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
