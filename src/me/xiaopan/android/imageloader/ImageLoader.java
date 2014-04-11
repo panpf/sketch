@@ -219,6 +219,7 @@ public class ImageLoader{
         }
 
         //试图取消当前ImageView上正在加载的请求，true：取消成功；false：无需取消
+        displayRequest.setDisplayListener(displayListener);
         if(!cancelPotentialDisplayRequest(imageView, displayRequest)){
             return;
         }
@@ -226,7 +227,6 @@ public class ImageLoader{
         //初始化请求
         displayRequest.setTargetSize(targetSize);
         displayRequest.setConfiguration(configuration);
-        displayRequest.setDisplayListener(displayListener);
         displayRequest.setDisplayOptions(displayOptions);
         imageViewHolder.setDisplayRequest(displayRequest);
         displayRequest.setImageViewHolder(imageViewHolder);
@@ -421,6 +421,7 @@ public class ImageLoader{
         if (potentialDisplayRequest != null) {
             final String requestId = potentialDisplayRequest.getId();
             if (requestId != null && requestId.equals(displayRequest.getId())) {
+                potentialDisplayRequest.setDisplayListener(displayRequest.getDisplayListener());
                 cancelled = false;
             }else{
                 potentialDisplayRequest.cancel(true);
