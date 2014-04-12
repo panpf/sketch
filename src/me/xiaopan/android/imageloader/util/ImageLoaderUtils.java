@@ -16,11 +16,7 @@
 
 package me.xiaopan.android.imageloader.util;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 import java.net.URLEncoder;
 
 import android.annotation.TargetApi;
@@ -28,6 +24,7 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
+import me.xiaopan.android.imageloader.task.download.DownloadListener;
 
 public class ImageLoaderUtils {
 	/**
@@ -211,5 +208,20 @@ public class ImageLoaderUtils {
             length += countFileLength(file);
         }
         return length;
+    }
+
+    public static long copy(InputStream inputStream, OutputStream outputStream, DownloadListener downloadListener, long totalLength) throws IOException{
+        int readNumber;	//读取到的字节的数量
+        long completedLength = 0;
+        byte[] cacheBytes = new byte[1024];//数据缓存区
+        while((readNumber = inputStream.read(cacheBytes)) != -1){
+            completedLength += readNumber;
+            outputStream.write(cacheBytes, 0, readNumber);
+            if(downloadListener != null){
+                downloadListener.onUpdateProgress(totalLength, completedLength);
+            }
+        }
+        outputStream.flush();
+        return completedLength;
     }
 }

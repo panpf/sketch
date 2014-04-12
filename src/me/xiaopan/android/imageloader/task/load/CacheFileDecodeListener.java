@@ -16,23 +16,18 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
-import java.io.File;
-
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.decode.BitmapDecoder;
-import me.xiaopan.android.imageloader.task.TaskRequest;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.util.Log;
+import me.xiaopan.android.imageloader.decode.BitmapDecoder;
+import me.xiaopan.android.imageloader.task.TaskRequest;
+
+import java.io.File;
 
 public class CacheFileDecodeListener implements BitmapDecoder.DecodeListener {
-    private static final String NAME = CacheFileDecodeListener.class.getSimpleName();
 	private File file;
-    private TaskRequest taskRequest;
 
 	public CacheFileDecodeListener(File file, TaskRequest taskRequest) {
 		this.file = file;
-        this.taskRequest = taskRequest;
 	}
 
     @Override

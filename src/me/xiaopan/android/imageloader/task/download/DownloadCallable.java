@@ -90,7 +90,7 @@ public class DownloadCallable implements Callable<Object>{
                 if(downloadRequest.getCacheFile() != null && ImageLoaderUtils.createFile(downloadRequest.getCacheFile()) && downloadRequest.getConfiguration().getDiskCache().applyForSpace(fileLength)){
                     // 如果可以缓存到本地
                     outputStream = new BufferedOutputStream(new FileOutputStream(downloadRequest.getCacheFile(), false), 8*1024);
-                    copy(inputStream, outputStream, fileLength);
+                    ImageLoaderUtils.copy(inputStream, outputStream, downloadRequest.getDownloadListener(), fileLength);
                     result = downloadRequest.getCacheFile();
                     if(downloadRequest.getConfiguration().isDebugMode()){
                         Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - FILE").append("；").append(downloadRequest.getName()).toString());
@@ -99,7 +99,7 @@ public class DownloadCallable implements Callable<Object>{
                     // 如果需要直接读到内存
                     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
                     outputStream = new BufferedOutputStream(byteArrayOutputStream);
-                    copy(inputStream, outputStream, fileLength);
+                    ImageLoaderUtils.copy(inputStream, outputStream, downloadRequest.getDownloadListener(), fileLength);
                     result = byteArrayOutputStream.toByteArray();
                     if(downloadRequest.getConfiguration().isDebugMode()){
                         Log.d(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("下载成功 - BYTE_ARRAY").append("；").append(downloadRequest.getName()).toString());
@@ -131,21 +131,6 @@ public class DownloadCallable implements Callable<Object>{
         }
 		return result;
 	}
-
-    private long copy(InputStream inputStream, OutputStream outputStream, long totalLength) throws IOException{
-        int readNumber;	//读取到的字节的数量
-        long completedLength = 0;
-        byte[] cacheBytes = new byte[1024];//数据缓存区
-        while((readNumber = inputStream.read(cacheBytes)) != -1){
-            completedLength += readNumber;
-            outputStream.write(cacheBytes, 0, readNumber);
-            if(downloadRequest.getDownloadListener() != null){
-                downloadRequest.getDownloadListener().onUpdateProgress(totalLength, completedLength);
-            }
-        }
-        outputStream.flush();
-        return completedLength;
-    }
 
     /**
      * 解析内容长度
