@@ -35,6 +35,9 @@ public class DisplayOptions extends LoadOptions {
     private Context context;
 	private boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
 	private BitmapDisplayer displayer;	//位图显示器
+    private boolean processLoadingDrawable = true;
+    private boolean processLoadFailDrawable = true;
+    private boolean processEmptyUriDrawable = true;
 	private DrawableHolder emptyUriDrawableHolder;	//当uri为空时显示的图片
 	private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
 	private DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
@@ -74,7 +77,7 @@ public class DisplayOptions extends LoadOptions {
 		if(emptyUriDrawableHolder.getDrawable() == null && emptyUriDrawableHolder.getResId() > 0){
 			Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), emptyUriDrawableHolder.getResId());
 			if(bitmap != null){
-				if(getProcessor() != null){
+				if(processEmptyUriDrawable && getProcessor() != null){
 					Bitmap newBitmap = getProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
 					if(newBitmap != bitmap){
 						bitmap.recycle();
@@ -110,7 +113,7 @@ public class DisplayOptions extends LoadOptions {
 		if(loadingDrawableHolder.getDrawable() == null && loadingDrawableHolder.getResId() > 0){
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), loadingDrawableHolder.getResId());
 			if(bitmap != null){
-				if(getProcessor() != null){
+				if(processLoadingDrawable && getProcessor() != null){
 					Bitmap newBitmap = getProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
                     if(newBitmap != bitmap){
                         bitmap.recycle();
@@ -146,7 +149,7 @@ public class DisplayOptions extends LoadOptions {
 		if(loadFailDrawableHolder.getDrawable() == null && loadFailDrawableHolder.getResId() > 0){
 			Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), loadFailDrawableHolder.getResId());
 			if(bitmap != null){
-				if(getProcessor() != null){
+				if(processLoadFailDrawable && getProcessor() != null){
 					Bitmap newBitmap = getProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
 					if(newBitmap != bitmap){
 						bitmap.recycle();
@@ -197,9 +200,15 @@ public class DisplayOptions extends LoadOptions {
     @Override
     public DisplayOptions setProcessor(BitmapProcessor processor) {
         super.setProcessor(processor);
-        emptyUriDrawableHolder.setDrawable(null);
-        loadingDrawableHolder.setDrawable(null);
-        loadFailDrawableHolder.setDrawable(null);
+        if(processLoadingDrawable){
+            loadingDrawableHolder.setDrawable(null);
+        }
+        if(processLoadFailDrawable){
+            loadFailDrawableHolder.setDrawable(null);
+        }
+        if(processEmptyUriDrawable){
+            emptyUriDrawableHolder.setDrawable(null);
+        }
         return this;
     }
 
@@ -233,6 +242,33 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
+    /**
+     * 设置是否使用BitmapProcessor处理加载中图片
+     * @param processLoadingDrawable 是否使用BitmapProcessor来处理加载中图片
+     */
+    public DisplayOptions setProcessLoadingDrawable(boolean processLoadingDrawable) {
+        this.processLoadingDrawable = processLoadingDrawable;
+        return this;
+    }
+
+    /**
+     * 设置是否使用BitmapProcessor处理加载失败图片
+     * @param processLoadFailDrawable 是否使用BitmapProcessor来处理加载失败图片
+     */
+    public DisplayOptions setProcessLoadFailDrawable(boolean processLoadFailDrawable) {
+        this.processLoadFailDrawable = processLoadFailDrawable;
+        return this;
+    }
+
+    /**
+     * 设置是否使用BitmapProcessor处理URI为空图片
+     * @param processEmptyUriDrawable 是否使用BitmapProcessor来处理URI为空图片
+     */
+    public DisplayOptions setProcessEmptyUriDrawable(boolean processEmptyUriDrawable) {
+        this.processEmptyUriDrawable = processEmptyUriDrawable;
+        return this;
+    }
+
     @Override
 	public DisplayOptions copy(){
         return new DisplayOptions(context)
@@ -248,7 +284,10 @@ public class DisplayOptions extends LoadOptions {
             .setDisplayer(displayer != null ? displayer.copy() : null)
             .setEmptyUriDrawable(emptyUriDrawableHolder.getResId())
             .setLoadFailDrawable(loadFailDrawableHolder.getResId())
-            .setLoadingDrawable(loadingDrawableHolder.getResId());
+            .setLoadingDrawable(loadingDrawableHolder.getResId())
+            .setProcessLoadingDrawable(processLoadingDrawable)
+            .setProcessLoadFailDrawable(processLoadFailDrawable)
+            .setProcessEmptyUriDrawable(processEmptyUriDrawable);
 	}
 	
 	private class DrawableHolder {

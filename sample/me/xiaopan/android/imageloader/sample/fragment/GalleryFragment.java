@@ -35,7 +35,7 @@ public class GalleryFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Gallery gallery = (Gallery) new Gallery(getActivity());
 		gallery.setBackgroundColor(Color.BLACK);
-		gallery.setSpacing(2);
+		gallery.setSpacing(5);
 		gallery.setAdapter(new GalleryImageAdapter(getActivity(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS)));
 		gallery.setOnItemClickListener(new OnItemClickListener() {
 			@Override

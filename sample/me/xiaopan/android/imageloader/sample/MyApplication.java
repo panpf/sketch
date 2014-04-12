@@ -17,14 +17,8 @@
 package me.xiaopan.android.imageloader.sample;
 
 import me.xiaoapn.android.imageloader.R;
-import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.cache.disk.LruDiskCache;
-import me.xiaopan.android.imageloader.cache.memory.LruMemoryCache;
-import me.xiaopan.android.imageloader.decode.DefaultBitmapDecoder;
 import me.xiaopan.android.imageloader.display.ZoomOutBitmapDisplayer;
-import me.xiaopan.android.imageloader.execute.DefaultRequestExecutor;
-import me.xiaopan.android.imageloader.http.DefaultHttpClientCreator;
 import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
 import me.xiaopan.android.imageloader.process.ReflectionBitmapProcessor;
 import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
@@ -41,17 +35,21 @@ public class MyApplication extends Application {
         .putOptions(DisplayOptionsType.GRID_VIEW, new DisplayOptions(getBaseContext())
             .setLoadingDrawable(R.drawable.image_loading)
             .setLoadFailDrawable(R.drawable.image_load_fail)
+            .setEmptyUriDrawable(R.drawable.image_loading)
             .setProcessor(new ReflectionBitmapProcessor()))
         .putOptions(DisplayOptionsType.VIEW_PAGER, new DisplayOptions(getBaseContext())
             .setLoadFailDrawable(R.drawable.image_load_fail)
+            .setEmptyUriDrawable(R.drawable.image_loading)
             .setDisplayer(new ZoomOutBitmapDisplayer()))
         .putOptions(DisplayOptionsType.LIST_VIEW, new DisplayOptions(getBaseContext())
             .setLoadingDrawable(R.drawable.image_loading)
             .setLoadFailDrawable(R.drawable.image_load_fail)
+            .setEmptyUriDrawable(R.drawable.image_loading)
             .setProcessor(new CircleBitmapProcessor()))
         .putOptions(DisplayOptionsType.GALLERY, new DisplayOptions(getBaseContext())
             .setLoadingDrawable(R.drawable.image_loading)
             .setLoadFailDrawable(R.drawable.image_load_fail)
+            .setEmptyUriDrawable(R.drawable.image_loading)
             .setProcessor(new RoundedCornerBitmapProcessor()));
 	}
 }

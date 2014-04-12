@@ -19,7 +19,7 @@ Android-ImageLoader是用在Android上的一个图片加载类库，主要用于
 ## Sample Application
 **[Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)**
 
-**[Download it on Github](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/Android-ImageLoader-2.3.0.apk)**
+**[Download it on Github](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/Android-ImageLoader-2.3.2.apk)**
 
 ##Usage
 
@@ -78,7 +78,10 @@ DisplayOptions displayOptions = new DisplayOptions(getBaseContext())
 .setMaxSize(new ImageSize(displayMetrics.widthPixels, displayMetrics.heightPixels))	//设置加载到内存中的图片的最大尺寸，如果原图的尺寸大于最大尺寸，在读取的时候就会缩小至合适的尺寸再读取
 .setMaxRetryCount(2)	//设置最大重试次数，当连接超时时会再次尝试下载
 .setProcessor(new ReflectionBitmapProcessor())	//设置Bitmap处理器，当图片从本地读取内存中后会使用BitmapProcessor将图片处理一下，你可以通过BitmapProcessor将图片处理成任何你想要的效果
-.setDisplayer(new FadeInBitmapDisplayer());	//设置图片显示器，在处理完图片之后会调用BitmapDisplayer来显示图片，你可以通过BitmapDisplayer自定义任何你想要的方式来显示图片
+.setDisplayer(new FadeInBitmapDisplayer())	//设置图片显示器，在处理完图片之后会调用BitmapDisplayer来显示图片，你可以通过BitmapDisplayer自定义任何你想要的方式来显示图片
+.setProcessLoadingDrawable(false)    //设置不使用BitmapProcessor处理加载中图片
+.setProcessLoadFailDrawable(false)   //设置不使用BitmapProcessor处理加载失败图片
+.setProcessEmptyUriDrawable(false);  //设置不使用BitmapProcessor处理URI为空图片
 ```
 DisplayOptions默认的配置是：
 >* 开启内存缓存和硬盘缓存
@@ -177,14 +180,15 @@ BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer�
 ###你还可以参考示例程序来更加直观的了解使用方式
 
 ##Downloads
-**[android-image-loader-2.3.1.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.1.jar)**
+**[android-image-loader-2.3.2.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.2.jar)**
 
-**[android-image-loader-2.3.1-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.1-with-src.jar)**
+**[android-image-loader-2.3.2-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.2-with-src.jar)**
 
 ##Change Log
 ###2.3.2
 >* 当无需取消的时候更新其DisplayListener
 >* 优化网络部分，解决会偶尔解码失败的bug
+>* DisplayOptions增加设置是否使用BitmapProcessor处理默认图片的方法
 
 ###2.3.1
 >* 本次更新主要是重命名一些方法和参数，以及补充一下注释，详情请参考示例代码

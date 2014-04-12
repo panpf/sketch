@@ -17,10 +17,8 @@ import org.apache.http.params.HttpProtocolParams;
 
 public class DefaultHttpClientCreator implements HttpClientCreator{
     private HttpClient httpClient;
-    private Configuration configuration;
 
     public DefaultHttpClientCreator(Configuration configuration) {
-        this.configuration = configuration;
         BasicHttpParams httpParams = new BasicHttpParams();
         ConnManagerParams.setTimeout(httpParams, DEFAULT_CONNECTION_TIME_OUT);
         HttpConnectionParams.setSoTimeout(httpParams, DEFAULT_CONNECTION_TIME_OUT);
