@@ -182,19 +182,16 @@ public class ImageLoaderUtils {
 
     /**
      * 获取SD卡可用容量
+     * @param path 路径
      */
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    public static long getSDCardAvailableSize(){
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-            StatFs statFs = new StatFs(Environment.getExternalStorageDirectory().getPath());
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2){
-                return statFs.getAvailableBlocks() * statFs.getBlockSize();
-            }else{
-                return statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
-            }
+    public static long getAvailableSize(String path){
+        StatFs statFs = new StatFs(path);
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2){
+            return statFs.getAvailableBlocks() * statFs.getBlockSize();
         }else{
-            return 0;
+            return statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
         }
     }
 

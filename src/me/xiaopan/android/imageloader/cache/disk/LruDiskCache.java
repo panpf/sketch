@@ -32,13 +32,16 @@ import android.util.Log;
  * 默认实现的磁盘缓存器
  */
 public class LruDiskCache implements DiskCache {
-	private static final String DEFAULT_DIRECTORY_NAME = "image_loader";
-	private long size = -1;
+	private static final String LOG_NAME = LruDiskCache.class.getSimpleName();
+    private static final String DEFAULT_DIRECTORY_NAME = "image_loader";
 	private File dir;	//缓存目录
     private Context context;
+    private FileLastModifiedComparator fileLastModifiedComparator;
+    private int reserveSize = 20 * 1024 * 1024;
 
     public LruDiskCache(Context context) {
         this.context = context;
+        this.fileLastModifiedComparator = new FileLastModifiedComparator();
     }
 
     private synchronized File getDir() {
@@ -58,48 +61,58 @@ public class LruDiskCache implements DiskCache {
 		}
 		this.dir = cacheDir;
 	}
-	
-	@Override
-	public synchronized void setSize(long size) {
-		this.size = size;
-	}
 
-	@Override
+    @Override
+    public void setReserveSize(int reserveSize) {
+        this.reserveSize = reserveSize;
+    }
+
+    @Override
 	public synchronized boolean applyForSpace(long cacheFileLength){
-        long sdcardAvailableSize = Math.abs(ImageLoaderUtils.getSDCardAvailableSize());
+        File cacheDir = getDir();
 
-        if(dir != null && dir.exists()){
-            File[] files = dir.listFiles();
-            if(files != null){
-                // 计算可用空间和已用空间
-                long availableSize = size > 0 && size <= sdcardAvailableSize ? size : sdcardAvailableSize;
-                long usedSize = ImageLoaderUtils.countFileLength(files);
+        // 总的可用空间
+        long totalAvailableSize = Math.abs(ImageLoaderUtils.getAvailableSize(cacheDir.getPath()));
 
-                // 如果剩余空间已经不够用了
-                if((availableSize - usedSize) < cacheFileLength){
-                    // 把所有文件按照最后修改日期排序，然后删除最不活跃的来腾出空间
-                    Arrays.sort(files, new FileLastModifiedComparator());
-                    for(File file : files){
-                        long currentFileLength = file.length();
-                        if(file.delete()){
-                            usedSize -= currentFileLength;
-                            if((availableSize - usedSize) >= cacheFileLength){
-                                break;
-                            }
-                        }
+        // 如果剩余空间够用
+        if(cacheFileLength <= totalAvailableSize-reserveSize){
+            return true;
+        }
+
+        // 获取所有缓存文件
+        File[] cacheFiles = null;
+        if(cacheDir != null && cacheDir.exists()){
+            cacheFiles = cacheDir.listFiles();
+        }
+
+        if(cacheFiles != null){
+            // 把所有文件按照最后修改日期排序
+            Arrays.sort(cacheFiles, fileLastModifiedComparator);
+
+            // 然后按照顺序来删除文件直到腾出足够的空间或文件删完为止
+            for(File file : cacheFiles){
+                Log.w(LOG_NAME, "删除缓存文件：" + file.getPath());
+                long currentFileLength = file.length();
+                if(file.delete()){
+                    totalAvailableSize += currentFileLength;
+                    if(cacheFileLength <= totalAvailableSize-reserveSize){
+                        return true;
                     }
                 }
             }
         }
-        return true;
+
+        // 返回申请空间失败
+        Log.e(LOG_NAME, "申请空间失败，剩余空间："+(totalAvailableSize/1024/1024)+"M"+"; 保留空间："+(reserveSize/1024/1024)+"M; "+"; "+cacheDir.getPath());
+        return false;
 	}
-	
+
 	@Override
 	public synchronized File createFile(TaskRequest request) {
 		if(!request.isEnableDiskCache()){
 			return null;
 		}
-		
+
 		File cacheFile = new File(getDir().getPath() + File.separator + ImageLoaderUtils.encodeUrl(request.getUri()));
 
 		//是否存在
