@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.imageloader.cache;
-
-import java.lang.ref.SoftReference;
-import java.util.concurrent.ConcurrentHashMap;
+package me.xiaopan.android.imageloader.cache.memory;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.drawable.BitmapDrawable;
 
+import java.lang.ref.SoftReference;
+import java.util.concurrent.ConcurrentHashMap;
+
 /**
  * 使用软引用的方式来缓存位图
  */
-public class BitmapSoftReferenceCacher extends BitmapDiskCacher {
+public class SoftReferenceMemoryCache implements MemoryCache{
 	private ConcurrentHashMap<String, SoftReference<BitmapDrawable>> bitmapCacheMap;
 	
-	public BitmapSoftReferenceCacher(){
+	public SoftReferenceMemoryCache(){
 		bitmapCacheMap = new ConcurrentHashMap<String, SoftReference<BitmapDrawable>>();
 	}
 	
@@ -53,18 +53,18 @@ public class BitmapSoftReferenceCacher extends BitmapDiskCacher {
 	}
 
 	@Override
-	public synchronized Bitmap getBitmapFromReusableSet(Options options) {
-		return null;
-	}
-
-	@Override
 	public synchronized BitmapDrawable remove(String key) {
 		SoftReference<BitmapDrawable> bitmapReference = bitmapCacheMap.remove(key);
 		return bitmapReference != null?bitmapReference.get():null;
 	}
 
 	@Override
-	public synchronized void clearMenoryCache() {
+	public synchronized void clear() {
 		bitmapCacheMap.clear();
 	}
+
+    @Override
+    public synchronized Bitmap getBitmapFromReusableSet(Options options) {
+        return null;
+    }
 }

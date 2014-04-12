@@ -38,7 +38,7 @@ public class BitmapLoadCallable implements Callable<Object> {
             bitmap = loadRequest.getConfiguration().getBitmapDecoder().decode(loadRequest, onDecodeListener);
 
             //处理位图
-            if(bitmap != null && !bitmap.isRecycled()){
+            if(bitmap != null){
                 onDecodeListener.onDecodeSuccess();
                 if(loadRequest.getLoadOptions().getProcessor() != null){
                     Bitmap newBitmap = loadRequest.getLoadOptions().getProcessor().process(bitmap, loadRequest.getScaleType(), loadRequest.getMaxSize());

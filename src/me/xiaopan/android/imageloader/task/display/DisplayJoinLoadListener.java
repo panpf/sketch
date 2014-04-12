@@ -62,7 +62,7 @@ public class DisplayJoinLoadListener implements LoadListener {
 
         //放入内存缓存
         if(displayRequest.getDisplayOptions().isEnableMemoryCache()){
-            displayRequest.getConfiguration().getBitmapCacher().put(displayRequest.getId(), bitmapDrawable);
+            displayRequest.getConfiguration().getMemoryCache().put(displayRequest.getId(), bitmapDrawable);
         }
 
         //显示

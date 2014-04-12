@@ -16,9 +16,6 @@
 
 package me.xiaopan.android.imageloader.decode;
 
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.load.LoadRequest;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -26,6 +23,9 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.Log;
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 
 /**
  * 默认的位图解码器
@@ -73,14 +73,14 @@ public class DefaultBitmapDecoder implements BitmapDecoder{
 
     /**
      * 尝试重复利用Bitmap
-     * @param loadRequest
-     * @param options
+     * @param loadRequest 加载请求
+     * @param options 解码选项
      */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 	private void addInBitmapOptions(LoadRequest loadRequest, BitmapFactory.Options options) {
 	    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
             // Try to find a bitmap to use for inBitmap.
-            Bitmap inBitmap = loadRequest.getConfiguration().getBitmapCacher().getBitmapFromReusableSet(options);
+            Bitmap inBitmap = loadRequest.getConfiguration().getMemoryCache().getBitmapFromReusableSet(options);
             if (inBitmap != null && !inBitmap.isRecycled()) {
 	    	    options.inMutable = true;// inBitmap only works with mutable bitmaps, so force the decoder to
                 options.inBitmap = inBitmap;// return mutable bitmaps.

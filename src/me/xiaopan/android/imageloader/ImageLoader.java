@@ -208,7 +208,7 @@ public class ImageLoader{
 
         //尝试显示
         if(displayOptions.isEnableMemoryCache()){
-            BitmapDrawable cacheDrawable = configuration.getBitmapCacher().get(displayRequest.getId());
+            BitmapDrawable cacheDrawable = configuration.getMemoryCache().get(displayRequest.getId());
             if(cacheDrawable != null){
                 imageView.setImageDrawable(cacheDrawable);
                 if(displayListener != null){

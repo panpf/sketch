@@ -17,8 +17,14 @@
 package me.xiaopan.android.imageloader.sample;
 
 import me.xiaoapn.android.imageloader.R;
+import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.cache.disk.LruDiskCache;
+import me.xiaopan.android.imageloader.cache.memory.LruMemoryCache;
+import me.xiaopan.android.imageloader.decode.DefaultBitmapDecoder;
 import me.xiaopan.android.imageloader.display.ZoomOutBitmapDisplayer;
+import me.xiaopan.android.imageloader.execute.DefaultRequestExecutor;
+import me.xiaopan.android.imageloader.http.DefaultHttpClientCreator;
 import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
 import me.xiaopan.android.imageloader.process.ReflectionBitmapProcessor;
 import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;

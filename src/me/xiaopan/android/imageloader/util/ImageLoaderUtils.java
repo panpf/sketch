@@ -23,18 +23,19 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
+import android.os.StatFs;
 
 public class ImageLoaderUtils {
 
-    public static final int BUFFER_SIZE = 8*1024;
+    public static final int BUFFER_SIZE = 32*1024;
 	
 	/**
 	 * 判断给定的字符串是否为null或者是空的
 	 * @param string 给定的字符串
-	 * @return 
 	 */
 	public static boolean isEmpty(String string){
 		return string == null || "".equals(string.trim());
@@ -43,7 +44,6 @@ public class ImageLoaderUtils {
 	/**
 	 * 判断给定的字符串是否不为null且不为空
 	 * @param string 给定的字符串
-	 * @return 
 	 */
 	public static boolean isNotEmpty(String string){
 		return !isEmpty(string);
@@ -166,5 +166,53 @@ public class ImageLoaderUtils {
         }else{
             return context.getCacheDir();
         }
+    }
+
+    /**
+     * 计算文件长度，此方法的关键点在于，他也能获取目录的长度
+     */
+    public static long countFileLength(File file){
+        long length = 0;
+        if(file.isFile()){
+            length += file.length();
+        }else{
+            File[] files = file.listFiles();
+            if(files != null){
+                for(File childFile : files){
+                    length += countFileLength(childFile);
+                }
+            }
+        }
+        return length;
+    }
+
+    /**
+     * 获取SD卡可用容量
+     */
+    @SuppressWarnings("deprecation")
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    public static long getSDCardAvailableSize(){
+        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+            StatFs statFs = new StatFs(Environment.getExternalStorageDirectory().getPath());
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2){
+                return statFs.getAvailableBlocks() * statFs.getBlockSize();
+            }else{
+                return statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
+            }
+        }else{
+            return 0;
+        }
+    }
+
+    /**
+     * 计算给定的多个文件的长度，此方法的关键点在于，他也能获取目录的长度
+     * @param files 给定的多个文件
+     */
+    public static long countFileLength(File...files){
+        int length = 0;
+        for(File file : files){
+            length += countFileLength(file);
+        }
+        return length;
     }
 }

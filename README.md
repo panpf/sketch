@@ -137,12 +137,15 @@ ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, 
 
 如果你了解DefaultRequestExecutor的特性后依然感觉无法满足你的需求的话，你可以通过实现RequestExecutor接口来自定义，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setRequstExecutor(RequestExecutor requestExecutor)方法应用即可，不过建议你在动手实现之前先参考一下DefaultRequestExecutor。
 
-###5.自定义BitmapCacher（图片缓存器）
+###5.自定义DiskCache（磁盘缓存器）
+自定义DiskCache是用来将图片缓存在本地磁盘上，方便下次读取，默认提供了LruDiskCache实现，可根据使用频率来删除很久没使用的缓存文件
+
+###5.自定义MemoryCache（图片缓存器）
 BitmapCacher是用来缓存Bitmap的，包括内存缓存和硬盘缓存，ImageLoader提供了以下两种缓存实现共选择：
 >* BitmapLruCacher：内存缓存部分采用LRU（近期最少使用）算法来缓存Bimtap，硬盘缓存部分两者都一样；
 >* BitmapSoftReferenceCacher：内存缓存部分采用软引用的方式来缓存Bitmap，硬盘缓存部分两者都一样。由于从Android4.0起虚拟机将变得异常活跃，所以此种缓存方法已经失去了其应有的作用，所以不建议使用。
 
-默认采用的是BitmapLruCacher，如果你想自定义的话只需实现BitmapCacher接口，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setBitmapCacher(BitmapCacher bitmapCacher)方法应用即可，同样建议在动手实现之前先参考一下BitmapLruCacher。
+默认采用的是BitmapLruCacher，如果你想自定义的话只需实现BitmapCacher接口，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setBitmapCacher(BitmapCacher memoryCache)方法应用即可，同样建议在动手实现之前先参考一下BitmapLruCacher。
 
 ###6.自定义BitmapDecoder（图片解码器）
 BitmapDecoder是用来解码Bitmap的，默认的实现是DefaultBitmapDecoder，如果你想自定义的话只需实现BitmapDecoder接口，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setBitmapLoader(BitmapDecoder bitmapDecoder)方法应用即可，同样建议在动手实现之前先参考一下DefaultBitmapDecoder。

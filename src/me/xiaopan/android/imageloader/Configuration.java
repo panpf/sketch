@@ -19,12 +19,16 @@ package me.xiaopan.android.imageloader;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.xiaopan.android.imageloader.cache.BitmapCacher;
-import me.xiaopan.android.imageloader.cache.BitmapLruCacher;
+import me.xiaopan.android.imageloader.cache.disk.DiskCache;
+import me.xiaopan.android.imageloader.cache.disk.LruDiskCache;
+import me.xiaopan.android.imageloader.cache.memory.LruMemoryCache;
+import me.xiaopan.android.imageloader.cache.memory.MemoryCache;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.decode.DefaultBitmapDecoder;
 import me.xiaopan.android.imageloader.execute.DefaultRequestExecutor;
 import me.xiaopan.android.imageloader.execute.RequestExecutor;
+import me.xiaopan.android.imageloader.http.DefaultHttpClientCreator;
+import me.xiaopan.android.imageloader.http.HttpClientCreator;
 import me.xiaopan.android.imageloader.task.TaskOptions;
 import android.content.Context;
 import android.os.Handler;
@@ -38,9 +42,11 @@ public class Configuration {
 	private Context context;	//上下文
 	private Handler handler;	//消息处理器
 	private RequestExecutor requestExecutor;	//请求执行器
-	private BitmapCacher bitmapCacher;	//位图缓存器
+    private DiskCache diskCache;    // 磁盘缓存器
+	private MemoryCache memoryCache;	//位图缓存器
 	private BitmapDecoder bitmapDecoder;	//位图解码器
 	private Map<Object, TaskOptions> optionsMap;	//显示选项集合
+    private HttpClientCreator httpClientCreator;
 	
 	public Configuration(Context context){
 		if(Looper.myLooper() != Looper.getMainLooper()){
@@ -80,23 +86,43 @@ public class Configuration {
 		return this;
 	}
 
-	/**
-	 * 获取位图缓存器
-	 * @return 位图缓存器
+    /**
+     * 获取磁盘缓存器
+     * @return 磁盘缓存器
+     */
+    public DiskCache getDiskCache() {
+        if(diskCache == null){
+            diskCache = new LruDiskCache(context);
+        }
+        return diskCache;
+    }
+
+    /**
+     * 设置磁盘缓存器
+     * @param diskCache 磁盘缓存器
+     */
+    public Configuration setDiskCache(DiskCache diskCache) {
+        this.diskCache = diskCache;
+        return this;
+    }
+
+    /**
+	 * 获取内存缓存器
+	 * @return 内存缓存器
 	 */
-	public BitmapCacher getBitmapCacher() {
-		if(bitmapCacher == null){
-			bitmapCacher = new BitmapLruCacher();
+	public MemoryCache getMemoryCache() {
+		if(memoryCache == null){
+			memoryCache = new LruMemoryCache();
 		}
-		return bitmapCacher;
+		return memoryCache;
 	}
 	
 	/**
-	 * 设置位图缓存器
-	 * @param bitmapCacher 位图缓存器
+	 * 设置内存缓存器
+	 * @param memoryCache 内存缓存器
 	 */
-	public Configuration setBitmapCacher(BitmapCacher bitmapCacher) {
-		this.bitmapCacher = bitmapCacher;
+	public Configuration setMemoryCache(MemoryCache memoryCache) {
+		this.memoryCache = memoryCache;
 		return this;
 	}
 
@@ -163,4 +189,24 @@ public class Configuration {
 		this.optionsMap.put(optionsName, options);
 		return this;
 	}
+
+    /**
+     * 获取HttpClient创建器
+     * @return HttpClient创建器
+     */
+    public HttpClientCreator getHttpClientCreator() {
+        if(httpClientCreator == null){
+            httpClientCreator = new DefaultHttpClientCreator(this);
+        }
+        return httpClientCreator;
+    }
+
+    /**
+     * 设置HttpClient创建器
+     * @param httpClientCreator HttpClient创建器
+     */
+    public Configuration setHttpClientCreator(HttpClientCreator httpClientCreator) {
+        this.httpClientCreator = httpClientCreator;
+        return this;
+    }
 }

@@ -88,7 +88,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
 	 * @param downloadRequest 下载请求
 	 */
 	private void executeDownloadRequest(DownloadRequest downloadRequest){
-		File cacheFile = downloadRequest.getConfiguration().getBitmapCacher().getCacheFile(downloadRequest);
+		File cacheFile = downloadRequest.getConfiguration().getDiskCache().createFile(downloadRequest);
 		downloadRequest.setCacheFile(cacheFile);
 		if(cacheFile != null && cacheFile.exists()){
 			localTaskExecutor.execute(new DownloadTask(downloadRequest));
@@ -112,7 +112,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
 		switch(scheme){
 			case HTTP :
 			case HTTPS : 
-				File cacheFile = loadRequest.getConfiguration().getBitmapCacher().getCacheFile(loadRequest);
+				File cacheFile = loadRequest.getConfiguration().getDiskCache().createFile(loadRequest);
                 loadRequest.setCacheFile(cacheFile);
                 if(cacheFile != null && cacheFile.exists()){
                     localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest))));
