@@ -54,7 +54,18 @@ URI支持以下五种类型
 >* "assets://image.png"; // from assets
 >* "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 
-###2.自定义DisplayOptions
+###2.配置ImageLodaer
+```java
+ImageLoader.getInstance(getBaseContext()).getConfiguration()
+	.setBitmapDecoder(new DefaultBitmapDecoder())  // 设置Bitmap解码器
+	.setDebugMode(true)  // 开启Debug模式，在控制台输出LOG
+	.setDiskCache(new LruDiskCache(getBaseContext()))  // 设置磁盘缓存器 
+	.setHttpClientCreator(new DefaultHttpClientCreator(configuration))  // 设置HttpClient生成器 
+	.setMemoryCache(new LruMemoryCache())  // 设置内存缓存器
+	.setRequestExecutor(new DefaultRequestExecutor());  // 设置请求执行器
+```
+
+###3.配置DisplayOptions
 ```java
 DisplayOptions displayOptions = new DisplayOptions(getBaseContext())
 .setEmptyUriDrawable(R.drawable.image_failure)    //设置当uri为空时显示的图片
@@ -69,13 +80,13 @@ DisplayOptions displayOptions = new DisplayOptions(getBaseContext())
 .setProcessor(new ReflectionBitmapProcessor())	//设置Bitmap处理器，当图片从本地读取内存中后会使用BitmapProcessor将图片处理一下，你可以通过BitmapProcessor将图片处理成任何你想要的效果
 .setDisplayer(new FadeInBitmapDisplayer());	//设置图片显示器，在处理完图片之后会调用BitmapDisplayer来显示图片，你可以通过BitmapDisplayer自定义任何你想要的方式来显示图片
 ```
-另外DisplayOptions默认的配置是：
+DisplayOptions默认的配置是：
 >* 开启内存缓存和硬盘缓存
 >* 图片最大尺寸为当前设备屏幕的尺寸
 >* 图片显示器为FadeInBitmapDisplayer（渐入效果）
 >* 最大重试次数为2
 
-###3.利用Configuration().putOptions()来管理多个DisplayOptions
+###4.利用Configuration().putOptions()来管理多个DisplayOptions
 当你有多个DisplayOptions的时候你要怎么去管理并方便的使用呢？别担心我已经为你提供了一个绝对可行的解决方案。
 
 首先你需要定义一个枚举类来作为Options的标签，如下：
@@ -127,30 +138,26 @@ ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, 
 ```
 注意：如果无法从Configuration中获取DisplayOptions的话ImageLoader就会创建一个默认的DisplayOptions。
 
-###4.自定义RequestExecutor（请求执行器）
-默认采用的是DefaultRequestExecutor，其包含三个线程池
+###5.RequestExecutor（请求执行器）
+RequestExecutor是用来执行请求的，默认的实现是DefaultRequestExecutor，其包含三个线程池
 >* 网络任务线程池：主要用来执行比较耗时的下载任务，核心线程数``5``个，最大线程数``10``；
 >* 本地任务线程池：用来执行本地任务，例如assets、drawable、缓存图片等。核心线程数``1``个，最大线程数也是``1``个，这样一来本地任务可以一个一个加载；
 >* 任务调度线程池：用来分发请求，其核心作用在于判断请求该放到网络任务线程池执行还是该放到本地任务线程池执行。核心线程数``1``个，最大线程数也是``1``个。
 
 三种线程池的任务队列都是长度为20的有界队列，这样可以保证能够及时加载最新的任务。
 
-如果你了解DefaultRequestExecutor的特性后依然感觉无法满足你的需求的话，你可以通过实现RequestExecutor接口来自定义，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setRequstExecutor(RequestExecutor requestExecutor)方法应用即可，不过建议你在动手实现之前先参考一下DefaultRequestExecutor。
+###6.DiskCache（磁盘缓存器）
+DiskCache用来将图片缓存在本地磁盘上，方便下次读取。特点是可以设置最大容量并自动清除不活跃的缓存文件，默认提供了LruDiskCache实现。
 
-###5.自定义DiskCache（磁盘缓存器）
-自定义DiskCache是用来将图片缓存在本地磁盘上，方便下次读取，默认提供了LruDiskCache实现，可根据使用频率来删除很久没使用的缓存文件
+###7.MemoryCache（内存缓存器）
+MemoryCache用来在内存中缓存Bitmap，默认提供了以下两种实现供选择（默认采用的是LruMemoryCache）：
+>* LruMemoryCache：内存缓存部分采用LRU（近期最少使用）算法来缓存Bimtap；
+>* SoftReferenceMemoryCache：内存缓存部分采用软引用的方式来缓存Bitmap，由于从Android4.0起虚拟机将变得异常活跃，所以此种缓存方法已经失去了其应有的作用，所以不建议使用。
 
-###5.自定义MemoryCache（图片缓存器）
-BitmapCacher是用来缓存Bitmap的，包括内存缓存和硬盘缓存，ImageLoader提供了以下两种缓存实现共选择：
->* BitmapLruCacher：内存缓存部分采用LRU（近期最少使用）算法来缓存Bimtap，硬盘缓存部分两者都一样；
->* BitmapSoftReferenceCacher：内存缓存部分采用软引用的方式来缓存Bitmap，硬盘缓存部分两者都一样。由于从Android4.0起虚拟机将变得异常活跃，所以此种缓存方法已经失去了其应有的作用，所以不建议使用。
+###8.BitmapDecoder（图片解码器）
+BitmapDecoder是用来解码Bitmap的，默认的实现是DefaultBitmapDecoder。
 
-默认采用的是BitmapLruCacher，如果你想自定义的话只需实现BitmapCacher接口，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setBitmapCacher(BitmapCacher memoryCache)方法应用即可，同样建议在动手实现之前先参考一下BitmapLruCacher。
-
-###6.自定义BitmapDecoder（图片解码器）
-BitmapDecoder是用来解码Bitmap的，默认的实现是DefaultBitmapDecoder，如果你想自定义的话只需实现BitmapDecoder接口，然后调用ImageLoader.getInstance(getBaseContext()).getConfiguration().setBitmapLoader(BitmapDecoder bitmapDecoder)方法应用即可，同样建议在动手实现之前先参考一下DefaultBitmapDecoder。
-
-###7.自定义BitmapProcessor（图片处理器）
+###9.BitmapProcessor（图片处理器）
 BitmapProcessor是用来在BitmapDecoder解码完图片之后在对图片进行处理的，因此你可以利用BitmapProcessor将图片处理成任何你想要的效果。ImageLoader默认提供了三种BitmapProcessor供你使用：
 >* CircleBitmapProcessor：圆形图片处理器，可以将图片处理成圆形的，如示例图所示；
 >* ReflectionBitmapProcessor：倒影图片处理器，可以将图片处理成倒影效果的，如示例图所示。另外倒影的高度以及倒影的距离都可以通过构造函数来自定义；
@@ -161,13 +168,11 @@ BitmapProcessor是用来在BitmapDecoder解码完图片之后在对图片进行�
 >* 通过BitmapProcessor的process()方法传进去的Bitmap在你处理完之后你无需释放它，ImageLoader会去处理的；
 >* 在处理的过程中如果你多次创建了新的Bitmap，那么在你用完之后一定要记得释放。
 
-###8.自定义BitmapDisplayer（图片显示器）
-BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer来以不同的动画来显示图片，默认提供以下三种：
+###10.BitmapDisplayer（图片显示器）
+BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer来以不同的动画来显示图片，默认提供以下三种（默认采用的是FadeInBitmapDisplayer）：
 >* FadeInBitmapDisplayer： 渐入效果。
 >* ZoomInBitmapDisplayer：渐入且由小到大效果。
 >* ZoomOutBitmapDisplayer：渐入且由大到小效果。
-
-如果你想自定义的话只需实现BitmapDisplayer接口，然后调用Options.setBitmapDisplayer(BitmapDisplayer displayer)应用即可。
 
 ###你还可以参考示例程序来更加直观的了解使用方式
 
@@ -179,6 +184,7 @@ BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer�
 ##Change Log
 ###2.3.2
 >* 当无需取消的时候更新其DisplayListener
+>* 优化网络部分，解决会偶尔解码失败的bug
 
 ###2.3.1
 >* 本次更新主要是重命名一些方法和参数，以及补充一下注释，详情请参考示例代码

@@ -89,7 +89,7 @@ public class DownloadCallable implements Callable<Object>{
                 inputStream = new BufferedHttpEntity(httpResponse.getEntity()).getContent();
                 if(downloadRequest.getCacheFile() != null && ImageLoaderUtils.createFile(downloadRequest.getCacheFile()) && downloadRequest.getConfiguration().getDiskCache().applyForSpace(fileLength)){
                     // 如果可以缓存到本地
-                    outputStream = new BufferedOutputStream(new FileOutputStream(downloadRequest.getCacheFile(), false));
+                    outputStream = new BufferedOutputStream(new FileOutputStream(downloadRequest.getCacheFile(), false), 8*1024);
                     copy(inputStream, outputStream, fileLength);
                     result = downloadRequest.getCacheFile();
                     if(downloadRequest.getConfiguration().isDebugMode()){

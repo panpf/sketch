@@ -48,8 +48,5 @@ public class CacheFileDecodeListener implements BitmapDecoder.DecodeListener {
     @Override
     public void onDecodeFailure() {
         file.delete();
-        if(taskRequest.getConfiguration().isDebugMode()){
-            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败，已删除缓存文件").append("：").append(file.getPath()).toString());
-        }
     }
 }

@@ -30,9 +30,6 @@ import android.os.Environment;
 import android.os.StatFs;
 
 public class ImageLoaderUtils {
-
-    public static final int BUFFER_SIZE = 32*1024;
-	
 	/**
 	 * 判断给定的字符串是否为null或者是空的
 	 * @param string 给定的字符串
