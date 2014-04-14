@@ -63,7 +63,7 @@ public class CircleBitmapProcessor implements BitmapProcessor {
         
         // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        Rect srcRect = new ComputeRect().compute(new Point(bitmap.getWidth(),  bitmap.getHeight()), new Point(slidLlength,  slidLlength), scaleType);
+        Rect srcRect = BitmapProcessorUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(slidLlength, slidLlength), scaleType);
         Rect dstRect = new Rect(0, 0, slidLlength, slidLlength);
         canvas.drawBitmap(bitmap, srcRect, dstRect, paint);
 

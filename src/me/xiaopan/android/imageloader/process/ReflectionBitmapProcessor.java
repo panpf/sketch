@@ -88,31 +88,6 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
         canvas.drawRect(0, imageHeight+reflectionSpacing, reflectionImage.getWidth(), bitmapWithReflection.getHeight(), paint);
 
         return bitmapWithReflection;
-		
-		
-
-//		// 初始化画布
-//		Bitmap bitmapWithReflection = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight() + reflectionSpacing + (int) (bitmap.getHeight()*reflectionScale), Bitmap.Config.ARGB_8888);
-//		Canvas canvas = new Canvas(bitmapWithReflection);
-//
-//		//创建倒影图片
-//        Matrix matrix = new Matrix();
-//        matrix.preScale(1, -1);
-//        Bitmap reflectionImage = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);//
-//
-//
-//		/* 将原图画到画布的上半部分，将倒影画到画布的下半部分，倒影与画布顶部的间距是原图的高度加上原图与倒影之间的间距 */
-//        canvas.drawBitmap(bitmap, 0, 0, null);
-//        canvas.drawBitmap(reflectionImage, 0, bitmap.getHeight() + reflectionSpacing, null);
-//        reflectionImage.recycle();
-//
-//		/* 将倒影改成半透明，创建画笔，并设置画笔的渐变从半透明的白色到全透明的白色，然后再倒影上面画半透明效果 */
-//        Paint paint = new Paint();
-//        paint.setShader(new LinearGradient(0, bitmap.getHeight(), 0, bitmapWithReflection.getHeight() + reflectionSpacing, 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
-//        paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
-//        canvas.drawRect(0, bitmap.getHeight() + reflectionSpacing, bitmap.getWidth(), bitmapWithReflection.getHeight() + reflectionSpacing, paint);
-//
-//        return bitmapWithReflection;
 	}
 	
 	@Override
@@ -123,7 +98,7 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
 	public Bitmap cut(ImageSize processSize, int imageHeight, Bitmap bitmap, ScaleType scaleType){
 		Bitmap cutBitmap = Bitmap.createBitmap(processSize.getWidth(), imageHeight, Bitmap.Config.ARGB_8888);
 		Canvas canvas = new Canvas(cutBitmap);
-        Rect srcRect = new ComputeRect().compute(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(cutBitmap.getWidth(), cutBitmap.getHeight()), scaleType);
+        Rect srcRect = BitmapProcessorUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(cutBitmap.getWidth(), cutBitmap.getHeight()), scaleType);
         canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, cutBitmap.getWidth(), cutBitmap.getHeight()), null);
         return cutBitmap;
 	}

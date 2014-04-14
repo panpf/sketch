@@ -79,7 +79,7 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
         
         // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        Rect srcRect = new ComputeRect().compute(new Point(bitmap.getWidth(),  bitmap.getHeight()), new Point(processSize.getWidth(),  processSize.getHeight()), scaleType);
+        Rect srcRect = BitmapProcessorUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(processSize.getWidth(), processSize.getHeight()), scaleType);
         Rect dstRect = new Rect(0, 0, processSize.getWidth(), processSize.getHeight());
         canvas.drawBitmap(bitmap, srcRect, dstRect, paint);
 
