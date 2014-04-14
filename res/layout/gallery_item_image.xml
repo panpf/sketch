@@ -6,6 +6,6 @@
 	    android:layout_width="200dp"
 	    android:layout_height="200dp"
 	    android:id="@+id/image_galleryItem"
-	    android:scaleType="fitXY"
+	    android:scaleType="centerCrop"
 	    android:contentDescription="@string/app_name"/>
 </LinearLayout>

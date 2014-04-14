@@ -19,7 +19,7 @@ Android-ImageLoader是用在Android上的一个图片加载类库，主要用于
 ## Sample Application
 **[Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)**
 
-**[Download it on Github](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/Android-ImageLoader-2.3.2.apk)**
+**[Download it on Github](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/Android-ImageLoader-2.3.3.apk)**
 
 ##Usage
 
@@ -187,6 +187,9 @@ BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer�
 ##Change Log
 ###2.3.3
 >* ImageLoader类增加清除缓存的方法
+>* 优化当连接不是图片的是的异常处理，当检查ContentType发现不是图片抛出异常并在控制台打印，方便处理
+>* HttpClient增加UserAgent，防止个别网站由于没有UserAgent而导致下载失败
+>* 优化默认提供的三种处理器的处理效果，特别是倒影处理器，当限制处理尺寸时，会截取原图中的一部分来绘制倒影图片，保证不会显示变形
 
 ###2.3.2
 >* 当无需取消的时候更新其DisplayListener

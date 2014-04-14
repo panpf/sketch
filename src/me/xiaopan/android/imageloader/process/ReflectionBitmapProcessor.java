@@ -61,18 +61,59 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
 		// 初始化参数
 		if(bitmap == null) return null;
 		if(scaleType == null) scaleType = ScaleType.FIT_CENTER;
-		if(processSize == null) processSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
-		
-		// 初始化画布
-		Bitmap bitmapWithReflection = Bitmap.createBitmap(processSize.getWidth(), processSize.getHeight(), Bitmap.Config.ARGB_8888);
-		Canvas canvas = new Canvas(bitmapWithReflection);
+
+		if(processSize != null){
+            return cutHandle(bitmap, scaleType, processSize);
+        }else{
+            return fullHandle(bitmap);
+        }
+	}
+	
+	@Override
+	public BitmapProcessor copy() {
+		return new ReflectionBitmapProcessor(reflectionSpacing, reflectionScale);
+	}
+
+    private Bitmap fullHandle(Bitmap bitmap){
+        // 初始化画布
+        Bitmap bitmapWithReflection = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight() + (int)(bitmap.getHeight()*reflectionScale) + reflectionSpacing, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmapWithReflection);
 
         // 在上半部分绘制原图
-		int imageHeight = (int) (processSize.getHeight() * (1 - reflectionScale));
-		Bitmap cutBitmap = cut(processSize, imageHeight, bitmap, scaleType);
+        canvas.drawBitmap(bitmap, 0, 0, null);
+
+        // 在下半部分绘制倒影图片
+        Matrix matrix = new Matrix();
+        matrix.preScale(1, -1);
+        Bitmap reflectionImage = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
+        canvas.drawBitmap(reflectionImage, 0, bitmap.getHeight()+reflectionSpacing, null);
+        reflectionImage.recycle();
+
+        // 在下半部分绘制半透明遮罩
+        Paint paint = new Paint();
+        paint.setShader(new LinearGradient(0, bitmap.getHeight()+reflectionSpacing, 0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
+        paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
+        canvas.drawRect(0, bitmap.getHeight()+reflectionSpacing, bitmapWithReflection.getWidth(), bitmapWithReflection.getHeight(), paint);
+
+        return bitmapWithReflection;
+    }
+
+    private Bitmap cutHandle(Bitmap bitmap, ScaleType scaleType, ImageSize processSize){
+        // 初始化画布
+        Bitmap bitmapWithReflection = Bitmap.createBitmap(processSize.getWidth(), processSize.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmapWithReflection);
+
+        // 从原图中裁剪出需要的区域
+        int imageHeight = (int) (processSize.getHeight() * (1 - reflectionScale));
+        Bitmap cutBitmap = Bitmap.createBitmap(processSize.getWidth(), imageHeight, Bitmap.Config.ARGB_8888);
+        Canvas canvas2 = new Canvas(cutBitmap);
+        Rect srcRect = BitmapProcessorUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(cutBitmap.getWidth(), cutBitmap.getHeight()), scaleType);
+        canvas2.drawBitmap(bitmap, srcRect, new Rect(0, 0, cutBitmap.getWidth(), cutBitmap.getHeight()), null);
+
+        // 在上半部分绘制原图
         canvas.drawBitmap(cutBitmap, new Rect(0, 0, cutBitmap.getWidth(), cutBitmap.getHeight()), new Rect(0, 0, bitmapWithReflection.getWidth(), imageHeight), null);
         bitmap.recycle();
-        
+
         // 在下半部分绘制倒影图片
         Matrix matrix = new Matrix();
         matrix.preScale(1, -1);
@@ -80,26 +121,13 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
         cutBitmap.recycle();
         canvas.drawBitmap(reflectionImage, 0, imageHeight+reflectionSpacing, null);
         reflectionImage.recycle();
-        
+
         // 在下半部分绘制半透明遮罩
         Paint paint = new Paint();
         paint.setShader(new LinearGradient(0, imageHeight+reflectionSpacing, 0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
         paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
-        canvas.drawRect(0, imageHeight+reflectionSpacing, reflectionImage.getWidth(), bitmapWithReflection.getHeight(), paint);
+        canvas.drawRect(0, imageHeight+reflectionSpacing, bitmapWithReflection.getWidth(), bitmapWithReflection.getHeight(), paint);
 
         return bitmapWithReflection;
-	}
-	
-	@Override
-	public BitmapProcessor copy() {
-		return new ReflectionBitmapProcessor(reflectionSpacing, reflectionScale);
-	}
-	
-	public Bitmap cut(ImageSize processSize, int imageHeight, Bitmap bitmap, ScaleType scaleType){
-		Bitmap cutBitmap = Bitmap.createBitmap(processSize.getWidth(), imageHeight, Bitmap.Config.ARGB_8888);
-		Canvas canvas = new Canvas(cutBitmap);
-        Rect srcRect = BitmapProcessorUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(cutBitmap.getWidth(), cutBitmap.getHeight()), scaleType);
-        canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, cutBitmap.getWidth(), cutBitmap.getHeight()), null);
-        return cutBitmap;
-	}
+    }
 }

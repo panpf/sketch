@@ -48,7 +48,7 @@ public class ImageSize {
 		if (width > 0 && height > 0){
 		    return new ImageSize(width, height);
         }
-        if(maxImageSize.getWidth() > 0 && maxImageSize.getHeight() > 0){
+        if(maxImageSize != null && maxImageSize.getWidth() > 0 && maxImageSize.getHeight() > 0){
             return maxImageSize;
         }
         return null;
@@ -60,7 +60,7 @@ public class ImageSize {
         if (width > 0 && height > 0){
             return new ImageSize(width, height);
         }
-        if(maxProcessSize.getWidth() > 0 && maxProcessSize.getHeight() > 0){
+        if(maxProcessSize != null && maxProcessSize.getWidth() > 0 && maxProcessSize.getHeight() > 0){
             return maxProcessSize;
         }
         return null;
