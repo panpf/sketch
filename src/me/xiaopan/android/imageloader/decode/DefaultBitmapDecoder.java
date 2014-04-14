@@ -16,6 +16,9 @@
 
 package me.xiaopan.android.imageloader.decode;
 
+import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.task.load.LoadRequest;
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,9 +26,6 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Point;
 import android.os.Build;
 import android.util.Log;
-import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.load.LoadRequest;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 
 /**
  * 默认的位图解码器
@@ -35,38 +35,38 @@ public class DefaultBitmapDecoder implements BitmapDecoder{
 	
 	@Override
 	public Bitmap decode(LoadRequest loadRequest, DecodeListener decodeListener){
-        //解码原图尺寸并计算缩放比例
-        Options options = new Options();
+		Bitmap bitmap = null;
+		Point originalSize = null;
+		Options options = new Options();
+		
+		// 解码其宽高
         options.inJustDecodeBounds = true;
         decodeListener.onDecode(options);
-        Point originalSize = new Point(options.outWidth, options.outHeight);
-        if(loadRequest.getMaxSize() != null){
-            options.inSampleSize = calculateInSampleSize(options, loadRequest.getMaxSize().getWidth(), loadRequest.getMaxSize().getHeight());
+        if(options.outWidth > 0 && options.outHeight > 0){
+        	originalSize = new Point(options.outWidth, options.outHeight);
+        	if(loadRequest.getDecodeSize() != null){
+        		options.inSampleSize = calculateInSampleSize(options, loadRequest.getDecodeSize().getWidth(), loadRequest.getDecodeSize().getHeight());
+        	}
+        	
+        	//解码
+        	options.inJustDecodeBounds = false;
+        	if (ImageLoaderUtils.hasHoneycomb()) {
+        		addInBitmapOptions(loadRequest, options);
+        	}
+        	bitmap = decodeListener.onDecode(options);
         }
-
-        //解码
-        options.inJustDecodeBounds = false;
-        if (ImageLoaderUtils.hasHoneycomb()) {
-            addInBitmapOptions(loadRequest, options);
-        }
-        Bitmap bitmap = decodeListener.onDecode(options);
-
-        //输出LOG
-        if(loadRequest.getConfiguration().isDebugMode()){
-            StringBuffer stringBuffer = new StringBuffer(NAME).append("：").append(bitmap != null?"解码成功":"解码失败");
-            if(bitmap != null && loadRequest.getMaxSize() != null){
-                stringBuffer.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                stringBuffer.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
-                stringBuffer.append("；").append("缩放比例").append("=").append(options.inSampleSize);
-                stringBuffer.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
-            }
-            String log = stringBuffer.append("；").append(loadRequest.getName()).toString();
-            if(bitmap != null){
-                Log.d(ImageLoader.LOG_TAG, log);
-            }else{
-                Log.w(ImageLoader.LOG_TAG, log);
-            }
-        }
+        
+        // 回调
+    	if(bitmap != null){
+    		if(!bitmap.isRecycled()){
+    			decodeListener.onDecodeSuccess(bitmap, originalSize, options.inSampleSize);
+    		}else{
+    			bitmap = null;
+    			decodeListener.onDecodeFailure();
+    		}
+    	}else{
+    		decodeListener.onDecodeFailure();
+    	}
 
 		return bitmap;
 	}
@@ -85,7 +85,7 @@ public class DefaultBitmapDecoder implements BitmapDecoder{
 	    	    options.inMutable = true;// inBitmap only works with mutable bitmaps, so force the decoder to
                 options.inBitmap = inBitmap;// return mutable bitmaps.
                 if(loadRequest.getConfiguration().isDebugMode()){
-                    Log.w(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("回收利用了尚未被回收的Bitmap").toString());
+                    Log.w(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("回收利用了尚未被回收的Bitmap").toString());
                 }
             }
 	    }

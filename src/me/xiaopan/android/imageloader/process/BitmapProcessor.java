@@ -34,10 +34,10 @@ public interface BitmapProcessor {
 	 * 处理
 	 * @param bitmap
 	 * @param scaleType
-	 * @param targetSize
+	 * @param processSize
 	 * @return
 	 */
-	public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize);
+	public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize processSize);
 	
 	/**
 	 * 拷贝

@@ -21,6 +21,7 @@ import java.io.IOException;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 
 /**
  * 位图解码器
@@ -48,7 +49,7 @@ public interface BitmapDecoder{
         /**
          * 解码成功
          */
-        public void onDecodeSuccess();
+        public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize);
 
         /**
          * 解码失败

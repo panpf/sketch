@@ -22,6 +22,7 @@ import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.task.download.DownloadListener;
 import me.xiaopan.android.imageloader.task.download.DownloadOptions;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
@@ -52,6 +53,7 @@ public class DownloadActivity extends Activity {
     private DownloadOptions downloadOptions;
     private String uri = "http://tupian.enterdesk.com/2013/xll/0112/taiqiumeinv/taiqiumeinv%20(3).jpg.680.510.jpg";
 
+	@SuppressLint("InlinedApi")
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);

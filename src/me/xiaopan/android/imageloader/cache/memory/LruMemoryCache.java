@@ -16,6 +16,8 @@
 
 package me.xiaopan.android.imageloader.cache.memory;
 
+import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
+import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -23,8 +25,6 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.support.v4.util.LruCache;
-import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
-import me.xiaopan.android.imageloader.util.RecyclingBitmapDrawable;
 
 /**
  * 使用Lru算法来缓存位图

@@ -16,22 +16,71 @@
 
 package me.xiaopan.android.imageloader.task.download;
 
+import java.io.File;
+
+import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.TaskRequest;
 
 /**
  * 下载请求
  */
 public class DownloadRequest extends TaskRequest{
+	private String uri;	//Uri
+	private String name;	//名称，用于在输出LOG的时候区分不同的请求
+	private File cacheFile;	//缓存文件
+	private Configuration configuration;	//配置
 	private DownloadOptions downloadOptions;
 	private DownloadListener downloadListener;
 	
-	public DownloadRequest(String uri) {
-		super(uri);
+	public DownloadRequest(String uri, Configuration configuration){
+		this.uri = uri;
+		this.configuration = configuration;
+	}
+
+	/**
+	 * 获取URI
+	 */
+    public String getUri() {
+		return uri;
+	}
+
+    /**
+     * 获取请求名称
+     */
+	public String getName() {
+		return name;
+	}
+
+	/**
+	 * 设置请求名称
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	/**
+	 * 获取ImageLoader配置
+	 */
+	public Configuration getConfiguration() {
+		return configuration;
+	}
+
+	/**
+	 * 获取缓存文件
+	 */
+	public File getCacheFile() {
+		return cacheFile;
+	}
+	
+	/**
+	 * 设置缓存文件
+	 */
+	public void setCacheFile(File cacheFile) {
+		this.cacheFile = cacheFile;
 	}
 
     /**
      * 获取下载选项
-     * @return 下载选项
      */
 	public DownloadOptions getDownloadOptions() {
 		return downloadOptions;
@@ -39,7 +88,6 @@ public class DownloadRequest extends TaskRequest{
 
     /**
      * 设置下载选项
-     * @param downloadOptions 下载选项
      */
 	public DownloadRequest setDownloadOptions(DownloadOptions downloadOptions) {
 		this.downloadOptions = downloadOptions;
@@ -48,7 +96,6 @@ public class DownloadRequest extends TaskRequest{
 
     /**
      * 获取下载监听器
-     * @return 下载监听器
      */
 	public DownloadListener getDownloadListener() {
 		return downloadListener;
@@ -56,19 +103,22 @@ public class DownloadRequest extends TaskRequest{
 
     /**
      * 设置下载监听器
-     * @param downloadListener 下载监听器
      */
 	public DownloadRequest setDownloadListener(DownloadListener downloadListener) {
 		this.downloadListener = downloadListener;
         return this;
 	}
 
-	@Override
+	/**
+	 * 是否使用磁盘缓存
+	 */
 	public boolean isEnableDiskCache() {
 		return downloadOptions != null && downloadOptions.isEnableDiskCache();
 	}
 
-	@Override
+	/**
+	 * 获取磁盘缓存有效期
+	 */
 	public long getDiskCachePeriodOfValidity() {
 		return downloadOptions != null?downloadOptions.getDiskCachePeriodOfValidity():0;
 	}

@@ -22,8 +22,10 @@ import android.graphics.Canvas;
 import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
+import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.widget.ImageView.ScaleType;
 
@@ -46,7 +48,7 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
 	}
 	
 	public ReflectionBitmapProcessor(){
-		this(2, 0.5f);
+		this(2, 0.3f);
 	}
 
 	@Override
@@ -55,34 +57,74 @@ public class ReflectionBitmapProcessor implements BitmapProcessor {
 	}
 
 	@Override
-	public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize) {
+	public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize processSize) {
+		// 初始化参数
 		if(bitmap == null) return null;
+		if(scaleType == null) scaleType = ScaleType.FIT_CENTER;
+		if(processSize == null) processSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+		
+		// 初始化画布
+		Bitmap bitmapWithReflection = Bitmap.createBitmap(processSize.getWidth(), processSize.getHeight(), Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmapWithReflection);
 
-		//创建倒影图片
+        // 在上半部分绘制原图
+		int imageHeight = (int) (processSize.getHeight() * (1 - reflectionScale));
+		Bitmap cutBitmap = cut(processSize, imageHeight, bitmap, scaleType);
+        canvas.drawBitmap(cutBitmap, new Rect(0, 0, cutBitmap.getWidth(), cutBitmap.getHeight()), new Rect(0, 0, bitmapWithReflection.getWidth(), imageHeight), null);
+        bitmap.recycle();
+        
+        // 在下半部分绘制倒影图片
         Matrix matrix = new Matrix();
         matrix.preScale(1, -1);
-        Bitmap reflectionImage = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);//
-
-		//并创建一张宽度与原图相同，但高度等于原图的高度加上间距加上倒影的高度的图片，并创建画布。画布分为上中下三部分，上：是原图；中：是原图与倒影的间距；下：是倒影 */
-        Bitmap bitmapWithReflection = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight() + reflectionSpacing + (int) (bitmap.getHeight()*reflectionScale), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmapWithReflection);
-
-		/* 将原图画到画布的上半部分，将倒影画到画布的下半部分，倒影与画布顶部的间距是原图的高度加上原图与倒影之间的间距 */
-        canvas.drawBitmap(bitmap, 0, 0, null);
-        canvas.drawBitmap(reflectionImage, 0, bitmap.getHeight() + reflectionSpacing, null);
+        Bitmap reflectionImage = Bitmap.createBitmap(cutBitmap, 0, 0, cutBitmap.getWidth(), cutBitmap.getHeight(), matrix, false);
+        cutBitmap.recycle();
+        canvas.drawBitmap(reflectionImage, 0, imageHeight+reflectionSpacing, null);
         reflectionImage.recycle();
-
-		/* 将倒影改成半透明，创建画笔，并设置画笔的渐变从半透明的白色到全透明的白色，然后再倒影上面画半透明效果 */
+        
+        // 在下半部分绘制半透明遮罩
         Paint paint = new Paint();
-        paint.setShader(new LinearGradient(0, bitmap.getHeight(), 0, bitmapWithReflection.getHeight() + reflectionSpacing, 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
+        paint.setShader(new LinearGradient(0, imageHeight+reflectionSpacing, 0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
         paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
-        canvas.drawRect(0, bitmap.getHeight() + reflectionSpacing, bitmap.getWidth(), bitmapWithReflection.getHeight() + reflectionSpacing, paint);
+        canvas.drawRect(0, imageHeight+reflectionSpacing, reflectionImage.getWidth(), bitmapWithReflection.getHeight(), paint);
 
         return bitmapWithReflection;
+		
+		
+
+//		// 初始化画布
+//		Bitmap bitmapWithReflection = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight() + reflectionSpacing + (int) (bitmap.getHeight()*reflectionScale), Bitmap.Config.ARGB_8888);
+//		Canvas canvas = new Canvas(bitmapWithReflection);
+//
+//		//创建倒影图片
+//        Matrix matrix = new Matrix();
+//        matrix.preScale(1, -1);
+//        Bitmap reflectionImage = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);//
+//
+//
+//		/* 将原图画到画布的上半部分，将倒影画到画布的下半部分，倒影与画布顶部的间距是原图的高度加上原图与倒影之间的间距 */
+//        canvas.drawBitmap(bitmap, 0, 0, null);
+//        canvas.drawBitmap(reflectionImage, 0, bitmap.getHeight() + reflectionSpacing, null);
+//        reflectionImage.recycle();
+//
+//		/* 将倒影改成半透明，创建画笔，并设置画笔的渐变从半透明的白色到全透明的白色，然后再倒影上面画半透明效果 */
+//        Paint paint = new Paint();
+//        paint.setShader(new LinearGradient(0, bitmap.getHeight(), 0, bitmapWithReflection.getHeight() + reflectionSpacing, 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
+//        paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
+//        canvas.drawRect(0, bitmap.getHeight() + reflectionSpacing, bitmap.getWidth(), bitmapWithReflection.getHeight() + reflectionSpacing, paint);
+//
+//        return bitmapWithReflection;
 	}
 	
 	@Override
 	public BitmapProcessor copy() {
 		return new ReflectionBitmapProcessor(reflectionSpacing, reflectionScale);
+	}
+	
+	public Bitmap cut(ImageSize processSize, int imageHeight, Bitmap bitmap, ScaleType scaleType){
+		Bitmap cutBitmap = Bitmap.createBitmap(processSize.getWidth(), imageHeight, Bitmap.Config.ARGB_8888);
+		Canvas canvas = new Canvas(cutBitmap);
+        Rect srcRect = new ComputeRect().compute(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(cutBitmap.getWidth(), cutBitmap.getHeight()), scaleType);
+        canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, cutBitmap.getWidth(), cutBitmap.getHeight()), null);
+        return cutBitmap;
 	}
 }

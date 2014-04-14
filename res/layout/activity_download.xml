@@ -2,8 +2,9 @@
     <android.support.v4.widget.DrawerLayout style="@style/match_match" android:id="@+id/drawer_download" android:background="@color/black">
         <FrameLayout style="@style/match_match">
             <ImageView
-                style="@style/match_match"
+                style="@style/wrap_wrap"
                 android:id="@+id/image_download"
+                android:layout_gravity="center"
                 android:contentDescription="@string/app_name"/>
             <ProgressBar
                 style="?android:attr/progressBarStyleHorizontal"

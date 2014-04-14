@@ -16,12 +16,12 @@
 
 package me.xiaopan.android.imageloader.cache.memory;
 
+import java.lang.ref.SoftReference;
+import java.util.concurrent.ConcurrentHashMap;
+
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.drawable.BitmapDrawable;
-
-import java.lang.ref.SoftReference;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 使用软引用的方式来缓存位图

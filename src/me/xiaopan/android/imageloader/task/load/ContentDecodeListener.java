@@ -21,28 +21,28 @@ import java.io.InputStream;
 
 import me.xiaopan.android.imageloader.ImageLoader;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
-import me.xiaopan.android.imageloader.task.TaskRequest;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Point;
 import android.net.Uri;
 import android.util.Log;
 
 public class ContentDecodeListener implements BitmapDecoder.DecodeListener {
     private static final String NAME = ContentDecodeListener.class.getSimpleName();
 	private String contentUri;
-	private TaskRequest taskRequest;
+	private LoadRequest loadRequest;
 	
-	public ContentDecodeListener(String contentUri, TaskRequest taskRequest) {
+	public ContentDecodeListener(String contentUri, LoadRequest loadRequest) {
 		this.contentUri = contentUri;
-		this.taskRequest = taskRequest;
+		this.loadRequest = loadRequest;
 	}
 
     @Override
     public Bitmap onDecode(BitmapFactory.Options options) {
         InputStream inputStream = null;
         try {
-            inputStream = taskRequest.getConfiguration().getContext().getContentResolver().openInputStream(Uri.parse(contentUri));
+            inputStream = loadRequest.getConfiguration().getContext().getContentResolver().openInputStream(Uri.parse(contentUri));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -55,14 +55,28 @@ public class ContentDecodeListener implements BitmapDecoder.DecodeListener {
     }
 
     @Override
-    public void onDecodeSuccess() {
-
+    public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
+        StringBuilder stringBuffer = new StringBuilder(NAME)
+        .append("；").append("解码成功");
+        if(bitmap != null && loadRequest.getDecodeSize() != null){
+            stringBuffer.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
+            stringBuffer.append("；").append("目标尺寸").append("=").append(loadRequest.getDecodeSize().getWidth()).append("x").append(loadRequest.getDecodeSize().getHeight());
+            stringBuffer.append("；").append("缩放比例").append("=").append(inSampleSize);
+            stringBuffer.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+        }else{
+        	stringBuffer.append("；").append("未缩放");
+        }
+        stringBuffer.append("；").append(loadRequest.getName());
+        Log.d(ImageLoader.LOG_TAG, stringBuffer.toString());
     }
 
     @Override
     public void onDecodeFailure() {
-        if(taskRequest.getConfiguration().isDebugMode()){
-            Log.e(ImageLoader.LOG_TAG, new StringBuffer(NAME).append("：").append("解码失败").append("：").append(contentUri).toString());
+        if(loadRequest.getConfiguration().isDebugMode()){
+        	StringBuilder stringBuilder = new StringBuilder(NAME)
+            .append("；").append("解码失败")
+            .append("；").append(contentUri);
+        	Log.e(ImageLoader.LOG_TAG, stringBuilder.toString());
         }
     }
 }

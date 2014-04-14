@@ -22,29 +22,67 @@ import me.xiaopan.android.imageloader.task.TaskOptions;
  * 下载选项
  */
 public class DownloadOptions extends TaskOptions{
-
-    @Override
-    public DownloadOptions setEnableDiskCache(boolean enableDiskCache) {
-        super.setEnableDiskCache(enableDiskCache);
+	private int maxRetryCount = 2;	//最大重试次数
+	private long diskCachePeriodOfValidity;	//磁盘缓存有效期，单位毫秒
+	private boolean enableDiskCache = true;	//是否开启磁盘缓存
+	
+	/**
+	 * 获取最大重试次数
+	 * @return 最大重试次数
+	 */
+	public int getMaxRetryCount() {
+		return maxRetryCount;
+	}
+	
+	/**
+	 * 设置最大重试次数
+	 * @param maxRetryCount 最大重试次数
+	 */
+	public DownloadOptions setMaxRetryCount(int maxRetryCount) {
+		this.maxRetryCount = maxRetryCount;
         return this;
-    }
+	}
+	
+	/**
+	 * 是否将网络上的图片缓存到本地
+	 * @return 是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
+	 */
+	public boolean isEnableDiskCache() {
+		return enableDiskCache;
+	}
 
-    @Override
-    public DownloadOptions setDiskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
-        super.setDiskCachePeriodOfValidity(diskCachePeriodOfValidity);
+	/**
+	 * 设置是否将网络上的图片缓存到本地
+	 * @param enableDiskCache 是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
+	 */
+	public DownloadOptions setEnableDiskCache(boolean enableDiskCache) {
+		this.enableDiskCache = enableDiskCache;
         return this;
-    }
+	}
 
-    @Override
-    public DownloadOptions setMaxRetryCount(int maxRetryCount) {
-        super.setMaxRetryCount(maxRetryCount);
+	/**
+	 * 获取本地缓存文件的有效时间
+	 * @return 本地缓存文件的有效时间，单位毫秒
+	 */
+	public long getDiskCachePeriodOfValidity() {
+		return diskCachePeriodOfValidity;
+	}
+
+	/**
+	 * 设置本地缓存文件的有效时间
+	 * @param diskCachePeriodOfValidity 本地缓存文件的有效时间，单位毫秒
+	 */
+	public DownloadOptions setDiskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
+		this.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
         return this;
-    }
+	}
 
-    @Override
+	/**
+	 * 拷贝一份
+	 */
 	public DownloadOptions copy(){
         return new DownloadOptions()
-            .setMaxRetryCount(getMaxRetryCount())
+            .setMaxRetryCount(maxRetryCount)
             .setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
             .setEnableDiskCache(isEnableDiskCache());
 	}

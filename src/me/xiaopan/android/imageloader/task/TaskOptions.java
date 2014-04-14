@@ -16,67 +16,6 @@
 
 package me.xiaopan.android.imageloader.task;
 
-/**
- * 任务选项
- */
-public abstract class TaskOptions{
-	private int maxRetryCount = 2;	//最大重试次数
-	private long diskCachePeriodOfValidity;	//磁盘缓存有效期，单位毫秒
-	private boolean enableDiskCache = true;	//是否开启磁盘缓存
-	
-	/**
-	 * 是否将网络上的图片缓存到本地
-	 * @return 是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
-	 */
-	public boolean isEnableDiskCache() {
-		return enableDiskCache;
-	}
+public abstract class TaskOptions {
 
-	/**
-	 * 设置是否将网络上的图片缓存到本地
-	 * @param enableDiskCache 是否将网络上的图片缓存到本地，缓存到本地后当内存中的Bitmap被回收就可以从本地读取，而不必再从网络上下载
-	 */
-	public TaskOptions setEnableDiskCache(boolean enableDiskCache) {
-		this.enableDiskCache = enableDiskCache;
-        return this;
-	}
-
-	/**
-	 * 获取本地缓存文件的有效时间
-	 * @return 本地缓存文件的有效时间，单位毫秒
-	 */
-	public long getDiskCachePeriodOfValidity() {
-		return diskCachePeriodOfValidity;
-	}
-
-	/**
-	 * 设置本地缓存文件的有效时间
-	 * @param diskCachePeriodOfValidity 本地缓存文件的有效时间，单位毫秒
-	 */
-	public TaskOptions setDiskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
-		this.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
-        return this;
-	}
-	
-	/**
-	 * 获取最大重试次数
-	 * @return 最大重试次数
-	 */
-	public int getMaxRetryCount() {
-		return maxRetryCount;
-	}
-	
-	/**
-	 * 设置最大重试次数
-	 * @param maxRetryCount 最大重试次数
-	 */
-	public TaskOptions setMaxRetryCount(int maxRetryCount) {
-		this.maxRetryCount = maxRetryCount;
-        return this;
-	}
-
-    /**
-     * 拷贝一份
-     */
-    public abstract TaskOptions copy();
 }

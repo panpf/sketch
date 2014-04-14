@@ -42,7 +42,7 @@ import android.widget.ImageView;
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
  */
 public class ImageLoader{
-	public static final String LOG_TAG= ImageLoader.class.getSimpleName();
+    public static final String LOG_TAG= ImageLoader.class.getSimpleName();
 	private static ImageLoader instance; 
 	private Configuration configuration;	//配置
 	
@@ -55,7 +55,7 @@ public class ImageLoader{
 	 * @param context 用来初始化配置
 	 * @return 图片加载器的实例
 	 */
-	public static ImageLoader getInstance(Context context){
+	public static final ImageLoader getInstance(Context context){
 		if(instance == null){
 			instance = new ImageLoader(context);
 		}
@@ -75,9 +75,8 @@ public class ImageLoader{
         if(downloadOptions == null) downloadOptions = new DownloadOptions();
 
 		//初始化请求
-		DownloadRequest downloadRequest = new DownloadRequest(url);
+		DownloadRequest downloadRequest = new DownloadRequest(url, configuration);
 		downloadRequest.setName(url);
-		downloadRequest.setConfiguration(configuration);
 		downloadRequest.setDownloadListener(downloadListener);
 		downloadRequest.setDownloadOptions(downloadOptions);
 		
@@ -123,11 +122,12 @@ public class ImageLoader{
         if(loadOptions == null) loadOptions = new LoadOptions();
 
         //初始化请求
-        LoadRequest loadRequest = new LoadRequest(uri);
-        loadRequest.setLoadListener(loadListener);
+        LoadRequest loadRequest = new LoadRequest(uri, configuration);
         loadRequest.setName(uri);
+        loadRequest.setLoadListener(loadListener);
         loadRequest.setLoadOptions(loadOptions);
-        loadRequest.setConfiguration(configuration);
+        loadRequest.setDecodeSize(loadOptions.getMaxSize());
+        loadRequest.setProcessSize(loadOptions.getProcessSize());
 
         //执行请求
         configuration.getRequestExecutor().execute(loadRequest);
@@ -177,7 +177,7 @@ public class ImageLoader{
      * @param displayOptions 显示选项
      * @param displayListener 显示监听器
      */
-    public final void display(String uri, ImageView imageView, DisplayOptions displayOptions, DisplayListener displayListener){
+    public void display(String uri, ImageView imageView, DisplayOptions displayOptions, DisplayListener displayListener){
         //初始化参数
         if(imageView == null) throw new IllegalArgumentException("imageView不能为null");
         if(displayListener != null) displayListener.onStart();
@@ -186,7 +186,7 @@ public class ImageLoader{
         //过滤掉空的URI
         if(ImageLoaderUtils.isEmpty(uri)){
             imageView.setImageDrawable(displayOptions.getEmptyUriDrawable());
-            if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("uri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+            if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuilder(LOG_TAG).append("：").append("uri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
             if(displayListener != null) displayListener.onFailure();
             return;
         }
@@ -195,16 +195,18 @@ public class ImageLoader{
         Scheme scheme = Scheme.ofUri(uri);
         if(scheme == Scheme.UNKNOWN){
             imageView.setImageDrawable(displayOptions.getLoadFailDrawable());
-            if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuffer(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(uri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+            if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuilder(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(uri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
             if(displayListener != null) displayListener.onFailure();
             return;
         }
 
-        //计算目标尺寸并创建请求
-        ImageViewHolder imageViewHolder = new ImageViewHolder(imageView);
-        ImageSize targetSize = ImageSize.defineTargetSizeForView(imageViewHolder, displayOptions.getMaxSize());
-        DisplayRequest displayRequest = new DisplayRequest(DisplayRequest.createId(ImageLoaderUtils.encodeUrl(uri), targetSize, displayOptions.getProcessor()), uri);
-        displayRequest.setName(uri);
+        // 计算解码尺寸和处理尺寸
+        ImageSize decodeSize = ImageSize.createDecodeSize(imageView, displayOptions.getMaxSize());
+        ImageSize processSize = ImageSize.createProcessSize(imageView);
+        
+        //创建请求
+        String requestId = DisplayRequest.createId(ImageLoaderUtils.encodeUrl(uri), decodeSize, processSize, displayOptions.getProcessor());
+        DisplayRequest displayRequest = new DisplayRequest(requestId, uri, configuration);
 
         //尝试显示
         if(displayOptions.isEnableMemoryCache()){
@@ -225,11 +227,11 @@ public class ImageLoader{
         }
 
         //初始化请求
-        displayRequest.setTargetSize(targetSize);
-        displayRequest.setConfiguration(configuration);
+        displayRequest.setName(uri);
+        displayRequest.setDecodeSize(decodeSize);
+        displayRequest.setProcessSize(processSize);
         displayRequest.setDisplayOptions(displayOptions);
-        imageViewHolder.setDisplayRequest(displayRequest);
-        displayRequest.setImageViewHolder(imageViewHolder);
+        displayRequest.setImageViewHolder(new ImageViewHolder(imageView));
         displayRequest.setScaleType(displayOptions.getScaleType()!=null?displayOptions.getScaleType():imageView.getScaleType());
 
         //显示默认图片
@@ -253,7 +255,7 @@ public class ImageLoader{
      * @param displayOptionsName 显示选项的名称，你通过configuration.putOptions()方法放进去的DisplayOptions在这里指定一样的名称就可以直接使用
      * @param displayListener 显示监听器
      */
-    public final void display(String imageUri, ImageView imageView, Enum<?> displayOptionsName, DisplayListener displayListener){
+    public void display(String imageUri, ImageView imageView, Enum<?> displayOptionsName, DisplayListener displayListener){
         display(imageUri, imageView, (DisplayOptions) configuration.getOptions(displayOptionsName), displayListener);
     }
 
@@ -269,7 +271,7 @@ public class ImageLoader{
      * @param imageView 显示图片的视图
      * @param displayListener 显示监听器
      */
-    public final void display(String imageUri, ImageView imageView, DisplayListener displayListener){
+    public void display(String imageUri, ImageView imageView, DisplayListener displayListener){
         display(imageUri, imageView, new DisplayOptions(configuration.getContext()), displayListener);
     }
 
@@ -318,7 +320,7 @@ public class ImageLoader{
      * </blockquote>
      * @param imageView 显示图片的视图
      */
-    public final void display(String imageUri, ImageView imageView){
+    public void display(String imageUri, ImageView imageView){
         display(imageUri, imageView, new DisplayOptions(configuration.getContext()), null);
     }
 
@@ -392,6 +394,28 @@ public class ImageLoader{
 	}
 
     /**
+     * 清除内存缓存和磁盘缓存
+     */
+    public void clearAllCache() {
+        clearMemoryCache();
+        clearDiskCache();
+    }
+
+    /**
+     * 清除内存缓存
+     */
+    public void clearMemoryCache() {
+        configuration.getMemoryCache().clear();
+    }
+
+    /**
+     * 清除磁盘缓存
+     */
+    public void clearDiskCache() {
+        configuration.getDiskCache().clear();
+    }
+
+    /**
      * 取消显示请求
      * @param imageView
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
@@ -401,7 +425,7 @@ public class ImageLoader{
         if (displayRequest != null) {
             displayRequest.cancel(true);
             if (displayRequest.getConfiguration().isDebugMode()) {
-                Log.w(ImageLoader.LOG_TAG, new StringBuffer().append("已取消").append("；").append(displayRequest.getName()).toString());
+                Log.w(ImageLoader.LOG_TAG, new StringBuilder().append("已取消").append("；").append(displayRequest.getName()).toString());
             }
             return true;
         }else{
@@ -428,7 +452,7 @@ public class ImageLoader{
                 cancelled = true;
             }
             if(!cancelled && potentialDisplayRequest.getConfiguration().isDebugMode()){
-                Log.d(ImageLoader.LOG_TAG, new StringBuffer(ImageLoader.LOG_TAG).append("：").append("无需取消").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(potentialDisplayRequest.getName()).toString());
+                Log.d(ImageLoader.LOG_TAG, new StringBuilder(ImageLoader.LOG_TAG).append("：").append("无需取消").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).append("；").append(potentialDisplayRequest.getName()).toString());
             }
         }
         return cancelled;

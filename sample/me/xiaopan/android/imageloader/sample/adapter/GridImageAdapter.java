@@ -31,7 +31,6 @@ import android.view.WindowManager;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 
 public class GridImageAdapter extends BaseAdapter {
 	private Context context;
@@ -80,7 +79,6 @@ public class GridImageAdapter extends BaseAdapter {
 			viewHolder.image = (ImageView) convertView.findViewById(R.id.image_gridItem);
 			if(cloumn > 1){
 				viewHolder.image.setLayoutParams(new FrameLayout.LayoutParams(screenWidth/cloumn, screenWidth/cloumn));
-				viewHolder.image.setScaleType(ScaleType.CENTER_CROP);
 			}
 			convertView.setTag(viewHolder);
 		}else{

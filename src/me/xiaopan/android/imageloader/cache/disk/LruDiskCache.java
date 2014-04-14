@@ -22,7 +22,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import me.xiaopan.android.imageloader.ImageLoader;
-import me.xiaopan.android.imageloader.task.TaskRequest;
+import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.util.FileLastModifiedComparator;
 import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import android.content.Context;
@@ -108,7 +108,7 @@ public class LruDiskCache implements DiskCache {
 	}
 
 	@Override
-	public synchronized File createFile(TaskRequest request) {
+	public synchronized File createFile(DownloadRequest request) {
 		if(!request.isEnableDiskCache()){
 			return null;
 		}
@@ -127,7 +127,7 @@ public class LruDiskCache implements DiskCache {
 		if(calendar.getTimeInMillis() >= cacheFile.lastModified()){
 			cacheFile.delete();
 			if(request.getConfiguration().isDebugMode()){
-				Log.w(ImageLoader.LOG_TAG, new StringBuffer("AvailableOfFile").append("：").append("文件过期已删除").append("；").append("文件地址").append("=").append(cacheFile.getPath()).append("；").append(request.getName()).toString());
+				Log.w(ImageLoader.LOG_TAG, new StringBuilder("AvailableOfFile").append("：").append("文件过期已删除").append("；").append("文件地址").append("=").append(cacheFile.getPath()).append("；").append(request.getName()).toString());
 			}
 			return cacheFile;
 		}

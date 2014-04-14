@@ -20,6 +20,7 @@ import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -59,58 +60,28 @@ public class RoundedCornerBitmapProcessor implements BitmapProcessor {
 	}
 
 	@Override
-	public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize) {
+	public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize processSize) {
+		// 初始化参数
 		if(bitmap == null) return null;
 		if(scaleType == null) scaleType = ScaleType.FIT_CENTER;
-		if(targetSize == null) targetSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+		if(processSize == null) processSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
 
-        Bitmap output = Bitmap.createBitmap(targetSize.getWidth(), targetSize.getHeight(), Bitmap.Config.ARGB_8888);
+		// 初始化画布
+        Bitmap output = Bitmap.createBitmap(processSize.getWidth(), processSize.getHeight(), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(0xFFFF0000);
-        canvas.drawRoundRect(new RectF(0, 0, targetSize.getWidth(), targetSize.getHeight()), roundPixels, roundPixels, paint);
-
-        float scale;
-        if(Math.abs(bitmap.getWidth() - targetSize.getWidth()) < Math.abs(bitmap.getHeight() - targetSize.getHeight())){
-            scale = (float) bitmap.getWidth()/targetSize.getWidth();
-            if((int)(targetSize.getHeight()*scale) > bitmap.getHeight()){
-                scale = (float) bitmap.getHeight()/targetSize.getHeight();
-            }
-        }else{
-            scale = (float) bitmap.getHeight()/targetSize.getHeight();
-            if((int)(targetSize.getWidth()*scale) > bitmap.getWidth()){
-                scale = (float) bitmap.getWidth()/targetSize.getWidth();
-            }
-        }
-        int srcWidth = (int)(targetSize.getWidth()*scale);
-        int srcHeight = (int)(targetSize.getHeight()*scale);
-        int srcLeft;
-        int srcTop;
-        if (scaleType == ScaleType.FIT_START) {
-            srcLeft = 0;
-            srcTop = 0;
-        } else if (scaleType == ScaleType.FIT_END) {
-            if(bitmap.getWidth() > bitmap.getHeight()){
-                srcLeft = bitmap.getWidth() - srcWidth;
-                srcTop = 0;
-            }else{
-                srcLeft = 0;
-                srcTop = bitmap.getHeight() - srcHeight;
-            }
-        } else {
-            if(bitmap.getWidth() > bitmap.getHeight()){
-                srcLeft = (bitmap.getWidth() - srcWidth)/2;
-                srcTop = 0;
-            }else{
-                srcLeft = 0;
-                srcTop = (bitmap.getHeight() - srcHeight)/2;
-            }
-        }
-
+        
+        // 绘制圆角的罩子
+        canvas.drawRoundRect(new RectF(0, 0, processSize.getWidth(), processSize.getHeight()), roundPixels, roundPixels, paint);
+        
+        // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, new Rect(srcLeft, srcTop, srcLeft+srcWidth, srcTop+srcHeight), new RectF(0, 0, targetSize.getWidth(), targetSize.getHeight()), paint);
+        Rect srcRect = new ComputeRect().compute(new Point(bitmap.getWidth(),  bitmap.getHeight()), new Point(processSize.getWidth(),  processSize.getHeight()), scaleType);
+        Rect dstRect = new Rect(0, 0, processSize.getWidth(), processSize.getHeight());
+        canvas.drawBitmap(bitmap, srcRect, dstRect, paint);
 
         return output;
 	}

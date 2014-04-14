@@ -180,11 +180,14 @@ BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer�
 ###你还可以参考示例程序来更加直观的了解使用方式
 
 ##Downloads
-**[android-image-loader-2.3.2.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.2.jar)**
+**[android-image-loader-2.3.3.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.3.jar)**
 
-**[android-image-loader-2.3.2-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.2-with-src.jar)**
+**[android-image-loader-2.3.3-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.3-with-src.jar)**
 
 ##Change Log
+###2.3.3
+>* ImageLoader类增加清除缓存的方法
+
 ###2.3.2
 >* 当无需取消的时候更新其DisplayListener
 >* 优化网络部分，解决会偶尔解码失败的bug

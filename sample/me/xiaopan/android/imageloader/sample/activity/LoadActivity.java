@@ -24,6 +24,7 @@ import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
 import me.xiaopan.android.imageloader.task.load.LoadListener;
 import me.xiaopan.android.imageloader.task.load.LoadOptions;
 import me.xiaopan.android.imageloader.util.ImageSize;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -63,7 +64,8 @@ public class LoadActivity extends Activity {
     private LoadOptions loadOptions;
     private String uri = "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347718813.jpg";
 
-    @Override
+    @SuppressLint("InlinedApi")
+	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_load);

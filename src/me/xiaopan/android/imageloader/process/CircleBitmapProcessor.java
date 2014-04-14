@@ -20,6 +20,7 @@ import me.xiaopan.android.imageloader.util.ImageSize;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -42,45 +43,29 @@ public class CircleBitmapProcessor implements BitmapProcessor {
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize targetSize) {
-        if (bitmap == null) return null;
+    public Bitmap process(Bitmap bitmap, ScaleType scaleType, ImageSize processSize) {
+    	// 初始化参数
+    	if (bitmap == null) return null;
         if (scaleType == null) scaleType = ScaleType.FIT_CENTER;
-        if (targetSize == null) targetSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
-        int slidLlength = targetSize.getWidth() > targetSize.getHeight() ? targetSize.getHeight() : targetSize.getWidth();
+        if (processSize == null) processSize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+        int slidLlength = processSize.getWidth() > processSize.getHeight() ? processSize.getHeight() : processSize.getWidth();
 
+        // 初始化画布
         Bitmap output = Bitmap.createBitmap(slidLlength, slidLlength, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
         paint.setColor(0xFFFF0000);
+        
+        // 绘制圆形的罩子
         canvas.drawCircle(slidLlength / 2, slidLlength / 2, slidLlength / 2, paint);
-
-        Rect srcRect;
-        if (scaleType == ScaleType.FIT_START) {
-            if (bitmap.getWidth() > bitmap.getHeight()) {
-                srcRect = new Rect(0, 0, bitmap.getHeight(), bitmap.getHeight());
-            } else {
-                srcRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getWidth());
-            }
-        } else if (scaleType == ScaleType.FIT_END) {
-            if (bitmap.getWidth() > bitmap.getHeight()) {
-                srcRect = new Rect(bitmap.getWidth() - bitmap.getHeight(), 0, bitmap.getWidth(), bitmap.getHeight());
-            } else {
-                srcRect = new Rect(0, bitmap.getHeight() - bitmap.getWidth(), bitmap.getWidth(), bitmap.getHeight());
-            }
-        } else {
-            if (bitmap.getWidth() > bitmap.getHeight()) {
-                int left = (bitmap.getWidth() - bitmap.getHeight()) / 2;
-                srcRect = new Rect(left, 0, bitmap.getHeight() + left, bitmap.getHeight());
-            } else {
-                int top = (bitmap.getHeight() - bitmap.getWidth()) / 2;
-                srcRect = new Rect(0, top, bitmap.getWidth(), bitmap.getWidth() + top);
-            }
-        }
-
+        
+        // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, slidLlength, slidLlength), paint);
+        Rect srcRect = new ComputeRect().compute(new Point(bitmap.getWidth(),  bitmap.getHeight()), new Point(slidLlength,  slidLlength), scaleType);
+        Rect dstRect = new Rect(0, 0, slidLlength, slidLlength);
+        canvas.drawBitmap(bitmap, srcRect, dstRect, paint);
 
         return output;
     }

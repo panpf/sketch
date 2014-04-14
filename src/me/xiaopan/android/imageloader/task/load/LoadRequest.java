@@ -16,6 +16,7 @@
 
 package me.xiaopan.android.imageloader.task.load;
 
+import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.download.DownloadRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
 import android.widget.ImageView;
@@ -24,11 +25,13 @@ import android.widget.ImageView;
  * 加载请求
  */
 public class LoadRequest extends DownloadRequest{
-	private LoadListener loadListener;	//监听器
-	private LoadOptions loadOptions;	//显示选项
+	private LoadListener loadListener;	// 监听器
+	private LoadOptions loadOptions;	// 显示选项
+    private ImageSize processSize;	// 使用BitmapProcessor处理时的尺寸
+    private ImageSize decodeSize;	// 用于在解码的时候计算inSampleSize
 	
-	public LoadRequest(String uri) {
-		super(uri);
+	public LoadRequest(String uri, Configuration configuration) {
+		super(uri, configuration);
 	}
 
 	/**
@@ -74,10 +77,33 @@ public class LoadRequest extends DownloadRequest{
     }
 
     /**
-     * 获取最大尺寸
-     * @return 最大尺寸
+     * 获取处理尺寸
+     * @return 处理尺寸
      */
-    public ImageSize getMaxSize() {
-        return loadOptions != null?loadOptions.getMaxSize():null;
-    }
+    public ImageSize getProcessSize() {
+		return processSize;
+	}
+
+    /**
+     * 设置处理尺寸
+     * @param processSize 处理尺寸
+     */
+	public void setProcessSize(ImageSize processSize) {
+		this.processSize = processSize;
+	}
+
+	/**
+	 * 获取解码尺寸
+	 */
+	public ImageSize getDecodeSize() {
+		return decodeSize;
+	}
+
+	/**
+	 * 设置解码尺寸
+	 * @param decodeSize 解码尺寸，用于在解码的时候计算inSampleSize
+	 */
+	public void setDecodeSize(ImageSize decodeSize) {
+		this.decodeSize = decodeSize;
+	}
 }

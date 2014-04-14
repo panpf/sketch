@@ -25,11 +25,12 @@ import android.widget.ImageView.ScaleType;
  * 显示选项
  */
 public class LoadOptions extends DownloadOptions{
-    private ScaleType scaleType = ScaleType.FIT_CENTER; //图片缩放方式，在处理图片的时候会用到
-    private ImageSize maxSize;	//最大图片尺寸
+    private ScaleType scaleType; //图片缩放方式，在处理图片的时候会用到
+    private ImageSize maxSize;	//最大图片尺寸，用于读取图片时计算inSampleSize
+    private ImageSize processSize;
 	private BitmapProcessor processor;	//位图处理器
 
-    /**
+	/**
      * 获取缩放方式
      * @return 图片缩放方式，在处理图片的时候会用到
      */
@@ -63,7 +64,7 @@ public class LoadOptions extends DownloadOptions{
         return this;
     }
 
-    /**
+	/**
      * 获取图片处理器
      * @return 图片处理器，在敬爱那个图片读到内存中之后会使用此处理器将图片处理一下，使之可以变成您想要的效果
      */
@@ -78,6 +79,23 @@ public class LoadOptions extends DownloadOptions{
 	public LoadOptions setProcessor(BitmapProcessor processor) {
 		this.processor = processor;
         return this;
+	}
+
+    /**
+     * 获取处理尺寸
+     * @return 处理尺寸
+     */
+    public ImageSize getProcessSize() {
+		return processSize;
+	}
+
+    /**
+     * 设置处理尺寸
+     * @param processSize 处理尺寸
+     */
+	public LoadOptions setProcessSize(ImageSize processSize) {
+		this.processSize = processSize;
+		return this;
 	}
 
     @Override

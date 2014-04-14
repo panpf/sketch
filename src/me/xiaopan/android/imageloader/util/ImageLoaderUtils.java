@@ -16,15 +16,24 @@
 
 package me.xiaopan.android.imageloader.util;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+
+import me.xiaopan.android.imageloader.task.download.DownloadListener;
+
+import org.apache.http.Header;
+import org.apache.http.HttpResponse;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import me.xiaopan.android.imageloader.task.download.DownloadListener;
 
 public class ImageLoaderUtils {
 	/**
@@ -220,5 +229,12 @@ public class ImageLoaderUtils {
         }
         outputStream.flush();
         return completedLength;
+    }
+    
+    public static final void printHttpResponse(HttpResponse httpResponse){
+    	Header[] headers = httpResponse.getAllHeaders();
+    	for(Header header : headers){
+    		System.out.println(header.getName()+": "+header.getValue());
+    	}
     }
 }

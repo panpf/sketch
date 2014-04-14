@@ -1,6 +1,7 @@
 package me.xiaopan.android.imageloader.http;
 
 import me.xiaopan.android.imageloader.Configuration;
+
 import org.apache.http.HttpVersion;
 import org.apache.http.client.HttpClient;
 import org.apache.http.conn.params.ConnManagerParams;
@@ -28,6 +29,7 @@ public class DefaultHttpClientCreator implements HttpClientCreator{
         HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
         HttpConnectionParams.setTcpNoDelay(httpParams, true);
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
+		HttpProtocolParams.setUserAgent(httpParams, String.format("Android-ImageLoader/%s (https://github.com/xiaopansky/Android-ImageLoader)", "2.3.3"));	//设置浏览器标识
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
         schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));

@@ -242,7 +242,13 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
-    /**
+    @Override
+	public DisplayOptions setProcessSize(ImageSize processSize) {
+		super.setProcessSize(processSize);
+        return this;
+	}
+
+	/**
      * 设置是否使用BitmapProcessor处理加载中图片
      * @param processLoadingDrawable 是否使用BitmapProcessor来处理加载中图片
      */

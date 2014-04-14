@@ -16,6 +16,7 @@
 
 package me.xiaopan.android.imageloader.task.display;
 
+import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.process.BitmapProcessor;
 import me.xiaopan.android.imageloader.task.load.LoadRequest;
 import me.xiaopan.android.imageloader.util.ImageSize;
@@ -26,14 +27,13 @@ import android.widget.ImageView;
  */
 public class DisplayRequest extends LoadRequest{
 	private String id;	//ID
-    private ImageSize targetSize;	//目标尺寸
 	private DisplayListener displayListener;	//监听器
 	private DisplayOptions displayOptions;	//显示选项
 	private ImageViewHolder imageViewHolder;	//ImageView持有器
     private ImageView.ScaleType scaleType;  //缩放方式
 
-	public DisplayRequest(String id, String uri) {
-		super(uri);
+	public DisplayRequest(String id, String uri, Configuration configuration) {
+		super(uri, configuration);
 		setId(id);
 	}
 
@@ -52,14 +52,6 @@ public class DisplayRequest extends LoadRequest{
 	public void setId(String id) {
 		this.id = id;
 	}
-
-    /**
-     * 设置目标尺寸
-     * @param targetSize 目标尺寸
-     */
-    public void setTargetSize(ImageSize targetSize) {
-        this.targetSize = targetSize;
-    }
 
     /**
      * 获取显示监听器
@@ -108,16 +100,12 @@ public class DisplayRequest extends LoadRequest{
      */
 	public void setImageViewHolder(ImageViewHolder imageViewHolder) {
 		this.imageViewHolder = imageViewHolder;
+		this.imageViewHolder.setDisplayRequest(this);
 	}
 
     @Override
     public ImageView.ScaleType getScaleType() {
         return scaleType;
-    }
-
-    @Override
-    public ImageSize getMaxSize() {
-        return targetSize;
     }
 
     /**
@@ -131,13 +119,19 @@ public class DisplayRequest extends LoadRequest{
     /**
      * 生成ID
      */
-    public static String createId(String uri, ImageSize targetSize, BitmapProcessor bitmapProcessor){
-        StringBuffer stringBuffer = new StringBuffer(uri);
-        if(targetSize != null){
+    public static String createId(String uri, ImageSize decodeSize, ImageSize processSize, BitmapProcessor bitmapProcessor){
+        StringBuilder stringBuffer = new StringBuilder(uri);
+        if(decodeSize != null){
             stringBuffer.append("_");
-            stringBuffer.append(targetSize.getWidth());
+            stringBuffer.append(decodeSize.getWidth());
             stringBuffer.append("x");
-            stringBuffer.append(targetSize.getHeight());
+            stringBuffer.append(decodeSize.getHeight());
+        }
+        if(processSize != null){
+            stringBuffer.append("_");
+            stringBuffer.append(processSize.getWidth());
+            stringBuffer.append("x");
+            stringBuffer.append(processSize.getHeight());
         }
         if(bitmapProcessor != null){
             String tag = bitmapProcessor.getTag();
