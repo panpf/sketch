@@ -165,72 +165,35 @@ public class LoadActivity extends Activity {
 
         periodOfValidityEdit.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String text = periodOfValidityEdit.getEditableText().toString().trim();
-                if (text != null && !"".equals(text)) {
-                    loadOptions.setDiskCachePeriodOfValidity(Long.valueOf(text));
-                } else {
-                    loadOptions.setDiskCachePeriodOfValidity(0);
-                }
                 reload = true;
             }
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
 
         maxWidthEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String maxWidthString = maxWidthEditText.getEditableText().toString().trim();
-                String maxHeightString = maxHeightEditText.getEditableText().toString().trim();
-                if (maxWidthString != null && !"".equals(maxWidthString) && maxHeightString != null && !"".equals(maxHeightString)) {
-                    loadOptions.setMaxSize(new ImageSize(Integer.valueOf(maxWidthString), Integer.valueOf(maxHeightString)));
-                } else {
-                    loadOptions.setMaxSize(null);
-                }
                 reload = true;
             }
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
 
         maxHeightEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                String maxWidthString = maxWidthEditText.getEditableText().toString().trim();
-                String maxHeightString = maxHeightEditText.getEditableText().toString().trim();
-                if (maxWidthString != null && !"".equals(maxWidthString) && maxHeightString != null && !"".equals(maxHeightString)) {
-                    loadOptions.setMaxSize(new ImageSize(Integer.valueOf(maxWidthString), Integer.valueOf(maxHeightString)));
-                } else {
-                    loadOptions.setMaxSize(null);
-                }
                 reload = true;
             }
+            @Override
+            public void afterTextChanged(Editable s) {}
         });
 
         imageTypeWidth.setOnClickListener(new View.OnClickListener() {
@@ -270,6 +233,22 @@ public class LoadActivity extends Activity {
             @Override
             public void onDrawerClosed(View view) {
                 if(reload){
+                    String maxWidthString = maxWidthEditText.getEditableText().toString().trim();
+                    String maxHeightString = maxHeightEditText.getEditableText().toString().trim();
+                    if (maxWidthString != null && !"".equals(maxWidthString) && maxHeightString != null && !"".equals(maxHeightString)) {
+                        loadOptions.setMaxSize(new ImageSize(Integer.valueOf(maxWidthString), Integer.valueOf(maxHeightString)));
+                    } else {
+                        loadOptions.setMaxSize(null);
+                    }
+                    loadOptions.setProcessSize(loadOptions.getMaxSize());
+
+                    String text = periodOfValidityEdit.getEditableText().toString().trim();
+                    if (text != null && !"".equals(text)) {
+                        loadOptions.setDiskCachePeriodOfValidity(Long.valueOf(text));
+                    } else {
+                        loadOptions.setDiskCachePeriodOfValidity(0);
+                    }
+
                     ImageLoader.getInstance(getBaseContext()).load(uri, loadOptions, new LoadListener() {
                         @Override
                         public void onStart() {

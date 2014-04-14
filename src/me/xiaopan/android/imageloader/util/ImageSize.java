@@ -45,22 +45,25 @@ public class ImageSize {
 	public static ImageSize createDecodeSize(ImageView imageView, ImageSize maxImageSize) {
 		int width = getWidth(imageView, true, true);
 		int height = getHeight(imageView, true, true);
-		if (width <= 0){
-			width = maxImageSize.getWidth();
-		}
-		if (height <= 0){
-			height = maxImageSize.getHeight();
-		}
-		return new ImageSize(width, height);
+		if (width > 0 && height > 0){
+		    return new ImageSize(width, height);
+        }
+        if(maxImageSize.getWidth() > 0 && maxImageSize.getHeight() > 0){
+            return maxImageSize;
+        }
+        return null;
 	}
 
-	public static ImageSize createProcessSize(ImageView imageView) {
+	public static ImageSize createProcessSize(ImageView imageView, ImageSize maxProcessSize) {
 		int width = getWidth(imageView, true, false);
 		int height = getHeight(imageView, true, false);
-		if (width <= 0 || height <= 0){
-			return null;
-		}
-		return new ImageSize(width, height);
+        if (width > 0 && height > 0){
+            return new ImageSize(width, height);
+        }
+        if(maxProcessSize.getWidth() > 0 && maxProcessSize.getHeight() > 0){
+            return maxProcessSize;
+        }
+        return null;
 	}
 	
 	public static int getWidth(ImageView imageView, boolean checkRealViewSize, boolean checkMaxViewSize) {

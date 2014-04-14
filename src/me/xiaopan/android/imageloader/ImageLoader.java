@@ -55,7 +55,7 @@ public class ImageLoader{
 	 * @param context 用来初始化配置
 	 * @return 图片加载器的实例
 	 */
-	public static final ImageLoader getInstance(Context context){
+	public static ImageLoader getInstance(Context context){
 		if(instance == null){
 			instance = new ImageLoader(context);
 		}
@@ -202,7 +202,7 @@ public class ImageLoader{
 
         // 计算解码尺寸和处理尺寸
         ImageSize decodeSize = ImageSize.createDecodeSize(imageView, displayOptions.getMaxSize());
-        ImageSize processSize = ImageSize.createProcessSize(imageView);
+        ImageSize processSize = ImageSize.createProcessSize(imageView, displayOptions.getProcessSize());
         
         //创建请求
         String requestId = DisplayRequest.createId(ImageLoaderUtils.encodeUrl(uri), decodeSize, processSize, displayOptions.getProcessor());
@@ -435,8 +435,6 @@ public class ImageLoader{
 
     /**
      * 取消潜在的请求
-     * @param imageView
-     * @param displayRequest
      * @return true：取消成功；false：ImageView所关联的任务就是所需的无需取消
      */
     private static boolean cancelPotentialDisplayRequest(ImageView imageView, DisplayRequest displayRequest) {
