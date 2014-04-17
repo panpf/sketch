@@ -43,18 +43,20 @@ public class CacheFileDecodeListener implements BitmapDecoder.DecodeListener {
     @Override
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
         file.setLastModified(System.currentTimeMillis());
-        StringBuilder stringBuffer = new StringBuilder(NAME)
-        .append("；").append("解码成功");
-        if(bitmap != null && loadRequest.getDecodeSize() != null){
-            stringBuffer.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-            stringBuffer.append("；").append("目标尺寸").append("=").append(loadRequest.getDecodeSize().getWidth()).append("x").append(loadRequest.getDecodeSize().getHeight());
-            stringBuffer.append("；").append("缩放比例").append("=").append(inSampleSize);
-            stringBuffer.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
-        }else{
-        	stringBuffer.append("；").append("未缩放");
+        if(loadRequest.getConfiguration().isDebugMode()){
+        	StringBuilder stringBuffer = new StringBuilder(NAME)
+        	.append("；").append("解码成功");
+        	if(bitmap != null && loadRequest.getDecodeSize() != null){
+        		stringBuffer.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
+        		stringBuffer.append("；").append("目标尺寸").append("=").append(loadRequest.getDecodeSize().getWidth()).append("x").append(loadRequest.getDecodeSize().getHeight());
+        		stringBuffer.append("；").append("缩放比例").append("=").append(inSampleSize);
+        		stringBuffer.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+        	}else{
+        		stringBuffer.append("；").append("未缩放");
+        	}
+        	stringBuffer.append("；").append(loadRequest.getName());
+        	Log.d(ImageLoader.LOG_TAG, stringBuffer.toString());
         }
-        stringBuffer.append("；").append(loadRequest.getName());
-        Log.d(ImageLoader.LOG_TAG, stringBuffer.toString());
     }
 
     @Override
