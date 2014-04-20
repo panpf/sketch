@@ -19,7 +19,7 @@ Android-ImageLoader是用在Android上的一个图片加载类库，主要用于
 ## Sample Application
 **[Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)**
 
-**[Download it on Github](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/Android-ImageLoader-2.3.3.apk)**
+**[Download it on Github](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/Android-ImageLoader-2.3.4.apk)**
 
 ##Usage
 
@@ -180,9 +180,9 @@ BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer�
 ###你还可以参考示例程序来更加直观的了解使用方式
 
 ##Downloads
-**[android-image-loader-2.3.3.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.3.jar)**
+**[android-image-loader-2.3.4.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.4.jar)**
 
-**[android-image-loader-2.3.3-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.3-with-src.jar)**
+**[android-image-loader-2.3.4-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.4-with-src.jar)**
 
 ##Change Log
 ###2.3.4
