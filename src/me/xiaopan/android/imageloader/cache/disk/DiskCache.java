@@ -54,4 +54,9 @@ public interface DiskCache {
      * 清除缓存
      */
     public void clear();
+    
+    /**
+     * 根据URI获取缓存文件
+     */
+    public File getCacheFileByUri(String uri);
 }

@@ -185,6 +185,9 @@ BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer�
 **[android-image-loader-2.3.3-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.3-with-src.jar)**
 
 ##Change Log
+###2.3.4
+>* ImageLoader和DiskCache中增加``public File getCacheFileByUri(String uri)``方法，方便开发者将缓存图片用作它途
+
 ###2.3.3
 >* ImageLoader类增加清除缓存的方法
 >* 当检查ContentType发现不是图片时抛出异常并在控制台打印，方便开发者发现问题

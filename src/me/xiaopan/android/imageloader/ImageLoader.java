@@ -18,6 +18,7 @@ package me.xiaopan.android.imageloader;
 
 import java.io.File;
 
+import me.xiaopan.android.imageloader.cache.disk.DiskCache;
 import me.xiaopan.android.imageloader.task.display.AsyncDrawable;
 import me.xiaopan.android.imageloader.task.display.DisplayListener;
 import me.xiaopan.android.imageloader.task.display.DisplayOptions;
@@ -413,6 +414,22 @@ public class ImageLoader{
      */
     public void clearDiskCache() {
         configuration.getDiskCache().clear();
+    }
+    
+    /**
+     * 根据URI获取缓存文件
+     */
+    public File getCacheFileByUri(String uri){
+    	if(configuration != null){
+    		DiskCache diskCache = configuration.getDiskCache();
+    		if(diskCache != null){
+    			return diskCache.getCacheFileByUri(uri);
+    		}else{
+        		return null;
+        	}
+    	}else{
+    		return null;
+    	}
     }
 
     /**

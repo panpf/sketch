@@ -108,12 +108,17 @@ public class LruDiskCache implements DiskCache {
 	}
 
 	@Override
+	public synchronized File getCacheFileByUri(String uri) {
+		return new File(getDir().getPath() + File.separator + ImageLoaderUtils.encodeUrl(uri));
+	}
+
+	@Override
 	public synchronized File createFile(DownloadRequest request) {
 		if(!request.isEnableDiskCache()){
 			return null;
 		}
 
-		File cacheFile = new File(getDir().getPath() + File.separator + ImageLoaderUtils.encodeUrl(request.getUri()));
+		File cacheFile = getCacheFileByUri(request.getUri());
 
 		//是否存在
 		if(!cacheFile.exists()) return cacheFile;

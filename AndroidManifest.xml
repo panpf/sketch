@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.xiaoapn.android.imageloader"
-    android:versionCode="233"
-    android:versionName="2.3.3" >
+    android:versionCode="234"
+    android:versionName="2.3.4" >
 
     <uses-sdk android:minSdkVersion="8" android:targetSdkVersion="19" />
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.SET_WALLPAPER"/>
     
     <application
         android:allowBackup="true"
