@@ -30,6 +30,7 @@ import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -42,6 +43,7 @@ import android.widget.ProgressBar;
  */
 public class NormalActivity extends Activity{
     private String uri = "http://d.hiphotos.baidu.com/image/w%3D2048/sign=0d87feac087b02080cc938e156e1f3d3/bf096b63f6246b606fb2647de9f81a4c510fa27f.jpg";
+    private Handler handler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,15 +51,16 @@ public class NormalActivity extends Activity{
         setContentView(R.layout.activity_normal);
         initImageSize();
 
+        handler = new Handler();
 
-        display(R.id.image_normal_11, R.id.progress_normal_11, createDisplayOptions(11));
-        display(R.id.image_normal_12, R.id.progress_normal_12, createDisplayOptions(12));
-        display(R.id.image_normal_13, R.id.progress_normal_13, createDisplayOptions(13));
+        display(R.id.image_normal_11, R.id.progress_normal_11, createDisplayOptions(11), 100);
+        display(R.id.image_normal_12, R.id.progress_normal_12, createDisplayOptions(12), 200);
+        display(R.id.image_normal_13, R.id.progress_normal_13, createDisplayOptions(13), 300);
 
-        display(R.id.image_normal_21, R.id.progress_normal_21, createDisplayOptions(21));
-        display(R.id.image_normal_22, R.id.progress_normal_22, createDisplayOptions(22));
+        display(R.id.image_normal_21, R.id.progress_normal_21, createDisplayOptions(21), 400);
+        display(R.id.image_normal_22, R.id.progress_normal_22, createDisplayOptions(22), 500);
 
-        display(R.id.image_normal_31, R.id.progress_normal_31, createDisplayOptions(31));
+        display(R.id.image_normal_31, R.id.progress_normal_31, createDisplayOptions(31), 600);
     }
 
     private void initImageSize(){
@@ -79,34 +82,39 @@ public class NormalActivity extends Activity{
         view.setLayoutParams(layoutParams);
     }
 
-    private void display(int imageViewId, int processBarId, DisplayOptions displayOptions){
-        final ProgressBar progressBar = (ProgressBar) findViewById(processBarId);
-        ImageLoader.getInstance(getBaseContext()).display(uri, (ImageView) findViewById(imageViewId), displayOptions, new DisplayListener() {
+    private void display(final int imageViewId, final int processBarId, final DisplayOptions displayOptions, int delayed){
+        handler.postDelayed(new Runnable() {
             @Override
-            public void onStart() {
-                progressBar.setVisibility(View.VISIBLE);
-            }
+            public void run() {
+                final ProgressBar progressBar = (ProgressBar) findViewById(processBarId);
+                ImageLoader.getInstance(getBaseContext()).display(uri, (ImageView) findViewById(imageViewId), displayOptions, new DisplayListener() {
+                    @Override
+                    public void onStart() {
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
 
-            @Override
-            public void onFailure() {
-                progressBar.setVisibility(View.GONE);
-            }
+                    @Override
+                    public void onFailure() {
+                        progressBar.setVisibility(View.GONE);
+                    }
 
-            @Override
-            public void onComplete(String imageUri, ImageView imageView, BitmapDrawable drawable) {
-                progressBar.setVisibility(View.GONE);
-            }
+                    @Override
+                    public void onComplete(String imageUri, ImageView imageView, BitmapDrawable drawable) {
+                        progressBar.setVisibility(View.GONE);
+                    }
 
-            @Override
-            public void onUpdateProgress(long totalLength, long completedLength) {
-                progressBar.setProgress((int) (((float) completedLength / totalLength) * 100));
-                progressBar.setVisibility(View.VISIBLE);
-            }
+                    @Override
+                    public void onUpdateProgress(long totalLength, long completedLength) {
+                        progressBar.setProgress((int) (((float) completedLength / totalLength) * 100));
+                        progressBar.setVisibility(View.VISIBLE);
+                    }
 
-            @Override
-            public void onCancel() {
+                    @Override
+                    public void onCancel() {
+                    }
+                });
             }
-        });
+        }, delayed);
     }
 
     public DisplayOptions createDisplayOptions(int position){

@@ -17,7 +17,9 @@
 package me.xiaopan.android.imageloader;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import me.xiaopan.android.imageloader.cache.disk.DiskCache;
 import me.xiaopan.android.imageloader.cache.disk.LruDiskCache;
@@ -47,6 +49,7 @@ public class Configuration {
 	private BitmapDecoder bitmapDecoder;	//位图解码器
 	private Map<Object, TaskOptions> optionsMap;	//显示选项集合
     private HttpClientCreator httpClientCreator;
+    private Set<String> downloadingFiles;
 	
 	public Configuration(Context context){
 		if(Looper.myLooper() != Looper.getMainLooper()){
@@ -56,6 +59,7 @@ public class Configuration {
 		this.context = context;
 		this.handler = new Handler();
 		this.optionsMap = new HashMap<Object, TaskOptions>();
+		this.downloadingFiles = new HashSet<String>();
 	}
 	
 	/**
@@ -209,4 +213,8 @@ public class Configuration {
         this.httpClientCreator = httpClientCreator;
         return this;
     }
+
+	public Set<String> getDownloadingFiles() {
+		return downloadingFiles;
+	}
 }

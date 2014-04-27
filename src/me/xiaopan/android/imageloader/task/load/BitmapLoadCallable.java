@@ -32,7 +32,7 @@ public class BitmapLoadCallable implements Callable<Object> {
 
 	@Override
 	public Object call() throws Exception {
-		Bitmap bitmap = null;
+        Bitmap bitmap = null;
 		try{
             //解码
             bitmap = loadRequest.getConfiguration().getBitmapDecoder().decode(loadRequest, onDecodeListener);

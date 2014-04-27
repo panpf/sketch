@@ -37,7 +37,14 @@ public class CacheFileDecodeListener implements BitmapDecoder.DecodeListener {
 
     @Override
     public Bitmap onDecode(BitmapFactory.Options options) {
-        return BitmapFactory.decodeFile(file.getPath(), options);
+    	if(file.canRead()){
+            return BitmapFactory.decodeFile(file.getPath(), options);
+        }else{
+            if(loadRequest.getConfiguration().isDebugMode()){
+                Log.e(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("；").append("不可读取").append("；").append(file.getPath()).toString());
+            }
+            return null;
+        }
     }
 
     @Override

@@ -106,30 +106,45 @@ public class DownloadCallable implements Callable<Object>{
 					throw new Exception("ContentLength异常："+contentTypeValue);
 				}
 				
-				//读取数据
 				inputStream = new BufferedHttpEntity(httpEntity).getContent();
-				if(downloadRequest.getCacheFile() != null && ImageLoaderUtils.createFile(downloadRequest.getCacheFile()) && downloadRequest.getConfiguration().getDiskCache().applyForSpace(contentLength)){
-					// 如果可以缓存到本地
+				
+				// 如果需要缓存到本地
+				if(downloadRequest.getCacheFile() != null && downloadRequest.getConfiguration().getDiskCache().applyForSpace(contentLength) && ImageLoaderUtils.createFile(downloadRequest.getCacheFile())){
+					downloadRequest.getConfiguration().getDownloadingFiles().add(downloadRequest.getCacheFile().getPath());	//标记为正在下载
 					outputStream = new BufferedOutputStream(new FileOutputStream(downloadRequest.getCacheFile(), false), 8*1024);
 					long completedLength = ImageLoaderUtils.copy(inputStream, outputStream, downloadRequest.getDownloadListener(), contentLength);
+					ImageLoaderUtils.close(inputStream);
+					ImageLoaderUtils.close(outputStream);
+					downloadRequest.getConfiguration().getDownloadingFiles().remove(downloadRequest.getCacheFile().getPath());	//标记为下载已完成
 					result = downloadRequest.getCacheFile();
 					if(downloadRequest.getConfiguration().isDebugMode()){
 						Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("下载成功 - FILE").append("；").append("文件长度").append(downloadRequest.getCacheFile().length()).append("/").append(completedLength).append("/").append(contentLength).append("；").append(downloadRequest.getName()).toString());
 					}
-				}else{
-					// 如果需要直接读到内存
-					ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-					outputStream = new BufferedOutputStream(byteArrayOutputStream);
-					long completedLength = ImageLoaderUtils.copy(inputStream, outputStream, downloadRequest.getDownloadListener(), contentLength);
-					result = byteArrayOutputStream.toByteArray();
-					if(downloadRequest.getConfiguration().isDebugMode()){
-						Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("下载成功 - BYTE_ARRAY").append("；").append("字节数").append("=").append(byteArrayOutputStream.size()).append("/").append(completedLength).append("/").append(contentLength).append("；").append(downloadRequest.getName()).toString());
-					}
+					break;
+				}
+				
+				// 直接读到内存
+				ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+				outputStream = new BufferedOutputStream(byteArrayOutputStream);
+				long completedLength = ImageLoaderUtils.copy(inputStream, outputStream, downloadRequest.getDownloadListener(), contentLength);
+				ImageLoaderUtils.close(inputStream);
+				ImageLoaderUtils.close(outputStream);
+				result = byteArrayOutputStream.toByteArray();
+				if(downloadRequest.getConfiguration().isDebugMode()){
+					Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("下载成功 - BYTE_ARRAY").append("；").append("字节数").append("=").append(byteArrayOutputStream.size()).append("/").append(completedLength).append("/").append(contentLength).append("；").append(downloadRequest.getName()).toString());
 				}
 				break;
 			} catch (Throwable e2) {
-                if(httpGet != null) httpGet.abort();
-				if(downloadRequest.getCacheFile() != null && downloadRequest.getCacheFile().exists()) downloadRequest.getCacheFile().delete();
+				ImageLoaderUtils.close(inputStream);
+				ImageLoaderUtils.close(outputStream);
+				
+				if(httpGet != null){
+					httpGet.abort();
+				}
+				
+				if(downloadRequest.getCacheFile() != null && downloadRequest.getCacheFile().exists()){
+					downloadRequest.getCacheFile().delete();
+				}
 
 				boolean isRetry = false;	//如果尚未达到最大重试次数，那么就再尝试一次
 				if(e2 instanceof ConnectTimeoutException || e2 instanceof SocketTimeoutException  || e2 instanceof  ConnectionPoolTimeoutException){
@@ -140,14 +155,13 @@ public class DownloadCallable implements Callable<Object>{
 				    e2.printStackTrace();
                 }
 				
-				if(downloadRequest.getConfiguration().isDebugMode()) Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("下载异常").append("；").append(downloadRequest.getName()).append("；").append("异常信息").append("=").append(e2.toString()).append("；").append(isRetry?"重新下载":"不再下载").toString());
+				if(downloadRequest.getConfiguration().isDebugMode()){
+					Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("下载异常").append("；").append(downloadRequest.getName()).append("；").append("异常信息").append("=").append(e2.toString()).append("；").append(isRetry?"重新下载":"不再下载").toString());
+				}
 
 				if(!isRetry){
 					break;
 				}
-			}finally{
-				ImageLoaderUtils.close(inputStream);
-				ImageLoaderUtils.close(outputStream);
 			}
         }
 		return result;

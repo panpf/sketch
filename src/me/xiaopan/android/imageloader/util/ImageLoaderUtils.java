@@ -123,7 +123,7 @@ public class ImageLoaderUtils {
         }
         return file.exists();
     }
-	
+    
 	/**
 	 * 删除给定的文件，如果当前文件是目录则会删除其包含的所有的文件或目录
 	 * @param file 给定的文件

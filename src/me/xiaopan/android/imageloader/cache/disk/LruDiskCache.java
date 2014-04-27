@@ -120,8 +120,10 @@ public class LruDiskCache implements DiskCache {
 
 		File cacheFile = getCacheFileByUri(request.getUri());
 
-		//是否存在
-		if(!cacheFile.exists()) return cacheFile;
+		//如果不存在就直接返回
+		if(!cacheFile.exists()){
+            return cacheFile;
+        }
 
 		//是否永久有效
 		if(request.getDiskCachePeriodOfValidity() <= 0) return cacheFile;

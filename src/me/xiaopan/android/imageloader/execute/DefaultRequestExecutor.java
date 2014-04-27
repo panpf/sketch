@@ -115,10 +115,17 @@ public class DefaultRequestExecutor implements RequestExecutor {
 				File cacheFile = loadRequest.getConfiguration().getDiskCache().createFile(loadRequest);
                 loadRequest.setCacheFile(cacheFile);
                 if(cacheFile != null && cacheFile.exists()){
-                    localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest))));
-                    if(loadRequest.getConfiguration().isDebugMode()){
-                        Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("LOAD - HTTP - 本地").append("；").append(loadRequest.getName()).toString());
-                    }
+                	if(!loadRequest.getConfiguration().getDownloadingFiles().contains(cacheFile.getPath())){
+                		localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest))));
+                		if(loadRequest.getConfiguration().isDebugMode()){
+                			Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("LOAD - HTTP - 本地").append("；").append(loadRequest.getName()).toString());
+                		}
+                	}else{
+                		netTaskExecutor.execute(new DownloadTask(loadRequest.setDownloadListener(new LoadJoinDownloadListener(localTaskExecutor, loadRequest))));
+                        if(loadRequest.getConfiguration().isDebugMode()){
+                            Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("LOAD - HTTP - 网络 - 正在下载").append("；").append(loadRequest.getName()).toString());
+                        }
+                	}
                 }else{
                     netTaskExecutor.execute(new DownloadTask(loadRequest.setDownloadListener(new LoadJoinDownloadListener(localTaskExecutor, loadRequest))));
                     if(loadRequest.getConfiguration().isDebugMode()){
