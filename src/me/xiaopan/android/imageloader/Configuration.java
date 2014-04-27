@@ -17,9 +17,7 @@
 package me.xiaopan.android.imageloader;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 import me.xiaopan.android.imageloader.cache.disk.DiskCache;
 import me.xiaopan.android.imageloader.cache.disk.LruDiskCache;
@@ -27,10 +25,10 @@ import me.xiaopan.android.imageloader.cache.memory.LruMemoryCache;
 import me.xiaopan.android.imageloader.cache.memory.MemoryCache;
 import me.xiaopan.android.imageloader.decode.BitmapDecoder;
 import me.xiaopan.android.imageloader.decode.DefaultBitmapDecoder;
+import me.xiaopan.android.imageloader.download.Downloader;
+import me.xiaopan.android.imageloader.download.LockDownloader;
 import me.xiaopan.android.imageloader.execute.DefaultRequestExecutor;
 import me.xiaopan.android.imageloader.execute.RequestExecutor;
-import me.xiaopan.android.imageloader.http.DefaultHttpClientCreator;
-import me.xiaopan.android.imageloader.http.HttpClientCreator;
 import me.xiaopan.android.imageloader.task.TaskOptions;
 import android.content.Context;
 import android.os.Handler;
@@ -41,25 +39,28 @@ import android.os.Looper;
  */
 public class Configuration {
 	private boolean debugMode;	//调试模式，在控制台输出日志
-	private Context context;	//上下文
 	private Handler handler;	//消息处理器
-	private RequestExecutor requestExecutor;	//请求执行器
+	private Context context;	//上下文
     private DiskCache diskCache;    // 磁盘缓存器
+    private Downloader downloader;	//下载器
 	private MemoryCache memoryCache;	//位图缓存器
 	private BitmapDecoder bitmapDecoder;	//位图解码器
+	private RequestExecutor requestExecutor;	//请求执行器
 	private Map<Object, TaskOptions> optionsMap;	//显示选项集合
-    private HttpClientCreator httpClientCreator;
-    private Set<String> downloadingFiles;
 	
 	public Configuration(Context context){
 		if(Looper.myLooper() != Looper.getMainLooper()){
 			throw new IllegalStateException("你不能在异步线程中创建此对象");
 		}
 		
-		this.context = context;
 		this.handler = new Handler();
+		this.context = context;
+		this.diskCache = new LruDiskCache(context);
+		this.downloader = new LockDownloader();
 		this.optionsMap = new HashMap<Object, TaskOptions>();
-		this.downloadingFiles = new HashSet<String>();
+		this.memoryCache = new LruMemoryCache();
+		this.bitmapDecoder = new DefaultBitmapDecoder();
+		this.requestExecutor = new DefaultRequestExecutor();
 	}
 	
 	/**
@@ -75,9 +76,6 @@ public class Configuration {
 	 * @return 请求执行器
 	 */
 	public RequestExecutor getRequestExecutor() {
-		if(requestExecutor == null){
-			requestExecutor = new DefaultRequestExecutor();
-		}
 		return requestExecutor;
 	}
 
@@ -95,9 +93,6 @@ public class Configuration {
      * @return 磁盘缓存器
      */
     public DiskCache getDiskCache() {
-        if(diskCache == null){
-            diskCache = new LruDiskCache(context);
-        }
         return diskCache;
     }
 
@@ -115,9 +110,6 @@ public class Configuration {
 	 * @return 内存缓存器
 	 */
 	public MemoryCache getMemoryCache() {
-		if(memoryCache == null){
-			memoryCache = new LruMemoryCache();
-		}
 		return memoryCache;
 	}
 	
@@ -135,9 +127,6 @@ public class Configuration {
 	 * @return 位图解码器
 	 */
 	public BitmapDecoder getBitmapDecoder() {
-		if(bitmapDecoder == null){
-			bitmapDecoder = new DefaultBitmapDecoder();
-		}
 		return bitmapDecoder;
 	}
 
@@ -195,26 +184,17 @@ public class Configuration {
 	}
 
     /**
-     * 获取HttpClient创建器
-     * @return HttpClient创建器
+     * 获取下载器
      */
-    public HttpClientCreator getHttpClientCreator() {
-        if(httpClientCreator == null){
-            httpClientCreator = new DefaultHttpClientCreator(this);
-        }
-        return httpClientCreator;
-    }
+	public Downloader getDownloader() {
+		return downloader;
+	}
 
-    /**
-     * 设置HttpClient创建器
-     * @param httpClientCreator HttpClient创建器
-     */
-    public Configuration setHttpClientCreator(HttpClientCreator httpClientCreator) {
-        this.httpClientCreator = httpClientCreator;
-        return this;
-    }
-
-	public Set<String> getDownloadingFiles() {
-		return downloadingFiles;
+	/**
+	 * 设置下载器
+	 * @param downloader
+	 */
+	public void setDownloader(Downloader downloader) {
+		this.downloader = downloader;
 	}
 }

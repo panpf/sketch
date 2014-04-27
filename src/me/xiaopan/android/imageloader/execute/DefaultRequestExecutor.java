@@ -115,7 +115,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
 				File cacheFile = loadRequest.getConfiguration().getDiskCache().createFile(loadRequest);
                 loadRequest.setCacheFile(cacheFile);
                 if(cacheFile != null && cacheFile.exists()){
-                	if(!loadRequest.getConfiguration().getDownloadingFiles().contains(cacheFile.getPath())){
+                	if(!loadRequest.getConfiguration().getDownloader().isDownloadingByCacheFilePath(cacheFile.getPath())){
                 		localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest))));
                 		if(loadRequest.getConfiguration().isDebugMode()){
                 			Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("LOAD - HTTP - 本地").append("；").append(loadRequest.getName()).toString());
