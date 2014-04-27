@@ -78,7 +78,7 @@ public class DisplayJoinLoadListener implements LoadListener {
                 });
             }
             if(displayRequest.getConfiguration().isDebugMode()){
-                Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("已解除绑定关系").append("；").append(displayRequest.getName()).toString());
+                Log.w(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("已解除绑定关系").append("；").append(displayRequest.getName()).toString());
             }
         }
     }
@@ -99,7 +99,7 @@ public class DisplayJoinLoadListener implements LoadListener {
             });
         }
         if(displayRequest.getConfiguration().isDebugMode()){
-            Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("已取消").append("；").append(displayRequest.getName()).toString());
+            Log.w(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("已取消加载").append("；").append(displayRequest.getName()).toString());
         }
     }
 }

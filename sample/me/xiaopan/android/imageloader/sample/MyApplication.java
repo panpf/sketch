@@ -31,7 +31,7 @@ public class MyApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 
-        ImageLoader.getInstance(getBaseContext()).getConfiguration().setDebugMode(true) //开启Debug，在控制台输出LOG
+        ImageLoader.getInstance(getBaseContext()).getConfiguration().setDebugMode(true)
         .putOptions(DisplayOptionsType.GRID_VIEW, new DisplayOptions(getBaseContext())
             .setLoadingDrawable(R.drawable.image_loading)
             .setLoadFailDrawable(R.drawable.image_load_fail)

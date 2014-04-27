@@ -441,9 +441,6 @@ public class ImageLoader{
         final DisplayRequest displayRequest = AsyncDrawable.getDisplayRequestByAsyncDrawable(imageView);
         if (displayRequest != null) {
             displayRequest.cancel(true);
-            if (displayRequest.getConfiguration().isDebugMode()) {
-                Log.w(ImageLoader.LOG_TAG, new StringBuilder().append("已取消").append("；").append(displayRequest.getName()).toString());
-            }
             return true;
         }else{
             return false;
