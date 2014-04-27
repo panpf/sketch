@@ -88,7 +88,7 @@ public class LockDownloader implements Downloader {
 	}
 
 	@Override
-	public Object down(DownloadRequest downloadRequest) {
+	public Object download(DownloadRequest downloadRequest) {
 		// 根据下载地址加锁，防止重复下载
 		ReentrantLock urlLock = getUrlLock(downloadRequest.getUri());
 		urlLock.lock();

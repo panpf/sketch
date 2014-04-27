@@ -60,7 +60,7 @@ ImageLoader.getInstance(getBaseContext()).getConfiguration()
 	.setBitmapDecoder(new DefaultBitmapDecoder())  // 设置Bitmap解码器
 	.setDebugMode(true)  // 开启Debug模式，在控制台输出LOG
 	.setDiskCache(new LruDiskCache(getBaseContext()))  // 设置磁盘缓存器 
-	.setHttpClientCreator(new DefaultHttpClientCreator(configuration))  // 设置HttpClient生成器 
+	.setDownloader(new LockDownloader())  // 设置下载器 
 	.setMemoryCache(new LruMemoryCache())  // 设置内存缓存器
 	.setRequestExecutor(new DefaultRequestExecutor());  // 设置请求执行器
 ```
@@ -177,14 +177,21 @@ BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer�
 >* ZoomInBitmapDisplayer：渐入且由小到大效果。
 >* ZoomOutBitmapDisplayer：渐入且由大到小效果。
 
+###11.Downloader（图片下载器）
+Downloader是用来下载图片的，默认的实现是LockDownloader。LockDownloader会根据下载地址加锁，防止重复下载
+
 ###你还可以参考示例程序来更加直观的了解使用方式
 
 ##Downloads
-**[android-image-loader-2.3.4.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.4.jar)**
-
-**[android-image-loader-2.3.4-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.4-with-src.jar)**
+>* [android-image-loader-2.3.5.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.5.jar)
+>* [android-image-loader-2.3.5-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.5-with-src.jar)
 
 ##Change Log
+###2.3.5
+>* 增加Downloader来管理图片下载，删除了HttpClientCreator
+>* 当请求已经取消时新的Downloader将不再读取数据，这么做是为了更快的处理新的请求
+>* 修复当同一个下载地址被多次请求时从第二个开始的请求可能会失败的BUG。原因是在第一个请求正在写入数据的过程中，第二个请求发起了，第二个请求检测到已经有了缓存文件，于是就去读取并解码。但实际上这时候的缓存文件是不完整的，所以就会解码失败。
+
 ###2.3.4
 >* ImageLoader和DiskCache中增加``public File getCacheFileByUri(String uri)``方法，方便开发者将缓存图片用作它途
 

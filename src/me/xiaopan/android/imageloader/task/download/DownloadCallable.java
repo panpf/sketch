@@ -27,6 +27,6 @@ public class DownloadCallable implements Callable<Object>{
 
 	@Override
 	public Object call(){
-		return downloadRequest.getConfiguration().getDownloader().down(downloadRequest);
+		return downloadRequest.getConfiguration().getDownloader().download(downloadRequest);
 	}
 }
