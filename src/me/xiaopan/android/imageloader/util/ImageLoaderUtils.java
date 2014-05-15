@@ -219,11 +219,11 @@ public class ImageLoaderUtils {
     public static long copy(InputStream inputStream, OutputStream outputStream, DownloadRequest downloadRequest, long totalLength) throws IOException{
         int readNumber;	//读取到的字节的数量
         long completedLength = 0;
-        byte[] cacheBytes = new byte[1024];//数据缓存区
+        byte[] cacheBytes = new byte[1024*4];//数据缓存区
         while(!downloadRequest.isCanceled() && (readNumber = inputStream.read(cacheBytes)) != -1){
-            completedLength += readNumber;
             outputStream.write(cacheBytes, 0, readNumber);
-            if(downloadRequest.getDownloadListener() != null){
+            completedLength += readNumber;
+            if(downloadRequest.getDownloadOptions() != null && downloadRequest.getDownloadOptions().isEnableProgressCallback() && downloadRequest.getDownloadListener() != null){
             	downloadRequest.getDownloadListener().onUpdateProgress(totalLength, completedLength);
             }
         }

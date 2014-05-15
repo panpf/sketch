@@ -124,32 +124,38 @@ public class NormalActivity extends Activity{
             case 11 :
                 displayOptions.setLoadingDrawable(R.drawable.image_loading);
                 displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setEnableProgressCallback(true);
                 displayOptions.setProcessor(new RoundedCornerBitmapProcessor());
                 break;
             case 12 :
                 displayOptions.setLoadingDrawable(R.drawable.image_loading);
                 displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setEnableProgressCallback(true);
                 displayOptions.setProcessor(new RoundedCornerBitmapProcessor());
                 break;
             case 13 :
                 displayOptions.setLoadingDrawable(R.drawable.image_loading);
                 displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setEnableProgressCallback(true);
                 displayOptions.setProcessor(new RoundedCornerBitmapProcessor());
                 break;
             case 21 :
                 displayOptions.setLoadingDrawable(R.drawable.image_loading);
                 displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setEnableProgressCallback(true);
                 displayOptions.setProcessor(new CircleBitmapProcessor());
                 displayOptions.setDisplayer(new ZoomInBitmapDisplayer());
                 break;
             case 22 :
                 displayOptions.setLoadingDrawable(R.drawable.image_loading);
                 displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setEnableProgressCallback(true);
                 displayOptions.setProcessor(new CircleBitmapProcessor());
                 displayOptions.setDisplayer(new ZoomOutBitmapDisplayer());
                 break;
             case 31 :
                 displayOptions.setLoadFailDrawable(R.drawable.image_load_fail);
+                displayOptions.setEnableProgressCallback(true);
                 displayOptions.setProcessor(new ReflectionBitmapProcessor());
                 break;
         }

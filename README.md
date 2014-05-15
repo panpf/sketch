@@ -73,6 +73,7 @@ DisplayOptions displayOptions = new DisplayOptions(getBaseContext())
 .setLoadFailDrawable(R.drawable.image_failure)	//设置当加载失败时显示的图片
 .setEnableMemoryCache(true)	//开启内存缓存，开启后会采用Lru算法将Bitmap缓存在内存中，以便重复利用
 .setEnableDiskCache(true)	//开启硬盘缓存，开启后会先将图片下载到本地，然后再加载到内存中
+.setEnableProgressCallback(true) // 开启进度回调功能
 .setDiskCachePeriodOfValidity(1000 * 60 * 60 * 24)	//设置硬盘缓存有效期为24小时，24小时过后将重新下载图片
  displayMetrics = getBaseContext().getResources().getDisplayMetrics()
 .setMaxSize(new ImageSize(displayMetrics.widthPixels, displayMetrics.heightPixels))	//设置加载到内存中的图片的最大尺寸，如果原图的尺寸大于最大尺寸，在读取的时候就会缩小至合适的尺寸再读取
@@ -183,10 +184,14 @@ Downloader是用来下载图片的，默认的实现是LockDownloader。LockDown
 ###你还可以参考示例程序来更加直观的了解使用方式
 
 ##Downloads
->* [android-image-loader-2.3.5.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.5.jar)
->* [android-image-loader-2.3.5-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.5-with-src.jar)
+>* [android-image-loader-2.3.6.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.6.jar)
+>* [android-image-loader-2.3.6-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.6-with-src.jar)
 
 ##Change Log
+###2.3.6
+>* 修复进度更新延迟很严重BUG
+>* 默认关闭进度更新功能，你可以通过Options.setEnableProgressCallback(true)方法开启
+
 ###2.3.5
 >* 增加Downloader来管理图片下载，删除了HttpClientCreator
 >* 当请求已经取消时新的Downloader将不再读取数据，这么做是为了更快的处理新的请求

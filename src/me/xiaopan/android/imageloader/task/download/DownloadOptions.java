@@ -25,6 +25,7 @@ public class DownloadOptions extends TaskOptions{
 	private int maxRetryCount = 2;	//最大重试次数
 	private long diskCachePeriodOfValidity;	//磁盘缓存有效期，单位毫秒
 	private boolean enableDiskCache = true;	//是否开启磁盘缓存
+	private boolean enableProgressCallback;	// 开启进度回调
 	
 	/**
 	 * 获取最大重试次数
@@ -78,12 +79,29 @@ public class DownloadOptions extends TaskOptions{
 	}
 
 	/**
+	 * 是否开启进度回调功能
+	 */
+    public boolean isEnableProgressCallback() {
+		return enableProgressCallback;
+	}
+
+    /**
+     * 设置是否开启进度回调功能
+	 * @param enableProgressCallback 是否开启进度回调功能
+     */
+	public DownloadOptions setEnableProgressCallback(boolean enableProgressCallback) {
+		this.enableProgressCallback = enableProgressCallback;
+        return this;
+	}
+
+	/**
 	 * 拷贝一份
 	 */
 	public DownloadOptions copy(){
         return new DownloadOptions()
             .setMaxRetryCount(maxRetryCount)
             .setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
-            .setEnableDiskCache(isEnableDiskCache());
+            .setEnableDiskCache(isEnableDiskCache())
+            .setEnableProgressCallback(enableProgressCallback);
 	}
 }

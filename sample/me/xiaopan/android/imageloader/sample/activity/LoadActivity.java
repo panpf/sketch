@@ -86,6 +86,7 @@ public class LoadActivity extends Activity {
         drawerLayout.openDrawer(Gravity.START);
 
         loadOptions = new LoadOptions();
+        loadOptions.setEnableProgressCallback(true);
         periodOfValidityEdit.setText("" + loadOptions.getDiskCachePeriodOfValidity());
 
         diskCacheToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

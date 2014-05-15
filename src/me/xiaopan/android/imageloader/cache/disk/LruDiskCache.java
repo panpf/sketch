@@ -114,7 +114,7 @@ public class LruDiskCache implements DiskCache {
 
 	@Override
 	public synchronized File createFile(DownloadRequest request) {
-		if(!request.isEnableDiskCache()){
+		if(request.getDownloadOptions() == null || !request.getDownloadOptions().isEnableDiskCache()){
 			return null;
 		}
 
@@ -126,11 +126,12 @@ public class LruDiskCache implements DiskCache {
         }
 
 		//是否永久有效
-		if(request.getDiskCachePeriodOfValidity() <= 0) return cacheFile;
+		long diskCachePeriodOfValidity = request.getDownloadOptions() != null?request.getDownloadOptions().getDiskCachePeriodOfValidity():0;
+		if(diskCachePeriodOfValidity <= 0) return cacheFile;
 
 		//是否过期
 		Calendar calendar = new GregorianCalendar();
-		calendar.add(Calendar.MILLISECOND, (int) -request.getDiskCachePeriodOfValidity());
+		calendar.add(Calendar.MILLISECOND, (int) -diskCachePeriodOfValidity);
 		if(calendar.getTimeInMillis() >= cacheFile.lastModified()){
 			cacheFile.delete();
 			if(request.getConfiguration().isDebugMode()){

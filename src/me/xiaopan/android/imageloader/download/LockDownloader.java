@@ -21,7 +21,6 @@ import me.xiaopan.android.imageloader.util.ImageLoaderUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.ConnectionPoolTimeoutException;
@@ -31,7 +30,6 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.conn.ssl.SSLSocketFactory;
-import org.apache.http.entity.BufferedHttpEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
@@ -45,7 +43,8 @@ public class LockDownloader implements Downloader {
 	public static final int DEFAULT_CONNECTION_TIME_OUT = 20000;
     public static final int DEFAULT_MAX_CONNECTIONS = 10;
     public static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
-	private HttpClient httpClient;
+    public static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
+	private DefaultHttpClient httpClient;
 	private Set<String> downloadingFiles;
 	private Map<String, ReentrantLock> urlLocks;
 
@@ -61,11 +60,13 @@ public class LockDownloader implements Downloader {
         HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
         HttpConnectionParams.setTcpNoDelay(httpParams, true);
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
-		HttpProtocolParams.setUserAgent(httpParams, String.format("Android-ImageLoader/%s (https://github.com/xiaopansky/Android-ImageLoader)", "2.3.3"));	//设置浏览器标识
+		HttpProtocolParams.setUserAgent(httpParams, DEFAULT_USER_AGENT);	//设置浏览器标识
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
         schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
         httpClient = new DefaultHttpClient(new ThreadSafeClientConnManager(httpParams, schemeRegistry), httpParams);
+        httpClient.addRequestInterceptor(new GzipProcessRequestInterceptor());
+        httpClient.addResponseInterceptor(new GzipProcessResponseInterceptor());
 	}
 
     /**
@@ -145,7 +146,8 @@ public class LockDownloader implements Downloader {
 					throw new Exception("ContentLength异常："+contentTypeValue);
 				}
 				
-				inputStream = new BufferedHttpEntity(httpEntity).getContent();
+//				inputStream = new BufferedHttpEntity(httpEntity).getContent();
+				inputStream = httpEntity.getContent();
 				
 				// 如果需要缓存到本地
 				if(cacheFile != null && downloadRequest.getConfiguration().getDiskCache().applyForSpace(contentLength) && ImageLoaderUtils.createFile(cacheFile)){

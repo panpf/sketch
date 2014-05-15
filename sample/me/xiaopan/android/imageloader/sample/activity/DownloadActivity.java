@@ -69,6 +69,7 @@ public class DownloadActivity extends Activity {
         drawerLayout.openDrawer(Gravity.START);
 
         downloadOptions = new DownloadOptions();
+        downloadOptions.setEnableProgressCallback(true);
         periodOfValidityEdit.setText("" + downloadOptions.getDiskCachePeriodOfValidity());
 
         diskCacheToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

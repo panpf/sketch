@@ -34,10 +34,7 @@ import android.widget.ImageView.ScaleType;
 public class DisplayOptions extends LoadOptions {
     private Context context;
 	private boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-	private BitmapDisplayer displayer;	//位图显示器
-    private boolean processLoadingDrawable = true;
-    private boolean processLoadFailDrawable = true;
-    private boolean processEmptyUriDrawable = true;
+    private BitmapDisplayer displayer;	//位图显示器
 	private DrawableHolder emptyUriDrawableHolder;	//当uri为空时显示的图片
 	private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
 	private DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
@@ -77,7 +74,7 @@ public class DisplayOptions extends LoadOptions {
 		if(emptyUriDrawableHolder.getDrawable() == null && emptyUriDrawableHolder.getResId() > 0){
 			Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), emptyUriDrawableHolder.getResId());
 			if(bitmap != null){
-				if(processEmptyUriDrawable && getProcessor() != null){
+				if(emptyUriDrawableHolder.isProcess() && getProcessor() != null){
 					Bitmap newBitmap = getProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
 					if(newBitmap != bitmap){
 						bitmap.recycle();
@@ -113,7 +110,7 @@ public class DisplayOptions extends LoadOptions {
 		if(loadingDrawableHolder.getDrawable() == null && loadingDrawableHolder.getResId() > 0){
             Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), loadingDrawableHolder.getResId());
 			if(bitmap != null){
-				if(processLoadingDrawable && getProcessor() != null){
+				if(emptyUriDrawableHolder.isProcess() && getProcessor() != null){
 					Bitmap newBitmap = getProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
                     if(newBitmap != bitmap){
                         bitmap.recycle();
@@ -149,7 +146,7 @@ public class DisplayOptions extends LoadOptions {
 		if(loadFailDrawableHolder.getDrawable() == null && loadFailDrawableHolder.getResId() > 0){
 			Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), loadFailDrawableHolder.getResId());
 			if(bitmap != null){
-				if(processLoadFailDrawable && getProcessor() != null){
+				if(loadFailDrawableHolder.isProcess() && getProcessor() != null){
 					Bitmap newBitmap = getProcessor().process(bitmap, ScaleType.CENTER_CROP, new ImageSize(bitmap.getWidth(), bitmap.getHeight()));
 					if(newBitmap != bitmap){
 						bitmap.recycle();
@@ -200,13 +197,13 @@ public class DisplayOptions extends LoadOptions {
     @Override
     public DisplayOptions setProcessor(BitmapProcessor processor) {
         super.setProcessor(processor);
-        if(processLoadingDrawable){
+        if(loadingDrawableHolder.isProcess()){
             loadingDrawableHolder.setDrawable(null);
         }
-        if(processLoadFailDrawable){
+        if(loadFailDrawableHolder.isProcess()){
             loadFailDrawableHolder.setDrawable(null);
         }
-        if(processEmptyUriDrawable){
+        if(emptyUriDrawableHolder.isProcess()){
             emptyUriDrawableHolder.setDrawable(null);
         }
         return this;
@@ -253,7 +250,7 @@ public class DisplayOptions extends LoadOptions {
      * @param processLoadingDrawable 是否使用BitmapProcessor来处理加载中图片
      */
     public DisplayOptions setProcessLoadingDrawable(boolean processLoadingDrawable) {
-        this.processLoadingDrawable = processLoadingDrawable;
+        loadingDrawableHolder.setProcess(processLoadingDrawable);
         return this;
     }
 
@@ -262,7 +259,7 @@ public class DisplayOptions extends LoadOptions {
      * @param processLoadFailDrawable 是否使用BitmapProcessor来处理加载失败图片
      */
     public DisplayOptions setProcessLoadFailDrawable(boolean processLoadFailDrawable) {
-        this.processLoadFailDrawable = processLoadFailDrawable;
+        loadFailDrawableHolder.setProcess(processLoadFailDrawable);
         return this;
     }
 
@@ -271,9 +268,15 @@ public class DisplayOptions extends LoadOptions {
      * @param processEmptyUriDrawable 是否使用BitmapProcessor来处理URI为空图片
      */
     public DisplayOptions setProcessEmptyUriDrawable(boolean processEmptyUriDrawable) {
-        this.processEmptyUriDrawable = processEmptyUriDrawable;
+        emptyUriDrawableHolder.setProcess(processEmptyUriDrawable);
         return this;
     }
+
+    @Override
+	public DisplayOptions setEnableProgressCallback(boolean enableProgressCallback) {
+    	super.setEnableProgressCallback(enableProgressCallback);
+		return this; 
+	}
 
     @Override
 	public DisplayOptions copy(){
@@ -281,9 +284,11 @@ public class DisplayOptions extends LoadOptions {
             .setMaxRetryCount(getMaxRetryCount())
             .setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
             .setEnableDiskCache(isEnableDiskCache())
+            .setEnableProgressCallback(true)
 
             .setScaleType(getScaleType())
             .setMaxSize(getMaxSize() != null ? getMaxSize().copy() : null)
+            .setProcessSize(getProcessSize() != null?getProcessSize().copy():null)
             .setProcessor(getProcessor() != null ? getProcessor().copy() : null)
 
             .setEnableMemoryCache(enableMemoryCache)
@@ -291,13 +296,14 @@ public class DisplayOptions extends LoadOptions {
             .setEmptyUriDrawable(emptyUriDrawableHolder.getResId())
             .setLoadFailDrawable(loadFailDrawableHolder.getResId())
             .setLoadingDrawable(loadingDrawableHolder.getResId())
-            .setProcessLoadingDrawable(processLoadingDrawable)
-            .setProcessLoadFailDrawable(processLoadFailDrawable)
-            .setProcessEmptyUriDrawable(processEmptyUriDrawable);
+            .setProcessLoadingDrawable(loadingDrawableHolder.isProcess())
+            .setProcessLoadFailDrawable(loadFailDrawableHolder.isProcess())
+            .setProcessEmptyUriDrawable(emptyUriDrawableHolder.isProcess());
 	}
 	
 	private class DrawableHolder {
 		private int resId;	//当正在加载时显示的图片
+		private boolean process = true;
 		private BitmapDrawable drawable;	//当加载地址为空时显示的图片
 		
 		public int getResId() {
@@ -306,6 +312,14 @@ public class DisplayOptions extends LoadOptions {
 
 		public void setResId(int resId) {
 			this.resId = resId;
+		}
+
+		public boolean isProcess() {
+			return process;
+		}
+
+		public void setProcess(boolean process) {
+			this.process = process;
 		}
 
 		public BitmapDrawable getDrawable() {

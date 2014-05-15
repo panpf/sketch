@@ -79,7 +79,7 @@ public class DownloadRequest extends TaskRequest{
 		this.cacheFile = cacheFile;
 	}
 
-    /**
+	/**
      * 获取下载选项
      */
 	public DownloadOptions getDownloadOptions() {
@@ -107,19 +107,5 @@ public class DownloadRequest extends TaskRequest{
 	public DownloadRequest setDownloadListener(DownloadListener downloadListener) {
 		this.downloadListener = downloadListener;
         return this;
-	}
-
-	/**
-	 * 是否使用磁盘缓存
-	 */
-	public boolean isEnableDiskCache() {
-		return downloadOptions != null && downloadOptions.isEnableDiskCache();
-	}
-
-	/**
-	 * 获取磁盘缓存有效期
-	 */
-	public long getDiskCachePeriodOfValidity() {
-		return downloadOptions != null?downloadOptions.getDiskCachePeriodOfValidity():0;
 	}
 }

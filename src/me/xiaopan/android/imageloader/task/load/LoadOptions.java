@@ -117,14 +117,22 @@ public class LoadOptions extends DownloadOptions{
     }
 
     @Override
+	public LoadOptions setEnableProgressCallback(boolean enableProgressCallback) {
+    	super.setEnableProgressCallback(enableProgressCallback);
+		return this; 
+	}
+
+	@Override
 	public LoadOptions copy(){
         return new LoadOptions()
             .setMaxRetryCount(getMaxRetryCount())
             .setDiskCachePeriodOfValidity(getDiskCachePeriodOfValidity())
             .setEnableDiskCache(isEnableDiskCache())
+            .setEnableProgressCallback(isEnableProgressCallback())
 
             .setScaleType(scaleType)
             .setMaxSize(maxSize != null ? maxSize.copy() : null)
+            .setProcessSize(getProcessSize() != null?getProcessSize().copy():null)
             .setProcessor(processor != null ? processor.copy() : null);
 	}
 }
