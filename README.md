@@ -1,8 +1,8 @@
-# ![Logo](https://github.com/xiaopansky/Android-ImageLoader/raw/master/res/drawable-mdpi/ic_launcher.png) Android-ImageLoader
+# ![Logo](https://github.com/xiaopansky/HappyImageLoader/raw/master/res/drawable-mdpi/ic_launcher.png) HappyImageLoader
 
-Android-ImageLoader是用在Android上的一个图片加载类库，主要用于从本地或网络加载图片并显示在ImageView上，最低兼容Android2.2
+HappyImageLoader是Android上的一个图片加载类库，主要用于从本地或网络读取图片，然后处理并显示在ImageView上，最低兼容Android2.2
 
-![sample](https://github.com/xiaopansky/Android-ImageLoader/raw/master/docs/sample.jpg)
+![sample](https://github.com/xiaopansky/HappyImageLoader/raw/master/docs/sample.jpg)
 
 ##Features
 
@@ -19,7 +19,7 @@ Android-ImageLoader是用在Android上的一个图片加载类库，主要用于
 ## Sample Application
 **[Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)**
 
-**[Download it on Github](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/Android-ImageLoader-2.3.4.apk)**
+**[Download it on Github](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/HappyImageLoader-2.3.4.apk)**
 
 ##Usage
 
@@ -184,8 +184,8 @@ Downloader是用来下载图片的，默认的实现是LockDownloader。LockDown
 ###你还可以参考示例程序来更加直观的了解使用方式
 
 ##Downloads
->* [android-image-loader-2.3.6.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.6.jar)
->* [android-image-loader-2.3.6-with-src.jar](https://github.com/xiaopansky/Android-ImageLoader/raw/master/releases/android-image-loader-2.3.6-with-src.jar)
+>* [android-image-loader-2.3.6.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-image-loader-2.3.6.jar)
+>* [android-image-loader-2.3.6-with-src.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-image-loader-2.3.6-with-src.jar)
 
 ##Change Log
 ###2.3.6
