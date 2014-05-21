@@ -184,8 +184,8 @@ Downloader是用来下载图片的，默认的实现是LockDownloader。LockDown
 ###你还可以参考示例程序来更加直观的了解使用方式
 
 ##Downloads
->* [android-image-loader-2.3.6.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-image-loader-2.3.6.jar)
->* [android-image-loader-2.3.6-with-src.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-image-loader-2.3.6-with-src.jar)
+>* [android-happy-image-loader-2.3.6.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-happy-image-loader-2.3.6.jar)
+>* [android-happy-image-loader-2.3.6-with-src.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-happy-image-loader-2.3.6-with-src.jar)
 
 ##Change Log
 ###2.3.6
