@@ -179,9 +179,6 @@ public class DisplayOptions extends LoadOptions {
 	 * @return 图片显示器，用来最后关头显示图片
 	 */
 	public BitmapDisplayer getDisplayer() {
-		if(displayer == null){
-			displayer = new FadeInBitmapDisplayer();
-		}
 		return displayer;
 	}
 
