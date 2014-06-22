@@ -20,6 +20,7 @@ import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import android.graphics.drawable.BitmapDrawable;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
+import android.view.animation.Interpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 
@@ -28,26 +29,49 @@ import android.widget.ImageView;
  */
 public class ZoomInBitmapDisplayer implements BitmapDisplayer {
 	private int duration;
+	private float fromX;
+	private float fromY;
+	private Interpolator interpolator;
+	
+	public ZoomInBitmapDisplayer(float fromX, float fromY, Interpolator interpolator, int duration) {
+		this.duration = duration;
+		this.fromX = fromX;
+		this.fromY = fromY;
+		this.interpolator = interpolator;
+	}
+	
+	public ZoomInBitmapDisplayer(float fromX, float fromY, Interpolator interpolator) {
+		this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION);
+	}
+	
+	public ZoomInBitmapDisplayer(float fromX, float fromY) {
+		this(fromX, fromY, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION);
+	}
+	
+	public ZoomInBitmapDisplayer(Interpolator interpolator) {
+		this(0.5f, 0.5f, interpolator, DEFAULT_ANIMATION_DURATION);
+	}
 
 	public ZoomInBitmapDisplayer(int duration){
-		this.duration = duration;
+		this(0.5f, 0.5f, new AccelerateDecelerateInterpolator(), duration);
 	}
 	
 	public ZoomInBitmapDisplayer(){
-		this(DEFAULT_ANIMATION_DURATION);
+		this(0.5f, 0.5f, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION);
 	}
 	
 	@Override
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest) {
-		ScaleAnimation scaleAnimation = new ScaleAnimation(0.5f, 1.0f, 0.5f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-		scaleAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
+		ScaleAnimation scaleAnimation = new ScaleAnimation(fromX, 1.0f, fromY, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
+		scaleAnimation.setInterpolator(interpolator);
 		scaleAnimation.setDuration(duration);
+    	imageView.clearAnimation();
 		imageView.setImageDrawable(bitmapDrawable);
 		imageView.startAnimation(scaleAnimation);
 	}
 	
 	@Override
 	public BitmapDisplayer copy() {
-		return new ZoomInBitmapDisplayer(duration);
+		return new ZoomInBitmapDisplayer(fromX, fromY, interpolator, duration);
 	}
 }

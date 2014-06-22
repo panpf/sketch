@@ -20,28 +20,30 @@ import java.io.File;
 
 import me.xiaopan.android.imageloader.Configuration;
 import me.xiaopan.android.imageloader.task.TaskRequest;
+import me.xiaopan.android.imageloader.util.Scheme;
 
 /**
  * 下载请求
  */
 public class DownloadRequest extends TaskRequest{
-	private String uri;	//Uri
-	private String name;	//名称，用于在输出LOG的时候区分不同的请求
+	private String imageUri;	//图片地址
 	private File cacheFile;	//缓存文件
+	private String name;	//名称，用于在输出LOG的时候区分不同的请求
+	private Scheme scheme;	// Uri协议格式
 	private Configuration configuration;	//配置
-	private DownloadOptions downloadOptions;
 	private DownloadListener downloadListener;
+	private DownloadOptions downloadOptions;
 	
-	public DownloadRequest(String uri, Configuration configuration){
-		this.uri = uri;
+	public DownloadRequest(String imageUri, Configuration configuration){
+		this.imageUri = imageUri;
 		this.configuration = configuration;
 	}
 
 	/**
 	 * 获取URI
 	 */
-    public String getUri() {
-		return uri;
+    public String getImageUri() {
+		return imageUri;
 	}
 
     /**
@@ -49,6 +51,22 @@ public class DownloadRequest extends TaskRequest{
      */
 	public String getName() {
 		return name;
+	}
+
+	/**
+	 * 获取Uri协议格式
+	 * @return
+	 */
+	public Scheme getScheme() {
+		return scheme;
+	}
+
+	/**
+	 * 设置Uri协议格式
+	 * @param scheme
+	 */
+	public void setScheme(Scheme scheme) {
+		this.scheme = scheme;
 	}
 
 	/**
@@ -89,9 +107,8 @@ public class DownloadRequest extends TaskRequest{
     /**
      * 设置下载选项
      */
-	public DownloadRequest setDownloadOptions(DownloadOptions downloadOptions) {
+	public void setDownloadOptions(DownloadOptions downloadOptions) {
 		this.downloadOptions = downloadOptions;
-        return this;
 	}
 
     /**
@@ -106,6 +123,6 @@ public class DownloadRequest extends TaskRequest{
      */
 	public DownloadRequest setDownloadListener(DownloadListener downloadListener) {
 		this.downloadListener = downloadListener;
-        return this;
+		return this;
 	}
 }

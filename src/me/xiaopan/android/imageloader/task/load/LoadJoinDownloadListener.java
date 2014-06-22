@@ -28,12 +28,12 @@ public class LoadJoinDownloadListener implements DownloadListener {
 	}
 
     @Override
-    public void onComplete(File cacheFile) {
+    public void onSuccess(File cacheFile) {
         executor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest))));
     }
 
     @Override
-    public void onComplete(byte[] data) {
+    public void onSuccess(byte[] data) {
         executor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ByteArrayDecodeListener(data, loadRequest))));
     }
 

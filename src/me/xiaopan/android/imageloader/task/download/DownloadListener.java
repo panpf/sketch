@@ -38,13 +38,13 @@ public interface DownloadListener {
      * 下载完成
      * @param cacheFile
      */
-    public void onComplete(File cacheFile);
+    public void onSuccess(File cacheFile);
 
     /**
      * 下载完成
      * @param data
      */
-    public void onComplete(byte[] data);
+    public void onSuccess(byte[] data);
 
     /**
      * 下载失败

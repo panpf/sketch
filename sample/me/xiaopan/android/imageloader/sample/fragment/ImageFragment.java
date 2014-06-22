@@ -62,7 +62,7 @@ public class ImageFragment extends Fragment {
 				}
 				
 				@Override
-				public void onComplete(String imageUri, ImageView imageView, BitmapDrawable drawable) {
+				public void onSuccess(String imageUri, ImageView imageView, BitmapDrawable drawable) {
 					progressBar.setVisibility(View.GONE);
 				}
 				

@@ -35,7 +35,6 @@ import me.xiaopan.android.imageloader.util.ImageSize;
 import me.xiaopan.android.imageloader.util.Scheme;
 import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -68,50 +67,65 @@ public class ImageLoader{
 
     /**
      * 下载
-     * @param url 只支持HTTP
+     * @param imageUri 只支持HTTP和HTTPS
      * @param downloadOptions 配置缓存以及失败重试等选项
      * @param downloadListener 监听下载过程
      */
-	public void download(String url, DownloadOptions downloadOptions, DownloadListener downloadListener){
-        //初始化参数
-		if(ImageLoaderUtils.isEmpty(url)) throw new IllegalArgumentException("url不能为null或空");//过滤掉空的URI
-		if(downloadListener != null) downloadListener.onStart();
-        if(downloadOptions == null){
-        	if(defaultDownloadOptions == null){
-        		defaultDownloadOptions = new DownloadOptions();
-        	}
-        	downloadOptions = defaultDownloadOptions;
-        }
+	public void download(String imageUri, DownloadOptions downloadOptions, DownloadListener downloadListener){
+		 // 验证参数的合法性
+		if(ImageLoaderUtils.isEmpty(imageUri)){
+			new NullPointerException("imageUri不能为null或空").printStackTrace();
+			if(downloadListener != null) downloadListener.onFailure();
+            return;
+		}
 
-		//初始化请求
-		DownloadRequest downloadRequest = new DownloadRequest(url, configuration);
-		downloadRequest.setName(url);
+		// 过滤掉不支持的协议格式
+        Scheme scheme = Scheme.valueOfUri(imageUri);
+        if(scheme != Scheme.HTTP || scheme != Scheme.HTTPS){
+            if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuilder(LOG_TAG).append("：").append("download()方法只处理http或https协议格式").append(" URI").append("=").append(imageUri).toString());
+            if(downloadListener != null) downloadListener.onFailure();
+            return;
+        }
+		
+		// 初始化请求
+		DownloadRequest downloadRequest = new DownloadRequest(imageUri, configuration);
+		downloadRequest.setName(imageUri.toString());
+		downloadRequest.setScheme(scheme);
+		if(downloadListener != null)downloadListener.onStart();
 		downloadRequest.setDownloadListener(downloadListener);
+		if(downloadOptions == null){
+			if(defaultDownloadOptions == null){
+				defaultDownloadOptions = new DownloadOptions();
+			}
+			downloadOptions = defaultDownloadOptions;
+		}
 		downloadRequest.setDownloadOptions(downloadOptions);
 		
 		//执行请求
-		getConfiguration().getRequestExecutor().execute(downloadRequest);
+		configuration.getRequestExecutor().execute(downloadRequest);
 	}
 
     /**
      * 下载
-     * @param url 只支持HTTP
+     * @param imageUri 只支持HTTP和HTTPS
      * @param downloadOptionsName 下载选项的名称，你通过configuration.putOptions()方法放进去的DownloadOptions在这里指定一样的名称就可以直接使用
      * @param downloadListener 监听下载过程
      */
-    public void download(String url, Enum<?> downloadOptionsName, DownloadListener downloadListener){
-        download(url, (DownloadOptions) configuration.getOptions(downloadOptionsName), downloadListener);
+    public void download(String imageUri, Enum<?> downloadOptionsName, DownloadListener downloadListener){
+        download(imageUri, (DownloadOptions) configuration.getOptions(downloadOptionsName), downloadListener);
     }
+
 
     /**
      * 下载
-     * @param url 只支持HTTP
+     * @param imageUri 只支持HTTP和HTTPS
      * @param downloadListener 监听下载过程
      */
-    public void download(String url, DownloadListener downloadListener){
-        download(url, defaultDownloadOptions, downloadListener);
+    public void download(String imageUri, DownloadListener downloadListener){
+        download(imageUri, defaultDownloadOptions, downloadListener);
     }
 
+    
     /**
      * 加载
      * @param imageUri 支持以下5种Uri
@@ -125,22 +139,35 @@ public class ImageLoader{
      * @param loadListener 监听加载过程
      */
 	public void load(String imageUri, LoadOptions loadOptions, LoadListener loadListener){
-        //初始化参数
-        if(ImageLoaderUtils.isEmpty(imageUri)) throw new IllegalArgumentException("uri不能为null或空");
+		// 验证参数的合法性
+		if(ImageLoaderUtils.isEmpty(imageUri)){
+			new NullPointerException("imageUri不能为null或空").printStackTrace();
+			if(loadListener != null) loadListener.onFailure();
+            return;
+		}
+
+        // 过滤掉未知协议的URI
+        Scheme scheme = Scheme.valueOfUri(imageUri);
+        if(scheme == Scheme.UNKNOWN){
+            if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuilder(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).toString());
+            if(loadListener != null) loadListener.onFailure();
+            return;
+        }
+        
+        //初始化请求
+        LoadRequest loadRequest = new LoadRequest(imageUri, configuration);
+        loadRequest.setName(imageUri.toString());
+        loadRequest.setScheme(scheme);
         if(loadListener != null) loadListener.onStart();
+        loadRequest.setLoadListener(loadListener);
         if(loadOptions == null){
         	if(defaultLoadOptions == null){
         		defaultLoadOptions = new LoadOptions();
         	}
         	loadOptions = defaultLoadOptions;
         }
-
-        //初始化请求
-        LoadRequest loadRequest = new LoadRequest(imageUri, configuration);
-        loadRequest.setName(imageUri);
-        loadRequest.setLoadListener(loadListener);
         loadRequest.setLoadOptions(loadOptions);
-        loadRequest.setDecodeSize(loadOptions.getMaxSize());
+        loadRequest.setDecodeMaxSize(loadOptions.getDecodeMaxSize());
         loadRequest.setProcessSize(loadOptions.getProcessSize());
 
         //执行请求
@@ -177,7 +204,67 @@ public class ImageLoader{
     public void load(String imageUri, LoadListener loadListener){
         load(imageUri, defaultLoadOptions, loadListener);
     }
+    
+    /**
+     * 加载
+     * @param imageFile 图片文件
+     * @param loadOptions 配置缓存、失败重试、最大尺寸以及处理器
+     * @param loadListener 监听加载过程
+     */
+	public void load(File imageFile, LoadOptions loadOptions, LoadListener loadListener){
+        load(Scheme.FILE.createUri(imageFile.getPath()), loadOptions, loadListener);
+	}
 
+    /**
+     * 加载
+     * @param imageFile 图片文件
+     * @param loadOptionsName 加载选项的名称，你通过configuration.putOptions()方法放进去的LoadOptions在这里指定一样的名称就可以直接使用
+     * @param loadListener 监听加载过程
+     */
+    public void load(File imageFile, Enum<?> loadOptionsName, LoadListener loadListener){
+        load(Scheme.FILE.createUri(imageFile.getPath()), (LoadOptions) configuration.getOptions(loadOptionsName), loadListener);
+    }
+
+    /**
+     * 加载
+     * @param imageFile 图片文件
+     * @param loadListener 监听加载过程
+     */
+    public void load(File imageFile, LoadListener loadListener){
+        load(Scheme.FILE.createUri(imageFile.getPath()), defaultLoadOptions, loadListener);
+    }
+    
+    
+    /**
+     * 加载
+     * @param imageResId 图片资源ID
+     * @param loadOptions 配置缓存、失败重试、最大尺寸以及处理器
+     * @param loadListener 监听加载过程
+     */
+	public void load(int imageResId, LoadOptions loadOptions, LoadListener loadListener){
+        load(Scheme.DRAWABLE.createUri(String.valueOf(imageResId)), loadOptions, loadListener);
+	}
+
+    /**
+     * 加载
+     * @param imageResId 图片资源ID
+     * @param loadOptionsName 加载选项的名称，你通过configuration.putOptions()方法放进去的LoadOptions在这里指定一样的名称就可以直接使用
+     * @param loadListener 监听加载过程
+     */
+    public void load(int imageResId, Enum<?> loadOptionsName, LoadListener loadListener){
+        load(Scheme.DRAWABLE.createUri(String.valueOf(imageResId)), (LoadOptions) configuration.getOptions(loadOptionsName), loadListener);
+    }
+
+    /**
+     * 加载
+     * @param imageResId 图片资源ID
+     * @param loadListener 监听加载过程
+     */
+    public void load(int imageResId, LoadListener loadListener){
+        load(Scheme.DRAWABLE.createUri(String.valueOf(imageResId)), defaultLoadOptions, loadListener);
+    }
+
+    
     /**
      * 显示图片
      * @param imageUri 图片Uri，支持以下5种Uri
@@ -192,48 +279,58 @@ public class ImageLoader{
      * @param displayListener 显示监听器
      */
     public void display(String imageUri, ImageView imageView, DisplayOptions displayOptions, DisplayListener displayListener){
-        //初始化参数
-        if(imageView == null) throw new IllegalArgumentException("imageView不能为null");
-        if(displayListener != null) displayListener.onStart();
-        if(displayOptions == null){
-        	if(defaultDisplayOptions == null){
-        		defaultDisplayOptions = new DisplayOptions(configuration.getContext());
-        	}
-        	displayOptions = defaultDisplayOptions;
-        }
+    	// 过滤掉为null的ImageView
+		if(imageView == null){
+			new NullPointerException("imageView不能为null").printStackTrace();
+			if(displayListener != null) displayListener.onFailure();
+            return;
+		}
 
-        //过滤掉空的URI
+		// 防止DisplayOptions为null
+		if(displayOptions == null){
+			if(defaultDisplayOptions == null){
+				defaultDisplayOptions = new DisplayOptions(configuration.getContext());
+			}
+			displayOptions = defaultDisplayOptions;
+		}
+    	
+    	// 过滤掉为空的URI
         if(ImageLoaderUtils.isEmpty(imageUri)){
+        	imageView.clearAnimation();
             imageView.setImageDrawable(displayOptions.getEmptyUriDrawable());
-            if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuilder(LOG_TAG).append("：").append("uri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
+            if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuilder(LOG_TAG).append("：").append("imageUri不能为null或空").append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
             if(displayListener != null) displayListener.onFailure();
             return;
         }
 
-        //过滤掉未知协议的URI
-        Scheme scheme = Scheme.ofUri(imageUri);
+        // 过滤掉未知协议的URI
+        Scheme scheme = Scheme.valueOfUri(imageUri);
         if(scheme == Scheme.UNKNOWN){
+        	imageView.clearAnimation();
             imageView.setImageDrawable(displayOptions.getLoadFailDrawable());
             if(configuration.isDebugMode()) Log.e(ImageLoader.LOG_TAG, new StringBuilder(LOG_TAG).append("：").append("未知的协议格式").append("URI").append("=").append(imageUri).append("；").append("ImageViewCode").append("=").append(imageView.hashCode()).toString());
             if(displayListener != null) displayListener.onFailure();
             return;
         }
+        
+        if(displayListener != null) displayListener.onStart();
 
         // 计算解码尺寸和处理尺寸
-        ImageSize decodeSize = ImageSize.createDecodeSize(imageView, displayOptions.getMaxSize());
+        ImageSize decodeMaxSize = ImageSize.createDecodeSize(imageView, displayOptions.getDecodeMaxSize());
         ImageSize processSize = ImageSize.createProcessSize(imageView, displayOptions.getProcessSize());
         
         //创建请求
-        String requestId = DisplayRequest.createId(ImageLoaderUtils.encodeUrl(imageUri), decodeSize, processSize, displayOptions.getProcessor());
+        String requestId = DisplayRequest.createId(ImageLoaderUtils.encodeUrl(imageUri.toString()), decodeMaxSize, processSize, displayOptions.getProcessor());
         DisplayRequest displayRequest = new DisplayRequest(requestId, imageUri, configuration);
 
         //尝试显示
         if(displayOptions.isEnableMemoryCache()){
             BitmapDrawable cacheDrawable = configuration.getMemoryCache().get(displayRequest.getId());
             if(cacheDrawable != null){
+            	imageView.clearAnimation();
                 imageView.setImageDrawable(cacheDrawable);
                 if(displayListener != null){
-                    displayListener.onComplete(imageUri, imageView, cacheDrawable);
+                    displayListener.onSuccess(imageUri, imageView, cacheDrawable);
                 }
                 return;
             }
@@ -246,8 +343,9 @@ public class ImageLoader{
         }
 
         //初始化请求
-        displayRequest.setName(imageUri);
-        displayRequest.setDecodeSize(decodeSize);
+        displayRequest.setName(imageUri.toString());
+        displayRequest.setScheme(scheme);
+        displayRequest.setDecodeMaxSize(decodeMaxSize);
         displayRequest.setProcessSize(processSize);
         displayRequest.setDisplayOptions(displayOptions);
         displayRequest.setImageViewHolder(new ImageViewHolder(imageView));
@@ -255,6 +353,7 @@ public class ImageLoader{
 
         //显示默认图片
         BitmapDrawable loadingBitmapDrawable = displayRequest.getDisplayOptions().getLoadingDrawable();
+    	imageView.clearAnimation();
         imageView.setImageDrawable(new AsyncDrawable(configuration.getContext().getResources(), loadingBitmapDrawable != null?loadingBitmapDrawable.getBitmap():null, displayRequest));
 
         //执行请求
@@ -276,22 +375,6 @@ public class ImageLoader{
      */
     public void display(String imageUri, ImageView imageView, Enum<?> displayOptionsName, DisplayListener displayListener){
         display(imageUri, imageView, (DisplayOptions) configuration.getOptions(displayOptionsName), displayListener);
-    }
-
-    /**
-     * 显示图片
-     * @param imageUri 图片Uri，支持以下5种Uri
-     * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
-     * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
-     * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
-     * <br>String imageUri = "assets://image.png"; // from assets
-     * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     * </blockquote>
-     * @param imageView 显示图片的视图
-     * @param displayListener 显示监听器
-     */
-    public void display(String imageUri, ImageView imageView, DisplayListener displayListener){
-        display(imageUri, imageView, defaultDisplayOptions, displayListener);
     }
 
     /**
@@ -338,11 +421,28 @@ public class ImageLoader{
      * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      * </blockquote>
      * @param imageView 显示图片的视图
+     * @param displayListener 显示监听器
+     */
+    public void display(String imageUri, ImageView imageView, DisplayListener displayListener){
+        display(imageUri, imageView, defaultDisplayOptions, displayListener);
+    }
+
+    /**
+     * 显示图片
+     * @param imageUri 图片Uri，支持以下5种Uri
+     * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
+     * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
+     * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
+     * <br>String imageUri = "assets://image.png"; // from assets
+     * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+     * </blockquote>
+     * @param imageView 显示图片的视图
      */
     public void display(String imageUri, ImageView imageView){
         display(imageUri, imageView, defaultDisplayOptions, null);
     }
 
+    
     /**
      * 显示图片
      * @param imageFile 图片文件
@@ -351,7 +451,7 @@ public class ImageLoader{
      * @param displayListener 显示监听器
      */
     public void display(File imageFile, ImageView imageView, DisplayOptions displayOptions, DisplayListener displayListener){
-        display(Uri.fromFile(imageFile).toString(), imageView, displayOptions, displayListener);
+        display(Scheme.FILE.createUri(imageFile.getPath()), imageView, displayOptions, displayListener);
     }
 
     /**
@@ -362,17 +462,7 @@ public class ImageLoader{
      * @param displayListener 显示监听器
      */
     public void display(File imageFile, ImageView imageView, Enum<?> displayOptionsName, DisplayListener displayListener){
-        display(Uri.fromFile(imageFile).toString(), imageView, (DisplayOptions) configuration.getOptions(displayOptionsName), displayListener);
-    }
-
-    /**
-     * 显示图片
-     * @param imageFile 图片文件
-     * @param imageView 显示图片的视图
-     * @param displayListener 显示监听器
-     */
-    public void display(File imageFile, ImageView imageView, DisplayListener displayListener){
-        display(Uri.fromFile(imageFile).toString(), imageView, defaultDisplayOptions, displayListener);
+        display(Scheme.FILE.createUri(imageFile.getPath()), imageView, (DisplayOptions) configuration.getOptions(displayOptionsName), displayListener);
     }
 
     /**
@@ -382,7 +472,7 @@ public class ImageLoader{
      * @param displayOptions 显示选项
      */
     public void display(File imageFile, ImageView imageView, DisplayOptions displayOptions){
-        display(Uri.fromFile(imageFile).toString(), imageView, displayOptions, null);
+        display(Scheme.FILE.createUri(imageFile.getPath()), imageView, displayOptions, null);
     }
 
     /**
@@ -392,7 +482,17 @@ public class ImageLoader{
      * @param displayOptionsName 显示选项的名称，你通过configuration.putOptions()方法放进去的DisplayOptions在这里指定一样的名称就可以直接使用
      */
     public void display(File imageFile, ImageView imageView, Enum<?> displayOptionsName){
-        display(Uri.fromFile(imageFile).toString(), imageView, (DisplayOptions) configuration.getOptions(displayOptionsName), null);
+        display(Scheme.FILE.createUri(imageFile.getPath()), imageView, (DisplayOptions) configuration.getOptions(displayOptionsName), null);
+    }
+
+    /**
+     * 显示图片
+     * @param imageFile 图片文件
+     * @param imageView 显示图片的视图
+     * @param displayListener 显示监听器
+     */
+    public void display(File imageFile, ImageView imageView, DisplayListener displayListener){
+        display(Scheme.FILE.createUri(imageFile.getPath()), imageView, defaultDisplayOptions, displayListener);
     }
 
     /**
@@ -401,9 +501,72 @@ public class ImageLoader{
      * @param imageView 显示图片的视图
      */
     public void display(File imageFile, ImageView imageView){
-        display(Uri.fromFile(imageFile).toString(), imageView, defaultDisplayOptions, null);
+        display(Scheme.FILE.createUri(imageFile.getPath()), imageView, defaultDisplayOptions, null);
+    }
+
+    
+    /**
+     * 显示图片
+     * @param imageResId 图片资源ID
+     * @param imageView 显示图片的视图
+     * @param displayOptions 显示选项
+     * @param displayListener 显示监听器
+     */
+    public void display(int imageResId, ImageView imageView, DisplayOptions displayOptions, DisplayListener displayListener){
+        display(Scheme.DRAWABLE.createUri(String.valueOf(imageResId)), imageView, displayOptions, displayListener);
+    }
+
+    /**
+     * 显示图片
+     * @param imageResId 图片资源ID
+     * @param imageView 显示图片的视图
+     * @param displayOptionsName 显示选项的名称，你通过configuration.putOptions()方法放进去的DisplayOptions在这里指定一样的名称就可以直接使用
+     * @param displayListener 显示监听器
+     */
+    public void display(int imageResId, ImageView imageView, Enum<?> displayOptionsName, DisplayListener displayListener){
+        display(Scheme.DRAWABLE.createUri(String.valueOf(imageResId)), imageView, (DisplayOptions) configuration.getOptions(displayOptionsName), displayListener);
+    }
+
+    /**
+     * 显示图片
+     * @param imageResId 图片资源ID
+     * @param imageView 显示图片的视图
+     * @param displayOptions 显示选项
+     */
+    public void display(int imageResId, ImageView imageView, DisplayOptions displayOptions){
+        display(Scheme.DRAWABLE.createUri(String.valueOf(imageResId)), imageView, displayOptions, null);
+    }
+
+    /**
+     * 显示图片
+     * @param imageResId 图片资源ID
+     * @param imageView 显示图片的视图
+     * @param displayOptionsName 显示选项的名称，你通过configuration.putOptions()方法放进去的DisplayOptions在这里指定一样的名称就可以直接使用
+     */
+    public void display(int imageResId, ImageView imageView, Enum<?> displayOptionsName){
+        display(Scheme.DRAWABLE.createUri(String.valueOf(imageResId)), imageView, (DisplayOptions) configuration.getOptions(displayOptionsName), null);
+    }
+
+    /**
+     * 显示图片
+     * @param imageResId 图片资源ID
+     * @param imageView 显示图片的视图
+     * @param displayListener 显示监听器
+     */
+    public void display(int imageResId, ImageView imageView, DisplayListener displayListener){
+        display(Scheme.DRAWABLE.createUri(String.valueOf(imageResId)), imageView, defaultDisplayOptions, displayListener);
+    }
+
+    /**
+     * 显示图片
+     * @param imageResId 图片资源ID
+     * @param imageView 显示图片的视图
+     */
+    public void display(int imageResId, ImageView imageView){
+        display(Scheme.DRAWABLE.createUri(String.valueOf(imageResId)), imageView, defaultDisplayOptions, null);
     }
 	
+    
 	/**
 	 * 获取配置
 	 * @return ImageLoader配置
@@ -481,4 +644,4 @@ public class ImageLoader{
         }
         return cancelled;
     }
-} 
+}

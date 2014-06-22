@@ -46,7 +46,7 @@ public class DisplayOptions extends LoadOptions {
 		this.loadingDrawableHolder = new DrawableHolder();
 		this.loadFailDrawableHolder = new DrawableHolder();
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        super.setMaxSize(new ImageSize(displayMetrics.widthPixels, displayMetrics.heightPixels));
+        super.setDecodeMaxSize(new ImageSize(displayMetrics.widthPixels, displayMetrics.heightPixels));
 	}
 
 	/**
@@ -220,8 +220,8 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setMaxSize(ImageSize maxSize) {
-        super.setMaxSize(maxSize);
+    public DisplayOptions setDecodeMaxSize(ImageSize maxSize) {
+        super.setDecodeMaxSize(maxSize);
         return this;
     }
 
@@ -291,7 +291,7 @@ public class DisplayOptions extends LoadOptions {
             .setEnableProgressCallback(true)
 
             .setScaleType(getScaleType())
-            .setMaxSize(getMaxSize() != null ? getMaxSize().copy() : null)
+            .setDecodeMaxSize(getDecodeMaxSize() != null ? getDecodeMaxSize().copy() : null)
             .setProcessSize(getProcessSize() != null?getProcessSize().copy():null)
             .setProcessor(getProcessor() != null ? getProcessor().copy() : null)
 

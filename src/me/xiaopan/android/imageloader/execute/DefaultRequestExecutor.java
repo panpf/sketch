@@ -108,8 +108,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
 	 * @param loadRequest 记载请求
 	 */
 	private void executeLoadRequest(LoadRequest loadRequest){
-		Scheme scheme = Scheme.ofUri(loadRequest.getUri());
-		switch(scheme){
+		switch(loadRequest.getScheme()){
 			case HTTP :
 			case HTTPS : 
 				File cacheFile = loadRequest.getConfiguration().getDiskCache().createFile(loadRequest);
@@ -134,32 +133,32 @@ public class DefaultRequestExecutor implements RequestExecutor {
                 }
 				break;
 			case FILE :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new FileDecodeListener(new File(Scheme.FILE.crop(loadRequest.getUri())), loadRequest))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new FileDecodeListener(new File(Scheme.FILE.crop(loadRequest.getImageUri())), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("LOAD - FILE").append("；").append(loadRequest.getName()).toString());
                 }
 				break;
 			case ASSETS :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new AssetsDecodeListener(Scheme.ASSETS.crop(loadRequest.getUri()), loadRequest))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new AssetsDecodeListener(Scheme.ASSETS.crop(loadRequest.getImageUri()), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("LOAD - ASSETS").append("；").append(loadRequest.getName()).toString());
                 }
 				break;
 			case CONTENT :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ContentDecodeListener(loadRequest.getUri(), loadRequest))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new ContentDecodeListener(loadRequest.getImageUri(), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("LOAD - CONTENT").append("；").append(loadRequest.getName()).toString());
                 }
 				break;
 			case DRAWABLE :
-                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new DrawableDecodeListener(Scheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest))));
+                localTaskExecutor.execute(new BitmapLoadTask(loadRequest, new BitmapLoadCallable(loadRequest, new DrawableDecodeListener(Scheme.DRAWABLE.crop(loadRequest.getImageUri()), loadRequest))));
                 if(loadRequest.getConfiguration().isDebugMode()){
                     Log.d(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("LOAD - DRAWABLE").append("；").append(loadRequest.getName()).toString());
                 }
                 break;
 			default:
                 if(loadRequest.getConfiguration().isDebugMode()){
-                    Log.e(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("LOAD - 未知的协议格式").append("：").append(loadRequest.getUri()).toString());
+                    Log.e(ImageLoader.LOG_TAG, new StringBuilder(NAME).append("：").append("LOAD - 未知的协议格式").append("：").append(loadRequest.getImageUri()).toString());
                 }
 				break;
 		}

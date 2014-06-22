@@ -1,6 +1,6 @@
 # ![Logo](https://github.com/xiaopansky/HappyImageLoader/raw/master/res/drawable-mdpi/ic_launcher.png) HappyImageLoader
 
-HappyImageLoader是Android上的一个图片加载类库，主要用于从本地或网络读取图片，然后处理并显示在ImageView上，最低兼容Android2.2
+HappyImageLoader是Android上的一个图片加载类库，主要用于从本地或网络读取图片，然后处理并显示在ImageView上
 
 ![sample](https://github.com/xiaopansky/HappyImageLoader/raw/master/docs/sample.jpg)
 
@@ -16,45 +16,62 @@ HappyImageLoader是Android上的一个图片加载类库，主要用于从本地
 
 >* 重复下载过滤。如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
 
-## Sample Application
-**[Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)**
+## Sample App
+>* [Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)
+>* [Download APK](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/HappyImageLoader-2.3.4.apk)
 
-**[Download it on Github](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/HappyImageLoader-2.3.4.apk)**
+##Usage Guide
 
-##Usage
+### Sample
+In activity
+```java
+@Override
+protected void onCreate(Bundle savedInstanceState) {
+	ImageView imageView = new ImageView(getBaseContext());
+	setContentView(imageView);
+	ImageLoader.getInstance(getBaseContext()).display("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg", imageView);
+}
+```
 
+In Adapter
+```java
+@Override
+public View getView(int position, View convertView, ViewGroup parent) {
+	final ViewHolder viewHolder;
+	if(convertView == null){
+		viewHolder = new ViewHolder();
+		convertView = LayoutInflater.from(context).inflate(R.layout.grid_item_image, null);
+		viewHolder.image = (ImageView) convertView.findViewById(R.id.image_gridItem);
+		convertView.setTag(viewHolder);
+	}else{
+		viewHolder = (ViewHolder) convertView.getTag();
+	}
+	
+	ImageLoader.getInstance(context).display(imageUris[position], viewHolder.image);
+	return convertView;
+}
+```
+
+###Advanced
 ImageLodaer有三个最主要的方法
 >* download() 下载图片，此方法仅仅实现将图片下载到本地
->* load() 加载图片，此方法在将图片下载到本地之后会将图片加载到内存，并使用BitmapProcessor来处理图片
->* display() 显示图片，实现了包括下载、加载以及显示。此方法在将图片加载到内存之后，会将图片放到内存缓存中，并使用BitmapDisplayer来显示图片
+>* load() 加载图片，此方法在将图片下载到本地之后会将图片加载到内存
+>* display() 显示图片，此方法在将图片下载并加载到内存之后，会将图片放到内存缓存中，然后显示在ImageView上
+
+你可以根据你的需求选择不同的方法来处理图片
 
 以下将重点介绍display()方法的使用，在看完之后关于load()和download()方法的使用你将无师自通。
 
-###1.定义显示选项
-```java
-DisplayOptions displayOptions = new DisplayOptions(getBaseContext());
-displayOptions.setLoadingDrawable(R.drawable.image_displaying); //设置默认图片
-displayOptions.setLoadFailDrawable(R.drawable.image_failure);   //设置加载失败时显示的图片
-```
-
-###2.调用display()方法显示图片
-你可以在任何地方调用以下代码来显示图片
-```java
-ImageLoader.getInstance(getBaseContext()).display("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg", findViewById(R.id.image_main), displayOptions);
-```
-不管你是在Adapter的getView()中使用了ViewHolder还是在Activity的onCrate()中调用都不会显示混乱。
-
-##Advanced
-
-###1.URI类型
-URI支持以下五种类型
+####1.URI类型
+支持以下六种URI类型
 >* "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
+>* "https://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
 >* "file:///mnt/sdcard/image.png"; // from SD card
 >* "content://media/external/audio/albumart/13"; // from content provider
 >* "assets://image.png"; // from assets
 >* "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
 
-###2.配置ImageLodaer
+####2.配置ImageLodaer
 ```java
 ImageLoader.getInstance(getBaseContext()).getConfiguration()
 	.setBitmapDecoder(new DefaultBitmapDecoder())  // 设置Bitmap解码器
@@ -65,7 +82,7 @@ ImageLoader.getInstance(getBaseContext()).getConfiguration()
 	.setRequestExecutor(new DefaultRequestExecutor());  // 设置请求执行器
 ```
 
-###3.配置DisplayOptions
+####3.使用DisplayOptions自定义显示选项
 ```java
 DisplayOptions displayOptions = new DisplayOptions(getBaseContext())
 .setEmptyUriDrawable(R.drawable.image_failure)    //设置当uri为空时显示的图片
@@ -75,22 +92,28 @@ DisplayOptions displayOptions = new DisplayOptions(getBaseContext())
 .setEnableDiskCache(true)	//开启硬盘缓存，开启后会先将图片下载到本地，然后再加载到内存中
 .setEnableProgressCallback(true) // 开启进度回调功能
 .setDiskCachePeriodOfValidity(1000 * 60 * 60 * 24)	//设置硬盘缓存有效期为24小时，24小时过后将重新下载图片
- displayMetrics = getBaseContext().getResources().getDisplayMetrics()
-.setMaxSize(new ImageSize(displayMetrics.widthPixels, displayMetrics.heightPixels))	//设置加载到内存中的图片的最大尺寸，如果原图的尺寸大于最大尺寸，在读取的时候就会缩小至合适的尺寸再读取
+.setDecodeMaxSize(new ImageSize(720, 1280))	// 设置解码最大尺寸，在解码图片的时候会根据DecodeMaxSize来计算inSampleSize，防止加载到内存中的图片的尺寸过大，默认值为当前设备屏幕的尺寸
+.setProcessSize(new ImageSize(400, 400))   // 设置处理尺寸，你可以通过此参数并配合BitmapProcessor指定最终显示到ImageView上的Bitmap的尺寸，一般情况下使用display()方法的时候不需要设置此参数，因为display()方法会根据ImageView的宽高来自动计算出一个合适的ProcessSize，前提条件是你需要在布局中明确指定ImageView的宽高，不能用match_parent或wrap_content
 .setMaxRetryCount(2)	//设置最大重试次数，当连接超时时会再次尝试下载
 .setProcessor(new ReflectionBitmapProcessor())	//设置Bitmap处理器，当图片从本地读取内存中后会使用BitmapProcessor将图片处理一下，你可以通过BitmapProcessor将图片处理成任何你想要的效果
-.setDisplayer(new FadeInBitmapDisplayer())	//设置图片显示器，在处理完图片之后会调用BitmapDisplayer来显示图片，你可以通过BitmapDisplayer自定义任何你想要的方式来显示图片
+.setDisplayer(new ZoomInBitmapDisplayer())	//设置图片显示器，在处理完图片之后会调用BitmapDisplayer来显示图片，你可以通过BitmapDisplayer自定义任何你想要的方式来显示图片
 .setProcessLoadingDrawable(false)    //设置不使用BitmapProcessor处理加载中图片
 .setProcessLoadFailDrawable(false)   //设置不使用BitmapProcessor处理加载失败图片
 .setProcessEmptyUriDrawable(false);  //设置不使用BitmapProcessor处理URI为空图片
 ```
+
+配置好后调用display()方法的时候传进去即可，例如：
+```java
+ImageLoader.getInstance(getBaseContext()).display("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg", imageView, displayOptions);
+```
+
 DisplayOptions默认的配置是：
 >* 开启内存缓存和硬盘缓存
->* 图片最大尺寸为当前设备屏幕的尺寸
->* 图片显示器为FadeInBitmapDisplayer（渐入效果）
+>* DecodeMaxSize为当前设备屏幕的尺寸
+>* Displayer为DefaultBitmapDisplayer（无任何动画效果效果）
 >* 最大重试次数为2
 
-###4.利用Configuration().putOptions()来管理多个DisplayOptions
+####4.利用Configuration().putOptions()来管理多个DisplayOptions
 当你有多个DisplayOptions的时候你要怎么去管理并方便的使用呢？别担心我已经为你提供了一个绝对可行的解决方案。
 
 首先你需要定义一个枚举类来作为Options的标签，如下：
@@ -142,38 +165,46 @@ ImageLoader.getInstance(context).display(imageUrls[position], viewHolder.image, 
 ```
 注意：如果无法从Configuration中获取DisplayOptions的话ImageLoader就会创建一个默认的DisplayOptions。
 
-###5.RequestExecutor（请求执行器）
+####5.RequestExecutor（请求执行器）
 RequestExecutor是用来执行请求的，默认的实现是DefaultRequestExecutor，其包含三个线程池
 >* 网络任务线程池：主要用来执行比较耗时的下载任务，核心线程数``5``个，最大线程数``10``；
 >* 本地任务线程池：用来执行本地任务，例如assets、drawable、缓存图片等。核心线程数``1``个，最大线程数也是``1``个，这样一来本地任务可以一个一个加载；
 >* 任务调度线程池：用来分发请求，其核心作用在于判断请求该放到网络任务线程池执行还是该放到本地任务线程池执行。核心线程数``1``个，最大线程数也是``1``个。
 
 三种线程池的任务队列都是长度为20的有界队列，这样可以保证能够及时加载最新的任务。
+你可以通过DefaultRequestExecutor的构造函数指定新的任务调度执行器、网络任务执行器、本地任务执行器来达到自定义的目的，详情请参考DefaultRequestExecutor的源码
 
-###6.DiskCache（磁盘缓存器）
+####6.DiskCache（磁盘缓存器）
 DiskCache用来将图片缓存在本地磁盘上，方便下次读取。特点是可以设置最大容量并自动清除不活跃的缓存文件，默认提供了LruDiskCache实现。
 
-###7.MemoryCache（内存缓存器）
+你可以通过DiskCache的setDir(File)方法来自定义缓存目录
+
+####7.MemoryCache（内存缓存器）
 MemoryCache用来在内存中缓存Bitmap，默认提供了以下两种实现供选择（默认采用的是LruMemoryCache）：
 >* LruMemoryCache：内存缓存部分采用LRU（近期最少使用）算法来缓存Bimtap；
 >* SoftReferenceMemoryCache：内存缓存部分采用软引用的方式来缓存Bitmap，由于从Android4.0起虚拟机将变得异常活跃，所以此种缓存方法已经失去了其应有的作用，所以不建议使用。
 
-###8.BitmapDecoder（图片解码器）
+你可以通过LruMemoryCache的构造函数实现自定义内存缓存最大容量，默认为可用内存的八分之一
+
+####8.BitmapDecoder（图片解码器）
 BitmapDecoder是用来解码Bitmap的，默认的实现是DefaultBitmapDecoder。
 
-###9.BitmapProcessor（图片处理器）
-BitmapProcessor是用来在BitmapDecoder解码完图片之后在对图片进行处理的，因此你可以利用BitmapProcessor将图片处理成任何你想要的效果。ImageLoader默认提供了三种BitmapProcessor供你使用：
+####9.BitmapProcessor（图片处理器）
+BitmapProcessor是用来在BitmapDecoder解码完图片之后在对图片进行处理的，因此你可以利用BitmapProcessor将图片处理成任何你想要的效果。ImageLoader默认提供了四种BitmapProcessor供你使用：
 >* TailorBitmapProcessor：图片裁剪处理器，可以将图片按照ProcessSize的尺寸进行裁剪
 >* CircleBitmapProcessor：圆形图片处理器，可以将图片处理成圆形的，如示例图所示；
 >* ReflectionBitmapProcessor：倒影图片处理器，可以将图片处理成倒影效果的，如示例图所示。另外倒影的高度以及倒影的距离都可以通过构造函数来自定义；
 >* RoundedCornerBitmapProcessor：圆角图片处理器，可以将图片处理成圆角的，如示例图所示。另外圆角的半径可以通过构造函数来自定义
 
+以上几种BitmapProcessor都会使用ProcessSize作为新创建的Bitmap的尺寸
+
 如果你想自定义的话只需实现BitmapProcessor接口，然后调用Options.setBitmapProcessor(BitmapProcessor processor)应用即可，另外有几点需要注意：
 >* BitmapProcessor接口有一个叫getTag()的方法，此方法的目的是获取一个能够标识当前BitmapProcessor的字符串用来组装图片的缓存ID。如果本地同一张图片使用不同的BitmapProcessor处理的话，最后的效果是不一样的，那么在内存中的缓存ID就不能一样，所以你要保证getTag()方法返回的字符串一定是独一无二的；
 >* 通过BitmapProcessor的process()方法传进去的Bitmap在你处理完之后你无需释放它，ImageLoader会去处理的；
 >* 在处理的过程中如果你多次创建了新的Bitmap，那么在你用完之后一定要记得释放。
+>* 如果processSize不为null，那么你新创建的Bitmap的尺寸一定要跟processSize一致
 
-###10.BitmapDisplayer（图片显示器）
+####10.BitmapDisplayer（图片显示器）
 BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer来以不同的动画来显示图片，默认提供以下三种（默认采用的是DefaultBitmapDisplayer）：
 >* DefaultBitmapDisplayer： 默认的图片显示器，没有任何动画效果。
 >* ZoomInBitmapDisplayer：由小到大效果显示器，比例是0.5f到1.0f。
@@ -183,7 +214,7 @@ BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer�
 
 注意：请慎用过渡效果显示器，因为当两张图片的尺寸不一致，但其中一张的尺寸非常接近ImageView时，TransitionDrawable会依这张图片作为标准强行将另一张图片拉伸
 
-###11.Downloader（图片下载器）
+####11.Downloader（图片下载器）
 Downloader是用来下载图片的，默认的实现是LockDownloader。LockDownloader会根据下载地址加锁，防止重复下载
 
 ###你还可以参考示例程序来更加直观的了解使用方式
@@ -193,50 +224,52 @@ Downloader是用来下载图片的，默认的实现是LockDownloader。LockDown
 >* [android-happy-image-loader-2.4.0-with-src.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-happy-image-loader-2.4.0-with-src.jar)
 
 ##Change Log
-###2.4.0
+####2.4.0
 >* 默认的BitmapDisplayer不再采用FadeInBitmapDisplayer，而采用了新增的DefaultBitmapDisplayer
 >* FadeInBitmapDisplayer改名为OriginalFadeInBitmapDisplayer
+>* ZoomInBitmapDisplayer和ZoomOutBitmapDisplayer增加了几个构造函数，方便自定义缩放比例和插值器
 >* 新增DefaultBitmapDisplayer和ColorFadeInBitmapDisplayer
 >* 新增TailorBitmapProcessor
 >* LruMemoryCache增加LruMemoryCache(int maxSize)构造函数，方便自定义内存缓存容量
+>* download()、load()、display()都增加了多种重载函数，方便直接加载不同类型的图片
 
-###2.3.6
+####2.3.6
 >* 修复进度更新延迟很严重BUG
 >* 默认关闭进度更新功能，你可以通过Options.setEnableProgressCallback(true)方法开启
 
-###2.3.5
+####2.3.5
 >* 增加Downloader来管理图片下载，删除了HttpClientCreator
 >* 当请求已经取消时新的Downloader将不再读取数据，这么做是为了更快的处理新的请求
 >* 修复当同一个下载地址被多次请求时从第二个开始的请求可能会失败的BUG。原因是在第一个请求正在写入数据的过程中，第二个请求发起了，第二个请求检测到已经有了缓存文件，于是就去读取并解码。但实际上这时候的缓存文件是不完整的，所以就会解码失败。
 
-###2.3.4
+####2.3.4
 >* ImageLoader和DiskCache中增加``public File getCacheFileByUri(String uri)``方法，方便开发者将缓存图片用作它途
 
-###2.3.3
+####2.3.3
 >* ImageLoader类增加清除缓存的方法
 >* 当检查ContentType发现不是图片时抛出异常并在控制台打印，方便开发者发现问题
 >* HttpClient增加UserAgent，防止个别网站由于没有UserAgent而导致下载失败
 >* 优化默认提供的三种处理器的处理效果，特别是倒影处理器，当限制处理尺寸时，会截取原图中的一部分来绘制倒影图片，保证不会显示变形
 
-###2.3.2
+####2.3.2
 >* 当无需取消的时候更新其DisplayListener
 >* 优化网络部分，解决会偶尔解码失败的bug
 >* DisplayOptions增加设置是否使用BitmapProcessor处理默认图片的方法
 
-###2.3.1
+####2.3.1
 >* 本次更新主要是重命名一些方法和参数，以及补充一下注释，详情请参考示例代码
 
-###2.3.0
+####2.3.0
 >* 重新梳理代码处理逻辑
 >* 增加load()和download()方法
 >* 优化CircleBitmapProcessor和RoundedCornerBitmapProcessor处理逻辑
 >* 整体大升级，提高稳定性以及处理效率
 
-###2.2.1
+####2.2.1
 >* 更新版权信息
 >* 重命名SimpleBitmapDecoder为BaseBitmapDecoder
 
-###2.2.0
+####2.2.0
 >* 去掉初始化方法（init(Context)），不再需要初始化
 >* getInstance()方法增加Context参数，初始化的工作移到了这里
 

@@ -25,10 +25,10 @@ import android.widget.ImageView;
  * 加载请求
  */
 public class LoadRequest extends DownloadRequest{
-	private LoadListener loadListener;	// 监听器
-	private LoadOptions loadOptions;	// 显示选项
+    private ImageSize decodeMaxSize;	// 解码最大尺寸，用于在解码的时候计算inSampleSize
     private ImageSize processSize;	// 使用BitmapProcessor处理时的尺寸
-    private ImageSize decodeSize;	// 用于在解码的时候计算inSampleSize
+    private LoadListener loadListener;	// 监听器
+    private LoadOptions loadOptions;	// 显示选项
 	
 	public LoadRequest(String uri, Configuration configuration) {
 		super(uri, configuration);
@@ -73,7 +73,7 @@ public class LoadRequest extends DownloadRequest{
      * @return 缩放类型
      */
     public ImageView.ScaleType getScaleType() {
-        return loadOptions != null?loadOptions.getScaleType(): ImageView.ScaleType.CENTER_CROP;
+        return loadOptions != null?loadOptions.getScaleType(): ImageView.ScaleType.FIT_CENTER;
     }
 
     /**
@@ -93,17 +93,17 @@ public class LoadRequest extends DownloadRequest{
 	}
 
 	/**
-	 * 获取解码尺寸
+	 * 获取解码最大尺寸
 	 */
-	public ImageSize getDecodeSize() {
-		return decodeSize;
+	public ImageSize getDecodeMaxSize() {
+		return decodeMaxSize;
 	}
 
 	/**
-	 * 设置解码尺寸
-	 * @param decodeSize 解码尺寸，用于在解码的时候计算inSampleSize
+	 * 设置解码最大尺寸
+	 * @param decodeMaxSize 解码最大尺寸，用于在解码的时候计算inSampleSize
 	 */
-	public void setDecodeSize(ImageSize decodeSize) {
-		this.decodeSize = decodeSize;
+	public void setDecodeMaxSize(ImageSize decodeMaxSize) {
+		this.decodeMaxSize = decodeMaxSize;
 	}
 }

@@ -37,7 +37,7 @@ public class LruMemoryCache implements MemoryCache {
 	}
 	
 	public LruMemoryCache(){
-		bitmapLruCache = new BitmapLruCache((int) (Runtime.getRuntime().maxMemory()/8));
+		this((int) (Runtime.getRuntime().maxMemory()/8));
 	}
 	
 	@Override

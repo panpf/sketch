@@ -134,7 +134,7 @@ public class DownloadActivity extends Activity {
                     }
 
                     @Override
-                    public void onComplete(final byte[] data) {
+                    public void onSuccess(final byte[] data) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -145,7 +145,7 @@ public class DownloadActivity extends Activity {
                     }
 
                     @Override
-                    public void onComplete(final File cacheFile) {
+                    public void onSuccess(final File cacheFile) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {

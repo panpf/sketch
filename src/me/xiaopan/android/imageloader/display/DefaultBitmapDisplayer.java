@@ -27,6 +27,7 @@ public class DefaultBitmapDisplayer implements BitmapDisplayer {
 
 	@Override
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest) {
+    	imageView.clearAnimation();
 		imageView.setImageDrawable(bitmapDrawable);
 	}
 	

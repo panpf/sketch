@@ -237,11 +237,11 @@ public class LoadActivity extends Activity {
                     String maxWidthString = maxWidthEditText.getEditableText().toString().trim();
                     String maxHeightString = maxHeightEditText.getEditableText().toString().trim();
                     if (maxWidthString != null && !"".equals(maxWidthString) && maxHeightString != null && !"".equals(maxHeightString)) {
-                        loadOptions.setMaxSize(new ImageSize(Integer.valueOf(maxWidthString), Integer.valueOf(maxHeightString)));
+                        loadOptions.setDecodeMaxSize(new ImageSize(Integer.valueOf(maxWidthString), Integer.valueOf(maxHeightString)));
                     } else {
-                        loadOptions.setMaxSize(null);
+                        loadOptions.setDecodeMaxSize(null);
                     }
-                    loadOptions.setProcessSize(loadOptions.getMaxSize());
+                    loadOptions.setProcessSize(loadOptions.getDecodeMaxSize());
 
                     String text = periodOfValidityEdit.getEditableText().toString().trim();
                     if (text != null && !"".equals(text)) {
@@ -269,7 +269,7 @@ public class LoadActivity extends Activity {
                         }
 
                         @Override
-                        public void onComplete(final Bitmap bitmap) {
+                        public void onSuccess(final Bitmap bitmap) {
                             reload = false;
                             runOnUiThread(new Runnable() {
                                 @Override

@@ -41,7 +41,7 @@ public interface DisplayListener {
      * @param imageView 视图
      * @param drawable 图片
      */
-    public void onComplete(String uri, ImageView imageView, BitmapDrawable drawable);
+    public void onSuccess(String uri, ImageView imageView, BitmapDrawable drawable);
 
     /**
      * 加载失败

@@ -48,9 +48,9 @@ public class DownloadTask extends Task{
 			if(downloadRequest.getDownloadListener() != null){
 				if(result != null){
 					if(result.getClass().isAssignableFrom(File.class)){
-						downloadRequest.getDownloadListener().onComplete((File) result);
+						downloadRequest.getDownloadListener().onSuccess((File) result);
 					}else{
-						downloadRequest.getDownloadListener().onComplete((byte[]) result);
+						downloadRequest.getDownloadListener().onSuccess((byte[]) result);
 					}
 				}else{
 					downloadRequest.getDownloadListener().onFailure();

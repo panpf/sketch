@@ -53,9 +53,9 @@ public class CacheFileDecodeListener implements BitmapDecoder.DecodeListener {
         if(loadRequest.getConfiguration().isDebugMode()){
         	StringBuilder stringBuffer = new StringBuilder(NAME)
         	.append("；").append("解码成功");
-        	if(bitmap != null && loadRequest.getDecodeSize() != null){
+        	if(bitmap != null && loadRequest.getDecodeMaxSize() != null){
         		stringBuffer.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-        		stringBuffer.append("；").append("目标尺寸").append("=").append(loadRequest.getDecodeSize().getWidth()).append("x").append(loadRequest.getDecodeSize().getHeight());
+        		stringBuffer.append("；").append("目标尺寸").append("=").append(loadRequest.getDecodeMaxSize().getWidth()).append("x").append(loadRequest.getDecodeMaxSize().getHeight());
         		stringBuffer.append("；").append("缩放比例").append("=").append(inSampleSize);
         		stringBuffer.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
         	}else{
@@ -75,7 +75,7 @@ public class CacheFileDecodeListener implements BitmapDecoder.DecodeListener {
         	.append("；").append("已删除")
         	.append("；").append("文件地址").append("=").append(file.getPath())
         	.append("；").append("文件长度").append("=").append(file.length())
-        	.append("；").append("URI").append("=").append(loadRequest.getUri());
+        	.append("；").append("URI").append("=").append(loadRequest.getImageUri());
         	Log.e(ImageLoader.LOG_TAG, stringBuilder.toString());
         }
     }

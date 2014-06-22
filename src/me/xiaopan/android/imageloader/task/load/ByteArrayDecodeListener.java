@@ -42,9 +42,9 @@ public class ByteArrayDecodeListener implements BitmapDecoder.DecodeListener {
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
         StringBuilder stringBuffer = new StringBuilder(NAME)
         .append("；").append("解码成功");
-        if(bitmap != null && loadRequest.getDecodeSize() != null){
+        if(bitmap != null && loadRequest.getDecodeMaxSize() != null){
             stringBuffer.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-            stringBuffer.append("；").append("目标尺寸").append("=").append(loadRequest.getDecodeSize().getWidth()).append("x").append(loadRequest.getDecodeSize().getHeight());
+            stringBuffer.append("；").append("目标尺寸").append("=").append(loadRequest.getDecodeMaxSize().getWidth()).append("x").append(loadRequest.getDecodeMaxSize().getHeight());
             stringBuffer.append("；").append("缩放比例").append("=").append(inSampleSize);
             stringBuffer.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
         }else{

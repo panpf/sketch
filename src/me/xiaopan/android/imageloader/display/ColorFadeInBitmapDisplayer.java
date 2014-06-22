@@ -42,6 +42,7 @@ public class ColorFadeInBitmapDisplayer implements BitmapDisplayer {
 	@Override
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest) {
 		TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(color), bitmapDrawable});
+    	imageView.clearAnimation();
 		imageView.setImageDrawable(transitionDrawable);
 		transitionDrawable.setCrossFadeEnabled(true);
 		transitionDrawable.startTransition(duration);

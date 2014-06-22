@@ -43,7 +43,7 @@ public class BitmapLoadTask extends Task {
 
 			if(loadRequest.getLoadListener() != null){
 				if(bitmap != null && !bitmap.isRecycled()){
-					loadRequest.getLoadListener().onComplete(bitmap);
+					loadRequest.getLoadListener().onSuccess(bitmap);
 				}else{
 					loadRequest.getLoadListener().onFailure();
 				}

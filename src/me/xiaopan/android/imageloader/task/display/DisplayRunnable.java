@@ -38,7 +38,7 @@ public class DisplayRunnable implements Runnable {
 			displayRequest.getDisplayOptions().getDisplayer().display(imageView, bitmapDrawable, bitmapType, displayRequest);
 			if(displayRequest.getDisplayListener() != null){
 				if(bitmapType == BitmapType.SUCCESS){
-					displayRequest.getDisplayListener().onComplete(displayRequest.getUri(), imageView, bitmapDrawable);
+					displayRequest.getDisplayListener().onSuccess(displayRequest.getImageUri(), imageView, bitmapDrawable);
 				}else{ 
 					displayRequest.getDisplayListener().onFailure();
 				}

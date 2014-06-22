@@ -51,7 +51,7 @@ public class DisplayJoinLoadListener implements LoadListener {
     }
 
     @Override
-    public void onComplete(Bitmap bitmap) {
+    public void onSuccess(Bitmap bitmap) {
         //创建BitmapDrawable
         BitmapDrawable bitmapDrawable;
         if (ImageLoaderUtils.hasHoneycomb()) {

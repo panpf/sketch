@@ -16,6 +16,10 @@
 
 package me.xiaopan.android.imageloader.util;
 
+
+/**
+ * 支持的协议类型
+ */
 public enum Scheme {
 	HTTP("http"), HTTPS("https"), FILE("file"), CONTENT("content"), ASSETS("assets"), DRAWABLE("drawable"), UNKNOWN("");
 
@@ -26,14 +30,27 @@ public enum Scheme {
 		this.scheme = scheme;
 		uriPrefix = scheme + "://";
 	}
+	
+	public String getScheme() {
+		return scheme;
+	}
 
-	/**
-	 * Defines scheme of incoming URI
-	 * 
-	 * @param uri URI for scheme detection
-	 * @return Scheme of incoming URI
-	 */
-	public static Scheme ofUri(String uri) {
+	private boolean belongsTo(String uri) {
+		return uri.startsWith(uriPrefix);
+	}
+	
+	public String createUri(String content){
+		return new StringBuilder().append(uriPrefix).append(content).toString();
+	}
+
+	public String crop(String uri) {
+		if (!belongsTo(uri)) {
+			throw new IllegalArgumentException(String.format("URI [%1$s] doesn't have expected scheme [%2$s]", uri, scheme));
+		}
+		return uri.substring(uriPrefix.length());
+	}
+
+	public static Scheme valueOfUri(String uri) {
 		if (uri != null) {
 			for (Scheme s : values()) {
 				if (s.belongsTo(uri)) {
@@ -42,22 +59,5 @@ public enum Scheme {
 			}
 		}
 		return UNKNOWN;
-	}
-
-	private boolean belongsTo(String uri) {
-		return uri.startsWith(uriPrefix);
-	}
-
-	/** Appends scheme to incoming path */
-	public String wrap(String path) {
-		return uriPrefix + path;
-	}
-
-	/** Removed scheme part ("scheme://") from incoming URI */
-	public String crop(String uri) {
-		if (!belongsTo(uri)) {
-			throw new IllegalArgumentException(String.format("URI [%1$s] doesn't have expected scheme [%2$s]", uri, scheme));
-		}
-		return uri.substring(uriPrefix.length());
 	}
 }

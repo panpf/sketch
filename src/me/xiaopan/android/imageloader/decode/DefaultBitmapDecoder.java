@@ -44,8 +44,8 @@ public class DefaultBitmapDecoder implements BitmapDecoder{
         decodeListener.onDecode(options);
         if(options.outWidth > 0 && options.outHeight > 0){
         	originalSize = new Point(options.outWidth, options.outHeight);
-        	if(loadRequest.getDecodeSize() != null){
-        		options.inSampleSize = calculateInSampleSize(options, loadRequest.getDecodeSize().getWidth(), loadRequest.getDecodeSize().getHeight());
+        	if(loadRequest.getDecodeMaxSize() != null){
+        		options.inSampleSize = calculateInSampleSize(options, loadRequest.getDecodeMaxSize().getWidth(), loadRequest.getDecodeMaxSize().getHeight());
         	}
         	
         	//解码

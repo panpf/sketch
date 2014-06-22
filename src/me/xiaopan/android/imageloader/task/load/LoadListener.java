@@ -38,7 +38,7 @@ public interface LoadListener {
      * 加载完成
      * @param bitmap 图片
      */
-    public void onComplete(Bitmap bitmap);
+    public void onSuccess(Bitmap bitmap);
 
     /**
      * 加载失败

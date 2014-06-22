@@ -118,7 +118,7 @@ public class LruDiskCache implements DiskCache {
 			return null;
 		}
 
-		File cacheFile = getCacheFileByUri(request.getUri());
+		File cacheFile = getCacheFileByUri(request.getImageUri());
 
 		//如果不存在就直接返回
 		if(!cacheFile.exists()){

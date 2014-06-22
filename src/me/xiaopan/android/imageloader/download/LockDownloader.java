@@ -91,7 +91,7 @@ public class LockDownloader implements Downloader {
 	@Override
 	public Object download(DownloadRequest downloadRequest) {
 		// 根据下载地址加锁，防止重复下载
-		ReentrantLock urlLock = getUrlLock(downloadRequest.getUri());
+		ReentrantLock urlLock = getUrlLock(downloadRequest.getImageUri());
 		urlLock.lock();
 		
 		if(downloadRequest.isCanceled()){
@@ -118,7 +118,7 @@ public class LockDownloader implements Downloader {
 		while(true){
 			numberOfDownload++;//加载次数加1
 			try {
-				httpGet = new HttpGet(downloadRequest.getUri());
+				httpGet = new HttpGet(downloadRequest.getImageUri());
 				HttpResponse httpResponse = httpClient.execute(httpGet);
 				
 				if(downloadRequest.isCanceled()){

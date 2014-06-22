@@ -26,8 +26,8 @@ import android.widget.ImageView.ScaleType;
  */
 public class LoadOptions extends DownloadOptions{
     private ScaleType scaleType; //图片缩放方式，在处理图片的时候会用到
-    private ImageSize maxSize;	//最大图片尺寸，用于读取图片时计算inSampleSize
-    private ImageSize processSize;
+    private ImageSize decodeMaxSize;	//解码最大图片尺寸，用于读取图片时计算inSampleSize
+    private ImageSize processSize;	// 处理尺寸，BitmapProcessor会根据此尺寸来创建新的图片
 	private BitmapProcessor processor;	//位图处理器
 
 	/**
@@ -48,19 +48,19 @@ public class LoadOptions extends DownloadOptions{
     }
 
     /**
-     * 获取图片最大尺寸
-     * @return 图片最大尺寸，将会根据最大尺寸在读取图片的时候适当的缩放
+     * 获取解码最大尺寸
+     * @return 解码最大尺寸，将会根据最大尺寸在读取图片的时候适当的缩放
      */
-    public ImageSize getMaxSize() {
-        return maxSize;
+    public ImageSize getDecodeMaxSize() {
+        return decodeMaxSize;
     }
 
     /**
-     * 设置图片最大尺寸
-     * @param maxSize 图片最大尺寸，将会根据最大尺寸在读取图片的时候适当的缩放
+     * 设置解码最大尺寸
+     * @param decodeMaxSize 解码最大尺寸，将会根据最大尺寸在读取图片的时候适当的缩放
      */
-    public LoadOptions setMaxSize(ImageSize maxSize) {
-        this.maxSize = maxSize;
+    public LoadOptions setDecodeMaxSize(ImageSize decodeMaxSize) {
+        this.decodeMaxSize = decodeMaxSize;
         return this;
     }
 
@@ -131,7 +131,7 @@ public class LoadOptions extends DownloadOptions{
             .setEnableProgressCallback(isEnableProgressCallback())
 
             .setScaleType(scaleType)
-            .setMaxSize(maxSize != null ? maxSize.copy() : null)
+            .setDecodeMaxSize(decodeMaxSize != null ? decodeMaxSize.copy() : null)
             .setProcessSize(getProcessSize() != null?getProcessSize().copy():null)
             .setProcessor(processor != null ? processor.copy() : null);
 	}

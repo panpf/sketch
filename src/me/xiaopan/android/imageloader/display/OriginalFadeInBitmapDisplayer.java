@@ -41,10 +41,12 @@ public class OriginalFadeInBitmapDisplayer implements BitmapDisplayer {
 		Drawable oldDrawable = imageView.getDrawable();
 		if(oldDrawable != null){
 			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, bitmapDrawable});
+        	imageView.clearAnimation();
 			imageView.setImageDrawable(transitionDrawable);
 			transitionDrawable.setCrossFadeEnabled(true);
 			transitionDrawable.startTransition(duration);
 		}else{
+        	imageView.clearAnimation();
 			imageView.setImageDrawable(bitmapDrawable);
 		}
 	}

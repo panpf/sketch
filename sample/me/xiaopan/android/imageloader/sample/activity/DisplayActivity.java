@@ -21,7 +21,6 @@ import me.xiaopan.android.imageloader.sample.adapter.StringAdapter;
 import me.xiaopan.android.imageloader.sample.fragment.GalleryFragment;
 import me.xiaopan.android.imageloader.sample.fragment.GridFragment;
 import me.xiaopan.android.imageloader.sample.fragment.ListFragment;
-import me.xiaopan.android.imageloader.sample.fragment.ViewPagerFragment;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
@@ -67,15 +66,14 @@ public class DisplayActivity extends FragmentActivity {
 		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, GravityCompat.END);
 		
 		viewTypeListView = (ListView) findViewById(R.id.list_display_views);
-		viewTypeListView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery", "ViewPager"));
+		viewTypeListView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery"));
 		viewTypeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				switch(position - viewTypeListView.getHeaderViewsCount()){
-					case 0 : viewType = ViewType.GRID_VIEW; update(true); break;
-					case 1 : viewType = ViewType.LIST_VIEW; update(true); break;
-					case 2 : viewType = ViewType.GALLERY; update(true); break;
-					case 3 : viewType = ViewType.VIEW_PAGER; update(true); break;
+					case 0 : viewType = ViewType.GRID_VIEW; update(); break;
+					case 1 : viewType = ViewType.LIST_VIEW; update(); break;
+					case 2 : viewType = ViewType.GALLERY; update(); break;
 				}
 				drawerLayout.closeDrawers();
 			}
@@ -89,7 +87,7 @@ public class DisplayActivity extends FragmentActivity {
 				switch(position - uriTypeListView.getHeaderViewsCount()){
 					case 0 : 
 						uriType = UriType.HTTP; 
-						update(true);
+						update();
 						break;
 					case 1 : 
 						Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
@@ -103,11 +101,11 @@ public class DisplayActivity extends FragmentActivity {
 						break;
 					case 3 : 
 						uriType = UriType.ASSETS; 
-						update(true);
+						update();
 						break;
 					case 4 : 
 						uriType = UriType.DRAWABLE; 
-						update(true);
+						update();
 						break;
 				}
 				drawerLayout.closeDrawers();
@@ -137,11 +135,11 @@ public class DisplayActivity extends FragmentActivity {
 		viewType = ViewType.GRID_VIEW;
 		uriType = UriType.HTTP;
 		
-		update(false);
+		update();
 	}
 	
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
-	private void update(boolean add){
+	private void update(){
 		String[] uris = null;
 		String uriName = null;
 		switch(uriType){
@@ -160,21 +158,17 @@ public class DisplayActivity extends FragmentActivity {
 				case GRID_VIEW : fragment = new GridFragment(); viewName = "GridView"; break;
 				case LIST_VIEW : fragment = new ListFragment(); viewName = "ListView"; break;
 				case GALLERY : fragment = new GalleryFragment(); viewName = "Gallery"; break;
-				case VIEW_PAGER :  fragment = new ViewPagerFragment(); viewName = "ViewPager"; break;
 			}
 			if(fragment != null){
-				String subTitle = viewName + " " + uriName;
+				if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+					getActionBar().setSubtitle(viewName + " " + uriName);
+				}
 				Bundle bundle = new Bundle();
 				bundle.putStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, uris);
 				fragment.setArguments(bundle);
 				FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
 				fragmentTransaction.setCustomAnimations(R.anim.base_slide_to_left_in, R.anim.base_slide_to_left_out, R.anim.base_slide_to_right_in, R.anim.base_slide_to_right_out);
-				if(add){
-					fragmentTransaction.addToBackStack(subTitle);
-					fragmentTransaction.add(R.id.fragment_display, fragment);
-				}else{
-					fragmentTransaction.replace(R.id.fragment_display, fragment);
-				}
+				fragmentTransaction.replace(R.id.fragment_display, fragment);
 				fragmentTransaction.commitAllowingStateLoss();
 			}else{
 				Toast.makeText(getBaseContext(), "还没有准备好此种模式，敬请期待！", Toast.LENGTH_SHORT).show();
@@ -185,7 +179,7 @@ public class DisplayActivity extends FragmentActivity {
 	}
 	
 	public enum ViewType{
-		GRID_VIEW, LIST_VIEW, GALLERY, VIEW_PAGER,
+		GRID_VIEW, LIST_VIEW, GALLERY,
 	}
 	
 	public enum UriType{
@@ -206,7 +200,7 @@ public class DisplayActivity extends FragmentActivity {
 						contentUris[w] = uri;
 					}
 					uriType = UriType.CONTENT; 
-					update(true);
+					update();
 				}else{
 					Toast.makeText(getBaseContext(), "空的", Toast.LENGTH_SHORT).show();
 					Log.w(DisplayActivity.class.getSimpleName(), "空的");
@@ -224,7 +218,7 @@ public class DisplayActivity extends FragmentActivity {
                     		fileUris[w] = fileUri;
                     	}
                     	uriType = UriType.FILE; 
-                    	update(true);
+                    	update();
                     }else{
                     	Toast.makeText(getBaseContext(), "没有取到文件地址，请使用系统自带的图库应用来选择文件", Toast.LENGTH_SHORT).show();
     					Log.w(DisplayActivity.class.getSimpleName(), "没有取到文件地址，请使用系统自带的图库应用来选择文件："+arg2.getData().toString());
@@ -246,7 +240,7 @@ public class DisplayActivity extends FragmentActivity {
 		Cursor cursor = context.getContentResolver().query(uri, new String[]{ MediaStore.Images.Media.DATA }, null, null, null);
         if (cursor != null){
              cursor.moveToFirst();
-             filePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+             filePath = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA));
              cursor.close();
         }
         return filePath;
