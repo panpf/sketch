@@ -18,7 +18,7 @@ HappyImageLoader是Android上的一个图片加载类库，主要用于从本地
 
 ## Sample App
 >* [Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)
->* [Download APK](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/HappyImageLoader-2.3.4.apk)
+>* [Download APK](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/HappyImageLoader-2.4.0.apk)
 
 ##Usage Guide
 
