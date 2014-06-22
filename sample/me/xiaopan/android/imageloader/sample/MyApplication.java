@@ -18,10 +18,13 @@ package me.xiaopan.android.imageloader.sample;
 
 import me.xiaoapn.android.imageloader.R;
 import me.xiaopan.android.imageloader.ImageLoader;
+import me.xiaopan.android.imageloader.cache.memory.LruMemoryCache;
+import me.xiaopan.android.imageloader.display.OriginalFadeInBitmapDisplayer;
 import me.xiaopan.android.imageloader.display.ZoomOutBitmapDisplayer;
 import me.xiaopan.android.imageloader.process.CircleBitmapProcessor;
 import me.xiaopan.android.imageloader.process.ReflectionBitmapProcessor;
 import me.xiaopan.android.imageloader.process.RoundedCornerBitmapProcessor;
+import me.xiaopan.android.imageloader.process.TailorBitmapProcessor;
 import me.xiaopan.android.imageloader.task.display.DisplayOptions;
 import android.app.Application;
 
@@ -31,12 +34,15 @@ public class MyApplication extends Application {
 	public void onCreate() {
 		super.onCreate();
 
-        ImageLoader.getInstance(getBaseContext()).getConfiguration().setDebugMode(true)
+        ImageLoader.getInstance(getBaseContext()).getConfiguration()
+        .setDebugMode(true)
+        .setMemoryCache(new LruMemoryCache((int) (Runtime.getRuntime().maxMemory()/4)))
         .putOptions(DisplayOptionsType.GRID_VIEW, new DisplayOptions(getBaseContext())
             .setLoadingDrawable(R.drawable.image_loading)
             .setLoadFailDrawable(R.drawable.image_load_fail)
             .setEmptyUriDrawable(R.drawable.image_loading)
-            .setProcessor(new ReflectionBitmapProcessor()))
+            .setDisplayer(new OriginalFadeInBitmapDisplayer(500))
+            .setProcessor(new TailorBitmapProcessor()))
         .putOptions(DisplayOptionsType.VIEW_PAGER, new DisplayOptions(getBaseContext())
             .setLoadFailDrawable(R.drawable.image_load_fail)
             .setEmptyUriDrawable(R.drawable.image_loading)

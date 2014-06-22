@@ -18,48 +18,18 @@ package me.xiaopan.android.imageloader.display;
 
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
 
 /**
- * 默认的位图显示器，没有任何动画效果效果
+ * 默认的位图显示器，没有任何动画效果
  */
 public class DefaultBitmapDisplayer implements BitmapDisplayer {
 
 	@Override
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest) {
-		switch(bitmapType){
-			case FAILURE : 
-				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
-					fadeIn(imageView, bitmapDrawable);
-				}else{
-					imageView.setImageDrawable(null);
-				}
-				break;
-			case SUCCESS : 
-				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
-					fadeIn(imageView, bitmapDrawable);
-				}else{
-					imageView.setImageDrawable(null);
-				}
-				break;
-		}
+		imageView.setImageDrawable(bitmapDrawable);
 	}
 	
-	/**
-	 * 渐入
-	 */
-	private void fadeIn(ImageView imageView, BitmapDrawable bitmapDrawable){
-		Drawable oldDrawable = imageView.getDrawable();
-		Drawable firstDrawable  = oldDrawable != null?oldDrawable:new ColorDrawable(android.R.color.transparent);
-		TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{firstDrawable, bitmapDrawable});
-		imageView.setImageDrawable(transitionDrawable);
-		transitionDrawable.setCrossFadeEnabled(true);
-		transitionDrawable.startTransition(duration);
-	}
-
 	@Override
 	public BitmapDisplayer copy() {
 		return new DefaultBitmapDisplayer();

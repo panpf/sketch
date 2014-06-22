@@ -163,6 +163,7 @@ BitmapDecoder是用来解码Bitmap的，默认的实现是DefaultBitmapDecoder�
 
 ###9.BitmapProcessor（图片处理器）
 BitmapProcessor是用来在BitmapDecoder解码完图片之后在对图片进行处理的，因此你可以利用BitmapProcessor将图片处理成任何你想要的效果。ImageLoader默认提供了三种BitmapProcessor供你使用：
+>* TailorBitmapProcessor：图片裁剪处理器，可以将图片按照ProcessSize的尺寸进行裁剪
 >* CircleBitmapProcessor：圆形图片处理器，可以将图片处理成圆形的，如示例图所示；
 >* ReflectionBitmapProcessor：倒影图片处理器，可以将图片处理成倒影效果的，如示例图所示。另外倒影的高度以及倒影的距离都可以通过构造函数来自定义；
 >* RoundedCornerBitmapProcessor：圆角图片处理器，可以将图片处理成圆角的，如示例图所示。另外圆角的半径可以通过构造函数来自定义
@@ -173,10 +174,14 @@ BitmapProcessor是用来在BitmapDecoder解码完图片之后在对图片进行�
 >* 在处理的过程中如果你多次创建了新的Bitmap，那么在你用完之后一定要记得释放。
 
 ###10.BitmapDisplayer（图片显示器）
-BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer来以不同的动画来显示图片，默认提供以下三种（默认采用的是FadeInBitmapDisplayer）：
->* FadeInBitmapDisplayer： 渐入效果。
->* ZoomInBitmapDisplayer：渐入且由小到大效果。
->* ZoomOutBitmapDisplayer：渐入且由大到小效果。
+BitmapDisplayer是最后用来显示图片的，你可以通过BitmapDisplayer来以不同的动画来显示图片，默认提供以下三种（默认采用的是DefaultBitmapDisplayer）：
+>* DefaultBitmapDisplayer： 默认的图片显示器，没有任何动画效果。
+>* ZoomInBitmapDisplayer：由小到大效果显示器，比例是0.5f到1.0f。
+>* ZoomOutBitmapDisplayer：由大到小效果显示器，比例是1.5f到1.0f。
+>* OriginalFadeInBitmapDisplayer： 原图过渡效果显示器，如果ImageView当前显示的有图片就用已有的图片和新的图片生成一个过渡图片（TransitionDrawable）。
+>* ColorFadeInBitmapDisplayer：颜色过渡显示器，你可以指定一种颜色作为过渡效果的起始色。
+
+注意：请慎用过渡效果显示器，因为当两张图片的尺寸不一致，但其中一张的尺寸非常接近ImageView时，TransitionDrawable会依这张图片作为标准强行将另一张图片拉伸
 
 ###11.Downloader（图片下载器）
 Downloader是用来下载图片的，默认的实现是LockDownloader。LockDownloader会根据下载地址加锁，防止重复下载
@@ -184,10 +189,17 @@ Downloader是用来下载图片的，默认的实现是LockDownloader。LockDown
 ###你还可以参考示例程序来更加直观的了解使用方式
 
 ##Downloads
->* [android-happy-image-loader-2.3.6.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-happy-image-loader-2.3.6.jar)
->* [android-happy-image-loader-2.3.6-with-src.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-happy-image-loader-2.3.6-with-src.jar)
+>* [android-happy-image-loader-2.4.0.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-happy-image-loader-2.4.0.jar)
+>* [android-happy-image-loader-2.4.0-with-src.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-happy-image-loader-2.4.0-with-src.jar)
 
 ##Change Log
+###2.4.0
+>* 默认的BitmapDisplayer不再采用FadeInBitmapDisplayer，而采用了新增的DefaultBitmapDisplayer
+>* FadeInBitmapDisplayer改名为OriginalFadeInBitmapDisplayer
+>* 新增DefaultBitmapDisplayer和ColorFadeInBitmapDisplayer
+>* 新增TailorBitmapProcessor
+>* LruMemoryCache增加LruMemoryCache(int maxSize)构造函数，方便自定义内存缓存容量
+
 ###2.3.6
 >* 修复进度更新延迟很严重BUG
 >* 默认关闭进度更新功能，你可以通过Options.setEnableProgressCallback(true)方法开启

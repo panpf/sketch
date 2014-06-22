@@ -18,9 +18,6 @@ package me.xiaopan.android.imageloader.display;
 
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.ScaleAnimation;
@@ -30,7 +27,6 @@ import android.widget.ImageView;
  * 由大到小位图显示器
  */
 public class ZoomOutBitmapDisplayer implements BitmapDisplayer {
-//	private static final String NAME= ZoomOutBitmapDisplayer.class.getSimpleName();
 	private int duration;
 
 	public ZoomOutBitmapDisplayer(int duration){
@@ -38,43 +34,15 @@ public class ZoomOutBitmapDisplayer implements BitmapDisplayer {
 	}
 	
 	public ZoomOutBitmapDisplayer(){
-		this(400);
+		this(DEFAULT_ANIMATION_DURATION);
 	}
 	
 	@Override
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest) {
-		switch(bitmapType){
-			case FAILURE : 
-				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
-					fadeIn(imageView, bitmapDrawable);
-				}else{
-					imageView.setImageDrawable(null);
-				}
-				break;
-			case SUCCESS : 
-				if(bitmapDrawable != null && !bitmapDrawable.getBitmap().isRecycled()){
-					fadeIn(imageView, bitmapDrawable);
-				}else{
-					imageView.setImageDrawable(null);
-				}
-				break;
-		}
-	}
-	
-	/**
-	 * 渐入
-	 */
-	private void fadeIn(ImageView imageView, BitmapDrawable bitmapDrawable){
-		Drawable oldDrawable = imageView.getDrawable();
-		Drawable firstDrawable  = oldDrawable != null?oldDrawable:new ColorDrawable(android.R.color.transparent);
-		TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{firstDrawable, bitmapDrawable});
-		imageView.setImageDrawable(transitionDrawable);
-		transitionDrawable.setCrossFadeEnabled(true);
-		transitionDrawable.startTransition(duration);
-		
 		ScaleAnimation scaleAnimation = new ScaleAnimation(1.5f, 1.0f, 1.5f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		scaleAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
 		scaleAnimation.setDuration(duration);
+		imageView.setImageDrawable(bitmapDrawable);
 		imageView.startAnimation(scaleAnimation);
 	}
 

@@ -18,36 +18,39 @@ package me.xiaopan.android.imageloader.display;
 
 import me.xiaopan.android.imageloader.task.display.DisplayRequest;
 import android.graphics.drawable.BitmapDrawable;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.animation.Animation;
-import android.view.animation.ScaleAnimation;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
 
 /**
- * 由小到大位图显示器
+ * 原图渐入位图显示器
  */
-public class ZoomInBitmapDisplayer implements BitmapDisplayer {
+public class OriginalFadeInBitmapDisplayer implements BitmapDisplayer {
 	private int duration;
 
-	public ZoomInBitmapDisplayer(int duration){
+	public OriginalFadeInBitmapDisplayer(int duration){
 		this.duration = duration;
 	}
 	
-	public ZoomInBitmapDisplayer(){
+	public OriginalFadeInBitmapDisplayer(){
 		this(DEFAULT_ANIMATION_DURATION);
 	}
 	
 	@Override
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest) {
-		ScaleAnimation scaleAnimation = new ScaleAnimation(0.5f, 1.0f, 0.5f, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
-		scaleAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
-		scaleAnimation.setDuration(duration);
-		imageView.setImageDrawable(bitmapDrawable);
-		imageView.startAnimation(scaleAnimation);
+		Drawable oldDrawable = imageView.getDrawable();
+		if(oldDrawable != null){
+			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, bitmapDrawable});
+			imageView.setImageDrawable(transitionDrawable);
+			transitionDrawable.setCrossFadeEnabled(true);
+			transitionDrawable.startTransition(duration);
+		}else{
+			imageView.setImageDrawable(bitmapDrawable);
+		}
 	}
 	
 	@Override
 	public BitmapDisplayer copy() {
-		return new ZoomInBitmapDisplayer(duration);
+		return new OriginalFadeInBitmapDisplayer(duration);
 	}
 }

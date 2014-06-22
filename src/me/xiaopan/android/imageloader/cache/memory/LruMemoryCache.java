@@ -32,6 +32,10 @@ import android.support.v4.util.LruCache;
 public class LruMemoryCache implements MemoryCache {
 	private BitmapLruCache bitmapLruCache;
 	
+	public LruMemoryCache(int maxSize){
+		bitmapLruCache = new BitmapLruCache(maxSize);
+	}
+	
 	public LruMemoryCache(){
 		bitmapLruCache = new BitmapLruCache((int) (Runtime.getRuntime().maxMemory()/8));
 	}

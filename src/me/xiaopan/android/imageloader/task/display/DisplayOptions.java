@@ -17,7 +17,7 @@
 package me.xiaopan.android.imageloader.task.display;
 
 import me.xiaopan.android.imageloader.display.BitmapDisplayer;
-import me.xiaopan.android.imageloader.display.FadeInBitmapDisplayer;
+import me.xiaopan.android.imageloader.display.DefaultBitmapDisplayer;
 import me.xiaopan.android.imageloader.process.BitmapProcessor;
 import me.xiaopan.android.imageloader.task.load.LoadOptions;
 import me.xiaopan.android.imageloader.util.ImageSize;
@@ -32,6 +32,7 @@ import android.widget.ImageView.ScaleType;
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
+	private static BitmapDisplayer defaultBitmapDisplayer;
     private Context context;
 	private boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     private BitmapDisplayer displayer;	//位图显示器
@@ -41,7 +42,6 @@ public class DisplayOptions extends LoadOptions {
 	
 	public DisplayOptions(Context context) {
         this.context = context;
-		this.displayer = new FadeInBitmapDisplayer();
 		this.emptyUriDrawableHolder = new DrawableHolder();
 		this.loadingDrawableHolder = new DrawableHolder();
 		this.loadFailDrawableHolder = new DrawableHolder();
@@ -179,7 +179,14 @@ public class DisplayOptions extends LoadOptions {
 	 * @return 图片显示器，用来最后关头显示图片
 	 */
 	public BitmapDisplayer getDisplayer() {
-		return displayer;
+		if(displayer != null){
+			return displayer;
+		}else{
+			if(defaultBitmapDisplayer == null){
+				defaultBitmapDisplayer = new DefaultBitmapDisplayer();
+			}
+			return defaultBitmapDisplayer;
+		}
 	}
 
 	/**

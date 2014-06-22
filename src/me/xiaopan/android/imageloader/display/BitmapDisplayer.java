@@ -24,6 +24,7 @@ import android.widget.ImageView;
  * 位图显示器
  */
 public interface BitmapDisplayer {
+	static final int DEFAULT_ANIMATION_DURATION = 400;
 	/**
 	 * 显示
 	 * @param imageView
