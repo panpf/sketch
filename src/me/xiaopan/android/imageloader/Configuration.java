@@ -47,14 +47,10 @@ public class Configuration {
 	private BitmapDecoder bitmapDecoder;	//位图解码器
 	private RequestExecutor requestExecutor;	//请求执行器
 	private Map<Object, TaskOptions> optionsMap;	//显示选项集合
-	
+	 
 	public Configuration(Context context){
-		if(Looper.myLooper() != Looper.getMainLooper()){
-			throw new IllegalStateException("你不能在异步线程中创建此对象");
-		}
-		
-		this.handler = new Handler();
 		this.context = context;
+		this.handler = new Handler(Looper.getMainLooper());
 		this.diskCache = new LruDiskCache(context);
 		this.downloader = new LockDownloader();
 		this.optionsMap = new HashMap<Object, TaskOptions>();

@@ -220,13 +220,17 @@ Downloader是用来下载图片的，默认的实现是LockDownloader。LockDown
 ###你还可以参考示例程序来更加直观的了解使用方式
 
 ##Downloads
->* [android-happy-image-loader-2.4.0.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-happy-image-loader-2.4.0.jar)
->* [android-happy-image-loader-2.4.0-with-src.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-happy-image-loader-2.4.0-with-src.jar)
+>* [android-happy-image-loader-2.4.1.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-happy-image-loader-2.4.1.jar)
+>* [android-happy-image-loader-2.4.1-with-src.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/releases/android-happy-image-loader-2.4.1-with-src.jar)
 
 dependencies
 >* [android-support-v4.jar](https://github.com/xiaopansky/HappyImageLoader/raw/master/libs/android-support-v4.jar)
 
 ##Change Log
+####2.4.1
+>* 去除了一个潜在的BUG，之前如果你第一次调用ImageLoader.getInstance()是在非主线程中的话将会抛出异常，现在不会了
+
+
 ####2.4.0
 >* 默认的BitmapDisplayer不再采用FadeInBitmapDisplayer，而采用了新增的DefaultBitmapDisplayer
 >* FadeInBitmapDisplayer改名为OriginalFadeInBitmapDisplayer

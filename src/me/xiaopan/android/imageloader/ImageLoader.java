@@ -58,7 +58,7 @@ public class ImageLoader{
 	 * @param context 用来初始化配置
 	 * @return 图片加载器的实例
 	 */
-	public static ImageLoader getInstance(Context context){
+	public static synchronized ImageLoader getInstance(Context context){
 		if(instance == null){
 			instance = new ImageLoader(context);
 		}
