@@ -4,7 +4,7 @@
     android:versionCode="241"
     android:versionName="2.4.1" >
 
-    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="L" />
+    <uses-sdk android:minSdkVersion="9" android:targetSdkVersion="20" />
 
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>

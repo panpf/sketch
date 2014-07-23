@@ -230,7 +230,6 @@ dependencies
 ####2.4.1
 >* 去除了一个潜在的BUG，之前如果你第一次调用ImageLoader.getInstance()是在非主线程中的话将会抛出异常，现在不会了
 
-
 ####2.4.0
 >* 默认的BitmapDisplayer不再采用FadeInBitmapDisplayer，而采用了新增的DefaultBitmapDisplayer
 >* FadeInBitmapDisplayer改名为OriginalFadeInBitmapDisplayer
