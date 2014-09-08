@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="ProgressPieView">
+        <attr name="progress" format="integer"/>
+        <attr name="max" format="integer"/>
+        <attr name="startAngle" format="integer"/>
+        <attr name="strokeWidth" format="dimension"/>
+        <attr name="backgroundColor" format="reference|color"/>
+        <attr name="progressColor" format="reference|color"/>
+        <attr name="strokeColor" format="reference|color"/>
+        <attr name="showStroke" format="boolean"/>
+        <attr name="showText" format="boolean"/>
+        <attr name="typeface" format="string"/>
+        <attr name="image" format="reference"/>
+        <attr name="android:text"/>
+        <attr name="android:textSize"/>
+        <attr name="android:textColor"/>
+        <attr name="progressFillType" format="enum" >
+            <enum name="radial" value="0"/>
+            <enum name="center" value="1"/>
+        </attr>
+    </declare-styleable>
+</resources>

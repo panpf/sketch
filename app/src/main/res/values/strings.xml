@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Spear</string>
+
+    <string name="activity_titel_download">Image Download</string>
+    <string name="activity_titel_load">Image Load</string>
+    <string name="activity_titel_display">Image Display</string>
+    <string name="url_github">http://github.com/xiaopansky/Android-ImageLoader</string>
+
+    <drawable name="divider">#80FFFFFF</drawable>
+
+    <string-array name="processors">
+        <item>无</item>
+        <item>倒影</item>
+        <item>圆角</item>
+        <item>圆形</item>
+    </string-array>
+
+    <string-array name="scaleTypes">
+        <item>MATRIX</item>
+        <item>FIT_XY</item>
+        <item>FIT_START</item>
+        <item>FIT_CENTER</item>
+        <item>FIT_END</item>
+        <item>CENTER</item>
+        <item>CENTER_CROP</item>
+        <item>CENTER_INSIDE</item>
+    </string-array>
+
+    <string-array name="urls">
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1600x900/1386814415425.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/1385432333209.jpg</item>
+        <item>http://d.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=83be833f0ef3d7ca0cf63b75c429856a/f9198618367adab45171df4289d4b31c8701e40a.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347718813.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1385101943856.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1385101992197.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/138448321642.jpg</item>
+        <item>http://a.hiphotos.baidu.com/image/h%3D768%3Bcrop%3D0%2C0%2C1366%2C768/sign=9a57341cca95d143c576e6254bcbe170/bba1cd11728b471061e225d3c1cec3fdfd0323e4.jpg</item>
+
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529070_1384156026015_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529105_1384156067650_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529106_1384156069005_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529107_1384156070394_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529108_1384156072471_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529111_1384156074019_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529113_1384156076013_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529115_1384156077604_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529117_1384156078856_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c0/28529118_1384156079925_800x600.jpg</item>
+
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c0/28045747_1382930731959_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c0/28045749_1382930733296_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c0/28045751_1382930735650_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c0/28045752_1382930737013_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c0/28045754_1382930738338_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c0/28045756_1382930739576_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c0/28045757_1382930740915_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c0/28045760_1382930743231_800x600.jpg</item>
+
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1312/31/c0/30160032_1388457521885.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1312/31/c0/30160033_1388457523133_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1312/31/c0/30160036_1388457525457_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1312/31/c0/30160040_1388457527619_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1312/31/c0/30160042_1388457529515_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1312/31/c0/30160046_1388457533853_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1312/31/c0/30160048_1388457535723_800x600.jpg</item>
+
+        <item>http://b.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=171f69a8087b02080cc93be254efc9b0/ac4bd11373f0820223b6d03249fbfbedab641b92.jpg</item>
+        <item>http://f.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=ccefae0f5e6034a829e2bc82fd257237/b17eca8065380cd7c4e985e3a344ad34588281cc.jpg</item>
+        <item>http://c.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=870140609058d109c4e3adb1e76ef7dc/b3b7d0a20cf431ad91ba60274936acaf2edd9847.jpg</item>
+        <item>http://a.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=50b1b729347adab43dd01f40bde2887f/50da81cb39dbb6fdfacee1270b24ab18972b371d.jpg</item>
+        <item>http://e.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=9e7a18386963f6241c5d3d00b172d09b/8ad4b31c8701a18bebb3814e9c2f07082838fe53.jpg</item>
+        <item>http://f.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=89936f5136a85edffa8cfa207f623240/cb8065380cd79123a27f9275af345982b2b78017.jpg</item>
+        <item>http://b.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=570d1f5d0e3387449cc52b7f6739e29a/a08b87d6277f9e2fa6215c051d30e924b899f3a3.jpg</item>
+        <item>http://f.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=a6edf0ccfe039245a1b5e50cb1a29fa1/2cf5e0fe9925bc31394307995cdf8db1cb137090.jpg</item>
+        <item>http://g.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=a956e8450a46f21fc9345a50c0125003/dbb44aed2e738bd4cd80148fa18b87d6267ff9ef.jpg</item>
+        <item>http://a.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=71d34b98cf11728b302d8821fecaf8ad/ae51f3deb48f8c54343d012638292df5e1fe7fc9.jpg</item>
+        <item>http://a.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=ef25dc259f16fdfad86cc2ed82b9b737/37d3d539b6003af3724dfb6e372ac65c1138b6cc.jpg</item>
+        <item>http://f.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=e0ec15e4e51190ef01fb96dcf82da675/359b033b5bb5c9ea7017c6ead739b6003bf3b3d7.jpg</item>
+        <item>http://b.hiphotos.baidu.com/image/h%3D768%3Bcrop%3D0%2C0%2C1366%2C768/sign=7ba92cc51c178a82d13c7da6ce3810ff/b7fd5266d016092452977412d60735fae6cd340d.jpg</item>
+        <item>http://e.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=d4128c248418367aad897bde1845b0b7/dcc451da81cb39dbd2be265bd2160924ab183044.jpg</item>
+        <item>http://h.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=96dea0afd343ad4ba62e42c3b43461cc/314e251f95cad1c8e86ba12d7d3e6709c83d51e3.jpg</item>
+        <item>http://f.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=e982b575e9f81a4c2632e8cae11c5b3a/267f9e2f07082838fa81db15ba99a9014c08f127.jpg</item>
+        <item>http://e.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=68a8f4371bd8bc3ec60802c9b4bd9d7d/2fdda3cc7cd98d1005c04d3c233fb80e7bec90a2.jpg</item>
+        <item>http://d.hiphotos.baidu.com/image/h%3D768%3Bcrop%3D0%2C0%2C1366%2C768/sign=7848f17841a98226a7c12921b2b9da73/50da81cb39dbb6fdc1ea962b0b24ab18972b370d.jpg</item>
+        <item>http://a.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=3bb4f63f58afa40f3cc6cade9d52382c/c8177f3e6709c93d388b4ffa9d3df8dcd1005445.jpg</item>
+        <item>http://b.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=930ea42b708b4710ce2ff9cff5f8f89e/f2deb48f8c5494eed9b053132ff5e0fe99257e2d.jpg</item>
+        <item>http://c.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=d0964323b27eca8012053de4a715acbe/503d269759ee3d6d377c62cb41166d224f4ade7c.jpg</item>
+        <item>http://b.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=78f761f334d3d539c13d0bc00cb1d233/0bd162d9f2d3572ca0c2ddd18813632762d0c39f.jpg</item>
+        <item>http://f.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=c2343fd81b4c510faec4e619566f1e4e/9f2f070828381f30ac546cb9a8014c086e06f055.jpg</item>
+        <item>http://f.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=e80740c09b25bc312b5d059b68e9b6d2/b3119313b07eca80a0caace9932397dda04483f5.jpg</item>
+        <item>http://d.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=f4b44230a8ec8a13141a53e3c135aaec/aa64034f78f0f7360c5b2ade0b55b319eac41343.jpg</item>
+        <item>http://e.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=0f29517c41a98226b8c12f24bcb48262/c9fcc3cec3fdfc0376a830b1d63f8794a5c226e3.jpg</item>
+        <item>http://d.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=8ee60514b3fb43161a1f7e7916927d40/1f178a82b9014a9045882362a8773912b21beebf.jpg</item>
+        <item>http://g.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=d9ace4f87f1ed21b79c92ae69b58e6a7/5fdf8db1cb134954571b9d6e544e9258d1094ab6.jpg</item>
+        <item>http://g.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=b6d844f7a5efce1bea2bccc99967c8bd/c8ea15ce36d3d539903708c23887e950352ab0ac.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347722456149.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347721740895.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347721857611.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347721991346.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347722593324.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347722660211.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1680x1050/1347780863974.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347781646697.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/1347972847713.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1920x1080/134779196194.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1440x900/1350487688362.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/1/1440x900/1350487693287.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/1383719342222.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/1383719345985.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/138371938334.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/1383719386504.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/1383719393382.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/3/1680x1050/138183054666.jpg</item>
+        <item>http://b.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=4c2802ae902397ddd6799c076fb489d4/54fbb2fb43166d22665a2edd472309f79052d24d.jpg</item>
+        <item>http://f.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=d637a71ad60735fa91f04abaa86734d0/18d8bc3eb13533faffa4962faad3fd1f41345ba4.jpg</item>
+
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/12/c0/28564810_1384238874717_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/08/c2/28450344_1383907997812_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/08/c2/28450360_1383908020393_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/08/c2/28450354_1383908015296_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/08/c2/28450351_1383908012501_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/08/c2/28450347_1383908006792_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/08/c2/28450345_1383908001011_800x600.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1386814422279.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1384483225833.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/138734772699.jpg</item>
+        <item>http://a.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=00289b304e086e066aa83b48343e4097/d833c895d143ad4b69a241c180025aafa40f0626.jpg</item>
+        <item>http://e.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=0e93f5304890f60304b098440f248878/d53f8794a4c27d1e560a42c519d5ad6eddc43886.jpg</item>
+        <item>http://e.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=41416b2d4b540923aa69677da46eea6a/96dda144ad3459827e47709c0ef431adcaef84eb.jpg</item>
+        <item>http://d.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=856eb8e5b11c8701d6b6b6e51149a54c/d1160924ab18972b7f1a06cbe4cd7b899e510a8a.jpg</item>
+        <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1440x900/1387347738143.jpg</item>
+        <item>http://a.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=18abfe390ef3d7ca0cf63b75c429856a/f9198618367adab4ca64a24489d4b31c8701e405.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c1/28531545_1384159000688_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1311/11/c1/28531569_1384159036990_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c1/28064240_1382954846746_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c1/28062724_1382952247340_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c1/28062729_1382952249917_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c1/28062734_1382952254138_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c1/28062737_1382952255497_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c1/28062748_1382952261238_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c1/28062754_1382952263741_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c0/28046197_1382931344153_800x600.jpg</item>
+        <item>http://img.pconline.com.cn/images/upload/upc/tx/wallpaper/1310/28/c0/28046200_1382931346407_800x600.jpg</item>
+        <item>http://a.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=27175538cb3d70cf4cfaae0eceeaea63/e61190ef76c6a7ef9632af27fffaaf51f3de669e.jpg</item>
+        <item>http://b.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=d311f92c0b24ab18e016e53403ccddae/cdbf6c81800a19d83d49980f31fa828ba61e4675.jpg</item>
+        <item>http://a.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=4019652e4334970a4773142ca3fceaab/7aec54e736d12f2e51f203614dc2d56285356838.jpg</item>
+        <item>http://f.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=3eb0f2bea41ea8d38a227007a13c0b2d/3801213fb80e7bec59ad46e42d2eb9389b506bbb.jpg</item>
+        <item>http://a.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=95a631d83b01213fcf334adf62d10db2/f7246b600c338744f34e2a7d530fd9f9d72aa023.jpg</item>
+        <item>http://d.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=5a4d60ef257f9e2f7035190b2906d247/d50735fae6cd7b896597e88a0d2442a7d8330ec4.jpg</item>
+        <item>http://b.hiphotos.baidu.com/image/w%3D1366%3Bcrop%3D0%2C0%2C1366%2C768/sign=677b4bb89c510fb378197394ef05f3f6/838ba61ea8d3fd1fc082a73b324e251f95ca5f23.jpg</item>
+        <item>http://a.hiphotos.baidu.com/image/w%3D2048/sign=21b75619df54564ee565e33987e69d82/738b4710b912c8fcab2d9cc7fe039245d78821d9.jpg</item>
+        <item>http://e.hiphotos.baidu.com/image/w%3D2048/sign=df72f04fc88065387beaa313a3e5a044/77c6a7efce1b9d16b19bef60f1deb48f8c546456.jpg</item>
+        <item>http://c.hiphotos.baidu.com/image/w%3D2048/sign=5b3202a1f403738dde4a0b228723b151/a8ec8a13632762d01530d9bea2ec08fa513dc6a1.jpg</item>
+
+        <item>http://img4.3lian.com/img2005/08/22/200903302054354508.png</item>
+        <item>http://img4.3lian.com/img2005/10/08/16.png</item>
+        <item>http://pic15.nipic.com/20110813/4172576_195523619000_2.png</item>
+        <item>http://p6.zbjimg.com/task/2011-06/18/830578/4dfc40099f312.png</item>
+        <item>http://img4.3lian.com/img2005/10/08/21.png</item>
+        <item>http://img2.3lian.com/img2007/14/04/20080405140141329.png</item>
+        <item>http://img2.3lian.com/img2007/14/04/20080405140143264.png</item>
+        <item>http://pic11.nipic.com/20101210/145234_171359054236_2.png</item>
+        <item>http://pic11.nipic.com/20101210/145234_164944034631_2.png</item>
+        <item>http://pic23.nipic.com/20120813/10691159_104145620113_2.png</item>
+        <item>http://img4.3lian.com/img2005/08/33/200902150651374454.png</item>
+    </string-array>
+
+</resources>

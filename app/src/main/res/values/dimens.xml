@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<!-- 文字大小 - 大的 -->
+	<dimen name="textSize_large">16sp</dimen>
+	
+	<!-- 内边距 - 默认 -->
+    <dimen name="padding_default">8dp</dimen>
+    
+    <!-- 内边距 - 特别大 -->
+    <dimen name="padding_specialLarge">16dp</dimen>
+</resources>

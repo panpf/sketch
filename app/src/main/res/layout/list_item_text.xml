@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" style="@style/item">
+	<TextView style="@style/wrap_wrap" android:textColor="@color/selector_text_title" android:id="@+id/text_textItem_text" android:text=""/>
+</LinearLayout>

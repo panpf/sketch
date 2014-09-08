@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ppv="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content" 
+    android:layout_height="wrap_content">
+	<me.xiaopan.android.spear.widget.SpearImageView
+	    android:id="@+id/image_galleryItem"
+	    android:layout_width="200dp"
+	    android:layout_height="200dp"
+	    android:scaleType="centerCrop"
+	    android:contentDescription="@string/app_name"/>
+    <me.xiaopan.android.spear.sample.widget.ProgressPieView
+        android:id="@+id/progress_galleryItem_progress"
+        android:layout_margin="8dp"
+        android:layout_gravity="center"
+        android:layout_width="96dp"
+        android:layout_height="96dp"
+        ppv:progressFillType="center"
+        ppv:strokeWidth="2dp"
+        ppv:strokeColor="#A8A8A8"
+        ppv:backgroundColor="#D1D1D1"
+        android:visibility="gone"
+        ppv:progressColor="#EE7942"/>
+</FrameLayout>
