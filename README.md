@@ -1,10 +1,10 @@
-# ![Logo](https://github.com/xiaopansky/HappyImageLoader/raw/spear/app/src/main/res/drawable-mdpi/ic_launcher.png) Spear
+# ![Logo](https://github.com/xiaopansky/Spear/raw/master/app/src/main/res/drawable-mdpi/ic_launcher.png) Spear
 
 Spear是Android上的一个图片加载器，目的是为了帮助开发者从本地或网络读取图片，然后处理并显示在ImageView上
 
 Spear is an image loader for Android, the purpose is to help the developers to read a picture from a local or network, and then processed and displayed on the ImageView.
 
-![sample](https://github.com/xiaopansky/HappyImageLoader/raw/spear/docs/sample.jpg)
+![sample](https://github.com/xiaopansky/Spear/raw/master/docs/sample.jpg)
 
 ###Features
 >* ``多种URI支持``。支持``http://``、``https://``、``assets://``、``content://``、``file://``、``drawable://``等6种URI。
@@ -35,7 +35,7 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 
 ### Sample App
 >* [Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)
->* [Download APK](https://github.com/xiaopansky/HappyImageLoader/raw/spear/releases/HappyImageLoader-2.4.0.apk)
+>* [Download APK](https://github.com/xiaopansky/Spear/raw/master/releases/HappyImageLoader-2.4.0.apk)
 
 ###Usage guide
 
@@ -122,26 +122,25 @@ Spear.with(getBaseContext())
 ```
 
 ####其它功能：
->* [使用RequestOptions](https://github.com/xiaopansky/HappyImageLoader/wiki/use-RequestOptions)
->* [使用load()或download()](https://github.com/xiaopansky/HappyImageLoader/wiki/use-load-and-download-method)
->* [内存缓存器（MemoryCache）](https://github.com/xiaopansky/HappyImageLoader/wiki/MemoryCache)
->* [磁盘缓存器（DiskCache）](https://github.com/xiaopansky/HappyImageLoader/wiki/DiskCache)
->* [图片解码器（ImageDecoder）](https://github.com/xiaopansky/HappyImageLoader/wiki/ImageDecoder)
->* [图片处理器（ImageProcessor）](https://github.com/xiaopansky/HappyImageLoader/wiki/ImageProcessor)
->* [图片显示器（ImageDisplayer）](https://github.com/xiaopansky/HappyImageLoader/wiki/ImageDisplayer)
->* [请求执行器（RequestExecutor）](https://github.com/xiaopansky/HappyImageLoader/wiki/RequestExecutor)
->* [图片下载器（ImageDownloader）](https://github.com/xiaopansky/HappyImageLoader/wiki/ImageDownloader)
+>* [使用RequestOptions](https://github.com/xiaopansky/Spear/wiki/use-RequestOptions)
+>* [使用load()或download()](https://github.com/xiaopansky/Spear/wiki/use-load-and-download-method)
+>* [内存缓存器（MemoryCache）](https://github.com/xiaopansky/Spear/wiki/MemoryCache)
+>* [磁盘缓存器（DiskCache）](https://github.com/xiaopansky/Spear/wiki/DiskCache)
+>* [图片解码器（ImageDecoder）](https://github.com/xiaopansky/Spear/wiki/ImageDecoder)
+>* [图片处理器（ImageProcessor）](https://github.com/xiaopansky/Spear/wiki/ImageProcessor)
+>* [图片显示器（ImageDisplayer）](https://github.com/xiaopansky/Spear/wiki/ImageDisplayer)
+>* [请求执行器（RequestExecutor）](https://github.com/xiaopansky/Spear/wiki/RequestExecutor)
+>* [图片下载器（ImageDownloader）](https://github.com/xiaopansky/Spear/wiki/ImageDownloader)
 
 ###Downloads
->* [spear-1.0.0.jar](https://github.com/xiaopansky/HappyImageLoader/raw/spear/releases/spear-1.0.0.jar)
->* [spear-1.0.0-sources.zip](https://github.com/xiaopansky/HappyImageLoader/raw/spear/releases/spear-1.0.0-sources.zip)
->* [spear-1.0.0-docs.zip](https://github.com/xiaopansky/HappyImageLoader/raw/spear/releases/spear-1.0.0-docs.zip)
+>* [spear-1.0.0.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.0.0.jar)
+>* [spear-1.0.0-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.0.0-sources.zip)
 
 ###Change log
 ####1.0.0
-HappyImageLoader脱胎换骨，全新出发
+Spear脱胎换骨，全新出发
 
-[Browse more](https://github.com/xiaopansky/HappyImageLoader/wiki/Change-log)
+[Browse more](https://github.com/xiaopansky/Spear/wiki/Change-log)
 
 ###License
 ```java
