@@ -121,16 +121,18 @@ Spear.with(getBaseContext())
     .fire();
 ```
 
-####其它功能：
->* [使用RequestOptions](https://github.com/xiaopansky/Spear/wiki/use-RequestOptions)
->* [使用load()或download()](https://github.com/xiaopansky/Spear/wiki/use-load-and-download-method)
->* [内存缓存器（MemoryCache）](https://github.com/xiaopansky/Spear/wiki/MemoryCache)
->* [磁盘缓存器（DiskCache）](https://github.com/xiaopansky/Spear/wiki/DiskCache)
->* [图片解码器（ImageDecoder）](https://github.com/xiaopansky/Spear/wiki/ImageDecoder)
->* [图片处理器（ImageProcessor）](https://github.com/xiaopansky/Spear/wiki/ImageProcessor)
->* [图片显示器（ImageDisplayer）](https://github.com/xiaopansky/Spear/wiki/ImageDisplayer)
->* [请求执行器（RequestExecutor）](https://github.com/xiaopansky/Spear/wiki/RequestExecutor)
->* [图片下载器（ImageDownloader）](https://github.com/xiaopansky/Spear/wiki/ImageDownloader)
+####你可能还感兴趣的功能：
+>* [使用``RequestOptions``定义属性模板来简化属性设置操作](https://github.com/xiaopansky/Spear/wiki/use-RequestOptions)
+>* [使用``load()``或``download()``来单独``加载``或``下载``图片](https://github.com/xiaopansky/Spear/wiki/use-load-and-download-method)
+>* [自定义``InSampleSize``计算规则或``自定义图片解码器``（ImageDecoder）](https://github.com/xiaopansky/Spear/wiki/ImageDecoder)
+>* [自定义display时``Maxsize``和``resize``计算规则]()
+>* [使加载到内存中的图片的尺寸``同ImageView的尺寸一样``，这样可最大限度的``节省内存``]()
+>* [将图片处理成``圆形``的、``椭圆形``的或者加上``倒影效果``以及``自定义图片处理器``（ImageProcessor）](https://github.com/xiaopansky/Spear/wiki/ImageProcessor)
+>* [以``渐变``或``缩放``的形式显示图片以及``自定义图片显示器``（ImageDisplayer）](https://github.com/xiaopansky/Spear/wiki/ImageDisplayer)
+>* [自定义``请求执行顺序``或``线程池大小``以及``自定义请求执行器``（RequestExecutor）](https://github.com/xiaopansky/Spear/wiki/RequestExecutor)
+>* [设置下载``失败重试次数``、``超时时间``以及``自定义图片下载器``（ImageDownloader）](https://github.com/xiaopansky/Spear/wiki/ImageDownloader)
+>* [设置``内存缓存大小``或``自定义内存缓存器``（MemoryCache）](https://github.com/xiaopansky/Spear/wiki/MemoryCache)
+>* [设置``磁盘缓存目录``或``自定义磁盘缓存器``（DiskCache）](https://github.com/xiaopansky/Spear/wiki/DiskCache)
 
 ###Downloads
 >* [spear-1.0.0.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.0.0.jar)
