@@ -36,34 +36,52 @@ Spear支持以下六种URI：
 >* "assets://image.png"; // from assets
 >* "drawable://" + R.drawable.image; // from drawable resource
 
-Image from http or https
+**Image from http or https**
 ```java
 String uri = "http://www.huabian.com/uploadfile/2013/1222/20131222054754556.jpg";
 Spear.with(context).display(uri, imageView).fire();
 ```
-        
-Image from file
+
+**Image from file**
 ```java
+Spear.with(context).display("file:///mnt/sfs.png", imageView).fire();
+
+or
+
 Spear.with(context).display(new File("/mnt/sfs.png"), imageView).fire();
 ```
         
-Image from content provider
+**Image from content provider**
 ```java
+Spear.with(context).display("content://media/external/audio/albumart/13", imageView).fire();
+
+or
+
 Uri uri = ...;
 Spear.with(context).display(uri, imageView).fire();
 ```
+
         
-Image from drawable resource
+**Image from drawable resource**
 ```java
+Spear.with(context).display("drawable://"+R.drawable.ic_launcher, imageView).fire();
+
+or
+
 Spear.with(context).display(R.drawable.ic_launcher, imageView).fire();
 ```
+
         
-Image from assets
+**Image from assets**
 ```java
+Spear.with(context).display("assets://test.png", imageView).fire();
+
+or
+
 String uri = Scheme.ASSETS.createUri("test.png");
 Spear.with(context).display(uri, imageView).fire();
 ```
-一定要记得最后要调用fire()方法哦
+*一定要记得最后要调用fire()方法哦*
 
 ####配置显示选项：
 ```java
@@ -112,6 +130,7 @@ Spear.with(getBaseContext())
 ####你可能还感兴趣的功能：
 >* [使用``RequestOptions``定义属性模板来简化属性设置操作](https://github.com/xiaopansky/Spear/wiki/RequestOptions)
 >* [监听加载``开始``、``成功``、``失败``以及``进度``]()
+>* [使用```SpearImageView```]()
 >* [将默认图也使用BitmapProcessor处理一下]()
 >* [使用``load()``或``download()``来单独``加载``或``下载``图片](https://github.com/xiaopansky/Spear/wiki/use-load-and-download-method)
 >* [自定义``InSampleSize``计算规则或``自定义图片解码器``（ImageDecoder）](https://github.com/xiaopansky/Spear/wiki/ImageDecoder)
