@@ -8,29 +8,17 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 
 ###Features
 >* ``多种URI支持``。支持``http://``、``https://``、``assets://``、``content://``、``file://``、``drawable://``等6种URI。
-
 >* ``异步加载``。采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
-
 >* ``支持缓存``。采用Lru算法在本地和内存中缓存图片，本地缓存可设置``过期``时间。
-
 >* ``支持ViewHolder``。即使你在ListView中使用了ViewHolder也依然可以使用ImageLoader来加载图片，并且图片显示绝对不会混乱。
-
 >* ``重复下载过滤``。如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
-
 >* ``即时取消无用请求``，在onDetachedFromWindow或重复利用的时候会取消无用的请求。
-
 >* ``支持进度回调``，通过progressCallback()方法即可设置并开启进度回调。
-
 >* ``防止加载过大Bitmap``,默认最大Bitmap限制为当前屏幕宽高的1.5倍，这样可以有效防止加载过大图片到内存中。
-
 >* ``重新处理图片尺寸``，可自定义加载到内存的图片的尺寸，使用display()方法显示图片的时候还会自动根据ImageView的宽高来重新处理。
-
 >* ``自带RequestOptions管理器``。你可以通过Spear.putOptions(Enum<?>, RequestOptions)存储RequestOptions，然后在使用的时候指定名称即可。
-
 >* ``提供SpearImageView``。让加载图片更加简单。
-
 >* ``额外提供load()和download()``。如果你不是要显示图片只是想要加载然后用作其他用途，那么你可以使用load()方法。
-
 >* ``强大的自定义功能``。可自定义请求分发与执行、缓存、解码、处理、显示、默认图片、失败图片等。
 
 ### Sample App
