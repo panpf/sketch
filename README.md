@@ -69,8 +69,8 @@ Spear.with(context).display(uri, imageView).fire();
 ```java
 Spear.with(getBaseContext())
     .display("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg", imageView)
-    .loadingDrawable(R.drawable.image_loading, true)    // 设置正在加载的时候显示的图片
-    .loadFailedDrawable(R.drawable.image_load_fail, true)   // 设置当加载失败的时候显示的图片
+    .loadingDrawable(R.drawable.image_loading)    // 设置正在加载的时候显示的图片
+    .loadFailedDrawable(R.drawable.image_load_fail)   // 设置当加载失败的时候显示的图片
     .disableDiskCache() // 禁用磁盘缓存
     .disableMemoryCache()   // 禁用内存缓存
     .diskCachePeriodOfValidity(60 * 1000) // 设置磁盘缓存有效期，单位毫秒，默认为0（永久有效）
