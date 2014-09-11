@@ -129,7 +129,7 @@ Spear.with(getBaseContext())
 ```
 
 ####你可能还感兴趣的功能：
->* [使用``RequestOptions``定义属性模板来简化属性设置操作](https://github.com/xiaopansky/Spear/wiki/RequestOptions)
+>* [使用``RequestOptions``定义属性模板来简化属性设置](https://github.com/xiaopansky/Spear/wiki/RequestOptions)
 >* [监听加载``开始``、``成功``、``失败``以及``进度``](https://github.com/xiaopansky/Spear/wiki/listener)
 >* [使用```SpearImageView```](https://github.com/xiaopansky/Spear/wiki/SpearImageView)
 >* [使用``load()``或``download()``来单独``加载``或``下载``图片](https://github.com/xiaopansky/Spear/wiki/use-load-and-download-method)
