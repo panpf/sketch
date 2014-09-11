@@ -37,6 +37,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import java.io.File;
+import java.lang.reflect.Field;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.Spear;
@@ -75,7 +76,14 @@ public class DownloadActivity extends ActionBarActivity {
         diskCacheToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                downloadOptions.enableDiskCache(isChecked);
+                try {
+                    Field field = DownloadOptions.class.getDeclaredField("enableDiskCache");
+                    field.set(downloadOptions, isChecked);
+                } catch (NoSuchFieldException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
                 periodOfValidityEdit.setEnabled(isChecked);
             }
         });

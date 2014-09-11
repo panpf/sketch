@@ -44,18 +44,26 @@ import me.xiaopan.android.spear.request.DownloadRequest;
  */
 public class HttpUrlConnectionImageDownloader implements ImageDownloader {
 	private static final String NAME = HttpUrlConnectionImageDownloader.class.getSimpleName();
-    private static final int DEFAULT_READ_TIMEOUT = 20 * 1000; // 20s
-    private static final int DEFAULT_CONNECT_TIMEOUT = 15 * 1000; // 15s
 
     private Set<String> downloadingFiles;
 	private Map<String, ReentrantLock> urlLocks;
-    private int maxRetryCount;
+    private int maxRetryCount = 1;
+    private int timeOut = 15 * 1000;
 
 	public HttpUrlConnectionImageDownloader() {
-        this.maxRetryCount = 1;
 		this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
 		this.downloadingFiles = Collections.synchronizedSet(new HashSet<String>());
 	}
+
+    @Override
+    public void setMaxRetryCount(int maxRetryCount) {
+        this.maxRetryCount = maxRetryCount;
+    }
+
+    @Override
+    public void setTimeOut(int timeOut) {
+        this.timeOut = timeOut;
+    }
 
     /**
      * 获取一个URL锁，通过此锁可以防止重复下载
@@ -76,7 +84,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
 		return downloadingFiles.contains(cacheFilePath);
 	}
 
-	@Override
+    @Override
 	public Object download(DownloadRequest request) {
         // 根据下载地址加锁，防止重复下载
         ReentrantLock urlLock = getUrlLock(request.getUri());
@@ -135,8 +143,8 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         HttpURLConnection connection = null;
         try {
             connection = (HttpURLConnection) new URL(request.getUri()).openConnection();
-            connection.setConnectTimeout(DEFAULT_CONNECT_TIMEOUT);
-            connection.setReadTimeout(DEFAULT_READ_TIMEOUT);
+            connection.setConnectTimeout(timeOut);
+            connection.setReadTimeout(timeOut);
 
             // 检查状态码
             int responseCode = connection.getResponseCode();

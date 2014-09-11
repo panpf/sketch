@@ -28,7 +28,7 @@ public interface DiskCache {
 	 * 设置缓存目录
 	 * @param cacheDir 缓存目录，在之后通过getCacheFile()方法获取缓存文件的时候就会在此文件夹下创建新文件
 	 */
-	public void setDir(File cacheDir);
+	public void setDiskCacheDir(File cacheDir);
 
     /**
      * 创建一个新的缓存文件

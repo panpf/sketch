@@ -43,6 +43,7 @@ import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.request.RequestOptions;
 import me.xiaopan.android.spear.util.AsyncDrawable;
+import me.xiaopan.android.spear.util.DefaultImageSizeCalculator;
 import me.xiaopan.android.spear.util.Scheme;
 
 /**
@@ -61,6 +62,7 @@ public class Spear {
     private ImageDecoder imageDecoder;	//图片解码器
     private ImageDownloader imageDownloader;	//图片下载器
     private RequestExecutor requestExecutor;	//请求执行器
+    private DefaultImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
 
 	public Spear(Context context){
         this.context = context;
@@ -70,6 +72,7 @@ public class Spear {
         this.memoryCache = new LruMemoryCache();
         this.imageDecoder = new DefaultImageDecoder();
         this.requestExecutor = new DefaultRequestExecutor();
+        this.imageSizeCalculator = new DefaultImageSizeCalculator();
 	}
 
     /**
@@ -242,7 +245,9 @@ public class Spear {
      * @param requestExecutor 请求执行器
      */
     public Spear setRequestExecutor(RequestExecutor requestExecutor) {
-        this.requestExecutor = requestExecutor;
+        if(requestExecutor != null){
+            this.requestExecutor = requestExecutor;
+        }
         return this;
     }
 
@@ -259,7 +264,9 @@ public class Spear {
      * @param diskCache 磁盘缓存器
      */
     public Spear setDiskCache(DiskCache diskCache) {
-        this.diskCache = diskCache;
+        if(diskCache != null){
+            this.diskCache = diskCache;
+        }
         return this;
     }
 
@@ -276,7 +283,9 @@ public class Spear {
      * @param memoryCache 内存缓存器
      */
     public Spear setMemoryCache(MemoryCache memoryCache) {
-        this.memoryCache = memoryCache;
+        if(memoryCache != null){
+            this.memoryCache = memoryCache;
+        }
         return this;
     }
 
@@ -293,7 +302,9 @@ public class Spear {
      * @param imageDecoder 位图解码器
      */
     public Spear setImageDecoder(ImageDecoder imageDecoder) {
-        this.imageDecoder = imageDecoder;
+        if(imageDecoder != null){
+            this.imageDecoder = imageDecoder;
+        }
         return this;
     }
 
@@ -334,7 +345,28 @@ public class Spear {
      * @param imageDownloader 图片下载器
      */
     public Spear setImageDownloader(ImageDownloader imageDownloader) {
-        this.imageDownloader = imageDownloader;
+        if(imageDownloader != null){
+            this.imageDownloader = imageDownloader;
+        }
+        return this;
+    }
+
+    /**
+     * 获取图片尺寸计算器
+     * @return 图片尺寸计算器
+     */
+    public DefaultImageSizeCalculator getImageSizeCalculator() {
+        return imageSizeCalculator;
+    }
+
+    /**
+     * 获取图片尺寸计算器
+     * @param imageSizeCalculator 图片尺寸计算器
+     */
+    public Spear setImageSizeCalculator(DefaultImageSizeCalculator imageSizeCalculator) {
+        if(imageSizeCalculator != null){
+            this.imageSizeCalculator = imageSizeCalculator;
+        }
         return this;
     }
 

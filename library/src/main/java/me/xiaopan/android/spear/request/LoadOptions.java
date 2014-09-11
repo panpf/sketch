@@ -40,8 +40,8 @@ public class LoadOptions extends DownloadOptions{
     }
 
     @Override
-    public LoadOptions enableDiskCache(boolean enableDiskCache) {
-        super.enableDiskCache(enableDiskCache);
+    public LoadOptions disableDiskCache() {
+        super.disableDiskCache();
         return this;
     }
 

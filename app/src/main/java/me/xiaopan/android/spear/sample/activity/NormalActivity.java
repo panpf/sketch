@@ -125,7 +125,7 @@ public class NormalActivity extends ActionBarActivity {
 
     public DisplayOptions createDisplayOptions(int position){
         DisplayOptions displayOptions = new DisplayOptions(getBaseContext());
-        displayOptions.enableMemoryCache(false);
+        displayOptions.disableMemoryCache();
         switch (position){
             case 11 :
                 displayOptions.loadingDrawable(R.drawable.image_loading, true);

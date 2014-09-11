@@ -39,6 +39,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
 import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
 
@@ -67,23 +68,22 @@ import me.xiaopan.android.spear.request.DownloadRequest;
  */
 public class HttpClientImageDownloader implements ImageDownloader {
 	private static final String NAME = HttpClientImageDownloader.class.getSimpleName();
-	public static final int DEFAULT_CONNECTION_TIME_OUT = 15 * 1000;
     public static final int DEFAULT_MAX_CONNECTIONS = 10;
     public static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
     public static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
 	private DefaultHttpClient httpClient;
 	private Set<String> downloadingFiles;
 	private Map<String, ReentrantLock> urlLocks;
-    private int maxRetryCount;
+    private int maxRetryCount = 1;
+	private int timeOut = 15 * 1000;
 
 	public HttpClientImageDownloader() {
-        this.maxRetryCount = 1;
 		this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
 		this.downloadingFiles = Collections.synchronizedSet(new HashSet<String>());
 		BasicHttpParams httpParams = new BasicHttpParams();
-        ConnManagerParams.setTimeout(httpParams, DEFAULT_CONNECTION_TIME_OUT);
-        HttpConnectionParams.setSoTimeout(httpParams, DEFAULT_CONNECTION_TIME_OUT);
-        HttpConnectionParams.setConnectionTimeout(httpParams, DEFAULT_CONNECTION_TIME_OUT);
+        ConnManagerParams.setTimeout(httpParams, timeOut);
+        HttpConnectionParams.setSoTimeout(httpParams, timeOut);
+        HttpConnectionParams.setConnectionTimeout(httpParams, timeOut);
         ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(400));
         ConnManagerParams.setMaxTotalConnections(httpParams, DEFAULT_MAX_CONNECTIONS);
         HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
@@ -97,6 +97,20 @@ public class HttpClientImageDownloader implements ImageDownloader {
         httpClient.addRequestInterceptor(new GzipProcessRequestInterceptor());
         httpClient.addResponseInterceptor(new GzipProcessResponseInterceptor());
 	}
+
+    @Override
+    public void setMaxRetryCount(int maxRetryCount) {
+        this.maxRetryCount = maxRetryCount;
+    }
+
+    @Override
+    public void setTimeOut(int timeOut) {
+        this.timeOut = timeOut;
+        HttpParams httpParams = httpClient.getParams();
+        ConnManagerParams.setTimeout(httpParams, timeOut);
+        HttpConnectionParams.setSoTimeout(httpParams, timeOut);
+        HttpConnectionParams.setConnectionTimeout(httpParams, timeOut);
+    }
 
     /**
      * 获取一个URL锁，通过此锁可以防止重复下载

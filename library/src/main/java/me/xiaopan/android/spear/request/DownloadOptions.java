@@ -24,12 +24,11 @@ public class DownloadOptions implements RequestOptions {
     private boolean enableDiskCache = true;	//是否开启磁盘缓存
 
     /**
-     * 开启硬盘缓存
-     * @param enableDiskCache 开启磁盘缓存
+     * 关闭磁盘缓存
      * @return DownloadOptions
      */
-    public DownloadOptions enableDiskCache(boolean enableDiskCache) {
-        this.enableDiskCache = enableDiskCache;
+    public DownloadOptions disableDiskCache() {
+        this.enableDiskCache = false;
         return this;
     }
 

@@ -28,7 +28,20 @@ import me.xiaopan.android.spear.util.ImageSize;
  */
 public class DefaultImageDecoder implements ImageDecoder {
 
-	@Override
+    private InSampleSizeCalculator inSampleSizeCalculator;
+
+    public DefaultImageDecoder(InSampleSizeCalculator inSampleSizeCalculator) {
+        if(inSampleSizeCalculator == null){
+            throw new IllegalArgumentException("inSampleSizeCalculator 不能为null");
+        }
+        this.inSampleSizeCalculator = inSampleSizeCalculator;
+    }
+
+    public DefaultImageDecoder() {
+        this(new DefaultInSampleSizeCalculator());
+    }
+
+    @Override
 	public Bitmap decode(Spear spear, ImageSize maxsize, DecodeListener decodeListener){
 		Bitmap bitmap;
 		Point originalSize;
@@ -43,7 +56,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             originalSize = new Point(options.outWidth, options.outHeight);
 
             // 计算缩放倍数
-            inSampleSize = calculateInSampleSize(options.outWidth, options.outHeight, maxsize.getWidth(), maxsize.getHeight());
+            inSampleSize = inSampleSizeCalculator.calculateInSampleSize(options.outWidth, options.outHeight, maxsize.getWidth(), maxsize.getHeight());
             options.inSampleSize = inSampleSize;
 
             // 再次解码
@@ -67,17 +80,4 @@ public class DefaultImageDecoder implements ImageDecoder {
 
 		return bitmap;
 	}
-
-    @Override
-    public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight) {
-        if(targetWidth >= outWidth && targetHeight >= outHeight){
-            return 1;
-        }
-
-        int inSampleSize = 1;
-        do{
-            inSampleSize *= 2;
-        }while ((outWidth/inSampleSize) > targetWidth && (outHeight/inSampleSize) > targetHeight);
-        return inSampleSize;
-    }
 }

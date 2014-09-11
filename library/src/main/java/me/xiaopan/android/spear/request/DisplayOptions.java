@@ -38,12 +38,11 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 开启内存缓存
-     * @param enableMemoryCache 开启内存缓存
+     * 关闭内存缓存
      * @return DisplayOptions
      */
-    public DisplayOptions enableMemoryCache(boolean enableMemoryCache) {
-        this.enableMemoryCache = enableMemoryCache;
+    public DisplayOptions disableMemoryCache() {
+        this.enableMemoryCache = false;
         return this;
     }
 
@@ -156,8 +155,8 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions enableDiskCache(boolean enableDiskCache) {
-        super.enableDiskCache(enableDiskCache);
+    public DisplayOptions disableDiskCache() {
+        super.disableDiskCache();
         return this;
     }
 

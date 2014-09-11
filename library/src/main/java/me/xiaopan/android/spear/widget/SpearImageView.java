@@ -132,7 +132,7 @@ public class SpearImageView extends ImageView{
      * 根据Content Uri设置图片
      * @param uri Content Uri 这个URI是其它Content Provider返回的
      */
-    public void setImageByContent(Uri uri){
+    public void setImageByUri(Uri uri){
         setImageByUri(uri.toString());
     }
 

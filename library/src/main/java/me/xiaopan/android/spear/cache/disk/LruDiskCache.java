@@ -39,34 +39,47 @@ import me.xiaopan.android.spear.util.FileLastModifiedComparator;
 public class LruDiskCache implements DiskCache {
 	private static final String LOG_NAME = LruDiskCache.class.getSimpleName();
     private static final String DEFAULT_DIRECTORY_NAME = "image_loader";
-	private File dir;	//缓存目录
+	private File diskCacheDir;	//缓存目录
     private Context context;
     private FileLastModifiedComparator fileLastModifiedComparator;
     private int reserveSize = 20 * 1024 * 1024;
+
+    public LruDiskCache(Context context, File diskCacheDir){
+        this.context = context;
+        this.fileLastModifiedComparator = new FileLastModifiedComparator();
+        setDiskCacheDir(diskCacheDir);
+    }
 
     public LruDiskCache(Context context) {
         this.context = context;
         this.fileLastModifiedComparator = new FileLastModifiedComparator();
     }
 
-    private synchronized File getDir() {
-        if(dir == null){
-            this.dir = new File(getDynamicCacheDir(context).getPath() + File.separator + DEFAULT_DIRECTORY_NAME);
+    private synchronized File getDiskCacheDir() {
+        if(diskCacheDir == null){
+            this.diskCacheDir = new File(getDynamicCacheDir(context).getPath() + File.separator + DEFAULT_DIRECTORY_NAME);
         }
-        if(!dir.exists()){
-            if(!dir.mkdirs()){
-                Log.e(Spear.LOG_TAG, "创建文件夹失败："+dir.getPath());
+        if(!diskCacheDir.exists()){
+            if(!diskCacheDir.mkdirs()){
+                Log.e(Spear.LOG_TAG, "创建缓存文件夹失败："+ diskCacheDir.getPath());
+                this.diskCacheDir = new File(getDynamicCacheDir(context).getPath() + File.separator + DEFAULT_DIRECTORY_NAME);
+                if(!diskCacheDir.exists()){
+                    if(!diskCacheDir.mkdirs()){
+                        Log.e(Spear.LOG_TAG, "再次创建缓存文件夹失败："+ diskCacheDir.getPath());
+                        diskCacheDir = null;
+                    }
+                }
             }
         }
-        return dir;
+        return diskCacheDir;
     }
 
     @Override
-	public synchronized void setDir(File cacheDir) {
+	public synchronized void setDiskCacheDir(File cacheDir) {
 		if(cacheDir != null && !cacheDir.isDirectory()){
 			throw new IllegalArgumentException(cacheDir.getPath() + "not a directory");
 		}
-		this.dir = cacheDir;
+		this.diskCacheDir = cacheDir;
 	}
 
     @Override
@@ -76,7 +89,7 @@ public class LruDiskCache implements DiskCache {
 
     @Override
 	public synchronized boolean applyForSpace(long cacheFileLength){
-        File cacheDir = getDir();
+        File cacheDir = getDiskCacheDir();
         if(cacheDir == null){
             return false;
         }
@@ -119,7 +132,11 @@ public class LruDiskCache implements DiskCache {
 
 	@Override
 	public synchronized File getCacheFileByUri(String uri) {
-		return new File(getDir().getPath() + File.separator + DisplayRequest.encodeUrl(uri));
+        File cacheDir = getDiskCacheDir();
+        if(cacheDir == null){
+            return null;
+        }
+		return new File(cacheDir.getPath() + File.separator + DisplayRequest.encodeUrl(uri));
 	}
 
 	@Override
@@ -130,6 +147,10 @@ public class LruDiskCache implements DiskCache {
 		}
 
 		File cacheFile = getCacheFileByUri(request.getUri());
+
+        if(cacheFile == null){
+            return null;
+        }
 
 		//如果不存在就直接返回
 		if(!cacheFile.exists()){
@@ -157,7 +178,7 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public synchronized void clear() {
-        deleteFile(dir);
+        deleteFile(diskCacheDir);
         deleteFile(new File(context.getCacheDir(), DEFAULT_DIRECTORY_NAME));
         deleteFile(new File(context.getExternalCacheDir(), DEFAULT_DIRECTORY_NAME));
     }

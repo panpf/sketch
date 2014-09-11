@@ -459,8 +459,8 @@ public class DisplayRequest extends LoadRequest{
             }
 
             // 计算解码尺寸、处理尺寸和请求ID
-            ImageSize newMaxsize = ImageSize.createMaxsize(imageView, this.maxsize);
-            ImageSize newResize = ImageSize.createResize(imageView, this.resize);
+            ImageSize newMaxsize = spear.getImageSizeCalculator().calculateImageMaxsize(imageView, this.maxsize);
+            ImageSize newResize = spear.getImageSizeCalculator().calculateImageResize(imageView, this.resize);
             String requestId = DisplayRequest.createId(encodeUrl(uri), newMaxsize, newResize, imageProcessor);
 
             // 尝试显示

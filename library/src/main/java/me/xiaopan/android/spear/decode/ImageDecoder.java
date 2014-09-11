@@ -38,16 +38,6 @@ public interface ImageDecoder {
 	public Bitmap decode(Spear spear, ImageSize maxsize,  DecodeListener decodeListener) throws IOException;
 
     /**
-     * 计算SampleSize
-     * @param outWidth 图片宽
-     * @param outHeight 图片高
-     * @param targetWidth 理想中的图片宽
-     * @param targetHeight 理想中的图片高
-     * @return inSampleSize
-     */
-    public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight);
-
-    /**
      * 解码监听器
      */
     public interface DecodeListener {
