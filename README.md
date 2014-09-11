@@ -45,18 +45,18 @@ Spear.with(context).display(uri, imageView).fire();
 **Image from file**
 ```java
 Spear.with(context).display("file:///mnt/sfs.png", imageView).fire();
-
+```
 or
-
+```java
 Spear.with(context).display(new File("/mnt/sfs.png"), imageView).fire();
 ```
         
 **Image from content provider**
 ```java
 Spear.with(context).display("content://media/external/audio/albumart/13", imageView).fire();
-
+```
 or
-
+```java
 Uri uri = ...;
 Spear.with(context).display(uri, imageView).fire();
 ```
@@ -65,9 +65,9 @@ Spear.with(context).display(uri, imageView).fire();
 **Image from drawable resource**
 ```java
 Spear.with(context).display("drawable://"+R.drawable.ic_launcher, imageView).fire();
-
+```
 or
-
+```java
 Spear.with(context).display(R.drawable.ic_launcher, imageView).fire();
 ```
 
@@ -75,12 +75,13 @@ Spear.with(context).display(R.drawable.ic_launcher, imageView).fire();
 **Image from assets**
 ```java
 Spear.with(context).display("assets://test.png", imageView).fire();
-
+```
 or
-
+```java
 String uri = Scheme.ASSETS.createUri("test.png");
 Spear.with(context).display(uri, imageView).fire();
 ```
+
 *一定要记得最后要调用fire()方法哦*
 
 ####配置显示选项：
