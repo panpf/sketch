@@ -44,6 +44,7 @@ import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.request.RequestOptions;
 import me.xiaopan.android.spear.util.AsyncDrawable;
 import me.xiaopan.android.spear.util.DefaultImageSizeCalculator;
+import me.xiaopan.android.spear.util.ImageSizeCalculator;
 import me.xiaopan.android.spear.util.Scheme;
 
 /**
@@ -62,7 +63,7 @@ public class Spear {
     private ImageDecoder imageDecoder;	//图片解码器
     private ImageDownloader imageDownloader;	//图片下载器
     private RequestExecutor requestExecutor;	//请求执行器
-    private DefaultImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
+    private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
 
 	public Spear(Context context){
         this.context = context;
@@ -355,7 +356,7 @@ public class Spear {
      * 获取图片尺寸计算器
      * @return 图片尺寸计算器
      */
-    public DefaultImageSizeCalculator getImageSizeCalculator() {
+    public ImageSizeCalculator getImageSizeCalculator() {
         return imageSizeCalculator;
     }
 
@@ -363,7 +364,7 @@ public class Spear {
      * 获取图片尺寸计算器
      * @param imageSizeCalculator 图片尺寸计算器
      */
-    public Spear setImageSizeCalculator(DefaultImageSizeCalculator imageSizeCalculator) {
+    public Spear setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
         if(imageSizeCalculator != null){
             this.imageSizeCalculator = imageSizeCalculator;
         }
