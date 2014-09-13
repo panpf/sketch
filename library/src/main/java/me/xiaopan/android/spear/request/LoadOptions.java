@@ -46,8 +46,8 @@ public class LoadOptions extends DownloadOptions{
     }
 
     @Override
-    public LoadOptions diskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
-        super.diskCachePeriodOfValidity(diskCachePeriodOfValidity);
+    public LoadOptions diskCacheTimeout(long diskCacheTimeout) {
+        super.diskCacheTimeout(diskCacheTimeout);
         return this;
     }
 

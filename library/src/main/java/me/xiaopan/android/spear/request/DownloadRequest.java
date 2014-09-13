@@ -45,7 +45,7 @@ public class DownloadRequest implements Request {
     private ProgressCallback downloadProgressCallback;  // 下载进度回调
 
     /* 可配置属性 */
-    protected long diskCachePeriodOfValidity;	// 磁盘缓存有效期，单位毫秒，小于等于0表示永不过期
+    protected long diskCacheTimeout;	// 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
     protected boolean enableDiskCache;	// 是否开启磁盘缓存
 
     @Override
@@ -143,11 +143,11 @@ public class DownloadRequest implements Request {
     }
 
     /**
-     * 获取磁盘缓存有效期
-     * @return 磁盘缓存有效期，单位毫秒，小于等于0表示永不过期
+     * 获取磁盘缓存超时时间
+     * @return 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
      */
-    public long getDiskCachePeriodOfValidity() {
-        return diskCachePeriodOfValidity;
+    public long getDiskCacheTimeout() {
+        return diskCacheTimeout;
     }
 
     /**
@@ -177,7 +177,7 @@ public class DownloadRequest implements Request {
         private Spear spear;
         private String uri;
 
-        private long diskCachePeriodOfValidity;
+        private long diskCacheTimeout;
         private boolean enableDiskCache = true;
 
         private DownloadListener downloadListener;
@@ -215,12 +215,12 @@ public class DownloadRequest implements Request {
         }
 
         /**
-         * 设置硬盘缓存有效期
-         * @param diskCachePeriodOfValidity 硬盘缓存有效期，单位毫秒，小于等于0表示永不过期
+         * 设置磁盘缓存超时时间
+         * @param diskCacheTimeout 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
          * @return Builder
          */
-        public Builder diskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
-            this.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
+        public Builder diskCacheTimeout(long diskCacheTimeout) {
+            this.diskCacheTimeout = diskCacheTimeout;
             return this;
         }
 
@@ -245,7 +245,7 @@ public class DownloadRequest implements Request {
             }
 
             this.enableDiskCache = options.isEnableDiskCache();
-            this.diskCachePeriodOfValidity = options.getDiskCachePeriodOfValidity();
+            this.diskCacheTimeout = options.getDiskCacheTimeout();
 
             return this;
         }
@@ -300,7 +300,7 @@ public class DownloadRequest implements Request {
             request.spear = spear;
             request.scheme = scheme;
             request.enableDiskCache = enableDiskCache;
-            request.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
+            request.diskCacheTimeout = diskCacheTimeout;
 
             request.downloadListener = downloadListener;
             request.downloadProgressCallback = progressCallback;

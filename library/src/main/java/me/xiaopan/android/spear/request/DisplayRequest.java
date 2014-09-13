@@ -160,7 +160,7 @@ public class DisplayRequest extends LoadRequest{
         private Spear spear;
         private String uri;
 
-        private long diskCachePeriodOfValidity;
+        private long diskCacheTimeout;
         private boolean enableDiskCache = true;
 
         private ImageSize maxsize;
@@ -208,12 +208,12 @@ public class DisplayRequest extends LoadRequest{
         }
 
         /**
-         * 设置硬盘缓存有效期
-         * @param diskCachePeriodOfValidity 硬盘缓存有效期，单位毫秒，小于等于0表示永不过期
+         * 设置磁盘缓存超时时间
+         * @param diskCacheTimeout 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
          * @return Builder
          */
-        public Builder diskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
-            this.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
+        public Builder diskCacheTimeout(long diskCacheTimeout) {
+            this.diskCacheTimeout = diskCacheTimeout;
             return this;
         }
 
@@ -384,7 +384,7 @@ public class DisplayRequest extends LoadRequest{
             }
 
             this.enableDiskCache = options.isEnableDiskCache();
-            this.diskCachePeriodOfValidity = options.getDiskCachePeriodOfValidity();
+            this.diskCacheTimeout = options.getDiskCacheTimeout();
 
             this.maxsize = options.getMaxsize();
             this.resize = options.getResize();
@@ -490,7 +490,7 @@ public class DisplayRequest extends LoadRequest{
             request.spear = spear;
             request.scheme = scheme;
             request.enableDiskCache = enableDiskCache;
-            request.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
+            request.diskCacheTimeout = diskCacheTimeout;
 
             request.maxsize = newMaxsize;
             request.resize = newResize;

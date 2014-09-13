@@ -20,7 +20,7 @@ package me.xiaopan.android.spear.request;
  * 下载选项
  */
 public class DownloadOptions implements RequestOptions {
-    private long diskCachePeriodOfValidity;	//磁盘缓存有效期，单位毫秒
+    private long diskCacheTimeout;	//磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
     private boolean enableDiskCache = true;	//是否开启磁盘缓存
 
     /**
@@ -33,21 +33,21 @@ public class DownloadOptions implements RequestOptions {
     }
 
     /**
-     * 设置硬盘缓存有效期
-     * @param diskCachePeriodOfValidity 硬盘缓存有效期，单位毫秒，小于等于0表示永不过期
+     * 设置磁盘缓存超时时间
+     * @param diskCacheTimeout 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
      * @return DownloadOptions
      */
-    public DownloadOptions diskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
-        this.diskCachePeriodOfValidity = diskCachePeriodOfValidity;
+    public DownloadOptions diskCacheTimeout(long diskCacheTimeout) {
+        this.diskCacheTimeout = diskCacheTimeout;
         return this;
     }
 
     /**
-     * 获取磁盘缓存有效期
-     * @return 磁盘缓存有效期
+     * 获取磁盘缓存超时时间
+     * @return 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
      */
-    public long getDiskCachePeriodOfValidity() {
-        return diskCachePeriodOfValidity;
+    public long getDiskCacheTimeout() {
+        return diskCacheTimeout;
     }
 
     /**

@@ -88,7 +88,7 @@ public class LoadActivity extends ActionBarActivity {
         drawerLayout.openDrawer(Gravity.START);
 
         loadOptions = new LoadOptions(getBaseContext());
-        periodOfValidityEdit.setText("" + loadOptions.getDiskCachePeriodOfValidity());
+        periodOfValidityEdit.setText("" + loadOptions.getDiskCacheTimeout());
 
         diskCacheToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -253,9 +253,9 @@ public class LoadActivity extends ActionBarActivity {
 
                     String text = periodOfValidityEdit.getEditableText().toString().trim();
                     if (!"".equals(text)) {
-                        loadOptions.diskCachePeriodOfValidity(Long.valueOf(text));
+                        loadOptions.diskCacheTimeout(Long.valueOf(text));
                     } else {
-                        loadOptions.diskCachePeriodOfValidity(0);
+                        loadOptions.diskCacheTimeout(0);
                     }
 
                     Spear.with(getBaseContext()).load(uri, new LoadListener() {

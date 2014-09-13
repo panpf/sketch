@@ -161,8 +161,8 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions diskCachePeriodOfValidity(long diskCachePeriodOfValidity) {
-        super.diskCachePeriodOfValidity(diskCachePeriodOfValidity);
+    public DisplayOptions diskCacheTimeout(long diskCacheTimeout) {
+        super.diskCacheTimeout(diskCacheTimeout);
         return this;
     }
 

@@ -158,12 +158,12 @@ public class LruDiskCache implements DiskCache {
         }
 
 		//是否永久有效
-		long diskCachePeriodOfValidity = request.getDiskCachePeriodOfValidity();
-		if(diskCachePeriodOfValidity <= 0) return cacheFile;
+		long diskCacheTimeout = request.getDiskCacheTimeout();
+		if(diskCacheTimeout <= 0) return cacheFile;
 
 		//是否过期
 		Calendar calendar = new GregorianCalendar();
-		calendar.add(Calendar.MILLISECOND, (int) -diskCachePeriodOfValidity);
+		calendar.add(Calendar.MILLISECOND, (int) -diskCacheTimeout);
 		if(calendar.getTimeInMillis() >= cacheFile.lastModified()){
 			if(!cacheFile.delete()){
                 Log.e(Spear.LOG_TAG, "删除文件失败：" + cacheFile.getPath());

@@ -71,7 +71,7 @@ public class DownloadActivity extends ActionBarActivity {
         drawerLayout.openDrawer(Gravity.START);
 
         downloadOptions = new DownloadOptions();
-        periodOfValidityEdit.setText("" + downloadOptions.getDiskCachePeriodOfValidity());
+        periodOfValidityEdit.setText("" + downloadOptions.getDiskCacheTimeout());
 
         diskCacheToggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -103,9 +103,9 @@ public class DownloadActivity extends ActionBarActivity {
             public void afterTextChanged(Editable s) {
                 String text = periodOfValidityEdit.getEditableText().toString().trim();
                 if(!"".equals(text)){
-                    downloadOptions.diskCachePeriodOfValidity(Long.valueOf(text));
+                    downloadOptions.diskCacheTimeout(Long.valueOf(text));
                 }else{
-                    downloadOptions.diskCachePeriodOfValidity(0);
+                    downloadOptions.diskCacheTimeout(0);
                 }
             }
         });
