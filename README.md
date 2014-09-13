@@ -128,6 +128,34 @@ Spear.with(getBaseContext())
     .fire();
 ```
 
+####download()、load()、display()
+Spear除了有display()方法用来显示图片之外，还有load()用来加载图片和download()方法用来下载图片
+
+>* download()：下载图片，此方法仅仅实现将图片下载到本地；
+>* load()：加载图片，此方法在将图片下载到本地之后会将图片加载到内存并实现本地缓存功能；
+>* display()：显示图片，此方法在将图片下载并加载到内存之后，会将图片放到内存缓存中，然后显示在ImageView上，并实现内存缓存。
+
+实际上整个显示图片的过程可分为下载、加载和显示三部分，这三个方法正好对应这三部分，因此你可以根据你的需求选择不同的方法来处理图片
+
+在前面我们都知道了display()的用法，而load()和download()的用法则同display()一模一样，唯一的区别是能设置的参数会比display()
+
+下面是属性表（'-'代表不支持）
+
+|属性|download|load|display|
+|:--|:--|:--|:--|
+|diskCache|true|true|true|
+|diskCacheTimeout|0（永久有效）|0（永久有效）|0（永久有效）|
+|maxsize|-|设备屏幕尺寸的1.5倍|结合ImageView的宽高来计算|
+|resize|-|null|结合ImageView的宽高来计算|
+|ImageProcessor|-|null|null|
+|ScaleType|-|ScaleType.FIT_CENTER|ScaleType.FIT_CENTER|
+|memoryCache|-|-|true|
+|ImageDisplayer|-|-|DefaultImageDisplayer（无任何特效）|
+|loadingDrawable|-|-|null|
+|loadFailedDrawable|-|-|null|
+|listener|null|null|null|
+|progressCallback|null|null|null|
+
 ####你可能还感兴趣的功能：
 >* [使用``RequestOptions``定义属性模板来简化属性设置](https://github.com/xiaopansky/Spear/wiki/RequestOptions)
 >* [监听加载``开始``、``成功``、``失败``以及``进度``](https://github.com/xiaopansky/Spear/wiki/listener)
