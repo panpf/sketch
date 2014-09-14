@@ -153,8 +153,8 @@ Spear除了有display()方法用来显示图片之外，还有load()用来加载
 |ImageDisplayer|-|-|DefaultImageDisplayer（无任何特效）|
 |loadingDrawable|-|-|null|
 |loadFailedDrawable|-|-|null|
-|listener|null|null|null|
-|progressCallback|null|null|null|
+|listener|null（在``非主线程``回调）|null（在``非主线程``回调）|null（在``主线程``回调）|
+|progressCallback|null（在``非主线程``回调）|null（在``非主线程``回调）|null（在``主线程``回调）|
 
 ####你可能还感兴趣的功能：
 >* [使用``RequestOptions``定义属性模板来简化属性设置](https://github.com/xiaopansky/Spear/wiki/RequestOptions)
