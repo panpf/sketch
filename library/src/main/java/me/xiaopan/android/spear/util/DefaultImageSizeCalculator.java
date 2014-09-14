@@ -22,33 +22,60 @@ import android.widget.ImageView;
 import java.lang.reflect.Field;
 
 /**
- * 默认的图片最大尺寸和修正尺寸计算器
+ * 图片尺寸计算器
  */
 public class DefaultImageSizeCalculator implements ImageSizeCalculator{
     @Override
-    public ImageSize calculateImageMaxsize(ImageView imageView, ImageSize referenceMaxsize) {
+    public ImageSize calculateImageMaxsize(ImageView imageView) {
         int width = getWidth(imageView, true, true);
         int height = getHeight(imageView, true, true);
-        if (width > 0 || height > 0){
+        if (width > 0 && height > 0){
             return new ImageSize(width, height);
-        }
-        if(referenceMaxsize != null && (referenceMaxsize.getWidth() > 0 || referenceMaxsize.getHeight() > 0)){
-            return referenceMaxsize;
         }
         return null;
     }
 
     @Override
-    public ImageSize calculateImageResize(ImageView imageView, ImageSize referenceResize) {
+    public ImageSize calculateImageResize(ImageView imageView) {
         int width = getWidth(imageView, true, false);
         int height = getHeight(imageView, true, false);
         if (width > 0 && height > 0){
             return new ImageSize(width, height);
         }
-        if(referenceResize != null && referenceResize.getWidth() > 0 && referenceResize.getHeight() > 0){
-            return referenceResize;
-        }
         return null;
+    }
+
+    @Override
+    public int compareMaxsize(ImageSize maxsize1, ImageSize maxsize2) {
+        if(maxsize1 == null || maxsize2 == null){
+            return 0;
+        }
+        return (maxsize1.getWidth() * maxsize1.getHeight()) - (maxsize2.getWidth() - maxsize2.getHeight());
+    }
+
+    @Override
+    public int compareResize(ImageSize resize1, ImageSize resize2) {
+        if(resize1 == null || resize2 == null){
+            return 0;
+        }
+        return (resize1.getWidth() * resize1.getHeight()) - (resize2.getWidth() - resize2.getHeight());
+    }
+
+    @Override
+    public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight) {
+        if(targetWidth <= 0 && targetHeight <= 0){
+            return 1;
+        }
+
+        if(targetWidth >= outWidth && targetHeight >= outHeight){
+            return 1;
+        }
+
+        int inSampleSize = 1;
+        do{
+            inSampleSize *= 2;
+        }while ((outWidth/inSampleSize) > targetWidth && (outHeight/inSampleSize) > targetHeight);
+        return inSampleSize;
     }
 
     public static int getWidth(ImageView imageView, boolean checkRealViewSize, boolean checkMaxViewSize) {

@@ -57,10 +57,10 @@ public class ReflectionImageProcessor implements ImageProcessor {
         if(bitmap == null) return null;
         if (scaleType == null) scaleType = ScaleType.FIT_CENTER;
 
-        if(resize != null){
-            return cutHandle(bitmap, scaleType, resize);
-        }else{
+        if(resize == null || ((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight()))){
             return fullHandle(bitmap);
+        }else{
+            return cutHandle(bitmap, scaleType, resize);
         }
 	}
 	

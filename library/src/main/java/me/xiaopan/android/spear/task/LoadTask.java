@@ -88,13 +88,11 @@ public class LoadTask extends Task {
                 bitmap = loadRequest.getSpear().getImageDecoder().decode(loadRequest.getSpear(), loadRequest.getMaxsize(), onDecodeListener);
 
                 //处理位图
-                if(bitmap != null){
-                    if(loadRequest.getImageProcessor() != null){
-                        Bitmap newBitmap = loadRequest.getImageProcessor().process(bitmap, loadRequest.getResize(), loadRequest.getScaleType());
-                        if(newBitmap != bitmap){
-                            bitmap.recycle();
-                            bitmap = newBitmap;
-                        }
+                if(bitmap != null && loadRequest.getImageProcessor() != null){
+                    Bitmap newBitmap = loadRequest.getImageProcessor().process(bitmap, loadRequest.getResize(), loadRequest.getScaleType());
+                    if(newBitmap != bitmap){
+                        bitmap.recycle();
+                        bitmap = newBitmap;
                     }
                 }
             }catch(Throwable throwable){

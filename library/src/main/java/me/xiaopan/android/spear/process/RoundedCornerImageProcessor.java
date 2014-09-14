@@ -53,7 +53,9 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
     public Bitmap process(Bitmap bitmap, ImageSize resize, ScaleType scaleType) {
         // 初始化参数
         if(bitmap == null) return null;
-        if (resize == null) resize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+        if (resize == null || ((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight()))){
+            resize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+        }
         if (scaleType == null) scaleType = ScaleType.FIT_CENTER;
 
 		// 初始化画布

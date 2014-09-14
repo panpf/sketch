@@ -37,7 +37,9 @@ public class CircleImageProcessor implements ImageProcessor {
         // 初始化参数
         if(bitmap == null) return null;
         if (scaleType == null) scaleType = ScaleType.FIT_CENTER;
-        if (resize == null) resize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+        if (resize == null || ((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight()))){
+            resize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+        }
 
         // 初始化画布
         int slidLength = resize.getWidth() > resize.getHeight() ? resize.getHeight() : resize.getWidth();

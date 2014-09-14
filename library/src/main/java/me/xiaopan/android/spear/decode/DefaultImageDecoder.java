@@ -28,26 +28,13 @@ import me.xiaopan.android.spear.util.ImageSize;
  */
 public class DefaultImageDecoder implements ImageDecoder {
 
-    private InSampleSizeCalculator inSampleSizeCalculator;
-
-    public DefaultImageDecoder(InSampleSizeCalculator inSampleSizeCalculator) {
-        if(inSampleSizeCalculator == null){
-            throw new IllegalArgumentException("inSampleSizeCalculator 不能为null");
-        }
-        this.inSampleSizeCalculator = inSampleSizeCalculator;
-    }
-
-    public DefaultImageDecoder() {
-        this(new DefaultInSampleSizeCalculator());
-    }
-
     @Override
 	public Bitmap decode(Spear spear, ImageSize maxsize, DecodeListener decodeListener){
 		Bitmap bitmap;
 		Point originalSize;
         int inSampleSize = 1;
 
-        if(maxsize != null && (maxsize.getWidth() > 0 || maxsize.getHeight() > 0)){
+        if(maxsize != null){
 		    // 只解码宽高
             Options options = new Options();
             options.inJustDecodeBounds = true;
@@ -56,7 +43,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             originalSize = new Point(options.outWidth, options.outHeight);
 
             // 计算缩放倍数
-            inSampleSize = inSampleSizeCalculator.calculateInSampleSize(options.outWidth, options.outHeight, maxsize.getWidth(), maxsize.getHeight());
+            inSampleSize = spear.getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxsize.getWidth(), maxsize.getHeight());
             options.inSampleSize = inSampleSize;
 
             // 再次解码

@@ -128,7 +128,7 @@ public class LoadRequest extends DownloadRequest{
             this.spear = spear;
             this.uri = uri;
             DisplayMetrics displayMetrics = spear.getContext().getResources().getDisplayMetrics();
-            maxsize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
+            this.maxsize = new ImageSize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
         }
 
         /**

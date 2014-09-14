@@ -25,10 +25,18 @@ public class ImageSize {
 		this.height = height;
 	}
 
+    /**
+     * 获取宽度
+     * @return 宽度
+     */
 	public int getWidth() {
 		return width;
 	}
 
+    /**
+     * 获取高度
+     * @return 高度
+     */
 	public int getHeight() {
 		return height;
 	}

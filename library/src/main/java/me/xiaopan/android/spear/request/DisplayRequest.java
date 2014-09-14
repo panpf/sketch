@@ -194,8 +194,22 @@ public class DisplayRequest extends LoadRequest{
             this.spear = spear;
             this.uri = uri;
             this.imageView = imageView;
-            DisplayMetrics displayMetrics = spear.getContext().getResources().getDisplayMetrics();
-            maxsize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
+
+            if(imageView != null){
+                // 根据ImageView的宽高计算maxsize
+                this.maxsize = spear.getImageSizeCalculator().calculateImageMaxsize(imageView);
+
+                // 如果根据ImageView没有计算出合适的maxsize，就以当前设备屏幕的1.5倍作为maxsize
+                if(this.maxsize == null){
+                    DisplayMetrics displayMetrics = spear.getContext().getResources().getDisplayMetrics();
+                    this.maxsize = new ImageSize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
+                }
+
+                // 根据ImageView的宽高计算resize
+                this.resize = spear.getImageSizeCalculator().calculateImageResize(imageView);
+
+                this.scaleType = imageView.getScaleType();
+            }
         }
 
         /**
@@ -386,9 +400,15 @@ public class DisplayRequest extends LoadRequest{
             this.enableDiskCache = options.isEnableDiskCache();
             this.diskCacheTimeout = options.getDiskCacheTimeout();
 
-            this.maxsize = options.getMaxsize();
-            this.resize = options.getResize();
-            this.scaleType = options.getScaleType();
+            if(this.maxsize == null || (options.getMaxsize() != null && spear.getImageSizeCalculator().compareMaxsize(options.getMaxsize(), this.maxsize) < 0)){
+                this.maxsize = options.getMaxsize();
+            }
+            if(this.resize == null || (options.getResize() != null && spear.getImageSizeCalculator().compareResize(options.getResize(), this.resize) < 0)){
+                this.resize = options.getResize();
+            }
+            if(this.scaleType == null || (options.getScaleType() != null && this.scaleType != options.getScaleType())){
+                this.scaleType = options.getScaleType();
+            }
             this.imageProcessor = options.getImageProcessor();
 
             this.enableMemoryCache = options.isEnableMemoryCache();
@@ -459,9 +479,7 @@ public class DisplayRequest extends LoadRequest{
             }
 
             // 计算解码尺寸、处理尺寸和请求ID
-            ImageSize newMaxsize = spear.getImageSizeCalculator().calculateImageMaxsize(imageView, this.maxsize);
-            ImageSize newResize = spear.getImageSizeCalculator().calculateImageResize(imageView, this.resize);
-            String requestId = DisplayRequest.createId(encodeUrl(uri), newMaxsize, newResize, imageProcessor);
+            String requestId = DisplayRequest.createId(encodeUrl(uri), maxsize, resize, imageProcessor);
 
             // 尝试显示
             if(enableMemoryCache){
@@ -492,10 +510,10 @@ public class DisplayRequest extends LoadRequest{
             request.enableDiskCache = enableDiskCache;
             request.diskCacheTimeout = diskCacheTimeout;
 
-            request.maxsize = newMaxsize;
-            request.resize = newResize;
+            request.maxsize = maxsize;
+            request.resize = resize;
             request.imageProcessor = imageProcessor;
-            request.scaleType = scaleType != null ? scaleType : imageView.getScaleType();
+            request.scaleType = scaleType;
 
             request.id = requestId;
             request.enableMemoryCache = enableMemoryCache;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中

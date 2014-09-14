@@ -34,7 +34,9 @@ public class CutImageProcessor implements ImageProcessor {
 	public Bitmap process(Bitmap bitmap, ImageSize resize, ScaleType scaleType) {
 		// 初始化参数
         if(bitmap == null) return null;
-		if(resize == null) return bitmap;
+		if(resize == null || ((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight()))){
+            return bitmap;
+        }
 		if(scaleType == null) scaleType = ScaleType.FIT_CENTER;
 
         Bitmap newBitmap = Bitmap.createBitmap(resize.getWidth(), resize.getHeight(), Bitmap.Config.ARGB_8888);
