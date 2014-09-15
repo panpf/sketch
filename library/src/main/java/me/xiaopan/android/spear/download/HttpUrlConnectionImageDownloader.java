@@ -61,7 +61,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public void setTimeOut(int timeOut) {
+    public void setTimeout(int timeOut) {
         this.timeOut = timeOut;
     }
 

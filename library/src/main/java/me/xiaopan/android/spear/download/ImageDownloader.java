@@ -42,5 +42,5 @@ public interface ImageDownloader {
      * 设置超时时间
      * @param timeOut 超时时间，单位毫秒，默认15秒
      */
-    public void setTimeOut(int timeOut);
+    public void setTimeout(int timeOut);
 }

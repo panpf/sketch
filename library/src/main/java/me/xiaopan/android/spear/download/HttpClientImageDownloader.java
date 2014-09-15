@@ -75,15 +75,15 @@ public class HttpClientImageDownloader implements ImageDownloader {
 	private Set<String> downloadingFiles;
 	private Map<String, ReentrantLock> urlLocks;
     private int maxRetryCount = 1;
-	private int timeOut = 15 * 1000;
+	private int timeout = 15 * 1000;
 
 	public HttpClientImageDownloader() {
 		this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
 		this.downloadingFiles = Collections.synchronizedSet(new HashSet<String>());
 		BasicHttpParams httpParams = new BasicHttpParams();
-        ConnManagerParams.setTimeout(httpParams, timeOut);
-        HttpConnectionParams.setSoTimeout(httpParams, timeOut);
-        HttpConnectionParams.setConnectionTimeout(httpParams, timeOut);
+        ConnManagerParams.setTimeout(httpParams, timeout);
+        HttpConnectionParams.setSoTimeout(httpParams, timeout);
+        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
         ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(400));
         ConnManagerParams.setMaxTotalConnections(httpParams, DEFAULT_MAX_CONNECTIONS);
         HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
@@ -104,12 +104,12 @@ public class HttpClientImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public void setTimeOut(int timeOut) {
-        this.timeOut = timeOut;
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
         HttpParams httpParams = httpClient.getParams();
-        ConnManagerParams.setTimeout(httpParams, timeOut);
-        HttpConnectionParams.setSoTimeout(httpParams, timeOut);
-        HttpConnectionParams.setConnectionTimeout(httpParams, timeOut);
+        ConnManagerParams.setTimeout(httpParams, timeout);
+        HttpConnectionParams.setSoTimeout(httpParams, timeout);
+        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
     }
 
     /**
