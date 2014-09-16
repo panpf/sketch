@@ -38,7 +38,7 @@ import me.xiaopan.android.spear.util.FileLastModifiedComparator;
  */
 public class LruDiskCache implements DiskCache {
 	private static final String LOG_NAME = LruDiskCache.class.getSimpleName();
-    private static final String DEFAULT_DIRECTORY_NAME = "image_loader";
+    private static final String DEFAULT_DIRECTORY_NAME = "spear";
 	private File diskCacheDir;	//缓存目录
     private Context context;
     private FileLastModifiedComparator fileLastModifiedComparator;
@@ -140,12 +140,7 @@ public class LruDiskCache implements DiskCache {
 	}
 
 	@Override
-	public synchronized File createFile(DownloadRequest request) {
-		// 如果不往本地缓存就直接结束
-        if(!request.isEnableDiskCache()){
-			return null;
-		}
-
+	public synchronized File createCacheFile(DownloadRequest request) {
 		File cacheFile = getCacheFileByUri(request.getUri());
 
         if(cacheFile == null){

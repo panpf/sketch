@@ -35,7 +35,7 @@ public interface DiskCache {
      * @param request 请求
      * @return 根据请求创建的缓存文件
      */
-    public File createFile(DownloadRequest request);
+    public File createCacheFile(DownloadRequest request);
 
 	/**
 	 * 申请空间
