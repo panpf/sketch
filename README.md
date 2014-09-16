@@ -92,9 +92,9 @@ Spear.with(getBaseContext())
     .loadFailedDrawable(R.drawable.image_load_fail)   // 设置当加载失败的时候显示的图片
     .disableDiskCache() // 禁用磁盘缓存
     .disableMemoryCache()   // 禁用内存缓存
-    .diskCachePeriodOfValidity(60 * 1000) // 设置磁盘缓存有效期，单位毫秒，默认为0（永久有效）
+    .diskCacheTimeout(60 * 1000) // 设置磁盘缓存有效期为60秒
     .maxsize(1000, 800) // 设置最大尺寸，用来解码Bitmap时计算inSampleSize，防止加载过大的图片到内存中，默认为当前屏幕的1.5倍
-    .resize(300, 300)   // 重新定义图片宽高，将原始图片加载到内存中之后会使用ImageProcessor根据原始图片创建一张新的300x300的图片，如果ImageView的宽高是固定的，那么就会使用ImageView的宽高作为resize
+    .resize(300, 300)   // 重新定义图片宽高，将原始图片加载到内存中之后会使用ImageProcessor根据原始图片创建一张新的300x300的图片
     .displayer(new OriginalFadeInImageDisplayer())  // 设置图片显示器，在最后一步会使用ImageDisplayer来显示图片
     .processor(new CircleImageProcessor())  // 设置图片处理器
     .scaleType(ImageView.ScaleType.FIT_START)   // 设置图片显示模式，在使用ImageProcessor处理图片的时候会用到此参数，默认为ImageView的ScaleType
