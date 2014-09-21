@@ -32,8 +32,9 @@ public interface LoadListener {
     /**
      * 已完成
      * @param bitmap 图片
+     * @param from 来源
      */
-    public void onCompleted(Bitmap bitmap);
+    public void onCompleted(Bitmap bitmap, From from);
 
     /**
      * 已失败
@@ -45,4 +46,19 @@ public interface LoadListener {
      * 已取消
      */
     public void onCanceled();
+
+    /**
+     * 来源
+     */
+    public enum From{
+        /**
+         * 网络下载
+         */
+        NETWORK,
+
+        /**
+         * 本地
+         */
+        LOCAL,
+    }
 }

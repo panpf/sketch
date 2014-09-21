@@ -36,8 +36,9 @@ public interface DisplayListener {
      * @param uri 地址
      * @param imageView 视图
      * @param drawable 图片
+     * @param from 来源
      */
-    public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable);
+    public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, From from);
 
     /**
      * 已失败
@@ -49,4 +50,24 @@ public interface DisplayListener {
      * 已取消
      */
     public void onCanceled();
+
+    /**
+     * 来源
+     */
+    public enum From{
+        /**
+         * 网络下载
+         */
+        NETWORK,
+
+        /**
+         * 本地
+         */
+        LOCAL,
+
+        /**
+         * 内存缓存
+         */
+        MOMERY_CACHE,
+    }
 }

@@ -104,7 +104,7 @@ public class NormalActivity extends ActionBarActivity {
                     }
 
                     @Override
-                    public void onCompleted(String imageUri, ImageView imageView, BitmapDrawable drawable) {
+                    public void onCompleted(String imageUri, ImageView imageView, BitmapDrawable drawable, From from) {
                         progressBar.setVisibility(View.GONE);
                     }
 

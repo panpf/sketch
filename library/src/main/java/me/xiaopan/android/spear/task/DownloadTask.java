@@ -19,6 +19,8 @@ package me.xiaopan.android.spear.task;
 import java.io.File;
 import java.util.concurrent.Callable;
 
+import me.xiaopan.android.spear.download.DownloadResult;
+import me.xiaopan.android.spear.request.DownloadListener;
 import me.xiaopan.android.spear.request.DownloadRequest;
 import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.request.Request;
@@ -43,22 +45,28 @@ public class DownloadTask extends Task{
             return;
 		}
 
-        Object result = null;
+        DownloadResult downloadResult = null;
         try {
-            result = get();
+            Object result = get();
+            if(result != null && result instanceof DownloadResult){
+                downloadResult = (DownloadResult) result;
+                if(downloadResult.getResult() == null){
+                    downloadResult = null;
+                }
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
 
-        if(result != null){
+        if(downloadResult != null){
             if(!(downloadRequest instanceof LoadRequest)){
                 downloadRequest.setStatus(Request.Status.COMPLETED);
             }
             if(downloadRequest.getDownloadListener() != null){
-                if(result.getClass().isAssignableFrom(File.class)){
-                    downloadRequest.getDownloadListener().onCompleted((File) result);
+                if(downloadResult.getResult().getClass().isAssignableFrom(File.class)){
+                    downloadRequest.getDownloadListener().onCompleted((File) downloadResult.getResult(), downloadResult.isFromNetwork()? DownloadListener.From.NETWORK: DownloadListener.From.LOCAL_CACHE);
                 }else{
-                    downloadRequest.getDownloadListener().onCompleted((byte[]) result);
+                    downloadRequest.getDownloadListener().onCompleted((byte[]) downloadResult.getResult(), downloadResult.isFromNetwork()? DownloadListener.From.NETWORK: DownloadListener.From.LOCAL_CACHE);
                 }
             }
         }else{

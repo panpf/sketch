@@ -17,6 +17,12 @@
 package me.xiaopan.android.spear.widget;
 
 import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Point;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
@@ -32,6 +38,7 @@ import me.xiaopan.android.spear.request.DisplayOptions;
 import me.xiaopan.android.spear.request.ProgressCallback;
 import me.xiaopan.android.spear.request.Request;
 import me.xiaopan.android.spear.request.RequestFuture;
+import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 import me.xiaopan.android.spear.util.Scheme;
 
@@ -44,12 +51,57 @@ public class SpearImageView extends ImageView{
     private DisplayListener displayListener;
     private ProgressCallback progressCallback;
 
+    private Paint paint;
+    private Path path;
+    private int debugColor = -1;
+    private DebugColorListener debugColorListener;
+
     public SpearImageView(Context context) {
         super(context);
     }
 
     public SpearImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+
+        // 重新计算三角形的位置
+        if(path != null){
+            path.reset();
+            int x = getWidth()/10;
+            int y = getWidth()/10;
+            path.moveTo(getPaddingLeft(), getPaddingTop());
+            path.lineTo(getPaddingLeft()+x, getPaddingTop());
+            path.lineTo(getPaddingLeft(), getPaddingTop()+y);
+            path.close();
+        }
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+
+        // 绘制三角形
+        if(debugColor == -1){
+            return;
+        }
+        if(paint == null){
+            paint = new Paint();
+        }
+        paint.setColor(debugColor);
+        if(path == null){
+            path = new Path();
+            int x = getWidth()/10;
+            int y = getWidth()/10;
+            path.moveTo(getPaddingLeft(), getPaddingTop());
+            path.lineTo(getPaddingLeft()+x, getPaddingTop());
+            path.lineTo(getPaddingLeft(), getPaddingTop()+y);
+            path.close();
+        }
+        canvas.drawPath(path, paint);
     }
 
     /**
@@ -101,7 +153,17 @@ public class SpearImageView extends ImageView{
             &&  requestFuture.getUri().equals(uri)){
             return;
         }
-        requestFuture = Spear.with(getContext()).display(uri, this).options(displayOptions).listener(displayListener).progressCallback(progressCallback).fire();
+        DisplayListener listener;
+        if(Spear.with(getContext()).isDebugMode()){
+            if(debugColorListener == null){
+                debugColorListener = new DebugColorListener();
+            }
+            listener = debugColorListener;
+        }else{
+            debugColor = -1;
+            listener = displayListener;
+        }
+        requestFuture = Spear.with(getContext()).display(uri, this).options(displayOptions).listener(listener).progressCallback(progressCallback).fire();
     }
 
     /**
@@ -182,6 +244,48 @@ public class SpearImageView extends ImageView{
             LayerDrawable layerDrawable = (LayerDrawable) drawable;
             for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
                 notifyDrawable(layerDrawable.getDrawable(i), isDisplayed);
+            }
+        }
+    }
+
+    private class DebugColorListener implements DisplayListener{
+        @Override
+        public void onStarted() {
+            debugColor = -1;
+            invalidate();
+            if(displayListener != null){
+                displayListener.onStarted();
+            }
+        }
+
+        @Override
+        public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, From from) {
+            if(from != null){
+                switch (from){
+                    case MOMERY_CACHE: debugColor = 0x8800FF00; break;
+                    case LOCAL: debugColor = 0x88FFFF00; break;
+                    case NETWORK: debugColor = 0x88FF0000; break;
+                }
+            }else{
+                debugColor = -1;
+            }
+            invalidate();
+            if(displayListener != null){
+                displayListener.onCompleted(uri, imageView, drawable, from);
+            }
+        }
+
+        @Override
+        public void onFailed(FailureCause failureCause) {
+            if(displayListener != null){
+                displayListener.onFailed(failureCause);
+            }
+        }
+
+        @Override
+        public void onCanceled() {
+            if(displayListener != null){
+                displayListener.onCanceled();
             }
         }
     }

@@ -132,11 +132,22 @@ public class DownloadActivity extends ActionBarActivity {
                     }
 
                     @Override
-                    public void onCompleted(final byte[] data) {
+                    public void onCompleted(final byte[] data, From from) {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
                                 imageView.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void onCompleted(final File cacheFile, From from) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.setImageURI(Uri.fromFile(cacheFile));
                                 progressBar.setVisibility(View.GONE);
                             }
                         });
@@ -148,17 +159,6 @@ public class DownloadActivity extends ActionBarActivity {
                             @Override
                             public void run() {
                                 Toast.makeText(getBaseContext(), "下载失败", Toast.LENGTH_SHORT).show();
-                                progressBar.setVisibility(View.GONE);
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void onCompleted(final File cacheFile) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                imageView.setImageURI(Uri.fromFile(cacheFile));
                                 progressBar.setVisibility(View.GONE);
                             }
                         });

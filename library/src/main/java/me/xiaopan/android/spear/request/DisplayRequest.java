@@ -488,7 +488,7 @@ public class DisplayRequest extends LoadRequest{
                     imageView.clearAnimation();
                     imageView.setImageDrawable(cacheDrawable);
                     if(displayListener != null){
-                        displayListener.onCompleted(uri, imageView, cacheDrawable);
+                        displayListener.onCompleted(uri, imageView, cacheDrawable, DisplayListener.From.MOMERY_CACHE);
                     }
                     return null;
                 }

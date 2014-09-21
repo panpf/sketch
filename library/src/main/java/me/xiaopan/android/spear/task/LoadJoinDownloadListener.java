@@ -22,6 +22,7 @@ import java.util.concurrent.Executor;
 import me.xiaopan.android.spear.decode.ByteArrayDecodeListener;
 import me.xiaopan.android.spear.decode.CacheFileDecodeListener;
 import me.xiaopan.android.spear.request.DownloadListener;
+import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.util.FailureCause;
 
@@ -41,13 +42,13 @@ public class LoadJoinDownloadListener implements DownloadListener {
 	}
 
     @Override
-    public void onCompleted(File cacheFile) {
-        executor.execute(new LoadTask(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest)));
+    public void onCompleted(File cacheFile, From from) {
+        executor.execute(new LoadTask(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest), from!=null?(from==From.LOCAL_CACHE?LoadListener.From.LOCAL :LoadListener.From.NETWORK):null));
     }
 
     @Override
-    public void onCompleted(byte[] data) {
-        executor.execute(new LoadTask(loadRequest, new ByteArrayDecodeListener(data, loadRequest)));
+    public void onCompleted(byte[] data, From from) {
+        executor.execute(new LoadTask(loadRequest, new ByteArrayDecodeListener(data, loadRequest), from!=null?(from==From.LOCAL_CACHE?LoadListener.From.LOCAL :LoadListener.From.NETWORK):null));
     }
 
 	@Override

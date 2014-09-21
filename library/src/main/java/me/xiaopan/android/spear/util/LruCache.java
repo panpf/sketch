@@ -310,7 +310,7 @@ public class LruCache<K, V> {
     }
 
     /**
-     * Returns a copy of the current contents of the cache, ordered from least
+     * Returns a readData of the current contents of the cache, ordered from least
      * recently accessed to most recently accessed.
      */
     public synchronized final Map<K, V> snapshot() {

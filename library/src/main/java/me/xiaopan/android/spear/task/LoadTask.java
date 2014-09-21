@@ -22,15 +22,18 @@ import java.util.concurrent.Callable;
 
 import me.xiaopan.android.spear.decode.ImageDecoder;
 import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.request.Request;
 
 public class LoadTask extends Task {
 	private LoadRequest loadRequest;
+    private LoadListener.From from;
 	
-	public LoadTask(LoadRequest loadRequest, ImageDecoder.DecodeListener onDecodeListener) {
+	public LoadTask(LoadRequest loadRequest, ImageDecoder.DecodeListener onDecodeListener, LoadListener.From from) {
 		super(loadRequest, new LoadCallable(loadRequest, onDecodeListener));
 		this.loadRequest = loadRequest;
+        this.from = from;
 	}
 	
 	@Override
@@ -54,7 +57,7 @@ public class LoadTask extends Task {
                 loadRequest.setStatus(Request.Status.COMPLETED);
             }
             if(loadRequest.getLoadListener() != null){
-                loadRequest.getLoadListener().onCompleted(bitmap);
+                loadRequest.getLoadListener().onCompleted(bitmap, from);
             }
         }else{
             if(!(loadRequest instanceof DisplayRequest)){

@@ -32,6 +32,7 @@ import me.xiaopan.android.spear.decode.DrawableDecodeListener;
 import me.xiaopan.android.spear.decode.FileDecodeListener;
 import me.xiaopan.android.spear.request.DisplayRequest;
 import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.request.Request;
 import me.xiaopan.android.spear.task.DisplayJoinLoadListener;
@@ -152,7 +153,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
                 	}
 
                     // 如果缓存文件可用就从本地读取
-                    localTaskExecutor.execute(new LoadTask(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest)));
+                    localTaskExecutor.execute(new LoadTask(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest), LoadListener.From.LOCAL));
                     if(loadRequest.getSpear().isDebugMode()){
                         Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - HTTP - 本地" + "；" + loadRequest.getName());
                     }
@@ -170,25 +171,25 @@ public class DefaultRequestExecutor implements RequestExecutor {
                 }
 				break;
 			case FILE :
-                localTaskExecutor.execute(new LoadTask(loadRequest, new FileDecodeListener(new File(Scheme.FILE.crop(loadRequest.getUri())), loadRequest)));
+                localTaskExecutor.execute(new LoadTask(loadRequest, new FileDecodeListener(new File(Scheme.FILE.crop(loadRequest.getUri())), loadRequest), LoadListener.From.LOCAL));
                 if(loadRequest.getSpear().isDebugMode()){
                     Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - FILE" + "；" + loadRequest.getName());
                 }
 				break;
 			case ASSETS :
-                localTaskExecutor.execute(new LoadTask(loadRequest, new AssetsDecodeListener(Scheme.ASSETS.crop(loadRequest.getUri()), loadRequest)));
+                localTaskExecutor.execute(new LoadTask(loadRequest, new AssetsDecodeListener(Scheme.ASSETS.crop(loadRequest.getUri()), loadRequest), LoadListener.From.LOCAL));
                 if(loadRequest.getSpear().isDebugMode()){
                     Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - ASSETS" + "；" + loadRequest.getName());
                 }
 				break;
 			case CONTENT :
-                localTaskExecutor.execute(new LoadTask(loadRequest, new ContentDecodeListener(loadRequest.getUri(), loadRequest)));
+                localTaskExecutor.execute(new LoadTask(loadRequest, new ContentDecodeListener(loadRequest.getUri(), loadRequest), LoadListener.From.LOCAL));
                 if(loadRequest.getSpear().isDebugMode()){
                     Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - CONTENT" + "；" + loadRequest.getName());
                 }
 				break;
 			case DRAWABLE :
-                localTaskExecutor.execute(new LoadTask(loadRequest, new DrawableDecodeListener(Scheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest)));
+                localTaskExecutor.execute(new LoadTask(loadRequest, new DrawableDecodeListener(Scheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest), LoadListener.From.LOCAL));
                 if(loadRequest.getSpear().isDebugMode()){
                     Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - DRAWABLE" + "；" + loadRequest.getName());
                 }

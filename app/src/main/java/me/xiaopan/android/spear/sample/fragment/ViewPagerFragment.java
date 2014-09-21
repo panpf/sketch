@@ -98,7 +98,7 @@ public class ViewPagerFragment extends Fragment {
             }
 
             @Override
-            public void onCompleted(final Bitmap bitmap) {
+            public void onCompleted(final Bitmap bitmap, From from) {
                 handler.post(new Runnable() {
                     @Override
                     public void run() {

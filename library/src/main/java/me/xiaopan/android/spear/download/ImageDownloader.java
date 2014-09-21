@@ -25,7 +25,7 @@ public interface ImageDownloader {
 	/**
 	 * 下载
 	 */
-	public Object download(DownloadRequest downloadRequest);
+	public DownloadResult download(DownloadRequest downloadRequest);
 	
 	/**
 	 * 判断给定缓存文件地址的文件是否正在下载
@@ -43,4 +43,10 @@ public interface ImageDownloader {
      * @param timeOut 超时时间，单位毫秒，默认15秒
      */
     public void setTimeout(int timeOut);
+
+    /**
+     * 设置进度回调精度
+     * @param progressCallbackAccuracy 进度回调精度，默认为10，意思是整个下载过程中回调10次
+     */
+    public void setProgressCallbackAccuracy(int progressCallbackAccuracy);
 }

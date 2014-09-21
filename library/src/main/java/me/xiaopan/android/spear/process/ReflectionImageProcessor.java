@@ -53,15 +53,23 @@ public class ReflectionImageProcessor implements ImageProcessor {
 
     @Override
     public Bitmap process(Bitmap bitmap, ImageSize resize, ScaleType scaleType) {
-		// 初始化参数
-        if(bitmap == null) return null;
-        if (scaleType == null) scaleType = ScaleType.FIT_CENTER;
-
-        if(resize == null || ((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight()))){
-            return fullHandle(bitmap);
-        }else{
-            return cutHandle(bitmap, scaleType, resize);
+        if(bitmap == null){
+            return null;
         }
+        if (scaleType == null){
+            scaleType = ScaleType.FIT_CENTER;
+        }
+
+        if(resize == null){
+            return fullHandle(bitmap);
+        }
+
+        // 如果新的尺寸大于等于原图的尺寸，就重新定义新的尺寸
+        if((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight())){
+            Rect rect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
+            resize = new ImageSize(rect.width(), rect.height());
+        }
+        return cutHandle(bitmap, scaleType, resize);
 	}
 	
     private Bitmap fullHandle(Bitmap bitmap){

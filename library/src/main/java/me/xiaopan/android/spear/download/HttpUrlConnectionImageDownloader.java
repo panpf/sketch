@@ -49,6 +49,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
 	private Map<String, ReentrantLock> urlLocks;
     private int maxRetryCount = 1;
     private int timeOut = 15 * 1000;
+    private int progressCallbackAccuracy = 10;
 
 	public HttpUrlConnectionImageDownloader() {
 		this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
@@ -63,6 +64,11 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     @Override
     public void setTimeout(int timeOut) {
         this.timeOut = timeOut;
+    }
+
+    @Override
+    public void setProgressCallbackAccuracy(int progressCallbackAccuracy) {
+        this.progressCallbackAccuracy = progressCallbackAccuracy;
     }
 
     /**
@@ -85,19 +91,19 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
 	}
 
     @Override
-	public Object download(DownloadRequest request) {
+	public DownloadResult download(DownloadRequest request) {
         // 根据下载地址加锁，防止重复下载
         ReentrantLock urlLock = getUrlLock(request.getUri());
         urlLock.lock();
 
-        Object result = null;
+        DownloadResult result = null;
         int number = 0;
         while(true){
             try {
                 result = realDownload(request);
                 break;
             } catch (Throwable e) {
-                if(e instanceof CanceledException){
+                if(e instanceof HttpClientImageDownloader.CanceledException){
                     break;
                 }else{
                     boolean retry = (e instanceof SocketTimeoutException || e instanceof InterruptedIOException) && number < maxRetryCount;
@@ -120,7 +126,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         return result;
     }
 
-    private Object realDownload(DownloadRequest request) throws Throwable {
+    private DownloadResult realDownload(DownloadRequest request) throws Throwable {
         // 如果已经取消了就直接结束
         if (request.isCanceled()) {
             if (request.getSpear().isDebugMode()) {
@@ -132,7 +138,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         // 如果缓存文件已经存在了就直接返回缓存文件
         File cacheFile = request.getCacheFile();
         if (cacheFile != null && cacheFile.exists()) {
-            return cacheFile;
+            return DownloadResult.createByFile(cacheFile, false);
         }
 
         // 下载
@@ -152,7 +158,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - get response code" + "；" + request.getName());
                 }
-                throw new CanceledException();
+                throw new HttpClientImageDownloader.CanceledException();
             }
             if (responseCode >= 300) {
                 throw new IllegalStateException("状态异常，状态码："+responseCode + " 原因：" + connection.getResponseMessage());
@@ -165,12 +171,12 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             }
 
             // 根据需求创建缓存文件并标记为正在下载
-            saveToCacheFile = cacheFile != null && request.getSpear().getDiskCache().applyForSpace(contentLength) && createFile(cacheFile);
+            saveToCacheFile = cacheFile != null && request.getSpear().getDiskCache().applyForSpace(contentLength) && HttpClientImageDownloader.confirmCreateCacheFile(cacheFile);
             if (request.isCanceled()) {
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - create cache file" + "；" + request.getName());
                 }
-                throw new CanceledException();
+                throw new HttpClientImageDownloader.CanceledException();
             }
 
             // 锁定文件，标记为正在下载
@@ -184,7 +190,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - get input stream" + "；" + request.getName());
                 }
-                throw new CanceledException();
+                throw new HttpClientImageDownloader.CanceledException();
             }
 
             // 根据是否需要缓存到本地创建不同的输出流
@@ -192,16 +198,16 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             outputStream = new BufferedOutputStream(saveToCacheFile ? new FileOutputStream(cacheFile, false) : (byteArrayOutputStream = new ByteArrayOutputStream()), 8 * 1024);
 
             // 读取数据
-            long completedLength = copy(inputStream, outputStream, request, contentLength);
+            long completedLength = HttpClientImageDownloader.readData(inputStream, outputStream, request, contentLength, progressCallbackAccuracy);
             if (request.isCanceled()) {
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - read data end" + "；" + request.getName());
                 }
-                throw new CanceledException();
+                throw new HttpClientImageDownloader.CanceledException();
             }
 
             // 转换结果
-            Object result = saveToCacheFile ? cacheFile : byteArrayOutputStream.toByteArray();
+            DownloadResult result = saveToCacheFile ? DownloadResult.createByFile(cacheFile, true) : DownloadResult.createByByteArray(byteArrayOutputStream.toByteArray(), true);
             if (request.getSpear().isDebugMode()) {
                 Log.i(Spear.LOG_TAG, NAME + "：" + "下载成功" + "；" + "文件长度：" + completedLength + "/" + contentLength + "；" + request.getName());
             }
@@ -242,46 +248,5 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             }
             throw throwable;
         }
-    }
-
-    public long copy(InputStream inputStream, OutputStream outputStream, DownloadRequest downloadRequest, long contentLength) throws IOException {
-        int readNumber;	//读取到的字节的数量
-        long completedLength = 0;
-        long averageLength = contentLength/10;
-        int callbackNumber = 0;
-        byte[] cacheBytes = new byte[1024*4];//数据缓存区
-        while(!downloadRequest.isCanceled() && (readNumber = inputStream.read(cacheBytes)) != -1){
-            outputStream.write(cacheBytes, 0, readNumber);
-            completedLength += readNumber;
-            if(downloadRequest.getDownloadProgressCallback() != null && (completedLength >= (callbackNumber+1)*averageLength || completedLength == contentLength)){
-                callbackNumber++;
-                downloadRequest.getDownloadProgressCallback().onUpdateProgress(contentLength, completedLength);
-            }
-        }
-        outputStream.flush();
-        return completedLength;
-    }
-
-    /**
-     * 创建文件，一定要保证给定的文件是存在的，创建的关键是如果文件所在的目录不存在的话就先创建目录
-     * @param file 要创建的文件
-     * @return true：创建好了
-     */
-    public static boolean createFile(File file){
-        if(!file.exists()){
-            File parentDir = file.getParentFile();
-            if(!parentDir.exists()){
-                parentDir.mkdirs();
-            }
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return file.exists();
-    }
-
-    private static class CanceledException extends IOException{
     }
 }

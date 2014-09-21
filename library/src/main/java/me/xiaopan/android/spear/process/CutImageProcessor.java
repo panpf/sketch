@@ -32,13 +32,23 @@ public class CutImageProcessor implements ImageProcessor {
 
 	@Override
 	public Bitmap process(Bitmap bitmap, ImageSize resize, ScaleType scaleType) {
-		// 初始化参数
-        if(bitmap == null) return null;
-		if(resize == null || ((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight()))){
+        if(bitmap == null){
+            return null;
+        }
+		if(resize == null){
             return bitmap;
         }
-		if(scaleType == null) scaleType = ScaleType.FIT_CENTER;
+		if(scaleType == null){
+            scaleType = ScaleType.FIT_CENTER;
+        }
 
+        // 如果新的尺寸大于等于原图的尺寸，就重新定义新的尺寸
+        if((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight())){
+            Rect rect = computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
+            resize = new ImageSize(rect.width(), rect.height());
+        }
+
+        // 根据新的尺寸创建新的图片
         Bitmap newBitmap = Bitmap.createBitmap(resize.getWidth(), resize.getHeight(), Bitmap.Config.ARGB_8888);
         Rect srcRect = computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(newBitmap.getWidth(), newBitmap.getHeight()), scaleType);
         Canvas canvas = new Canvas(newBitmap);

@@ -24,6 +24,7 @@ import android.widget.ImageView;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ImageDisplayer;
+import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.request.DisplayRequest;
 import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.Request;
@@ -44,7 +45,7 @@ public class DisplayJoinLoadListener implements LoadListener {
     }
 
     @Override
-    public void onCompleted(Bitmap bitmap) {
+    public void onCompleted(Bitmap bitmap, From from) {
         //创建BitmapDrawable并放入内存缓存
         BitmapDrawable bitmapDrawable;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -73,12 +74,13 @@ public class DisplayJoinLoadListener implements LoadListener {
         }
 
         // 显示
-        displayRequest.getSpear().getHandler().post(new DisplayRunnable(displayRequest, bitmapDrawable, ImageDisplayer.BitmapType.SUCCESS, null));
+        DisplayListener.From displayFrom = from!=null?(from==From.NETWORK?DisplayListener.From.NETWORK:DisplayListener.From.LOCAL):null;
+        displayRequest.getSpear().getHandler().post(new DisplayRunnable(displayRequest, bitmapDrawable, ImageDisplayer.BitmapType.SUCCESS, null, displayFrom));
     }
 
     @Override
     public void onFailed(FailureCause failureCause) {
-        displayRequest.getSpear().getHandler().post(new DisplayRunnable(displayRequest, displayRequest.getFailedDrawable(), ImageDisplayer.BitmapType.FAILURE, failureCause));
+        displayRequest.getSpear().getHandler().post(new DisplayRunnable(displayRequest, displayRequest.getFailedDrawable(), ImageDisplayer.BitmapType.FAILURE, failureCause, null));
     }
 
     @Override
@@ -102,12 +104,14 @@ public class DisplayJoinLoadListener implements LoadListener {
         private ImageDisplayer.BitmapType bitmapType;
         private BitmapDrawable bitmapDrawable;
         private FailureCause failureCause;
+        private DisplayListener.From from;
 
-        public DisplayRunnable(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, ImageDisplayer.BitmapType bitmapType, FailureCause failureCause) {
+        public DisplayRunnable(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, ImageDisplayer.BitmapType bitmapType, FailureCause failureCause, DisplayListener.From from) {
             this.displayRequest = displayRequest;
             this.bitmapDrawable = bitmapDrawable;
             this.bitmapType = bitmapType;
             this.failureCause = failureCause;
+            this.from = from;
         }
 
         @Override
@@ -133,7 +137,7 @@ public class DisplayJoinLoadListener implements LoadListener {
 
             if(displayRequest.getDisplayListener() != null){
                 if(bitmapType == ImageDisplayer.BitmapType.SUCCESS){
-                    displayRequest.getDisplayListener().onCompleted(displayRequest.getUri(), imageView, bitmapDrawable);
+                    displayRequest.getDisplayListener().onCompleted(displayRequest.getUri(), imageView, bitmapDrawable, from);
                 }else{
                     displayRequest.getDisplayListener().onFailed(failureCause);
                 }

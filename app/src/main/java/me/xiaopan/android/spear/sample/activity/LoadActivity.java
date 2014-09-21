@@ -267,7 +267,7 @@ public class LoadActivity extends ActionBarActivity {
                         }
 
                         @Override
-                        public void onCompleted(final Bitmap bitmap) {
+                        public void onCompleted(final Bitmap bitmap, From from) {
                             reload = false;
                             runOnUiThread(new Runnable() {
                                 @Override

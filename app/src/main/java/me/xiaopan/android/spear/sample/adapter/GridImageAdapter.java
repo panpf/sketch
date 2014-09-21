@@ -97,7 +97,7 @@ public class GridImageAdapter extends BaseAdapter {
                 }
 
                 @Override
-                public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable) {
+                public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, From from) {
                     viewHolder.progressPieView.setVisibility(View.GONE);
                 }
 
