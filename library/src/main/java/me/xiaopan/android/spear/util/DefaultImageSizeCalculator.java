@@ -27,18 +27,19 @@ import java.lang.reflect.Field;
 public class DefaultImageSizeCalculator implements ImageSizeCalculator{
     @Override
     public ImageSize calculateImageMaxsize(ImageView imageView) {
-        int width = getWidth(imageView, true, true);
-        int height = getHeight(imageView, true, true);
-        if (width > 0 && height > 0){
+        int width = getWidth(imageView, true, true, true);
+        int height = getHeight(imageView, true, true, true);
+        if (width <= 0 && height <= 0){
+            return null;
+        }else{
             return new ImageSize(width, height);
         }
-        return null;
     }
 
     @Override
     public ImageSize calculateImageResize(ImageView imageView) {
-        int width = getWidth(imageView, true, false);
-        int height = getHeight(imageView, true, false);
+        int width = getWidth(imageView, true, false, false);
+        int height = getHeight(imageView, true, false, false);
         if (width > 0 && height > 0){
             return new ImageSize(width, height);
         }
@@ -78,7 +79,7 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
         return inSampleSize;
     }
 
-    public static int getWidth(ImageView imageView, boolean checkRealViewSize, boolean checkMaxViewSize) {
+    public static int getWidth(ImageView imageView, boolean checkRealViewSize, boolean checkMaxViewSize, boolean acceptWrapContent) {
         if(imageView == null){
             return 0;
         }
@@ -94,10 +95,13 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
         if(width <= 0 && checkMaxViewSize){
             width = getImageViewFieldValue(imageView, "mMaxWidth");
         }
+        if(width <= 0 && acceptWrapContent && params != null && params.width == ViewGroup.LayoutParams.WRAP_CONTENT){
+            width = -1;
+        }
         return width;
     }
 
-    public static int getHeight(ImageView imageView, boolean checkRealViewSize, boolean checkMaxViewSize) {
+    public static int getHeight(ImageView imageView, boolean checkRealViewSize, boolean checkMaxViewSize, boolean acceptWrapContent) {
         if(imageView == null){
             return 0;
         }
@@ -112,6 +116,9 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
         }
         if(height <= 0 && checkMaxViewSize){
             height = getImageViewFieldValue(imageView, "mMaxHeight");
+        }
+        if(height <= 0 && acceptWrapContent && params != null && params.height == ViewGroup.LayoutParams.WRAP_CONTENT){
+            height = -1;
         }
         return height;
     }
