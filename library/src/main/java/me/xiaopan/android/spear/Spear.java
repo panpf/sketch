@@ -32,8 +32,8 @@ import me.xiaopan.android.spear.cache.memory.LruMemoryCache;
 import me.xiaopan.android.spear.cache.memory.MemoryCache;
 import me.xiaopan.android.spear.decode.DefaultImageDecoder;
 import me.xiaopan.android.spear.decode.ImageDecoder;
-import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.download.HttpClientImageDownloader;
+import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.execute.DefaultRequestExecutor;
 import me.xiaopan.android.spear.execute.RequestExecutor;
 import me.xiaopan.android.spear.request.DisplayRequest;
@@ -69,10 +69,10 @@ public class Spear {
         this.context = context;
         this.handler = new Handler(Looper.getMainLooper());
         this.diskCache = new LruDiskCache(context);
-        this.imageDownloader = new HttpClientImageDownloader();
         this.memoryCache = new LruMemoryCache();
         this.imageDecoder = new DefaultImageDecoder();
-        this.requestExecutor = new DefaultRequestExecutor();
+        this.imageDownloader = new HttpClientImageDownloader();
+        this.requestExecutor = new DefaultRequestExecutor.Builder().build();
         this.imageSizeCalculator = new DefaultImageSizeCalculator();
 	}
 

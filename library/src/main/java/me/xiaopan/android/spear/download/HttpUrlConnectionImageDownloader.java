@@ -48,7 +48,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     private Set<String> downloadingFiles;
 	private Map<String, ReentrantLock> urlLocks;
     private int maxRetryCount = 1;
-    private int timeOut = 15 * 1000;
+    private int timeout = 15 * 1000;
     private int progressCallbackAccuracy = 10;
 
 	public HttpUrlConnectionImageDownloader() {
@@ -63,7 +63,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
 
     @Override
     public void setTimeout(int timeOut) {
-        this.timeOut = timeOut;
+        this.timeout = timeOut;
     }
 
     @Override
@@ -148,18 +148,21 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         OutputStream outputStream = null;
         HttpURLConnection connection = null;
         try {
+            // 创建连接设置超时时间并开始连接
             connection = (HttpURLConnection) new URL(request.getUri()).openConnection();
-            connection.setConnectTimeout(timeOut);
-            connection.setReadTimeout(timeOut);
+            connection.setConnectTimeout(timeout);
+            connection.setReadTimeout(timeout);
+            connection.connect();
 
-            // 检查状态码
-            int responseCode = connection.getResponseCode();
             if (request.isCanceled()) {
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - get response code" + "；" + request.getName());
                 }
                 throw new HttpClientImageDownloader.CanceledException();
             }
+
+            // 检查状态码
+            int responseCode = connection.getResponseCode();
             if (responseCode >= 300) {
                 throw new IllegalStateException("状态异常，状态码："+responseCode + " 原因：" + connection.getResponseMessage());
             }
@@ -216,7 +219,6 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             try { outputStream.flush(); } catch (IOException e) { e.printStackTrace(); }
             try { outputStream.close(); } catch (IOException e) { e.printStackTrace(); }
             try { inputStream.close(); } catch (IOException e) { e.printStackTrace(); }
-            connection.disconnect();
 
             // 解除文件锁定
             if (lockedFilePath != null) {
@@ -232,9 +234,6 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             }
             if(inputStream != null){
                 try { inputStream.close(); } catch (IOException e) { e.printStackTrace(); }
-            }
-            if(connection != null){
-                connection.disconnect();
             }
 
             // 如果发生异常并且使用了缓存文件以及缓存文件存在就删除缓存文件，然后如果删除失败就输出LOG

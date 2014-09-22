@@ -19,6 +19,7 @@ package me.xiaopan.android.spear.execute;
 import android.util.Log;
 
 import java.io.File;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -52,22 +53,10 @@ public class DefaultRequestExecutor implements RequestExecutor {
 	private Executor netTaskExecutor;	//网络任务执行器
 	private Executor localTaskExecutor;	//本地任务执行器
 	
-	public DefaultRequestExecutor(Executor taskDispatchExecutor, Executor netTaskExecutor, Executor localTaskExecutor){
-		this.taskDispatchExecutor = taskDispatchExecutor;
-		this.netTaskExecutor = netTaskExecutor;
-		this.localTaskExecutor = localTaskExecutor;
-	}
-	
-	public DefaultRequestExecutor(Executor netTaskExecutor){
-		this(
-			new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy()),
-			netTaskExecutor, 
-			new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy())
-		);
-	}
-	
-	public DefaultRequestExecutor(){
-		this(new ThreadPoolExecutor(5, 10, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy()));
+	private DefaultRequestExecutor(Builder builder){
+		this.taskDispatchExecutor = builder.taskDispatchExecutor;
+        this.netTaskExecutor = builder.netTaskExecutor;
+        this.localTaskExecutor = builder.localTaskExecutor;
 	}
 	
 	@Override
@@ -212,5 +201,51 @@ public class DefaultRequestExecutor implements RequestExecutor {
             displayRequest.setLoadProgressCallback(new DisplayJoinLoadProgressCallback(displayRequest, displayRequest.getDisplayProgressCallback()));
         }
         executeLoadRequest(displayRequest);
+    }
+
+    public static class Builder{
+        private Executor taskDispatchExecutor;	//任务调度执行器
+        private Executor netTaskExecutor;	//网络任务执行器
+        private Executor localTaskExecutor;	//本地任务执行器
+
+        public Builder taskDispatchExecutor(BlockingQueue<Runnable> workQueue){
+            if(workQueue != null){
+                workQueue = new LinkedBlockingQueue<Runnable>(20);
+            }
+            this.taskDispatchExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
+            return this;
+        }
+
+        public Builder netTaskExecutor(int maxPoolSize, BlockingQueue<Runnable> workQueue){
+            if(maxPoolSize <= 0){
+                maxPoolSize = 5;
+            }
+            if(workQueue == null){
+                workQueue = new LinkedBlockingQueue<Runnable>(20);
+            }
+            this.netTaskExecutor = new ThreadPoolExecutor(maxPoolSize, maxPoolSize, 1, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
+            return this;
+        }
+
+        public Builder localTaskExecutor(BlockingQueue<Runnable> workQueue){
+            if(workQueue == null){
+                workQueue = new LinkedBlockingQueue<Runnable>(20);
+            }
+            this.localTaskExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
+            return this;
+        }
+
+        public DefaultRequestExecutor build(){
+            if(taskDispatchExecutor == null){
+                taskDispatchExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy());
+            }
+            if(netTaskExecutor == null){
+                netTaskExecutor = new ThreadPoolExecutor(5, 5, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy());
+            }
+            if(localTaskExecutor == null){
+                localTaskExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(20), new ThreadPoolExecutor.DiscardOldestPolicy());
+            }
+            return new DefaultRequestExecutor(this);
+        }
     }
 }

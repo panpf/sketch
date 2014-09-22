@@ -19,7 +19,7 @@ package me.xiaopan.android.spear.task;
 import java.io.File;
 import java.util.concurrent.Callable;
 
-import me.xiaopan.android.spear.download.DownloadResult;
+import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.request.DownloadListener;
 import me.xiaopan.android.spear.request.DownloadRequest;
 import me.xiaopan.android.spear.request.LoadRequest;
@@ -45,11 +45,11 @@ public class DownloadTask extends Task{
             return;
 		}
 
-        DownloadResult downloadResult = null;
+        ImageDownloader.DownloadResult downloadResult = null;
         try {
             Object result = get();
-            if(result != null && result instanceof DownloadResult){
-                downloadResult = (DownloadResult) result;
+            if(result != null && result instanceof ImageDownloader.DownloadResult){
+                downloadResult = (ImageDownloader.DownloadResult) result;
                 if(downloadResult.getResult() == null){
                     downloadResult = null;
                 }

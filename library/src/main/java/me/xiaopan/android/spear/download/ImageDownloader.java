@@ -16,6 +16,8 @@
 
 package me.xiaopan.android.spear.download;
 
+import java.io.File;
+
 import me.xiaopan.android.spear.request.DownloadRequest;
 
 /**
@@ -49,4 +51,46 @@ public interface ImageDownloader {
      * @param progressCallbackAccuracy 进度回调精度，默认为10，意思是整个下载过程中回调10次
      */
     public void setProgressCallbackAccuracy(int progressCallbackAccuracy);
+
+    /**
+     * 下载结果
+     */
+    public static class DownloadResult {
+        private Object result;
+        private boolean fromNetwork;
+
+        private DownloadResult(){
+
+        }
+
+        public Object getResult() {
+            return result;
+        }
+
+        public void setResult(Object result) {
+            this.result = result;
+        }
+
+        public boolean isFromNetwork() {
+            return fromNetwork;
+        }
+
+        public void setFromNetwork(boolean fromNetwork) {
+            this.fromNetwork = fromNetwork;
+        }
+
+        public static DownloadResult createByFile(File resultFile, boolean fromNetwork){
+            DownloadResult result = new DownloadResult();
+            result.setResult(resultFile);
+            result.setFromNetwork(fromNetwork);
+            return result;
+        }
+
+        public static DownloadResult createByByteArray(byte[] resultDate, boolean fromNetwork){
+            DownloadResult result = new DownloadResult();
+            result.setResult(resultDate);
+            result.setFromNetwork(fromNetwork);
+            return result;
+        }
+    }
 }
