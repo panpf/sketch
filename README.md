@@ -141,9 +141,9 @@ Spear除了有display()方法用来显示图片之外，还有load()用来加载
 ``这三个方法的用法都一样``
 
 display()与load()、download()的区别
-1. display().fire()必须在主线程执行，否则将无效，而load().fire()和download.fire()则没有此限制
-2. **在使用display()方法显示图片的时候，Spear会自动根据ImageView的宽高计算maxsize和resize，条件就是计算maxsize时要求ImageView的宽高至少有一个是固定的，而计算resize的时候要求宽高都是固定的，这样就省却了很多麻烦，也节省了内存**
-3. 可使用的属性display()最多，download()最少具体如下表所示：
+>* display().fire()必须在主线程执行，否则将无效，而load().fire()和download.fire()则没有此限制
+>* **在使用display()方法显示图片的时候，Spear会自动根据ImageView的宽高计算maxsize和resize，条件就是计算maxsize时要求ImageView的宽高至少有一个是固定的，而计算resize的时候要求宽高都是固定的，这样就省却了很多麻烦，也节省了内存**
+>* 可使用的属性display()最多，download()最少具体如下表所示：
 
 下面是属性表（'-'代表不支持）
 
