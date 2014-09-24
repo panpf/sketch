@@ -47,10 +47,10 @@ public interface ImageDownloader {
     public void setTimeout(int timeOut);
 
     /**
-     * 设置进度回调精度
-     * @param progressCallbackAccuracy 进度回调精度，默认为10，意思是整个下载过程中回调10次
+     * 设置进度回调次数
+     * @param progressCallbackNumber 进度回调次数，默认为10，意思是整个下载过程中进度回调10次，例如第一次是10%，第二次是20%，以此类推
      */
-    public void setProgressCallbackAccuracy(int progressCallbackAccuracy);
+    public void setProgressCallbackNumber(int progressCallbackNumber);
 
     /**
      * 下载结果

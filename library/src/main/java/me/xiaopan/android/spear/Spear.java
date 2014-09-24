@@ -65,7 +65,7 @@ public class Spear {
     private RequestExecutor requestExecutor;	//请求执行器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
 
-	public Spear(Context context){
+	private Spear(Context context){
         this.context = context;
         this.handler = new Handler(Looper.getMainLooper());
         this.diskCache = new LruDiskCache(context);

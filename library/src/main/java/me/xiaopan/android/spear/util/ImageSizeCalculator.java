@@ -46,14 +46,6 @@ public interface ImageSizeCalculator {
     public int compareMaxsize(ImageSize maxsize1, ImageSize maxsize2);
 
     /**
-     * 比较两个resize的大小，在使用options()方法批量设置属性的时候会使用此方法比较RequestOptions的resize和已有的resize，如果前者小于后者就会使用前者代替后者
-     * @param resize1 resize1
-     * @param resize2 resize2
-     * @return 等于0：两者相等；小于0：resize1小于resize2；大于0：resize1大于resize2
-     */
-    public int compareResize(ImageSize resize1, ImageSize resize2);
-
-    /**
      * 计算InSampleSize
      * @param outWidth 原始宽
      * @param outHeight 原始高

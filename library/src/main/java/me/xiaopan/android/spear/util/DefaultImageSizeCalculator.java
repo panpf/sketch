@@ -55,14 +55,6 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
     }
 
     @Override
-    public int compareResize(ImageSize resize1, ImageSize resize2) {
-        if(resize1 == null || resize2 == null){
-            return 0;
-        }
-        return (resize1.getWidth() * resize1.getHeight()) - (resize2.getWidth() - resize2.getHeight());
-    }
-
-    @Override
     public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight) {
         if(targetWidth <= 0 && targetHeight <= 0){
             return 1;

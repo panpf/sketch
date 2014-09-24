@@ -76,7 +76,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
 	private Map<String, ReentrantLock> urlLocks;
     private int maxRetryCount = 1;
 	private int timeout = 15 * 1000;
-    private int progressCallbackAccuracy = 10;
+    private int progressCallbackNumber = 10;
 
 	public HttpClientImageDownloader() {
 		this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
@@ -114,8 +114,8 @@ public class HttpClientImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public void setProgressCallbackAccuracy(int progressCallbackAccuracy) {
-        this.progressCallbackAccuracy = progressCallbackAccuracy;
+    public void setProgressCallbackNumber(int progressCallbackNumber) {
+        this.progressCallbackNumber = progressCallbackNumber;
     }
 
     /**
@@ -250,7 +250,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             outputStream = new BufferedOutputStream(saveToCacheFile ? new FileOutputStream(cacheFile, false) : (byteArrayOutputStream = new ByteArrayOutputStream()), 8 * 1024);
 
             // 读取数据
-            long completedLength = readData(inputStream, outputStream, request, contentLength, progressCallbackAccuracy);
+            long completedLength = readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
             if (request.isCanceled()) {
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - read data end" + "；" + request.getName());

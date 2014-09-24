@@ -18,6 +18,7 @@ package me.xiaopan.android.spear.request;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
@@ -403,7 +404,7 @@ public class DisplayRequest extends LoadRequest{
             if(this.maxsize == null || (options.getMaxsize() != null && spear.getImageSizeCalculator().compareMaxsize(options.getMaxsize(), this.maxsize) < 0)){
                 this.maxsize = options.getMaxsize();
             }
-            if(this.resize == null || (options.getResize() != null && spear.getImageSizeCalculator().compareResize(options.getResize(), this.resize) < 0)){
+            if(this.resize == null){
                 this.resize = options.getResize();
             }
             if(this.scaleType == null || (options.getScaleType() != null && this.scaleType != options.getScaleType())){
@@ -433,6 +434,12 @@ public class DisplayRequest extends LoadRequest{
          * @return RequestFuture 你可以通过RequestFuture来查看请求的状态或者取消这个请求
          */
         public RequestFuture fire() {
+            // 检查是否是在主线程
+            if(Thread.currentThread() != Looper.getMainLooper().getThread()){
+                new IllegalStateException("你不能在非主线程执行fire()方法").printStackTrace();
+                return null;
+            }
+
             // 执行请求
             if(displayListener != null){
                 displayListener.onStarted();
