@@ -44,6 +44,8 @@ import me.xiaopan.android.spear.util.Scheme;
  * SpearImageView
  */
 public class SpearImageView extends ImageView{
+    private static final String LOG_NAME = SpearImageView.class.getSimpleName();
+
     private RequestFuture requestFuture;
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
@@ -110,7 +112,9 @@ public class SpearImageView extends ImageView{
         setImageDrawable(null);
         if(requestFuture != null && !requestFuture.isFinished()){
             requestFuture.cancel();
-            Log.d(SpearImageView.class.getSimpleName(), "已取消");
+            if(Spear.with(getContext()).isDebugMode()){
+                Log.w(Spear.LOG_TAG, LOG_NAME+"；"+"已取消；"+requestFuture.getName());
+            }
         }
         super.onDetachedFromWindow();
     }
@@ -143,13 +147,14 @@ public class SpearImageView extends ImageView{
      * <br>String imageUri = "assets://image.png"; // from assets
      * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      * </blockquote>
+     * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public void setImageByUri(String uri){
+    public RequestFuture setImageByUri(String uri){
         // 如果正在加载或已加载完成并且URI与上次一致就不再加载
         if(requestFuture != null
             && (requestFuture.getStatus() == Request.Status.WAITING || requestFuture.getStatus() == Request.Status.LOADING || requestFuture.getStatus() == Request.Status.COMPLETED)
             &&  requestFuture.getUri().equals(uri)){
-            return;
+            return requestFuture;
         }
         DisplayListener listener;
         if(Spear.with(getContext()).isDebugMode()){
@@ -162,38 +167,43 @@ public class SpearImageView extends ImageView{
             listener = displayListener;
         }
         requestFuture = Spear.with(getContext()).display(uri, this).options(displayOptions).listener(listener).progressCallback(progressCallback).fire();
+        return requestFuture;
     }
 
     /**
      * 根据文件设置图片
      * @param imageFile SD卡上的图片文件
+     * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public void setImageByFile(File imageFile){
-        setImageByUri(Scheme.FILE.createUri(imageFile.getPath()));
+    public RequestFuture setImageByFile(File imageFile){
+        return setImageByUri(Scheme.FILE.createUri(imageFile.getPath()));
     }
 
     /**
      * 根据Drawable ID设置图片
      * @param drawableResId Drawable ID
+     * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public void setImageByDrawable(int drawableResId){
-        setImageByUri(Scheme.DRAWABLE.createUri(String.valueOf(drawableResId)));
+    public RequestFuture setImageByDrawable(int drawableResId){
+        return setImageByUri(Scheme.DRAWABLE.createUri(String.valueOf(drawableResId)));
     }
 
     /**
      * 根据assets文件名称设置图片
      * @param imageFileName ASSETS文件加下的图片文件的名称
+     * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public void setImageByAssets(String imageFileName){
-        setImageByUri(Scheme.ASSETS.createUri(imageFileName));
+    public RequestFuture setImageByAssets(String imageFileName){
+        return setImageByUri(Scheme.ASSETS.createUri(imageFileName));
     }
 
     /**
      * 根据Content Uri设置图片
      * @param uri Content Uri 这个URI是其它Content Provider返回的
+     * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public void setImageByUri(Uri uri){
-        setImageByUri(uri.toString());
+    public RequestFuture setImageByContent(Uri uri){
+        return setImageByUri(uri.toString());
     }
 
     /**
@@ -226,6 +236,14 @@ public class SpearImageView extends ImageView{
      */
     public void setProgressCallback(ProgressCallback progressCallback) {
         this.progressCallback = progressCallback;
+    }
+
+    /**
+     * 获取RequestFuture，你需要对此方法返回的对象进行非null验证，如果你没有调用过setImageBy***系列方法设置图片，那么此方法将一直返回null
+     * @return RequestFuture，你可以通过RequestFuture查看请求是否完成或主动取消请求
+     */
+    public RequestFuture getRequestFuture() {
+        return requestFuture;
     }
 
     /**

@@ -23,6 +23,12 @@ import me.xiaopan.android.spear.task.Task;
  */
 public interface Request {
     /**
+     * 获取请求名称，常用来在log中区分请求
+     * @return 请求名称
+     */
+    public String getName();
+
+    /**
      * 获取请求URI
      * @return 请求URI
      */

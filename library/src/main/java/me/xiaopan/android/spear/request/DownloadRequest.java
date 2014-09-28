@@ -49,6 +49,11 @@ public class DownloadRequest implements Request {
     protected boolean enableDiskCache;	// 是否开启磁盘缓存
 
     @Override
+	public String getName() {
+		return name;
+	}
+
+    @Override
     public String getUri() {
         return uri;
     }
@@ -97,13 +102,6 @@ public class DownloadRequest implements Request {
     public Spear getSpear() {
         return spear;
     }
-
-    /**
-     * 获取请求名称
-     */
-	public String getName() {
-		return name;
-	}
 
 	/**
 	 * 获取Uri协议类型

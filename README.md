@@ -178,10 +178,16 @@ display()与load()、download()的区别
 >* [设置``磁盘缓存目录``或``保留空间大小``（DiskCache）](https://github.com/xiaopansky/Spear/wiki/DiskCache)
 
 ###Downloads
->* [spear-1.1.0.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.0.jar)
->* [spear-1.1.0-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.0-sources.zip)
+>* [spear-1.1.1.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.1.jar)
+>* [spear-1.1.1-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.1-sources.zip)
 
 ###Change log
+###1.1.1
+>* ``新增``。RequestFuture增加了getName()方法用于获取请求名称
+>* ``优化``。优化了SpearImageView中onDetachedFromWindow()取消时的日志
+>* ``新增``。SpearImageView的setImageUriBy***系列方法新增了返回值，返回对应的RequestFuture，方便查看请求的状态
+>* ``修改``。SpearImageView的setImageByUri(Uri)方法改名为setImageByContent(Uri)
+
 ####1.1.0
 >* ``新增``。ImageDownloader新增setProgressCallbackNumber(int)方法可用来控制进度回调次数
 >* ``新增``。DownloadListener、LoadLinstener、DisplayListener的onCompleted()方法新增From参数，用来表示数据来自哪里

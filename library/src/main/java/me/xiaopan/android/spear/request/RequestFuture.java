@@ -20,10 +20,18 @@ package me.xiaopan.android.spear.request;
  * 你可以通过RequestFuture来查看请求的状态或者取消这个请求
  */
 public class RequestFuture {
-    public Request request;
+    private Request request;
 
     public RequestFuture(Request request) {
         this.request = request;
+    }
+
+    /**
+     * 获取请求名称，常用来在log中区分请求
+     * @return 请求名称
+     */
+    public String getName(){
+        return request.getName();
     }
 
     /**
