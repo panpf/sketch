@@ -20,7 +20,6 @@ bin/
 gen/
 
 # Idea files
-.idea/
 /.idea/workspace.xml
 /.idea/libraries
 #*.iml
