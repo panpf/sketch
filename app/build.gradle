@@ -2,10 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "20.0.0"
+    buildToolsVersion "21.0.1"
 
     defaultConfig {
-        applicationId "me.xiaopan.android.spear.sample"
+        applicationId "me.xiaoapn.android.imageloader"
         minSdkVersion 8
         targetSdkVersion 19
         versionCode 241

@@ -85,8 +85,8 @@ public class Spear {
      * @param downloadListener 下载监听器
      * @return DownloadRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始下载
      */
-	public DownloadRequest.Builder download(String uri, DownloadListener downloadListener){
-		 return new DownloadRequest.Builder(this, uri).listener(downloadListener);
+	public DownloadRequest.Helper download(String uri, DownloadListener downloadListener){
+		 return new DownloadRequest.Helper(this, uri).listener(downloadListener);
 	}
 
 
@@ -104,8 +104,8 @@ public class Spear {
      * @param loadListener 加载监听器
      * @return LoadRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadRequest.Builder load(String uri, LoadListener loadListener){
-        return new LoadRequest.Builder(this, uri).listener(loadListener);
+	public LoadRequest.Helper load(String uri, LoadListener loadListener){
+        return new LoadRequest.Helper(this, uri).listener(loadListener);
 	}
     
     /**
@@ -114,8 +114,8 @@ public class Spear {
      * @param loadListener 加载监听器
      * @return LoadRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadRequest.Builder load(File imageFile, LoadListener loadListener){
-        return new LoadRequest.Builder(this, Scheme.FILE.createUri(imageFile.getPath())).listener(loadListener);
+	public LoadRequest.Helper load(File imageFile, LoadListener loadListener){
+        return new LoadRequest.Helper(this, Scheme.FILE.createUri(imageFile.getPath())).listener(loadListener);
 	}
 
     /**
@@ -124,8 +124,8 @@ public class Spear {
      * @param loadListener 加载监听器
      * @return LoadRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadRequest.Builder load(int drawableResId, LoadListener loadListener){
-        return new LoadRequest.Builder(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
+	public LoadRequest.Helper load(int drawableResId, LoadListener loadListener){
+        return new LoadRequest.Helper(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
 	}
 
     /**
@@ -134,8 +134,8 @@ public class Spear {
      * @param loadListener 加载监听器
      * @return LoadRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadRequest.Builder load(Uri uri, LoadListener loadListener){
-        return new LoadRequest.Builder(this, uri.toString()).listener(loadListener);
+	public LoadRequest.Helper load(Uri uri, LoadListener loadListener){
+        return new LoadRequest.Helper(this, uri.toString()).listener(loadListener);
 	}
 
 
@@ -153,8 +153,8 @@ public class Spear {
      * @param imageView 显示图片的视图
      * @return DisplayRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayRequest.Builder display(String uri, ImageView imageView){
-        return new DisplayRequest.Builder(this, uri, imageView);
+    public DisplayRequest.Helper display(String uri, ImageView imageView){
+        return new DisplayRequest.Helper(this, uri, imageView);
     }
 
     /**
@@ -163,8 +163,8 @@ public class Spear {
      * @param imageView 显示图片的视图
      * @return DisplayRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayRequest.Builder display(File imageFile, ImageView imageView){
-        return new DisplayRequest.Builder(this, Scheme.FILE.createUri(imageFile.getPath()), imageView);
+    public DisplayRequest.Helper display(File imageFile, ImageView imageView){
+        return new DisplayRequest.Helper(this, Scheme.FILE.createUri(imageFile.getPath()), imageView);
     }
 
     /**
@@ -173,8 +173,8 @@ public class Spear {
      * @param imageView 显示图片的视图
      * @return DisplayRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayRequest.Builder display(int drawableResId, ImageView imageView){
-        return new DisplayRequest.Builder(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
+    public DisplayRequest.Helper display(int drawableResId, ImageView imageView){
+        return new DisplayRequest.Helper(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
     }
 
     /**
@@ -183,8 +183,8 @@ public class Spear {
      * @param imageView 显示图片的视图
      * @return DisplayRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayRequest.Builder display(Uri uri, ImageView imageView){
-        return new DisplayRequest.Builder(this, uri.toString(), imageView);
+    public DisplayRequest.Helper display(Uri uri, ImageView imageView){
+        return new DisplayRequest.Helper(this, uri.toString(), imageView);
     }
 	
     /**

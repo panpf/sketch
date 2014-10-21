@@ -2,14 +2,14 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 19
-    buildToolsVersion "20.0.0"
+    buildToolsVersion "21.0.1"
 
     defaultConfig {
         applicationId "me.xiaopan.android.spear.library"
         minSdkVersion 8
         targetSdkVersion 19
-        versionCode 110
-        versionName "1.1.0"
+        versionCode 112
+        versionName "1.1.2"
     }
 
     buildTypes {

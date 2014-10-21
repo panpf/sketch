@@ -97,7 +97,7 @@ public class LoadRequest extends DownloadRequest{
     /**
      * 生成器，用来生成加载请求
      */
-    public static class Builder{
+    public static class Helper{
         private Spear spear;
         private String uri;
 
@@ -124,7 +124,7 @@ public class LoadRequest extends DownloadRequest{
          * <br>“drawable://" + R.drawable.image // from drawables
          * </blockquote>
          */
-        public Builder(Spear spear, String uri) {
+        public Helper(Spear spear, String uri) {
             this.spear = spear;
             this.uri = uri;
             DisplayMetrics displayMetrics = spear.getContext().getResources().getDisplayMetrics();
@@ -135,7 +135,7 @@ public class LoadRequest extends DownloadRequest{
          * 关闭硬盘缓存
          * @return Builder
          */
-        public Builder disableDiskCache() {
+        public Helper disableDiskCache() {
             this.enableDiskCache = false;
             return this;
         }
@@ -145,7 +145,7 @@ public class LoadRequest extends DownloadRequest{
          * @param diskCacheTimeout 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
          * @return Builder
          */
-        public Builder diskCacheTimeout(long diskCacheTimeout) {
+        public Helper diskCacheTimeout(long diskCacheTimeout) {
             this.diskCacheTimeout = diskCacheTimeout;
             return this;
         }
@@ -155,7 +155,7 @@ public class LoadRequest extends DownloadRequest{
          * @param maxsize 最大尺寸
          * @return Builder
          */
-        public Builder maxsize(ImageSize maxsize){
+        public Helper maxsize(ImageSize maxsize){
             this.maxsize = maxsize;
             return this;
         }
@@ -166,7 +166,7 @@ public class LoadRequest extends DownloadRequest{
          * @param height 高
          * @return Builder
          */
-        public Builder maxsize(int width, int height){
+        public Helper maxsize(int width, int height){
             this.maxsize = new ImageSize(width, height);
             return this;
         }
@@ -174,9 +174,9 @@ public class LoadRequest extends DownloadRequest{
         /**
          * 重新修改宽高，BitmapProcessor会根据此宽高和ScaleType创建一张新的图片
          * @param resize 新的尺寸
-         * @return Builder
+         * @return Helper
          */
-        public Builder resize(ImageSize resize){
+        public Helper resize(ImageSize resize){
             this.resize = resize;
             if(this.resize != null && imageProcessor == null){
                 imageProcessor = new CutImageProcessor();
@@ -188,9 +188,9 @@ public class LoadRequest extends DownloadRequest{
          * 重新修改宽高，BitmapProcessor会根据此宽高和ScaleType创建一张新的图片
          * @param width 宽
          * @param height 高
-         * @return Builder
+         * @return Helper
          */
-        public Builder resize(int width, int height){
+        public Helper resize(int width, int height){
             this.resize = new ImageSize(width, height);
             if(imageProcessor == null){
                 imageProcessor = new CutImageProcessor();
@@ -201,9 +201,9 @@ public class LoadRequest extends DownloadRequest{
         /**
          * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
          * @param processor 图片处理器
-         * @return Builder
+         * @return Helper
          */
-        public Builder processor(ImageProcessor processor){
+        public Helper processor(ImageProcessor processor){
             this.imageProcessor = processor;
             return this;
         }
@@ -211,9 +211,9 @@ public class LoadRequest extends DownloadRequest{
         /**
          * 设置加载监听器
          * @param loadListener 加载监听器
-         * @return Builder
+         * @return Helper
          */
-        public Builder listener(LoadListener loadListener){
+        public Helper listener(LoadListener loadListener){
             this.loadListener = loadListener;
             return this;
         }
@@ -221,9 +221,9 @@ public class LoadRequest extends DownloadRequest{
         /**
          * 设置ScaleType，BitmapProcessor会根据resize和ScaleType创建一张新的图片
          * @param scaleType ScaleType
-         * @return Builder
+         * @return Helper
          */
-        public Builder scaleType(ImageView.ScaleType scaleType){
+        public Helper scaleType(ImageView.ScaleType scaleType){
             this.scaleType = scaleType;
             return this;
         }
@@ -231,9 +231,9 @@ public class LoadRequest extends DownloadRequest{
         /**
          * 设置进度回调
          * @param progressCallback 进度回调
-         * @return Builder
+         * @return Helper
          */
-        public Builder progressCallback(ProgressCallback progressCallback){
+        public Helper progressCallback(ProgressCallback progressCallback){
             this.progressCallback = progressCallback;
             return this;
         }
@@ -241,9 +241,9 @@ public class LoadRequest extends DownloadRequest{
         /**
          * 设置加载参数
          * @param options 加载参数
-         * @return Builder
+         * @return Helper
          */
-        public Builder options(LoadOptions options){
+        public Helper options(LoadOptions options){
             if(options == null){
                 return null;
             }
@@ -262,9 +262,9 @@ public class LoadRequest extends DownloadRequest{
         /**
          * 设置加载参数，你只需要提前将LoadOptions通过Spear.putOptions()方法存起来，然后在这里指定其名称即可
          * @param optionsName 参数名称
-         * @return Builder
+         * @return Helper
          */
-        public Builder options(Enum<?> optionsName){
+        public Helper options(Enum<?> optionsName){
             return options((LoadOptions) Spear.getOptions(optionsName));
         }
 

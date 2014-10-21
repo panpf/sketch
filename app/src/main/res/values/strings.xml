@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Spear</string>
+    <string name="app_name">Spear Sample</string>
 
     <string name="activity_titel_download">Image Download</string>
     <string name="activity_titel_load">Image Load</string>
     <string name="activity_titel_display">Image Display</string>
-    <string name="url_github">http://github.com/xiaopansky/Android-ImageLoader</string>
+    <string name="url_github">http://github.com/xiaopansky/Spear</string>
 
     <drawable name="divider">#80FFFFFF</drawable>
 
@@ -160,15 +160,12 @@
         <item>http://pic15.nipic.com/20110813/4172576_195523619000_2.png</item>
         <item>http://p6.zbjimg.com/task/2011-06/18/830578/4dfc40099f312.png</item>
         <item>http://img4.3lian.com/img2005/10/08/21.png</item>
-        <item>http://img2.3lian.com/img2007/14/04/20080405140141329.png</item>
-        <item>http://img2.3lian.com/img2007/14/04/20080405140143264.png</item>
         <item>http://pic11.nipic.com/20101210/145234_171359054236_2.png</item>
         <item>http://pic11.nipic.com/20101210/145234_164944034631_2.png</item>
         <item>http://pic23.nipic.com/20120813/10691159_104145620113_2.png</item>
         <item>http://img4.3lian.com/img2005/08/33/200902150651374454.png</item>
 
 
-        <item>http://files.jjcm.org/webp/bmw_webp.webp</item>
         <item>http://demos.mattwest.io/webp-demo-images/result.webp</item>
         <item>http://cdn.androidpolice.com/wp-content/uploads/2013/07/ps_webp_vs_png/1.webp</item>
         <item>https://fbcdn-sphotos-d-a.akamaihd.net/hphotos-ak-prn1/30545_478541545551262_1275108757_n.jpg.webp</item>

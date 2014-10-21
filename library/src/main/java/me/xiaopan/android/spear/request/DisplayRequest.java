@@ -154,10 +154,7 @@ public class DisplayRequest extends LoadRequest{
         return stringBuffer.toString();
     }
 
-    /**
-     * 生成器，生成显示请求
-     */
-    public static class Builder{
+    public static class Helper {
         private Spear spear;
         private String uri;
 
@@ -191,7 +188,7 @@ public class DisplayRequest extends LoadRequest{
          * <br>“drawable://" + R.drawable.image // from drawables
          * </blockquote>
          */
-        public Builder(Spear spear, String uri, ImageView imageView) {
+        public Helper(Spear spear, String uri, ImageView imageView) {
             this.spear = spear;
             this.uri = uri;
             this.imageView = imageView;
@@ -215,9 +212,9 @@ public class DisplayRequest extends LoadRequest{
 
         /**
          * 关闭硬盘缓存
-         * @return Builder
+         * @return Helper
          */
-        public Builder disableDiskCache() {
+        public Helper disableDiskCache() {
             this.enableDiskCache = false;
             return this;
         }
@@ -225,9 +222,9 @@ public class DisplayRequest extends LoadRequest{
         /**
          * 设置磁盘缓存超时时间
          * @param diskCacheTimeout 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-         * @return Builder
+         * @return Helper
          */
-        public Builder diskCacheTimeout(long diskCacheTimeout) {
+        public Helper diskCacheTimeout(long diskCacheTimeout) {
             this.diskCacheTimeout = diskCacheTimeout;
             return this;
         }
@@ -235,9 +232,9 @@ public class DisplayRequest extends LoadRequest{
         /**
          * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
          * @param maxsize 最大尺寸
-         * @return Builder
+         * @return Helper
          */
-        public Builder maxsize(ImageSize maxsize){
+        public Helper maxsize(ImageSize maxsize){
             this.maxsize = maxsize;
             return this;
         }
@@ -246,9 +243,9 @@ public class DisplayRequest extends LoadRequest{
          * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
          * @param width 宽
          * @param height 高
-         * @return Builder
+         * @return Helper
          */
-        public Builder maxsize(int width, int height){
+        public Helper maxsize(int width, int height){
             this.maxsize = new ImageSize(width, height);
             return this;
         }
@@ -256,9 +253,9 @@ public class DisplayRequest extends LoadRequest{
         /**
          * 重新修改宽高，BitmapProcessor会根据此宽高和ScaleType创建一张新的图片
          * @param resize 新的尺寸
-         * @return Builder
+         * @return Helper
          */
-        public Builder resize(ImageSize resize){
+        public Helper resize(ImageSize resize){
             this.resize = resize;
             if(this.resize != null && imageProcessor == null){
                 imageProcessor = new CutImageProcessor();
@@ -270,9 +267,9 @@ public class DisplayRequest extends LoadRequest{
          * 重新修改宽高，BitmapProcessor会根据此宽高和ScaleType创建一张新的图片
          * @param width 宽
          * @param height 高
-         * @return Builder
+         * @return Helper
          */
-        public Builder resize(int width, int height){
+        public Helper resize(int width, int height){
             this.resize = new ImageSize(width, height);
             if(imageProcessor == null){
                 imageProcessor = new CutImageProcessor();
@@ -283,9 +280,9 @@ public class DisplayRequest extends LoadRequest{
         /**
          * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
          * @param processor Bitmap处理器
-         * @return Builder
+         * @return Helper
          */
-        public Builder processor(ImageProcessor processor){
+        public Helper processor(ImageProcessor processor){
             this.imageProcessor = processor;
             return this;
         }
@@ -293,9 +290,9 @@ public class DisplayRequest extends LoadRequest{
         /**
          * 设置ScaleType，BitmapProcessor会根据resize和ScaleType创建一张新的图片
          * @param scaleType ScaleType
-         * @return Builder
+         * @return Helper
          */
-        public Builder scaleType(ImageView.ScaleType scaleType){
+        public Helper scaleType(ImageView.ScaleType scaleType){
             this.scaleType = scaleType;
             return this;
         }
@@ -303,7 +300,7 @@ public class DisplayRequest extends LoadRequest{
         /**
          * 关闭内存缓存
          */
-        public Builder disableMemoryCache() {
+        public Helper disableMemoryCache() {
             this.enableMemoryCache = false;
             return this;
         }
@@ -312,7 +309,7 @@ public class DisplayRequest extends LoadRequest{
          * 设置显示监听器
          * @param displayListener 显示监听器
          */
-        public Builder listener(DisplayListener displayListener) {
+        public Helper listener(DisplayListener displayListener) {
             this.displayListener = displayListener;
             return this;
         }
@@ -321,7 +318,7 @@ public class DisplayRequest extends LoadRequest{
          * 设置图片显示器，在加载完成后会调用此显示器来显示图片
          * @param displayer 图片显示器
          */
-        public Builder displayer(ImageDisplayer displayer) {
+        public Helper displayer(ImageDisplayer displayer) {
             this.imageDisplayer = displayer;
             return this;
         }
@@ -330,7 +327,7 @@ public class DisplayRequest extends LoadRequest{
          * 设置正在加载的时候显示的图片
          * @param drawableResId 正在加载的时候显示的图片
          */
-        public Builder loadingDrawable(int drawableResId) {
+        public Helper loadingDrawable(int drawableResId) {
             if(loadingDrawableHolder == null){
                 loadingDrawableHolder = new DrawableHolder();
             }
@@ -343,7 +340,7 @@ public class DisplayRequest extends LoadRequest{
          * @param drawableResId 正在加载的时候显示的图片
          * @param isProcess 是否使用BitmapProcessor对当前图片进行处理
          */
-        public Builder loadingDrawable(int drawableResId, boolean isProcess) {
+        public Helper loadingDrawable(int drawableResId, boolean isProcess) {
             if(loadingDrawableHolder == null){
                 loadingDrawableHolder = new DrawableHolder();
             }
@@ -356,7 +353,7 @@ public class DisplayRequest extends LoadRequest{
          * 设置当加载失败的时候显示的图片
          * @param drawableResId 当加载失败的时候显示的图片
          */
-        public Builder loadFailedDrawable(int drawableResId) {
+        public Helper loadFailedDrawable(int drawableResId) {
             if(loadFailedDrawableHolder == null){
                 loadFailedDrawableHolder = new DrawableHolder();
             }
@@ -369,7 +366,7 @@ public class DisplayRequest extends LoadRequest{
          * @param drawableResId 当加载失败的时候显示的图片
          * @param isProcess 是否使用BitmapProcessor对当前图片进行处理
          */
-        public Builder loadFailedDrawable(int drawableResId, boolean isProcess) {
+        public Helper loadFailedDrawable(int drawableResId, boolean isProcess) {
             if(loadFailedDrawableHolder == null){
                 loadFailedDrawableHolder = new DrawableHolder();
             }
@@ -381,9 +378,9 @@ public class DisplayRequest extends LoadRequest{
         /**
          * 设置进度回调
          * @param progressCallback 进度回调
-         * @return Builder
+         * @return Helper
          */
-        public Builder progressCallback(ProgressCallback progressCallback){
+        public Helper progressCallback(ProgressCallback progressCallback){
             this.progressCallback = progressCallback;
             return this;
         }
@@ -391,9 +388,9 @@ public class DisplayRequest extends LoadRequest{
         /**
          * 设置显示参数
          * @param options 显示参数
-         * @return Builder
+         * @return Helper
          */
-        public Builder options(DisplayOptions options){
+        public Helper options(DisplayOptions options){
             if(options == null){
                 return null;
             }
@@ -423,9 +420,9 @@ public class DisplayRequest extends LoadRequest{
         /**
          * 设置显示参数，你只需要提前将DisplayOptions通过Spear.putOptions()方法存起来，然后在这里指定其名称即可
          * @param optionsName 参数名称
-         * @return Builder
+         * @return Helper
          */
-        public Builder options(Enum<?> optionsName){
+        public Helper options(Enum<?> optionsName){
             return options((DisplayOptions) Spear.getOptions(optionsName));
         }
 

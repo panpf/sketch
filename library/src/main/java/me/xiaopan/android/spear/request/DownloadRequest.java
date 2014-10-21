@@ -171,7 +171,7 @@ public class DownloadRequest implements Request {
     /**
      * 生成器，用来生成下载请求
      */
-    public static class Builder{
+    public static class Helper{
         private Spear spear;
         private String uri;
 
@@ -189,25 +189,25 @@ public class DownloadRequest implements Request {
          * <br>“https://site.com/image.png“ // from Web
          * </blockquote>
          */
-        public Builder(Spear spear, String uri) {
+        public Helper(Spear spear, String uri) {
             this.spear = spear;
             this.uri = uri;
         }
 
         /**
          * 设置监听器
-         * @return Builder
+         * @return Helper
          */
-        public Builder listener(DownloadListener downloadListener){
+        public Helper listener(DownloadListener downloadListener){
             this.downloadListener = downloadListener;
             return this;
         }
 
         /**
          * 关闭硬盘缓存
-         * @return Builder
+         * @return Helper
          */
-        public Builder disableDiskCache() {
+        public Helper disableDiskCache() {
             this.enableDiskCache = false;
             return this;
         }
@@ -215,9 +215,9 @@ public class DownloadRequest implements Request {
         /**
          * 设置磁盘缓存超时时间
          * @param diskCacheTimeout 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-         * @return Builder
+         * @return Helper
          */
-        public Builder diskCacheTimeout(long diskCacheTimeout) {
+        public Helper diskCacheTimeout(long diskCacheTimeout) {
             this.diskCacheTimeout = diskCacheTimeout;
             return this;
         }
@@ -225,9 +225,9 @@ public class DownloadRequest implements Request {
         /**
          * 设置进度回调
          * @param progressCallback 进度回调
-         * @return Builder
+         * @return Helper
          */
-        public Builder progressCallback(ProgressCallback progressCallback){
+        public Helper progressCallback(ProgressCallback progressCallback){
             this.progressCallback = progressCallback;
             return this;
         }
@@ -235,9 +235,9 @@ public class DownloadRequest implements Request {
         /**
          * 设置下载参数
          * @param options 下载参数
-         * @return Builder
+         * @return Helper
          */
-        public Builder options(DownloadOptions options){
+        public Helper options(DownloadOptions options){
             if(options == null){
                 return null;
             }
@@ -251,9 +251,9 @@ public class DownloadRequest implements Request {
         /**
          * 设置下载参数，你只需要提前将DownloadOptions通过Spear.putOptions()方法存起来，然后在这里指定其名称即可
          * @param optionsName 参数名称
-         * @return Builder
+         * @return Helper
          */
-        public Builder options(Enum<?> optionsName){
+        public Helper options(Enum<?> optionsName){
             return options((DownloadOptions) Spear.getOptions(optionsName));
         }
 

@@ -24,7 +24,7 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 
 ### Sample App
 >* [Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)
->* [Download APK](https://github.com/xiaopansky/Spear/raw/master/releases/HappyImageLoader-2.4.0.apk)
+>* [Download APK](https://github.com/xiaopansky/Spear/raw/master/releases/SpearSample-2.4.1.apk)
 
 ###Usage guide
 
@@ -178,10 +178,13 @@ display()与load()、download()的区别
 >* [设置``磁盘缓存目录``或``保留空间大小``（DiskCache）](https://github.com/xiaopansky/Spear/wiki/DiskCache)
 
 ###Downloads
->* [spear-1.1.1.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.1.jar)
->* [spear-1.1.1-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.1-sources.zip)
+>* [spear-1.1.2.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.2.jar)
+>* [spear-1.1.2-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.2-sources.zip)
 
 ###Change log
+###1.1.2
+>* ``修改``。修改DisplayRequest.Builder、LoadRequest.Builder、DownloadRequest.Builder的名字为DisplayRequest.Helper、LoadRequest.Helper、DownloadRequest.Helper，这是因为DisplayRequest.Builder原本应有的build()方法被fire()代替了，而功能也是大不一样，所以觉得叫Builder不太合适
+
 ###1.1.1
 >* ``新增``。RequestFuture增加了getName()方法用于获取请求名称
 >* ``优化``。优化了SpearImageView中onDetachedFromWindow()取消时的日志
@@ -194,8 +197,8 @@ display()与load()、download()的区别
 >* ``新增``。 SpearImageView新增类似Picasso的Debug功能，只需调用Spear.setDebugMode(true)开启调试模式即可开启此功能
 >* ``优化``。优化内置的几种图片处理器的resize处理规则。当原图尺寸小于resize时，之前是担心会创建一张更大的图，浪费内存，于是做法是尺寸不变，现在的做法是依然处理但是resize要根据原图尺寸重新计算，原则就是保证新的resize小于原图尺寸并且宽高比同旧的resize一样。例如原图宽高是300x225，resize宽高是400x400，那么之前的结果就是resize还是400x400，最终图片是300x225，而现在的结果是调整resize为255x255，最终图片是225x225
 >* ``新增``。支持仅根据宽或高限制图片大小，例如：maxsize为500x-1，意思就是宽最大为500，高随之缩放
->* ``优化``。调整了DefaultRequestExecitor的创建方式，Builder，网络下载线程池最大容量由10修改为5
->* ``优化``。调整了DisplayRequest.Builder的options()方法里应用DisplayOptions.resize的规则
+>* ``优化``。调整了DefaultRequestExecitor的创建方式，网络下载线程池最大容量由10修改为5
+>* ``优化``。调整了DisplayRequest.Helper的options()方法里应用DisplayOptions.resize的规则
 
 ####1.0.0
 Spear脱胎换骨，全新出发
