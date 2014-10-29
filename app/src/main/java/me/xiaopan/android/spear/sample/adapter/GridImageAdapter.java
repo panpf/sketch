@@ -32,7 +32,7 @@ import android.widget.ImageView;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.request.DisplayListener;
-import me.xiaopan.android.spear.request.ProgressCallback;
+import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.widget.ProgressPieView;
 import me.xiaopan.android.spear.util.FailureCause;
@@ -111,7 +111,7 @@ public class GridImageAdapter extends BaseAdapter {
 
                 }
             });
-            viewHolder.image.setProgressCallback(new ProgressCallback() {
+            viewHolder.image.setProgressListener(new ProgressListener() {
                 @Override
                 public void onUpdateProgress(long totalLength, long completedLength) {
                     viewHolder.progressPieView.setProgress((int) (((float) completedLength / totalLength) * 100));

@@ -310,9 +310,9 @@ public class HttpClientImageDownloader implements ImageDownloader {
         while(!downloadRequest.isCanceled() && (readNumber = inputStream.read(cacheBytes)) != -1){
             outputStream.write(cacheBytes, 0, readNumber);
             completedLength += readNumber;
-            if(downloadRequest.getDownloadProgressCallback() != null && (completedLength >= (callbackNumber+1)*averageLength || completedLength == contentLength)){
+            if(downloadRequest.getDownloadProgressListener() != null && (completedLength >= (callbackNumber+1)*averageLength || completedLength == contentLength)){
                 callbackNumber++;
-                downloadRequest.getDownloadProgressCallback().onUpdateProgress(contentLength, completedLength);
+                downloadRequest.getDownloadProgressListener().onUpdateProgress(contentLength, completedLength);
             }
         }
         outputStream.flush();

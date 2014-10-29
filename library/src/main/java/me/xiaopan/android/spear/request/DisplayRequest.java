@@ -53,7 +53,7 @@ public class DisplayRequest extends LoadRequest{
 	private ImageViewHolder imageViewHolder;	//ImageView持有器
 
 	private DisplayListener displayListener;	//监听器
-    private ProgressCallback displayProgressCallback; // 显示进度监听器
+    private ProgressListener displayProgressListener; // 显示进度监听器
 
     /**
      * 获取ID，此ID用来在内存缓存Bitmap时作为其KEY
@@ -123,11 +123,11 @@ public class DisplayRequest extends LoadRequest{
     }
 
     /**
-     * 获取显示进度回调
-     * @return 显示进度回调
+     * 获取显示进度监听器
+     * @return 显示进度监听器
      */
-    public ProgressCallback getDisplayProgressCallback() {
-        return displayProgressCallback;
+    public ProgressListener getDisplayProgressListener() {
+        return displayProgressListener;
     }
 
     /**
@@ -172,7 +172,7 @@ public class DisplayRequest extends LoadRequest{
         private DrawableHolder loadFailedDrawableHolder;
 
         private DisplayListener displayListener;
-        private ProgressCallback progressCallback;
+        private ProgressListener progressListener;
 
         private ImageView imageView;
 
@@ -376,12 +376,12 @@ public class DisplayRequest extends LoadRequest{
         }
 
         /**
-         * 设置进度回调
-         * @param progressCallback 进度回调
+         * 设置进度监听器
+         * @param progressListener 进度监听器
          * @return Helper
          */
-        public Helper progressCallback(ProgressCallback progressCallback){
-            this.progressCallback = progressCallback;
+        public Helper progressListener(ProgressListener progressListener){
+            this.progressListener = progressListener;
             return this;
         }
 
@@ -431,15 +431,20 @@ public class DisplayRequest extends LoadRequest{
          * @return RequestFuture 你可以通过RequestFuture来查看请求的状态或者取消这个请求
          */
         public RequestFuture fire() {
-            // 检查是否是在主线程
-            if(Thread.currentThread() != Looper.getMainLooper().getThread()){
-                new IllegalStateException("你不能在非主线程执行fire()方法").printStackTrace();
-                return null;
-            }
+            boolean isMainThread = Looper.myLooper() == Looper.getMainLooper();
 
             // 执行请求
             if(displayListener != null){
-                displayListener.onStarted();
+                if(isMainThread){
+                    displayListener.onStarted();
+                }else{
+                    spear.getHandler().post(new Runnable() {
+                        @Override
+                        public void run() {
+                            displayListener.onStarted();
+                        }
+                    });
+                }
             }
 
             // 验证imageView参数
@@ -448,7 +453,16 @@ public class DisplayRequest extends LoadRequest{
                     Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "imageView不能为null");
                 }
                 if(displayListener != null){
-                    displayListener.onFailed(FailureCause.IMAGE_VIEW_NULL);
+                    if(isMainThread){
+                        displayListener.onFailed(FailureCause.IMAGE_VIEW_NULL);
+                    }else{
+                        spear.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                               displayListener.onFailed(FailureCause.IMAGE_VIEW_NULL);
+                            }
+                        });
+                    }
                 }
                 return null;
             }
@@ -456,16 +470,34 @@ public class DisplayRequest extends LoadRequest{
             // 验证uri参数
             if(uri == null || "".equals(uri.trim())){
                 if(loadFailedDrawableHolder != null){
-                    Drawable loadFailedDrawable = loadFailedDrawableHolder.getDrawable(spear.getContext(), imageProcessor);
+                    final Drawable loadFailedDrawable = loadFailedDrawableHolder.getDrawable(spear.getContext(), imageProcessor);
                     if(loadFailedDrawable != null){
-                        imageView.setImageDrawable(loadFailedDrawable);
+                        if(isMainThread){
+                            imageView.setImageDrawable(loadFailedDrawable);
+                        }else{
+                            spear.getHandler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    imageView.setImageDrawable(loadFailedDrawable);
+                                }
+                            });
+                        }
                     }
                 }
                 if(spear.isDebugMode()){
                     Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "uri不能为null或空");
                 }
                 if(displayListener != null){
-                    displayListener.onFailed(FailureCause.URI_NULL_OR_EMPTY);
+                    if(isMainThread){
+                        displayListener.onFailed(FailureCause.URI_NULL_OR_EMPTY);
+                    }else{
+                        spear.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                displayListener.onFailed(FailureCause.URI_NULL_OR_EMPTY);
+                            }
+                        });
+                    }
                 }
                 return null;
             }
@@ -477,7 +509,16 @@ public class DisplayRequest extends LoadRequest{
                     Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "未知的协议类型" + " URI" + "=" + uri);
                 }
                 if(displayListener != null){
-                    displayListener.onFailed(FailureCause.URI_NO_SUPPORT);
+                    if(isMainThread){
+                        displayListener.onFailed(FailureCause.URI_NO_SUPPORT);
+                    }else{
+                        spear.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                displayListener.onFailed(FailureCause.URI_NO_SUPPORT);
+                            }
+                        });
+                    }
                 }
                 return null;
             }
@@ -487,12 +528,31 @@ public class DisplayRequest extends LoadRequest{
 
             // 尝试显示
             if(enableMemoryCache){
-                BitmapDrawable cacheDrawable = spear.getMemoryCache().get(requestId);
+                final BitmapDrawable cacheDrawable = spear.getMemoryCache().get(requestId);
                 if(cacheDrawable != null){
-                    imageView.clearAnimation();
-                    imageView.setImageDrawable(cacheDrawable);
+                    if(isMainThread){
+                        imageView.clearAnimation();
+                        imageView.setImageDrawable(cacheDrawable);
+                    }else{
+                        spear.getHandler().post(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.clearAnimation();
+                                imageView.setImageDrawable(cacheDrawable);
+                            }
+                        });
+                    }
                     if(displayListener != null){
-                        displayListener.onCompleted(uri, imageView, cacheDrawable, DisplayListener.From.MOMERY_CACHE);
+                        if(isMainThread){
+                            displayListener.onCompleted(uri, imageView, cacheDrawable, DisplayListener.From.MOMERY_CACHE);
+                        }else{
+                            spear.getHandler().post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    displayListener.onCompleted(uri, imageView, cacheDrawable, DisplayListener.From.MOMERY_CACHE);
+                                }
+                            });
+                        }
                     }
                     return null;
                 }
@@ -505,7 +565,7 @@ public class DisplayRequest extends LoadRequest{
             }
 
             // 创建请求
-            DisplayRequest request = new DisplayRequest();
+            final DisplayRequest request = new DisplayRequest();
 
             request.uri = uri;
             request.name = uri;
@@ -526,12 +586,22 @@ public class DisplayRequest extends LoadRequest{
             request.failedDrawableHolder = loadFailedDrawableHolder;
 
             request.displayListener = displayListener;
-            request.displayProgressCallback = progressCallback;
+            request.displayProgressListener = progressListener;
 
             // 显示默认图片
-            BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getContext(), imageProcessor):null;
-            imageView.clearAnimation();
-            imageView.setImageDrawable(new AsyncDrawable(spear.getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
+            final BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getContext(), imageProcessor):null;
+            if(isMainThread){
+                imageView.clearAnimation();
+                imageView.setImageDrawable(new AsyncDrawable(spear.getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
+            }else{
+                spear.getHandler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        imageView.clearAnimation();
+                        imageView.setImageDrawable(new AsyncDrawable(spear.getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
+                    }
+                });
+            }
 
             spear.getRequestExecutor().execute(request);
             return new RequestFuture(request);

@@ -17,12 +17,12 @@
 package me.xiaopan.android.spear.request;
 
 /**
- * 进度回调
+ * 进度监听器
  */
-public interface ProgressCallback {
+public interface ProgressListener {
 
     /**
-     * 更新下载进度
+     * 更新进度
      * @param totalLength 总长度
      * @param completedLength 已完成长度
      */

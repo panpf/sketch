@@ -37,10 +37,10 @@ import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.request.Request;
 import me.xiaopan.android.spear.task.DisplayJoinLoadListener;
-import me.xiaopan.android.spear.task.DisplayJoinLoadProgressCallback;
+import me.xiaopan.android.spear.task.DisplayJoinLoadProgressListener;
 import me.xiaopan.android.spear.task.DownloadTask;
 import me.xiaopan.android.spear.task.LoadJoinDownloadListener;
-import me.xiaopan.android.spear.task.LoadJoinDownloadProgressCallback;
+import me.xiaopan.android.spear.task.LoadJoinDownloadProgressListener;
 import me.xiaopan.android.spear.task.LoadTask;
 import me.xiaopan.android.spear.util.Scheme;
 
@@ -131,8 +131,8 @@ public class DefaultRequestExecutor implements RequestExecutor {
                 	// 如果缓存文件虽然已存在，但是正在下载中，就从网络下载
                     if(loadRequest.getSpear().getImageDownloader().isDownloadingByCacheFilePath(cacheFile.getPath())){
                         loadRequest.setDownloadListener(new LoadJoinDownloadListener(localTaskExecutor, loadRequest));
-                        if(loadRequest.getLoadProgressCallback() != null){
-                            loadRequest.setDownloadProgressCallback(new LoadJoinDownloadProgressCallback(loadRequest.getLoadProgressCallback()));
+                        if(loadRequest.getLoadProgressListener() != null){
+                            loadRequest.setDownloadProgressListener(new LoadJoinDownloadProgressListener(loadRequest.getLoadProgressListener()));
                         }
                 		netTaskExecutor.execute(new DownloadTask(loadRequest));
                         if(loadRequest.getSpear().isDebugMode()){
@@ -151,8 +151,8 @@ public class DefaultRequestExecutor implements RequestExecutor {
 
                 // 如果不需要缓存或缓存文件不存在就从网络下载
                 loadRequest.setDownloadListener(new LoadJoinDownloadListener(localTaskExecutor, loadRequest));
-                if(loadRequest.getLoadProgressCallback() != null){
-                    loadRequest.setDownloadProgressCallback(new LoadJoinDownloadProgressCallback(loadRequest.getLoadProgressCallback()));
+                if(loadRequest.getLoadProgressListener() != null){
+                    loadRequest.setDownloadProgressListener(new LoadJoinDownloadProgressListener(loadRequest.getLoadProgressListener()));
                 }
                 netTaskExecutor.execute(new DownloadTask(loadRequest));
                 if(loadRequest.getSpear().isDebugMode()){
@@ -197,8 +197,8 @@ public class DefaultRequestExecutor implements RequestExecutor {
      */
     private void executeDisplayRequest(DisplayRequest displayRequest){
         displayRequest.setLoadListener(new DisplayJoinLoadListener(displayRequest));
-        if(displayRequest.getDisplayProgressCallback() != null){
-            displayRequest.setLoadProgressCallback(new DisplayJoinLoadProgressCallback(displayRequest, displayRequest.getDisplayProgressCallback()));
+        if(displayRequest.getDisplayProgressListener() != null){
+            displayRequest.setLoadProgressListener(new DisplayJoinLoadProgressListener(displayRequest, displayRequest.getDisplayProgressListener()));
         }
         executeLoadRequest(displayRequest);
     }

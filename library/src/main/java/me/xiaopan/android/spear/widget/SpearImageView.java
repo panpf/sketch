@@ -33,7 +33,7 @@ import java.io.File;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.request.DisplayOptions;
-import me.xiaopan.android.spear.request.ProgressCallback;
+import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.request.Request;
 import me.xiaopan.android.spear.request.RequestFuture;
 import me.xiaopan.android.spear.util.FailureCause;
@@ -49,7 +49,7 @@ public class SpearImageView extends ImageView{
     private RequestFuture requestFuture;
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
-    private ProgressCallback progressCallback;
+    private ProgressListener progressListener;
 
     private Paint paint;
     private Path path;
@@ -166,7 +166,7 @@ public class SpearImageView extends ImageView{
             debugColor = -1;
             listener = displayListener;
         }
-        requestFuture = Spear.with(getContext()).display(uri, this).options(displayOptions).listener(listener).progressCallback(progressCallback).fire();
+        requestFuture = Spear.with(getContext()).display(uri, this).options(displayOptions).listener(listener).progressListener(progressListener).fire();
         return requestFuture;
     }
 
@@ -184,7 +184,7 @@ public class SpearImageView extends ImageView{
      * @param drawableResId Drawable ID
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public RequestFuture setImageByDrawable(int drawableResId){
+    public RequestFuture setImageByResource(int drawableResId){
         return setImageByUri(Scheme.DRAWABLE.createUri(String.valueOf(drawableResId)));
     }
 
@@ -232,10 +232,10 @@ public class SpearImageView extends ImageView{
 
     /**
      * 设置显示进度监听器
-     * @param progressCallback 进度监听器
+     * @param progressListener 进度监听器
      */
-    public void setProgressCallback(ProgressCallback progressCallback) {
-        this.progressCallback = progressCallback;
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
     }
 
     /**

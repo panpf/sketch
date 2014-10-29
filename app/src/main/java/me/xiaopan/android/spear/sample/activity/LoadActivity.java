@@ -48,7 +48,7 @@ import me.xiaopan.android.spear.process.RoundedCornerImageProcessor;
 import me.xiaopan.android.spear.request.DownloadOptions;
 import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.LoadOptions;
-import me.xiaopan.android.spear.request.ProgressCallback;
+import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.sample.widget.ProgressPieView;
 import me.xiaopan.android.spear.util.FailureCause;
 
@@ -293,7 +293,7 @@ public class LoadActivity extends ActionBarActivity {
                         public void onCanceled() {
 
                         }
-                    }).options(loadOptions).progressCallback(new ProgressCallback() {
+                    }).options(loadOptions).progressListener(new ProgressListener() {
                         @Override
                         public void onUpdateProgress(final long totalLength, final long completedLength) {
                             runOnUiThread(new Runnable() {

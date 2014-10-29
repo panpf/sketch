@@ -26,7 +26,7 @@ import android.widget.ImageView;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.request.DisplayListener;
-import me.xiaopan.android.spear.request.ProgressCallback;
+import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.widget.ProgressPieView;
 import me.xiaopan.android.spear.util.FailureCause;
@@ -70,7 +70,7 @@ public class ImageFragment extends Fragment {
                 public void onCanceled() {
                 }
             });
-            imageView.setProgressCallback(new ProgressCallback() {
+            imageView.setProgressListener(new ProgressListener() {
                 @Override
                 public void onUpdateProgress(long totalLength, long completedLength) {
                     progressBar.setProgress((int) (((float) completedLength / totalLength) * 100));

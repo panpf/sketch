@@ -42,7 +42,7 @@ public class DownloadRequest implements Request {
     protected String name;	// 名称，用于在输出LOG的时候区分不同的请求
     protected Scheme scheme;	// Uri协议格式
 	private DownloadListener downloadListener;  // 下载监听器
-    private ProgressCallback downloadProgressCallback;  // 下载进度回调
+    private ProgressListener downloadProgressListener;  // 下载进度监听器
 
     /* 可配置属性 */
     protected long diskCacheTimeout;	// 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
@@ -157,15 +157,19 @@ public class DownloadRequest implements Request {
     }
 
     /**
-     * 获取下载进度回调
-     * @return 下载进度回调
+     * 获取下载进度监听器
+     * @return 下载进度监听器
      */
-    public ProgressCallback getDownloadProgressCallback() {
-        return downloadProgressCallback;
+    public ProgressListener getDownloadProgressListener() {
+        return downloadProgressListener;
     }
 
-    public void setDownloadProgressCallback(ProgressCallback downloadProgressCallback) {
-        this.downloadProgressCallback = downloadProgressCallback;
+    /**
+     * 设置下载进度监听器
+     * @param downloadProgressListener 下载进度监听器
+     */
+    public void setDownloadProgressListener(ProgressListener downloadProgressListener) {
+        this.downloadProgressListener = downloadProgressListener;
     }
 
     /**
@@ -179,7 +183,7 @@ public class DownloadRequest implements Request {
         private boolean enableDiskCache = true;
 
         private DownloadListener downloadListener;
-        private ProgressCallback progressCallback;
+        private ProgressListener progressListener;
 
         /**
          * 创建下载请求生成器
@@ -223,12 +227,12 @@ public class DownloadRequest implements Request {
         }
 
         /**
-         * 设置进度回调
-         * @param progressCallback 进度回调
+         * 设置进度监听器
+         * @param progressListener 进度监听器
          * @return Helper
          */
-        public Helper progressCallback(ProgressCallback progressCallback){
-            this.progressCallback = progressCallback;
+        public Helper progressListener(ProgressListener progressListener){
+            this.progressListener = progressListener;
             return this;
         }
 
@@ -301,7 +305,7 @@ public class DownloadRequest implements Request {
             request.diskCacheTimeout = diskCacheTimeout;
 
             request.downloadListener = downloadListener;
-            request.downloadProgressCallback = progressCallback;
+            request.downloadProgressListener = progressListener;
 
             spear.getRequestExecutor().execute(request);
             return new RequestFuture(request);

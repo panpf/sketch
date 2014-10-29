@@ -13,7 +13,7 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 >* ``支持ViewHolder``。即使你在ListView中使用了ViewHolder也依然可以使用ImageLoader来加载图片，并且图片显示绝对不会混乱。
 >* ``重复下载过滤``。如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
 >* ``即时取消无用请求``。在onDetachedFromWindow或重复利用的时候会取消无用的请求。
->* ``支持进度回调``。通过progressCallback()方法即可设置并开启进度回调。
+>* ``支持进度回调``。通过progressListener()方法即可设置并开启进度回调。
 >* ``防止加载过大Bitmap``,默认最大Bitmap限制为当前屏幕宽高的1.5倍，这样可以有效防止加载过大图片到内存中。
 >* ``重新处理图片尺寸``。可自定义加载到内存的图片的尺寸，使用display()方法显示图片的时候还会自动根据ImageView的宽高来重新处理。
 >* ``自带RequestOptions管理器``。你可以通过Spear.putOptions(Enum<?>, RequestOptions)存储RequestOptions。然后在使用的时候指定名称即可。
@@ -120,7 +120,7 @@ Spear.with(getBaseContext())
 
         }
     })
-    .progressCallback(new ProgressCallback() {  // 设置进度监听器
+    .progressListener(new ProgressListener() {  // 设置进度监听器
         @Override
         public void onUpdateProgress(long totalLength, long completedLength) {
             
@@ -141,7 +141,7 @@ Spear除了有display()方法用来显示图片之外，还有load()用来加载
 ``这三个方法的用法都一样``
 
 display()与load()、download()的区别
->* display().fire()必须在主线程执行，否则将无效，而load().fire()和download.fire()则没有此限制
+>* display()的listener和progressListener中的所有回调方法一定是在主线程中回调的，而load()、download()则不是这样的，具体规则是在没有进入异步线程之前发生的回调（例如在fire()方法中）视当前调用的环境（是不是在主线程调用的fire()方法）而定，在异步线程中发生的回调则都是在异步线程中直接回调，不会像display()那样通过Handler在主线程回调
 >* **在使用display()方法显示图片的时候，Spear会自动根据ImageView的宽高计算maxsize和resize，条件就是计算maxsize时要求ImageView的宽高至少有一个是固定的，而计算resize的时候要求宽高都是固定的，这样就省却了很多麻烦，也节省了内存**
 >* 可使用的属性display()最多，download()最少具体如下表所示：
 
@@ -160,7 +160,7 @@ display()与load()、download()的区别
 |loadingDrawable|-|-|null|
 |loadFailedDrawable|-|-|null|
 |listener|null（在``非主线程``回调）|null（在``非主线程``回调）|null（在``主线程``回调）|
-|progressCallback|null（在``非主线程``回调）|null（在``非主线程``回调）|null（在``主线程``回调）|
+|progressListener|null（在``非主线程``回调）|null（在``非主线程``回调）|null（在``主线程``回调）|
 
 ####你可能还感兴趣的功能：
 >* [取消请求](https://github.com/xiaopansky/Spear/wiki/CancelRequest)
@@ -178,10 +178,15 @@ display()与load()、download()的区别
 >* [设置``磁盘缓存目录``或``保留空间大小``（DiskCache）](https://github.com/xiaopansky/Spear/wiki/DiskCache)
 
 ###Downloads
->* [spear-1.1.2.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.2.jar)
->* [spear-1.1.2-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.2-sources.zip)
+>* [spear-1.1.3.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.3.jar)
+>* [spear-1.1.3-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.3-sources.zip)
 
 ###Change log
+###1.1.3
+>* ``修改``。修改ProgressCallback的名字为ProgressListener并且各个Request.Helper中的progressCallback()方法页改名为progressListener
+>* ``优化``。DisplayRequest.Helper.fire()方法不再限制只能在主线程中执行
+>* ``修改``。修改SpearImageView.setImageByDrawable()方法的名称为setImageByResource()
+
 ###1.1.2
 >* ``修改``。修改DisplayRequest.Builder、LoadRequest.Builder、DownloadRequest.Builder的名字为DisplayRequest.Helper、LoadRequest.Helper、DownloadRequest.Helper，这是因为DisplayRequest.Builder原本应有的build()方法被fire()代替了，而功能也是大不一样，所以觉得叫Builder不太合适
 

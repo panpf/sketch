@@ -16,19 +16,19 @@
 
 package me.xiaopan.android.spear.task;
 
-import me.xiaopan.android.spear.request.ProgressCallback;
+import me.xiaopan.android.spear.request.ProgressListener;
 
-public class LoadJoinDownloadProgressCallback implements ProgressCallback{
-    private ProgressCallback loadProgressCallback;
+public class LoadJoinDownloadProgressListener implements ProgressListener {
+    private ProgressListener loadProgressListener;
 
-    public LoadJoinDownloadProgressCallback(ProgressCallback loadProgressCallback) {
-        this.loadProgressCallback = loadProgressCallback;
+    public LoadJoinDownloadProgressListener(ProgressListener loadProgressListener) {
+        this.loadProgressListener = loadProgressListener;
     }
 
     @Override
     public void onUpdateProgress(long totalLength, long completedLength) {
-        if(loadProgressCallback != null){
-            loadProgressCallback.onUpdateProgress(totalLength, completedLength);
+        if(loadProgressListener != null){
+            loadProgressListener.onUpdateProgress(totalLength, completedLength);
         }
     }
 }

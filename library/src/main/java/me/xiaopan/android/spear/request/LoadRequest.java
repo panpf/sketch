@@ -40,7 +40,7 @@ public class LoadRequest extends DownloadRequest{
     protected ImageView.ScaleType scaleType; // 图片缩放方式，BitmapProcessor会根据resize和scaleType来创建新的图片
 
     private LoadListener loadListener;	// 监听器
-    private ProgressCallback loadProgressCallback;  // 加载进度监听器
+    private ProgressListener loadProgressListener;  // 加载进度监听器
 
     /**
 	 * 获取加载监听器
@@ -83,15 +83,19 @@ public class LoadRequest extends DownloadRequest{
     }
 
     /**
-     * 获取加载进度回调
-     * @return 加载进度回调
+     * 获取加载进度监听器
+     * @return 加载进度监听器
      */
-    public ProgressCallback getLoadProgressCallback() {
-        return loadProgressCallback;
+    public ProgressListener getLoadProgressListener() {
+        return loadProgressListener;
     }
 
-    public void setLoadProgressCallback(ProgressCallback loadProgressCallback) {
-        this.loadProgressCallback = loadProgressCallback;
+    /**
+     * 设置加载进度监听器
+     * @param loadProgressListener 加载进度监听器
+     */
+    public void setLoadProgressListener(ProgressListener loadProgressListener) {
+        this.loadProgressListener = loadProgressListener;
     }
 
     /**
@@ -110,7 +114,7 @@ public class LoadRequest extends DownloadRequest{
         private ImageView.ScaleType scaleType;
 
         private LoadListener loadListener;
-        private ProgressCallback progressCallback;
+        private ProgressListener progressListener;
 
         /**
          * 创建加载请求生成器
@@ -229,12 +233,12 @@ public class LoadRequest extends DownloadRequest{
         }
 
         /**
-         * 设置进度回调
-         * @param progressCallback 进度回调
+         * 设置进度监听器
+         * @param progressListener 进度监听器
          * @return Helper
          */
-        public Helper progressCallback(ProgressCallback progressCallback){
-            this.progressCallback = progressCallback;
+        public Helper progressListener(ProgressListener progressListener){
+            this.progressListener = progressListener;
             return this;
         }
 
@@ -317,7 +321,7 @@ public class LoadRequest extends DownloadRequest{
             request.scaleType = scaleType;
 
             request.loadListener = loadListener;
-            request.loadProgressCallback = progressCallback;
+            request.loadProgressListener = progressListener;
 
             spear.getRequestExecutor().execute(request);
             return new RequestFuture(request);

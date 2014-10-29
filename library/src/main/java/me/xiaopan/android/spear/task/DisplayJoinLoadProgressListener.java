@@ -17,21 +17,21 @@
 package me.xiaopan.android.spear.task;
 
 import me.xiaopan.android.spear.request.DisplayRequest;
-import me.xiaopan.android.spear.request.ProgressCallback;
+import me.xiaopan.android.spear.request.ProgressListener;
 
-public class DisplayJoinLoadProgressCallback implements ProgressCallback{
+public class DisplayJoinLoadProgressListener implements ProgressListener {
     private DisplayRequest request;
-    private ProgressCallback displayProgressCallback;
+    private ProgressListener displayProgressListener;
 
-    public DisplayJoinLoadProgressCallback(DisplayRequest request, ProgressCallback displayProgressCallback) {
+    public DisplayJoinLoadProgressListener(DisplayRequest request, ProgressListener displayProgressListener) {
         this.request = request;
-        this.displayProgressCallback = displayProgressCallback;
+        this.displayProgressListener = displayProgressListener;
     }
 
     @Override
     public void onUpdateProgress(final long totalLength, final long completedLength) {
-        if(displayProgressCallback != null){
-            request.getSpear().getHandler().post(new UpdateProgressRunnable(request, totalLength, completedLength, displayProgressCallback));
+        if(displayProgressListener != null){
+            request.getSpear().getHandler().post(new UpdateProgressRunnable(request, totalLength, completedLength, displayProgressListener));
         }
     }
 
@@ -39,13 +39,13 @@ public class DisplayJoinLoadProgressCallback implements ProgressCallback{
         private DisplayRequest request;
         private long totalLength;
         private long completedLength;
-        private ProgressCallback displayProgressCallback;
+        private ProgressListener displayProgressListener;
 
-        private UpdateProgressRunnable(DisplayRequest request, long totalLength, long completedLength, ProgressCallback displayProgressCallback) {
+        private UpdateProgressRunnable(DisplayRequest request, long totalLength, long completedLength, ProgressListener displayProgressListener) {
             this.request = request;
             this.totalLength = totalLength;
             this.completedLength = completedLength;
-            this.displayProgressCallback = displayProgressCallback;
+            this.displayProgressListener = displayProgressListener;
         }
 
         @Override
@@ -53,7 +53,7 @@ public class DisplayJoinLoadProgressCallback implements ProgressCallback{
             if(request.isCanceled() || request.isFinished()){
                 return;
             }
-            displayProgressCallback.onUpdateProgress(totalLength, completedLength);
+            displayProgressListener.onUpdateProgress(totalLength, completedLength);
         }
     }
 }

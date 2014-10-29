@@ -43,7 +43,7 @@ import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.request.DownloadListener;
 import me.xiaopan.android.spear.request.DownloadOptions;
-import me.xiaopan.android.spear.request.ProgressCallback;
+import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.sample.widget.ProgressPieView;
 import me.xiaopan.android.spear.util.FailureCause;
 
@@ -168,7 +168,7 @@ public class DownloadActivity extends ActionBarActivity {
                     public void onCanceled() {
 
                     }
-                }).options(downloadOptions).progressCallback(new ProgressCallback() {
+                }).options(downloadOptions).progressListener(new ProgressListener() {
                     @Override
                     public void onUpdateProgress(final long totalLength, final long completedLength) {
                         runOnUiThread(new Runnable() {
