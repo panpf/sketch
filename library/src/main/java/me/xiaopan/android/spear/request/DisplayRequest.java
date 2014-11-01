@@ -544,12 +544,12 @@ public class DisplayRequest extends LoadRequest{
                     }
                     if(displayListener != null){
                         if(isMainThread){
-                            displayListener.onCompleted(uri, imageView, cacheDrawable, DisplayListener.From.MOMERY_CACHE);
+                            displayListener.onCompleted(uri, imageView, cacheDrawable, DisplayListener.From.MEMORY);
                         }else{
                             spear.getHandler().post(new Runnable() {
                                 @Override
                                 public void run() {
-                                    displayListener.onCompleted(uri, imageView, cacheDrawable, DisplayListener.From.MOMERY_CACHE);
+                                    displayListener.onCompleted(uri, imageView, cacheDrawable, DisplayListener.From.MEMORY);
                                 }
                             });
                         }

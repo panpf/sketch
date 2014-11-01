@@ -278,7 +278,7 @@ public class SpearImageView extends ImageView{
         public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, From from) {
             if(from != null){
                 switch (from){
-                    case MOMERY_CACHE: debugColor = 0x8800FF00; break;
+                    case MEMORY: debugColor = 0x8800FF00; break;
                     case LOCAL: debugColor = 0x88FFFF00; break;
                     case NETWORK: debugColor = 0x88FF0000; break;
                 }

@@ -56,7 +56,7 @@ public interface DisplayListener {
      */
     public enum From{
         /**
-         * 网络下载
+         * 网络
          */
         NETWORK,
 
@@ -66,8 +66,8 @@ public interface DisplayListener {
         LOCAL,
 
         /**
-         * 内存缓存
+         * 内存
          */
-        MOMERY_CACHE,
+        MEMORY,
     }
 }
