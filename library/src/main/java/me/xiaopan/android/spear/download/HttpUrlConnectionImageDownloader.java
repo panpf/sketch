@@ -168,7 +168,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             }
 
             // 检查内容长度
-            long  contentLength = connection.getHeaderFieldInt("Content-Length", -1);
+            int  contentLength = connection.getHeaderFieldInt("Content-Length", -1);
             if (contentLength <= 0) {
                 throw new IOException("Content-Length 为 0");
             }
@@ -201,7 +201,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             outputStream = new BufferedOutputStream(saveToCacheFile ? new FileOutputStream(cacheFile, false) : (byteArrayOutputStream = new ByteArrayOutputStream()), 8 * 1024);
 
             // 读取数据
-            long completedLength = HttpClientImageDownloader.readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
+            int completedLength = HttpClientImageDownloader.readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
             if (request.isCanceled()) {
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - read data end" + "；" + request.getName());

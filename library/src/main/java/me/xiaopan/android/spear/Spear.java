@@ -18,8 +18,6 @@ package me.xiaopan.android.spear;
 
 import android.content.Context;
 import android.net.Uri;
-import android.os.Handler;
-import android.os.Looper;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -36,6 +34,7 @@ import me.xiaopan.android.spear.download.HttpClientImageDownloader;
 import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.execute.DefaultRequestExecutor;
 import me.xiaopan.android.spear.execute.RequestExecutor;
+import me.xiaopan.android.spear.request.DisplayCallbackHandler;
 import me.xiaopan.android.spear.request.DisplayRequest;
 import me.xiaopan.android.spear.request.DownloadListener;
 import me.xiaopan.android.spear.request.DownloadRequest;
@@ -54,7 +53,6 @@ public class Spear {
     public static final String LOG_TAG= Spear.class.getSimpleName();
 	private static Spear instance;
 
-    private Handler handler;	//消息处理器，用于在主线程显示图片
     private Context context;	//上下文
 
     private boolean debugMode;	//调试模式，在控制台输出日志
@@ -64,16 +62,17 @@ public class Spear {
     private ImageDownloader imageDownloader;	//图片下载器
     private RequestExecutor requestExecutor;	//请求执行器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
+    private DisplayCallbackHandler displayCallbackHandler;	//显示相关回调处理器
 
 	private Spear(Context context){
         this.context = context;
-        this.handler = new Handler(Looper.getMainLooper());
         this.diskCache = new LruDiskCache(context);
         this.memoryCache = new LruMemoryCache();
         this.imageDecoder = new DefaultImageDecoder();
         this.imageDownloader = new HttpClientImageDownloader();
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
         this.imageSizeCalculator = new DefaultImageSizeCalculator();
+        this.displayCallbackHandler = new DisplayCallbackHandler();
 	}
 
     /**
@@ -310,11 +309,11 @@ public class Spear {
     }
 
     /**
-     * 获取消息处理器
-     * @return 消息处理器，用来实现在主线程显示图片
+     * 获取显示相关回调处理器
+     * @return 显示相关回调处理器
      */
-    public Handler getHandler() {
-        return handler;
+    public DisplayCallbackHandler getDisplayCallbackHandler() {
+        return displayCallbackHandler;
     }
 
     /**

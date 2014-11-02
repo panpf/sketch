@@ -21,39 +21,13 @@ import me.xiaopan.android.spear.request.ProgressListener;
 
 public class DisplayJoinLoadProgressListener implements ProgressListener {
     private DisplayRequest request;
-    private ProgressListener displayProgressListener;
 
-    public DisplayJoinLoadProgressListener(DisplayRequest request, ProgressListener displayProgressListener) {
+    public DisplayJoinLoadProgressListener(DisplayRequest request) {
         this.request = request;
-        this.displayProgressListener = displayProgressListener;
     }
 
     @Override
-    public void onUpdateProgress(final long totalLength, final long completedLength) {
-        if(displayProgressListener != null){
-            request.getSpear().getHandler().post(new UpdateProgressRunnable(request, totalLength, completedLength, displayProgressListener));
-        }
-    }
-
-    private static class UpdateProgressRunnable implements Runnable{
-        private DisplayRequest request;
-        private long totalLength;
-        private long completedLength;
-        private ProgressListener displayProgressListener;
-
-        private UpdateProgressRunnable(DisplayRequest request, long totalLength, long completedLength, ProgressListener displayProgressListener) {
-            this.request = request;
-            this.totalLength = totalLength;
-            this.completedLength = completedLength;
-            this.displayProgressListener = displayProgressListener;
-        }
-
-        @Override
-        public void run() {
-            if(request.isCanceled() || request.isFinished()){
-                return;
-            }
-            displayProgressListener.onUpdateProgress(totalLength, completedLength);
-        }
+    public void onUpdateProgress(final int totalLength, final int completedLength) {
+        request.getSpear().getDisplayCallbackHandler().updateProgressCallback(request, totalLength, completedLength);
     }
 }

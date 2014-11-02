@@ -114,7 +114,7 @@ public class NormalActivity extends ActionBarActivity {
                 });
                 spearImageView.setProgressListener(new ProgressListener() {
                     @Override
-                    public void onUpdateProgress(long totalLength, long completedLength) {
+                    public void onUpdateProgress(int totalLength, int completedLength) {
                         progressBar.setProgress((int) (((float) completedLength / totalLength) * 100));
                     }
                 });

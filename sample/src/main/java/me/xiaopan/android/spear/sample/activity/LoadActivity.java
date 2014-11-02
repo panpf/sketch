@@ -295,7 +295,7 @@ public class LoadActivity extends ActionBarActivity {
                         }
                     }).options(loadOptions).progressListener(new ProgressListener() {
                         @Override
-                        public void onUpdateProgress(final long totalLength, final long completedLength) {
+                        public void onUpdateProgress(final int totalLength, final int completedLength) {
                             runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {

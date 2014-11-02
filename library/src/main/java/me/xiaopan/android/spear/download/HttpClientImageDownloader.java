@@ -213,10 +213,10 @@ public class HttpClientImageDownloader implements ImageDownloader {
             }
 
             // 检查内容长度
-            long contentLength = 0;
+            int contentLength = 0;
             Header[] headers = httpResponse.getHeaders("Content-Length");
             if(headers != null && headers.length > 0){
-                contentLength = Long.valueOf(headers[0].getValue());
+                contentLength = Integer.valueOf(headers[0].getValue());
             }
             if (contentLength <= 0) {
                 throw new IOException("Content-Length 为 0");
@@ -250,7 +250,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             outputStream = new BufferedOutputStream(saveToCacheFile ? new FileOutputStream(cacheFile, false) : (byteArrayOutputStream = new ByteArrayOutputStream()), 8 * 1024);
 
             // 读取数据
-            long completedLength = readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
+            int completedLength = readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
             if (request.isCanceled()) {
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - read data end" + "；" + request.getName());
@@ -301,10 +301,10 @@ public class HttpClientImageDownloader implements ImageDownloader {
         }
     }
 
-    public static long readData(InputStream inputStream, OutputStream outputStream, DownloadRequest downloadRequest, long contentLength, int progressCallbackAccuracy) throws IOException {
+    public static int readData(InputStream inputStream, OutputStream outputStream, DownloadRequest downloadRequest, int contentLength, int progressCallbackAccuracy) throws IOException {
         int readNumber;	//读取到的字节的数量
-        long completedLength = 0;
-        long averageLength = contentLength/progressCallbackAccuracy;
+        int completedLength = 0;
+        int averageLength = contentLength/progressCallbackAccuracy;
         int callbackNumber = 0;
         byte[] cacheBytes = new byte[1024*4];//数据缓存区
         while(!downloadRequest.isCanceled() && (readNumber = inputStream.read(cacheBytes)) != -1){

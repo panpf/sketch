@@ -198,7 +198,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
     private void executeDisplayRequest(DisplayRequest displayRequest){
         displayRequest.setLoadListener(new DisplayJoinLoadListener(displayRequest));
         if(displayRequest.getDisplayProgressListener() != null){
-            displayRequest.setLoadProgressListener(new DisplayJoinLoadProgressListener(displayRequest, displayRequest.getDisplayProgressListener()));
+            displayRequest.setLoadProgressListener(new DisplayJoinLoadProgressListener(displayRequest));
         }
         executeLoadRequest(displayRequest);
     }

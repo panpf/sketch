@@ -26,7 +26,7 @@ public class LoadJoinDownloadProgressListener implements ProgressListener {
     }
 
     @Override
-    public void onUpdateProgress(long totalLength, long completedLength) {
+    public void onUpdateProgress(int totalLength, int completedLength) {
         if(loadProgressListener != null){
             loadProgressListener.onUpdateProgress(totalLength, completedLength);
         }

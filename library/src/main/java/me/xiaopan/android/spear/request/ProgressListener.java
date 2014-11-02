@@ -26,5 +26,5 @@ public interface ProgressListener {
      * @param totalLength 总长度
      * @param completedLength 已完成长度
      */
-    public void onUpdateProgress(long totalLength, long completedLength);
+    public void onUpdateProgress(int totalLength, int completedLength);
 }

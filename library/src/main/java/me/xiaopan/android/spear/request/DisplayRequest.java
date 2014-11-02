@@ -18,7 +18,6 @@ package me.xiaopan.android.spear.request;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
@@ -54,6 +53,11 @@ public class DisplayRequest extends LoadRequest{
 
 	private DisplayListener displayListener;	//监听器
     private ProgressListener displayProgressListener; // 显示进度监听器
+
+    // Results
+    private BitmapDrawable bitmapDrawable;
+    private FailureCause failureCause;
+    private DisplayListener.From from;
 
     /**
      * 获取ID，此ID用来在内存缓存Bitmap时作为其KEY
@@ -128,6 +132,30 @@ public class DisplayRequest extends LoadRequest{
      */
     public ProgressListener getDisplayProgressListener() {
         return displayProgressListener;
+    }
+
+    public BitmapDrawable getBitmapDrawable() {
+        return bitmapDrawable;
+    }
+
+    public void setBitmapDrawable(BitmapDrawable bitmapDrawable) {
+        this.bitmapDrawable = bitmapDrawable;
+    }
+
+    public FailureCause getFailureCause() {
+        return failureCause;
+    }
+
+    public void setFailureCause(FailureCause failureCause) {
+        this.failureCause = failureCause;
+    }
+
+    public DisplayListener.From getFrom() {
+        return from;
+    }
+
+    public void setFrom(DisplayListener.From from) {
+        this.from = from;
     }
 
     /**
@@ -431,74 +459,27 @@ public class DisplayRequest extends LoadRequest{
          * @return RequestFuture 你可以通过RequestFuture来查看请求的状态或者取消这个请求
          */
         public RequestFuture fire() {
-            boolean isMainThread = Looper.myLooper() == Looper.getMainLooper();
-
-            // 执行请求
-            if(displayListener != null){
-                if(isMainThread){
-                    displayListener.onStarted();
-                }else{
-                    spear.getHandler().post(new Runnable() {
-                        @Override
-                        public void run() {
-                            displayListener.onStarted();
-                        }
-                    });
-                }
-            }
+            spear.getDisplayCallbackHandler().startCallbackOnFire(displayListener);
 
             // 验证imageView参数
             if(imageView == null){
                 if(spear.isDebugMode()){
                     Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "imageView不能为null");
                 }
-                if(displayListener != null){
-                    if(isMainThread){
-                        displayListener.onFailed(FailureCause.IMAGE_VIEW_NULL);
-                    }else{
-                        spear.getHandler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                               displayListener.onFailed(FailureCause.IMAGE_VIEW_NULL);
-                            }
-                        });
-                    }
-                }
+                spear.getDisplayCallbackHandler().failCallbackOnFire(null, null, FailureCause.IMAGE_VIEW_NULL, displayListener);
                 return null;
             }
 
             // 验证uri参数
             if(uri == null || "".equals(uri.trim())){
-                if(loadFailedDrawableHolder != null){
-                    final Drawable loadFailedDrawable = loadFailedDrawableHolder.getDrawable(spear.getContext(), imageProcessor);
-                    if(loadFailedDrawable != null){
-                        if(isMainThread){
-                            imageView.setImageDrawable(loadFailedDrawable);
-                        }else{
-                            spear.getHandler().post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    imageView.setImageDrawable(loadFailedDrawable);
-                                }
-                            });
-                        }
-                    }
-                }
                 if(spear.isDebugMode()){
                     Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "uri不能为null或空");
                 }
-                if(displayListener != null){
-                    if(isMainThread){
-                        displayListener.onFailed(FailureCause.URI_NULL_OR_EMPTY);
-                    }else{
-                        spear.getHandler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                displayListener.onFailed(FailureCause.URI_NULL_OR_EMPTY);
-                            }
-                        });
-                    }
+                Drawable loadFailedDrawable = null;
+                if(loadFailedDrawableHolder != null){
+                    loadFailedDrawable = loadFailedDrawableHolder.getDrawable(spear.getContext(), imageProcessor);
                 }
+                spear.getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
                 return null;
             }
 
@@ -508,18 +489,11 @@ public class DisplayRequest extends LoadRequest{
                 if(spear.isDebugMode()){
                     Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "未知的协议类型" + " URI" + "=" + uri);
                 }
-                if(displayListener != null){
-                    if(isMainThread){
-                        displayListener.onFailed(FailureCause.URI_NO_SUPPORT);
-                    }else{
-                        spear.getHandler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                displayListener.onFailed(FailureCause.URI_NO_SUPPORT);
-                            }
-                        });
-                    }
+                Drawable loadFailedDrawable = null;
+                if(loadFailedDrawableHolder != null){
+                    loadFailedDrawable = loadFailedDrawableHolder.getDrawable(spear.getContext(), imageProcessor);
                 }
+                spear.getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NO_SUPPORT, displayListener);
                 return null;
             }
 
@@ -530,30 +504,7 @@ public class DisplayRequest extends LoadRequest{
             if(enableMemoryCache){
                 final BitmapDrawable cacheDrawable = spear.getMemoryCache().get(requestId);
                 if(cacheDrawable != null){
-                    if(isMainThread){
-                        imageView.clearAnimation();
-                        imageView.setImageDrawable(cacheDrawable);
-                    }else{
-                        spear.getHandler().post(new Runnable() {
-                            @Override
-                            public void run() {
-                                imageView.clearAnimation();
-                                imageView.setImageDrawable(cacheDrawable);
-                            }
-                        });
-                    }
-                    if(displayListener != null){
-                        if(isMainThread){
-                            displayListener.onCompleted(uri, imageView, cacheDrawable, DisplayListener.From.MEMORY);
-                        }else{
-                            spear.getHandler().post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    displayListener.onCompleted(uri, imageView, cacheDrawable, DisplayListener.From.MEMORY);
-                                }
-                            });
-                        }
-                    }
+                    spear.getDisplayCallbackHandler().completeCallbackOnFire(imageView, uri, cacheDrawable, displayListener, DisplayListener.From.MEMORY);
                     return null;
                 }
             }
@@ -589,19 +540,9 @@ public class DisplayRequest extends LoadRequest{
             request.displayProgressListener = progressListener;
 
             // 显示默认图片
-            final BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getContext(), imageProcessor):null;
-            if(isMainThread){
-                imageView.clearAnimation();
-                imageView.setImageDrawable(new AsyncDrawable(spear.getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
-            }else{
-                spear.getHandler().post(new Runnable() {
-                    @Override
-                    public void run() {
-                        imageView.clearAnimation();
-                        imageView.setImageDrawable(new AsyncDrawable(spear.getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
-                    }
-                });
-            }
+            BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getContext(), imageProcessor):null;
+            imageView.clearAnimation();
+            imageView.setImageDrawable(new AsyncDrawable(spear.getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
 
             spear.getRequestExecutor().execute(request);
             return new RequestFuture(request);

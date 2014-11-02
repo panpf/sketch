@@ -113,7 +113,7 @@ public class GridImageAdapter extends BaseAdapter {
             });
             viewHolder.image.setProgressListener(new ProgressListener() {
                 @Override
-                public void onUpdateProgress(long totalLength, long completedLength) {
+                public void onUpdateProgress(int totalLength, int completedLength) {
                     viewHolder.progressPieView.setProgress((int) (((float) completedLength / totalLength) * 100));
                 }
             });
