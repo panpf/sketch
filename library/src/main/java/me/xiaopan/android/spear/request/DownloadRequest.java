@@ -16,37 +16,32 @@
 
 package me.xiaopan.android.spear.request;
 
-import android.util.Log;
-
 import java.io.File;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.task.Task;
-import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.Scheme;
 
 /**
  * 下载请求
  */
 public class DownloadRequest implements Request {
-    private static final String LOG_TAG = DownloadRequest.class.getSimpleName();
-
     /* 任务基础属性 */
     private Task task;	// 执行当前请求的任务，由于一个请求可能辗转被好几个任务处理
     private Status status = Status.WAITING;  // 状态
 
     /* 必须属性 */
     private File cacheFile;	// 缓存文件
-    protected Spear spear;
-    protected String uri;	// 图片地址
-    protected String name;	// 名称，用于在输出LOG的时候区分不同的请求
-    protected Scheme scheme;	// Uri协议格式
-	private DownloadListener downloadListener;  // 下载监听器
-    private ProgressListener downloadProgressListener;  // 下载进度监听器
+    Spear spear;
+    String uri;	// 图片地址
+    String name;	// 名称，用于在输出LOG的时候区分不同的请求
+    Scheme scheme;	// Uri协议格式
+	DownloadListener downloadListener;  // 下载监听器
+    ProgressListener downloadProgressListener;  // 下载进度监听器
 
     /* 可配置属性 */
-    protected long diskCacheTimeout;	// 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-    protected boolean enableDiskCache;	// 是否开启磁盘缓存
+    long diskCacheTimeout;	// 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
+    boolean enableDiskCache;	// 是否开启磁盘缓存
 
     @Override
 	public String getName() {
@@ -170,145 +165,5 @@ public class DownloadRequest implements Request {
      */
     public void setDownloadProgressListener(ProgressListener downloadProgressListener) {
         this.downloadProgressListener = downloadProgressListener;
-    }
-
-    /**
-     * 生成器，用来生成下载请求
-     */
-    public static class Helper{
-        private Spear spear;
-        private String uri;
-
-        private long diskCacheTimeout;
-        private boolean enableDiskCache = true;
-
-        private DownloadListener downloadListener;
-        private ProgressListener progressListener;
-
-        /**
-         * 创建下载请求生成器
-         * @param spear Spear
-         * @param uri 支持以下2种类型
-         * <blockquote>“http://site.com/image.png“  // from Web
-         * <br>“https://site.com/image.png“ // from Web
-         * </blockquote>
-         */
-        public Helper(Spear spear, String uri) {
-            this.spear = spear;
-            this.uri = uri;
-        }
-
-        /**
-         * 设置监听器
-         * @return Helper
-         */
-        public Helper listener(DownloadListener downloadListener){
-            this.downloadListener = downloadListener;
-            return this;
-        }
-
-        /**
-         * 关闭硬盘缓存
-         * @return Helper
-         */
-        public Helper disableDiskCache() {
-            this.enableDiskCache = false;
-            return this;
-        }
-
-        /**
-         * 设置磁盘缓存超时时间
-         * @param diskCacheTimeout 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-         * @return Helper
-         */
-        public Helper diskCacheTimeout(long diskCacheTimeout) {
-            this.diskCacheTimeout = diskCacheTimeout;
-            return this;
-        }
-
-        /**
-         * 设置进度监听器
-         * @param progressListener 进度监听器
-         * @return Helper
-         */
-        public Helper progressListener(ProgressListener progressListener){
-            this.progressListener = progressListener;
-            return this;
-        }
-
-        /**
-         * 设置下载参数
-         * @param options 下载参数
-         * @return Helper
-         */
-        public Helper options(DownloadOptions options){
-            if(options == null){
-                return null;
-            }
-
-            this.enableDiskCache = options.isEnableDiskCache();
-            this.diskCacheTimeout = options.getDiskCacheTimeout();
-
-            return this;
-        }
-
-        /**
-         * 设置下载参数，你只需要提前将DownloadOptions通过Spear.putOptions()方法存起来，然后在这里指定其名称即可
-         * @param optionsName 参数名称
-         * @return Helper
-         */
-        public Helper options(Enum<?> optionsName){
-            return options((DownloadOptions) Spear.getOptions(optionsName));
-        }
-
-        /**
-         * 执行请求
-         * @return RequestFuture 你可以通过RequestFuture来查看请求的状态或者取消这个请求
-         */
-        public RequestFuture fire(){
-            // 执行请求
-            if(downloadListener != null){
-                downloadListener.onStarted();
-            }
-
-            // 验证uri参数
-            if(uri == null || "".equals(uri.trim())){
-                if(spear.isDebugMode()){
-                    Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "uri不能为null或空");
-                }
-                if(downloadListener != null){
-                    downloadListener.onFailed(FailureCause.URI_NULL_OR_EMPTY);
-                }
-                return null;
-            }
-
-            // 过滤掉不支持的URI协议类型
-            Scheme scheme = Scheme.valueOfUri(uri);
-            if(!(scheme == Scheme.HTTP || scheme == Scheme.HTTPS)){
-                if(spear.isDebugMode()){
-                    Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "download()方法只能处理http或https协议" + " URI" + "=" + uri);
-                }
-                if(downloadListener != null){
-                    downloadListener.onFailed(FailureCause.URI_NO_SUPPORT);
-                }
-                return null;
-            }
-
-            // 创建请求
-            DownloadRequest request = new DownloadRequest();
-
-            request.uri = uri;
-            request.name = uri;
-            request.spear = spear;
-            request.scheme = scheme;
-            request.enableDiskCache = enableDiskCache;
-            request.diskCacheTimeout = diskCacheTimeout;
-
-            request.downloadListener = downloadListener;
-            request.downloadProgressListener = progressListener;
-
-            spear.getRequestExecutor().execute(request);
-            return new RequestFuture(request);
-        }
     }
 }

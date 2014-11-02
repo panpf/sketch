@@ -29,7 +29,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.request.DisplayHelper;
 import me.xiaopan.android.spear.request.DownloadRequest;
 import me.xiaopan.android.spear.util.FileLastModifiedComparator;
 
@@ -136,7 +136,7 @@ public class LruDiskCache implements DiskCache {
         if(cacheDir == null){
             return null;
         }
-		return new File(cacheDir.getPath() + File.separator + DisplayRequest.encodeUrl(uri));
+		return new File(cacheDir.getPath() + File.separator + DisplayHelper.encodeUrl(uri));
 	}
 
 	@Override

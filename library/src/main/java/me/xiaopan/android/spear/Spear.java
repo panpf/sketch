@@ -35,14 +35,16 @@ import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.execute.DefaultRequestExecutor;
 import me.xiaopan.android.spear.execute.RequestExecutor;
 import me.xiaopan.android.spear.request.DisplayCallbackHandler;
+import me.xiaopan.android.spear.request.DisplayHelper;
 import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.request.DownloadHelper;
 import me.xiaopan.android.spear.request.DownloadListener;
-import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.request.LoadHelper;
 import me.xiaopan.android.spear.request.LoadListener;
-import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.request.RequestOptions;
 import me.xiaopan.android.spear.util.AsyncDrawable;
 import me.xiaopan.android.spear.util.DefaultImageSizeCalculator;
+import me.xiaopan.android.spear.util.DisplayHelperManager;
 import me.xiaopan.android.spear.util.ImageSizeCalculator;
 import me.xiaopan.android.spear.util.Scheme;
 
@@ -59,6 +61,7 @@ public class Spear {
     private DiskCache diskCache;    // 磁盘缓存器
     private MemoryCache memoryCache;	//图片缓存器
     private ImageDecoder imageDecoder;	//图片解码器
+    private DisplayHelperManager displayHelperManager;
     private ImageDownloader imageDownloader;	//图片下载器
     private RequestExecutor requestExecutor;	//请求执行器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
@@ -69,6 +72,7 @@ public class Spear {
         this.diskCache = new LruDiskCache(context);
         this.memoryCache = new LruMemoryCache();
         this.imageDecoder = new DefaultImageDecoder();
+        this.displayHelperManager = new DisplayHelperManager();
         this.imageDownloader = new HttpClientImageDownloader();
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
         this.imageSizeCalculator = new DefaultImageSizeCalculator();
@@ -82,10 +86,10 @@ public class Spear {
      * <br>“https://site.com/image.png“ // from Web
      * </blockquote>
      * @param downloadListener 下载监听器
-     * @return DownloadRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始下载
+     * @return DownloadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始下载
      */
-	public DownloadRequest.Helper download(String uri, DownloadListener downloadListener){
-		 return new DownloadRequest.Helper(this, uri).listener(downloadListener);
+	public DownloadHelper download(String uri, DownloadListener downloadListener){
+		 return new DownloadHelper(this, uri).listener(downloadListener);
 	}
 
 
@@ -101,40 +105,40 @@ public class Spear {
      * <br>“drawable://" + R.drawable.image // from drawables
      * </blockquote>
      * @param loadListener 加载监听器
-     * @return LoadRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始加载
+     * @return LoadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadRequest.Helper load(String uri, LoadListener loadListener){
-        return new LoadRequest.Helper(this, uri).listener(loadListener);
+	public LoadHelper load(String uri, LoadListener loadListener){
+        return new LoadHelper(this, uri).listener(loadListener);
 	}
     
     /**
      * 加载
      * @param imageFile 图片文件
      * @param loadListener 加载监听器
-     * @return LoadRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始加载
+     * @return LoadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadRequest.Helper load(File imageFile, LoadListener loadListener){
-        return new LoadRequest.Helper(this, Scheme.FILE.createUri(imageFile.getPath())).listener(loadListener);
+	public LoadHelper load(File imageFile, LoadListener loadListener){
+        return new LoadHelper(this, Scheme.FILE.createUri(imageFile.getPath())).listener(loadListener);
 	}
 
     /**
      * 加载
      * @param drawableResId 图片资源ID
      * @param loadListener 加载监听器
-     * @return LoadRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始加载
+     * @return LoadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadRequest.Helper load(int drawableResId, LoadListener loadListener){
-        return new LoadRequest.Helper(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
+	public LoadHelper load(int drawableResId, LoadListener loadListener){
+        return new LoadHelper(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
 	}
 
     /**
      * 加载
      * @param uri 图片资源URI
      * @param loadListener 加载监听器
-     * @return LoadRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始加载
+     * @return LoadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadRequest.Helper load(Uri uri, LoadListener loadListener){
-        return new LoadRequest.Helper(this, uri.toString()).listener(loadListener);
+	public LoadHelper load(Uri uri, LoadListener loadListener){
+        return new LoadHelper(this, uri.toString()).listener(loadListener);
 	}
 
 
@@ -150,40 +154,40 @@ public class Spear {
      * <br>“drawable://" + R.drawable.image // from drawables
      * </blockquote>
      * @param imageView 显示图片的视图
-     * @return DisplayRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始显示
+     * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayRequest.Helper display(String uri, ImageView imageView){
-        return new DisplayRequest.Helper(this, uri, imageView);
+    public DisplayHelper display(String uri, ImageView imageView){
+        return displayHelperManager.getDisplayHelper(this, uri, imageView);
     }
 
     /**
      * 显示图片
      * @param imageFile 图片文件
      * @param imageView 显示图片的视图
-     * @return DisplayRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始显示
+     * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayRequest.Helper display(File imageFile, ImageView imageView){
-        return new DisplayRequest.Helper(this, Scheme.FILE.createUri(imageFile.getPath()), imageView);
+    public DisplayHelper display(File imageFile, ImageView imageView){
+        return displayHelperManager.getDisplayHelper(this, Scheme.FILE.createUri(imageFile.getPath()), imageView);
     }
 
     /**
      * 显示图片
      * @param drawableResId 图片资源ID
      * @param imageView 显示图片的视图
-     * @return DisplayRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始显示
+     * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayRequest.Helper display(int drawableResId, ImageView imageView){
-        return new DisplayRequest.Helper(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
+    public DisplayHelper display(int drawableResId, ImageView imageView){
+        return displayHelperManager.getDisplayHelper(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
     }
 
     /**
      * 显示图片
      * @param uri 图片资源URI
      * @param imageView 显示图片的视图
-     * @return DisplayRequest.Builder 你可以继续设置一些参数，最后调用fire()方法开始显示
+     * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayRequest.Helper display(Uri uri, ImageView imageView){
-        return new DisplayRequest.Helper(this, uri.toString(), imageView);
+    public DisplayHelper display(Uri uri, ImageView imageView){
+        return displayHelperManager.getDisplayHelper(this, uri.toString(), imageView);
     }
 	
     /**
@@ -408,6 +412,14 @@ public class Spear {
      */
     private static class OptionsMapInstanceHolder{
         private static final Map<Object, RequestOptions> OPTIONS_MAP = new HashMap<Object, RequestOptions>();
+    }
+
+    /**
+     * 获取DisplayHelper管理器
+     * @return DisplayHelper管理器
+     */
+    public DisplayHelperManager getDisplayHelperManager() {
+        return displayHelperManager;
     }
 
     /**

@@ -78,6 +78,7 @@ public class DownloadActivity extends ActionBarActivity {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 try {
                     Field field = DownloadOptions.class.getDeclaredField("enableDiskCache");
+                    field.setAccessible(true);
                     field.set(downloadOptions, isChecked);
                 } catch (NoSuchFieldException e) {
                     e.printStackTrace();
