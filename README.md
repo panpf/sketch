@@ -1,4 +1,4 @@
-# ![Logo](https://github.com/xiaopansky/Spear/raw/master/app/src/main/res/drawable-mdpi/ic_launcher.png) Spear
+# ![Logo](https://github.com/xiaopansky/Spear/raw/master/sample/src/main/res/drawable-mdpi/ic_launcher.png) Spear
 
 Spear是Android上的一个图片加载器，目的是为了帮助开发者从本地或网络读取图片，然后处理并显示在ImageView上
 
