@@ -1,1 +1,3 @@
-<manifest package="me.xiaopan.android.spear.library"/>
+<manifest package="me.xiaopan.android.spear.library">
+    <application/>
+</manifest>
