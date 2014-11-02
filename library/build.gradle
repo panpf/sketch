@@ -8,8 +8,8 @@ android {
         applicationId "me.xiaopan.android.spear.library"
         minSdkVersion 8
         targetSdkVersion 19
-        versionCode 112
-        versionName "1.1.2"
+        versionCode 120
+        versionName "1.2.0"
     }
 
     buildTypes {

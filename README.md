@@ -122,7 +122,7 @@ Spear.with(getBaseContext())
     })
     .progressListener(new ProgressListener() {  // 设置进度监听器
         @Override
-        public void onUpdateProgress(long totalLength, long completedLength) {
+        public void onUpdateProgress(int totalLength, int completedLength) {
             
         }
     })
@@ -141,7 +141,7 @@ Spear除了有display()方法用来显示图片之外，还有load()用来加载
 ``这三个方法的用法都一样``
 
 display()与load()、download()的区别
->* display()的listener和progressListener中的所有回调方法一定是在主线程中回调的，而load()、download()则不是这样的，具体规则是在没有进入异步线程之前发生的回调（例如在fire()方法中）视当前调用的环境（是不是在主线程调用的fire()方法）而定，在异步线程中发生的回调则都是在异步线程中直接回调，不会像display()那样通过Handler在主线程回调
+>* display()的fire()方法必须在主线程执行，否则将会有异常发生
 >* **在使用display()方法显示图片的时候，Spear会自动根据ImageView的宽高计算maxsize和resize，条件就是计算maxsize时要求ImageView的宽高至少有一个是固定的，而计算resize的时候要求宽高都是固定的，这样就省却了很多麻烦，也节省了内存**
 >* 可使用的属性display()最多，download()最少具体如下表所示：
 
@@ -178,10 +178,16 @@ display()与load()、download()的区别
 >* [设置``磁盘缓存目录``或``保留空间大小``（DiskCache）](https://github.com/xiaopansky/Spear/wiki/DiskCache)
 
 ###Downloads
->* [spear-1.1.3.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.3.jar)
->* [spear-1.1.3-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.1.3-sources.zip)
+>* [spear-1.2.0.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.2.0.jar)
+>* [spear-1.2.0-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.2.0-sources.zip)
 
 ###Change log
+###1.2.0
+>* ``优化``。display的fire方法去掉了异步线程过滤，由于display基本都是在主线程执行的过滤异步线程没有意义
+>* ``优化``。改善了需要通过Handler在主线程执行回调以及显示的方式，以前是使用Runnable，现在时通过Message，这样就避免了创建Runnable，由于display是非常频繁的操作，因此这将会是有意义的改善
+>* ``优化``。优化了DisplayHelper的使用，以前是为每一次display都创建一个DisplayHelper，现在是只要你是按照display().fire()这样连续的使用，那么所有的display将共用一个DisplayHelper，这将会避免创建大量的DisplayHelper
+>* ``优化``。ProgressListener.onUpdateProgress(long, long)改为ProgressListener.onUpdateProgress(int, int)，因为int足够用了
+
 ###1.1.3
 >* ``修改``。修改ProgressCallback的名字为ProgressListener并且各个Request.Helper中的progressCallback()方法页改名为progressListener
 >* ``优化``。DisplayRequest.Helper.fire()方法不再限制只能在主线程中执行
