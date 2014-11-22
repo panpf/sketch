@@ -48,14 +48,11 @@ import me.xiaopan.android.spear.process.RoundedCornerImageProcessor;
 import me.xiaopan.android.spear.request.DownloadOptions;
 import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.LoadOptions;
-import me.xiaopan.android.spear.request.ProgressListener;
-import me.xiaopan.android.spear.sample.widget.ProgressPieView;
 import me.xiaopan.android.spear.util.FailureCause;
 
 public class LoadActivity extends ActionBarActivity {
     private EditText periodOfValidityEdit;
     private ImageView imageView;
-    private ProgressPieView progressBar;
     private DrawerLayout drawerLayout;
     private EditText maxWidthEditText;
     private EditText maxHeightEditText;
@@ -76,7 +73,6 @@ public class LoadActivity extends ActionBarActivity {
         maxHeightEditText = (EditText) findViewById(R.id.edit_load_maxHeight);
         ToggleButton diskCacheToggleButton = (ToggleButton) findViewById(R.id.toggle_load_diskCache);
         imageView = (ImageView) findViewById(R.id.image_load);
-        progressBar = (ProgressPieView) findViewById(R.id.progressBar_load);
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_load);
         Spinner processorSpinner = (Spinner) findViewById(R.id.spinner_load_processor);
         Spinner scaleTypeSpinner = (Spinner) findViewById(R.id.spinner_load_scaleType);
@@ -261,8 +257,6 @@ public class LoadActivity extends ActionBarActivity {
                     Spear.with(getBaseContext()).load(uri, new LoadListener() {
                         @Override
                         public void onStarted() {
-                            progressBar.setProgress(0);
-                            progressBar.setVisibility(View.VISIBLE);
                             imageView.setImageBitmap(null);
                         }
 
@@ -273,7 +267,6 @@ public class LoadActivity extends ActionBarActivity {
                                 @Override
                                 public void run() {
                                     imageView.setImageBitmap(bitmap);
-                                    progressBar.setVisibility(View.GONE);
                                 }
                             });
                         }
@@ -284,7 +277,6 @@ public class LoadActivity extends ActionBarActivity {
                                 @Override
                                 public void run() {
                                     Toast.makeText(getBaseContext(), "加载失败", Toast.LENGTH_SHORT).show();
-                                    progressBar.setVisibility(View.GONE);
                                 }
                             });
                         }
@@ -293,18 +285,7 @@ public class LoadActivity extends ActionBarActivity {
                         public void onCanceled() {
 
                         }
-                    }).options(loadOptions).progressListener(new ProgressListener() {
-                        @Override
-                        public void onUpdateProgress(final int totalLength, final int completedLength) {
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    progressBar.setProgress((int) (((float) completedLength / totalLength) * 100));
-                                    progressBar.setVisibility(View.VISIBLE);
-                                }
-                            });
-                        }
-                    }).fire();
+                    }).options(loadOptions).fire();
                 }
             }
 

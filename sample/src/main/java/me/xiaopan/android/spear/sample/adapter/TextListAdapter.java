@@ -17,7 +17,7 @@
 package me.xiaopan.android.spear.sample.adapter;
 
 import android.content.Context;
-import android.view.LayoutInflater;
+import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -28,17 +28,17 @@ import java.util.List;
 
 import me.xiaoapn.android.spear.sample.R;
 
-public class StringAdapter extends BaseAdapter {
+public class TextListAdapter extends BaseAdapter {
 	private Context context;
 	private List<String> contents;
 	private boolean full = true;
 	
-	public StringAdapter(Context context, List<String> contents){
+	public TextListAdapter(Context context, List<String> contents){
 		this.context = context;
 		this.contents = contents;
 	}
 	
-	public StringAdapter(Context context, String... contents){
+	public TextListAdapter(Context context, String... contents){
 		this.context = context;
 		this.contents = new ArrayList<String>(contents.length);
 		for(String string : contents){
@@ -62,24 +62,23 @@ public class StringAdapter extends BaseAdapter {
 	}
 
 	@Override
-	public View getView(int realPosition, View convertView, ViewGroup parent) {
-		ViewHolder viewHolder;
+	public View getView(int position, View convertView, ViewGroup parent) {
+        TextView textView;
 		if(convertView == null){
-			viewHolder = new ViewHolder();
-			convertView = LayoutInflater.from(context).inflate(R.layout.list_item_text, null);
-			viewHolder.text = (TextView) convertView.findViewById(R.id.text_textItem_text);
-			convertView.setTag(viewHolder);
+			textView = new TextView(context);
+            textView.setPadding(dp2px(context, 16), dp2px(context, 16), dp2px(context, 16), dp2px(context, 16));
+            textView.setTextColor(context.getResources().getColorStateList(R.color.selector_text_title));
+            textView.setGravity(Gravity.CENTER_VERTICAL);
+            textView.setMinHeight(dp2px(context, 52));
+
+            convertView = textView;
 		}else{
-			viewHolder = (ViewHolder) convertView.getTag();
+			textView = (TextView) convertView;
 		}
 		
-		viewHolder.text.setText(contents.get(realPosition));
+		textView.setText(contents.get(position));
 		
 		return convertView;
-	}
-	
-	class ViewHolder{
-		private TextView text;
 	}
 
 	public boolean isFull() {
@@ -89,4 +88,12 @@ public class StringAdapter extends BaseAdapter {
 	public void setFull(boolean full) {
 		this.full = full;
 	}
+
+    /**
+     * 根据手机的分辨率从 dp 的单位 转成为 px(像素)
+     */
+    public static int dp2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
 }

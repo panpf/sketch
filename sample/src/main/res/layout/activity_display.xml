@@ -1,4 +1,6 @@
-<merge xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent">
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent" android:layout_height="fill_parent">
     <android.support.v4.widget.DrawerLayout android:id="@+id/drawer_display" android:layout_width="fill_parent" android:layout_height="fill_parent">
         <FrameLayout 
             android:id="@+id/fragment_display" 
@@ -17,5 +19,4 @@
             android:layout_gravity="end" 
             android:background="@color/white"/>
     </android.support.v4.widget.DrawerLayout>
-    <include layout="@layout/include_shadow_down"/>
 </merge>

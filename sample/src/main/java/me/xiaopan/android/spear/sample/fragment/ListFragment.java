@@ -29,7 +29,7 @@ import android.widget.ListView;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.sample.activity.ViewPagerActivity;
-import me.xiaopan.android.spear.sample.adapter.ListImageAdapter;
+import me.xiaopan.android.spear.sample.adapter.ImageListAdapter;
 
 public class ListFragment extends Fragment {
 	
@@ -40,7 +40,7 @@ public class ListFragment extends Fragment {
 		listView.setBackgroundColor(Color.BLACK);
 		listView.setDivider(getResources().getDrawable(R.drawable.divider));
 		listView.setDividerHeight(1);
-		listView.setAdapter(new ListImageAdapter(getActivity(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS)));
+		listView.setAdapter(new ImageListAdapter(getActivity(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS)));
 		listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

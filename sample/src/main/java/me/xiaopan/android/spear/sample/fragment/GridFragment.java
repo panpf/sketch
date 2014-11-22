@@ -28,7 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.GridView;
 
 import me.xiaopan.android.spear.sample.activity.ViewPagerActivity;
-import me.xiaopan.android.spear.sample.adapter.GridImageAdapter;
+import me.xiaopan.android.spear.sample.adapter.ImageGridAdapter;
 
 public class GridFragment extends Fragment {
 	public static final String PARAM_REQUIRED_STRING_ARRAY_URLS = "PARAM_REQUIRED_STRING_ARRAY_URLS";
@@ -38,10 +38,10 @@ public class GridFragment extends Fragment {
 		GridView gridView = new GridView(getActivity());
 		gridView.setBackgroundColor(Color.BLACK);
 		gridView.setPadding(0, 0, 0, 0);
-		gridView.setNumColumns(3);
+		gridView.setNumColumns(2);
 		gridView.setVerticalSpacing(2);
 		gridView.setHorizontalSpacing(2);
-		gridView.setAdapter(new GridImageAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS), 3));
+		gridView.setAdapter(new ImageGridAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS), 2, 2));
 		gridView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

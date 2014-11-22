@@ -43,14 +43,11 @@ import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.request.DownloadListener;
 import me.xiaopan.android.spear.request.DownloadOptions;
-import me.xiaopan.android.spear.request.ProgressListener;
-import me.xiaopan.android.spear.sample.widget.ProgressPieView;
 import me.xiaopan.android.spear.util.FailureCause;
 
 public class DownloadActivity extends ActionBarActivity {
     private EditText periodOfValidityEdit;
 	private ImageView imageView;
-	private ProgressPieView progressBar;
 
     private DownloadOptions downloadOptions;
     private String uri = "http://tupian.enterdesk.com/2013/xll/0112/taiqiumeinv/taiqiumeinv%20(3).jpg.680.510.jpg";
@@ -63,7 +60,6 @@ public class DownloadActivity extends ActionBarActivity {
         periodOfValidityEdit = (EditText) findViewById(R.id.edit_download_periodOfValidity);
         ToggleButton diskCacheToggleButton = (ToggleButton) findViewById(R.id.toggle_download_diskCache);
 		imageView = (ImageView) findViewById(R.id.image_download);
-		progressBar = (ProgressPieView) findViewById(R.id.progressBar_download);
         DrawerLayout drawerLayout = (DrawerLayout) findViewById(R.id.drawer_download);
 
         drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_left, GravityCompat.START);
@@ -127,8 +123,6 @@ public class DownloadActivity extends ActionBarActivity {
                 Spear.with(getBaseContext()).download(uri, new DownloadListener() {
                     @Override
                     public void onStarted() {
-                        progressBar.setProgress(0);
-                        progressBar.setVisibility(View.VISIBLE);
                         imageView.setImageBitmap(null);
                     }
 
@@ -138,7 +132,6 @@ public class DownloadActivity extends ActionBarActivity {
                             @Override
                             public void run() {
                                 imageView.setImageBitmap(BitmapFactory.decodeByteArray(data, 0, data.length));
-                                progressBar.setVisibility(View.GONE);
                             }
                         });
                     }
@@ -149,7 +142,6 @@ public class DownloadActivity extends ActionBarActivity {
                             @Override
                             public void run() {
                                 imageView.setImageURI(Uri.fromFile(cacheFile));
-                                progressBar.setVisibility(View.GONE);
                             }
                         });
                     }
@@ -160,7 +152,6 @@ public class DownloadActivity extends ActionBarActivity {
                             @Override
                             public void run() {
                                 Toast.makeText(getBaseContext(), "下载失败", Toast.LENGTH_SHORT).show();
-                                progressBar.setVisibility(View.GONE);
                             }
                         });
                     }
@@ -169,17 +160,7 @@ public class DownloadActivity extends ActionBarActivity {
                     public void onCanceled() {
 
                     }
-                }).options(downloadOptions).progressListener(new ProgressListener() {
-                    @Override
-                    public void onUpdateProgress(final int totalLength, final int completedLength) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressBar.setProgress((int) (((float) completedLength / totalLength) * 100));
-                            }
-                        });
-                    }
-                }).fire();
+                }).options(downloadOptions).fire();
             }
 
             @Override

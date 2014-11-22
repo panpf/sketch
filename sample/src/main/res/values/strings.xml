@@ -7,6 +7,8 @@
     <string name="activity_titel_load">Image Load</string>
     <string name="activity_titel_display">Image Display</string>
     <string name="url_github">http://github.com/xiaopansky/Spear</string>
+    <string name="loadingLater">正在加载%s，请稍后…</string>
+    <string name="ingLater">正在%s，请稍后…</string>
 
     <drawable name="divider">#80FFFFFF</drawable>
 

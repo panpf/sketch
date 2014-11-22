@@ -1,4 +1,6 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="fill_parent" android:layout_height="fill_parent">
-    <ListView style="@style/match_match" android:id="@android:id/list"/>
-    <include layout="@layout/include_shadow_down"/>
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
 </merge>

@@ -28,7 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
 import me.xiaoapn.android.spear.sample.R;
-import me.xiaopan.android.spear.sample.adapter.StringAdapter;
+import me.xiaopan.android.spear.sample.adapter.TextListAdapter;
 
 public class MainActivity extends ActionBarActivity {
     private ListView listView;
@@ -36,28 +36,30 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_list);
+
+        setContentView(R.layout.activity_list);
 
         listView = (ListView) findViewById(android.R.id.list);
-		
-		listView.setAdapter(new StringAdapter(getBaseContext(), new String[]{"download", "load", "display", "同一张图片应用于不同场景"}));
-
+		listView.setAdapter(new TextListAdapter(getBaseContext(), new String[]{"download", "load", "display", "同一张图片应用于不同场景", "图片搜索"}));
         listView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 				Class<?> targetClass = null;
 				switch(position - listView.getHeaderViewsCount()){
-					case 0 : 
+					case 0 :
 						targetClass = DownloadActivity.class;
 						break;
-					case 1 : 
+					case 1 :
 						targetClass = LoadActivity.class;
 						break;
-					case 2 : 
+					case 2 :
 						targetClass = DisplayActivity.class;
 						break;
                     case 3 :
                         targetClass = NormalActivity.class;
+						break;
+                    case 4 :
+                        targetClass = ImageSearchActivity.class;
 						break;
 				}
 				if(targetClass != null){
@@ -65,6 +67,8 @@ public class MainActivity extends ActionBarActivity {
 				}
 			}
 		});
+
+		setContentView(listView);
 	}
 
     @Override

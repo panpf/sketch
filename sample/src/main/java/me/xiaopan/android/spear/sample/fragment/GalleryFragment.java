@@ -28,7 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
 
 import me.xiaopan.android.spear.sample.activity.ViewPagerActivity;
-import me.xiaopan.android.spear.sample.adapter.GalleryImageAdapter;
+import me.xiaopan.android.spear.sample.adapter.ImageGalleryAdapter;
 
 @SuppressWarnings("deprecation")
 public class GalleryFragment extends Fragment {
@@ -38,7 +38,7 @@ public class GalleryFragment extends Fragment {
 		Gallery gallery = new Gallery(getActivity());
 		gallery.setBackgroundColor(Color.BLACK);
 		gallery.setSpacing(5);
-		gallery.setAdapter(new GalleryImageAdapter(getActivity(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS)));
+		gallery.setAdapter(new ImageGalleryAdapter(getActivity(), getArguments().getStringArray(GridFragment.PARAM_REQUIRED_STRING_ARRAY_URLS)));
 		gallery.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

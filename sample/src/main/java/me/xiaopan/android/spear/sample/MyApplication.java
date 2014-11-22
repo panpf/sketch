@@ -20,6 +20,7 @@ import android.app.Application;
 import android.view.animation.OvershootInterpolator;
 
 import me.xiaoapn.android.spear.sample.R;
+import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.OriginalFadeInImageDisplayer;
 import me.xiaopan.android.spear.display.ZoomInImageDisplayer;
@@ -37,6 +38,7 @@ public class MyApplication extends Application {
 		super.onCreate();
 
         Spear.with(getBaseContext()).setDebugMode(true);
+        GoHttp.with(getBaseContext()).setDebugMode(true);
         Spear.putOptions(DisplayOptionsType.GRID_VIEW, new DisplayOptions(getBaseContext())
                 .loadingDrawable(R.drawable.image_loading, true)
                 .loadFailedDrawable(R.drawable.image_load_fail, true)

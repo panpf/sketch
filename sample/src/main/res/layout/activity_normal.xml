@@ -1,132 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:ppv="http://schemas.android.com/apk/res-auto"
-    style="@style/match_match"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/black">
-    <LinearLayout style="@style/match_wrap_vertical">
-        <LinearLayout style="@style/match_wrap">
-            <FrameLayout style="@style/weight_wrap">
-                <me.xiaopan.android.spear.widget.SpearImageView
-                    android:id="@+id/image_normal_11"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:contentDescription="@string/app_name"/>
-                <me.xiaopan.android.spear.sample.widget.ProgressPieView
-                    android:id="@+id/progress_normal_11"
-                    android:layout_margin="8dp"
-                    android:layout_gravity="center"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:visibility="gone"
-                    ppv:progressFillType="center"
-                    ppv:strokeWidth="2dp"
-                    ppv:strokeColor="#A8A8A8"
-                    ppv:backgroundColor="#D1D1D1"
-                    ppv:progressColor="#EE7942"/>
-            </FrameLayout>
-
-            <FrameLayout style="@style/weight_wrap" android:layout_marginLeft="2dp">
-                <me.xiaopan.android.spear.widget.SpearImageView
-                    android:id="@+id/image_normal_12"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:contentDescription="@string/app_name"/>
-                <me.xiaopan.android.spear.sample.widget.ProgressPieView
-                    android:id="@+id/progress_normal_12"
-                    android:layout_margin="8dp"
-                    android:layout_gravity="center"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:visibility="gone"
-                    ppv:progressFillType="center"
-                    ppv:strokeWidth="2dp"
-                    ppv:strokeColor="#A8A8A8"
-                    ppv:backgroundColor="#D1D1D1"
-                    ppv:progressColor="#EE7942"/>
-            </FrameLayout>
-
-            <FrameLayout style="@style/weight_wrap" android:layout_marginTop="2dp">
-                <me.xiaopan.android.spear.widget.SpearImageView
-                    android:id="@+id/image_normal_13"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:contentDescription="@string/app_name"/>
-                <me.xiaopan.android.spear.sample.widget.ProgressPieView
-                    android:id="@+id/progress_normal_13"
-                    android:layout_margin="8dp"
-                    android:layout_gravity="center"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:visibility="gone"
-                    ppv:progressFillType="center"
-                    ppv:strokeWidth="2dp"
-                    ppv:strokeColor="#A8A8A8"
-                    ppv:backgroundColor="#D1D1D1"
-                    ppv:progressColor="#EE7942"/>
-            </FrameLayout>
-        </LinearLayout>
-
-        <LinearLayout style="@style/match_wrap" android:layout_marginTop="2dp">
-            <FrameLayout style="@style/weight_wrap">
-                <me.xiaopan.android.spear.widget.SpearImageView
-                    android:id="@+id/image_normal_21"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:contentDescription="@string/app_name"/>
-                <me.xiaopan.android.spear.sample.widget.ProgressPieView
-                    android:id="@+id/progress_normal_21"
-                    android:layout_margin="8dp"
-                    android:layout_gravity="center"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:visibility="gone"
-                    ppv:progressFillType="center"
-                    ppv:strokeWidth="2dp"
-                    ppv:strokeColor="#A8A8A8"
-                    ppv:backgroundColor="#D1D1D1"
-                    ppv:progressColor="#EE7942"/>
-            </FrameLayout>
-
-            <FrameLayout style="@style/weight_wrap" android:layout_marginLeft="2dp">
-                <me.xiaopan.android.spear.widget.SpearImageView
-                    android:id="@+id/image_normal_22"
-                    android:layout_width="200dp"
-                    android:layout_height="200dp"
-                    android:contentDescription="@string/app_name"/>
-                <me.xiaopan.android.spear.sample.widget.ProgressPieView
-                    android:id="@+id/progress_normal_22"
-                    android:layout_margin="8dp"
-                    android:layout_gravity="center"
-                    android:layout_width="96dp"
-                    android:layout_height="96dp"
-                    android:visibility="gone"
-                    ppv:progressFillType="center"
-                    ppv:strokeWidth="2dp"
-                    ppv:strokeColor="#A8A8A8"
-                    ppv:backgroundColor="#D1D1D1"
-                    ppv:progressColor="#EE7942"/>
-            </FrameLayout>
-        </LinearLayout>
-
-        <FrameLayout style="@style/match_match" android:layout_marginTop="2dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
             <me.xiaopan.android.spear.widget.SpearImageView
-                android:id="@+id/image_normal_31"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:id="@+id/image_normal_11"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
                 android:contentDescription="@string/app_name"/>
-            <me.xiaopan.android.spear.sample.widget.ProgressPieView
-                android:id="@+id/progress_normal_31"
-                android:layout_margin="8dp"
-                android:layout_gravity="center"
-                android:layout_width="96dp"
-                android:layout_height="96dp"
-                android:visibility="gone"
-                ppv:progressFillType="center"
-                ppv:strokeWidth="2dp"
-                ppv:strokeColor="#A8A8A8"
-                ppv:backgroundColor="#D1D1D1"
-                ppv:progressColor="#EE7942"/>
-        </FrameLayout>
+
+            <me.xiaopan.android.spear.widget.SpearImageView
+                android:id="@+id/image_normal_12"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"/>
+
+            <me.xiaopan.android.spear.widget.SpearImageView
+                android:id="@+id/image_normal_13"
+                android:layout_width="0dp"
+                android:layout_height="100dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp">
+            <me.xiaopan.android.spear.widget.SpearImageView
+                android:id="@+id/image_normal_21"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"/>
+
+            <me.xiaopan.android.spear.widget.SpearImageView
+                android:id="@+id/image_normal_22"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:layout_weight="1"
+                android:contentDescription="@string/app_name"/>
+        </LinearLayout>
+
+        <me.xiaopan.android.spear.widget.SpearImageView
+            android:id="@+id/image_normal_31"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="2dp"
+            android:contentDescription="@string/app_name"/>
     </LinearLayout>
 </ScrollView>

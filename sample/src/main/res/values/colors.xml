@@ -8,4 +8,6 @@
     
     <!-- 透明色 -->
     <color name="transparent">#00000000</color>
+    <color name="gray">#ff969696</color>
+    <color name="page_background">#f0f4f6</color>
 </resources>

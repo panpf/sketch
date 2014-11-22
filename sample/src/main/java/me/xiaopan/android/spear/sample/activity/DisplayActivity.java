@@ -39,7 +39,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import me.xiaoapn.android.spear.sample.R;
-import me.xiaopan.android.spear.sample.adapter.StringAdapter;
+import me.xiaopan.android.spear.sample.adapter.TextListAdapter;
 import me.xiaopan.android.spear.sample.fragment.GalleryFragment;
 import me.xiaopan.android.spear.sample.fragment.GridFragment;
 import me.xiaopan.android.spear.sample.fragment.ListFragment;
@@ -67,7 +67,7 @@ public class DisplayActivity extends ActionBarActivity {
 		drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shaow_down_right, GravityCompat.END);
 		
 		viewTypeListView = (ListView) findViewById(R.id.list_display_views);
-		viewTypeListView.setAdapter(new StringAdapter(getBaseContext(), "GridView", "ListView", "Gallery"));
+		viewTypeListView.setAdapter(new TextListAdapter(getBaseContext(), "GridView", "ListView", "Gallery"));
 		viewTypeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -81,7 +81,7 @@ public class DisplayActivity extends ActionBarActivity {
 		});
 		
 		uriTypeListView = (ListView) findViewById(R.id.list_display_uri);
-		uriTypeListView.setAdapter(new StringAdapter(getBaseContext(), "http://", "file://", "content://", "assets://", "drawable://"));
+		uriTypeListView.setAdapter(new TextListAdapter(getBaseContext(), "http://", "file://", "content://", "assets://", "drawable://"));
 		uriTypeListView.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {

@@ -17,7 +17,6 @@
 package me.xiaopan.android.spear.sample.activity;
 
 import android.content.Intent;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -26,7 +25,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.display.OriginalFadeInImageDisplayer;
@@ -35,11 +33,7 @@ import me.xiaopan.android.spear.display.ZoomOutImageDisplayer;
 import me.xiaopan.android.spear.process.CircleImageProcessor;
 import me.xiaopan.android.spear.process.ReflectionImageProcessor;
 import me.xiaopan.android.spear.process.RoundedCornerImageProcessor;
-import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.request.DisplayOptions;
-import me.xiaopan.android.spear.request.ProgressListener;
-import me.xiaopan.android.spear.sample.widget.ProgressPieView;
-import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.widget.SpearImageView;
 
 public class NormalActivity extends ActionBarActivity {
@@ -54,14 +48,14 @@ public class NormalActivity extends ActionBarActivity {
 
         handler = new Handler();
 
-        display(R.id.image_normal_11, R.id.progress_normal_11, createDisplayOptions(11), 100);
-        display(R.id.image_normal_12, R.id.progress_normal_12, createDisplayOptions(12), 200);
-        display(R.id.image_normal_13, R.id.progress_normal_13, createDisplayOptions(13), 300);
+        display(R.id.image_normal_11, createDisplayOptions(11), 100);
+        display(R.id.image_normal_12, createDisplayOptions(12), 200);
+        display(R.id.image_normal_13, createDisplayOptions(13), 300);
 
-        display(R.id.image_normal_21, R.id.progress_normal_21, createDisplayOptions(21), 400);
-        display(R.id.image_normal_22, R.id.progress_normal_22, createDisplayOptions(22), 500);
+        display(R.id.image_normal_21, createDisplayOptions(21), 400);
+        display(R.id.image_normal_22, createDisplayOptions(22), 500);
 
-        display(R.id.image_normal_31, R.id.progress_normal_31, createDisplayOptions(31), 600);
+        display(R.id.image_normal_31, createDisplayOptions(31), 600);
     }
 
     private void initImageSize(){
@@ -83,41 +77,12 @@ public class NormalActivity extends ActionBarActivity {
         view.setLayoutParams(layoutParams);
     }
 
-    private void display(final int imageViewId, final int processBarId, final DisplayOptions displayOptions, int delayed){
+    private void display(final int imageViewId, final DisplayOptions displayOptions, int delayed){
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 SpearImageView spearImageView = (SpearImageView) findViewById(imageViewId);
-                final ProgressPieView progressBar = (ProgressPieView) findViewById(processBarId);
-                progressBar.setMax(100);
                 spearImageView.setDisplayOptions(displayOptions);
-                spearImageView.setDisplayListener(new DisplayListener() {
-                    @Override
-                    public void onStarted() {
-                        progressBar.setVisibility(View.VISIBLE);
-                        progressBar.setProgress(0);
-                    }
-
-                    @Override
-                    public void onFailed(FailureCause failureCause) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onCompleted(String imageUri, ImageView imageView, BitmapDrawable drawable, From from) {
-                        progressBar.setVisibility(View.GONE);
-                    }
-
-                    @Override
-                    public void onCanceled() {
-                    }
-                });
-                spearImageView.setProgressListener(new ProgressListener() {
-                    @Override
-                    public void onUpdateProgress(int totalLength, int completedLength) {
-                        progressBar.setProgress((int) (((float) completedLength / totalLength) * 100));
-                    }
-                });
                 spearImageView.setImageByUri(uri);
             }
         }, delayed);
