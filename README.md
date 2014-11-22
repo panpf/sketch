@@ -182,6 +182,12 @@ display()与load()、download()的区别
 >* [spear-1.2.0-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.2.0-sources.zip)
 
 ###Change log
+###1.2.2
+>* ``修复``。修复使用SpearImageView时，没有设置DisplayOptions导致的崩溃问题
+
+###1.2.1
+>* ``修复``。修复了当SpearImageView在RecyclerView中使用的时候会因为在onDetachedFromWindow()方法中设置了setImageDrawable(null)导致图片显示空白的BUG
+
 ###1.2.0
 >* ``优化``。display的fire方法去掉了异步线程过滤，由于display基本都是在主线程执行的过滤异步线程没有意义
 >* ``优化``。改善了需要通过Handler在主线程执行回调以及显示的方式，以前是使用Runnable，现在时通过Message，这样就避免了创建Runnable，由于display是非常频繁的操作，因此这将会是有意义的改善

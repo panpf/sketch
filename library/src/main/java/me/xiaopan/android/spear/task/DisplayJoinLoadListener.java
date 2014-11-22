@@ -57,7 +57,7 @@ public class DisplayJoinLoadListener implements LoadListener {
         // 已取消
         if (displayRequest.isCanceled()) {
             if(displayRequest.getSpear().isDebugMode()){
-                Log.w(Spear.LOG_TAG, NAME + "：" + "已取消显示" + "；" + displayRequest.getName());
+                Log.w(Spear.LOG_TAG, NAME + "：" + "已取消显示 onCompleted()" + "；" + displayRequest.getName());
             }
             displayRequest.getSpear().getDisplayCallbackHandler().cancelCallback(displayRequest.getDisplayListener());
             return;
@@ -77,7 +77,7 @@ public class DisplayJoinLoadListener implements LoadListener {
     @Override
     public void onCanceled() {
         if(displayRequest.getSpear().isDebugMode()){
-            Log.w(Spear.LOG_TAG, NAME + "：" + "已取消显示" + "；" + displayRequest.getName());
+            Log.w(Spear.LOG_TAG, NAME + "：" + "已取消显示 onCanceled()" + "；" + displayRequest.getName());
         }
         displayRequest.getSpear().getDisplayCallbackHandler().cancelCallback(displayRequest.getDisplayListener());
     }

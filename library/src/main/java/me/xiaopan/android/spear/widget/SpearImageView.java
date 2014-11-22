@@ -44,8 +44,6 @@ import me.xiaopan.android.spear.util.Scheme;
  * SpearImageView
  */
 public class SpearImageView extends ImageView{
-    private static final String LOG_NAME = SpearImageView.class.getSimpleName();
-
     private RequestFuture requestFuture;
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
@@ -109,12 +107,8 @@ public class SpearImageView extends ImageView{
      */
     @Override
     protected void onDetachedFromWindow() {
-        setImageDrawable(null);
         if(requestFuture != null && !requestFuture.isFinished()){
             requestFuture.cancel();
-            if(Spear.with(getContext()).isDebugMode()){
-                Log.w(Spear.LOG_TAG, LOG_NAME+"；"+"已取消；"+requestFuture.getName());
-            }
         }
         super.onDetachedFromWindow();
     }

@@ -313,7 +313,7 @@ public class DisplayHelper {
      */
     public DisplayHelper options(DisplayOptions options){
         if(options == null){
-            return null;
+            return this;
         }
 
         this.enableDiskCache = options.isEnableDiskCache();
