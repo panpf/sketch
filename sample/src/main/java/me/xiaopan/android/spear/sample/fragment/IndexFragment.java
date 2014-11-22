@@ -1,6 +1,8 @@
 package me.xiaopan.android.spear.sample.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -56,7 +58,6 @@ public class IndexFragment extends InjectFragment implements PullRefreshLayout.O
     }
 
     private void showContent(HomeRequest.Home home){
-        Log.e("ghghkj", "hgkjgjhgj");
         conetentViewGroup.removeAllViews();
         int number = 0;
         for(HomeRequest.ImageCategory imageCategory : home.getImageCategories()){
@@ -104,6 +105,17 @@ public class IndexFragment extends InjectFragment implements PullRefreshLayout.O
         twoSpearImageView.setImageByUri(imageCategory.getImageList().get(1).getUrl());
         threeSpearImageView.setImageByUri(imageCategory.getImageList().get(3).getUrl());
         fourSpearImageView.setImageByUri(imageCategory.getImageList().get(2).getUrl());
+
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            CardView oneCardView = (CardView) categoryItemView.findViewById(R.id.card_fourItem_one);
+            CardView twoCardView = (CardView) categoryItemView.findViewById(R.id.card_fourItem_two);
+            CardView threeCardView = (CardView) categoryItemView.findViewById(R.id.card_fourItem_three);
+            CardView fourCardView = (CardView) categoryItemView.findViewById(R.id.card_fourItem_four);
+            oneCardView.setShadowPadding(0, 0, 0, 0);
+            twoCardView.setShadowPadding(0, 0, 0, 0);
+            threeCardView.setShadowPadding(0, 0, 0, 0);
+            fourCardView.setShadowPadding(0, 0, 0, 0);
+        }
 
         return categoryItemView;
     }
@@ -158,6 +170,19 @@ public class IndexFragment extends InjectFragment implements PullRefreshLayout.O
         fourSpearImageView.setImageByUri(imageCategory.getImageList().get(3).getUrl());
         fiveSpearImageView.setImageByUri(imageCategory.getImageList().get(2).getUrl());
 
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP){
+            CardView oneCardView = (CardView) categoryItemView.findViewById(R.id.card_fiveItem_one);
+            CardView twoCardView = (CardView) categoryItemView.findViewById(R.id.card_fiveItem_two);
+            CardView threeCardView = (CardView) categoryItemView.findViewById(R.id.card_fiveItem_three);
+            CardView fourCardView = (CardView) categoryItemView.findViewById(R.id.card_fiveItem_four);
+            CardView fiveCardView = (CardView) categoryItemView.findViewById(R.id.card_fiveItem_five);
+            oneCardView.setShadowPadding(0, 0, 0, 0);
+            twoCardView.setShadowPadding(0, 0, 0, 0);
+            threeCardView.setShadowPadding(0, 0, 0, 0);
+            fourCardView.setShadowPadding(0, 0, 0, 0);
+            fiveCardView.setShadowPadding(0, 0, 0, 0);
+        }
+
         return categoryItemView;
     }
 
@@ -175,6 +200,10 @@ public class IndexFragment extends InjectFragment implements PullRefreshLayout.O
 
             @Override
             public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, HomeRequest.Home response, boolean b, boolean b2) {
+                if(getActivity() == null){
+                    return;
+                }
+
                 showContent(home = response);
                 pullRefreshLayout.stopRefresh();
             }
