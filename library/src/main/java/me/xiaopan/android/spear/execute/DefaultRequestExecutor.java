@@ -210,7 +210,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
 
         public Builder taskDispatchExecutor(BlockingQueue<Runnable> workQueue){
             if(workQueue != null){
-                workQueue = new LinkedBlockingQueue<Runnable>(20);
+                workQueue = new LinkedBlockingQueue<Runnable>(200);
             }
             this.taskDispatchExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
             return this;
@@ -221,7 +221,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
                 maxPoolSize = 5;
             }
             if(workQueue == null){
-                workQueue = new LinkedBlockingQueue<Runnable>(20);
+                workQueue = new LinkedBlockingQueue<Runnable>(200);
             }
             this.netTaskExecutor = new ThreadPoolExecutor(maxPoolSize, maxPoolSize, 1, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
             return this;
@@ -229,7 +229,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
 
         public Builder localTaskExecutor(BlockingQueue<Runnable> workQueue){
             if(workQueue == null){
-                workQueue = new LinkedBlockingQueue<Runnable>(20);
+                workQueue = new LinkedBlockingQueue<Runnable>(200);
             }
             this.localTaskExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
             return this;

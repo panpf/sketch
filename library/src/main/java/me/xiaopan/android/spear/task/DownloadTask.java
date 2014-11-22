@@ -16,8 +16,6 @@
 
 package me.xiaopan.android.spear.task;
 
-import android.util.Log;
-
 import java.io.File;
 import java.util.concurrent.Callable;
 
@@ -41,7 +39,6 @@ public class DownloadTask extends Task{
 	@Override
 	protected void done() {
 		if(downloadRequest.isCanceled()){
-            Log.e("取消", "3");
             if(downloadRequest.getDownloadListener() != null){
                 downloadRequest.getDownloadListener().onCanceled();
             }
@@ -92,7 +89,6 @@ public class DownloadTask extends Task{
         @Override
         public Object call(){
             if(downloadRequest.isCanceled()){
-                Log.e("取消", "4");
                 return null;
             }
 

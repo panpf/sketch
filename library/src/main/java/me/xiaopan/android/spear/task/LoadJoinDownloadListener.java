@@ -16,8 +16,6 @@
 
 package me.xiaopan.android.spear.task;
 
-import android.util.Log;
-
 import java.io.File;
 import java.util.concurrent.Executor;
 
@@ -62,7 +60,6 @@ public class LoadJoinDownloadListener implements DownloadListener {
 
     @Override
     public void onCanceled() {
-        Log.e("取消", "2");
         if(loadRequest.getLoadListener() != null){
             loadRequest.getLoadListener().onCanceled();
         }

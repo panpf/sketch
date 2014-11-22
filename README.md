@@ -7,20 +7,20 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 ![sample](https://github.com/xiaopansky/Spear/raw/master/docs/sample.jpg)
 
 ###Features
->* ``多种URI支持``。支持``http://``、``https://``、``assets://``、``content://``、``file://``、``drawable://``等6种URI。
->* ``异步加载``。采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
->* ``支持缓存``。采用Lru算法在本地和内存中缓存图片，本地缓存可设置``过期``时间。
->* ``支持ViewHolder``。即使你在ListView中使用了ViewHolder也依然可以使用ImageLoader来加载图片，并且图片显示绝对不会混乱。
->* ``重复下载过滤``。如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
->* ``即时取消无用请求``。在onDetachedFromWindow或重复利用的时候会取消无用的请求。
->* ``支持进度回调``。通过progressListener()方法即可设置并开启进度回调。
+>* ``多种URI支持``. 支持``http://``、``https://``、``assets://``、``content://``、``file://``、``drawable://``等6种URI。
+>* ``异步加载``. 采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
+>* ``支持缓存``. 采用Lru算法在本地和内存中缓存图片，本地缓存可设置``过期``时间。
+>* ``支持ViewHolder``. 即使你在ListView中使用了ViewHolder也依然可以使用ImageLoader来加载图片，并且图片显示绝对不会混乱。
+>* ``重复下载过滤``. 如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
+>* ``即时取消无用请求``. 在onDetachedFromWindow或重复利用的时候会取消无用的请求。
+>* ``支持进度回调``. 通过progressListener()方法即可设置并开启进度回调。
 >* ``防止加载过大Bitmap``,默认最大Bitmap限制为当前屏幕宽高的1.5倍，这样可以有效防止加载过大图片到内存中。
->* ``重新处理图片尺寸``。可自定义加载到内存的图片的尺寸，使用display()方法显示图片的时候还会自动根据ImageView的宽高来重新处理。
->* ``自带RequestOptions管理器``。你可以通过Spear.putOptions(Enum<?>, RequestOptions)存储RequestOptions。然后在使用的时候指定名称即可。
->* ``提供SpearImageView``。让加载图片更加简单，只需调用setImageBy***系列方法即可显示各种图片。
->* ``额外提供load()和download()``。如果你不是要显示图片只是想要加载然后用作其他用途，那么你可以使用load()方法。
->* ``强大的自定义功能``。可自定义请求分发与执行、缓存、解码、处理、显示、默认图片、失败图片等。
->* ``强制使用单例模式``。你只能通过Spear.with(Context)方法获取实例，降低使用复杂度
+>* ``重新处理图片尺寸``. 可自定义加载到内存的图片的尺寸，使用display()方法显示图片的时候还会自动根据ImageView的宽高来重新处理。
+>* ``自带RequestOptions管理器``. 你可以通过Spear.putOptions(Enum<?>, RequestOptions)存储RequestOptions。然后在使用的时候指定名称即可。
+>* ``提供SpearImageView``. 让加载图片更加简单，只需调用setImageBy***系列方法即可显示各种图片。
+>* ``额外提供load()和download()``. 如果你不是要显示图片只是想要加载然后用作其他用途，那么你可以使用load()方法。
+>* ``强大的自定义功能``. 可自定义请求分发与执行、缓存、解码、处理、显示、默认图片、失败图片等。
+>* ``强制使用单例模式``. 你只能通过Spear.with(Context)方法获取实例，降低使用复杂度
 
 ### Sample App
 >* [Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)
@@ -182,40 +182,40 @@ display()与load()、download()的区别
 >* [spear-1.2.0-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.2.0-sources.zip)
 
 ###Change log
-###1.2.2
->* ``修复``。修复使用SpearImageView时，没有设置DisplayOptions导致的崩溃问题
-
 ###1.2.1
->* ``修复``。修复了当SpearImageView在RecyclerView中使用的时候会因为在onDetachedFromWindow()方法中设置了setImageDrawable(null)导致图片显示空白的BUG
+>* ``修复``. 修复了当SpearImageView在RecyclerView中使用的时候会因为在onDetachedFromWindow()方法中设置了setImageDrawable(null)导致图片显示空白的BUG
+>* ``修复``. 修复使用SpearImageView时，没有设置DisplayOptions导致的崩溃问题
+>* ``优化``. 优化默认的动画的执行时间，从400毫秒改为300毫秒
+>* ``优化``. 默认任务执行器的队列长度由20调整为200，这是由于如果你一次性要显示大量的图片，队列长度比较小的话，后面的将会出现异常
 
 ###1.2.0
->* ``优化``。display的fire方法去掉了异步线程过滤，由于display基本都是在主线程执行的过滤异步线程没有意义
->* ``优化``。改善了需要通过Handler在主线程执行回调以及显示的方式，以前是使用Runnable，现在时通过Message，这样就避免了创建Runnable，由于display是非常频繁的操作，因此这将会是有意义的改善
->* ``优化``。优化了DisplayHelper的使用，以前是为每一次display都创建一个DisplayHelper，现在是只要你是按照display().fire()这样连续的使用，那么所有的display将共用一个DisplayHelper，这将会避免创建大量的DisplayHelper
->* ``优化``。ProgressListener.onUpdateProgress(long, long)改为ProgressListener.onUpdateProgress(int, int)，因为int足够用了
+>* ``优化``. display的fire方法去掉了异步线程过滤，由于display基本都是在主线程执行的过滤异步线程没有意义
+>* ``优化``. 改善了需要通过Handler在主线程执行回调以及显示的方式，以前是使用Runnable，现在时通过Message，这样就避免了创建Runnable，由于display是非常频繁的操作，因此这将会是有意义的改善
+>* ``优化``. 优化了DisplayHelper的使用，以前是为每一次display都创建一个DisplayHelper，现在是只要你是按照display().fire()这样连续的使用，那么所有的display将共用一个DisplayHelper，这将会避免创建大量的DisplayHelper
+>* ``优化``. ProgressListener.onUpdateProgress(long, long)改为ProgressListener.onUpdateProgress(int, int)，因为int足够用了
 
 ###1.1.3
->* ``修改``。修改ProgressCallback的名字为ProgressListener并且各个Request.Helper中的progressCallback()方法页改名为progressListener
->* ``优化``。DisplayRequest.Helper.fire()方法不再限制只能在主线程中执行
->* ``修改``。修改SpearImageView.setImageByDrawable()方法的名称为setImageByResource()
+>* ``修改``. 修改ProgressCallback的名字为ProgressListener并且各个Request.Helper中的progressCallback()方法页改名为progressListener
+>* ``优化``. DisplayRequest.Helper.fire()方法不再限制只能在主线程中执行
+>* ``修改``. 修改SpearImageView.setImageByDrawable()方法的名称为setImageByResource()
 
 ###1.1.2
->* ``修改``。修改DisplayRequest.Builder、LoadRequest.Builder、DownloadRequest.Builder的名字为DisplayRequest.Helper、LoadRequest.Helper、DownloadRequest.Helper，这是因为DisplayRequest.Builder原本应有的build()方法被fire()代替了，而功能也是大不一样，所以觉得叫Builder不太合适
+>* ``修改``. 修改DisplayRequest.Builder、LoadRequest.Builder、DownloadRequest.Builder的名字为DisplayRequest.Helper、LoadRequest.Helper、DownloadRequest.Helper，这是因为DisplayRequest.Builder原本应有的build()方法被fire()代替了，而功能也是大不一样，所以觉得叫Builder不太合适
 
 ###1.1.1
->* ``新增``。RequestFuture增加了getName()方法用于获取请求名称
->* ``优化``。优化了SpearImageView中onDetachedFromWindow()取消时的日志
->* ``新增``。SpearImageView的setImageUriBy***系列方法新增了返回值，返回对应的RequestFuture，方便查看请求的状态
->* ``修改``。SpearImageView的setImageByUri(Uri)方法改名为setImageByContent(Uri)
+>* ``新增``. RequestFuture增加了getName()方法用于获取请求名称
+>* ``优化``. 优化了SpearImageView中onDetachedFromWindow()取消时的日志
+>* ``新增``. SpearImageView的setImageUriBy***系列方法新增了返回值，返回对应的RequestFuture，方便查看请求的状态
+>* ``修改``. SpearImageView的setImageByUri(Uri)方法改名为setImageByContent(Uri)
 
 ####1.1.0
->* ``新增``。ImageDownloader新增setProgressCallbackNumber(int)方法可用来控制进度回调次数
->* ``新增``。DownloadListener、LoadLinstener、DisplayListener的onCompleted()方法新增From参数，用来表示数据来自哪里
->* ``新增``。 SpearImageView新增类似Picasso的Debug功能，只需调用Spear.setDebugMode(true)开启调试模式即可开启此功能
->* ``优化``。优化内置的几种图片处理器的resize处理规则。当原图尺寸小于resize时，之前是担心会创建一张更大的图，浪费内存，于是做法是尺寸不变，现在的做法是依然处理但是resize要根据原图尺寸重新计算，原则就是保证新的resize小于原图尺寸并且宽高比同旧的resize一样。例如原图宽高是300x225，resize宽高是400x400，那么之前的结果就是resize还是400x400，最终图片是300x225，而现在的结果是调整resize为255x255，最终图片是225x225
->* ``新增``。支持仅根据宽或高限制图片大小，例如：maxsize为500x-1，意思就是宽最大为500，高随之缩放
->* ``优化``。调整了DefaultRequestExecitor的创建方式，网络下载线程池最大容量由10修改为5
->* ``优化``。调整了DisplayRequest.Helper的options()方法里应用DisplayOptions.resize的规则
+>* ``新增``. ImageDownloader新增setProgressCallbackNumber(int)方法可用来控制进度回调次数
+>* ``新增``. DownloadListener、LoadLinstener、DisplayListener的onCompleted()方法新增From参数，用来表示数据来自哪里
+>* ``新增``.  SpearImageView新增类似Picasso的Debug功能，只需调用Spear.setDebugMode(true)开启调试模式即可开启此功能
+>* ``优化``. 优化内置的几种图片处理器的resize处理规则。当原图尺寸小于resize时，之前是担心会创建一张更大的图，浪费内存，于是做法是尺寸不变，现在的做法是依然处理但是resize要根据原图尺寸重新计算，原则就是保证新的resize小于原图尺寸并且宽高比同旧的resize一样。例如原图宽高是300x225，resize宽高是400x400，那么之前的结果就是resize还是400x400，最终图片是300x225，而现在的结果是调整resize为255x255，最终图片是225x225
+>* ``新增``. 支持仅根据宽或高限制图片大小，例如：maxsize为500x-1，意思就是宽最大为500，高随之缩放
+>* ``优化``. 调整了DefaultRequestExecitor的创建方式，网络下载线程池最大容量由10修改为5
+>* ``优化``. 调整了DisplayRequest.Helper的options()方法里应用DisplayOptions.resize的规则
 
 ####1.0.0
 Spear脱胎换骨，全新出发

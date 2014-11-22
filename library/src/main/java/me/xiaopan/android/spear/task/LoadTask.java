@@ -17,7 +17,6 @@
 package me.xiaopan.android.spear.task;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import java.util.concurrent.Callable;
 
@@ -40,7 +39,6 @@ public class LoadTask extends Task {
 	@Override
 	protected void done() {
         if(loadRequest.isCanceled()){
-            Log.e("取消", "1");
             if(loadRequest.getLoadListener() != null){
 				loadRequest.getLoadListener().onCanceled();
 			}
@@ -82,9 +80,7 @@ public class LoadTask extends Task {
 
         @Override
         public Object call() throws Exception {
-            Log.e("取消", "Callable - call");
             if(loadRequest.isCanceled()){
-                Log.e("取消", "5");
                 return null;
             }
 
