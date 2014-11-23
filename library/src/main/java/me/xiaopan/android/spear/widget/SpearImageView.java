@@ -25,7 +25,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -34,7 +33,6 @@ import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.request.DisplayOptions;
 import me.xiaopan.android.spear.request.ProgressListener;
-import me.xiaopan.android.spear.request.Request;
 import me.xiaopan.android.spear.request.RequestFuture;
 import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
@@ -103,17 +101,6 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 从Window分离的时候如果请求还没结束就取消
-     */
-    @Override
-    protected void onDetachedFromWindow() {
-        if(requestFuture != null && !requestFuture.isFinished()){
-            requestFuture.cancel();
-        }
-        super.onDetachedFromWindow();
-    }
-
-    /**
      * @see android.widget.ImageView#setImageDrawable(android.graphics.drawable.Drawable)
      */
     @Override
@@ -144,12 +131,6 @@ public class SpearImageView extends ImageView{
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
     public RequestFuture setImageByUri(String uri){
-        // 如果正在加载或已加载完成并且URI与上次一致就不再加载
-        if(requestFuture != null
-            && (requestFuture.getStatus() == Request.Status.WAITING || requestFuture.getStatus() == Request.Status.LOADING || requestFuture.getStatus() == Request.Status.COMPLETED)
-            &&  requestFuture.getUri().equals(uri)){
-            return requestFuture;
-        }
         DisplayListener listener;
         if(Spear.with(getContext()).isDebugMode()){
             if(debugColorListener == null){
@@ -160,7 +141,12 @@ public class SpearImageView extends ImageView{
             debugColor = -1;
             listener = displayListener;
         }
-        requestFuture = Spear.with(getContext()).display(uri, this).options(displayOptions).listener(listener).progressListener(progressListener).fire();
+        requestFuture = Spear.with(getContext())
+                .display(uri, this)
+                .options(displayOptions)
+                .listener(listener)
+                .progressListener(progressListener)
+                .fire();
         return requestFuture;
     }
 
