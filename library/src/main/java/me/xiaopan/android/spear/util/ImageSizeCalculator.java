@@ -17,6 +17,7 @@
 
 package me.xiaopan.android.spear.util;
 
+import android.content.Context;
 import android.widget.ImageView;
 
 /**
@@ -36,6 +37,13 @@ public interface ImageSizeCalculator {
      * @return resize
      */
     public ImageSize calculateImageResize(ImageView imageView);
+
+    /**
+     * 获取默认的maxsize
+     * @param context 上下文
+     * @return maxsize
+     */
+    public ImageSize getDefaultImageMaxsize(Context context);
 
     /**
      * 比较两个maxsize的大小，在使用options()方法批量设置属性的时候会使用此方法比较RequestOptions的maxsize和已有的maxsize，如果前者小于后者就会使用前者代替后者

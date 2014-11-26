@@ -93,8 +93,7 @@ public class DisplayHelper {
 
             // 如果根据ImageView没有计算出合适的maxsize，就以当前设备屏幕的1.5倍作为maxsize
             if(this.maxsize == null){
-                DisplayMetrics displayMetrics = spear.getContext().getResources().getDisplayMetrics();
-                this.maxsize = new ImageSize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
+                this.maxsize = spear.getImageSizeCalculator().getDefaultImageMaxsize(spear.getContext());
             }
 
             // 根据ImageView的宽高计算resize

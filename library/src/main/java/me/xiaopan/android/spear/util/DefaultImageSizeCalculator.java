@@ -16,6 +16,8 @@
 
 package me.xiaopan.android.spear.util;
 
+import android.content.Context;
+import android.util.DisplayMetrics;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
@@ -25,14 +27,16 @@ import java.lang.reflect.Field;
  * 图片尺寸计算器
  */
 public class DefaultImageSizeCalculator implements ImageSizeCalculator{
+    private ImageSize defaultMaxsize;
+
     @Override
     public ImageSize calculateImageMaxsize(ImageView imageView) {
         int width = getWidth(imageView, true, true);
         int height = getHeight(imageView, true, true);
-        if (width <= 0 && height <= 0){
-            return null;
-        }else{
+        if (width > 0 || height > 0){
             return new ImageSize(width, height);
+        }else{
+            return null;
         }
     }
 
@@ -42,8 +46,22 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
         int height = getHeight(imageView, false, false);
         if (width > 0 && height > 0){
             return new ImageSize(width, height);
+        }else{
+            return null;
         }
-        return null;
+    }
+
+    @Override
+    public ImageSize getDefaultImageMaxsize(Context context) {
+        if(defaultMaxsize == null){
+            synchronized (this){
+                if(defaultMaxsize == null){
+                    DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+                    defaultMaxsize = new ImageSize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
+                }
+            }
+        }
+        return defaultMaxsize;
     }
 
     @Override
