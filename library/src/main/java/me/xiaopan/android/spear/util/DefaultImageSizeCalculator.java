@@ -74,18 +74,33 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
 
     @Override
     public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight) {
+        // 如果目标尺寸都小于等于0，那就别计算了没意义
         if(targetWidth <= 0 && targetHeight <= 0){
             return 1;
         }
 
+        // 如果目标尺寸都大于等于原始尺寸，也别计算了没意义
         if(targetWidth >= outWidth && targetHeight >= outHeight){
             return 1;
         }
 
+        // 首先根据缩放后只要有任何一边小于等于目标即可的规则计算一遍inSampleSize
         int inSampleSize = 1;
         do{
             inSampleSize *= 2;
         }while ((outWidth/inSampleSize) > targetWidth && (outHeight/inSampleSize) > targetHeight);
+
+        // 然后根据比较像素总数的原则过滤掉那些比较极端的一边特别小，一边特别大的图片
+        // 比如目标尺寸是400x400，图片的尺寸是6000*600，缩放后是3000*300
+        // 这样看来的确是满足了第一个条件了，但是图片的尺寸依然很大
+        // 因此这一步我们根据像素总数来过滤，规则是总像素数不得大于目标尺寸像素数的两倍
+        long totalPixels = outWidth * outHeight / inSampleSize;
+        final long totalReqPixelsCap = targetWidth * targetHeight * 2;
+        while (totalPixels > totalReqPixelsCap) {
+            inSampleSize *= 2;
+            totalPixels /= 2;
+        }
+
         return inSampleSize;
     }
 
