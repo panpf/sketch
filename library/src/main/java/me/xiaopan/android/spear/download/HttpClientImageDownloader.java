@@ -200,6 +200,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             HttpResponse httpResponse = httpClient.execute(httpGet);
 
             if (request.isCanceled()) {
+                releaseConnect(httpResponse);
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - get response" + "；" + request.getName());
                 }
@@ -209,6 +210,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             // 检查状态码
             int responseCode = httpResponse.getStatusLine().getStatusCode();
             if (responseCode >= 300) {
+                releaseConnect(httpResponse);
                 throw new IllegalStateException("状态异常，状态码："+responseCode + " 原因：" + httpResponse.getStatusLine().getReasonPhrase());
             }
 
@@ -219,12 +221,14 @@ public class HttpClientImageDownloader implements ImageDownloader {
                 contentLength = Integer.valueOf(headers[0].getValue());
             }
             if (contentLength <= 0) {
+                releaseConnect(httpResponse);
                 throw new IOException("Content-Length 为 0");
             }
 
             // 根据需求创建缓存文件并标记为正在下载
             saveToCacheFile = cacheFile != null && request.getSpear().getDiskCache().applyForSpace(contentLength) && confirmCreateCacheFile(cacheFile);
             if (request.isCanceled()) {
+                releaseConnect(httpResponse);
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - create cache file" + "；" + request.getName());
                 }
@@ -337,6 +341,33 @@ public class HttpClientImageDownloader implements ImageDownloader {
             }
         }
         return file.exists();
+    }
+
+    public static void releaseConnect(HttpResponse httpResponse){
+        if(httpResponse == null){
+            return;
+        }
+
+        HttpEntity httpEntity = httpResponse.getEntity();
+        if(httpEntity == null){
+            return;
+        }
+
+        InputStream inputStream = null;
+        try {
+            inputStream = httpEntity.getContent();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        if(inputStream == null){
+            return;
+        }
+
+        try {
+            inputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private static class GzipProcessRequestInterceptor implements HttpRequestInterceptor {
