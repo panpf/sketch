@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.cache.disk;
+package me.xiaopan.android.spear.cache;
 
 import android.annotation.TargetApi;
 import android.content.Context;

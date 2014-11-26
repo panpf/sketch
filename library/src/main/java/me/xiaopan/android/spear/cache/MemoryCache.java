@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.cache.memory;
+package me.xiaopan.android.spear.cache;
 
 import android.graphics.drawable.BitmapDrawable;
 

@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.cache.memory;
+package me.xiaopan.android.spear.cache;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 
 import me.xiaopan.android.spear.util.LruCache;
+import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 
 /**
  * 使用Lru算法来缓存位图
@@ -57,4 +60,30 @@ public class LruMemoryCache implements MemoryCache {
 	public synchronized void clear() {
 		bitmapLruCache.evictAll();
 	}
+
+    private static class BitmapLruCache extends LruCache<String, BitmapDrawable> {
+
+        public BitmapLruCache(int maxSize) {
+            super(maxSize);
+        }
+
+        @Override
+        protected int sizeOf(String key, BitmapDrawable value) {
+            int bitmapSize;
+            Bitmap bitmap = value.getBitmap();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+                bitmapSize =  bitmap.getByteCount();
+            }else{
+                bitmapSize = bitmap.getRowBytes() * bitmap.getHeight();
+            }
+            return bitmapSize == 0 ? 1 : bitmapSize;
+        }
+
+        @Override
+        protected void entryRemoved(boolean evicted, String key, BitmapDrawable oldValue, BitmapDrawable newValue) {
+            if(RecyclingBitmapDrawable.class.isInstance(oldValue)){
+                ((RecyclingBitmapDrawable) oldValue).setIsCached(false);
+            }
+        }
+    }
 }
