@@ -24,6 +24,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -100,6 +101,17 @@ public class SpearImageView extends ImageView{
         canvas.drawPath(path, paint);
     }
 
+    @Override
+    protected void onDetachedFromWindow() {
+        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1){
+            final Drawable previousDrawable = getDrawable();
+            if(previousDrawable != null){
+                notifyDrawable(previousDrawable, false);
+            }
+        }
+        super.onDetachedFromWindow();
+    }
+
     /**
      * @see android.widget.ImageView#setImageDrawable(android.graphics.drawable.Drawable)
      */
@@ -112,10 +124,14 @@ public class SpearImageView extends ImageView{
         super.setImageDrawable(drawable);
 
         // Notify new Drawable that it is being displayed
-        notifyDrawable(drawable, true);
+        if(drawable != null){
+            notifyDrawable(drawable, true);
+        }
 
         // Notify old Drawable so it is no longer being displayed
-        notifyDrawable(previousDrawable, false);
+        if(previousDrawable != null){
+            notifyDrawable(previousDrawable, false);
+        }
     }
 
     /**
@@ -229,7 +245,7 @@ public class SpearImageView extends ImageView{
     /**
      * Notifies the drawable that it's displayed state has changed.
      * @param drawable Drawable
-     * @param isDisplayed 是否延迟
+     * @param isDisplayed 是否已显示
      */
     private static void notifyDrawable(Drawable drawable, final boolean isDisplayed) {
         if (drawable instanceof RecyclingBitmapDrawable) {

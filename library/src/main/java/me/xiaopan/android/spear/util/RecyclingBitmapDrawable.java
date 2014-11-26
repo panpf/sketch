@@ -27,12 +27,10 @@ import android.util.Log;
  * {@link Bitmap#recycle() recycle()} will be called on this drawable's bitmap.
  */
 public class RecyclingBitmapDrawable extends BitmapDrawable {
-
-    static final String LOG_TAG = "CountingBitmapDrawable";
+    private static final String LOG_TAG = RecyclingBitmapDrawable.class.getSimpleName();
 
     private int mCacheRefCount = 0;
     private int mDisplayRefCount = 0;
-
     private boolean mHasBeenDisplayed;
 
     public RecyclingBitmapDrawable(Resources res, Bitmap bitmap) {
