@@ -24,10 +24,10 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.xiaopan.android.spear.cache.disk.DiskCache;
-import me.xiaopan.android.spear.cache.disk.LruDiskCache;
-import me.xiaopan.android.spear.cache.memory.LruMemoryCache;
-import me.xiaopan.android.spear.cache.memory.MemoryCache;
+import me.xiaopan.android.spear.cache.DiskCache;
+import me.xiaopan.android.spear.cache.LruDiskCache;
+import me.xiaopan.android.spear.cache.LruMemoryCache;
+import me.xiaopan.android.spear.cache.MemoryCache;
 import me.xiaopan.android.spear.decode.DefaultImageDecoder;
 import me.xiaopan.android.spear.decode.ImageDecoder;
 import me.xiaopan.android.spear.download.HttpClientImageDownloader;
