@@ -21,7 +21,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.process.CutImageProcessor;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.ImageSize;
@@ -36,8 +35,8 @@ public class LoadHelper {
     private Spear spear;
     private String uri;
 
-    private long diskCacheTimeout;
-    private boolean enableDiskCache = true;
+    private long diskCacheTimeout = DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT;
+    private boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
 
     private ImageSize maxsize;
     private ImageSize resize;
@@ -62,8 +61,7 @@ public class LoadHelper {
     public LoadHelper(Spear spear, String uri) {
         this.spear = spear;
         this.uri = uri;
-        DisplayMetrics displayMetrics = spear.getContext().getResources().getDisplayMetrics();
-        this.maxsize = new ImageSize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
+        this.maxsize = spear.getImageSizeCalculator().getDefaultImageMaxsize(spear.getContext());
     }
 
     /**
@@ -113,9 +111,6 @@ public class LoadHelper {
      */
     public LoadHelper resize(ImageSize resize){
         this.resize = resize;
-        if(this.resize != null && imageProcessor == null){
-            imageProcessor = new CutImageProcessor();
-        }
         return this;
     }
 
@@ -127,9 +122,6 @@ public class LoadHelper {
      */
     public LoadHelper resize(int width, int height){
         this.resize = new ImageSize(width, height);
-        if(imageProcessor == null){
-            imageProcessor = new CutImageProcessor();
-        }
         return this;
     }
 
@@ -180,16 +172,27 @@ public class LoadHelper {
      */
     public LoadHelper options(LoadOptions options){
         if(options == null){
-            return null;
+            return this;
         }
 
-        this.enableDiskCache = options.isEnableDiskCache();
-        this.diskCacheTimeout = options.getDiskCacheTimeout();
-
-        this.maxsize = options.getMaxsize();
-        this.resize = options.getResize();
-        this.scaleType = options.getScaleType();
-        this.imageProcessor = options.getImageProcessor();
+        if(options.getDiskCacheTimeout() != DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT){
+            this.diskCacheTimeout = options.getDiskCacheTimeout();
+        }
+        if(options.isEnableDiskCache() != DownloadRequest.DEFAULT_ENABLE_DISK_CACHE){
+            this.enableDiskCache = options.isEnableDiskCache();
+        }
+        if(this.maxsize == null){
+            this.maxsize = options.getMaxsize();
+        }
+        if(this.resize == null){
+            this.resize = options.getResize();
+        }
+        if(this.scaleType == null){
+            this.scaleType = options.getScaleType();
+        }
+        if(this.imageProcessor == null){
+            this.imageProcessor = options.getImageProcessor();
+        }
 
         return this;
     }

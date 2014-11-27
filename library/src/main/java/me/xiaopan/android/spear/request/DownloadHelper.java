@@ -31,8 +31,8 @@ public class DownloadHelper {
     private Spear spear;
     private String uri;
 
-    private long diskCacheTimeout;
-    private boolean enableDiskCache = true;
+    private long diskCacheTimeout = DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT;
+    private boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
 
     private DownloadListener downloadListener;
     private ProgressListener progressListener;
@@ -95,11 +95,15 @@ public class DownloadHelper {
      */
     public DownloadHelper options(DownloadOptions options){
         if(options == null){
-            return null;
+            return this;
         }
 
-        this.enableDiskCache = options.isEnableDiskCache();
-        this.diskCacheTimeout = options.getDiskCacheTimeout();
+        if(options.getDiskCacheTimeout() != DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT){
+            this.diskCacheTimeout = options.getDiskCacheTimeout();
+        }
+        if(options.isEnableDiskCache() != DownloadRequest.DEFAULT_ENABLE_DISK_CACHE){
+            this.enableDiskCache = options.isEnableDiskCache();
+        }
 
         return this;
     }

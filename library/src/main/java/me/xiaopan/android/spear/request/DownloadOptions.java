@@ -20,8 +20,8 @@ package me.xiaopan.android.spear.request;
  * 下载选项
  */
 public class DownloadOptions implements RequestOptions {
-    private long diskCacheTimeout;	//磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-    private boolean enableDiskCache = true;	//是否开启磁盘缓存
+    private long diskCacheTimeout = DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT;	//磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
+    private boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;	//是否开启磁盘缓存
 
     /**
      * 关闭磁盘缓存

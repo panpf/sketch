@@ -26,6 +26,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.widget.ImageView.ScaleType;
 
+import me.xiaopan.android.spear.util.ImageProcessUtils;
 import me.xiaopan.android.spear.util.ImageSize;
 
 /**
@@ -63,7 +64,7 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
 
         // 如果新的尺寸大于等于原图的尺寸，就重新定义新的尺寸
         if((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight())){
-            Rect rect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
+            Rect rect = ImageProcessUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
             resize = new ImageSize(rect.width(), rect.height());
         }
 
@@ -80,7 +81,7 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
         
         // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        Rect srcRect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
+        Rect srcRect = ImageProcessUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
         Rect dstRect = new Rect(0, 0, resize.getWidth(), resize.getHeight());
         canvas.drawBitmap(bitmap, srcRect, dstRect, paint);
 

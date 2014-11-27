@@ -18,7 +18,6 @@ package me.xiaopan.android.spear.request;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -27,7 +26,6 @@ import java.net.URLEncoder;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ImageDisplayer;
-import me.xiaopan.android.spear.process.CutImageProcessor;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.AsyncDrawable;
 import me.xiaopan.android.spear.util.DrawableHolder;
@@ -45,18 +43,18 @@ public class DisplayHelper {
     Spear spear;
     String uri;
 
-    long diskCacheTimeout;
-    boolean enableDiskCache = true;
+    long diskCacheTimeout = DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT;
+    boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
 
     ImageSize maxsize;
     ImageSize resize;
     ImageProcessor imageProcessor;
     ImageView.ScaleType scaleType;
 
-    boolean enableMemoryCache = true;
+    boolean enableMemoryCache = DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE;
     ImageDisplayer imageDisplayer;
     DrawableHolder loadingDrawableHolder;
-    DrawableHolder loadFailedDrawableHolder;
+    DrawableHolder loadFailDrawableHolder;
 
     DisplayListener displayListener;
     ProgressListener progressListener;
@@ -88,10 +86,8 @@ public class DisplayHelper {
         this.imageView = imageView;
 
         if(imageView != null){
-            // 根据ImageView的宽高计算maxsize
+            // 根据ImageView的宽高计算maxsize，如果没有计算出合适的maxsize，就获取默认maxsize
             this.maxsize = spear.getImageSizeCalculator().calculateImageMaxsize(imageView);
-
-            // 如果根据ImageView没有计算出合适的maxsize，就以当前设备屏幕的1.5倍作为maxsize
             if(this.maxsize == null){
                 this.maxsize = spear.getImageSizeCalculator().getDefaultImageMaxsize(spear.getContext());
             }
@@ -111,18 +107,18 @@ public class DisplayHelper {
         spear = null;
         uri = null;
 
-        diskCacheTimeout = 0;
-        enableDiskCache = true;
+        diskCacheTimeout = DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT;
+        enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
 
         maxsize = null;
         resize = null;
         imageProcessor = null;
         scaleType = null;
 
-        enableMemoryCache = true;
+        enableMemoryCache = DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE;
         imageDisplayer = null;
         loadingDrawableHolder = null;
-        loadFailedDrawableHolder = null;
+        loadFailDrawableHolder = null;
 
         displayListener = null;
         progressListener = null;
@@ -177,9 +173,6 @@ public class DisplayHelper {
      */
     public DisplayHelper resize(ImageSize resize){
         this.resize = resize;
-        if(this.resize != null && imageProcessor == null){
-            imageProcessor = new CutImageProcessor();
-        }
         return this;
     }
 
@@ -191,9 +184,6 @@ public class DisplayHelper {
      */
     public DisplayHelper resize(int width, int height){
         this.resize = new ImageSize(width, height);
-        if(imageProcessor == null){
-            imageProcessor = new CutImageProcessor();
-        }
         return this;
     }
 
@@ -273,11 +263,11 @@ public class DisplayHelper {
      * 设置当加载失败的时候显示的图片
      * @param drawableResId 当加载失败的时候显示的图片
      */
-    public DisplayHelper loadFailedDrawable(int drawableResId) {
-        if(loadFailedDrawableHolder == null){
-            loadFailedDrawableHolder = new DrawableHolder();
+    public DisplayHelper loadFailDrawable(int drawableResId) {
+        if(loadFailDrawableHolder == null){
+            loadFailDrawableHolder = new DrawableHolder();
         }
-        loadFailedDrawableHolder.setResId(drawableResId);
+        loadFailDrawableHolder.setResId(drawableResId);
         return this;
     }
 
@@ -287,11 +277,11 @@ public class DisplayHelper {
      * @param isProcess 是否使用BitmapProcessor对当前图片进行处理
      */
     public DisplayHelper loadFailedDrawable(int drawableResId, boolean isProcess) {
-        if(loadFailedDrawableHolder == null){
-            loadFailedDrawableHolder = new DrawableHolder();
+        if(loadFailDrawableHolder == null){
+            loadFailDrawableHolder = new DrawableHolder();
         }
-        loadFailedDrawableHolder.setResId(drawableResId);
-        loadFailedDrawableHolder.setProcess(isProcess);
+        loadFailDrawableHolder.setResId(drawableResId);
+        loadFailDrawableHolder.setProcess(isProcess);
         return this;
     }
 
@@ -315,24 +305,36 @@ public class DisplayHelper {
             return this;
         }
 
-        this.enableDiskCache = options.isEnableDiskCache();
-        this.diskCacheTimeout = options.getDiskCacheTimeout();
-
+        if(options.getDiskCacheTimeout() != DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT){
+            this.diskCacheTimeout = options.getDiskCacheTimeout();
+        }
+        if(options.isEnableDiskCache() != DownloadRequest.DEFAULT_ENABLE_DISK_CACHE){
+            this.enableDiskCache = options.isEnableDiskCache();
+        }
+        if(options.isEnableMemoryCache() != DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE){
+            this.enableMemoryCache = options.isEnableMemoryCache();
+        }
         if(this.maxsize == null || (options.getMaxsize() != null && spear.getImageSizeCalculator().compareMaxsize(options.getMaxsize(), this.maxsize) < 0)){
             this.maxsize = options.getMaxsize();
         }
         if(this.resize == null){
             this.resize = options.getResize();
         }
-        if(this.scaleType == null || (options.getScaleType() != null && this.scaleType != options.getScaleType())){
+        if(this.scaleType == null){
             this.scaleType = options.getScaleType();
         }
-        this.imageProcessor = options.getImageProcessor();
-
-        this.enableMemoryCache = options.isEnableMemoryCache();
-        this.imageDisplayer = options.getImageDisplayer();
-        this.loadingDrawableHolder = options.getLoadingDrawableHolder();
-        this.loadFailedDrawableHolder = options.getLoadFailedDrawableHolder();
+        if(this.imageProcessor == null){
+            this.imageProcessor = options.getImageProcessor();
+        }
+        if(this.imageDisplayer == null){
+            this.imageDisplayer = options.getImageDisplayer();
+        }
+        if(this.loadingDrawableHolder == null){
+            this.loadingDrawableHolder = options.getLoadingDrawableHolder();
+        }
+        if(this.loadFailDrawableHolder == null){
+            this.loadFailDrawableHolder = options.getLoadFailDrawableHolder();
+        }
 
         return this;
     }
@@ -369,8 +371,8 @@ public class DisplayHelper {
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "uri不能为null或空");
             }
             Drawable loadFailedDrawable = null;
-            if(loadFailedDrawableHolder != null){
-                loadFailedDrawable = loadFailedDrawableHolder.getDrawable(spear.getContext(), imageProcessor);
+            if(loadFailDrawableHolder != null){
+                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getContext(), imageProcessor);
             }
             spear.getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
             spear.getDisplayHelperManager().recoveryDisplayHelper(this);
@@ -384,8 +386,8 @@ public class DisplayHelper {
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "未知的协议类型" + " URI" + "=" + uri);
             }
             Drawable loadFailedDrawable = null;
-            if(loadFailedDrawableHolder != null){
-                loadFailedDrawable = loadFailedDrawableHolder.getDrawable(spear.getContext(), imageProcessor);
+            if(loadFailDrawableHolder != null){
+                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getContext(), imageProcessor);
             }
             spear.getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NO_SUPPORT, displayListener);
             spear.getDisplayHelperManager().recoveryDisplayHelper(this);
@@ -431,7 +433,7 @@ public class DisplayHelper {
         request.enableMemoryCache = enableMemoryCache;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
         request.imageViewHolder = new ImageViewHolder(imageView, request);
         request.imageDisplayer = imageDisplayer;
-        request.failedDrawableHolder = loadFailedDrawableHolder;
+        request.failedDrawableHolder = loadFailDrawableHolder;
 
         request.displayListener = displayListener;
         request.displayProgressListener = progressListener;

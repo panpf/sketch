@@ -26,6 +26,9 @@ import me.xiaopan.android.spear.util.Scheme;
  * 下载请求
  */
 public class DownloadRequest implements Request {
+    public static final long DEFAULT_DISK_CACHE_TIMEOUT = 0;
+    public static final boolean DEFAULT_ENABLE_DISK_CACHE = true;
+
     /* 任务基础属性 */
     private Task task;	// 执行当前请求的任务，由于一个请求可能辗转被好几个任务处理
     private Status status = Status.WAITING;  // 状态
@@ -40,8 +43,8 @@ public class DownloadRequest implements Request {
     ProgressListener downloadProgressListener;  // 下载进度监听器
 
     /* 可配置属性 */
-    long diskCacheTimeout;	// 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-    boolean enableDiskCache;	// 是否开启磁盘缓存
+    long diskCacheTimeout = DEFAULT_DISK_CACHE_TIMEOUT;	// 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
+    boolean enableDiskCache = DEFAULT_ENABLE_DISK_CACHE;	// 是否开启磁盘缓存
 
     @Override
 	public String getName() {

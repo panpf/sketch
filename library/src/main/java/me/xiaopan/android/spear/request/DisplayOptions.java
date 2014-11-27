@@ -28,10 +28,10 @@ import me.xiaopan.android.spear.util.ImageSize;
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
-	private boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+	private boolean enableMemoryCache = DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     private ImageDisplayer imageDisplayer;	// 图片显示器
     private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
-    private DrawableHolder loadFailedDrawableHolder;	//当加载失败时显示的图片
+    private DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
 
     public DisplayOptions(Context context) {
         super(context);
@@ -89,11 +89,11 @@ public class DisplayOptions extends LoadOptions {
      * @param drawableResId 当加载失败的时候显示的图片
      * @return DisplayOptions
      */
-    public DisplayOptions loadFailedDrawable(int drawableResId) {
-        if(loadFailedDrawableHolder == null){
-            loadFailedDrawableHolder = new DrawableHolder();
+    public DisplayOptions loadFailDrawable(int drawableResId) {
+        if(loadFailDrawableHolder == null){
+            loadFailDrawableHolder = new DrawableHolder();
         }
-        loadFailedDrawableHolder.setResId(drawableResId);
+        loadFailDrawableHolder.setResId(drawableResId);
         return this;
     }
 
@@ -104,11 +104,11 @@ public class DisplayOptions extends LoadOptions {
      * @return DisplayOptions
      */
     public DisplayOptions loadFailedDrawable(int drawableResId, boolean isProcess) {
-        if(loadFailedDrawableHolder == null){
-            loadFailedDrawableHolder = new DrawableHolder();
+        if(loadFailDrawableHolder == null){
+            loadFailDrawableHolder = new DrawableHolder();
         }
-        loadFailedDrawableHolder.setResId(drawableResId);
-        loadFailedDrawableHolder.setProcess(isProcess);
+        loadFailDrawableHolder.setResId(drawableResId);
+        loadFailDrawableHolder.setProcess(isProcess);
         return this;
     }
 
@@ -118,8 +118,8 @@ public class DisplayOptions extends LoadOptions {
         if(loadingDrawableHolder != null && loadingDrawableHolder.isProcess()){
             loadingDrawableHolder.reset();
         }
-        if(loadFailedDrawableHolder != null && loadFailedDrawableHolder.isProcess()){
-            loadFailedDrawableHolder.reset();
+        if(loadFailDrawableHolder != null && loadFailDrawableHolder.isProcess()){
+            loadFailDrawableHolder.reset();
         }
         return this;
     }
@@ -194,7 +194,7 @@ public class DisplayOptions extends LoadOptions {
      * 获取加载失败时显示的图片
      * @return 加载失败时显示的图片
      */
-    public DrawableHolder getLoadFailedDrawableHolder() {
-        return loadFailedDrawableHolder;
+    public DrawableHolder getLoadFailDrawableHolder() {
+        return loadFailDrawableHolder;
     }
 }

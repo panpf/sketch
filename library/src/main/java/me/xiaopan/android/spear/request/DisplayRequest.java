@@ -28,10 +28,10 @@ import me.xiaopan.android.spear.util.ImageViewHolder;
  * 显示请求
  */
 public class DisplayRequest extends LoadRequest{
-    private static ImageDisplayer defaultImageDisplayer;
+    public static final boolean DEFAULT_ENABLE_MEMORY_CACHE = true;
 
     String id;	//ID
-    boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+    boolean enableMemoryCache = DEFAULT_ENABLE_MEMORY_CACHE;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     DrawableHolder failedDrawableHolder;	//当加载失败时显示的图片
     ImageDisplayer imageDisplayer;	//图片显示器
 	ImageViewHolder imageViewHolder;	//ImageView持有器
@@ -81,14 +81,7 @@ public class DisplayRequest extends LoadRequest{
      * @return 图片显示器
      */
     public ImageDisplayer getImageDisplayer() {
-        if(imageDisplayer != null){
-            return imageDisplayer;
-        }else{
-            if(defaultImageDisplayer == null){
-                defaultImageDisplayer = new DefaultImageDisplayer();
-            }
-            return defaultImageDisplayer;
-        }
+        return imageDisplayer;
     }
 
     /**

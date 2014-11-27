@@ -43,7 +43,9 @@ import me.xiaopan.android.spear.request.LoadHelper;
 import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.RequestOptions;
 import me.xiaopan.android.spear.util.AsyncDrawable;
+import me.xiaopan.android.spear.util.BaseDefaultProperty;
 import me.xiaopan.android.spear.util.DefaultImageSizeCalculator;
+import me.xiaopan.android.spear.util.DefaultProperty;
 import me.xiaopan.android.spear.util.DisplayHelperManager;
 import me.xiaopan.android.spear.util.ImageSizeCalculator;
 import me.xiaopan.android.spear.util.Scheme;
@@ -63,6 +65,7 @@ public class Spear {
     private ImageDecoder imageDecoder;	//图片解码器
     private DisplayHelperManager displayHelperManager;
     private ImageDownloader imageDownloader;	//图片下载器
+    private DefaultProperty defaultProperty;    // 默认属性
     private RequestExecutor requestExecutor;	//请求执行器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
     private DisplayCallbackHandler displayCallbackHandler;	//显示相关回调处理器
@@ -72,10 +75,11 @@ public class Spear {
         this.diskCache = new LruDiskCache(context);
         this.memoryCache = new LruMemoryCache();
         this.imageDecoder = new DefaultImageDecoder();
-        this.displayHelperManager = new DisplayHelperManager();
         this.imageDownloader = new HttpClientImageDownloader();
+        this.defaultProperty = new BaseDefaultProperty();
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
         this.imageSizeCalculator = new DefaultImageSizeCalculator();
+        this.displayHelperManager = new DisplayHelperManager();
         this.displayCallbackHandler = new DisplayCallbackHandler();
 	}
 
@@ -234,6 +238,22 @@ public class Spear {
      */
     public Context getContext() {
         return context;
+    }
+
+    /**
+     * 获取默认的属性
+     * @return 默认属性
+     */
+    public DefaultProperty getDefaultProperty() {
+        return defaultProperty;
+    }
+
+    /**
+     * 设置默认的属性
+     * @param defaultProperty 默认的属性
+     */
+    public void setDefaultProperty(DefaultProperty defaultProperty) {
+        this.defaultProperty = defaultProperty;
     }
 
     /**

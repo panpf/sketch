@@ -21,7 +21,6 @@ import android.util.DisplayMetrics;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.android.spear.process.CutImageProcessor;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.ImageSize;
 
@@ -79,9 +78,6 @@ public class LoadOptions extends DownloadOptions{
      */
     public LoadOptions resize(ImageSize resize){
         this.resize = resize;
-        if(this.resize != null && imageProcessor == null){
-            imageProcessor = new CutImageProcessor();
-        }
         return this;
     }
 
@@ -93,9 +89,6 @@ public class LoadOptions extends DownloadOptions{
      */
     public LoadOptions resize(int width, int height){
         this.resize = new ImageSize(width, height);
-        if(imageProcessor == null){
-            imageProcessor = new CutImageProcessor();
-        }
         return this;
     }
 

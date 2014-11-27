@@ -69,7 +69,11 @@ public class DisplayCallbackHandler implements Handler.Callback{
                     return true;
                 }
 
-                displayRequest.getImageDisplayer().display(imageView, displayRequest.getBitmapDrawable(), ImageDisplayer.BitmapType.SUCCESS, displayRequest);
+                ImageDisplayer imageDisplayer = displayRequest.getImageDisplayer();
+                if(imageDisplayer == null){
+                    imageDisplayer = displayRequest.getSpear().getDefaultProperty().getDefaultImageDisplayer(displayRequest.getSpear().getContext());
+                }
+                imageDisplayer.display(imageView, displayRequest.getBitmapDrawable(), ImageDisplayer.BitmapType.SUCCESS, displayRequest);
                 displayRequest.setStatus(Request.Status.COMPLETED);
 
                 if(displayRequest.getDisplayListener() != null){
@@ -106,7 +110,11 @@ public class DisplayCallbackHandler implements Handler.Callback{
                     return true;
                 }
 
-                displayRequestOnFail.getImageDisplayer().display(imageViewOnFail, displayRequestOnFail.getBitmapDrawable(), ImageDisplayer.BitmapType.FAILURE, displayRequestOnFail);
+                ImageDisplayer imageDisplayer2 = displayRequestOnFail.getImageDisplayer();
+                if(imageDisplayer2 == null){
+                    imageDisplayer2 = displayRequestOnFail.getSpear().getDefaultProperty().getDefaultImageDisplayer(displayRequestOnFail.getSpear().getContext());
+                }
+                imageDisplayer2.display(imageViewOnFail, displayRequestOnFail.getBitmapDrawable(), ImageDisplayer.BitmapType.FAILURE, displayRequestOnFail);
                 displayRequestOnFail.setStatus(Request.Status.FAILED);
 
                 if(displayRequestOnFail.getDisplayListener() != null){
