@@ -43,6 +43,7 @@ import me.xiaopan.android.spear.util.Scheme;
  * SpearImageView
  */
 public class SpearImageView extends ImageView{
+    private static final int NONE = -1;
     private RequestFuture requestFuture;
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
@@ -50,8 +51,12 @@ public class SpearImageView extends ImageView{
 
     private Paint paint;
     private Path path;
-    private int debugColor = -1;
+    private int debugColor = NONE;
+    private float progress = NONE;
+    private int progressColor = 0x22000000;
     private DebugColorListener debugColorListener;
+    private UpdateProgressListener updateProgressListener;
+    private ProgressDisplayListener progressDisplayListener;
 
     public SpearImageView(Context context) {
         super(context);
@@ -82,23 +87,30 @@ public class SpearImageView extends ImageView{
         super.onDraw(canvas);
 
         // 绘制三角形
-        if(debugColor == -1){
-            return;
+        if(debugColor != NONE){
+            if(paint == null){
+                paint = new Paint();
+            }
+            paint.setColor(debugColor);
+            if(path == null){
+                path = new Path();
+                int x = getWidth()/10;
+                int y = getWidth()/10;
+                path.moveTo(getPaddingLeft(), getPaddingTop());
+                path.lineTo(getPaddingLeft()+x, getPaddingTop());
+                path.lineTo(getPaddingLeft(), getPaddingTop()+y);
+                path.close();
+            }
+            canvas.drawPath(path, paint);
         }
-        if(paint == null){
-            paint = new Paint();
+
+        if(progress != NONE){
+            if(paint == null){
+                paint = new Paint();
+            }
+            paint.setColor(progressColor);
+            canvas.drawRect(getPaddingLeft(), getPaddingTop() + (progress*getHeight()), getWidth()-getPaddingLeft()-getPaddingRight(), getHeight()-getPaddingTop()-getPaddingBottom(), paint);
         }
-        paint.setColor(debugColor);
-        if(path == null){
-            path = new Path();
-            int x = getWidth()/10;
-            int y = getWidth()/10;
-            path.moveTo(getPaddingLeft(), getPaddingTop());
-            path.lineTo(getPaddingLeft()+x, getPaddingTop());
-            path.lineTo(getPaddingLeft(), getPaddingTop()+y);
-            path.close();
-        }
-        canvas.drawPath(path, paint);
     }
 
     @Override
@@ -147,23 +159,36 @@ public class SpearImageView extends ImageView{
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
     public RequestFuture setImageByUri(String uri){
-        DisplayListener listener;
+        // 重置角标和进度
+        if(debugColor != NONE || progress != NONE){
+            debugColor = NONE;
+            progress = NONE;
+            invalidate();
+        }
+
+        requestFuture = Spear.with(getContext())
+                .display(uri, this)
+                .options(displayOptions)
+                .listener(getDisplayListener())
+                .progressListener(updateProgressListener!=null?updateProgressListener:progressListener)
+                .fire();
+        return requestFuture;
+    }
+
+    private DisplayListener getDisplayListener(){
         if(Spear.with(getContext()).isDebugMode()){
             if(debugColorListener == null){
                 debugColorListener = new DebugColorListener();
             }
-            listener = debugColorListener;
+            return debugColorListener;
+        }else if(updateProgressListener != null){
+            if(progressDisplayListener == null){
+                progressDisplayListener = new ProgressDisplayListener();
+            }
+            return progressDisplayListener;
         }else{
-            debugColor = -1;
-            listener = displayListener;
+            return displayListener;
         }
-        requestFuture = Spear.with(getContext())
-                .display(uri, this)
-                .options(displayOptions)
-                .listener(listener)
-                .progressListener(progressListener)
-                .fire();
-        return requestFuture;
     }
 
     /**
@@ -243,6 +268,22 @@ public class SpearImageView extends ImageView{
     }
 
     /**
+     * 显示进度
+     * @param showProgress 是否显示进度
+     */
+    public void setShowProgress(boolean showProgress){
+        if(showProgress){
+            if(updateProgressListener == null){
+                updateProgressListener = new UpdateProgressListener();
+            }
+        }else{
+            if(updateProgressListener != null){
+                updateProgressListener = null;
+            }
+        }
+    }
+
+    /**
      * Notifies the drawable that it's displayed state has changed.
      * @param drawable Drawable
      * @param isDisplayed 是否已显示
@@ -263,7 +304,8 @@ public class SpearImageView extends ImageView{
     private class DebugColorListener implements DisplayListener{
         @Override
         public void onStarted() {
-            debugColor = -1;
+            debugColor = NONE;
+            progress = updateProgressListener!=null?0:NONE;
             invalidate();
             if(displayListener != null){
                 displayListener.onStarted();
@@ -279,8 +321,9 @@ public class SpearImageView extends ImageView{
                     case NETWORK: debugColor = 0x88FF0000; break;
                 }
             }else{
-                debugColor = -1;
+                debugColor = NONE;
             }
+            progress = NONE;
             invalidate();
             if(displayListener != null){
                 displayListener.onCompleted(uri, imageView, drawable, from);
@@ -289,6 +332,57 @@ public class SpearImageView extends ImageView{
 
         @Override
         public void onFailed(FailureCause failureCause) {
+            debugColor = NONE;
+            progress = NONE;
+            invalidate();
+            if(displayListener != null){
+                displayListener.onFailed(failureCause);
+            }
+        }
+
+        @Override
+        public void onCanceled() {
+            if(displayListener != null){
+                displayListener.onCanceled();
+            }
+        }
+    }
+
+    private class UpdateProgressListener implements ProgressListener{
+        @Override
+        public void onUpdateProgress(int totalLength, int completedLength) {
+            progress = (float) completedLength/totalLength;
+            invalidate();
+            if(progressListener != null){
+                progressListener.onUpdateProgress(totalLength, completedLength);
+            }
+        }
+    }
+
+    private class ProgressDisplayListener implements DisplayListener{
+
+        @Override
+        public void onStarted() {
+            progress = 0;
+            invalidate();
+            if(displayListener != null){
+                displayListener.onStarted();
+            }
+        }
+
+        @Override
+        public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, From from) {
+            progress = NONE;
+            invalidate();
+            if(displayListener != null){
+                displayListener.onCompleted(uri, imageView, drawable, from);
+            }
+        }
+
+        @Override
+        public void onFailed(FailureCause failureCause) {
+            progress = NONE;
+            invalidate();
             if(displayListener != null){
                 displayListener.onFailed(failureCause);
             }
