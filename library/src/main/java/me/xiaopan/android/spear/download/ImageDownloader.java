@@ -41,10 +41,10 @@ public interface ImageDownloader {
     public void setMaxRetryCount(int maxRetryCount);
 
     /**
-     * 设置超时时间
-     * @param timeOut 超时时间，单位毫秒，默认15秒
+     * 设置连接超时时间
+     * @param connectTimeout 连接超时时间，单位毫秒，默认15秒
      */
-    public void setTimeout(int timeOut);
+    public void setConnectTimeout(int connectTimeout);
 
     /**
      * 设置进度回调次数
