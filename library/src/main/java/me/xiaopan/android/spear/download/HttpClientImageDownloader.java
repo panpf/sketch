@@ -68,29 +68,33 @@ import me.xiaopan.android.spear.request.DownloadRequest;
  */
 public class HttpClientImageDownloader implements ImageDownloader {
 	private static final String NAME = HttpClientImageDownloader.class.getSimpleName();
-    public static final int DEFAULT_MAX_CONNECTIONS = 10;
-    public static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;
-    public static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
-	private DefaultHttpClient httpClient;
+    private final static int DEFAULT_WAIT_TIMEOUT = 60*1000;   // 默认从连接池中获取连接的最大等待时间
+    private final static int DEFAULT_READ_TIMEOUT = 10*1000;   // 默认读取超时时间
+    private final static int DEFAULT_CONNECT_TIMEOUT = 10*1000;    // 默认连接超时时间
+    private final static int DEFAULT_MAX_ROUTE_CONNECTIONS = 400;    // 默认每个路由的最大连接数
+    private static final int DEFAULT_MAX_CONNECTIONS = 800;  // 默认最大连接数
+    private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;  // 默认Socket缓存大小
+    private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
+
+    private DefaultHttpClient httpClient;
 	private Set<String> downloadingFiles;
 	private Map<String, ReentrantLock> urlLocks;
     private int maxRetryCount = 1;
-	private int timeout = 15 * 1000;
     private int progressCallbackNumber = 10;
 
 	public HttpClientImageDownloader() {
 		this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
 		this.downloadingFiles = Collections.synchronizedSet(new HashSet<String>());
 		BasicHttpParams httpParams = new BasicHttpParams();
-        ConnManagerParams.setTimeout(httpParams, timeout);
-        HttpConnectionParams.setSoTimeout(httpParams, timeout);
-        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
-        ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(400));
+        ConnManagerParams.setTimeout(httpParams, DEFAULT_WAIT_TIMEOUT);
+        ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(DEFAULT_MAX_ROUTE_CONNECTIONS));
         ConnManagerParams.setMaxTotalConnections(httpParams, DEFAULT_MAX_CONNECTIONS);
-        HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
         HttpConnectionParams.setTcpNoDelay(httpParams, true);
+        HttpConnectionParams.setSoTimeout(httpParams, DEFAULT_READ_TIMEOUT);
+        HttpConnectionParams.setConnectionTimeout(httpParams, DEFAULT_CONNECT_TIMEOUT);
+        HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
-		HttpProtocolParams.setUserAgent(httpParams, DEFAULT_USER_AGENT);	//设置浏览器标识
+		HttpProtocolParams.setUserAgent(httpParams, DEFAULT_USER_AGENT);
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
         schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
@@ -105,12 +109,9 @@ public class HttpClientImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public void setTimeout(int timeout) {
-        this.timeout = timeout;
+    public void setConnectTimeout(int connectTimeout) {
         HttpParams httpParams = httpClient.getParams();
-        ConnManagerParams.setTimeout(httpParams, timeout);
-        HttpConnectionParams.setSoTimeout(httpParams, timeout);
-        HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+        HttpConnectionParams.setConnectionTimeout(httpParams, connectTimeout);
     }
 
     @Override
@@ -288,9 +289,9 @@ public class HttpClientImageDownloader implements ImageDownloader {
             if (inputStream != null) {
                 try { inputStream.close(); } catch (IOException e) { e.printStackTrace(); }
             }
-            if(httpGet != null){
-                httpGet.abort();
-            }
+//            if(httpGet != null){
+//                httpGet.abort();
+//            }
 
             // 如果发生异常并且使用了缓存文件以及缓存文件存在就删除缓存文件，然后如果删除失败就输出LOG
             if(saveToCacheFile && cacheFile != null && cacheFile.exists() && !cacheFile.delete()) {
