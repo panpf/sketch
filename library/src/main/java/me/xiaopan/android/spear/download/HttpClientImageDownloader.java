@@ -229,7 +229,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             }
 
             // 根据需求创建缓存文件并标记为正在下载
-            saveToCacheFile = cacheFile != null && request.getSpear().getDiskCache().applyForSpace(contentLength) && confirmCreateCacheFile(cacheFile);
+            saveToCacheFile = cacheFile != null && request.getSpear().getDiskCache().applyForSpace(contentLength) && HttpUrlConnectionImageDownloader.createCacheFile(cacheFile);
             if (request.isCanceled()) {
                 releaseConnect(httpResponse);
                 if (request.getSpear().isDebugMode()) {
@@ -257,7 +257,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             outputStream = new BufferedOutputStream(saveToCacheFile ? new FileOutputStream(cacheFile, false) : (byteArrayOutputStream = new ByteArrayOutputStream()), 8 * 1024);
 
             // 读取数据
-            int completedLength = readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
+            int completedLength = HttpUrlConnectionImageDownloader.readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
             if (request.isCanceled()) {
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - read data end" + "；" + request.getName());
@@ -306,44 +306,6 @@ public class HttpClientImageDownloader implements ImageDownloader {
             }
             throw throwable;
         }
-    }
-
-    public static int readData(InputStream inputStream, OutputStream outputStream, DownloadRequest downloadRequest, int contentLength, int progressCallbackAccuracy) throws IOException {
-        int readNumber;	//读取到的字节的数量
-        int completedLength = 0;
-        int averageLength = contentLength/progressCallbackAccuracy;
-        int callbackNumber = 0;
-        byte[] cacheBytes = new byte[1024*4];//数据缓存区
-        while(!downloadRequest.isCanceled() && (readNumber = inputStream.read(cacheBytes)) != -1){
-            outputStream.write(cacheBytes, 0, readNumber);
-            completedLength += readNumber;
-            if(downloadRequest.getDownloadProgressListener() != null && (completedLength >= (callbackNumber+1)*averageLength || completedLength == contentLength)){
-                callbackNumber++;
-                downloadRequest.getDownloadProgressListener().onUpdateProgress(contentLength, completedLength);
-            }
-        }
-        outputStream.flush();
-        return completedLength;
-    }
-
-    /**
-     * 创建缓存文件，一定要保证给定的文件是存在的，创建的关键是如果文件所在的目录不存在的话就先创建目录
-     * @param file 要创建的文件
-     * @return true：创建好了
-     */
-    public static boolean confirmCreateCacheFile(File file){
-        if(!file.exists()){
-            File parentDir = file.getParentFile();
-            if(!parentDir.exists()){
-                parentDir.mkdirs();
-            }
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return file.exists();
     }
 
     public static void releaseConnect(HttpResponse httpResponse){
