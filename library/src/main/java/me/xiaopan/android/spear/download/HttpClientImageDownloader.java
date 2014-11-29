@@ -68,14 +68,14 @@ import me.xiaopan.android.spear.request.DownloadRequest;
  */
 public class HttpClientImageDownloader implements ImageDownloader {
 	private static final String NAME = HttpClientImageDownloader.class.getSimpleName();
-    private final static int DEFAULT_WAIT_TIMEOUT = 60*1000;   // 默认从连接池中获取连接的最大等待时间
-    private final static int DEFAULT_READ_TIMEOUT = 10*1000;   // 默认读取超时时间
-    private final static int DEFAULT_CONNECT_TIMEOUT = 10*1000;    // 默认连接超时时间
-    private final static int DEFAULT_MAX_ROUTE_CONNECTIONS = 400;    // 默认每个路由的最大连接数
+    private static final int DEFAULT_WAIT_TIMEOUT = 60*1000;   // 默认从连接池中获取连接的最大等待时间
+    private static final int DEFAULT_READ_TIMEOUT = 10*1000;   // 默认读取超时时间
+    private static final int DEFAULT_CONNECT_TIMEOUT = 10*1000;    // 默认连接超时时间
+    private static final int DEFAULT_MAX_ROUTE_CONNECTIONS = 400;    // 默认每个路由的最大连接数
     private static final int DEFAULT_MAX_CONNECTIONS = 800;  // 默认最大连接数
     private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;  // 默认Socket缓存大小
-    private final static int DEFAULT_MAX_RETRY_COUNT = 1;    // 默认最大重试次数
-    private final static int DEFAULT_PROGRESS_CALLBACK_NUMBER = 10;    // 默认进度回调次数
+    private static final int DEFAULT_MAX_RETRY_COUNT = 1;    // 默认最大重试次数
+    private static final int DEFAULT_PROGRESS_CALLBACK_NUMBER = 10;    // 默认进度回调次数
     private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
 
     private DefaultHttpClient httpClient;
@@ -203,7 +203,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             HttpResponse httpResponse = httpClient.execute(httpGet);
 
             if (request.isCanceled()) {
-                releaseConnect(httpResponse);
+                releaseConnection(httpResponse);
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - get response" + "；" + request.getName());
                 }
@@ -213,7 +213,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             // 检查状态码
             int responseCode = httpResponse.getStatusLine().getStatusCode();
             if (responseCode >= 300) {
-                releaseConnect(httpResponse);
+                releaseConnection(httpResponse);
                 throw new IllegalStateException("状态异常，状态码："+responseCode + " 原因：" + httpResponse.getStatusLine().getReasonPhrase());
             }
 
@@ -224,14 +224,14 @@ public class HttpClientImageDownloader implements ImageDownloader {
                 contentLength = Integer.valueOf(headers[0].getValue());
             }
             if (contentLength <= 0) {
-                releaseConnect(httpResponse);
+                releaseConnection(httpResponse);
                 throw new IOException("Content-Length 为 0");
             }
 
             // 根据需求创建缓存文件并标记为正在下载
             saveToCacheFile = cacheFile != null && request.getSpear().getDiskCache().applyForSpace(contentLength) && HttpUrlConnectionImageDownloader.createCacheFile(cacheFile);
             if (request.isCanceled()) {
-                releaseConnect(httpResponse);
+                releaseConnection(httpResponse);
                 if (request.getSpear().isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - create cache file" + "；" + request.getName());
                 }
@@ -308,7 +308,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         }
     }
 
-    public static void releaseConnect(HttpResponse httpResponse){
+    public static void releaseConnection(HttpResponse httpResponse){
         if(httpResponse == null){
             return;
         }
