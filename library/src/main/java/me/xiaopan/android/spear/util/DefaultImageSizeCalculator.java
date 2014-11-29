@@ -94,7 +94,7 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
         // 比如目标尺寸是400x400，图片的尺寸是6000*600，缩放后是3000*300
         // 这样看来的确是满足了第一个条件了，但是图片的尺寸依然很大
         // 因此这一步我们根据像素总数来过滤，规则是总像素数不得大于目标尺寸像素数的两倍
-        long totalPixels = outWidth * outHeight / inSampleSize;
+        long totalPixels = (outWidth/inSampleSize) * (outHeight/inSampleSize);
         final long totalReqPixelsCap = targetWidth * targetHeight * 2;
         while (totalPixels > totalReqPixelsCap) {
             inSampleSize *= 2;
