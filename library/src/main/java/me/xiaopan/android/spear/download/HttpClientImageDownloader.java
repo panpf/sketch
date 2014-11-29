@@ -74,13 +74,15 @@ public class HttpClientImageDownloader implements ImageDownloader {
     private final static int DEFAULT_MAX_ROUTE_CONNECTIONS = 400;    // 默认每个路由的最大连接数
     private static final int DEFAULT_MAX_CONNECTIONS = 800;  // 默认最大连接数
     private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;  // 默认Socket缓存大小
+    private final static int DEFAULT_MAX_RETRY_COUNT = 1;    // 默认最大重试次数
+    private final static int DEFAULT_PROGRESS_CALLBACK_NUMBER = 10;    // 默认进度回调次数
     private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
 
     private DefaultHttpClient httpClient;
 	private Set<String> downloadingFiles;
 	private Map<String, ReentrantLock> urlLocks;
-    private int maxRetryCount = 1;
-    private int progressCallbackNumber = 10;
+    private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
+    private int progressCallbackNumber = DEFAULT_PROGRESS_CALLBACK_NUMBER;
 
 	public HttpClientImageDownloader() {
 		this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
