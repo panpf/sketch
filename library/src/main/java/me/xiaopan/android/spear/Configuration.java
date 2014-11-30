@@ -37,12 +37,11 @@ import me.xiaopan.android.spear.download.HttpUrlConnectionImageDownloader;
 import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.execute.DefaultRequestExecutor;
 import me.xiaopan.android.spear.execute.RequestExecutor;
+import me.xiaopan.android.spear.process.CutImageProcessor;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.request.DisplayCallbackHandler;
 import me.xiaopan.android.spear.util.DefaultImageSizeCalculator;
 import me.xiaopan.android.spear.util.DisplayHelperManager;
-import me.xiaopan.android.spear.util.ImageProcessUtils;
-import me.xiaopan.android.spear.util.ImageSize;
 import me.xiaopan.android.spear.util.ImageSizeCalculator;
 
 public class Configuration {
@@ -273,38 +272,5 @@ public class Configuration {
             }
         }
         return defaultCutImageProcessor;
-    }
-
-    /**
-     * 裁剪位图处理器
-     */
-    private static class CutImageProcessor implements ImageProcessor {
-
-        @Override
-        public Bitmap process(Bitmap bitmap, ImageSize resize, ImageView.ScaleType scaleType) {
-            if(bitmap == null){
-                return null;
-            }
-            if(resize == null){
-                return bitmap;
-            }
-            if(scaleType == null){
-                scaleType = ImageView.ScaleType.FIT_CENTER;
-            }
-
-            // 如果新的尺寸大于等于原图的尺寸，就重新定义新的尺寸
-            if((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight())){
-                Rect rect = ImageProcessUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
-                resize = new ImageSize(rect.width(), rect.height());
-            }
-
-            // 根据新的尺寸创建新的图片
-            Bitmap newBitmap = Bitmap.createBitmap(resize.getWidth(), resize.getHeight(), Bitmap.Config.ARGB_8888);
-            Rect srcRect = ImageProcessUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(newBitmap.getWidth(), newBitmap.getHeight()), scaleType);
-            Canvas canvas = new Canvas(newBitmap);
-            canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, newBitmap.getWidth(), newBitmap.getHeight()), null);
-
-            return newBitmap;
-        }
     }
 }

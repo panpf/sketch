@@ -14,13 +14,49 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.util;
+package me.xiaopan.android.spear.process;
 
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.widget.ImageView;
 
-public class ImageProcessUtils {
+import me.xiaopan.android.spear.util.ImageSize;
+
+public class CutImageProcessor implements ImageProcessor {
+
+    @Override
+    public Bitmap process(Bitmap bitmap, ImageSize resize, ImageView.ScaleType scaleType) {
+        if(bitmap == null){
+            return null;
+        }
+        if(resize == null){
+            return bitmap;
+        }
+        if(scaleType == null){
+            scaleType = ImageView.ScaleType.FIT_CENTER;
+        }
+
+        // 如果新的尺寸大于等于原图的尺寸，就重新定义新的尺寸
+        if((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight())){
+            Rect rect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
+            resize = new ImageSize(rect.width(), rect.height());
+        }
+
+        // 如果尺寸完全一样就不裁剪了
+        if(resize.getWidth() == bitmap.getWidth() && resize.getHeight() == bitmap.getHeight()){
+            return bitmap;
+        }
+
+        // 根据新的尺寸创建新的图片
+        Bitmap newBitmap = Bitmap.createBitmap(resize.getWidth(), resize.getHeight(), Bitmap.Config.ARGB_8888);
+        Rect srcRect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(newBitmap.getWidth(), newBitmap.getHeight()), scaleType);
+        Canvas canvas = new Canvas(newBitmap);
+        canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, newBitmap.getWidth(), newBitmap.getHeight()), null);
+
+        return newBitmap;
+    }
 
     /**
      * 计算影射区域

@@ -25,7 +25,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.android.spear.util.ImageProcessUtils;
 import me.xiaopan.android.spear.util.ImageSize;
 
 /**
@@ -47,7 +46,7 @@ public class CircleImageProcessor implements ImageProcessor {
 
         // 如果新的尺寸大于等于原图的尺寸，就重新定义新的尺寸
         if((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight())){
-            Rect rect = ImageProcessUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
+            Rect rect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
             resize = new ImageSize(rect.width(), rect.height());
         }
 
@@ -65,7 +64,7 @@ public class CircleImageProcessor implements ImageProcessor {
         
         // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        Rect srcRect = ImageProcessUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(slidLength, slidLength), scaleType);
+        Rect srcRect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(slidLength, slidLength), scaleType);
         Rect dstRect = new Rect(0, 0, slidLength, slidLength);
         canvas.drawBitmap(bitmap, srcRect, dstRect, paint);
 

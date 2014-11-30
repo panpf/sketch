@@ -28,7 +28,6 @@ import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.android.spear.util.ImageProcessUtils;
 import me.xiaopan.android.spear.util.ImageSize;
 
 /**
@@ -67,7 +66,7 @@ public class ReflectionImageProcessor implements ImageProcessor {
 
         // 如果新的尺寸大于等于原图的尺寸，就重新定义新的尺寸
         if((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight())){
-            Rect rect = ImageProcessUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
+            Rect rect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
             resize = new ImageSize(rect.width(), rect.height());
         }
         return cutHandle(bitmap, scaleType, resize);
@@ -106,7 +105,7 @@ public class ReflectionImageProcessor implements ImageProcessor {
         int imageHeight = (int) (processSize.getHeight() * (1 - reflectionScale));
         Bitmap cutBitmap = Bitmap.createBitmap(processSize.getWidth(), imageHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas2 = new Canvas(cutBitmap);
-        Rect srcRect = ImageProcessUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(cutBitmap.getWidth(), cutBitmap.getHeight()), scaleType);
+        Rect srcRect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(cutBitmap.getWidth(), cutBitmap.getHeight()), scaleType);
         canvas2.drawBitmap(bitmap, srcRect, new Rect(0, 0, cutBitmap.getWidth(), cutBitmap.getHeight()), null);
 
         // 在上半部分绘制原图
