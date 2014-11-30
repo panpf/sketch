@@ -179,7 +179,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
     private DownloadResult realDownload(DownloadRequest request) throws Throwable {
         // 如果已经取消了就直接结束
         if (request.isCanceled()) {
-            if (request.getSpear().isDebugMode()) {
+            if (Spear.isDebugMode()) {
                 Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 拿到锁之后" + "；" + request.getName());
             }
             return null;
@@ -204,7 +204,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
 
             if (request.isCanceled()) {
                 releaseConnection(httpResponse);
-                if (request.getSpear().isDebugMode()) {
+                if (Spear.isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 获取Response之后" + "；" + request.getName());
                 }
                 throw new CanceledException();
@@ -229,10 +229,10 @@ public class HttpClientImageDownloader implements ImageDownloader {
             }
 
             // 根据需求创建缓存文件并标记为正在下载
-            saveToCacheFile = cacheFile != null && request.getSpear().getDiskCache().applyForSpace(contentLength) && HttpUrlConnectionImageDownloader.createCacheFile(cacheFile);
+            saveToCacheFile = cacheFile != null && request.getSpear().getConfiguration().getDiskCache().applyForSpace(contentLength) && HttpUrlConnectionImageDownloader.createCacheFile(cacheFile);
             if (request.isCanceled()) {
                 releaseConnection(httpResponse);
-                if (request.getSpear().isDebugMode()) {
+                if (Spear.isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 创建缓存文件之后" + "；" + request.getName());
                 }
                 throw new CanceledException();
@@ -246,7 +246,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             // 获取输入流后判断是否已取消
             inputStream = httpResponse.getEntity().getContent();
             if (request.isCanceled()) {
-                if (request.getSpear().isDebugMode()) {
+                if (Spear.isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 获取输入流之后" + "；" + request.getName());
                 }
                 throw new CanceledException();
@@ -259,7 +259,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             // 读取数据
             int completedLength = HttpUrlConnectionImageDownloader.readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
             if (request.isCanceled()) {
-                if (request.getSpear().isDebugMode()) {
+                if (Spear.isDebugMode()) {
                     Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 读取数据之后" + "；" + request.getName());
                 }
                 throw new CanceledException();
@@ -267,7 +267,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
 
             // 转换结果
             DownloadResult result = saveToCacheFile ? DownloadResult.createByFile(cacheFile, true) : DownloadResult.createByByteArray(byteArrayOutputStream.toByteArray(), true);
-            if (request.getSpear().isDebugMode()) {
+            if (Spear.isDebugMode()) {
                 Log.i(Spear.LOG_TAG, NAME + "：" + "下载成功" + "；" + "文件长度：" + completedLength + "/" + contentLength + "；" + request.getName());
             }
 

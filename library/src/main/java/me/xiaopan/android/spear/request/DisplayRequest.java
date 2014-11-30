@@ -89,7 +89,7 @@ public class DisplayRequest extends LoadRequest{
      * @return 加载失败时显示的图片
      */
     public BitmapDrawable getFailedDrawable() {
-        return failedDrawableHolder!=null?failedDrawableHolder.getDrawable(spear.getContext(), getImageProcessor()):null;
+        return failedDrawableHolder!=null?failedDrawableHolder.getDrawable(spear.getConfiguration().getContext(), getImageProcessor()):null;
     }
 
     @Override

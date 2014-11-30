@@ -93,7 +93,7 @@ public class DownloadTask extends Task{
             }
 
             downloadRequest.setStatus(Request.Status.LOADING);
-            return downloadRequest.getSpear().getImageDownloader().download(downloadRequest);
+            return downloadRequest.getSpear().getConfiguration().getImageDownloader().download(downloadRequest);
         }
     }
 }

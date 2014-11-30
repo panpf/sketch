@@ -41,7 +41,7 @@ public class CacheFileDecodeListener implements ImageDecoder.DecodeListener {
     	if(file.canRead()){
             return BitmapFactory.decodeFile(file.getPath(), options);
         }else{
-            if(loadRequest.getSpear().isDebugMode()){
+            if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, new StringBuilder(NAME).append("；").append("不可读取").append("；").append(file.getPath()).toString());
             }
             return null;
@@ -51,7 +51,7 @@ public class CacheFileDecodeListener implements ImageDecoder.DecodeListener {
     @Override
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
         file.setLastModified(System.currentTimeMillis());
-        if(loadRequest.getSpear().isDebugMode()){
+        if(Spear.isDebugMode()){
         	StringBuilder stringBuffer = new StringBuilder(NAME)
         	.append("；").append("解码成功");
         	if(bitmap != null && loadRequest.getMaxsize() != null){
@@ -72,7 +72,7 @@ public class CacheFileDecodeListener implements ImageDecoder.DecodeListener {
         if(!file.delete()){
             Log.e(Spear.LOG_TAG, "删除文件失败："+file.getPath());
         }
-        if(loadRequest.getSpear().isDebugMode()){
+        if(Spear.isDebugMode()){
         	StringBuffer stringBuffer = new StringBuffer(NAME)
         	.append("；").append("解码失败")
         	.append("；").append("已删除")

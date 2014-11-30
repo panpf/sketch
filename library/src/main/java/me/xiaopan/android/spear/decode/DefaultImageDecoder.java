@@ -43,7 +43,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             originalSize = new Point(options.outWidth, options.outHeight);
 
             // 计算缩放倍数
-            inSampleSize = spear.getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxsize.getWidth(), maxsize.getHeight());
+            inSampleSize = spear.getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxsize.getWidth(), maxsize.getHeight());
             options.inSampleSize = inSampleSize;
 
             // 再次解码

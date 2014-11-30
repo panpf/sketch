@@ -89,13 +89,13 @@ public class LoadTask extends Task {
             Bitmap bitmap = null;
             try{
                 //解码
-                bitmap = loadRequest.getSpear().getImageDecoder().decode(loadRequest.getSpear(), loadRequest.getMaxsize(), onDecodeListener);
+                bitmap = loadRequest.getSpear().getConfiguration().getImageDecoder().decode(loadRequest.getSpear(), loadRequest.getMaxsize(), onDecodeListener);
 
                 //处理位图
                 if(bitmap != null){
                     ImageProcessor imageProcessor = loadRequest.getImageProcessor();
                     if(imageProcessor == null && loadRequest.getResize() != null){
-                        imageProcessor = loadRequest.getSpear().getDefaultProperty().getDefaultCutImageProcessor(loadRequest.getSpear().getContext());
+                        imageProcessor = loadRequest.getSpear().getConfiguration().getDefaultProperty().getDefaultCutImageProcessor(loadRequest.getSpear().getConfiguration().getContext());
                     }
                     if(imageProcessor != null){
                         Bitmap newBitmap = imageProcessor.process(bitmap, loadRequest.getResize(), loadRequest.getScaleType());

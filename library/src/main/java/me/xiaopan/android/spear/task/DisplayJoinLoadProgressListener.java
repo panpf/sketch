@@ -28,6 +28,6 @@ public class DisplayJoinLoadProgressListener implements ProgressListener {
 
     @Override
     public void onUpdateProgress(final int totalLength, final int completedLength) {
-        request.getSpear().getDisplayCallbackHandler().updateProgressCallback(request, totalLength, completedLength);
+        request.getSpear().getConfiguration().getDisplayCallbackHandler().updateProgressCallback(request, totalLength, completedLength);
     }
 }

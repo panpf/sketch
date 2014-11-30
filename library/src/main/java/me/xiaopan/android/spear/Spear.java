@@ -24,17 +24,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.xiaopan.android.spear.cache.DiskCache;
-import me.xiaopan.android.spear.cache.LruDiskCache;
-import me.xiaopan.android.spear.cache.LruMemoryCache;
-import me.xiaopan.android.spear.cache.MemoryCache;
-import me.xiaopan.android.spear.decode.DefaultImageDecoder;
-import me.xiaopan.android.spear.decode.ImageDecoder;
-import me.xiaopan.android.spear.download.HttpClientImageDownloader;
-import me.xiaopan.android.spear.download.ImageDownloader;
-import me.xiaopan.android.spear.execute.DefaultRequestExecutor;
-import me.xiaopan.android.spear.execute.RequestExecutor;
-import me.xiaopan.android.spear.request.DisplayCallbackHandler;
 import me.xiaopan.android.spear.request.DisplayHelper;
 import me.xiaopan.android.spear.request.DisplayRequest;
 import me.xiaopan.android.spear.request.DownloadHelper;
@@ -43,11 +32,6 @@ import me.xiaopan.android.spear.request.LoadHelper;
 import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.RequestOptions;
 import me.xiaopan.android.spear.util.AsyncDrawable;
-import me.xiaopan.android.spear.util.BaseDefaultProperty;
-import me.xiaopan.android.spear.util.DefaultImageSizeCalculator;
-import me.xiaopan.android.spear.util.DefaultProperty;
-import me.xiaopan.android.spear.util.DisplayHelperManager;
-import me.xiaopan.android.spear.util.ImageSizeCalculator;
 import me.xiaopan.android.spear.util.Scheme;
 
 /**
@@ -56,32 +40,37 @@ import me.xiaopan.android.spear.util.Scheme;
 public class Spear {
     public static final String LOG_TAG= Spear.class.getSimpleName();
 	private static Spear instance;
-
-    private Context context;	//上下文
-
-    private boolean debugMode;	//调试模式，在控制台输出日志
-    private DiskCache diskCache;    // 磁盘缓存器
-    private MemoryCache memoryCache;	//图片缓存器
-    private ImageDecoder imageDecoder;	//图片解码器
-    private DisplayHelperManager displayHelperManager;
-    private ImageDownloader imageDownloader;	//图片下载器
-    private DefaultProperty defaultProperty;    // 默认属性
-    private RequestExecutor requestExecutor;	//请求执行器
-    private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
-    private DisplayCallbackHandler displayCallbackHandler;	//显示相关回调处理器
+    private static boolean debugMode;	//调试模式，在控制台输出日志
+    private static Map<Object, RequestOptions> optionsMap;
+    private Configuration configuration;
 
 	private Spear(Context context){
-        this.context = context;
-        this.diskCache = new LruDiskCache(context);
-        this.memoryCache = new LruMemoryCache();
-        this.imageDecoder = new DefaultImageDecoder();
-        this.imageDownloader = new HttpClientImageDownloader();
-        this.defaultProperty = new BaseDefaultProperty();
-        this.requestExecutor = new DefaultRequestExecutor.Builder().build();
-        this.imageSizeCalculator = new DefaultImageSizeCalculator();
-        this.displayHelperManager = new DisplayHelperManager();
-        this.displayCallbackHandler = new DisplayCallbackHandler();
+        this.configuration = new Configuration(context);
 	}
+
+    /**
+     * 获取图片加载器的实例
+     * @param context 用来初始化配置
+     * @return 图片加载器的实例
+     */
+    public static Spear with(Context context){
+        if(instance == null){
+            synchronized (Spear.class){
+                if(instance == null){
+                    instance = new Spear(context);
+                }
+            }
+        }
+        return instance;
+    }
+
+    /**
+     * 获取配置对象
+     * @return 配置对象
+     */
+    public Configuration getConfiguration() {
+        return configuration;
+    }
 
     /**
      * 下载
@@ -161,7 +150,7 @@ public class Spear {
      * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(String uri, ImageView imageView){
-        return displayHelperManager.getDisplayHelper(this, uri, imageView);
+        return configuration.getDisplayHelperManager().getDisplayHelper(this, uri, imageView);
     }
 
     /**
@@ -171,7 +160,7 @@ public class Spear {
      * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(File imageFile, ImageView imageView){
-        return displayHelperManager.getDisplayHelper(this, Scheme.FILE.createUri(imageFile.getPath()), imageView);
+        return configuration.getDisplayHelperManager().getDisplayHelper(this, Scheme.FILE.createUri(imageFile.getPath()), imageView);
     }
 
     /**
@@ -181,7 +170,7 @@ public class Spear {
      * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(int drawableResId, ImageView imageView){
-        return displayHelperManager.getDisplayHelper(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
+        return configuration.getDisplayHelperManager().getDisplayHelper(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
     }
 
     /**
@@ -191,207 +180,7 @@ public class Spear {
      * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(Uri uri, ImageView imageView){
-        return displayHelperManager.getDisplayHelper(this, uri.toString(), imageView);
-    }
-	
-    /**
-     * 清除内存缓存和磁盘缓存
-     */
-    public void clearAllCache() {
-        clearMemoryCache();
-        clearDiskCache();
-    }
-
-    /**
-     * 清除内存缓存
-     */
-    public void clearMemoryCache() {
-        if(memoryCache == null){
-            return;
-        }
-        memoryCache.clear();
-    }
-
-    /**
-     * 清除磁盘缓存
-     */
-    public void clearDiskCache() {
-        if(diskCache == null){
-            return;
-        }
-        diskCache.clear();
-    }
-    
-    /**
-     * 根据URI获取缓存文件
-     */
-    public File getCacheFileByUri(String uri){
-        if(diskCache == null){
-            return null;
-        }
-		return diskCache.getCacheFileByUri(uri);
-    }
-
-    /**
-     * 获取上下文
-     * @return 上下文
-     */
-    public Context getContext() {
-        return context;
-    }
-
-    /**
-     * 获取默认的属性
-     * @return 默认属性
-     */
-    public DefaultProperty getDefaultProperty() {
-        return defaultProperty;
-    }
-
-    /**
-     * 设置默认的属性
-     * @param defaultProperty 默认的属性
-     */
-    public void setDefaultProperty(DefaultProperty defaultProperty) {
-        this.defaultProperty = defaultProperty;
-    }
-
-    /**
-     * 获取请求执行器
-     * @return 请求执行器
-     */
-    public RequestExecutor getRequestExecutor() {
-        return requestExecutor;
-    }
-
-    /**
-     * 设置请求执行器
-     * @param requestExecutor 请求执行器
-     */
-    public Spear setRequestExecutor(RequestExecutor requestExecutor) {
-        if(requestExecutor != null){
-            this.requestExecutor = requestExecutor;
-        }
-        return this;
-    }
-
-    /**
-     * 获取磁盘缓存器
-     * @return 磁盘缓存器
-     */
-    public DiskCache getDiskCache() {
-        return diskCache;
-    }
-
-    /**
-     * 设置磁盘缓存器
-     * @param diskCache 磁盘缓存器
-     */
-    public Spear setDiskCache(DiskCache diskCache) {
-        if(diskCache != null){
-            this.diskCache = diskCache;
-        }
-        return this;
-    }
-
-    /**
-     * 获取内存缓存器
-     * @return 内存缓存器
-     */
-    public MemoryCache getMemoryCache() {
-        return memoryCache;
-    }
-
-    /**
-     * 设置内存缓存器
-     * @param memoryCache 内存缓存器
-     */
-    public Spear setMemoryCache(MemoryCache memoryCache) {
-        if(memoryCache != null){
-            this.memoryCache = memoryCache;
-        }
-        return this;
-    }
-
-    /**
-     * 获取位图解码器
-     * @return 位图解码器
-     */
-    public ImageDecoder getImageDecoder() {
-        return imageDecoder;
-    }
-
-    /**
-     * 设置位图解码器
-     * @param imageDecoder 位图解码器
-     */
-    public Spear setImageDecoder(ImageDecoder imageDecoder) {
-        if(imageDecoder != null){
-            this.imageDecoder = imageDecoder;
-        }
-        return this;
-    }
-
-    /**
-     * 获取显示相关回调处理器
-     * @return 显示相关回调处理器
-     */
-    public DisplayCallbackHandler getDisplayCallbackHandler() {
-        return displayCallbackHandler;
-    }
-
-    /**
-     * 是否开启调试模式
-     * @return 是否开启调试模式，开启调试模式后会在控制台输出LOG
-     */
-    public boolean isDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * 设置是否开启调试模式
-     * @param debugMode 是否开启调试模式，开启调试模式后会在控制台输出LOG
-     */
-    public Spear setDebugMode(boolean debugMode) {
-        this.debugMode = debugMode;
-        return this;
-    }
-
-    /**
-     * 获取图片下载器
-     */
-    public ImageDownloader getImageDownloader() {
-        return imageDownloader;
-    }
-
-    /**
-     * 设置图片下载器
-     * @param imageDownloader 图片下载器
-     */
-    public Spear setImageDownloader(ImageDownloader imageDownloader) {
-        if(imageDownloader != null){
-            this.imageDownloader = imageDownloader;
-        }
-        return this;
-    }
-
-    /**
-     * 获取图片尺寸计算器
-     * @return 图片尺寸计算器
-     */
-    public ImageSizeCalculator getImageSizeCalculator() {
-        return imageSizeCalculator;
-    }
-
-    /**
-     * 获取图片尺寸计算器
-     * @param imageSizeCalculator 图片尺寸计算器
-     */
-    public Spear setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
-        if(imageSizeCalculator != null){
-            this.imageSizeCalculator = imageSizeCalculator;
-        }
-        return this;
+        return configuration.getDisplayHelperManager().getDisplayHelper(this, uri.toString(), imageView);
     }
 
     /**
@@ -415,7 +204,10 @@ public class Spear {
      * @return 选项
      */
     public static RequestOptions getOptions(Enum<?> optionsName){
-        return OptionsMapInstanceHolder.OPTIONS_MAP.get(optionsName);
+        if(optionsMap == null){
+            return null;
+        }
+        return optionsMap.get(optionsName);
     }
 
     /**
@@ -424,37 +216,29 @@ public class Spear {
      * @param options 选项
      */
     public static void putOptions(Enum<?> optionsName, RequestOptions options){
-        OptionsMapInstanceHolder.OPTIONS_MAP.put(optionsName, options);
-    }
-
-    /**
-     * 选项集合持有器
-     */
-    private static class OptionsMapInstanceHolder{
-        private static final Map<Object, RequestOptions> OPTIONS_MAP = new HashMap<Object, RequestOptions>();
-    }
-
-    /**
-     * 获取DisplayHelper管理器
-     * @return DisplayHelper管理器
-     */
-    public DisplayHelperManager getDisplayHelperManager() {
-        return displayHelperManager;
-    }
-
-    /**
-     * 获取图片加载器的实例
-     * @param context 用来初始化配置
-     * @return 图片加载器的实例
-     */
-    public static Spear with(Context context){
-        if(instance == null){
+        if(optionsMap == null){
             synchronized (Spear.class){
-                if(instance == null){
-                    instance = new Spear(context);
+                if(optionsMap == null){
+                    optionsMap = new HashMap<Object, RequestOptions>();
                 }
             }
         }
-        return instance;
+        optionsMap.put(optionsName, options);
+    }
+
+    /**
+     * 是否开启调试模式
+     * @return 是否开启调试模式，开启调试模式后会在控制台输出LOG
+     */
+    public static boolean isDebugMode() {
+        return debugMode;
+    }
+
+    /**
+     * 设置是否开启调试模式
+     * @param debugMode 是否开启调试模式，开启调试模式后会在控制台输出LOG
+     */
+    public static void setDebugMode(boolean debugMode) {
+        Spear.debugMode = debugMode;
     }
 }

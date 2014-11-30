@@ -46,42 +46,42 @@ public class DisplayJoinLoadListener implements LoadListener {
         //创建BitmapDrawable并放入内存缓存
         BitmapDrawable bitmapDrawable;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            bitmapDrawable = new BitmapDrawable(displayRequest.getSpear().getContext().getResources(), bitmap);
+            bitmapDrawable = new BitmapDrawable(displayRequest.getSpear().getConfiguration().getContext().getResources(), bitmap);
         } else {
-            bitmapDrawable = new RecyclingBitmapDrawable(displayRequest.getSpear().getContext().getResources(), bitmap);
+            bitmapDrawable = new RecyclingBitmapDrawable(displayRequest.getSpear().getConfiguration().getContext().getResources(), bitmap);
         }
         if(displayRequest.isEnableMemoryCache()){
             if(bitmapDrawable instanceof RecyclingBitmapDrawable){
                 ((RecyclingBitmapDrawable) bitmapDrawable).setIsCached(true);
             }
-            displayRequest.getSpear().getMemoryCache().put(displayRequest.getId(), bitmapDrawable);
+            displayRequest.getSpear().getConfiguration().getMemoryCache().put(displayRequest.getId(), bitmapDrawable);
         }
 
         // 已取消
         if (displayRequest.isCanceled()) {
-            if(displayRequest.getSpear().isDebugMode()){
+            if(Spear.isDebugMode()){
                 Log.w(Spear.LOG_TAG, NAME + "：" + "已取消显示 onCompleted()" + "；" + displayRequest.getName());
             }
-            displayRequest.getSpear().getDisplayCallbackHandler().cancelCallback(displayRequest.getDisplayListener());
+            displayRequest.getSpear().getConfiguration().getDisplayCallbackHandler().cancelCallback(displayRequest.getDisplayListener());
             return;
         }
 
         // 显示
         DisplayListener.From displayFrom = from!=null?(from==From.NETWORK?DisplayListener.From.NETWORK:DisplayListener.From.LOCAL):null;
 
-        displayRequest.getSpear().getDisplayCallbackHandler().completeCallback(displayRequest, bitmapDrawable, displayFrom);
+        displayRequest.getSpear().getConfiguration().getDisplayCallbackHandler().completeCallback(displayRequest, bitmapDrawable, displayFrom);
     }
 
     @Override
     public void onFailed(FailureCause failureCause) {
-        displayRequest.getSpear().getDisplayCallbackHandler().failCallback(displayRequest, displayRequest.getFailedDrawable(), failureCause);
+        displayRequest.getSpear().getConfiguration().getDisplayCallbackHandler().failCallback(displayRequest, displayRequest.getFailedDrawable(), failureCause);
     }
 
     @Override
     public void onCanceled() {
-        if(displayRequest.getSpear().isDebugMode()){
+        if(Spear.isDebugMode()){
             Log.w(Spear.LOG_TAG, NAME + "：" + "已取消显示 onCanceled()" + "；" + displayRequest.getName());
         }
-        displayRequest.getSpear().getDisplayCallbackHandler().cancelCallback(displayRequest.getDisplayListener());
+        displayRequest.getSpear().getConfiguration().getDisplayCallbackHandler().cancelCallback(displayRequest.getDisplayListener());
     }
 }

@@ -129,7 +129,7 @@ public class DownloadHelper {
 
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
-            if(spear.isDebugMode()){
+            if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "uri不能为null或空");
             }
             if(downloadListener != null){
@@ -141,7 +141,7 @@ public class DownloadHelper {
         // 过滤掉不支持的URI协议类型
         Scheme scheme = Scheme.valueOfUri(uri);
         if(!(scheme == Scheme.HTTP || scheme == Scheme.HTTPS)){
-            if(spear.isDebugMode()){
+            if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "download()方法只能处理http或https协议" + " URI" + "=" + uri);
             }
             if(downloadListener != null){
@@ -163,7 +163,7 @@ public class DownloadHelper {
         request.downloadListener = downloadListener;
         request.downloadProgressListener = progressListener;
 
-        spear.getRequestExecutor().execute(request);
+        spear.getConfiguration().getRequestExecutor().execute(request);
         return new RequestFuture(request);
     }
 }

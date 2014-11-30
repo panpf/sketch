@@ -49,7 +49,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
             case WHAT_CALLBACK_COMPLETED:
                 DisplayRequest displayRequest = (DisplayRequest) msg.obj;
                 if(displayRequest.isCanceled()){
-                    if(displayRequest.getSpear().isDebugMode()){
+                    if(Spear.isDebugMode()){
                         Log.w(Spear.LOG_TAG, NAME + "：" + "已取消显示" + "；" + displayRequest.getName());
                     }
                     if(displayRequest.getDisplayListener() != null){
@@ -60,7 +60,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
 
                 ImageView imageView = displayRequest.getImageViewHolder().getImageView();
                 if(imageView == null){
-                    if(displayRequest.getSpear().isDebugMode()){
+                    if(Spear.isDebugMode()){
                         Log.w(Spear.LOG_TAG, NAME + "：" + "已取消显示（ImageView为null）" + "；" + displayRequest.getName());
                     }
                     if(displayRequest.getDisplayListener() != null){
@@ -71,7 +71,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
 
                 ImageDisplayer imageDisplayer = displayRequest.getImageDisplayer();
                 if(imageDisplayer == null){
-                    imageDisplayer = displayRequest.getSpear().getDefaultProperty().getDefaultImageDisplayer(displayRequest.getSpear().getContext());
+                    imageDisplayer = displayRequest.getSpear().getConfiguration().getDefaultProperty().getDefaultImageDisplayer(displayRequest.getSpear().getConfiguration().getContext());
                 }
                 imageDisplayer.display(imageView, displayRequest.getBitmapDrawable(), ImageDisplayer.BitmapType.SUCCESS, displayRequest);
                 displayRequest.setStatus(Request.Status.COMPLETED);
@@ -90,7 +90,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
             case WHAT_CALLBACK_FAILED:
                 DisplayRequest displayRequestOnFail = (DisplayRequest) msg.obj;
                 if(displayRequestOnFail.isCanceled()){
-                    if(displayRequestOnFail.getSpear().isDebugMode()){
+                    if(Spear.isDebugMode()){
                         Log.w(Spear.LOG_TAG, NAME + "：" + "已取消显示" + "；" + displayRequestOnFail.getName());
                     }
                     if(displayRequestOnFail.getDisplayListener() != null){
@@ -101,7 +101,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
 
                 ImageView imageViewOnFail = displayRequestOnFail.getImageViewHolder().getImageView();
                 if(imageViewOnFail == null){
-                    if(displayRequestOnFail.getSpear().isDebugMode()){
+                    if(Spear.isDebugMode()){
                         Log.w(Spear.LOG_TAG, NAME + "：" + "已取消显示（ImageView为null）" + "；" + displayRequestOnFail.getName());
                     }
                     if(displayRequestOnFail.getDisplayListener() != null){
@@ -112,7 +112,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
 
                 ImageDisplayer imageDisplayer2 = displayRequestOnFail.getImageDisplayer();
                 if(imageDisplayer2 == null){
-                    imageDisplayer2 = displayRequestOnFail.getSpear().getDefaultProperty().getDefaultImageDisplayer(displayRequestOnFail.getSpear().getContext());
+                    imageDisplayer2 = displayRequestOnFail.getSpear().getConfiguration().getDefaultProperty().getDefaultImageDisplayer(displayRequestOnFail.getSpear().getConfiguration().getContext());
                 }
                 imageDisplayer2.display(imageViewOnFail, displayRequestOnFail.getBitmapDrawable(), ImageDisplayer.BitmapType.FAILURE, displayRequestOnFail);
                 displayRequestOnFail.setStatus(Request.Status.FAILED);

@@ -87,13 +87,13 @@ public class DisplayHelper {
 
         if(imageView != null){
             // 根据ImageView的宽高计算maxsize，如果没有计算出合适的maxsize，就获取默认maxsize
-            this.maxsize = spear.getImageSizeCalculator().calculateImageMaxsize(imageView);
+            this.maxsize = spear.getConfiguration().getImageSizeCalculator().calculateImageMaxsize(imageView);
             if(this.maxsize == null){
-                this.maxsize = spear.getImageSizeCalculator().getDefaultImageMaxsize(spear.getContext());
+                this.maxsize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxsize(spear.getConfiguration().getContext());
             }
 
             // 根据ImageView的宽高计算resize
-            this.resize = spear.getImageSizeCalculator().calculateImageResize(imageView);
+            this.resize = spear.getConfiguration().getImageSizeCalculator().calculateImageResize(imageView);
 
             this.scaleType = imageView.getScaleType();
         }
@@ -314,7 +314,7 @@ public class DisplayHelper {
         if(options.isEnableMemoryCache() != DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE){
             this.enableMemoryCache = options.isEnableMemoryCache();
         }
-        if(this.maxsize == null || (options.getMaxsize() != null && spear.getImageSizeCalculator().compareMaxsize(options.getMaxsize(), this.maxsize) < 0)){
+        if(this.maxsize == null || (options.getMaxsize() != null && spear.getConfiguration().getImageSizeCalculator().compareMaxsize(options.getMaxsize(), this.maxsize) < 0)){
             this.maxsize = options.getMaxsize();
         }
         if(this.resize == null){
@@ -353,44 +353,44 @@ public class DisplayHelper {
      * @return RequestFuture 你可以通过RequestFuture来查看请求的状态或者取消这个请求
      */
     public RequestFuture fire() {
-        spear.getDisplayCallbackHandler().startCallbackOnFire(displayListener);
+        spear.getConfiguration().getDisplayCallbackHandler().startCallbackOnFire(displayListener);
 
         // 验证imageView参数
         if(imageView == null){
-            if(spear.isDebugMode()){
+            if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "imageView不能为null");
             }
-            spear.getDisplayCallbackHandler().failCallbackOnFire(null, null, FailureCause.IMAGE_VIEW_NULL, displayListener);
-            spear.getDisplayHelperManager().recoveryDisplayHelper(this);
+            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(null, null, FailureCause.IMAGE_VIEW_NULL, displayListener);
+            spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
             return null;
         }
 
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
-            if(spear.isDebugMode()){
+            if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "uri不能为null或空");
             }
             Drawable loadFailedDrawable = null;
             if(loadFailDrawableHolder != null){
-                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getContext(), imageProcessor);
+                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), imageProcessor);
             }
-            spear.getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
-            spear.getDisplayHelperManager().recoveryDisplayHelper(this);
+            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
+            spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
             return null;
         }
 
         // 过滤掉不支持的URI协议类型
         Scheme scheme = Scheme.valueOfUri(uri);
         if(scheme == Scheme.UNKNOWN){
-            if(spear.isDebugMode()){
+            if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "未知的协议类型" + " URI" + "=" + uri);
             }
             Drawable loadFailedDrawable = null;
             if(loadFailDrawableHolder != null){
-                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getContext(), imageProcessor);
+                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), imageProcessor);
             }
-            spear.getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NO_SUPPORT, displayListener);
-            spear.getDisplayHelperManager().recoveryDisplayHelper(this);
+            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NO_SUPPORT, displayListener);
+            spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
             return null;
         }
 
@@ -399,10 +399,10 @@ public class DisplayHelper {
 
         // 尝试显示
         if(enableMemoryCache){
-            final BitmapDrawable cacheDrawable = spear.getMemoryCache().get(requestId);
+            final BitmapDrawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(requestId);
             if(cacheDrawable != null){
-                spear.getDisplayCallbackHandler().completeCallbackOnFire(imageView, uri, cacheDrawable, displayListener, DisplayListener.From.MEMORY);
-                spear.getDisplayHelperManager().recoveryDisplayHelper(this);
+                spear.getConfiguration().getDisplayCallbackHandler().completeCallbackOnFire(imageView, uri, cacheDrawable, displayListener, DisplayListener.From.MEMORY);
+                spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
                 return null;
             }
         }
@@ -410,7 +410,7 @@ public class DisplayHelper {
         // 试图取消当前ImageView上正在加载的请求
         DisplayRequest potentialRequest = cancelPotentialDisplayRequest(imageView, requestId);
         if(potentialRequest != null){
-            spear.getDisplayHelperManager().recoveryDisplayHelper(this);
+            spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
             return new RequestFuture(potentialRequest);
         }
 
@@ -439,12 +439,12 @@ public class DisplayHelper {
         request.displayProgressListener = progressListener;
 
         // 显示默认图片
-        BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getContext(), imageProcessor):null;
+        BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getConfiguration().getContext(), imageProcessor):null;
         imageView.clearAnimation();
-        imageView.setImageDrawable(new AsyncDrawable(spear.getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
+        imageView.setImageDrawable(new AsyncDrawable(spear.getConfiguration().getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
 
-        spear.getRequestExecutor().execute(request);
-        spear.getDisplayHelperManager().recoveryDisplayHelper(this);
+        spear.getConfiguration().getRequestExecutor().execute(request);
+        spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
         return new RequestFuture(request);
     }
 
@@ -487,7 +487,7 @@ public class DisplayHelper {
                 potentialDisplayRequest.cancel();
                 cancelled = true;
             }
-            if(!cancelled && potentialDisplayRequest.getSpear().isDebugMode()){
+            if(!cancelled && Spear.isDebugMode()){
                 Log.d(Spear.LOG_TAG, LOG_TAG + "：" + "无需取消" + "；" + "ImageViewCode" + "=" + imageView.hashCode() + "；" + potentialDisplayRequest.getName());
             }
         }

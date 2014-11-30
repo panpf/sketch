@@ -41,7 +41,7 @@ public class FileDecodeListener implements ImageDecoder.DecodeListener {
         if(file.canRead()){
             return BitmapFactory.decodeFile(file.getPath(), options);
         }else{
-            if(loadRequest.getSpear().isDebugMode()){
+            if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, NAME+"；"+"不可读取"+"；"+file.getPath());
             }
             return null;
@@ -66,7 +66,7 @@ public class FileDecodeListener implements ImageDecoder.DecodeListener {
 
     @Override
     public void onDecodeFailure() {
-        if(loadRequest.getSpear().isDebugMode()){
+        if(Spear.isDebugMode()){
         	StringBuffer stringBuffer = new StringBuffer(NAME)
         	.append("；"+"解码失败")
         	.append("；"+"文件地址"+"="+file.getPath())

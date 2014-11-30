@@ -36,7 +36,7 @@ public class DrawableDecodeListener implements ImageDecoder.DecodeListener {
 
     @Override
     public Bitmap onDecode(BitmapFactory.Options options) {
-        return BitmapFactory.decodeResource(loadRequest.getSpear().getContext().getResources(), Integer.valueOf(drawableIdString), options);
+        return BitmapFactory.decodeResource(loadRequest.getSpear().getConfiguration().getContext().getResources(), Integer.valueOf(drawableIdString), options);
     }
 
     @Override
@@ -57,7 +57,7 @@ public class DrawableDecodeListener implements ImageDecoder.DecodeListener {
 
     @Override
     public void onDecodeFailure() {
-        if(loadRequest.getSpear().isDebugMode()){
+        if(Spear.isDebugMode()){
         	Log.e(Spear.LOG_TAG, NAME + "；" + "解码失败" + "；" + drawableIdString);
         }
     }

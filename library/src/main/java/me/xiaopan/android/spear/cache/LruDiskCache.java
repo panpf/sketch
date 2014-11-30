@@ -163,7 +163,7 @@ public class LruDiskCache implements DiskCache {
 			if(!cacheFile.delete()){
                 Log.e(Spear.LOG_TAG, "删除文件失败：" + cacheFile.getPath());
             }
-			if(request.getSpear().isDebugMode()){
+			if(Spear.isDebugMode()){
 				Log.w(Spear.LOG_TAG, LOG_NAME + "：" + "AvailableOfFile" + "：" + "文件过期已删除" + "；" + "文件地址" + "=" + cacheFile.getPath() + "；" + request.getName());
 			}
 			return cacheFile;

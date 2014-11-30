@@ -57,7 +57,7 @@ public class ByteArrayDecodeListener implements ImageDecoder.DecodeListener {
 
     @Override
     public void onDecodeFailure() {
-        if(loadRequest.getSpear().isDebugMode()){
+        if(Spear.isDebugMode()){
         	Log.e(Spear.LOG_TAG, NAME + "；" + "解码失败" + "；" + loadRequest.getName());
         }
     }

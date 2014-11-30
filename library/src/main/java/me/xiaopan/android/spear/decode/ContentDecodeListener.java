@@ -42,7 +42,7 @@ public class ContentDecodeListener implements ImageDecoder.DecodeListener {
     public Bitmap onDecode(BitmapFactory.Options options) {
         InputStream inputStream = null;
         try {
-            inputStream = loadRequest.getSpear().getContext().getContentResolver().openInputStream(Uri.parse(contentUri));
+            inputStream = loadRequest.getSpear().getConfiguration().getContext().getContentResolver().openInputStream(Uri.parse(contentUri));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -76,7 +76,7 @@ public class ContentDecodeListener implements ImageDecoder.DecodeListener {
 
     @Override
     public void onDecodeFailure() {
-        if(loadRequest.getSpear().isDebugMode()){
+        if(Spear.isDebugMode()){
         	Log.e(Spear.LOG_TAG, NAME + "；" + "解码失败" + "；" + contentUri);
         }
     }

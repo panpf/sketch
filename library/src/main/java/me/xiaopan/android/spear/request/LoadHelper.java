@@ -61,7 +61,7 @@ public class LoadHelper {
     public LoadHelper(Spear spear, String uri) {
         this.spear = spear;
         this.uri = uri;
-        this.maxsize = spear.getImageSizeCalculator().getDefaultImageMaxsize(spear.getContext());
+        this.maxsize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxsize(spear.getConfiguration().getContext());
     }
 
     /**
@@ -218,7 +218,7 @@ public class LoadHelper {
 
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
-            if(spear.isDebugMode()){
+            if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "uri不能为null或空");
             }
             if(loadListener != null){
@@ -230,7 +230,7 @@ public class LoadHelper {
         // 过滤掉不支持的URI协议类型
         Scheme scheme = Scheme.valueOfUri(uri);
         if(scheme == Scheme.UNKNOWN){
-            if(spear.isDebugMode()){
+            if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "未知的协议类型" + " URI" + "=" + uri);
             }
             if(loadListener != null){
@@ -257,7 +257,7 @@ public class LoadHelper {
         request.loadListener = loadListener;
         request.loadProgressListener = progressListener;
 
-        spear.getRequestExecutor().execute(request);
+        spear.getConfiguration().getRequestExecutor().execute(request);
         return new RequestFuture(request);
     }
 }
