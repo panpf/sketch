@@ -95,7 +95,7 @@ public class LoadTask extends Task {
                 if(bitmap != null){
                     ImageProcessor imageProcessor = loadRequest.getImageProcessor();
                     if(imageProcessor == null && loadRequest.getResize() != null){
-                        imageProcessor = loadRequest.getSpear().getConfiguration().getDefaultProperty().getDefaultCutImageProcessor(loadRequest.getSpear().getConfiguration().getContext());
+                        imageProcessor = loadRequest.getSpear().getConfiguration().getDefaultCutImageProcessor();
                     }
                     if(imageProcessor != null){
                         Bitmap newBitmap = imageProcessor.process(bitmap, loadRequest.getResize(), loadRequest.getScaleType());

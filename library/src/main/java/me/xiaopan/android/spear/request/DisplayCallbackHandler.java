@@ -71,7 +71,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
 
                 ImageDisplayer imageDisplayer = displayRequest.getImageDisplayer();
                 if(imageDisplayer == null){
-                    imageDisplayer = displayRequest.getSpear().getConfiguration().getDefaultProperty().getDefaultImageDisplayer(displayRequest.getSpear().getConfiguration().getContext());
+                    imageDisplayer = displayRequest.getSpear().getConfiguration().getDefaultImageDisplayer();
                 }
                 imageDisplayer.display(imageView, displayRequest.getBitmapDrawable(), ImageDisplayer.BitmapType.SUCCESS, displayRequest);
                 displayRequest.setStatus(Request.Status.COMPLETED);
@@ -112,7 +112,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
 
                 ImageDisplayer imageDisplayer2 = displayRequestOnFail.getImageDisplayer();
                 if(imageDisplayer2 == null){
-                    imageDisplayer2 = displayRequestOnFail.getSpear().getConfiguration().getDefaultProperty().getDefaultImageDisplayer(displayRequestOnFail.getSpear().getConfiguration().getContext());
+                    imageDisplayer2 = displayRequestOnFail.getSpear().getConfiguration().getDefaultImageDisplayer();
                 }
                 imageDisplayer2.display(imageViewOnFail, displayRequestOnFail.getBitmapDrawable(), ImageDisplayer.BitmapType.FAILURE, displayRequestOnFail);
                 displayRequestOnFail.setStatus(Request.Status.FAILED);

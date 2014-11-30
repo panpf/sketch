@@ -17,10 +17,13 @@
 package me.xiaopan.android.spear;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.widget.ImageView;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import me.xiaopan.android.spear.cache.DiskCache;
 import me.xiaopan.android.spear.cache.LruDiskCache;
@@ -28,16 +31,18 @@ import me.xiaopan.android.spear.cache.LruMemoryCache;
 import me.xiaopan.android.spear.cache.MemoryCache;
 import me.xiaopan.android.spear.decode.DefaultImageDecoder;
 import me.xiaopan.android.spear.decode.ImageDecoder;
+import me.xiaopan.android.spear.display.DefaultImageDisplayer;
+import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.download.HttpUrlConnectionImageDownloader;
 import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.execute.DefaultRequestExecutor;
 import me.xiaopan.android.spear.execute.RequestExecutor;
+import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.request.DisplayCallbackHandler;
-import me.xiaopan.android.spear.request.RequestOptions;
-import me.xiaopan.android.spear.util.BaseDefaultProperty;
 import me.xiaopan.android.spear.util.DefaultImageSizeCalculator;
-import me.xiaopan.android.spear.util.DefaultProperty;
 import me.xiaopan.android.spear.util.DisplayHelperManager;
+import me.xiaopan.android.spear.util.ImageProcessUtils;
+import me.xiaopan.android.spear.util.ImageSize;
 import me.xiaopan.android.spear.util.ImageSizeCalculator;
 
 public class Configuration {
@@ -45,8 +50,9 @@ public class Configuration {
     private DiskCache diskCache;    // 磁盘缓存器
     private MemoryCache memoryCache;	//图片缓存器
     private ImageDecoder imageDecoder;	//图片解码器
+    private ImageDisplayer defaultImageDisplayer;
+    private ImageProcessor defaultCutImageProcessor;
     private ImageDownloader imageDownloader;	//图片下载器
-    private DefaultProperty defaultProperty;    // 默认属性
     private RequestExecutor requestExecutor;	//请求执行器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
     private DisplayHelperManager displayHelperManager;  // DisplayHelper管理器
@@ -58,7 +64,6 @@ public class Configuration {
         this.memoryCache = new LruMemoryCache();
         this.imageDecoder = new DefaultImageDecoder();
         this.imageDownloader = new HttpUrlConnectionImageDownloader();
-        this.defaultProperty = new BaseDefaultProperty();
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
         this.imageSizeCalculator = new DefaultImageSizeCalculator();
         this.displayHelperManager = new DisplayHelperManager();
@@ -71,14 +76,6 @@ public class Configuration {
      */
     public Context getContext() {
         return context;
-    }
-
-    /**
-     * 获取默认的属性
-     * @return 默认属性
-     */
-    public DefaultProperty getDefaultProperty() {
-        return defaultProperty;
     }
 
     /**
@@ -154,16 +151,6 @@ public class Configuration {
         return diskCache.getCacheFileByUri(uri);
     }
 
-
-
-    /**
-     * 设置默认的属性
-     * @param defaultProperty 默认的属性
-     */
-    public void setDefaultProperty(DefaultProperty defaultProperty) {
-        this.defaultProperty = defaultProperty;
-    }
-
     /**
      * 设置请求执行器
      * @param requestExecutor 请求执行器
@@ -231,6 +218,22 @@ public class Configuration {
     }
 
     /**
+     * 设置默认的图片处理器
+     * @param defaultImageDisplayer 默认的图片处理器
+     */
+    public void setDefaultImageDisplayer(ImageDisplayer defaultImageDisplayer) {
+        this.defaultImageDisplayer = defaultImageDisplayer;
+    }
+
+    /**
+     * 默认的默认的图片裁剪处理器
+     * @param defaultCutImageProcessor 默认的图片裁剪处理器
+     */
+    public void setDefaultCutImageProcessor(ImageProcessor defaultCutImageProcessor) {
+        this.defaultCutImageProcessor = defaultCutImageProcessor;
+    }
+
+    /**
      * 清除内存缓存和磁盘缓存
      */
     public void clearAllCache() {
@@ -239,6 +242,69 @@ public class Configuration {
         }
         if(diskCache != null){
             diskCache.clear();
+        }
+    }
+
+    /**
+     * 获取默认的图片显示器
+     * @return 默认的图片显示器
+     */
+    public ImageDisplayer getDefaultImageDisplayer() {
+        if(defaultImageDisplayer == null){
+            synchronized (this){
+                if(defaultImageDisplayer == null){
+                    defaultImageDisplayer = new DefaultImageDisplayer();
+                }
+            }
+        }
+        return defaultImageDisplayer;
+    }
+
+    /**
+     * 获取默认的图片裁剪处理器
+     * @return 默认的图片裁剪处理器
+     */
+    public ImageProcessor getDefaultCutImageProcessor() {
+        if(defaultCutImageProcessor == null){
+            synchronized (this){
+                if(defaultCutImageProcessor == null){
+                    defaultCutImageProcessor = new CutImageProcessor();
+                }
+            }
+        }
+        return defaultCutImageProcessor;
+    }
+
+    /**
+     * 裁剪位图处理器
+     */
+    private static class CutImageProcessor implements ImageProcessor {
+
+        @Override
+        public Bitmap process(Bitmap bitmap, ImageSize resize, ImageView.ScaleType scaleType) {
+            if(bitmap == null){
+                return null;
+            }
+            if(resize == null){
+                return bitmap;
+            }
+            if(scaleType == null){
+                scaleType = ImageView.ScaleType.FIT_CENTER;
+            }
+
+            // 如果新的尺寸大于等于原图的尺寸，就重新定义新的尺寸
+            if((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight())){
+                Rect rect = ImageProcessUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
+                resize = new ImageSize(rect.width(), rect.height());
+            }
+
+            // 根据新的尺寸创建新的图片
+            Bitmap newBitmap = Bitmap.createBitmap(resize.getWidth(), resize.getHeight(), Bitmap.Config.ARGB_8888);
+            Rect srcRect = ImageProcessUtils.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(newBitmap.getWidth(), newBitmap.getHeight()), scaleType);
+            Canvas canvas = new Canvas(newBitmap);
+            canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, newBitmap.getWidth(), newBitmap.getHeight()), null);
+
+            return newBitmap;
         }
     }
 }
