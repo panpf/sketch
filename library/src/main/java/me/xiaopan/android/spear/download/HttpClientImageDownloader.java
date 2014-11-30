@@ -159,9 +159,9 @@ public class HttpClientImageDownloader implements ImageDownloader {
                     boolean retry = (e instanceof SocketTimeoutException || e instanceof InterruptedIOException) && number < maxRetryCount;
                     if(retry){
                         number++;
-                        Log.w(Spear.LOG_TAG, NAME+"；"+"下载异常"+"；"+"再次尝试" + "；" + request.getName());
+                        Log.w(Spear.LOG_TAG, NAME+"；"+"下载异常 - 再次尝试" + "；" + request.getName());
                     }else{
-                        Log.e(Spear.LOG_TAG, NAME+"；"+"下载异常"+"；"+"不再尝试" + "；" + request.getName());
+                        Log.e(Spear.LOG_TAG, NAME+"；"+"下载异常 - 不再尝试" + "；" + request.getName());
                     }
                     e.printStackTrace();
                     if(!retry){
@@ -180,7 +180,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         // 如果已经取消了就直接结束
         if (request.isCanceled()) {
             if (request.getSpear().isDebugMode()) {
-                Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - get lock" + "；" + request.getName());
+                Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 拿到锁之后" + "；" + request.getName());
             }
             return null;
         }
@@ -205,7 +205,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             if (request.isCanceled()) {
                 releaseConnection(httpResponse);
                 if (request.getSpear().isDebugMode()) {
-                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - get response" + "；" + request.getName());
+                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 获取Response之后" + "；" + request.getName());
                 }
                 throw new CanceledException();
             }
@@ -233,7 +233,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             if (request.isCanceled()) {
                 releaseConnection(httpResponse);
                 if (request.getSpear().isDebugMode()) {
-                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - create cache file" + "；" + request.getName());
+                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 创建缓存文件之后" + "；" + request.getName());
                 }
                 throw new CanceledException();
             }
@@ -247,7 +247,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             inputStream = httpResponse.getEntity().getContent();
             if (request.isCanceled()) {
                 if (request.getSpear().isDebugMode()) {
-                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - get input stream" + "；" + request.getName());
+                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 获取输入流之后" + "；" + request.getName());
                 }
                 throw new CanceledException();
             }
@@ -260,7 +260,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             int completedLength = HttpUrlConnectionImageDownloader.readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
             if (request.isCanceled()) {
                 if (request.getSpear().isDebugMode()) {
-                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - read data end" + "；" + request.getName());
+                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 读取数据之后" + "；" + request.getName());
                 }
                 throw new CanceledException();
             }
