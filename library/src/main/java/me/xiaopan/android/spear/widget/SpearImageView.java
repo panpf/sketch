@@ -57,6 +57,7 @@ public class SpearImageView extends ImageView{
     private DebugColorListener debugColorListener;
     private UpdateProgressListener updateProgressListener;
     private ProgressDisplayListener progressDisplayListener;
+    private boolean debugMode;
 
     public SpearImageView(Context context) {
         super(context);
@@ -176,7 +177,7 @@ public class SpearImageView extends ImageView{
     }
 
     private DisplayListener getDisplayListener(){
-        if(Spear.with(getContext()).isDebugMode()){
+        if(debugMode){
             if(debugColorListener == null){
                 debugColorListener = new DebugColorListener();
             }
@@ -280,6 +281,19 @@ public class SpearImageView extends ImageView{
             if(updateProgressListener != null){
                 updateProgressListener = null;
             }
+        }
+    }
+
+    /**
+     * 设置是否开启调试模式，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，黄色代表本次是从本地加载的，绿色代表本次是从内存加载的
+     * @param debugMode 是否开启调试模式
+     */
+    public void setDebugMode(boolean debugMode) {
+        boolean oldDebugMode = this.debugMode;
+        this.debugMode = debugMode;
+        if(oldDebugMode){
+            debugColor = NONE;
+            invalidate();
         }
     }
 
