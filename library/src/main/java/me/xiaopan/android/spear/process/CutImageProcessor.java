@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.util.Log;
 import android.widget.ImageView;
 
 import me.xiaopan.android.spear.util.ImageSize;
@@ -28,33 +29,128 @@ public class CutImageProcessor implements ImageProcessor {
 
     @Override
     public Bitmap process(Bitmap bitmap, ImageSize resize, ImageView.ScaleType scaleType) {
-        if(bitmap == null){
-            return null;
-        }
-        if(resize == null){
+        if(bitmap == null) return null;
+        if(resize == null) return bitmap;
+        if(scaleType == null) scaleType = ImageView.ScaleType.FIT_CENTER;
+
+        int bitmapWidth = bitmap.getWidth();
+        int bitmapHeight = bitmap.getHeight();
+        int resizeWidth = resize.getWidth();
+        int resizeHeight = resize.getHeight();
+
+        if(scaleType == ImageView.ScaleType.CENTER){
+            if(resizeWidth >= bitmapWidth && resizeHeight >= bitmapHeight){
+                return bitmap;
+            }else{
+                Rect srcRect = findCutRect(bitmapWidth, bitmapHeight, resizeWidth, resizeHeight, Offset.CENTER);
+                return cut(bitmap, srcRect.width(), srcRect.height(), srcRect);
+            }
+        }else if(scaleType == ImageView.ScaleType.CENTER_CROP){
+            if(((float)resizeWidth/resizeHeight == (float)bitmapWidth/bitmapHeight) && resizeWidth >= bitmapWidth){
+                return bitmap;
+            }
+
+            Rect srcRect = findMappingRect(bitmapWidth, bitmapHeight, resizeWidth, resizeHeight, Offset.CENTER);
+            int newBitmapWidth;
+            int newBitmapHeight;
+            if(bitmapWidth > resizeWidth && bitmapHeight > resizeHeight){
+                newBitmapWidth = resizeWidth;
+                newBitmapHeight = resizeHeight;
+            }else{
+                newBitmapWidth = srcRect.width();
+                newBitmapHeight = srcRect.height();
+            }
+            return cut(bitmap, newBitmapWidth, newBitmapHeight, srcRect);
+        }else if(scaleType == ImageView.ScaleType.CENTER_INSIDE
+                || scaleType == ImageView.ScaleType.FIT_CENTER
+                || scaleType == ImageView.ScaleType.FIT_END
+                || scaleType == ImageView.ScaleType.FIT_START){
+            if(resizeWidth > bitmapWidth && resizeHeight > bitmapHeight){
+                return bitmap;
+            }else{
+                float widthScale = (float)bitmapWidth/resizeWidth;
+                float heightScale = (float)bitmapHeight/resizeHeight;
+                float finalScale = widthScale>heightScale?widthScale:heightScale;
+                return Bitmap.createScaledBitmap(bitmap, (int)(bitmapWidth/finalScale), (int)(bitmapHeight/finalScale), true);
+            }
+        }else if(scaleType == ImageView.ScaleType.FIT_XY
+                || scaleType == ImageView.ScaleType.MATRIX){
+            return bitmap;
+        }else{
             return bitmap;
         }
-        if(scaleType == null){
-            scaleType = ImageView.ScaleType.FIT_CENTER;
+    }
+
+    public static Rect findMappingRect(int sourceWidth, int sourceHeight, int targetWidth, int targetHeight, Offset offset){
+        float widthScale = (float)sourceWidth/targetWidth;
+        float heightScale = (float)sourceHeight/targetHeight;
+        float scale = widthScale<heightScale?widthScale:heightScale;
+        int srcLeft;
+        int srcTop;
+        int srcWidth = (int)(targetWidth*scale);
+        int srcHeight = (int)(targetHeight*scale);
+        if (offset == null || offset == Offset.START) {
+            srcLeft = 0;
+            srcTop = 0;
+        } else if (offset == Offset.END) {
+            if(sourceWidth > sourceHeight){
+                srcLeft = sourceWidth - srcWidth;
+                srcTop = 0;
+            }else{
+                srcLeft = 0;
+                srcTop = sourceHeight - srcHeight;
+            }
+        } else {
+            if(sourceWidth > sourceHeight){
+                srcLeft = (sourceWidth - srcWidth)/2;
+                srcTop = 0;
+            }else{
+                srcLeft = 0;
+                srcTop = (sourceHeight - srcHeight)/2;
+            }
+        }
+        return new Rect(srcLeft, srcTop, srcLeft+srcWidth, srcTop+srcHeight);
+    }
+
+    public static Rect findCutRect(int sourceWidth, int sourceHeight, int targetWidth, int targetHeight, Offset offset){
+        int left;
+        int right;
+        if(sourceWidth > targetWidth){
+            if(offset == null || offset == Offset.START){
+                left = 0;
+            }else if(offset == Offset.END){
+                left = sourceWidth-targetWidth;
+            }else{
+                left = (sourceWidth-targetWidth)/2;
+            }
+            right = left+targetWidth;
+        }else{
+            left = 0;
+            right = sourceWidth;
         }
 
-        // 如果新的尺寸大于等于原图的尺寸，就重新定义新的尺寸
-        if((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight())){
-            Rect rect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
-            resize = new ImageSize(rect.width(), rect.height());
+        int top;
+        int bottom;
+        if(sourceWidth > targetHeight){
+            if(offset == null || offset == Offset.START){
+                top = 0;
+            }else if(offset == Offset.END){
+                top = sourceHeight-targetHeight;
+            }else{
+                top = (sourceHeight-targetHeight)/2;
+            }
+            bottom = top+targetHeight;
+        }else{
+            top = 0;
+            bottom = sourceHeight;
         }
+        return new Rect(left, top, right, bottom);
+    }
 
-        // 如果尺寸完全一样就不裁剪了
-        if(resize.getWidth() == bitmap.getWidth() && resize.getHeight() == bitmap.getHeight()){
-            return bitmap;
-        }
-
-        // 根据新的尺寸创建新的图片
-        Bitmap newBitmap = Bitmap.createBitmap(resize.getWidth(), resize.getHeight(), Bitmap.Config.ARGB_8888);
-        Rect srcRect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(newBitmap.getWidth(), newBitmap.getHeight()), scaleType);
+    public static Bitmap cut(Bitmap sourceBitmap, int newBitmapWidth, int newBitmapHeight, Rect srcRect){
+        Bitmap newBitmap = Bitmap.createBitmap(newBitmapWidth, newBitmapHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(newBitmap);
-        canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, newBitmap.getWidth(), newBitmap.getHeight()), null);
-
+        canvas.drawBitmap(sourceBitmap, srcRect, new Rect(0, 0, newBitmap.getWidth(), newBitmap.getHeight()), null);
         return newBitmap;
     }
 
@@ -65,6 +161,7 @@ public class CutImageProcessor implements ImageProcessor {
      * @param scaleType 显示方式
      * @return 影射区域
      */
+    @Deprecated
     public static Rect computeSrcRect(Point sourceSize, Point targetSize, ImageView.ScaleType scaleType){
         if(scaleType == ImageView.ScaleType.CENTER_INSIDE || scaleType == ImageView.ScaleType.MATRIX || scaleType == ImageView.ScaleType.FIT_XY){
             return new Rect(0, 0, sourceSize.x, sourceSize.y);
@@ -107,5 +204,11 @@ public class CutImageProcessor implements ImageProcessor {
             }
             return new Rect(srcLeft, srcTop, srcLeft+srcWidth, srcTop+srcHeight);
         }
+    }
+
+    public enum Offset{
+        START,
+        CENTER,
+        END,
     }
 }
