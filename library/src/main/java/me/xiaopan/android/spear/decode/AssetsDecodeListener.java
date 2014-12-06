@@ -59,18 +59,18 @@ public class AssetsDecodeListener implements ImageDecoder.DecodeListener {
 
     @Override
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
-        StringBuffer stringBuffer = new StringBuffer(NAME)
+        StringBuilder stringBuilder = new StringBuilder(NAME)
         .append("；").append("解码成功");
         if(bitmap != null && loadRequest.getMaxsize() != null){
-            stringBuffer.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-            stringBuffer.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
-            stringBuffer.append("；").append("缩放比例").append("=").append(inSampleSize);
-            stringBuffer.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+            stringBuilder.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
+            stringBuilder.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+            stringBuilder.append("；").append("缩放比例").append("=").append(inSampleSize);
+            stringBuilder.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
         }else{
-        	stringBuffer.append("；").append("未缩放");
+        	stringBuilder.append("；").append("未缩放");
         }
-        stringBuffer.append("；").append(loadRequest.getName());
-        Log.d(Spear.LOG_TAG, stringBuffer.toString());
+        stringBuilder.append("；").append(loadRequest.getName());
+        Log.d(Spear.LOG_TAG, stringBuilder.toString());
     }
 
     @Override

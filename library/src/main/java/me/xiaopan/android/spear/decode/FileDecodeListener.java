@@ -50,28 +50,27 @@ public class FileDecodeListener implements ImageDecoder.DecodeListener {
 
     @Override
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
-        StringBuilder stringBuffer = new StringBuilder(NAME)
+        StringBuilder stringBuilder = new StringBuilder(NAME)
         .append("；"+"解码成功");
         if(bitmap != null && loadRequest.getMaxsize() != null){
-            stringBuffer.append("；"+"原始尺寸"+"="+originalSize.x+"x"+originalSize.y);
-            stringBuffer.append("；"+"目标尺寸"+"="+loadRequest.getMaxsize().getWidth()+"x"+loadRequest.getMaxsize().getHeight());
-            stringBuffer.append("；"+"缩放比例"+"="+inSampleSize);
-            stringBuffer.append("；"+"最终尺寸"+"="+bitmap.getWidth()+"x"+bitmap.getHeight());
+            stringBuilder.append("；" + "原始尺寸" + "=" + originalSize.x + "x" + originalSize.y);
+            stringBuilder.append("；" + "目标尺寸" + "=" + loadRequest.getMaxsize().getWidth() + "x" + loadRequest.getMaxsize().getHeight());
+            stringBuilder.append("；" + "缩放比例" + "=" + inSampleSize);
+            stringBuilder.append("；" + "最终尺寸" + "=" + bitmap.getWidth() + "x" + bitmap.getHeight());
         }else{
-        	stringBuffer.append("；"+"未缩放");
+        	stringBuilder.append("；" + "未缩放");
         }
-        stringBuffer.append("；"+loadRequest.getName());
-        Log.d(Spear.LOG_TAG, stringBuffer.toString());
+        stringBuilder.append("；" + loadRequest.getName());
+        Log.d(Spear.LOG_TAG, stringBuilder.toString());
     }
 
     @Override
     public void onDecodeFailure() {
         if(Spear.isDebugMode()){
-        	StringBuffer stringBuffer = new StringBuffer(NAME)
-        	.append("；"+"解码失败")
-        	.append("；"+"文件地址"+"="+file.getPath())
-        	.append("；"+"文件长度"+"="+file.length());
-        	Log.e(Spear.LOG_TAG, stringBuffer.toString());
+        	Log.e(Spear.LOG_TAG, new StringBuilder(NAME)
+                    .append("；"+"解码失败")
+                    .append("；"+"文件地址"+"="+file.getPath())
+                    .append("；"+"文件长度"+"="+file.length()).toString());
         }
     }
 }
