@@ -276,7 +276,7 @@ public class DisplayHelper {
      * @param drawableResId 当加载失败的时候显示的图片
      * @param isProcess 是否使用BitmapProcessor对当前图片进行处理
      */
-    public DisplayHelper loadFailedDrawable(int drawableResId, boolean isProcess) {
+    public DisplayHelper loadFailDrawable(int drawableResId, boolean isProcess) {
         if(loadFailDrawableHolder == null){
             loadFailDrawableHolder = new DrawableHolder();
         }
@@ -370,11 +370,11 @@ public class DisplayHelper {
             if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "uri不能为null或空");
             }
-            Drawable loadFailedDrawable = null;
+            Drawable loadFailDrawable = null;
             if(loadFailDrawableHolder != null){
-                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null);
+                loadFailDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null);
             }
-            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
+            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
             return null;
         }
@@ -385,16 +385,16 @@ public class DisplayHelper {
             if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "未知的协议类型" + " URI" + "=" + uri);
             }
-            Drawable loadFailedDrawable = null;
+            Drawable loadFailDrawable = null;
             if(loadFailDrawableHolder != null){
-                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null);
+                loadFailDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null);
             }
-            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NO_SUPPORT, displayListener);
+            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailDrawable, FailureCause.URI_NO_SUPPORT, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
             return null;
         }
 
-        // 计算解码尺寸、处理尺寸和请求ID
+        // 计算缓存ID
         String requestId = createId(encodeUrl(uri), maxsize, resize, scaleType, imageProcessor);
 
         // 尝试显示
@@ -405,6 +405,17 @@ public class DisplayHelper {
                 spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
                 return null;
             }
+        }
+
+        if(spear.isPaused()){
+            // 显示默认图片
+            BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null):null;
+            imageView.clearAnimation();
+            imageView.setImageDrawable(loadingBitmapDrawable);
+            if(displayListener != null){
+                displayListener.onCanceled();
+            }
+            return null;
         }
 
         // 试图取消当前ImageView上正在加载的请求

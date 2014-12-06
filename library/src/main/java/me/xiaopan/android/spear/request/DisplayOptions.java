@@ -103,7 +103,7 @@ public class DisplayOptions extends LoadOptions {
      * @param isProcess 是否使用BitmapProcessor对当前图片进行处理
      * @return DisplayOptions
      */
-    public DisplayOptions loadFailedDrawable(int drawableResId, boolean isProcess) {
+    public DisplayOptions loadFailDrawable(int drawableResId, boolean isProcess) {
         if(loadFailDrawableHolder == null){
             loadFailDrawableHolder = new DrawableHolder();
         }
