@@ -43,6 +43,7 @@ public class Spear {
     private static boolean debugMode;	//调试模式，在控制台输出日志
     private static Map<Object, RequestOptions> optionsMap;
     private Configuration configuration;
+    private boolean pause;
 
 	private Spear(Context context){
         this.configuration = new Configuration(context);
@@ -70,6 +71,28 @@ public class Spear {
      */
     public Configuration getConfiguration() {
         return configuration;
+    }
+
+    /**
+     * 暂停加载新的图片，暂停后如果内存中没有需要的图片那么就不再处理了
+     */
+    public void pause(){
+        this.pause = true;
+    }
+
+    /**
+     * 恢复运行
+     */
+    public void resume(){
+        this.pause = false;
+    }
+
+    /**
+     * 是否暂停了
+     * @return 是否暂停了
+     */
+    public boolean isPaused() {
+        return pause;
     }
 
     /**
