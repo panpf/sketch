@@ -22,10 +22,13 @@ import android.graphics.LinearGradient;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Point;
+import android.graphics.PorterDuff;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Shader.TileMode;
+import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.android.spear.util.ImageSize;
@@ -34,8 +37,11 @@ import me.xiaopan.android.spear.util.ImageSize;
  * 倒影位图处理器
  */
 public class ReflectionImageProcessor implements ImageProcessor {
+    private static final String NAME = ReflectionImageProcessor.class.getName();
 	private int reflectionSpacing;
 	private float reflectionScale;
+    private boolean forceUseResizeInCenterCrop = true;
+    private String flag;
 	
 	/**
 	 * 创建一个倒影位图处理器
@@ -52,80 +58,111 @@ public class ReflectionImageProcessor implements ImageProcessor {
 	}
 
     @Override
+    public String getFlag() {
+        if(flag == null){
+            flag = NAME+"(scale="+reflectionScale+", spacing="+reflectionSpacing+")";
+        }
+        return flag;
+    }
+
+    @Override
     public Bitmap process(Bitmap bitmap, ImageSize resize, ScaleType scaleType) {
-        if(bitmap == null){
-            return null;
-        }
-        if (scaleType == null){
-            scaleType = ScaleType.FIT_CENTER;
+        if(bitmap == null) return null;
+        if(scaleType == null) scaleType = ScaleType.FIT_CENTER;
+        if(resize == null) resize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+
+        int bitmapWidth = bitmap.getWidth();
+        int bitmapHeight = bitmap.getHeight();
+        int newBitmapWidth = resize.getWidth();
+        int newBitmapHeight = resize.getHeight();
+
+        Rect srcRect = null;
+        if(scaleType == ImageView.ScaleType.CENTER){
+            if(newBitmapWidth >= bitmapWidth && newBitmapHeight >= bitmapHeight){
+                srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
+                newBitmapWidth = bitmapWidth;
+                newBitmapHeight = bitmapHeight;
+            }else{
+                srcRect = CutImageProcessor.findCutRect(bitmapWidth, bitmapHeight, newBitmapWidth, newBitmapHeight);
+                newBitmapWidth = srcRect.width();
+                newBitmapHeight = srcRect.height();
+            }
+        }else if(scaleType == ImageView.ScaleType.CENTER_CROP){
+            if(!forceUseResizeInCenterCrop && ((float)newBitmapWidth/newBitmapHeight == (float)bitmapWidth/bitmapHeight && newBitmapWidth >= bitmapWidth)){
+                srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
+                newBitmapWidth = bitmapWidth;
+                newBitmapHeight = bitmapHeight;
+            }else{
+                srcRect = CutImageProcessor.findMappingRect(bitmapWidth, bitmapHeight, newBitmapWidth, newBitmapHeight);
+                if(!forceUseResizeInCenterCrop && (bitmapWidth <= newBitmapWidth || bitmapHeight <= newBitmapHeight)){
+                    newBitmapWidth = srcRect.width();
+                    newBitmapHeight = srcRect.height();
+                }
+            }
+        }else if(scaleType == ImageView.ScaleType.CENTER_INSIDE || scaleType == ImageView.ScaleType.FIT_CENTER || scaleType == ImageView.ScaleType.FIT_END || scaleType == ImageView.ScaleType.FIT_START){
+            if(newBitmapWidth >= bitmapWidth && newBitmapHeight >= bitmapHeight){
+                srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
+                newBitmapWidth = bitmapWidth;
+                newBitmapHeight = bitmapHeight;
+            }else{
+                float widthScale = (float)bitmapWidth/newBitmapWidth;
+                float heightScale = (float)bitmapHeight/newBitmapHeight;
+                float finalScale = widthScale>heightScale?widthScale:heightScale;
+                newBitmapWidth = (int)(bitmapWidth/finalScale);
+                newBitmapHeight = (int)(bitmapHeight/finalScale);
+                srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
+            }
+        }else if(scaleType == ImageView.ScaleType.FIT_XY || scaleType == ImageView.ScaleType.MATRIX){
+            srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
+            newBitmapWidth = bitmapWidth;
+            newBitmapHeight = bitmapHeight;
         }
 
-        if(resize == null){
-            return fullHandle(bitmap);
+        if(srcRect == null){
+            return bitmap;
+        }else{
+            return process(bitmap, bitmapWidth, bitmapHeight, newBitmapWidth, newBitmapHeight, srcRect);
+        }
+    }
+
+    private Bitmap process(Bitmap bitmap, int bitmapWidth, int bitmapHeight, int newBitmapWidth, int newBitmapHeight, Rect srcRect){
+        Bitmap srcBitmap;
+        if(bitmapWidth == newBitmapWidth && bitmapHeight == newBitmapHeight){
+            srcBitmap = bitmap;
+        }else{
+            srcBitmap = Bitmap.createBitmap(newBitmapWidth, newBitmapHeight, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(srcBitmap);
+            canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, srcBitmap.getWidth(), srcBitmap.getHeight()), null);
         }
 
-        // 如果新的尺寸大于等于原图的尺寸，就重新定义新的尺寸
-        if((resize.getWidth() * resize.getHeight()) >= (bitmap.getWidth() * bitmap.getHeight())){
-            Rect rect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(resize.getWidth(), resize.getHeight()), scaleType);
-            resize = new ImageSize(rect.width(), rect.height());
-        }
-        return cutHandle(bitmap, scaleType, resize);
-	}
-	
-    private Bitmap fullHandle(Bitmap bitmap){
         // 初始化画布
-        Bitmap bitmapWithReflection = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight() + (int)(bitmap.getHeight()*reflectionScale) + reflectionSpacing, Bitmap.Config.ARGB_8888);
+        Bitmap bitmapWithReflection = Bitmap.createBitmap(newBitmapWidth, (int) (newBitmapHeight+reflectionSpacing+(newBitmapHeight*reflectionScale)), Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmapWithReflection);
 
         // 在上半部分绘制原图
-        canvas.drawBitmap(bitmap, 0, 0, null);
+        canvas.drawBitmap(srcBitmap, 0, 0, null);
 
-        // 在下半部分绘制倒影图片
+        // 在下半部分绘制倒影
         Matrix matrix = new Matrix();
         matrix.preScale(1, -1);
-        Bitmap reflectionImage = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, false);
-        canvas.drawBitmap(reflectionImage, 0, bitmap.getHeight()+reflectionSpacing, null);
+        Bitmap reflectionImage = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.getWidth(), srcBitmap.getHeight(), matrix, false);
+        if(srcBitmap != bitmap){
+            srcBitmap.recycle();
+        }
+        canvas.drawBitmap(reflectionImage, 0, newBitmapHeight+reflectionSpacing, null);
         reflectionImage.recycle();
 
         // 在下半部分绘制半透明遮罩
         Paint paint = new Paint();
-        paint.setShader(new LinearGradient(0, bitmap.getHeight()+reflectionSpacing, 0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
+        paint.setShader(new LinearGradient(0, newBitmapHeight+reflectionSpacing, 0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
         paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
-        canvas.drawRect(0, bitmap.getHeight()+reflectionSpacing, bitmapWithReflection.getWidth(), bitmapWithReflection.getHeight(), paint);
+        canvas.drawRect(0, newBitmapHeight + reflectionSpacing, bitmapWithReflection.getWidth(), bitmapWithReflection.getHeight(), paint);
 
         return bitmapWithReflection;
     }
 
-    private Bitmap cutHandle(Bitmap bitmap, ScaleType scaleType, ImageSize processSize){
-        // 初始化画布
-        Bitmap bitmapWithReflection = Bitmap.createBitmap(processSize.getWidth(), processSize.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmapWithReflection);
-
-        // 从原图中裁剪出需要的区域
-        int imageHeight = (int) (processSize.getHeight() * (1 - reflectionScale));
-        Bitmap cutBitmap = Bitmap.createBitmap(processSize.getWidth(), imageHeight, Bitmap.Config.ARGB_8888);
-        Canvas canvas2 = new Canvas(cutBitmap);
-        Rect srcRect = CutImageProcessor.computeSrcRect(new Point(bitmap.getWidth(), bitmap.getHeight()), new Point(cutBitmap.getWidth(), cutBitmap.getHeight()), scaleType);
-        canvas2.drawBitmap(bitmap, srcRect, new Rect(0, 0, cutBitmap.getWidth(), cutBitmap.getHeight()), null);
-
-        // 在上半部分绘制原图
-        canvas.drawBitmap(cutBitmap, new Rect(0, 0, cutBitmap.getWidth(), cutBitmap.getHeight()), new Rect(0, 0, bitmapWithReflection.getWidth(), imageHeight), null);
-        bitmap.recycle();
-
-        // 在下半部分绘制倒影图片
-        Matrix matrix = new Matrix();
-        matrix.preScale(1, -1);
-        Bitmap reflectionImage = Bitmap.createBitmap(cutBitmap, 0, 0, cutBitmap.getWidth(), cutBitmap.getHeight(), matrix, false);
-        cutBitmap.recycle();
-        canvas.drawBitmap(reflectionImage, 0, imageHeight+reflectionSpacing, null);
-        reflectionImage.recycle();
-
-        // 在下半部分绘制半透明遮罩
-        Paint paint = new Paint();
-        paint.setShader(new LinearGradient(0, imageHeight+reflectionSpacing, 0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
-        paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
-        canvas.drawRect(0, imageHeight+reflectionSpacing, bitmapWithReflection.getWidth(), bitmapWithReflection.getHeight(), paint);
-
-        return bitmapWithReflection;
+    public ReflectionImageProcessor disableForceUseResizeInCenterCrop() {
+        this.forceUseResizeInCenterCrop = false;
+        return this;
     }
 }

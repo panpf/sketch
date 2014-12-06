@@ -33,4 +33,10 @@ public interface ImageProcessor {
 	 * @return 新的图片
 	 */
 	public Bitmap process(Bitmap bitmap, ImageSize resize, ScaleType scaleType);
+
+    /**
+     * 获取Flag，Flag将用于计算缓存ID
+     * @return Flag
+     */
+    public String getFlag();
 }
