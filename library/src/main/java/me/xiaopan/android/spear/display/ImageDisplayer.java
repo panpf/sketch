@@ -25,7 +25,7 @@ import me.xiaopan.android.spear.request.DisplayRequest;
  * 图片显示器
  */
 public interface ImageDisplayer {
-	static final int DEFAULT_ANIMATION_DURATION = 300;
+	static final int DEFAULT_ANIMATION_DURATION = 400;
 	/**
 	 * 显示
 	 * @param imageView ImageView
