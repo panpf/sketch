@@ -46,9 +46,15 @@ public interface DiskCache {
 
     /**
      * 设置保留空间
-     * @param reserveSize 保留空间，当设备剩余存储空间小于保留空间时就要返回申请失败，默认为20M
+     * @param reserveSize 保留空间，当设备剩余存储空间小于保留空间时就要返回申请失败，默认为100M
      */
     public void setReserveSize(int reserveSize);
+
+    /**
+     * 设置最大容量，默认为没有限制
+     * @param maxsize 最大容量
+     */
+    public void setMaxsize(int maxsize);
 
     /**
      * 清除缓存

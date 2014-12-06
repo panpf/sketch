@@ -26,7 +26,10 @@ import android.util.Log;
 import java.io.File;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.LinkedList;
+import java.util.List;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.request.DisplayHelper;
@@ -39,10 +42,12 @@ import me.xiaopan.android.spear.util.FileLastModifiedComparator;
 public class LruDiskCache implements DiskCache {
 	private static final String LOG_NAME = LruDiskCache.class.getSimpleName();
     private static final String DEFAULT_DIRECTORY_NAME = "spear";
+    private static final int DEFAULT_RESERVE_SIZE = 100 * 1024 * 1024;
 	private File diskCacheDir;	//缓存目录
     private Context context;
     private FileLastModifiedComparator fileLastModifiedComparator;
-    private int reserveSize = 20 * 1024 * 1024;
+    private int reserveSize = DEFAULT_RESERVE_SIZE;
+    private int maxsize = -1;
 
     public LruDiskCache(Context context, File diskCacheDir){
         this.context = context;
@@ -71,6 +76,7 @@ public class LruDiskCache implements DiskCache {
                 }
             }
         }
+
         return diskCacheDir;
     }
 
@@ -84,7 +90,14 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public void setReserveSize(int reserveSize) {
-        this.reserveSize = reserveSize;
+        if(reserveSize > DEFAULT_RESERVE_SIZE){
+            this.reserveSize = reserveSize;
+        }
+    }
+
+    @Override
+    public void setMaxsize(int maxsize) {
+        this.maxsize = maxsize;
     }
 
     @Override
@@ -96,10 +109,17 @@ public class LruDiskCache implements DiskCache {
 
         // 总的可用空间
         long totalAvailableSize = Math.abs(getAvailableSize(cacheDir.getPath()));
-
+        long usedSize = 0;
         // 如果剩余空间够用
-        if(cacheFileLength <= totalAvailableSize-reserveSize){
-            return true;
+        if(totalAvailableSize-reserveSize > cacheFileLength){
+            if(maxsize > 0){
+                usedSize = Math.abs(countFileLength(cacheDir));
+                if(usedSize+cacheFileLength < maxsize){
+                    return true;
+                }
+            }else{
+                return true;
+            }
         }
 
         // 获取所有缓存文件
@@ -118,8 +138,15 @@ public class LruDiskCache implements DiskCache {
                 long currentFileLength = file.length();
                 if(file.delete()){
                     totalAvailableSize += currentFileLength;
-                    if(cacheFileLength <= totalAvailableSize-reserveSize){
-                        return true;
+                    if(totalAvailableSize-reserveSize > cacheFileLength){
+                        if(maxsize > 0){
+                            usedSize -= currentFileLength;
+                            if(usedSize+cacheFileLength < maxsize){
+                                return true;
+                            }
+                        }else{
+                            return true;
+                        }
                     }
                 }
             }
@@ -179,36 +206,6 @@ public class LruDiskCache implements DiskCache {
     }
 
     /**
-     * 删除给定的文件，如果当前文件是目录则会删除其包含的所有的文件或目录
-     * @param file 给定的文件
-     * @return true：删除成功；false：删除失败
-     */
-    private boolean deleteFile(File file){
-        if(file.exists()){
-            if(file.isFile()){
-                return file.delete();
-            }else{
-                File[] files = file.listFiles();
-                boolean deleteSuccess = true;
-                if(files != null){
-                    for(File tempFile : files){
-                        if(!deleteFile(tempFile)){
-                            deleteSuccess = false;
-                            break;
-                        }
-                    }
-                }
-                if(deleteSuccess){
-                    deleteSuccess = file.delete();
-                }
-                return deleteSuccess;
-            }
-        }else{
-            return true;
-        }
-    }
-
-    /**
      * 获取动态获取缓存目录
      * @param context 上下文
      * @return 如果SD卡可用，就返回外部缓存目录，否则返回机身自带缓存目录
@@ -234,9 +231,74 @@ public class LruDiskCache implements DiskCache {
     private long getAvailableSize(String path){
         StatFs statFs = new StatFs(path);
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2){
-            return statFs.getAvailableBlocks() * statFs.getBlockSize();
+            return (long)statFs.getAvailableBlocks() * statFs.getBlockSize();
         }else{
-            return statFs.getAvailableBlocksLong() * statFs.getBlockSizeLong();
+            return statFs.getAvailableBytes();
         }
+    }
+
+    /**
+     * 获取文件长度，此方法的关键点在于，他也能获取目录的长度
+     * @param file
+     * @return
+     */
+    public static long countFileLength(File file){
+        if(!file.exists()){
+            return 0;
+        }
+
+        if(file.isFile()){
+            return file.length();
+        }
+
+        File[] childFiles = file.listFiles();
+        if(childFiles == null || childFiles.length <= 0){
+            return 0;
+        }
+
+        List<File> fileList = new LinkedList<File>();
+        Collections.addAll(fileList, childFiles);
+        long length = 0;
+        for(File childFile : fileList){
+            if(childFile.isFile()){
+                length += childFile.length();
+            }else{
+                childFiles = childFile.listFiles();
+                if(childFiles == null || childFiles.length <= 0){
+                    continue;
+                }
+                Collections.addAll(fileList, childFiles);
+            }
+        }
+        return length;
+    }
+
+    /**
+     * 删除给定的文件，如果当前文件是目录则会删除其包含的所有的文件或目录
+     * @param file 给定的文件
+     * @return true：删除成功；false：删除失败
+     */
+    public static boolean deleteFile(File file){
+        if(!file.exists()){
+            return true;
+        }
+
+        if(file.isFile()){
+            return file.delete();
+        }
+
+        File[] files = file.listFiles();
+        boolean deleteSuccess = true;
+        if(files != null){
+            for(File tempFile : files){
+                if(!deleteFile(tempFile)){
+                    deleteSuccess = false;
+                }
+            }
+        }
+        if(deleteSuccess){
+            deleteSuccess = file.delete();
+        }
+        return deleteSuccess;
     }
 }
