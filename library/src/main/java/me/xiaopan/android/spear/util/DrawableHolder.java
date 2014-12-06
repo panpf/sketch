@@ -54,7 +54,7 @@ public class DrawableHolder {
         this.process = process;
     }
 
-    public BitmapDrawable getDrawable(Context context, ImageProcessor imageProcessor) {
+    public BitmapDrawable getDrawable(Context context, ImageSize resize, ImageView.ScaleType scaleType, ImageProcessor imageProcessor) {
         if(drawable == null && resId > 0){
             boolean finished = false;
             if(!process || imageProcessor == null){
@@ -69,7 +69,7 @@ public class DrawableHolder {
                 Bitmap bitmap = BitmapFactory.decodeResource(context.getResources(), resId);
                 if(bitmap != null){
                     if(process && imageProcessor != null){
-                        Bitmap newBitmap = imageProcessor.process(bitmap, null, ImageView.ScaleType.CENTER_CROP);
+                        Bitmap newBitmap = imageProcessor.process(bitmap, resize, scaleType);
                         if(newBitmap != bitmap){
                             bitmap.recycle();
                             bitmap = newBitmap;
