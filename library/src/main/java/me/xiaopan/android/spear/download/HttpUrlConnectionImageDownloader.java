@@ -317,7 +317,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         try {
             inputStream = connection.getInputStream();
         } catch (IOException e) {
-            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "释放连接时获取输入流失败："+e.getMessage() + "；" + request.getName());
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "："+e.getClass().getName()+"：" + "释放连接时获取输入流失败："+e.getMessage() + "；" + request.getName());
             return;
         }
         close(inputStream);
