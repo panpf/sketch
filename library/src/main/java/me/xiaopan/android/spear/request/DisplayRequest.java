@@ -20,6 +20,7 @@ import android.graphics.drawable.BitmapDrawable;
 
 import me.xiaopan.android.spear.display.DefaultImageDisplayer;
 import me.xiaopan.android.spear.display.ImageDisplayer;
+import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.DrawableHolder;
 import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.ImageViewHolder;
@@ -89,7 +90,18 @@ public class DisplayRequest extends LoadRequest{
      * @return 加载失败时显示的图片
      */
     public BitmapDrawable getFailedDrawable() {
-        return failedDrawableHolder!=null?failedDrawableHolder.getDrawable(spear.getConfiguration().getContext(), getImageProcessor()):null;
+        if(failedDrawableHolder == null){
+            return null;
+        }
+        ImageProcessor processor;
+        if(imageProcessor != null){
+            processor = imageProcessor;
+        }else if(resize != null){
+          processor = spear.getConfiguration().getDefaultCutImageProcessor();
+        }else{
+            processor = null;
+        }
+        return failedDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, processor);
     }
 
     @Override
