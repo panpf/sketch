@@ -372,7 +372,7 @@ public class DisplayHelper {
             }
             Drawable loadFailedDrawable = null;
             if(loadFailDrawableHolder != null){
-                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), imageProcessor);
+                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null);
             }
             spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
@@ -387,7 +387,7 @@ public class DisplayHelper {
             }
             Drawable loadFailedDrawable = null;
             if(loadFailDrawableHolder != null){
-                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), imageProcessor);
+                loadFailedDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null);
             }
             spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailedDrawable, FailureCause.URI_NO_SUPPORT, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
@@ -395,7 +395,7 @@ public class DisplayHelper {
         }
 
         // 计算解码尺寸、处理尺寸和请求ID
-        String requestId = createId(encodeUrl(uri), maxsize, resize, imageProcessor);
+        String requestId = createId(encodeUrl(uri), maxsize, resize, scaleType, imageProcessor);
 
         // 尝试显示
         if(enableMemoryCache){
@@ -439,7 +439,7 @@ public class DisplayHelper {
         request.displayProgressListener = progressListener;
 
         // 显示默认图片
-        BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getConfiguration().getContext(), imageProcessor):null;
+        BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null):null;
         imageView.clearAnimation();
         imageView.setImageDrawable(new AsyncDrawable(spear.getConfiguration().getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
 
@@ -451,25 +451,29 @@ public class DisplayHelper {
     /**
      * 生成ID
      */
-    public static String createId(String uri, ImageSize maxsize, ImageSize resize, ImageProcessor imageProcessor){
-        StringBuilder stringBuffer = new StringBuilder(uri);
+    public static String createId(String uri, ImageSize maxsize, ImageSize resize, ImageView.ScaleType scaleType, ImageProcessor imageProcessor){
+        StringBuilder stringBuilder = new StringBuilder(uri);
         if(maxsize != null){
-            stringBuffer.append("_");
-            stringBuffer.append(maxsize.getWidth());
-            stringBuffer.append("x");
-            stringBuffer.append(maxsize.getHeight());
+            stringBuilder.append("_");
+            stringBuilder.append(maxsize.getWidth());
+            stringBuilder.append("x");
+            stringBuilder.append(maxsize.getHeight());
         }
         if(resize != null){
-            stringBuffer.append("_");
-            stringBuffer.append(resize.getWidth());
-            stringBuffer.append("x");
-            stringBuffer.append(resize.getHeight());
+            stringBuilder.append("_");
+            stringBuilder.append(resize.getWidth());
+            stringBuilder.append("x");
+            stringBuilder.append(resize.getHeight());
+        }
+        if(scaleType != null){
+            stringBuilder.append("_");
+            stringBuilder.append(scaleType.name());
         }
         if(imageProcessor != null){
-            stringBuffer.append("_");
-            stringBuffer.append(imageProcessor.getClass().getName());
+            stringBuilder.append("_");
+            stringBuilder.append(imageProcessor.getFlag());
         }
-        return stringBuffer.toString();
+        return stringBuilder.toString();
     }
 
     /**
