@@ -36,4 +36,19 @@ public enum DisplayOptionsType {
 	 * ViewPager用的
 	 */
 	VIEW_PAGER,
+
+	/**
+	 * 分类
+	 */
+	CATEGORY,
+
+	/**
+	 *
+	 */
+	STAR_HEADER,
+
+	/**
+	 *
+	 */
+	STAR_ITEM,
 }

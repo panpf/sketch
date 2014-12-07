@@ -290,28 +290,28 @@ public class ListViewLoadMoreManager implements OnScrollListener{
 	/**
 	 * 加载失败
 	 */
-	public void loadFailed(){
+	public void loadFail(){
 		if(!footerViewAdded){
 			if(debugMode){
-				Log.i(NAME, "loadFailed：没有添加Footer到ListView");
+				Log.i(NAME, "loadFail：没有添加Footer到ListView");
 			}
 			return;
 		}
 		if(end){
 			if(debugMode){
-				Log.i(NAME, "loadFailed：已加载完毕");
+				Log.i(NAME, "loadFail：已加载完毕");
 			}
 			return;
 		}
 		if(!loading){
 			if(debugMode){
-				Log.i(NAME, "loadFailed：尚未加载");
+				Log.i(NAME, "loadFail：尚未加载");
 			}
 			return;
 		}
  
 		if(debugMode){
-			Log.e(NAME, "loadFailed：加载失败");
+			Log.e(NAME, "loadFail：加载失败");
 		}
 		loading = false;
 		allowClickLoad = true;

@@ -15,13 +15,13 @@ import me.xiaopan.android.gohttp.requestobject.URL;
  */
 @URL("http://image.baidu.com/i")
 @Method(MethodType.GET)
-public class ImageSearchRequest implements Request{
+public class SearchImageRequest implements Request{
     @Param private String tn = "resultjsonavatarnew";
     @Param private String ie = "utf-8";
     @Param private String word;
     @Param private String cg = "girl";
     @Param("pn") private int start;
-    @Param private String rn = "60";
+    @Param("rn") private int size = 60;
     @Param private String z;
     @Param private String fr;
     @Param private String width;
@@ -30,7 +30,7 @@ public class ImageSearchRequest implements Request{
     @Param private String ic="0";
     @Param private String s="0";
 
-    public ImageSearchRequest(String word) {
+    public SearchImageRequest(String word) {
         this.word = word;
     }
 
@@ -54,8 +54,10 @@ public class ImageSearchRequest implements Request{
     public static class Image{
         @SerializedName("thumbURL") private String thumbUrl;
         @SerializedName("objURL") private String sourceUrl;
-        private int width;
-        private int height;
+        @SerializedName("width") private int width;
+        @SerializedName("height") private int height;
+
+        private String imageSizeStr;
 
         public String getThumbUrl() {
             return thumbUrl;
@@ -71,6 +73,13 @@ public class ImageSearchRequest implements Request{
 
         public int getHeight() {
             return height;
+        }
+
+        public String getImageSizeStr() {
+            if(imageSizeStr == null){
+                imageSizeStr = width+"x"+height;
+            }
+            return imageSizeStr;
         }
     }
 }

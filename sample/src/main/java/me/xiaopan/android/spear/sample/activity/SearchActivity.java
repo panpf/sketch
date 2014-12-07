@@ -25,27 +25,24 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.inject.app.InjectActionBarActivity;
 import me.xiaopan.android.spear.sample.MyActionBarActivity;
-import me.xiaopan.android.spear.sample.fragment.IndexFragment;
+import me.xiaopan.android.spear.sample.fragment.SearchFragment;
 
 /**
  * 图片搜索页面
  */
 @InjectContentView(R.layout.activity_search)
-public class ImageSearchActivity extends MyActionBarActivity {
+public class SearchActivity extends MyActionBarActivity {
     @InjectView(R.id.drawer_search) private DrawerLayout drawerLayout;
     @InjectView(R.id.list_search_category) private ListView categoryListView;
 
@@ -62,7 +59,7 @@ public class ImageSearchActivity extends MyActionBarActivity {
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_search_content, new IndexFragment())
+                .replace(R.id.frame_search_content, new SearchFragment())
                 .commit();
 	}
 

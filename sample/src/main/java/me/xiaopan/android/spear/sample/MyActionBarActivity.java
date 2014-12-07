@@ -17,21 +17,12 @@
 package me.xiaopan.android.spear.sample;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 
-import me.xiaoapn.android.spear.sample.R;
-import me.xiaopan.android.inject.InjectContentView;
-import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectActionBarActivity;
 
 public class MyActionBarActivity extends InjectActionBarActivity {
-    @InjectView(R.id.toolbar) private Toolbar toolbar;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-        if(toolbar != null){
-            setSupportActionBar(toolbar);
-        }
 	}
 }

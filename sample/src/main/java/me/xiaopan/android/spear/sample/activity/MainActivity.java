@@ -59,7 +59,7 @@ public class MainActivity extends ActionBarActivity {
                         targetClass = NormalActivity.class;
 						break;
                     case 4 :
-                        targetClass = ImageSearchActivity.class;
+                        targetClass = SearchActivity.class;
 						break;
 				}
 				if(targetClass != null){

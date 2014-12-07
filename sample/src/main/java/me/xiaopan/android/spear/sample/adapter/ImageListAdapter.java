@@ -19,6 +19,7 @@ package me.xiaopan.android.spear.sample.adapter;
 import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
@@ -56,7 +57,7 @@ public class ImageListAdapter extends BaseAdapter {
             spearImageView = new SpearImageView(context);
             spearImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             spearImageView.setDisplayOptions(DisplayOptionsType.LIST_VIEW);
-            spearImageView.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+            spearImageView.setLayoutParams(new AbsListView.LayoutParams(200, 200));
             convertView = spearImageView;
         }else{
             spearImageView = (SpearImageView) convertView;

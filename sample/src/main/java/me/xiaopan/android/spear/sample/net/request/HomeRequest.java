@@ -1,11 +1,8 @@
 package me.xiaopan.android.spear.sample.net.request;
 
-import android.util.Log;
-
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
-import com.google.gson.stream.JsonReader;
 
 import org.apache.http.HttpResponse;
 import org.json.JSONArray;
@@ -35,13 +32,13 @@ public class HomeRequest implements Request{
 
         @Override
         public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, String baiduImageHomeSourceCode, boolean b, boolean b2) throws Throwable {
-            Home home = new Home();
-            home.setRecommendImages(parseRecommendImage(baiduImageHomeSourceCode));
-            home.setImageCategories(parseImageCategory(baiduImageHomeSourceCode));
-            return home;
+            Response response = new Response();
+            response.setRecommendImages(parseRecommendImage(baiduImageHomeSourceCode));
+            response.setImageCategories(parseImageCategory(baiduImageHomeSourceCode));
+            return response;
         }
 
-        public List<RecommendImageGroup> parseRecommendImage(String baiduImageHomeSourceCode) throws JSONException {
+        public List<ImageGroup> parseRecommendImage(String baiduImageHomeSourceCode) throws JSONException {
             String sliderRegex = "var sliderData = \\[[\\d\\D\\s\\S]*?\\];";
             Matcher matcher2 = Pattern.compile(sliderRegex).matcher(baiduImageHomeSourceCode);
             if(matcher2.find()){
@@ -52,16 +49,15 @@ public class HomeRequest implements Request{
                     throw new IllegalArgumentException("轮播图数据异常，可能是百度把首页改了");
                 }
                 sliderJson = sliderJson.substring(PREFIX.length(), sliderJson.length()-SUFFIX.length()).trim();
-                sliderJson = clearSpaceChar(sliderJson);
 
                 // 解析数据
                 JSONArray jsonArray = new JSONArray(sliderJson);
-                List<RecommendImageGroup> imageList = null;
+                List<ImageGroup> imageList = null;
                 for(int w = 0, size = jsonArray.length(); w < size; w++){
                     if(imageList == null){
-                        imageList = new ArrayList<RecommendImageGroup>();
+                        imageList = new ArrayList<ImageGroup>();
                     }
-                    imageList.add(RecommendImageGroup.parse(jsonArray.getJSONObject(w)));
+                    imageList.add(ImageGroup.parse(jsonArray.getJSONObject(w)));
                 }
                 if(imageList == null || imageList.size() == 0){
                     throw new IllegalArgumentException("分类推荐中没有图片，可能是百度把首页改了");
@@ -71,20 +67,6 @@ public class HomeRequest implements Request{
             }else{
                 return null;
             }
-        }
-
-        private String clearSpaceChar(String source){
-            char spaceChar1 = ' ';
-            char spaceChar2 = '\n';
-            char spaceChar3 = ' ';
-            StringBuilder stringBuilder = new StringBuilder();
-            for(int w = 0, size = source.length(); w < size; w++){
-                char curretChar = source.charAt(w);
-                if(curretChar != spaceChar1 && curretChar != spaceChar2 && curretChar != spaceChar3){
-                    stringBuilder.append(curretChar);
-                }
-            }
-            return stringBuilder.toString();
         }
 
         private List<ImageCategory> parseImageCategory(String baiduImageHomeSourceCode){
@@ -122,19 +104,11 @@ public class HomeRequest implements Request{
             }
 
             return imageCategories;
-
-//            String categoryRegex = "var columns = \\[[\\d\\D\\s\\S]*?\\];";
-//            Pattern pattern3 = Pattern.compile(categoryRegex);
-//            Matcher matcher3 = pattern3.matcher(baiduImageHomeSourceCode);
-//            int number3 = 0;
-//            while(matcher3.find()){
-//                System.out.println((++number3)+"\n"+matcher3.group()+"\n\n\n");
-//            }
         }
     }
 
-    public static class Home {
-        private List<RecommendImageGroup> recommendImages;
+    public static class Response {
+        private List<ImageGroup> recommendImages;
         private List<ImageCategory> imageCategories;
 
         @Override
@@ -142,11 +116,11 @@ public class HomeRequest implements Request{
             return "recommendImages="+recommendImages.toString()+"; imageCategories="+imageCategories.toString();
         }
 
-        public List<RecommendImageGroup> getRecommendImages() {
+        public List<ImageGroup> getRecommendImages() {
             return recommendImages;
         }
 
-        public void setRecommendImages(List<RecommendImageGroup> recommendImages) {
+        public void setRecommendImages(List<ImageGroup> recommendImages) {
             this.recommendImages = recommendImages;
         }
 
@@ -274,7 +248,7 @@ public class HomeRequest implements Request{
         }
     }
 
-    public static class RecommendImageGroup {
+    public static class ImageGroup {
         @SerializedName("width") private int width;
         @SerializedName("height") private int height;
         @SerializedName("title") private String title;
@@ -344,44 +318,44 @@ public class HomeRequest implements Request{
             this.size = size;
         }
 
-        public static RecommendImageGroup parse(JSONObject jsonObject){
-            RecommendImageGroup recommendImageGroup = new RecommendImageGroup();
+        public static ImageGroup parse(JSONObject jsonObject){
+            ImageGroup imageGroup = new ImageGroup();
             try {
-                recommendImageGroup.setCategory(jsonObject.getString("column"));
+                imageGroup.setCategory(jsonObject.getString("column"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             try {
-                recommendImageGroup.setHeight(jsonObject.getInt("height"));
+                imageGroup.setHeight(jsonObject.getInt("height"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             try {
-                recommendImageGroup.setLink(jsonObject.getString("url"));
+                imageGroup.setLink(jsonObject.getString("url"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             try {
-                recommendImageGroup.setSize(jsonObject.getString("coverNum"));
+                imageGroup.setSize(jsonObject.getString("coverNum"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             try {
-                recommendImageGroup.setTitle(jsonObject.getString("title"));
+                imageGroup.setTitle(jsonObject.getString("title"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             try {
-                recommendImageGroup.setUrl(jsonObject.getString("src"));
+                imageGroup.setUrl(jsonObject.getString("src"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
             try {
-                recommendImageGroup.setWidth(jsonObject.getInt("width"));
+                imageGroup.setWidth(jsonObject.getInt("width"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            return recommendImageGroup;
+            return imageGroup;
         }
     }
 }

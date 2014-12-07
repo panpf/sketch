@@ -20,6 +20,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Build;
+import android.util.Log;
 import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,6 +29,7 @@ import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
+import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.widget.SpearImageView;
 
@@ -83,7 +85,6 @@ public class ImageGridAdapter extends BaseAdapter {
         }else{
             spearImageView = (SpearImageView) convertView;
         }
-
         spearImageView.setImageByUri(imageUris[position]);
         return convertView;
 	}

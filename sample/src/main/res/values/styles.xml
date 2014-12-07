@@ -1,11 +1,4 @@
 <resources>
-    <style name="toolbar">
-        <item name="android:id">@id/toolbar</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">?attr/colorPrimaryDark</item>
-    </style>
-
     <!-- 项 -->
     <style name="item">
         <item name="android:layout_width">match_parent</item>

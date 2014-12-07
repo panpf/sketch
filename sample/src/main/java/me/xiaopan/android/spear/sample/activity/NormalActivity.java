@@ -94,36 +94,36 @@ public class NormalActivity extends ActionBarActivity {
         switch (position){
             case 11 :
                 displayOptions.loadingDrawable(R.drawable.image_loading, true);
-                displayOptions.loadFailedDrawable(R.drawable.image_load_fail, true);
+                displayOptions.loadFailDrawable(R.drawable.image_load_fail, true);
                 displayOptions.displayer(new OriginalFadeInImageDisplayer());
                 displayOptions.processor(new RoundedCornerImageProcessor());
                 break;
             case 12 :
                 displayOptions.loadingDrawable(R.drawable.image_loading, true);
-                displayOptions.loadFailedDrawable(R.drawable.image_load_fail, true);
+                displayOptions.loadFailDrawable(R.drawable.image_load_fail, true);
                 displayOptions.displayer(new OriginalFadeInImageDisplayer());
                 displayOptions.processor(new RoundedCornerImageProcessor());
                 break;
             case 13 :
                 displayOptions.loadingDrawable(R.drawable.image_loading, true);
-                displayOptions.loadFailedDrawable(R.drawable.image_load_fail, true);
+                displayOptions.loadFailDrawable(R.drawable.image_load_fail, true);
                 displayOptions.displayer(new OriginalFadeInImageDisplayer());
                 displayOptions.processor(new RoundedCornerImageProcessor());
                 break;
             case 21 :
                 displayOptions.loadingDrawable(R.drawable.image_loading, true);
-                displayOptions.loadFailedDrawable(R.drawable.image_load_fail, true);
+                displayOptions.loadFailDrawable(R.drawable.image_load_fail, true);
                 displayOptions.processor(new CircleImageProcessor());
                 displayOptions.displayer(new ZoomInImageDisplayer());
                 break;
             case 22 :
                 displayOptions.loadingDrawable(R.drawable.image_loading, true);
-                displayOptions.loadFailedDrawable(R.drawable.image_load_fail, true);
+                displayOptions.loadFailDrawable(R.drawable.image_load_fail, true);
                 displayOptions.processor(new CircleImageProcessor());
                 displayOptions.displayer(new ZoomInImageDisplayer());
                 break;
             case 31 :
-                displayOptions.loadFailedDrawable(R.drawable.image_load_fail, true);
+                displayOptions.loadFailDrawable(R.drawable.image_load_fail, true);
                 displayOptions.displayer(new ZoomOutImageDisplayer());
                 displayOptions.processor(new ReflectionImageProcessor());
                 break;

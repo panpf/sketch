@@ -8,16 +8,12 @@
         android:id="@+id/pullRefresh_index"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ScrollView
+        <ListView
+            android:id="@+id/list_index_content"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <LinearLayout
-                android:id="@+id/layout_index_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-            </LinearLayout>
-        </ScrollView>
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:listSelector="@null"/>
     </me.xiaopan.android.spear.sample.widget.MyPullRefreshLayout>
     <me.xiaopan.android.spear.sample.widget.HintView
         android:id="@+id/hint_index"

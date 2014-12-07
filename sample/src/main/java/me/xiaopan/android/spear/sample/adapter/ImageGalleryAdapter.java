@@ -20,6 +20,7 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Gallery;
 import android.widget.ImageView;
 
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
@@ -56,7 +57,7 @@ public class ImageGalleryAdapter extends BaseAdapter {
             spearImageView = new SpearImageView(context);
             spearImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             spearImageView.setDisplayOptions(DisplayOptionsType.GALLERY);
-            spearImageView.setLayoutParams(new ViewGroup.LayoutParams(200, 200));
+            spearImageView.setLayoutParams(new Gallery.LayoutParams(200, 200));
             convertView = spearImageView;
 		}else{
 			spearImageView = (SpearImageView) convertView;
