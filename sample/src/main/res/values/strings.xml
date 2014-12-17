@@ -3,32 +3,11 @@
 
     <string name="app_name">Spear</string>
 
-    <string name="activity_titel_download">Image Download</string>
-    <string name="activity_titel_load">Image Load</string>
-    <string name="activity_titel_display">Image Display</string>
     <string name="url_github">http://github.com/xiaopansky/Spear</string>
     <string name="loadingLater">正在加载%s，请稍后…</string>
     <string name="ingLater">正在%s，请稍后…</string>
 
     <drawable name="divider">#80FFFFFF</drawable>
-
-    <string-array name="processors">
-        <item>无</item>
-        <item>倒影</item>
-        <item>圆角</item>
-        <item>圆形</item>
-    </string-array>
-
-    <string-array name="scaleTypes">
-        <item>MATRIX</item>
-        <item>FIT_XY</item>
-        <item>FIT_START</item>
-        <item>FIT_CENTER</item>
-        <item>FIT_END</item>
-        <item>CENTER</item>
-        <item>CENTER_CROP</item>
-        <item>CENTER_INSIDE</item>
-    </string-array>
 
     <string-array name="urls">
         <item>http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg</item>

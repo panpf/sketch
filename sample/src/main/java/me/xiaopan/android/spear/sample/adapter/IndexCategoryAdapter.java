@@ -1,22 +1,18 @@
 package me.xiaopan.android.spear.sample.adapter;
 
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 import me.xiaoapn.android.spear.sample.R;
-import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
-import me.xiaopan.android.spear.sample.net.request.HomeRequest;
-import me.xiaopan.android.spear.util.FailureCause;
+import me.xiaopan.android.spear.sample.net.request.IndexRequest;
 import me.xiaopan.android.spear.widget.SpearImageView;
 
 /**
@@ -24,20 +20,33 @@ import me.xiaopan.android.spear.widget.SpearImageView;
  */
 public class IndexCategoryAdapter extends BaseAdapter{
     private Context context;
-    private List<HomeRequest.ImageCategory> imageCategoryList;
+    private List<IndexRequest.ImageCategory> imageCategoryList;
     private View.OnClickListener imageClickListener;
+    private View.OnClickListener categoryTitleClickListener;
 
-    public IndexCategoryAdapter(Context context, final List<HomeRequest.ImageCategory> imageCategoryList, final OnClickListener onClickListener){
+    public IndexCategoryAdapter(Context context, final List<IndexRequest.ImageCategory> imageCategoryList, final OnClickListener onClickListener){
         this.context = context;
         this.imageCategoryList = imageCategoryList;
         this.imageClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 int categoryPosition = (Integer) v.getTag(R.id.tagId_categoryPosition);
-                int imagePosition = (Integer) v.getTag(R.id.tagId_imagePosition);
-                if(onClickListener != null){
-                    HomeRequest.ImageCategory imageCategory = imageCategoryList.get(categoryPosition);
-                    onClickListener.onImageClick(imageCategory, imageCategory.getImageList().get(imagePosition));
+                if(categoryPosition < imageCategoryList.size() && onClickListener != null){
+                    IndexRequest.ImageCategory imageCategory = imageCategoryList.get(categoryPosition);
+                    int imagePosition = (Integer) v.getTag(R.id.tagId_imagePosition);
+                    if(imagePosition < imageCategory.getImageList().size()){
+                        onClickListener.onClickImage(imageCategory, imageCategory.getImageList().get(imagePosition));
+                    }
+                }
+            }
+        };
+
+        this.categoryTitleClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int categoryPosition = (Integer) v.getTag(R.id.tagId_categoryPosition);
+                if(categoryPosition < imageCategoryList.size() && onClickListener != null){
+                    onClickListener.onClickCategoryTitle(imageCategoryList.get(categoryPosition));
                 }
             }
         };
@@ -74,7 +83,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
             case 0 :
                 FourViewHolder fourViewHolder;
                 if(convertView == null){
-                    convertView = LayoutInflater.from(context).inflate(R.layout.list_item_category_four, null);
+                    convertView = LayoutInflater.from(context).inflate(R.layout.list_item_category_four, parent, false);
                     fourViewHolder = new FourViewHolder(convertView, this);
                     convertView.setTag(fourViewHolder);
                 }else{
@@ -86,7 +95,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
             case 1 :
                 FiveViewHolder fiveViewHolder;
                 if(convertView == null){
-                    convertView = LayoutInflater.from(context).inflate(R.layout.list_item_category_five, null);
+                    convertView = LayoutInflater.from(context).inflate(R.layout.list_item_category_five, parent, false);
                     fiveViewHolder = new FiveViewHolder(convertView, this);
                     convertView.setTag(fiveViewHolder);
                 }else{
@@ -101,6 +110,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
     }
 
     private static class FourViewHolder{
+        private View categoryTitleLayout;
         private FrameLayout oneCardView;
         private FrameLayout twoCardView;
         private FrameLayout threeCardView;
@@ -119,6 +129,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
         public FourViewHolder(View itemView, final IndexCategoryAdapter adapter) {
             this.adapter = adapter;
 
+            categoryTitleLayout = itemView.findViewById(R.id.layout_fourItem_title);
             oneCardView = (FrameLayout) itemView.findViewById(R.id.card_fourItem_one);
             twoCardView = (FrameLayout) itemView.findViewById(R.id.card_fourItem_two);
             threeCardView = (FrameLayout) itemView.findViewById(R.id.card_fourItem_three);
@@ -133,15 +144,10 @@ public class IndexCategoryAdapter extends BaseAdapter{
             threeNameTextView = (TextView) itemView.findViewById(R.id.text_fourItem_name_three);
             fourNameTextView = (TextView) itemView.findViewById(R.id.text_fourItem_name_four);
 
-            oneSpearImageView.setDisplayOptions(DisplayOptionsType.CATEGORY);
-            twoSpearImageView.setDisplayOptions(DisplayOptionsType.CATEGORY);
-            threeSpearImageView.setDisplayOptions(DisplayOptionsType.CATEGORY);
-            fourSpearImageView.setDisplayOptions(DisplayOptionsType.CATEGORY);
-
-            oneSpearImageView.setShowProgress(true);
-            twoSpearImageView.setShowProgress(true);
-            threeSpearImageView.setShowProgress(true);
-            fourSpearImageView.setShowProgress(true);
+            oneSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_ONE);
+            twoSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_TWO);
+            threeSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_TWO);
+            fourSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_ONE);
 
             int marginBorder = (int) adapter.context.getResources().getDimension(R.dimen.home_category_margin_border);
             int averageWidth = (adapter.context.getResources().getDisplayMetrics().widthPixels - (marginBorder * 4))/5;
@@ -156,6 +162,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
             setWidthAndHeight(threeNameTextView, averageWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
             setWidthAndHeight(fourNameTextView, averageWidth * 2, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+            categoryTitleLayout.setOnClickListener(adapter.categoryTitleClickListener);
             oneCardView.setOnClickListener(adapter.imageClickListener);
             twoCardView.setOnClickListener(adapter.imageClickListener);
             threeCardView.setOnClickListener(adapter.imageClickListener);
@@ -163,11 +170,13 @@ public class IndexCategoryAdapter extends BaseAdapter{
         }
 
         public void bindData(int position){
-            HomeRequest.ImageCategory imageCategory = adapter.imageCategoryList.get(position);
+            IndexRequest.ImageCategory imageCategory = adapter.imageCategoryList.get(position);
+
+            categoryTitleLayout.setTag(R.id.tagId_categoryPosition, position);
 
             categoryTitleTextView.setText(imageCategory.getName());
 
-            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 1){
+            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 0){
                 oneNameTextView.setText(imageCategory.getImageList().get(0).getTitle());
                 oneSpearImageView.setImageByUri(imageCategory.getImageList().get(0).getUrl());
                 oneCardView.setVisibility(View.VISIBLE);
@@ -177,7 +186,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
             oneCardView.setTag(R.id.tagId_categoryPosition, position);
             oneCardView.setTag(R.id.tagId_imagePosition, 0);
 
-            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 2){
+            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 1){
                 twoNameTextView.setText(imageCategory.getImageList().get(1).getTitle());
                 twoSpearImageView.setImageByUri(imageCategory.getImageList().get(1).getUrl());
                 twoCardView.setVisibility(View.VISIBLE);
@@ -187,7 +196,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
             twoCardView.setTag(R.id.tagId_categoryPosition, position);
             twoCardView.setTag(R.id.tagId_imagePosition, 1);
 
-            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 4){
+            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 3){
                 threeNameTextView.setText(imageCategory.getImageList().get(3).getTitle());
                 threeSpearImageView.setImageByUri(imageCategory.getImageList().get(3).getUrl());
                 threeCardView.setVisibility(View.VISIBLE);
@@ -197,7 +206,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
             threeCardView.setTag(R.id.tagId_categoryPosition, position);
             threeCardView.setTag(R.id.tagId_imagePosition, 3);
 
-            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 3){
+            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 2){
                 fourNameTextView.setText(imageCategory.getImageList().get(2).getTitle());
                 fourSpearImageView.setImageByUri(imageCategory.getImageList().get(2).getUrl());
                 fourCardView.setVisibility(View.VISIBLE);
@@ -210,6 +219,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
     }
 
     private static class FiveViewHolder{
+        private View categoryTitleLayout;
         private FrameLayout oneCardView;
         private FrameLayout twoCardView;
         private FrameLayout threeCardView;
@@ -231,6 +241,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
         public FiveViewHolder(View itemView, final IndexCategoryAdapter adapter) {
             this.adapter = adapter;
 
+            categoryTitleLayout = itemView.findViewById(R.id.layout_fiveItem_title);
             oneCardView = (FrameLayout) itemView.findViewById(R.id.card_fiveItem_one);
             twoCardView = (FrameLayout) itemView.findViewById(R.id.card_fiveItem_two);
             threeCardView = (FrameLayout) itemView.findViewById(R.id.card_fiveItem_three);
@@ -248,11 +259,11 @@ public class IndexCategoryAdapter extends BaseAdapter{
             fourNameTextView = (TextView) itemView.findViewById(R.id.text_fiveItem_name_four);
             fiveNameTextView = (TextView) itemView.findViewById(R.id.text_fiveItem_name_five);
 
-            oneSpearImageView.setDisplayOptions(DisplayOptionsType.CATEGORY);
-            twoSpearImageView.setDisplayOptions(DisplayOptionsType.CATEGORY);
-            threeSpearImageView.setDisplayOptions(DisplayOptionsType.CATEGORY);
-            fourSpearImageView.setDisplayOptions(DisplayOptionsType.CATEGORY);
-            fiveSpearImageView.setDisplayOptions(DisplayOptionsType.CATEGORY);
+            oneSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_ONE);
+            twoSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_THREE);
+            threeSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_THREE);
+            fourSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_TWO);
+            fiveSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_TWO);
 
             oneSpearImageView.setShowProgress(true);
             twoSpearImageView.setShowProgress(true);
@@ -275,6 +286,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
             setWidthAndHeight(fourNameTextView, averageWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
             setWidthAndHeight(fiveNameTextView, averageWidth, ViewGroup.LayoutParams.WRAP_CONTENT);
 
+            categoryTitleLayout.setOnClickListener(adapter.categoryTitleClickListener);
             oneCardView.setOnClickListener(adapter.imageClickListener);
             twoCardView.setOnClickListener(adapter.imageClickListener);
             threeCardView.setOnClickListener(adapter.imageClickListener);
@@ -283,11 +295,13 @@ public class IndexCategoryAdapter extends BaseAdapter{
         }
 
         public void bindData(int position){
-            HomeRequest.ImageCategory imageCategory = adapter.imageCategoryList.get(position);
+            IndexRequest.ImageCategory imageCategory = adapter.imageCategoryList.get(position);
+
+            categoryTitleLayout.setTag(R.id.tagId_categoryPosition, position);
 
             categoryTitleTextView.setText(imageCategory.getName());
 
-            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 1){
+            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 0){
                 oneNameTextView.setText(imageCategory.getImageList().get(0).getTitle());
                 oneSpearImageView.setImageByUri(imageCategory.getImageList().get(0).getUrl());
                 oneCardView.setVisibility(View.VISIBLE);
@@ -297,7 +311,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
             oneCardView.setTag(R.id.tagId_categoryPosition, position);
             oneCardView.setTag(R.id.tagId_imagePosition, 0);
 
-            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 2){
+            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 1){
                 twoNameTextView.setText(imageCategory.getImageList().get(1).getTitle());
                 twoSpearImageView.setImageByUri(imageCategory.getImageList().get(1).getUrl());
                 twoCardView.setVisibility(View.VISIBLE);
@@ -307,7 +321,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
             twoCardView.setTag(R.id.tagId_categoryPosition, position);
             twoCardView.setTag(R.id.tagId_imagePosition, 1);
 
-            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 5){
+            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 4){
                 threeNameTextView.setText(imageCategory.getImageList().get(4).getTitle());
                 threeSpearImageView.setImageByUri(imageCategory.getImageList().get(4).getUrl());
                 threeCardView.setVisibility(View.VISIBLE);
@@ -317,7 +331,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
             threeCardView.setTag(R.id.tagId_categoryPosition, position);
             threeCardView.setTag(R.id.tagId_imagePosition, 4);
 
-            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 4){
+            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 3){
                 fourNameTextView.setText(imageCategory.getImageList().get(3).getTitle());
                 fourSpearImageView.setImageByUri(imageCategory.getImageList().get(3).getUrl());
                 fourCardView.setVisibility(View.VISIBLE);
@@ -327,7 +341,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
             fourCardView.setTag(R.id.tagId_categoryPosition, position);
             fourCardView.setTag(R.id.tagId_imagePosition, 3);
 
-            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 3){
+            if(imageCategory.getImageList()!=null && imageCategory.getImageList().size() > 2){
                 fiveNameTextView.setText(imageCategory.getImageList().get(2).getTitle());
                 fiveSpearImageView.setImageByUri(imageCategory.getImageList().get(2).getUrl());
                 fiveCardView.setVisibility(View.VISIBLE);
@@ -347,37 +361,7 @@ public class IndexCategoryAdapter extends BaseAdapter{
     }
 
     public interface OnClickListener {
-        public void onImageClick(HomeRequest.ImageCategory imageCategory, HomeRequest.Image image);
-    }
-
-    public static class ShowSizeListener implements DisplayListener{
-        private TextView textView;
-
-        public ShowSizeListener(TextView textView) {
-            this.textView = textView;
-        }
-
-        @Override
-        public void onStarted() {
-            textView.setVisibility(View.INVISIBLE);
-        }
-
-        @Override
-        public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, From from) {
-            if(drawable != null){
-                textView.setText(drawable.getIntrinsicWidth() + "x" + drawable.getIntrinsicHeight());
-                textView.setVisibility(View.VISIBLE);
-            }
-        }
-
-        @Override
-        public void onFailed(FailureCause failureCause) {
-
-        }
-
-        @Override
-        public void onCanceled() {
-
-        }
+        public void onClickImage(IndexRequest.ImageCategory imageCategory, IndexRequest.Image image);
+        public void onClickCategoryTitle(IndexRequest.ImageCategory imageCategory);
     }
 }

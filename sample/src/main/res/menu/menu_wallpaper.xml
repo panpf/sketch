@@ -5,5 +5,5 @@
     <item
 	    android:id="@+id/menu_wallpaper"
 	    android:title="Apply Wallpaper"
-        app:showAsAction="always"/>
+        app:showAsAction="ifRoom"/>
 </menu>

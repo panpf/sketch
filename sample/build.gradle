@@ -1,7 +1,19 @@
 apply plugin: 'com.android.application'
 
 android {
+    compileSdkVersion 21    // 编译版本为API 21（Android 5.0 Lollipop）
+    buildToolsVersion "21.1.1"  // 构建工具使用21.1版的
+
+    defaultConfig {
+        applicationId "me.xiaoapn.android.imageloader"  // 默认的APP ID
+        minSdkVersion 9 // 最小版本为API 9（Android 2.3 Gingerbread）
+        targetSdkVersion 21 // 目标版本为API 21（Android 5.0 Lollipop）
+        versionCode 241 // 版本号
+        versionName "2.4.1" // 版本名称
+    }
+
     signingConfigs {
+        // 默认的签名
         defaultSigning {
             keyAlias 'android-imageloader'
             keyPassword 'u2gHWYjiaUB022VV'
@@ -9,33 +21,78 @@ android {
             storePassword 'u2gHWYjiaUB022VV'
         }
     }
-    compileSdkVersion 21
-    buildToolsVersion "21.1"
-    defaultConfig {
-        applicationId "me.xiaoapn.android.imageloader"
-        minSdkVersion 9
-        targetSdkVersion 21
-        versionCode 241
-        versionName "2.4.1"
-    }
+
+    // 配置构建类型，在原有基础上增加国内版和国外版
     buildTypes {
+        // 默认就有的
+        debug{
+
+        }
+
+        // 默认就有的
         release {
-            runProguard false
+            minifyEnabled false // 不开启proguard
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.defaultSigning
+        }
+
+        // 国内版
+        internal {
+            minifyEnabled false // 不开启proguard
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.defaultSigning
+            applicationIdSuffix '.internal' // 修改APP ID，在默认ID的基础上追加.internal
+        }
+
+        // 国外版
+        external {
+            minifyEnabled false // 不开启proguard
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.defaultSigning
+            applicationIdSuffix '.external' // 修改APP ID，在默认ID的基础上追加.external
+        }
+    }
+
+    // 配置不同的渠道标识
+    productFlavors{
+        AppChina{
+            manifestPlaceholders = [UMENG_CHANNEL:"AppChina"]
+        }
+
+        YignYongBao{
+            manifestPlaceholders = [UMENG_CHANNEL:"YignYongBao"]
+        }
+
+        WanDouJia{
+            manifestPlaceholders = [UMENG_CHANNEL:"WanDouJia"]
+        }
+
+        BaiDu{
+            manifestPlaceholders = [UMENG_CHANNEL:"BaiDu"]
+        }
+
+        GooglePlay{
+            manifestPlaceholders = [UMENG_CHANNEL:"GooglePlay"]
+        }
+
+        QihooAppStore{
+            manifestPlaceholders = [UMENG_CHANNEL:"QihooAppStore"]
         }
     }
 }
 
+// 配置依赖
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':library')
-    compile 'com.android.support:appcompat-v7:21.0.0'
+    compile 'com.android.support:appcompat-v7:21.0.2'
     compile 'com.android.support:cardview-v7:21.0.0'
     compile 'com.android.support:palette-v7:21.0.0'
     compile 'com.android.support:recyclerview-v7:21.0.0'
+    compile(name: 'pager-sliding-strip-1.5.1', ext: 'aar')
 }
 
+// 将libs目录作为仓库
 repositories{
     flatDir{
         dirs 'libs'

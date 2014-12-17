@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="me.xiaoapn.android.spear.sample">
 
     <uses-permission android:name="android.permission.INTERNET"/>
@@ -13,18 +14,18 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" 
         android:name="me.xiaopan.android.spear.sample.MyApplication" >
-        <activity android:name="me.xiaopan.android.spear.sample.activity.BaiduImageActivity" android:label="@string/app_name">
+        <activity android:name="me.xiaopan.android.spear.sample.activity.StarActivity" android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="me.xiaopan.android.spear.sample.activity.DownloadActivity" android:label="@string/activity_titel_download"/>
-        <activity android:name="me.xiaopan.android.spear.sample.activity.LoadActivity" android:label="@string/activity_titel_load"/>
-        <activity android:name="me.xiaopan.android.spear.sample.activity.DisplayActivity" android:label="@string/activity_titel_display"/>
-        <activity android:name="me.xiaopan.android.spear.sample.activity.NormalActivity" android:label="@string/app_name"/>
-        <activity android:name="me.xiaopan.android.spear.sample.activity.ViewPagerActivity" android:label="@string/app_name"/>
-        <activity android:name="me.xiaopan.android.spear.sample.activity.StarActivity" android:label="@string/app_name"/>
+        <activity android:name="me.xiaopan.android.spear.sample.activity.PhotoAlbumActivity" android:label="@string/app_name"/>
+        <activity android:name="me.xiaopan.android.spear.sample.activity.ImageDetailActivity" android:label="@string/app_name"/>
+        <activity android:name="me.xiaopan.android.spear.sample.activity.StarHomeActivity" android:label="@string/app_name"/>
         <activity android:name="me.xiaopan.android.spear.sample.activity.SearchActivity" android:label="@string/app_name"/>
+        <activity android:name="me.xiaopan.android.spear.sample.activity.IndexActivity" android:label="@string/app_name"/>
+
+        <meta-data android:name="UMENG_CHANNEL" android:value="${UMENG_CHANNEL}"/>
     </application>
 </manifest>

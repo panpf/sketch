@@ -77,7 +77,7 @@ public class SearchActivity extends MyActionBarActivity {
                 startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.url_github))));
                 break;
             case R.id.menu_photoAlbum :
-                startActivity(new Intent(getBaseContext(), DisplayActivity.class));
+                startActivity(new Intent(getBaseContext(), PhotoAlbumActivity.class));
                 break;
         }
         return super.onOptionsItemSelected(item);

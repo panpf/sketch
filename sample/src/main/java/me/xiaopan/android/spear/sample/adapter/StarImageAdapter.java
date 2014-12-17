@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -81,14 +80,10 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         RecyclerView.ViewHolder viewHolder = null;
         switch(viewType){
             case ITEM_TYPE_HEADER :
-                FrameLayout layout = new FrameLayout(context);
-                SpearImageView spearImageView = new SpearImageView(context);
-                spearImageView.setId(R.id.card_fiveItem_one);
-                layout.addView(spearImageView);
-                viewHolder = new HeaderViewHolder(layout, this);
+                viewHolder = new HeaderViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_image_header, viewGroup, false), this);
                 break;
             case ITEM_TYPE_ITEM :
-                viewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_image, viewGroup, false), this);
+                viewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_image, viewGroup, false), this);
                 break;
         }
         return viewHolder;
@@ -111,15 +106,9 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     }
 
     private static class ItemViewHolder extends RecyclerView.ViewHolder{
-        private FrameLayout oneCardView;
-        private FrameLayout twoCardView;
-        private FrameLayout threeCardView;
         private SpearImageView oneSpearImageView;
         private SpearImageView twoSpearImageView;
         private SpearImageView threeSpearImageView;
-        private TextView oneNameTextView;
-        private TextView twoNameTextView;
-        private TextView threeNameTextView;
 
         private StarImageAdapter adapter;
 
@@ -128,18 +117,9 @@ public class StarImageAdapter extends RecyclerView.Adapter{
             super(itemView);
             this.adapter = adapter;
 
-            oneCardView = (FrameLayout) itemView.findViewById(R.id.card_item_one);
-            twoCardView = (FrameLayout) itemView.findViewById(R.id.card_item_two);
-            threeCardView = (FrameLayout) itemView.findViewById(R.id.card_item_three);
-
-            oneSpearImageView = (SpearImageView) itemView.findViewById(R.id.image_item_one);
-            twoSpearImageView = (SpearImageView) itemView.findViewById(R.id.image_item_two);
-            threeSpearImageView = (SpearImageView) itemView.findViewById(R.id.image_item_three);
-
-            oneNameTextView = (TextView) itemView.findViewById(R.id.text_item_name_one);
-            twoNameTextView = (TextView) itemView.findViewById(R.id.text_item_name_two);
-            threeNameTextView = (TextView) itemView.findViewById(R.id.text_item_name_three);
-
+            oneSpearImageView = (SpearImageView) itemView.findViewById(R.id.image_starImageItem_one);
+            twoSpearImageView = (SpearImageView) itemView.findViewById(R.id.image_starImageItem_two);
+            threeSpearImageView = (SpearImageView) itemView.findViewById(R.id.image_starImageItem_three);
 
             ViewGroup.LayoutParams params = oneSpearImageView.getLayoutParams();
             params.width = adapter.imageSize;
@@ -156,30 +136,9 @@ public class StarImageAdapter extends RecyclerView.Adapter{
             params.height = adapter.imageSize;
             threeSpearImageView.setLayoutParams(params);
 
-
-            params = oneNameTextView.getLayoutParams();
-            params.width = adapter.imageSize;
-            oneNameTextView.setLayoutParams(params);
-
-            params = twoNameTextView.getLayoutParams();
-            params.width = adapter.imageSize;
-            twoNameTextView.setLayoutParams(params);
-
-            params = threeNameTextView.getLayoutParams();
-            params.width = adapter.imageSize;
-            threeNameTextView.setLayoutParams(params);
-
-            oneSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_ITEM);
-            twoSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_ITEM);
-            threeSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_ITEM);
-
-            oneSpearImageView.setDisplayListener(new IndexCategoryAdapter.ShowSizeListener(oneNameTextView));
-            twoSpearImageView.setDisplayListener(new IndexCategoryAdapter.ShowSizeListener(twoNameTextView));
-            threeSpearImageView.setDisplayListener(new IndexCategoryAdapter.ShowSizeListener(threeNameTextView));
-
-            oneSpearImageView.setShowProgress(true);
-            twoSpearImageView.setShowProgress(true);
-            threeSpearImageView.setShowProgress(true);
+            oneSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_HOME_ITEM);
+            twoSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_HOME_ITEM);
+            threeSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_HOME_ITEM);
 
             View.OnClickListener onClickListener = new View.OnClickListener() {
                 @Override
@@ -193,9 +152,10 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                     }
                 }
             };
-            oneCardView.setOnClickListener(onClickListener);
-            twoCardView.setOnClickListener(onClickListener);
-            threeCardView.setOnClickListener(onClickListener);
+
+            oneSpearImageView.setOnClickListener(onClickListener);
+            twoSpearImageView.setOnClickListener(onClickListener);
+            threeSpearImageView.setOnClickListener(onClickListener);
         }
 
         public void bindData(int position){
@@ -217,39 +177,38 @@ public class StarImageAdapter extends RecyclerView.Adapter{
             }
 
             int oneReadPosition = (position*adapter.column);
-            bind(oneCardView, oneSpearImageView, oneNameTextView, oneReadPosition<adapter.imageList.size()?adapter.imageList.get(oneReadPosition):null, oneReadPosition);
+            bind(oneSpearImageView, oneReadPosition<adapter.imageList.size()?adapter.imageList.get(oneReadPosition):null, oneReadPosition);
 
             int twoReadPosition = (position*adapter.column)+1;
-            bind(twoCardView, twoSpearImageView, twoNameTextView, twoReadPosition<adapter.imageList.size()?adapter.imageList.get(twoReadPosition):null, twoReadPosition);
+            bind(twoSpearImageView, twoReadPosition<adapter.imageList.size()?adapter.imageList.get(twoReadPosition):null, twoReadPosition);
 
             int threeReadPosition = (position*adapter.column)+2;
-            bind(threeCardView, threeSpearImageView, threeNameTextView, threeReadPosition<adapter.imageList.size()?adapter.imageList.get(threeReadPosition):null, threeReadPosition);
+            bind(threeSpearImageView, threeReadPosition<adapter.imageList.size()?adapter.imageList.get(threeReadPosition):null, threeReadPosition);
 
 
-            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) oneCardView.getLayoutParams();
+            ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) oneSpearImageView.getLayoutParams();
             params.topMargin = topMargin;
             params.bottomMargin = bottomMargin;
-            oneCardView.setLayoutParams(params);
+            oneSpearImageView.setLayoutParams(params);
 
-            params = (ViewGroup.MarginLayoutParams) twoCardView.getLayoutParams();
+            params = (ViewGroup.MarginLayoutParams) twoSpearImageView.getLayoutParams();
             params.topMargin = topMargin;
             params.bottomMargin = bottomMargin;
-            twoCardView.setLayoutParams(params);
+            twoSpearImageView.setLayoutParams(params);
 
-            params = (ViewGroup.MarginLayoutParams) threeCardView.getLayoutParams();
+            params = (ViewGroup.MarginLayoutParams) threeSpearImageView.getLayoutParams();
             params.topMargin = topMargin;
             params.bottomMargin = bottomMargin;
-            threeCardView.setLayoutParams(params);
+            threeSpearImageView.setLayoutParams(params);
         }
 
-        private void bind(FrameLayout cardView, SpearImageView spearImageView, TextView nameTextView, StarImageRequest.Image image, int position){
+        private void bind(SpearImageView spearImageView, StarImageRequest.Image image, int position){
             if(image != null){
-                cardView.setTag(position);
-                nameTextView.setText(image.getImageSizeStr());
+                spearImageView.setTag(position);
                 spearImageView.setImageByUri(image.getSourceUrl());
-                cardView.setVisibility(View.VISIBLE);
+                spearImageView.setVisibility(View.VISIBLE);
             }else{
-                cardView.setVisibility(View.INVISIBLE);
+                spearImageView.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -263,8 +222,8 @@ public class StarImageAdapter extends RecyclerView.Adapter{
 
             this.adapter = adapter;
 
-            spearImageView = (SpearImageView) itemView.findViewById(R.id.card_fiveItem_one);
-            spearImageView.setDisplayOptions(DisplayOptionsType.STAR_HEADER);
+            spearImageView = (SpearImageView) itemView.findViewById(R.id.image_starImageHeaderItem);
+            spearImageView.setDisplayOptions(DisplayOptionsType.STAR_HOME_HEADER);
             spearImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
             spearImageView.setLayoutParams(new FrameLayout.LayoutParams(adapter.screenWidth, (int) (adapter.screenWidth / 3.2f)));
         }

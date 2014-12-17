@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <me.xiaopan.android.spear.widget.SpearImageView
+            android:id="@+id/spearImage_hotStarTwoItem_one"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/app_name"/>
+        <TextView
+            android:id="@+id/text_hotStarTwoItem_one"
+            style="@style/text_image_name"/>
+    </FrameLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="8dp">
+        <me.xiaopan.android.spear.widget.SpearImageView
+            android:id="@+id/spearImage_hotStarTwoItem_two"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:scaleType="centerCrop"
+            android:contentDescription="@string/app_name"/>
+        <TextView
+            android:id="@+id/text_hotStarTwoItem_two"
+            style="@style/text_image_name"/>
+    </FrameLayout>
+</LinearLayout>

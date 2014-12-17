@@ -18,17 +18,14 @@ package me.xiaopan.android.spear.sample;
 
 import android.app.Application;
 import android.graphics.Color;
-import android.view.animation.OvershootInterpolator;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ColorFadeInImageDisplayer;
 import me.xiaopan.android.spear.display.OriginalFadeInImageDisplayer;
-import me.xiaopan.android.spear.display.ZoomOutImageDisplayer;
 import me.xiaopan.android.spear.process.CircleImageProcessor;
 import me.xiaopan.android.spear.process.ReflectionImageProcessor;
-import me.xiaopan.android.spear.process.RoundedCornerImageProcessor;
 import me.xiaopan.android.spear.request.DisplayOptions;
 
 public class MyApplication extends Application {
@@ -40,15 +37,15 @@ public class MyApplication extends Application {
         GoHttp.with(getBaseContext()).setDebugMode(true);
         Spear.setDebugMode(true);
         Spear.putOptions(
-            DisplayOptionsType.GRID_VIEW,
+            DisplayOptionsType.LOCAL_PHOTO_ALBUM_ITEM,
             new DisplayOptions(getBaseContext())
                 .loadingDrawable(R.drawable.image_loading, true)
                 .loadFailDrawable(R.drawable.image_load_fail, true)
-                .displayer(new ColorFadeInImageDisplayer(Color.WHITE))
+                .displayer(new OriginalFadeInImageDisplayer())
         );
 
         Spear.putOptions(
-            DisplayOptionsType.VIEW_PAGER,
+            DisplayOptionsType.IMAGE_DETAIL_ITEM,
             new DisplayOptions(getBaseContext())
                 .loadFailDrawable(R.drawable.image_load_fail, true)
                 .displayer(new ColorFadeInImageDisplayer(Color.BLACK))
@@ -56,25 +53,13 @@ public class MyApplication extends Application {
         );
 
         Spear.putOptions(
-            DisplayOptionsType.LIST_VIEW,
+            DisplayOptionsType.STAR_HOME_HEADER,
             new DisplayOptions(getBaseContext())
-                .loadingDrawable(R.drawable.image_loading, true)
-                .loadFailDrawable(R.drawable.image_load_fail, true)
-                .displayer(new ZoomOutImageDisplayer(new OvershootInterpolator()))
-                .processor(new CircleImageProcessor())
-        );
-
-        Spear.putOptions(
-            DisplayOptionsType.GALLERY,
-            new DisplayOptions(getBaseContext())
-                .loadingDrawable(R.drawable.image_loading, true)
-                .loadFailDrawable(R.drawable.image_load_fail, true)
                 .displayer(new OriginalFadeInImageDisplayer())
-                .processor(new RoundedCornerImageProcessor())
         );
 
         Spear.putOptions(
-            DisplayOptionsType.CATEGORY,
+            DisplayOptionsType.STAR_HOME_ITEM,
             new DisplayOptions(getBaseContext())
                 .loadingDrawable(R.drawable.image_loading, true)
                 .loadFailDrawable(R.drawable.image_load_fail, true)
@@ -82,16 +67,60 @@ public class MyApplication extends Application {
         );
 
         Spear.putOptions(
-            DisplayOptionsType.STAR_HEADER,
-            new DisplayOptions(getBaseContext())
-                .displayer(new OriginalFadeInImageDisplayer())
+                DisplayOptionsType.STAR_HEAD_PORTRAIT,
+                new DisplayOptions(getBaseContext())
+                    .loadingDrawable(R.drawable.image_loading, true)
+                    .loadFailDrawable(R.drawable.image_load_fail, true)
+                    .displayer(new OriginalFadeInImageDisplayer())
+                    .processor(new CircleImageProcessor())
         );
 
         Spear.putOptions(
-            DisplayOptionsType.STAR_ITEM,
-            new DisplayOptions(getBaseContext())
-                .loadingDrawable(R.drawable.image_loading, true)
-                .loadFailDrawable(R.drawable.image_load_fail, true)
+                DisplayOptionsType.INDEX_CATEGORY_ONE,
+                new DisplayOptions(getBaseContext())
+                    .loadingDrawable(R.drawable.image_loading, true)
+                    .loadFailDrawable(R.drawable.image_load_fail, true)
+                    .displayer(new OriginalFadeInImageDisplayer())
+        );
+
+        Spear.putOptions(
+                DisplayOptionsType.INDEX_CATEGORY_TWO,
+                new DisplayOptions(getBaseContext())
+                    .loadingDrawable(R.drawable.image_loading, true)
+                    .loadFailDrawable(R.drawable.image_load_fail, true)
+                    .displayer(new OriginalFadeInImageDisplayer())
+        );
+
+        Spear.putOptions(
+                DisplayOptionsType.INDEX_CATEGORY_THREE,
+                new DisplayOptions(getBaseContext())
+                        .loadingDrawable(R.drawable.image_loading, true)
+                        .loadFailDrawable(R.drawable.image_load_fail, true)
+                        .displayer(new OriginalFadeInImageDisplayer())
+        );
+
+        Spear.putOptions(
+                DisplayOptionsType.HOT_STAR_ONE,
+                new DisplayOptions(getBaseContext())
+                    .loadingDrawable(R.drawable.image_loading, true)
+                    .loadFailDrawable(R.drawable.image_load_fail, true)
+                    .displayer(new OriginalFadeInImageDisplayer())
+        );
+
+        Spear.putOptions(
+                DisplayOptionsType.HOT_STAR_TWO,
+                new DisplayOptions(getBaseContext())
+                    .loadingDrawable(R.drawable.image_loading, true)
+                    .loadFailDrawable(R.drawable.image_load_fail, true)
+                    .displayer(new OriginalFadeInImageDisplayer())
+        );
+
+        Spear.putOptions(
+                DisplayOptionsType.HOT_STAR_THREE,
+                new DisplayOptions(getBaseContext())
+                    .loadingDrawable(R.drawable.image_loading, true)
+                    .loadFailDrawable(R.drawable.image_load_fail, true)
+                    .displayer(new OriginalFadeInImageDisplayer())
         );
 	}
 }

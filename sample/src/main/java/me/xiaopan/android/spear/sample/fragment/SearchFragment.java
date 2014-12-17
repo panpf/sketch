@@ -2,6 +2,7 @@ package me.xiaopan.android.spear.sample.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -28,8 +29,8 @@ import me.xiaopan.android.widget.PullRefreshLayout;
  * 图片搜索Fragment
  */
 @InjectContentView(R.layout.fragment_search)
-public class SearchFragment extends InjectFragment implements SearchImageAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener{
-    @InjectView(R.id.recyclerView_search) PullRefreshLayout pullRefreshLayout;
+public class SearchFragment extends InjectFragment implements SearchImageAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener {
+    @InjectView(R.id.refreshLayout_search) PullRefreshLayout pullRefreshLayout;
     @InjectView(R.id.recyclerView_search) private RecyclerView recyclerView;
     @InjectView(R.id.hintView_search) private HintView hintView;
 
@@ -51,19 +52,19 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
 
         pullRefreshLayout.setOnRefreshListener(this);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         recyclerView.setOnScrollListener(loadMoreListener);
 
-        if(searchImageAdapter == null){
+        if (searchImageAdapter == null) {
             pullRefreshLayout.startRefresh();
-        }else{
+        } else {
             recyclerView.setAdapter(searchImageAdapter);
         }
     }
 
     @Override
     public void onDetach() {
-        if(refreshRequestFuture != null && !refreshRequestFuture.isFinished()){
+        if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             refreshRequestFuture.cancel(true);
         }
         super.onDetach();
@@ -76,7 +77,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
 
     @Override
     public void onRefresh() {
-        if(refreshRequestFuture != null && !refreshRequestFuture.isFinished()){
+        if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             return;
         }
 
@@ -90,7 +91,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
 
             @Override
             public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, SearchImageRequest.Response responseObject, boolean b, boolean b2) {
-                if(getActivity() == null){
+                if (getActivity() == null) {
                     return;
                 }
 
@@ -101,7 +102,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
 
             @Override
             public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean b, boolean b2) {
-                if(getActivity() == null){
+                if (getActivity() == null) {
                     return;
                 }
 
@@ -113,7 +114,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
                             pullRefreshLayout.startRefresh();
                         }
                     });
-                }else{
+                } else {
                     Toast.makeText(getActivity(), "刷新失败", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -125,7 +126,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
         }).go();
     }
 
-    private class MyLoadMoreListener extends RecyclerView.OnScrollListener implements SearchImageAdapter.OnLoadMoreListener{
+    private class MyLoadMoreListener extends RecyclerView.OnScrollListener implements SearchImageAdapter.OnLoadMoreListener {
         private boolean enable;
         private boolean end;
         private HttpRequestFuture loadMoreRequestFuture;
@@ -148,7 +149,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
 
         @Override
         public void onLoadMore() {
-            if(refreshRequestFuture != null && !refreshRequestFuture.isFinished()){
+            if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
                 return;
             }
 
@@ -161,7 +162,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
 
                 @Override
                 public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, SearchImageRequest.Response responseObject, boolean b, boolean b2) {
-                    if(getActivity() == null){
+                    if (getActivity() == null) {
                         return;
                     }
 
@@ -173,12 +174,12 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
 
                     searchImageAdapter.getImageList().addAll(newImageList);
                     searchImageAdapter.notifyDataSetChanged();
-                    Toast.makeText(getActivity(), "新加载"+newImageList.size()+"条数据", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "新加载" + newImageList.size() + "条数据", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean b, boolean b2) {
-                    if(getActivity() == null){
+                    if (getActivity() == null) {
                         return;
                     }
 
@@ -192,8 +193,8 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
             }).go();
         }
 
-        public void cancel(){
-            if(loadMoreRequestFuture != null && !loadMoreRequestFuture.isFinished()){
+        public void cancel() {
+            if (loadMoreRequestFuture != null && !loadMoreRequestFuture.isFinished()) {
                 loadMoreRequestFuture.cancel(true);
             }
         }

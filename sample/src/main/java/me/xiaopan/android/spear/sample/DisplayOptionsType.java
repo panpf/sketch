@@ -18,37 +18,57 @@ package me.xiaopan.android.spear.sample;
 
 public enum DisplayOptionsType {
 	/**
-	 * ListView用的
+	 * 本地相册Item
 	 */
-	LIST_VIEW, 
+	LOCAL_PHOTO_ALBUM_ITEM,
 	
 	/**
-	 * GridView用的
+	 * 图片详情ITEM
 	 */
-	GRID_VIEW, 
-	
-	/**
-	 * Gallery用的
-	 */
-	GALLERY, 
-	
-	/**
-	 * ViewPager用的
-	 */
-	VIEW_PAGER,
+	IMAGE_DETAIL_ITEM,
 
 	/**
-	 * 分类
+	 * 首页 - 分类1
 	 */
-	CATEGORY,
+	INDEX_CATEGORY_ONE,
 
 	/**
-	 *
+	 * 首页 - 分类2
 	 */
-	STAR_HEADER,
+	INDEX_CATEGORY_TWO,
 
 	/**
-	 *
+	 * 首页 - 分类3
 	 */
-	STAR_ITEM,
+	INDEX_CATEGORY_THREE,
+
+	/**
+	 * 明星个人主页 - 页头
+	 */
+	STAR_HOME_HEADER,
+
+	/**
+	 * 明星个人主页 - ITEM
+	 */
+	STAR_HOME_ITEM,
+
+	/**
+	 * 明星头像
+	 */
+	STAR_HEAD_PORTRAIT,
+
+    /**
+     * 热门明星页面 - 第一种图片
+     */
+    HOT_STAR_ONE,
+
+    /**
+     * 热门明星页面 - 第二种图片
+     */
+    HOT_STAR_TWO,
+
+    /**
+     * 热门明星页面 - 第三种图片
+     */
+    HOT_STAR_THREE,
 }

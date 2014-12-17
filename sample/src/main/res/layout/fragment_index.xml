@@ -4,8 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <me.xiaopan.android.spear.sample.widget.MyPullRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/pullRefresh_index"
+        android:id="@+id/refreshLayout_index"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
         <ListView
