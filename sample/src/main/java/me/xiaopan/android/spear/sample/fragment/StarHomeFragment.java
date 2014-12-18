@@ -37,22 +37,17 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
     public static final String PARAM_REQUIRED_STRING_STAR_TITLE = "PARAM_REQUIRED_STRING_STAR_TITLE";
     public static final String PARAM_REQUIRED_STRING_STAR_URL = "PARAM_REQUIRED_STRING_STAR_URL";
 
-    @InjectView(R.id.refreshLayout_search)
-    PullRefreshLayout pullRefreshLayout;
-    @InjectView(R.id.recyclerView_search)
-    private RecyclerView recyclerView;
-    @InjectView(R.id.hintView_search)
-    private HintView hintView;
+    @InjectView(R.id.refreshLayout_search) private PullRefreshLayout pullRefreshLayout;
+    @InjectView(R.id.recyclerView_search) private RecyclerView recyclerView;
+    @InjectView(R.id.hintView_search) private HintView hintView;
+
+    @InjectExtra(PARAM_REQUIRED_STRING_STAR_TITLE) private String starTitle;
+    @InjectExtra(PARAM_REQUIRED_STRING_STAR_URL) private String starHomeUrl;
 
     private StarImageRequest starImageRequest;
     private HttpRequestFuture refreshRequestFuture;
     private StarImageAdapter imageRecyclerAdapter;
     private MyLoadMoreListener loadMoreListener;
-
-    @InjectExtra(PARAM_REQUIRED_STRING_STAR_TITLE)
-    private String starTitle;
-    @InjectExtra(PARAM_REQUIRED_STRING_STAR_URL)
-    private String starHomeUrl;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -245,7 +240,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
 
                     imageRecyclerAdapter.getImageList().addAll(newImageList);
                     imageRecyclerAdapter.notifyDataSetChanged();
-                    Toast.makeText(getActivity(), "新加载" + newImageList.size() + "条数据", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
@@ -254,7 +249,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                         return;
                     }
 
-                    Toast.makeText(getActivity(), "加载更多失败", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "快递投递失败", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override

@@ -21,7 +21,8 @@ import me.xiaopan.android.spear.widget.SpearImageView;
  * 新的图片适配器
  */
 public class SearchImageAdapter extends RecyclerView.Adapter{
-    private int imageSize = -1;
+    private int itemSize = -1;
+    private int columns = -1;
     private Context context;
     private OnItemClickListener onItemClickListener;
     private List<SearchImageRequest.Image> imageList;
@@ -35,23 +36,33 @@ public class SearchImageAdapter extends RecyclerView.Adapter{
         this.imageList = imageList;
         this.onItemClickListener = onItemClickListener;
 
-        int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
-
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if(layoutManager instanceof GridLayoutManager){
             layoutType = LayoutType.GRID;
+            int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
+            int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
             GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
             int maxSize = gridLayoutManager.getOrientation() == GridLayoutManager.VERTICAL? screenWidth :screenHeight;
-            imageSize = maxSize/gridLayoutManager.getSpanCount();
+            maxSize -= dp2px(context, 8) * 3;
+            columns = gridLayoutManager.getSpanCount();
+            itemSize = maxSize/ columns;
         }else if(layoutManager instanceof StaggeredGridLayoutManager){
             layoutType = LayoutType.STAGGERED;
             StaggeredGridLayoutManager gridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
-            int maxSize = gridLayoutManager.getOrientation() == GridLayoutManager.VERTICAL? screenWidth :screenHeight;
-            imageSize = maxSize/gridLayoutManager.getSpanCount();
+            columns = gridLayoutManager.getSpanCount();
         }else{
             layoutType = LayoutType.LINEAR;
         }
+    }
+
+    /**
+     * dp单位转换为px
+     * @param context 上下文，需要通过上下文获取到当前屏幕的像素密度
+     * @param dpValue dp值
+     * @return px值
+     */
+    private int dp2px(Context context, float dpValue){
+        return (int)(dpValue * (context.getResources().getDisplayMetrics().density) + 0.5f);
     }
 
     @Override
@@ -70,11 +81,11 @@ public class SearchImageAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
         View view = LayoutInflater.from(context).inflate(R.layout.list_item_search_image, viewGroup, false);
-        if(layoutType == LayoutType.GRID && imageSize != -1){
+        if(layoutType == LayoutType.GRID && itemSize != -1){
             View imageView = view.findViewById(R.id.image_searchImageItem);
             ViewGroup.LayoutParams params = imageView.getLayoutParams();
-            params.width = imageSize;
-            params.height = imageSize;
+            params.width = itemSize;
+            params.height = itemSize;
             imageView.setLayoutParams(params);
         }
 
