@@ -370,11 +370,9 @@ public class DisplayHelper {
             if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "uri不能为null或空");
             }
-            Drawable loadFailDrawable = null;
-            if(loadFailDrawableHolder != null){
-                loadFailDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null);
-            }
-            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
+            // 显示默认图片
+            BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null):null;
+            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadingBitmapDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
             return null;
         }
