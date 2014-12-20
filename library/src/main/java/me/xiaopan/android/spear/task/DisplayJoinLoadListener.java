@@ -67,7 +67,7 @@ public class DisplayJoinLoadListener implements LoadListener {
         }
 
         // 显示
-        DisplayListener.From displayFrom = from!=null?(from==From.NETWORK?DisplayListener.From.NETWORK:DisplayListener.From.LOCAL):null;
+        DisplayListener.From displayFrom = from!=null?(from==From.NETWORK?DisplayListener.From.NETWORK:DisplayListener.From.DISK):null;
 
         displayRequest.getSpear().getConfiguration().getDisplayCallbackHandler().completeCallback(displayRequest, bitmapDrawable, displayFrom);
     }
