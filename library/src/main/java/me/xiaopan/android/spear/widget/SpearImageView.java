@@ -26,7 +26,10 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.view.MotionEvent;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.Scroller;
 
 import java.io.File;
 
@@ -49,25 +52,35 @@ public class SpearImageView extends ImageView{
     private static final int DEFAULT_DEBUG_COLOR_NETWORK = 0x88FF0000;
     private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
     private static final int DEFAULT_PRESSED_COLOR = 0x33000000;
+    private static final int DEFAULT_ANIMATION_DURATION = 500;
 
     private RequestFuture requestFuture;
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
     private ProgressListener progressListener;
 
-    private Paint paint;
-    private Path path;
     private int debugColor = NONE;
-    private float progress = NONE;
-    private int progressColor = DEFAULT_PROGRESS_COLOR;
-    private int pressedColor = DEFAULT_PRESSED_COLOR;
+    private boolean debugMode = true;
+    private Paint debugPaint;
+    private Path debugTrianglePath;
     private DebugDisplayListener debugDisplayListener;
+
+    private int progressColor = DEFAULT_PROGRESS_COLOR;
+    private float progress = NONE;
+    private boolean enableShowProgress;
+    private Paint progressPaint;
     private UpdateProgressListener updateProgressListener;
     private ProgressDisplayListener progressDisplayListener;
-    private boolean debugMode;
+
+    private int touchX;
+    private int touchY;
+    private int pressRippleColor = DEFAULT_PRESSED_COLOR;
+    private int pressRippleAnimationDuration = DEFAULT_ANIMATION_DURATION;
     private boolean pressed;
-    private boolean enableShowPressed;
-    private boolean enableShowProgress;
+    private boolean enablePressRipple = true;
+    private Paint pressRipplePaint;
+    private Scroller pressRippleScroller;
+    private Runnable pressRippleRefreshRunnable;
 
     public SpearImageView(Context context) {
         super(context);
@@ -82,14 +95,14 @@ public class SpearImageView extends ImageView{
         super.onLayout(changed, left, top, right, bottom);
 
         // 重新计算三角形的位置
-        if(path != null){
-            path.reset();
+        if(debugTrianglePath != null){
+            debugTrianglePath.reset();
             int x = getWidth()/10;
             int y = getWidth()/10;
-            path.moveTo(getPaddingLeft(), getPaddingTop());
-            path.lineTo(getPaddingLeft()+x, getPaddingTop());
-            path.lineTo(getPaddingLeft(), getPaddingTop()+y);
-            path.close();
+            debugTrianglePath.moveTo(getPaddingLeft(), getPaddingTop());
+            debugTrianglePath.lineTo(getPaddingLeft() + x, getPaddingTop());
+            debugTrianglePath.lineTo(getPaddingLeft(), getPaddingTop() + y);
+            debugTrianglePath.close();
         }
     }
 
@@ -98,44 +111,103 @@ public class SpearImageView extends ImageView{
         super.onDraw(canvas);
 
         // 绘制按下状态
-        if(enableShowPressed && pressed){
-            canvas.drawColor(pressedColor);
+        if(pressed || (pressRippleScroller != null && pressRippleScroller.computeScrollOffset())){
+            if(pressRipplePaint == null){
+                pressRipplePaint = new Paint();
+                pressRipplePaint.setColor(pressRippleColor);
+            }
+            canvas.drawCircle(touchX, touchY, pressRippleScroller.getCurrX(), pressRipplePaint);
         }
 
         // 绘制进度
         if(enableShowProgress && progress != NONE){
-            if(paint == null){
-                paint = new Paint();
+            if(progressPaint == null){
+                progressPaint = new Paint();
+                progressPaint.setColor(progressColor);
             }
-            paint.setColor(progressColor);
-            canvas.drawRect(getPaddingLeft(), getPaddingTop() + (progress * getHeight()), getWidth() - getPaddingLeft() - getPaddingRight(), getHeight() - getPaddingTop() - getPaddingBottom(), paint);
+            canvas.drawRect(getPaddingLeft(), getPaddingTop() + (progress * getHeight()), getWidth() - getPaddingLeft() - getPaddingRight(), getHeight() - getPaddingTop() - getPaddingBottom(), progressPaint);
         }
 
         // 绘制三角形
-        if(debugColor != NONE){
-            if(paint == null){
-                paint = new Paint();
-            }
-            paint.setColor(debugColor);
-            if(path == null){
-                path = new Path();
+        if(debugMode && debugColor != NONE){
+            if(debugTrianglePath == null){
+                debugTrianglePath = new Path();
                 int x = getWidth()/10;
                 int y = getWidth()/10;
-                path.moveTo(getPaddingLeft(), getPaddingTop());
-                path.lineTo(getPaddingLeft()+x, getPaddingTop());
-                path.lineTo(getPaddingLeft(), getPaddingTop()+y);
-                path.close();
+                debugTrianglePath.moveTo(getPaddingLeft(), getPaddingTop());
+                debugTrianglePath.lineTo(getPaddingLeft()+x, getPaddingTop());
+                debugTrianglePath.lineTo(getPaddingLeft(), getPaddingTop()+y);
+                debugTrianglePath.close();
             }
-            canvas.drawPath(path, paint);
+            if(debugPaint == null){
+                debugPaint = new Paint();
+            }
+            debugPaint.setColor(debugColor);
+            canvas.drawPath(debugTrianglePath, debugPaint);
         }
     }
 
     @Override
     protected void dispatchSetPressed(boolean pressed) {
-        if(enableShowPressed && this.pressed != pressed){
+        if(enablePressRipple && this.pressed != pressed){
             this.pressed = pressed;
+            if(pressed){
+                if(pressRippleScroller == null){
+                    pressRippleScroller = new Scroller(getContext(), new DecelerateInterpolator());
+                }
+                pressRippleScroller.startScroll(0, 0, computePressRippleRadius(), 0, pressRippleAnimationDuration);
+                if(pressRippleRefreshRunnable == null){
+                    pressRippleRefreshRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            invalidate();
+                            if(pressRippleScroller.computeScrollOffset()){
+                                post(this);
+                            }
+                        }
+                    };
+                }
+                post(pressRippleRefreshRunnable);
+            }
+
             invalidate();
         }
+    }
+
+    /**
+     * 计算按下脉波的半径
+     * @return 按下脉波的半径
+     */
+    private int computePressRippleRadius(){
+        int centerX = getWidth()/2;
+        int centerY = getHeight()/2;
+        // 当按下位置在第一或第四象限的时候，比较按下位置在左上角到右下角这条线上距离谁最远就以谁为半径，否则在左下角到右上角这条线上比较
+        if((touchX < centerX && touchY < centerY) || (touchX > centerX && touchY > centerY)) {
+            int toLeftTopXDistance = touchX;
+            int toLeftTopYDistance = touchY;
+            int toLeftTopDistance = (int) Math.sqrt((toLeftTopXDistance * toLeftTopXDistance) + (toLeftTopYDistance * toLeftTopYDistance));
+            int toRightBottomXDistance = Math.abs(touchX - getWidth());
+            int toRightBottomYDistance = Math.abs(touchY - getHeight());
+            int toRightBottomDistance = (int) Math.sqrt((toRightBottomXDistance * toRightBottomXDistance) + (toRightBottomYDistance * toRightBottomYDistance));
+            return toLeftTopDistance > toRightBottomDistance ? toLeftTopDistance : toRightBottomDistance;
+        }else{
+           int toLeftBottomXDistance = touchX;
+           int toLeftBottomYDistance = Math.abs(touchY - getHeight());
+           int toLeftBottomDistance = (int) Math.sqrt((toLeftBottomXDistance * toLeftBottomXDistance) + (toLeftBottomYDistance * toLeftBottomYDistance));
+           int toRightTopXDistance = Math.abs(touchX - getWidth());
+           int toRightTopYDistance = touchY;
+           int toRightTopDistance = (int) Math.sqrt((toRightTopXDistance * toRightTopXDistance) + (toRightTopYDistance * toRightTopYDistance));
+           return toLeftBottomDistance > toRightTopDistance ? toLeftBottomDistance : toRightTopDistance;
+        }
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if(enablePressRipple && event.getAction() == MotionEvent.ACTION_DOWN && !pressed){
+            touchX = (int) event.getX();
+            touchY = (int) event.getY();
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override
@@ -191,10 +263,10 @@ public class SpearImageView extends ImageView{
             invalidate();
         }
 
-        return requestFuture = Spear.with(getContext()).display(uri, this).options(displayOptions).listener(getDisplayListener()).progressListener(getProgressListener()).fire();
+        return requestFuture = Spear.with(getContext()).display(uri, this).options(displayOptions).listener(getFinalDisplayListener()).progressListener(getFinalProgressListener()).fire();
     }
 
-    private DisplayListener getDisplayListener(){
+    private DisplayListener getFinalDisplayListener(){
         if(debugMode){
             if(debugDisplayListener == null){
                 debugDisplayListener = new DebugDisplayListener();
@@ -210,7 +282,7 @@ public class SpearImageView extends ImageView{
         }
     }
 
-    private ProgressListener getProgressListener(){
+    private ProgressListener getFinalProgressListener(){
         if(enableShowProgress){
             if(updateProgressListener == null){
                 updateProgressListener = new UpdateProgressListener();
@@ -219,54 +291,6 @@ public class SpearImageView extends ImageView{
         }else{
             return progressListener;
         }
-    }
-
-    /**
-     * 是否显示按下状态
-     * @return 是否显示按下状态
-     */
-    public boolean isEnableShowPressed() {
-        return enableShowPressed;
-    }
-
-    /**
-     * 设置是否显示按下状态，开启后按下的时候会在ImageView表面显示一个黑色半透明层
-     * @param enableShowPressed 是否显示按下状态
-     */
-    public void setEnableShowPressed(boolean enableShowPressed) {
-        this.enableShowPressed = enableShowPressed;
-    }
-
-    /**
-     * 是否显示进度
-     * @return 是否显示进度
-     */
-    public boolean isEnableShowProgress() {
-        return enableShowProgress;
-    }
-
-    /**
-     * 设置是否显示进度
-     * @param enableShowProgress 是否显示进度
-     */
-    public void setEnableShowProgress(boolean enableShowProgress) {
-        this.enableShowProgress = enableShowProgress;
-    }
-
-    /**
-     * 设置按下时的颜色
-     * @param pressedColor 按下时的颜色
-     */
-    public void setPressedColor(int pressedColor) {
-        this.pressedColor = pressedColor;
-    }
-
-    /**
-     * 设置进度的颜色
-     * @param progressColor 进度的颜色
-     */
-    public void setProgressColor(int progressColor) {
-        this.progressColor = progressColor;
     }
 
     /**
@@ -303,6 +327,76 @@ public class SpearImageView extends ImageView{
      */
     public RequestFuture setImageByContent(Uri uri){
         return setImageByUri(uri.toString());
+    }
+
+    /**
+     * 是否开启按下脉波效果
+     * @return 是否开启按下脉波效果
+     */
+    public boolean isEnablePressRipple() {
+        return enablePressRipple;
+    }
+
+    /**
+     * 设置是否开启按下脉波效果，开启后按下的时候会在ImageView表面显示一个黑色半透明的脉波，此功能需要你点注册点击事件或设置Clickable
+     * @param enablePressRipple 是否开启按下脉波效果
+     */
+    public void setEnablePressRipple(boolean enablePressRipple) {
+        this.enablePressRipple = enablePressRipple;
+    }
+
+    /**
+     * 是否显示进度
+     * @return 是否显示进度
+     */
+    public boolean isEnableShowProgress() {
+        return enableShowProgress;
+    }
+
+    /**
+     * 设置是否显示进度
+     * @param enableShowProgress 是否显示进度
+     */
+    public void setEnableShowProgress(boolean enableShowProgress) {
+        this.enableShowProgress = enableShowProgress;
+    }
+
+    /**
+     * 设置按下时的颜色
+     * @param pressRippleColor 按下时的颜色
+     */
+    public void setPressRippleColor(int pressRippleColor) {
+        this.pressRippleColor = pressRippleColor;
+        if(pressRipplePaint != null){
+            pressRipplePaint.setColor(pressRippleColor);
+        }
+    }
+
+    /**
+     * 设置进度的颜色
+     * @param progressColor 进度的颜色
+     */
+    public void setProgressColor(int progressColor) {
+        this.progressColor = progressColor;
+        if(progressPaint != null){
+            progressPaint.setColor(progressColor);
+        }
+    }
+
+    /**
+     * 获取按下脉波动画持续时间
+     * @return 按下脉波动画持续时间，单位毫秒
+     */
+    public int getPressRippleAnimationDuration() {
+        return pressRippleAnimationDuration;
+    }
+
+    /**
+     * 设置按下脉波动画持续时间
+     * @param pressRippleAnimationDuration 按下脉波动画持续时间，单位毫秒
+     */
+    public void setPressRippleAnimationDuration(int pressRippleAnimationDuration) {
+        this.pressRippleAnimationDuration = pressRippleAnimationDuration;
     }
 
     /**
