@@ -61,9 +61,9 @@ public interface DisplayListener {
         NETWORK,
 
         /**
-         * 本地
+         * 磁盘
          */
-        LOCAL,
+        DISK,
 
         /**
          * 内存
