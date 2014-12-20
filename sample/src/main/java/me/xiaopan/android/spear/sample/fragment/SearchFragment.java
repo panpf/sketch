@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.Toast;
 
@@ -52,7 +53,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
 
         pullRefreshLayout.setOnRefreshListener(this);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setOnScrollListener(loadMoreListener);
 
         if (searchImageAdapter == null) {

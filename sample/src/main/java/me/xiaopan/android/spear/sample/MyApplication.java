@@ -122,5 +122,27 @@ public class MyApplication extends Application {
                     .loadFailDrawable(R.drawable.image_load_fail, true)
                     .displayer(new OriginalFadeInImageDisplayer())
         );
+
+        Spear.putOptions(
+                DisplayOptionsType.SEARCH_ITEM_GRID,
+                new DisplayOptions(getBaseContext())
+                        .loadingDrawable(R.drawable.image_loading, true)
+                        .loadFailDrawable(R.drawable.image_load_fail, true)
+                        .displayer(new OriginalFadeInImageDisplayer())
+        );
+
+        Spear.putOptions(
+                DisplayOptionsType.SEARCH_ITEM_LINEAR,
+                new DisplayOptions(getBaseContext())
+                        .loadFailDrawable(R.drawable.image_load_fail, true)
+                        .displayer(new OriginalFadeInImageDisplayer())
+        );
+
+        Spear.putOptions(
+                DisplayOptionsType.SEARCH_ITEM_STAGGERED,
+                new DisplayOptions(getBaseContext())
+                        .loadFailDrawable(R.drawable.image_load_fail, true)
+                        .displayer(new OriginalFadeInImageDisplayer())
+        );
 	}
 }

@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -28,6 +29,7 @@ public class SearchImageAdapter extends RecyclerView.Adapter{
     private List<SearchImageRequest.Image> imageList;
     private OnLoadMoreListener onLoadMoreListener;
     private LayoutType layoutType;
+    private boolean vertical;
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -39,19 +41,27 @@ public class SearchImageAdapter extends RecyclerView.Adapter{
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
         if(layoutManager instanceof GridLayoutManager){
             layoutType = LayoutType.GRID;
-            int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-            int screenHeight = context.getResources().getDisplayMetrics().heightPixels;
             GridLayoutManager gridLayoutManager = (GridLayoutManager) layoutManager;
-            int maxSize = gridLayoutManager.getOrientation() == GridLayoutManager.VERTICAL? screenWidth :screenHeight;
-            maxSize -= dp2px(context, 8) * 3;
+            vertical = gridLayoutManager.getOrientation() == GridLayoutManager.VERTICAL;
+            int maxSize = vertical?context.getResources().getDisplayMetrics().widthPixels:context.getResources().getDisplayMetrics().heightPixels;
             columns = gridLayoutManager.getSpanCount();
-            itemSize = maxSize/ columns;
+            maxSize -= dp2px(context, 8) * columns * 2;
+            itemSize = maxSize / columns;
         }else if(layoutManager instanceof StaggeredGridLayoutManager){
             layoutType = LayoutType.STAGGERED;
-            StaggeredGridLayoutManager gridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
-            columns = gridLayoutManager.getSpanCount();
+            StaggeredGridLayoutManager staggeredGridLayoutManager = (StaggeredGridLayoutManager) layoutManager;
+            vertical = staggeredGridLayoutManager.getOrientation() == StaggeredGridLayoutManager.VERTICAL;
+            int maxSize = vertical?context.getResources().getDisplayMetrics().widthPixels:context.getResources().getDisplayMetrics().heightPixels;
+            columns = staggeredGridLayoutManager.getSpanCount();
+            maxSize -= dp2px(context, 8) * columns * 2;
+            itemSize = maxSize / columns;
         }else{
             layoutType = LayoutType.LINEAR;
+            LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
+            vertical = linearLayoutManager.getOrientation() == LinearLayoutManager.VERTICAL;
+            int maxSize = vertical?context.getResources().getDisplayMetrics().widthPixels:context.getResources().getDisplayMetrics().heightPixels;
+            maxSize -= dp2px(context, 8) * 2;
+            itemSize = maxSize;
         }
     }
 
@@ -80,28 +90,35 @@ public class SearchImageAdapter extends RecyclerView.Adapter{
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_item_search_image, viewGroup, false);
+        MyViewHolder viewHolder = new MyViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_search_image, viewGroup, false));
+
         if(layoutType == LayoutType.GRID && itemSize != -1){
-            View imageView = view.findViewById(R.id.image_searchImageItem);
-            ViewGroup.LayoutParams params = imageView.getLayoutParams();
+            ViewGroup.LayoutParams params = viewHolder.spearImageView.getLayoutParams();
             params.width = itemSize;
             params.height = itemSize;
-            imageView.setLayoutParams(params);
+            viewHolder.spearImageView.setLayoutParams(params);
+            viewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.SEARCH_ITEM_GRID);
+        }else if(layoutType == LayoutType.STAGGERED){
+            viewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.SEARCH_ITEM_STAGGERED);
+        }else{
+            viewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.SEARCH_ITEM_LINEAR);
         }
 
-        view.setOnClickListener(new View.OnClickListener() {
+        viewHolder.spearImageView.setEnablePressRipple(true);
+        viewHolder.spearImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(onItemClickListener != null){
-                    int position = (Integer) v.getTag();
-                    if(position < imageList.size()){
+                if (onItemClickListener != null) {
+                    RecyclerView.ViewHolder viewHolder = (RecyclerView.ViewHolder) v.getTag();
+                    int position = viewHolder.getPosition();
+                    if (position < imageList.size()) {
                         SearchImageRequest.Image image = imageList.get(position);
                         onItemClickListener.onItemClick(position, image);
                     }
                 }
             }
         });
-        return new MyViewHolder(view);
+        return viewHolder;
     }
 
     @Override
@@ -109,15 +126,30 @@ public class SearchImageAdapter extends RecyclerView.Adapter{
         SearchImageRequest.Image image = imageList.get(position);
         MyViewHolder myViewHolder = (MyViewHolder) viewHolder;
 
-        if(layoutType == LayoutType.STAGGERED || layoutType == LayoutType.LINEAR){
-            ViewGroup.LayoutParams params = myViewHolder.imageView.getLayoutParams();
-            params.width = image.getWidth();
-            params.height = image.getHeight();
-            myViewHolder.imageView.setLayoutParams(params);
+        if(layoutType == LayoutType.STAGGERED){
+            ViewGroup.LayoutParams params = myViewHolder.spearImageView.getLayoutParams();
+            if(vertical){
+                params.width = itemSize;
+                params.height = (int) (image.getHeight()/(((float)image.getWidth()/itemSize)));
+            }else{
+                params.width = (int) (image.getWidth()/(((float)image.getHeight()/itemSize)));
+                params.height = itemSize;
+            }
+            myViewHolder.spearImageView.setLayoutParams(params);
+        }else if(layoutType == LayoutType.LINEAR){
+            ViewGroup.LayoutParams params = myViewHolder.spearImageView.getLayoutParams();
+            if(vertical){
+                params.width = itemSize;
+                params.height = (int) (image.getHeight()/(((float)image.getWidth()/itemSize)));
+            }else{
+                params.width = (int) (image.getWidth()/(((float)image.getHeight()/itemSize)));
+                params.height = itemSize;
+            }
+            myViewHolder.spearImageView.setLayoutParams(params);
         }
 
-        viewHolder.itemView.setTag(position);
-        myViewHolder.imageView.setImageByUri(image.getSourceUrl());
+        viewHolder.itemView.setTag(viewHolder);
+        myViewHolder.spearImageView.setImageByUri(image.getSourceUrl());
 
         if(onLoadMoreListener != null && onLoadMoreListener.isEnable() && position == imageList.size() - 1){
             onLoadMoreListener.onLoadMore();
@@ -125,13 +157,11 @@ public class SearchImageAdapter extends RecyclerView.Adapter{
     }
 
     private static class MyViewHolder extends RecyclerView.ViewHolder{
-        private SpearImageView imageView;
+        private SpearImageView spearImageView;
 
         public MyViewHolder(View itemView) {
             super(itemView);
-
-            imageView = (SpearImageView) itemView.findViewById(R.id.image_searchImageItem);
-            imageView.setDisplayOptions(DisplayOptionsType.STAR_HOME_ITEM);
+            spearImageView = (SpearImageView) itemView.findViewById(R.id.image_searchImageItem);
         }
     }
 

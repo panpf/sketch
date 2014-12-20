@@ -116,6 +116,7 @@ public class PhotoAlbumFragment extends Fragment {
                 if(imageWidth != -1){
                     spearImageView.setLayoutParams(new AbsListView.LayoutParams(imageWidth, imageWidth));
                 }
+                spearImageView.setClickable(true);
                 spearImageView.setDisplayOptions(DisplayOptionsType.LOCAL_PHOTO_ALBUM_ITEM);
                 convertView = spearImageView;
             }else{

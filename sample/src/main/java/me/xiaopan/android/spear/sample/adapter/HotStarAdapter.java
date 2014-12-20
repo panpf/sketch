@@ -206,6 +206,10 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             twoSpearImageView.setOnClickListener(onClickListener);
             threeSpearImageView.setOnClickListener(onClickListener);
 
+            oneSpearImageView.setEnablePressRipple(true);
+            twoSpearImageView.setEnablePressRipple(true);
+            threeSpearImageView.setEnablePressRipple(true);
+
             int space = (int) itemView.getResources().getDimension(R.dimen.home_category_margin_border);
             int screenWidth = itemView.getContext().getResources().getDisplayMetrics().widthPixels;
             int availableScreenWidth = screenWidth - (space*3);
@@ -253,6 +257,10 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             twoSpearImageView.setOnClickListener(onClickListener);
             threeSpearImageView.setOnClickListener(onClickListener);
 
+            oneSpearImageView.setEnablePressRipple(true);
+            twoSpearImageView.setEnablePressRipple(true);
+            threeSpearImageView.setEnablePressRipple(true);
+
             int space = (int) itemView.getResources().getDimension(R.dimen.home_category_margin_border);
             int screenWidth = itemView.getContext().getResources().getDisplayMetrics().widthPixels;
             int availableScreenWidth = screenWidth - (space*3);
@@ -295,6 +303,9 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             oneSpearImageView.setOnClickListener(onClickListener);
             twoSpearImageView.setOnClickListener(onClickListener);
 
+            oneSpearImageView.setEnablePressRipple(true);
+            twoSpearImageView.setEnablePressRipple(true);
+
             int space = (int) itemView.getResources().getDimension(R.dimen.home_category_margin_border);
             int screenWidth = itemView.getContext().getResources().getDisplayMetrics().widthPixels;
             int availableScreenWidth = screenWidth - (space*3);
@@ -325,6 +336,8 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             oneNameTextView = (TextView) itemView.findViewById(R.id.text_hotStarOneItem_one);
 
             oneSpearImageView.setOnClickListener(onClickListener);
+
+            oneSpearImageView.setEnablePressRipple(true);
 
             int space = (int) itemView.getResources().getDimension(R.dimen.home_category_margin_border);
             int screenWidth = itemView.getContext().getResources().getDisplayMetrics().widthPixels;

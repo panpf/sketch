@@ -71,4 +71,19 @@ public enum DisplayOptionsType {
      * 热门明星页面 - 第三种图片
      */
     HOT_STAR_THREE,
+
+    /**
+     * 搜索 - ITEM - Grid
+     */
+    SEARCH_ITEM_GRID,
+
+    /**
+     * 搜索 - ITEM - Linear
+     */
+    SEARCH_ITEM_LINEAR,
+
+    /**
+     * 搜索 - ITEM - STAGGERED
+     */
+    SEARCH_ITEM_STAGGERED,
 }

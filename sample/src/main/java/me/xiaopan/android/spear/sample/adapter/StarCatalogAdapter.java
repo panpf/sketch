@@ -73,6 +73,7 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
 
             itemView.setOnClickListener(onClickListener);
             oneSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_HEAD_PORTRAIT);
+            oneSpearImageView.setEnablePressRipple(true);
 
             int space = (int) itemView.getResources().getDimension(R.dimen.home_category_margin_border);
             int screenWidth = itemView.getContext().getResources().getDisplayMetrics().widthPixels;

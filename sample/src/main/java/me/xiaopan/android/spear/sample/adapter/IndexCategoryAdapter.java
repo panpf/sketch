@@ -149,6 +149,11 @@ public class IndexCategoryAdapter extends BaseAdapter{
             threeSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_TWO);
             fourSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_ONE);
 
+            oneSpearImageView.setEnablePressRipple(true);
+            twoSpearImageView.setEnablePressRipple(true);
+            threeSpearImageView.setEnablePressRipple(true);
+            fourSpearImageView.setEnablePressRipple(true);
+
             int marginBorder = (int) adapter.context.getResources().getDimension(R.dimen.home_category_margin_border);
             int averageWidth = (adapter.context.getResources().getDisplayMetrics().widthPixels - (marginBorder * 4))/5;
 
@@ -265,11 +270,11 @@ public class IndexCategoryAdapter extends BaseAdapter{
             fourSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_TWO);
             fiveSpearImageView.setDisplayOptions(DisplayOptionsType.INDEX_CATEGORY_TWO);
 
-            oneSpearImageView.setShowProgress(true);
-            twoSpearImageView.setShowProgress(true);
-            threeSpearImageView.setShowProgress(true);
-            fourSpearImageView.setShowProgress(true);
-            fiveSpearImageView.setShowProgress(true);
+            oneSpearImageView.setEnablePressRipple(true);
+            twoSpearImageView.setEnablePressRipple(true);
+            threeSpearImageView.setEnablePressRipple(true);
+            fourSpearImageView.setEnablePressRipple(true);
+            fiveSpearImageView.setEnablePressRipple(true);
 
             int marginBorder = (int) adapter.context.getResources().getDimension(R.dimen.home_category_margin_border);
             int averageWidth = (adapter.context.getResources().getDisplayMetrics().widthPixels - (marginBorder * 4))/5;
