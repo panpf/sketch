@@ -44,6 +44,12 @@ import me.xiaopan.android.spear.util.Scheme;
  */
 public class SpearImageView extends ImageView{
     private static final int NONE = -1;
+    private static final int DEFAULT_DEBUG_COLOR_MEMORY = 0x8800FF00;
+    private static final int DEFAULT_DEBUG_COLOR_DISK = 0x88FFFF00;
+    private static final int DEFAULT_DEBUG_COLOR_NETWORK = 0x88FF0000;
+    private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
+    private static final int DEFAULT_PRESSED_COLOR = 0x33000000;
+
     private RequestFuture requestFuture;
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
@@ -53,11 +59,15 @@ public class SpearImageView extends ImageView{
     private Path path;
     private int debugColor = NONE;
     private float progress = NONE;
-    private int progressColor = 0x22000000;
-    private DebugColorListener debugColorListener;
+    private int progressColor = DEFAULT_PROGRESS_COLOR;
+    private int pressedColor = DEFAULT_PRESSED_COLOR;
+    private DebugDisplayListener debugDisplayListener;
     private UpdateProgressListener updateProgressListener;
     private ProgressDisplayListener progressDisplayListener;
     private boolean debugMode;
+    private boolean pressed;
+    private boolean enableShowPressed;
+    private boolean enableShowProgress;
 
     public SpearImageView(Context context) {
         super(context);
@@ -87,6 +97,20 @@ public class SpearImageView extends ImageView{
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        // 绘制按下状态
+        if(enableShowPressed && pressed){
+            canvas.drawColor(pressedColor);
+        }
+
+        // 绘制进度
+        if(enableShowProgress && progress != NONE){
+            if(paint == null){
+                paint = new Paint();
+            }
+            paint.setColor(progressColor);
+            canvas.drawRect(getPaddingLeft(), getPaddingTop() + (progress * getHeight()), getWidth() - getPaddingLeft() - getPaddingRight(), getHeight() - getPaddingTop() - getPaddingBottom(), paint);
+        }
+
         // 绘制三角形
         if(debugColor != NONE){
             if(paint == null){
@@ -104,13 +128,13 @@ public class SpearImageView extends ImageView{
             }
             canvas.drawPath(path, paint);
         }
+    }
 
-        if(progress != NONE){
-            if(paint == null){
-                paint = new Paint();
-            }
-            paint.setColor(progressColor);
-            canvas.drawRect(getPaddingLeft(), getPaddingTop() + (progress*getHeight()), getWidth()-getPaddingLeft()-getPaddingRight(), getHeight()-getPaddingTop()-getPaddingBottom(), paint);
+    @Override
+    protected void dispatchSetPressed(boolean pressed) {
+        if(enableShowPressed && this.pressed != pressed){
+            this.pressed = pressed;
+            invalidate();
         }
     }
 
@@ -167,22 +191,16 @@ public class SpearImageView extends ImageView{
             invalidate();
         }
 
-        requestFuture = Spear.with(getContext())
-                .display(uri, this)
-                .options(displayOptions)
-                .listener(getDisplayListener())
-                .progressListener(updateProgressListener!=null?updateProgressListener:progressListener)
-                .fire();
-        return requestFuture;
+        return requestFuture = Spear.with(getContext()).display(uri, this).options(displayOptions).listener(getDisplayListener()).progressListener(getProgressListener()).fire();
     }
 
     private DisplayListener getDisplayListener(){
         if(debugMode){
-            if(debugColorListener == null){
-                debugColorListener = new DebugColorListener();
+            if(debugDisplayListener == null){
+                debugDisplayListener = new DebugDisplayListener();
             }
-            return debugColorListener;
-        }else if(updateProgressListener != null){
+            return debugDisplayListener;
+        }else if(enableShowProgress){
             if(progressDisplayListener == null){
                 progressDisplayListener = new ProgressDisplayListener();
             }
@@ -190,6 +208,65 @@ public class SpearImageView extends ImageView{
         }else{
             return displayListener;
         }
+    }
+
+    private ProgressListener getProgressListener(){
+        if(enableShowProgress){
+            if(updateProgressListener == null){
+                updateProgressListener = new UpdateProgressListener();
+            }
+            return updateProgressListener;
+        }else{
+            return progressListener;
+        }
+    }
+
+    /**
+     * 是否显示按下状态
+     * @return 是否显示按下状态
+     */
+    public boolean isEnableShowPressed() {
+        return enableShowPressed;
+    }
+
+    /**
+     * 设置是否显示按下状态，开启后按下的时候会在ImageView表面显示一个黑色半透明层
+     * @param enableShowPressed 是否显示按下状态
+     */
+    public void setEnableShowPressed(boolean enableShowPressed) {
+        this.enableShowPressed = enableShowPressed;
+    }
+
+    /**
+     * 是否显示进度
+     * @return 是否显示进度
+     */
+    public boolean isEnableShowProgress() {
+        return enableShowProgress;
+    }
+
+    /**
+     * 设置是否显示进度
+     * @param enableShowProgress 是否显示进度
+     */
+    public void setEnableShowProgress(boolean enableShowProgress) {
+        this.enableShowProgress = enableShowProgress;
+    }
+
+    /**
+     * 设置按下时的颜色
+     * @param pressedColor 按下时的颜色
+     */
+    public void setPressedColor(int pressedColor) {
+        this.pressedColor = pressedColor;
+    }
+
+    /**
+     * 设置进度的颜色
+     * @param progressColor 进度的颜色
+     */
+    public void setProgressColor(int progressColor) {
+        this.progressColor = progressColor;
     }
 
     /**
@@ -269,22 +346,6 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 显示进度
-     * @param showProgress 是否显示进度
-     */
-    public void setShowProgress(boolean showProgress){
-        if(showProgress){
-            if(updateProgressListener == null){
-                updateProgressListener = new UpdateProgressListener();
-            }
-        }else{
-            if(updateProgressListener != null){
-                updateProgressListener = null;
-            }
-        }
-    }
-
-    /**
      * 设置是否开启调试模式，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，黄色代表本次是从本地加载的，绿色代表本次是从内存加载的
      * @param debugMode 是否开启调试模式
      */
@@ -315,11 +376,11 @@ public class SpearImageView extends ImageView{
         }
     }
 
-    private class DebugColorListener implements DisplayListener{
+    private class DebugDisplayListener implements DisplayListener{
         @Override
         public void onStarted() {
             debugColor = NONE;
-            progress = updateProgressListener!=null?0:NONE;
+            progress = enableShowProgress?0:NONE;
             invalidate();
             if(displayListener != null){
                 displayListener.onStarted();
@@ -330,9 +391,9 @@ public class SpearImageView extends ImageView{
         public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, From from) {
             if(from != null){
                 switch (from){
-                    case MEMORY: debugColor = 0x8800FF00; break;
-                    case LOCAL: debugColor = 0x88FFFF00; break;
-                    case NETWORK: debugColor = 0x88FF0000; break;
+                    case MEMORY: debugColor = DEFAULT_DEBUG_COLOR_MEMORY; break;
+                    case DISK: debugColor = DEFAULT_DEBUG_COLOR_DISK; break;
+                    case NETWORK: debugColor = DEFAULT_DEBUG_COLOR_NETWORK; break;
                 }
             }else{
                 debugColor = NONE;
