@@ -77,7 +77,7 @@ public class SpearImageView extends ImageView{
     private int pressRippleColor = DEFAULT_PRESSED_COLOR;
     private int pressRippleAnimationDuration = DEFAULT_ANIMATION_DURATION;
     private boolean pressed;
-    private boolean enablePressRipple = true;
+    private boolean enablePressRipple;
     private Paint pressRipplePaint;
     private Scroller pressRippleScroller;
     private Runnable pressRippleRefreshRunnable;
