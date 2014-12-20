@@ -60,7 +60,7 @@ public class SpearImageView extends ImageView{
     private ProgressListener progressListener;
 
     private int debugColor = NONE;
-    private boolean debugMode = true;
+    private boolean debugMode;
     private Paint debugPaint;
     private Path debugTrianglePath;
     private DebugDisplayListener debugDisplayListener;
