@@ -11,7 +11,6 @@ import java.util.List;
 
 import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.requestobject.Request;
-import me.xiaopan.android.gohttp.requestobject.URL;
 import me.xiaopan.android.spear.sample.net.NetUtils;
 
 /**
@@ -20,13 +19,19 @@ import me.xiaopan.android.spear.sample.net.NetUtils;
 public abstract class HotStarRequest implements Request{
 
     public static class ResponseHandler implements HttpRequest.ResponseHandleCompletedAfterListener<String> {
+        private String starType;
+
+        public ResponseHandler(boolean isMan) {
+            this.starType = isMan?"男明星":"女明星";
+        }
+
         @Override
         public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, String sourceContent, boolean b, boolean b2) throws Throwable {
             List<HotStar> hotStarList = new LinkedList<>();
-            hotStarList.add(new HotStar("内地最热", parse(NetUtils.substring(sourceContent, "type : \"nd\",", "\\}\\)\\;", "imgs : "))));
-            hotStarList.add(new HotStar("港台最热", parse(NetUtils.substring(sourceContent, "type : \"gt\",", "\\}\\)\\;", "imgs : "))));
-            hotStarList.add(new HotStar("日韩最热", parse(NetUtils.substring(sourceContent, "type : \"rh\",", "\\}\\)\\;", "imgs : "))));
-            hotStarList.add(new HotStar("欧美最热", parse(NetUtils.substring(sourceContent, "type : \"om\",", "\\}\\)\\;", "imgs : "))));
+            hotStarList.add(new HotStar("内地最热"+starType, parse(NetUtils.substring(sourceContent, "type : \"nd\",", "\\}\\)\\;", "imgs : "))));
+            hotStarList.add(new HotStar("港台最热"+starType, parse(NetUtils.substring(sourceContent, "type : \"gt\",", "\\}\\)\\;", "imgs : "))));
+            hotStarList.add(new HotStar("日韩最热"+starType, parse(NetUtils.substring(sourceContent, "type : \"rh\",", "\\}\\)\\;", "imgs : "))));
+            hotStarList.add(new HotStar("欧美最热"+starType, parse(NetUtils.substring(sourceContent, "type : \"om\",", "\\}\\)\\;", "imgs : "))));
             return hotStarList;
         }
 

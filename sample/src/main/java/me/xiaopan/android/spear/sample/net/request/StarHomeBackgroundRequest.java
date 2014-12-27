@@ -11,10 +11,6 @@ import java.util.regex.Pattern;
 
 import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.requestobject.Request;
-import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.display.ColorFadeInImageDisplayer;
-import me.xiaopan.android.spear.request.DisplayOptions;
-import me.xiaopan.android.spear.sample.DisplayOptionsType;
 
 /**
  * 明星个人主页背景请求

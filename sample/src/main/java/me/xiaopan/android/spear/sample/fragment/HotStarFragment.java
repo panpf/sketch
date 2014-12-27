@@ -33,19 +33,13 @@ import me.xiaopan.android.widget.PullRefreshLayout;
  */
 @InjectContentView(R.layout.fragment_hot_star)
 public class HotStarFragment extends InjectFragment implements PullRefreshLayout.OnRefreshListener, HotStarAdapter.OnImageClickListener{
-    /**
-     * 参数 - 必须的 - 布尔 - 显示热门男明星
-     */
-    public static final String PARAM_REQUIRED_BOOLEAN_MAN_STAR = "PARAM_REQUIRED_BOOLEAN_MAN_STAR";
 
     @InjectView(R.id.refreshLayout_hotStar) private PullRefreshLayout refreshLayout;
     @InjectView(R.id.hint_hotStar) private HintView hintView;
     @InjectView(R.id.recyclerView_hotStar_content) private RecyclerView contentRecyclerView;
 
-    @InjectExtra(PARAM_REQUIRED_BOOLEAN_MAN_STAR) private boolean manStar;
-
     private HttpRequestFuture httpRequestFuture;
-    private RecyclerView.Adapter adapter;
+    private HotStarAdapter adapter;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -67,7 +61,20 @@ public class HotStarFragment extends InjectFragment implements PullRefreshLayout
             return;
         }
 
-        httpRequestFuture = GoHttp.with(getActivity()).newRequest(manStar?new HotManStarRequest():new HotWomanStarRequest(), new StringHttpResponseHandler(), new HttpRequest.Listener<List<HotStarRequest.HotStar>>() {
+        load(false, false);
+    }
+
+    @Override
+    public void onDetach() {
+        if(httpRequestFuture != null && !httpRequestFuture.isFinished()){
+            httpRequestFuture.cancel(true);
+        }
+
+        super.onDetach();
+    }
+
+    private void load(boolean isMan, final boolean last){
+        httpRequestFuture = GoHttp.with(getActivity()).newRequest(isMan?new HotManStarRequest():new HotWomanStarRequest(), new StringHttpResponseHandler(), new HttpRequest.Listener<List<HotStarRequest.HotStar>>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
                 hintView.hidden();
@@ -75,9 +82,14 @@ public class HotStarFragment extends InjectFragment implements PullRefreshLayout
 
             @Override
             public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, List<HotStarRequest.HotStar> hotStarList, boolean b, boolean b2) {
-                adapter = new HotStarAdapter(getActivity(), hotStarList, HotStarFragment.this);
-                contentRecyclerView.setAdapter(adapter);
-                refreshLayout.stopRefresh();
+                if(last){
+                    adapter.append(hotStarList);
+                    contentRecyclerView.setAdapter(adapter);
+                    refreshLayout.stopRefresh();
+                }else{
+                    adapter = new HotStarAdapter(getActivity(), hotStarList, HotStarFragment.this);
+                    load(true, true);
+                }
             }
 
             @Override
@@ -99,7 +111,7 @@ public class HotStarFragment extends InjectFragment implements PullRefreshLayout
             public void onCanceled(HttpRequest httpRequest) {
 
             }
-        }).responseHandleCompletedAfterListener(new HotStarRequest.ResponseHandler()).go();
+        }).responseHandleCompletedAfterListener(new HotStarRequest.ResponseHandler(isMan)).go();
     }
 
     @Override

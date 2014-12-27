@@ -16,114 +16,91 @@
 
 package me.xiaopan.android.spear.sample.fragment;
 
-import android.annotation.TargetApi;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.Point;
-import android.os.Build;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.AbsListView;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
 
-import me.xiaopan.android.spear.sample.DisplayOptionsType;
+import java.util.ArrayList;
+import java.util.List;
+
+import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.sample.activity.ImageDetailActivity;
-import me.xiaopan.android.spear.widget.SpearImageView;
+import me.xiaopan.android.spear.sample.adapter.ImageGridAdapter;
 
 /**
  * 本地相册页面
  */
-public class PhotoAlbumFragment extends Fragment {
-    public static final String PARAM_REQUIRED_STRING_ARRAY_URLS = "PARAM_REQUIRED_STRING_ARRAY_URLS";
+public class PhotoAlbumFragment extends Fragment implements ImageGridAdapter.OnImageClickListener{
+    private GridView gridView;
+    private ImageGridAdapter imageGridAdapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        GridView gridView = new GridView(getActivity());
-        gridView.setBackgroundColor(Color.BLACK);
+        gridView = new GridView(getActivity());
+        gridView.setBackgroundColor(Color.WHITE);
         gridView.setPadding(0, 0, 0, 0);
         gridView.setNumColumns(2);
         gridView.setVerticalSpacing(2);
         gridView.setHorizontalSpacing(2);
-        gridView.setAdapter(new ImageGridAdapter(getActivity(), getArguments().getStringArray(PARAM_REQUIRED_STRING_ARRAY_URLS), 2, 2));
-        gridView.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Bundle bundle = new Bundle();
-                bundle.putStringArray(PhotoAlbumFragment.PARAM_REQUIRED_STRING_ARRAY_URLS, getArguments().getStringArray(PhotoAlbumFragment.PARAM_REQUIRED_STRING_ARRAY_URLS));
-                bundle.putInt(ImageDetailFragment.PARAM_OPTIONAL_INT_CURRENT_POSITION, position);
-                Intent intent = new Intent(getActivity(), ImageDetailActivity.class);
-                intent.putExtras(bundle);
-                startActivity(intent);
-            }
-        });
+
+        if(imageGridAdapter != null){
+            gridView.setAdapter(imageGridAdapter);
+        }else{
+            new ReadImagesTask(getActivity().getBaseContext()).execute();
+        }
+
         return gridView;
     }
 
-    private static class ImageGridAdapter extends BaseAdapter {
+    @Override
+    public void onImageClick(int position) {
+        ImageDetailActivity.launch(getActivity(), (ArrayList<String>) imageGridAdapter.getImageUrlList(), position);
+    }
+
+    private class ReadImagesTask extends AsyncTask<Void, Integer, List<String>> {
         private Context context;
-        private String[] imageUris;
-        private int imageWidth = -1;
 
-        @SuppressWarnings("deprecation")
-        @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-        public ImageGridAdapter(Context context, String[] imageUris, int column, int horizontalSpacing){
+        private ReadImagesTask(Context context) {
             this.context = context;
-            this.imageUris = imageUris;
-            if(column > 1){
-                WindowManager windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-                Display display = windowManager.getDefaultDisplay();
-                if(Build.VERSION.SDK_INT < Build.VERSION_CODES.HONEYCOMB_MR2){
-                    imageWidth = (display.getWidth()-((column-1)*horizontalSpacing))/column;
-                }else{
-                    Point point = new Point();
-                    display.getSize(point);
-                    imageWidth = (point.x-((column-1)*horizontalSpacing))/column;
-                }
+        }
+
+        @Override
+        protected List<String> doInBackground(Void[] params) {
+            Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+            String where = MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=?";
+            String[] whereParams = new String[] { "image/jpeg", "image/png"};
+            String sortOrder = MediaStore.Images.Media.DATE_MODIFIED;
+            ContentResolver mContentResolver = context.getContentResolver();
+
+            //只查询jpeg和png的图片
+            Cursor mCursor = mContentResolver.query(mImageUri, null, where, whereParams, sortOrder);
+            if(mCursor == null){
+                return null;
             }
-        }
 
-        @Override
-        public Object getItem(int position) {
-            return imageUris[position];
-        }
-
-        @Override
-        public int getCount() {
-            return imageUris!=null?imageUris.length:0;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            SpearImageView spearImageView;
-            if(convertView == null){
-                spearImageView = new SpearImageView(context);
-                spearImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                if(imageWidth != -1){
-                    spearImageView.setLayoutParams(new AbsListView.LayoutParams(imageWidth, imageWidth));
-                }
-                spearImageView.setClickable(true);
-                spearImageView.setDisplayOptions(DisplayOptionsType.LOCAL_PHOTO_ALBUM_ITEM);
-                convertView = spearImageView;
-            }else{
-                spearImageView = (SpearImageView) convertView;
+            List<String> imagePathList = new ArrayList<>(mCursor.getCount());
+            while (mCursor.moveToNext()) {
+                //获取图片的路径
+                imagePathList.add(mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
             }
-            spearImageView.setImageByUri(imageUris[position]);
-            return convertView;
+            mCursor.close();
+            return imagePathList;
+        }
+
+        @Override
+        protected void onPostExecute(List<String> strings) {
+            gridView.setAdapter(imageGridAdapter = new ImageGridAdapter(getActivity(), strings, 2, 2, PhotoAlbumFragment.this));
         }
     }
 }

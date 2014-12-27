@@ -37,6 +37,10 @@ public class StarImageRequest implements Request{
         this.start = newStart;
     }
 
+    public int getSize() {
+        return size;
+    }
+
     public static class Response{
         @SerializedName("totalNum") private int total;
         @SerializedName("return_number") private int returnNumber;

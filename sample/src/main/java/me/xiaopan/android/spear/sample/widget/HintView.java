@@ -145,14 +145,14 @@ public class HintView extends LinearLayout {
 		}
 
 		if(transparent){
-			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
-				setBackground(null);
-			}else{
-				setBackgroundDrawable(null);
-			}
+//			if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN){
+//				setBackground(null);
+//			}else{
+//				setBackgroundDrawable(null);
+//			}
 			setClickable(false);
 		}else{
-			setBackgroundColor(getResources().getColor(R.color.page_background));
+//			setBackgroundColor(getResources().getColor(R.color.page_background));
 			setClickable(true);
 		}
 

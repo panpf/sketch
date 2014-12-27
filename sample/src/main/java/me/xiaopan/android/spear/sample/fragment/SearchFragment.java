@@ -2,15 +2,15 @@ package me.xiaopan.android.spear.sample.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.xiaoapn.android.spear.sample.R;
@@ -19,8 +19,10 @@ import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.HttpRequestFuture;
 import me.xiaopan.android.gohttp.JsonHttpResponseHandler;
 import me.xiaopan.android.inject.InjectContentView;
+import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
+import me.xiaopan.android.spear.sample.activity.ImageDetailActivity;
 import me.xiaopan.android.spear.sample.adapter.SearchImageAdapter;
 import me.xiaopan.android.spear.sample.net.request.SearchImageRequest;
 import me.xiaopan.android.spear.sample.widget.HintView;
@@ -31,6 +33,8 @@ import me.xiaopan.android.widget.PullRefreshLayout;
  */
 @InjectContentView(R.layout.fragment_search)
 public class SearchFragment extends InjectFragment implements SearchImageAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener {
+    public static final String PARAM_OPTIONAL_STRING_SEARCH_KEYWORD = "PARAM_OPTIONAL_STRING_SEARCH_KEYWORD";
+
     @InjectView(R.id.refreshLayout_search) PullRefreshLayout pullRefreshLayout;
     @InjectView(R.id.recyclerView_search) private RecyclerView recyclerView;
     @InjectView(R.id.hintView_search) private HintView hintView;
@@ -40,11 +44,17 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
     private SearchImageAdapter searchImageAdapter;
     private MyLoadMoreListener loadMoreListener;
 
+    @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD) private String searchKeyword = "美女";
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        searchImageRequest = new SearchImageRequest("美女");
+        searchImageRequest = new SearchImageRequest(searchKeyword);
         loadMoreListener = new MyLoadMoreListener();
+
+        if(getActivity() instanceof ActionBarActivity){
+            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(searchKeyword);
+        }
     }
 
     @Override
@@ -68,12 +78,13 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
         if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             refreshRequestFuture.cancel(true);
         }
+
         super.onDetach();
     }
 
     @Override
     public void onItemClick(int position, SearchImageRequest.Image image) {
-
+        ImageDetailActivity.launch(getActivity(), (ArrayList<String>) searchImageAdapter.getImageUrlList(), position);
     }
 
     @Override
@@ -154,7 +165,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
                 return;
             }
 
-            searchImageRequest.setStart(searchImageAdapter.getImageList().size());
+            searchImageRequest.setStart(searchImageAdapter.getDataSize());
             loadMoreRequestFuture = GoHttp.with(getActivity()).newRequest(searchImageRequest, new JsonHttpResponseHandler(SearchImageRequest.Response.class), new HttpRequest.Listener<SearchImageRequest.Response>() {
                 @Override
                 public void onStarted(HttpRequest httpRequest) {
@@ -173,7 +184,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
                         return;
                     }
 
-                    searchImageAdapter.getImageList().addAll(newImageList);
+                    searchImageAdapter.append(newImageList);
                     searchImageAdapter.notifyDataSetChanged();
                     Toast.makeText(getActivity(), "新加载" + newImageList.size() + "条数据", Toast.LENGTH_SHORT).show();
                 }

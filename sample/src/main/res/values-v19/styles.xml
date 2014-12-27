@@ -1,0 +1,6 @@
+<resources>
+    <style name="RootLayout">
+        <item name="android:fitsSystemWindows">true</item>
+        <item name="android:clipToPadding">true</item>
+    </style>
+</resources>

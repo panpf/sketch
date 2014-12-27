@@ -1,27 +1,24 @@
 <resources>
-    <style name="text_image_title">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/shape_bottom_liner</item>
-        <item name="android:layout_gravity">bottom</item>
+
+    <style name="TextAppearance_ImageTitle">
+        <item name="android:background">@drawable/shape_linear_gradient_transparent_to_black</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:padding">@dimen/image_title_padding</item>
         <item name="android:gravity">left</item>
         <item name="android:singleLine">true</item>
     </style>
 
-    <style name="text_image_name">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/shape_name_background</item>
-        <item name="android:layout_gravity">bottom</item>
+    <style name="TextAppearance_ImageName">
+        <item name="android:background">@drawable/shape_round_corners_black_translucent</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:paddingLeft">8dp</item>
         <item name="android:paddingTop">4dp</item>
         <item name="android:paddingRight">8dp</item>
         <item name="android:paddingBottom">4dp</item>
-        <item name="android:layout_margin">8dp</item>
-        <item name="android:singleLine">true</item>
         <item name="android:gravity">center</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="RootLayout">
     </style>
 </resources>

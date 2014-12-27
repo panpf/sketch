@@ -45,7 +45,10 @@
                 android:scaleType="centerCrop"/>
             <TextView
                 android:id="@+id/text_fiveItem_name_one"
-                style="@style/text_image_title"/>
+                style="@style/TextAppearance_ImageTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"/>
         </FrameLayout>
 
         <LinearLayout
@@ -67,7 +70,10 @@
                     android:scaleType="centerCrop"/>
                 <TextView
                     android:id="@+id/text_fiveItem_name_two"
-                    style="@style/text_image_title"/>
+                    style="@style/TextAppearance_ImageTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"/>
             </FrameLayout>
 
             <FrameLayout
@@ -85,7 +91,10 @@
                     android:scaleType="centerCrop"/>
                 <TextView
                     android:id="@+id/text_fiveItem_name_three"
-                    style="@style/text_image_title"/>
+                    style="@style/TextAppearance_ImageTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"/>
             </FrameLayout>
         </LinearLayout>
 
@@ -108,7 +117,10 @@
                     android:scaleType="centerCrop"/>
                 <TextView
                     android:id="@+id/text_fiveItem_name_four"
-                    style="@style/text_image_title"/>
+                    style="@style/TextAppearance_ImageTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"/>
             </FrameLayout>
 
             <FrameLayout
@@ -126,7 +138,10 @@
                     android:scaleType="centerCrop"/>
                 <TextView
                     android:id="@+id/text_fiveItem_name_five"
-                    style="@style/text_image_title"/>
+                    style="@style/TextAppearance_ImageTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"/>
             </FrameLayout>
         </LinearLayout>
     </LinearLayout>

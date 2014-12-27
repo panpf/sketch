@@ -11,11 +11,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.net.request.SearchImageRequest;
+import me.xiaopan.android.spear.sample.util.DimenUtils;
 import me.xiaopan.android.spear.widget.SpearImageView;
 
 /**
@@ -30,12 +32,17 @@ public class SearchImageAdapter extends RecyclerView.Adapter{
     private OnLoadMoreListener onLoadMoreListener;
     private LayoutType layoutType;
     private boolean vertical;
+    private List<String> imageUrlList;
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public SearchImageAdapter(Context context, List<SearchImageRequest.Image> imageList, RecyclerView recyclerView, OnItemClickListener onItemClickListener){
         this.context = context;
         this.imageList = imageList;
+        this.imageUrlList = new ArrayList<>(imageList.size());
+        for(SearchImageRequest.Image image : imageList){
+            imageUrlList.add(image.getSourceUrl());
+        }
         this.onItemClickListener = onItemClickListener;
 
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
@@ -45,7 +52,7 @@ public class SearchImageAdapter extends RecyclerView.Adapter{
             vertical = gridLayoutManager.getOrientation() == GridLayoutManager.VERTICAL;
             int maxSize = vertical?context.getResources().getDisplayMetrics().widthPixels:context.getResources().getDisplayMetrics().heightPixels;
             columns = gridLayoutManager.getSpanCount();
-            maxSize -= dp2px(context, 8) * columns * 2;
+            maxSize -= DimenUtils.dp2px(context, 8) * columns * 2;
             itemSize = maxSize / columns;
         }else if(layoutManager instanceof StaggeredGridLayoutManager){
             layoutType = LayoutType.STAGGERED;
@@ -53,26 +60,16 @@ public class SearchImageAdapter extends RecyclerView.Adapter{
             vertical = staggeredGridLayoutManager.getOrientation() == StaggeredGridLayoutManager.VERTICAL;
             int maxSize = vertical?context.getResources().getDisplayMetrics().widthPixels:context.getResources().getDisplayMetrics().heightPixels;
             columns = staggeredGridLayoutManager.getSpanCount();
-            maxSize -= dp2px(context, 8) * columns * 2;
+            maxSize -= DimenUtils.dp2px(context, 8) * columns * 2;
             itemSize = maxSize / columns;
         }else{
             layoutType = LayoutType.LINEAR;
             LinearLayoutManager linearLayoutManager = (LinearLayoutManager) layoutManager;
             vertical = linearLayoutManager.getOrientation() == LinearLayoutManager.VERTICAL;
             int maxSize = vertical?context.getResources().getDisplayMetrics().widthPixels:context.getResources().getDisplayMetrics().heightPixels;
-            maxSize -= dp2px(context, 8) * 2;
+            maxSize -= DimenUtils.dp2px(context, 8) * 2;
             itemSize = maxSize;
         }
-    }
-
-    /**
-     * dp单位转换为px
-     * @param context 上下文，需要通过上下文获取到当前屏幕的像素密度
-     * @param dpValue dp值
-     * @return px值
-     */
-    private int dp2px(Context context, float dpValue){
-        return (int)(dpValue * (context.getResources().getDisplayMetrics().density) + 0.5f);
     }
 
     @Override
@@ -80,12 +77,23 @@ public class SearchImageAdapter extends RecyclerView.Adapter{
         return imageList!=null?imageList.size():0;
     }
 
-    public List<SearchImageRequest.Image> getImageList() {
-        return imageList;
-    }
-
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
         this.onLoadMoreListener = onLoadMoreListener;
+    }
+
+    public int getDataSize(){
+        return imageList.size();
+    }
+
+    public void append(List<SearchImageRequest.Image> imageList) {
+        this.imageList.addAll(imageList);
+        for(SearchImageRequest.Image image : imageList){
+            imageUrlList.add(image.getSourceUrl());
+        }
+    }
+
+    public List<String> getImageUrlList() {
+        return imageUrlList;
     }
 
     @Override

@@ -17,12 +17,31 @@
 package me.xiaopan.android.spear.sample;
 
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 
+import me.xiaoapn.android.spear.sample.R;
+import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectActionBarActivity;
 
 public class MyActionBarActivity extends InjectActionBarActivity {
+    @InjectView(R.id.toolbar) protected Toolbar toolbar;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        if(toolbar != null){
+            onPreSetSupportActionBar();
+            toolbar.setTitleTextColor(getResources().getColor(R.color.default_text_color_normal));
+            setSupportActionBar(toolbar);
+            onPostSetSupportActionBar();
+        }
 	}
+
+    protected void onPreSetSupportActionBar(){
+
+    }
+
+    protected void onPostSetSupportActionBar(){
+
+    }
 }

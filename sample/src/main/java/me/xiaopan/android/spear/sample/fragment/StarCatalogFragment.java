@@ -31,19 +31,13 @@ import me.xiaopan.android.widget.PullRefreshLayout;
  */
 @InjectContentView(R.layout.fragment_star_catalog)
 public class StarCatalogFragment extends InjectFragment implements PullRefreshLayout.OnRefreshListener, StarCatalogAdapter.OnImageClickListener {
-    /**
-     * 参数 - 必须的 - 布尔 - 显示男明星目录
-     */
-    public static final String PARAM_REQUIRED_BOOLEAN_MAN_STAR = "PARAM_REQUIRED_BOOLEAN_MAN_STAR";
 
     @InjectView(R.id.refreshLayout_starCatalog) private PullRefreshLayout refreshLayout;
     @InjectView(R.id.hint_starCatalog) private HintView hintView;
     @InjectView(R.id.recyclerView_starCatalog_content) private RecyclerView contentRecyclerView;
 
-    @InjectExtra(PARAM_REQUIRED_BOOLEAN_MAN_STAR) private boolean manStar;
-
     private HttpRequestFuture httpRequestFuture;
-    private RecyclerView.Adapter adapter;
+    private StarCatalogAdapter adapter;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -65,7 +59,20 @@ public class StarCatalogFragment extends InjectFragment implements PullRefreshLa
             return;
         }
 
-        httpRequestFuture = GoHttp.with(getActivity()).newRequest(manStar?new ManStarCatalogRequest():new WomanStarCatalogRequest(), new StringHttpResponseHandler(), new HttpRequest.Listener<StarCatalogRequest.Result>() {
+        load(false, false);
+    }
+
+    @Override
+    public void onDetach() {
+        if(httpRequestFuture != null && !httpRequestFuture.isFinished()){
+            httpRequestFuture.cancel(true);
+        }
+
+        super.onDetach();
+    }
+
+    private void load(boolean isMan, final boolean last){
+        httpRequestFuture = GoHttp.with(getActivity()).newRequest(isMan?new ManStarCatalogRequest():new WomanStarCatalogRequest(), new StringHttpResponseHandler(), new HttpRequest.Listener<StarCatalogRequest.Result>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
                 hintView.hidden();
@@ -73,9 +80,14 @@ public class StarCatalogFragment extends InjectFragment implements PullRefreshLa
 
             @Override
             public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, StarCatalogRequest.Result result, boolean b, boolean b2) {
-                adapter = new StarCatalogAdapter(getActivity(), result, StarCatalogFragment.this);
-                contentRecyclerView.setAdapter(adapter);
-                refreshLayout.stopRefresh();
+                if(last){
+                    adapter.append(result);
+                    contentRecyclerView.setAdapter(adapter);
+                    refreshLayout.stopRefresh();
+                }else{
+                    adapter = new StarCatalogAdapter(getActivity(), result, StarCatalogFragment.this);
+                    load(true, true);
+                }
             }
 
             @Override

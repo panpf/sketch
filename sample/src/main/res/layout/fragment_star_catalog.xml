@@ -13,8 +13,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@null"
-            android:listSelector="@null"
-            android:background="#F0EFF0"/>
+            android:listSelector="@null"/>
     </me.xiaopan.android.spear.sample.widget.MyPullRefreshLayout>
     <me.xiaopan.android.spear.sample.widget.HintView
         android:id="@+id/hint_starCatalog"

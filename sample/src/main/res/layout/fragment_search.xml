@@ -12,6 +12,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
     </me.xiaopan.android.spear.sample.widget.MyPullRefreshLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </LinearLayout>
     <me.xiaopan.android.spear.sample.widget.HintView
         android:id="@+id/hintView_search"
         android:layout_width="match_parent"

@@ -16,7 +16,7 @@ import me.xiaopan.android.gohttp.StringHttpResponseHandler;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
-import me.xiaopan.android.spear.sample.activity.StarActivity;
+import me.xiaopan.android.spear.sample.activity.MainActivity;
 import me.xiaopan.android.spear.sample.activity.StarHomeActivity;
 import me.xiaopan.android.spear.sample.adapter.IndexCategoryAdapter;
 import me.xiaopan.android.spear.sample.net.request.IndexRequest;
@@ -28,12 +28,10 @@ import me.xiaopan.android.widget.PullRefreshLayout;
  */
 @InjectContentView(R.layout.fragment_index)
 public class IndexFragment extends InjectFragment implements PullRefreshLayout.OnRefreshListener, IndexCategoryAdapter.OnClickListener {
-    @InjectView(R.id.refreshLayout_index)
-    private PullRefreshLayout pullRefreshLayout;
-    @InjectView(R.id.hint_index)
-    private HintView hintView;
-    @InjectView(R.id.list_index_content)
-    private ListView contentListView;
+    @InjectView(R.id.refreshLayout_index) private PullRefreshLayout pullRefreshLayout;
+    @InjectView(R.id.hint_index) private HintView hintView;
+    @InjectView(R.id.list_index_content) private ListView contentListView;
+
     private HttpRequestFuture indexRequestFuture;
     private IndexRequest.Response response;
 
@@ -128,7 +126,7 @@ public class IndexFragment extends InjectFragment implements PullRefreshLayout.O
     public void onClickCategoryTitle(IndexRequest.ImageCategory imageCategory) {
         Intent intent = null;
         if ("明星".equals(imageCategory.getName())) {
-            intent = new Intent(getActivity(), StarActivity.class);
+            intent = new Intent(getActivity(), MainActivity.class);
         }
 
         if (intent != null) {

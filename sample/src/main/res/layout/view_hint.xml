@@ -6,8 +6,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
 	    android:gravity="center"
-		android:clickable="true"
-	    android:background="@color/page_background">
+		android:clickable="true">
 		<ViewSwitcher
             android:id="@+id/viewSwitcher_hint"
             android:layout_width="match_parent"
@@ -30,7 +29,6 @@
 			        android:id="@+id/text_hint_loadingHint" 
 				    android:text="@string/loadingLater"
 				    android:gravity="center"
-				    android:textColor="@color/gray"
 				    android:layout_marginTop="16dp"/>
 			</LinearLayout>
 			
@@ -39,7 +37,6 @@
                 android:layout_height="wrap_content"
 		        android:id="@+id/text_hint_hint" 
 			    android:gravity="center"
-			    android:textColor="@color/gray"
 			    android:drawableTop="@drawable/ic_failure"
 			    android:layout_gravity="center"
 			    android:drawablePadding="@dimen/padding_specialLarge"/>

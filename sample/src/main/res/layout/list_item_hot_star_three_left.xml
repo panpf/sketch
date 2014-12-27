@@ -15,7 +15,11 @@
             android:contentDescription="@string/app_name"/>
         <TextView
             android:id="@+id/text_hotStarThreeLeftItem_one"
-            style="@style/text_image_name"/>
+            style="@style/TextAppearance_ImageName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:layout_margin="8dp"/>
     </FrameLayout>
 
     <LinearLayout
@@ -34,7 +38,11 @@
                 android:contentDescription="@string/app_name"/>
             <TextView
                 android:id="@+id/text_hotStarThreeLeftItem_two"
-                style="@style/text_image_name"/>
+                style="@style/TextAppearance_ImageName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="8dp"/>
         </FrameLayout>
 
 
@@ -50,7 +58,11 @@
                 android:contentDescription="@string/app_name"/>
             <TextView
                 android:id="@+id/text_hotStarThreeLeftItem_three"
-                style="@style/text_image_name"/>
+                style="@style/TextAppearance_ImageName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_margin="8dp"/>
         </FrameLayout>
     </LinearLayout>
 </LinearLayout>

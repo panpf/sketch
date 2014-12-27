@@ -1,15 +1,24 @@
 <resources>
 
-    <!-- Base application theme. -->
+    <!-- 基本的主题样式主要用于定义不同版本的差异 -->
     <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!-- Customize your theme here. -->
     </style>
 
-    <!-- Base application theme. -->
+    <!-- 真正使用的主题，在BaseTheme的基础上定义所有版本均支持的样式 -->
     <style name="AppTheme" parent="BaseTheme">
-        <!-- Customize your theme here. -->
-        <!--<item name="android:windowNoTitle">true</item>-->
-        <!--<item name="windowActionBar">false</item>-->
+        <item name="android:windowBackground">@drawable/shape_window_background</item>
+        <item name="android:textViewStyle">@style/MyWidget.TextView</item>
+    </style>
+
+    <!-- 真正使用的没有标题的主题 -->
+    <style name="AppTheme.NoTitle" parent="AppTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="windowActionBar">false</item>
+    </style>
+
+    <!-- TextView的样式 -->
+    <style name="MyWidget.TextView" parent="@android:style/Widget.TextView">
+        <item name="android:textColor">@color/default_text_color_normal</item>
     </style>
 
 </resources>

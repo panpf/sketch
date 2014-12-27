@@ -15,7 +15,7 @@
         android:id="@+id/text_starHeadPortraitItem"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/shape_name_background"
+        android:background="@drawable/shape_round_corners_black_translucent"
         android:textColor="@android:color/white"
         android:paddingLeft="8dp"
         android:paddingTop="4dp"

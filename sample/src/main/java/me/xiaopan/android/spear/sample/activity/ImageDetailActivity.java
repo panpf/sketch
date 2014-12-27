@@ -16,55 +16,77 @@
 
 package me.xiaopan.android.spear.sample.activity;
 
+import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
-import android.widget.FrameLayout;
+import android.view.MotionEvent;
+import android.view.View;
+
+import java.util.ArrayList;
 
 import me.xiaoapn.android.spear.sample.R;
+import me.xiaopan.android.inject.InjectContentView;
+import me.xiaopan.android.inject.InjectParentMember;
+import me.xiaopan.android.spear.sample.MyActionBarActivity;
 import me.xiaopan.android.spear.sample.fragment.ImageDetailFragment;
 
 /**
- * 图片详情页面
+ * 大图页面
  */
-public class ImageDetailActivity extends ActionBarActivity {
-	
+@InjectParentMember
+@InjectContentView(R.layout.activity_only_fragment)
+public class ImageDetailActivity extends MyActionBarActivity implements ImageDetailFragment.SetDispatchTouchEventListener {
+    private ImageDetailFragment.DispatchTouchEventListener dispatchTouchEventListener;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		FrameLayout frameLayout = new FrameLayout(getBaseContext());
-		frameLayout.setId(R.id.fragment_photoAlbum_content);
-		setContentView(frameLayout);
-		
-		FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-		Fragment fragment = new ImageDetailFragment();
-		fragment.setArguments(getIntent().getExtras());
-		fragmentTransaction.replace(R.id.fragment_photoAlbum_content, fragment);
-		fragmentTransaction.commitAllowingStateLoss();
+
+        ImageDetailFragment imageDetailFragment = new ImageDetailFragment();
+        imageDetailFragment.setArguments(getIntent().getExtras());
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.frame_onlyFragment_content, imageDetailFragment)
+                .commit();
+        getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
+        toolbar.setVisibility(View.GONE);
 	}
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_search, menu);
-        getMenuInflater().inflate(R.menu.menu_github, menu);
-        return super.onCreateOptionsMenu(menu);
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        boolean result = true;
+        try{
+            result = super.dispatchTouchEvent(ev);
+        }catch(RuntimeException e){
+            e.printStackTrace();
+        }
+
+        if(dispatchTouchEventListener != null){
+            dispatchTouchEventListener.dispatchTouchEvent(ev);
+        }
+
+        return result;
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch(item.getItemId()){
-            case R.id.menu_search :
-                startActivity(new Intent(getBaseContext(), SearchActivity.class));
-                break;
-            case R.id.menu_github :
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.url_github))));
-                break;
-        }
-        return super.onOptionsItemSelected(item);
+    public void setDispatchTouchEventListener(ImageDetailFragment.DispatchTouchEventListener dispatchTouchEventListener) {
+        this.dispatchTouchEventListener = dispatchTouchEventListener;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.window_pop_enter, R.anim.window_pop_exit);
+    }
+
+    public static void launch(Activity activity, ArrayList<String> imageUrlList, int defaultPosition){
+        Intent intent = new Intent(activity, ImageDetailActivity.class);
+        intent.putStringArrayListExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_ARRAY_LIST_URLS, imageUrlList);
+        intent.putExtra(ImageDetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION, defaultPosition);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.window_push_enter, R.anim.window_push_exit);
     }
 }

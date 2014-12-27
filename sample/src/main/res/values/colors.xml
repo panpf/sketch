@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="gray">#ff969696</color>
-    <color name="page_background">#f0f4f6</color>
+    <color name="default_text_color_normal">#AEFFFFFF</color>
+    <color name="default_text_color_selected">#FFFFFF</color>
+
+    <color name="window_background_start">#A75509</color>
+    <color name="window_background_center">#371708</color>
+    <color name="window_background_end">#040404</color>
+
+    <color name="list_item_background_pressed">#33FFFFFF</color>
+
+    <color name="drawer_menu">#AAA75509</color>
 </resources>

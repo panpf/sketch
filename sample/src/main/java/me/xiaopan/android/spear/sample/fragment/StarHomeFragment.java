@@ -1,8 +1,11 @@
 package me.xiaopan.android.spear.sample.fragment;
 
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -10,6 +13,7 @@ import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.xiaoapn.android.spear.sample.R;
@@ -22,7 +26,7 @@ import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
-import me.xiaopan.android.spear.Spear;
+import me.xiaopan.android.spear.sample.activity.ImageDetailActivity;
 import me.xiaopan.android.spear.sample.adapter.StarImageAdapter;
 import me.xiaopan.android.spear.sample.net.request.StarHomeBackgroundRequest;
 import me.xiaopan.android.spear.sample.net.request.StarImageRequest;
@@ -46,7 +50,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
 
     private StarImageRequest starImageRequest;
     private HttpRequestFuture refreshRequestFuture;
-    private StarImageAdapter imageRecyclerAdapter;
+    private StarImageAdapter starImageAdapter;
     private MyLoadMoreListener loadMoreListener;
 
     @Override
@@ -63,12 +67,11 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
         pullRefreshLayout.setOnRefreshListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setOnScrollListener(loadMoreListener);
 
-        if (imageRecyclerAdapter == null) {
+        if (starImageAdapter == null) {
             pullRefreshLayout.startRefresh();
         } else {
-            recyclerView.setAdapter(imageRecyclerAdapter);
+            recyclerView.setAdapter(starImageAdapter);
         }
     }
 
@@ -77,12 +80,13 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
         if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             refreshRequestFuture.cancel(true);
         }
+
         super.onDetach();
     }
 
     @Override
     public void onItemClick(int position, StarImageRequest.Image image) {
-
+        ImageDetailActivity.launch(getActivity(), (ArrayList<String>) starImageAdapter.getImageUrlList(), position);
     }
 
     @Override
@@ -104,7 +108,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                     return;
                 }
 
-                recyclerView.setBackgroundColor(backgroundObject.getBackgroundColor());
+//                recyclerView.setBackgroundColor(backgroundObject.getBackgroundColor());
                 loadItems(backgroundObject.getBackgroundImageUrl());
             }
 
@@ -115,7 +119,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                 }
 
                 pullRefreshLayout.stopRefresh();
-                if (imageRecyclerAdapter == null) {
+                if (starImageAdapter == null) {
                     hintView.failure(failure, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -148,10 +152,10 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                     return;
                 }
 
-                recyclerView.setAdapter(imageRecyclerAdapter = new StarImageAdapter(getActivity(), backgroundImageUrl, responseObject.getImages(), StarHomeFragment.this));
+                recyclerView.setAdapter(starImageAdapter = new StarImageAdapter(getActivity(), backgroundImageUrl, responseObject.getImages(), StarHomeFragment.this));
                 pullRefreshLayout.stopRefresh();
                 loadMoreListener.reset();
-                imageRecyclerAdapter.setOnLoadMoreListener(loadMoreListener);
+                starImageAdapter.setOnLoadMoreListener(loadMoreListener);
             }
 
             @Override
@@ -161,7 +165,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                 }
 
                 pullRefreshLayout.stopRefresh();
-                if (imageRecyclerAdapter == null) {
+                if (starImageAdapter == null) {
                     hintView.failure(failure, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -179,38 +183,17 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
         }).responseHandleCompletedAfterListener(new StarImageRequest.ResponseHandler()).go();
     }
 
-    private class MyLoadMoreListener extends RecyclerView.OnScrollListener implements StarImageAdapter.OnLoadMoreListener {
-        private boolean enable;
+    private class MyLoadMoreListener implements StarImageAdapter.OnLoadMoreListener {
         private boolean end;
         private HttpRequestFuture loadMoreRequestFuture;
 
         @Override
-        public void setEnable(boolean enable) {
-            this.enable = enable;
-        }
-
-        @Override
-        public boolean isEnable() {
-            return !end && enable;
+        public boolean isEnd() {
+            return end;
         }
 
         public void reset() {
             end = false;
-            enable = true;
-        }
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-            enable = newState != 0 && (refreshRequestFuture == null || refreshRequestFuture.isFinished());
-            if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
-                Spear.with(getActivity()).pause();
-            } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
-                Spear.with(getActivity()).resume();
-                if (imageRecyclerAdapter != null) {
-                    imageRecyclerAdapter.notifyDataSetChanged();
-                }
-            }
         }
 
         @Override
@@ -219,7 +202,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                 return;
             }
 
-            starImageRequest.setStart(imageRecyclerAdapter.getImageList().size());
+            starImageRequest.setStart(starImageAdapter.getDataSize());
             loadMoreRequestFuture = GoHttp.with(getActivity()).newRequest(starImageRequest, new JsonHttpResponseHandler(StarImageRequest.Response.class), new HttpRequest.Listener<StarImageRequest.Response>() {
                 @Override
                 public void onStarted(HttpRequest httpRequest) {
@@ -233,14 +216,19 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                     }
 
                     List<StarImageRequest.Image> newImageList = responseObject.getImages();
-                    if (newImageList == null || newImageList.size() == 0) {
+                    if (newImageList != null && newImageList.size() > 0) {
+                        starImageAdapter.append(newImageList);
+                        if(newImageList.size() < starImageRequest.getSize()){
+                            end = true;
+                            Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹，已全部送完！", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹", Toast.LENGTH_SHORT).show();
+                        }
+                    }else{
                         end = true;
-                        return;
+                        Toast.makeText(getActivity(), "没有您的包裹了", Toast.LENGTH_SHORT).show();
                     }
-
-                    imageRecyclerAdapter.getImageList().addAll(newImageList);
-                    imageRecyclerAdapter.notifyDataSetChanged();
-                    Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹", Toast.LENGTH_SHORT).show();
+                    starImageAdapter.notifyDataSetChanged();
                 }
 
                 @Override
