@@ -20,6 +20,7 @@ import android.content.Context;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.android.spear.display.ImageDisplayer;
+import me.xiaopan.android.spear.display.OriginalFadeInImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.DrawableHolder;
 import me.xiaopan.android.spear.util.ImageSize;
@@ -28,10 +29,13 @@ import me.xiaopan.android.spear.util.ImageSize;
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
-	private boolean enableMemoryCache = DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-    private ImageDisplayer imageDisplayer;	// 图片显示器
-    private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
-    private DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
+	protected boolean enableMemoryCache = DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+    protected ImageDisplayer imageDisplayer;	// 图片显示器
+    protected DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
+    protected DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
+    protected boolean resizeByImageViewLayoutSize;
+
+    protected boolean tempResizeByDisplayer;
 
     public DisplayOptions(Context context) {
         super(context);
@@ -53,6 +57,17 @@ public class DisplayOptions extends LoadOptions {
      */
     public DisplayOptions displayer(ImageDisplayer displayer) {
         this.imageDisplayer = displayer;
+        if(this.imageDisplayer != null && this.imageDisplayer instanceof OriginalFadeInImageDisplayer){
+            if(resize == null && !resizeByImageViewLayoutSize){
+                resizeByImageViewLayoutSize = true;
+                tempResizeByDisplayer = true;
+            }
+        }else{
+            if(tempResizeByDisplayer){
+                resizeByImageViewLayoutSize = false;
+                tempResizeByDisplayer = false;
+            }
+        }
         return this;
     }
 
@@ -148,6 +163,13 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
+    /**
+     * 根据ImageView的LayoutSize创建一张新的图片
+     */
+    public void resizeByImageViewLayoutSize() {
+        this.resizeByImageViewLayoutSize = true;
+    }
+
     @Override
     public DisplayOptions scaleType(ScaleType scaleType) {
         super.scaleType(scaleType);
@@ -164,6 +186,10 @@ public class DisplayOptions extends LoadOptions {
     public DisplayOptions diskCacheTimeout(long diskCacheTimeout) {
         super.diskCacheTimeout(diskCacheTimeout);
         return this;
+    }
+
+    public boolean isResizeByImageViewLayoutSize() {
+        return resizeByImageViewLayoutSize;
     }
 
     /**

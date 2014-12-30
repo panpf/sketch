@@ -26,13 +26,14 @@ import java.net.URLEncoder;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ImageDisplayer;
+import me.xiaopan.android.spear.display.OriginalFadeInImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.AsyncDrawable;
 import me.xiaopan.android.spear.util.DrawableHolder;
 import me.xiaopan.android.spear.util.FailureCause;
+import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.ImageSize;
 import me.xiaopan.android.spear.util.ImageViewHolder;
-import me.xiaopan.android.spear.util.Scheme;
 
 /**
  * DisplayHelper
@@ -61,13 +62,15 @@ public class DisplayHelper {
 
     ImageView imageView;
 
+    private boolean tempResizeByDisplayer;
+
     /**
      * 创建显示请求生成器
      * @param spear Spear
      * @param uri 支持以下6种类型
      * <blockquote>“http://site.com/image.png“  // from Web
      * <br>“https://site.com/image.png“ // from Web
-     * <br>“file:///mnt/sdcard/image.png“ // from SD card
+     * <br>“/mnt/sdcard/image.png“ // from SD card
      * <br>“content://media/external/audio/albumart/13“ // from content provider
      * <br>“assets://image.png“ // from assets
      * <br>“drawable://" + R.drawable.image // from drawables
@@ -91,9 +94,6 @@ public class DisplayHelper {
             if(this.maxsize == null){
                 this.maxsize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxsize(spear.getConfiguration().getContext());
             }
-
-            // 根据ImageView的宽高计算resize
-            this.resize = spear.getConfiguration().getImageSizeCalculator().calculateImageResize(imageView);
 
             this.scaleType = imageView.getScaleType();
         }
@@ -173,6 +173,7 @@ public class DisplayHelper {
      */
     public DisplayHelper resize(ImageSize resize){
         this.resize = resize;
+        tempResizeByDisplayer = false;
         return this;
     }
 
@@ -184,6 +185,16 @@ public class DisplayHelper {
      */
     public DisplayHelper resize(int width, int height){
         this.resize = new ImageSize(width, height);
+        tempResizeByDisplayer = false;
+        return this;
+    }
+
+    /**
+     * 根据ImageView的LayoutSize创建一张新的图片
+     */
+    public DisplayHelper resizeByImageViewLayoutSize(){
+        this.resize = spear.getConfiguration().getImageSizeCalculator().calculateImageResize(imageView);
+        tempResizeByDisplayer = false;
         return this;
     }
 
@@ -230,6 +241,17 @@ public class DisplayHelper {
      */
     public DisplayHelper displayer(ImageDisplayer displayer) {
         this.imageDisplayer = displayer;
+        if(this.imageDisplayer != null && this.imageDisplayer instanceof OriginalFadeInImageDisplayer){
+            if(resize == null){
+                resizeByImageViewLayoutSize();
+                tempResizeByDisplayer = true;
+            }
+        }else{
+            if(tempResizeByDisplayer){
+                resize = null;
+                tempResizeByDisplayer = false;
+            }
+        }
         return this;
     }
 
@@ -318,7 +340,11 @@ public class DisplayHelper {
             this.maxsize = options.getMaxsize();
         }
         if(this.resize == null){
-            this.resize = options.getResize();
+            if(options.getResize() != null){
+                this.resize = options.getResize();
+            }else if(options.isResizeByImageViewLayoutSize()){
+                resizeByImageViewLayoutSize();
+            }
         }
         if(this.scaleType == null){
             this.scaleType = options.getScaleType();
@@ -378,8 +404,8 @@ public class DisplayHelper {
         }
 
         // 过滤掉不支持的URI协议类型
-        Scheme scheme = Scheme.valueOfUri(uri);
-        if(scheme == Scheme.UNKNOWN){
+        ImageScheme imageScheme = ImageScheme.valueOfUri(uri);
+        if(imageScheme == null){
             if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "未知的协议类型" + " URI" + "=" + uri);
             }
@@ -429,7 +455,7 @@ public class DisplayHelper {
         request.uri = uri;
         request.name = uri;
         request.spear = spear;
-        request.scheme = scheme;
+        request.imageScheme = imageScheme;
         request.enableDiskCache = enableDiskCache;
         request.diskCacheTimeout = diskCacheTimeout;
 

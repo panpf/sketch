@@ -30,29 +30,30 @@ import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectParentMember;
 import me.xiaopan.android.spear.sample.MyActionBarActivity;
-import me.xiaopan.android.spear.sample.fragment.ImageDetailFragment;
+import me.xiaopan.android.spear.sample.fragment.DetailFragment;
 
 /**
  * 大图页面
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
-public class ImageDetailActivity extends MyActionBarActivity implements ImageDetailFragment.SetDispatchTouchEventListener {
-    private ImageDetailFragment.DispatchTouchEventListener dispatchTouchEventListener;
+public class DetailActivity extends MyActionBarActivity implements DetailFragment.SetDispatchTouchEventListener {
+    private DetailFragment.DispatchTouchEventListener dispatchTouchEventListener;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-        ImageDetailFragment imageDetailFragment = new ImageDetailFragment();
-        imageDetailFragment.setArguments(getIntent().getExtras());
+        toolbar.setVisibility(View.GONE);
+
+        DetailFragment detailFragment = new DetailFragment();
+        detailFragment.setArguments(getIntent().getExtras());
 
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.frame_onlyFragment_content, imageDetailFragment)
+                .replace(R.id.frame_onlyFragment_content, detailFragment)
                 .commit();
         getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
-        toolbar.setVisibility(View.GONE);
 	}
 
     @Override
@@ -72,7 +73,13 @@ public class ImageDetailActivity extends MyActionBarActivity implements ImageDet
     }
 
     @Override
-    public void setDispatchTouchEventListener(ImageDetailFragment.DispatchTouchEventListener dispatchTouchEventListener) {
+    public boolean onTouchEvent(MotionEvent event) {
+        System.out.println("ActivityOnTouchEvent");
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public void setDispatchTouchEventListener(DetailFragment.DispatchTouchEventListener dispatchTouchEventListener) {
         this.dispatchTouchEventListener = dispatchTouchEventListener;
     }
 
@@ -83,9 +90,9 @@ public class ImageDetailActivity extends MyActionBarActivity implements ImageDet
     }
 
     public static void launch(Activity activity, ArrayList<String> imageUrlList, int defaultPosition){
-        Intent intent = new Intent(activity, ImageDetailActivity.class);
-        intent.putStringArrayListExtra(ImageDetailFragment.PARAM_REQUIRED_STRING_ARRAY_LIST_URLS, imageUrlList);
-        intent.putExtra(ImageDetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION, defaultPosition);
+        Intent intent = new Intent(activity, DetailActivity.class);
+        intent.putStringArrayListExtra(DetailFragment.PARAM_REQUIRED_STRING_ARRAY_LIST_URLS, imageUrlList);
+        intent.putExtra(DetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION, defaultPosition);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.window_push_enter, R.anim.window_push_exit);
     }

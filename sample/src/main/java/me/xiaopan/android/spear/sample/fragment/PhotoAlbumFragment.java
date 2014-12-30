@@ -18,54 +18,60 @@ package me.xiaopan.android.spear.sample.fragment;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.GridView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import me.xiaoapn.android.spear.sample.R;
-import me.xiaopan.android.spear.sample.activity.ImageDetailActivity;
-import me.xiaopan.android.spear.sample.adapter.ImageGridAdapter;
+import me.xiaopan.android.inject.InjectContentView;
+import me.xiaopan.android.inject.InjectView;
+import me.xiaopan.android.inject.app.InjectFragment;
+import me.xiaopan.android.spear.sample.activity.DetailActivity;
+import me.xiaopan.android.spear.sample.adapter.PhotoAlbumImageAdapter;
+import me.xiaopan.android.widget.PullRefreshLayout;
 
 /**
  * 本地相册页面
  */
-public class PhotoAlbumFragment extends Fragment implements ImageGridAdapter.OnImageClickListener{
-    private GridView gridView;
-    private ImageGridAdapter imageGridAdapter;
+@InjectContentView(R.layout.fragment_photo_album)
+public class PhotoAlbumFragment extends InjectFragment implements PhotoAlbumImageAdapter.OnImageClickListener, PullRefreshLayout.OnRefreshListener{
+    @InjectView(R.id.refreshLayout_photoAlbum) private PullRefreshLayout pullRefreshLayout;
+    @InjectView(R.id.recyclerView_photoAlbum_content) private RecyclerView recyclerView;
+    private PhotoAlbumImageAdapter imageAdapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        gridView = new GridView(getActivity());
-        gridView.setBackgroundColor(Color.WHITE);
-        gridView.setPadding(0, 0, 0, 0);
-        gridView.setNumColumns(2);
-        gridView.setVerticalSpacing(2);
-        gridView.setHorizontalSpacing(2);
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        if(imageGridAdapter != null){
-            gridView.setAdapter(imageGridAdapter);
+        pullRefreshLayout.setOnRefreshListener(this);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+
+        if(imageAdapter != null){
+            recyclerView.setAdapter(imageAdapter);
         }else{
-            new ReadImagesTask(getActivity().getBaseContext()).execute();
+            pullRefreshLayout.startRefresh();
         }
-
-        return gridView;
     }
 
     @Override
     public void onImageClick(int position) {
-        ImageDetailActivity.launch(getActivity(), (ArrayList<String>) imageGridAdapter.getImageUrlList(), position);
+        DetailActivity.launch(getActivity(), (ArrayList<String>) imageAdapter.getImageUrlList(), position);
+    }
+
+    @Override
+    public void onRefresh() {
+        if(getActivity() != null){
+            new ReadImagesTask(getActivity().getBaseContext()).execute();
+        }
     }
 
     private class ReadImagesTask extends AsyncTask<Void, Integer, List<String>> {
@@ -100,7 +106,12 @@ public class PhotoAlbumFragment extends Fragment implements ImageGridAdapter.OnI
 
         @Override
         protected void onPostExecute(List<String> strings) {
-            gridView.setAdapter(imageGridAdapter = new ImageGridAdapter(getActivity(), strings, 2, 2, PhotoAlbumFragment.this));
+            if(getActivity() == null){
+                return;
+            }
+
+            recyclerView.setAdapter(imageAdapter = new PhotoAlbumImageAdapter(getActivity(), strings, PhotoAlbumFragment.this, recyclerView));
+            pullRefreshLayout.stopRefresh();
         }
     }
 }

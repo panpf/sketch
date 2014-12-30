@@ -37,6 +37,8 @@ public class StarHomeActivity extends MyActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         StarHomeFragment starHomeFragment = new StarHomeFragment();
         starHomeFragment.setArguments(getIntent().getExtras());
 

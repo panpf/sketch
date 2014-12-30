@@ -22,7 +22,7 @@ import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
-import me.xiaopan.android.spear.sample.activity.ImageDetailActivity;
+import me.xiaopan.android.spear.sample.activity.DetailActivity;
 import me.xiaopan.android.spear.sample.adapter.SearchImageAdapter;
 import me.xiaopan.android.spear.sample.net.request.SearchImageRequest;
 import me.xiaopan.android.spear.sample.widget.HintView;
@@ -84,7 +84,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
 
     @Override
     public void onItemClick(int position, SearchImageRequest.Image image) {
-        ImageDetailActivity.launch(getActivity(), (ArrayList<String>) searchImageAdapter.getImageUrlList(), position);
+        DetailActivity.launch(getActivity(), (ArrayList<String>) searchImageAdapter.getImageUrlList(), position);
     }
 
     @Override

@@ -39,6 +39,8 @@ public class MyApplication extends Application {
         Spear.putOptions(
             DisplayOptionsType.LOCAL_PHOTO_ALBUM_ITEM,
             new DisplayOptions(getBaseContext())
+                .disableDiskCache()
+                .disableMemoryCache()
                 .loadingDrawable(R.drawable.image_loading, true)
                 .loadFailDrawable(R.drawable.image_load_fail, true)
                 .displayer(new OriginalFadeInImageDisplayer())

@@ -29,10 +29,10 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 ###Usage guide
 
 ####显示图片
-Spear支持以下六种URI：
+Spear支持以下6种URI：
 >* "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
 >* "https://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
->* "file:///mnt/sdcard/image.png"; // from SD card
+>* "/mnt/sdcard/image.png"; // from SD card
 >* "content://media/external/audio/albumart/13"; // from content provider
 >* "assets://image.png"; // from assets
 >* "drawable://" + R.drawable.image; // from drawable resource
@@ -45,7 +45,7 @@ Spear.with(context).display(uri, imageView).fire();
 
 **Image from file**
 ```java
-Spear.with(context).display("file:///mnt/sfs.png", imageView).fire();
+Spear.with(context).display("/mnt/sfs.png", imageView).fire();
 ```
 or
 ```java
@@ -90,7 +90,7 @@ Spear.with(context).display(uri, imageView).fire();
 Spear.with(getBaseContext())
     .display("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg", imageView)
     .loadingDrawable(R.drawable.image_loading)    // 设置正在加载的时候显示的图片
-    .loadFailedDrawable(R.drawable.image_load_fail)   // 设置当加载失败的时候显示的图片
+    .loadFailDrawable(R.drawable.image_load_fail)   // 设置当加载失败的时候显示的图片
     .disableDiskCache() // 禁用磁盘缓存
     .disableMemoryCache()   // 禁用内存缓存
     .diskCacheTimeout(60 * 1000) // 设置磁盘缓存有效期为60秒
@@ -182,11 +182,45 @@ display()与load()、download()的区别
 >* [spear-1.2.0-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.2.0-sources.zip)
 
 ###Change log
-###1.2.1
->* ``修复``. 修复了当SpearImageView在RecyclerView中使用的时候会因为在onDetachedFromWindow()方法中设置了setImageDrawable(null)导致图片显示空白的BUG
->* ``修复``. 修复使用SpearImageView时，没有设置DisplayOptions导致的崩溃问题
->* ``优化``. 优化默认的动画的执行时间，从400毫秒改为300毫秒
+###1.3.0
+**SpearImageView**
+>* ``修复``. 修复了由于在onDetachedFromWindow()方法中执行了setImageDrawable(null)释放图片导致在RecyclerView回滚的时候图片显示空白的BUG
+>* ``修复``. 修复了由于在onDetachedFromWindow()方法中主动取消了请求导致在RecyclerView中会出现错误取消而引起了图片显示不出来的BUG
+>* ``修复``. 取消了在setImageByUri()方法中的过滤请求功能，因为这里只能根据URI过滤。例如：同一个URI在同一个SpearImageView上调用setImageByUri()方法显示了两次，但是这两次显示的时候SpearImageView的宽高是不一样的，结果就是第一次的显示请求继续执行，第二次的显示请求被拒绝了。现在去掉过滤功能后统一都交给了Spear处理，结果会是第一次的显示请求被取消，第二次的显示请求继续执行。
+>* ``新增``. 新增在图片表面显示进度的功能，你只需调用setEnableShowProgress(boolean)方法开启即可
+>* ``优化``. debug开关不再由Spear.isDebug()控制，而是在SpearImageView中新增了一个debugMode参数来控制
+>* ``新增``. 新增类似MaterialDesign的按下脉波效果。你只需注册点击事件或调用setClickable(true)，然后调用setEnablePressRipple(true)即可
+
+**Other**
+>* ``修复``. display时计算maxsize和resize的时候不再考虑real width和real height。这是因为当ImageView的宽高是固定的，在循环重复利用的时候从第二次循环利用开始，最终计算出来的size都将是上一次的size，显然这是个很严重的BUG。当所有的ImageView的宽高都是一样的时候看不出来这个问题，都不一样的时候问题就出来了。
 >* ``优化``. 默认任务执行器的队列长度由20调整为200，这是由于如果你一次性要显示大量的图片，队列长度比较小的话，后面的将会出现异常
+>* ``修复``. 修复了由于DisplayHelper、LoadHelper、DownloadHelper的options()方法发现参数为null时返回了一个null对象的BUG，这会导致使用SpearImageView时由于没有设置DisplayOptions而引起崩溃
+>* ``修复``. 修复在2.3及以下缓存RecyclingBitmapDrawable的时候忘记添加计数导致Bitmap被提前回收而引发崩溃的BUG
+>* ``删除``. 删除SoftReferenceMemoryCache.java
+>* ``移动``. 移动DiskCache.java、LruDiskCache.java、LruMemoryCache.java、MemoryCache.java到cache目录下
+>* ``优化``. 优化HttpClientImageDownloader，读取数据的时候出现异常或取消的时候主动关闭输入流，避免堵塞连接池，造成ConnectionPoolTimeoutException异常
+>* ``优化``. 将计算默认maxsize的代码封装成一个方法并放到了ImageSizeCalculator.java中，方便开发者自定义
+>* ``优化``. 优化了默认的inSampleSize的计算方法，增加了限制图片像素数超过目标尺寸像素的两倍，这样可以有效防止那些一边特小一边特大的图片，以特大的姿态被加载到内存中
+>* ``优化``. 优化了默认的ImageDisplayer和默认的裁剪ImageProcessor的实现方式
+>* ``修改``. 修改DisplayHelper中loadFailedDrawable()方法的名称为loadFailDrawable()
+>* ``修复``. 修复DisplayHelper、LoadHelper、DownloadHelper中调用options()方法设置参数的时候会直接覆盖Helper中的参数的BUG，修改后的规则是如果Options中的参数倍设置过才会直接覆盖
+>* ``修改``. ImageDownloader.setTimeout()改名为setConnectTimeout()
+>* ``优化``. 将一些配置移到了Configuration.java中，debug配置直接改成了静态的
+>* ``修改``. 默认的图片下载器改成了HttpUrlConnectionImageDownloader，HttpClientImageDownloader退居二线变成了替补
+>* ``优化``. 优化了自带的图片处理器，根据ScaleType，以不同的方式处理图片，主要体现在是否裁剪图片上
+>* ``优化``. 默认图片和失败图片使用ImageProcessor处理时支持使用DisplayHelper中的resize和scaleType
+>* ``优化``. 优化自带的图片处理器，对ScaleType支持更完善，更准确
+>* ``新增``. 增加pause功能，你可以在列表滚动时调用pause()方法暂停加载新图片，在列表停止滚动后调用resume()方法恢复并刷新列表，通过这样的手段来提高列表滑动流畅度
+>* ``新增``. LruDiskCache增加maxsize功能
+>* ``优化``. 调整LruDiskCache的默认保留空间为100M
+>* ``优化``. 当uri为null或空时显示loadingDrawable
+>* ``修改``. DisplayListener.From.LOCAL改名为DisplayListener.From.DISK
+>* ``新增``. 增加对例如“/mtn/sdcard0/sample.png”uri的支持
+>* ``优化``. 默认解码器在遇到1x1的图片时按照失败处理
+>* ``优化``. 默认线程池的keepAliveTime时间由1秒改为60秒
+>* ``修改``. 不再默认根据ImageView的Layout Size设置resize，新增resizeByImageViewLayoutSize()方法开启此功能
+>* ``修改``. 当你使用OriginalFadeInImageDisplayer作为displayer的时候会默认开启resizeByImageViewLayoutSize功能，因为不开启resizeByImageViewLayoutSize的话图片最终就会显示变形
+>* ``修改``. image uri不再支持file:///mnt/sdcard/image.png，改为直接支持/mnt/sdcard/image.png
 
 ###1.2.0
 >* ``优化``. display的fire方法去掉了异步线程过滤，由于display基本都是在主线程执行的过滤异步线程没有意义
@@ -194,31 +228,7 @@ display()与load()、download()的区别
 >* ``优化``. 优化了DisplayHelper的使用，以前是为每一次display都创建一个DisplayHelper，现在是只要你是按照display().fire()这样连续的使用，那么所有的display将共用一个DisplayHelper，这将会避免创建大量的DisplayHelper
 >* ``优化``. ProgressListener.onUpdateProgress(long, long)改为ProgressListener.onUpdateProgress(int, int)，因为int足够用了
 
-###1.1.3
->* ``修改``. 修改ProgressCallback的名字为ProgressListener并且各个Request.Helper中的progressCallback()方法页改名为progressListener
->* ``优化``. DisplayRequest.Helper.fire()方法不再限制只能在主线程中执行
->* ``修改``. 修改SpearImageView.setImageByDrawable()方法的名称为setImageByResource()
-
-###1.1.2
->* ``修改``. 修改DisplayRequest.Builder、LoadRequest.Builder、DownloadRequest.Builder的名字为DisplayRequest.Helper、LoadRequest.Helper、DownloadRequest.Helper，这是因为DisplayRequest.Builder原本应有的build()方法被fire()代替了，而功能也是大不一样，所以觉得叫Builder不太合适
-
-###1.1.1
->* ``新增``. RequestFuture增加了getName()方法用于获取请求名称
->* ``优化``. 优化了SpearImageView中onDetachedFromWindow()取消时的日志
->* ``新增``. SpearImageView的setImageUriBy***系列方法新增了返回值，返回对应的RequestFuture，方便查看请求的状态
->* ``修改``. SpearImageView的setImageByUri(Uri)方法改名为setImageByContent(Uri)
-
-####1.1.0
->* ``新增``. ImageDownloader新增setProgressCallbackNumber(int)方法可用来控制进度回调次数
->* ``新增``. DownloadListener、LoadLinstener、DisplayListener的onCompleted()方法新增From参数，用来表示数据来自哪里
->* ``新增``.  SpearImageView新增类似Picasso的Debug功能，只需调用Spear.setDebugMode(true)开启调试模式即可开启此功能
->* ``优化``. 优化内置的几种图片处理器的resize处理规则。当原图尺寸小于resize时，之前是担心会创建一张更大的图，浪费内存，于是做法是尺寸不变，现在的做法是依然处理但是resize要根据原图尺寸重新计算，原则就是保证新的resize小于原图尺寸并且宽高比同旧的resize一样。例如原图宽高是300x225，resize宽高是400x400，那么之前的结果就是resize还是400x400，最终图片是300x225，而现在的结果是调整resize为255x255，最终图片是225x225
->* ``新增``. 支持仅根据宽或高限制图片大小，例如：maxsize为500x-1，意思就是宽最大为500，高随之缩放
->* ``优化``. 调整了DefaultRequestExecitor的创建方式，网络下载线程池最大容量由10修改为5
->* ``优化``. 调整了DisplayRequest.Helper的options()方法里应用DisplayOptions.resize的规则
-
-####1.0.0
-Spear脱胎换骨，全新出发
+[查看更多...](https://github.com/xiaopansky/Spear/wiki/Change-log/_edit)
 
 ###License
 ```java

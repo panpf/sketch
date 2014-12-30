@@ -3,6 +3,7 @@ package me.xiaopan.android.spear.sample.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
@@ -43,7 +44,7 @@ public class StarCatalogFragment extends InjectFragment implements PullRefreshLa
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        contentRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         refreshLayout.setOnRefreshListener(this);
 
         if(adapter == null){
@@ -109,7 +110,7 @@ public class StarCatalogFragment extends InjectFragment implements PullRefreshLa
             public void onCanceled(HttpRequest httpRequest) {
 
             }
-        }).responseHandleCompletedAfterListener(new StarCatalogRequest.ResponseHandler()).go();
+        }).responseHandleCompletedAfterListener(new StarCatalogRequest.ResponseHandler(isMan)).go();
     }
 
     @Override

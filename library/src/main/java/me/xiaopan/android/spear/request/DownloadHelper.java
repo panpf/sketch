@@ -20,7 +20,7 @@ import android.util.Log;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.util.FailureCause;
-import me.xiaopan.android.spear.util.Scheme;
+import me.xiaopan.android.spear.util.ImageScheme;
 
 /**
  * DownloadHelper
@@ -139,8 +139,8 @@ public class DownloadHelper {
         }
 
         // 过滤掉不支持的URI协议类型
-        Scheme scheme = Scheme.valueOfUri(uri);
-        if(!(scheme == Scheme.HTTP || scheme == Scheme.HTTPS)){
+        ImageScheme imageScheme = ImageScheme.valueOfUri(uri);
+        if(!(imageScheme == ImageScheme.HTTP || imageScheme == ImageScheme.HTTPS)){
             if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "download()方法只能处理http或https协议" + " URI" + "=" + uri);
             }
@@ -156,7 +156,7 @@ public class DownloadHelper {
         request.uri = uri;
         request.name = uri;
         request.spear = spear;
-        request.scheme = scheme;
+        request.imageScheme = imageScheme;
         request.enableDiskCache = enableDiskCache;
         request.diskCacheTimeout = diskCacheTimeout;
 

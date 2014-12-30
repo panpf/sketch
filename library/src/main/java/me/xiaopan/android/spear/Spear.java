@@ -32,7 +32,7 @@ import me.xiaopan.android.spear.request.LoadHelper;
 import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.RequestOptions;
 import me.xiaopan.android.spear.util.AsyncDrawable;
-import me.xiaopan.android.spear.util.Scheme;
+import me.xiaopan.android.spear.util.ImageScheme;
 
 /**
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
@@ -115,7 +115,7 @@ public class Spear {
      * @param uri 支持以下6种类型
      * <blockquote>“http://site.com/image.png“  // from Web
      * <br>“https://site.com/image.png“ // from Web
-     * <br>“file:///mnt/sdcard/image.png“ // from SD card
+     * <br>“/mnt/sdcard/image.png“ // from SD card
      * <br>“content://media/external/audio/albumart/13“ // from content provider
      * <br>“assets://image.png“ // from assets
      * <br>“drawable://" + R.drawable.image // from drawables
@@ -134,7 +134,7 @@ public class Spear {
      * @return LoadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(File imageFile, LoadListener loadListener){
-        return new LoadHelper(this, Scheme.FILE.createUri(imageFile.getPath())).listener(loadListener);
+        return new LoadHelper(this, imageFile.getPath()).listener(loadListener);
 	}
 
     /**
@@ -144,7 +144,7 @@ public class Spear {
      * @return LoadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(int drawableResId, LoadListener loadListener){
-        return new LoadHelper(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
+        return new LoadHelper(this, ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
 	}
 
     /**
@@ -164,7 +164,7 @@ public class Spear {
      * @param uri 支持以下6种类型
      * <blockquote>“http://site.com/image.png“  // from Web
      * <br>“https://site.com/image.png“ // from Web
-     * <br>“file:///mnt/sdcard/image.png“ // from SD card
+     * <br>“/mnt/sdcard/image.png“ // from SD card
      * <br>“content://media/external/audio/albumart/13“ // from content provider
      * <br>“assets://image.png“ // from assets
      * <br>“drawable://" + R.drawable.image // from drawables
@@ -183,7 +183,7 @@ public class Spear {
      * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(File imageFile, ImageView imageView){
-        return configuration.getDisplayHelperManager().getDisplayHelper(this, Scheme.FILE.createUri(imageFile.getPath()), imageView);
+        return configuration.getDisplayHelperManager().getDisplayHelper(this, imageFile.getPath(), imageView);
     }
 
     /**
@@ -193,7 +193,7 @@ public class Spear {
      * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(int drawableResId, ImageView imageView){
-        return configuration.getDisplayHelperManager().getDisplayHelper(this, Scheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
+        return configuration.getDisplayHelperManager().getDisplayHelper(this, ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
     }
 
     /**

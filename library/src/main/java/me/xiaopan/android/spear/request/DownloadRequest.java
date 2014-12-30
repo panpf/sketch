@@ -20,7 +20,7 @@ import java.io.File;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.task.Task;
-import me.xiaopan.android.spear.util.Scheme;
+import me.xiaopan.android.spear.util.ImageScheme;
 
 /**
  * 下载请求
@@ -38,7 +38,7 @@ public class DownloadRequest implements Request {
     Spear spear;
     String uri;	// 图片地址
     String name;	// 名称，用于在输出LOG的时候区分不同的请求
-    Scheme scheme;	// Uri协议格式
+    ImageScheme imageScheme;	// Uri协议格式
 	DownloadListener downloadListener;  // 下载监听器
     ProgressListener downloadProgressListener;  // 下载进度监听器
 
@@ -104,8 +104,8 @@ public class DownloadRequest implements Request {
 	/**
 	 * 获取Uri协议类型
 	 */
-	public Scheme getScheme() {
-		return scheme;
+	public ImageScheme getImageScheme() {
+		return imageScheme;
 	}
 
 	/**

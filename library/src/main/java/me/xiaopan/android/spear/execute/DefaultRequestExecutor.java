@@ -42,7 +42,7 @@ import me.xiaopan.android.spear.task.DownloadTask;
 import me.xiaopan.android.spear.task.LoadJoinDownloadListener;
 import me.xiaopan.android.spear.task.LoadJoinDownloadProgressListener;
 import me.xiaopan.android.spear.task.LoadTask;
-import me.xiaopan.android.spear.util.Scheme;
+import me.xiaopan.android.spear.util.ImageScheme;
 
 /**
  * 默认的请求执行器
@@ -117,7 +117,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
 	 * @param loadRequest 记载请求
 	 */
 	private void executeLoadRequest(LoadRequest loadRequest){
-		switch(loadRequest.getScheme()){
+		switch(loadRequest.getImageScheme()){
 			case HTTP :
 			case HTTPS :
                 // 根据需求生成缓存文件
@@ -166,7 +166,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
                 }
 				break;
 			case ASSETS :
-                localTaskExecutor.execute(new LoadTask(loadRequest, new AssetsDecodeListener(Scheme.ASSETS.crop(loadRequest.getUri()), loadRequest), LoadListener.From.LOCAL));
+                localTaskExecutor.execute(new LoadTask(loadRequest, new AssetsDecodeListener(ImageScheme.ASSETS.crop(loadRequest.getUri()), loadRequest), LoadListener.From.LOCAL));
                 if(Spear.isDebugMode()){
                     Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - ASSETS" + "；" + loadRequest.getName());
                 }
@@ -178,7 +178,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
                 }
 				break;
 			case DRAWABLE :
-                localTaskExecutor.execute(new LoadTask(loadRequest, new DrawableDecodeListener(Scheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest), LoadListener.From.LOCAL));
+                localTaskExecutor.execute(new LoadTask(loadRequest, new DrawableDecodeListener(ImageScheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest), LoadListener.From.LOCAL));
                 if(Spear.isDebugMode()){
                     Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - DRAWABLE" + "；" + loadRequest.getName());
                 }

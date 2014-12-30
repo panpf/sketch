@@ -30,6 +30,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
@@ -60,6 +61,7 @@ public class MainActivity extends MyActionBarActivity implements StartFragment.G
     private Fragment indexFragment;
     private Fragment starFragment;
     private Fragment photoAlbumFragment;
+    private long lastClickBackTime;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -138,7 +140,7 @@ public class MainActivity extends MyActionBarActivity implements StartFragment.G
         titleTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
 
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_main_content, new StartFragment())
+                .replace(R.id.frame_main_content, new PhotoAlbumFragment())
                 .commit();
         getSupportActionBar().setTitle("明星");
     }
@@ -176,6 +178,17 @@ public class MainActivity extends MyActionBarActivity implements StartFragment.G
     @Override
     public PagerSlidingTabStrip onGetPagerSlidingTabStrip() {
         return titleTabStrip;
+    }
+
+    @Override
+    public void onBackPressed() {
+        long currentTime = System.currentTimeMillis();
+        if(currentTime - lastClickBackTime < 2000){
+            super.onBackPressed();
+        }else{
+            lastClickBackTime = currentTime;
+            Toast.makeText(getBaseContext(), "再按一下返回键退出"+getResources().getString(R.string.app_name), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private static class TitleTabFactory implements PagerSlidingTabStrip.TabViewFactory{

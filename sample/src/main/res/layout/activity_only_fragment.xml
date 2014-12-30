@@ -11,6 +11,5 @@
     <FrameLayout
         android:id="@+id/frame_onlyFragment_content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        style="@style/RootLayout"/>
+        android:layout_height="match_parent"/>
 </LinearLayout>

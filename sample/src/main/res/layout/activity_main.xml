@@ -28,42 +28,120 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
-        <LinearLayout
+        <ScrollView
             android:id="@+id/layout_main_leftMenu"
             android:layout_width="100dp"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:orientation="vertical"
             android:clickable="true"
             android:background="@drawable/shape_drawer_menu_background">
-            <TextView
-                android:id="@+id/button_main_index"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="首页"
-                android:background="@drawable/selector_list_item"/>
-            <TextView
-                android:id="@+id/button_main_star"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="明星"
-                android:background="@drawable/selector_list_item"/>
-            <TextView
-                android:id="@+id/button_main_photoAlbum"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="本地相册"
-                android:background="@drawable/selector_list_item"/>
-            <TextView
-                android:id="@+id/button_main_about"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="关于Spear"
-                android:background="@drawable/selector_list_item"/>
-        </LinearLayout>
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/button_main_index"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="首页"
+                    android:background="@drawable/selector_list_item"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/default_text_color_normal"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="壁纸"
+                    android:clickable="true"
+                    android:background="@drawable/selector_list_item"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="家居"
+                    android:clickable="true"
+                    android:background="@drawable/selector_list_item"/>
+                <TextView
+                    android:id="@+id/button_main_star"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="明星"
+                    android:background="@drawable/selector_list_item"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="摄像"
+                    android:clickable="true"
+                    android:background="@drawable/selector_list_item"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="美食"
+                    android:clickable="true"
+                    android:background="@drawable/selector_list_item"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="设计"
+                    android:clickable="true"
+                    android:background="@drawable/selector_list_item"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="时尚"
+                    android:clickable="true"
+                    android:background="@drawable/selector_list_item"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="旅游"
+                    android:clickable="true"
+                    android:background="@drawable/selector_list_item"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="宠物"
+                    android:background="@drawable/selector_list_item"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="汽车"
+                    android:clickable="true"
+                    android:background="@drawable/selector_list_item"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:background="@color/default_text_color_normal"/>
+
+                <TextView
+                    android:id="@+id/button_main_photoAlbum"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="本地相册"
+                    android:background="@drawable/selector_list_item"/>
+                <TextView
+                    android:id="@+id/button_main_about"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:text="关于Spear"
+                    android:background="@drawable/selector_list_item"/>
+            </LinearLayout>
+        </ScrollView>
     </android.support.v4.widget.DrawerLayout>
 </LinearLayout>

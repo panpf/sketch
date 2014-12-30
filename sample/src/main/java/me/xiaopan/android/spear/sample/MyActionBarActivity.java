@@ -18,6 +18,8 @@ package me.xiaopan.android.spear.sample;
 
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuItem;
+import android.view.View;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.inject.InjectView;
@@ -43,5 +45,15 @@ public class MyActionBarActivity extends InjectActionBarActivity {
 
     protected void onPostSetSupportActionBar(){
 
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId() == android.R.id.home){
+            onBackPressed();
+            return true;
+        }else{
+            return super.onOptionsItemSelected(item);
+        }
     }
 }

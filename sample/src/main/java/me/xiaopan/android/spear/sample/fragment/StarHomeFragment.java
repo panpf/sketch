@@ -1,11 +1,8 @@
 package me.xiaopan.android.spear.sample.fragment;
 
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -26,7 +23,7 @@ import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
-import me.xiaopan.android.spear.sample.activity.ImageDetailActivity;
+import me.xiaopan.android.spear.sample.activity.DetailActivity;
 import me.xiaopan.android.spear.sample.adapter.StarImageAdapter;
 import me.xiaopan.android.spear.sample.net.request.StarHomeBackgroundRequest;
 import me.xiaopan.android.spear.sample.net.request.StarImageRequest;
@@ -86,7 +83,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
 
     @Override
     public void onItemClick(int position, StarImageRequest.Image image) {
-        ImageDetailActivity.launch(getActivity(), (ArrayList<String>) starImageAdapter.getImageUrlList(), position);
+        DetailActivity.launch(getActivity(), (ArrayList<String>) starImageAdapter.getImageUrlList(), position);
     }
 
     @Override
@@ -215,6 +212,8 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                         return;
                     }
 
+                    int count = starImageAdapter.getItemCount();
+
                     List<StarImageRequest.Image> newImageList = responseObject.getImages();
                     if (newImageList != null && newImageList.size() > 0) {
                         starImageAdapter.append(newImageList);
@@ -228,7 +227,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                         end = true;
                         Toast.makeText(getActivity(), "没有您的包裹了", Toast.LENGTH_SHORT).show();
                     }
-                    starImageAdapter.notifyDataSetChanged();
+                    starImageAdapter.notifyItemInserted(count);
                 }
 
                 @Override

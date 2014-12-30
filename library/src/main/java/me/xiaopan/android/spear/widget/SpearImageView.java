@@ -39,8 +39,8 @@ import me.xiaopan.android.spear.request.DisplayOptions;
 import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.request.RequestFuture;
 import me.xiaopan.android.spear.util.FailureCause;
+import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
-import me.xiaopan.android.spear.util.Scheme;
 
 /**
  * SpearImageView
@@ -299,7 +299,7 @@ public class SpearImageView extends ImageView{
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
     public RequestFuture setImageByFile(File imageFile){
-        return setImageByUri(Scheme.FILE.createUri(imageFile.getPath()));
+        return setImageByUri(ImageScheme.FILE.createUri(imageFile.getPath()));
     }
 
     /**
@@ -308,7 +308,7 @@ public class SpearImageView extends ImageView{
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
     public RequestFuture setImageByResource(int drawableResId){
-        return setImageByUri(Scheme.DRAWABLE.createUri(String.valueOf(drawableResId)));
+        return setImageByUri(ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId)));
     }
 
     /**
@@ -317,7 +317,7 @@ public class SpearImageView extends ImageView{
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
     public RequestFuture setImageByAssets(String imageFileName){
-        return setImageByUri(Scheme.ASSETS.createUri(imageFileName));
+        return setImageByUri(ImageScheme.ASSETS.createUri(imageFileName));
     }
 
     /**

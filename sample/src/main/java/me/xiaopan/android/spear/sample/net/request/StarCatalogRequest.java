@@ -18,24 +18,40 @@ import me.xiaopan.android.spear.sample.net.NetUtils;
 public abstract class StarCatalogRequest implements Request{
 
     public static class ResponseHandler implements HttpRequest.ResponseHandleCompletedAfterListener<String> {
+        public boolean isMan;
+
+        public ResponseHandler(boolean isMan) {
+            this.isMan = isMan;
+        }
+
         @Override
         public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, String sourceContent, boolean b, boolean b2) throws Throwable {
             Result result = new Result();
+            result.setTitle(isMan?"男明星":"女明星");
             String json = NetUtils.substring(sourceContent, "\"data\" : ", "\\}\\)\\;", null);
-            result.setWomanStarList((List<Star>) new Gson().fromJson(json, new TypeToken<List<Star>>(){}.getType()));
+            result.setStarList((List<Star>) new Gson().fromJson(json, new TypeToken<List<Star>>() {}.getType()));
             return result;
         }
     }
 
     public static class Result {
-        private List<Star> womanStarList;
+        private String title;
+        private List<Star> starList;
 
-        public List<Star> getWomanStarList() {
-            return womanStarList;
+        public String getTitle() {
+            return title;
         }
 
-        public void setWomanStarList(List<Star> womanStarList) {
-            this.womanStarList = womanStarList;
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public List<Star> getStarList() {
+            return starList;
+        }
+
+        public void setStarList(List<Star> starList) {
+            this.starList = starList;
         }
     }
 

@@ -16,15 +16,14 @@
 
 package me.xiaopan.android.spear.request;
 
-import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.FailureCause;
+import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.ImageSize;
-import me.xiaopan.android.spear.util.Scheme;
 
 /**
  * LoadHelper
@@ -52,7 +51,7 @@ public class LoadHelper {
      * @param uri 支持以下6种类型
      * <blockquote>“http://site.com/image.png“  // from Web
      * <br>“https://site.com/image.png“ // from Web
-     * <br>“file:///mnt/sdcard/image.png“ // from SD card
+     * <br>“/mnt/sdcard/image.png“ // from SD card
      * <br>“content://media/external/audio/albumart/13“ // from content provider
      * <br>“assets://image.png“ // from assets
      * <br>“drawable://" + R.drawable.image // from drawables
@@ -228,8 +227,8 @@ public class LoadHelper {
         }
 
         // 过滤掉不支持的URI协议类型
-        Scheme scheme = Scheme.valueOfUri(uri);
-        if(scheme == Scheme.UNKNOWN){
+        ImageScheme imageScheme = ImageScheme.valueOfUri(uri);
+        if(imageScheme == null){
             if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "未知的协议类型" + " URI" + "=" + uri);
             }
@@ -245,7 +244,7 @@ public class LoadHelper {
         request.uri = uri;
         request.name = uri;
         request.spear = spear;
-        request.scheme = scheme;
+        request.imageScheme = imageScheme;
         request.enableDiskCache = enableDiskCache;
         request.diskCacheTimeout = diskCacheTimeout;
 

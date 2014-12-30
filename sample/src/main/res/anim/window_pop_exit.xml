@@ -3,11 +3,11 @@
     <translate
         android:duration="400"
         android:fromXDelta="0"
-        android:toXDelta="100%p"
-        android:interpolator="@android:anim/decelerate_interpolator"/>
+        android:interpolator="@android:anim/decelerate_interpolator"
+        android:toXDelta="100%p" />
     <alpha
         android:duration="400"
         android:fromAlpha="1.0"
-        android:toAlpha="0.0"
-        android:interpolator="@android:anim/decelerate_interpolator"/>
+        android:interpolator="@android:anim/decelerate_interpolator"
+        android:toAlpha="0.0" />
 </set>
