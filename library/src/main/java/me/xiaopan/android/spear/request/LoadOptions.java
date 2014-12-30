@@ -28,10 +28,10 @@ import me.xiaopan.android.spear.util.ImageSize;
  * 显示选项
  */
 public class LoadOptions extends DownloadOptions{
-    private ScaleType scaleType; //图片缩放方式，在处理图片的时候会用到
-    private ImageSize maxsize;	//解码最大图片尺寸，用于读取图片时计算inSampleSize
-    private ImageSize resize;	// 处理尺寸，BitmapProcessor会根据此尺寸来创建新的图片
-    private ImageProcessor imageProcessor;	//图片处理器
+    protected ScaleType scaleType; //图片缩放方式，在处理图片的时候会用到
+    protected ImageSize maxsize;	//解码最大图片尺寸，用于读取图片时计算inSampleSize
+    protected ImageSize resize;	// 处理尺寸，BitmapProcessor会根据此尺寸来创建新的图片
+    protected ImageProcessor imageProcessor;	//图片处理器
 
     public LoadOptions(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
