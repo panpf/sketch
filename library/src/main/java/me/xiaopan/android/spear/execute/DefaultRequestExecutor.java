@@ -160,7 +160,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
                 }
 				break;
 			case FILE :
-                localTaskExecutor.execute(new LoadTask(loadRequest, new FileDecodeListener(new File(Scheme.FILE.crop(loadRequest.getUri())), loadRequest), LoadListener.From.LOCAL));
+                localTaskExecutor.execute(new LoadTask(loadRequest, new FileDecodeListener(new File(loadRequest.getUri()), loadRequest), LoadListener.From.LOCAL));
                 if(Spear.isDebugMode()){
                     Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - FILE" + "；" + loadRequest.getName());
                 }
@@ -212,7 +212,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
             if(workQueue != null){
                 workQueue = new LinkedBlockingQueue<Runnable>(200);
             }
-            this.taskDispatchExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
+            this.taskDispatchExecutor = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
             return this;
         }
 
@@ -223,7 +223,7 @@ public class DefaultRequestExecutor implements RequestExecutor {
             if(workQueue == null){
                 workQueue = new LinkedBlockingQueue<Runnable>(200);
             }
-            this.netTaskExecutor = new ThreadPoolExecutor(maxPoolSize, maxPoolSize, 1, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
+            this.netTaskExecutor = new ThreadPoolExecutor(maxPoolSize, maxPoolSize, 60, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
             return this;
         }
 
@@ -231,19 +231,19 @@ public class DefaultRequestExecutor implements RequestExecutor {
             if(workQueue == null){
                 workQueue = new LinkedBlockingQueue<Runnable>(200);
             }
-            this.localTaskExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
+            this.localTaskExecutor = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, workQueue, new ThreadPoolExecutor.DiscardOldestPolicy());
             return this;
         }
 
         public DefaultRequestExecutor build(){
             if(taskDispatchExecutor == null){
-                taskDispatchExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
+                taskDispatchExecutor = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
             }
             if(netTaskExecutor == null){
-                netTaskExecutor = new ThreadPoolExecutor(5, 5, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
+                netTaskExecutor = new ThreadPoolExecutor(5, 5, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
             }
             if(localTaskExecutor == null){
-                localTaskExecutor = new ThreadPoolExecutor(1, 1, 1, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
+                localTaskExecutor = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
             }
             return new DefaultRequestExecutor(this);
         }
