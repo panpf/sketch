@@ -34,6 +34,7 @@ import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
@@ -182,7 +183,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         try {
             responseCode = connection.getResponseCode();
         } catch (IOException e) {
-            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "获取状态码时发生异常" + "；" + request.getName());
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "获取状态码时发生异常" + "；" + request.getName()+"；HttpResponseHeader="+getResponseHeadersString(connection));
             releaseConnection(connection, request);
             return null;
         }
@@ -190,12 +191,12 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         try {
             responseMessage = connection.getResponseMessage();
         } catch (IOException e) {
-            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "获取状态消息时发生异常" + "；" + request.getName());
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "获取状态消息时发生异常" + "；" + request.getName()+"；HttpResponseHeader="+getResponseHeadersString(connection));
             releaseConnection(connection, request);
             return null;
         }
         if (responseCode < 200 || responseCode > 299) {
-            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "状态码异常："+responseCode+" "+responseMessage + "；" + request.getName());
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "状态码异常："+responseCode+" "+responseMessage + "；" + request.getName()+"；HttpResponseHeader="+getResponseHeadersString(connection));
             releaseConnection(connection, request);
             return null;
         }
@@ -203,7 +204,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         // 检查内容长度
         int contentLength = connection.getHeaderFieldInt("Content-Length", -1);
         if (contentLength <= 0) {
-            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "内容长度异常："+contentLength + "；" + request.getName());
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "内容长度异常："+contentLength + "；" + request.getName()+"；HttpResponseHeader="+getResponseHeadersString(connection));
             releaseConnection(connection, request);
             return null;
         }
@@ -228,7 +229,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         try {
             inputStream = connection.getInputStream();
         } catch (IOException e) {
-            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "获取输入流时发生异常："+e.getMessage() + "；" + request.getName());
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "获取输入流时发生异常："+e.getMessage() + "；" + request.getName()+"；HttpResponseHeader="+getResponseHeadersString(connection));
             if (saveToCacheFile) downloadingFiles.remove(cacheFile.getPath());
             if (saveToCacheFile && cacheFile.exists() && !cacheFile.delete() && Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "删除缓存文件失败：" + cacheFile.getPath() + "；" + request.getName());
             throw e;
@@ -264,7 +265,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             completedLength = readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
         } catch (IOException e) {
             exception = true;
-            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "读取数据时发生异常："+e.getMessage() + "；" + request.getName());
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "读取数据时发生异常："+e.getMessage() + "；" + request.getName()+"；HttpResponseHeader="+getResponseHeadersString(connection));
             throw e;
         }finally {
             close(outputStream);
@@ -278,7 +279,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             return null;
         }
 
-        if (Spear.isDebugMode())  Log.i(Spear.LOG_TAG, NAME + "：" + "下载成功" + "；" + "文件长度：" + completedLength + "/" + contentLength + "；" + request.getName());
+        if (Spear.isDebugMode())  Log.i(Spear.LOG_TAG, NAME + "：" + "下载成功" + "；" + "文件长度：" + completedLength + "/" + contentLength + "；" + request.getName()+"；HttpResponseHeader="+getResponseHeadersString(connection));
 
         // 转换结果
         if(outputStream instanceof ByteArrayOutputStream){
@@ -359,5 +360,35 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             return false;
         }
         return true;
+    }
+
+    public static String getResponseHeadersString(HttpURLConnection urlConnection){
+        Map<String, List<String>> headers = urlConnection.getHeaderFields();
+        StringBuilder stringBuilder = new StringBuilder();
+        stringBuilder.append("[");
+        for(Map.Entry<String, List<String>> entry : headers.entrySet()){
+            if(stringBuilder.length() != 1){
+                stringBuilder.append(", ");
+            }
+
+            stringBuilder.append("{");
+
+            stringBuilder.append(entry.getKey());
+
+            stringBuilder.append(":");
+
+            List<String> values = entry.getValue();
+            if(values.size() == 0){
+                stringBuilder.append("");
+            }else if(values.size() == 1){
+                stringBuilder.append(values.get(0));
+            }else{
+                stringBuilder.append(values.toString());
+            }
+
+            stringBuilder.append("}");
+        }
+        stringBuilder.append("]");
+        return stringBuilder.toString();
     }
 }
