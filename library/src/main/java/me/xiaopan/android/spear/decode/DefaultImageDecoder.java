@@ -30,8 +30,8 @@ public class DefaultImageDecoder implements ImageDecoder {
 
     @Override
 	public Bitmap decode(Spear spear, ImageSize maxsize, DecodeListener decodeListener){
-		Bitmap bitmap;
-		Point originalSize;
+		Bitmap bitmap = null;
+		Point originalSize = null;
         int inSampleSize = 1;
 
         if(maxsize != null){
@@ -39,22 +39,32 @@ public class DefaultImageDecoder implements ImageDecoder {
             Options options = new Options();
             options.inJustDecodeBounds = true;
             decodeListener.onDecode(options);
-            options.inJustDecodeBounds = false;
-            originalSize = new Point(options.outWidth, options.outHeight);
+            if(!(options.outWidth == 1 && options.outHeight == 1)){
+                originalSize = new Point(options.outWidth, options.outHeight);
 
-            // 计算缩放倍数
-            inSampleSize = spear.getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxsize.getWidth(), maxsize.getHeight());
-            options.inSampleSize = inSampleSize;
+                // 计算缩放倍数
+                inSampleSize = spear.getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxsize.getWidth(), maxsize.getHeight());
+                options.inSampleSize = inSampleSize;
 
-            // 再次解码
-            bitmap = decodeListener.onDecode(options);
+                // 再次解码
+                options.inJustDecodeBounds = false;
+                bitmap = decodeListener.onDecode(options);
+            }
         }else{
             bitmap = decodeListener.onDecode(null);
-            originalSize = new Point(bitmap.getWidth(), bitmap.getHeight());
+            if(bitmap != null){
+                if(!(bitmap.getWidth()==1 && bitmap.getHeight() == 1)){
+                    originalSize = new Point(bitmap.getWidth(), bitmap.getHeight());
+                }else{
+                    if(!bitmap.isRecycled()){
+                        bitmap.recycle();
+                    }
+                }
+            }
         }
 
         // 回调
-    	if(bitmap != null){
+    	if(bitmap != null && originalSize != null){
     		if(!bitmap.isRecycled()){
     			decodeListener.onDecodeSuccess(bitmap, originalSize, inSampleSize);
     		}else{
