@@ -31,8 +31,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     public PhotoAlbumImageAdapter(final Context context, final List<String> imageUris, final OnImageClickListener onImageClickListener, final RecyclerView recyclerView){
         this.context = context;
         this.imageUris = imageUris;
-        this.imageUris.add("http://static.yingyonghui.com/is/2292/2292890/128i.webp");
-        this.imageUris.add("http://static.yingyonghui.com/is/2387/2387175/128i.webp");
         this.itemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -52,7 +50,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             borderMargin = DimenUtils.dp2px(context, 8);
             middleMargin = DimenUtils.dp2px(context, 4);
             int maxScreenWidth = context.getResources().getDisplayMetrics().widthPixels - ((borderMargin * (spanCount+1)));
-//            int maxScreenWidth = context.getResources().getDisplayMetrics().widthPixels;
             itemWidth = maxScreenWidth/spanCount;
         }
     }

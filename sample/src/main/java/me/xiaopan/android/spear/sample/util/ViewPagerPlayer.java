@@ -1,7 +1,5 @@
 package me.xiaopan.android.spear.sample.util;
 
-import java.lang.reflect.Field;
-
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -9,6 +7,8 @@ import android.support.v4.view.ViewPager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.widget.Scroller;
+
+import java.lang.reflect.Field;
 
 /**
  * 播放器

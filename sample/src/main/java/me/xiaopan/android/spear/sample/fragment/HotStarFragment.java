@@ -1,6 +1,5 @@
 package me.xiaopan.android.spear.sample.fragment;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +16,6 @@ import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.HttpRequestFuture;
 import me.xiaopan.android.gohttp.StringHttpResponseHandler;
 import me.xiaopan.android.inject.InjectContentView;
-import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
 import me.xiaopan.android.spear.sample.activity.StarHomeActivity;
@@ -116,9 +114,6 @@ public class HotStarFragment extends InjectFragment implements PullRefreshLayout
 
     @Override
     public void onClickImage(HotStarRequest.Star star) {
-        Intent intent = new Intent(getActivity(), StarHomeActivity.class);
-        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE, star.getName());
-        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_URL, "http://image.baidu.com/channel/star/"+star.getName());
-        startActivity(intent);
+        StarHomeActivity.launch(getActivity(), star.getName());
     }
 }

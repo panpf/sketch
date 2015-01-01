@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<me.xiaopan.android.spear.widget.SpearImageView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/image_searchImageItem"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:scaleType="centerCrop"
-    android:layout_margin="@dimen/home_category_margin_border"/>

@@ -73,12 +73,6 @@ public class DetailActivity extends MyActionBarActivity implements DetailFragmen
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        System.out.println("ActivityOnTouchEvent");
-        return super.onTouchEvent(event);
-    }
-
-    @Override
     public void setDispatchTouchEventListener(DetailFragment.DispatchTouchEventListener dispatchTouchEventListener) {
         this.dispatchTouchEventListener = dispatchTouchEventListener;
     }

@@ -19,7 +19,6 @@ package me.xiaopan.android.spear.sample;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.inject.InjectView;
@@ -33,7 +32,6 @@ public class MyActionBarActivity extends InjectActionBarActivity {
 		super.onCreate(savedInstanceState);
         if(toolbar != null){
             onPreSetSupportActionBar();
-            toolbar.setTitleTextColor(getResources().getColor(R.color.default_text_color_normal));
             setSupportActionBar(toolbar);
             onPostSetSupportActionBar();
         }

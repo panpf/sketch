@@ -49,7 +49,6 @@ import me.xiaopan.android.spear.sample.util.AnimationUtils;
 import me.xiaopan.android.spear.sample.util.ApplyWallpaperAsyncTask;
 import me.xiaopan.android.spear.sample.util.PageNumberSetter;
 import me.xiaopan.android.spear.sample.util.SaveImageAsyncTask;
-import me.xiaopan.android.spear.sample.util.SaveTempImageAsyncTask;
 import me.xiaopan.android.spear.sample.util.SingleTapDetector;
 import me.xiaopan.android.spear.sample.util.ViewPagerPlayer;
 import me.xiaopan.android.spear.util.FailureCause;
@@ -219,7 +218,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
                 if(imageFile != null){
                     Intent intent = new Intent(Intent.ACTION_SEND);
                     intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(imageFile));
-                    intent.setType("image/" + SaveTempImageAsyncTask.parseFileType(imageFile.getName()));
+                    intent.setType("image/" + parseFileType(imageFile.getName()));
                     List<ResolveInfo> infoList = getActivity().getPackageManager().queryIntentActivities(intent, 0);
                     if (infoList != null && !infoList.isEmpty()) {
                         startActivity(intent);
@@ -388,5 +387,17 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
 
     public interface SetDispatchTouchEventListener{
         public void setDispatchTouchEventListener(DispatchTouchEventListener dispatchTouchEventListener);
+    }
+
+    public static String parseFileType(String fileName){
+        int lastIndexOf = fileName.lastIndexOf(".");
+        if(lastIndexOf < 0){
+            return null;
+        }
+        String fileType = fileName.substring(lastIndexOf+1);
+        if(fileType == null || "".equals(fileType.trim())){
+            return null;
+        }
+        return fileType;
     }
 }

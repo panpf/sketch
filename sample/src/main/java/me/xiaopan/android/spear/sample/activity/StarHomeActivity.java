@@ -16,6 +16,8 @@
 
 package me.xiaopan.android.spear.sample.activity;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 
 import me.xiaoapn.android.spear.sample.R;
@@ -51,5 +53,19 @@ public class StarHomeActivity extends MyActionBarActivity {
     @Override
     protected void onPreSetSupportActionBar() {
         toolbar.setTitle(starTitle);
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        overridePendingTransition(R.anim.window_pop_enter, R.anim.window_pop_exit);
+    }
+
+    public static void launch(Activity activity, String starName){
+        Intent intent = new Intent(activity, StarHomeActivity.class);
+        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE, starName);
+        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_URL, "http://image.baidu.com/channel/star/"+starName);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.window_push_enter, R.anim.window_push_exit);
     }
 }

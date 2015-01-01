@@ -1,4 +1,4 @@
-<me.xiaopan.android.spear.sample.widget.MyFragmeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black">
@@ -94,4 +94,4 @@
             android:textColor="@android:color/white"
             android:text=""/>
     </LinearLayout>
-</me.xiaopan.android.spear.sample.widget.MyFragmeLayout>
+</FrameLayout>

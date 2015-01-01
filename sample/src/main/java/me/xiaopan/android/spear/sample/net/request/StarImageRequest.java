@@ -60,7 +60,6 @@ public class StarImageRequest implements Request{
         @SerializedName("image_url") private String sourceUrl;
         @SerializedName("image_width") private int width;
         @SerializedName("image_height") private int height;
-        private String imageSizeStr;
 
         public String getThumbUrl() {
             return thumbUrl;
@@ -76,13 +75,6 @@ public class StarImageRequest implements Request{
 
         public int getHeight() {
             return height;
-        }
-
-        public String getImageSizeStr() {
-            if(imageSizeStr == null){
-                imageSizeStr = width+"x"+height;
-            }
-            return imageSizeStr;
         }
     }
 

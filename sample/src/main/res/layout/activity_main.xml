@@ -16,7 +16,7 @@
             android:id="@+id/tabStrip_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"/>
+            android:layout_gravity="right"/>
     </FrameLayout>
 
     <android.support.v4.widget.DrawerLayout
@@ -39,100 +39,107 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
-                <TextView
-                    android:id="@+id/button_main_index"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="首页"
-                    android:background="@drawable/selector_list_item"/>
+                <!--<TextView-->
+                    <!--android:id="@+id/button_main_index"-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="16dp"-->
+                    <!--android:text="首页"-->
+                    <!--android:background="@drawable/selector_list_item"/>-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/default_text_color_normal"/>
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1dp"-->
+                    <!--android:background="@color/default_text_color_normal"/>-->
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="壁纸"
-                    android:clickable="true"
-                    android:background="@drawable/selector_list_item"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="家居"
-                    android:clickable="true"
-                    android:background="@drawable/selector_list_item"/>
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="16dp"-->
+                    <!--android:text="壁纸"-->
+                    <!--android:clickable="true"-->
+                    <!--android:background="@drawable/selector_list_item"/>-->
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="16dp"-->
+                    <!--android:text="家居"-->
+                    <!--android:clickable="true"-->
+                    <!--android:background="@drawable/selector_list_item"/>-->
                 <TextView
                     android:id="@+id/button_main_star"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:text="明星"
+                    android:text="明星图片"
                     android:background="@drawable/selector_list_item"/>
                 <TextView
+                    android:id="@+id/button_main_search"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:text="摄像"
-                    android:clickable="true"
+                    android:text="图片搜索"
                     android:background="@drawable/selector_list_item"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="美食"
-                    android:clickable="true"
-                    android:background="@drawable/selector_list_item"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="设计"
-                    android:clickable="true"
-                    android:background="@drawable/selector_list_item"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="时尚"
-                    android:clickable="true"
-                    android:background="@drawable/selector_list_item"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="旅游"
-                    android:clickable="true"
-                    android:background="@drawable/selector_list_item"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="宠物"
-                    android:background="@drawable/selector_list_item"/>
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="16dp"
-                    android:text="汽车"
-                    android:clickable="true"
-                    android:background="@drawable/selector_list_item"/>
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="16dp"-->
+                    <!--android:text="摄像"-->
+                    <!--android:clickable="true"-->
+                    <!--android:background="@drawable/selector_list_item"/>-->
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="16dp"-->
+                    <!--android:text="美食"-->
+                    <!--android:clickable="true"-->
+                    <!--android:background="@drawable/selector_list_item"/>-->
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="16dp"-->
+                    <!--android:text="设计"-->
+                    <!--android:clickable="true"-->
+                    <!--android:background="@drawable/selector_list_item"/>-->
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="16dp"-->
+                    <!--android:text="时尚"-->
+                    <!--android:clickable="true"-->
+                    <!--android:background="@drawable/selector_list_item"/>-->
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="16dp"-->
+                    <!--android:text="旅游"-->
+                    <!--android:clickable="true"-->
+                    <!--android:background="@drawable/selector_list_item"/>-->
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="16dp"-->
+                    <!--android:text="宠物"-->
+                    <!--android:background="@drawable/selector_list_item"/>-->
+                <!--<TextView-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="wrap_content"-->
+                    <!--android:padding="16dp"-->
+                    <!--android:text="汽车"-->
+                    <!--android:clickable="true"-->
+                    <!--android:background="@drawable/selector_list_item"/>-->
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:background="@color/default_text_color_normal"/>
+                <!--<View-->
+                    <!--android:layout_width="match_parent"-->
+                    <!--android:layout_height="1dp"-->
+                    <!--android:background="@color/default_text_color_normal"/>-->
 
                 <TextView
                     android:id="@+id/button_main_photoAlbum"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:padding="16dp"
-                    android:text="本地相册"
+                    android:text="本地图片"
                     android:background="@drawable/selector_list_item"/>
                 <TextView
                     android:id="@+id/button_main_about"

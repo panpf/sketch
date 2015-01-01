@@ -1,11 +1,17 @@
 package me.xiaopan.android.spear.sample.fragment;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -23,8 +29,9 @@ import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
 import me.xiaopan.android.spear.sample.activity.DetailActivity;
-import me.xiaopan.android.spear.sample.adapter.SearchImageAdapter;
+import me.xiaopan.android.spear.sample.adapter.StarImageAdapter;
 import me.xiaopan.android.spear.sample.net.request.SearchImageRequest;
+import me.xiaopan.android.spear.sample.net.request.StarImageRequest;
 import me.xiaopan.android.spear.sample.widget.HintView;
 import me.xiaopan.android.widget.PullRefreshLayout;
 
@@ -32,7 +39,7 @@ import me.xiaopan.android.widget.PullRefreshLayout;
  * 图片搜索Fragment
  */
 @InjectContentView(R.layout.fragment_search)
-public class SearchFragment extends InjectFragment implements SearchImageAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener {
+public class SearchFragment extends InjectFragment implements StarImageAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener {
     public static final String PARAM_OPTIONAL_STRING_SEARCH_KEYWORD = "PARAM_OPTIONAL_STRING_SEARCH_KEYWORD";
 
     @InjectView(R.id.refreshLayout_search) PullRefreshLayout pullRefreshLayout;
@@ -41,7 +48,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
 
     private SearchImageRequest searchImageRequest;
     private HttpRequestFuture refreshRequestFuture;
-    private SearchImageAdapter searchImageAdapter;
+    private StarImageAdapter searchImageAdapter;
     private MyLoadMoreListener loadMoreListener;
 
     @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD) private String searchKeyword = "美女";
@@ -51,10 +58,52 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
         super.onCreate(savedInstanceState);
         searchImageRequest = new SearchImageRequest(searchKeyword);
         loadMoreListener = new MyLoadMoreListener();
-
+        setHasOptionsMenu(true);
         if(getActivity() instanceof ActionBarActivity){
             ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(searchKeyword);
         }
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        getActivity().getMenuInflater().inflate(R.menu.menu_search_view, menu);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_searchView));
+        searchView.setQueryHint(searchKeyword);
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
+            @Override
+            public boolean onQueryTextSubmit(String s) {
+                s = s.trim();
+                if("".equals(s)){
+                    Toast.makeText(getActivity(), "搜索关键字不能为空", Toast.LENGTH_LONG).show();
+                    return false;
+                }
+
+                getActivity().setTitle(s);
+                Bundle bundle = new Bundle();
+                bundle.putString(SearchFragment.PARAM_OPTIONAL_STRING_SEARCH_KEYWORD, s);
+                SearchFragment searchFragment = new SearchFragment();
+                searchFragment.setArguments(bundle);
+                getFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
+                        .replace(R.id.frame_main_content, searchFragment)
+                        .commit();
+
+                ((InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE))
+                        .hideSoftInputFromWindow(getActivity().getCurrentFocus()
+                                        .getWindowToken(),
+                                InputMethodManager.HIDE_NOT_ALWAYS);
+
+                return true;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String s) {
+                return false;
+            }
+        });
+
+        super.onCreateOptionsMenu(menu, inflater);
     }
 
     @Override
@@ -83,11 +132,6 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
     }
 
     @Override
-    public void onItemClick(int position, SearchImageRequest.Image image) {
-        DetailActivity.launch(getActivity(), (ArrayList<String>) searchImageAdapter.getImageUrlList(), position);
-    }
-
-    @Override
     public void onRefresh() {
         if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             return;
@@ -107,8 +151,14 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
                     return;
                 }
 
-                recyclerView.setAdapter(searchImageAdapter = new SearchImageAdapter(getActivity(), responseObject.getImages(), recyclerView, SearchFragment.this));
+                List<StarImageRequest.Image> imageList = new ArrayList<StarImageRequest.Image>();
+                for (SearchImageRequest.Image image : responseObject.getImages()) {
+                    imageList.add(image);
+                }
+
+                recyclerView.setAdapter(searchImageAdapter = new StarImageAdapter(getActivity(), null, imageList, SearchFragment.this));
                 pullRefreshLayout.stopRefresh();
+                loadMoreListener.reset();
                 searchImageAdapter.setOnLoadMoreListener(loadMoreListener);
             }
 
@@ -135,28 +185,30 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
             public void onCanceled(HttpRequest httpRequest) {
 
             }
-        }).go();
+        }).responseHandleCompletedAfterListener(new SearchImageRequest.ResponseHandler()).go();
     }
 
-    private class MyLoadMoreListener extends RecyclerView.OnScrollListener implements SearchImageAdapter.OnLoadMoreListener {
-        private boolean enable;
+    @Override
+    public void onItemClick(int position, StarImageRequest.Image image) {
+        DetailActivity.launch(getActivity(), (ArrayList<String>) searchImageAdapter.getImageUrlList(), position);
+    }
+
+    private class MyLoadMoreListener extends RecyclerView.OnScrollListener implements StarImageAdapter.OnLoadMoreListener {
         private boolean end;
         private HttpRequestFuture loadMoreRequestFuture;
 
         @Override
-        public void setEnable(boolean enable) {
-            this.enable = enable;
-        }
-
-        @Override
-        public boolean isEnable() {
-            return !end && enable;
-        }
-
-        @Override
         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
             super.onScrollStateChanged(recyclerView, newState);
-            enable = newState != 0 && (refreshRequestFuture == null || refreshRequestFuture.isFinished());
+        }
+
+        @Override
+        public boolean isEnd() {
+            return end;
+        }
+
+        public void reset(){
+            end = false;
         }
 
         @Override
@@ -178,15 +230,30 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
                         return;
                     }
 
-                    List<SearchImageRequest.Image> newImageList = responseObject.getImages();
-                    if (newImageList == null || newImageList.size() == 0) {
-                        end = true;
-                        return;
+
+                    List<StarImageRequest.Image> newImageList = null;
+                    if (responseObject.getImages() != null) {
+                        newImageList = new ArrayList<StarImageRequest.Image>();
+                        for (SearchImageRequest.Image image : responseObject.getImages()) {
+                            newImageList.add(image);
+                        }
                     }
 
-                    searchImageAdapter.append(newImageList);
-                    searchImageAdapter.notifyDataSetChanged();
-                    Toast.makeText(getActivity(), "新加载" + newImageList.size() + "条数据", Toast.LENGTH_SHORT).show();
+                    int count = searchImageAdapter.getItemCount();
+
+                    if (newImageList != null && newImageList.size() > 0) {
+                        searchImageAdapter.append(newImageList);
+                        if (newImageList.size() < searchImageRequest.getSize()) {
+                            end = true;
+                            Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹，已全部送完！", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹", Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        end = true;
+                        Toast.makeText(getActivity(), "没有您的包裹了", Toast.LENGTH_SHORT).show();
+                    }
+                    searchImageAdapter.notifyItemInserted(count);
                 }
 
                 @Override
@@ -194,15 +261,15 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
                     if (getActivity() == null) {
                         return;
                     }
-
-                    Toast.makeText(getActivity(), "加载更多失败", Toast.LENGTH_SHORT).show();
+                    searchImageAdapter.loadMoreFailed();
+                    Toast.makeText(getActivity(), "快递投递失败", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onCanceled(HttpRequest httpRequest) {
 
                 }
-            }).go();
+            }).responseHandleCompletedAfterListener(new SearchImageRequest.ResponseHandler()).go();
         }
 
         public void cancel() {

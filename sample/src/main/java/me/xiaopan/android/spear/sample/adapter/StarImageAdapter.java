@@ -7,7 +7,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,7 +27,6 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     private static final int ITEM_TYPE_LOAD_MORE_FOOTER = 1;
     private static final int ITEM_TYPE_HEADER = 2;
     private int imageSize = -1;
-//    private int screenWidth;
     private int headerWidth;
     private int column = 3;
     private int marginBorder;
@@ -36,15 +34,16 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     private Context context;
     private List<StarImageRequest.Image> imageList;
     private OnLoadMoreListener onLoadMoreListener;
-    private String backgroundImageUrl;
+    private String headerImageUrl;
     private View.OnClickListener itemClickListener;
     private List<String> imageUrlList;
+    private LoadMoreFooterViewHolder loadMoreFooterViewHolder;
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public StarImageAdapter(Context context, String backgroundImageUrl, List<StarImageRequest.Image> imageList, final OnItemClickListener onItemClickListener){
+    public StarImageAdapter(Context context, String headerImageUrl, List<StarImageRequest.Image> imageList, final OnItemClickListener onItemClickListener){
         this.context = context;
-        this.backgroundImageUrl = backgroundImageUrl;
+        this.headerImageUrl = headerImageUrl;
         this.imageList = imageList;
         this.imageUrlList = new ArrayList<>(imageList.size());
         for(StarImageRequest.Image image : imageList){
@@ -74,7 +73,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemViewType(int position) {
-        if(backgroundImageUrl != null && position == 0){
+        if(headerImageUrl != null && position == 0){
             return ITEM_TYPE_HEADER;
         }else if(onLoadMoreListener != null && position == getItemCount()-1){
             return ITEM_TYPE_LOAD_MORE_FOOTER;
@@ -89,7 +88,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
             return 0;
         }
         return (imageList.size()%column!=0?(imageList.size()/column)+1:(imageList.size()/column))   // ITEM行数
-                +(backgroundImageUrl!=null?1:0) // 加上头
+                +(headerImageUrl !=null?1:0) // 加上头
                 +(onLoadMoreListener!=null?1:0); // 加上尾巴
     }
 
@@ -157,7 +156,8 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 viewHolder = itemViewHolder;
                 break;
             case ITEM_TYPE_LOAD_MORE_FOOTER:
-                viewHolder = new LoadMoreFooterViewHolder(LayoutInflater.from(context).inflate(R.layout.list_footer_load_more, viewGroup, false));
+                loadMoreFooterViewHolder = new LoadMoreFooterViewHolder(LayoutInflater.from(context).inflate(R.layout.list_footer_load_more, viewGroup, false));
+                viewHolder = loadMoreFooterViewHolder;
                 break;
         }
         return viewHolder;
@@ -168,18 +168,18 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         switch(getItemViewType(position)){
             case ITEM_TYPE_HEADER :
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) viewHolder;
-                headerViewHolder.spearImageView.setImageByUri(backgroundImageUrl);
+                headerViewHolder.spearImageView.setImageByUri(headerImageUrl);
                 break;
             case ITEM_TYPE_ITEM :
                 ItemViewHolder itemViewHolder = (ItemViewHolder) viewHolder;
-                if(backgroundImageUrl != null){
+                if(headerImageUrl != null){
                     position -= 1;
                 }
 
                 int topMargin;
                 int bottomMargin;
                 if(position == 0){
-                    topMargin = backgroundImageUrl!=null?margin:marginBorder;
+                    topMargin = headerImageUrl !=null?margin:marginBorder;
                     bottomMargin = margin;
                 }else if(position == getItemCount()-1){
                     topMargin = margin;
@@ -188,15 +188,6 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                     topMargin = margin;
                     bottomMargin = margin;
                 }
-
-                int oneReadPosition = (position*column);
-                bind(itemViewHolder.oneSpearImageView, oneReadPosition<imageList.size()?imageList.get(oneReadPosition):null, oneReadPosition);
-
-                int twoReadPosition = (position*column)+1;
-                bind(itemViewHolder.twoSpearImageView, twoReadPosition<imageList.size()?imageList.get(twoReadPosition):null, twoReadPosition);
-
-                int threeReadPosition = (position*column)+2;
-                bind(itemViewHolder.threeSpearImageView, threeReadPosition<imageList.size()?imageList.get(threeReadPosition):null, threeReadPosition);
 
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) itemViewHolder.oneSpearImageView.getLayoutParams();
                 params.topMargin = topMargin;
@@ -212,6 +203,15 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 params.topMargin = topMargin;
                 params.bottomMargin = bottomMargin;
                 itemViewHolder.threeSpearImageView.setLayoutParams(params);
+
+                int oneReadPosition = (position*column);
+                bind(itemViewHolder.oneSpearImageView, oneReadPosition<imageList.size()?imageList.get(oneReadPosition):null, oneReadPosition);
+
+                int twoReadPosition = (position*column)+1;
+                bind(itemViewHolder.twoSpearImageView, twoReadPosition<imageList.size()?imageList.get(twoReadPosition):null, twoReadPosition);
+
+                int threeReadPosition = (position*column)+2;
+                bind(itemViewHolder.threeSpearImageView, threeReadPosition<imageList.size()?imageList.get(threeReadPosition):null, threeReadPosition);
                 break;
             case ITEM_TYPE_LOAD_MORE_FOOTER :
                 LoadMoreFooterViewHolder footerViewHolder = (LoadMoreFooterViewHolder) viewHolder;
@@ -230,10 +230,17 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     private void bind(SpearImageView spearImageView, StarImageRequest.Image image, int position){
         if(image != null){
             spearImageView.setTag(position);
-            spearImageView.setImageByUri(image.getSourceUrl());
+            spearImageView.setImageByUri(image.getThumbUrl());
             spearImageView.setVisibility(View.VISIBLE);
         }else{
             spearImageView.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    public void loadMoreFailed(){
+        if(loadMoreFooterViewHolder != null){
+            loadMoreFooterViewHolder.contextTextView.setText("Sorry！您的包裹运送失败，您再试一次吧！");
+            loadMoreFooterViewHolder.progressBar.setVisibility(View.GONE);
         }
     }
 

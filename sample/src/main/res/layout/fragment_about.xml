@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="16dp"
+        android:autoLink="all"
+        android:text="Spear是Android上一个专门用来显示、加载或下载图片的类库\n\n本APP是Spear的示例APP，主要用来体现Spear的强大之处\n\n更加详细的信息请访问Github\nGithub: http://github.com/xiaopansky/spear"/>
+</ScrollView>

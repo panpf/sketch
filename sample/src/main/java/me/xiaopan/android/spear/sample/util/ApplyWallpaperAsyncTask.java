@@ -1,13 +1,13 @@
 package me.xiaopan.android.spear.sample.util;
 
+import android.app.WallpaperManager;
+import android.content.Context;
+import android.os.AsyncTask;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
-import android.app.WallpaperManager;
-import android.content.Context;
-import android.os.AsyncTask;
 
 /**
  * 应用壁纸异步任务

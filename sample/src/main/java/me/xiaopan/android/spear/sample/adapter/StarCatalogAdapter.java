@@ -92,7 +92,7 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
         if(viewType == ITEM_TYPE_CATEGORY_TITLE){
-            viewHolder = new CategoryTitleHolder(LayoutInflater.from(context).inflate(R.layout.list_item_hot_star_category_title, parent, false));
+            viewHolder = new CategoryTitleHolder(LayoutInflater.from(context).inflate(R.layout.list_item_title, parent, false));
         }else if(viewType == ITEM_TYPE_DATA){
             ItemHolder itemHolder = new ItemHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_head_portrait, parent, false));
 

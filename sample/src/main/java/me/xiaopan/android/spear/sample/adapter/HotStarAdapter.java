@@ -116,7 +116,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
         if(viewType == ITEM_TYPE_CATEGORY_TITLE){
-            viewHolder = new CategoryTitleHolder(LayoutInflater.from(context).inflate(R.layout.list_item_hot_star_category_title, parent, false));
+            viewHolder = new CategoryTitleHolder(LayoutInflater.from(context).inflate(R.layout.list_item_title, parent, false));
         }else if(viewType == ITEM_TYPE_THREE_ITEM_LEFT){
             ThreeItemLeftHolder threeItemLeftHolder = new ThreeItemLeftHolder(LayoutInflater.from(context).inflate(R.layout.list_item_hot_star_three_left, parent, false));
 
