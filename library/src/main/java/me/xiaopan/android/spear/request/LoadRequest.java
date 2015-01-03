@@ -27,9 +27,9 @@ import me.xiaopan.android.spear.util.ImageSize;
 public class LoadRequest extends DownloadRequest{
     /* 可配置属性 */
     ImageSize maxsize;	// 最大尺寸，用于读取图片时计算inSampleSize
-    ImageSize resize;	// 新的尺寸，BitmapProcessor会根据此尺寸和scaleType来创建新的图片
+    ImageSize resize;	// 裁剪图片，ImageProcessor会根据此尺寸和scaleType来裁剪图片
     ImageProcessor imageProcessor;	// 图片处理器
-    ImageView.ScaleType scaleType; // 图片缩放方式，BitmapProcessor会根据resize和scaleType来创建新的图片
+    ImageView.ScaleType scaleType; // 图片缩放方式，ImageProcessor会根据resize和scaleType来创建新的图片
 
     LoadListener loadListener;	// 监听器
     ProgressListener loadProgressListener;  // 加载进度监听器
@@ -54,7 +54,7 @@ public class LoadRequest extends DownloadRequest{
     }
 
     /**
-     * 获取新的尺寸，BitmapProcessor会根据此尺寸和scaleType来创建新的图片
+     * 获取新的尺寸，ImageProcessor会根据此尺寸和scaleType来创建新的图片
      */
     public ImageSize getResize() {
 		return resize;

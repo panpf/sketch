@@ -34,6 +34,7 @@ import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.ImageSize;
 import me.xiaopan.android.spear.util.ImageViewHolder;
+import me.xiaopan.android.spear.widget.SpearImageView;
 
 /**
  * DisplayHelper
@@ -97,6 +98,15 @@ public class DisplayHelper {
 
             this.scaleType = imageView.getScaleType();
         }
+
+        if(imageView instanceof SpearImageView){
+            SpearImageView spearImageView = (SpearImageView) imageView;
+            options(spearImageView.getDisplayOptions());
+            listener(spearImageView.getDisplayListener());
+            progressListener(spearImageView.getProgressListener());
+            spearImageView.tryResetDebugFlagAndProgressStatus();
+        }
+
         return this;
     }
 
@@ -167,7 +177,7 @@ public class DisplayHelper {
     }
 
     /**
-     * 重新修改宽高，BitmapProcessor会根据此宽高和ScaleType创建一张新的图片
+     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
      * @param resize 新的尺寸
      * @return Helper
      */
@@ -178,7 +188,7 @@ public class DisplayHelper {
     }
 
     /**
-     * 重新修改宽高，BitmapProcessor会根据此宽高和ScaleType创建一张新的图片
+     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
      * @param width 宽
      * @param height 高
      * @return Helper
@@ -190,7 +200,7 @@ public class DisplayHelper {
     }
 
     /**
-     * 根据ImageView的LayoutSize创建一张新的图片
+     * 根据ImageView的LayoutSize裁剪图片
      */
     public DisplayHelper resizeByImageViewLayoutSize(){
         this.resize = spear.getConfiguration().getImageSizeCalculator().calculateImageResize(imageView);
@@ -209,7 +219,7 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置ScaleType，BitmapProcessor会根据resize和ScaleType创建一张新的图片
+     * 设置ScaleType，ImageProcessor会根据resize和ScaleType创建一张新的图片
      * @param scaleType ScaleType
      * @return Helper
      */
@@ -270,7 +280,7 @@ public class DisplayHelper {
     /**
      * 设置正在加载的时候显示的图片
      * @param drawableResId 正在加载的时候显示的图片
-     * @param isProcess 是否使用BitmapProcessor对当前图片进行处理
+     * @param isProcess 是否使用ImageProcessor对当前图片进行处理
      */
     public DisplayHelper loadingDrawable(int drawableResId, boolean isProcess) {
         if(loadingDrawableHolder == null){
@@ -296,7 +306,7 @@ public class DisplayHelper {
     /**
      * 设置当加载失败的时候显示的图片
      * @param drawableResId 当加载失败的时候显示的图片
-     * @param isProcess 是否使用BitmapProcessor对当前图片进行处理
+     * @param isProcess 是否使用ImageProcessor对当前图片进行处理
      */
     public DisplayHelper loadFailDrawable(int drawableResId, boolean isProcess) {
         if(loadFailDrawableHolder == null){
@@ -480,7 +490,12 @@ public class DisplayHelper {
 
         spear.getConfiguration().getRequestExecutor().execute(request);
         spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
-        return new RequestFuture(request);
+
+        RequestFuture requestFuture = new RequestFuture(request);
+        if(imageView instanceof SpearImageView){
+            ((SpearImageView) imageView).setRequestFuture(requestFuture);
+        }
+        return requestFuture;
     }
 
     /**

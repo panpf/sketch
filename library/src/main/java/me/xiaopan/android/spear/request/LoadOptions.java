@@ -30,7 +30,7 @@ import me.xiaopan.android.spear.util.ImageSize;
 public class LoadOptions extends DownloadOptions{
     protected ScaleType scaleType; //图片缩放方式，在处理图片的时候会用到
     protected ImageSize maxsize;	//解码最大图片尺寸，用于读取图片时计算inSampleSize
-    protected ImageSize resize;	// 处理尺寸，BitmapProcessor会根据此尺寸来创建新的图片
+    protected ImageSize resize;	// 处理尺寸，ImageProcessor会根据此尺寸来创建新的图片
     protected ImageProcessor imageProcessor;	//图片处理器
 
     public LoadOptions(Context context) {
@@ -72,7 +72,7 @@ public class LoadOptions extends DownloadOptions{
     }
 
     /**
-     * 重新修改宽高，BitmapProcessor会根据此宽高和ScaleType创建一张新的图片
+     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
      * @param resize 新的尺寸
      * @return LoadOptions
      */
@@ -82,7 +82,7 @@ public class LoadOptions extends DownloadOptions{
     }
 
     /**
-     * 重新修改宽高，BitmapProcessor会根据此宽高和ScaleType创建一张新的图片
+     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
      * @param width 宽
      * @param height 高
      * @return LoadOptions
@@ -103,7 +103,7 @@ public class LoadOptions extends DownloadOptions{
     }
 
     /**
-     * 设置ScaleType，BitmapProcessor会根据resize和ScaleType创建一张新的图片
+     * 设置ScaleType，ImageProcessor会根据resize和ScaleType创建一张新的图片
      * @param scaleType ScaleType
      * @return LoadOptions
      */

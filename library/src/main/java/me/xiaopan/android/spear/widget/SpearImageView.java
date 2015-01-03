@@ -246,51 +246,17 @@ public class SpearImageView extends ImageView{
     /**
      * 根据URI设置图片
      * @param uri 支持以下6种Uri
-     * <blockquote>String imageUri = "http://site.com/image.png"; // from Web
-     * <br>String imageUri = "https://site.com/image.png"; // from Web
-     * <br>String imageUri = "file:///mnt/sdcard/image.png"; // from SD card
-     * <br>String imageUri = "content://media/external/audio/albumart/13"; // from content provider
-     * <br>String imageUri = "assets://image.png"; // from assets
-     * <br>String imageUri = "drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+     * <blockquote>"http://site.com/image.png"; // from Web
+     * <br>"https://site.com/image.png"; // from Web
+     * <br>"/mnt/sdcard/image.png"; // from SD card
+     * <br>"content://media/external/audio/albumart/13"; // from content provider
+     * <br>"assets://image.png"; // from assets
+     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      * </blockquote>
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
     public RequestFuture setImageByUri(String uri){
-        // 重置角标和进度
-        if(debugColor != NONE || progress != NONE){
-            debugColor = NONE;
-            progress = NONE;
-            invalidate();
-        }
-
-        return requestFuture = Spear.with(getContext()).display(uri, this).options(displayOptions).listener(getFinalDisplayListener()).progressListener(getFinalProgressListener()).fire();
-    }
-
-    private DisplayListener getFinalDisplayListener(){
-        if(debugMode){
-            if(debugDisplayListener == null){
-                debugDisplayListener = new DebugDisplayListener();
-            }
-            return debugDisplayListener;
-        }else if(enableShowProgress){
-            if(progressDisplayListener == null){
-                progressDisplayListener = new ProgressDisplayListener();
-            }
-            return progressDisplayListener;
-        }else{
-            return displayListener;
-        }
-    }
-
-    private ProgressListener getFinalProgressListener(){
-        if(enableShowProgress){
-            if(updateProgressListener == null){
-                updateProgressListener = new UpdateProgressListener();
-            }
-            return updateProgressListener;
-        }else{
-            return progressListener;
-        }
+        return Spear.with(getContext()).display(uri, this).fire();
     }
 
     /**
@@ -299,7 +265,7 @@ public class SpearImageView extends ImageView{
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
     public RequestFuture setImageByFile(File imageFile){
-        return setImageByUri(ImageScheme.FILE.createUri(imageFile.getPath()));
+        return setImageByUri(imageFile.getPath());
     }
 
     /**
@@ -327,6 +293,18 @@ public class SpearImageView extends ImageView{
      */
     public RequestFuture setImageByContent(Uri uri){
         return setImageByUri(uri.toString());
+    }
+
+    /**
+     * 尝试重置Debug标识和进度的状态
+     */
+    public void tryResetDebugFlagAndProgressStatus(){
+        // 重置角标和进度
+        if(debugColor != NONE || progress != NONE){
+            debugColor = NONE;
+            progress = NONE;
+            invalidate();
+        }
     }
 
     /**
@@ -400,6 +378,14 @@ public class SpearImageView extends ImageView{
     }
 
     /**
+     * 获取显示参数
+     * @return
+     */
+    public DisplayOptions getDisplayOptions() {
+        return displayOptions;
+    }
+
+    /**
      * 设置显示参数
      * @param displayOptions 显示参数
      */
@@ -416,11 +402,46 @@ public class SpearImageView extends ImageView{
     }
 
     /**
+     * 获取显示监听器
+     * @return 显示监听器
+     */
+    public DisplayListener getDisplayListener(){
+        if(debugMode){
+            if(debugDisplayListener == null){
+                debugDisplayListener = new DebugDisplayListener();
+            }
+            return debugDisplayListener;
+        }else if(enableShowProgress){
+            if(progressDisplayListener == null){
+                progressDisplayListener = new ProgressDisplayListener();
+            }
+            return progressDisplayListener;
+        }else{
+            return displayListener;
+        }
+    }
+
+    /**
      * 设置显示监听器
      * @param displayListener 显示监听器
      */
     public void setDisplayListener(DisplayListener displayListener) {
         this.displayListener = displayListener;
+    }
+
+    /**
+     * 获取进度监听器
+     * @return 进度监听器
+     */
+    public ProgressListener getProgressListener(){
+        if(enableShowProgress){
+            if(updateProgressListener == null){
+                updateProgressListener = new UpdateProgressListener();
+            }
+            return updateProgressListener;
+        }else{
+            return progressListener;
+        }
     }
 
     /**
@@ -437,6 +458,14 @@ public class SpearImageView extends ImageView{
      */
     public RequestFuture getRequestFuture() {
         return requestFuture;
+    }
+
+    /**
+     * 设置RequestFuture，此方法由Spear调用，你无需理会即可
+     * @param requestFuture RequestFuture
+     */
+    public void setRequestFuture(RequestFuture requestFuture) {
+        this.requestFuture = requestFuture;
     }
 
     /**

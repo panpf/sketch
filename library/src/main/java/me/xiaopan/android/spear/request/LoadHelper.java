@@ -104,7 +104,7 @@ public class LoadHelper {
     }
 
     /**
-     * 重新修改宽高，BitmapProcessor会根据此宽高和ScaleType创建一张新的图片
+     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
      * @param resize 新的尺寸
      * @return Helper
      */
@@ -114,7 +114,7 @@ public class LoadHelper {
     }
 
     /**
-     * 重新修改宽高，BitmapProcessor会根据此宽高和ScaleType创建一张新的图片
+     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
      * @param width 宽
      * @param height 高
      * @return Helper
@@ -145,7 +145,7 @@ public class LoadHelper {
     }
 
     /**
-     * 设置ScaleType，BitmapProcessor会根据resize和ScaleType创建一张新的图片
+     * 设置ScaleType，ImageProcessor会根据resize和ScaleType创建一张新的图片
      * @param scaleType ScaleType
      * @return Helper
      */

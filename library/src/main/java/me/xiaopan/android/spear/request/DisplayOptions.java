@@ -87,7 +87,7 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 设置正在加载的时候显示的图片
      * @param drawableResId 正在加载的时候显示的图片
-     * @param isProcess 是否使用BitmapProcessor对当前图片进行处理
+     * @param isProcess 是否使用ImageProcessor对当前图片进行处理
      * @return DisplayOptions
      */
     public DisplayOptions loadingDrawable(int drawableResId, boolean isProcess) {
@@ -115,7 +115,7 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 设置当加载失败的时候显示的图片
      * @param drawableResId 当加载失败的时候显示的图片
-     * @param isProcess 是否使用BitmapProcessor对当前图片进行处理
+     * @param isProcess 是否使用ImageProcessor对当前图片进行处理
      * @return DisplayOptions
      */
     public DisplayOptions loadFailDrawable(int drawableResId, boolean isProcess) {
@@ -164,7 +164,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 根据ImageView的LayoutSize创建一张新的图片
+     * 根据ImageView的Layout Size裁剪图片
      */
     public void resizeByImageViewLayoutSize() {
         this.resizeByImageViewLayoutSize = true;
