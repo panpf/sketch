@@ -18,7 +18,6 @@ package me.xiaopan.android.spear.request;
 
 import android.graphics.drawable.BitmapDrawable;
 
-import me.xiaopan.android.spear.display.DefaultImageDisplayer;
 import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.DrawableHolder;
@@ -31,14 +30,14 @@ import me.xiaopan.android.spear.util.ImageViewHolder;
 public class DisplayRequest extends LoadRequest{
     public static final boolean DEFAULT_ENABLE_MEMORY_CACHE = true;
 
-    String id;	//ID
-    boolean enableMemoryCache = DEFAULT_ENABLE_MEMORY_CACHE;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-    DrawableHolder failedDrawableHolder;	//当加载失败时显示的图片
-    ImageDisplayer imageDisplayer;	//图片显示器
-	ImageViewHolder imageViewHolder;	//ImageView持有器
+    private String id;	//ID
+    private boolean enableMemoryCache = DEFAULT_ENABLE_MEMORY_CACHE;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+    private DrawableHolder failedDrawableHolder;	//当加载失败时显示的图片
+    private ImageDisplayer imageDisplayer;	//图片显示器
+    private ImageViewHolder imageViewHolder;	//ImageView持有器
 
-	DisplayListener displayListener;	//监听器
-    ProgressListener displayProgressListener; // 显示进度监听器
+    private DisplayListener displayListener;	//监听器
+    private ProgressListener displayProgressListener; // 显示进度监听器
 
     // Results
     private BitmapDrawable bitmapDrawable;
@@ -94,14 +93,14 @@ public class DisplayRequest extends LoadRequest{
             return null;
         }
         ImageProcessor processor;
-        if(imageProcessor != null){
-            processor = imageProcessor;
-        }else if(resize != null){
-          processor = spear.getConfiguration().getDefaultCutImageProcessor();
+        if(getImageProcessor() != null){
+            processor = getImageProcessor();
+        }else if(getResize() != null){
+          processor = getSpear().getConfiguration().getDefaultCutImageProcessor();
         }else{
             processor = null;
         }
-        return failedDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, processor);
+        return failedDrawableHolder.getDrawable(getSpear().getConfiguration().getContext(), getResize(), getScaleType(), processor);
     }
 
     @Override
@@ -146,5 +145,37 @@ public class DisplayRequest extends LoadRequest{
 
     public void setFrom(DisplayListener.From from) {
         this.from = from;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setEnableMemoryCache(boolean enableMemoryCache) {
+        this.enableMemoryCache = enableMemoryCache;
+    }
+
+    public DrawableHolder getFailedDrawableHolder() {
+        return failedDrawableHolder;
+    }
+
+    public void setFailedDrawableHolder(DrawableHolder failedDrawableHolder) {
+        this.failedDrawableHolder = failedDrawableHolder;
+    }
+
+    public void setImageDisplayer(ImageDisplayer imageDisplayer) {
+        this.imageDisplayer = imageDisplayer;
+    }
+
+    public void setImageViewHolder(ImageViewHolder imageViewHolder) {
+        this.imageViewHolder = imageViewHolder;
+    }
+
+    public void setDisplayListener(DisplayListener displayListener) {
+        this.displayListener = displayListener;
+    }
+
+    public void setDisplayProgressListener(ProgressListener displayProgressListener) {
+        this.displayProgressListener = displayProgressListener;
     }
 }

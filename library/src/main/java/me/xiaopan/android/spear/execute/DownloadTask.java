@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.task;
+package me.xiaopan.android.spear.execute;
 
 import java.io.File;
 import java.util.concurrent.Callable;
@@ -28,7 +28,7 @@ import me.xiaopan.android.spear.request.Request;
 /**
  * 下载任务
  */
-public class DownloadTask extends Task{
+public class DownloadTask extends Task {
 	private DownloadRequest downloadRequest;
 	
 	public DownloadTask(DownloadRequest downloadRequest) {

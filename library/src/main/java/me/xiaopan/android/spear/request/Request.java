@@ -16,7 +16,7 @@
 
 package me.xiaopan.android.spear.request;
 
-import me.xiaopan.android.spear.task.Task;
+import me.xiaopan.android.spear.execute.Task;
 
 /**
  * 请求

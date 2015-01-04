@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.task;
+package me.xiaopan.android.spear.execute;
 
 import java.io.File;
 import java.util.concurrent.Executor;
@@ -43,7 +43,7 @@ public class LoadJoinDownloadListener implements DownloadListener {
 
     @Override
     public void onCompleted(File cacheFile, From from) {
-        executor.execute(new LoadTask(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest), from!=null?(from==From.LOCAL_CACHE?LoadListener.From.LOCAL :LoadListener.From.NETWORK):null));
+        executor.execute(new LoadTask(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest), from!=null?(from==From.LOCAL_CACHE? LoadListener.From.LOCAL :LoadListener.From.NETWORK):null));
     }
 
     @Override

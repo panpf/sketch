@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -24,17 +24,20 @@ import android.widget.ImageView;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
-import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.display.OriginalFadeInImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
+import me.xiaopan.android.spear.request.DisplayListener;
+import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.request.ProgressListener;
+import me.xiaopan.android.spear.request.RequestFuture;
 import me.xiaopan.android.spear.util.AsyncDrawable;
 import me.xiaopan.android.spear.util.DrawableHolder;
 import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.ImageSize;
 import me.xiaopan.android.spear.util.ImageViewHolder;
-import me.xiaopan.android.spear.widget.SpearImageView;
 
 /**
  * DisplayHelper
@@ -462,26 +465,26 @@ public class DisplayHelper {
         // 创建请求
         final DisplayRequest request = new DisplayRequest();
 
-        request.uri = uri;
-        request.name = uri;
-        request.spear = spear;
-        request.imageScheme = imageScheme;
-        request.enableDiskCache = enableDiskCache;
-        request.diskCacheTimeout = diskCacheTimeout;
+        request.setUri(uri);
+        request.setName(uri);
+        request.setSpear(spear);
+        request.setImageScheme(imageScheme);
+        request.setEnableDiskCache(enableDiskCache);
+        request.setDiskCacheTimeout(diskCacheTimeout);
 
-        request.maxsize = maxsize;
-        request.resize = resize;
-        request.imageProcessor = imageProcessor;
-        request.scaleType = scaleType;
+        request.setMaxsize(maxsize);
+        request.setResize(resize);
+        request.setImageProcessor(imageProcessor);
+        request.setScaleType(scaleType);
 
-        request.id = requestId;
-        request.enableMemoryCache = enableMemoryCache;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-        request.imageViewHolder = new ImageViewHolder(imageView, request);
-        request.imageDisplayer = imageDisplayer;
-        request.failedDrawableHolder = loadFailDrawableHolder;
+        request.setId(requestId);
+        request.setEnableMemoryCache(enableMemoryCache);
+        request.setImageViewHolder(new ImageViewHolder(imageView, request));
+        request.setImageDisplayer(imageDisplayer);
+        request.setFailedDrawableHolder(loadFailDrawableHolder);
 
-        request.displayListener = displayListener;
-        request.displayProgressListener = progressListener;
+        request.setDisplayListener(displayListener);
+        request.setDisplayProgressListener(progressListener);
 
         // 显示默认图片
         BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null):null;

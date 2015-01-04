@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear;
 
 import android.util.Log;
 import android.widget.ImageView;
 
-import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.process.ImageProcessor;
+import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.request.LoadListener;
+import me.xiaopan.android.spear.request.LoadRequest;
+import me.xiaopan.android.spear.request.ProgressListener;
+import me.xiaopan.android.spear.request.RequestFuture;
 import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.ImageSize;
@@ -241,20 +245,20 @@ public class LoadHelper {
         // 创建请求
         LoadRequest request = new LoadRequest();
 
-        request.uri = uri;
-        request.name = uri;
-        request.spear = spear;
-        request.imageScheme = imageScheme;
-        request.enableDiskCache = enableDiskCache;
-        request.diskCacheTimeout = diskCacheTimeout;
+        request.setUri(uri);
+        request.setName(uri);
+        request.setSpear(spear);
+        request.setImageScheme(imageScheme);
+        request.setEnableDiskCache(enableDiskCache);
+        request.setDiskCacheTimeout(diskCacheTimeout);
 
-        request.maxsize = maxsize;
-        request.resize = resize;
-        request.imageProcessor = imageProcessor;
-        request.scaleType = scaleType;
+        request.setMaxsize(maxsize);
+        request.setResize(resize);
+        request.setImageProcessor(imageProcessor);
+        request.setScaleType(scaleType);
 
-        request.loadListener = loadListener;
-        request.loadProgressListener = progressListener;
+        request.setLoadListener(loadListener);
+        request.setLoadProgressListener(progressListener);
 
         spear.getConfiguration().getRequestExecutor().execute(request);
         return new RequestFuture(request);

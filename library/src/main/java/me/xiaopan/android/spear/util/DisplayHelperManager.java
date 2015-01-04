@@ -21,8 +21,8 @@ import android.widget.ImageView;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import me.xiaopan.android.spear.DisplayHelper;
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.request.DisplayHelper;
 
 /**
  * DisplayHelper管理器

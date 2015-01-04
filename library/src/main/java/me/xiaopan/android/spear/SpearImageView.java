@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.widget;
+package me.xiaopan.android.spear;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -33,9 +33,7 @@ import android.widget.Scroller;
 
 import java.io.File;
 
-import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.request.DisplayListener;
-import me.xiaopan.android.spear.request.DisplayOptions;
 import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.request.RequestFuture;
 import me.xiaopan.android.spear.util.FailureCause;
@@ -298,7 +296,7 @@ public class SpearImageView extends ImageView{
     /**
      * 尝试重置Debug标识和进度的状态
      */
-    public void tryResetDebugFlagAndProgressStatus(){
+    void tryResetDebugFlagAndProgressStatus(){
         // 重置角标和进度
         if(debugColor != NONE || progress != NONE){
             debugColor = NONE;
@@ -308,27 +306,11 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 是否开启按下脉波效果
-     * @return 是否开启按下脉波效果
-     */
-    public boolean isEnablePressRipple() {
-        return enablePressRipple;
-    }
-
-    /**
      * 设置是否开启按下脉波效果，开启后按下的时候会在ImageView表面显示一个黑色半透明的脉波，此功能需要你点注册点击事件或设置Clickable
      * @param enablePressRipple 是否开启按下脉波效果
      */
     public void setEnablePressRipple(boolean enablePressRipple) {
         this.enablePressRipple = enablePressRipple;
-    }
-
-    /**
-     * 是否显示进度
-     * @return 是否显示进度
-     */
-    public boolean isEnableShowProgress() {
-        return enableShowProgress;
     }
 
     /**
@@ -362,14 +344,6 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 获取按下脉波动画持续时间
-     * @return 按下脉波动画持续时间，单位毫秒
-     */
-    public int getPressRippleAnimationDuration() {
-        return pressRippleAnimationDuration;
-    }
-
-    /**
      * 设置按下脉波动画持续时间
      * @param pressRippleAnimationDuration 按下脉波动画持续时间，单位毫秒
      */
@@ -381,7 +355,7 @@ public class SpearImageView extends ImageView{
      * 获取显示参数
      * @return
      */
-    public DisplayOptions getDisplayOptions() {
+    DisplayOptions getDisplayOptions() {
         return displayOptions;
     }
 
@@ -405,7 +379,7 @@ public class SpearImageView extends ImageView{
      * 获取显示监听器
      * @return 显示监听器
      */
-    public DisplayListener getDisplayListener(){
+    DisplayListener getDisplayListener(){
         if(debugMode){
             if(debugDisplayListener == null){
                 debugDisplayListener = new DebugDisplayListener();
@@ -433,7 +407,7 @@ public class SpearImageView extends ImageView{
      * 获取进度监听器
      * @return 进度监听器
      */
-    public ProgressListener getProgressListener(){
+    ProgressListener getProgressListener(){
         if(enableShowProgress){
             if(updateProgressListener == null){
                 updateProgressListener = new UpdateProgressListener();
@@ -464,7 +438,7 @@ public class SpearImageView extends ImageView{
      * 设置RequestFuture，此方法由Spear调用，你无需理会即可
      * @param requestFuture RequestFuture
      */
-    public void setRequestFuture(RequestFuture requestFuture) {
+    void setRequestFuture(RequestFuture requestFuture) {
         this.requestFuture = requestFuture;
     }
 

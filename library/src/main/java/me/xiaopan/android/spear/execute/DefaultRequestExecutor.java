@@ -36,12 +36,6 @@ import me.xiaopan.android.spear.request.DownloadRequest;
 import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.request.Request;
-import me.xiaopan.android.spear.task.DisplayJoinLoadListener;
-import me.xiaopan.android.spear.task.DisplayJoinLoadProgressListener;
-import me.xiaopan.android.spear.task.DownloadTask;
-import me.xiaopan.android.spear.task.LoadJoinDownloadListener;
-import me.xiaopan.android.spear.task.LoadJoinDownloadProgressListener;
-import me.xiaopan.android.spear.task.LoadTask;
 import me.xiaopan.android.spear.util.ImageScheme;
 
 /**

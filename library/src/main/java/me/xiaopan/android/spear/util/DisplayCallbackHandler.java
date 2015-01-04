@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear.util;
 
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -26,7 +26,9 @@ import android.widget.ImageView;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ImageDisplayer;
-import me.xiaopan.android.spear.util.FailureCause;
+import me.xiaopan.android.spear.request.DisplayListener;
+import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.request.Request;
 
 /**
  * 显示回调处理器

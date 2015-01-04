@@ -19,7 +19,7 @@ package me.xiaopan.android.spear.request;
 import java.io.File;
 
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.task.Task;
+import me.xiaopan.android.spear.execute.Task;
 import me.xiaopan.android.spear.util.ImageScheme;
 
 /**
@@ -35,16 +35,16 @@ public class DownloadRequest implements Request {
 
     /* 必须属性 */
     private File cacheFile;	// 缓存文件
-    Spear spear;
-    String uri;	// 图片地址
-    String name;	// 名称，用于在输出LOG的时候区分不同的请求
-    ImageScheme imageScheme;	// Uri协议格式
-	DownloadListener downloadListener;  // 下载监听器
-    ProgressListener downloadProgressListener;  // 下载进度监听器
+    private Spear spear;
+    private String uri;	// 图片地址
+    private String name;	// 名称，用于在输出LOG的时候区分不同的请求
+    private ImageScheme imageScheme;	// Uri协议格式
+    private DownloadListener downloadListener;  // 下载监听器
+    private ProgressListener downloadProgressListener;  // 下载进度监听器
 
     /* 可配置属性 */
-    long diskCacheTimeout = DEFAULT_DISK_CACHE_TIMEOUT;	// 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-    boolean enableDiskCache = DEFAULT_ENABLE_DISK_CACHE;	// 是否开启磁盘缓存
+    private long diskCacheTimeout = DEFAULT_DISK_CACHE_TIMEOUT;	// 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
+    private boolean enableDiskCache = DEFAULT_ENABLE_DISK_CACHE;	// 是否开启磁盘缓存
 
     @Override
 	public String getName() {
@@ -168,5 +168,54 @@ public class DownloadRequest implements Request {
      */
     public void setDownloadProgressListener(ProgressListener downloadProgressListener) {
         this.downloadProgressListener = downloadProgressListener;
+    }
+
+    /**
+     * 获取任务
+     */
+    public Task getTask() {
+        return task;
+    }
+
+    /**
+     * 设置Spear
+     */
+    public void setSpear(Spear spear) {
+        this.spear = spear;
+    }
+
+    /**
+     * 设置uri
+     */
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    /**
+     * 设置名称
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    /**
+     * 设置图片协议类型
+     */
+    public void setImageScheme(ImageScheme imageScheme) {
+        this.imageScheme = imageScheme;
+    }
+
+    /**
+     * 设置磁盘缓存超时时间，单位毫秒
+     */
+    public void setDiskCacheTimeout(long diskCacheTimeout) {
+        this.diskCacheTimeout = diskCacheTimeout;
+    }
+
+    /**
+     * 设置开启或关闭磁盘缓存功能
+     */
+    public void setEnableDiskCache(boolean enableDiskCache) {
+        this.enableDiskCache = enableDiskCache;
     }
 }

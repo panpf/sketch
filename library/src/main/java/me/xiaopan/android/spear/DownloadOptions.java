@@ -14,7 +14,10 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear;
+
+import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.request.RequestOptions;
 
 /**
  * 下载选项

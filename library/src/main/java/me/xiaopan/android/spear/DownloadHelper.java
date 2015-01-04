@@ -14,11 +14,14 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear;
 
 import android.util.Log;
 
-import me.xiaopan.android.spear.Spear;
+import me.xiaopan.android.spear.request.DownloadListener;
+import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.request.ProgressListener;
+import me.xiaopan.android.spear.request.RequestFuture;
 import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.ImageScheme;
 
@@ -153,15 +156,15 @@ public class DownloadHelper {
         // 创建请求
         DownloadRequest request = new DownloadRequest();
 
-        request.uri = uri;
-        request.name = uri;
-        request.spear = spear;
-        request.imageScheme = imageScheme;
-        request.enableDiskCache = enableDiskCache;
-        request.diskCacheTimeout = diskCacheTimeout;
+        request.setUri(uri);
+        request.setName(uri);
+        request.setSpear(spear);
+        request.setImageScheme(imageScheme);
+        request.setEnableDiskCache(enableDiskCache);
+        request.setDiskCacheTimeout(diskCacheTimeout);
 
-        request.downloadListener = downloadListener;
-        request.downloadProgressListener = progressListener;
+        request.setDownloadListener(downloadListener);
+        request.setDownloadProgressListener(progressListener);
 
         spear.getConfiguration().getRequestExecutor().execute(request);
         return new RequestFuture(request);

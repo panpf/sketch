@@ -24,11 +24,8 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.xiaopan.android.spear.request.DisplayHelper;
 import me.xiaopan.android.spear.request.DisplayRequest;
-import me.xiaopan.android.spear.request.DownloadHelper;
 import me.xiaopan.android.spear.request.DownloadListener;
-import me.xiaopan.android.spear.request.LoadHelper;
 import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.RequestOptions;
 import me.xiaopan.android.spear.util.AsyncDrawable;
@@ -102,7 +99,7 @@ public class Spear {
      * <br>“https://site.com/image.png“ // from Web
      * </blockquote>
      * @param downloadListener 下载监听器
-     * @return DownloadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始下载
+     * @return DownloadHelper 你可以继续设置一些参数，最后调用fire()方法开始下载
      */
 	public DownloadHelper download(String uri, DownloadListener downloadListener){
 		 return new DownloadHelper(this, uri).listener(downloadListener);
@@ -121,7 +118,7 @@ public class Spear {
      * <br>“drawable://" + R.drawable.image // from drawables
      * </blockquote>
      * @param loadListener 加载监听器
-     * @return LoadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始加载
+     * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(String uri, LoadListener loadListener){
         return new LoadHelper(this, uri).listener(loadListener);
@@ -131,7 +128,7 @@ public class Spear {
      * 加载
      * @param imageFile 图片文件
      * @param loadListener 加载监听器
-     * @return LoadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始加载
+     * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(File imageFile, LoadListener loadListener){
         return new LoadHelper(this, imageFile.getPath()).listener(loadListener);
@@ -141,7 +138,7 @@ public class Spear {
      * 加载
      * @param drawableResId 图片资源ID
      * @param loadListener 加载监听器
-     * @return LoadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始加载
+     * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(int drawableResId, LoadListener loadListener){
         return new LoadHelper(this, ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
@@ -151,7 +148,7 @@ public class Spear {
      * 加载
      * @param uri 图片资源URI
      * @param loadListener 加载监听器
-     * @return LoadRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始加载
+     * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(Uri uri, LoadListener loadListener){
         return new LoadHelper(this, uri.toString()).listener(loadListener);
@@ -170,7 +167,7 @@ public class Spear {
      * <br>“drawable://" + R.drawable.image // from drawables
      * </blockquote>
      * @param imageView 显示图片的视图
-     * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
+     * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(String uri, ImageView imageView){
         return configuration.getDisplayHelperManager().getDisplayHelper(this, uri, imageView);
@@ -180,7 +177,7 @@ public class Spear {
      * 显示图片
      * @param imageFile 图片文件
      * @param imageView 显示图片的视图
-     * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
+     * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(File imageFile, ImageView imageView){
         return configuration.getDisplayHelperManager().getDisplayHelper(this, imageFile.getPath(), imageView);
@@ -190,7 +187,7 @@ public class Spear {
      * 显示图片
      * @param drawableResId 图片资源ID
      * @param imageView 显示图片的视图
-     * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
+     * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(int drawableResId, ImageView imageView){
         return configuration.getDisplayHelperManager().getDisplayHelper(this, ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
@@ -200,7 +197,7 @@ public class Spear {
      * 显示图片
      * @param uri 图片资源URI
      * @param imageView 显示图片的视图
-     * @return DisplayRequest.Helper 你可以继续设置一些参数，最后调用fire()方法开始显示
+     * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(Uri uri, ImageView imageView){
         return configuration.getDisplayHelperManager().getDisplayHelper(this, uri.toString(), imageView);

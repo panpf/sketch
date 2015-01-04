@@ -17,11 +17,6 @@
 package me.xiaopan.android.spear;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.widget.ImageView;
 
 import java.io.File;
 
@@ -39,8 +34,8 @@ import me.xiaopan.android.spear.execute.DefaultRequestExecutor;
 import me.xiaopan.android.spear.execute.RequestExecutor;
 import me.xiaopan.android.spear.process.CutImageProcessor;
 import me.xiaopan.android.spear.process.ImageProcessor;
-import me.xiaopan.android.spear.request.DisplayCallbackHandler;
 import me.xiaopan.android.spear.util.DefaultImageSizeCalculator;
+import me.xiaopan.android.spear.util.DisplayCallbackHandler;
 import me.xiaopan.android.spear.util.DisplayHelperManager;
 import me.xiaopan.android.spear.util.ImageSizeCalculator;
 

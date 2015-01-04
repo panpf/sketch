@@ -19,11 +19,9 @@ package me.xiaopan.android.spear.process;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.util.Log;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.android.spear.util.ImageSize;

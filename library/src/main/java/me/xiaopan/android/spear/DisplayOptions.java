@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear;
 
 import android.content.Context;
 import android.widget.ImageView.ScaleType;
@@ -22,6 +22,7 @@ import android.widget.ImageView.ScaleType;
 import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.display.OriginalFadeInImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
+import me.xiaopan.android.spear.request.DisplayRequest;
 import me.xiaopan.android.spear.util.DrawableHolder;
 import me.xiaopan.android.spear.util.ImageSize;
 
