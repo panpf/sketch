@@ -72,13 +72,13 @@ public class SpearImageView extends ImageView{
 
     private int touchX;
     private int touchY;
-    private int pressRippleColor = DEFAULT_PRESSED_COLOR;
-    private int pressRippleAnimationDuration = DEFAULT_ANIMATION_DURATION;
+    private int clickRippleColor = DEFAULT_PRESSED_COLOR;
+    private int clickRippleAnimationDuration = DEFAULT_ANIMATION_DURATION;
     private boolean pressed;
-    private boolean enablePressRipple;
-    private Paint pressRipplePaint;
-    private Scroller pressRippleScroller;
-    private Runnable pressRippleRefreshRunnable;
+    private boolean enableClickRipple;
+    private Paint clickRipplePaint;
+    private Scroller clickRippleScroller;
+    private Runnable clickRippleRefreshRunnable;
 
     public SpearImageView(Context context) {
         super(context);
@@ -109,12 +109,12 @@ public class SpearImageView extends ImageView{
         super.onDraw(canvas);
 
         // 绘制按下状态
-        if(pressed || (pressRippleScroller != null && pressRippleScroller.computeScrollOffset())){
-            if(pressRipplePaint == null){
-                pressRipplePaint = new Paint();
-                pressRipplePaint.setColor(pressRippleColor);
+        if(pressed || (clickRippleScroller != null && clickRippleScroller.computeScrollOffset())){
+            if(clickRipplePaint == null){
+                clickRipplePaint = new Paint();
+                clickRipplePaint.setColor(clickRippleColor);
             }
-            canvas.drawCircle(touchX, touchY, pressRippleScroller.getCurrX(), pressRipplePaint);
+            canvas.drawCircle(touchX, touchY, clickRippleScroller.getCurrX(), clickRipplePaint);
         }
 
         // 绘制进度
@@ -147,25 +147,25 @@ public class SpearImageView extends ImageView{
 
     @Override
     protected void dispatchSetPressed(boolean pressed) {
-        if(enablePressRipple && this.pressed != pressed){
+        if(enableClickRipple && this.pressed != pressed){
             this.pressed = pressed;
             if(pressed){
-                if(pressRippleScroller == null){
-                    pressRippleScroller = new Scroller(getContext(), new DecelerateInterpolator());
+                if(clickRippleScroller == null){
+                    clickRippleScroller = new Scroller(getContext(), new DecelerateInterpolator());
                 }
-                pressRippleScroller.startScroll(0, 0, computePressRippleRadius(), 0, pressRippleAnimationDuration);
-                if(pressRippleRefreshRunnable == null){
-                    pressRippleRefreshRunnable = new Runnable() {
+                clickRippleScroller.startScroll(0, 0, computeRippleRadius(), 0, clickRippleAnimationDuration);
+                if(clickRippleRefreshRunnable == null){
+                    clickRippleRefreshRunnable = new Runnable() {
                         @Override
                         public void run() {
                             invalidate();
-                            if(pressRippleScroller.computeScrollOffset()){
+                            if(clickRippleScroller.computeScrollOffset()){
                                 post(this);
                             }
                         }
                     };
                 }
-                post(pressRippleRefreshRunnable);
+                post(clickRippleRefreshRunnable);
             }
 
             invalidate();
@@ -173,10 +173,10 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 计算按下脉波的半径
-     * @return 按下脉波的半径
+     * 计算涟漪的半径
+     * @return 涟漪的半径
      */
-    private int computePressRippleRadius(){
+    private int computeRippleRadius(){
         int centerX = getWidth()/2;
         int centerY = getHeight()/2;
         // 当按下位置在第一或第四象限的时候，比较按下位置在左上角到右下角这条线上距离谁最远就以谁为半径，否则在左下角到右上角这条线上比较
@@ -201,7 +201,7 @@ public class SpearImageView extends ImageView{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(enablePressRipple && event.getAction() == MotionEvent.ACTION_DOWN && !pressed){
+        if(enableClickRipple && event.getAction() == MotionEvent.ACTION_DOWN && !pressed){
             touchX = (int) event.getX();
             touchY = (int) event.getY();
         }
@@ -306,11 +306,11 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 设置是否开启按下脉波效果，开启后按下的时候会在ImageView表面显示一个黑色半透明的脉波，此功能需要你点注册点击事件或设置Clickable
-     * @param enablePressRipple 是否开启按下脉波效果
+     * 设置是否开启点击涟漪效果，开启后按下的时候会在ImageView表面显示一个黑色半透明的涟漪效果，此功能需要你点注册点击事件或设置Clickable
+     * @param enableClickRipple 是否开启点击涟漪效果
      */
-    public void setEnablePressRipple(boolean enablePressRipple) {
-        this.enablePressRipple = enablePressRipple;
+    public void setEnableClickRipple(boolean enableClickRipple) {
+        this.enableClickRipple = enableClickRipple;
     }
 
     /**
@@ -322,13 +322,13 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 设置按下时的颜色
-     * @param pressRippleColor 按下时的颜色
+     * 设置点击涟漪效果的颜色
+     * @param clickRippleColor 点击涟漪效果的颜色
      */
-    public void setPressRippleColor(int pressRippleColor) {
-        this.pressRippleColor = pressRippleColor;
-        if(pressRipplePaint != null){
-            pressRipplePaint.setColor(pressRippleColor);
+    public void setClickRippleColor(int clickRippleColor) {
+        this.clickRippleColor = clickRippleColor;
+        if(clickRipplePaint != null){
+            clickRipplePaint.setColor(clickRippleColor);
         }
     }
 
@@ -344,11 +344,11 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 设置按下脉波动画持续时间
-     * @param pressRippleAnimationDuration 按下脉波动画持续时间，单位毫秒
+     * 设置点击涟漪动画持续时间
+     * @param clickRippleAnimationDuration 点击涟漪动画持续时间，单位毫秒
      */
-    public void setPressRippleAnimationDuration(int pressRippleAnimationDuration) {
-        this.pressRippleAnimationDuration = pressRippleAnimationDuration;
+    public void setClickRippleAnimationDuration(int clickRippleAnimationDuration) {
+        this.clickRippleAnimationDuration = clickRippleAnimationDuration;
     }
 
     /**

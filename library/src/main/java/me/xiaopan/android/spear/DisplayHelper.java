@@ -45,26 +45,26 @@ import me.xiaopan.android.spear.util.ImageViewHolder;
 public class DisplayHelper {
     private static final String LOG_TAG = DisplayRequest.class.getSimpleName();
 
-    Spear spear;
-    String uri;
+    private Spear spear;
+    private String uri;
 
-    long diskCacheTimeout = DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT;
-    boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
+    private long diskCacheTimeout = DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT;
+    private boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
 
-    ImageSize maxsize;
-    ImageSize resize;
-    ImageProcessor imageProcessor;
-    ImageView.ScaleType scaleType;
+    private ImageSize maxsize;
+    private ImageSize resize;
+    private ImageProcessor imageProcessor;
+    private ImageView.ScaleType scaleType;
 
-    boolean enableMemoryCache = DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE;
-    ImageDisplayer imageDisplayer;
-    DrawableHolder loadingDrawableHolder;
-    DrawableHolder loadFailDrawableHolder;
+    private boolean enableMemoryCache = DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE;
+    private ImageDisplayer imageDisplayer;
+    private DrawableHolder loadingDrawableHolder;
+    private DrawableHolder loadFailDrawableHolder;
 
-    DisplayListener displayListener;
-    ProgressListener progressListener;
+    private DisplayListener displayListener;
+    private ProgressListener progressListener;
 
-    ImageView imageView;
+    private ImageView imageView;
 
     private boolean tempResizeByDisplayer;
 
