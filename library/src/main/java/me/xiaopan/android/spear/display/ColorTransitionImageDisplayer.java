@@ -27,16 +27,16 @@ import me.xiaopan.android.spear.request.DisplayRequest;
 /**
  * 颜色渐入图片显示器
  */
-public class ColorFadeInImageDisplayer implements ImageDisplayer {
+public class ColorTransitionImageDisplayer implements ImageDisplayer {
 	private int duration;
 	private int color;
 
-	public ColorFadeInImageDisplayer(int color, int duration){
+	public ColorTransitionImageDisplayer(int color, int duration){
 		this.color = color;
 		this.duration = duration;
 	}
 
-	public ColorFadeInImageDisplayer(int color){
+	public ColorTransitionImageDisplayer(int color){
 		this(color, DEFAULT_ANIMATION_DURATION);
 	}
 	

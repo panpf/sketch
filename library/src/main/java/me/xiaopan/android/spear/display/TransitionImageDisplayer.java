@@ -24,16 +24,16 @@ import android.widget.ImageView;
 import me.xiaopan.android.spear.request.DisplayRequest;
 
 /**
- * 原图渐入图片显示器
+ * 过度图片显示器
  */
-public class OriginalFadeInImageDisplayer implements ImageDisplayer {
+public class TransitionImageDisplayer implements ImageDisplayer {
 	private int duration;
 
-	public OriginalFadeInImageDisplayer(int duration){
+	public TransitionImageDisplayer(int duration){
 		this.duration = duration;
 	}
 	
-	public OriginalFadeInImageDisplayer(){
+	public TransitionImageDisplayer(){
 		this(DEFAULT_ANIMATION_DURATION);
 	}
 	
