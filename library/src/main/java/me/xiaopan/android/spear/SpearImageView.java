@@ -253,7 +253,7 @@ public class SpearImageView extends ImageView{
      * </blockquote>
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public RequestFuture setImageByUri(String uri){
+    public RequestFuture setImageFromUri(String uri){
         return Spear.with(getContext()).display(uri, this).fire();
     }
 
@@ -262,8 +262,8 @@ public class SpearImageView extends ImageView{
      * @param imageFile SD卡上的图片文件
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public RequestFuture setImageByFile(File imageFile){
-        return setImageByUri(imageFile.getPath());
+    public RequestFuture setImageFromFile(File imageFile){
+        return setImageFromUri(imageFile.getPath());
     }
 
     /**
@@ -271,8 +271,8 @@ public class SpearImageView extends ImageView{
      * @param drawableResId Drawable ID
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public RequestFuture setImageByResource(int drawableResId){
-        return setImageByUri(ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId)));
+    public RequestFuture setImageFromResource(int drawableResId){
+        return setImageFromUri(ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId)));
     }
 
     /**
@@ -280,8 +280,8 @@ public class SpearImageView extends ImageView{
      * @param imageFileName ASSETS文件加下的图片文件的名称
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public RequestFuture setImageByAssets(String imageFileName){
-        return setImageByUri(ImageScheme.ASSETS.createUri(imageFileName));
+    public RequestFuture setImageFromAssets(String imageFileName){
+        return setImageFromUri(ImageScheme.ASSETS.createUri(imageFileName));
     }
 
     /**
@@ -289,8 +289,8 @@ public class SpearImageView extends ImageView{
      * @param uri Content Uri 这个URI是其它Content Provider返回的
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public RequestFuture setImageByContent(Uri uri){
-        return setImageByUri(uri.toString());
+    public RequestFuture setImageFromContent(Uri uri){
+        return setImageFromUri(uri.toString());
     }
 
     /**
@@ -427,7 +427,7 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 获取RequestFuture，你需要对此方法返回的对象进行非null验证，如果你没有调用过setImageBy***系列方法设置图片，那么此方法将一直返回null
+     * 获取RequestFuture，你需要对此方法返回的对象进行非null验证，如果你没有调用过setImageFrom***系列方法设置图片，那么此方法将一直返回null
      * @return RequestFuture，你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
     public RequestFuture getRequestFuture() {
