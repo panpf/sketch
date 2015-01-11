@@ -261,7 +261,7 @@ public class SearchFragment extends InjectFragment implements StarImageAdapter.O
                     if (getActivity() == null) {
                         return;
                     }
-                    searchImageAdapter.loadMoreFailed();
+                    searchImageAdapter.loadMoreFail();
                     Toast.makeText(getActivity(), "快递投递失败", Toast.LENGTH_SHORT).show();
                 }
 

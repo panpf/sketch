@@ -7,7 +7,7 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <me.xiaopan.android.spear.widget.SpearImageView
+        <me.xiaopan.android.spear.SpearImageView
             android:id="@+id/spearImage_hotStarThreeLeftItem_one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -30,7 +30,7 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
-            <me.xiaopan.android.spear.widget.SpearImageView
+            <me.xiaopan.android.spear.SpearImageView
                 android:id="@+id/spearImage_hotStarThreeLeftItem_two"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp">
-            <me.xiaopan.android.spear.widget.SpearImageView
+            <me.xiaopan.android.spear.SpearImageView
                 android:id="@+id/spearImage_hotStarThreeLeftItem_three"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

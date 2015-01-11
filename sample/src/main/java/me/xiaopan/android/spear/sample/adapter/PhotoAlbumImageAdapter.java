@@ -15,7 +15,7 @@ import java.util.List;
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.util.DimenUtils;
-import me.xiaopan.android.spear.widget.SpearImageView;
+import me.xiaopan.android.spear.SpearImageView;
 
 public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     private Context context;
@@ -73,7 +73,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         ItemViewHolder itemViewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_photo_album_image, parent, false));
 
         itemViewHolder.spearImageView.setOnClickListener(itemClickListener);
-        itemViewHolder.spearImageView.setEnablePressRipple(true);
+        itemViewHolder.spearImageView.setEnableClickRipple(true);
         itemViewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.LOCAL_PHOTO_ALBUM_ITEM);
         if(itemWidth != -1){
             ViewGroup.LayoutParams layoutParams = itemViewHolder.spearImageView.getLayoutParams();
@@ -116,7 +116,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             itemViewHolder.spearImageView.setLayoutParams(marginLayoutParams);
         }
 
-        itemViewHolder.spearImageView.setImageByUri(imageUris.get(position));
+        itemViewHolder.spearImageView.setImageFromUri(imageUris.get(position));
         itemViewHolder.spearImageView.setTag(itemViewHolder);
     }
 

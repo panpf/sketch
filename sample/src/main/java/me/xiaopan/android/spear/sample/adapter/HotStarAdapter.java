@@ -13,7 +13,7 @@ import java.util.List;
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.net.request.HotStarRequest;
-import me.xiaopan.android.spear.widget.SpearImageView;
+import me.xiaopan.android.spear.SpearImageView;
 
 /**
  * 热门明星适配器
@@ -124,9 +124,9 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemLeftHolder.twoSpearImageView.setOnClickListener(itemClickListener);
             threeItemLeftHolder.threeSpearImageView.setOnClickListener(itemClickListener);
 
-            threeItemLeftHolder.oneSpearImageView.setEnablePressRipple(true);
-            threeItemLeftHolder.twoSpearImageView.setEnablePressRipple(true);
-            threeItemLeftHolder.threeSpearImageView.setEnablePressRipple(true);
+            threeItemLeftHolder.oneSpearImageView.setEnableClickRipple(true);
+            threeItemLeftHolder.twoSpearImageView.setEnableClickRipple(true);
+            threeItemLeftHolder.threeSpearImageView.setEnableClickRipple(true);
 
             int itemWidth = availableScreenWidth / 2;
             int itemHeight = (int) (itemWidth/0.75);
@@ -157,9 +157,9 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemRightHolder.twoSpearImageView.setOnClickListener(itemClickListener);
             threeItemRightHolder.threeSpearImageView.setOnClickListener(itemClickListener);
 
-            threeItemRightHolder.oneSpearImageView.setEnablePressRipple(true);
-            threeItemRightHolder.twoSpearImageView.setEnablePressRipple(true);
-            threeItemRightHolder.threeSpearImageView.setEnablePressRipple(true);
+            threeItemRightHolder.oneSpearImageView.setEnableClickRipple(true);
+            threeItemRightHolder.twoSpearImageView.setEnableClickRipple(true);
+            threeItemRightHolder.threeSpearImageView.setEnableClickRipple(true);
 
             int itemWidth = availableScreenWidth / 2;
             int itemHeight = (int) (itemWidth/0.75);
@@ -189,8 +189,8 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             twoItemHolder.oneSpearImageView.setOnClickListener(itemClickListener);
             twoItemHolder.twoSpearImageView.setOnClickListener(itemClickListener);
 
-            twoItemHolder.oneSpearImageView.setEnablePressRipple(true);
-            twoItemHolder.twoSpearImageView.setEnablePressRipple(true);
+            twoItemHolder.oneSpearImageView.setEnableClickRipple(true);
+            twoItemHolder.twoSpearImageView.setEnableClickRipple(true);
 
             int itemWidth = availableScreenWidth / 2;
             int itemHeight = (int) (itemWidth/1.36);
@@ -213,7 +213,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
 
             oneItemHolder.oneSpearImageView.setOnClickListener(itemClickListener);
 
-            oneItemHolder.oneSpearImageView.setEnablePressRipple(true);
+            oneItemHolder.oneSpearImageView.setEnableClickRipple(true);
 
             int itemWidth = availableScreenWidth;
             int itemHeight = (int) (itemWidth/1.36);
@@ -242,9 +242,9 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemLeftHolder.oneNameTextView.setText(threeItemLeft.star1.getName());
             threeItemLeftHolder.twoNameTextView.setText(threeItemLeft.star2.getName());
             threeItemLeftHolder.threeNameTextView.setText(threeItemLeft.star3.getName());
-            threeItemLeftHolder.oneSpearImageView.setImageByUri(threeItemLeft.star1.getHeightImage().getUrl());
-            threeItemLeftHolder.twoSpearImageView.setImageByUri(threeItemLeft.star2.getWidthImage().getUrl());
-            threeItemLeftHolder.threeSpearImageView.setImageByUri(threeItemLeft.star3.getWidthImage().getUrl());
+            threeItemLeftHolder.oneSpearImageView.setImageFromUri(threeItemLeft.star1.getHeightImage().getUrl());
+            threeItemLeftHolder.twoSpearImageView.setImageFromUri(threeItemLeft.star2.getWidthImage().getUrl());
+            threeItemLeftHolder.threeSpearImageView.setImageFromUri(threeItemLeft.star3.getWidthImage().getUrl());
             threeItemLeftHolder.oneSpearImageView.setTag(threeItemLeft.star1);
             threeItemLeftHolder.twoSpearImageView.setTag(threeItemLeft.star2);
             threeItemLeftHolder.threeSpearImageView.setTag(threeItemLeft.star3);
@@ -254,9 +254,9 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemRightHolder.oneNameTextView.setText(threeItemRight.star1.getName());
             threeItemRightHolder.twoNameTextView.setText(threeItemRight.star2.getName());
             threeItemRightHolder.threeNameTextView.setText(threeItemRight.star3.getName());
-            threeItemRightHolder.oneSpearImageView.setImageByUri(threeItemRight.star1.getWidthImage().getUrl());
-            threeItemRightHolder.twoSpearImageView.setImageByUri(threeItemRight.star2.getWidthImage().getUrl());
-            threeItemRightHolder.threeSpearImageView.setImageByUri(threeItemRight.star3.getHeightImage().getUrl());
+            threeItemRightHolder.oneSpearImageView.setImageFromUri(threeItemRight.star1.getWidthImage().getUrl());
+            threeItemRightHolder.twoSpearImageView.setImageFromUri(threeItemRight.star2.getWidthImage().getUrl());
+            threeItemRightHolder.threeSpearImageView.setImageFromUri(threeItemRight.star3.getHeightImage().getUrl());
             threeItemRightHolder.oneSpearImageView.setTag(threeItemRight.star1);
             threeItemRightHolder.twoSpearImageView.setTag(threeItemRight.star2);
             threeItemRightHolder.threeSpearImageView.setTag(threeItemRight.star3);
@@ -265,15 +265,15 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             TwoItem twoItem = (TwoItem) items.get(position);
             twoItemHolder.oneNameTextView.setText(twoItem.star1.getName());
             twoItemHolder.twoNameTextView.setText(twoItem.star2.getName());
-            twoItemHolder.oneSpearImageView.setImageByUri(twoItem.star1.getWidthImage().getUrl());
-            twoItemHolder.twoSpearImageView.setImageByUri(twoItem.star2.getWidthImage().getUrl());
+            twoItemHolder.oneSpearImageView.setImageFromUri(twoItem.star1.getWidthImage().getUrl());
+            twoItemHolder.twoSpearImageView.setImageFromUri(twoItem.star2.getWidthImage().getUrl());
             twoItemHolder.oneSpearImageView.setTag(twoItem.star1);
             twoItemHolder.twoSpearImageView.setTag(twoItem.star2);
         }else if(holder instanceof OneItemHolder){
             OneItemHolder oneItemHolder = (OneItemHolder) holder;
             OneItem oneItem = (OneItem) items.get(position);
             oneItemHolder.oneNameTextView.setText(oneItem.star1.getName());
-            oneItemHolder.oneSpearImageView.setImageByUri(oneItem.star1.getWidthImage().getUrl());
+            oneItemHolder.oneSpearImageView.setImageFromUri(oneItem.star1.getWidthImage().getUrl());
             oneItemHolder.oneSpearImageView.setTag(oneItem.star1);
         }
 

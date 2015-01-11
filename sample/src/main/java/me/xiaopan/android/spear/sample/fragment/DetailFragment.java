@@ -52,7 +52,7 @@ import me.xiaopan.android.spear.sample.util.SaveImageAsyncTask;
 import me.xiaopan.android.spear.sample.util.SingleTapDetector;
 import me.xiaopan.android.spear.sample.util.ViewPagerPlayer;
 import me.xiaopan.android.spear.util.FailureCause;
-import me.xiaopan.android.spear.widget.SpearImageView;
+import me.xiaopan.android.spear.SpearImageView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -312,7 +312,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
 //        @Override
 //        public Object instantiateItem(ViewGroup container, int position) {
 //            SpearImageView spearImageView = new SpearImageView(context);
-//            spearImageView.setImageByUri(uris.get(position));
+//            spearImageView.setImageFromUri(uris.get(position));
 //            container.addView(spearImageView);
 //            return spearImageView;
 //        }
@@ -359,7 +359,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
 
                 }
             });
-            imageView.setImageByUri(imageUri);
+            imageView.setImageFromUri(imageUri);
         }
 
         @Override

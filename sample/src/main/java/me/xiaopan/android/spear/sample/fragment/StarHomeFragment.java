@@ -235,7 +235,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                     if (getActivity() == null) {
                         return;
                     }
-                    starImageAdapter.loadMoreFailed();
+                    starImageAdapter.loadMoreFail();
                     Toast.makeText(getActivity(), "快递投递失败", Toast.LENGTH_SHORT).show();
                 }
 

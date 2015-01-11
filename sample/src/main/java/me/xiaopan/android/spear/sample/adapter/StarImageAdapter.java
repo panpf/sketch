@@ -17,7 +17,7 @@ import java.util.List;
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.net.request.StarImageRequest;
-import me.xiaopan.android.spear.widget.SpearImageView;
+import me.xiaopan.android.spear.SpearImageView;
 
 /**
  * 明星图片适配器
@@ -146,9 +146,9 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 itemViewHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_HOME_ITEM);
                 itemViewHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_HOME_ITEM);
 
-                itemViewHolder.oneSpearImageView.setEnablePressRipple(true);
-                itemViewHolder.twoSpearImageView.setEnablePressRipple(true);
-                itemViewHolder.threeSpearImageView.setEnablePressRipple(true);
+                itemViewHolder.oneSpearImageView.setEnableClickRipple(true);
+                itemViewHolder.twoSpearImageView.setEnableClickRipple(true);
+                itemViewHolder.threeSpearImageView.setEnableClickRipple(true);
 
                 itemViewHolder.oneSpearImageView.setOnClickListener(itemClickListener);
                 itemViewHolder.twoSpearImageView.setOnClickListener(itemClickListener);
@@ -168,7 +168,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         switch(getItemViewType(position)){
             case ITEM_TYPE_HEADER :
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) viewHolder;
-                headerViewHolder.spearImageView.setImageByUri(headerImageUrl);
+                headerViewHolder.spearImageView.setImageFromUri(headerImageUrl);
                 break;
             case ITEM_TYPE_ITEM :
                 ItemViewHolder itemViewHolder = (ItemViewHolder) viewHolder;
@@ -230,14 +230,14 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     private void bind(SpearImageView spearImageView, StarImageRequest.Image image, int position){
         if(image != null){
             spearImageView.setTag(position);
-            spearImageView.setImageByUri(image.getThumbUrl());
+            spearImageView.setImageFromUri(image.getThumbUrl());
             spearImageView.setVisibility(View.VISIBLE);
         }else{
             spearImageView.setVisibility(View.INVISIBLE);
         }
     }
 
-    public void loadMoreFailed(){
+    public void loadMoreFail(){
         if(loadMoreFooterViewHolder != null){
             loadMoreFooterViewHolder.contextTextView.setText("Sorry！您的包裹运送失败，您再试一次吧！");
             loadMoreFooterViewHolder.progressBar.setVisibility(View.GONE);

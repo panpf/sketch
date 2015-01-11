@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
-    <me.xiaopan.android.spear.widget.SpearImageView
+    <me.xiaopan.android.spear.SpearImageView
         android:id="@+id/spearImage_hotStarOneItem_one"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
