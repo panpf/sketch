@@ -32,7 +32,7 @@ public class DisplayRequest extends LoadRequest{
 
     private String id;	//ID
     private boolean enableMemoryCache = DEFAULT_ENABLE_MEMORY_CACHE;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-    private DrawableHolder failedDrawableHolder;	//当加载失败时显示的图片
+    private DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
     private ImageDisplayer imageDisplayer;	//图片显示器
     private ImageViewHolder imageViewHolder;	//ImageView持有器
 
@@ -43,6 +43,8 @@ public class DisplayRequest extends LoadRequest{
     private BitmapDrawable bitmapDrawable;
     private FailureCause failureCause;
     private DisplayListener.From from;
+
+    private boolean resizeByImageViewLayoutSizeAndFromDisplayer;
 
     /**
      * 获取ID，此ID用来在内存缓存Bitmap时作为其KEY
@@ -88,8 +90,8 @@ public class DisplayRequest extends LoadRequest{
      * 获取加载失败时显示的图片
      * @return 加载失败时显示的图片
      */
-    public BitmapDrawable getFailedDrawable() {
-        if(failedDrawableHolder == null){
+    public BitmapDrawable getLoadFailDrawable() {
+        if(loadFailDrawableHolder == null){
             return null;
         }
         ImageProcessor processor;
@@ -100,7 +102,7 @@ public class DisplayRequest extends LoadRequest{
         }else{
             processor = null;
         }
-        return failedDrawableHolder.getDrawable(getSpear().getConfiguration().getContext(), getResize(), getScaleType(), processor);
+        return loadFailDrawableHolder.getDrawable(getSpear().getConfiguration().getContext(), getResize(), getScaleType(), processor, resizeByImageViewLayoutSizeAndFromDisplayer);
     }
 
     @Override
@@ -155,12 +157,12 @@ public class DisplayRequest extends LoadRequest{
         this.enableMemoryCache = enableMemoryCache;
     }
 
-    public DrawableHolder getFailedDrawableHolder() {
-        return failedDrawableHolder;
+    public DrawableHolder getLoadFailDrawableHolder() {
+        return loadFailDrawableHolder;
     }
 
-    public void setFailedDrawableHolder(DrawableHolder failedDrawableHolder) {
-        this.failedDrawableHolder = failedDrawableHolder;
+    public void setLoadFailDrawableHolder(DrawableHolder loadFailDrawableHolder) {
+        this.loadFailDrawableHolder = loadFailDrawableHolder;
     }
 
     public void setImageDisplayer(ImageDisplayer imageDisplayer) {
@@ -177,5 +179,9 @@ public class DisplayRequest extends LoadRequest{
 
     public void setDisplayProgressListener(ProgressListener displayProgressListener) {
         this.displayProgressListener = displayProgressListener;
+    }
+
+    public void setResizeByImageViewLayoutSizeAndFromDisplayer(boolean resizeByImageViewLayoutSizeAndFromDisplayer) {
+        this.resizeByImageViewLayoutSizeAndFromDisplayer = resizeByImageViewLayoutSizeAndFromDisplayer;
     }
 }

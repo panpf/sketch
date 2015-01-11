@@ -159,9 +159,9 @@ public class DisplayCallbackHandler implements Handler.Callback{
         handler.obtainMessage(WHAT_CALLBACK_FAILED, displayRequest).sendToTarget();
     }
 
-    public void failCallbackOnFire(ImageView imageView, Drawable bitmapDrawable, FailureCause failureCause, DisplayListener displayListener){
-        if(bitmapDrawable != null){
-            imageView.setImageDrawable(bitmapDrawable);
+    public void failCallbackOnFire(ImageView imageView, Drawable loadFailDrawable, FailureCause failureCause, DisplayListener displayListener){
+        if(loadFailDrawable != null){
+            imageView.setImageDrawable(loadFailDrawable);
         }
         if(displayListener == null){
             return;

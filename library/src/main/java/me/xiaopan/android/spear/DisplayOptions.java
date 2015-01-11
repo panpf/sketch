@@ -20,7 +20,7 @@ import android.content.Context;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.android.spear.display.ImageDisplayer;
-import me.xiaopan.android.spear.display.OriginalFadeInImageDisplayer;
+import me.xiaopan.android.spear.display.TransitionImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.request.DisplayRequest;
 import me.xiaopan.android.spear.util.DrawableHolder;
@@ -35,8 +35,7 @@ public class DisplayOptions extends LoadOptions {
     protected DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
     protected DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
     protected boolean resizeByImageViewLayoutSize;
-
-    protected boolean tempResizeByDisplayer;
+    protected boolean resizeByImageViewLayoutSizeFromDisplayer;
 
     public DisplayOptions(Context context) {
         super(context);
@@ -58,16 +57,14 @@ public class DisplayOptions extends LoadOptions {
      */
     public DisplayOptions displayer(ImageDisplayer displayer) {
         this.imageDisplayer = displayer;
-        if(this.imageDisplayer != null && this.imageDisplayer instanceof OriginalFadeInImageDisplayer){
-            if(resize == null && !resizeByImageViewLayoutSize){
-                resizeByImageViewLayoutSize = true;
-                tempResizeByDisplayer = true;
+        if(this.imageDisplayer != null && this.imageDisplayer instanceof TransitionImageDisplayer){
+            if(!this.resizeByImageViewLayoutSize){
+                this.resizeByImageViewLayoutSize = true;
+                this.resizeByImageViewLayoutSizeFromDisplayer = true;
             }
-        }else{
-            if(tempResizeByDisplayer){
-                resizeByImageViewLayoutSize = false;
-                tempResizeByDisplayer = false;
-            }
+        }else if(this.resizeByImageViewLayoutSizeFromDisplayer){
+            this.resizeByImageViewLayoutSize = false;
+            this.resizeByImageViewLayoutSizeFromDisplayer = false;
         }
         return this;
     }
@@ -155,12 +152,16 @@ public class DisplayOptions extends LoadOptions {
     @Override
     public DisplayOptions resize(ImageSize resize){
         super.resize(resize);
+        this.resizeByImageViewLayoutSize = false;
+        this.resizeByImageViewLayoutSizeFromDisplayer = false;
         return this;
     }
 
     @Override
     public DisplayOptions resize(int width, int height) {
         super.resize(width, height);
+        this.resizeByImageViewLayoutSize = false;
+        this.resizeByImageViewLayoutSizeFromDisplayer = false;
         return this;
     }
 
@@ -169,6 +170,7 @@ public class DisplayOptions extends LoadOptions {
      */
     public void resizeByImageViewLayoutSize() {
         this.resizeByImageViewLayoutSize = true;
+        this.resizeByImageViewLayoutSizeFromDisplayer = false;
     }
 
     @Override
@@ -223,5 +225,9 @@ public class DisplayOptions extends LoadOptions {
      */
     public DrawableHolder getLoadFailDrawableHolder() {
         return loadFailDrawableHolder;
+    }
+
+    public boolean isResizeByImageViewLayoutSizeFromDisplayer() {
+        return resizeByImageViewLayoutSizeFromDisplayer;
     }
 }

@@ -54,9 +54,10 @@ public class DrawableHolder {
         this.process = process;
     }
 
-    public BitmapDrawable getDrawable(Context context, ImageSize resize, ImageView.ScaleType scaleType, ImageProcessor imageProcessor) {
+    public BitmapDrawable getDrawable(Context context, ImageSize resize, ImageView.ScaleType scaleType, ImageProcessor imageProcessor, boolean forceProcess) {
         if(drawable == null && resId > 0){
             boolean finished = false;
+            boolean process = forceProcess || this.process;
             if(!process || imageProcessor == null){
                 Drawable defaultDrawable = context.getResources().getDrawable(resId);
                 if(defaultDrawable != null && defaultDrawable instanceof BitmapDrawable){
@@ -84,5 +85,9 @@ public class DrawableHolder {
 
     public void reset() {
         this.drawable = null;
+    }
+
+    public BitmapDrawable getDrawable() {
+        return drawable;
     }
 }

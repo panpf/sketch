@@ -17,7 +17,6 @@
 package me.xiaopan.android.spear;
 
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -25,7 +24,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import me.xiaopan.android.spear.display.ImageDisplayer;
-import me.xiaopan.android.spear.display.OriginalFadeInImageDisplayer;
+import me.xiaopan.android.spear.display.TransitionImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.request.DisplayRequest;
@@ -66,7 +65,8 @@ public class DisplayHelper {
 
     private ImageView imageView;
 
-    private boolean tempResizeByDisplayer;
+    private boolean resizeByImageViewLayoutSize;
+    private boolean resizeByImageViewLayoutSizeAndFromDisplayer;
 
     /**
      * 创建显示请求生成器
@@ -137,6 +137,9 @@ public class DisplayHelper {
         progressListener = null;
 
         imageView = null;
+
+        resizeByImageViewLayoutSize = false;
+        resizeByImageViewLayoutSizeAndFromDisplayer = false;
     }
 
     /**
@@ -186,7 +189,8 @@ public class DisplayHelper {
      */
     public DisplayHelper resize(ImageSize resize){
         this.resize = resize;
-        tempResizeByDisplayer = false;
+        this.resizeByImageViewLayoutSize = false;
+        this.resizeByImageViewLayoutSizeAndFromDisplayer = false;
         return this;
     }
 
@@ -198,7 +202,8 @@ public class DisplayHelper {
      */
     public DisplayHelper resize(int width, int height){
         this.resize = new ImageSize(width, height);
-        tempResizeByDisplayer = false;
+        this.resizeByImageViewLayoutSize = false;
+        this.resizeByImageViewLayoutSizeAndFromDisplayer = false;
         return this;
     }
 
@@ -207,7 +212,8 @@ public class DisplayHelper {
      */
     public DisplayHelper resizeByImageViewLayoutSize(){
         this.resize = spear.getConfiguration().getImageSizeCalculator().calculateImageResize(imageView);
-        tempResizeByDisplayer = false;
+        this.resizeByImageViewLayoutSize = true;
+        this.resizeByImageViewLayoutSizeAndFromDisplayer = false;
         return this;
     }
 
@@ -254,16 +260,15 @@ public class DisplayHelper {
      */
     public DisplayHelper displayer(ImageDisplayer displayer) {
         this.imageDisplayer = displayer;
-        if(this.imageDisplayer != null && this.imageDisplayer instanceof OriginalFadeInImageDisplayer){
-            if(resize == null){
-                resizeByImageViewLayoutSize();
-                tempResizeByDisplayer = true;
+        if(this.imageDisplayer != null && this.imageDisplayer instanceof TransitionImageDisplayer){
+            if(!resizeByImageViewLayoutSize){
+                this.resize = spear.getConfiguration().getImageSizeCalculator().calculateImageResize(imageView);
+                this.resizeByImageViewLayoutSize = true;
+                this.resizeByImageViewLayoutSizeAndFromDisplayer = true;
             }
-        }else{
-            if(tempResizeByDisplayer){
-                resize = null;
-                tempResizeByDisplayer = false;
-            }
+        }else if(this.resizeByImageViewLayoutSizeAndFromDisplayer){
+            this.resizeByImageViewLayoutSize = false;
+            this.resizeByImageViewLayoutSizeAndFromDisplayer = false;
         }
         return this;
     }
@@ -352,11 +357,15 @@ public class DisplayHelper {
         if(this.maxsize == null || (options.getMaxsize() != null && spear.getConfiguration().getImageSizeCalculator().compareMaxsize(options.getMaxsize(), this.maxsize) < 0)){
             this.maxsize = options.getMaxsize();
         }
-        if(this.resize == null){
-            if(options.getResize() != null){
+        if(!resizeByImageViewLayoutSize || this.resize == null){
+            if(options.isResizeByImageViewLayoutSize()){
+                this.resize = spear.getConfiguration().getImageSizeCalculator().calculateImageResize(imageView);
+                this.resizeByImageViewLayoutSize = options.isResizeByImageViewLayoutSize();
+                this.resizeByImageViewLayoutSizeAndFromDisplayer = options.isResizeByImageViewLayoutSizeFromDisplayer();
+            }else if(this.resize == null && options.getResize() != null){
                 this.resize = options.getResize();
-            }else if(options.isResizeByImageViewLayoutSize()){
-                resizeByImageViewLayoutSize();
+                this.resizeByImageViewLayoutSize = false;
+                this.resizeByImageViewLayoutSizeAndFromDisplayer = false;
             }
         }
         if(this.scaleType == null){
@@ -410,7 +419,7 @@ public class DisplayHelper {
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "uri不能为null或空");
             }
             // 显示默认图片
-            BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null):null;
+            BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
             spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadingBitmapDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
             return null;
@@ -422,11 +431,7 @@ public class DisplayHelper {
             if(Spear.isDebugMode()){
                 Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "未知的协议类型" + " URI" + "=" + uri);
             }
-            Drawable loadFailDrawable = null;
-            if(loadFailDrawableHolder != null){
-                loadFailDrawable = loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null);
-            }
-            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadFailDrawable, FailureCause.URI_NO_SUPPORT, displayListener);
+            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, getDrawableFromDrawableHolder(loadFailDrawableHolder), FailureCause.URI_NO_SUPPORT, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
             return null;
         }
@@ -446,7 +451,7 @@ public class DisplayHelper {
 
         if(spear.isPaused()){
             // 显示默认图片
-            BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null):null;
+            BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
             imageView.clearAnimation();
             imageView.setImageDrawable(loadingBitmapDrawable);
             if(displayListener != null){
@@ -481,13 +486,15 @@ public class DisplayHelper {
         request.setEnableMemoryCache(enableMemoryCache);
         request.setImageViewHolder(new ImageViewHolder(imageView, request));
         request.setImageDisplayer(imageDisplayer);
-        request.setFailedDrawableHolder(loadFailDrawableHolder);
+        request.setLoadFailDrawableHolder(loadFailDrawableHolder);
 
         request.setDisplayListener(displayListener);
         request.setDisplayProgressListener(progressListener);
 
+        request.setResizeByImageViewLayoutSizeAndFromDisplayer(resizeByImageViewLayoutSizeAndFromDisplayer);
+
         // 显示默认图片
-        BitmapDrawable loadingBitmapDrawable = loadingDrawableHolder!=null?loadingDrawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor!=null?imageProcessor:resize!=null?spear.getConfiguration().getDefaultCutImageProcessor():null):null;
+        BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
         imageView.clearAnimation();
         imageView.setImageDrawable(new AsyncDrawable(spear.getConfiguration().getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
 
@@ -499,6 +506,24 @@ public class DisplayHelper {
             ((SpearImageView) imageView).setRequestFuture(requestFuture);
         }
         return requestFuture;
+    }
+
+    private ImageProcessor getImageProcessor(){
+        if(imageProcessor != null){
+            return imageProcessor;
+        }else if(resize!=null){
+            return spear.getConfiguration().getDefaultCutImageProcessor();
+        }else{
+            return null;
+        }
+    }
+
+    private BitmapDrawable getDrawableFromDrawableHolder(DrawableHolder drawableHolder){
+        if(drawableHolder != null){
+            return drawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, getImageProcessor(), resizeByImageViewLayoutSizeAndFromDisplayer);
+        }else{
+            return null;
+        }
     }
 
     /**

@@ -74,7 +74,7 @@ public class DisplayJoinLoadListener implements LoadListener {
 
     @Override
     public void onFailed(FailureCause failureCause) {
-        displayRequest.getSpear().getConfiguration().getDisplayCallbackHandler().failCallback(displayRequest, displayRequest.getFailedDrawable(), failureCause);
+        displayRequest.getSpear().getConfiguration().getDisplayCallbackHandler().failCallback(displayRequest, displayRequest.getLoadFailDrawable(), failureCause);
     }
 
     @Override
