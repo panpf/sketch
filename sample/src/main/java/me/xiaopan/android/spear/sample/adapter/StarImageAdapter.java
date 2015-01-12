@@ -230,7 +230,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     private void bind(SpearImageView spearImageView, StarImageRequest.Image image, int position){
         if(image != null){
             spearImageView.setTag(position);
-            spearImageView.setImageFromUri(image.getThumbUrl());
+            spearImageView.setImageFromUri(image.getSourceUrl());
             spearImageView.setVisibility(View.VISIBLE);
         }else{
             spearImageView.setVisibility(View.INVISIBLE);
