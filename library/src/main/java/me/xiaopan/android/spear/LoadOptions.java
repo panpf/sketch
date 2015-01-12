@@ -44,12 +44,6 @@ public class LoadOptions extends DownloadOptions{
         return this;
     }
 
-    @Override
-    public LoadOptions diskCacheTimeout(long diskCacheTimeout) {
-        super.diskCacheTimeout(diskCacheTimeout);
-        return this;
-    }
-
     /**
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
      * @param maxsize 最大尺寸

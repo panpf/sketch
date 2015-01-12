@@ -25,9 +25,7 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -168,34 +166,7 @@ public class LruDiskCache implements DiskCache {
 
 	@Override
 	public synchronized File createCacheFile(DownloadRequest request) {
-		File cacheFile = getCacheFileByUri(request.getUri());
-
-        if(cacheFile == null){
-            return null;
-        }
-
-		//如果不存在就直接返回
-		if(!cacheFile.exists()){
-            return cacheFile;
-        }
-
-		//是否永久有效
-		long diskCacheTimeout = request.getDiskCacheTimeout();
-		if(diskCacheTimeout <= 0) return cacheFile;
-
-		//是否过期
-		Calendar calendar = new GregorianCalendar();
-		calendar.add(Calendar.MILLISECOND, (int) -diskCacheTimeout);
-		if(calendar.getTimeInMillis() >= cacheFile.lastModified()){
-			if(!cacheFile.delete()){
-                Log.e(Spear.LOG_TAG, "删除文件失败：" + cacheFile.getPath());
-            }
-			if(Spear.isDebugMode()){
-				Log.w(Spear.LOG_TAG, LOG_NAME + "：" + "AvailableOfFile" + "：" + "文件过期已删除" + "；" + "文件地址" + "=" + cacheFile.getPath() + "；" + request.getName());
-			}
-			return cacheFile;
-		}
-		return cacheFile;
+		return getCacheFileByUri(request.getUri());
 	}
 
     @Override

@@ -185,12 +185,6 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
-    @Override
-    public DisplayOptions diskCacheTimeout(long diskCacheTimeout) {
-        super.diskCacheTimeout(diskCacheTimeout);
-        return this;
-    }
-
     public boolean isResizeByImageViewLayoutSize() {
         return resizeByImageViewLayoutSize;
     }

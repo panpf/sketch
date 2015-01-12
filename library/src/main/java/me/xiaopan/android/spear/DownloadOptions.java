@@ -23,7 +23,6 @@ import me.xiaopan.android.spear.request.RequestOptions;
  * 下载选项
  */
 public class DownloadOptions implements RequestOptions {
-    protected long diskCacheTimeout = DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT;	//磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
     protected boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;	//是否开启磁盘缓存
 
     /**
@@ -33,24 +32,6 @@ public class DownloadOptions implements RequestOptions {
     public DownloadOptions disableDiskCache() {
         this.enableDiskCache = false;
         return this;
-    }
-
-    /**
-     * 设置磁盘缓存超时时间
-     * @param diskCacheTimeout 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-     * @return DownloadOptions
-     */
-    public DownloadOptions diskCacheTimeout(long diskCacheTimeout) {
-        this.diskCacheTimeout = diskCacheTimeout;
-        return this;
-    }
-
-    /**
-     * 获取磁盘缓存超时时间
-     * @return 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-     */
-    public long getDiskCacheTimeout() {
-        return diskCacheTimeout;
     }
 
     /**

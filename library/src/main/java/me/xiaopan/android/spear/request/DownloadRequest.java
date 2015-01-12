@@ -26,7 +26,6 @@ import me.xiaopan.android.spear.util.ImageScheme;
  * 下载请求
  */
 public class DownloadRequest implements Request {
-    public static final long DEFAULT_DISK_CACHE_TIMEOUT = 0;
     public static final boolean DEFAULT_ENABLE_DISK_CACHE = true;
 
     /* 任务基础属性 */
@@ -43,7 +42,6 @@ public class DownloadRequest implements Request {
     private ProgressListener downloadProgressListener;  // 下载进度监听器
 
     /* 可配置属性 */
-    private long diskCacheTimeout = DEFAULT_DISK_CACHE_TIMEOUT;	// 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
     private boolean enableDiskCache = DEFAULT_ENABLE_DISK_CACHE;	// 是否开启磁盘缓存
 
     @Override
@@ -139,14 +137,6 @@ public class DownloadRequest implements Request {
     }
 
     /**
-     * 获取磁盘缓存超时时间
-     * @return 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-     */
-    public long getDiskCacheTimeout() {
-        return diskCacheTimeout;
-    }
-
-    /**
      * 是否开启磁盘缓存
      * @return 是否开启磁盘缓存
      */
@@ -203,13 +193,6 @@ public class DownloadRequest implements Request {
      */
     public void setImageScheme(ImageScheme imageScheme) {
         this.imageScheme = imageScheme;
-    }
-
-    /**
-     * 设置磁盘缓存超时时间，单位毫秒
-     */
-    public void setDiskCacheTimeout(long diskCacheTimeout) {
-        this.diskCacheTimeout = diskCacheTimeout;
     }
 
     /**

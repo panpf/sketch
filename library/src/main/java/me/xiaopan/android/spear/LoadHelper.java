@@ -38,7 +38,6 @@ public class LoadHelper {
     private Spear spear;
     private String uri;
 
-    private long diskCacheTimeout = DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT;
     private boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
 
     private ImageSize maxsize;
@@ -73,16 +72,6 @@ public class LoadHelper {
      */
     public LoadHelper disableDiskCache() {
         this.enableDiskCache = false;
-        return this;
-    }
-
-    /**
-     * 设置磁盘缓存超时时间
-     * @param diskCacheTimeout 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-     * @return Builder
-     */
-    public LoadHelper diskCacheTimeout(long diskCacheTimeout) {
-        this.diskCacheTimeout = diskCacheTimeout;
         return this;
     }
 
@@ -178,9 +167,6 @@ public class LoadHelper {
             return this;
         }
 
-        if(options.getDiskCacheTimeout() != DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT){
-            this.diskCacheTimeout = options.getDiskCacheTimeout();
-        }
         if(options.isEnableDiskCache() != DownloadRequest.DEFAULT_ENABLE_DISK_CACHE){
             this.enableDiskCache = options.isEnableDiskCache();
         }
@@ -250,7 +236,6 @@ public class LoadHelper {
         request.setSpear(spear);
         request.setImageScheme(imageScheme);
         request.setEnableDiskCache(enableDiskCache);
-        request.setDiskCacheTimeout(diskCacheTimeout);
 
         request.setMaxsize(maxsize);
         request.setResize(resize);

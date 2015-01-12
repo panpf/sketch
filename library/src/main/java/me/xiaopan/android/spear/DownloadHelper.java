@@ -34,7 +34,6 @@ public class DownloadHelper {
     private Spear spear;
     private String uri;
 
-    private long diskCacheTimeout = DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT;
     private boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
 
     private DownloadListener downloadListener;
@@ -72,16 +71,6 @@ public class DownloadHelper {
     }
 
     /**
-     * 设置磁盘缓存超时时间
-     * @param diskCacheTimeout 磁盘缓存超时时间，单位毫秒，小于等于0表示永久有效
-     * @return Helper
-     */
-    public DownloadHelper diskCacheTimeout(long diskCacheTimeout) {
-        this.diskCacheTimeout = diskCacheTimeout;
-        return this;
-    }
-
-    /**
      * 设置进度监听器
      * @param progressListener 进度监听器
      * @return Helper
@@ -101,9 +90,6 @@ public class DownloadHelper {
             return this;
         }
 
-        if(options.getDiskCacheTimeout() != DownloadRequest.DEFAULT_DISK_CACHE_TIMEOUT){
-            this.diskCacheTimeout = options.getDiskCacheTimeout();
-        }
         if(options.isEnableDiskCache() != DownloadRequest.DEFAULT_ENABLE_DISK_CACHE){
             this.enableDiskCache = options.isEnableDiskCache();
         }
@@ -161,7 +147,6 @@ public class DownloadHelper {
         request.setSpear(spear);
         request.setImageScheme(imageScheme);
         request.setEnableDiskCache(enableDiskCache);
-        request.setDiskCacheTimeout(diskCacheTimeout);
 
         request.setDownloadListener(downloadListener);
         request.setDownloadProgressListener(progressListener);
