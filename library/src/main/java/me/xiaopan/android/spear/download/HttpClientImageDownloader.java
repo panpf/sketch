@@ -27,6 +27,7 @@ import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpVersion;
+import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
@@ -46,6 +47,7 @@ import org.apache.http.protocol.HttpContext;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -53,9 +55,7 @@ import java.io.InterruptedIOException;
 import java.io.OutputStream;
 import java.net.SocketTimeoutException;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.GZIPInputStream;
@@ -68,6 +68,7 @@ import me.xiaopan.android.spear.request.DownloadRequest;
  */
 public class HttpClientImageDownloader implements ImageDownloader {
 	private static final String NAME = HttpClientImageDownloader.class.getSimpleName();
+    private static final int BUFFER_SIZE = 8*1024;
     private static final int DEFAULT_WAIT_TIMEOUT = 60*1000;   // 默认从连接池中获取连接的最大等待时间
     private static final int DEFAULT_READ_TIMEOUT = 10*1000;   // 默认读取超时时间
     private static final int DEFAULT_CONNECT_TIMEOUT = 10*1000;    // 默认连接超时时间
@@ -79,14 +80,12 @@ public class HttpClientImageDownloader implements ImageDownloader {
     private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
 
     private DefaultHttpClient httpClient;
-	private Set<String> downloadingFiles;
 	private Map<String, ReentrantLock> urlLocks;
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
     private int progressCallbackNumber = DEFAULT_PROGRESS_CALLBACK_NUMBER;
 
 	public HttpClientImageDownloader() {
 		this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
-		this.downloadingFiles = Collections.synchronizedSet(new HashSet<String>());
 		BasicHttpParams httpParams = new BasicHttpParams();
         ConnManagerParams.setTimeout(httpParams, DEFAULT_WAIT_TIMEOUT);
         ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(DEFAULT_MAX_ROUTE_CONNECTIONS));
@@ -136,11 +135,6 @@ public class HttpClientImageDownloader implements ImageDownloader {
 	}
 
 	@Override
-	public synchronized boolean isDownloadingByCacheFilePath(String cacheFilePath) {
-		return downloadingFiles.contains(cacheFilePath);
-	}
-
-	@Override
 	public DownloadResult download(DownloadRequest request) {
         // 根据下载地址加锁，防止重复下载
         ReentrantLock urlLock = getUrlLock(request.getUri());
@@ -149,24 +143,33 @@ public class HttpClientImageDownloader implements ImageDownloader {
         DownloadResult result = null;
         int number = 0;
         while(true){
+            // 如果已经取消了就直接结束
+            if (request.isCanceled()) {
+                if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 拿到锁之后" + "；" + request.getName());
+                break;
+            }
+
+            // 如果缓存文件已经存在了就直接返回缓存文件
+            File cacheFile = request.getCacheFile();
+            if (cacheFile != null && cacheFile.exists()) {
+                result = DownloadResult.createByFile(cacheFile, false);
+                break;
+            }
+
             try {
                 result = realDownload(request);
                 break;
             } catch (Throwable e) {
-                if(e instanceof CanceledException){
-                    break;
+                boolean retry = (e instanceof SocketTimeoutException || e instanceof InterruptedIOException) && number < maxRetryCount;
+                if(retry){
+                    number++;
+                    if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "；" + "下载异常 - 再次尝试" + "；" + request.getName());
                 }else{
-                    boolean retry = (e instanceof SocketTimeoutException || e instanceof InterruptedIOException) && number < maxRetryCount;
-                    if(retry){
-                        number++;
-                        Log.w(Spear.LOG_TAG, NAME+"；"+"下载异常 - 再次尝试" + "；" + request.getName());
-                    }else{
-                        Log.e(Spear.LOG_TAG, NAME+"；"+"下载异常 - 不再尝试" + "；" + request.getName());
-                    }
-                    e.printStackTrace();
-                    if(!retry){
-                        break;
-                    }
+                    if (Spear.isDebugMode()) Log.e(Spear.LOG_TAG, NAME + "；" + "下载异常 - 不再尝试" + "；" + request.getName());
+                }
+                e.printStackTrace();
+                if(!retry){
+                    break;
                 }
             }
         }
@@ -176,135 +179,122 @@ public class HttpClientImageDownloader implements ImageDownloader {
         return result;
 	}
 
-    private DownloadResult realDownload(DownloadRequest request) throws Throwable {
-        // 如果已经取消了就直接结束
+    private DownloadResult realDownload(DownloadRequest request) throws IOException {
+        HttpResponse httpResponse;
+        try {
+            httpResponse = httpClient.execute(new HttpGet(request.getUri()));
+        } catch (IOException e) {
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "创建连接失败："+e.getMessage() + "；" + request.getName());
+            throw e;
+        }
         if (request.isCanceled()) {
-            if (Spear.isDebugMode()) {
-                Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 拿到锁之后" + "；" + request.getName());
-            }
+            releaseConnection(httpResponse);
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 获取Response之后" + "；" + request.getName());
             return null;
         }
 
-        // 如果缓存文件已经存在了就直接返回缓存文件
-        File cacheFile = request.getCacheFile();
-        if (cacheFile != null && cacheFile.exists()) {
-            return DownloadResult.createByFile(cacheFile, false);
+        // 检查状态码
+        StatusLine statusLine = httpResponse.getStatusLine();
+        if(statusLine == null){
+            releaseConnection(httpResponse);
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "获取状态行失败" + "；" + request.getName());
+            return null;
+        }
+        int responseCode = statusLine.getStatusCode();
+        if (responseCode != 200) {
+            releaseConnection(httpResponse);
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "状态码异常："+responseCode + " " + httpResponse.getStatusLine().getReasonPhrase() + "；" + request.getName());
+            return null;
         }
 
-        // 下载
-        String lockedFilePath = null;   // 已锁定的文件的路径
-        boolean saveToCacheFile = false;  // 是否将数据保存到缓存文件里
-        HttpGet httpGet = null;
-        InputStream inputStream = null;
-        OutputStream outputStream = null;
+        // 检查内容长度
+        int contentLength = 0;
+        Header[] headers = httpResponse.getHeaders("Content-Length");
+        if(headers != null && headers.length > 0){
+            contentLength = Integer.valueOf(headers[0].getValue());
+        }
+        if (contentLength <= 0) {
+            releaseConnection(httpResponse);
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "内容长度异常："+contentLength + "；" + request.getName());
+            return null;
+        }
 
+        return readData(request, httpResponse, contentLength);
+    }
+
+    private DownloadResult readData(DownloadRequest request, HttpResponse httpResponse, int contentLength) throws IOException {
+        File tempFile = null;
+        if(request.getCacheFile() != null && request.getSpear().getConfiguration().getDiskCache().applyForSpace(contentLength)){
+            tempFile = new File(request.getCacheFile().getPath()+".temp");
+            if(!HttpUrlConnectionImageDownloader.createFile(request.getCacheFile())){
+                tempFile = null;
+            }
+        }
+
+        // 获取输入流后判断是否已取消
+        InputStream inputStream;
         try {
-            httpGet = new HttpGet(request.getUri());
-            HttpResponse httpResponse = httpClient.execute(httpGet);
-
-            if (request.isCanceled()) {
-                releaseConnection(httpResponse);
-                if (Spear.isDebugMode()) {
-                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 获取Response之后" + "；" + request.getName());
-                }
-                throw new CanceledException();
-            }
-
-            // 检查状态码
-            int responseCode = httpResponse.getStatusLine().getStatusCode();
-            if (responseCode >= 300) {
-                releaseConnection(httpResponse);
-                throw new IllegalStateException("状态异常，状态码："+responseCode + " 原因：" + httpResponse.getStatusLine().getReasonPhrase());
-            }
-
-            // 检查内容长度
-            int contentLength = 0;
-            Header[] headers = httpResponse.getHeaders("Content-Length");
-            if(headers != null && headers.length > 0){
-                contentLength = Integer.valueOf(headers[0].getValue());
-            }
-            if (contentLength <= 0) {
-                releaseConnection(httpResponse);
-                throw new IOException("Content-Length 为 0");
-            }
-
-            // 根据需求创建缓存文件并标记为正在下载
-            saveToCacheFile = cacheFile != null && request.getSpear().getConfiguration().getDiskCache().applyForSpace(contentLength) && HttpUrlConnectionImageDownloader.createCacheFile(cacheFile);
-            if (request.isCanceled()) {
-                releaseConnection(httpResponse);
-                if (Spear.isDebugMode()) {
-                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 创建缓存文件之后" + "；" + request.getName());
-                }
-                throw new CanceledException();
-            }
-
-            // 锁定文件，标记为正在下载
-            if (saveToCacheFile) {
-                downloadingFiles.add(lockedFilePath = cacheFile.getPath());
-            }
-
-            // 获取输入流后判断是否已取消
             inputStream = httpResponse.getEntity().getContent();
-            if (request.isCanceled()) {
-                if (Spear.isDebugMode()) {
-                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 获取输入流之后" + "；" + request.getName());
-                }
-                throw new CanceledException();
-            }
+        } catch (IOException e) {
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "获取输入流时发生异常：" + e.getMessage() + "；" + request.getName());
+            if (tempFile != null && tempFile.exists() && !tempFile.delete()) Log.w(Spear.LOG_TAG, NAME + "：" + "读取输入流时发生异常，需要删除临时缓存文件，但删除失败：" + tempFile.getPath() + "；" + request.getName());
+            throw e;
+        }
+        if (request.isCanceled()) {
+            HttpUrlConnectionImageDownloader.close(inputStream);
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 获取输入流之后" + "；" + request.getName());
+            if (tempFile != null && tempFile.exists() && !tempFile.delete()) Log.w(Spear.LOG_TAG, NAME + "：" + "获取输入流之后发现取消，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+            return null;
+        }
 
-            // 根据是否需要缓存到本地创建不同的输出流
-            ByteArrayOutputStream byteArrayOutputStream = null;
-            outputStream = new BufferedOutputStream(saveToCacheFile ? new FileOutputStream(cacheFile, false) : (byteArrayOutputStream = new ByteArrayOutputStream()), 8 * 1024);
-
-            // 读取数据
-            int completedLength = HttpUrlConnectionImageDownloader.readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
-            if (request.isCanceled()) {
-                if (Spear.isDebugMode()) {
-                    Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 读取数据之后" + "；" + request.getName());
-                }
-                throw new CanceledException();
+        // 当不需要将数据缓存到本地的时候就使用ByteArrayOutputStream来存储数据
+        OutputStream outputStream;
+        if(tempFile != null){
+            try {
+                outputStream = new BufferedOutputStream(new FileOutputStream(tempFile, false), BUFFER_SIZE);
+            } catch (FileNotFoundException e) {
+                HttpUrlConnectionImageDownloader.close(inputStream);
+                Log.w(Spear.LOG_TAG, NAME + "：" + "创建输出流时找不到文件了："+tempFile.getPath() + "；" + request.getName());
+                throw e;
             }
+        }else{
+            outputStream = new ByteArrayOutputStream();
+        }
 
-            // 转换结果
-            DownloadResult result = saveToCacheFile ? DownloadResult.createByFile(cacheFile, true) : DownloadResult.createByByteArray(byteArrayOutputStream.toByteArray(), true);
-            if (Spear.isDebugMode()) {
-                Log.i(Spear.LOG_TAG, NAME + "：" + "下载成功" + "；" + "文件长度：" + completedLength + "/" + contentLength + "；" + request.getName());
-            }
+        // 读取数据
+        int completedLength = 0;
+        boolean exception = false;
+        try {
+            completedLength = HttpUrlConnectionImageDownloader.readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
+        } catch (IOException e) {
+            exception = true;
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "读取数据时发生异常："+e.getMessage() + "；" + request.getName());
+            throw e;
+        }finally {
+            HttpUrlConnectionImageDownloader.close(outputStream);
+            HttpUrlConnectionImageDownloader.close(inputStream);
+            if (exception && tempFile != null && tempFile.exists() && !tempFile.delete()) Log.w(Spear.LOG_TAG, NAME + "：" + "读取数据时发生异常，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+        }
+        if (request.isCanceled()) {
+            if (Spear.isDebugMode()) Log.w(Spear.LOG_TAG, NAME + "：" + "已取消下载 - 读取完数据之后" + "；" + request.getName());
+            if (tempFile != null && tempFile.exists() && !tempFile.delete()) Log.w(Spear.LOG_TAG, NAME + "：" + "读取完数据之后发现取消了，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+            return null;
+        }
 
-            // 各种关闭
-            try { outputStream.flush(); } catch (IOException e) { e.printStackTrace(); }
-            try { outputStream.close(); } catch (IOException e) { e.printStackTrace(); }
-            try { inputStream.close(); } catch (IOException e) { e.printStackTrace(); }
+        if (Spear.isDebugMode()) Log.i(Spear.LOG_TAG, NAME + "：" + "下载成功" + "；" + "文件长度：" + completedLength + "/" + contentLength + "；" + request.getName());
 
-            // 解除文件锁定
-            if (lockedFilePath != null) {
-                downloadingFiles.remove(lockedFilePath);
+        // 转换结果
+        if(tempFile != null && tempFile.exists()){
+            if(tempFile.renameTo(request.getCacheFile())){
+                return DownloadResult.createByFile(request.getCacheFile(), true);
+            }else{
+                if (!tempFile.delete()) Log.w(Spear.LOG_TAG, NAME + "：" + "重命名失败，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+                return null;
             }
-
-            return result;
-        } catch (Throwable throwable) {
-            // 各种关闭
-            if (outputStream != null) {
-                try { outputStream.flush(); } catch (IOException e) { e.printStackTrace(); }
-                try { outputStream.close(); } catch (IOException e) { e.printStackTrace(); }
-            }
-            if (inputStream != null) {
-                try { inputStream.close(); } catch (IOException e) { e.printStackTrace(); }
-            }
-//            if(httpGet != null){
-//                httpGet.abort();
-//            }
-
-            // 如果发生异常并且使用了缓存文件以及缓存文件存在就删除缓存文件，然后如果删除失败就输出LOG
-            if(saveToCacheFile && cacheFile != null && cacheFile.exists() && !cacheFile.delete()) {
-                Log.e(Spear.LOG_TAG, NAME + "：" + "删除缓存文件失败：" + cacheFile.getPath());
-            }
-
-            // 解除文件锁定
-            if (lockedFilePath != null) {
-                downloadingFiles.remove(lockedFilePath);
-            }
-            throw throwable;
+        }else if(outputStream instanceof ByteArrayOutputStream){
+            return DownloadResult.createByByteArray(((ByteArrayOutputStream) outputStream).toByteArray(), true);
+        }else{
+            return null;
         }
     }
 
@@ -388,8 +378,5 @@ public class HttpClientImageDownloader implements ImageDownloader {
                 return -1;
             }
         }
-    }
-
-    public static class CanceledException extends IOException{
     }
 }

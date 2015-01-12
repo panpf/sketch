@@ -74,36 +74,22 @@ public class DefaultRequestExecutor implements RequestExecutor {
 	 * @param downloadRequest 下载请求
 	 */
 	private void executeDownloadRequest(DownloadRequest downloadRequest){
-		// 根据需求生成缓存文件
+		// 要先创建缓存文件
         if(downloadRequest.isEnableDiskCache()){
             downloadRequest.setCacheFile(downloadRequest.getSpear().getConfiguration().getDiskCache().createCacheFile(downloadRequest));
         }
 
-        // 如果需要缓存并且缓存文件已存在就考虑从本地读取
+        // 如果缓存文件存在就从本地读取
         File cacheFile = downloadRequest.getCacheFile();
 		if(cacheFile != null && cacheFile.exists()){
-            // 如果缓存文件虽然已存在，但是正在下载中，就从网络下载
-            if(downloadRequest.getSpear().getConfiguration().getImageDownloader().isDownloadingByCacheFilePath(cacheFile.getPath())){
-                netTaskExecutor.execute(new DownloadTask(downloadRequest));
-                if(Spear.isDebugMode()){
-                    Log.d(Spear.LOG_TAG, NAME + "：" + "DOWNLOAD - 网络 - 正在下载" + "；" + downloadRequest.getName());
-                }
-                return;
-            }
-
-            // 如果缓存文件可用就从本地读取
             localTaskExecutor.execute(new DownloadTask(downloadRequest));
-			if(Spear.isDebugMode()){
-				Log.d(Spear.LOG_TAG, NAME + "：" + "DOWNLOAD - 本地" + "；" + downloadRequest.getName());
-			}
+			if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "DOWNLOAD - 本地" + "；" + downloadRequest.getName());
             return;
 		}
 
-        // 不需要缓存或缓存文件不存在就从网络下载
+        // 从网络下载
         netTaskExecutor.execute(new DownloadTask(downloadRequest));
-        if(Spear.isDebugMode()){
-            Log.d(Spear.LOG_TAG, NAME + "：" + "DOWNLOAD - 网络" + "；" + downloadRequest.getName());
-        }
+        if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "DOWNLOAD - 网络" + "；" + downloadRequest.getName());
 	}
 	
 	/**
@@ -114,73 +100,45 @@ public class DefaultRequestExecutor implements RequestExecutor {
 		switch(loadRequest.getImageScheme()){
 			case HTTP :
 			case HTTPS :
-                // 根据需求生成缓存文件
+                // 要先创建缓存文件
                 if(loadRequest.isEnableDiskCache()){
                     loadRequest.setCacheFile(loadRequest.getSpear().getConfiguration().getDiskCache().createCacheFile(loadRequest));
                 }
 
-                // 如果需要缓存并且缓存文件已存在就考虑从本地读取
+                // 如果缓存文件存在就从本地读取
 				File cacheFile = loadRequest.getCacheFile();
                 if(cacheFile != null && cacheFile.exists()){
-                	// 如果缓存文件虽然已存在，但是正在下载中，就从网络下载
-                    if(loadRequest.getSpear().getConfiguration().getImageDownloader().isDownloadingByCacheFilePath(cacheFile.getPath())){
-                        loadRequest.setDownloadListener(new LoadJoinDownloadListener(localTaskExecutor, loadRequest));
-                        if(loadRequest.getLoadProgressListener() != null){
-                            loadRequest.setDownloadProgressListener(new LoadJoinDownloadProgressListener(loadRequest.getLoadProgressListener()));
-                        }
-                		netTaskExecutor.execute(new DownloadTask(loadRequest));
-                        if(Spear.isDebugMode()){
-                            Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - HTTP - 网络 - 正在下载" + "；" + loadRequest.getName());
-                        }
-                        break;
-                	}
-
-                    // 如果缓存文件可用就从本地读取
                     localTaskExecutor.execute(new LoadTask(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest), LoadListener.From.LOCAL));
-                    if(Spear.isDebugMode()){
-                        Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - HTTP - 本地" + "；" + loadRequest.getName());
-                    }
+                    if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - HTTP - 本地" + "；" + loadRequest.getName());
                     break;
                 }
 
-                // 如果不需要缓存或缓存文件不存在就从网络下载
+                // 从网络下载
                 loadRequest.setDownloadListener(new LoadJoinDownloadListener(localTaskExecutor, loadRequest));
                 if(loadRequest.getLoadProgressListener() != null){
                     loadRequest.setDownloadProgressListener(new LoadJoinDownloadProgressListener(loadRequest.getLoadProgressListener()));
                 }
                 netTaskExecutor.execute(new DownloadTask(loadRequest));
-                if(Spear.isDebugMode()){
-                    Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - HTTP - 网络" + "；" + loadRequest.getName());
-                }
+                if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - HTTP - 网络" + "；" + loadRequest.getName());
 				break;
 			case FILE :
                 localTaskExecutor.execute(new LoadTask(loadRequest, new FileDecodeListener(new File(loadRequest.getUri()), loadRequest), LoadListener.From.LOCAL));
-                if(Spear.isDebugMode()){
-                    Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - FILE" + "；" + loadRequest.getName());
-                }
+                if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - FILE" + "；" + loadRequest.getName());
 				break;
 			case ASSETS :
                 localTaskExecutor.execute(new LoadTask(loadRequest, new AssetsDecodeListener(ImageScheme.ASSETS.crop(loadRequest.getUri()), loadRequest), LoadListener.From.LOCAL));
-                if(Spear.isDebugMode()){
-                    Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - ASSETS" + "；" + loadRequest.getName());
-                }
+                if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - ASSETS" + "；" + loadRequest.getName());
 				break;
 			case CONTENT :
                 localTaskExecutor.execute(new LoadTask(loadRequest, new ContentDecodeListener(loadRequest.getUri(), loadRequest), LoadListener.From.LOCAL));
-                if(Spear.isDebugMode()){
-                    Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - CONTENT" + "；" + loadRequest.getName());
-                }
+                if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - CONTENT" + "；" + loadRequest.getName());
 				break;
 			case DRAWABLE :
                 localTaskExecutor.execute(new LoadTask(loadRequest, new DrawableDecodeListener(ImageScheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest), LoadListener.From.LOCAL));
-                if(Spear.isDebugMode()){
-                    Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - DRAWABLE" + "；" + loadRequest.getName());
-                }
+                if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - DRAWABLE" + "；" + loadRequest.getName());
                 break;
 			default:
-                if(Spear.isDebugMode()){
-                    Log.e(Spear.LOG_TAG, NAME + "：" + "LOAD - 未知的协议格式" + "：" + loadRequest.getUri());
-                }
+                if(Spear.isDebugMode()) Log.e(Spear.LOG_TAG, NAME + "：" + "LOAD - 未知的协议格式" + "：" + loadRequest.getUri());
 				break;
 		}
 	}

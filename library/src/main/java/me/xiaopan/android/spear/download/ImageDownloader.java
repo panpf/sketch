@@ -29,11 +29,6 @@ public interface ImageDownloader {
 	 */
 	public DownloadResult download(DownloadRequest downloadRequest);
 	
-	/**
-	 * 判断给定缓存文件地址的文件是否正在下载
-	 */
-	public boolean isDownloadingByCacheFilePath(String cacheFilePath);
-
     /**
      * 设置最大重试次数
      * @param maxRetryCount 最大重试次数，默认1
