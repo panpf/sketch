@@ -31,8 +31,8 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
 
     @Override
     public ImageSize calculateImageMaxsize(ImageView imageView) {
-        int width = getWidth(imageView, true, true);
-        int height = getHeight(imageView, true, true);
+        int width = getWidth(imageView, true, true, false);
+        int height = getHeight(imageView, true, true, false);
         if (width > 0 || height > 0){
             return new ImageSize(width, height);
         }else{
@@ -42,8 +42,8 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
 
     @Override
     public ImageSize calculateImageResize(ImageView imageView) {
-        int width = getWidth(imageView, false, false);
-        int height = getHeight(imageView, false, false);
+        int width = getWidth(imageView, false, false, true);
+        int height = getHeight(imageView, false, false, true);
         if (width > 0 && height > 0){
             return new ImageSize(width, height);
         }else{
@@ -104,7 +104,7 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
         return inSampleSize;
     }
 
-    public static int getWidth(ImageView imageView, boolean checkMaxViewSize, boolean acceptWrapContent) {
+    public static int getWidth(ImageView imageView, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {
         if(imageView == null){
             return 0;
         }
@@ -113,8 +113,12 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
         final ViewGroup.LayoutParams params = imageView.getLayoutParams();
         if (params != null){
             width = params.width;
+            if(subtractPadding && width > 0  && (width - imageView.getPaddingLeft() - imageView.getPaddingRight()) > 0){
+                width -= imageView.getPaddingLeft()+imageView.getPaddingRight();
+                return width;
+            }
         }
-        if(width <= 0 && checkMaxViewSize){
+        if(width <= 0 && checkMaxWidth){
             width = getImageViewFieldValue(imageView, "mMaxWidth");
         }
         if(width <= 0 && acceptWrapContent && params != null && params.width == ViewGroup.LayoutParams.WRAP_CONTENT){
@@ -123,7 +127,7 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
         return width;
     }
 
-    public static int getHeight(ImageView imageView, boolean checkMaxViewSize, boolean acceptWrapContent) {
+    public static int getHeight(ImageView imageView, boolean checkMaxHeight, boolean acceptWrapContent, boolean subtractPadding) {
         if(imageView == null){
             return 0;
         }
@@ -132,8 +136,12 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
         final ViewGroup.LayoutParams params = imageView.getLayoutParams();
         if (params != null){
             height = params.height;
+            if(subtractPadding && height > 0 && (height - imageView.getPaddingTop() - imageView.getPaddingBottom()) > 0){
+                height -= imageView.getPaddingTop()+imageView.getPaddingBottom();
+                return height;
+            }
         }
-        if(height <= 0 && checkMaxViewSize){
+        if(height <= 0 && checkMaxHeight){
             height = getImageViewFieldValue(imageView, "mMaxHeight");
         }
         if(height <= 0 && acceptWrapContent && params != null && params.height == ViewGroup.LayoutParams.WRAP_CONTENT){
