@@ -27,7 +27,8 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 >* [Download APK](https://github.com/xiaopansky/Spear/raw/master/releases/SpearSample-2.5.0.apk)
 
 扫描二维码下载示例APP
-![SampleApp](https://github.com/xiaopansky/Spear/raw/master/releases/sample_apk_download_url.jpg)
+
+![SampleApp](https://github.com/xiaopansky/Spear/raw/master/releases/sample_apk_download_url.png)
 
 ##Usage guide
 
@@ -200,7 +201,7 @@ display()与load()、download()的区别
 >* ``优化``. 优化了DisplayHelper的使用，以前是为每一次display都创建一个DisplayHelper，现在是只要你是按照display().fire()这样连续的使用，那么所有的display将共用一个DisplayHelper，这将会避免创建大量的DisplayHelper
 >* ``优化``. ProgressListener.onUpdateProgress(long, long)改为ProgressListener.onUpdateProgress(int, int)，因为int足够用了
 
-[查看更多...](https://github.com/xiaopansky/Spear/wiki/Change-log/_edit)
+[查看更多...](https://github.com/xiaopansky/Spear/wiki/Change-log)
 
 ##License
 ```java
