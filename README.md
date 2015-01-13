@@ -28,7 +28,7 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 
 扫描二维码下载示例APP
 
-![SampleApp](https://github.com/xiaopansky/Spear/raw/master/releases/sample_apk_download_url.png)
+![SampleApp](https://github.com/xiaopansky/Spear/raw/master/releases/sample_apk_download_qr.png)
 
 ##Usage guide
 
