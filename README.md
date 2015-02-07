@@ -51,7 +51,7 @@ SpearImageView contentSpearImageView = ...;
 spearImageView.setImageFromUri("http://www.huabian.com/uploadfile/2013/1222/20131222054754556.jpg");
 
 // from local file
-spearImageView.setImageFromUri("file:///mnt/sfs.png");
+spearImageView.setImageFromUri("/mnt/sfs.png");
 // or
 spearImageView.setImageFromFile(new File("/mnt/sfs.png"));
         
