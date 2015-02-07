@@ -6,7 +6,7 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 
 ![sample](https://github.com/xiaopansky/Spear/raw/master/docs/sample.jpg)
 
-##Features
+###特点（Features）
 >* ``多种URI支持`` 支持``http://``、``https://``、``assets://``、``content://``、``/sdcard/sample.jpg``、``drawable://``等6种URI。
 >* ``异步加载`` 采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
 >* ``缓存支持`` 采用Lru算法在本地和内存中缓存图片，本地缓存可设置最大容量、保留容量以及有效期。
@@ -22,7 +22,7 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 >* ``强大的自定义功能`` 可自定义请求分发与执行、缓存、解码、处理、显示、默认图片、失败图片等。
 >* ``使用方便`` 直接通过Spear.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置
 
-## Sample App
+###示例APP（Sample app）
 >* [Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)
 >* [Download APK](https://github.com/xiaopansky/Spear/raw/master/releases/SpearSample-2.5.1.apk)
 
@@ -30,7 +30,7 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 
 ![SampleApp](https://github.com/xiaopansky/Spear/raw/master/releases/sample_apk_download_qr.png)
 
-##Usage guide
+###使用指南（Usage guide）
 
 ####Spear支持以下6种URI：
 >* "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
@@ -132,12 +132,32 @@ display()与load()、download()的区别
 >* [使用ImageView](https://github.com/xiaopansky/Spear/wiki/UseImageView)
 >* [暂停加载新图片，进一步提升列表流畅度](https://github.com/xiaopansky/Spear/wiki/pause-or-resume-spear)
 
-###Downloads
+###JAR包下载（Download jar）
 >* [spear-1.3.0.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.3.0.jar)
 >* [spear-1.3.0-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.3.0-sources.zip)
 
-##Change log
-###1.3.0
+###新计划（New plan）
+####下一版开发计划（The next version of the development plan）
+>* 支持读取已安装APP或本地APK文件的图标（可能要新增一个类型，比如app://com.android.core或/sdcard/test.apk）
+>* 示例APP增加一个页面，展示读取已安装APP或本地APK文件的图标的功能。页面分两部分，分别显示已安装APP列表和扫描到的本地APK包列表
+>* 修复首页竖的默认图貌似裁剪跑偏的问题
+>* 增加在移动网络下不加载网络图片的功能，另外结合SpearImageView支持点击加载（是否要新增加一个可以提示“点击加载”的默认图片，同loadingDrawable时同级的）
+>* 支持外部添加一个Bitmap到内存缓存中，这样将会大大增加灵活性（那么外部将有权利设置缓存ID以及决定是否用RecycleDrawable就要放在MemoryCache中了）
+>* 考虑将默认图也放到内存缓存中，试图通过这样的方式解决之前担心的默认图太多导致始终占用内存的问题
+>* 考虑如何支持用已缓存的小缩略图作为默认图片（比如支持从内存缓存中加载默认图）
+
+####需求池（Demand pool）
+>* 结合android-gif-drawable支持GIF图
+>* loading图片支持直接设置bitmap以及各种类型的Drawable
+>* 优化imagedecoder解码图片部分的实现，现在的局限性比较大，不方便自定义，比如去掉各种decodelistener
+>* DrawableHolder还要改，貌似有的时候不需要解码生成新的图片
+>* 考虑支持图片下载断点续传
+>* 解码缓存文件失败的时候支持删除缓存文件并重新次下载
+>* 考虑如何处理因异常（比如程序被强行终止）产生的下载垃圾文件，比如在申请空间的时候清理那些下载垃圾文件
+>* 考虑一下怎么能让使用者更加方便的自定义新的加载方式，就比如我要显示apk的图标，却因为现有框架的限制导致必须开发者来支持才可以
+
+###更新日志（Change log）
+####1.3.0
 **SpearImageView**
 >* ``修复``. 兼容RecyclerView，因为在RecyclerView中View的生命周期略有变化，导致图片显示异常，现已修复
 >* ``修复``. 取消了在setImageFromUri()方法中的过滤请求功能，因为这里只能根据URI过滤。例如：同一个URI在同一个SpearImageView上调用setImageFromUri()方法显示了两次，但是这两次显示的时候SpearImageView的宽高是不一样的，结果就是第一次的显示请求继续执行，第二次的显示请求被拒绝了。现在去掉过滤功能后统一都交给了Spear处理，结果会是第一次的显示请求被取消，第二次的显示请求继续执行。
@@ -196,14 +216,14 @@ display()与load()、download()的区别
 >* ``优化``. display的fire方法去掉了异步线程过滤，由于display基本都是在主线程执行的过滤异步线程没有意义
 >* ``修改``. 不再默认根据ImageView的Layout Size设置resize，新增resizeByImageViewLayoutSize()方法开启此功能。另外当你使用TransitionImageDisplayer作为displayer的时候会默认开启resizeByImageViewLayoutSize功能，因为不开启resizeByImageViewLayoutSize的话图片最终就会显示变形
 
-###1.2.0
+####1.2.0
 >* ``优化``. 改善了需要通过Handler在主线程执行回调以及显示的方式，以前是使用Runnable，现在时通过Message，这样就避免了创建Runnable，由于display是非常频繁的操作，因此这将会是有意义的改善
 >* ``优化``. 优化了DisplayHelper的使用，以前是为每一次display都创建一个DisplayHelper，现在是只要你是按照display().fire()这样连续的使用，那么所有的display将共用一个DisplayHelper，这将会避免创建大量的DisplayHelper
 >* ``优化``. ProgressListener.onUpdateProgress(long, long)改为ProgressListener.onUpdateProgress(int, int)，因为int足够用了
 
 [查看更多...](https://github.com/xiaopansky/Spear/wiki/Change-log)
 
-##License
+###License
 ```java
 /*
  * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
