@@ -83,17 +83,10 @@ public class CutImageProcessor implements ImageProcessor {
         float widthScale = (float)sourceWidth/targetWidth;
         float heightScale = (float)sourceHeight/targetHeight;
         float finalScale = widthScale<heightScale?widthScale:heightScale;
-        int srcLeft;
-        int srcTop;
         int srcWidth = (int)(targetWidth*finalScale);
         int srcHeight = (int)(targetHeight*finalScale);
-        if(sourceWidth > sourceHeight){
-            srcLeft = (sourceWidth - srcWidth)/2;
-            srcTop = 0;
-        }else{
-            srcLeft = 0;
-            srcTop = (sourceHeight - srcHeight)/2;
-        }
+        int srcLeft = (sourceWidth - srcWidth)/2;
+        int srcTop = (sourceHeight - srcHeight)/2;
         return new Rect(srcLeft, srcTop, srcLeft+srcWidth, srcTop+srcHeight);
     }
 
