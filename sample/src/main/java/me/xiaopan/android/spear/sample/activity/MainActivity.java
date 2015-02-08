@@ -33,9 +33,10 @@ import me.xiaopan.android.inject.InjectParentMember;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.spear.sample.MyActionBarActivity;
 import me.xiaopan.android.spear.sample.fragment.AboutFragment;
+import me.xiaopan.android.spear.sample.fragment.AppListFragment;
 import me.xiaopan.android.spear.sample.fragment.PhotoAlbumFragment;
 import me.xiaopan.android.spear.sample.fragment.SearchFragment;
-import me.xiaopan.android.spear.sample.fragment.StartFragment;
+import me.xiaopan.android.spear.sample.fragment.StarFragment;
 import me.xiaopan.android.spear.sample.util.AnimationUtils;
 import me.xiaopan.android.spear.sample.util.DimenUtils;
 import me.xiaopan.android.widget.PagerSlidingTabStrip;
@@ -45,13 +46,15 @@ import me.xiaopan.android.widget.PagerSlidingTabStrip;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
-public class MainActivity extends MyActionBarActivity implements StartFragment.GetPagerSlidingTagStripListener{
-    @InjectView(R.id.tabStrip_main) private PagerSlidingTabStrip titleTabStrip;
+public class MainActivity extends MyActionBarActivity implements StarFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener {
+    @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
+    @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
     @InjectView(R.id.drawer_main_content) private DrawerLayout drawerLayout;
     @InjectView(R.id.layout_main_leftMenu) private View leftMenuView;
     @InjectView(R.id.button_main_search) private View searchButton;
     @InjectView(R.id.button_main_star) private View starButton;
     @InjectView(R.id.button_main_photoAlbum) private View photoAlbumButton;
+    @InjectView(R.id.button_main_appList) private View appListButton;
     @InjectView(R.id.button_main_about) private View aboutButton;
 
     private long lastClickBackTime;
@@ -78,13 +81,14 @@ public class MainActivity extends MyActionBarActivity implements StartFragment.G
             public void onClick(View v) {
                 drawerLayout.closeDrawer(Gravity.START);
 
-                if(type != Type.STAR){
+                if (type != Type.STAR) {
                     getSupportActionBar().setTitle("明星");
-                    AnimationUtils.visibleViewByAlpha(titleTabStrip);
+                    AnimationUtils.visibleViewByAlpha(starTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
                     type = Type.STAR;
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                            .replace(R.id.frame_main_content, new StartFragment())
+                            .replace(R.id.frame_main_content, new StarFragment())
                             .commit();
                 }
             }
@@ -96,7 +100,8 @@ public class MainActivity extends MyActionBarActivity implements StartFragment.G
                 drawerLayout.closeDrawer(Gravity.START);
 
                 if(type != Type.SEARCH){
-                    AnimationUtils.invisibleViewByAlpha(titleTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
                     type = Type.SEARCH;
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
@@ -112,7 +117,8 @@ public class MainActivity extends MyActionBarActivity implements StartFragment.G
                 drawerLayout.closeDrawer(Gravity.START);
 
                 if(type != Type.LOCAL_PHOTO_ALBUM){
-                    AnimationUtils.invisibleViewByAlpha(titleTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
                     getSupportActionBar().setTitle("本地相册");
                     type = Type.LOCAL_PHOTO_ALBUM;
                     getSupportFragmentManager()
@@ -124,13 +130,32 @@ public class MainActivity extends MyActionBarActivity implements StartFragment.G
             }
         });
 
+        appListButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawer(Gravity.START);
+
+                if(type != Type.APP_LIST){
+                    getSupportActionBar().setTitle("本地APP");
+                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
+                    AnimationUtils.visibleViewByAlpha(appListTabStrip);
+                    type = Type.APP_LIST;
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
+                            .replace(R.id.frame_main_content, new AppListFragment())
+                            .commit();
+                }
+            }
+        });
+
         aboutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 drawerLayout.closeDrawer(Gravity.START);
 
                 if(type != Type.ABOUT){
-                    AnimationUtils.invisibleViewByAlpha(titleTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
                     getSupportActionBar().setTitle("关于");
                     type = Type.ABOUT;
                     getSupportFragmentManager().beginTransaction()
@@ -141,13 +166,10 @@ public class MainActivity extends MyActionBarActivity implements StartFragment.G
             }
         });
 
-        titleTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
+        starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
+        appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
 
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.frame_main_content, new StartFragment())
-                .commit();
-        getSupportActionBar().setTitle("明星");
-        type = Type.STAR;
+        appListButton.performClick();
     }
 
     @Override
@@ -165,19 +187,25 @@ public class MainActivity extends MyActionBarActivity implements StartFragment.G
     }
 
     @Override
-    public PagerSlidingTabStrip onGetPagerSlidingTabStrip() {
-        return titleTabStrip;
+    public PagerSlidingTabStrip onGetStarTabStrip() {
+        return starTabStrip;
+    }
+
+    @Override
+    public PagerSlidingTabStrip onGetAppListTabStrip() {
+        return appListTabStrip;
     }
 
     @Override
     public void onBackPressed() {
         long currentTime = System.currentTimeMillis();
-        if(currentTime - lastClickBackTime < 2000){
-            super.onBackPressed();
-        }else{
+        if((currentTime - lastClickBackTime) > 2000){
             lastClickBackTime = currentTime;
             Toast.makeText(getBaseContext(), "再按一下返回键退出"+getResources().getString(R.string.app_name), Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        super.onBackPressed();
     }
 
     private static class TitleTabFactory implements PagerSlidingTabStrip.TabViewFactory{
@@ -227,5 +255,6 @@ public class MainActivity extends MyActionBarActivity implements StartFragment.G
         SEARCH,
         LOCAL_PHOTO_ALBUM,
         ABOUT,
+        APP_LIST,
     }
 }

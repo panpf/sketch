@@ -119,6 +119,7 @@ public class SearchFragment extends InjectFragment implements StarImageAdapter.O
             pullRefreshLayout.startRefresh();
         } else {
             recyclerView.setAdapter(searchImageAdapter);
+            recyclerView.scheduleLayoutAnimation();
         }
     }
 
@@ -157,6 +158,7 @@ public class SearchFragment extends InjectFragment implements StarImageAdapter.O
                 }
 
                 recyclerView.setAdapter(searchImageAdapter = new StarImageAdapter(getActivity(), null, imageList, SearchFragment.this));
+                recyclerView.scheduleLayoutAnimation();
                 pullRefreshLayout.stopRefresh();
                 loadMoreListener.reset();
                 searchImageAdapter.setOnLoadMoreListener(loadMoreListener);

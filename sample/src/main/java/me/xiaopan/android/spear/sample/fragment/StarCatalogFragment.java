@@ -48,6 +48,7 @@ public class StarCatalogFragment extends InjectFragment implements PullRefreshLa
             refreshLayout.startRefresh();
         }else{
             contentRecyclerView.setAdapter(adapter);
+            contentRecyclerView.scheduleLayoutAnimation();
         }
     }
 
@@ -81,6 +82,7 @@ public class StarCatalogFragment extends InjectFragment implements PullRefreshLa
                 if(last){
                     adapter.append(result);
                     contentRecyclerView.setAdapter(adapter);
+                    contentRecyclerView.scheduleLayoutAnimation();
                     refreshLayout.stopRefresh();
                 }else{
                     adapter = new StarCatalogAdapter(getActivity(), result, StarCatalogFragment.this);

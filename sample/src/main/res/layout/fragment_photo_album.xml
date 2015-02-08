@@ -12,6 +12,7 @@
             android:id="@+id/recyclerView_photoAlbum_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layoutAnimation="@anim/layout_animation"
             android:divider="@null"
             android:listSelector="@null"/>
     </me.xiaopan.android.spear.sample.widget.MyPullRefreshLayout>

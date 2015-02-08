@@ -69,6 +69,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
             pullRefreshLayout.startRefresh();
         } else {
             recyclerView.setAdapter(starImageAdapter);
+            recyclerView.scheduleLayoutAnimation();
         }
     }
 
@@ -150,6 +151,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                 }
 
                 recyclerView.setAdapter(starImageAdapter = new StarImageAdapter(getActivity(), backgroundImageUrl, responseObject.getImages(), StarHomeFragment.this));
+                recyclerView.scheduleLayoutAnimation();
                 pullRefreshLayout.stopRefresh();
                 loadMoreListener.reset();
                 starImageAdapter.setOnLoadMoreListener(loadMoreListener);

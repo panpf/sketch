@@ -50,6 +50,7 @@ public class HotStarFragment extends InjectFragment implements PullRefreshLayout
             refreshLayout.startRefresh();
         }else{
             contentRecyclerView.setAdapter(adapter);
+            contentRecyclerView.scheduleLayoutAnimation();
         }
     }
 
@@ -83,6 +84,7 @@ public class HotStarFragment extends InjectFragment implements PullRefreshLayout
                 if(last){
                     adapter.append(hotStarList);
                     contentRecyclerView.setAdapter(adapter);
+                    contentRecyclerView.scheduleLayoutAnimation();
                     refreshLayout.stopRefresh();
                 }else{
                     adapter = new HotStarAdapter(getActivity(), hotStarList, HotStarFragment.this);

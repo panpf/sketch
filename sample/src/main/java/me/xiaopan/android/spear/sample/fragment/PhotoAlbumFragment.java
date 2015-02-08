@@ -57,6 +57,7 @@ public class PhotoAlbumFragment extends InjectFragment implements PhotoAlbumImag
 
         if(imageAdapter != null){
             recyclerView.setAdapter(imageAdapter);
+            recyclerView.scheduleLayoutAnimation();
         }else{
             pullRefreshLayout.startRefresh();
         }
@@ -111,6 +112,7 @@ public class PhotoAlbumFragment extends InjectFragment implements PhotoAlbumImag
             }
 
             recyclerView.setAdapter(imageAdapter = new PhotoAlbumImageAdapter(getActivity(), strings, PhotoAlbumFragment.this, recyclerView));
+            recyclerView.scheduleLayoutAnimation();
             pullRefreshLayout.stopRefresh();
         }
     }
