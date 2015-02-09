@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:paddingTop="8dp">
 	<me.xiaopan.android.spear.SpearImageView
-	    android:id="@+id/image_imageFragment_image" 
+	    android:id="@+id/image_imageFragment_image"
 	    android:layout_width="match_parent" 
 	    android:layout_height="match_parent" 
 	    android:contentDescription="@string/app_name"/>

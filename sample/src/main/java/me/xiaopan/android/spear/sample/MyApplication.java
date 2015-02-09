@@ -144,5 +144,12 @@ public class MyApplication extends Application {
                         .loadFailDrawable(R.drawable.image_load_fail)
                         .displayer(new TransitionImageDisplayer())
         );
+
+        Spear.putOptions(
+                DisplayOptionsType.APP_ICON,
+                new DisplayOptions(getBaseContext())
+                        .loadingDrawable(R.drawable.image_loading)
+                        .displayer(new TransitionImageDisplayer())
+        );
 	}
 }

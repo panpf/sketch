@@ -107,6 +107,8 @@ public class AppPackageFragment extends InjectFragment{
                         if(packageInfo == null){
                             continue;
                         }
+                        packageInfo.applicationInfo.sourceDir = childFile.getPath();
+                        packageInfo.applicationInfo.publicSourceDir = childFile.getPath();
 
                         AppInfo appInfo = new AppInfo();
                         appInfo.setName(String.valueOf(packageInfo.applicationInfo.loadLabel(packageManager)));

@@ -9,6 +9,8 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.xiaoapn.android.spear.sample.R;
+import me.xiaopan.android.spear.SpearImageView;
+import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.bean.AppInfo;
 
 /**
@@ -27,7 +29,9 @@ public class AppPackageListAdapter extends RecyclerView.Adapter{
         if(viewType == 0){
             return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app_list_header, parent, false));
         }else{
-            return new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
+            AppInfoViewHolder appInfoViewHolder = new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
+            appInfoViewHolder.iconSpearImageView.setDisplayOptions(DisplayOptionsType.APP_ICON);
+            return appInfoViewHolder;
         }
     }
 
@@ -43,6 +47,7 @@ public class AppPackageListAdapter extends RecyclerView.Adapter{
         }else{
             AppInfo appInfo = appInfoList.get(position-1);
             AppInfoViewHolder appInfoViewHolder = (AppInfoViewHolder) holder;
+            appInfoViewHolder.iconSpearImageView.setImageFromUri(appInfo.getApkFilePath());
             appInfoViewHolder.nameTextView.setText(appInfo.getName());
             appInfoViewHolder.infoTextView.setText("v"+appInfo.getVersionName()+"  |  "+appInfo.getAppSize());
         }
@@ -59,12 +64,14 @@ public class AppPackageListAdapter extends RecyclerView.Adapter{
     }
 
     public static class AppInfoViewHolder extends RecyclerView.ViewHolder{
+        private SpearImageView iconSpearImageView;
         private TextView nameTextView;
         private TextView infoTextView;
 
         public AppInfoViewHolder(View itemView) {
             super(itemView);
 
+            iconSpearImageView = (SpearImageView) itemView.findViewById(R.id.image_installedApp_icon);
             nameTextView = (TextView) itemView.findViewById(R.id.text_installedApp_name);
             infoTextView = (TextView) itemView.findViewById(R.id.text_installedApp_info);
         }

@@ -86,4 +86,9 @@ public enum DisplayOptionsType {
      * 搜索 - ITEM - STAGGERED
      */
     SEARCH_ITEM_STAGGERED,
+
+    /**
+     * APP图标
+     */
+    APP_ICON,
 }

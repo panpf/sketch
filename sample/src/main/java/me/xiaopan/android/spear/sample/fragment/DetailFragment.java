@@ -150,7 +150,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
     }
 
     /**
-     * 切换工具栏和页码的现实状态
+     * 切换工具栏和页码的显示状态
      */
     private void toggleToolbarVisibleState(){
         show =! show;
