@@ -16,9 +16,13 @@
 
 package me.xiaopan.android.spear.execute;
 
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
-import java.util.concurrent.Callable;
+import java.io.IOException;
 
 import me.xiaopan.android.spear.decode.ImageDecoder;
 import me.xiaopan.android.spear.process.ImageProcessor;
@@ -27,18 +31,19 @@ import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.request.Request;
 
-public class LoadTask extends Task {
+public class LoadTask implements Runnable {
 	private LoadRequest loadRequest;
     private LoadListener.From from;
+    private ImageDecoder.DecodeListener onDecodeListener;
 	
 	public LoadTask(LoadRequest loadRequest, ImageDecoder.DecodeListener onDecodeListener, LoadListener.From from) {
-		super(loadRequest, new LoadCallable(loadRequest, onDecodeListener));
 		this.loadRequest = loadRequest;
+		this.onDecodeListener = onDecodeListener;
         this.from = from;
 	}
 	
 	@Override
-	protected void done() {
+	public void run() {
         if(loadRequest.isCanceled()){
             if(loadRequest.getLoadListener() != null){
 				loadRequest.getLoadListener().onCanceled();
@@ -46,12 +51,50 @@ public class LoadTask extends Task {
             return;
 		}
 
+        loadRequest.setStatus(Request.Status.LOADING);
+
+        // 解码
         Bitmap bitmap = null;
-        try {
-            bitmap = (Bitmap) get();
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(loadRequest.getUri().endsWith(".apk")){
+            PackageManager packageManager = loadRequest.getSpear().getConfiguration().getContext().getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageArchiveInfo(loadRequest.getUri(), PackageManager.GET_CONFIGURATIONS);
+            if(packageInfo != null){
+                packageInfo.applicationInfo.sourceDir = loadRequest.getUri();
+                packageInfo.applicationInfo.publicSourceDir = loadRequest.getUri();
+                Drawable drawable = packageInfo.applicationInfo.loadIcon(packageManager);
+                if(drawable != null && drawable instanceof BitmapDrawable){
+                    bitmap = ((BitmapDrawable) drawable).getBitmap();
+                }
+            }
+        }else{
+            try{
+                bitmap = loadRequest.getSpear().getConfiguration().getImageDecoder().decode(loadRequest.getSpear(), loadRequest.getMaxsize(), onDecodeListener);
+            }catch(IOException e1){
+                e1.printStackTrace();
+            }
         }
+
+        //处理
+        if(bitmap != null){
+            ImageProcessor imageProcessor = loadRequest.getImageProcessor();
+            if(imageProcessor == null && loadRequest.getResize() != null){
+                imageProcessor = loadRequest.getSpear().getConfiguration().getDefaultCutImageProcessor();
+            }
+            if(imageProcessor != null){
+                Bitmap newBitmap = imageProcessor.process(bitmap, loadRequest.getResize(), loadRequest.getScaleType());
+                if(newBitmap != bitmap){
+                    bitmap.recycle();
+                    bitmap = newBitmap;
+                }
+            }
+        }
+
+        if(loadRequest.isCanceled()){
+            if(loadRequest.getLoadListener() != null){
+				loadRequest.getLoadListener().onCanceled();
+			}
+            return;
+		}
 
         if(bitmap != null && !bitmap.isRecycled()){
             if(!(loadRequest instanceof DisplayRequest)){
@@ -69,46 +112,4 @@ public class LoadTask extends Task {
             }
         }
 	}
-
-    private static class LoadCallable implements Callable<Object> {
-        protected LoadRequest loadRequest;
-        private ImageDecoder.DecodeListener onDecodeListener;
-
-        public LoadCallable(LoadRequest displayRequest, ImageDecoder.DecodeListener onDecodeListener) {
-            this.loadRequest = displayRequest;
-            this.onDecodeListener = onDecodeListener;
-        }
-
-        @Override
-        public Object call() throws Exception {
-            if(loadRequest.isCanceled()){
-                return null;
-            }
-
-            loadRequest.setStatus(Request.Status.LOADING);
-            Bitmap bitmap = null;
-            try{
-                //解码
-                bitmap = loadRequest.getSpear().getConfiguration().getImageDecoder().decode(loadRequest.getSpear(), loadRequest.getMaxsize(), onDecodeListener);
-
-                //处理位图
-                if(bitmap != null){
-                    ImageProcessor imageProcessor = loadRequest.getImageProcessor();
-                    if(imageProcessor == null && loadRequest.getResize() != null){
-                        imageProcessor = loadRequest.getSpear().getConfiguration().getDefaultCutImageProcessor();
-                    }
-                    if(imageProcessor != null){
-                        Bitmap newBitmap = imageProcessor.process(bitmap, loadRequest.getResize(), loadRequest.getScaleType());
-                        if(newBitmap != bitmap){
-                            bitmap.recycle();
-                            bitmap = newBitmap;
-                        }
-                    }
-                }
-            }catch(Throwable throwable){
-                throwable.printStackTrace();
-            }
-            return bitmap;
-        }
-    }
 }

@@ -54,7 +54,7 @@ public class DisplayJoinLoadListener implements LoadListener {
             if(bitmapDrawable instanceof RecyclingBitmapDrawable){
                 ((RecyclingBitmapDrawable) bitmapDrawable).setIsCached(true);
             }
-            displayRequest.getSpear().getConfiguration().getMemoryCache().put(displayRequest.getId(), bitmapDrawable);
+            displayRequest.getSpear().getConfiguration().getMemoryCache().put(displayRequest.getMemoryCacheId(), bitmapDrawable);
         }
 
         // 已取消

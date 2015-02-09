@@ -16,8 +16,6 @@
 
 package me.xiaopan.android.spear.request;
 
-import me.xiaopan.android.spear.execute.Task;
-
 /**
  * 请求
  */
@@ -33,12 +31,6 @@ public interface Request {
      * @return 请求URI
      */
     public String getUri();
-
-    /**
-     * 设置任务
-     * @param task 任务
-     */
-	public void setTask(Task task);
 
     /**
      * 是否已经结束

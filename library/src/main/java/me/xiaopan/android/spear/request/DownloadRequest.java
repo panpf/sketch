@@ -19,7 +19,6 @@ package me.xiaopan.android.spear.request;
 import java.io.File;
 
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.execute.Task;
 import me.xiaopan.android.spear.util.ImageScheme;
 
 /**
@@ -29,7 +28,6 @@ public class DownloadRequest implements Request {
     public static final boolean DEFAULT_ENABLE_DISK_CACHE = true;
 
     /* 任务基础属性 */
-    private Task task;	// 执行当前请求的任务，由于一个请求可能辗转被好几个任务处理
     private Status status = Status.WAITING;  // 状态
 
     /* 必须属性 */
@@ -52,11 +50,6 @@ public class DownloadRequest implements Request {
     @Override
     public String getUri() {
         return uri;
-    }
-
-    @Override
-    public void setTask(Task task) {
-        this.task = task;
     }
 
     @Override
@@ -85,9 +78,6 @@ public class DownloadRequest implements Request {
             return false;
         }
         status = Status.CANCELED;
-        if(task != null){
-            task.cancel(true);
-        }
         return true;
     }
 
@@ -158,13 +148,6 @@ public class DownloadRequest implements Request {
      */
     public void setDownloadProgressListener(ProgressListener downloadProgressListener) {
         this.downloadProgressListener = downloadProgressListener;
-    }
-
-    /**
-     * 获取任务
-     */
-    public Task getTask() {
-        return task;
     }
 
     /**

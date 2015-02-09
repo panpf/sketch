@@ -466,7 +466,7 @@ public class DisplayHelper {
         request.setImageProcessor(imageProcessor);
         request.setScaleType(scaleType);
 
-        request.setId(requestId);
+        request.setMemoryCacheId(requestId);
         request.setEnableMemoryCache(enableMemoryCache);
         request.setImageViewHolder(new ImageViewHolder(imageView, request));
         request.setImageDisplayer(imageDisplayer);
@@ -546,7 +546,7 @@ public class DisplayHelper {
         final DisplayRequest potentialDisplayRequest = AsyncDrawable.getDisplayRequestByAsyncDrawable(imageView);
         boolean cancelled = true;
         if (potentialDisplayRequest != null) {
-            final String oldRequestId = potentialDisplayRequest.getId();
+            final String oldRequestId = potentialDisplayRequest.getMemoryCacheId();
             if (oldRequestId != null && oldRequestId.equals(newRequestId)) {
                 cancelled = false;
             }else{

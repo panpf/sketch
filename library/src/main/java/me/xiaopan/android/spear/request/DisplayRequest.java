@@ -30,7 +30,7 @@ import me.xiaopan.android.spear.util.ImageViewHolder;
 public class DisplayRequest extends LoadRequest{
     public static final boolean DEFAULT_ENABLE_MEMORY_CACHE = true;
 
-    private String id;	//ID
+    private String memoryCacheId;	//内存缓存ID
     private boolean enableMemoryCache = DEFAULT_ENABLE_MEMORY_CACHE;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     private DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
     private ImageDisplayer imageDisplayer;	//图片显示器
@@ -47,11 +47,11 @@ public class DisplayRequest extends LoadRequest{
     private boolean resizeByImageViewLayoutSizeAndFromDisplayer;
 
     /**
-     * 获取ID，此ID用来在内存缓存Bitmap时作为其KEY
+     * 获取内存缓存ID，此ID用来在内存缓存Bitmap时作为其KEY
      * @return ID
      */
-	public String getId() {
-		return id;
+	public String getMemoryCacheId() {
+		return memoryCacheId;
 	}
 
     /**
@@ -149,8 +149,8 @@ public class DisplayRequest extends LoadRequest{
         this.from = from;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public void setMemoryCacheId(String memoryCacheId) {
+        this.memoryCacheId = memoryCacheId;
     }
 
     public void setEnableMemoryCache(boolean enableMemoryCache) {

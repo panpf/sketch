@@ -17,7 +17,6 @@
 package me.xiaopan.android.spear.execute;
 
 import java.io.File;
-import java.util.concurrent.Callable;
 
 import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.request.DownloadListener;
@@ -28,34 +27,34 @@ import me.xiaopan.android.spear.request.Request;
 /**
  * 下载任务
  */
-public class DownloadTask extends Task {
+public class DownloadTask implements Runnable {
 	private DownloadRequest downloadRequest;
 	
 	public DownloadTask(DownloadRequest downloadRequest) {
-		super(downloadRequest, new DownloadCallable(downloadRequest));
 		this.downloadRequest = downloadRequest;
 	}
 	
 	@Override
-	protected void done() {
-		if(downloadRequest.isCanceled()){
+	public void run() {
+        if(downloadRequest.isCanceled()){
+            if(downloadRequest.getDownloadListener() != null){
+                downloadRequest.getDownloadListener().onCanceled();
+            }
+            return;
+        }
+
+        downloadRequest.setStatus(Request.Status.LOADING);
+        ImageDownloader.DownloadResult downloadResult = downloadRequest.getSpear().getConfiguration().getImageDownloader().download(downloadRequest);
+
+        if(downloadRequest.isCanceled()){
             if(downloadRequest.getDownloadListener() != null){
                 downloadRequest.getDownloadListener().onCanceled();
             }
             return;
 		}
 
-        ImageDownloader.DownloadResult downloadResult = null;
-        try {
-            Object result = get();
-            if(result != null && result instanceof ImageDownloader.DownloadResult){
-                downloadResult = (ImageDownloader.DownloadResult) result;
-                if(downloadResult.getResult() == null){
-                    downloadResult = null;
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if(downloadResult != null && downloadResult.getResult() == null){
+            downloadResult = null;
         }
 
         if(downloadResult != null){
@@ -78,22 +77,4 @@ public class DownloadTask extends Task {
             }
         }
 	}
-
-    private static class DownloadCallable implements Callable<Object> {
-        private DownloadRequest downloadRequest;
-
-        public DownloadCallable(DownloadRequest downloadRequest) {
-            this.downloadRequest = downloadRequest;
-        }
-
-        @Override
-        public Object call(){
-            if(downloadRequest.isCanceled()){
-                return null;
-            }
-
-            downloadRequest.setStatus(Request.Status.LOADING);
-            return downloadRequest.getSpear().getConfiguration().getImageDownloader().download(downloadRequest);
-        }
-    }
 }
