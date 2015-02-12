@@ -16,40 +16,73 @@
 
 package me.xiaopan.android.spear.request;
 
+import android.util.Log;
+
 import java.io.File;
 
 import me.xiaopan.android.spear.Spear;
+import me.xiaopan.android.spear.download.ImageDownloader;
+import me.xiaopan.android.spear.execute.RequestExecutor;
 import me.xiaopan.android.spear.util.ImageScheme;
 
 /**
  * 下载请求
  */
-public class DownloadRequest implements Request {
+public class DownloadRequest implements Request, Runnable {
     public static final boolean DEFAULT_ENABLE_DISK_CACHE = true;
+    private static final String NAME = "DownloadRequest";
 
-    /* 任务基础属性 */
-    private Status status = Status.WAITING;  // 状态
-
-    /* 必须属性 */
-    private File cacheFile;	// 缓存文件
+    /* 通用属性 */
     private Spear spear;
+    private Status status = Status.WAITING;  // 状态
     private String uri;	// 图片地址
     private String name;	// 名称，用于在输出LOG的时候区分不同的请求
     private ImageScheme imageScheme;	// Uri协议格式
-    private DownloadListener downloadListener;  // 下载监听器
-    private ProgressListener downloadProgressListener;  // 下载进度监听器
 
-    /* 可配置属性 */
+    /* 下载请求用到的属性 */
+    private File cacheFile;	// 缓存文件
     private boolean enableDiskCache = DEFAULT_ENABLE_DISK_CACHE;	// 是否开启磁盘缓存
+    private DownloadListener downloadListener;  // 下载监听器
+    private ProgressListener progressListener;  // 下载进度监听器
 
     @Override
-	public String getName() {
-		return name;
-	}
+    public Spear getSpear() {
+        return spear;
+    }
+
+    @Override
+    public void setSpear(Spear spear) {
+        this.spear = spear;
+    }
 
     @Override
     public String getUri() {
         return uri;
+    }
+
+    @Override
+    public void setUri(String uri) {
+        this.uri = uri;
+    }
+
+    @Override
+    public ImageScheme getImageScheme() {
+        return imageScheme;
+    }
+
+    @Override
+    public void setImageScheme(ImageScheme imageScheme) {
+        this.imageScheme = imageScheme;
+    }
+
+    @Override
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public void setName(String name) {
+        this.name = name;
     }
 
     @Override
@@ -60,6 +93,67 @@ public class DownloadRequest implements Request {
     @Override
     public Status getStatus() {
         return status;
+    }
+
+    /**
+     * 获取缓存文件
+     */
+	public File getCacheFile() {
+		return cacheFile;
+	}
+
+    /**
+     * 设置缓存文件
+     */
+	public void setCacheFile(File cacheFile) {
+		this.cacheFile = cacheFile;
+	}
+
+    /**
+     * 是否开启磁盘缓存（默认开启）
+     * @return 是否开启磁盘缓存
+     */
+    public boolean isEnableDiskCache() {
+        return enableDiskCache;
+    }
+
+    /**
+     * 设置开启磁盘缓存功能（默认开启）
+     * @param enableDiskCache 是否开启磁盘缓存功能
+     */
+    public void setEnableDiskCache(boolean enableDiskCache) {
+        this.enableDiskCache = enableDiskCache;
+    }
+
+    /**
+     * 获取进度监听器哦
+     * @return 进度监听器哦
+     */
+    public ProgressListener getProgressListener() {
+        return progressListener;
+    }
+
+    /**
+     * 设置进度监听器
+     * @param progressListener 进度监听器
+     */
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    /**
+     * 获取下载监听器
+     */
+    public DownloadListener getDownloadListener() {
+        return downloadListener;
+    }
+
+    /**
+     * 设置下载监听器
+     * @param downloadListener 下载监听器
+     */
+    public void setDownloadListener(DownloadListener downloadListener) {
+        this.downloadListener = downloadListener;
     }
 
     @Override
@@ -81,107 +175,75 @@ public class DownloadRequest implements Request {
         return true;
     }
 
-    /**
-     * 获取Spear
-     * @return Spear
-     */
-    public Spear getSpear() {
-        return spear;
+    @Override
+    public void updateProgress(int totalLength, int completedLength) {
+        if(progressListener != null){
+            progressListener.onUpdateProgress(totalLength, completedLength);
+        }
     }
 
-	/**
-	 * 获取Uri协议类型
-	 */
-	public ImageScheme getImageScheme() {
-		return imageScheme;
-	}
+    @Override
+    public void run() {
+        executeDownload();
+    }
 
-	/**
-	 * 获取缓存文件
-	 */
-	public File getCacheFile() {
-		return cacheFile;
-	}
-	
-	/**
-	 * 设置缓存文件
-	 */
-	public void setCacheFile(File cacheFile) {
-		this.cacheFile = cacheFile;
-	}
+    @Override
+    public void dispatch(RequestExecutor requestExecutor) {
+        // 要先创建缓存文件
+        if(isEnableDiskCache()){
+            setCacheFile(getSpear().getConfiguration().getDiskCache().createCacheFile(this));
+        }
 
-    /**
-     * 获取下载监听器
-     */
-	public DownloadListener getDownloadListener() {
-		return downloadListener;
-	}
-
-    /**
-     * 设置下载监听器
-     * @param downloadListener 下载监听器
-     */
-    public DownloadRequest setDownloadListener(DownloadListener downloadListener) {
-        this.downloadListener = downloadListener;
-        return this;
+        // 从网络下载
+        requestExecutor.getNetTaskExecutor().execute(this);
+        if(Spear.isDebugMode()){
+            Log.d(Spear.LOG_TAG, NAME + " - dispatch：" + getName());
+        }
     }
 
     /**
-     * 是否开启磁盘缓存
-     * @return 是否开启磁盘缓存
+     * 执行下载
      */
-    public boolean isEnableDiskCache() {
-        return enableDiskCache;
-    }
+    public void executeDownload() {
+        if(isCanceled()){
+            if(getDownloadListener() != null){
+                getDownloadListener().onCanceled();
+            }
+            return;
+        }
 
-    /**
-     * 获取下载进度监听器
-     * @return 下载进度监听器
-     */
-    public ProgressListener getDownloadProgressListener() {
-        return downloadProgressListener;
-    }
+        setStatus(Request.Status.LOADING);
+        ImageDownloader.DownloadResult downloadResult = getSpear().getConfiguration().getImageDownloader().download(this);
 
-    /**
-     * 设置下载进度监听器
-     * @param downloadProgressListener 下载进度监听器
-     */
-    public void setDownloadProgressListener(ProgressListener downloadProgressListener) {
-        this.downloadProgressListener = downloadProgressListener;
-    }
+        if(isCanceled()){
+            if(getDownloadListener() != null){
+                getDownloadListener().onCanceled();
+            }
+            return;
+        }
 
-    /**
-     * 设置Spear
-     */
-    public void setSpear(Spear spear) {
-        this.spear = spear;
-    }
+        if(downloadResult != null && downloadResult.getResult() == null){
+            downloadResult = null;
+        }
 
-    /**
-     * 设置uri
-     */
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    /**
-     * 设置名称
-     */
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    /**
-     * 设置图片协议类型
-     */
-    public void setImageScheme(ImageScheme imageScheme) {
-        this.imageScheme = imageScheme;
-    }
-
-    /**
-     * 设置开启或关闭磁盘缓存功能
-     */
-    public void setEnableDiskCache(boolean enableDiskCache) {
-        this.enableDiskCache = enableDiskCache;
+        if(downloadResult != null){
+            if(!(this instanceof LoadRequest)){
+                setStatus(Request.Status.COMPLETED);
+            }
+            if(getDownloadListener() != null){
+                if(downloadResult.getResult().getClass().isAssignableFrom(File.class)){
+                    getDownloadListener().onCompleted((File) downloadResult.getResult(), downloadResult.isFromNetwork()? DownloadListener.ImageFrom.NETWORK: DownloadListener.ImageFrom.LOCAL_CACHE);
+                }else{
+                    getDownloadListener().onCompleted((byte[]) downloadResult.getResult(), downloadResult.isFromNetwork()? DownloadListener.ImageFrom.NETWORK: DownloadListener.ImageFrom.LOCAL_CACHE);
+                }
+            }
+        }else{
+            if(!(this instanceof LoadRequest)){
+                setStatus(Request.Status.FAILED);
+            }
+            if(getDownloadListener() != null){
+                getDownloadListener().onFailed(null);
+            }
+        }
     }
 }

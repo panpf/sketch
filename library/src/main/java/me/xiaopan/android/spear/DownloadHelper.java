@@ -149,9 +149,9 @@ public class DownloadHelper {
         request.setEnableDiskCache(enableDiskCache);
 
         request.setDownloadListener(downloadListener);
-        request.setDownloadProgressListener(progressListener);
+        request.setProgressListener(progressListener);
 
-        spear.getConfiguration().getRequestExecutor().execute(request);
+        spear.getConfiguration().getRequestExecutor().submit(request);
         return new RequestFuture(request);
     }
 }

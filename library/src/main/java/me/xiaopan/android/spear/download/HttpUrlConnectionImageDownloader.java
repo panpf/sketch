@@ -50,7 +50,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     private static final int DEFAULT_CONNECT_TIMEOUT = 10*1000;    // 默认连接超时时间
     private static final int DEFAULT_MAX_RETRY_COUNT = 1;    // 默认最大重试次数
     private static final int DEFAULT_PROGRESS_CALLBACK_NUMBER = 10;    // 默认进度回调次数
-	private static final String NAME = HttpUrlConnectionImageDownloader.class.getSimpleName();
+	private static final String NAME = "HttpUrlConnectionImageDownloader";
 
 	private Map<String, ReentrantLock> urlLocks;
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
@@ -324,9 +324,9 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         while(!downloadRequest.isCanceled() && (readNumber = inputStream.read(cacheBytes)) != -1){
             outputStream.write(cacheBytes, 0, readNumber);
             completedLength += readNumber;
-            if(downloadRequest.getDownloadProgressListener() != null && (completedLength >= (callbackNumber+1)*averageLength || completedLength == contentLength)){
+            if(completedLength >= (callbackNumber+1)*averageLength || completedLength == contentLength){
                 callbackNumber++;
-                downloadRequest.getDownloadProgressListener().onUpdateProgress(contentLength, completedLength);
+                downloadRequest.updateProgress(contentLength, completedLength);
             }
         }
         outputStream.flush();

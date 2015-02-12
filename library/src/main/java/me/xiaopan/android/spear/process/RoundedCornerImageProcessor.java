@@ -32,7 +32,7 @@ import me.xiaopan.android.spear.util.ImageSize;
  * 圆角位图处理器
  */
 public class RoundedCornerImageProcessor implements ImageProcessor {
-    private static final String NAME = RoundedCornerImageProcessor.class.getName();
+    private static final String NAME = "RoundedCornerImageProcessor";
 	private int roundPixels;
     private boolean forceUseResizeInCenterCrop = true;
     private String flag;

@@ -24,7 +24,7 @@ import android.widget.ImageView;
 import me.xiaopan.android.spear.util.ImageSize;
 
 public class CutImageProcessor implements ImageProcessor {
-    private static final String NAME = CutImageProcessor.class.getName();
+    private static final String NAME = "CutImageProcessor";
 
     @Override
     public String getFlag() {

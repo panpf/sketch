@@ -485,9 +485,9 @@ public class SpearImageView extends ImageView{
         }
 
         @Override
-        public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, From from) {
-            if(from != null){
-                switch (from){
+        public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, ImageFrom imageFrom) {
+            if(imageFrom != null){
+                switch (imageFrom){
                     case MEMORY: debugColor = DEFAULT_DEBUG_COLOR_MEMORY; break;
                     case DISK: debugColor = DEFAULT_DEBUG_COLOR_DISK; break;
                     case NETWORK: debugColor = DEFAULT_DEBUG_COLOR_NETWORK; break;
@@ -498,7 +498,7 @@ public class SpearImageView extends ImageView{
             progress = NONE;
             invalidate();
             if(displayListener != null){
-                displayListener.onCompleted(uri, imageView, drawable, from);
+                displayListener.onCompleted(uri, imageView, drawable, imageFrom);
             }
         }
 
@@ -543,11 +543,11 @@ public class SpearImageView extends ImageView{
         }
 
         @Override
-        public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, From from) {
+        public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, ImageFrom imageFrom) {
             progress = NONE;
             invalidate();
             if(displayListener != null){
-                displayListener.onCompleted(uri, imageView, drawable, from);
+                displayListener.onCompleted(uri, imageView, drawable, imageFrom);
             }
         }
 

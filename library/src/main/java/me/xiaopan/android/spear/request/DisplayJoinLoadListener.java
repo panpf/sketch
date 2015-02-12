@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.execute;
+package me.xiaopan.android.spear.request;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -22,14 +22,11 @@ import android.os.Build;
 import android.util.Log;
 
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.request.DisplayListener;
-import me.xiaopan.android.spear.request.DisplayRequest;
-import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 
-public class DisplayJoinLoadListener implements LoadListener {
-    private static String NAME= DisplayJoinLoadListener.class.getSimpleName();
+public class DisplayJoinLoadListener  implements LoadListener {
+    private static String NAME = "DisplayJoinLoadListener";
     private DisplayRequest displayRequest;
 
     public DisplayJoinLoadListener(DisplayRequest displayRequest) {
@@ -42,7 +39,7 @@ public class DisplayJoinLoadListener implements LoadListener {
     }
 
     @Override
-    public void onCompleted(Bitmap bitmap, From from) {
+    public void onCompleted(Bitmap bitmap, ImageFrom imageFrom) {
         //创建BitmapDrawable并放入内存缓存
         BitmapDrawable bitmapDrawable;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
@@ -67,9 +64,9 @@ public class DisplayJoinLoadListener implements LoadListener {
         }
 
         // 显示
-        DisplayListener.From displayFrom = from!=null?(from==From.NETWORK?DisplayListener.From.NETWORK:DisplayListener.From.DISK):null;
+        DisplayListener.ImageFrom displayImageFrom = imageFrom !=null?(imageFrom == LoadListener.ImageFrom.NETWORK? DisplayListener.ImageFrom.NETWORK: DisplayListener.ImageFrom.DISK):null;
 
-        displayRequest.getSpear().getConfiguration().getDisplayCallbackHandler().completeCallback(displayRequest, bitmapDrawable, displayFrom);
+        displayRequest.getSpear().getConfiguration().getDisplayCallbackHandler().completeCallback(displayRequest, bitmapDrawable, displayImageFrom);
     }
 
     @Override

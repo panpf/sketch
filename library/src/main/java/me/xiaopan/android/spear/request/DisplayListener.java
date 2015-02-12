@@ -36,9 +36,9 @@ public interface DisplayListener {
      * @param uri 地址
      * @param imageView 视图
      * @param drawable 图片
-     * @param from 来源
+     * @param imageFrom 图片来源
      */
-    public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, From from);
+    public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, ImageFrom imageFrom);
 
     /**
      * 已失败
@@ -52,9 +52,9 @@ public interface DisplayListener {
     public void onCanceled();
 
     /**
-     * 来源
+     * 图片来源
      */
-    public enum From{
+    public enum ImageFrom {
         /**
          * 网络
          */

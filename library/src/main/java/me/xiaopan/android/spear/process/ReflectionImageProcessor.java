@@ -34,7 +34,7 @@ import me.xiaopan.android.spear.util.ImageSize;
  * 倒影位图处理器
  */
 public class ReflectionImageProcessor implements ImageProcessor {
-    private static final String NAME = ReflectionImageProcessor.class.getName();
+    private static final String NAME = "ReflectionImageProcessor";
 	private int reflectionSpacing;
 	private float reflectionScale;
     private boolean forceUseResizeInCenterCrop = true;

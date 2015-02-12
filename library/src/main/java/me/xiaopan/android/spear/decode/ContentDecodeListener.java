@@ -29,7 +29,7 @@ import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.request.LoadRequest;
 
 public class ContentDecodeListener implements ImageDecoder.DecodeListener {
-    private static final String NAME = ContentDecodeListener.class.getSimpleName();
+    private static final String NAME = "ContentDecodeListener";
 	private String contentUri;
 	private LoadRequest loadRequest;
 	

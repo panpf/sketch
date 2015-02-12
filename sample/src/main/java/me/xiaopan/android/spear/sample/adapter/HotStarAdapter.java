@@ -128,6 +128,10 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemLeftHolder.twoSpearImageView.setEnableClickRipple(true);
             threeItemLeftHolder.threeSpearImageView.setEnableClickRipple(true);
 
+            threeItemLeftHolder.oneSpearImageView.setEnableShowProgress(true);
+            threeItemLeftHolder.twoSpearImageView.setEnableShowProgress(true);
+            threeItemLeftHolder.threeSpearImageView.setEnableShowProgress(true);
+
             int itemWidth = availableScreenWidth / 2;
             int itemHeight = (int) (itemWidth/0.75);
 
@@ -161,6 +165,10 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemRightHolder.twoSpearImageView.setEnableClickRipple(true);
             threeItemRightHolder.threeSpearImageView.setEnableClickRipple(true);
 
+            threeItemRightHolder.oneSpearImageView.setEnableShowProgress(true);
+            threeItemRightHolder.twoSpearImageView.setEnableShowProgress(true);
+            threeItemRightHolder.threeSpearImageView.setEnableShowProgress(true);
+
             int itemWidth = availableScreenWidth / 2;
             int itemHeight = (int) (itemWidth/0.75);
 
@@ -192,6 +200,9 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             twoItemHolder.oneSpearImageView.setEnableClickRipple(true);
             twoItemHolder.twoSpearImageView.setEnableClickRipple(true);
 
+            twoItemHolder.oneSpearImageView.setEnableShowProgress(true);
+            twoItemHolder.twoSpearImageView.setEnableShowProgress(true);
+
             int itemWidth = availableScreenWidth / 2;
             int itemHeight = (int) (itemWidth/1.36);
 
@@ -214,6 +225,8 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             oneItemHolder.oneSpearImageView.setOnClickListener(itemClickListener);
 
             oneItemHolder.oneSpearImageView.setEnableClickRipple(true);
+
+            oneItemHolder.oneSpearImageView.setEnableShowProgress(true);
 
             int itemWidth = availableScreenWidth;
             int itemHeight = (int) (itemWidth/1.36);

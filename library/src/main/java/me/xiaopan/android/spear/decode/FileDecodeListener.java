@@ -27,7 +27,7 @@ import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.request.LoadRequest;
 
 public class FileDecodeListener implements ImageDecoder.DecodeListener {
-    private static final String NAME = FileDecodeListener.class.getSimpleName();
+    private static final String NAME = "FileDecodeListener";
 	private File file;
     private LoadRequest loadRequest;
 	

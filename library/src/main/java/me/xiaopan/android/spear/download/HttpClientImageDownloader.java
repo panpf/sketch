@@ -67,7 +67,7 @@ import me.xiaopan.android.spear.request.DownloadRequest;
  * 使用HttpClient来访问网络的下载器
  */
 public class HttpClientImageDownloader implements ImageDownloader {
-	private static final String NAME = HttpClientImageDownloader.class.getSimpleName();
+	private static final String NAME = "HttpClientImageDownloader";
     private static final int BUFFER_SIZE = 8*1024;
     private static final int DEFAULT_WAIT_TIMEOUT = 60*1000;   // 默认从连接池中获取连接的最大等待时间
     private static final int DEFAULT_READ_TIMEOUT = 10*1000;   // 默认读取超时时间

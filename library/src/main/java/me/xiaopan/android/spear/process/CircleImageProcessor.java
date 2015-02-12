@@ -30,7 +30,7 @@ import me.xiaopan.android.spear.util.ImageSize;
  * 圆形位图处理器
  */
 public class CircleImageProcessor implements ImageProcessor {
-    private static final String NAME = CircleImageProcessor.class.getName();
+    private static final String NAME = "CircleImageProcessor";
 
     @Override
     public String getFlag() {

@@ -428,7 +428,7 @@ public class DisplayHelper {
         if(enableMemoryCache){
             final BitmapDrawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(requestId);
             if(cacheDrawable != null){
-                spear.getConfiguration().getDisplayCallbackHandler().completeCallbackOnFire(imageView, uri, cacheDrawable, displayListener, DisplayListener.From.MEMORY);
+                spear.getConfiguration().getDisplayCallbackHandler().completeCallbackOnFire(imageView, uri, cacheDrawable, displayListener, DisplayListener.ImageFrom.MEMORY);
                 spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
                 return null;
             }
@@ -473,7 +473,7 @@ public class DisplayHelper {
         request.setLoadFailDrawableHolder(loadFailDrawableHolder);
 
         request.setDisplayListener(displayListener);
-        request.setDisplayProgressListener(progressListener);
+        request.setProgressListener(progressListener);
 
         request.setResizeByImageViewLayoutSizeAndFromDisplayer(resizeByImageViewLayoutSizeAndFromDisplayer);
 
@@ -482,7 +482,7 @@ public class DisplayHelper {
         imageView.clearAnimation();
         imageView.setImageDrawable(new AsyncDrawable(spear.getConfiguration().getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
 
-        spear.getConfiguration().getRequestExecutor().execute(request);
+        spear.getConfiguration().getRequestExecutor().submit(request);
         spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
 
         RequestFuture requestFuture = new RequestFuture(request);

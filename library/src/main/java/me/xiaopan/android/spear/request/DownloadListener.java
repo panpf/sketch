@@ -32,16 +32,16 @@ public interface DownloadListener {
     /**
      * 已完成，当选择本地缓存的时候才会回调这个方法
      * @param cacheFile 本地缓存文件
-     * @param from 来源
+     * @param imageFrom 图片来源
      */
-    public void onCompleted(File cacheFile, From from);
+    public void onCompleted(File cacheFile, ImageFrom imageFrom);
 
     /**
      * 已完成，当没有选择本地缓存的时候将回调这个方法
      * @param data 数据
-     * @param from 来源
+     * @param imageFrom 来源
      */
-    public void onCompleted(byte[] data, From from);
+    public void onCompleted(byte[] data, ImageFrom imageFrom);
 
     /**
      * 已失败
@@ -55,9 +55,9 @@ public interface DownloadListener {
     public void onCanceled();
 
     /**
-     * 来源
+     * 图片来源
      */
-    public enum From{
+    public enum ImageFrom {
         /**
          * 网络下载
          */

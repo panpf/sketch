@@ -243,9 +243,9 @@ public class LoadHelper {
         request.setScaleType(scaleType);
 
         request.setLoadListener(loadListener);
-        request.setLoadProgressListener(progressListener);
+        request.setProgressListener(progressListener);
 
-        spear.getConfiguration().getRequestExecutor().execute(request);
+        spear.getConfiguration().getRequestExecutor().submit(request);
         return new RequestFuture(request);
     }
 }

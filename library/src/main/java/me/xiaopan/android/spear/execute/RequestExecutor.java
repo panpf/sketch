@@ -16,11 +16,26 @@
 
 package me.xiaopan.android.spear.execute;
 
+import java.util.concurrent.Executor;
+
 import me.xiaopan.android.spear.request.Request;
 
 /**
  * 请求执行器
  */
 public interface RequestExecutor {
-	public void execute(Request request);
+    /**
+     * 提交请求
+     */
+	public void submit(Request request);
+
+    /**
+     * 获取本地任务执行器
+     */
+    public Executor getLocalTaskExecutor();
+
+    /**
+     * 获取网络任务执行器
+     */
+    public Executor getNetTaskExecutor();
 }

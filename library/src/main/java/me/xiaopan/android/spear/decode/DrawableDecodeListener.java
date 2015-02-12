@@ -25,7 +25,7 @@ import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.request.LoadRequest;
 
 public class DrawableDecodeListener implements ImageDecoder.DecodeListener {
-    private static final String NAME = DrawableDecodeListener.class.getSimpleName();
+    private static final String NAME = "DrawableDecodeListener";
 	private String drawableIdString;
     private LoadRequest loadRequest;
 	

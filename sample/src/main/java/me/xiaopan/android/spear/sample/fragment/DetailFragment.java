@@ -344,7 +344,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
                 }
 
                 @Override
-                public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, From from) {
+                public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, ImageFrom imageFrom) {
                     progressBar.setVisibility(View.GONE);
                     new PhotoViewAttacher(imageView);
                 }

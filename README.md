@@ -23,7 +23,7 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 >* ``使用方便`` 直接通过Spear.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置
 
 ###示例APP（Sample app）
->* [Get it on Google Play](https://play.google.com/store/apps/details?id=me.xiaoapn.android.imageloader)
+>* [Get it on Google Play](https://play.google.com/store/apps/details?memoryCacheId=me.xiaoapn.android.imageloader)
 >* [Download APK](https://github.com/xiaopansky/Spear/raw/master/releases/SpearSample-2.5.1.apk)
 
 扫描二维码下载示例APP
@@ -157,6 +157,10 @@ display()与load()、download()的区别
 >* 考虑一下怎么能让使用者更加方便的自定义新的加载方式，就比如我要显示apk的图标，却因为现有框架的限制导致必须开发者来支持才可以
 
 ###更新日志（Change log）
+####1.4.0
+**ImageProcessor**
+>* ``修复``. 修复当遇到1:1比例的图片，但resize比例不是1:1的时候，在裁剪默认图时横向没有居中的BUG。对于所有使用CutImageProcessor.findMappingRect()计算srcRect的ImageProcessor都将得到修复
+
 ####1.3.0
 **SpearImageView**
 >* ``修复``. 兼容RecyclerView，因为在RecyclerView中View的生命周期略有变化，导致图片显示异常，现已修复

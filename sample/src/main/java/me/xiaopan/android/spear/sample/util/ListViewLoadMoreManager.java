@@ -38,7 +38,7 @@ import java.lang.reflect.Field;
  * <br>由于需要设置OnScrollListener才能实现功能，所以你也要设置OnScrollListener的话就需要调用ListViewLoadMoreManager的setOnScrollListener来设置，如果在之前已经设置了OnScrollListener的话也不用担心，ListViewLoadMoreManager会先拿到已存在的OnScrollListener并回调它
  */
 public class ListViewLoadMoreManager implements OnScrollListener{
-	private static final String NAME = ListViewLoadMoreManager.class.getSimpleName();
+	private static final String NAME = "ListViewLoadMoreManager";
 	
 	private int lastTriggerItem;	// 最后一次触发时间
 	private boolean end;	// 是否已经结束加载（已经结束的话就不再处理任何事件或操作）

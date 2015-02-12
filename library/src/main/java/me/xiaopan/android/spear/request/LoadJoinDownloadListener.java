@@ -14,20 +14,16 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.execute;
+package me.xiaopan.android.spear.request;
 
 import java.io.File;
 import java.util.concurrent.Executor;
 
 import me.xiaopan.android.spear.decode.ByteArrayDecodeListener;
 import me.xiaopan.android.spear.decode.CacheFileDecodeListener;
-import me.xiaopan.android.spear.request.DownloadListener;
-import me.xiaopan.android.spear.request.LoadListener;
-import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.util.FailureCause;
 
 public class LoadJoinDownloadListener implements DownloadListener {
-
     private Executor executor;
     private LoadRequest loadRequest;
 
@@ -37,26 +33,32 @@ public class LoadJoinDownloadListener implements DownloadListener {
     }
 
     @Override
-	public void onStarted() {
+    public void onStarted() {
 
-	}
-
-    @Override
-    public void onCompleted(File cacheFile, From from) {
-        executor.execute(new LoadTask(loadRequest, new CacheFileDecodeListener(cacheFile, loadRequest), from!=null?(from==From.LOCAL_CACHE? LoadListener.From.LOCAL :LoadListener.From.NETWORK):null));
     }
 
     @Override
-    public void onCompleted(byte[] data, From from) {
-        executor.execute(new LoadTask(loadRequest, new ByteArrayDecodeListener(data, loadRequest), from!=null?(from==From.LOCAL_CACHE?LoadListener.From.LOCAL :LoadListener.From.NETWORK):null));
+    public void onCompleted(File cacheFile, ImageFrom imageFrom) {
+        loadRequest.setRunStatus(LoadRequest.RunStatus.LOAD);
+        loadRequest.setImageFrom(imageFrom != null ? (imageFrom == DownloadListener.ImageFrom.LOCAL_CACHE ? LoadListener.ImageFrom.LOCAL : LoadListener.ImageFrom.NETWORK) : null);
+        loadRequest.setOnDecodeListener(new CacheFileDecodeListener(cacheFile, loadRequest));
+        executor.execute(loadRequest);
     }
 
-	@Override
-	public void onFailed(FailureCause failureCause) {
+    @Override
+    public void onCompleted(byte[] data, ImageFrom imageFrom) {
+        loadRequest.setRunStatus(LoadRequest.RunStatus.LOAD);
+        loadRequest.setImageFrom(imageFrom != null ? (imageFrom == DownloadListener.ImageFrom.LOCAL_CACHE ? LoadListener.ImageFrom.LOCAL : LoadListener.ImageFrom.NETWORK) : null);
+        loadRequest.setOnDecodeListener(new ByteArrayDecodeListener(data, loadRequest));
+        executor.execute(loadRequest);
+    }
+
+    @Override
+    public void onFailed(FailureCause failureCause) {
         if(loadRequest.getLoadListener() != null){
             loadRequest.getLoadListener().onFailed(failureCause);
         }
-	}
+    }
 
     @Override
     public void onCanceled() {

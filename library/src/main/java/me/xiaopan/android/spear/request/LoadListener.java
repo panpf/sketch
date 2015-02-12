@@ -32,9 +32,9 @@ public interface LoadListener {
     /**
      * 已完成
      * @param bitmap 图片
-     * @param from 来源
+     * @param imageFrom 图片来源
      */
-    public void onCompleted(Bitmap bitmap, From from);
+    public void onCompleted(Bitmap bitmap, ImageFrom imageFrom);
 
     /**
      * 已失败
@@ -48,9 +48,9 @@ public interface LoadListener {
     public void onCanceled();
 
     /**
-     * 来源
+     * 图片来源
      */
-    public enum From{
+    public enum ImageFrom {
         /**
          * 网络下载
          */
