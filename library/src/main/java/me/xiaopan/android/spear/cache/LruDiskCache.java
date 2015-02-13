@@ -24,12 +24,13 @@ import android.os.StatFs;
 import android.util.Log;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
-import me.xiaopan.android.spear.DisplayHelper;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.request.DownloadRequest;
 import me.xiaopan.android.spear.util.FileLastModifiedComparator;
@@ -38,7 +39,7 @@ import me.xiaopan.android.spear.util.FileLastModifiedComparator;
  * 默认实现的磁盘缓存器
  */
 public class LruDiskCache implements DiskCache {
-	private static final String LOG_NAME = LruDiskCache.class.getSimpleName();
+	private static final String LOG_NAME = "LruDiskCache";
     private static final String DEFAULT_DIRECTORY_NAME = "spear";
     private static final int DEFAULT_RESERVE_SIZE = 100 * 1024 * 1024;
 	private File diskCacheDir;	//缓存目录
@@ -64,11 +65,11 @@ public class LruDiskCache implements DiskCache {
         }
         if(!diskCacheDir.exists()){
             if(!diskCacheDir.mkdirs()){
-                Log.e(Spear.LOG_TAG, "创建缓存文件夹失败："+ diskCacheDir.getPath());
+                Log.e(Spear.TAG, "创建缓存文件夹失败："+ diskCacheDir.getPath());
                 this.diskCacheDir = new File(getDynamicCacheDir(context).getPath() + File.separator + DEFAULT_DIRECTORY_NAME);
                 if(!diskCacheDir.exists()){
                     if(!diskCacheDir.mkdirs()){
-                        Log.e(Spear.LOG_TAG, "再次创建缓存文件夹失败："+ diskCacheDir.getPath());
+                        Log.e(Spear.TAG, "再次创建缓存文件夹失败："+ diskCacheDir.getPath());
                         diskCacheDir = null;
                     }
                 }
@@ -161,7 +162,12 @@ public class LruDiskCache implements DiskCache {
         if(cacheDir == null){
             return null;
         }
-		return new File(cacheDir.getPath() + File.separator + DisplayHelper.encodeUrl(uri));
+        try {
+            uri =  URLEncoder.encode(uri, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+		return new File(cacheDir, uri);
 	}
 
 	@Override
@@ -209,9 +215,9 @@ public class LruDiskCache implements DiskCache {
     }
 
     /**
-     * 获取文件长度，此方法的关键点在于，他也能获取目录的长度
-     * @param file
-     * @return
+     * 计算文件长度，此方法的关键点在于，他也能获取目录的长度
+     * @param file 要计算的文件
+     * @return 长度
      */
     public static long countFileLength(File file){
         if(!file.exists()){

@@ -16,24 +16,11 @@
 
 package me.xiaopan.android.spear.request;
 
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ImageView;
 
-import java.io.File;
-import java.io.IOException;
-
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.decode.AssetsDecodeListener;
-import me.xiaopan.android.spear.decode.CacheFileDecodeListener;
-import me.xiaopan.android.spear.decode.ContentDecodeListener;
-import me.xiaopan.android.spear.decode.DrawableDecodeListener;
-import me.xiaopan.android.spear.decode.FileDecodeListener;
-import me.xiaopan.android.spear.decode.ImageDecoder;
 import me.xiaopan.android.spear.execute.RequestExecutor;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.ImageScheme;
@@ -55,7 +42,7 @@ public class LoadRequest extends DownloadRequest{
     /* 辅助加载的属性 */
     private RunStatus runStatus;
     private LoadListener.ImageFrom imageFrom;
-    private ImageDecoder.DecodeListener onDecodeListener;
+    private byte[] imageData;
 
     /**
      * 获取裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来创建新的图片
@@ -138,19 +125,27 @@ public class LoadRequest extends DownloadRequest{
     }
 
     /**
-     * 设置解码监听器
-     * @param onDecodeListener 解码监听器
-     */
-    public void setOnDecodeListener(ImageDecoder.DecodeListener onDecodeListener) {
-        this.onDecodeListener = onDecodeListener;
-    }
-
-    /**
      * 设置运行状态
      * @param runStatus 运行状态
      */
     public void setRunStatus(RunStatus runStatus) {
         this.runStatus = runStatus;
+    }
+
+    /**
+     * 获取图片数据
+     * @return 图片数据
+     */
+    public byte[] getImageData() {
+        return imageData;
+    }
+
+    /**
+     * 设置图片数据
+     * @param imageData 图片数据
+     */
+    public void setImageData(byte[] imageData) {
+        this.imageData = imageData;
     }
 
     @Override
@@ -175,63 +170,23 @@ public class LoadRequest extends DownloadRequest{
 
     @Override
     public void dispatch(RequestExecutor requestExecutor) {
-        switch(getImageScheme()){
-            case HTTP:
-            case HTTPS :
-                // 要先创建缓存文件
-                if(isEnableDiskCache()){
-                    setCacheFile(getSpear().getConfiguration().getDiskCache().createCacheFile(this));
-                }
+        if(getImageScheme() == ImageScheme.HTTP || getImageScheme() == ImageScheme.HTTPS){
+            setCacheFile(isEnableDiskCache()?getSpear().getConfiguration().getDiskCache().createCacheFile(this):null);
 
-                // 如果缓存文件存在就从本地读取
-                File cacheFile = getCacheFile();
-                if(cacheFile != null && cacheFile.exists()){
-                    setRunStatus(LoadRequest.RunStatus.LOAD);
-                    setImageFrom(LoadListener.ImageFrom.LOCAL);
-                    setOnDecodeListener(new CacheFileDecodeListener(cacheFile, this));
-                    requestExecutor.getLocalTaskExecutor().execute(this);
-                    if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - HTTP - 本地" + "；" + getName());
-                    break;
-                }
-
-                // 从网络下载
+            // 如果不需要缓存或缓存文件不存在就从网络下载
+            if(getCacheFile() == null || !getCacheFile().exists()){
                 setDownloadListener(new LoadJoinDownloadListener(requestExecutor.getLocalTaskExecutor(), this));
-                setRunStatus(LoadRequest.RunStatus.DOWNLOAD);
+                setRunStatus(RunStatus.DOWNLOAD);
                 requestExecutor.getNetTaskExecutor().execute(this);
-                if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - HTTP - 网络" + "；" + getName());
-                break;
-            case FILE :
-                setRunStatus(LoadRequest.RunStatus.LOAD);
-                setImageFrom(LoadListener.ImageFrom.LOCAL);
-                setOnDecodeListener(new FileDecodeListener(new File(getUri()), this));
-                requestExecutor.getLocalTaskExecutor().execute(this);
-                if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - FILE" + "；" + getName());
-                break;
-            case ASSETS :
-                setRunStatus(LoadRequest.RunStatus.LOAD);
-                setImageFrom(LoadListener.ImageFrom.LOCAL);
-                setOnDecodeListener(new AssetsDecodeListener(ImageScheme.ASSETS.crop(getUri()), this));
-                requestExecutor.getLocalTaskExecutor().execute(this);
-                if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - ASSETS" + "；" + getName());
-                break;
-            case CONTENT :
-                setRunStatus(LoadRequest.RunStatus.LOAD);
-                setImageFrom(LoadListener.ImageFrom.LOCAL);
-                setOnDecodeListener(new ContentDecodeListener(getUri(), this));
-                requestExecutor.getLocalTaskExecutor().execute(this);
-                if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - CONTENT" + "；" + getName());
-                break;
-            case DRAWABLE :
-                setRunStatus(LoadRequest.RunStatus.LOAD);
-                setImageFrom(LoadListener.ImageFrom.LOCAL);
-                setOnDecodeListener(new DrawableDecodeListener(ImageScheme.DRAWABLE.crop(getUri()), this));
-                requestExecutor.getLocalTaskExecutor().execute(this);
-                if(Spear.isDebugMode()) Log.d(Spear.LOG_TAG, NAME + "：" + "LOAD - DRAWABLE" + "；" + getName());
-                break;
-            default:
-                if(Spear.isDebugMode()) Log.e(Spear.LOG_TAG, NAME + "：" + "LOAD - 未知的协议格式" + "：" + getUri());
-                break;
+                if(Spear.isDebugMode()) Log.d(Spear.TAG, NAME + "：" + "LOAD - 网络" + "；" + getName());
+                return;
+            }
         }
+
+        setRunStatus(RunStatus.LOAD);
+        setImageFrom(LoadListener.ImageFrom.LOCAL);
+        requestExecutor.getLocalTaskExecutor().execute(this);
+        if(Spear.isDebugMode()) Log.d(Spear.TAG, NAME + "：" + "LOAD - 本地" + "；" + getName());
     }
 
     /**
@@ -248,24 +203,16 @@ public class LoadRequest extends DownloadRequest{
         setStatus(Request.Status.LOADING);
 
         // 解码
-        Bitmap bitmap = null;
-        if(getUri().endsWith(".apk")){
-            PackageManager packageManager = getSpear().getConfiguration().getContext().getPackageManager();
-            PackageInfo packageInfo = packageManager.getPackageArchiveInfo(getUri(), PackageManager.GET_CONFIGURATIONS);
-            if(packageInfo != null){
-                packageInfo.applicationInfo.sourceDir = getUri();
-                packageInfo.applicationInfo.publicSourceDir = getUri();
-                Drawable drawable = packageInfo.applicationInfo.loadIcon(packageManager);
-                if(drawable != null && drawable instanceof BitmapDrawable){
-                    bitmap = ((BitmapDrawable) drawable).getBitmap();
-                }
+        Bitmap bitmap = getSpear().getConfiguration().getImageDecoder().decode(this);
+
+        if(isCanceled()){
+            if(getLoadListener() != null){
+                getLoadListener().onCanceled();
             }
-        }else{
-            try{
-                bitmap = getSpear().getConfiguration().getImageDecoder().decode(getSpear(), getMaxsize(), onDecodeListener);
-            }catch(IOException e1){
-                e1.printStackTrace();
+            if(bitmap != null && !bitmap.isRecycled()){
+                bitmap.recycle();
             }
+            return;
         }
 
         //处理
@@ -286,6 +233,9 @@ public class LoadRequest extends DownloadRequest{
         if(isCanceled()){
             if(getLoadListener() != null){
                 getLoadListener().onCanceled();
+            }
+            if(bitmap != null && !bitmap.isRecycled()){
+                bitmap.recycle();
             }
             return;
         }

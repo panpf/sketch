@@ -19,8 +19,6 @@ package me.xiaopan.android.spear.request;
 import java.io.File;
 import java.util.concurrent.Executor;
 
-import me.xiaopan.android.spear.decode.ByteArrayDecodeListener;
-import me.xiaopan.android.spear.decode.CacheFileDecodeListener;
 import me.xiaopan.android.spear.util.FailureCause;
 
 public class LoadJoinDownloadListener implements DownloadListener {
@@ -41,7 +39,7 @@ public class LoadJoinDownloadListener implements DownloadListener {
     public void onCompleted(File cacheFile, ImageFrom imageFrom) {
         loadRequest.setRunStatus(LoadRequest.RunStatus.LOAD);
         loadRequest.setImageFrom(imageFrom != null ? (imageFrom == DownloadListener.ImageFrom.LOCAL_CACHE ? LoadListener.ImageFrom.LOCAL : LoadListener.ImageFrom.NETWORK) : null);
-        loadRequest.setOnDecodeListener(new CacheFileDecodeListener(cacheFile, loadRequest));
+        loadRequest.setCacheFile(cacheFile);
         executor.execute(loadRequest);
     }
 
@@ -49,7 +47,7 @@ public class LoadJoinDownloadListener implements DownloadListener {
     public void onCompleted(byte[] data, ImageFrom imageFrom) {
         loadRequest.setRunStatus(LoadRequest.RunStatus.LOAD);
         loadRequest.setImageFrom(imageFrom != null ? (imageFrom == DownloadListener.ImageFrom.LOCAL_CACHE ? LoadListener.ImageFrom.LOCAL : LoadListener.ImageFrom.NETWORK) : null);
-        loadRequest.setOnDecodeListener(new ByteArrayDecodeListener(data, loadRequest));
+        loadRequest.setImageData(data);
         executor.execute(loadRequest);
     }
 

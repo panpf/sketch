@@ -29,7 +29,7 @@ import me.xiaopan.android.spear.util.ImageScheme;
  * DownloadHelper
  */
 public class DownloadHelper {
-    private static final String LOG_TAG = DownloadRequest.class.getSimpleName();
+    private static final String NAME = "DownloadHelper";
 
     private Spear spear;
     private String uri;
@@ -119,7 +119,7 @@ public class DownloadHelper {
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
             if(Spear.isDebugMode()){
-                Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "uri不能为null或空");
+                Log.e(Spear.TAG, NAME + "：" + "uri不能为null或空");
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailureCause.URI_NULL_OR_EMPTY);
@@ -131,7 +131,7 @@ public class DownloadHelper {
         ImageScheme imageScheme = ImageScheme.valueOfUri(uri);
         if(!(imageScheme == ImageScheme.HTTP || imageScheme == ImageScheme.HTTPS)){
             if(Spear.isDebugMode()){
-                Log.e(Spear.LOG_TAG, LOG_TAG + "：" + "download()方法只能处理http或https协议" + " URI" + "=" + uri);
+                Log.e(Spear.TAG, NAME + "：" + "download()方法只能处理http或https协议" + " URI" + "=" + uri);
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailureCause.URI_NO_SUPPORT);

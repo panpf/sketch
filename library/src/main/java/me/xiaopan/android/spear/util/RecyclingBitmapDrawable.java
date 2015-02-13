@@ -27,7 +27,7 @@ import android.util.Log;
  * {@link Bitmap#recycle() recycle()} will be called on this drawable's bitmap.
  */
 public class RecyclingBitmapDrawable extends BitmapDrawable {
-    private static final String LOG_TAG = RecyclingBitmapDrawable.class.getSimpleName();
+    private static final String NAME = "RecyclingBitmapDrawable";
 
     private int mCacheRefCount = 0;
     private int mDisplayRefCount = 0;
@@ -81,7 +81,7 @@ public class RecyclingBitmapDrawable extends BitmapDrawable {
         // If the drawable cache and display ref counts = 0, and this drawable
         // has been displayed, then recycle
         if (mCacheRefCount <= 0 && mDisplayRefCount <= 0 && mHasBeenDisplayed && hasValidBitmap()) {
-            Log.d(LOG_TAG, "No longer being used or cached so recycling. " + toString());
+            Log.d(NAME, "No longer being used or cached so recycling. " + toString());
             getBitmap().recycle();
         }
     }

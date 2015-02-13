@@ -36,7 +36,7 @@ public class DisplayHelperManager {
 
     public DisplayHelper getDisplayHelper(Spear spear, String uri, ImageView imageView){
         if(displayHelperPool.isEmpty()){
-            return new DisplayHelper(spear, uri, imageView);
+            return spear.getConfiguration().getHelperFactory().newDisplayHelper(spear, uri, imageView);
         }else{
             return displayHelperPool.poll().reset(spear, uri, imageView);
         }

@@ -197,7 +197,7 @@ public class DownloadRequest implements Request, Runnable {
         // 从网络下载
         requestExecutor.getNetTaskExecutor().execute(this);
         if(Spear.isDebugMode()){
-            Log.d(Spear.LOG_TAG, NAME + " - dispatch：" + getName());
+            Log.d(Spear.TAG, NAME + " - dispatch：" + getName());
         }
     }
 

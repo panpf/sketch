@@ -34,9 +34,11 @@ import me.xiaopan.android.spear.execute.DefaultRequestExecutor;
 import me.xiaopan.android.spear.execute.RequestExecutor;
 import me.xiaopan.android.spear.process.CutImageProcessor;
 import me.xiaopan.android.spear.process.ImageProcessor;
+import me.xiaopan.android.spear.util.DefaultHelperFactory;
 import me.xiaopan.android.spear.util.DefaultImageSizeCalculator;
 import me.xiaopan.android.spear.util.DisplayCallbackHandler;
 import me.xiaopan.android.spear.util.DisplayHelperManager;
+import me.xiaopan.android.spear.util.HelperFactory;
 import me.xiaopan.android.spear.util.ImageSizeCalculator;
 
 public class Configuration {
@@ -44,8 +46,9 @@ public class Configuration {
     private DiskCache diskCache;    // 磁盘缓存器
     private MemoryCache memoryCache;	//图片缓存器
     private ImageDecoder imageDecoder;	//图片解码器
-    private ImageDisplayer defaultImageDisplayer;
-    private ImageProcessor defaultCutImageProcessor;
+    private HelperFactory helperFactory;    // 协助器工厂
+    private ImageDisplayer defaultImageDisplayer;   // 默认的图片显示器，当DisplayRequest中没有指定显示器的时候就会用到
+    private ImageProcessor defaultCutImageProcessor;    // 默认的图片裁剪处理器
     private ImageDownloader imageDownloader;	//图片下载器
     private RequestExecutor requestExecutor;	//请求执行器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
@@ -57,11 +60,14 @@ public class Configuration {
         this.diskCache = new LruDiskCache(context);
         this.memoryCache = new LruMemoryCache();
         this.imageDecoder = new DefaultImageDecoder();
+        this.helperFactory = new DefaultHelperFactory();
         this.imageDownloader = new HttpUrlConnectionImageDownloader();
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
         this.imageSizeCalculator = new DefaultImageSizeCalculator();
         this.displayHelperManager = new DisplayHelperManager();
+        this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.displayCallbackHandler = new DisplayCallbackHandler();
+        this.defaultCutImageProcessor = new CutImageProcessor();
     }
 
     /**
@@ -133,6 +139,30 @@ public class Configuration {
      */
     public DisplayHelperManager getDisplayHelperManager() {
         return displayHelperManager;
+    }
+
+    /**
+     * 获取默认的图片显示器
+     * @return 默认的图片显示器
+     */
+    public ImageDisplayer getDefaultImageDisplayer() {
+        return defaultImageDisplayer;
+    }
+
+    /**
+     * 获取默认的图片裁剪处理器
+     * @return 默认的图片裁剪处理器
+     */
+    public ImageProcessor getDefaultCutImageProcessor() {
+        return defaultCutImageProcessor;
+    }
+
+    /**
+     * 获取协助器工厂
+     * @return 协助器工厂
+     */
+    public HelperFactory getHelperFactory() {
+        return helperFactory;
     }
 
     /**
@@ -215,57 +245,32 @@ public class Configuration {
      * 设置默认的图片处理器
      * @param defaultImageDisplayer 默认的图片处理器
      */
-    public void setDefaultImageDisplayer(ImageDisplayer defaultImageDisplayer) {
-        this.defaultImageDisplayer = defaultImageDisplayer;
+    public Configuration setDefaultImageDisplayer(ImageDisplayer defaultImageDisplayer) {
+        if(defaultImageDisplayer != null){
+            this.defaultImageDisplayer = defaultImageDisplayer;
+        }
+        return this;
     }
 
     /**
      * 默认的默认的图片裁剪处理器
      * @param defaultCutImageProcessor 默认的图片裁剪处理器
      */
-    public void setDefaultCutImageProcessor(ImageProcessor defaultCutImageProcessor) {
-        this.defaultCutImageProcessor = defaultCutImageProcessor;
+    public Configuration setDefaultCutImageProcessor(ImageProcessor defaultCutImageProcessor) {
+        if(defaultCutImageProcessor != null){
+            this.defaultCutImageProcessor = defaultCutImageProcessor;
+        }
+        return this;
     }
 
     /**
-     * 清除内存缓存和磁盘缓存
+     * 设置协助器工厂
+     * @param helperFactory 协助器工厂
      */
-    public void clearAllCache() {
-        if(memoryCache != null){
-            memoryCache.clear();
+    public Configuration setHelperFactory(HelperFactory helperFactory) {
+        if(helperFactory != null){
+            this.helperFactory = helperFactory;
         }
-        if(diskCache != null){
-            diskCache.clear();
-        }
-    }
-
-    /**
-     * 获取默认的图片显示器
-     * @return 默认的图片显示器
-     */
-    public ImageDisplayer getDefaultImageDisplayer() {
-        if(defaultImageDisplayer == null){
-            synchronized (this){
-                if(defaultImageDisplayer == null){
-                    defaultImageDisplayer = new DefaultImageDisplayer();
-                }
-            }
-        }
-        return defaultImageDisplayer;
-    }
-
-    /**
-     * 获取默认的图片裁剪处理器
-     * @return 默认的图片裁剪处理器
-     */
-    public ImageProcessor getDefaultCutImageProcessor() {
-        if(defaultCutImageProcessor == null){
-            synchronized (this){
-                if(defaultCutImageProcessor == null){
-                    defaultCutImageProcessor = new CutImageProcessor();
-                }
-            }
-        }
-        return defaultCutImageProcessor;
+        return this;
     }
 }

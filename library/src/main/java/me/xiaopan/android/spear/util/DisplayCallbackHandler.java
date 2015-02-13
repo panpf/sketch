@@ -52,7 +52,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
                 DisplayRequest displayRequest = (DisplayRequest) msg.obj;
                 if(displayRequest.isCanceled()){
                     if(Spear.isDebugMode()){
-                        Log.w(Spear.LOG_TAG, NAME+" - COMPLETED"+ "：" + "已取消显示" + "；" + displayRequest.getName());
+                        Log.w(Spear.TAG, NAME+" - COMPLETED"+ "：" + "已取消显示" + "；" + displayRequest.getName());
                     }
                     if(displayRequest.getDisplayListener() != null){
                         displayRequest.getDisplayListener().onCanceled();
@@ -63,7 +63,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
                 ImageView imageView = displayRequest.getImageViewHolder().getImageView();
                 if(imageView == null){
                     if(Spear.isDebugMode()){
-                        Log.w(Spear.LOG_TAG, NAME+" - COMPLETED" + "：" + "已取消显示（ImageView为null）" + "；" + displayRequest.getName());
+                        Log.w(Spear.TAG, NAME+" - COMPLETED" + "：" + "已取消显示（ImageView为null）" + "；" + displayRequest.getName());
                     }
                     if(displayRequest.getDisplayListener() != null){
                         displayRequest.getDisplayListener().onCanceled();
@@ -93,7 +93,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
                 DisplayRequest displayRequestOnFail = (DisplayRequest) msg.obj;
                 if(displayRequestOnFail.isCanceled()){
                     if(Spear.isDebugMode()){
-                        Log.w(Spear.LOG_TAG, NAME+" - FAILED" + "：" + "已取消显示" + "；" + displayRequestOnFail.getName());
+                        Log.w(Spear.TAG, NAME+" - FAILED" + "：" + "已取消显示" + "；" + displayRequestOnFail.getName());
                     }
                     if(displayRequestOnFail.getDisplayListener() != null){
                         displayRequestOnFail.getDisplayListener().onCanceled();
@@ -104,7 +104,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
                 ImageView imageViewOnFail = displayRequestOnFail.getImageViewHolder().getImageView();
                 if(imageViewOnFail == null){
                     if(Spear.isDebugMode()){
-                        Log.w(Spear.LOG_TAG, NAME+" - FAILED" + "：" + "已取消显示（ImageView为null）" + "；" + displayRequestOnFail.getName());
+                        Log.w(Spear.TAG, NAME+" - FAILED" + "：" + "已取消显示（ImageView为null）" + "；" + displayRequestOnFail.getName());
                     }
                     if(displayRequestOnFail.getDisplayListener() != null){
                         displayRequestOnFail.getDisplayListener().onCanceled();

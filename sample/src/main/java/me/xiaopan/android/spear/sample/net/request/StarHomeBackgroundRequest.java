@@ -61,7 +61,7 @@ public class StarHomeBackgroundRequest implements Request{
                     backgroundColor = Color.parseColor(color);
                 }catch (IllegalArgumentException e){
                     e.printStackTrace();
-                    Log.e(StarHomeBackgroundRequest.class.getSimpleName(), "解析背景颜色失败："+color);
+                    Log.e("StarHomeBackground", "解析背景颜色失败："+color);
                 }
             }
             return backgroundColor;

@@ -87,7 +87,7 @@ public class PhotoAlbumFragment extends InjectFragment implements PhotoAlbumImag
             Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
             String where = MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=?";
             String[] whereParams = new String[] { "image/jpeg", "image/png"};
-            String sortOrder = MediaStore.Images.Media.DATE_MODIFIED;
+            String sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " DESC";
             ContentResolver mContentResolver = context.getContentResolver();
 
             //只查询jpeg和png的图片

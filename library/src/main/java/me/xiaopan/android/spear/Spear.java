@@ -35,7 +35,7 @@ import me.xiaopan.android.spear.util.ImageScheme;
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
  */
 public class Spear {
-    public static final String LOG_TAG= Spear.class.getSimpleName();
+    public static final String TAG = "Spear";
 	private static Spear instance;
     private static boolean debugMode;	//调试模式，在控制台输出日志
     private static Map<Object, RequestOptions> optionsMap;
@@ -102,7 +102,7 @@ public class Spear {
      * @return DownloadHelper 你可以继续设置一些参数，最后调用fire()方法开始下载
      */
 	public DownloadHelper download(String uri, DownloadListener downloadListener){
-		 return new DownloadHelper(this, uri).listener(downloadListener);
+		 return configuration.getHelperFactory().newDownloadHelper(this, uri).listener(downloadListener);
 	}
 
 
@@ -121,7 +121,7 @@ public class Spear {
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(String uri, LoadListener loadListener){
-        return new LoadHelper(this, uri).listener(loadListener);
+        return configuration.getHelperFactory().newLoadHelper(this, uri).listener(loadListener);
 	}
     
     /**
@@ -131,7 +131,7 @@ public class Spear {
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(File imageFile, LoadListener loadListener){
-        return new LoadHelper(this, imageFile.getPath()).listener(loadListener);
+        return configuration.getHelperFactory().newLoadHelper(this, imageFile.getPath()).listener(loadListener);
 	}
 
     /**
@@ -141,7 +141,7 @@ public class Spear {
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(int drawableResId, LoadListener loadListener){
-        return new LoadHelper(this, ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
+        return configuration.getHelperFactory().newLoadHelper(this, ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
 	}
 
     /**
@@ -151,7 +151,7 @@ public class Spear {
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(Uri uri, LoadListener loadListener){
-        return new LoadHelper(this, uri.toString()).listener(loadListener);
+        return configuration.getHelperFactory().newLoadHelper(this, uri.toString()).listener(loadListener);
 	}
 
 
