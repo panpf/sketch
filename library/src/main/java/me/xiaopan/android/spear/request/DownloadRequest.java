@@ -22,28 +22,30 @@ import java.io.File;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.download.ImageDownloader;
-import me.xiaopan.android.spear.execute.RequestExecutor;
 import me.xiaopan.android.spear.util.ImageScheme;
 
 /**
  * 下载请求
  */
-public class DownloadRequest implements Request, Runnable {
+public class DownloadRequest implements Request{
     public static final boolean DEFAULT_ENABLE_DISK_CACHE = true;
     private static final String NAME = "DownloadRequest";
 
     /* 通用属性 */
-    private Spear spear;
-    private Status status = Status.WAITING;  // 状态
-    private String uri;	// 图片地址
-    private String name;	// 名称，用于在输出LOG的时候区分不同的请求
-    private ImageScheme imageScheme;	// Uri协议格式
+    protected Spear spear;
+    private Status status = Status.WAIT_DISPATCH;  // 状态
+    protected String uri;	// 图片地址
+    protected String name;	// 名称，用于在输出LOG的时候区分不同的请求
+    protected RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
 
-    /* 下载请求用到的属性 */
-    private File cacheFile;	// 缓存文件
-    private boolean enableDiskCache = DEFAULT_ENABLE_DISK_CACHE;	// 是否开启磁盘缓存
+    protected ImageScheme imageScheme;	// Uri协议格式
+
+    /* 下载用到的属性 */
+    protected File cacheFile;	// 缓存文件
+    protected boolean enableDiskCache = DEFAULT_ENABLE_DISK_CACHE;	// 是否开启磁盘缓存
+
     private DownloadListener downloadListener;  // 下载监听器
-    private ProgressListener progressListener;  // 下载进度监听器
+    protected ProgressListener progressListener;  // 下载进度监听器
 
     @Override
     public Spear getSpear() {
@@ -86,35 +88,16 @@ public class DownloadRequest implements Request, Runnable {
     }
 
     @Override
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    @Override
     public Status getStatus() {
         return status;
     }
 
     /**
      * 获取缓存文件
+     * @return 缓存文件
      */
-	public File getCacheFile() {
-		return cacheFile;
-	}
-
-    /**
-     * 设置缓存文件
-     */
-	public void setCacheFile(File cacheFile) {
-		this.cacheFile = cacheFile;
-	}
-
-    /**
-     * 是否开启磁盘缓存（默认开启）
-     * @return 是否开启磁盘缓存
-     */
-    public boolean isEnableDiskCache() {
-        return enableDiskCache;
+    public File getCacheFile() {
+        return cacheFile;
     }
 
     /**
@@ -142,13 +125,6 @@ public class DownloadRequest implements Request, Runnable {
     }
 
     /**
-     * 获取下载监听器
-     */
-    public DownloadListener getDownloadListener() {
-        return downloadListener;
-    }
-
-    /**
      * 设置下载监听器
      * @param downloadListener 下载监听器
      */
@@ -171,79 +147,167 @@ public class DownloadRequest implements Request, Runnable {
         if(isFinished()){
             return false;
         }
-        status = Status.CANCELED;
+        toCanceledStatus();
         return true;
     }
 
     @Override
-    public void updateProgress(int totalLength, int completedLength) {
-        if(progressListener != null){
-            progressListener.onUpdateProgress(totalLength, completedLength);
-        }
-    }
-
-    @Override
     public void run() {
-        executeDownload();
+        switch(runStatus){
+            case DISPATCH:
+                dispatch();
+                break;
+            case DOWNLOAD:
+                executeDownload();
+                break;
+            default:
+                new IllegalStateException(runStatus.name()+" 属于未知的类型，没法搞").printStackTrace();
+                break;
+        }
     }
 
     @Override
-    public void dispatch(RequestExecutor requestExecutor) {
+    public void dispatch() {
         // 要先创建缓存文件
-        if(isEnableDiskCache()){
-            setCacheFile(getSpear().getConfiguration().getDiskCache().createCacheFile(this));
-        }
+        this.cacheFile = enableDiskCache?spear.getConfiguration().getDiskCache().createCacheFile(this):null;
 
         // 从网络下载
-        requestExecutor.getNetTaskExecutor().execute(this);
+        runDownload();
         if(Spear.isDebugMode()){
-            Log.d(Spear.TAG, NAME + " - dispatch：" + getName());
+            Log.d(Spear.TAG, NAME + " - dispatch：" + name);
         }
     }
 
     /**
      * 执行下载
      */
-    public void executeDownload() {
+    protected void executeDownload() {
         if(isCanceled()){
-            if(getDownloadListener() != null){
-                getDownloadListener().onCanceled();
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + "：" + "已取消下载（下载刚开始）" + "；" + name);
             }
             return;
         }
 
-        setStatus(Request.Status.LOADING);
-        ImageDownloader.DownloadResult downloadResult = getSpear().getConfiguration().getImageDownloader().download(this);
+        ImageDownloader.DownloadResult downloadResult = spear.getConfiguration().getImageDownloader().download(this);
 
         if(isCanceled()){
-            if(getDownloadListener() != null){
-                getDownloadListener().onCanceled();
-            }
             return;
         }
 
-        if(downloadResult != null && downloadResult.getResult() == null){
-            downloadResult = null;
-        }
-
-        if(downloadResult != null){
-            if(!(this instanceof LoadRequest)){
-                setStatus(Request.Status.COMPLETED);
-            }
-            if(getDownloadListener() != null){
-                if(downloadResult.getResult().getClass().isAssignableFrom(File.class)){
-                    getDownloadListener().onCompleted((File) downloadResult.getResult(), downloadResult.isFromNetwork()? DownloadListener.ImageFrom.NETWORK: DownloadListener.ImageFrom.LOCAL_CACHE);
-                }else{
-                    getDownloadListener().onCompleted((byte[]) downloadResult.getResult(), downloadResult.isFromNetwork()? DownloadListener.ImageFrom.NETWORK: DownloadListener.ImageFrom.LOCAL_CACHE);
-                }
-            }
+        if(downloadResult != null  && downloadResult.getResult() != null){
+            handleDownloadCompleted(downloadResult);
         }else{
-            if(!(this instanceof LoadRequest)){
-                setStatus(Request.Status.FAILED);
-            }
-            if(getDownloadListener() != null){
-                getDownloadListener().onFailed(null);
+            toFailedStatus();
+        }
+    }
+
+    public void handleUpdateProgress(int totalLength, int completedLength) {
+        if(progressListener != null){
+            progressListener.onUpdateProgress(totalLength, completedLength);
+        }
+    }
+
+    public void handleDownloadCompleted(ImageDownloader.DownloadResult downloadResult){
+        toCompletedStatus();
+        if(downloadListener != null){
+            if(downloadResult.getResult().getClass().isAssignableFrom(File.class)){
+                downloadListener.onCompleted((File) downloadResult.getResult(), downloadResult.isFromNetwork());
+            }else{
+                downloadListener.onCompleted((byte[]) downloadResult.getResult());
             }
         }
+    }
+
+    @Override
+    public void toWaitDispatchStatus() {
+        this.status = Status.WAIT_DISPATCH;
+    }
+
+    @Override
+    public void toDispatchingStatus() {
+        this.status = Status.DISPATCHING;
+    }
+
+    @Override
+    public void toWaitDownloadStatus() {
+        this.status = Status.WAIT_DOWNLOAD;
+    }
+
+    @Override
+    public void toGetDownloadLockStatus() {
+        this.status = Status.GET_DOWNLOAD_LOCK;
+    }
+
+    @Override
+    public void toDownloadingStatus() {
+        this.status = Status.DOWNLOADING;
+    }
+
+    @Override
+    public void toWaitLoadStatus() {
+        this.status = Status.WAIT_LOAD;
+    }
+
+    @Override
+    public void toLoadingStatus() {
+        this.status = Status.LOADING;
+    }
+
+    @Override
+    public void toWaitDisplayStatus() {
+        this.status = Status.WAIT_DISPLAY;
+    }
+
+    @Override
+    public void toDisplayingStatus() {
+        this.status = Status.DISPLAYING;
+    }
+
+    @Override
+    public void toCompletedStatus() {
+        this.status = Status.COMPLETED;
+    }
+
+    @Override
+    public void toFailedStatus() {
+        this.status = Status.FAILED;
+        handleFail();
+    }
+
+    @Override
+    public void toCanceledStatus() {
+        this.status = Status.CANCELED;
+        handleCancel();
+    }
+
+    public void handleFail(){
+        if(downloadListener != null){
+            downloadListener.onFailed(null);
+        }
+    }
+
+    public void handleCancel(){
+        if(downloadListener != null){
+            downloadListener.onCanceled();
+        }
+    }
+
+    @Override
+    public void runDispatch() {
+        this.runStatus = RunStatus.DISPATCH;
+        spear.getConfiguration().getRequestExecutor().getRequestDispatchExecutor().execute(this);
+    }
+
+    @Override
+    public void runDownload() {
+        this.runStatus = RunStatus.DOWNLOAD;
+        spear.getConfiguration().getRequestExecutor().getNetRequestExecutor().execute(this);
+    }
+
+    @Override
+    public void runLoad() {
+        this.runStatus = RunStatus.LOAD;
+        spear.getConfiguration().getRequestExecutor().getLocalRequestExecutor().execute(this);
     }
 }

@@ -50,24 +50,4 @@ public interface DisplayListener {
      * 已取消
      */
     public void onCanceled();
-
-    /**
-     * 图片来源
-     */
-    public enum ImageFrom {
-        /**
-         * 网络
-         */
-        NETWORK,
-
-        /**
-         * 磁盘
-         */
-        DISK,
-
-        /**
-         * 内存
-         */
-        MEMORY,
-    }
 }

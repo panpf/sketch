@@ -26,6 +26,7 @@ import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.request.DisplayRequest;
 import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.request.ImageFrom;
 import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.request.RequestFuture;
 import me.xiaopan.android.spear.util.AsyncDrawable;
@@ -43,6 +44,8 @@ public class DisplayHelper {
 
     protected Spear spear;
     protected String uri;
+    
+    protected String memoryCacheId;
 
     protected boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
 
@@ -138,8 +141,18 @@ public class DisplayHelper {
     }
 
     /**
+     * 设置内存缓存ID（大多数情况下你不需要手动设置缓存ID，除非你想使用通过putBitmap()放到缓存中的图片）
+     * @param memoryCacheId 内存缓存ID
+     * @return DisplayHelper
+     */
+    public DisplayHelper memoryCacheId(String memoryCacheId){
+        this.memoryCacheId = memoryCacheId;
+        return this;
+    }
+
+    /**
      * 关闭硬盘缓存
-     * @return Helper
+     * @return DisplayHelper
      */
     public DisplayHelper disableDiskCache() {
         this.enableDiskCache = false;
@@ -149,7 +162,7 @@ public class DisplayHelper {
     /**
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
      * @param maxsize 最大尺寸
-     * @return Helper
+     * @return DisplayHelper
      */
     public DisplayHelper maxsize(ImageSize maxsize){
         this.maxsize = maxsize;
@@ -160,7 +173,7 @@ public class DisplayHelper {
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
      * @param width 宽
      * @param height 高
-     * @return Helper
+     * @return DisplayHelper
      */
     public DisplayHelper maxsize(int width, int height){
         this.maxsize = new ImageSize(width, height);
@@ -170,7 +183,7 @@ public class DisplayHelper {
     /**
      * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
      * @param resize 新的尺寸
-     * @return Helper
+     * @return DisplayHelper
      */
     public DisplayHelper resize(ImageSize resize){
         this.resize = resize;
@@ -183,7 +196,7 @@ public class DisplayHelper {
      * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
      * @param width 宽
      * @param height 高
-     * @return Helper
+     * @return DisplayHelper
      */
     public DisplayHelper resize(int width, int height){
         this.resize = new ImageSize(width, height);
@@ -205,7 +218,7 @@ public class DisplayHelper {
     /**
      * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
      * @param processor Bitmap处理器
-     * @return Helper
+     * @return DisplayHelper
      */
     public DisplayHelper processor(ImageProcessor processor){
         this.imageProcessor = processor;
@@ -215,7 +228,7 @@ public class DisplayHelper {
     /**
      * 设置ScaleType，ImageProcessor会根据resize和ScaleType创建一张新的图片
      * @param scaleType ScaleType
-     * @return Helper
+     * @return DisplayHelper
      */
     public DisplayHelper scaleType(ImageView.ScaleType scaleType){
         this.scaleType = scaleType;
@@ -313,7 +326,7 @@ public class DisplayHelper {
     /**
      * 设置进度监听器
      * @param progressListener 进度监听器
-     * @return Helper
+     * @return DisplayHelper
      */
     public DisplayHelper progressListener(ProgressListener progressListener){
         this.progressListener = progressListener;
@@ -323,7 +336,7 @@ public class DisplayHelper {
     /**
      * 设置显示参数
      * @param options 显示参数
-     * @return Helper
+     * @return DisplayHelper
      */
     public DisplayHelper options(DisplayOptions options){
         if(options == null){
@@ -372,7 +385,7 @@ public class DisplayHelper {
     /**
      * 设置显示参数，你只需要提前将DisplayOptions通过Spear.putOptions()方法存起来，然后在这里指定其名称即可
      * @param optionsName 参数名称
-     * @return Helper
+     * @return DisplayHelper
      */
     public DisplayHelper options(Enum<?> optionsName){
         return options((DisplayOptions) Spear.getOptions(optionsName));
@@ -400,7 +413,6 @@ public class DisplayHelper {
             if(Spear.isDebugMode()){
                 Log.e(Spear.TAG, NAME + "：" + "uri不能为null或空");
             }
-            // 显示默认图片
             BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
             spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadingBitmapDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
@@ -418,21 +430,21 @@ public class DisplayHelper {
             return null;
         }
 
-        // 计算缓存ID
-        String requestId = createMemoryCacheId(uri, maxsize, resize, scaleType, imageProcessor);
+        // 计算请求ID
+        String requestId = memoryCacheId!=null?memoryCacheId:createMemoryCacheId(uri, maxsize, resize, scaleType, imageProcessor);
 
-        // 尝试显示
+        // 尝试从内存中寻找缓存图片
         if(enableMemoryCache){
-            final BitmapDrawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(requestId);
+            BitmapDrawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(requestId);
             if(cacheDrawable != null){
-                spear.getConfiguration().getDisplayCallbackHandler().completeCallbackOnFire(imageView, uri, cacheDrawable, displayListener, DisplayListener.ImageFrom.MEMORY);
+                spear.getConfiguration().getDisplayCallbackHandler().completeCallbackOnFire(imageView, uri, cacheDrawable, displayListener, ImageFrom.MEMORY);
                 spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
                 return null;
             }
         }
 
+        // 如果已经暂停了的话就不再从本地或网络加载了
         if(spear.isPaused()){
-            // 显示默认图片
             BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
             imageView.clearAnimation();
             imageView.setImageDrawable(loadingBitmapDrawable);
@@ -463,7 +475,7 @@ public class DisplayHelper {
         request.setImageProcessor(imageProcessor);
         request.setScaleType(scaleType);
 
-        request.setMemoryCacheId(requestId);
+        request.setId(requestId);
         request.setEnableMemoryCache(enableMemoryCache);
         request.setImageViewHolder(new ImageViewHolder(imageView, request));
         request.setImageDisplayer(imageDisplayer);
@@ -479,7 +491,7 @@ public class DisplayHelper {
         imageView.clearAnimation();
         imageView.setImageDrawable(new AsyncDrawable(spear.getConfiguration().getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
 
-        spear.getConfiguration().getRequestExecutor().submit(request);
+        request.runDispatch();
         spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
 
         RequestFuture requestFuture = new RequestFuture(request);
@@ -543,7 +555,7 @@ public class DisplayHelper {
         final DisplayRequest potentialDisplayRequest = AsyncDrawable.getDisplayRequestByAsyncDrawable(imageView);
         boolean cancelled = true;
         if (potentialDisplayRequest != null) {
-            final String oldRequestId = potentialDisplayRequest.getMemoryCacheId();
+            final String oldRequestId = potentialDisplayRequest.getId();
             if (oldRequestId != null && oldRequestId.equals(newRequestId)) {
                 cancelled = false;
             }else{

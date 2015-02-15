@@ -35,18 +35,18 @@ import me.xiaopan.android.spear.util.ImageSize;
 public class LoadHelper {
     private static final String NAME = "DownloadHelper";
 
-    private Spear spear;
-    private String uri;
+    protected Spear spear;
+    protected String uri;
 
-    private boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
+    protected boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
 
-    private ImageSize maxsize;
-    private ImageSize resize;
-    private ImageProcessor imageProcessor;
-    private ImageView.ScaleType scaleType;
+    protected ImageSize maxsize;
+    protected ImageSize resize;
+    protected ImageProcessor imageProcessor;
+    protected ImageView.ScaleType scaleType;
 
-    private LoadListener loadListener;
-    private ProgressListener progressListener;
+    protected LoadListener loadListener;
+    protected ProgressListener progressListener;
 
     /**
      * 创建加载请求生成器
@@ -68,7 +68,7 @@ public class LoadHelper {
 
     /**
      * 关闭硬盘缓存
-     * @return Builder
+     * @return LoadHelper
      */
     public LoadHelper disableDiskCache() {
         this.enableDiskCache = false;
@@ -78,7 +78,7 @@ public class LoadHelper {
     /**
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
      * @param maxsize 最大尺寸
-     * @return Builder
+     * @return LoadHelper
      */
     public LoadHelper maxsize(ImageSize maxsize){
         this.maxsize = maxsize;
@@ -89,7 +89,7 @@ public class LoadHelper {
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
      * @param width 宽
      * @param height 高
-     * @return Builder
+     * @return LoadHelper
      */
     public LoadHelper maxsize(int width, int height){
         this.maxsize = new ImageSize(width, height);
@@ -99,7 +99,7 @@ public class LoadHelper {
     /**
      * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
      * @param resize 新的尺寸
-     * @return Helper
+     * @return LoadHelper
      */
     public LoadHelper resize(ImageSize resize){
         this.resize = resize;
@@ -110,7 +110,7 @@ public class LoadHelper {
      * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
      * @param width 宽
      * @param height 高
-     * @return Helper
+     * @return LoadHelper
      */
     public LoadHelper resize(int width, int height){
         this.resize = new ImageSize(width, height);
@@ -120,7 +120,7 @@ public class LoadHelper {
     /**
      * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
      * @param processor 图片处理器
-     * @return Helper
+     * @return LoadHelper
      */
     public LoadHelper processor(ImageProcessor processor){
         this.imageProcessor = processor;
@@ -130,7 +130,7 @@ public class LoadHelper {
     /**
      * 设置加载监听器
      * @param loadListener 加载监听器
-     * @return Helper
+     * @return LoadHelper
      */
     public LoadHelper listener(LoadListener loadListener){
         this.loadListener = loadListener;
@@ -140,7 +140,7 @@ public class LoadHelper {
     /**
      * 设置ScaleType，ImageProcessor会根据resize和ScaleType创建一张新的图片
      * @param scaleType ScaleType
-     * @return Helper
+     * @return LoadHelper
      */
     public LoadHelper scaleType(ImageView.ScaleType scaleType){
         this.scaleType = scaleType;
@@ -150,7 +150,7 @@ public class LoadHelper {
     /**
      * 设置进度监听器
      * @param progressListener 进度监听器
-     * @return Helper
+     * @return LoadHelper
      */
     public LoadHelper progressListener(ProgressListener progressListener){
         this.progressListener = progressListener;
@@ -160,7 +160,7 @@ public class LoadHelper {
     /**
      * 设置加载参数
      * @param options 加载参数
-     * @return Helper
+     * @return LoadHelper
      */
     public LoadHelper options(LoadOptions options){
         if(options == null){
@@ -189,7 +189,7 @@ public class LoadHelper {
     /**
      * 设置加载参数，你只需要提前将LoadOptions通过Spear.putOptions()方法存起来，然后在这里指定其名称即可
      * @param optionsName 参数名称
-     * @return Helper
+     * @return LoadHelper
      */
     public LoadHelper options(Enum<?> optionsName){
         return options((LoadOptions) Spear.getOptions(optionsName));
@@ -245,7 +245,7 @@ public class LoadHelper {
         request.setLoadListener(loadListener);
         request.setProgressListener(progressListener);
 
-        spear.getConfiguration().getRequestExecutor().submit(request);
+        request.runDispatch();
         return new RequestFuture(request);
     }
 }

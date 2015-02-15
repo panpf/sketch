@@ -137,9 +137,11 @@ public class HttpClientImageDownloader implements ImageDownloader {
 	@Override
 	public DownloadResult download(DownloadRequest request) {
         // 根据下载地址加锁，防止重复下载
+        request.toGetDownloadLockStatus();
         ReentrantLock urlLock = getUrlLock(request.getUri());
         urlLock.lock();
 
+        request.toDownloadingStatus();
         DownloadResult result = null;
         int number = 0;
         while(true){

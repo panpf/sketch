@@ -20,8 +20,10 @@ import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.ImageView;
 
+import java.io.File;
+
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.execute.RequestExecutor;
+import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.ImageSize;
@@ -33,15 +35,14 @@ public class LoadRequest extends DownloadRequest{
     private static final String NAME = "LoadRequest";
 
     /* 加载请求用到的属性 */
-    private ImageSize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来裁剪图片
-    private ImageSize maxsize;	// 最大尺寸，用于读取图片时计算inSampleSize
+    protected ImageSize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来裁剪图片
+    protected ImageSize maxsize;	// 最大尺寸，用于读取图片时计算inSampleSize
     private LoadListener loadListener;	// 监听器
-    private ImageProcessor imageProcessor;	// 图片处理器
-    private ImageView.ScaleType scaleType; // 图片缩放方式，ImageProcessor会根据resize和scaleType来创建新的图片
+    protected ImageProcessor imageProcessor;	// 图片处理器
+    protected ImageView.ScaleType scaleType; // 图片缩放方式，ImageProcessor会根据resize和scaleType来创建新的图片
 
     /* 辅助加载的属性 */
-    private RunStatus runStatus;
-    private LoadListener.ImageFrom imageFrom;
+    private ImageFrom imageFrom;
     private byte[] imageData;
 
     /**
@@ -101,13 +102,6 @@ public class LoadRequest extends DownloadRequest{
     }
 
     /**
-     * 获取加载监听器
-     */
-    public LoadListener getLoadListener() {
-        return loadListener;
-    }
-
-    /**
      * 设置加载监听器
      */
     public LoadRequest setLoadListener(LoadListener loadListener) {
@@ -120,16 +114,8 @@ public class LoadRequest extends DownloadRequest{
      * 设置结果来自哪里
      * @param imageFrom 结果来自哪里
      */
-    public void setImageFrom(LoadListener.ImageFrom imageFrom) {
+    public void setImageFrom(ImageFrom imageFrom) {
         this.imageFrom = imageFrom;
-    }
-
-    /**
-     * 设置运行状态
-     * @param runStatus 运行状态
-     */
-    public void setRunStatus(RunStatus runStatus) {
-        this.runStatus = runStatus;
     }
 
     /**
@@ -150,43 +136,31 @@ public class LoadRequest extends DownloadRequest{
 
     @Override
     public void run() {
-        if(runStatus == null){
-            new IllegalStateException("runStatus 参数为null，无法执行").printStackTrace();
-            return;
-        }
-
-        switch(runStatus){
-            case LOAD:
-                executeLoad();
-                break;
-            case DOWNLOAD:
-                executeDownload();
-                break;
-            default:
-                new IllegalStateException(runStatus.name()+" 属于未知的类型，没法搞").printStackTrace();
-                break;
+        if(runStatus == RunStatus.LOAD){
+            executeLoad();
+        }else{
+            super.run();
         }
     }
 
     @Override
-    public void dispatch(RequestExecutor requestExecutor) {
-        if(getImageScheme() == ImageScheme.HTTP || getImageScheme() == ImageScheme.HTTPS){
-            setCacheFile(isEnableDiskCache()?getSpear().getConfiguration().getDiskCache().createCacheFile(this):null);
+    public void dispatch() {
+        if(imageScheme == ImageScheme.HTTP || imageScheme == ImageScheme.HTTPS){
+            this.cacheFile = enableDiskCache?spear.getConfiguration().getDiskCache().createCacheFile(this):null;
 
             // 如果不需要缓存或缓存文件不存在就从网络下载
-            if(getCacheFile() == null || !getCacheFile().exists()){
-                setDownloadListener(new LoadJoinDownloadListener(requestExecutor.getLocalTaskExecutor(), this));
-                setRunStatus(RunStatus.DOWNLOAD);
-                requestExecutor.getNetTaskExecutor().execute(this);
-                if(Spear.isDebugMode()) Log.d(Spear.TAG, NAME + "：" + "LOAD - 网络" + "；" + getName());
+            if(cacheFile == null || !cacheFile.exists()){
+                runDownload();
+                if(Spear.isDebugMode()){
+                    Log.d(Spear.TAG, NAME + "：" + "LOAD - 网络" + "；" + name);
+                }
                 return;
             }
         }
 
-        setRunStatus(RunStatus.LOAD);
-        setImageFrom(LoadListener.ImageFrom.LOCAL);
-        requestExecutor.getLocalTaskExecutor().execute(this);
-        if(Spear.isDebugMode()) Log.d(Spear.TAG, NAME + "：" + "LOAD - 本地" + "；" + getName());
+        setImageFrom(ImageFrom.LOCAL);
+        runLoad();
+        if(Spear.isDebugMode()) Log.d(Spear.TAG, NAME + "：" + "LOAD - 本地" + "；" + name);
     }
 
     /**
@@ -194,23 +168,23 @@ public class LoadRequest extends DownloadRequest{
      */
     public void executeLoad(){
         if(isCanceled()){
-            if(getLoadListener() != null){
-                getLoadListener().onCanceled();
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + "：" + "已取消加载（加载刚开始）" + "；" + name);
             }
             return;
         }
 
-        setStatus(Request.Status.LOADING);
+        toLoadingStatus();
 
         // 解码
-        Bitmap bitmap = getSpear().getConfiguration().getImageDecoder().decode(this);
+        Bitmap bitmap = spear.getConfiguration().getImageDecoder().decode(this);
 
         if(isCanceled()){
-            if(getLoadListener() != null){
-                getLoadListener().onCanceled();
-            }
             if(bitmap != null && !bitmap.isRecycled()){
                 bitmap.recycle();
+            }
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + "：" + "已取消加载（解码完成后）" + "；" + name);
             }
             return;
         }
@@ -219,7 +193,7 @@ public class LoadRequest extends DownloadRequest{
         if(bitmap != null && !bitmap.isRecycled()){
             ImageProcessor imageProcessor = getImageProcessor();
             if(imageProcessor == null && getResize() != null){
-                imageProcessor = getSpear().getConfiguration().getDefaultCutImageProcessor();
+                imageProcessor = spear.getConfiguration().getDefaultCutImageProcessor();
             }
             if(imageProcessor != null){
                 Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), getScaleType());
@@ -231,34 +205,54 @@ public class LoadRequest extends DownloadRequest{
         }
 
         if(isCanceled()){
-            if(getLoadListener() != null){
-                getLoadListener().onCanceled();
-            }
             if(bitmap != null && !bitmap.isRecycled()){
                 bitmap.recycle();
+            }
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + "：" + "已取消加载（图片处理后）" + "；" + name);
             }
             return;
         }
 
         if(bitmap != null && !bitmap.isRecycled()){
-            if(!(this instanceof DisplayRequest)){
-                setStatus(Request.Status.COMPLETED);
-            }
-            if(getLoadListener() != null){
-                getLoadListener().onCompleted(bitmap, imageFrom);
-            }
+            handleLoadCompleted(bitmap, imageFrom);
         }else{
-            if(!(this instanceof DisplayRequest)){
-                setStatus(Request.Status.FAILED);
-            }
-            if(getLoadListener() != null){
-                getLoadListener().onFailed(null);
-            }
+            toFailedStatus();
         }
     }
 
-    public enum RunStatus{
-        LOAD,
-        DOWNLOAD,
+    @Override
+    public void handleDownloadCompleted(ImageDownloader.DownloadResult downloadResult) {
+        this.imageFrom = downloadResult.isFromNetwork()?ImageFrom.NETWORK:ImageFrom.DISK_CACHE;
+
+        if(downloadResult.getResult().getClass().isAssignableFrom(File.class)){
+            this.cacheFile = (File) downloadResult.getResult();
+        }else{
+            this.imageData = (byte[]) downloadResult.getResult();
+        }
+
+        this.runStatus = LoadRequest.RunStatus.LOAD;
+        spear.getConfiguration().getRequestExecutor().getLocalRequestExecutor().execute(this);
+    }
+
+    @Override
+    public void handleFail() {
+        if(loadListener != null){
+            loadListener.onFailed(null);
+        }
+    }
+
+    @Override
+    public void handleCancel() {
+        if(loadListener != null){
+            loadListener.onCanceled();
+        }
+    }
+
+    public void handleLoadCompleted(Bitmap bitmap, ImageFrom imageFrom){
+        toCompletedStatus();
+        if(loadListener != null){
+            loadListener.onCompleted(bitmap, imageFrom);
+        }
     }
 }

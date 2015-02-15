@@ -31,13 +31,13 @@ import me.xiaopan.android.spear.util.ImageScheme;
 public class DownloadHelper {
     private static final String NAME = "DownloadHelper";
 
-    private Spear spear;
-    private String uri;
+    protected Spear spear;
+    protected String uri;
 
-    private boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
+    protected boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
 
-    private DownloadListener downloadListener;
-    private ProgressListener progressListener;
+    protected DownloadListener downloadListener;
+    protected ProgressListener progressListener;
 
     /**
      * 创建下载请求生成器
@@ -54,7 +54,7 @@ public class DownloadHelper {
 
     /**
      * 设置监听器
-     * @return Helper
+     * @return DownloadHelper
      */
     public DownloadHelper listener(DownloadListener downloadListener){
         this.downloadListener = downloadListener;
@@ -63,7 +63,7 @@ public class DownloadHelper {
 
     /**
      * 关闭硬盘缓存
-     * @return Helper
+     * @return DownloadHelper
      */
     public DownloadHelper disableDiskCache() {
         this.enableDiskCache = false;
@@ -73,7 +73,7 @@ public class DownloadHelper {
     /**
      * 设置进度监听器
      * @param progressListener 进度监听器
-     * @return Helper
+     * @return DownloadHelper
      */
     public DownloadHelper progressListener(ProgressListener progressListener){
         this.progressListener = progressListener;
@@ -83,7 +83,7 @@ public class DownloadHelper {
     /**
      * 设置下载参数
      * @param options 下载参数
-     * @return Helper
+     * @return DownloadHelper
      */
     public DownloadHelper options(DownloadOptions options){
         if(options == null){
@@ -100,7 +100,7 @@ public class DownloadHelper {
     /**
      * 设置下载参数，你只需要提前将DownloadOptions通过Spear.putOptions()方法存起来，然后在这里指定其名称即可
      * @param optionsName 参数名称
-     * @return Helper
+     * @return DownloadHelper
      */
     public DownloadHelper options(Enum<?> optionsName){
         return options((DownloadOptions) Spear.getOptions(optionsName));
@@ -151,7 +151,7 @@ public class DownloadHelper {
         request.setDownloadListener(downloadListener);
         request.setProgressListener(progressListener);
 
-        spear.getConfiguration().getRequestExecutor().submit(request);
+        request.runDispatch();
         return new RequestFuture(request);
     }
 }

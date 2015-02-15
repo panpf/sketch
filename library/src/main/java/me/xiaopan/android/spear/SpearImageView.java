@@ -34,6 +34,7 @@ import android.widget.Scroller;
 import java.io.File;
 
 import me.xiaopan.android.spear.request.DisplayListener;
+import me.xiaopan.android.spear.request.ImageFrom;
 import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.request.RequestFuture;
 import me.xiaopan.android.spear.util.FailureCause;
@@ -489,7 +490,8 @@ public class SpearImageView extends ImageView{
             if(imageFrom != null){
                 switch (imageFrom){
                     case MEMORY: debugColor = DEFAULT_DEBUG_COLOR_MEMORY; break;
-                    case DISK: debugColor = DEFAULT_DEBUG_COLOR_DISK; break;
+                    case LOCAL: debugColor = DEFAULT_DEBUG_COLOR_DISK; break;
+                    case DISK_CACHE: debugColor = DEFAULT_DEBUG_COLOR_DISK; break;
                     case NETWORK: debugColor = DEFAULT_DEBUG_COLOR_NETWORK; break;
                 }
             }else{

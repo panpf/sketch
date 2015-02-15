@@ -22,8 +22,6 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
-import me.xiaopan.android.spear.request.Request;
-
 /**
  * 默认的请求执行器
  */
@@ -38,23 +36,18 @@ public class DefaultRequestExecutor implements RequestExecutor {
         this.localTaskExecutor = builder.localTaskExecutor;
 	}
 	
-	@Override
-	public void submit(final Request request) {
-		taskDispatchExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                request.dispatch(DefaultRequestExecutor.this);
-            }
-        });
-	}
+    @Override
+    public Executor getRequestDispatchExecutor() {
+        return taskDispatchExecutor;
+    }
 
     @Override
-    public Executor getLocalTaskExecutor() {
+    public Executor getLocalRequestExecutor() {
         return localTaskExecutor;
     }
 
     @Override
-    public Executor getNetTaskExecutor() {
+    public Executor getNetRequestExecutor() {
         return netTaskExecutor;
     }
 

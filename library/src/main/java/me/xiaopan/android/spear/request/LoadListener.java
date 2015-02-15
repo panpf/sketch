@@ -46,19 +46,4 @@ public interface LoadListener {
      * 已取消
      */
     public void onCanceled();
-
-    /**
-     * 图片来源
-     */
-    public enum ImageFrom {
-        /**
-         * 网络下载
-         */
-        NETWORK,
-
-        /**
-         * 本地
-         */
-        LOCAL,
-    }
 }

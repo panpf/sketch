@@ -28,7 +28,7 @@ import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.request.DisplayRequest;
-import me.xiaopan.android.spear.request.Request;
+import me.xiaopan.android.spear.request.ImageFrom;
 
 /**
  * 显示回调处理器
@@ -54,9 +54,6 @@ public class DisplayCallbackHandler implements Handler.Callback{
                     if(Spear.isDebugMode()){
                         Log.w(Spear.TAG, NAME+" - COMPLETED"+ "：" + "已取消显示" + "；" + displayRequest.getName());
                     }
-                    if(displayRequest.getDisplayListener() != null){
-                        displayRequest.getDisplayListener().onCanceled();
-                    }
                     return true;
                 }
 
@@ -76,7 +73,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
                     imageDisplayer = displayRequest.getSpear().getConfiguration().getDefaultImageDisplayer();
                 }
                 imageDisplayer.display(imageView, displayRequest.getResultBitmap(), ImageDisplayer.BitmapType.SUCCESS, displayRequest);
-                displayRequest.setStatus(Request.Status.COMPLETED);
+                displayRequest.toCompletedStatus();
 
                 if(displayRequest.getDisplayListener() != null){
                     displayRequest.getDisplayListener().onCompleted(displayRequest.getUri(), imageView, displayRequest.getResultBitmap(), displayRequest.getImageFrom());
@@ -84,7 +81,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
                 return true;
             case WHAT_CALLBACK_PROGRESS :
                 DisplayRequest displayRequestOnProgress = (DisplayRequest) msg.obj;
-                if(displayRequestOnProgress.isCanceled() || displayRequestOnProgress.isFinished()){
+                if(displayRequestOnProgress.isFinished()){
                     return true;
                 }
                 displayRequestOnProgress.getProgressListener().onUpdateProgress(msg.arg1, msg.arg2);
@@ -94,9 +91,6 @@ public class DisplayCallbackHandler implements Handler.Callback{
                 if(displayRequestOnFail.isCanceled()){
                     if(Spear.isDebugMode()){
                         Log.w(Spear.TAG, NAME+" - FAILED" + "：" + "已取消显示" + "；" + displayRequestOnFail.getName());
-                    }
-                    if(displayRequestOnFail.getDisplayListener() != null){
-                        displayRequestOnFail.getDisplayListener().onCanceled();
                     }
                     return true;
                 }
@@ -117,7 +111,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
                     imageDisplayer2 = displayRequestOnFail.getSpear().getConfiguration().getDefaultImageDisplayer();
                 }
                 imageDisplayer2.display(imageViewOnFail, displayRequestOnFail.getResultBitmap(), ImageDisplayer.BitmapType.FAILURE, displayRequestOnFail);
-                displayRequestOnFail.setStatus(Request.Status.FAILED);
+                displayRequestOnFail.toFailedStatus();
 
                 if(displayRequestOnFail.getDisplayListener() != null){
                     displayRequestOnFail.getDisplayListener().onFailed(displayRequestOnFail.getFailureCause());
@@ -138,13 +132,14 @@ public class DisplayCallbackHandler implements Handler.Callback{
         displayListener.onStarted();
     }
 
-    public void completeCallback(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, DisplayListener.ImageFrom imageFrom){
+    public void completeCallback(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, ImageFrom imageFrom){
         displayRequest.setResultBitmap(bitmapDrawable);
         displayRequest.setImageFrom(imageFrom);
+        displayRequest.toWaitDisplayStatus();
         handler.obtainMessage(WHAT_CALLBACK_COMPLETED, displayRequest).sendToTarget();
     }
 
-    public void completeCallbackOnFire(ImageView imageView, String uri, BitmapDrawable bitmapDrawable, DisplayListener displayListener, DisplayListener.ImageFrom imageFrom){
+    public void completeCallbackOnFire(ImageView imageView, String uri, BitmapDrawable bitmapDrawable, DisplayListener displayListener, ImageFrom imageFrom){
         imageView.clearAnimation();
         imageView.setImageDrawable(bitmapDrawable);
         if(displayListener == null){
@@ -156,6 +151,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
     public void failCallback(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, FailureCause failureCause){
         displayRequest.setResultBitmap(bitmapDrawable);
         displayRequest.setFailureCause(failureCause);
+        displayRequest.toWaitDisplayStatus();
         handler.obtainMessage(WHAT_CALLBACK_FAILED, displayRequest).sendToTarget();
     }
 

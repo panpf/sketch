@@ -16,23 +16,28 @@
 
 package me.xiaopan.android.spear.request;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
+import android.util.Log;
 
+import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ImageDisplayer;
-import me.xiaopan.android.spear.execute.RequestExecutor;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.DrawableHolder;
 import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.ImageViewHolder;
+import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 
 /**
  * 显示请求
  */
 public class DisplayRequest extends LoadRequest{
+    private static final String NAME = "DisplayCallbackHandler";
     public static final boolean DEFAULT_ENABLE_MEMORY_CACHE = true;
 
     /* 显示请求用到的属性 */
-    private String memoryCacheId;	//内存缓存ID
+    private String id;	//内存缓存ID
     private boolean enableMemoryCache = DEFAULT_ENABLE_MEMORY_CACHE;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     private ImageDisplayer imageDisplayer;	//图片显示器
     private DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
@@ -43,22 +48,22 @@ public class DisplayRequest extends LoadRequest{
     private FailureCause failureCause;
     private ImageViewHolder imageViewHolder;	//ImageView持有器
     private BitmapDrawable resultBitmap;
-    private DisplayListener.ImageFrom imageFrom;
+    private ImageFrom imageFrom;
 
     /**
-     * 获取内存缓存ID，此ID用来在内存缓存Bitmap时作为其KEY
-     * @return ID
+     * 获取请求ID
+     * @return 请求ID
      */
-	public String getMemoryCacheId() {
-		return memoryCacheId;
+	public String getId() {
+		return id;
 	}
 
     /**
-     * 设置内存缓存ID
-     * @param memoryCacheId 内存缓存ID
+     * 设置请求ID
+     * @param id 请求ID
      */
-    public void setMemoryCacheId(String memoryCacheId) {
-        this.memoryCacheId = memoryCacheId;
+    public void setId(String id) {
+        this.id = id;
     }
 
     /**
@@ -75,14 +80,6 @@ public class DisplayRequest extends LoadRequest{
      */
     public void setImageViewHolder(ImageViewHolder imageViewHolder) {
         this.imageViewHolder = imageViewHolder;
-    }
-
-    /**
-     * 是否开启内存缓存（默认开启）
-     * @return 是否开启内存缓存
-     */
-    public boolean isEnableMemoryCache() {
-        return enableMemoryCache;
     }
 
     /**
@@ -110,14 +107,6 @@ public class DisplayRequest extends LoadRequest{
     }
 
     /**
-     * 获取加载失败图片持有期器
-     * @return 加载失败图片持有期器
-     */
-    public DrawableHolder getLoadFailDrawableHolder() {
-        return loadFailDrawableHolder;
-    }
-
-    /**
      * 设置加载失败图片持有期器
      * @param loadFailDrawableHolder 加载失败图片持有期器
      */
@@ -137,11 +126,11 @@ public class DisplayRequest extends LoadRequest{
         if(getImageProcessor() != null){
             processor = getImageProcessor();
         }else if(getResize() != null){
-            processor = getSpear().getConfiguration().getDefaultCutImageProcessor();
+            processor = spear.getConfiguration().getDefaultCutImageProcessor();
         }else{
             processor = null;
         }
-        return loadFailDrawableHolder.getDrawable(getSpear().getConfiguration().getContext(), getResize(), getScaleType(), processor, resizeByImageViewLayoutSizeAndFromDisplayer);
+        return loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), getResize(), getScaleType(), processor, resizeByImageViewLayoutSizeAndFromDisplayer);
     }
 
     /**
@@ -196,7 +185,7 @@ public class DisplayRequest extends LoadRequest{
      * 获取结果图片来源
      * @return 结果图片来源
      */
-    public DisplayListener.ImageFrom getImageFrom() {
+    public ImageFrom getImageFrom() {
         return imageFrom;
     }
 
@@ -204,15 +193,8 @@ public class DisplayRequest extends LoadRequest{
      * 设置结果图片来源
      * @param imageFrom 结果图片来源
      */
-    public void setImageFrom(DisplayListener.ImageFrom imageFrom) {
+    public void setImageFrom(ImageFrom imageFrom) {
         this.imageFrom = imageFrom;
-    }
-
-    /**
-     * resize是否来自ImageView的LayoutSize并且来自Displayer
-     */
-    public boolean isResizeByImageViewLayoutSizeAndFromDisplayer() {
-        return resizeByImageViewLayoutSizeAndFromDisplayer;
     }
 
     /**
@@ -229,22 +211,56 @@ public class DisplayRequest extends LoadRequest{
         if(!isCanceled){
             isCanceled = imageViewHolder != null && imageViewHolder.isCollected();
             if(isCanceled){
-                setStatus(Status.CANCELED);
+                toCanceledStatus();
             }
         }
         return isCanceled;
     }
 
     @Override
-    public void dispatch(RequestExecutor requestExecutor) {
-        setLoadListener(new DisplayJoinLoadListener(this));
-        super.dispatch(requestExecutor);
+    public void handleUpdateProgress(int totalLength, int completedLength) {
+        if(progressListener != null){
+            spear.getConfiguration().getDisplayCallbackHandler().updateProgressCallback(this, totalLength, completedLength);
+        }
     }
 
     @Override
-    public void updateProgress(int totalLength, int completedLength) {
-        if(getProgressListener() != null){
-            getSpear().getConfiguration().getDisplayCallbackHandler().updateProgressCallback(this, totalLength, completedLength);
+    public void handleLoadCompleted(Bitmap bitmap, ImageFrom imageFrom) {
+        //创建BitmapDrawable并放入内存缓存
+        BitmapDrawable bitmapDrawable;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            bitmapDrawable = new BitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
+        } else {
+            bitmapDrawable = new RecyclingBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
         }
+        if(enableMemoryCache){
+            if(bitmapDrawable instanceof RecyclingBitmapDrawable){
+                ((RecyclingBitmapDrawable) bitmapDrawable).setIsCached(true);
+            }
+            spear.getConfiguration().getMemoryCache().put(id, bitmapDrawable);
+        }
+
+        // 已取消
+        if (isCanceled()) {
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + "：" + "已取消显示（图片放到内存中之后）" + "；" + name);
+            }
+            return;
+        }
+
+        // 显示
+        spear.getConfiguration().getDisplayCallbackHandler().completeCallback(this, bitmapDrawable, imageFrom);
+    }
+
+    @Override
+    public void handleCancel() {
+        if(displayListener != null){
+            spear.getConfiguration().getDisplayCallbackHandler().cancelCallback(displayListener);
+        }
+    }
+
+    @Override
+    public void handleFail() {
+        spear.getConfiguration().getDisplayCallbackHandler().failCallback(this, getLoadFailDrawable(), null);
     }
 }

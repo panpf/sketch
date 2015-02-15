@@ -17,13 +17,12 @@
 package me.xiaopan.android.spear.request;
 
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.execute.RequestExecutor;
 import me.xiaopan.android.spear.util.ImageScheme;
 
 /**
  * 请求
  */
-public interface Request {
+public interface Request extends Runnable, StatusManager, RunManager{
     /**
      * 获取Spear
      * @return Spear
@@ -78,12 +77,6 @@ public interface Request {
     public Status getStatus();
 
     /**
-     * 设置状态
-     * @param status 状态
-     */
-    public void setStatus(Status status);
-
-    /**
      * 是否已经结束
      * @return true：已经结束了；false：还在处理中
      */
@@ -103,30 +96,57 @@ public interface Request {
 
     /**
      * 分发请求
-     * @param requestExecutor 请求执行器
      */
-    public void dispatch(RequestExecutor requestExecutor);
-
-    /**
-     * 更新进度
-     * @param totalLength 总长度
-     * @param completedLength 已完成长度
-     */
-    public void updateProgress(int totalLength, int completedLength);
+    public void dispatch();
 
     /**
      * 请求状态
      */
     public enum Status{
         /**
-         * 等待中
+         * 等待分发
          */
-        WAITING,
+        WAIT_DISPATCH,
+
+        /**
+         * 正在分发
+         */
+        DISPATCHING,
+
+        /**
+         * 等待下载
+         */
+        WAIT_DOWNLOAD,
+
+        /**
+         * 获取下载锁
+         */
+        GET_DOWNLOAD_LOCK,
+
+        /**
+         * 下载中
+         */
+        DOWNLOADING,
+
+        /**
+         * 等待加载
+         */
+        WAIT_LOAD,
 
         /**
          * 加载中
          */
         LOADING,
+
+        /**
+         * 等待显示
+         */
+        WAIT_DISPLAY,
+
+        /**
+         * 显示中
+         */
+        DISPLAYING,
 
         /**
          * 已完成
@@ -142,5 +162,22 @@ public interface Request {
          * 已取消
          */
         CANCELED,
+    }
+
+    public enum RunStatus{
+        /**
+         * 分发
+         */
+        DISPATCH,
+
+        /**
+         * 加载
+         */
+        LOAD,
+
+        /**
+         * 下载
+         */
+        DOWNLOAD,
     }
 }

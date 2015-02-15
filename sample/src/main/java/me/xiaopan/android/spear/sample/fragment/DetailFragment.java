@@ -42,7 +42,9 @@ import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
 import me.xiaopan.android.spear.Spear;
+import me.xiaopan.android.spear.SpearImageView;
 import me.xiaopan.android.spear.request.DisplayListener;
+import me.xiaopan.android.spear.request.ImageFrom;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.util.AnimationBatchExecutor;
 import me.xiaopan.android.spear.sample.util.AnimationUtils;
@@ -52,7 +54,6 @@ import me.xiaopan.android.spear.sample.util.SaveImageAsyncTask;
 import me.xiaopan.android.spear.sample.util.SingleTapDetector;
 import me.xiaopan.android.spear.sample.util.ViewPagerPlayer;
 import me.xiaopan.android.spear.util.FailureCause;
-import me.xiaopan.android.spear.SpearImageView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
