@@ -33,7 +33,7 @@ public class DownloadRequest implements Request{
 
     /* 通用属性 */
     protected Spear spear;
-    private Status status = Status.WAIT_DISPATCH;  // 状态
+    protected Status status = Status.WAIT_DISPATCH;  // 状态
     protected String uri;	// 图片地址
     protected String name;	// 名称，用于在输出LOG的时候区分不同的请求
     protected RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
@@ -41,11 +41,14 @@ public class DownloadRequest implements Request{
     protected ImageScheme imageScheme;	// Uri协议格式
 
     /* 下载用到的属性 */
-    protected File cacheFile;	// 缓存文件
     protected boolean enableDiskCache = DEFAULT_ENABLE_DISK_CACHE;	// 是否开启磁盘缓存
 
+    /* 下载过程中用到的属性 */
+    protected File cacheFile;	// 缓存文件
+    protected FailureCause failureCause;    // 失败原因
     private DownloadListener downloadListener;  // 下载监听器
     protected ProgressListener progressListener;  // 下载进度监听器
+    private ImageDownloader.DownloadResult downloadResult;    // 下载结果
 
     @Override
     public Spear getSpear() {
@@ -132,9 +135,25 @@ public class DownloadRequest implements Request{
         this.downloadListener = downloadListener;
     }
 
+    /**
+     * 获取失败原因
+     * @return 失败原因
+     */
+    public FailureCause getFailureCause() {
+        return failureCause;
+    }
+
+    /**
+     * 设置失败原因
+     * @param failureCause 失败原因
+     */
+    public void setFailureCause(FailureCause failureCause) {
+        this.failureCause = failureCause;
+    }
+
     @Override
     public boolean isFinished() {
-        return status == Status.COMPLETED || status == Status.FAILED || status == Status.CANCELED;
+        return status == Status.COMPLETED || status == Status.CANCELED || status == Status.FAILED;
     }
 
     @Override
@@ -149,6 +168,10 @@ public class DownloadRequest implements Request{
         }
         toCanceledStatus();
         return true;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 
     @Override
@@ -198,24 +221,7 @@ public class DownloadRequest implements Request{
         if(downloadResult != null  && downloadResult.getResult() != null){
             handleDownloadCompleted(downloadResult);
         }else{
-            toFailedStatus();
-        }
-    }
-
-    public void handleUpdateProgress(int totalLength, int completedLength) {
-        if(progressListener != null){
-            progressListener.onUpdateProgress(totalLength, completedLength);
-        }
-    }
-
-    public void handleDownloadCompleted(ImageDownloader.DownloadResult downloadResult){
-        toCompletedStatus();
-        if(downloadListener != null){
-            if(downloadResult.getResult().getClass().isAssignableFrom(File.class)){
-                downloadListener.onCompleted((File) downloadResult.getResult(), downloadResult.isFromNetwork());
-            }else{
-                downloadListener.onCompleted((byte[]) downloadResult.getResult());
-            }
+            toFailedStatus(FailureCause.DOWNLOAD_FAIL);
         }
     }
 
@@ -267,27 +273,27 @@ public class DownloadRequest implements Request{
     @Override
     public void toCompletedStatus() {
         this.status = Status.COMPLETED;
+        if(downloadListener != null){
+            if(downloadResult.getResult().getClass().isAssignableFrom(File.class)){
+                downloadListener.onCompleted((File) downloadResult.getResult(), downloadResult.isFromNetwork());
+            }else{
+                downloadListener.onCompleted((byte[]) downloadResult.getResult());
+            }
+        }
     }
 
     @Override
-    public void toFailedStatus() {
+    public void toFailedStatus(FailureCause failureCause) {
         this.status = Status.FAILED;
-        handleFail();
+        this.failureCause = failureCause;
+        if(downloadListener != null){
+            downloadListener.onFailed(failureCause);
+        }
     }
 
     @Override
     public void toCanceledStatus() {
         this.status = Status.CANCELED;
-        handleCancel();
-    }
-
-    public void handleFail(){
-        if(downloadListener != null){
-            downloadListener.onFailed(null);
-        }
-    }
-
-    public void handleCancel(){
         if(downloadListener != null){
             downloadListener.onCanceled();
         }
@@ -309,5 +315,16 @@ public class DownloadRequest implements Request{
     public void runLoad() {
         this.runStatus = RunStatus.LOAD;
         spear.getConfiguration().getRequestExecutor().getLocalRequestExecutor().execute(this);
+    }
+
+    public void handleUpdateProgress(int totalLength, int completedLength) {
+        if(progressListener != null){
+            progressListener.onUpdateProgress(totalLength, completedLength);
+        }
+    }
+
+    public void handleDownloadCompleted(ImageDownloader.DownloadResult downloadResult){
+        this.downloadResult = downloadResult;
+        toCompletedStatus();
     }
 }

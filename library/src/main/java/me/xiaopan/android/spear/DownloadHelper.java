@@ -22,7 +22,7 @@ import me.xiaopan.android.spear.request.DownloadListener;
 import me.xiaopan.android.spear.request.DownloadRequest;
 import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.request.RequestFuture;
-import me.xiaopan.android.spear.util.FailureCause;
+import me.xiaopan.android.spear.request.FailureCause;
 import me.xiaopan.android.spear.util.ImageScheme;
 
 /**

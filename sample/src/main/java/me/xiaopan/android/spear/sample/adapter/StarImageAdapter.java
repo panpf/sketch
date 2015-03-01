@@ -150,6 +150,10 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 itemViewHolder.twoSpearImageView.setEnableClickRipple(true);
                 itemViewHolder.threeSpearImageView.setEnableClickRipple(true);
 
+                itemViewHolder.oneSpearImageView.setEnableShowProgress(true);
+                itemViewHolder.twoSpearImageView.setEnableShowProgress(true);
+                itemViewHolder.threeSpearImageView.setEnableShowProgress(true);
+
                 itemViewHolder.oneSpearImageView.setOnClickListener(itemClickListener);
                 itemViewHolder.twoSpearImageView.setOnClickListener(itemClickListener);
                 itemViewHolder.threeSpearImageView.setOnClickListener(itemClickListener);

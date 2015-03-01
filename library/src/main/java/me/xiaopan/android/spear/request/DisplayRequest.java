@@ -19,13 +19,10 @@ package me.xiaopan.android.spear.request;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-import android.util.Log;
 
-import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.DrawableHolder;
-import me.xiaopan.android.spear.util.FailureCause;
 import me.xiaopan.android.spear.util.ImageViewHolder;
 import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 
@@ -45,7 +42,6 @@ public class DisplayRequest extends LoadRequest{
 
     /* 辅助的属性 */
     private boolean resizeByImageViewLayoutSizeAndFromDisplayer;
-    private FailureCause failureCause;
     private ImageViewHolder imageViewHolder;	//ImageView持有器
     private BitmapDrawable resultBitmap;
     private ImageFrom imageFrom;
@@ -166,22 +162,6 @@ public class DisplayRequest extends LoadRequest{
     }
 
     /**
-     * 获取失败原因
-     * @return 失败原因
-     */
-    public FailureCause getFailureCause() {
-        return failureCause;
-    }
-
-    /**
-     * 设置失败原因
-     * @param failureCause 失败原因
-     */
-    public void setFailureCause(FailureCause failureCause) {
-        this.failureCause = failureCause;
-    }
-
-    /**
      * 获取结果图片来源
      * @return 结果图片来源
      */
@@ -227,40 +207,37 @@ public class DisplayRequest extends LoadRequest{
     @Override
     public void handleLoadCompleted(Bitmap bitmap, ImageFrom imageFrom) {
         //创建BitmapDrawable并放入内存缓存
-        BitmapDrawable bitmapDrawable;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-            bitmapDrawable = new BitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
+            resultBitmap = new BitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
         } else {
-            bitmapDrawable = new RecyclingBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
+            resultBitmap = new RecyclingBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
         }
         if(enableMemoryCache){
-            if(bitmapDrawable instanceof RecyclingBitmapDrawable){
-                ((RecyclingBitmapDrawable) bitmapDrawable).setIsCached(true);
+            if(resultBitmap instanceof RecyclingBitmapDrawable){
+                ((RecyclingBitmapDrawable) resultBitmap).setIsCached(true);
             }
-            spear.getConfiguration().getMemoryCache().put(id, bitmapDrawable);
-        }
-
-        // 已取消
-        if (isCanceled()) {
-            if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + "：" + "已取消显示（图片放到内存中之后）" + "；" + name);
-            }
-            return;
+            spear.getConfiguration().getMemoryCache().put(id, resultBitmap);
         }
 
         // 显示
-        spear.getConfiguration().getDisplayCallbackHandler().completeCallback(this, bitmapDrawable, imageFrom);
+        toCompletedStatus();
     }
 
     @Override
-    public void handleCancel() {
+    public void toCompletedStatus() {
+        spear.getConfiguration().getDisplayCallbackHandler().completeCallback(this);
+    }
+
+    @Override
+    public void toFailedStatus(FailureCause failureCause) {
+        spear.getConfiguration().getDisplayCallbackHandler().failCallback(this);
+    }
+
+    @Override
+    public void toCanceledStatus() {
+        this.status = Status.CANCELED;
         if(displayListener != null){
             spear.getConfiguration().getDisplayCallbackHandler().cancelCallback(displayListener);
         }
-    }
-
-    @Override
-    public void handleFail() {
-        spear.getConfiguration().getDisplayCallbackHandler().failCallback(this, getLoadFailDrawable(), null);
     }
 }

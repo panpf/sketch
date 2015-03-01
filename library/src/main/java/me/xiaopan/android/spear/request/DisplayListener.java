@@ -20,8 +20,6 @@ package me.xiaopan.android.spear.request;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
-import me.xiaopan.android.spear.util.FailureCause;
-
 /**
  * 显示监听器，值的注意的是DisplayListener中所有的方法都会在主线中执行，所以实现着不必考虑异步线程中刷新UI的问题
  */

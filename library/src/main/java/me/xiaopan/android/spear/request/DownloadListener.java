@@ -18,8 +18,6 @@ package me.xiaopan.android.spear.request;
 
 import java.io.File;
 
-import me.xiaopan.android.spear.util.FailureCause;
-
 /**
  * 下载监听器
  */

@@ -44,6 +44,7 @@ public class LoadRequest extends DownloadRequest{
     /* 辅助加载的属性 */
     private ImageFrom imageFrom;
     private byte[] imageData;
+    private Bitmap bitmap;
 
     /**
      * 获取裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来创建新的图片
@@ -217,8 +218,38 @@ public class LoadRequest extends DownloadRequest{
         if(bitmap != null && !bitmap.isRecycled()){
             handleLoadCompleted(bitmap, imageFrom);
         }else{
-            toFailedStatus();
+            toFailedStatus(FailureCause.DECODE_FAIL);
         }
+    }
+
+    @Override
+    public void toCompletedStatus() {
+        this.status = Status.COMPLETED;
+        if(loadListener != null){
+            loadListener.onCompleted(bitmap, imageFrom);
+        }
+    }
+
+    @Override
+    public void toFailedStatus(FailureCause failureCause) {
+        this.status = Status.FAILED;
+        if(loadListener != null){
+            loadListener.onFailed(failureCause);
+        }
+    }
+
+    @Override
+    public void toCanceledStatus() {
+        this.status = Status.CANCELED;
+        if(loadListener != null){
+            loadListener.onCanceled();
+        }
+    }
+
+    public void handleLoadCompleted(Bitmap bitmap, ImageFrom imageFrom){
+        this.bitmap = bitmap;
+        this.imageFrom = imageFrom;
+        toCompletedStatus();
     }
 
     @Override
@@ -233,26 +264,5 @@ public class LoadRequest extends DownloadRequest{
 
         this.runStatus = LoadRequest.RunStatus.LOAD;
         spear.getConfiguration().getRequestExecutor().getLocalRequestExecutor().execute(this);
-    }
-
-    @Override
-    public void handleFail() {
-        if(loadListener != null){
-            loadListener.onFailed(null);
-        }
-    }
-
-    @Override
-    public void handleCancel() {
-        if(loadListener != null){
-            loadListener.onCanceled();
-        }
-    }
-
-    public void handleLoadCompleted(Bitmap bitmap, ImageFrom imageFrom){
-        toCompletedStatus();
-        if(loadListener != null){
-            loadListener.onCompleted(bitmap, imageFrom);
-        }
     }
 }

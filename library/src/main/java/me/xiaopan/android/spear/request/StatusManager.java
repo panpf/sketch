@@ -56,8 +56,9 @@ public interface StatusManager {
 
     /**
      * 转为已失败状态
+     * @param failureCause 失败原因
      */
-    public void toFailedStatus();
+    public void toFailedStatus(FailureCause failureCause);
 
     /**
      * 转为已取消状态

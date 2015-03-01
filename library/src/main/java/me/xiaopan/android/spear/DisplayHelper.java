@@ -31,7 +31,7 @@ import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.request.RequestFuture;
 import me.xiaopan.android.spear.util.AsyncDrawable;
 import me.xiaopan.android.spear.util.DrawableHolder;
-import me.xiaopan.android.spear.util.FailureCause;
+import me.xiaopan.android.spear.request.FailureCause;
 import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.ImageSize;
 import me.xiaopan.android.spear.util.ImageViewHolder;
@@ -437,7 +437,7 @@ public class DisplayHelper {
         if(enableMemoryCache){
             BitmapDrawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(requestId);
             if(cacheDrawable != null){
-                spear.getConfiguration().getDisplayCallbackHandler().completeCallbackOnFire(imageView, uri, cacheDrawable, displayListener, ImageFrom.MEMORY);
+                spear.getConfiguration().getDisplayCallbackHandler().completeCallbackOnFire(imageView, uri, cacheDrawable, displayListener, ImageFrom.MEMORY_CACHE);
                 spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
                 return null;
             }

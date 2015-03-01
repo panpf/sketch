@@ -25,7 +25,7 @@ import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.request.RequestFuture;
-import me.xiaopan.android.spear.util.FailureCause;
+import me.xiaopan.android.spear.request.FailureCause;
 import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.ImageSize;
 

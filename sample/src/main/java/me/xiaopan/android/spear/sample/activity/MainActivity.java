@@ -169,7 +169,7 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
 
-        appListButton.performClick();
+        starButton.performClick();
     }
 
     @Override

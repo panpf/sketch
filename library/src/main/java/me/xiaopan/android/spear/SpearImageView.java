@@ -37,7 +37,7 @@ import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.request.ImageFrom;
 import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.request.RequestFuture;
-import me.xiaopan.android.spear.util.FailureCause;
+import me.xiaopan.android.spear.request.FailureCause;
 import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 
@@ -489,7 +489,7 @@ public class SpearImageView extends ImageView{
         public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, ImageFrom imageFrom) {
             if(imageFrom != null){
                 switch (imageFrom){
-                    case MEMORY: debugColor = DEFAULT_DEBUG_COLOR_MEMORY; break;
+                    case MEMORY_CACHE: debugColor = DEFAULT_DEBUG_COLOR_MEMORY; break;
                     case LOCAL: debugColor = DEFAULT_DEBUG_COLOR_DISK; break;
                     case DISK_CACHE: debugColor = DEFAULT_DEBUG_COLOR_DISK; break;
                     case NETWORK: debugColor = DEFAULT_DEBUG_COLOR_NETWORK; break;

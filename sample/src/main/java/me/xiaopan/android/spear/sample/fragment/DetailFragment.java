@@ -53,7 +53,7 @@ import me.xiaopan.android.spear.sample.util.PageNumberSetter;
 import me.xiaopan.android.spear.sample.util.SaveImageAsyncTask;
 import me.xiaopan.android.spear.sample.util.SingleTapDetector;
 import me.xiaopan.android.spear.sample.util.ViewPagerPlayer;
-import me.xiaopan.android.spear.util.FailureCause;
+import me.xiaopan.android.spear.request.FailureCause;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**

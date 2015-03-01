@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.util;
+package me.xiaopan.android.spear.request;
 
 /**
  * 失败原因
@@ -36,7 +36,12 @@ public enum FailureCause {
     URI_NO_SUPPORT,
 
     /**
+     * 下载失败
+     */
+    DOWNLOAD_FAIL,
+
+    /**
      * 解码失败
      */
-    DECODE_FAILED,
+    DECODE_FAIL,
 }

@@ -18,8 +18,6 @@ package me.xiaopan.android.spear.request;
 
 import android.graphics.Bitmap;
 
-import me.xiaopan.android.spear.util.FailureCause;
-
 /**
  * 加载监听器
  */

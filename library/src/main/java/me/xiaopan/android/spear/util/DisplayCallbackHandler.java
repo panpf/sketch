@@ -28,7 +28,9 @@ import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.request.FailureCause;
 import me.xiaopan.android.spear.request.ImageFrom;
+import me.xiaopan.android.spear.request.Request;
 
 /**
  * 显示回调处理器
@@ -73,7 +75,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
                     imageDisplayer = displayRequest.getSpear().getConfiguration().getDefaultImageDisplayer();
                 }
                 imageDisplayer.display(imageView, displayRequest.getResultBitmap(), ImageDisplayer.BitmapType.SUCCESS, displayRequest);
-                displayRequest.toCompletedStatus();
+                displayRequest.setStatus(Request.Status.COMPLETED);
 
                 if(displayRequest.getDisplayListener() != null){
                     displayRequest.getDisplayListener().onCompleted(displayRequest.getUri(), imageView, displayRequest.getResultBitmap(), displayRequest.getImageFrom());
@@ -106,12 +108,12 @@ public class DisplayCallbackHandler implements Handler.Callback{
                     return true;
                 }
 
-                ImageDisplayer imageDisplayer2 = displayRequestOnFail.getImageDisplayer();
-                if(imageDisplayer2 == null){
-                    imageDisplayer2 = displayRequestOnFail.getSpear().getConfiguration().getDefaultImageDisplayer();
+                ImageDisplayer imageDisplayerOnFail = displayRequestOnFail.getImageDisplayer();
+                if(imageDisplayerOnFail == null){
+                    imageDisplayerOnFail = displayRequestOnFail.getSpear().getConfiguration().getDefaultImageDisplayer();
                 }
-                imageDisplayer2.display(imageViewOnFail, displayRequestOnFail.getResultBitmap(), ImageDisplayer.BitmapType.FAILURE, displayRequestOnFail);
-                displayRequestOnFail.toFailedStatus();
+                imageDisplayerOnFail.display(imageViewOnFail, displayRequestOnFail.getLoadFailDrawable(), ImageDisplayer.BitmapType.FAILURE, displayRequestOnFail);
+                displayRequestOnFail.setStatus(Request.Status.FAILED);
 
                 if(displayRequestOnFail.getDisplayListener() != null){
                     displayRequestOnFail.getDisplayListener().onFailed(displayRequestOnFail.getFailureCause());
@@ -132,9 +134,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
         displayListener.onStarted();
     }
 
-    public void completeCallback(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, ImageFrom imageFrom){
-        displayRequest.setResultBitmap(bitmapDrawable);
-        displayRequest.setImageFrom(imageFrom);
+    public void completeCallback(DisplayRequest displayRequest){
         displayRequest.toWaitDisplayStatus();
         handler.obtainMessage(WHAT_CALLBACK_COMPLETED, displayRequest).sendToTarget();
     }
@@ -142,15 +142,12 @@ public class DisplayCallbackHandler implements Handler.Callback{
     public void completeCallbackOnFire(ImageView imageView, String uri, BitmapDrawable bitmapDrawable, DisplayListener displayListener, ImageFrom imageFrom){
         imageView.clearAnimation();
         imageView.setImageDrawable(bitmapDrawable);
-        if(displayListener == null){
-            return;
+        if(displayListener != null){
+            displayListener.onCompleted(uri, imageView, bitmapDrawable, imageFrom);
         }
-        displayListener.onCompleted(uri, imageView, bitmapDrawable, imageFrom);
     }
 
-    public void failCallback(DisplayRequest displayRequest, BitmapDrawable bitmapDrawable, FailureCause failureCause){
-        displayRequest.setResultBitmap(bitmapDrawable);
-        displayRequest.setFailureCause(failureCause);
+    public void failCallback(DisplayRequest displayRequest){
         displayRequest.toWaitDisplayStatus();
         handler.obtainMessage(WHAT_CALLBACK_FAILED, displayRequest).sendToTarget();
     }
@@ -159,10 +156,9 @@ public class DisplayCallbackHandler implements Handler.Callback{
         if(loadFailDrawable != null){
             imageView.setImageDrawable(loadFailDrawable);
         }
-        if(displayListener == null){
-            return;
+        if(displayListener != null){
+            displayListener.onFailed(failureCause);
         }
-        displayListener.onFailed(failureCause);
     }
 
     public void cancelCallback(DisplayListener displayListener){

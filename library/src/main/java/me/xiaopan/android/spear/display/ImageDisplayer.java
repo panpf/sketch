@@ -36,6 +36,7 @@ public interface ImageDisplayer {
 	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest);
 	
 	public enum BitmapType {
-		SUCCESS, FAILURE,
+		SUCCESS,
+        FAILURE,
 	}
 }

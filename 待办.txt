@@ -1,1 +1,12 @@
 在本地APP列表页面切换到其他页面，并在其他页面把内存缓存耗完，保证重置一遍，然后在切换回本地APP列表页面就会崩溃，怀疑是根loadIcon方法有关，比如多次返回的Bitmap结果是一样的，然后貌似跟在加载过程中添加的当取消的时候就回收bitmap有关
+
+
+更新日志：
+####1.4.0
+**ImageProcessor**
+>* ``修复``. 修复当遇到1:1比例的图片，但resize比例不是1:1的时候，在裁剪默认图时横向没有居中的BUG。对于所有使用CutImageProcessor.findMappingRect()计算srcRect的ImageProcessor都将得到修复
+
+调用drawableToBitmap后drawable是否有必要发现是bitmapdrawable立即释放，
+如果从本地apk文件中读取的icon是否缓存（例如多次读取到的是同一张图片），那么就有必要重新绘制一张，然后回收旧的，因为我要保证每一张都是独立的不一样的
+
+当bitmap创建之后遇到的各种取消，这时候bitmap应该主动释放
