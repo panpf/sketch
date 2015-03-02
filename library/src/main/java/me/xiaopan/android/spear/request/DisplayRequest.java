@@ -30,7 +30,6 @@ import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
  * 显示请求
  */
 public class DisplayRequest extends LoadRequest{
-    private static final String NAME = "DisplayCallbackHandler";
     public static final boolean DEFAULT_ENABLE_MEMORY_CACHE = true;
 
     /* 显示请求用到的属性 */
@@ -213,9 +212,6 @@ public class DisplayRequest extends LoadRequest{
             resultBitmap = new RecyclingBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
         }
         if(enableMemoryCache){
-            if(resultBitmap instanceof RecyclingBitmapDrawable){
-                ((RecyclingBitmapDrawable) resultBitmap).setIsCached(true);
-            }
             spear.getConfiguration().getMemoryCache().put(id, resultBitmap);
         }
 

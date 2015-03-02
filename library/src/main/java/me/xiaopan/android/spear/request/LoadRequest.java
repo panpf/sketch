@@ -161,7 +161,9 @@ public class LoadRequest extends DownloadRequest{
 
         setImageFrom(ImageFrom.LOCAL);
         runLoad();
-        if(Spear.isDebugMode()) Log.d(Spear.TAG, NAME + "：" + "LOAD - 本地" + "；" + name);
+        if(Spear.isDebugMode()){
+            Log.d(Spear.TAG, NAME + "：" + "LOAD - 本地" + "；" + name);
+        }
     }
 
     /**

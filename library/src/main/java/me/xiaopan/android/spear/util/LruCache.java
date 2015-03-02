@@ -112,7 +112,7 @@ public class LruCache<K, V> {
      *
      * @return the previous value mapped by {@code key}.
      */
-    public final V put(K key, V value) {
+    public V put(K key, V value) {
         if (key == null || value == null) {
             throw new NullPointerException("key == null || value == null");
         }

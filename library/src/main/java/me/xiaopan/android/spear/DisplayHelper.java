@@ -430,10 +430,8 @@ public class DisplayHelper {
             return null;
         }
 
-        // 计算请求ID
-        String requestId = memoryCacheId!=null?memoryCacheId:createMemoryCacheId(uri, maxsize, resize, scaleType, imageProcessor);
-
         // 尝试从内存中寻找缓存图片
+        String requestId = memoryCacheId!=null?memoryCacheId:createMemoryCacheId(uri, maxsize, resize, scaleType, imageProcessor);
         if(enableMemoryCache){
             BitmapDrawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(requestId);
             if(cacheDrawable != null){
@@ -454,14 +452,14 @@ public class DisplayHelper {
             return null;
         }
 
-        // 试图取消当前ImageView上正在加载的请求
+        // 试图取消当前ImageView上正在加载的请求，如果有结果返回表示正在加载的任务与目前的是一样的无需取消
         DisplayRequest potentialRequest = cancelPotentialDisplayRequest(imageView, requestId);
         if(potentialRequest != null){
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
             return new RequestFuture(potentialRequest);
         }
 
-        // 创建请求
+        // 组织请求
         final DisplayRequest request = new DisplayRequest();
 
         request.setUri(uri);
@@ -491,7 +489,9 @@ public class DisplayHelper {
         imageView.clearAnimation();
         imageView.setImageDrawable(new AsyncDrawable(spear.getConfiguration().getContext().getResources(), loadingBitmapDrawable != null ? loadingBitmapDrawable.getBitmap() : null, request));
 
+        // 分发请求
         request.runDispatch();
+
         spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
 
         RequestFuture requestFuture = new RequestFuture(request);
