@@ -67,6 +67,8 @@ public class DisplayHelper {
     protected boolean resizeByImageViewLayoutSize;
     protected boolean resizeByImageViewLayoutSizeAndFromDisplayer;
 
+    protected boolean returnRequestFuture;
+
     /**
      * 创建显示请求生成器
      * @param spear Spear
@@ -104,8 +106,9 @@ public class DisplayHelper {
         if(imageView instanceof SpearImageView){
             SpearImageView spearImageView = (SpearImageView) imageView;
             options(spearImageView.getDisplayOptions());
-            listener(spearImageView.getDisplayListener());
-            progressListener(spearImageView.getProgressListener());
+            this.displayListener = spearImageView.getDisplayListener();
+            this.progressListener = spearImageView.getProgressListener();
+            this.returnRequestFuture = spearImageView.isReturnRequestFuture();
             spearImageView.tryResetDebugFlagAndProgressStatus();
         }
 
@@ -334,6 +337,15 @@ public class DisplayHelper {
     }
 
     /**
+     * fire之后返回RequestFuture，默认情况下fire方法返回null
+     * @return DisplayHelper
+     */
+    public DisplayHelper returnRequestFuture(){
+        this.returnRequestFuture = true;
+        return this;
+    }
+
+    /**
      * 设置显示参数
      * @param options 显示参数
      * @return DisplayHelper
@@ -494,11 +506,15 @@ public class DisplayHelper {
 
         spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
 
-        RequestFuture requestFuture = new RequestFuture(request);
-        if(imageView instanceof SpearImageView){
-            ((SpearImageView) imageView).setRequestFuture(requestFuture);
+        if(returnRequestFuture){
+            RequestFuture requestFuture = new RequestFuture(request);
+            if(imageView instanceof SpearImageView){
+                ((SpearImageView) imageView).setRequestFuture(requestFuture);
+            }
+            return requestFuture;
+        }else{
+            return null;
         }
-        return requestFuture;
     }
 
     protected ImageProcessor getImageProcessor(){

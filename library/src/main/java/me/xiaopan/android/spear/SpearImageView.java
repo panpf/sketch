@@ -57,6 +57,7 @@ public class SpearImageView extends ImageView{
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
     private ProgressListener progressListener;
+    private boolean returnRequestFuture;
 
     private int debugColor = NONE;
     private boolean debugMode;
@@ -454,6 +455,22 @@ public class SpearImageView extends ImageView{
             debugColor = NONE;
             invalidate();
         }
+    }
+
+    /**
+     * fire之后是否返回RequestFuture
+     * @return true：返回
+     */
+    public boolean isReturnRequestFuture() {
+        return returnRequestFuture;
+    }
+
+    /**
+     * 设置是否返回RequestFuture
+     * @param returnRequestFuture fire之后是否返回RequestFuture
+     */
+    public void setReturnRequestFuture(boolean returnRequestFuture) {
+        this.returnRequestFuture = returnRequestFuture;
     }
 
     /**

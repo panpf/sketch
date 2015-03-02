@@ -39,6 +39,8 @@ public class DownloadHelper {
     protected DownloadListener downloadListener;
     protected ProgressListener progressListener;
 
+    protected boolean returnRequestFuture;
+
     /**
      * 创建下载请求生成器
      * @param spear Spear
@@ -77,6 +79,15 @@ public class DownloadHelper {
      */
     public DownloadHelper progressListener(ProgressListener progressListener){
         this.progressListener = progressListener;
+        return this;
+    }
+
+    /**
+     * fire之后返回RequestFuture，默认情况下fire方法返回null
+     * @return DisplayHelper
+     */
+    public DownloadHelper returnRequestFuture(){
+        this.returnRequestFuture = true;
         return this;
     }
 
@@ -152,6 +163,11 @@ public class DownloadHelper {
         request.setProgressListener(progressListener);
 
         request.runDispatch();
-        return new RequestFuture(request);
+
+        if(returnRequestFuture){
+            return new RequestFuture(request);
+        }else{
+            return null;
+        }
     }
 }
