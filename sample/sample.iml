@@ -88,13 +88,13 @@
     <orderEntry type="library" exported="" name="recyclerview-v7-21.0.0" level="project" />
     <orderEntry type="library" exported="" name="appcompat-v7-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="pinyin4j-2.5.0" level="project" />
+    <orderEntry type="library" exported="" name="pull_refresh_layout-1.1.1-" level="project" />
     <orderEntry type="library" exported="" name="pager-sliding-strip-1.5.1-" level="project" />
     <orderEntry type="library" exported="" name="photo-view" level="project" />
     <orderEntry type="library" exported="" name="gson-2.2.4" level="project" />
     <orderEntry type="library" exported="" name="android-happy-inject-1.3.1" level="project" />
     <orderEntry type="library" exported="" name="support-annotations-21.0.3" level="project" />
     <orderEntry type="library" exported="" name="support-v4-21.0.3" level="project" />
-    <orderEntry type="library" exported="" name="android-pull-refresh-layout-1.1.0" level="project" />
     <orderEntry type="library" exported="" name="go-http-1.1.3" level="project" />
     <orderEntry type="module" module-name="library" exported="" />
   </component>

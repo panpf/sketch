@@ -35,7 +35,7 @@ public class MyPullRefreshLayout extends PullRefreshLayout {
 
     public MyPullRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        setPullRefreshHeaderClass(MyPullRefreshHeader.class);
+        addView(new MyPullRefreshHeader(context));
     }
 
     private static class MyPullRefreshHeader extends LinearLayout implements PullRefreshLayout.PullRefreshHeader {
