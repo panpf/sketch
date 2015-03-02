@@ -34,10 +34,10 @@ import android.widget.Scroller;
 import java.io.File;
 
 import me.xiaopan.android.spear.request.DisplayListener;
+import me.xiaopan.android.spear.request.FailureCause;
 import me.xiaopan.android.spear.request.ImageFrom;
 import me.xiaopan.android.spear.request.ProgressListener;
 import me.xiaopan.android.spear.request.RequestFuture;
-import me.xiaopan.android.spear.request.FailureCause;
 import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 
@@ -212,18 +212,16 @@ public class SpearImageView extends ImageView{
 
     @Override
     protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+
         if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1){
             final Drawable previousDrawable = getDrawable();
             if(previousDrawable != null){
-                notifyDrawable(previousDrawable, false);
+                notifyDrawable("onDetachedFromWindow", previousDrawable, false);
             }
         }
-        super.onDetachedFromWindow();
     }
 
-    /**
-     * @see android.widget.ImageView#setImageDrawable(android.graphics.drawable.Drawable)
-     */
     @Override
     public void setImageDrawable(Drawable drawable) {
         // Keep hold of previous Drawable
@@ -234,12 +232,12 @@ public class SpearImageView extends ImageView{
 
         // Notify new Drawable that it is being displayed
         if(drawable != null){
-            notifyDrawable(drawable, true);
+            notifyDrawable("setImageDrawable", drawable, true);
         }
 
         // Notify old Drawable so it is no longer being displayed
         if(previousDrawable != null){
-            notifyDrawable(previousDrawable, false);
+            notifyDrawable("setImageDrawable", previousDrawable, false);
         }
     }
 
@@ -475,18 +473,19 @@ public class SpearImageView extends ImageView{
 
     /**
      * Notifies the drawable that it's displayed state has changed.
+     * @param callingStation 调用位置
      * @param drawable Drawable
      * @param isDisplayed 是否已显示
      */
-    private static void notifyDrawable(Drawable drawable, final boolean isDisplayed) {
+    private static void notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
         if (drawable instanceof RecyclingBitmapDrawable) {
             // The drawable is a CountingBitmapDrawable, so notify it
-            ((RecyclingBitmapDrawable) drawable).setIsDisplayed(isDisplayed);
+            ((RecyclingBitmapDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
         } else if (drawable instanceof LayerDrawable) {
             // The drawable is a LayerDrawable, so recurse on each layer
             LayerDrawable layerDrawable = (LayerDrawable) drawable;
             for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
-                notifyDrawable(layerDrawable.getDrawable(i), isDisplayed);
+                notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);
             }
         }
     }

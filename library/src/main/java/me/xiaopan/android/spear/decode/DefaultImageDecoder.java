@@ -345,9 +345,6 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeFailure() {
-            if(!file.delete()){
-                Log.e(Spear.TAG, "删除文件失败："+file.getPath());
-            }
             if(Spear.isDebugMode()){
                 Log.e(Spear.TAG, new StringBuilder(NAME)
                         .append("；").append("解码失败").append("；").append("已删除")
@@ -355,6 +352,9 @@ public class DefaultImageDecoder implements ImageDecoder {
                         .append("；").append("文件长度").append("=").append(file.length())
                         .append("；").append("URI").append("=").append(loadRequest.getUri())
                         .toString());
+            }
+            if(!file.delete()){
+                Log.e(Spear.TAG, "删除文件失败："+file.getPath());
             }
         }
     }

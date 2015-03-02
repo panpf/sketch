@@ -32,7 +32,7 @@ public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
     @Override
     public BitmapDrawable put(String key, BitmapDrawable value) {
         if(value instanceof RecyclingBitmapDrawable){
-            ((RecyclingBitmapDrawable) value).setIsCached(true);
+            ((RecyclingBitmapDrawable) value).setIsCached("BitmapLruCache - put", true);
         }
         return super.put(key, value);
     }
@@ -52,7 +52,7 @@ public class BitmapLruCache extends LruCache<String, BitmapDrawable> {
     @Override
     protected void entryRemoved(boolean evicted, String key, BitmapDrawable oldValue, BitmapDrawable newValue) {
         if(RecyclingBitmapDrawable.class.isInstance(oldValue)){
-            ((RecyclingBitmapDrawable) oldValue).setIsCached(false);
+            ((RecyclingBitmapDrawable) oldValue).setIsCached("BitmapLruCache - entryRemoved", false);
         }
     }
 }

@@ -53,6 +53,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
             case WHAT_CALLBACK_COMPLETED:
                 DisplayRequest displayRequest = (DisplayRequest) msg.obj;
                 if(displayRequest.isCanceled()){
+                    displayRequest.tryReleaseImage("CompletedCallback - Cancel");
                     if(Spear.isDebugMode()){
                         Log.w(Spear.TAG, NAME+" - COMPLETED"+ "：" + "已取消显示" + "；" + displayRequest.getName());
                     }
@@ -61,6 +62,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
 
                 ImageView imageView = displayRequest.getImageViewHolder().getImageView();
                 if(imageView == null){
+                    displayRequest.tryReleaseImage("CompletedCallback - ImageView null");
                     if(Spear.isDebugMode()){
                         Log.w(Spear.TAG, NAME+" - COMPLETED" + "：" + "已取消显示（ImageView为null）" + "；" + displayRequest.getName());
                     }
