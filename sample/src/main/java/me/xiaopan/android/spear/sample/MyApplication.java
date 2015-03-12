@@ -149,6 +149,7 @@ public class MyApplication extends Application {
                 DisplayOptionsType.APP_ICON,
                 new DisplayOptions(getBaseContext())
                         .loadingDrawable(R.drawable.image_loading)
+                        .loadFailDrawable(R.drawable.image_load_fail)
                         .displayer(new TransitionImageDisplayer())
         );
 	}
