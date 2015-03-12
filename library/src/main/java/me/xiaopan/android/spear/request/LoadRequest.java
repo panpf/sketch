@@ -169,7 +169,7 @@ public class LoadRequest extends DownloadRequest{
     /**
      * 执行加载
      */
-    public void executeLoad(){
+    protected final void executeLoad(){
         if(isCanceled()){
             if(Spear.isDebugMode()){
                 Log.w(Spear.TAG, NAME + "：" + "已取消加载（加载刚开始）" + "；" + name);
@@ -183,7 +183,10 @@ public class LoadRequest extends DownloadRequest{
         Bitmap bitmap = spear.getConfiguration().getImageDecoder().decode(this);
 
         if(isCanceled()){
-            if(bitmap != null && !bitmap.isRecycled()){
+            if(bitmap != null){
+                if(Spear.isDebugMode()){
+                    Log.e(Spear.TAG, "recycle bitmap@" + Integer.toHexString(bitmap.hashCode())+"（executeLoad - decodeAfter - cancel）");
+                }
                 bitmap.recycle();
             }
             if(Spear.isDebugMode()){
@@ -208,7 +211,10 @@ public class LoadRequest extends DownloadRequest{
         }
 
         if(isCanceled()){
-            if(bitmap != null && !bitmap.isRecycled()){
+            if(bitmap != null){
+                if(Spear.isDebugMode()){
+                    Log.e(Spear.TAG, "recycle bitmap@" + Integer.toHexString(bitmap.hashCode())+"（executeLoad - processAfter - cancel）");
+                }
                 bitmap.recycle();
             }
             if(Spear.isDebugMode()){
@@ -248,14 +254,14 @@ public class LoadRequest extends DownloadRequest{
         }
     }
 
-    public void handleLoadCompleted(Bitmap bitmap, ImageFrom imageFrom){
+    protected void handleLoadCompleted(Bitmap bitmap, ImageFrom imageFrom){
         this.bitmap = bitmap;
         this.imageFrom = imageFrom;
         toCompletedStatus();
     }
 
     @Override
-    public void handleDownloadCompleted(ImageDownloader.DownloadResult downloadResult) {
+    protected void handleDownloadCompleted(ImageDownloader.DownloadResult downloadResult) {
         this.imageFrom = downloadResult.isFromNetwork()?ImageFrom.NETWORK:ImageFrom.DISK_CACHE;
 
         if(downloadResult.getResult().getClass().isAssignableFrom(File.class)){

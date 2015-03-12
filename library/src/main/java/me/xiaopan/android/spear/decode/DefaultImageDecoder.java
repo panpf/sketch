@@ -124,22 +124,20 @@ public class DefaultImageDecoder implements ImageDecoder {
                 if(!(bitmap.getWidth()==1 && bitmap.getHeight() == 1)){
                     originalSize = new Point(bitmap.getWidth(), bitmap.getHeight());
                 }else{
-                    if(!bitmap.isRecycled()){
-                        bitmap.recycle();
+                    if(Spear.isDebugMode()){
+                        Log.e(Spear.TAG, "recycle bitmap@"+Integer.toHexString(bitmap.hashCode())+"（1x1 Image）");
                     }
+                    bitmap.recycle();
+                    bitmap = null;
                 }
             }
         }
 
         // 回调
-        if(bitmap != null && originalSize != null){
-            if(!bitmap.isRecycled()){
-                decodeHelper.onDecodeSuccess(bitmap, originalSize, inSampleSize);
-            }else{
-                bitmap = null;
-                decodeHelper.onDecodeFailure();
-            }
+        if(bitmap != null && !bitmap.isRecycled() && originalSize != null){
+            decodeHelper.onDecodeSuccess(bitmap, originalSize, inSampleSize);
         }else{
+            bitmap = null;
             decodeHelper.onDecodeFailure();
         }
 
@@ -154,14 +152,25 @@ public class DefaultImageDecoder implements ImageDecoder {
      */
     public static Bitmap decodeIconFromApk(Context context, String apkFilePath){
         PackageManager packageManager = context.getPackageManager();
-        PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, 0);
+        PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if(packageInfo == null){
             return null;
         }
 
         packageInfo.applicationInfo.sourceDir = apkFilePath;
         packageInfo.applicationInfo.publicSourceDir = apkFilePath;
-        return drawableToBitmap(packageInfo.applicationInfo.loadIcon(packageManager));
+
+        Drawable drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo);
+        if(drawable == null){
+            return null;
+        }
+        if(drawable instanceof BitmapDrawable && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) packageManager.getDefaultActivityIcon()).getBitmap()){
+            if(Spear.isDebugMode()){
+                Log.d(Spear.TAG, "没有取到图标 "+apkFilePath);
+            }
+            return null;
+        }
+        return drawableToBitmap(drawable);
     }
 
     /**
@@ -194,17 +203,17 @@ public class DefaultImageDecoder implements ImageDecoder {
          * 解码
          * @param options 解码选项
          */
-        public Bitmap onDecode(BitmapFactory.Options options);
+        Bitmap onDecode(BitmapFactory.Options options);
 
         /**
          * 解码成功
          */
-        public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize);
+        void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize);
 
         /**
          * 解码失败
          */
-        public void onDecodeFailure();
+        void onDecodeFailure();
     }
 
     public static class AssetsDecodeHelper implements DecodeHelper {

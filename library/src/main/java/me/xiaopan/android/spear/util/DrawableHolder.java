@@ -21,8 +21,10 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.ImageView;
 
+import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.process.ImageProcessor;
 
 public class DrawableHolder {
@@ -32,9 +34,10 @@ public class DrawableHolder {
 
     public void setResId(int resId) {
         if(this.resId != resId && drawable != null){
-            if(!drawable.getBitmap().isRecycled()){
-                drawable.getBitmap().recycle();
+            if(Spear.isDebugMode()){
+                Log.d(Spear.TAG, "recycle bitmap@" + Integer.toHexString(drawable.getBitmap().hashCode()) + "（DrawableHolder - setResId - recycleOldBitmap）");
             }
+            drawable.getBitmap().recycle();
             drawable = null;
         }
         this.resId = resId;
@@ -46,9 +49,10 @@ public class DrawableHolder {
 
     public void setProcess(boolean process) {
         if(this.process != process && drawable != null){
-            if(!drawable.getBitmap().isRecycled()){
-                drawable.getBitmap().recycle();
+            if(Spear.isDebugMode()){
+                Log.d(Spear.TAG, "recycle bitmap@" + Integer.toHexString(drawable.getBitmap().hashCode()) + "（DrawableHolder - setProcess - recycleOldBitmap）");
             }
+            drawable.getBitmap().recycle();
             drawable = null;
         }
         this.process = process;

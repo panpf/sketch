@@ -204,7 +204,7 @@ public class DownloadRequest implements Request{
     /**
      * 执行下载
      */
-    protected void executeDownload() {
+    protected final void executeDownload() {
         if(isCanceled()){
             if(Spear.isDebugMode()){
                 Log.w(Spear.TAG, NAME + "：" + "已取消下载（下载刚开始）" + "；" + name);
@@ -323,7 +323,7 @@ public class DownloadRequest implements Request{
         }
     }
 
-    public void handleDownloadCompleted(ImageDownloader.DownloadResult downloadResult){
+    protected void handleDownloadCompleted(ImageDownloader.DownloadResult downloadResult){
         this.downloadResult = downloadResult;
         toCompletedStatus();
     }

@@ -19,9 +19,7 @@ package me.xiaopan.android.spear.request;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-import android.util.Log;
 
-import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.DrawableHolder;
@@ -243,17 +241,8 @@ public class DisplayRequest extends LoadRequest{
      * 尝试释放图片
      */
     public void tryReleaseImage(String callingStation){
-        if(resultBitmap == null){
-            return;
+        if(resultBitmap != null && resultBitmap instanceof RecyclingBitmapDrawable){
+            ((RecyclingBitmapDrawable) resultBitmap).checkState(callingStation);
         }
-
-        if(resultBitmap instanceof RecyclingBitmapDrawable){
-            RecyclingBitmapDrawable recyclingBitmapDrawable = (RecyclingBitmapDrawable) resultBitmap;
-            recyclingBitmapDrawable.checkState(callingStation);
-            return;
-        }
-
-        Log.w(Spear.TAG, "tryReleaseImage 2 ：Bitmap@" + Integer.toHexString(resultBitmap.getBitmap().hashCode()));
-        resultBitmap.getBitmap().recycle();
     }
 }

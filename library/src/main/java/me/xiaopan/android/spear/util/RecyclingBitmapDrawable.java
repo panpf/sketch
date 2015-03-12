@@ -33,7 +33,6 @@ public class RecyclingBitmapDrawable extends BitmapDrawable {
 
     private int mCacheRefCount = 0;
     private int mDisplayRefCount = 0;
-//    private boolean mHasBeenDisplayed;
 
     public RecyclingBitmapDrawable(Resources res, Bitmap bitmap) {
         super(res, bitmap);
@@ -50,7 +49,6 @@ public class RecyclingBitmapDrawable extends BitmapDrawable {
         synchronized (this) {
             if (isDisplayed) {
                 mDisplayRefCount++;
-//                mHasBeenDisplayed = true;
             } else {
                 mDisplayRefCount--;
             }
@@ -82,10 +80,10 @@ public class RecyclingBitmapDrawable extends BitmapDrawable {
     public synchronized void checkState(String callingStation) {
         // If the drawable cache and display ref counts = 0, and this drawable
         // has been displayed, then recycle
-        if (mCacheRefCount <= 0 && mDisplayRefCount <= 0
-//                && mHasBeenDisplayed
-                && getBitmap() != null && !getBitmap().isRecycled()) {
-            Log.w(Spear.TAG, NAME+"："+callingStation+"：No longer being used or cached so recycling. Bitmap@" + Integer.toHexString(getBitmap().hashCode()));
+        if (mCacheRefCount <= 0 && mDisplayRefCount <= 0 && getBitmap() != null && !getBitmap().isRecycled()) {
+            if(Spear.isDebugMode()){
+                Log.e(Spear.TAG, "recycle bitmap@" + Integer.toHexString(getBitmap().hashCode()) + "（" + NAME + " - " + callingStation + "）");
+            }
             getBitmap().recycle();
         }
     }

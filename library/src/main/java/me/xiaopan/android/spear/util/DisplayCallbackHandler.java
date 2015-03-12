@@ -52,22 +52,11 @@ public class DisplayCallbackHandler implements Handler.Callback{
         switch (msg.what){
             case WHAT_CALLBACK_COMPLETED:
                 DisplayRequest displayRequest = (DisplayRequest) msg.obj;
-                if(displayRequest.isCanceled()){
+                ImageView imageView = displayRequest.getImageViewHolder().getImageView();
+                if(imageView == null || displayRequest.isCanceled()){
                     displayRequest.tryReleaseImage("CompletedCallback - Cancel");
                     if(Spear.isDebugMode()){
                         Log.w(Spear.TAG, NAME+" - COMPLETED"+ "：" + "已取消显示" + "；" + displayRequest.getName());
-                    }
-                    return true;
-                }
-
-                ImageView imageView = displayRequest.getImageViewHolder().getImageView();
-                if(imageView == null){
-                    displayRequest.tryReleaseImage("CompletedCallback - ImageView null");
-                    if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME+" - COMPLETED" + "：" + "已取消显示（ImageView为null）" + "；" + displayRequest.getName());
-                    }
-                    if(displayRequest.getDisplayListener() != null){
-                        displayRequest.getDisplayListener().onCanceled();
                     }
                     return true;
                 }
