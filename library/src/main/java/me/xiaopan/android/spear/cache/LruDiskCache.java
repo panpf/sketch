@@ -39,7 +39,7 @@ import me.xiaopan.android.spear.util.FileLastModifiedComparator;
  * 默认实现的磁盘缓存器
  */
 public class LruDiskCache implements DiskCache {
-	private static final String LOG_NAME = "LruDiskCache";
+	private static final String NAME = "LruDiskCache";
     private static final String DEFAULT_DIRECTORY_NAME = "spear";
     private static final int DEFAULT_RESERVE_SIZE = 100 * 1024 * 1024;
 	private File diskCacheDir;	//缓存目录
@@ -65,11 +65,15 @@ public class LruDiskCache implements DiskCache {
         }
         if(!diskCacheDir.exists()){
             if(!diskCacheDir.mkdirs()){
-                Log.e(Spear.TAG, "创建缓存文件夹失败："+ diskCacheDir.getPath());
+                if(Spear.isDebugMode()){
+                    Log.e(Spear.TAG, NAME + " - " + "创建缓存文件夹失败："+ diskCacheDir.getPath());
+                }
                 this.diskCacheDir = new File(getDynamicCacheDir(context).getPath() + File.separator + DEFAULT_DIRECTORY_NAME);
                 if(!diskCacheDir.exists()){
                     if(!diskCacheDir.mkdirs()){
-                        Log.e(Spear.TAG, "再次创建缓存文件夹失败："+ diskCacheDir.getPath());
+                        if(Spear.isDebugMode()){
+                            Log.e(Spear.TAG, NAME + " - " + "再次创建缓存文件夹失败："+ diskCacheDir.getPath());
+                        }
                         diskCacheDir = null;
                     }
                 }
@@ -133,7 +137,9 @@ public class LruDiskCache implements DiskCache {
 
             // 然后按照顺序来删除文件直到腾出足够的空间或文件删完为止
             for(File file : cacheFiles){
-                Log.w(LOG_NAME, "删除缓存文件：" + file.getPath());
+                if(Spear.isDebugMode()){
+                    Log.w(Spear.TAG, NAME + " - " + "删除缓存文件：" + file.getPath());
+                }
                 long currentFileLength = file.length();
                 if(file.delete()){
                     totalAvailableSize += currentFileLength;
@@ -152,7 +158,9 @@ public class LruDiskCache implements DiskCache {
         }
 
         // 返回申请空间失败
-        Log.e(LOG_NAME, "申请空间失败，剩余空间："+(totalAvailableSize/1024/1024)+"M"+"; 保留空间："+(reserveSize/1024/1024)+"M; "+"; "+cacheDir.getPath());
+        if(Spear.isDebugMode()){
+            Log.e(Spear.TAG, NAME + " - " + "申请空间失败，剩余空间："+(totalAvailableSize/1024/1024)+"M"+"; 保留空间："+(reserveSize/1024/1024)+"M; "+"; "+cacheDir.getPath());
+        }
         return false;
 	}
 

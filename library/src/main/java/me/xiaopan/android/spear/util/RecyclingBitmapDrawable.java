@@ -82,7 +82,7 @@ public class RecyclingBitmapDrawable extends BitmapDrawable {
         // has been displayed, then recycle
         if (mCacheRefCount <= 0 && mDisplayRefCount <= 0 && getBitmap() != null && !getBitmap().isRecycled()) {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, "recycle bitmap@" + Integer.toHexString(getBitmap().hashCode()) + "（" + NAME + " - " + callingStation + "）");
+                Log.e(Spear.TAG, NAME + " - " + "recycle bitmap@" + Integer.toHexString(getBitmap().hashCode()) + "（" + NAME + " - " + callingStation + "）");
             }
             getBitmap().recycle();
         }

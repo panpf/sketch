@@ -413,7 +413,7 @@ public class DisplayHelper {
         // 验证imageView参数
         if(imageView == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + "：" + "imageView不能为null");
+                Log.e(Spear.TAG, NAME + " - " + "imageView不能为null");
             }
             spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(null, null, FailureCause.IMAGE_VIEW_NULL, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
@@ -423,7 +423,7 @@ public class DisplayHelper {
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + "：" + "uri不能为null或空");
+                Log.e(Spear.TAG, NAME + " - " + "uri不能为null或空");
             }
             BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
             spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadingBitmapDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
@@ -435,7 +435,7 @@ public class DisplayHelper {
         ImageScheme imageScheme = ImageScheme.valueOfUri(uri);
         if(imageScheme == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + "：" + "未知的协议类型" + " URI" + "=" + uri);
+                Log.e(Spear.TAG, NAME + " - " + "未知的协议类型" + " URI" + "=" + uri);
             }
             spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, getDrawableFromDrawableHolder(loadFailDrawableHolder), FailureCause.URI_NO_SUPPORT, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
@@ -579,7 +579,7 @@ public class DisplayHelper {
                 cancelled = true;
             }
             if(!cancelled && Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + "：" + "无需取消" + "；" + "ImageViewCode" + "=" + imageView.hashCode() + "；" + potentialDisplayRequest.getName());
+                Log.d(Spear.TAG, NAME + " - " + "无需取消" + "；" + "ImageViewCode" + "=" + imageView.hashCode() + "；" + potentialDisplayRequest.getName());
             }
         }
         return cancelled?null:potentialDisplayRequest;

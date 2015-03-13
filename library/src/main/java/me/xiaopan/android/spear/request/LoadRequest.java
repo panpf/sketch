@@ -153,7 +153,7 @@ public class LoadRequest extends DownloadRequest{
             if(cacheFile == null || !cacheFile.exists()){
                 runDownload();
                 if(Spear.isDebugMode()){
-                    Log.d(Spear.TAG, NAME + "：" + "LOAD - 网络" + "；" + name);
+                    Log.d(Spear.TAG, NAME + " - " + "LOAD；网络" + "；" + name);
                 }
                 return;
             }
@@ -162,7 +162,7 @@ public class LoadRequest extends DownloadRequest{
         setImageFrom(ImageFrom.LOCAL);
         runLoad();
         if(Spear.isDebugMode()){
-            Log.d(Spear.TAG, NAME + "：" + "LOAD - 本地" + "；" + name);
+            Log.d(Spear.TAG, NAME + " - " + "LOAD；本地" + "；" + name);
         }
     }
 
@@ -172,7 +172,7 @@ public class LoadRequest extends DownloadRequest{
     protected final void executeLoad(){
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + "：" + "已取消加载（加载刚开始）" + "；" + name);
+                Log.w(Spear.TAG, NAME + " - " + "已取消加载（加载刚开始）" + "；" + name);
             }
             return;
         }
@@ -185,12 +185,12 @@ public class LoadRequest extends DownloadRequest{
         if(isCanceled()){
             if(bitmap != null){
                 if(Spear.isDebugMode()){
-                    Log.e(Spear.TAG, "recycle bitmap@" + Integer.toHexString(bitmap.hashCode())+"（executeLoad - decodeAfter - cancel）");
+                    Log.e(Spear.TAG, NAME + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode())+"（executeLoad - decodeAfter - cancel）");
                 }
                 bitmap.recycle();
             }
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + "：" + "已取消加载（解码完成后）" + "；" + name);
+                Log.w(Spear.TAG, NAME + " - " + "已取消加载（解码完成后）" + "；" + name);
             }
             return;
         }
@@ -213,12 +213,12 @@ public class LoadRequest extends DownloadRequest{
         if(isCanceled()){
             if(bitmap != null){
                 if(Spear.isDebugMode()){
-                    Log.e(Spear.TAG, "recycle bitmap@" + Integer.toHexString(bitmap.hashCode())+"（executeLoad - processAfter - cancel）");
+                    Log.e(Spear.TAG, NAME + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode())+"（executeLoad - processAfter - cancel）");
                 }
                 bitmap.recycle();
             }
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + "：" + "已取消加载（图片处理后）" + "；" + name);
+                Log.w(Spear.TAG, NAME + " - " + "已取消加载（图片处理后）" + "；" + name);
             }
             return;
         }

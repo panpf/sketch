@@ -147,7 +147,9 @@ public class HttpClientImageDownloader implements ImageDownloader {
         while(true){
             // 如果已经取消了就直接结束
             if (request.isCanceled()) {
-                if (Spear.isDebugMode()) Log.w(Spear.TAG, NAME + "：" + "已取消下载 - 拿到锁之后" + "；" + request.getName());
+                if (Spear.isDebugMode()){
+                    Log.w(Spear.TAG, NAME + " - " + "已取消下载 - 拿到锁之后" + "；" + request.getName());
+                }
                 break;
             }
 
@@ -165,9 +167,13 @@ public class HttpClientImageDownloader implements ImageDownloader {
                 boolean retry = (e instanceof SocketTimeoutException || e instanceof InterruptedIOException) && number < maxRetryCount;
                 if(retry){
                     number++;
-                    if (Spear.isDebugMode()) Log.w(Spear.TAG, NAME + "；" + "下载异常 - 再次尝试" + "；" + request.getName());
+                    if (Spear.isDebugMode()){
+                        Log.w(Spear.TAG, NAME + " - " + "下载异常 - 再次尝试" + "；" + request.getName());
+                    }
                 }else{
-                    if (Spear.isDebugMode()) Log.e(Spear.TAG, NAME + "；" + "下载异常 - 不再尝试" + "；" + request.getName());
+                    if (Spear.isDebugMode()){
+                        Log.e(Spear.TAG, NAME + " - " + "下载异常 - 不再尝试" + "；" + request.getName());
+                    }
                 }
                 e.printStackTrace();
                 if(!retry){
@@ -186,12 +192,16 @@ public class HttpClientImageDownloader implements ImageDownloader {
         try {
             httpResponse = httpClient.execute(new HttpGet(request.getUri()));
         } catch (IOException e) {
-            if (Spear.isDebugMode()) Log.w(Spear.TAG, NAME + "：" + "创建连接失败："+e.getMessage() + "；" + request.getName());
+            if (Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "创建连接失败："+e.getMessage() + "；" + request.getName());
+            }
             throw e;
         }
         if (request.isCanceled()) {
             releaseConnection(httpResponse);
-            if (Spear.isDebugMode()) Log.w(Spear.TAG, NAME + "：" + "已取消下载 - 获取Response之后" + "；" + request.getName());
+            if (Spear.isDebugMode()) {
+                Log.w(Spear.TAG, NAME + " - " + "已取消下载 - 获取Response之后" + "；" + request.getName());
+            }
             return null;
         }
 
@@ -199,13 +209,17 @@ public class HttpClientImageDownloader implements ImageDownloader {
         StatusLine statusLine = httpResponse.getStatusLine();
         if(statusLine == null){
             releaseConnection(httpResponse);
-            if (Spear.isDebugMode()) Log.w(Spear.TAG, NAME + "：" + "获取状态行失败" + "；" + request.getName());
+            if (Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "获取状态行失败" + "；" + request.getName());
+            }
             return null;
         }
         int responseCode = statusLine.getStatusCode();
         if (responseCode != 200) {
             releaseConnection(httpResponse);
-            if (Spear.isDebugMode()) Log.w(Spear.TAG, NAME + "：" + "状态码异常："+responseCode + " " + httpResponse.getStatusLine().getReasonPhrase() + "；" + request.getName());
+            if (Spear.isDebugMode()) {
+                Log.w(Spear.TAG, NAME + " - " + "状态码异常："+responseCode + " " + httpResponse.getStatusLine().getReasonPhrase() + "；" + request.getName());
+            }
             return null;
         }
 
@@ -217,7 +231,9 @@ public class HttpClientImageDownloader implements ImageDownloader {
         }
         if (contentLength <= 0) {
             releaseConnection(httpResponse);
-            if (Spear.isDebugMode()) Log.w(Spear.TAG, NAME + "：" + "内容长度异常："+contentLength + "；" + request.getName());
+            if (Spear.isDebugMode()) {
+                Log.w(Spear.TAG, NAME + " - " + "内容长度异常："+contentLength + "；" + request.getName());
+            }
             return null;
         }
 
@@ -238,14 +254,22 @@ public class HttpClientImageDownloader implements ImageDownloader {
         try {
             inputStream = httpResponse.getEntity().getContent();
         } catch (IOException e) {
-            if (Spear.isDebugMode()) Log.w(Spear.TAG, NAME + "：" + "获取输入流时发生异常：" + e.getMessage() + "；" + request.getName());
-            if (tempFile != null && tempFile.exists() && !tempFile.delete()) Log.w(Spear.TAG, NAME + "：" + "读取输入流时发生异常，需要删除临时缓存文件，但删除失败：" + tempFile.getPath() + "；" + request.getName());
+            if (Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "获取输入流时发生异常：" + e.getMessage() + "；" + request.getName());
+            }
+            if (tempFile != null && tempFile.exists() && !tempFile.delete() && Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "读取输入流时发生异常，需要删除临时缓存文件，但删除失败：" + tempFile.getPath() + "；" + request.getName());
+            }
             throw e;
         }
         if (request.isCanceled()) {
             HttpUrlConnectionImageDownloader.close(inputStream);
-            if (Spear.isDebugMode()) Log.w(Spear.TAG, NAME + "：" + "已取消下载 - 获取输入流之后" + "；" + request.getName());
-            if (tempFile != null && tempFile.exists() && !tempFile.delete()) Log.w(Spear.TAG, NAME + "：" + "获取输入流之后发现取消，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+            if (Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "已取消下载 - 获取输入流之后" + "；" + request.getName());
+            }
+            if (tempFile != null && tempFile.exists() && !tempFile.delete() && Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "获取输入流之后发现取消，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+            }
             return null;
         }
 
@@ -256,7 +280,9 @@ public class HttpClientImageDownloader implements ImageDownloader {
                 outputStream = new BufferedOutputStream(new FileOutputStream(tempFile, false), BUFFER_SIZE);
             } catch (FileNotFoundException e) {
                 HttpUrlConnectionImageDownloader.close(inputStream);
-                Log.w(Spear.TAG, NAME + "：" + "创建输出流时找不到文件了："+tempFile.getPath() + "；" + request.getName());
+                if(Spear.isDebugMode()){
+                    Log.w(Spear.TAG, NAME + " - " + "创建输出流时找不到文件了："+tempFile.getPath() + "；" + request.getName());
+                }
                 throw e;
             }
         }else{
@@ -270,27 +296,39 @@ public class HttpClientImageDownloader implements ImageDownloader {
             completedLength = HttpUrlConnectionImageDownloader.readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
         } catch (IOException e) {
             exception = true;
-            if (Spear.isDebugMode()) Log.w(Spear.TAG, NAME + "：" + "读取数据时发生异常："+e.getMessage() + "；" + request.getName());
+            if (Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "读取数据时发生异常："+e.getMessage() + "；" + request.getName());
+            }
             throw e;
         }finally {
             HttpUrlConnectionImageDownloader.close(outputStream);
             HttpUrlConnectionImageDownloader.close(inputStream);
-            if (exception && tempFile != null && tempFile.exists() && !tempFile.delete()) Log.w(Spear.TAG, NAME + "：" + "读取数据时发生异常，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+            if (exception && tempFile != null && tempFile.exists() && !tempFile.delete() && Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "读取数据时发生异常，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+            }
         }
         if (request.isCanceled()) {
-            if (Spear.isDebugMode()) Log.w(Spear.TAG, NAME + "：" + "已取消下载 - 读取完数据之后" + "；" + request.getName());
-            if (tempFile != null && tempFile.exists() && !tempFile.delete()) Log.w(Spear.TAG, NAME + "：" + "读取完数据之后发现取消了，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+            if (Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "已取消下载 - 读取完数据之后" + "；" + request.getName());
+            }
+            if (tempFile != null && tempFile.exists() && !tempFile.delete() && Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "读取完数据之后发现取消了，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+            }
             return null;
         }
 
-        if (Spear.isDebugMode()) Log.i(Spear.TAG, NAME + "：" + "下载成功" + "；" + "文件长度：" + completedLength + "/" + contentLength + "；" + request.getName());
+        if (Spear.isDebugMode()){
+            Log.i(Spear.TAG, NAME + " - " + "下载成功" + "；" + "文件长度：" + completedLength + "/" + contentLength + "；" + request.getName());
+        }
 
         // 转换结果
         if(tempFile != null && tempFile.exists()){
             if(tempFile.renameTo(request.getCacheFile())){
                 return DownloadResult.createByFile(request.getCacheFile(), true);
             }else{
-                if (!tempFile.delete()) Log.w(Spear.TAG, NAME + "：" + "重命名失败，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+                if (!tempFile.delete() && Spear.isDebugMode()){
+                    Log.w(Spear.TAG, NAME + " - " + "重命名失败，需要删除临时缓存文件，但删除失败："+tempFile.getPath() + "；" + request.getName());
+                }
                 return null;
             }
         }else if(outputStream instanceof ByteArrayOutputStream){

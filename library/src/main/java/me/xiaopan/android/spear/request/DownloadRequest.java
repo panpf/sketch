@@ -197,7 +197,7 @@ public class DownloadRequest implements Request{
         // 从网络下载
         runDownload();
         if(Spear.isDebugMode()){
-            Log.d(Spear.TAG, NAME + " - dispatch：" + name);
+            Log.d(Spear.TAG, NAME + " - " + "dispatch：" + name);
         }
     }
 
@@ -207,7 +207,7 @@ public class DownloadRequest implements Request{
     protected final void executeDownload() {
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + "：" + "已取消下载（下载刚开始）" + "；" + name);
+                Log.w(Spear.TAG, NAME + " - " + "已取消下载（下载刚开始）" + "；" + name);
             }
             return;
         }

@@ -219,7 +219,7 @@ public class LoadHelper {
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + "：" + "uri不能为null或空");
+                Log.e(Spear.TAG, NAME + " - " + "uri不能为null或空");
             }
             if(loadListener != null){
                 loadListener.onFailed(FailureCause.URI_NULL_OR_EMPTY);
@@ -231,7 +231,7 @@ public class LoadHelper {
         ImageScheme imageScheme = ImageScheme.valueOfUri(uri);
         if(imageScheme == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + "：" + "未知的协议类型" + " URI" + "=" + uri);
+                Log.e(Spear.TAG, NAME + " - " + "未知的协议类型" + " URI" + "=" + uri);
             }
             if(loadListener != null){
                 loadListener.onFailed(FailureCause.URI_NO_SUPPORT);

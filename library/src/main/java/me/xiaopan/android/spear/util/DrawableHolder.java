@@ -28,6 +28,7 @@ import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.process.ImageProcessor;
 
 public class DrawableHolder {
+    private static final String NAME = "DrawableHolder";
     private int resId;	//当正在加载时显示的图片
     private boolean process;
     private BitmapDrawable drawable;	//当加载地址为空时显示的图片
@@ -35,7 +36,7 @@ public class DrawableHolder {
     public void setResId(int resId) {
         if(this.resId != resId && drawable != null){
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, "recycle bitmap@" + Integer.toHexString(drawable.getBitmap().hashCode()) + "（DrawableHolder - setResId - recycleOldBitmap）");
+                Log.d(Spear.TAG, NAME + " - " + "recycle bitmap@" + Integer.toHexString(drawable.getBitmap().hashCode()) + "（DrawableHolder - setResId - recycleOldBitmap）");
             }
             drawable.getBitmap().recycle();
             drawable = null;
@@ -50,7 +51,7 @@ public class DrawableHolder {
     public void setProcess(boolean process) {
         if(this.process != process && drawable != null){
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, "recycle bitmap@" + Integer.toHexString(drawable.getBitmap().hashCode()) + "（DrawableHolder - setProcess - recycleOldBitmap）");
+                Log.d(Spear.TAG, NAME + " - " + "recycle bitmap@" + Integer.toHexString(drawable.getBitmap().hashCode()) + "（DrawableHolder - setProcess - recycleOldBitmap）");
             }
             drawable.getBitmap().recycle();
             drawable = null;
