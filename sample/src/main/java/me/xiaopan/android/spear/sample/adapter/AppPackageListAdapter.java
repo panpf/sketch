@@ -47,7 +47,7 @@ public class AppPackageListAdapter extends RecyclerView.Adapter{
         }else{
             AppInfo appInfo = appInfoList.get(position-1);
             AppInfoViewHolder appInfoViewHolder = (AppInfoViewHolder) holder;
-            appInfoViewHolder.iconSpearImageView.setImageFromUri(appInfo.getApkFilePath());
+            appInfoViewHolder.iconSpearImageView.displayImageUri(appInfo.getApkFilePath());
             appInfoViewHolder.nameTextView.setText(appInfo.getName());
             appInfoViewHolder.infoTextView.setText("v"+appInfo.getVersionName()+"  |  "+appInfo.getAppSize());
         }

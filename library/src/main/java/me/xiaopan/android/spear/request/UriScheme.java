@@ -68,7 +68,7 @@ public enum UriScheme {
         }
     },
 
-    ASSETS("assets://"){
+    ASSET("asset://"){
         @Override
         public String createUri(String content){
             if(content == null || "".equals(content.trim())){

@@ -53,7 +53,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             return decodeFile(loadRequest);
         }else if(loadRequest.getUriScheme() == UriScheme.CONTENT){
             return decodeContent(loadRequest);
-        }else if(loadRequest.getUriScheme() == UriScheme.ASSETS){
+        }else if(loadRequest.getUriScheme() == UriScheme.ASSET){
             return decodeAssets(loadRequest);
         }else if(loadRequest.getUriScheme() == UriScheme.DRAWABLE){
             return decodeDrawable(loadRequest);
@@ -91,7 +91,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public Bitmap decodeAssets(LoadRequest loadRequest){
-        return decodeFromHelper(loadRequest, new AssetsDecodeHelper(UriScheme.ASSETS.crop(loadRequest.getUri()), loadRequest));
+        return decodeFromHelper(loadRequest, new AssetsDecodeHelper(UriScheme.ASSET.crop(loadRequest.getUri()), loadRequest));
     }
 
     public Bitmap decodeDrawable(LoadRequest loadRequest){

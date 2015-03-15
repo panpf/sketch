@@ -116,7 +116,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             itemViewHolder.spearImageView.setLayoutParams(marginLayoutParams);
         }
 
-        itemViewHolder.spearImageView.setImageFromUri(imageUris.get(position));
+        itemViewHolder.spearImageView.displayImageUri(imageUris.get(position));
         itemViewHolder.spearImageView.setTag(itemViewHolder);
     }
 

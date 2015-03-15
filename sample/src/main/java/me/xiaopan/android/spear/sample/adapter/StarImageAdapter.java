@@ -172,7 +172,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         switch(getItemViewType(position)){
             case ITEM_TYPE_HEADER :
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) viewHolder;
-                headerViewHolder.spearImageView.setImageFromUri(headerImageUrl);
+                headerViewHolder.spearImageView.displayImageUri(headerImageUrl);
                 break;
             case ITEM_TYPE_ITEM :
                 ItemViewHolder itemViewHolder = (ItemViewHolder) viewHolder;
@@ -234,7 +234,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     private void bind(SpearImageView spearImageView, StarImageRequest.Image image, int position){
         if(image != null){
             spearImageView.setTag(position);
-            spearImageView.setImageFromUri(image.getSourceUrl());
+            spearImageView.displayImageUri(image.getSourceUrl());
             spearImageView.setVisibility(View.VISIBLE);
         }else{
             spearImageView.setVisibility(View.INVISIBLE);

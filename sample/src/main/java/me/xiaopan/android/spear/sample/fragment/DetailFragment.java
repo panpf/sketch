@@ -18,7 +18,6 @@ package me.xiaopan.android.spear.sample.fragment;
 
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -28,7 +27,6 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -43,7 +41,9 @@ import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.SpearImageView;
+import me.xiaopan.android.spear.request.CancelCause;
 import me.xiaopan.android.spear.request.DisplayListener;
+import me.xiaopan.android.spear.request.FailCause;
 import me.xiaopan.android.spear.request.ImageFrom;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.util.AnimationBatchExecutor;
@@ -53,7 +53,6 @@ import me.xiaopan.android.spear.sample.util.PageNumberSetter;
 import me.xiaopan.android.spear.sample.util.SaveImageAsyncTask;
 import me.xiaopan.android.spear.sample.util.SingleTapDetector;
 import me.xiaopan.android.spear.sample.util.ViewPagerPlayer;
-import me.xiaopan.android.spear.request.FailureCause;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -313,7 +312,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
 //        @Override
 //        public Object instantiateItem(ViewGroup container, int position) {
 //            SpearImageView spearImageView = new SpearImageView(context);
-//            spearImageView.setImageFromUri(uris.get(position));
+//            spearImageView.displayImageUri(uris.get(position));
 //            container.addView(spearImageView);
 //            return spearImageView;
 //        }
@@ -345,31 +344,22 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
                 }
 
                 @Override
-                public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, ImageFrom imageFrom) {
+                public void onCompleted(ImageFrom imageFrom) {
                     progressBar.setVisibility(View.GONE);
                     new PhotoViewAttacher(imageView);
                 }
 
                 @Override
-                public void onFailed(FailureCause failureCause) {
+                public void onFailed(FailCause failCause) {
                     progressBar.setVisibility(View.GONE);
                 }
 
                 @Override
-                public void onCanceled() {
+                public void onCanceled(CancelCause cancelCause) {
 
                 }
             });
-            imageView.setImageFromUri(imageUri);
-        }
-
-        @Override
-        public void onDetach() {
-            if(imageView.getRequestFuture() != null && !imageView.getRequestFuture().isFinished()){
-                imageView.getRequestFuture().cancel();
-            }
-
-            super.onDetach();
+            imageView.displayImageUri(imageUri);
         }
     }
 
@@ -383,11 +373,11 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
     }
 
     public interface DispatchTouchEventListener{
-        public void dispatchTouchEvent(MotionEvent ev);
+        void dispatchTouchEvent(MotionEvent ev);
     }
 
     public interface SetDispatchTouchEventListener{
-        public void setDispatchTouchEventListener(DispatchTouchEventListener dispatchTouchEventListener);
+        void setDispatchTouchEventListener(DispatchTouchEventListener dispatchTouchEventListener);
     }
 
     public static String parseFileType(String fileName){
@@ -396,7 +386,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
             return null;
         }
         String fileType = fileName.substring(lastIndexOf+1);
-        if(fileType == null || "".equals(fileType.trim())){
+        if("".equals(fileType.trim())){
             return null;
         }
         return fileType;

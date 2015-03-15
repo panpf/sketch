@@ -94,7 +94,7 @@ public class Spear {
 
     /**
      * 下载
-     * @param uri 支持以下2种类型
+     * @param uri 图片Uri，支持以下几种
      * <blockquote>“http://site.com/image.png“  // from Web
      * <br>“https://site.com/image.png“ // from Web
      * </blockquote>
@@ -109,13 +109,14 @@ public class Spear {
 
     /**
      * 加载
-     * @param uri 支持以下6种类型
-     * <blockquote>“http://site.com/image.png“  // from Web
-     * <br>“https://site.com/image.png“ // from Web
-     * <br>“/mnt/sdcard/image.png“ // from SD card
-     * <br>“content://media/external/audio/albumart/13“ // from content provider
-     * <br>“assets://image.png“ // from assets
-     * <br>“drawable://" + R.drawable.image // from drawables
+     * @param uri 图片Uri，支持以下几种
+     * <blockquote>"http://site.com/image.png"; // from Web
+     * <br>"https://site.com/image.png"; // from Web
+     * <br>"/mnt/sdcard/image.png"; // from SD card
+     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
+     * <br>"content://media/external/audio/albumart/13"; // from content provider
+     * <br>"asset://image.png"; // from assets
+     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      * </blockquote>
      * @param loadListener 加载监听器
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
@@ -158,13 +159,14 @@ public class Spear {
 
     /**
      * 显示图片
-     * @param uri 支持以下6种类型
-     * <blockquote>“http://site.com/image.png“  // from Web
-     * <br>“https://site.com/image.png“ // from Web
-     * <br>“/mnt/sdcard/image.png“ // from SD card
-     * <br>“content://media/external/audio/albumart/13“ // from content provider
-     * <br>“assets://image.png“ // from assets
-     * <br>“drawable://" + R.drawable.image // from drawables
+     * @param uri 图片Uri，支持以下几种
+     * <blockquote>"http://site.com/image.png"; // from Web
+     * <br>"https://site.com/image.png"; // from Web
+     * <br>"/mnt/sdcard/image.png"; // from SD card
+     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
+     * <br>"content://media/external/audio/albumart/13"; // from content provider
+     * <br>"asset://image.png"; // from assets
+     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      * </blockquote>
      * @param imageView 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示

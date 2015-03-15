@@ -30,8 +30,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
-import java.io.File;
-
 import me.xiaopan.android.spear.request.CancelCause;
 import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.request.FailCause;
@@ -241,55 +239,56 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 根据URI设置图片
-     * @param uri 支持以下6种Uri
+     * 根据Uri显示图片
+     * @param uri 图片Uri，支持以下几种
      * <blockquote>"http://site.com/image.png"; // from Web
      * <br>"https://site.com/image.png"; // from Web
      * <br>"/mnt/sdcard/image.png"; // from SD card
+     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
      * <br>"content://media/external/audio/albumart/13"; // from content provider
-     * <br>"assets://image.png"; // from assets
+     * <br>"asset://image.png"; // from assets
      * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      * </blockquote>
-     * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
+     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    public Request setImageFromUri(String uri){
+    public Request displayImageUri(String uri){
         return Spear.with(getContext()).display(uri, this).fire();
     }
 
     /**
-     * 根据文件设置图片
-     * @param imageFile SD卡上的图片文件
-     * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
+     * 显示本地图片
+     * @param imageFilePath SD卡上的图片文件
+     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    public Request setImageFromFile(File imageFile){
-        return setImageFromUri(imageFile.getPath());
+    public Request displayImageFile(String imageFilePath){
+        return Spear.with(getContext()).display(imageFilePath, this).fire();
     }
 
     /**
-     * 根据Drawable ID设置图片
+     * 显示Drawable资源里的图片
      * @param drawableResId Drawable ID
-     * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
+     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    public Request setImageFromResource(int drawableResId){
-        return setImageFromUri(UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)));
+    public Request displayImageResource(int drawableResId){
+        return Spear.with(getContext()).display(UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), this).fire();
     }
 
     /**
-     * 根据assets文件名称设置图片
+     * 显示asset里的图片
      * @param imageFileName ASSETS文件加下的图片文件的名称
-     * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
+     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    public Request setImageFromAssets(String imageFileName){
-        return setImageFromUri(UriScheme.ASSETS.createUri(imageFileName));
+    public Request displayImageAsset(String imageFileName){
+        return Spear.with(getContext()).display(UriScheme.ASSET.createUri(imageFileName), this).fire();
     }
 
     /**
-     * 根据Content Uri设置图片
+     * 根据Content Uri显示图片
      * @param uri Content Uri 这个URI是其它Content Provider返回的
-     * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
+     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    public Request setImageFromContent(Uri uri){
-        return setImageFromUri(uri.toString());
+    public Request displayImageContent(Uri uri){
+        return Spear.with(getContext()).display(uri != null ? UriScheme.ASSET.createUri(uri.toString()):null, this).fire();
     }
 
     /**

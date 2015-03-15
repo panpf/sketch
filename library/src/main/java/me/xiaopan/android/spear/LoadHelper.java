@@ -52,13 +52,14 @@ public class LoadHelper {
     /**
      * 创建加载请求生成器
      * @param spear Spear
-     * @param uri 支持以下6种类型
-     * <blockquote>“http://site.com/image.png“  // from Web
-     * <br>“https://site.com/image.png“ // from Web
-     * <br>“/mnt/sdcard/image.png“ // from SD card
-     * <br>“content://media/external/audio/albumart/13“ // from content provider
-     * <br>“assets://image.png“ // from assets
-     * <br>“drawable://" + R.drawable.image // from drawables
+     * @param uri 图片Uri，支持以下几种
+     * <blockquote>"http://site.com/image.png"; // from Web
+     * <br>"https://site.com/image.png"; // from Web
+     * <br>"/mnt/sdcard/image.png"; // from SD card
+     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
+     * <br>"content://media/external/audio/albumart/13"; // from content provider
+     * <br>"asset://image.png"; // from assets
+     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      * </blockquote>
      */
     public LoadHelper(Spear spear, String uri) {

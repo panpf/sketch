@@ -255,9 +255,9 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemLeftHolder.oneNameTextView.setText(threeItemLeft.star1.getName());
             threeItemLeftHolder.twoNameTextView.setText(threeItemLeft.star2.getName());
             threeItemLeftHolder.threeNameTextView.setText(threeItemLeft.star3.getName());
-            threeItemLeftHolder.oneSpearImageView.setImageFromUri(threeItemLeft.star1.getHeightImage().getUrl());
-            threeItemLeftHolder.twoSpearImageView.setImageFromUri(threeItemLeft.star2.getWidthImage().getUrl());
-            threeItemLeftHolder.threeSpearImageView.setImageFromUri(threeItemLeft.star3.getWidthImage().getUrl());
+            threeItemLeftHolder.oneSpearImageView.displayImageUri(threeItemLeft.star1.getHeightImage().getUrl());
+            threeItemLeftHolder.twoSpearImageView.displayImageUri(threeItemLeft.star2.getWidthImage().getUrl());
+            threeItemLeftHolder.threeSpearImageView.displayImageUri(threeItemLeft.star3.getWidthImage().getUrl());
             threeItemLeftHolder.oneSpearImageView.setTag(threeItemLeft.star1);
             threeItemLeftHolder.twoSpearImageView.setTag(threeItemLeft.star2);
             threeItemLeftHolder.threeSpearImageView.setTag(threeItemLeft.star3);
@@ -267,9 +267,9 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemRightHolder.oneNameTextView.setText(threeItemRight.star1.getName());
             threeItemRightHolder.twoNameTextView.setText(threeItemRight.star2.getName());
             threeItemRightHolder.threeNameTextView.setText(threeItemRight.star3.getName());
-            threeItemRightHolder.oneSpearImageView.setImageFromUri(threeItemRight.star1.getWidthImage().getUrl());
-            threeItemRightHolder.twoSpearImageView.setImageFromUri(threeItemRight.star2.getWidthImage().getUrl());
-            threeItemRightHolder.threeSpearImageView.setImageFromUri(threeItemRight.star3.getHeightImage().getUrl());
+            threeItemRightHolder.oneSpearImageView.displayImageUri(threeItemRight.star1.getWidthImage().getUrl());
+            threeItemRightHolder.twoSpearImageView.displayImageUri(threeItemRight.star2.getWidthImage().getUrl());
+            threeItemRightHolder.threeSpearImageView.displayImageUri(threeItemRight.star3.getHeightImage().getUrl());
             threeItemRightHolder.oneSpearImageView.setTag(threeItemRight.star1);
             threeItemRightHolder.twoSpearImageView.setTag(threeItemRight.star2);
             threeItemRightHolder.threeSpearImageView.setTag(threeItemRight.star3);
@@ -278,15 +278,15 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             TwoItem twoItem = (TwoItem) items.get(position);
             twoItemHolder.oneNameTextView.setText(twoItem.star1.getName());
             twoItemHolder.twoNameTextView.setText(twoItem.star2.getName());
-            twoItemHolder.oneSpearImageView.setImageFromUri(twoItem.star1.getWidthImage().getUrl());
-            twoItemHolder.twoSpearImageView.setImageFromUri(twoItem.star2.getWidthImage().getUrl());
+            twoItemHolder.oneSpearImageView.displayImageUri(twoItem.star1.getWidthImage().getUrl());
+            twoItemHolder.twoSpearImageView.displayImageUri(twoItem.star2.getWidthImage().getUrl());
             twoItemHolder.oneSpearImageView.setTag(twoItem.star1);
             twoItemHolder.twoSpearImageView.setTag(twoItem.star2);
         }else if(holder instanceof OneItemHolder){
             OneItemHolder oneItemHolder = (OneItemHolder) holder;
             OneItem oneItem = (OneItem) items.get(position);
             oneItemHolder.oneNameTextView.setText(oneItem.star1.getName());
-            oneItemHolder.oneSpearImageView.setImageFromUri(oneItem.star1.getWidthImage().getUrl());
+            oneItemHolder.oneSpearImageView.displayImageUri(oneItem.star1.getWidthImage().getUrl());
             oneItemHolder.oneSpearImageView.setTag(oneItem.star1);
         }
 

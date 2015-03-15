@@ -42,7 +42,7 @@ public class DownloadHelper {
     /**
      * 创建下载请求生成器
      * @param spear Spear
-     * @param uri 支持以下2种类型
+     * @param uri 图片Uri，支持以下几种
      * <blockquote>“http://site.com/image.png“  // from Web
      * <br>“https://site.com/image.png“ // from Web
      * </blockquote>
