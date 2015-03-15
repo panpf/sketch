@@ -7,61 +7,61 @@ public interface StatusManager {
     /**
      * 转为等待分发状态
      */
-    public void toWaitDispatchStatus();
+    void toWaitDispatchStatus();
 
     /**
      * 转为正在分发状态
      */
-    public void toDispatchingStatus();
+    void toDispatchingStatus();
 
     /**
      * 转为等待下载状态
      */
-    public void toWaitDownloadStatus();
+    void toWaitDownloadStatus();
 
     /**
      * 转为获取下载锁状态
      */
-    public void toGetDownloadLockStatus();
+    void toGetDownloadLockStatus();
 
     /**
      * 转为下载中状态
      */
-    public void toDownloadingStatus();
+    void toDownloadingStatus();
 
     /**
      * 转为等待加载状态
      */
-    public void toWaitLoadStatus();
+    void toWaitLoadStatus();
 
     /**
      * 转为加载中状态
      */
-    public void toLoadingStatus();
+    void toLoadingStatus();
 
     /**
      * 转为等待显示状态
      */
-    public void toWaitDisplayStatus();
+    void toWaitDisplayStatus();
 
     /**
      * 转为显示中状态
      */
-    public void toDisplayingStatus();
+    void toDisplayingStatus();
 
     /**
      * 转为已完成状态
      */
-    public void toCompletedStatus();
+    void toCompletedStatus();
 
     /**
      * 转为已失败状态
-     * @param failureCause 失败原因
+     * @param failCause 失败原因
      */
-    public void toFailedStatus(FailureCause failureCause);
+    void toFailedStatus(FailCause failCause);
 
     /**
      * 转为已取消状态
      */
-    public void toCanceledStatus();
+    void toCanceledStatus(CancelCause cancelCause);
 }

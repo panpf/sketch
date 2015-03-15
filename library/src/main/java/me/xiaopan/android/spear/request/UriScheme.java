@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.util;
+package me.xiaopan.android.spear.request;
 
 /**
  * 支持的协议类型
  */
-public enum ImageScheme {
+public enum UriScheme {
 	HTTP("http://"){
         @Override
         public String createUri(String uri){
@@ -106,7 +106,7 @@ public enum ImageScheme {
 
 	private String uriPrefix;
 
-	ImageScheme(String uriPrefix) {
+	UriScheme(String uriPrefix) {
 		this.uriPrefix = uriPrefix;
 	}
 
@@ -118,11 +118,11 @@ public enum ImageScheme {
         return uriPrefix;
     }
 
-    public static ImageScheme valueOfUri(String uri) {
+    public static UriScheme valueOfUri(String uri) {
 		if (uri != null) {
-			for (ImageScheme imageScheme : values()) {
-				if (uri.startsWith(imageScheme.getUriPrefix())) {
-					return imageScheme;
+			for (UriScheme uriScheme : values()) {
+				if (uri.startsWith(uriScheme.getUriPrefix())) {
+					return uriScheme;
 				}
 			}
 		}

@@ -25,23 +25,23 @@ public interface LoadListener {
     /**
      * 已开始
      */
-    public void onStarted();
+    void onStarted();
 
     /**
      * 已完成
      * @param bitmap 图片
      * @param imageFrom 图片来源
      */
-    public void onCompleted(Bitmap bitmap, ImageFrom imageFrom);
+    void onCompleted(Bitmap bitmap, ImageFrom imageFrom);
 
     /**
      * 已失败
-     * @param failureCause 失败原因
+     * @param failCause 失败原因
      */
-    public void onFailed(FailureCause failureCause);
+    void onFailed(FailCause failCause);
 
     /**
      * 已取消
      */
-    public void onCanceled();
+    void onCanceled(CancelCause cancelCause);
 }

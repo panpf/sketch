@@ -19,7 +19,7 @@ package me.xiaopan.android.spear.request;
 /**
  * 失败原因
  */
-public enum FailureCause {
+public enum FailCause {
     /**
      * URI为NULL或空
      */

@@ -23,18 +23,19 @@ import android.widget.ImageView;
 import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.display.TransitionImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
+import me.xiaopan.android.spear.request.CancelCause;
 import me.xiaopan.android.spear.request.DisplayListener;
 import me.xiaopan.android.spear.request.DisplayRequest;
 import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.request.FailCause;
 import me.xiaopan.android.spear.request.ImageFrom;
+import me.xiaopan.android.spear.request.Level;
 import me.xiaopan.android.spear.request.ProgressListener;
-import me.xiaopan.android.spear.request.RequestFuture;
+import me.xiaopan.android.spear.request.Request;
+import me.xiaopan.android.spear.request.UriScheme;
 import me.xiaopan.android.spear.util.AsyncDrawable;
 import me.xiaopan.android.spear.util.DrawableHolder;
-import me.xiaopan.android.spear.request.FailureCause;
-import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.ImageSize;
-import me.xiaopan.android.spear.util.ImageViewHolder;
 
 /**
  * DisplayHelper
@@ -44,30 +45,25 @@ public class DisplayHelper {
 
     protected Spear spear;
     protected String uri;
-    
-    protected String memoryCacheId;
-
+    protected String name;
     protected boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
+    protected ProgressListener progressListener;
 
+    protected Level level = Level.NET;
     protected ImageSize maxsize;
     protected ImageSize resize;
     protected ImageProcessor imageProcessor;
     protected ImageView.ScaleType scaleType;
 
+    protected String memoryCacheId;
     protected boolean enableMemoryCache = DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE;
+    protected boolean resizeByImageViewLayoutSize;
+    protected boolean resizeByImageViewLayoutSizeAndFromDisplayer;
+    protected ImageView imageView;
     protected ImageDisplayer imageDisplayer;
     protected DrawableHolder loadingDrawableHolder;
     protected DrawableHolder loadFailDrawableHolder;
-
     protected DisplayListener displayListener;
-    protected ProgressListener progressListener;
-
-    protected ImageView imageView;
-
-    protected boolean resizeByImageViewLayoutSize;
-    protected boolean resizeByImageViewLayoutSizeAndFromDisplayer;
-
-    protected boolean returnRequestFuture;
 
     /**
      * 创建显示请求生成器
@@ -108,7 +104,6 @@ public class DisplayHelper {
             options(spearImageView.getDisplayOptions());
             this.displayListener = spearImageView.getDisplayListener();
             this.progressListener = spearImageView.getProgressListener();
-            this.returnRequestFuture = spearImageView.isReturnRequestFuture();
             spearImageView.tryResetDebugFlagAndProgressStatus();
         }
 
@@ -121,26 +116,35 @@ public class DisplayHelper {
     public void restoreDefault(){
         spear = null;
         uri = null;
-
+        name = null;
         enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
+        progressListener = null;
 
+        level = Level.NET;
         maxsize = null;
         resize = null;
         imageProcessor = null;
         scaleType = null;
 
+        memoryCacheId = null;
         enableMemoryCache = DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE;
+        resizeByImageViewLayoutSize = false;
+        resizeByImageViewLayoutSizeAndFromDisplayer = false;
+        imageView = null;
         imageDisplayer = null;
         loadingDrawableHolder = null;
         loadFailDrawableHolder = null;
-
         displayListener = null;
-        progressListener = null;
+    }
 
-        imageView = null;
-
-        resizeByImageViewLayoutSize = false;
-        resizeByImageViewLayoutSizeAndFromDisplayer = false;
+    /**
+     * 设置名称，用于在log总区分请求
+     * @param name 名称
+     * @return DisplayHelper
+     */
+    public DisplayHelper name(String name){
+        this.name = name;
+        return this;
     }
 
     /**
@@ -337,11 +341,14 @@ public class DisplayHelper {
     }
 
     /**
-     * fire之后返回RequestFuture，默认情况下fire方法返回null
+     * 设置加载级别
+     * @param level 加载级别
      * @return DisplayHelper
      */
-    public DisplayHelper returnRequestFuture(){
-        this.returnRequestFuture = true;
+    public DisplayHelper level(Level level){
+        if(level != null){
+            this.level = level;
+        }
         return this;
     }
 
@@ -405,9 +412,9 @@ public class DisplayHelper {
 
     /**
      * 执行请求
-     * @return RequestFuture 你可以通过RequestFuture来查看请求的状态或者取消这个请求
+     * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
      */
-    public RequestFuture fire() {
+    public Request fire() {
         spear.getConfiguration().getDisplayCallbackHandler().startCallbackOnFire(displayListener);
 
         // 验证imageView参数
@@ -415,7 +422,7 @@ public class DisplayHelper {
             if(Spear.isDebugMode()){
                 Log.e(Spear.TAG, NAME + " - " + "imageView不能为null");
             }
-            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(null, null, FailureCause.IMAGE_VIEW_NULL, displayListener);
+            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(null, null, FailCause.IMAGE_VIEW_NULL, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
             return null;
         }
@@ -426,58 +433,78 @@ public class DisplayHelper {
                 Log.e(Spear.TAG, NAME + " - " + "uri不能为null或空");
             }
             BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
-            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadingBitmapDrawable, FailureCause.URI_NULL_OR_EMPTY, displayListener);
+            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, loadingBitmapDrawable, FailCause.URI_NULL_OR_EMPTY, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
+            if(imageView instanceof SpearImageView){
+                ((SpearImageView) imageView).setDisplayRequest(null);
+            }
             return null;
         }
 
         // 过滤掉不支持的URI协议类型
-        ImageScheme imageScheme = ImageScheme.valueOfUri(uri);
-        if(imageScheme == null){
+        UriScheme uriScheme = UriScheme.valueOfUri(uri);
+        if(uriScheme == null){
             if(Spear.isDebugMode()){
                 Log.e(Spear.TAG, NAME + " - " + "未知的协议类型" + " URI" + "=" + uri);
             }
-            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, getDrawableFromDrawableHolder(loadFailDrawableHolder), FailureCause.URI_NO_SUPPORT, displayListener);
+            spear.getConfiguration().getDisplayCallbackHandler().failCallbackOnFire(imageView, getDrawableFromDrawableHolder(loadFailDrawableHolder), FailCause.URI_NO_SUPPORT, displayListener);
             spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
+            if(imageView instanceof SpearImageView){
+                ((SpearImageView) imageView).setDisplayRequest(null);
+            }
             return null;
         }
 
         // 尝试从内存中寻找缓存图片
-        String requestId = memoryCacheId!=null?memoryCacheId:createMemoryCacheId(uri, maxsize, resize, scaleType, imageProcessor);
+        String memoryCacheId = this.memoryCacheId !=null? this.memoryCacheId :createMemoryCacheId(uri, maxsize, resize, scaleType, imageProcessor);
         if(enableMemoryCache){
-            BitmapDrawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(requestId);
+            BitmapDrawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(memoryCacheId);
             if(cacheDrawable != null){
-                spear.getConfiguration().getDisplayCallbackHandler().completeCallbackOnFire(imageView, uri, cacheDrawable, displayListener, ImageFrom.MEMORY_CACHE);
+                spear.getConfiguration().getDisplayCallbackHandler().completeCallbackOnFire(imageView, cacheDrawable, displayListener, ImageFrom.MEMORY_CACHE);
                 spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
+                if(imageView instanceof SpearImageView){
+                    ((SpearImageView) imageView).setDisplayRequest(null);
+                }
                 return null;
             }
         }
 
         // 如果已经暂停了的话就不再从本地或网络加载了
-        if(spear.isPaused()){
+        if(level == Level.MEMORY || spear.isPaused()){
             BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
             imageView.clearAnimation();
             imageView.setImageDrawable(loadingBitmapDrawable);
             if(displayListener != null){
-                displayListener.onCanceled();
+                displayListener.onCanceled(CancelCause.LEVEL_IS_MEMORY);
+            }
+            if(imageView instanceof SpearImageView){
+                ((SpearImageView) imageView).setDisplayRequest(null);
             }
             return null;
         }
 
-        // 试图取消当前ImageView上正在加载的请求，如果有结果返回表示正在加载的任务与目前的是一样的无需取消
-        DisplayRequest potentialRequest = cancelPotentialDisplayRequest(imageView, requestId);
+        // 试图取消已经存在的请求
+        DisplayRequest potentialRequest = AsyncDrawable.getDisplayRequestByAsyncDrawable(imageView);
         if(potentialRequest != null){
-            spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
-            return new RequestFuture(potentialRequest);
+            if(memoryCacheId.equals(potentialRequest.getMemoryCacheId())){
+                // ID一样无需取消
+                if(Spear.isDebugMode()){
+                    Log.d(Spear.TAG, NAME + " - " + "无需取消" + "；" + "ImageViewCode" + "=" + imageView.hashCode() + "；" + potentialRequest.getName());
+                }
+                spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
+                return potentialRequest;
+            }else{
+                potentialRequest.cancel();
+            }
         }
 
         // 组织请求
-        final DisplayRequest request = new DisplayRequest();
+        final DisplayRequest request = new DisplayRequest(spear, uri, uriScheme, memoryCacheId, imageView);
 
-        request.setUri(uri);
-        request.setName(uri);
-        request.setSpear(spear);
-        request.setImageScheme(imageScheme);
+        request.setName(name != null ? name : memoryCacheId);
+        request.setLevel(level);
+        request.setProgressListener(progressListener);
+
         request.setEnableDiskCache(enableDiskCache);
 
         request.setMaxsize(maxsize);
@@ -485,15 +512,10 @@ public class DisplayHelper {
         request.setImageProcessor(imageProcessor);
         request.setScaleType(scaleType);
 
-        request.setId(requestId);
         request.setEnableMemoryCache(enableMemoryCache);
-        request.setImageViewHolder(new ImageViewHolder(imageView, request));
         request.setImageDisplayer(imageDisplayer);
         request.setLoadFailDrawableHolder(loadFailDrawableHolder);
-
         request.setDisplayListener(displayListener);
-        request.setProgressListener(progressListener);
-
         request.setResizeByImageViewLayoutSizeAndFromDisplayer(resizeByImageViewLayoutSizeAndFromDisplayer);
 
         // 显示默认图片
@@ -506,15 +528,10 @@ public class DisplayHelper {
 
         spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
 
-        if(returnRequestFuture){
-            RequestFuture requestFuture = new RequestFuture(request);
-            if(imageView instanceof SpearImageView){
-                ((SpearImageView) imageView).setRequestFuture(requestFuture);
-            }
-            return requestFuture;
-        }else{
-            return null;
+        if(imageView instanceof SpearImageView){
+            ((SpearImageView) imageView).setDisplayRequest(request);
         }
+        return request;
     }
 
     protected ImageProcessor getImageProcessor(){
@@ -561,27 +578,5 @@ public class DisplayHelper {
             stringBuilder.append(imageProcessor.getFlag());
         }
         return stringBuilder.toString();
-    }
-
-    /**
-     * 取消潜在的请求
-     * @return true：取消成功；false：ImageView所关联的任务就是所需的无需取消
-     */
-    protected static DisplayRequest cancelPotentialDisplayRequest(ImageView imageView, String newRequestId) {
-        final DisplayRequest potentialDisplayRequest = AsyncDrawable.getDisplayRequestByAsyncDrawable(imageView);
-        boolean cancelled = true;
-        if (potentialDisplayRequest != null) {
-            final String oldRequestId = potentialDisplayRequest.getId();
-            if (oldRequestId != null && oldRequestId.equals(newRequestId)) {
-                cancelled = false;
-            }else{
-                potentialDisplayRequest.cancel();
-                cancelled = true;
-            }
-            if(!cancelled && Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "无需取消" + "；" + "ImageViewCode" + "=" + imageView.hashCode() + "；" + potentialDisplayRequest.getName());
-            }
-        }
-        return cancelled?null:potentialDisplayRequest;
     }
 }

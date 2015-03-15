@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
@@ -33,12 +32,13 @@ import android.widget.Scroller;
 
 import java.io.File;
 
+import me.xiaopan.android.spear.request.CancelCause;
 import me.xiaopan.android.spear.request.DisplayListener;
-import me.xiaopan.android.spear.request.FailureCause;
+import me.xiaopan.android.spear.request.FailCause;
 import me.xiaopan.android.spear.request.ImageFrom;
 import me.xiaopan.android.spear.request.ProgressListener;
-import me.xiaopan.android.spear.request.RequestFuture;
-import me.xiaopan.android.spear.util.ImageScheme;
+import me.xiaopan.android.spear.request.Request;
+import me.xiaopan.android.spear.request.UriScheme;
 import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 
 /**
@@ -53,11 +53,10 @@ public class SpearImageView extends ImageView{
     private static final int DEFAULT_PRESSED_COLOR = 0x33000000;
     private static final int DEFAULT_ANIMATION_DURATION = 500;
 
-    private RequestFuture requestFuture;
+    private Request displayRequest;
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
     private ProgressListener progressListener;
-    private boolean returnRequestFuture;
 
     private int debugColor = NONE;
     private boolean debugMode;
@@ -253,7 +252,7 @@ public class SpearImageView extends ImageView{
      * </blockquote>
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public RequestFuture setImageFromUri(String uri){
+    public Request setImageFromUri(String uri){
         return Spear.with(getContext()).display(uri, this).fire();
     }
 
@@ -262,7 +261,7 @@ public class SpearImageView extends ImageView{
      * @param imageFile SD卡上的图片文件
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public RequestFuture setImageFromFile(File imageFile){
+    public Request setImageFromFile(File imageFile){
         return setImageFromUri(imageFile.getPath());
     }
 
@@ -271,8 +270,8 @@ public class SpearImageView extends ImageView{
      * @param drawableResId Drawable ID
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public RequestFuture setImageFromResource(int drawableResId){
-        return setImageFromUri(ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId)));
+    public Request setImageFromResource(int drawableResId){
+        return setImageFromUri(UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)));
     }
 
     /**
@@ -280,8 +279,8 @@ public class SpearImageView extends ImageView{
      * @param imageFileName ASSETS文件加下的图片文件的名称
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public RequestFuture setImageFromAssets(String imageFileName){
-        return setImageFromUri(ImageScheme.ASSETS.createUri(imageFileName));
+    public Request setImageFromAssets(String imageFileName){
+        return setImageFromUri(UriScheme.ASSETS.createUri(imageFileName));
     }
 
     /**
@@ -289,7 +288,7 @@ public class SpearImageView extends ImageView{
      * @param uri Content Uri 这个URI是其它Content Provider返回的
      * @return RequestFuture 你可以通过RequestFuture查看请求是否完成或主动取消请求
      */
-    public RequestFuture setImageFromContent(Uri uri){
+    public Request setImageFromContent(Uri uri){
         return setImageFromUri(uri.toString());
     }
 
@@ -353,7 +352,7 @@ public class SpearImageView extends ImageView{
 
     /**
      * 获取显示参数
-     * @return
+     * @return 显示参数
      */
     DisplayOptions getDisplayOptions() {
         return displayOptions;
@@ -427,19 +426,19 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 获取RequestFuture，你需要对此方法返回的对象进行非null验证，如果你没有调用过setImageFrom***系列方法设置图片，那么此方法将一直返回null
-     * @return RequestFuture，你可以通过RequestFuture查看请求是否完成或主动取消请求
+     * 获取显示请求，你可通过这个对象来查看状态或主动取消请求
+     * @return 显示请求
      */
-    public RequestFuture getRequestFuture() {
-        return requestFuture;
+    public Request getDisplayRequest() {
+        return displayRequest;
     }
 
     /**
-     * 设置RequestFuture，此方法由Spear调用，你无需理会即可
-     * @param requestFuture RequestFuture
+     * 设置显示请求，此方法由Spear调用，你无需理会即可
+     * @param displayRequest 显示请求
      */
-    void setRequestFuture(RequestFuture requestFuture) {
-        this.requestFuture = requestFuture;
+    void setDisplayRequest(Request displayRequest) {
+        this.displayRequest = displayRequest;
     }
 
     /**
@@ -453,22 +452,6 @@ public class SpearImageView extends ImageView{
             debugColor = NONE;
             invalidate();
         }
-    }
-
-    /**
-     * fire之后是否返回RequestFuture
-     * @return true：返回
-     */
-    public boolean isReturnRequestFuture() {
-        return returnRequestFuture;
-    }
-
-    /**
-     * 设置是否返回RequestFuture
-     * @param returnRequestFuture fire之后是否返回RequestFuture
-     */
-    public void setReturnRequestFuture(boolean returnRequestFuture) {
-        this.returnRequestFuture = returnRequestFuture;
     }
 
     /**
@@ -502,7 +485,7 @@ public class SpearImageView extends ImageView{
         }
 
         @Override
-        public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, ImageFrom imageFrom) {
+        public void onCompleted(ImageFrom imageFrom) {
             if(imageFrom != null){
                 switch (imageFrom){
                     case MEMORY_CACHE: debugColor = DEFAULT_DEBUG_COLOR_MEMORY; break;
@@ -516,24 +499,24 @@ public class SpearImageView extends ImageView{
             progress = NONE;
             invalidate();
             if(displayListener != null){
-                displayListener.onCompleted(uri, imageView, drawable, imageFrom);
+                displayListener.onCompleted(imageFrom);
             }
         }
 
         @Override
-        public void onFailed(FailureCause failureCause) {
+        public void onFailed(FailCause failCause) {
             debugColor = NONE;
             progress = NONE;
             invalidate();
             if(displayListener != null){
-                displayListener.onFailed(failureCause);
+                displayListener.onFailed(failCause);
             }
         }
 
         @Override
-        public void onCanceled() {
+        public void onCanceled(CancelCause cancelCause) {
             if(displayListener != null){
-                displayListener.onCanceled();
+                displayListener.onCanceled(cancelCause);
             }
         }
     }
@@ -561,27 +544,27 @@ public class SpearImageView extends ImageView{
         }
 
         @Override
-        public void onCompleted(String uri, ImageView imageView, BitmapDrawable drawable, ImageFrom imageFrom) {
+        public void onCompleted(ImageFrom imageFrom) {
             progress = NONE;
             invalidate();
             if(displayListener != null){
-                displayListener.onCompleted(uri, imageView, drawable, imageFrom);
+                displayListener.onCompleted(imageFrom);
             }
         }
 
         @Override
-        public void onFailed(FailureCause failureCause) {
+        public void onFailed(FailCause failCause) {
             progress = NONE;
             invalidate();
             if(displayListener != null){
-                displayListener.onFailed(failureCause);
+                displayListener.onFailed(failCause);
             }
         }
 
         @Override
-        public void onCanceled() {
+        public void onCanceled(CancelCause cancelCause) {
             if(displayListener != null){
-                displayListener.onCanceled();
+                displayListener.onCanceled(cancelCause);
             }
         }
     }

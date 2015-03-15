@@ -20,10 +20,10 @@ import android.util.Log;
 
 import me.xiaopan.android.spear.request.DownloadListener;
 import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.request.FailCause;
 import me.xiaopan.android.spear.request.ProgressListener;
-import me.xiaopan.android.spear.request.RequestFuture;
-import me.xiaopan.android.spear.request.FailureCause;
-import me.xiaopan.android.spear.util.ImageScheme;
+import me.xiaopan.android.spear.request.Request;
+import me.xiaopan.android.spear.request.UriScheme;
 
 /**
  * DownloadHelper
@@ -33,13 +33,11 @@ public class DownloadHelper {
 
     protected Spear spear;
     protected String uri;
-
+    protected String name;
     protected boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
-
-    protected DownloadListener downloadListener;
     protected ProgressListener progressListener;
 
-    protected boolean returnRequestFuture;
+    protected DownloadListener downloadListener;
 
     /**
      * 创建下载请求生成器
@@ -52,6 +50,16 @@ public class DownloadHelper {
     public DownloadHelper(Spear spear, String uri) {
         this.spear = spear;
         this.uri = uri;
+    }
+
+    /**
+     * 设置名称，用于在log总区分请求
+     * @param name 名称
+     * @return DownloadHelper
+     */
+    public DownloadHelper name(String name){
+        this.name = name;
+        return this;
     }
 
     /**
@@ -83,15 +91,6 @@ public class DownloadHelper {
     }
 
     /**
-     * fire之后返回RequestFuture，默认情况下fire方法返回null
-     * @return DisplayHelper
-     */
-    public DownloadHelper returnRequestFuture(){
-        this.returnRequestFuture = true;
-        return this;
-    }
-
-    /**
      * 设置下载参数
      * @param options 下载参数
      * @return DownloadHelper
@@ -119,9 +118,9 @@ public class DownloadHelper {
 
     /**
      * 执行请求
-     * @return RequestFuture 你可以通过RequestFuture来查看请求的状态或者取消这个请求
+     * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
      */
-    public RequestFuture fire(){
+    public Request fire(){
         // 执行请求
         if(downloadListener != null){
             downloadListener.onStarted();
@@ -133,30 +132,27 @@ public class DownloadHelper {
                 Log.e(Spear.TAG, NAME + " - " + "uri不能为null或空");
             }
             if(downloadListener != null){
-                downloadListener.onFailed(FailureCause.URI_NULL_OR_EMPTY);
+                downloadListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
             }
             return null;
         }
 
         // 过滤掉不支持的URI协议类型
-        ImageScheme imageScheme = ImageScheme.valueOfUri(uri);
-        if(!(imageScheme == ImageScheme.HTTP || imageScheme == ImageScheme.HTTPS)){
+        UriScheme uriScheme = UriScheme.valueOfUri(uri);
+        if(!(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS)){
             if(Spear.isDebugMode()){
                 Log.e(Spear.TAG, NAME + " - " + "download()方法只能处理http或https协议" + " URI" + "=" + uri);
             }
             if(downloadListener != null){
-                downloadListener.onFailed(FailureCause.URI_NO_SUPPORT);
+                downloadListener.onFailed(FailCause.URI_NO_SUPPORT);
             }
             return null;
         }
 
         // 创建请求
-        DownloadRequest request = new DownloadRequest();
+        DownloadRequest request = new DownloadRequest(spear, uri, uriScheme);
 
-        request.setUri(uri);
-        request.setName(uri);
-        request.setSpear(spear);
-        request.setImageScheme(imageScheme);
+        request.setName(name != null ? name : uri);
         request.setEnableDiskCache(enableDiskCache);
 
         request.setDownloadListener(downloadListener);
@@ -164,10 +160,6 @@ public class DownloadHelper {
 
         request.runDispatch();
 
-        if(returnRequestFuture){
-            return new RequestFuture(request);
-        }else{
-            return null;
-        }
+        return request;
     }
 }

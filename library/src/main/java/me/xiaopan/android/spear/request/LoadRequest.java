@@ -25,7 +25,6 @@ import java.io.File;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.process.ImageProcessor;
-import me.xiaopan.android.spear.util.ImageScheme;
 import me.xiaopan.android.spear.util.ImageSize;
 
 /**
@@ -34,17 +33,20 @@ import me.xiaopan.android.spear.util.ImageSize;
 public class LoadRequest extends DownloadRequest{
     private static final String NAME = "LoadRequest";
 
-    /* 加载请求用到的属性 */
     protected ImageSize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来裁剪图片
     protected ImageSize maxsize;	// 最大尺寸，用于读取图片时计算inSampleSize
-    private LoadListener loadListener;	// 监听器
     protected ImageProcessor imageProcessor;	// 图片处理器
     protected ImageView.ScaleType scaleType; // 图片缩放方式，ImageProcessor会根据resize和scaleType来创建新的图片
+    protected Level level = Level.NET;
+    private LoadListener loadListener;	// 监听器
 
-    /* 辅助加载的属性 */
-    private ImageFrom imageFrom;
     private byte[] imageData;
     private Bitmap bitmap;
+    protected ImageFrom imageFrom;
+
+    public LoadRequest(Spear spear, String uri, UriScheme uriScheme) {
+        super(spear, uri, uriScheme);
+    }
 
     /**
      * 获取裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来创建新的图片
@@ -110,14 +112,14 @@ public class LoadRequest extends DownloadRequest{
         return this;
     }
 
-
     /**
-     * 设置结果来自哪里
-     * @param imageFrom 结果来自哪里
+     * 设置级别
+     * @param level 级别
      */
-    public void setImageFrom(ImageFrom imageFrom) {
-        this.imageFrom = imageFrom;
+    public void setLevel(Level level) {
+        this.level = level;
     }
+
 
     /**
      * 获取图片数据
@@ -128,11 +130,11 @@ public class LoadRequest extends DownloadRequest{
     }
 
     /**
-     * 设置图片数据
-     * @param imageData 图片数据
+     * 获取结果图片来源
+     * @return 结果图片来源
      */
-    public void setImageData(byte[] imageData) {
-        this.imageData = imageData;
+    public ImageFrom getImageFrom() {
+        return imageFrom;
     }
 
     @Override
@@ -145,12 +147,18 @@ public class LoadRequest extends DownloadRequest{
     }
 
     @Override
-    public void dispatch() {
-        if(imageScheme == ImageScheme.HTTP || imageScheme == ImageScheme.HTTPS){
+    public void executeDispatch() {
+        toDispatchingStatus();
+        if(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS){
             this.cacheFile = enableDiskCache?spear.getConfiguration().getDiskCache().createCacheFile(this):null;
 
             // 如果不需要缓存或缓存文件不存在就从网络下载
             if(cacheFile == null || !cacheFile.exists()){
+                if(level == Level.LOCAL){
+                    toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
+                    return;
+                }
+
                 runDownload();
                 if(Spear.isDebugMode()){
                     Log.d(Spear.TAG, NAME + " - " + "LOAD；网络" + "；" + name);
@@ -159,7 +167,7 @@ public class LoadRequest extends DownloadRequest{
             }
         }
 
-        setImageFrom(ImageFrom.LOCAL);
+        this.imageFrom = ImageFrom.LOCAL;
         runLoad();
         if(Spear.isDebugMode()){
             Log.d(Spear.TAG, NAME + " - " + "LOAD；本地" + "；" + name);
@@ -226,7 +234,7 @@ public class LoadRequest extends DownloadRequest{
         if(bitmap != null && !bitmap.isRecycled()){
             handleLoadCompleted(bitmap, imageFrom);
         }else{
-            toFailedStatus(FailureCause.DECODE_FAIL);
+            toFailedStatus(FailCause.DECODE_FAIL);
         }
     }
 
@@ -239,21 +247,27 @@ public class LoadRequest extends DownloadRequest{
     }
 
     @Override
-    public void toFailedStatus(FailureCause failureCause) {
+    public void toFailedStatus(FailCause failCause) {
         this.status = Status.FAILED;
         if(loadListener != null){
-            loadListener.onFailed(failureCause);
+            loadListener.onFailed(failCause);
         }
     }
 
     @Override
-    public void toCanceledStatus() {
+    public void toCanceledStatus(CancelCause cancelCause) {
         this.status = Status.CANCELED;
+        this.cancelCause = cancelCause;
         if(loadListener != null){
-            loadListener.onCanceled();
+            loadListener.onCanceled(cancelCause);
         }
     }
 
+    /**
+     * 加载完成
+     * @param bitmap 图片
+     * @param imageFrom 图片来源
+     */
     protected void handleLoadCompleted(Bitmap bitmap, ImageFrom imageFrom){
         this.bitmap = bitmap;
         this.imageFrom = imageFrom;
@@ -270,7 +284,7 @@ public class LoadRequest extends DownloadRequest{
             this.imageData = (byte[]) downloadResult.getResult();
         }
 
-        this.runStatus = LoadRequest.RunStatus.LOAD;
+        this.runStatus = RunStatus.LOAD;
         spear.getConfiguration().getRequestExecutor().getLocalRequestExecutor().execute(this);
     }
 }

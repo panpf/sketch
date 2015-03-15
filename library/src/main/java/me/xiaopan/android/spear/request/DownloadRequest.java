@@ -22,42 +22,35 @@ import java.io.File;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.download.ImageDownloader;
-import me.xiaopan.android.spear.util.ImageScheme;
 
 /**
  * 下载请求
  */
-public class DownloadRequest implements Request{
+public class DownloadRequest implements Request, Runnable, StatusManager, RunManager{
     public static final boolean DEFAULT_ENABLE_DISK_CACHE = true;
     private static final String NAME = "DownloadRequest";
 
-    /* 通用属性 */
     protected Spear spear;
-    protected Status status = Status.WAIT_DISPATCH;  // 状态
     protected String uri;	// 图片地址
     protected String name;	// 名称，用于在输出LOG的时候区分不同的请求
-    protected RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
-
-    protected ImageScheme imageScheme;	// Uri协议格式
-
-    /* 下载用到的属性 */
     protected boolean enableDiskCache = DEFAULT_ENABLE_DISK_CACHE;	// 是否开启磁盘缓存
-
-    /* 下载过程中用到的属性 */
-    protected File cacheFile;	// 缓存文件
-    protected FailureCause failureCause;    // 失败原因
-    private DownloadListener downloadListener;  // 下载监听器
+    protected UriScheme uriScheme;	// Uri协议格式
     protected ProgressListener progressListener;  // 下载进度监听器
+
+    private DownloadListener downloadListener;  // 下载监听器
+
+    protected Status status = Status.WAIT_DISPATCH;  // 状态
+    protected RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
+    protected FailCause failCause;    // 失败原因
+    protected CancelCause cancelCause;
+
+    protected File cacheFile;	// 缓存文件
     private ImageDownloader.DownloadResult downloadResult;    // 下载结果
 
-    @Override
-    public Spear getSpear() {
-        return spear;
-    }
-
-    @Override
-    public void setSpear(Spear spear) {
+    public DownloadRequest(Spear spear, String uri, UriScheme uriScheme) {
         this.spear = spear;
+        this.uri = uri;
+        this.uriScheme = uriScheme;
     }
 
     @Override
@@ -65,19 +58,11 @@ public class DownloadRequest implements Request{
         return uri;
     }
 
-    @Override
-    public void setUri(String uri) {
-        this.uri = uri;
-    }
-
-    @Override
-    public ImageScheme getImageScheme() {
-        return imageScheme;
-    }
-
-    @Override
-    public void setImageScheme(ImageScheme imageScheme) {
-        this.imageScheme = imageScheme;
+    /**
+     * 获取Uri协议类型
+     */
+    public UriScheme getUriScheme() {
+        return uriScheme;
     }
 
     @Override
@@ -85,30 +70,12 @@ public class DownloadRequest implements Request{
         return name;
     }
 
-    @Override
+    /**
+     * 设置请求名称，用于在log中区分请求
+     * @param name 请求名称
+     */
     public void setName(String name) {
         this.name = name;
-    }
-
-    @Override
-    public Status getStatus() {
-        return status;
-    }
-
-    /**
-     * 获取缓存文件
-     * @return 缓存文件
-     */
-    public File getCacheFile() {
-        return cacheFile;
-    }
-
-    /**
-     * 设置开启磁盘缓存功能（默认开启）
-     * @param enableDiskCache 是否开启磁盘缓存功能
-     */
-    public void setEnableDiskCache(boolean enableDiskCache) {
-        this.enableDiskCache = enableDiskCache;
     }
 
     /**
@@ -127,6 +94,19 @@ public class DownloadRequest implements Request{
         this.progressListener = progressListener;
     }
 
+    @Override
+    public Status getStatus() {
+        return status;
+    }
+
+    /**
+     * 设置是否开启磁盘缓存
+     * @param enableDiskCache 是否开启磁盘缓存
+     */
+    public void setEnableDiskCache(boolean enableDiskCache) {
+        this.enableDiskCache = enableDiskCache;
+    }
+
     /**
      * 设置下载监听器
      * @param downloadListener 下载监听器
@@ -136,19 +116,35 @@ public class DownloadRequest implements Request{
     }
 
     /**
-     * 获取失败原因
-     * @return 失败原因
+     * 获取Spear
+     * @return Spear
      */
-    public FailureCause getFailureCause() {
-        return failureCause;
+    public Spear getSpear() {
+        return spear;
     }
 
     /**
-     * 设置失败原因
-     * @param failureCause 失败原因
+     * 获取缓存文件
+     * @return 缓存文件
      */
-    public void setFailureCause(FailureCause failureCause) {
-        this.failureCause = failureCause;
+    public File getCacheFile() {
+        return cacheFile;
+    }
+
+    /**
+     * 获取失败原因
+     * @return 失败原因
+     */
+    public FailCause getFailCause() {
+        return failCause;
+    }
+
+    /**
+     * 获取取消原因
+     * @return 取消原因
+     */
+    public CancelCause getCancelCause() {
+        return cancelCause;
     }
 
     @Override
@@ -166,7 +162,7 @@ public class DownloadRequest implements Request{
         if(isFinished()){
             return false;
         }
-        toCanceledStatus();
+        toCanceledStatus(CancelCause.NORMAL);
         return true;
     }
 
@@ -178,7 +174,7 @@ public class DownloadRequest implements Request{
     public void run() {
         switch(runStatus){
             case DISPATCH:
-                dispatch();
+                executeDispatch();
                 break;
             case DOWNLOAD:
                 executeDownload();
@@ -189,15 +185,18 @@ public class DownloadRequest implements Request{
         }
     }
 
-    @Override
-    public void dispatch() {
+    /**
+     * 分发请求
+     */
+    public void executeDispatch() {
+        toDispatchingStatus();
         // 要先创建缓存文件
         this.cacheFile = enableDiskCache?spear.getConfiguration().getDiskCache().createCacheFile(this):null;
 
         // 从网络下载
         runDownload();
         if(Spear.isDebugMode()){
-            Log.d(Spear.TAG, NAME + " - " + "dispatch：" + name);
+            Log.d(Spear.TAG, NAME + " - " + "executeDispatch：" + name);
         }
     }
 
@@ -221,7 +220,7 @@ public class DownloadRequest implements Request{
         if(downloadResult != null  && downloadResult.getResult() != null){
             handleDownloadCompleted(downloadResult);
         }else{
-            toFailedStatus(FailureCause.DOWNLOAD_FAIL);
+            toFailedStatus(FailCause.DOWNLOAD_FAIL);
         }
     }
 
@@ -283,17 +282,18 @@ public class DownloadRequest implements Request{
     }
 
     @Override
-    public void toFailedStatus(FailureCause failureCause) {
+    public void toFailedStatus(FailCause failCause) {
         this.status = Status.FAILED;
-        this.failureCause = failureCause;
+        this.failCause = failCause;
         if(downloadListener != null){
-            downloadListener.onFailed(failureCause);
+            downloadListener.onFailed(failCause);
         }
     }
 
     @Override
-    public void toCanceledStatus() {
+    public void toCanceledStatus(CancelCause cancelCause) {
         this.status = Status.CANCELED;
+        this.cancelCause = cancelCause;
         if(downloadListener != null){
             downloadListener.onCanceled();
         }
@@ -301,28 +301,40 @@ public class DownloadRequest implements Request{
 
     @Override
     public void runDispatch() {
+        toWaitDispatchStatus();
         this.runStatus = RunStatus.DISPATCH;
         spear.getConfiguration().getRequestExecutor().getRequestDispatchExecutor().execute(this);
     }
 
     @Override
     public void runDownload() {
+        toWaitDownloadStatus();
         this.runStatus = RunStatus.DOWNLOAD;
         spear.getConfiguration().getRequestExecutor().getNetRequestExecutor().execute(this);
     }
 
     @Override
     public void runLoad() {
+        toWaitLoadStatus();
         this.runStatus = RunStatus.LOAD;
         spear.getConfiguration().getRequestExecutor().getLocalRequestExecutor().execute(this);
     }
 
+    /**
+     * 更新进度
+     * @param totalLength 总长度
+     * @param completedLength 已完成长度
+     */
     public void handleUpdateProgress(int totalLength, int completedLength) {
         if(progressListener != null){
             progressListener.onUpdateProgress(totalLength, completedLength);
         }
     }
 
+    /**
+     * 下载完成
+     * @param downloadResult 下载结果
+     */
     protected void handleDownloadCompleted(ImageDownloader.DownloadResult downloadResult){
         this.downloadResult = downloadResult;
         toCompletedStatus();

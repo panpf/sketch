@@ -21,12 +21,13 @@ import android.widget.ImageView;
 
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.request.FailCause;
+import me.xiaopan.android.spear.request.Level;
 import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.LoadRequest;
 import me.xiaopan.android.spear.request.ProgressListener;
-import me.xiaopan.android.spear.request.RequestFuture;
-import me.xiaopan.android.spear.request.FailureCause;
-import me.xiaopan.android.spear.util.ImageScheme;
+import me.xiaopan.android.spear.request.Request;
+import me.xiaopan.android.spear.request.UriScheme;
 import me.xiaopan.android.spear.util.ImageSize;
 
 /**
@@ -37,18 +38,16 @@ public class LoadHelper {
 
     protected Spear spear;
     protected String uri;
-
+    protected String name;
     protected boolean enableDiskCache = DownloadRequest.DEFAULT_ENABLE_DISK_CACHE;
+    protected ProgressListener progressListener;
 
+    protected Level level = Level.NET;
     protected ImageSize maxsize;
     protected ImageSize resize;
     protected ImageProcessor imageProcessor;
     protected ImageView.ScaleType scaleType;
-
     protected LoadListener loadListener;
-    protected ProgressListener progressListener;
-
-    protected boolean returnRequestFuture;
 
     /**
      * 创建加载请求生成器
@@ -66,6 +65,16 @@ public class LoadHelper {
         this.spear = spear;
         this.uri = uri;
         this.maxsize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxsize(spear.getConfiguration().getContext());
+    }
+
+    /**
+     * 设置名称，用于在log总区分请求
+     * @param name 名称
+     * @return LoadHelper
+     */
+    public LoadHelper name(String name){
+        this.name = name;
+        return this;
     }
 
     /**
@@ -160,11 +169,14 @@ public class LoadHelper {
     }
 
     /**
-     * fire之后返回RequestFuture，默认情况下fire方法返回null
-     * @return DisplayHelper
+     * 设置加载级别
+     * @param level 加载级别
+     * @return LoadHelper
      */
-    public LoadHelper returnRequestFuture(){
-        this.returnRequestFuture = true;
+    public LoadHelper level(Level level){
+        if(level != null){
+            this.level = level;
+        }
         return this;
     }
 
@@ -208,9 +220,9 @@ public class LoadHelper {
 
     /**
      * 执行请求
-     * @return RequestFuture 你可以通过RequestFuture来查看请求的状态或者取消这个请求
+     * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
      */
-    public RequestFuture fire() {
+    public Request fire() {
         // 执行请求
         if(loadListener != null){
             loadListener.onStarted();
@@ -222,46 +234,40 @@ public class LoadHelper {
                 Log.e(Spear.TAG, NAME + " - " + "uri不能为null或空");
             }
             if(loadListener != null){
-                loadListener.onFailed(FailureCause.URI_NULL_OR_EMPTY);
+                loadListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
             }
             return null;
         }
 
         // 过滤掉不支持的URI协议类型
-        ImageScheme imageScheme = ImageScheme.valueOfUri(uri);
-        if(imageScheme == null){
+        UriScheme uriScheme = UriScheme.valueOfUri(uri);
+        if(uriScheme == null){
             if(Spear.isDebugMode()){
                 Log.e(Spear.TAG, NAME + " - " + "未知的协议类型" + " URI" + "=" + uri);
             }
             if(loadListener != null){
-                loadListener.onFailed(FailureCause.URI_NO_SUPPORT);
+                loadListener.onFailed(FailCause.URI_NO_SUPPORT);
             }
             return null;
         }
 
         // 创建请求
-        LoadRequest request = new LoadRequest();
+        LoadRequest request = new LoadRequest(spear, uri, uriScheme);
 
-        request.setUri(uri);
-        request.setName(uri);
-        request.setSpear(spear);
-        request.setImageScheme(imageScheme);
+        request.setName(name != null ? name : uri);
+        request.setProgressListener(progressListener);
+        request.setLevel(level);
+
         request.setEnableDiskCache(enableDiskCache);
 
         request.setMaxsize(maxsize);
         request.setResize(resize);
         request.setImageProcessor(imageProcessor);
         request.setScaleType(scaleType);
-
         request.setLoadListener(loadListener);
-        request.setProgressListener(progressListener);
 
         request.runDispatch();
 
-        if(returnRequestFuture){
-            return new RequestFuture(request);
-        }else{
-            return null;
-        }
+        return request;
     }
 }

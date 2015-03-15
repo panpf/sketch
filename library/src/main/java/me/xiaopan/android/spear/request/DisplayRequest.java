@@ -19,7 +19,9 @@ package me.xiaopan.android.spear.request;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.widget.ImageView;
 
+import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.DrawableHolder;
@@ -32,34 +34,29 @@ import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 public class DisplayRequest extends LoadRequest{
     public static final boolean DEFAULT_ENABLE_MEMORY_CACHE = true;
 
-    /* 显示请求用到的属性 */
-    private String id;	//内存缓存ID
+    private String memoryCacheId;	//内存缓存ID
     private boolean enableMemoryCache = DEFAULT_ENABLE_MEMORY_CACHE;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     private ImageDisplayer imageDisplayer;	//图片显示器
     private DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
     private DisplayListener displayListener;	//监听器
 
-    /* 辅助的属性 */
     private boolean resizeByImageViewLayoutSizeAndFromDisplayer;
-    private ImageViewHolder imageViewHolder;	//ImageView持有器
     private BitmapDrawable resultBitmap;
-    private ImageFrom imageFrom;
+    private ImageViewHolder imageViewHolder;
 
-    /**
-     * 获取请求ID
-     * @return 请求ID
-     */
-	public String getId() {
-		return id;
-	}
-
-    /**
-     * 设置请求ID
-     * @param id 请求ID
-     */
-    public void setId(String id) {
-        this.id = id;
+    public DisplayRequest(Spear spear, String uri, UriScheme uriScheme, String memoryCacheId, ImageView imageView) {
+        super(spear, uri, uriScheme);
+        this.memoryCacheId = memoryCacheId;
+        this.imageViewHolder = new ImageViewHolder(imageView, this);
     }
+
+    /**
+     * 获取内存缓存ID
+     * @return 内存缓存ID
+     */
+	public String getMemoryCacheId() {
+		return memoryCacheId;
+	}
 
     /**
      * 获取ImageView持有器
@@ -68,14 +65,6 @@ public class DisplayRequest extends LoadRequest{
 	public ImageViewHolder getImageViewHolder() {
 		return imageViewHolder;
 	}
-
-    /**
-     * 设置ImageView持有器
-     * @param imageViewHolder ImageView持有器
-     */
-    public void setImageViewHolder(ImageViewHolder imageViewHolder) {
-        this.imageViewHolder = imageViewHolder;
-    }
 
     /**
      * 设置是否开启内存缓存（默认开启）
@@ -153,30 +142,6 @@ public class DisplayRequest extends LoadRequest{
     }
 
     /**
-     * 设置结果图片
-     * @param resultBitmap 结果图片
-     */
-    public void setResultBitmap(BitmapDrawable resultBitmap) {
-        this.resultBitmap = resultBitmap;
-    }
-
-    /**
-     * 获取结果图片来源
-     * @return 结果图片来源
-     */
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    /**
-     * 设置结果图片来源
-     * @param imageFrom 结果图片来源
-     */
-    public void setImageFrom(ImageFrom imageFrom) {
-        this.imageFrom = imageFrom;
-    }
-
-    /**
      * 设置resize是否来自ImageView的LayoutSize并且来自Displayer
      * @param resizeByImageViewLayoutSizeAndFromDisplayer resize是否来自ImageView的LayoutSize并且来自Displayer
      */
@@ -190,7 +155,7 @@ public class DisplayRequest extends LoadRequest{
         if(!isCanceled){
             isCanceled = imageViewHolder != null && imageViewHolder.isCollected();
             if(isCanceled){
-                toCanceledStatus();
+                toCanceledStatus(CancelCause.NORMAL);
             }
         }
         return isCanceled;
@@ -205,14 +170,15 @@ public class DisplayRequest extends LoadRequest{
 
     @Override
     public void handleLoadCompleted(Bitmap bitmap, ImageFrom imageFrom) {
+        this.imageFrom = imageFrom;
         //创建BitmapDrawable并放入内存缓存
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             resultBitmap = new BitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
         } else {
             resultBitmap = new RecyclingBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
         }
-        if(enableMemoryCache){
-            spear.getConfiguration().getMemoryCache().put(id, resultBitmap);
+        if(enableMemoryCache && memoryCacheId != null){
+            spear.getConfiguration().getMemoryCache().put(memoryCacheId, resultBitmap);
         }
 
         // 显示
@@ -225,15 +191,16 @@ public class DisplayRequest extends LoadRequest{
     }
 
     @Override
-    public void toFailedStatus(FailureCause failureCause) {
+    public void toFailedStatus(FailCause failCause) {
         spear.getConfiguration().getDisplayCallbackHandler().failCallback(this);
     }
 
     @Override
-    public void toCanceledStatus() {
+    public void toCanceledStatus(CancelCause cancelCause) {
         this.status = Status.CANCELED;
+        this.cancelCause = cancelCause;
         if(displayListener != null){
-            spear.getConfiguration().getDisplayCallbackHandler().cancelCallback(displayListener);
+            spear.getConfiguration().getDisplayCallbackHandler().cancelCallback(this);
         }
     }
 

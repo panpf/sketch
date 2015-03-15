@@ -29,7 +29,7 @@ import me.xiaopan.android.spear.request.DownloadListener;
 import me.xiaopan.android.spear.request.LoadListener;
 import me.xiaopan.android.spear.request.RequestOptions;
 import me.xiaopan.android.spear.util.AsyncDrawable;
-import me.xiaopan.android.spear.util.ImageScheme;
+import me.xiaopan.android.spear.request.UriScheme;
 
 /**
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
@@ -141,7 +141,7 @@ public class Spear {
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(int drawableResId, LoadListener loadListener){
-        return configuration.getHelperFactory().newLoadHelper(this, ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
+        return configuration.getHelperFactory().newLoadHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
 	}
 
     /**
@@ -190,7 +190,7 @@ public class Spear {
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(int drawableResId, ImageView imageView){
-        return configuration.getDisplayHelperManager().getDisplayHelper(this, ImageScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
+        return configuration.getDisplayHelperManager().getDisplayHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
     }
 
     /**

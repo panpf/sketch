@@ -35,7 +35,7 @@ import java.io.InputStream;
 
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.request.LoadRequest;
-import me.xiaopan.android.spear.util.ImageScheme;
+import me.xiaopan.android.spear.request.UriScheme;
 import me.xiaopan.android.spear.util.ImageSize;
 
 /**
@@ -47,15 +47,15 @@ public class DefaultImageDecoder implements ImageDecoder {
 
     @Override
 	public Bitmap decode(LoadRequest loadRequest){
-        if(loadRequest.getImageScheme() == ImageScheme.HTTP || loadRequest.getImageScheme() == ImageScheme.HTTPS){
+        if(loadRequest.getUriScheme() == UriScheme.HTTP || loadRequest.getUriScheme() == UriScheme.HTTPS){
             return decodeHttpOrHttps(loadRequest);
-        }else if(loadRequest.getImageScheme() == ImageScheme.FILE){
+        }else if(loadRequest.getUriScheme() == UriScheme.FILE){
             return decodeFile(loadRequest);
-        }else if(loadRequest.getImageScheme() == ImageScheme.CONTENT){
+        }else if(loadRequest.getUriScheme() == UriScheme.CONTENT){
             return decodeContent(loadRequest);
-        }else if(loadRequest.getImageScheme() == ImageScheme.ASSETS){
+        }else if(loadRequest.getUriScheme() == UriScheme.ASSETS){
             return decodeAssets(loadRequest);
-        }else if(loadRequest.getImageScheme() == ImageScheme.DRAWABLE){
+        }else if(loadRequest.getUriScheme() == UriScheme.DRAWABLE){
             return decodeDrawable(loadRequest);
         }else{
             return null;
@@ -91,11 +91,11 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public Bitmap decodeAssets(LoadRequest loadRequest){
-        return decodeFromHelper(loadRequest, new AssetsDecodeHelper(ImageScheme.ASSETS.crop(loadRequest.getUri()), loadRequest));
+        return decodeFromHelper(loadRequest, new AssetsDecodeHelper(UriScheme.ASSETS.crop(loadRequest.getUri()), loadRequest));
     }
 
     public Bitmap decodeDrawable(LoadRequest loadRequest){
-        return decodeFromHelper(loadRequest, new DrawableDecodeHelper(ImageScheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest));
+        return decodeFromHelper(loadRequest, new DrawableDecodeHelper(UriScheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest));
     }
 
     public static Bitmap decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper){
