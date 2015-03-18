@@ -32,6 +32,7 @@ import me.xiaopan.android.spear.sample.activity.DetailActivity;
 import me.xiaopan.android.spear.sample.adapter.StarImageAdapter;
 import me.xiaopan.android.spear.sample.net.request.SearchImageRequest;
 import me.xiaopan.android.spear.sample.net.request.StarImageRequest;
+import me.xiaopan.android.spear.sample.util.PauseLoadForRecyclerView;
 import me.xiaopan.android.spear.sample.widget.HintView;
 import me.xiaopan.android.widget.PullRefreshLayout;
 
@@ -113,7 +114,7 @@ public class SearchFragment extends InjectFragment implements StarImageAdapter.O
         pullRefreshLayout.setOnRefreshListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setOnScrollListener(loadMoreListener);
+        recyclerView.setOnScrollListener(new PauseLoadForRecyclerView(view.getContext()));
 
         if (searchImageAdapter == null) {
             pullRefreshLayout.startRefresh();
@@ -195,14 +196,9 @@ public class SearchFragment extends InjectFragment implements StarImageAdapter.O
         DetailActivity.launch(getActivity(), (ArrayList<String>) searchImageAdapter.getImageUrlList(), position);
     }
 
-    private class MyLoadMoreListener extends RecyclerView.OnScrollListener implements StarImageAdapter.OnLoadMoreListener {
+    private class MyLoadMoreListener implements StarImageAdapter.OnLoadMoreListener {
         private boolean end;
         private HttpRequestFuture loadMoreRequestFuture;
-
-        @Override
-        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-            super.onScrollStateChanged(recyclerView, newState);
-        }
 
         @Override
         public boolean isEnd() {

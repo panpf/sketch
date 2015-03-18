@@ -142,12 +142,12 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             ItemHolder itemHolder = (ItemHolder) holder;
 
             itemHolder.oneNameTextView.setText(dataItem.star1.getName());
-            itemHolder.oneSpearImageView.displayImageUri(dataItem.star1.getAvatarUrl());
+            itemHolder.oneSpearImageView.displayUriImage(dataItem.star1.getAvatarUrl());
             itemHolder.oneLayout.setTag(dataItem.star1);
 
             if(dataItem.star2 != null){
                 itemHolder.twoNameTextView.setText(dataItem.star2.getName());
-                itemHolder.twoSpearImageView.displayImageUri(dataItem.star2.getAvatarUrl());
+                itemHolder.twoSpearImageView.displayUriImage(dataItem.star2.getAvatarUrl());
                 itemHolder.twoLayout.setTag(dataItem.star2);
                 itemHolder.twoLayout.setVisibility(View.VISIBLE);
             }else{
@@ -156,7 +156,7 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
 
             if(dataItem.star3 != null){
                 itemHolder.threeNameTextView.setText(dataItem.star3.getName());
-                itemHolder.threeSpearImageView.displayImageUri(dataItem.star3.getAvatarUrl());
+                itemHolder.threeSpearImageView.displayUriImage(dataItem.star3.getAvatarUrl());
                 itemHolder.threeLayout.setTag(dataItem.star3);
                 itemHolder.threeLayout.setVisibility(View.VISIBLE);
             }else{

@@ -312,7 +312,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
 //        @Override
 //        public Object instantiateItem(ViewGroup container, int position) {
 //            SpearImageView spearImageView = new SpearImageView(context);
-//            spearImageView.displayImageUri(uris.get(position));
+//            spearImageView.displayUriImage(uris.get(position));
 //            container.addView(spearImageView);
 //            return spearImageView;
 //        }
@@ -359,7 +359,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
 
                 }
             });
-            imageView.displayImageUri(imageUri);
+            imageView.displayUriImage(imageUri);
         }
     }
 

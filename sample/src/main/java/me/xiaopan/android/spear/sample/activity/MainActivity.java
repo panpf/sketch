@@ -18,14 +18,19 @@ package me.xiaopan.android.spear.sample.activity;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.ptr.folding.BaseFoldingLayout;
+import com.ptr.folding.FoldingDrawerLayout;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
@@ -39,6 +44,7 @@ import me.xiaopan.android.spear.sample.fragment.SearchFragment;
 import me.xiaopan.android.spear.sample.fragment.StarFragment;
 import me.xiaopan.android.spear.sample.util.AnimationUtils;
 import me.xiaopan.android.spear.sample.util.DimenUtils;
+import me.xiaopan.android.spear.sample.util.PauseLoadForRecyclerView;
 import me.xiaopan.android.widget.PagerSlidingTabStrip;
 
 /**
@@ -56,6 +62,10 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
     @InjectView(R.id.button_main_photoAlbum) private View photoAlbumButton;
     @InjectView(R.id.button_main_appList) private View appListButton;
     @InjectView(R.id.button_main_about) private View aboutButton;
+    @InjectView(R.id.item_main_pauseLoadNewImage) private View pauseLoadNewImageItem;
+    @InjectView(R.id.item_main_mobileNet) private View mobileNetItem;
+    @InjectView(R.id.checkBox_main_pauseLoadNewImage) private CheckBox pauseLoadNewImageCheckBox;
+    @InjectView(R.id.checkBox_main_mobileNet) private CheckBox mobileNetCheckBox;
 
     private long lastClickBackTime;
     private Type type;
@@ -73,8 +83,10 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
 
         // 设置左侧菜单的宽度为屏幕的一半
         ViewGroup.LayoutParams params = leftMenuView.getLayoutParams();
-        params.width = (int) (getResources().getDisplayMetrics().widthPixels*0.6);
+        params.width = (int) (getResources().getDisplayMetrics().widthPixels*0.7);
         leftMenuView.setLayoutParams(params);
+
+        pauseLoadNewImageCheckBox.setChecked(PauseLoadForRecyclerView.isEnablePauseLoadOnScrolling(getBaseContext()));
 
         starButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -153,7 +165,7 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
             public void onClick(View v) {
                 drawerLayout.closeDrawer(Gravity.START);
 
-                if(type != Type.ABOUT){
+                if (type != Type.ABOUT) {
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
                     getSupportActionBar().setTitle("关于");
@@ -166,10 +178,40 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
             }
         });
 
+        pauseLoadNewImageItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean oldPauseLoadOnScrolling = PauseLoadForRecyclerView.isEnablePauseLoadOnScrolling(getBaseContext());
+                PauseLoadForRecyclerView.setEnablePauseLoadOnScrolling(getBaseContext(), !oldPauseLoadOnScrolling);
+                pauseLoadNewImageCheckBox.setChecked(!oldPauseLoadOnScrolling);
+                drawerLayout.closeDrawer(Gravity.START);
+            }
+        });
+
+        mobileNetItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawer(Gravity.START);
+            }
+        });
+
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
 
         starButton.performClick();
+
+        final Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                BaseFoldingLayout foldingLayout = ((FoldingDrawerLayout) drawerLayout).getFoldingLayout(leftMenuView);
+                if (foldingLayout != null) {
+                    foldingLayout.setNumberOfFolds(8);
+                } else {
+                    handler.postDelayed(this, 100);
+                }
+            }
+        }, 100);
     }
 
     @Override

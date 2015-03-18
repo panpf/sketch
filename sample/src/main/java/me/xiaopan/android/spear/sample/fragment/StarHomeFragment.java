@@ -27,6 +27,7 @@ import me.xiaopan.android.spear.sample.activity.DetailActivity;
 import me.xiaopan.android.spear.sample.adapter.StarImageAdapter;
 import me.xiaopan.android.spear.sample.net.request.StarHomeBackgroundRequest;
 import me.xiaopan.android.spear.sample.net.request.StarImageRequest;
+import me.xiaopan.android.spear.sample.util.PauseLoadForRecyclerView;
 import me.xiaopan.android.spear.sample.widget.HintView;
 import me.xiaopan.android.widget.PullRefreshLayout;
 
@@ -64,6 +65,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
         pullRefreshLayout.setOnRefreshListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        recyclerView.setOnScrollListener(new PauseLoadForRecyclerView(getActivity()));
 
         if (starImageAdapter == null) {
             pullRefreshLayout.startRefresh();

@@ -21,12 +21,12 @@ import android.graphics.Color;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.android.spear.DisplayOptions;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.display.ColorTransitionImageDisplayer;
 import me.xiaopan.android.spear.display.TransitionImageDisplayer;
 import me.xiaopan.android.spear.process.CircleImageProcessor;
 import me.xiaopan.android.spear.process.ReflectionImageProcessor;
-import me.xiaopan.android.spear.DisplayOptions;
 
 public class MyApplication extends Application {
 
