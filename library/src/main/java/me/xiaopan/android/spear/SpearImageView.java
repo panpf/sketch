@@ -251,7 +251,7 @@ public class SpearImageView extends ImageView{
      * </blockquote>
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    public Request displayImageUri(String uri){
+    public Request displayUriImage(String uri){
         return Spear.with(getContext()).display(uri, this).fire();
     }
 
@@ -260,7 +260,7 @@ public class SpearImageView extends ImageView{
      * @param imageFilePath SD卡上的图片文件
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    public Request displayImageFile(String imageFilePath){
+    public Request displayFilImagee(String imageFilePath){
         return Spear.with(getContext()).display(imageFilePath, this).fire();
     }
 
@@ -269,7 +269,7 @@ public class SpearImageView extends ImageView{
      * @param drawableResId Drawable ID
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    public Request displayImageResource(int drawableResId){
+    public Request displayResourceImage(int drawableResId){
         return Spear.with(getContext()).display(UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), this).fire();
     }
 
@@ -278,7 +278,7 @@ public class SpearImageView extends ImageView{
      * @param imageFileName ASSETS文件加下的图片文件的名称
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    public Request displayImageAsset(String imageFileName){
+    public Request displayAssetImage(String imageFileName){
         return Spear.with(getContext()).display(UriScheme.ASSET.createUri(imageFileName), this).fire();
     }
 
@@ -287,7 +287,7 @@ public class SpearImageView extends ImageView{
      * @param uri Content Uri 这个URI是其它Content Provider返回的
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    public Request displayImageContent(Uri uri){
+    public Request displayContentImage(Uri uri){
         return Spear.with(getContext()).display(uri != null ? UriScheme.ASSET.createUri(uri.toString()):null, this).fire();
     }
 

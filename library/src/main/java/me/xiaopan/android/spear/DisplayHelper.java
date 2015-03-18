@@ -90,6 +90,9 @@ public class DisplayHelper {
         this.spear = spear;
         this.uri = uri;
         this.imageView = imageView;
+        if(spear.isPauseLoadOnScrolling()){
+            this.level = Level.MEMORY;
+        }
 
         if(imageView != null){
             // 根据ImageView的宽高计算maxsize，如果没有计算出合适的maxsize，就获取默认maxsize
@@ -472,7 +475,7 @@ public class DisplayHelper {
         }
 
         // 如果已经暂停了的话就不再从本地或网络加载了
-        if(level == Level.MEMORY || spear.isPaused()){
+        if(level == Level.MEMORY){
             BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
             imageView.clearAnimation();
             imageView.setImageDrawable(loadingBitmapDrawable);

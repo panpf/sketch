@@ -18,6 +18,7 @@ package me.xiaopan.android.spear;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -40,7 +41,7 @@ public class Spear {
     private static boolean debugMode;	//调试模式，在控制台输出日志
     private static Map<Object, RequestOptions> optionsMap;
     private Configuration configuration;
-    private boolean pause;
+    private boolean pauseLoadOnScrolling;
 
 	private Spear(Context context){
         this.configuration = new Configuration(context);
@@ -71,25 +72,22 @@ public class Spear {
     }
 
     /**
-     * 暂停加载新的图片，暂停后如果内存中没有需要的图片那么就不再处理了
+     * 设置是否在滚动时暂停加载，只影响display请求，暂停后将只从内存查找缓存图片，如果内存中没有就不再处理了。需要配合Scrolling一起使用
+     * @param pauseLoadOnScrolling 是否在滚动时暂停加载
      */
-    public void pause(){
-        this.pause = true;
+    public void setPauseLoadOnScrolling(boolean pauseLoadOnScrolling) {
+        this.pauseLoadOnScrolling = pauseLoadOnScrolling;
+        if(isDebugMode()){
+            Log.w(TAG, this.pauseLoadOnScrolling?"已开启滚动时停止加载功能":"已关闭滚动时停止加载功能");
+        }
     }
 
     /**
-     * 恢复运行
+     * 是否在滚动时暂停加载，只影响display请求，暂停后将只从内存查找缓存图片，如果内存中没有就不再处理了。需要配合Scrolling一起使用
+     * @return 是否在滚动时暂停加载
      */
-    public void resume(){
-        this.pause = false;
-    }
-
-    /**
-     * 是否暂停了
-     * @return 是否暂停了
-     */
-    public boolean isPaused() {
-        return pause;
+    public boolean isPauseLoadOnScrolling() {
+        return pauseLoadOnScrolling;
     }
 
     /**
