@@ -24,7 +24,7 @@ import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
-import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.DisplayRequest;
 
 public class AsyncDrawable extends BitmapDrawable {
     private WeakReference<DisplayRequest> displayRequestWeakReference;

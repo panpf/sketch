@@ -23,7 +23,7 @@ import android.view.animation.Interpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 
-import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.DisplayRequest;
 
 /**
  * 由小到大图片显示器

@@ -19,23 +19,26 @@ package me.xiaopan.android.spear.util;
 import android.widget.ImageView;
 
 import me.xiaopan.android.spear.DisplayHelper;
+import me.xiaopan.android.spear.DisplayHelperImpl;
 import me.xiaopan.android.spear.DownloadHelper;
+import me.xiaopan.android.spear.DownloadHelperImpl;
 import me.xiaopan.android.spear.LoadHelper;
+import me.xiaopan.android.spear.LoadHelperImpl;
 import me.xiaopan.android.spear.Spear;
 
 public class DefaultHelperFactory implements HelperFactory{
     @Override
     public DownloadHelper newDownloadHelper(Spear spear, String uri) {
-        return new DownloadHelper(spear, uri);
+        return new DownloadHelperImpl(spear, uri);
     }
 
     @Override
     public LoadHelper newLoadHelper(Spear spear, String uri) {
-        return new LoadHelper(spear, uri);
+        return new LoadHelperImpl(spear, uri);
     }
 
     @Override
     public DisplayHelper newDisplayHelper(Spear spear, String uri, ImageView imageView) {
-        return new DisplayHelper(spear, uri, imageView);
+        return new DisplayHelperImpl(spear, uri, imageView);
     }
 }

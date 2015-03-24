@@ -1,9 +1,9 @@
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear;
 
 /**
  * 请求的状态
  */
-public enum Status{
+public enum RequestStatus {
     /**
      * 等待分发
      */

@@ -31,11 +31,13 @@ import me.xiaopan.android.spear.Spear;
 public class RecyclingBitmapDrawable extends BitmapDrawable {
     private static final String NAME = "RecyclingBitmapDrawable";
 
-    private int mCacheRefCount = 0;
-    private int mDisplayRefCount = 0;
+    private int mCacheRefCount;
+    private int mDisplayRefCount;
+    private boolean mWaitDisplay;
 
     public RecyclingBitmapDrawable(Resources res, Bitmap bitmap) {
         super(res, bitmap);
+        this.mWaitDisplay = true;
     }
 
     /**
@@ -49,9 +51,13 @@ public class RecyclingBitmapDrawable extends BitmapDrawable {
         synchronized (this) {
             if (isDisplayed) {
                 mDisplayRefCount++;
+                mWaitDisplay = false;
             } else {
                 mDisplayRefCount--;
             }
+        }
+        if(Spear.isDebugMode()){
+            Log.d(Spear.TAG, NAME + " - " + "bitmap@" + Integer.toHexString(getBitmap().hashCode()) + " - " + (isDisplayed?"display":"unbind") + " - " + callingStation);
         }
 
         // Check to see if recycle() can be called
@@ -72,17 +78,31 @@ public class RecyclingBitmapDrawable extends BitmapDrawable {
                 mCacheRefCount--;
             }
         }
+        if(Spear.isDebugMode()){
+            Log.d(Spear.TAG, NAME + " - " + "bitmap@" + Integer.toHexString(getBitmap().hashCode()) + " - " + (isCached?"putCache":"removedFromCache") + " - " + callingStation);
+        }
 
         // Check to see if recycle() can be called
         checkState(callingStation);
     }
 
-    public synchronized void checkState(String callingStation) {
+    /**
+     * 取消显示
+     */
+    public void cancelDisplay(String callingStation){
+        if(Spear.isDebugMode()){
+            Log.d(Spear.TAG, NAME + " - " + "cancel display bitmap@" + Integer.toHexString(getBitmap().hashCode()) + " - " + callingStation);
+        }
+        mWaitDisplay = false;
+        checkState(callingStation);
+    }
+
+    private synchronized void checkState(String callingStation) {
         // If the drawable cache and display ref counts = 0, and this drawable
         // has been displayed, then recycle
-        if (mCacheRefCount <= 0 && mDisplayRefCount <= 0 && getBitmap() != null && !getBitmap().isRecycled()) {
+        if (mCacheRefCount <= 0 && mDisplayRefCount <= 0 && !mWaitDisplay && getBitmap() != null && !getBitmap().isRecycled()) {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "recycle bitmap@" + Integer.toHexString(getBitmap().hashCode()) + "（" + NAME + " - " + callingStation + "）");
+                Log.e(Spear.TAG, NAME + " - " + "recycle bitmap@" + Integer.toHexString(getBitmap().hashCode()) + "（" + callingStation + "）");
             }
             getBitmap().recycle();
         }

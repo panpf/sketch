@@ -22,7 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
 
-import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.DisplayRequest;
 
 /**
  * 颜色渐入图片显示器

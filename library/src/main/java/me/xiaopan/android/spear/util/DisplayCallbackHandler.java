@@ -21,22 +21,18 @@ import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 import android.widget.ImageView;
 
-import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.display.ImageDisplayer;
-import me.xiaopan.android.spear.request.DisplayListener;
-import me.xiaopan.android.spear.request.DisplayRequest;
-import me.xiaopan.android.spear.request.FailCause;
-import me.xiaopan.android.spear.request.ImageFrom;
-import me.xiaopan.android.spear.request.Status;
+import me.xiaopan.android.spear.DisplayListener;
+import me.xiaopan.android.spear.DisplayRequest;
+import me.xiaopan.android.spear.FailCause;
+import me.xiaopan.android.spear.ImageFrom;
+import me.xiaopan.android.spear.RequestStatus;
 
 /**
  * 显示回调处理器
  */
 public class DisplayCallbackHandler implements Handler.Callback{
-    private static final String NAME = "DisplayCallbackHandler";
     private static final int WHAT_CALLBACK_COMPLETED = 102;
     private static final int WHAT_CALLBACK_FAILED = 103;
     private static final int WHAT_CALLBACK_CANCELED = 104;
@@ -51,59 +47,16 @@ public class DisplayCallbackHandler implements Handler.Callback{
     public boolean handleMessage(Message msg) {
         switch (msg.what){
             case WHAT_CALLBACK_COMPLETED:
-                DisplayRequest displayRequest = (DisplayRequest) msg.obj;
-                if(displayRequest.isCanceled()){
-                    displayRequest.tryReleaseImage("CompletedCallback - Cancel");
-                    if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "COMPLETED"+ "：" + "已取消显示" + "；" + displayRequest.getName());
-                    }
-                    return true;
-                }
-
-                ImageView imageView = displayRequest.getImageViewHolder().getImageView();
-                ImageDisplayer imageDisplayer = displayRequest.getImageDisplayer();
-                if(imageDisplayer == null){
-                    imageDisplayer = displayRequest.getSpear().getConfiguration().getDefaultImageDisplayer();
-                }
-                displayRequest.toDisplayingStatus();
-                imageDisplayer.display(imageView, displayRequest.getResultBitmap(), ImageDisplayer.BitmapType.SUCCESS, displayRequest);
-                displayRequest.setStatus(Status.COMPLETED);
-
-                if(displayRequest.getDisplayListener() != null){
-                    displayRequest.getDisplayListener().onCompleted(displayRequest.getImageFrom());
-                }
+                ((DisplayRequest) msg.obj).handleCompletedOnMainThread();
                 return true;
             case WHAT_CALLBACK_PROGRESS :
-                DisplayRequest displayRequestOnProgress = (DisplayRequest) msg.obj;
-                if(displayRequestOnProgress.isFinished()){
-                    return true;
-                }
-                displayRequestOnProgress.getProgressListener().onUpdateProgress(msg.arg1, msg.arg2);
+                ((DisplayRequest) msg.obj).updateProgressOnMainThread(msg.arg1, msg.arg2);
                 return true;
             case WHAT_CALLBACK_FAILED:
-                DisplayRequest displayRequestOnFail = (DisplayRequest) msg.obj;
-                if(displayRequestOnFail.isCanceled()){
-                    if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "FAILED" + "：" + "已取消显示" + "；" + displayRequestOnFail.getName());
-                    }
-                    return true;
-                }
-
-                ImageView imageViewOnFail = displayRequestOnFail.getImageViewHolder().getImageView();
-                ImageDisplayer imageDisplayerOnFail = displayRequestOnFail.getImageDisplayer();
-                if(imageDisplayerOnFail == null){
-                    imageDisplayerOnFail = displayRequestOnFail.getSpear().getConfiguration().getDefaultImageDisplayer();
-                }
-                imageDisplayerOnFail.display(imageViewOnFail, displayRequestOnFail.getLoadFailDrawable(), ImageDisplayer.BitmapType.FAILURE, displayRequestOnFail);
-                displayRequestOnFail.setStatus(Status.FAILED);
-
-                if(displayRequestOnFail.getDisplayListener() != null){
-                    displayRequestOnFail.getDisplayListener().onFailed(displayRequestOnFail.getFailCause());
-                }
+                ((DisplayRequest) msg.obj).handleFailedOnMainThread();
                 return true;
             case WHAT_CALLBACK_CANCELED:
-                DisplayRequest displayRequestOnCancel = (DisplayRequest) msg.obj;
-                displayRequestOnCancel.getDisplayListener().onCanceled(displayRequestOnCancel.getCancelCause());
+                ((DisplayRequest) msg.obj).handleCanceledOnMainThread();
                 return true;
             default:
                 return false;
@@ -117,22 +70,12 @@ public class DisplayCallbackHandler implements Handler.Callback{
         displayListener.onStarted();
     }
 
-    public void completeCallback(DisplayRequest displayRequest){
-        displayRequest.toWaitDisplayStatus();
-        handler.obtainMessage(WHAT_CALLBACK_COMPLETED, displayRequest).sendToTarget();
-    }
-
     public void completeCallbackOnFire(ImageView imageView, BitmapDrawable bitmapDrawable, DisplayListener displayListener, ImageFrom imageFrom){
         imageView.clearAnimation();
         imageView.setImageDrawable(bitmapDrawable);
         if(displayListener != null){
             displayListener.onCompleted(imageFrom);
         }
-    }
-
-    public void failCallback(DisplayRequest displayRequest){
-        displayRequest.toWaitDisplayStatus();
-        handler.obtainMessage(WHAT_CALLBACK_FAILED, displayRequest).sendToTarget();
     }
 
     public void failCallbackOnFire(ImageView imageView, Drawable loadFailDrawable, FailCause failCause, DisplayListener displayListener){
@@ -144,10 +87,17 @@ public class DisplayCallbackHandler implements Handler.Callback{
         }
     }
 
+    public void completeCallback(DisplayRequest displayRequest){
+        displayRequest.setRequestStatus(RequestStatus.WAIT_DISPLAY);
+        handler.obtainMessage(WHAT_CALLBACK_COMPLETED, displayRequest).sendToTarget();
+    }
+
+    public void failCallback(DisplayRequest displayRequest){
+        displayRequest.setRequestStatus(RequestStatus.WAIT_DISPLAY);
+        handler.obtainMessage(WHAT_CALLBACK_FAILED, displayRequest).sendToTarget();
+    }
+
     public void cancelCallback(DisplayRequest displayRequest){
-        if(displayRequest.getDisplayListener() == null){
-            return;
-        }
         handler.obtainMessage(WHAT_CALLBACK_CANCELED, displayRequest).sendToTarget();
     }
 

@@ -19,7 +19,7 @@ package me.xiaopan.android.spear.display;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
-import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.DisplayRequest;
 
 /**
  * 默认的图片显示器，没有任何动画效果

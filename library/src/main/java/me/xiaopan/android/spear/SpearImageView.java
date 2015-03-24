@@ -30,13 +30,6 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
-import me.xiaopan.android.spear.request.CancelCause;
-import me.xiaopan.android.spear.request.DisplayListener;
-import me.xiaopan.android.spear.request.FailCause;
-import me.xiaopan.android.spear.request.ImageFrom;
-import me.xiaopan.android.spear.request.ProgressListener;
-import me.xiaopan.android.spear.request.Request;
-import me.xiaopan.android.spear.request.UriScheme;
 import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 
 /**
@@ -339,14 +332,6 @@ public class SpearImageView extends ImageView{
         if(progressPaint != null){
             progressPaint.setColor(progressColor);
         }
-    }
-
-    /**
-     * 设置点击涟漪动画持续时间
-     * @param clickRippleAnimationDuration 点击涟漪动画持续时间，单位毫秒
-     */
-    public void setClickRippleAnimationDuration(int clickRippleAnimationDuration) {
-        this.clickRippleAnimationDuration = clickRippleAnimationDuration;
     }
 
     /**

@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.request;
-
-import android.graphics.Bitmap;
+package me.xiaopan.android.spear;
 
 /**
- * 加载监听器
+ * 失败原因
  */
-public interface LoadListener {
+public enum FailCause {
     /**
-     * 已开始
+     * URI为NULL或空
      */
-    void onStarted();
+    URI_NULL_OR_EMPTY,
 
     /**
-     * 已完成
-     * @param bitmap 图片
-     * @param imageFrom 图片来源
+     * ImageView为NULL
      */
-    void onCompleted(Bitmap bitmap, ImageFrom imageFrom);
+    IMAGE_VIEW_NULL,
 
     /**
-     * 已失败
-     * @param failCause 失败原因
+     * URI不支持
      */
-    void onFailed(FailCause failCause);
+    URI_NO_SUPPORT,
 
     /**
-     * 已取消
+     * 下载失败
      */
-    void onCanceled(CancelCause cancelCause);
+    DOWNLOAD_FAIL,
+
+    /**
+     * 解码失败
+     */
+    DECODE_FAIL,
 }

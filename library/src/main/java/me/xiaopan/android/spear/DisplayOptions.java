@@ -20,9 +20,7 @@ import android.content.Context;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.android.spear.display.ImageDisplayer;
-import me.xiaopan.android.spear.display.TransitionImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
-import me.xiaopan.android.spear.request.DisplayRequest;
 import me.xiaopan.android.spear.util.DrawableHolder;
 import me.xiaopan.android.spear.util.ImageSize;
 
@@ -30,12 +28,12 @@ import me.xiaopan.android.spear.util.ImageSize;
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
-	protected boolean enableMemoryCache = DisplayRequest.DEFAULT_ENABLE_MEMORY_CACHE;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+	protected boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     protected ImageDisplayer imageDisplayer;	// 图片显示器
     protected DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
     protected DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
+
     protected boolean resizeByImageViewLayoutSize;
-    protected boolean resizeByImageViewLayoutSizeFromDisplayer;
 
     public DisplayOptions(Context context) {
         super(context);
@@ -57,15 +55,6 @@ public class DisplayOptions extends LoadOptions {
      */
     public DisplayOptions displayer(ImageDisplayer displayer) {
         this.imageDisplayer = displayer;
-        if(this.imageDisplayer != null && this.imageDisplayer instanceof TransitionImageDisplayer){
-            if(!this.resizeByImageViewLayoutSize){
-                this.resizeByImageViewLayoutSize = true;
-                this.resizeByImageViewLayoutSizeFromDisplayer = true;
-            }
-        }else if(this.resizeByImageViewLayoutSizeFromDisplayer){
-            this.resizeByImageViewLayoutSize = false;
-            this.resizeByImageViewLayoutSizeFromDisplayer = false;
-        }
         return this;
     }
 
@@ -153,7 +142,6 @@ public class DisplayOptions extends LoadOptions {
     public DisplayOptions resize(ImageSize resize){
         super.resize(resize);
         this.resizeByImageViewLayoutSize = false;
-        this.resizeByImageViewLayoutSizeFromDisplayer = false;
         return this;
     }
 
@@ -161,7 +149,6 @@ public class DisplayOptions extends LoadOptions {
     public DisplayOptions resize(int width, int height) {
         super.resize(width, height);
         this.resizeByImageViewLayoutSize = false;
-        this.resizeByImageViewLayoutSizeFromDisplayer = false;
         return this;
     }
 
@@ -170,7 +157,6 @@ public class DisplayOptions extends LoadOptions {
      */
     public void resizeByImageViewLayoutSize() {
         this.resizeByImageViewLayoutSize = true;
-        this.resizeByImageViewLayoutSizeFromDisplayer = false;
     }
 
     @Override
@@ -219,9 +205,5 @@ public class DisplayOptions extends LoadOptions {
      */
     public DrawableHolder getLoadFailDrawableHolder() {
         return loadFailDrawableHolder;
-    }
-
-    public boolean isResizeByImageViewLayoutSizeFromDisplayer() {
-        return resizeByImageViewLayoutSizeFromDisplayer;
     }
 }

@@ -21,7 +21,7 @@ import android.widget.ImageView;
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
-import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.DisplayRequest;
 
 /**
  * ImageView持有器，以弱引用的方式持有关联的ImageView

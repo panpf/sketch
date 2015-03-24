@@ -21,7 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
 
-import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.DisplayRequest;
 
 /**
  * 过度图片显示器
@@ -34,7 +34,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 	}
 	
 	public TransitionImageDisplayer(){
-		this(DEFAULT_ANIMATION_DURATION);
+		this(800);
 	}
 	
 	@Override

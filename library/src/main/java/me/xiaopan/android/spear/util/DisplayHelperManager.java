@@ -18,9 +18,6 @@ package me.xiaopan.android.spear.util;
 
 import android.widget.ImageView;
 
-import java.util.LinkedList;
-import java.util.Queue;
-
 import me.xiaopan.android.spear.DisplayHelper;
 import me.xiaopan.android.spear.Spear;
 
@@ -28,24 +25,23 @@ import me.xiaopan.android.spear.Spear;
  * DisplayHelper管理器
  */
 public class DisplayHelperManager {
-    private Queue<DisplayHelper> displayHelperPool;
-
-    public DisplayHelperManager() {
-        displayHelperPool = new LinkedList<DisplayHelper>();
-    }
+    private DisplayHelper displayHelper;
 
     public DisplayHelper getDisplayHelper(Spear spear, String uri, ImageView imageView){
-        if(displayHelperPool.isEmpty()){
+        if(displayHelper == null){
             return spear.getConfiguration().getHelperFactory().newDisplayHelper(spear, uri, imageView);
         }else{
-            return displayHelperPool.poll().reset(spear, uri, imageView);
+            DisplayHelper newDisplayHelper = displayHelper;
+            displayHelper = null;
+            newDisplayHelper.init(spear, uri, imageView);
+            return newDisplayHelper;
         }
     }
 
-    public void recoveryDisplayHelper(DisplayHelper displayHelper){
-        if(displayHelperPool.isEmpty()){
-            displayHelper.restoreDefault();
-            displayHelperPool.add(displayHelper);
+    public void recoveryDisplayHelper(DisplayHelper waitDisplayHelper){
+        waitDisplayHelper.reset();
+        if(displayHelper == null){
+            displayHelper = waitDisplayHelper;
         }
     }
 }

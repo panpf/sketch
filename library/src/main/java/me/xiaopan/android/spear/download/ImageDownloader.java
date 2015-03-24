@@ -18,7 +18,7 @@ package me.xiaopan.android.spear.download;
 
 import java.io.File;
 
-import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.DownloadRequest;
 
 /**
  * 下载器

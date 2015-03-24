@@ -34,8 +34,8 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.request.LoadRequest;
-import me.xiaopan.android.spear.request.UriScheme;
+import me.xiaopan.android.spear.LoadRequest;
+import me.xiaopan.android.spear.UriScheme;
 import me.xiaopan.android.spear.util.ImageSize;
 
 /**
@@ -127,7 +127,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                     originalSize = new Point(bitmap.getWidth(), bitmap.getHeight());
                 }else{
                     if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "recycle bitmap@"+Integer.toHexString(bitmap.hashCode())+"（1x1 Image）");
+                        Log.w(Spear.TAG, NAME + " - " + "recycle bitmap@"+Integer.toHexString(bitmap.hashCode()) + " - " + "1x1 Image");
                     }
                     bitmap.recycle();
                     bitmap = null;
@@ -140,7 +140,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             decodeHelper.onDecodeSuccess(bitmap, originalSize, inSampleSize);
         }else{
             bitmap = null;
-            decodeHelper.onDecodeFailure();
+            decodeHelper.onDecodeFailed();
         }
 
         return bitmap;
@@ -168,7 +168,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
         if(drawable instanceof BitmapDrawable && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) packageManager.getDefaultActivityIcon()).getBitmap()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "没有取到图标 "+apkFilePath);
+                Log.w(Spear.TAG, NAME + " - " + "icon not found" + " - " + apkFilePath);
             }
             return null;
         }
@@ -215,7 +215,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         /**
          * 解码失败
          */
-        void onDecodeFailure();
+        void onDecodeFailed();
     }
 
     public static class AssetsDecodeHelper implements DecodeHelper {
@@ -252,24 +252,24 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - ").append("解码成功");
+                        .append(" - ").append("decode success");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
-                    stringBuilder.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
-                    stringBuilder.append("；").append("缩放比例").append("=").append(inSampleSize);
-                    stringBuilder.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+                    stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
+                    stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
-                    stringBuilder.append("；").append("未缩放");
+                    stringBuilder.append(" - ").append("unchanged");
                 }
-                stringBuilder.append("；").append(loadRequest.getName());
+                stringBuilder.append(" - ").append(loadRequest.getName());
                 Log.d(Spear.TAG, stringBuilder.toString());
             }
         }
 
         @Override
-        public void onDecodeFailure() {
+        public void onDecodeFailed() {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "解码失败" + "；" + assetsFilePath);
+                Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + assetsFilePath);
             }
         }
     }
@@ -293,24 +293,24 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - ").append("解码成功");
+                        .append(" - ").append("decode success");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
-                    stringBuilder.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
-                    stringBuilder.append("；").append("缩放比例").append("=").append(inSampleSize);
-                    stringBuilder.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+                    stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
+                    stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
-                    stringBuilder.append("；").append("未缩放");
+                    stringBuilder.append(" - ").append("unchanged");
                 }
-                stringBuilder.append("；").append(loadRequest.getName());
+                stringBuilder.append(" - ").append(loadRequest.getName());
                 Log.d(Spear.TAG, stringBuilder.toString());
             }
         }
 
         @Override
-        public void onDecodeFailure() {
+        public void onDecodeFailed() {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "解码失败" + "；" + loadRequest.getName());
+                Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + loadRequest.getName());
             }
         }
     }
@@ -329,7 +329,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         public Bitmap onDecode(BitmapFactory.Options options) {
             if(!file.canRead()){
                 if(Spear.isDebugMode()){
-                    Log.e(Spear.TAG, NAME + " - "+"不可读取"+"；"+file.getPath());
+                    Log.e(Spear.TAG, NAME + " - " + "can not read" + " - " + file.getPath());
                 }
                 return null;
             }
@@ -341,38 +341,38 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(!file.setLastModified(System.currentTimeMillis())){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - "+"修改文件最后修改时间失败："+file.getPath());
+                    Log.w(Spear.TAG, NAME + " - " + "update last modified failed" + " - " + file.getPath());
                 }
             }
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - ").append("解码成功");
+                        .append(" - ").append("decode success");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
-                    stringBuilder.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
-                    stringBuilder.append("；").append("缩放比例").append("=").append(inSampleSize);
-                    stringBuilder.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+                    stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
+                    stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
-                    stringBuilder.append("；").append("未缩放");
+                    stringBuilder.append(" - ").append("unchanged");
                 }
-                stringBuilder.append("；").append(loadRequest.getName());
+                stringBuilder.append(" - ").append(loadRequest.getName());
                 Log.d(Spear.TAG, stringBuilder.toString());
             }
         }
 
         @Override
-        public void onDecodeFailure() {
+        public void onDecodeFailed() {
             if(Spear.isDebugMode()){
                 Log.e(Spear.TAG, new StringBuilder(NAME)
-                        .append("；").append("解码失败").append("；").append("已删除")
-                        .append("；").append("文件地址").append("=").append(file.getPath())
-                        .append("；").append("文件长度").append("=").append(file.length())
-                        .append("；").append("URI").append("=").append(loadRequest.getUri())
+                        .append(" - ").append("decode failed")
+                        .append(", ").append("filePath").append("=").append(file.getPath())
+                        .append(",  ").append("fileLength").append("=").append(file.length())
+                        .append(",  ").append("imageUri").append("=").append(loadRequest.getUri())
                         .toString());
             }
             if(!file.delete()){
                 if(Spear.isDebugMode()){
-                    Log.e(Spear.TAG, NAME + " - " + "删除文件失败："+file.getPath());
+                    Log.e(Spear.TAG, NAME + " - " + "delete damaged disk cache file failed" + " - " + file.getPath());
                 }
             }
         }
@@ -397,24 +397,24 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - ").append("解码成功");
+                        .append(" - ").append("decode success");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
-                    stringBuilder.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
-                    stringBuilder.append("；").append("缩放比例").append("=").append(inSampleSize);
-                    stringBuilder.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+                    stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(",  ").append("inSampleSize").append("=").append(inSampleSize);
+                    stringBuilder.append(",  ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
-                    stringBuilder.append("；").append("未缩放");
+                    stringBuilder.append(" - ").append("unchanged");
                 }
-                stringBuilder.append("；").append(loadRequest.getName());
+                stringBuilder.append(" - ").append(loadRequest.getName());
                 Log.d(Spear.TAG, stringBuilder.toString());
             }
         }
 
         @Override
-        public void onDecodeFailure() {
+        public void onDecodeFailed() {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "解码失败" + "；" + drawableIdString);
+                Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + drawableIdString);
             }
         }
     }
@@ -435,7 +435,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 return BitmapFactory.decodeFile(file.getPath(), options);
             }else{
                 if(Spear.isDebugMode()){
-                    Log.e(Spear.TAG, NAME + " - " + "不可读取"+"；"+file.getPath());
+                    Log.e(Spear.TAG, NAME + " - " + "can not read" + " - " + file.getPath());
                 }
                 return null;
             }
@@ -445,27 +445,27 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - "+"解码成功");
+                        .append(" - "+"decode success");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
-                    stringBuilder.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
-                    stringBuilder.append("；").append("缩放比例").append("=").append(inSampleSize);
-                    stringBuilder.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+                    stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
+                    stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
-                    stringBuilder.append("；").append("未缩放");
+                    stringBuilder.append(" - ").append("unchanged");
                 }
-                stringBuilder.append("；").append(loadRequest.getName());
+                stringBuilder.append(" - ").append(loadRequest.getName());
                 Log.d(Spear.TAG, stringBuilder.toString());
             }
         }
 
         @Override
-        public void onDecodeFailure() {
+        public void onDecodeFailed() {
             if(Spear.isDebugMode()){
                 Log.e(Spear.TAG, new StringBuilder(NAME)
-                        .append("；").append("解码失败")
-                        .append("；").append("文件地址").append("=").append(file.getPath())
-                        .append("；").append("文件长度").append("=").append(file.length())
+                        .append(" - ").append("decode failed")
+                        .append(", ").append("filePath").append("=").append(file.getPath())
+                        .append(", ").append("fileLength").append("=").append(file.length())
                         .toString());
             }
         }
@@ -505,24 +505,24 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - ").append("解码成功");
+                        .append(" - ").append("decode success");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
-                    stringBuilder.append("；").append("原始尺寸").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append("；").append("目标尺寸").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
-                    stringBuilder.append("；").append("缩放比例").append("=").append(inSampleSize);
-                    stringBuilder.append("；").append("最终尺寸").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+                    stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
+                    stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
-                    stringBuilder.append("；").append("未缩放");
+                    stringBuilder.append(" - ").append("unchanged");
                 }
-                stringBuilder.append("；").append(loadRequest.getName());
+                stringBuilder.append(" - ").append(loadRequest.getName());
                 Log.d(Spear.TAG, stringBuilder.toString());
             }
         }
 
         @Override
-        public void onDecodeFailure() {
+        public void onDecodeFailed() {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "解码失败" + "；" + contentUri);
+                Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + contentUri);
             }
         }
     }

@@ -1,4 +1,4 @@
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear;
 
 /**
  * 取消的原因

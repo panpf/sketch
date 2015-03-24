@@ -27,22 +27,22 @@ public interface MemoryCache {
 	 * @param key 键
 	 * @param bitmapDrawable 值
 	 */
-	public void put(String key, BitmapDrawable bitmapDrawable);
+	void put(String key, BitmapDrawable bitmapDrawable);
 	
 	/**
 	 * 根据给定的key获取位图
 	 * @param key 键
 	 */
-	public BitmapDrawable get(String key);
+	BitmapDrawable get(String key);
 	
 	/**
 	 * 根据给定的key删除位图
 	 * @param key 键
 	 */
-	public BitmapDrawable remove(String key);
+	BitmapDrawable remove(String key);
 	
 	/**
 	 * 清除内存缓存
 	 */
-	public void clear();
+	void clear();
 }

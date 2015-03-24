@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear;
 
 /**
  * 请求
@@ -36,7 +36,25 @@ public interface Request{
      * 获取请求的状态
      * @return 请求的状态
      */
-    Status getStatus();
+    RequestStatus getRequestStatus();
+
+    /**
+     * 获取结果图片来源
+     * @return 结果图片来源
+     */
+    ImageFrom getImageFrom();
+
+    /**
+     * 获取失败原因
+     * @return 失败原因
+     */
+    FailCause getFailCause();
+
+    /**
+     * 获取取消原因
+     * @return 取消原因
+     */
+    CancelCause getCancelCause();
 
     /**
      * 是否已经结束

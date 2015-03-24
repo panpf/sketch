@@ -19,13 +19,13 @@ package me.xiaopan.android.spear.display;
 import android.graphics.drawable.BitmapDrawable;
 import android.widget.ImageView;
 
-import me.xiaopan.android.spear.request.DisplayRequest;
+import me.xiaopan.android.spear.DisplayRequest;
 
 /**
  * 图片显示器
  */
 public interface ImageDisplayer {
-	static final int DEFAULT_ANIMATION_DURATION = 400;
+	int DEFAULT_ANIMATION_DURATION = 400;
 	/**
 	 * 显示
 	 * @param imageView ImageView
@@ -33,9 +33,9 @@ public interface ImageDisplayer {
 	 * @param bitmapType 图片类型
 	 * @param displayRequest 请求
 	 */
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest);
+	void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest);
 	
-	public enum BitmapType {
+	enum BitmapType {
 		SUCCESS,
         FAILURE,
 	}

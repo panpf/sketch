@@ -18,8 +18,6 @@ package me.xiaopan.android.spear;
 
 import android.content.Context;
 
-import java.io.File;
-
 import me.xiaopan.android.spear.cache.DiskCache;
 import me.xiaopan.android.spear.cache.LruDiskCache;
 import me.xiaopan.android.spear.cache.LruMemoryCache;
@@ -36,10 +34,12 @@ import me.xiaopan.android.spear.process.CutImageProcessor;
 import me.xiaopan.android.spear.process.ImageProcessor;
 import me.xiaopan.android.spear.util.DefaultHelperFactory;
 import me.xiaopan.android.spear.util.DefaultImageSizeCalculator;
+import me.xiaopan.android.spear.util.DefaultRequestFactory;
 import me.xiaopan.android.spear.util.DisplayCallbackHandler;
 import me.xiaopan.android.spear.util.DisplayHelperManager;
 import me.xiaopan.android.spear.util.HelperFactory;
 import me.xiaopan.android.spear.util.ImageSizeCalculator;
+import me.xiaopan.android.spear.util.RequestFactory;
 
 public class Configuration {
     private Context context;	//上下文
@@ -49,6 +49,7 @@ public class Configuration {
     private HelperFactory helperFactory;    // 协助器工厂
     private ImageDisplayer defaultImageDisplayer;   // 默认的图片显示器，当DisplayRequest中没有指定显示器的时候就会用到
     private ImageProcessor defaultCutImageProcessor;    // 默认的图片裁剪处理器
+    private RequestFactory requestFactory;  // 请求工厂
     private ImageDownloader imageDownloader;	//图片下载器
     private RequestExecutor requestExecutor;	//请求执行器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
@@ -61,6 +62,7 @@ public class Configuration {
         this.memoryCache = new LruMemoryCache();
         this.imageDecoder = new DefaultImageDecoder();
         this.helperFactory = new DefaultHelperFactory();
+        this.requestFactory = new DefaultRequestFactory();
         this.imageDownloader = new HttpUrlConnectionImageDownloader();
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
         this.imageSizeCalculator = new DefaultImageSizeCalculator();
@@ -87,11 +89,33 @@ public class Configuration {
     }
 
     /**
+     * 设置请求执行器
+     * @param requestExecutor 请求执行器
+     */
+    public Configuration setRequestExecutor(RequestExecutor requestExecutor) {
+        if(requestExecutor != null){
+            this.requestExecutor = requestExecutor;
+        }
+        return this;
+    }
+
+    /**
      * 获取磁盘缓存器
      * @return 磁盘缓存器
      */
     public DiskCache getDiskCache() {
         return diskCache;
+    }
+
+    /**
+     * 设置磁盘缓存器
+     * @param diskCache 磁盘缓存器
+     */
+    public Configuration setDiskCache(DiskCache diskCache) {
+        if(diskCache != null){
+            this.diskCache = diskCache;
+        }
+        return this;
     }
 
     /**
@@ -103,11 +127,33 @@ public class Configuration {
     }
 
     /**
-     * 获取位图解码器
-     * @return 位图解码器
+     * 设置内存缓存器
+     * @param memoryCache 内存缓存器
+     */
+    public Configuration setMemoryCache(MemoryCache memoryCache) {
+        if(memoryCache != null){
+            this.memoryCache = memoryCache;
+        }
+        return this;
+    }
+
+    /**
+     * 获取图片解码器
+     * @return 图片解码器
      */
     public ImageDecoder getImageDecoder() {
         return imageDecoder;
+    }
+
+    /**
+     * 设置图片解码器
+     * @param imageDecoder 图片解码器
+     */
+    public Configuration setImageDecoder(ImageDecoder imageDecoder) {
+        if(imageDecoder != null){
+            this.imageDecoder = imageDecoder;
+        }
+        return this;
     }
 
     /**
@@ -126,11 +172,33 @@ public class Configuration {
     }
 
     /**
+     * 设置图片下载器
+     * @param imageDownloader 图片下载器
+     */
+    public Configuration setImageDownloader(ImageDownloader imageDownloader) {
+        if(imageDownloader != null){
+            this.imageDownloader = imageDownloader;
+        }
+        return this;
+    }
+
+    /**
      * 获取图片尺寸计算器
      * @return 图片尺寸计算器
      */
     public ImageSizeCalculator getImageSizeCalculator() {
         return imageSizeCalculator;
+    }
+
+    /**
+     * 获取图片尺寸计算器
+     * @param imageSizeCalculator 图片尺寸计算器
+     */
+    public Configuration setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
+        if(imageSizeCalculator != null){
+            this.imageSizeCalculator = imageSizeCalculator;
+        }
+        return this;
     }
 
     /**
@@ -150,98 +218,6 @@ public class Configuration {
     }
 
     /**
-     * 获取默认的图片裁剪处理器
-     * @return 默认的图片裁剪处理器
-     */
-    public ImageProcessor getDefaultCutImageProcessor() {
-        return defaultCutImageProcessor;
-    }
-
-    /**
-     * 获取协助器工厂
-     * @return 协助器工厂
-     */
-    public HelperFactory getHelperFactory() {
-        return helperFactory;
-    }
-
-    /**
-     * 根据URI获取缓存文件
-     */
-    public File getCacheFileByUri(String uri){
-        if(diskCache == null){
-            return null;
-        }
-        return diskCache.getCacheFileByUri(uri);
-    }
-
-    /**
-     * 设置请求执行器
-     * @param requestExecutor 请求执行器
-     */
-    public Configuration setRequestExecutor(RequestExecutor requestExecutor) {
-        if(requestExecutor != null){
-            this.requestExecutor = requestExecutor;
-        }
-        return this;
-    }
-
-    /**
-     * 设置磁盘缓存器
-     * @param diskCache 磁盘缓存器
-     */
-    public Configuration setDiskCache(DiskCache diskCache) {
-        if(diskCache != null){
-            this.diskCache = diskCache;
-        }
-        return this;
-    }
-
-    /**
-     * 设置内存缓存器
-     * @param memoryCache 内存缓存器
-     */
-    public Configuration setMemoryCache(MemoryCache memoryCache) {
-        if(memoryCache != null){
-            this.memoryCache = memoryCache;
-        }
-        return this;
-    }
-
-    /**
-     * 设置位图解码器
-     * @param imageDecoder 位图解码器
-     */
-    public Configuration setImageDecoder(ImageDecoder imageDecoder) {
-        if(imageDecoder != null){
-            this.imageDecoder = imageDecoder;
-        }
-        return this;
-    }
-
-    /**
-     * 设置图片下载器
-     * @param imageDownloader 图片下载器
-     */
-    public Configuration setImageDownloader(ImageDownloader imageDownloader) {
-        if(imageDownloader != null){
-            this.imageDownloader = imageDownloader;
-        }
-        return this;
-    }
-
-    /**
-     * 获取图片尺寸计算器
-     * @param imageSizeCalculator 图片尺寸计算器
-     */
-    public Configuration setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
-        if(imageSizeCalculator != null){
-            this.imageSizeCalculator = imageSizeCalculator;
-        }
-        return this;
-    }
-
-    /**
      * 设置默认的图片处理器
      * @param defaultImageDisplayer 默认的图片处理器
      */
@@ -250,6 +226,14 @@ public class Configuration {
             this.defaultImageDisplayer = defaultImageDisplayer;
         }
         return this;
+    }
+
+    /**
+     * 获取默认的图片裁剪处理器
+     * @return 默认的图片裁剪处理器
+     */
+    public ImageProcessor getDefaultCutImageProcessor() {
+        return defaultCutImageProcessor;
     }
 
     /**
@@ -264,12 +248,39 @@ public class Configuration {
     }
 
     /**
+     * 获取协助器工厂
+     * @return 协助器工厂
+     */
+    public HelperFactory getHelperFactory() {
+        return helperFactory;
+    }
+
+    /**
      * 设置协助器工厂
      * @param helperFactory 协助器工厂
      */
     public Configuration setHelperFactory(HelperFactory helperFactory) {
         if(helperFactory != null){
             this.helperFactory = helperFactory;
+        }
+        return this;
+    }
+
+    /**
+     * 获取请求工厂
+     * @return 请求工厂
+     */
+    public RequestFactory getRequestFactory() {
+        return requestFactory;
+    }
+
+    /**
+     * 设置请求工厂
+     * @param requestFactory 请求工厂
+     */
+    public Configuration setRequestFactory(RequestFactory requestFactory) {
+        if(requestFactory != null){
+            this.requestFactory = requestFactory;
         }
         return this;
     }

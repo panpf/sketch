@@ -14,29 +14,17 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear;
 
 /**
- * 图片来源
+ * 进度监听器
  */
-public enum ImageFrom {
-    /**
-     * 网络
-     */
-    NETWORK,
+public interface ProgressListener {
 
     /**
-     * 磁盘缓存
+     * 更新进度
+     * @param totalLength 总长度
+     * @param completedLength 已完成长度
      */
-    DISK_CACHE,
-
-    /**
-     * 本地图片
-     */
-    LOCAL,
-
-    /**
-     * 内存缓存
-     */
-    MEMORY_CACHE,
+    void onUpdateProgress(int totalLength, int completedLength);
 }

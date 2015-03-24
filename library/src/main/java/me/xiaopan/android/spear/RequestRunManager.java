@@ -14,34 +14,30 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear;
 
 /**
- * 失败原因
+ * 运行管理器
  */
-public enum FailCause {
-    /**
-     * URI为NULL或空
-     */
-    URI_NULL_OR_EMPTY,
+public interface RequestRunManager {
+    void postRunDispatch();
+    void postRunDownload();
+    void postRunLoad();
 
-    /**
-     * ImageView为NULL
-     */
-    IMAGE_VIEW_NULL,
+    enum RunStatus{
+        /**
+         * 分发
+         */
+        DISPATCH,
 
-    /**
-     * URI不支持
-     */
-    URI_NO_SUPPORT,
+        /**
+         * 加载
+         */
+        LOAD,
 
-    /**
-     * 下载失败
-     */
-    DOWNLOAD_FAIL,
-
-    /**
-     * 解码失败
-     */
-    DECODE_FAIL,
+        /**
+         * 下载
+         */
+        DOWNLOAD,
+    }
 }

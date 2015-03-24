@@ -14,10 +14,34 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.request;
+package me.xiaopan.android.spear;
+
+import android.graphics.Bitmap;
 
 /**
- * 请求参数
+ * 加载监听器
  */
-public interface RequestOptions {
+public interface LoadListener {
+    /**
+     * 已开始
+     */
+    void onStarted();
+
+    /**
+     * 已完成
+     * @param bitmap 图片
+     * @param imageFrom 图片来源
+     */
+    void onCompleted(Bitmap bitmap, ImageFrom imageFrom);
+
+    /**
+     * 已失败
+     * @param failCause 失败原因
+     */
+    void onFailed(FailCause failCause);
+
+    /**
+     * 已取消
+     */
+    void onCanceled(CancelCause cancelCause);
 }

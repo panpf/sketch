@@ -32,7 +32,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.request.DownloadRequest;
+import me.xiaopan.android.spear.DownloadRequest;
 import me.xiaopan.android.spear.util.FileLastModifiedComparator;
 
 /**

@@ -25,12 +25,7 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.xiaopan.android.spear.request.DisplayRequest;
-import me.xiaopan.android.spear.request.DownloadListener;
-import me.xiaopan.android.spear.request.LoadListener;
-import me.xiaopan.android.spear.request.RequestOptions;
 import me.xiaopan.android.spear.util.AsyncDrawable;
-import me.xiaopan.android.spear.request.UriScheme;
 
 /**
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
