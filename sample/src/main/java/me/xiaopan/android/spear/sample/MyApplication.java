@@ -27,6 +27,8 @@ import me.xiaopan.android.spear.display.ColorTransitionImageDisplayer;
 import me.xiaopan.android.spear.display.TransitionImageDisplayer;
 import me.xiaopan.android.spear.process.CircleImageProcessor;
 import me.xiaopan.android.spear.process.ReflectionImageProcessor;
+import me.xiaopan.android.spear.sample.util.MobileNetworkPauseDownloadNewImageManager;
+import me.xiaopan.android.spear.sample.util.Settings;
 
 public class MyApplication extends Application {
 
@@ -37,11 +39,11 @@ public class MyApplication extends Application {
         GoHttp.with(getBaseContext()).setDebugMode(true);
         Spear.setDebugMode(true);
         Spear.putOptions(
-            DisplayOptionsType.LOCAL_PHOTO_ALBUM_ITEM,
-            new DisplayOptions(getBaseContext())
-                .loadingDrawable(R.drawable.image_loading)
-                .loadFailDrawable(R.drawable.image_load_fail)
-                .displayer(new TransitionImageDisplayer())
+                DisplayOptionsType.LOCAL_PHOTO_ALBUM_ITEM,
+                new DisplayOptions(getBaseContext())
+                        .loadingDrawable(R.drawable.image_loading)
+                        .loadFailDrawable(R.drawable.image_load_fail)
+                        .displayer(new TransitionImageDisplayer())
         );
 
         Spear.putOptions(
@@ -152,5 +154,8 @@ public class MyApplication extends Application {
                         .loadFailDrawable(R.drawable.image_load_fail)
                         .displayer(new TransitionImageDisplayer())
         );
+
+        boolean isPauseDownloadImage = Settings.with(getBaseContext()).isMobileNetworkPauseDownloadNewImage();
+        MobileNetworkPauseDownloadNewImageManager.with(getBaseContext()).setPauseDownloadImage(isPauseDownloadImage);
 	}
 }

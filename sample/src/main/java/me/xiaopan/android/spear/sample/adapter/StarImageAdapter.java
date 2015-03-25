@@ -18,6 +18,7 @@ import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.net.request.StarImageRequest;
 import me.xiaopan.android.spear.SpearImageView;
+import me.xiaopan.android.spear.sample.util.Settings;
 
 /**
  * 明星图片适配器
@@ -38,11 +39,13 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     private View.OnClickListener itemClickListener;
     private List<String> imageUrlList;
     private LoadMoreFooterViewHolder loadMoreFooterViewHolder;
+    private Settings settings;
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public StarImageAdapter(Context context, String headerImageUrl, List<StarImageRequest.Image> imageList, final OnItemClickListener onItemClickListener){
         this.context = context;
+        this.settings = Settings.with(context);
         this.headerImageUrl = headerImageUrl;
         this.imageList = imageList;
         this.imageUrlList = new ArrayList<>(imageList.size());
@@ -150,10 +153,6 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 itemViewHolder.twoSpearImageView.setEnableClickRipple(true);
                 itemViewHolder.threeSpearImageView.setEnableClickRipple(true);
 
-                itemViewHolder.oneSpearImageView.setEnableShowProgress(true);
-                itemViewHolder.twoSpearImageView.setEnableShowProgress(true);
-                itemViewHolder.threeSpearImageView.setEnableShowProgress(true);
-
                 itemViewHolder.oneSpearImageView.setOnClickListener(itemClickListener);
                 itemViewHolder.twoSpearImageView.setOnClickListener(itemClickListener);
                 itemViewHolder.threeSpearImageView.setOnClickListener(itemClickListener);
@@ -192,6 +191,10 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                     topMargin = margin;
                     bottomMargin = margin;
                 }
+
+                itemViewHolder.oneSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
+                itemViewHolder.twoSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
+                itemViewHolder.threeSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
 
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) itemViewHolder.oneSpearImageView.getLayoutParams();
                 params.topMargin = topMargin;
@@ -283,11 +286,11 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     }
 
     public interface OnItemClickListener{
-        public void onItemClick(int position, StarImageRequest.Image image);
+        void onItemClick(int position, StarImageRequest.Image image);
     }
 
     public interface OnLoadMoreListener{
-        public boolean isEnd();
-        public void onLoadMore();
+        boolean isEnd();
+        void onLoadMore();
     }
 }

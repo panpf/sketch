@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +33,7 @@ import me.xiaopan.android.spear.sample.activity.DetailActivity;
 import me.xiaopan.android.spear.sample.adapter.StarImageAdapter;
 import me.xiaopan.android.spear.sample.net.request.SearchImageRequest;
 import me.xiaopan.android.spear.sample.net.request.StarImageRequest;
-import me.xiaopan.android.spear.sample.util.PauseLoadForRecyclerView;
+import me.xiaopan.android.spear.sample.util.ScrollingPauseLoadNewImageManager;
 import me.xiaopan.android.spear.sample.widget.HintView;
 import me.xiaopan.android.widget.PullRefreshLayout;
 
@@ -60,8 +61,20 @@ public class SearchFragment extends InjectFragment implements StarImageAdapter.O
         searchImageRequest = new SearchImageRequest(searchKeyword);
         loadMoreListener = new MyLoadMoreListener();
         setHasOptionsMenu(true);
-        if(getActivity() instanceof ActionBarActivity){
-            ((ActionBarActivity) getActivity()).getSupportActionBar().setTitle(searchKeyword);
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setTitle(searchKeyword);
+    }
+
+    private void setTitle(String subtitle){
+        if(getActivity() != null && getActivity() instanceof ActionBarActivity){
+            ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+            if(actionBar != null){
+                actionBar.setTitle(subtitle);
+            }
         }
     }
 
@@ -79,7 +92,7 @@ public class SearchFragment extends InjectFragment implements StarImageAdapter.O
                     return false;
                 }
 
-                getActivity().setTitle(s);
+                setTitle(s);
                 Bundle bundle = new Bundle();
                 bundle.putString(SearchFragment.PARAM_OPTIONAL_STRING_SEARCH_KEYWORD, s);
                 SearchFragment searchFragment = new SearchFragment();
@@ -114,7 +127,7 @@ public class SearchFragment extends InjectFragment implements StarImageAdapter.O
         pullRefreshLayout.setOnRefreshListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setOnScrollListener(new PauseLoadForRecyclerView(view.getContext()));
+        recyclerView.setOnScrollListener(new ScrollingPauseLoadNewImageManager(view.getContext()));
 
         if (searchImageAdapter == null) {
             pullRefreshLayout.startRefresh();

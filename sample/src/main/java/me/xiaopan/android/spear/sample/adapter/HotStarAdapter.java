@@ -14,6 +14,7 @@ import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.net.request.HotStarRequest;
 import me.xiaopan.android.spear.SpearImageView;
+import me.xiaopan.android.spear.sample.util.Settings;
 
 /**
  * 热门明星适配器
@@ -29,9 +30,11 @@ public class HotStarAdapter extends RecyclerView.Adapter{
     private int marginBorder;
     private int availableScreenWidth;
     private View.OnClickListener itemClickListener;
+    private Settings settings;
 
     public HotStarAdapter(Context context, List<HotStarRequest.HotStar> hotStarList, final OnImageClickListener onImageClickListener) {
         this.context = context;
+        this.settings = Settings.with(context);
         append(hotStarList);
         this.marginBorder = (int) context.getResources().getDimension(R.dimen.home_category_margin_border);
         this.availableScreenWidth = context.getResources().getDisplayMetrics().widthPixels - (marginBorder*3);
@@ -128,10 +131,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemLeftHolder.twoSpearImageView.setEnableClickRipple(true);
             threeItemLeftHolder.threeSpearImageView.setEnableClickRipple(true);
 
-            threeItemLeftHolder.oneSpearImageView.setEnableShowProgress(true);
-            threeItemLeftHolder.twoSpearImageView.setEnableShowProgress(true);
-            threeItemLeftHolder.threeSpearImageView.setEnableShowProgress(true);
-
             int itemWidth = availableScreenWidth / 2;
             int itemHeight = (int) (itemWidth/0.75);
 
@@ -165,10 +164,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemRightHolder.twoSpearImageView.setEnableClickRipple(true);
             threeItemRightHolder.threeSpearImageView.setEnableClickRipple(true);
 
-            threeItemRightHolder.oneSpearImageView.setEnableShowProgress(true);
-            threeItemRightHolder.twoSpearImageView.setEnableShowProgress(true);
-            threeItemRightHolder.threeSpearImageView.setEnableShowProgress(true);
-
             int itemWidth = availableScreenWidth / 2;
             int itemHeight = (int) (itemWidth/0.75);
 
@@ -200,9 +195,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             twoItemHolder.oneSpearImageView.setEnableClickRipple(true);
             twoItemHolder.twoSpearImageView.setEnableClickRipple(true);
 
-            twoItemHolder.oneSpearImageView.setEnableShowProgress(true);
-            twoItemHolder.twoSpearImageView.setEnableShowProgress(true);
-
             int itemWidth = availableScreenWidth / 2;
             int itemHeight = (int) (itemWidth/1.36);
 
@@ -225,8 +217,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             oneItemHolder.oneSpearImageView.setOnClickListener(itemClickListener);
 
             oneItemHolder.oneSpearImageView.setEnableClickRipple(true);
-
-            oneItemHolder.oneSpearImageView.setEnableShowProgress(true);
 
             int itemWidth = availableScreenWidth;
             int itemHeight = (int) (itemWidth/1.36);
@@ -261,6 +251,9 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemLeftHolder.oneSpearImageView.setTag(threeItemLeft.star1);
             threeItemLeftHolder.twoSpearImageView.setTag(threeItemLeft.star2);
             threeItemLeftHolder.threeSpearImageView.setTag(threeItemLeft.star3);
+            threeItemLeftHolder.oneSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
+            threeItemLeftHolder.twoSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
+            threeItemLeftHolder.threeSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
         }else if(holder instanceof ThreeItemRightHolder){
             ThreeItemRightHolder threeItemRightHolder = (ThreeItemRightHolder) holder;
             ThreeItemRight threeItemRight = (ThreeItemRight) items.get(position);
@@ -273,6 +266,9 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemRightHolder.oneSpearImageView.setTag(threeItemRight.star1);
             threeItemRightHolder.twoSpearImageView.setTag(threeItemRight.star2);
             threeItemRightHolder.threeSpearImageView.setTag(threeItemRight.star3);
+            threeItemRightHolder.oneSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
+            threeItemRightHolder.twoSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
+            threeItemRightHolder.threeSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
         }else if(holder instanceof TwoItemHolder){
             TwoItemHolder twoItemHolder = (TwoItemHolder) holder;
             TwoItem twoItem = (TwoItem) items.get(position);
@@ -282,12 +278,15 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             twoItemHolder.twoSpearImageView.displayUriImage(twoItem.star2.getWidthImage().getUrl());
             twoItemHolder.oneSpearImageView.setTag(twoItem.star1);
             twoItemHolder.twoSpearImageView.setTag(twoItem.star2);
+            twoItemHolder.oneSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
+            twoItemHolder.twoSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
         }else if(holder instanceof OneItemHolder){
             OneItemHolder oneItemHolder = (OneItemHolder) holder;
             OneItem oneItem = (OneItem) items.get(position);
             oneItemHolder.oneNameTextView.setText(oneItem.star1.getName());
             oneItemHolder.oneSpearImageView.displayUriImage(oneItem.star1.getWidthImage().getUrl());
             oneItemHolder.oneSpearImageView.setTag(oneItem.star1);
+            oneItemHolder.oneSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
         }
 
         int topMargin;
@@ -403,6 +402,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
     }
 
     public interface OnImageClickListener{
-        public void onClickImage(HotStarRequest.Star star);
+        void onClickImage(HotStarRequest.Star star);
     }
 }

@@ -44,7 +44,8 @@ import me.xiaopan.android.spear.sample.fragment.SearchFragment;
 import me.xiaopan.android.spear.sample.fragment.StarFragment;
 import me.xiaopan.android.spear.sample.util.AnimationUtils;
 import me.xiaopan.android.spear.sample.util.DimenUtils;
-import me.xiaopan.android.spear.sample.util.PauseLoadForRecyclerView;
+import me.xiaopan.android.spear.sample.util.MobileNetworkPauseDownloadNewImageManager;
+import me.xiaopan.android.spear.sample.util.Settings;
 import me.xiaopan.android.widget.PagerSlidingTabStrip;
 
 /**
@@ -62,13 +63,16 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
     @InjectView(R.id.button_main_photoAlbum) private View photoAlbumButton;
     @InjectView(R.id.button_main_appList) private View appListButton;
     @InjectView(R.id.button_main_about) private View aboutButton;
-    @InjectView(R.id.item_main_pauseLoadNewImage) private View pauseLoadNewImageItem;
-    @InjectView(R.id.item_main_mobileNet) private View mobileNetItem;
-    @InjectView(R.id.checkBox_main_pauseLoadNewImage) private CheckBox pauseLoadNewImageCheckBox;
-    @InjectView(R.id.checkBox_main_mobileNet) private CheckBox mobileNetCheckBox;
+    @InjectView(R.id.item_main_scrollingPauseLoadNewImage) private View scrollingPauseLoadNewImageItem;
+    @InjectView(R.id.item_main_mobileNetworkPauseDownloadNewImage) private View mobileNetworkPauseDownloadImageItem;
+    @InjectView(R.id.item_main_showImageDownloadProgress) private View showImageDownloadProgressItem;
+    @InjectView(R.id.checkBox_main_scrollingPauseLoadNewImage) private CheckBox scrollingPauseLoadNewImageCheckBox;
+    @InjectView(R.id.checkBox_main_mobileNetworkPauseDownloadNewImage) private CheckBox mobileNetworkPauseDownloadImageCheckBox;
+    @InjectView(R.id.checkBox_main_showImageDownloadProgress) private CheckBox showImageDownloadProgressCheckBox;
 
     private long lastClickBackTime;
     private Type type;
+    private Settings settings;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -86,7 +90,10 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
         params.width = (int) (getResources().getDisplayMetrics().widthPixels*0.7);
         leftMenuView.setLayoutParams(params);
 
-        pauseLoadNewImageCheckBox.setChecked(PauseLoadForRecyclerView.isEnablePauseLoadOnScrolling(getBaseContext()));
+        settings = Settings.with(getBaseContext());
+        scrollingPauseLoadNewImageCheckBox.setChecked(settings.isScrollingPauseLoadNewImage());
+        showImageDownloadProgressCheckBox.setChecked(settings.isShowImageDownloadProgress());
+        mobileNetworkPauseDownloadImageCheckBox.setChecked(settings.isMobileNetworkPauseDownloadNewImage());
 
         starButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -94,7 +101,7 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
                 drawerLayout.closeDrawer(Gravity.START);
 
                 if (type != Type.STAR) {
-                    getSupportActionBar().setTitle("明星");
+                    getSupportActionBar().setTitle("明星图片");
                     AnimationUtils.visibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
                     type = Type.STAR;
@@ -168,7 +175,7 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
                 if (type != Type.ABOUT) {
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
-                    getSupportActionBar().setTitle("关于");
+                    getSupportActionBar().setTitle("关于Spear");
                     type = Type.ABOUT;
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
@@ -178,19 +185,33 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
             }
         });
 
-        pauseLoadNewImageItem.setOnClickListener(new View.OnClickListener() {
+        showImageDownloadProgressItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean oldPauseLoadOnScrolling = PauseLoadForRecyclerView.isEnablePauseLoadOnScrolling(getBaseContext());
-                PauseLoadForRecyclerView.setEnablePauseLoadOnScrolling(getBaseContext(), !oldPauseLoadOnScrolling);
-                pauseLoadNewImageCheckBox.setChecked(!oldPauseLoadOnScrolling);
+                boolean newShowProgressValue = !settings.isShowImageDownloadProgress();
+                settings.setShowImageDownloadProgress(newShowProgressValue);
+                showImageDownloadProgressCheckBox.setChecked(newShowProgressValue);
                 drawerLayout.closeDrawer(Gravity.START);
             }
         });
 
-        mobileNetItem.setOnClickListener(new View.OnClickListener() {
+        scrollingPauseLoadNewImageItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                boolean newPauseLoadNewImageValue = !settings.isScrollingPauseLoadNewImage();
+                settings.setScrollingPauseLoadNewImage(newPauseLoadNewImageValue);
+                scrollingPauseLoadNewImageCheckBox.setChecked(newPauseLoadNewImageValue);
+                drawerLayout.closeDrawer(Gravity.START);
+            }
+        });
+
+        mobileNetworkPauseDownloadImageItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean newMobileNetStopDownloadImageValue = !settings.isMobileNetworkPauseDownloadNewImage();
+                settings.setMobileNetworkPauseDownloadNewImage(newMobileNetStopDownloadImageValue);
+                mobileNetworkPauseDownloadImageCheckBox.setChecked(newMobileNetStopDownloadImageValue);
+                MobileNetworkPauseDownloadNewImageManager.with(getBaseContext()).setPauseDownloadImage(newMobileNetStopDownloadImageValue);
                 drawerLayout.closeDrawer(Gravity.START);
             }
         });
@@ -206,7 +227,7 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
             public void run() {
                 BaseFoldingLayout foldingLayout = ((FoldingDrawerLayout) drawerLayout).getFoldingLayout(leftMenuView);
                 if (foldingLayout != null) {
-                    foldingLayout.setNumberOfFolds(8);
+                    foldingLayout.setNumberOfFolds(4);
                 } else {
                     handler.postDelayed(this, 100);
                 }

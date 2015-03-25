@@ -16,6 +16,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            android:textSize="16sp"
             android:text="页面"/>
         <View
             android:layout_width="match_parent"
@@ -37,7 +39,7 @@
         <TextView
             android:id="@+id/button_main_photoAlbum"
             style="@style/menu_item"
-            android:text="本地图片"/>
+            android:text="本地相册"/>
         <TextView
             android:id="@+id/button_main_appList"
             style="@style/menu_item"
@@ -52,6 +54,8 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
+            android:textStyle="bold"
+            android:textSize="16sp"
             android:text="设置"/>
         <View
             android:layout_width="match_parent"
@@ -62,16 +66,16 @@
             android:layout_marginTop="8dp"/>
 
         <LinearLayout
-            android:id="@+id/item_main_pauseLoadNewImage"
+            android:id="@+id/item_main_showImageDownloadProgress"
             android:clickable="true"
             style="@style/menu_item">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="列表滑动时停止加载图片"/>
+                android:text="显示图片下载进度"/>
             <CheckBox
-                android:id="@+id/checkBox_main_pauseLoadNewImage"
+                android:id="@+id/checkBox_main_showImageDownloadProgress"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
@@ -81,7 +85,26 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/item_main_mobileNet"
+            android:id="@+id/item_main_scrollingPauseLoadNewImage"
+            android:clickable="true"
+            style="@style/menu_item">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="列表滑动时不加载图片"/>
+            <CheckBox
+                android:id="@+id/checkBox_main_scrollingPauseLoadNewImage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_main_mobileNetworkPauseDownloadNewImage"
             android:clickable="true"
             style="@style/menu_item">
             <TextView
@@ -90,7 +113,7 @@
                 android:layout_weight="1"
                 android:text="移动网络下不加载新图片"/>
             <CheckBox
-                android:id="@+id/checkBox_main_mobileNet"
+                android:id="@+id/checkBox_main_mobileNetworkPauseDownloadNewImage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"

@@ -23,7 +23,7 @@ import me.xiaopan.android.spear.sample.adapter.HotStarAdapter;
 import me.xiaopan.android.spear.sample.net.request.HotManStarRequest;
 import me.xiaopan.android.spear.sample.net.request.HotStarRequest;
 import me.xiaopan.android.spear.sample.net.request.HotWomanStarRequest;
-import me.xiaopan.android.spear.sample.util.PauseLoadForRecyclerView;
+import me.xiaopan.android.spear.sample.util.ScrollingPauseLoadNewImageManager;
 import me.xiaopan.android.spear.sample.widget.HintView;
 import me.xiaopan.android.widget.PullRefreshLayout;
 
@@ -45,7 +45,7 @@ public class HotStarFragment extends InjectFragment implements PullRefreshLayout
         super.onViewCreated(view, savedInstanceState);
 
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        contentRecyclerView.setOnScrollListener(new PauseLoadForRecyclerView(view.getContext()));
+        contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadNewImageManager(view.getContext()));
         refreshLayout.setOnRefreshListener(this);
 
         if(adapter == null){
