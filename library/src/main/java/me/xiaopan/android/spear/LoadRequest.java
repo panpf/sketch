@@ -71,12 +71,6 @@ public interface LoadRequest extends DownloadRequest{
     void setLoadListener(LoadListener loadListener);
 
     /**
-     * 设置请求处理级别
-     * @param requestHandleLevel 请求处理级别
-     */
-    void setRequestHandleLevel(RequestHandleLevel requestHandleLevel);
-
-    /**
      * 获取图片数据
      * @return 图片数据
      */

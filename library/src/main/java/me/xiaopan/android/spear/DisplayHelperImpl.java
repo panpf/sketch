@@ -81,7 +81,10 @@ public class DisplayHelperImpl implements DisplayHelper{
         this.spear = spear;
         this.uri = uri;
         this.imageView = imageView;
-        if(spear.isPauseLoadOnScrolling()){
+        if(spear.isPauseDownloadNewImage()){
+            this.requestHandleLevel = RequestHandleLevel.LOCAL;
+        }
+        if(spear.isPauseLoadNewImage()){
             this.requestHandleLevel = RequestHandleLevel.MEMORY;
         }
 
@@ -384,6 +387,9 @@ public class DisplayHelperImpl implements DisplayHelper{
             imageView.setImageDrawable(loadingBitmapDrawable);
             if(displayListener != null){
                 displayListener.onCanceled(CancelCause.LEVEL_IS_MEMORY);
+                if(Spear.isDebugMode()){
+                    Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "level is memory" + " - " + name);
+                }
             }
             if(imageView instanceof SpearImageView){
                 ((SpearImageView) imageView).setDisplayRequest(null);

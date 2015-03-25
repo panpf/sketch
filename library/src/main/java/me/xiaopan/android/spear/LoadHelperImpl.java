@@ -38,7 +38,6 @@ public class LoadHelperImpl implements LoadHelper{
     protected ProgressListener progressListener;
 
     // 加载属性
-    protected RequestHandleLevel requestHandleLevel = RequestHandleLevel.NET;
     protected ImageSize maxsize;
     protected ImageSize resize;
     protected ImageProcessor imageProcessor;
@@ -125,14 +124,6 @@ public class LoadHelperImpl implements LoadHelper{
     }
 
     @Override
-    public LoadHelperImpl level(RequestHandleLevel requestHandleLevel){
-        if(requestHandleLevel != null){
-            this.requestHandleLevel = requestHandleLevel;
-        }
-        return this;
-    }
-
-    @Override
     public LoadHelperImpl options(LoadOptions options){
         if(options == null){
             return this;
@@ -195,10 +186,9 @@ public class LoadHelperImpl implements LoadHelper{
         LoadRequest request = spear.getConfiguration().getRequestFactory().newLoadRequest(spear, uri, uriScheme);
 
         request.setName(name != null ? name : uri);
-        request.setProgressListener(progressListener);
-        request.setRequestHandleLevel(requestHandleLevel);
 
         request.setEnableDiskCache(enableDiskCache);
+        request.setProgressListener(progressListener);
 
         request.setMaxsize(maxsize);
         request.setResize(resize);

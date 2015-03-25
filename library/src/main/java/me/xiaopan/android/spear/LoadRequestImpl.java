@@ -43,7 +43,6 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private ProgressListener progressListener;  // 下载进度监听器
 
     // Load fields
-    private RequestHandleLevel requestHandleLevel = RequestHandleLevel.NET;
     private ImageSize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来裁剪图片
     private ImageSize maxsize;	// 最大尺寸，用于读取图片时计算inSampleSize
     private ImageProcessor imageProcessor;	// 图片处理器
@@ -103,11 +102,6 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     }
 
     /****************************************** Load methods ******************************************/
-    @Override
-    public void setRequestHandleLevel(RequestHandleLevel requestHandleLevel) {
-        this.requestHandleLevel = requestHandleLevel;
-    }
-
     @Override
     public ImageSize getResize() {
         return resize;
@@ -291,11 +285,6 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
                     Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "diskCache" + " - " + name);
                 }
             }else{
-                if(requestHandleLevel == RequestHandleLevel.LOCAL){
-                    toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
-                    return;
-                }
-
                 postRunDownload();
                 if(Spear.isDebugMode()){
                     Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "download" + " - " + name);

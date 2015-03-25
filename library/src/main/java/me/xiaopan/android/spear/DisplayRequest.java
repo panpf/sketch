@@ -62,6 +62,12 @@ public interface DisplayRequest extends LoadRequest{
     void setDisplayListener(DisplayListener displayListener);
 
     /**
+     * 设置请求处理级别
+     * @param requestHandleLevel 请求处理级别
+     */
+    void setRequestHandleLevel(RequestHandleLevel requestHandleLevel);
+
+    /**
      * 取消显示
      */
     void cancelDisplay(String callingStation);

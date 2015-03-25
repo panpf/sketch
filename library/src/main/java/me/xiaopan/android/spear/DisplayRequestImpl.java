@@ -372,6 +372,9 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             }else{
                 if(requestHandleLevel == RequestHandleLevel.LOCAL){
                     toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
+                    if(Spear.isDebugMode()){
+                        Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "level is local" + " - " + name);
+                    }
                     return;
                 }
 

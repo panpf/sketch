@@ -32,11 +32,14 @@ import me.xiaopan.android.spear.util.AsyncDrawable;
  */
 public class Spear {
     public static final String TAG = "Spear";
-	private static Spear instance;
+
+    private static Spear instance;
     private static boolean debugMode;	//调试模式，在控制台输出日志
     private static Map<Object, RequestOptions> optionsMap;
+
     private Configuration configuration;
-    private boolean pauseLoadOnScrolling;
+    private boolean pauseLoadNewImage;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+    private boolean pauseDownloadNewImage;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
 
 	private Spear(Context context){
         this.configuration = new Configuration(context);
@@ -67,23 +70,58 @@ public class Spear {
     }
 
     /**
-     * 设置是否在滚动时暂停加载，只影响display请求，暂停后将只从内存查找缓存图片，如果内存中没有就不再处理了。需要配合Scrolling一起使用
-     * @param pauseLoadOnScrolling 是否在滚动时暂停加载
+     * 设置是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+     * @param pauseLoadNewImage 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
      */
-    public void setPauseLoadOnScrolling(boolean pauseLoadOnScrolling) {
-        this.pauseLoadOnScrolling = pauseLoadOnScrolling;
+    public void setPauseLoadNewImage(boolean pauseLoadNewImage) {
+        if(this.pauseLoadNewImage == pauseLoadNewImage){
+            return;
+        }
+        this.pauseLoadNewImage = pauseLoadNewImage;
         if(isDebugMode()){
-            Log.w(TAG, this.pauseLoadOnScrolling?"已开启滚动时停止加载功能":"已关闭滚动时停止加载功能");
+            if(this.pauseLoadNewImage){
+                Log.w(TAG, "pauseLoadNewImage");
+            }else{
+                Log.d(TAG, "resumeLoadNewImage");
+            }
         }
     }
 
     /**
-     * 是否在滚动时暂停加载，只影响display请求，暂停后将只从内存查找缓存图片，如果内存中没有就不再处理了。需要配合Scrolling一起使用
-     * @return 是否在滚动时暂停加载
+     * 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+     * @return 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
      */
-    public boolean isPauseLoadOnScrolling() {
-        return pauseLoadOnScrolling;
+    public boolean isPauseLoadNewImage() {
+        return pauseLoadNewImage;
     }
+
+    /**
+     * 是否暂停下载图片，开启后将不再从网络下载图片，只影响display请求
+     * @return 暂停下载图片，开启后将不再从网络下载图片，只影响display请求
+     */
+    public boolean isPauseDownloadNewImage() {
+        return pauseDownloadNewImage;
+    }
+
+    /**
+     * 设置暂停下载图片，开启后将不再从网络下载图片，只影响display请求
+     * @param pauseDownloadNewImage 暂停下载图片，开启后将不再从网络下载图片，只影响display请求
+     */
+    public void setPauseDownloadNewImage(boolean pauseDownloadNewImage) {
+        if(this.pauseDownloadNewImage == pauseDownloadNewImage){
+            return;
+        }
+        this.pauseDownloadNewImage = pauseDownloadNewImage;
+        if(isDebugMode()){
+            if(this.pauseDownloadNewImage){
+                Log.w(TAG, "pauseDownloadNewImage");
+            }else{
+                Log.d(TAG, "resumeDownloadImage");
+            }
+        }
+    }
+
+
 
     /**
      * 下载

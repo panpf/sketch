@@ -97,13 +97,6 @@ public interface LoadHelper {
     LoadHelper progressListener(ProgressListener progressListener);
 
     /**
-     * 设置加载级别
-     * @param requestHandleLevel 加载级别
-     * @return LoadHelper
-     */
-    LoadHelper level(RequestHandleLevel requestHandleLevel);
-
-    /**
      * 设置加载参数
      * @param options 加载参数
      * @return LoadHelper
