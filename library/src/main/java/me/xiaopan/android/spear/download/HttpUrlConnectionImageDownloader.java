@@ -49,7 +49,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     private static final String NAME = "HttpUrlConnectionImageDownloader";
 
     private static final int BUFFER_SIZE = 8*1024;
-    private static final int DEFAULT_READ_TIMEOUT = 10*1000;   // 默认读取超时时间
+    private static final int DEFAULT_READ_TIMEOUT = 30*1000;   // 默认读取超时时间
     private static final int DEFAULT_CONNECT_TIMEOUT = 10*1000;    // 默认连接超时时间
     private static final int DEFAULT_MAX_RETRY_COUNT = 1;    // 默认最大重试次数
     private static final int DEFAULT_PROGRESS_CALLBACK_NUMBER = 10;    // 默认进度回调次数
@@ -184,6 +184,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         try {
             responseCode = connection.getResponseCode();
         } catch (IOException e) {
+            e.printStackTrace();
             releaseConnection(connection, request);
             if (Spear.isDebugMode()) {
                 Log.w(Spear.TAG, NAME + " - " + "get response code failed" + " - " + request.getName() + " - " + "HttpResponseHeader:"+getResponseHeadersString(connection));
@@ -194,6 +195,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         try {
             responseMessage = connection.getResponseMessage();
         } catch (IOException e) {
+            e.printStackTrace();
             releaseConnection(connection, request);
             if (Spear.isDebugMode()) {
                 Log.w(Spear.TAG, NAME + " - " + "get response message failed" + " - " + request.getName() + " - " + "HttpResponseHeader:"+getResponseHeadersString(connection));
