@@ -423,7 +423,7 @@ public class DisplayHelperImpl implements DisplayHelper{
             imageView.clearAnimation();
             imageView.setImageDrawable(loadingBitmapDrawable);
             if(displayListener != null){
-                displayListener.onCanceled(levelFromPauseLoad ?CancelCause.PAUSE_LOAD_NEW_IMAGE:CancelCause.LEVEL_IS_MEMORY);
+                displayListener.onCanceled(levelFromPauseLoad ?CancelCause.PAUSE_LOAD :CancelCause.LEVEL_IS_MEMORY);
                 if(Spear.isDebugMode()){
                     Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + (levelFromPauseLoad?"pause load":"level is memory") + " - " + name);
                 }

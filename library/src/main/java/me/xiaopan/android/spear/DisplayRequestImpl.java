@@ -594,7 +594,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             imageDisplayer.display(imageViewHolder.getImageView(), getPauseDownloadDrawable(), this);
         }
 
-        cancelCause = CancelCause.PAUSE_DOWNLOAD_NEW_IMAGE;
+        cancelCause = CancelCause.PAUSE_DOWNLOAD;
         setRequestStatus(RequestStatus.CANCELED);
         if(displayListener != null){
             displayListener.onCanceled(cancelCause);

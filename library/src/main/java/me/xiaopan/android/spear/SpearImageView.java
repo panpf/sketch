@@ -66,12 +66,13 @@ public class SpearImageView extends ImageView{
     private View.OnClickListener onClickListener;
     private String imageUri;
     private boolean replacedClickListener;
+    private boolean clickLoadOnPauseDownload;
 
     private int touchX;
     private int touchY;
     private int clickRippleColor = DEFAULT_RIPPLE_COLOR;
     private boolean pressed;
-    private boolean enableClickRipple;
+    private boolean showClickRipple;
     private Paint clickRipplePaint;
     private Scroller clickRippleScroller;
     private Runnable clickRippleRefreshRunnable;
@@ -149,7 +150,7 @@ public class SpearImageView extends ImageView{
 
     @Override
     protected void dispatchSetPressed(boolean pressed) {
-        if(enableClickRipple && this.pressed != pressed){
+        if(showClickRipple && this.pressed != pressed){
             this.pressed = pressed;
             if(pressed){
                 if(clickRippleScroller == null){
@@ -203,7 +204,7 @@ public class SpearImageView extends ImageView{
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(enableClickRipple && event.getAction() == MotionEvent.ACTION_DOWN && !pressed){
+        if(showClickRipple && event.getAction() == MotionEvent.ACTION_DOWN && !pressed){
             touchX = (int) event.getX();
             touchY = (int) event.getY();
         }
@@ -295,11 +296,19 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 设置是否开启点击涟漪效果，开启后按下的时候会在ImageView表面显示一个黑色半透明的涟漪效果，此功能需要你点注册点击事件或设置Clickable
-     * @param enableClickRipple 是否开启点击涟漪效果
+     * 设置是否在暂停下载的时候开启点击加载功能
+     * @param clickLoadOnPauseDownload 是否在暂停下载的时候开启点击加载功能
      */
-    public void setEnableClickRipple(boolean enableClickRipple) {
-        this.enableClickRipple = enableClickRipple;
+    public void setClickLoadOnPauseDownload(boolean clickLoadOnPauseDownload) {
+        this.clickLoadOnPauseDownload = clickLoadOnPauseDownload;
+    }
+
+    /**
+     * 设置是否显示点击涟漪效果，开启后按下的时候会在ImageView表面显示一个黑色半透明的涟漪效果，此功能需要注册点击事件或设置Clickable为true
+     * @param showClickRipple 是否显示点击涟漪效果
+     */
+    public void setShowClickRipple(boolean showClickRipple) {
+        this.showClickRipple = showClickRipple;
     }
 
     /**
@@ -361,7 +370,7 @@ public class SpearImageView extends ImageView{
      * @return 显示监听器
      */
     DisplayListener getDisplayListener(boolean isPauseDownload){
-        if(showFromFlag || showDownloadProgress || isPauseDownload){
+        if(showFromFlag || showDownloadProgress || (isPauseDownload && clickLoadOnPauseDownload)){
             if(myListener == null){
                 myListener = new MyListener();
             }
@@ -424,7 +433,7 @@ public class SpearImageView extends ImageView{
      */
     void setImageUri(String imageUri){
         this.imageUri = imageUri;
-        if(replacedClickListener){
+        if(clickLoadOnPauseDownload && replacedClickListener){
             setOnClickListener(onClickListener);
             if(onClickListener == null){
                 setClickable(false);
@@ -525,7 +534,7 @@ public class SpearImageView extends ImageView{
 
         @Override
         public void onCanceled(CancelCause cancelCause) {
-            if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD_NEW_IMAGE){
+            if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD && clickLoadOnPauseDownload){
                 SpearImageView.super.setOnClickListener(this);
                 replacedClickListener = true;
             }
