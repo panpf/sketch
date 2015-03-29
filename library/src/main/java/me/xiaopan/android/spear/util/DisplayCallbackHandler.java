@@ -27,7 +27,6 @@ import me.xiaopan.android.spear.DisplayListener;
 import me.xiaopan.android.spear.DisplayRequest;
 import me.xiaopan.android.spear.FailCause;
 import me.xiaopan.android.spear.ImageFrom;
-import me.xiaopan.android.spear.RequestStatus;
 
 /**
  * 显示回调处理器
@@ -37,6 +36,7 @@ public class DisplayCallbackHandler implements Handler.Callback{
     private static final int WHAT_CALLBACK_FAILED = 103;
     private static final int WHAT_CALLBACK_CANCELED = 104;
     private static final int WHAT_CALLBACK_PROGRESS = 105;
+    private static final int WHAT_CALLBACK_PAUSE_DOWNLOAD = 106;
     private Handler handler;
 
     public DisplayCallbackHandler() {
@@ -57,6 +57,9 @@ public class DisplayCallbackHandler implements Handler.Callback{
                 return true;
             case WHAT_CALLBACK_CANCELED:
                 ((DisplayRequest) msg.obj).handleCanceledOnMainThread();
+                return true;
+            case WHAT_CALLBACK_PAUSE_DOWNLOAD:
+                ((DisplayRequest) msg.obj).handlePauseDownloadOnMainThread();
                 return true;
             default:
                 return false;
@@ -88,12 +91,10 @@ public class DisplayCallbackHandler implements Handler.Callback{
     }
 
     public void completeCallback(DisplayRequest displayRequest){
-        displayRequest.setRequestStatus(RequestStatus.WAIT_DISPLAY);
         handler.obtainMessage(WHAT_CALLBACK_COMPLETED, displayRequest).sendToTarget();
     }
 
     public void failCallback(DisplayRequest displayRequest){
-        displayRequest.setRequestStatus(RequestStatus.WAIT_DISPLAY);
         handler.obtainMessage(WHAT_CALLBACK_FAILED, displayRequest).sendToTarget();
     }
 
@@ -103,5 +104,9 @@ public class DisplayCallbackHandler implements Handler.Callback{
 
     public void updateProgressCallback(DisplayRequest request, int totalLength, int completedLength){
         handler.obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, request).sendToTarget();
+    }
+
+    public void pauseDownloadCallback(DisplayRequest displayRequest){
+        handler.obtainMessage(WHAT_CALLBACK_PAUSE_DOWNLOAD, displayRequest).sendToTarget();
     }
 }

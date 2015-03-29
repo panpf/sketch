@@ -50,10 +50,22 @@ public interface DisplayRequest extends LoadRequest{
     void setLoadFailDrawableHolder(DrawableHolder loadFailDrawableHolder);
 
     /**
+     * 设置暂停下载图片
+     * @param pauseDownloadDrawableHolder 暂停下载图片
+     */
+    void setPauseDownloadDrawableHolder(DrawableHolder pauseDownloadDrawableHolder);
+
+    /**
      * 获取加载失败时显示的图片
      * @return 加载失败时显示的图片
      */
     BitmapDrawable getLoadFailDrawable();
+
+    /**
+     * 获取暂停下载时显示的图片
+     * @return 暂停下载时显示的图片
+     */
+    BitmapDrawable getPauseDownloadDrawable();
 
     /**
      * 设置显示监听器
@@ -88,7 +100,18 @@ public interface DisplayRequest extends LoadRequest{
     void handleCanceledOnMainThread();
 
     /**
+     * 在主线程处理暂停下载
+     */
+    void handlePauseDownloadOnMainThread();
+
+    /**
      * 在主线程更新进度
      */
     void updateProgressOnMainThread(int totalLength, int completedLength);
+
+    /**
+     * 设置Level是否来自暂停下载
+     * @param levelFromPauseDownload Level是否来自暂停下载
+     */
+    void setLevelFromPauseDownload(boolean levelFromPauseDownload);
 }

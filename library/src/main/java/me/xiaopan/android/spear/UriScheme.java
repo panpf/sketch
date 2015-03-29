@@ -119,7 +119,7 @@ public enum UriScheme {
     }
 
     public static UriScheme valueOfUri(String uri) {
-		if (uri != null) {
+		if (uri != null && !"".equals(uri.trim())) {
 			for (UriScheme uriScheme : values()) {
 				if (uri.startsWith(uriScheme.getUriPrefix())) {
 					return uriScheme;

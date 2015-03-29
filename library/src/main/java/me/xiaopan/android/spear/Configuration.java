@@ -17,6 +17,7 @@
 package me.xiaopan.android.spear;
 
 import android.content.Context;
+import android.util.Log;
 
 import me.xiaopan.android.spear.cache.DiskCache;
 import me.xiaopan.android.spear.cache.LruDiskCache;
@@ -39,6 +40,7 @@ import me.xiaopan.android.spear.util.DisplayCallbackHandler;
 import me.xiaopan.android.spear.util.DisplayHelperManager;
 import me.xiaopan.android.spear.util.HelperFactory;
 import me.xiaopan.android.spear.util.ImageSizeCalculator;
+import me.xiaopan.android.spear.util.MobileNetworkPauseDownloadManager;
 import me.xiaopan.android.spear.util.RequestFactory;
 
 public class Configuration {
@@ -55,6 +57,10 @@ public class Configuration {
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
     private DisplayHelperManager displayHelperManager;  // DisplayHelper管理器
     private DisplayCallbackHandler displayCallbackHandler;	//显示相关回调处理器
+
+    private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+    private boolean pauseDownload;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
+    private MobileNetworkPauseDownloadManager mobileNetworkPauseDownloadManager;
 
     public Configuration(Context context){
         this.context = context;
@@ -281,6 +287,76 @@ public class Configuration {
     public Configuration setRequestFactory(RequestFactory requestFactory) {
         if(requestFactory != null){
             this.requestFactory = requestFactory;
+        }
+        return this;
+    }
+
+    /**
+     * 设置是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+     * @param pauseLoad 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+     */
+    public void setPauseLoad(boolean pauseLoad) {
+        if(this.pauseLoad == pauseLoad){
+            return;
+        }
+        this.pauseLoad = pauseLoad;
+        if(Spear.isDebugMode()){
+            if(this.pauseLoad){
+                Log.w(Spear.TAG, "pauseLoad");
+            }else{
+                Log.d(Spear.TAG, "resumeLoad");
+            }
+        }
+    }
+
+    /**
+     * 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+     * @return 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+     */
+    public boolean isPauseLoad() {
+        return pauseLoad;
+    }
+
+    /**
+     * 是否暂停下载图片，开启后将不再从网络下载图片，只影响display请求
+     * @return 暂停下载图片，开启后将不再从网络下载图片，只影响display请求
+     */
+    public boolean isPauseDownload() {
+        return pauseDownload;
+    }
+
+    /**
+     * 设置暂停下载图片，开启后将不再从网络下载图片，只影响display请求
+     * @param pauseDownload 暂停下载图片，开启后将不再从网络下载图片，只影响display请求
+     */
+    public void setPauseDownload(boolean pauseDownload) {
+        if(this.pauseDownload == pauseDownload){
+            return;
+        }
+        this.pauseDownload = pauseDownload;
+        if(Spear.isDebugMode()){
+            if(this.pauseDownload){
+                Log.w(Spear.TAG, "pauseDownload");
+            }else{
+                Log.d(Spear.TAG, "resumeDownload");
+            }
+        }
+    }
+
+    /**
+     * 设置是否开启移动网络下暂停下载的功能
+     * @param mobileNetworkPauseDownload 是否开启移动网络下暂停下载的功能
+     */
+    public Configuration setMobileNetworkPauseDownload(boolean mobileNetworkPauseDownload){
+        if(mobileNetworkPauseDownload){
+            if(mobileNetworkPauseDownloadManager == null){
+                mobileNetworkPauseDownloadManager = new MobileNetworkPauseDownloadManager(context);
+            }
+            mobileNetworkPauseDownloadManager.setPauseDownload(true);
+        }else{
+            if(mobileNetworkPauseDownloadManager != null){
+                mobileNetworkPauseDownloadManager.setPauseDownload(false);
+            }
         }
         return this;
     }

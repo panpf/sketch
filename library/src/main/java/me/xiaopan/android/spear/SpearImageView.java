@@ -26,6 +26,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
@@ -37,35 +38,37 @@ import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
  */
 public class SpearImageView extends ImageView{
     private static final int NONE = -1;
-    private static final int DEFAULT_DEBUG_COLOR_MEMORY = 0x8800FF00;
-    private static final int DEFAULT_DEBUG_COLOR_DISK = 0x88FFFF00;
-    private static final int DEFAULT_DEBUG_COLOR_NETWORK = 0x88FF0000;
+    private static final int FROM_FLAG_COLOR_MEMORY = 0x8800FF00;
+    private static final int FROM_FLAG_COLOR_LOCAL = 0x880000FF;
+    private static final int FROM_FLAG_COLOR_DISK_CACHE = 0x88FFFF00;
+    private static final int FROM_FLAG_COLOR_NETWORK = 0x88FF0000;
     private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
-    private static final int DEFAULT_PRESSED_COLOR = 0x33000000;
-    private static final int DEFAULT_ANIMATION_DURATION = 500;
+    private static final int DEFAULT_RIPPLE_COLOR = 0x33000000;
+    private static final int RIPPLE_ANIMATION_DURATION_SHORT = 100;
+    private static final int RIPPLE_ANIMATION_DURATION_LENGTH = 500;
 
     private Request displayRequest;
+    private MyListener myListener;
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
     private ProgressListener progressListener;
 
-    private int debugColor = NONE;
-    private boolean debugMode;
-    private Paint debugPaint;
-    private Path debugTrianglePath;
-    private DebugDisplayListener debugDisplayListener;
+    private int fromFlagColor = NONE;
+    private Path fromFlagPath;
+    private Paint fromFlagPaint;
+    private boolean showFromFlag;
 
     private int progressColor = DEFAULT_PROGRESS_COLOR;
-    private float progress = NONE;
-    private boolean enableShowProgress;
     private Paint progressPaint;
-    private UpdateProgressListener updateProgressListener;
-    private ProgressDisplayListener progressDisplayListener;
+    private float progress = NONE;
+    private boolean showDownloadProgress;
+
+    private View.OnClickListener onClickListener;
+    private String imageUri;
 
     private int touchX;
     private int touchY;
-    private int clickRippleColor = DEFAULT_PRESSED_COLOR;
-    private int clickRippleAnimationDuration = DEFAULT_ANIMATION_DURATION;
+    private int clickRippleColor = DEFAULT_RIPPLE_COLOR;
     private boolean pressed;
     private boolean enableClickRipple;
     private Paint clickRipplePaint;
@@ -81,18 +84,24 @@ public class SpearImageView extends ImageView{
     }
 
     @Override
+    public void setOnClickListener(OnClickListener l) {
+        super.setOnClickListener(l);
+        this.onClickListener = l;
+    }
+
+    @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
         // 重新计算三角形的位置
-        if(debugTrianglePath != null){
-            debugTrianglePath.reset();
+        if(fromFlagPath != null){
+            fromFlagPath.reset();
             int x = getWidth()/10;
             int y = getWidth()/10;
-            debugTrianglePath.moveTo(getPaddingLeft(), getPaddingTop());
-            debugTrianglePath.lineTo(getPaddingLeft() + x, getPaddingTop());
-            debugTrianglePath.lineTo(getPaddingLeft(), getPaddingTop() + y);
-            debugTrianglePath.close();
+            fromFlagPath.moveTo(getPaddingLeft(), getPaddingTop());
+            fromFlagPath.lineTo(getPaddingLeft() + x, getPaddingTop());
+            fromFlagPath.lineTo(getPaddingLeft(), getPaddingTop() + y);
+            fromFlagPath.close();
         }
     }
 
@@ -110,7 +119,7 @@ public class SpearImageView extends ImageView{
         }
 
         // 绘制进度
-        if(enableShowProgress && progress != NONE){
+        if(showDownloadProgress && progress != NONE){
             if(progressPaint == null){
                 progressPaint = new Paint();
                 progressPaint.setColor(progressColor);
@@ -119,21 +128,21 @@ public class SpearImageView extends ImageView{
         }
 
         // 绘制三角形
-        if(debugMode && debugColor != NONE){
-            if(debugTrianglePath == null){
-                debugTrianglePath = new Path();
+        if(showFromFlag && fromFlagColor != NONE){
+            if(fromFlagPath == null){
+                fromFlagPath = new Path();
                 int x = getWidth()/10;
                 int y = getWidth()/10;
-                debugTrianglePath.moveTo(getPaddingLeft(), getPaddingTop());
-                debugTrianglePath.lineTo(getPaddingLeft()+x, getPaddingTop());
-                debugTrianglePath.lineTo(getPaddingLeft(), getPaddingTop()+y);
-                debugTrianglePath.close();
+                fromFlagPath.moveTo(getPaddingLeft(), getPaddingTop());
+                fromFlagPath.lineTo(getPaddingLeft()+x, getPaddingTop());
+                fromFlagPath.lineTo(getPaddingLeft(), getPaddingTop()+y);
+                fromFlagPath.close();
             }
-            if(debugPaint == null){
-                debugPaint = new Paint();
+            if(fromFlagPaint == null){
+                fromFlagPaint = new Paint();
             }
-            debugPaint.setColor(debugColor);
-            canvas.drawPath(debugTrianglePath, debugPaint);
+            fromFlagPaint.setColor(fromFlagColor);
+            canvas.drawPath(fromFlagPath, fromFlagPaint);
         }
     }
 
@@ -145,7 +154,7 @@ public class SpearImageView extends ImageView{
                 if(clickRippleScroller == null){
                     clickRippleScroller = new Scroller(getContext(), new DecelerateInterpolator());
                 }
-                clickRippleScroller.startScroll(0, 0, computeRippleRadius(), 0, clickRippleAnimationDuration);
+                clickRippleScroller.startScroll(0, 0, computeRippleRadius(), 0, RIPPLE_ANIMATION_DURATION_LENGTH);
                 if(clickRippleRefreshRunnable == null){
                     clickRippleRefreshRunnable = new Runnable() {
                         @Override
@@ -232,7 +241,7 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 根据Uri显示图片
+     * 显示图片
      * @param uri 图片Uri，支持以下几种
      * <blockquote>"http://site.com/image.png"; // from Web
      * <br>"https://site.com/image.png"; // from Web
@@ -244,7 +253,7 @@ public class SpearImageView extends ImageView{
      * </blockquote>
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    public Request displayUriImage(String uri){
+    public Request displayImage(String uri){
         return Spear.with(getContext()).display(uri, this).fire();
     }
 
@@ -285,18 +294,6 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 尝试重置Debug标识和进度的状态
-     */
-    void tryResetDebugFlagAndProgressStatus(){
-        // 重置角标和进度
-        if(debugColor != NONE || progress != NONE){
-            debugColor = NONE;
-            progress = NONE;
-            invalidate();
-        }
-    }
-
-    /**
      * 设置是否开启点击涟漪效果，开启后按下的时候会在ImageView表面显示一个黑色半透明的涟漪效果，此功能需要你点注册点击事件或设置Clickable
      * @param enableClickRipple 是否开启点击涟漪效果
      */
@@ -305,11 +302,11 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 设置是否显示进度
-     * @param enableShowProgress 是否显示进度
+     * 设置是否显示下载进度
+     * @param showDownloadProgress 是否显示进度
      */
-    public void setEnableShowProgress(boolean enableShowProgress) {
-        this.enableShowProgress = enableShowProgress;
+    public void setShowDownloadProgress(boolean showDownloadProgress) {
+        this.showDownloadProgress = showDownloadProgress;
     }
 
     /**
@@ -362,17 +359,12 @@ public class SpearImageView extends ImageView{
      * 获取显示监听器
      * @return 显示监听器
      */
-    DisplayListener getDisplayListener(){
-        if(debugMode){
-            if(debugDisplayListener == null){
-                debugDisplayListener = new DebugDisplayListener();
+    DisplayListener getDisplayListener(boolean isPauseDownload){
+        if(showFromFlag || showDownloadProgress || isPauseDownload){
+            if(myListener == null){
+                myListener = new MyListener();
             }
-            return debugDisplayListener;
-        }else if(enableShowProgress){
-            if(progressDisplayListener == null){
-                progressDisplayListener = new ProgressDisplayListener();
-            }
-            return progressDisplayListener;
+            return myListener;
         }else{
             return displayListener;
         }
@@ -391,11 +383,11 @@ public class SpearImageView extends ImageView{
      * @return 进度监听器
      */
     ProgressListener getProgressListener(){
-        if(enableShowProgress){
-            if(updateProgressListener == null){
-                updateProgressListener = new UpdateProgressListener();
+        if(showDownloadProgress){
+            if(myListener == null){
+                myListener = new MyListener();
             }
-            return updateProgressListener;
+            return myListener;
         }else{
             return progressListener;
         }
@@ -426,14 +418,23 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 设置是否开启调试模式，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，黄色代表本次是从本地加载的，绿色代表本次是从内存加载的
-     * @param debugMode 是否开启调试模式
+     * 设置图片uri
+     * @param imageUri 图片uri
      */
-    public void setDebugMode(boolean debugMode) {
-        boolean oldDebugMode = this.debugMode;
-        this.debugMode = debugMode;
+    void setImageUri(String imageUri){
+        this.imageUri = imageUri;
+        setOnClickListener(onClickListener);
+    }
+
+    /**
+     * 设置是否开启调试模式，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，黄色代表本次是从本地加载的，绿色代表本次是从内存加载的
+     * @param showFromFlag 是否开启调试模式
+     */
+    public void setShowFromFlag(boolean showFromFlag) {
+        boolean oldDebugMode = this.showFromFlag;
+        this.showFromFlag = showFromFlag;
         if(oldDebugMode){
-            debugColor = NONE;
+            fromFlagColor = NONE;
             invalidate();
         }
     }
@@ -457,12 +458,18 @@ public class SpearImageView extends ImageView{
         }
     }
 
-    private class DebugDisplayListener implements DisplayListener{
+    private class MyListener implements DisplayListener, ProgressListener, View.OnClickListener{
         @Override
         public void onStarted() {
-            debugColor = NONE;
-            progress = enableShowProgress?0:NONE;
-            invalidate();
+            if(showFromFlag){
+                fromFlagColor = NONE;
+            }
+            if(showDownloadProgress){
+                progress = 0;
+            }
+            if(showFromFlag || showDownloadProgress){
+                invalidate();
+            }
             if(displayListener != null){
                 displayListener.onStarted();
             }
@@ -470,18 +477,24 @@ public class SpearImageView extends ImageView{
 
         @Override
         public void onCompleted(ImageFrom imageFrom) {
-            if(imageFrom != null){
-                switch (imageFrom){
-                    case MEMORY_CACHE: debugColor = DEFAULT_DEBUG_COLOR_MEMORY; break;
-                    case LOCAL: debugColor = DEFAULT_DEBUG_COLOR_DISK; break;
-                    case DISK_CACHE: debugColor = DEFAULT_DEBUG_COLOR_DISK; break;
-                    case NETWORK: debugColor = DEFAULT_DEBUG_COLOR_NETWORK; break;
+            if(showFromFlag){
+                if(imageFrom != null){
+                    switch (imageFrom){
+                        case MEMORY_CACHE: fromFlagColor = FROM_FLAG_COLOR_MEMORY; break;
+                        case DISK_CACHE: fromFlagColor = FROM_FLAG_COLOR_DISK_CACHE; break;
+                        case NETWORK: fromFlagColor = FROM_FLAG_COLOR_NETWORK; break;
+                        case LOCAL: fromFlagColor = FROM_FLAG_COLOR_LOCAL; break;
+                    }
+                }else{
+                    fromFlagColor = NONE;
                 }
-            }else{
-                debugColor = NONE;
             }
-            progress = NONE;
-            invalidate();
+            if(showDownloadProgress){
+                progress = NONE;
+            }
+            if(showFromFlag || showDownloadProgress){
+                invalidate();
+            }
             if(displayListener != null){
                 displayListener.onCompleted(imageFrom);
             }
@@ -489,67 +502,44 @@ public class SpearImageView extends ImageView{
 
         @Override
         public void onFailed(FailCause failCause) {
-            debugColor = NONE;
-            progress = NONE;
-            invalidate();
-            if(displayListener != null){
+            if(showFromFlag){
+                fromFlagColor = NONE;
+            }
+            if(showDownloadProgress){
+                progress = NONE;
+            }
+            if(showDownloadProgress || showFromFlag){
+                invalidate();
+            }
+            if (displayListener != null){
                 displayListener.onFailed(failCause);
             }
         }
 
         @Override
         public void onCanceled(CancelCause cancelCause) {
+            if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD_NEW_IMAGE){
+                SpearImageView.super.setOnClickListener(this);
+            }
             if(displayListener != null){
                 displayListener.onCanceled(cancelCause);
             }
         }
-    }
 
-    private class UpdateProgressListener implements ProgressListener{
         @Override
         public void onUpdateProgress(int totalLength, int completedLength) {
-            progress = (float) completedLength/totalLength;
-            invalidate();
+            if(showDownloadProgress){
+                progress = (float) completedLength/totalLength;
+                invalidate();
+            }
             if(progressListener != null){
                 progressListener.onUpdateProgress(totalLength, completedLength);
             }
         }
-    }
-
-    private class ProgressDisplayListener implements DisplayListener{
 
         @Override
-        public void onStarted() {
-            progress = 0;
-            invalidate();
-            if(displayListener != null){
-                displayListener.onStarted();
-            }
-        }
-
-        @Override
-        public void onCompleted(ImageFrom imageFrom) {
-            progress = NONE;
-            invalidate();
-            if(displayListener != null){
-                displayListener.onCompleted(imageFrom);
-            }
-        }
-
-        @Override
-        public void onFailed(FailCause failCause) {
-            progress = NONE;
-            invalidate();
-            if(displayListener != null){
-                displayListener.onFailed(failCause);
-            }
-        }
-
-        @Override
-        public void onCanceled(CancelCause cancelCause) {
-            if(displayListener != null){
-                displayListener.onCanceled(cancelCause);
-            }
+        public void onClick(View v) {
+            Spear.with(getContext()).display(imageUri, SpearImageView.this).level(RequestHandleLevel.NET).fire();
         }
     }
 }

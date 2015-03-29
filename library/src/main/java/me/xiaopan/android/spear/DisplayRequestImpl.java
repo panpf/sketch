@@ -60,6 +60,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private String memoryCacheId;	// 内存缓存ID
     private boolean enableMemoryCache = true;	// 是否开启内存缓存
     private DrawableHolder loadFailDrawableHolder;	// 当加载失败时显示的图片
+    private DrawableHolder pauseDownloadDrawableHolder;	// 当暂停下载时显示的图片
     private ImageDisplayer imageDisplayer;	// 图片显示器
     private DisplayListener displayListener;	// 监听器
 
@@ -73,6 +74,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
     private BitmapDrawable resultBitmap;    // 最终的图片
     private ImageViewHolder imageViewHolder;    // 绑定ImageView
+    private boolean levelFromPauseDownload;
 
     public DisplayRequestImpl(Spear spear, String uri, UriScheme uriScheme, String memoryCacheId, ImageView imageView) {
         this.spear = spear;
@@ -166,42 +168,27 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     }
 
     /****************************************** Display methods ******************************************/
-    /**
-     * 获取内存缓存ID
-     * @return 内存缓存ID
-     */
+    @Override
     public String getMemoryCacheId() {
         return memoryCacheId;
     }
 
-    /**
-     * 设置是否开启内存缓存（默认开启）
-     * @param enableMemoryCache 是否开启内存缓存
-     */
+    @Override
     public void setEnableMemoryCache(boolean enableMemoryCache) {
         this.enableMemoryCache = enableMemoryCache;
     }
 
-    /**
-     * 设置图片显示器（用于在图片加载完成后显示图片）
-     * @param imageDisplayer 图片显示器
-     */
+    @Override
     public void setImageDisplayer(ImageDisplayer imageDisplayer) {
         this.imageDisplayer = imageDisplayer;
     }
 
-    /**
-     * 设置加载失败图片持有期器
-     * @param loadFailDrawableHolder 加载失败图片持有期器
-     */
+    @Override
     public void setLoadFailDrawableHolder(DrawableHolder loadFailDrawableHolder) {
         this.loadFailDrawableHolder = loadFailDrawableHolder;
     }
 
-    /**
-     * 获取加载失败时显示的图片
-     * @return 加载失败时显示的图片
-     */
+    @Override
     public BitmapDrawable getLoadFailDrawable() {
         if(loadFailDrawableHolder == null){
             return null;
@@ -217,10 +204,28 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         return loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), getResize(), getScaleType(), processor, imageDisplayer!=null&&imageDisplayer instanceof TransitionImageDisplayer);
     }
 
-    /**
-     * 设置显示监听器
-     * @param displayListener 显示监听器
-     */
+    @Override
+    public void setPauseDownloadDrawableHolder(DrawableHolder pauseDownloadDrawableHolder) {
+        this.pauseDownloadDrawableHolder = pauseDownloadDrawableHolder;
+    }
+
+    @Override
+    public BitmapDrawable getPauseDownloadDrawable() {
+        if(pauseDownloadDrawableHolder == null){
+            return null;
+        }
+        ImageProcessor processor;
+        if(getImageProcessor() != null){
+            processor = getImageProcessor();
+        }else if(getResize() != null){
+            processor = spear.getConfiguration().getDefaultCutImageProcessor();
+        }else{
+            processor = null;
+        }
+        return pauseDownloadDrawableHolder.getDrawable(spear.getConfiguration().getContext(), getResize(), getScaleType(), processor, imageDisplayer!=null&&imageDisplayer instanceof TransitionImageDisplayer);
+    }
+
+    @Override
     public void setDisplayListener(DisplayListener displayListener) {
         this.displayListener = displayListener;
     }
@@ -291,6 +296,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     @Override
     public void toFailedStatus(FailCause failCause) {
         this.failCause = failCause;
+        setRequestStatus(RequestStatus.WAIT_DISPLAY);
         spear.getConfiguration().getDisplayCallbackHandler().failCallback(this);
     }
 
@@ -371,9 +377,17 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 }
             }else{
                 if(requestHandleLevel == RequestHandleLevel.LOCAL){
-                    toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
-                    if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "level is local" + " - " + name);
+                    if(levelFromPauseDownload){
+                        setRequestStatus(RequestStatus.WAIT_DISPLAY);
+                        spear.getConfiguration().getDisplayCallbackHandler().pauseDownloadCallback(this);
+                        if(Spear.isDebugMode()){
+                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "pause download" + " - " + name);
+                        }
+                    }else{
+                        toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
+                        if(Spear.isDebugMode()){
+                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "level is local" + " - " + name);
+                        }
                     }
                     return;
                 }
@@ -508,6 +522,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             }
 
             // 显示
+            setRequestStatus(RequestStatus.WAIT_DISPLAY);
             spear.getConfiguration().getDisplayCallbackHandler().completeCallback(this);
         }else{
             toFailedStatus(FailCause.DECODE_FAIL);
@@ -528,7 +543,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(imageDisplayer == null){
             imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
         }
-        imageDisplayer.display(imageViewHolder.getImageView(), resultBitmap, ImageDisplayer.BitmapType.SUCCESS, this);
+        imageDisplayer.display(imageViewHolder.getImageView(), resultBitmap, this);
         setRequestStatus(RequestStatus.COMPLETED);
         if(displayListener != null){
             displayListener.onCompleted(imageFrom);
@@ -548,7 +563,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(imageDisplayer == null){
             imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
         }
-        imageDisplayer.display(imageViewHolder.getImageView(), getLoadFailDrawable(), ImageDisplayer.BitmapType.FAILURE, this);
+        imageDisplayer.display(imageViewHolder.getImageView(), getLoadFailDrawable(), this);
         setRequestStatus(RequestStatus.FAILED);
         if(displayListener != null){
             displayListener.onFailed(failCause);
@@ -557,6 +572,30 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
     @Override
     public void handleCanceledOnMainThread() {
+        if(displayListener != null){
+            displayListener.onCanceled(cancelCause);
+        }
+    }
+
+    @Override
+    public void handlePauseDownloadOnMainThread() {
+        if(isCanceled()){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "handlePauseDownloadOnMainThread" + " - " + "canceled" + " - " + name);
+            }
+            return;
+        }
+
+        if(pauseDownloadDrawableHolder != null){
+            setRequestStatus(RequestStatus.DISPLAYING);
+            if(imageDisplayer == null){
+                imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
+            }
+            imageDisplayer.display(imageViewHolder.getImageView(), getPauseDownloadDrawable(), this);
+        }
+
+        cancelCause = CancelCause.PAUSE_DOWNLOAD_NEW_IMAGE;
+        setRequestStatus(RequestStatus.CANCELED);
         if(displayListener != null){
             displayListener.onCanceled(cancelCause);
         }
@@ -574,6 +613,11 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(progressListener != null){
             progressListener.onUpdateProgress(totalLength, completedLength);
         }
+    }
+
+    @Override
+    public void setLevelFromPauseDownload(boolean levelFromPauseDownload) {
+        this.levelFromPauseDownload = levelFromPauseDownload;
     }
 
     @Override

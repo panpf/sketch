@@ -32,6 +32,7 @@ public class DisplayOptions extends LoadOptions {
     protected ImageDisplayer imageDisplayer;	// 图片显示器
     protected DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
     protected DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
+    protected DrawableHolder pauseDownloadDrawableHolder;	//暂停下载时显示的图片
 
     protected boolean resizeByImageViewLayoutSize;
 
@@ -59,8 +60,8 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 设置正在加载的时候显示的图片
-     * @param drawableResId 正在加载的时候显示的图片
+     * 设置正在加载时显示的图片
+     * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
     public DisplayOptions loadingDrawable(int drawableResId) {
@@ -68,13 +69,14 @@ public class DisplayOptions extends LoadOptions {
             loadingDrawableHolder = new DrawableHolder();
         }
         loadingDrawableHolder.setResId(drawableResId);
+        loadingDrawableHolder.setProcess(false);
         return this;
     }
 
     /**
-     * 设置正在加载的时候显示的图片
-     * @param drawableResId 正在加载的时候显示的图片
-     * @param isProcess 是否使用ImageProcessor对当前图片进行处理
+     * 设置正在加载时候显示的图片
+     * @param drawableResId 资源图片ID
+     * @param isProcess 是否使用ImageProcessor处理
      * @return DisplayOptions
      */
     public DisplayOptions loadingDrawable(int drawableResId, boolean isProcess) {
@@ -87,8 +89,8 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 设置当加载失败的时候显示的图片
-     * @param drawableResId 当加载失败的时候显示的图片
+     * 设置加载失败时显示的图片
+     * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
     public DisplayOptions loadFailDrawable(int drawableResId) {
@@ -96,13 +98,14 @@ public class DisplayOptions extends LoadOptions {
             loadFailDrawableHolder = new DrawableHolder();
         }
         loadFailDrawableHolder.setResId(drawableResId);
+        loadFailDrawableHolder.setProcess(false);
         return this;
     }
 
     /**
-     * 设置当加载失败的时候显示的图片
-     * @param drawableResId 当加载失败的时候显示的图片
-     * @param isProcess 是否使用ImageProcessor对当前图片进行处理
+     * 设置加载失败时显示的图片
+     * @param drawableResId 资源图片ID
+     * @param isProcess 是否使用ImageProcessor处理
      * @return DisplayOptions
      */
     public DisplayOptions loadFailDrawable(int drawableResId, boolean isProcess) {
@@ -114,6 +117,35 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
+    /**
+     * 设置暂停下载时显示的图片
+     * @param drawableResId 资源图片ID
+     * @return DisplayOptions
+     */
+    public DisplayOptions pauseDownloadDrawable(int drawableResId) {
+        if(pauseDownloadDrawableHolder == null){
+            pauseDownloadDrawableHolder = new DrawableHolder();
+        }
+        pauseDownloadDrawableHolder.setResId(drawableResId);
+        pauseDownloadDrawableHolder.setProcess(false);
+        return this;
+    }
+
+    /**
+     * 设置暂停下载时显示的图片
+     * @param drawableResId 资源图片ID
+     * @param isProcess 是否使用ImageProcessor处理
+     * @return DisplayOptions
+     */
+    public DisplayOptions pauseDownloadDrawable(int drawableResId, boolean isProcess) {
+        if(pauseDownloadDrawableHolder == null){
+            pauseDownloadDrawableHolder = new DrawableHolder();
+        }
+        pauseDownloadDrawableHolder.setResId(drawableResId);
+        pauseDownloadDrawableHolder.setProcess(isProcess);
+        return this;
+    }
+
     @Override
     public DisplayOptions processor(ImageProcessor processor) {
         super.processor(processor);
@@ -122,6 +154,9 @@ public class DisplayOptions extends LoadOptions {
         }
         if(loadFailDrawableHolder != null && loadFailDrawableHolder.isProcess()){
             loadFailDrawableHolder.reset();
+        }
+        if(pauseDownloadDrawableHolder != null && pauseDownloadDrawableHolder.isProcess()){
+            pauseDownloadDrawableHolder.reset();
         }
         return this;
     }
@@ -205,5 +240,9 @@ public class DisplayOptions extends LoadOptions {
      */
     public DrawableHolder getLoadFailDrawableHolder() {
         return loadFailDrawableHolder;
+    }
+
+    public DrawableHolder getPauseDownloadDrawableHolder() {
+        return pauseDownloadDrawableHolder;
     }
 }

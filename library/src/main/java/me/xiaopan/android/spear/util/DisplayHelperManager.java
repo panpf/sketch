@@ -33,13 +33,13 @@ public class DisplayHelperManager {
         }else{
             DisplayHelper newDisplayHelper = displayHelper;
             displayHelper = null;
+            newDisplayHelper.reset();
             newDisplayHelper.init(spear, uri, imageView);
             return newDisplayHelper;
         }
     }
 
     public void recoveryDisplayHelper(DisplayHelper waitDisplayHelper){
-        waitDisplayHelper.reset();
         if(displayHelper == null){
             displayHelper = waitDisplayHelper;
         }

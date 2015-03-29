@@ -56,7 +56,11 @@ public class DisplayHelperImpl implements DisplayHelper{
     protected ImageDisplayer imageDisplayer;
     protected DrawableHolder loadingDrawableHolder;
     protected DrawableHolder loadFailDrawableHolder;
+    protected DrawableHolder pauseDownloadDrawableHolder;
     protected DisplayListener displayListener;
+
+    protected boolean levelFromPauseDownload;
+    protected boolean levelFromPauseLoad;
 
     /**
      * 创建显示请求生成器
@@ -81,11 +85,14 @@ public class DisplayHelperImpl implements DisplayHelper{
         this.spear = spear;
         this.uri = uri;
         this.imageView = imageView;
-        if(spear.isPauseDownloadNewImage()){
+        if(spear.getConfiguration().isPauseDownload()){
             this.requestHandleLevel = RequestHandleLevel.LOCAL;
+            levelFromPauseDownload = true;
         }
-        if(spear.isPauseLoadNewImage()){
+        if(spear.getConfiguration().isPauseLoad()){
             this.requestHandleLevel = RequestHandleLevel.MEMORY;
+            levelFromPauseDownload = false;
+            levelFromPauseLoad = true;
         }
 
         if(imageView != null){
@@ -100,10 +107,10 @@ public class DisplayHelperImpl implements DisplayHelper{
 
         if(imageView instanceof SpearImageView){
             SpearImageView spearImageView = (SpearImageView) imageView;
-            options(spearImageView.getDisplayOptions());
-            this.displayListener = spearImageView.getDisplayListener();
+            this.displayListener = spearImageView.getDisplayListener(levelFromPauseDownload);
             this.progressListener = spearImageView.getProgressListener();
-            spearImageView.tryResetDebugFlagAndProgressStatus();
+            options(spearImageView.getDisplayOptions());
+            spearImageView.setImageUri(uri);
         }
 
         return this;
@@ -129,7 +136,11 @@ public class DisplayHelperImpl implements DisplayHelper{
         imageDisplayer = null;
         loadingDrawableHolder = null;
         loadFailDrawableHolder = null;
+        pauseDownloadDrawableHolder = null;
         displayListener = null;
+
+        levelFromPauseDownload = false;
+        levelFromPauseLoad = false;
     }
 
     @Override
@@ -238,6 +249,7 @@ public class DisplayHelperImpl implements DisplayHelper{
             loadFailDrawableHolder = new DrawableHolder();
         }
         loadFailDrawableHolder.setResId(drawableResId);
+        loadFailDrawableHolder.setProcess(false);
         return this;
     }
 
@@ -252,6 +264,26 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
+    public DisplayHelperImpl pauseDownloadDrawable(int drawableResId) {
+        if(pauseDownloadDrawableHolder == null){
+            pauseDownloadDrawableHolder = new DrawableHolder();
+        }
+        pauseDownloadDrawableHolder.setResId(drawableResId);
+        pauseDownloadDrawableHolder.setProcess(false);
+        return this;
+    }
+
+    @Override
+    public DisplayHelperImpl pauseDownloadDrawable(int drawableResId, boolean isProcess) {
+        if(pauseDownloadDrawableHolder == null){
+            pauseDownloadDrawableHolder = new DrawableHolder();
+        }
+        pauseDownloadDrawableHolder.setResId(drawableResId);
+        pauseDownloadDrawableHolder.setProcess(isProcess);
+        return this;
+    }
+
+    @Override
     public DisplayHelperImpl progressListener(ProgressListener progressListener){
         this.progressListener = progressListener;
         return this;
@@ -261,6 +293,8 @@ public class DisplayHelperImpl implements DisplayHelper{
     public DisplayHelperImpl level(RequestHandleLevel requestHandleLevel){
         if(requestHandleLevel != null){
             this.requestHandleLevel = requestHandleLevel;
+            levelFromPauseDownload = false;
+            levelFromPauseLoad = false;
         }
         return this;
     }
@@ -300,6 +334,9 @@ public class DisplayHelperImpl implements DisplayHelper{
         }
         if(this.loadFailDrawableHolder == null){
             this.loadFailDrawableHolder = options.getLoadFailDrawableHolder();
+        }
+        if(this.pauseDownloadDrawableHolder == null){
+            this.pauseDownloadDrawableHolder = options.getPauseDownloadDrawableHolder();
         }
 
         return this;
@@ -362,11 +399,11 @@ public class DisplayHelperImpl implements DisplayHelper{
             BitmapDrawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(memoryCacheId);
             if(cacheDrawable != null){
                 if(!cacheDrawable.getBitmap().isRecycled()){
-                    spear.getConfiguration().getDisplayCallbackHandler().completeCallbackOnFire(imageView, cacheDrawable, displayListener, ImageFrom.MEMORY_CACHE);
-                    spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
                     if(imageView instanceof SpearImageView){
                         ((SpearImageView) imageView).setDisplayRequest(null);
                     }
+                    spear.getConfiguration().getDisplayCallbackHandler().completeCallbackOnFire(imageView, cacheDrawable, displayListener, ImageFrom.MEMORY_CACHE);
+                    spear.getConfiguration().getDisplayHelperManager().recoveryDisplayHelper(this);
                     if(Spear.isDebugMode()){
                         Log.d(Spear.TAG, NAME + " - " + "from memory get bitmap@"+Integer.toHexString(cacheDrawable.getBitmap().hashCode()));
                     }
@@ -386,9 +423,9 @@ public class DisplayHelperImpl implements DisplayHelper{
             imageView.clearAnimation();
             imageView.setImageDrawable(loadingBitmapDrawable);
             if(displayListener != null){
-                displayListener.onCanceled(CancelCause.LEVEL_IS_MEMORY);
+                displayListener.onCanceled(levelFromPauseLoad ?CancelCause.PAUSE_LOAD_NEW_IMAGE:CancelCause.LEVEL_IS_MEMORY);
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "level is memory" + " - " + name);
+                    Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + (levelFromPauseLoad?"pause load":"level is memory") + " - " + name);
                 }
             }
             if(imageView instanceof SpearImageView){
@@ -399,9 +436,8 @@ public class DisplayHelperImpl implements DisplayHelper{
 
         // 试图取消已经存在的请求
         DisplayRequest potentialRequest = AsyncDrawable.getDisplayRequestByAsyncDrawable(imageView);
-        if(potentialRequest != null){
+        if(potentialRequest != null && !potentialRequest.isFinished()){
             if(memoryCacheId.equals(potentialRequest.getMemoryCacheId())){
-                // ID一样无需取消
                 if(Spear.isDebugMode()){
                     Log.d(Spear.TAG, NAME + " - " + "无需取消" + "；" + "ImageViewCode" + "=" + imageView.hashCode() + "；" + potentialRequest.getName());
                 }
@@ -429,7 +465,9 @@ public class DisplayHelperImpl implements DisplayHelper{
         request.setEnableMemoryCache(enableMemoryCache);
         request.setImageDisplayer(imageDisplayer);
         request.setLoadFailDrawableHolder(loadFailDrawableHolder);
+        request.setPauseDownloadDrawableHolder(pauseDownloadDrawableHolder);
         request.setDisplayListener(displayListener);
+        request.setLevelFromPauseDownload(true);
 
         // 显示默认图片
         BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);

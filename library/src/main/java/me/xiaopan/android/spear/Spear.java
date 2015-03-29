@@ -18,7 +18,6 @@ package me.xiaopan.android.spear;
 
 import android.content.Context;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.ImageView;
 
 import java.io.File;
@@ -38,8 +37,6 @@ public class Spear {
     private static Map<Object, RequestOptions> optionsMap;
 
     private Configuration configuration;
-    private boolean pauseLoadNewImage;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
-    private boolean pauseDownloadNewImage;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
 
 	private Spear(Context context){
         this.configuration = new Configuration(context);
@@ -67,58 +64,6 @@ public class Spear {
      */
     public Configuration getConfiguration() {
         return configuration;
-    }
-
-    /**
-     * 设置是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
-     * @param pauseLoadNewImage 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
-     */
-    public void setPauseLoadNewImage(boolean pauseLoadNewImage) {
-        if(this.pauseLoadNewImage == pauseLoadNewImage){
-            return;
-        }
-        this.pauseLoadNewImage = pauseLoadNewImage;
-        if(isDebugMode()){
-            if(this.pauseLoadNewImage){
-                Log.w(TAG, "pauseLoadNewImage");
-            }else{
-                Log.d(TAG, "resumeLoadNewImage");
-            }
-        }
-    }
-
-    /**
-     * 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
-     * @return 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
-     */
-    public boolean isPauseLoadNewImage() {
-        return pauseLoadNewImage;
-    }
-
-    /**
-     * 是否暂停下载图片，开启后将不再从网络下载图片，只影响display请求
-     * @return 暂停下载图片，开启后将不再从网络下载图片，只影响display请求
-     */
-    public boolean isPauseDownloadNewImage() {
-        return pauseDownloadNewImage;
-    }
-
-    /**
-     * 设置暂停下载图片，开启后将不再从网络下载图片，只影响display请求
-     * @param pauseDownloadNewImage 暂停下载图片，开启后将不再从网络下载图片，只影响display请求
-     */
-    public void setPauseDownloadNewImage(boolean pauseDownloadNewImage) {
-        if(this.pauseDownloadNewImage == pauseDownloadNewImage){
-            return;
-        }
-        this.pauseDownloadNewImage = pauseDownloadNewImage;
-        if(isDebugMode()){
-            if(this.pauseDownloadNewImage){
-                Log.w(TAG, "pauseDownloadNewImage");
-            }else{
-                Log.d(TAG, "resumeDownloadImage");
-            }
-        }
     }
 
 

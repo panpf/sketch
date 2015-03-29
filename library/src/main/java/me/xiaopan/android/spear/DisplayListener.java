@@ -39,6 +39,7 @@ public interface DisplayListener {
 
     /**
      * 已取消
+     * @param cancelCause 原因
      */
     void onCanceled(CancelCause cancelCause);
 }

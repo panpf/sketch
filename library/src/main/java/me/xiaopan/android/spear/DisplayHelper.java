@@ -58,14 +58,14 @@ public interface DisplayHelper {
     DisplayHelper disableDiskCache();
 
     /**
-     * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
+     * 设置最大尺寸，在解码时会使用此Size来计算inSimpleSize
      * @param maxsize 最大尺寸
      * @return DisplayHelper
      */
     DisplayHelper maxsize(ImageSize maxsize);
 
     /**
-     * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
+     * 设置最大尺寸，在解码时会使用此Size来计算inSimpleSize
      * @param width 宽
      * @param height 高
      * @return DisplayHelper
@@ -124,30 +124,43 @@ public interface DisplayHelper {
     DisplayHelper displayer(ImageDisplayer displayer);
 
     /**
-     * 设置正在加载的时候显示的图片
-     * @param drawableResId 正在加载的时候显示的图片
+     * 设置正在加载时显示的图片
+     * @param drawableResId 资源图片ID
      */
     DisplayHelper loadingDrawable(int drawableResId);
 
     /**
-     * 设置正在加载的时候显示的图片
-     * @param drawableResId 正在加载的时候显示的图片
-     * @param isProcess 是否使用ImageProcessor对当前图片进行处理
+     * 设置正在加载时显示的图片
+     * @param drawableResId 资源图片ID
+     * @param isProcess 是否使用ImageProcessor处理
      */
     DisplayHelper loadingDrawable(int drawableResId, boolean isProcess);
 
     /**
-     * 设置当加载失败的时候显示的图片
-     * @param drawableResId 当加载失败的时候显示的图片
+     * 设置加载失败时显示的图片
+     * @param drawableResId 资源图片ID
      */
     DisplayHelper loadFailDrawable(int drawableResId);
 
     /**
-     * 设置当加载失败的时候显示的图片
-     * @param drawableResId 当加载失败的时候显示的图片
-     * @param isProcess 是否使用ImageProcessor对当前图片进行处理
+     * 设置加载失败时显示的图片
+     * @param drawableResId 资源图片ID
+     * @param isProcess 是否使用ImageProcessor处理
      */
     DisplayHelper loadFailDrawable(int drawableResId, boolean isProcess);
+
+    /**
+     * 设置加载失败时显示的图片
+     * @param drawableResId 资源图片ID
+     */
+    DisplayHelper pauseDownloadDrawable(int drawableResId);
+
+    /**
+     * 设置暂停下载时显示的图片
+     * @param drawableResId 资源图片ID
+     * @param isProcess 是否使用ImageProcessor处理
+     */
+    DisplayHelper pauseDownloadDrawable(int drawableResId, boolean isProcess);
 
     /**
      * 设置进度监听器
