@@ -126,6 +126,8 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 headerParams.width = headerWidth;
                 headerParams.height = (int) (headerWidth / 3.2f);
                 headerViewHolder.spearImageView.setLayoutParams(headerParams);
+                headerViewHolder.spearImageView.setClickLoadOnPauseDownload(true);
+                headerViewHolder.spearImageView.setShowClickRipple(true);
                 viewHolder = headerViewHolder;
                 break;
             case ITEM_TYPE_ITEM :
@@ -149,9 +151,13 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 itemViewHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
                 itemViewHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
 
-                itemViewHolder.oneSpearImageView.setEnableClickRipple(true);
-                itemViewHolder.twoSpearImageView.setEnableClickRipple(true);
-                itemViewHolder.threeSpearImageView.setEnableClickRipple(true);
+                itemViewHolder.oneSpearImageView.setShowClickRipple(true);
+                itemViewHolder.twoSpearImageView.setShowClickRipple(true);
+                itemViewHolder.threeSpearImageView.setShowClickRipple(true);
+
+                itemViewHolder.oneSpearImageView.setClickLoadOnPauseDownload(true);
+                itemViewHolder.twoSpearImageView.setClickLoadOnPauseDownload(true);
+                itemViewHolder.threeSpearImageView.setClickLoadOnPauseDownload(true);
 
                 itemViewHolder.oneSpearImageView.setOnClickListener(itemClickListener);
                 itemViewHolder.twoSpearImageView.setOnClickListener(itemClickListener);
@@ -171,6 +177,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         switch(getItemViewType(position)){
             case ITEM_TYPE_HEADER :
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) viewHolder;
+                headerViewHolder.spearImageView.setShowFromFlag(settings.isShowImageFromFlag());
                 headerViewHolder.spearImageView.displayImage(headerImageUrl);
                 break;
             case ITEM_TYPE_ITEM :

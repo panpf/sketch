@@ -76,7 +76,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         ItemViewHolder itemViewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_photo_album_image, parent, false));
 
         itemViewHolder.spearImageView.setOnClickListener(itemClickListener);
-        itemViewHolder.spearImageView.setEnableClickRipple(true);
+        itemViewHolder.spearImageView.setShowClickRipple(true);
         itemViewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
         if(itemWidth != -1){
             ViewGroup.LayoutParams layoutParams = itemViewHolder.spearImageView.getLayoutParams();

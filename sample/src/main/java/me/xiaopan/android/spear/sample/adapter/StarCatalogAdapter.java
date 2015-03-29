@@ -101,7 +101,8 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
 
             itemHolder.oneLayout.setOnClickListener(onClickListener);
             itemHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.Circular);
-            itemHolder.oneSpearImageView.setEnableClickRipple(true);
+            itemHolder.oneSpearImageView.setShowClickRipple(true);
+            itemHolder.oneSpearImageView.setClickLoadOnPauseDownload(true);
             ViewGroup.LayoutParams params = itemHolder.oneSpearImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
@@ -112,7 +113,8 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
 
             itemHolder.twoLayout.setOnClickListener(onClickListener);
             itemHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.Circular);
-            itemHolder.twoSpearImageView.setEnableClickRipple(true);
+            itemHolder.twoSpearImageView.setShowClickRipple(true);
+            itemHolder.twoSpearImageView.setClickLoadOnPauseDownload(true);
             params = itemHolder.twoSpearImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
@@ -123,7 +125,8 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
 
             itemHolder.threeLayout.setOnClickListener(onClickListener);
             itemHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.Circular);
-            itemHolder.threeSpearImageView.setEnableClickRipple(true);
+            itemHolder.threeSpearImageView.setShowClickRipple(true);
+            itemHolder.threeSpearImageView.setClickLoadOnPauseDownload(true);
             params = itemHolder.threeSpearImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;

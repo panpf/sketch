@@ -124,9 +124,13 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemLeftHolder.twoSpearImageView.setOnClickListener(itemClickListener);
             threeItemLeftHolder.threeSpearImageView.setOnClickListener(itemClickListener);
 
-            threeItemLeftHolder.oneSpearImageView.setEnableClickRipple(true);
-            threeItemLeftHolder.twoSpearImageView.setEnableClickRipple(true);
-            threeItemLeftHolder.threeSpearImageView.setEnableClickRipple(true);
+            threeItemLeftHolder.oneSpearImageView.setShowClickRipple(true);
+            threeItemLeftHolder.twoSpearImageView.setShowClickRipple(true);
+            threeItemLeftHolder.threeSpearImageView.setShowClickRipple(true);
+
+            threeItemLeftHolder.oneSpearImageView.setClickLoadOnPauseDownload(true);
+            threeItemLeftHolder.twoSpearImageView.setClickLoadOnPauseDownload(true);
+            threeItemLeftHolder.threeSpearImageView.setClickLoadOnPauseDownload(true);
 
             int itemWidth = (availableScreenWidth-marginBorder)/2;
             int itemHeight = (int) (itemWidth/0.75);
@@ -157,9 +161,13 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemRightHolder.twoSpearImageView.setOnClickListener(itemClickListener);
             threeItemRightHolder.threeSpearImageView.setOnClickListener(itemClickListener);
 
-            threeItemRightHolder.oneSpearImageView.setEnableClickRipple(true);
-            threeItemRightHolder.twoSpearImageView.setEnableClickRipple(true);
-            threeItemRightHolder.threeSpearImageView.setEnableClickRipple(true);
+            threeItemRightHolder.oneSpearImageView.setShowClickRipple(true);
+            threeItemRightHolder.twoSpearImageView.setShowClickRipple(true);
+            threeItemRightHolder.threeSpearImageView.setShowClickRipple(true);
+
+            threeItemRightHolder.oneSpearImageView.setClickLoadOnPauseDownload(true);
+            threeItemRightHolder.twoSpearImageView.setClickLoadOnPauseDownload(true);
+            threeItemRightHolder.threeSpearImageView.setClickLoadOnPauseDownload(true);
 
             int itemWidth = (availableScreenWidth-marginBorder) / 2;
             int itemHeight = (int) (itemWidth/0.75);
@@ -189,8 +197,11 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             twoItemHolder.oneSpearImageView.setOnClickListener(itemClickListener);
             twoItemHolder.twoSpearImageView.setOnClickListener(itemClickListener);
 
-            twoItemHolder.oneSpearImageView.setEnableClickRipple(true);
-            twoItemHolder.twoSpearImageView.setEnableClickRipple(true);
+            twoItemHolder.oneSpearImageView.setShowClickRipple(true);
+            twoItemHolder.twoSpearImageView.setShowClickRipple(true);
+
+            twoItemHolder.oneSpearImageView.setClickLoadOnPauseDownload(true);
+            twoItemHolder.twoSpearImageView.setClickLoadOnPauseDownload(true);
 
             int itemWidth = (availableScreenWidth-marginBorder) / 2;
             int itemHeight = (int) (itemWidth/0.75);

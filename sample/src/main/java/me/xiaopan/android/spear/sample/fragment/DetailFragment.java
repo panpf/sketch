@@ -356,7 +356,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
 
                 @Override
                 public void onCanceled(CancelCause cancelCause) {
-                    if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD_NEW_IMAGE){
+                    if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD){
                         progressBar.setVisibility(View.GONE);
                     }
                 }
