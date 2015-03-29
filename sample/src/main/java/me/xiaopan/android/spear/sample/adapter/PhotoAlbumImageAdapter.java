@@ -13,9 +13,10 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import me.xiaoapn.android.spear.sample.R;
+import me.xiaopan.android.spear.SpearImageView;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.util.DimenUtils;
-import me.xiaopan.android.spear.SpearImageView;
+import me.xiaopan.android.spear.sample.util.Settings;
 
 public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     private Context context;
@@ -25,12 +26,14 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     private int spanCount = -1;
     private int borderMargin;
     private int middleMargin;
+    private Settings settings;
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public PhotoAlbumImageAdapter(final Context context, final List<String> imageUris, final OnImageClickListener onImageClickListener, final RecyclerView recyclerView){
         this.context = context;
         this.imageUris = imageUris;
+        this.settings = Settings.with(context);
         this.itemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,7 +77,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
 
         itemViewHolder.spearImageView.setOnClickListener(itemClickListener);
         itemViewHolder.spearImageView.setEnableClickRipple(true);
-        itemViewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.LOCAL_PHOTO_ALBUM_ITEM);
+        itemViewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
         if(itemWidth != -1){
             ViewGroup.LayoutParams layoutParams = itemViewHolder.spearImageView.getLayoutParams();
             layoutParams.width = itemWidth;
@@ -116,7 +119,8 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             itemViewHolder.spearImageView.setLayoutParams(marginLayoutParams);
         }
 
-        itemViewHolder.spearImageView.displayUriImage(imageUris.get(position));
+        itemViewHolder.spearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+        itemViewHolder.spearImageView.displayImage(imageUris.get(position));
         itemViewHolder.spearImageView.setTag(itemViewHolder);
     }
 
@@ -130,6 +134,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     }
 
     public interface OnImageClickListener{
-        public void onImageClick(int position);
+        void onImageClick(int position);
     }
 }

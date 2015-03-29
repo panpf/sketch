@@ -10,11 +10,11 @@ import me.xiaopan.android.spear.Spear;
 /**
  * 滚动中暂停暂停加载新图片管理器
  */
-public class ScrollingPauseLoadNewImageManager extends RecyclerView.OnScrollListener implements AbsListView.OnScrollListener{
+public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener implements AbsListView.OnScrollListener{
     private Spear spear;
     private Settings settings;
 
-    public ScrollingPauseLoadNewImageManager(Context context) {
+    public ScrollingPauseLoadManager(Context context) {
         this.spear = Spear.with(context);
         this.settings = Settings.with(context);
     }
@@ -28,17 +28,15 @@ public class ScrollingPauseLoadNewImageManager extends RecyclerView.OnScrollList
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
 
-        if(!settings.isScrollingPauseLoadNewImage() || recyclerView.getAdapter() == null){
+        if(!settings.isScrollingPauseLoad() || recyclerView.getAdapter() == null){
             return;
         }
 
         if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
-            if(!spear.isPauseLoadNewImage()){
-                spear.setPauseLoadNewImage(true);
-            }
+            spear.getConfiguration().setPauseLoad(true);
         } else if(newState == RecyclerView.SCROLL_STATE_IDLE){
-            if(spear.isPauseLoadNewImage()){
-                spear.setPauseLoadNewImage(false);
+            if(spear.getConfiguration().isPauseLoad()){
+                spear.getConfiguration().setPauseLoad(false);
                 recyclerView.getAdapter().notifyDataSetChanged();
             }
         }
@@ -46,17 +44,17 @@ public class ScrollingPauseLoadNewImageManager extends RecyclerView.OnScrollList
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if(!settings.isScrollingPauseLoadNewImage() || view.getAdapter() == null || !(view.getAdapter() instanceof BaseAdapter)){
+        if(!settings.isScrollingPauseLoad() || view.getAdapter() == null || !(view.getAdapter() instanceof BaseAdapter)){
             return;
         }
 
         if(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-            if(!spear.isPauseLoadNewImage()){
-                spear.setPauseLoadNewImage(true);
+            if(!spear.getConfiguration().isPauseLoad()){
+                spear.getConfiguration().setPauseLoad(true);
             }
         } else if(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE){
-            if(spear.isPauseLoadNewImage()){
-                spear.setPauseLoadNewImage(false);
+            if(spear.getConfiguration().isPauseLoad()){
+                spear.getConfiguration().setPauseLoad(false);
                 ((BaseAdapter)view.getAdapter()).notifyDataSetChanged();
             }
         }

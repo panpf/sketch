@@ -36,6 +36,7 @@ import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectParentMember;
 import me.xiaopan.android.inject.InjectView;
+import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.sample.MyActionBarActivity;
 import me.xiaopan.android.spear.sample.fragment.AboutFragment;
 import me.xiaopan.android.spear.sample.fragment.AppListFragment;
@@ -44,7 +45,6 @@ import me.xiaopan.android.spear.sample.fragment.SearchFragment;
 import me.xiaopan.android.spear.sample.fragment.StarFragment;
 import me.xiaopan.android.spear.sample.util.AnimationUtils;
 import me.xiaopan.android.spear.sample.util.DimenUtils;
-import me.xiaopan.android.spear.sample.util.MobileNetworkPauseDownloadNewImageManager;
 import me.xiaopan.android.spear.sample.util.Settings;
 import me.xiaopan.android.widget.PagerSlidingTabStrip;
 
@@ -63,12 +63,14 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
     @InjectView(R.id.button_main_photoAlbum) private View photoAlbumButton;
     @InjectView(R.id.button_main_appList) private View appListButton;
     @InjectView(R.id.button_main_about) private View aboutButton;
-    @InjectView(R.id.item_main_scrollingPauseLoadNewImage) private View scrollingPauseLoadNewImageItem;
-    @InjectView(R.id.item_main_mobileNetworkPauseDownloadNewImage) private View mobileNetworkPauseDownloadImageItem;
+    @InjectView(R.id.item_main_scrollingPauseLoad) private View scrollingPauseLoadItem;
+    @InjectView(R.id.checkBox_main_scrollingPauseLoad) private CheckBox scrollingPauseLoadCheckBox;
+    @InjectView(R.id.item_main_mobileNetworkPauseDownload) private View mobileNetworkPauseDownloadItem;
+    @InjectView(R.id.checkBox_main_mobileNetworkPauseDownload) private CheckBox mobileNetworkPauseDownloadCheckBox;
     @InjectView(R.id.item_main_showImageDownloadProgress) private View showImageDownloadProgressItem;
-    @InjectView(R.id.checkBox_main_scrollingPauseLoadNewImage) private CheckBox scrollingPauseLoadNewImageCheckBox;
-    @InjectView(R.id.checkBox_main_mobileNetworkPauseDownloadNewImage) private CheckBox mobileNetworkPauseDownloadImageCheckBox;
     @InjectView(R.id.checkBox_main_showImageDownloadProgress) private CheckBox showImageDownloadProgressCheckBox;
+    @InjectView(R.id.item_main_showImageFromFlag) private View showImageFromFlagItem;
+    @InjectView(R.id.checkBox_main_showImageFromFlag) private CheckBox showImageFromFlagCheckBox;
 
     private long lastClickBackTime;
     private Type type;
@@ -91,9 +93,10 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
         leftMenuView.setLayoutParams(params);
 
         settings = Settings.with(getBaseContext());
-        scrollingPauseLoadNewImageCheckBox.setChecked(settings.isScrollingPauseLoadNewImage());
+        scrollingPauseLoadCheckBox.setChecked(settings.isScrollingPauseLoad());
         showImageDownloadProgressCheckBox.setChecked(settings.isShowImageDownloadProgress());
-        mobileNetworkPauseDownloadImageCheckBox.setChecked(settings.isMobileNetworkPauseDownloadNewImage());
+        mobileNetworkPauseDownloadCheckBox.setChecked(settings.isMobileNetworkPauseDownload());
+        showImageFromFlagCheckBox.setChecked(settings.isShowImageFromFlag());
 
         starButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,23 +198,33 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
             }
         });
 
-        scrollingPauseLoadNewImageItem.setOnClickListener(new View.OnClickListener() {
+        scrollingPauseLoadItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean newPauseLoadNewImageValue = !settings.isScrollingPauseLoadNewImage();
-                settings.setScrollingPauseLoadNewImage(newPauseLoadNewImageValue);
-                scrollingPauseLoadNewImageCheckBox.setChecked(newPauseLoadNewImageValue);
+                boolean newPauseLoadValue = !settings.isScrollingPauseLoad();
+                settings.setScrollingPauseLoad(newPauseLoadValue);
+                scrollingPauseLoadCheckBox.setChecked(newPauseLoadValue);
                 drawerLayout.closeDrawer(Gravity.START);
             }
         });
 
-        mobileNetworkPauseDownloadImageItem.setOnClickListener(new View.OnClickListener() {
+        mobileNetworkPauseDownloadItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                boolean newMobileNetStopDownloadImageValue = !settings.isMobileNetworkPauseDownloadNewImage();
-                settings.setMobileNetworkPauseDownloadNewImage(newMobileNetStopDownloadImageValue);
-                mobileNetworkPauseDownloadImageCheckBox.setChecked(newMobileNetStopDownloadImageValue);
-                MobileNetworkPauseDownloadNewImageManager.with(getBaseContext()).setPauseDownloadImage(newMobileNetStopDownloadImageValue);
+                boolean newMobileNetStopDownloadValue = !settings.isMobileNetworkPauseDownload();
+                settings.setMobileNetworkPauseDownload(newMobileNetStopDownloadValue);
+                mobileNetworkPauseDownloadCheckBox.setChecked(newMobileNetStopDownloadValue);
+                Spear.with(getBaseContext()).getConfiguration().setMobileNetworkPauseDownload(newMobileNetStopDownloadValue);
+                drawerLayout.closeDrawer(Gravity.START);
+            }
+        });
+
+        showImageFromFlagItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean newShowImageFromFlag = !settings.isShowImageFromFlag();
+                settings.setShowImageFromFlag(newShowImageFromFlag);
+                showImageFromFlagCheckBox.setChecked(newShowImageFromFlag);
                 drawerLayout.closeDrawer(Gravity.START);
             }
         });

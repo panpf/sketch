@@ -10,14 +10,14 @@ import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
-import me.xiaopan.android.spear.sample.adapter.ContentAdapter;
+import me.xiaopan.android.spear.sample.adapter.FragmentAdapter;
 import me.xiaopan.android.widget.PagerSlidingTabStrip;
 
 @InjectContentView(R.layout.fragment_star)
 public class StarFragment extends InjectFragment{
     @InjectView(R.id.pager_star_content) private ViewPager viewPager;
     private GetStarTagStripListener getPagerSlidingTagStripListener;
-    private ContentAdapter contentAdapter;
+    private FragmentAdapter fragmentAdapter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -46,13 +46,13 @@ public class StarFragment extends InjectFragment{
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(contentAdapter == null){
+        if(fragmentAdapter == null){
             Fragment[] fragments = new Fragment[2];
             fragments[0] = new HotStarFragment();
             fragments[1] = new StarCatalogFragment();
-            contentAdapter = new ContentAdapter(getChildFragmentManager(), fragments);
+            fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments);
         }
-        viewPager.setAdapter(contentAdapter);
+        viewPager.setAdapter(fragmentAdapter);
         getPagerSlidingTagStripListener.onGetStarTabStrip().setViewPager(viewPager);
     }
 

@@ -66,6 +66,25 @@
             android:layout_marginTop="8dp"/>
 
         <LinearLayout
+            android:id="@+id/item_main_showImageFromFlag"
+            android:clickable="true"
+            style="@style/menu_item">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="显示图片来源角标"/>
+            <CheckBox
+                android:id="@+id/checkBox_main_showImageFromFlag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/item_main_showImageDownloadProgress"
             android:clickable="true"
             style="@style/menu_item">
@@ -85,16 +104,16 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/item_main_scrollingPauseLoadNewImage"
+            android:id="@+id/item_main_scrollingPauseLoad"
             android:clickable="true"
             style="@style/menu_item">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="列表滑动时不加载图片"/>
+                android:text="列表滑动时不加载新图片"/>
             <CheckBox
-                android:id="@+id/checkBox_main_scrollingPauseLoadNewImage"
+                android:id="@+id/checkBox_main_scrollingPauseLoad"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"
@@ -104,16 +123,16 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/item_main_mobileNetworkPauseDownloadNewImage"
+            android:id="@+id/item_main_mobileNetworkPauseDownload"
             android:clickable="true"
             style="@style/menu_item">
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="移动网络下不加载新图片"/>
+                android:text="移动网络下不下载新图片"/>
             <CheckBox
-                android:id="@+id/checkBox_main_mobileNetworkPauseDownloadNewImage"
+                android:id="@+id/checkBox_main_mobileNetworkPauseDownload"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"

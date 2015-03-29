@@ -39,12 +39,12 @@ import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
-import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.SpearImageView;
 import me.xiaopan.android.spear.CancelCause;
 import me.xiaopan.android.spear.DisplayListener;
 import me.xiaopan.android.spear.FailCause;
 import me.xiaopan.android.spear.ImageFrom;
+import me.xiaopan.android.spear.Spear;
+import me.xiaopan.android.spear.SpearImageView;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.util.AnimationBatchExecutor;
 import me.xiaopan.android.spear.sample.util.AnimationUtils;
@@ -312,7 +312,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
 //        @Override
 //        public Object instantiateItem(ViewGroup container, int position) {
 //            SpearImageView spearImageView = new SpearImageView(context);
-//            spearImageView.displayUriImage(uris.get(position));
+//            spearImageView.displayImage(uris.get(position));
 //            container.addView(spearImageView);
 //            return spearImageView;
 //        }
@@ -336,7 +336,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
         public void onViewCreated(View view, Bundle savedInstanceState) {
             super.onViewCreated(view, savedInstanceState);
 
-            imageView.setDisplayOptions(DisplayOptionsType.IMAGE_DETAIL_ITEM);
+            imageView.setDisplayOptions(DisplayOptionsType.Detail);
             imageView.setDisplayListener(new DisplayListener() {
                 @Override
                 public void onStarted() {
@@ -356,10 +356,12 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
 
                 @Override
                 public void onCanceled(CancelCause cancelCause) {
-
+                    if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD_NEW_IMAGE){
+                        progressBar.setVisibility(View.GONE);
+                    }
                 }
             });
-            imageView.displayUriImage(imageUri);
+            imageView.displayImage(imageUri);
         }
     }
 

@@ -33,7 +33,7 @@ import me.xiaopan.android.spear.sample.activity.DetailActivity;
 import me.xiaopan.android.spear.sample.adapter.StarImageAdapter;
 import me.xiaopan.android.spear.sample.net.request.SearchImageRequest;
 import me.xiaopan.android.spear.sample.net.request.StarImageRequest;
-import me.xiaopan.android.spear.sample.util.ScrollingPauseLoadNewImageManager;
+import me.xiaopan.android.spear.sample.util.ScrollingPauseLoadManager;
 import me.xiaopan.android.spear.sample.widget.HintView;
 import me.xiaopan.android.widget.PullRefreshLayout;
 
@@ -127,7 +127,7 @@ public class SearchFragment extends InjectFragment implements StarImageAdapter.O
         pullRefreshLayout.setOnRefreshListener(this);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setOnScrollListener(new ScrollingPauseLoadNewImageManager(view.getContext()));
+        recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
         if (searchImageAdapter == null) {
             pullRefreshLayout.startRefresh();

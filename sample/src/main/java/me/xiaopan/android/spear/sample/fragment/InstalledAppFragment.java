@@ -24,7 +24,7 @@ import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
 import me.xiaopan.android.spear.sample.adapter.InstalledAppListAdapter;
 import me.xiaopan.android.spear.sample.bean.AppInfo;
-import me.xiaopan.android.spear.sample.util.ScrollingPauseLoadNewImageManager;
+import me.xiaopan.android.spear.sample.util.ScrollingPauseLoadManager;
 
 /**
  * 已安装APP列表
@@ -39,7 +39,7 @@ public class InstalledAppFragment extends InjectFragment{
         super.onViewCreated(view, savedInstanceState);
 
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-        contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadNewImageManager(view.getContext()));
+        contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
         if(adapter != null){
             contentRecyclerView.setAdapter(adapter);
@@ -98,7 +98,7 @@ public class InstalledAppFragment extends InjectFragment{
                     return;
                 }
 
-                adapter = new InstalledAppListAdapter(appInfoList);
+                adapter = new InstalledAppListAdapter(getActivity(), appInfoList);
                 contentRecyclerView.setAdapter(adapter);
                 contentRecyclerView.scheduleLayoutAnimation();
             }

@@ -5,15 +5,17 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 public class Settings {
-    private static final String PREFERENCE_SCROLLING_PAUSE_LOAD_NEW_IMAGE = "PREFERENCE_SCROLLING_PAUSE_LOAD_NEW_IMAGE";
+    private static final String PREFERENCE_SCROLLING_PAUSE_LOAD = "PREFERENCE_SCROLLING_PAUSE_LOAD";
     private static final String PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS = "PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS";
-    private static final String PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD_NEW_IMAGE = "PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD_NEW_IMAGE";
+    private static final String PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD = "PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD";
+    private static final String PREFERENCE_SHOW_IMAGE_FROM_FLAG = "PREFERENCE_SHOW_IMAGE_FROM_FLAG";
 
     private static Settings settingsInstance;
 
-    private boolean scrollingPauseLoadNewImage;
+    private boolean scrollingPauseLoad;
     private boolean showImageDownloadProgress;
-    private boolean mobileNetworkPauseDownloadNewImage;
+    private boolean mobileNetworkPauseDownload;
+    private boolean showImageFromFlag;
 
     private SharedPreferences.Editor editor;
 
@@ -21,9 +23,10 @@ public class Settings {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
         this.editor = preferences.edit();
 
-        this.scrollingPauseLoadNewImage = preferences.getBoolean(PREFERENCE_SCROLLING_PAUSE_LOAD_NEW_IMAGE, false);
+        this.scrollingPauseLoad = preferences.getBoolean(PREFERENCE_SCROLLING_PAUSE_LOAD, false);
         this.showImageDownloadProgress = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS, false);
-        this.mobileNetworkPauseDownloadNewImage = preferences.getBoolean(PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD_NEW_IMAGE, false);
+        this.mobileNetworkPauseDownload = preferences.getBoolean(PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, false);
+        this.showImageFromFlag = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, false);
     }
 
     public static Settings with(Context context){
@@ -41,17 +44,17 @@ public class Settings {
      * 滚动的时候是否暂停加载新图片
      * @return 滚动的时候是否暂停加载新图片
      */
-    public boolean isScrollingPauseLoadNewImage(){
-        return scrollingPauseLoadNewImage;
+    public boolean isScrollingPauseLoad(){
+        return scrollingPauseLoad;
     }
 
     /**
      * 设置滚动的时候是否暂停加载新图片
-     * @param scrollingPauseLoadNewImage 滚动的时候是否暂停加载新图片
+     * @param scrollingPauseLoad 滚动的时候是否暂停加载新图片
      */
-    public void setScrollingPauseLoadNewImage(boolean scrollingPauseLoadNewImage){
-        this.scrollingPauseLoadNewImage = scrollingPauseLoadNewImage;
-        editor.putBoolean(PREFERENCE_SCROLLING_PAUSE_LOAD_NEW_IMAGE, scrollingPauseLoadNewImage).apply();
+    public void setScrollingPauseLoad(boolean scrollingPauseLoad){
+        this.scrollingPauseLoad = scrollingPauseLoad;
+        editor.putBoolean(PREFERENCE_SCROLLING_PAUSE_LOAD, scrollingPauseLoad).apply();
     }
 
     /**
@@ -75,16 +78,33 @@ public class Settings {
      * 移动网络下是否暂停下载新图片
      * @return 移动网络下是否暂停下载新图片
      */
-    public boolean isMobileNetworkPauseDownloadNewImage() {
-        return mobileNetworkPauseDownloadNewImage;
+    public boolean isMobileNetworkPauseDownload() {
+        return mobileNetworkPauseDownload;
     }
 
     /**
      * 设置移动网络下是否暂停下载新图片
-     * @param mobileNetworkPauseDownloadNewImage 移动网络下是否暂停下载新图片
+     * @param mobileNetworkPauseDownload 移动网络下是否暂停下载新图片
      */
-    public void setMobileNetworkPauseDownloadNewImage(boolean mobileNetworkPauseDownloadNewImage) {
-        this.mobileNetworkPauseDownloadNewImage = mobileNetworkPauseDownloadNewImage;
-        editor.putBoolean(PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD_NEW_IMAGE, mobileNetworkPauseDownloadNewImage).apply();
+    public void setMobileNetworkPauseDownload(boolean mobileNetworkPauseDownload) {
+        this.mobileNetworkPauseDownload = mobileNetworkPauseDownload;
+        editor.putBoolean(PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, mobileNetworkPauseDownload).apply();
+    }
+
+    /**
+     * 是否显示图片来源标记
+     * @return 显示图片来源标记
+     */
+    public boolean isShowImageFromFlag() {
+        return showImageFromFlag;
+    }
+
+    /**
+     * 设置显示图片来源标记
+     * @param showImageFromFlag 显示图片来源标记
+     */
+    public void setShowImageFromFlag(boolean showImageFromFlag) {
+        this.showImageFromFlag = showImageFromFlag;
+        editor.putBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, showImageFromFlag).apply();
     }
 }

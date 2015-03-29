@@ -120,7 +120,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         switch(viewType){
             case ITEM_TYPE_HEADER :
                 HeaderViewHolder headerViewHolder = new HeaderViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_image_header, viewGroup, false));
-                headerViewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.STAR_HOME_HEADER);
+                headerViewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_3_2);
                 headerViewHolder.spearImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 ViewGroup.LayoutParams headerParams = headerViewHolder.spearImageView.getLayoutParams();
                 headerParams.width = headerWidth;
@@ -145,9 +145,9 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 itemParams.height = imageSize;
                 itemViewHolder.threeSpearImageView.setLayoutParams(itemParams);
 
-                itemViewHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_HOME_ITEM);
-                itemViewHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_HOME_ITEM);
-                itemViewHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.STAR_HOME_ITEM);
+                itemViewHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
+                itemViewHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
+                itemViewHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
 
                 itemViewHolder.oneSpearImageView.setEnableClickRipple(true);
                 itemViewHolder.twoSpearImageView.setEnableClickRipple(true);
@@ -171,7 +171,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         switch(getItemViewType(position)){
             case ITEM_TYPE_HEADER :
                 HeaderViewHolder headerViewHolder = (HeaderViewHolder) viewHolder;
-                headerViewHolder.spearImageView.displayUriImage(headerImageUrl);
+                headerViewHolder.spearImageView.displayImage(headerImageUrl);
                 break;
             case ITEM_TYPE_ITEM :
                 ItemViewHolder itemViewHolder = (ItemViewHolder) viewHolder;
@@ -192,9 +192,13 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                     bottomMargin = margin;
                 }
 
-                itemViewHolder.oneSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
-                itemViewHolder.twoSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
-                itemViewHolder.threeSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
+                itemViewHolder.oneSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
+                itemViewHolder.twoSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
+                itemViewHolder.threeSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
+
+                itemViewHolder.oneSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+                itemViewHolder.twoSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+                itemViewHolder.threeSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
 
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) itemViewHolder.oneSpearImageView.getLayoutParams();
                 params.topMargin = topMargin;
@@ -237,7 +241,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     private void bind(SpearImageView spearImageView, StarImageRequest.Image image, int position){
         if(image != null){
             spearImageView.setTag(position);
-            spearImageView.displayUriImage(image.getSourceUrl());
+            spearImageView.displayImage(image.getSourceUrl());
             spearImageView.setVisibility(View.VISIBLE);
         }else{
             spearImageView.setVisibility(View.INVISIBLE);

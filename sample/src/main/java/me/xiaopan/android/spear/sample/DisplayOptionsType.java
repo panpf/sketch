@@ -18,77 +18,32 @@ package me.xiaopan.android.spear.sample;
 
 public enum DisplayOptionsType {
 	/**
-	 * 本地相册Item
+	 * 详情
 	 */
-	LOCAL_PHOTO_ALBUM_ITEM,
-	
-	/**
-	 * 图片详情ITEM
-	 */
-	IMAGE_DETAIL_ITEM,
+	Detail,
 
 	/**
-	 * 首页 - 分类1
+	 * 矩形
 	 */
-	INDEX_CATEGORY_ONE,
+	Rectangle_1,
 
 	/**
-	 * 首页 - 分类2
+	 * 矩形，宽高比例为0.75
 	 */
-	INDEX_CATEGORY_TWO,
+	Rectangle_0_75,
 
 	/**
-	 * 首页 - 分类3
+	 * 矩形，宽高比例为1.56
 	 */
-	INDEX_CATEGORY_THREE,
+	Rectangle_1_56,
 
 	/**
-	 * 明星个人主页 - 页头
+	 * 矩形，宽高比例为3.2
 	 */
-	STAR_HOME_HEADER,
+	Rectangle_3_2,
 
 	/**
-	 * 明星个人主页 - ITEM
+	 * 圆形
 	 */
-	STAR_HOME_ITEM,
-
-	/**
-	 * 明星头像
-	 */
-	STAR_HEAD_PORTRAIT,
-
-    /**
-     * 热门明星页面 - 第一种图片
-     */
-    HOT_STAR_ONE,
-
-    /**
-     * 热门明星页面 - 第二种图片
-     */
-    HOT_STAR_TWO,
-
-    /**
-     * 热门明星页面 - 第三种图片
-     */
-    HOT_STAR_THREE,
-
-    /**
-     * 搜索 - ITEM - Grid
-     */
-    SEARCH_ITEM_GRID,
-
-    /**
-     * 搜索 - ITEM - Linear
-     */
-    SEARCH_ITEM_LINEAR,
-
-    /**
-     * 搜索 - ITEM - STAGGERED
-     */
-    SEARCH_ITEM_STAGGERED,
-
-    /**
-     * APP图标
-     */
-    APP_ICON,
+	Circular,
 }

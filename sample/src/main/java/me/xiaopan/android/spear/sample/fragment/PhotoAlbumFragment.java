@@ -37,7 +37,7 @@ import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
 import me.xiaopan.android.spear.sample.activity.DetailActivity;
 import me.xiaopan.android.spear.sample.adapter.PhotoAlbumImageAdapter;
-import me.xiaopan.android.spear.sample.util.ScrollingPauseLoadNewImageManager;
+import me.xiaopan.android.spear.sample.util.ScrollingPauseLoadManager;
 import me.xiaopan.android.widget.PullRefreshLayout;
 
 /**
@@ -55,7 +55,7 @@ public class PhotoAlbumFragment extends InjectFragment implements PhotoAlbumImag
 
         pullRefreshLayout.setOnRefreshListener(this);
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        recyclerView.setOnScrollListener(new ScrollingPauseLoadNewImageManager(view.getContext()));
+        recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
         if(imageAdapter != null){
             recyclerView.setAdapter(imageAdapter);

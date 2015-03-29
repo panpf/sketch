@@ -1,5 +1,6 @@
 package me.xiaopan.android.spear.sample.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,6 +13,7 @@ import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.SpearImageView;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.bean.AppInfo;
+import me.xiaopan.android.spear.sample.util.Settings;
 
 /**
  * APP安装包列表适配器
@@ -19,9 +21,11 @@ import me.xiaopan.android.spear.sample.bean.AppInfo;
 public class AppPackageListAdapter extends RecyclerView.Adapter{
     private List<AppInfo> appInfoList;
     private long useTime = -1;
+    private Settings settings;
 
-    public AppPackageListAdapter(List<AppInfo> appInfoList) {
+    public AppPackageListAdapter(Context context, List<AppInfo> appInfoList) {
         this.appInfoList = appInfoList;
+        this.settings = Settings.with(context);
     }
 
     @Override
@@ -30,7 +34,7 @@ public class AppPackageListAdapter extends RecyclerView.Adapter{
             return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app_list_header, parent, false));
         }else{
             AppInfoViewHolder appInfoViewHolder = new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
-            appInfoViewHolder.iconSpearImageView.setDisplayOptions(DisplayOptionsType.APP_ICON);
+            appInfoViewHolder.iconSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
             return appInfoViewHolder;
         }
     }
@@ -47,7 +51,10 @@ public class AppPackageListAdapter extends RecyclerView.Adapter{
         }else{
             AppInfo appInfo = appInfoList.get(position-1);
             AppInfoViewHolder appInfoViewHolder = (AppInfoViewHolder) holder;
-            appInfoViewHolder.iconSpearImageView.displayUriImage(appInfo.getApkFilePath());
+
+            appInfoViewHolder.iconSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+            appInfoViewHolder.iconSpearImageView.displayImage(appInfo.getApkFilePath());
+
             appInfoViewHolder.nameTextView.setText(appInfo.getName());
             appInfoViewHolder.infoTextView.setText("v"+appInfo.getVersionName()+"  |  "+appInfo.getAppSize());
         }

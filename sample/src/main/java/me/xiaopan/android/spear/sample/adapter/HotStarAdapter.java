@@ -24,7 +24,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
     private static final int ITEM_TYPE_THREE_ITEM_LEFT = 1;
     private static final int ITEM_TYPE_THREE_ITEM_RIGHT = 2;
     private static final int ITEM_TYPE_TWO_ITEM = 3;
-    private static final int ITEM_TYPE_ONE_ITEM = 4;
     private Context context;
     private List<Object> items;
     private int marginBorder;
@@ -37,7 +36,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         this.settings = Settings.with(context);
         append(hotStarList);
         this.marginBorder = (int) context.getResources().getDimension(R.dimen.home_category_margin_border);
-        this.availableScreenWidth = context.getResources().getDisplayMetrics().widthPixels - (marginBorder*3);
+        this.availableScreenWidth = context.getResources().getDisplayMetrics().widthPixels - (marginBorder*2);
         this.itemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -55,7 +54,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         for(int w = 0, size = starList.size(); w < size;){
             int number = size - w;
             if(number == 1){
-                OneItem oneItem = new OneItem();
+                TwoItem oneItem = new TwoItem();
                 oneItem.star1 = starList.get(w++);
                 items.add(oneItem);
             }else if(number == 2){
@@ -108,8 +107,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             return ITEM_TYPE_THREE_ITEM_RIGHT;
         }else if(item instanceof TwoItem){
             return ITEM_TYPE_TWO_ITEM;
-        }else if(item instanceof OneItem){
-            return ITEM_TYPE_ONE_ITEM;
         }else{
             return -1;
         }
@@ -131,26 +128,26 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemLeftHolder.twoSpearImageView.setEnableClickRipple(true);
             threeItemLeftHolder.threeSpearImageView.setEnableClickRipple(true);
 
-            int itemWidth = availableScreenWidth / 2;
+            int itemWidth = (availableScreenWidth-marginBorder)/2;
             int itemHeight = (int) (itemWidth/0.75);
 
             ViewGroup.LayoutParams params = threeItemLeftHolder.oneSpearImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemHeight;
             threeItemLeftHolder.oneSpearImageView.setLayoutParams(params);
-            threeItemLeftHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.HOT_STAR_ONE);
+            threeItemLeftHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_0_75);
 
             params = threeItemLeftHolder.twoSpearImageView.getLayoutParams();
-            params.width = (int) (availableScreenWidth * 0.5);
+            params.width = itemWidth;
             params.height = (itemHeight-marginBorder)/2;
             threeItemLeftHolder.twoSpearImageView.setLayoutParams(params);
-            threeItemLeftHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.HOT_STAR_TWO);
+            threeItemLeftHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1_56);
 
             params = threeItemLeftHolder.threeSpearImageView.getLayoutParams();
-            params.width = (int) (availableScreenWidth * 0.5);
+            params.width = itemWidth;
             params.height = (itemHeight-marginBorder)/2;
             threeItemLeftHolder.threeSpearImageView.setLayoutParams(params);
-            threeItemLeftHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.HOT_STAR_TWO);
+            threeItemLeftHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1_56);
 
             viewHolder = threeItemLeftHolder;
         }else if(viewType == ITEM_TYPE_THREE_ITEM_RIGHT){
@@ -164,26 +161,26 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemRightHolder.twoSpearImageView.setEnableClickRipple(true);
             threeItemRightHolder.threeSpearImageView.setEnableClickRipple(true);
 
-            int itemWidth = availableScreenWidth / 2;
+            int itemWidth = (availableScreenWidth-marginBorder) / 2;
             int itemHeight = (int) (itemWidth/0.75);
 
             ViewGroup.LayoutParams params = threeItemRightHolder.threeSpearImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemHeight;
             threeItemRightHolder.threeSpearImageView.setLayoutParams(params);
-            threeItemRightHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.HOT_STAR_ONE);
+            threeItemRightHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_0_75);
 
             params = threeItemRightHolder.twoSpearImageView.getLayoutParams();
-            params.width = (int) (availableScreenWidth * 0.5);
+            params.width = itemWidth;
             params.height = (itemHeight-marginBorder)/2;
             threeItemRightHolder.twoSpearImageView.setLayoutParams(params);
-            threeItemRightHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.HOT_STAR_TWO);
+            threeItemRightHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1_56);
 
             params = threeItemRightHolder.oneSpearImageView.getLayoutParams();
-            params.width = (int) (availableScreenWidth * 0.5);
+            params.width = itemWidth;
             params.height = (itemHeight-marginBorder)/2;
             threeItemRightHolder.oneSpearImageView.setLayoutParams(params);
-            threeItemRightHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.HOT_STAR_TWO);
+            threeItemRightHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1_56);
 
             viewHolder = threeItemRightHolder;
         }else if(viewType == ITEM_TYPE_TWO_ITEM){
@@ -195,39 +192,22 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             twoItemHolder.oneSpearImageView.setEnableClickRipple(true);
             twoItemHolder.twoSpearImageView.setEnableClickRipple(true);
 
-            int itemWidth = availableScreenWidth / 2;
-            int itemHeight = (int) (itemWidth/1.36);
+            int itemWidth = (availableScreenWidth-marginBorder) / 2;
+            int itemHeight = (int) (itemWidth/0.75);
 
             ViewGroup.LayoutParams params = twoItemHolder.oneSpearImageView.getLayoutParams();
             params.width = itemWidth;
-            params.height = itemHeight;
+            params.height = (itemHeight-marginBorder)/2;
             twoItemHolder.oneSpearImageView.setLayoutParams(params);
-            twoItemHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.HOT_STAR_THREE);
+            twoItemHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1_56);
 
             params = twoItemHolder.twoSpearImageView.getLayoutParams();
             params.width = itemWidth;
-            params.height = itemHeight;
+            params.height = (itemHeight-marginBorder)/2;
             twoItemHolder.twoSpearImageView.setLayoutParams(params);
-            twoItemHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.HOT_STAR_THREE);
+            twoItemHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1_56);
 
             viewHolder = twoItemHolder;
-        }else if(viewType == ITEM_TYPE_ONE_ITEM){
-            OneItemHolder oneItemHolder = new OneItemHolder(LayoutInflater.from(context).inflate(R.layout.list_item_hot_star_one, parent, false));
-
-            oneItemHolder.oneSpearImageView.setOnClickListener(itemClickListener);
-
-            oneItemHolder.oneSpearImageView.setEnableClickRipple(true);
-
-            int itemWidth = availableScreenWidth;
-            int itemHeight = (int) (itemWidth/1.36);
-
-            ViewGroup.LayoutParams params = oneItemHolder.oneSpearImageView.getLayoutParams();
-            params.width = itemWidth;
-            params.height = itemHeight;
-            oneItemHolder.oneSpearImageView.setLayoutParams(params);
-            oneItemHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.HOT_STAR_THREE);
-
-            viewHolder = oneItemHolder;
         }else{
             return null;
         }
@@ -242,51 +222,71 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         }else if(holder instanceof ThreeItemLeftHolder){
             ThreeItemLeftHolder threeItemLeftHolder = (ThreeItemLeftHolder) holder;
             ThreeItemLeft threeItemLeft = (ThreeItemLeft) items.get(position);
+
             threeItemLeftHolder.oneNameTextView.setText(threeItemLeft.star1.getName());
             threeItemLeftHolder.twoNameTextView.setText(threeItemLeft.star2.getName());
             threeItemLeftHolder.threeNameTextView.setText(threeItemLeft.star3.getName());
-            threeItemLeftHolder.oneSpearImageView.displayUriImage(threeItemLeft.star1.getHeightImage().getUrl());
-            threeItemLeftHolder.twoSpearImageView.displayUriImage(threeItemLeft.star2.getWidthImage().getUrl());
-            threeItemLeftHolder.threeSpearImageView.displayUriImage(threeItemLeft.star3.getWidthImage().getUrl());
+
             threeItemLeftHolder.oneSpearImageView.setTag(threeItemLeft.star1);
             threeItemLeftHolder.twoSpearImageView.setTag(threeItemLeft.star2);
             threeItemLeftHolder.threeSpearImageView.setTag(threeItemLeft.star3);
-            threeItemLeftHolder.oneSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
-            threeItemLeftHolder.twoSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
-            threeItemLeftHolder.threeSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
+
+            threeItemLeftHolder.oneSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
+            threeItemLeftHolder.twoSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
+            threeItemLeftHolder.threeSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
+
+            threeItemLeftHolder.oneSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+            threeItemLeftHolder.twoSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+            threeItemLeftHolder.threeSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+
+            threeItemLeftHolder.oneSpearImageView.displayImage(threeItemLeft.star1.getHeightImage().getUrl());
+            threeItemLeftHolder.twoSpearImageView.displayImage(threeItemLeft.star2.getWidthImage().getUrl());
+            threeItemLeftHolder.threeSpearImageView.displayImage(threeItemLeft.star3.getWidthImage().getUrl());
         }else if(holder instanceof ThreeItemRightHolder){
             ThreeItemRightHolder threeItemRightHolder = (ThreeItemRightHolder) holder;
             ThreeItemRight threeItemRight = (ThreeItemRight) items.get(position);
+
             threeItemRightHolder.oneNameTextView.setText(threeItemRight.star1.getName());
             threeItemRightHolder.twoNameTextView.setText(threeItemRight.star2.getName());
             threeItemRightHolder.threeNameTextView.setText(threeItemRight.star3.getName());
-            threeItemRightHolder.oneSpearImageView.displayUriImage(threeItemRight.star1.getWidthImage().getUrl());
-            threeItemRightHolder.twoSpearImageView.displayUriImage(threeItemRight.star2.getWidthImage().getUrl());
-            threeItemRightHolder.threeSpearImageView.displayUriImage(threeItemRight.star3.getHeightImage().getUrl());
+
             threeItemRightHolder.oneSpearImageView.setTag(threeItemRight.star1);
             threeItemRightHolder.twoSpearImageView.setTag(threeItemRight.star2);
             threeItemRightHolder.threeSpearImageView.setTag(threeItemRight.star3);
-            threeItemRightHolder.oneSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
-            threeItemRightHolder.twoSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
-            threeItemRightHolder.threeSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
+
+            threeItemRightHolder.oneSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
+            threeItemRightHolder.twoSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
+            threeItemRightHolder.threeSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
+
+            threeItemRightHolder.oneSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+            threeItemRightHolder.twoSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+            threeItemRightHolder.threeSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+
+            threeItemRightHolder.oneSpearImageView.displayImage(threeItemRight.star1.getWidthImage().getUrl());
+            threeItemRightHolder.twoSpearImageView.displayImage(threeItemRight.star2.getWidthImage().getUrl());
+            threeItemRightHolder.threeSpearImageView.displayImage(threeItemRight.star3.getHeightImage().getUrl());
         }else if(holder instanceof TwoItemHolder){
             TwoItemHolder twoItemHolder = (TwoItemHolder) holder;
             TwoItem twoItem = (TwoItem) items.get(position);
+
             twoItemHolder.oneNameTextView.setText(twoItem.star1.getName());
-            twoItemHolder.twoNameTextView.setText(twoItem.star2.getName());
-            twoItemHolder.oneSpearImageView.displayUriImage(twoItem.star1.getWidthImage().getUrl());
-            twoItemHolder.twoSpearImageView.displayUriImage(twoItem.star2.getWidthImage().getUrl());
             twoItemHolder.oneSpearImageView.setTag(twoItem.star1);
-            twoItemHolder.twoSpearImageView.setTag(twoItem.star2);
-            twoItemHolder.oneSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
-            twoItemHolder.twoSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
-        }else if(holder instanceof OneItemHolder){
-            OneItemHolder oneItemHolder = (OneItemHolder) holder;
-            OneItem oneItem = (OneItem) items.get(position);
-            oneItemHolder.oneNameTextView.setText(oneItem.star1.getName());
-            oneItemHolder.oneSpearImageView.displayUriImage(oneItem.star1.getWidthImage().getUrl());
-            oneItemHolder.oneSpearImageView.setTag(oneItem.star1);
-            oneItemHolder.oneSpearImageView.setEnableShowProgress(settings.isShowImageDownloadProgress());
+            twoItemHolder.oneSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
+            twoItemHolder.oneSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+            twoItemHolder.oneSpearImageView.displayImage(twoItem.star1.getWidthImage().getUrl());
+
+            if(twoItem.star2 != null){
+                twoItemHolder.twoNameTextView.setText(twoItem.star2.getName());
+                twoItemHolder.twoSpearImageView.setTag(twoItem.star2);
+                twoItemHolder.twoSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
+                twoItemHolder.twoSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+                twoItemHolder.twoSpearImageView.displayImage(twoItem.star2.getWidthImage().getUrl());
+                twoItemHolder.twoNameTextView.setVisibility(View.VISIBLE);
+                twoItemHolder.twoSpearImageView.setVisibility(View.VISIBLE);
+            }else{
+                twoItemHolder.twoNameTextView.setVisibility(View.INVISIBLE);
+                twoItemHolder.twoSpearImageView.setVisibility(View.INVISIBLE);
+            }
         }
 
         int topMargin;
@@ -360,17 +360,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         }
     }
 
-    private static class OneItemHolder extends RecyclerView.ViewHolder{
-        private SpearImageView oneSpearImageView;
-        private TextView oneNameTextView;
-
-        public OneItemHolder(View itemView) {
-            super(itemView);
-            oneSpearImageView = (SpearImageView) itemView.findViewById(R.id.spearImage_hotStarOneItem_one);
-            oneNameTextView = (TextView) itemView.findViewById(R.id.text_hotStarOneItem_one);
-        }
-    }
-
     private static class CategoryTitleHolder extends RecyclerView.ViewHolder{
         private TextView categoryTitleTextView;
 
@@ -395,10 +384,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
     private static class TwoItem {
         private HotStarRequest.Star star1;
         private HotStarRequest.Star star2;
-    }
-
-    private static class OneItem {
-        private HotStarRequest.Star star1;
     }
 
     public interface OnImageClickListener{

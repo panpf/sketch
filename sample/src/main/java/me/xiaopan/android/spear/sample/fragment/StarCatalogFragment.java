@@ -21,7 +21,7 @@ import me.xiaopan.android.spear.sample.adapter.StarCatalogAdapter;
 import me.xiaopan.android.spear.sample.net.request.ManStarCatalogRequest;
 import me.xiaopan.android.spear.sample.net.request.StarCatalogRequest;
 import me.xiaopan.android.spear.sample.net.request.WomanStarCatalogRequest;
-import me.xiaopan.android.spear.sample.util.ScrollingPauseLoadNewImageManager;
+import me.xiaopan.android.spear.sample.util.ScrollingPauseLoadManager;
 import me.xiaopan.android.spear.sample.widget.HintView;
 import me.xiaopan.android.widget.PullRefreshLayout;
 
@@ -43,7 +43,7 @@ public class StarCatalogFragment extends InjectFragment implements PullRefreshLa
         super.onViewCreated(view, savedInstanceState);
 
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadNewImageManager(view.getContext()));
+        contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
         refreshLayout.setOnRefreshListener(this);
 
         if(adapter == null){

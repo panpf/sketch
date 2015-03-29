@@ -10,7 +10,7 @@ import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
-import me.xiaopan.android.spear.sample.adapter.ContentAdapter;
+import me.xiaopan.android.spear.sample.adapter.FragmentAdapter;
 import me.xiaopan.android.widget.PagerSlidingTabStrip;
 
 /**
@@ -20,7 +20,7 @@ import me.xiaopan.android.widget.PagerSlidingTabStrip;
 public class AppListFragment extends InjectFragment {
     @InjectView(R.id.pager_appList_content) private ViewPager viewPager;
     private GetAppListTagStripListener getPagerSlidingTagStripListener;
-    private ContentAdapter contentAdapter;
+    private FragmentAdapter fragmentAdapter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -49,13 +49,13 @@ public class AppListFragment extends InjectFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(contentAdapter == null){
+        if(fragmentAdapter == null){
             Fragment[] fragments = new Fragment[2];
             fragments[0] = new InstalledAppFragment();
             fragments[1] = new AppPackageFragment();
-            contentAdapter = new ContentAdapter(getChildFragmentManager(), fragments);
+            fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments);
         }
-        viewPager.setAdapter(contentAdapter);
+        viewPager.setAdapter(fragmentAdapter);
         getPagerSlidingTagStripListener.onGetAppListTabStrip().setViewPager(viewPager);
     }
 
