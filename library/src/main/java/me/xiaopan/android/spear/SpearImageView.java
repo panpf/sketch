@@ -65,6 +65,7 @@ public class SpearImageView extends ImageView{
 
     private View.OnClickListener onClickListener;
     private String imageUri;
+    private boolean replacedClickListener;
 
     private int touchX;
     private int touchY;
@@ -423,7 +424,13 @@ public class SpearImageView extends ImageView{
      */
     void setImageUri(String imageUri){
         this.imageUri = imageUri;
-        setOnClickListener(onClickListener);
+        if(replacedClickListener){
+            setOnClickListener(onClickListener);
+            if(onClickListener == null){
+                setClickable(false);
+            }
+            replacedClickListener = false;
+        }
     }
 
     /**
@@ -520,6 +527,7 @@ public class SpearImageView extends ImageView{
         public void onCanceled(CancelCause cancelCause) {
             if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD_NEW_IMAGE){
                 SpearImageView.super.setOnClickListener(this);
+                replacedClickListener = true;
             }
             if(displayListener != null){
                 displayListener.onCanceled(cancelCause);
