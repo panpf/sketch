@@ -30,13 +30,7 @@ public interface ImageDisplayer {
 	 * 显示
 	 * @param imageView ImageView
 	 * @param bitmapDrawable 图片
-	 * @param bitmapType 图片类型
 	 * @param displayRequest 请求
 	 */
-	void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest);
-	
-	enum BitmapType {
-		SUCCESS,
-        FAILURE,
-	}
+	void display(ImageView imageView, BitmapDrawable bitmapDrawable, DisplayRequest displayRequest);
 }

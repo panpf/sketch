@@ -38,7 +38,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, BitmapType bitmapType, DisplayRequest displayRequest) {
+	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, DisplayRequest displayRequest) {
 		if(bitmapDrawable == null){
             return;
         }
