@@ -28,7 +28,7 @@ import android.graphics.Shader.TileMode;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.android.spear.util.ImageSize;
+import me.xiaopan.android.spear.ImageSize;
 
 /**
  * 倒影位图处理器

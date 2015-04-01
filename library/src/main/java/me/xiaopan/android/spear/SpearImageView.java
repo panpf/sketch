@@ -23,15 +23,13 @@ import android.graphics.Path;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
-
-import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 
 /**
  * SpearImageView
@@ -110,6 +108,7 @@ public class SpearImageView extends ImageView{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        Log.i("SpearImageView", "onDraw: " + hashCode());
 
         // 绘制按下状态
         if(pressed || (clickRippleScroller != null && clickRippleScroller.computeScrollOffset())){
@@ -212,15 +211,31 @@ public class SpearImageView extends ImageView{
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        Log.d("SpearImageView", "onAttachedToWindow: " + hashCode());
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-
-        if(Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1){
-            final Drawable previousDrawable = getDrawable();
-            if(previousDrawable != null){
-                notifyDrawable("onDetachedFromWindow", previousDrawable, false);
-            }
+        Log.d("SpearImageView", "onDetachedFromWindow: "+hashCode());
+        final Drawable previousDrawable = getDrawable();
+        if(previousDrawable != null){
+            notifyDrawable("onDetachedFromWindow", previousDrawable, false);
         }
+    }
+
+    @Override
+    public void onStartTemporaryDetach() {
+        super.onStartTemporaryDetach();
+        Log.w("SpearImageView", "onStartTemporaryDetach: " + hashCode());
+    }
+
+    @Override
+    public void onFinishTemporaryDetach() {
+        super.onFinishTemporaryDetach();
+        Log.w("SpearImageView", "onFinishTemporaryDetach: " + hashCode());
     }
 
     @Override
@@ -456,17 +471,15 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * Notifies the drawable that it's displayed state has changed.
+     * 修改Drawable显示状态
      * @param callingStation 调用位置
      * @param drawable Drawable
      * @param isDisplayed 是否已显示
      */
     private static void notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
-        if (drawable instanceof RecyclingBitmapDrawable) {
-            // The drawable is a CountingBitmapDrawable, so notify it
-            ((RecyclingBitmapDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
+        if (drawable instanceof RecycleDrawable) {
+            ((RecycleDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
         } else if (drawable instanceof LayerDrawable) {
-            // The drawable is a LayerDrawable, so recurse on each layer
             LayerDrawable layerDrawable = (LayerDrawable) drawable;
             for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
                 notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);

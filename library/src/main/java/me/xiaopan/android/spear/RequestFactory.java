@@ -14,17 +14,15 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.util;
+package me.xiaopan.android.spear;
 
 import android.widget.ImageView;
 
-import me.xiaopan.android.spear.DisplayHelper;
-import me.xiaopan.android.spear.DownloadHelper;
-import me.xiaopan.android.spear.LoadHelper;
-import me.xiaopan.android.spear.Spear;
-
-public interface HelperFactory {
-    public DownloadHelper newDownloadHelper(Spear spear, String uri);
-    public LoadHelper newLoadHelper(Spear spear, String uri);
-    public DisplayHelper newDisplayHelper(Spear spear, String uri, ImageView imageView);
+/**
+ * Request创建工厂
+ */
+public interface RequestFactory {
+    DisplayRequest newDisplayRequest(Spear spear, String uri, UriScheme uriScheme, String memoryCacheId, ImageView imageView);
+    LoadRequest newLoadRequest(Spear spear, String uri, UriScheme uriScheme);
+    DownloadRequest newDownloadRequest(Spear spear, String uri, UriScheme uriScheme);
 }

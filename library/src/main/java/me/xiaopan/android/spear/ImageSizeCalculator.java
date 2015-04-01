@@ -15,7 +15,7 @@
  */
 
 
-package me.xiaopan.android.spear.util;
+package me.xiaopan.android.spear;
 
 import android.content.Context;
 import android.widget.ImageView;

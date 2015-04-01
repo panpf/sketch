@@ -18,7 +18,7 @@ package me.xiaopan.android.spear;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
+import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -28,10 +28,6 @@ import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.display.TransitionImageDisplayer;
 import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.process.ImageProcessor;
-import me.xiaopan.android.spear.util.DrawableHolder;
-import me.xiaopan.android.spear.util.ImageSize;
-import me.xiaopan.android.spear.util.ImageViewHolder;
-import me.xiaopan.android.spear.util.RecyclingBitmapDrawable;
 
 /**
  * 显示请求
@@ -59,6 +55,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     // Display fields
     private String memoryCacheId;	// 内存缓存ID
     private boolean enableMemoryCache = true;	// 是否开启内存缓存
+    private boolean thisIsGifImage; // 这是一张GIF图
     private DrawableHolder loadFailDrawableHolder;	// 当加载失败时显示的图片
     private DrawableHolder pauseDownloadDrawableHolder;	// 当暂停下载时显示的图片
     private ImageDisplayer imageDisplayer;	// 图片显示器
@@ -72,7 +69,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
     private CancelCause cancelCause;  // 取消原因
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
-    private BitmapDrawable resultBitmap;    // 最终的图片
+    private Drawable resultDrawable;    // 最终的图片
     private ImageViewHolder imageViewHolder;    // 绑定ImageView
     private boolean levelFromPauseDownload;
 
@@ -317,13 +314,6 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     }
 
     @Override
-    public void cancelDisplay(String callingStation){
-        if(resultBitmap != null && resultBitmap instanceof RecyclingBitmapDrawable){
-            ((RecyclingBitmapDrawable) resultBitmap).cancelDisplay(callingStation);
-        }
-    }
-
-    @Override
     public void postRunDispatch() {
         setRequestStatus(RequestStatus.WAIT_DISPATCH);
         this.runStatus = RunStatus.DISPATCH;
@@ -511,18 +501,16 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         }
 
         if(bitmap != null && !bitmap.isRecycled()){
-            //创建BitmapDrawable并放入内存缓存
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                resultBitmap = new BitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
-            } else {
-                resultBitmap = new RecyclingBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
-            }
+            resultDrawable = new RecycleBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
             if(enableMemoryCache && memoryCacheId != null){
-                spear.getConfiguration().getMemoryCache().put(memoryCacheId, resultBitmap);
+                spear.getConfiguration().getMemoryCache().put(memoryCacheId, resultDrawable);
             }
 
             // 显示
             setRequestStatus(RequestStatus.WAIT_DISPLAY);
+            if(resultDrawable instanceof RecycleDrawable){
+                ((RecycleDrawable) resultDrawable).setIsWaitDisplay("executeLoad", true);
+            }
             spear.getConfiguration().getDisplayCallbackHandler().completeCallback(this);
         }else{
             toFailedStatus(FailCause.DECODE_FAIL);
@@ -532,7 +520,9 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     @Override
     public void handleCompletedOnMainThread() {
         if(isCanceled()){
-            cancelDisplay("CompletedCallback - Cancel");
+            if(resultDrawable != null && resultDrawable instanceof RecycleDrawable){
+                ((RecycleDrawable) resultDrawable).setIsWaitDisplay("CompletedCallback - Cancel", false);
+            }
             if(Spear.isDebugMode()){
                 Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
             }
@@ -543,7 +533,10 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(imageDisplayer == null){
             imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
         }
-        imageDisplayer.display(imageViewHolder.getImageView(), resultBitmap, this);
+        imageDisplayer.display(imageViewHolder.getImageView(), resultDrawable);
+        if(resultDrawable instanceof RecycleDrawable){
+            ((RecycleDrawable) resultDrawable).setIsWaitDisplay("CompletedCallback - Cancel", false);
+        }
         setRequestStatus(RequestStatus.COMPLETED);
         if(displayListener != null){
             displayListener.onCompleted(imageFrom);
@@ -563,7 +556,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(imageDisplayer == null){
             imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
         }
-        imageDisplayer.display(imageViewHolder.getImageView(), getLoadFailDrawable(), this);
+        imageDisplayer.display(imageViewHolder.getImageView(), getLoadFailDrawable());
         setRequestStatus(RequestStatus.FAILED);
         if(displayListener != null){
             displayListener.onFailed(failCause);
@@ -591,7 +584,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             if(imageDisplayer == null){
                 imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
             }
-            imageDisplayer.display(imageViewHolder.getImageView(), getPauseDownloadDrawable(), this);
+            imageDisplayer.display(imageViewHolder.getImageView(), getPauseDownloadDrawable());
         }
 
         cancelCause = CancelCause.PAUSE_DOWNLOAD;
@@ -618,6 +611,11 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     @Override
     public void setLevelFromPauseDownload(boolean levelFromPauseDownload) {
         this.levelFromPauseDownload = levelFromPauseDownload;
+    }
+
+    @Override
+    public void setThisIsGifImage(boolean thisIsGifImage) {
+        this.thisIsGifImage = thisIsGifImage;
     }
 
     @Override

@@ -16,12 +16,9 @@
 
 package me.xiaopan.android.spear.display;
 
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
-
-import me.xiaopan.android.spear.DisplayRequest;
 
 /**
  * 过度图片显示器
@@ -38,20 +35,20 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, DisplayRequest displayRequest) {
-		if(bitmapDrawable == null){
+	public void display(ImageView imageView, Drawable drawable) {
+		if(drawable == null){
             return;
         }
         Drawable oldDrawable = imageView.getDrawable();
 		if(oldDrawable != null){
-			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, bitmapDrawable});
+			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, drawable});
         	imageView.clearAnimation();
 			imageView.setImageDrawable(transitionDrawable);
 			transitionDrawable.setCrossFadeEnabled(true);
 			transitionDrawable.startTransition(duration);
 		}else{
         	imageView.clearAnimation();
-			imageView.setImageDrawable(bitmapDrawable);
+			imageView.setImageDrawable(drawable);
 		}
 	}
 }

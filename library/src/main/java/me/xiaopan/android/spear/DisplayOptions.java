@@ -21,14 +21,13 @@ import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
-import me.xiaopan.android.spear.util.DrawableHolder;
-import me.xiaopan.android.spear.util.ImageSize;
 
 /**
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
 	protected boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+    protected boolean loadGifDrawable;
     protected ImageDisplayer imageDisplayer;	// 图片显示器
     protected DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
     protected DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
@@ -46,6 +45,15 @@ public class DisplayOptions extends LoadOptions {
      */
     public DisplayOptions disableMemoryCache() {
         this.enableMemoryCache = false;
+        return this;
+    }
+
+    /**
+     * 加载GIF图
+     * @return DisplayOptions
+     */
+    public DisplayOptions loadGifDrawable(){
+        this.loadGifDrawable = true;
         return this;
     }
 

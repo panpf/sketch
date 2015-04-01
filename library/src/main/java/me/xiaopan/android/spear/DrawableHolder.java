@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.util;
+package me.xiaopan.android.spear;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -24,7 +24,6 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ImageView;
 
-import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.process.ImageProcessor;
 
 public class DrawableHolder {

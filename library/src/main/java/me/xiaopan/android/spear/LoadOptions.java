@@ -22,7 +22,6 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.android.spear.process.ImageProcessor;
-import me.xiaopan.android.spear.util.ImageSize;
 
 /**
  * 显示选项

@@ -19,7 +19,6 @@ package me.xiaopan.android.spear;
 import android.widget.ImageView;
 
 import me.xiaopan.android.spear.process.ImageProcessor;
-import me.xiaopan.android.spear.util.ImageSize;
 
 /**
  * 加载请求

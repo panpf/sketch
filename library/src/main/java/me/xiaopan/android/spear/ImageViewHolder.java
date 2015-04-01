@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.util;
+package me.xiaopan.android.spear;
 
 import android.widget.ImageView;
 
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
-
-import me.xiaopan.android.spear.DisplayRequest;
 
 /**
  * ImageView持有器，以弱引用的方式持有关联的ImageView
@@ -38,7 +36,7 @@ public class ImageViewHolder{
 	public ImageView getImageView() {
 		final ImageView imageView = imageViewReference.get();
 		if (displayRequest != null) {
-			DisplayRequest holderDisplayRequest = AsyncDrawable.getDisplayRequestByAsyncDrawable(imageView);
+			DisplayRequest holderDisplayRequest = BindBitmapDrawable.getDisplayRequestByImageView(imageView);
             if(holderDisplayRequest != null && holderDisplayRequest == displayRequest){
             	return imageView;
             }else{

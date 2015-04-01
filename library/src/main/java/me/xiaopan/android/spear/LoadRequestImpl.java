@@ -24,7 +24,6 @@ import java.io.File;
 
 import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.process.ImageProcessor;
-import me.xiaopan.android.spear.util.ImageSize;
 
 /**
  * 加载请求

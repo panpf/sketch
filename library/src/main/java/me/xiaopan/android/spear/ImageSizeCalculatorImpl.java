@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.util;
+package me.xiaopan.android.spear;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
@@ -26,7 +26,7 @@ import java.lang.reflect.Field;
 /**
  * 图片尺寸计算器
  */
-public class DefaultImageSizeCalculator implements ImageSizeCalculator{
+public class ImageSizeCalculatorImpl implements ImageSizeCalculator{
     private ImageSize defaultMaxsize;
 
     @Override

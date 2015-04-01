@@ -24,7 +24,7 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.android.spear.util.ImageSize;
+import me.xiaopan.android.spear.ImageSize;
 
 /**
  * 圆形位图处理器

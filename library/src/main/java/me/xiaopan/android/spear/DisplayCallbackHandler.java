@@ -14,19 +14,11 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.util;
+package me.xiaopan.android.spear;
 
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.widget.ImageView;
-
-import me.xiaopan.android.spear.DisplayListener;
-import me.xiaopan.android.spear.DisplayRequest;
-import me.xiaopan.android.spear.FailCause;
-import me.xiaopan.android.spear.ImageFrom;
 
 /**
  * 显示回调处理器
@@ -63,30 +55,6 @@ public class DisplayCallbackHandler implements Handler.Callback{
                 return true;
             default:
                 return false;
-        }
-    }
-
-    public void startCallbackOnFire(DisplayListener displayListener){
-        if(displayListener == null){
-            return;
-        }
-        displayListener.onStarted();
-    }
-
-    public void completeCallbackOnFire(ImageView imageView, BitmapDrawable bitmapDrawable, DisplayListener displayListener, ImageFrom imageFrom){
-        imageView.clearAnimation();
-        imageView.setImageDrawable(bitmapDrawable);
-        if(displayListener != null){
-            displayListener.onCompleted(imageFrom);
-        }
-    }
-
-    public void failCallbackOnFire(ImageView imageView, Drawable loadFailDrawable, FailCause failCause, DisplayListener displayListener){
-        if(loadFailDrawable != null){
-            imageView.setImageDrawable(loadFailDrawable);
-        }
-        if(displayListener != null){
-            displayListener.onFailed(failCause);
         }
     }
 

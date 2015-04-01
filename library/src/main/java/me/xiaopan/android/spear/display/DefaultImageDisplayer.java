@@ -16,10 +16,8 @@
 
 package me.xiaopan.android.spear.display;
 
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
-
-import me.xiaopan.android.spear.DisplayRequest;
 
 /**
  * 默认的图片显示器，没有任何动画效果
@@ -27,11 +25,11 @@ import me.xiaopan.android.spear.DisplayRequest;
 public class DefaultImageDisplayer implements ImageDisplayer {
 
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, DisplayRequest displayRequest) {
-    	if(bitmapDrawable == null){
+	public void display(ImageView imageView, Drawable drawable) {
+    	if(drawable == null){
             return;
         }
         imageView.clearAnimation();
-		imageView.setImageDrawable(bitmapDrawable);
+		imageView.setImageDrawable(drawable);
 	}
 }

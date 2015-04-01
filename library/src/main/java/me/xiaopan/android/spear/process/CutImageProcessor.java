@@ -21,7 +21,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.widget.ImageView;
 
-import me.xiaopan.android.spear.util.ImageSize;
+import me.xiaopan.android.spear.ImageSize;
 
 public class CutImageProcessor implements ImageProcessor {
     private static final String NAME = "CutImageProcessor";

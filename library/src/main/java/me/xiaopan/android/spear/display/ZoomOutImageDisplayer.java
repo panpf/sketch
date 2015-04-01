@@ -16,14 +16,12 @@
 
 package me.xiaopan.android.spear.display;
 
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
-
-import me.xiaopan.android.spear.DisplayRequest;
 
 /**
  * 由大到小图片显示器
@@ -62,15 +60,15 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, BitmapDrawable bitmapDrawable, DisplayRequest displayRequest) {
-        if(bitmapDrawable == null){
+	public void display(ImageView imageView, Drawable drawable) {
+        if(drawable == null){
             return;
         }
         ScaleAnimation scaleAnimation = new ScaleAnimation(fromX, 1.0f, fromY, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		scaleAnimation.setInterpolator(interpolator);
 		scaleAnimation.setDuration(duration);
     	imageView.clearAnimation();
-		imageView.setImageDrawable(bitmapDrawable);
+		imageView.setImageDrawable(drawable);
 		imageView.startAnimation(scaleAnimation);
 	}
 }

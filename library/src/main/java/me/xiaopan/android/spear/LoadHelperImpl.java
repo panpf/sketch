@@ -20,7 +20,6 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import me.xiaopan.android.spear.process.ImageProcessor;
-import me.xiaopan.android.spear.util.ImageSize;
 
 /**
  * LoadHelper

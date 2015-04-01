@@ -14,23 +14,14 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.util;
+package me.xiaopan.android.spear;
 
 import android.widget.ImageView;
-
-import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.DisplayRequest;
-import me.xiaopan.android.spear.DisplayRequestImpl;
-import me.xiaopan.android.spear.DownloadRequest;
-import me.xiaopan.android.spear.DownloadRequestImpl;
-import me.xiaopan.android.spear.LoadRequest;
-import me.xiaopan.android.spear.LoadRequestImpl;
-import me.xiaopan.android.spear.UriScheme;
 
 /**
  * 默认的Request创建工厂
  */
-public class DefaultRequestFactory implements RequestFactory{
+public class RequestFactoryImpl implements RequestFactory{
     @Override
     public DisplayRequest newDisplayRequest(Spear spear, String uri, UriScheme uriScheme, String memoryCacheId, ImageView imageView){
         return new DisplayRequestImpl(spear, uri, uriScheme, memoryCacheId, imageView);

@@ -26,7 +26,7 @@ import android.graphics.RectF;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.android.spear.util.ImageSize;
+import me.xiaopan.android.spear.ImageSize;
 
 /**
  * 圆角位图处理器

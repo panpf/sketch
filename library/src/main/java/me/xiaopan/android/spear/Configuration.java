@@ -33,15 +33,7 @@ import me.xiaopan.android.spear.execute.DefaultRequestExecutor;
 import me.xiaopan.android.spear.execute.RequestExecutor;
 import me.xiaopan.android.spear.process.CutImageProcessor;
 import me.xiaopan.android.spear.process.ImageProcessor;
-import me.xiaopan.android.spear.util.DefaultHelperFactory;
-import me.xiaopan.android.spear.util.DefaultImageSizeCalculator;
-import me.xiaopan.android.spear.util.DefaultRequestFactory;
-import me.xiaopan.android.spear.util.DisplayCallbackHandler;
-import me.xiaopan.android.spear.util.DisplayHelperManager;
-import me.xiaopan.android.spear.util.HelperFactory;
-import me.xiaopan.android.spear.util.ImageSizeCalculator;
 import me.xiaopan.android.spear.util.MobileNetworkPauseDownloadManager;
-import me.xiaopan.android.spear.util.RequestFactory;
 
 public class Configuration {
     private Context context;	//上下文
@@ -55,7 +47,6 @@ public class Configuration {
     private ImageDownloader imageDownloader;	//图片下载器
     private RequestExecutor requestExecutor;	//请求执行器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
-    private DisplayHelperManager displayHelperManager;  // DisplayHelper管理器
     private DisplayCallbackHandler displayCallbackHandler;	//显示相关回调处理器
 
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
@@ -65,14 +56,13 @@ public class Configuration {
     public Configuration(Context context){
         this.context = context;
         this.diskCache = new LruDiskCache(context);
-        this.memoryCache = new LruMemoryCache();
+        this.memoryCache = new LruMemoryCache(context);
         this.imageDecoder = new DefaultImageDecoder();
-        this.helperFactory = new DefaultHelperFactory();
-        this.requestFactory = new DefaultRequestFactory();
+        this.helperFactory = new HelperFactoryImpl();
+        this.requestFactory = new RequestFactoryImpl();
         this.imageDownloader = new HttpUrlConnectionImageDownloader();
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
-        this.imageSizeCalculator = new DefaultImageSizeCalculator();
-        this.displayHelperManager = new DisplayHelperManager();
+        this.imageSizeCalculator = new ImageSizeCalculatorImpl();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.displayCallbackHandler = new DisplayCallbackHandler();
         this.defaultCutImageProcessor = new CutImageProcessor();
@@ -205,14 +195,6 @@ public class Configuration {
             this.imageSizeCalculator = imageSizeCalculator;
         }
         return this;
-    }
-
-    /**
-     * 获取DisplayHelper管理器
-     * @return DisplayHelper管理器
-     */
-    public DisplayHelperManager getDisplayHelperManager() {
-        return displayHelperManager;
     }
 
     /**

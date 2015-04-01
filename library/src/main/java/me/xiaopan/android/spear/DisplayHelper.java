@@ -20,7 +20,6 @@ import android.widget.ImageView;
 
 import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.process.ImageProcessor;
-import me.xiaopan.android.spear.util.ImageSize;
 
 /**
  * DisplayHelper
@@ -108,8 +107,15 @@ public interface DisplayHelper {
 
     /**
      * 关闭内存缓存
+     * @return DisplayHelper
      */
     DisplayHelper disableMemoryCache();
+
+    /**
+     * 加载gif图片
+     * @return DisplayHelper
+     */
+    DisplayHelper thisIsGifImage();
 
     /**
      * 设置显示监听器

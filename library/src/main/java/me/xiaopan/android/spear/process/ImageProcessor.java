@@ -19,7 +19,7 @@ package me.xiaopan.android.spear.process;
 import android.graphics.Bitmap;
 import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.android.spear.util.ImageSize;
+import me.xiaopan.android.spear.ImageSize;
 
 /**
  * 图片处理器，你可以是实现此接口，将你的图片处理成你想要的效果

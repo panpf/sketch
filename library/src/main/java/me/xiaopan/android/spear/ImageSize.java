@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.android.spear.util;
+package me.xiaopan.android.spear;
 
 public class ImageSize {
 	private int width;

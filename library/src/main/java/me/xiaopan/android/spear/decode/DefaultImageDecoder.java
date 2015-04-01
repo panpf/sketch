@@ -36,7 +36,7 @@ import java.io.InputStream;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.LoadRequest;
 import me.xiaopan.android.spear.UriScheme;
-import me.xiaopan.android.spear.util.ImageSize;
+import me.xiaopan.android.spear.ImageSize;
 
 /**
  * 默认的位图解码器

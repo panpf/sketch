@@ -19,7 +19,6 @@ package me.xiaopan.android.spear;
 import android.graphics.drawable.BitmapDrawable;
 
 import me.xiaopan.android.spear.display.ImageDisplayer;
-import me.xiaopan.android.spear.util.DrawableHolder;
 
 /**
  * 显示请求
@@ -80,11 +79,6 @@ public interface DisplayRequest extends LoadRequest{
     void setRequestHandleLevel(RequestHandleLevel requestHandleLevel);
 
     /**
-     * 取消显示
-     */
-    void cancelDisplay(String callingStation);
-
-    /**
      * 在主线程处理完成
      */
     void handleCompletedOnMainThread();
@@ -114,4 +108,9 @@ public interface DisplayRequest extends LoadRequest{
      * @param levelFromPauseDownload Level是否来自暂停下载
      */
     void setLevelFromPauseDownload(boolean levelFromPauseDownload);
+
+    /**
+     * 是否是一张gif图
+     */
+    void setThisIsGifImage(boolean loadGifDrawable);
 }

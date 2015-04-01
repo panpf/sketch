@@ -24,8 +24,6 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.xiaopan.android.spear.util.AsyncDrawable;
-
 /**
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
  */
@@ -78,7 +76,7 @@ public class Spear {
      * @return DownloadHelper 你可以继续设置一些参数，最后调用fire()方法开始下载
      */
 	public DownloadHelper download(String uri, DownloadListener downloadListener){
-		 return configuration.getHelperFactory().newDownloadHelper(this, uri).listener(downloadListener);
+		 return configuration.getHelperFactory().getDownloadHelper(this, uri).listener(downloadListener);
 	}
 
 
@@ -98,7 +96,7 @@ public class Spear {
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(String uri, LoadListener loadListener){
-        return configuration.getHelperFactory().newLoadHelper(this, uri).listener(loadListener);
+        return configuration.getHelperFactory().getLoadHelper(this, uri).listener(loadListener);
 	}
     
     /**
@@ -108,7 +106,7 @@ public class Spear {
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(File imageFile, LoadListener loadListener){
-        return configuration.getHelperFactory().newLoadHelper(this, imageFile.getPath()).listener(loadListener);
+        return configuration.getHelperFactory().getLoadHelper(this, imageFile.getPath()).listener(loadListener);
 	}
 
     /**
@@ -118,7 +116,7 @@ public class Spear {
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(int drawableResId, LoadListener loadListener){
-        return configuration.getHelperFactory().newLoadHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
+        return configuration.getHelperFactory().getLoadHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
 	}
 
     /**
@@ -128,7 +126,7 @@ public class Spear {
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
 	public LoadHelper load(Uri uri, LoadListener loadListener){
-        return configuration.getHelperFactory().newLoadHelper(this, uri.toString()).listener(loadListener);
+        return configuration.getHelperFactory().getLoadHelper(this, uri.toString()).listener(loadListener);
 	}
 
 
@@ -148,7 +146,7 @@ public class Spear {
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(String uri, ImageView imageView){
-        return configuration.getDisplayHelperManager().getDisplayHelper(this, uri, imageView);
+        return configuration.getHelperFactory().getDisplayHelper(this, uri, imageView);
     }
 
     /**
@@ -158,7 +156,7 @@ public class Spear {
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(File imageFile, ImageView imageView){
-        return configuration.getDisplayHelperManager().getDisplayHelper(this, imageFile.getPath(), imageView);
+        return configuration.getHelperFactory().getDisplayHelper(this, imageFile.getPath(), imageView);
     }
 
     /**
@@ -168,7 +166,7 @@ public class Spear {
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(int drawableResId, ImageView imageView){
-        return configuration.getDisplayHelperManager().getDisplayHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
+        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
     }
 
     /**
@@ -178,7 +176,7 @@ public class Spear {
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(Uri uri, ImageView imageView){
-        return configuration.getDisplayHelperManager().getDisplayHelper(this, uri.toString(), imageView);
+        return configuration.getHelperFactory().getDisplayHelper(this, uri.toString(), imageView);
     }
 
     /**
@@ -187,8 +185,8 @@ public class Spear {
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
      */
     public static boolean cancel(ImageView imageView) {
-        final DisplayRequest displayRequest = AsyncDrawable.getDisplayRequestByAsyncDrawable(imageView);
-        if (displayRequest != null) {
+        final DisplayRequest displayRequest = BindBitmapDrawable.getDisplayRequestByImageView(imageView);
+        if (displayRequest != null && !displayRequest.isFinished()) {
             displayRequest.cancel();
             return true;
         }else{

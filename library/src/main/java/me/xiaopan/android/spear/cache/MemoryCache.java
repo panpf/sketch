@@ -16,7 +16,7 @@
 
 package me.xiaopan.android.spear.cache;
 
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 /**
  * 内存缓存器
@@ -25,21 +25,21 @@ public interface MemoryCache {
 	/**
 	 * 放进去一个位图
 	 * @param key 键
-	 * @param bitmapDrawable 值
+	 * @param value 值
 	 */
-	void put(String key, BitmapDrawable bitmapDrawable);
+	void put(String key, Drawable value);
 	
 	/**
 	 * 根据给定的key获取位图
 	 * @param key 键
 	 */
-	BitmapDrawable get(String key);
+	Drawable get(String key);
 	
 	/**
 	 * 根据给定的key删除位图
 	 * @param key 键
 	 */
-	BitmapDrawable remove(String key);
+	Drawable remove(String key);
 	
 	/**
 	 * 清除内存缓存
