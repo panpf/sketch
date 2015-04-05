@@ -37,56 +37,56 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
 
     private int cacheRefCount;
     private int displayRefCount;
-    private int waitDisplayRefCount;
+    private boolean waitDisplay;
 
     public RecycleGifDrawable(AssetFileDescriptor afd) throws IOException {
         super(afd);
-        this.waitDisplayRefCount++;
+        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(AssetManager assets, String assetName) throws IOException {
         super(assets, assetName);
-        this.waitDisplayRefCount++;
+        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(ByteBuffer buffer) throws IOException {
         super(buffer);
-        this.waitDisplayRefCount++;
+        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(byte[] bytes) throws IOException {
         super(bytes);
-        this.waitDisplayRefCount++;
+        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(FileDescriptor fd) throws IOException {
         super(fd);
-        this.waitDisplayRefCount++;
+        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(File file) throws IOException {
         super(file);
-        this.waitDisplayRefCount++;
+        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(String filePath) throws IOException {
         super(filePath);
-        this.waitDisplayRefCount++;
+        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(Resources res, int id) throws Resources.NotFoundException, IOException {
         super(res, id);
-        this.waitDisplayRefCount++;
+        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(ContentResolver resolver, Uri uri) throws IOException {
         super(resolver, uri);
-        this.waitDisplayRefCount++;
+        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(InputStream stream) throws IOException {
         super(stream);
-        this.waitDisplayRefCount++;
+        this.waitDisplay = true;
     }
 
     @Override
@@ -94,19 +94,14 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
         synchronized (this) {
             if (isDisplayed) {
                 displayRefCount++;
-                if(waitDisplayRefCount > 0){
-                    waitDisplayRefCount--;
-                }
+                waitDisplay = false;
             } else {
                 if(displayRefCount > 0){
                     displayRefCount--;
                 }
             }
         }
-        if(Spear.isDebugMode()){
-            Log.d(Spear.TAG, NAME + " - " + "bitmap@" + getHashCode() + " - " + (isDisplayed ? "display" : "unbind") + " - " + callingStation);
-        }
-        tryRecycle(callingStation);
+        tryRecycle((isDisplayed ? "display" : "hide"), callingStation);
     }
 
     @Override
@@ -120,35 +115,27 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
                 }
             }
         }
-        if(Spear.isDebugMode()){
-            Log.d(Spear.TAG, NAME + " - " + "bitmap@" + getHashCode() + " - " + (isCached ? "putCache" : "removedFromCache") + " - " + callingStation);
-        }
-        tryRecycle(callingStation);
+        tryRecycle((isCached ? "putToCache" : "removedFromCache"), callingStation);
     }
 
     @Override
-    public void setIsWaitDisplay(String callingStation, boolean isWaitDisplay){
+    public void cancelWaitDisplay(String callingStation){
         synchronized (this){
-            if(isWaitDisplay){
-                waitDisplayRefCount++;
-            }else{
-                if(waitDisplayRefCount > 0){
-                    waitDisplayRefCount--;
-                }
-            }
+            waitDisplay = false;
         }
-        if(Spear.isDebugMode()){
-            Log.d(Spear.TAG, NAME + " - " + "bitmap@" + getHashCode() + " - " + (isWaitDisplay ? "WaitDisplay" : "Display") + " - " + callingStation);
-        }
-        tryRecycle(callingStation);
+        tryRecycle("cancelDisplay", callingStation);
     }
 
-    private synchronized void tryRecycle(String callingStation) {
-        if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
+    private synchronized void tryRecycle(String type, String callingStation) {
+        if (cacheRefCount <= 0 && displayRefCount <= 0 && !waitDisplay && canRecycle()) {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "recycle gif drawable@" + getHashCode() + "（" + callingStation + "）");
+                Log.e(Spear.TAG, NAME + " - " + "recycled gif drawable@" + getHashCode() + " - " + type + " - " + callingStation);
             }
             recycle();
+        }else{
+            if(Spear.isDebugMode()){
+                Log.d(Spear.TAG, NAME + " - " + "can't recycle gif drawable@" + getHashCode() + " - " + type + " - " + callingStation + " - " + ("cacheRefCount="+cacheRefCount) + "; " + ("displayRefCount="+displayRefCount) + "; " + ("waitDisplay="+waitDisplay) + "; " + ("canRecycle="+canRecycle()));
+            }
         }
     }
 

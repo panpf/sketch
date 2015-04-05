@@ -24,7 +24,6 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -108,7 +107,6 @@ public class SpearImageView extends ImageView{
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        Log.i("SpearImageView", "onDraw: " + hashCode());
 
         // 绘制按下状态
         if(pressed || (clickRippleScroller != null && clickRippleScroller.computeScrollOffset())){
@@ -211,15 +209,8 @@ public class SpearImageView extends ImageView{
     }
 
     @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        Log.d("SpearImageView", "onAttachedToWindow: " + hashCode());
-    }
-
-    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Log.d("SpearImageView", "onDetachedFromWindow: "+hashCode());
         final Drawable previousDrawable = getDrawable();
         if(previousDrawable != null){
             notifyDrawable("onDetachedFromWindow", previousDrawable, false);
@@ -227,33 +218,15 @@ public class SpearImageView extends ImageView{
     }
 
     @Override
-    public void onStartTemporaryDetach() {
-        super.onStartTemporaryDetach();
-        Log.w("SpearImageView", "onStartTemporaryDetach: " + hashCode());
-    }
+    public void setImageDrawable(Drawable newDrawable) {
+        final Drawable oldDrawable = getDrawable();
+        super.setImageDrawable(newDrawable);
 
-    @Override
-    public void onFinishTemporaryDetach() {
-        super.onFinishTemporaryDetach();
-        Log.w("SpearImageView", "onFinishTemporaryDetach: " + hashCode());
-    }
-
-    @Override
-    public void setImageDrawable(Drawable drawable) {
-        // Keep hold of previous Drawable
-        final Drawable previousDrawable = getDrawable();
-
-        // Call super to set new Drawable
-        super.setImageDrawable(drawable);
-
-        // Notify new Drawable that it is being displayed
-        if(drawable != null){
-            notifyDrawable("setImageDrawable", drawable, true);
+        if(newDrawable != null){
+            notifyDrawable("setImageDrawable", newDrawable, true);
         }
-
-        // Notify old Drawable so it is no longer being displayed
-        if(previousDrawable != null){
-            notifyDrawable("setImageDrawable", previousDrawable, false);
+        if(oldDrawable != null){
+            notifyDrawable("setImageDrawable", oldDrawable, false);
         }
     }
 

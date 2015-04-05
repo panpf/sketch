@@ -22,5 +22,5 @@ public interface RecycleDrawable{
 
     void setIsCached(String callingStation, boolean isCached);
 
-    void setIsWaitDisplay(String callingStation, boolean isWaitDisplay);
+    void cancelWaitDisplay(String callingStation);
 }

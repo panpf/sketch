@@ -508,9 +508,6 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
             // 显示
             setRequestStatus(RequestStatus.WAIT_DISPLAY);
-            if(resultDrawable instanceof RecycleDrawable){
-                ((RecycleDrawable) resultDrawable).setIsWaitDisplay("executeLoad", true);
-            }
             spear.getConfiguration().getDisplayCallbackHandler().completeCallback(this);
         }else{
             toFailedStatus(FailCause.DECODE_FAIL);
@@ -521,7 +518,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     public void handleCompletedOnMainThread() {
         if(isCanceled()){
             if(resultDrawable != null && resultDrawable instanceof RecycleDrawable){
-                ((RecycleDrawable) resultDrawable).setIsWaitDisplay("completedCallback:cancel", false);
+                ((RecycleDrawable) resultDrawable).cancelWaitDisplay("completedCallback:cancel");
             }
             if(Spear.isDebugMode()){
                 Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
@@ -534,9 +531,6 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
         }
         imageDisplayer.display(imageViewHolder.getImageView(), resultDrawable);
-        if(resultDrawable instanceof RecycleDrawable){
-            ((RecycleDrawable) resultDrawable).setIsWaitDisplay("completedCallback", false);
-        }
         setRequestStatus(RequestStatus.COMPLETED);
         if(displayListener != null){
             displayListener.onCompleted(imageFrom);

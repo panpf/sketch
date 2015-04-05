@@ -19,27 +19,21 @@ package me.xiaopan.android.spear;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.util.Log;
-
-import java.io.InputStream;
 
 public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDrawable {
     private static final String NAME = "RecycleBitmapDrawable";
 
     private int cacheRefCount;
     private int displayRefCount;
-    private int waitDisplayRefCount;
+    private boolean waitDisplay;
+    private String bitmapCode;
 
     public RecycleBitmapDrawable(Resources res, Bitmap bitmap) {
         super(res, bitmap);
-    }
-
-    public RecycleBitmapDrawable(Resources res, String filepath) {
-        super(res, filepath);
-    }
-
-    public RecycleBitmapDrawable(Resources res, InputStream is) {
-        super(res, is);
+        this.bitmapCode = Integer.toHexString(bitmap.hashCode());
+        this.waitDisplay = true;
     }
 
     @Override
@@ -47,16 +41,14 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
         synchronized (this) {
             if (isDisplayed) {
                 displayRefCount++;
+                waitDisplay = false;
             } else {
                 if(displayRefCount > 0){
                     displayRefCount--;
                 }
             }
         }
-        if(Spear.isDebugMode()){
-            Log.d(Spear.TAG, NAME + " - " + "bitmap@" + getHashCode() + " - " + (isDisplayed ? "display" : "unbind") + " - " + callingStation);
-        }
-        tryRecycle(callingStation);
+        tryRecycle((isDisplayed ? "display" : "hide"), callingStation);
     }
 
     @Override
@@ -70,34 +62,26 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
                 }
             }
         }
-        if(Spear.isDebugMode()){
-            Log.d(Spear.TAG, NAME + " - " + "bitmap@" + getHashCode() + " - " + (isCached ? "putCache" : "removedFromCache") + " - " + callingStation);
-        }
-        tryRecycle(callingStation);
+        tryRecycle((isCached ? "putToCache" : "removedFromCache"), callingStation);
     }
 
     @Override
-    public void setIsWaitDisplay(String callingStation, boolean isWaitDisplay){
+    public void cancelWaitDisplay(String callingStation){
         synchronized (this){
-            if(isWaitDisplay){
-                waitDisplayRefCount++;
-            }else{
-                if(waitDisplayRefCount > 0){
-                    waitDisplayRefCount--;
-                }
-            }
+            waitDisplay = false;
         }
-        if(Spear.isDebugMode()){
-            Log.d(Spear.TAG, NAME + " - " + "bitmap@" + getHashCode() + " - " + (isWaitDisplay ? "WaitDisplay" : "Display") + " - " + callingStation);
-        }
-        tryRecycle(callingStation);
+        tryRecycle("cancelDisplay", callingStation);
     }
 
-    private synchronized void tryRecycle(String callingStation) {
-        if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
+    private synchronized void tryRecycle(String type, String callingStation) {
+        if (cacheRefCount <= 0 && displayRefCount <= 0 && !waitDisplay && canRecycle()) {
             getBitmap().recycle();
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "recycle bitmap@" + getHashCode() + " - " + callingStation);
+                Log.w(Spear.TAG, NAME + " - " + "recycled bitmap@" + getHashCode() + " - " + type + " - " + callingStation);
+            }
+        }else{
+            if(Spear.isDebugMode()){
+                Log.d(Spear.TAG, NAME + " - " + "can't recycle bitmap@" + getHashCode() + " - " + type + " - " + callingStation + " - " + ("cacheRefCount="+cacheRefCount) + "; " + ("displayRefCount="+displayRefCount) + "; " + ("waitDisplay="+waitDisplay) + "; " + ("canRecycle="+canRecycle()));
             }
         }
     }
@@ -107,7 +91,11 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     }
 
     private boolean canRecycle(){
-//        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1 && !getBitmap().isRecycled();
-        return !getBitmap().isRecycled();
+        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1 && !getBitmap().isRecycled();
+//        return !getBitmap().isRecycled();
+    }
+
+    public String getBitmapCode() {
+        return bitmapCode;
     }
 }
