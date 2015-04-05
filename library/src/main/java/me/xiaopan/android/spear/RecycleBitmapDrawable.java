@@ -19,7 +19,6 @@ package me.xiaopan.android.spear;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.util.Log;
 
 import java.io.InputStream;
@@ -98,7 +97,7 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             getBitmap().recycle();
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "recycle bitmap@" + getHashCode() + "（" + callingStation + "）");
+                Log.w(Spear.TAG, NAME + " - " + "recycle bitmap@" + getHashCode() + " - " + callingStation);
             }
         }
     }
@@ -108,6 +107,7 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     }
 
     private boolean canRecycle(){
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1 && !getBitmap().isRecycled();
+//        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1 && !getBitmap().isRecycled();
+        return !getBitmap().isRecycled();
     }
 }

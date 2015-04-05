@@ -88,7 +88,7 @@ public class LruMemoryCache implements MemoryCache {
 		@Override
 		public Drawable put(String key, Drawable value) {
 			if(value instanceof RecycleDrawable){
-				((RecycleDrawable) value).setIsCached(NAME+" - put", true);
+				((RecycleDrawable) value).setIsCached(NAME+":put", true);
 			}
 			return super.put(key, value);
 		}
@@ -116,7 +116,7 @@ public class LruMemoryCache implements MemoryCache {
 		@Override
 		protected void entryRemoved(boolean evicted, String key, Drawable oldValue, Drawable newValue) {
 			if(RecycleDrawable.class.isInstance(oldValue)){
-				((RecycleDrawable) oldValue).setIsCached(NAME+" - entryRemoved", false);
+				((RecycleDrawable) oldValue).setIsCached(NAME+":entryRemoved", false);
 			}
 		}
 	}

@@ -437,7 +437,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private void executeLoad(){
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "start load" + " - " + name);
+                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "startLoad" + " - " + name);
             }
             return;
         }
@@ -448,7 +448,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         Bitmap bitmap = spear.getConfiguration().getImageDecoder().decode(this);
         if(bitmap != null){
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "executeLoad" + " - " + name);
+                Log.d(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@" + Integer.toHexString(bitmap.hashCode()));
             }
         }else{
             if(Spear.isDebugMode()){
@@ -459,7 +459,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(isCanceled()){
             if(bitmap != null){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "decode after - cancel" + " - " + name);
+                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "decodeAfter:cancel");
                 }
                 bitmap.recycle();
             }
@@ -479,7 +479,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), getScaleType());
                 if(newBitmap != bitmap){
                     if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - " + "recycle old bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "process after" + " - " + name);
+                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - " + "recycle old bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter");
                     }
                     bitmap.recycle();
                     bitmap = newBitmap;
@@ -490,12 +490,12 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(isCanceled()){
             if(bitmap != null){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode())+"（executeLoad - processAfter - cancel）");
+                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter:cancel");
                 }
                 bitmap.recycle();
             }
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled "+ " - " + "process after" + " - " + name);
+                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled "+ " - " + "processAfter" + " - " + name);
             }
             return;
         }
@@ -521,7 +521,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     public void handleCompletedOnMainThread() {
         if(isCanceled()){
             if(resultDrawable != null && resultDrawable instanceof RecycleDrawable){
-                ((RecycleDrawable) resultDrawable).setIsWaitDisplay("CompletedCallback - Cancel", false);
+                ((RecycleDrawable) resultDrawable).setIsWaitDisplay("completedCallback:cancel", false);
             }
             if(Spear.isDebugMode()){
                 Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
@@ -535,7 +535,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         }
         imageDisplayer.display(imageViewHolder.getImageView(), resultDrawable);
         if(resultDrawable instanceof RecycleDrawable){
-            ((RecycleDrawable) resultDrawable).setIsWaitDisplay("CompletedCallback - Cancel", false);
+            ((RecycleDrawable) resultDrawable).setIsWaitDisplay("completedCallback", false);
         }
         setRequestStatus(RequestStatus.COMPLETED);
         if(displayListener != null){
