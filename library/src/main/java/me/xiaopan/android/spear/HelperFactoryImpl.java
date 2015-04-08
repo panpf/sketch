@@ -38,14 +38,26 @@ public class HelperFactoryImpl implements HelperFactory{
         }else{
             DisplayHelper displayHelper = this.obsoletingDisplayHelper;
             this.obsoletingDisplayHelper = null;
-            displayHelper.reset();
             displayHelper.init(spear, uri, imageView);
             return displayHelper;
         }
     }
 
     @Override
+    public DisplayHelper getDisplayHelper(Spear spear, DisplayParams displayParams, ImageView imageView) {
+        if(this.obsoletingDisplayHelper == null){
+            return new DisplayHelperImpl(spear, displayParams, imageView);
+        }else{
+            DisplayHelper displayHelper = this.obsoletingDisplayHelper;
+            this.obsoletingDisplayHelper = null;
+            displayHelper.init(spear, displayParams, imageView);
+            return displayHelper;
+        }
+    }
+
+    @Override
     public void recycleDisplayHelper(DisplayHelper obsoletingDisplayHelper){
+        obsoletingDisplayHelper.reset();
         if(this.obsoletingDisplayHelper == null){
             this.obsoletingDisplayHelper = obsoletingDisplayHelper;
         }

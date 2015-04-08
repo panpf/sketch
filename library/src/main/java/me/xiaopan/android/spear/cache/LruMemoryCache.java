@@ -25,9 +25,9 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import me.xiaopan.android.spear.RecycleDrawable;
+import me.xiaopan.android.spear.RecycleGifDrawable;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.util.LruCache;
-import pl.droidsonroids.gif.GifDrawable;
 
 /**
  * 使用Lru算法来缓存位图
@@ -98,15 +98,17 @@ public class LruMemoryCache implements MemoryCache {
 			int bitmapSize;
 			if(value instanceof BitmapDrawable){
 				Bitmap bitmap = ((BitmapDrawable) value).getBitmap();
-				if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+				if(bitmap == null){
+					bitmapSize = 0;
+				} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
 					bitmapSize = bitmap.getAllocationByteCount();
 				} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
 					bitmapSize =  bitmap.getByteCount();
 				}else{
 					bitmapSize = bitmap.getRowBytes() * bitmap.getHeight();
 				}
-			}else if(value instanceof GifDrawable){
-				return (int) ((GifDrawable) value).getAllocationByteCount();
+			}else if(value instanceof RecycleGifDrawable){
+				return (int) ((RecycleGifDrawable) value).getAllocationByteCount();
 			}else{
 				return 0;
 			}

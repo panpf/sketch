@@ -448,23 +448,23 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         Bitmap bitmap = spear.getConfiguration().getImageDecoder().decode(this);
         if(bitmap != null){
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@" + Integer.toHexString(bitmap.hashCode()));
+                Log.d(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + name);
             }
         }else{
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "decode failed - " + name);
+                Log.e(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "decodeFailed" + " - " + name);
             }
         }
 
         if(isCanceled()){
             if(bitmap != null){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "decodeAfter:cancel");
+                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "decodeAfter:cancel" + " - " + name);
                 }
                 bitmap.recycle();
             }
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "decode after" + " - " + name);
+                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "decodeAfter" + " - " + name);
             }
             return;
         }
@@ -479,7 +479,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), getScaleType());
                 if(newBitmap != bitmap){
                     if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - " + "recycle old bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter");
+                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - " + "recycle old bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter" + " - " + name);
                     }
                     bitmap.recycle();
                     bitmap = newBitmap;
@@ -490,7 +490,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(isCanceled()){
             if(bitmap != null){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter:cancel");
+                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter:cancel" + " - " + name);
                 }
                 bitmap.recycle();
             }

@@ -252,7 +252,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - ").append("decode success");
+                        .append(" - ").append("decodeSuccess");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
@@ -293,7 +293,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - ").append("decode success");
+                        .append(" - ").append("decodeSuccess");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
@@ -346,7 +346,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             }
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - ").append("decode success");
+                        .append(" - ").append("decodeSuccess");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
@@ -397,7 +397,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - ").append("decode success");
+                        .append(" - ").append("decodeSuccess");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
@@ -445,7 +445,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - "+"decode success");
+                        .append(" - "+"decodeSuccess");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
@@ -505,7 +505,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - ").append("decode success");
+                        .append(" - ").append("decodeSuccess");
                 if(bitmap != null && loadRequest.getMaxsize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());

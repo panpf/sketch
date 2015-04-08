@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -33,7 +34,9 @@ import android.widget.Scroller;
 /**
  * SpearImageView
  */
-public class SpearImageView extends ImageView{
+public class SpearImageView extends ImageView implements SpearImageViewInterface{
+    private static final String NAME = "SpearImageView";
+
     private static final int NONE = -1;
     private static final int FROM_FLAG_COLOR_MEMORY = 0x8800FF00;
     private static final int FROM_FLAG_COLOR_LOCAL = 0x880000FF;
@@ -49,6 +52,7 @@ public class SpearImageView extends ImageView{
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
     private ProgressListener progressListener;
+    private DisplayParams displayParams;
 
     private int fromFlagColor = NONE;
     private Path fromFlagPath;
@@ -61,9 +65,10 @@ public class SpearImageView extends ImageView{
     private boolean showDownloadProgress;
 
     private View.OnClickListener onClickListener;
-    private String imageUri;
     private boolean replacedClickListener;
-    private boolean clickLoadOnPauseDownload;
+    private boolean clickRedisplayOnPauseDownload;
+    private boolean clickRedisplayOnFailed;
+    private boolean isSetImage;
 
     private int touchX;
     private int touchY;
@@ -209,11 +214,27 @@ public class SpearImageView extends ImageView{
     }
 
     @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if(!isSetImage && displayParams != null){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + "：" + "restore image on attached to window" + " - " + displayParams.uri);
+            }
+            Spear.with(getContext()).display(displayParams, SpearImageView.this).fire();
+        }
+    }
+
+    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        final Drawable previousDrawable = getDrawable();
-        if(previousDrawable != null){
-            notifyDrawable("onDetachedFromWindow", previousDrawable, false);
+        this.isSetImage = false;
+        if(displayRequest != null && !displayRequest.isFinished()){
+            displayRequest.cancel();
+        }
+        final Drawable oldDrawable = getDrawable();
+        if(oldDrawable != null){
+            super.setImageDrawable(null);
+            notifyDrawable("onDetachedFromWindow", oldDrawable, false);
         }
     }
 
@@ -223,72 +244,134 @@ public class SpearImageView extends ImageView{
         super.setImageDrawable(newDrawable);
 
         if(newDrawable != null){
-            notifyDrawable("setImageDrawable", newDrawable, true);
+            notifyDrawable("setImageDrawable:newDrawable", newDrawable, true);
         }
         if(oldDrawable != null){
-            notifyDrawable("setImageDrawable", oldDrawable, false);
+            notifyDrawable("setImageDrawable:oldDrawable", oldDrawable, false);
         }
     }
 
-    /**
-     * 显示图片
-     * @param uri 图片Uri，支持以下几种
-     * <blockquote>"http://site.com/image.png"; // from Web
-     * <br>"https://site.com/image.png"; // from Web
-     * <br>"/mnt/sdcard/image.png"; // from SD card
-     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     * <br>"content://media/external/audio/albumart/13"; // from content provider
-     * <br>"asset://image.png"; // from assets
-     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     * </blockquote>
-     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
-     */
+    @Override
+    public void onDisplay() {
+
+    }
+
+    @Override
     public Request displayImage(String uri){
         return Spear.with(getContext()).display(uri, this).fire();
     }
 
-    /**
-     * 显示本地图片
-     * @param imageFilePath SD卡上的图片文件
-     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
-     */
-    public Request displayFilImagee(String imageFilePath){
+    @Override
+    public Request displayFilImage(String imageFilePath){
         return Spear.with(getContext()).display(imageFilePath, this).fire();
     }
 
-    /**
-     * 显示Drawable资源里的图片
-     * @param drawableResId Drawable ID
-     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
-     */
+    @Override
     public Request displayResourceImage(int drawableResId){
         return Spear.with(getContext()).display(UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), this).fire();
     }
 
-    /**
-     * 显示asset里的图片
-     * @param imageFileName ASSETS文件加下的图片文件的名称
-     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
-     */
+    @Override
     public Request displayAssetImage(String imageFileName){
         return Spear.with(getContext()).display(UriScheme.ASSET.createUri(imageFileName), this).fire();
     }
 
-    /**
-     * 根据Content Uri显示图片
-     * @param uri Content Uri 这个URI是其它Content Provider返回的
-     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
-     */
+    @Override
     public Request displayContentImage(Uri uri){
         return Spear.with(getContext()).display(uri != null ? UriScheme.ASSET.createUri(uri.toString()):null, this).fire();
     }
 
+    @Override
+    public DisplayOptions getDisplayOptions() {
+        return displayOptions;
+    }
+
+    @Override
+    public void setDisplayOptions(DisplayOptions displayOptions) {
+        this.displayOptions = displayOptions;
+    }
+
+    @Override
+    public void setDisplayOptions(Enum<?> optionsName) {
+        this.displayOptions = (DisplayOptions) Spear.getOptions(optionsName);
+    }
+
+    @Override
+    public DisplayListener getDisplayListener(boolean isPauseDownload){
+        if(showFromFlag || showDownloadProgress || (isPauseDownload && clickRedisplayOnPauseDownload) || clickRedisplayOnFailed){
+            if(myListener == null){
+                myListener = new MyListener();
+            }
+            return myListener;
+        }else{
+            return displayListener;
+        }
+    }
+
+    @Override
+    public void setDisplayListener(DisplayListener displayListener) {
+        this.displayListener = displayListener;
+    }
+
+    @Override
+    public ProgressListener getProgressListener(){
+        if(showDownloadProgress){
+            if(myListener == null){
+                myListener = new MyListener();
+            }
+            return myListener;
+        }else{
+            return progressListener;
+        }
+    }
+
+    @Override
+    public void setProgressListener(ProgressListener progressListener) {
+        this.progressListener = progressListener;
+    }
+
+    @Override
+    public Request getDisplayRequest() {
+        return displayRequest;
+    }
+
+    @Override
+    public void setDisplayRequest(Request displayRequest) {
+        this.displayRequest = displayRequest;
+    }
+
+    @Override
+    public DisplayParams getDisplayParams() {
+        return displayParams;
+    }
+
+    @Override
+    public void setDisplayParams(DisplayParams displayParams) {
+        this.displayParams = displayParams;
+        this.isSetImage = true;
+        if(replacedClickListener){
+            setOnClickListener(onClickListener);
+            if(onClickListener == null){
+                setClickable(false);
+            }
+            replacedClickListener = false;
+        }
+    }
+
     /**
-     * 设置是否在暂停下载的时候开启点击加载功能
-     * @param clickLoadOnPauseDownload 是否在暂停下载的时候开启点击加载功能
+     * 设置当暂停下载的时候是否点击重新显示
+     * @param clickRedisplayOnPauseDownload 当暂停下载的时候是否点击重新显示
      */
-    public void setClickLoadOnPauseDownload(boolean clickLoadOnPauseDownload) {
-        this.clickLoadOnPauseDownload = clickLoadOnPauseDownload;
+    public void setClickRedisplayOnPauseDownload(boolean clickRedisplayOnPauseDownload) {
+        this.clickRedisplayOnPauseDownload = clickRedisplayOnPauseDownload;
+    }
+
+    /**
+     * 设置当失败的时候是否点击重新显示
+     * @param clickRedisplayOnFailed 当失败的时候是否点击重新显示
+     */
+    public void setClickRedisplayOnFailed(boolean clickRedisplayOnFailed) {
+        this.clickRedisplayOnFailed = clickRedisplayOnFailed;
     }
 
     /**
@@ -330,107 +413,6 @@ public class SpearImageView extends ImageView{
     }
 
     /**
-     * 获取显示参数
-     * @return 显示参数
-     */
-    DisplayOptions getDisplayOptions() {
-        return displayOptions;
-    }
-
-    /**
-     * 设置显示参数
-     * @param displayOptions 显示参数
-     */
-    public void setDisplayOptions(DisplayOptions displayOptions) {
-        this.displayOptions = displayOptions;
-    }
-
-    /**
-     * 设置显示参数的名称
-     * @param optionsName 显示参数的名称
-     */
-    public void setDisplayOptions(Enum<?> optionsName) {
-        this.displayOptions = (DisplayOptions) Spear.getOptions(optionsName);
-    }
-
-    /**
-     * 获取显示监听器
-     * @return 显示监听器
-     */
-    DisplayListener getDisplayListener(boolean isPauseDownload){
-        if(showFromFlag || showDownloadProgress || (isPauseDownload && clickLoadOnPauseDownload)){
-            if(myListener == null){
-                myListener = new MyListener();
-            }
-            return myListener;
-        }else{
-            return displayListener;
-        }
-    }
-
-    /**
-     * 设置显示监听器
-     * @param displayListener 显示监听器
-     */
-    public void setDisplayListener(DisplayListener displayListener) {
-        this.displayListener = displayListener;
-    }
-
-    /**
-     * 获取进度监听器
-     * @return 进度监听器
-     */
-    ProgressListener getProgressListener(){
-        if(showDownloadProgress){
-            if(myListener == null){
-                myListener = new MyListener();
-            }
-            return myListener;
-        }else{
-            return progressListener;
-        }
-    }
-
-    /**
-     * 设置显示进度监听器
-     * @param progressListener 进度监听器
-     */
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    /**
-     * 获取显示请求，你可通过这个对象来查看状态或主动取消请求
-     * @return 显示请求
-     */
-    public Request getDisplayRequest() {
-        return displayRequest;
-    }
-
-    /**
-     * 设置显示请求，此方法由Spear调用，你无需理会即可
-     * @param displayRequest 显示请求
-     */
-    void setDisplayRequest(Request displayRequest) {
-        this.displayRequest = displayRequest;
-    }
-
-    /**
-     * 设置图片uri
-     * @param imageUri 图片uri
-     */
-    void setImageUri(String imageUri){
-        this.imageUri = imageUri;
-        if(clickLoadOnPauseDownload && replacedClickListener){
-            setOnClickListener(onClickListener);
-            if(onClickListener == null){
-                setClickable(false);
-            }
-            replacedClickListener = false;
-        }
-    }
-
-    /**
      * 设置是否开启调试模式，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，黄色代表本次是从本地加载的，绿色代表本次是从内存加载的
      * @param showFromFlag 是否开启调试模式
      */
@@ -450,7 +432,13 @@ public class SpearImageView extends ImageView{
      * @param isDisplayed 是否已显示
      */
     private static void notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
-        if (drawable instanceof RecycleDrawable) {
+        if(drawable instanceof BindBitmapDrawable){
+            BindBitmapDrawable bindBitmapDrawable = (BindBitmapDrawable) drawable;
+            DisplayRequest displayRequest = bindBitmapDrawable.getDisplayRequest();
+            if(displayRequest != null && !displayRequest.isFinished()){
+                displayRequest.cancel();
+            }
+        }else if (drawable instanceof RecycleDrawable) {
             ((RecycleDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
         } else if (drawable instanceof LayerDrawable) {
             LayerDrawable layerDrawable = (LayerDrawable) drawable;
@@ -513,6 +501,10 @@ public class SpearImageView extends ImageView{
             if(showDownloadProgress || showFromFlag){
                 invalidate();
             }
+            if(clickRedisplayOnFailed){
+                SpearImageView.super.setOnClickListener(this);
+                replacedClickListener = true;
+            }
             if (displayListener != null){
                 displayListener.onFailed(failCause);
             }
@@ -520,7 +512,7 @@ public class SpearImageView extends ImageView{
 
         @Override
         public void onCanceled(CancelCause cancelCause) {
-            if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD && clickLoadOnPauseDownload){
+            if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD && clickRedisplayOnPauseDownload){
                 SpearImageView.super.setOnClickListener(this);
                 replacedClickListener = true;
             }
@@ -542,7 +534,9 @@ public class SpearImageView extends ImageView{
 
         @Override
         public void onClick(View v) {
-            Spear.with(getContext()).display(imageUri, SpearImageView.this).level(RequestHandleLevel.NET).fire();
+            if(displayParams != null){
+                Spear.with(getContext()).display(displayParams, SpearImageView.this).level(RequestHandleLevel.NET).fire();
+            }
         }
     }
 }

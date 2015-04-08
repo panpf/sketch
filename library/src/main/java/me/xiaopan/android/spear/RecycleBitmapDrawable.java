@@ -19,7 +19,6 @@ package me.xiaopan.android.spear;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.util.Log;
 
 public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDrawable {
@@ -87,12 +86,12 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     }
 
     private String getHashCode(){
-        return Integer.toHexString(getBitmap().hashCode());
+        return getBitmap() != null ? Integer.toHexString(getBitmap().hashCode()) : null;
     }
 
     private boolean canRecycle(){
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1 && !getBitmap().isRecycled();
-//        return !getBitmap().isRecycled();
+//        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1 && getBitmap() != null && !getBitmap().isRecycled();
+        return getBitmap() != null && !getBitmap().isRecycled();
     }
 
     public String getBitmapCode() {

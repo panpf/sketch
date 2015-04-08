@@ -180,6 +180,16 @@ public class Spear {
     }
 
     /**
+     * 显示图片
+     * @param displayParams 参数集
+     * @param imageView 显示图片的视图
+     * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
+     */
+    public DisplayHelper display(DisplayParams displayParams, ImageView imageView){
+        return configuration.getHelperFactory().getDisplayHelper(this, displayParams, imageView);
+    }
+
+    /**
      * 取消
      * @param imageView ImageView
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务

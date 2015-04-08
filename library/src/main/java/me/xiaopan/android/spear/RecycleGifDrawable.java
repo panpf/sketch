@@ -21,7 +21,6 @@ import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
 import android.net.Uri;
-import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
@@ -144,6 +143,7 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
     }
 
     private boolean canRecycle(){
-        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1 && !isRecycled();
+//        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1 && !isRecycled();
+        return !isRecycled();
     }
 }

@@ -35,9 +35,12 @@ public class DrawableHolder {
     public void setResId(int resId) {
         if(this.resId != resId && drawable != null){
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "recycle bitmap@" + Integer.toHexString(drawable.getBitmap().hashCode()) + "（DrawableHolder - setResId - recycleOldBitmap）");
+                String hashCode = drawable.getBitmap() != null ? (Integer.toHexString(drawable.getBitmap().hashCode())):null;
+                Log.d(Spear.TAG, NAME + " - " + "recycle old bitmap@" + hashCode + " - " + "DrawableHolder:setResId");
             }
-            drawable.getBitmap().recycle();
+            if(drawable.getBitmap() != null){
+                drawable.getBitmap().recycle();
+            }
             drawable = null;
         }
         this.resId = resId;
@@ -50,7 +53,8 @@ public class DrawableHolder {
     public void setProcess(boolean process) {
         if(this.process != process && drawable != null){
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "recycle bitmap@" + Integer.toHexString(drawable.getBitmap().hashCode()) + "（DrawableHolder - setProcess - recycleOldBitmap）");
+                String hashCode = drawable.getBitmap() != null ? (Integer.toHexString(drawable.getBitmap().hashCode())):null;
+                Log.d(Spear.TAG, NAME + " - " + "recycle old bitmap@" + hashCode + " - " + "DrawableHolder:setProcess");
             }
             drawable.getBitmap().recycle();
             drawable = null;

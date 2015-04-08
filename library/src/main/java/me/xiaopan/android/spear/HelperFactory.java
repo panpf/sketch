@@ -22,5 +22,6 @@ public interface HelperFactory {
     DownloadHelper getDownloadHelper(Spear spear, String uri);
     LoadHelper getLoadHelper(Spear spear, String uri);
     DisplayHelper getDisplayHelper(Spear spear, String uri, ImageView imageView);
+    DisplayHelper getDisplayHelper(Spear spear, DisplayParams displayParams, ImageView imageView);
     void recycleDisplayHelper(DisplayHelper obsoletingDisplayHelper);
 }

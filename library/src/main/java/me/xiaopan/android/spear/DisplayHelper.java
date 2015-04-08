@@ -27,14 +27,24 @@ import me.xiaopan.android.spear.process.ImageProcessor;
 public interface DisplayHelper {
 
     /**
-     * 重置
+     * 初始化
      */
     DisplayHelper init(Spear spear, String uri, ImageView imageView);
+
+    /**
+     * 初始化
+     */
+    DisplayHelper init(Spear spear, DisplayParams displayParams, ImageView imageView);
 
     /**
      * 恢复默认值
      */
     void reset();
+
+    /**
+     * 填充
+     */
+    void fullDisplayParams();
 
     /**
      * 设置名称，用于在log总区分请求
