@@ -13,8 +13,11 @@ import me.xiaopan.android.inject.app.InjectFragment;
 import me.xiaopan.android.spear.sample.adapter.FragmentAdapter;
 import me.xiaopan.android.widget.PagerSlidingTabStrip;
 
-@InjectContentView(R.layout.fragment_star)
-public class StarFragment extends InjectFragment{
+/**
+ * 明星首页
+ */
+@InjectContentView(R.layout.fragment_star_index)
+public class StarIndexFragment extends InjectFragment{
     @InjectView(R.id.pager_star_content) private ViewPager viewPager;
     private GetStarTagStripListener getPagerSlidingTagStripListener;
     private FragmentAdapter fragmentAdapter;

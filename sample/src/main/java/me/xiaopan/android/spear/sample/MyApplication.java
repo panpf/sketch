@@ -18,6 +18,7 @@ package me.xiaopan.android.spear.sample;
 
 import android.app.Application;
 import android.graphics.Color;
+import android.util.Log;
 
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.gohttp.GoHttp;
@@ -78,6 +79,7 @@ public class MyApplication extends Application {
             new DisplayOptions(getBaseContext())
                 .loadFailDrawable(R.drawable.image_load_fail2)
                 .pauseDownloadDrawable(R.drawable.image_click2)
+                .loadGifDrawable()
                 .displayer(new ColorTransitionImageDisplayer(Color.BLACK))
                 .processor(new ReflectionImageProcessor())
         );
@@ -95,4 +97,18 @@ public class MyApplication extends Application {
         boolean isPauseDownload = Settings.with(getBaseContext()).isMobileNetworkPauseDownload();
         Spear.with(getBaseContext()).getConfiguration().setMobileNetworkPauseDownload(isPauseDownload);
 	}
+
+        @Override
+        public void onLowMemory() {
+                super.onLowMemory();
+
+                Log.w("Application", "lowMemory");
+                Spear.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
+        }
+
+        @Override
+        public void onTrimMemory(int level) {
+                super.onTrimMemory(level);
+                Log.w("Application", "trimMemory");
+        }
 }

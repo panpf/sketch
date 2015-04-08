@@ -128,10 +128,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemLeftHolder.twoSpearImageView.setShowClickRipple(true);
             threeItemLeftHolder.threeSpearImageView.setShowClickRipple(true);
 
-            threeItemLeftHolder.oneSpearImageView.setClickLoadOnPauseDownload(true);
-            threeItemLeftHolder.twoSpearImageView.setClickLoadOnPauseDownload(true);
-            threeItemLeftHolder.threeSpearImageView.setClickLoadOnPauseDownload(true);
-
             int itemWidth = (availableScreenWidth-marginBorder)/2;
             int itemHeight = (int) (itemWidth/0.75);
 
@@ -165,10 +161,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemRightHolder.twoSpearImageView.setShowClickRipple(true);
             threeItemRightHolder.threeSpearImageView.setShowClickRipple(true);
 
-            threeItemRightHolder.oneSpearImageView.setClickLoadOnPauseDownload(true);
-            threeItemRightHolder.twoSpearImageView.setClickLoadOnPauseDownload(true);
-            threeItemRightHolder.threeSpearImageView.setClickLoadOnPauseDownload(true);
-
             int itemWidth = (availableScreenWidth-marginBorder) / 2;
             int itemHeight = (int) (itemWidth/0.75);
 
@@ -199,9 +191,6 @@ public class HotStarAdapter extends RecyclerView.Adapter{
 
             twoItemHolder.oneSpearImageView.setShowClickRipple(true);
             twoItemHolder.twoSpearImageView.setShowClickRipple(true);
-
-            twoItemHolder.oneSpearImageView.setClickLoadOnPauseDownload(true);
-            twoItemHolder.twoSpearImageView.setClickLoadOnPauseDownload(true);
 
             int itemWidth = (availableScreenWidth-marginBorder) / 2;
             int itemHeight = (int) (itemWidth/0.75);
@@ -250,6 +239,14 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemLeftHolder.twoSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
             threeItemLeftHolder.threeSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
 
+            threeItemLeftHolder.oneSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+            threeItemLeftHolder.twoSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+            threeItemLeftHolder.threeSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+
+            threeItemLeftHolder.oneSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
+            threeItemLeftHolder.twoSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
+            threeItemLeftHolder.threeSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
+
             threeItemLeftHolder.oneSpearImageView.displayImage(threeItemLeft.star1.getHeightImage().getUrl());
             threeItemLeftHolder.twoSpearImageView.displayImage(threeItemLeft.star2.getWidthImage().getUrl());
             threeItemLeftHolder.threeSpearImageView.displayImage(threeItemLeft.star3.getWidthImage().getUrl());
@@ -273,6 +270,14 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemRightHolder.twoSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
             threeItemRightHolder.threeSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
 
+            threeItemRightHolder.oneSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+            threeItemRightHolder.twoSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+            threeItemRightHolder.threeSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+
+            threeItemRightHolder.oneSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
+            threeItemRightHolder.twoSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
+            threeItemRightHolder.threeSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
+
             threeItemRightHolder.oneSpearImageView.displayImage(threeItemRight.star1.getWidthImage().getUrl());
             threeItemRightHolder.twoSpearImageView.displayImage(threeItemRight.star2.getWidthImage().getUrl());
             threeItemRightHolder.threeSpearImageView.displayImage(threeItemRight.star3.getHeightImage().getUrl());
@@ -284,14 +289,20 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             twoItemHolder.oneSpearImageView.setTag(twoItem.star1);
             twoItemHolder.oneSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
             twoItemHolder.oneSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+            twoItemHolder.oneSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+            twoItemHolder.oneSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
             twoItemHolder.oneSpearImageView.displayImage(twoItem.star1.getWidthImage().getUrl());
+
 
             if(twoItem.star2 != null){
                 twoItemHolder.twoNameTextView.setText(twoItem.star2.getName());
                 twoItemHolder.twoSpearImageView.setTag(twoItem.star2);
+                twoItemHolder.twoSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+                twoItemHolder.twoSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
                 twoItemHolder.twoSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
                 twoItemHolder.twoSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
                 twoItemHolder.twoSpearImageView.displayImage(twoItem.star2.getWidthImage().getUrl());
+
                 twoItemHolder.twoNameTextView.setVisibility(View.VISIBLE);
                 twoItemHolder.twoSpearImageView.setVisibility(View.VISIBLE);
             }else{

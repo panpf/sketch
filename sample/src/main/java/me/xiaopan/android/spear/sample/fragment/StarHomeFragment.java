@@ -34,14 +34,14 @@ import me.xiaopan.android.widget.PullRefreshLayout;
 /**
  * 明星个人页面
  */
-@InjectContentView(R.layout.fragment_search)
+@InjectContentView(R.layout.fragment_star_home)
 public class StarHomeFragment extends InjectFragment implements StarImageAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener {
     public static final String PARAM_REQUIRED_STRING_STAR_TITLE = "PARAM_REQUIRED_STRING_STAR_TITLE";
     public static final String PARAM_REQUIRED_STRING_STAR_URL = "PARAM_REQUIRED_STRING_STAR_URL";
 
-    @InjectView(R.id.refreshLayout_search) private PullRefreshLayout pullRefreshLayout;
-    @InjectView(R.id.recyclerView_search) private RecyclerView recyclerView;
-    @InjectView(R.id.hintView_search) private HintView hintView;
+    @InjectView(R.id.refreshLayout_starHome) private PullRefreshLayout pullRefreshLayout;
+    @InjectView(R.id.recyclerView_starHome) private RecyclerView recyclerView;
+    @InjectView(R.id.hintView_starHome) private HintView hintView;
 
     @InjectExtra(PARAM_REQUIRED_STRING_STAR_TITLE) private String starTitle;
     @InjectExtra(PARAM_REQUIRED_STRING_STAR_URL) private String starHomeUrl;

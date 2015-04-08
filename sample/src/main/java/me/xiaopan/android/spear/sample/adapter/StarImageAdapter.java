@@ -119,16 +119,15 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         RecyclerView.ViewHolder viewHolder = null;
         switch(viewType){
             case ITEM_TYPE_HEADER :
-                HeaderViewHolder headerViewHolder = new HeaderViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_image_header, viewGroup, false));
-                headerViewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_3_2);
-                headerViewHolder.spearImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                ViewGroup.LayoutParams headerParams = headerViewHolder.spearImageView.getLayoutParams();
+                HeadViewHolder headViewHolder = new HeadViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_image_header, viewGroup, false));
+                headViewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_3_2);
+                headViewHolder.spearImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                ViewGroup.LayoutParams headerParams = headViewHolder.spearImageView.getLayoutParams();
                 headerParams.width = headerWidth;
                 headerParams.height = (int) (headerWidth / 3.2f);
-                headerViewHolder.spearImageView.setLayoutParams(headerParams);
-                headerViewHolder.spearImageView.setClickLoadOnPauseDownload(true);
-                headerViewHolder.spearImageView.setShowClickRipple(true);
-                viewHolder = headerViewHolder;
+                headViewHolder.spearImageView.setLayoutParams(headerParams);
+                headViewHolder.spearImageView.setShowClickRipple(true);
+                viewHolder = headViewHolder;
                 break;
             case ITEM_TYPE_ITEM :
                 ItemViewHolder itemViewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_image, viewGroup, false));
@@ -155,10 +154,6 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 itemViewHolder.twoSpearImageView.setShowClickRipple(true);
                 itemViewHolder.threeSpearImageView.setShowClickRipple(true);
 
-                itemViewHolder.oneSpearImageView.setClickLoadOnPauseDownload(true);
-                itemViewHolder.twoSpearImageView.setClickLoadOnPauseDownload(true);
-                itemViewHolder.threeSpearImageView.setClickLoadOnPauseDownload(true);
-
                 itemViewHolder.oneSpearImageView.setOnClickListener(itemClickListener);
                 itemViewHolder.twoSpearImageView.setOnClickListener(itemClickListener);
                 itemViewHolder.threeSpearImageView.setOnClickListener(itemClickListener);
@@ -176,9 +171,11 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     public void onBindViewHolder(RecyclerView.ViewHolder viewHolder, int position) {
         switch(getItemViewType(position)){
             case ITEM_TYPE_HEADER :
-                HeaderViewHolder headerViewHolder = (HeaderViewHolder) viewHolder;
-                headerViewHolder.spearImageView.setShowFromFlag(settings.isShowImageFromFlag());
-                headerViewHolder.spearImageView.displayImage(headerImageUrl);
+                HeadViewHolder headViewHolder = (HeadViewHolder) viewHolder;
+                headViewHolder.spearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+                headViewHolder.spearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+                headViewHolder.spearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
+                headViewHolder.spearImageView.displayImage(headerImageUrl);
                 break;
             case ITEM_TYPE_ITEM :
                 ItemViewHolder itemViewHolder = (ItemViewHolder) viewHolder;
@@ -206,6 +203,14 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 itemViewHolder.oneSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
                 itemViewHolder.twoSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
                 itemViewHolder.threeSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+
+                itemViewHolder.oneSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+                itemViewHolder.twoSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+                itemViewHolder.threeSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+
+                itemViewHolder.oneSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
+                itemViewHolder.twoSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
+                itemViewHolder.threeSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
 
                 ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) itemViewHolder.oneSpearImageView.getLayoutParams();
                 params.topMargin = topMargin;
@@ -276,10 +281,10 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         }
     }
 
-    private static class HeaderViewHolder extends RecyclerView.ViewHolder{
+    private static class HeadViewHolder extends RecyclerView.ViewHolder{
         private SpearImageView spearImageView;
 
-        public HeaderViewHolder(View itemView) {
+        public HeadViewHolder(View itemView) {
             super(itemView);
             spearImageView = (SpearImageView) itemView.findViewById(R.id.image_starImageHeaderItem);
         }

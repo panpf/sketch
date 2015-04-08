@@ -102,7 +102,6 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             itemHolder.oneLayout.setOnClickListener(onClickListener);
             itemHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.Circular);
             itemHolder.oneSpearImageView.setShowClickRipple(true);
-            itemHolder.oneSpearImageView.setClickLoadOnPauseDownload(true);
             ViewGroup.LayoutParams params = itemHolder.oneSpearImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
@@ -114,7 +113,6 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             itemHolder.twoLayout.setOnClickListener(onClickListener);
             itemHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.Circular);
             itemHolder.twoSpearImageView.setShowClickRipple(true);
-            itemHolder.twoSpearImageView.setClickLoadOnPauseDownload(true);
             params = itemHolder.twoSpearImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
@@ -126,7 +124,6 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             itemHolder.threeLayout.setOnClickListener(onClickListener);
             itemHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.Circular);
             itemHolder.threeSpearImageView.setShowClickRipple(true);
-            itemHolder.threeSpearImageView.setClickLoadOnPauseDownload(true);
             params = itemHolder.threeSpearImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
@@ -149,12 +146,16 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
 
             itemHolder.oneNameTextView.setText(dataItem.star1.getName());
             itemHolder.oneSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+            itemHolder.oneSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+            itemHolder.oneSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
             itemHolder.oneSpearImageView.displayImage(dataItem.star1.getAvatarUrl());
             itemHolder.oneLayout.setTag(dataItem.star1);
 
             if(dataItem.star2 != null){
                 itemHolder.twoNameTextView.setText(dataItem.star2.getName());
                 itemHolder.twoSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+                itemHolder.twoSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+                itemHolder.twoSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
                 itemHolder.twoSpearImageView.displayImage(dataItem.star2.getAvatarUrl());
                 itemHolder.twoLayout.setTag(dataItem.star2);
                 itemHolder.twoLayout.setVisibility(View.VISIBLE);
@@ -165,6 +166,8 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             if(dataItem.star3 != null){
                 itemHolder.threeNameTextView.setText(dataItem.star3.getName());
                 itemHolder.threeSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
+                itemHolder.threeSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+                itemHolder.threeSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
                 itemHolder.threeSpearImageView.displayImage(dataItem.star3.getAvatarUrl());
                 itemHolder.threeLayout.setTag(dataItem.star3);
                 itemHolder.threeLayout.setVisibility(View.VISIBLE);

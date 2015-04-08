@@ -60,6 +60,6 @@ public class AppListFragment extends InjectFragment {
     }
 
     public interface GetAppListTagStripListener{
-        public PagerSlidingTabStrip onGetAppListTabStrip();
+        PagerSlidingTabStrip onGetAppListTabStrip();
     }
 }

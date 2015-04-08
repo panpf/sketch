@@ -42,7 +42,7 @@ import me.xiaopan.android.spear.sample.fragment.AboutFragment;
 import me.xiaopan.android.spear.sample.fragment.AppListFragment;
 import me.xiaopan.android.spear.sample.fragment.PhotoAlbumFragment;
 import me.xiaopan.android.spear.sample.fragment.SearchFragment;
-import me.xiaopan.android.spear.sample.fragment.StarFragment;
+import me.xiaopan.android.spear.sample.fragment.StarIndexFragment;
 import me.xiaopan.android.spear.sample.util.AnimationUtils;
 import me.xiaopan.android.spear.sample.util.DimenUtils;
 import me.xiaopan.android.spear.sample.util.Settings;
@@ -53,7 +53,7 @@ import me.xiaopan.android.widget.PagerSlidingTabStrip;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
-public class MainActivity extends MyActionBarActivity implements StarFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener {
+public class MainActivity extends MyActionBarActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener {
     @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
     @InjectView(R.id.drawer_main_content) private DrawerLayout drawerLayout;
@@ -71,6 +71,10 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
     @InjectView(R.id.checkBox_main_showImageDownloadProgress) private CheckBox showImageDownloadProgressCheckBox;
     @InjectView(R.id.item_main_showImageFromFlag) private View showImageFromFlagItem;
     @InjectView(R.id.checkBox_main_showImageFromFlag) private CheckBox showImageFromFlagCheckBox;
+    @InjectView(R.id.item_main_clickDisplayOnFailed) private View clickDisplayOnFailedItem;
+    @InjectView(R.id.checkBox_main_clickDisplayOnFailed) private CheckBox clickDisplayOnFailedCheckBox;
+    @InjectView(R.id.item_main_clickDisplayOnPauseDownload) private View clickDisplayOnPauseDownloadItem;
+    @InjectView(R.id.checkBox_main_clickDisplayOnPauseDownload) private CheckBox clickDisplayOnPauseDownloadCheckBox;
 
     private long lastClickBackTime;
     private Type type;
@@ -97,6 +101,8 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
         showImageDownloadProgressCheckBox.setChecked(settings.isShowImageDownloadProgress());
         mobileNetworkPauseDownloadCheckBox.setChecked(settings.isMobileNetworkPauseDownload());
         showImageFromFlagCheckBox.setChecked(settings.isShowImageFromFlag());
+        clickDisplayOnFailedCheckBox.setChecked(settings.isClickDisplayOnFailed());
+        clickDisplayOnPauseDownloadCheckBox.setChecked(settings.isClickDisplayOnPauseDownload());
 
         starButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,7 +116,7 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
                     type = Type.STAR;
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                            .replace(R.id.frame_main_content, new StarFragment())
+                            .replace(R.id.frame_main_content, new StarIndexFragment())
                             .commit();
                 }
             }
@@ -225,6 +231,26 @@ public class MainActivity extends MyActionBarActivity implements StarFragment.Ge
                 boolean newShowImageFromFlag = !settings.isShowImageFromFlag();
                 settings.setShowImageFromFlag(newShowImageFromFlag);
                 showImageFromFlagCheckBox.setChecked(newShowImageFromFlag);
+                drawerLayout.closeDrawer(Gravity.START);
+            }
+        });
+
+        clickDisplayOnFailedItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean newClickDisplayOnFailed = !settings.isClickDisplayOnFailed();
+                settings.setClickDisplayOnFailed(newClickDisplayOnFailed);
+                clickDisplayOnFailedCheckBox.setChecked(newClickDisplayOnFailed);
+                drawerLayout.closeDrawer(Gravity.START);
+            }
+        });
+
+        clickDisplayOnPauseDownloadItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                boolean newClickDisplayOnPauseDownload = !settings.isClickDisplayOnPauseDownload();
+                settings.setClickDisplayOnPauseDownload(newClickDisplayOnPauseDownload);
+                clickDisplayOnPauseDownloadCheckBox.setChecked(newClickDisplayOnPauseDownload);
                 drawerLayout.closeDrawer(Gravity.START);
             }
         });

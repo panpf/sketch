@@ -4,17 +4,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <me.xiaopan.android.spear.sample.widget.MyPullRefreshLayout
-        android:id="@+id/refreshLayout_search"
+        android:id="@+id/refreshLayout_starHome"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <ListView
-            android:id="@+id/list_search"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView_starHome"
             android:layout_width="match_parent"
             android:layoutAnimation="@anim/layout_animation"
             android:layout_height="match_parent"/>
     </me.xiaopan.android.spear.sample.widget.MyPullRefreshLayout>
     <me.xiaopan.android.spear.sample.widget.HintView
-        android:id="@+id/hintView_search"
+        android:id="@+id/hintView_starHome"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 </FrameLayout>

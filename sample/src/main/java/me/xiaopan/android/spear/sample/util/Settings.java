@@ -9,6 +9,8 @@ public class Settings {
     private static final String PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS = "PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS";
     private static final String PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD = "PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD";
     private static final String PREFERENCE_SHOW_IMAGE_FROM_FLAG = "PREFERENCE_SHOW_IMAGE_FROM_FLAG";
+    private static final String PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD = "PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD";
+    private static final String PREFERENCE_CLICK_DISPLAY_ON_FAILED = "PREFERENCE_CLICK_DISPLAY_ON_FAILED";
 
     private static Settings settingsInstance;
 
@@ -16,6 +18,8 @@ public class Settings {
     private boolean showImageDownloadProgress;
     private boolean mobileNetworkPauseDownload;
     private boolean showImageFromFlag;
+    private boolean clickDisplayOnPauseDownload;
+    private boolean clickDisplayOnFailed;
 
     private SharedPreferences.Editor editor;
 
@@ -27,6 +31,8 @@ public class Settings {
         this.showImageDownloadProgress = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS, false);
         this.mobileNetworkPauseDownload = preferences.getBoolean(PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, false);
         this.showImageFromFlag = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, false);
+        this.clickDisplayOnPauseDownload = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, false);
+        this.clickDisplayOnFailed = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, false);
     }
 
     public static Settings with(Context context){
@@ -106,5 +112,23 @@ public class Settings {
     public void setShowImageFromFlag(boolean showImageFromFlag) {
         this.showImageFromFlag = showImageFromFlag;
         editor.putBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, showImageFromFlag).apply();
+    }
+
+    public boolean isClickDisplayOnFailed() {
+        return clickDisplayOnFailed;
+    }
+
+    public void setClickDisplayOnFailed(boolean clickDisplayOnFailed) {
+        this.clickDisplayOnFailed = clickDisplayOnFailed;
+        editor.putBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, clickDisplayOnFailed).apply();
+    }
+
+    public boolean isClickDisplayOnPauseDownload() {
+        return clickDisplayOnPauseDownload;
+    }
+
+    public void setClickDisplayOnPauseDownload(boolean clickDisplayOnPauseDownload) {
+        this.clickDisplayOnPauseDownload = clickDisplayOnPauseDownload;
+        editor.putBoolean(PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, clickDisplayOnPauseDownload).apply();
     }
 }

@@ -140,5 +140,43 @@
                 android:focusable="false"
                 android:focusableInTouchMode="false"/>
         </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_main_clickDisplayOnPauseDownload"
+            android:clickable="true"
+            style="@style/menu_item">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="暂停下载时点击显示图片"/>
+            <CheckBox
+                android:id="@+id/checkBox_main_clickDisplayOnPauseDownload"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_main_clickDisplayOnFailed"
+            android:clickable="true"
+            style="@style/menu_item">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="显示失败时点击显示图片"/>
+            <CheckBox
+                android:id="@+id/checkBox_main_clickDisplayOnFailed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>
