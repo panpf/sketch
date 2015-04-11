@@ -124,10 +124,12 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             }
 
             // 如果缓存文件已经存在了就直接返回缓存文件
-            File cacheFile = request.getCacheFile();
-            if (cacheFile != null && cacheFile.exists()) {
-                result = DownloadResult.createByFile(cacheFile, false);
-                break;
+            if(request.isEnableDiskCache()){
+                File cacheFile = request.getSpear().getConfiguration().getDiskCache().getCacheFile(request.getUri());
+                if (cacheFile != null && cacheFile.exists()) {
+                    result = DownloadResult.createByFile(cacheFile, false);
+                    break;
+                }
             }
 
             try {
@@ -224,11 +226,17 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     private DownloadResult readData(DownloadRequest request, HttpURLConnection connection, int contentLength) throws IOException {
+        // 生成缓存文件和临时缓存文件
         File tempFile = null;
-        if(request.getCacheFile() != null && request.getSpear().getConfiguration().getDiskCache().applyForSpace(contentLength)){
-            tempFile = new File(request.getCacheFile().getPath()+".temp");
-            if(!createFile(tempFile)){
-                tempFile = null;
+        File cacheFile = null;
+        if(request.isEnableDiskCache()){
+            cacheFile = request.getSpear().getConfiguration().getDiskCache().generateCacheFile(request.getUri());
+            if(cacheFile != null && request.getSpear().getConfiguration().getDiskCache().applyForSpace(contentLength)){
+                tempFile = new File(cacheFile.getPath()+".temp");
+                if(!createFile(tempFile)){
+                    tempFile = null;
+                    cacheFile = null;
+                }
             }
         }
 
@@ -297,8 +305,8 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
 
         // 转换结果
         if(tempFile != null && tempFile.exists()){
-            if(tempFile.renameTo(request.getCacheFile())){
-                return DownloadResult.createByFile(request.getCacheFile(), true);
+            if(tempFile.renameTo(cacheFile)){
+                return DownloadResult.createByFile(cacheFile, true);
             }else{
                 if (!tempFile.delete() && Spear.isDebugMode()) {
                     Log.w(Spear.TAG, NAME + " - " + "delete temp download file failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + request.getName());

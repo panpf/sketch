@@ -18,6 +18,8 @@ package me.xiaopan.android.spear;
 
 import android.widget.ImageView;
 
+import java.io.File;
+
 import me.xiaopan.android.spear.process.ImageProcessor;
 
 /**
@@ -68,6 +70,12 @@ public interface LoadRequest extends DownloadRequest{
      * 设置加载监听器
      */
     void setLoadListener(LoadListener loadListener);
+
+    /**
+     * 获取缓存文件
+     * @return 缓存文件
+     */
+    File getCacheFile();
 
     /**
      * 获取图片数据

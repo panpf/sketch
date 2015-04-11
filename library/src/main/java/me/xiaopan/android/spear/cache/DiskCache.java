@@ -30,6 +30,13 @@ public interface DiskCache {
      */
     File getCacheFile(String uri);
 
+    /**
+     * 生成缓存文件对象，只new一个File并负责初始化好缓存目录
+     * @param uri 图片uri
+     * @return 缓存文件对象
+     */
+    File generateCacheFile(String uri);
+
 	/**
 	 * 申请空间，尝试腾出足够的空间，删除的原则是最后修改时间排序（每一次访问缓存文件都会更新其最后修改时间）来删除文件，直到腾出足够的空间
 	 * @param length 申请的容量
@@ -72,6 +79,13 @@ public interface DiskCache {
      * @return 最大容量，默认为100M
      */
     long getMaxSize();
+
+    /**
+     * 将uri地址进行转码作为缓存文件的名字
+     * @param uri
+     * @return
+     */
+    String encodeFileName(String uri);
 
     /**
      * 获取已用容量

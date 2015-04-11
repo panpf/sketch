@@ -16,8 +16,6 @@
 
 package me.xiaopan.android.spear;
 
-import java.io.File;
-
 /**
  * 下载请求
  */
@@ -46,6 +44,12 @@ public interface DownloadRequest extends Request, RequestRunManager {
     void setProgressListener(ProgressListener progressListener);
 
     /**
+     * 是否开启了磁盘缓存
+     * @return 是否开启了磁盘缓存
+     */
+    boolean isEnableDiskCache();
+
+    /**
      * 设置是否开启磁盘缓存
      * @param enableDiskCache 是否开启磁盘缓存
      */
@@ -56,12 +60,6 @@ public interface DownloadRequest extends Request, RequestRunManager {
      * @param downloadListener 下载监听器
      */
     void setDownloadListener(DownloadListener downloadListener);
-
-    /**
-     * 获取缓存文件
-     * @return 缓存文件
-     */
-    File getCacheFile();
 
     /**
      * 设置状态

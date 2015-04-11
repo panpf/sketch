@@ -62,13 +62,17 @@ public class DefaultImageDecoder implements ImageDecoder {
 	}
 
     public Bitmap decodeHttpOrHttps(LoadRequest loadRequest){
-        if(loadRequest.getCacheFile() != null && loadRequest.getCacheFile().exists()){
-            return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(loadRequest.getCacheFile(), loadRequest));
-        }else if(loadRequest.getImageData() != null && loadRequest.getImageData().length > 0){
-            return decodeFromHelper(loadRequest, new ByteArrayDecodeHelper(loadRequest.getImageData(), loadRequest));
-        }else{
-            return null;
+        File cacheFile = loadRequest.getCacheFile();
+        if(cacheFile != null && cacheFile.exists()){
+            return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(cacheFile, loadRequest));
         }
+
+        byte[] imageData = loadRequest.getImageData();
+        if (imageData != null && imageData.length > 0){
+            return decodeFromHelper(loadRequest, new ByteArrayDecodeHelper(imageData, loadRequest));
+        }
+
+        return null;
     }
 
     public Bitmap decodeFile(LoadRequest loadRequest){

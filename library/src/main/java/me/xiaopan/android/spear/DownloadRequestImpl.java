@@ -40,7 +40,6 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private DownloadListener downloadListener;  // 下载监听器
 
     // Runtime fields
-    private File cacheFile;	// 缓存文件
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
     private FailCause failCause;    // 失败原因
     private ImageFrom imageFrom;    // 图片来源
@@ -85,6 +84,11 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     }
 
     @Override
+    public boolean isEnableDiskCache() {
+        return enableDiskCache;
+    }
+
+    @Override
     public void setProgressListener(ProgressListener progressListener) {
         this.progressListener = progressListener;
     }
@@ -103,11 +107,6 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     @Override
     public void setDownloadListener(DownloadListener downloadListener) {
         this.downloadListener = downloadListener;
-    }
-
-    @Override
-    public File getCacheFile() {
-        return cacheFile;
     }
 
     @Override
@@ -212,14 +211,14 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
         if(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS){
-            this.cacheFile = enableDiskCache?spear.getConfiguration().getDiskCache().getCacheFile(uri):null;
-            if(cacheFile != null && cacheFile.exists()){
-                this.imageFrom = ImageFrom.DISK_CACHE;
+            File diskCacheFile = enableDiskCache?spear.getConfiguration().getDiskCache().getCacheFile(uri):null;
+            if(diskCacheFile != null && diskCacheFile.exists()){
                 if(Spear.isDebugMode()){
                     Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "diskCache" + " - " + name);
                 }
+                this.imageFrom = ImageFrom.DISK_CACHE;
                 if(downloadListener != null){
-                    downloadListener.onCompleted(cacheFile, false);
+                    downloadListener.onCompleted(diskCacheFile, false);
                 }
             }else{
                 postRunDownload();

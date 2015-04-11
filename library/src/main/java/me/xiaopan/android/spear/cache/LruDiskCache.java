@@ -19,7 +19,6 @@ package me.xiaopan.android.spear.cache;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.os.Environment;
 import android.os.StatFs;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -43,16 +42,16 @@ public class LruDiskCache implements DiskCache {
     private static final String DEFAULT_DIRECTORY_NAME = "spear";
     private static final int DEFAULT_RESERVE_SIZE = 100 * 1024 * 1024;
     private static final int DEFAULT_MAX_SIZE = 100 * 1024 * 1024;
-	private File diskCacheDir;	//缓存目录
+	private File cacheDir;	//缓存目录
     private Context context;
     private FileLastModifiedComparator fileLastModifiedComparator;
     private int reserveSize = DEFAULT_RESERVE_SIZE;
-    private int maxsize = DEFAULT_MAX_SIZE;
+    private int maxSize = DEFAULT_MAX_SIZE;
 
-    public LruDiskCache(Context context, File diskCacheDir){
+    public LruDiskCache(Context context, File cacheDir){
         this.context = context;
         this.fileLastModifiedComparator = new FileLastModifiedComparator();
-        setCacheDir(diskCacheDir);
+        setCacheDir(cacheDir);
     }
 
     public LruDiskCache(Context context) {
@@ -65,32 +64,40 @@ public class LruDiskCache implements DiskCache {
 		if(cacheDir != null && !cacheDir.isDirectory()){
 			throw new IllegalArgumentException(cacheDir.getPath() + "not a directory");
 		}
-		this.diskCacheDir = cacheDir;
+		this.cacheDir = cacheDir;
 	}
 
     @Override
     public synchronized File getCacheDir() {
-        if(diskCacheDir == null){
-            this.diskCacheDir = new File(getDynamicCacheDir(context).getPath() + File.separator + DEFAULT_DIRECTORY_NAME);
-        }
-        if(!diskCacheDir.exists()){
-            if(!diskCacheDir.mkdirs()){
-                if(Spear.isDebugMode()){
-                    Log.e(Spear.TAG, NAME + " - " + "create cache dir failed："+ diskCacheDir.getPath());
-                }
-                this.diskCacheDir = new File(getDynamicCacheDir(context).getPath() + File.separator + DEFAULT_DIRECTORY_NAME);
-                if(!diskCacheDir.exists()){
-                    if(!diskCacheDir.mkdirs()){
-                        if(Spear.isDebugMode()){
-                            Log.e(Spear.TAG, NAME + " - " + "again create cache dir failed："+ diskCacheDir.getPath());
-                        }
-                        diskCacheDir = null;
-                    }
-                }
+        // 首先尝试使用cacheDir参数指定的位置
+        if(cacheDir != null) {
+            if(cacheDir.exists() || cacheDir.mkdirs()){
+                return cacheDir;
+            }else if(Spear.isDebugMode()){
+                Log.e(Spear.TAG, NAME + " - " + "create cache dir failed："+ cacheDir.getPath());
             }
         }
 
-        return diskCacheDir;
+        // 然后尝试使用SD卡的默认缓存文件夹
+        File superDir = context.getExternalCacheDir();
+        if(superDir != null){
+            cacheDir = new File(superDir, DEFAULT_DIRECTORY_NAME);
+            if(cacheDir.exists() || cacheDir.mkdirs()) {
+                return cacheDir;
+            }
+        }
+
+        // 最后尝试使用系统的默认缓存文件夹
+        superDir = context.getCacheDir();
+        if(superDir != null){
+            cacheDir = new File(superDir, DEFAULT_DIRECTORY_NAME);
+            if(cacheDir.exists() || cacheDir.mkdirs()) {
+                return cacheDir;
+            }
+        }
+
+        cacheDir = null;
+        return null;
     }
 
     @Override
@@ -107,19 +114,19 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public void setMaxSize(int maxSize) {
-        this.maxsize = maxSize;
+        this.maxSize = maxSize;
     }
 
     @Override
     public long getMaxSize() {
-        return maxsize;
+        return maxSize;
     }
 
     @Override
     public long getSize() {
-        File cacheDir = getCacheDir();
-        if(cacheDir != null && cacheDir.exists()){
-            return countFileLength(cacheDir);
+        File finalCacheDir = getCacheDir();
+        if(finalCacheDir != null && finalCacheDir.exists()){
+            return countFileLength(finalCacheDir);
         }else{
             return 0;
         }
@@ -127,19 +134,19 @@ public class LruDiskCache implements DiskCache {
 
     @Override
 	public synchronized boolean applyForSpace(long cacheFileLength){
-        File cacheDir = getCacheDir();
-        if(cacheDir == null){
+        File finalCacheDir = getCacheDir();
+        if(finalCacheDir == null){
             return false;
         }
 
         // 总的可用空间
-        long totalAvailableSize = Math.abs(getAvailableSize(cacheDir.getPath()));
+        long totalAvailableSize = Math.abs(getAvailableSize(finalCacheDir.getPath()));
         long usedSize = 0;
         // 如果剩余空间够用
         if(totalAvailableSize-reserveSize > cacheFileLength){
-            if(maxsize > 0){
-                usedSize = Math.abs(countFileLength(cacheDir));
-                if(usedSize+cacheFileLength < maxsize){
+            if(maxSize > 0){
+                usedSize = Math.abs(countFileLength(finalCacheDir));
+                if(usedSize+cacheFileLength < maxSize){
                     return true;
                 }
             }else{
@@ -149,8 +156,8 @@ public class LruDiskCache implements DiskCache {
 
         // 获取所有缓存文件
         File[] cacheFiles = null;
-        if(cacheDir.exists()){
-            cacheFiles = cacheDir.listFiles();
+        if(finalCacheDir.exists()){
+            cacheFiles = finalCacheDir.listFiles();
         }
 
         if(cacheFiles != null){
@@ -166,9 +173,9 @@ public class LruDiskCache implements DiskCache {
                 if(file.delete()){
                     totalAvailableSize += currentFileLength;
                     if(totalAvailableSize-reserveSize > cacheFileLength){
-                        if(maxsize > 0){
+                        if(maxSize > 0){
                             usedSize -= currentFileLength;
-                            if(usedSize+cacheFileLength < maxsize){
+                            if(usedSize+cacheFileLength < maxSize){
                                 return true;
                             }
                         }else{
@@ -181,49 +188,100 @@ public class LruDiskCache implements DiskCache {
 
         // 返回申请空间失败
         if(Spear.isDebugMode()){
-            Log.e(Spear.TAG, NAME + " - " + "apply for space failed, remaining space："+ Formatter.formatFileSize(context, totalAvailableSize)+"; reserve size："+Formatter.formatFileSize(context, reserveSize) + " - " + cacheDir.getPath());
+            Log.e(Spear.TAG, NAME + " - " + "apply for space failed, remaining space：" + Formatter.formatFileSize(context, totalAvailableSize) + "; reserve size：" + Formatter.formatFileSize(context, reserveSize) + " - " + finalCacheDir.getPath());
         }
         return false;
 	}
 
-	@Override
-	public synchronized File getCacheFile(String uri) {
-        /**
-         * 在这里要先从外置SD卡获取缓存文件没有的话再从内置SD卡
-         */
-        File cacheDir = getCacheDir();
-        if(cacheDir == null){
-            return null;
-        }
+    @Override
+    public String encodeFileName(String uri){
         try {
-            uri =  URLEncoder.encode(uri, "UTF-8");
+            return URLEncoder.encode(uri, "UTF-8");
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
+            return null;
         }
-        return new File(cacheDir, uri);
+    }
+
+	@Override
+	public synchronized File getCacheFile(String uri) {
+        String fileName = encodeFileName(uri);
+        if(fileName == null){
+            return null;
+        }
+
+        File cacheFile;
+        File superDir;
+        File finalCacheDir;
+
+        // 先从cacheDir参数指定的位置中找
+        superDir = this.cacheDir;
+        finalCacheDir = superDir;
+        if(finalCacheDir != null && finalCacheDir.exists()){
+            cacheFile = new File(finalCacheDir, fileName);
+            if(cacheFile.exists()){
+                return cacheFile;
+            }
+        }
+
+        // 再从SD卡的默认缓存目录找
+        superDir = context.getExternalCacheDir();
+        finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
+        if(finalCacheDir != null && finalCacheDir.exists()){
+            cacheFile = new File(finalCacheDir, fileName);
+            if(cacheFile.exists()){
+                return cacheFile;
+            }
+        }
+
+        // 最后从系统的默认缓存目录找
+        superDir = context.getCacheDir();
+        finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
+        if(finalCacheDir != null && finalCacheDir.exists()){
+            cacheFile = new File(finalCacheDir, fileName);
+            if(cacheFile.exists()){
+                return cacheFile;
+            }
+        }
+
+        // 都没有就返回null
+        return null;
 	}
 
     @Override
-    public synchronized void clear() {
-        deleteFile(diskCacheDir);
-        deleteFile(new File(context.getCacheDir(), DEFAULT_DIRECTORY_NAME));
-        deleteFile(new File(context.getExternalCacheDir(), DEFAULT_DIRECTORY_NAME));
+    public File generateCacheFile(String uri) {
+        String fileName = encodeFileName(uri);
+        if(fileName == null){
+            return null;
+        }
+        File finalCacheDir = getCacheDir();
+        if(finalCacheDir == null){
+            return null;
+        }
+        return new File(finalCacheDir, fileName);
     }
 
-    /**
-     * 获取动态获取缓存目录
-     * @param context 上下文
-     * @return 如果SD卡可用，就返回外部缓存目录，否则返回机身自带缓存目录
-     */
-    private File getDynamicCacheDir(Context context){
-        if(Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
-            File dir = context.getExternalCacheDir();
-            if(dir == null){
-                dir = context.getCacheDir();
-            }
-            return dir;
-        }else{
-            return context.getCacheDir();
+    @Override
+    public synchronized void clear() {
+        File superDir;
+        File finalCacheDir;
+
+        superDir = cacheDir;
+        finalCacheDir = superDir;
+        if(finalCacheDir != null && finalCacheDir.exists()){
+            deleteFile(superDir);
+        }
+
+        superDir = context.getExternalCacheDir();
+        finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
+        if(finalCacheDir != null && finalCacheDir.exists()){
+            deleteFile(superDir);
+        }
+
+        superDir = context.getCacheDir();
+        finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
+        if(finalCacheDir != null && finalCacheDir.exists()){
+            deleteFile(superDir);
         }
     }
 

@@ -96,6 +96,11 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     }
 
     @Override
+    public boolean isEnableDiskCache() {
+        return enableDiskCache;
+    }
+
+    @Override
     public void setProgressListener(ProgressListener progressListener) {
         this.progressListener = progressListener;
     }
@@ -148,6 +153,11 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
     /****************************************** Runtime methods ******************************************/
     @Override
+    public File getCacheFile() {
+        return cacheFile;
+    }
+
+    @Override
     public byte[] getImageData() {
         return imageData;
     }
@@ -169,11 +179,6 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
     @Override
     public void setDownloadListener(DownloadListener downloadListener) {
-    }
-
-    @Override
-    public File getCacheFile() {
-        return cacheFile;
     }
 
     @Override
@@ -276,8 +281,9 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
         if(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS){
-            this.cacheFile = enableDiskCache?spear.getConfiguration().getDiskCache().getCacheFile(uri):null;
-            if(cacheFile != null && cacheFile.exists()){
+            File diskCacheFile = enableDiskCache?spear.getConfiguration().getDiskCache().getCacheFile(uri):null;
+            if(diskCacheFile != null && diskCacheFile.exists()){
+                this.cacheFile = diskCacheFile;
                 this.imageFrom = ImageFrom.DISK_CACHE;
                 postRunLoad();
                 if(Spear.isDebugMode()){
@@ -319,14 +325,12 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
         }
 
         if(downloadResult != null  && downloadResult.getResult() != null){
-            this.imageFrom = downloadResult.isFromNetwork()?ImageFrom.NETWORK:ImageFrom.DISK_CACHE;
-
             if(downloadResult.getResult().getClass().isAssignableFrom(File.class)){
                 this.cacheFile = (File) downloadResult.getResult();
             }else{
                 this.imageData = (byte[]) downloadResult.getResult();
             }
-
+            this.imageFrom = downloadResult.isFromNetwork()?ImageFrom.NETWORK:ImageFrom.DISK_CACHE;
             postRunLoad();
         }else{
             toFailedStatus(FailCause.DOWNLOAD_FAIL);
