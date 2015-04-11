@@ -83,10 +83,10 @@ public class LruMemoryCache implements MemoryCache {
 
 	@Override
 	public synchronized void clear() {
-		drawableLruCache.evictAll();
 		if(Spear.isDebugMode()){
-			Log.i(Spear.TAG, NAME + " - " + "clear" + " - "  + "MemoryCacheSize: "+ Formatter.formatFileSize(context, drawableLruCache.size()));
+			Log.i(Spear.TAG, NAME + " - " + "clear" + " - "  + "before clean MemoryCacheSize: "+ Formatter.formatFileSize(context, drawableLruCache.size()));
 		}
+		drawableLruCache.evictAll();
 	}
 
 	private class DrawableLruCache extends LruCache<String, Drawable> {
