@@ -348,7 +348,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
         // 解码
         Bitmap bitmap = spear.getConfiguration().getImageDecoder().decode(this);
-        if(bitmap != null){
+        if(bitmap != null && !bitmap.isRecycled()){
             if(Spear.isDebugMode()){
                 Log.d(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "executeLoad" + " - " + name);
             }
