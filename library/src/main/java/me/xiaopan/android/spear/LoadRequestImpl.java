@@ -276,7 +276,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
         if(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS){
-            this.cacheFile = enableDiskCache?spear.getConfiguration().getDiskCache().createCacheFile(this):null;
+            this.cacheFile = enableDiskCache?spear.getConfiguration().getDiskCache().getCacheFile(uri):null;
             if(cacheFile != null && cacheFile.exists()){
                 this.imageFrom = ImageFrom.DISK_CACHE;
                 postRunLoad();

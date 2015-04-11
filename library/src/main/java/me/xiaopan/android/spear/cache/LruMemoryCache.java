@@ -72,6 +72,16 @@ public class LruMemoryCache implements MemoryCache {
 	}
 
 	@Override
+	public long getSize() {
+		return drawableLruCache.size();
+	}
+
+	@Override
+	public long getMaxSize() {
+		return drawableLruCache.maxSize();
+	}
+
+	@Override
 	public synchronized void clear() {
 		drawableLruCache.evictAll();
 		if(Spear.isDebugMode()){

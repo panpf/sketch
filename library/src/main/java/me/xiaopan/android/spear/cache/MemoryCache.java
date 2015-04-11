@@ -40,6 +40,18 @@ public interface MemoryCache {
 	 * @param key 键
 	 */
 	Drawable remove(String key);
+
+	/**
+	 * 获取已用容量
+	 * @return 已用容量
+	 */
+	long getSize();
+
+	/**
+	 * 获取最大容量
+	 * @return 最大容量
+	 */
+	long getMaxSize();
 	
 	/**
 	 * 清除内存缓存

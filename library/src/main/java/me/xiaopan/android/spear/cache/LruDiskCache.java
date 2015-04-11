@@ -33,7 +33,6 @@ import java.util.LinkedList;
 import java.util.List;
 
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.DownloadRequest;
 import me.xiaopan.android.spear.util.FileLastModifiedComparator;
 
 /**
@@ -53,7 +52,7 @@ public class LruDiskCache implements DiskCache {
     public LruDiskCache(Context context, File diskCacheDir){
         this.context = context;
         this.fileLastModifiedComparator = new FileLastModifiedComparator();
-        setDiskCacheDir(diskCacheDir);
+        setCacheDir(diskCacheDir);
     }
 
     public LruDiskCache(Context context) {
@@ -61,7 +60,16 @@ public class LruDiskCache implements DiskCache {
         this.fileLastModifiedComparator = new FileLastModifiedComparator();
     }
 
-    private synchronized File getDiskCacheDir() {
+    @Override
+	public synchronized void setCacheDir(File cacheDir) {
+		if(cacheDir != null && !cacheDir.isDirectory()){
+			throw new IllegalArgumentException(cacheDir.getPath() + "not a directory");
+		}
+		this.diskCacheDir = cacheDir;
+	}
+
+    @Override
+    public synchronized File getCacheDir() {
         if(diskCacheDir == null){
             this.diskCacheDir = new File(getDynamicCacheDir(context).getPath() + File.separator + DEFAULT_DIRECTORY_NAME);
         }
@@ -86,14 +94,6 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-	public synchronized void setDiskCacheDir(File cacheDir) {
-		if(cacheDir != null && !cacheDir.isDirectory()){
-			throw new IllegalArgumentException(cacheDir.getPath() + "not a directory");
-		}
-		this.diskCacheDir = cacheDir;
-	}
-
-    @Override
     public void setReserveSize(int reserveSize) {
         if(reserveSize > DEFAULT_RESERVE_SIZE){
             this.reserveSize = reserveSize;
@@ -101,13 +101,33 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public void setMaxsize(int maxsize) {
-        this.maxsize = maxsize;
+    public long getReserveSize() {
+        return reserveSize;
+    }
+
+    @Override
+    public void setMaxSize(int maxSize) {
+        this.maxsize = maxSize;
+    }
+
+    @Override
+    public long getMaxSize() {
+        return maxsize;
+    }
+
+    @Override
+    public long getSize() {
+        File cacheDir = getCacheDir();
+        if(cacheDir != null && cacheDir.exists()){
+            return countFileLength(cacheDir);
+        }else{
+            return 0;
+        }
     }
 
     @Override
 	public synchronized boolean applyForSpace(long cacheFileLength){
-        File cacheDir = getDiskCacheDir();
+        File cacheDir = getCacheDir();
         if(cacheDir == null){
             return false;
         }
@@ -161,14 +181,17 @@ public class LruDiskCache implements DiskCache {
 
         // 返回申请空间失败
         if(Spear.isDebugMode()){
-            Log.e(Spear.TAG, NAME + " - " + "apply space failed, remaining space："+ Formatter.formatFileSize(context, totalAvailableSize)+"; reserve size："+Formatter.formatFileSize(context, reserveSize) + " - " + cacheDir.getPath());
+            Log.e(Spear.TAG, NAME + " - " + "apply for space failed, remaining space："+ Formatter.formatFileSize(context, totalAvailableSize)+"; reserve size："+Formatter.formatFileSize(context, reserveSize) + " - " + cacheDir.getPath());
         }
         return false;
 	}
 
 	@Override
-	public synchronized File getCacheFileByUri(String uri) {
-        File cacheDir = getDiskCacheDir();
+	public synchronized File getCacheFile(String uri) {
+        /**
+         * 在这里要先从外置SD卡获取缓存文件没有的话再从内置SD卡
+         */
+        File cacheDir = getCacheDir();
         if(cacheDir == null){
             return null;
         }
@@ -177,12 +200,7 @@ public class LruDiskCache implements DiskCache {
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
-		return new File(cacheDir, uri);
-	}
-
-	@Override
-	public synchronized File createCacheFile(DownloadRequest request) {
-		return getCacheFileByUri(request.getUri());
+        return new File(cacheDir, uri);
 	}
 
     @Override
