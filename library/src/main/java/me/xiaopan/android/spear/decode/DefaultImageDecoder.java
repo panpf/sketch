@@ -44,7 +44,6 @@ import me.xiaopan.android.spear.ImageSize;
 public class DefaultImageDecoder implements ImageDecoder {
     private static final String NAME = "DefaultImageDecoder";
 
-
     @Override
 	public Bitmap decode(LoadRequest loadRequest){
         if(loadRequest.getUriScheme() == UriScheme.HTTP || loadRequest.getUriScheme() == UriScheme.HTTPS){
@@ -54,7 +53,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         }else if(loadRequest.getUriScheme() == UriScheme.CONTENT){
             return decodeContent(loadRequest);
         }else if(loadRequest.getUriScheme() == UriScheme.ASSET){
-            return decodeAssets(loadRequest);
+            return decodeAsset(loadRequest);
         }else if(loadRequest.getUriScheme() == UriScheme.DRAWABLE){
             return decodeDrawable(loadRequest);
         }else{
@@ -90,7 +89,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         return decodeFromHelper(loadRequest, new ContentDecodeHelper(loadRequest.getUri(), loadRequest));
     }
 
-    public Bitmap decodeAssets(LoadRequest loadRequest){
+    public Bitmap decodeAsset(LoadRequest loadRequest){
         return decodeFromHelper(loadRequest, new AssetsDecodeHelper(UriScheme.ASSET.crop(loadRequest.getUri()), loadRequest));
     }
 
