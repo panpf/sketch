@@ -49,6 +49,15 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
+     * 启用内存缓存
+     * @return DisplayOptions
+     */
+    public DisplayOptions enableMemoryCache() {
+        this.enableMemoryCache = true;
+        return this;
+    }
+
+    /**
      * 加载GIF图
      * @return DisplayOptions
      */
@@ -211,6 +220,12 @@ public class DisplayOptions extends LoadOptions {
     @Override
     public DisplayOptions disableDiskCache() {
         super.disableDiskCache();
+        return this;
+    }
+
+    @Override
+    public DisplayOptions enableDiskCache() {
+        this.enableDiskCache = true;
         return this;
     }
 

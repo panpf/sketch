@@ -32,7 +32,7 @@ public class Spear {
 
     private static Spear instance;
     private static boolean debugMode;	//调试模式，在控制台输出日志
-    private static Map<Object, RequestOptions> optionsMap;
+    private static Map<Enum<?>, RequestOptions> optionsMap;
 
     private Configuration configuration;
 
@@ -225,11 +225,19 @@ public class Spear {
         if(optionsMap == null){
             synchronized (Spear.class){
                 if(optionsMap == null){
-                    optionsMap = new HashMap<Object, RequestOptions>();
+                    optionsMap = new HashMap<Enum<?>, RequestOptions>();
                 }
             }
         }
         optionsMap.put(optionsName, options);
+    }
+
+    /**
+     * 获取OptionMap
+     * @return OptionMap
+     */
+    public static Map<Enum<?>, RequestOptions> getOptionsMap() {
+        return optionsMap;
     }
 
     /**

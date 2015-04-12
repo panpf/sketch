@@ -32,6 +32,15 @@ public class DownloadOptions implements RequestOptions {
     }
 
     /**
+     * 启用磁盘缓存
+     * @return DownloadOptions
+     */
+    public DownloadOptions enableDiskCache() {
+        this.enableDiskCache = true;
+        return this;
+    }
+
+    /**
      * 是否开启磁盘缓存
      * @return 是否开启磁盘缓存
      */
