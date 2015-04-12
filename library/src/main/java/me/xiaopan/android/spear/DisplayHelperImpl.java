@@ -123,10 +123,10 @@ public class DisplayHelperImpl implements DisplayHelper{
 
             if(imageView instanceof SpearImageViewInterface){
                 spearImageViewInterface = (SpearImageViewInterface) imageView;
+                spearImageViewInterface.onDisplay();
                 this.displayListener = spearImageViewInterface.getDisplayListener(levelFromPauseDownload);
                 this.progressListener = spearImageViewInterface.getProgressListener();
                 options(spearImageViewInterface.getDisplayOptions());
-                spearImageViewInterface.onDisplay();
             }
         }
 
@@ -180,10 +180,10 @@ public class DisplayHelperImpl implements DisplayHelper{
 
         if(imageView instanceof SpearImageViewInterface){
             spearImageViewInterface = (SpearImageViewInterface) imageView;
+            spearImageViewInterface.onDisplay();
             this.displayListener = spearImageViewInterface.getDisplayListener(levelFromPauseDownload);
             this.progressListener = spearImageViewInterface.getProgressListener();
             options(spearImageViewInterface.getDisplayOptions());
-            spearImageViewInterface.onDisplay();
         }
 
         return this;
