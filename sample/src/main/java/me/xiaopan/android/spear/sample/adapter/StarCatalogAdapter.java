@@ -11,10 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.xiaoapn.android.spear.sample.R;
-import me.xiaopan.android.spear.SpearImageView;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.net.request.StarCatalogRequest;
-import me.xiaopan.android.spear.sample.util.Settings;
+import me.xiaopan.android.spear.sample.widget.MyImageView;
 
 /**
  * 明星目录适配器
@@ -27,11 +26,9 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
     private List<Object> items;
     private View.OnClickListener onClickListener;
     private int itemWidth;
-    private Settings settings;
 
     public StarCatalogAdapter(Context context, StarCatalogRequest.Result result, final OnImageClickListener onImageClickListener) {
         this.context = context;
-        this.settings = Settings.with(context);
         append(result);
         int space = (int) context.getResources().getDimension(R.dimen.home_category_margin_border);
         int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
@@ -100,34 +97,31 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             ItemHolder itemHolder = new ItemHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_head_portrait, parent, false));
 
             itemHolder.oneLayout.setOnClickListener(onClickListener);
-            itemHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.Circular);
-            itemHolder.oneSpearImageView.setShowClickRipple(true);
-            ViewGroup.LayoutParams params = itemHolder.oneSpearImageView.getLayoutParams();
+            itemHolder.oneImageView.setDisplayOptions(DisplayOptionsType.Circular);
+            ViewGroup.LayoutParams params = itemHolder.oneImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
-            itemHolder.oneSpearImageView.setLayoutParams(params);
+            itemHolder.oneImageView.setLayoutParams(params);
             params = itemHolder.oneNameTextView.getLayoutParams();
             params.width = itemWidth;
             itemHolder.oneNameTextView.setLayoutParams(params);
 
             itemHolder.twoLayout.setOnClickListener(onClickListener);
-            itemHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.Circular);
-            itemHolder.twoSpearImageView.setShowClickRipple(true);
-            params = itemHolder.twoSpearImageView.getLayoutParams();
+            itemHolder.twoImageView.setDisplayOptions(DisplayOptionsType.Circular);
+            params = itemHolder.twoImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
-            itemHolder.twoSpearImageView.setLayoutParams(params);
+            itemHolder.twoImageView.setLayoutParams(params);
             params = itemHolder.twoNameTextView.getLayoutParams();
             params.width = itemWidth;
             itemHolder.twoNameTextView.setLayoutParams(params);
 
             itemHolder.threeLayout.setOnClickListener(onClickListener);
-            itemHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.Circular);
-            itemHolder.threeSpearImageView.setShowClickRipple(true);
-            params = itemHolder.threeSpearImageView.getLayoutParams();
+            itemHolder.threeImageView.setDisplayOptions(DisplayOptionsType.Circular);
+            params = itemHolder.threeImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
-            itemHolder.threeSpearImageView.setLayoutParams(params);
+            itemHolder.threeImageView.setLayoutParams(params);
             params = itemHolder.threeNameTextView.getLayoutParams();
             params.width = itemWidth;
             itemHolder.threeNameTextView.setLayoutParams(params);
@@ -145,18 +139,12 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             ItemHolder itemHolder = (ItemHolder) holder;
 
             itemHolder.oneNameTextView.setText(dataItem.star1.getName());
-            itemHolder.oneSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
-            itemHolder.oneSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
-            itemHolder.oneSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
-            itemHolder.oneSpearImageView.displayImage(dataItem.star1.getAvatarUrl());
+            itemHolder.oneImageView.displayImage(dataItem.star1.getAvatarUrl());
             itemHolder.oneLayout.setTag(dataItem.star1);
 
             if(dataItem.star2 != null){
                 itemHolder.twoNameTextView.setText(dataItem.star2.getName());
-                itemHolder.twoSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
-                itemHolder.twoSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
-                itemHolder.twoSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
-                itemHolder.twoSpearImageView.displayImage(dataItem.star2.getAvatarUrl());
+                itemHolder.twoImageView.displayImage(dataItem.star2.getAvatarUrl());
                 itemHolder.twoLayout.setTag(dataItem.star2);
                 itemHolder.twoLayout.setVisibility(View.VISIBLE);
             }else{
@@ -165,10 +153,7 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
 
             if(dataItem.star3 != null){
                 itemHolder.threeNameTextView.setText(dataItem.star3.getName());
-                itemHolder.threeSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
-                itemHolder.threeSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
-                itemHolder.threeSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
-                itemHolder.threeSpearImageView.displayImage(dataItem.star3.getAvatarUrl());
+                itemHolder.threeImageView.displayImage(dataItem.star3.getAvatarUrl());
                 itemHolder.threeLayout.setTag(dataItem.star3);
                 itemHolder.threeLayout.setVisibility(View.VISIBLE);
             }else{
@@ -192,36 +177,36 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
 
     private static class ItemHolder extends RecyclerView.ViewHolder{
         private View oneLayout;
-        private SpearImageView oneSpearImageView;
+        private MyImageView oneImageView;
         private TextView oneNameTextView;
 
         private View twoLayout;
-        private SpearImageView twoSpearImageView;
+        private MyImageView twoImageView;
         private TextView twoNameTextView;
 
         private View threeLayout;
-        private SpearImageView threeSpearImageView;
+        private MyImageView threeImageView;
         private TextView threeNameTextView;
 
         public ItemHolder(View itemView) {
             super(itemView);
 
             oneLayout = itemView.findViewById(R.id.layout_starHeadPortraitItem_one);
-            oneSpearImageView = (SpearImageView) itemView.findViewById(R.id.spearImage_starHeadPortraitItem_one);
+            oneImageView = (MyImageView) itemView.findViewById(R.id.image_starHeadPortraitItem_one);
             oneNameTextView = (TextView) itemView.findViewById(R.id.text_starHeadPortraitItem_one);
 
             twoLayout = itemView.findViewById(R.id.layout_starHeadPortraitItem_two);
-            twoSpearImageView = (SpearImageView) itemView.findViewById(R.id.spearImage_starHeadPortraitItem_two);
+            twoImageView = (MyImageView) itemView.findViewById(R.id.image_starHeadPortraitItem_two);
             twoNameTextView = (TextView) itemView.findViewById(R.id.text_starHeadPortraitItem_two);
 
             threeLayout = itemView.findViewById(R.id.layout_starHeadPortraitItem_three);
-            threeSpearImageView = (SpearImageView) itemView.findViewById(R.id.spearImage_starHeadPortraitItem_three);
+            threeImageView = (MyImageView) itemView.findViewById(R.id.image_starHeadPortraitItem_three);
             threeNameTextView = (TextView) itemView.findViewById(R.id.text_starHeadPortraitItem_three);
         }
     }
 
     public interface OnImageClickListener{
-        public void onClickImage(StarCatalogRequest.Star star);
+        void onClickImage(StarCatalogRequest.Star star);
     }
 
     private static class DataItem{

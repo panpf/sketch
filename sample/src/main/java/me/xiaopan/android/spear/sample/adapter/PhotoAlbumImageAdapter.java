@@ -13,10 +13,9 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import me.xiaoapn.android.spear.sample.R;
-import me.xiaopan.android.spear.SpearImageView;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.util.DimenUtils;
-import me.xiaopan.android.spear.sample.util.Settings;
+import me.xiaopan.android.spear.sample.widget.MyImageView;
 
 public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     private Context context;
@@ -26,14 +25,12 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     private int spanCount = -1;
     private int borderMargin;
     private int middleMargin;
-    private Settings settings;
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public PhotoAlbumImageAdapter(final Context context, final List<String> imageUris, final OnImageClickListener onImageClickListener, final RecyclerView recyclerView){
         this.context = context;
         this.imageUris = imageUris;
-        this.settings = Settings.with(context);
         this.itemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +73,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         ItemViewHolder itemViewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_photo_album_image, parent, false));
 
         itemViewHolder.spearImageView.setOnClickListener(itemClickListener);
-        itemViewHolder.spearImageView.setShowClickRipple(true);
         itemViewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
         if(itemWidth != -1){
             ViewGroup.LayoutParams layoutParams = itemViewHolder.spearImageView.getLayoutParams();
@@ -119,17 +115,16 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             itemViewHolder.spearImageView.setLayoutParams(marginLayoutParams);
         }
 
-        itemViewHolder.spearImageView.setShowFromFlag(settings.isShowImageFromFlag());
         itemViewHolder.spearImageView.displayImage(imageUris.get(position));
         itemViewHolder.spearImageView.setTag(itemViewHolder);
     }
 
     private static class ItemViewHolder extends RecyclerView.ViewHolder{
-        private SpearImageView spearImageView;
+        private MyImageView spearImageView;
         public ItemViewHolder(View itemView) {
             super(itemView);
 
-            this.spearImageView = (SpearImageView) itemView.findViewById(R.id.image_photoAlbumImageItem_one);
+            this.spearImageView = (MyImageView) itemView.findViewById(R.id.image_photoAlbumImageItem_one);
         }
     }
 

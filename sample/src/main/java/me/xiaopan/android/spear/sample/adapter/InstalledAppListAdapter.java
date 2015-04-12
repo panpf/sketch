@@ -10,21 +10,18 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.xiaoapn.android.spear.sample.R;
-import me.xiaopan.android.spear.SpearImageView;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.bean.AppInfo;
-import me.xiaopan.android.spear.sample.util.Settings;
+import me.xiaopan.android.spear.sample.widget.MyImageView;
 
 /**
  * 已安装APP列表适配器
  */
 public class InstalledAppListAdapter extends RecyclerView.Adapter{
     private List<AppInfo> appInfoList;
-    private Settings settings;
 
     public InstalledAppListAdapter(Context context, List<AppInfo> appInfoList) {
         this.appInfoList = appInfoList;
-        this.settings = Settings.with(context);
     }
 
     @Override
@@ -47,7 +44,6 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter{
             AppInfo appInfo = appInfoList.get(position-1);
             AppInfoViewHolder appInfoViewHolder = (AppInfoViewHolder) holder;
 
-            appInfoViewHolder.iconSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
             appInfoViewHolder.iconSpearImageView.displayImage(appInfo.getApkFilePath());
 
             appInfoViewHolder.nameTextView.setText(appInfo.getName());
@@ -66,14 +62,14 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter{
     }
 
     public static class AppInfoViewHolder extends RecyclerView.ViewHolder{
-        private SpearImageView iconSpearImageView;
+        private MyImageView iconSpearImageView;
         private TextView nameTextView;
         private TextView infoTextView;
 
         public AppInfoViewHolder(View itemView) {
             super(itemView);
 
-            iconSpearImageView = (SpearImageView) itemView.findViewById(R.id.image_installedApp_icon);
+            iconSpearImageView = (MyImageView) itemView.findViewById(R.id.image_installedApp_icon);
             nameTextView = (TextView) itemView.findViewById(R.id.text_installedApp_name);
             infoTextView = (TextView) itemView.findViewById(R.id.text_installedApp_info);
         }

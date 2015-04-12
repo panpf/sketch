@@ -17,8 +17,7 @@ import java.util.List;
 import me.xiaoapn.android.spear.sample.R;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.net.request.StarImageRequest;
-import me.xiaopan.android.spear.SpearImageView;
-import me.xiaopan.android.spear.sample.util.Settings;
+import me.xiaopan.android.spear.sample.widget.MyImageView;
 
 /**
  * 明星图片适配器
@@ -39,13 +38,11 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     private View.OnClickListener itemClickListener;
     private List<String> imageUrlList;
     private LoadMoreFooterViewHolder loadMoreFooterViewHolder;
-    private Settings settings;
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     public StarImageAdapter(Context context, String headerImageUrl, List<StarImageRequest.Image> imageList, final OnItemClickListener onItemClickListener){
         this.context = context;
-        this.settings = Settings.with(context);
         this.headerImageUrl = headerImageUrl;
         this.imageList = imageList;
         this.imageUrlList = new ArrayList<>(imageList.size());
@@ -120,43 +117,38 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         switch(viewType){
             case ITEM_TYPE_HEADER :
                 HeadViewHolder headViewHolder = new HeadViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_image_header, viewGroup, false));
-                headViewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_3_2);
-                headViewHolder.spearImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                ViewGroup.LayoutParams headerParams = headViewHolder.spearImageView.getLayoutParams();
+                headViewHolder.imageView.setDisplayOptions(DisplayOptionsType.Rectangle_3_2);
+                headViewHolder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                ViewGroup.LayoutParams headerParams = headViewHolder.imageView.getLayoutParams();
                 headerParams.width = headerWidth;
                 headerParams.height = (int) (headerWidth / 3.2f);
-                headViewHolder.spearImageView.setLayoutParams(headerParams);
-                headViewHolder.spearImageView.setShowClickRipple(true);
+                headViewHolder.imageView.setLayoutParams(headerParams);
                 viewHolder = headViewHolder;
                 break;
             case ITEM_TYPE_ITEM :
                 ItemViewHolder itemViewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_image, viewGroup, false));
-                ViewGroup.LayoutParams itemParams = itemViewHolder.oneSpearImageView.getLayoutParams();
+                ViewGroup.LayoutParams itemParams = itemViewHolder.oneImageView.getLayoutParams();
                 itemParams.width = imageSize;
                 itemParams.height = imageSize;
-                itemViewHolder.oneSpearImageView.setLayoutParams(itemParams);
+                itemViewHolder.oneImageView.setLayoutParams(itemParams);
 
-                itemParams = itemViewHolder.twoSpearImageView.getLayoutParams();
+                itemParams = itemViewHolder.twoImageView.getLayoutParams();
                 itemParams.width = imageSize;
                 itemParams.height = imageSize;
-                itemViewHolder.twoSpearImageView.setLayoutParams(itemParams);
+                itemViewHolder.twoImageView.setLayoutParams(itemParams);
 
-                itemParams = itemViewHolder.threeSpearImageView.getLayoutParams();
+                itemParams = itemViewHolder.threeImageView.getLayoutParams();
                 itemParams.width = imageSize;
                 itemParams.height = imageSize;
-                itemViewHolder.threeSpearImageView.setLayoutParams(itemParams);
+                itemViewHolder.threeImageView.setLayoutParams(itemParams);
 
-                itemViewHolder.oneSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
-                itemViewHolder.twoSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
-                itemViewHolder.threeSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
+                itemViewHolder.oneImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
+                itemViewHolder.twoImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
+                itemViewHolder.threeImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
 
-                itemViewHolder.oneSpearImageView.setShowClickRipple(true);
-                itemViewHolder.twoSpearImageView.setShowClickRipple(true);
-                itemViewHolder.threeSpearImageView.setShowClickRipple(true);
-
-                itemViewHolder.oneSpearImageView.setOnClickListener(itemClickListener);
-                itemViewHolder.twoSpearImageView.setOnClickListener(itemClickListener);
-                itemViewHolder.threeSpearImageView.setOnClickListener(itemClickListener);
+                itemViewHolder.oneImageView.setOnClickListener(itemClickListener);
+                itemViewHolder.twoImageView.setOnClickListener(itemClickListener);
+                itemViewHolder.threeImageView.setOnClickListener(itemClickListener);
                 viewHolder = itemViewHolder;
                 break;
             case ITEM_TYPE_LOAD_MORE_FOOTER:
@@ -172,10 +164,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         switch(getItemViewType(position)){
             case ITEM_TYPE_HEADER :
                 HeadViewHolder headViewHolder = (HeadViewHolder) viewHolder;
-                headViewHolder.spearImageView.setShowFromFlag(settings.isShowImageFromFlag());
-                headViewHolder.spearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
-                headViewHolder.spearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
-                headViewHolder.spearImageView.displayImage(headerImageUrl);
+                headViewHolder.imageView.displayImage(headerImageUrl);
                 break;
             case ITEM_TYPE_ITEM :
                 ItemViewHolder itemViewHolder = (ItemViewHolder) viewHolder;
@@ -196,45 +185,29 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                     bottomMargin = margin;
                 }
 
-                itemViewHolder.oneSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
-                itemViewHolder.twoSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
-                itemViewHolder.threeSpearImageView.setShowDownloadProgress(settings.isShowImageDownloadProgress());
-
-                itemViewHolder.oneSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
-                itemViewHolder.twoSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
-                itemViewHolder.threeSpearImageView.setShowFromFlag(settings.isShowImageFromFlag());
-
-                itemViewHolder.oneSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
-                itemViewHolder.twoSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
-                itemViewHolder.threeSpearImageView.setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
-
-                itemViewHolder.oneSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
-                itemViewHolder.twoSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
-                itemViewHolder.threeSpearImageView.setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
-
-                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) itemViewHolder.oneSpearImageView.getLayoutParams();
+                ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) itemViewHolder.oneImageView.getLayoutParams();
                 params.topMargin = topMargin;
                 params.bottomMargin = bottomMargin;
-                itemViewHolder.oneSpearImageView.setLayoutParams(params);
+                itemViewHolder.oneImageView.setLayoutParams(params);
 
-                params = (ViewGroup.MarginLayoutParams) itemViewHolder.twoSpearImageView.getLayoutParams();
+                params = (ViewGroup.MarginLayoutParams) itemViewHolder.twoImageView.getLayoutParams();
                 params.topMargin = topMargin;
                 params.bottomMargin = bottomMargin;
-                itemViewHolder.twoSpearImageView.setLayoutParams(params);
+                itemViewHolder.twoImageView.setLayoutParams(params);
 
-                params = (ViewGroup.MarginLayoutParams) itemViewHolder.threeSpearImageView.getLayoutParams();
+                params = (ViewGroup.MarginLayoutParams) itemViewHolder.threeImageView.getLayoutParams();
                 params.topMargin = topMargin;
                 params.bottomMargin = bottomMargin;
-                itemViewHolder.threeSpearImageView.setLayoutParams(params);
+                itemViewHolder.threeImageView.setLayoutParams(params);
 
                 int oneReadPosition = (position*column);
-                bind(itemViewHolder.oneSpearImageView, oneReadPosition<imageList.size()?imageList.get(oneReadPosition):null, oneReadPosition);
+                bind(itemViewHolder.oneImageView, oneReadPosition<imageList.size()?imageList.get(oneReadPosition):null, oneReadPosition);
 
                 int twoReadPosition = (position*column)+1;
-                bind(itemViewHolder.twoSpearImageView, twoReadPosition<imageList.size()?imageList.get(twoReadPosition):null, twoReadPosition);
+                bind(itemViewHolder.twoImageView, twoReadPosition<imageList.size()?imageList.get(twoReadPosition):null, twoReadPosition);
 
                 int threeReadPosition = (position*column)+2;
-                bind(itemViewHolder.threeSpearImageView, threeReadPosition<imageList.size()?imageList.get(threeReadPosition):null, threeReadPosition);
+                bind(itemViewHolder.threeImageView, threeReadPosition<imageList.size()?imageList.get(threeReadPosition):null, threeReadPosition);
                 break;
             case ITEM_TYPE_LOAD_MORE_FOOTER :
                 LoadMoreFooterViewHolder footerViewHolder = (LoadMoreFooterViewHolder) viewHolder;
@@ -250,13 +223,13 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         }
     }
 
-    private void bind(SpearImageView spearImageView, StarImageRequest.Image image, int position){
+    private void bind(MyImageView imageView, StarImageRequest.Image image, int position){
         if(image != null){
-            spearImageView.setTag(position);
-            spearImageView.displayImage(image.getSourceUrl());
-            spearImageView.setVisibility(View.VISIBLE);
+            imageView.setTag(position);
+            imageView.displayImage(image.getSourceUrl());
+            imageView.setVisibility(View.VISIBLE);
         }else{
-            spearImageView.setVisibility(View.INVISIBLE);
+            imageView.setVisibility(View.INVISIBLE);
         }
     }
 
@@ -268,25 +241,25 @@ public class StarImageAdapter extends RecyclerView.Adapter{
     }
 
     private static class ItemViewHolder extends RecyclerView.ViewHolder{
-        private SpearImageView oneSpearImageView;
-        private SpearImageView twoSpearImageView;
-        private SpearImageView threeSpearImageView;
+        private MyImageView oneImageView;
+        private MyImageView twoImageView;
+        private MyImageView threeImageView;
 
         @SuppressWarnings("deprecation")
         public ItemViewHolder(View itemView) {
             super(itemView);
-            oneSpearImageView = (SpearImageView) itemView.findViewById(R.id.image_starImageItem_one);
-            twoSpearImageView = (SpearImageView) itemView.findViewById(R.id.image_starImageItem_two);
-            threeSpearImageView = (SpearImageView) itemView.findViewById(R.id.image_starImageItem_three);
+            oneImageView = (MyImageView) itemView.findViewById(R.id.image_starImageItem_one);
+            twoImageView = (MyImageView) itemView.findViewById(R.id.image_starImageItem_two);
+            threeImageView = (MyImageView) itemView.findViewById(R.id.image_starImageItem_three);
         }
     }
 
     private static class HeadViewHolder extends RecyclerView.ViewHolder{
-        private SpearImageView spearImageView;
+        private MyImageView imageView;
 
         public HeadViewHolder(View itemView) {
             super(itemView);
-            spearImageView = (SpearImageView) itemView.findViewById(R.id.image_starImageHeaderItem);
+            imageView = (MyImageView) itemView.findViewById(R.id.image_starImageHeaderItem);
         }
     }
 

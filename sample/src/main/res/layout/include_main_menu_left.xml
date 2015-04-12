@@ -66,6 +66,25 @@
             android:layout_marginTop="8dp"/>
 
         <LinearLayout
+            android:id="@+id/item_main_showClickRipple"
+            android:clickable="true"
+            style="@style/menu_item">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="开启点击涟漪效果"/>
+            <CheckBox
+                android:id="@+id/checkBox_main_showClickRipple"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
+        </LinearLayout>
+
+        <LinearLayout
             android:id="@+id/item_main_showImageFromFlag"
             android:clickable="true"
             style="@style/menu_item">
@@ -177,6 +196,80 @@
                 android:clickable="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_main_enableMemoryCache"
+            android:clickable="true"
+            style="@style/menu_item">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="开启内存缓存"/>
+            <CheckBox
+                android:id="@+id/checkBox_main_enableMemoryCache"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_main_enableDiskCache"
+            android:clickable="true"
+            style="@style/menu_item">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="开启磁盘缓存"/>
+            <CheckBox
+                android:id="@+id/checkBox_main_enableDiskCache"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_main_cleanMemoryCache"
+            android:clickable="true"
+            style="@style/menu_item">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="清除内存缓存"/>
+            <TextView
+                android:id="@+id/text_main_memoryCacheSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/default_text_color_subtitle"
+                android:text="已用16M"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_main_cleanDiskCache"
+            android:clickable="true"
+            style="@style/menu_item">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="清除磁盘缓存"/>
+            <TextView
+                android:id="@+id/text_main_diskCacheSize"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/default_text_color_subtitle"
+                android:text="已用96M"/>
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

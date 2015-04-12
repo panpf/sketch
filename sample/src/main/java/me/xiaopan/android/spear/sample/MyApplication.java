@@ -96,6 +96,13 @@ public class MyApplication extends Application {
 
         boolean isPauseDownload = Settings.with(getBaseContext()).isMobileNetworkPauseDownload();
         Spear.with(getBaseContext()).getConfiguration().setMobileNetworkPauseDownload(isPauseDownload);
+
+            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+                    @Override
+                    public void uncaughtException(Thread thread, Throwable ex) {
+                            ex.printStackTrace();
+                    }
+            });
 	}
 
         @Override

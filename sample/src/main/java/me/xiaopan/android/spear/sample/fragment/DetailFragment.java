@@ -44,7 +44,6 @@ import me.xiaopan.android.spear.DisplayListener;
 import me.xiaopan.android.spear.FailCause;
 import me.xiaopan.android.spear.ImageFrom;
 import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.SpearImageView;
 import me.xiaopan.android.spear.sample.DisplayOptionsType;
 import me.xiaopan.android.spear.sample.util.AnimationBatchExecutor;
 import me.xiaopan.android.spear.sample.util.AnimationUtils;
@@ -53,6 +52,7 @@ import me.xiaopan.android.spear.sample.util.PageNumberSetter;
 import me.xiaopan.android.spear.sample.util.SaveImageAsyncTask;
 import me.xiaopan.android.spear.sample.util.SingleTapDetector;
 import me.xiaopan.android.spear.sample.util.ViewPagerPlayer;
+import me.xiaopan.android.spear.sample.widget.MyImageView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
@@ -194,8 +194,8 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
             Toast.makeText(getActivity(), type+"，当前图片的URL是空的，没法拿到图片", Toast.LENGTH_LONG).show();
             return null;
         }else if(currentUrl.startsWith("http://") || currentUrl.startsWith("https://")){
-            File  file = Spear.with(getActivity()).getConfiguration().getDiskCache().getCacheFileByUri(currentUrl);
-            if(file == null){
+            File  file = Spear.with(getActivity()).getConfiguration().getDiskCache().getCacheFile(currentUrl);
+            if(file == null || !file.exists()){
                 Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
                 return null;
             }else{
@@ -252,8 +252,8 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
                 if(currentUrl == null || "".equals(currentUrl.trim())){
                     Toast.makeText(getActivity(), "保存图片失败，因为当前图片的URL是空的，没法拿到图片", Toast.LENGTH_LONG).show();
                 }else if(currentUrl.startsWith("http://") || currentUrl.startsWith("https://")){
-                    File imageFile3 = Spear.with(getActivity()).getConfiguration().getDiskCache().getCacheFileByUri(currentUrl);
-                    if(imageFile3 == null){
+                    File imageFile3 = Spear.with(getActivity()).getConfiguration().getDiskCache().getCacheFile(currentUrl);
+                    if(imageFile3 == null || !imageFile3.exists()){
                         Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
                     }else{
                         new SaveImageAsyncTask(getActivity(), imageFile3).execute("");
@@ -327,7 +327,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
     public static class ImageFragment extends InjectFragment {
         public static final String PARAM_REQUIRED_IMAGE_URI = "PARAM_REQUIRED_IMAGE_URI";
 
-        @InjectView(R.id.image_imageFragment_image) private SpearImageView imageView;
+        @InjectView(R.id.image_imageFragment_image) private MyImageView imageView;
         @InjectView(R.id.progress_imageFragment_progress) private ProgressBar progressBar;
 
         @InjectExtra(PARAM_REQUIRED_IMAGE_URI) private String imageUri;
@@ -337,6 +337,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
             super.onViewCreated(view, savedInstanceState);
 
             imageView.setDisplayOptions(DisplayOptionsType.Detail);
+            imageView.setAutoApplyGlobalAttr(false);
             imageView.setDisplayListener(new DisplayListener() {
                 @Override
                 public void onStarted() {

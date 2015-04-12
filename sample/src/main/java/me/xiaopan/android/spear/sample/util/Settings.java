@@ -11,6 +11,9 @@ public class Settings {
     private static final String PREFERENCE_SHOW_IMAGE_FROM_FLAG = "PREFERENCE_SHOW_IMAGE_FROM_FLAG";
     private static final String PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD = "PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD";
     private static final String PREFERENCE_CLICK_DISPLAY_ON_FAILED = "PREFERENCE_CLICK_DISPLAY_ON_FAILED";
+    private static final String PREFERENCE_CLICK_SHOW_CLICK_RIPPLE = "PREFERENCE_CLICK_SHOW_CLICK_RIPPLE";
+    private static final String PREFERENCE_ENABLE_MEMORY_CACHE = "PREFERENCE_ENABLE_MEMORY_CACHE";
+    private static final String PREFERENCE_ENABLE_DISK_CACHE = "PREFERENCE_ENABLE_DISK_CACHE";
 
     private static Settings settingsInstance;
 
@@ -20,6 +23,9 @@ public class Settings {
     private boolean showImageFromFlag;
     private boolean clickDisplayOnPauseDownload;
     private boolean clickDisplayOnFailed;
+    private boolean showClickRipple;
+    private boolean enableMemoryCache;
+    private boolean enableDiskCache;
 
     private SharedPreferences.Editor editor;
 
@@ -28,11 +34,14 @@ public class Settings {
         this.editor = preferences.edit();
 
         this.scrollingPauseLoad = preferences.getBoolean(PREFERENCE_SCROLLING_PAUSE_LOAD, false);
-        this.showImageDownloadProgress = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS, false);
-        this.mobileNetworkPauseDownload = preferences.getBoolean(PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, false);
-        this.showImageFromFlag = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, false);
-        this.clickDisplayOnPauseDownload = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, false);
-        this.clickDisplayOnFailed = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, false);
+        this.showImageDownloadProgress = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS, true);
+        this.mobileNetworkPauseDownload = preferences.getBoolean(PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, true);
+        this.showImageFromFlag = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, true);
+        this.clickDisplayOnPauseDownload = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, true);
+        this.clickDisplayOnFailed = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, true);
+        this.showClickRipple = preferences.getBoolean(PREFERENCE_CLICK_SHOW_CLICK_RIPPLE, true);
+        this.enableMemoryCache = preferences.getBoolean(PREFERENCE_ENABLE_MEMORY_CACHE, true);
+        this.enableDiskCache = preferences.getBoolean(PREFERENCE_ENABLE_DISK_CACHE, true);
     }
 
     public static Settings with(Context context){
@@ -130,5 +139,32 @@ public class Settings {
     public void setClickDisplayOnPauseDownload(boolean clickDisplayOnPauseDownload) {
         this.clickDisplayOnPauseDownload = clickDisplayOnPauseDownload;
         editor.putBoolean(PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, clickDisplayOnPauseDownload).apply();
+    }
+
+    public boolean isShowClickRipple() {
+        return showClickRipple;
+    }
+
+    public void setShowClickRipple(boolean showClickRipple) {
+        this.showClickRipple = showClickRipple;
+        editor.putBoolean(PREFERENCE_CLICK_SHOW_CLICK_RIPPLE, showClickRipple).apply();
+    }
+
+    public boolean isEnableDiskCache() {
+        return enableDiskCache;
+    }
+
+    public void setEnableDiskCache(boolean enableDiskCache) {
+        this.enableDiskCache = enableDiskCache;
+        editor.putBoolean(PREFERENCE_ENABLE_DISK_CACHE, enableDiskCache).apply();
+    }
+
+    public boolean isEnableMemoryCache() {
+        return enableMemoryCache;
+    }
+
+    public void setEnableMemoryCache(boolean enableMemoryCache) {
+        this.enableMemoryCache = enableMemoryCache;
+        editor.putBoolean(PREFERENCE_ENABLE_MEMORY_CACHE, enableMemoryCache).apply();
     }
 }

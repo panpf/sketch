@@ -27,7 +27,6 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:21.0.0'
     compile(name: 'pager-sliding-strip-1.5.1', ext: 'aar')
     compile(name: 'pull_refresh_layout-1.1.1', ext: 'aar')
-    compile(name: 'foldinglayout-release', ext: 'aar')
 }
 
 repositories{
