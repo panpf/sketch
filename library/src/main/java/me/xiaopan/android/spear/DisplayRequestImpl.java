@@ -28,6 +28,7 @@ import me.xiaopan.android.spear.display.ImageDisplayer;
 import me.xiaopan.android.spear.display.TransitionImageDisplayer;
 import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.process.ImageProcessor;
+import me.xiaopan.android.spear.util.CommentUtils;
 
 /**
  * 显示请求
@@ -408,7 +409,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private void executeDownload() {
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "start download" + " - " + name);
+                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "startDownload" + " - " + name);
             }
             return;
         }
@@ -417,7 +418,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "download after" + " - " + name);
+                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "downloadAfter" + " - " + name);
             }
             return;
         }
@@ -447,6 +448,14 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         }
 
         setRequestStatus(RequestStatus.LOADING);
+
+        // 如果是本地APK文件就尝试得到其缓存文件
+        if(isLocalApkFile()){
+            File apkIconCacheFile = getApkCacheIconFile();
+            if(apkIconCacheFile != null){
+                this.cacheFile = apkIconCacheFile;
+            }
+        }
 
         // 解码
         Bitmap bitmap = spear.getConfiguration().getImageDecoder().decode(this);
@@ -622,5 +631,31 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
     @Override
     public void setDownloadListener(DownloadListener downloadListener) {
+    }
+
+    @Override
+    public boolean isLocalApkFile(){
+        return uriScheme == UriScheme.FILE && CommentUtils.checkSuffix(uri, ".apk");
+    }
+
+    /**
+     * 获取APK图片的缓存文件
+     * @return APK图片的缓存文件
+     */
+    private File getApkCacheIconFile(){
+        File apkIconCacheFile = spear.getConfiguration().getDiskCache().getCacheFile(uri);
+        if(apkIconCacheFile != null){
+            return apkIconCacheFile;
+        }
+
+        Bitmap iconBitmap = CommentUtils.decodeIconFromApk(spear.getConfiguration().getContext(), uri, NAME);
+        if(iconBitmap != null && !iconBitmap.isRecycled()){
+            apkIconCacheFile = spear.getConfiguration().getDiskCache().saveBitmap(iconBitmap, uri);
+            if(apkIconCacheFile != null){
+                return apkIconCacheFile;
+            }
+        }
+
+        return null;
     }
 }

@@ -41,6 +41,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.DownloadRequest;
 import me.xiaopan.android.spear.RequestStatus;
+import me.xiaopan.android.spear.util.CommentUtils;
 
 /**
  * 使用HttpURLConnection来访问网络的下载器
@@ -233,7 +234,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             cacheFile = request.getSpear().getConfiguration().getDiskCache().generateCacheFile(request.getUri());
             if(cacheFile != null && request.getSpear().getConfiguration().getDiskCache().applyForSpace(contentLength)){
                 tempFile = new File(cacheFile.getPath()+".temp");
-                if(!createFile(tempFile)){
+                if(!CommentUtils.createFile(tempFile)){
                     tempFile = null;
                     cacheFile = null;
                 }
@@ -305,14 +306,17 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
 
         // 转换结果
         if(tempFile != null && tempFile.exists()){
-            if(tempFile.renameTo(cacheFile)){
-                return DownloadResult.createByFile(cacheFile, true);
-            }else{
+            if(!tempFile.renameTo(cacheFile)){
+                if(Spear.isDebugMode()){
+                    Log.w(Spear.TAG, NAME + " - " + "rename failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + request.getName());
+                }
                 if (!tempFile.delete() && Spear.isDebugMode()) {
                     Log.w(Spear.TAG, NAME + " - " + "delete temp download file failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + request.getName());
                 }
                 return null;
             }
+
+            return DownloadResult.createByFile(cacheFile, true);
         }else if(outputStream instanceof ByteArrayOutputStream){
             return DownloadResult.createByByteArray(((ByteArrayOutputStream) outputStream).toByteArray(), true);
         }else{
@@ -373,26 +377,6 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         }
         outputStream.flush();
         return completedLength;
-    }
-
-    public static boolean createFile(File file){
-        if(file.exists()){
-           return true;
-        }
-
-        File parentDir = file.getParentFile();
-        if(!parentDir.exists() && !parentDir.mkdirs()){
-            return false;
-        }
-        try {
-            if(!file.createNewFile()){
-                return false;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
     }
 
     public static String getResponseHeadersString(HttpURLConnection urlConnection){

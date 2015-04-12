@@ -82,4 +82,10 @@ public interface LoadRequest extends DownloadRequest{
      * @return 图片数据
      */
     byte[] getImageData();
+
+    /**
+     * 是否是本地APK文件
+     * @return true：是
+     */
+    boolean isLocalApkFile();
 }

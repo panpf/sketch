@@ -16,6 +16,8 @@
 
 package me.xiaopan.android.spear.cache;
 
+import android.graphics.Bitmap;
+
 import java.io.File;
 
 /**
@@ -82,10 +84,10 @@ public interface DiskCache {
 
     /**
      * 将uri地址进行转码作为缓存文件的名字
-     * @param uri
-     * @return
+     * @param uri 图片uri
+     * @return 文件名字
      */
-    String encodeFileName(String uri);
+    String uriToFileName(String uri);
 
     /**
      * 获取已用容量
@@ -97,4 +99,12 @@ public interface DiskCache {
      * 清除缓存
      */
     void clear();
+
+    /**
+     * 保存Bitmap
+     * @param bitmap bitmap
+     * @param uri uri
+     * @return 缓存文件
+     */
+    File saveBitmap(Bitmap bitmap, String uri);
 }

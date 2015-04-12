@@ -18,20 +18,21 @@ package me.xiaopan.android.spear.cache;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.StatFs;
 import android.text.format.Formatter;
 import android.util.Log;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
 import me.xiaopan.android.spear.Spear;
+import me.xiaopan.android.spear.util.CommentUtils;
 import me.xiaopan.android.spear.util.FileLastModifiedComparator;
 
 /**
@@ -74,7 +75,7 @@ public class LruDiskCache implements DiskCache {
             if(cacheDir.exists() || cacheDir.mkdirs()){
                 return cacheDir;
             }else if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "create cache dir failed："+ cacheDir.getPath());
+                Log.e(Spear.TAG, NAME + " - " + "create cache dir failed" + " - " + cacheDir.getPath());
             }
         }
 
@@ -96,6 +97,9 @@ public class LruDiskCache implements DiskCache {
             }
         }
 
+        if(Spear.isDebugMode()){
+            Log.e(Spear.TAG, NAME + "get cache dir failed");
+        }
         cacheDir = null;
         return null;
     }
@@ -126,7 +130,7 @@ public class LruDiskCache implements DiskCache {
     public long getSize() {
         File finalCacheDir = getCacheDir();
         if(finalCacheDir != null && finalCacheDir.exists()){
-            return countFileLength(finalCacheDir);
+            return CommentUtils.countFileLength(finalCacheDir);
         }else{
             return 0;
         }
@@ -145,7 +149,7 @@ public class LruDiskCache implements DiskCache {
         // 如果剩余空间够用
         if(totalAvailableSize-reserveSize > cacheFileLength){
             if(maxSize > 0){
-                usedSize = Math.abs(countFileLength(finalCacheDir));
+                usedSize = Math.abs(CommentUtils.countFileLength(finalCacheDir));
                 if(usedSize+cacheFileLength < maxSize){
                     return true;
                 }
@@ -167,7 +171,7 @@ public class LruDiskCache implements DiskCache {
             // 然后按照顺序来删除文件直到腾出足够的空间或文件删完为止
             for(File file : cacheFiles){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "deleted cache file：" + file.getPath());
+                    Log.w(Spear.TAG, NAME + " - " + "deleted cache file" + " - " + file.getPath());
                 }
                 long currentFileLength = file.length();
                 if(file.delete()){
@@ -188,13 +192,16 @@ public class LruDiskCache implements DiskCache {
 
         // 返回申请空间失败
         if(Spear.isDebugMode()){
-            Log.e(Spear.TAG, NAME + " - " + "apply for space failed, remaining space：" + Formatter.formatFileSize(context, totalAvailableSize) + "; reserve size：" + Formatter.formatFileSize(context, reserveSize) + " - " + finalCacheDir.getPath());
+            Log.e(Spear.TAG, NAME + " - " + "apply for space failed" + " - " + "remaining space：" + Formatter.formatFileSize(context, totalAvailableSize) + "; reserve size：" + Formatter.formatFileSize(context, reserveSize) + " - " + finalCacheDir.getPath());
         }
         return false;
 	}
 
     @Override
-    public String encodeFileName(String uri){
+    public String uriToFileName(String uri){
+        if(CommentUtils.checkSuffix(uri, ".apk")){
+            uri += ".png";
+        }
         try {
             return URLEncoder.encode(uri, "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -205,7 +212,7 @@ public class LruDiskCache implements DiskCache {
 
 	@Override
 	public synchronized File getCacheFile(String uri) {
-        String fileName = encodeFileName(uri);
+        String fileName = uriToFileName(uri);
         if(fileName == null){
             return null;
         }
@@ -250,8 +257,11 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public File generateCacheFile(String uri) {
-        String fileName = encodeFileName(uri);
+        String fileName = uriToFileName(uri);
         if(fileName == null){
+            if(Spear.isDebugMode()){
+                Log.e(Spear.TAG, NAME + "encode uri failed" + " - " + uri);
+            }
             return null;
         }
         File finalCacheDir = getCacheDir();
@@ -269,20 +279,88 @@ public class LruDiskCache implements DiskCache {
         superDir = cacheDir;
         finalCacheDir = superDir;
         if(finalCacheDir != null && finalCacheDir.exists()){
-            deleteFile(superDir);
+            CommentUtils.deleteFile(superDir);
         }
 
         superDir = context.getExternalCacheDir();
         finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
         if(finalCacheDir != null && finalCacheDir.exists()){
-            deleteFile(superDir);
+            CommentUtils.deleteFile(superDir);
         }
 
         superDir = context.getCacheDir();
         finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
         if(finalCacheDir != null && finalCacheDir.exists()){
-            deleteFile(superDir);
+            CommentUtils.deleteFile(superDir);
         }
+    }
+
+    @Override
+    public synchronized File saveBitmap(Bitmap bitmap, String uri) {
+        if(bitmap == null || bitmap.isRecycled()){
+            return null;
+        }
+
+        File cacheFile = generateCacheFile(uri);
+        if(cacheFile == null){
+            return null;
+        }
+
+        // 申请空间
+        int bitmapSize;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            bitmapSize = bitmap.getAllocationByteCount();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+            bitmapSize =  bitmap.getByteCount();
+        }else{
+            bitmapSize = bitmap.getRowBytes() * bitmap.getHeight();
+        }
+        if(!applyForSpace(bitmapSize)){
+            return null;
+        }
+
+        File tempFile = new File(cacheFile.getPath()+".temp");
+
+        // 创建文件
+        if(!CommentUtils.createFile(tempFile)) {
+            if (Spear.isDebugMode()) {
+                Log.e(Spear.TAG, NAME + "create file failed" + " - " + tempFile.getPath());
+            }
+            return null;
+        }
+
+        // 写出
+        FileOutputStream outputStream = null;
+        try {
+            outputStream = new FileOutputStream(tempFile, false);
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if(tempFile.exists()){
+                if(!tempFile.delete() && Spear.isDebugMode()){
+                    Log.w(Spear.TAG, NAME + " - " + "delete temp cache file failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + uri);
+                }
+            }
+            return null;
+        } finally {
+            if(outputStream != null){
+                try {
+                    outputStream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        if(!tempFile.renameTo(cacheFile)){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "rename failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + uri);
+            }
+            tempFile.delete();
+            return null;
+        }
+        return cacheFile;
     }
 
     /**
@@ -298,70 +376,5 @@ public class LruDiskCache implements DiskCache {
         }else{
             return statFs.getAvailableBytes();
         }
-    }
-
-    /**
-     * 计算文件长度，此方法的关键点在于，他也能获取目录的长度
-     * @param file 要计算的文件
-     * @return 长度
-     */
-    public static long countFileLength(File file){
-        if(!file.exists()){
-            return 0;
-        }
-
-        if(file.isFile()){
-            return file.length();
-        }
-
-        File[] childFiles = file.listFiles();
-        if(childFiles == null || childFiles.length <= 0){
-            return 0;
-        }
-
-        List<File> fileList = new LinkedList<File>();
-        Collections.addAll(fileList, childFiles);
-        long length = 0;
-        for(File childFile : fileList){
-            if(childFile.isFile()){
-                length += childFile.length();
-            }else{
-                childFiles = childFile.listFiles();
-                if(childFiles == null || childFiles.length <= 0){
-                    continue;
-                }
-                Collections.addAll(fileList, childFiles);
-            }
-        }
-        return length;
-    }
-
-    /**
-     * 删除给定的文件，如果当前文件是目录则会删除其包含的所有的文件或目录
-     * @param file 给定的文件
-     * @return true：删除成功；false：删除失败
-     */
-    public static boolean deleteFile(File file){
-        if(!file.exists()){
-            return true;
-        }
-
-        if(file.isFile()){
-            return file.delete();
-        }
-
-        File[] files = file.listFiles();
-        boolean deleteSuccess = true;
-        if(files != null){
-            for(File tempFile : files){
-                if(!deleteFile(tempFile)){
-                    deleteSuccess = false;
-                }
-            }
-        }
-        if(deleteSuccess){
-            deleteSuccess = file.delete();
-        }
-        return deleteSuccess;
     }
 }

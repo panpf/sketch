@@ -24,6 +24,7 @@ import java.io.File;
 
 import me.xiaopan.android.spear.download.ImageDownloader;
 import me.xiaopan.android.spear.process.ImageProcessor;
+import me.xiaopan.android.spear.util.CommentUtils;
 
 /**
  * 加载请求
@@ -310,7 +311,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private void executeDownload() {
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "start download" + " - " + name);
+                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "startDownload" + " - " + name);
             }
             return;
         }
@@ -319,7 +320,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "download after" + " - " + name);
+                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "downloadAfter" + " - " + name);
             }
             return;
         }
@@ -343,12 +344,20 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private void executeLoad(){
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "start load" + " - " + name);
+                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "startLoad" + " - " + name);
             }
             return;
         }
 
         setRequestStatus(RequestStatus.LOADING);
+
+        // 如果是本地APK文件就尝试得到其缓存文件
+        if(isLocalApkFile()){
+            File apkIconCacheFile = getApkCacheIconFile();
+            if(apkIconCacheFile != null){
+                this.cacheFile = apkIconCacheFile;
+            }
+        }
 
         // 解码
         Bitmap bitmap = spear.getConfiguration().getImageDecoder().decode(this);
@@ -358,19 +367,19 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
             }
         }else{
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "decode failed - " + name);
+                Log.e(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "decodeFailed" + " - " + name);
             }
         }
 
         if(isCanceled()){
             if(bitmap != null){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "decode after - cancel" + " - " + name);
+                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "decodeAfter:cancel" + " - " + name);
                 }
                 bitmap.recycle();
             }
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "decode after" + " - " + name);
+                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "decodeAfter" + " - " + name);
             }
             return;
         }
@@ -414,5 +423,31 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
         }else{
             toFailedStatus(FailCause.DECODE_FAIL);
         }
+    }
+
+    @Override
+    public boolean isLocalApkFile(){
+        return uriScheme == UriScheme.FILE && CommentUtils.checkSuffix(uri, ".apk");
+    }
+
+    /**
+     * 获取APK图片的缓存文件
+     * @return APK图片的缓存文件
+     */
+    private File getApkCacheIconFile(){
+        File apkIconCacheFile = spear.getConfiguration().getDiskCache().getCacheFile(uri);
+        if(apkIconCacheFile != null){
+            return apkIconCacheFile;
+        }
+
+        Bitmap iconBitmap = CommentUtils.decodeIconFromApk(spear.getConfiguration().getContext(), uri, NAME);
+        if(iconBitmap != null && !iconBitmap.isRecycled()){
+            apkIconCacheFile = spear.getConfiguration().getDiskCache().saveBitmap(iconBitmap, uri);
+            if(apkIconCacheFile != null){
+                return apkIconCacheFile;
+            }
+        }
+
+        return null;
     }
 }

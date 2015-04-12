@@ -16,16 +16,10 @@
 
 package me.xiaopan.android.spear.decode;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapFactory.Options;
-import android.graphics.Canvas;
 import android.graphics.Point;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.Log;
 
@@ -33,10 +27,10 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
-import me.xiaopan.android.spear.Spear;
-import me.xiaopan.android.spear.LoadRequest;
-import me.xiaopan.android.spear.UriScheme;
 import me.xiaopan.android.spear.ImageSize;
+import me.xiaopan.android.spear.LoadRequest;
+import me.xiaopan.android.spear.Spear;
+import me.xiaopan.android.spear.UriScheme;
 
 /**
  * 默认的位图解码器
@@ -76,14 +70,8 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public Bitmap decodeFile(LoadRequest loadRequest){
-        String fileNameSuffix = null;
-        int lastIndex = loadRequest.getUri().lastIndexOf(".");
-        if(lastIndex > -1){
-            fileNameSuffix = loadRequest.getUri().substring(lastIndex);
-        }
-
-        if(".apk".equalsIgnoreCase(fileNameSuffix)){
-            return decodeIconFromApk(loadRequest.getSpear().getConfiguration().getContext(), loadRequest.getUri());
+        if(loadRequest.isLocalApkFile() && loadRequest.getCacheFile() != null){
+            return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(loadRequest.getCacheFile(), loadRequest));
         }else{
             return decodeFromHelper(loadRequest, new FileDecodeHelper(new File(loadRequest.getUri()), loadRequest));
         }
@@ -139,7 +127,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         // 回调
-        if(bitmap != null && !bitmap.isRecycled() && originalSize != null){
+        if(bitmap != null && !bitmap.isRecycled()){
             decodeHelper.onDecodeSuccess(bitmap, originalSize, inSampleSize);
         }else{
             bitmap = null;
@@ -147,57 +135,6 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         return bitmap;
-    }
-
-    /**
-     * 解压APK的图标
-     * @param context 上下文
-     * @param apkFilePath APK文件的位置
-     * @return  APK的图标
-     */
-    public static Bitmap decodeIconFromApk(Context context, String apkFilePath){
-        PackageManager packageManager = context.getPackageManager();
-        PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
-        if(packageInfo == null){
-            return null;
-        }
-
-        packageInfo.applicationInfo.sourceDir = apkFilePath;
-        packageInfo.applicationInfo.publicSourceDir = apkFilePath;
-
-        Drawable drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo);
-        if(drawable == null){
-            return null;
-        }
-        if(drawable instanceof BitmapDrawable && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) packageManager.getDefaultActivityIcon()).getBitmap()){
-            if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "icon not found" + " - " + apkFilePath);
-            }
-            return null;
-        }
-        return drawableToBitmap(drawable);
-    }
-
-    /**
-     * Drawable转成Bitmap
-     * @param drawable drawable
-     * @return bitmap
-     */
-    public static Bitmap drawableToBitmap(Drawable drawable){
-        if(drawable == null ){
-            return null;
-        }else if(drawable instanceof BitmapDrawable){
-            return ((BitmapDrawable) drawable).getBitmap();
-        }else{
-            if(drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0){
-                return null;
-            }
-
-            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.draw(canvas);
-            return bitmap;
-        }
     }
 
     /**
@@ -366,12 +303,14 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public void onDecodeFailed() {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, new StringBuilder(NAME)
-                        .append(" - ").append("decode failed")
-                        .append(", ").append("filePath").append("=").append(file.getPath())
-                        .append(",  ").append("fileLength").append("=").append(file.length())
-                        .append(",  ").append("imageUri").append("=").append(loadRequest.getUri())
-                        .toString());
+                StringBuilder logContent = new StringBuilder(NAME);
+                logContent.append(" - ").append("decode failed");
+                logContent.append(", ").append("filePath").append("=").append(file.getPath());
+                if(file.exists()){
+                    logContent.append(",  ").append("fileLength").append("=").append(file.length());
+                }
+                logContent.append(",  ").append("imageUri").append("=").append(loadRequest.getUri());
+                Log.e(Spear.TAG, logContent.toString());
             }
             if(!file.delete()){
                 if(Spear.isDebugMode()){
@@ -465,11 +404,13 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public void onDecodeFailed() {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, new StringBuilder(NAME)
-                        .append(" - ").append("decode failed")
-                        .append(", ").append("filePath").append("=").append(file.getPath())
-                        .append(", ").append("fileLength").append("=").append(file.length())
-                        .toString());
+                StringBuilder log = new StringBuilder(NAME);
+                log.append(" - ").append("decode failed");
+                log.append(", ").append("filePath").append("=").append(file.getPath());
+                if(file.exists()){
+                    log.append(", ").append("fileLength").append("=").append(file.length());
+                }
+                Log.e(Spear.TAG, log.toString());
             }
         }
     }

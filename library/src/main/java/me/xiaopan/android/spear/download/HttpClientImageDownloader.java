@@ -63,6 +63,7 @@ import java.util.zip.GZIPInputStream;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.DownloadRequest;
 import me.xiaopan.android.spear.RequestStatus;
+import me.xiaopan.android.spear.util.CommentUtils;
 
 /**
  * 使用HttpClient来访问网络的下载器
@@ -248,7 +249,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             cacheFile = request.getSpear().getConfiguration().getDiskCache().generateCacheFile(request.getUri());
             if(cacheFile != null && request.getSpear().getConfiguration().getDiskCache().applyForSpace(contentLength)){
                 tempFile = new File(cacheFile.getPath()+".temp");
-                if(!HttpUrlConnectionImageDownloader.createFile(tempFile)){
+                if(!CommentUtils.createFile(tempFile)){
                     tempFile = null;
                     cacheFile = null;
                 }
@@ -320,14 +321,17 @@ public class HttpClientImageDownloader implements ImageDownloader {
 
         // 转换结果
         if(tempFile != null && tempFile.exists()){
-            if(tempFile.renameTo(cacheFile)){
-                return DownloadResult.createByFile(cacheFile, true);
-            }else{
-                if (!tempFile.delete() && Spear.isDebugMode()){
+            if(!tempFile.renameTo(cacheFile)){
+                if(Spear.isDebugMode()){
+                    Log.w(Spear.TAG, NAME + " - " + "rename failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + request.getName());
+                }
+                if (!tempFile.delete() && Spear.isDebugMode()) {
                     Log.w(Spear.TAG, NAME + " - " + "delete temp download file failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + request.getName());
                 }
                 return null;
             }
+
+            return DownloadResult.createByFile(cacheFile, true);
         }else if(outputStream instanceof ByteArrayOutputStream){
             return DownloadResult.createByByteArray(((ByteArrayOutputStream) outputStream).toByteArray(), true);
         }else{
