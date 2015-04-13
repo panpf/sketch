@@ -17,15 +17,11 @@
 package me.xiaopan.android.spear.cache;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.text.format.Formatter;
 import android.util.Log;
 
 import me.xiaopan.android.spear.RecycleDrawable;
-import me.xiaopan.android.spear.RecycleGifDrawable;
 import me.xiaopan.android.spear.Spear;
 import me.xiaopan.android.spear.util.LruCache;
 
@@ -51,6 +47,9 @@ public class LruMemoryCache implements MemoryCache {
 	
 	@Override
 	public synchronized void put(String key, Drawable value) {
+		if(!(value instanceof RecycleDrawable)){
+			throw new IllegalArgumentException("drawable must be implemented RecycleDrawable");
+		}
 		drawableLruCache.put(key, value);
 		if(Spear.isDebugMode()){
 			Log.i(Spear.TAG, NAME + " - " + "put" + " - " + "MemoryCacheSize: "+ Formatter.formatFileSize(context, drawableLruCache.size()));
@@ -97,39 +96,19 @@ public class LruMemoryCache implements MemoryCache {
 
 		@Override
 		public Drawable put(String key, Drawable value) {
-			if(value instanceof RecycleDrawable){
-				((RecycleDrawable) value).setIsCached(NAME+":put", true);
-			}
+			((RecycleDrawable) value).setIsCached(NAME+":put", true);
 			return super.put(key, value);
 		}
 
 		@Override
 		protected int sizeOf(String key, Drawable value) {
-			int bitmapSize;
-			if(value instanceof BitmapDrawable){
-				Bitmap bitmap = ((BitmapDrawable) value).getBitmap();
-				if(bitmap == null){
-					bitmapSize = 0;
-				} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-					bitmapSize = bitmap.getAllocationByteCount();
-				} else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-					bitmapSize =  bitmap.getByteCount();
-				}else{
-					bitmapSize = bitmap.getRowBytes() * bitmap.getHeight();
-				}
-			}else if(value instanceof RecycleGifDrawable){
-				return (int) ((RecycleGifDrawable) value).getAllocationByteCount();
-			}else{
-				return 0;
-			}
+			int bitmapSize = ((RecycleDrawable) value).getSize();
 			return bitmapSize == 0 ? 1 : bitmapSize;
 		}
 
 		@Override
 		protected void entryRemoved(boolean evicted, String key, Drawable oldValue, Drawable newValue) {
-			if(RecycleDrawable.class.isInstance(oldValue)){
-				((RecycleDrawable) oldValue).setIsCached(NAME+":entryRemoved", false);
-			}
+			((RecycleDrawable) oldValue).setIsCached(NAME+":entryRemoved", false);
 		}
 	}
 }

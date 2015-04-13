@@ -19,6 +19,7 @@ package me.xiaopan.android.spear;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.os.Build;
 import android.util.Log;
 
 public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDrawable {
@@ -70,6 +71,20 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
             waitDisplay = false;
         }
         tryRecycle("cancelDisplay", callingStation);
+    }
+
+    @Override
+    public int getSize() {
+        Bitmap bitmap = getBitmap();
+        if(bitmap == null){
+            return 0;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return bitmap.getAllocationByteCount();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return  bitmap.getByteCount();
+        }else{
+            return bitmap.getRowBytes() * bitmap.getHeight();
+        }
     }
 
     private synchronized void tryRecycle(String type, String callingStation) {

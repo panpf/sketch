@@ -125,6 +125,11 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
         tryRecycle("cancelDisplay", callingStation);
     }
 
+    @Override
+    public int getSize() {
+        return (int) getAllocationByteCount();
+    }
+
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && !waitDisplay && canRecycle()) {
             if(Spear.isDebugMode()){

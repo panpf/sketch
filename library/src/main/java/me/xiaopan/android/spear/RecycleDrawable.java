@@ -23,4 +23,6 @@ public interface RecycleDrawable{
     void setIsCached(String callingStation, boolean isCached);
 
     void cancelWaitDisplay(String callingStation);
+
+    int getSize();
 }
