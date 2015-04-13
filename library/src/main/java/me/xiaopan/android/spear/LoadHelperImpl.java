@@ -173,7 +173,7 @@ public class LoadHelperImpl implements LoadHelper{
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if(uriScheme == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + "URI=" + uri);
+                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + uri);
             }
             if(loadListener != null){
                 loadListener.onFailed(FailCause.URI_NO_SUPPORT);

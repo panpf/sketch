@@ -447,6 +447,29 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             return;
         }
 
+        // 检查是否已经有了
+        if(enableMemoryCache){
+            Drawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(memoryCacheId);
+            if(cacheDrawable != null){
+                RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
+                if(!recycleDrawable.isRecycled()){
+                    if(Spear.isDebugMode()){
+                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "from memory get drawable@"+recycleDrawable.getHashCodeByLog() + " - " + name);
+                    }
+                    this.resultDrawable = cacheDrawable;
+                    imageFrom = ImageFrom.MEMORY_CACHE;
+                    setRequestStatus(RequestStatus.WAIT_DISPLAY);
+                    spear.getConfiguration().getDisplayCallbackHandler().completeCallback(this);
+                    return;
+                }else{
+                    spear.getConfiguration().getMemoryCache().remove(memoryCacheId);
+                    if(Spear.isDebugMode()){
+                        Log.e(Spear.TAG, NAME + " - " + "bitmap recycled@" + recycleDrawable.getHashCodeByLog() + " - " + name);
+                    }
+                }
+            }
+        }
+
         setRequestStatus(RequestStatus.LOADING);
 
         // 如果是本地APK文件就尝试得到其缓存文件

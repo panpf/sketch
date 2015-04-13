@@ -98,7 +98,7 @@ public class DownloadHelperImpl implements DownloadHelper{
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "uri不能为null或空");
+                Log.e(Spear.TAG, NAME + " - " + "uri is null or empty");
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
@@ -108,9 +108,19 @@ public class DownloadHelperImpl implements DownloadHelper{
 
         // 过滤掉不支持的URI协议类型
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
+        if(uriScheme == null){
+            if(Spear.isDebugMode()){
+                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + uri);
+            }
+            if(downloadListener != null){
+                downloadListener.onFailed(FailCause.URI_NO_SUPPORT);
+            }
+            return null;
+        }
+
         if(!(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS)){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "download()方法只能处理http或https协议" + " URI" + "=" + uri);
+                Log.e(Spear.TAG, NAME + " - " + "only support http ot https" + " - " + uri);
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailCause.URI_NO_SUPPORT);

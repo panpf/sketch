@@ -25,4 +25,8 @@ public interface RecycleDrawable{
     void cancelWaitDisplay(String callingStation);
 
     int getSize();
+
+    boolean isRecycled();
+
+    String getHashCodeByLog();
 }

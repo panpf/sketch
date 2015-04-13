@@ -240,7 +240,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private void executeDownload() {
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "start download" + " - " + name);
+                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "startDownload" + " - " + name);
             }
             return;
         }
@@ -249,7 +249,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
 
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "download after" + " - " + name);
+                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "downloadAfter" + " - " + name);
             }
             return;
         }

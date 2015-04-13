@@ -469,6 +469,9 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(imageProcessor == null && resize!=null){
             imageProcessor = spear.getConfiguration().getDefaultCutImageProcessor();
         }
+        if(name == null){
+            name = memoryCacheId;
+        }
 
         if(displayListener != null){
             displayListener.onStarted();
@@ -509,7 +512,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if(uriScheme == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "未知的协议类型" + " URI" + "=" + uri);
+                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + uri);
             }
             if(spearImageViewInterface != null){
                 spearImageViewInterface.setDisplayRequest(null);
@@ -530,9 +533,10 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(enableMemoryCache){
             Drawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(memoryCacheId);
             if(cacheDrawable != null){
-                if(!isRecycled(cacheDrawable)){
+                RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
+                if(!recycleDrawable.isRecycled()){
                     if(Spear.isDebugMode()){
-                        Log.d(Spear.TAG, NAME + " - " + "from memory get bitmap@" + getHashCode(cacheDrawable));
+                        Log.d(Spear.TAG, NAME + " - " + "from memory get bitmap@" + recycleDrawable.getHashCodeByLog() + " - " + name);
                     }
                     if(spearImageViewInterface != null){
                         spearImageViewInterface.setDisplayRequest(null);
@@ -546,7 +550,7 @@ public class DisplayHelperImpl implements DisplayHelper{
                 }else{
                     spear.getConfiguration().getMemoryCache().remove(memoryCacheId);
                     if(Spear.isDebugMode()){
-                        Log.e(Spear.TAG, NAME + " - " + "bitmap@" + getHashCode(cacheDrawable) + " - 已被回收");
+                        Log.e(Spear.TAG, NAME + " - " + "bitmap recycled@" + recycleDrawable.getHashCodeByLog() + " - " + name);
                     }
                 }
             }
@@ -586,7 +590,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         // 组织请求
         final DisplayRequest request = spear.getConfiguration().getRequestFactory().newDisplayRequest(spear, uri, uriScheme, memoryCacheId, imageView);
 
-        request.setName(name != null ? name : memoryCacheId);
+        request.setName(name);
 
         request.setEnableDiskCache(enableDiskCache);
         request.setProgressListener(progressListener);
@@ -654,34 +658,6 @@ public class DisplayHelperImpl implements DisplayHelper{
             return drawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor, imageDisplayer!=null&&imageDisplayer instanceof TransitionImageDisplayer);
         }else{
             return null;
-        }
-    }
-
-    private boolean isRecycled(Drawable drawable){
-        if(drawable == null){
-            return false;
-        } else if(drawable instanceof BitmapDrawable){
-            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            return bitmap != null && bitmap.isRecycled();
-        }else if(drawable instanceof RecycleGifDrawable){
-            return ((RecycleGifDrawable) drawable).isRecycled();
-        }else{
-            return false;
-        }
-    }
-
-    private String getHashCode(Drawable drawable){
-        if(drawable == null){
-            return null;
-        } else if(drawable instanceof BitmapDrawable){
-            Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            if(bitmap != null){
-                return Integer.toHexString(bitmap.hashCode());
-            }else{
-                return null;
-            }
-        }else{
-            return Integer.toHexString(drawable.hashCode());
         }
     }
 }

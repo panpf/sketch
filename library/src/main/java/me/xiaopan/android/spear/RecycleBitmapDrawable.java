@@ -87,21 +87,28 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
         }
     }
 
+    @Override
+    public boolean isRecycled() {
+        Bitmap bitmap = getBitmap();
+        return bitmap != null && bitmap.isRecycled();
+    }
+
+    @Override
+    public String getHashCodeByLog() {
+        return getBitmap() != null ? Integer.toHexString(getBitmap().hashCode()) : null;
+    }
+
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && !waitDisplay && canRecycle()) {
             getBitmap().recycle();
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "recycled bitmap@" + getHashCode() + " - " + type + " - " + callingStation);
+                Log.w(Spear.TAG, NAME + " - " + "recycled bitmap@" + getHashCodeByLog() + " - " + type + " - " + callingStation);
             }
         }else{
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "can't recycle bitmap@" + getHashCode() + " - " + type + " - " + callingStation + " - " + ("cacheRefCount="+cacheRefCount) + "; " + ("displayRefCount="+displayRefCount) + "; " + ("waitDisplay="+waitDisplay) + "; " + ("canRecycle="+canRecycle()));
+                Log.d(Spear.TAG, NAME + " - " + "can't recycle bitmap@" + getHashCodeByLog() + " - " + type + " - " + callingStation + " - " + ("cacheRefCount="+cacheRefCount) + "; " + ("displayRefCount="+displayRefCount) + "; " + ("waitDisplay="+waitDisplay) + "; " + ("canRecycle="+canRecycle()));
             }
         }
-    }
-
-    private String getHashCode(){
-        return getBitmap() != null ? Integer.toHexString(getBitmap().hashCode()) : null;
     }
 
     private boolean canRecycle(){
