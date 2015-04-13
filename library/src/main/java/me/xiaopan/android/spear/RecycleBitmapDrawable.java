@@ -27,13 +27,12 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
 
     private int cacheRefCount;
     private int displayRefCount;
-    private boolean waitDisplay;
+    private int waitDisplayRefCount;
     private String bitmapCode;
 
     public RecycleBitmapDrawable(Resources res, Bitmap bitmap) {
         super(res, bitmap);
         this.bitmapCode = Integer.toHexString(bitmap.hashCode());
-        this.waitDisplay = true;
     }
 
     @Override
@@ -41,7 +40,9 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
         synchronized (this) {
             if (isDisplayed) {
                 displayRefCount++;
-                waitDisplay = false;
+                if(waitDisplayRefCount > 0){
+                    waitDisplayRefCount--;
+                }
             } else {
                 if(displayRefCount > 0){
                     displayRefCount--;
@@ -66,11 +67,17 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     }
 
     @Override
-    public void cancelWaitDisplay(String callingStation){
-        synchronized (this){
-            waitDisplay = false;
+    public void setIsWaitDisplay(String callingStation, boolean isWaitDisplay) {
+        synchronized (this) {
+            if (isWaitDisplay) {
+                waitDisplayRefCount++;
+            } else {
+                if(waitDisplayRefCount > 0){
+                    waitDisplayRefCount--;
+                }
+            }
         }
-        tryRecycle("cancelDisplay", callingStation);
+        tryRecycle((isWaitDisplay ? "wait display" : "cancel display"), callingStation);
     }
 
     @Override
@@ -99,14 +106,14 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     }
 
     private synchronized void tryRecycle(String type, String callingStation) {
-        if (cacheRefCount <= 0 && displayRefCount <= 0 && !waitDisplay && canRecycle()) {
+        if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             getBitmap().recycle();
             if(Spear.isDebugMode()){
                 Log.w(Spear.TAG, NAME + " - " + "recycled bitmap@" + getHashCodeByLog() + " - " + type + " - " + callingStation);
             }
         }else{
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "can't recycle bitmap@" + getHashCodeByLog() + " - " + type + " - " + callingStation + " - " + ("cacheRefCount="+cacheRefCount) + "; " + ("displayRefCount="+displayRefCount) + "; " + ("waitDisplay="+waitDisplay) + "; " + ("canRecycle="+canRecycle()));
+                Log.d(Spear.TAG, NAME + " - " + "can't recycle bitmap@" + getHashCodeByLog() + " - " + type + " - " + callingStation + " - " + ("cacheRefCount="+cacheRefCount) + "; " + ("displayRefCount="+displayRefCount) + "; " + ("waitDisplayRefCount="+waitDisplayRefCount) + "; " + ("canRecycle="+canRecycle()));
             }
         }
     }

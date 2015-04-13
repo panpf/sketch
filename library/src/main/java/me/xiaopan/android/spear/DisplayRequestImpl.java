@@ -459,6 +459,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                     this.resultDrawable = cacheDrawable;
                     imageFrom = ImageFrom.MEMORY_CACHE;
                     setRequestStatus(RequestStatus.WAIT_DISPLAY);
+                    recycleDrawable.setIsWaitDisplay("executeLoad:fromMemory", true);
                     spear.getConfiguration().getDisplayCallbackHandler().completeCallback(this);
                     return;
                 }else{
@@ -537,13 +538,15 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         }
 
         if(bitmap != null && !bitmap.isRecycled()){
-            resultDrawable = new RecycleBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
+            RecycleBitmapDrawable resultDrawable = new RecycleBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
             if(enableMemoryCache && memoryCacheId != null){
                 spear.getConfiguration().getMemoryCache().put(memoryCacheId, resultDrawable);
             }
+            this.resultDrawable = resultDrawable;
 
             // 显示
             setRequestStatus(RequestStatus.WAIT_DISPLAY);
+            resultDrawable.setIsWaitDisplay("executeLoad:new", true);
             spear.getConfiguration().getDisplayCallbackHandler().completeCallback(this);
         }else{
             toFailedStatus(FailCause.DECODE_FAIL);
@@ -554,7 +557,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     public void handleCompletedOnMainThread() {
         if(isCanceled()){
             if(resultDrawable != null && resultDrawable instanceof RecycleDrawable){
-                ((RecycleDrawable) resultDrawable).cancelWaitDisplay("completedCallback:cancel");
+                ((RecycleDrawable) resultDrawable).setIsWaitDisplay("completedCallback:cancel", false);
             }
             if(Spear.isDebugMode()){
                 Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);

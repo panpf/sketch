@@ -36,56 +36,46 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
 
     private int cacheRefCount;
     private int displayRefCount;
-    private boolean waitDisplay;
+    private int waitDisplayRefCount;
 
     public RecycleGifDrawable(AssetFileDescriptor afd) throws IOException {
         super(afd);
-        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(AssetManager assets, String assetName) throws IOException {
         super(assets, assetName);
-        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(ByteBuffer buffer) throws IOException {
         super(buffer);
-        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(byte[] bytes) throws IOException {
         super(bytes);
-        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(FileDescriptor fd) throws IOException {
         super(fd);
-        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(File file) throws IOException {
         super(file);
-        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(String filePath) throws IOException {
         super(filePath);
-        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(Resources res, int id) throws Resources.NotFoundException, IOException {
         super(res, id);
-        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(ContentResolver resolver, Uri uri) throws IOException {
         super(resolver, uri);
-        this.waitDisplay = true;
     }
 
     public RecycleGifDrawable(InputStream stream) throws IOException {
         super(stream);
-        this.waitDisplay = true;
     }
 
     @Override
@@ -93,7 +83,9 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
         synchronized (this) {
             if (isDisplayed) {
                 displayRefCount++;
-                waitDisplay = false;
+                if(waitDisplayRefCount > 0){
+                    waitDisplayRefCount--;
+                }
             } else {
                 if(displayRefCount > 0){
                     displayRefCount--;
@@ -118,11 +110,17 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
     }
 
     @Override
-    public void cancelWaitDisplay(String callingStation){
-        synchronized (this){
-            waitDisplay = false;
+    public void setIsWaitDisplay(String callingStation, boolean isWaitDisplay) {
+        synchronized (this) {
+            if (isWaitDisplay) {
+                waitDisplayRefCount++;
+            } else {
+                if(waitDisplayRefCount > 0){
+                    waitDisplayRefCount--;
+                }
+            }
         }
-        tryRecycle("cancelDisplay", callingStation);
+        tryRecycle((isWaitDisplay ? "wait display" : "cancel display"), callingStation);
     }
 
     @Override
@@ -141,14 +139,14 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
     }
 
     private synchronized void tryRecycle(String type, String callingStation) {
-        if (cacheRefCount <= 0 && displayRefCount <= 0 && !waitDisplay && canRecycle()) {
+        if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if(Spear.isDebugMode()){
                 Log.e(Spear.TAG, NAME + " - " + "recycled gif drawable@" + getHashCodeByLog() + " - " + type + " - " + callingStation);
             }
             recycle();
         }else{
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "can't recycle gif drawable@" + getHashCodeByLog() + " - " + type + " - " + callingStation + " - " + ("cacheRefCount="+cacheRefCount) + "; " + ("displayRefCount="+displayRefCount) + "; " + ("waitDisplay="+waitDisplay) + "; " + ("canRecycle="+canRecycle()));
+                Log.d(Spear.TAG, NAME + " - " + "can't recycle gif drawable@" + getHashCodeByLog() + " - " + type + " - " + callingStation + " - " + ("cacheRefCount="+cacheRefCount) + "; " + ("displayRefCount="+displayRefCount) + "; " + ("waitDisplayRefCount="+waitDisplayRefCount) + "; " + ("canRecycle="+canRecycle()));
             }
         }
     }

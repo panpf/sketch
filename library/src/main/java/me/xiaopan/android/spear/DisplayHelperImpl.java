@@ -492,7 +492,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + "URI=" + uri);
+                Log.e(Spear.TAG, NAME + " - " + "uri is null or empty");
             }
             if(spearImageViewInterface != null){
                 spearImageViewInterface.setDisplayRequest(null);
