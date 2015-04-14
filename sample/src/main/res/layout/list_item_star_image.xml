@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <me.xiaopan.android.spear.sample.widget.MyImageView
+    <me.xiaopan.spear.sample.widget.MyImageView
         android:id="@+id/image_starImageItem_one"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -14,7 +14,7 @@
         android:layout_marginRight="@dimen/home_category_margin"
         android:layout_marginBottom="@dimen/home_category_margin"/>
 
-    <me.xiaopan.android.spear.sample.widget.MyImageView
+    <me.xiaopan.spear.sample.widget.MyImageView
         android:id="@+id/image_starImageItem_two"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -24,7 +24,7 @@
         android:layout_marginRight="@dimen/home_category_margin"
         android:layout_marginBottom="@dimen/home_category_margin"/>
 
-    <me.xiaopan.android.spear.sample.widget.MyImageView
+    <me.xiaopan.spear.sample.widget.MyImageView
         android:id="@+id/image_starImageItem_three"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

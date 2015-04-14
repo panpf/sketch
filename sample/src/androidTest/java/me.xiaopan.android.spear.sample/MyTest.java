@@ -6,7 +6,7 @@ import android.util.Log;
 
 import java.io.File;
 
-import me.xiaopan.android.spear.util.CommentUtils;
+import me.xiaopan.spear.util.CommentUtils;
 
 public class MyTest extends AndroidTestCase{
 

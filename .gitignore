@@ -20,15 +20,16 @@ bin/
 gen/
 
 # Idea files
-/.idea/workspace.xml
-/.idea/libraries
-#*.iml
+.idea/
+*.iml
 
 # Gradle files
 .gradle/
-/build
-/out
-/out2
+build/
 
 # Mac files
 .DS_Store
+
+# coustom files
+change log.txt
+to-do list.txt

@@ -5,19 +5,39 @@ android {
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "me.xiaoapn.android.imageloader"
+        applicationId "me.xiaopan.spear.sample"
         minSdkVersion 9
         targetSdkVersion 21
         versionCode 251
         versionName "2.5.1"
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+    signingConfigs{
+        release{
+            storeFile file("release.jks")
+            storePassword "u2gHWYjiaUB022VV"
+            keyAlias "android-imageloader"
+            keyPassword "u2gHWYjiaUB022VV"
         }
     }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+        }
+    }
+
+//    productFlavors{
+//        android{
+//            applicationId "me.xiaopan.spear.sample"
+//        }
+//
+//        googlePlay{
+//            applicationId "me.xiaoapn.android.imageloader"
+//        }
+//    }
 }
 
 dependencies {

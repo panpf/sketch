@@ -7,7 +7,7 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 ![sample](https://github.com/xiaopansky/Spear/raw/master/docs/sample.jpg)
 
 ###特点（Features）
->* ``多种URI支持`` 支持``http://``、``https://``、``assets://``、``content://``、``/sdcard/sample.jpg``、``drawable://``等6种URI。
+>* ``多种URI支持`` 支持``http://``、``https://``、``asset://``、``content://``、``/sdcard/sample.jpg``、``drawable://``等6种URI。
 >* ``异步加载`` 采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
 >* ``缓存支持`` 采用Lru算法在本地和内存中缓存图片，本地缓存可设置最大容量、保留容量以及有效期。
 >* ``支持ViewHolder`` 即使你在ListView中使用了ViewHolder也依然可以使用ImageLoader来加载图片，并且图片显示绝对不会混乱。
@@ -36,8 +36,9 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 >* "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
 >* "https://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
 >* "/mnt/sdcard/image.png"; // from SD card
+>* "/mnt/sdcard/app.apk"; // from SD card apk file
 >* "content://media/external/audio/albumart/13"; // from content provider
->* "assets://image.png"; // from assets
+>* "asset://image.png"; // from assets
 >* "drawable://" + R.drawable.image; // from drawable resource
 
 ####使用SpearImageView显示图片
@@ -67,7 +68,7 @@ spearImageView.setImageFromUri("drawable://"+R.drawable.ic_launcher);
 spearImageView.setImageFromResource(R.drawable.ic_launcher);
         
 // from assets
-spearImageView.setImageFromUri("assets://test.png");
+spearImageView.setImageFromUri("asset://test.png");
 // or
 spearImageView.setImageFromAssets("test.png");
 ```
@@ -145,6 +146,7 @@ display()与load()、download()的区别
 >* 支持外部添加一个Bitmap到内存缓存中，这样将会大大增加灵活性（那么外部将有权利设置缓存ID以及决定是否用RecycleDrawable就要放在MemoryCache中了）
 >* 考虑将默认图也放到内存缓存中，试图通过这样的方式解决之前担心的默认图太多导致始终占用内存的问题
 >* 考虑如何支持用已缓存的小缩略图作为默认图片（比如支持从内存缓存中加载默认图）
+>* 改善框架实现，便于使用者自定义整个流程中的每个环节
 
 ####需求池（Demand pool）
 >* 结合android-gif-drawable支持GIF图
