@@ -1,49 +1,48 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 21
+    compileSdkVersion 22
     buildToolsVersion "21.1.2"
 
     defaultConfig {
-        applicationId "me.xiaopan.spear.sample"
         minSdkVersion 9
-        targetSdkVersion 21
+        targetSdkVersion 22
         versionCode 251
         versionName "2.5.1"
     }
 
     signingConfigs{
         release{
-            storeFile file("release.jks")
-            storePassword "u2gHWYjiaUB022VV"
-            keyAlias "android-imageloader"
-            keyPassword "u2gHWYjiaUB022VV"
+            storeFile file(property("sample.storeFile"))
+            storePassword property('sample.storePassword')
+            keyAlias property('sample.keyAlias')
+            keyPassword property('sample.keyPassword')
         }
     }
 
     buildTypes {
         release {
-            minifyEnabled true
+            minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
         }
     }
 
-//    productFlavors{
-//        android{
-//            applicationId "me.xiaopan.spear.sample"
-//        }
-//
+    productFlavors{
+        normal{
+            applicationId "me.xiaopan.spear.sample"
+        }
+
 //        googlePlay{
 //            applicationId "me.xiaoapn.android.imageloader"
 //        }
-//    }
+    }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile project(':library')
-    compile 'com.android.support:appcompat-v7:21.0.3'
+    compile 'com.android.support:appcompat-v7:22.0.0'
     compile 'com.android.support:recyclerview-v7:21.0.0'
     compile(name: 'pager-sliding-strip-1.5.1', ext: 'aar')
     compile(name: 'pull_refresh_layout-1.1.1', ext: 'aar')
