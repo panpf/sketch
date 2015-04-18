@@ -27,6 +27,10 @@ import me.xiaopan.spear.download.ImageDownloader;
  * 下载请求
  */
 public class DownloadRequestImpl implements DownloadRequest, Runnable{
+    private static final int WHAT_CALLBACK_COMPLETED = 302;
+    private static final int WHAT_CALLBACK_FAILED = 303;
+    private static final int WHAT_CALLBACK_CANCELED = 304;
+    private static final int WHAT_CALLBACK_PROGRESS = 305;
     private static final String NAME = "DownloadRequestImpl";
 
     // Base fields
@@ -41,6 +45,8 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private DownloadListener downloadListener;  // 下载监听器
 
     // Runtime fields
+    private File resultFile;
+    private byte[] resultBytes;
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
     private FailCause failCause;    // 失败原因
     private ImageFrom imageFrom;    // 图片来源
@@ -148,24 +154,35 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     @Override
     public void toFailedStatus(FailCause failCause) {
         this.failCause = failCause;
-        setRequestStatus(RequestStatus.FAILED);
-        if(downloadListener != null){
-            downloadListener.onFailed(failCause);
-        }
+        spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_FAILED, this).sendToTarget();
     }
 
     @Override
     public void toCanceledStatus(CancelCause cancelCause) {
         this.requestStatus = RequestStatus.CANCELED;
         setRequestStatus(RequestStatus.CANCELED);
-        if(downloadListener != null){
-            downloadListener.onCanceled();
-        }
+        spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_CANCELED, this).sendToTarget();
     }
 
     @Override
     public void invokeInMainThread(Message msg) {
-
+        switch (msg.what){
+            case WHAT_CALLBACK_COMPLETED:
+                handleCompletedOnMainThread();
+                break;
+            case WHAT_CALLBACK_PROGRESS :
+                updateProgressOnMainThread(msg.arg1, msg.arg2);
+                break;
+            case WHAT_CALLBACK_FAILED:
+                handleFailedOnMainThread();
+                break;
+            case WHAT_CALLBACK_CANCELED:
+                handleCanceledOnMainThread();
+                break;
+            default:
+                new IllegalArgumentException("unknown message what: "+msg.what).printStackTrace();
+                break;
+        }
     }
 
     @Override
@@ -192,7 +209,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     @Override
     public void updateProgress(int totalLength, int completedLength) {
         if(progressListener != null){
-            progressListener.onUpdateProgress(totalLength, completedLength);
+            spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
         }
     }
 
@@ -223,9 +240,8 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
                     Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "diskCache" + " - " + name);
                 }
                 this.imageFrom = ImageFrom.DISK_CACHE;
-                if(downloadListener != null){
-                    downloadListener.onCompleted(diskCacheFile, false);
-                }
+                this.resultFile = diskCacheFile;
+                spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
             }else{
                 postRunDownload();
                 if(Spear.isDebugMode()){
@@ -265,13 +281,64 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
             this.requestStatus = RequestStatus.COMPLETED;
             if(downloadListener != null){
                 if(downloadResult.getResult().getClass().isAssignableFrom(File.class)){
-                    downloadListener.onCompleted((File) downloadResult.getResult(), downloadResult.isFromNetwork());
+                    this.resultFile = (File) downloadResult.getResult();
                 }else{
-                    downloadListener.onCompleted((byte[]) downloadResult.getResult());
+                    this.resultBytes = (byte[]) downloadResult.getResult();
                 }
+                spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
             }
         }else{
             toFailedStatus(FailCause.DOWNLOAD_FAIL);
+        }
+    }
+
+    private void handleCompletedOnMainThread() {
+        if(isCanceled()){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
+            }
+            return;
+        }
+
+        setRequestStatus(RequestStatus.COMPLETED);
+        if(downloadListener != null){
+            if(resultFile != null){
+                downloadListener.onCompleted(resultFile, imageFrom==ImageFrom.NETWORK);
+            }else if(resultBytes != null){
+                downloadListener.onCompleted(resultBytes);
+            }
+        }
+    }
+
+    private void handleFailedOnMainThread() {
+        if(isCanceled()){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "handleFailedOnMainThread" + " - " + "canceled" + " - " + name);
+            }
+            return;
+        }
+
+        setRequestStatus(RequestStatus.FAILED);
+        if(downloadListener != null){
+            downloadListener.onFailed(failCause);
+        }
+    }
+
+    private void handleCanceledOnMainThread() {
+        if(downloadListener != null){
+            downloadListener.onCanceled();
+        }
+    }
+
+    private void updateProgressOnMainThread(int totalLength, int completedLength) {
+        if(isFinished()){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "updateProgressOnMainThread" + " - " + "finished" + " - " + name);
+            }
+            return;
+        }
+        if(progressListener != null){
+            progressListener.onUpdateProgress(totalLength, completedLength);
         }
     }
 }

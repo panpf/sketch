@@ -79,31 +79,6 @@ public interface DisplayRequest extends LoadRequest{
     void setRequestHandleLevel(RequestHandleLevel requestHandleLevel);
 
     /**
-     * 在主线程处理完成
-     */
-    void handleCompletedOnMainThread();
-
-    /**
-     * 执行失败
-     */
-    void handleFailedOnMainThread();
-
-    /**
-     * 在主线程处理取消
-     */
-    void handleCanceledOnMainThread();
-
-    /**
-     * 在主线程处理暂停下载
-     */
-    void handlePauseDownloadOnMainThread();
-
-    /**
-     * 在主线程更新进度
-     */
-    void updateProgressOnMainThread(int totalLength, int completedLength);
-
-    /**
      * 设置Level是否来自暂停下载
      * @param levelFromPauseDownload Level是否来自暂停下载
      */

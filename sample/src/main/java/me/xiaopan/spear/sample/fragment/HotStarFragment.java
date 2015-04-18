@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.DisplayMetrics;
@@ -170,17 +168,12 @@ public class HotStarFragment extends InjectFragment implements PullRefreshLayout
 
             @Override
             public void onCompleted(final Bitmap bitmap, ImageFrom imageFrom) {
-                if(onSetWindowBackgroundListener != null && getActivity() != null){
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (getActivity() != null && onSetWindowBackgroundListener != null) {
-                                onSetWindowBackgroundListener.onSetWindowBackground(new BitmapDrawable(getResources(), bitmap));
-                            } else {
-                                bitmap.recycle();
-                            }
-                        }
-                    });
+                if(onSetWindowBackgroundListener != null){
+                    if (isResumed() && getUserVisibleHint()) {
+                        onSetWindowBackgroundListener.onSetWindowBackground(new BitmapDrawable(getResources(), bitmap));
+                    } else {
+                        bitmap.recycle();
+                    }
                 }
             }
 

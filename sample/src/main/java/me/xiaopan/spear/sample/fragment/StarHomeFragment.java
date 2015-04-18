@@ -5,8 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -255,17 +253,12 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
 
             @Override
             public void onCompleted(final Bitmap bitmap, ImageFrom imageFrom) {
-                if(onSetWindowBackgroundListener != null && getActivity() != null){
-                    new Handler(Looper.getMainLooper()).post(new Runnable() {
-                        @Override
-                        public void run() {
-                            if(getActivity() != null && onSetWindowBackgroundListener != null){
-                                onSetWindowBackgroundListener.onSetWindowBackground(new BitmapDrawable(getResources(), bitmap));
-                            }else{
-                                bitmap.recycle();
-                            }
-                        }
-                    });
+                if(onSetWindowBackgroundListener != null){
+                    if(isResumed() && getUserVisibleHint()){
+                        onSetWindowBackgroundListener.onSetWindowBackground(new BitmapDrawable(getResources(), bitmap));
+                    }else{
+                        bitmap.recycle();
+                    }
                 }
             }
 

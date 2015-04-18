@@ -584,94 +584,6 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     }
 
     @Override
-    public void handleCompletedOnMainThread() {
-        if(isCanceled()){
-            if(resultDrawable != null && resultDrawable instanceof RecycleDrawable){
-                ((RecycleDrawable) resultDrawable).setIsWaitDisplay("completedCallback:cancel", false);
-            }
-            if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
-            }
-            return;
-        }
-
-        setRequestStatus(RequestStatus.DISPLAYING);
-        if(imageDisplayer == null){
-            imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
-        }
-        imageDisplayer.display(imageViewHolder.getImageView(), resultDrawable);
-        setRequestStatus(RequestStatus.COMPLETED);
-        if(displayListener != null){
-            displayListener.onCompleted(imageFrom);
-        }
-    }
-
-    @Override
-    public void handleFailedOnMainThread() {
-        if(isCanceled()){
-            if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "handleFailedOnMainThread" + " - " + "canceled" + " - " + name);
-            }
-            return;
-        }
-
-        setRequestStatus(RequestStatus.DISPLAYING);
-        if(imageDisplayer == null){
-            imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
-        }
-        imageDisplayer.display(imageViewHolder.getImageView(), getLoadFailDrawable());
-        setRequestStatus(RequestStatus.FAILED);
-        if(displayListener != null){
-            displayListener.onFailed(failCause);
-        }
-    }
-
-    @Override
-    public void handleCanceledOnMainThread() {
-        if(displayListener != null){
-            displayListener.onCanceled(cancelCause);
-        }
-    }
-
-    @Override
-    public void handlePauseDownloadOnMainThread() {
-        if(isCanceled()){
-            if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "handlePauseDownloadOnMainThread" + " - " + "canceled" + " - " + name);
-            }
-            return;
-        }
-
-        if(pauseDownloadDrawableHolder != null){
-            setRequestStatus(RequestStatus.DISPLAYING);
-            if(imageDisplayer == null){
-                imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
-            }
-            imageDisplayer.display(imageViewHolder.getImageView(), getPauseDownloadDrawable());
-        }
-
-        cancelCause = CancelCause.PAUSE_DOWNLOAD;
-        setRequestStatus(RequestStatus.CANCELED);
-        if(displayListener != null){
-            displayListener.onCanceled(cancelCause);
-        }
-    }
-
-    @Override
-    public void updateProgressOnMainThread(int totalLength, int completedLength) {
-        if(isFinished()){
-            if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "updateProgressOnMainThread" + " - " + "finished" + " - " + name);
-            }
-            return;
-        }
-
-        if(progressListener != null){
-            progressListener.onUpdateProgress(totalLength, completedLength);
-        }
-    }
-
-    @Override
     public void setLevelFromPauseDownload(boolean levelFromPauseDownload) {
         this.levelFromPauseDownload = levelFromPauseDownload;
     }
@@ -713,5 +625,88 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         }
 
         return null;
+    }
+
+    private void handleCompletedOnMainThread() {
+        if(isCanceled()){
+            if(resultDrawable != null && resultDrawable instanceof RecycleDrawable){
+                ((RecycleDrawable) resultDrawable).setIsWaitDisplay("completedCallback:cancel", false);
+            }
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
+            }
+            return;
+        }
+
+        setRequestStatus(RequestStatus.DISPLAYING);
+        if(imageDisplayer == null){
+            imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
+        }
+        imageDisplayer.display(imageViewHolder.getImageView(), resultDrawable);
+        setRequestStatus(RequestStatus.COMPLETED);
+        if(displayListener != null){
+            displayListener.onCompleted(imageFrom);
+        }
+    }
+
+    private void handleFailedOnMainThread() {
+        if(isCanceled()){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "handleFailedOnMainThread" + " - " + "canceled" + " - " + name);
+            }
+            return;
+        }
+
+        setRequestStatus(RequestStatus.DISPLAYING);
+        if(imageDisplayer == null){
+            imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
+        }
+        imageDisplayer.display(imageViewHolder.getImageView(), getLoadFailDrawable());
+        setRequestStatus(RequestStatus.FAILED);
+        if(displayListener != null){
+            displayListener.onFailed(failCause);
+        }
+    }
+
+    private void handleCanceledOnMainThread() {
+        if(displayListener != null){
+            displayListener.onCanceled(cancelCause);
+        }
+    }
+
+    private void handlePauseDownloadOnMainThread() {
+        if(isCanceled()){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "handlePauseDownloadOnMainThread" + " - " + "canceled" + " - " + name);
+            }
+            return;
+        }
+
+        if(pauseDownloadDrawableHolder != null){
+            setRequestStatus(RequestStatus.DISPLAYING);
+            if(imageDisplayer == null){
+                imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
+            }
+            imageDisplayer.display(imageViewHolder.getImageView(), getPauseDownloadDrawable());
+        }
+
+        cancelCause = CancelCause.PAUSE_DOWNLOAD;
+        setRequestStatus(RequestStatus.CANCELED);
+        if(displayListener != null){
+            displayListener.onCanceled(cancelCause);
+        }
+    }
+
+    private void updateProgressOnMainThread(int totalLength, int completedLength) {
+        if(isFinished()){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "updateProgressOnMainThread" + " - " + "finished" + " - " + name);
+            }
+            return;
+        }
+
+        if(progressListener != null){
+            progressListener.onUpdateProgress(totalLength, completedLength);
+        }
     }
 }

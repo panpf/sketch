@@ -31,6 +31,10 @@ import me.xiaopan.spear.util.CommentUtils;
  * 加载请求
  */
 public class LoadRequestImpl implements LoadRequest, Runnable{
+    private static final int WHAT_CALLBACK_COMPLETED = 202;
+    private static final int WHAT_CALLBACK_FAILED = 203;
+    private static final int WHAT_CALLBACK_CANCELED = 204;
+    private static final int WHAT_CALLBACK_PROGRESS = 205;
     private static final String NAME = "LoadRequestImpl";
 
     // Base fields
@@ -53,6 +57,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     // Runtime fields
     private File cacheFile;	// 缓存文件
     private byte[] imageData;
+    private Bitmap resultBitmap;
     private ImageFrom imageFrom;    // 图片来源
     private FailCause failCause;    // 失败原因
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
@@ -237,31 +242,42 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     @Override
     public void updateProgress(int totalLength, int completedLength) {
         if(progressListener != null){
-            progressListener.onUpdateProgress(totalLength, completedLength);
+            spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
         }
     }
 
     @Override
     public void toFailedStatus(FailCause failCause) {
         this.failCause = failCause;
-        setRequestStatus(RequestStatus.FAILED);
-        if(loadListener != null){
-            loadListener.onFailed(failCause);
-        }
+        spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_FAILED, this).sendToTarget();
     }
 
     @Override
     public void toCanceledStatus(CancelCause cancelCause) {
         this.cancelCause = cancelCause;
         setRequestStatus(RequestStatus.CANCELED);
-        if(loadListener != null){
-            loadListener.onCanceled(cancelCause);
-        }
+        spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_CANCELED, this).sendToTarget();
     }
 
     @Override
     public void invokeInMainThread(Message msg) {
-
+        switch (msg.what){
+            case WHAT_CALLBACK_COMPLETED:
+                handleCompletedOnMainThread();
+                break;
+            case WHAT_CALLBACK_PROGRESS :
+                updateProgressOnMainThread(msg.arg1, msg.arg2);
+                break;
+            case WHAT_CALLBACK_FAILED:
+                handleFailedOnMainThread();
+                break;
+            case WHAT_CALLBACK_CANCELED:
+                handleCanceledOnMainThread();
+                break;
+            default:
+                new IllegalArgumentException("unknown message what: "+msg.what).printStackTrace();
+                break;
+        }
     }
 
     @Override
@@ -422,10 +438,8 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
         }
 
         if(bitmap != null && !bitmap.isRecycled()){
-            this.requestStatus = RequestStatus.COMPLETED;
-            if(loadListener != null){
-                loadListener.onCompleted(bitmap, imageFrom);
-            }
+            this.resultBitmap = bitmap;
+            spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
         }else{
             toFailedStatus(FailCause.DECODE_FAIL);
         }
@@ -455,5 +469,53 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
         }
 
         return null;
+    }
+
+    private void handleCompletedOnMainThread() {
+        if(isCanceled()){
+            resultBitmap.recycle();
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
+            }
+            return;
+        }
+
+        setRequestStatus(RequestStatus.COMPLETED);
+        if(loadListener != null){
+            loadListener.onCompleted(resultBitmap, imageFrom);
+        }
+    }
+
+    private void handleFailedOnMainThread() {
+        if(isCanceled()){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "handleFailedOnMainThread" + " - " + "canceled" + " - " + name);
+            }
+            return;
+        }
+
+        setRequestStatus(RequestStatus.FAILED);
+        if(loadListener != null){
+            loadListener.onFailed(failCause);
+        }
+    }
+
+    private void handleCanceledOnMainThread() {
+        if(loadListener != null){
+            loadListener.onCanceled(cancelCause);
+        }
+    }
+
+    private void updateProgressOnMainThread(int totalLength, int completedLength) {
+        if(isFinished()){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + " - " + "updateProgressOnMainThread" + " - " + "finished" + " - " + name);
+            }
+            return;
+        }
+
+        if(progressListener != null){
+            progressListener.onUpdateProgress(totalLength, completedLength);
+        }
     }
 }

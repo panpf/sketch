@@ -4,8 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.ImageView;
@@ -115,17 +113,12 @@ public class ImageFragment extends MyFragment {
 
                     @Override
                     public void onCompleted(final Bitmap bitmap, ImageFrom imageFrom) {
-                        if(onSetWindowBackgroundListener != null && getActivity() != null){
-                            new Handler(Looper.getMainLooper()).post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if(isResumed() && getUserVisibleHint() && getActivity() != null && onSetWindowBackgroundListener != null){
-                                        onSetWindowBackgroundListener.onSetWindowBackground(new BitmapDrawable(getResources(), bitmap));
-                                    }else{
-                                        bitmap.recycle();
-                                    }
-                                }
-                            });
+                        if(onSetWindowBackgroundListener != null){
+                            if(isResumed() && getUserVisibleHint()){
+                                onSetWindowBackgroundListener.onSetWindowBackground(new BitmapDrawable(getResources(), bitmap));
+                            }else{
+                                bitmap.recycle();
+                            }
                         }
                     }
 
