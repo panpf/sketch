@@ -16,6 +16,7 @@
 
 package me.xiaopan.spear;
 
+import android.os.Message;
 import android.util.Log;
 
 import java.io.File;
@@ -160,6 +161,11 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
         if(downloadListener != null){
             downloadListener.onCanceled();
         }
+    }
+
+    @Override
+    public void invokeInMainThread(Message msg) {
+
     }
 
     @Override

@@ -17,6 +17,9 @@
 package me.xiaopan.spear;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.util.Log;
 
 import me.xiaopan.spear.cache.DiskCache;
@@ -37,6 +40,7 @@ import me.xiaopan.spear.util.MobileNetworkPauseDownloadManager;
 
 public class Configuration {
     private Context context;	//上下文
+    private Handler handler;    // 异步线程回调用
     private DiskCache diskCache;    // 磁盘缓存器
     private MemoryCache memoryCache;	//图片缓存器
     private ImageDecoder imageDecoder;	//图片解码器
@@ -47,7 +51,6 @@ public class Configuration {
     private ImageDownloader imageDownloader;	//图片下载器
     private RequestExecutor requestExecutor;	//请求执行器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
-    private DisplayCallbackHandler displayCallbackHandler;	//显示相关回调处理器
 
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean pauseDownload;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
@@ -64,8 +67,18 @@ public class Configuration {
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
         this.imageSizeCalculator = new ImageSizeCalculatorImpl();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
-        this.displayCallbackHandler = new DisplayCallbackHandler();
         this.defaultCutImageProcessor = new CutImageProcessor();
+        this.handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
+            @Override
+            public boolean handleMessage(Message msg) {
+                if(msg.obj instanceof DownloadRequest){
+                    ((DownloadRequest) msg.obj).invokeInMainThread(msg);
+                    return true;
+                }else{
+                    return false;
+                }
+            }
+        });
     }
 
     /**
@@ -74,6 +87,14 @@ public class Configuration {
      */
     public Context getContext() {
         return context;
+    }
+
+    /**
+     * 获取Handler
+     * @return Handler
+     */
+    public Handler getHandler() {
+        return handler;
     }
 
     /**
@@ -150,14 +171,6 @@ public class Configuration {
             this.imageDecoder = imageDecoder;
         }
         return this;
-    }
-
-    /**
-     * 获取显示相关回调处理器
-     * @return 显示相关回调处理器
-     */
-    public DisplayCallbackHandler getDisplayCallbackHandler() {
-        return displayCallbackHandler;
     }
 
     /**

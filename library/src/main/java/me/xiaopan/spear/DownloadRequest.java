@@ -16,6 +16,8 @@
 
 package me.xiaopan.spear;
 
+import android.os.Message;
+
 /**
  * 下载请求
  */
@@ -85,4 +87,10 @@ public interface DownloadRequest extends Request, RequestRunManager {
      * @param cancelCause 取消原因
      */
     void toCanceledStatus(CancelCause cancelCause);
+
+    /**
+     * 在主线程中执行
+     * @param msg 消息
+     */
+    void invokeInMainThread(Message msg);
 }

@@ -17,6 +17,7 @@
 package me.xiaopan.spear;
 
 import android.graphics.Bitmap;
+import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -256,6 +257,11 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
         if(loadListener != null){
             loadListener.onCanceled(cancelCause);
         }
+    }
+
+    @Override
+    public void invokeInMainThread(Message msg) {
+
     }
 
     @Override

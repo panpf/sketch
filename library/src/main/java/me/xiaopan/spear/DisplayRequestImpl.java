@@ -19,6 +19,7 @@ package me.xiaopan.spear;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -34,6 +35,11 @@ import me.xiaopan.spear.util.CommentUtils;
  * 显示请求
  */
 public class DisplayRequestImpl implements DisplayRequest, Runnable{
+    private static final int WHAT_CALLBACK_COMPLETED = 102;
+    private static final int WHAT_CALLBACK_FAILED = 103;
+    private static final int WHAT_CALLBACK_CANCELED = 104;
+    private static final int WHAT_CALLBACK_PROGRESS = 105;
+    private static final int WHAT_CALLBACK_PAUSE_DOWNLOAD = 106;
     private static final String NAME = "DisplayRequestImpl";
 
     // Base fields
@@ -300,7 +306,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     public void toFailedStatus(FailCause failCause) {
         this.failCause = failCause;
         setRequestStatus(RequestStatus.WAIT_DISPLAY);
-        spear.getConfiguration().getDisplayCallbackHandler().failCallback(this);
+        spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_FAILED, this).sendToTarget();
     }
 
     @Override
@@ -308,14 +314,35 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         this.cancelCause = cancelCause;
         setRequestStatus(RequestStatus.CANCELED);
         if(displayListener != null){
-            spear.getConfiguration().getDisplayCallbackHandler().cancelCallback(this);
+            spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_CANCELED, this).sendToTarget();
+        }
+    }
+
+    @Override
+    public void invokeInMainThread(Message msg) {
+        switch (msg.what){
+            case WHAT_CALLBACK_COMPLETED:
+                ((DisplayRequest) msg.obj).handleCompletedOnMainThread();
+                break;
+            case WHAT_CALLBACK_PROGRESS :
+                ((DisplayRequest) msg.obj).updateProgressOnMainThread(msg.arg1, msg.arg2);
+                break;
+            case WHAT_CALLBACK_FAILED:
+                ((DisplayRequest) msg.obj).handleFailedOnMainThread();
+                break;
+            case WHAT_CALLBACK_CANCELED:
+                ((DisplayRequest) msg.obj).handleCanceledOnMainThread();
+                break;
+            case WHAT_CALLBACK_PAUSE_DOWNLOAD:
+                ((DisplayRequest) msg.obj).handlePauseDownloadOnMainThread();
+                break;
         }
     }
 
     @Override
     public void updateProgress(int totalLength, int completedLength) {
         if(progressListener != null){
-            spear.getConfiguration().getDisplayCallbackHandler().updateProgressCallback(this, totalLength, completedLength);
+            spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
         }
     }
 
@@ -376,7 +403,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 if(requestHandleLevel == RequestHandleLevel.LOCAL){
                     if(levelFromPauseDownload){
                         setRequestStatus(RequestStatus.WAIT_DISPLAY);
-                        spear.getConfiguration().getDisplayCallbackHandler().pauseDownloadCallback(this);
+                        spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PAUSE_DOWNLOAD, this).sendToTarget();
                         if(Spear.isDebugMode()){
                             Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "pause download" + " - " + name);
                         }
@@ -460,7 +487,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                     imageFrom = ImageFrom.MEMORY_CACHE;
                     setRequestStatus(RequestStatus.WAIT_DISPLAY);
                     recycleDrawable.setIsWaitDisplay("executeLoad:fromMemory", true);
-                    spear.getConfiguration().getDisplayCallbackHandler().completeCallback(this);
+                    spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
                     return;
                 }else{
                     spear.getConfiguration().getMemoryCache().remove(memoryCacheId);
@@ -547,7 +574,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             // 显示
             setRequestStatus(RequestStatus.WAIT_DISPLAY);
             resultDrawable.setIsWaitDisplay("executeLoad:new", true);
-            spear.getConfiguration().getDisplayCallbackHandler().completeCallback(this);
+            spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
         }else{
             toFailedStatus(FailCause.DECODE_FAIL);
         }
