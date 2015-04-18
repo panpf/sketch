@@ -336,6 +336,9 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             case WHAT_CALLBACK_PAUSE_DOWNLOAD:
                 handlePauseDownloadOnMainThread();
                 break;
+            default:
+                new IllegalArgumentException("unknown message what: "+msg.what).printStackTrace();
+                break;
         }
     }
 
@@ -380,7 +383,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 executeDownload();
                 break;
             default:
-                new IllegalArgumentException(runStatus.name()+" unknown runStatus").printStackTrace();
+                new IllegalArgumentException("unknown runStatus: "+runStatus.name()).printStackTrace();
                 break;
         }
     }

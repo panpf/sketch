@@ -206,7 +206,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
                 executeDownload();
                 break;
             default:
-                new IllegalArgumentException(runStatus.name()+" unknown runStatus").printStackTrace();
+                new IllegalArgumentException("unknown runStatus: "+runStatus.name()).printStackTrace();
                 break;
         }
     }

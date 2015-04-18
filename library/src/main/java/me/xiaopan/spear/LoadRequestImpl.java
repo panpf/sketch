@@ -277,7 +277,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
                 executeDownload();
                 break;
             default:
-                new IllegalArgumentException(runStatus.name()+" unknown runStatus").printStackTrace();
+                new IllegalArgumentException("unknown runStatus: "+runStatus.name()).printStackTrace();
                 break;
         }
     }
