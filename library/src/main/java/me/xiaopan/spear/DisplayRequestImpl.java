@@ -322,19 +322,19 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     public void invokeInMainThread(Message msg) {
         switch (msg.what){
             case WHAT_CALLBACK_COMPLETED:
-                ((DisplayRequest) msg.obj).handleCompletedOnMainThread();
+                handleCompletedOnMainThread();
                 break;
             case WHAT_CALLBACK_PROGRESS :
-                ((DisplayRequest) msg.obj).updateProgressOnMainThread(msg.arg1, msg.arg2);
+                updateProgressOnMainThread(msg.arg1, msg.arg2);
                 break;
             case WHAT_CALLBACK_FAILED:
-                ((DisplayRequest) msg.obj).handleFailedOnMainThread();
+                handleFailedOnMainThread();
                 break;
             case WHAT_CALLBACK_CANCELED:
-                ((DisplayRequest) msg.obj).handleCanceledOnMainThread();
+                handleCanceledOnMainThread();
                 break;
             case WHAT_CALLBACK_PAUSE_DOWNLOAD:
-                ((DisplayRequest) msg.obj).handlePauseDownloadOnMainThread();
+                handlePauseDownloadOnMainThread();
                 break;
         }
     }
