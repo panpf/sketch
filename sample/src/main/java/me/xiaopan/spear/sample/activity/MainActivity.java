@@ -17,10 +17,11 @@
 package me.xiaopan.spear.sample.activity;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.widget.SlidingPaneLayout;
 import android.text.format.Formatter;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -56,10 +57,10 @@ import me.xiaopan.spear.sample.util.Settings;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
-public class MainActivity extends MyActionBarActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener{
+public class MainActivity extends MyActionBarActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener {
     @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
-    @InjectView(R.id.drawer_main_content) private DrawerLayout drawerLayout;
+    @InjectView(R.id.drawer_main_content) private SlidingPaneLayout drawerLayout;
     @InjectView(R.id.layout_main_leftMenu) private View leftMenuView;
     @InjectView(R.id.button_main_search) private View searchButton;
     @InjectView(R.id.button_main_star) private View starButton;
@@ -92,18 +93,17 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
     private long lastClickBackTime;
     private Type type;
     private Settings settings;
-    private ActionBarDrawerToggle drawerToggle;
+
+    private WindowBackgroundManager windowBackgroundManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        drawerToggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
-        drawerToggle.syncState();
-        drawerLayout.setDrawerListener(drawerToggle);
+        windowBackgroundManager = new WindowBackgroundManager(this);
 
-        drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, Gravity.START);
+        drawerLayout.setShadowResourceLeft(R.drawable.shape_drawer_shadow_down_left);
+        drawerLayout.setSliderFadeColor(Color.parseColor("#00ffffff"));
         setRefreshCacheSize();
 
         // 设置左侧菜单的宽度为屏幕的一半
@@ -146,39 +146,31 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
     }
 
     private void setRefreshCacheSize(){
-        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+        drawerLayout.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
             @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                drawerToggle.onDrawerSlide(drawerView, slideOffset);
+            public void onPanelSlide(View panel, float slideOffset) {
+
             }
 
             @Override
-            public void onDrawerOpened(View drawerView) {
-                drawerToggle.onDrawerOpened(drawerView);
-                if(leftMenuView == drawerView){
-                    refreshCacheSizeInfo(false, Spear.with(getBaseContext()).getConfiguration().getMemoryCache().getSize(), Spear.with(getBaseContext()).getConfiguration().getMemoryCache().getMaxSize());
-                    new AsyncTask<Integer, Integer, Long>() {
-                        @Override
-                        protected Long doInBackground(Integer... params) {
-                            return Spear.with(getBaseContext()).getConfiguration().getDiskCache().getSize();
-                        }
+            public void onPanelOpened(View panel) {
+                refreshCacheSizeInfo(false, Spear.with(getBaseContext()).getConfiguration().getMemoryCache().getSize(), Spear.with(getBaseContext()).getConfiguration().getMemoryCache().getMaxSize());
+                new AsyncTask<Integer, Integer, Long>() {
+                    @Override
+                    protected Long doInBackground(Integer... params) {
+                        return Spear.with(getBaseContext()).getConfiguration().getDiskCache().getSize();
+                    }
 
-                        @Override
-                        protected void onPostExecute(Long diskUsedSize) {
-                            refreshCacheSizeInfo(true, diskUsedSize, Spear.with(getBaseContext()).getConfiguration().getDiskCache().getMaxSize());
-                        }
-                    }.execute(0);
-                }
+                    @Override
+                    protected void onPostExecute(Long diskUsedSize) {
+                        refreshCacheSizeInfo(true, diskUsedSize, Spear.with(getBaseContext()).getConfiguration().getDiskCache().getMaxSize());
+                    }
+                }.execute(0);
             }
 
             @Override
-            public void onDrawerClosed(View drawerView) {
-                drawerToggle.onDrawerClosed(drawerView);
-            }
+            public void onPanelClosed(View panel) {
 
-            @Override
-            public void onDrawerStateChanged(int newState) {
-                drawerToggle.onDrawerStateChanged(newState);
             }
         });
     }
@@ -197,10 +189,10 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_MENU){
-            if(drawerLayout.isDrawerOpen(Gravity.START)){
-                drawerLayout.closeDrawer(Gravity.START);
+            if(drawerLayout.isOpen()){
+                drawerLayout.closePane();
             }else{
-                drawerLayout.openDrawer(Gravity.START);
+                drawerLayout.openPane();
             }
             return true;
         }else{
@@ -234,7 +226,7 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.button_main_about :
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 if (type != Type.ABOUT) {
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
@@ -247,7 +239,7 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
                 }
                 break;
             case R.id.button_main_appList :
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 if(type != Type.APP_LIST){
                     getSupportActionBar().setTitle("本地APP");
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
@@ -260,7 +252,7 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
                 }
                 break;
             case R.id.button_main_photoAlbum :
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 if(type != Type.LOCAL_PHOTO_ALBUM){
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
@@ -274,7 +266,7 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
                 }
                 break;
             case R.id.button_main_search :
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 if (type != Type.SEARCH) {
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
@@ -286,7 +278,7 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
                 }
                 break;
             case R.id.button_main_star :
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 if (type != Type.STAR) {
                     getSupportActionBar().setTitle("明星图片");
                     AnimationUtils.visibleViewByAlpha(starTabStrip);
@@ -303,37 +295,37 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
                 settings.setMobileNetworkPauseDownload(newMobileNetStopDownloadValue);
                 mobileNetworkPauseDownloadCheckBox.setChecked(newMobileNetStopDownloadValue);
                 Spear.with(getBaseContext()).getConfiguration().setMobileNetworkPauseDownload(newMobileNetStopDownloadValue);
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 break;
             case R.id.item_main_scrollingPauseLoad :
                 boolean newPauseLoadValue = !settings.isScrollingPauseLoad();
                 settings.setScrollingPauseLoad(newPauseLoadValue);
                 scrollingPauseLoadCheckBox.setChecked(newPauseLoadValue);
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 break;
             case R.id.item_main_showImageDownloadProgress :
                 boolean newShowProgressValue = !settings.isShowImageDownloadProgress();
                 settings.setShowImageDownloadProgress(newShowProgressValue);
                 showImageDownloadProgressCheckBox.setChecked(newShowProgressValue);
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 break;
             case R.id.item_main_showImageFromFlag :
                 boolean newShowImageFromFlag = !settings.isShowImageFromFlag();
                 settings.setShowImageFromFlag(newShowImageFromFlag);
                 showImageFromFlagCheckBox.setChecked(newShowImageFromFlag);
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 break;
             case R.id.item_main_clickDisplayOnFailed :
                 boolean newClickDisplayOnFailed = !settings.isClickDisplayOnFailed();
                 settings.setClickDisplayOnFailed(newClickDisplayOnFailed);
                 clickDisplayOnFailedCheckBox.setChecked(newClickDisplayOnFailed);
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 break;
             case R.id.item_main_clickDisplayOnPauseDownload :
                 boolean newClickDisplayOnPauseDownload = !settings.isClickDisplayOnPauseDownload();
                 settings.setClickDisplayOnPauseDownload(newClickDisplayOnPauseDownload);
                 clickDisplayOnPauseDownloadCheckBox.setChecked(newClickDisplayOnPauseDownload);
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 break;
             case R.id.item_main_cleanMemoryCache :
                 Spear.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
@@ -353,21 +345,21 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
                 boolean newShowClickRippleValue = !settings.isShowClickRipple();
                 settings.setShowClickRipple(newShowClickRippleValue);
                 showClickRippleCheckBox.setChecked(newShowClickRippleValue);
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 break;
             case R.id.item_main_enableDiskCache :
                 boolean newEnableDiskCacheValue = !settings.isEnableDiskCache();
                 settings.setEnableDiskCache(newEnableDiskCacheValue);
                 setCacheStatus(false, newEnableDiskCacheValue);
                 enableDiskCacheCheckBox.setChecked(newEnableDiskCacheValue);
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 break;
             case R.id.item_main_enableMemoryCache :
                 boolean newEnableMemoryCacheValue = !settings.isEnableMemoryCache();
                 settings.setEnableMemoryCache(newEnableMemoryCacheValue);
                 setCacheStatus(true, newEnableMemoryCacheValue);
                 enableMemoryCacheCheckBox.setChecked(newEnableMemoryCacheValue);
-                drawerLayout.closeDrawer(Gravity.START);
+                drawerLayout.closePane();
                 break;
         }
     }
@@ -401,6 +393,17 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
                 }
             }
         }
+    }
+
+    @Override
+    public void onSetWindowBackground(Drawable newDrawable) {
+        windowBackgroundManager.setBackground(newDrawable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        windowBackgroundManager.destroy();
     }
 
     private static class TitleTabFactory implements PagerSlidingTabStrip.TabViewFactory{

@@ -18,13 +18,14 @@ package me.xiaopan.spear.sample.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import me.xiaopan.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectParentMember;
 import me.xiaopan.spear.sample.MyActionBarActivity;
+import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.fragment.StarHomeFragment;
 
 /**
@@ -32,14 +33,18 @@ import me.xiaopan.spear.sample.fragment.StarHomeFragment;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
-public class StarHomeActivity extends MyActionBarActivity {
+public class StarHomeActivity extends MyActionBarActivity implements WindowBackgroundManager.OnSetWindowBackgroundListener {
     @InjectExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE) private String starTitle;
+
+    private WindowBackgroundManager windowBackgroundManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        windowBackgroundManager = new WindowBackgroundManager(this);
 
         StarHomeFragment starHomeFragment = new StarHomeFragment();
         starHomeFragment.setArguments(getIntent().getExtras());
@@ -64,8 +69,19 @@ public class StarHomeActivity extends MyActionBarActivity {
     public static void launch(Activity activity, String starName){
         Intent intent = new Intent(activity, StarHomeActivity.class);
         intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE, starName);
-        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_URL, "http://image.baidu.com/channel/star/"+starName);
+        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_URL, "http://image.baidu.com/channel/star/" + starName);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.window_push_enter, R.anim.window_push_exit);
+    }
+
+    @Override
+    public void onSetWindowBackground(Drawable newDrawable) {
+        windowBackgroundManager.setBackground(newDrawable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        windowBackgroundManager.destroy();
     }
 }

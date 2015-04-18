@@ -1,8 +1,0 @@
-<resources>
-
-    <!-- 基本的主题样式，主要用于在API21上的差异 -->
-    <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
-</resources>

@@ -1,11 +1,19 @@
 package me.xiaopan.spear.sample.fragment;
 
+import android.app.Activity;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
@@ -13,23 +21,28 @@ import org.apache.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xiaopan.spear.sample.R;
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.HttpRequestFuture;
 import me.xiaopan.android.gohttp.JsonHttpResponseHandler;
-import me.xiaopan.android.gohttp.StringHttpResponseHandler;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
+import me.xiaopan.android.widget.PullRefreshLayout;
+import me.xiaopan.spear.CancelCause;
+import me.xiaopan.spear.FailCause;
+import me.xiaopan.spear.ImageFrom;
+import me.xiaopan.spear.LoadListener;
+import me.xiaopan.spear.Spear;
+import me.xiaopan.spear.process.BlurImageProcessor;
+import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.activity.DetailActivity;
+import me.xiaopan.spear.sample.activity.WindowBackgroundManager;
 import me.xiaopan.spear.sample.adapter.StarImageAdapter;
-import me.xiaopan.spear.sample.net.request.StarHomeBackgroundRequest;
 import me.xiaopan.spear.sample.net.request.StarImageRequest;
 import me.xiaopan.spear.sample.util.ScrollingPauseLoadManager;
 import me.xiaopan.spear.sample.widget.HintView;
-import me.xiaopan.android.widget.PullRefreshLayout;
 
 /**
  * 明星个人页面
@@ -50,6 +63,15 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
     private HttpRequestFuture refreshRequestFuture;
     private StarImageAdapter starImageAdapter;
     private MyLoadMoreListener loadMoreListener;
+    private WindowBackgroundManager.OnSetWindowBackgroundListener onSetWindowBackgroundListener;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener){
+            onSetWindowBackgroundListener = (WindowBackgroundManager.OnSetWindowBackgroundListener) activity;
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -81,6 +103,7 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
             refreshRequestFuture.cancel(true);
         }
 
+        onSetWindowBackgroundListener = null;
         super.onDetach();
     }
 
@@ -96,49 +119,6 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
         }
 
         loadMoreListener.cancel();
-        refreshRequestFuture = GoHttp.with(getActivity()).newRequest(starHomeUrl, new StringHttpResponseHandler(), new HttpRequest.Listener<StarHomeBackgroundRequest.Background>() {
-            @Override
-            public void onStarted(HttpRequest httpRequest) {
-                hintView.hidden();
-            }
-
-            @Override
-            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, StarHomeBackgroundRequest.Background backgroundObject, boolean b, boolean b2) {
-                if (getActivity() == null) {
-                    return;
-                }
-
-//                recyclerView.setBackgroundColor(backgroundObject.getBackgroundColor());
-                loadItems(backgroundObject.getBackgroundImageUrl());
-            }
-
-            @Override
-            public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean b, boolean b2) {
-                if (getActivity() == null) {
-                    return;
-                }
-
-                pullRefreshLayout.stopRefresh();
-                if (starImageAdapter == null) {
-                    hintView.failure(failure, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            pullRefreshLayout.startRefresh();
-                        }
-                    });
-                } else {
-                    Toast.makeText(getActivity(), "刷新失败", Toast.LENGTH_SHORT).show();
-                }
-            }
-
-            @Override
-            public void onCanceled(HttpRequest httpRequest) {
-
-            }
-        }).responseHandleCompletedAfterListener(new StarHomeBackgroundRequest.ResponseHandler()).go();
-    }
-
-    private void loadItems(final String backgroundImageUrl) {
         starImageRequest.setStart(0);
         refreshRequestFuture = GoHttp.with(getActivity()).newRequest(starImageRequest, new JsonHttpResponseHandler(StarImageRequest.Response.class), new HttpRequest.Listener<StarImageRequest.Response>() {
             @Override
@@ -152,11 +132,14 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                     return;
                 }
 
-                recyclerView.setAdapter(starImageAdapter = new StarImageAdapter(getActivity(), backgroundImageUrl, responseObject.getImages(), StarHomeFragment.this));
+                recyclerView.setAdapter(starImageAdapter = new StarImageAdapter(getActivity(), null, responseObject.getImages(), StarHomeFragment.this));
                 recyclerView.scheduleLayoutAnimation();
                 pullRefreshLayout.stopRefresh();
                 loadMoreListener.reset();
                 starImageAdapter.setOnLoadMoreListener(loadMoreListener);
+                if(responseObject.getImages() != null && responseObject.getImages().size() > 0){
+                    applyWindowBackground(responseObject.getImages().get(0).getSourceUrl());
+                }
             }
 
             @Override
@@ -255,5 +238,49 @@ public class StarHomeFragment extends InjectFragment implements StarImageAdapter
                 loadMoreRequestFuture.cancel(true);
             }
         }
+    }
+
+    private void applyWindowBackground(String imageUri){
+        Log.e("test", "applyWindowBackground");
+        if(imageUri == null || getActivity() == null){
+            return;
+        }
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+
+        Spear.with(getActivity()).load(imageUri, new LoadListener() {
+            @Override
+            public void onStarted() {
+
+            }
+
+            @Override
+            public void onCompleted(final Bitmap bitmap, ImageFrom imageFrom) {
+                if(onSetWindowBackgroundListener != null && getActivity() != null){
+                    new Handler(Looper.getMainLooper()).post(new Runnable() {
+                        @Override
+                        public void run() {
+                            if(getActivity() != null && onSetWindowBackgroundListener != null){
+                                onSetWindowBackgroundListener.onSetWindowBackground(new BitmapDrawable(getResources(), bitmap));
+                            }else{
+                                bitmap.recycle();
+                            }
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onFailed(FailCause failCause) {
+
+            }
+
+            @Override
+            public void onCanceled(CancelCause cancelCause) {
+
+            }
+        }).resize(displayMetrics.widthPixels, displayMetrics.heightPixels)
+                .scaleType(ImageView.ScaleType.CENTER_CROP)
+                .processor(new BlurImageProcessor(15, true))
+                .fire();
     }
 }

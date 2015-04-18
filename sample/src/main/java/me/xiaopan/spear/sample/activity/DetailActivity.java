@@ -18,18 +18,17 @@ package me.xiaopan.spear.sample.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
 
 import java.util.ArrayList;
 
-import me.xiaopan.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectParentMember;
 import me.xiaopan.spear.sample.MyActionBarActivity;
+import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.fragment.DetailFragment;
 
 /**
@@ -37,12 +36,16 @@ import me.xiaopan.spear.sample.fragment.DetailFragment;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
-public class DetailActivity extends MyActionBarActivity implements DetailFragment.SetDispatchTouchEventListener {
+public class DetailActivity extends MyActionBarActivity implements DetailFragment.SetDispatchTouchEventListener, WindowBackgroundManager.OnSetWindowBackgroundListener {
     private DetailFragment.DispatchTouchEventListener dispatchTouchEventListener;
+
+    private WindowBackgroundManager windowBackgroundManager;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        windowBackgroundManager = new WindowBackgroundManager(this);
 
         toolbar.setVisibility(View.GONE);
 
@@ -53,7 +56,6 @@ public class DetailActivity extends MyActionBarActivity implements DetailFragmen
                 .beginTransaction()
                 .replace(R.id.frame_onlyFragment_content, detailFragment)
                 .commit();
-        getWindow().setBackgroundDrawable(new ColorDrawable(Color.BLACK));
 	}
 
     @Override
@@ -81,6 +83,17 @@ public class DetailActivity extends MyActionBarActivity implements DetailFragmen
     public void onBackPressed() {
         super.onBackPressed();
         overridePendingTransition(R.anim.window_pop_enter, R.anim.window_pop_exit);
+    }
+
+    @Override
+    public void onSetWindowBackground(Drawable newDrawable) {
+        windowBackgroundManager.setBackground(newDrawable);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        windowBackgroundManager.destroy();
     }
 
     public static void launch(Activity activity, ArrayList<String> imageUrlList, int defaultPosition){

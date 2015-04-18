@@ -21,39 +21,30 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.io.File;
 import java.util.List;
 
-import me.xiaopan.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectFragment;
-import me.xiaopan.spear.sample.DisplayOptionsType;
-import me.xiaopan.spear.sample.util.AnimationUtils;
-import me.xiaopan.spear.sample.widget.MyImageView;
-import me.xiaopan.spear.CancelCause;
-import me.xiaopan.spear.DisplayListener;
-import me.xiaopan.spear.FailCause;
-import me.xiaopan.spear.ImageFrom;
 import me.xiaopan.spear.Spear;
+import me.xiaopan.spear.sample.R;
+import me.xiaopan.spear.sample.adapter.ImageFragmentAdapter;
 import me.xiaopan.spear.sample.util.AnimationBatchExecutor;
+import me.xiaopan.spear.sample.util.AnimationUtils;
 import me.xiaopan.spear.sample.util.ApplyWallpaperAsyncTask;
 import me.xiaopan.spear.sample.util.PageNumberSetter;
 import me.xiaopan.spear.sample.util.SaveImageAsyncTask;
 import me.xiaopan.spear.sample.util.SingleTapDetector;
 import me.xiaopan.spear.sample.util.ViewPagerPlayer;
-import uk.co.senab.photoview.PhotoViewAttacher;
+import me.xiaopan.spear.sample.widget.DepthPageTransformer;
 
 /**
  * 图片详情页面
@@ -116,6 +107,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
         animationBatchExecutor = new AnimationBatchExecutor(getActivity(), R.anim.action_show, R.anim.action_hidden, 70, shareButton, applyWallpaperButton, playButton, saveButton);
         viewPagerPlayer = new ViewPagerPlayer(viewPager);
         new PageNumberSetter(currentItemTextView, viewPager);
+        viewPager.setPageTransformer(false, new DepthPageTransformer());
 
         shareButton.setOnClickListener(this);
         applyWallpaperButton.setOnClickListener(this);
@@ -267,107 +259,7 @@ public class DetailFragment extends InjectFragment implements SingleTapDetector.
         }
     }
 
-    private static class ImageFragmentAdapter extends FragmentStatePagerAdapter {
-        private List<String> uris;
-
-        public ImageFragmentAdapter(FragmentManager fm, List<String> uris) {
-            super(fm);
-            this.uris = uris;
-        }
-
-        @Override
-        public int getCount() {
-            return uris.size();
-        }
-
-        @Override
-        public Fragment getItem(int arg0) {
-            ImageFragment imageFragment = new ImageFragment();
-            Bundle bundle = new Bundle();
-            bundle.putString(ImageFragment.PARAM_REQUIRED_IMAGE_URI, uris.get(arg0));
-            imageFragment.setArguments(bundle);
-            return imageFragment;
-        }
-    }
-
-//    private static class ImageAdapter extends PagerAdapter{
-//        private Context context;
-//        private List<String> uris;
-//
-//        public ImageAdapter(Context context, List<String> uris) {
-//            this.context = context;
-//            this.uris = uris;
-//        }
-//
-//        @Override
-//        public int getCount() {
-//            return uris.size();
-//        }
-//
-//        @Override
-//        public boolean isViewFromObject(View view, Object object) {
-//            return view == object;
-//        }
-//
-//        @Override
-//        public Object instantiateItem(ViewGroup container, int position) {
-//            SpearImageView spearImageView = new SpearImageView(context);
-//            spearImageView.displayImage(uris.get(position));
-//            container.addView(spearImageView);
-//            return spearImageView;
-//        }
-//
-//        @Override
-//        public void destroyItem(ViewGroup container, int position, Object object) {
-//            container.removeView((View) object);
-//        }
-//    }
-
-    @InjectContentView(R.layout.fragment_image)
-    public static class ImageFragment extends InjectFragment {
-        public static final String PARAM_REQUIRED_IMAGE_URI = "PARAM_REQUIRED_IMAGE_URI";
-
-        @InjectView(R.id.image_imageFragment_image) private MyImageView imageView;
-        @InjectView(R.id.progress_imageFragment_progress) private ProgressBar progressBar;
-
-        @InjectExtra(PARAM_REQUIRED_IMAGE_URI) private String imageUri;
-
-        @Override
-        public void onViewCreated(View view, Bundle savedInstanceState) {
-            super.onViewCreated(view, savedInstanceState);
-
-            imageView.setDisplayOptions(DisplayOptionsType.Detail);
-            imageView.setAutoApplyGlobalAttr(false);
-            imageView.setDisplayListener(new DisplayListener() {
-                @Override
-                public void onStarted() {
-                    progressBar.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onCompleted(ImageFrom imageFrom) {
-                    progressBar.setVisibility(View.GONE);
-                    new PhotoViewAttacher(imageView);
-                }
-
-                @Override
-                public void onFailed(FailCause failCause) {
-                    progressBar.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onCanceled(CancelCause cancelCause) {
-                    if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD){
-                        progressBar.setVisibility(View.GONE);
-                    }
-                }
-            });
-            imageView.displayImage(imageUri);
-        }
-    }
-
     private class StartPlay implements Runnable{
-
         @Override
         public void run() {
             viewPagerPlayer.start();

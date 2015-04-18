@@ -26,7 +26,6 @@ import me.xiaopan.spear.Spear;
 import me.xiaopan.spear.display.ColorTransitionImageDisplayer;
 import me.xiaopan.spear.display.TransitionImageDisplayer;
 import me.xiaopan.spear.process.CircleImageProcessor;
-import me.xiaopan.spear.process.ReflectionImageProcessor;
 import me.xiaopan.spear.sample.util.Settings;
 
 public class MyApplication extends Application {
@@ -79,8 +78,7 @@ public class MyApplication extends Application {
                 .loadFailDrawable(R.drawable.image_load_fail2)
                 .pauseDownloadDrawable(R.drawable.image_click2)
                 .loadGifDrawable()
-                .displayer(new ColorTransitionImageDisplayer(Color.BLACK))
-                .processor(new ReflectionImageProcessor())
+                .displayer(new ColorTransitionImageDisplayer(Color.TRANSPARENT))
         );
 
         Spear.putOptions(
