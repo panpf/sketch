@@ -11,10 +11,7 @@
             android:id="@+id/recyclerView_starHome"
             android:layout_width="match_parent"
             android:layoutAnimation="@anim/layout_animation"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:clipChildren="false"
-            android:paddingTop="150dp"/>
+            android:layout_height="match_parent"/>
     </me.xiaopan.spear.sample.widget.MyPullRefreshLayout>
     <me.xiaopan.spear.sample.widget.HintView
         android:id="@+id/hintView_starHome"

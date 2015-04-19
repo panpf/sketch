@@ -1,5 +1,6 @@
 package me.xiaopan.spear.sample.fragment;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -19,7 +20,6 @@ import org.apache.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xiaopan.spear.sample.R;
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.HttpRequestFuture;
@@ -27,20 +27,22 @@ import me.xiaopan.android.gohttp.JsonHttpResponseHandler;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.inject.app.InjectFragment;
+import me.xiaopan.android.widget.PullRefreshLayout;
+import me.xiaopan.spear.sample.MyFragment;
+import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.activity.DetailActivity;
+import me.xiaopan.spear.sample.activity.WindowBackgroundManager;
 import me.xiaopan.spear.sample.adapter.SearchImageAdapter;
 import me.xiaopan.spear.sample.net.request.SearchImageRequest;
 import me.xiaopan.spear.sample.net.request.StarImageRequest;
 import me.xiaopan.spear.sample.util.ScrollingPauseLoadManager;
 import me.xiaopan.spear.sample.widget.HintView;
-import me.xiaopan.android.widget.PullRefreshLayout;
 
 /**
  * 图片搜索Fragment
  */
 @InjectContentView(R.layout.fragment_search)
-public class SearchFragment extends InjectFragment implements SearchImageAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener {
+public class SearchFragment extends MyFragment implements SearchImageAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener {
     public static final String PARAM_OPTIONAL_STRING_SEARCH_KEYWORD = "PARAM_OPTIONAL_STRING_SEARCH_KEYWORD";
 
     @InjectView(R.id.refreshLayout_search) PullRefreshLayout pullRefreshLayout;
@@ -51,8 +53,17 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
     private HttpRequestFuture refreshRequestFuture;
     private SearchImageAdapter searchImageListAdapter;
     private MyLoadMoreListener loadMoreListener;
+    private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
 
     @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD) private String searchKeyword = "美女";
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener){
+            windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
+        }
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -86,7 +97,7 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
             @Override
             public boolean onQueryTextSubmit(String s) {
                 s = s.trim();
-                if("".equals(s)){
+                if ("".equals(s)) {
                     Toast.makeText(getActivity(), "搜索关键字不能为空", Toast.LENGTH_LONG).show();
                     return false;
                 }
@@ -132,6 +143,9 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
         } else {
             recyclerView.setAdapter(searchImageListAdapter);
             recyclerView.scheduleLayoutAnimation();
+            if(windowBackgroundLoader != null){
+                windowBackgroundLoader.restore();
+            }
         }
     }
 
@@ -140,8 +154,17 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
         if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             refreshRequestFuture.cancel(true);
         }
-
+        if(windowBackgroundLoader != null){
+            windowBackgroundLoader.detach();
+        }
         super.onDetach();
+    }
+
+    @Override
+    protected void onUserVisibleChanged(boolean isVisibleToUser) {
+        if(windowBackgroundLoader != null){
+            windowBackgroundLoader.setUserVisible(isVisibleToUser);
+        }
     }
 
     @Override
@@ -174,6 +197,10 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
                 pullRefreshLayout.stopRefresh();
                 loadMoreListener.reset();
                 searchImageListAdapter.setOnLoadMoreListener(loadMoreListener);
+
+                if(windowBackgroundLoader != null && imageList.size() > 0){
+                    windowBackgroundLoader.load(imageList.get(0).getSourceUrl());
+                }
             }
 
             @Override
@@ -247,8 +274,6 @@ public class SearchFragment extends InjectFragment implements SearchImageAdapter
                             newImageList.add(image);
                         }
                     }
-
-                    int count = searchImageListAdapter.getCount();
 
                     if (newImageList != null && newImageList.size() > 0) {
                         searchImageListAdapter.append(newImageList);

@@ -8,14 +8,15 @@ import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
 
-import me.xiaopan.spear.sample.R;
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.android.gohttp.HttpRequest;
 import me.xiaopan.android.gohttp.HttpRequestFuture;
 import me.xiaopan.android.gohttp.StringHttpResponseHandler;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.inject.app.InjectFragment;
+import me.xiaopan.android.widget.PullRefreshLayout;
+import me.xiaopan.spear.sample.MyFragment;
+import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.activity.StarHomeActivity;
 import me.xiaopan.spear.sample.adapter.StarCatalogAdapter;
 import me.xiaopan.spear.sample.net.request.ManStarCatalogRequest;
@@ -23,13 +24,12 @@ import me.xiaopan.spear.sample.net.request.StarCatalogRequest;
 import me.xiaopan.spear.sample.net.request.WomanStarCatalogRequest;
 import me.xiaopan.spear.sample.util.ScrollingPauseLoadManager;
 import me.xiaopan.spear.sample.widget.HintView;
-import me.xiaopan.android.widget.PullRefreshLayout;
 
 /**
  * 明星目录页面
  */
 @InjectContentView(R.layout.fragment_star_catalog)
-public class StarCatalogFragment extends InjectFragment implements PullRefreshLayout.OnRefreshListener, StarCatalogAdapter.OnImageClickListener {
+public class StarCatalogFragment extends MyFragment implements PullRefreshLayout.OnRefreshListener, StarCatalogAdapter.OnImageClickListener {
 
     @InjectView(R.id.refreshLayout_starCatalog) private PullRefreshLayout refreshLayout;
     @InjectView(R.id.hint_starCatalog) private HintView hintView;

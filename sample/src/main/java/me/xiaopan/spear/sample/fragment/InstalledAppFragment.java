@@ -18,10 +18,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-import me.xiaopan.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.inject.app.InjectFragment;
+import me.xiaopan.spear.sample.MyFragment;
+import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.adapter.InstalledAppListAdapter;
 import me.xiaopan.spear.sample.bean.AppInfo;
 import me.xiaopan.spear.sample.util.ScrollingPauseLoadManager;
@@ -30,7 +30,7 @@ import me.xiaopan.spear.sample.util.ScrollingPauseLoadManager;
  * 已安装APP列表
  */
 @InjectContentView(R.layout.fragment_installed_app)
-public class InstalledAppFragment extends InjectFragment{
+public class InstalledAppFragment extends MyFragment {
     @InjectView(R.id.recyclerView_installedApp_content) private RecyclerView contentRecyclerView;
     private InstalledAppListAdapter adapter = null;
 

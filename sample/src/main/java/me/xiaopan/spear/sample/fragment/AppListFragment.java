@@ -6,18 +6,18 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
-import me.xiaopan.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.inject.app.InjectFragment;
-import me.xiaopan.spear.sample.adapter.FragmentAdapter;
 import me.xiaopan.android.widget.PagerSlidingTabStrip;
+import me.xiaopan.spear.sample.MyFragment;
+import me.xiaopan.spear.sample.R;
+import me.xiaopan.spear.sample.adapter.FragmentAdapter;
 
 /**
  * App列表页面，用来展示已安装APP和本地APK列表
  */
 @InjectContentView(R.layout.fragment_app_list)
-public class AppListFragment extends InjectFragment {
+public class AppListFragment extends MyFragment {
     @InjectView(R.id.pager_appList_content) private ViewPager viewPager;
     private GetAppListTagStripListener getPagerSlidingTagStripListener;
     private FragmentAdapter fragmentAdapter;

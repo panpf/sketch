@@ -2,7 +2,7 @@ package me.xiaopan.spear.sample;
 
 import me.xiaopan.android.inject.app.InjectFragment;
 
-public abstract class MyFragment extends InjectFragment {
+public class MyFragment extends InjectFragment {
 
     @Override
     public void onPause() {
@@ -28,5 +28,7 @@ public abstract class MyFragment extends InjectFragment {
         }
     }
 
-    protected abstract void onUserVisibleChanged(boolean isVisibleToUser);
+    protected void onUserVisibleChanged(boolean isVisibleToUser){
+
+    }
 }

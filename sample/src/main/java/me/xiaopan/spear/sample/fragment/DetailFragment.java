@@ -33,8 +33,8 @@ import java.util.List;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.inject.app.InjectFragment;
 import me.xiaopan.spear.Spear;
+import me.xiaopan.spear.sample.MyFragment;
 import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.adapter.ImageFragmentAdapter;
 import me.xiaopan.spear.sample.util.AnimationBatchExecutor;
@@ -50,7 +50,7 @@ import me.xiaopan.spear.sample.widget.DepthPageTransformer;
  * 图片详情页面
  */
 @InjectContentView(R.layout.fragment_detail)
-public class DetailFragment extends InjectFragment implements SingleTapDetector.OnSingleTapListener, View.OnClickListener{
+public class DetailFragment extends MyFragment implements SingleTapDetector.OnSingleTapListener, View.OnClickListener{
     public static final String PARAM_REQUIRED_STRING_ARRAY_LIST_URLS = "PARAM_REQUIRED_STRING_ARRAY_LIST_URLS";
     public static final String PARAM_OPTIONAL_INT_DEFAULT_POSITION = "PARAM_OPTIONAL_INT_DEFAULT_POSITION";
 

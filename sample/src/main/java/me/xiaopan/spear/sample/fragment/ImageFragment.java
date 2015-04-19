@@ -1,12 +1,8 @@
 package me.xiaopan.spear.sample.fragment;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 
 import me.xiaopan.android.inject.InjectContentView;
@@ -16,10 +12,6 @@ import me.xiaopan.spear.CancelCause;
 import me.xiaopan.spear.DisplayListener;
 import me.xiaopan.spear.FailCause;
 import me.xiaopan.spear.ImageFrom;
-import me.xiaopan.spear.LoadListener;
-import me.xiaopan.spear.Request;
-import me.xiaopan.spear.Spear;
-import me.xiaopan.spear.process.BlurImageProcessor;
 import me.xiaopan.spear.sample.DisplayOptionsType;
 import me.xiaopan.spear.sample.MyFragment;
 import me.xiaopan.spear.sample.R;
@@ -35,14 +27,14 @@ public class ImageFragment extends MyFragment {
     @InjectView(R.id.progress_imageFragment_progress) private ProgressBar progressBar;
 
     @InjectExtra(PARAM_REQUIRED_IMAGE_URI) private String imageUri;
-    private WindowBackgroundManager.OnSetWindowBackgroundListener onSetWindowBackgroundListener;
-    private Request loadBackgroundRequest;
+
+    private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         if(activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener){
-            onSetWindowBackgroundListener = (WindowBackgroundManager.OnSetWindowBackgroundListener) activity;
+            windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
         }
     }
 
@@ -71,7 +63,7 @@ public class ImageFragment extends MyFragment {
 
             @Override
             public void onCanceled(CancelCause cancelCause) {
-                if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD){
+                if (cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD) {
                     progressBar.setVisibility(View.GONE);
                 }
             }
@@ -81,60 +73,21 @@ public class ImageFragment extends MyFragment {
 
     @Override
     public void onDetach() {
+        if(windowBackgroundLoader != null){
+            windowBackgroundLoader.detach();
+        }
         super.onDetach();
-        onSetWindowBackgroundListener = null;
     }
 
     @Override
     public void onUserVisibleChanged(boolean isVisibleToUser){
-        if(isVisibleToUser){
-            loadBackgroundRequest = applyWindowBackground(imageUri);
-        }else{
-            if(loadBackgroundRequest != null && !loadBackgroundRequest.isFinished()){
-                loadBackgroundRequest.cancel();
-                loadBackgroundRequest = null;
+        if(windowBackgroundLoader != null){
+            windowBackgroundLoader.setUserVisible(isVisibleToUser);
+            if(isVisibleToUser){
+                windowBackgroundLoader.load(imageUri);
+            }else{
+                windowBackgroundLoader.cancel();
             }
         }
-    }
-
-    private Request applyWindowBackground(String imageUri){
-        if(imageUri == null || getActivity() == null){
-            return null;
-        }
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
-
-        return Spear.with(getActivity()).load(
-                imageUri,
-                new LoadListener() {
-                    @Override
-                    public void onStarted() {
-
-                    }
-
-                    @Override
-                    public void onCompleted(final Bitmap bitmap, ImageFrom imageFrom) {
-                        if(onSetWindowBackgroundListener != null){
-                            if(isResumed() && getUserVisibleHint()){
-                                onSetWindowBackgroundListener.onSetWindowBackground(new BitmapDrawable(getResources(), bitmap));
-                            }else{
-                                bitmap.recycle();
-                            }
-                        }
-                    }
-
-                    @Override
-                    public void onFailed(FailCause failCause) {
-
-                    }
-
-                    @Override
-                    public void onCanceled(CancelCause cancelCause) {
-
-                    }
-                }
-        ).resize(displayMetrics.widthPixels, displayMetrics.heightPixels)
-                .scaleType(ImageView.ScaleType.CENTER_CROP)
-                .processor(new BlurImageProcessor(15, true))
-                .fire();
     }
 }

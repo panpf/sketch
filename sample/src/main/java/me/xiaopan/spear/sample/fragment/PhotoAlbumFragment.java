@@ -16,6 +16,7 @@
 
 package me.xiaopan.spear.sample.fragment;
 
+import android.app.Activity;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
@@ -31,23 +32,34 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xiaopan.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.inject.app.InjectFragment;
+import me.xiaopan.android.widget.PullRefreshLayout;
+import me.xiaopan.spear.sample.MyFragment;
+import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.activity.DetailActivity;
+import me.xiaopan.spear.sample.activity.WindowBackgroundManager;
 import me.xiaopan.spear.sample.adapter.PhotoAlbumImageAdapter;
 import me.xiaopan.spear.sample.util.ScrollingPauseLoadManager;
-import me.xiaopan.android.widget.PullRefreshLayout;
 
 /**
  * 本地相册页面
  */
 @InjectContentView(R.layout.fragment_photo_album)
-public class PhotoAlbumFragment extends InjectFragment implements PhotoAlbumImageAdapter.OnImageClickListener, PullRefreshLayout.OnRefreshListener{
+public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAdapter.OnImageClickListener, PullRefreshLayout.OnRefreshListener{
     @InjectView(R.id.refreshLayout_photoAlbum) private PullRefreshLayout pullRefreshLayout;
     @InjectView(R.id.recyclerView_photoAlbum_content) private RecyclerView recyclerView;
+
     private PhotoAlbumImageAdapter imageAdapter;
+    private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener){
+            windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
+        }
+    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -60,6 +72,9 @@ public class PhotoAlbumFragment extends InjectFragment implements PhotoAlbumImag
         if(imageAdapter != null){
             recyclerView.setAdapter(imageAdapter);
             recyclerView.scheduleLayoutAnimation();
+            if(windowBackgroundLoader != null){
+                windowBackgroundLoader.restore();
+            }
         }else{
             pullRefreshLayout.startRefresh();
         }
@@ -74,6 +89,21 @@ public class PhotoAlbumFragment extends InjectFragment implements PhotoAlbumImag
     public void onRefresh() {
         if(getActivity() != null){
             new ReadImagesTask(getActivity().getBaseContext()).execute();
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        if(windowBackgroundLoader != null){
+            windowBackgroundLoader.detach();
+        }
+        super.onDetach();
+    }
+
+    @Override
+    protected void onUserVisibleChanged(boolean isVisibleToUser) {
+        if(windowBackgroundLoader != null){
+            windowBackgroundLoader.setUserVisible(isVisibleToUser);
         }
     }
 
@@ -116,6 +146,9 @@ public class PhotoAlbumFragment extends InjectFragment implements PhotoAlbumImag
             recyclerView.setAdapter(imageAdapter = new PhotoAlbumImageAdapter(getActivity(), strings, PhotoAlbumFragment.this, recyclerView));
             recyclerView.scheduleLayoutAnimation();
             pullRefreshLayout.stopRefresh();
+            if(windowBackgroundLoader != null && strings != null && strings.size() > 0){
+                windowBackgroundLoader.load(strings.get(0));
+            }
         }
     }
 }

@@ -21,10 +21,10 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import me.xiaopan.spear.sample.R;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.inject.app.InjectFragment;
+import me.xiaopan.spear.sample.MyFragment;
+import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.adapter.AppPackageListAdapter;
 import me.xiaopan.spear.sample.bean.AppInfo;
 import me.xiaopan.spear.sample.util.ScrollingPauseLoadManager;
@@ -33,7 +33,7 @@ import me.xiaopan.spear.sample.util.ScrollingPauseLoadManager;
  * 本地安装包页面
  */
 @InjectContentView(R.layout.fragment_installed_app)
-public class AppPackageFragment extends InjectFragment{
+public class AppPackageFragment extends MyFragment {
     @InjectView(R.id.recyclerView_installedApp_content) private RecyclerView contentRecyclerView;
     private AppPackageListAdapter adapter = null;
 
