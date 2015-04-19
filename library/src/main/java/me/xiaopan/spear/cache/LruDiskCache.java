@@ -30,10 +30,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Arrays;
+import java.util.Comparator;
 
 import me.xiaopan.spear.Spear;
 import me.xiaopan.spear.util.CommentUtils;
-import me.xiaopan.spear.util.FileLastModifiedComparator;
 
 /**
  * 默认实现的磁盘缓存器
@@ -43,7 +43,8 @@ public class LruDiskCache implements DiskCache {
     private static final String DEFAULT_DIRECTORY_NAME = "spear";
     private static final int DEFAULT_RESERVE_SIZE = 100 * 1024 * 1024;
     private static final int DEFAULT_MAX_SIZE = 100 * 1024 * 1024;
-	private File cacheDir;	//缓存目录
+
+    private File cacheDir;
     private Context context;
     private FileLastModifiedComparator fileLastModifiedComparator;
     private int reserveSize = DEFAULT_RESERVE_SIZE;
@@ -51,20 +52,16 @@ public class LruDiskCache implements DiskCache {
 
     public LruDiskCache(Context context, File cacheDir){
         this.context = context;
+        this.cacheDir = cacheDir;
         this.fileLastModifiedComparator = new FileLastModifiedComparator();
-        setCacheDir(cacheDir);
     }
 
     public LruDiskCache(Context context) {
-        this.context = context;
-        this.fileLastModifiedComparator = new FileLastModifiedComparator();
+        this(context, null);
     }
 
     @Override
 	public synchronized void setCacheDir(File cacheDir) {
-		if(cacheDir != null && !cacheDir.isDirectory()){
-			throw new IllegalArgumentException(cacheDir.getPath() + "not a directory");
-		}
 		this.cacheDir = cacheDir;
 	}
 
@@ -375,6 +372,24 @@ public class LruDiskCache implements DiskCache {
             return (long)statFs.getAvailableBlocks() * statFs.getBlockSize();
         }else{
             return statFs.getAvailableBytes();
+        }
+    }
+
+    /**
+     * 文件最后修改日期比较器
+     */
+    public static class FileLastModifiedComparator implements Comparator<File> {
+        @Override
+        public int compare(File lhs, File rhs) {
+            long lhsTime = lhs.lastModified();
+            long rhsTime = rhs.lastModified();
+            if(lhsTime == rhsTime){
+                return 0;
+            }else if(lhsTime > rhsTime){
+                return 1;
+            }else{
+                return -1;
+            }
         }
     }
 }

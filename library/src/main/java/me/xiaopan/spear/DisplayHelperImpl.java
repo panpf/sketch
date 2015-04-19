@@ -469,7 +469,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(imageProcessor == null && resize!=null){
             imageProcessor = spear.getConfiguration().getDefaultCutImageProcessor();
         }
-        if(name == null){
+        if(name == null && memoryCacheId != null){
             name = memoryCacheId;
         }
 
@@ -480,7 +480,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         // 验证imageView参数
         if(imageView == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "uri is null or empty");
+                Log.e(Spear.TAG, NAME + " - " + "ImageView is null" + " - " + (name!=null?name:uri));
             }
             if(displayListener != null){
                 displayListener.onFailed(FailCause.IMAGE_VIEW_NULL);
@@ -512,7 +512,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if(uriScheme == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + uri);
+                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme: " + uri + " - " + (name!=null?name:uri));
             }
             if(spearImageViewInterface != null){
                 spearImageViewInterface.setDisplayRequest(null);
@@ -530,6 +530,9 @@ public class DisplayHelperImpl implements DisplayHelper{
 
         // 尝试从内存中寻找缓存图片
         String memoryCacheId = this.memoryCacheId !=null? this.memoryCacheId : generateMemoryCacheId(uri, maxsize, resize, scaleType, imageProcessor);
+        if(name == null){
+            name = memoryCacheId;
+        }
         if(enableMemoryCache){
             Drawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(memoryCacheId);
             if(cacheDrawable != null){
