@@ -1,6 +1,6 @@
 package me.xiaopan.spear;
 
-public enum RequestHandleLevel {
+public enum HandleLevel {
     /**
      * 正常的情况，内存没有就从本地加载，本地还没有就从网络加载，适用于所有类型的图片
      */

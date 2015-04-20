@@ -38,11 +38,17 @@ public interface LoadHelper {
     LoadHelper disableDiskCache();
 
     /**
-     * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
-     * @param maxsize 最大尺寸
+     * 禁止解码Gif图片
      * @return LoadHelper
      */
-    LoadHelper maxsize(ImageSize maxsize);
+    LoadHelper disableGifImage();
+
+    /**
+     * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
+     * @param maxSize 最大尺寸
+     * @return LoadHelper
+     */
+    LoadHelper maxSize(ImageSize maxSize);
 
     /**
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
@@ -50,7 +56,7 @@ public interface LoadHelper {
      * @param height 高
      * @return LoadHelper
      */
-    LoadHelper maxsize(int width, int height);
+    LoadHelper maxSize(int width, int height);
 
     /**
      * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片

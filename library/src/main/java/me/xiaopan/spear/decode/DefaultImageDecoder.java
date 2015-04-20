@@ -29,6 +29,7 @@ import java.io.InputStream;
 
 import me.xiaopan.spear.ImageSize;
 import me.xiaopan.spear.LoadRequest;
+import me.xiaopan.spear.RecycleGifDrawable;
 import me.xiaopan.spear.Spear;
 import me.xiaopan.spear.UriScheme;
 
@@ -39,7 +40,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     private static final String NAME = "DefaultImageDecoder";
 
     @Override
-	public Bitmap decode(LoadRequest loadRequest){
+	public Object decode(LoadRequest loadRequest){
         if(loadRequest.getUriScheme() == UriScheme.HTTP || loadRequest.getUriScheme() == UriScheme.HTTPS){
             return decodeHttpOrHttps(loadRequest);
         }else if(loadRequest.getUriScheme() == UriScheme.FILE){
@@ -55,7 +56,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 	}
 
-    public Bitmap decodeHttpOrHttps(LoadRequest loadRequest){
+    public Object decodeHttpOrHttps(LoadRequest loadRequest){
         File cacheFile = loadRequest.getCacheFile();
         if(cacheFile != null && cacheFile.exists()){
             return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(cacheFile, loadRequest));
@@ -69,7 +70,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         return null;
     }
 
-    public Bitmap decodeFile(LoadRequest loadRequest){
+    public Object decodeFile(LoadRequest loadRequest){
         if(loadRequest.isLocalApkFile() && loadRequest.getCacheFile() != null){
             return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(loadRequest.getCacheFile(), loadRequest));
         }else{
@@ -77,64 +78,69 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
     }
 
-    public Bitmap decodeContent(LoadRequest loadRequest){
-        return decodeFromHelper(loadRequest, new ContentDecodeHelper(loadRequest.getUri(), loadRequest));
+    public Object decodeContent(LoadRequest loadRequest){
+        return decodeFromHelper(loadRequest, new ContentDecodeHelper(Uri.parse(loadRequest.getUri()), loadRequest));
     }
 
-    public Bitmap decodeAsset(LoadRequest loadRequest){
+    public Object decodeAsset(LoadRequest loadRequest){
         return decodeFromHelper(loadRequest, new AssetsDecodeHelper(UriScheme.ASSET.crop(loadRequest.getUri()), loadRequest));
     }
 
-    public Bitmap decodeDrawable(LoadRequest loadRequest){
-        return decodeFromHelper(loadRequest, new DrawableDecodeHelper(UriScheme.DRAWABLE.crop(loadRequest.getUri()), loadRequest));
+    public Object decodeDrawable(LoadRequest loadRequest){
+        return decodeFromHelper(loadRequest, new DrawableDecodeHelper(Integer.valueOf(UriScheme.DRAWABLE.crop(loadRequest.getUri())), loadRequest));
     }
 
-    public static Bitmap decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper){
-        ImageSize maxsize = loadRequest.getMaxsize();
+    public static Object decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper){
+        ImageSize maxSize = loadRequest.getMaxSize();
         Bitmap bitmap = null;
         Point originalSize = null;
         int inSampleSize = 1;
 
-        if(maxsize != null){
-            // 只解码宽高
-            Options options = new Options();
-            options.inJustDecodeBounds = true;
-            decodeHelper.onDecode(options);
-            if(!(options.outWidth == 1 && options.outHeight == 1)){
-                originalSize = new Point(options.outWidth, options.outHeight);
+        // 只解码宽高
+        Options options = new Options();
+        options.inJustDecodeBounds = true;
+        decodeHelper.decode(options);
 
-                // 计算缩放倍数
-                inSampleSize = loadRequest.getSpear().getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxsize.getWidth(), maxsize.getHeight());
-                options.inSampleSize = inSampleSize;
-
-                // 再次解码
-                options.inJustDecodeBounds = false;
-                bitmap = decodeHelper.onDecode(options);
-            }
+        if(!loadRequest.isDisableGifImage() && options.outMimeType.equals("image/gif")){
+            return decodeHelper.getGifDrawable();
         }else{
-            bitmap = decodeHelper.onDecode(null);
-            if(bitmap != null){
-                if(!(bitmap.getWidth()==1 && bitmap.getHeight() == 1)){
-                    originalSize = new Point(bitmap.getWidth(), bitmap.getHeight());
-                }else{
-                    if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "recycle bitmap@"+Integer.toHexString(bitmap.hashCode()) + " - " + "1x1 Image");
+            if(maxSize != null){
+                if(!(options.outWidth == 1 && options.outHeight == 1)){
+                    originalSize = new Point(options.outWidth, options.outHeight);
+
+                    // 计算缩放倍数
+                    inSampleSize = loadRequest.getSpear().getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxSize.getWidth(), maxSize.getHeight());
+                    options.inSampleSize = inSampleSize;
+
+                    // 再次解码
+                    options.inJustDecodeBounds = false;
+                    bitmap = decodeHelper.decode(options);
+                }
+            }else{
+                bitmap = decodeHelper.decode(null);
+                if(bitmap != null){
+                    if(!(bitmap.getWidth()==1 && bitmap.getHeight() == 1)){
+                        originalSize = new Point(bitmap.getWidth(), bitmap.getHeight());
+                    }else{
+                        if(Spear.isDebugMode()){
+                            Log.w(Spear.TAG, NAME + " - " + "recycle bitmap@"+Integer.toHexString(bitmap.hashCode()) + " - " + "1x1 Image");
+                        }
+                        bitmap.recycle();
+                        bitmap = null;
                     }
-                    bitmap.recycle();
-                    bitmap = null;
                 }
             }
-        }
 
-        // 回调
-        if(bitmap != null && !bitmap.isRecycled()){
-            decodeHelper.onDecodeSuccess(bitmap, originalSize, inSampleSize);
-        }else{
-            bitmap = null;
-            decodeHelper.onDecodeFailed();
-        }
+            // 回调
+            if(bitmap != null && !bitmap.isRecycled()){
+                decodeHelper.onDecodeSuccess(bitmap, originalSize, inSampleSize);
+            }else{
+                bitmap = null;
+                decodeHelper.onDecodeFailed();
+            }
 
-        return bitmap;
+            return bitmap;
+        }
     }
 
     /**
@@ -145,7 +151,7 @@ public class DefaultImageDecoder implements ImageDecoder {
          * 解码
          * @param options 解码选项
          */
-        Bitmap onDecode(BitmapFactory.Options options);
+        Bitmap decode(BitmapFactory.Options options);
 
         /**
          * 解码成功
@@ -156,6 +162,12 @@ public class DefaultImageDecoder implements ImageDecoder {
          * 解码失败
          */
         void onDecodeFailed();
+
+        /**
+         * 获取GIF图
+         * @return
+         */
+        RecycleGifDrawable getGifDrawable();
     }
 
     public static class AssetsDecodeHelper implements DecodeHelper {
@@ -169,7 +181,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         @Override
-        public Bitmap onDecode(BitmapFactory.Options options) {
+        public Bitmap decode(BitmapFactory.Options options) {
             InputStream inputStream = null;
             try {
                 inputStream = loadRequest.getSpear().getConfiguration().getContext().getAssets().open(assetsFilePath);
@@ -193,9 +205,9 @@ public class DefaultImageDecoder implements ImageDecoder {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
                         .append(" - ").append("decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxsize() != null){
+                if(bitmap != null && loadRequest.getMaxSize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
@@ -212,6 +224,16 @@ public class DefaultImageDecoder implements ImageDecoder {
                 Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + assetsFilePath);
             }
         }
+
+        @Override
+        public RecycleGifDrawable getGifDrawable() {
+            try {
+                return new RecycleGifDrawable(loadRequest.getSpear().getConfiguration().getContext().getAssets(), assetsFilePath);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 
     public static class ByteArrayDecodeHelper implements DecodeHelper {
@@ -225,7 +247,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         @Override
-        public Bitmap onDecode(BitmapFactory.Options options) {
+        public Bitmap decode(BitmapFactory.Options options) {
             return BitmapFactory.decodeByteArray(data, 0, data.length, options);
         }
 
@@ -234,9 +256,9 @@ public class DefaultImageDecoder implements ImageDecoder {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
                         .append(" - ").append("decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxsize() != null){
+                if(bitmap != null && loadRequest.getMaxSize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
@@ -253,6 +275,16 @@ public class DefaultImageDecoder implements ImageDecoder {
                 Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + loadRequest.getName());
             }
         }
+
+        @Override
+        public RecycleGifDrawable getGifDrawable() {
+            try {
+                return new RecycleGifDrawable(data);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 
     public static class CacheFileDecodeHelper implements DecodeHelper {
@@ -266,7 +298,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         @Override
-        public Bitmap onDecode(BitmapFactory.Options options) {
+        public Bitmap decode(BitmapFactory.Options options) {
             if(!file.canRead()){
                 if(Spear.isDebugMode()){
                     Log.e(Spear.TAG, NAME + " - " + "can not read" + " - " + file.getPath());
@@ -287,9 +319,9 @@ public class DefaultImageDecoder implements ImageDecoder {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
                         .append(" - ").append("decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxsize() != null){
+                if(bitmap != null && loadRequest.getMaxSize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
@@ -318,21 +350,31 @@ public class DefaultImageDecoder implements ImageDecoder {
                 }
             }
         }
+
+        @Override
+        public RecycleGifDrawable getGifDrawable() {
+            try {
+                return new RecycleGifDrawable(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 
     public static class DrawableDecodeHelper implements DecodeHelper {
         private static final String NAME = "DrawableDecodeHelper";
-        private String drawableIdString;
+        private int drawableId;
         private LoadRequest loadRequest;
 
-        public DrawableDecodeHelper(String drawableIdString, LoadRequest loadRequest) {
-            this.drawableIdString = drawableIdString;
+        public DrawableDecodeHelper(int drawableId, LoadRequest loadRequest) {
+            this.drawableId = drawableId;
             this.loadRequest = loadRequest;
         }
 
         @Override
-        public Bitmap onDecode(BitmapFactory.Options options) {
-            return BitmapFactory.decodeResource(loadRequest.getSpear().getConfiguration().getContext().getResources(), Integer.valueOf(drawableIdString), options);
+        public Bitmap decode(BitmapFactory.Options options) {
+            return BitmapFactory.decodeResource(loadRequest.getSpear().getConfiguration().getContext().getResources(), drawableId, options);
         }
 
         @Override
@@ -340,9 +382,9 @@ public class DefaultImageDecoder implements ImageDecoder {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
                         .append(" - ").append("decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxsize() != null){
+                if(bitmap != null && loadRequest.getMaxSize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(",  ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(",  ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
@@ -356,7 +398,17 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public void onDecodeFailed() {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + drawableIdString);
+                Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + drawableId);
+            }
+        }
+
+        @Override
+        public RecycleGifDrawable getGifDrawable() {
+            try {
+                return new RecycleGifDrawable(loadRequest.getSpear().getConfiguration().getContext().getResources(), drawableId);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
             }
         }
     }
@@ -372,7 +424,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         @Override
-        public Bitmap onDecode(BitmapFactory.Options options) {
+        public Bitmap decode(BitmapFactory.Options options) {
             if(file.canRead()){
                 return BitmapFactory.decodeFile(file.getPath(), options);
             }else{
@@ -388,9 +440,9 @@ public class DefaultImageDecoder implements ImageDecoder {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
                         .append(" - "+"decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxsize() != null){
+                if(bitmap != null && loadRequest.getMaxSize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
@@ -413,23 +465,33 @@ public class DefaultImageDecoder implements ImageDecoder {
                 Log.e(Spear.TAG, log.toString());
             }
         }
+
+        @Override
+        public RecycleGifDrawable getGifDrawable() {
+            try {
+                return new RecycleGifDrawable(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
     }
 
     public static class ContentDecodeHelper implements DecodeHelper {
         private static final String NAME = "ContentDecodeHelper";
-        private String contentUri;
+        private Uri contentUri;
         private LoadRequest loadRequest;
 
-        public ContentDecodeHelper(String contentUri, LoadRequest loadRequest) {
+        public ContentDecodeHelper(Uri contentUri, LoadRequest loadRequest) {
             this.contentUri = contentUri;
             this.loadRequest = loadRequest;
         }
 
         @Override
-        public Bitmap onDecode(BitmapFactory.Options options) {
+        public Bitmap decode(BitmapFactory.Options options) {
             InputStream inputStream = null;
             try {
-                inputStream = loadRequest.getSpear().getConfiguration().getContext().getContentResolver().openInputStream(Uri.parse(contentUri));
+                inputStream = loadRequest.getSpear().getConfiguration().getContext().getContentResolver().openInputStream(contentUri);
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -450,9 +512,9 @@ public class DefaultImageDecoder implements ImageDecoder {
             if(Spear.isDebugMode()){
                 StringBuilder stringBuilder = new StringBuilder(NAME)
                         .append(" - ").append("decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxsize() != null){
+                if(bitmap != null && loadRequest.getMaxSize() != null){
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxsize().getWidth()).append("x").append(loadRequest.getMaxsize().getHeight());
+                    stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
                 }else{
@@ -467,6 +529,16 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeFailed() {
             if(Spear.isDebugMode()){
                 Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + contentUri);
+            }
+        }
+
+        @Override
+        public RecycleGifDrawable getGifDrawable() {
+            try {
+                return new RecycleGifDrawable(loadRequest.getSpear().getConfiguration().getContext().getContentResolver(), contentUri);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
             }
         }
     }

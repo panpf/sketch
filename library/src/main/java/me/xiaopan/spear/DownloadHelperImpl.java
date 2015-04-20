@@ -77,9 +77,7 @@ public class DownloadHelperImpl implements DownloadHelper{
             return this;
         }
 
-        if(!options.isEnableDiskCache()){
-            this.enableDiskCache = false;
-        }
+        this.enableDiskCache = options.isEnableDiskCache();
 
         return this;
     }

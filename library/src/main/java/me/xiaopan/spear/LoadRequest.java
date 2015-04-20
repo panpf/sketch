@@ -39,12 +39,12 @@ public interface LoadRequest extends DownloadRequest{
     /**
      * 获取最大尺寸，用于读取图片时计算inSampleSize
      */
-    ImageSize getMaxsize();
+    ImageSize getMaxSize();
 
     /**
      * 设置最大尺寸，用于读取图片时计算inSampleSize
      */
-    void setMaxsize(ImageSize maxsize);
+    void setMaxSize(ImageSize maxSize);
 
     /**
      * 获取缩放类型
@@ -70,6 +70,17 @@ public interface LoadRequest extends DownloadRequest{
      * 设置加载监听器
      */
     void setLoadListener(LoadListener loadListener);
+
+    /**
+     * 是否禁止解码Gif图片，禁止后Gif图将使用BitmapFactory来解码
+     * @return true：禁止
+     */
+    boolean isDisableGifImage();
+
+    /**
+     * 设置是否禁止解码Gif图，禁止后Gif图将使用BitmapFactory来解码
+     */
+    void setDisableGifImage(boolean isDisableGifImage);
 
     /**
      * 获取缓存文件

@@ -25,33 +25,33 @@ import android.widget.ImageView;
  */
 public interface ImageSizeCalculator {
     /**
-     * 计算maxsize
+     * 计算maxSize
      * @param imageView 你需要根据ImageView的宽高来计算
-     * @return maxsize
+     * @return maxSize
      */
-    public ImageSize calculateImageMaxsize(ImageView imageView);
+    ImageSize calculateImageMaxSize(ImageView imageView);
 
     /**
      * 计算resize
      * @param imageView 你需要根据ImageView的宽高来计算
      * @return resize
      */
-    public ImageSize calculateImageResize(ImageView imageView);
+    ImageSize calculateImageResize(ImageView imageView);
 
     /**
-     * 获取默认的maxsize
+     * 获取默认的maxSize
      * @param context 上下文
-     * @return maxsize
+     * @return maxSize
      */
-    public ImageSize getDefaultImageMaxsize(Context context);
+    ImageSize getDefaultImageMaxSize(Context context);
 
     /**
-     * 比较两个maxsize的大小，在使用options()方法批量设置属性的时候会使用此方法比较RequestOptions的maxsize和已有的maxsize，如果前者小于后者就会使用前者代替后者
-     * @param maxsize1 maxsize1
-     * @param maxsize2 maxsize2
-     * @return 等于0：两者相等；小于0：maxsize1小于maxsize2；大于0：maxsize1大于maxsize2
+     * 比较两个maxSize的大小，在使用options()方法批量设置属性的时候会使用此方法比较RequestOptions的maxSize和已有的maxSize，如果前者小于后者就会使用前者代替后者
+     * @param maxSize1 maxSize1
+     * @param maxSize2 maxSize2
+     * @return 等于0：两者相等；小于0：maxSize1小于maxSize2；大于0：maxSize1大于maxSize2
      */
-    public int compareMaxsize(ImageSize maxsize1, ImageSize maxsize2);
+    int compareMaxSize(ImageSize maxSize1, ImageSize maxSize2);
 
     /**
      * 计算InSampleSize
@@ -61,5 +61,5 @@ public interface ImageSizeCalculator {
      * @param targetHeight 目标高
      * @return 合适的InSampleSize
      */
-    public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight);
+    int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight);
 }

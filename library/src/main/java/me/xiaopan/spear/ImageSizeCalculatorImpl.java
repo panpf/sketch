@@ -27,10 +27,10 @@ import java.lang.reflect.Field;
  * 图片尺寸计算器
  */
 public class ImageSizeCalculatorImpl implements ImageSizeCalculator{
-    private ImageSize defaultMaxsize;
+    private ImageSize defaultMaxSize;
 
     @Override
-    public ImageSize calculateImageMaxsize(ImageView imageView) {
+    public ImageSize calculateImageMaxSize(ImageView imageView) {
         int width = getWidth(imageView, true, true, false);
         int height = getHeight(imageView, true, true, false);
         if (width > 0 || height > 0){
@@ -52,24 +52,24 @@ public class ImageSizeCalculatorImpl implements ImageSizeCalculator{
     }
 
     @Override
-    public ImageSize getDefaultImageMaxsize(Context context) {
-        if(defaultMaxsize == null){
+    public ImageSize getDefaultImageMaxSize(Context context) {
+        if(defaultMaxSize == null){
             synchronized (this){
-                if(defaultMaxsize == null){
+                if(defaultMaxSize == null){
                     DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-                    defaultMaxsize = new ImageSize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
+                    defaultMaxSize = new ImageSize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
                 }
             }
         }
-        return defaultMaxsize;
+        return defaultMaxSize;
     }
 
     @Override
-    public int compareMaxsize(ImageSize maxsize1, ImageSize maxsize2) {
-        if(maxsize1 == null || maxsize2 == null){
+    public int compareMaxSize(ImageSize maxSize1, ImageSize maxSize2) {
+        if(maxSize1 == null || maxSize2 == null){
             return 0;
         }
-        return (maxsize1.getWidth() * maxsize1.getHeight()) - (maxsize2.getWidth() - maxsize2.getHeight());
+        return (maxSize1.getWidth() * maxSize1.getHeight()) - (maxSize2.getWidth() - maxSize2.getHeight());
     }
 
     @Override

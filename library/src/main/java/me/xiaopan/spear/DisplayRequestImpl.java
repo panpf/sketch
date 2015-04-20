@@ -53,16 +53,16 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private ProgressListener progressListener;  // 下载进度监听器
 
     // Load fields
-    private RequestHandleLevel requestHandleLevel = RequestHandleLevel.NET;  // Level
     private ImageSize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来裁剪图片
-    private ImageSize maxsize;	// 最大尺寸，用于读取图片时计算inSampleSize
+    private ImageSize maxSize;	// 最大尺寸，用于读取图片时计算inSampleSize
+    private HandleLevel handleLevel = HandleLevel.NET;  // Level
     private ImageProcessor imageProcessor;	// 图片处理器
     private ImageView.ScaleType scaleType; // 图片缩放方式，ImageProcessor会根据resize和scaleType来创建新的图片
 
     // Display fields
     private String memoryCacheId;	// 内存缓存ID
     private boolean enableMemoryCache = true;	// 是否开启内存缓存
-    private boolean thisIsGifImage; // 这是一张GIF图
+    private boolean disableGifImage; // 这是一张GIF图
     private DrawableHolder loadFailDrawableHolder;	// 当加载失败时显示的图片
     private DrawableHolder pauseDownloadDrawableHolder;	// 当暂停下载时显示的图片
     private ImageDisplayer imageDisplayer;	// 图片显示器
@@ -132,8 +132,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
     /****************************************** Load methods ******************************************/
     @Override
-    public void setRequestHandleLevel(RequestHandleLevel requestHandleLevel) {
-        this.requestHandleLevel = requestHandleLevel;
+    public void setHandleLevel(HandleLevel handleLevel) {
+        this.handleLevel = handleLevel;
     }
 
     @Override
@@ -147,13 +147,13 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     }
 
     @Override
-    public ImageSize getMaxsize() {
-        return maxsize;
+    public ImageSize getMaxSize() {
+        return maxSize;
     }
 
     @Override
-    public void setMaxsize(ImageSize maxsize) {
-        this.maxsize = maxsize;
+    public void setMaxSize(ImageSize maxSize) {
+        this.maxSize = maxSize;
     }
 
     @Override
@@ -403,7 +403,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                     Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "diskCache" + " - " + name);
                 }
             }else{
-                if(requestHandleLevel == RequestHandleLevel.LOCAL){
+                if(handleLevel == HandleLevel.LOCAL){
                     if(levelFromPauseDownload){
                         setRequestStatus(RequestStatus.WAIT_DISPLAY);
                         spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PAUSE_DOWNLOAD, this).sendToTarget();
@@ -413,7 +413,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                     }else{
                         toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
                         if(Spear.isDebugMode()){
-                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "level is local" + " - " + name);
+                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "handleLevel is local" + " - " + name);
                         }
                     }
                     return;
@@ -481,7 +481,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(enableMemoryCache){
             Drawable cacheDrawable = spear.getConfiguration().getMemoryCache().get(memoryCacheId);
             if(cacheDrawable != null){
-                RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
+                RecycleDrawableInterface recycleDrawable = (RecycleDrawableInterface) cacheDrawable;
                 if(!recycleDrawable.isRecycled()){
                     if(Spear.isDebugMode()){
                         Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "from memory get drawable@"+recycleDrawable.getHashCodeByLog() + " - " + name);
@@ -512,89 +512,117 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         }
 
         // 解码
-        Bitmap bitmap = spear.getConfiguration().getImageDecoder().decode(this);
-        if(bitmap != null && !bitmap.isRecycled()){
-            if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + name);
-            }
-        }else{
-            if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "decodeFailed" + " - " + name);
-            }
+        Object decodeResult = spear.getConfiguration().getImageDecoder().decode(this);
+        if(decodeResult == null){
+            toFailedStatus(FailCause.DECODE_FAIL);
+            return;
         }
 
-        if(isCanceled()){
-            if(bitmap != null){
+        if(decodeResult instanceof Bitmap){
+            Bitmap bitmap = (Bitmap) decodeResult;
+            if(!bitmap.isRecycled()){
+                if(Spear.isDebugMode()){
+                    Log.d(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + name);
+                }
+            }else{
+                if(Spear.isDebugMode()){
+                    Log.e(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "decodeFailed" + " - " + name);
+                }
+            }
+
+            if(isCanceled()){
                 if(Spear.isDebugMode()){
                     Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "decodeAfter:cancel" + " - " + name);
                 }
                 bitmap.recycle();
+                if(Spear.isDebugMode()){
+                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "decodeAfter" + " - " + name);
+                }
+                return;
             }
-            if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "decodeAfter" + " - " + name);
-            }
-            return;
-        }
 
-        //处理
-        if(bitmap != null && !bitmap.isRecycled()){
-            ImageProcessor imageProcessor = getImageProcessor();
-            if(imageProcessor == null && getResize() != null){
-                imageProcessor = spear.getConfiguration().getDefaultCutImageProcessor();
+            //处理
+            if(!bitmap.isRecycled()){
+                ImageProcessor imageProcessor = getImageProcessor();
+                if(imageProcessor == null && getResize() != null){
+                    imageProcessor = spear.getConfiguration().getDefaultCutImageProcessor();
+                }
+                if(imageProcessor != null){
+                    Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), getScaleType());
+                    if(newBitmap != bitmap){
+                        if(Spear.isDebugMode()){
+                            Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - " + "recycle old bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter" + " - " + name);
+                        }
+                        bitmap.recycle();
+                        bitmap = newBitmap;
+                    }
+                }
             }
-            if(imageProcessor != null){
-                Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), getScaleType());
-                if(newBitmap != bitmap){
+
+            if(isCanceled()){
+                if(bitmap != null){
                     if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - " + "recycle old bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter" + " - " + name);
+                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter:cancel" + " - " + name);
                     }
                     bitmap.recycle();
-                    bitmap = newBitmap;
                 }
-            }
-        }
-
-        if(isCanceled()){
-            if(bitmap != null){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter:cancel" + " - " + name);
+                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled "+ " - " + "processAfter" + " - " + name);
                 }
-                bitmap.recycle();
+                return;
             }
-            if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled "+ " - " + "processAfter" + " - " + name);
-            }
-            return;
-        }
 
-        if(bitmap != null && !bitmap.isRecycled()){
-            RecycleBitmapDrawable resultDrawable = new RecycleBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
-            if(enableMemoryCache && memoryCacheId != null){
-                spear.getConfiguration().getMemoryCache().put(memoryCacheId, resultDrawable);
-            }
-            this.resultDrawable = resultDrawable;
+            if(bitmap != null && !bitmap.isRecycled()){
+                RecycleBitmapDrawable bitmapDrawable = new RecycleBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
+                if(enableMemoryCache && memoryCacheId != null){
+                    spear.getConfiguration().getMemoryCache().put(memoryCacheId, bitmapDrawable);
+                }
+                this.resultDrawable = bitmapDrawable;
 
-            // 显示
-            setRequestStatus(RequestStatus.WAIT_DISPLAY);
-            resultDrawable.setIsWaitDisplay("executeLoad:new", true);
-            spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                // 显示
+                setRequestStatus(RequestStatus.WAIT_DISPLAY);
+                bitmapDrawable.setIsWaitDisplay("executeLoad:new", true);
+                spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+            }else{
+                toFailedStatus(FailCause.DECODE_FAIL);
+            }
+        }else if(decodeResult instanceof RecycleGifDrawable){
+            RecycleGifDrawable gifDrawable = (RecycleGifDrawable) decodeResult;
+            if(!gifDrawable.isRecycled()){
+                if(enableMemoryCache && memoryCacheId != null){
+                    spear.getConfiguration().getMemoryCache().put(memoryCacheId, gifDrawable);
+                }
+                this.resultDrawable = gifDrawable;
+
+                // 显示
+                setRequestStatus(RequestStatus.WAIT_DISPLAY);
+                gifDrawable.setIsWaitDisplay("executeLoad:new", true);
+                spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+            }else{
+                toFailedStatus(FailCause.DECODE_FAIL);
+            }
         }else{
             toFailedStatus(FailCause.DECODE_FAIL);
         }
     }
 
     @Override
-    public void setLevelFromPauseDownload(boolean levelFromPauseDownload) {
-        this.levelFromPauseDownload = levelFromPauseDownload;
-    }
-
-    @Override
-    public void setThisIsGifImage(boolean thisIsGifImage) {
-        this.thisIsGifImage = thisIsGifImage;
+    public void setHandleLevelFromPauseDownload(boolean handleLevelFromPauseDownload) {
+        this.levelFromPauseDownload = handleLevelFromPauseDownload;
     }
 
     @Override
     public void setLoadListener(LoadListener loadListener) {
+    }
+
+    @Override
+    public boolean isDisableGifImage() {
+        return disableGifImage;
+    }
+
+    @Override
+    public void setDisableGifImage(boolean isDisableGifImage) {
+        this.disableGifImage = isDisableGifImage;
     }
 
     @Override
@@ -629,8 +657,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
     private void handleCompletedOnMainThread() {
         if(isCanceled()){
-            if(resultDrawable != null && resultDrawable instanceof RecycleDrawable){
-                ((RecycleDrawable) resultDrawable).setIsWaitDisplay("completedCallback:cancel", false);
+            if(resultDrawable != null && resultDrawable instanceof RecycleDrawableInterface){
+                ((RecycleDrawableInterface) resultDrawable).setIsWaitDisplay("completedCallback:cancel", false);
             }
             if(Spear.isDebugMode()){
                 Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
@@ -643,6 +671,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
         }
         imageDisplayer.display(imageViewHolder.getImageView(), resultDrawable);
+        ((RecycleDrawableInterface) resultDrawable).setIsWaitDisplay("completedCallback", false);
         setRequestStatus(RequestStatus.COMPLETED);
         if(displayListener != null){
             displayListener.onCompleted(imageFrom);

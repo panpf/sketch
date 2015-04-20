@@ -20,23 +20,15 @@ package me.xiaopan.spear;
  * 下载选项
  */
 public class DownloadOptions implements RequestOptions {
-    protected boolean enableDiskCache = true;	//是否开启磁盘缓存
+    private boolean enableDiskCache = true;	//是否开启磁盘缓存
 
     /**
-     * 关闭磁盘缓存
+     * 设置是否开启磁盘缓存
+     * @param isEnableDiskCache 是否开启磁盘缓存
      * @return DownloadOptions
      */
-    public DownloadOptions disableDiskCache() {
-        this.enableDiskCache = false;
-        return this;
-    }
-
-    /**
-     * 启用磁盘缓存
-     * @return DownloadOptions
-     */
-    public DownloadOptions enableDiskCache() {
-        this.enableDiskCache = true;
+    public DownloadOptions setEnableDiskCache(boolean isEnableDiskCache) {
+        this.enableDiskCache = isEnableDiskCache;
         return this;
     }
 

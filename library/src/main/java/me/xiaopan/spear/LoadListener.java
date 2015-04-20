@@ -35,6 +35,13 @@ public interface LoadListener {
     void onCompleted(Bitmap bitmap, ImageFrom imageFrom);
 
     /**
+     * 已完成
+     * @param gifDrawable GIF图
+     * @param imageFrom 图片来源
+     */
+    void onCompleted(RecycleGifDrawable gifDrawable, ImageFrom imageFrom);
+
+    /**
      * 已失败
      * @param failCause 失败原因
      */

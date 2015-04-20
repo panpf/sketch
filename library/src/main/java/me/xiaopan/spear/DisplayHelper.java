@@ -67,11 +67,17 @@ public interface DisplayHelper {
     DisplayHelper disableDiskCache();
 
     /**
+     * 禁止解码Gif图片
+     * @return LoadHelper
+     */
+    DisplayHelper disableGifImage();
+
+    /**
      * 设置最大尺寸，在解码时会使用此Size来计算inSimpleSize
-     * @param maxsize 最大尺寸
+     * @param maxSize 最大尺寸
      * @return DisplayHelper
      */
-    DisplayHelper maxsize(ImageSize maxsize);
+    DisplayHelper maxSize(ImageSize maxSize);
 
     /**
      * 设置最大尺寸，在解码时会使用此Size来计算inSimpleSize
@@ -79,7 +85,7 @@ public interface DisplayHelper {
      * @param height 高
      * @return DisplayHelper
      */
-    DisplayHelper maxsize(int width, int height);
+    DisplayHelper maxSize(int width, int height);
 
     /**
      * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
@@ -120,12 +126,6 @@ public interface DisplayHelper {
      * @return DisplayHelper
      */
     DisplayHelper disableMemoryCache();
-
-    /**
-     * 加载gif图片
-     * @return DisplayHelper
-     */
-    DisplayHelper thisIsGifImage();
 
     /**
      * 设置显示监听器
@@ -186,11 +186,11 @@ public interface DisplayHelper {
     DisplayHelper progressListener(ProgressListener progressListener);
 
     /**
-     * 设置加载级别
-     * @param requestHandleLevel 加载级别
+     * 设置处理级别
+     * @param handleLevel 处理级别
      * @return DisplayHelper
      */
-    DisplayHelper level(RequestHandleLevel requestHandleLevel);
+    DisplayHelper handleLevel(HandleLevel handleLevel);
 
     /**
      * 设置显示参数
@@ -215,5 +215,5 @@ public interface DisplayHelper {
     /**
      * 生成内存缓存ID
      */
-    String generateMemoryCacheId(String uri, ImageSize maxsize, ImageSize resize, ImageView.ScaleType scaleType, ImageProcessor imageProcessor);
+    String generateMemoryCacheId(String uri, ImageSize maxSize, ImageSize resize, ImageView.ScaleType scaleType, ImageProcessor imageProcessor);
 }

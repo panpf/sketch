@@ -31,7 +31,7 @@ import java.nio.ByteBuffer;
 
 import pl.droidsonroids.gif.GifDrawable;
 
-public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
+public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableInterface {
     private static final String NAME = "RecycleGifDrawable";
 
     private int cacheRefCount;
@@ -83,9 +83,6 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
         synchronized (this) {
             if (isDisplayed) {
                 displayRefCount++;
-                if(waitDisplayRefCount > 0){
-                    waitDisplayRefCount--;
-                }
             } else {
                 if(displayRefCount > 0){
                     displayRefCount--;
@@ -120,7 +117,7 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
                 }
             }
         }
-        tryRecycle((isWaitDisplay ? "wait display" : "cancel display"), callingStation);
+        tryRecycle((isWaitDisplay ? "waitDisplay" : "displayed"), callingStation);
     }
 
     @Override

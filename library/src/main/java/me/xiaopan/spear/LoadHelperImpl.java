@@ -37,7 +37,8 @@ public class LoadHelperImpl implements LoadHelper{
     protected ProgressListener progressListener;
 
     // 加载属性
-    protected ImageSize maxsize;
+    protected boolean disableGifImage;
+    protected ImageSize maxSize;
     protected ImageSize resize;
     protected ImageProcessor imageProcessor;
     protected ImageView.ScaleType scaleType;
@@ -59,7 +60,7 @@ public class LoadHelperImpl implements LoadHelper{
     public LoadHelperImpl(Spear spear, String uri) {
         this.spear = spear;
         this.uri = uri;
-        this.maxsize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxsize(spear.getConfiguration().getContext());
+        this.maxSize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(spear.getConfiguration().getContext());
     }
 
     @Override
@@ -75,14 +76,20 @@ public class LoadHelperImpl implements LoadHelper{
     }
 
     @Override
-    public LoadHelperImpl maxsize(ImageSize maxsize){
-        this.maxsize = maxsize;
+    public LoadHelperImpl disableGifImage() {
+        this.disableGifImage = true;
         return this;
     }
 
     @Override
-    public LoadHelperImpl maxsize(int width, int height){
-        this.maxsize = new ImageSize(width, height);
+    public LoadHelperImpl maxSize(ImageSize maxSize){
+        this.maxSize = maxSize;
+        return this;
+    }
+
+    @Override
+    public LoadHelperImpl maxSize(int width, int height){
+        this.maxSize = new ImageSize(width, height);
         return this;
     }
 
@@ -128,11 +135,9 @@ public class LoadHelperImpl implements LoadHelper{
             return this;
         }
 
-        if(!options.isEnableDiskCache()){
-            this.enableDiskCache = false;
-        }
-        if(this.maxsize == null){
-            this.maxsize = options.getMaxsize();
+        this.enableDiskCache = options.isEnableDiskCache();
+        if(this.maxSize == null){
+            this.maxSize = options.getMaxSize();
         }
         if(this.resize == null){
             this.resize = options.getResize();
@@ -143,6 +148,7 @@ public class LoadHelperImpl implements LoadHelper{
         if(this.imageProcessor == null){
             this.imageProcessor = options.getImageProcessor();
         }
+        this.disableGifImage = options.isDisableGifImage();
 
         return this;
     }
@@ -189,11 +195,12 @@ public class LoadHelperImpl implements LoadHelper{
         request.setEnableDiskCache(enableDiskCache);
         request.setProgressListener(progressListener);
 
-        request.setMaxsize(maxsize);
         request.setResize(resize);
-        request.setImageProcessor(imageProcessor);
+        request.setMaxSize(maxSize);
         request.setScaleType(scaleType);
         request.setLoadListener(loadListener);
+        request.setImageProcessor(imageProcessor);
+        request.setDisableGifImage(disableGifImage);
 
         request.postRunDispatch();
 

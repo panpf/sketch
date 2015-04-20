@@ -49,15 +49,16 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
     // Load fields
     private ImageSize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来裁剪图片
-    private ImageSize maxsize;	// 最大尺寸，用于读取图片时计算inSampleSize
+    private ImageSize maxSize;	// 最大尺寸，用于读取图片时计算inSampleSize
     private ImageProcessor imageProcessor;	// 图片处理器
     private ImageView.ScaleType scaleType; // 图片缩放方式，ImageProcessor会根据resize和scaleType来创建新的图片
     private LoadListener loadListener;	// 监听器
+    private boolean disableGifImage;
 
     // Runtime fields
     private File cacheFile;	// 缓存文件
     private byte[] imageData;
-    private Bitmap resultBitmap;
+    private Object resultBitmap;
     private ImageFrom imageFrom;    // 图片来源
     private FailCause failCause;    // 失败原因
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
@@ -124,13 +125,13 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     }
 
     @Override
-    public ImageSize getMaxsize() {
-        return maxsize;
+    public ImageSize getMaxSize() {
+        return maxSize;
     }
 
     @Override
-    public void setMaxsize(ImageSize maxsize) {
-        this.maxsize = maxsize;
+    public void setMaxSize(ImageSize maxSize) {
+        this.maxSize = maxSize;
     }
 
     @Override
@@ -156,6 +157,16 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     @Override
     public void setLoadListener(LoadListener loadListener) {
         this.loadListener = loadListener;
+    }
+
+    @Override
+    public boolean isDisableGifImage() {
+        return disableGifImage;
+    }
+
+    @Override
+    public void setDisableGifImage(boolean isDisableGifImage) {
+        this.disableGifImage = isDisableGifImage;
     }
 
     /****************************************** Runtime methods ******************************************/
@@ -382,63 +393,73 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
         }
 
         // 解码
-        Bitmap bitmap = spear.getConfiguration().getImageDecoder().decode(this);
-        if(bitmap != null && !bitmap.isRecycled()){
-            if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "executeLoad" + " - " + name);
-            }
-        }else{
-            if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "decodeFailed" + " - " + name);
-            }
+        Object decodeResult = spear.getConfiguration().getImageDecoder().decode(this);
+        if(decodeResult == null){
+            toFailedStatus(FailCause.DECODE_FAIL);
         }
 
-        if(isCanceled()){
-            if(bitmap != null){
+        if(decodeResult instanceof Bitmap){
+            Bitmap bitmap = (Bitmap) decodeResult;
+            if(!bitmap.isRecycled()){
+                if(Spear.isDebugMode()){
+                    Log.d(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "executeLoad" + " - " + name);
+                }
+            }else{
+                if(Spear.isDebugMode()){
+                    Log.e(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "decodeFailed" + " - " + name);
+                }
+            }
+
+            if(isCanceled()){
                 if(Spear.isDebugMode()){
                     Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "decodeAfter:cancel" + " - " + name);
                 }
                 bitmap.recycle();
+                if(Spear.isDebugMode()){
+                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "decodeAfter" + " - " + name);
+                }
+                return;
             }
-            if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "decodeAfter" + " - " + name);
-            }
-            return;
-        }
 
-        //处理
-        if(bitmap != null && !bitmap.isRecycled()){
-            ImageProcessor imageProcessor = getImageProcessor();
-            if(imageProcessor == null && getResize() != null){
-                imageProcessor = spear.getConfiguration().getDefaultCutImageProcessor();
+            //处理
+            if(!bitmap.isRecycled()){
+                ImageProcessor imageProcessor = getImageProcessor();
+                if(imageProcessor == null && getResize() != null){
+                    imageProcessor = spear.getConfiguration().getDefaultCutImageProcessor();
+                }
+                if(imageProcessor != null){
+                    Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), getScaleType());
+                    if(newBitmap != bitmap){
+                        if(Spear.isDebugMode()){
+                            Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - " + "recycle old bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter" + " - " + name);
+                        }
+                        bitmap.recycle();
+                        bitmap = newBitmap;
+                    }
+                }
             }
-            if(imageProcessor != null){
-                Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), getScaleType());
-                if(newBitmap != bitmap){
+
+            if(isCanceled()){
+                if(bitmap != null){
                     if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - " + "recycle old bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter" + " - " + name);
+                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + "processAfter:cancel");
                     }
                     bitmap.recycle();
-                    bitmap = newBitmap;
                 }
-            }
-        }
-
-        if(isCanceled()){
-            if(bitmap != null){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + "processAfter:cancel");
+                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled "+ " - " + "processAfter" + " - " + name);
                 }
-                bitmap.recycle();
+                return;
             }
-            if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled "+ " - " + "processAfter" + " - " + name);
-            }
-            return;
-        }
 
-        if(bitmap != null && !bitmap.isRecycled()){
-            this.resultBitmap = bitmap;
+            if(bitmap != null && !bitmap.isRecycled()){
+                this.resultBitmap = bitmap;
+                spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+            }else{
+                toFailedStatus(FailCause.DECODE_FAIL);
+            }
+        }else if(decodeResult instanceof RecycleGifDrawable){
+            this.resultBitmap = decodeResult;
             spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
         }else{
             toFailedStatus(FailCause.DECODE_FAIL);
@@ -473,7 +494,13 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
     private void handleCompletedOnMainThread() {
         if(isCanceled()){
-            resultBitmap.recycle();
+            if(resultBitmap != null){
+                if(resultBitmap instanceof Bitmap){
+                    ((Bitmap) resultBitmap).recycle();
+                }else if(resultBitmap instanceof RecycleGifDrawable){
+                    ((RecycleGifDrawable) resultBitmap).recycle();
+                }
+            }
             if(Spear.isDebugMode()){
                 Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
             }
@@ -482,7 +509,11 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
         setRequestStatus(RequestStatus.COMPLETED);
         if(loadListener != null){
-            loadListener.onCompleted(resultBitmap, imageFrom);
+            if(resultBitmap instanceof Bitmap){
+                loadListener.onCompleted(((Bitmap) resultBitmap), imageFrom);
+            }else if(resultBitmap instanceof RecycleGifDrawable){
+                loadListener.onCompleted(((RecycleGifDrawable) resultBitmap), imageFrom);
+            }
         }
     }
 

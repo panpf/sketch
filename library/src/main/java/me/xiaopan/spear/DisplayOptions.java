@@ -26,44 +26,42 @@ import me.xiaopan.spear.process.ImageProcessor;
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
-	protected boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-    protected boolean loadGifDrawable;
-    protected ImageDisplayer imageDisplayer;	// 图片显示器
-    protected DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
-    protected DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
-    protected DrawableHolder pauseDownloadDrawableHolder;	//暂停下载时显示的图片
+    private boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+    private ImageDisplayer imageDisplayer;	// 图片显示器
+    private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
+    private DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
+    private DrawableHolder pauseDownloadDrawableHolder;	//暂停下载时显示的图片
 
-    protected boolean resizeByImageViewLayoutSize;
+    private boolean resizeByImageViewLayoutSize;
 
     public DisplayOptions(Context context) {
         super(context);
     }
 
     /**
-     * 关闭内存缓存
+     * 是否开启了内存缓存
+     * @return 是否开启了内存缓存
+     */
+    public boolean isEnableMemoryCache() {
+        return enableMemoryCache;
+    }
+
+    /**
+     * 设置是否开启内存缓存
+     * @param isEnableMemoryCache 是否开启内存缓存
      * @return DisplayOptions
      */
-    public DisplayOptions disableMemoryCache() {
-        this.enableMemoryCache = false;
+    public DisplayOptions setEnableMemoryCache(boolean isEnableMemoryCache) {
+        this.enableMemoryCache = isEnableMemoryCache;
         return this;
     }
 
     /**
-     * 启用内存缓存
-     * @return DisplayOptions
+     * 获取图片显示器
+     * @return 图片显示器
      */
-    public DisplayOptions enableMemoryCache() {
-        this.enableMemoryCache = true;
-        return this;
-    }
-
-    /**
-     * 加载GIF图
-     * @return DisplayOptions
-     */
-    public DisplayOptions loadGifDrawable(){
-        this.loadGifDrawable = true;
-        return this;
+    public ImageDisplayer getImageDisplayer() {
+        return imageDisplayer;
     }
 
     /**
@@ -71,9 +69,17 @@ public class DisplayOptions extends LoadOptions {
      * @param displayer 图片显示器
      * @return DisplayOptions
      */
-    public DisplayOptions displayer(ImageDisplayer displayer) {
+    public DisplayOptions setImageDisplayer(ImageDisplayer displayer) {
         this.imageDisplayer = displayer;
         return this;
+    }
+
+    /**
+     * 获取加载中时显示的图片
+     * @return 加载中时显示的图片
+     */
+    public DrawableHolder getLoadingDrawableHolder() {
+        return loadingDrawableHolder;
     }
 
     /**
@@ -81,7 +87,7 @@ public class DisplayOptions extends LoadOptions {
      * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
-    public DisplayOptions loadingDrawable(int drawableResId) {
+    public DisplayOptions setLoadingDrawable(int drawableResId) {
         if(loadingDrawableHolder == null){
             loadingDrawableHolder = new DrawableHolder();
         }
@@ -96,7 +102,7 @@ public class DisplayOptions extends LoadOptions {
      * @param isProcess 是否使用ImageProcessor处理
      * @return DisplayOptions
      */
-    public DisplayOptions loadingDrawable(int drawableResId, boolean isProcess) {
+    public DisplayOptions setLoadingDrawable(int drawableResId, boolean isProcess) {
         if(loadingDrawableHolder == null){
             loadingDrawableHolder = new DrawableHolder();
         }
@@ -106,11 +112,19 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
+     * 获取加载失败时显示的图片
+     * @return 加载失败时显示的图片
+     */
+    public DrawableHolder getLoadFailDrawableHolder() {
+        return loadFailDrawableHolder;
+    }
+
+    /**
      * 设置加载失败时显示的图片
      * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
-    public DisplayOptions loadFailDrawable(int drawableResId) {
+    public DisplayOptions setLoadFailDrawable(int drawableResId) {
         if(loadFailDrawableHolder == null){
             loadFailDrawableHolder = new DrawableHolder();
         }
@@ -125,7 +139,7 @@ public class DisplayOptions extends LoadOptions {
      * @param isProcess 是否使用ImageProcessor处理
      * @return DisplayOptions
      */
-    public DisplayOptions loadFailDrawable(int drawableResId, boolean isProcess) {
+    public DisplayOptions setLoadFailDrawable(int drawableResId, boolean isProcess) {
         if(loadFailDrawableHolder == null){
             loadFailDrawableHolder = new DrawableHolder();
         }
@@ -135,11 +149,19 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
+     * 设置暂停下载时的占位图
+     * @return 暂停下载时的占位图
+     */
+    public DrawableHolder getPauseDownloadDrawableHolder() {
+        return pauseDownloadDrawableHolder;
+    }
+
+    /**
      * 设置暂停下载时显示的图片
      * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
-    public DisplayOptions pauseDownloadDrawable(int drawableResId) {
+    public DisplayOptions setPauseDownloadDrawable(int drawableResId) {
         if(pauseDownloadDrawableHolder == null){
             pauseDownloadDrawableHolder = new DrawableHolder();
         }
@@ -154,7 +176,7 @@ public class DisplayOptions extends LoadOptions {
      * @param isProcess 是否使用ImageProcessor处理
      * @return DisplayOptions
      */
-    public DisplayOptions pauseDownloadDrawable(int drawableResId, boolean isProcess) {
+    public DisplayOptions setPauseDownloadDrawable(int drawableResId, boolean isProcess) {
         if(pauseDownloadDrawableHolder == null){
             pauseDownloadDrawableHolder = new DrawableHolder();
         }
@@ -163,9 +185,25 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
+    /**
+     * 是否需要根据ImageView的LayoutSize来调整resize
+     * @return true：是
+     */
+    public boolean isResizeByImageViewLayoutSize() {
+        return resizeByImageViewLayoutSize;
+    }
+
+    /**
+     * 设置是否需要根据ImageView的LayoutSize来调整resize
+     * @param isResizeByImageViewLayoutSize true：是
+     */
+    public void setResizeByImageViewLayoutSize(boolean isResizeByImageViewLayoutSize) {
+        this.resizeByImageViewLayoutSize = isResizeByImageViewLayoutSize;
+    }
+
     @Override
-    public DisplayOptions processor(ImageProcessor processor) {
-        super.processor(processor);
+    public DisplayOptions setImageProcessor(ImageProcessor processor) {
+        super.setImageProcessor(processor);
         if(loadingDrawableHolder != null && loadingDrawableHolder.isProcess()){
             loadingDrawableHolder.reset();
         }
@@ -179,93 +217,46 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions maxsize(ImageSize maxsize){
-        super.maxsize(maxsize);
+    public DisplayOptions setEnableDiskCache(boolean isEnableDiskCache) {
+        super.setEnableDiskCache(isEnableDiskCache);
         return this;
     }
 
     @Override
-    public DisplayOptions maxsize(int width, int height) {
-        super.maxsize(width, height);
+    public DisplayOptions setMaxSize(ImageSize maxSize){
+        super.setMaxSize(maxSize);
         return this;
     }
 
     @Override
-    public DisplayOptions resize(ImageSize resize){
-        super.resize(resize);
+    public DisplayOptions setMaxSize(int width, int height) {
+        super.setMaxSize(width, height);
+        return this;
+    }
+
+    @Override
+    public DisplayOptions setResize(ImageSize resize){
+        super.setResize(resize);
         this.resizeByImageViewLayoutSize = false;
         return this;
     }
 
     @Override
-    public DisplayOptions resize(int width, int height) {
-        super.resize(width, height);
+    public DisplayOptions setResize(int width, int height) {
+        super.setResize(width, height);
         this.resizeByImageViewLayoutSize = false;
         return this;
     }
 
-    /**
-     * 根据ImageView的Layout Size裁剪图片
-     */
-    public void resizeByImageViewLayoutSize() {
-        this.resizeByImageViewLayoutSize = true;
-    }
-
     @Override
-    public DisplayOptions scaleType(ScaleType scaleType) {
-        super.scaleType(scaleType);
+    public DisplayOptions setScaleType(ScaleType scaleType) {
+        super.setScaleType(scaleType);
         return this;
     }
 
     @Override
-    public DisplayOptions disableDiskCache() {
-        super.disableDiskCache();
+    public DisplayOptions setDisableGifImage(boolean disableGifImage) {
+        super.setDisableGifImage(disableGifImage);
         return this;
-    }
-
-    @Override
-    public DisplayOptions enableDiskCache() {
-        this.enableDiskCache = true;
-        return this;
-    }
-
-    public boolean isResizeByImageViewLayoutSize() {
-        return resizeByImageViewLayoutSize;
-    }
-
-    /**
-     * 是否开启了内存缓存
-     * @return 是否开启了内存缓存
-     */
-    public boolean isEnableMemoryCache() {
-        return enableMemoryCache;
-    }
-
-    /**
-     * 获取图片显示器
-     * @return 图片显示器
-     */
-    public ImageDisplayer getImageDisplayer() {
-        return imageDisplayer;
-    }
-
-    /**
-     * 获取加载中时显示的图片
-     * @return 加载中时显示的图片
-     */
-    public DrawableHolder getLoadingDrawableHolder() {
-        return loadingDrawableHolder;
-    }
-
-    /**
-     * 获取加载失败时显示的图片
-     * @return 加载失败时显示的图片
-     */
-    public DrawableHolder getLoadFailDrawableHolder() {
-        return loadFailDrawableHolder;
-    }
-
-    public DrawableHolder getPauseDownloadDrawableHolder() {
-        return pauseDownloadDrawableHolder;
     }
 }

@@ -31,16 +31,16 @@ public class DisplayParams {
     public ProgressListener progressListener;
 
     // 加载属性
-    public RequestHandleLevel requestHandleLevel = RequestHandleLevel.NET;
-    public ImageSize maxsize;
+    public boolean disableGifImage;
+    public ImageSize maxSize;
     public ImageSize resize;
+    public HandleLevel handleLevel = HandleLevel.NET;
     public ImageProcessor imageProcessor;
     public ImageView.ScaleType scaleType;
 
     // 显示属性
     public String memoryCacheId;
     public boolean enableMemoryCache = true;
-    public boolean thisIsGifImage;
     public ImageDisplayer imageDisplayer;
     public DrawableHolder loadingDrawableHolder;
     public DrawableHolder loadFailDrawableHolder;

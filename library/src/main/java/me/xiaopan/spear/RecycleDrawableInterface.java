@@ -16,7 +16,7 @@
 
 package me.xiaopan.spear;
 
-public interface RecycleDrawable{
+public interface RecycleDrawableInterface {
 
     void setIsDisplayed(String callingStation, boolean isDisplayed);
 

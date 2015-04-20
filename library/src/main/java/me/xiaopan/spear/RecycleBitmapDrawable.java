@@ -22,7 +22,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.util.Log;
 
-public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDrawable {
+public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDrawableInterface {
     private static final String NAME = "RecycleBitmapDrawable";
 
     private int cacheRefCount;
@@ -40,9 +40,6 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
         synchronized (this) {
             if (isDisplayed) {
                 displayRefCount++;
-                if(waitDisplayRefCount > 0){
-                    waitDisplayRefCount--;
-                }
             } else {
                 if(displayRefCount > 0){
                     displayRefCount--;
@@ -77,7 +74,7 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
                 }
             }
         }
-        tryRecycle((isWaitDisplay ? "wait display" : "cancel display"), callingStation);
+        tryRecycle((isWaitDisplay ? "waitDisplay" : "displayed"), callingStation);
     }
 
     @Override

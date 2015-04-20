@@ -27,29 +27,38 @@ import me.xiaopan.spear.process.ImageProcessor;
  * 显示选项
  */
 public class LoadOptions extends DownloadOptions{
-    protected ScaleType scaleType; //图片缩放方式，在处理图片的时候会用到
-    protected ImageSize maxsize;	//解码最大图片尺寸，用于读取图片时计算inSampleSize
-    protected ImageSize resize;	// 处理尺寸，ImageProcessor会根据此尺寸来创建新的图片
-    protected ImageProcessor imageProcessor;	//图片处理器
+    private ScaleType scaleType; //图片缩放方式，在处理图片的时候会用到
+    private ImageSize maxSize;	//解码最大图片尺寸，用于读取图片时计算inSampleSize
+    private ImageSize resize;	// 处理尺寸，ImageProcessor会根据此尺寸来创建新的图片
+    private ImageProcessor imageProcessor;	//图片处理器
+    private boolean disableGifImage;
 
     public LoadOptions(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        maxsize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
+        setMaxSize((int) (displayMetrics.widthPixels * 1.5f), (int) (displayMetrics.heightPixels * 1.5f));
     }
 
     @Override
-    public LoadOptions disableDiskCache() {
-        super.disableDiskCache();
+    public LoadOptions setEnableDiskCache(boolean isEnableDiskCache) {
+        super.setEnableDiskCache(isEnableDiskCache);
         return this;
     }
 
     /**
+     * 获取最大尺寸
+     * @return 最大尺寸
+     */
+    public ImageSize getMaxSize() {
+        return maxSize;
+    }
+
+    /**
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
-     * @param maxsize 最大尺寸
+     * @param maxSize 最大尺寸
      * @return LoadOptions
      */
-    public LoadOptions maxsize(ImageSize maxsize){
-        this.maxsize = maxsize;
+    public LoadOptions setMaxSize(ImageSize maxSize){
+        this.maxSize = maxSize;
         return this;
     }
 
@@ -59,9 +68,17 @@ public class LoadOptions extends DownloadOptions{
      * @param height 高
      * @return LoadOptions
      */
-    public LoadOptions maxsize(int width, int height){
-        this.maxsize = new ImageSize(width, height);
+    public LoadOptions setMaxSize(int width, int height){
+        this.maxSize = new ImageSize(width, height);
         return this;
+    }
+
+    /**
+     * 获取新尺寸
+     * @return 新尺寸
+     */
+    public ImageSize getResize() {
+        return resize;
     }
 
     /**
@@ -69,7 +86,7 @@ public class LoadOptions extends DownloadOptions{
      * @param resize 新的尺寸
      * @return LoadOptions
      */
-    public LoadOptions resize(ImageSize resize){
+    public LoadOptions setResize(ImageSize resize){
         this.resize = resize;
         return this;
     }
@@ -80,9 +97,17 @@ public class LoadOptions extends DownloadOptions{
      * @param height 高
      * @return LoadOptions
      */
-    public LoadOptions resize(int width, int height){
+    public LoadOptions setResize(int width, int height){
         this.resize = new ImageSize(width, height);
         return this;
+    }
+
+    /**
+     * 获取图片处理器
+     * @return 图片处理器
+     */
+    public ImageProcessor getImageProcessor() {
+        return imageProcessor;
     }
 
     /**
@@ -90,18 +115,8 @@ public class LoadOptions extends DownloadOptions{
      * @param processor 图片处理器
      * @return LoadOptions
      */
-    public LoadOptions processor(ImageProcessor processor){
+    public LoadOptions setImageProcessor(ImageProcessor processor){
         this.imageProcessor = processor;
-        return this;
-    }
-
-    /**
-     * 设置ScaleType，ImageProcessor会根据resize和ScaleType创建一张新的图片
-     * @param scaleType ScaleType
-     * @return LoadOptions
-     */
-    public LoadOptions scaleType(ImageView.ScaleType scaleType){
-        this.scaleType = scaleType;
         return this;
     }
 
@@ -114,26 +129,29 @@ public class LoadOptions extends DownloadOptions{
     }
 
     /**
-     * 获取最大尺寸
-     * @return 最大尺寸
+     * 设置ScaleType，ImageProcessor会根据resize和ScaleType创建一张新的图片
+     * @param scaleType ScaleType
+     * @return LoadOptions
      */
-    public ImageSize getMaxsize() {
-        return maxsize;
+    public LoadOptions setScaleType(ImageView.ScaleType scaleType){
+        this.scaleType = scaleType;
+        return this;
     }
 
     /**
-     * 获取新尺寸
-     * @return 新尺寸
+     * 是否禁止处理GIF图片
+     * @return true：是
      */
-    public ImageSize getResize() {
-        return resize;
+    public boolean isDisableGifImage() {
+        return disableGifImage;
     }
 
     /**
-     * 获取图片处理器
-     * @return 图片处理器
+     * 设置是否禁止处理GIF图片
+     * @param disableGifImage true：是
      */
-    public ImageProcessor getImageProcessor() {
-        return imageProcessor;
+    public LoadOptions setDisableGifImage(boolean disableGifImage) {
+        this.disableGifImage = disableGifImage;
+        return this;
     }
 }

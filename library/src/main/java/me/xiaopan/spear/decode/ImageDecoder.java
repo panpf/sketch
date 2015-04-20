@@ -16,8 +16,6 @@
 
 package me.xiaopan.spear.decode;
 
-import android.graphics.Bitmap;
-
 import me.xiaopan.spear.LoadRequest;
 
 /**
@@ -28,5 +26,5 @@ public interface ImageDecoder {
 	 * 解码
      * @param loadRequest 加载请求
 	 */
-	public Bitmap decode(LoadRequest loadRequest);
+	Object decode(LoadRequest loadRequest);
 }

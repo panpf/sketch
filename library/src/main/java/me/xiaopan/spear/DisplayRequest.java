@@ -73,19 +73,14 @@ public interface DisplayRequest extends LoadRequest{
     void setDisplayListener(DisplayListener displayListener);
 
     /**
-     * 设置请求处理级别
-     * @param requestHandleLevel 请求处理级别
+     * 设置处理级别
+     * @param handleLevel 处理级别
      */
-    void setRequestHandleLevel(RequestHandleLevel requestHandleLevel);
+    void setHandleLevel(HandleLevel handleLevel);
 
     /**
-     * 设置Level是否来自暂停下载
-     * @param levelFromPauseDownload Level是否来自暂停下载
+     * 设置HandleLevel是否来自暂停下载
+     * @param handleLevelFromPauseDownload HandleLevel是否来自暂停下载
      */
-    void setLevelFromPauseDownload(boolean levelFromPauseDownload);
-
-    /**
-     * 是否是一张gif图
-     */
-    void setThisIsGifImage(boolean loadGifDrawable);
+    void setHandleLevelFromPauseDownload(boolean handleLevelFromPauseDownload);
 }

@@ -438,8 +438,8 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
             if(displayRequest != null && !displayRequest.isFinished()){
                 displayRequest.cancel();
             }
-        }else if (drawable instanceof RecycleDrawable) {
-            ((RecycleDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
+        }else if (drawable instanceof RecycleDrawableInterface) {
+            ((RecycleDrawableInterface) drawable).setIsDisplayed(callingStation, isDisplayed);
         } else if (drawable instanceof LayerDrawable) {
             LayerDrawable layerDrawable = (LayerDrawable) drawable;
             for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
@@ -535,7 +535,7 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
         @Override
         public void onClick(View v) {
             if(displayParams != null){
-                Spear.with(getContext()).display(displayParams, SpearImageView.this).level(RequestHandleLevel.NET).fire();
+                Spear.with(getContext()).display(displayParams, SpearImageView.this).handleLevel(HandleLevel.NET).fire();
             }
         }
     }

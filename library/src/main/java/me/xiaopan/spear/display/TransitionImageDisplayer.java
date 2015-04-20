@@ -20,6 +20,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
 
+import me.xiaopan.spear.RecycleGifDrawable;
+
 /**
  * 过度图片显示器
  */
@@ -39,9 +41,8 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 		if(drawable == null){
             return;
         }
-        Drawable oldDrawable = imageView.getDrawable();
-		if(oldDrawable != null){
-			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, drawable});
+		if(!(drawable instanceof RecycleGifDrawable) && imageView.getDrawable() != null){
+			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{imageView.getDrawable(), drawable});
         	imageView.clearAnimation();
 			imageView.setImageDrawable(transitionDrawable);
 			transitionDrawable.setCrossFadeEnabled(true);
