@@ -31,6 +31,7 @@ public class LoadHelperImpl implements LoadHelper{
     protected Spear spear;
     protected String uri;
     protected String name;
+    protected HandleLevel handleLevel = HandleLevel.NET;
 
     // 下载属性
     protected boolean enableDiskCache = true;
@@ -43,6 +44,8 @@ public class LoadHelperImpl implements LoadHelper{
     protected ImageProcessor imageProcessor;
     protected ImageView.ScaleType scaleType;
     protected LoadListener loadListener;
+
+    protected boolean handleLevelFromPauseDownload;
 
     /**
      * 创建加载请求生成器
@@ -61,6 +64,10 @@ public class LoadHelperImpl implements LoadHelper{
         this.spear = spear;
         this.uri = uri;
         this.maxSize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(spear.getConfiguration().getContext());
+        if(spear.getConfiguration().isPauseDownload()){
+            this.handleLevel = HandleLevel.LOCAL;
+            handleLevelFromPauseDownload = true;
+        }
     }
 
     @Override
@@ -149,6 +156,16 @@ public class LoadHelperImpl implements LoadHelper{
             this.imageProcessor = options.getImageProcessor();
         }
         this.disableGifImage = options.isDisableGifImage();
+        HandleLevel optionHandleLevel = options.getHandleLevel();
+        if(handleLevel != null && optionHandleLevel != null){
+            if(optionHandleLevel.getLevel() < handleLevel.getLevel()){
+                handleLevel = optionHandleLevel;
+                handleLevelFromPauseDownload = false;
+            }
+        }else if(optionHandleLevel != null){
+            handleLevel = optionHandleLevel;
+            handleLevelFromPauseDownload = false;
+        }
 
         return this;
     }
@@ -156,6 +173,15 @@ public class LoadHelperImpl implements LoadHelper{
     @Override
     public LoadHelperImpl options(Enum<?> optionsName){
         return options((LoadOptions) Spear.getOptions(optionsName));
+    }
+
+    @Override
+    public LoadHelperImpl handleLevel(HandleLevel handleLevel){
+        if(handleLevel != null){
+            this.handleLevel = handleLevel;
+            handleLevelFromPauseDownload = false;
+        }
+        return this;
     }
 
     @Override
@@ -198,9 +224,11 @@ public class LoadHelperImpl implements LoadHelper{
         request.setResize(resize);
         request.setMaxSize(maxSize);
         request.setScaleType(scaleType);
+        request.setHandleLevel(handleLevel);
         request.setLoadListener(loadListener);
         request.setImageProcessor(imageProcessor);
         request.setDisableGifImage(disableGifImage);
+        request.setHandleLevelFromPauseDownload(handleLevelFromPauseDownload);
 
         request.postRunDispatch();
 

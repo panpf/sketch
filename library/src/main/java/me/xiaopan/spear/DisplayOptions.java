@@ -259,4 +259,10 @@ public class DisplayOptions extends LoadOptions {
         super.setDisableGifImage(disableGifImage);
         return this;
     }
+
+    @Override
+    public DisplayOptions setHandleLevel(HandleLevel handleLevel) {
+        super.setHandleLevel(handleLevel);
+        return this;
+    }
 }

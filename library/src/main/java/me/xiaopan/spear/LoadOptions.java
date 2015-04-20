@@ -154,4 +154,10 @@ public class LoadOptions extends DownloadOptions{
         this.disableGifImage = disableGifImage;
         return this;
     }
+
+    @Override
+    public LoadOptions setHandleLevel(HandleLevel handleLevel) {
+        super.setHandleLevel(handleLevel);
+        return this;
+    }
 }

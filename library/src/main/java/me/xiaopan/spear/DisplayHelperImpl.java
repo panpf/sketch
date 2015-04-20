@@ -36,6 +36,7 @@ public class DisplayHelperImpl implements DisplayHelper{
     protected Spear spear;
     protected String uri;
     protected String name;
+    protected HandleLevel handleLevel = HandleLevel.NET;
 
     // 下载属性
     protected boolean enableDiskCache = true;
@@ -46,7 +47,6 @@ public class DisplayHelperImpl implements DisplayHelper{
     protected ImageSize maxSize;
     protected ImageSize resize;
     protected ImageProcessor imageProcessor;
-    protected HandleLevel handleLevel = HandleLevel.NET;
     protected ImageView.ScaleType scaleType;
 
     // 显示属性
@@ -450,6 +450,16 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(this.pauseDownloadDrawableHolder == null){
             this.pauseDownloadDrawableHolder = options.getPauseDownloadDrawableHolder();
         }
+        HandleLevel optionHandleLevel = options.getHandleLevel();
+        if(handleLevel != null && optionHandleLevel != null){
+            if(optionHandleLevel.getLevel() < handleLevel.getLevel()){
+                handleLevel = optionHandleLevel;
+                handleLevelFromPauseDownload = false;
+            }
+        }else if(optionHandleLevel != null){
+            handleLevel = optionHandleLevel;
+            handleLevelFromPauseDownload = false;
+        }
 
         return this;
     }
@@ -607,7 +617,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         request.setEnableMemoryCache(enableMemoryCache);
         request.setLoadFailDrawableHolder(loadFailDrawableHolder);
         request.setPauseDownloadDrawableHolder(pauseDownloadDrawableHolder);
-        request.setHandleLevelFromPauseDownload(true);
+        request.setHandleLevelFromPauseDownload(handleLevelFromPauseDownload);
 
         // 显示默认图片
         BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);

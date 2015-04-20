@@ -28,11 +28,14 @@ public class DownloadHelperImpl implements DownloadHelper{
     protected Spear spear;
     protected String uri;
     protected String name;
+    protected HandleLevel handleLevel = HandleLevel.NET;
 
     // 下载属性
     protected boolean enableDiskCache = true;
     protected ProgressListener progressListener;
     protected DownloadListener downloadListener;
+
+    protected boolean handleLevelFromPauseDownload;
 
     /**
      * 创建下载请求生成器
@@ -45,6 +48,10 @@ public class DownloadHelperImpl implements DownloadHelper{
     public DownloadHelperImpl(Spear spear, String uri) {
         this.spear = spear;
         this.uri = uri;
+        if(spear.getConfiguration().isPauseDownload()){
+            this.handleLevel = HandleLevel.LOCAL;
+            handleLevelFromPauseDownload = true;
+        }
     }
 
     @Override
@@ -78,6 +85,16 @@ public class DownloadHelperImpl implements DownloadHelper{
         }
 
         this.enableDiskCache = options.isEnableDiskCache();
+        HandleLevel optionHandleLevel = options.getHandleLevel();
+        if(handleLevel != null && optionHandleLevel != null){
+            if(optionHandleLevel.getLevel() < handleLevel.getLevel()){
+                handleLevel = optionHandleLevel;
+                handleLevelFromPauseDownload = false;
+            }
+        }else if(optionHandleLevel != null){
+            handleLevel = optionHandleLevel;
+            handleLevelFromPauseDownload = false;
+        }
 
         return this;
     }
@@ -85,6 +102,15 @@ public class DownloadHelperImpl implements DownloadHelper{
     @Override
     public DownloadHelperImpl options(Enum<?> optionsName){
         return options((DownloadOptions) Spear.getOptions(optionsName));
+    }
+
+    @Override
+    public DownloadHelperImpl handleLevel(HandleLevel handleLevel){
+        if(handleLevel != null){
+            this.handleLevel = handleLevel;
+            handleLevelFromPauseDownload = false;
+        }
+        return this;
     }
 
     @Override
@@ -131,9 +157,11 @@ public class DownloadHelperImpl implements DownloadHelper{
 
         request.setName(name != null ? name : uri);
         request.setEnableDiskCache(enableDiskCache);
+        request.setHandleLevel(handleLevel);
 
         request.setDownloadListener(downloadListener);
         request.setProgressListener(progressListener);
+        request.setHandleLevelFromPauseDownload(handleLevelFromPauseDownload);
 
         request.postRunDispatch();
 

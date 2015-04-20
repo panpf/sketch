@@ -71,16 +71,4 @@ public interface DisplayRequest extends LoadRequest{
      * @param displayListener 显示监听器
      */
     void setDisplayListener(DisplayListener displayListener);
-
-    /**
-     * 设置处理级别
-     * @param handleLevel 处理级别
-     */
-    void setHandleLevel(HandleLevel handleLevel);
-
-    /**
-     * 设置HandleLevel是否来自暂停下载
-     * @param handleLevelFromPauseDownload HandleLevel是否来自暂停下载
-     */
-    void setHandleLevelFromPauseDownload(boolean handleLevelFromPauseDownload);
 }

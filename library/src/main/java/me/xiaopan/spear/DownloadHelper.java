@@ -61,6 +61,13 @@ public interface DownloadHelper {
     DownloadHelper options(Enum<?> optionsName);
 
     /**
+     * 设置处理级别
+     * @param handleLevel 处理级别
+     * @return DisplayHelper
+     */
+    DownloadHelper handleLevel(HandleLevel handleLevel);
+
+    /**
      * 执行请求
      * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
      */

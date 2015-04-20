@@ -47,6 +47,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private String uri;	// 图片地址
     private String name;	// 名称，用于在输出LOG的时候区分不同的请求
     private UriScheme uriScheme;	// Uri协议格式
+    private boolean levelFromPauseDownload;
+    private HandleLevel handleLevel = HandleLevel.NET;  // HandleLevel
 
     // Download fields
     private boolean enableDiskCache = true;	// 是否开启磁盘缓存
@@ -55,14 +57,13 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     // Load fields
     private ImageSize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来裁剪图片
     private ImageSize maxSize;	// 最大尺寸，用于读取图片时计算inSampleSize
-    private HandleLevel handleLevel = HandleLevel.NET;  // Level
     private ImageProcessor imageProcessor;	// 图片处理器
     private ImageView.ScaleType scaleType; // 图片缩放方式，ImageProcessor会根据resize和scaleType来创建新的图片
+    private boolean disableGifImage; // 这是一张GIF图
 
     // Display fields
     private String memoryCacheId;	// 内存缓存ID
     private boolean enableMemoryCache = true;	// 是否开启内存缓存
-    private boolean disableGifImage; // 这是一张GIF图
     private DrawableHolder loadFailDrawableHolder;	// 当加载失败时显示的图片
     private DrawableHolder pauseDownloadDrawableHolder;	// 当暂停下载时显示的图片
     private ImageDisplayer imageDisplayer;	// 图片显示器
@@ -78,7 +79,6 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
     private Drawable resultDrawable;    // 最终的图片
     private ImageViewHolder imageViewHolder;    // 绑定ImageView
-    private boolean levelFromPauseDownload;
 
     public DisplayRequestImpl(Spear spear, String uri, UriScheme uriScheme, String memoryCacheId, ImageView imageView) {
         this.spear = spear;
@@ -114,6 +114,16 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         return uriScheme;
     }
 
+    @Override
+    public void setHandleLevel(HandleLevel handleLevel) {
+        this.handleLevel = handleLevel;
+    }
+
+    @Override
+    public void setHandleLevelFromPauseDownload(boolean handleLevelFromPauseDownload) {
+        this.levelFromPauseDownload = handleLevelFromPauseDownload;
+    }
+
     /****************************************** Download methods ******************************************/
     @Override
     public void setEnableDiskCache(boolean enableDiskCache) {
@@ -131,11 +141,6 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     }
 
     /****************************************** Load methods ******************************************/
-    @Override
-    public void setHandleLevel(HandleLevel handleLevel) {
-        this.handleLevel = handleLevel;
-    }
-
     @Override
     public ImageSize getResize() {
         return resize;
@@ -604,11 +609,6 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         }else{
             toFailedStatus(FailCause.DECODE_FAIL);
         }
-    }
-
-    @Override
-    public void setHandleLevelFromPauseDownload(boolean handleLevelFromPauseDownload) {
-        this.levelFromPauseDownload = handleLevelFromPauseDownload;
     }
 
     @Override

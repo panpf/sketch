@@ -64,6 +64,18 @@ public interface DownloadRequest extends Request, RequestRunManager {
     void setDownloadListener(DownloadListener downloadListener);
 
     /**
+     * 设置处理级别
+     * @param handleLevel 处理级别
+     */
+    void setHandleLevel(HandleLevel handleLevel);
+
+    /**
+     * 设置HandleLevel是否来自暂停下载
+     * @param handleLevelFromPauseDownload HandleLevel是否来自暂停下载
+     */
+    void setHandleLevelFromPauseDownload(boolean handleLevelFromPauseDownload);
+
+    /**
      * 设置状态
      * @param requestStatus 状态
      */
