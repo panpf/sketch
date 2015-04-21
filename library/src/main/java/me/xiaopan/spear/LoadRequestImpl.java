@@ -42,8 +42,8 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private String uri;	// 图片地址
     private String name;	// 名称，用于在输出LOG的时候区分不同的请求
     private UriScheme uriScheme;	// Uri协议格式
-    private boolean levelFromPauseDownload; // HandleLevel是否来自暂停下载
-    private HandleLevel handleLevel = HandleLevel.NET;  // HandleLevel
+    private RequestLevel requestLevel = RequestLevel.NET;  // 请求Level
+    private RequestLevelFrom requestLevelFrom; // 请求Level的来源
 
     // Download fields
     private boolean enableDiskCache = true;	// 是否开启磁盘缓存
@@ -100,13 +100,13 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     }
 
     @Override
-    public void setHandleLevel(HandleLevel handleLevel) {
-        this.handleLevel = handleLevel;
+    public void setRequestLevel(RequestLevel requestLevel) {
+        this.requestLevel = requestLevel;
     }
 
     @Override
-    public void setHandleLevelFromPauseDownload(boolean handleLevelFromPauseDownload) {
-        this.levelFromPauseDownload = handleLevelFromPauseDownload;
+    public void setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
+        this.requestLevelFrom = requestLevelFrom;
     }
 
     /****************************************** Download methods ******************************************/
@@ -336,8 +336,8 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
                     Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "diskCache" + " - " + name);
                 }
             }else{
-                if(handleLevel == HandleLevel.LOCAL){
-                    if(levelFromPauseDownload){
+                if(requestLevel == RequestLevel.LOCAL){
+                    if(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD){
                         toCanceledStatus(CancelCause.PAUSE_DOWNLOAD);
                         if(Spear.isDebugMode()){
                             Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "pause download" + " - " + name);
@@ -345,7 +345,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
                     }else{
                         toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
                         if(Spear.isDebugMode()){
-                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "handleLevel is local" + " - " + name);
+                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "requestLevel is local" + " - " + name);
                         }
                     }
                     return;

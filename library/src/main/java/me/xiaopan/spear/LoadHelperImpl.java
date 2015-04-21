@@ -31,7 +31,8 @@ public class LoadHelperImpl implements LoadHelper{
     protected Spear spear;
     protected String uri;
     protected String name;
-    protected HandleLevel handleLevel = HandleLevel.NET;
+    protected RequestLevel requestLevel = RequestLevel.NET;
+    protected RequestLevelFrom requestLevelFrom;
 
     // 下载属性
     protected boolean enableDiskCache = true;
@@ -44,8 +45,6 @@ public class LoadHelperImpl implements LoadHelper{
     protected ImageProcessor imageProcessor;
     protected ImageView.ScaleType scaleType;
     protected LoadListener loadListener;
-
-    protected boolean handleLevelFromPauseDownload;
 
     /**
      * 创建加载请求生成器
@@ -65,8 +64,8 @@ public class LoadHelperImpl implements LoadHelper{
         this.uri = uri;
         this.maxSize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(spear.getConfiguration().getContext());
         if(spear.getConfiguration().isPauseDownload()){
-            this.handleLevel = HandleLevel.LOCAL;
-            handleLevelFromPauseDownload = true;
+            this.requestLevel = RequestLevel.LOCAL;
+            this.requestLevelFrom = RequestLevelFrom.PAUSE_DOWNLOAD;
         }
     }
 
@@ -156,15 +155,15 @@ public class LoadHelperImpl implements LoadHelper{
             this.imageProcessor = options.getImageProcessor();
         }
         this.disableGifImage = options.isDisableGifImage();
-        HandleLevel optionHandleLevel = options.getHandleLevel();
-        if(handleLevel != null && optionHandleLevel != null){
-            if(optionHandleLevel.getLevel() < handleLevel.getLevel()){
-                handleLevel = optionHandleLevel;
-                handleLevelFromPauseDownload = false;
+        RequestLevel optionRequestLevel = options.getRequestLevel();
+        if(requestLevel != null && optionRequestLevel != null){
+            if(optionRequestLevel.getLevel() < requestLevel.getLevel()){
+                this.requestLevel = optionRequestLevel;
+                this.requestLevelFrom = null;
             }
-        }else if(optionHandleLevel != null){
-            handleLevel = optionHandleLevel;
-            handleLevelFromPauseDownload = false;
+        }else if(optionRequestLevel != null){
+            this.requestLevel = optionRequestLevel;
+            this.requestLevelFrom = null;
         }
 
         return this;
@@ -176,10 +175,10 @@ public class LoadHelperImpl implements LoadHelper{
     }
 
     @Override
-    public LoadHelperImpl handleLevel(HandleLevel handleLevel){
-        if(handleLevel != null){
-            this.handleLevel = handleLevel;
-            handleLevelFromPauseDownload = false;
+    public LoadHelperImpl requestLevel(RequestLevel requestLevel){
+        if(requestLevel != null){
+            this.requestLevel = requestLevel;
+            this.requestLevelFrom = null;
         }
         return this;
     }
@@ -201,11 +200,15 @@ public class LoadHelperImpl implements LoadHelper{
             return null;
         }
 
+        if(name == null){
+            name = uri;
+        }
+
         // 过滤掉不支持的URI协议类型
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if(uriScheme == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + uri);
+                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + name);
             }
             if(loadListener != null){
                 loadListener.onFailed(FailCause.URI_NO_SUPPORT);
@@ -216,7 +219,9 @@ public class LoadHelperImpl implements LoadHelper{
         // 创建请求
         LoadRequest request = spear.getConfiguration().getRequestFactory().newLoadRequest(spear, uri, uriScheme);
 
-        request.setName(name != null ? name : uri);
+        request.setName(name);
+        request.setRequestLevel(requestLevel);
+        request.setRequestLevelFrom(requestLevelFrom);
 
         request.setEnableDiskCache(enableDiskCache);
         request.setProgressListener(progressListener);
@@ -224,11 +229,9 @@ public class LoadHelperImpl implements LoadHelper{
         request.setResize(resize);
         request.setMaxSize(maxSize);
         request.setScaleType(scaleType);
-        request.setHandleLevel(handleLevel);
         request.setLoadListener(loadListener);
         request.setImageProcessor(imageProcessor);
         request.setDisableGifImage(disableGifImage);
-        request.setHandleLevelFromPauseDownload(handleLevelFromPauseDownload);
 
         request.postRunDispatch();
 

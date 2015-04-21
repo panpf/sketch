@@ -47,8 +47,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private String uri;	// 图片地址
     private String name;	// 名称，用于在输出LOG的时候区分不同的请求
     private UriScheme uriScheme;	// Uri协议格式
-    private boolean levelFromPauseDownload;
-    private HandleLevel handleLevel = HandleLevel.NET;  // HandleLevel
+    private RequestLevel requestLevel = RequestLevel.NET;  // 请求Level
+    private RequestLevelFrom requestLevelFrom;
 
     // Download fields
     private boolean enableDiskCache = true;	// 是否开启磁盘缓存
@@ -115,13 +115,13 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     }
 
     @Override
-    public void setHandleLevel(HandleLevel handleLevel) {
-        this.handleLevel = handleLevel;
+    public void setRequestLevel(RequestLevel requestLevel) {
+        this.requestLevel = requestLevel;
     }
 
     @Override
-    public void setHandleLevelFromPauseDownload(boolean handleLevelFromPauseDownload) {
-        this.levelFromPauseDownload = handleLevelFromPauseDownload;
+    public void setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
+        this.requestLevelFrom = requestLevelFrom;
     }
 
     /****************************************** Download methods ******************************************/
@@ -408,8 +408,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                     Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "diskCache" + " - " + name);
                 }
             }else{
-                if(handleLevel == HandleLevel.LOCAL){
-                    if(levelFromPauseDownload){
+                if(requestLevel == RequestLevel.LOCAL){
+                    if(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD){
                         setRequestStatus(RequestStatus.WAIT_DISPLAY);
                         spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PAUSE_DOWNLOAD, this).sendToTarget();
                         if(Spear.isDebugMode()){
@@ -418,7 +418,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                     }else{
                         toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
                         if(Spear.isDebugMode()){
-                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "handleLevel is local" + " - " + name);
+                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "requestLevel is local" + " - " + name);
                         }
                     }
                     return;

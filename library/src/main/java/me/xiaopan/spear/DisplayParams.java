@@ -25,6 +25,8 @@ public class DisplayParams {
     // 基本属性
     public String uri;
     public String name;
+    public RequestLevel requestLevel = RequestLevel.NET;
+    public RequestLevelFrom requestLevelFrom;
 
     // 下载属性
     public boolean enableDiskCache = true;
@@ -34,7 +36,6 @@ public class DisplayParams {
     public boolean disableGifImage;
     public ImageSize maxSize;
     public ImageSize resize;
-    public HandleLevel handleLevel = HandleLevel.NET;
     public ImageProcessor imageProcessor;
     public ImageView.ScaleType scaleType;
 

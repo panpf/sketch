@@ -186,11 +186,11 @@ public interface DisplayHelper {
     DisplayHelper progressListener(ProgressListener progressListener);
 
     /**
-     * 设置处理级别
-     * @param handleLevel 处理级别
+     * 设置请求Level
+     * @param requestLevel 请求Level
      * @return DisplayHelper
      */
-    DisplayHelper handleLevel(HandleLevel handleLevel);
+    DisplayHelper requestLevel(RequestLevel requestLevel);
 
     /**
      * 设置显示参数

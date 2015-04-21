@@ -156,8 +156,8 @@ public class LoadOptions extends DownloadOptions{
     }
 
     @Override
-    public LoadOptions setHandleLevel(HandleLevel handleLevel) {
-        super.setHandleLevel(handleLevel);
+    public LoadOptions setRequestLevel(RequestLevel requestLevel) {
+        super.setRequestLevel(requestLevel);
         return this;
     }
 }

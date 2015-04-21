@@ -28,14 +28,13 @@ public class DownloadHelperImpl implements DownloadHelper{
     protected Spear spear;
     protected String uri;
     protected String name;
-    protected HandleLevel handleLevel = HandleLevel.NET;
+    protected RequestLevel requestLevel = RequestLevel.NET;
+    protected RequestLevelFrom requestLevelFrom;
 
     // 下载属性
     protected boolean enableDiskCache = true;
     protected ProgressListener progressListener;
     protected DownloadListener downloadListener;
-
-    protected boolean handleLevelFromPauseDownload;
 
     /**
      * 创建下载请求生成器
@@ -49,8 +48,8 @@ public class DownloadHelperImpl implements DownloadHelper{
         this.spear = spear;
         this.uri = uri;
         if(spear.getConfiguration().isPauseDownload()){
-            this.handleLevel = HandleLevel.LOCAL;
-            handleLevelFromPauseDownload = true;
+            this.requestLevel = RequestLevel.LOCAL;
+            this.requestLevelFrom = null;
         }
     }
 
@@ -85,15 +84,15 @@ public class DownloadHelperImpl implements DownloadHelper{
         }
 
         this.enableDiskCache = options.isEnableDiskCache();
-        HandleLevel optionHandleLevel = options.getHandleLevel();
-        if(handleLevel != null && optionHandleLevel != null){
-            if(optionHandleLevel.getLevel() < handleLevel.getLevel()){
-                handleLevel = optionHandleLevel;
-                handleLevelFromPauseDownload = false;
+        RequestLevel optionRequestLevel = options.getRequestLevel();
+        if(requestLevel != null && optionRequestLevel != null){
+            if(optionRequestLevel.getLevel() < requestLevel.getLevel()){
+                this.requestLevel = optionRequestLevel;
+                this.requestLevelFrom = null;
             }
-        }else if(optionHandleLevel != null){
-            handleLevel = optionHandleLevel;
-            handleLevelFromPauseDownload = false;
+        }else if(optionRequestLevel != null){
+            this.requestLevel = optionRequestLevel;
+            this.requestLevelFrom = null;
         }
 
         return this;
@@ -105,10 +104,10 @@ public class DownloadHelperImpl implements DownloadHelper{
     }
 
     @Override
-    public DownloadHelperImpl handleLevel(HandleLevel handleLevel){
-        if(handleLevel != null){
-            this.handleLevel = handleLevel;
-            handleLevelFromPauseDownload = false;
+    public DownloadHelperImpl requestLevel(RequestLevel requestLevel){
+        if(requestLevel != null){
+            this.requestLevel = requestLevel;
+            this.requestLevelFrom = null;
         }
         return this;
     }
@@ -130,11 +129,15 @@ public class DownloadHelperImpl implements DownloadHelper{
             return null;
         }
 
+        if(name == null){
+            name = uri;
+        }
+
         // 过滤掉不支持的URI协议类型
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if(uriScheme == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + uri);
+                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + name);
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailCause.URI_NO_SUPPORT);
@@ -144,7 +147,7 @@ public class DownloadHelperImpl implements DownloadHelper{
 
         if(!(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS)){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "only support http ot https" + " - " + uri);
+                Log.e(Spear.TAG, NAME + " - " + "only support http ot https" + " - " + name);
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailCause.URI_NO_SUPPORT);
@@ -155,13 +158,15 @@ public class DownloadHelperImpl implements DownloadHelper{
         // 创建请求
         DownloadRequest request = spear.getConfiguration().getRequestFactory().newDownloadRequest(spear, uri, uriScheme);
 
-        request.setName(name != null ? name : uri);
+        request.setName(name);
+        request.setRequestLevel(requestLevel);
+        request.setRequestLevelFrom(requestLevelFrom);
+
         request.setEnableDiskCache(enableDiskCache);
-        request.setHandleLevel(handleLevel);
+        request.setRequestLevel(requestLevel);
 
         request.setDownloadListener(downloadListener);
         request.setProgressListener(progressListener);
-        request.setHandleLevelFromPauseDownload(handleLevelFromPauseDownload);
 
         request.postRunDispatch();
 

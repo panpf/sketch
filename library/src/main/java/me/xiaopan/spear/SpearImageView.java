@@ -535,7 +535,7 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
         @Override
         public void onClick(View v) {
             if(displayParams != null){
-                Spear.with(getContext()).display(displayParams, SpearImageView.this).handleLevel(HandleLevel.NET).fire();
+                Spear.with(getContext()).display(displayParams, SpearImageView.this).requestLevel(RequestLevel.NET).fire();
             }
         }
     }

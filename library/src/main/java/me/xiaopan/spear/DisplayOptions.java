@@ -261,8 +261,8 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setHandleLevel(HandleLevel handleLevel) {
-        super.setHandleLevel(handleLevel);
+    public DisplayOptions setRequestLevel(RequestLevel requestLevel) {
+        super.setRequestLevel(requestLevel);
         return this;
     }
 }

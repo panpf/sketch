@@ -61,11 +61,11 @@ public interface DownloadHelper {
     DownloadHelper options(Enum<?> optionsName);
 
     /**
-     * 设置处理级别
-     * @param handleLevel 处理级别
+     * 设置请求Level
+     * @param requestLevel 请求Level
      * @return DisplayHelper
      */
-    DownloadHelper handleLevel(HandleLevel handleLevel);
+    DownloadHelper requestLevel(RequestLevel requestLevel);
 
     /**
      * 执行请求

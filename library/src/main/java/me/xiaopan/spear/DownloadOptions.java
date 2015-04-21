@@ -21,7 +21,7 @@ package me.xiaopan.spear;
  */
 public class DownloadOptions implements RequestOptions {
     private boolean enableDiskCache = true;	//是否开启磁盘缓存
-    private HandleLevel handleLevel;
+    private RequestLevel requestLevel;
 
     /**
      * 设置是否开启磁盘缓存
@@ -42,19 +42,19 @@ public class DownloadOptions implements RequestOptions {
     }
 
     /**
-     * 获取处理级别
-     * @return 处理级别
+     * 获取请求Level
+     * @return 请求Level
      */
-    public HandleLevel getHandleLevel() {
-        return handleLevel;
+    public RequestLevel getRequestLevel() {
+        return requestLevel;
     }
 
     /**
-     * 设置处理级别
-     * @param handleLevel 处理级别
+     * 设置请求Level
+     * @param requestLevel 请求Level
      */
-    public DownloadOptions setHandleLevel(HandleLevel handleLevel) {
-        this.handleLevel = handleLevel;
+    public DownloadOptions setRequestLevel(RequestLevel requestLevel) {
+        this.requestLevel = requestLevel;
         return this;
     }
 }

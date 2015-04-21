@@ -36,7 +36,8 @@ public class DisplayHelperImpl implements DisplayHelper{
     protected Spear spear;
     protected String uri;
     protected String name;
-    protected HandleLevel handleLevel = HandleLevel.NET;
+    protected RequestLevel requestLevel = RequestLevel.NET;
+    protected RequestLevelFrom requestLevelFrom;
 
     // 下载属性
     protected boolean enableDiskCache = true;
@@ -59,8 +60,6 @@ public class DisplayHelperImpl implements DisplayHelper{
     protected DrawableHolder pauseDownloadDrawableHolder;
     protected DisplayListener displayListener;
 
-    protected boolean handleLevelFromPauseDownload;
-    protected boolean handleLevelFromPauseLoad;
     protected SpearImageViewInterface spearImageViewInterface;
 
     /**
@@ -105,13 +104,12 @@ public class DisplayHelperImpl implements DisplayHelper{
         this.uri = uri;
         this.imageView = imageView;
         if(spear.getConfiguration().isPauseDownload()){
-            this.handleLevel = HandleLevel.LOCAL;
-            handleLevelFromPauseDownload = true;
+            this.requestLevel = RequestLevel.LOCAL;
+            this.requestLevelFrom = RequestLevelFrom.PAUSE_DOWNLOAD;
         }
         if(spear.getConfiguration().isPauseLoad()){
-            this.handleLevel = HandleLevel.MEMORY;
-            handleLevelFromPauseDownload = false;
-            handleLevelFromPauseLoad = true;
+            this.requestLevel = RequestLevel.MEMORY;
+            this.requestLevelFrom = RequestLevelFrom.PAUSE_LOAD;
         }
 
         if(imageView != null){
@@ -124,7 +122,7 @@ public class DisplayHelperImpl implements DisplayHelper{
             if(imageView instanceof SpearImageViewInterface){
                 spearImageViewInterface = (SpearImageViewInterface) imageView;
                 spearImageViewInterface.onDisplay();
-                this.displayListener = spearImageViewInterface.getDisplayListener(handleLevelFromPauseDownload);
+                this.displayListener = spearImageViewInterface.getDisplayListener(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD);
                 this.progressListener = spearImageViewInterface.getProgressListener();
                 options(spearImageViewInterface.getDisplayOptions());
             }
@@ -138,6 +136,8 @@ public class DisplayHelperImpl implements DisplayHelper{
         this.spear = spear;
         this.uri = displayParams.uri;
         this.name = displayParams.name;
+        this.requestLevel = displayParams.requestLevel;
+        this.requestLevelFrom = displayParams.requestLevelFrom;
 
         this.enableDiskCache = displayParams.enableDiskCache;
         this.progressListener = displayParams.progressListener;
@@ -145,7 +145,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         this.resize = displayParams.resize;
         this.maxSize = displayParams.maxSize;
         this.scaleType = displayParams.scaleType;
-        this.handleLevel = displayParams.handleLevel;
+        this.requestLevel = displayParams.requestLevel;
         this.imageProcessor = displayParams.imageProcessor;
         this.disableGifImage = displayParams.disableGifImage;
 
@@ -158,14 +158,15 @@ public class DisplayHelperImpl implements DisplayHelper{
         this.pauseDownloadDrawableHolder = displayParams.pauseDownloadDrawableHolder;
         this.displayListener = displayParams.displayListener;
 
-        if(spear.getConfiguration().isPauseDownload()){
-            this.handleLevel = HandleLevel.LOCAL;
-            handleLevelFromPauseDownload = true;
-        }
-        if(spear.getConfiguration().isPauseLoad()){
-            this.handleLevel = HandleLevel.MEMORY;
-            handleLevelFromPauseDownload = false;
-            handleLevelFromPauseLoad = true;
+        if(requestLevelFrom != null){
+            if(spear.getConfiguration().isPauseDownload()){
+                this.requestLevel = RequestLevel.LOCAL;
+                this.requestLevelFrom = RequestLevelFrom.PAUSE_DOWNLOAD;
+            }
+            if(spear.getConfiguration().isPauseLoad()){
+                this.requestLevel = RequestLevel.MEMORY;
+                this.requestLevelFrom = RequestLevelFrom.PAUSE_LOAD;
+            }
         }
 
         if(imageView != null){
@@ -181,7 +182,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(imageView instanceof SpearImageViewInterface){
             spearImageViewInterface = (SpearImageViewInterface) imageView;
             spearImageViewInterface.onDisplay();
-            this.displayListener = spearImageViewInterface.getDisplayListener(handleLevelFromPauseDownload);
+            this.displayListener = spearImageViewInterface.getDisplayListener(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD);
             this.progressListener = spearImageViewInterface.getProgressListener();
             options(spearImageViewInterface.getDisplayOptions());
         }
@@ -194,6 +195,8 @@ public class DisplayHelperImpl implements DisplayHelper{
         spear = null;
         uri = null;
         name = null;
+        requestLevel = RequestLevel.NET;
+        requestLevelFrom = null;
 
         enableDiskCache = true;
         progressListener = null;
@@ -201,7 +204,6 @@ public class DisplayHelperImpl implements DisplayHelper{
         resize = null;
         maxSize = null;
         scaleType = null;
-        handleLevel = HandleLevel.NET;
         imageProcessor = null;
         disableGifImage = false;
 
@@ -214,8 +216,6 @@ public class DisplayHelperImpl implements DisplayHelper{
         pauseDownloadDrawableHolder = null;
         displayListener = null;
 
-        handleLevelFromPauseDownload = false;
-        handleLevelFromPauseLoad = false;
         spearImageViewInterface = null;
     }
 
@@ -229,6 +229,8 @@ public class DisplayHelperImpl implements DisplayHelper{
 
             displayParams.uri = uri;
             displayParams.name = name;
+            displayParams.requestLevel = requestLevel;
+            displayParams.requestLevelFrom = requestLevelFrom;
 
             displayParams.enableDiskCache = enableDiskCache;
             displayParams.progressListener = progressListener;
@@ -236,7 +238,6 @@ public class DisplayHelperImpl implements DisplayHelper{
             displayParams.resize = resize;
             displayParams.maxSize = maxSize;
             displayParams.scaleType = scaleType;
-            displayParams.handleLevel = handleLevel;
             displayParams.imageProcessor = imageProcessor;
             displayParams.disableGifImage = disableGifImage;
 
@@ -405,11 +406,10 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public DisplayHelperImpl handleLevel(HandleLevel handleLevel){
-        if(handleLevel != null){
-            this.handleLevel = handleLevel;
-            handleLevelFromPauseDownload = false;
-            handleLevelFromPauseLoad = false;
+    public DisplayHelperImpl requestLevel(RequestLevel requestLevel){
+        if(requestLevel != null){
+            this.requestLevel = requestLevel;
+            this.requestLevelFrom = null;
         }
         return this;
     }
@@ -450,15 +450,15 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(this.pauseDownloadDrawableHolder == null){
             this.pauseDownloadDrawableHolder = options.getPauseDownloadDrawableHolder();
         }
-        HandleLevel optionHandleLevel = options.getHandleLevel();
-        if(handleLevel != null && optionHandleLevel != null){
-            if(optionHandleLevel.getLevel() < handleLevel.getLevel()){
-                handleLevel = optionHandleLevel;
-                handleLevelFromPauseDownload = false;
+        RequestLevel optionRequestLevel = options.getRequestLevel();
+        if(requestLevel != null && optionRequestLevel != null){
+            if(optionRequestLevel.getLevel() < requestLevel.getLevel()){
+                this.requestLevel = optionRequestLevel;
+                this.requestLevelFrom = null;
             }
-        }else if(optionHandleLevel != null){
-            handleLevel = optionHandleLevel;
-            handleLevelFromPauseDownload = false;
+        }else if(optionRequestLevel != null){
+            this.requestLevel = optionRequestLevel;
+            this.requestLevelFrom = null;
         }
 
         return this;
@@ -567,14 +567,14 @@ public class DisplayHelperImpl implements DisplayHelper{
         }
 
         // 如果已经暂停了的话就不再从本地或网络加载了
-        if(handleLevel == HandleLevel.MEMORY){
+        if(requestLevel == RequestLevel.MEMORY){
             BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
             imageView.clearAnimation();
             imageView.setImageDrawable(loadingBitmapDrawable);
             if(displayListener != null){
-                displayListener.onCanceled(handleLevelFromPauseLoad ?CancelCause.PAUSE_LOAD :CancelCause.LEVEL_IS_MEMORY);
+                displayListener.onCanceled(requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? CancelCause.PAUSE_LOAD :CancelCause.LEVEL_IS_MEMORY);
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + (handleLevelFromPauseLoad ?"pause load":"handleLevel is memory") + " - " + name);
+                    Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + (requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? "pause load":"requestLevel is memory") + " - " + name);
                 }
             }
             if(spearImageViewInterface != null){
@@ -601,6 +601,8 @@ public class DisplayHelperImpl implements DisplayHelper{
         final DisplayRequest request = spear.getConfiguration().getRequestFactory().newDisplayRequest(spear, uri, uriScheme, memoryCacheId, imageView);
 
         request.setName(name);
+        request.setRequestLevel(requestLevel);
+        request.setRequestLevelFrom(requestLevelFrom);
 
         request.setEnableDiskCache(enableDiskCache);
         request.setProgressListener(progressListener);
@@ -608,7 +610,6 @@ public class DisplayHelperImpl implements DisplayHelper{
         request.setResize(resize);
         request.setMaxSize(maxSize);
         request.setScaleType(scaleType);
-        request.setHandleLevel(handleLevel);
         request.setImageProcessor(imageProcessor);
         request.setDisableGifImage(disableGifImage);
 
@@ -617,7 +618,6 @@ public class DisplayHelperImpl implements DisplayHelper{
         request.setEnableMemoryCache(enableMemoryCache);
         request.setLoadFailDrawableHolder(loadFailDrawableHolder);
         request.setPauseDownloadDrawableHolder(pauseDownloadDrawableHolder);
-        request.setHandleLevelFromPauseDownload(handleLevelFromPauseDownload);
 
         // 显示默认图片
         BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
