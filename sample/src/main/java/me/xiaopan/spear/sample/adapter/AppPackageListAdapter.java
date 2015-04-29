@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import me.xiaopan.spear.sample.DisplayOptionsType;
+import me.xiaopan.spear.sample.OptionsType;
 import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.bean.AppInfo;
 import me.xiaopan.spear.sample.widget.MyImageView;
@@ -31,7 +31,7 @@ public class AppPackageListAdapter extends RecyclerView.Adapter{
             return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app_list_header, parent, false));
         }else{
             AppInfoViewHolder appInfoViewHolder = new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
-            appInfoViewHolder.iconSpearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
+            appInfoViewHolder.iconSpearImageView.setDisplayOptions(OptionsType.Rectangle_1);
             return appInfoViewHolder;
         }
     }

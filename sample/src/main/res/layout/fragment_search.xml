@@ -11,6 +11,8 @@
             android:id="@+id/list_search"
             android:layout_width="match_parent"
             android:layoutAnimation="@anim/layout_animation"
+            android:listSelector="@android:color/transparent"
+            android:divider="@android:color/transparent"
             android:layout_height="match_parent"/>
     </me.xiaopan.spear.sample.widget.MyPullRefreshLayout>
     <me.xiaopan.spear.sample.widget.HintView

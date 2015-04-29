@@ -57,7 +57,7 @@ import me.xiaopan.spear.sample.util.Settings;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
-public class MainActivity extends MyActionBarActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener {
+public class MainActivity extends MyActionBarActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener, AboutFragment.TogglePageListener {
     @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
     @InjectView(R.id.drawer_main_content) private SlidingPaneLayout drawerLayout;
@@ -142,7 +142,7 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
 
-        starButton.performClick();
+        searchButton.performClick();
     }
 
     private void setRefreshCacheSize(){
@@ -371,39 +371,37 @@ public class MainActivity extends MyActionBarActivity implements StarIndexFragme
                 if(options instanceof DisplayOptions){
                     DisplayOptions displayOptions = (DisplayOptions) options;
                     if(memory){
-                        if(newValue){
-                            displayOptions.enableMemoryCache();
-                        }else{
-                            displayOptions.disableMemoryCache();
-                        }
+                        displayOptions.setEnableMemoryCache(newValue);
                     }else{
-                        if(newValue){
-                            displayOptions.enableDiskCache();
-                        }else{
-                            displayOptions.disableDiskCache();
-                        }
+                        displayOptions.setEnableDiskCache(newValue);
                     }
                 }else if(options instanceof DownloadOptions){
                     DownloadOptions displayOptions = (DownloadOptions) options;
-                    if(newValue){
-                        displayOptions.enableDiskCache();
-                    }else{
-                        displayOptions.disableDiskCache();
-                    }
+                    displayOptions.setEnableDiskCache(newValue);
                 }
             }
         }
     }
 
     @Override
-    public void onSetWindowBackground(Drawable newDrawable) {
-        windowBackgroundManager.setBackground(newDrawable);
+    public void onSetWindowBackground(String currentBackgroundUri, Drawable newDrawable) {
+        windowBackgroundManager.setBackground(currentBackgroundUri, newDrawable);
+    }
+
+    @Override
+    public String getCurrentBackgroundUri() {
+        return windowBackgroundManager.getCurrentBackgroundUri();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         windowBackgroundManager.destroy();
+    }
+
+    @Override
+    public void onToggleToGifSample() {
+        searchButton.performClick();
     }
 
     private static class TitleTabFactory implements PagerSlidingTabStrip.TabViewFactory{

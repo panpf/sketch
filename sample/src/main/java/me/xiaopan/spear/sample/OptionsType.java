@@ -16,7 +16,7 @@
 
 package me.xiaopan.spear.sample;
 
-public enum DisplayOptionsType {
+public enum OptionsType {
 	/**
 	 * 详情
 	 */
@@ -46,4 +46,6 @@ public enum DisplayOptionsType {
 	 * 圆形
 	 */
 	Circular,
+
+	WindowBackground,
 }

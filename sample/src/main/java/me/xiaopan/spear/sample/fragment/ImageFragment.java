@@ -12,7 +12,7 @@ import me.xiaopan.spear.CancelCause;
 import me.xiaopan.spear.DisplayListener;
 import me.xiaopan.spear.FailCause;
 import me.xiaopan.spear.ImageFrom;
-import me.xiaopan.spear.sample.DisplayOptionsType;
+import me.xiaopan.spear.sample.OptionsType;
 import me.xiaopan.spear.sample.MyFragment;
 import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.activity.WindowBackgroundManager;
@@ -42,7 +42,7 @@ public class ImageFragment extends MyFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        imageView.setDisplayOptions(DisplayOptionsType.Detail);
+        imageView.setDisplayOptions(OptionsType.Detail);
         imageView.setAutoApplyGlobalAttr(false);
         imageView.setDisplayListener(new DisplayListener() {
             @Override
@@ -51,7 +51,7 @@ public class ImageFragment extends MyFragment {
             }
 
             @Override
-            public void onCompleted(ImageFrom imageFrom) {
+            public void onCompleted(ImageFrom imageFrom, String mimeType) {
                 progressBar.setVisibility(View.GONE);
                 new PhotoViewAttacher(imageView);
             }

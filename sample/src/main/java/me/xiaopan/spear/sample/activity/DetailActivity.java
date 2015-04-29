@@ -86,11 +86,6 @@ public class DetailActivity extends MyActionBarActivity implements DetailFragmen
     }
 
     @Override
-    public void onSetWindowBackground(Drawable newDrawable) {
-        windowBackgroundManager.setBackground(newDrawable);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         windowBackgroundManager.destroy();
@@ -102,5 +97,15 @@ public class DetailActivity extends MyActionBarActivity implements DetailFragmen
         intent.putExtra(DetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION, defaultPosition);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.window_push_enter, R.anim.window_push_exit);
+    }
+
+    @Override
+    public void onSetWindowBackground(String uri, Drawable drawable) {
+        windowBackgroundManager.setBackground(uri, drawable);
+    }
+
+    @Override
+    public String getCurrentBackgroundUri() {
+        return windowBackgroundManager.getCurrentBackgroundUri();
     }
 }

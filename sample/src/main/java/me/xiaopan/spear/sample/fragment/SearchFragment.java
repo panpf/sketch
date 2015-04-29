@@ -55,7 +55,7 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
     private MyLoadMoreListener loadMoreListener;
     private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
 
-    @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD) private String searchKeyword = "美女";
+    @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD) private String searchKeyword = "GIF";
 
     @Override
     public void onAttach(Activity activity) {

@@ -14,7 +14,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xiaopan.spear.sample.DisplayOptionsType;
+import me.xiaopan.spear.sample.OptionsType;
 import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.net.request.StarImageRequest;
 import me.xiaopan.spear.sample.widget.MyImageView;
@@ -117,7 +117,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         switch(viewType){
             case ITEM_TYPE_HEADER :
                 HeadViewHolder headViewHolder = new HeadViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_image_header, viewGroup, false));
-                headViewHolder.imageView.setDisplayOptions(DisplayOptionsType.Rectangle_3_2);
+                headViewHolder.imageView.setDisplayOptions(OptionsType.Rectangle_3_2);
                 headViewHolder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 ViewGroup.LayoutParams headerParams = headViewHolder.imageView.getLayoutParams();
                 headerParams.width = headerWidth;
@@ -142,9 +142,9 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 itemParams.height = imageSize;
                 itemViewHolder.threeImageView.setLayoutParams(itemParams);
 
-                itemViewHolder.oneImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
-                itemViewHolder.twoImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
-                itemViewHolder.threeImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
+                itemViewHolder.oneImageView.setDisplayOptions(OptionsType.Rectangle_1);
+                itemViewHolder.twoImageView.setDisplayOptions(OptionsType.Rectangle_1);
+                itemViewHolder.threeImageView.setDisplayOptions(OptionsType.Rectangle_1);
 
                 itemViewHolder.oneImageView.setOnClickListener(itemClickListener);
                 itemViewHolder.twoImageView.setOnClickListener(itemClickListener);

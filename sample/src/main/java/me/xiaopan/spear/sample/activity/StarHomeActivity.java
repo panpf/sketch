@@ -75,13 +75,18 @@ public class StarHomeActivity extends MyActionBarActivity implements WindowBackg
     }
 
     @Override
-    public void onSetWindowBackground(Drawable newDrawable) {
-        windowBackgroundManager.setBackground(newDrawable);
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         windowBackgroundManager.destroy();
+    }
+
+    @Override
+    public void onSetWindowBackground(String uri, Drawable drawable) {
+        windowBackgroundManager.setBackground(uri, drawable);
+    }
+
+    @Override
+    public String getCurrentBackgroundUri() {
+        return windowBackgroundManager.getCurrentBackgroundUri();
     }
 }

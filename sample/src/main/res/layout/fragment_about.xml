@@ -1,12 +1,143 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layoutAnimation="@anim/layout_animation">
+    android:orientation="vertical">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Spear是Android上一个专门用来显示、加载或下载图片的类库，特性如下："/>
+            <TextView
+                android:id="@+id/text_about_gifIntro"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="1. 支持GIF图."/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="2. 多种URI支持. 支持http://、https://、asset://、content://、/sdcard/sample.jpg、drawable://等6种URI。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:autoLink="all"
+                android:text="3. 异步加载. 采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="4. 支持缓存. 采用Lru算法在本地和内存中缓存图片，本地缓存可设置最大容量、保留容量以及有效期。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="5. 支持ViewHolder. 即使你在ListView中使用了ViewHolder也依然可以使用ImageLoader来加载图片，并且图片显示绝对不会混乱。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="6. SpearImageView. 提供更强大的SpearImageView，只需调用displayImage***系列方法即可显示各种图片。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:autoLink="all"
+                android:text="7. 重复下载过滤. 如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="8. 即时取消无用请求. SpearImageView在onDetachedFromWindow或被重复利用的时候会及时取消之前的请求。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="9. 支持进度回调. 通过progressListener()方法即可设置并开启进度回调。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="10. 防止加载过大Bitmap. 提供maxSize参数来控制加载到内存的图片的尺寸（默认为当前屏幕宽高的1.5倍），另外还会自动根据ImageView的layout size来调整maxSize。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="11. 裁剪图片. 通过resize可对图片进行裁剪，另外还会自动根据ImageView的layout size来调整resize。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:autoLink="all"
+                android:text="12. 多种级别供你自由玩转图片. 除了display()方法可用来显示图片之外，你还可以通过load()方法加载图片或通过download()方法下载图片。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="13. 强大的自定义功能. 可自定义请求分发与执行、缓存、解码、处理、显示、默认图片、失败图片等。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="14. 提供RequestOptions. 通过RequestOptions你可以提前定义好一系列的属性，然后在显示图片的时候一次性设置，另外你还可以通过Spear.putOptions()存储RequestOptions，然后在使用的时候指定名称即可。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="15. 使用方便. 直接通过Spear.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置"/>你还可以通过Spear.putOptions()存储RequestOptions，然后在使用的时候指定名称即可。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="16. 兼容RecyclerView. RecyclerView增加了一些新的特性，导致在onDetachedFromWindow()中直接回收图片或设置drawable为null会导致一些显示异常和崩溃，现已完美兼容"/>
+        </LinearLayout>
+    </ScrollView>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="16dp"
+        android:layout_gravity="center"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
         android:autoLink="all"
-        android:text="Spear是Android上一个专门用来显示、加载或下载图片的类库\n\n本APP是Spear的示例APP，主要用来体现Spear的强大之处\n\n更加详细的信息请访问Github\nGithub: http://github.com/xiaopansky/spear"/>
-</ScrollView>
+        android:text="Github: http://github.com/xiaopansky/spear"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
+        android:gravity="center">
+        <TextView
+            android:id="@+id/text_about_supportLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#88ffffff"
+            android:text="Powered by："/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/text_about_supportLabel"
+            android:textColor="#88ffffff"
+            android:text="android-gif-drawable"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/text_about_supportLabel"
+            android:layout_below="@id/text_about_supportLabel"
+            android:textColor="#88ffffff"
+            android:text="http://image.baidu.com"/>
+    </RelativeLayout>
+</LinearLayout>

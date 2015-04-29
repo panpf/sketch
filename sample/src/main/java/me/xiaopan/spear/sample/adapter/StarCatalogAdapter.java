@@ -10,7 +10,8 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xiaopan.spear.sample.DisplayOptionsType;
+import me.xiaopan.spear.SpearImageView;
+import me.xiaopan.spear.sample.OptionsType;
 import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.net.request.StarCatalogRequest;
 import me.xiaopan.spear.sample.widget.MyImageView;
@@ -97,34 +98,49 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             ItemHolder itemHolder = new ItemHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_head_portrait, parent, false));
 
             itemHolder.oneLayout.setOnClickListener(onClickListener);
-            itemHolder.oneImageView.setDisplayOptions(DisplayOptionsType.Circular);
+            itemHolder.oneImageView.setDisplayOptions(OptionsType.Circular);
             ViewGroup.LayoutParams params = itemHolder.oneImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
             itemHolder.oneImageView.setLayoutParams(params);
             params = itemHolder.oneNameTextView.getLayoutParams();
+            itemHolder.oneImageView.setImageShape(SpearImageView.ImageShape.CIRCLE);
             params.width = itemWidth;
             itemHolder.oneNameTextView.setLayoutParams(params);
 
             itemHolder.twoLayout.setOnClickListener(onClickListener);
-            itemHolder.twoImageView.setDisplayOptions(DisplayOptionsType.Circular);
+            itemHolder.twoImageView.setDisplayOptions(OptionsType.Circular);
             params = itemHolder.twoImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
             itemHolder.twoImageView.setLayoutParams(params);
             params = itemHolder.twoNameTextView.getLayoutParams();
+            itemHolder.twoImageView.setImageShape(SpearImageView.ImageShape.CIRCLE);
             params.width = itemWidth;
             itemHolder.twoNameTextView.setLayoutParams(params);
 
             itemHolder.threeLayout.setOnClickListener(onClickListener);
-            itemHolder.threeImageView.setDisplayOptions(DisplayOptionsType.Circular);
+            itemHolder.threeImageView.setDisplayOptions(OptionsType.Circular);
             params = itemHolder.threeImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
             itemHolder.threeImageView.setLayoutParams(params);
             params = itemHolder.threeNameTextView.getLayoutParams();
+            itemHolder.threeImageView.setImageShape(SpearImageView.ImageShape.CIRCLE);
             params.width = itemWidth;
             itemHolder.threeNameTextView.setLayoutParams(params);
+
+//            ImageProcessor processor = new RoundedCornerImageProcessor(20);
+//            float[] radii = new float[]{20, 20, 20, 20, 20, 20 ,20, 20};
+//            itemHolder.oneImageView.getDisplayOptions().setImageProcessor(processor);
+//            itemHolder.twoImageView.getDisplayOptions().setImageProcessor(processor);
+//            itemHolder.threeImageView.getDisplayOptions().setImageProcessor(processor);
+//            itemHolder.oneImageView.setImageShape(SpearImageView.ImageShape.ROUNDED_RECT);
+//            itemHolder.twoImageView.setImageShape(SpearImageView.ImageShape.ROUNDED_RECT);
+//            itemHolder.threeImageView.setImageShape(SpearImageView.ImageShape.ROUNDED_RECT);
+//            itemHolder.oneImageView.setRoundedRadii(radii);
+//            itemHolder.twoImageView.setRoundedRadii(radii);
+//            itemHolder.threeImageView.setRoundedRadii(radii);
 
             viewHolder = itemHolder;
         }

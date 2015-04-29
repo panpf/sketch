@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import me.xiaopan.spear.SpearImageView;
+import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.util.Settings;
 
 public class MyImageView extends SpearImageView {
@@ -22,6 +23,10 @@ public class MyImageView extends SpearImageView {
 
     private void onInit(Context context){
         settings = Settings.with(context);
+        setShowGifFlag(true);
+        if(!isInEditMode()){
+            setGifFlagDrawable(R.drawable.ic_gif);
+        }
     }
 
     @Override

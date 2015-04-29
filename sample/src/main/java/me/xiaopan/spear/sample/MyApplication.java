@@ -19,12 +19,15 @@ package me.xiaopan.spear.sample;
 import android.app.Application;
 import android.graphics.Color;
 import android.util.Log;
+import android.widget.ImageView;
 
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.spear.DisplayOptions;
+import me.xiaopan.spear.LoadOptions;
 import me.xiaopan.spear.Spear;
 import me.xiaopan.spear.display.ColorTransitionImageDisplayer;
 import me.xiaopan.spear.display.TransitionImageDisplayer;
+import me.xiaopan.spear.process.BlurImageProcessor;
 import me.xiaopan.spear.process.CircleImageProcessor;
 import me.xiaopan.spear.sample.util.Settings;
 
@@ -37,59 +40,67 @@ public class MyApplication extends Application {
         GoHttp.with(getBaseContext()).setDebugMode(true);
         Spear.setDebugMode(true);
         Spear.putOptions(
-                DisplayOptionsType.Rectangle_1,
+                OptionsType.Rectangle_1,
                 new DisplayOptions(getBaseContext())
-                        .loadingDrawable(R.drawable.image_loading2)
-                        .loadFailDrawable(R.drawable.image_load_fail2)
-                        .pauseDownloadDrawable(R.drawable.image_click2)
-                        .displayer(new TransitionImageDisplayer())
+                        .setLoadingDrawable(R.drawable.image_loading2)
+                        .setLoadFailDrawable(R.drawable.image_load_fail2)
+                        .setPauseDownloadDrawable(R.drawable.image_click2)
+                        .setDecodeGifImage(false)
+                        .setImageDisplayer(new TransitionImageDisplayer())
         );
 
         Spear.putOptions(
-                DisplayOptionsType.Rectangle_0_75,
+                OptionsType.Rectangle_0_75,
                 new DisplayOptions(getBaseContext())
-                        .loadingDrawable(R.drawable.image_loading2)
-                        .loadFailDrawable(R.drawable.image_load_fail2)
-                        .pauseDownloadDrawable(R.drawable.image_click2)
-                        .displayer(new TransitionImageDisplayer())
+                        .setLoadingDrawable(R.drawable.image_loading2)
+                        .setLoadFailDrawable(R.drawable.image_load_fail2)
+                        .setPauseDownloadDrawable(R.drawable.image_click2)
+                        .setImageDisplayer(new TransitionImageDisplayer())
         );
 
         Spear.putOptions(
-                DisplayOptionsType.Rectangle_1_56,
+                OptionsType.Rectangle_1_56,
                 new DisplayOptions(getBaseContext())
-                        .loadingDrawable(R.drawable.image_loading2)
-                        .loadFailDrawable(R.drawable.image_load_fail2)
-                        .pauseDownloadDrawable(R.drawable.image_click2)
-                        .displayer(new TransitionImageDisplayer())
+                        .setLoadingDrawable(R.drawable.image_loading2)
+                        .setLoadFailDrawable(R.drawable.image_load_fail2)
+                        .setPauseDownloadDrawable(R.drawable.image_click2)
+                        .setImageDisplayer(new TransitionImageDisplayer())
         );
 
         Spear.putOptions(
-                DisplayOptionsType.Rectangle_3_2,
+                OptionsType.Rectangle_3_2,
                 new DisplayOptions(getBaseContext())
-                        .loadingDrawable(R.drawable.image_loading2)
-                        .loadFailDrawable(R.drawable.image_load_fail2)
-                        .pauseDownloadDrawable(R.drawable.image_click2)
-                        .displayer(new TransitionImageDisplayer())
+                        .setLoadingDrawable(R.drawable.image_loading2)
+                        .setLoadFailDrawable(R.drawable.image_load_fail2)
+                        .setPauseDownloadDrawable(R.drawable.image_click2)
+                        .setImageDisplayer(new TransitionImageDisplayer())
         );
 
         Spear.putOptions(
-            DisplayOptionsType.Detail,
+            OptionsType.Detail,
             new DisplayOptions(getBaseContext())
-                .loadFailDrawable(R.drawable.image_load_fail2)
-                .pauseDownloadDrawable(R.drawable.image_click2)
-                .loadGifDrawable()
-                .displayer(new ColorTransitionImageDisplayer(Color.TRANSPARENT))
+                .setLoadFailDrawable(R.drawable.image_load_fail2)
+                .setPauseDownloadDrawable(R.drawable.image_click2)
+                .setImageDisplayer(new ColorTransitionImageDisplayer(Color.TRANSPARENT))
         );
 
         Spear.putOptions(
-                DisplayOptionsType.Circular,
+                OptionsType.Circular,
                 new DisplayOptions(getBaseContext())
-                        .loadingDrawable(R.drawable.image_loading2)
-                        .loadFailDrawable(R.drawable.image_load_fail2)
-                        .pauseDownloadDrawable(R.drawable.image_click2)
-                        .displayer(new TransitionImageDisplayer())
-                        .processor(new CircleImageProcessor())
+                        .setLoadingDrawable(R.drawable.image_loading2)
+                        .setLoadFailDrawable(R.drawable.image_load_fail2)
+                        .setPauseDownloadDrawable(R.drawable.image_click2)
+                        .setImageDisplayer(new TransitionImageDisplayer())
+                        .setImageProcessor(new CircleImageProcessor())
         );
+
+            Spear.putOptions(
+                    OptionsType.WindowBackground,
+                    new LoadOptions(getBaseContext())
+                            .setScaleType(ImageView.ScaleType.CENTER_CROP)
+                            .setImageProcessor(new BlurImageProcessor(15, true))
+                            .setDecodeGifImage(false)
+            );
 
         boolean isPauseDownload = Settings.with(getBaseContext()).isMobileNetworkPauseDownload();
         Spear.with(getBaseContext()).getConfiguration().setMobileNetworkPauseDownload(isPauseDownload);

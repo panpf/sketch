@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import me.xiaopan.spear.sample.DisplayOptionsType;
+import me.xiaopan.spear.sample.OptionsType;
 import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.util.DimenUtils;
 import me.xiaopan.spear.sample.widget.MyImageView;
@@ -73,7 +73,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         ItemViewHolder itemViewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_photo_album_image, parent, false));
 
         itemViewHolder.spearImageView.setOnClickListener(itemClickListener);
-        itemViewHolder.spearImageView.setDisplayOptions(DisplayOptionsType.Rectangle_1);
+        itemViewHolder.spearImageView.setDisplayOptions(OptionsType.Rectangle_1);
         if(itemWidth != -1){
             ViewGroup.LayoutParams layoutParams = itemViewHolder.spearImageView.getLayoutParams();
             layoutParams.width = itemWidth;

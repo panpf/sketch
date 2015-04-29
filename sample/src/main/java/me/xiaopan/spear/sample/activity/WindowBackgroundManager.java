@@ -10,28 +10,30 @@ import android.graphics.drawable.TransitionDrawable;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
-import android.widget.ImageView;
 
 import me.xiaopan.spear.CancelCause;
 import me.xiaopan.spear.FailCause;
 import me.xiaopan.spear.ImageFrom;
 import me.xiaopan.spear.LoadListener;
+import me.xiaopan.spear.RecycleDrawableInterface;
 import me.xiaopan.spear.Request;
 import me.xiaopan.spear.Spear;
-import me.xiaopan.spear.process.BlurImageProcessor;
+import me.xiaopan.spear.sample.OptionsType;
 import me.xiaopan.spear.sample.R;
 
 public class WindowBackgroundManager {
     private Activity activity;
     private Drawable oneDrawable;
     private Drawable twoDrawable;
+    private String currentBackgroundUri;
 
     public WindowBackgroundManager(Activity activity) {
         this.activity = activity;
         this.activity.getWindow().setFormat(PixelFormat.TRANSLUCENT); // 要先将Window的格式设为透明的，如果不这么做的话第一次改变Window的背景的话屏幕会快速的闪一下（黑色的）
     }
 
-    public void setBackground(Drawable newDrawable) {
+    public void setBackground(String currentBackgroundUri, Drawable newDrawable) {
+        this.currentBackgroundUri = currentBackgroundUri;
         Drawable oldOneDrawable = oneDrawable;
         Window window = activity.getWindow();
         Drawable oneDrawable = twoDrawable!=null?twoDrawable:activity.getResources().getDrawable(R.drawable.shape_window_background);
@@ -45,13 +47,23 @@ public class WindowBackgroundManager {
         recycleDrawable(oldOneDrawable);
     }
 
+    public String getCurrentBackgroundUri() {
+        return currentBackgroundUri;
+    }
+
     public void destroy() {
         recycleDrawable(oneDrawable);
         recycleDrawable(twoDrawable);
     }
 
     private void recycleDrawable(Drawable drawable){
-        if(drawable != null && drawable instanceof BitmapDrawable){
+        if(drawable == null){
+            return;
+        }
+
+        if(drawable instanceof RecycleDrawableInterface){
+            ((RecycleDrawableInterface) drawable).recycle();
+        }else if(drawable instanceof BitmapDrawable){
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
             if(bitmap != null && !bitmap.isRecycled()){
                 Log.d(Spear.TAG, "old window bitmap recycled@" + Integer.toHexString(bitmap.hashCode()));
@@ -61,7 +73,8 @@ public class WindowBackgroundManager {
     }
 
     public interface OnSetWindowBackgroundListener {
-        void onSetWindowBackground(Drawable drawable);
+        void onSetWindowBackground(String uri, Drawable drawable);
+        String getCurrentBackgroundUri();
     }
 
     public static class WindowBackgroundLoader {
@@ -95,10 +108,13 @@ public class WindowBackgroundManager {
 
         public void setUserVisible(boolean userVisible) {
             this.userVisible = userVisible;
+            if(userVisible && windowBackgroundImageUri != null){
+                load(windowBackgroundImageUri);
+            }
         }
 
-        public void load(String imageUri){
-            if(imageUri == null){
+        public void load(final String imageUri){
+            if(imageUri == null || imageUri.equals(onSetWindowBackgroundListener.getCurrentBackgroundUri())){
                 return;
             }
             this.windowBackgroundImageUri = imageUri;
@@ -113,12 +129,12 @@ public class WindowBackgroundManager {
                 }
 
                 @Override
-                public void onCompleted(final Bitmap bitmap, ImageFrom imageFrom) {
+                public void onCompleted(Drawable gifDrawable, ImageFrom imageFrom, String mimeType) {
                     if(onSetWindowBackgroundListener != null){
                         if(userVisible){
-                            onSetWindowBackgroundListener.onSetWindowBackground(new BitmapDrawable(context.getResources(), bitmap));
+                            onSetWindowBackgroundListener.onSetWindowBackground(imageUri, gifDrawable);
                         }else{
-                            bitmap.recycle();
+                            ((RecycleDrawableInterface) gifDrawable).recycle();
                         }
                     }
                 }
@@ -133,8 +149,7 @@ public class WindowBackgroundManager {
 
                 }
             }).resize(displayMetrics.widthPixels/2, displayMetrics.heightPixels/2)
-                    .scaleType(ImageView.ScaleType.CENTER_CROP)
-                    .processor(new BlurImageProcessor(15, true))
+                    .options(OptionsType.WindowBackground)
                     .fire();
         }
     }

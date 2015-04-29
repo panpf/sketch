@@ -117,13 +117,14 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
         @Override
         protected List<String> doInBackground(Void[] params) {
             Uri mImageUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-            String where = MediaStore.Images.Media.MIME_TYPE + "=? or " + MediaStore.Images.Media.MIME_TYPE + "=?";
-            String[] whereParams = new String[] { "image/jpeg", "image/png"};
+            String[] columns = new String[]{
+                    MediaStore.Images.Media.DATA,
+                    MediaStore.Images.Media.DATE_MODIFIED
+            };
             String sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " DESC";
-            ContentResolver mContentResolver = context.getContentResolver();
 
-            //只查询jpeg和png的图片
-            Cursor mCursor = mContentResolver.query(mImageUri, null, where, whereParams, sortOrder);
+            ContentResolver mContentResolver = context.getContentResolver();
+            Cursor mCursor = mContentResolver.query(mImageUri, columns, null, null, sortOrder);
             if(mCursor == null){
                 return null;
             }
