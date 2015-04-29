@@ -17,16 +17,3 @@ allprojects {
         jcenter()
     }
 }
-
-def loadProperties(String fileName){
-    FileInputStream inputStream = new FileInputStream(new File(fileName))
-    Properties properties = new Properties()
-    properties.load(inputStream)
-    inputStream.close()
-    for(Map.Entry property in properties){
-        ext[property.key] = property.value
-        println(property.key+"="+property.value)
-    }
-}
-
-loadProperties 'local.properties'

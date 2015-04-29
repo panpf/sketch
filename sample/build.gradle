@@ -1,5 +1,18 @@
 apply plugin: 'com.android.application'
 
+def loadProperties(String fileName){
+    FileInputStream inputStream = new FileInputStream(new File(fileName))
+    Properties properties = new Properties()
+    properties.load(inputStream)
+    inputStream.close()
+    for(Map.Entry property in properties){
+        ext[property.key] = property.value
+        println(property.key+"="+property.value)
+    }
+}
+
+loadProperties 'sample/local.properties'
+
 android {
     compileSdkVersion 22
     buildToolsVersion "21.1.2"
@@ -36,6 +49,10 @@ android {
 //        googlePlay{
 //            applicationId "me.xiaoapn.android.imageloader"
 //        }
+    }
+
+    lintOptions {
+        abortOnError false
     }
 }
 
