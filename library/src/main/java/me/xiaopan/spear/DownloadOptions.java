@@ -23,6 +23,14 @@ public class DownloadOptions implements RequestOptions {
     private boolean enableDiskCache = true;	//是否开启磁盘缓存
     private RequestLevel requestLevel;
 
+    public DownloadOptions(){
+
+    }
+
+    public DownloadOptions(DownloadOptions from){
+        copyOf(from);
+    }
+
     /**
      * 设置是否开启磁盘缓存
      * @param isEnableDiskCache 是否开启磁盘缓存
@@ -56,5 +64,10 @@ public class DownloadOptions implements RequestOptions {
     public DownloadOptions setRequestLevel(RequestLevel requestLevel) {
         this.requestLevel = requestLevel;
         return this;
+    }
+
+    public void copyOf(DownloadOptions downloadOptions){
+        this.enableDiskCache = downloadOptions.isEnableDiskCache();
+        this.requestLevel = downloadOptions.getRequestLevel();
     }
 }

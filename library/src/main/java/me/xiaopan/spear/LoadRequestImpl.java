@@ -17,6 +17,7 @@
 package me.xiaopan.spear;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
@@ -55,12 +56,13 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private ImageProcessor imageProcessor;	// 图片处理器
     private ImageView.ScaleType scaleType; // 图片缩放方式，ImageProcessor会根据resize和scaleType来创建新的图片
     private LoadListener loadListener;	// 监听器
-    private boolean disableGifImage;
+    private boolean decodeGifImage = true;  // 是否解码GIF图片
 
     // Runtime fields
     private File cacheFile;	// 缓存文件
     private byte[] imageData;
-    private Object resultBitmap;
+    private Drawable resultBitmap;
+    private String mimeType;
     private ImageFrom imageFrom;    // 图片来源
     private FailCause failCause;    // 失败原因
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
@@ -172,13 +174,13 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     }
 
     @Override
-    public boolean isDisableGifImage() {
-        return disableGifImage;
+    public boolean isDecodeGifImage() {
+        return decodeGifImage;
     }
 
     @Override
-    public void setDisableGifImage(boolean isDisableGifImage) {
-        this.disableGifImage = isDisableGifImage;
+    public void setDecodeGifImage(boolean isDecodeGifImage) {
+        this.decodeGifImage = isDecodeGifImage;
     }
 
     /****************************************** Runtime methods ******************************************/
@@ -480,13 +482,17 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
             }
 
             if(bitmap != null && !bitmap.isRecycled()){
-                this.resultBitmap = bitmap;
+                RecycleBitmapDrawable recycleBitmapDrawable = new RecycleBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
+                recycleBitmapDrawable.setMimeType(mimeType);
+                this.resultBitmap = recycleBitmapDrawable;
                 spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
             }else{
                 toFailedStatus(FailCause.DECODE_FAIL);
             }
         }else if(decodeResult instanceof RecycleGifDrawable){
-            this.resultBitmap = decodeResult;
+            RecycleGifDrawable recycleGifDrawable = (RecycleGifDrawable) decodeResult;
+            recycleGifDrawable.setMimeType(mimeType);
+            this.resultBitmap = recycleGifDrawable;
             spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
         }else{
             toFailedStatus(FailCause.DECODE_FAIL);
@@ -496,6 +502,16 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     @Override
     public boolean isLocalApkFile(){
         return uriScheme == UriScheme.FILE && CommentUtils.checkSuffix(uri, ".apk");
+    }
+
+    @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     /**
@@ -522,11 +538,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private void handleCompletedOnMainThread() {
         if(isCanceled()){
             if(resultBitmap != null){
-                if(resultBitmap instanceof Bitmap){
-                    ((Bitmap) resultBitmap).recycle();
-                }else if(resultBitmap instanceof RecycleGifDrawable){
-                    ((RecycleGifDrawable) resultBitmap).recycle();
-                }
+                ((RecycleDrawableInterface)resultBitmap).recycle();
             }
             if(Spear.isDebugMode()){
                 Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
@@ -536,11 +548,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
         setRequestStatus(RequestStatus.COMPLETED);
         if(loadListener != null){
-            if(resultBitmap instanceof Bitmap){
-                loadListener.onCompleted(((Bitmap) resultBitmap), imageFrom);
-            }else if(resultBitmap instanceof RecycleGifDrawable){
-                loadListener.onCompleted(((RecycleGifDrawable) resultBitmap), imageFrom);
-            }
+            loadListener.onCompleted(resultBitmap, imageFrom, mimeType);
         }
     }
 

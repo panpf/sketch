@@ -44,7 +44,7 @@ public interface SpearImageViewInterface{
      * @param imageFilePath SD卡上的图片文件
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    Request displayFilImage(String imageFilePath);
+    Request displayFileImage(String imageFilePath);
 
     /**
      * 显示Drawable资源里的图片

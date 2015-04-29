@@ -70,7 +70,7 @@ public interface DisplayHelper {
      * 禁止解码Gif图片
      * @return LoadHelper
      */
-    DisplayHelper disableGifImage();
+    DisplayHelper disableDecodeGifImage();
 
     /**
      * 设置最大尺寸，在解码时会使用此Size来计算inSimpleSize

@@ -39,7 +39,7 @@ public class LoadHelperImpl implements LoadHelper{
     protected ProgressListener progressListener;
 
     // 加载属性
-    protected boolean disableGifImage;
+    protected boolean decodeGifImage = true;
     protected ImageSize maxSize;
     protected ImageSize resize;
     protected ImageProcessor imageProcessor;
@@ -82,8 +82,8 @@ public class LoadHelperImpl implements LoadHelper{
     }
 
     @Override
-    public LoadHelperImpl disableGifImage() {
-        this.disableGifImage = true;
+    public LoadHelperImpl disableDecodeGifImage() {
+        this.decodeGifImage = false;
         return this;
     }
 
@@ -154,7 +154,7 @@ public class LoadHelperImpl implements LoadHelper{
         if(this.imageProcessor == null){
             this.imageProcessor = options.getImageProcessor();
         }
-        this.disableGifImage = options.isDisableGifImage();
+        this.decodeGifImage = options.isDecodeGifImage();
         RequestLevel optionRequestLevel = options.getRequestLevel();
         if(requestLevel != null && optionRequestLevel != null){
             if(optionRequestLevel.getLevel() < requestLevel.getLevel()){
@@ -231,7 +231,7 @@ public class LoadHelperImpl implements LoadHelper{
         request.setScaleType(scaleType);
         request.setLoadListener(loadListener);
         request.setImageProcessor(imageProcessor);
-        request.setDisableGifImage(disableGifImage);
+        request.setDecodeGifImage(decodeGifImage);
 
         request.postRunDispatch();
 

@@ -54,6 +54,7 @@ public class Configuration {
 
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean pauseDownload;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
+    private boolean decodeGifImage = true; // 是否解码GIF图
     private MobileNetworkPauseDownloadManager mobileNetworkPauseDownloadManager;
 
     public Configuration(Context context){
@@ -354,5 +355,21 @@ public class Configuration {
             }
         }
         return this;
+    }
+
+    /**
+     * 是否解码GIF图
+     * @return true：解码；false：不解码
+     */
+    public boolean isDecodeGifImage() {
+        return decodeGifImage;
+    }
+
+    /**
+     * 设置是否解码GIF图
+     * @param decodeGifImage true：解码；false：不解码
+     */
+    public void setDecodeGifImage(boolean decodeGifImage) {
+        this.decodeGifImage = decodeGifImage;
     }
 }

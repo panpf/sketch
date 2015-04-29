@@ -25,6 +25,7 @@ public interface ImageDecoder {
 	/**
 	 * 解码
      * @param loadRequest 加载请求
+	 * @return null：解码失败；Bitmap：一般的图片；RecycleGifDrawable：GIF图片
 	 */
 	Object decode(LoadRequest loadRequest);
 }

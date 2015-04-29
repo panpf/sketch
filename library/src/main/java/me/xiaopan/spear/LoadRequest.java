@@ -72,15 +72,14 @@ public interface LoadRequest extends DownloadRequest{
     void setLoadListener(LoadListener loadListener);
 
     /**
-     * 是否禁止解码Gif图片，禁止后Gif图将使用BitmapFactory来解码
-     * @return true：禁止
+     * 是否解码Gif图片，如果为false，Gif图将使用BitmapFactory来解码
      */
-    boolean isDisableGifImage();
+    boolean isDecodeGifImage();
 
     /**
-     * 设置是否禁止解码Gif图，禁止后Gif图将使用BitmapFactory来解码
+     * 设置是否解码Gif图，如果为false，Gif图将使用BitmapFactory来解码
      */
-    void setDisableGifImage(boolean isDisableGifImage);
+    void setDecodeGifImage(boolean isDecodeGifImage);
 
     /**
      * 获取缓存文件
@@ -99,4 +98,16 @@ public interface LoadRequest extends DownloadRequest{
      * @return true：是
      */
     boolean isLocalApkFile();
+
+    /**
+     * 获取图片类型
+     * @return 图片类型
+     */
+    String getMimeType();
+
+    /**
+     * 设置图片类型
+     * @param mimeType 图片类型
+     */
+    void setMimeType(String mimeType);
 }

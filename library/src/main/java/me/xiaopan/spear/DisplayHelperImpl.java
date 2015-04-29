@@ -44,7 +44,7 @@ public class DisplayHelperImpl implements DisplayHelper{
     protected ProgressListener progressListener;
 
     // 加载属性
-    protected boolean disableGifImage;
+    protected boolean decodeGifImage = true;
     protected ImageSize maxSize;
     protected ImageSize resize;
     protected ImageProcessor imageProcessor;
@@ -147,7 +147,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         this.scaleType = displayParams.scaleType;
         this.requestLevel = displayParams.requestLevel;
         this.imageProcessor = displayParams.imageProcessor;
-        this.disableGifImage = displayParams.disableGifImage;
+        this.decodeGifImage = displayParams.decodeGifImage;
 
         this.imageView = imageView;
         this.memoryCacheId = displayParams.memoryCacheId;
@@ -205,7 +205,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         maxSize = null;
         scaleType = null;
         imageProcessor = null;
-        disableGifImage = false;
+        decodeGifImage = true;
 
         memoryCacheId = null;
         enableMemoryCache = true;
@@ -239,7 +239,7 @@ public class DisplayHelperImpl implements DisplayHelper{
             displayParams.maxSize = maxSize;
             displayParams.scaleType = scaleType;
             displayParams.imageProcessor = imageProcessor;
-            displayParams.disableGifImage = disableGifImage;
+            displayParams.decodeGifImage = decodeGifImage;
 
             displayParams.memoryCacheId = memoryCacheId;
             displayParams.enableMemoryCache = enableMemoryCache;
@@ -272,8 +272,8 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public DisplayHelperImpl disableGifImage() {
-        this.disableGifImage = true;
+    public DisplayHelperImpl disableDecodeGifImage() {
+        this.decodeGifImage = false;
         return this;
     }
 
@@ -440,7 +440,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(this.imageDisplayer == null){
             displayer(options.getImageDisplayer());
         }
-        this.disableGifImage = options.isDisableGifImage();
+        this.decodeGifImage = options.isDecodeGifImage();
         if(this.loadingDrawableHolder == null){
             this.loadingDrawableHolder = options.getLoadingDrawableHolder();
         }
@@ -553,7 +553,7 @@ public class DisplayHelperImpl implements DisplayHelper{
                     }
                     imageView.setImageDrawable(cacheDrawable);
                     if(displayListener != null){
-                        displayListener.onCompleted(ImageFrom.MEMORY_CACHE);
+                        displayListener.onCompleted(ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
                     }
                     spear.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
                     return null;
@@ -588,7 +588,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(potentialRequest != null && !potentialRequest.isFinished()){
             if(memoryCacheId.equals(potentialRequest.getMemoryCacheId())){
                 if(Spear.isDebugMode()){
-                    Log.d(Spear.TAG, NAME + " - " + "无需取消" + "；" + "ImageViewCode" + "=" + imageView.hashCode() + "；" + potentialRequest.getName());
+                    Log.d(Spear.TAG, NAME + " - " + "don't need to cancel" + "；" + "ImageViewCode" + "=" + imageView.hashCode() + "；" + potentialRequest.getName());
                 }
                 spear.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
                 return potentialRequest;
@@ -611,7 +611,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         request.setMaxSize(maxSize);
         request.setScaleType(scaleType);
         request.setImageProcessor(imageProcessor);
-        request.setDisableGifImage(disableGifImage);
+        request.setDecodeGifImage(decodeGifImage);
 
         request.setImageDisplayer(imageDisplayer);
         request.setDisplayListener(displayListener);

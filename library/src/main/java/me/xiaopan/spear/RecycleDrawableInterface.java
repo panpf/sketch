@@ -29,4 +29,10 @@ public interface RecycleDrawableInterface {
     boolean isRecycled();
 
     String getHashCodeByLog();
+
+    String getMimeType();
+
+    void setMimeType(String mimeType);
+
+    void recycle();
 }

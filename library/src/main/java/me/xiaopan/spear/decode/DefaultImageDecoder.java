@@ -26,6 +26,7 @@ import android.util.Log;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 
 import me.xiaopan.spear.ImageSize;
 import me.xiaopan.spear.LoadRequest;
@@ -100,47 +101,57 @@ public class DefaultImageDecoder implements ImageDecoder {
         Options options = new Options();
         options.inJustDecodeBounds = true;
         decodeHelper.decode(options);
+        loadRequest.setMimeType(options.outMimeType);
 
-        if(!loadRequest.isDisableGifImage() && options.outMimeType.equals("image/gif")){
-            return decodeHelper.getGifDrawable();
-        }else{
-            if(maxSize != null){
-                if(!(options.outWidth == 1 && options.outHeight == 1)){
-                    originalSize = new Point(options.outWidth, options.outHeight);
-
-                    // 计算缩放倍数
-                    inSampleSize = loadRequest.getSpear().getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxSize.getWidth(), maxSize.getHeight());
-                    options.inSampleSize = inSampleSize;
-
-                    // 再次解码
-                    options.inJustDecodeBounds = false;
-                    bitmap = decodeHelper.decode(options);
-                }
-            }else{
-                bitmap = decodeHelper.decode(null);
-                if(bitmap != null){
-                    if(!(bitmap.getWidth()==1 && bitmap.getHeight() == 1)){
-                        originalSize = new Point(bitmap.getWidth(), bitmap.getHeight());
-                    }else{
-                        if(Spear.isDebugMode()){
-                            Log.w(Spear.TAG, NAME + " - " + "recycle bitmap@"+Integer.toHexString(bitmap.hashCode()) + " - " + "1x1 Image");
-                        }
-                        bitmap.recycle();
-                        bitmap = null;
-                    }
-                }
+        // GIF图片
+        if(loadRequest.getSpear().getConfiguration().isDecodeGifImage() && loadRequest.isDecodeGifImage() && options.outMimeType.equals("image/gif")){
+            try {
+                return decodeHelper.getGifDrawable();
+            }catch (UnsatisfiedLinkError e){
+                Log.e(Spear.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, unable to process the GIF images, has automatically according to the common image decoding, and has set up a closed automatically decoding GIF image feature. If you need to decode the GIF figure please go to “https://github.com/xiaopansky/spear” to download “libpl_droidsonroids_gif.so” file and put in your project");
+                Log.e(Spear.TAG, "没有找到“libpl_droidsonroids_gif.so”文件，无法处理GIF图片，已自动按普通图片解码，并已自动关闭解码GIF图片功能。如果您需要解码GIF图请上“https://github.com/xiaopansky/spear”下载“libpl_droidsonroids_gif.so”文件并放到您的项目中");
+                loadRequest.getSpear().getConfiguration().setDecodeGifImage(false);
+                e.printStackTrace();
             }
-
-            // 回调
-            if(bitmap != null && !bitmap.isRecycled()){
-                decodeHelper.onDecodeSuccess(bitmap, originalSize, inSampleSize);
-            }else{
-                bitmap = null;
-                decodeHelper.onDecodeFailed();
-            }
-
-            return bitmap;
         }
+
+        // 普通图片
+        if(maxSize != null){
+            if(!(options.outWidth == 1 && options.outHeight == 1)){
+                originalSize = new Point(options.outWidth, options.outHeight);
+
+                // 计算缩放倍数
+                inSampleSize = loadRequest.getSpear().getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxSize.getWidth(), maxSize.getHeight());
+                options.inSampleSize = inSampleSize;
+
+                // 再次解码
+                options.inJustDecodeBounds = false;
+                bitmap = decodeHelper.decode(options);
+            }
+        }else{
+            bitmap = decodeHelper.decode(null);
+            if(bitmap != null){
+                if(!(bitmap.getWidth()==1 && bitmap.getHeight() == 1)){
+                    originalSize = new Point(bitmap.getWidth(), bitmap.getHeight());
+                }else{
+                    if(Spear.isDebugMode()){
+                        Log.w(Spear.TAG, NAME + " - " + "recycle bitmap@"+Integer.toHexString(bitmap.hashCode()) + " - " + "1x1 Image");
+                    }
+                    bitmap.recycle();
+                    bitmap = null;
+                }
+            }
+        }
+
+        // 回调
+        if(bitmap != null && !bitmap.isRecycled()){
+            decodeHelper.onDecodeSuccess(bitmap, originalSize, inSampleSize);
+        }else{
+            bitmap = null;
+            decodeHelper.onDecodeFailed();
+        }
+
+        return bitmap;
     }
 
     /**
@@ -165,7 +176,6 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         /**
          * 获取GIF图
-         * @return
          */
         RecycleGifDrawable getGifDrawable();
     }
@@ -354,7 +364,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public RecycleGifDrawable getGifDrawable() {
             try {
-                return new RecycleGifDrawable(file);
+                return new RecycleGifDrawable(new RandomAccessFile(file.getPath(), "r").getFD());
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
@@ -469,7 +479,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public RecycleGifDrawable getGifDrawable() {
             try {
-                return new RecycleGifDrawable(file);
+                return new RecycleGifDrawable(new RandomAccessFile(file.getPath(), "r").getFD());
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;

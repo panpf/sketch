@@ -31,11 +31,15 @@ public class LoadOptions extends DownloadOptions{
     private ImageSize maxSize;	//解码最大图片尺寸，用于读取图片时计算inSampleSize
     private ImageSize resize;	// 处理尺寸，ImageProcessor会根据此尺寸来创建新的图片
     private ImageProcessor imageProcessor;	//图片处理器
-    private boolean disableGifImage;
+    private boolean decodeGifImage = true; // 是否解码GIF图片
 
     public LoadOptions(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         setMaxSize((int) (displayMetrics.widthPixels * 1.5f), (int) (displayMetrics.heightPixels * 1.5f));
+    }
+
+    public LoadOptions(LoadOptions from){
+        copyOf(from);
     }
 
     @Override
@@ -139,19 +143,19 @@ public class LoadOptions extends DownloadOptions{
     }
 
     /**
-     * 是否禁止处理GIF图片
+     * 是否解码GIF图片
      * @return true：是
      */
-    public boolean isDisableGifImage() {
-        return disableGifImage;
+    public boolean isDecodeGifImage() {
+        return decodeGifImage;
     }
 
     /**
-     * 设置是否禁止处理GIF图片
-     * @param disableGifImage true：是
+     * 设置是否解码GIF图片
+     * @param decodeGifImage true：是
      */
-    public LoadOptions setDisableGifImage(boolean disableGifImage) {
-        this.disableGifImage = disableGifImage;
+    public LoadOptions setDecodeGifImage(boolean decodeGifImage) {
+        this.decodeGifImage = decodeGifImage;
         return this;
     }
 
@@ -159,5 +163,16 @@ public class LoadOptions extends DownloadOptions{
     public LoadOptions setRequestLevel(RequestLevel requestLevel) {
         super.setRequestLevel(requestLevel);
         return this;
+    }
+
+    public void copyOf(LoadOptions loadOptions){
+        this.scaleType = loadOptions.getScaleType();
+        this.maxSize = loadOptions.getMaxSize();
+        this.resize = loadOptions.getResize();
+        this.imageProcessor = loadOptions.getImageProcessor();
+        this.decodeGifImage = loadOptions.isDecodeGifImage();
+
+        setEnableDiskCache(loadOptions.isEnableDiskCache());
+        setRequestLevel(loadOptions.getRequestLevel());
     }
 }

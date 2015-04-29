@@ -28,11 +28,10 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     private int cacheRefCount;
     private int displayRefCount;
     private int waitDisplayRefCount;
-    private String bitmapCode;
+    private String mimeType;
 
     public RecycleBitmapDrawable(Resources res, Bitmap bitmap) {
         super(res, bitmap);
-        this.bitmapCode = Integer.toHexString(bitmap.hashCode());
     }
 
     @Override
@@ -99,7 +98,30 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
 
     @Override
     public String getHashCodeByLog() {
-        return getBitmap() != null ? Integer.toHexString(getBitmap().hashCode()) : null;
+        Bitmap bitmap = getBitmap();
+        if(bitmap != null){
+            return Integer.toHexString(bitmap.hashCode());
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
+    @Override
+    public void recycle() {
+        Bitmap bitmap = getBitmap();
+        if(bitmap != null){
+            bitmap.recycle();
+        }
     }
 
     private synchronized void tryRecycle(String type, String callingStation) {
@@ -118,9 +140,5 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     private boolean canRecycle(){
 //        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1 && getBitmap() != null && !getBitmap().isRecycled();
         return getBitmap() != null && !getBitmap().isRecycled();
-    }
-
-    public String getBitmapCode() {
-        return bitmapCode;
     }
 }

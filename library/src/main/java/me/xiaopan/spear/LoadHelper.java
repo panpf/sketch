@@ -38,10 +38,10 @@ public interface LoadHelper {
     LoadHelper disableDiskCache();
 
     /**
-     * 禁止解码Gif图片
+     * 不解码Gif图片
      * @return LoadHelper
      */
-    LoadHelper disableGifImage();
+    LoadHelper disableDecodeGifImage();
 
     /**
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize

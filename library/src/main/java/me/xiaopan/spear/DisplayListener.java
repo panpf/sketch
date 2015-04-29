@@ -28,8 +28,9 @@ public interface DisplayListener {
     /**
      * 已完成
      * @param imageFrom 图片来源
+     * @param mimeType 图片类型
      */
-    void onCompleted(ImageFrom imageFrom);
+    void onCompleted(ImageFrom imageFrom, String mimeType);
 
     /**
      * 已失败

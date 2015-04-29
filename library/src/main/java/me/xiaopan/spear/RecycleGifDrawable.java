@@ -37,6 +37,7 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     private int cacheRefCount;
     private int displayRefCount;
     private int waitDisplayRefCount;
+    private String mimeType;
 
     public RecycleGifDrawable(AssetFileDescriptor afd) throws IOException {
         super(afd);
@@ -133,6 +134,16 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     @Override
     public String getHashCodeByLog() {
         return Integer.toHexString(hashCode());
+    }
+
+    @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     private synchronized void tryRecycle(String type, String callingStation) {

@@ -33,7 +33,7 @@ public class DisplayParams {
     public ProgressListener progressListener;
 
     // 加载属性
-    public boolean disableGifImage;
+    public boolean decodeGifImage = true;
     public ImageSize maxSize;
     public ImageSize resize;
     public ImageProcessor imageProcessor;

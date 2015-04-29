@@ -20,9 +20,12 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -30,6 +33,9 @@ import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
+
+import pl.droidsonroids.gif.GifViewSavedState;
+import pl.droidsonroids.gif.GifViewUtils;
 
 /**
  * SpearImageView
@@ -53,31 +59,42 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
     private DisplayListener displayListener;
     private ProgressListener progressListener;
     private DisplayParams displayParams;
-
-    private int fromFlagColor = NONE;
-    private Path fromFlagPath;
-    private Paint fromFlagPaint;
-    private boolean showFromFlag;
-
-    private int progressColor = DEFAULT_PROGRESS_COLOR;
-    private Paint progressPaint;
-    private float progress = NONE;
-    private boolean showDownloadProgress;
-
     private View.OnClickListener onClickListener;
     private boolean replacedClickListener;
     private boolean clickRedisplayOnPauseDownload;
     private boolean clickRedisplayOnFailed;
     private boolean isSetImage;
 
-    private int touchX;
-    private int touchY;
-    private int clickRippleColor = DEFAULT_RIPPLE_COLOR;
-    private boolean pressed;
-    private boolean showClickRipple;
-    private Paint clickRipplePaint;
-    private Scroller clickRippleScroller;
-    private Runnable clickRippleRefreshRunnable;
+    private boolean mFreezesAnimation;
+
+    protected int fromFlagColor = NONE;
+    protected Path fromFlagPath;
+    protected Paint fromFlagPaint;
+    protected boolean showFromFlag;
+
+    protected int progressColor = DEFAULT_PROGRESS_COLOR;
+    protected Paint progressPaint;
+    protected float progress = NONE;
+    protected boolean showDownloadProgress;
+
+    protected int touchX;
+    protected int touchY;
+    protected int clickRippleColor = DEFAULT_RIPPLE_COLOR;
+    protected boolean pressed;
+    protected boolean showClickRipple;
+    protected Paint clickRipplePaint;
+    protected Scroller clickRippleScroller;
+    protected Runnable clickRippleRefreshRunnable;
+
+    protected boolean currentIsShowGifFlag;
+    protected boolean showGifFlag;
+    protected float gifTextLeft = -1;
+    protected float gifTextTop = -1;
+    protected Drawable gifFlagDrawable;
+
+    protected Path imageShapeShadeClipPath;
+    protected float[] roundedRadii;
+    protected ImageShape imageShape = ImageShape.RECT;
 
     public SpearImageView(Context context) {
         super(context);
@@ -85,6 +102,12 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
 
     public SpearImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        postInit(GifViewUtils.initImageView(this, attrs, 0, 0));
+    }
+
+    public SpearImageView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        postInit(GifViewUtils.initImageView(this, attrs, defStyle, 0));
     }
 
     @Override
@@ -97,56 +120,79 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        // 重新计算三角形的位置
         if(fromFlagPath != null){
             fromFlagPath.reset();
             int x = getWidth()/10;
             int y = getWidth()/10;
-            fromFlagPath.moveTo(getPaddingLeft(), getPaddingTop());
-            fromFlagPath.lineTo(getPaddingLeft() + x, getPaddingTop());
-            fromFlagPath.lineTo(getPaddingLeft(), getPaddingTop() + y);
+            int left2 = getPaddingLeft();
+            int top2 = getPaddingTop();
+            fromFlagPath.moveTo(left2, top2);
+            fromFlagPath.lineTo(left2 + x, top2);
+            fromFlagPath.lineTo(left2, top2 + y);
             fromFlagPath.close();
+        }
+
+        if(showGifFlag && gifFlagDrawable != null){
+            gifTextLeft = getWidth()-getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
+            gifTextTop = getHeight()-getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        drawPressedStatus(canvas);
+        drawDownloadProgress(canvas);
+        drawFromFlag(canvas);
+        drawGifFlag(canvas);
+    }
 
-        // 绘制按下状态
-        if(pressed || (clickRippleScroller != null && clickRippleScroller.computeScrollOffset())){
-            if(clickRipplePaint == null){
-                clickRipplePaint = new Paint();
-                clickRipplePaint.setColor(clickRippleColor);
-            }
-            canvas.drawCircle(touchX, touchY, clickRippleScroller.getCurrX(), clickRipplePaint);
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if(showClickRipple && event.getAction() == MotionEvent.ACTION_DOWN && !pressed){
+            touchX = (int) event.getX();
+            touchY = (int) event.getY();
         }
+        return super.onTouchEvent(event);
+    }
 
-        // 绘制进度
-        if(showDownloadProgress && progress != NONE){
-            if(progressPaint == null){
-                progressPaint = new Paint();
-                progressPaint.setColor(progressColor);
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if(!isSetImage && displayParams != null){
+            if(Spear.isDebugMode()){
+                Log.w(Spear.TAG, NAME + "：" + "restore image on attached to window" + " - " + displayParams.uri);
             }
-            canvas.drawRect(getPaddingLeft(), getPaddingTop() + (progress * getHeight()), getWidth() - getPaddingLeft() - getPaddingRight(), getHeight() - getPaddingTop() - getPaddingBottom(), progressPaint);
+            Spear.with(getContext()).display(displayParams, SpearImageView.this).fire();
         }
+    }
 
-        // 绘制三角形
-        if(showFromFlag && fromFlagColor != NONE){
-            if(fromFlagPath == null){
-                fromFlagPath = new Path();
-                int x = getWidth()/10;
-                int y = getWidth()/10;
-                fromFlagPath.moveTo(getPaddingLeft(), getPaddingTop());
-                fromFlagPath.lineTo(getPaddingLeft()+x, getPaddingTop());
-                fromFlagPath.lineTo(getPaddingLeft(), getPaddingTop()+y);
-                fromFlagPath.close();
-            }
-            if(fromFlagPaint == null){
-                fromFlagPaint = new Paint();
-            }
-            fromFlagPaint.setColor(fromFlagColor);
-            canvas.drawPath(fromFlagPath, fromFlagPaint);
+    @Override
+    public Parcelable onSaveInstanceState() {
+        Drawable source = mFreezesAnimation ? getDrawable() : null;
+        Drawable background = mFreezesAnimation ? getBackground() : null;
+        return new GifViewSavedState(super.onSaveInstanceState(), source, background);
+    }
+
+    @Override
+    public void onRestoreInstanceState(Parcelable state) {
+        GifViewSavedState ss = (GifViewSavedState) state;
+        super.onRestoreInstanceState(ss.getSuperState());
+        ss.restoreState(getDrawable(), 0);
+        ss.restoreState(getBackground(), 1);
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        this.isSetImage = false;
+        if(displayRequest != null && !displayRequest.isFinished()){
+            displayRequest.cancel();
+        }
+        final Drawable oldDrawable = getDrawable();
+        if(oldDrawable != null){
+            super.setImageDrawable(null);
+            notifyDrawable("onDetachedFromWindow", oldDrawable, false);
         }
     }
 
@@ -177,69 +223,46 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
         }
     }
 
+    @Override
+    public void setBackgroundResource(int resId) {
+        if (!GifViewUtils.setResource(this, false, resId)) {
+            super.setBackgroundResource(resId);
+        }
+    }
+
     /**
-     * 计算涟漪的半径
-     * @return 涟漪的半径
+     * Sets the content of this GifImageView to the specified Uri.
+     * If uri destination is not a GIF then {@link android.widget.ImageView#setImageURI(android.net.Uri)}
+     * is called as fallback.
+     * For supported URI schemes see: {@link android.content.ContentResolver#openAssetFileDescriptor(android.net.Uri, String)}.
+     *
+     * @param uri The Uri of an image
      */
-    private int computeRippleRadius(){
-        int centerX = getWidth()/2;
-        int centerY = getHeight()/2;
-        // 当按下位置在第一或第四象限的时候，比较按下位置在左上角到右下角这条线上距离谁最远就以谁为半径，否则在左下角到右上角这条线上比较
-        if((touchX < centerX && touchY < centerY) || (touchX > centerX && touchY > centerY)) {
-            int toLeftTopXDistance = touchX;
-            int toLeftTopYDistance = touchY;
-            int toLeftTopDistance = (int) Math.sqrt((toLeftTopXDistance * toLeftTopXDistance) + (toLeftTopYDistance * toLeftTopYDistance));
-            int toRightBottomXDistance = Math.abs(touchX - getWidth());
-            int toRightBottomYDistance = Math.abs(touchY - getHeight());
-            int toRightBottomDistance = (int) Math.sqrt((toRightBottomXDistance * toRightBottomXDistance) + (toRightBottomYDistance * toRightBottomYDistance));
-            return toLeftTopDistance > toRightBottomDistance ? toLeftTopDistance : toRightBottomDistance;
-        }else{
-           int toLeftBottomXDistance = touchX;
-           int toLeftBottomYDistance = Math.abs(touchY - getHeight());
-           int toLeftBottomDistance = (int) Math.sqrt((toLeftBottomXDistance * toLeftBottomXDistance) + (toLeftBottomYDistance * toLeftBottomYDistance));
-           int toRightTopXDistance = Math.abs(touchX - getWidth());
-           int toRightTopYDistance = touchY;
-           int toRightTopDistance = (int) Math.sqrt((toRightTopXDistance * toRightTopXDistance) + (toRightTopYDistance * toRightTopYDistance));
-           return toLeftBottomDistance > toRightTopDistance ? toLeftBottomDistance : toRightTopDistance;
+    @Override
+    public void setImageURI(Uri uri) {
+        if (!GifViewUtils.setGifImageUri(this, uri)) {
+            super.setImageURI(uri);
         }
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if(showClickRipple && event.getAction() == MotionEvent.ACTION_DOWN && !pressed){
-            touchX = (int) event.getX();
-            touchY = (int) event.getY();
-        }
-        return super.onTouchEvent(event);
-    }
-
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        if(!isSetImage && displayParams != null){
-            if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + "：" + "restore image on attached to window" + " - " + displayParams.uri);
-            }
-            Spear.with(getContext()).display(displayParams, SpearImageView.this).fire();
-        }
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        this.isSetImage = false;
-        if(displayRequest != null && !displayRequest.isFinished()){
-            displayRequest.cancel();
-        }
-        final Drawable oldDrawable = getDrawable();
-        if(oldDrawable != null){
-            super.setImageDrawable(null);
-            notifyDrawable("onDetachedFromWindow", oldDrawable, false);
+    public void setImageResource(int resId) {
+        if (!GifViewUtils.setResource(this, true, resId)) {
+            super.setImageResource(resId);
         }
     }
 
     @Override
     public void setImageDrawable(Drawable newDrawable) {
+        // refresh gif flag
+        if(showGifFlag){
+            boolean newDrawableIsGif = isGifImage(newDrawable);
+            if(newDrawableIsGif != currentIsShowGifFlag){
+                currentIsShowGifFlag = newDrawableIsGif;
+                invalidate();
+            }
+        }
+
         final Drawable oldDrawable = getDrawable();
         super.setImageDrawable(newDrawable);
 
@@ -249,6 +272,89 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
         if(oldDrawable != null){
             notifyDrawable("setImageDrawable:oldDrawable", oldDrawable, false);
         }
+    }
+
+    protected void drawPressedStatus(Canvas canvas){
+        if(pressed || (clickRippleScroller != null && clickRippleScroller.computeScrollOffset())){
+            if(imageShape != ImageShape.RECT && getImageShapeClipPath() != null){
+                canvas.save();
+                canvas.clipPath(getImageShapeClipPath());
+            }
+            if(clickRipplePaint == null){
+                clickRipplePaint = new Paint();
+                clickRipplePaint.setColor(clickRippleColor);
+            }
+            canvas.drawCircle(touchX, touchY, clickRippleScroller.getCurrX(), clickRipplePaint);
+            if(imageShape != ImageShape.RECT){
+                canvas.restore();
+            }
+        }
+    }
+
+    protected void drawDownloadProgress(Canvas canvas){
+        if(showDownloadProgress && progress != NONE){
+            if(imageShape != ImageShape.RECT && getImageShapeClipPath() != null){
+                canvas.save();
+                canvas.clipPath(getImageShapeClipPath());
+            }
+            if(progressPaint == null){
+                progressPaint = new Paint();
+                progressPaint.setColor(progressColor);
+            }
+            canvas.drawRect(getPaddingLeft(), getPaddingTop() + (progress * getHeight()), getWidth() - getPaddingLeft() - getPaddingRight(), getHeight() - getPaddingTop() - getPaddingBottom(), progressPaint);
+            if(imageShape != ImageShape.RECT){
+                canvas.restore();
+            }
+        }
+    }
+
+    protected void drawFromFlag(Canvas canvas){
+        if(showFromFlag && fromFlagColor != NONE){
+            if(fromFlagPath == null){
+                fromFlagPath = new Path();
+                int x = getWidth()/10;
+                int y = getWidth()/10;
+                int left2 = getPaddingLeft();
+                int top2 = getPaddingTop();
+                fromFlagPath.moveTo(left2, top2);
+                fromFlagPath.lineTo(left2 + x, top2);
+                fromFlagPath.lineTo(left2, top2 + y);
+                fromFlagPath.close();
+            }
+            if(fromFlagPaint == null){
+                fromFlagPaint = new Paint();
+            }
+            fromFlagPaint.setColor(fromFlagColor);
+            canvas.drawPath(fromFlagPath, fromFlagPaint);
+        }
+    }
+
+    protected void drawGifFlag(Canvas canvas){
+        if(showGifFlag && currentIsShowGifFlag && gifFlagDrawable != null){
+            if(gifTextLeft == -1){
+                gifTextLeft = getWidth()-getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
+                gifTextTop = getHeight()-getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
+            }
+            canvas.save();
+            canvas.translate(gifTextLeft, gifTextTop);
+            gifFlagDrawable.draw(canvas);
+            canvas.restore();
+        }
+    }
+
+    protected Path getImageShapeClipPath(){
+        if(imageShapeShadeClipPath == null && imageShape != ImageShape.RECT){
+            imageShapeShadeClipPath = new Path();
+            if(imageShape == ImageShape.CIRCLE){
+                int xRadius = getWidth()/2;
+                int yRadius = getHeight()/2;
+                imageShapeShadeClipPath.addCircle(xRadius, yRadius, xRadius < yRadius ? xRadius : yRadius, Path.Direction.CW);
+            }else if(imageShape == ImageShape.ROUNDED_RECT){
+                RectF rectF = new RectF(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
+                imageShapeShadeClipPath.addRoundRect(rectF, roundedRadii, Path.Direction.CW);
+            }
+        }
+        return imageShapeShadeClipPath;
     }
 
     @Override
@@ -262,7 +368,7 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
     }
 
     @Override
-    public Request displayFilImage(String imageFilePath){
+    public Request displayFileImage(String imageFilePath){
         return Spear.with(getContext()).display(imageFilePath, this).fire();
     }
 
@@ -288,12 +394,18 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
 
     @Override
     public void setDisplayOptions(DisplayOptions displayOptions) {
-        this.displayOptions = displayOptions;
+        if(displayOptions == null){
+            this.displayOptions = null;
+        }else if(this.displayOptions == null){
+            this.displayOptions = new DisplayOptions(displayOptions);
+        }else{
+            this.displayOptions.copyOf(displayOptions);
+        }
     }
 
     @Override
     public void setDisplayOptions(Enum<?> optionsName) {
-        this.displayOptions = (DisplayOptions) Spear.getOptions(optionsName);
+        setDisplayOptions((DisplayOptions) Spear.getOptions(optionsName));
     }
 
     @Override
@@ -356,6 +468,16 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
             }
             replacedClickListener = false;
         }
+    }
+
+    /**
+     * Sets whether animation position is saved in {@link #onSaveInstanceState()} and restored
+     * in {@link #onRestoreInstanceState(Parcelable)}
+     *
+     * @param freezesAnimation whether animation position is saved
+     */
+    public void setFreezesAnimation(boolean freezesAnimation) {
+        mFreezesAnimation = freezesAnimation;
     }
 
     /**
@@ -426,6 +548,135 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
     }
 
     /**
+     * 是否显示GIF标识
+     * @return 是否显示GIF标识
+     */
+    public boolean isShowGifFlag() {
+        return showGifFlag;
+    }
+
+    /**
+     * 设置是否显示GIF标识
+     * @param showGifFlag 是否显示GIF标识
+     */
+    public void setShowGifFlag(boolean showGifFlag) {
+        this.showGifFlag = showGifFlag;
+    }
+
+    /**
+     * 获取GIF图片标识
+     * @return GIF图片标识
+     */
+    public Drawable getGifFlagDrawable() {
+        return gifFlagDrawable;
+    }
+
+    /**
+     * 设置GIF图片标识
+     * @param gifFlagDrawable GIF图片标识
+     */
+    public void setGifFlagDrawable(Drawable gifFlagDrawable) {
+        this.gifFlagDrawable = gifFlagDrawable;
+        if(this.gifFlagDrawable != null){
+            this.gifFlagDrawable.setBounds(0 , 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
+        }
+    }
+
+    /**
+     * 设置GIF图片标识
+     * @param gifFlagResId GIF图片标识
+     */
+    public void setGifFlagDrawable(int gifFlagResId) {
+        this.gifFlagDrawable = getResources().getDrawable(gifFlagResId);
+        if(this.gifFlagDrawable != null){
+            this.gifFlagDrawable.setBounds(0 , 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
+        }
+    }
+
+    /**
+     * 获取图片形状
+     * @return 图片形状
+     */
+    public ImageShape getImageShape() {
+        return imageShape;
+    }
+
+    /**
+     * 设置图片形状
+     * @param imageShape 图片形状
+     */
+    public void setImageShape(ImageShape imageShape) {
+        this.imageShape = imageShape;
+    }
+
+    /**
+     * 设置圆角半径
+     * @return 圆角半径
+     */
+    public float[] getRoundedRadii() {
+        return roundedRadii;
+    }
+
+    /**
+     * 设置圆角半径
+     * @param roundedRadii 圆角半径
+     */
+    public void setRoundedRadii(float[] roundedRadii) {
+        this.roundedRadii = roundedRadii;
+    }
+
+    private void postInit(GifViewUtils.InitResult result) {
+        mFreezesAnimation = result.mFreezesAnimation;
+        if (result.mSourceResId > 0) {
+            super.setImageResource(result.mSourceResId);
+        }
+        if (result.mBackgroundResId > 0) {
+            super.setBackgroundResource(result.mBackgroundResId);
+        }
+    }
+
+    /**
+     * 计算涟漪的半径
+     * @return 涟漪的半径
+     */
+    private int computeRippleRadius(){
+        int centerX = getWidth()/2;
+        int centerY = getHeight()/2;
+        // 当按下位置在第一或第四象限的时候，比较按下位置在左上角到右下角这条线上距离谁最远就以谁为半径，否则在左下角到右上角这条线上比较
+        if((touchX < centerX && touchY < centerY) || (touchX > centerX && touchY > centerY)) {
+            int toLeftTopXDistance = touchX;
+            int toLeftTopYDistance = touchY;
+            int toLeftTopDistance = (int) Math.sqrt((toLeftTopXDistance * toLeftTopXDistance) + (toLeftTopYDistance * toLeftTopYDistance));
+            int toRightBottomXDistance = Math.abs(touchX - getWidth());
+            int toRightBottomYDistance = Math.abs(touchY - getHeight());
+            int toRightBottomDistance = (int) Math.sqrt((toRightBottomXDistance * toRightBottomXDistance) + (toRightBottomYDistance * toRightBottomYDistance));
+            return toLeftTopDistance > toRightBottomDistance ? toLeftTopDistance : toRightBottomDistance;
+        }else{
+            int toLeftBottomXDistance = touchX;
+            int toLeftBottomYDistance = Math.abs(touchY - getHeight());
+            int toLeftBottomDistance = (int) Math.sqrt((toLeftBottomXDistance * toLeftBottomXDistance) + (toLeftBottomYDistance * toLeftBottomYDistance));
+            int toRightTopXDistance = Math.abs(touchX - getWidth());
+            int toRightTopYDistance = touchY;
+            int toRightTopDistance = (int) Math.sqrt((toRightTopXDistance * toRightTopXDistance) + (toRightTopYDistance * toRightTopYDistance));
+            return toLeftBottomDistance > toRightTopDistance ? toLeftBottomDistance : toRightTopDistance;
+        }
+    }
+
+    private static boolean isGifImage(Drawable newDrawable){
+        if(newDrawable == null){
+            return false;
+        }
+
+        if(newDrawable instanceof TransitionDrawable){
+            TransitionDrawable transitionDrawable = (TransitionDrawable) newDrawable;
+            if(transitionDrawable.getNumberOfLayers() >= 2){
+                newDrawable = transitionDrawable.getDrawable(1);
+            }
+        }
+        return newDrawable instanceof RecycleDrawableInterface && "image/gif".equals(((RecycleDrawableInterface) newDrawable).getMimeType());
+    }
+
+    /**
      * 修改Drawable显示状态
      * @param callingStation 调用位置
      * @param drawable Drawable
@@ -466,7 +717,7 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
         }
 
         @Override
-        public void onCompleted(ImageFrom imageFrom) {
+        public void onCompleted(ImageFrom imageFrom, String mimeType) {
             if(showFromFlag){
                 if(imageFrom != null){
                     switch (imageFrom){
@@ -486,7 +737,7 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
                 invalidate();
             }
             if(displayListener != null){
-                displayListener.onCompleted(imageFrom);
+                displayListener.onCompleted(imageFrom, mimeType);
             }
         }
 
@@ -538,5 +789,14 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
                 Spear.with(getContext()).display(displayParams, SpearImageView.this).requestLevel(RequestLevel.NET).fire();
             }
         }
+    }
+
+    /**
+     * 图片形状
+     */
+    public enum ImageShape{
+        RECT,
+        CIRCLE,
+        ROUNDED_RECT,
     }
 }

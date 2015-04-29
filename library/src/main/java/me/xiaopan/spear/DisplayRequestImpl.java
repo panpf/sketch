@@ -59,7 +59,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private ImageSize maxSize;	// 最大尺寸，用于读取图片时计算inSampleSize
     private ImageProcessor imageProcessor;	// 图片处理器
     private ImageView.ScaleType scaleType; // 图片缩放方式，ImageProcessor会根据resize和scaleType来创建新的图片
-    private boolean disableGifImage; // 这是一张GIF图
+    private boolean decodeGifImage = true; // 是否解码GIF图
 
     // Display fields
     private String memoryCacheId;	// 内存缓存ID
@@ -72,6 +72,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     // Runtime fields
     private File cacheFile;	// 缓存文件
     private byte[] imageData;   // 如果不使用磁盘缓存的话下载完成后图片数据就用字节数组保存着
+    private String mimeType;
     private ImageFrom imageFrom;    // 图片来自哪里
     private FailCause failCause;    // 失败原因
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
@@ -582,9 +583,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 if(enableMemoryCache && memoryCacheId != null){
                     spear.getConfiguration().getMemoryCache().put(memoryCacheId, bitmapDrawable);
                 }
+                bitmapDrawable.setMimeType(mimeType);
                 this.resultDrawable = bitmapDrawable;
-
-                // 显示
                 setRequestStatus(RequestStatus.WAIT_DISPLAY);
                 bitmapDrawable.setIsWaitDisplay("executeLoad:new", true);
                 spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
@@ -597,9 +597,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 if(enableMemoryCache && memoryCacheId != null){
                     spear.getConfiguration().getMemoryCache().put(memoryCacheId, gifDrawable);
                 }
+                gifDrawable.setMimeType(mimeType);
                 this.resultDrawable = gifDrawable;
-
-                // 显示
                 setRequestStatus(RequestStatus.WAIT_DISPLAY);
                 gifDrawable.setIsWaitDisplay("executeLoad:new", true);
                 spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
@@ -616,13 +615,13 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     }
 
     @Override
-    public boolean isDisableGifImage() {
-        return disableGifImage;
+    public boolean isDecodeGifImage() {
+        return decodeGifImage;
     }
 
     @Override
-    public void setDisableGifImage(boolean isDisableGifImage) {
-        this.disableGifImage = isDisableGifImage;
+    public void setDecodeGifImage(boolean isDecodeGifImage) {
+        this.decodeGifImage = isDecodeGifImage;
     }
 
     @Override
@@ -632,6 +631,16 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     @Override
     public boolean isLocalApkFile(){
         return uriScheme == UriScheme.FILE && CommentUtils.checkSuffix(uri, ".apk");
+    }
+
+    @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     /**
@@ -674,7 +683,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         ((RecycleDrawableInterface) resultDrawable).setIsWaitDisplay("completedCallback", false);
         setRequestStatus(RequestStatus.COMPLETED);
         if(displayListener != null){
-            displayListener.onCompleted(imageFrom);
+            displayListener.onCompleted(imageFrom, mimeType);
         }
     }
 

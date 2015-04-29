@@ -16,39 +16,30 @@
 
 package me.xiaopan.spear;
 
-import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 
-/**
- * 加载监听器
- */
 public interface LoadListener {
     /**
-     * 已开始
+     * load start
      */
     void onStarted();
 
     /**
-     * 已完成
-     * @param bitmap 图片
-     * @param imageFrom 图片来源
+     * load complete
+     * @param drawable RecycleBitmapDrawable:normal image; RecycleGifDrawable:gif image; null:exception
+     * @param imageFrom image from
+     * @param mimeType image type
      */
-    void onCompleted(Bitmap bitmap, ImageFrom imageFrom);
+    void onCompleted(Drawable drawable, ImageFrom imageFrom, String mimeType);
 
     /**
-     * 已完成
-     * @param gifDrawable GIF图
-     * @param imageFrom 图片来源
-     */
-    void onCompleted(RecycleGifDrawable gifDrawable, ImageFrom imageFrom);
-
-    /**
-     * 已失败
-     * @param failCause 失败原因
+     * load fail
+     * @param failCause fail cause
      */
     void onFailed(FailCause failCause);
 
     /**
-     * 已取消
+     * cancel
      */
     void onCanceled(CancelCause cancelCause);
 }

@@ -38,6 +38,11 @@ public class DisplayOptions extends LoadOptions {
         super(context);
     }
 
+    public DisplayOptions(DisplayOptions from){
+        super(from);
+        copyOf(from);
+    }
+
     /**
      * 是否开启了内存缓存
      * @return 是否开启了内存缓存
@@ -255,8 +260,8 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setDisableGifImage(boolean disableGifImage) {
-        super.setDisableGifImage(disableGifImage);
+    public DisplayOptions setDecodeGifImage(boolean decodeGifImage) {
+        super.setDecodeGifImage(decodeGifImage);
         return this;
     }
 
@@ -264,5 +269,23 @@ public class DisplayOptions extends LoadOptions {
     public DisplayOptions setRequestLevel(RequestLevel requestLevel) {
         super.setRequestLevel(requestLevel);
         return this;
+    }
+
+    public void copyOf(DisplayOptions displayOptions){
+        this.enableMemoryCache = displayOptions.enableMemoryCache;
+        this.imageDisplayer = displayOptions.imageDisplayer;
+        this.loadingDrawableHolder = displayOptions.loadingDrawableHolder;
+        this.loadFailDrawableHolder = displayOptions.loadFailDrawableHolder;
+        this.pauseDownloadDrawableHolder = displayOptions.pauseDownloadDrawableHolder;
+        this.resizeByImageViewLayoutSize = displayOptions.resizeByImageViewLayoutSize;
+
+        setScaleType(displayOptions.getScaleType());
+        setMaxSize(displayOptions.getMaxSize());
+        setResize(displayOptions.getResize());
+        setImageProcessor(displayOptions.getImageProcessor());
+        setDecodeGifImage(displayOptions.isDecodeGifImage());
+
+        setEnableDiskCache(displayOptions.isEnableDiskCache());
+        setRequestLevel(displayOptions.getRequestLevel());
     }
 }
