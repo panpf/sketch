@@ -3,7 +3,6 @@ package pl.droidsonroids.gif;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.view.View;
 
 public class GifViewSavedState extends View.BaseSavedState {
@@ -37,7 +36,7 @@ public class GifViewSavedState extends View.BaseSavedState {
     }
 
     @Override
-    public void writeToParcel(@NonNull Parcel dest, int flags) {
+    public void writeToParcel(Parcel dest, int flags) {
         super.writeToParcel(dest, flags);
         dest.writeInt(mStates.length);
         for (long[] mState : mStates)

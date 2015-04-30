@@ -7,8 +7,6 @@ import android.graphics.RectF;
 import android.graphics.SurfaceTexture;
 import android.os.Build;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.Surface;
 import android.view.TextureView;
@@ -261,7 +259,7 @@ public class GifTextureView extends TextureView {
      *
      * @param inputSource new animation source, may be null
      */
-    public synchronized void setInputSource(@Nullable InputSource inputSource) {
+    public synchronized void setInputSource(InputSource inputSource) {
         mRenderThread.dispose();
         mInputSource = inputSource;
         mRenderThread = new RenderThread();
@@ -289,7 +287,6 @@ public class GifTextureView extends TextureView {
      *
      * @return exception occurred during loading or playing GIF or null
      */
-    @Nullable
     public IOException getIOException() {
         if (mRenderThread.mIOException != null) {
             return mRenderThread.mIOException;
@@ -304,7 +301,7 @@ public class GifTextureView extends TextureView {
      *
      * @param scaleType The desired scaling mode.
      */
-    public void setScaleType(@NonNull ScaleType scaleType) {
+    public void setScaleType(ScaleType scaleType) {
         mScaleType = scaleType;
         updateTextureViewSize(mRenderThread.mGifInfoHandle);
     }
