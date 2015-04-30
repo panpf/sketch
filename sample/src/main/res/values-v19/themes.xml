@@ -1,7 +1,7 @@
 <resources>
 
-    <!-- 基本的主题样式，主要用于在API19上的差异 -->
-    <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <!-- 兼容主题样式，配置在API19上的差异 -->
+    <style name="CompatTheme" parent="BaseTheme">
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 

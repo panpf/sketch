@@ -27,15 +27,15 @@ import me.xiaopan.spear.LoadOptions;
 import me.xiaopan.spear.Spear;
 import me.xiaopan.spear.display.ColorTransitionImageDisplayer;
 import me.xiaopan.spear.display.TransitionImageDisplayer;
-import me.xiaopan.spear.process.BlurImageProcessor;
+import me.xiaopan.spear.process.GaussianBlurImageProcessor;
 import me.xiaopan.spear.process.CircleImageProcessor;
 import me.xiaopan.spear.sample.util.Settings;
 
 public class MyApplication extends Application {
 
-	@Override
-	public void onCreate() {
-		super.onCreate();
+    @Override
+    public void onCreate() {
+        super.onCreate();
 
         GoHttp.with(getBaseContext()).setDebugMode(true);
         Spear.setDebugMode(true);
@@ -77,11 +77,11 @@ public class MyApplication extends Application {
         );
 
         Spear.putOptions(
-            OptionsType.Detail,
-            new DisplayOptions(getBaseContext())
-                .setLoadFailDrawable(R.drawable.image_load_fail2)
-                .setPauseDownloadDrawable(R.drawable.image_click2)
-                .setImageDisplayer(new ColorTransitionImageDisplayer(Color.TRANSPARENT))
+                OptionsType.Detail,
+                new DisplayOptions(getBaseContext())
+                        .setLoadFailDrawable(R.drawable.image_load_fail2)
+                        .setPauseDownloadDrawable(R.drawable.image_click2)
+                        .setImageDisplayer(new ColorTransitionImageDisplayer(Color.TRANSPARENT))
         );
 
         Spear.putOptions(
@@ -94,36 +94,29 @@ public class MyApplication extends Application {
                         .setImageProcessor(new CircleImageProcessor())
         );
 
-            Spear.putOptions(
-                    OptionsType.WindowBackground,
-                    new LoadOptions(getBaseContext())
-                            .setScaleType(ImageView.ScaleType.CENTER_CROP)
-                            .setImageProcessor(new BlurImageProcessor(15, true))
-                            .setDecodeGifImage(false)
-            );
+        Spear.putOptions(
+                OptionsType.WindowBackground,
+                new LoadOptions(getBaseContext())
+                        .setScaleType(ImageView.ScaleType.CENTER_CROP)
+                        .setImageProcessor(new GaussianBlurImageProcessor(true))
+                        .setDecodeGifImage(false)
+        );
 
         boolean isPauseDownload = Settings.with(getBaseContext()).isMobileNetworkPauseDownload();
         Spear.with(getBaseContext()).getConfiguration().setMobileNetworkPauseDownload(isPauseDownload);
+    }
 
-            Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-                    @Override
-                    public void uncaughtException(Thread thread, Throwable ex) {
-                            ex.printStackTrace();
-                    }
-            });
-	}
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
 
-        @Override
-        public void onLowMemory() {
-                super.onLowMemory();
+        Log.w("Application", "lowMemory");
+        Spear.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
+    }
 
-                Log.w("Application", "lowMemory");
-                Spear.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
-        }
-
-        @Override
-        public void onTrimMemory(int level) {
-                super.onTrimMemory(level);
-                Log.w("Application", "trimMemory");
-        }
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        Log.w("Application", "trimMemory");
+    }
 }

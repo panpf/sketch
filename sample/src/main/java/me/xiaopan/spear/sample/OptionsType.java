@@ -17,35 +17,35 @@
 package me.xiaopan.spear.sample;
 
 public enum OptionsType {
-	/**
-	 * 详情
-	 */
-	Detail,
+    /**
+     * 详情
+     */
+    Detail,
 
-	/**
-	 * 矩形
-	 */
-	Rectangle_1,
+    /**
+     * 矩形
+     */
+    Rectangle_1,
 
-	/**
-	 * 矩形，宽高比例为0.75
-	 */
-	Rectangle_0_75,
+    /**
+     * 矩形，宽高比例为0.75
+     */
+    Rectangle_0_75,
 
-	/**
-	 * 矩形，宽高比例为1.56
-	 */
-	Rectangle_1_56,
+    /**
+     * 矩形，宽高比例为1.56
+     */
+    Rectangle_1_56,
 
-	/**
-	 * 矩形，宽高比例为3.2
-	 */
-	Rectangle_3_2,
+    /**
+     * 矩形，宽高比例为3.2
+     */
+    Rectangle_3_2,
 
-	/**
-	 * 圆形
-	 */
-	Circular,
+    /**
+     * 圆形
+     */
+    Circular,
 
-	WindowBackground,
+    WindowBackground,
 }

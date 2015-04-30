@@ -7,20 +7,22 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 ![sample](https://github.com/xiaopansky/Spear/raw/master/docs/sample.jpg)
 
 ###特点（Features）
->* ``多种URI支持`` 支持``http://``、``https://``、``asset://``、``content://``、``/sdcard/sample.jpg``、``drawable://``等6种URI。
->* ``异步加载`` 采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
->* ``缓存支持`` 采用Lru算法在本地和内存中缓存图片，本地缓存可设置最大容量、保留容量以及有效期。
->* ``支持ViewHolder`` 即使你在ListView中使用了ViewHolder也依然可以使用ImageLoader来加载图片，并且图片显示绝对不会混乱。
->* ``SpearImageView`` SpearImageView继承自ImageView，只需调用setImageFrom***系列方法即可显示各种图片，如果你的APP要兼容Android2.3及以下版本，那么你必须使用SpearImageView才能保证Bitmap被顺利回收。
->* ``重复下载过滤`` 如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
->* ``即时取消无用请求`` ImageView在onDetachedFromWindow或被重复利用的时候会及时取消之前的请求。
->* ``支持进度回调`` 通过progressListener()方法即可设置并开启进度回调。
->* ``防止加载过大Bitmap`` 默认最大Bitmap限制为当前屏幕宽高的1.5倍，这样可以有效防止加载过大图片到内存中。
->* ``裁剪图片`` 可对图片进行裁剪，使用display()方法显示图片的时候还可根据ImageView的布局尺寸来决定裁剪的尺寸。
->* ``自带RequestOptions管理器`` 你可以通过Spear.putOptions(Enum<?>, RequestOptions)存储RequestOptions。然后在使用的时候指定名称即可。
->* ``提供load()和download()`` 你还可以通过load()方法加载图片图片到内存或通过download()方法下载图片到本地。
->* ``强大的自定义功能`` 可自定义请求分发与执行、缓存、解码、处理、显示、默认图片、失败图片等。
->* ``使用方便`` 直接通过Spear.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置
+>* ``支持GIF图片``. 默认支持GIF图片，直接导入android-gif-drawable即可使用
+>* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``/sdcard/sample.jpg``、``drawable://``等6种URI。
+>* ``异步加载``. 采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
+>* ``支持缓存``. 采用Lru算法在本地和内存中缓存图片，本地缓存可设置最大容量、保留容量以及有效期。
+>* ``支持ViewHolder``. 即使你在ListView中使用了ViewHolder也依然可以使用ImageLoader来加载图片，并且图片显示绝对不会混乱。
+>* ``SpearImageView``. 提供更强大的SpearImageView，只需调用displayImage***系列方法即可显示各种图片。
+>* ``重复下载过滤``. 如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
+>* ``即时取消无用请求``. SpearImageView在onDetachedFromWindow或被重复利用的时候会及时取消之前的请求。
+>* ``支持进度回调``. 通过progressListener()方法即可设置并开启进度回调。
+>* ``防止加载过大Bitmap`` 提供maxSize参数来控制加载到内存的图片的尺寸（默认为当前屏幕宽高的1.5倍），另外还会自动根据ImageView的layout size来调整maxSize。
+>* ``裁剪图片``. 通过resize可对图片进行裁剪，另外还会自动根据ImageView的layout size来调整resize。
+>* ``多种级别供你自由玩转图片``. 除了display()方法可用来显示图片之外，你还可以通过load()方法加载图片或通过download()方法下载图片。
+>* ``强大的自定义功能``. 可自定义请求分发与执行、缓存、解码、处理、显示、默认图片、失败图片等。
+>* ``提供RequestOptions``. 通过RequestOptions你可以提前定义好一系列的属性，然后在显示图片的时候一次性设置，另外你还可以通过Spear.putOptions(Enum<?>, RequestOptions)存储RequestOptions。然后在使用的时候指定名称即可。
+>* ``使用方便``. 直接通过Spear.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置
+>* ``兼容RecyclerView``. RecyclerView增加了一些新的特性，导致在onDetachedFromWindow()中直接回收图片或设置drawable为null会导致一些显示异常和崩溃，现已完美兼容
 
 ###示例APP（Sample app）
 >* [Get it on Google Play](https://play.google.com/store/apps/details?memoryCacheId=me.xiaoapn.android.imageloader)
@@ -88,7 +90,7 @@ Spear除了有display()方法用来显示图片之外，还有load()用来加载
 
 display()与load()、download()的区别
 >* display()的fire()方法必须在主线程执行，否则将会有异常发生
->* 在使用display()方法显示图片的时候，Spear会自动根据ImageView的layout size计算maxsize
+>* 在使用display()方法显示图片的时候，Spear会自动根据ImageView的layout size计算maxSize
 >* 可使用的属性display()最多，download()最少具体如下表所示：
 
 对应关系
@@ -104,7 +106,7 @@ display()与load()、download()的区别
 |属性|download()|load()|display()|
 |:--|:--|:--|:--|
 |enableDiskCache|true|true|true|
-|maxsize|-|屏幕的1.5倍|ImageView的layout size 或屏幕的1.5倍|
+|maxSize|-|屏幕的1.5倍|ImageView的layout size 或屏幕的1.5倍|
 |resize|-|null|null|
 |imageProcessor|-|null|null|
 |scaleType|-|FIT_CENTER|FIT_CENTER|
@@ -120,7 +122,7 @@ display()与load()、download()的区别
 >* [使用``SpearImageView``代替ImageView快速显示图片](https://github.com/xiaopansky/Spear/wiki/SpearImageView)
 >* [处理图片成``圆形``的、``椭圆形``的或者加上``倒影效果``（ImageProcessor）](https://github.com/xiaopansky/Spear/wiki/ImageProcessor)
 >* [以``渐变``或``缩放``的方式显示图片（ImageDisplayer）](https://github.com/xiaopansky/Spear/wiki/ImageDisplayer)
->* [使用``maxsize``防止加载过大的图片以``节省内存``](https://github.com/xiaopansky/Spear/wiki/maxsize)
+>* [使用``maxSize``防止加载过大的图片以``节省内存``](https://github.com/xiaopansky/Spear/wiki/maxSize)
 >* [使用``resize``裁剪图片](https://github.com/xiaopansky/Spear/wiki/resize)
 >* [使用``RequestOptions``定义属性模板来简化属性设置](https://github.com/xiaopansky/Spear/wiki/RequestOptions)
 >* [监听加载``开始``、``成功``、``失败``以及``进度``](https://github.com/xiaopansky/Spear/wiki/listener)
@@ -179,14 +181,14 @@ display()与load()、download()的区别
 >* ``删除``. 删除SoftReferenceMemoryCache.java
 >* ``移动``. 移动DiskCache.java、LruDiskCache.java、LruMemoryCache.java、MemoryCache.java到cache目录下
 >* ``优化``. 调整LruDiskCache的默认保留空间为100M
->* ``新增``. LruDiskCache增加maxsize功能
+>* ``新增``. LruDiskCache增加maxSize功能
 >* ``修复``. 修复在2.3及以下缓存RecyclingBitmapDrawable的时候忘记添加计数导致Bitmap被提前回收而引发崩溃的BUG
 >* ``删除``. 去掉了diskCacheTimeout功能，事实证明这个功能没多大用处，并且还影响了当容量不足时清理文件的功能
 
 **Decode**
 >* ``优化``. 优化了默认的inSampleSize的计算方法，增加了限制图片像素数超过目标尺寸像素的两倍，这样可以有效防止那些一边特小一边特大的图片，以特大的姿态被加载到内存中
->* ``优化``. 将计算默认maxsize的代码封装成一个方法并放到了ImageSizeCalculator.java中
->* ``修复``. 计算maxsize的时候不再考虑ImageView的getWidth()和getHeight()，这是因为当ImageView的宽高是固定的，在循环重复利用的时候从第二次循环利用开始，最终计算出来的size都将是上一次的size，显然这是个很严重的BUG。当所有的ImageView的宽高都是一样的时候看不出来这个问题，都不一样的时候问题就出来了。
+>* ``优化``. 将计算默认maxSize的代码封装成一个方法并放到了ImageSizeCalculator.java中
+>* ``修复``. 计算maxSize的时候不再考虑ImageView的getWidth()和getHeight()，这是因为当ImageView的宽高是固定的，在循环重复利用的时候从第二次循环利用开始，最终计算出来的size都将是上一次的size，显然这是个很严重的BUG。当所有的ImageView的宽高都是一样的时候看不出来这个问题，都不一样的时候问题就出来了。
 >* ``优化``. 默认解码器在遇到1x1的图片时按照失败处理
 
 **Display**
