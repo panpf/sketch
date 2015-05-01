@@ -18,6 +18,7 @@ package me.xiaopan.spear.sample;
 
 import android.app.Application;
 import android.graphics.Color;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -27,8 +28,8 @@ import me.xiaopan.spear.LoadOptions;
 import me.xiaopan.spear.Spear;
 import me.xiaopan.spear.display.ColorTransitionImageDisplayer;
 import me.xiaopan.spear.display.TransitionImageDisplayer;
-import me.xiaopan.spear.process.GaussianBlurImageProcessor;
 import me.xiaopan.spear.process.CircleImageProcessor;
+import me.xiaopan.spear.process.GaussianBlurImageProcessor;
 import me.xiaopan.spear.sample.util.Settings;
 
 public class MyApplication extends Application {
@@ -110,13 +111,7 @@ public class MyApplication extends Application {
     public void onLowMemory() {
         super.onLowMemory();
 
-        Log.w("Application", "lowMemory");
+        Log.w("Application", "Memory is very low, has automatic releasing Spear in memory cache("+ Formatter.formatFileSize(getBaseContext(), Spear.with(getBaseContext()).getConfiguration().getMemoryCache().getSize())+")");
         Spear.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
-    }
-
-    @Override
-    public void onTrimMemory(int level) {
-        super.onTrimMemory(level);
-        Log.w("Application", "trimMemory");
     }
 }
