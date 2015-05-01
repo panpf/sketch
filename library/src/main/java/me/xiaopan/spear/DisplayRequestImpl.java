@@ -555,13 +555,13 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 }
                 if(imageProcessor != null){
                     Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), getScaleType());
-                    if(newBitmap != bitmap){
-                        if(Spear.isDebugMode()){
-                            Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - " + "recycle old bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter" + " - " + name);
-                        }
-                        bitmap.recycle();
-                        bitmap = newBitmap;
+                    if(newBitmap != null && newBitmap != bitmap && Spear.isDebugMode()){
+                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - " + "recycle old bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter" + " - " + name);
                     }
+                    if(newBitmap == null || newBitmap != bitmap){
+                        bitmap.recycle();
+                    }
+                    bitmap = newBitmap;
                 }
             }
 
