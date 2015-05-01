@@ -48,4 +48,6 @@ public enum OptionsType {
     Circular,
 
     WindowBackground,
+
+    Staggered,
 }

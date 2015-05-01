@@ -103,6 +103,13 @@ public class MyApplication extends Application {
                         .setDecodeGifImage(false)
         );
 
+        Spear.putOptions(
+                OptionsType.Staggered,
+                new DisplayOptions(getBaseContext())
+                        .setDecodeGifImage(false)
+                        .setImageDisplayer(new ColorTransitionImageDisplayer(Color.TRANSPARENT))
+        );
+
         boolean isPauseDownload = Settings.with(getBaseContext()).isMobileNetworkPauseDownload();
         Spear.with(getBaseContext()).getConfiguration().setMobileNetworkPauseDownload(isPauseDownload);
     }
@@ -111,7 +118,7 @@ public class MyApplication extends Application {
     public void onLowMemory() {
         super.onLowMemory();
 
-        Log.w("Application", "Memory is very low, has automatic releasing Spear in memory cache("+ Formatter.formatFileSize(getBaseContext(), Spear.with(getBaseContext()).getConfiguration().getMemoryCache().getSize())+")");
+        Log.w("Application", "Memory is very low, has automatic releasing Spear in memory cache(" + Formatter.formatFileSize(getBaseContext(), Spear.with(getBaseContext()).getConfiguration().getMemoryCache().getSize()) + ")");
         Spear.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
     }
 }

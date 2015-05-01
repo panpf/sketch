@@ -12,8 +12,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ListView;
 import android.widget.Toast;
+
+import com.etsy.android.grid.StaggeredGridView;
 
 import org.apache.http.HttpResponse;
 
@@ -37,23 +38,25 @@ import me.xiaopan.spear.sample.net.request.SearchImageRequest;
 import me.xiaopan.spear.sample.net.request.StarImageRequest;
 import me.xiaopan.spear.sample.util.ScrollingPauseLoadManager;
 import me.xiaopan.spear.sample.widget.HintView;
+import me.xiaopan.spear.sample.widget.LoadMoreFooterView;
 
 /**
  * 图片搜索Fragment
  */
 @InjectContentView(R.layout.fragment_search)
-public class SearchFragment extends MyFragment implements SearchImageAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener {
+public class SearchFragment extends MyFragment implements SearchImageAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener, LoadMoreFooterView.OnLoadMoreListener {
     public static final String PARAM_OPTIONAL_STRING_SEARCH_KEYWORD = "PARAM_OPTIONAL_STRING_SEARCH_KEYWORD";
 
     @InjectView(R.id.refreshLayout_search) PullRefreshLayout pullRefreshLayout;
-    @InjectView(R.id.list_search) private ListView recyclerView;
+    @InjectView(R.id.list_search) private StaggeredGridView recyclerView;
     @InjectView(R.id.hintView_search) private HintView hintView;
 
     private SearchImageRequest searchImageRequest;
     private HttpRequestFuture refreshRequestFuture;
+    private HttpRequestFuture loadMoreRequestFuture;
     private SearchImageAdapter searchImageListAdapter;
-    private MyLoadMoreListener loadMoreListener;
     private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
+    private LoadMoreFooterView loadMoreFooterView;
 
     @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD) private String searchKeyword = "GIF";
 
@@ -69,7 +72,6 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         searchImageRequest = new SearchImageRequest(searchKeyword);
-        loadMoreListener = new MyLoadMoreListener();
         setHasOptionsMenu(true);
     }
 
@@ -141,12 +143,17 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
         if (searchImageListAdapter == null) {
             pullRefreshLayout.startRefresh();
         } else {
-            recyclerView.setAdapter(searchImageListAdapter);
-            recyclerView.scheduleLayoutAnimation();
+            setAdapter(searchImageListAdapter);
             if(windowBackgroundLoader != null){
                 windowBackgroundLoader.restore();
             }
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        loadMoreFooterView = null;
     }
 
     @Override
@@ -167,13 +174,26 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
         }
     }
 
+    private void setAdapter(SearchImageAdapter adapter){
+        if(loadMoreFooterView == null){
+            loadMoreFooterView = new LoadMoreFooterView(getActivity(), recyclerView);
+            loadMoreFooterView.setOnLoadMoreListener(this);
+            recyclerView.addFooterView(loadMoreFooterView);
+        }
+        recyclerView.setAdapter(searchImageListAdapter = adapter);
+        recyclerView.scheduleLayoutAnimation();
+    }
+
     @Override
     public void onRefresh() {
         if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             return;
         }
 
-        loadMoreListener.cancel();
+        if(loadMoreRequestFuture != null && !loadMoreRequestFuture.isFinished()){
+            loadMoreRequestFuture.cancel(true);
+        }
+
         searchImageRequest.setStart(0);
         refreshRequestFuture = GoHttp.with(getActivity()).newRequest(searchImageRequest, new JsonHttpResponseHandler(SearchImageRequest.Response.class), new HttpRequest.Listener<SearchImageRequest.Response>() {
             @Override
@@ -191,12 +211,12 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
                 for (SearchImageRequest.Image image : responseObject.getImages()) {
                     imageList.add(image);
                 }
-
-                recyclerView.setAdapter(searchImageListAdapter = new SearchImageAdapter(getActivity(), null, imageList, SearchFragment.this));
-                recyclerView.scheduleLayoutAnimation();
+                setAdapter(new SearchImageAdapter(getActivity(), recyclerView, imageList, SearchFragment.this));
                 pullRefreshLayout.stopRefresh();
-                loadMoreListener.reset();
-                searchImageListAdapter.setOnLoadMoreListener(loadMoreListener);
+
+                if(loadMoreFooterView != null && loadMoreFooterView.isEnd()){
+                    loadMoreFooterView.setEnd(false);
+                }
 
                 if(windowBackgroundLoader != null && imageList.size() > 0){
                     windowBackgroundLoader.load(imageList.get(0).getSourceUrl());
@@ -234,82 +254,58 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
         DetailActivity.launch(getActivity(), (ArrayList<String>) searchImageListAdapter.getImageUrlList(), position);
     }
 
-    private class MyLoadMoreListener implements SearchImageAdapter.OnLoadMoreListener {
-        private boolean end;
-        private HttpRequestFuture loadMoreRequestFuture;
+    @Override
+    public void onLoadMore(final LoadMoreFooterView loadMoreFooterView) {
+        searchImageRequest.setStart(searchImageListAdapter.getDataSize());
+        loadMoreRequestFuture = GoHttp.with(getActivity()).newRequest(searchImageRequest, new JsonHttpResponseHandler(SearchImageRequest.Response.class), new HttpRequest.Listener<SearchImageRequest.Response>() {
+            @Override
+            public void onStarted(HttpRequest httpRequest) {
 
-        @Override
-        public boolean isEnd() {
-            return end;
-        }
-
-        public void reset(){
-            end = false;
-        }
-
-        @Override
-        public void onLoadMore() {
-            if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
-                return;
             }
 
-            searchImageRequest.setStart(searchImageListAdapter.getDataSize());
-            loadMoreRequestFuture = GoHttp.with(getActivity()).newRequest(searchImageRequest, new JsonHttpResponseHandler(SearchImageRequest.Response.class), new HttpRequest.Listener<SearchImageRequest.Response>() {
-                @Override
-                public void onStarted(HttpRequest httpRequest) {
-
+            @Override
+            public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, SearchImageRequest.Response responseObject, boolean b, boolean b2) {
+                if (getActivity() == null) {
+                    return;
                 }
 
-                @Override
-                public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, SearchImageRequest.Response responseObject, boolean b, boolean b2) {
-                    if (getActivity() == null) {
-                        return;
+                List<StarImageRequest.Image> newImageList = null;
+                if (responseObject.getImages() != null) {
+                    newImageList = new ArrayList<StarImageRequest.Image>();
+                    for (SearchImageRequest.Image image : responseObject.getImages()) {
+                        newImageList.add(image);
                     }
+                }
 
-
-                    List<StarImageRequest.Image> newImageList = null;
-                    if (responseObject.getImages() != null) {
-                        newImageList = new ArrayList<StarImageRequest.Image>();
-                        for (SearchImageRequest.Image image : responseObject.getImages()) {
-                            newImageList.add(image);
-                        }
-                    }
-
-                    if (newImageList != null && newImageList.size() > 0) {
-                        searchImageListAdapter.append(newImageList);
-                        if (newImageList.size() < searchImageRequest.getSize()) {
-                            end = true;
-                            Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹，已全部送完！", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹", Toast.LENGTH_SHORT).show();
-                        }
+                if (newImageList != null && newImageList.size() > 0) {
+                    searchImageListAdapter.append(newImageList);
+                    if (newImageList.size() < searchImageRequest.getSize()) {
+                        loadMoreFooterView.setEnd(true);
+                        Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹，已全部送完！", Toast.LENGTH_SHORT).show();
                     } else {
-                        end = true;
-                        Toast.makeText(getActivity(), "没有您的包裹了", Toast.LENGTH_SHORT).show();
+                        loadMoreFooterView.loadFinished(true);
+                        Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹", Toast.LENGTH_SHORT).show();
                     }
-                    searchImageListAdapter.notifyDataSetChanged();
+                } else {
+                    loadMoreFooterView.setEnd(true);
+                    Toast.makeText(getActivity(), "没有您的包裹了", Toast.LENGTH_SHORT).show();
                 }
-
-                @Override
-                public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean b, boolean b2) {
-                    if (getActivity() == null) {
-                        return;
-                    }
-                    searchImageListAdapter.loadMoreFail();
-                    Toast.makeText(getActivity(), "快递投递失败", Toast.LENGTH_SHORT).show();
-                }
-
-                @Override
-                public void onCanceled(HttpRequest httpRequest) {
-
-                }
-            }).responseHandleCompletedAfterListener(new SearchImageRequest.ResponseHandler()).go();
-        }
-
-        public void cancel() {
-            if (loadMoreRequestFuture != null && !loadMoreRequestFuture.isFinished()) {
-                loadMoreRequestFuture.cancel(true);
+                searchImageListAdapter.notifyDataSetChanged();
             }
-        }
+
+            @Override
+            public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean b, boolean b2) {
+                if (getActivity() == null) {
+                    return;
+                }
+                loadMoreFooterView.loadFinished(false);
+                Toast.makeText(getActivity(), "快递投递失败", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onCanceled(HttpRequest httpRequest) {
+                loadMoreFooterView.loadFinished(false);
+            }
+        }).responseHandleCompletedAfterListener(new SearchImageRequest.ResponseHandler()).go();
     }
 }
