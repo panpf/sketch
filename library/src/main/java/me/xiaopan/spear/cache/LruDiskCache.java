@@ -76,12 +76,16 @@ public class LruDiskCache implements DiskCache {
             }
         }
 
+        File superDir;
+
         // 然后尝试使用SD卡的默认缓存文件夹
-        File superDir = context.getExternalCacheDir();
-        if(superDir != null){
-            cacheDir = new File(superDir, DEFAULT_DIRECTORY_NAME);
-            if(cacheDir.exists() || cacheDir.mkdirs()) {
-                return cacheDir;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO){
+            superDir = context.getExternalCacheDir();
+            if(superDir != null){
+                cacheDir = new File(superDir, DEFAULT_DIRECTORY_NAME);
+                if(cacheDir.exists() || cacheDir.mkdirs()) {
+                    return cacheDir;
+                }
             }
         }
 
@@ -229,12 +233,14 @@ public class LruDiskCache implements DiskCache {
         }
 
         // 再从SD卡的默认缓存目录找
-        superDir = context.getExternalCacheDir();
-        finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
-        if(finalCacheDir != null && finalCacheDir.exists()){
-            cacheFile = new File(finalCacheDir, fileName);
-            if(cacheFile.exists()){
-                return cacheFile;
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO){
+            superDir = context.getExternalCacheDir();
+            finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
+            if(finalCacheDir != null && finalCacheDir.exists()){
+                cacheFile = new File(finalCacheDir, fileName);
+                if(cacheFile.exists()){
+                    return cacheFile;
+                }
             }
         }
 
@@ -279,10 +285,12 @@ public class LruDiskCache implements DiskCache {
             CommentUtils.deleteFile(superDir);
         }
 
-        superDir = context.getExternalCacheDir();
-        finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
-        if(finalCacheDir != null && finalCacheDir.exists()){
-            CommentUtils.deleteFile(superDir);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO){
+            superDir = context.getExternalCacheDir();
+            finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
+            if(finalCacheDir != null && finalCacheDir.exists()){
+                CommentUtils.deleteFile(superDir);
+            }
         }
 
         superDir = context.getCacheDir();
