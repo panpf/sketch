@@ -24,6 +24,7 @@ import android.widget.ImageView;
 
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.spear.DisplayOptions;
+import me.xiaopan.spear.ImageHolder;
 import me.xiaopan.spear.LoadOptions;
 import me.xiaopan.spear.Spear;
 import me.xiaopan.spear.display.ColorTransitionImageDisplayer;
@@ -61,9 +62,9 @@ public class MyApplication extends Application {
         Spear.putOptions(
                 OptionsType.Circular,
                 new DisplayOptions(getBaseContext())
-                        .setLoadingImage(R.drawable.image_loading2, CircleImageProcessor.getInstance())
-                        .setFailureImage(R.drawable.image_load_fail2, CircleImageProcessor.getInstance())
-                        .setPauseDownloadImage(R.drawable.image_click2, CircleImageProcessor.getInstance())
+                        .setLoadingImage(new ImageHolder(R.drawable.image_loading2, CircleImageProcessor.getInstance()))
+                        .setFailureImage(new ImageHolder(R.drawable.image_load_fail2, CircleImageProcessor.getInstance()))
+                        .setPauseDownloadImage(new ImageHolder(R.drawable.image_click2, CircleImageProcessor.getInstance()))
                         .setDecodeGifImage(false)
                         .setImageDisplayer(new TransitionImageDisplayer())
                         .setImageProcessor(CircleImageProcessor.getInstance())

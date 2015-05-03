@@ -152,13 +152,6 @@ public interface DisplayHelper {
     DisplayHelper loadingImage(int drawableResId);
 
     /**
-     * 设置正在加载时显示的图片
-     * @param drawableResId 资源图片ID
-     * @param imageProcessor 图片处理器
-     */
-    DisplayHelper loadingImage(int drawableResId, ImageProcessor imageProcessor);
-
-    /**
      * 设置失败时显示的图片
      * @param failureImage 失败时显示的图片
      */
@@ -171,13 +164,6 @@ public interface DisplayHelper {
     DisplayHelper failureImage(int drawableResId);
 
     /**
-     * 设置失败时显示的图片
-     * @param drawableResId 资源图片ID
-     * @param imageProcessor 图片处理器
-     */
-    DisplayHelper failureImage(int drawableResId, ImageProcessor imageProcessor);
-
-    /**
      * 设置暂停下载时显示的图片
      * @param pauseDownloadImage 暂停下载时显示的图片
      */
@@ -188,13 +174,6 @@ public interface DisplayHelper {
      * @param drawableResId 资源图片ID
      */
     DisplayHelper pauseDownloadImage(int drawableResId);
-
-    /**
-     * 设置暂停下载时显示的图片
-     * @param drawableResId 资源图片ID
-     * @param imageProcessor 图片处理器
-     */
-    DisplayHelper pauseDownloadImage(int drawableResId, ImageProcessor imageProcessor);
 
     /**
      * 设置进度监听器

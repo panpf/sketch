@@ -361,12 +361,6 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public DisplayHelperImpl loadingImage(int drawableResId, ImageProcessor imageProcessor) {
-        loadingImage(new ImageHolder(drawableResId, imageProcessor));
-        return this;
-    }
-
-    @Override
     public DisplayHelperImpl failureImage(ImageHolder failureImage) {
         if(this.failureImageHolder != null){
             this.failureImageHolder.recycle();
@@ -382,12 +376,6 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public DisplayHelperImpl failureImage(int drawableResId, ImageProcessor imageProcessor) {
-        failureImage(new ImageHolder(drawableResId, imageProcessor));
-        return this;
-    }
-
-    @Override
     public DisplayHelperImpl pauseDownloadImage(ImageHolder pauseDownloadImage) {
         if(this.pauseDownloadImageHolder != null){
             this.pauseDownloadImageHolder.recycle();
@@ -399,12 +387,6 @@ public class DisplayHelperImpl implements DisplayHelper{
     @Override
     public DisplayHelperImpl pauseDownloadImage(int drawableResId) {
         pauseDownloadImage(new ImageHolder(drawableResId));
-        return this;
-    }
-
-    @Override
-    public DisplayHelperImpl pauseDownloadImage(int drawableResId, ImageProcessor imageProcessor) {
-        pauseDownloadImage(new ImageHolder(drawableResId, imageProcessor));
         return this;
     }
 

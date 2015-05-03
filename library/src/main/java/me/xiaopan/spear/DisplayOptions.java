@@ -91,11 +91,12 @@ public class DisplayOptions extends LoadOptions {
      * 设置正在加载时显示的图片
      * @param loadingImage 正在加载时显示的图片
      */
-    public void setLoadingImage(ImageHolder loadingImage) {
+    public DisplayOptions setLoadingImage(ImageHolder loadingImage) {
         if(this.loadingImage != null){
             this.loadingImage.recycle();
         }
         this.loadingImage = loadingImage;
+        return this;
     }
 
     /**
@@ -105,17 +106,6 @@ public class DisplayOptions extends LoadOptions {
      */
     public DisplayOptions setLoadingImage(int drawableResId) {
         setLoadingImage(new ImageHolder(drawableResId));
-        return this;
-    }
-
-    /**
-     * 设置正在加载时显示的图片
-     * @param drawableResId 资源图片ID
-     * @param imageProcessor 图片处理器
-     * @return DisplayOptions
-     */
-    public DisplayOptions setLoadingImage(int drawableResId, ImageProcessor imageProcessor) {
-        setLoadingImage(new ImageHolder(drawableResId, imageProcessor));
         return this;
     }
 
@@ -131,11 +121,12 @@ public class DisplayOptions extends LoadOptions {
      * 设置失败时显示的图片
      * @param failureImage 失败时显示的图片
      */
-    public void setFailureImage(ImageHolder failureImage) {
+    public DisplayOptions setFailureImage(ImageHolder failureImage) {
         if(this.failureImage != null){
             this.failureImage.recycle();
         }
         this.failureImage = failureImage;
+        return this;
     }
 
     /**
@@ -145,17 +136,6 @@ public class DisplayOptions extends LoadOptions {
      */
     public DisplayOptions setFailureImage(int drawableResId) {
         setFailureImage(new ImageHolder(drawableResId));
-        return this;
-    }
-
-    /**
-     * 设置失败时显示的图片
-     * @param drawableResId 资源图片ID
-     * @param imageProcessor 图片处理器
-     * @return DisplayOptions
-     */
-    public DisplayOptions setFailureImage(int drawableResId, ImageProcessor imageProcessor) {
-        setFailureImage(new ImageHolder(drawableResId, imageProcessor));
         return this;
     }
 
@@ -171,11 +151,12 @@ public class DisplayOptions extends LoadOptions {
      * 设置暂停下载时显示的图片
      * @param pauseDownloadImage 暂停下载时显示的图片
      */
-    public void setPauseDownloadImage(ImageHolder pauseDownloadImage) {
+    public DisplayOptions setPauseDownloadImage(ImageHolder pauseDownloadImage) {
         if(this.pauseDownloadImage != null){
             this.pauseDownloadImage.recycle();
         }
         this.pauseDownloadImage = pauseDownloadImage;
+        return this;
     }
 
     /**
@@ -185,17 +166,6 @@ public class DisplayOptions extends LoadOptions {
      */
     public DisplayOptions setPauseDownloadImage(int drawableResId) {
         setPauseDownloadImage(new ImageHolder(drawableResId));
-        return this;
-    }
-
-    /**
-     * 设置暂停下载时显示的图片
-     * @param drawableResId 资源图片ID
-     * @param imageProcessor 图片处理器
-     * @return DisplayOptions
-     */
-    public DisplayOptions setPauseDownloadImage(int drawableResId, ImageProcessor imageProcessor) {
-        setPauseDownloadImage(new ImageHolder(drawableResId, imageProcessor));
         return this;
     }
 
