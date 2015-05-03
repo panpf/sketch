@@ -28,9 +28,9 @@ import me.xiaopan.spear.process.ImageProcessor;
 public class DisplayOptions extends LoadOptions {
     private boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     private ImageDisplayer imageDisplayer;	// 图片显示器
-    private DrawableHolder loadingDrawableHolder;	//当正在加载时显示的图片
-    private DrawableHolder loadFailDrawableHolder;	//当加载失败时显示的图片
-    private DrawableHolder pauseDownloadDrawableHolder;	//暂停下载时显示的图片
+    private ImageHolder loadingImage;	//当正在加载时显示的图片
+    private ImageHolder failureImage;	//当失败时显示的图片
+    private ImageHolder pauseDownloadImage;	//暂停下载时显示的图片
 
     private boolean resizeByImageViewLayoutSize;
 
@@ -80,11 +80,22 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 获取加载中时显示的图片
-     * @return 加载中时显示的图片
+     * 获取正在加载时显示的图片
+     * @return 正在加载时显示的图片
      */
-    public DrawableHolder getLoadingDrawableHolder() {
-        return loadingDrawableHolder;
+    public ImageHolder getLoadingImage() {
+        return loadingImage;
+    }
+
+    /**
+     * 设置正在加载时显示的图片
+     * @param loadingImage 正在加载时显示的图片
+     */
+    public void setLoadingImage(ImageHolder loadingImage) {
+        if(this.loadingImage != null){
+            this.loadingImage.recycle();
+        }
+        this.loadingImage = loadingImage;
     }
 
     /**
@@ -92,73 +103,79 @@ public class DisplayOptions extends LoadOptions {
      * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
-    public DisplayOptions setLoadingDrawable(int drawableResId) {
-        if(loadingDrawableHolder == null){
-            loadingDrawableHolder = new DrawableHolder();
-        }
-        loadingDrawableHolder.setResId(drawableResId);
-        loadingDrawableHolder.setProcess(false);
+    public DisplayOptions setLoadingImage(int drawableResId) {
+        setLoadingImage(new ImageHolder(drawableResId));
         return this;
     }
 
     /**
-     * 设置正在加载时候显示的图片
+     * 设置正在加载时显示的图片
      * @param drawableResId 资源图片ID
-     * @param isProcess 是否使用ImageProcessor处理
+     * @param imageProcessor 图片处理器
      * @return DisplayOptions
      */
-    public DisplayOptions setLoadingDrawable(int drawableResId, boolean isProcess) {
-        if(loadingDrawableHolder == null){
-            loadingDrawableHolder = new DrawableHolder();
-        }
-        loadingDrawableHolder.setResId(drawableResId);
-        loadingDrawableHolder.setProcess(isProcess);
+    public DisplayOptions setLoadingImage(int drawableResId, ImageProcessor imageProcessor) {
+        setLoadingImage(new ImageHolder(drawableResId, imageProcessor));
         return this;
     }
 
     /**
-     * 获取加载失败时显示的图片
-     * @return 加载失败时显示的图片
+     * 获取失败时显示的图片
+     * @return 失败时显示的图片
      */
-    public DrawableHolder getLoadFailDrawableHolder() {
-        return loadFailDrawableHolder;
+    public ImageHolder getFailureImage() {
+        return failureImage;
     }
 
     /**
-     * 设置加载失败时显示的图片
+     * 设置失败时显示的图片
+     * @param failureImage 失败时显示的图片
+     */
+    public void setFailureImage(ImageHolder failureImage) {
+        if(this.failureImage != null){
+            this.failureImage.recycle();
+        }
+        this.failureImage = failureImage;
+    }
+
+    /**
+     * 设置失败时显示的图片
      * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
-    public DisplayOptions setLoadFailDrawable(int drawableResId) {
-        if(loadFailDrawableHolder == null){
-            loadFailDrawableHolder = new DrawableHolder();
-        }
-        loadFailDrawableHolder.setResId(drawableResId);
-        loadFailDrawableHolder.setProcess(false);
+    public DisplayOptions setFailureImage(int drawableResId) {
+        setFailureImage(new ImageHolder(drawableResId));
         return this;
     }
 
     /**
-     * 设置加载失败时显示的图片
+     * 设置失败时显示的图片
      * @param drawableResId 资源图片ID
-     * @param isProcess 是否使用ImageProcessor处理
+     * @param imageProcessor 图片处理器
      * @return DisplayOptions
      */
-    public DisplayOptions setLoadFailDrawable(int drawableResId, boolean isProcess) {
-        if(loadFailDrawableHolder == null){
-            loadFailDrawableHolder = new DrawableHolder();
-        }
-        loadFailDrawableHolder.setResId(drawableResId);
-        loadFailDrawableHolder.setProcess(isProcess);
+    public DisplayOptions setFailureImage(int drawableResId, ImageProcessor imageProcessor) {
+        setFailureImage(new ImageHolder(drawableResId, imageProcessor));
         return this;
     }
 
     /**
-     * 设置暂停下载时的占位图
-     * @return 暂停下载时的占位图
+     * 获取暂停下载时显示的图片
+     * @return 暂停下载时显示的图片
      */
-    public DrawableHolder getPauseDownloadDrawableHolder() {
-        return pauseDownloadDrawableHolder;
+    public ImageHolder getPauseDownloadImage() {
+        return pauseDownloadImage;
+    }
+
+    /**
+     * 设置暂停下载时显示的图片
+     * @param pauseDownloadImage 暂停下载时显示的图片
+     */
+    public void setPauseDownloadImage(ImageHolder pauseDownloadImage) {
+        if(this.pauseDownloadImage != null){
+            this.pauseDownloadImage.recycle();
+        }
+        this.pauseDownloadImage = pauseDownloadImage;
     }
 
     /**
@@ -166,27 +183,19 @@ public class DisplayOptions extends LoadOptions {
      * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
-    public DisplayOptions setPauseDownloadDrawable(int drawableResId) {
-        if(pauseDownloadDrawableHolder == null){
-            pauseDownloadDrawableHolder = new DrawableHolder();
-        }
-        pauseDownloadDrawableHolder.setResId(drawableResId);
-        pauseDownloadDrawableHolder.setProcess(false);
+    public DisplayOptions setPauseDownloadImage(int drawableResId) {
+        setPauseDownloadImage(new ImageHolder(drawableResId));
         return this;
     }
 
     /**
      * 设置暂停下载时显示的图片
      * @param drawableResId 资源图片ID
-     * @param isProcess 是否使用ImageProcessor处理
+     * @param imageProcessor 图片处理器
      * @return DisplayOptions
      */
-    public DisplayOptions setPauseDownloadDrawable(int drawableResId, boolean isProcess) {
-        if(pauseDownloadDrawableHolder == null){
-            pauseDownloadDrawableHolder = new DrawableHolder();
-        }
-        pauseDownloadDrawableHolder.setResId(drawableResId);
-        pauseDownloadDrawableHolder.setProcess(isProcess);
+    public DisplayOptions setPauseDownloadImage(int drawableResId, ImageProcessor imageProcessor) {
+        setPauseDownloadImage(new ImageHolder(drawableResId, imageProcessor));
         return this;
     }
 
@@ -209,15 +218,6 @@ public class DisplayOptions extends LoadOptions {
     @Override
     public DisplayOptions setImageProcessor(ImageProcessor processor) {
         super.setImageProcessor(processor);
-        if(loadingDrawableHolder != null && loadingDrawableHolder.isProcess()){
-            loadingDrawableHolder.reset();
-        }
-        if(loadFailDrawableHolder != null && loadFailDrawableHolder.isProcess()){
-            loadFailDrawableHolder.reset();
-        }
-        if(pauseDownloadDrawableHolder != null && pauseDownloadDrawableHolder.isProcess()){
-            pauseDownloadDrawableHolder.reset();
-        }
         return this;
     }
 
@@ -274,9 +274,9 @@ public class DisplayOptions extends LoadOptions {
     public void copyOf(DisplayOptions displayOptions){
         this.enableMemoryCache = displayOptions.enableMemoryCache;
         this.imageDisplayer = displayOptions.imageDisplayer;
-        this.loadingDrawableHolder = displayOptions.loadingDrawableHolder;
-        this.loadFailDrawableHolder = displayOptions.loadFailDrawableHolder;
-        this.pauseDownloadDrawableHolder = displayOptions.pauseDownloadDrawableHolder;
+        this.loadingImage = displayOptions.loadingImage;
+        this.failureImage = displayOptions.failureImage;
+        this.pauseDownloadImage = displayOptions.pauseDownloadImage;
         this.resizeByImageViewLayoutSize = displayOptions.resizeByImageViewLayoutSize;
 
         setScaleType(displayOptions.getScaleType());

@@ -16,13 +16,11 @@
 
 package me.xiaopan.spear;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.util.Log;
 
-public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDrawableInterface {
+public class RecycleBitmapDrawable extends SrcBitmapDrawable implements RecycleDrawableInterface {
     private static final String NAME = "RecycleBitmapDrawable";
 
     private int cacheRefCount;
@@ -30,8 +28,8 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     private int waitDisplayRefCount;
     private String mimeType;
 
-    public RecycleBitmapDrawable(Resources res, Bitmap bitmap) {
-        super(res, bitmap);
+    public RecycleBitmapDrawable(Bitmap bitmap) {
+        super(bitmap);
     }
 
     @Override

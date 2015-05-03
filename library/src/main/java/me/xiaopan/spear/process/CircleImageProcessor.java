@@ -31,6 +31,22 @@ import me.xiaopan.spear.ImageSize;
  */
 public class CircleImageProcessor implements ImageProcessor {
     private static final String NAME = "CircleImageProcessor";
+    private static CircleImageProcessor instance;
+
+    public static CircleImageProcessor getInstance() {
+        if(instance == null){
+            synchronized (CircleImageProcessor.class){
+                if(instance == null){
+                    instance = new CircleImageProcessor();
+                }
+            }
+        }
+        return instance;
+    }
+
+    private CircleImageProcessor(){
+
+    }
 
     @Override
     public String getFlag() {

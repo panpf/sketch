@@ -16,8 +16,8 @@
 
 package me.xiaopan.spear;
 
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.Log;
@@ -64,12 +64,13 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     // Display fields
     private String memoryCacheId;	// 内存缓存ID
     private boolean enableMemoryCache = true;	// 是否开启内存缓存
-    private DrawableHolder loadFailDrawableHolder;	// 当加载失败时显示的图片
-    private DrawableHolder pauseDownloadDrawableHolder;	// 当暂停下载时显示的图片
+    private ImageHolder failureImageHolder;	// 当失败时显示的图片
+    private ImageHolder pauseDownloadImageHolder;	// 当暂停下载时显示的图片
     private ImageDisplayer imageDisplayer;	// 图片显示器
     private DisplayListener displayListener;	// 监听器
 
     // Runtime fields
+    private Context context;
     private File cacheFile;	// 缓存文件
     private byte[] imageData;   // 如果不使用磁盘缓存的话下载完成后图片数据就用字节数组保存着
     private String mimeType;
@@ -82,6 +83,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private ImageViewHolder imageViewHolder;    // 绑定ImageView
 
     public DisplayRequestImpl(Spear spear, String uri, UriScheme uriScheme, String memoryCacheId, ImageView imageView) {
+        this.context = spear.getConfiguration().getContext();
         this.spear = spear;
         this.uri = uri;
         this.uriScheme = uriScheme;
@@ -199,45 +201,49 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     }
 
     @Override
-    public void setLoadFailDrawableHolder(DrawableHolder loadFailDrawableHolder) {
-        this.loadFailDrawableHolder = loadFailDrawableHolder;
+    public void setFailureImageHolder(ImageHolder failureImageHolder) {
+        this.failureImageHolder = failureImageHolder;
     }
 
     @Override
-    public BitmapDrawable getLoadFailDrawable() {
-        if(loadFailDrawableHolder == null){
-            return null;
+    public Drawable getFailureDrawable() {
+        if(failureImageHolder != null){
+            Bitmap bitmap = failureImageHolder.getBitmap(context);
+            if(bitmap != null){
+                SrcBitmapDrawable failureSrcBitmapDrawable = new SrcBitmapDrawable(bitmap);
+                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer){
+                    if(resize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
+                        failureSrcBitmapDrawable.setFixedSize(resize.getWidth(), resize.getHeight());
+                    }
+                }
+                return failureSrcBitmapDrawable;
+            }
         }
-        ImageProcessor processor;
-        if(getImageProcessor() != null){
-            processor = getImageProcessor();
-        }else if(getResize() != null){
-            processor = spear.getConfiguration().getDefaultCutImageProcessor();
-        }else{
-            processor = null;
-        }
-        return loadFailDrawableHolder.getDrawable(spear.getConfiguration().getContext(), getResize(), getScaleType(), processor, imageDisplayer!=null&&imageDisplayer instanceof TransitionImageDisplayer);
+
+        return null;
     }
 
     @Override
-    public void setPauseDownloadDrawableHolder(DrawableHolder pauseDownloadDrawableHolder) {
-        this.pauseDownloadDrawableHolder = pauseDownloadDrawableHolder;
+    public void setPauseDownloadImageHolder(ImageHolder pauseDownloadImageHolder) {
+        this.pauseDownloadImageHolder = pauseDownloadImageHolder;
     }
 
     @Override
-    public BitmapDrawable getPauseDownloadDrawable() {
-        if(pauseDownloadDrawableHolder == null){
-            return null;
+    public Drawable getPauseDownloadDrawable() {
+        if(pauseDownloadImageHolder != null){
+            Bitmap bitmap = pauseDownloadImageHolder.getBitmap(context);
+            if(bitmap != null){
+                SrcBitmapDrawable pauseDownloadSrcBitmapDrawable = new SrcBitmapDrawable(bitmap);
+                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer){
+                    if(resize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
+                        pauseDownloadSrcBitmapDrawable.setFixedSize(resize.getWidth(), resize.getHeight());
+                    }
+                }
+                return pauseDownloadSrcBitmapDrawable;
+            }
         }
-        ImageProcessor processor;
-        if(getImageProcessor() != null){
-            processor = getImageProcessor();
-        }else if(getResize() != null){
-            processor = spear.getConfiguration().getDefaultCutImageProcessor();
-        }else{
-            processor = null;
-        }
-        return pauseDownloadDrawableHolder.getDrawable(spear.getConfiguration().getContext(), getResize(), getScaleType(), processor, imageDisplayer!=null&&imageDisplayer instanceof TransitionImageDisplayer);
+
+        return null;
     }
 
     @Override
@@ -579,7 +585,12 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             }
 
             if(bitmap != null && !bitmap.isRecycled()){
-                RecycleBitmapDrawable bitmapDrawable = new RecycleBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
+                RecycleBitmapDrawable bitmapDrawable = new RecycleBitmapDrawable(bitmap);
+                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer){
+                    if(resize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
+                        bitmapDrawable.setFixedSize(resize.getWidth(), resize.getHeight());
+                    }
+                }
                 if(enableMemoryCache && memoryCacheId != null){
                     spear.getConfiguration().getMemoryCache().put(memoryCacheId, bitmapDrawable);
                 }
@@ -653,7 +664,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             return apkIconCacheFile;
         }
 
-        Bitmap iconBitmap = CommentUtils.decodeIconFromApk(spear.getConfiguration().getContext(), uri, NAME);
+        Bitmap iconBitmap = CommentUtils.decodeIconFromApk(context, uri, NAME);
         if(iconBitmap != null && !iconBitmap.isRecycled()){
             apkIconCacheFile = spear.getConfiguration().getDiskCache().saveBitmap(iconBitmap, uri);
             if(apkIconCacheFile != null){
@@ -699,7 +710,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(imageDisplayer == null){
             imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();
         }
-        imageDisplayer.display(imageViewHolder.getImageView(), getLoadFailDrawable());
+        imageDisplayer.display(imageViewHolder.getImageView(), getFailureDrawable());
         setRequestStatus(RequestStatus.FAILED);
         if(displayListener != null){
             displayListener.onFailed(failCause);
@@ -720,7 +731,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             return;
         }
 
-        if(pauseDownloadDrawableHolder != null){
+        if(pauseDownloadImageHolder != null){
             setRequestStatus(RequestStatus.DISPLAYING);
             if(imageDisplayer == null){
                 imageDisplayer = spear.getConfiguration().getDefaultImageDisplayer();

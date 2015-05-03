@@ -1,18 +1,16 @@
 package me.xiaopan.spear;
 
-import android.content.res.Resources;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
-public class BindBitmapDrawable extends BitmapDrawable {
+public class BindBitmapDrawable extends SrcBitmapDrawable {
     private WeakReference<DisplayRequest> displayRequestWeakReference;
 
-    public BindBitmapDrawable(Resources res, Bitmap bitmap, DisplayRequest displayRequest) {
-        super(res, bitmap);
+    public BindBitmapDrawable(Bitmap bitmap, DisplayRequest displayRequest) {
+        super(bitmap);
         displayRequestWeakReference = new WeakReference<DisplayRequest>(displayRequest);
     }
 

@@ -16,7 +16,7 @@
 
 package me.xiaopan.spear;
 
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 
 import me.xiaopan.spear.display.ImageDisplayer;
 
@@ -43,28 +43,28 @@ public interface DisplayRequest extends LoadRequest{
     void setImageDisplayer(ImageDisplayer imageDisplayer);
 
     /**
-     * 设置加载失败图片持有期器
-     * @param loadFailDrawableHolder 加载失败图片持有期器
+     * 设置失败图片持有器
+     * @param failureImageHolder 失败图片持有器
      */
-    void setLoadFailDrawableHolder(DrawableHolder loadFailDrawableHolder);
+    void setFailureImageHolder(ImageHolder failureImageHolder);
 
     /**
      * 设置暂停下载图片
-     * @param pauseDownloadDrawableHolder 暂停下载图片
+     * @param pauseDownloadImageHolder 暂停下载图片
      */
-    void setPauseDownloadDrawableHolder(DrawableHolder pauseDownloadDrawableHolder);
+    void setPauseDownloadImageHolder(ImageHolder pauseDownloadImageHolder);
 
     /**
-     * 获取加载失败时显示的图片
-     * @return 加载失败时显示的图片
+     * 获取失败时显示的图片
+     * @return 失败时显示的图片
      */
-    BitmapDrawable getLoadFailDrawable();
+    Drawable getFailureDrawable();
 
     /**
      * 获取暂停下载时显示的图片
      * @return 暂停下载时显示的图片
      */
-    BitmapDrawable getPauseDownloadDrawable();
+    Drawable getPauseDownloadDrawable();
 
     /**
      * 设置显示监听器

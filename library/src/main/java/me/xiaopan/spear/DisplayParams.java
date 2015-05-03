@@ -43,8 +43,8 @@ public class DisplayParams {
     public String memoryCacheId;
     public boolean enableMemoryCache = true;
     public ImageDisplayer imageDisplayer;
-    public DrawableHolder loadingDrawableHolder;
-    public DrawableHolder loadFailDrawableHolder;
-    public DrawableHolder pauseDownloadDrawableHolder;
+    public ImageHolder loadingImageHolder;
+    public ImageHolder loadFailImageHolder;
+    public ImageHolder pauseDownloadImageHolder;
     public DisplayListener displayListener;
 }

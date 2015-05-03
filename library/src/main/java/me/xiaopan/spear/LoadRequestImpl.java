@@ -482,7 +482,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
             }
 
             if(bitmap != null && !bitmap.isRecycled()){
-                RecycleBitmapDrawable recycleBitmapDrawable = new RecycleBitmapDrawable(spear.getConfiguration().getContext().getResources(), bitmap);
+                RecycleBitmapDrawable recycleBitmapDrawable = new RecycleBitmapDrawable(bitmap);
                 recycleBitmapDrawable.setMimeType(mimeType);
                 this.resultBitmap = recycleBitmapDrawable;
                 spear.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();

@@ -141,42 +141,60 @@ public interface DisplayHelper {
 
     /**
      * 设置正在加载时显示的图片
-     * @param drawableResId 资源图片ID
+     * @param loadingImage 正在加载时显示的图片
      */
-    DisplayHelper loadingDrawable(int drawableResId);
+    DisplayHelper loadingImage(ImageHolder loadingImage);
 
     /**
      * 设置正在加载时显示的图片
      * @param drawableResId 资源图片ID
-     * @param isProcess 是否使用ImageProcessor处理
      */
-    DisplayHelper loadingDrawable(int drawableResId, boolean isProcess);
+    DisplayHelper loadingImage(int drawableResId);
 
     /**
-     * 设置加载失败时显示的图片
+     * 设置正在加载时显示的图片
      * @param drawableResId 资源图片ID
+     * @param imageProcessor 图片处理器
      */
-    DisplayHelper loadFailDrawable(int drawableResId);
+    DisplayHelper loadingImage(int drawableResId, ImageProcessor imageProcessor);
 
     /**
-     * 设置加载失败时显示的图片
-     * @param drawableResId 资源图片ID
-     * @param isProcess 是否使用ImageProcessor处理
+     * 设置失败时显示的图片
+     * @param failureImage 失败时显示的图片
      */
-    DisplayHelper loadFailDrawable(int drawableResId, boolean isProcess);
+    DisplayHelper failureImage(ImageHolder failureImage);
 
     /**
-     * 设置加载失败时显示的图片
+     * 设置失败时显示的图片
      * @param drawableResId 资源图片ID
      */
-    DisplayHelper pauseDownloadDrawable(int drawableResId);
+    DisplayHelper failureImage(int drawableResId);
+
+    /**
+     * 设置失败时显示的图片
+     * @param drawableResId 资源图片ID
+     * @param imageProcessor 图片处理器
+     */
+    DisplayHelper failureImage(int drawableResId, ImageProcessor imageProcessor);
+
+    /**
+     * 设置暂停下载时显示的图片
+     * @param pauseDownloadImage 暂停下载时显示的图片
+     */
+    DisplayHelper pauseDownloadImage(ImageHolder pauseDownloadImage);
 
     /**
      * 设置暂停下载时显示的图片
      * @param drawableResId 资源图片ID
-     * @param isProcess 是否使用ImageProcessor处理
      */
-    DisplayHelper pauseDownloadDrawable(int drawableResId, boolean isProcess);
+    DisplayHelper pauseDownloadImage(int drawableResId);
+
+    /**
+     * 设置暂停下载时显示的图片
+     * @param drawableResId 资源图片ID
+     * @param imageProcessor 图片处理器
+     */
+    DisplayHelper pauseDownloadImage(int drawableResId, ImageProcessor imageProcessor);
 
     /**
      * 设置进度监听器

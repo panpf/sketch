@@ -16,8 +16,8 @@
 
 package me.xiaopan.spear;
 
+import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.widget.ImageView;
@@ -55,11 +55,12 @@ public class DisplayHelperImpl implements DisplayHelper{
     protected boolean enableMemoryCache = true;
     protected ImageView imageView;
     protected ImageDisplayer imageDisplayer;
-    protected DrawableHolder loadingDrawableHolder;
-    protected DrawableHolder loadFailDrawableHolder;
-    protected DrawableHolder pauseDownloadDrawableHolder;
+    protected ImageHolder loadingImageHolder;
+    protected ImageHolder failureImageHolder;
+    protected ImageHolder pauseDownloadImageHolder;
     protected DisplayListener displayListener;
 
+    protected Context context;
     protected SpearImageViewInterface spearImageViewInterface;
 
     /**
@@ -100,6 +101,8 @@ public class DisplayHelperImpl implements DisplayHelper{
 
     @Override
     public DisplayHelperImpl init(Spear spear, String uri, ImageView imageView){
+        this.context = spear.getConfiguration().getContext();
+
         this.spear = spear;
         this.uri = uri;
         this.imageView = imageView;
@@ -115,7 +118,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(imageView != null){
             this.maxSize = spear.getConfiguration().getImageSizeCalculator().calculateImageMaxSize(imageView);
             if(this.maxSize == null){
-                this.maxSize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(spear.getConfiguration().getContext());
+                this.maxSize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(context);
             }
             this.scaleType = imageView.getScaleType();
 
@@ -133,6 +136,8 @@ public class DisplayHelperImpl implements DisplayHelper{
 
     @Override
     public DisplayHelper init(Spear spear, DisplayParams displayParams, ImageView imageView) {
+        this.context = spear.getConfiguration().getContext();
+
         this.spear = spear;
         this.uri = displayParams.uri;
         this.name = displayParams.name;
@@ -153,9 +158,9 @@ public class DisplayHelperImpl implements DisplayHelper{
         this.memoryCacheId = displayParams.memoryCacheId;
         this.enableMemoryCache = displayParams.enableMemoryCache;
         this.imageDisplayer = displayParams.imageDisplayer;
-        this.loadingDrawableHolder = displayParams.loadingDrawableHolder;
-        this.loadFailDrawableHolder = displayParams.loadFailDrawableHolder;
-        this.pauseDownloadDrawableHolder = displayParams.pauseDownloadDrawableHolder;
+        this.loadingImageHolder = displayParams.loadingImageHolder;
+        this.failureImageHolder = displayParams.loadFailImageHolder;
+        this.pauseDownloadImageHolder = displayParams.pauseDownloadImageHolder;
         this.displayListener = displayParams.displayListener;
 
         if(requestLevelFrom != null){
@@ -173,7 +178,7 @@ public class DisplayHelperImpl implements DisplayHelper{
             // 根据ImageView的宽高计算maxSize，如果没有计算出合适的maxSize，就获取默认的maxSize
             this.maxSize = spear.getConfiguration().getImageSizeCalculator().calculateImageMaxSize(imageView);
             if(this.maxSize == null){
-                this.maxSize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(spear.getConfiguration().getContext());
+                this.maxSize = spear.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(context);
             }
 
             this.scaleType = imageView.getScaleType();
@@ -211,9 +216,9 @@ public class DisplayHelperImpl implements DisplayHelper{
         enableMemoryCache = true;
         imageView = null;
         imageDisplayer = null;
-        loadingDrawableHolder = null;
-        loadFailDrawableHolder = null;
-        pauseDownloadDrawableHolder = null;
+        loadingImageHolder = null;
+        failureImageHolder = null;
+        pauseDownloadImageHolder = null;
         displayListener = null;
 
         spearImageViewInterface = null;
@@ -244,9 +249,9 @@ public class DisplayHelperImpl implements DisplayHelper{
             displayParams.memoryCacheId = memoryCacheId;
             displayParams.enableMemoryCache = enableMemoryCache;
             displayParams.imageDisplayer = imageDisplayer;
-            displayParams.loadingDrawableHolder = loadingDrawableHolder;
-            displayParams.loadFailDrawableHolder = loadFailDrawableHolder;
-            displayParams.pauseDownloadDrawableHolder = pauseDownloadDrawableHolder;
+            displayParams.loadingImageHolder = loadingImageHolder;
+            displayParams.loadFailImageHolder = failureImageHolder;
+            displayParams.pauseDownloadImageHolder = pauseDownloadImageHolder;
             displayParams.displayListener = displayListener;
 
             spearImageViewInterface.setDisplayParams(displayParams);
@@ -341,61 +346,65 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public DisplayHelperImpl loadingDrawable(int drawableResId) {
-        if(loadingDrawableHolder == null){
-            loadingDrawableHolder = new DrawableHolder();
+    public DisplayHelperImpl loadingImage(ImageHolder loadingImage) {
+        if(this.loadingImageHolder != null){
+            this.loadingImageHolder.recycle();
         }
-        loadingDrawableHolder.setResId(drawableResId);
+        this.loadingImageHolder = loadingImage;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl loadingDrawable(int drawableResId, boolean isProcess) {
-        if(loadingDrawableHolder == null){
-            loadingDrawableHolder = new DrawableHolder();
-        }
-        loadingDrawableHolder.setResId(drawableResId);
-        loadingDrawableHolder.setProcess(isProcess);
+    public DisplayHelperImpl loadingImage(int drawableResId) {
+        loadingImage(new ImageHolder(drawableResId));
         return this;
     }
 
     @Override
-    public DisplayHelperImpl loadFailDrawable(int drawableResId) {
-        if(loadFailDrawableHolder == null){
-            loadFailDrawableHolder = new DrawableHolder();
-        }
-        loadFailDrawableHolder.setResId(drawableResId);
-        loadFailDrawableHolder.setProcess(false);
+    public DisplayHelperImpl loadingImage(int drawableResId, ImageProcessor imageProcessor) {
+        loadingImage(new ImageHolder(drawableResId, imageProcessor));
         return this;
     }
 
     @Override
-    public DisplayHelperImpl loadFailDrawable(int drawableResId, boolean isProcess) {
-        if(loadFailDrawableHolder == null){
-            loadFailDrawableHolder = new DrawableHolder();
+    public DisplayHelperImpl failureImage(ImageHolder failureImage) {
+        if(this.failureImageHolder != null){
+            this.failureImageHolder.recycle();
         }
-        loadFailDrawableHolder.setResId(drawableResId);
-        loadFailDrawableHolder.setProcess(isProcess);
+        this.failureImageHolder = failureImage;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl pauseDownloadDrawable(int drawableResId) {
-        if(pauseDownloadDrawableHolder == null){
-            pauseDownloadDrawableHolder = new DrawableHolder();
-        }
-        pauseDownloadDrawableHolder.setResId(drawableResId);
-        pauseDownloadDrawableHolder.setProcess(false);
+    public DisplayHelperImpl failureImage(int drawableResId) {
+        failureImage(new ImageHolder(drawableResId));
         return this;
     }
 
     @Override
-    public DisplayHelperImpl pauseDownloadDrawable(int drawableResId, boolean isProcess) {
-        if(pauseDownloadDrawableHolder == null){
-            pauseDownloadDrawableHolder = new DrawableHolder();
+    public DisplayHelperImpl failureImage(int drawableResId, ImageProcessor imageProcessor) {
+        failureImage(new ImageHolder(drawableResId, imageProcessor));
+        return this;
+    }
+
+    @Override
+    public DisplayHelperImpl pauseDownloadImage(ImageHolder pauseDownloadImage) {
+        if(this.pauseDownloadImageHolder != null){
+            this.pauseDownloadImageHolder.recycle();
         }
-        pauseDownloadDrawableHolder.setResId(drawableResId);
-        pauseDownloadDrawableHolder.setProcess(isProcess);
+        this.pauseDownloadImageHolder = pauseDownloadImage;
+        return this;
+    }
+
+    @Override
+    public DisplayHelperImpl pauseDownloadImage(int drawableResId) {
+        pauseDownloadImage(new ImageHolder(drawableResId));
+        return this;
+    }
+
+    @Override
+    public DisplayHelperImpl pauseDownloadImage(int drawableResId, ImageProcessor imageProcessor) {
+        pauseDownloadImage(new ImageHolder(drawableResId, imageProcessor));
         return this;
     }
 
@@ -441,14 +450,14 @@ public class DisplayHelperImpl implements DisplayHelper{
             displayer(options.getImageDisplayer());
         }
         this.decodeGifImage = options.isDecodeGifImage();
-        if(this.loadingDrawableHolder == null){
-            this.loadingDrawableHolder = options.getLoadingDrawableHolder();
+        if(this.loadingImageHolder == null){
+            this.loadingImageHolder = options.getLoadingImage();
         }
-        if(this.loadFailDrawableHolder == null){
-            this.loadFailDrawableHolder = options.getLoadFailDrawableHolder();
+        if(this.failureImageHolder == null){
+            this.failureImageHolder = options.getFailureImage();
         }
-        if(this.pauseDownloadDrawableHolder == null){
-            this.pauseDownloadDrawableHolder = options.getPauseDownloadDrawableHolder();
+        if(this.pauseDownloadImageHolder == null){
+            this.pauseDownloadImageHolder = options.getPauseDownloadImage();
         }
         RequestLevel optionRequestLevel = options.getRequestLevel();
         if(requestLevel != null && optionRequestLevel != null){
@@ -473,7 +482,7 @@ public class DisplayHelperImpl implements DisplayHelper{
     public Request fire() {
         fullDisplayParams();
 
-        if(imageProcessor == null && resize!=null){
+        if(imageProcessor == null && resize != null){
             imageProcessor = spear.getConfiguration().getDefaultCutImageProcessor();
         }
         if(name == null && memoryCacheId != null){
@@ -504,9 +513,9 @@ public class DisplayHelperImpl implements DisplayHelper{
             if(spearImageViewInterface != null){
                 spearImageViewInterface.setDisplayRequest(null);
             }
-            Drawable failDrawable = getDrawableFromDrawableHolder(loadFailDrawableHolder);
-            if(failDrawable != null){
-                imageView.setImageDrawable(failDrawable);
+            Drawable failureDrawable = getDrawableFromDrawableHolder(failureImageHolder);
+            if(failureDrawable != null){
+                imageView.setImageDrawable(failureDrawable);
             }
             if(displayListener != null){
                 displayListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
@@ -524,9 +533,9 @@ public class DisplayHelperImpl implements DisplayHelper{
             if(spearImageViewInterface != null){
                 spearImageViewInterface.setDisplayRequest(null);
             }
-            Drawable failDrawable = getDrawableFromDrawableHolder(loadFailDrawableHolder);
-            if(failDrawable != null){
-                imageView.setImageDrawable(failDrawable);
+            Drawable failureDrawable = getDrawableFromDrawableHolder(failureImageHolder);
+            if(failureDrawable != null){
+                imageView.setImageDrawable(failureDrawable);
             }
             if(displayListener != null){
                 displayListener.onFailed(FailCause.URI_NO_SUPPORT);
@@ -568,9 +577,9 @@ public class DisplayHelperImpl implements DisplayHelper{
 
         // 如果已经暂停了的话就不再从本地或网络加载了
         if(requestLevel == RequestLevel.MEMORY){
-            BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
+            Drawable loadingDrawable = getDrawableFromDrawableHolder(loadingImageHolder);
             imageView.clearAnimation();
-            imageView.setImageDrawable(loadingBitmapDrawable);
+            imageView.setImageDrawable(loadingDrawable);
             if(displayListener != null){
                 displayListener.onCanceled(requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? CancelCause.PAUSE_LOAD :CancelCause.LEVEL_IS_MEMORY);
                 if(Spear.isDebugMode()){
@@ -616,16 +625,18 @@ public class DisplayHelperImpl implements DisplayHelper{
         request.setImageDisplayer(imageDisplayer);
         request.setDisplayListener(displayListener);
         request.setEnableMemoryCache(enableMemoryCache);
-        request.setLoadFailDrawableHolder(loadFailDrawableHolder);
-        request.setPauseDownloadDrawableHolder(pauseDownloadDrawableHolder);
+        request.setFailureImageHolder(failureImageHolder);
+        request.setPauseDownloadImageHolder(pauseDownloadImageHolder);
 
         // 显示默认图片
-        BitmapDrawable loadingBitmapDrawable = getDrawableFromDrawableHolder(loadingDrawableHolder);
-        Bitmap loadingBitmap = null;
-        if(loadingBitmapDrawable != null){
-            loadingBitmap = loadingBitmapDrawable.getBitmap();
+        Bitmap loadingBitmap = loadingImageHolder !=null? loadingImageHolder.getBitmap(context):null;
+        BindBitmapDrawable bindBitmapDrawable = new BindBitmapDrawable(loadingBitmap, request);
+        if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer){
+            if(resize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
+                bindBitmapDrawable.setFixedSize(resize.getWidth(), resize.getHeight());
+            }
         }
-        imageView.setImageDrawable(new BindBitmapDrawable(spear.getConfiguration().getContext().getResources(), loadingBitmap, request));
+        imageView.setImageDrawable(bindBitmapDrawable);
 
         if(spearImageViewInterface != null){
             spearImageViewInterface.setDisplayRequest(request);
@@ -663,11 +674,20 @@ public class DisplayHelperImpl implements DisplayHelper{
         return stringBuilder.toString();
     }
 
-    private BitmapDrawable getDrawableFromDrawableHolder(DrawableHolder drawableHolder){
-        if(drawableHolder != null){
-            return drawableHolder.getDrawable(spear.getConfiguration().getContext(), resize, scaleType, imageProcessor, imageDisplayer!=null&&imageDisplayer instanceof TransitionImageDisplayer);
-        }else{
-            return null;
+    private Drawable getDrawableFromDrawableHolder(ImageHolder imageHolder){
+        if(imageHolder != null){
+            Bitmap bitmap = imageHolder.getBitmap(context);
+            if(bitmap != null){
+                SrcBitmapDrawable srcBitmapDrawable = new SrcBitmapDrawable(bitmap);
+                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer){
+                    if(resize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
+                        srcBitmapDrawable.setFixedSize(resize.getWidth(), resize.getHeight());
+                    }
+                }
+                return srcBitmapDrawable;
+            }
         }
+
+        return null;
     }
 }
