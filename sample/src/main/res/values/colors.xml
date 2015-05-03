@@ -9,6 +9,4 @@
     <color name="window_background_end">#040404</color>
 
     <color name="list_item_background_pressed">#33FFFFFF</color>
-
-    <color name="drawer_menu">#DDA75509</color>
 </resources>

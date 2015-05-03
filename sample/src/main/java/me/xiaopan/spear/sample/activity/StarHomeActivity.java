@@ -24,7 +24,7 @@ import android.os.Bundle;
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
 import me.xiaopan.android.inject.InjectParentMember;
-import me.xiaopan.spear.sample.MyActionBarActivity;
+import me.xiaopan.spear.sample.MyAppCompatActivity;
 import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.fragment.StarHomeFragment;
 
@@ -33,7 +33,7 @@ import me.xiaopan.spear.sample.fragment.StarHomeFragment;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
-public class StarHomeActivity extends MyActionBarActivity implements WindowBackgroundManager.OnSetWindowBackgroundListener {
+public class StarHomeActivity extends MyAppCompatActivity implements WindowBackgroundManager.OnSetWindowBackgroundListener {
     @InjectExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE) private String starTitle;
 
     private WindowBackgroundManager windowBackgroundManager;

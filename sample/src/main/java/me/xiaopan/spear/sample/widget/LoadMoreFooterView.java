@@ -9,7 +9,6 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.etsy.android.grid.HeaderViewListAdapter;
-import com.etsy.android.grid.StaggeredGridView;
 
 import me.xiaopan.spear.sample.R;
 
@@ -19,27 +18,35 @@ public class LoadMoreFooterView extends FrameLayout implements HeaderViewListAda
     private OnLoadMoreListener onLoadMoreListener;
     private ProgressBar progressBar;
     private TextView tipsTextView;
+    private boolean pause;
 
-    public LoadMoreFooterView(Context context, StaggeredGridView staggeredGridView) {
+    public LoadMoreFooterView(Context context) {
         super(context);
-        init(staggeredGridView);
+        init();
     }
 
-    public LoadMoreFooterView(Context context, AttributeSet attrs, StaggeredGridView staggeredGridView) {
+    public LoadMoreFooterView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init(staggeredGridView);
+        init();
     }
 
-    public LoadMoreFooterView(Context context, AttributeSet attrs, int defStyleAttr, StaggeredGridView staggeredGridView) {
+    public LoadMoreFooterView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init(staggeredGridView);
+        init();
     }
 
-    private void init(StaggeredGridView staggeredGridView){
+    private void init(){
         LayoutInflater.from(getContext()).inflate(R.layout.list_footer_load_more, this);
         progressBar = (ProgressBar) findViewById(R.id.progress_loadMoreFooter);
         tipsTextView = (TextView) findViewById(R.id.text_loadMoreFooter_content);
-        staggeredGridView.setOnGetFooterViewListener(this);
+    }
+
+    public boolean isPause() {
+        return pause;
+    }
+
+    public void setPause(boolean pause) {
+        this.pause = pause;
     }
 
     public boolean isEnd() {
@@ -88,7 +95,7 @@ public class LoadMoreFooterView extends FrameLayout implements HeaderViewListAda
             tipsTextView.setText("别着急，您的包裹马上就来！");
         }
 
-        if(onLoadMoreListener == null || end || loading){
+        if(onLoadMoreListener == null || end || pause || loading){
             return;
         }
 

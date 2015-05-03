@@ -95,7 +95,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="15. 使用方便. 直接通过Spear.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置"/>你还可以通过Spear.putOptions()存储RequestOptions，然后在使用的时候指定名称即可。"/>
+                android:text="15. 使用方便. 直接通过Spear.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置, 你还可以通过Spear.putOptions()存储RequestOptions，然后在使用的时候指定名称即可。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

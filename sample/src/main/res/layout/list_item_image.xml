@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<me.xiaopan.spear.sample.widget.MyImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/image_starImageHeaderItem"
+<me.xiaopan.spear.sample.widget.MyImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/image_imageItem"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:scaleType="centerCrop"/>

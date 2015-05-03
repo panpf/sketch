@@ -23,7 +23,7 @@ import android.view.MenuItem;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.inject.app.InjectActionBarActivity;
 
-public class MyActionBarActivity extends InjectActionBarActivity {
+public abstract class MyAppCompatActivity extends InjectActionBarActivity {
     @InjectView(R.id.toolbar) protected Toolbar toolbar;
 
 	@Override

@@ -44,9 +44,9 @@ public class MyApplication extends Application {
 
         Spear.putOptions(OptionsType.Rectangle,
                 new DisplayOptions(getBaseContext())
-                        .setLoadingImage(R.drawable.image_loading2)
-                        .setFailureImage(R.drawable.image_load_fail2)
-                        .setPauseDownloadImage(R.drawable.image_click2)
+                        .setLoadingImage(R.drawable.image_loading)
+                        .setFailureImage(R.drawable.image_failure)
+                        .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setDecodeGifImage(false)
                         .setImageDisplayer(new TransitionImageDisplayer())
         );
@@ -54,17 +54,17 @@ public class MyApplication extends Application {
         Spear.putOptions(
                 OptionsType.Detail,
                 new DisplayOptions(getBaseContext())
-                        .setFailureImage(R.drawable.image_load_fail2)
-                        .setPauseDownloadImage(R.drawable.image_click2)
+                        .setFailureImage(R.drawable.image_failure)
+                        .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setImageDisplayer(new ColorTransitionImageDisplayer(Color.TRANSPARENT))
         );
 
         Spear.putOptions(
                 OptionsType.Circular,
                 new DisplayOptions(getBaseContext())
-                        .setLoadingImage(new ImageHolder(R.drawable.image_loading2, CircleImageProcessor.getInstance()))
-                        .setFailureImage(new ImageHolder(R.drawable.image_load_fail2, CircleImageProcessor.getInstance()))
-                        .setPauseDownloadImage(new ImageHolder(R.drawable.image_click2, CircleImageProcessor.getInstance()))
+                        .setLoadingImage(new ImageHolder(R.drawable.image_loading, CircleImageProcessor.getInstance()))
+                        .setFailureImage(new ImageHolder(R.drawable.image_failure, CircleImageProcessor.getInstance()))
+                        .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download, CircleImageProcessor.getInstance()))
                         .setDecodeGifImage(false)
                         .setImageDisplayer(new TransitionImageDisplayer())
                         .setImageProcessor(CircleImageProcessor.getInstance())

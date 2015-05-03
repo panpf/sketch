@@ -41,7 +41,7 @@ import me.xiaopan.spear.DisplayOptions;
 import me.xiaopan.spear.DownloadOptions;
 import me.xiaopan.spear.RequestOptions;
 import me.xiaopan.spear.Spear;
-import me.xiaopan.spear.sample.MyActionBarActivity;
+import me.xiaopan.spear.sample.MyAppCompatActivity;
 import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.fragment.AboutFragment;
 import me.xiaopan.spear.sample.fragment.AppListFragment;
@@ -57,7 +57,7 @@ import me.xiaopan.spear.sample.util.Settings;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
-public class MainActivity extends MyActionBarActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener, AboutFragment.TogglePageListener {
+public class MainActivity extends MyAppCompatActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener, AboutFragment.TogglePageListener {
     @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
     @InjectView(R.id.drawer_main_content) private SlidingPaneLayout drawerLayout;

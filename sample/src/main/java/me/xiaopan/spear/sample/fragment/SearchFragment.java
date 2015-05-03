@@ -33,7 +33,7 @@ import me.xiaopan.spear.sample.MyFragment;
 import me.xiaopan.spear.sample.R;
 import me.xiaopan.spear.sample.activity.DetailActivity;
 import me.xiaopan.spear.sample.activity.WindowBackgroundManager;
-import me.xiaopan.spear.sample.adapter.SearchImageAdapter;
+import me.xiaopan.spear.sample.adapter.ImageStaggeredGridAdapter;
 import me.xiaopan.spear.sample.net.request.SearchImageRequest;
 import me.xiaopan.spear.sample.net.request.StarImageRequest;
 import me.xiaopan.spear.sample.util.ScrollingPauseLoadManager;
@@ -44,17 +44,17 @@ import me.xiaopan.spear.sample.widget.LoadMoreFooterView;
  * 图片搜索Fragment
  */
 @InjectContentView(R.layout.fragment_search)
-public class SearchFragment extends MyFragment implements SearchImageAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener, LoadMoreFooterView.OnLoadMoreListener {
+public class SearchFragment extends MyFragment implements ImageStaggeredGridAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener, LoadMoreFooterView.OnLoadMoreListener {
     public static final String PARAM_OPTIONAL_STRING_SEARCH_KEYWORD = "PARAM_OPTIONAL_STRING_SEARCH_KEYWORD";
 
     @InjectView(R.id.refreshLayout_search) PullRefreshLayout pullRefreshLayout;
-    @InjectView(R.id.list_search) private StaggeredGridView recyclerView;
+    @InjectView(R.id.list_search) private StaggeredGridView staggeredGridView;
     @InjectView(R.id.hintView_search) private HintView hintView;
 
     private SearchImageRequest searchImageRequest;
     private HttpRequestFuture refreshRequestFuture;
     private HttpRequestFuture loadMoreRequestFuture;
-    private SearchImageAdapter searchImageListAdapter;
+    private ImageStaggeredGridAdapter searchImageListAdapter;
     private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
     private LoadMoreFooterView loadMoreFooterView;
 
@@ -138,7 +138,7 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
 
         pullRefreshLayout.setOnRefreshListener(this);
 
-        recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
+        staggeredGridView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
         if (searchImageListAdapter == null) {
             pullRefreshLayout.startRefresh();
@@ -151,8 +151,8 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         loadMoreFooterView = null;
     }
 
@@ -174,14 +174,15 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
         }
     }
 
-    private void setAdapter(SearchImageAdapter adapter){
+    private void setAdapter(ImageStaggeredGridAdapter adapter){
         if(loadMoreFooterView == null){
-            loadMoreFooterView = new LoadMoreFooterView(getActivity(), recyclerView);
+            loadMoreFooterView = new LoadMoreFooterView(getActivity());
             loadMoreFooterView.setOnLoadMoreListener(this);
-            recyclerView.addFooterView(loadMoreFooterView);
+            staggeredGridView.setOnGetFooterViewListener(loadMoreFooterView);
+            staggeredGridView.addFooterView(loadMoreFooterView);
         }
-        recyclerView.setAdapter(searchImageListAdapter = adapter);
-        recyclerView.scheduleLayoutAnimation();
+        staggeredGridView.setAdapter(searchImageListAdapter = adapter);
+        staggeredGridView.scheduleLayoutAnimation();
     }
 
     @Override
@@ -192,6 +193,10 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
 
         if(loadMoreRequestFuture != null && !loadMoreRequestFuture.isFinished()){
             loadMoreRequestFuture.cancel(true);
+        }
+
+        if(loadMoreFooterView != null){
+            loadMoreFooterView.setPause(true);
         }
 
         searchImageRequest.setStart(0);
@@ -211,11 +216,15 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
                 for (SearchImageRequest.Image image : responseObject.getImages()) {
                     imageList.add(image);
                 }
-                setAdapter(new SearchImageAdapter(getActivity(), recyclerView, imageList, SearchFragment.this));
+                setAdapter(new ImageStaggeredGridAdapter(getActivity(), staggeredGridView, imageList, SearchFragment.this));
+
                 pullRefreshLayout.stopRefresh();
 
-                if(loadMoreFooterView != null && loadMoreFooterView.isEnd()){
-                    loadMoreFooterView.setEnd(false);
+                if(loadMoreFooterView != null){
+                    loadMoreFooterView.setPause(false);
+                    if(loadMoreFooterView.isEnd()){
+                        loadMoreFooterView.setEnd(false);
+                    }
                 }
 
                 if(windowBackgroundLoader != null && imageList.size() > 0){
@@ -228,7 +237,9 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
                 if (getActivity() == null) {
                     return;
                 }
-
+                if(loadMoreFooterView != null){
+                    loadMoreFooterView.setPause(false);
+                }
                 pullRefreshLayout.stopRefresh();
                 if (searchImageListAdapter == null) {
                     hintView.failure(failure, new View.OnClickListener() {
@@ -244,7 +255,9 @@ public class SearchFragment extends MyFragment implements SearchImageAdapter.OnI
 
             @Override
             public void onCanceled(HttpRequest httpRequest) {
-
+                if(loadMoreFooterView != null){
+                    loadMoreFooterView.setPause(false);
+                }
             }
         }).responseHandleCompletedAfterListener(new SearchImageRequest.ResponseHandler()).go();
     }

@@ -21,7 +21,7 @@ import me.xiaopan.spear.sample.widget.MyImageView;
 /**
  * 搜索图片适配器
  */
-public class SearchImageAdapter extends BaseAdapter {
+public class ImageStaggeredGridAdapter extends BaseAdapter {
     private int itemWidth;
     private Context context;
     private List<StarImageRequest.Image> imageList;
@@ -29,7 +29,7 @@ public class SearchImageAdapter extends BaseAdapter {
     private List<String> urlList;
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public SearchImageAdapter(Context context, StaggeredGridView staggeredGridView, List<StarImageRequest.Image> imageList, final OnItemClickListener onItemClickListener){
+    public ImageStaggeredGridAdapter(Context context, StaggeredGridView staggeredGridView, List<StarImageRequest.Image> imageList, final OnItemClickListener onItemClickListener){
         this.context = context;
         append(imageList);
         itemWidth = staggeredGridView.getColumnWidth();
@@ -101,7 +101,7 @@ public class SearchImageAdapter extends BaseAdapter {
     }
 
     public View onCreateViewHolder(ViewGroup viewGroup) {
-        View headItemView = LayoutInflater.from(context).inflate(R.layout.list_item_star_image_header, viewGroup, false);
+        View headItemView = LayoutInflater.from(context).inflate(R.layout.list_item_image, viewGroup, false);
         ItemViewHolder itemViewHolder = new ItemViewHolder(headItemView);
         itemViewHolder.imageView.setOnClickListener(itemClickListener);
         itemViewHolder.imageView.setDisplayOptions(OptionsType.Rectangle);
@@ -131,7 +131,7 @@ public class SearchImageAdapter extends BaseAdapter {
         private StarImageRequest.Image image;
 
         public ItemViewHolder(View itemView) {
-            imageView = (MyImageView) itemView.findViewById(R.id.image_starImageHeaderItem);
+            imageView = (MyImageView) itemView.findViewById(R.id.image_imageItem);
         }
     }
 

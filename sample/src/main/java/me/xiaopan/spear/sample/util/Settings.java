@@ -2,6 +2,7 @@ package me.xiaopan.spear.sample.util;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.preference.PreferenceManager;
 
 public class Settings {
@@ -55,6 +56,14 @@ public class Settings {
         return settingsInstance;
     }
 
+    private void apply(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD){
+            editor.apply();
+        }else{
+            editor.commit();
+        }
+    }
+
     /**
      * 滚动的时候是否暂停加载新图片
      * @return 滚动的时候是否暂停加载新图片
@@ -69,7 +78,8 @@ public class Settings {
      */
     public void setScrollingPauseLoad(boolean scrollingPauseLoad){
         this.scrollingPauseLoad = scrollingPauseLoad;
-        editor.putBoolean(PREFERENCE_SCROLLING_PAUSE_LOAD, scrollingPauseLoad).apply();
+        editor.putBoolean(PREFERENCE_SCROLLING_PAUSE_LOAD, scrollingPauseLoad);
+        apply();
     }
 
     /**
@@ -86,7 +96,8 @@ public class Settings {
      */
     public void setShowImageDownloadProgress(boolean showImageDownloadProgress) {
         this.showImageDownloadProgress = showImageDownloadProgress;
-        editor.putBoolean(PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS, showImageDownloadProgress).apply();
+        editor.putBoolean(PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS, showImageDownloadProgress);
+        apply();
     }
 
     /**
@@ -103,7 +114,8 @@ public class Settings {
      */
     public void setMobileNetworkPauseDownload(boolean mobileNetworkPauseDownload) {
         this.mobileNetworkPauseDownload = mobileNetworkPauseDownload;
-        editor.putBoolean(PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, mobileNetworkPauseDownload).apply();
+        editor.putBoolean(PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, mobileNetworkPauseDownload);
+        apply();
     }
 
     /**
@@ -120,7 +132,8 @@ public class Settings {
      */
     public void setShowImageFromFlag(boolean showImageFromFlag) {
         this.showImageFromFlag = showImageFromFlag;
-        editor.putBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, showImageFromFlag).apply();
+        editor.putBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, showImageFromFlag);
+        apply();
     }
 
     public boolean isClickDisplayOnFailed() {
@@ -129,7 +142,8 @@ public class Settings {
 
     public void setClickDisplayOnFailed(boolean clickDisplayOnFailed) {
         this.clickDisplayOnFailed = clickDisplayOnFailed;
-        editor.putBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, clickDisplayOnFailed).apply();
+        editor.putBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, clickDisplayOnFailed);
+        apply();
     }
 
     public boolean isClickDisplayOnPauseDownload() {
@@ -138,7 +152,8 @@ public class Settings {
 
     public void setClickDisplayOnPauseDownload(boolean clickDisplayOnPauseDownload) {
         this.clickDisplayOnPauseDownload = clickDisplayOnPauseDownload;
-        editor.putBoolean(PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, clickDisplayOnPauseDownload).apply();
+        editor.putBoolean(PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, clickDisplayOnPauseDownload);
+        apply();
     }
 
     public boolean isShowClickRipple() {
@@ -147,7 +162,8 @@ public class Settings {
 
     public void setShowClickRipple(boolean showClickRipple) {
         this.showClickRipple = showClickRipple;
-        editor.putBoolean(PREFERENCE_CLICK_SHOW_CLICK_RIPPLE, showClickRipple).apply();
+        editor.putBoolean(PREFERENCE_CLICK_SHOW_CLICK_RIPPLE, showClickRipple);
+        apply();
     }
 
     public boolean isEnableDiskCache() {
@@ -156,7 +172,8 @@ public class Settings {
 
     public void setEnableDiskCache(boolean enableDiskCache) {
         this.enableDiskCache = enableDiskCache;
-        editor.putBoolean(PREFERENCE_ENABLE_DISK_CACHE, enableDiskCache).apply();
+        editor.putBoolean(PREFERENCE_ENABLE_DISK_CACHE, enableDiskCache);
+        apply();
     }
 
     public boolean isEnableMemoryCache() {
@@ -165,6 +182,7 @@ public class Settings {
 
     public void setEnableMemoryCache(boolean enableMemoryCache) {
         this.enableMemoryCache = enableMemoryCache;
-        editor.putBoolean(PREFERENCE_ENABLE_MEMORY_CACHE, enableMemoryCache).apply();
+        editor.putBoolean(PREFERENCE_ENABLE_MEMORY_CACHE, enableMemoryCache);
+        apply();
     }
 }
