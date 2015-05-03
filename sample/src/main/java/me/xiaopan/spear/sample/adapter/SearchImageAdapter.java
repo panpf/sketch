@@ -104,7 +104,7 @@ public class SearchImageAdapter extends BaseAdapter {
         View headItemView = LayoutInflater.from(context).inflate(R.layout.list_item_star_image_header, viewGroup, false);
         ItemViewHolder itemViewHolder = new ItemViewHolder(headItemView);
         itemViewHolder.imageView.setOnClickListener(itemClickListener);
-        itemViewHolder.imageView.setDisplayOptions(OptionsType.Staggered);
+        itemViewHolder.imageView.setDisplayOptions(OptionsType.Rectangle);
         headItemView.setTag(itemViewHolder);
         return headItemView;
     }

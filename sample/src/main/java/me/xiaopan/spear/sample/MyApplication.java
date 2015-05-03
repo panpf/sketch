@@ -40,59 +40,33 @@ public class MyApplication extends Application {
 
         GoHttp.with(getBaseContext()).setDebugMode(true);
         Spear.setDebugMode(true);
-        Spear.putOptions(
-                OptionsType.Rectangle_1,
+
+        Spear.putOptions(OptionsType.Rectangle,
                 new DisplayOptions(getBaseContext())
-                        .setLoadingDrawable(R.drawable.image_loading2)
-                        .setLoadFailDrawable(R.drawable.image_load_fail2)
-                        .setPauseDownloadDrawable(R.drawable.image_click2)
+                        .setLoadingImage(R.drawable.image_loading2)
+                        .setFailureImage(R.drawable.image_load_fail2)
+                        .setPauseDownloadImage(R.drawable.image_click2)
                         .setDecodeGifImage(false)
-                        .setImageDisplayer(new TransitionImageDisplayer())
-        );
-
-        Spear.putOptions(
-                OptionsType.Rectangle_0_75,
-                new DisplayOptions(getBaseContext())
-                        .setLoadingDrawable(R.drawable.image_loading2)
-                        .setLoadFailDrawable(R.drawable.image_load_fail2)
-                        .setPauseDownloadDrawable(R.drawable.image_click2)
-                        .setImageDisplayer(new TransitionImageDisplayer())
-        );
-
-        Spear.putOptions(
-                OptionsType.Rectangle_1_56,
-                new DisplayOptions(getBaseContext())
-                        .setLoadingDrawable(R.drawable.image_loading2)
-                        .setLoadFailDrawable(R.drawable.image_load_fail2)
-                        .setPauseDownloadDrawable(R.drawable.image_click2)
-                        .setImageDisplayer(new TransitionImageDisplayer())
-        );
-
-        Spear.putOptions(
-                OptionsType.Rectangle_3_2,
-                new DisplayOptions(getBaseContext())
-                        .setLoadingDrawable(R.drawable.image_loading2)
-                        .setLoadFailDrawable(R.drawable.image_load_fail2)
-                        .setPauseDownloadDrawable(R.drawable.image_click2)
                         .setImageDisplayer(new TransitionImageDisplayer())
         );
 
         Spear.putOptions(
                 OptionsType.Detail,
                 new DisplayOptions(getBaseContext())
-                        .setLoadFailDrawable(R.drawable.image_load_fail2)
-                        .setPauseDownloadDrawable(R.drawable.image_click2)
+                        .setFailureImage(R.drawable.image_load_fail2)
+                        .setPauseDownloadImage(R.drawable.image_click2)
                         .setImageDisplayer(new ColorTransitionImageDisplayer(Color.TRANSPARENT))
         );
 
         Spear.putOptions(
                 OptionsType.Circular,
                 new DisplayOptions(getBaseContext())
-                        .setLoadingDrawable(R.drawable.image_loading2)
-                        .setLoadFailDrawable(R.drawable.image_load_fail2)
-                        .setPauseDownloadDrawable(R.drawable.image_click2)
+                        .setLoadingImage(R.drawable.image_loading2, CircleImageProcessor.getInstance())
+                        .setFailureImage(R.drawable.image_load_fail2, CircleImageProcessor.getInstance())
+                        .setPauseDownloadImage(R.drawable.image_click2, CircleImageProcessor.getInstance())
+                        .setDecodeGifImage(false)
                         .setImageDisplayer(new TransitionImageDisplayer())
-                        .setImageProcessor(new CircleImageProcessor())
+                        .setImageProcessor(CircleImageProcessor.getInstance())
         );
 
         Spear.putOptions(
@@ -101,13 +75,6 @@ public class MyApplication extends Application {
                         .setScaleType(ImageView.ScaleType.CENTER_CROP)
                         .setImageProcessor(new GaussianBlurImageProcessor(true))
                         .setDecodeGifImage(false)
-        );
-
-        Spear.putOptions(
-                OptionsType.Staggered,
-                new DisplayOptions(getBaseContext())
-                        .setDecodeGifImage(false)
-                        .setImageDisplayer(new ColorTransitionImageDisplayer(Color.TRANSPARENT))
         );
 
         boolean isPauseDownload = Settings.with(getBaseContext()).isMobileNetworkPauseDownload();

@@ -117,7 +117,7 @@ public class StarImageAdapter extends RecyclerView.Adapter{
         switch(viewType){
             case ITEM_TYPE_HEADER :
                 HeadViewHolder headViewHolder = new HeadViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_image_header, viewGroup, false));
-                headViewHolder.imageView.setDisplayOptions(OptionsType.Rectangle_3_2);
+                headViewHolder.imageView.setDisplayOptions(OptionsType.Rectangle);
                 headViewHolder.imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 ViewGroup.LayoutParams headerParams = headViewHolder.imageView.getLayoutParams();
                 headerParams.width = headerWidth;
@@ -142,9 +142,9 @@ public class StarImageAdapter extends RecyclerView.Adapter{
                 itemParams.height = imageSize;
                 itemViewHolder.threeImageView.setLayoutParams(itemParams);
 
-                itemViewHolder.oneImageView.setDisplayOptions(OptionsType.Rectangle_1);
-                itemViewHolder.twoImageView.setDisplayOptions(OptionsType.Rectangle_1);
-                itemViewHolder.threeImageView.setDisplayOptions(OptionsType.Rectangle_1);
+                itemViewHolder.oneImageView.setDisplayOptions(OptionsType.Rectangle);
+                itemViewHolder.twoImageView.setDisplayOptions(OptionsType.Rectangle);
+                itemViewHolder.threeImageView.setDisplayOptions(OptionsType.Rectangle);
 
                 itemViewHolder.oneImageView.setOnClickListener(itemClickListener);
                 itemViewHolder.twoImageView.setOnClickListener(itemClickListener);

@@ -31,7 +31,7 @@ public class AppPackageListAdapter extends RecyclerView.Adapter{
             return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app_list_header, parent, false));
         }else{
             AppInfoViewHolder appInfoViewHolder = new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
-            appInfoViewHolder.iconSpearImageView.setDisplayOptions(OptionsType.Rectangle_1);
+            appInfoViewHolder.iconSpearImageView.setDisplayOptions(OptionsType.Rectangle);
             return appInfoViewHolder;
         }
     }
