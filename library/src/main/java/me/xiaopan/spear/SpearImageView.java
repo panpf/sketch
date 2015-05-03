@@ -92,9 +92,10 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
     protected float gifTextTop = -1;
     protected Drawable gifFlagDrawable;
 
-    protected Path imageShapeShadeClipPath;
+    protected Path imageShapeClipPath;
     protected float[] roundedRadii;
     protected ImageShape imageShape = ImageShape.RECT;
+    protected boolean applyClip = false;
 
     public SpearImageView(Context context) {
         super(context);
@@ -136,6 +137,14 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
             gifTextLeft = getWidth()-getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
             gifTextTop = getHeight()-getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
         }
+
+        imageShapeClipPath = null;
+    }
+
+    @Override
+    public void setPadding(int left, int top, int right, int bottom) {
+        super.setPadding(left, top, right, bottom);
+        imageShapeClipPath = null;
     }
 
     @Override
@@ -198,7 +207,7 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
 
     @Override
     protected void dispatchSetPressed(boolean pressed) {
-        if(showClickRipple && this.pressed != pressed){
+        if(showClickRipple && isClickable() && this.pressed != pressed){
             this.pressed = pressed;
             if(pressed){
                 if(clickRippleScroller == null){
@@ -276,16 +285,20 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
 
     protected void drawPressedStatus(Canvas canvas){
         if(pressed || (clickRippleScroller != null && clickRippleScroller.computeScrollOffset())){
-            if(imageShape != ImageShape.RECT && getImageShapeClipPath() != null){
+            Path imageShapeClipPath = getImageShapeClipPath();
+            applyClip = imageShapeClipPath != null;
+            if(applyClip){
                 canvas.save();
-                canvas.clipPath(getImageShapeClipPath());
+                canvas.clipPath(imageShapeClipPath);
             }
+
             if(clickRipplePaint == null){
                 clickRipplePaint = new Paint();
                 clickRipplePaint.setColor(clickRippleColor);
             }
             canvas.drawCircle(touchX, touchY, clickRippleScroller.getCurrX(), clickRipplePaint);
-            if(imageShape != ImageShape.RECT){
+
+            if(applyClip){
                 canvas.restore();
             }
         }
@@ -293,16 +306,20 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
 
     protected void drawDownloadProgress(Canvas canvas){
         if(showDownloadProgress && progress != NONE){
-            if(imageShape != ImageShape.RECT && getImageShapeClipPath() != null){
+            Path imageShapeClipPath = getImageShapeClipPath();
+            applyClip = imageShapeClipPath != null;
+            if(applyClip){
                 canvas.save();
-                canvas.clipPath(getImageShapeClipPath());
+                canvas.clipPath(imageShapeClipPath);
             }
+
             if(progressPaint == null){
                 progressPaint = new Paint();
                 progressPaint.setColor(progressColor);
             }
             canvas.drawRect(getPaddingLeft(), getPaddingTop() + (progress * getHeight()), getWidth() - getPaddingLeft() - getPaddingRight(), getHeight() - getPaddingTop() - getPaddingBottom(), progressPaint);
-            if(imageShape != ImageShape.RECT){
+
+            if(applyClip){
                 canvas.restore();
             }
         }
@@ -343,18 +360,24 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
     }
 
     protected Path getImageShapeClipPath(){
-        if(imageShapeShadeClipPath == null && imageShape != ImageShape.RECT){
-            imageShapeShadeClipPath = new Path();
-            if(imageShape == ImageShape.CIRCLE){
-                int xRadius = getWidth()/2;
-                int yRadius = getHeight()/2;
-                imageShapeShadeClipPath.addCircle(xRadius, yRadius, xRadius < yRadius ? xRadius : yRadius, Path.Direction.CW);
+        if(imageShapeClipPath == null){
+            if(imageShape == ImageShape.RECT){
+                if(getPaddingLeft() != 0 || getPaddingTop() != 0 || getPaddingRight() != 0 || getPaddingBottom() != 0){
+                    imageShapeClipPath = new Path();
+                    imageShapeClipPath.addRect(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom(), Path.Direction.CW);
+                }
+            }else if(imageShape == ImageShape.CIRCLE){
+                imageShapeClipPath = new Path();
+                int xRadius = (getWidth()-getPaddingLeft()-getPaddingRight())/2;
+                int yRadius = (getHeight()-getPaddingTop()-getPaddingBottom())/2;
+                imageShapeClipPath.addCircle(xRadius, yRadius, xRadius < yRadius ? xRadius : yRadius, Path.Direction.CW);
             }else if(imageShape == ImageShape.ROUNDED_RECT){
                 RectF rectF = new RectF(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
-                imageShapeShadeClipPath.addRoundRect(rectF, roundedRadii, Path.Direction.CW);
+                imageShapeClipPath = new Path();
+                imageShapeClipPath.addRoundRect(rectF, roundedRadii, Path.Direction.CW);
             }
         }
-        return imageShapeShadeClipPath;
+        return imageShapeClipPath;
     }
 
     @Override
@@ -640,24 +663,22 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
      * @return 涟漪的半径
      */
     private int computeRippleRadius(){
+        // 先计算按下点到四边的距离
+        int toLeftDistance = touchX - getPaddingLeft();
+        int toTopDistance = touchY - getPaddingTop();
+        int toRightDistance = Math.abs(getWidth() - getPaddingRight() - touchX);
+        int toBottomDistance = Math.abs(getHeight() - getPaddingBottom() - touchY);
+
+        // 当按下位置在第一或第四象限的时候，比较按下位置在左上角到右下角这条线上距离谁最远就以谁为半径，否则在左下角到右上角这条线上比较
         int centerX = getWidth()/2;
         int centerY = getHeight()/2;
-        // 当按下位置在第一或第四象限的时候，比较按下位置在左上角到右下角这条线上距离谁最远就以谁为半径，否则在左下角到右上角这条线上比较
         if((touchX < centerX && touchY < centerY) || (touchX > centerX && touchY > centerY)) {
-            int toLeftTopXDistance = touchX;
-            int toLeftTopYDistance = touchY;
-            int toLeftTopDistance = (int) Math.sqrt((toLeftTopXDistance * toLeftTopXDistance) + (toLeftTopYDistance * toLeftTopYDistance));
-            int toRightBottomXDistance = Math.abs(touchX - getWidth());
-            int toRightBottomYDistance = Math.abs(touchY - getHeight());
-            int toRightBottomDistance = (int) Math.sqrt((toRightBottomXDistance * toRightBottomXDistance) + (toRightBottomYDistance * toRightBottomYDistance));
+            int toLeftTopDistance = (int) Math.sqrt((toLeftDistance * toLeftDistance) + (toTopDistance * toTopDistance));
+            int toRightBottomDistance = (int) Math.sqrt((toRightDistance * toRightDistance) + (toBottomDistance * toBottomDistance));
             return toLeftTopDistance > toRightBottomDistance ? toLeftTopDistance : toRightBottomDistance;
         }else{
-            int toLeftBottomXDistance = touchX;
-            int toLeftBottomYDistance = Math.abs(touchY - getHeight());
-            int toLeftBottomDistance = (int) Math.sqrt((toLeftBottomXDistance * toLeftBottomXDistance) + (toLeftBottomYDistance * toLeftBottomYDistance));
-            int toRightTopXDistance = Math.abs(touchX - getWidth());
-            int toRightTopYDistance = touchY;
-            int toRightTopDistance = (int) Math.sqrt((toRightTopXDistance * toRightTopXDistance) + (toRightTopYDistance * toRightTopYDistance));
+            int toLeftBottomDistance = (int) Math.sqrt((toLeftDistance * toLeftDistance) + (toBottomDistance * toBottomDistance));
+            int toRightTopDistance = (int) Math.sqrt((toRightDistance * toRightDistance) + (toTopDistance * toTopDistance));
             return toLeftBottomDistance > toRightTopDistance ? toLeftBottomDistance : toRightTopDistance;
         }
     }
