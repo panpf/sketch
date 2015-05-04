@@ -46,7 +46,6 @@ public class ImageHolder {
                 if(imageProcessor != null){
                     Bitmap newBitmap = imageProcessor.process(bitmap, null, null);
                     if(newBitmap != bitmap){
-                        bitmap.recycle();
                         bitmap = newBitmap;
                         canRecycle = true;
                     }
