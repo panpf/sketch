@@ -37,7 +37,7 @@ public class MyImageView extends SpearImageView {
             setShowClickRipple(settings.isShowClickRipple());
             setShowFromFlag(settings.isShowImageFromFlag());
             setShowDownloadProgress(settings.isShowImageDownloadProgress());
-            setClickRedisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+            setClickDisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
             setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
         }
     }
