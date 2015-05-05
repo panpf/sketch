@@ -60,15 +60,47 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, Drawable drawable) {
-		if(drawable == null){
+	public void display(ImageView imageView, Drawable newDrawable) {
+		if(newDrawable == null){
             return;
         }
         ScaleAnimation scaleAnimation = new ScaleAnimation(fromX, 1.0f, fromY, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		scaleAnimation.setInterpolator(interpolator);
 		scaleAnimation.setDuration(duration);
     	imageView.clearAnimation();
-		imageView.setImageDrawable(drawable);
+		imageView.setImageDrawable(newDrawable);
 		imageView.startAnimation(scaleAnimation);
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
+	}
+
+	public float getFromX() {
+		return fromX;
+	}
+
+	public void setFromX(float fromX) {
+		this.fromX = fromX;
+	}
+
+	public float getFromY() {
+		return fromY;
+	}
+
+	public void setFromY(float fromY) {
+		this.fromY = fromY;
+	}
+
+	public Interpolator getInterpolator() {
+		return interpolator;
+	}
+
+	public void setInterpolator(Interpolator interpolator) {
+		this.interpolator = interpolator;
 	}
 }

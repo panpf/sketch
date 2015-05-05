@@ -16,6 +16,8 @@
 
 package me.xiaopan.spear.display;
 
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.widget.ImageView;
@@ -23,7 +25,7 @@ import android.widget.ImageView;
 import me.xiaopan.spear.RecycleGifDrawable;
 
 /**
- * 过度图片显示器
+ * 过渡图片显示器
  */
 public class TransitionImageDisplayer implements ImageDisplayer {
 	private int duration;
@@ -33,23 +35,35 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 	}
 	
 	public TransitionImageDisplayer(){
-		this(800);
+		this(500);
 	}
 	
 	@Override
-	public void display(ImageView imageView, Drawable drawable) {
-		if(drawable == null){
+	public void display(ImageView imageView, Drawable newDrawable) {
+		if(newDrawable == null){
             return;
         }
-		if(!(drawable instanceof RecycleGifDrawable) && imageView.getDrawable() != null){
-			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{imageView.getDrawable(), drawable});
+		if(newDrawable instanceof RecycleGifDrawable){
+        	imageView.clearAnimation();
+			imageView.setImageDrawable(newDrawable);
+		}else{
+			Drawable oldDrawable = imageView.getDrawable();
+			if(oldDrawable == null){
+				new ColorDrawable(Color.TRANSPARENT);
+			}
+			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, newDrawable});
         	imageView.clearAnimation();
 			imageView.setImageDrawable(transitionDrawable);
 			transitionDrawable.setCrossFadeEnabled(true);
 			transitionDrawable.startTransition(duration);
-		}else{
-        	imageView.clearAnimation();
-			imageView.setImageDrawable(drawable);
 		}
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 }

@@ -38,14 +38,30 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, Drawable drawable) {
-		if(drawable == null){
+	public void display(ImageView imageView, Drawable newDrawable) {
+		if(newDrawable == null){
             return;
         }
-        TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(color), drawable});
+        TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(color), newDrawable});
     	imageView.clearAnimation();
 		imageView.setImageDrawable(transitionDrawable);
 		transitionDrawable.setCrossFadeEnabled(true);
 		transitionDrawable.startTransition(duration);
+	}
+
+	public int getColor() {
+		return color;
+	}
+
+	public void setColor(int color) {
+		this.color = color;
+	}
+
+	public int getDuration() {
+		return duration;
+	}
+
+	public void setDuration(int duration) {
+		this.duration = duration;
 	}
 }

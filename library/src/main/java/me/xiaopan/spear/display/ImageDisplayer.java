@@ -27,7 +27,7 @@ public interface ImageDisplayer {
 	/**
 	 * 显示
 	 * @param imageView ImageView
-	 * @param drawable 图片
+	 * @param newDrawable 图片
 	 */
-	void display(ImageView imageView, Drawable drawable);
+	void display(ImageView imageView, Drawable newDrawable);
 }

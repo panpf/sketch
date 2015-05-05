@@ -25,11 +25,11 @@ import android.widget.ImageView;
 public class DefaultImageDisplayer implements ImageDisplayer {
 
 	@Override
-	public void display(ImageView imageView, Drawable drawable) {
-    	if(drawable == null){
+	public void display(ImageView imageView, Drawable newDrawable) {
+    	if(newDrawable == null){
             return;
         }
         imageView.clearAnimation();
-		imageView.setImageDrawable(drawable);
+		imageView.setImageDrawable(newDrawable);
 	}
 }
