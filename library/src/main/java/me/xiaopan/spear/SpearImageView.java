@@ -61,7 +61,7 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
     private DisplayParams displayParams;
     private View.OnClickListener onClickListener;
     private boolean replacedClickListener;
-    private boolean clickRedisplayOnPauseDownload;
+    private boolean clickDisplayOnPauseDownload;
     private boolean clickRedisplayOnFailed;
     private boolean isSetImage;
 
@@ -433,7 +433,7 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
 
     @Override
     public DisplayListener getDisplayListener(boolean isPauseDownload){
-        if(showFromFlag || showDownloadProgress || (isPauseDownload && clickRedisplayOnPauseDownload) || clickRedisplayOnFailed){
+        if(showFromFlag || showDownloadProgress || (isPauseDownload && clickDisplayOnPauseDownload) || clickRedisplayOnFailed){
             if(myListener == null){
                 myListener = new MyListener();
             }
@@ -504,16 +504,16 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
     }
 
     /**
-     * 设置当暂停下载的时候是否点击重新显示
-     * @param clickRedisplayOnPauseDownload 当暂停下载的时候是否点击重新显示
+     * 设置当暂停下载的时候点击显示图片
+     * @param clickDisplayOnPauseDownload true：是
      */
-    public void setClickRedisplayOnPauseDownload(boolean clickRedisplayOnPauseDownload) {
-        this.clickRedisplayOnPauseDownload = clickRedisplayOnPauseDownload;
+    public void setClickDisplayOnPauseDownload(boolean clickDisplayOnPauseDownload) {
+        this.clickDisplayOnPauseDownload = clickDisplayOnPauseDownload;
     }
 
     /**
-     * 设置当失败的时候是否点击重新显示
-     * @param clickRedisplayOnFailed 当失败的时候是否点击重新显示
+     * 设置当失败的时候点击重新显示图片
+     * @param clickRedisplayOnFailed true：是
      */
     public void setClickRedisplayOnFailed(boolean clickRedisplayOnFailed) {
         this.clickRedisplayOnFailed = clickRedisplayOnFailed;
@@ -784,7 +784,7 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
 
         @Override
         public void onCanceled(CancelCause cancelCause) {
-            if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD && clickRedisplayOnPauseDownload){
+            if(cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD && clickDisplayOnPauseDownload){
                 SpearImageView.super.setOnClickListener(this);
                 replacedClickListener = true;
             }
