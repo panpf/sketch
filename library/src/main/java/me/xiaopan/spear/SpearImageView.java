@@ -34,6 +34,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
+import me.xiaopan.spear.util.CommentUtils;
 import pl.droidsonroids.gif.GifViewSavedState;
 import pl.droidsonroids.gif.GifViewUtils;
 
@@ -170,7 +171,7 @@ public class SpearImageView extends ImageView implements SpearImageViewInterface
         super.onAttachedToWindow();
         if(!isSetImage && displayParams != null){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + "：" + "restore image on attached to window" + " - " + displayParams.uri);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, "：", "restore image on attached to window", " - ", displayParams.uri));
             }
             Spear.with(getContext()).display(displayParams, SpearImageView.this).fire();
         }

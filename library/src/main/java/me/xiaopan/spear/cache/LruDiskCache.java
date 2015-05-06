@@ -72,7 +72,7 @@ public class LruDiskCache implements DiskCache {
             if(cacheDir.exists() || cacheDir.mkdirs()){
                 return cacheDir;
             }else if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "create cache dir failed" + " - " + cacheDir.getPath());
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "create cache dir failed", " - ", cacheDir.getPath()));
             }
         }
 
@@ -99,7 +99,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if(Spear.isDebugMode()){
-            Log.e(Spear.TAG, NAME + "get cache dir failed");
+            Log.e(Spear.TAG, CommentUtils.concat(NAME, "get cache dir failed"));
         }
         cacheDir = null;
         return null;
@@ -172,7 +172,7 @@ public class LruDiskCache implements DiskCache {
             // 然后按照顺序来删除文件直到腾出足够的空间或文件删完为止
             for(File file : cacheFiles){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "deleted cache file" + " - " + file.getPath());
+                    Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "deleted cache file", " - ", file.getPath()));
                 }
                 long currentFileLength = file.length();
                 if(file.delete()){
@@ -193,7 +193,7 @@ public class LruDiskCache implements DiskCache {
 
         // 返回申请空间失败
         if(Spear.isDebugMode()){
-            Log.e(Spear.TAG, NAME + " - " + "apply for space failed" + " - " + "remaining space：" + Formatter.formatFileSize(context, totalAvailableSize) + "; reserve size：" + Formatter.formatFileSize(context, reserveSize) + " - " + finalCacheDir.getPath());
+            Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "apply for space failed", " - ", "remaining space：", Formatter.formatFileSize(context, totalAvailableSize), "; reserve size：", Formatter.formatFileSize(context, reserveSize), " - ", finalCacheDir.getPath()));
         }
         return false;
 	}
@@ -263,7 +263,7 @@ public class LruDiskCache implements DiskCache {
         String fileName = uriToFileName(uri);
         if(fileName == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + "encode uri failed" + " - " + uri);
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, "encode uri failed", " - ", uri));
             }
             return null;
         }
@@ -329,7 +329,7 @@ public class LruDiskCache implements DiskCache {
         // 创建文件
         if(!CommentUtils.createFile(tempFile)) {
             if (Spear.isDebugMode()) {
-                Log.e(Spear.TAG, NAME + "create file failed" + " - " + tempFile.getPath());
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, "create file failed", " - ", tempFile.getPath()));
             }
             return null;
         }
@@ -344,7 +344,7 @@ public class LruDiskCache implements DiskCache {
             e.printStackTrace();
             if(tempFile.exists()){
                 if(!tempFile.delete() && Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "delete temp cache file failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + uri);
+                    Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "delete temp cache file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", uri));
                 }
             }
             return null;
@@ -360,7 +360,7 @@ public class LruDiskCache implements DiskCache {
 
         if(!tempFile.renameTo(cacheFile)){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "rename failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + uri);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "rename failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", uri));
             }
             tempFile.delete();
             return null;

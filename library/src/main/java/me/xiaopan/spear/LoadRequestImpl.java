@@ -335,19 +335,19 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
                 this.imageFrom = ImageFrom.DISK_CACHE;
                 postRunLoad();
                 if(Spear.isDebugMode()){
-                    Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "diskCache" + " - " + name);
+                    Log.d(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
                 }
             }else{
                 if(requestLevel == RequestLevel.LOCAL){
                     if(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD){
                         toCanceledStatus(CancelCause.PAUSE_DOWNLOAD);
                         if(Spear.isDebugMode()){
-                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "pause download" + " - " + name);
+                            Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", name));
                         }
                     }else{
                         toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
                         if(Spear.isDebugMode()){
-                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "requestLevel is local" + " - " + name);
+                            Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "requestLevel is local", " - ", name));
                         }
                     }
                     return;
@@ -355,14 +355,14 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
                 postRunDownload();
                 if(Spear.isDebugMode()){
-                    Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "download" + " - " + name);
+                    Log.d(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "download", " - ", name));
                 }
             }
         }else{
             this.imageFrom = ImageFrom.LOCAL;
             postRunLoad();
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "local" + " - " + name);
+                Log.d(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "local", " - ", name));
             }
         }
     }
@@ -373,7 +373,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private void executeDownload() {
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "startDownload" + " - " + name);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "startDownload", " - ", name));
             }
             return;
         }
@@ -382,7 +382,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "downloadAfter" + " - " + name);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "downloadAfter", " - ", name));
             }
             return;
         }
@@ -406,7 +406,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private void executeLoad(){
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "startLoad" + " - " + name);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "startLoad", " - ", name));
             }
             return;
         }
@@ -431,21 +431,21 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
             Bitmap bitmap = (Bitmap) decodeResult;
             if(!bitmap.isRecycled()){
                 if(Spear.isDebugMode()){
-                    Log.d(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "executeLoad" + " - " + name);
+                    Log.d(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "new bitmap@", Integer.toHexString(bitmap.hashCode()), " - ", "executeLoad", " - ", name));
                 }
             }else{
                 if(Spear.isDebugMode()){
-                    Log.e(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "decodeFailed" + " - " + name);
+                    Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "decodeFailed", " - ", name));
                 }
             }
 
             if(isCanceled()){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "decodeAfter:cancel" + " - " + name);
+                    Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "recycle bitmap@", Integer.toHexString(bitmap.hashCode()), " - ", "decodeAfter:cancel", " - ", name));
                 }
                 bitmap.recycle();
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled" + " - " + "decodeAfter" + " - " + name);
+                    Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "decodeAfter", " - ", name));
                 }
                 return;
             }
@@ -459,7 +459,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
                 if(imageProcessor != null){
                     Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), getScaleType());
                     if(newBitmap != null && newBitmap != bitmap && Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - " + "recycle old bitmap@" + Integer.toHexString(bitmap.hashCode()) + " - " + "processAfter" + " - " + name);
+                        Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - ", "recycle old bitmap@", Integer.toHexString(bitmap.hashCode()), " - ", "processAfter", " - ", name));
                     }
                     if(newBitmap == null || newBitmap != bitmap){
                         bitmap.recycle();
@@ -471,12 +471,12 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
             if(isCanceled()){
                 if(bitmap != null){
                     if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()) + "processAfter:cancel");
+                        Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "recycle bitmap@", Integer.toHexString(bitmap.hashCode()), "processAfter:cancel"));
                     }
                     bitmap.recycle();
                 }
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "executeLoad" + " - " + "canceled "+ " - " + "processAfter" + " - " + name);
+                    Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled ", " - ", "processAfter", " - ", name));
                 }
                 return;
             }
@@ -541,7 +541,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
                 ((RecycleDrawableInterface)resultBitmap).recycle();
             }
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", name));
             }
             return;
         }
@@ -555,7 +555,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private void handleFailedOnMainThread() {
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "handleFailedOnMainThread" + " - " + "canceled" + " - " + name);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", name));
             }
             return;
         }
@@ -575,7 +575,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private void updateProgressOnMainThread(int totalLength, int completedLength) {
         if(isFinished()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "updateProgressOnMainThread" + " - " + "finished" + " - " + name);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", name));
             }
             return;
         }

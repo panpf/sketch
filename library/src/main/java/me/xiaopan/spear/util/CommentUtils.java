@@ -41,7 +41,7 @@ public class CommentUtils {
         }
         if(drawable instanceof BitmapDrawable && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) packageManager.getDefaultActivityIcon()).getBitmap()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, logName + " - " + "icon not found" + " - " + apkFilePath);
+                Log.w(Spear.TAG, CommentUtils.concat(logName, " - ", "icon not found", " - ", apkFilePath));
             }
             return null;
         }
@@ -175,5 +175,16 @@ public class CommentUtils {
         }
 
         return suffix.equalsIgnoreCase(fileNameSuffix);
+    }
+
+    public static String concat(String... strings){
+        if(strings == null || strings.length == 0){
+            return null;
+        }
+        StringBuilder builder = new StringBuilder();
+        for(String string : strings){
+            builder.append(string);
+        }
+        return builder.toString();
     }
 }

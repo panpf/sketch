@@ -33,6 +33,7 @@ import me.xiaopan.spear.LoadRequest;
 import me.xiaopan.spear.RecycleGifDrawable;
 import me.xiaopan.spear.Spear;
 import me.xiaopan.spear.UriScheme;
+import me.xiaopan.spear.util.CommentUtils;
 
 /**
  * 默认的位图解码器
@@ -135,7 +136,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                     originalSize = new Point(bitmap.getWidth(), bitmap.getHeight());
                 }else{
                     if(Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "recycle bitmap@"+Integer.toHexString(bitmap.hashCode()) + " - " + "1x1 Image");
+                        Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()), " - ", "1x1 Image"));
                     }
                     bitmap.recycle();
                     bitmap = null;
@@ -231,7 +232,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public void onDecodeFailed() {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + assetsFilePath);
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "decode failed", " - ", assetsFilePath));
             }
         }
 
@@ -282,7 +283,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public void onDecodeFailed() {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + loadRequest.getName());
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "decode failed", " - ", loadRequest.getName()));
             }
         }
 
@@ -311,7 +312,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         public Bitmap decode(BitmapFactory.Options options) {
             if(!file.canRead()){
                 if(Spear.isDebugMode()){
-                    Log.e(Spear.TAG, NAME + " - " + "can not read" + " - " + file.getPath());
+                    Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "can not read", " - ", file.getPath()));
                 }
                 return null;
             }
@@ -323,7 +324,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(!file.setLastModified(System.currentTimeMillis())){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "update last modified failed" + " - " + file.getPath());
+                    Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "update last modified failed", " - ", file.getPath()));
                 }
             }
             if(Spear.isDebugMode()){
@@ -356,7 +357,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             }
             if(!file.delete()){
                 if(Spear.isDebugMode()){
-                    Log.e(Spear.TAG, NAME + " - " + "delete damaged disk cache file failed" + " - " + file.getPath());
+                    Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "delete damaged disk cache file failed", " - ", file.getPath()));
                 }
             }
         }
@@ -408,7 +409,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public void onDecodeFailed() {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + drawableId);
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "decode failed", " - ", String.valueOf(drawableId)));
             }
         }
 
@@ -439,7 +440,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 return BitmapFactory.decodeFile(file.getPath(), options);
             }else{
                 if(Spear.isDebugMode()){
-                    Log.e(Spear.TAG, NAME + " - " + "can not read" + " - " + file.getPath());
+                    Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "can not read", " - ", file.getPath()));
                 }
                 return null;
             }
@@ -538,7 +539,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public void onDecodeFailed() {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "decode failed" + " - " + contentUri);
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "decode failed", " - ", contentUri.toString()));
             }
         }
 

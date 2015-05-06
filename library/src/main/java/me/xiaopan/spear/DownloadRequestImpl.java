@@ -22,6 +22,7 @@ import android.util.Log;
 import java.io.File;
 
 import me.xiaopan.spear.download.ImageDownloader;
+import me.xiaopan.spear.util.CommentUtils;
 
 /**
  * 下载请求
@@ -249,7 +250,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
             File diskCacheFile = enableDiskCache?spear.getConfiguration().getDiskCache().getCacheFile(uri):null;
             if(diskCacheFile != null && diskCacheFile.exists()){
                 if(Spear.isDebugMode()){
-                    Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "diskCache" + " - " + name);
+                    Log.d(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
                 }
                 this.imageFrom = ImageFrom.DISK_CACHE;
                 this.resultFile = diskCacheFile;
@@ -259,12 +260,12 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
                     if(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD){
                         toCanceledStatus(CancelCause.PAUSE_DOWNLOAD);
                         if(Spear.isDebugMode()){
-                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "pause download" + " - " + name);
+                            Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", name));
                         }
                     }else{
                         toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
                         if(Spear.isDebugMode()){
-                            Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "requestLevel is local" + " - " + name);
+                            Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "requestLevel is local", " - ", name));
                         }
                     }
                     return;
@@ -272,12 +273,12 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
 
                 postRunDownload();
                 if(Spear.isDebugMode()){
-                    Log.d(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "download" + " - " + name);
+                    Log.d(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "download", " - ", name));
                 }
             }
         }else{
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "executeDispatch" + " - " + "not support uri:" + uri + " - " + name);
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "not support uri:", uri, " - ", name));
             }
             toFailedStatus(FailCause.URI_NO_SUPPORT);
         }
@@ -289,7 +290,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private void executeDownload() {
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "startDownload" + " - " + name);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "startDownload", " - ", name));
             }
             return;
         }
@@ -298,7 +299,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
 
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "executeDownload" +" - "+"canceled" + " - " + "downloadAfter" + " - " + name);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "downloadAfter", " - ", name));
             }
             return;
         }
@@ -322,7 +323,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private void handleCompletedOnMainThread() {
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "handleCompletedOnMainThread" + " - " + "canceled" + " - " + name);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", name));
             }
             return;
         }
@@ -340,7 +341,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private void handleFailedOnMainThread() {
         if(isCanceled()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "handleFailedOnMainThread" + " - " + "canceled" + " - " + name);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", name));
             }
             return;
         }
@@ -360,7 +361,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private void updateProgressOnMainThread(int totalLength, int completedLength) {
         if(isFinished()){
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "updateProgressOnMainThread" + " - " + "finished" + " - " + name);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", name));
             }
             return;
         }

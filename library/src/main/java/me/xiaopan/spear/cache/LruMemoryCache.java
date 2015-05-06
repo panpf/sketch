@@ -23,6 +23,7 @@ import android.util.Log;
 
 import me.xiaopan.spear.RecycleDrawableInterface;
 import me.xiaopan.spear.Spear;
+import me.xiaopan.spear.util.CommentUtils;
 import me.xiaopan.spear.util.LruCache;
 
 /**
@@ -37,7 +38,7 @@ public class LruMemoryCache implements MemoryCache {
 		this.context = context;
         this.drawableLruCache = new DrawableLruCache(maxSize);
 		if(Spear.isDebugMode()){
-			Log.i(Spear.TAG, NAME + " - " + "MemoryCacheMaxSize: "+ Formatter.formatFileSize(context, maxSize));
+			Log.i(Spear.TAG, CommentUtils.concat(NAME, " - ", "MemoryCacheMaxSize: "+ Formatter.formatFileSize(context, maxSize)));
 		}
 	}
 
@@ -52,7 +53,7 @@ public class LruMemoryCache implements MemoryCache {
 		}
 		drawableLruCache.put(key, value);
 		if(Spear.isDebugMode()){
-			Log.i(Spear.TAG, NAME + " - " + "put" + " - " + "MemoryCacheSize: "+ Formatter.formatFileSize(context, drawableLruCache.size()));
+			Log.i(Spear.TAG, CommentUtils.concat(NAME, " - ", "put", " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
 		}
 	}
 
@@ -65,7 +66,7 @@ public class LruMemoryCache implements MemoryCache {
 	public synchronized Drawable remove(String key) {
 		Drawable drawable = drawableLruCache.remove(key);
 		if(Spear.isDebugMode()){
-			Log.i(Spear.TAG, NAME + " - " + "remove" + " - "  + "MemoryCacheSize: "+ Formatter.formatFileSize(context, drawableLruCache.size()));
+			Log.i(Spear.TAG, CommentUtils.concat(NAME, " - ", "remove", " - " , "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
 		}
 		return drawable;
 	}
@@ -83,7 +84,7 @@ public class LruMemoryCache implements MemoryCache {
 	@Override
 	public synchronized void clear() {
 		if(Spear.isDebugMode()){
-			Log.i(Spear.TAG, NAME + " - " + "clear" + " - "  + "before clean MemoryCacheSize: "+ Formatter.formatFileSize(context, drawableLruCache.size()));
+			Log.i(Spear.TAG, CommentUtils.concat(NAME, " - ", "clear", " - " , "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
 		}
 		drawableLruCache.evictAll();
 	}

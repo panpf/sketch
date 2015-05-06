@@ -25,6 +25,7 @@ import android.widget.ImageView;
 import me.xiaopan.spear.display.ImageDisplayer;
 import me.xiaopan.spear.display.TransitionImageDisplayer;
 import me.xiaopan.spear.process.ImageProcessor;
+import me.xiaopan.spear.util.CommentUtils;
 
 /**
  * DisplayHelper
@@ -478,7 +479,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         // 验证imageView参数
         if(imageView == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "ImageView is null" + " - " + (name!=null?name:uri));
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "ImageView is null", " - ", (name!=null?name:uri)));
             }
             if(displayListener != null){
                 displayListener.onFailed(FailCause.IMAGE_VIEW_NULL);
@@ -490,7 +491,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "uri is null or empty");
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ",  "uri is null or empty"));
             }
             if(spearImageViewInterface != null){
                 spearImageViewInterface.setDisplayRequest(null);
@@ -510,7 +511,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if(uriScheme == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme: " + uri + " - " + (name!=null?name:uri));
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "unknown uri scheme: ", uri, " - ", (name!=null?name:uri)));
             }
             if(spearImageViewInterface != null){
                 spearImageViewInterface.setDisplayRequest(null);
@@ -537,7 +538,7 @@ public class DisplayHelperImpl implements DisplayHelper{
                 RecycleDrawableInterface recycleDrawable = (RecycleDrawableInterface) cacheDrawable;
                 if(!recycleDrawable.isRecycled()){
                     if(Spear.isDebugMode()){
-                        Log.d(Spear.TAG, NAME + " - " + "from memory get bitmap@" + recycleDrawable.getHashCodeByLog() + " - " + name);
+                        Log.d(Spear.TAG, CommentUtils.concat(NAME, " - ", "from memory get bitmap@", recycleDrawable.getHashCodeByLog(), " - ", name));
                     }
                     if(spearImageViewInterface != null){
                         spearImageViewInterface.setDisplayRequest(null);
@@ -551,7 +552,7 @@ public class DisplayHelperImpl implements DisplayHelper{
                 }else{
                     spear.getConfiguration().getMemoryCache().remove(memoryCacheId);
                     if(Spear.isDebugMode()){
-                        Log.e(Spear.TAG, NAME + " - " + "bitmap recycled@" + recycleDrawable.getHashCodeByLog() + " - " + name);
+                        Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "bitmap recycled@", recycleDrawable.getHashCodeByLog(), " - ", name));
                     }
                 }
             }
@@ -565,7 +566,7 @@ public class DisplayHelperImpl implements DisplayHelper{
             if(displayListener != null){
                 displayListener.onCanceled(requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? CancelCause.PAUSE_LOAD :CancelCause.LEVEL_IS_MEMORY);
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + (requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? "pause load":"requestLevel is memory") + " - " + name);
+                    Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", (requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? "pause load":"requestLevel is memory"), " - ", name));
                 }
             }
             if(spearImageViewInterface != null){
@@ -579,7 +580,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(potentialRequest != null && !potentialRequest.isFinished()){
             if(memoryCacheId.equals(potentialRequest.getMemoryCacheId())){
                 if(Spear.isDebugMode()){
-                    Log.d(Spear.TAG, NAME + " - " + "don't need to cancel" + "；" + "ImageViewCode" + "=" + imageView.hashCode() + "；" + potentialRequest.getName());
+                    Log.d(Spear.TAG, CommentUtils.concat(NAME, " - ", "don't need to cancel", "；", "ImageViewCode", "=", Integer.toHexString(imageView.hashCode()), "；", potentialRequest.getName()));
                 }
                 spear.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
                 return potentialRequest;

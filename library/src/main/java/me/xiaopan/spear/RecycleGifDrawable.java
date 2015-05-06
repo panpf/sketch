@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import me.xiaopan.spear.util.CommentUtils;
 import pl.droidsonroids.gif.GifDrawable;
 
 public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableInterface {
@@ -149,12 +150,12 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "recycled gif drawable@" + getHashCodeByLog() + " - " + type + " - " + callingStation);
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "recycled gif drawable@", getHashCodeByLog(), " - ", type, " - ", callingStation));
             }
             recycle();
         }else{
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "can't recycle gif drawable@" + getHashCodeByLog() + " - " + type + " - " + callingStation + " - " + ("cacheRefCount="+cacheRefCount) + "; " + ("displayRefCount="+displayRefCount) + "; " + ("waitDisplayRefCount="+waitDisplayRefCount) + "; " + ("canRecycle="+canRecycle()));
+                Log.d(Spear.TAG, CommentUtils.concat(NAME, " - ", "can't recycle gif drawable@", getHashCodeByLog(), " - ", type, " - ", callingStation, " - ", "cacheRefCount=", String.valueOf(cacheRefCount), "; ", "displayRefCount=", String.valueOf(displayRefCount), "; ", "waitDisplayRefCount=", String.valueOf(waitDisplayRefCount), "; ", "canRecycle=", String.valueOf(canRecycle())));
             }
         }
     }

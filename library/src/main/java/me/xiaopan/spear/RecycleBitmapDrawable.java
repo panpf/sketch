@@ -20,6 +20,8 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
 
+import me.xiaopan.spear.util.CommentUtils;
+
 public class RecycleBitmapDrawable extends SrcBitmapDrawable implements RecycleDrawableInterface {
     private static final String NAME = "RecycleBitmapDrawable";
 
@@ -126,11 +128,11 @@ public class RecycleBitmapDrawable extends SrcBitmapDrawable implements RecycleD
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             getBitmap().recycle();
             if(Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "recycled bitmap@" + getHashCodeByLog() + " - " + type + " - " + callingStation);
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "recycled bitmap@", getHashCodeByLog(), " - ", type, " - ", callingStation));
             }
         }else{
             if(Spear.isDebugMode()){
-                Log.d(Spear.TAG, NAME + " - " + "can't recycle bitmap@" + getHashCodeByLog() + " - " + type + " - " + callingStation + " - " + ("cacheRefCount="+cacheRefCount) + "; " + ("displayRefCount="+displayRefCount) + "; " + ("waitDisplayRefCount="+waitDisplayRefCount) + "; " + ("canRecycle="+canRecycle()));
+                Log.d(Spear.TAG, CommentUtils.concat(NAME, " - ", "can't recycle bitmap@", getHashCodeByLog(), " - ", type, " - ", callingStation, " - ", "cacheRefCount=", String.valueOf(cacheRefCount), "; ", "displayRefCount=", String.valueOf(displayRefCount), "; ", "waitDisplayRefCount=", String.valueOf(waitDisplayRefCount), "; ", "canRecycle=", String.valueOf(canRecycle())));
             }
         }
     }

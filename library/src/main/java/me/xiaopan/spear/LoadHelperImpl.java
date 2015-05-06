@@ -20,6 +20,7 @@ import android.util.Log;
 import android.widget.ImageView;
 
 import me.xiaopan.spear.process.ImageProcessor;
+import me.xiaopan.spear.util.CommentUtils;
 
 /**
  * LoadHelper
@@ -192,7 +193,7 @@ public class LoadHelperImpl implements LoadHelper{
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "uri is null or empty");
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "uri is null or empty"));
             }
             if(loadListener != null){
                 loadListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
@@ -208,7 +209,7 @@ public class LoadHelperImpl implements LoadHelper{
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if(uriScheme == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + name);
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "unknown uri scheme", " - ", name));
             }
             if(loadListener != null){
                 loadListener.onFailed(FailCause.URI_NO_SUPPORT);

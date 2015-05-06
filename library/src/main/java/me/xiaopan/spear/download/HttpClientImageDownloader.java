@@ -150,7 +150,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
             // 如果已经取消了就直接结束
             if (request.isCanceled()) {
                 if (Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "get lock after" + " - " + request.getName());
+                    Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "get lock after", " - ", request.getName()));
                 }
                 break;
             }
@@ -172,11 +172,11 @@ public class HttpClientImageDownloader implements ImageDownloader {
                 if(retry){
                     number++;
                     if (Spear.isDebugMode()){
-                        Log.w(Spear.TAG, NAME + " - " + "download failed" + " - " + "retry" + " - " + request.getName());
+                        Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "download failed", " - ", "retry", " - ", request.getName()));
                     }
                 }else{
                     if (Spear.isDebugMode()){
-                        Log.e(Spear.TAG, NAME + " - " + "download failed" + " - " + "end" + " - " + request.getName());
+                        Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "download failed", " - ", "end", " - ", request.getName()));
                     }
                 }
                 e.printStackTrace();
@@ -201,7 +201,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         if (request.isCanceled()) {
             releaseConnection(httpResponse);
             if (Spear.isDebugMode()) {
-                Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "get response after" + " - " + request.getName());
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "get response after", " - ", request.getName()));
             }
             return null;
         }
@@ -211,7 +211,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         if(statusLine == null){
             releaseConnection(httpResponse);
             if (Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "get status line failed" + " - " + request.getName());
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "get status line failed", " - ", request.getName()));
             }
             return null;
         }
@@ -219,7 +219,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         if (responseCode != 200) {
             releaseConnection(httpResponse);
             if (Spear.isDebugMode()) {
-                Log.e(Spear.TAG, NAME + " - " + "response code exception" + " - " + "responseCode:" + responseCode + "; responseMessage:" + httpResponse.getStatusLine().getReasonPhrase() + " - " + request.getName());
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "response code exception", " - ", "responseCode:", String.valueOf(responseCode), "; responseMessage:", httpResponse.getStatusLine().getReasonPhrase(), " - ", request.getName()));
             }
             return null;
         }
@@ -233,7 +233,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         if (contentLength <= 0) {
             releaseConnection(httpResponse);
             if (Spear.isDebugMode()) {
-                Log.w(Spear.TAG, NAME + " - " + "content length exception" + " - " + "contentLength:"+contentLength + " - " + request.getName());
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "content length exception", " - ", "contentLength:" + contentLength, " - ", request.getName()));
             }
             return null;
         }
@@ -262,17 +262,17 @@ public class HttpClientImageDownloader implements ImageDownloader {
             inputStream = httpResponse.getEntity().getContent();
         } catch (IOException e) {
             if (tempFile != null && tempFile.exists() && !tempFile.delete() && Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "delete temp download file failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + request.getName());
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "delete temp download file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
             }
             throw e;
         }
         if (request.isCanceled()) {
             HttpUrlConnectionImageDownloader.close(inputStream);
             if (Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "get input stream after" + " - " + request.getName());
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "get input stream after", " - ", request.getName()));
             }
             if (tempFile != null && tempFile.exists() && !tempFile.delete() && Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "delete temp download file failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + request.getName());
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "delete temp download file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
             }
             return null;
         }
@@ -302,31 +302,31 @@ public class HttpClientImageDownloader implements ImageDownloader {
             HttpUrlConnectionImageDownloader.close(outputStream);
             HttpUrlConnectionImageDownloader.close(inputStream);
             if (exception && tempFile != null && tempFile.exists() && !tempFile.delete() && Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "delete temp download file failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + request.getName());
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "delete temp download file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
             }
         }
         if (request.isCanceled()) {
             if (Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "canceled" + " - " + "read data after" + " - " + request.getName());
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "read data after", " - ", request.getName()));
             }
             if (tempFile != null && tempFile.exists() && !tempFile.delete() && Spear.isDebugMode()){
-                Log.w(Spear.TAG, NAME + " - " + "delete temp download file failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + request.getName());
+                Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "delete temp download file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
             }
             return null;
         }
 
         if (Spear.isDebugMode()){
-            Log.i(Spear.TAG, NAME + " - " + "download success" + " - " + "fileLength:" + completedLength + "/" + contentLength + " - " + request.getName());
+            Log.i(Spear.TAG, CommentUtils.concat(NAME, " - ", "download success", " - ", "fileLength:", String.valueOf(completedLength), "/", String.valueOf(contentLength), " - ", request.getName()));
         }
 
         // 转换结果
         if(tempFile != null && tempFile.exists()){
             if(!tempFile.renameTo(cacheFile)){
                 if(Spear.isDebugMode()){
-                    Log.w(Spear.TAG, NAME + " - " + "rename failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + request.getName());
+                    Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "rename failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
                 }
                 if (!tempFile.delete() && Spear.isDebugMode()) {
-                    Log.w(Spear.TAG, NAME + " - " + "delete temp download file failed" + " - " + "tempFilePath:" + tempFile.getPath() + " - " + request.getName());
+                    Log.w(Spear.TAG, CommentUtils.concat(NAME, " - ", "delete temp download file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
                 }
                 return null;
             }

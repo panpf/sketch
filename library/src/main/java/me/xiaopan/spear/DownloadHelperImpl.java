@@ -18,6 +18,8 @@ package me.xiaopan.spear;
 
 import android.util.Log;
 
+import me.xiaopan.spear.util.CommentUtils;
+
 /**
  * DownloadHelper
  */
@@ -121,7 +123,7 @@ public class DownloadHelperImpl implements DownloadHelper{
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "uri is null or empty");
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "uri is null or empty"));
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
@@ -137,7 +139,7 @@ public class DownloadHelperImpl implements DownloadHelper{
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if(uriScheme == null){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "unknown uri scheme" + " - " + name);
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "unknown uri scheme", " - ", name));
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailCause.URI_NO_SUPPORT);
@@ -147,7 +149,7 @@ public class DownloadHelperImpl implements DownloadHelper{
 
         if(!(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS)){
             if(Spear.isDebugMode()){
-                Log.e(Spear.TAG, NAME + " - " + "only support http ot https" + " - " + name);
+                Log.e(Spear.TAG, CommentUtils.concat(NAME, " - ", "only support http ot https", " - ", name));
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailCause.URI_NO_SUPPORT);
