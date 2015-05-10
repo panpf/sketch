@@ -31,5 +31,6 @@ build/
 .DS_Store
 
 # coustom files
-change log.txt
-to-do list.txt
+TODOS.txt
+bugs.txt
+logs.txt

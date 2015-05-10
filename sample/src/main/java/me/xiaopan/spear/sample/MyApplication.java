@@ -17,7 +17,6 @@
 package me.xiaopan.spear.sample;
 
 import android.app.Application;
-import android.graphics.Color;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.ImageView;
@@ -27,7 +26,6 @@ import me.xiaopan.spear.DisplayOptions;
 import me.xiaopan.spear.ImageHolder;
 import me.xiaopan.spear.LoadOptions;
 import me.xiaopan.spear.Spear;
-import me.xiaopan.spear.display.ColorTransitionImageDisplayer;
 import me.xiaopan.spear.display.TransitionImageDisplayer;
 import me.xiaopan.spear.process.CircleImageProcessor;
 import me.xiaopan.spear.process.GaussianBlurImageProcessor;
@@ -56,7 +54,7 @@ public class MyApplication extends Application {
                 new DisplayOptions(getBaseContext())
                         .setFailureImage(R.drawable.image_failure)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setImageDisplayer(new ColorTransitionImageDisplayer(Color.TRANSPARENT))
+                        .setImageDisplayer(new TransitionImageDisplayer())
         );
 
         Spear.putOptions(
