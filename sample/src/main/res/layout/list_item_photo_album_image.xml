@@ -4,7 +4,7 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-    <me.xiaopan.spear.sample.widget.MyImageView
+    <me.xiaopan.sketchsample.widget.MyImageView
         android:id="@+id/image_photoAlbumImageItem_one"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

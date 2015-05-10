@@ -16,7 +16,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Spear是Android上一个专门用来显示、加载或下载图片的类库，特性如下："/>
+                android:text="Sketch是Android上一个专门用来显示、加载或下载图片的类库，特性如下："/>
             <TextView
                 android:id="@+id/text_about_gifIntro"
                 android:layout_width="wrap_content"
@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="6. SpearImageView. 提供更强大的SpearImageView，只需调用displayImage***系列方法即可显示各种图片。"/>
+                android:text="6. SketchImageView. 提供更强大的SketchImageView，只需调用displayImage***系列方法即可显示各种图片。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -59,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="8. 即时取消无用请求. SpearImageView在onDetachedFromWindow或被重复利用的时候会及时取消之前的请求。"/>
+                android:text="8. 即时取消无用请求. SketchImageView在onDetachedFromWindow或被重复利用的时候会及时取消之前的请求。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -90,12 +90,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="14. 提供RequestOptions. 通过RequestOptions你可以提前定义好一系列的属性，然后在显示图片的时候一次性设置，另外你还可以通过Spear.putOptions()存储RequestOptions，然后在使用的时候指定名称即可。"/>
+                android:text="14. 提供RequestOptions. 通过RequestOptions你可以提前定义好一系列的属性，然后在显示图片的时候一次性设置，另外你还可以通过Sketch.putOptions()存储RequestOptions，然后在使用的时候指定名称即可。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="15. 使用方便. 直接通过Spear.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置, 你还可以通过Spear.putOptions()存储RequestOptions，然后在使用的时候指定名称即可。"/>
+                android:text="15. 使用方便. 直接通过Sketch.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置, 你还可以通过Sketch.putOptions()存储RequestOptions，然后在使用的时候指定名称即可。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -112,7 +112,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
         android:autoLink="all"
-        android:text="Github: http://github.com/xiaopansky/spear"/>
+        android:text="Github: http://github.com/xiaopansky/sketch"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <me.xiaopan.spear.sample.widget.MyPullRefreshLayout
+    <me.xiaopan.sketchsample.widget.MyPullRefreshLayout
         android:id="@+id/refreshLayout_search"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -17,8 +17,8 @@
             android:divider="@android:color/transparent"
             app:column_count="2"
             app:item_margin="8dp"/>
-    </me.xiaopan.spear.sample.widget.MyPullRefreshLayout>
-    <me.xiaopan.spear.sample.widget.HintView
+    </me.xiaopan.sketchsample.widget.MyPullRefreshLayout>
+    <me.xiaopan.sketchsample.widget.HintView
         android:id="@+id/hintView_search"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

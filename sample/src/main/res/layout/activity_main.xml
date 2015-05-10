@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<me.xiaopan.spear.sample.widget.PagerEnabledSlidingPaneLayout
+<me.xiaopan.sketchsample.widget.PagerEnabledSlidingPaneLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/drawer_main_content"
     android:layout_width="match_parent"
@@ -36,4 +36,4 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
-</me.xiaopan.spear.sample.widget.PagerEnabledSlidingPaneLayout>
+</me.xiaopan.sketchsample.widget.PagerEnabledSlidingPaneLayout>

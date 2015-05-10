@@ -29,7 +29,7 @@ import android.view.ViewGroup;
 
 import java.util.Arrays;
 
-import me.xiaopan.spear.sample.R;
+import me.xiaopan.sketchsample.R;
 
 /**
  * A staggered grid view which supports multiple columns with rows of varying sizes.

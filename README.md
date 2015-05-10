@@ -1,10 +1,10 @@
-# ![Logo](https://github.com/xiaopansky/Spear/raw/master/sample/src/main/res/drawable-mdpi/ic_launcher.png) Spear
+# ![Logo](https://github.com/xiaopansky/Sketch/raw/master/sample/src/main/res/drawable-mdpi/ic_launcher.png) Sketch
 
-Spear是Android上的一个图片加载器，目的是为了帮助开发者从本地或网络读取图片，然后处理并显示在ImageView上
+Sketch是Android上的一个图片加载器，目的是为了帮助开发者从本地或网络读取图片，然后处理并显示在ImageView上
 
-Spear is an image loader for Android, the purpose is to help the developers to read a picture from a local or network, and then processed and displayed on the ImageView.
+Sketch is an image loader for Android, the purpose is to help the developers to read a picture from a local or network, and then processed and displayed on the ImageView.
 
-![sample](https://github.com/xiaopansky/Spear/raw/master/docs/sample.jpg)
+![sample](https://github.com/xiaopansky/Sketch/raw/master/docs/sample.jpg)
 
 ###特点（Features）
 >* ``支持GIF图片``. 默认支持GIF图片，直接导入android-gif-drawable即可使用
@@ -12,29 +12,29 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 >* ``异步加载``. 采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
 >* ``支持缓存``. 采用Lru算法在本地和内存中缓存图片，本地缓存可设置最大容量、保留容量以及有效期。
 >* ``支持ViewHolder``. 即使你在ListView中使用了ViewHolder也依然可以使用ImageLoader来加载图片，并且图片显示绝对不会混乱。
->* ``SpearImageView``. 提供更强大的SpearImageView，只需调用displayImage***系列方法即可显示各种图片。
+>* ``SketchImageView``. 提供更强大的SketchImageView，只需调用displayImage***系列方法即可显示各种图片。
 >* ``重复下载过滤``. 如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。
->* ``即时取消无用请求``. SpearImageView在onDetachedFromWindow或被重复利用的时候会及时取消之前的请求。
+>* ``即时取消无用请求``. SketchImageView在onDetachedFromWindow或被重复利用的时候会及时取消之前的请求。
 >* ``支持进度回调``. 通过progressListener()方法即可设置并开启进度回调。
 >* ``防止加载过大Bitmap`` 提供maxSize参数来控制加载到内存的图片的尺寸（默认为当前屏幕宽高的1.5倍），另外还会自动根据ImageView的layout size来调整maxSize。
 >* ``裁剪图片``. 通过resize可对图片进行裁剪，另外还会自动根据ImageView的layout size来调整resize。
 >* ``多种级别供你自由玩转图片``. 除了display()方法可用来显示图片之外，你还可以通过load()方法加载图片或通过download()方法下载图片。
 >* ``强大的自定义功能``. 可自定义请求分发与执行、缓存、解码、处理、显示、默认图片、失败图片等。
->* ``提供RequestOptions``. 通过RequestOptions你可以提前定义好一系列的属性，然后在显示图片的时候一次性设置，另外你还可以通过Spear.putOptions(Enum<?>, RequestOptions)存储RequestOptions。然后在使用的时候指定名称即可。
->* ``使用方便``. 直接通过Spear.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置
+>* ``提供RequestOptions``. 通过RequestOptions你可以提前定义好一系列的属性，然后在显示图片的时候一次性设置，另外你还可以通过Sketch.putOptions(Enum<?>, RequestOptions)存储RequestOptions。然后在使用的时候指定名称即可。
+>* ``使用方便``. 直接通过Sketch.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置
 >* ``兼容RecyclerView``. RecyclerView增加了一些新的特性，导致在onDetachedFromWindow()中直接回收图片或设置drawable为null会导致一些显示异常和崩溃，现已完美兼容
 
 ###示例APP（Sample app）
 >* [Get it on Google Play](https://play.google.com/store/apps/details?memoryCacheId=me.xiaoapn.android.imageloader)
->* [Download APK](https://github.com/xiaopansky/Spear/raw/master/releases/SpearSample-2.5.1.apk)
+>* [Download APK](https://github.com/xiaopansky/Sketch/raw/master/releases/SketchSample-2.5.1.apk)
 
 扫描二维码下载示例APP
 
-![SampleApp](https://github.com/xiaopansky/Spear/raw/master/releases/sample_apk_download_qr.png)
+![SampleApp](https://github.com/xiaopansky/Sketch/raw/master/releases/sample_apk_download_qr.png)
 
 ###使用指南（Usage guide）
 
-####Spear支持以下6种URI：
+####Sketch支持以下6种URI：
 >* "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
 >* "https://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
 >* "/mnt/sdcard/image.png"; // from SD card
@@ -43,42 +43,42 @@ Spear is an image loader for Android, the purpose is to help the developers to r
 >* "asset://image.png"; // from assets
 >* "drawable://" + R.drawable.image; // from drawable resource
 
-####使用SpearImageView显示图片
+####使用SketchImageView显示图片
 
-**如果你的APP要兼容Android2.3及以下版本，那么你必须使用SpearImageView才能保证Bitmap被顺利回收，切记切记！**
+**如果你的APP要兼容Android2.3及以下版本，那么你必须使用SketchImageView才能保证Bitmap被顺利回收，切记切记！**
 
 ```java
-SpearImageView spearImageView = ...;
+SketchImageView sketchImageView = ...;
 
 // from http or https
-spearImageView.setImageFromUri("http://www.huabian.com/uploadfile/2013/1222/20131222054754556.jpg");
+sketchImageView.setImageFromUri("http://www.huabian.com/uploadfile/2013/1222/20131222054754556.jpg");
 
 // from local file
-spearImageView.setImageFromUri("/mnt/sfs.png");
+sketchImageView.setImageFromUri("/mnt/sfs.png");
 // or
-spearImageView.setImageFromFile(new File("/mnt/sfs.png"));
+sketchImageView.setImageFromFile(new File("/mnt/sfs.png"));
         
 // from content provider
-spearImageView.setImageFromUri("content://media/external/audio/albumart/13");
+sketchImageView.setImageFromUri("content://media/external/audio/albumart/13");
 // or
 Uri uri = ...;
-spearImageView.setImageFromContent(uri);
+sketchImageView.setImageFromContent(uri);
         
 // from drawable resource
-spearImageView.setImageFromUri("drawable://"+R.drawable.ic_launcher);
+sketchImageView.setImageFromUri("drawable://"+R.drawable.ic_launcher);
 // or
-spearImageView.setImageFromResource(R.drawable.ic_launcher);
+sketchImageView.setImageFromResource(R.drawable.ic_launcher);
         
 // from assets
-spearImageView.setImageFromUri("asset://test.png");
+sketchImageView.setImageFromUri("asset://test.png");
 // or
-spearImageView.setImageFromAssets("test.png");
+sketchImageView.setImageFromAssets("test.png");
 ```
 
-[点击查看详细使用说明](https://github.com/xiaopansky/Spear/wiki/SpearImageView)
+[点击查看详细使用说明](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
 
 ####download()、load()、display()
-Spear除了有display()方法用来显示图片之外，还有load()用来加载图片和download()方法用来下载图片
+Sketch除了有display()方法用来显示图片之外，还有load()用来加载图片和download()方法用来下载图片
 
 >* download()：下载图片，此方法仅仅实现将图片下载到本地；
 >* load()：加载图片，此方法在将图片下载到本地之后会将图片加载到内存并实现本地缓存功能；
@@ -90,14 +90,14 @@ Spear除了有display()方法用来显示图片之外，还有load()用来加载
 
 display()与load()、download()的区别
 >* display()的fire()方法必须在主线程执行，否则将会有异常发生
->* 在使用display()方法显示图片的时候，Spear会自动根据ImageView的layout size计算maxSize
+>* 在使用display()方法显示图片的时候，Sketch会自动根据ImageView的layout size计算maxSize
 >* 可使用的属性display()最多，download()最少具体如下表所示：
 
 对应关系
 
 |属性|download|load|display|
 |:--|:--|:--|:--|
-|使用方法|Spear.download()|Spear.load()|Spear.display()|
+|使用方法|Sketch.download()|Sketch.load()|Sketch.display()|
 |返回的helper|DownloadHelper|LoadHelper|DisplayHelper|
 |使用的options|DownloadOptions|LoadOptions|DisplayOptions|
 
@@ -119,32 +119,32 @@ display()与load()、download()的区别
 
 
 ####你可能还感兴趣的功能：
->* [使用``SpearImageView``代替ImageView快速显示图片](https://github.com/xiaopansky/Spear/wiki/SpearImageView)
->* [处理图片成``圆形``的、``椭圆形``的或者加上``倒影效果``（ImageProcessor）](https://github.com/xiaopansky/Spear/wiki/ImageProcessor)
->* [以``渐变``或``缩放``的方式显示图片（ImageDisplayer）](https://github.com/xiaopansky/Spear/wiki/ImageDisplayer)
->* [使用``maxSize``防止加载过大的图片以``节省内存``](https://github.com/xiaopansky/Spear/wiki/maxSize)
->* [使用``resize``裁剪图片](https://github.com/xiaopansky/Spear/wiki/resize)
->* [使用``RequestOptions``定义属性模板来简化属性设置](https://github.com/xiaopansky/Spear/wiki/RequestOptions)
->* [监听加载``开始``、``成功``、``失败``以及``进度``](https://github.com/xiaopansky/Spear/wiki/listener)
->* [自定义``inSampleSize``计算规则或``图片解码器``（ImageDecoder）](https://github.com/xiaopansky/Spear/wiki/ImageDecoder)
->* [设置``内存缓存最大容量``（MemoryCache）](https://github.com/xiaopansky/Spear/wiki/MemoryCache)
->* [设置``磁盘缓存最大容量``、``磁盘缓存目录``或``保留空间大小``（DiskCache）](https://github.com/xiaopansky/Spear/wiki/DiskCache)
->* [设置下载``失败重试次数``、``超时时间``（ImageDownloader）](https://github.com/xiaopansky/Spear/wiki/ImageDownloader)
->* [取消请求](https://github.com/xiaopansky/Spear/wiki/CancelRequest)
->* [自定义``请求执行顺序``、``任务队列长度``或``线程池大小``（RequestExecutor）](https://github.com/xiaopansky/Spear/wiki/RequestExecutor)
->* [使用ImageView](https://github.com/xiaopansky/Spear/wiki/UseImageView)
->* [暂停加载新图片，进一步提升列表流畅度](https://github.com/xiaopansky/Spear/wiki/pause-or-resume-spear)
+>* [使用``SketchImageView``代替ImageView快速显示图片](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
+>* [处理图片成``圆形``的、``椭圆形``的或者加上``倒影效果``（ImageProcessor）](https://github.com/xiaopansky/Sketch/wiki/ImageProcessor)
+>* [以``渐变``或``缩放``的方式显示图片（ImageDisplayer）](https://github.com/xiaopansky/Sketch/wiki/ImageDisplayer)
+>* [使用``maxSize``防止加载过大的图片以``节省内存``](https://github.com/xiaopansky/Sketch/wiki/maxSize)
+>* [使用``resize``裁剪图片](https://github.com/xiaopansky/Sketch/wiki/resize)
+>* [使用``RequestOptions``定义属性模板来简化属性设置](https://github.com/xiaopansky/Sketch/wiki/RequestOptions)
+>* [监听加载``开始``、``成功``、``失败``以及``进度``](https://github.com/xiaopansky/Sketch/wiki/listener)
+>* [自定义``inSampleSize``计算规则或``图片解码器``（ImageDecoder）](https://github.com/xiaopansky/Sketch/wiki/ImageDecoder)
+>* [设置``内存缓存最大容量``（MemoryCache）](https://github.com/xiaopansky/Sketch/wiki/MemoryCache)
+>* [设置``磁盘缓存最大容量``、``磁盘缓存目录``或``保留空间大小``（DiskCache）](https://github.com/xiaopansky/Sketch/wiki/DiskCache)
+>* [设置下载``失败重试次数``、``超时时间``（ImageDownloader）](https://github.com/xiaopansky/Sketch/wiki/ImageDownloader)
+>* [取消请求](https://github.com/xiaopansky/Sketch/wiki/CancelRequest)
+>* [自定义``请求执行顺序``、``任务队列长度``或``线程池大小``（RequestExecutor）](https://github.com/xiaopansky/Sketch/wiki/RequestExecutor)
+>* [使用ImageView](https://github.com/xiaopansky/Sketch/wiki/UseImageView)
+>* [暂停加载新图片，进一步提升列表流畅度](https://github.com/xiaopansky/Sketch/wiki/pause-or-resume-sketch)
 
 ###JAR包下载（Download jar）
->* [spear-1.3.0.jar](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.3.0.jar)
->* [spear-1.3.0-sources.zip](https://github.com/xiaopansky/Spear/raw/master/releases/spear-1.3.0-sources.zip)
+>* [sketch-1.3.0.jar](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-1.3.0.jar)
+>* [sketch-1.3.0-sources.zip](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-1.3.0-sources.zip)
 
 ###新计划（New plan）
 ####下一版开发计划（The next version of the development plan）
 >* 支持读取已安装APP或本地APK文件的图标（可能要新增一个类型，比如app://com.android.core或/sdcard/test.apk）
 >* 示例APP增加一个页面，展示读取已安装APP或本地APK文件的图标的功能。页面分两部分，分别显示已安装APP列表和扫描到的本地APK包列表
 >* 修复首页竖的默认图貌似裁剪跑偏的问题
->* 增加在移动网络下不加载网络图片的功能，另外结合SpearImageView支持点击加载（是否要新增加一个可以提示“点击加载”的默认图片，同loadingDrawable时同级的）
+>* 增加在移动网络下不加载网络图片的功能，另外结合SketchImageView支持点击加载（是否要新增加一个可以提示“点击加载”的默认图片，同loadingDrawable时同级的）
 >* 支持外部添加一个Bitmap到内存缓存中，这样将会大大增加灵活性（那么外部将有权利设置缓存ID以及决定是否用RecycleDrawable就要放在MemoryCache中了）
 >* 考虑将默认图也放到内存缓存中，试图通过这样的方式解决之前担心的默认图太多导致始终占用内存的问题
 >* 考虑如何支持用已缓存的小缩略图作为默认图片（比如支持从内存缓存中加载默认图）
@@ -162,13 +162,13 @@ display()与load()、download()的区别
 
 ###更新日志（Change log）
 ####1.3.0
-**SpearImageView**
+**SketchImageView**
 >* ``修复``. 兼容RecyclerView，因为在RecyclerView中View的生命周期略有变化，导致图片显示异常，现已修复
->* ``修复``. 取消了在setImageFromUri()方法中的过滤请求功能，因为这里只能根据URI过滤。例如：同一个URI在同一个SpearImageView上调用setImageFromUri()方法显示了两次，但是这两次显示的时候SpearImageView的宽高是不一样的，结果就是第一次的显示请求继续执行，第二次的显示请求被拒绝了。现在去掉过滤功能后统一都交给了Spear处理，结果会是第一次的显示请求被取消，第二次的显示请求继续执行。
+>* ``修复``. 取消了在setImageFromUri()方法中的过滤请求功能，因为这里只能根据URI过滤。例如：同一个URI在同一个SketchImageView上调用setImageFromUri()方法显示了两次，但是这两次显示的时候SketchImageView的宽高是不一样的，结果就是第一次的显示请求继续执行，第二次的显示请求被拒绝了。现在去掉过滤功能后统一都交给了Sketch处理，结果会是第一次的显示请求被取消，第二次的显示请求继续执行。
 >* ``新增``. 新增在图片表面显示进度的功能，你只需调用setEnableShowProgress(boolean)方法开启即可
->* ``优化``. debug开关不再由Spear.isDebug()控制，而是在SpearImageView中新增了一个debugMode参数来控制
+>* ``优化``. debug开关不再由Sketch.isDebug()控制，而是在SketchImageView中新增了一个debugMode参数来控制
 >* ``新增``. 新增类似MaterialDesign的点击涟漪效果。你只需注册点击事件或调用setClickable(true)，然后调用setEnableClickRipple(true)即可
->* ``修复``. 修复了使用SpearImageView时设置了DisplayOptions、DisplayListener等参数，但最终没有通过setImageFrom***()方法显示图片而是通过Spear.with(context).display(imageUrl, spearImageView)显示图片最终导致DisplayOptions、DisplayListener等参数不起作用的BUG
+>* ``修复``. 修复了使用SketchImageView时设置了DisplayOptions、DisplayListener等参数，但最终没有通过setImageFrom***()方法显示图片而是通过Sketch.with(context).display(imageUrl, sketchImageView)显示图片最终导致DisplayOptions、DisplayListener等参数不起作用的BUG
 >* ``修改``. setImageBy***()系列方法，改名为setImageFrom***()
 
 **Download**
@@ -208,11 +208,11 @@ display()与load()、download()的区别
 **Request**
 >* ``修改``. DisplayListener.From.LOCAL改名为DisplayListener.From.DISK
 
-**Spear**
+**Sketch**
 >* ``优化``. 将一些配置移到了Configuration.java中，debugMode的设置直接改成了静态的
 >* ``新增``. 增加pause功能，你可以在列表滚动时调用pause()方法暂停加载新图片，在列表停止滚动后调用resume()方法恢复并刷新列表，通过这样的手段来提高列表滑动流畅度
 >* ``修改``. image uri不再支持“file:///mnt/sdcard/image.png”，直接支持“/mnt/sdcard/image.png”
->* ``修复``. 修复了由于DisplayHelper、LoadHelper、DownloadHelper的options()方法参数为null时返回了一个null对象的BUG，这会导致使用SpearImageView时由于没有设置DisplayOptions而引起崩溃
+>* ``修复``. 修复了由于DisplayHelper、LoadHelper、DownloadHelper的options()方法参数为null时返回了一个null对象的BUG，这会导致使用SketchImageView时由于没有设置DisplayOptions而引起崩溃
 >* ``修改``. 修改DisplayHelper中loadFailedDrawable()方法的名称为loadFailDrawable()
 >* ``修复``. 修复DisplayHelper、LoadHelper、DownloadHelper中调用options()方法设置参数的时候会直接覆盖Helper中的参数的BUG，修改后的规则是如果helper中为null，且Options中的参数被设置过才会覆盖
 >* ``优化``. 默认图片和失败图片使用ImageProcessor处理时支持使用DisplayHelper中的resize和scaleType
@@ -225,7 +225,7 @@ display()与load()、download()的区别
 >* ``优化``. 优化了DisplayHelper的使用，以前是为每一次display都创建一个DisplayHelper，现在是只要你是按照display().fire()这样连续的使用，那么所有的display将共用一个DisplayHelper，这将会避免创建大量的DisplayHelper
 >* ``优化``. ProgressListener.onUpdateProgress(long, long)改为ProgressListener.onUpdateProgress(int, int)，因为int足够用了
 
-[查看更多...](https://github.com/xiaopansky/Spear/wiki/Change-log)
+[查看更多...](https://github.com/xiaopansky/Sketch/wiki/Change-log)
 
 ###License
 ```java

@@ -11,7 +11,9 @@ def loadProperties(String fileName){
     }
 }
 
-loadProperties 'sample/local.properties'
+// 加载签名配置文件
+String projectPath = projectDir;
+loadProperties projectPath+'/local.properties'
 
 android {
     compileSdkVersion 22
@@ -43,7 +45,7 @@ android {
 
     productFlavors{
         normal{
-            applicationId "me.xiaopan.spear.sample"
+            applicationId "me.xiaopan.sketchsample"
         }
 
 //        googlePlay{
