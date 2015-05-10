@@ -115,7 +115,7 @@ public class DownloadHelperImpl implements DownloadHelper{
     }
 
     @Override
-    public Request fire(){
+    public Request commit(){
         if(downloadListener != null){
             downloadListener.onStarted();
         }

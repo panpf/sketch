@@ -38,9 +38,6 @@ import me.xiaopan.sketch.util.CommentUtils;
 import pl.droidsonroids.gif.GifViewSavedState;
 import pl.droidsonroids.gif.GifViewUtils;
 
-/**
- * SketchImageView
- */
 public class SketchImageView extends ImageView implements SketchImageViewInterface {
     private static final String NAME = "SketchImageView";
 
@@ -173,7 +170,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
             if(Sketch.isDebugMode()){
                 Log.w(Sketch.TAG, CommentUtils.concat(NAME, "：", "restore image on attached to window", " - ", displayParams.uri));
             }
-            Sketch.with(getContext()).display(displayParams, SketchImageView.this).fire();
+            Sketch.with(getContext()).display(displayParams, SketchImageView.this).commit();
         }
     }
 
@@ -388,27 +385,27 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
     @Override
     public Request displayImage(String uri){
-        return Sketch.with(getContext()).display(uri, this).fire();
+        return Sketch.with(getContext()).display(uri, this).commit();
     }
 
     @Override
     public Request displayFileImage(String imageFilePath){
-        return Sketch.with(getContext()).display(imageFilePath, this).fire();
+        return Sketch.with(getContext()).display(imageFilePath, this).commit();
     }
 
     @Override
     public Request displayResourceImage(int drawableResId){
-        return Sketch.with(getContext()).display(UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), this).fire();
+        return Sketch.with(getContext()).display(UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), this).commit();
     }
 
     @Override
     public Request displayAssetImage(String imageFileName){
-        return Sketch.with(getContext()).display(UriScheme.ASSET.createUri(imageFileName), this).fire();
+        return Sketch.with(getContext()).display(UriScheme.ASSET.createUri(imageFileName), this).commit();
     }
 
     @Override
     public Request displayContentImage(Uri uri){
-        return Sketch.with(getContext()).display(uri != null ? UriScheme.ASSET.createUri(uri.toString()):null, this).fire();
+        return Sketch.with(getContext()).display(uri != null ? UriScheme.ASSET.createUri(uri.toString()):null, this).commit();
     }
 
     @Override
@@ -808,7 +805,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         @Override
         public void onClick(View v) {
             if(displayParams != null){
-                Sketch.with(getContext()).display(displayParams, SketchImageView.this).requestLevel(RequestLevel.NET).fire();
+                Sketch.with(getContext()).display(displayParams, SketchImageView.this).requestLevel(RequestLevel.NET).commit();
             }
         }
     }

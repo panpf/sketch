@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch;
 
-import android.widget.ImageView;
-
 import java.io.File;
 
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -27,14 +25,14 @@ import me.xiaopan.sketch.process.ImageProcessor;
  */
 public interface LoadRequest extends DownloadRequest{
     /**
-     * 获取裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来创建新的图片
+     * 获取新的尺寸，ImageProcessor会根据此尺寸来裁剪图片
      */
-    ImageSize getResize();
+    Resize getResize();
 
     /**
-     * 设置裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来创建新的图片
+     * 设置新的尺寸，ImageProcessor会根据此尺寸来裁剪图片
      */
-    void setResize(ImageSize resize);
+    void setResize(Resize resize);
 
     /**
      * 获取最大尺寸，用于读取图片时计算inSampleSize
@@ -45,16 +43,6 @@ public interface LoadRequest extends DownloadRequest{
      * 设置最大尺寸，用于读取图片时计算inSampleSize
      */
     void setMaxSize(ImageSize maxSize);
-
-    /**
-     * 获取缩放类型
-     */
-    ImageView.ScaleType getScaleType();
-
-    /**
-     * 设置缩放类型
-     */
-    void setScaleType(ImageView.ScaleType scaleType);
 
     /**
      * 获取图片处理器

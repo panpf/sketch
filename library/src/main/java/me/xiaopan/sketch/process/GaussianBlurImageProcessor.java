@@ -3,18 +3,18 @@ package me.xiaopan.sketch.process;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.widget.ImageView;
 
-import me.xiaopan.sketch.ImageSize;
+import me.xiaopan.sketch.Resize;
+import me.xiaopan.sketch.util.CommentUtils;
 
 /**
  * 高斯模糊图片处理器
  */
 public class GaussianBlurImageProcessor extends CutImageProcessor {
+    private static final String NAME = "GaussianBlurImageProcessor";
+
     private int radius = 10;
     private boolean isDarkHandle;
-
-    private String tag;
 
     /**
      * @param radius 模糊半径，取值为0到100，默认为15
@@ -43,9 +43,28 @@ public class GaussianBlurImageProcessor extends CutImageProcessor {
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, ImageSize resize, ImageView.ScaleType scaleType) {
+    public void appendIdentifier(StringBuilder builder) {
+        builder.append(NAME);
+        builder.append("(");
+        builder.append("radius");
+        builder.append("=");
+        builder.append(radius);
+        builder.append(";");
+        builder.append("isDarkHandle");
+        builder.append("=");
+        builder.append(isDarkHandle);
+        builder.append(")");
+    }
+
+    @Override
+    public String getIdentifier() {
+        return CommentUtils.concat(NAME, "(", "radius", "=", radius, ";", "isDarkHandle", "=", isDarkHandle, ")");
+    }
+
+    @Override
+    public Bitmap process(Bitmap bitmap, Resize resize) {
         // cut handle
-        Bitmap resizeBitmap = super.process(bitmap, resize, scaleType);
+        Bitmap resizeBitmap = super.process(bitmap, resize);
 
         // blur handle
         Bitmap blurBitmap= fastGaussianBlur(resizeBitmap, radius, false);
@@ -60,14 +79,6 @@ public class GaussianBlurImageProcessor extends CutImageProcessor {
         }
 
         return blurBitmap;
-    }
-
-    @Override
-    public String getFlag() {
-        if(tag == null){
-            tag = "BlurImageProcessor(radius="+radius+";isDarkHandle="+isDarkHandle+")";
-        }
-        return tag;
     }
 
     /**

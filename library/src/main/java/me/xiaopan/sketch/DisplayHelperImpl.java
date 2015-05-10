@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.display.ImageDisplayer;
@@ -47,14 +48,14 @@ public class DisplayHelperImpl implements DisplayHelper{
     // 加载属性
     protected boolean decodeGifImage = true;
     protected ImageSize maxSize;
-    protected ImageSize resize;
+    protected Resize resize;
     protected ImageProcessor imageProcessor;
-    protected ImageView.ScaleType scaleType;
 
     // 显示属性
     protected String memoryCacheId;
     protected boolean enableMemoryCache = true;
     protected ImageView imageView;
+    protected ImageSize fixedSize;
     protected ImageDisplayer imageDisplayer;
     protected ImageHolder loadingImageHolder;
     protected ImageHolder failureImageHolder;
@@ -103,10 +104,10 @@ public class DisplayHelperImpl implements DisplayHelper{
     @Override
     public DisplayHelperImpl init(Sketch sketch, String uri, ImageView imageView){
         this.context = sketch.getConfiguration().getContext();
-
         this.sketch = sketch;
         this.uri = uri;
         this.imageView = imageView;
+
         if(sketch.getConfiguration().isPauseDownload()){
             this.requestLevel = RequestLevel.LOCAL;
             this.requestLevelFrom = RequestLevelFrom.PAUSE_DOWNLOAD;
@@ -117,18 +118,19 @@ public class DisplayHelperImpl implements DisplayHelper{
         }
 
         if(imageView != null){
-            this.maxSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageMaxSize(imageView);
-            if(this.maxSize == null){
-                this.maxSize = sketch.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(context);
+            ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+            if(layoutParams != null && layoutParams.width > 0 && layoutParams.height > 0 && imageView.getScaleType() == ImageView.ScaleType.CENTER_CROP){
+                fixedSize = new ImageSize(layoutParams.width, layoutParams.height);
             }
-            this.scaleType = imageView.getScaleType();
+
+            this.maxSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageMaxSize(imageView);
 
             if(imageView instanceof SketchImageViewInterface){
                 sketchImageViewInterface = (SketchImageViewInterface) imageView;
-                sketchImageViewInterface.onDisplay();
+                options(sketchImageViewInterface.getDisplayOptions());
                 this.displayListener = sketchImageViewInterface.getDisplayListener(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD);
                 this.progressListener = sketchImageViewInterface.getProgressListener();
-                options(sketchImageViewInterface.getDisplayOptions());
+                sketchImageViewInterface.onDisplay();
             }
         }
 
@@ -150,12 +152,12 @@ public class DisplayHelperImpl implements DisplayHelper{
 
         this.resize = displayParams.resize;
         this.maxSize = displayParams.maxSize;
-        this.scaleType = displayParams.scaleType;
         this.requestLevel = displayParams.requestLevel;
         this.imageProcessor = displayParams.imageProcessor;
         this.decodeGifImage = displayParams.decodeGifImage;
 
         this.imageView = imageView;
+        this.fixedSize = displayParams.fixedSize;
         this.memoryCacheId = displayParams.memoryCacheId;
         this.enableMemoryCache = displayParams.enableMemoryCache;
         this.imageDisplayer = displayParams.imageDisplayer;
@@ -164,33 +166,11 @@ public class DisplayHelperImpl implements DisplayHelper{
         this.pauseDownloadImageHolder = displayParams.pauseDownloadImageHolder;
         this.displayListener = displayParams.displayListener;
 
-        if(requestLevelFrom != null){
-            if(sketch.getConfiguration().isPauseDownload()){
-                this.requestLevel = RequestLevel.LOCAL;
-                this.requestLevelFrom = RequestLevelFrom.PAUSE_DOWNLOAD;
-            }
-            if(sketch.getConfiguration().isPauseLoad()){
-                this.requestLevel = RequestLevel.MEMORY;
-                this.requestLevelFrom = RequestLevelFrom.PAUSE_LOAD;
-            }
-        }
-
-        if(imageView != null){
-            // 根据ImageView的宽高计算maxSize，如果没有计算出合适的maxSize，就获取默认的maxSize
-            this.maxSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageMaxSize(imageView);
-            if(this.maxSize == null){
-                this.maxSize = sketch.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(context);
-            }
-
-            this.scaleType = imageView.getScaleType();
-        }
-
         if(imageView instanceof SketchImageViewInterface){
             sketchImageViewInterface = (SketchImageViewInterface) imageView;
-            sketchImageViewInterface.onDisplay();
             this.displayListener = sketchImageViewInterface.getDisplayListener(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD);
             this.progressListener = sketchImageViewInterface.getProgressListener();
-            options(sketchImageViewInterface.getDisplayOptions());
+            sketchImageViewInterface.onDisplay();
         }
 
         return this;
@@ -209,11 +189,11 @@ public class DisplayHelperImpl implements DisplayHelper{
 
         resize = null;
         maxSize = null;
-        scaleType = null;
         imageProcessor = null;
         decodeGifImage = true;
 
         memoryCacheId = null;
+        fixedSize = null;
         enableMemoryCache = true;
         imageView = null;
         imageDisplayer = null;
@@ -226,7 +206,7 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public void fullDisplayParams(){
+    public void inflateDisplayParams(){
         if(sketchImageViewInterface != null){
             DisplayParams displayParams = sketchImageViewInterface.getDisplayParams();
             if(displayParams == null){
@@ -243,11 +223,11 @@ public class DisplayHelperImpl implements DisplayHelper{
 
             displayParams.resize = resize;
             displayParams.maxSize = maxSize;
-            displayParams.scaleType = scaleType;
             displayParams.imageProcessor = imageProcessor;
             displayParams.decodeGifImage = decodeGifImage;
 
             displayParams.memoryCacheId = memoryCacheId;
+            displayParams.fixedSize = fixedSize;
             displayParams.enableMemoryCache = enableMemoryCache;
             displayParams.imageDisplayer = imageDisplayer;
             displayParams.loadingImageHolder = loadingImageHolder;
@@ -296,14 +276,14 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public DisplayHelperImpl resize(ImageSize resize){
+    public DisplayHelperImpl resize(Resize resize){
         this.resize = resize;
         return this;
     }
 
     @Override
     public DisplayHelperImpl resize(int width, int height){
-        this.resize = new ImageSize(width, height);
+        this.resize = new Resize(width, height);
         return this;
     }
 
@@ -316,12 +296,6 @@ public class DisplayHelperImpl implements DisplayHelper{
     @Override
     public DisplayHelperImpl processor(ImageProcessor processor){
         this.imageProcessor = processor;
-        return this;
-    }
-
-    @Override
-    public DisplayHelperImpl scaleType(ImageView.ScaleType scaleType){
-        this.scaleType = scaleType;
         return this;
     }
 
@@ -340,9 +314,6 @@ public class DisplayHelperImpl implements DisplayHelper{
     @Override
     public DisplayHelperImpl displayer(ImageDisplayer displayer) {
         this.imageDisplayer = displayer;
-        if(this.imageDisplayer != null && this.imageDisplayer instanceof TransitionImageDisplayer && this.resize == null){
-            resizeByImageViewLayoutSize();
-        }
         return this;
     }
 
@@ -423,9 +394,6 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(options.isResizeByImageViewLayoutSize()){
             resizeByImageViewLayoutSize();
         }
-        if(this.scaleType == null){
-            this.scaleType = options.getScaleType();
-        }
         if(this.imageProcessor == null){
             this.imageProcessor = options.getImageProcessor();
         }
@@ -461,16 +429,24 @@ public class DisplayHelperImpl implements DisplayHelper{
         return options((DisplayOptions) Sketch.getOptions(optionsName));
     }
 
-    @Override
-    public Request fire() {
-        fullDisplayParams();
-
+    /**
+     * 处理一下参数
+     */
+    protected void handleParams(){
         if(imageProcessor == null && resize != null){
             imageProcessor = sketch.getConfiguration().getDefaultCutImageProcessor();
         }
+
         if(name == null && memoryCacheId != null){
             name = memoryCacheId;
         }
+    }
+
+    @Override
+    public Request commit() {
+        inflateDisplayParams();
+
+        handleParams();
 
         if(displayListener != null){
             displayListener.onStarted();
@@ -528,7 +504,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         }
 
         // 尝试从内存中寻找缓存图片
-        String memoryCacheId = this.memoryCacheId !=null? this.memoryCacheId : generateMemoryCacheId(uri, maxSize, resize, scaleType, imageProcessor);
+        String memoryCacheId = this.memoryCacheId !=null? this.memoryCacheId : generateMemoryCacheId(uri, maxSize, resize, imageProcessor);
         if(name == null){
             name = memoryCacheId;
         }
@@ -601,10 +577,10 @@ public class DisplayHelperImpl implements DisplayHelper{
 
         request.setResize(resize);
         request.setMaxSize(maxSize);
-        request.setScaleType(scaleType);
         request.setImageProcessor(imageProcessor);
         request.setDecodeGifImage(decodeGifImage);
 
+        request.setFixedSize(fixedSize);
         request.setImageDisplayer(imageDisplayer);
         request.setDisplayListener(displayListener);
         request.setEnableMemoryCache(enableMemoryCache);
@@ -614,10 +590,8 @@ public class DisplayHelperImpl implements DisplayHelper{
         // 显示默认图片
         Bitmap loadingBitmap = loadingImageHolder !=null? loadingImageHolder.getBitmap(context):null;
         BindBitmapDrawable bindBitmapDrawable = new BindBitmapDrawable(loadingBitmap, request);
-        if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer){
-            if(resize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
-                bindBitmapDrawable.setFixedSize(resize.getWidth(), resize.getHeight());
-            }
+        if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null ){
+            bindBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
         }
         imageView.setImageDrawable(bindBitmapDrawable);
 
@@ -632,29 +606,21 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public String generateMemoryCacheId(String uri, ImageSize maxSize, ImageSize resize, ImageView.ScaleType scaleType, ImageProcessor imageProcessor){
-        StringBuilder stringBuilder = new StringBuilder(uri);
+    public String generateMemoryCacheId(String uri, ImageSize maxSize, Resize resize, ImageProcessor imageProcessor){
+        StringBuilder builder = new StringBuilder(uri);
         if(maxSize != null){
-            stringBuilder.append("_");
-            stringBuilder.append(maxSize.getWidth());
-            stringBuilder.append("x");
-            stringBuilder.append(maxSize.getHeight());
+            builder.append("_");
+            maxSize.appendIdentifier(builder);
         }
         if(resize != null){
-            stringBuilder.append("_");
-            stringBuilder.append(resize.getWidth());
-            stringBuilder.append("x");
-            stringBuilder.append(resize.getHeight());
-        }
-        if(scaleType != null){
-            stringBuilder.append("_");
-            stringBuilder.append(scaleType.name());
+            builder.append("_");
+            resize.appendIdentifier(builder);
         }
         if(imageProcessor != null){
-            stringBuilder.append("_");
-            stringBuilder.append(imageProcessor.getFlag());
+            builder.append("_");
+            imageProcessor.appendIdentifier(builder);
         }
-        return stringBuilder.toString();
+        return builder.toString();
     }
 
     private Drawable getDrawableFromDrawableHolder(ImageHolder imageHolder){
@@ -662,10 +628,8 @@ public class DisplayHelperImpl implements DisplayHelper{
             Bitmap bitmap = imageHolder.getBitmap(context);
             if(bitmap != null){
                 SrcBitmapDrawable srcBitmapDrawable = new SrcBitmapDrawable(bitmap);
-                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer){
-                    if(resize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
-                        srcBitmapDrawable.setFixedSize(resize.getWidth(), resize.getHeight());
-                    }
+                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
+                    srcBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
                 }
                 return srcBitmapDrawable;
             }

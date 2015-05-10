@@ -26,9 +26,9 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.sketch.ImageSize;
+import me.xiaopan.sketch.Resize;
+import me.xiaopan.sketch.util.CommentUtils;
 
 /**
  * 倒影位图处理器
@@ -38,8 +38,7 @@ public class ReflectionImageProcessor implements ImageProcessor {
 	private int reflectionSpacing;
 	private float reflectionScale;
     private boolean forceUseResizeInCenterCrop = true;
-    private String flag;
-	
+
 	/**
 	 * 创建一个倒影位图处理器
 	 * @param reflectionSpacing 倒影和图片之间的距离
@@ -55,23 +54,45 @@ public class ReflectionImageProcessor implements ImageProcessor {
 	}
 
     @Override
-    public String getFlag() {
-        if(flag == null){
-            flag = NAME+"(scale="+reflectionScale+", spacing="+reflectionSpacing+")";
-        }
-        return flag;
+    public String getIdentifier() {
+        return CommentUtils.concat(NAME+"(scale="+reflectionScale+", spacing="+reflectionSpacing+")");
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, ImageSize resize, ScaleType scaleType) {
-        if(bitmap == null) return null;
-        if(scaleType == null) scaleType = ScaleType.FIT_CENTER;
-        if(resize == null) resize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+    public void appendIdentifier(StringBuilder builder) {
+        builder.append(NAME);
+        builder.append("(scale=");
+        builder.append(reflectionScale);
+        builder.append(", spacing=");
+        builder.append(reflectionSpacing);
+        builder.append(")");
+    }
+
+    @Override
+    public Bitmap process(Bitmap bitmap, Resize resize) {
+        if(bitmap == null){
+            return null;
+        }
+
+        ImageView.ScaleType scaleType = null;
+        if(resize != null){
+            scaleType = resize.getScaleType();
+        }
+        if(scaleType == null){
+            scaleType = ImageView.ScaleType.FIT_CENTER;
+        }
 
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
-        int newBitmapWidth = resize.getWidth();
-        int newBitmapHeight = resize.getHeight();
+        int newBitmapWidth;
+        int newBitmapHeight;
+        if(resize != null){
+            newBitmapWidth = resize.getWidth();
+            newBitmapHeight = resize.getHeight();
+        }else{
+            newBitmapWidth = bitmap.getWidth();
+            newBitmapHeight = bitmap.getHeight();
+        }
 
         Rect srcRect = null;
         if(scaleType == ImageView.ScaleType.CENTER){

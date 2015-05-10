@@ -18,8 +18,6 @@ package me.xiaopan.sketch;
 
 import android.content.Context;
 import android.util.DisplayMetrics;
-import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.process.ImageProcessor;
 
@@ -27,9 +25,8 @@ import me.xiaopan.sketch.process.ImageProcessor;
  * 显示选项
  */
 public class LoadOptions extends DownloadOptions{
-    private ScaleType scaleType; //图片缩放方式，在处理图片的时候会用到
-    private ImageSize maxSize;	//解码最大图片尺寸，用于读取图片时计算inSampleSize
-    private ImageSize resize;	// 处理尺寸，ImageProcessor会根据此尺寸来创建新的图片
+    private ImageSize maxSize;	//最大图片尺寸，用于读取图片时计算inSampleSize
+    private Resize resize;	// 新的尺寸，ImageProcessor会根据此尺寸来创建新的图片
     private ImageProcessor imageProcessor;	//图片处理器
     private boolean decodeGifImage = true; // 是否解码GIF图片
 
@@ -81,28 +78,28 @@ public class LoadOptions extends DownloadOptions{
      * 获取新尺寸
      * @return 新尺寸
      */
-    public ImageSize getResize() {
+    public Resize getResize() {
         return resize;
     }
 
     /**
-     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
+     * 裁剪图片，ImageProcessor会根据此尺寸裁剪图片
      * @param resize 新的尺寸
      * @return LoadOptions
      */
-    public LoadOptions setResize(ImageSize resize){
+    public LoadOptions setResize(Resize resize){
         this.resize = resize;
         return this;
     }
 
     /**
-     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
+     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
      * @param width 宽
      * @param height 高
      * @return LoadOptions
      */
     public LoadOptions setResize(int width, int height){
-        this.resize = new ImageSize(width, height);
+        this.resize = new Resize(width, height);
         return this;
     }
 
@@ -121,24 +118,6 @@ public class LoadOptions extends DownloadOptions{
      */
     public LoadOptions setImageProcessor(ImageProcessor processor){
         this.imageProcessor = processor;
-        return this;
-    }
-
-    /**
-     * 获取缩放类型
-     * @return 缩放类型
-     */
-    public ScaleType getScaleType() {
-        return scaleType;
-    }
-
-    /**
-     * 设置ScaleType，ImageProcessor会根据resize和ScaleType创建一张新的图片
-     * @param scaleType ScaleType
-     * @return LoadOptions
-     */
-    public LoadOptions setScaleType(ImageView.ScaleType scaleType){
-        this.scaleType = scaleType;
         return this;
     }
 
@@ -166,7 +145,6 @@ public class LoadOptions extends DownloadOptions{
     }
 
     public void copyOf(LoadOptions loadOptions){
-        this.scaleType = loadOptions.getScaleType();
         this.maxSize = loadOptions.getMaxSize();
         this.resize = loadOptions.getResize();
         this.imageProcessor = loadOptions.getImageProcessor();

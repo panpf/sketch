@@ -20,7 +20,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.Log;
-import android.widget.ImageView;
 
 import java.io.File;
 
@@ -51,10 +50,9 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private ProgressListener progressListener;  // 下载进度监听器
 
     // Load fields
-    private ImageSize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来裁剪图片
+    private Resize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸来裁剪图片
     private ImageSize maxSize;	// 最大尺寸，用于读取图片时计算inSampleSize
     private ImageProcessor imageProcessor;	// 图片处理器
-    private ImageView.ScaleType scaleType; // 图片缩放方式，ImageProcessor会根据resize和scaleType来创建新的图片
     private LoadListener loadListener;	// 监听器
     private boolean decodeGifImage = true;  // 是否解码GIF图片
 
@@ -129,12 +127,12 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
     /****************************************** Load methods ******************************************/
     @Override
-    public ImageSize getResize() {
+    public Resize getResize() {
         return resize;
     }
 
     @Override
-    public void setResize(ImageSize resize) {
+    public void setResize(Resize resize) {
         this.resize = resize;
     }
 
@@ -146,16 +144,6 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     @Override
     public void setMaxSize(ImageSize maxSize) {
         this.maxSize = maxSize;
-    }
-
-    @Override
-    public ImageView.ScaleType getScaleType() {
-        return scaleType;
-    }
-
-    @Override
-    public void setScaleType(ImageView.ScaleType scaleType) {
-        this.scaleType = scaleType;
     }
 
     @Override
@@ -453,11 +441,8 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
             //处理
             if(!bitmap.isRecycled()){
                 ImageProcessor imageProcessor = getImageProcessor();
-                if(imageProcessor == null && getResize() != null){
-                    imageProcessor = sketch.getConfiguration().getDefaultCutImageProcessor();
-                }
                 if(imageProcessor != null){
-                    Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), getScaleType());
+                    Bitmap newBitmap = imageProcessor.process(bitmap, getResize());
                     if(newBitmap != null && newBitmap != bitmap && Sketch.isDebugMode()){
                         Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - ", "recycle old bitmap@", Integer.toHexString(bitmap.hashCode()), " - ", "processAfter", " - ", name));
                     }

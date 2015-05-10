@@ -24,19 +24,19 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.sketch.ImageSize;
+import me.xiaopan.sketch.Resize;
+import me.xiaopan.sketch.util.CommentUtils;
 
 /**
  * 圆角位图处理器
  */
 public class RoundedCornerImageProcessor implements ImageProcessor {
     private static final String NAME = "RoundedCornerImageProcessor";
-	private int roundPixels;
+
+    private int roundPixels;
     private boolean forceUseResizeInCenterCrop = true;
-    private String flag;
-	
+
 	/**
 	 * 创建一个圆角位图显示器
 	 * @param roundPixels 圆角度数
@@ -53,23 +53,45 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
 	}
 
     @Override
-    public String getFlag() {
-        if(flag == null){
-            flag = NAME+"(roundPixels="+roundPixels+", forceUseResizeInCenterCrop="+forceUseResizeInCenterCrop+")";
-        }
-        return flag;
+    public String getIdentifier() {
+        return CommentUtils.concat(NAME+"(roundPixels="+roundPixels+", forceUseResizeInCenterCrop="+forceUseResizeInCenterCrop+")");
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, ImageSize resize, ScaleType scaleType) {
-        if(bitmap == null) return null;
-        if(scaleType == null) scaleType = ScaleType.FIT_CENTER;
-        if(resize == null) resize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+    public void appendIdentifier(StringBuilder builder) {
+        builder.append(NAME);
+        builder.append("(roundPixels=");
+        builder.append(roundPixels);
+        builder.append(", forceUseResizeInCenterCrop=");
+        builder.append(forceUseResizeInCenterCrop);
+        builder.append(")");
+    }
+
+    @Override
+    public Bitmap process(Bitmap bitmap, Resize resize) {
+        if(bitmap == null){
+            return null;
+        }
+
+        ImageView.ScaleType scaleType = null;
+        if(resize != null){
+            scaleType = resize.getScaleType();
+        }
+        if(scaleType == null){
+            scaleType = ImageView.ScaleType.FIT_CENTER;
+        }
 
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
-        int newBitmapWidth = resize.getWidth();
-        int newBitmapHeight = resize.getHeight();
+        int newBitmapWidth;
+        int newBitmapHeight;
+        if(resize != null){
+            newBitmapWidth = resize.getWidth();
+            newBitmapHeight = resize.getHeight();
+        }else{
+            newBitmapWidth = bitmap.getWidth();
+            newBitmapHeight = bitmap.getHeight();
+        }
 
         Rect srcRect = null;
         if(scaleType == ImageView.ScaleType.CENTER){
@@ -133,8 +155,8 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
             return output;
         }
 	}
-	
-	public int getRoundPixels() {
+
+    public int getRoundPixels() {
 		return roundPixels;
 	}
 

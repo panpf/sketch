@@ -55,15 +55,15 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private ProgressListener progressListener;  // 下载进度监听器
 
     // Load fields
-    private ImageSize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸和scaleType来裁剪图片
+    private Resize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸来裁剪图片
     private ImageSize maxSize;	// 最大尺寸，用于读取图片时计算inSampleSize
     private ImageProcessor imageProcessor;	// 图片处理器
-    private ImageView.ScaleType scaleType; // 图片缩放方式，ImageProcessor会根据resize和scaleType来创建新的图片
     private boolean decodeGifImage = true; // 是否解码GIF图
 
     // Display fields
     private String memoryCacheId;	// 内存缓存ID
     private boolean enableMemoryCache = true;	// 是否开启内存缓存
+    private ImageSize fixedSize;    // 固定尺寸
     private ImageHolder failureImageHolder;	// 当失败时显示的图片
     private ImageHolder pauseDownloadImageHolder;	// 当暂停下载时显示的图片
     private ImageDisplayer imageDisplayer;	// 图片显示器
@@ -145,12 +145,12 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
     /****************************************** Load methods ******************************************/
     @Override
-    public ImageSize getResize() {
+    public Resize getResize() {
         return resize;
     }
 
     @Override
-    public void setResize(ImageSize resize) {
+    public void setResize(Resize resize) {
         this.resize = resize;
     }
 
@@ -162,16 +162,6 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     @Override
     public void setMaxSize(ImageSize maxSize) {
         this.maxSize = maxSize;
-    }
-
-    @Override
-    public ImageView.ScaleType getScaleType() {
-        return scaleType;
-    }
-
-    @Override
-    public void setScaleType(ImageView.ScaleType scaleType) {
-        this.scaleType = scaleType;
     }
 
     @Override
@@ -211,10 +201,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             Bitmap bitmap = failureImageHolder.getBitmap(context);
             if(bitmap != null){
                 SrcBitmapDrawable failureSrcBitmapDrawable = new SrcBitmapDrawable(bitmap);
-                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer){
-                    if(resize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
-                        failureSrcBitmapDrawable.setFixedSize(resize.getWidth(), resize.getHeight());
-                    }
+                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
+                    failureSrcBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
                 }
                 return failureSrcBitmapDrawable;
             }
@@ -234,10 +222,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             Bitmap bitmap = pauseDownloadImageHolder.getBitmap(context);
             if(bitmap != null){
                 SrcBitmapDrawable pauseDownloadSrcBitmapDrawable = new SrcBitmapDrawable(bitmap);
-                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer){
-                    if(resize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
-                        pauseDownloadSrcBitmapDrawable.setFixedSize(resize.getWidth(), resize.getHeight());
-                    }
+                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
+                    pauseDownloadSrcBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
                 }
                 return pauseDownloadSrcBitmapDrawable;
             }
@@ -249,6 +235,11 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     @Override
     public void setDisplayListener(DisplayListener displayListener) {
         this.displayListener = displayListener;
+    }
+
+    @Override
+    public void setFixedSize(ImageSize fixedSize) {
+        this.fixedSize = fixedSize;
     }
 
     /****************************************** Runtime methods ******************************************/
@@ -556,11 +547,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             //处理
             if(!bitmap.isRecycled()){
                 ImageProcessor imageProcessor = getImageProcessor();
-                if(imageProcessor == null && getResize() != null){
-                    imageProcessor = sketch.getConfiguration().getDefaultCutImageProcessor();
-                }
                 if(imageProcessor != null){
-                    Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), getScaleType());
+                    Bitmap newBitmap = imageProcessor.process(bitmap, getResize());
                     if(newBitmap != null && newBitmap != bitmap && Sketch.isDebugMode()){
                         Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - ", "recycle old bitmap@", Integer.toHexString(bitmap.hashCode()), " - ", "processAfter", " - ", name));
                     }
@@ -586,10 +574,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
             if(bitmap != null && !bitmap.isRecycled()){
                 RecycleBitmapDrawable bitmapDrawable = new RecycleBitmapDrawable(bitmap);
-                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer){
-                    if(resize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
-                        bitmapDrawable.setFixedSize(resize.getWidth(), resize.getHeight());
-                    }
+                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
+                    bitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
                 }
                 if(enableMemoryCache && memoryCacheId != null){
                     sketch.getConfiguration().getMemoryCache().put(memoryCacheId, bitmapDrawable);

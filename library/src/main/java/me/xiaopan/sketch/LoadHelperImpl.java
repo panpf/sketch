@@ -17,7 +17,6 @@
 package me.xiaopan.sketch;
 
 import android.util.Log;
-import android.widget.ImageView;
 
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.CommentUtils;
@@ -41,10 +40,9 @@ public class LoadHelperImpl implements LoadHelper{
 
     // 加载属性
     protected boolean decodeGifImage = true;
+    protected Resize resize;
     protected ImageSize maxSize;
-    protected ImageSize resize;
     protected ImageProcessor imageProcessor;
-    protected ImageView.ScaleType scaleType;
     protected LoadListener loadListener;
 
     /**
@@ -101,14 +99,14 @@ public class LoadHelperImpl implements LoadHelper{
     }
 
     @Override
-    public LoadHelperImpl resize(ImageSize resize){
+    public LoadHelperImpl resize(Resize resize){
         this.resize = resize;
         return this;
     }
 
     @Override
     public LoadHelperImpl resize(int width, int height){
-        this.resize = new ImageSize(width, height);
+        this.resize = new Resize(width, height);
         return this;
     }
 
@@ -121,12 +119,6 @@ public class LoadHelperImpl implements LoadHelper{
     @Override
     public LoadHelperImpl listener(LoadListener loadListener){
         this.loadListener = loadListener;
-        return this;
-    }
-
-    @Override
-    public LoadHelperImpl scaleType(ImageView.ScaleType scaleType){
-        this.scaleType = scaleType;
         return this;
     }
 
@@ -148,9 +140,6 @@ public class LoadHelperImpl implements LoadHelper{
         }
         if(this.resize == null){
             this.resize = options.getResize();
-        }
-        if(this.scaleType == null){
-            this.scaleType = options.getScaleType();
         }
         if(this.imageProcessor == null){
             this.imageProcessor = options.getImageProcessor();
@@ -184,8 +173,19 @@ public class LoadHelperImpl implements LoadHelper{
         return this;
     }
 
+    /**
+     * 处理一下参数
+     */
+    protected void handleParams(){
+        if(imageProcessor == null && resize != null){
+            imageProcessor = sketch.getConfiguration().getDefaultCutImageProcessor();
+        }
+    }
+
     @Override
-    public Request fire() {
+    public Request commit() {
+        handleParams();
+
         if(loadListener != null){
             loadListener.onStarted();
         }
@@ -229,7 +229,6 @@ public class LoadHelperImpl implements LoadHelper{
 
         request.setResize(resize);
         request.setMaxSize(maxSize);
-        request.setScaleType(scaleType);
         request.setLoadListener(loadListener);
         request.setImageProcessor(imageProcessor);
         request.setDecodeGifImage(decodeGifImage);

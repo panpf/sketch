@@ -19,7 +19,6 @@ package me.xiaopan.sketchsample;
 import android.app.Application;
 import android.text.format.Formatter;
 import android.util.Log;
-import android.widget.ImageView;
 
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.sketch.DisplayOptions;
@@ -71,7 +70,6 @@ public class MyApplication extends Application {
         Sketch.putOptions(
                 OptionsType.WindowBackground,
                 new LoadOptions(getBaseContext())
-                        .setScaleType(ImageView.ScaleType.CENTER_CROP)
                         .setImageProcessor(new GaussianBlurImageProcessor(true))
                         .setDecodeGifImage(false)
         );

@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch;
 
+import me.xiaopan.sketch.util.CommentUtils;
+
 public class ImageSize {
 	private int width;
 	private int height;
@@ -25,7 +27,7 @@ public class ImageSize {
 		this.height = height;
 	}
 
-    /**
+	/**
      * 获取宽度
      * @return 宽度
      */
@@ -39,5 +41,15 @@ public class ImageSize {
      */
 	public int getHeight() {
 		return height;
+	}
+
+	public String getIdentifier(){
+		return CommentUtils.concat(String.valueOf(width), "x", String.valueOf(height));
+	}
+
+	public void appendIdentifier(StringBuilder builder){
+		builder.append(width);
+		builder.append("x");
+		builder.append(height);
 	}
 }

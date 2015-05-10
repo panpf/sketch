@@ -22,9 +22,8 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.sketch.ImageSize;
+import me.xiaopan.sketch.Resize;
 
 /**
  * 圆形位图处理器
@@ -49,19 +48,32 @@ public class CircleImageProcessor implements ImageProcessor {
     }
 
     @Override
-    public String getFlag() {
+    public String getIdentifier() {
         return NAME;
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, ImageSize resize, ScaleType scaleType) {
-        if(bitmap == null) return null;
-        if(resize == null) resize = new ImageSize(bitmap.getWidth(), bitmap.getHeight());
+    public void appendIdentifier(StringBuilder builder) {
+        builder.append(NAME);
+    }
+
+    @Override
+    public Bitmap process(Bitmap bitmap, Resize resize) {
+        if(bitmap == null){
+            return null;
+        }
 
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();
-        int newBitmapWidth = resize.getWidth();
-        int newBitmapHeight = resize.getHeight();
+        int newBitmapWidth;
+        int newBitmapHeight;
+        if(resize != null){
+            newBitmapWidth = resize.getWidth();
+            newBitmapHeight = resize.getHeight();
+        }else{
+            newBitmapWidth = bitmap.getWidth();
+            newBitmapHeight = bitmap.getHeight();
+        }
 
         // 当newBitmap size大于bitmap size时，再创建一张newBitmap size的图片就不太合适了，应该以bitmap size为准
         if(newBitmapWidth > bitmapWidth && newBitmapHeight > bitmapHeight){

@@ -17,9 +17,8 @@
 package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
-import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.sketch.ImageSize;
+import me.xiaopan.sketch.Resize;
 
 /**
  * 图片处理器，你可以是实现此接口，将你的图片处理成你想要的效果
@@ -29,14 +28,19 @@ public interface ImageProcessor {
 	 * 处理
 	 * @param bitmap 要被处理的图片
 	 * @param resize 新的尺寸
-	 * @param scaleType 显示方式
 	 * @return 新的图片
 	 */
-	public Bitmap process(Bitmap bitmap, ImageSize resize, ScaleType scaleType);
+	Bitmap process(Bitmap bitmap, Resize resize);
 
     /**
-     * 获取Flag，Flag将用于计算缓存ID
-     * @return Flag
+     * 获取标识符用于生成缓存ID
+     * @return 标识符
      */
-    public String getFlag();
+    String getIdentifier();
+
+    /**
+     * 追加标识符
+     * @param builder
+     */
+    void appendIdentifier(StringBuilder builder);
 }

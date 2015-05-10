@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch;
 
-import android.widget.ImageView;
-
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.process.ImageProcessor;
 
@@ -35,16 +33,16 @@ public class DisplayParams {
     // 加载属性
     public boolean decodeGifImage = true;
     public ImageSize maxSize;
-    public ImageSize resize;
+    public Resize resize;
     public ImageProcessor imageProcessor;
-    public ImageView.ScaleType scaleType;
 
     // 显示属性
     public String memoryCacheId;
     public boolean enableMemoryCache = true;
-    public ImageDisplayer imageDisplayer;
+    public ImageSize fixedSize;
     public ImageHolder loadingImageHolder;
     public ImageHolder loadFailImageHolder;
     public ImageHolder pauseDownloadImageHolder;
+    public ImageDisplayer imageDisplayer;
     public DisplayListener displayListener;
 }

@@ -71,4 +71,10 @@ public interface DisplayRequest extends LoadRequest{
      * @param displayListener 显示监听器
      */
     void setDisplayListener(DisplayListener displayListener);
+
+    /**
+     * 设置固定尺寸，用于显示图片的时候用
+     * @param fixedSize 固定尺寸
+     */
+    void setFixedSize(ImageSize fixedSize);
 }

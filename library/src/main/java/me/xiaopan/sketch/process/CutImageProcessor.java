@@ -21,21 +21,33 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.widget.ImageView;
 
-import me.xiaopan.sketch.ImageSize;
+import me.xiaopan.sketch.Resize;
 
 public class CutImageProcessor implements ImageProcessor {
     private static final String NAME = "CutImageProcessor";
 
     @Override
-    public String getFlag() {
+    public String getIdentifier() {
         return NAME;
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, ImageSize resize, ImageView.ScaleType scaleType) {
-        if(bitmap == null) return null;
-        if(resize == null) return bitmap;
-        if(scaleType == null) scaleType = ImageView.ScaleType.FIT_CENTER;
+    public void appendIdentifier(StringBuilder builder) {
+        builder.append(NAME);
+    }
+
+    @Override
+    public Bitmap process(Bitmap bitmap, Resize resize) {
+        if(bitmap == null){
+            return null;
+        }
+        if(resize == null){
+            return bitmap;
+        }
+        ImageView.ScaleType scaleType = resize.getScaleType();
+        if(scaleType == null){
+            scaleType = ImageView.ScaleType.FIT_CENTER;
+        }
 
         int bitmapWidth = bitmap.getWidth();
         int bitmapHeight = bitmap.getHeight();

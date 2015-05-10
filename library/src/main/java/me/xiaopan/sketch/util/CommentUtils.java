@@ -177,12 +177,12 @@ public class CommentUtils {
         return suffix.equalsIgnoreCase(fileNameSuffix);
     }
 
-    public static String concat(String... strings){
+    public static String concat(Object... strings){
         if(strings == null || strings.length == 0){
             return null;
         }
         StringBuilder builder = new StringBuilder();
-        for(String string : strings){
+        for(Object string : strings){
             builder.append(string);
         }
         return builder.toString();

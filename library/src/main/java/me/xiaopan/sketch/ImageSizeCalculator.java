@@ -36,7 +36,7 @@ public interface ImageSizeCalculator {
      * @param imageView 你需要根据ImageView的宽高来计算
      * @return resize
      */
-    ImageSize calculateImageResize(ImageView imageView);
+    Resize calculateImageResize(ImageView imageView);
 
     /**
      * 获取默认的maxSize

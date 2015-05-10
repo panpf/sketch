@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch;
 
-import android.widget.ImageView;
-
 import me.xiaopan.sketch.process.ImageProcessor;
 
 /**
@@ -59,14 +57,14 @@ public interface LoadHelper {
     LoadHelper maxSize(int width, int height);
 
     /**
-     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
+     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
      * @param resize 新的尺寸
      * @return LoadHelper
      */
-    LoadHelper resize(ImageSize resize);
+    LoadHelper resize(Resize resize);
 
     /**
-     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
+     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
      * @param width 宽
      * @param height 高
      * @return LoadHelper
@@ -74,7 +72,7 @@ public interface LoadHelper {
     LoadHelper resize(int width, int height);
 
     /**
-     * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
+     * 设置图片处理器，图片处理器会根据resize创建一张新的图片
      * @param processor 图片处理器
      * @return LoadHelper
      */
@@ -86,13 +84,6 @@ public interface LoadHelper {
      * @return LoadHelper
      */
     LoadHelper listener(LoadListener loadListener);
-
-    /**
-     * 设置ScaleType，ImageProcessor会根据resize和ScaleType创建一张新的图片
-     * @param scaleType ScaleType
-     * @return LoadHelper
-     */
-    LoadHelper scaleType(ImageView.ScaleType scaleType);
 
     /**
      * 设置进度监听器
@@ -123,8 +114,8 @@ public interface LoadHelper {
     LoadHelper requestLevel(RequestLevel requestLevel);
 
     /**
-     * 执行请求
+     * 提交请求
      * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
      */
-    Request fire();
+    Request commit();
 }

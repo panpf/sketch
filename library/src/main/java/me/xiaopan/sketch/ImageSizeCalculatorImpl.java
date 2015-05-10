@@ -36,16 +36,16 @@ public class ImageSizeCalculatorImpl implements ImageSizeCalculator{
         if (width > 0 || height > 0){
             return new ImageSize(width, height);
         }else{
-            return null;
+            return getDefaultImageMaxSize(imageView.getContext());
         }
     }
 
     @Override
-    public ImageSize calculateImageResize(ImageView imageView) {
+    public Resize calculateImageResize(ImageView imageView) {
         int width = getWidth(imageView, false, false, true);
         int height = getHeight(imageView, false, false, true);
         if (width > 0 && height > 0){
-            return new ImageSize(width, height);
+            return new Resize(width, height, imageView.getScaleType());
         }else{
             return null;
         }

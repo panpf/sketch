@@ -150,7 +150,7 @@ public class WindowBackgroundManager {
                 }
             }).resize(displayMetrics.widthPixels/2, displayMetrics.heightPixels/2)
                     .options(OptionsType.WindowBackground)
-                    .fire();
+                    .commit();
         }
     }
 }

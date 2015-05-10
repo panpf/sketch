@@ -75,6 +75,7 @@ library：
 >* 可以根据图片ID来作为默认图片，这样貌似就能实现默认图是缩略图的功能了
 >* 参考Glide、Fresco和Picasso
 >* 写一个系列博客介绍Sketch，也算是做一个总结
+>* 修改resize加一个参数，一定要拿到的图跟resize尺寸一样
 
 考虑的一些问题：
 >* （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapdrawable立即释放）

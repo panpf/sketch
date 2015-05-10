@@ -42,9 +42,9 @@ public interface DisplayHelper {
     void reset();
 
     /**
-     * 填充
+     * 填充SketchImageView的显示参数
      */
-    void fullDisplayParams();
+    void inflateDisplayParams();
 
     /**
      * 设置名称，用于在log总区分请求
@@ -88,11 +88,11 @@ public interface DisplayHelper {
     DisplayHelper maxSize(int width, int height);
 
     /**
-     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
+     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
      * @param resize 新的尺寸
      * @return DisplayHelper
      */
-    DisplayHelper resize(ImageSize resize);
+    DisplayHelper resize(Resize resize);
 
     /**
      * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
@@ -113,13 +113,6 @@ public interface DisplayHelper {
      * @return DisplayHelper
      */
     DisplayHelper processor(ImageProcessor processor);
-
-    /**
-     * 设置ScaleType，ImageProcessor会根据resize和ScaleType创建一张新的图片
-     * @param scaleType ScaleType
-     * @return DisplayHelper
-     */
-    DisplayHelper scaleType(ImageView.ScaleType scaleType);
 
     /**
      * 关闭内存缓存
@@ -204,13 +197,13 @@ public interface DisplayHelper {
     DisplayHelper options(Enum<?> optionsName);
 
     /**
-     * 执行请求
+     * 提交请求
      * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
      */
-    Request fire();
+    Request commit();
 
     /**
      * 生成内存缓存ID
      */
-    String generateMemoryCacheId(String uri, ImageSize maxSize, ImageSize resize, ImageView.ScaleType scaleType, ImageProcessor imageProcessor);
+    String generateMemoryCacheId(String uri, ImageSize maxSize, Resize resize, ImageProcessor imageProcessor);
 }

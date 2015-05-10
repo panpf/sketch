@@ -27,6 +27,7 @@ public class ImageHolder {
     private int resId;
     private Bitmap bitmap;
     private ImageProcessor imageProcessor;
+    private Resize resize;
     private boolean canRecycle;
 
     public ImageHolder(int resId) {
@@ -38,13 +39,19 @@ public class ImageHolder {
         this.imageProcessor = imageProcessor;
     }
 
+    public ImageHolder(int resId, ImageProcessor imageProcessor, Resize resize) {
+        this.resId = resId;
+        this.resize = resize;
+        this.imageProcessor = imageProcessor;
+    }
+
     public Bitmap getBitmap(Context context){
         if(bitmap == null){
             Drawable drawable = context.getResources().getDrawable(resId);
             if(drawable != null && drawable instanceof BitmapDrawable){
                 bitmap = ((BitmapDrawable) drawable).getBitmap();
                 if(imageProcessor != null){
-                    Bitmap newBitmap = imageProcessor.process(bitmap, null, null);
+                    Bitmap newBitmap = imageProcessor.process(bitmap, resize);
                     if(newBitmap != bitmap){
                         bitmap = newBitmap;
                         canRecycle = true;

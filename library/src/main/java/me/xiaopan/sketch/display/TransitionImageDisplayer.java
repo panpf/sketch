@@ -25,7 +25,7 @@ import android.widget.ImageView;
 import me.xiaopan.sketch.RecycleGifDrawable;
 
 /**
- * 过渡图片显示器
+ * 过渡效果的图片显示器
  */
 public class TransitionImageDisplayer implements ImageDisplayer {
 	private int duration;
@@ -35,7 +35,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 	}
 	
 	public TransitionImageDisplayer(){
-		this(500);
+		this(400);
 	}
 	
 	@Override

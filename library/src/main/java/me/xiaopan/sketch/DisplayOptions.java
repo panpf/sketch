@@ -17,7 +17,6 @@
 package me.xiaopan.sketch;
 
 import android.content.Context;
-import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -183,6 +182,9 @@ public class DisplayOptions extends LoadOptions {
      */
     public void setResizeByImageViewLayoutSize(boolean isResizeByImageViewLayoutSize) {
         this.resizeByImageViewLayoutSize = isResizeByImageViewLayoutSize;
+        if(this.resizeByImageViewLayoutSize && getResize() != null){
+            super.setResize(null);
+        }
     }
 
     @Override
@@ -210,7 +212,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setResize(ImageSize resize){
+    public DisplayOptions setResize(Resize resize){
         super.setResize(resize);
         this.resizeByImageViewLayoutSize = false;
         return this;
@@ -220,12 +222,6 @@ public class DisplayOptions extends LoadOptions {
     public DisplayOptions setResize(int width, int height) {
         super.setResize(width, height);
         this.resizeByImageViewLayoutSize = false;
-        return this;
-    }
-
-    @Override
-    public DisplayOptions setScaleType(ScaleType scaleType) {
-        super.setScaleType(scaleType);
         return this;
     }
 
@@ -249,7 +245,6 @@ public class DisplayOptions extends LoadOptions {
         this.pauseDownloadImage = displayOptions.pauseDownloadImage;
         this.resizeByImageViewLayoutSize = displayOptions.resizeByImageViewLayoutSize;
 
-        setScaleType(displayOptions.getScaleType());
         setMaxSize(displayOptions.getMaxSize());
         setResize(displayOptions.getResize());
         setImageProcessor(displayOptions.getImageProcessor());
