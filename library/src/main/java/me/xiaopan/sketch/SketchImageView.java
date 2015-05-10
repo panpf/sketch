@@ -28,6 +28,7 @@ import android.net.Uri;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -48,8 +49,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     private static final int FROM_FLAG_COLOR_NETWORK = 0x88FF0000;
     private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
     private static final int DEFAULT_RIPPLE_COLOR = 0x33000000;
-    private static final int RIPPLE_ANIMATION_DURATION_SHORT = 100;
-    private static final int RIPPLE_ANIMATION_DURATION_LENGTH = 500;
 
     private Request displayRequest;
     private MyListener myListener;
@@ -78,11 +77,13 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     protected int touchX;
     protected int touchY;
     protected int clickRippleColor = DEFAULT_RIPPLE_COLOR;
-    protected boolean pressed;
+    protected int radius;
+    protected boolean allowShowRipple;
     protected boolean showClickRipple;
+    protected boolean animationRunning;
     protected Paint clickRipplePaint;
-    protected Scroller clickRippleScroller;
-    protected Runnable clickRippleRefreshRunnable;
+    protected GestureDetector gestureDetector;
+    protected boolean showRect;
 
     protected boolean currentIsShowGifFlag;
     protected boolean showGifFlag;
@@ -156,10 +157,21 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(showClickRipple && event.getAction() == MotionEvent.ACTION_DOWN && !pressed){
-            touchX = (int) event.getX();
-            touchY = (int) event.getY();
+        if(showClickRipple && isClickable()){
+            if(gestureDetector == null){
+                gestureDetector = new GestureDetector(getContext(), new PressedStatusManager());
+            }
+            gestureDetector.onTouchEvent(event);
+            switch (event.getAction() & MotionEvent.ACTION_MASK) {
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                case MotionEvent.ACTION_OUTSIDE:
+                    allowShowRipple = false;
+                    invalidate();
+                    break;
+            }
         }
+
         return super.onTouchEvent(event);
     }
 
@@ -200,33 +212,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         if(oldDrawable != null){
             super.setImageDrawable(null);
             notifyDrawable("onDetachedFromWindow", oldDrawable, false);
-        }
-    }
-
-    @Override
-    protected void dispatchSetPressed(boolean pressed) {
-        if(showClickRipple && isClickable() && this.pressed != pressed){
-            this.pressed = pressed;
-            if(pressed){
-                if(clickRippleScroller == null){
-                    clickRippleScroller = new Scroller(getContext(), new DecelerateInterpolator());
-                }
-                clickRippleScroller.startScroll(0, 0, computeRippleRadius(), 0, RIPPLE_ANIMATION_DURATION_LENGTH);
-                if(clickRippleRefreshRunnable == null){
-                    clickRippleRefreshRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            invalidate();
-                            if(clickRippleScroller.computeScrollOffset()){
-                                post(this);
-                            }
-                        }
-                    };
-                }
-                post(clickRippleRefreshRunnable);
-            }
-
-            invalidate();
         }
     }
 
@@ -282,7 +267,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     protected void drawPressedStatus(Canvas canvas){
-        if(pressed || (clickRippleScroller != null && clickRippleScroller.computeScrollOffset())){
+        if(allowShowRipple || animationRunning || showRect){
             Path imageShapeClipPath = getImageShapeClipPath();
             applyClip = imageShapeClipPath != null;
             if(applyClip){
@@ -294,7 +279,11 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
                 clickRipplePaint = new Paint();
                 clickRipplePaint.setColor(clickRippleColor);
             }
-            canvas.drawCircle(touchX, touchY, clickRippleScroller.getCurrX(), clickRipplePaint);
+            if(animationRunning){
+                canvas.drawCircle(touchX, touchY, radius, clickRipplePaint);
+            }else if(showRect){
+                canvas.drawRect(0, 0, getWidth(), getHeight(), clickRipplePaint);
+            }
 
             if(applyClip){
                 canvas.restore();
@@ -656,31 +645,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         }
     }
 
-    /**
-     * 计算涟漪的半径
-     * @return 涟漪的半径
-     */
-    private int computeRippleRadius(){
-        // 先计算按下点到四边的距离
-        int toLeftDistance = touchX - getPaddingLeft();
-        int toTopDistance = touchY - getPaddingTop();
-        int toRightDistance = Math.abs(getWidth() - getPaddingRight() - touchX);
-        int toBottomDistance = Math.abs(getHeight() - getPaddingBottom() - touchY);
-
-        // 当按下位置在第一或第四象限的时候，比较按下位置在左上角到右下角这条线上距离谁最远就以谁为半径，否则在左下角到右上角这条线上比较
-        int centerX = getWidth()/2;
-        int centerY = getHeight()/2;
-        if((touchX < centerX && touchY < centerY) || (touchX > centerX && touchY > centerY)) {
-            int toLeftTopDistance = (int) Math.sqrt((toLeftDistance * toLeftDistance) + (toTopDistance * toTopDistance));
-            int toRightBottomDistance = (int) Math.sqrt((toRightDistance * toRightDistance) + (toBottomDistance * toBottomDistance));
-            return toLeftTopDistance > toRightBottomDistance ? toLeftTopDistance : toRightBottomDistance;
-        }else{
-            int toLeftBottomDistance = (int) Math.sqrt((toLeftDistance * toLeftDistance) + (toBottomDistance * toBottomDistance));
-            int toRightTopDistance = (int) Math.sqrt((toRightDistance * toRightDistance) + (toTopDistance * toTopDistance));
-            return toLeftBottomDistance > toRightTopDistance ? toLeftBottomDistance : toRightTopDistance;
-        }
-    }
-
     private static boolean isGifImage(Drawable newDrawable){
         if(newDrawable == null){
             return false;
@@ -771,7 +735,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
             if(showDownloadProgress || showFromFlag){
                 invalidate();
             }
-            if(clickRedisplayOnFailed){
+            if(clickRedisplayOnFailed && failCause != FailCause.URI_NULL_OR_EMPTY && failCause != FailCause.IMAGE_VIEW_NULL && failCause != FailCause.URI_NO_SUPPORT){
                 SketchImageView.super.setOnClickListener(this);
                 replacedClickListener = true;
             }
@@ -817,5 +781,104 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         RECT,
         CIRCLE,
         ROUNDED_RECT,
+    }
+
+    private class PressedStatusManager extends GestureDetector.SimpleOnGestureListener implements Runnable{
+        private boolean showPress;
+        private Scroller scroller;
+        private Runnable cancelRunnable;
+
+        public PressedStatusManager() {
+            scroller = new Scroller(getContext());
+        }
+
+        @Override
+        public void run() {
+            animationRunning = scroller.computeScrollOffset();
+            if(animationRunning){
+                radius = scroller.getCurrX();
+                post(this);
+            }
+            invalidate();
+        }
+
+        @Override
+        public boolean onDown(MotionEvent event) {
+            if(!scroller.isFinished()){
+                scroller.forceFinished(true);
+                removeCallbacks(this);
+                animationRunning = false;
+                invalidate();
+            }
+
+            touchX = (int) event.getX();
+            touchY = (int) event.getY();
+            showPress = false;
+            return false;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+            allowShowRipple = true;
+            showPress = true;
+            startAnimation(1000);
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+            super.onLongPress(e);
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            if(!showPress){
+                showRect = true;
+                invalidate();
+                if(cancelRunnable == null){
+                    cancelRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            showRect = false;
+                            invalidate();
+                        }
+                    };
+                }
+                postDelayed(cancelRunnable, 200);
+            }
+            return super.onSingleTapUp(e);
+        }
+
+        private void startAnimation(int duration){
+            if(scroller == null){
+                scroller = new Scroller(getContext(), new DecelerateInterpolator());
+            }
+            scroller.startScroll(0, 0, computeRippleRadius(), 0, duration);
+            post(this);
+        }
+
+        /**
+         * 计算涟漪的半径
+         * @return 涟漪的半径
+         */
+        private int computeRippleRadius(){
+            // 先计算按下点到四边的距离
+            int toLeftDistance = touchX - getPaddingLeft();
+            int toTopDistance = touchY - getPaddingTop();
+            int toRightDistance = Math.abs(getWidth() - getPaddingRight() - touchX);
+            int toBottomDistance = Math.abs(getHeight() - getPaddingBottom() - touchY);
+
+            // 当按下位置在第一或第四象限的时候，比较按下位置在左上角到右下角这条线上距离谁最远就以谁为半径，否则在左下角到右上角这条线上比较
+            int centerX = getWidth()/2;
+            int centerY = getHeight()/2;
+            if((touchX < centerX && touchY < centerY) || (touchX > centerX && touchY > centerY)) {
+                int toLeftTopDistance = (int) Math.sqrt((toLeftDistance * toLeftDistance) + (toTopDistance * toTopDistance));
+                int toRightBottomDistance = (int) Math.sqrt((toRightDistance * toRightDistance) + (toBottomDistance * toBottomDistance));
+                return toLeftTopDistance > toRightBottomDistance ? toLeftTopDistance : toRightBottomDistance;
+            }else{
+                int toLeftBottomDistance = (int) Math.sqrt((toLeftDistance * toLeftDistance) + (toBottomDistance * toBottomDistance));
+                int toRightTopDistance = (int) Math.sqrt((toRightDistance * toRightDistance) + (toTopDistance * toTopDistance));
+                return toLeftBottomDistance > toRightTopDistance ? toLeftBottomDistance : toRightTopDistance;
+            }
+        }
     }
 }

@@ -98,33 +98,42 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             ItemHolder itemHolder = new ItemHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_head_portrait, parent, false));
 
             itemHolder.oneLayout.setOnClickListener(onClickListener);
+            itemHolder.twoLayout.setOnClickListener(onClickListener);
+            itemHolder.threeLayout.setOnClickListener(onClickListener);
+
+            itemHolder.oneImageView.setOnClickListener(onClickListener);
+            itemHolder.twoImageView.setOnClickListener(onClickListener);
+            itemHolder.threeImageView.setOnClickListener(onClickListener);
+
             itemHolder.oneImageView.setDisplayOptions(OptionsType.Circular);
+            itemHolder.twoImageView.setDisplayOptions(OptionsType.Circular);
+            itemHolder.threeImageView.setDisplayOptions(OptionsType.Circular);
+
             ViewGroup.LayoutParams params = itemHolder.oneImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = itemWidth;
             itemHolder.oneImageView.setLayoutParams(params);
+
+            params = itemHolder.twoImageView.getLayoutParams();
+            params.width = itemWidth;
+            params.height = itemWidth;
+            itemHolder.twoImageView.setLayoutParams(params);
+
+            params = itemHolder.threeImageView.getLayoutParams();
+            params.width = itemWidth;
+            params.height = itemWidth;
+            itemHolder.threeImageView.setLayoutParams(params);
+
             params = itemHolder.oneNameTextView.getLayoutParams();
             itemHolder.oneImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
             params.width = itemWidth;
             itemHolder.oneNameTextView.setLayoutParams(params);
 
-            itemHolder.twoLayout.setOnClickListener(onClickListener);
-            itemHolder.twoImageView.setDisplayOptions(OptionsType.Circular);
-            params = itemHolder.twoImageView.getLayoutParams();
-            params.width = itemWidth;
-            params.height = itemWidth;
-            itemHolder.twoImageView.setLayoutParams(params);
             params = itemHolder.twoNameTextView.getLayoutParams();
             itemHolder.twoImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
             params.width = itemWidth;
             itemHolder.twoNameTextView.setLayoutParams(params);
 
-            itemHolder.threeLayout.setOnClickListener(onClickListener);
-            itemHolder.threeImageView.setDisplayOptions(OptionsType.Circular);
-            params = itemHolder.threeImageView.getLayoutParams();
-            params.width = itemWidth;
-            params.height = itemWidth;
-            itemHolder.threeImageView.setLayoutParams(params);
             params = itemHolder.threeNameTextView.getLayoutParams();
             itemHolder.threeImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
             params.width = itemWidth;
@@ -145,11 +154,13 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             itemHolder.oneNameTextView.setText(dataItem.star1.getName());
             itemHolder.oneImageView.displayImage(dataItem.star1.getAvatarUrl());
             itemHolder.oneLayout.setTag(dataItem.star1);
+            itemHolder.oneImageView.setTag(dataItem.star1);
 
             if(dataItem.star2 != null){
                 itemHolder.twoNameTextView.setText(dataItem.star2.getName());
                 itemHolder.twoImageView.displayImage(dataItem.star2.getAvatarUrl());
                 itemHolder.twoLayout.setTag(dataItem.star2);
+                itemHolder.twoImageView.setTag(dataItem.star2);
                 itemHolder.twoLayout.setVisibility(View.VISIBLE);
             }else{
                 itemHolder.twoLayout.setVisibility(View.INVISIBLE);
@@ -159,6 +170,7 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
                 itemHolder.threeNameTextView.setText(dataItem.star3.getName());
                 itemHolder.threeImageView.displayImage(dataItem.star3.getAvatarUrl());
                 itemHolder.threeLayout.setTag(dataItem.star3);
+                itemHolder.threeImageView.setTag(dataItem.star3);
                 itemHolder.threeLayout.setVisibility(View.VISIBLE);
             }else{
                 itemHolder.threeLayout.setVisibility(View.INVISIBLE);
