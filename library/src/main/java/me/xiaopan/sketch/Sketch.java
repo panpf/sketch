@@ -20,7 +20,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.widget.ImageView;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,7 +61,7 @@ public class Sketch {
 
 
     /**
-     * 下载
+     * 下载图片
      * @param uri 图片Uri，支持以下几种
      * <blockquote>“http://site.com/image.png“  // from Web
      * <br>“https://site.com/image.png“ // from Web
@@ -77,7 +76,7 @@ public class Sketch {
 
 
     /**
-     * 加载
+     * 根据URI加载图片
      * @param uri 图片Uri，支持以下几种
      * <blockquote>"http://site.com/image.png"; // from Web
      * <br>"https://site.com/image.png"; // from Web
@@ -93,34 +92,34 @@ public class Sketch {
 	public LoadHelper load(String uri, LoadListener loadListener){
         return configuration.getHelperFactory().getLoadHelper(this, uri).listener(loadListener);
 	}
-    
+
     /**
-     * 加载
-     * @param imageFile 图片文件
+     * 加载Asset中的图片
+     * @param fileName 文件名称
      * @param loadListener 加载监听器
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadHelper load(File imageFile, LoadListener loadListener){
-        return configuration.getHelperFactory().getLoadHelper(this, imageFile.getPath()).listener(loadListener);
-	}
-
+    public LoadHelper loadFromAsset(String fileName, LoadListener loadListener){
+        return configuration.getHelperFactory().getLoadHelper(this, UriScheme.ASSET.createUri(fileName)).listener(loadListener);
+    }
+    
     /**
-     * 加载
+     * 加载资源中的图片
      * @param drawableResId 图片资源ID
      * @param loadListener 加载监听器
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadHelper load(int drawableResId, LoadListener loadListener){
+	public LoadHelper loadFromRecource(int drawableResId, LoadListener loadListener){
         return configuration.getHelperFactory().getLoadHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
 	}
 
     /**
-     * 加载
+     * 加载ContentProvider中的图片
      * @param uri 图片资源URI
      * @param loadListener 加载监听器
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadHelper load(Uri uri, LoadListener loadListener){
+	public LoadHelper loadFromContent(Uri uri, LoadListener loadListener){
         return configuration.getHelperFactory().getLoadHelper(this, uri.toString()).listener(loadListener);
 	}
 
@@ -145,37 +144,37 @@ public class Sketch {
     }
 
     /**
-     * 显示图片
-     * @param imageFile 图片文件
+     * 显示Asset中的图片
+     * @param fileName 文件名称
      * @param imageView 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayHelper display(File imageFile, ImageView imageView){
-        return configuration.getHelperFactory().getDisplayHelper(this, imageFile.getPath(), imageView);
+    public DisplayHelper displayFromAsset(String fileName, ImageView imageView){
+        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.ASSET.createUri(fileName), imageView);
     }
 
     /**
-     * 显示图片
+     * 显示资源中的图片
      * @param drawableResId 图片资源ID
      * @param imageView 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayHelper display(int drawableResId, ImageView imageView){
+    public DisplayHelper displayFromRecource(int drawableResId, ImageView imageView){
         return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
     }
 
     /**
-     * 显示图片
+     * 显示ContentProvider中的图片
      * @param uri 图片资源URI
      * @param imageView 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayHelper display(Uri uri, ImageView imageView){
-        return configuration.getHelperFactory().getDisplayHelper(this, uri.toString(), imageView);
+    public DisplayHelper displayFromContent(Uri uri, ImageView imageView){
+        return configuration.getHelperFactory().getDisplayHelper(this, uri!=null?uri.toString():null, imageView);
     }
 
     /**
-     * 显示图片
+     * 显示图片，主要用于配合SketchImageView兼容RecyclerView
      * @param displayParams 参数集
      * @param imageView 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
@@ -183,6 +182,8 @@ public class Sketch {
     public DisplayHelper display(DisplayParams displayParams, ImageView imageView){
         return configuration.getHelperFactory().getDisplayHelper(this, displayParams, imageView);
     }
+
+
 
     /**
      * 取消

@@ -32,54 +32,59 @@ Sketch is an image loader for Android, the purpose is to help the developers to 
 
 ![SampleApp](https://github.com/xiaopansky/Sketch/raw/master/releases/sample_apk_download_qr.png)
 
-###使用指南（Usage guide）
+###简介（Introduction）
 
-####Sketch支持以下6种类型的URI：
->* "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"  // from Web (.jpeg, .png, .webp, .gif...)
->* "https://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg" // from Web (.jpeg, .png, .webp, .gif...)
->* "/mnt/sdcard/image.png"  // from SD card (.jpeg, .png, .webp, .gif, .apk...)
->* "content://media/external/images/media/13"   // from content provider (.jpeg, .png, .webp, .gif...)
->* "asset://image.png"  // from assets (.jpeg, .png, .webp, .gif...)
->* "drawable://" + R.drawable.image // from drawable resource (.jpeg, .png, .webp, .gif...)
+####支持的URI以及使用的方法（Support URI and the use of the method）：
 
-####使用SketchImageView显示图片
+|Type|Scheme|Fetch method used in SketchImageView|
+|:--|:--|:--|
+|File in network|http://, https:// |displayImage(String)|
+|File in SDCard|/|displayImage(String)|
+|Content Provider|content://|displayContentImage(Uri)|
+|Asset in app|asset://|displayAssetImage(String)|
+|Resource in app|resource://|displayRecourceImage(int)|
 
-**如果你的APP要兼容Android2.3及以下版本，那么你必须使用SketchImageView才能保证Bitmap被顺利回收，切记切记！**
+####支持的图片类型（Support picture type）
 
+|Type|Scheme|jpeg|png|webp|gif|apk icon|
+|:--|:--|:--|:--|:--|:--|:--|:--|
+|File in network|http://, http:// |yes|yes|yes|yes|no|
+|File in SDCard|/|yes|yes|yes|yes|yes|
+|Content Provider|content://|yes|yes|yes|yes|no|
+|Asset in app|asset://|yes|yes|yes|yes|no|
+|Resource in app|resource://|yes|yes|yes|yes|no|
+
+示例（Sample）：
 ```java
 SketchImageView sketchImageView = ...;
 
-// from http or https
-sketchImageView.setImageFromUri("http://www.huabian.com/uploadfile/2013/1222/20131222054754556.jpg");
+// display from image network
+sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
 
-// from local file
-sketchImageView.setImageFromUri("/mnt/sfs.png");
-// or
-sketchImageView.setImageFromFile(new File("/mnt/sfs.png"));
-        
-// from content provider
-sketchImageView.setImageFromUri("content://media/external/audio/albumart/13");
-// or
+// display image from SDCard
+sketchImageView.displayImage("/sdcard0/sample.png");
+
+// display APK icon
+sketchImageView.displayImage("/sdcard0/google_play.apk");
+
+// display resource drawable
+sketchImageView.displayResourceImage(R.drawable.sample);
+
+// display image from asset 
+sketchImageView.displayAssetImage("sample.jpg");
+
+// display image from ContentProvider
 Uri uri = ...;
-sketchImageView.setImageFromContent(uri);
-        
-// from drawable resource
-sketchImageView.setImageFromUri("drawable://"+R.drawable.ic_launcher);
-// or
-sketchImageView.setImageFromResource(R.drawable.ic_launcher);
-        
-// from assets
-sketchImageView.setImageFromUri("asset://test.png");
-// or
-sketchImageView.setImageFromAssets("test.png");
+sketchImageView.displayContentImage(uri);
 ```
-
-[点击查看详细使用说明](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
+[点击查看SketchImageView详细使用说明（Click to view the SketchImageView detailed instructions）](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
 
 ####download()、load()、display()
 Sketch除了有display()方法用来显示图片之外，还有load()用来加载图片和download()方法用来下载图片
 
->* download()：下载图片，此方法仅仅实现将图片下载到本地；
+这里会弄一个流程图来表示整个过程
+
+>* download()：下载网络图片，此方法仅仅实现将图片下载到本地；
 >* load()：加载图片，此方法在将图片下载到本地之后会将图片加载到内存并实现本地缓存功能；
 >* display()：显示图片，此方法在将图片下载并加载到内存之后，会将图片放到内存缓存中，然后显示在ImageView上，并实现内存缓存。
 
@@ -134,9 +139,43 @@ display()与load()、download()的区别
 >* [使用ImageView](https://github.com/xiaopansky/Sketch/wiki/UseImageView)
 >* [暂停加载新图片，进一步提升列表流畅度](https://github.com/xiaopansky/Sketch/wiki/pause-or-resume-sketch)
 
-###JAR包下载（Download jar）
+###使用指南（Usage guide）
+####导入Sketch（Getting started with Sketch）
+
 >* [sketch-1.3.0.jar](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-1.3.0.jar)
 >* [sketch-1.3.0-sources.zip](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-1.3.0-sources.zip)
+
+####配置权限（Configure the required permissions）
+在AndroidManifest.xml文件中添加以下权限
+```xml
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+```
+
+####在XML中使用SketchImageView
+res/layout/item_user.xml
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<me.xiaopan.SketchImageView
+    android:id="@+id/image_main_head"
+    android:layout_width="130dp"
+    android:layout_height="130dp"
+  />
+```
+
+####在Adapter中设置URI显示图片
+```java
+@Override
+public View getView(int position, View convertView, ViewGroup parent) {
+	if(convertView == null){
+		convertView = LayoutInflater.from(context).inflate(R.layout.item_user, parent, false);
+	}
+
+	SketchImageView headImageView = (SketchImageView) convertView;
+	headImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
+	return convertView;
+}
+```
 
 ###新计划（New plan）
 ####下一版开发计划（The next version of the development plan）

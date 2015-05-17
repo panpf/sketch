@@ -68,7 +68,6 @@ library：
 代办池：
 >* loading支持bitmap
 >* 用百度云测试一下
->* 考虑支持不同的应用场景，例如background，drawableTop等
 >* 解码缓存文件失败的时候要再次下载
 >* 用一下其它的几款图片加载器，例如UIL、fresco、glide、picasso对比一下，特别是对RecyclerView的兼容性，然后写博客
 >* 支持断点续传
@@ -78,6 +77,7 @@ library：
 >* 写一个系列博客介绍Sketch，也算是做一个总结
 >* 想办法支持一次加载两张图一张小图一张大图
 >* resize加一个参数，一定要拿到的图跟resize尺寸一样
+>* 低版本支持WEBP
 
 考虑的一些问题：
 >* （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapdrawable立即释放）
@@ -97,3 +97,4 @@ library：
 >* 用纯色定义的图片作为默认图的时候会发生什么情况呢？
 >* 既然APK图标无需关心回收问题，那是不是就没必要费劲给搞到本地缓存区再读，直接读取显示不回收不就行了，然后再考虑如何处理的问题，因为处理之后就需要回收了
 >* 考虑对宽高固定的ImageView和普通图片使用像GlideDrawable一样的方式实现，这样可能会更顺畅一点
+>* 考虑支持不同的应用场景，例如background，drawableTop等

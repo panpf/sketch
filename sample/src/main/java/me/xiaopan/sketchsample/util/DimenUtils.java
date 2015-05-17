@@ -2,9 +2,6 @@ package me.xiaopan.sketchsample.util;
 
 import android.content.Context;
 
-/**
- * Created by xiaopan on 14/12/27.
- */
 public class DimenUtils {
 
     /**

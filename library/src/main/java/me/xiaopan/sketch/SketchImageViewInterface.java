@@ -37,13 +37,6 @@ public interface SketchImageViewInterface {
     Request displayImage(String uri);
 
     /**
-     * 显示本地图片
-     * @param imageFilePath SD卡上的图片文件
-     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
-     */
-    Request displayFileImage(String imageFilePath);
-
-    /**
      * 显示Drawable资源里的图片
      * @param drawableResId Drawable ID
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求

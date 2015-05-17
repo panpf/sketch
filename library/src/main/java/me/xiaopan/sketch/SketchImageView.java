@@ -385,23 +385,18 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     @Override
-    public Request displayFileImage(String imageFilePath){
-        return Sketch.with(getContext()).display(imageFilePath, this).commit();
-    }
-
-    @Override
     public Request displayResourceImage(int drawableResId){
-        return Sketch.with(getContext()).display(UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), this).commit();
+        return Sketch.with(getContext()).displayFromRecource(drawableResId, this).commit();
     }
 
     @Override
     public Request displayAssetImage(String imageFileName){
-        return Sketch.with(getContext()).display(UriScheme.ASSET.createUri(imageFileName), this).commit();
+        return Sketch.with(getContext()).displayFromAsset(imageFileName, this).commit();
     }
 
     @Override
     public Request displayContentImage(Uri uri){
-        return Sketch.with(getContext()).display(uri != null ? UriScheme.ASSET.createUri(uri.toString()):null, this).commit();
+        return Sketch.with(getContext()).displayFromContent(uri, this).commit();
     }
 
     @Override
