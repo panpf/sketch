@@ -28,9 +28,10 @@ public interface ImageProcessor {
 	 * 处理
 	 * @param bitmap 要被处理的图片
 	 * @param resize 新的尺寸
+     * @param imagesOfLowQuality 需要一个低质量的新图片
 	 * @return 新的图片
 	 */
-	Bitmap process(Bitmap bitmap, Resize resize);
+	Bitmap process(Bitmap bitmap, Resize resize, boolean imagesOfLowQuality);
 
     /**
      * 获取标识符用于生成缓存ID
@@ -40,7 +41,6 @@ public interface ImageProcessor {
 
     /**
      * 追加标识符
-     * @param builder
      */
-    void appendIdentifier(StringBuilder builder);
+    StringBuilder appendIdentifier(StringBuilder builder);
 }

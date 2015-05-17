@@ -25,25 +25,32 @@ import android.widget.ImageView;
  */
 public interface ImageSizeCalculator {
     /**
-     * 计算maxSize
+     * 计算MaxSize
      * @param imageView 你需要根据ImageView的宽高来计算
-     * @return maxSize
+     * @return MaxSize
      */
-    ImageSize calculateImageMaxSize(ImageView imageView);
+    MaxSize calculateImageMaxSize(ImageView imageView);
 
     /**
-     * 计算resize
+     * 计算Resize
      * @param imageView 你需要根据ImageView的宽高来计算
-     * @return resize
+     * @return Resize
      */
     Resize calculateImageResize(ImageView imageView);
+
+    /**
+     * 计算FixedSize
+     * @param imageView 你需要根据ImageView的宽高来计算
+     * @return FixedSize
+     */
+    FixedSize calculateImageFixedSize(ImageView imageView);
 
     /**
      * 获取默认的maxSize
      * @param context 上下文
      * @return maxSize
      */
-    ImageSize getDefaultImageMaxSize(Context context);
+    MaxSize getDefaultImageMaxSize(Context context);
 
     /**
      * 比较两个maxSize的大小，在使用options()方法批量设置属性的时候会使用此方法比较RequestOptions的maxSize和已有的maxSize，如果前者小于后者就会使用前者代替后者
@@ -51,7 +58,7 @@ public interface ImageSizeCalculator {
      * @param maxSize2 maxSize2
      * @return 等于0：两者相等；小于0：maxSize1小于maxSize2；大于0：maxSize1大于maxSize2
      */
-    int compareMaxSize(ImageSize maxSize1, ImageSize maxSize2);
+    int compareMaxSize(MaxSize maxSize1, MaxSize maxSize2);
 
     /**
      * 计算InSampleSize

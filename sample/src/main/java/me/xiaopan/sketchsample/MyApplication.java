@@ -21,6 +21,7 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.DisplayOptions;
 import me.xiaopan.sketch.ImageHolder;
 import me.xiaopan.sketch.LoadOptions;
@@ -37,10 +38,10 @@ public class MyApplication extends Application {
         super.onCreate();
 
         GoHttp.with(getBaseContext()).setDebugMode(true);
-        Sketch.setDebugMode(true);
 
+        Sketch.setDebugMode(BuildConfig.DEBUG);
         Sketch.putOptions(OptionsType.Rectangle,
-                new DisplayOptions(getBaseContext())
+                new DisplayOptions()
                         .setLoadingImage(R.drawable.image_loading)
                         .setFailureImage(R.drawable.image_failure)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
@@ -50,7 +51,7 @@ public class MyApplication extends Application {
 
         Sketch.putOptions(
                 OptionsType.Detail,
-                new DisplayOptions(getBaseContext())
+                new DisplayOptions()
                         .setFailureImage(R.drawable.image_failure)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setImageDisplayer(new TransitionImageDisplayer())
@@ -58,7 +59,7 @@ public class MyApplication extends Application {
 
         Sketch.putOptions(
                 OptionsType.Circular,
-                new DisplayOptions(getBaseContext())
+                new DisplayOptions()
                         .setLoadingImage(new ImageHolder(R.drawable.image_loading, CircleImageProcessor.getInstance()))
                         .setFailureImage(new ImageHolder(R.drawable.image_failure, CircleImageProcessor.getInstance()))
                         .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download, CircleImageProcessor.getInstance()))
@@ -69,13 +70,18 @@ public class MyApplication extends Application {
 
         Sketch.putOptions(
                 OptionsType.WindowBackground,
-                new LoadOptions(getBaseContext())
+                new LoadOptions()
                         .setImageProcessor(new GaussianBlurImageProcessor(true))
                         .setDecodeGifImage(false)
         );
 
-        boolean isPauseDownload = Settings.with(getBaseContext()).isMobileNetworkPauseDownload();
-        Sketch.with(getBaseContext()).getConfiguration().setMobileNetworkPauseDownload(isPauseDownload);
+        Settings settings = Settings.with(this);
+        Configuration sketchConfiguration = Sketch.with(this).getConfiguration();
+
+        sketchConfiguration.setMobileNetworkPauseDownload(settings.isMobileNetworkPauseDownload());
+        sketchConfiguration.setImagesOfLowQuality(settings.isImagesOfLowQuality());
+        sketchConfiguration.setEnableDiskCache(settings.isEnableDiskCache());
+        sketchConfiguration.setEnableMemoryCache(settings.isEnableMemoryCache());
     }
 
     @Override

@@ -1,12 +1,12 @@
 /*
  * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,27 +16,37 @@
 
 package me.xiaopan.sketch;
 
-public interface RecycleDrawableInterface {
+public class MaxSize implements ImageSize{
+	private int width;
+	private int height;
 
-    void setIsDisplayed(String callingStation, boolean isDisplayed);
+	public MaxSize(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
 
-    void setIsCached(String callingStation, boolean isCached);
+	@Override
+	public int getWidth() {
+		return width;
+	}
 
-    void setIsWaitDisplay(String callingStation, boolean isWaitDisplay);
+	@Override
+	public int getHeight() {
+		return height;
+	}
 
-    int getByteCount();
+	@Override
+	public String getIdentifier(){
+		return appendIdentifier(new StringBuilder()).toString();
+	}
 
-    boolean isRecycled();
-
-    String getMimeType();
-
-    void setMimeType(String mimeType);
-
-    void recycle();
-
-    String getSize();
-
-    String getConfig();
-
-    String getInfo();
+	@Override
+	public StringBuilder appendIdentifier(StringBuilder builder){
+		builder.append("MaxSize(");
+		builder.append(width);
+		builder.append("x");
+		builder.append(height);
+		builder.append(")");
+		return builder;
+	}
 }

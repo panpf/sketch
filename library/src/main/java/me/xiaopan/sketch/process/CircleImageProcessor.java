@@ -53,12 +53,13 @@ public class CircleImageProcessor implements ImageProcessor {
     }
 
     @Override
-    public void appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append(NAME);
+        return builder;
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, Resize resize) {
+    public Bitmap process(Bitmap bitmap, Resize resize, boolean imagesOfLowQuality) {
         if(bitmap == null){
             return null;
         }
@@ -84,7 +85,7 @@ public class CircleImageProcessor implements ImageProcessor {
 
         // 初始化画布
         int diameter = newBitmapWidth<newBitmapHeight?newBitmapWidth:newBitmapHeight;
-        Bitmap output = Bitmap.createBitmap(diameter, diameter, Bitmap.Config.ARGB_8888);
+        Bitmap output = Bitmap.createBitmap(diameter, diameter, imagesOfLowQuality? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
         paint.setAntiAlias(true);

@@ -28,6 +28,7 @@ public class ImageHolder {
     private Bitmap bitmap;
     private ImageProcessor imageProcessor;
     private Resize resize;
+    private boolean imagesOfLowQuality;
     private boolean canRecycle;
 
     public ImageHolder(int resId) {
@@ -45,13 +46,24 @@ public class ImageHolder {
         this.imageProcessor = imageProcessor;
     }
 
+    public ImageHolder(int resId, ImageProcessor imageProcessor, Resize resize, boolean imagesOfLowQuality) {
+        this.resId = resId;
+        this.resize = resize;
+        this.imageProcessor = imageProcessor;
+        this.imagesOfLowQuality = imagesOfLowQuality;
+    }
+
     public Bitmap getBitmap(Context context){
         if(bitmap == null){
             Drawable drawable = context.getResources().getDrawable(resId);
             if(drawable != null && drawable instanceof BitmapDrawable){
                 bitmap = ((BitmapDrawable) drawable).getBitmap();
                 if(imageProcessor != null){
-                    Bitmap newBitmap = imageProcessor.process(bitmap, resize);
+                    boolean tempImagesOfLowQuality = this.imagesOfLowQuality;
+                    if(Sketch.with(context).getConfiguration().isImagesOfLowQuality()){
+                        tempImagesOfLowQuality = true;
+                    }
+                    Bitmap newBitmap = imageProcessor.process(bitmap, resize, tempImagesOfLowQuality);
                     if(newBitmap != bitmap){
                         bitmap = newBitmap;
                         canRecycle = true;

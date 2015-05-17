@@ -46,7 +46,7 @@ public interface LoadHelper {
      * @param maxSize 最大尺寸
      * @return LoadHelper
      */
-    LoadHelper maxSize(ImageSize maxSize);
+    LoadHelper maxSize(MaxSize maxSize);
 
     /**
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
@@ -70,6 +70,12 @@ public interface LoadHelper {
      * @return LoadHelper
      */
     LoadHelper resize(int width, int height);
+
+    /**
+     * 返回低质量的图片
+     * @return LoadHelper
+     */
+    LoadHelper imagesOfLowQuality();
 
     /**
      * 设置图片处理器，图片处理器会根据resize创建一张新的图片

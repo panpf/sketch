@@ -77,33 +77,14 @@ public class RecycleBitmapDrawable extends SrcBitmapDrawable implements RecycleD
     }
 
     @Override
-    public int getSize() {
-        Bitmap bitmap = getBitmap();
-        if(bitmap == null){
-            return 0;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return bitmap.getAllocationByteCount();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            return  bitmap.getByteCount();
-        }else{
-            return bitmap.getRowBytes() * bitmap.getHeight();
-        }
+    public int getByteCount() {
+        return getByteCount(getBitmap());
     }
 
     @Override
     public boolean isRecycled() {
         Bitmap bitmap = getBitmap();
         return bitmap != null && bitmap.isRecycled();
-    }
-
-    @Override
-    public String getHashCodeByLog() {
-        Bitmap bitmap = getBitmap();
-        if(bitmap != null){
-            return Integer.toHexString(bitmap.hashCode());
-        }else{
-            return null;
-        }
     }
 
     @Override
@@ -124,15 +105,65 @@ public class RecycleBitmapDrawable extends SrcBitmapDrawable implements RecycleD
         }
     }
 
+    @Override
+    public String getSize() {
+        Bitmap bitmap = getBitmap();
+        if(bitmap != null){
+            return CommentUtils.concat(bitmap.getWidth(), "x", bitmap.getHeight());
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public String getConfig(){
+        Bitmap bitmap = getBitmap();
+        if(bitmap != null && bitmap.getConfig() != null){
+            return bitmap.getConfig().name();
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public String getInfo() {
+        Bitmap bitmap = getBitmap();
+        if(bitmap != null){
+            return CommentUtils.concat("RecycleBitmapDrawable(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(), ")");
+        }else{
+            return null;
+        }
+    }
+
+    public static String getInfo(Bitmap bitmap, String mimeType) {
+        if(bitmap != null){
+            return CommentUtils.concat("Bitmap(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig()!=null?bitmap.getConfig().name():null, "; byteCount=", getByteCount(bitmap), ")");
+        }else{
+            return null;
+        }
+    }
+
+    public static int getByteCount(Bitmap bitmap) {
+        if(bitmap == null){
+            return 0;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return bitmap.getAllocationByteCount();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return  bitmap.getByteCount();
+        }else{
+            return bitmap.getRowBytes() * bitmap.getHeight();
+        }
+    }
+
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
-            getBitmap().recycle();
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "recycled bitmap@", getHashCodeByLog(), " - ", type, " - ", callingStation));
+                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo()));
             }
+            getBitmap().recycle();
         }else{
             if(Sketch.isDebugMode()){
-                Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "can't recycle bitmap@", getHashCodeByLog(), " - ", type, " - ", callingStation, " - ", "cacheRefCount=", String.valueOf(cacheRefCount), "; ", "displayRefCount=", String.valueOf(displayRefCount), "; ", "waitDisplayRefCount=", String.valueOf(waitDisplayRefCount), "; ", "canRecycle=", String.valueOf(canRecycle())));
+                Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "can't recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
             }
         }
     }

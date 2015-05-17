@@ -588,6 +588,10 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
         return 0;
     }
 
+    public Bitmap getBitmap() {
+        return mBuffer;
+    }
+
     /**
      * Returns the minimum number of bytes that can be used to store pixels of the single frame.
      * Returned value is the same for all the frames since it is based on the size of GIF screen.

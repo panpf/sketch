@@ -369,7 +369,14 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
     @Override
     public void onDisplay() {
-
+        this.isSetImage = true;
+        if(replacedClickListener){
+            setOnClickListener(onClickListener);
+            if(onClickListener == null){
+                setClickable(false);
+            }
+            replacedClickListener = false;
+        }
     }
 
     @Override
@@ -470,14 +477,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     @Override
     public void setDisplayParams(DisplayParams displayParams) {
         this.displayParams = displayParams;
-        this.isSetImage = true;
-        if(replacedClickListener){
-            setOnClickListener(onClickListener);
-            if(onClickListener == null){
-                setClickable(false);
-            }
-            replacedClickListener = false;
-        }
     }
 
     /**
@@ -708,6 +707,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
                         case DISK_CACHE: fromFlagColor = FROM_FLAG_COLOR_DISK_CACHE; break;
                         case NETWORK: fromFlagColor = FROM_FLAG_COLOR_NETWORK; break;
                         case LOCAL: fromFlagColor = FROM_FLAG_COLOR_LOCAL; break;
+                        default: fromFlagColor = NONE; break;
                     }
                 }else{
                     fromFlagColor = NONE;

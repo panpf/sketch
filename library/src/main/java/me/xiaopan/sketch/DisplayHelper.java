@@ -77,7 +77,7 @@ public interface DisplayHelper {
      * @param maxSize 最大尺寸
      * @return DisplayHelper
      */
-    DisplayHelper maxSize(ImageSize maxSize);
+    DisplayHelper maxSize(MaxSize maxSize);
 
     /**
      * 设置最大尺寸，在解码时会使用此Size来计算inSimpleSize
@@ -106,6 +106,12 @@ public interface DisplayHelper {
      * 根据ImageView的LayoutSize裁剪图片
      */
     DisplayHelper resizeByImageViewLayoutSize();
+
+    /**
+     * 返回低质量的图片
+     * @return LoadHelper
+     */
+    DisplayHelper imagesOfLowQuality();
 
     /**
      * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
@@ -205,5 +211,5 @@ public interface DisplayHelper {
     /**
      * 生成内存缓存ID
      */
-    String generateMemoryCacheId(String uri, ImageSize maxSize, Resize resize, ImageProcessor imageProcessor);
+    String generateMemoryCacheId(String uri, MaxSize maxSize, Resize resize, boolean imagesOfLowQuality, ImageProcessor imageProcessor);
 }

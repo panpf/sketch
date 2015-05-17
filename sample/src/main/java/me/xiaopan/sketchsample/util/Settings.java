@@ -15,6 +15,7 @@ public class Settings {
     private static final String PREFERENCE_CLICK_SHOW_CLICK_RIPPLE = "PREFERENCE_CLICK_SHOW_CLICK_RIPPLE";
     private static final String PREFERENCE_ENABLE_MEMORY_CACHE = "PREFERENCE_ENABLE_MEMORY_CACHE";
     private static final String PREFERENCE_ENABLE_DISK_CACHE = "PREFERENCE_ENABLE_DISK_CACHE";
+    private static final String PREFERENCE_IMAGES_OF_LOW_QUALITY = "PREFERENCE_IMAGES_OF_LOW_QUALITY";
 
     private static Settings settingsInstance;
 
@@ -27,6 +28,7 @@ public class Settings {
     private boolean showClickRipple;
     private boolean enableMemoryCache;
     private boolean enableDiskCache;
+    private boolean imagesOfLowQuality;
 
     private SharedPreferences.Editor editor;
 
@@ -43,6 +45,7 @@ public class Settings {
         this.showClickRipple = preferences.getBoolean(PREFERENCE_CLICK_SHOW_CLICK_RIPPLE, true);
         this.enableMemoryCache = preferences.getBoolean(PREFERENCE_ENABLE_MEMORY_CACHE, true);
         this.enableDiskCache = preferences.getBoolean(PREFERENCE_ENABLE_DISK_CACHE, true);
+        this.imagesOfLowQuality = preferences.getBoolean(PREFERENCE_IMAGES_OF_LOW_QUALITY, false);
     }
 
     public static Settings with(Context context){
@@ -183,6 +186,16 @@ public class Settings {
     public void setEnableMemoryCache(boolean enableMemoryCache) {
         this.enableMemoryCache = enableMemoryCache;
         editor.putBoolean(PREFERENCE_ENABLE_MEMORY_CACHE, enableMemoryCache);
+        apply();
+    }
+
+    public boolean isImagesOfLowQuality() {
+        return imagesOfLowQuality;
+    }
+
+    public void setImagesOfLowQuality(boolean imagesOfLowQuality) {
+        this.imagesOfLowQuality = imagesOfLowQuality;
+        editor.putBoolean(PREFERENCE_IMAGES_OF_LOW_QUALITY, imagesOfLowQuality);
         apply();
     }
 }

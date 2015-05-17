@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch;
 
-import android.content.Context;
-
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.process.ImageProcessor;
 
@@ -33,8 +31,7 @@ public class DisplayOptions extends LoadOptions {
 
     private boolean resizeByImageViewLayoutSize;
 
-    public DisplayOptions(Context context) {
-        super(context);
+    public DisplayOptions() {
     }
 
     public DisplayOptions(DisplayOptions from){
@@ -200,7 +197,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setMaxSize(ImageSize maxSize){
+    public DisplayOptions setMaxSize(MaxSize maxSize){
         super.setMaxSize(maxSize);
         return this;
     }
@@ -232,6 +229,12 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
+    public DisplayOptions setImagesOfLowQuality(boolean imagesOfLowQuality) {
+        super.setImagesOfLowQuality(imagesOfLowQuality);
+        return this;
+    }
+
+    @Override
     public DisplayOptions setRequestLevel(RequestLevel requestLevel) {
         super.setRequestLevel(requestLevel);
         return this;
@@ -247,6 +250,7 @@ public class DisplayOptions extends LoadOptions {
 
         setMaxSize(displayOptions.getMaxSize());
         setResize(displayOptions.getResize());
+        setImagesOfLowQuality(displayOptions.isImagesOfLowQuality());
         setImageProcessor(displayOptions.getImageProcessor());
         setDecodeGifImage(displayOptions.isDecodeGifImage());
 

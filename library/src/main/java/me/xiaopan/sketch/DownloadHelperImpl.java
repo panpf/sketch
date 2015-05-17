@@ -114,8 +114,19 @@ public class DownloadHelperImpl implements DownloadHelper{
         return this;
     }
 
+    /**
+     * 处理一下参数
+     */
+    protected void handleParams(){
+        if(!sketch.getConfiguration().isEnableDiskCache()){
+            enableDiskCache = false;
+        }
+    }
+
     @Override
     public Request commit(){
+        handleParams();
+
         if(downloadListener != null){
             downloadListener.onStarted();
         }

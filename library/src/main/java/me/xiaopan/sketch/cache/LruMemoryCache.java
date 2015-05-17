@@ -51,9 +51,13 @@ public class LruMemoryCache implements MemoryCache {
 		if(!(value instanceof RecycleDrawableInterface)){
 			throw new IllegalArgumentException("drawable must be implemented RecycleDrawableInterface");
 		}
+		int cacheSize = 0;
+		if(Sketch.isDebugMode()){
+			cacheSize = drawableLruCache.size();
+		}
 		drawableLruCache.put(key, value);
 		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "put", " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "put", " - ", "beforeCacheSize=", Formatter.formatFileSize(context, cacheSize), " - ", ((RecycleDrawableInterface) value).getInfo(), " - ", "afterCacheSize=", Formatter.formatFileSize(context, drawableLruCache.size())));
 		}
 	}
 
@@ -102,8 +106,8 @@ public class LruMemoryCache implements MemoryCache {
 		}
 
 		@Override
-		protected int sizeOf(String key, Drawable value) {
-			int bitmapSize = ((RecycleDrawableInterface) value).getSize();
+		public int sizeOf(String key, Drawable value) {
+			int bitmapSize = ((RecycleDrawableInterface) value).getByteCount();
 			return bitmapSize == 0 ? 1 : bitmapSize;
 		}
 

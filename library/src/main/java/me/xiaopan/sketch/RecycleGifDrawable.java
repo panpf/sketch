@@ -20,6 +20,7 @@ import android.content.ContentResolver;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 
@@ -123,18 +124,13 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     }
 
     @Override
-    public int getSize() {
+    public int getByteCount() {
         return (int) getAllocationByteCount();
     }
 
     @Override
     public boolean isRecycled() {
         return super.isRecycled();
-    }
-
-    @Override
-    public String getHashCodeByLog() {
-        return Integer.toHexString(hashCode());
     }
 
     @Override
@@ -147,15 +143,45 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
         this.mimeType = mimeType;
     }
 
+    @Override
+    public String getSize() {
+        Bitmap bitmap = getBitmap();
+        if(bitmap != null){
+            return CommentUtils.concat(bitmap.getWidth(), "x", bitmap.getHeight());
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public String getConfig() {
+        Bitmap bitmap = getBitmap();
+        if(bitmap != null && bitmap.getConfig() != null){
+            return bitmap.getConfig().name();
+        }else{
+            return null;
+        }
+    }
+
+    @Override
+    public String getInfo() {
+        Bitmap bitmap = getBitmap();
+        if(bitmap != null){
+            return CommentUtils.concat("RecycleGifDrawable(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(), ")");
+        }else{
+            return null;
+        }
+    }
+
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "recycled gif drawable@", getHashCodeByLog(), " - ", type, " - ", callingStation));
+                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "recycled gif drawable", " - ", callingStation, ":", type, " - ", getInfo()));
             }
             recycle();
         }else{
             if(Sketch.isDebugMode()){
-                Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "can't recycle gif drawable@", getHashCodeByLog(), " - ", type, " - ", callingStation, " - ", "cacheRefCount=", String.valueOf(cacheRefCount), "; ", "displayRefCount=", String.valueOf(displayRefCount), "; ", "waitDisplayRefCount=", String.valueOf(waitDisplayRefCount), "; ", "canRecycle=", String.valueOf(canRecycle())));
+                Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "can't recycle gif drawable", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
             }
         }
     }

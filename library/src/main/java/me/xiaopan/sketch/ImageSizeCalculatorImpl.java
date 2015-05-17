@@ -27,16 +27,15 @@ import java.lang.reflect.Field;
  * 图片尺寸计算器
  */
 public class ImageSizeCalculatorImpl implements ImageSizeCalculator{
-    private ImageSize defaultMaxSize;
 
     @Override
-    public ImageSize calculateImageMaxSize(ImageView imageView) {
+    public MaxSize calculateImageMaxSize(ImageView imageView) {
         int width = getWidth(imageView, true, true, false);
         int height = getHeight(imageView, true, true, false);
         if (width > 0 || height > 0){
-            return new ImageSize(width, height);
+            return new MaxSize(width, height);
         }else{
-            return getDefaultImageMaxSize(imageView.getContext());
+            return null;
         }
     }
 
@@ -52,20 +51,22 @@ public class ImageSizeCalculatorImpl implements ImageSizeCalculator{
     }
 
     @Override
-    public ImageSize getDefaultImageMaxSize(Context context) {
-        if(defaultMaxSize == null){
-            synchronized (this){
-                if(defaultMaxSize == null){
-                    DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-                    defaultMaxSize = new ImageSize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
-                }
-            }
+    public FixedSize calculateImageFixedSize(ImageView imageView) {
+        ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+        if(layoutParams != null && layoutParams.width > 0 && layoutParams.height > 0 && imageView.getScaleType() == ImageView.ScaleType.CENTER_CROP){
+            return new FixedSize(layoutParams.width-(imageView.getPaddingLeft()+imageView.getPaddingRight()), layoutParams.height-(imageView.getPaddingTop()+imageView.getPaddingBottom()));
         }
-        return defaultMaxSize;
+        return null;
     }
 
     @Override
-    public int compareMaxSize(ImageSize maxSize1, ImageSize maxSize2) {
+    public MaxSize getDefaultImageMaxSize(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return new MaxSize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
+    }
+
+    @Override
+    public int compareMaxSize(MaxSize maxSize1, MaxSize maxSize2) {
         if(maxSize1 == null || maxSize2 == null){
             return 0;
         }

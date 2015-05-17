@@ -2,7 +2,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/layout_main_leftMenu"
-    android:layout_width="250dp"
+    android:layout_width="350dp"
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:clickable="true">
@@ -55,7 +55,8 @@
             android:layout_marginTop="16dp"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:text="设置"/>
+            android:text="功能"/>
+
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
@@ -227,6 +228,25 @@
                 android:text="开启磁盘缓存"/>
             <CheckBox
                 android:id="@+id/checkBox_main_enableDiskCache"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/item_main_imagesOfLowQuality"
+            android:clickable="true"
+            style="@style/menu_item">
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="低质量图片"/>
+            <CheckBox
+                android:id="@+id/checkBox_main_imagesOfLowQuality"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="8dp"

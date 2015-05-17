@@ -26,7 +26,6 @@ import android.graphics.RectF;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Resize;
-import me.xiaopan.sketch.util.CommentUtils;
 
 /**
  * 圆角位图处理器
@@ -54,21 +53,22 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
 
     @Override
     public String getIdentifier() {
-        return CommentUtils.concat(NAME+"(roundPixels="+roundPixels+", forceUseResizeInCenterCrop="+forceUseResizeInCenterCrop+")");
+        return appendIdentifier(new StringBuilder()).toString();
     }
 
     @Override
-    public void appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append(NAME);
         builder.append("(roundPixels=");
         builder.append(roundPixels);
         builder.append(", forceUseResizeInCenterCrop=");
         builder.append(forceUseResizeInCenterCrop);
         builder.append(")");
+        return builder;
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, Resize resize) {
+    public Bitmap process(Bitmap bitmap, Resize resize, boolean imagesOfLowQuality) {
         if(bitmap == null){
             return null;
         }
@@ -138,7 +138,7 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
         if(srcRect == null){
             return bitmap;
         }else{
-            Bitmap output = Bitmap.createBitmap(newBitmapWidth, newBitmapHeight, Bitmap.Config.ARGB_8888);
+            Bitmap output = Bitmap.createBitmap(newBitmapWidth, newBitmapHeight, imagesOfLowQuality? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(output);
             Paint paint = new Paint();
             paint.setAntiAlias(true);

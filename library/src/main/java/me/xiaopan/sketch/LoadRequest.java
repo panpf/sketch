@@ -37,12 +37,22 @@ public interface LoadRequest extends DownloadRequest{
     /**
      * 获取最大尺寸，用于读取图片时计算inSampleSize
      */
-    ImageSize getMaxSize();
+    MaxSize getMaxSize();
 
     /**
      * 设置最大尺寸，用于读取图片时计算inSampleSize
      */
-    void setMaxSize(ImageSize maxSize);
+    void setMaxSize(MaxSize maxSize);
+
+    /**
+     * 是否返回低质量的图片
+     */
+    boolean isImagesOfLowQuality();
+
+    /**
+     * 设置是否返回低质量的图片
+     */
+    void setImagesOfLowQuality(boolean imagesOfLowQuality);
 
     /**
      * 获取图片处理器

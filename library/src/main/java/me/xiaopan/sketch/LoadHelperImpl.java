@@ -39,11 +39,12 @@ public class LoadHelperImpl implements LoadHelper{
     protected ProgressListener progressListener;
 
     // 加载属性
-    protected boolean decodeGifImage = true;
     protected Resize resize;
-    protected ImageSize maxSize;
-    protected ImageProcessor imageProcessor;
+    protected boolean decodeGifImage = true;
+    protected MaxSize maxSize;
     protected LoadListener loadListener;
+    protected boolean imagesOfLowQuality;
+    protected ImageProcessor imageProcessor;
 
     /**
      * 创建加载请求生成器
@@ -61,7 +62,6 @@ public class LoadHelperImpl implements LoadHelper{
     public LoadHelperImpl(Sketch sketch, String uri) {
         this.sketch = sketch;
         this.uri = uri;
-        this.maxSize = sketch.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(sketch.getConfiguration().getContext());
         if(sketch.getConfiguration().isPauseDownload()){
             this.requestLevel = RequestLevel.LOCAL;
             this.requestLevelFrom = RequestLevelFrom.PAUSE_DOWNLOAD;
@@ -87,14 +87,14 @@ public class LoadHelperImpl implements LoadHelper{
     }
 
     @Override
-    public LoadHelperImpl maxSize(ImageSize maxSize){
+    public LoadHelperImpl maxSize(MaxSize maxSize){
         this.maxSize = maxSize;
         return this;
     }
 
     @Override
     public LoadHelperImpl maxSize(int width, int height){
-        this.maxSize = new ImageSize(width, height);
+        this.maxSize = new MaxSize(width, height);
         return this;
     }
 
@@ -107,6 +107,12 @@ public class LoadHelperImpl implements LoadHelper{
     @Override
     public LoadHelperImpl resize(int width, int height){
         this.resize = new Resize(width, height);
+        return this;
+    }
+
+    @Override
+    public LoadHelperImpl imagesOfLowQuality() {
+        this.imagesOfLowQuality = true;
         return this;
     }
 
@@ -141,6 +147,7 @@ public class LoadHelperImpl implements LoadHelper{
         if(this.resize == null){
             this.resize = options.getResize();
         }
+        this.imagesOfLowQuality = options.isImagesOfLowQuality();
         if(this.imageProcessor == null){
             this.imageProcessor = options.getImageProcessor();
         }
@@ -180,6 +187,21 @@ public class LoadHelperImpl implements LoadHelper{
         if(imageProcessor == null && resize != null){
             imageProcessor = sketch.getConfiguration().getDefaultCutImageProcessor();
         }
+        if(maxSize == null){
+            maxSize = sketch.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(sketch.getConfiguration().getContext());
+        }
+        if(name == null){
+            name = uri;
+        }
+        if(!sketch.getConfiguration().isDecodeGifImage()){
+            decodeGifImage = false;
+        }
+        if(!sketch.getConfiguration().isEnableDiskCache()){
+            enableDiskCache = false;
+        }
+        if(sketch.getConfiguration().isImagesOfLowQuality()){
+            imagesOfLowQuality = true;
+        }
     }
 
     @Override
@@ -199,10 +221,6 @@ public class LoadHelperImpl implements LoadHelper{
                 loadListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
             }
             return null;
-        }
-
-        if(name == null){
-            name = uri;
         }
 
         // 过滤掉不支持的URI协议类型
@@ -229,6 +247,7 @@ public class LoadHelperImpl implements LoadHelper{
 
         request.setResize(resize);
         request.setMaxSize(maxSize);
+        request.setImagesOfLowQuality(imagesOfLowQuality);
         request.setLoadListener(loadListener);
         request.setImageProcessor(imageProcessor);
         request.setDecodeGifImage(decodeGifImage);

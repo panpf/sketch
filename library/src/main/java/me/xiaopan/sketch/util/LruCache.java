@@ -244,7 +244,7 @@ public class LruCache<K, V> {
      *
      * <p>An entry's size must not change while it is in the cache.
      */
-    protected int sizeOf(K key, V value) {
+    public int sizeOf(K key, V value) {
         return 1;
     }
 

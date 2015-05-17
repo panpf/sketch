@@ -31,15 +31,16 @@ public class DisplayParams {
     public ProgressListener progressListener;
 
     // 加载属性
-    public boolean decodeGifImage = true;
-    public ImageSize maxSize;
     public Resize resize;
+    public boolean decodeGifImage = true;
+    public boolean imagesOfLowQuality;
+    public MaxSize maxSize;
     public ImageProcessor imageProcessor;
 
     // 显示属性
     public String memoryCacheId;
     public boolean enableMemoryCache = true;
-    public ImageSize fixedSize;
+    public FixedSize fixedSize;
     public ImageHolder loadingImageHolder;
     public ImageHolder loadFailImageHolder;
     public ImageHolder pauseDownloadImageHolder;

@@ -16,40 +16,12 @@
 
 package me.xiaopan.sketch;
 
-import me.xiaopan.sketch.util.CommentUtils;
+public interface ImageSize {
+	int getWidth();
 
-public class ImageSize {
-	private int width;
-	private int height;
+	int getHeight();
 
-	public ImageSize(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
+	String getIdentifier();
 
-	/**
-     * 获取宽度
-     * @return 宽度
-     */
-	public int getWidth() {
-		return width;
-	}
-
-    /**
-     * 获取高度
-     * @return 高度
-     */
-	public int getHeight() {
-		return height;
-	}
-
-	public String getIdentifier(){
-		return CommentUtils.concat(String.valueOf(width), "x", String.valueOf(height));
-	}
-
-	public void appendIdentifier(StringBuilder builder){
-		builder.append(width);
-		builder.append("x");
-		builder.append(height);
-	}
+	StringBuilder appendIdentifier(StringBuilder builder);
 }

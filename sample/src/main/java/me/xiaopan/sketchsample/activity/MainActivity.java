@@ -17,11 +17,13 @@
 package me.xiaopan.sketchsample.activity;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.SlidingPaneLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.format.Formatter;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -31,15 +33,10 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Map;
-
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectParentMember;
 import me.xiaopan.android.inject.InjectView;
 import me.xiaopan.android.widget.PagerSlidingTabStrip;
-import me.xiaopan.sketch.DisplayOptions;
-import me.xiaopan.sketch.DownloadOptions;
-import me.xiaopan.sketch.RequestOptions;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.MyAppCompatActivity;
 import me.xiaopan.sketchsample.R;
@@ -51,6 +48,7 @@ import me.xiaopan.sketchsample.fragment.StarIndexFragment;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.DimenUtils;
 import me.xiaopan.sketchsample.util.Settings;
+import me.xiaopan.sketchsample.widget.SlidingPaneLayoutCompatDrawerLayout;
 
 /**
  * 首页
@@ -60,7 +58,7 @@ import me.xiaopan.sketchsample.util.Settings;
 public class MainActivity extends MyAppCompatActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener, AboutFragment.TogglePageListener {
     @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
-    @InjectView(R.id.drawer_main_content) private SlidingPaneLayout drawerLayout;
+    @InjectView(R.id.drawer_main_content) private SlidingPaneLayout slidingPaneLayout;
     @InjectView(R.id.layout_main_leftMenu) private View leftMenuView;
     @InjectView(R.id.button_main_search) private View searchButton;
     @InjectView(R.id.button_main_star) private View starButton;
@@ -89,12 +87,15 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
     @InjectView(R.id.checkBox_main_enableMemoryCache) private CheckBox enableMemoryCacheCheckBox;
     @InjectView(R.id.item_main_enableDiskCache) private View enableDiskCacheItem;
     @InjectView(R.id.checkBox_main_enableDiskCache) private CheckBox enableDiskCacheCheckBox;
+    @InjectView(R.id.item_main_imagesOfLowQuality) private View imagesOfLowQualityItem;
+    @InjectView(R.id.checkBox_main_imagesOfLowQuality) private CheckBox imagesOfLowQualityCheckBox;
 
     private long lastClickBackTime;
     private Type type;
     private Settings settings;
 
     private WindowBackgroundManager windowBackgroundManager;
+    private ActionBarDrawerToggle toggleDrawable;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -102,14 +103,18 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
 
         windowBackgroundManager = new WindowBackgroundManager(this);
 
-        drawerLayout.setShadowResourceLeft(R.drawable.shape_drawer_shadow_down_left);
-        drawerLayout.setSliderFadeColor(Color.parseColor("#00ffffff"));
-        setRefreshCacheSize();
+        slidingPaneLayout.setShadowResourceLeft(R.drawable.shape_drawer_shadow_down_left);
+        slidingPaneLayout.setSliderFadeColor(Color.parseColor("#00ffffff"));
+        initSlidingPanLayoutSlideListener();
 
         // 设置左侧菜单的宽度为屏幕的一半
         ViewGroup.LayoutParams params = leftMenuView.getLayoutParams();
         params.width = (int) (getResources().getDisplayMetrics().widthPixels*0.7);
         leftMenuView.setLayoutParams(params);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        toggleDrawable = new ActionBarDrawerToggle(this, new SlidingPaneLayoutCompatDrawerLayout(getBaseContext(), slidingPaneLayout), toolbar, R.string.drawer_open, R.string.drawer_close);
 
         settings = Settings.with(getBaseContext());
         scrollingPauseLoadCheckBox.setChecked(settings.isScrollingPauseLoad());
@@ -121,6 +126,7 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
         showClickRippleCheckBox.setChecked(settings.isShowClickRipple());
         enableMemoryCacheCheckBox.setChecked(settings.isEnableMemoryCache());
         enableDiskCacheCheckBox.setChecked(settings.isEnableDiskCache());
+        imagesOfLowQualityCheckBox.setChecked(settings.isImagesOfLowQuality());
 
         starButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
@@ -138,6 +144,7 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
         showClickRippleItem.setOnClickListener(this);
         enableDiskCacheItem.setOnClickListener(this);
         enableMemoryCacheItem.setOnClickListener(this);
+        imagesOfLowQualityItem.setOnClickListener(this);
 
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
@@ -145,15 +152,33 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
         searchButton.performClick();
     }
 
-    private void setRefreshCacheSize(){
-        drawerLayout.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+
+        // 同步状态，这一步很重要，要不然初始
+        toggleDrawable.syncState();
+        toggleDrawable.onDrawerSlide(null, 1.0f);
+        toggleDrawable.onDrawerSlide(null, 0.5f);
+        toggleDrawable.onDrawerSlide(null, 0.0f);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        toggleDrawable.onConfigurationChanged(newConfig);
+    }
+
+    private void initSlidingPanLayoutSlideListener(){
+        slidingPaneLayout.setPanelSlideListener(new SlidingPaneLayout.PanelSlideListener() {
             @Override
             public void onPanelSlide(View panel, float slideOffset) {
-
+                toggleDrawable.onDrawerSlide(panel, slideOffset);
             }
 
             @Override
             public void onPanelOpened(View panel) {
+                toggleDrawable.onDrawerOpened(panel);
                 refreshCacheSizeInfo(false, Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getSize(), Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getMaxSize());
                 new AsyncTask<Integer, Integer, Long>() {
                     @Override
@@ -170,7 +195,7 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
 
             @Override
             public void onPanelClosed(View panel) {
-
+                toggleDrawable.onDrawerClosed(panel);
             }
         });
     }
@@ -189,10 +214,10 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if(keyCode == KeyEvent.KEYCODE_MENU){
-            if(drawerLayout.isOpen()){
-                drawerLayout.closePane();
+            if(slidingPaneLayout.isOpen()){
+                slidingPaneLayout.closePane();
             }else{
-                drawerLayout.openPane();
+                slidingPaneLayout.openPane();
             }
             return true;
         }else{
@@ -226,7 +251,7 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
     public void onClick(View v) {
         switch(v.getId()){
             case R.id.button_main_about :
-                drawerLayout.closePane();
+                slidingPaneLayout.closePane();
                 if (type != Type.ABOUT) {
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
@@ -239,7 +264,7 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
                 }
                 break;
             case R.id.button_main_appList :
-                drawerLayout.closePane();
+                slidingPaneLayout.closePane();
                 if(type != Type.APP_LIST){
                     getSupportActionBar().setTitle("本地APP");
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
@@ -252,7 +277,7 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
                 }
                 break;
             case R.id.button_main_photoAlbum :
-                drawerLayout.closePane();
+                slidingPaneLayout.closePane();
                 if(type != Type.LOCAL_PHOTO_ALBUM){
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
@@ -266,7 +291,7 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
                 }
                 break;
             case R.id.button_main_search :
-                drawerLayout.closePane();
+                slidingPaneLayout.closePane();
                 if (type != Type.SEARCH) {
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
@@ -278,7 +303,7 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
                 }
                 break;
             case R.id.button_main_star :
-                drawerLayout.closePane();
+                slidingPaneLayout.closePane();
                 if (type != Type.STAR) {
                     getSupportActionBar().setTitle("明星图片");
                     AnimationUtils.visibleViewByAlpha(starTabStrip);
@@ -295,37 +320,37 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
                 settings.setMobileNetworkPauseDownload(newMobileNetStopDownloadValue);
                 mobileNetworkPauseDownloadCheckBox.setChecked(newMobileNetStopDownloadValue);
                 Sketch.with(getBaseContext()).getConfiguration().setMobileNetworkPauseDownload(newMobileNetStopDownloadValue);
-                drawerLayout.closePane();
+                slidingPaneLayout.closePane();
                 break;
             case R.id.item_main_scrollingPauseLoad :
                 boolean newPauseLoadValue = !settings.isScrollingPauseLoad();
                 settings.setScrollingPauseLoad(newPauseLoadValue);
                 scrollingPauseLoadCheckBox.setChecked(newPauseLoadValue);
-                drawerLayout.closePane();
+                slidingPaneLayout.closePane();
                 break;
             case R.id.item_main_showImageDownloadProgress :
                 boolean newShowProgressValue = !settings.isShowImageDownloadProgress();
                 settings.setShowImageDownloadProgress(newShowProgressValue);
                 showImageDownloadProgressCheckBox.setChecked(newShowProgressValue);
-                drawerLayout.closePane();
+                slidingPaneLayout.closePane();
                 break;
             case R.id.item_main_showImageFromFlag :
                 boolean newShowImageFromFlag = !settings.isShowImageFromFlag();
                 settings.setShowImageFromFlag(newShowImageFromFlag);
                 showImageFromFlagCheckBox.setChecked(newShowImageFromFlag);
-                drawerLayout.closePane();
+                slidingPaneLayout.closePane();
                 break;
             case R.id.item_main_clickDisplayOnFailed :
                 boolean newClickDisplayOnFailed = !settings.isClickDisplayOnFailed();
                 settings.setClickDisplayOnFailed(newClickDisplayOnFailed);
                 clickDisplayOnFailedCheckBox.setChecked(newClickDisplayOnFailed);
-                drawerLayout.closePane();
+                slidingPaneLayout.closePane();
                 break;
             case R.id.item_main_clickDisplayOnPauseDownload :
                 boolean newClickDisplayOnPauseDownload = !settings.isClickDisplayOnPauseDownload();
                 settings.setClickDisplayOnPauseDownload(newClickDisplayOnPauseDownload);
                 clickDisplayOnPauseDownloadCheckBox.setChecked(newClickDisplayOnPauseDownload);
-                drawerLayout.closePane();
+                slidingPaneLayout.closePane();
                 break;
             case R.id.item_main_cleanMemoryCache :
                 Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
@@ -343,43 +368,31 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
                 break;
             case R.id.item_main_showClickRipple :
                 boolean newShowClickRippleValue = !settings.isShowClickRipple();
-                settings.setShowClickRipple(newShowClickRippleValue);
                 showClickRippleCheckBox.setChecked(newShowClickRippleValue);
-                drawerLayout.closePane();
+                settings.setShowClickRipple(newShowClickRippleValue);
+                slidingPaneLayout.closePane();
                 break;
             case R.id.item_main_enableDiskCache :
                 boolean newEnableDiskCacheValue = !settings.isEnableDiskCache();
                 settings.setEnableDiskCache(newEnableDiskCacheValue);
-                setCacheStatus(false, newEnableDiskCacheValue);
                 enableDiskCacheCheckBox.setChecked(newEnableDiskCacheValue);
-                drawerLayout.closePane();
+                Sketch.with(getBaseContext()).getConfiguration().setEnableDiskCache(newEnableDiskCacheValue);
+                slidingPaneLayout.closePane();
                 break;
             case R.id.item_main_enableMemoryCache :
                 boolean newEnableMemoryCacheValue = !settings.isEnableMemoryCache();
-                settings.setEnableMemoryCache(newEnableMemoryCacheValue);
-                setCacheStatus(true, newEnableMemoryCacheValue);
                 enableMemoryCacheCheckBox.setChecked(newEnableMemoryCacheValue);
-                drawerLayout.closePane();
+                settings.setEnableMemoryCache(newEnableMemoryCacheValue);
+                Sketch.with(getBaseContext()).getConfiguration().setEnableMemoryCache(newEnableMemoryCacheValue);
+                slidingPaneLayout.closePane();
                 break;
-        }
-    }
-
-    private void setCacheStatus(boolean memory, boolean newValue){
-        Map<Enum<?>, RequestOptions> optionsMap = Sketch.getOptionsMap();
-        if(optionsMap != null && optionsMap.size() > 0){
-            for(RequestOptions options : optionsMap.values()){
-                if(options instanceof DisplayOptions){
-                    DisplayOptions displayOptions = (DisplayOptions) options;
-                    if(memory){
-                        displayOptions.setEnableMemoryCache(newValue);
-                    }else{
-                        displayOptions.setEnableDiskCache(newValue);
-                    }
-                }else if(options instanceof DownloadOptions){
-                    DownloadOptions displayOptions = (DownloadOptions) options;
-                    displayOptions.setEnableDiskCache(newValue);
-                }
-            }
+            case R.id.item_main_imagesOfLowQuality :
+                boolean newImagesOfLowQualityValue = !settings.isImagesOfLowQuality();
+                imagesOfLowQualityCheckBox.setChecked(newImagesOfLowQualityValue);
+                settings.setImagesOfLowQuality(newImagesOfLowQualityValue);
+                Sketch.with(getBaseContext()).getConfiguration().setImagesOfLowQuality(newImagesOfLowQualityValue);
+                slidingPaneLayout.closePane();
+                break;
         }
     }
 

@@ -16,23 +16,19 @@
 
 package me.xiaopan.sketch;
 
-import android.content.Context;
-import android.util.DisplayMetrics;
-
 import me.xiaopan.sketch.process.ImageProcessor;
 
 /**
  * 显示选项
  */
 public class LoadOptions extends DownloadOptions{
-    private ImageSize maxSize;	//最大图片尺寸，用于读取图片时计算inSampleSize
-    private Resize resize;	// 新的尺寸，ImageProcessor会根据此尺寸来创建新的图片
-    private ImageProcessor imageProcessor;	//图片处理器
-    private boolean decodeGifImage = true; // 是否解码GIF图片
+    private Resize resize;
+    private boolean decodeGifImage = true;
+    private boolean imagesOfLowQuality;
+    private MaxSize maxSize;
+    private ImageProcessor imageProcessor;
 
-    public LoadOptions(Context context) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        setMaxSize((int) (displayMetrics.widthPixels * 1.5f), (int) (displayMetrics.heightPixels * 1.5f));
+    public LoadOptions() {
     }
 
     public LoadOptions(LoadOptions from){
@@ -49,7 +45,7 @@ public class LoadOptions extends DownloadOptions{
      * 获取最大尺寸
      * @return 最大尺寸
      */
-    public ImageSize getMaxSize() {
+    public MaxSize getMaxSize() {
         return maxSize;
     }
 
@@ -58,7 +54,7 @@ public class LoadOptions extends DownloadOptions{
      * @param maxSize 最大尺寸
      * @return LoadOptions
      */
-    public LoadOptions setMaxSize(ImageSize maxSize){
+    public LoadOptions setMaxSize(MaxSize maxSize){
         this.maxSize = maxSize;
         return this;
     }
@@ -70,7 +66,7 @@ public class LoadOptions extends DownloadOptions{
      * @return LoadOptions
      */
     public LoadOptions setMaxSize(int width, int height){
-        this.maxSize = new ImageSize(width, height);
+        this.maxSize = new MaxSize(width, height);
         return this;
     }
 
@@ -144,9 +140,27 @@ public class LoadOptions extends DownloadOptions{
         return this;
     }
 
+    /**
+     * 是否返回低质量的图片
+     * @return true: 是
+     */
+    public boolean isImagesOfLowQuality() {
+        return imagesOfLowQuality;
+    }
+
+    /**
+     * 设置是否返回低质量的图片
+     * @param imagesOfLowQuality true：是
+     */
+    public LoadOptions setImagesOfLowQuality(boolean imagesOfLowQuality) {
+        this.imagesOfLowQuality = imagesOfLowQuality;
+        return this;
+    }
+
     public void copyOf(LoadOptions loadOptions){
         this.maxSize = loadOptions.getMaxSize();
         this.resize = loadOptions.getResize();
+        this.imagesOfLowQuality = loadOptions.imagesOfLowQuality;
         this.imageProcessor = loadOptions.getImageProcessor();
         this.decodeGifImage = loadOptions.isDecodeGifImage();
 

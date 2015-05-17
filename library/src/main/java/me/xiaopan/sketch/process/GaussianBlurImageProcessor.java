@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 import me.xiaopan.sketch.Resize;
-import me.xiaopan.sketch.util.CommentUtils;
 
 /**
  * 高斯模糊图片处理器
@@ -13,7 +12,7 @@ import me.xiaopan.sketch.util.CommentUtils;
 public class GaussianBlurImageProcessor extends CutImageProcessor {
     private static final String NAME = "GaussianBlurImageProcessor";
 
-    private int radius = 10;
+    private int radius = 15;
     private boolean isDarkHandle;
 
     /**
@@ -43,7 +42,7 @@ public class GaussianBlurImageProcessor extends CutImageProcessor {
     }
 
     @Override
-    public void appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append(NAME);
         builder.append("(");
         builder.append("radius");
@@ -54,20 +53,21 @@ public class GaussianBlurImageProcessor extends CutImageProcessor {
         builder.append("=");
         builder.append(isDarkHandle);
         builder.append(")");
+        return builder;
     }
 
     @Override
     public String getIdentifier() {
-        return CommentUtils.concat(NAME, "(", "radius", "=", radius, ";", "isDarkHandle", "=", isDarkHandle, ")");
+        return appendIdentifier(new StringBuilder()).toString();
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, Resize resize) {
+    public Bitmap process(Bitmap bitmap, Resize resize, boolean imagesOfLowQuality) {
         // cut handle
-        Bitmap resizeBitmap = super.process(bitmap, resize);
+        Bitmap resizeBitmap = super.process(bitmap, resize, imagesOfLowQuality);
 
         // blur handle
-        Bitmap blurBitmap= fastGaussianBlur(resizeBitmap, radius, false);
+        Bitmap blurBitmap= fastGaussianBlur(resizeBitmap, radius, false, imagesOfLowQuality);
         if(resizeBitmap != bitmap){
             resizeBitmap.recycle();
         }
@@ -88,12 +88,12 @@ public class GaussianBlurImageProcessor extends CutImageProcessor {
      * @param canReuseInBitmap
      * @return
      */
-    public Bitmap fastGaussianBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
+    public Bitmap fastGaussianBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap, boolean imagesOfLowQuality) {
         Bitmap bitmap;
         if (canReuseInBitmap) {
             bitmap = sentBitmap;
         } else {
-            bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
+            bitmap = sentBitmap.copy(Bitmap.Config.ARGB_8888, true);
         }
 
         try{

@@ -34,14 +34,13 @@ Sketch is an image loader for Android, the purpose is to help the developers to 
 
 ###使用指南（Usage guide）
 
-####Sketch支持以下6种URI：
->* "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
->* "https://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"; // from Web
->* "/mnt/sdcard/image.png"; // from SD card
->* "/mnt/sdcard/app.apk"; // from SD card apk file
->* "content://media/external/audio/albumart/13"; // from content provider
->* "asset://image.png"; // from assets
->* "drawable://" + R.drawable.image; // from drawable resource
+####Sketch支持以下6种类型的URI：
+>* "http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg"  // from Web (.jpeg, .png, .webp, .gif...)
+>* "https://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg" // from Web (.jpeg, .png, .webp, .gif...)
+>* "/mnt/sdcard/image.png"  // from SD card (.jpeg, .png, .webp, .gif, .apk...)
+>* "content://media/external/images/media/13"   // from content provider (.jpeg, .png, .webp, .gif...)
+>* "asset://image.png"  // from assets (.jpeg, .png, .webp, .gif...)
+>* "drawable://" + R.drawable.image // from drawable resource (.jpeg, .png, .webp, .gif...)
 
 ####使用SketchImageView显示图片
 

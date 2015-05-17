@@ -28,8 +28,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 
-import me.xiaopan.sketch.ImageSize;
+import me.xiaopan.sketch.ImageFormat;
 import me.xiaopan.sketch.LoadRequest;
+import me.xiaopan.sketch.MaxSize;
 import me.xiaopan.sketch.RecycleGifDrawable;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.UriScheme;
@@ -93,60 +94,58 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public static Object decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper){
-        ImageSize maxSize = loadRequest.getMaxSize();
-        Bitmap bitmap = null;
-        Point originalSize = null;
-        int inSampleSize = 1;
-
-        // 只解码宽高
+        // just decode bounds
         Options options = new Options();
         options.inJustDecodeBounds = true;
         decodeHelper.decode(options);
-        loadRequest.setMimeType(options.outMimeType);
+        options.inJustDecodeBounds = false;
 
-        // GIF图片
-        if(loadRequest.getSketch().getConfiguration().isDecodeGifImage() && loadRequest.isDecodeGifImage() && options.outMimeType.equals("image/gif")){
+        // setup best bitmap config by MimeType
+        loadRequest.setMimeType(options.outMimeType);
+        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
+        if(imageFormat != null){
+            options.inPreferredConfig = imageFormat.getConfig(loadRequest.isImagesOfLowQuality());
+        }
+
+        // decode gif image
+        if(imageFormat != null && imageFormat == ImageFormat.GIF && loadRequest.isDecodeGifImage()){
             try {
                 return decodeHelper.getGifDrawable();
             }catch (UnsatisfiedLinkError e){
                 Log.e(Sketch.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, unable to process the GIF images, has automatically according to the common image decoding, and has set up a closed automatically decoding GIF image feature. If you need to decode the GIF figure please go to “https://github.com/xiaopansky/sketch” to download “libpl_droidsonroids_gif.so” file and put in your project");
-                Log.e(Sketch.TAG, "没有找到“libpl_droidsonroids_gif.so”文件，无法处理GIF图片，已自动按普通图片解码，并已自动关闭解码GIF图片功能。如果您需要解码GIF图请上“https://github.com/xiaopansky/sketch”下载“libpl_droidsonroids_gif.so”文件并放到您的项目中");
                 loadRequest.getSketch().getConfiguration().setDecodeGifImage(false);
                 e.printStackTrace();
             }
         }
 
-        // 普通图片
-        if(maxSize != null){
-            if(!(options.outWidth == 1 && options.outHeight == 1)){
-                originalSize = new Point(options.outWidth, options.outHeight);
+        // decode normal image
+        Bitmap bitmap = null;
+        Point originalSize = new Point(options.outWidth, options.outHeight);
+        if(options.outWidth != 1 && options.outHeight != 1){
+            // calculate inSampleSize
+            MaxSize maxSize = loadRequest.getMaxSize();
+            if (maxSize != null) {
+                options.inSampleSize = loadRequest.getSketch().getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxSize.getWidth(), maxSize.getHeight());
+            }
 
-                // 计算缩放倍数
-                inSampleSize = loadRequest.getSketch().getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxSize.getWidth(), maxSize.getHeight());
-                options.inSampleSize = inSampleSize;
-
-                // 再次解码
-                options.inJustDecodeBounds = false;
-                bitmap = decodeHelper.decode(options);
+            // Decoding and exclude the width or height of 1 pixel image
+            bitmap = decodeHelper.decode(options);
+            if(bitmap != null && (bitmap.getWidth() == 1 || bitmap.getHeight() == 1)){
+                if(Sketch.isDebugMode()){
+                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "bitmap width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", "BitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(), " - ", loadRequest.getName()));
+                }
+                bitmap.recycle();
+                bitmap = null;
             }
         }else{
-            bitmap = decodeHelper.decode(null);
-            if(bitmap != null){
-                if(!(bitmap.getWidth()==1 && bitmap.getHeight() == 1)){
-                    originalSize = new Point(bitmap.getWidth(), bitmap.getHeight());
-                }else{
-                    if(Sketch.isDebugMode()){
-                        Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "recycle bitmap@" + Integer.toHexString(bitmap.hashCode()), " - ", "1x1 Image"));
-                    }
-                    bitmap.recycle();
-                    bitmap = null;
-                }
+            if(Sketch.isDebugMode()) {
+                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "image width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", loadRequest.getName()));
             }
         }
 
-        // 回调
+        // Results the callback
         if(bitmap != null && !bitmap.isRecycled()){
-            decodeHelper.onDecodeSuccess(bitmap, originalSize, inSampleSize);
+            decodeHelper.onDecodeSuccess(bitmap, originalSize, options.inSampleSize);
         }else{
             bitmap = null;
             decodeHelper.onDecodeFailed();

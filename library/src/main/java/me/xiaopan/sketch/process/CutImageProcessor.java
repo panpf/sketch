@@ -32,12 +32,13 @@ public class CutImageProcessor implements ImageProcessor {
     }
 
     @Override
-    public void appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append(NAME);
+        return builder;
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, Resize resize) {
+    public Bitmap process(Bitmap bitmap, Resize resize, boolean imagesOfLowQuality) {
         if(bitmap == null){
             return null;
         }
@@ -84,7 +85,11 @@ public class CutImageProcessor implements ImageProcessor {
         if(srcRect == null){
             return bitmap;
         }else{
-            Bitmap newBitmap = Bitmap.createBitmap(newBitmapWidth, newBitmapHeight, Bitmap.Config.ARGB_8888);
+            Bitmap.Config newBitmapConfig = bitmap.getConfig();
+            if(newBitmapConfig == null){
+                newBitmapConfig = imagesOfLowQuality? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888;
+            }
+            Bitmap newBitmap = Bitmap.createBitmap(newBitmapWidth, newBitmapHeight, newBitmapConfig);
             Canvas canvas = new Canvas(newBitmap);
             canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, newBitmap.getWidth(), newBitmap.getHeight()), null);
             return newBitmap;

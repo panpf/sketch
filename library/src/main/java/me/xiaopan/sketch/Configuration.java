@@ -55,6 +55,9 @@ public class Configuration {
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean pauseDownload;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean decodeGifImage = true; // 是否解码GIF图
+    private boolean imagesOfLowQuality; // 是否返回低质量的图片
+    private boolean enableMemoryCache = true;
+    private boolean enableDiskCache = true;
     private MobileNetworkPauseDownloadManager mobileNetworkPauseDownloadManager;
 
     public Configuration(Context context){
@@ -291,18 +294,18 @@ public class Configuration {
      * 设置是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
      * @param pauseLoad 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
      */
-    public void setPauseLoad(boolean pauseLoad) {
-        if(this.pauseLoad == pauseLoad){
-            return;
-        }
-        this.pauseLoad = pauseLoad;
-        if(Sketch.isDebugMode()){
-            if(this.pauseLoad){
-                Log.w(Sketch.TAG, "pauseLoad");
-            }else{
-                Log.d(Sketch.TAG, "resumeLoad");
+    public Configuration setPauseLoad(boolean pauseLoad) {
+        if(this.pauseLoad != pauseLoad){
+            this.pauseLoad = pauseLoad;
+            if(Sketch.isDebugMode()){
+                if(this.pauseLoad){
+                    Log.w(Sketch.TAG, "pauseLoad");
+                }else{
+                    Log.d(Sketch.TAG, "resumeLoad");
+                }
             }
         }
+        return this;
     }
 
     /**
@@ -325,18 +328,18 @@ public class Configuration {
      * 设置暂停下载图片，开启后将不再从网络下载图片，只影响display请求
      * @param pauseDownload 暂停下载图片，开启后将不再从网络下载图片，只影响display请求
      */
-    public void setPauseDownload(boolean pauseDownload) {
-        if(this.pauseDownload == pauseDownload){
-            return;
-        }
-        this.pauseDownload = pauseDownload;
-        if(Sketch.isDebugMode()){
-            if(this.pauseDownload){
-                Log.w(Sketch.TAG, "pauseDownload");
-            }else{
-                Log.d(Sketch.TAG, "resumeDownload");
+    public Configuration setPauseDownload(boolean pauseDownload) {
+        if(this.pauseDownload != pauseDownload){
+            this.pauseDownload = pauseDownload;
+            if(Sketch.isDebugMode()){
+                if(this.pauseDownload){
+                    Log.w(Sketch.TAG, "pauseDownload");
+                }else{
+                    Log.d(Sketch.TAG, "resumeDownload");
+                }
             }
         }
+        return this;
     }
 
     /**
@@ -369,7 +372,57 @@ public class Configuration {
      * 设置是否解码GIF图
      * @param decodeGifImage true：解码；false：不解码
      */
-    public void setDecodeGifImage(boolean decodeGifImage) {
+    public Configuration setDecodeGifImage(boolean decodeGifImage) {
         this.decodeGifImage = decodeGifImage;
+        return this;
+    }
+
+    /**
+     * 是否返回低质量的图片
+     * @return true: 是
+     */
+    public boolean isImagesOfLowQuality() {
+        return imagesOfLowQuality;
+    }
+
+    /**
+     * 设置是否返回低质量的图片
+     * @param imagesOfLowQuality true:是
+     */
+    public Configuration setImagesOfLowQuality(boolean imagesOfLowQuality) {
+        this.imagesOfLowQuality = imagesOfLowQuality;
+        return this;
+    }
+
+    /**
+     * 是否开启了磁盘缓存
+     * @return true：是
+     */
+    public boolean isEnableDiskCache() {
+        return enableDiskCache;
+    }
+
+    /**
+     * 设置是否开启磁盘缓存
+     * @param enableDiskCache true：是
+     */
+    public void setEnableDiskCache(boolean enableDiskCache) {
+        this.enableDiskCache = enableDiskCache;
+    }
+
+    /**
+     * 是否开启了内存缓存
+     * @return true：是
+     */
+    public boolean isEnableMemoryCache() {
+        return enableMemoryCache;
+    }
+
+    /**
+     * 设置是否开启内存缓存
+     * @param enableMemoryCache true：是
+     */
+    public void setEnableMemoryCache(boolean enableMemoryCache) {
+        this.enableMemoryCache = enableMemoryCache;
     }
 }

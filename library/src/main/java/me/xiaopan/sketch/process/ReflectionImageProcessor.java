@@ -28,7 +28,6 @@ import android.graphics.Shader.TileMode;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Resize;
-import me.xiaopan.sketch.util.CommentUtils;
 
 /**
  * 倒影位图处理器
@@ -55,21 +54,22 @@ public class ReflectionImageProcessor implements ImageProcessor {
 
     @Override
     public String getIdentifier() {
-        return CommentUtils.concat(NAME+"(scale="+reflectionScale+", spacing="+reflectionSpacing+")");
+        return appendIdentifier(new StringBuilder()).toString();
     }
 
     @Override
-    public void appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append(NAME);
         builder.append("(scale=");
         builder.append(reflectionScale);
         builder.append(", spacing=");
         builder.append(reflectionSpacing);
         builder.append(")");
+        return builder;
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, Resize resize) {
+    public Bitmap process(Bitmap bitmap, Resize resize, boolean imagesOfLowQuality) {
         if(bitmap == null){
             return null;
         }
@@ -139,22 +139,22 @@ public class ReflectionImageProcessor implements ImageProcessor {
         if(srcRect == null){
             return bitmap;
         }else{
-            return process(bitmap, bitmapWidth, bitmapHeight, newBitmapWidth, newBitmapHeight, srcRect);
+            return process(bitmap, imagesOfLowQuality? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888, bitmapWidth, bitmapHeight, newBitmapWidth, newBitmapHeight, srcRect);
         }
     }
 
-    private Bitmap process(Bitmap bitmap, int bitmapWidth, int bitmapHeight, int newBitmapWidth, int newBitmapHeight, Rect srcRect){
+    private Bitmap process(Bitmap bitmap, Bitmap.Config config, int bitmapWidth, int bitmapHeight, int newBitmapWidth, int newBitmapHeight, Rect srcRect){
         Bitmap srcBitmap;
         if(bitmapWidth == newBitmapWidth && bitmapHeight == newBitmapHeight){
             srcBitmap = bitmap;
         }else{
-            srcBitmap = Bitmap.createBitmap(newBitmapWidth, newBitmapHeight, Bitmap.Config.ARGB_8888);
+            srcBitmap = Bitmap.createBitmap(newBitmapWidth, newBitmapHeight, config);
             Canvas canvas = new Canvas(srcBitmap);
             canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, srcBitmap.getWidth(), srcBitmap.getHeight()), null);
         }
 
         // 初始化画布
-        Bitmap bitmapWithReflection = Bitmap.createBitmap(newBitmapWidth, (int) (newBitmapHeight+reflectionSpacing+(newBitmapHeight*reflectionScale)), Bitmap.Config.ARGB_8888);
+        Bitmap bitmapWithReflection = Bitmap.createBitmap(newBitmapWidth, (int) (newBitmapHeight+reflectionSpacing+(newBitmapHeight*reflectionScale)), config);
         Canvas canvas = new Canvas(bitmapWithReflection);
 
         // 在上半部分绘制原图

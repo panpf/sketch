@@ -16,26 +16,13 @@
 
 package me.xiaopan.sketch;
 
-import android.widget.ImageView;
-
-public class Resize implements ImageSize{
+public class FixedSize implements ImageSize{
 	private int width;
 	private int height;
 
-	private ImageView.ScaleType scaleType = ImageView.ScaleType.CENTER_CROP;
-
-	public Resize(int width, int height) {
+	public FixedSize(int width, int height) {
 		this.width = width;
 		this.height = height;
-	}
-
-	public Resize(int width, int height, ImageView.ScaleType scaleType) {
-		this(width, height);
-		this.scaleType = scaleType;
-	}
-
-	public ImageView.ScaleType getScaleType() {
-		return scaleType;
 	}
 
 	@Override
@@ -55,14 +42,10 @@ public class Resize implements ImageSize{
 
 	@Override
 	public StringBuilder appendIdentifier(StringBuilder builder){
-		builder.append("Resize(");
+		builder.append("MaxSize(");
 		builder.append(width);
 		builder.append("x");
 		builder.append(height);
-		if(scaleType != null){
-			builder.append(":");
-			builder.append(scaleType.name());
-		}
 		builder.append(")");
 		return builder;
 	}

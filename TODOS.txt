@@ -54,28 +54,30 @@ library：
 >* （搞定）明星个人主页要用瀑布流（上百度搜索下瀑布流怎么搞，有没有好的实现方式）StaggeredGridLayoutManager.setGapStrategy(GAP_HANDLING_NONE)貌似就不会换位置了
 >* （搞定）修改所有日志总字符串的写法，写一个公共的专门连接字符串的方法
 >* （搞定）要不要名字改为Sketch
+>* （搞定）SketchImageView的点击涟漪效果，快速点按的时候应该快速消失，并且在2.3版本上涟漪效果失效
+>* （搞定）是否不再默认从ImageView上解析resize并且对图片进行裁剪，以前这样做的目的是为了解决图片变形问题，现在呢？貌似不需要了
+>* （搞定）支持设置bitmap.config
+>* （搞定）将bitmapConfig，改成低质量的图片
+>* （搞定）示例APP增加修改Bitmap.Config，界面改了一点儿，其它都没动
+>* （搞定）有些明确需要透明效果的处理器不能跟着bitmapConfig走
+>* （搞定）不再提供bitmapConfig设置，改由自动根据mimeType来选择合适的config，这样更加智能
 
 >* 找个地方给图片给改成圆角的，目的是为了展示圆角的效果
 >* 把昨晚看的一篇处理原型图文章里的原型背景拿过来试试
 
 代办池：
->* 对loading drawable处理的时候加上判断尺寸比例是否一样，一样的话就不处理了
 >* loading支持bitmap
->* SketchImageView的点击涟漪效果，快速点按的时候应该快速消失，并且在2.3版本上涟漪效果失效
 >* 用百度云测试一下
->* GifDrawable是否有在隐藏的时候停止播放的功能，有的话是否需要ImageView配合
->* 想办法支持一次加载两张图一张小图一张大图
->* 考虑支持不同的应用场景，例如background，drawabletop等
->* processor支持设置bitmap.config
+>* 考虑支持不同的应用场景，例如background，drawableTop等
 >* 解码缓存文件失败的时候要再次下载
 >* 用一下其它的几款图片加载器，例如UIL、fresco、glide、picasso对比一下，特别是对RecyclerView的兼容性，然后写博客
->* 是否不再默认从ImageView上解析resize并且对图片进行裁剪，以前这样做的目的是为了解决图片变形问题，现在呢？貌似不需要了
 >* 支持断点续传
 >* 支持OKhttp
 >* 可以根据图片ID来作为默认图片，这样貌似就能实现默认图是缩略图的功能了
 >* 参考Glide、Fresco和Picasso
 >* 写一个系列博客介绍Sketch，也算是做一个总结
->* 修改resize加一个参数，一定要拿到的图跟resize尺寸一样
+>* 想办法支持一次加载两张图一张小图一张大图
+>* resize加一个参数，一定要拿到的图跟resize尺寸一样
 
 考虑的一些问题：
 >* （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapdrawable立即释放）
@@ -83,6 +85,8 @@ library：
 >* （胡搞）现在需要在ondetowindow的时候主动取消加载，在notifydrawable方法中加入对Binddrawable的处理，在Bingdrawable中取消请求，这样就不必考弱引用来维护关系了
 >* （不这么搞了）在Sketch中加一个参数，意思就是是否开启暂停加载的功能，然后所有的PauseLoadFor类都判断次参数
 >* （不靠谱）改AsyncDrawable为RecycleDrawable形式
+>* （经测试会自定停止但尚不知是怎么做到的）GifDrawable是否有在隐藏的时候停止播放的功能，有的话是否需要ImageView配合
+>* （已经采取了新的方式实现，不再需要处理图片了）对loading drawable处理的时候加上判断尺寸比例是否一样，一样的话就不处理了
 >* 考虑如何处理下载的垃圾文件，申请空间的时候清理文件要处理那些下载垃圾
 >* 考虑将默认图也放到内存缓存中，试图通过这样的方式解决之前担心的默认图太多导致始终占用内存的问题
 >* 考虑如何支持用已缓存的小缩略图作为默认图片（比如支持从内存缓存中加载默认图）

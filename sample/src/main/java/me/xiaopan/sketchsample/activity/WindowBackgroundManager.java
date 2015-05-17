@@ -15,6 +15,7 @@ import me.xiaopan.sketch.CancelCause;
 import me.xiaopan.sketch.FailCause;
 import me.xiaopan.sketch.ImageFrom;
 import me.xiaopan.sketch.LoadListener;
+import me.xiaopan.sketch.RecycleBitmapDrawable;
 import me.xiaopan.sketch.RecycleDrawableInterface;
 import me.xiaopan.sketch.Request;
 import me.xiaopan.sketch.Sketch;
@@ -62,11 +63,12 @@ public class WindowBackgroundManager {
         }
 
         if(drawable instanceof RecycleDrawableInterface){
+            Log.d(Sketch.TAG, "old window bitmap recycled - " + ((RecycleDrawableInterface) drawable).getInfo());
             ((RecycleDrawableInterface) drawable).recycle();
         }else if(drawable instanceof BitmapDrawable){
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
             if(bitmap != null && !bitmap.isRecycled()){
-                Log.d(Sketch.TAG, "old window bitmap recycled@" + Integer.toHexString(bitmap.hashCode()));
+                Log.d(Sketch.TAG, "old window bitmap recycled - " + RecycleBitmapDrawable.getInfo(bitmap, null));
                 bitmap.recycle();
             }
         }

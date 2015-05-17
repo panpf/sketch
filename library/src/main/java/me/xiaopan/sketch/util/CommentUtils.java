@@ -25,7 +25,7 @@ public class CommentUtils {
      * @param apkFilePath APK文件的位置
      * @return  APK的图标
      */
-    public static Bitmap decodeIconFromApk(Context context, String apkFilePath, String logName){
+    public static Bitmap decodeIconFromApk(Context context, String apkFilePath, boolean imagesOfLowQuality, String logName){
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if(packageInfo == null){
@@ -45,7 +45,7 @@ public class CommentUtils {
             }
             return null;
         }
-        return drawableToBitmap(drawable);
+        return drawableToBitmap(drawable, imagesOfLowQuality);
     }
 
     /**
@@ -53,7 +53,7 @@ public class CommentUtils {
      * @param drawable drawable
      * @return bitmap
      */
-    public static Bitmap drawableToBitmap(Drawable drawable){
+    public static Bitmap drawableToBitmap(Drawable drawable, boolean imagesOfLowQuality){
         if(drawable == null ){
             return null;
         }else if(drawable instanceof BitmapDrawable){
@@ -63,7 +63,7 @@ public class CommentUtils {
                 return null;
             }
 
-            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), imagesOfLowQuality? Bitmap.Config.ARGB_4444: Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             drawable.draw(canvas);
             return bitmap;

@@ -51,10 +51,11 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
 
     // Load fields
     private Resize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸来裁剪图片
-    private ImageSize maxSize;	// 最大尺寸，用于读取图片时计算inSampleSize
-    private ImageProcessor imageProcessor;	// 图片处理器
-    private LoadListener loadListener;	// 监听器
     private boolean decodeGifImage = true;  // 是否解码GIF图片
+    private boolean imagesOfLowQuality;   // 是否返回低质量的图片
+    private MaxSize maxSize;	// 最大尺寸，用于读取图片时计算inSampleSize
+    private LoadListener loadListener;	// 监听器
+    private ImageProcessor imageProcessor;	// 图片处理器
 
     // Runtime fields
     private File cacheFile;	// 缓存文件
@@ -137,13 +138,23 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     }
 
     @Override
-    public ImageSize getMaxSize() {
+    public MaxSize getMaxSize() {
         return maxSize;
     }
 
     @Override
-    public void setMaxSize(ImageSize maxSize) {
+    public void setMaxSize(MaxSize maxSize) {
         this.maxSize = maxSize;
+    }
+
+    @Override
+    public boolean isImagesOfLowQuality() {
+        return imagesOfLowQuality;
+    }
+
+    @Override
+    public void setImagesOfLowQuality(boolean imagesOfLowQuality) {
+        this.imagesOfLowQuality = imagesOfLowQuality;
     }
 
     @Override
@@ -419,22 +430,19 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
             Bitmap bitmap = (Bitmap) decodeResult;
             if(!bitmap.isRecycled()){
                 if(Sketch.isDebugMode()){
-                    Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "new bitmap@", Integer.toHexString(bitmap.hashCode()), " - ", "executeLoad", " - ", name));
+                    Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "new bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
                 }
             }else{
                 if(Sketch.isDebugMode()){
-                    Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "decodeFailed", " - ", name));
+                    Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "decode failed bitmap recycled", " - ", "decode after", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
                 }
             }
 
             if(isCanceled()){
                 if(Sketch.isDebugMode()){
-                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "recycle bitmap@", Integer.toHexString(bitmap.hashCode()), " - ", "decodeAfter:cancel", " - ", name));
+                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "decode after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
                 }
                 bitmap.recycle();
-                if(Sketch.isDebugMode()){
-                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "decodeAfter", " - ", name));
-                }
                 return;
             }
 
@@ -442,9 +450,9 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
             if(!bitmap.isRecycled()){
                 ImageProcessor imageProcessor = getImageProcessor();
                 if(imageProcessor != null){
-                    Bitmap newBitmap = imageProcessor.process(bitmap, getResize());
+                    Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), imagesOfLowQuality);
                     if(newBitmap != null && newBitmap != bitmap && Sketch.isDebugMode()){
-                        Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "new bitmap@"+Integer.toHexString(newBitmap.hashCode())+" - ", "recycle old bitmap@", Integer.toHexString(bitmap.hashCode()), " - ", "processAfter", " - ", name));
+                        Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "process after", " - ", "newBitmap", " - ", RecycleBitmapDrawable.getInfo(newBitmap, mimeType), " - ", "recycled old bitmap", " - ", name));
                     }
                     if(newBitmap == null || newBitmap != bitmap){
                         bitmap.recycle();
@@ -454,14 +462,11 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
             }
 
             if(isCanceled()){
-                if(bitmap != null){
-                    if(Sketch.isDebugMode()){
-                        Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "recycle bitmap@", Integer.toHexString(bitmap.hashCode()), "processAfter:cancel"));
-                    }
-                    bitmap.recycle();
-                }
                 if(Sketch.isDebugMode()){
-                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled ", " - ", "processAfter", " - ", name));
+                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "process after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
+                }
+                if(bitmap != null){
+                    bitmap.recycle();
                 }
                 return;
             }
@@ -477,6 +482,11 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
         }else if(decodeResult instanceof RecycleGifDrawable){
             RecycleGifDrawable recycleGifDrawable = (RecycleGifDrawable) decodeResult;
             recycleGifDrawable.setMimeType(mimeType);
+
+            if(Sketch.isDebugMode()){
+                Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "new gif drawable", " - ", recycleGifDrawable.getInfo(), " - ", name));
+            }
+
             this.resultBitmap = recycleGifDrawable;
             sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
         }else{
@@ -509,7 +519,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
             return apkIconCacheFile;
         }
 
-        Bitmap iconBitmap = CommentUtils.decodeIconFromApk(sketch.getConfiguration().getContext(), uri, NAME);
+        Bitmap iconBitmap = CommentUtils.decodeIconFromApk(sketch.getConfiguration().getContext(), uri, imagesOfLowQuality, NAME);
         if(iconBitmap != null && !iconBitmap.isRecycled()){
             apkIconCacheFile = sketch.getConfiguration().getDiskCache().saveBitmap(iconBitmap, uri);
             if(apkIconCacheFile != null){
