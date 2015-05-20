@@ -21,6 +21,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.widget.SlidingPaneLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -46,6 +47,7 @@ import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.StarIndexFragment;
 import me.xiaopan.sketchsample.util.AnimationUtils;
+import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.util.DimenUtils;
 import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.SlidingPaneLayoutCompatDrawerLayout;
@@ -56,6 +58,7 @@ import me.xiaopan.sketchsample.widget.SlidingPaneLayoutCompatDrawerLayout;
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
 public class MainActivity extends MyAppCompatActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener, AboutFragment.TogglePageListener {
+    @InjectView(R.id.layout_main_conteng) private View contentView;
     @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
     @InjectView(R.id.drawer_main_content) private SlidingPaneLayout slidingPaneLayout;
@@ -100,6 +103,7 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+        onInitLayoutTopPadding();
 
         windowBackgroundManager = new WindowBackgroundManager(this);
 
@@ -150,6 +154,18 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
 
         searchButton.performClick();
+    }
+
+    private void onInitLayoutTopPadding(){
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+            int statusBarHeight = DeviceUtils.getStatusBarHeight(getResources());
+            if(statusBarHeight > 0){
+                contentView.setPadding(contentView.getPaddingLeft(), statusBarHeight, contentView.getPaddingRight(), contentView.getPaddingBottom());
+                leftMenuView.setPadding(contentView.getPaddingLeft(), statusBarHeight, contentView.getPaddingRight(), contentView.getPaddingBottom());
+            }else{
+                slidingPaneLayout.setFitsSystemWindows(true);
+            }
+        }
     }
 
     @Override
