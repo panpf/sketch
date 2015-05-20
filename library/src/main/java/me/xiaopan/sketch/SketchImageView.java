@@ -223,21 +223,23 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     /**
-     * Sets the content of this GifImageView to the specified Uri.
-     * If uri destination is not a GIF then {@link android.widget.ImageView#setImageURI(android.net.Uri)}
-     * is called as fallback.
-     * For supported URI schemes see: {@link android.content.ContentResolver#openAssetFileDescriptor(android.net.Uri, String)}.
-     *
+     * @deprecated Use the new displayURIImage(Uri) method
      * @param uri The Uri of an image
      */
     @Override
+    @Deprecated
     public void setImageURI(Uri uri) {
         if (!GifViewUtils.setGifImageUri(this, uri)) {
             super.setImageURI(uri);
         }
     }
 
+    /**
+     * @deprecated Use the new displayResourceImage(int) method
+     * @param resId the resource identifier of the drawable
+     */
     @Override
+    @Deprecated
     public void setImageResource(int resId) {
         if (!GifViewUtils.setResource(this, true, resId)) {
             super.setImageResource(resId);
@@ -395,8 +397,8 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     @Override
-    public Request displayContentImage(Uri uri){
-        return Sketch.with(getContext()).displayFromContent(uri, this).commit();
+    public Request displayURIImage(Uri uri){
+        return Sketch.with(getContext()).displayFromURI(uri, this).commit();
     }
 
     @Override

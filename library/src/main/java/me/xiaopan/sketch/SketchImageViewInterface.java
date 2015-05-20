@@ -51,11 +51,11 @@ public interface SketchImageViewInterface {
     Request displayAssetImage(String imageFileName);
 
     /**
-     * 根据Content Uri显示图片
-     * @param uri Content Uri 这个URI是其它Content Provider返回的
+     * 显示URI指向的图片
+     * @param uri 图片URI
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    Request displayContentImage(Uri uri);
+    Request displayURIImage(Uri uri);
 
     /**
      * 获取显示参数

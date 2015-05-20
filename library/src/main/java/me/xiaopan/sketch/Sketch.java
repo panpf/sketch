@@ -114,12 +114,12 @@ public class Sketch {
 	}
 
     /**
-     * 加载ContentProvider中的图片
-     * @param uri 图片资源URI
+     * 加载URI指向的图片
+     * @param uri 图片URI
      * @param loadListener 加载监听器
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadHelper loadFromContent(Uri uri, LoadListener loadListener){
+	public LoadHelper loadFromURI(Uri uri, LoadListener loadListener){
         return configuration.getHelperFactory().getLoadHelper(this, uri.toString()).listener(loadListener);
 	}
 
@@ -164,12 +164,12 @@ public class Sketch {
     }
 
     /**
-     * 显示ContentProvider中的图片
-     * @param uri 图片资源URI
+     * 显示URI指向的图片
+     * @param uri 图片URI
      * @param imageView 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayHelper displayFromContent(Uri uri, ImageView imageView){
+    public DisplayHelper displayFromURI(Uri uri, ImageView imageView){
         return configuration.getHelperFactory().getDisplayHelper(this, uri!=null?uri.toString():null, imageView);
     }
 
