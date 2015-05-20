@@ -8,7 +8,7 @@
     <include layout="@layout/include_main_menu_left" />
 
     <LinearLayout
-        android:id="@+id/layout_main_conteng"
+        android:id="@+id/layout_main_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">

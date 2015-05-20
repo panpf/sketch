@@ -58,7 +58,7 @@ import me.xiaopan.sketchsample.widget.SlidingPaneLayoutCompatDrawerLayout;
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
 public class MainActivity extends MyAppCompatActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener, AboutFragment.TogglePageListener {
-    @InjectView(R.id.layout_main_conteng) private View contentView;
+    @InjectView(R.id.layout_main_content) private View contentView;
     @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
     @InjectView(R.id.drawer_main_content) private SlidingPaneLayout slidingPaneLayout;
