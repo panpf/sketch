@@ -70,10 +70,7 @@ public class MyApplication extends Application {
 
         Sketch.putOptions(
                 OptionsType.DETAIL,
-                new DisplayOptions()
-                        .setFailureImage(R.drawable.image_failure)
-                        .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setImageDisplayer(transitionImageDisplayer)
+                new DisplayOptions().setImageDisplayer(transitionImageDisplayer)
         );
 
         Sketch.putOptions(

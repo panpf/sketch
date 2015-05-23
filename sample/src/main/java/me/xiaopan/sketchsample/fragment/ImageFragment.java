@@ -3,7 +3,6 @@ package me.xiaopan.sketchsample.fragment;
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import me.xiaopan.android.inject.InjectContentView;
 import me.xiaopan.android.inject.InjectExtra;
@@ -12,10 +11,13 @@ import me.xiaopan.sketch.CancelCause;
 import me.xiaopan.sketch.DisplayListener;
 import me.xiaopan.sketch.FailCause;
 import me.xiaopan.sketch.ImageFrom;
-import me.xiaopan.sketchsample.OptionsType;
+import me.xiaopan.sketch.RequestLevel;
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.MyFragment;
+import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
+import me.xiaopan.sketchsample.widget.HintView;
 import me.xiaopan.sketchsample.widget.MyImageView;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -24,7 +26,7 @@ public class ImageFragment extends MyFragment {
     public static final String PARAM_REQUIRED_IMAGE_URI = "PARAM_REQUIRED_IMAGE_URI";
 
     @InjectView(R.id.image_imageFragment_image) private MyImageView imageView;
-    @InjectView(R.id.progress_imageFragment_progress) private ProgressBar progressBar;
+    @InjectView(R.id.hint_imageFragment_hint) private HintView hintView;
 
     @InjectExtra(PARAM_REQUIRED_IMAGE_URI) private String imageUri;
 
@@ -50,27 +52,70 @@ public class ImageFragment extends MyFragment {
         imageView.setDisplayListener(new DisplayListener() {
             @Override
             public void onStarted() {
-                progressBar.setVisibility(View.VISIBLE);
+                hintView.loading("正在加载图片，请稍后...");
             }
 
             @Override
             public void onCompleted(ImageFrom imageFrom, String mimeType) {
-                progressBar.setVisibility(View.GONE);
+                hintView.hidden();
                 photoViewAttacher.update();
             }
 
             @Override
             public void onFailed(FailCause failCause) {
-                progressBar.setVisibility(View.GONE);
+                hintView.hint(R.drawable.ic_failure, "图片显示失败", "重新显示", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        imageView.displayImage(imageUri);
+                    }
+                });
                 photoViewAttacher.update();
             }
 
             @Override
             public void onCanceled(CancelCause cancelCause) {
-                if (cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD) {
-                    progressBar.setVisibility(View.GONE);
+                if(cancelCause == null){
+                    return;
                 }
-                if(cancelCause != null && cancelCause != CancelCause.NORMAL){
+
+                switch (cancelCause){
+                    case LEVEL_IS_LOCAL:
+                        hintView.hint(R.drawable.ic_failure, "level is local", "直接显示", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
+                            }
+                        });
+                        break;
+                    case LEVEL_IS_MEMORY:
+                        hintView.hint(R.drawable.ic_failure, "level is memory", "直接显示", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
+                            }
+                        });
+                        break;
+                    case NORMAL:
+                        break;
+                    case PAUSE_DOWNLOAD:
+                        hintView.hint(R.drawable.ic_failure, "为节省流量已暂停下载新图片", "不管了，直接下载", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
+                            }
+                        });
+                        break;
+                    case PAUSE_LOAD:
+                        hintView.hint(R.drawable.ic_failure, "已暂停加载新图片", "直接加载", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
+                            }
+                        });
+                        break;
+                }
+
+                if(cancelCause != CancelCause.NORMAL){
                     photoViewAttacher.update();
                 }
             }
