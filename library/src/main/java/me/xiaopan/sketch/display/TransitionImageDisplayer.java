@@ -20,9 +20,9 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.widget.ImageView;
 
 import me.xiaopan.sketch.RecycleGifDrawable;
+import me.xiaopan.sketch.SketchImageViewInterface;
 
 /**
  * 过渡效果的图片显示器
@@ -39,21 +39,21 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, Drawable newDrawable) {
+	public void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable) {
 		if(newDrawable == null){
             return;
         }
 		if(newDrawable instanceof RecycleGifDrawable){
-        	imageView.clearAnimation();
-			imageView.setImageDrawable(newDrawable);
+        	sketchImageViewInterface.clearAnimation();
+			sketchImageViewInterface.setImageDrawable(newDrawable);
 		}else{
-			Drawable oldDrawable = imageView.getDrawable();
+			Drawable oldDrawable = sketchImageViewInterface.getDrawable();
 			if(oldDrawable == null){
 				new ColorDrawable(Color.TRANSPARENT);
 			}
 			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, newDrawable});
-        	imageView.clearAnimation();
-			imageView.setImageDrawable(transitionDrawable);
+        	sketchImageViewInterface.clearAnimation();
+			sketchImageViewInterface.setImageDrawable(transitionDrawable);
 			transitionDrawable.setCrossFadeEnabled(true);
 			transitionDrawable.startTransition(duration);
 		}

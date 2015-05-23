@@ -21,7 +21,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.Log;
-import android.widget.ImageView;
 
 import java.io.File;
 
@@ -81,15 +80,15 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private CancelCause cancelCause;  // 取消原因
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
     private Drawable resultDrawable;    // 最终的图片
-    private ImageViewHolder imageViewHolder;    // 绑定ImageView
+    private SketchImageViewInterfaceHolder sketchImageViewInterfaceHolder;    // 绑定ImageView
 
-    public DisplayRequestImpl(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, ImageView imageView) {
+    public DisplayRequestImpl(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface) {
         this.context = sketch.getConfiguration().getContext();
         this.sketch = sketch;
         this.uri = uri;
         this.uriScheme = uriScheme;
         this.memoryCacheId = memoryCacheId;
-        this.imageViewHolder = new ImageViewHolder(imageView, this);
+        this.sketchImageViewInterfaceHolder = new SketchImageViewInterfaceHolder(sketchImageViewInterface, this);
     }
 
     /****************************************** Base methods ******************************************/
@@ -308,7 +307,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     public boolean isCanceled() {
         boolean isCanceled = requestStatus == RequestStatus.CANCELED;
         if(!isCanceled){
-            isCanceled = imageViewHolder != null && imageViewHolder.isCollected();
+            isCanceled = sketchImageViewInterfaceHolder != null && sketchImageViewInterfaceHolder.isCollected();
             if(isCanceled){
                 toCanceledStatus(CancelCause.NORMAL);
             }
@@ -686,7 +685,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(imageDisplayer == null){
             imageDisplayer = sketch.getConfiguration().getDefaultImageDisplayer();
         }
-        imageDisplayer.display(imageViewHolder.getImageView(), resultDrawable);
+        imageDisplayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), resultDrawable);
         ((RecycleDrawableInterface) resultDrawable).setIsWaitDisplay("completedCallback", false);
         setRequestStatus(RequestStatus.COMPLETED);
         if(displayListener != null){
@@ -706,7 +705,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(imageDisplayer == null){
             imageDisplayer = sketch.getConfiguration().getDefaultImageDisplayer();
         }
-        imageDisplayer.display(imageViewHolder.getImageView(), getFailureDrawable());
+        imageDisplayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), getFailureDrawable());
         setRequestStatus(RequestStatus.FAILED);
         if(displayListener != null){
             displayListener.onFailed(failCause);
@@ -732,7 +731,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             if(imageDisplayer == null){
                 imageDisplayer = sketch.getConfiguration().getDefaultImageDisplayer();
             }
-            imageDisplayer.display(imageViewHolder.getImageView(), getPauseDownloadDrawable());
+            imageDisplayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), getPauseDownloadDrawable());
         }
 
         cancelCause = CancelCause.PAUSE_DOWNLOAD;

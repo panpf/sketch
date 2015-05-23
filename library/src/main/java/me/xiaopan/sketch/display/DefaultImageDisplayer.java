@@ -17,7 +17,8 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
+
+import me.xiaopan.sketch.SketchImageViewInterface;
 
 /**
  * 默认的图片显示器，没有任何动画效果
@@ -25,11 +26,11 @@ import android.widget.ImageView;
 public class DefaultImageDisplayer implements ImageDisplayer {
 
 	@Override
-	public void display(ImageView imageView, Drawable newDrawable) {
+	public void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable) {
     	if(newDrawable == null){
             return;
         }
-        imageView.clearAnimation();
-		imageView.setImageDrawable(newDrawable);
+        sketchImageViewInterface.clearAnimation();
+		sketchImageViewInterface.setImageDrawable(newDrawable);
 	}
 }

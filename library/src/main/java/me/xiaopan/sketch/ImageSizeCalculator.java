@@ -18,7 +18,6 @@
 package me.xiaopan.sketch;
 
 import android.content.Context;
-import android.widget.ImageView;
 
 /**
  * 图片最大尺寸和修正尺寸计算器
@@ -26,24 +25,24 @@ import android.widget.ImageView;
 public interface ImageSizeCalculator {
     /**
      * 计算MaxSize
-     * @param imageView 你需要根据ImageView的宽高来计算
+     * @param sketchImageViewInterface 你需要根据ImageView的宽高来计算
      * @return MaxSize
      */
-    MaxSize calculateImageMaxSize(ImageView imageView);
+    MaxSize calculateImageMaxSize(SketchImageViewInterface sketchImageViewInterface);
 
     /**
      * 计算Resize
-     * @param imageView 你需要根据ImageView的宽高来计算
+     * @param sketchImageViewInterface 你需要根据ImageView的宽高来计算
      * @return Resize
      */
-    Resize calculateImageResize(ImageView imageView);
+    Resize calculateImageResize(SketchImageViewInterface sketchImageViewInterface);
 
     /**
      * 计算FixedSize
-     * @param imageView 你需要根据ImageView的宽高来计算
+     * @param sketchImageViewInterface 你需要根据ImageView的宽高来计算
      * @return FixedSize
      */
-    FixedSize calculateImageFixedSize(ImageView imageView);
+    FixedSize calculateImageFixedSize(SketchImageViewInterface sketchImageViewInterface);
 
     /**
      * 获取默认的maxSize

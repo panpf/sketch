@@ -21,7 +21,8 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
 import android.view.animation.ScaleAnimation;
-import android.widget.ImageView;
+
+import me.xiaopan.sketch.SketchImageViewInterface;
 
 /**
  * 由大到小图片显示器
@@ -60,16 +61,16 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, Drawable newDrawable) {
+	public void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable) {
         if(newDrawable == null){
             return;
         }
         ScaleAnimation scaleAnimation = new ScaleAnimation(fromX, 1.0f, fromY, 1.0f, Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF, 0.5f);
 		scaleAnimation.setInterpolator(interpolator);
 		scaleAnimation.setDuration(duration);
-    	imageView.clearAnimation();
-		imageView.setImageDrawable(newDrawable);
-		imageView.startAnimation(scaleAnimation);
+    	sketchImageViewInterface.clearAnimation();
+		sketchImageViewInterface.setImageDrawable(newDrawable);
+		sketchImageViewInterface.startAnimation(scaleAnimation);
 	}
 
 	public int getDuration() {

@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch;
 
-import android.widget.ImageView;
-
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.process.ImageProcessor;
 
@@ -29,12 +27,12 @@ public interface DisplayHelper {
     /**
      * 初始化
      */
-    DisplayHelper init(Sketch sketch, String uri, ImageView imageView);
+    DisplayHelper init(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface);
 
     /**
      * 初始化
      */
-    DisplayHelper init(Sketch sketch, DisplayParams displayParams, ImageView imageView);
+    DisplayHelper init(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface);
 
     /**
      * 恢复默认值

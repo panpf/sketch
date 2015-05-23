@@ -16,12 +16,10 @@
 
 package me.xiaopan.sketch;
 
-import android.widget.ImageView;
-
 public interface HelperFactory {
     DownloadHelper getDownloadHelper(Sketch sketch, String uri);
     LoadHelper getLoadHelper(Sketch sketch, String uri);
-    DisplayHelper getDisplayHelper(Sketch sketch, String uri, ImageView imageView);
-    DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, ImageView imageView);
+    DisplayHelper getDisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface);
+    DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface);
     void recycleDisplayHelper(DisplayHelper obsoletingDisplayHelper);
 }

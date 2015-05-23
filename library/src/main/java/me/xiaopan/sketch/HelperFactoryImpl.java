@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch;
 
-import android.widget.ImageView;
-
 public class HelperFactoryImpl implements HelperFactory{
     private DisplayHelper obsoletingDisplayHelper;
 
@@ -32,25 +30,25 @@ public class HelperFactoryImpl implements HelperFactory{
     }
 
     @Override
-    public DisplayHelper getDisplayHelper(Sketch sketch, String uri, ImageView imageView) {
+    public DisplayHelper getDisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
         if(this.obsoletingDisplayHelper == null){
-            return new DisplayHelperImpl(sketch, uri, imageView);
+            return new DisplayHelperImpl(sketch, uri, sketchImageViewInterface);
         }else{
             DisplayHelper displayHelper = this.obsoletingDisplayHelper;
             this.obsoletingDisplayHelper = null;
-            displayHelper.init(sketch, uri, imageView);
+            displayHelper.init(sketch, uri, sketchImageViewInterface);
             return displayHelper;
         }
     }
 
     @Override
-    public DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, ImageView imageView) {
+    public DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
         if(this.obsoletingDisplayHelper == null){
-            return new DisplayHelperImpl(sketch, displayParams, imageView);
+            return new DisplayHelperImpl(sketch, displayParams, sketchImageViewInterface);
         }else{
             DisplayHelper displayHelper = this.obsoletingDisplayHelper;
             this.obsoletingDisplayHelper = null;
-            displayHelper.init(sketch, displayParams, imageView);
+            displayHelper.init(sketch, displayParams, sketchImageViewInterface);
             return displayHelper;
         }
     }

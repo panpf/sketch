@@ -313,6 +313,16 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         }
     }
 
+    @Override
+    public Drawable getDrawable() {
+        return super.getDrawable();
+    }
+
+    @Override
+    public View getSelf() {
+        return this;
+    }
+
     protected void drawPressedStatus(Canvas canvas){
         if(allowShowRipple || animationRunning || showRect){
             applyClip = imageShapeClipPath != null;

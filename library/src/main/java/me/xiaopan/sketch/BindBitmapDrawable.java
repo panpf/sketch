@@ -2,7 +2,6 @@ package me.xiaopan.sketch;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
@@ -23,13 +22,13 @@ public class BindBitmapDrawable extends SketchBitmapDrawable {
     }
 
     /**
-     * 获取与给定ImageView所持有的DisplayRequst
-     * @param imageView ImageView
-     * @return 给定ImageView所持有的DisplayRequst
+     * 获取与给定SketchImageViewInterface所持有的DisplayRequest
+     * @param sketchImageViewInterface SketchImageViewInterface
+     * @return 给定ImageView所持有的DisplayRequest
      */
-    public static DisplayRequest getDisplayRequestByImageView(ImageView imageView) {
-        if (imageView != null) {
-            final Drawable drawable = imageView.getDrawable();
+    public static DisplayRequest getDisplayRequestBySketchImageInterface(SketchImageViewInterface sketchImageViewInterface) {
+        if (sketchImageViewInterface != null) {
+            final Drawable drawable = sketchImageViewInterface.getDrawable();
             if (drawable != null && drawable instanceof BindBitmapDrawable) {
                 return ((BindBitmapDrawable) drawable).getDisplayRequest();
             }

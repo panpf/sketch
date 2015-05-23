@@ -16,13 +16,11 @@
 
 package me.xiaopan.sketch;
 
-import android.widget.ImageView;
-
 /**
  * Request创建工厂
  */
 public interface RequestFactory {
-    DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, ImageView imageView);
+    DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface);
     LoadRequest newLoadRequest(Sketch sketch, String uri, UriScheme uriScheme);
     DownloadRequest newDownloadRequest(Sketch sketch, String uri, UriScheme uriScheme);
 }

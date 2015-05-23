@@ -23,8 +23,8 @@ import android.widget.ImageView;
  */
 public class RequestFactoryImpl implements RequestFactory{
     @Override
-    public DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, ImageView imageView){
-        return new DisplayRequestImpl(sketch, uri, uriScheme, memoryCacheId, imageView);
+    public DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface){
+        return new DisplayRequestImpl(sketch, uri, uriScheme, memoryCacheId, sketchImageViewInterface);
     }
 
     @Override

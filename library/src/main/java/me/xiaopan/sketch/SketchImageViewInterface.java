@@ -16,10 +16,52 @@
 
 package me.xiaopan.sketch;
 
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.view.View;
+import android.view.animation.Animation;
+import android.widget.ImageView;
 
 public interface SketchImageViewInterface {
+    /**
+     * 显示图片
+     */
     void onDisplay();
+
+    /**
+     * 获取Drawable
+     * @return Drawable
+     */
+    Drawable getDrawable();
+
+    /**
+     * 设置Drawable
+     * @param drawable Drawable
+     */
+    void setImageDrawable(Drawable drawable);
+
+    /**
+     * 获取自己
+     * @return View
+     */
+    View getSelf();
+
+    /**
+     * 获取缩放方式
+     * @return 缩放方式
+     */
+    ImageView.ScaleType getScaleType();
+
+    /**
+     * 清除动画
+     */
+    void clearAnimation();
+
+    /**
+     * 开始执行动画
+     * @param animation 动画
+     */
+    void startAnimation(Animation animation);
 
     /**
      * 显示图片

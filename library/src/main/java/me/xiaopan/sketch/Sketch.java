@@ -18,7 +18,6 @@ package me.xiaopan.sketch;
 
 import android.content.Context;
 import android.net.Uri;
-import android.widget.ImageView;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -136,62 +135,62 @@ public class Sketch {
      * <br>"asset://image.png"; // from assets
      * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      * </blockquote>
-     * @param imageView 显示图片的视图
+     * @param sketchImageViewInterface 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayHelper display(String uri, ImageView imageView){
-        return configuration.getHelperFactory().getDisplayHelper(this, uri, imageView);
+    public DisplayHelper display(String uri, SketchImageViewInterface sketchImageViewInterface){
+        return configuration.getHelperFactory().getDisplayHelper(this, uri, sketchImageViewInterface);
     }
 
     /**
      * 显示Asset中的图片
      * @param fileName 文件名称
-     * @param imageView 显示图片的视图
+     * @param sketchImageViewInterface 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayHelper displayFromAsset(String fileName, ImageView imageView){
-        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.ASSET.createUri(fileName), imageView);
+    public DisplayHelper displayFromAsset(String fileName, SketchImageViewInterface sketchImageViewInterface){
+        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.ASSET.createUri(fileName), sketchImageViewInterface);
     }
 
     /**
      * 显示资源中的图片
      * @param drawableResId 图片资源ID
-     * @param imageView 显示图片的视图
+     * @param sketchImageViewInterface 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayHelper displayFromResource(int drawableResId, ImageView imageView){
-        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
+    public DisplayHelper displayFromResource(int drawableResId, SketchImageViewInterface sketchImageViewInterface){
+        return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), sketchImageViewInterface);
     }
 
     /**
      * 显示URI指向的图片
      * @param uri 图片URI
-     * @param imageView 显示图片的视图
+     * @param sketchImageViewInterface 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayHelper displayFromURI(Uri uri, ImageView imageView){
-        return configuration.getHelperFactory().getDisplayHelper(this, uri!=null?uri.toString():null, imageView);
+    public DisplayHelper displayFromURI(Uri uri, SketchImageViewInterface sketchImageViewInterface){
+        return configuration.getHelperFactory().getDisplayHelper(this, uri!=null?uri.toString():null, sketchImageViewInterface);
     }
 
     /**
      * 显示图片，主要用于配合SketchImageView兼容RecyclerView
      * @param displayParams 参数集
-     * @param imageView 显示图片的视图
+     * @param sketchImageViewInterface 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayHelper display(DisplayParams displayParams, ImageView imageView){
-        return configuration.getHelperFactory().getDisplayHelper(this, displayParams, imageView);
+    public DisplayHelper display(DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface){
+        return configuration.getHelperFactory().getDisplayHelper(this, displayParams, sketchImageViewInterface);
     }
 
 
 
     /**
      * 取消
-     * @param imageView ImageView
+     * @param sketchImageViewInterface ImageView
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
      */
-    public static boolean cancel(ImageView imageView) {
-        final DisplayRequest displayRequest = BindBitmapDrawable.getDisplayRequestByImageView(imageView);
+    public static boolean cancel(SketchImageViewInterface sketchImageViewInterface) {
+        final DisplayRequest displayRequest = BindBitmapDrawable.getDisplayRequestBySketchImageInterface(sketchImageViewInterface);
         if (displayRequest != null && !displayRequest.isFinished()) {
             displayRequest.cancel();
             return true;

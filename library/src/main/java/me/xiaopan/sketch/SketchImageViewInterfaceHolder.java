@@ -16,38 +16,36 @@
 
 package me.xiaopan.sketch;
 
-import android.widget.ImageView;
-
 import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
  * ImageView持有器，以弱引用的方式持有关联的ImageView
  */
-public class ImageViewHolder{
+public class SketchImageViewInterfaceHolder {
 	private DisplayRequest displayRequest;
-	private Reference<ImageView> imageViewReference;
+	private Reference<SketchImageViewInterface> sketchImageViewInterfaceReference;
 
-	public ImageViewHolder(ImageView imageView, DisplayRequest displayRequest) {
-		this.imageViewReference = new WeakReference<ImageView>(imageView);
+	public SketchImageViewInterfaceHolder(SketchImageViewInterface imageView, DisplayRequest displayRequest) {
+		this.sketchImageViewInterfaceReference = new WeakReference<SketchImageViewInterface>(imageView);
         this.displayRequest = displayRequest;
 	}
 
-	public ImageView getImageView() {
-		final ImageView imageView = imageViewReference.get();
+	public SketchImageViewInterface getSketchImageViewInterface() {
+		final SketchImageViewInterface sketchImageViewInterface = sketchImageViewInterfaceReference.get();
 		if (displayRequest != null) {
-			DisplayRequest holderDisplayRequest = BindBitmapDrawable.getDisplayRequestByImageView(imageView);
+			DisplayRequest holderDisplayRequest = BindBitmapDrawable.getDisplayRequestBySketchImageInterface(sketchImageViewInterface);
             if(holderDisplayRequest != null && holderDisplayRequest == displayRequest){
-            	return imageView;
+            	return sketchImageViewInterface;
             }else{
             	return null;
             }
         }else{
-        	return imageView;
+        	return sketchImageViewInterface;
         }
 	}
 
 	public boolean isCollected() {
-		return getImageView() == null;
+		return getSketchImageViewInterface() == null;
 	}
 }

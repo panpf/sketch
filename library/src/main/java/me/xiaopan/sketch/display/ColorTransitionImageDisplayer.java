@@ -19,7 +19,8 @@ package me.xiaopan.sketch.display;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.widget.ImageView;
+
+import me.xiaopan.sketch.SketchImageViewInterface;
 
 /**
  * 颜色渐入图片显示器
@@ -38,13 +39,13 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
 	}
 	
 	@Override
-	public void display(ImageView imageView, Drawable newDrawable) {
+	public void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable) {
 		if(newDrawable == null){
             return;
         }
         TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{new ColorDrawable(color), newDrawable});
-    	imageView.clearAnimation();
-		imageView.setImageDrawable(transitionDrawable);
+    	sketchImageViewInterface.clearAnimation();
+		sketchImageViewInterface.setImageDrawable(transitionDrawable);
 		transitionDrawable.setCrossFadeEnabled(true);
 		transitionDrawable.startTransition(duration);
 	}

@@ -17,7 +17,8 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
-import android.widget.ImageView;
+
+import me.xiaopan.sketch.SketchImageViewInterface;
 
 /**
  * 图片显示器
@@ -26,8 +27,8 @@ public interface ImageDisplayer {
 	int DEFAULT_ANIMATION_DURATION = 400;
 	/**
 	 * 显示
-	 * @param imageView ImageView
+	 * @param sketchImageViewInterface ImageView
 	 * @param newDrawable 图片
 	 */
-	void display(ImageView imageView, Drawable newDrawable);
+	void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable);
 }
