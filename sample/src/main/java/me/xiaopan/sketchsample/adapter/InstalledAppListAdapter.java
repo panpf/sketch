@@ -9,9 +9,12 @@ import android.widget.TextView;
 
 import java.util.List;
 
+import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.bean.AppInfo;
+import me.xiaopan.sketchsample.util.DeviceUtils;
+import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 /**
@@ -19,9 +22,11 @@ import me.xiaopan.sketchsample.widget.MyImageView;
  */
 public class InstalledAppListAdapter extends RecyclerView.Adapter{
     private List<AppInfo> appInfoList;
+    private Settings settings;
 
     public InstalledAppListAdapter(Context context, List<AppInfo> appInfoList) {
         this.appInfoList = appInfoList;
+        this.settings = Settings.with(context);
     }
 
     @Override
@@ -30,7 +35,10 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter{
             return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app_list_header, parent, false));
         }else{
             AppInfoViewHolder appInfoViewHolder = new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
-            appInfoViewHolder.iconSketchImageView.setDisplayOptions(OptionsType.Rectangle);
+            appInfoViewHolder.iconSketchImageView.setDisplayOptions(OptionsType.ROUNDED_RECT);
+            appInfoViewHolder.iconSketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
+            appInfoViewHolder.iconSketchImageView.setRoundedRadius(DeviceUtils.dp2px(parent.getContext(), 10));
+            appInfoViewHolder.iconSketchImageView.setAutoApplyGlobalAttr(false);
             return appInfoViewHolder;
         }
     }
@@ -48,6 +56,9 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter{
 
             appInfoViewHolder.nameTextView.setText(appInfo.getName());
             appInfoViewHolder.infoTextView.setText("v"+appInfo.getVersionName()+"  |  "+appInfo.getAppSize());
+
+            appInfoViewHolder.iconSketchImageView.setShowClickRipple(settings.isShowClickRipple());
+            appInfoViewHolder.iconSketchImageView.setShowFromFlag(settings.isShowImageFromFlag());
         }
     }
 

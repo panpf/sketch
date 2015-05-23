@@ -20,20 +20,25 @@ public enum OptionsType {
     /**
      * 矩形
       */
-    Rectangle,
+    RECT,
+
+    /**
+     * 圆角矩形
+     */
+    ROUNDED_RECT,
 
     /**
      * 圆形
      */
-    Circular,
+    CIRCULAR,
 
     /**
      * 详情
      */
-    Detail,
+    DETAIL,
 
     /**
      * 窗口背景
      */
-    WindowBackground,
+    WINDOW_BACKGROUND,
 }

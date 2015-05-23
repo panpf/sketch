@@ -104,7 +104,7 @@ public class ImageStaggeredGridAdapter extends BaseAdapter {
         View headItemView = LayoutInflater.from(context).inflate(R.layout.list_item_image, viewGroup, false);
         ItemViewHolder itemViewHolder = new ItemViewHolder(headItemView);
         itemViewHolder.imageView.setOnClickListener(itemClickListener);
-        itemViewHolder.imageView.setDisplayOptions(OptionsType.Rectangle);
+        itemViewHolder.imageView.setDisplayOptions(OptionsType.RECT);
         headItemView.setTag(itemViewHolder);
         return headItemView;
     }

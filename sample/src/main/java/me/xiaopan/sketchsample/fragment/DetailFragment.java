@@ -102,7 +102,7 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
         applyWallpaperButton.setVisibility(View.INVISIBLE);
         playButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
-        toolbarLayout.setBackgroundDrawable(null);
+        toolbarLayout.setVisibility(View.GONE);
 
         animationBatchExecutor = new AnimationBatchExecutor(getActivity(), R.anim.action_show, R.anim.action_hidden, 70, shareButton, applyWallpaperButton, playButton, saveButton);
         viewPagerPlayer = new ViewPagerPlayer(viewPager);
@@ -148,11 +148,11 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
         show =! show;
         animationBatchExecutor.start(show);
         if(show){
-            toolbarLayout.setBackgroundResource(R.drawable.shape_linear_gradient_transparent_to_black);
+            AnimationUtils.visibleViewByAlpha(toolbarLayout);
             AnimationUtils.visibleViewByAlpha(numberLayout);
         }else{
-            toolbarLayout.setBackgroundDrawable(null);
             AnimationUtils.goneViewByAlpha(numberLayout);
+            AnimationUtils.goneViewByAlpha(toolbarLayout);
         }
     }
 

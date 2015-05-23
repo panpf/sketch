@@ -25,6 +25,7 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.InstalledAppListAdapter;
 import me.xiaopan.sketchsample.bean.AppInfo;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
+import me.xiaopan.sketchsample.widget.HintView;
 
 /**
  * 已安装APP列表
@@ -32,6 +33,7 @@ import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 @InjectContentView(R.layout.fragment_installed_app)
 public class InstalledAppFragment extends MyFragment {
     @InjectView(R.id.recyclerView_installedApp_content) private RecyclerView contentRecyclerView;
+    @InjectView(R.id.hint_installedApp_hint) private HintView hintView;
     private InstalledAppListAdapter adapter = null;
 
     @Override
@@ -52,6 +54,12 @@ public class InstalledAppFragment extends MyFragment {
     private void loadAppList(){
         new AsyncTask<Integer, Integer, List<AppInfo>>(){
             private Context context = getActivity().getBaseContext();
+
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+                hintView.loading("正在加载已安装列表，请稍后...");
+            }
 
             @Override
             protected List<AppInfo> doInBackground(Integer... params) {
@@ -98,6 +106,7 @@ public class InstalledAppFragment extends MyFragment {
                     return;
                 }
 
+                hintView.hidden();
                 adapter = new InstalledAppListAdapter(getActivity(), appInfoList);
                 contentRecyclerView.setAdapter(adapter);
                 contentRecyclerView.scheduleLayoutAnimation();

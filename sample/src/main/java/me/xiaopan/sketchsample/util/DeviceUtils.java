@@ -1,5 +1,6 @@
 package me.xiaopan.sketchsample.util;
 
+import android.content.Context;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 
@@ -29,5 +30,9 @@ public class DeviceUtils {
             result = res.getDimensionPixelSize(resourceId);
         }
         return result;
+    }
+
+    public static int dp2px(Context context, int dpValue){
+        return (int) ((dpValue * context.getResources().getDisplayMetrics().density) + 0.5);
     }
 }

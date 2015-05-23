@@ -48,7 +48,6 @@ import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.StarIndexFragment;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.DeviceUtils;
-import me.xiaopan.sketchsample.util.DimenUtils;
 import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.SlidingPaneLayoutCompatDrawerLayout;
 
@@ -450,22 +449,22 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
                 textView.setText(title);
                 if(number == 0){
                     textView.setPadding(
-                            DimenUtils.dp2px(context, 16),
-                            DimenUtils.dp2px(context, 16),
-                            DimenUtils.dp2px(context, 8),
-                            DimenUtils.dp2px(context, 16));
+                            DeviceUtils.dp2px(context, 16),
+                            DeviceUtils.dp2px(context, 16),
+                            DeviceUtils.dp2px(context, 8),
+                            DeviceUtils.dp2px(context, 16));
                 }else if(number == titles.length-1){
                     textView.setPadding(
-                            DimenUtils.dp2px(context, 8),
-                            DimenUtils.dp2px(context, 16),
-                            DimenUtils.dp2px(context, 16),
-                            DimenUtils.dp2px(context, 16));
+                            DeviceUtils.dp2px(context, 8),
+                            DeviceUtils.dp2px(context, 16),
+                            DeviceUtils.dp2px(context, 16),
+                            DeviceUtils.dp2px(context, 16));
                 }else{
                     textView.setPadding(
-                            DimenUtils.dp2px(context, 8),
-                            DimenUtils.dp2px(context, 16),
-                            DimenUtils.dp2px(context, 8),
-                            DimenUtils.dp2px(context, 16));
+                            DeviceUtils.dp2px(context, 8),
+                            DeviceUtils.dp2px(context, 16),
+                            DeviceUtils.dp2px(context, 8),
+                            DeviceUtils.dp2px(context, 16));
                 }
                 textView.setGravity(Gravity.CENTER);
                 textView.setTextColor(context.getResources().getColorStateList(R.color.tab));

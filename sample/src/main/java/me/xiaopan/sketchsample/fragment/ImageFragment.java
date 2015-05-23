@@ -29,6 +29,7 @@ public class ImageFragment extends MyFragment {
     @InjectExtra(PARAM_REQUIRED_IMAGE_URI) private String imageUri;
 
     private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
+    private PhotoViewAttacher photoViewAttacher;
 
     @Override
     public void onAttach(Activity activity) {
@@ -42,8 +43,10 @@ public class ImageFragment extends MyFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        imageView.setDisplayOptions(OptionsType.Detail);
+        photoViewAttacher = new PhotoViewAttacher(imageView);
+        imageView.setDisplayOptions(OptionsType.DETAIL);
         imageView.setAutoApplyGlobalAttr(false);
+
         imageView.setDisplayListener(new DisplayListener() {
             @Override
             public void onStarted() {
@@ -53,18 +56,22 @@ public class ImageFragment extends MyFragment {
             @Override
             public void onCompleted(ImageFrom imageFrom, String mimeType) {
                 progressBar.setVisibility(View.GONE);
-                new PhotoViewAttacher(imageView);
+                photoViewAttacher.update();
             }
 
             @Override
             public void onFailed(FailCause failCause) {
                 progressBar.setVisibility(View.GONE);
+                photoViewAttacher.update();
             }
 
             @Override
             public void onCanceled(CancelCause cancelCause) {
                 if (cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD) {
                     progressBar.setVisibility(View.GONE);
+                }
+                if(cancelCause != null && cancelCause != CancelCause.NORMAL){
+                    photoViewAttacher.update();
                 }
             }
         });

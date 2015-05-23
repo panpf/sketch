@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 明星全部页面 -->
-<android.support.v7.widget.RecyclerView
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/recyclerView_installedApp_content"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:divider="@null"
-    android:layoutAnimation="@anim/layout_animation"
-    android:listSelector="@null"/>
+    android:layout_height="match_parent">
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerView_installedApp_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null"
+        android:layoutAnimation="@anim/layout_animation"
+        android:listSelector="@null"/>
+
+    <me.xiaopan.sketchsample.widget.HintView
+        android:id="@+id/hint_installedApp_hint"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</FrameLayout>

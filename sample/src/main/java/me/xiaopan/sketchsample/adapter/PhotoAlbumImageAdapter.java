@@ -14,7 +14,7 @@ import java.util.List;
 
 import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.util.DimenUtils;
+import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
@@ -47,8 +47,8 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             spanCount = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).getSpanCount();
         }
         if(spanCount != -1){
-            borderMargin = DimenUtils.dp2px(context, 8);
-            middleMargin = DimenUtils.dp2px(context, 4);
+            borderMargin = DeviceUtils.dp2px(context, 8);
+            middleMargin = DeviceUtils.dp2px(context, 4);
             int maxScreenWidth = context.getResources().getDisplayMetrics().widthPixels - ((borderMargin * (spanCount+1)));
             itemWidth = maxScreenWidth/spanCount;
         }
@@ -73,7 +73,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         ItemViewHolder itemViewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_photo_album_image, parent, false));
 
         itemViewHolder.sketchImageView.setOnClickListener(itemClickListener);
-        itemViewHolder.sketchImageView.setDisplayOptions(OptionsType.Rectangle);
+        itemViewHolder.sketchImageView.setDisplayOptions(OptionsType.RECT);
         if(itemWidth != -1){
             ViewGroup.LayoutParams layoutParams = itemViewHolder.sketchImageView.getLayoutParams();
             layoutParams.width = itemWidth;

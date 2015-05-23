@@ -28,6 +28,7 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.AppPackageListAdapter;
 import me.xiaopan.sketchsample.bean.AppInfo;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
+import me.xiaopan.sketchsample.widget.HintView;
 
 /**
  * 本地安装包页面
@@ -35,6 +36,7 @@ import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 @InjectContentView(R.layout.fragment_installed_app)
 public class AppPackageFragment extends MyFragment {
     @InjectView(R.id.recyclerView_installedApp_content) private RecyclerView contentRecyclerView;
+    @InjectView(R.id.hint_installedApp_hint) private HintView hintView;
     private AppPackageListAdapter adapter = null;
 
     @Override
@@ -60,6 +62,7 @@ public class AppPackageFragment extends MyFragment {
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
+                hintView.loading("正在扫描本地APK文件，请稍后...");
                 time = System.currentTimeMillis();
             }
 
@@ -152,6 +155,7 @@ public class AppPackageFragment extends MyFragment {
                     return;
                 }
 
+                hintView.hidden();
                 adapter = new AppPackageListAdapter(getActivity(), appInfoList);
                 adapter.setUseTime(System.currentTimeMillis() - time);
                 contentRecyclerView.setAdapter(adapter);

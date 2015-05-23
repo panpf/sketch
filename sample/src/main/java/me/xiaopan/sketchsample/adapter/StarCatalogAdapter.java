@@ -105,9 +105,13 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             itemHolder.twoImageView.setOnClickListener(onClickListener);
             itemHolder.threeImageView.setOnClickListener(onClickListener);
 
-            itemHolder.oneImageView.setDisplayOptions(OptionsType.Circular);
-            itemHolder.twoImageView.setDisplayOptions(OptionsType.Circular);
-            itemHolder.threeImageView.setDisplayOptions(OptionsType.Circular);
+            itemHolder.oneImageView.setDisplayOptions(OptionsType.CIRCULAR);
+            itemHolder.twoImageView.setDisplayOptions(OptionsType.CIRCULAR);
+            itemHolder.threeImageView.setDisplayOptions(OptionsType.CIRCULAR);
+
+            itemHolder.oneImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
+            itemHolder.twoImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
+            itemHolder.threeImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
 
             ViewGroup.LayoutParams params = itemHolder.oneImageView.getLayoutParams();
             params.width = itemWidth;
@@ -125,17 +129,14 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             itemHolder.threeImageView.setLayoutParams(params);
 
             params = itemHolder.oneNameTextView.getLayoutParams();
-            itemHolder.oneImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
             params.width = itemWidth;
             itemHolder.oneNameTextView.setLayoutParams(params);
 
             params = itemHolder.twoNameTextView.getLayoutParams();
-            itemHolder.twoImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
             params.width = itemWidth;
             itemHolder.twoNameTextView.setLayoutParams(params);
 
             params = itemHolder.threeNameTextView.getLayoutParams();
-            itemHolder.threeImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
             params.width = itemWidth;
             itemHolder.threeNameTextView.setLayoutParams(params);
 

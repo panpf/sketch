@@ -66,8 +66,8 @@ public class HintView extends LinearLayout {
 	/**
 	 * 显示加载中，将使用type格式化“正在加载%s，请稍后…”字符串
 	 */
-	public void loading(String type){
-		loadingHintTextView.setText(getContext().getString(R.string.loadingLater, type));
+	public void loading(String message){
+		loadingHintTextView.setText(message);
 		if(mode != Mode.LOADING){
 			if(mode == Mode.HINT){
 				viewSwitcher.setInAnimation(getContext(), R.anim.slide_to_bottom_in);
@@ -86,27 +86,6 @@ public class HintView extends LinearLayout {
 	public void setProgress(int totalLength, int completedLength){
 		progressBar.setMax(totalLength);
 		progressBar.setProgress(completedLength);
-	}
-	
-	/**
-	 * 显示进行中，将使用type格式化“正在%s，请稍后…”字符串
-	 */
-	public void ing(String type){
-		loadingHintTextView.setText(getContext().getString(R.string.ingLater, type));
-		
-		if(mode != Mode.LOADING){
-			if(mode != null){
-				viewSwitcher.setInAnimation(getContext(), R.anim.slide_to_bottom_in);
-				viewSwitcher.setOutAnimation(getContext(), R.anim.slide_to_bottom_out);
-			}else{
-				viewSwitcher.setInAnimation(null);
-				viewSwitcher.setOutAnimation(null);
-			} 
-			mode = Mode.LOADING;
-			actionButton.setVisibility(View.INVISIBLE);
-			viewSwitcher.setDisplayedChild(mode.index);
-			setVisibility(View.VISIBLE);
-		}
 	}
 	
 	/**

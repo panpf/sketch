@@ -23,12 +23,15 @@ import android.util.Log;
 import me.xiaopan.android.gohttp.GoHttp;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.DisplayOptions;
+import me.xiaopan.sketch.FixedSize;
 import me.xiaopan.sketch.ImageHolder;
 import me.xiaopan.sketch.LoadOptions;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.CircleImageProcessor;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
+import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
+import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.util.Settings;
 
 public class MyApplication extends Application {
@@ -40,36 +43,52 @@ public class MyApplication extends Application {
         GoHttp.with(getBaseContext()).setDebugMode(true);
 
         Sketch.setDebugMode(BuildConfig.DEBUG);
-        Sketch.putOptions(OptionsType.Rectangle,
+
+        TransitionImageDisplayer transitionImageDisplayer = new TransitionImageDisplayer();
+        Sketch.putOptions(OptionsType.RECT,
                 new DisplayOptions()
                         .setLoadingImage(R.drawable.image_loading)
                         .setFailureImage(R.drawable.image_failure)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setDecodeGifImage(false)
-                        .setImageDisplayer(new TransitionImageDisplayer())
+                        .setImageDisplayer(transitionImageDisplayer)
+        );
+
+        int appIconShowSize = DeviceUtils.dp2px(getBaseContext(), 60);
+        int appIconRoundedSize = DeviceUtils.dp2px(getBaseContext(), 10);
+        RoundedCornerImageProcessor roundedCornerImageProcessor = new RoundedCornerImageProcessor();
+        roundedCornerImageProcessor.setFixedSize(new FixedSize(appIconShowSize, appIconShowSize));
+        roundedCornerImageProcessor.setRoundPixels(appIconRoundedSize);
+        Sketch.putOptions(OptionsType.ROUNDED_RECT,
+                new DisplayOptions()
+                        .setLoadingImage(new ImageHolder(R.drawable.image_loading, roundedCornerImageProcessor))
+                        .setFailureImage(new ImageHolder(R.drawable.image_failure, roundedCornerImageProcessor))
+                        .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download, roundedCornerImageProcessor))
+                        .setDecodeGifImage(false)
+                        .setImageDisplayer(transitionImageDisplayer)
         );
 
         Sketch.putOptions(
-                OptionsType.Detail,
+                OptionsType.DETAIL,
                 new DisplayOptions()
                         .setFailureImage(R.drawable.image_failure)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setImageDisplayer(new TransitionImageDisplayer())
+                        .setImageDisplayer(transitionImageDisplayer)
         );
 
         Sketch.putOptions(
-                OptionsType.Circular,
+                OptionsType.CIRCULAR,
                 new DisplayOptions()
                         .setLoadingImage(new ImageHolder(R.drawable.image_loading, CircleImageProcessor.getInstance()))
                         .setFailureImage(new ImageHolder(R.drawable.image_failure, CircleImageProcessor.getInstance()))
                         .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download, CircleImageProcessor.getInstance()))
                         .setDecodeGifImage(false)
-                        .setImageDisplayer(new TransitionImageDisplayer())
+                        .setImageDisplayer(transitionImageDisplayer)
                         .setImageProcessor(CircleImageProcessor.getInstance())
         );
 
         Sketch.putOptions(
-                OptionsType.WindowBackground,
+                OptionsType.WINDOW_BACKGROUND,
                 new LoadOptions()
                         .setImageProcessor(new GaussianBlurImageProcessor(true))
                         .setDecodeGifImage(false)

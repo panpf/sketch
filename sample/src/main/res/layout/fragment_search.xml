@@ -15,7 +15,8 @@
             android:layoutAnimation="@anim/layout_animation"
             android:listSelector="@android:color/transparent"
             android:divider="@android:color/transparent"
-            app:column_count="2"
+            app:column_count_portrait="2"
+            app:column_count_landscape="3"
             app:item_margin="8dp"/>
     </me.xiaopan.sketchsample.widget.MyPullRefreshLayout>
     <me.xiaopan.sketchsample.widget.HintView
