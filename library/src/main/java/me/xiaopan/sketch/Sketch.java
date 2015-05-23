@@ -109,7 +109,7 @@ public class Sketch {
      * @param loadListener 加载监听器
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
-	public LoadHelper loadFromRecource(int drawableResId, LoadListener loadListener){
+	public LoadHelper loadFromResource(int drawableResId, LoadListener loadListener){
         return configuration.getHelperFactory().getLoadHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
 	}
 
@@ -159,7 +159,7 @@ public class Sketch {
      * @param imageView 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
-    public DisplayHelper displayFromRecource(int drawableResId, ImageView imageView){
+    public DisplayHelper displayFromResource(int drawableResId, ImageView imageView){
         return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageView);
     }
 
