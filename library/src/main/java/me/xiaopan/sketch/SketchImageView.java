@@ -87,14 +87,15 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
     protected boolean currentIsShowGifFlag;
     protected boolean showGifFlag;
-    protected float gifTextLeft = -1;
-    protected float gifTextTop = -1;
+    protected float gifDrawableLeft = -1;
+    protected float gifDrawableTop = -1;
     protected Drawable gifFlagDrawable;
 
     protected Path imageShapeClipPath;
-    protected float[] roundedRadii;
+    protected int roundedRadius;
     protected ImageShape imageShape = ImageShape.RECT;
     protected boolean applyClip = false;
+    RectF rectF;
 
     public SketchImageView(Context context) {
         super(context);
@@ -120,24 +121,67 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if(fromFlagPath != null){
+        initFromFlag();
+        initGifFlag();
+        initImageShapePath();
+    }
+
+    protected void initFromFlag(){
+        if(!showFromFlag){
+            return;
+        }
+
+        if(fromFlagPath == null){
+            fromFlagPath = new Path();
+        }else{
             fromFlagPath.reset();
-            int x = getWidth()/10;
-            int y = getWidth()/10;
-            int left2 = getPaddingLeft();
-            int top2 = getPaddingTop();
-            fromFlagPath.moveTo(left2, top2);
-            fromFlagPath.lineTo(left2 + x, top2);
-            fromFlagPath.lineTo(left2, top2 + y);
-            fromFlagPath.close();
+        }
+        int x = getWidth()/10;
+        int y = getWidth()/10;
+        int left2 = getPaddingLeft();
+        int top2 = getPaddingTop();
+        fromFlagPath.moveTo(left2, top2);
+        fromFlagPath.lineTo(left2 + x, top2);
+        fromFlagPath.lineTo(left2, top2 + y);
+        fromFlagPath.close();
+    }
+
+    protected void initGifFlag(){
+        if(!showGifFlag || gifFlagDrawable == null){
+            return;
         }
 
-        if(showGifFlag && gifFlagDrawable != null){
-            gifTextLeft = getWidth()-getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
-            gifTextTop = getHeight()-getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
-        }
+        gifDrawableLeft = getWidth()-getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
+        gifDrawableTop = getHeight()-getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
+    }
 
-        imageShapeClipPath = null;
+    protected void initImageShapePath(){
+        if(imageShape == ImageShape.RECT){
+            imageShapeClipPath = null;
+        }else if(imageShape == ImageShape.CIRCLE){
+            if(imageShapeClipPath == null){
+                imageShapeClipPath = new Path();
+            }else{
+                imageShapeClipPath.reset();
+            }
+            int xRadius = (getWidth()-getPaddingLeft()-getPaddingRight())/2;
+            int yRadius = (getHeight()-getPaddingTop()-getPaddingBottom())/2;
+            imageShapeClipPath.addCircle(xRadius, yRadius, xRadius < yRadius ? xRadius : yRadius, Path.Direction.CW);
+        }else if(imageShape == ImageShape.ROUNDED_RECT){
+            if(imageShapeClipPath == null){
+                imageShapeClipPath = new Path();
+            }else{
+                imageShapeClipPath.reset();
+            }
+            if(rectF == null){
+                rectF = new RectF(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
+            }else{
+                rectF.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
+            }
+            imageShapeClipPath.addRoundRect(rectF, roundedRadius, roundedRadius, Path.Direction.CW);
+        }else{
+            imageShapeClipPath = null;
+        }
     }
 
     @Override
@@ -149,6 +193,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+
         drawPressedStatus(canvas);
         drawDownloadProgress(canvas);
         drawFromFlag(canvas);
@@ -270,7 +315,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
     protected void drawPressedStatus(Canvas canvas){
         if(allowShowRipple || animationRunning || showRect){
-            Path imageShapeClipPath = getImageShapeClipPath();
             applyClip = imageShapeClipPath != null;
             if(applyClip){
                 canvas.save();
@@ -280,11 +324,12 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
             if(clickRipplePaint == null){
                 clickRipplePaint = new Paint();
                 clickRipplePaint.setColor(clickRippleColor);
+                clickRipplePaint.setAntiAlias(true);
             }
             if(animationRunning){
                 canvas.drawCircle(touchX, touchY, radius, clickRipplePaint);
             }else if(showRect){
-                canvas.drawRect(0, 0, getWidth(), getHeight(), clickRipplePaint);
+                canvas.drawRect(getPaddingLeft(), getPaddingTop(), getWidth()-getPaddingRight(), getHeight()-getPaddingBottom(), clickRipplePaint);
             }
 
             if(applyClip){
@@ -295,7 +340,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
     protected void drawDownloadProgress(Canvas canvas){
         if(showDownloadProgress && progress != NONE){
-            Path imageShapeClipPath = getImageShapeClipPath();
             applyClip = imageShapeClipPath != null;
             if(applyClip){
                 canvas.save();
@@ -305,6 +349,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
             if(progressPaint == null){
                 progressPaint = new Paint();
                 progressPaint.setColor(progressColor);
+                progressPaint.setAntiAlias(true);
             }
             canvas.drawRect(getPaddingLeft(), getPaddingTop() + (progress * getHeight()), getWidth() - getPaddingLeft() - getPaddingRight(), getHeight() - getPaddingTop() - getPaddingBottom(), progressPaint);
 
@@ -329,6 +374,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
             }
             if(fromFlagPaint == null){
                 fromFlagPaint = new Paint();
+                fromFlagPaint.setAntiAlias(true);
             }
             fromFlagPaint.setColor(fromFlagColor);
             canvas.drawPath(fromFlagPath, fromFlagPaint);
@@ -337,36 +383,15 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
     protected void drawGifFlag(Canvas canvas){
         if(showGifFlag && currentIsShowGifFlag && gifFlagDrawable != null){
-            if(gifTextLeft == -1){
-                gifTextLeft = getWidth()-getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
-                gifTextTop = getHeight()-getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
+            if(gifDrawableLeft == -1){
+                gifDrawableLeft = getWidth()-getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
+                gifDrawableTop = getHeight()-getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
             }
             canvas.save();
-            canvas.translate(gifTextLeft, gifTextTop);
+            canvas.translate(gifDrawableLeft, gifDrawableTop);
             gifFlagDrawable.draw(canvas);
             canvas.restore();
         }
-    }
-
-    protected Path getImageShapeClipPath(){
-        if(imageShapeClipPath == null){
-            if(imageShape == ImageShape.RECT){
-                if(getPaddingLeft() != 0 || getPaddingTop() != 0 || getPaddingRight() != 0 || getPaddingBottom() != 0){
-                    imageShapeClipPath = new Path();
-                    imageShapeClipPath.addRect(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom(), Path.Direction.CW);
-                }
-            }else if(imageShape == ImageShape.CIRCLE){
-                imageShapeClipPath = new Path();
-                int xRadius = (getWidth()-getPaddingLeft()-getPaddingRight())/2;
-                int yRadius = (getHeight()-getPaddingTop()-getPaddingBottom())/2;
-                imageShapeClipPath.addCircle(xRadius, yRadius, xRadius < yRadius ? xRadius : yRadius, Path.Direction.CW);
-            }else if(imageShape == ImageShape.ROUNDED_RECT){
-                RectF rectF = new RectF(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
-                imageShapeClipPath = new Path();
-                imageShapeClipPath.addRoundRect(rectF, roundedRadii, Path.Direction.CW);
-            }
-        }
-        return imageShapeClipPath;
     }
 
     @Override
@@ -388,7 +413,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
     @Override
     public Request displayResourceImage(int drawableResId){
-        return Sketch.with(getContext()).displayFromRecource(drawableResId, this).commit();
+        return Sketch.with(getContext()).displayFromResource(drawableResId, this).commit();
     }
 
     @Override
@@ -613,22 +638,24 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      */
     public void setImageShape(ImageShape imageShape) {
         this.imageShape = imageShape;
+        initImageShapePath();
     }
 
     /**
-     * 设置圆角半径
+     * 获取圆角半径
      * @return 圆角半径
      */
-    public float[] getRoundedRadii() {
-        return roundedRadii;
+    public int getRoundedRadiud() {
+        return roundedRadius;
     }
 
     /**
      * 设置圆角半径
-     * @param roundedRadii 圆角半径
+     * @param radius 圆角半径
      */
-    public void setRoundedRadii(float[] roundedRadii) {
-        this.roundedRadii = roundedRadii;
+    public void setRoundedRadius(int radius) {
+        this.roundedRadius = radius;
+        initImageShapePath();
     }
 
     private void postInit(GifViewUtils.InitResult result) {
@@ -652,7 +679,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
                 newDrawable = transitionDrawable.getDrawable(1);
             }
         }
-        return newDrawable instanceof RecycleDrawableInterface && "image/gif".equals(((RecycleDrawableInterface) newDrawable).getMimeType());
+        return newDrawable instanceof RecycleDrawableInterface && ImageFormat.GIF.getMimeType().equals(((RecycleDrawableInterface) newDrawable).getMimeType());
     }
 
     /**
