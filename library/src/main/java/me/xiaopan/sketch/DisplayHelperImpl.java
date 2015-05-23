@@ -653,11 +653,11 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(imageHolder != null){
             Bitmap bitmap = imageHolder.getBitmap(context);
             if(bitmap != null){
-                SrcBitmapDrawable srcBitmapDrawable = new SrcBitmapDrawable(bitmap);
+                SketchBitmapDrawable sketchBitmapDrawable = new SketchBitmapDrawable(bitmap);
                 if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
-                    srcBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
+                    sketchBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
                 }
-                return srcBitmapDrawable;
+                return sketchBitmapDrawable;
             }
         }
 

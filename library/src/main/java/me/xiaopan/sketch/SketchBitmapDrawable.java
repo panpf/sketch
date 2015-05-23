@@ -9,7 +9,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-public class SrcBitmapDrawable extends Drawable {
+public class SketchBitmapDrawable extends Drawable {
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
     private Bitmap mBitmap;
     private Paint mPaint;
@@ -18,7 +18,7 @@ public class SrcBitmapDrawable extends Drawable {
     private int bitmapWidth;
     private int bitmapHeight;
 
-    public SrcBitmapDrawable(Bitmap bitmap) {
+    public SketchBitmapDrawable(Bitmap bitmap) {
         this.mBitmap = bitmap;
         this.bitmapWidth = bitmap!=null?bitmap.getWidth():0;
         this.bitmapHeight = bitmap!=null?bitmap.getHeight():0;

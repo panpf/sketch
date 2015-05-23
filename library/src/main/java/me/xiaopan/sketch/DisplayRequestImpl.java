@@ -211,11 +211,11 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(failureImageHolder != null){
             Bitmap bitmap = failureImageHolder.getBitmap(context);
             if(bitmap != null){
-                SrcBitmapDrawable failureSrcBitmapDrawable = new SrcBitmapDrawable(bitmap);
+                SketchBitmapDrawable failureSketchBitmapDrawable = new SketchBitmapDrawable(bitmap);
                 if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
-                    failureSrcBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
+                    failureSketchBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
                 }
-                return failureSrcBitmapDrawable;
+                return failureSketchBitmapDrawable;
             }
         }
 
@@ -232,11 +232,11 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
         if(pauseDownloadImageHolder != null){
             Bitmap bitmap = pauseDownloadImageHolder.getBitmap(context);
             if(bitmap != null){
-                SrcBitmapDrawable pauseDownloadSrcBitmapDrawable = new SrcBitmapDrawable(bitmap);
+                SketchBitmapDrawable pauseDownloadSketchBitmapDrawable = new SketchBitmapDrawable(bitmap);
                 if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
-                    pauseDownloadSrcBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
+                    pauseDownloadSketchBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
                 }
-                return pauseDownloadSrcBitmapDrawable;
+                return pauseDownloadSketchBitmapDrawable;
             }
         }
 

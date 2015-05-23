@@ -6,7 +6,7 @@ import android.widget.ImageView;
 
 import java.lang.ref.WeakReference;
 
-public class BindBitmapDrawable extends SrcBitmapDrawable {
+public class BindBitmapDrawable extends SketchBitmapDrawable {
     private WeakReference<DisplayRequest> displayRequestWeakReference;
 
     public BindBitmapDrawable(Bitmap bitmap, DisplayRequest displayRequest) {
