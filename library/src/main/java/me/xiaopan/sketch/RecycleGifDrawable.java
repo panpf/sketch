@@ -173,6 +173,11 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
         }
     }
 
+    @Override
+    public boolean canRecycle(){
+        return !isRecycled();
+    }
+
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if(Sketch.isDebugMode()){
@@ -184,10 +189,5 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
                 Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "can't recycle gif drawable", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
             }
         }
-    }
-
-    private boolean canRecycle(){
-//        return Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1 && !isRecycled();
-        return !isRecycled();
     }
 }

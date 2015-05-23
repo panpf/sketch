@@ -39,4 +39,6 @@ public interface RecycleDrawableInterface {
     String getConfig();
 
     String getInfo();
+
+    boolean canRecycle();
 }
