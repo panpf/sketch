@@ -88,9 +88,6 @@ public class DisplayOptions extends LoadOptions {
      * @param loadingImage 正在加载时显示的图片
      */
     public DisplayOptions setLoadingImage(ImageHolder loadingImage) {
-        if(this.loadingImage != null){
-            this.loadingImage.recycle();
-        }
         this.loadingImage = loadingImage;
         return this;
     }
@@ -118,9 +115,6 @@ public class DisplayOptions extends LoadOptions {
      * @param failureImage 失败时显示的图片
      */
     public DisplayOptions setFailureImage(ImageHolder failureImage) {
-        if(this.failureImage != null){
-            this.failureImage.recycle();
-        }
         this.failureImage = failureImage;
         return this;
     }
@@ -148,9 +142,6 @@ public class DisplayOptions extends LoadOptions {
      * @param pauseDownloadImage 暂停下载时显示的图片
      */
     public DisplayOptions setPauseDownloadImage(ImageHolder pauseDownloadImage) {
-        if(this.pauseDownloadImage != null){
-            this.pauseDownloadImage.recycle();
-        }
         this.pauseDownloadImage = pauseDownloadImage;
         return this;
     }

@@ -34,7 +34,7 @@ public class SketchImageViewInterfaceHolder {
 	public SketchImageViewInterface getSketchImageViewInterface() {
 		final SketchImageViewInterface sketchImageViewInterface = sketchImageViewInterfaceReference.get();
 		if (displayRequest != null) {
-			DisplayRequest holderDisplayRequest = BindBitmapDrawable.getDisplayRequestBySketchImageInterface(sketchImageViewInterface);
+			DisplayRequest holderDisplayRequest = BindFixedRecycleBitmapDrawable.getDisplayRequestBySketchImageInterface(sketchImageViewInterface);
             if(holderDisplayRequest != null && holderDisplayRequest == displayRequest){
             	return sketchImageViewInterface;
             }else{

@@ -190,7 +190,7 @@ public class Sketch {
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
      */
     public static boolean cancel(SketchImageViewInterface sketchImageViewInterface) {
-        final DisplayRequest displayRequest = BindBitmapDrawable.getDisplayRequestBySketchImageInterface(sketchImageViewInterface);
+        final DisplayRequest displayRequest = BindFixedRecycleBitmapDrawable.getDisplayRequestBySketchImageInterface(sketchImageViewInterface);
         if (displayRequest != null && !displayRequest.isFinished()) {
             displayRequest.cancel();
             return true;

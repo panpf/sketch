@@ -38,14 +38,10 @@ public class LruMemoryCache implements MemoryCache {
 		this.context = context;
         this.drawableLruCache = new DrawableLruCache(maxSize);
 		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "MemoryCacheMaxSize: "+ Formatter.formatFileSize(context, maxSize)));
+			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "MemoryCacheMaxSize: " + Formatter.formatFileSize(context, maxSize)));
 		}
 	}
 
-    public LruMemoryCache(Context context){
-		this(context, (int) (Runtime.getRuntime().maxMemory()/8));
-	}
-	
 	@Override
 	public synchronized void put(String key, Drawable value) {
 		if(!(value instanceof RecycleDrawableInterface)){
@@ -70,7 +66,7 @@ public class LruMemoryCache implements MemoryCache {
 	public synchronized Drawable remove(String key) {
 		Drawable drawable = drawableLruCache.remove(key);
 		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "remove", " - " , "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "remove", " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
 		}
 		return drawable;
 	}
@@ -88,7 +84,7 @@ public class LruMemoryCache implements MemoryCache {
 	@Override
 	public synchronized void clear() {
 		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "clear", " - " , "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "clear", " - ", "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
 		}
 		drawableLruCache.evictAll();
 	}

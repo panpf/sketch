@@ -21,15 +21,17 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.process.ImageProcessor;
+import me.xiaopan.sketch.util.CommentUtils;
 
 public class ImageHolder {
     private int resId;
-    private Bitmap bitmap;
     private ImageProcessor imageProcessor;
     private Resize resize;
     private boolean imagesOfLowQuality;
-    private boolean canRecycle;
+    private String memoryCacheId;
+    private RecycleBitmapDrawable drawable;
 
     public ImageHolder(int resId) {
         this.resId = resId;
@@ -53,32 +55,100 @@ public class ImageHolder {
         this.imagesOfLowQuality = imagesOfLowQuality;
     }
 
-    public Bitmap getBitmap(Context context){
-        if(bitmap == null){
-            Drawable drawable = context.getResources().getDrawable(resId);
-            if(drawable != null && drawable instanceof BitmapDrawable){
-                bitmap = ((BitmapDrawable) drawable).getBitmap();
-                if(imageProcessor != null){
-                    boolean tempImagesOfLowQuality = this.imagesOfLowQuality;
-                    if(Sketch.with(context).getConfiguration().isImagesOfLowQuality()){
-                        tempImagesOfLowQuality = true;
-                    }
-                    Bitmap newBitmap = imageProcessor.process(bitmap, resize, tempImagesOfLowQuality);
-                    if(newBitmap != bitmap){
-                        bitmap = newBitmap;
-                        canRecycle = true;
-                    }
+    private RecycleBitmapDrawable getRecycleBitmapDrawable(Context context){
+        if(drawable != null && !drawable.isRecycled()){
+            return drawable;
+        }
+
+        // 从内存缓存中取
+        if(memoryCacheId == null){
+            memoryCacheId = generateMemoryCacheId(resId, resize, imagesOfLowQuality, imageProcessor);
+        }
+        MemoryCache lruMemoryCache = Sketch.with(context).getConfiguration().getPlaceholderImageMemoryCache();
+        RecycleBitmapDrawable newDrawable = (RecycleBitmapDrawable) lruMemoryCache.get(memoryCacheId);
+        if(newDrawable != null && !newDrawable.isRecycled()){
+            this.drawable = newDrawable;
+            return drawable;
+        }
+
+        if(newDrawable != null){
+            lruMemoryCache.remove(memoryCacheId);
+        }
+
+        // 创建新的图片
+        Bitmap bitmap;
+        boolean tempImagesOfLowQuality = this.imagesOfLowQuality;
+        if(Sketch.with(context).getConfiguration().isImagesOfLowQuality()){
+            tempImagesOfLowQuality = true;
+        }
+        boolean canRecycle = false;
+
+        Drawable resDrawable = context.getResources().getDrawable(resId);
+        if(resDrawable != null && resDrawable instanceof BitmapDrawable){
+            bitmap = ((BitmapDrawable) resDrawable).getBitmap();
+        }else{
+            bitmap = CommentUtils.drawableToBitmap(resDrawable, tempImagesOfLowQuality);
+            canRecycle = true;
+        }
+
+        if(bitmap != null && !bitmap.isRecycled() && imageProcessor != null){
+            Bitmap newBitmap = imageProcessor.process(bitmap, resize, tempImagesOfLowQuality);
+            if(newBitmap != bitmap){
+                if(canRecycle){
+                    bitmap.recycle();
                 }
+                bitmap = newBitmap;
+                canRecycle = true;
             }
         }
-        return bitmap;
+
+        if(bitmap != null && !bitmap.isRecycled()){
+            newDrawable = new RecycleBitmapDrawable(bitmap);
+            newDrawable.setAllowRecycle(canRecycle);
+            if(canRecycle){
+                lruMemoryCache.put(memoryCacheId, newDrawable);
+            }
+            drawable = newDrawable;
+        }
+
+        return drawable;
     }
 
-    public void recycle(){
-        if(canRecycle && bitmap != null){
-            bitmap.recycle();
-            bitmap = null;
-            canRecycle = false;
+    public FixedRecycleBitmapDrawable getFixedRecycleBitmapDrawable(Context context, FixedSize fixedSize){
+        RecycleBitmapDrawable recycleBitmapDrawable = getRecycleBitmapDrawable(context);
+        if(recycleBitmapDrawable != null){
+            FixedRecycleBitmapDrawable fixedRecycleBitmapDrawable = new FixedRecycleBitmapDrawable(recycleBitmapDrawable);
+            if(fixedSize != null){
+                fixedRecycleBitmapDrawable.setFixedSize(fixedSize);
+            }
+            return fixedRecycleBitmapDrawable;
         }
+        return null;
+    }
+
+    public BindFixedRecycleBitmapDrawable getBindFixedRecycleBitmapDrawable(Context context, FixedSize fixedSize, DisplayRequest displayRequest){
+        RecycleBitmapDrawable recycleBitmapDrawable = getRecycleBitmapDrawable(context);
+        BindFixedRecycleBitmapDrawable bindFixedRecycleBitmapDrawable = new BindFixedRecycleBitmapDrawable(recycleBitmapDrawable, displayRequest);
+        if(fixedSize != null){
+            bindFixedRecycleBitmapDrawable.setFixedSize(fixedSize);
+        }
+        return bindFixedRecycleBitmapDrawable;
+    }
+
+    protected String generateMemoryCacheId(int resId, Resize resize, boolean imagesOfLowQuality, ImageProcessor imageProcessor){
+        StringBuilder builder = new StringBuilder();
+        builder.append(resId);
+        if(resize != null){
+            builder.append("_");
+            resize.appendIdentifier(builder);
+        }
+        if(imagesOfLowQuality){
+            builder.append("_LowQuality");
+        }
+        if(imageProcessor != null){
+            builder.append("_");
+            imageProcessor.appendIdentifier(builder);
+        }
+        return builder.toString();
     }
 }

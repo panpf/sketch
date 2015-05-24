@@ -699,12 +699,13 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      * @param isDisplayed 是否已显示
      */
     private static void notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
-        if(drawable instanceof BindBitmapDrawable){
-            BindBitmapDrawable bindBitmapDrawable = (BindBitmapDrawable) drawable;
-            DisplayRequest displayRequest = bindBitmapDrawable.getDisplayRequest();
+        if(drawable instanceof BindFixedRecycleBitmapDrawable){
+            BindFixedRecycleBitmapDrawable bindFixedRecycleBitmapDrawable = (BindFixedRecycleBitmapDrawable) drawable;
+            DisplayRequest displayRequest = bindFixedRecycleBitmapDrawable.getDisplayRequest();
             if(displayRequest != null && !displayRequest.isFinished()){
                 displayRequest.cancel();
             }
+            bindFixedRecycleBitmapDrawable.setIsDisplayed(callingStation, isDisplayed);
         }else if (drawable instanceof RecycleDrawableInterface) {
             ((RecycleDrawableInterface) drawable).setIsDisplayed(callingStation, isDisplayed);
         } else if (drawable instanceof LayerDrawable) {

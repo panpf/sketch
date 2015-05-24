@@ -1,16 +1,15 @@
 package me.xiaopan.sketch;
 
-import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
 import java.lang.ref.WeakReference;
 
-public class BindBitmapDrawable extends SketchBitmapDrawable {
+public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable{
     private WeakReference<DisplayRequest> displayRequestWeakReference;
 
-    public BindBitmapDrawable(Bitmap bitmap, DisplayRequest displayRequest) {
-        super(bitmap);
-        displayRequestWeakReference = new WeakReference<DisplayRequest>(displayRequest);
+    public BindFixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, DisplayRequest displayRequest) {
+        super(recycleBitmapDrawable);
+        this.displayRequestWeakReference = new WeakReference<DisplayRequest>(displayRequest);
     }
 
     /**
@@ -29,8 +28,8 @@ public class BindBitmapDrawable extends SketchBitmapDrawable {
     public static DisplayRequest getDisplayRequestBySketchImageInterface(SketchImageViewInterface sketchImageViewInterface) {
         if (sketchImageViewInterface != null) {
             final Drawable drawable = sketchImageViewInterface.getDrawable();
-            if (drawable != null && drawable instanceof BindBitmapDrawable) {
-                return ((BindBitmapDrawable) drawable).getDisplayRequest();
+            if (drawable != null && drawable instanceof BindFixedRecycleBitmapDrawable) {
+                return ((BindFixedRecycleBitmapDrawable) drawable).getDisplayRequest();
             }
         }
         return null;

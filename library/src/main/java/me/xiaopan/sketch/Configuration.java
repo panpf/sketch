@@ -43,6 +43,7 @@ public class Configuration {
     private Handler handler;    // 异步线程回调用
     private DiskCache diskCache;    // 磁盘缓存器
     private MemoryCache memoryCache;	//图片缓存器
+    private MemoryCache placeholderImageMemoryCache;    // 占位图内存缓存器
     private ImageDecoder imageDecoder;	//图片解码器
     private HelperFactory helperFactory;    // 协助器工厂
     private ImageDisplayer defaultImageDisplayer;   // 默认的图片显示器，当DisplayRequest中没有指定显示器的时候就会用到
@@ -63,7 +64,7 @@ public class Configuration {
     public Configuration(Context context){
         this.context = context;
         this.diskCache = new LruDiskCache(context);
-        this.memoryCache = new LruMemoryCache(context);
+        this.memoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory()/8));
         this.imageDecoder = new DefaultImageDecoder();
         this.helperFactory = new HelperFactoryImpl();
         this.requestFactory = new RequestFactoryImpl();
@@ -72,6 +73,7 @@ public class Configuration {
         this.imageSizeCalculator = new ImageSizeCalculatorImpl();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.defaultCutImageProcessor = new CutImageProcessor();
+        this.placeholderImageMemoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory()/16));
         this.handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {
@@ -153,7 +155,34 @@ public class Configuration {
      */
     public Configuration setMemoryCache(MemoryCache memoryCache) {
         if(memoryCache != null){
+            MemoryCache oldMemoryCache = this.memoryCache;
             this.memoryCache = memoryCache;
+            if(oldMemoryCache != null){
+                oldMemoryCache.clear();
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 获取占位图内存缓存器
+     * @return 占位图内存缓存器
+     */
+    public MemoryCache getPlaceholderImageMemoryCache() {
+        return placeholderImageMemoryCache;
+    }
+
+    /**
+     * 设置占位图内存缓存器
+     * @param placeholderImageMemoryCache 占位图内存缓存器
+     */
+    public Configuration setPlaceholderImageMemoryCache(MemoryCache placeholderImageMemoryCache) {
+        if(placeholderImageMemoryCache != null){
+            MemoryCache oldMemoryCache = this.placeholderImageMemoryCache;
+            this.placeholderImageMemoryCache = placeholderImageMemoryCache;
+            if(oldMemoryCache != null){
+                oldMemoryCache.clear();
+            }
         }
         return this;
     }

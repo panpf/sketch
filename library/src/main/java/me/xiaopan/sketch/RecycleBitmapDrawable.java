@@ -22,22 +22,23 @@ import android.util.Log;
 
 import me.xiaopan.sketch.util.CommentUtils;
 
-public class RecycleBitmapDrawable extends SketchBitmapDrawable implements RecycleDrawableInterface {
+public class RecycleBitmapDrawable extends FixedBitmapDrawable implements RecycleDrawableInterface {
     private static final String NAME = "RecycleBitmapDrawable";
 
     private int cacheRefCount;
     private int displayRefCount;
     private int waitDisplayRefCount;
     private String mimeType;
+    private boolean allowRecycle = true;
 
     public RecycleBitmapDrawable(Bitmap bitmap) {
         super(bitmap);
     }
 
     @Override
-    public void setIsDisplayed(String callingStation, boolean isDisplayed) {
+    public void setIsDisplayed(String callingStation, boolean displayed) {
         synchronized (this) {
-            if (isDisplayed) {
+            if (displayed) {
                 displayRefCount++;
             } else {
                 if(displayRefCount > 0){
@@ -45,13 +46,13 @@ public class RecycleBitmapDrawable extends SketchBitmapDrawable implements Recyc
                 }
             }
         }
-        tryRecycle((isDisplayed ? "display" : "hide"), callingStation);
+        tryRecycle((displayed ? "display" : "hide"), callingStation);
     }
 
     @Override
-    public void setIsCached(String callingStation, boolean isCached) {
+    public void setIsCached(String callingStation, boolean cached) {
         synchronized (this) {
-            if (isCached) {
+            if (cached) {
                 cacheRefCount++;
             } else {
                 if(cacheRefCount > 0){
@@ -59,13 +60,13 @@ public class RecycleBitmapDrawable extends SketchBitmapDrawable implements Recyc
                 }
             }
         }
-        tryRecycle((isCached ? "putToCache" : "removedFromCache"), callingStation);
+        tryRecycle((cached ? "putToCache" : "removedFromCache"), callingStation);
     }
 
     @Override
-    public void setIsWaitDisplay(String callingStation, boolean isWaitDisplay) {
+    public void setIsWaitDisplay(String callingStation, boolean waitDisplay) {
         synchronized (this) {
-            if (isWaitDisplay) {
+            if (waitDisplay) {
                 waitDisplayRefCount++;
             } else {
                 if(waitDisplayRefCount > 0){
@@ -73,7 +74,7 @@ public class RecycleBitmapDrawable extends SketchBitmapDrawable implements Recyc
                 }
             }
         }
-        tryRecycle((isWaitDisplay ? "waitDisplay" : "displayed"), callingStation);
+        tryRecycle((waitDisplay ? "waitDisplay" : "displayed"), callingStation);
     }
 
     @Override
@@ -84,7 +85,7 @@ public class RecycleBitmapDrawable extends SketchBitmapDrawable implements Recyc
     @Override
     public boolean isRecycled() {
         Bitmap bitmap = getBitmap();
-        return bitmap != null && bitmap.isRecycled();
+        return bitmap == null || bitmap.isRecycled();
     }
 
     @Override
@@ -137,7 +138,12 @@ public class RecycleBitmapDrawable extends SketchBitmapDrawable implements Recyc
 
     @Override
     public boolean canRecycle(){
-        return getBitmap() != null && !getBitmap().isRecycled();
+        return allowRecycle && getBitmap() != null && !getBitmap().isRecycled();
+    }
+
+    @Override
+    public void setAllowRecycle(boolean allowRecycle) {
+        this.allowRecycle = allowRecycle;
     }
 
     private synchronized void tryRecycle(String type, String callingStation) {
@@ -155,7 +161,7 @@ public class RecycleBitmapDrawable extends SketchBitmapDrawable implements Recyc
 
     public static String getInfo(Bitmap bitmap, String mimeType) {
         if(bitmap != null){
-            return CommentUtils.concat("Bitmap(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig()!=null?bitmap.getConfig().name():null, "; byteCount=", getByteCount(bitmap), ")");
+            return CommentUtils.concat("Bitmap(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(bitmap), ")");
         }else{
             return null;
         }

@@ -208,7 +208,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         if (responseCode != 200) {
             releaseConnection(connection, request);
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "response code exception", " - ", "responseCode:", String.valueOf(responseCode), "; responseMessage:", responseMessage, " - ", request.getName()+" - ", "HttpResponseHeader:", getResponseHeadersString(connection)));
+                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "response code exception", " - ", "responseCode:", String.valueOf(responseCode), "; responseMessage:", responseMessage, " - ", request.getName() + " - ", "HttpResponseHeader:", getResponseHeadersString(connection)));
             }
             return null;
         }
@@ -218,7 +218,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         if (contentLength <= 0) {
             releaseConnection(connection, request);
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "content length exception", " - ", "contentLength:"+contentLength, " - ", request.getName(), " - ", "HttpResponseHeader:", getResponseHeadersString(connection)));
+                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "content length exception", " - ", "contentLength:" + contentLength, " - ", request.getName(), " - ", "HttpResponseHeader:", getResponseHeadersString(connection)));
             }
             return null;
         }

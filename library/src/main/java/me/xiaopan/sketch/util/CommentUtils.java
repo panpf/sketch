@@ -5,6 +5,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -186,5 +187,16 @@ public class CommentUtils {
             builder.append(string);
         }
         return builder.toString();
+    }
+
+    public static void mapping(int sourceWidth, int sourceHeight, int targetWidth, int targetHeight, Rect rect){
+        float widthScale = (float)sourceWidth/targetWidth;
+        float heightScale = (float)sourceHeight/targetHeight;
+        float finalScale = widthScale<heightScale?widthScale:heightScale;
+        int srcWidth = (int)(targetWidth*finalScale);
+        int srcHeight = (int)(targetHeight*finalScale);
+        int srcLeft = (sourceWidth - srcWidth)/2;
+        int srcTop = (sourceHeight - srcHeight)/2;
+        rect.set(srcLeft, srcTop, srcLeft+srcWidth, srcTop+srcHeight);
     }
 }

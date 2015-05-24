@@ -40,6 +40,7 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     private int displayRefCount;
     private int waitDisplayRefCount;
     private String mimeType;
+    private boolean allowRecycle = true;
 
     public RecycleGifDrawable(AssetFileDescriptor afd) throws IOException {
         super(afd);
@@ -82,9 +83,9 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     }
 
     @Override
-    public void setIsDisplayed(String callingStation, boolean isDisplayed) {
+    public void setIsDisplayed(String callingStation, boolean displayed) {
         synchronized (this) {
-            if (isDisplayed) {
+            if (displayed) {
                 displayRefCount++;
             } else {
                 if(displayRefCount > 0){
@@ -92,13 +93,13 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
                 }
             }
         }
-        tryRecycle((isDisplayed ? "display" : "hide"), callingStation);
+        tryRecycle((displayed ? "display" : "hide"), callingStation);
     }
 
     @Override
-    public void setIsCached(String callingStation, boolean isCached) {
+    public void setIsCached(String callingStation, boolean cached) {
         synchronized (this) {
-            if (isCached) {
+            if (cached) {
                 cacheRefCount++;
             } else {
                 if(cacheRefCount > 0){
@@ -106,13 +107,13 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
                 }
             }
         }
-        tryRecycle((isCached ? "putToCache" : "removedFromCache"), callingStation);
+        tryRecycle((cached ? "putToCache" : "removedFromCache"), callingStation);
     }
 
     @Override
-    public void setIsWaitDisplay(String callingStation, boolean isWaitDisplay) {
+    public void setIsWaitDisplay(String callingStation, boolean waitDisplay) {
         synchronized (this) {
-            if (isWaitDisplay) {
+            if (waitDisplay) {
                 waitDisplayRefCount++;
             } else {
                 if(waitDisplayRefCount > 0){
@@ -120,7 +121,7 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
                 }
             }
         }
-        tryRecycle((isWaitDisplay ? "waitDisplay" : "displayed"), callingStation);
+        tryRecycle((waitDisplay ? "waitDisplay" : "displayed"), callingStation);
     }
 
     @Override
@@ -175,7 +176,12 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
 
     @Override
     public boolean canRecycle(){
-        return !isRecycled();
+        return allowRecycle && !isRecycled();
+    }
+
+    @Override
+    public void setAllowRecycle(boolean allowRecycle) {
+        this.allowRecycle = allowRecycle;
     }
 
     private synchronized void tryRecycle(String type, String callingStation) {

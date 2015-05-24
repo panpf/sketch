@@ -21,6 +21,8 @@ public interface ImageSize {
 
 	int getHeight();
 
+	void set(int width, int height);
+
 	String getIdentifier();
 
 	StringBuilder appendIdentifier(StringBuilder builder);

@@ -18,11 +18,11 @@ package me.xiaopan.sketch;
 
 public interface RecycleDrawableInterface {
 
-    void setIsDisplayed(String callingStation, boolean isDisplayed);
+    void setIsDisplayed(String callingStation, boolean displayed);
 
-    void setIsCached(String callingStation, boolean isCached);
+    void setIsCached(String callingStation, boolean cached);
 
-    void setIsWaitDisplay(String callingStation, boolean isWaitDisplay);
+    void setIsWaitDisplay(String callingStation, boolean waitDisplay);
 
     int getByteCount();
 
@@ -41,4 +41,6 @@ public interface RecycleDrawableInterface {
     String getInfo();
 
     boolean canRecycle();
+
+    void setAllowRecycle(boolean allowRecycle);
 }

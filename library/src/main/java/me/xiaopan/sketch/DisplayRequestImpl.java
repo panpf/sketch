@@ -63,23 +63,23 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     // Display fields
     private String memoryCacheId;	// 内存缓存ID
     private boolean enableMemoryCache = true;	// 是否开启内存缓存
-    private ImageSize fixedSize;    // 固定尺寸
+    private FixedSize fixedSize;    // 固定尺寸
     private ImageHolder failureImageHolder;	// 当失败时显示的图片
     private ImageHolder pauseDownloadImageHolder;	// 当暂停下载时显示的图片
     private ImageDisplayer imageDisplayer;	// 图片显示器
     private DisplayListener displayListener;	// 监听器
 
     // Runtime fields
-    private Context context;
     private File cacheFile;	// 缓存文件
     private byte[] imageData;   // 如果不使用磁盘缓存的话下载完成后图片数据就用字节数组保存着
     private String mimeType;
+    private Context context;
+    private Drawable resultDrawable;    // 最终的图片
     private ImageFrom imageFrom;    // 图片来自哪里
     private FailCause failCause;    // 失败原因
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
     private CancelCause cancelCause;  // 取消原因
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
-    private Drawable resultDrawable;    // 最终的图片
     private SketchImageViewInterfaceHolder sketchImageViewInterfaceHolder;    // 绑定ImageView
 
     public DisplayRequestImpl(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface) {
@@ -207,18 +207,11 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
     @Override
     public Drawable getFailureDrawable() {
-        if(failureImageHolder != null){
-            Bitmap bitmap = failureImageHolder.getBitmap(context);
-            if(bitmap != null){
-                SketchBitmapDrawable failureSketchBitmapDrawable = new SketchBitmapDrawable(bitmap);
-                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
-                    failureSketchBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
-                }
-                return failureSketchBitmapDrawable;
-            }
+        if(failureImageHolder == null){
+            return null;
         }
-
-        return null;
+        FixedSize tempFixedSize = imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null?fixedSize:null;
+        return failureImageHolder.getFixedRecycleBitmapDrawable(context, tempFixedSize);
     }
 
     @Override
@@ -228,18 +221,11 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
     @Override
     public Drawable getPauseDownloadDrawable() {
-        if(pauseDownloadImageHolder != null){
-            Bitmap bitmap = pauseDownloadImageHolder.getBitmap(context);
-            if(bitmap != null){
-                SketchBitmapDrawable pauseDownloadSketchBitmapDrawable = new SketchBitmapDrawable(bitmap);
-                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
-                    pauseDownloadSketchBitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
-                }
-                return pauseDownloadSketchBitmapDrawable;
-            }
+        if(pauseDownloadImageHolder == null){
+            return null;
         }
-
-        return null;
+        FixedSize tempFixedSize = imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null?fixedSize:null;
+        return pauseDownloadImageHolder.getFixedRecycleBitmapDrawable(context, tempFixedSize);
     }
 
     @Override

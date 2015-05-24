@@ -36,6 +36,12 @@ public class FixedSize implements ImageSize{
 	}
 
 	@Override
+	public void set(int width, int height) {
+		this.width = width;
+		this.height = height;
+	}
+
+	@Override
 	public String getIdentifier(){
 		return appendIdentifier(new StringBuilder()).toString();
 	}
