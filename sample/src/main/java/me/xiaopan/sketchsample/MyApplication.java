@@ -45,7 +45,7 @@ public class MyApplication extends Application {
         Sketch.setDebugMode(BuildConfig.DEBUG);
 
         TransitionImageDisplayer transitionImageDisplayer = new TransitionImageDisplayer();
-        Sketch.putOptions(OptionsType.RECT,
+        Sketch.putOptions(OptionsType.NORMAL_RECT,
                 new DisplayOptions()
                         .setLoadingImage(R.drawable.image_loading)
                         .setFailureImage(R.drawable.image_failure)
@@ -59,7 +59,7 @@ public class MyApplication extends Application {
         RoundedCornerImageProcessor roundedCornerImageProcessor = new RoundedCornerImageProcessor();
         roundedCornerImageProcessor.setFixedSize(new FixedSize(appIconShowSize, appIconShowSize));
         roundedCornerImageProcessor.setRoundPixels(appIconRoundedSize);
-        Sketch.putOptions(OptionsType.ROUNDED_RECT,
+        Sketch.putOptions(OptionsType.APP_ICON,
                 new DisplayOptions()
                         .setLoadingImage(new ImageHolder(R.drawable.image_loading, roundedCornerImageProcessor))
                         .setFailureImage(new ImageHolder(R.drawable.image_failure, roundedCornerImageProcessor))
@@ -74,7 +74,7 @@ public class MyApplication extends Application {
         );
 
         Sketch.putOptions(
-                OptionsType.CIRCULAR,
+                OptionsType.NORMAL_CIRCULAR,
                 new DisplayOptions()
                         .setLoadingImage(new ImageHolder(R.drawable.image_loading, CircleImageProcessor.getInstance()))
                         .setFailureImage(new ImageHolder(R.drawable.image_failure, CircleImageProcessor.getInstance()))

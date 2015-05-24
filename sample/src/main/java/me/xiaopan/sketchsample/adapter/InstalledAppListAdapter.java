@@ -35,7 +35,7 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter{
             return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app_list_header, parent, false));
         }else{
             AppInfoViewHolder appInfoViewHolder = new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
-            appInfoViewHolder.iconSketchImageView.setDisplayOptions(OptionsType.ROUNDED_RECT);
+            appInfoViewHolder.iconSketchImageView.setDisplayOptions(OptionsType.APP_ICON);
             appInfoViewHolder.iconSketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
             appInfoViewHolder.iconSketchImageView.setRoundedRadius(DeviceUtils.dp2px(parent.getContext(), 10));
             appInfoViewHolder.iconSketchImageView.setAutoApplyGlobalAttr(false);

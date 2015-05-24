@@ -12,7 +12,12 @@ import android.view.ViewGroup;
 
 import java.util.List;
 
-import me.xiaopan.sketchsample.OptionsType;
+import me.xiaopan.sketch.DisplayOptions;
+import me.xiaopan.sketch.FixedSize;
+import me.xiaopan.sketch.ImageHolder;
+import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.display.TransitionImageDisplayer;
+import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -25,6 +30,8 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     private int spanCount = -1;
     private int borderMargin;
     private int middleMargin;
+    private int roundRadius;
+    private DisplayOptions displayOptions;
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -52,6 +59,18 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             int maxScreenWidth = context.getResources().getDisplayMetrics().widthPixels - ((borderMargin * (spanCount+1)));
             itemWidth = maxScreenWidth/spanCount;
         }
+
+        roundRadius = DeviceUtils.dp2px(context, 10);
+        RoundedCornerImageProcessor imageProcessor = new RoundedCornerImageProcessor();
+        imageProcessor.setFixedSize(new FixedSize(itemWidth, itemWidth));
+        imageProcessor.setRoundPixels(roundRadius);
+        displayOptions = new DisplayOptions()
+                .setLoadingImage(new ImageHolder(R.drawable.image_loading, imageProcessor))
+                .setFailureImage(new ImageHolder(R.drawable.image_failure, imageProcessor))
+                .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download, imageProcessor))
+                .setImageProcessor(imageProcessor)
+                .setDecodeGifImage(false)
+                .setImageDisplayer(new TransitionImageDisplayer());
     }
 
     @Override
@@ -73,7 +92,9 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         ItemViewHolder itemViewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_photo_album_image, parent, false));
 
         itemViewHolder.sketchImageView.setOnClickListener(itemClickListener);
-        itemViewHolder.sketchImageView.setDisplayOptions(OptionsType.RECT);
+        itemViewHolder.sketchImageView.setDisplayOptions(displayOptions);
+        itemViewHolder.sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
+        itemViewHolder.sketchImageView.setRoundedRadius(roundRadius);
         if(itemWidth != -1){
             ViewGroup.LayoutParams layoutParams = itemViewHolder.sketchImageView.getLayoutParams();
             layoutParams.width = itemWidth;

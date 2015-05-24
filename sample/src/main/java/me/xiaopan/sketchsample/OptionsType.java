@@ -18,19 +18,19 @@ package me.xiaopan.sketchsample;
 
 public enum OptionsType {
     /**
-     * 矩形
+     * 通用矩形
       */
-    RECT,
+    NORMAL_RECT,
 
     /**
-     * 圆角矩形
+     * APP图标
      */
-    ROUNDED_RECT,
+    APP_ICON,
 
     /**
-     * 圆形
+     * 通用圆形
      */
-    CIRCULAR,
+    NORMAL_CIRCULAR,
 
     /**
      * 详情

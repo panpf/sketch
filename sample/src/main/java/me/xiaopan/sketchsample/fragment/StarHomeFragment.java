@@ -213,7 +213,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     if(headImageView == null){
                         View view = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_heade_image, staggeredGridView, false);
                         headImageView = (MyImageView) view.findViewById(R.id.image_headImageItem);
-                        headImageView.setDisplayOptions(OptionsType.RECT);
+                        headImageView.setDisplayOptions(OptionsType.NORMAL_RECT);
 
                         ViewGroup.LayoutParams headerParams = headImageView.getLayoutParams();
                         headerParams.width = getActivity().getResources().getDisplayMetrics().widthPixels;

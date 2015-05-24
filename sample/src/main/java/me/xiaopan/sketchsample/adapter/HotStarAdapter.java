@@ -128,19 +128,19 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             params.width = itemWidth;
             params.height = itemHeight;
             threeItemLeftHolder.oneImageView.setLayoutParams(params);
-            threeItemLeftHolder.oneImageView.setDisplayOptions(OptionsType.RECT);
+            threeItemLeftHolder.oneImageView.setDisplayOptions(OptionsType.NORMAL_RECT);
 
             params = threeItemLeftHolder.twoImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = (itemHeight-marginBorder)/2;
             threeItemLeftHolder.twoImageView.setLayoutParams(params);
-            threeItemLeftHolder.twoImageView.setDisplayOptions(OptionsType.RECT);
+            threeItemLeftHolder.twoImageView.setDisplayOptions(OptionsType.NORMAL_RECT);
 
             params = threeItemLeftHolder.threeImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = (itemHeight-marginBorder)/2;
             threeItemLeftHolder.threeImageView.setLayoutParams(params);
-            threeItemLeftHolder.threeImageView.setDisplayOptions(OptionsType.RECT);
+            threeItemLeftHolder.threeImageView.setDisplayOptions(OptionsType.NORMAL_RECT);
 
             viewHolder = threeItemLeftHolder;
         }else if(viewType == ITEM_TYPE_THREE_ITEM_RIGHT){
@@ -157,19 +157,19 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             params.width = itemWidth;
             params.height = itemHeight;
             threeItemRightHolder.threeImageView.setLayoutParams(params);
-            threeItemRightHolder.threeImageView.setDisplayOptions(OptionsType.RECT);
+            threeItemRightHolder.threeImageView.setDisplayOptions(OptionsType.NORMAL_RECT);
 
             params = threeItemRightHolder.twoImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = (itemHeight-marginBorder)/2;
             threeItemRightHolder.twoImageView.setLayoutParams(params);
-            threeItemRightHolder.twoImageView.setDisplayOptions(OptionsType.RECT);
+            threeItemRightHolder.twoImageView.setDisplayOptions(OptionsType.NORMAL_RECT);
 
             params = threeItemRightHolder.oneImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = (itemHeight-marginBorder)/2;
             threeItemRightHolder.oneImageView.setLayoutParams(params);
-            threeItemRightHolder.oneImageView.setDisplayOptions(OptionsType.RECT);
+            threeItemRightHolder.oneImageView.setDisplayOptions(OptionsType.NORMAL_RECT);
 
             viewHolder = threeItemRightHolder;
         }else if(viewType == ITEM_TYPE_TWO_ITEM){
@@ -185,13 +185,13 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             params.width = itemWidth;
             params.height = (itemHeight-marginBorder)/2;
             twoItemHolder.oneImageView.setLayoutParams(params);
-            twoItemHolder.oneImageView.setDisplayOptions(OptionsType.RECT);
+            twoItemHolder.oneImageView.setDisplayOptions(OptionsType.NORMAL_RECT);
 
             params = twoItemHolder.twoImageView.getLayoutParams();
             params.width = itemWidth;
             params.height = (itemHeight-marginBorder)/2;
             twoItemHolder.twoImageView.setLayoutParams(params);
-            twoItemHolder.twoImageView.setDisplayOptions(OptionsType.RECT);
+            twoItemHolder.twoImageView.setDisplayOptions(OptionsType.NORMAL_RECT);
 
             viewHolder = twoItemHolder;
         }else{
