@@ -4,6 +4,8 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.ListAdapter;
+import android.widget.WrapperListAdapter;
 
 import me.xiaopan.sketch.Sketch;
 
@@ -44,7 +46,14 @@ public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener imp
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if(!settings.isScrollingPauseLoad() || view.getAdapter() == null || !(view.getAdapter() instanceof BaseAdapter)){
+        ListAdapter listAdapter = view.getAdapter();
+        if(listAdapter == null){
+            return;
+        }
+        if(listAdapter instanceof WrapperListAdapter){
+            listAdapter = ((WrapperListAdapter)listAdapter).getWrappedAdapter();
+        }
+        if(!settings.isScrollingPauseLoad() || listAdapter == null || !(listAdapter instanceof BaseAdapter)){
             return;
         }
 
@@ -55,7 +64,7 @@ public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener imp
         } else if(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE){
             if(sketch.getConfiguration().isPauseLoad()){
                 sketch.getConfiguration().setPauseLoad(false);
-                ((BaseAdapter)view.getAdapter()).notifyDataSetChanged();
+                ((BaseAdapter)listAdapter).notifyDataSetChanged();
             }
         }
     }
