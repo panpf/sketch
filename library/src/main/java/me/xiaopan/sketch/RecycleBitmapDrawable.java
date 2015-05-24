@@ -20,7 +20,7 @@ import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
 
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 public class RecycleBitmapDrawable extends FixedBitmapDrawable implements RecycleDrawableInterface {
     private static final String NAME = "RecycleBitmapDrawable";
@@ -110,7 +110,7 @@ public class RecycleBitmapDrawable extends FixedBitmapDrawable implements Recycl
     public String getSize() {
         Bitmap bitmap = getBitmap();
         if(bitmap != null){
-            return CommentUtils.concat(bitmap.getWidth(), "x", bitmap.getHeight());
+            return SketchUtils.concat(bitmap.getWidth(), "x", bitmap.getHeight());
         }else{
             return null;
         }
@@ -130,7 +130,7 @@ public class RecycleBitmapDrawable extends FixedBitmapDrawable implements Recycl
     public String getInfo() {
         Bitmap bitmap = getBitmap();
         if(bitmap != null){
-            return CommentUtils.concat("RecycleBitmapDrawable(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(), ")");
+            return SketchUtils.concat("RecycleBitmapDrawable(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(), ")");
         }else{
             return null;
         }
@@ -149,19 +149,19 @@ public class RecycleBitmapDrawable extends FixedBitmapDrawable implements Recycl
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo()));
             }
             getBitmap().recycle();
         }else{
             if(Sketch.isDebugMode()){
-                Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "can't recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can't recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
             }
         }
     }
 
     public static String getInfo(Bitmap bitmap, String mimeType) {
         if(bitmap != null){
-            return CommentUtils.concat("Bitmap(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(bitmap), ")");
+            return SketchUtils.concat("Bitmap(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(bitmap), ")");
         }else{
             return null;
         }

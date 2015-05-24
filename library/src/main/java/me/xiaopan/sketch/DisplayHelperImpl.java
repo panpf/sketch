@@ -23,7 +23,7 @@ import android.util.Log;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.ImageProcessor;
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * DisplayHelper
@@ -459,7 +459,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         // 验证imageView参数
         if(sketchImageViewInterface == null){
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "sketchImageViewInterface is null", " - ", (name != null ? name : uri)));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "sketchImageViewInterface is null", " - ", (name != null ? name : uri)));
             }
             if(displayListener != null){
                 displayListener.onFailed(FailCause.IMAGE_VIEW_NULL);
@@ -471,7 +471,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "uri is null or empty"));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
             }
             if(sketchImageViewInterface != null){
                 sketchImageViewInterface.setDisplayRequest(null);
@@ -491,7 +491,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if(uriScheme == null){
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "unknown uri scheme: ", uri, " - ", (name != null ? name : uri)));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme: ", uri, " - ", (name != null ? name : uri)));
             }
             if(sketchImageViewInterface != null){
                 sketchImageViewInterface.setDisplayRequest(null);
@@ -518,7 +518,7 @@ public class DisplayHelperImpl implements DisplayHelper{
                 RecycleDrawableInterface recycleDrawable = (RecycleDrawableInterface) cacheDrawable;
                 if(!recycleDrawable.isRecycled()){
                     if(Sketch.isDebugMode()){
-                        Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "from memory get bitmap", " - ", recycleDrawable.getInfo(), " - ", name));
+                        Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "from memory get bitmap", " - ", recycleDrawable.getInfo(), " - ", name));
                     }
                     if(sketchImageViewInterface != null){
                         sketchImageViewInterface.setDisplayRequest(null);
@@ -532,7 +532,7 @@ public class DisplayHelperImpl implements DisplayHelper{
                 }else{
                     sketch.getConfiguration().getMemoryCache().remove(memoryCacheId);
                     if(Sketch.isDebugMode()){
-                        Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "bitmap recycled", " - ", recycleDrawable.getInfo(), " - ", name));
+                        Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "bitmap recycled", " - ", recycleDrawable.getInfo(), " - ", name));
                     }
                 }
             }
@@ -546,7 +546,7 @@ public class DisplayHelperImpl implements DisplayHelper{
             if(displayListener != null){
                 displayListener.onCanceled(requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? CancelCause.PAUSE_LOAD :CancelCause.LEVEL_IS_MEMORY);
                 if(Sketch.isDebugMode()){
-                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", (requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? "pause load" : "requestLevel is memory"), " - ", name));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", (requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? "pause load" : "requestLevel is memory"), " - ", name));
                 }
             }
             if(sketchImageViewInterface != null){
@@ -560,7 +560,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         if(potentialRequest != null && !potentialRequest.isFinished()){
             if(memoryCacheId.equals(potentialRequest.getMemoryCacheId())){
                 if(Sketch.isDebugMode()){
-                    Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "don't need to cancel", "；", "ImageViewCode", "=", Integer.toHexString(sketchImageViewInterface.hashCode()), "；", potentialRequest.getName()));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "don't need to cancel", "；", "ImageViewCode", "=", Integer.toHexString(sketchImageViewInterface.hashCode()), "；", potentialRequest.getName()));
                 }
                 sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
                 return potentialRequest;

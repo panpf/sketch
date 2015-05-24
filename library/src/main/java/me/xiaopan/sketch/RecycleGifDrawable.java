@@ -30,7 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 import pl.droidsonroids.gif.GifDrawable;
 
 public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableInterface {
@@ -148,7 +148,7 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     public String getSize() {
         Bitmap bitmap = getBitmap();
         if(bitmap != null){
-            return CommentUtils.concat(bitmap.getWidth(), "x", bitmap.getHeight());
+            return SketchUtils.concat(bitmap.getWidth(), "x", bitmap.getHeight());
         }else{
             return null;
         }
@@ -168,7 +168,7 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     public String getInfo() {
         Bitmap bitmap = getBitmap();
         if(bitmap != null){
-            return CommentUtils.concat("RecycleGifDrawable(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(), ")");
+            return SketchUtils.concat("RecycleGifDrawable(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(), ")");
         }else{
             return null;
         }
@@ -187,12 +187,12 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "recycled gif drawable", " - ", callingStation, ":", type, " - ", getInfo()));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "recycled gif drawable", " - ", callingStation, ":", type, " - ", getInfo()));
             }
             recycle();
         }else{
             if(Sketch.isDebugMode()){
-                Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "can't recycle gif drawable", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can't recycle gif drawable", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
             }
         }
     }

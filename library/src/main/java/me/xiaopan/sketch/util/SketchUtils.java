@@ -18,7 +18,7 @@ import java.util.List;
 
 import me.xiaopan.sketch.Sketch;
 
-public class CommentUtils {
+public class SketchUtils {
 
     /**
      * 解压APK的图标
@@ -42,7 +42,7 @@ public class CommentUtils {
         }
         if(drawable instanceof BitmapDrawable && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) packageManager.getDefaultActivityIcon()).getBitmap()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(logName, " - ", "icon not found", " - ", apkFilePath));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "icon not found", " - ", apkFilePath));
             }
             return null;
         }

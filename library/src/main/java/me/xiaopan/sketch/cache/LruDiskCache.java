@@ -33,7 +33,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 默认实现的磁盘缓存器
@@ -72,7 +72,7 @@ public class LruDiskCache implements DiskCache {
             if(cacheDir.exists() || cacheDir.mkdirs()){
                 return cacheDir;
             }else if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "create cache dir failed", " - ", cacheDir.getPath()));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "create cache dir failed", " - ", cacheDir.getPath()));
             }
         }
 
@@ -99,7 +99,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if(Sketch.isDebugMode()){
-            Log.e(Sketch.TAG, CommentUtils.concat(NAME, "get cache dir failed"));
+            Log.e(Sketch.TAG, SketchUtils.concat(NAME, "get cache dir failed"));
         }
         cacheDir = null;
         return null;
@@ -131,7 +131,7 @@ public class LruDiskCache implements DiskCache {
     public long getSize() {
         File finalCacheDir = getCacheDir();
         if(finalCacheDir != null && finalCacheDir.exists()){
-            return CommentUtils.countFileLength(finalCacheDir);
+            return SketchUtils.countFileLength(finalCacheDir);
         }else{
             return 0;
         }
@@ -150,7 +150,7 @@ public class LruDiskCache implements DiskCache {
         // 如果剩余空间够用
         if(totalAvailableSize-reserveSize > cacheFileLength){
             if(maxSize > 0){
-                usedSize = Math.abs(CommentUtils.countFileLength(finalCacheDir));
+                usedSize = Math.abs(SketchUtils.countFileLength(finalCacheDir));
                 if(usedSize+cacheFileLength < maxSize){
                     return true;
                 }
@@ -172,7 +172,7 @@ public class LruDiskCache implements DiskCache {
             // 然后按照顺序来删除文件直到腾出足够的空间或文件删完为止
             for(File file : cacheFiles){
                 if(Sketch.isDebugMode()){
-                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "deleted cache file", " - ", file.getPath()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "deleted cache file", " - ", file.getPath()));
                 }
                 long currentFileLength = file.length();
                 if(file.delete()){
@@ -193,14 +193,14 @@ public class LruDiskCache implements DiskCache {
 
         // 返回申请空间失败
         if(Sketch.isDebugMode()){
-            Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "apply for space failed", " - ", "remaining space：", Formatter.formatFileSize(context, totalAvailableSize), "; reserve size：", Formatter.formatFileSize(context, reserveSize), " - ", finalCacheDir.getPath()));
+            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "apply for space failed", " - ", "remaining space：", Formatter.formatFileSize(context, totalAvailableSize), "; reserve size：", Formatter.formatFileSize(context, reserveSize), " - ", finalCacheDir.getPath()));
         }
         return false;
 	}
 
     @Override
     public String uriToFileName(String uri){
-        if(CommentUtils.checkSuffix(uri, ".apk")){
+        if(SketchUtils.checkSuffix(uri, ".apk")){
             uri += ".png";
         }
         try {
@@ -263,7 +263,7 @@ public class LruDiskCache implements DiskCache {
         String fileName = uriToFileName(uri);
         if(fileName == null){
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, "encode uri failed", " - ", uri));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, "encode uri failed", " - ", uri));
             }
             return null;
         }
@@ -282,21 +282,21 @@ public class LruDiskCache implements DiskCache {
         superDir = cacheDir;
         finalCacheDir = superDir;
         if(finalCacheDir != null && finalCacheDir.exists()){
-            CommentUtils.deleteFile(superDir);
+            SketchUtils.deleteFile(superDir);
         }
 
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO){
             superDir = context.getExternalCacheDir();
             finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
             if(finalCacheDir != null && finalCacheDir.exists()){
-                CommentUtils.deleteFile(superDir);
+                SketchUtils.deleteFile(superDir);
             }
         }
 
         superDir = context.getCacheDir();
         finalCacheDir = superDir!=null?new File(superDir, DEFAULT_DIRECTORY_NAME):null;
         if(finalCacheDir != null && finalCacheDir.exists()){
-            CommentUtils.deleteFile(superDir);
+            SketchUtils.deleteFile(superDir);
         }
     }
 
@@ -327,9 +327,9 @@ public class LruDiskCache implements DiskCache {
         File tempFile = new File(cacheFile.getPath()+".temp");
 
         // 创建文件
-        if(!CommentUtils.createFile(tempFile)) {
+        if(!SketchUtils.createFile(tempFile)) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, "create file failed", " - ", tempFile.getPath()));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, "create file failed", " - ", tempFile.getPath()));
             }
             return null;
         }
@@ -344,7 +344,7 @@ public class LruDiskCache implements DiskCache {
             e.printStackTrace();
             if(tempFile.exists()){
                 if(!tempFile.delete() && Sketch.isDebugMode()){
-                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "delete temp cache file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", uri));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete temp cache file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", uri));
                 }
             }
             return null;
@@ -360,7 +360,7 @@ public class LruDiskCache implements DiskCache {
 
         if(!tempFile.renameTo(cacheFile)){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "rename failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", uri));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "rename failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", uri));
             }
             tempFile.delete();
             return null;

@@ -8,7 +8,7 @@ import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawableInterface{
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
@@ -147,7 +147,7 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
         }else if((float)bitmapWidth/(float)bitmapHeight == (float)fixedWidth/(float)fixedHeight){
             srcRect.set(0, 0, bitmapWidth, bitmapHeight);
         }else{
-            CommentUtils.mapping(bitmapWidth, bitmapHeight, fixedWidth, fixedHeight, srcRect);
+            SketchUtils.mapping(bitmapWidth, bitmapHeight, fixedWidth, fixedHeight, srcRect);
         }
         setBounds(0, 0, srcRect.width(), srcRect.height());
     }

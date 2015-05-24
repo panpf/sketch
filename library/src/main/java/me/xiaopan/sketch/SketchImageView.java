@@ -35,7 +35,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 import pl.droidsonroids.gif.GifViewSavedState;
 import pl.droidsonroids.gif.GifViewUtils;
 
@@ -225,7 +225,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         super.onAttachedToWindow();
         if(!isSetImage && displayParams != null){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, "：", "restore image on attached to window", " - ", displayParams.uri));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, "：", "restore image on attached to window", " - ", displayParams.uri));
             }
             Sketch.with(getContext()).display(displayParams, SketchImageView.this).commit();
         }

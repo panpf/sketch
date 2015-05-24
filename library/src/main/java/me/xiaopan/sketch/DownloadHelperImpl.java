@@ -18,7 +18,7 @@ package me.xiaopan.sketch;
 
 import android.util.Log;
 
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * DownloadHelper
@@ -134,7 +134,7 @@ public class DownloadHelperImpl implements DownloadHelper{
         // 验证uri参数
         if(uri == null || "".equals(uri.trim())){
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "uri is null or empty"));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
@@ -150,7 +150,7 @@ public class DownloadHelperImpl implements DownloadHelper{
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if(uriScheme == null){
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "unknown uri scheme", " - ", name));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", name));
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailCause.URI_NO_SUPPORT);
@@ -160,7 +160,7 @@ public class DownloadHelperImpl implements DownloadHelper{
 
         if(!(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS)){
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "only support http ot https", " - ", name));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "only support http ot https", " - ", name));
             }
             if(downloadListener != null){
                 downloadListener.onFailed(FailCause.URI_NO_SUPPORT);

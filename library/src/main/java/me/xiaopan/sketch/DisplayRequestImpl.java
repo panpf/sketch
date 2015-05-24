@@ -28,7 +28,7 @@ import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.download.ImageDownloader;
 import me.xiaopan.sketch.process.ImageProcessor;
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 显示请求
@@ -399,7 +399,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 this.imageFrom = ImageFrom.DISK_CACHE;
                 postRunLoad();
                 if(Sketch.isDebugMode()){
-                    Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
                 }
             }else{
                 if(requestLevel == RequestLevel.LOCAL){
@@ -407,12 +407,12 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                         setRequestStatus(RequestStatus.WAIT_DISPLAY);
                         sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PAUSE_DOWNLOAD, this).sendToTarget();
                         if(Sketch.isDebugMode()){
-                            Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", name));
+                            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", name));
                         }
                     }else{
                         toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
                         if(Sketch.isDebugMode()){
-                            Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "requestLevel is local", " - ", name));
+                            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "requestLevel is local", " - ", name));
                         }
                     }
                     return;
@@ -420,14 +420,14 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
                 postRunDownload();
                 if(Sketch.isDebugMode()){
-                    Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "download", " - ", name));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "download", " - ", name));
                 }
             }
         }else{
             this.imageFrom = ImageFrom.LOCAL;
             postRunLoad();
             if(Sketch.isDebugMode()){
-                Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "local", " - ", name));
+                Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "local", " - ", name));
             }
         }
     }
@@ -438,7 +438,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private void executeDownload() {
         if(isCanceled()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "startDownload", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "startDownload", " - ", name));
             }
             return;
         }
@@ -447,7 +447,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
         if(isCanceled()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "downloadAfter", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "downloadAfter", " - ", name));
             }
             return;
         }
@@ -471,7 +471,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private void executeLoad(){
         if(isCanceled()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "startLoad", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "startLoad", " - ", name));
             }
             return;
         }
@@ -483,7 +483,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 RecycleDrawableInterface recycleDrawable = (RecycleDrawableInterface) cacheDrawable;
                 if(!recycleDrawable.isRecycled()){
                     if(Sketch.isDebugMode()){
-                        Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "from memory get drawable", " - ", recycleDrawable.getInfo(), " - ", name));
+                        Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "from memory get drawable", " - ", recycleDrawable.getInfo(), " - ", name));
                     }
                     this.resultDrawable = cacheDrawable;
                     imageFrom = ImageFrom.MEMORY_CACHE;
@@ -494,7 +494,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 }else{
                     sketch.getConfiguration().getMemoryCache().remove(memoryCacheId);
                     if(Sketch.isDebugMode()){
-                        Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", "bitmap recycled", " - ", recycleDrawable.getInfo(), " - ", name));
+                        Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", "bitmap recycled", " - ", recycleDrawable.getInfo(), " - ", name));
                     }
                 }
             }
@@ -521,17 +521,17 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             Bitmap bitmap = (Bitmap) decodeResult;
             if(!bitmap.isRecycled()){
                 if(Sketch.isDebugMode()){
-                    Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "new bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "new bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
                 }
             }else{
                 if(Sketch.isDebugMode()){
-                    Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "decode failed bitmap recycled", " - ", "decode after", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
+                    Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "decode failed bitmap recycled", " - ", "decode after", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
                 }
             }
 
             if(isCanceled()){
                 if(Sketch.isDebugMode()){
-                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "decode after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "decode after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
                 }
                 bitmap.recycle();
                 return;
@@ -543,7 +543,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 if(imageProcessor != null){
                     Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), imagesOfLowQuality);
                     if(newBitmap != null && newBitmap != bitmap && Sketch.isDebugMode()){
-                        Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "process after", " - ", "newBitmap", " - ", RecycleBitmapDrawable.getInfo(newBitmap, mimeType), " - ", "recycled old bitmap", " - ", name));
+                        Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "process after", " - ", "newBitmap", " - ", RecycleBitmapDrawable.getInfo(newBitmap, mimeType), " - ", "recycled old bitmap", " - ", name));
                     }
                     if(newBitmap == null || newBitmap != bitmap){
                         bitmap.recycle();
@@ -554,7 +554,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
             if(isCanceled()){
                 if(Sketch.isDebugMode()){
-                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "process after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "process after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
                 }
                 if(bitmap != null){
                     bitmap.recycle();
@@ -583,7 +583,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             gifDrawable.setMimeType(mimeType);
 
             if(Sketch.isDebugMode()){
-                Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeLoad", " - ", "new gif drawable", " - ", gifDrawable.getInfo(), " - ", name));
+                Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "new gif drawable", " - ", gifDrawable.getInfo(), " - ", name));
             }
 
             if(!gifDrawable.isRecycled()){
@@ -622,7 +622,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
 
     @Override
     public boolean isLocalApkFile(){
-        return uriScheme == UriScheme.FILE && CommentUtils.checkSuffix(uri, ".apk");
+        return uriScheme == UriScheme.FILE && SketchUtils.checkSuffix(uri, ".apk");
     }
 
     @Override
@@ -645,7 +645,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             return apkIconCacheFile;
         }
 
-        Bitmap iconBitmap = CommentUtils.decodeIconFromApk(context, uri, imagesOfLowQuality, NAME);
+        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(context, uri, imagesOfLowQuality, NAME);
         if(iconBitmap != null && !iconBitmap.isRecycled()){
             apkIconCacheFile = sketch.getConfiguration().getDiskCache().saveBitmap(iconBitmap, uri);
             if(apkIconCacheFile != null){
@@ -662,7 +662,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
                 ((RecycleDrawableInterface) resultDrawable).setIsWaitDisplay("completedCallback:cancel", false);
             }
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", name));
             }
             return;
         }
@@ -682,7 +682,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private void handleFailedOnMainThread() {
         if(isCanceled()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", name));
             }
             return;
         }
@@ -707,7 +707,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private void handlePauseDownloadOnMainThread() {
         if(isCanceled()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "handlePauseDownloadOnMainThread", " - ", "canceled", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handlePauseDownloadOnMainThread", " - ", "canceled", " - ", name));
             }
             return;
         }
@@ -730,7 +730,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private void updateProgressOnMainThread(int totalLength, int completedLength) {
         if(isFinished()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", name));
             }
             return;
         }

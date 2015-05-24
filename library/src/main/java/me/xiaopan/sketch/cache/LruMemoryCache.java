@@ -23,7 +23,7 @@ import android.util.Log;
 
 import me.xiaopan.sketch.RecycleDrawableInterface;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.LruCache;
 
 /**
@@ -38,7 +38,7 @@ public class LruMemoryCache implements MemoryCache {
 		this.context = context;
         this.drawableLruCache = new DrawableLruCache(maxSize);
 		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "MemoryCacheMaxSize: " + Formatter.formatFileSize(context, maxSize)));
+			Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "MemoryCacheMaxSize: " + Formatter.formatFileSize(context, maxSize)));
 		}
 	}
 
@@ -53,7 +53,7 @@ public class LruMemoryCache implements MemoryCache {
 		}
 		drawableLruCache.put(key, value);
 		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "put", " - ", "beforeCacheSize=", Formatter.formatFileSize(context, cacheSize), " - ", ((RecycleDrawableInterface) value).getInfo(), " - ", "afterCacheSize=", Formatter.formatFileSize(context, drawableLruCache.size())));
+			Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "put", " - ", "beforeCacheSize=", Formatter.formatFileSize(context, cacheSize), " - ", ((RecycleDrawableInterface) value).getInfo(), " - ", "afterCacheSize=", Formatter.formatFileSize(context, drawableLruCache.size())));
 		}
 	}
 
@@ -66,7 +66,7 @@ public class LruMemoryCache implements MemoryCache {
 	public synchronized Drawable remove(String key) {
 		Drawable drawable = drawableLruCache.remove(key);
 		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "remove", " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+			Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "remove", " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
 		}
 		return drawable;
 	}
@@ -84,7 +84,7 @@ public class LruMemoryCache implements MemoryCache {
 	@Override
 	public synchronized void clear() {
 		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, CommentUtils.concat(NAME, " - ", "clear", " - ", "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+			Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "clear", " - ", "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
 		}
 		drawableLruCache.evictAll();
 	}

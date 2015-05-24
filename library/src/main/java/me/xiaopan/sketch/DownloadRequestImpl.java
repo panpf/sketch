@@ -22,7 +22,7 @@ import android.util.Log;
 import java.io.File;
 
 import me.xiaopan.sketch.download.ImageDownloader;
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 下载请求
@@ -250,7 +250,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
             File diskCacheFile = enableDiskCache? sketch.getConfiguration().getDiskCache().getCacheFile(uri):null;
             if(diskCacheFile != null && diskCacheFile.exists()){
                 if(Sketch.isDebugMode()){
-                    Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
                 }
                 this.imageFrom = ImageFrom.DISK_CACHE;
                 this.resultFile = diskCacheFile;
@@ -260,12 +260,12 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
                     if(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD){
                         toCanceledStatus(CancelCause.PAUSE_DOWNLOAD);
                         if(Sketch.isDebugMode()){
-                            Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", name));
+                            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", name));
                         }
                     }else{
                         toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
                         if(Sketch.isDebugMode()){
-                            Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "canceled", " - ", "requestLevel is local", " - ", name));
+                            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "requestLevel is local", " - ", name));
                         }
                     }
                     return;
@@ -273,12 +273,12 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
 
                 postRunDownload();
                 if(Sketch.isDebugMode()){
-                    Log.d(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "download", " - ", name));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "download", " - ", name));
                 }
             }
         }else{
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeDispatch", " - ", "not support uri:", uri, " - ", name));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "not support uri:", uri, " - ", name));
             }
             toFailedStatus(FailCause.URI_NO_SUPPORT);
         }
@@ -290,7 +290,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private void executeDownload() {
         if(isCanceled()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "startDownload", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "startDownload", " - ", name));
             }
             return;
         }
@@ -299,7 +299,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
 
         if(isCanceled()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "downloadAfter", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "downloadAfter", " - ", name));
             }
             return;
         }
@@ -323,7 +323,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private void handleCompletedOnMainThread() {
         if(isCanceled()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", name));
             }
             return;
         }
@@ -341,7 +341,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private void handleFailedOnMainThread() {
         if(isCanceled()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", name));
             }
             return;
         }
@@ -361,7 +361,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private void updateProgressOnMainThread(int totalLength, int completedLength) {
         if(isFinished()){
             if(Sketch.isDebugMode()){
-                Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", name));
             }
             return;
         }

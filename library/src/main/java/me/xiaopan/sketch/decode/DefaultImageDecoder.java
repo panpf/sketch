@@ -34,7 +34,7 @@ import me.xiaopan.sketch.MaxSize;
 import me.xiaopan.sketch.RecycleGifDrawable;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.UriScheme;
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 默认的位图解码器
@@ -132,14 +132,14 @@ public class DefaultImageDecoder implements ImageDecoder {
             bitmap = decodeHelper.decode(options);
             if(bitmap != null && (bitmap.getWidth() == 1 || bitmap.getHeight() == 1)){
                 if(Sketch.isDebugMode()){
-                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "bitmap width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", "BitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(), " - ", loadRequest.getName()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "bitmap width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", "BitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(), " - ", loadRequest.getName()));
                 }
                 bitmap.recycle();
                 bitmap = null;
             }
         }else{
             if(Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "image width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", loadRequest.getName()));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "image width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", loadRequest.getName()));
             }
         }
 
@@ -231,7 +231,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public void onDecodeFailed() {
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "decode failed", " - ", assetsFilePath));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", assetsFilePath));
             }
         }
 
@@ -282,7 +282,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public void onDecodeFailed() {
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "decode failed", " - ", loadRequest.getName()));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", loadRequest.getName()));
             }
         }
 
@@ -311,7 +311,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         public Bitmap decode(BitmapFactory.Options options) {
             if(!file.canRead()){
                 if(Sketch.isDebugMode()){
-                    Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "can not read", " - ", file.getPath()));
+                    Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can not read", " - ", file.getPath()));
                 }
                 return null;
             }
@@ -323,7 +323,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
             if(!file.setLastModified(System.currentTimeMillis())){
                 if(Sketch.isDebugMode()){
-                    Log.w(Sketch.TAG, CommentUtils.concat(NAME, " - ", "update last modified failed", " - ", file.getPath()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "update last modified failed", " - ", file.getPath()));
                 }
             }
             if(Sketch.isDebugMode()){
@@ -356,7 +356,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             }
             if(!file.delete()){
                 if(Sketch.isDebugMode()){
-                    Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "delete damaged disk cache file failed", " - ", file.getPath()));
+                    Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete damaged disk cache file failed", " - ", file.getPath()));
                 }
             }
         }
@@ -408,7 +408,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public void onDecodeFailed() {
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "decode failed", " - ", String.valueOf(drawableId)));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", String.valueOf(drawableId)));
             }
         }
 
@@ -439,7 +439,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 return BitmapFactory.decodeFile(file.getPath(), options);
             }else{
                 if(Sketch.isDebugMode()){
-                    Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "can not read", " - ", file.getPath()));
+                    Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can not read", " - ", file.getPath()));
                 }
                 return null;
             }
@@ -538,7 +538,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         @Override
         public void onDecodeFailed() {
             if(Sketch.isDebugMode()){
-                Log.e(Sketch.TAG, CommentUtils.concat(NAME, " - ", "decode failed", " - ", contentUri.toString()));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", contentUri.toString()));
             }
         }
 

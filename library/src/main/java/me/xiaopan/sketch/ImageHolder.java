@@ -23,7 +23,7 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.process.ImageProcessor;
-import me.xiaopan.sketch.util.CommentUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 public class ImageHolder {
     private int resId;
@@ -87,7 +87,7 @@ public class ImageHolder {
         if(resDrawable != null && resDrawable instanceof BitmapDrawable){
             bitmap = ((BitmapDrawable) resDrawable).getBitmap();
         }else{
-            bitmap = CommentUtils.drawableToBitmap(resDrawable, tempImagesOfLowQuality);
+            bitmap = SketchUtils.drawableToBitmap(resDrawable, tempImagesOfLowQuality);
             canRecycle = true;
         }
 
