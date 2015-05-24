@@ -110,7 +110,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
 
         if(spanCount != -1){
-            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) itemViewHolder.sketchImageView.getLayoutParams();
+            ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) itemViewHolder.rootView.getLayoutParams();
             int remainder = position % spanCount;
             if(remainder == 0){
                 marginLayoutParams.leftMargin = borderMargin;
@@ -133,7 +133,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
                 marginLayoutParams.topMargin = middleMargin;
                 marginLayoutParams.bottomMargin = middleMargin;
             }
-            itemViewHolder.sketchImageView.setLayoutParams(marginLayoutParams);
+            itemViewHolder.rootView.setLayoutParams(marginLayoutParams);
         }
 
         itemViewHolder.sketchImageView.displayImage(imageUris.get(position));
@@ -141,11 +141,14 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     }
 
     private static class ItemViewHolder extends RecyclerView.ViewHolder{
+        private View rootView;
         private MyImageView sketchImageView;
+
         public ItemViewHolder(View itemView) {
             super(itemView);
 
             this.sketchImageView = (MyImageView) itemView.findViewById(R.id.image_photoAlbumImageItem_one);
+            this.rootView = itemView.findViewById(R.id.layout_photoAlbumImageItem_root);
         }
     }
 
