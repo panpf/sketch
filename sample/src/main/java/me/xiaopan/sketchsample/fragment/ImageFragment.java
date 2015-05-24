@@ -29,6 +29,7 @@ public class ImageFragment extends MyFragment {
     @InjectView(R.id.hint_imageFragment_hint) private HintView hintView;
 
     @InjectExtra(PARAM_REQUIRED_IMAGE_URI) private String imageUri;
+    private boolean completedAfterUpdateBackground;
 
     private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
     private PhotoViewAttacher photoViewAttacher;
@@ -59,6 +60,12 @@ public class ImageFragment extends MyFragment {
             public void onCompleted(ImageFrom imageFrom, String mimeType) {
                 hintView.hidden();
                 photoViewAttacher.update();
+                if(completedAfterUpdateBackground){
+                    completedAfterUpdateBackground = false;
+                    if(isResumed() && getUserVisibleHint()){
+                        windowBackgroundLoader.load(imageUri);
+                    }
+                }
             }
 
             @Override
@@ -66,6 +73,7 @@ public class ImageFragment extends MyFragment {
                 hintView.hint(R.drawable.ic_failure, "图片显示失败", "重新显示", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        completedAfterUpdateBackground = true;
                         imageView.displayImage(imageUri);
                     }
                 });
@@ -83,6 +91,7 @@ public class ImageFragment extends MyFragment {
                         hintView.hint(R.drawable.ic_failure, "level is local", "直接显示", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                completedAfterUpdateBackground = true;
                                 Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
                             }
                         });
@@ -91,6 +100,7 @@ public class ImageFragment extends MyFragment {
                         hintView.hint(R.drawable.ic_failure, "level is memory", "直接显示", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                completedAfterUpdateBackground = true;
                                 Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
                             }
                         });
@@ -101,6 +111,7 @@ public class ImageFragment extends MyFragment {
                         hintView.hint(R.drawable.ic_failure, "为节省流量已暂停下载新图片", "不管了，直接下载", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                completedAfterUpdateBackground = true;
                                 Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
                             }
                         });
@@ -109,6 +120,7 @@ public class ImageFragment extends MyFragment {
                         hintView.hint(R.drawable.ic_failure, "已暂停加载新图片", "直接加载", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
+                                completedAfterUpdateBackground = true;
                                 Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
                             }
                         });
