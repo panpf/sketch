@@ -48,6 +48,7 @@ public class GifTextureView extends TextureView {
 
     public GifTextureView(Context context) {
         super(context);
+        init(null, 0, 0);
     }
 
     public GifTextureView(Context context, AttributeSet attrs) {
@@ -66,25 +67,37 @@ public class GifTextureView extends TextureView {
         init(attrs, defStyleAttr, defStyleRes);
     }
 
-    private static final ScaleType[] sScaleTypeArray = {ScaleType.MATRIX, ScaleType.FIT_XY, ScaleType.FIT_START, ScaleType.FIT_CENTER, ScaleType.FIT_END, ScaleType.CENTER, ScaleType.CENTER_CROP, ScaleType.CENTER_INSIDE};
+    private static final ScaleType[] sScaleTypeArray = {
+            ScaleType.MATRIX,
+            ScaleType.FIT_XY,
+            ScaleType.FIT_START,
+            ScaleType.FIT_CENTER,
+            ScaleType.FIT_END,
+            ScaleType.CENTER,
+            ScaleType.CENTER_CROP,
+            ScaleType.CENTER_INSIDE
+    };
 
     private void init(AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        if (attrs != null && !isInEditMode()) {
+        if (attrs != null) {
             final int scaleTypeIndex = attrs.getAttributeIntValue(GifViewUtils.ANDROID_NS, "scaleType", -1);
             if (scaleTypeIndex >= 0 && scaleTypeIndex < sScaleTypeArray.length) {
                 mScaleType = sScaleTypeArray[scaleTypeIndex];
             }
-//            final TypedArray textureViewAttributes = getContext().obtainStyledAttributes(attrs, R.styleable.GifTextureView, defStyleAttr, defStyleRes);
+//            final TypedArray textureViewAttributes = getContext().obtainStyledAttributes(attrs, R.styleable
+//                    .GifTextureView, defStyleAttr, defStyleRes);
 //            mInputSource = findSource(textureViewAttributes);
 //            super.setOpaque(textureViewAttributes.getBoolean(R.styleable.GifTextureView_isOpaque, false));
 //            textureViewAttributes.recycle();
             mFreezesAnimation = GifViewUtils.isFreezingAnimation(this, attrs, defStyleAttr, defStyleRes);
+        } else {
+            super.setOpaque(false);
+        }
+        if (!isInEditMode()) {
             mRenderThread = new RenderThread();
             if (mInputSource != null) {
                 mRenderThread.start();
             }
-        } else {
-            super.setOpaque(false);
         }
     }
 
@@ -131,17 +144,23 @@ public class GifTextureView extends TextureView {
 //            if ("drawable".equals(type) || "raw".equals(type)) {
 //                return new InputSource.ResourcesSource(textureViewAttributes.getResources(), value.resourceId);
 //            } else if (!"string".equals(type)) {
-//                throw new IllegalArgumentException("Expected string, drawable or raw resource, type " + type + " cannot be converted to GIF");
+//                throw new IllegalArgumentException("Expected string, drawable or raw resource, type " + type + " " +
+//                        "cannot be converted to GIF");
 //            }
 //        }
 //        return new InputSource.AssetSource(textureViewAttributes.getResources().getAssets(), value.string.toString());
 //    }
 
     private class RenderThread extends Thread implements SurfaceTextureListener {
+
         final ConditionVariable isSurfaceValid = new ConditionVariable();
         private GifInfoHandle mGifInfoHandle = GifInfoHandle.NULL_INFO;
         private IOException mIOException;
         long[] mSavedState;
+
+        RenderThread() {
+            super("GifRenderThread");
+        }
 
         @Override
         public void run() {
