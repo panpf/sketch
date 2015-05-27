@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -328,7 +329,15 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
             applyClip = imageShapeClipPath != null;
             if(applyClip){
                 canvas.save();
-                canvas.clipPath(imageShapeClipPath);
+                try{
+                    canvas.clipPath(imageShapeClipPath);
+                }catch (UnsupportedOperationException e){
+                    Log.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+                        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                    }
+                    e.printStackTrace();
+                }
             }
 
             if(clickRipplePaint == null){
@@ -353,7 +362,15 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
             applyClip = imageShapeClipPath != null;
             if(applyClip){
                 canvas.save();
-                canvas.clipPath(imageShapeClipPath);
+                try{
+                    canvas.clipPath(imageShapeClipPath);
+                }catch (UnsupportedOperationException e){
+                    Log.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
+                    if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB){
+                        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+                    }
+                    e.printStackTrace();
+                }
             }
 
             if(progressPaint == null){
