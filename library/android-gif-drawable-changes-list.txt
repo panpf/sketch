@@ -1,0 +1,8 @@
+1. 去掉了对android.support.annotation的依赖
+2. 去掉了所有的自定义属性
+    GifTextureView
+        89 - 93
+        138 - 154
+
+3. GifDrawable增加getBitmap()方法
+4. SketchImageView中集成的相关类和方法改成了public的
