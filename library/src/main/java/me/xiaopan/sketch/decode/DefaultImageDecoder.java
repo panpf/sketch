@@ -115,6 +115,14 @@ public class DefaultImageDecoder implements ImageDecoder {
                 Log.e(Sketch.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, unable to process the GIF images, has automatically according to the common image decoding, and has set up a closed automatically decoding GIF image feature. If you need to decode the GIF figure please go to “https://github.com/xiaopansky/sketch” to download “libpl_droidsonroids_gif.so” file and put in your project");
                 loadRequest.getSketch().getConfiguration().setDecodeGifImage(false);
                 e.printStackTrace();
+            }catch (ExceptionInInitializerError e){
+                Log.e(Sketch.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, unable to process the GIF images, has automatically according to the common image decoding, and has set up a closed automatically decoding GIF image feature. If you need to decode the GIF figure please go to “https://github.com/xiaopansky/sketch” to download “libpl_droidsonroids_gif.so” file and put in your project");
+                loadRequest.getSketch().getConfiguration().setDecodeGifImage(false);
+                e.printStackTrace();
+            }catch (Throwable e){
+                Log.e(Sketch.TAG, "When decoding GIF figure some unknown exception, has shut down automatically GIF picture decoding function");
+                loadRequest.getSketch().getConfiguration().setDecodeGifImage(false);
+                e.printStackTrace();
             }
         }
 
