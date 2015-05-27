@@ -26,7 +26,6 @@ import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -37,8 +36,6 @@ import android.widget.ImageView;
 import android.widget.Scroller;
 
 import me.xiaopan.sketch.util.SketchUtils;
-import pl.droidsonroids.gif.GifViewSavedState;
-import pl.droidsonroids.gif.GifViewUtils;
 
 public class SketchImageView extends ImageView implements SketchImageViewInterface {
     private static final String NAME = "SketchImageView";
@@ -62,8 +59,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     private boolean clickDisplayOnPauseDownload;
     private boolean clickRedisplayOnFailed;
     private boolean isSetImage;
-
-    private boolean mFreezesAnimation;
 
     protected int fromFlagColor = NONE;
     protected Path fromFlagPath;
@@ -104,12 +99,10 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
     public SketchImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        postInit(GifViewUtils.initImageView(this, attrs, 0, 0));
     }
 
     public SketchImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        postInit(GifViewUtils.initImageView(this, attrs, defStyle, 0));
     }
 
     @Override
@@ -233,21 +226,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     @Override
-    public Parcelable onSaveInstanceState() {
-        Drawable source = mFreezesAnimation ? getDrawable() : null;
-        Drawable background = mFreezesAnimation ? getBackground() : null;
-        return new GifViewSavedState(super.onSaveInstanceState(), source, background);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Parcelable state) {
-        GifViewSavedState ss = (GifViewSavedState) state;
-        super.onRestoreInstanceState(ss.getSuperState());
-        ss.restoreState(getDrawable(), 0);
-        ss.restoreState(getBackground(), 1);
-    }
-
-    @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
         this.isSetImage = false;
@@ -261,13 +239,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         }
     }
 
-    @Override
-    public void setBackgroundResource(int resId) {
-        if (!GifViewUtils.setResource(this, false, resId)) {
-            super.setBackgroundResource(resId);
-        }
-    }
-
     /**
      * @deprecated Use the new displayURIImage(Uri) method
      * @param uri The Uri of an image
@@ -275,9 +246,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     @Override
     @Deprecated
     public void setImageURI(Uri uri) {
-        if (!GifViewUtils.setGifImageUri(this, uri)) {
-            super.setImageURI(uri);
-        }
+        super.setImageURI(uri);
     }
 
     /**
@@ -287,9 +256,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     @Override
     @Deprecated
     public void setImageResource(int resId) {
-        if (!GifViewUtils.setResource(this, true, resId)) {
-            super.setImageResource(resId);
-        }
+        super.setImageResource(resId);
     }
 
     @Override
@@ -529,16 +496,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     /**
-     * Sets whether animation position is saved in {@link #onSaveInstanceState()} and restored
-     * in {@link #onRestoreInstanceState(Parcelable)}
-     *
-     * @param freezesAnimation whether animation position is saved
-     */
-    public void setFreezesAnimation(boolean freezesAnimation) {
-        mFreezesAnimation = freezesAnimation;
-    }
-
-    /**
      * 设置当暂停下载的时候点击显示图片
      * @param clickDisplayOnPauseDownload true：是
      */
@@ -683,16 +640,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     public void setRoundedRadius(int radius) {
         this.roundedRadius = radius;
         initImageShapePath();
-    }
-
-    private void postInit(GifViewUtils.InitResult result) {
-        mFreezesAnimation = result.mFreezesAnimation;
-        if (result.mSourceResId > 0) {
-            super.setImageResource(result.mSourceResId);
-        }
-        if (result.mBackgroundResId > 0) {
-            super.setBackgroundResource(result.mBackgroundResId);
-        }
     }
 
     private static boolean isGifImage(Drawable newDrawable){

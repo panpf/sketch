@@ -10,13 +10,13 @@ import android.widget.ImageView;
 
 import java.io.IOException;
 
-public final class GifViewUtils {
+final class GifViewUtils {
     static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
 
     private GifViewUtils() {
     }
 
-    public static InitResult initImageView(ImageView view, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    static InitResult initImageView(ImageView view, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         if (attrs != null && !view.isInEditMode()) {
             final int sourceResId = getResourceId(view, attrs, true);
             final int backgroundResId = getResourceId(view, attrs, false);
@@ -41,7 +41,7 @@ public final class GifViewUtils {
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @SuppressWarnings("deprecation")
-    public static boolean setResource(ImageView view, boolean isSrc, int resId) {
+    static boolean setResource(ImageView view, boolean isSrc, int resId) {
         Resources res = view.getResources();
         if (res != null) {
             try {
@@ -69,7 +69,7 @@ public final class GifViewUtils {
         return false;
     }
 
-    public static boolean setGifImageUri(ImageView imageView, Uri uri) {
+    static boolean setGifImageUri(ImageView imageView, Uri uri) {
         if (uri != null) {
             try {
                 imageView.setImageDrawable(new GifDrawable(imageView.getContext().getContentResolver(), uri));
@@ -81,10 +81,10 @@ public final class GifViewUtils {
         return false;
     }
 
-    public static class InitResult {
-        public final int mSourceResId;
-        public final int mBackgroundResId;
-        public final boolean mFreezesAnimation;
+    static class InitResult {
+        final int mSourceResId;
+        final int mBackgroundResId;
+        final boolean mFreezesAnimation;
 
         InitResult(int sourceResId, int backgroundResId, boolean freezesAnimation) {
 

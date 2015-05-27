@@ -5,11 +5,11 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.view.View;
 
-public class GifViewSavedState extends View.BaseSavedState {
+class GifViewSavedState extends View.BaseSavedState {
 
     final long[][] mStates;
 
-    public GifViewSavedState(Parcelable superState, Drawable... drawables) {
+    GifViewSavedState(Parcelable superState, Drawable... drawables) {
         super(superState);
         mStates = new long[drawables.length][];
         for (int i = 0; i < drawables.length; i++) {
@@ -54,7 +54,7 @@ public class GifViewSavedState extends View.BaseSavedState {
         }
     };
 
-    public void restoreState(Drawable drawable, int i) {
+    void restoreState(Drawable drawable, int i) {
         if (mStates[i] != null && drawable instanceof GifDrawable) {
             final GifDrawable gifDrawable = (GifDrawable) drawable;
             gifDrawable.startAnimation(gifDrawable.mNativeInfoHandle.restoreSavedState(mStates[i], gifDrawable.mBuffer));
