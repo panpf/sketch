@@ -41,9 +41,9 @@ public class DisplayParams {
     public String memoryCacheId;
     public boolean enableMemoryCache = true;
     public FixedSize fixedSize;
-    public ImageHolder loadingImageHolder;
-    public ImageHolder loadFailImageHolder;
-    public ImageHolder pauseDownloadImageHolder;
+    public LoadingImageHolder loadingImageHolder;
+    public FailureImageHolder loadFailImageHolder;
+    public PauseDownloadImageHolder pauseDownloadImageHolder;
     public ImageDisplayer imageDisplayer;
     public DisplayListener displayListener;
 }

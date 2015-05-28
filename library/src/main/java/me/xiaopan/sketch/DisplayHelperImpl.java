@@ -55,9 +55,9 @@ public class DisplayHelperImpl implements DisplayHelper{
     protected SketchImageViewInterface sketchImageViewInterface;
     protected FixedSize fixedSize;
     protected ImageDisplayer imageDisplayer;
-    protected ImageHolder loadingImageHolder;
-    protected ImageHolder failureImageHolder;
-    protected ImageHolder pauseDownloadImageHolder;
+    protected LoadingImageHolder loadingImageHolder;
+    protected FailureImageHolder failureImageHolder;
+    protected PauseDownloadImageHolder pauseDownloadImageHolder;
     protected DisplayListener displayListener;
 
     protected Context context;
@@ -316,38 +316,38 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public DisplayHelperImpl loadingImage(ImageHolder loadingImage) {
-        this.loadingImageHolder = loadingImage;
+    public DisplayHelperImpl loadingImage(LoadingImageHolder loadingImageHolder) {
+        this.loadingImageHolder = loadingImageHolder;
         return this;
     }
 
     @Override
     public DisplayHelperImpl loadingImage(int drawableResId) {
-        loadingImage(new ImageHolder(drawableResId));
+        loadingImage(new LoadingImageHolder(drawableResId));
         return this;
     }
 
     @Override
-    public DisplayHelperImpl failureImage(ImageHolder failureImage) {
-        this.failureImageHolder = failureImage;
+    public DisplayHelperImpl failureImage(FailureImageHolder failureImageHolder) {
+        this.failureImageHolder = failureImageHolder;
         return this;
     }
 
     @Override
     public DisplayHelperImpl failureImage(int drawableResId) {
-        failureImage(new ImageHolder(drawableResId));
+        failureImage(new FailureImageHolder(drawableResId));
         return this;
     }
 
     @Override
-    public DisplayHelperImpl pauseDownloadImage(ImageHolder pauseDownloadImage) {
-        this.pauseDownloadImageHolder = pauseDownloadImage;
+    public DisplayHelperImpl pauseDownloadImage(PauseDownloadImageHolder pauseDownloadImageHolder) {
+        this.pauseDownloadImageHolder = pauseDownloadImageHolder;
         return this;
     }
 
     @Override
     public DisplayHelperImpl pauseDownloadImage(int drawableResId) {
-        pauseDownloadImage(new ImageHolder(drawableResId));
+        pauseDownloadImage(new PauseDownloadImageHolder(drawableResId));
         return this;
     }
 
@@ -392,7 +392,7 @@ public class DisplayHelperImpl implements DisplayHelper{
         }
         this.decodeGifImage = options.isDecodeGifImage();
         if(this.loadingImageHolder == null){
-            this.loadingImageHolder = options.getLoadingImage();
+            this.loadingImageHolder = options.getLoadingImageHolder();
         }
         if(this.failureImageHolder == null){
             this.failureImageHolder = options.getFailureImage();

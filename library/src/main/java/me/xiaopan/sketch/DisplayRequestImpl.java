@@ -63,8 +63,8 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private String memoryCacheId;	// 内存缓存ID
     private boolean enableMemoryCache = true;	// 是否开启内存缓存
     private FixedSize fixedSize;    // 固定尺寸
-    private ImageHolder failureImageHolder;	// 当失败时显示的图片
-    private ImageHolder pauseDownloadImageHolder;	// 当暂停下载时显示的图片
+    private FailureImageHolder failureImageHolder;	// 当失败时显示的图片
+    private PauseDownloadImageHolder pauseDownloadImageHolder;	// 当暂停下载时显示的图片
     private ImageDisplayer imageDisplayer;	// 图片显示器
     private DisplayListener displayListener;	// 监听器
 
@@ -200,7 +200,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     }
 
     @Override
-    public void setFailureImageHolder(ImageHolder failureImageHolder) {
+    public void setFailureImageHolder(FailureImageHolder failureImageHolder) {
         this.failureImageHolder = failureImageHolder;
     }
 
@@ -214,7 +214,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     }
 
     @Override
-    public void setPauseDownloadImageHolder(ImageHolder pauseDownloadImageHolder) {
+    public void setPauseDownloadImageHolder(PauseDownloadImageHolder pauseDownloadImageHolder) {
         this.pauseDownloadImageHolder = pauseDownloadImageHolder;
     }
 

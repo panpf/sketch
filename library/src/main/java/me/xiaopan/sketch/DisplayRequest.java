@@ -46,13 +46,13 @@ public interface DisplayRequest extends LoadRequest{
      * 设置失败图片持有器
      * @param failureImageHolder 失败图片持有器
      */
-    void setFailureImageHolder(ImageHolder failureImageHolder);
+    void setFailureImageHolder(FailureImageHolder failureImageHolder);
 
     /**
      * 设置暂停下载图片
      * @param pauseDownloadImageHolder 暂停下载图片
      */
-    void setPauseDownloadImageHolder(ImageHolder pauseDownloadImageHolder);
+    void setPauseDownloadImageHolder(PauseDownloadImageHolder pauseDownloadImageHolder);
 
     /**
      * 获取失败时显示的图片

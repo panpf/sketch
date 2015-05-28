@@ -25,9 +25,9 @@ import me.xiaopan.sketch.process.ImageProcessor;
 public class DisplayOptions extends LoadOptions {
     private boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     private ImageDisplayer imageDisplayer;	// 图片显示器
-    private ImageHolder loadingImage;	//当正在加载时显示的图片
-    private ImageHolder failureImage;	//当失败时显示的图片
-    private ImageHolder pauseDownloadImage;	//暂停下载时显示的图片
+    private LoadingImageHolder loadingImageHolder;	//当正在加载时显示的图片
+    private FailureImageHolder failureImageHolder;	//当失败时显示的图片
+    private PauseDownloadImageHolder pauseDownloadImageHolder;	//暂停下载时显示的图片
 
     private boolean resizeByImageViewLayoutSize;
 
@@ -79,16 +79,16 @@ public class DisplayOptions extends LoadOptions {
      * 获取正在加载时显示的图片
      * @return 正在加载时显示的图片
      */
-    public ImageHolder getLoadingImage() {
-        return loadingImage;
+    public LoadingImageHolder getLoadingImageHolder() {
+        return loadingImageHolder;
     }
 
     /**
      * 设置正在加载时显示的图片
-     * @param loadingImage 正在加载时显示的图片
+     * @param loadingImageHolder 正在加载时显示的图片
      */
-    public DisplayOptions setLoadingImage(ImageHolder loadingImage) {
-        this.loadingImage = loadingImage;
+    public DisplayOptions setLoadingImage(LoadingImageHolder loadingImageHolder) {
+        this.loadingImageHolder = loadingImageHolder;
         return this;
     }
 
@@ -98,7 +98,7 @@ public class DisplayOptions extends LoadOptions {
      * @return DisplayOptions
      */
     public DisplayOptions setLoadingImage(int drawableResId) {
-        setLoadingImage(new ImageHolder(drawableResId));
+        setLoadingImage(new LoadingImageHolder(drawableResId));
         return this;
     }
 
@@ -106,16 +106,16 @@ public class DisplayOptions extends LoadOptions {
      * 获取失败时显示的图片
      * @return 失败时显示的图片
      */
-    public ImageHolder getFailureImage() {
-        return failureImage;
+    public FailureImageHolder getFailureImage() {
+        return failureImageHolder;
     }
 
     /**
      * 设置失败时显示的图片
-     * @param failureImage 失败时显示的图片
+     * @param failureImageHolder 失败时显示的图片
      */
-    public DisplayOptions setFailureImage(ImageHolder failureImage) {
-        this.failureImage = failureImage;
+    public DisplayOptions setFailureImage(FailureImageHolder failureImageHolder) {
+        this.failureImageHolder = failureImageHolder;
         return this;
     }
 
@@ -125,7 +125,7 @@ public class DisplayOptions extends LoadOptions {
      * @return DisplayOptions
      */
     public DisplayOptions setFailureImage(int drawableResId) {
-        setFailureImage(new ImageHolder(drawableResId));
+        setFailureImage(new FailureImageHolder(drawableResId));
         return this;
     }
 
@@ -133,16 +133,16 @@ public class DisplayOptions extends LoadOptions {
      * 获取暂停下载时显示的图片
      * @return 暂停下载时显示的图片
      */
-    public ImageHolder getPauseDownloadImage() {
-        return pauseDownloadImage;
+    public PauseDownloadImageHolder getPauseDownloadImage() {
+        return pauseDownloadImageHolder;
     }
 
     /**
      * 设置暂停下载时显示的图片
-     * @param pauseDownloadImage 暂停下载时显示的图片
+     * @param pauseDownloadImageHolder 暂停下载时显示的图片
      */
-    public DisplayOptions setPauseDownloadImage(ImageHolder pauseDownloadImage) {
-        this.pauseDownloadImage = pauseDownloadImage;
+    public DisplayOptions setPauseDownloadImage(PauseDownloadImageHolder pauseDownloadImageHolder) {
+        this.pauseDownloadImageHolder = pauseDownloadImageHolder;
         return this;
     }
 
@@ -152,7 +152,7 @@ public class DisplayOptions extends LoadOptions {
      * @return DisplayOptions
      */
     public DisplayOptions setPauseDownloadImage(int drawableResId) {
-        setPauseDownloadImage(new ImageHolder(drawableResId));
+        setPauseDownloadImage(new PauseDownloadImageHolder(drawableResId));
         return this;
     }
 
@@ -234,9 +234,9 @@ public class DisplayOptions extends LoadOptions {
     public void copyOf(DisplayOptions displayOptions){
         this.enableMemoryCache = displayOptions.enableMemoryCache;
         this.imageDisplayer = displayOptions.imageDisplayer;
-        this.loadingImage = displayOptions.loadingImage;
-        this.failureImage = displayOptions.failureImage;
-        this.pauseDownloadImage = displayOptions.pauseDownloadImage;
+        this.loadingImageHolder = displayOptions.loadingImageHolder;
+        this.failureImageHolder = displayOptions.failureImageHolder;
+        this.pauseDownloadImageHolder = displayOptions.pauseDownloadImageHolder;
         this.resizeByImageViewLayoutSize = displayOptions.resizeByImageViewLayoutSize;
 
         setMaxSize(displayOptions.getMaxSize());

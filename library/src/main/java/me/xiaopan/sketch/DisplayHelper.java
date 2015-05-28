@@ -138,9 +138,9 @@ public interface DisplayHelper {
 
     /**
      * 设置正在加载时显示的图片
-     * @param loadingImage 正在加载时显示的图片
+     * @param loadingImageHolder 正在加载时显示的图片
      */
-    DisplayHelper loadingImage(ImageHolder loadingImage);
+    DisplayHelper loadingImage(LoadingImageHolder loadingImageHolder);
 
     /**
      * 设置正在加载时显示的图片
@@ -150,9 +150,9 @@ public interface DisplayHelper {
 
     /**
      * 设置失败时显示的图片
-     * @param failureImage 失败时显示的图片
+     * @param failureImageHolder 失败时显示的图片
      */
-    DisplayHelper failureImage(ImageHolder failureImage);
+    DisplayHelper failureImage(FailureImageHolder failureImageHolder);
 
     /**
      * 设置失败时显示的图片
@@ -162,9 +162,9 @@ public interface DisplayHelper {
 
     /**
      * 设置暂停下载时显示的图片
-     * @param pauseDownloadImage 暂停下载时显示的图片
+     * @param pauseDownloadImageHolder 暂停下载时显示的图片
      */
-    DisplayHelper pauseDownloadImage(ImageHolder pauseDownloadImage);
+    DisplayHelper pauseDownloadImage(PauseDownloadImageHolder pauseDownloadImageHolder);
 
     /**
      * 设置暂停下载时显示的图片
