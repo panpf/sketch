@@ -61,13 +61,12 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append(NAME);
-        builder.append("(");
+        builder.append(" - ");
         builder.append("roundPixels=").append(roundPixels);
         builder.append(", forceUseResizeInCenterCrop=").append(forceUseResizeInCenterCrop);
         if(fixedSize != null){
             builder.append(", fixedSize=").append(fixedSize.getWidth()).append("x").append(fixedSize.getHeight());
         }
-        builder.append(")");
         return builder;
     }
 

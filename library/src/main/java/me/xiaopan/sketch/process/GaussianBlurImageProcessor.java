@@ -44,7 +44,7 @@ public class GaussianBlurImageProcessor extends CutImageProcessor {
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append(NAME);
-        builder.append("(");
+        builder.append(" - ");
         builder.append("radius");
         builder.append("=");
         builder.append(radius);
@@ -52,7 +52,6 @@ public class GaussianBlurImageProcessor extends CutImageProcessor {
         builder.append("isDarkHandle");
         builder.append("=");
         builder.append(isDarkHandle);
-        builder.append(")");
         return builder;
     }
 

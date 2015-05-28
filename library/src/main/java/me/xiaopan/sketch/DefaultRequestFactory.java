@@ -16,12 +16,12 @@
 
 package me.xiaopan.sketch;
 
-import android.widget.ImageView;
-
 /**
  * 默认的Request创建工厂
  */
-public class RequestFactoryImpl implements RequestFactory{
+public class DefaultRequestFactory implements RequestFactory{
+    private static final String NAME = "DefaultRequestFactory";
+
     @Override
     public DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface){
         return new DisplayRequestImpl(sketch, uri, uriScheme, memoryCacheId, sketchImageViewInterface);
@@ -35,5 +35,15 @@ public class RequestFactoryImpl implements RequestFactory{
     @Override
     public DownloadRequest newDownloadRequest(Sketch sketch, String uri, UriScheme uriScheme) {
         return new DownloadRequestImpl(sketch, uri, uriScheme);
+    }
+
+    @Override
+    public String getIdentifier() {
+        return NAME;
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(NAME);
     }
 }

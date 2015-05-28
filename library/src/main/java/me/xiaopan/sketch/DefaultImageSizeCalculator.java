@@ -25,9 +25,10 @@ import android.widget.ImageView;
 import java.lang.reflect.Field;
 
 /**
- * 图片尺寸计算器
+ * 默认的图片尺寸计算器
  */
-public class ImageSizeCalculatorImpl implements ImageSizeCalculator{
+public class DefaultImageSizeCalculator implements ImageSizeCalculator{
+    private static final String NAME = "DefaultImageSizeCalculator";
 
     @Override
     public MaxSize calculateImageMaxSize(SketchImageViewInterface sketchImageViewInterface) {
@@ -119,6 +120,16 @@ public class ImageSizeCalculatorImpl implements ImageSizeCalculator{
         }
 
         return inSampleSize;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return NAME;
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(NAME);
     }
 
     public static int getWidth(View imageView, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {

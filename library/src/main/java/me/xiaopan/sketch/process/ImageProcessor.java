@@ -34,7 +34,7 @@ public interface ImageProcessor {
 	Bitmap process(Bitmap bitmap, Resize resize, boolean imagesOfLowQuality);
 
     /**
-     * 获取标识符用于生成缓存ID
+     * 获取标识符
      * @return 标识符
      */
     String getIdentifier();

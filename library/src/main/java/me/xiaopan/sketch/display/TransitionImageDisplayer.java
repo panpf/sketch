@@ -28,6 +28,7 @@ import me.xiaopan.sketch.SketchImageViewInterface;
  * 过渡效果的图片显示器
  */
 public class TransitionImageDisplayer implements ImageDisplayer {
+	private static final String NAME = "TransitionImageDisplayer";
 	private int duration;
 
 	public TransitionImageDisplayer(int duration){
@@ -57,6 +58,18 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 			transitionDrawable.setCrossFadeEnabled(true);
 			transitionDrawable.startTransition(duration);
 		}
+	}
+
+	@Override
+	public String getIdentifier() {
+		return appendIdentifier(new StringBuilder()).toString();
+	}
+
+	@Override
+	public StringBuilder appendIdentifier(StringBuilder builder) {
+		return builder.append(NAME)
+				.append(" - ")
+				.append("duration").append("=").append(duration);
 	}
 
 	public int getDuration() {

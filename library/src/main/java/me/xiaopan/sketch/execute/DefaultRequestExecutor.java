@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
  * 默认的请求执行器
  */
 public class DefaultRequestExecutor implements RequestExecutor {
+    private static final String NAME = "DefaultRequestExecutor";
 	private Executor taskDispatchExecutor;	//任务调度执行器
 	private Executor netTaskExecutor;	//网络任务执行器
 	private Executor localTaskExecutor;	//本地任务执行器
@@ -51,7 +52,17 @@ public class DefaultRequestExecutor implements RequestExecutor {
         return netTaskExecutor;
     }
 
-    public static class Builder{
+    @Override
+    public String getIdentifier() {
+        return NAME;
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(NAME);
+    }
+
+    public static class Builder {
         private Executor taskDispatchExecutor;	//任务调度执行器
         private Executor netTaskExecutor;	//网络任务执行器
         private Executor localTaskExecutor;	//本地任务执行器

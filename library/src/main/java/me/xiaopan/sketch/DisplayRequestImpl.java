@@ -26,7 +26,6 @@ import java.io.File;
 
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
-import me.xiaopan.sketch.download.ImageDownloader;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -443,7 +442,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
             return;
         }
 
-        ImageDownloader.DownloadResult downloadResult = sketch.getConfiguration().getImageDownloader().download(this);
+        DownloadResult downloadResult = sketch.getConfiguration().getImageDownloader().download(this);
 
         if(isCanceled()){
             if(Sketch.isDebugMode()){

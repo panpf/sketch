@@ -368,6 +368,25 @@ public class LruDiskCache implements DiskCache {
         return cacheFile;
     }
 
+    @Override
+    public String getIdentifier() {
+        return appendIdentifier(new StringBuilder()).toString();
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        builder.append(NAME).append(" - ");
+        File cacheDir = getCacheDir();
+        if(cacheDir != null){
+            builder.append("cacheDir").append("=").append(cacheDir.getPath())
+                    .append(", ");
+        }
+        builder.append("maxSize").append("=").append(Formatter.formatFileSize(context, maxSize))
+        .append(", ")
+        .append("reserveSize").append("=").append(Formatter.formatFileSize(context, reserveSize));
+        return builder;
+    }
+
     /**
      * 获取SD卡可用容量
      * @param path 路径

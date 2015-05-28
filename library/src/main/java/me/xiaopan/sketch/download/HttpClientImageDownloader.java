@@ -60,9 +60,10 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.GZIPInputStream;
 
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.DownloadRequest;
+import me.xiaopan.sketch.DownloadResult;
 import me.xiaopan.sketch.RequestStatus;
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -120,6 +121,18 @@ public class HttpClientImageDownloader implements ImageDownloader {
     @Override
     public void setProgressCallbackNumber(int progressCallbackNumber) {
         this.progressCallbackNumber = progressCallbackNumber;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return appendIdentifier(new StringBuilder()).toString();
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(NAME)
+                .append(" - ")
+                .append("maxRetryCount").append("=").append(maxRetryCount);
     }
 
     /**

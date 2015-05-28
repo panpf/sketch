@@ -28,4 +28,15 @@ public interface ImageDecoder {
 	 * @return null：解码失败；Bitmap：一般的图片；RecycleGifDrawable：GIF图片
 	 */
 	Object decode(LoadRequest loadRequest);
+
+	/**
+	 * 获取标识符
+	 * @return 标识符
+	 */
+	String getIdentifier();
+
+	/**
+	 * 追加标识符
+	 */
+	StringBuilder appendIdentifier(StringBuilder builder);
 }

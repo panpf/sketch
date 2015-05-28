@@ -39,6 +39,8 @@ import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.MobileNetworkPauseDownloadManager;
 
 public class Configuration {
+    private static final String NAME = "Configuration";
+
     private Context context;	//上下文
     private Handler handler;    // 异步线程回调用
     private DiskCache diskCache;    // 磁盘缓存器
@@ -66,11 +68,11 @@ public class Configuration {
         this.diskCache = new LruDiskCache(context);
         this.memoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory()/8));
         this.imageDecoder = new DefaultImageDecoder();
-        this.helperFactory = new HelperFactoryImpl();
-        this.requestFactory = new RequestFactoryImpl();
+        this.helperFactory = new DefaultHelperFactory();
+        this.requestFactory = new DefaultRequestFactory();
         this.imageDownloader = new HttpUrlConnectionImageDownloader();
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
-        this.imageSizeCalculator = new ImageSizeCalculatorImpl();
+        this.imageSizeCalculator = new DefaultImageSizeCalculator();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.defaultCutImageProcessor = new CutImageProcessor();
         this.placeholderImageMemoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory()/16));
@@ -85,6 +87,9 @@ public class Configuration {
                 }
             }
         });
+        if(Sketch.isDebugMode()){
+            Log.i(Sketch.TAG, getInfo());
+        }
     }
 
     /**
@@ -118,6 +123,14 @@ public class Configuration {
     public Configuration setRequestExecutor(RequestExecutor requestExecutor) {
         if(requestExecutor != null){
             this.requestExecutor = requestExecutor;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("requestExecutor").append(" (");
+                requestExecutor.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -137,6 +150,14 @@ public class Configuration {
     public Configuration setDiskCache(DiskCache diskCache) {
         if(diskCache != null){
             this.diskCache = diskCache;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("diskCache").append(" (");
+                diskCache.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -159,6 +180,14 @@ public class Configuration {
             this.memoryCache = memoryCache;
             if(oldMemoryCache != null){
                 oldMemoryCache.clear();
+            }
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("memoryCache").append(" (");
+                memoryCache.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
             }
         }
         return this;
@@ -183,6 +212,14 @@ public class Configuration {
             if(oldMemoryCache != null){
                 oldMemoryCache.clear();
             }
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("placeholderImageMemoryCache").append(" (");
+                placeholderImageMemoryCache.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -202,6 +239,14 @@ public class Configuration {
     public Configuration setImageDecoder(ImageDecoder imageDecoder) {
         if(imageDecoder != null){
             this.imageDecoder = imageDecoder;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("imageDecoder").append(" (");
+                imageDecoder.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -220,6 +265,14 @@ public class Configuration {
     public Configuration setImageDownloader(ImageDownloader imageDownloader) {
         if(imageDownloader != null){
             this.imageDownloader = imageDownloader;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("imageDownloader").append(" (");
+                imageDownloader.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -239,6 +292,14 @@ public class Configuration {
     public Configuration setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
         if(imageSizeCalculator != null){
             this.imageSizeCalculator = imageSizeCalculator;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("imageSizeCalculator").append(" (");
+                imageSizeCalculator.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -258,6 +319,14 @@ public class Configuration {
     public Configuration setDefaultImageDisplayer(ImageDisplayer defaultImageDisplayer) {
         if(defaultImageDisplayer != null){
             this.defaultImageDisplayer = defaultImageDisplayer;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("defaultImageDisplayer").append(" (");
+                defaultImageDisplayer.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -277,6 +346,14 @@ public class Configuration {
     public Configuration setDefaultCutImageProcessor(ImageProcessor defaultCutImageProcessor) {
         if(defaultCutImageProcessor != null){
             this.defaultCutImageProcessor = defaultCutImageProcessor;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("defaultCutImageProcessor").append(" (");
+                defaultCutImageProcessor.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -296,6 +373,14 @@ public class Configuration {
     public Configuration setHelperFactory(HelperFactory helperFactory) {
         if(helperFactory != null){
             this.helperFactory = helperFactory;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("helperFactory").append(" (");
+                helperFactory.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -315,6 +400,14 @@ public class Configuration {
     public Configuration setRequestFactory(RequestFactory requestFactory) {
         if(requestFactory != null){
             this.requestFactory = requestFactory;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("requestFactory").append(" (");
+                requestFactory.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -327,11 +420,12 @@ public class Configuration {
         if(this.pauseLoad != pauseLoad){
             this.pauseLoad = pauseLoad;
             if(Sketch.isDebugMode()){
-                if(this.pauseLoad){
-                    Log.w(Sketch.TAG, "pauseLoad");
-                }else{
-                    Log.d(Sketch.TAG, "resumeLoad");
-                }
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("pauseLoad").append(" (");
+                builder.append(pauseLoad);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
             }
         }
         return this;
@@ -361,11 +455,12 @@ public class Configuration {
         if(this.pauseDownload != pauseDownload){
             this.pauseDownload = pauseDownload;
             if(Sketch.isDebugMode()){
-                if(this.pauseDownload){
-                    Log.w(Sketch.TAG, "pauseDownload");
-                }else{
-                    Log.d(Sketch.TAG, "resumeDownload");
-                }
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("pauseDownload").append(" (");
+                builder.append(pauseDownload);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
             }
         }
         return this;
@@ -403,6 +498,14 @@ public class Configuration {
      */
     public Configuration setDecodeGifImage(boolean decodeGifImage) {
         this.decodeGifImage = decodeGifImage;
+        if(Sketch.isDebugMode()){
+            StringBuilder builder = new StringBuilder();
+            builder.append(NAME).append(": ").append("set").append(" - ");
+            builder.append("decodeGifImage").append(" (");
+            builder.append(decodeGifImage);
+            builder.append(")");
+            Log.i(Sketch.TAG, builder.toString());
+        }
         return this;
     }
 
@@ -420,6 +523,14 @@ public class Configuration {
      */
     public Configuration setImagesOfLowQuality(boolean imagesOfLowQuality) {
         this.imagesOfLowQuality = imagesOfLowQuality;
+        if(Sketch.isDebugMode()){
+            StringBuilder builder = new StringBuilder();
+            builder.append(NAME).append(": ").append("set").append(" - ");
+            builder.append("imagesOfLowQuality").append(" (");
+            builder.append(imagesOfLowQuality);
+            builder.append(")");
+            Log.i(Sketch.TAG, builder.toString());
+        }
         return this;
     }
 
@@ -437,6 +548,14 @@ public class Configuration {
      */
     public void setEnableDiskCache(boolean enableDiskCache) {
         this.enableDiskCache = enableDiskCache;
+        if(Sketch.isDebugMode()){
+            StringBuilder builder = new StringBuilder();
+            builder.append(NAME).append(": ").append("set").append(" - ");
+            builder.append("enableDiskCache").append(" (");
+            builder.append(enableDiskCache);
+            builder.append(")");
+            Log.i(Sketch.TAG, builder.toString());
+        }
     }
 
     /**
@@ -453,5 +572,143 @@ public class Configuration {
      */
     public void setEnableMemoryCache(boolean enableMemoryCache) {
         this.enableMemoryCache = enableMemoryCache;
+        if(Sketch.isDebugMode()){
+            StringBuilder builder = new StringBuilder();
+            builder.append(NAME).append(": ").append("set").append(" - ");
+            builder.append("enableMemoryCache").append(" (");
+            builder.append(enableMemoryCache);
+            builder.append(")");
+            Log.i(Sketch.TAG, builder.toString());
+        }
+    }
+
+    public String getInfo(){
+        StringBuilder builder = new StringBuilder();
+        builder.append(NAME).append(": ");
+
+        if(diskCache != null){
+            builder.append("diskCache");
+            builder.append(" (");
+            diskCache.appendIdentifier(builder);
+            builder.append(")");
+        }
+
+        if(memoryCache != null){
+            if(builder.length() > 0) builder.append("; ");
+            builder.append("memoryCache");
+            builder.append(" (");
+            memoryCache.appendIdentifier(builder);
+            builder.append(")");
+        }
+
+        if(placeholderImageMemoryCache != null){
+            if(builder.length() > 0) builder.append("; ");
+            builder.append("placeholderImageMemoryCache");
+            builder.append(" (");
+            placeholderImageMemoryCache.appendIdentifier(builder);
+            builder.append(")");
+        }
+
+        if(imageDecoder != null){
+            if(builder.length() > 0) builder.append("; ");
+            builder.append("imageDecoder");
+            builder.append(" (");
+            imageDecoder.appendIdentifier(builder);
+            builder.append(")");
+        }
+
+        if(helperFactory != null){
+            if(builder.length() > 0) builder.append("; ");
+            builder.append("helperFactory");
+            builder.append(" (");
+            helperFactory.appendIdentifier(builder);
+            builder.append(")");
+        }
+
+        if(defaultImageDisplayer != null){
+            if(builder.length() > 0) builder.append("; ");
+            builder.append("defaultImageDisplayer");
+            builder.append(" (");
+            defaultImageDisplayer.appendIdentifier(builder);
+            builder.append(")");
+        }
+
+        if(defaultCutImageProcessor != null){
+            if(builder.length() > 0) builder.append("; ");
+            builder.append("defaultCutImageProcessor");
+            builder.append(" (");
+            defaultCutImageProcessor.appendIdentifier(builder);
+            builder.append(")");
+        }
+
+        if(requestFactory != null){
+            if(builder.length() > 0) builder.append("; ");
+            builder.append("requestFactory");
+            builder.append(" (");
+            requestFactory.appendIdentifier(builder);
+            builder.append(")");
+        }
+
+        if(imageDownloader != null){
+            if(builder.length() > 0) builder.append("; ");
+            builder.append("imageDownloader");
+            builder.append(" (");
+            imageDownloader.appendIdentifier(builder);
+            builder.append(")");
+        }
+
+        if(requestExecutor != null){
+            if(builder.length() > 0) builder.append("; ");
+            builder.append("requestExecutor");
+            builder.append(" (");
+            requestExecutor.appendIdentifier(builder);
+            builder.append(")");
+        }
+
+        if(imageSizeCalculator != null){
+            if(builder.length() > 0) builder.append("; ");
+            builder.append("imageSizeCalculator");
+            builder.append(" (");
+            imageSizeCalculator.appendIdentifier(builder);
+            builder.append(")");
+        }
+
+        if(builder.length() > 0) builder.append("; ");
+        builder.append("pauseLoad");
+        builder.append(" (");
+        builder.append(pauseLoad);
+        builder.append(")");
+
+        builder.append("; ");
+        builder.append("pauseDownload");
+        builder.append(" (");
+        builder.append(pauseDownload);
+        builder.append(")");
+
+        builder.append("; ");
+        builder.append("decodeGifImage");
+        builder.append(" (");
+        builder.append(decodeGifImage);
+        builder.append(")");
+
+        builder.append("; ");
+        builder.append("imagesOfLowQuality");
+        builder.append(" (");
+        builder.append(imagesOfLowQuality);
+        builder.append(")");
+
+        builder.append("; ");
+        builder.append("enableMemoryCache");
+        builder.append(" (");
+        builder.append(enableMemoryCache);
+        builder.append(")");
+
+        builder.append("; ");
+        builder.append("enableDiskCache");
+        builder.append(" (");
+        builder.append(enableDiskCache);
+        builder.append(")");
+
+        return builder.toString();
     }
 }

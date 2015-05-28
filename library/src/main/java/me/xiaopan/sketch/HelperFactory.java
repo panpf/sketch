@@ -22,4 +22,15 @@ public interface HelperFactory {
     DisplayHelper getDisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface);
     DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface);
     void recycleDisplayHelper(DisplayHelper obsoletingDisplayHelper);
+
+    /**
+     * 获取标识符
+     * @return 标识符
+     */
+    String getIdentifier();
+
+    /**
+     * 追加标识符
+     */
+    StringBuilder appendIdentifier(StringBuilder builder);
 }

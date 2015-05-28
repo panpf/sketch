@@ -25,15 +25,26 @@ public interface RequestExecutor {
     /**
      * 获取请求分发执行器
      */
-    public Executor getRequestDispatchExecutor();
+    Executor getRequestDispatchExecutor();
 
     /**
      * 获取本地任务执行器
      */
-    public Executor getLocalRequestExecutor();
+    Executor getLocalRequestExecutor();
 
     /**
      * 获取网络任务执行器
      */
-    public Executor getNetRequestExecutor();
+    Executor getNetRequestExecutor();
+
+    /**
+     * 获取标识符
+     * @return 标识符
+     */
+    String getIdentifier();
+
+    /**
+     * 追加标识符
+     */
+    StringBuilder appendIdentifier(StringBuilder builder);
 }

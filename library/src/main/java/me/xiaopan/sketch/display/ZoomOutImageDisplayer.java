@@ -28,6 +28,7 @@ import me.xiaopan.sketch.SketchImageViewInterface;
  * 由大到小图片显示器
  */
 public class ZoomOutImageDisplayer implements ImageDisplayer {
+	private static final String NAME = "ZoomOutImageDisplayer";
 	private int duration;
 	private float fromX;
 	private float fromY;
@@ -71,6 +72,26 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
     	sketchImageViewInterface.clearAnimation();
 		sketchImageViewInterface.setImageDrawable(newDrawable);
 		sketchImageViewInterface.startAnimation(scaleAnimation);
+	}
+
+	@Override
+	public String getIdentifier() {
+		return appendIdentifier(new StringBuilder()).toString();
+	}
+
+	@Override
+	public StringBuilder appendIdentifier(StringBuilder builder) {
+		builder.append(NAME).
+				append(" - ")
+				.append("duration").append("=").append(duration)
+				.append(", ")
+				.append("fromX").append("=").append(fromX)
+				.append(", ")
+				.append("fromY").append("=").append(fromY);
+		if(interpolator != null){
+			builder.append(", ").append("interpolator").append("=").append(interpolator.getClass().getSimpleName());
+		}
+		return builder;
 	}
 
 	public int getDuration() {

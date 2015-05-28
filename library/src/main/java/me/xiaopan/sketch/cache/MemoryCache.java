@@ -57,4 +57,15 @@ public interface MemoryCache {
 	 * 清除内存缓存
 	 */
 	void clear();
+
+	/**
+	 * 获取标识符
+	 * @return 标识符
+	 */
+	String getIdentifier();
+
+	/**
+	 * 追加标识符
+	 */
+	StringBuilder appendIdentifier(StringBuilder builder);
 }

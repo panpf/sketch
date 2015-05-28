@@ -38,9 +38,10 @@ import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.DownloadRequest;
+import me.xiaopan.sketch.DownloadResult;
 import me.xiaopan.sketch.RequestStatus;
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -78,6 +79,24 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     @Override
     public void setProgressCallbackNumber(int progressCallbackNumber) {
         this.progressCallbackNumber = progressCallbackNumber;
+    }
+
+    @Override
+    public String getIdentifier() {
+        return appendIdentifier(new StringBuilder()).toString();
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(NAME)
+                .append(" - ")
+                .append("maxRetryCount").append("=").append(maxRetryCount)
+                .append(", ")
+                .append("progressCallbackNumber").append("=").append(progressCallbackNumber)
+                .append(", ")
+                .append("connectTimeout").append("=").append(connectTimeout)
+                .append(", ")
+                .append("readTimeout").append("=").append(readTimeout);
     }
 
     /**

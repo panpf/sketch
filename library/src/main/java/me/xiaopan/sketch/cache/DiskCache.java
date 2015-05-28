@@ -107,4 +107,15 @@ public interface DiskCache {
      * @return 缓存文件
      */
     File saveBitmap(Bitmap bitmap, String uri);
+
+    /**
+     * 获取标识符
+     * @return 标识符
+     */
+    String getIdentifier();
+
+    /**
+     * 追加标识符
+     */
+    StringBuilder appendIdentifier(StringBuilder builder);
 }

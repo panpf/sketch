@@ -37,9 +37,6 @@ public class LruMemoryCache implements MemoryCache {
 	public LruMemoryCache(Context context, int maxSize){
 		this.context = context;
         this.drawableLruCache = new DrawableLruCache(maxSize);
-		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "MemoryCacheMaxSize: " + Formatter.formatFileSize(context, maxSize)));
-		}
 	}
 
 	@Override
@@ -87,6 +84,18 @@ public class LruMemoryCache implements MemoryCache {
 			Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "clear", " - ", "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
 		}
 		drawableLruCache.evictAll();
+	}
+
+	@Override
+	public String getIdentifier() {
+		return appendIdentifier(new StringBuilder()).toString();
+	}
+
+	@Override
+	public StringBuilder appendIdentifier(StringBuilder builder) {
+		return builder.append(NAME)
+				.append(" - ")
+				.append("maxSize").append("=").append(Formatter.formatFileSize(context, getMaxSize()));
 	}
 
 	private class DrawableLruCache extends LruCache<String, Drawable> {

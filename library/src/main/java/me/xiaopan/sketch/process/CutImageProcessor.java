@@ -33,8 +33,7 @@ public class CutImageProcessor implements ImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        builder.append(NAME);
-        return builder;
+        return builder.append(NAME);
     }
 
     @Override

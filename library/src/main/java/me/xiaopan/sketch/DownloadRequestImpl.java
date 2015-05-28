@@ -21,7 +21,6 @@ import android.util.Log;
 
 import java.io.File;
 
-import me.xiaopan.sketch.download.ImageDownloader;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -295,7 +294,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
             return;
         }
 
-        ImageDownloader.DownloadResult downloadResult = sketch.getConfiguration().getImageDownloader().download(this);
+        DownloadResult downloadResult = sketch.getConfiguration().getImageDownloader().download(this);
 
         if(isCanceled()){
             if(Sketch.isDebugMode()){

@@ -26,6 +26,7 @@ import me.xiaopan.sketch.SketchImageViewInterface;
  * 颜色渐入图片显示器
  */
 public class ColorTransitionImageDisplayer implements ImageDisplayer {
+	private static final String NAME = "ColorTransitionImageDisplayer";
 	private int duration;
 	private int color;
 
@@ -48,6 +49,20 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
 		sketchImageViewInterface.setImageDrawable(transitionDrawable);
 		transitionDrawable.setCrossFadeEnabled(true);
 		transitionDrawable.startTransition(duration);
+	}
+
+	@Override
+	public String getIdentifier() {
+		return appendIdentifier(new StringBuilder()).toString();
+	}
+
+	@Override
+	public StringBuilder appendIdentifier(StringBuilder builder) {
+		return builder.append(NAME)
+				.append(" - ")
+				.append("duration").append("=").append(duration)
+				.append(", ")
+				.append("color").append("=").append(color);
 	}
 
 	public int getColor() {

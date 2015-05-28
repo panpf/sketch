@@ -31,4 +31,15 @@ public interface ImageDisplayer {
 	 * @param newDrawable 图片
 	 */
 	void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable);
+
+	/**
+	 * 获取标识符
+	 * @return 标识符
+	 */
+	String getIdentifier();
+
+	/**
+	 * 追加标识符
+	 */
+	StringBuilder appendIdentifier(StringBuilder builder);
 }

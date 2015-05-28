@@ -16,7 +16,8 @@
 
 package me.xiaopan.sketch;
 
-public class HelperFactoryImpl implements HelperFactory{
+public class DefaultHelperFactory implements HelperFactory{
+    private static final String NAME = "DefaultHelperFactory";
     private DisplayHelper obsoletingDisplayHelper;
 
     @Override
@@ -59,5 +60,15 @@ public class HelperFactoryImpl implements HelperFactory{
         if(this.obsoletingDisplayHelper == null){
             this.obsoletingDisplayHelper = obsoletingDisplayHelper;
         }
+    }
+
+    @Override
+    public String getIdentifier() {
+        return NAME;
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(NAME);
     }
 }

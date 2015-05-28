@@ -59,6 +59,16 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 	}
 
+    @Override
+    public String getIdentifier() {
+        return NAME;
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(NAME);
+    }
+
     public Object decodeHttpOrHttps(LoadRequest loadRequest){
         File cacheFile = loadRequest.getCacheFile();
         if(cacheFile != null && cacheFile.exists()){

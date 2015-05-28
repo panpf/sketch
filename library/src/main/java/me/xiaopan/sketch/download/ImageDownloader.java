@@ -16,9 +16,8 @@
 
 package me.xiaopan.sketch.download;
 
-import java.io.File;
-
 import me.xiaopan.sketch.DownloadRequest;
+import me.xiaopan.sketch.DownloadResult;
 
 /**
  * 下载器
@@ -27,65 +26,34 @@ public interface ImageDownloader {
 	/**
 	 * 下载
 	 */
-	public DownloadResult download(DownloadRequest downloadRequest);
+	DownloadResult download(DownloadRequest downloadRequest);
 	
     /**
      * 设置最大重试次数
      * @param maxRetryCount 最大重试次数，默认1
      */
-    public void setMaxRetryCount(int maxRetryCount);
+    void setMaxRetryCount(int maxRetryCount);
 
     /**
      * 设置连接超时时间
      * @param connectTimeout 连接超时时间，单位毫秒，默认15秒
      */
-    public void setConnectTimeout(int connectTimeout);
+    void setConnectTimeout(int connectTimeout);
 
     /**
      * 设置进度回调次数
      * @param progressCallbackNumber 进度回调次数，默认为10，意思是整个下载过程中进度回调10次，例如第一次是10%，第二次是20%，以此类推
      */
-    public void setProgressCallbackNumber(int progressCallbackNumber);
+    void setProgressCallbackNumber(int progressCallbackNumber);
 
     /**
-     * 下载结果
+     * 获取标识符
+     * @return 标识符
      */
-    public static class DownloadResult {
-        private Object result;
-        private boolean fromNetwork;
+    String getIdentifier();
 
-        private DownloadResult(){
-
-        }
-
-        public Object getResult() {
-            return result;
-        }
-
-        public void setResult(Object result) {
-            this.result = result;
-        }
-
-        public boolean isFromNetwork() {
-            return fromNetwork;
-        }
-
-        public void setFromNetwork(boolean fromNetwork) {
-            this.fromNetwork = fromNetwork;
-        }
-
-        public static DownloadResult createByFile(File resultFile, boolean fromNetwork){
-            DownloadResult result = new DownloadResult();
-            result.setResult(resultFile);
-            result.setFromNetwork(fromNetwork);
-            return result;
-        }
-
-        public static DownloadResult createByByteArray(byte[] resultDate, boolean fromNetwork){
-            DownloadResult result = new DownloadResult();
-            result.setResult(resultDate);
-            result.setFromNetwork(fromNetwork);
-            return result;
-        }
-    }
+    /**
+     * 追加标识符
+     */
+    StringBuilder appendIdentifier(StringBuilder builder);
 }
