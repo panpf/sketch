@@ -46,7 +46,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     private static final int FROM_FLAG_COLOR_DISK_CACHE = 0x88FFFF00;
     private static final int FROM_FLAG_COLOR_NETWORK = 0x88FF0000;
     private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
-    private static final int DEFAULT_RIPPLE_COLOR = 0x33000000;
+    private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;
 
     private Request displayRequest;
     private MyListener myListener;
@@ -65,19 +65,19 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     protected Paint fromFlagPaint;
     protected boolean showFromFlag;
 
-    protected int progressColor = DEFAULT_PROGRESS_COLOR;
+    protected int downloadProgressColor = DEFAULT_PROGRESS_COLOR;
     protected Paint progressPaint;
     protected float progress = NONE;
     protected boolean showDownloadProgress;
 
     protected int touchX;
     protected int touchY;
-    protected int clickRippleColor = DEFAULT_RIPPLE_COLOR;
-    protected int radius;
-    protected boolean allowShowRipple;
-    protected boolean showClickRipple;
+    protected int pressedStatusColor = DEFAULT_PRESSED_STATUS_COLOR;
+    protected int rippleRadius;
+    protected boolean allowShowPressedStatus;
+    protected boolean showPressedStatus;
     protected boolean animationRunning;
-    protected Paint clickRipplePaint;
+    protected Paint pressedStatusPaint;
     protected GestureDetector gestureDetector;
     protected boolean showRect;
 
@@ -196,7 +196,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(showClickRipple && isClickable()){
+        if(showPressedStatus && isClickable()){
             if(gestureDetector == null){
                 gestureDetector = new GestureDetector(getContext(), new PressedStatusManager());
             }
@@ -205,7 +205,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
                 case MotionEvent.ACTION_UP:
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_OUTSIDE:
-                    allowShowRipple = false;
+                    allowShowPressedStatus = false;
                     invalidate();
                     break;
             }
@@ -292,7 +292,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     protected void drawPressedStatus(Canvas canvas){
-        if(allowShowRipple || animationRunning || showRect){
+        if(allowShowPressedStatus || animationRunning || showRect){
             applyClip = imageShapeClipPath != null;
             if(applyClip){
                 canvas.save();
@@ -307,15 +307,15 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
                 }
             }
 
-            if(clickRipplePaint == null){
-                clickRipplePaint = new Paint();
-                clickRipplePaint.setColor(clickRippleColor);
-                clickRipplePaint.setAntiAlias(true);
+            if(pressedStatusPaint == null){
+                pressedStatusPaint = new Paint();
+                pressedStatusPaint.setColor(pressedStatusColor);
+                pressedStatusPaint.setAntiAlias(true);
             }
             if(animationRunning){
-                canvas.drawCircle(touchX, touchY, radius, clickRipplePaint);
+                canvas.drawCircle(touchX, touchY, rippleRadius, pressedStatusPaint);
             }else if(showRect){
-                canvas.drawRect(getPaddingLeft(), getPaddingTop(), getWidth()-getPaddingRight(), getHeight()-getPaddingBottom(), clickRipplePaint);
+                canvas.drawRect(getPaddingLeft(), getPaddingTop(), getWidth()-getPaddingRight(), getHeight()-getPaddingBottom(), pressedStatusPaint);
             }
 
             if(applyClip){
@@ -342,7 +342,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
             if(progressPaint == null){
                 progressPaint = new Paint();
-                progressPaint.setColor(progressColor);
+                progressPaint.setColor(downloadProgressColor);
                 progressPaint.setAntiAlias(true);
             }
             canvas.drawRect(getPaddingLeft(), getPaddingTop() + (progress * getHeight()), getWidth() - getPaddingLeft() - getPaddingRight(), getHeight() - getPaddingTop() - getPaddingBottom(), progressPaint);
@@ -512,11 +512,11 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     /**
-     * 设置是否显示点击涟漪效果，开启后按下的时候会在ImageView表面显示一个黑色半透明的涟漪效果，此功能需要注册点击事件或设置Clickable为true
-     * @param showClickRipple 是否显示点击涟漪效果
+     * 设置是否显示按下状态，开启后按下的时候会在ImageView表面覆盖一个黑色半透明图层，长按的时候还会有类似Android5.0的涟漪效果。此功能需要注册点击事件或设置Clickable为true
+     * @param showPressedStatus 是否显示点击状态
      */
-    public void setShowClickRipple(boolean showClickRipple) {
-        this.showClickRipple = showClickRipple;
+    public void setShowPressedStatus(boolean showPressedStatus) {
+        this.showPressedStatus = showPressedStatus;
     }
 
     /**
@@ -528,25 +528,45 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     /**
-     * 设置点击涟漪效果的颜色
-     * @param clickRippleColor 点击涟漪效果的颜色
+     * 设置按下状态的颜色
+     * @param pressedStatusColor 按下状态的颜色
      */
-    public void setClickRippleColor(int clickRippleColor) {
-        this.clickRippleColor = clickRippleColor;
-        if(clickRipplePaint != null){
-            clickRipplePaint.setColor(clickRippleColor);
+    public void setPressedStatusColor(int pressedStatusColor) {
+        this.pressedStatusColor = pressedStatusColor;
+        if(pressedStatusPaint != null){
+            pressedStatusPaint.setColor(pressedStatusColor);
         }
     }
 
     /**
-     * 设置进度的颜色
-     * @param progressColor 进度的颜色
+     * 设置下载进度的颜色
+     * @param downloadProgressColor 下载进度的颜色
      */
-    public void setProgressColor(int progressColor) {
-        this.progressColor = progressColor;
+    public void setDownloadProgressColor(int downloadProgressColor) {
+        this.downloadProgressColor = downloadProgressColor;
         if(progressPaint != null){
-            progressPaint.setColor(progressColor);
+            progressPaint.setColor(downloadProgressColor);
         }
+    }
+
+    public int getDownloadProgressColor() {
+        return downloadProgressColor;
+    }
+
+    public int getFromFlagColor() {
+        return fromFlagColor;
+    }
+
+    public int getPressedStatusColor() {
+        return pressedStatusColor;
+    }
+
+    public boolean isShowFromFlag() {
+        return showFromFlag;
+    }
+
+    public boolean isShowPressedStatus() {
+        return showPressedStatus;
     }
 
     /**
@@ -795,7 +815,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         public void run() {
             animationRunning = scroller.computeScrollOffset();
             if(animationRunning){
-                radius = scroller.getCurrX();
+                rippleRadius = scroller.getCurrX();
                 post(this);
             }
             invalidate();
@@ -818,7 +838,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
 
         @Override
         public void onShowPress(MotionEvent e) {
-            allowShowRipple = true;
+            allowShowPressedStatus = true;
             showPress = true;
             startAnimation(1000);
         }
