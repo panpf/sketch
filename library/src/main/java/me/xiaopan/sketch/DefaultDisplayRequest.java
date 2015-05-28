@@ -32,7 +32,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 显示请求
  */
-public class DisplayRequestImpl implements DisplayRequest, Runnable{
+public class DefaultDisplayRequest implements DisplayRequest, Runnable{
     private static final int WHAT_CALLBACK_COMPLETED = 102;
     private static final int WHAT_CALLBACK_FAILED = 103;
     private static final int WHAT_CALLBACK_CANCELED = 104;
@@ -81,7 +81,7 @@ public class DisplayRequestImpl implements DisplayRequest, Runnable{
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
     private SketchImageViewInterfaceHolder sketchImageViewInterfaceHolder;    // 绑定ImageView
 
-    public DisplayRequestImpl(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface) {
+    public DefaultDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface) {
         this.context = sketch.getConfiguration().getContext();
         this.sketch = sketch;
         this.uri = uri;

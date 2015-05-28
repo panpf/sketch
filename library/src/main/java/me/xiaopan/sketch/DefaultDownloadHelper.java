@@ -23,7 +23,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * DownloadHelper
  */
-public class DownloadHelperImpl implements DownloadHelper{
+public class DefaultDownloadHelper implements DownloadHelper{
     private static final String NAME = "DownloadHelperImpl";
 
     // 基本属性
@@ -46,7 +46,7 @@ public class DownloadHelperImpl implements DownloadHelper{
      * <br>“https://site.com/image.png“ // from Web
      * </blockquote>
      */
-    public DownloadHelperImpl(Sketch sketch, String uri) {
+    public DefaultDownloadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
         this.uri = uri;
         if(sketch.getConfiguration().isPauseDownload()){
@@ -56,31 +56,31 @@ public class DownloadHelperImpl implements DownloadHelper{
     }
 
     @Override
-    public DownloadHelperImpl name(String name){
+    public DefaultDownloadHelper name(String name){
         this.name = name;
         return this;
     }
 
     @Override
-    public DownloadHelperImpl listener(DownloadListener downloadListener){
+    public DefaultDownloadHelper listener(DownloadListener downloadListener){
         this.downloadListener = downloadListener;
         return this;
     }
 
     @Override
-    public DownloadHelperImpl disableDiskCache() {
+    public DefaultDownloadHelper disableDiskCache() {
         this.enableDiskCache = false;
         return this;
     }
 
     @Override
-    public DownloadHelperImpl progressListener(ProgressListener progressListener){
+    public DefaultDownloadHelper progressListener(ProgressListener progressListener){
         this.progressListener = progressListener;
         return this;
     }
 
     @Override
-    public DownloadHelperImpl options(DownloadOptions options){
+    public DefaultDownloadHelper options(DownloadOptions options){
         if(options == null){
             return this;
         }
@@ -101,12 +101,12 @@ public class DownloadHelperImpl implements DownloadHelper{
     }
 
     @Override
-    public DownloadHelperImpl options(Enum<?> optionsName){
+    public DefaultDownloadHelper options(Enum<?> optionsName){
         return options((DownloadOptions) Sketch.getOptions(optionsName));
     }
 
     @Override
-    public DownloadHelperImpl requestLevel(RequestLevel requestLevel){
+    public DefaultDownloadHelper requestLevel(RequestLevel requestLevel){
         if(requestLevel != null){
             this.requestLevel = requestLevel;
             this.requestLevelFrom = null;

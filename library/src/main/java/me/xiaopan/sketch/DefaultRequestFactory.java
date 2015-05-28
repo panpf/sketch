@@ -24,17 +24,17 @@ public class DefaultRequestFactory implements RequestFactory{
 
     @Override
     public DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface){
-        return new DisplayRequestImpl(sketch, uri, uriScheme, memoryCacheId, sketchImageViewInterface);
+        return new DefaultDisplayRequest(sketch, uri, uriScheme, memoryCacheId, sketchImageViewInterface);
     }
 
     @Override
     public LoadRequest newLoadRequest(Sketch sketch, String uri, UriScheme uriScheme) {
-        return new LoadRequestImpl(sketch, uri, uriScheme);
+        return new DefaultLoadRequest(sketch, uri, uriScheme);
     }
 
     @Override
     public DownloadRequest newDownloadRequest(Sketch sketch, String uri, UriScheme uriScheme) {
-        return new DownloadRequestImpl(sketch, uri, uriScheme);
+        return new DefaultDownloadRequest(sketch, uri, uriScheme);
     }
 
     @Override

@@ -24,7 +24,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * LoadHelper
  */
-public class LoadHelperImpl implements LoadHelper{
+public class DefaultLoadHelper implements LoadHelper{
     private static final String NAME = "LoadHelperImpl";
 
     // 基本属性
@@ -59,7 +59,7 @@ public class LoadHelperImpl implements LoadHelper{
      * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      * </blockquote>
      */
-    public LoadHelperImpl(Sketch sketch, String uri) {
+    public DefaultLoadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
         this.uri = uri;
         if(sketch.getConfiguration().isPauseDownload()){
@@ -69,73 +69,73 @@ public class LoadHelperImpl implements LoadHelper{
     }
 
     @Override
-    public LoadHelperImpl name(String name){
+    public DefaultLoadHelper name(String name){
         this.name = name;
         return this;
     }
 
     @Override
-    public LoadHelperImpl disableDiskCache() {
+    public DefaultLoadHelper disableDiskCache() {
         this.enableDiskCache = false;
         return this;
     }
 
     @Override
-    public LoadHelperImpl disableDecodeGifImage() {
+    public DefaultLoadHelper disableDecodeGifImage() {
         this.decodeGifImage = false;
         return this;
     }
 
     @Override
-    public LoadHelperImpl maxSize(MaxSize maxSize){
+    public DefaultLoadHelper maxSize(MaxSize maxSize){
         this.maxSize = maxSize;
         return this;
     }
 
     @Override
-    public LoadHelperImpl maxSize(int width, int height){
+    public DefaultLoadHelper maxSize(int width, int height){
         this.maxSize = new MaxSize(width, height);
         return this;
     }
 
     @Override
-    public LoadHelperImpl resize(Resize resize){
+    public DefaultLoadHelper resize(Resize resize){
         this.resize = resize;
         return this;
     }
 
     @Override
-    public LoadHelperImpl resize(int width, int height){
+    public DefaultLoadHelper resize(int width, int height){
         this.resize = new Resize(width, height);
         return this;
     }
 
     @Override
-    public LoadHelperImpl imagesOfLowQuality() {
+    public DefaultLoadHelper imagesOfLowQuality() {
         this.imagesOfLowQuality = true;
         return this;
     }
 
     @Override
-    public LoadHelperImpl processor(ImageProcessor processor){
+    public DefaultLoadHelper processor(ImageProcessor processor){
         this.imageProcessor = processor;
         return this;
     }
 
     @Override
-    public LoadHelperImpl listener(LoadListener loadListener){
+    public DefaultLoadHelper listener(LoadListener loadListener){
         this.loadListener = loadListener;
         return this;
     }
 
     @Override
-    public LoadHelperImpl progressListener(ProgressListener progressListener){
+    public DefaultLoadHelper progressListener(ProgressListener progressListener){
         this.progressListener = progressListener;
         return this;
     }
 
     @Override
-    public LoadHelperImpl options(LoadOptions options){
+    public DefaultLoadHelper options(LoadOptions options){
         if(options == null){
             return this;
         }
@@ -167,12 +167,12 @@ public class LoadHelperImpl implements LoadHelper{
     }
 
     @Override
-    public LoadHelperImpl options(Enum<?> optionsName){
+    public DefaultLoadHelper options(Enum<?> optionsName){
         return options((LoadOptions) Sketch.getOptions(optionsName));
     }
 
     @Override
-    public LoadHelperImpl requestLevel(RequestLevel requestLevel){
+    public DefaultLoadHelper requestLevel(RequestLevel requestLevel){
         if(requestLevel != null){
             this.requestLevel = requestLevel;
             this.requestLevelFrom = null;

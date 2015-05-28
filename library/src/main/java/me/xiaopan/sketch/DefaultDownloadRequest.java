@@ -26,7 +26,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 下载请求
  */
-public class DownloadRequestImpl implements DownloadRequest, Runnable{
+public class DefaultDownloadRequest implements DownloadRequest, Runnable{
     private static final int WHAT_CALLBACK_COMPLETED = 302;
     private static final int WHAT_CALLBACK_FAILED = 303;
     private static final int WHAT_CALLBACK_CANCELED = 304;
@@ -54,7 +54,7 @@ public class DownloadRequestImpl implements DownloadRequest, Runnable{
     private ImageFrom imageFrom;    // 图片来源
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
 
-    public DownloadRequestImpl(Sketch sketch, String uri, UriScheme uriScheme) {
+    public DefaultDownloadRequest(Sketch sketch, String uri, UriScheme uriScheme) {
         this.sketch = sketch;
         this.uri = uri;
         this.uriScheme = uriScheme;

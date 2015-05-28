@@ -22,18 +22,18 @@ public class DefaultHelperFactory implements HelperFactory{
 
     @Override
     public DownloadHelper getDownloadHelper(Sketch sketch, String uri) {
-        return new DownloadHelperImpl(sketch, uri);
+        return new DefaultDownloadHelper(sketch, uri);
     }
 
     @Override
     public LoadHelper getLoadHelper(Sketch sketch, String uri) {
-        return new LoadHelperImpl(sketch, uri);
+        return new DefaultLoadHelper(sketch, uri);
     }
 
     @Override
     public DisplayHelper getDisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
         if(this.obsoletingDisplayHelper == null){
-            return new DisplayHelperImpl(sketch, uri, sketchImageViewInterface);
+            return new DefaultDisplayHelper(sketch, uri, sketchImageViewInterface);
         }else{
             DisplayHelper displayHelper = this.obsoletingDisplayHelper;
             this.obsoletingDisplayHelper = null;
@@ -45,7 +45,7 @@ public class DefaultHelperFactory implements HelperFactory{
     @Override
     public DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
         if(this.obsoletingDisplayHelper == null){
-            return new DisplayHelperImpl(sketch, displayParams, sketchImageViewInterface);
+            return new DefaultDisplayHelper(sketch, displayParams, sketchImageViewInterface);
         }else{
             DisplayHelper displayHelper = this.obsoletingDisplayHelper;
             this.obsoletingDisplayHelper = null;

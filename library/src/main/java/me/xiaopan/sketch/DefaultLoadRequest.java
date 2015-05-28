@@ -29,7 +29,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 加载请求
  */
-public class LoadRequestImpl implements LoadRequest, Runnable{
+public class DefaultLoadRequest implements LoadRequest, Runnable{
     private static final int WHAT_CALLBACK_COMPLETED = 202;
     private static final int WHAT_CALLBACK_FAILED = 203;
     private static final int WHAT_CALLBACK_CANCELED = 204;
@@ -67,7 +67,7 @@ public class LoadRequestImpl implements LoadRequest, Runnable{
     private CancelCause cancelCause;  // 取消原因
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
 
-    public LoadRequestImpl(Sketch sketch, String uri, UriScheme uriScheme) {
+    public DefaultLoadRequest(Sketch sketch, String uri, UriScheme uriScheme) {
         this.sketch = sketch;
         this.uri = uri;
         this.uriScheme = uriScheme;

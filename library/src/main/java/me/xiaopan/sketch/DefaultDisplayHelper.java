@@ -28,7 +28,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * DisplayHelper
  */
-public class DisplayHelperImpl implements DisplayHelper{
+public class DefaultDisplayHelper implements DisplayHelper{
     private static final String NAME = "DisplayHelperImpl";
 
     // 基本属性
@@ -76,7 +76,7 @@ public class DisplayHelperImpl implements DisplayHelper{
      * </blockquote>
      * @param sketchImageViewInterface 图片View
      */
-    public DisplayHelperImpl(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
+    public DefaultDisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
         init(sketch, uri, sketchImageViewInterface);
     }
 
@@ -94,12 +94,12 @@ public class DisplayHelperImpl implements DisplayHelper{
      * </blockquote>
      * @param sketchImageViewInterface 图片View
      */
-    public DisplayHelperImpl(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
+    public DefaultDisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
         init(sketch, displayParams, sketchImageViewInterface);
     }
 
     @Override
-    public DisplayHelperImpl init(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface){
+    public DefaultDisplayHelper init(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface){
         this.context = sketch.getConfiguration().getContext();
         this.sketch = sketch;
         this.uri = uri;
@@ -232,133 +232,133 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public DisplayHelperImpl name(String name){
+    public DefaultDisplayHelper name(String name){
         this.name = name;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl memoryCacheId(String memoryCacheId){
+    public DefaultDisplayHelper memoryCacheId(String memoryCacheId){
         this.memoryCacheId = memoryCacheId;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl disableDiskCache() {
+    public DefaultDisplayHelper disableDiskCache() {
         this.enableDiskCache = false;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl disableDecodeGifImage() {
+    public DefaultDisplayHelper disableDecodeGifImage() {
         this.decodeGifImage = false;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl maxSize(MaxSize maxSize){
+    public DefaultDisplayHelper maxSize(MaxSize maxSize){
         this.maxSize = maxSize;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl maxSize(int width, int height){
+    public DefaultDisplayHelper maxSize(int width, int height){
         this.maxSize = new MaxSize(width, height);
         return this;
     }
 
     @Override
-    public DisplayHelperImpl resize(Resize resize){
+    public DefaultDisplayHelper resize(Resize resize){
         this.resize = resize;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl resize(int width, int height){
+    public DefaultDisplayHelper resize(int width, int height){
         this.resize = new Resize(width, height);
         return this;
     }
 
     @Override
-    public DisplayHelperImpl resizeByImageViewLayoutSize(){
+    public DefaultDisplayHelper resizeByImageViewLayoutSize(){
         this.resize = sketch.getConfiguration().getImageSizeCalculator().calculateImageResize(sketchImageViewInterface);
         return this;
     }
 
     @Override
-    public DisplayHelperImpl imagesOfLowQuality() {
+    public DefaultDisplayHelper imagesOfLowQuality() {
         this.imagesOfLowQuality = true;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl processor(ImageProcessor processor){
+    public DefaultDisplayHelper processor(ImageProcessor processor){
         this.imageProcessor = processor;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl disableMemoryCache() {
+    public DefaultDisplayHelper disableMemoryCache() {
         this.enableMemoryCache = false;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl listener(DisplayListener displayListener) {
+    public DefaultDisplayHelper listener(DisplayListener displayListener) {
         this.displayListener = displayListener;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl displayer(ImageDisplayer displayer) {
+    public DefaultDisplayHelper displayer(ImageDisplayer displayer) {
         this.imageDisplayer = displayer;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl loadingImage(LoadingImageHolder loadingImageHolder) {
+    public DefaultDisplayHelper loadingImage(LoadingImageHolder loadingImageHolder) {
         this.loadingImageHolder = loadingImageHolder;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl loadingImage(int drawableResId) {
+    public DefaultDisplayHelper loadingImage(int drawableResId) {
         loadingImage(new LoadingImageHolder(drawableResId));
         return this;
     }
 
     @Override
-    public DisplayHelperImpl failureImage(FailureImageHolder failureImageHolder) {
+    public DefaultDisplayHelper failureImage(FailureImageHolder failureImageHolder) {
         this.failureImageHolder = failureImageHolder;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl failureImage(int drawableResId) {
+    public DefaultDisplayHelper failureImage(int drawableResId) {
         failureImage(new FailureImageHolder(drawableResId));
         return this;
     }
 
     @Override
-    public DisplayHelperImpl pauseDownloadImage(PauseDownloadImageHolder pauseDownloadImageHolder) {
+    public DefaultDisplayHelper pauseDownloadImage(PauseDownloadImageHolder pauseDownloadImageHolder) {
         this.pauseDownloadImageHolder = pauseDownloadImageHolder;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl pauseDownloadImage(int drawableResId) {
+    public DefaultDisplayHelper pauseDownloadImage(int drawableResId) {
         pauseDownloadImage(new PauseDownloadImageHolder(drawableResId));
         return this;
     }
 
     @Override
-    public DisplayHelperImpl progressListener(ProgressListener progressListener){
+    public DefaultDisplayHelper progressListener(ProgressListener progressListener){
         this.progressListener = progressListener;
         return this;
     }
 
     @Override
-    public DisplayHelperImpl requestLevel(RequestLevel requestLevel){
+    public DefaultDisplayHelper requestLevel(RequestLevel requestLevel){
         if(requestLevel != null){
             this.requestLevel = requestLevel;
             this.requestLevelFrom = null;
@@ -367,7 +367,7 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public DisplayHelperImpl options(DisplayOptions options){
+    public DefaultDisplayHelper options(DisplayOptions options){
         if(options == null){
             return this;
         }
@@ -415,7 +415,7 @@ public class DisplayHelperImpl implements DisplayHelper{
     }
 
     @Override
-    public DisplayHelperImpl options(Enum<?> optionsName){
+    public DefaultDisplayHelper options(Enum<?> optionsName){
         return options((DisplayOptions) Sketch.getOptions(optionsName));
     }
 
