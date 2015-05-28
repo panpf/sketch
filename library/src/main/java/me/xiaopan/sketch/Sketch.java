@@ -18,9 +18,12 @@ package me.xiaopan.sketch;
 
 import android.content.Context;
 import android.net.Uri;
+import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
@@ -35,8 +38,9 @@ public class Sketch {
     private Configuration configuration;
 
 	private Sketch(Context context){
+        Log.i(TAG, SketchUtils.concat("Sketch", " ", BuildConfig.BUILD_TYPE, " ", BuildConfig.VERSION_NAME, "(", BuildConfig.VERSION_CODE, ")"));
         this.configuration = new Configuration(context);
-	}
+    }
 
     public static Sketch with(Context context){
         if(instance == null){
