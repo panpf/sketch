@@ -312,7 +312,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
                 pressedStatusPaint.setColor(pressedStatusColor);
                 pressedStatusPaint.setAntiAlias(true);
             }
-            if(animationRunning){
+            if(allowShowPressedStatus || animationRunning){
                 canvas.drawCircle(touchX, touchY, rippleRadius, pressedStatusPaint);
             }else if(showRect){
                 canvas.drawRect(getPaddingLeft(), getPaddingTop(), getWidth()-getPaddingRight(), getHeight()-getPaddingBottom(), pressedStatusPaint);
