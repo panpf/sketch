@@ -497,14 +497,16 @@ public class Configuration {
      * @param decodeGifImage true：解码；false：不解码
      */
     public Configuration setDecodeGifImage(boolean decodeGifImage) {
-        this.decodeGifImage = decodeGifImage;
-        if(Sketch.isDebugMode()){
-            StringBuilder builder = new StringBuilder();
-            builder.append(NAME).append(": ").append("set").append(" - ");
-            builder.append("decodeGifImage").append(" (");
-            builder.append(decodeGifImage);
-            builder.append(")");
-            Log.i(Sketch.TAG, builder.toString());
+        if(this.decodeGifImage != decodeGifImage){
+            this.decodeGifImage = decodeGifImage;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("decodeGifImage").append(" (");
+                builder.append(decodeGifImage);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -522,14 +524,16 @@ public class Configuration {
      * @param imagesOfLowQuality true:是
      */
     public Configuration setImagesOfLowQuality(boolean imagesOfLowQuality) {
-        this.imagesOfLowQuality = imagesOfLowQuality;
-        if(Sketch.isDebugMode()){
-            StringBuilder builder = new StringBuilder();
-            builder.append(NAME).append(": ").append("set").append(" - ");
-            builder.append("imagesOfLowQuality").append(" (");
-            builder.append(imagesOfLowQuality);
-            builder.append(")");
-            Log.i(Sketch.TAG, builder.toString());
+        if(this.imagesOfLowQuality != imagesOfLowQuality){
+            this.imagesOfLowQuality = imagesOfLowQuality;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("imagesOfLowQuality").append(" (");
+                builder.append(imagesOfLowQuality);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
         return this;
     }
@@ -546,16 +550,19 @@ public class Configuration {
      * 设置是否开启磁盘缓存
      * @param enableDiskCache true：是
      */
-    public void setEnableDiskCache(boolean enableDiskCache) {
-        this.enableDiskCache = enableDiskCache;
-        if(Sketch.isDebugMode()){
-            StringBuilder builder = new StringBuilder();
-            builder.append(NAME).append(": ").append("set").append(" - ");
-            builder.append("enableDiskCache").append(" (");
-            builder.append(enableDiskCache);
-            builder.append(")");
-            Log.i(Sketch.TAG, builder.toString());
+    public Configuration setEnableDiskCache(boolean enableDiskCache) {
+        if(this.enableDiskCache != enableDiskCache) {
+            this.enableDiskCache = enableDiskCache;
+            if (Sketch.isDebugMode()) {
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("enableDiskCache").append(" (");
+                builder.append(enableDiskCache);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
+        return this;
     }
 
     /**
@@ -570,16 +577,19 @@ public class Configuration {
      * 设置是否开启内存缓存
      * @param enableMemoryCache true：是
      */
-    public void setEnableMemoryCache(boolean enableMemoryCache) {
-        this.enableMemoryCache = enableMemoryCache;
-        if(Sketch.isDebugMode()){
-            StringBuilder builder = new StringBuilder();
-            builder.append(NAME).append(": ").append("set").append(" - ");
-            builder.append("enableMemoryCache").append(" (");
-            builder.append(enableMemoryCache);
-            builder.append(")");
-            Log.i(Sketch.TAG, builder.toString());
+    public Configuration setEnableMemoryCache(boolean enableMemoryCache) {
+        if(this.enableMemoryCache != enableMemoryCache) {
+            this.enableMemoryCache = enableMemoryCache;
+            if (Sketch.isDebugMode()) {
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("enableMemoryCache").append(" (");
+                builder.append(enableMemoryCache);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
         }
+        return this;
     }
 
     public String getInfo(){
