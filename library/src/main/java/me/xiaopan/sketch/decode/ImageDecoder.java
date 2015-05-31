@@ -19,7 +19,7 @@ package me.xiaopan.sketch.decode;
 import me.xiaopan.sketch.LoadRequest;
 
 /**
- * 位图解码器
+ * 图片解码器
  */
 public interface ImageDecoder {
 	/**

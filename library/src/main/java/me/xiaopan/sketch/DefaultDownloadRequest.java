@@ -31,7 +31,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable{
     private static final int WHAT_CALLBACK_FAILED = 303;
     private static final int WHAT_CALLBACK_CANCELED = 304;
     private static final int WHAT_CALLBACK_PROGRESS = 305;
-    private static final String NAME = "DownloadRequestImpl";
+    private static final String NAME = "DefaultDownloadRequest";
 
     // Base fields
     private Sketch sketch;  // Sketch

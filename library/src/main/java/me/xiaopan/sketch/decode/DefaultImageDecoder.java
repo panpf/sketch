@@ -37,7 +37,7 @@ import me.xiaopan.sketch.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 默认的位图解码器
+ * 默认的图片解码器
  */
 public class DefaultImageDecoder implements ImageDecoder {
     private static final String NAME = "DefaultImageDecoder";
@@ -114,7 +114,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         loadRequest.setMimeType(options.outMimeType);
         ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
         if(imageFormat != null){
-            options.inPreferredConfig = imageFormat.getConfig(loadRequest.isImagesOfLowQuality());
+            options.inPreferredConfig = imageFormat.getConfig(loadRequest.isLowQualityImage());
         }
 
         // decode gif image

@@ -21,12 +21,13 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 
 import me.xiaopan.sketch.Resize;
+import me.xiaopan.sketch.ResizeCalculator;
+import me.xiaopan.sketch.Sketch;
 
 /**
- * 圆形位图处理器
+ * 圆形图片处理器
  */
 public class CircleImageProcessor implements ImageProcessor {
     private static final String NAME = "CircleImageProcessor";
@@ -59,33 +60,22 @@ public class CircleImageProcessor implements ImageProcessor {
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, Resize resize, boolean imagesOfLowQuality) {
-        if(bitmap == null){
+    public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+        if(bitmap == null || bitmap.isRecycled()){
             return null;
         }
 
-        int bitmapWidth = bitmap.getWidth();
-        int bitmapHeight = bitmap.getHeight();
-        int newBitmapWidth;
-        int newBitmapHeight;
-        if(resize != null){
-            newBitmapWidth = resize.getWidth();
-            newBitmapHeight = resize.getHeight();
-        }else{
-            newBitmapWidth = bitmap.getWidth();
-            newBitmapHeight = bitmap.getHeight();
-        }
+        int targetWidth = resize != null?resize.getWidth():bitmap.getWidth();
+        int targetHeight = resize != null?resize.getHeight():bitmap.getHeight();
+        int newBitmapSize = targetWidth < targetHeight ? targetWidth : targetHeight;
 
-        // 当newBitmap size大于bitmap size时，再创建一张newBitmap size的图片就不太合适了，应该以bitmap size为准
-        if(newBitmapWidth > bitmapWidth && newBitmapHeight > bitmapHeight){
-            Rect rect = CutImageProcessor.findMappingRect(bitmapWidth, bitmapHeight, newBitmapWidth, newBitmapHeight);
-            newBitmapWidth = rect.width();
-            newBitmapHeight = rect.height();
+        ResizeCalculator.Result result = sketch.getConfiguration().getResizeCalculator().calculator(bitmap.getWidth(), bitmap.getHeight(), newBitmapSize, newBitmapSize, resize != null ? resize.getScaleType() : null, forceUseResize);
+        if(result == null){
+            return bitmap;
         }
 
         // 初始化画布
-        int diameter = newBitmapWidth<newBitmapHeight?newBitmapWidth:newBitmapHeight;
-        Bitmap output = Bitmap.createBitmap(diameter, diameter, imagesOfLowQuality? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888);
+        Bitmap output = Bitmap.createBitmap(result.imageWidth, result.imageHeight, lowQualityImage ? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -93,13 +83,11 @@ public class CircleImageProcessor implements ImageProcessor {
         paint.setColor(0xFFFF0000);
         
         // 绘制圆形的罩子
-        canvas.drawCircle(diameter/2, diameter/2, diameter/2, paint);
+        canvas.drawCircle(result.imageWidth/2, result.imageHeight/2, (result.imageWidth<result.imageHeight?result.imageWidth:result.imageHeight)/2, paint);
         
         // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
-        Rect dstRect = new Rect(0, 0, diameter, diameter);
-        Rect srcRect = CutImageProcessor.findMappingRect(bitmapWidth, bitmapHeight, diameter, diameter);
-        canvas.drawBitmap(bitmap, srcRect, dstRect, paint);
+        canvas.drawBitmap(bitmap, result.srcRect, result.destRect, paint);
 
         return output;
     }

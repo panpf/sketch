@@ -23,9 +23,10 @@ import me.xiaopan.sketch.process.ImageProcessor;
  */
 public class LoadOptions extends DownloadOptions{
     private Resize resize;
-    private boolean decodeGifImage = true;
-    private boolean imagesOfLowQuality;
     private MaxSize maxSize;
+    private boolean decodeGifImage = true;
+    private boolean forceUseResize;
+    private boolean lowQualityImage;
     private ImageProcessor imageProcessor;
 
     public LoadOptions() {
@@ -144,27 +145,45 @@ public class LoadOptions extends DownloadOptions{
      * 是否返回低质量的图片
      * @return true: 是
      */
-    public boolean isImagesOfLowQuality() {
-        return imagesOfLowQuality;
+    public boolean isLowQualityImage() {
+        return lowQualityImage;
     }
 
     /**
      * 设置是否返回低质量的图片
-     * @param imagesOfLowQuality true：是
+     * @param lowQualityImage true：是
      */
-    public LoadOptions setImagesOfLowQuality(boolean imagesOfLowQuality) {
-        this.imagesOfLowQuality = imagesOfLowQuality;
+    public LoadOptions setLowQualityImage(boolean lowQualityImage) {
+        this.lowQualityImage = lowQualityImage;
+        return this;
+    }
+
+    /**
+     * 是否强制使用resize
+     * @return true：强制使用resize，返回的图片的尺寸一定是跟resize一样
+     */
+    public boolean isForceUseResize() {
+        return forceUseResize;
+    }
+
+    /**
+     * 设置是否强制使用resize
+     * @param forceUseResize true：强制使用resize，返回的图片的尺寸一定是跟resize一样
+     */
+    public LoadOptions setForceUseResize(boolean forceUseResize) {
+        this.forceUseResize = forceUseResize;
         return this;
     }
 
     public void copyOf(LoadOptions loadOptions){
         this.maxSize = loadOptions.getMaxSize();
         this.resize = loadOptions.getResize();
-        this.imagesOfLowQuality = loadOptions.imagesOfLowQuality;
+        this.lowQualityImage = loadOptions.lowQualityImage;
         this.imageProcessor = loadOptions.getImageProcessor();
         this.decodeGifImage = loadOptions.isDecodeGifImage();
+        this.forceUseResize = loadOptions.isForceUseResize();
 
-        setEnableDiskCache(loadOptions.isEnableDiskCache());
-        setRequestLevel(loadOptions.getRequestLevel());
+        super.setEnableDiskCache(loadOptions.isEnableDiskCache());
+        super.setRequestLevel(loadOptions.getRequestLevel());
     }
 }

@@ -29,7 +29,7 @@ public class DisplayOptions extends LoadOptions {
     private FailureImageHolder failureImageHolder;	//当失败时显示的图片
     private PauseDownloadImageHolder pauseDownloadImageHolder;	//暂停下载时显示的图片
 
-    private boolean resizeByImageViewLayoutSize;
+    private boolean resizeByFixedSize;
 
     public DisplayOptions() {
     }
@@ -160,19 +160,20 @@ public class DisplayOptions extends LoadOptions {
      * 是否需要根据ImageView的LayoutSize来调整resize
      * @return true：是
      */
-    public boolean isResizeByImageViewLayoutSize() {
-        return resizeByImageViewLayoutSize;
+    public boolean isResizeByFixedSize() {
+        return resizeByFixedSize;
     }
 
     /**
      * 设置是否需要根据ImageView的LayoutSize来调整resize
-     * @param isResizeByImageViewLayoutSize true：是
+     * @param isResizeByFixedSize true：是
      */
-    public void setResizeByImageViewLayoutSize(boolean isResizeByImageViewLayoutSize) {
-        this.resizeByImageViewLayoutSize = isResizeByImageViewLayoutSize;
-        if(this.resizeByImageViewLayoutSize && getResize() != null){
+    public DisplayOptions setResizeByFixedSize(boolean isResizeByFixedSize) {
+        this.resizeByFixedSize = isResizeByFixedSize;
+        if(this.resizeByFixedSize && getResize() != null){
             super.setResize(null);
         }
+        return this;
     }
 
     @Override
@@ -202,14 +203,14 @@ public class DisplayOptions extends LoadOptions {
     @Override
     public DisplayOptions setResize(Resize resize){
         super.setResize(resize);
-        this.resizeByImageViewLayoutSize = false;
+        this.resizeByFixedSize = false;
         return this;
     }
 
     @Override
     public DisplayOptions setResize(int width, int height) {
         super.setResize(width, height);
-        this.resizeByImageViewLayoutSize = false;
+        this.resizeByFixedSize = false;
         return this;
     }
 
@@ -220,8 +221,8 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setImagesOfLowQuality(boolean imagesOfLowQuality) {
-        super.setImagesOfLowQuality(imagesOfLowQuality);
+    public DisplayOptions setLowQualityImage(boolean lowQualityImage) {
+        super.setLowQualityImage(lowQualityImage);
         return this;
     }
 
@@ -231,21 +232,27 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
+    @Override
+    public DisplayOptions setForceUseResize(boolean forceUseResize) {
+        super.setForceUseResize(forceUseResize);
+        return this;
+    }
+
     public void copyOf(DisplayOptions displayOptions){
-        this.enableMemoryCache = displayOptions.enableMemoryCache;
         this.imageDisplayer = displayOptions.imageDisplayer;
+        this.resizeByFixedSize = displayOptions.resizeByFixedSize;
+        this.enableMemoryCache = displayOptions.enableMemoryCache;
         this.loadingImageHolder = displayOptions.loadingImageHolder;
         this.failureImageHolder = displayOptions.failureImageHolder;
         this.pauseDownloadImageHolder = displayOptions.pauseDownloadImageHolder;
-        this.resizeByImageViewLayoutSize = displayOptions.resizeByImageViewLayoutSize;
 
-        setMaxSize(displayOptions.getMaxSize());
-        setResize(displayOptions.getResize());
-        setImagesOfLowQuality(displayOptions.isImagesOfLowQuality());
-        setImageProcessor(displayOptions.getImageProcessor());
-        setDecodeGifImage(displayOptions.isDecodeGifImage());
+        super.setMaxSize(displayOptions.getMaxSize());
+        super.setResize(displayOptions.getResize());
+        super.setLowQualityImage(displayOptions.isLowQualityImage());
+        super.setImageProcessor(displayOptions.getImageProcessor());
+        super.setDecodeGifImage(displayOptions.isDecodeGifImage());
 
-        setEnableDiskCache(displayOptions.isEnableDiskCache());
-        setRequestLevel(displayOptions.getRequestLevel());
+        super.setEnableDiskCache(displayOptions.isEnableDiskCache());
+        super.setRequestLevel(displayOptions.getRequestLevel());
     }
 }

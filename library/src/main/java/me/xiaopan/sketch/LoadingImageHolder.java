@@ -27,32 +27,55 @@ import me.xiaopan.sketch.util.SketchUtils;
 
 public class LoadingImageHolder implements ImageHolder{
     private int resId;
-    private ImageProcessor imageProcessor;
     private Resize resize;
-    private boolean imagesOfLowQuality;
     private String memoryCacheId;
+    private boolean lowQualityImage;
+    private boolean forceUseResize;
+    private ImageProcessor imageProcessor;
     private RecycleBitmapDrawable drawable;
 
     public LoadingImageHolder(int resId) {
         this.resId = resId;
     }
 
-    public LoadingImageHolder(int resId, ImageProcessor imageProcessor) {
-        this.resId = resId;
-        this.imageProcessor = imageProcessor;
+    public boolean isForceUseResize() {
+        return forceUseResize;
     }
 
-    public LoadingImageHolder(int resId, ImageProcessor imageProcessor, Resize resize) {
-        this.resId = resId;
-        this.resize = resize;
-        this.imageProcessor = imageProcessor;
+    public LoadingImageHolder setForceUseResize(boolean forceUseResize) {
+        this.forceUseResize = forceUseResize;
+        return this;
     }
 
-    public LoadingImageHolder(int resId, ImageProcessor imageProcessor, Resize resize, boolean imagesOfLowQuality) {
-        this.resId = resId;
-        this.resize = resize;
+    public ImageProcessor getImageProcessor() {
+        return imageProcessor;
+    }
+
+    public LoadingImageHolder setImageProcessor(ImageProcessor imageProcessor) {
         this.imageProcessor = imageProcessor;
-        this.imagesOfLowQuality = imagesOfLowQuality;
+        return this;
+    }
+
+    public boolean isLowQualityImage() {
+        return lowQualityImage;
+    }
+
+    public LoadingImageHolder setLowQualityImage(boolean lowQualityImage) {
+        this.lowQualityImage = lowQualityImage;
+        return this;
+    }
+
+    public int getResId() {
+        return resId;
+    }
+
+    public Resize getResize() {
+        return resize;
+    }
+
+    public LoadingImageHolder setResize(Resize resize) {
+        this.resize = resize;
+        return this;
     }
 
     protected RecycleBitmapDrawable getRecycleBitmapDrawable(Context context){
@@ -62,7 +85,7 @@ public class LoadingImageHolder implements ImageHolder{
 
         // 从内存缓存中取
         if(memoryCacheId == null){
-            memoryCacheId = generateMemoryCacheId(resId, resize, imagesOfLowQuality, imageProcessor);
+            memoryCacheId = generateMemoryCacheId(resId, resize, forceUseResize, lowQualityImage, imageProcessor);
         }
         MemoryCache lruMemoryCache = Sketch.with(context).getConfiguration().getPlaceholderImageMemoryCache();
         RecycleBitmapDrawable newDrawable = (RecycleBitmapDrawable) lruMemoryCache.get(memoryCacheId);
@@ -77,9 +100,9 @@ public class LoadingImageHolder implements ImageHolder{
 
         // 创建新的图片
         Bitmap bitmap;
-        boolean tempImagesOfLowQuality = this.imagesOfLowQuality;
-        if(Sketch.with(context).getConfiguration().isImagesOfLowQuality()){
-            tempImagesOfLowQuality = true;
+        boolean tempLowQualityImage = this.lowQualityImage;
+        if(Sketch.with(context).getConfiguration().isLowQualityImage()){
+            tempLowQualityImage = true;
         }
         boolean canRecycle = false;
 
@@ -87,12 +110,12 @@ public class LoadingImageHolder implements ImageHolder{
         if(resDrawable != null && resDrawable instanceof BitmapDrawable){
             bitmap = ((BitmapDrawable) resDrawable).getBitmap();
         }else{
-            bitmap = SketchUtils.drawableToBitmap(resDrawable, tempImagesOfLowQuality);
+            bitmap = SketchUtils.drawableToBitmap(resDrawable, tempLowQualityImage);
             canRecycle = true;
         }
 
         if(bitmap != null && !bitmap.isRecycled() && imageProcessor != null){
-            Bitmap newBitmap = imageProcessor.process(bitmap, resize, tempImagesOfLowQuality);
+            Bitmap newBitmap = imageProcessor.process(Sketch.with(context), bitmap, resize, forceUseResize, tempLowQualityImage);
             if(newBitmap != bitmap){
                 if(canRecycle){
                     bitmap.recycle();
@@ -114,15 +137,20 @@ public class LoadingImageHolder implements ImageHolder{
         return drawable;
     }
 
-    protected String generateMemoryCacheId(int resId, Resize resize, boolean imagesOfLowQuality, ImageProcessor imageProcessor){
+    protected String generateMemoryCacheId(int resId, Resize resize, boolean forceUseResize, boolean lowQualityImage, ImageProcessor imageProcessor){
         StringBuilder builder = new StringBuilder();
         builder.append(resId);
         if(resize != null){
             builder.append("_");
             resize.appendIdentifier(builder);
         }
-        if(imagesOfLowQuality){
-            builder.append("_LowQuality");
+        if(forceUseResize){
+            builder.append("_");
+            builder.append("forceUseResize");
+        }
+        if(lowQualityImage){
+            builder.append("_");
+            builder.append("lowQualityImage");
         }
         if(imageProcessor != null){
             builder.append("_");

@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch;
 
+import android.widget.ImageView.ScaleType;
+
 import me.xiaopan.sketch.process.ImageProcessor;
 
 /**
@@ -58,13 +60,6 @@ public interface LoadHelper {
 
     /**
      * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
-     * @param resize 新的尺寸
-     * @return LoadHelper
-     */
-    LoadHelper resize(Resize resize);
-
-    /**
-     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
      * @param width 宽
      * @param height 高
      * @return LoadHelper
@@ -72,10 +67,25 @@ public interface LoadHelper {
     LoadHelper resize(int width, int height);
 
     /**
+     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
+     * @param width 宽
+     * @param height 高
+     * @param scaleType
+     * @return LoadHelper
+     */
+    LoadHelper resize(int width, int height, ScaleType scaleType);
+
+    /**
+     * 强制使用resize，最终返回的图片尺寸一定跟resize一样
+     * @return DisplayHelper
+     */
+    LoadHelper forceUseFixed();
+
+    /**
      * 返回低质量的图片
      * @return LoadHelper
      */
-    LoadHelper imagesOfLowQuality();
+    LoadHelper lowQualityImage();
 
     /**
      * 设置图片处理器，图片处理器会根据resize创建一张新的图片

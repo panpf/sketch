@@ -23,20 +23,20 @@ import android.graphics.drawable.Drawable;
  */
 public interface MemoryCache {
 	/**
-	 * 放进去一个位图
+	 * 放进去一张图片
 	 * @param key 键
 	 * @param value 值
 	 */
 	void put(String key, Drawable value);
 	
 	/**
-	 * 根据给定的key获取位图
+	 * 根据给定的key获取图片
 	 * @param key 键
 	 */
 	Drawable get(String key);
 	
 	/**
-	 * 根据给定的key删除位图
+	 * 根据给定的key删除图片
 	 * @param key 键
 	 */
 	Drawable remove(String key);

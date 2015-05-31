@@ -23,25 +23,24 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.graphics.Shader.TileMode;
-import android.widget.ImageView;
 
 import me.xiaopan.sketch.Resize;
+import me.xiaopan.sketch.ResizeCalculator;
+import me.xiaopan.sketch.Sketch;
 
 /**
- * 倒影位图处理器
+ * 倒影图片处理器
  */
 public class ReflectionImageProcessor implements ImageProcessor {
     private static final String NAME = "ReflectionImageProcessor";
 	private int reflectionSpacing;
 	private float reflectionScale;
-    private boolean forceUseResizeInCenterCrop = true;
 
 	/**
-	 * 创建一个倒影位图处理器
+	 * 创建一个倒影图片处理器
 	 * @param reflectionSpacing 倒影和图片之间的距离
-	 * @param reflectionScale 倒影的高度所占原图高度比例
+	 * @param reflectionScale 倒影的高度所占原图高度比例，取值为0.0到1
 	 */
 	public ReflectionImageProcessor(int reflectionSpacing, float reflectionScale) {
 		this.reflectionSpacing = reflectionSpacing;
@@ -68,92 +67,27 @@ public class ReflectionImageProcessor implements ImageProcessor {
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, Resize resize, boolean imagesOfLowQuality) {
+    public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
         if(bitmap == null){
             return null;
         }
 
-        ImageView.ScaleType scaleType = null;
-        if(resize != null){
-            scaleType = resize.getScaleType();
-        }
-        if(scaleType == null){
-            scaleType = ImageView.ScaleType.FIT_CENTER;
-        }
-
-        int bitmapWidth = bitmap.getWidth();
-        int bitmapHeight = bitmap.getHeight();
-        int newBitmapWidth;
-        int newBitmapHeight;
-        if(resize != null){
-            newBitmapWidth = resize.getWidth();
-            newBitmapHeight = resize.getHeight();
-        }else{
-            newBitmapWidth = bitmap.getWidth();
-            newBitmapHeight = bitmap.getHeight();
-        }
-
-        Rect srcRect = null;
-        if(scaleType == ImageView.ScaleType.CENTER){
-            if(newBitmapWidth >= bitmapWidth && newBitmapHeight >= bitmapHeight){
-                srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
-                newBitmapWidth = bitmapWidth;
-                newBitmapHeight = bitmapHeight;
-            }else{
-                srcRect = CutImageProcessor.findCutRect(bitmapWidth, bitmapHeight, newBitmapWidth, newBitmapHeight);
-                newBitmapWidth = srcRect.width();
-                newBitmapHeight = srcRect.height();
-            }
-        }else if(scaleType == ImageView.ScaleType.CENTER_CROP){
-            if(!forceUseResizeInCenterCrop && ((float)newBitmapWidth/newBitmapHeight == (float)bitmapWidth/bitmapHeight && newBitmapWidth >= bitmapWidth)){
-                srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
-                newBitmapWidth = bitmapWidth;
-                newBitmapHeight = bitmapHeight;
-            }else{
-                srcRect = CutImageProcessor.findMappingRect(bitmapWidth, bitmapHeight, newBitmapWidth, newBitmapHeight);
-                if(!forceUseResizeInCenterCrop && (bitmapWidth <= newBitmapWidth || bitmapHeight <= newBitmapHeight)){
-                    newBitmapWidth = srcRect.width();
-                    newBitmapHeight = srcRect.height();
-                }
-            }
-        }else if(scaleType == ImageView.ScaleType.CENTER_INSIDE || scaleType == ImageView.ScaleType.FIT_CENTER || scaleType == ImageView.ScaleType.FIT_END || scaleType == ImageView.ScaleType.FIT_START){
-            if(newBitmapWidth >= bitmapWidth && newBitmapHeight >= bitmapHeight){
-                srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
-                newBitmapWidth = bitmapWidth;
-                newBitmapHeight = bitmapHeight;
-            }else{
-                float widthScale = (float)bitmapWidth/newBitmapWidth;
-                float heightScale = (float)bitmapHeight/newBitmapHeight;
-                float finalScale = widthScale>heightScale?widthScale:heightScale;
-                newBitmapWidth = (int)(bitmapWidth/finalScale);
-                newBitmapHeight = (int)(bitmapHeight/finalScale);
-                srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
-            }
-        }else if(scaleType == ImageView.ScaleType.FIT_XY || scaleType == ImageView.ScaleType.MATRIX){
-            srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
-            newBitmapWidth = bitmapWidth;
-            newBitmapHeight = bitmapHeight;
-        }
-
-        if(srcRect == null){
+        ResizeCalculator.Result result = sketch.getConfiguration().getResizeCalculator().calculator(bitmap.getWidth(), bitmap.getHeight(), resize != null ? resize.getWidth() : bitmap.getWidth(), resize != null ? resize.getHeight() : bitmap.getHeight(), resize != null ? resize.getScaleType() : null, forceUseResize);
+        if(result == null){
             return bitmap;
-        }else{
-            return process(bitmap, imagesOfLowQuality? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888, bitmapWidth, bitmapHeight, newBitmapWidth, newBitmapHeight, srcRect);
         }
-    }
 
-    private Bitmap process(Bitmap bitmap, Bitmap.Config config, int bitmapWidth, int bitmapHeight, int newBitmapWidth, int newBitmapHeight, Rect srcRect){
         Bitmap srcBitmap;
-        if(bitmapWidth == newBitmapWidth && bitmapHeight == newBitmapHeight){
+        if(bitmap.getWidth() == result.imageWidth && bitmap.getHeight() == result.imageHeight){
             srcBitmap = bitmap;
         }else{
-            srcBitmap = Bitmap.createBitmap(newBitmapWidth, newBitmapHeight, config);
+            srcBitmap = Bitmap.createBitmap(result.imageWidth, result.imageHeight, lowQualityImage ? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(srcBitmap);
-            canvas.drawBitmap(bitmap, srcRect, new Rect(0, 0, srcBitmap.getWidth(), srcBitmap.getHeight()), null);
+            canvas.drawBitmap(bitmap, result.srcRect, result.destRect, null);
         }
 
         // 初始化画布
-        Bitmap bitmapWithReflection = Bitmap.createBitmap(newBitmapWidth, (int) (newBitmapHeight+reflectionSpacing+(newBitmapHeight*reflectionScale)), config);
+        Bitmap bitmapWithReflection = Bitmap.createBitmap(result.imageWidth, (int) (result.imageHeight+reflectionSpacing+(result.imageHeight*reflectionScale)), lowQualityImage ? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmapWithReflection);
 
         // 在上半部分绘制原图
@@ -166,20 +100,31 @@ public class ReflectionImageProcessor implements ImageProcessor {
         if(srcBitmap != bitmap){
             srcBitmap.recycle();
         }
-        canvas.drawBitmap(reflectionImage, 0, newBitmapHeight+reflectionSpacing, null);
+        canvas.drawBitmap(reflectionImage, 0, result.imageHeight+reflectionSpacing, null);
         reflectionImage.recycle();
 
         // 在下半部分绘制半透明遮罩
         Paint paint = new Paint();
-        paint.setShader(new LinearGradient(0, newBitmapHeight+reflectionSpacing, 0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
+        paint.setShader(new LinearGradient(0, result.imageHeight+reflectionSpacing, 0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
         paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
-        canvas.drawRect(0, newBitmapHeight + reflectionSpacing, bitmapWithReflection.getWidth(), bitmapWithReflection.getHeight(), paint);
+        canvas.drawRect(0, result.imageHeight + reflectionSpacing, bitmapWithReflection.getWidth(), bitmapWithReflection.getHeight(), paint);
 
         return bitmapWithReflection;
     }
 
-    public ReflectionImageProcessor disableForceUseResizeInCenterCrop() {
-        this.forceUseResizeInCenterCrop = false;
-        return this;
+    public float getReflectionScale() {
+        return reflectionScale;
+    }
+
+    public void setReflectionScale(float reflectionScale) {
+        this.reflectionScale = reflectionScale;
+    }
+
+    public int getReflectionSpacing() {
+        return reflectionSpacing;
+    }
+
+    public void setReflectionSpacing(int reflectionSpacing) {
+        this.reflectionSpacing = reflectionSpacing;
     }
 }

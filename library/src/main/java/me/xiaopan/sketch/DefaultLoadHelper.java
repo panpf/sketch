@@ -17,6 +17,7 @@
 package me.xiaopan.sketch;
 
 import android.util.Log;
+import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -25,7 +26,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * LoadHelper
  */
 public class DefaultLoadHelper implements LoadHelper{
-    private static final String NAME = "LoadHelperImpl";
+    private static final String NAME = "DefaultLoadHelper";
 
     // 基本属性
     protected Sketch sketch;
@@ -41,9 +42,10 @@ public class DefaultLoadHelper implements LoadHelper{
     // 加载属性
     protected Resize resize;
     protected boolean decodeGifImage = true;
+    protected boolean forceUseResize;
+    protected boolean lowQualityImage;
     protected MaxSize maxSize;
     protected LoadListener loadListener;
-    protected boolean imagesOfLowQuality;
     protected ImageProcessor imageProcessor;
 
     /**
@@ -99,20 +101,26 @@ public class DefaultLoadHelper implements LoadHelper{
     }
 
     @Override
-    public DefaultLoadHelper resize(Resize resize){
-        this.resize = resize;
-        return this;
-    }
-
-    @Override
     public DefaultLoadHelper resize(int width, int height){
         this.resize = new Resize(width, height);
         return this;
     }
 
     @Override
-    public DefaultLoadHelper imagesOfLowQuality() {
-        this.imagesOfLowQuality = true;
+    public DefaultLoadHelper resize(int width, int height, ScaleType scaleType) {
+        this.resize = new Resize(width, height, scaleType);
+        return this;
+    }
+
+    @Override
+    public DefaultLoadHelper forceUseFixed() {
+        this.forceUseResize = true;
+        return this;
+    }
+
+    @Override
+    public DefaultLoadHelper lowQualityImage() {
+        this.lowQualityImage = true;
         return this;
     }
 
@@ -144,10 +152,11 @@ public class DefaultLoadHelper implements LoadHelper{
         if(this.maxSize == null){
             this.maxSize = options.getMaxSize();
         }
-        if(this.resize == null){
-            this.resize = options.getResize();
+        if(this.resize == null && options.getResize() != null){
+            this.resize = new Resize(options.getResize());
         }
-        this.imagesOfLowQuality = options.isImagesOfLowQuality();
+        this.forceUseResize = options.isForceUseResize();
+        this.lowQualityImage = options.isLowQualityImage();
         if(this.imageProcessor == null){
             this.imageProcessor = options.getImageProcessor();
         }
@@ -199,8 +208,8 @@ public class DefaultLoadHelper implements LoadHelper{
         if(!sketch.getConfiguration().isEnableDiskCache()){
             enableDiskCache = false;
         }
-        if(sketch.getConfiguration().isImagesOfLowQuality()){
-            imagesOfLowQuality = true;
+        if(sketch.getConfiguration().isLowQualityImage()){
+            lowQualityImage = true;
         }
     }
 
@@ -247,7 +256,8 @@ public class DefaultLoadHelper implements LoadHelper{
 
         request.setResize(resize);
         request.setMaxSize(maxSize);
-        request.setImagesOfLowQuality(imagesOfLowQuality);
+        request.setForceUseResize(forceUseResize);
+        request.setLowQualityImage(lowQualityImage);
         request.setLoadListener(loadListener);
         request.setImageProcessor(imageProcessor);
         request.setDecodeGifImage(decodeGifImage);

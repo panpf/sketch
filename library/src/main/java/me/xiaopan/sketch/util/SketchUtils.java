@@ -26,7 +26,7 @@ public class SketchUtils {
      * @param apkFilePath APK文件的位置
      * @return  APK的图标
      */
-    public static Bitmap decodeIconFromApk(Context context, String apkFilePath, boolean imagesOfLowQuality, String logName){
+    public static Bitmap decodeIconFromApk(Context context, String apkFilePath, boolean lowQualityImage, String logName){
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if(packageInfo == null){
@@ -46,7 +46,7 @@ public class SketchUtils {
             }
             return null;
         }
-        return drawableToBitmap(drawable, imagesOfLowQuality);
+        return drawableToBitmap(drawable, lowQualityImage);
     }
 
     /**
@@ -54,7 +54,7 @@ public class SketchUtils {
      * @param drawable drawable
      * @return bitmap
      */
-    public static Bitmap drawableToBitmap(Drawable drawable, boolean imagesOfLowQuality){
+    public static Bitmap drawableToBitmap(Drawable drawable, boolean lowQualityImage){
         if(drawable == null ){
             return null;
         }else if(drawable instanceof BitmapDrawable){
@@ -64,7 +64,7 @@ public class SketchUtils {
                 return null;
             }
 
-            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), imagesOfLowQuality? Bitmap.Config.ARGB_4444: Bitmap.Config.ARGB_8888);
+            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), lowQualityImage? Bitmap.Config.ARGB_4444: Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             drawable.draw(canvas);
             return bitmap;

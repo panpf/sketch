@@ -35,6 +35,18 @@ public interface LoadRequest extends DownloadRequest{
     void setResize(Resize resize);
 
     /**
+     * 是否强制使用resize
+     * @return true：最终返回的图片尺寸一定跟resize一样
+     */
+    boolean isForceUseResize();
+
+    /**
+     * 设置是否强制使用resize
+     * @param forceUseResize true：最终返回的图片尺寸一定跟resize一样
+     */
+    void setForceUseResize(boolean forceUseResize);
+
+    /**
      * 获取最大尺寸，用于读取图片时计算inSampleSize
      */
     MaxSize getMaxSize();
@@ -47,12 +59,12 @@ public interface LoadRequest extends DownloadRequest{
     /**
      * 是否返回低质量的图片
      */
-    boolean isImagesOfLowQuality();
+    boolean isLowQualityImage();
 
     /**
      * 设置是否返回低质量的图片
      */
-    void setImagesOfLowQuality(boolean imagesOfLowQuality);
+    void setLowQualityImage(boolean lowQualityImage);
 
     /**
      * 获取图片处理器

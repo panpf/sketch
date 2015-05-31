@@ -5,11 +5,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 
 import me.xiaopan.sketch.Resize;
+import me.xiaopan.sketch.Sketch;
 
 /**
  * 高斯模糊图片处理器
  */
-public class GaussianBlurImageProcessor extends CutImageProcessor {
+public class GaussianBlurImageProcessor extends DefaultImageProcessor {
     private static final String NAME = "GaussianBlurImageProcessor";
 
     private int radius = 15;
@@ -61,12 +62,15 @@ public class GaussianBlurImageProcessor extends CutImageProcessor {
     }
 
     @Override
-    public Bitmap process(Bitmap bitmap, Resize resize, boolean imagesOfLowQuality) {
+    public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
         // cut handle
-        Bitmap resizeBitmap = super.process(bitmap, resize, imagesOfLowQuality);
+        Bitmap resizeBitmap = super.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
+        if(resizeBitmap == null){
+            return null;
+        }
 
         // blur handle
-        Bitmap blurBitmap= fastGaussianBlur(resizeBitmap, radius, false, imagesOfLowQuality);
+        Bitmap blurBitmap= fastGaussianBlur(resizeBitmap, radius, false, lowQualityImage);
         if(resizeBitmap != bitmap){
             resizeBitmap.recycle();
         }
@@ -87,7 +91,7 @@ public class GaussianBlurImageProcessor extends CutImageProcessor {
      * @param canReuseInBitmap
      * @return
      */
-    public Bitmap fastGaussianBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap, boolean imagesOfLowQuality) {
+    public Bitmap fastGaussianBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap, boolean lowQualityImage) {
         Bitmap bitmap;
         if (canReuseInBitmap) {
             bitmap = sentBitmap;

@@ -24,7 +24,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * DownloadHelper
  */
 public class DefaultDownloadHelper implements DownloadHelper{
-    private static final String NAME = "DownloadHelperImpl";
+    private static final String NAME = "DefaultDownloadHelper";
 
     // 基本属性
     protected Sketch sketch;

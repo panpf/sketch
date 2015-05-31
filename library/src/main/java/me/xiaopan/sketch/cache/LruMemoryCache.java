@@ -27,7 +27,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.LruCache;
 
 /**
- * 使用Lru算法来缓存位图
+ * 使用Lru算法来缓存图片
  */
 public class LruMemoryCache implements MemoryCache {
 	private static final String NAME = "LruMemoryCache";

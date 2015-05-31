@@ -19,6 +19,7 @@ package me.xiaopan.sketch;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
@@ -29,7 +30,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * DisplayHelper
  */
 public class DefaultDisplayHelper implements DisplayHelper{
-    private static final String NAME = "DisplayHelperImpl";
+    private static final String NAME = "DefaultDisplayHelper";
 
     // 基本属性
     protected Sketch sketch;
@@ -45,20 +46,21 @@ public class DefaultDisplayHelper implements DisplayHelper{
     // 加载属性
     protected Resize resize;
     protected boolean decodeGifImage = true;
+    protected boolean forceUseResize;
+    protected boolean lowQualityImage;
     protected MaxSize maxSize;
-    protected boolean imagesOfLowQuality;
     protected ImageProcessor imageProcessor;
 
     // 显示属性
     protected String memoryCacheId;
     protected boolean enableMemoryCache = true;
-    protected SketchImageViewInterface sketchImageViewInterface;
     protected FixedSize fixedSize;
     protected ImageDisplayer imageDisplayer;
+    protected DisplayListener displayListener;
     protected LoadingImageHolder loadingImageHolder;
     protected FailureImageHolder failureImageHolder;
     protected PauseDownloadImageHolder pauseDownloadImageHolder;
-    protected DisplayListener displayListener;
+    protected SketchImageViewInterface sketchImageViewInterface;
 
     protected Context context;
 
@@ -118,7 +120,6 @@ public class DefaultDisplayHelper implements DisplayHelper{
             this.fixedSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageFixedSize(sketchImageViewInterface);
             this.maxSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageMaxSize(sketchImageViewInterface);
 
-            this.sketchImageViewInterface = (SketchImageViewInterface) sketchImageViewInterface;
             this.sketchImageViewInterface.onDisplay();
             options(this.sketchImageViewInterface.getDisplayOptions());
 
@@ -144,7 +145,8 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
         this.resize = displayParams.resize;
         this.maxSize = displayParams.maxSize;
-        this.imagesOfLowQuality = displayParams.imagesOfLowQuality;
+        this.forceUseResize = displayParams.forceUseResize;
+        this.lowQualityImage = displayParams.lowQualityImage;
         this.requestLevel = displayParams.requestLevel;
         this.imageProcessor = displayParams.imageProcessor;
         this.decodeGifImage = displayParams.decodeGifImage;
@@ -159,7 +161,6 @@ public class DefaultDisplayHelper implements DisplayHelper{
         this.pauseDownloadImageHolder = displayParams.pauseDownloadImageHolder;
         this.displayListener = displayParams.displayListener;
 
-        this.sketchImageViewInterface = (SketchImageViewInterface) sketchImageViewInterface;
         this.sketchImageViewInterface.onDisplay();
 
         this.displayListener = this.sketchImageViewInterface.getDisplayListener(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD);
@@ -181,7 +182,8 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
         resize = null;
         maxSize = null;
-        imagesOfLowQuality = false;
+        forceUseResize = false;
+        lowQualityImage = false;
         imageProcessor = null;
         decodeGifImage = true;
 
@@ -214,7 +216,8 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
             displayParams.resize = resize;
             displayParams.maxSize = maxSize;
-            displayParams.imagesOfLowQuality = imagesOfLowQuality;
+            displayParams.forceUseResize = forceUseResize;
+            displayParams.lowQualityImage = lowQualityImage;
             displayParams.imageProcessor = imageProcessor;
             displayParams.decodeGifImage = decodeGifImage;
 
@@ -268,26 +271,32 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public DefaultDisplayHelper resize(Resize resize){
-        this.resize = resize;
-        return this;
-    }
-
-    @Override
     public DefaultDisplayHelper resize(int width, int height){
         this.resize = new Resize(width, height);
         return this;
     }
 
     @Override
-    public DefaultDisplayHelper resizeByImageViewLayoutSize(){
+    public DefaultDisplayHelper resize(int width, int height, ScaleType scaleType) {
+        this.resize = new Resize(width, height, scaleType);
+        return this;
+    }
+
+    @Override
+    public DefaultDisplayHelper resizeByFixedSize(){
         this.resize = sketch.getConfiguration().getImageSizeCalculator().calculateImageResize(sketchImageViewInterface);
         return this;
     }
 
     @Override
-    public DefaultDisplayHelper imagesOfLowQuality() {
-        this.imagesOfLowQuality = true;
+    public DefaultDisplayHelper forceUseResize() {
+        this.forceUseResize = true;
+        return this;
+    }
+
+    @Override
+    public DefaultDisplayHelper lowQualityImage() {
+        this.lowQualityImage = true;
         return this;
     }
 
@@ -378,17 +387,19 @@ public class DefaultDisplayHelper implements DisplayHelper{
             this.maxSize = options.getMaxSize();
         }
         if(this.resize == null){
-            this.resize = options.getResize();
+            if(options.isResizeByFixedSize()){
+                resizeByFixedSize();
+            }else if(options.getResize() != null){
+                this.resize = new Resize(options.getResize());
+            }
         }
-        this.imagesOfLowQuality = options.isImagesOfLowQuality();
-        if(options.isResizeByImageViewLayoutSize()){
-            resizeByImageViewLayoutSize();
-        }
+        this.forceUseResize = options.isForceUseResize();
+        this.lowQualityImage = options.isLowQualityImage();
         if(this.imageProcessor == null){
             this.imageProcessor = options.getImageProcessor();
         }
         if(this.imageDisplayer == null){
-            displayer(options.getImageDisplayer());
+            this.imageDisplayer = options.getImageDisplayer();
         }
         this.decodeGifImage = options.isDecodeGifImage();
         if(this.loadingImageHolder == null){
@@ -423,6 +434,9 @@ public class DefaultDisplayHelper implements DisplayHelper{
      * 处理一下参数
      */
     protected void handleParams(){
+        if(resize != null && resize.getScaleType() == null && sketchImageViewInterface != null){
+            resize.setScaleType(sketchImageViewInterface.getScaleType());
+        }
         if(resize != null && imageProcessor == null){
             imageProcessor = sketch.getConfiguration().getDefaultCutImageProcessor();
         }
@@ -441,8 +455,8 @@ public class DefaultDisplayHelper implements DisplayHelper{
         if(!sketch.getConfiguration().isEnableMemoryCache()){
             enableMemoryCache = false;
         }
-        if(sketch.getConfiguration().isImagesOfLowQuality()){
-            imagesOfLowQuality = true;
+        if(sketch.getConfiguration().isLowQualityImage()){
+            lowQualityImage = true;
         }
     }
 
@@ -508,7 +522,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
         }
 
         // 尝试从内存中寻找缓存图片
-        String memoryCacheId = this.memoryCacheId !=null? this.memoryCacheId : generateMemoryCacheId(uri, maxSize, resize, imagesOfLowQuality, imageProcessor);
+        String memoryCacheId = this.memoryCacheId !=null? this.memoryCacheId : generateMemoryCacheId(uri, maxSize, resize, forceUseResize, lowQualityImage, imageProcessor);
         if(name == null){
             name = memoryCacheId;
         }
@@ -581,7 +595,8 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
         request.setResize(resize);
         request.setMaxSize(maxSize);
-        request.setImagesOfLowQuality(imagesOfLowQuality);
+        request.setForceUseResize(forceUseResize);
+        request.setLowQualityImage(lowQualityImage);
         request.setImageProcessor(imageProcessor);
         request.setDecodeGifImage(decodeGifImage);
 
@@ -606,7 +621,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public String generateMemoryCacheId(String uri, MaxSize maxSize, Resize resize, boolean imagesOfLowQuality, ImageProcessor imageProcessor){
+    public String generateMemoryCacheId(String uri, MaxSize maxSize, Resize resize, boolean forceUseResize, boolean lowQualityImage, ImageProcessor imageProcessor){
         StringBuilder builder = new StringBuilder();
         builder.append(uri);
         if(maxSize != null){
@@ -617,8 +632,13 @@ public class DefaultDisplayHelper implements DisplayHelper{
             builder.append("_");
             resize.appendIdentifier(builder);
         }
-        if(imagesOfLowQuality){
-            builder.append("_LowQuality");
+        if(forceUseResize){
+            builder.append("_");
+            builder.append("forceUseResize");
+        }
+        if(lowQualityImage){
+            builder.append("_");
+            builder.append("lowQualityImage");
         }
         if(imageProcessor != null){
             builder.append("_");

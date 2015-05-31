@@ -24,6 +24,12 @@ public class Resize implements ImageSize{
 
 	private ImageView.ScaleType scaleType = ImageView.ScaleType.CENTER_CROP;
 
+	public Resize(Resize sourceResize){
+		this.width = sourceResize.width;
+		this.height = sourceResize.height;
+		this.scaleType = sourceResize.scaleType;
+	}
+
 	public Resize(int width, int height) {
 		this.width = width;
 		this.height = height;
@@ -36,6 +42,10 @@ public class Resize implements ImageSize{
 
 	public ImageView.ScaleType getScaleType() {
 		return scaleType;
+	}
+
+	public void setScaleType(ImageView.ScaleType scaleType) {
+		this.scaleType = scaleType;
 	}
 
 	@Override

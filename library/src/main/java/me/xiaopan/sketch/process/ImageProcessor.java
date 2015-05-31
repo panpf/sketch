@@ -19,6 +19,7 @@ package me.xiaopan.sketch.process;
 import android.graphics.Bitmap;
 
 import me.xiaopan.sketch.Resize;
+import me.xiaopan.sketch.Sketch;
 
 /**
  * 图片处理器，你可以是实现此接口，将你的图片处理成你想要的效果
@@ -26,12 +27,14 @@ import me.xiaopan.sketch.Resize;
 public interface ImageProcessor {
 	/**
 	 * 处理
+	 * @param sketch Sketch
 	 * @param bitmap 要被处理的图片
 	 * @param resize 新的尺寸
-     * @param imagesOfLowQuality 需要一个低质量的新图片
+	 * @param forceUseResize 是否强制使用resize
+     * @param lowQualityImage 需要一个低质量的新图片
 	 * @return 新的图片
 	 */
-	Bitmap process(Bitmap bitmap, Resize resize, boolean imagesOfLowQuality);
+	Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage);
 
     /**
      * 获取标识符

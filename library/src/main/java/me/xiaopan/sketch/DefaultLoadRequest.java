@@ -34,7 +34,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
     private static final int WHAT_CALLBACK_FAILED = 203;
     private static final int WHAT_CALLBACK_CANCELED = 204;
     private static final int WHAT_CALLBACK_PROGRESS = 205;
-    private static final String NAME = "LoadRequestImpl";
+    private static final String NAME = "DefaultLoadRequest";
 
     // Base fields
     private Sketch sketch;  // Sketch
@@ -51,7 +51,8 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
     // Load fields
     private Resize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸来裁剪图片
     private boolean decodeGifImage = true;  // 是否解码GIF图片
-    private boolean imagesOfLowQuality;   // 是否返回低质量的图片
+    private boolean forceUseResize; // 是否强制使用resize
+    private boolean lowQualityImage;   // 是否返回低质量的图片
     private MaxSize maxSize;	// 最大尺寸，用于读取图片时计算inSampleSize
     private LoadListener loadListener;	// 监听器
     private ImageProcessor imageProcessor;	// 图片处理器
@@ -137,6 +138,16 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
     }
 
     @Override
+    public boolean isForceUseResize() {
+        return forceUseResize;
+    }
+
+    @Override
+    public void setForceUseResize(boolean forceUseResize) {
+        this.forceUseResize = forceUseResize;
+    }
+
+    @Override
     public MaxSize getMaxSize() {
         return maxSize;
     }
@@ -147,13 +158,13 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
     }
 
     @Override
-    public boolean isImagesOfLowQuality() {
-        return imagesOfLowQuality;
+    public boolean isLowQualityImage() {
+        return lowQualityImage;
     }
 
     @Override
-    public void setImagesOfLowQuality(boolean imagesOfLowQuality) {
-        this.imagesOfLowQuality = imagesOfLowQuality;
+    public void setLowQualityImage(boolean lowQualityImage) {
+        this.lowQualityImage = lowQualityImage;
     }
 
     @Override
@@ -449,7 +460,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
             if(!bitmap.isRecycled()){
                 ImageProcessor imageProcessor = getImageProcessor();
                 if(imageProcessor != null){
-                    Bitmap newBitmap = imageProcessor.process(bitmap, getResize(), imagesOfLowQuality);
+                    Bitmap newBitmap = imageProcessor.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
                     if(newBitmap != null && newBitmap != bitmap && Sketch.isDebugMode()){
                         Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "process after", " - ", "newBitmap", " - ", RecycleBitmapDrawable.getInfo(newBitmap, mimeType), " - ", "recycled old bitmap", " - ", name));
                     }
@@ -518,7 +529,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
             return apkIconCacheFile;
         }
 
-        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(sketch.getConfiguration().getContext(), uri, imagesOfLowQuality, NAME);
+        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(sketch.getConfiguration().getContext(), uri, lowQualityImage, NAME);
         if(iconBitmap != null && !iconBitmap.isRecycled()){
             apkIconCacheFile = sketch.getConfiguration().getDiskCache().saveBitmap(iconBitmap, uri);
             if(apkIconCacheFile != null){

@@ -19,8 +19,8 @@ public enum ImageFormat {
         this.lowQualityConfig = lowQualityConfig;
     }
 
-    public Bitmap.Config getConfig(boolean imagesOfLowQuality) {
-        return imagesOfLowQuality?lowQualityConfig:bestConfig;
+    public Bitmap.Config getConfig(boolean lowQualityImage) {
+        return lowQualityImage?lowQualityConfig:bestConfig;
     }
 
     public String getMimeType() {

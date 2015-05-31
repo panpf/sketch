@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch;
 
+import android.widget.ImageView.ScaleType;
+
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.process.ImageProcessor;
 
@@ -86,13 +88,6 @@ public interface DisplayHelper {
     DisplayHelper maxSize(int width, int height);
 
     /**
-     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
-     * @param resize 新的尺寸
-     * @return DisplayHelper
-     */
-    DisplayHelper resize(Resize resize);
-
-    /**
      * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
      * @param width 宽
      * @param height 高
@@ -101,15 +96,30 @@ public interface DisplayHelper {
     DisplayHelper resize(int width, int height);
 
     /**
+     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
+     * @param width 宽
+     * @param height 高
+     * @param scaleType
+     * @return LoadHelper
+     */
+    DisplayHelper resize(int width, int height, ScaleType scaleType);
+
+    /**
      * 根据ImageView的LayoutSize裁剪图片
      */
-    DisplayHelper resizeByImageViewLayoutSize();
+    DisplayHelper resizeByFixedSize();
+
+    /**
+     * 强制使用resize，最终返回的图片尺寸一定跟resize一样
+     * @return DisplayHelper
+     */
+    DisplayHelper forceUseResize();
 
     /**
      * 返回低质量的图片
      * @return LoadHelper
      */
-    DisplayHelper imagesOfLowQuality();
+    DisplayHelper lowQualityImage();
 
     /**
      * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
@@ -209,5 +219,5 @@ public interface DisplayHelper {
     /**
      * 生成内存缓存ID
      */
-    String generateMemoryCacheId(String uri, MaxSize maxSize, Resize resize, boolean imagesOfLowQuality, ImageProcessor imageProcessor);
+    String generateMemoryCacheId(String uri, MaxSize maxSize, Resize resize, boolean forceUseResize, boolean lowQualityImage, ImageProcessor imageProcessor);
 }

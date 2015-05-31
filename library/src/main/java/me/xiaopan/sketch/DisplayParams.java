@@ -32,8 +32,9 @@ public class DisplayParams {
 
     // 加载属性
     public Resize resize;
+    public boolean forceUseResize;
     public boolean decodeGifImage = true;
-    public boolean imagesOfLowQuality;
+    public boolean lowQualityImage;
     public MaxSize maxSize;
     public ImageProcessor imageProcessor;
 

@@ -642,7 +642,9 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      */
     public void setImageShape(ImageShape imageShape) {
         this.imageShape = imageShape;
-        initImageShapePath();
+        if(getWidth() != 0){
+            initImageShapePath();
+        }
     }
 
     /**
@@ -659,7 +661,9 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      */
     public void setRoundedRadius(int radius) {
         this.roundedRadius = radius;
-        initImageShapePath();
+        if(getWidth() != 0){
+            initImageShapePath();
+        }
     }
 
     private static boolean isGifImage(Drawable newDrawable){

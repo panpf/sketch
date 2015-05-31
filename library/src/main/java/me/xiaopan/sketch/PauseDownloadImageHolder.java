@@ -26,18 +26,6 @@ public class PauseDownloadImageHolder extends LoadingImageHolder{
         super(resId);
     }
 
-    public PauseDownloadImageHolder(int resId, ImageProcessor imageProcessor) {
-        super(resId, imageProcessor);
-    }
-
-    public PauseDownloadImageHolder(int resId, ImageProcessor imageProcessor, Resize resize) {
-        super(resId, imageProcessor, resize);
-    }
-
-    public PauseDownloadImageHolder(int resId, ImageProcessor imageProcessor, Resize resize, boolean imagesOfLowQuality) {
-        super(resId, imageProcessor, resize, imagesOfLowQuality);
-    }
-
     @Override
     public synchronized BindFixedRecycleBitmapDrawable getBindFixedRecycleBitmapDrawable(Context context, FixedSize fixedSize, DisplayRequest displayRequest) {
         return super.getBindFixedRecycleBitmapDrawable(context, fixedSize, displayRequest);
@@ -46,5 +34,29 @@ public class PauseDownloadImageHolder extends LoadingImageHolder{
     @Override
     public synchronized FixedRecycleBitmapDrawable getFixedRecycleBitmapDrawable(Context context, FixedSize fixedSize) {
         return super.getFixedRecycleBitmapDrawable(context, fixedSize);
+    }
+
+    @Override
+    public PauseDownloadImageHolder setForceUseResize(boolean forceUseResize) {
+        super.setForceUseResize(forceUseResize);
+        return this;
+    }
+
+    @Override
+    public PauseDownloadImageHolder setImageProcessor(ImageProcessor imageProcessor) {
+        super.setImageProcessor(imageProcessor);
+        return this;
+    }
+
+    @Override
+    public PauseDownloadImageHolder setLowQualityImage(boolean lowQualityImage) {
+        super.setLowQualityImage(lowQualityImage);
+        return this;
+    }
+
+    @Override
+    public PauseDownloadImageHolder setResize(Resize resize) {
+        super.setResize(resize);
+        return this;
     }
 }

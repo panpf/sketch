@@ -34,7 +34,7 @@ import me.xiaopan.sketch.download.HttpUrlConnectionImageDownloader;
 import me.xiaopan.sketch.download.ImageDownloader;
 import me.xiaopan.sketch.execute.DefaultRequestExecutor;
 import me.xiaopan.sketch.execute.RequestExecutor;
-import me.xiaopan.sketch.process.CutImageProcessor;
+import me.xiaopan.sketch.process.DefaultImageProcessor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.MobileNetworkPauseDownloadManager;
 
@@ -53,12 +53,13 @@ public class Configuration {
     private RequestFactory requestFactory;  // 请求工厂
     private ImageDownloader imageDownloader;	//图片下载器
     private RequestExecutor requestExecutor;	//请求执行器
+    private ResizeCalculator resizeCalculator;  // resize计算器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
 
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean pauseDownload;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean decodeGifImage = true; // 是否解码GIF图
-    private boolean imagesOfLowQuality; // 是否返回低质量的图片
+    private boolean lowQualityImage; // 是否返回低质量的图片
     private boolean enableMemoryCache = true;
     private boolean enableDiskCache = true;
     private MobileNetworkPauseDownloadManager mobileNetworkPauseDownloadManager;
@@ -72,9 +73,10 @@ public class Configuration {
         this.requestFactory = new DefaultRequestFactory();
         this.imageDownloader = new HttpUrlConnectionImageDownloader();
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
+        this.resizeCalculator = new DefaultResizeCalculator();
         this.imageSizeCalculator = new DefaultImageSizeCalculator();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
-        this.defaultCutImageProcessor = new CutImageProcessor();
+        this.defaultCutImageProcessor = new DefaultImageProcessor();
         this.placeholderImageMemoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory()/16));
         this.handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
             @Override
@@ -413,6 +415,33 @@ public class Configuration {
     }
 
     /**
+     * 获取Resize计算器
+     * @return ResizeCalculator
+     */
+    public ResizeCalculator getResizeCalculator() {
+        return resizeCalculator;
+    }
+
+    /**
+     * 设置Resize计算器
+     * @param resizeCalculator ResizeCalculator
+     */
+    public Configuration setResizeCalculator(ResizeCalculator resizeCalculator) {
+        if(resizeCalculator != null){
+            this.resizeCalculator = resizeCalculator;
+            if(Sketch.isDebugMode()){
+                StringBuilder builder = new StringBuilder();
+                builder.append(NAME).append(": ").append("set").append(" - ");
+                builder.append("resizeCalculator").append(" (");
+                resizeCalculator.appendIdentifier(builder);
+                builder.append(")");
+                Log.i(Sketch.TAG, builder.toString());
+            }
+        }
+        return this;
+    }
+
+    /**
      * 设置是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
      * @param pauseLoad 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
      */
@@ -515,22 +544,22 @@ public class Configuration {
      * 是否返回低质量的图片
      * @return true: 是
      */
-    public boolean isImagesOfLowQuality() {
-        return imagesOfLowQuality;
+    public boolean isLowQualityImage() {
+        return lowQualityImage;
     }
 
     /**
      * 设置是否返回低质量的图片
-     * @param imagesOfLowQuality true:是
+     * @param lowQualityImage true:是
      */
-    public Configuration setImagesOfLowQuality(boolean imagesOfLowQuality) {
-        if(this.imagesOfLowQuality != imagesOfLowQuality){
-            this.imagesOfLowQuality = imagesOfLowQuality;
+    public Configuration setLowQualityImage(boolean lowQualityImage) {
+        if(this.lowQualityImage != lowQualityImage){
+            this.lowQualityImage = lowQualityImage;
             if(Sketch.isDebugMode()){
                 StringBuilder builder = new StringBuilder();
                 builder.append(NAME).append(": ").append("set").append(" - ");
-                builder.append("imagesOfLowQuality").append(" (");
-                builder.append(imagesOfLowQuality);
+                builder.append("lowQualityImage").append(" (");
+                builder.append(lowQualityImage);
                 builder.append(")");
                 Log.i(Sketch.TAG, builder.toString());
             }
@@ -702,9 +731,9 @@ public class Configuration {
         builder.append(")");
 
         builder.append("; ");
-        builder.append("imagesOfLowQuality");
+        builder.append("lowQualityImage");
         builder.append(" (");
-        builder.append(imagesOfLowQuality);
+        builder.append(lowQualityImage);
         builder.append(")");
 
         builder.append("; ");
