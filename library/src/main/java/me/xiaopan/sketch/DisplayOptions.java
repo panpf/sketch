@@ -23,7 +23,7 @@ import me.xiaopan.sketch.process.ImageProcessor;
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
-    private boolean enableMemoryCache = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+    private boolean cacheInMemory = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     private ImageDisplayer imageDisplayer;	// 图片显示器
     private LoadingImageHolder loadingImageHolder;	//当正在加载时显示的图片
     private FailureImageHolder failureImageHolder;	//当失败时显示的图片
@@ -40,20 +40,20 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 是否开启了内存缓存
-     * @return 是否开启了内存缓存
+     * 是否将图片缓存在内存中
+     * @return 是否将图片缓存在内存中（默认是）
      */
-    public boolean isEnableMemoryCache() {
-        return enableMemoryCache;
+    public boolean isCacheInMemory() {
+        return cacheInMemory;
     }
 
     /**
-     * 设置是否开启内存缓存
-     * @param isEnableMemoryCache 是否开启内存缓存
+     * 设置是否将图片缓存在内存中
+     * @param cacheInMemory 是否将图片缓存在内存中（默认是）
      * @return DisplayOptions
      */
-    public DisplayOptions setEnableMemoryCache(boolean isEnableMemoryCache) {
-        this.enableMemoryCache = isEnableMemoryCache;
+    public DisplayOptions setCacheInMemory(boolean cacheInMemory) {
+        this.cacheInMemory = cacheInMemory;
         return this;
     }
 
@@ -183,8 +183,8 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setEnableDiskCache(boolean isEnableDiskCache) {
-        super.setEnableDiskCache(isEnableDiskCache);
+    public DisplayOptions setCacheInDisk(boolean cacheInDisk) {
+        super.setCacheInDisk(cacheInDisk);
         return this;
     }
 
@@ -239,9 +239,9 @@ public class DisplayOptions extends LoadOptions {
     }
 
     public void copyOf(DisplayOptions displayOptions){
+        this.cacheInMemory = displayOptions.cacheInMemory;
         this.imageDisplayer = displayOptions.imageDisplayer;
         this.resizeByFixedSize = displayOptions.resizeByFixedSize;
-        this.enableMemoryCache = displayOptions.enableMemoryCache;
         this.loadingImageHolder = displayOptions.loadingImageHolder;
         this.failureImageHolder = displayOptions.failureImageHolder;
         this.pauseDownloadImageHolder = displayOptions.pauseDownloadImageHolder;
@@ -252,7 +252,7 @@ public class DisplayOptions extends LoadOptions {
         super.setImageProcessor(displayOptions.getImageProcessor());
         super.setDecodeGifImage(displayOptions.isDecodeGifImage());
 
-        super.setEnableDiskCache(displayOptions.isEnableDiskCache());
+        super.setCacheInDisk(displayOptions.isCacheInDisk());
         super.setRequestLevel(displayOptions.getRequestLevel());
     }
 }

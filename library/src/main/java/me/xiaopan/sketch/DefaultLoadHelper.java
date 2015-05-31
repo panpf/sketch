@@ -36,7 +36,7 @@ public class DefaultLoadHelper implements LoadHelper{
     protected RequestLevelFrom requestLevelFrom;
 
     // 下载属性
-    protected boolean enableDiskCache = true;
+    protected boolean cacheInDisk = true;
     protected ProgressListener progressListener;
 
     // 加载属性
@@ -78,7 +78,7 @@ public class DefaultLoadHelper implements LoadHelper{
 
     @Override
     public DefaultLoadHelper disableDiskCache() {
-        this.enableDiskCache = false;
+        this.cacheInDisk = false;
         return this;
     }
 
@@ -148,7 +148,7 @@ public class DefaultLoadHelper implements LoadHelper{
             return this;
         }
 
-        this.enableDiskCache = options.isEnableDiskCache();
+        this.cacheInDisk = options.isCacheInDisk();
         if(this.maxSize == null){
             this.maxSize = options.getMaxSize();
         }
@@ -205,8 +205,8 @@ public class DefaultLoadHelper implements LoadHelper{
         if(!sketch.getConfiguration().isDecodeGifImage()){
             decodeGifImage = false;
         }
-        if(!sketch.getConfiguration().isEnableDiskCache()){
-            enableDiskCache = false;
+        if(!sketch.getConfiguration().isCacheInDisk()){
+            cacheInDisk = false;
         }
         if(sketch.getConfiguration().isLowQualityImage()){
             lowQualityImage = true;
@@ -251,7 +251,7 @@ public class DefaultLoadHelper implements LoadHelper{
         request.setRequestLevel(requestLevel);
         request.setRequestLevelFrom(requestLevelFrom);
 
-        request.setEnableDiskCache(enableDiskCache);
+        request.setCacheInDisk(cacheInDisk);
         request.setProgressListener(progressListener);
 
         request.setResize(resize);

@@ -27,7 +27,7 @@ public class DisplayParams {
     public RequestLevelFrom requestLevelFrom;
 
     // 下载属性
-    public boolean enableDiskCache = true;
+    public boolean cacheInDisk = true;
     public ProgressListener progressListener;
 
     // 加载属性
@@ -40,7 +40,7 @@ public class DisplayParams {
 
     // 显示属性
     public String memoryCacheId;
-    public boolean enableMemoryCache = true;
+    public boolean cacheInMemory = true;
     public FixedSize fixedSize;
     public LoadingImageHolder loadingImageHolder;
     public FailureImageHolder loadFailImageHolder;

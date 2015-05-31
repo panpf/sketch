@@ -37,8 +37,8 @@ public class LoadOptions extends DownloadOptions{
     }
 
     @Override
-    public LoadOptions setEnableDiskCache(boolean isEnableDiskCache) {
-        super.setEnableDiskCache(isEnableDiskCache);
+    public LoadOptions setCacheInDisk(boolean cacheInDisk) {
+        super.setCacheInDisk(cacheInDisk);
         return this;
     }
 
@@ -183,7 +183,7 @@ public class LoadOptions extends DownloadOptions{
         this.decodeGifImage = loadOptions.isDecodeGifImage();
         this.forceUseResize = loadOptions.isForceUseResize();
 
-        super.setEnableDiskCache(loadOptions.isEnableDiskCache());
+        super.setCacheInDisk(loadOptions.isCacheInDisk());
         super.setRequestLevel(loadOptions.getRequestLevel());
     }
 }

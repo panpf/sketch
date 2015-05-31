@@ -49,7 +49,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
     private RequestLevelFrom requestLevelFrom;
 
     // Download fields
-    private boolean enableDiskCache = true;	// 是否开启磁盘缓存
+    private boolean cacheInDisk = true;	// 是否开启磁盘缓存
     private ProgressListener progressListener;  // 下载进度监听器
 
     // Load fields
@@ -62,7 +62,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
 
     // Display fields
     private String memoryCacheId;	// 内存缓存ID
-    private boolean enableMemoryCache = true;	// 是否开启内存缓存
+    private boolean cacheInMemory = true;	// 是否开启内存缓存
     private FixedSize fixedSize;    // 固定尺寸
     private FailureImageHolder failureImageHolder;	// 当失败时显示的图片
     private PauseDownloadImageHolder pauseDownloadImageHolder;	// 当暂停下载时显示的图片
@@ -129,13 +129,13 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
 
     /****************************************** Download methods ******************************************/
     @Override
-    public void setEnableDiskCache(boolean enableDiskCache) {
-        this.enableDiskCache = enableDiskCache;
+    public void setCacheInDisk(boolean cacheInDisk) {
+        this.cacheInDisk = cacheInDisk;
     }
 
     @Override
-    public boolean isEnableDiskCache() {
-        return enableDiskCache;
+    public boolean isCacheInDisk() {
+        return cacheInDisk;
     }
 
     @Override
@@ -201,8 +201,8 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
     }
 
     @Override
-    public void setEnableMemoryCache(boolean enableMemoryCache) {
-        this.enableMemoryCache = enableMemoryCache;
+    public void setCacheInMemory(boolean cacheInMemory) {
+        this.cacheInMemory = cacheInMemory;
     }
 
     @Override
@@ -403,7 +403,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
         if(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS){
-            File diskCacheFile = enableDiskCache? sketch.getConfiguration().getDiskCache().getCacheFile(uri):null;
+            File diskCacheFile = cacheInDisk ? sketch.getConfiguration().getDiskCache().getCacheFile(uri):null;
             if(diskCacheFile != null && diskCacheFile.exists()){
                 this.cacheFile = diskCacheFile;
                 this.imageFrom = ImageFrom.DISK_CACHE;
@@ -487,7 +487,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
         }
 
         // 检查是否已经有了
-        if(enableMemoryCache){
+        if(cacheInMemory){
             Drawable cacheDrawable = sketch.getConfiguration().getMemoryCache().get(memoryCacheId);
             if(cacheDrawable != null){
                 RecycleDrawableInterface recycleDrawable = (RecycleDrawableInterface) cacheDrawable;
@@ -577,7 +577,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
                 if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
                     bitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
                 }
-                if(enableMemoryCache && memoryCacheId != null){
+                if(cacheInMemory && memoryCacheId != null){
                     sketch.getConfiguration().getMemoryCache().put(memoryCacheId, bitmapDrawable);
                 }
                 bitmapDrawable.setMimeType(mimeType);
@@ -597,7 +597,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
             }
 
             if(!gifDrawable.isRecycled()){
-                if(enableMemoryCache && memoryCacheId != null){
+                if(cacheInMemory && memoryCacheId != null){
                     sketch.getConfiguration().getMemoryCache().put(memoryCacheId, gifDrawable);
                 }
                 this.resultDrawable = gifDrawable;

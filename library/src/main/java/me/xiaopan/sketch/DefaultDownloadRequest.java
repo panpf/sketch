@@ -42,7 +42,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable{
     private RequestLevelFrom requestLevelFrom; // 请求Level的来源
 
     // Download fields
-    private boolean enableDiskCache = true;	// 是否开启磁盘缓存
+    private boolean cacheInDisk = true;	// 是否开启磁盘缓存
     private ProgressListener progressListener;  // 下载进度监听器
     private DownloadListener downloadListener;  // 下载监听器
 
@@ -98,13 +98,13 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable{
 
     /****************************************** Download methods ******************************************/
     @Override
-    public void setEnableDiskCache(boolean enableDiskCache) {
-        this.enableDiskCache = enableDiskCache;
+    public void setCacheInDisk(boolean cacheInDisk) {
+        this.cacheInDisk = cacheInDisk;
     }
 
     @Override
-    public boolean isEnableDiskCache() {
-        return enableDiskCache;
+    public boolean isCacheInDisk() {
+        return cacheInDisk;
     }
 
     @Override
@@ -246,7 +246,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable{
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
         if(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS){
-            File diskCacheFile = enableDiskCache? sketch.getConfiguration().getDiskCache().getCacheFile(uri):null;
+            File diskCacheFile = cacheInDisk ? sketch.getConfiguration().getDiskCache().getCacheFile(uri):null;
             if(diskCacheFile != null && diskCacheFile.exists()){
                 if(Sketch.isDebugMode()){
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));

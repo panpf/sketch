@@ -40,7 +40,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
     protected RequestLevelFrom requestLevelFrom;
 
     // 下载属性
-    protected boolean enableDiskCache = true;
+    protected boolean cacheInDisk = true;
     protected ProgressListener progressListener;
 
     // 加载属性
@@ -53,7 +53,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
     // 显示属性
     protected String memoryCacheId;
-    protected boolean enableMemoryCache = true;
+    protected boolean cacheInMemory = true;
     protected FixedSize fixedSize;
     protected ImageDisplayer imageDisplayer;
     protected DisplayListener displayListener;
@@ -140,7 +140,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
         this.requestLevel = displayParams.requestLevel;
         this.requestLevelFrom = displayParams.requestLevelFrom;
 
-        this.enableDiskCache = displayParams.enableDiskCache;
+        this.cacheInDisk = displayParams.cacheInDisk;
         this.progressListener = displayParams.progressListener;
 
         this.resize = displayParams.resize;
@@ -154,7 +154,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
         this.sketchImageViewInterface = sketchImageViewInterface;
         this.fixedSize = displayParams.fixedSize;
         this.memoryCacheId = displayParams.memoryCacheId;
-        this.enableMemoryCache = displayParams.enableMemoryCache;
+        this.cacheInMemory = displayParams.cacheInMemory;
         this.imageDisplayer = displayParams.imageDisplayer;
         this.loadingImageHolder = displayParams.loadingImageHolder;
         this.failureImageHolder = displayParams.loadFailImageHolder;
@@ -177,7 +177,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
         requestLevel = RequestLevel.NET;
         requestLevelFrom = null;
 
-        enableDiskCache = true;
+        cacheInDisk = true;
         progressListener = null;
 
         resize = null;
@@ -189,7 +189,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
         memoryCacheId = null;
         fixedSize = null;
-        enableMemoryCache = true;
+        cacheInMemory = true;
         sketchImageViewInterface = null;
         imageDisplayer = null;
         loadingImageHolder = null;
@@ -211,7 +211,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
             displayParams.requestLevel = requestLevel;
             displayParams.requestLevelFrom = requestLevelFrom;
 
-            displayParams.enableDiskCache = enableDiskCache;
+            displayParams.cacheInDisk = cacheInDisk;
             displayParams.progressListener = progressListener;
 
             displayParams.resize = resize;
@@ -223,7 +223,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
             displayParams.memoryCacheId = memoryCacheId;
             displayParams.fixedSize = fixedSize;
-            displayParams.enableMemoryCache = enableMemoryCache;
+            displayParams.cacheInMemory = cacheInMemory;
             displayParams.imageDisplayer = imageDisplayer;
             displayParams.loadingImageHolder = loadingImageHolder;
             displayParams.loadFailImageHolder = failureImageHolder;
@@ -248,7 +248,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
     @Override
     public DefaultDisplayHelper disableDiskCache() {
-        this.enableDiskCache = false;
+        this.cacheInDisk = false;
         return this;
     }
 
@@ -308,7 +308,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
     @Override
     public DefaultDisplayHelper disableMemoryCache() {
-        this.enableMemoryCache = false;
+        this.cacheInMemory = false;
         return this;
     }
 
@@ -381,8 +381,8 @@ public class DefaultDisplayHelper implements DisplayHelper{
             return this;
         }
 
-        this.enableDiskCache = options.isEnableDiskCache();
-        this.enableMemoryCache = options.isEnableMemoryCache();
+        this.cacheInDisk = options.isCacheInDisk();
+        this.cacheInMemory = options.isCacheInMemory();
         if(this.maxSize == null || (options.getMaxSize() != null && sketch.getConfiguration().getImageSizeCalculator().compareMaxSize(options.getMaxSize(), this.maxSize) < 0)){
             this.maxSize = options.getMaxSize();
         }
@@ -449,11 +449,11 @@ public class DefaultDisplayHelper implements DisplayHelper{
         if(!sketch.getConfiguration().isDecodeGifImage()){
             decodeGifImage = false;
         }
-        if(!sketch.getConfiguration().isEnableDiskCache()){
-            enableDiskCache = false;
+        if(!sketch.getConfiguration().isCacheInDisk()){
+            cacheInDisk = false;
         }
-        if(!sketch.getConfiguration().isEnableMemoryCache()){
-            enableMemoryCache = false;
+        if(!sketch.getConfiguration().isCacheInMemory()){
+            cacheInMemory = false;
         }
         if(sketch.getConfiguration().isLowQualityImage()){
             lowQualityImage = true;
@@ -526,7 +526,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
         if(name == null){
             name = memoryCacheId;
         }
-        if(enableMemoryCache){
+        if(cacheInMemory){
             Drawable cacheDrawable = sketch.getConfiguration().getMemoryCache().get(memoryCacheId);
             if(cacheDrawable != null){
                 RecycleDrawableInterface recycleDrawable = (RecycleDrawableInterface) cacheDrawable;
@@ -590,7 +590,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
         request.setRequestLevel(requestLevel);
         request.setRequestLevelFrom(requestLevelFrom);
 
-        request.setEnableDiskCache(enableDiskCache);
+        request.setCacheInDisk(cacheInDisk);
         request.setProgressListener(progressListener);
 
         request.setResize(resize);
@@ -603,7 +603,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
         request.setFixedSize(fixedSize);
         request.setImageDisplayer(imageDisplayer);
         request.setDisplayListener(displayListener);
-        request.setEnableMemoryCache(enableMemoryCache);
+        request.setCacheInMemory(cacheInMemory);
         request.setFailureImageHolder(failureImageHolder);
         request.setPauseDownloadImageHolder(pauseDownloadImageHolder);
 

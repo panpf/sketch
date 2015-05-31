@@ -57,11 +57,11 @@ public class Configuration {
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
 
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+    private boolean cacheInDisk = true;
+    private boolean cacheInMemory = true;
     private boolean pauseDownload;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean decodeGifImage = true; // 是否解码GIF图
     private boolean lowQualityImage; // 是否返回低质量的图片
-    private boolean enableMemoryCache = true;
-    private boolean enableDiskCache = true;
     private MobileNetworkPauseDownloadManager mobileNetworkPauseDownloadManager;
 
     public Configuration(Context context){
@@ -568,25 +568,25 @@ public class Configuration {
     }
 
     /**
-     * 是否开启了磁盘缓存
-     * @return true：是
+     * 是否将图片缓存在本地
+     * @return 是否将图片缓存在本地（默认是）
      */
-    public boolean isEnableDiskCache() {
-        return enableDiskCache;
+    public boolean isCacheInDisk() {
+        return cacheInDisk;
     }
 
     /**
-     * 设置是否开启磁盘缓存
-     * @param enableDiskCache true：是
+     * 设置是否将图片缓存在本地
+     * @param cacheInDisk 是否将图片缓存在本地（默认是）
      */
-    public Configuration setEnableDiskCache(boolean enableDiskCache) {
-        if(this.enableDiskCache != enableDiskCache) {
-            this.enableDiskCache = enableDiskCache;
+    public Configuration setCacheInDisk(boolean cacheInDisk) {
+        if(this.cacheInDisk != cacheInDisk) {
+            this.cacheInDisk = cacheInDisk;
             if (Sketch.isDebugMode()) {
                 StringBuilder builder = new StringBuilder();
                 builder.append(NAME).append(": ").append("set").append(" - ");
-                builder.append("enableDiskCache").append(" (");
-                builder.append(enableDiskCache);
+                builder.append("cacheInDisk").append(" (");
+                builder.append(cacheInDisk);
                 builder.append(")");
                 Log.i(Sketch.TAG, builder.toString());
             }
@@ -595,25 +595,25 @@ public class Configuration {
     }
 
     /**
-     * 是否开启了内存缓存
-     * @return true：是
+     * 是否将图片缓存在内存中
+     * @return 是否将图片缓存在内存中（默认是）
      */
-    public boolean isEnableMemoryCache() {
-        return enableMemoryCache;
+    public boolean isCacheInMemory() {
+        return cacheInMemory;
     }
 
     /**
-     * 设置是否开启内存缓存
-     * @param enableMemoryCache true：是
+     * 设置是否将图片缓存在内存中
+     * @param cacheInMemory 是否将图片缓存在内存中（默认是）
      */
-    public Configuration setEnableMemoryCache(boolean enableMemoryCache) {
-        if(this.enableMemoryCache != enableMemoryCache) {
-            this.enableMemoryCache = enableMemoryCache;
+    public Configuration setCacheInMemory(boolean cacheInMemory) {
+        if(this.cacheInMemory != cacheInMemory) {
+            this.cacheInMemory = cacheInMemory;
             if (Sketch.isDebugMode()) {
                 StringBuilder builder = new StringBuilder();
                 builder.append(NAME).append(": ").append("set").append(" - ");
-                builder.append("enableMemoryCache").append(" (");
-                builder.append(enableMemoryCache);
+                builder.append("cacheInMemory").append(" (");
+                builder.append(cacheInMemory);
                 builder.append(")");
                 Log.i(Sketch.TAG, builder.toString());
             }
@@ -712,6 +712,14 @@ public class Configuration {
             builder.append(")");
         }
 
+        if(resizeCalculator != null){
+            if(builder.length() > 0) builder.append("; ");
+            builder.append("resizeCalculator");
+            builder.append(" (");
+            resizeCalculator.appendIdentifier(builder);
+            builder.append(")");
+        }
+
         if(builder.length() > 0) builder.append("; ");
         builder.append("pauseLoad");
         builder.append(" (");
@@ -737,15 +745,15 @@ public class Configuration {
         builder.append(")");
 
         builder.append("; ");
-        builder.append("enableMemoryCache");
+        builder.append("cacheInMemory");
         builder.append(" (");
-        builder.append(enableMemoryCache);
+        builder.append(cacheInMemory);
         builder.append(")");
 
         builder.append("; ");
-        builder.append("enableDiskCache");
+        builder.append("cacheInDisk");
         builder.append(" (");
-        builder.append(enableDiskCache);
+        builder.append(cacheInDisk);
         builder.append(")");
 
         return builder.toString();

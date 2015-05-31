@@ -34,7 +34,7 @@ public class DefaultDownloadHelper implements DownloadHelper{
     protected RequestLevelFrom requestLevelFrom;
 
     // 下载属性
-    protected boolean enableDiskCache = true;
+    protected boolean cacheInDisk = true;
     protected ProgressListener progressListener;
     protected DownloadListener downloadListener;
 
@@ -69,7 +69,7 @@ public class DefaultDownloadHelper implements DownloadHelper{
 
     @Override
     public DefaultDownloadHelper disableDiskCache() {
-        this.enableDiskCache = false;
+        this.cacheInDisk = false;
         return this;
     }
 
@@ -85,7 +85,7 @@ public class DefaultDownloadHelper implements DownloadHelper{
             return this;
         }
 
-        this.enableDiskCache = options.isEnableDiskCache();
+        this.cacheInDisk = options.isCacheInDisk();
         RequestLevel optionRequestLevel = options.getRequestLevel();
         if(requestLevel != null && optionRequestLevel != null){
             if(optionRequestLevel.getLevel() < requestLevel.getLevel()){
@@ -118,8 +118,8 @@ public class DefaultDownloadHelper implements DownloadHelper{
      * 处理一下参数
      */
     protected void handleParams(){
-        if(!sketch.getConfiguration().isEnableDiskCache()){
-            enableDiskCache = false;
+        if(!sketch.getConfiguration().isCacheInDisk()){
+            cacheInDisk = false;
         }
     }
 
@@ -175,7 +175,7 @@ public class DefaultDownloadHelper implements DownloadHelper{
         request.setRequestLevel(requestLevel);
         request.setRequestLevelFrom(requestLevelFrom);
 
-        request.setEnableDiskCache(enableDiskCache);
+        request.setCacheInDisk(cacheInDisk);
         request.setRequestLevel(requestLevel);
 
         request.setDownloadListener(downloadListener);

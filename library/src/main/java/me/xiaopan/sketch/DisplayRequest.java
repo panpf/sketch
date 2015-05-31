@@ -31,10 +31,10 @@ public interface DisplayRequest extends LoadRequest{
 	String getMemoryCacheId();
 
     /**
-     * 设置是否开启内存缓存（默认开启）
-     * @param enableMemoryCache 是否开启内存缓存
+     * 设置是否将图片缓存在内存中
+     * @param cacheInMemory 是否将图片缓存在内存中（默认是）
      */
-    void setEnableMemoryCache(boolean enableMemoryCache);
+    void setCacheInMemory(boolean cacheInMemory);
 
     /**
      * 设置图片显示器（用于在图片加载完成后显示图片）

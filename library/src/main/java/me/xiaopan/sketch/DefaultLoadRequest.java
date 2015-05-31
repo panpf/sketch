@@ -45,7 +45,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
     private RequestLevelFrom requestLevelFrom; // 请求Level的来源
 
     // Download fields
-    private boolean enableDiskCache = true;	// 是否开启磁盘缓存
+    private boolean cacheInDisk = true;	// 是否开启磁盘缓存
     private ProgressListener progressListener;  // 下载进度监听器
 
     // Load fields
@@ -112,13 +112,13 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
 
     /****************************************** Download methods ******************************************/
     @Override
-    public void setEnableDiskCache(boolean enableDiskCache) {
-        this.enableDiskCache = enableDiskCache;
+    public void setCacheInDisk(boolean cacheInDisk) {
+        this.cacheInDisk = cacheInDisk;
     }
 
     @Override
-    public boolean isEnableDiskCache() {
-        return enableDiskCache;
+    public boolean isCacheInDisk() {
+        return cacheInDisk;
     }
 
     @Override
@@ -338,7 +338,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
         if(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS){
-            File diskCacheFile = enableDiskCache? sketch.getConfiguration().getDiskCache().getCacheFile(uri):null;
+            File diskCacheFile = cacheInDisk ? sketch.getConfiguration().getDiskCache().getCacheFile(uri):null;
             if(diskCacheFile != null && diskCacheFile.exists()){
                 this.cacheFile = diskCacheFile;
                 this.imageFrom = ImageFrom.DISK_CACHE;

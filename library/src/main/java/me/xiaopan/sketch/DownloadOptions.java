@@ -20,7 +20,7 @@ package me.xiaopan.sketch;
  * 下载选项
  */
 public class DownloadOptions implements RequestOptions {
-    private boolean enableDiskCache = true;	//是否开启磁盘缓存
+    private boolean cacheInDisk = true;	//是否开启磁盘缓存
     private RequestLevel requestLevel;
 
     public DownloadOptions(){
@@ -32,21 +32,21 @@ public class DownloadOptions implements RequestOptions {
     }
 
     /**
-     * 设置是否开启磁盘缓存
-     * @param isEnableDiskCache 是否开启磁盘缓存
+     * 设置是否将图片缓存在本地
+     * @param cacheInDisk 是否将图片缓存在本地（默认是）
      * @return DownloadOptions
      */
-    public DownloadOptions setEnableDiskCache(boolean isEnableDiskCache) {
-        this.enableDiskCache = isEnableDiskCache;
+    public DownloadOptions setCacheInDisk(boolean cacheInDisk) {
+        this.cacheInDisk = cacheInDisk;
         return this;
     }
 
     /**
-     * 是否开启磁盘缓存
-     * @return 是否开启磁盘缓存
+     * 是否将图片缓存在本地
+     * @return 是否将图片缓存在本地（默认是）
      */
-    public boolean isEnableDiskCache() {
-        return enableDiskCache;
+    public boolean isCacheInDisk() {
+        return cacheInDisk;
     }
 
     /**
@@ -67,7 +67,7 @@ public class DownloadOptions implements RequestOptions {
     }
 
     public void copyOf(DownloadOptions downloadOptions){
-        this.enableDiskCache = downloadOptions.isEnableDiskCache();
+        this.cacheInDisk = downloadOptions.isCacheInDisk();
         this.requestLevel = downloadOptions.getRequestLevel();
     }
 }

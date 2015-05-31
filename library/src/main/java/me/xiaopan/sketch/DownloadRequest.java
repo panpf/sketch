@@ -46,16 +46,16 @@ public interface DownloadRequest extends Request, RequestRunManager {
     void setProgressListener(ProgressListener progressListener);
 
     /**
-     * 是否开启了磁盘缓存
-     * @return 是否开启了磁盘缓存
+     * 是否将图片缓存在本地
+     * @return 是否将图片缓存在本地（默认是）
      */
-    boolean isEnableDiskCache();
+    boolean isCacheInDisk();
 
     /**
-     * 设置是否开启磁盘缓存
-     * @param enableDiskCache 是否开启磁盘缓存
+     * 设置是否将图片缓存在本地
+     * @param cacheInDisk 是否将图片缓存在本地（默认是）
      */
-    void setEnableDiskCache(boolean enableDiskCache);
+    void setCacheInDisk(boolean cacheInDisk);
 
     /**
      * 设置下载监听器
