@@ -157,7 +157,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 是否需要根据ImageView的LayoutSize来调整resize
+     * 是否使用ImageView的LayoutSize作为resize
      * @return true：是
      */
     public boolean isResizeByFixedSize() {
@@ -165,7 +165,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     /**
-     * 设置是否需要根据ImageView的LayoutSize来调整resize
+     * 设置是否使用ImageView的LayoutSize作为resize
      * @param isResizeByFixedSize true：是
      */
     public DisplayOptions setResizeByFixedSize(boolean isResizeByFixedSize) {

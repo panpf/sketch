@@ -88,7 +88,7 @@ public interface DisplayHelper {
     DisplayHelper maxSize(int width, int height);
 
     /**
-     * 裁剪图片，ImageProcessor会根据此宽高和ScaleType裁剪图片
+     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
      * @param width 宽
      * @param height 高
      * @return DisplayHelper
@@ -96,7 +96,7 @@ public interface DisplayHelper {
     DisplayHelper resize(int width, int height);
 
     /**
-     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
+     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
      * @param width 宽
      * @param height 高
      * @param scaleType
@@ -105,12 +105,12 @@ public interface DisplayHelper {
     DisplayHelper resize(int width, int height, ScaleType scaleType);
 
     /**
-     * 根据ImageView的LayoutSize裁剪图片
+     * 使用ImageView的LayoutSize作为resize
      */
     DisplayHelper resizeByFixedSize();
 
     /**
-     * 强制使用resize，最终返回的图片尺寸一定跟resize一样
+     * 强制使经过resize返回的图片同resize的尺寸一致
      * @return DisplayHelper
      */
     DisplayHelper forceUseResize();

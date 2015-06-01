@@ -113,7 +113,7 @@ public class DefaultLoadHelper implements LoadHelper{
     }
 
     @Override
-    public DefaultLoadHelper forceUseFixed() {
+    public DefaultLoadHelper forceUseResize() {
         this.forceUseResize = true;
         return this;
     }

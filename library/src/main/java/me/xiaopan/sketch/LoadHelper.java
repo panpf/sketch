@@ -59,7 +59,7 @@ public interface LoadHelper {
     LoadHelper maxSize(int width, int height);
 
     /**
-     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
+     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
      * @param width 宽
      * @param height 高
      * @return LoadHelper
@@ -67,7 +67,7 @@ public interface LoadHelper {
     LoadHelper resize(int width, int height);
 
     /**
-     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
+     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
      * @param width 宽
      * @param height 高
      * @param scaleType
@@ -76,10 +76,10 @@ public interface LoadHelper {
     LoadHelper resize(int width, int height, ScaleType scaleType);
 
     /**
-     * 强制使用resize，最终返回的图片尺寸一定跟resize一样
+     * 强制使经过resize返回的图片同resize的尺寸一致
      * @return DisplayHelper
      */
-    LoadHelper forceUseFixed();
+    LoadHelper forceUseResize();
 
     /**
      * 返回低质量的图片

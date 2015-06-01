@@ -80,7 +80,7 @@ public class LoadOptions extends DownloadOptions{
     }
 
     /**
-     * 裁剪图片，ImageProcessor会根据此尺寸裁剪图片
+     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
      * @param resize 新的尺寸
      * @return LoadOptions
      */
@@ -90,7 +90,7 @@ public class LoadOptions extends DownloadOptions{
     }
 
     /**
-     * 裁剪图片，ImageProcessor会根据此尺寸来裁剪图片
+     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
      * @param width 宽
      * @param height 高
      * @return LoadOptions
@@ -159,16 +159,16 @@ public class LoadOptions extends DownloadOptions{
     }
 
     /**
-     * 是否强制使用resize
-     * @return true：强制使用resize，返回的图片的尺寸一定是跟resize一样
+     * 是否强制使经过resize返回的图片同resize的尺寸一致
+     * @return true：强制使经过resize返回的图片同resize的尺寸一致
      */
     public boolean isForceUseResize() {
         return forceUseResize;
     }
 
     /**
-     * 设置是否强制使用resize
-     * @param forceUseResize true：强制使用resize，返回的图片的尺寸一定是跟resize一样
+     * 设置是否强制使经过resize返回的图片同resize的尺寸一致
+     * @param forceUseResize true：强制使经过resize返回的图片同resize的尺寸一致
      */
     public LoadOptions setForceUseResize(boolean forceUseResize) {
         this.forceUseResize = forceUseResize;
