@@ -22,8 +22,8 @@ android {
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 22
-        versionCode 201
-        versionName "2.0.0 beta"
+        versionCode 200
+        versionName "2.0.0"
     }
 
     signingConfigs{
@@ -47,10 +47,6 @@ android {
         normal{
             applicationId "me.xiaopan.sketchsample"
         }
-
-//        googlePlay{
-//            applicationId "me.xiaoapn.android.imageloader"
-//        }
     }
 
     lintOptions {

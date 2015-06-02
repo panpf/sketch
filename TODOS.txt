@@ -45,6 +45,7 @@ library：
 >* （搞定）搜索的默认关键词改为gif色图
 >* （搞定）gif drawable 不能使用过渡显示器
 >* （搞定）直接集成GIFdrawable到sketch中
+>* （搞定）当bitmap创建之后遇到的各种取消，并且没有放到内存缓存之前应该主动释放Bitmap（在解码完后发现取消了就回收Bitmap）
 >* （搞定）我擦imageholder处理完了之后原图不能回收啊
 >* （搞定）增加一个接口，将sketchimageview的特别功能抽离出来，方便别人自定义，最重要的是在display之前加一个初始化的方法，方便初始化一些在getview中频繁设置的属性
 >* （已经搞成瀑布流了）将搜索列表改为RecyclerView
@@ -61,23 +62,28 @@ library：
 >* （搞定）示例APP增加修改Bitmap.Config，界面改了一点儿，其它都没动
 >* （搞定）有些明确需要透明效果的处理器不能跟着bitmapConfig走
 >* （搞定）不再提供bitmapConfig设置，改由自动根据mimeType来选择合适的config，这样更加智能
-
->* 找个地方给图片给改成圆角的，目的是为了展示圆角的效果
->* 把昨晚看的一篇处理原型图文章里的原型背景拿过来试试
+>* （搞定）低版本支持WEBP
+>* （低版本不再支持WEBP了，因为WEBP库不支持inSampleSize）已经实现了低版本支持了WEBP，但是目前DefaultImageDecoder代码逻辑还比较混乱，需要再优化以下
+>* （搞定）优化ImageFragment中图片显示失败时的提示方式，现在显示失败图片太二了
+>* （搞定）SrcBitmapDrawable改名为SketchBitmapDrawable
+>* （搞定）把SketchImageView中跟ImageView相关的方法都在interface中也定义一份，这样Sketch中就不需要明确引用ImageView，也更方便别人自定义
+>* （搞定）找个地方给图片给改成圆角的，目的是为了展示圆角的效果
+>* （搞定）BindBitmapDrawable的setFixedSize不应该转交给recycleDrawable处理，因为每一个都士不一样的，而RecycleDrawable却是一样的，因此比较纠结
+>* （搞定）对loadingDrawable提供内存缓存支持，默认缓存容量为可用最大内存的十六分之一，现在你可以放心的对占位图进行各种处理了
+>* （搞定）CommentUtils重命名为SketchUtils
+>* （搞定）sample中关于页面信息需要更新
+>* （搞定）readme.me增加最低版本说明
+>* （搞定）初始化Sketch的加入输出版本信息，例如Sketch，2.0.0， 200， release
+>* （搞定）是否要对ImageHolder加入同步，貌似还是很有必要的，例如失败图片是在异步线程或主线程都会同时调用的，加同步还是必须的，实现方案是，ImageHolder搞成接口，例如换成PlaceholderImage接口，然后搞三种继承LoadingPlaceholderImage，FailureImage，PauseDownloadImage，然后由于后两者会在异步线程中调用，因此只给后两者加同步
+>* （搞定）用百度云测试一下
+>* （搞定）readme增加感谢android-gif-drawable说明
+>* （搞定）增加forceUseResize参数
+>* （搞定）低质量图片参数改名 翻转过来
+>* （搞定）HintView里的失败图标和按钮以及下拉帅新的箭头都是灰色的或者样式不符合要求
+>* （搞定）enableMemoryCache改名为cacheInMemory，还有enableDiskCache
 
 代办池：
->* loading支持bitmap
->* 用百度云测试一下
->* 解码缓存文件失败的时候要再次下载
 >* 用一下其它的几款图片加载器，例如UIL、fresco、glide、picasso对比一下，特别是对RecyclerView的兼容性，然后写博客
->* 支持断点续传
->* 支持OKhttp
->* 可以根据图片ID来作为默认图片，这样貌似就能实现默认图是缩略图的功能了
->* 参考Glide、Fresco和Picasso
->* 写一个系列博客介绍Sketch，也算是做一个总结
->* 想办法支持一次加载两张图一张小图一张大图
->* resize加一个参数，一定要拿到的图跟resize尺寸一样
->* 低版本支持WEBP
 
 考虑的一些问题：
 >* （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapdrawable立即释放）
@@ -87,14 +93,25 @@ library：
 >* （不靠谱）改AsyncDrawable为RecycleDrawable形式
 >* （经测试会自定停止但尚不知是怎么做到的）GifDrawable是否有在隐藏的时候停止播放的功能，有的话是否需要ImageView配合
 >* （已经采取了新的方式实现，不再需要处理图片了）对loading drawable处理的时候加上判断尺寸比例是否一样，一样的话就不处理了
+>* （不需要已采用新方案实现）考虑是否要去除对loadingDrawable的处理
+>* （ClipPath有明显的锯齿，并且无法解决，因此不能使用）SketchImageView支持ClipPath
+>* （ClipPath有明显的锯齿，并且无法解决，因此不能使用）SketchBitmapDrawable支持ClipPath
+>* （不必了，之前加这个参数主要为了解决圆角图片的问题，现在在圆角处理器中加入了这个功能，解决了这个问题）resize加一个参数，一定要拿到的图跟resize尺寸一样
 >* 考虑如何处理下载的垃圾文件，申请空间的时候清理文件要处理那些下载垃圾
 >* 考虑将默认图也放到内存缓存中，试图通过这样的方式解决之前担心的默认图太多导致始终占用内存的问题
 >* 考虑如何支持用已缓存的小缩略图作为默认图片（比如支持从内存缓存中加载默认图）
 >* 考虑支持外部添加一个bitmap到内存缓存中，那么决定是否用recycledrawable就要放在memorycache中了
->* 当bitmap创建之后遇到的各种取消，并且没有放到内存缓存之前应该主动释放Bitmap（在解码完后发现取消了就回收Bitmap）
 >* 考虑是否把Bitmap往缓存里放的时机放到主线程来搞
->* 考虑是否要去除对loadingDrawable的处理
 >* 用纯色定义的图片作为默认图的时候会发生什么情况呢？
 >* 既然APK图标无需关心回收问题，那是不是就没必要费劲给搞到本地缓存区再读，直接读取显示不回收不就行了，然后再考虑如何处理的问题，因为处理之后就需要回收了
 >* 考虑对宽高固定的ImageView和普通图片使用像GlideDrawable一样的方式实现，这样可能会更顺畅一点
 >* 考虑支持不同的应用场景，例如background，drawableTop等
+>* 支持断点续传
+>* 支持OKhttp
+>* loading支持bitmap
+>* 可以根据图片ID来作为默认图片，这样貌似就能实现默认图是缩略图的功能了
+>* 参考Glide、Fresco和Picasso
+>* 写一个系列博客介绍Sketch，也算是做一个总结
+>* 想办法支持一次加载两张图一张小图一张大图
+>* 把昨晚看的一篇处理原型图文章里的原型背景拿过来试试
+>* 解码缓存文件失败的时候要再次下载
