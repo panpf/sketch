@@ -91,7 +91,7 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
         }
 
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outImageFile)));
-        return "已成功保存到 "+outImageFile.getPath()+" 目录，您可以在您的相册中找到它";
+        return "已保存到 "+outImageFile.getParentFile().getPath()+"目录";
     }
 
     @Override

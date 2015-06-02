@@ -22,6 +22,7 @@
             android:id="@+id/progressBar"
             android:layout_width="30dp"
             android:layout_height="30dp"
+            android:indeterminateDrawable="@drawable/progressbar_indeterminate_spinner_blue"
             android:layout_gravity="center"
             android:visibility="invisible"
             android:tag="progressBar"/>

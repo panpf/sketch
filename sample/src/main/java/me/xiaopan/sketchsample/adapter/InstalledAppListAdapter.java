@@ -57,7 +57,7 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter{
             appInfoViewHolder.nameTextView.setText(appInfo.getName());
             appInfoViewHolder.infoTextView.setText("v"+appInfo.getVersionName()+"  |  "+appInfo.getAppSize());
 
-            appInfoViewHolder.iconSketchImageView.setShowClickRipple(settings.isShowClickRipple());
+            appInfoViewHolder.iconSketchImageView.setShowPressedStatus(settings.isShowPressedStatus());
             appInfoViewHolder.iconSketchImageView.setShowFromFlag(settings.isShowImageFromFlag());
         }
     }

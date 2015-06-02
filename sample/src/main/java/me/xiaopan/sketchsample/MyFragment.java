@@ -31,4 +31,8 @@ public class MyFragment extends InjectFragment {
     protected void onUserVisibleChanged(boolean isVisibleToUser){
 
     }
+
+    public boolean isVisibleToUser(){
+        return isResumed() && getUserVisibleHint();
+    }
 }

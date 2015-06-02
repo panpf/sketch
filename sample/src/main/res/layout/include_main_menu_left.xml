@@ -69,16 +69,16 @@
                 android:layout_marginTop="8dp"/>
 
             <LinearLayout
-                android:id="@+id/item_main_showClickRipple"
+                android:id="@+id/item_main_showPressedStatus"
                 android:clickable="true"
                 style="@style/menu_item">
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="开启点击涟漪效果"/>
+                    android:text="显示按下状态"/>
                 <CheckBox
-                    android:id="@+id/checkBox_main_showClickRipple"
+                    android:id="@+id/checkBox_main_showPressedStatus"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
@@ -202,7 +202,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/item_main_enableMemoryCache"
+                android:id="@+id/item_main_cacheInMemory"
                 android:clickable="true"
                 style="@style/menu_item">
                 <TextView
@@ -211,7 +211,7 @@
                     android:layout_weight="1"
                     android:text="开启内存缓存"/>
                 <CheckBox
-                    android:id="@+id/checkBox_main_enableMemoryCache"
+                    android:id="@+id/checkBox_main_cacheInMemory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
@@ -221,7 +221,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/item_main_enableDiskCache"
+                android:id="@+id/item_main_cacheInDisk"
                 android:clickable="true"
                 style="@style/menu_item">
                 <TextView
@@ -230,7 +230,7 @@
                     android:layout_weight="1"
                     android:text="开启磁盘缓存"/>
                 <CheckBox
-                    android:id="@+id/checkBox_main_enableDiskCache"
+                    android:id="@+id/checkBox_main_cacheInDisk"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"
@@ -240,7 +240,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:id="@+id/item_main_imagesOfLowQuality"
+                android:id="@+id/item_main_lowQualityImge"
                 android:clickable="true"
                 style="@style/menu_item">
                 <TextView
@@ -249,7 +249,7 @@
                     android:layout_weight="1"
                     android:text="低质量图片"/>
                 <CheckBox
-                    android:id="@+id/checkBox_main_imagesOfLowQuality"
+                    android:id="@+id/checkBox_main_lowQualityImage"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="8dp"

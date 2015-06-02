@@ -7,6 +7,7 @@ import android.graphics.PixelFormat;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.Window;
@@ -21,6 +22,7 @@ import me.xiaopan.sketch.Request;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
+import me.xiaopan.sketchsample.util.DeviceUtils;
 
 public class WindowBackgroundManager {
     private Activity activity;
@@ -124,6 +126,13 @@ public class WindowBackgroundManager {
                 loadBackgroundRequest.cancel();
             }
             DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+            int resizeWidth = displayMetrics.widthPixels;
+            int resizeHeight = displayMetrics.heightPixels;
+            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT){
+                resizeHeight -= DeviceUtils.getStatusBarHeight(context.getResources());
+            }
+            resizeWidth /= 2;
+            resizeHeight /= 2;
             loadBackgroundRequest = Sketch.with(context).load(imageUri, new LoadListener() {
                 @Override
                 public void onStarted() {
@@ -132,10 +141,10 @@ public class WindowBackgroundManager {
 
                 @Override
                 public void onCompleted(Drawable gifDrawable, ImageFrom imageFrom, String mimeType) {
-                    if(onSetWindowBackgroundListener != null){
-                        if(userVisible){
+                    if (onSetWindowBackgroundListener != null) {
+                        if (userVisible) {
                             onSetWindowBackgroundListener.onSetWindowBackground(imageUri, gifDrawable);
-                        }else{
+                        } else {
                             ((RecycleDrawableInterface) gifDrawable).recycle();
                         }
                     }
@@ -150,9 +159,7 @@ public class WindowBackgroundManager {
                 public void onCanceled(CancelCause cancelCause) {
 
                 }
-            }).resize(displayMetrics.widthPixels/2, displayMetrics.heightPixels/2)
-                    .options(OptionsType.WINDOW_BACKGROUND)
-                    .commit();
+            }).resize(resizeWidth, resizeHeight).options(OptionsType.WINDOW_BACKGROUND).commit();
         }
     }
 }

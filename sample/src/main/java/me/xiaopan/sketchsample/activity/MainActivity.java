@@ -79,18 +79,18 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
     @InjectView(R.id.checkBox_main_clickDisplayOnFailed) private CheckBox clickDisplayOnFailedCheckBox;
     @InjectView(R.id.item_main_clickDisplayOnPauseDownload) private View clickDisplayOnPauseDownloadItem;
     @InjectView(R.id.checkBox_main_clickDisplayOnPauseDownload) private CheckBox clickDisplayOnPauseDownloadCheckBox;
-    @InjectView(R.id.item_main_showClickRipple) private View showClickRippleItem;
-    @InjectView(R.id.checkBox_main_showClickRipple) private CheckBox showClickRippleCheckBox;
+    @InjectView(R.id.item_main_showPressedStatus) private View showPressedStatusItem;
+    @InjectView(R.id.checkBox_main_showPressedStatus) private CheckBox showPressedStatusCheckBox;
     @InjectView(R.id.item_main_cleanMemoryCache) private View cleanMemoryCacheItem;
     @InjectView(R.id.text_main_memoryCacheSize) private TextView memoryCacheSizeTextView;
     @InjectView(R.id.item_main_cleanDiskCache) private View cleanDiskCacheItem;
     @InjectView(R.id.text_main_diskCacheSize) private TextView diskCacheSizeTextView;
-    @InjectView(R.id.item_main_enableMemoryCache) private View enableMemoryCacheItem;
-    @InjectView(R.id.checkBox_main_enableMemoryCache) private CheckBox enableMemoryCacheCheckBox;
-    @InjectView(R.id.item_main_enableDiskCache) private View enableDiskCacheItem;
-    @InjectView(R.id.checkBox_main_enableDiskCache) private CheckBox enableDiskCacheCheckBox;
-    @InjectView(R.id.item_main_imagesOfLowQuality) private View imagesOfLowQualityItem;
-    @InjectView(R.id.checkBox_main_imagesOfLowQuality) private CheckBox imagesOfLowQualityCheckBox;
+    @InjectView(R.id.item_main_cacheInMemory) private View cacheMemoryItem;
+    @InjectView(R.id.checkBox_main_cacheInMemory) private CheckBox cacheInMemoryCheckBox;
+    @InjectView(R.id.item_main_cacheInDisk) private View cacheInDiskItem;
+    @InjectView(R.id.checkBox_main_cacheInDisk) private CheckBox cacheInDiskCheckBox;
+    @InjectView(R.id.item_main_lowQualityImge) private View lowQualityImageItem;
+    @InjectView(R.id.checkBox_main_lowQualityImage) private CheckBox lowQualityImageCheckBox;
 
     private long lastClickBackTime;
     private Type type;
@@ -126,10 +126,10 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
         showImageFromFlagCheckBox.setChecked(settings.isShowImageFromFlag());
         clickDisplayOnFailedCheckBox.setChecked(settings.isClickDisplayOnFailed());
         clickDisplayOnPauseDownloadCheckBox.setChecked(settings.isClickDisplayOnPauseDownload());
-        showClickRippleCheckBox.setChecked(settings.isShowClickRipple());
-        enableMemoryCacheCheckBox.setChecked(settings.isEnableMemoryCache());
-        enableDiskCacheCheckBox.setChecked(settings.isEnableDiskCache());
-        imagesOfLowQualityCheckBox.setChecked(settings.isImagesOfLowQuality());
+        showPressedStatusCheckBox.setChecked(settings.isShowPressedStatus());
+        cacheInMemoryCheckBox.setChecked(settings.isCacheInMemory());
+        cacheInDiskCheckBox.setChecked(settings.isCacheInDisk());
+        lowQualityImageCheckBox.setChecked(settings.isLowQualityImage());
 
         starButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
@@ -144,10 +144,10 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
         clickDisplayOnPauseDownloadItem.setOnClickListener(this);
         cleanDiskCacheItem.setOnClickListener(this);
         cleanMemoryCacheItem.setOnClickListener(this);
-        showClickRippleItem.setOnClickListener(this);
-        enableDiskCacheItem.setOnClickListener(this);
-        enableMemoryCacheItem.setOnClickListener(this);
-        imagesOfLowQualityItem.setOnClickListener(this);
+        showPressedStatusItem.setOnClickListener(this);
+        cacheInDiskItem.setOnClickListener(this);
+        cacheMemoryItem.setOnClickListener(this);
+        lowQualityImageItem.setOnClickListener(this);
 
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
@@ -381,31 +381,31 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
                     }
                 }.execute(0);
                 break;
-            case R.id.item_main_showClickRipple :
-                boolean newShowClickRippleValue = !settings.isShowClickRipple();
-                showClickRippleCheckBox.setChecked(newShowClickRippleValue);
-                settings.setShowClickRipple(newShowClickRippleValue);
+            case R.id.item_main_showPressedStatus:
+                boolean newShowPressedStatusValue = !settings.isShowPressedStatus();
+                showPressedStatusCheckBox.setChecked(newShowPressedStatusValue);
+                settings.setShowPressedStatus(newShowPressedStatusValue);
                 slidingPaneLayout.closePane();
                 break;
-            case R.id.item_main_enableDiskCache :
-                boolean newEnableDiskCacheValue = !settings.isEnableDiskCache();
-                settings.setEnableDiskCache(newEnableDiskCacheValue);
-                enableDiskCacheCheckBox.setChecked(newEnableDiskCacheValue);
-                Sketch.with(getBaseContext()).getConfiguration().setEnableDiskCache(newEnableDiskCacheValue);
+            case R.id.item_main_cacheInDisk:
+                boolean newCacheInDiskValue = !settings.isCacheInDisk();
+                settings.setCacheInDisk(newCacheInDiskValue);
+                cacheInDiskCheckBox.setChecked(newCacheInDiskValue);
+                Sketch.with(getBaseContext()).getConfiguration().setCacheInDisk(newCacheInDiskValue);
                 slidingPaneLayout.closePane();
                 break;
-            case R.id.item_main_enableMemoryCache :
-                boolean newEnableMemoryCacheValue = !settings.isEnableMemoryCache();
-                enableMemoryCacheCheckBox.setChecked(newEnableMemoryCacheValue);
-                settings.setEnableMemoryCache(newEnableMemoryCacheValue);
-                Sketch.with(getBaseContext()).getConfiguration().setEnableMemoryCache(newEnableMemoryCacheValue);
+            case R.id.item_main_cacheInMemory:
+                boolean newCacheInMemoryValue = !settings.isCacheInMemory();
+                cacheInMemoryCheckBox.setChecked(newCacheInMemoryValue);
+                settings.setCacheInMemory(newCacheInMemoryValue);
+                Sketch.with(getBaseContext()).getConfiguration().setCacheInMemory(newCacheInMemoryValue);
                 slidingPaneLayout.closePane();
                 break;
-            case R.id.item_main_imagesOfLowQuality :
-                boolean newImagesOfLowQualityValue = !settings.isImagesOfLowQuality();
-                imagesOfLowQualityCheckBox.setChecked(newImagesOfLowQualityValue);
-                settings.setImagesOfLowQuality(newImagesOfLowQualityValue);
-                Sketch.with(getBaseContext()).getConfiguration().setImagesOfLowQuality(newImagesOfLowQualityValue);
+            case R.id.item_main_lowQualityImge:
+                boolean newLowQualityImageValue = !settings.isLowQualityImage();
+                lowQualityImageCheckBox.setChecked(newLowQualityImageValue);
+                settings.setLowQualityImage(newLowQualityImageValue);
+                Sketch.with(getBaseContext()).getConfiguration().setLowQualityImage(newLowQualityImageValue);
                 slidingPaneLayout.closePane();
                 break;
         }

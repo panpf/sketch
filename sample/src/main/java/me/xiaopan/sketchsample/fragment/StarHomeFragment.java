@@ -3,7 +3,7 @@ package me.xiaopan.sketchsample.fragment;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,7 +76,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         pullRefreshLayout.setOnRefreshListener(this);
@@ -173,7 +173,12 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     loadMoreFooterView.setPause(false);
                 }
 
-                pullRefreshLayout.stopRefresh();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        pullRefreshLayout.stopRefresh();
+                    }
+                }, 1000);
                 if (starImageAdapter == null) {
                     hintView.failure(failure, new View.OnClickListener() {
                         @Override
@@ -227,7 +232,12 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
 
                 setAdapter(new ImageStaggeredGridAdapter(getActivity(), staggeredGridView, responseObject.getImages(), StarHomeFragment.this));
 
-                pullRefreshLayout.stopRefresh();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        pullRefreshLayout.stopRefresh();
+                    }
+                }, 1000);
 
                 if(loadMoreFooterView != null){
                     loadMoreFooterView.setPause(false);
@@ -251,7 +261,12 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     loadMoreFooterView.setPause(false);
                 }
 
-                pullRefreshLayout.stopRefresh();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        pullRefreshLayout.stopRefresh();
+                    }
+                }, 1000);
                 if (starImageAdapter == null) {
                     hintView.failure(failure, new View.OnClickListener() {
                         @Override

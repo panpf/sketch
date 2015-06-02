@@ -12,9 +12,9 @@ public class Settings {
     private static final String PREFERENCE_SHOW_IMAGE_FROM_FLAG = "PREFERENCE_SHOW_IMAGE_FROM_FLAG";
     private static final String PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD = "PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD";
     private static final String PREFERENCE_CLICK_DISPLAY_ON_FAILED = "PREFERENCE_CLICK_DISPLAY_ON_FAILED";
-    private static final String PREFERENCE_CLICK_SHOW_CLICK_RIPPLE = "PREFERENCE_CLICK_SHOW_CLICK_RIPPLE";
-    private static final String PREFERENCE_ENABLE_MEMORY_CACHE = "PREFERENCE_ENABLE_MEMORY_CACHE";
-    private static final String PREFERENCE_ENABLE_DISK_CACHE = "PREFERENCE_ENABLE_DISK_CACHE";
+    private static final String PREFERENCE_CLICK_SHOW_PRESSED_STATUS = "PREFERENCE_CLICK_SHOW_PRESSED_STATUS";
+    private static final String PREFERENCE_CACHE_IN_MEMORY = "PREFERENCE_CACHE_IN_MEMORY";
+    private static final String PREFERENCE_CACHE_IN_DISK = "PREFERENCE_CACHE_IN_DISK";
     private static final String PREFERENCE_IMAGES_OF_LOW_QUALITY = "PREFERENCE_IMAGES_OF_LOW_QUALITY";
 
     private static Settings settingsInstance;
@@ -25,10 +25,10 @@ public class Settings {
     private boolean showImageFromFlag;
     private boolean clickDisplayOnPauseDownload;
     private boolean clickDisplayOnFailed;
-    private boolean showClickRipple;
-    private boolean enableMemoryCache;
-    private boolean enableDiskCache;
-    private boolean imagesOfLowQuality;
+    private boolean showPressedStatus;
+    private boolean cacheInMemory;
+    private boolean cacheInDisk;
+    private boolean lowQualityImage;
 
     private SharedPreferences.Editor editor;
 
@@ -42,10 +42,10 @@ public class Settings {
         this.showImageFromFlag = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, false);
         this.clickDisplayOnPauseDownload = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, true);
         this.clickDisplayOnFailed = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, true);
-        this.showClickRipple = preferences.getBoolean(PREFERENCE_CLICK_SHOW_CLICK_RIPPLE, true);
-        this.enableMemoryCache = preferences.getBoolean(PREFERENCE_ENABLE_MEMORY_CACHE, true);
-        this.enableDiskCache = preferences.getBoolean(PREFERENCE_ENABLE_DISK_CACHE, true);
-        this.imagesOfLowQuality = preferences.getBoolean(PREFERENCE_IMAGES_OF_LOW_QUALITY, false);
+        this.showPressedStatus = preferences.getBoolean(PREFERENCE_CLICK_SHOW_PRESSED_STATUS, true);
+        this.cacheInMemory = preferences.getBoolean(PREFERENCE_CACHE_IN_MEMORY, true);
+        this.cacheInDisk = preferences.getBoolean(PREFERENCE_CACHE_IN_DISK, true);
+        this.lowQualityImage = preferences.getBoolean(PREFERENCE_IMAGES_OF_LOW_QUALITY, false);
     }
 
     public static Settings with(Context context){
@@ -159,43 +159,43 @@ public class Settings {
         apply();
     }
 
-    public boolean isShowClickRipple() {
-        return showClickRipple;
+    public boolean isShowPressedStatus() {
+        return showPressedStatus;
     }
 
-    public void setShowClickRipple(boolean showClickRipple) {
-        this.showClickRipple = showClickRipple;
-        editor.putBoolean(PREFERENCE_CLICK_SHOW_CLICK_RIPPLE, showClickRipple);
+    public void setShowPressedStatus(boolean showPressedStatus) {
+        this.showPressedStatus = showPressedStatus;
+        editor.putBoolean(PREFERENCE_CLICK_SHOW_PRESSED_STATUS, showPressedStatus);
         apply();
     }
 
-    public boolean isEnableDiskCache() {
-        return enableDiskCache;
+    public boolean isCacheInDisk() {
+        return cacheInDisk;
     }
 
-    public void setEnableDiskCache(boolean enableDiskCache) {
-        this.enableDiskCache = enableDiskCache;
-        editor.putBoolean(PREFERENCE_ENABLE_DISK_CACHE, enableDiskCache);
+    public void setCacheInDisk(boolean cacheInDisk) {
+        this.cacheInDisk = cacheInDisk;
+        editor.putBoolean(PREFERENCE_CACHE_IN_DISK, cacheInDisk);
         apply();
     }
 
-    public boolean isEnableMemoryCache() {
-        return enableMemoryCache;
+    public boolean isCacheInMemory() {
+        return cacheInMemory;
     }
 
-    public void setEnableMemoryCache(boolean enableMemoryCache) {
-        this.enableMemoryCache = enableMemoryCache;
-        editor.putBoolean(PREFERENCE_ENABLE_MEMORY_CACHE, enableMemoryCache);
+    public void setCacheInMemory(boolean cacheInMemory) {
+        this.cacheInMemory = cacheInMemory;
+        editor.putBoolean(PREFERENCE_CACHE_IN_MEMORY, cacheInMemory);
         apply();
     }
 
-    public boolean isImagesOfLowQuality() {
-        return imagesOfLowQuality;
+    public boolean isLowQualityImage() {
+        return lowQualityImage;
     }
 
-    public void setImagesOfLowQuality(boolean imagesOfLowQuality) {
-        this.imagesOfLowQuality = imagesOfLowQuality;
-        editor.putBoolean(PREFERENCE_IMAGES_OF_LOW_QUALITY, imagesOfLowQuality);
+    public void setLowQualityImage(boolean lowQualityImage) {
+        this.lowQualityImage = lowQualityImage;
+        editor.putBoolean(PREFERENCE_IMAGES_OF_LOW_QUALITY, lowQualityImage);
         apply();
     }
 }

@@ -2808,8 +2808,13 @@ public abstract class ExtendableListView extends AbsListView {
 
     @Override
     public Parcelable onSaveInstanceState() {
-
-        Parcelable superState = super.onSaveInstanceState();
+        Parcelable superState;
+        try{
+            superState = super.onSaveInstanceState();
+        }catch (Exception e){
+            e.printStackTrace();
+            superState = BaseSavedState.EMPTY_STATE;
+        }
         ListSavedState ss = new ListSavedState(superState);
 
         if (mSyncState != null) {

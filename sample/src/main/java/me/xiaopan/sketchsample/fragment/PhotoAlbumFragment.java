@@ -23,8 +23,8 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.provider.MediaStore;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -62,7 +62,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         pullRefreshLayout.setOnRefreshListener(this);
@@ -146,7 +146,12 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
 
             recyclerView.setAdapter(imageAdapter = new PhotoAlbumImageAdapter(getActivity(), strings, PhotoAlbumFragment.this, recyclerView));
             recyclerView.scheduleLayoutAnimation();
-            pullRefreshLayout.stopRefresh();
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    pullRefreshLayout.stopRefresh();
+                }
+            }, 1000);
             if(windowBackgroundLoader != null && strings != null && strings.size() > 0){
                 windowBackgroundLoader.load(strings.get(0));
             }

@@ -9,7 +9,7 @@
         android:layout_height="60dp"
         android:id="@+id/image_installedApp_icon"
         android:contentDescription="@string/app_name"
-        android:src="@drawable/ic_launcher"/>
+        android:src="@mipmap/ic_launcher"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

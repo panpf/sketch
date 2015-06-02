@@ -9,12 +9,15 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.util.List;
 
 import me.xiaopan.sketch.DisplayOptions;
-import me.xiaopan.sketch.FixedSize;
-import me.xiaopan.sketch.ImageHolder;
+import me.xiaopan.sketch.FailureImageHolder;
+import me.xiaopan.sketch.LoadingImageHolder;
+import me.xiaopan.sketch.PauseDownloadImageHolder;
+import me.xiaopan.sketch.Resize;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
@@ -61,15 +64,16 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         }
 
         roundRadius = DeviceUtils.dp2px(context, 10);
-        RoundedCornerImageProcessor imageProcessor = new RoundedCornerImageProcessor();
-        imageProcessor.setFixedSize(new FixedSize(itemWidth, itemWidth));
-        imageProcessor.setRoundPixels(roundRadius);
+        RoundedCornerImageProcessor imageProcessor = new RoundedCornerImageProcessor(roundRadius);
+        Resize resize = new Resize(itemWidth, itemWidth, ImageView.ScaleType.CENTER_CROP);
         displayOptions = new DisplayOptions()
-                .setLoadingImage(new ImageHolder(R.drawable.image_loading, imageProcessor))
-                .setFailureImage(new ImageHolder(R.drawable.image_failure, imageProcessor))
-                .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download, imageProcessor))
+                .setLoadingImage(new LoadingImageHolder(R.drawable.image_loading).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
+                .setFailureImage(new FailureImageHolder(R.drawable.image_failure).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
+                .setPauseDownloadImage(new PauseDownloadImageHolder(R.drawable.image_pause_download).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
                 .setImageProcessor(imageProcessor)
                 .setDecodeGifImage(false)
+                .setResizeByFixedSize(true)
+                .setForceUseResize(true)
                 .setImageDisplayer(new TransitionImageDisplayer());
     }
 

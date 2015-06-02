@@ -3,7 +3,7 @@ package me.xiaopan.sketchsample.fragment;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
@@ -76,7 +76,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
     }
 
     @Override
-    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setTitle(searchKeyword);
     }
@@ -92,7 +92,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        getActivity().getMenuInflater().inflate(R.menu.menu_search_view, menu);
+        inflater.inflate(R.menu.menu_search_view, menu);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(menu.findItem(R.id.menu_searchView));
         searchView.setQueryHint(searchKeyword);
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
@@ -133,7 +133,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         pullRefreshLayout.setOnRefreshListener(this);
@@ -218,7 +218,12 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                 }
                 setAdapter(new ImageStaggeredGridAdapter(getActivity(), staggeredGridView, imageList, SearchFragment.this));
 
-                pullRefreshLayout.stopRefresh();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        pullRefreshLayout.stopRefresh();
+                    }
+                }, 1000);
 
                 if(loadMoreFooterView != null){
                     loadMoreFooterView.setPause(false);
@@ -240,7 +245,12 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                 if(loadMoreFooterView != null){
                     loadMoreFooterView.setPause(false);
                 }
-                pullRefreshLayout.stopRefresh();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        pullRefreshLayout.stopRefresh();
+                    }
+                }, 1000);
                 if (searchImageListAdapter == null) {
                     hintView.failure(failure, new View.OnClickListener() {
                         @Override

@@ -107,7 +107,7 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
         animationBatchExecutor = new AnimationBatchExecutor(getActivity(), R.anim.action_show, R.anim.action_hidden, 70, shareButton, applyWallpaperButton, playButton, saveButton);
         viewPagerPlayer = new ViewPagerPlayer(viewPager);
         new PageNumberSetter(currentItemTextView, viewPager);
-        viewPager.setPageTransformer(false, new DepthPageTransformer());
+        viewPager.setPageTransformer(true, new DepthPageTransformer());
 
         shareButton.setOnClickListener(this);
         applyWallpaperButton.setOnClickListener(this);

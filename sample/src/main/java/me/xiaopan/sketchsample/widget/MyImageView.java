@@ -23,7 +23,6 @@ public class MyImageView extends SketchImageView {
 
     private void onInit(Context context){
         settings = Settings.with(context);
-        setShowGifFlag(true);
         if(!isInEditMode()){
             setGifFlagDrawable(R.drawable.ic_gif);
         }
@@ -34,7 +33,7 @@ public class MyImageView extends SketchImageView {
         super.onDisplay();
 
         if(autoApplyGlobalAttr){
-            setShowClickRipple(settings.isShowClickRipple());
+            setShowPressedStatus(settings.isShowPressedStatus());
             setShowFromFlag(settings.isShowImageFromFlag());
             setShowDownloadProgress(settings.isShowImageDownloadProgress());
             setClickDisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());

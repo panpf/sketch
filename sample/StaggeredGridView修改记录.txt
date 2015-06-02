@@ -1,0 +1,2 @@
+ExtendableListView的onSaveInstanceState()方法的调用super.onSaveInstanceState()在2.2上会抛出NullPointException，现已捕获
+HeaderViewListAdapter增加OnGetFooterViewListener支持

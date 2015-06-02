@@ -10,11 +10,13 @@ import android.widget.WrapperListAdapter;
 import me.xiaopan.sketch.Sketch;
 
 /**
- * 滚动中暂停暂停加载新图片管理器
+ * 滚动中暂停暂停加载新图片管理器支持RecyclerView和AbsListView
  */
 public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener implements AbsListView.OnScrollListener{
     private Sketch sketch;
     private Settings settings;
+    private AbsListView.OnScrollListener absListScrollListener;
+    private RecyclerView.OnScrollListener recyclerScrollListener;
 
     public ScrollingPauseLoadManager(Context context) {
         this.sketch = Sketch.with(context);
@@ -24,53 +26,69 @@ public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener imp
     @Override
     public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
+        if(recyclerScrollListener != null){
+            recyclerScrollListener.onScrolled(recyclerView, dx, dy);
+        }
     }
 
     @Override
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
 
-        if(!settings.isScrollingPauseLoad() || recyclerView.getAdapter() == null){
-            return;
+        if(settings.isScrollingPauseLoad() && recyclerView.getAdapter() != null){
+            if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
+                sketch.getConfiguration().setPauseLoad(true);
+            } else if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                if(sketch.getConfiguration().isPauseLoad()){
+                    sketch.getConfiguration().setPauseLoad(false);
+                    recyclerView.getAdapter().notifyDataSetChanged();
+                }
+            }
         }
 
-        if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
-            sketch.getConfiguration().setPauseLoad(true);
-        } else if(newState == RecyclerView.SCROLL_STATE_IDLE){
-            if(sketch.getConfiguration().isPauseLoad()){
-                sketch.getConfiguration().setPauseLoad(false);
-                recyclerView.getAdapter().notifyDataSetChanged();
-            }
+        if(recyclerScrollListener != null){
+            recyclerScrollListener.onScrollStateChanged(recyclerView, newState);
         }
     }
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        ListAdapter listAdapter = view.getAdapter();
-        if(listAdapter == null){
-            return;
-        }
-        if(listAdapter instanceof WrapperListAdapter){
-            listAdapter = ((WrapperListAdapter)listAdapter).getWrappedAdapter();
-        }
-        if(!settings.isScrollingPauseLoad() || listAdapter == null || !(listAdapter instanceof BaseAdapter)){
-            return;
+        if(settings.isScrollingPauseLoad() && view.getAdapter() != null){
+            ListAdapter listAdapter = view.getAdapter();
+            if(listAdapter instanceof WrapperListAdapter){
+                listAdapter = ((WrapperListAdapter)listAdapter).getWrappedAdapter();
+            }
+            if(listAdapter instanceof BaseAdapter){
+                if(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
+                    if(!sketch.getConfiguration().isPauseLoad()){
+                        sketch.getConfiguration().setPauseLoad(true);
+                    }
+                } else if(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE){
+                    if(sketch.getConfiguration().isPauseLoad()){
+                        sketch.getConfiguration().setPauseLoad(false);
+                        ((BaseAdapter)listAdapter).notifyDataSetChanged();
+                    }
+                }
+            }
         }
 
-        if(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-            if(!sketch.getConfiguration().isPauseLoad()){
-                sketch.getConfiguration().setPauseLoad(true);
-            }
-        } else if(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE){
-            if(sketch.getConfiguration().isPauseLoad()){
-                sketch.getConfiguration().setPauseLoad(false);
-                ((BaseAdapter)listAdapter).notifyDataSetChanged();
-            }
+        if(absListScrollListener != null){
+            absListScrollListener.onScrollStateChanged(view, scrollState);
         }
     }
 
     @Override
     public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+        if(absListScrollListener != null){
+            absListScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+        }
+    }
 
+    public void setOnScrollListener(AbsListView.OnScrollListener absListViewScrollListener) {
+        this.absListScrollListener = absListViewScrollListener;
+    }
+
+    public void setOnScrollListener(RecyclerView.OnScrollListener recyclerScrollListener) {
+        this.recyclerScrollListener = recyclerScrollListener;
     }
 }

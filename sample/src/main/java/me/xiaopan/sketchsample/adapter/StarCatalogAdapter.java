@@ -47,26 +47,30 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
     }
 
     public void append(StarCatalogRequest.Result result){
+        List<StarCatalogRequest.Star> starList = result.getStarList();
+        if(starList == null){
+            return;
+        }
         if(items == null){
-            items = new ArrayList<>(result.getStarList().size());
+            items = new ArrayList<>(starList.size());
         }
         items.add(result.getTitle());
-        for(int w = 0, size = result.getStarList().size(); w < size;){
+        for(int w = 0, size = starList.size(); w < size;){
             int number = size - w;
             if(number == 1){
                 DataItem dataItem = new DataItem();
-                dataItem.star1 = result.getStarList().get(w++);
+                dataItem.star1 = starList.get(w++);
                 items.add(dataItem);
             }else if(number == 2){
                 DataItem dataItem = new DataItem();
-                dataItem.star1 = result.getStarList().get(w++);
-                dataItem.star2 = result.getStarList().get(w++);
+                dataItem.star1 = starList.get(w++);
+                dataItem.star2 = starList.get(w++);
                 items.add(dataItem);
             }else{
                 DataItem dataItem = new DataItem();
-                dataItem.star1 = result.getStarList().get(w++);
-                dataItem.star2 = result.getStarList().get(w++);
-                dataItem.star3 = result.getStarList().get(w++);
+                dataItem.star1 = starList.get(w++);
+                dataItem.star2 = starList.get(w++);
+                dataItem.star3 = starList.get(w++);
                 items.add(dataItem);
             }
         }

@@ -2,6 +2,7 @@ package me.xiaopan.sketchsample.fragment;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -115,7 +116,12 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
                     adapter.append(hotStarList);
                     contentRecyclerView.setAdapter(adapter);
                     contentRecyclerView.scheduleLayoutAnimation();
-                    refreshLayout.stopRefresh();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            refreshLayout.stopRefresh();
+                        }
+                    }, 1000);
                     if (!haveSetWindowBackground && windowBackgroundLoader != null && hotStarList.size() > 0 && hotStarList.get(0).getStarList().size() > 0) {
                         windowBackgroundLoader.load(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());
                     }
@@ -132,7 +138,12 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
 
             @Override
             public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean b, boolean b2) {
-                refreshLayout.stopRefresh();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshLayout.stopRefresh();
+                    }
+                }, 1000);
                 if (adapter == null) {
                     hintView.failure(failure, new View.OnClickListener() {
                         @Override

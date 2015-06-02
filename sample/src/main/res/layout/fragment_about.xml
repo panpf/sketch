@@ -21,86 +21,96 @@
                 android:id="@+id/text_about_gifIntro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="1. 支持GIF图."/>
+                android:layout_marginTop="8dp"
+                android:text="1. 支持GIF图片. 集成了android-gif-drawable 1.1.7可以方便的显示GIF图片，感谢koral"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:text="2. 多种URI支持. 支持http://、https://、asset://、content://、/sdcard/sample.jpg、drawable://等6种URI。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:autoLink="all"
                 android:text="3. 异步加载. 采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="4. 支持缓存. 采用Lru算法在本地和内存中缓存图片，本地缓存可设置最大容量、保留容量以及有效期。"/>
+                android:layout_marginTop="8dp"
+                android:text="4. 二级缓存支持. 采用Lru算法在本地和内存中缓存图片，本地缓存默认最大容量为100M，内存缓存默认最大容量为最大可用内存的八分之一。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="5. 支持ViewHolder. 即使你在ListView中使用了ViewHolder也依然可以使用ImageLoader来加载图片，并且图片显示绝对不会混乱。"/>
+                android:layout_marginTop="8dp"
+                android:text="5. 支持ViewHolder. 即使你在ListView中使用了ViewHolder也依然可以使用Sketch来加载图片，在不占用setTag()方法的同时保证图片显示绝对不会混乱。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="6. SketchImageView. 提供更强大的SketchImageView，只需调用displayImage***系列方法即可显示各种图片。"/>
+                android:layout_marginTop="8dp"
+                android:text="6. SketchImageView. 提供功能更强大的SketchImageView，只需调用displayImage***系列方法即可显示各种图片，并且支持显示下载进度，按下效果，显示失败时点击重新显示以及显示GIF标识等功能。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:autoLink="all"
-                android:text="7. 重复下载过滤. 如果两个请求的图片地址一样的话，第二个就会等待，一直到第一个下载成功后才会继续处理。"/>
+                android:text="7. 重复下载过滤. 如果两个请求的图片地址一样的话，第二个就会等待第一个下载完成之后直接使用第一个下载的图片"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="8. 即时取消无用请求. SketchImageView在onDetachedFromWindow或被重复利用的时候会及时取消之前的请求。"/>
+                android:layout_marginTop="8dp"
+                android:text="8. 即时取消无用请求. SketchImageView在onDetachedFromWindow()或被重复利用的时候会及时取消之前的请求。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="9. 支持进度回调. 通过progressListener()方法即可设置并开启进度回调。"/>
+                android:layout_marginTop="8dp"
+                android:text="9. 自动防止加载过大Bitmap 提供maxSize参数来控制加载到内存的图片的尺寸，默认为屏幕宽高的1.5倍，在使用display()方法显示图片的时候还会自动根据ImageView的layout size来调整maxSize。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="10. 防止加载过大Bitmap. 提供maxSize参数来控制加载到内存的图片的尺寸（默认为当前屏幕宽高的1.5倍），另外还会自动根据ImageView的layout size来调整maxSize。"/>
+                android:layout_marginTop="8dp"
+                android:text="10. TransitionDrawable支持. 自定义了一个FixedSizeBitmapDrawable，用于支持任意尺寸的两张图片使用TransitionDrawable过渡显示，保证不变形。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="11. 裁剪图片. 通过resize可对图片进行裁剪，另外还会自动根据ImageView的layout size来调整resize。"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="8dp"
                 android:autoLink="all"
-                android:text="12. 多种级别供你自由玩转图片. 除了display()方法可用来显示图片之外，你还可以通过load()方法加载图片或通过download()方法下载图片。"/>
+                android:text="11. 兼容RecyclerView. RecyclerView增加了一些新的特性，导致在onDetachedFromWindow()中直接回收图片或设置drawable为null会导致一些显示异常和崩溃，现已完美兼容。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="13. 强大的自定义功能. 可自定义请求分发与执行、缓存、解码、处理、显示、默认图片、失败图片等。"/>
+                android:layout_marginTop="8dp"
+                android:text="12. 多种方式玩转图片. 除了display()方法可用来显示图片之外，你还可以通过load()方法加载图片或通过download()方法下载图片。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="14. 提供RequestOptions. 通过RequestOptions你可以提前定义好一系列的属性，然后在显示图片的时候一次性设置，另外你还可以通过Sketch.putOptions()存储RequestOptions，然后在使用的时候指定名称即可。"/>
+                android:layout_marginTop="8dp"
+                android:text="13. 强大的自定义功能. 可自定义参数组织、请求分发与执行、图片缓存、图片解码、图片处理、图片显示、默认或失败占位图、计算inSampleSize以及整个流程等。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="15. 使用方便. 直接通过Sketch.with(Context).display()方法即可显示图片，无需事先在Application中做任何设置, 你还可以通过Sketch.putOptions()存储RequestOptions，然后在使用的时候指定名称即可。"/>
+                android:layout_marginTop="8dp"
+                android:text="14. 支持读取APK图标. 支持直接读取本地APK文件的图标，只需想指定本地图片的路径那样指定APK文件的路径即可。"/>
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:text="16. 兼容RecyclerView. RecyclerView增加了一些新的特性，导致在onDetachedFromWindow()中直接回收图片或设置drawable为null会导致一些显示异常和崩溃，现已完美兼容"/>
+                android:layout_marginTop="8dp"
+                android:text="15. 提供RequestOptions. 通过RequestOptions你可以提前定义好一系列的属性，然后在显示图片的时候一次性设置，另外你还可以通过Sketch.putOptions()存储RequestOptions。然后在使用的时候指定名称即可。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="16. 提供移动网络下暂停下载功能. 内置了移动网络下暂停下载图片的功能，你只需调用Sketch.with(context).getConfiguration().setMobileNetworkPauseDownload(true)开启即可"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="17. 占位图支持内存缓存. 对经过ImageProcessor处理的占位图支持内存缓存。"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="18. 自动选择合适的Bitmap.Config. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，最明显的例子就是对于JPEG类型的图片使用Bitmap.Config.RGB_565解码。"/>
         </LinearLayout>
     </ScrollView>
 

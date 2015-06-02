@@ -1,6 +1,7 @@
 package me.xiaopan.sketchsample.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -85,7 +86,12 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
                     adapter.append(result);
                     contentRecyclerView.setAdapter(adapter);
                     contentRecyclerView.scheduleLayoutAnimation();
-                    refreshLayout.stopRefresh();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            refreshLayout.stopRefresh();
+                        }
+                    }, 1000);
                 }else{
                     adapter = new StarCatalogAdapter(getActivity(), result, StarCatalogFragment.this);
                     load(true, true);
@@ -94,7 +100,12 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
 
             @Override
             public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean b, boolean b2) {
-                refreshLayout.stopRefresh();
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        refreshLayout.stopRefresh();
+                    }
+                }, 1000);
                 if (adapter == null) {
                     hintView.failure(failure, new View.OnClickListener() {
                         @Override
