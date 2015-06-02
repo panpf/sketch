@@ -1,4 +1,4 @@
-# ![Logo](https://github.com/xiaopansky/Sketch/raw/master/sample/src/main/res/drawable-mdpi/ic_launcher.png) Sketch
+# ![Logo](https://github.com/xiaopansky/Sketch/raw/master/sample/src/main/res/mipmap-mdpi/ic_launcher.png) Sketch
 
 Sketch是用于Android上的一个图片加载器，目的是为了帮助开发者从本地或网络读取图片，然后处理并显示在页面上
 
@@ -28,6 +28,7 @@ Sketch is for Android on a picture of the loader, the purpose is to help the dev
 
 ###示例APP（Sample app）
 ![SampleApp](https://github.com/xiaopansky/Sketch/raw/master/releases/sample_apk_download_qr.png)
+
 扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](https://github.com/xiaopansky/Sketch/raw/master/releases/SketchSample-2.0.0.apk)
 
 ###简介（Introduction）
