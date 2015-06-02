@@ -81,8 +81,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     protected GestureDetector gestureDetector;
     protected boolean showRect;
 
-    protected boolean currentIsShowGifFlag;
-    protected boolean showGifFlag;
+    protected boolean currentIsGifDrawable;
     protected float gifDrawableLeft = -1;
     protected float gifDrawableTop = -1;
     protected Drawable gifFlagDrawable;
@@ -141,12 +140,10 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     protected void initGifFlag(){
-        if(!showGifFlag || gifFlagDrawable == null){
-            return;
+        if(gifFlagDrawable != null){
+            gifDrawableLeft = getWidth()-getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
+            gifDrawableTop = getHeight()-getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
         }
-
-        gifDrawableLeft = getWidth()-getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
-        gifDrawableTop = getHeight()-getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
     }
 
     protected void initImageShapePath(){
@@ -262,10 +259,10 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     @Override
     public void setImageDrawable(Drawable newDrawable) {
         // refresh gif flag
-        if(showGifFlag){
+        if(gifFlagDrawable != null){
             boolean newDrawableIsGif = isGifImage(newDrawable);
-            if(newDrawableIsGif != currentIsShowGifFlag){
-                currentIsShowGifFlag = newDrawableIsGif;
+            if(newDrawableIsGif != currentIsGifDrawable){
+                currentIsGifDrawable = newDrawableIsGif;
                 invalidate();
             }
         }
@@ -376,7 +373,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     protected void drawGifFlag(Canvas canvas){
-        if(showGifFlag && currentIsShowGifFlag && gifFlagDrawable != null){
+        if(currentIsGifDrawable && gifFlagDrawable != null){
             if(gifDrawableLeft == -1){
                 gifDrawableLeft = getWidth()-getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
                 gifDrawableTop = getHeight()-getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
@@ -580,22 +577,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
             fromFlagColor = NONE;
             invalidate();
         }
-    }
-
-    /**
-     * 是否显示GIF标识
-     * @return 是否显示GIF标识
-     */
-    public boolean isShowGifFlag() {
-        return showGifFlag;
-    }
-
-    /**
-     * 设置是否显示GIF标识
-     * @param showGifFlag 是否显示GIF标识
-     */
-    public void setShowGifFlag(boolean showGifFlag) {
-        this.showGifFlag = showGifFlag;
     }
 
     /**
