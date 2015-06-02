@@ -71,15 +71,10 @@ import me.xiaopan.sketch.util.SketchUtils;
  */
 public class HttpClientImageDownloader implements ImageDownloader {
 	private static final String NAME = "HttpClientImageDownloader";
-    private static final int BUFFER_SIZE = 8*1024;
     private static final int DEFAULT_WAIT_TIMEOUT = 60*1000;   // 默认从连接池中获取连接的最大等待时间
-    private static final int DEFAULT_READ_TIMEOUT = 10*1000;   // 默认读取超时时间
-    private static final int DEFAULT_CONNECT_TIMEOUT = 30*1000;    // 默认连接超时时间
     private static final int DEFAULT_MAX_ROUTE_CONNECTIONS = 400;    // 默认每个路由的最大连接数
     private static final int DEFAULT_MAX_CONNECTIONS = 800;  // 默认最大连接数
     private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;  // 默认Socket缓存大小
-    private static final int DEFAULT_MAX_RETRY_COUNT = 1;    // 默认最大重试次数
-    private static final int DEFAULT_PROGRESS_CALLBACK_NUMBER = 10;    // 默认进度回调次数
     private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
 
     private DefaultHttpClient httpClient;

@@ -23,6 +23,12 @@ import me.xiaopan.sketch.DownloadResult;
  * 下载器
  */
 public interface ImageDownloader {
+    int BUFFER_SIZE = 8*1024;   // 默认缓存池大小
+    int DEFAULT_READ_TIMEOUT = 20*1000;   // 默认读取超时时间
+    int DEFAULT_CONNECT_TIMEOUT = 20*1000;    // 默认连接超时时间
+    int DEFAULT_MAX_RETRY_COUNT = 1;    // 默认最大重试次数
+    int DEFAULT_PROGRESS_CALLBACK_NUMBER = 10;    // 默认进度回调次数
+
 	/**
 	 * 下载
 	 */
@@ -36,7 +42,7 @@ public interface ImageDownloader {
 
     /**
      * 设置连接超时时间
-     * @param connectTimeout 连接超时时间，单位毫秒，默认15秒
+     * @param connectTimeout 连接超时时间，单位毫秒，默认2000毫秒
      */
     void setConnectTimeout(int connectTimeout);
 
