@@ -22,3 +22,5 @@ android {
         abortOnError false
     }
 }
+
+apply from: "bintrayUpload.gradle"

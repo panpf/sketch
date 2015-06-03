@@ -109,15 +109,24 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 ###使用指南（Usage guide）
 ####1. 导入Sketch（Import Sketch to your project）
 
-#####Using Eclipse
-首先点击下载[sketch-2.0.0.aar](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-2.0.0.aar)，并改后缀名为zip
-然后解压并将classes.jar文件重命名为sketch-2.0.0.jar
-最后将sketch-2.0.0.jar和libs目录下的全部文件拷贝到你的项目的libs目录下
+#####使用Eclipse（Use Eclipse）
+1. 首先点击下载[sketch-2.0.0.aar](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-2.0.0.aar)并改后缀名为zip
+2. 然后解压并将classes.jar文件重命名为sketch-2.0.0.jar
+3. 最后将sketch-2.0.0.jar和libs目录下的全部文件拷贝到你的项目的libs目录下
 
-#####Using Android Studio
-首先点击下载[sketch-2.0.0.aar](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-2.0.0.aar)，并放到你module的libs目录下
+#####使用Gradle（Use Gradle）
+**从JCenter仓库导入（From jcenter import ）**
+
+```groovy
+dependencies{
+	compile 'me.xiaopan:sketch:2.0.0'
+}
+```
+
+**离线模式（Offline work）**
+点击下载[sketch-2.0.0.aar](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-2.0.0.aar)，并放到你module的libs目录下
 然后在你module的build.gradle文件中添加以下代码：
-```dsl
+```groovy
 repositories{
     flatDir(){
         dirs 'libs'
@@ -129,6 +138,16 @@ dependencies{
 }
 ```
 最后同步一下Gradle即可
+
+#####使用Maven（Use Maven）
+```xml
+<dependency>
+	<groupId>me.xiaopan</groupId>
+	<artifactId>sketch</artifactId>
+	<version>2.0.0</version>
+	<type>aar</type>
+</dependency>
+```
 
 ####2. 配置最低版本（Configure min sdk version）
 Sketch最低兼容API v8
@@ -148,7 +167,7 @@ Sketch最低兼容API v8
 
 #####Using Android Studio
 在app/build.gradle文件文件中配置最低ba'b
-```dsl
+```groovy
 android {
 	...
 
