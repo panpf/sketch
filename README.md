@@ -124,7 +124,9 @@ dependencies{
 ```
 
 **离线模式（Offline work）**
+
 点击下载[sketch-2.0.0.aar](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-2.0.0.aar)，并放到你module的libs目录下
+
 然后在你module的build.gradle文件中添加以下代码：
 ```groovy
 repositories{
