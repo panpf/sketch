@@ -141,16 +141,6 @@ dependencies{
 ```
 最后同步一下Gradle即可
 
-#####使用Maven（Use Maven）
-```xml
-<dependency>
-	<groupId>me.xiaopan</groupId>
-	<artifactId>sketch</artifactId>
-	<version>2.0.0</version>
-	<type>aar</type>
-</dependency>
-```
-
 ####2. 配置最低版本（Configure min sdk version）
 Sketch最低兼容API v8
 
