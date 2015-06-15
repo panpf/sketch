@@ -1,10 +1,10 @@
-# ![Logo](https://github.com/xiaopansky/Sketch/raw/master/sample/src/main/res/mipmap-mdpi/ic_launcher.png) Sketch
+# ![Logo](docs/logo.png) Sketch
 
 Sketch是用于Android上的一个图片加载器，目的是为了帮助开发者从本地或网络读取图片，然后处理并显示在页面上
 
 Sketch is for Android on a picture of the loader, the purpose is to help the developers to read the image from a local or network, then processed and displayed on the page
 
-![sample](https://github.com/xiaopansky/Sketch/raw/master/docs/sample.jpg)
+![sample](docs/sample.jpg)
 
 ###特点（Features）
 >* ``支持GIF图片``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示GIF图片，感谢koral--
@@ -27,9 +27,9 @@ Sketch is for Android on a picture of the loader, the purpose is to help the dev
 >* ``自动选择合适的Bimtap.Config``. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，最明显的例子就是对于JPEG类型的图片使用Bitmap.Config.RGB_565解码。
 
 ###示例APP（Sample app）
-![SampleApp](https://github.com/xiaopansky/Sketch/raw/master/releases/sample_apk_download_qr.png)
+![SampleApp](docs/qr_download.png)
 
-扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](https://github.com/xiaopansky/Sketch/raw/master/releases/SketchSample-2.0.0.apk)
+扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](https://github.com/xiaopansky/Sketch/raw/master/docs/sample.apk)
 
 ###简介（Introduction）
 
@@ -109,13 +109,8 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 ###使用指南（Usage guide）
 ####1. 导入Sketch（Import Sketch to your project）
 
-#####使用Eclipse（Use Eclipse）
-1. 首先点击下载[sketch-2.0.0.aar](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-2.0.0.aar)并改后缀名为zip
-2. 然后解压并将classes.jar文件重命名为sketch-2.0.0.jar
-3. 最后将sketch-2.0.0.jar和libs目录下的全部文件拷贝到你的项目的libs目录下
-
 #####使用Gradle（Use Gradle）
-**从JCenter仓库导入（From jcenter import ）**
+``从JCenter仓库导入（Import from jcenter）``
 
 ```groovy
 dependencies{
@@ -123,7 +118,7 @@ dependencies{
 }
 ```
 
-**离线模式（Offline work）**
+``离线模式（Offline work）``
 
 点击下载[sketch-2.0.0.aar](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-2.0.0.aar)，并放到你module的libs目录下
 
@@ -141,10 +136,28 @@ dependencies{
 ```
 最后同步一下Gradle即可
 
+#####使用Eclipse（Use Eclipse）
+1. 首先点击下载[sketch-2.0.0.aar](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-2.0.0.aar)并改后缀名为zip
+2. 然后解压并将classes.jar文件重命名为sketch-2.0.0.jar
+3. 最后将sketch-2.0.0.jar和libs目录下的全部文件拷贝到你的项目的libs目录下
+
 ####2. 配置最低版本（Configure min sdk version）
 Sketch最低兼容API v8
 
-#####Using Eclipse
+#####使用Gradle（Use Gradle）
+在app/build.gradle文件文件中配置最低版本为8
+```groovy
+android {
+	...
+
+    defaultConfig {
+        minSdkVersion 8
+        ...
+    }
+}
+```
+
+#####使用Eclipse（Use Eclipse）
 在AndroidManifest.xml文件中配置最低版本为8
 ```xml
 <manifest
@@ -155,19 +168,6 @@ Sketch最低兼容API v8
     ...
     </application>
 </manifest>
-```
-
-#####Using Android Studio
-在app/build.gradle文件文件中配置最低ba'b
-```groovy
-android {
-	...
-
-    defaultConfig {
-        minSdkVersion 8
-        ...
-    }
-}
 ```
 
 ####3. 配置权限（Configure the required permissions）
