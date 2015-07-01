@@ -139,7 +139,7 @@ dependencies{
 #####使用Eclipse（Use Eclipse）
 1. 首先点击下载[sketch-2.0.0.aar](https://github.com/xiaopansky/Sketch/raw/master/releases/sketch-2.0.0.aar)并改后缀名为zip
 2. 然后解压并将classes.jar文件重命名为sketch-2.0.0.jar
-3. 最后将sketch-2.0.0.jar和libs目录下的全部文件拷贝到你的项目的libs目录下
+3. 最后将sketch-2.0.0.jar和jni目录下的全部文件拷贝到你的项目的libs目录下即可
 
 ####2. 配置最低版本（Configure min sdk version）
 Sketch最低兼容API v8
