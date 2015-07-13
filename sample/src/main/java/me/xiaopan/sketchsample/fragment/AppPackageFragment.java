@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
 
-import me.xiaopan.android.inject.InjectContentView;
-import me.xiaopan.android.inject.InjectView;
+import me.xiaopan.androidinjector.InjectContentView;
+import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.AppPackageListAdapter;

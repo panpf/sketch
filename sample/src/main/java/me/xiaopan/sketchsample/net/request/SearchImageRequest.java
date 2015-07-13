@@ -7,12 +7,12 @@ import org.apache.http.HttpResponse;
 import java.util.Iterator;
 import java.util.List;
 
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.MethodType;
-import me.xiaopan.android.gohttp.requestobject.Method;
-import me.xiaopan.android.gohttp.requestobject.Param;
-import me.xiaopan.android.gohttp.requestobject.Request;
-import me.xiaopan.android.gohttp.requestobject.URL;
+import me.xiaopan.gohttp.HttpRequest;
+import me.xiaopan.gohttp.MethodType;
+import me.xiaopan.gohttp.requestobject.Method;
+import me.xiaopan.gohttp.requestobject.Param;
+import me.xiaopan.gohttp.requestobject.Request;
+import me.xiaopan.gohttp.requestobject.URL;
 
 /**
  * 搜索百度图片
@@ -118,7 +118,6 @@ public class SearchImageRequest implements Request{
         public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, Response response, boolean b, boolean b2) throws Throwable {
             if(response.getImages() != null){
                 Iterator<Image> iterator = response.getImages().iterator();
-                int number = 0;
                 while (iterator.hasNext()){
                     Image image = iterator.next();
                     if(image.sourceUrl == null || "".equals(image.sourceUrl)){

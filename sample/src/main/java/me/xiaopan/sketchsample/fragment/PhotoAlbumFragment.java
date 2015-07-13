@@ -32,9 +32,9 @@ import android.view.View;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xiaopan.android.inject.InjectContentView;
-import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.widget.PullRefreshLayout;
+import me.xiaopan.androidinjector.InjectContentView;
+import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.DetailActivity;

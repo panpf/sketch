@@ -1,6 +1,6 @@
 <resources>
 
-    <style name="BaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="BaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
     </style>
 
     <!-- 配置不同版本上的差异 -->
@@ -10,8 +10,6 @@
 
     <!-- 真正使用的主题，在BaseThemeCompatTheme的基础上定义所有版本均支持的样式 -->
     <style name="AppTheme" parent="CompatTheme">
-        <item name="android:windowNoTitle">true</item>
-        <item name="windowActionBar">false</item>
         <item name="android:windowBackground">@drawable/shape_window_background</item>
         <item name="android:textViewStyle">@style/MyTextView</item>
     </style>

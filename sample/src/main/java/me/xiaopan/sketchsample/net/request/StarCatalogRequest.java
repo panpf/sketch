@@ -8,8 +8,8 @@ import org.apache.http.HttpResponse;
 
 import java.util.List;
 
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.requestobject.Request;
+import me.xiaopan.gohttp.HttpRequest;
+import me.xiaopan.gohttp.requestobject.Request;
 import me.xiaopan.sketchsample.net.NetUtils;
 
 /**

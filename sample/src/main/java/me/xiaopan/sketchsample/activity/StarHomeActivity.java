@@ -21,9 +21,9 @@ import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 
-import me.xiaopan.android.inject.InjectContentView;
-import me.xiaopan.android.inject.InjectExtra;
-import me.xiaopan.android.inject.InjectParentMember;
+import me.xiaopan.androidinjector.InjectContentView;
+import me.xiaopan.androidinjector.InjectExtra;
+import me.xiaopan.androidinjector.InjectParentMember;
 import me.xiaopan.sketchsample.MyAppCompatActivity;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.fragment.StarHomeFragment;

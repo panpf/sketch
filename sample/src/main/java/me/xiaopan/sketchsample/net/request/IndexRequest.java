@@ -14,9 +14,9 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.requestobject.Request;
-import me.xiaopan.android.gohttp.requestobject.URL;
+import me.xiaopan.gohttp.HttpRequest;
+import me.xiaopan.gohttp.requestobject.Request;
+import me.xiaopan.gohttp.requestobject.URL;
 
 /**
  * 百度图片首页请求

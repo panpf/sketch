@@ -25,8 +25,8 @@ import android.view.View;
 
 import java.util.ArrayList;
 
-import me.xiaopan.android.inject.InjectContentView;
-import me.xiaopan.android.inject.InjectParentMember;
+import me.xiaopan.androidinjector.InjectContentView;
+import me.xiaopan.androidinjector.InjectParentMember;
 import me.xiaopan.sketchsample.MyAppCompatActivity;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.fragment.DetailFragment;

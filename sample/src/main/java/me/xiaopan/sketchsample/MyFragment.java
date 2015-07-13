@@ -1,6 +1,6 @@
 package me.xiaopan.sketchsample;
 
-import me.xiaopan.android.inject.app.InjectFragment;
+import me.xiaopan.androidinjector.app.InjectFragment;
 
 public class MyFragment extends InjectFragment {
 

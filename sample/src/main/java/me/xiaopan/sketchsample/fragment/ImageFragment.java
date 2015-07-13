@@ -4,9 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 
-import me.xiaopan.android.inject.InjectContentView;
-import me.xiaopan.android.inject.InjectExtra;
-import me.xiaopan.android.inject.InjectView;
+import me.xiaopan.androidinjector.InjectContentView;
+import me.xiaopan.androidinjector.InjectExtra;
+import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.CancelCause;
 import me.xiaopan.sketch.DisplayListener;
 import me.xiaopan.sketch.FailCause;

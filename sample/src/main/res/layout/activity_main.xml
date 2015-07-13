@@ -18,13 +18,13 @@
 
             <include layout="@layout/include_toolbar" />
 
-            <me.xiaopan.android.widget.PagerSlidingTabStrip
+            <me.xiaopan.psts.PagerSlidingTabStrip
                 android:id="@+id/tabStrip_main_star"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="right" />
 
-            <me.xiaopan.android.widget.PagerSlidingTabStrip
+            <me.xiaopan.psts.PagerSlidingTabStrip
                 android:id="@+id/tabStrip_main_appList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

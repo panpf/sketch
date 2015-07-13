@@ -9,8 +9,8 @@ import org.json.JSONException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.requestobject.Request;
+import me.xiaopan.gohttp.HttpRequest;
+import me.xiaopan.gohttp.requestobject.Request;
 
 /**
  * 明星个人主页背景请求

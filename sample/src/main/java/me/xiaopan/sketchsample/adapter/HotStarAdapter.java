@@ -47,6 +47,9 @@ public class HotStarAdapter extends RecyclerView.Adapter{
     }
 
     private void parse(List<HotStarRequest.Star> starList){
+        if(starList == null){
+            return;
+        }
         boolean left = true;
         for(int w = 0, size = starList.size(); w < size;){
             int number = size - w;

@@ -30,9 +30,9 @@ import android.widget.Toast;
 import java.io.File;
 import java.util.List;
 
-import me.xiaopan.android.inject.InjectContentView;
-import me.xiaopan.android.inject.InjectExtra;
-import me.xiaopan.android.inject.InjectView;
+import me.xiaopan.androidinjector.InjectContentView;
+import me.xiaopan.androidinjector.InjectExtra;
+import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;

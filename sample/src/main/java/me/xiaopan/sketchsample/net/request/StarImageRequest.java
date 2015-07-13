@@ -7,12 +7,12 @@ import org.apache.http.HttpResponse;
 import java.util.Iterator;
 import java.util.List;
 
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.MethodType;
-import me.xiaopan.android.gohttp.requestobject.Method;
-import me.xiaopan.android.gohttp.requestobject.Param;
-import me.xiaopan.android.gohttp.requestobject.Request;
-import me.xiaopan.android.gohttp.requestobject.URL;
+import me.xiaopan.gohttp.HttpRequest;
+import me.xiaopan.gohttp.MethodType;
+import me.xiaopan.gohttp.requestobject.Method;
+import me.xiaopan.gohttp.requestobject.Param;
+import me.xiaopan.gohttp.requestobject.Request;
+import me.xiaopan.gohttp.requestobject.URL;
 
 /**
  * 明星

@@ -12,13 +12,13 @@ import org.apache.http.HttpResponse;
 
 import java.util.List;
 
-import me.xiaopan.android.gohttp.GoHttp;
-import me.xiaopan.android.gohttp.HttpRequest;
-import me.xiaopan.android.gohttp.HttpRequestFuture;
-import me.xiaopan.android.gohttp.StringHttpResponseHandler;
-import me.xiaopan.android.inject.InjectContentView;
-import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.widget.PullRefreshLayout;
+import me.xiaopan.androidinjector.InjectContentView;
+import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.gohttp.GoHttp;
+import me.xiaopan.gohttp.HttpRequest;
+import me.xiaopan.gohttp.HttpRequestFuture;
+import me.xiaopan.gohttp.StringHttpResponseHandler;
+import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.StarHomeActivity;

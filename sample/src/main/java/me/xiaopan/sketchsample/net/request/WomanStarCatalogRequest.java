@@ -1,6 +1,6 @@
 package me.xiaopan.sketchsample.net.request;
 
-import me.xiaopan.android.gohttp.requestobject.URL;
+import me.xiaopan.gohttp.requestobject.URL;
 
 /**
  * 女明星目录请求

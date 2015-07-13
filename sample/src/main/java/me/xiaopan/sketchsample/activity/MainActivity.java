@@ -34,10 +34,10 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import me.xiaopan.android.inject.InjectContentView;
-import me.xiaopan.android.inject.InjectParentMember;
-import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.widget.PagerSlidingTabStrip;
+import me.xiaopan.androidinjector.InjectContentView;
+import me.xiaopan.androidinjector.InjectParentMember;
+import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.MyAppCompatActivity;
 import me.xiaopan.sketchsample.R;

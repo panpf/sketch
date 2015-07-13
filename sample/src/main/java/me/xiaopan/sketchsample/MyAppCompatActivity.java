@@ -20,10 +20,10 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import me.xiaopan.android.inject.InjectView;
-import me.xiaopan.android.inject.app.InjectActionBarActivity;
+import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.androidinjector.app.InjectAppCompatActivity;
 
-public abstract class MyAppCompatActivity extends InjectActionBarActivity {
+public abstract class MyAppCompatActivity extends InjectAppCompatActivity {
     @InjectView(R.id.toolbar) protected Toolbar toolbar;
 
 	@Override

@@ -25,7 +25,7 @@ import java.io.FileNotFoundException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 
-import me.xiaopan.android.gohttp.HttpRequest;
+import me.xiaopan.gohttp.HttpRequest;
 import me.xiaopan.sketchsample.R;
 
 /**

@@ -20,7 +20,7 @@ import android.app.Application;
 import android.text.format.Formatter;
 import android.util.Log;
 
-import me.xiaopan.android.gohttp.GoHttp;
+import me.xiaopan.gohttp.GoHttp;
 import me.xiaopan.sketch.Sketch;
 
 public class MyApplication extends Application {
