@@ -17,55 +17,43 @@ import me.xiaopan.gohttp.requestobject.URL;
 /**
  * 搜索百度图片
  */
-@URL("http://image.baidu.com/i")
+@URL("http://image.baidu.com/search/acjson")
 @Method(MethodType.GET)
 public class SearchImageRequest implements Request{
-//    @Param private String tn = "resultjsonavatarnew";
-//    @Param private String ie = "utf-8";
-//    @Param private String word;
-//    @Param private String cg = "girl";
-//    @Param("pn") private int start;
-//    @Param("rn") private int size = 60;
-//    @Param private String z;
-//    @Param private String fr;
-//    @Param private String width;
-//    @Param private String height;
-//    @Param private String lm="-1";
-//    @Param private String ic="0";
-//    @Param private String s="0";
-
-    @Param private String tn="resultjson_com";
-    @Param private String ipn="rj";
-    @Param private String ct="201326592";
-    @Param private String cl="2";
-    @Param private String lm="-1";
-    @Param private String st="-1";
-    @Param private String fm="index";
-    @Param private String fr="";
-    @Param private String sf="1";
-    @Param private String fmq="";
-    @Param private String pv="";
-    @Param private String ic="0";
-    @Param private String nc="1";
-    @Param private String z="";
-    @Param private String se="1";
-    @Param private String showtab="0";
-    @Param private String fb="0";
-    @Param private String width="";
-    @Param private String height="";
-    @Param private String face="0";
-    @Param private String istype="2";
-    @Param private String ie="utf-8";
-    @Param private String word;
-    @Param private String oq;
-    @Param private String rsp="-1";
-    @Param private String oe="utf-8";
+    @Param String queryWord = "";
+    @Param String word = "";
     @Param("rn") private int size = 60;
     @Param("pn") private int start = 0;
 
+    @Param String tn="resultjson_com";
+    @Param String ipn = "rj";
+    @Param String ct = "201326592";
+    @Param String is = "";
+    @Param String fp = "result";
+    @Param String cl = "2";
+    @Param String lm = "-1";
+    @Param String ie = "utf-8";
+    @Param String oe = "utf-8";
+    @Param String adpicid = "";
+    @Param String st = "-1";
+    @Param String z = "";
+    @Param String ic = "0";
+    @Param String s = "";
+    @Param String se = "";
+    @Param String tab = "";
+    @Param String width = "";
+    @Param String height = "";
+    @Param String face = "0";
+    @Param String istype = "2";
+    @Param String qc = "";
+    @Param String nc = "1";
+    @Param String fr = "";
+    @Param String gsm = "3c";
+    @Param("1437824884073") String temp = "";
+
     public SearchImageRequest(String word) {
         this.word = word;
-        this.oq = word;
+        this.queryWord = word;
     }
 
     public void setStart(int newStart){
@@ -90,7 +78,7 @@ public class SearchImageRequest implements Request{
     }
 
     public static class Image extends StarImageRequest.Image{
-        @SerializedName("largeTnImageUrl") private String sourceUrl;
+        @SerializedName("thumbURL") private String sourceUrl;
         @SerializedName("width") private int width;
         @SerializedName("height") private int height;
 

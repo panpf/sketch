@@ -213,29 +213,35 @@ public class HintView extends LinearLayout {
 	 * @param reloadButtonClickListener 重新加载按钮点击监听器
 	 */
 	public void failure(HttpRequest.Failure failure, OnClickListener reloadButtonClickListener){
-		if(failure.isException()){
-            String message;
-            if(failure.getException() instanceof SecurityException){
-                message = "网络连接异常【101】";
-            }else if(failure.getException() instanceof UnknownHostException){
-                if(isConnectedByState(getContext())){
-                    message = "网络连接异常【202】";
-                }else{
-                    message = "没有网络连接";
-                }
-            }else if(failure.getException() instanceof HttpHostConnectException && failure.getException().getMessage() != null && failure.getException().getMessage().contains("refused")){
-                message = "网络连接异常【202】";
-            }else if(failure.getException() instanceof SocketTimeoutException || failure.getException() instanceof ConnectTimeoutException){
-                message = "网络连接超时";
-            }else if(failure.getException() instanceof FileNotFoundException){
-                message = "网络连接异常【404】";
-            }else{
-                message = "网络连接异常【909】";
-            }
-			hint(R.drawable.ic_failure, message, "刷新", reloadButtonClickListener, false);
+		String message;
+		if(failure != null){
+			message = failure.getMessage();
+			if(failure.isException()){
+				Throwable exception = failure.getException();
+				if(exception == null){
+					message = "网络连接异常【909】";
+				}else if(exception instanceof SecurityException){
+					message = "网络连接异常【101】";
+				}else if(exception instanceof UnknownHostException){
+					if(isConnectedByState(getContext())){
+						message = "网络连接异常【202】";
+					}else{
+						message = "没有网络连接";
+					}
+				}else if(exception instanceof HttpHostConnectException && exception.getMessage() != null && exception.getMessage().contains("refused")){
+					message = "网络连接异常【202】";
+				}else if(exception instanceof SocketTimeoutException || exception instanceof ConnectTimeoutException){
+					message = "网络连接超时";
+				}else if(exception instanceof FileNotFoundException){
+					message = "网络连接异常【404】";
+				}else{
+					message = "网络连接异常【909】";
+				}
+			}
 		}else{
-			hint(R.drawable.ic_failure, failure.getMessage(), null, null, false);
+			message = "加载失败了";
 		}
+		hint(R.drawable.ic_failure, message, "刷新", reloadButtonClickListener, false);
 	}
 	
 	/**

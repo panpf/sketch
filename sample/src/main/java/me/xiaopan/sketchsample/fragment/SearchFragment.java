@@ -212,28 +212,43 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                     return;
                 }
 
-                List<StarImageRequest.Image> imageList = new ArrayList<StarImageRequest.Image>();
-                for (SearchImageRequest.Image image : responseObject.getImages()) {
-                    imageList.add(image);
-                }
-                setAdapter(new ImageStaggeredGridAdapter(getActivity(), staggeredGridView, imageList, SearchFragment.this));
-
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        pullRefreshLayout.stopRefresh();
+                if(responseObject == null || responseObject.getImages() == null || responseObject.getImages().size() == 0){
+                    hintView.failure(new HttpRequest.Failure(0, "咦，图片去哪儿了？"), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            pullRefreshLayout.startRefresh();
+                        }
+                    });
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            pullRefreshLayout.stopRefresh();
+                        }
+                    }, 1000);
+                }else{
+                    List<StarImageRequest.Image> imageList = new ArrayList<StarImageRequest.Image>();
+                    for (SearchImageRequest.Image image : responseObject.getImages()) {
+                        imageList.add(image);
                     }
-                }, 1000);
+                    setAdapter(new ImageStaggeredGridAdapter(getActivity(), staggeredGridView, imageList, SearchFragment.this));
 
-                if(loadMoreFooterView != null){
-                    loadMoreFooterView.setPause(false);
-                    if(loadMoreFooterView.isEnd()){
-                        loadMoreFooterView.setEnd(false);
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            pullRefreshLayout.stopRefresh();
+                        }
+                    }, 1000);
+
+                    if(loadMoreFooterView != null){
+                        loadMoreFooterView.setPause(false);
+                        if(loadMoreFooterView.isEnd()){
+                            loadMoreFooterView.setEnd(false);
+                        }
                     }
-                }
 
-                if(windowBackgroundLoader != null && imageList.size() > 0){
-                    windowBackgroundLoader.load(imageList.get(0).getSourceUrl());
+                    if(windowBackgroundLoader != null && imageList.size() > 0){
+                        windowBackgroundLoader.load(imageList.get(0).getSourceUrl());
+                    }
                 }
             }
 
