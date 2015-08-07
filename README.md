@@ -235,6 +235,7 @@ public View getView(int position, View convertView, ViewGroup parent) {
 >* [使用RequestOptions定义属性模板来简化属性设置](https://github.com/xiaopansky/Sketch/wiki/RequestOptions)
 >* [显示APK的图标](https://github.com/xiaopansky/Sketch/wiki/display-apk-icon)
 >* [了解何时取消请求以及如何主动取消请求](https://github.com/xiaopansky/Sketch/wiki/CancelRequest)
+>* [配置混淆（Proguard）](https://github.com/xiaopansky/Sketch/wiki/proguard-configuration)
 
 ###Thanks
 [koral](https://github.com/koral--) - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
