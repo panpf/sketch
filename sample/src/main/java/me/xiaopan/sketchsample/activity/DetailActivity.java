@@ -27,7 +27,7 @@ import java.util.ArrayList;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectParentMember;
-import me.xiaopan.sketchsample.MyAppCompatActivity;
+import me.xiaopan.sketchsample.MyBaseActivity;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.fragment.DetailFragment;
 
@@ -36,7 +36,7 @@ import me.xiaopan.sketchsample.fragment.DetailFragment;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
-public class DetailActivity extends MyAppCompatActivity implements DetailFragment.SetDispatchTouchEventListener, WindowBackgroundManager.OnSetWindowBackgroundListener {
+public class DetailActivity extends MyBaseActivity implements DetailFragment.SetDispatchTouchEventListener, WindowBackgroundManager.OnSetWindowBackgroundListener {
     private DetailFragment.DispatchTouchEventListener dispatchTouchEventListener;
 
     private WindowBackgroundManager windowBackgroundManager;

@@ -39,7 +39,7 @@ import me.xiaopan.androidinjector.InjectParentMember;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketchsample.MyAppCompatActivity;
+import me.xiaopan.sketchsample.MyBaseActivity;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
@@ -56,7 +56,7 @@ import me.xiaopan.sketchsample.widget.SlidingPaneLayoutCompatDrawerLayout;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
-public class MainActivity extends MyAppCompatActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener, AboutFragment.TogglePageListener {
+public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener, AboutFragment.TogglePageListener {
     @InjectView(R.id.layout_main_content) private View contentView;
     @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
@@ -153,6 +153,11 @@ public class MainActivity extends MyAppCompatActivity implements StarIndexFragme
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
 
         searchButton.performClick();
+    }
+
+    @Override
+    protected boolean isDisableSetFitsSystemWindows() {
+        return true;
     }
 
     private void onInitLayoutTopPadding(){
