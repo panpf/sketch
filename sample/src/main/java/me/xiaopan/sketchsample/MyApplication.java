@@ -20,6 +20,8 @@ import android.app.Application;
 import android.text.format.Formatter;
 import android.util.Log;
 
+import com.tencent.bugly.crashreport.CrashReport;
+
 import me.xiaopan.gohttp.GoHttp;
 import me.xiaopan.sketch.Sketch;
 
@@ -28,8 +30,9 @@ public class MyApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        CrashReport.initCrashReport(getBaseContext(), "900007777", BuildConfig.DEBUG);
 
-        GoHttp.with(getBaseContext()).setDebugMode(true);
+        GoHttp.with(getBaseContext()).setDebugMode(BuildConfig.DEBUG);
 
         SketchManager sketchManager = new SketchManager(getBaseContext());
         sketchManager.initConfig();

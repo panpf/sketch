@@ -17,7 +17,7 @@ loadProperties projectPath+'/local.properties'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "21.1.2"
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         minSdkVersion 8
@@ -60,7 +60,7 @@ dependencies {
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'me.xiaopan:gohttp:1.2.0'
-    compile 'me.xiaopan:androidinjector:1.4.0'
+    compile 'me.xiaopan:androidinjector:1.5.0'
     compile 'me.xiaopan:pagerslidingtabstrip:1.6.0'
     compile 'me.xiaopan:pullrefreshlayout:1.4.0'
 }

@@ -57,4 +57,6 @@
 -keep public class * implements java.io.Serializable {*;}
 ##---------------End: proguard configuration for Gson  ----------
 
+-keep public class com.tencent.bugly.**{*;}
+
 
