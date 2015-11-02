@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
@@ -18,7 +17,7 @@ public class FixedBitmapDrawable extends Drawable {
     private Rect srcRect;
     private Rect destRect;
     private Paint paint;
-    private Point fixedSize;
+    private FixedSize fixedSize;
     private Bitmap bitmap;
 
     public FixedBitmapDrawable(Bitmap bitmap) {
@@ -41,12 +40,24 @@ public class FixedBitmapDrawable extends Drawable {
 
     @Override
     public int getIntrinsicWidth() {
-        return srcRect!=null?srcRect.width():0;
+        if(fixedSize != null){
+            return fixedSize.getWidth();
+        }else if(srcRect != null){
+            return srcRect.width();
+        }else{
+            return 0;
+        }
     }
 
     @Override
     public int getIntrinsicHeight() {
-        return srcRect!=null?srcRect.height():0;
+        if(fixedSize != null){
+            return fixedSize.getHeight();
+        }else if(srcRect != null){
+            return srcRect.height();
+        }else{
+            return 0;
+        }
     }
 
     @Override
@@ -111,43 +122,33 @@ public class FixedBitmapDrawable extends Drawable {
         return bitmap;
     }
 
-    public Point getFixedSize() {
+    public FixedSize getFixedSize() {
         return fixedSize;
     }
 
-    public void setFixedSize(Point fixedSize) {
+    public void setFixedSize(FixedSize fixedSize) {
         if(srcRect != null){
             this.fixedSize = fixedSize;
             if(fixedSize == null){
                 srcRect.set(0, 0, bitmapWidth, bitmapHeight);
-                super.setBounds(0, 0, bitmapWidth, bitmapHeight);
+                setBounds(0, 0, bitmapWidth, bitmapHeight);
             }else{
-                onUpdateFixedSize(fixedSize.x, fixedSize.y);
+                int fixedWidth = fixedSize.getWidth();
+                int fixedHeight = fixedSize.getHeight();
+                if(bitmapWidth == 0 || bitmapHeight == 0){
+                    srcRect.set(0, 0, 0, 0);
+                }else if((float)bitmapWidth/(float)bitmapHeight == (float)fixedWidth/(float)fixedHeight){
+                    srcRect.set(0, 0, bitmapWidth, bitmapHeight);
+                }else{
+                    SketchUtils.mapping(bitmapWidth, bitmapHeight, fixedWidth, fixedHeight, srcRect);
+                }
+                setBounds(0, 0, fixedSize.getWidth(), fixedSize.getHeight());
             }
             invalidateSelf();
         }
     }
 
     public void setFixedSize(int width, int height) {
-        if(srcRect != null){
-            if(this.fixedSize == null){
-                this.fixedSize = new Point(width, height);
-            }else{
-                this.fixedSize.set(width, height);
-            }
-            onUpdateFixedSize(width, height);
-            invalidateSelf();
-        }
-    }
-
-    protected void onUpdateFixedSize(int fixedWidth, int fixedHeight){
-        if(bitmapWidth == 0 || bitmapHeight == 0){
-            srcRect.set(0, 0, 0, 0);
-        }else if((float)bitmapWidth/(float)bitmapHeight == (float)fixedWidth/(float)fixedHeight){
-            srcRect.set(0, 0, bitmapWidth, bitmapHeight);
-        }else{
-            SketchUtils.mapping(bitmapWidth, bitmapHeight, fixedWidth, fixedHeight, srcRect);
-        }
-        setBounds(0, 0, srcRect.width(), srcRect.height());
+        setFixedSize(width != 0 && height != 0 ? new FixedSize(width, height) : null);
     }
 }
