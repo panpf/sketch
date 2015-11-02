@@ -199,7 +199,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public void inflateDisplayParams(){
+    public void saveDisplayParams(){
         if(sketchImageViewInterface != null){
             DisplayParams displayParams = sketchImageViewInterface.getDisplayParams();
             if(displayParams == null){
@@ -458,11 +458,14 @@ public class DefaultDisplayHelper implements DisplayHelper{
         if(sketch.getConfiguration().isLowQualityImage()){
             lowQualityImage = true;
         }
+        if(imageDisplayer instanceof TransitionImageDisplayer && fixedSize == null && loadingImageHolder != null){
+            throw new IllegalArgumentException("Or when using TransitionImageDisplayer ImageView wide high is fixed, or cannot use loadingImage, only in this way at the time of display images does not deformation");
+        }
     }
 
     @Override
     public Request commit() {
-        inflateDisplayParams();
+        saveDisplayParams();
 
         handleParams();
 

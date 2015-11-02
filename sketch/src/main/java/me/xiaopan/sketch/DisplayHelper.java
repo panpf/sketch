@@ -44,7 +44,7 @@ public interface DisplayHelper {
     /**
      * 填充SketchImageView的显示参数
      */
-    void inflateDisplayParams();
+    void saveDisplayParams();
 
     /**
      * 设置名称，用于在log总区分请求
