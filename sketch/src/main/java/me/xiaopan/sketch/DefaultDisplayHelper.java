@@ -57,9 +57,9 @@ public class DefaultDisplayHelper implements DisplayHelper{
     protected FixedSize fixedSize;
     protected ImageDisplayer imageDisplayer;
     protected DisplayListener displayListener;
-    protected LoadingImageHolder loadingImageHolder;
-    protected FailureImageHolder failureImageHolder;
-    protected PauseDownloadImageHolder pauseDownloadImageHolder;
+    protected ImageHolder loadingImageHolder;
+    protected ImageHolder failureImageHolder;
+    protected ImageHolder pauseDownloadImageHolder;
     protected SketchImageViewInterface sketchImageViewInterface;
 
     protected Context context;
@@ -325,38 +325,38 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public DefaultDisplayHelper loadingImage(LoadingImageHolder loadingImageHolder) {
+    public DefaultDisplayHelper loadingImage(ImageHolder loadingImageHolder) {
         this.loadingImageHolder = loadingImageHolder;
         return this;
     }
 
     @Override
     public DefaultDisplayHelper loadingImage(int drawableResId) {
-        loadingImage(new LoadingImageHolder(drawableResId));
+        loadingImage(new ImageHolder(drawableResId));
         return this;
     }
 
     @Override
-    public DefaultDisplayHelper failureImage(FailureImageHolder failureImageHolder) {
+    public DefaultDisplayHelper failureImage(ImageHolder failureImageHolder) {
         this.failureImageHolder = failureImageHolder;
         return this;
     }
 
     @Override
     public DefaultDisplayHelper failureImage(int drawableResId) {
-        failureImage(new FailureImageHolder(drawableResId));
+        failureImage(new ImageHolder(drawableResId));
         return this;
     }
 
     @Override
-    public DefaultDisplayHelper pauseDownloadImage(PauseDownloadImageHolder pauseDownloadImageHolder) {
+    public DefaultDisplayHelper pauseDownloadImage(ImageHolder pauseDownloadImageHolder) {
         this.pauseDownloadImageHolder = pauseDownloadImageHolder;
         return this;
     }
 
     @Override
     public DefaultDisplayHelper pauseDownloadImage(int drawableResId) {
-        pauseDownloadImage(new PauseDownloadImageHolder(drawableResId));
+        pauseDownloadImage(new ImageHolder(drawableResId));
         return this;
     }
 
@@ -493,7 +493,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
             if(sketchImageViewInterface != null){
                 sketchImageViewInterface.setDisplayRequest(null);
             }
-            Drawable failureDrawable = getFixedRecycleBitmapDrawableFromImageHolder(failureImageHolder);
+            Drawable failureDrawable = failureImageHolder != null ? failureImageHolder.getRecycleBitmapDrawable(context) : null;
             if(failureDrawable != null){
                 sketchImageViewInterface.setImageDrawable(failureDrawable);
             }
@@ -513,7 +513,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
             if(sketchImageViewInterface != null){
                 sketchImageViewInterface.setDisplayRequest(null);
             }
-            Drawable failureDrawable = getFixedRecycleBitmapDrawableFromImageHolder(failureImageHolder);
+            Drawable failureDrawable = failureImageHolder != null ? failureImageHolder .getRecycleBitmapDrawable(context) : null;
             if(failureDrawable != null){
                 sketchImageViewInterface.setImageDrawable(failureDrawable);
             }
@@ -557,7 +557,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
         // 如果已经暂停了的话就不再从本地或网络加载了
         if(requestLevel == RequestLevel.MEMORY){
-            Drawable loadingDrawable = getFixedRecycleBitmapDrawableFromImageHolder(loadingImageHolder);
+            Drawable loadingDrawable = loadingImageHolder != null ? loadingImageHolder.getRecycleBitmapDrawable(context) : null;
             sketchImageViewInterface.clearAnimation();
             sketchImageViewInterface.setImageDrawable(loadingDrawable);
             if(displayListener != null){
@@ -611,7 +611,18 @@ public class DefaultDisplayHelper implements DisplayHelper{
         request.setPauseDownloadImageHolder(pauseDownloadImageHolder);
 
         // 显示默认图片
-        sketchImageViewInterface.setImageDrawable(getBindFixedRecycleBitmapDrawableFromImageHolder(loadingImageHolder, request));
+        Drawable loadingBindDrawable;
+        if(loadingImageHolder != null){
+            RecycleBitmapDrawable loadingDrawable = loadingImageHolder.getRecycleBitmapDrawable(context);
+            FixedSize tempFixedSize = null;
+            if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
+                tempFixedSize = fixedSize;
+            }
+            loadingBindDrawable = new BindFixedRecycleBitmapDrawable(loadingDrawable, tempFixedSize, request);
+        }else{
+            loadingBindDrawable = new BindFixedRecycleBitmapDrawable(null, request);
+        }
+        sketchImageViewInterface.setImageDrawable(loadingBindDrawable);
 
         if(sketchImageViewInterface != null){
             sketchImageViewInterface.setDisplayRequest(request);
@@ -648,21 +659,5 @@ public class DefaultDisplayHelper implements DisplayHelper{
             imageProcessor.appendIdentifier(builder);
         }
         return builder.toString();
-    }
-
-    private Drawable getFixedRecycleBitmapDrawableFromImageHolder(ImageHolder imageHolder){
-        if(imageHolder == null){
-            return null;
-        }
-        FixedSize tempFixedSize = imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null?fixedSize:null;
-        return imageHolder.getFixedRecycleBitmapDrawable(context, tempFixedSize);
-    }
-
-    private Drawable getBindFixedRecycleBitmapDrawableFromImageHolder(ImageHolder imageHolder, DisplayRequest request){
-        if(imageHolder == null){
-            return new BindFixedRecycleBitmapDrawable(null, request);
-        }
-        FixedSize tempFixedSize = imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null?fixedSize:null;
-        return imageHolder.getBindFixedRecycleBitmapDrawable(context, tempFixedSize, request);
     }
 }

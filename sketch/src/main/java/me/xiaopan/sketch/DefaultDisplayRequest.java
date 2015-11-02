@@ -64,8 +64,8 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
     private String memoryCacheId;	// 内存缓存ID
     private boolean cacheInMemory = true;	// 是否开启内存缓存
     private FixedSize fixedSize;    // 固定尺寸
-    private FailureImageHolder failureImageHolder;	// 当失败时显示的图片
-    private PauseDownloadImageHolder pauseDownloadImageHolder;	// 当暂停下载时显示的图片
+    private ImageHolder failureImageHolder;	// 当失败时显示的图片
+    private ImageHolder pauseDownloadImageHolder;	// 当暂停下载时显示的图片
     private ImageDisplayer imageDisplayer;	// 图片显示器
     private DisplayListener displayListener;	// 监听器
 
@@ -211,7 +211,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
     }
 
     @Override
-    public void setFailureImageHolder(FailureImageHolder failureImageHolder) {
+    public void setFailureImageHolder(ImageHolder failureImageHolder) {
         this.failureImageHolder = failureImageHolder;
     }
 
@@ -219,13 +219,15 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
     public Drawable getFailureDrawable() {
         if(failureImageHolder == null){
             return null;
+        }else if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
+            return new FixedRecycleBitmapDrawable(failureImageHolder.getRecycleBitmapDrawable(context), fixedSize);
+        }else{
+            return failureImageHolder.getRecycleBitmapDrawable(context);
         }
-        FixedSize tempFixedSize = imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null?fixedSize:null;
-        return failureImageHolder.getFixedRecycleBitmapDrawable(context, tempFixedSize);
     }
 
     @Override
-    public void setPauseDownloadImageHolder(PauseDownloadImageHolder pauseDownloadImageHolder) {
+    public void setPauseDownloadImageHolder(ImageHolder pauseDownloadImageHolder) {
         this.pauseDownloadImageHolder = pauseDownloadImageHolder;
     }
 
@@ -233,9 +235,11 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
     public Drawable getPauseDownloadDrawable() {
         if(pauseDownloadImageHolder == null){
             return null;
+        }else if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
+            return new FixedRecycleBitmapDrawable(pauseDownloadImageHolder.getRecycleBitmapDrawable(context), fixedSize);
+        }else{
+            return pauseDownloadImageHolder.getRecycleBitmapDrawable(context);
         }
-        FixedSize tempFixedSize = imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null?fixedSize:null;
-        return pauseDownloadImageHolder.getFixedRecycleBitmapDrawable(context, tempFixedSize);
     }
 
     @Override
@@ -574,9 +578,6 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
 
             if(bitmap != null && !bitmap.isRecycled()){
                 RecycleBitmapDrawable bitmapDrawable = new RecycleBitmapDrawable(bitmap);
-                if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
-                    bitmapDrawable.setFixedSize(fixedSize.getWidth(), fixedSize.getHeight());
-                }
                 if(cacheInMemory && memoryCacheId != null){
                     sketch.getConfiguration().getMemoryCache().put(memoryCacheId, bitmapDrawable);
                 }
@@ -678,10 +679,19 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
         }
 
         setRequestStatus(RequestStatus.DISPLAYING);
+
+        // Set FixedSize
+        Drawable finalDrawable;
+        if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null && resultDrawable instanceof RecycleBitmapDrawable){
+            finalDrawable = new FixedRecycleBitmapDrawable((RecycleBitmapDrawable) resultDrawable, fixedSize);
+        }else{
+            finalDrawable = resultDrawable;
+        }
+
         if(imageDisplayer == null){
             imageDisplayer = sketch.getConfiguration().getDefaultImageDisplayer();
         }
-        imageDisplayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), resultDrawable);
+        imageDisplayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), finalDrawable);
         ((RecycleDrawableInterface) resultDrawable).setIsWaitDisplay("completedCallback", false);
         setRequestStatus(RequestStatus.COMPLETED);
         if(displayListener != null){

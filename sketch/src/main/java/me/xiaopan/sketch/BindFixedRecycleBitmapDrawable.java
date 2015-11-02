@@ -8,7 +8,12 @@ public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable{
     private WeakReference<DisplayRequest> displayRequestWeakReference;
 
     public BindFixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, DisplayRequest displayRequest) {
-        super(recycleBitmapDrawable);
+        super(recycleBitmapDrawable, null);
+        this.displayRequestWeakReference = new WeakReference<DisplayRequest>(displayRequest);
+    }
+
+    public BindFixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, FixedSize fixedSize, DisplayRequest displayRequest) {
+        super(recycleBitmapDrawable, fixedSize);
         this.displayRequestWeakReference = new WeakReference<DisplayRequest>(displayRequest);
     }
 

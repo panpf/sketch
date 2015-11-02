@@ -17,12 +17,13 @@
 package me.xiaopan.sketch;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.util.Log;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class RecycleBitmapDrawable extends FixedBitmapDrawable implements RecycleDrawableInterface {
+public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDrawableInterface {
     private static final String NAME = "RecycleBitmapDrawable";
 
     private int cacheRefCount;

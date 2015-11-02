@@ -21,7 +21,7 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
     private Bitmap bitmap;
     private RecycleBitmapDrawable recycleBitmapDrawable;
 
-    public FixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable) {
+    public FixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, FixedSize fixedSize) {
         this.recycleBitmapDrawable = recycleBitmapDrawable;
         this.bitmap = recycleBitmapDrawable!=null?recycleBitmapDrawable.getBitmap():null;
         if(bitmap != null){
@@ -30,6 +30,26 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
             this.paint = new Paint(DEFAULT_PAINT_FLAGS);
             this.srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
             this.destRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
+
+            if(srcRect != null){
+                this.fixedSize = fixedSize;
+                if(fixedSize == null){
+                    srcRect.set(0, 0, bitmapWidth, bitmapHeight);
+                    setBounds(0, 0, bitmapWidth, bitmapHeight);
+                }else{
+                    int fixedWidth = fixedSize.getWidth();
+                    int fixedHeight = fixedSize.getHeight();
+                    if(bitmapWidth == 0 || bitmapHeight == 0){
+                        srcRect.set(0, 0, 0, 0);
+                    }else if((float)bitmapWidth/(float)bitmapHeight == (float)fixedWidth/(float)fixedHeight){
+                        srcRect.set(0, 0, bitmapWidth, bitmapHeight);
+                    }else{
+                        SketchUtils.mapping(bitmapWidth, bitmapHeight, fixedWidth, fixedHeight, srcRect);
+                    }
+                    setBounds(0, 0, fixedSize.getWidth(), fixedSize.getHeight());
+                }
+                invalidateSelf();
+            }
         }
     }
 
@@ -42,29 +62,17 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
 
     @Override
     public int getIntrinsicWidth() {
-        if(fixedSize != null){
-            return fixedSize.getWidth();
-        }else if(srcRect != null){
-            return srcRect.width();
-        }else{
-            return 0;
-        }
+        return fixedSize != null ? fixedSize.getWidth() : bitmapWidth;
     }
 
     @Override
     public int getIntrinsicHeight() {
-        if(fixedSize != null){
-            return fixedSize.getHeight();
-        }else if(srcRect != null){
-            return srcRect.height();
-        }else{
-            return 0;
-        }
+        return fixedSize != null ? fixedSize.getHeight() : bitmapHeight;
     }
 
     @Override
     public int getAlpha() {
-        return paint!=null?paint.getAlpha():super.getAlpha();
+        return paint != null ? paint.getAlpha() : super.getAlpha();
     }
 
     @Override
@@ -126,32 +134,6 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
 
     public FixedSize getFixedSize() {
         return fixedSize;
-    }
-
-    public void setFixedSize(FixedSize fixedSize) {
-        if(srcRect != null){
-            this.fixedSize = fixedSize;
-            if(fixedSize == null){
-                srcRect.set(0, 0, bitmapWidth, bitmapHeight);
-                setBounds(0, 0, bitmapWidth, bitmapHeight);
-            }else{
-                int fixedWidth = fixedSize.getWidth();
-                int fixedHeight = fixedSize.getHeight();
-                if(bitmapWidth == 0 || bitmapHeight == 0){
-                    srcRect.set(0, 0, 0, 0);
-                }else if((float)bitmapWidth/(float)bitmapHeight == (float)fixedWidth/(float)fixedHeight){
-                    srcRect.set(0, 0, bitmapWidth, bitmapHeight);
-                }else{
-                    SketchUtils.mapping(bitmapWidth, bitmapHeight, fixedWidth, fixedHeight, srcRect);
-                }
-                setBounds(0, 0, fixedSize.getWidth(), fixedSize.getHeight());
-            }
-            invalidateSelf();
-        }
-    }
-
-    public void setFixedSize(int width, int height) {
-        setFixedSize(width != 0 && height != 0 ? new FixedSize(width, height) : null);
     }
 
     @Override

@@ -25,9 +25,9 @@ import me.xiaopan.sketch.process.ImageProcessor;
 public class DisplayOptions extends LoadOptions {
     private boolean cacheInMemory = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     private ImageDisplayer imageDisplayer;	// 图片显示器
-    private LoadingImageHolder loadingImageHolder;	//当正在加载时显示的图片
-    private FailureImageHolder failureImageHolder;	//当失败时显示的图片
-    private PauseDownloadImageHolder pauseDownloadImageHolder;	//暂停下载时显示的图片
+    private ImageHolder loadingImageHolder;	//当正在加载时显示的图片
+    private ImageHolder failureImageHolder;	//当失败时显示的图片
+    private ImageHolder pauseDownloadImageHolder;	//暂停下载时显示的图片
 
     private boolean resizeByFixedSize;
 
@@ -79,7 +79,7 @@ public class DisplayOptions extends LoadOptions {
      * 获取正在加载时显示的图片
      * @return 正在加载时显示的图片
      */
-    public LoadingImageHolder getLoadingImageHolder() {
+    public ImageHolder getLoadingImageHolder() {
         return loadingImageHolder;
     }
 
@@ -87,7 +87,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置正在加载时显示的图片
      * @param loadingImageHolder 正在加载时显示的图片
      */
-    public DisplayOptions setLoadingImage(LoadingImageHolder loadingImageHolder) {
+    public DisplayOptions setLoadingImage(ImageHolder loadingImageHolder) {
         this.loadingImageHolder = loadingImageHolder;
         return this;
     }
@@ -98,7 +98,7 @@ public class DisplayOptions extends LoadOptions {
      * @return DisplayOptions
      */
     public DisplayOptions setLoadingImage(int drawableResId) {
-        setLoadingImage(new LoadingImageHolder(drawableResId));
+        setLoadingImage(new ImageHolder(drawableResId));
         return this;
     }
 
@@ -106,7 +106,7 @@ public class DisplayOptions extends LoadOptions {
      * 获取失败时显示的图片
      * @return 失败时显示的图片
      */
-    public FailureImageHolder getFailureImage() {
+    public ImageHolder getFailureImage() {
         return failureImageHolder;
     }
 
@@ -114,7 +114,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置失败时显示的图片
      * @param failureImageHolder 失败时显示的图片
      */
-    public DisplayOptions setFailureImage(FailureImageHolder failureImageHolder) {
+    public DisplayOptions setFailureImage(ImageHolder failureImageHolder) {
         this.failureImageHolder = failureImageHolder;
         return this;
     }
@@ -125,7 +125,7 @@ public class DisplayOptions extends LoadOptions {
      * @return DisplayOptions
      */
     public DisplayOptions setFailureImage(int drawableResId) {
-        setFailureImage(new FailureImageHolder(drawableResId));
+        setFailureImage(new ImageHolder(drawableResId));
         return this;
     }
 
@@ -133,7 +133,7 @@ public class DisplayOptions extends LoadOptions {
      * 获取暂停下载时显示的图片
      * @return 暂停下载时显示的图片
      */
-    public PauseDownloadImageHolder getPauseDownloadImage() {
+    public ImageHolder getPauseDownloadImage() {
         return pauseDownloadImageHolder;
     }
 
@@ -141,7 +141,7 @@ public class DisplayOptions extends LoadOptions {
      * 设置暂停下载时显示的图片
      * @param pauseDownloadImageHolder 暂停下载时显示的图片
      */
-    public DisplayOptions setPauseDownloadImage(PauseDownloadImageHolder pauseDownloadImageHolder) {
+    public DisplayOptions setPauseDownloadImage(ImageHolder pauseDownloadImageHolder) {
         this.pauseDownloadImageHolder = pauseDownloadImageHolder;
         return this;
     }
@@ -152,7 +152,7 @@ public class DisplayOptions extends LoadOptions {
      * @return DisplayOptions
      */
     public DisplayOptions setPauseDownloadImage(int drawableResId) {
-        setPauseDownloadImage(new PauseDownloadImageHolder(drawableResId));
+        setPauseDownloadImage(new ImageHolder(drawableResId));
         return this;
     }
 
