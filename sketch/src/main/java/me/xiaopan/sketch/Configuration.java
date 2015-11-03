@@ -17,6 +17,7 @@
 package me.xiaopan.sketch;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -30,6 +31,7 @@ import me.xiaopan.sketch.decode.DefaultImageDecoder;
 import me.xiaopan.sketch.decode.ImageDecoder;
 import me.xiaopan.sketch.display.DefaultImageDisplayer;
 import me.xiaopan.sketch.display.ImageDisplayer;
+import me.xiaopan.sketch.download.HttpClientImageDownloader;
 import me.xiaopan.sketch.download.HttpUrlConnectionImageDownloader;
 import me.xiaopan.sketch.download.ImageDownloader;
 import me.xiaopan.sketch.execute.DefaultRequestExecutor;
@@ -71,7 +73,11 @@ public class Configuration {
         this.imageDecoder = new DefaultImageDecoder();
         this.helperFactory = new DefaultHelperFactory();
         this.requestFactory = new DefaultRequestFactory();
-        this.imageDownloader = new HttpUrlConnectionImageDownloader();
+        if (Build.VERSION.SDK_INT >= 9) {
+            this.imageDownloader = new HttpUrlConnectionImageDownloader();
+        }else{
+            this.imageDownloader = new HttpClientImageDownloader();
+        }
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
         this.resizeCalculator = new DefaultResizeCalculator();
         this.imageSizeCalculator = new DefaultImageSizeCalculator();
