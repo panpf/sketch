@@ -19,6 +19,7 @@ package me.xiaopan.sketch;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.display.ImageDisplayer;
@@ -63,6 +64,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
     protected SketchImageViewInterface sketchImageViewInterface;
 
     protected Context context;
+    protected ImageView.ScaleType scaleType;
 
     /**
      * 创建显示请求生成器
@@ -117,6 +119,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
         }
 
         if(sketchImageViewInterface != null){
+            this.scaleType = sketchImageViewInterface.getScaleType();
             this.fixedSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageFixedSize(sketchImageViewInterface);
             this.maxSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageMaxSize(sketchImageViewInterface);
 
@@ -458,8 +461,16 @@ public class DefaultDisplayHelper implements DisplayHelper{
         if(sketch.getConfiguration().isLowQualityImage()){
             lowQualityImage = true;
         }
-        if(imageDisplayer instanceof TransitionImageDisplayer && fixedSize == null && loadingImageHolder != null){
-            throw new IllegalArgumentException("Or when using TransitionImageDisplayer ImageView wide high is fixed, or cannot use loadingImage, only in this way at the time of display images does not deformation");
+        if(imageDisplayer instanceof TransitionImageDisplayer){
+            if(fixedSize != null){
+                if(loadingImageHolder != null && scaleType != ScaleType.CENTER_CROP){
+                    throw new IllegalArgumentException("When using TransitionImageDisplayer ImageView wide tall if is fixed and set the loadingImage, then ScaleType must be CENTER_CTOP");
+                }
+            }else{
+                if(loadingImageHolder != null){
+                    throw new IllegalArgumentException("When using TransitionImageDisplayer ImageView wide tall if is unknown may not be used then loadingImage");
+                }
+            }
         }
     }
 
@@ -615,7 +626,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
         if(loadingImageHolder != null){
             RecycleBitmapDrawable loadingDrawable = loadingImageHolder.getRecycleBitmapDrawable(context);
             FixedSize tempFixedSize = null;
-            if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
+            if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ScaleType.CENTER_CROP){
                 tempFixedSize = fixedSize;
             }
             loadingBindDrawable = new BindFixedRecycleBitmapDrawable(loadingDrawable, tempFixedSize, request);

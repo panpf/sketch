@@ -70,7 +70,7 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
         }
 
         ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
-        if(layoutParams != null && layoutParams.width > 0 && layoutParams.height > 0 && sketchImageViewInterface.getScaleType() == ImageView.ScaleType.CENTER_CROP){
+        if(layoutParams != null && layoutParams.width > 0 && layoutParams.height > 0){
             return new FixedSize(layoutParams.width-(imageView.getPaddingLeft()+imageView.getPaddingRight()), layoutParams.height-(imageView.getPaddingTop()+imageView.getPaddingBottom()));
         }
         return null;

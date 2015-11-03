@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.Log;
+import android.widget.ImageView;
 
 import java.io.File;
 
@@ -82,6 +83,8 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
     private SketchImageViewInterfaceHolder sketchImageViewInterfaceHolder;    // 绑定ImageView
 
+    protected ImageView.ScaleType scaleType;
+
     public DefaultDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface) {
         this.context = sketch.getConfiguration().getContext();
         this.sketch = sketch;
@@ -89,6 +92,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
         this.uriScheme = uriScheme;
         this.memoryCacheId = memoryCacheId;
         this.sketchImageViewInterfaceHolder = new SketchImageViewInterfaceHolder(sketchImageViewInterface, this);
+        this.scaleType = sketchImageViewInterface.getScaleType();
     }
 
     /****************************************** Base methods ******************************************/
@@ -219,7 +223,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
     public Drawable getFailureDrawable() {
         if(failureImageHolder == null){
             return null;
-        }else if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
+        }else if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
             return new FixedRecycleBitmapDrawable(failureImageHolder.getRecycleBitmapDrawable(context), fixedSize);
         }else{
             return failureImageHolder.getRecycleBitmapDrawable(context);
@@ -235,7 +239,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
     public Drawable getPauseDownloadDrawable() {
         if(pauseDownloadImageHolder == null){
             return null;
-        }else if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null){
+        }else if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
             return new FixedRecycleBitmapDrawable(pauseDownloadImageHolder.getRecycleBitmapDrawable(context), fixedSize);
         }else{
             return pauseDownloadImageHolder.getRecycleBitmapDrawable(context);
@@ -682,7 +686,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable{
 
         // Set FixedSize
         Drawable finalDrawable;
-        if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null && resultDrawable instanceof RecycleBitmapDrawable){
+        if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && resultDrawable instanceof RecycleBitmapDrawable && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP){
             finalDrawable = new FixedRecycleBitmapDrawable((RecycleBitmapDrawable) resultDrawable, fixedSize);
         }else{
             finalDrawable = resultDrawable;
