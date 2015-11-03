@@ -64,8 +64,8 @@ public class Configuration {
     private boolean lowQualityImage; // 是否返回低质量的图片
     private MobileNetworkPauseDownloadManager mobileNetworkPauseDownloadManager;
 
-    public Configuration(Context context){
-        this.context = context;
+    public Configuration(Context tempContext){
+        this.context = tempContext.getApplicationContext();
         this.diskCache = new LruDiskCache(context);
         this.memoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory()/8));
         this.imageDecoder = new DefaultImageDecoder();
