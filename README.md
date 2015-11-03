@@ -114,13 +114,13 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 
 ```groovy
 dependencies{
-	compile 'me.xiaopan:sketch:2.0.0'
+	compile 'me.xiaopan:sketch:2.1.0'
 }
 ```
 
 ``离线模式（Offline work）``
 
-首先到[releases](https://github.com/xiaopansky/Sketch/releases)页面下载最新版的aar包（`这里以sketch-2.0.0.aar为例，具体请以你下载到的文件名称为准`），并放到你module的libs目录下
+首先到[releases](https://github.com/xiaopansky/Sketch/releases)页面下载最新版的aar包（`这里以sketch-2.1.0.aar为例，具体请以你下载到的文件名称为准`），并放到你module的libs目录下
 
 然后在你module的build.gradle文件中添加以下代码：
 ```groovy
@@ -131,16 +131,16 @@ repositories{
 }
 
 dependencies{
-    compile(name:'sketch-2.0.0', ext:'aar')
+    compile(name:'sketch-2.1.0', ext:'aar')
 }
 ```
 最后同步一下Gradle即可
 
 #####使用Eclipse（Use Eclipse）
-1. 首先到[releases](https://github.com/xiaopansky/Sketch/releases)页面下载最新版的aar包（`这里以sketch-2.0.0.aar为例，具体请以你下载到的文件名称为准`）
+1. 首先到[releases](https://github.com/xiaopansky/Sketch/releases)页面下载最新版的aar包（`这里以sketch-2.1.0.aar为例，具体请以你下载到的文件名称为准`）
 2. 然后改后缀名为zip并解压
-3. 接下来将classes.jar文件重命名为sketch-2.0.0.jar
-4. 最后将sketch-2.0.0.jar和jni目录下的全部文件拷贝到你的项目的libs目录下即可
+3. 接下来将classes.jar文件重命名为sketch-2.1.0.jar
+4. 最后将sketch-2.1.0.jar和jni目录下的全部文件拷贝到你的项目的libs目录下即可
 
 ####2. 配置最低版本（Configure min sdk version）
 Sketch最低兼容API v8

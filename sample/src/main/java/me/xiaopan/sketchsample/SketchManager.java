@@ -5,10 +5,8 @@ import android.widget.ImageView;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.DisplayOptions;
-import me.xiaopan.sketch.FailureImageHolder;
 import me.xiaopan.sketch.LoadOptions;
-import me.xiaopan.sketch.LoadingImageHolder;
-import me.xiaopan.sketch.PauseDownloadImageHolder;
+import me.xiaopan.sketch.ImageHolder;
 import me.xiaopan.sketch.Resize;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
@@ -49,9 +47,9 @@ public class SketchManager {
         RoundedCornerImageProcessor roundedCornerImageProcessor = new RoundedCornerImageProcessor(DeviceUtils.dp2px(context, 10));
         Resize appIconSize = new Resize(DeviceUtils.dp2px(context, 60), DeviceUtils.dp2px(context, 60), ImageView.ScaleType.CENTER_CROP);
         Sketch.putOptions(OptionsType.APP_ICON, new DisplayOptions()
-                        .setLoadingImage(new LoadingImageHolder(R.drawable.image_loading).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
-                        .setFailureImage(new FailureImageHolder(R.drawable.image_failure).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
-                        .setPauseDownloadImage(new PauseDownloadImageHolder(R.drawable.image_pause_download).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
+                        .setLoadingImage(new ImageHolder(R.drawable.image_loading).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
+                        .setFailureImage(new ImageHolder(R.drawable.image_failure).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
+                        .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
                         .setDecodeGifImage(false)
                         .setResizeByFixedSize(true)
                         .setForceUseResize(true)
@@ -64,9 +62,9 @@ public class SketchManager {
         );
 
         Sketch.putOptions(OptionsType.NORMAL_CIRCULAR, new DisplayOptions()
-                        .setLoadingImage(new LoadingImageHolder(R.drawable.image_loading).setImageProcessor(CircleImageProcessor.getInstance()))
-                        .setFailureImage(new FailureImageHolder(R.drawable.image_failure).setImageProcessor(CircleImageProcessor.getInstance()))
-                        .setPauseDownloadImage(new PauseDownloadImageHolder(R.drawable.image_pause_download).setImageProcessor(CircleImageProcessor.getInstance()))
+                        .setLoadingImage(new ImageHolder(R.drawable.image_loading).setImageProcessor(CircleImageProcessor.getInstance()))
+                        .setFailureImage(new ImageHolder(R.drawable.image_failure).setImageProcessor(CircleImageProcessor.getInstance()))
+                        .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download).setImageProcessor(CircleImageProcessor.getInstance()))
                         .setDecodeGifImage(false)
                         .setImageDisplayer(transitionImageDisplayer)
                         .setImageProcessor(CircleImageProcessor.getInstance())

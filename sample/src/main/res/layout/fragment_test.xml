@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <me.xiaopan.sketchsample.widget.MyImageView
+        android:id="@+id/image1"
+        android:layout_width="200dp"
+        android:layout_height="250dp"
+        android:layout_marginTop="16dp"
+        android:layout_gravity="center_horizontal"
+        android:scaleType="centerCrop"
+        android:background="#88ff0000"/>
+
+    <me.xiaopan.sketchsample.widget.MyImageView
+        android:id="@+id/image2"
+        android:layout_width="200dp"
+        android:layout_height="250dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:background="#8800ff00"/>
+
+</LinearLayout>
