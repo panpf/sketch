@@ -28,27 +28,23 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
             this.bitmapWidth = bitmap.getWidth();
             this.bitmapHeight = bitmap.getHeight();
             this.paint = new Paint(DEFAULT_PAINT_FLAGS);
-            this.srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
             this.destRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
-
-            if(srcRect != null){
-                this.fixedSize = fixedSize;
-                if(fixedSize == null){
-                    srcRect.set(0, 0, bitmapWidth, bitmapHeight);
-                    setBounds(0, 0, bitmapWidth, bitmapHeight);
+            this.fixedSize = fixedSize;
+            if(fixedSize == null){
+                this.srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
+                setBounds(0, 0, bitmapWidth, bitmapHeight);
+            }else{
+                int fixedWidth = fixedSize.getWidth();
+                int fixedHeight = fixedSize.getHeight();
+                if(bitmapWidth == 0 || bitmapHeight == 0){
+                    this.srcRect = new Rect(0, 0, 0, 0);
+                }else if((float)bitmapWidth/(float)bitmapHeight == (float)fixedWidth/(float)fixedHeight){
+                    this.srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
                 }else{
-                    int fixedWidth = fixedSize.getWidth();
-                    int fixedHeight = fixedSize.getHeight();
-                    if(bitmapWidth == 0 || bitmapHeight == 0){
-                        srcRect.set(0, 0, 0, 0);
-                    }else if((float)bitmapWidth/(float)bitmapHeight == (float)fixedWidth/(float)fixedHeight){
-                        srcRect.set(0, 0, bitmapWidth, bitmapHeight);
-                    }else{
-                        SketchUtils.mapping(bitmapWidth, bitmapHeight, fixedWidth, fixedHeight, srcRect);
-                    }
-                    setBounds(0, 0, fixedSize.getWidth(), fixedSize.getHeight());
+                    this.srcRect = new Rect();
+                    SketchUtils.mapping(bitmapWidth, bitmapHeight, fixedWidth, fixedHeight, srcRect);
                 }
-                invalidateSelf();
+                setBounds(0, 0, fixedSize.getWidth(), fixedSize.getHeight());
             }
         }
     }
