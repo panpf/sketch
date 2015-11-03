@@ -44,17 +44,22 @@ public class DefaultImageDecoder implements ImageDecoder {
 
     @Override
 	public Object decode(LoadRequest loadRequest){
-        if(loadRequest.getUriScheme() == UriScheme.HTTP || loadRequest.getUriScheme() == UriScheme.HTTPS){
-            return decodeHttpOrHttps(loadRequest);
-        }else if(loadRequest.getUriScheme() == UriScheme.FILE){
-            return decodeFile(loadRequest);
-        }else if(loadRequest.getUriScheme() == UriScheme.CONTENT){
-            return decodeContent(loadRequest);
-        }else if(loadRequest.getUriScheme() == UriScheme.ASSET){
-            return decodeAsset(loadRequest);
-        }else if(loadRequest.getUriScheme() == UriScheme.DRAWABLE){
-            return decodeDrawable(loadRequest);
-        }else{
+        try{
+            if(loadRequest.getUriScheme() == UriScheme.HTTP || loadRequest.getUriScheme() == UriScheme.HTTPS){
+                return decodeHttpOrHttps(loadRequest);
+            }else if(loadRequest.getUriScheme() == UriScheme.FILE){
+                return decodeFile(loadRequest);
+            }else if(loadRequest.getUriScheme() == UriScheme.CONTENT){
+                return decodeContent(loadRequest);
+            }else if(loadRequest.getUriScheme() == UriScheme.ASSET){
+                return decodeAsset(loadRequest);
+            }else if(loadRequest.getUriScheme() == UriScheme.DRAWABLE){
+                return decodeDrawable(loadRequest);
+            }else{
+                return null;
+            }
+        }catch(Throwable e){
+            e.printStackTrace();
             return null;
         }
 	}
