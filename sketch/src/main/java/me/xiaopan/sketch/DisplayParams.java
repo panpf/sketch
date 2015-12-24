@@ -46,5 +46,4 @@ public class DisplayParams {
     public ImageHolder loadFailImageHolder;
     public ImageHolder pauseDownloadImageHolder;
     public ImageDisplayer imageDisplayer;
-    public DisplayListener displayListener;
 }

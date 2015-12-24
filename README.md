@@ -1,4 +1,4 @@
-# ![Logo](docs/logo.png) Sketch
+#![Logo](docs/logo.png) Sketch
 
 Sketch是用于Android上的一个图片加载器，目的是为了帮助开发者从本地或网络读取图片，然后处理并显示在页面上
 
@@ -27,9 +27,9 @@ Sketch is for Android on a picture of the loader, the purpose is to help the dev
 >* ``自动选择合适的Bimtap.Config``. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，最明显的例子就是对于JPEG类型的图片使用Bitmap.Config.RGB_565解码。
 
 ###示例APP（Sample app）
-![SampleApp](docs/qr_download.png)
+![SampleApp](docs/sketch-sample.png)
 
-扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](https://github.com/xiaopansky/Sketch/raw/master/docs/sample-2.1.0.apk)
+扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](https://github.com/xiaopansky/Sketch/raw/master/docs/sketch-sample.apk)
 
 ###简介（Introduction）
 
@@ -69,7 +69,7 @@ sketchImageView.displayImage("/sdcard/google_play.apk");
 // display resource drawable
 sketchImageView.displayResourceImage(R.drawable.sample);
 
-// display image from asset 
+// display image from asset
 sketchImageView.displayAssetImage("sample.jpg");
 
 // display image from URI
@@ -107,6 +107,8 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 |pauseDownloadImage|-|-|null|
 
 ###使用指南（Usage guide）
+`lastVersionName`是最新版本名称的意思，你可以在[release](https://github.com/xiaopansky/Sketch/releases)页面看到最新的版本名称
+
 ####1. 导入Sketch（Import Sketch to your project）
 
 #####使用Gradle（Use Gradle）
@@ -114,13 +116,13 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 
 ```groovy
 dependencies{
-	compile 'me.xiaopan:sketch:2.1.0'
+	compile 'me.xiaopan:sketch:lastVersionName'
 }
 ```
 
 ``离线模式（Offline work）``
 
-首先到[JCenter](https://bintray.com/xiaopansky/maven/Sketch/view)下载最新版的aar包（`这里以sketch-2.1.0.aar为例，具体请以你下载到的文件名称为准`），并放到你module的libs目录下
+首先到[JCenter](https://bintray.com/xiaopansky/maven/Sketch/view)下载最新版的aar包，然后放到你module的libs目录下
 
 然后在你module的build.gradle文件中添加以下代码：
 ```groovy
@@ -131,16 +133,16 @@ repositories{
 }
 
 dependencies{
-    compile(name:'sketch-2.1.0', ext:'aar')
+    compile(name:'sketch-lastVersionName', ext:'aar')
 }
 ```
 最后同步一下Gradle即可
 
 #####使用Eclipse（Use Eclipse）
-1. 首先到[JCenter](https://bintray.com/xiaopansky/maven/Sketch/view)下载最新版的aar包（`这里以sketch-2.1.0.aar为例，具体请以你下载到的文件名称为准`）
+1. 首先到[JCenter](https://bintray.com/xiaopansky/maven/Sketch/view)下载最新版的aar包
 2. 然后改后缀名为zip并解压
-3. 接下来将classes.jar文件重命名为sketch-2.1.0.jar
-4. 最后将sketch-2.1.0.jar和jni目录下的全部文件拷贝到你的项目的libs目录下即可
+3. 接下来将classes.jar文件重命名为sketch-lastVersionName.jar
+4. 最后将sketch-lastVersionName.jar和jni目录下的全部文件拷贝到你的项目的libs目录下即可
 
 ####2. 配置最低版本（Configure min sdk version）
 Sketch最低兼容API v8
@@ -176,7 +178,7 @@ android {
 ```xml
 <manifest
 	...
-	>  
+	>
 	<uses-permission android:name="android.permission.INTERNET"/>
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
@@ -244,13 +246,13 @@ public View getView(int position, View convertView, ViewGroup parent) {
 ```java
 /*
  * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.

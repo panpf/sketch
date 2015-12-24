@@ -118,17 +118,15 @@ public class DefaultDisplayHelper implements DisplayHelper{
             this.requestLevelFrom = RequestLevelFrom.PAUSE_LOAD;
         }
 
-        if(sketchImageViewInterface != null){
-            this.scaleType = sketchImageViewInterface.getScaleType();
-            this.fixedSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageFixedSize(sketchImageViewInterface);
-            this.maxSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageMaxSize(sketchImageViewInterface);
+        this.scaleType = sketchImageViewInterface.getScaleType();
+        this.fixedSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageFixedSize(sketchImageViewInterface);
+        this.maxSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageMaxSize(sketchImageViewInterface);
 
-            this.sketchImageViewInterface.onDisplay();
-            options(this.sketchImageViewInterface.getDisplayOptions());
+        this.sketchImageViewInterface.onDisplay();
+        options(this.sketchImageViewInterface.getDisplayOptions());
 
-            this.displayListener = this.sketchImageViewInterface.getDisplayListener(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD);
-            this.progressListener = this.sketchImageViewInterface.getProgressListener();
-        }
+        this.displayListener = sketchImageViewInterface.getDisplayListener(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD);
+        this.progressListener = sketchImageViewInterface.getProgressListener();
 
         return this;
     }
@@ -162,12 +160,12 @@ public class DefaultDisplayHelper implements DisplayHelper{
         this.loadingImageHolder = displayParams.loadingImageHolder;
         this.failureImageHolder = displayParams.loadFailImageHolder;
         this.pauseDownloadImageHolder = displayParams.pauseDownloadImageHolder;
-        this.displayListener = displayParams.displayListener;
 
         this.sketchImageViewInterface.onDisplay();
 
-        this.displayListener = this.sketchImageViewInterface.getDisplayListener(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD);
-        this.progressListener = this.sketchImageViewInterface.getProgressListener();
+        this.scaleType = sketchImageViewInterface.getScaleType();
+        this.displayListener = sketchImageViewInterface.getDisplayListener(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD);
+        this.progressListener = sketchImageViewInterface.getProgressListener();
 
         return this;
     }
@@ -231,7 +229,6 @@ public class DefaultDisplayHelper implements DisplayHelper{
             displayParams.loadingImageHolder = loadingImageHolder;
             displayParams.loadFailImageHolder = failureImageHolder;
             displayParams.pauseDownloadImageHolder = pauseDownloadImageHolder;
-            displayParams.displayListener = displayListener;
 
             sketchImageViewInterface.setDisplayParams(displayParams);
         }

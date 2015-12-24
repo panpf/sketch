@@ -17,13 +17,13 @@ loadProperties projectPath+'/local.properties'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "23.0.1"
+    buildToolsVersion '23.0.2'
 
     defaultConfig {
         minSdkVersion 8
         targetSdkVersion 22
-        versionCode 210
-        versionName "2.1.0"
+        versionCode 211
+        versionName "2.1.1"
     }
 
     signingConfigs{
