@@ -1,10 +1,10 @@
-#![Logo](docs/logo.png) Sketch
+#![Logo](https://github.com/xiaopansky/Sketch/raw/master/docs/logo.png) Sketch
 
 Sketch是用于Android上的一个图片加载器，目的是为了帮助开发者从本地或网络读取图片，然后处理并显示在页面上
 
 Sketch is for Android on a picture of the loader, the purpose is to help the developers to read the image from a local or network, then processed and displayed on the page
 
-![sample](docs/sample.jpg)
+![sample](https://github.com/xiaopansky/Sketch/raw/master/docs/sample.jpg)
 
 ###特点（Features）
 >* ``支持GIF图片``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示GIF图片，感谢koral--
@@ -27,7 +27,7 @@ Sketch is for Android on a picture of the loader, the purpose is to help the dev
 >* ``自动选择合适的Bimtap.Config``. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，最明显的例子就是对于JPEG类型的图片使用Bitmap.Config.RGB_565解码。
 
 ###示例APP（Sample app）
-![SampleApp](docs/sketch-sample.png)
+![SampleApp](https://github.com/xiaopansky/Sketch/raw/master/docs/sketch-sample.png)
 
 扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](https://github.com/xiaopansky/Sketch/raw/master/docs/sketch-sample.apk)
 
@@ -107,88 +107,26 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 |pauseDownloadImage|-|-|null|
 
 ###使用指南（Usage guide）
+
+####1. 导入Sketch（Import Sketch）
+add gradle dependency
+```groovy
+dependencies{
+	compile compile 'me.xiaopan:sketch:lastVersionName'
+}
+```
 `lastVersionName`是最新版本名称的意思，你可以在[release](https://github.com/xiaopansky/Sketch/releases)页面看到最新的版本名称
 
-####1. 导入Sketch（Import Sketch to your project）
+最低支持`Android2.2`
 
-#####使用Gradle（Use Gradle）
-``从JCenter仓库导入（Import from jcenter）``
-
-```groovy
-dependencies{
-	compile 'me.xiaopan:sketch:lastVersionName'
-}
-```
-
-``离线模式（Offline work）``
-
-首先到[JCenter](https://bintray.com/xiaopansky/maven/Sketch/view)下载最新版的aar包，然后放到你module的libs目录下
-
-然后在你module的build.gradle文件中添加以下代码：
-```groovy
-repositories{
-    flatDir(){
-        dirs 'libs'
-    }
-}
-
-dependencies{
-    compile(name:'sketch-lastVersionName', ext:'aar')
-}
-```
-最后同步一下Gradle即可
-
-#####使用Eclipse（Use Eclipse）
-1. 首先到[JCenter](https://bintray.com/xiaopansky/maven/Sketch/view)下载最新版的aar包
-2. 然后改后缀名为zip并解压
-3. 接下来将classes.jar文件重命名为sketch-lastVersionName.jar
-4. 最后将sketch-lastVersionName.jar和jni目录下的全部文件拷贝到你的项目的libs目录下即可
-
-####2. 配置最低版本（Configure min sdk version）
-Sketch最低兼容API v8
-
-#####使用Gradle（Use Gradle）
-在app/build.gradle文件文件中配置最低版本为8
-```groovy
-android {
-	...
-
-    defaultConfig {
-        minSdkVersion 8
-        ...
-    }
-}
-```
-
-#####使用Eclipse（Use Eclipse）
-在AndroidManifest.xml文件中配置最低版本为8
+然后在AndroidManifest.xml文件中添加以下权限
 ```xml
-<manifest
-	...
-	>
-    <uses-sdk android:minSdkVersion="8"/>
-    <application>
-    ...
-    </application>
-</manifest>
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 ```
 
-####3. 配置权限（Configure the required permissions）
-在AndroidManifest.xml文件中添加以下权限
-```xml
-<manifest
-	...
-	>
-	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <application>
-    ...
-    </application>
-</manifest>
-```
-
-####4. 在XML中使用SketchImageView
+####2. 在XML中使用SketchImageView
 res/layout/item_user.xml
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -199,22 +137,14 @@ res/layout/item_user.xml
   />
 ```
 
-####5. 在Adapter中设置URI显示图片
+####3. 在代码中设置URI显示图片
 ```java
-@Override
-public View getView(int position, View convertView, ViewGroup parent) {
-	if(convertView == null){
-		convertView = LayoutInflater.from(context).inflate(R.layout.item_user, parent, false);
-	}
-
-	SketchImageView headImageView = (SketchImageView) convertView;
-	headImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
-	return convertView;
-}
+SketchImageView headImageView = ...;
+headImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
 ```
 [点击查看SketchImageView详细使用说明](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
 
-####6. 你可能还感兴趣的功能：
+####4. 你可能还感兴趣的功能：
 增强用户体验：
 >* [使用SketchImageView代替ImageView显示图片](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
 >* [使用ImageProcessor将图片变成圆形的、圆角的或者高斯模糊的](https://github.com/xiaopansky/Sketch/wiki/ImageProcessor)
@@ -243,20 +173,16 @@ public View getView(int position, View convertView, ViewGroup parent) {
 [koral](https://github.com/koral--) - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
 
 ###License
-```java
-/*
- * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-```
+    Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
