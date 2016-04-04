@@ -25,7 +25,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * LoadHelper
  */
-public class DefaultLoadHelper implements LoadHelper{
+public class DefaultLoadHelper implements LoadHelper {
     private static final String NAME = "DefaultLoadHelper";
 
     // 基本属性
@@ -50,28 +50,29 @@ public class DefaultLoadHelper implements LoadHelper{
 
     /**
      * 创建加载请求生成器
+     *
      * @param sketch Sketch
-     * @param uri 图片Uri，支持以下几种
-     * <blockquote>"http://site.com/image.png"; // from Web
-     * <br>"https://site.com/image.png"; // from Web
-     * <br>"/mnt/sdcard/image.png"; // from SD card
-     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     * <br>"content://media/external/audio/albumart/13"; // from content provider
-     * <br>"asset://image.png"; // from assets
-     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     * </blockquote>
+     * @param uri    图片Uri，支持以下几种
+     *               <blockquote>"http://site.com/image.png"; // from Web
+     *               <br>"https://site.com/image.png"; // from Web
+     *               <br>"/mnt/sdcard/image.png"; // from SD card
+     *               <br>"/mnt/sdcard/app.apk"; // from SD card apk file
+     *               <br>"content://media/external/audio/albumart/13"; // from content provider
+     *               <br>"asset://image.png"; // from assets
+     *               <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+     *               </blockquote>
      */
     public DefaultLoadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
         this.uri = uri;
-        if(sketch.getConfiguration().isPauseDownload()){
+        if (sketch.getConfiguration().isPauseDownload()) {
             this.requestLevel = RequestLevel.LOCAL;
             this.requestLevelFrom = RequestLevelFrom.PAUSE_DOWNLOAD;
         }
     }
 
     @Override
-    public DefaultLoadHelper name(String name){
+    public DefaultLoadHelper name(String name) {
         this.name = name;
         return this;
     }
@@ -89,19 +90,19 @@ public class DefaultLoadHelper implements LoadHelper{
     }
 
     @Override
-    public DefaultLoadHelper maxSize(MaxSize maxSize){
+    public DefaultLoadHelper maxSize(MaxSize maxSize) {
         this.maxSize = maxSize;
         return this;
     }
 
     @Override
-    public DefaultLoadHelper maxSize(int width, int height){
+    public DefaultLoadHelper maxSize(int width, int height) {
         this.maxSize = new MaxSize(width, height);
         return this;
     }
 
     @Override
-    public DefaultLoadHelper resize(int width, int height){
+    public DefaultLoadHelper resize(int width, int height) {
         this.resize = new Resize(width, height);
         return this;
     }
@@ -125,49 +126,49 @@ public class DefaultLoadHelper implements LoadHelper{
     }
 
     @Override
-    public DefaultLoadHelper processor(ImageProcessor processor){
+    public DefaultLoadHelper processor(ImageProcessor processor) {
         this.imageProcessor = processor;
         return this;
     }
 
     @Override
-    public DefaultLoadHelper listener(LoadListener loadListener){
+    public DefaultLoadHelper listener(LoadListener loadListener) {
         this.loadListener = loadListener;
         return this;
     }
 
     @Override
-    public DefaultLoadHelper progressListener(ProgressListener progressListener){
+    public DefaultLoadHelper progressListener(ProgressListener progressListener) {
         this.progressListener = progressListener;
         return this;
     }
 
     @Override
-    public DefaultLoadHelper options(LoadOptions options){
-        if(options == null){
+    public DefaultLoadHelper options(LoadOptions options) {
+        if (options == null) {
             return this;
         }
 
         this.cacheInDisk = options.isCacheInDisk();
-        if(this.maxSize == null){
+        if (this.maxSize == null) {
             this.maxSize = options.getMaxSize();
         }
-        if(this.resize == null && options.getResize() != null){
+        if (this.resize == null && options.getResize() != null) {
             this.resize = new Resize(options.getResize());
         }
         this.forceUseResize = options.isForceUseResize();
         this.lowQualityImage = options.isLowQualityImage();
-        if(this.imageProcessor == null){
+        if (this.imageProcessor == null) {
             this.imageProcessor = options.getImageProcessor();
         }
         this.decodeGifImage = options.isDecodeGifImage();
         RequestLevel optionRequestLevel = options.getRequestLevel();
-        if(requestLevel != null && optionRequestLevel != null){
-            if(optionRequestLevel.getLevel() < requestLevel.getLevel()){
+        if (requestLevel != null && optionRequestLevel != null) {
+            if (optionRequestLevel.getLevel() < requestLevel.getLevel()) {
                 this.requestLevel = optionRequestLevel;
                 this.requestLevelFrom = null;
             }
-        }else if(optionRequestLevel != null){
+        } else if (optionRequestLevel != null) {
             this.requestLevel = optionRequestLevel;
             this.requestLevelFrom = null;
         }
@@ -176,13 +177,13 @@ public class DefaultLoadHelper implements LoadHelper{
     }
 
     @Override
-    public DefaultLoadHelper options(Enum<?> optionsName){
+    public DefaultLoadHelper options(Enum<?> optionsName) {
         return options((LoadOptions) Sketch.getOptions(optionsName));
     }
 
     @Override
-    public DefaultLoadHelper requestLevel(RequestLevel requestLevel){
-        if(requestLevel != null){
+    public DefaultLoadHelper requestLevel(RequestLevel requestLevel) {
+        if (requestLevel != null) {
             this.requestLevel = requestLevel;
             this.requestLevelFrom = null;
         }
@@ -192,23 +193,23 @@ public class DefaultLoadHelper implements LoadHelper{
     /**
      * 处理一下参数
      */
-    protected void handleParams(){
-        if(imageProcessor == null && resize != null){
+    protected void handleParams() {
+        if (imageProcessor == null && resize != null) {
             imageProcessor = sketch.getConfiguration().getDefaultCutImageProcessor();
         }
-        if(maxSize == null){
+        if (maxSize == null) {
             maxSize = sketch.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(sketch.getConfiguration().getContext());
         }
-        if(name == null){
+        if (name == null) {
             name = uri;
         }
-        if(!sketch.getConfiguration().isDecodeGifImage()){
+        if (!sketch.getConfiguration().isDecodeGifImage()) {
             decodeGifImage = false;
         }
-        if(!sketch.getConfiguration().isCacheInDisk()){
+        if (!sketch.getConfiguration().isCacheInDisk()) {
             cacheInDisk = false;
         }
-        if(sketch.getConfiguration().isLowQualityImage()){
+        if (sketch.getConfiguration().isLowQualityImage()) {
             lowQualityImage = true;
         }
     }
@@ -217,16 +218,16 @@ public class DefaultLoadHelper implements LoadHelper{
     public Request commit() {
         handleParams();
 
-        if(loadListener != null){
+        if (loadListener != null) {
             loadListener.onStarted();
         }
 
         // 验证uri参数
-        if(uri == null || "".equals(uri.trim())){
-            if(Sketch.isDebugMode()){
+        if (uri == null || "".equals(uri.trim())) {
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
             }
-            if(loadListener != null){
+            if (loadListener != null) {
                 loadListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
             }
             return null;
@@ -234,11 +235,11 @@ public class DefaultLoadHelper implements LoadHelper{
 
         // 过滤掉不支持的URI协议类型
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
-        if(uriScheme == null){
-            if(Sketch.isDebugMode()){
+        if (uriScheme == null) {
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", name));
             }
-            if(loadListener != null){
+            if (loadListener != null) {
                 loadListener.onFailed(FailCause.URI_NO_SUPPORT);
             }
             return null;

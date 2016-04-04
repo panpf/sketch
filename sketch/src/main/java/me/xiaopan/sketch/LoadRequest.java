@@ -23,7 +23,7 @@ import me.xiaopan.sketch.process.ImageProcessor;
 /**
  * 加载请求
  */
-public interface LoadRequest extends DownloadRequest{
+public interface LoadRequest extends DownloadRequest {
     /**
      * 获取新的尺寸，ImageProcessor会根据此尺寸来裁剪图片
      */
@@ -36,12 +36,14 @@ public interface LoadRequest extends DownloadRequest{
 
     /**
      * 是否强制使用resize
+     *
      * @return true：最终返回的图片尺寸一定跟resize一样
      */
     boolean isForceUseResize();
 
     /**
      * 设置是否强制使用resize
+     *
      * @param forceUseResize true：最终返回的图片尺寸一定跟resize一样
      */
     void setForceUseResize(boolean forceUseResize);
@@ -93,30 +95,35 @@ public interface LoadRequest extends DownloadRequest{
 
     /**
      * 获取缓存文件
+     *
      * @return 缓存文件
      */
     File getCacheFile();
 
     /**
      * 获取图片数据
+     *
      * @return 图片数据
      */
     byte[] getImageData();
 
     /**
      * 是否是本地APK文件
+     *
      * @return true：是
      */
     boolean isLocalApkFile();
 
     /**
      * 获取图片类型
+     *
      * @return 图片类型
      */
     String getMimeType();
 
     /**
      * 设置图片类型
+     *
      * @param mimeType 图片类型
      */
     void setMimeType(String mimeType);

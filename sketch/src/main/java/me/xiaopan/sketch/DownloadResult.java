@@ -22,7 +22,7 @@ public class DownloadResult {
     private Object result;
     private boolean fromNetwork;
 
-    private DownloadResult(){
+    private DownloadResult() {
 
     }
 
@@ -42,14 +42,14 @@ public class DownloadResult {
         this.fromNetwork = fromNetwork;
     }
 
-    public static DownloadResult createByFile(File resultFile, boolean fromNetwork){
+    public static DownloadResult createByFile(File resultFile, boolean fromNetwork) {
         DownloadResult result = new DownloadResult();
         result.setResult(resultFile);
         result.setFromNetwork(fromNetwork);
         return result;
     }
 
-    public static DownloadResult createByByteArray(byte[] resultDate, boolean fromNetwork){
+    public static DownloadResult createByByteArray(byte[] resultDate, boolean fromNetwork) {
         DownloadResult result = new DownloadResult();
         result.setResult(resultDate);
         result.setFromNetwork(fromNetwork);

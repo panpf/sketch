@@ -16,43 +16,43 @@
 
 package me.xiaopan.sketch;
 
-public class FixedSize implements ImageSize{
-	private int width;
-	private int height;
+public class FixedSize implements ImageSize {
+    private int width;
+    private int height;
 
-	public FixedSize(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
+    public FixedSize(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
 
-	@Override
-	public int getWidth() {
-		return width;
-	}
+    @Override
+    public int getWidth() {
+        return width;
+    }
 
-	@Override
-	public int getHeight() {
-		return height;
-	}
+    @Override
+    public int getHeight() {
+        return height;
+    }
 
-	@Override
-	public void set(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
+    @Override
+    public void set(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
 
-	@Override
-	public String getIdentifier(){
-		return appendIdentifier(new StringBuilder()).toString();
-	}
+    @Override
+    public String getIdentifier() {
+        return appendIdentifier(new StringBuilder()).toString();
+    }
 
-	@Override
-	public StringBuilder appendIdentifier(StringBuilder builder){
-		builder.append("MaxSize(");
-		builder.append(width);
-		builder.append("x");
-		builder.append(height);
-		builder.append(")");
-		return builder;
-	}
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        builder.append("MaxSize(");
+        builder.append(width);
+        builder.append("x");
+        builder.append(height);
+        builder.append(")");
+        return builder;
+    }
 }

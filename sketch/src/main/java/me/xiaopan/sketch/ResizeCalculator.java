@@ -10,7 +10,7 @@ public interface ResizeCalculator {
 
     StringBuilder appendIdentifier(StringBuilder builder);
 
-    class Result{
+    class Result {
         public int imageWidth;
         public int imageHeight;
         public Rect srcRect;

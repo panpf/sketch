@@ -21,15 +21,18 @@ import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.Log;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 import me.xiaopan.sketch.process.ImageProcessor;
+import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 加载请求
  */
-public class DefaultLoadRequest implements LoadRequest, Runnable{
+public class DefaultLoadRequest implements LoadRequest, Runnable {
     private static final int WHAT_CALLBACK_COMPLETED = 202;
     private static final int WHAT_CALLBACK_FAILED = 203;
     private static final int WHAT_CALLBACK_CANCELED = 204;
@@ -38,27 +41,27 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
 
     // Base fields
     private Sketch sketch;  // Sketch
-    private String uri;	// 图片地址
-    private String name;	// 名称，用于在输出LOG的时候区分不同的请求
-    private UriScheme uriScheme;	// Uri协议格式
+    private String uri;    // 图片地址
+    private String name;    // 名称，用于在输出LOG的时候区分不同的请求
+    private UriScheme uriScheme;    // Uri协议格式
     private RequestLevel requestLevel = RequestLevel.NET;  // 请求Level
     private RequestLevelFrom requestLevelFrom; // 请求Level的来源
 
     // Download fields
-    private boolean cacheInDisk = true;	// 是否开启磁盘缓存
+    private boolean cacheInDisk = true;    // 是否开启磁盘缓存
     private ProgressListener progressListener;  // 下载进度监听器
 
     // Load fields
-    private Resize resize;	// 裁剪尺寸，ImageProcessor会根据此尺寸来裁剪图片
+    private Resize resize;    // 裁剪尺寸，ImageProcessor会根据此尺寸来裁剪图片
     private boolean decodeGifImage = true;  // 是否解码GIF图片
     private boolean forceUseResize; // 是否强制使用resize
     private boolean lowQualityImage;   // 是否返回低质量的图片
-    private MaxSize maxSize;	// 最大尺寸，用于读取图片时计算inSampleSize
-    private LoadListener loadListener;	// 监听器
-    private ImageProcessor imageProcessor;	// 图片处理器
+    private MaxSize maxSize;    // 最大尺寸，用于读取图片时计算inSampleSize
+    private LoadListener loadListener;    // 监听器
+    private ImageProcessor imageProcessor;    // 图片处理器
 
     // Runtime fields
-    private File cacheFile;	// 缓存文件
+    private File cacheFile;    // 缓存文件
     private byte[] imageData;
     private Drawable resultBitmap;
     private String mimeType;
@@ -74,7 +77,9 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
         this.uriScheme = uriScheme;
     }
 
-    /****************************************** Base methods ******************************************/
+    /******************************************
+     * Base methods
+     ******************************************/
     @Override
     public Sketch getSketch() {
         return sketch;
@@ -110,7 +115,9 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
         this.requestLevelFrom = requestLevelFrom;
     }
 
-    /****************************************** Download methods ******************************************/
+    /******************************************
+     * Download methods
+     ******************************************/
     @Override
     public void setCacheInDisk(boolean cacheInDisk) {
         this.cacheInDisk = cacheInDisk;
@@ -126,7 +133,9 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
         this.progressListener = progressListener;
     }
 
-    /****************************************** Load methods ******************************************/
+    /******************************************
+     * Load methods
+     ******************************************/
     @Override
     public Resize getResize() {
         return resize;
@@ -192,7 +201,9 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
         this.decodeGifImage = isDecodeGifImage;
     }
 
-    /****************************************** Runtime methods ******************************************/
+    /******************************************
+     * Runtime methods
+     ******************************************/
     @Override
     public File getCacheFile() {
         return cacheFile;
@@ -232,7 +243,9 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
         return cancelCause;
     }
 
-    /****************************************** Other methods ******************************************/
+    /******************************************
+     * Other methods
+     ******************************************/
     @Override
     public boolean isFinished() {
         return requestStatus == RequestStatus.COMPLETED || requestStatus == RequestStatus.CANCELED || requestStatus == RequestStatus.FAILED;
@@ -245,7 +258,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
 
     @Override
     public boolean cancel() {
-        if(isFinished()){
+        if (isFinished()) {
             return false;
         }
         toCanceledStatus(CancelCause.NORMAL);
@@ -275,7 +288,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
 
     @Override
     public void updateProgress(int totalLength, int completedLength) {
-        if(progressListener != null){
+        if (progressListener != null) {
             sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
         }
     }
@@ -295,11 +308,11 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
 
     @Override
     public void invokeInMainThread(Message msg) {
-        switch (msg.what){
+        switch (msg.what) {
             case WHAT_CALLBACK_COMPLETED:
                 handleCompletedOnMainThread();
                 break;
-            case WHAT_CALLBACK_PROGRESS :
+            case WHAT_CALLBACK_PROGRESS:
                 updateProgressOnMainThread(msg.arg1, msg.arg2);
                 break;
             case WHAT_CALLBACK_FAILED:
@@ -309,14 +322,14 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
                 handleCanceledOnMainThread();
                 break;
             default:
-                new IllegalArgumentException("unknown message what: "+msg.what).printStackTrace();
+                new IllegalArgumentException("unknown message what: " + msg.what).printStackTrace();
                 break;
         }
     }
 
     @Override
     public void run() {
-        switch(runStatus){
+        switch (runStatus) {
             case DISPATCH:
                 executeDispatch();
                 break;
@@ -327,7 +340,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
                 executeDownload();
                 break;
             default:
-                new IllegalArgumentException("unknown runStatus: "+runStatus.name()).printStackTrace();
+                new IllegalArgumentException("unknown runStatus: " + runStatus.name()).printStackTrace();
                 break;
         }
     }
@@ -337,25 +350,25 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
      */
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
-        if(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS){
-            File diskCacheFile = cacheInDisk ? sketch.getConfiguration().getDiskCache().getCacheFile(uri):null;
-            if(diskCacheFile != null && diskCacheFile.exists()){
+        if (uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS) {
+            File diskCacheFile = cacheInDisk ? sketch.getConfiguration().getDiskCache().getCacheFile(uri) : null;
+            if (diskCacheFile != null && diskCacheFile.exists()) {
                 this.cacheFile = diskCacheFile;
                 this.imageFrom = ImageFrom.DISK_CACHE;
                 postRunLoad();
-                if(Sketch.isDebugMode()){
+                if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
                 }
-            }else{
-                if(requestLevel == RequestLevel.LOCAL){
-                    if(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD){
+            } else {
+                if (requestLevel == RequestLevel.LOCAL) {
+                    if (requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD) {
                         toCanceledStatus(CancelCause.PAUSE_DOWNLOAD);
-                        if(Sketch.isDebugMode()){
+                        if (Sketch.isDebugMode()) {
                             Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", name));
                         }
-                    }else{
+                    } else {
                         toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
-                        if(Sketch.isDebugMode()){
+                        if (Sketch.isDebugMode()) {
                             Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "requestLevel is local", " - ", name));
                         }
                     }
@@ -363,14 +376,14 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
                 }
 
                 postRunDownload();
-                if(Sketch.isDebugMode()){
+                if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "download", " - ", name));
                 }
             }
-        }else{
+        } else {
             this.imageFrom = ImageFrom.LOCAL;
             postRunLoad();
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "local", " - ", name));
             }
         }
@@ -380,8 +393,8 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
      * 执行下载
      */
     private void executeDownload() {
-        if(isCanceled()){
-            if(Sketch.isDebugMode()){
+        if (isCanceled()) {
+            if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "startDownload", " - ", name));
             }
             return;
@@ -389,22 +402,22 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
 
         DownloadResult downloadResult = sketch.getConfiguration().getImageDownloader().download(this);
 
-        if(isCanceled()){
-            if(Sketch.isDebugMode()){
+        if (isCanceled()) {
+            if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "downloadAfter", " - ", name));
             }
             return;
         }
 
-        if(downloadResult != null  && downloadResult.getResult() != null){
-            if(downloadResult.getResult().getClass().isAssignableFrom(File.class)){
+        if (downloadResult != null && downloadResult.getResult() != null) {
+            if (downloadResult.getResult().getClass().isAssignableFrom(File.class)) {
                 this.cacheFile = (File) downloadResult.getResult();
-            }else{
+            } else {
                 this.imageData = (byte[]) downloadResult.getResult();
             }
-            this.imageFrom = downloadResult.isFromNetwork()?ImageFrom.NETWORK:ImageFrom.DISK_CACHE;
+            this.imageFrom = downloadResult.isFromNetwork() ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
             postRunLoad();
-        }else{
+        } else {
             toFailedStatus(FailCause.DOWNLOAD_FAIL);
         }
     }
@@ -412,9 +425,9 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
     /**
      * 执行加载
      */
-    private void executeLoad(){
-        if(isCanceled()){
-            if(Sketch.isDebugMode()){
+    private void executeLoad() {
+        if (isCanceled()) {
+            if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "startLoad", " - ", name));
             }
             return;
@@ -423,33 +436,33 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
         setRequestStatus(RequestStatus.LOADING);
 
         // 如果是本地APK文件就尝试得到其缓存文件
-        if(isLocalApkFile()){
+        if (isLocalApkFile()) {
             File apkIconCacheFile = getApkCacheIconFile();
-            if(apkIconCacheFile != null){
+            if (apkIconCacheFile != null) {
                 this.cacheFile = apkIconCacheFile;
             }
         }
 
         // 解码
         Object decodeResult = sketch.getConfiguration().getImageDecoder().decode(this);
-        if(decodeResult == null){
+        if (decodeResult == null) {
             toFailedStatus(FailCause.DECODE_FAIL);
         }
 
-        if(decodeResult instanceof Bitmap){
+        if (decodeResult instanceof Bitmap) {
             Bitmap bitmap = (Bitmap) decodeResult;
-            if(!bitmap.isRecycled()){
-                if(Sketch.isDebugMode()){
+            if (!bitmap.isRecycled()) {
+                if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "new bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
                 }
-            }else{
-                if(Sketch.isDebugMode()){
+            } else {
+                if (Sketch.isDebugMode()) {
                     Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "decode failed bitmap recycled", " - ", "decode after", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
                 }
             }
 
-            if(isCanceled()){
-                if(Sketch.isDebugMode()){
+            if (isCanceled()) {
+                if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "decode after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
                 }
                 bitmap.recycle();
@@ -457,55 +470,55 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
             }
 
             //处理
-            if(!bitmap.isRecycled()){
+            if (!bitmap.isRecycled()) {
                 ImageProcessor imageProcessor = getImageProcessor();
-                if(imageProcessor != null){
+                if (imageProcessor != null) {
                     Bitmap newBitmap = imageProcessor.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
-                    if(newBitmap != null && newBitmap != bitmap && Sketch.isDebugMode()){
+                    if (newBitmap != null && newBitmap != bitmap && Sketch.isDebugMode()) {
                         Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "process after", " - ", "newBitmap", " - ", RecycleBitmapDrawable.getInfo(newBitmap, mimeType), " - ", "recycled old bitmap", " - ", name));
                     }
-                    if(newBitmap == null || newBitmap != bitmap){
+                    if (newBitmap == null || newBitmap != bitmap) {
                         bitmap.recycle();
                     }
                     bitmap = newBitmap;
                 }
             }
 
-            if(isCanceled()){
-                if(Sketch.isDebugMode()){
+            if (isCanceled()) {
+                if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "canceled", " - ", "process after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, mimeType), " - ", name));
                 }
-                if(bitmap != null){
+                if (bitmap != null) {
                     bitmap.recycle();
                 }
                 return;
             }
 
-            if(bitmap != null && !bitmap.isRecycled()){
+            if (bitmap != null && !bitmap.isRecycled()) {
                 RecycleBitmapDrawable recycleBitmapDrawable = new RecycleBitmapDrawable(bitmap);
                 recycleBitmapDrawable.setMimeType(mimeType);
                 this.resultBitmap = recycleBitmapDrawable;
                 sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
-            }else{
+            } else {
                 toFailedStatus(FailCause.DECODE_FAIL);
             }
-        }else if(decodeResult instanceof RecycleGifDrawable){
+        } else if (decodeResult instanceof RecycleGifDrawable) {
             RecycleGifDrawable recycleGifDrawable = (RecycleGifDrawable) decodeResult;
             recycleGifDrawable.setMimeType(mimeType);
 
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "new gif drawable", " - ", recycleGifDrawable.getInfo(), " - ", name));
             }
 
             this.resultBitmap = recycleGifDrawable;
             sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
-        }else{
+        } else {
             toFailedStatus(FailCause.DECODE_FAIL);
         }
     }
 
     @Override
-    public boolean isLocalApkFile(){
+    public boolean isLocalApkFile() {
         return uriScheme == UriScheme.FILE && SketchUtils.checkSuffix(uri, ".apk");
     }
 
@@ -521,71 +534,84 @@ public class DefaultLoadRequest implements LoadRequest, Runnable{
 
     /**
      * 获取APK图片的缓存文件
+     *
      * @return APK图片的缓存文件
      */
-    private File getApkCacheIconFile(){
+    private File getApkCacheIconFile() {
         File apkIconCacheFile = sketch.getConfiguration().getDiskCache().getCacheFile(uri);
-        if(apkIconCacheFile != null){
-            return apkIconCacheFile;
-        }
+        if (apkIconCacheFile == null) {
+            Bitmap iconBitmap = SketchUtils.decodeIconFromApk(sketch.getConfiguration().getContext(), uri, lowQualityImage, NAME);
+            if (iconBitmap != null && !iconBitmap.isRecycled()) {
+                DiskLruCache.Editor editor = sketch.getConfiguration().getDiskCache().edit(uri);
+                BufferedOutputStream outputStream = null;
+                try {
+                    outputStream = new BufferedOutputStream(editor.newOutputStream(0), 8 * 1024);
+                    iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+                    editor.commit();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    try {
+                        editor.abort();
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                    }
+                } finally {
+                    SketchUtils.close(outputStream);
+                }
 
-        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(sketch.getConfiguration().getContext(), uri, lowQualityImage, NAME);
-        if(iconBitmap != null && !iconBitmap.isRecycled()){
-            apkIconCacheFile = sketch.getConfiguration().getDiskCache().saveBitmap(iconBitmap, uri);
-            if(apkIconCacheFile != null){
-                return apkIconCacheFile;
+                apkIconCacheFile = sketch.getConfiguration().getDiskCache().getCacheFile(uri);
             }
         }
 
-        return null;
+        return apkIconCacheFile;
     }
 
     private void handleCompletedOnMainThread() {
-        if(isCanceled()){
-            if(resultBitmap != null){
-                ((RecycleDrawableInterface)resultBitmap).recycle();
+        if (isCanceled()) {
+            if (resultBitmap != null) {
+                ((RecycleDrawableInterface) resultBitmap).recycle();
             }
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", name));
             }
             return;
         }
 
         setRequestStatus(RequestStatus.COMPLETED);
-        if(loadListener != null){
+        if (loadListener != null) {
             loadListener.onCompleted(resultBitmap, imageFrom, mimeType);
         }
     }
 
     private void handleFailedOnMainThread() {
-        if(isCanceled()){
-            if(Sketch.isDebugMode()){
+        if (isCanceled()) {
+            if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", name));
             }
             return;
         }
 
         setRequestStatus(RequestStatus.FAILED);
-        if(loadListener != null){
+        if (loadListener != null) {
             loadListener.onFailed(failCause);
         }
     }
 
     private void handleCanceledOnMainThread() {
-        if(loadListener != null){
+        if (loadListener != null) {
             loadListener.onCanceled(cancelCause);
         }
     }
 
     private void updateProgressOnMainThread(int totalLength, int completedLength) {
-        if(isFinished()){
-            if(Sketch.isDebugMode()){
+        if (isFinished()) {
+            if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", name));
             }
             return;
         }
 
-        if(progressListener != null){
+        if (progressListener != null) {
             progressListener.onUpdateProgress(totalLength, completedLength);
         }
     }

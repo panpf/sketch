@@ -20,9 +20,9 @@ package me.xiaopan.sketch;
  * 支持的协议类型
  */
 public enum UriScheme {
-	HTTP("http://"){
+    HTTP("http://") {
         @Override
-        public String createUri(String uri){
+        public String createUri(String uri) {
             return uri;
         }
 
@@ -32,9 +32,9 @@ public enum UriScheme {
         }
     },
 
-    HTTPS("https://"){
+    HTTPS("https://") {
         @Override
-        public String createUri(String uri){
+        public String createUri(String uri) {
             return uri;
         }
 
@@ -44,9 +44,9 @@ public enum UriScheme {
         }
     },
 
-    FILE("/"){
+    FILE("/") {
         @Override
-        public String createUri(String uri){
+        public String createUri(String uri) {
             return uri;
         }
 
@@ -56,9 +56,9 @@ public enum UriScheme {
         }
     },
 
-    CONTENT("content://"){
+    CONTENT("content://") {
         @Override
-        public String createUri(String uri){
+        public String createUri(String uri) {
             return uri;
         }
 
@@ -68,13 +68,13 @@ public enum UriScheme {
         }
     },
 
-    ASSET("asset://"){
+    ASSET("asset://") {
         @Override
-        public String createUri(String content){
-            if(content == null || "".equals(content.trim())){
+        public String createUri(String content) {
+            if (content == null || "".equals(content.trim())) {
                 return null;
             }
-            return getUriPrefix()+content;
+            return getUriPrefix() + content;
         }
 
         @Override
@@ -86,13 +86,13 @@ public enum UriScheme {
         }
     },
 
-    DRAWABLE("drawable://"){
+    DRAWABLE("drawable://") {
         @Override
-        public String createUri(String content){
-            if(content == null || "".equals(content.trim())){
+        public String createUri(String content) {
+            if (content == null || "".equals(content.trim())) {
                 return null;
             }
-            return getUriPrefix()+content;
+            return getUriPrefix() + content;
         }
 
         @Override
@@ -104,28 +104,28 @@ public enum UriScheme {
         }
     };
 
-	private String uriPrefix;
+    private String uriPrefix;
 
-	UriScheme(String uriPrefix) {
-		this.uriPrefix = uriPrefix;
-	}
+    UriScheme(String uriPrefix) {
+        this.uriPrefix = uriPrefix;
+    }
 
-	public abstract String createUri(String content);
+    public abstract String createUri(String content);
 
-	public abstract String crop(String uri);
+    public abstract String crop(String uri);
 
     public String getUriPrefix() {
         return uriPrefix;
     }
 
     public static UriScheme valueOfUri(String uri) {
-		if (uri != null && !"".equals(uri.trim())) {
-			for (UriScheme uriScheme : values()) {
-				if (uri.startsWith(uriScheme.getUriPrefix())) {
-					return uriScheme;
-				}
-			}
-		}
-		return null;
-	}
+        if (uri != null && !"".equals(uri.trim())) {
+            for (UriScheme uriScheme : values()) {
+                if (uri.startsWith(uriScheme.getUriPrefix())) {
+                    return uriScheme;
+                }
+            }
+        }
+        return null;
+    }
 }

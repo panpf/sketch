@@ -19,11 +19,11 @@ package me.xiaopan.sketch;
 /**
  * 默认的Request创建工厂
  */
-public class DefaultRequestFactory implements RequestFactory{
+public class DefaultRequestFactory implements RequestFactory {
     private static final String NAME = "DefaultRequestFactory";
 
     @Override
-    public DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface){
+    public DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface) {
         return new DefaultDisplayRequest(sketch, uri, uriScheme, memoryCacheId, sketchImageViewInterface);
     }
 

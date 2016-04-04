@@ -23,29 +23,29 @@ import java.lang.ref.WeakReference;
  * ImageView持有器，以弱引用的方式持有关联的ImageView
  */
 public class SketchImageViewInterfaceHolder {
-	private DisplayRequest displayRequest;
-	private Reference<SketchImageViewInterface> sketchImageViewInterfaceReference;
+    private DisplayRequest displayRequest;
+    private Reference<SketchImageViewInterface> sketchImageViewInterfaceReference;
 
-	public SketchImageViewInterfaceHolder(SketchImageViewInterface imageView, DisplayRequest displayRequest) {
-		this.sketchImageViewInterfaceReference = new WeakReference<SketchImageViewInterface>(imageView);
+    public SketchImageViewInterfaceHolder(SketchImageViewInterface imageView, DisplayRequest displayRequest) {
+        this.sketchImageViewInterfaceReference = new WeakReference<SketchImageViewInterface>(imageView);
         this.displayRequest = displayRequest;
-	}
+    }
 
-	public SketchImageViewInterface getSketchImageViewInterface() {
-		final SketchImageViewInterface sketchImageViewInterface = sketchImageViewInterfaceReference.get();
-		if (displayRequest != null) {
-			DisplayRequest holderDisplayRequest = BindFixedRecycleBitmapDrawable.getDisplayRequestBySketchImageInterface(sketchImageViewInterface);
-            if(holderDisplayRequest != null && holderDisplayRequest == displayRequest){
-            	return sketchImageViewInterface;
-            }else{
-            	return null;
+    public SketchImageViewInterface getSketchImageViewInterface() {
+        final SketchImageViewInterface sketchImageViewInterface = sketchImageViewInterfaceReference.get();
+        if (displayRequest != null) {
+            DisplayRequest holderDisplayRequest = BindFixedRecycleBitmapDrawable.getDisplayRequestBySketchImageInterface(sketchImageViewInterface);
+            if (holderDisplayRequest != null && holderDisplayRequest == displayRequest) {
+                return sketchImageViewInterface;
+            } else {
+                return null;
             }
-        }else{
-        	return sketchImageViewInterface;
+        } else {
+            return sketchImageViewInterface;
         }
-	}
+    }
 
-	public boolean isCollected() {
-		return getSketchImageViewInterface() == null;
-	}
+    public boolean isCollected() {
+        return getSketchImageViewInterface() == null;
+    }
 }

@@ -27,19 +27,22 @@ public interface DisplayListener {
 
     /**
      * 已完成
+     *
      * @param imageFrom 图片来源
-     * @param mimeType 图片类型
+     * @param mimeType  图片类型
      */
     void onCompleted(ImageFrom imageFrom, String mimeType);
 
     /**
      * 已失败
+     *
      * @param failCause 失败原因
      */
     void onFailed(FailCause failCause);
 
     /**
      * 已取消
+     *
      * @param cancelCause 原因
      */
     void onCanceled(CancelCause cancelCause);

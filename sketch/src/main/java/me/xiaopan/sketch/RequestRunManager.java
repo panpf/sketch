@@ -21,10 +21,12 @@ package me.xiaopan.sketch;
  */
 public interface RequestRunManager {
     void postRunDispatch();
+
     void postRunDownload();
+
     void postRunLoad();
 
-    enum RunStatus{
+    enum RunStatus {
         /**
          * 分发
          */

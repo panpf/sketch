@@ -42,7 +42,7 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
             if (displayed) {
                 displayRefCount++;
             } else {
-                if(displayRefCount > 0){
+                if (displayRefCount > 0) {
                     displayRefCount--;
                 }
             }
@@ -56,7 +56,7 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
             if (cached) {
                 cacheRefCount++;
             } else {
-                if(cacheRefCount > 0){
+                if (cacheRefCount > 0) {
                     cacheRefCount--;
                 }
             }
@@ -70,7 +70,7 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
             if (waitDisplay) {
                 waitDisplayRefCount++;
             } else {
-                if(waitDisplayRefCount > 0){
+                if (waitDisplayRefCount > 0) {
                     waitDisplayRefCount--;
                 }
             }
@@ -102,7 +102,7 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     @Override
     public void recycle() {
         Bitmap bitmap = getBitmap();
-        if(bitmap != null){
+        if (bitmap != null) {
             bitmap.recycle();
         }
     }
@@ -110,19 +110,19 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     @Override
     public String getSize() {
         Bitmap bitmap = getBitmap();
-        if(bitmap != null){
+        if (bitmap != null) {
             return SketchUtils.concat(bitmap.getWidth(), "x", bitmap.getHeight());
-        }else{
+        } else {
             return null;
         }
     }
 
     @Override
-    public String getConfig(){
+    public String getConfig() {
         Bitmap bitmap = getBitmap();
-        if(bitmap != null && bitmap.getConfig() != null){
+        if (bitmap != null && bitmap.getConfig() != null) {
             return bitmap.getConfig().name();
-        }else{
+        } else {
             return null;
         }
     }
@@ -130,15 +130,15 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     @Override
     public String getInfo() {
         Bitmap bitmap = getBitmap();
-        if(bitmap != null){
+        if (bitmap != null) {
             return SketchUtils.concat("RecycleBitmapDrawable(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(), ")");
-        }else{
+        } else {
             return null;
         }
     }
 
     @Override
-    public boolean canRecycle(){
+    public boolean canRecycle() {
         return allowRecycle && getBitmap() != null && !getBitmap().isRecycled();
     }
 
@@ -149,33 +149,33 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
 
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo()));
             }
             getBitmap().recycle();
-        }else{
-            if(Sketch.isDebugMode()){
+        } else {
+            if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can't recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
             }
         }
     }
 
     public static String getInfo(Bitmap bitmap, String mimeType) {
-        if(bitmap != null){
+        if (bitmap != null) {
             return SketchUtils.concat("Bitmap(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(bitmap), ")");
-        }else{
+        } else {
             return null;
         }
     }
 
     public static int getByteCount(Bitmap bitmap) {
-        if(bitmap == null){
+        if (bitmap == null) {
             return 0;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             return bitmap.getAllocationByteCount();
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            return  bitmap.getByteCount();
-        }else{
+            return bitmap.getByteCount();
+        } else {
             return bitmap.getRowBytes() * bitmap.getHeight();
         }
     }

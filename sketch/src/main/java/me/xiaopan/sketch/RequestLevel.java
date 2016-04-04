@@ -37,7 +37,7 @@ public enum RequestLevel {
 
     private int level;
 
-    RequestLevel(int level){
+    RequestLevel(int level) {
         this.level = level;
     }
 

@@ -88,7 +88,7 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
             if (displayed) {
                 displayRefCount++;
             } else {
-                if(displayRefCount > 0){
+                if (displayRefCount > 0) {
                     displayRefCount--;
                 }
             }
@@ -102,7 +102,7 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
             if (cached) {
                 cacheRefCount++;
             } else {
-                if(cacheRefCount > 0){
+                if (cacheRefCount > 0) {
                     cacheRefCount--;
                 }
             }
@@ -116,7 +116,7 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
             if (waitDisplay) {
                 waitDisplayRefCount++;
             } else {
-                if(waitDisplayRefCount > 0){
+                if (waitDisplayRefCount > 0) {
                     waitDisplayRefCount--;
                 }
             }
@@ -147,9 +147,9 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     @Override
     public String getSize() {
         Bitmap bitmap = getBitmap();
-        if(bitmap != null){
+        if (bitmap != null) {
             return SketchUtils.concat(bitmap.getWidth(), "x", bitmap.getHeight());
-        }else{
+        } else {
             return null;
         }
     }
@@ -157,9 +157,9 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     @Override
     public String getConfig() {
         Bitmap bitmap = getBitmap();
-        if(bitmap != null && bitmap.getConfig() != null){
+        if (bitmap != null && bitmap.getConfig() != null) {
             return bitmap.getConfig().name();
-        }else{
+        } else {
             return null;
         }
     }
@@ -167,15 +167,15 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
     @Override
     public String getInfo() {
         Bitmap bitmap = getBitmap();
-        if(bitmap != null){
+        if (bitmap != null) {
             return SketchUtils.concat("RecycleGifDrawable(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(), ")");
-        }else{
+        } else {
             return null;
         }
     }
 
     @Override
-    public boolean canRecycle(){
+    public boolean canRecycle() {
         return allowRecycle && !isRecycled();
     }
 
@@ -186,12 +186,12 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableIn
 
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "recycled gif drawable", " - ", callingStation, ":", type, " - ", getInfo()));
             }
             recycle();
-        }else{
-            if(Sketch.isDebugMode()){
+        } else {
+            if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can't recycle gif drawable", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
             }
         }

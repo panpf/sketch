@@ -38,22 +38,22 @@ public class DefaultImageProcessor implements ImageProcessor {
 
     @Override
     public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if(bitmap == null || bitmap.isRecycled()){
+        if (bitmap == null || bitmap.isRecycled()) {
             return null;
         }
 
-        if(resize == null || (bitmap.getWidth() == resize.getWidth() && bitmap.getHeight() == resize.getHeight())){
+        if (resize == null || (bitmap.getWidth() == resize.getWidth() && bitmap.getHeight() == resize.getHeight())) {
             return bitmap;
         }
 
         ResizeCalculator.Result result = sketch.getConfiguration().getResizeCalculator().calculator(bitmap.getWidth(), bitmap.getHeight(), resize.getWidth(), resize.getHeight(), resize.getScaleType(), forceUseResize);
-        if(result == null){
+        if (result == null) {
             return bitmap;
         }
 
         Bitmap.Config newBitmapConfig = bitmap.getConfig();
-        if(newBitmapConfig == null){
-            newBitmapConfig = lowQualityImage ? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888;
+        if (newBitmapConfig == null) {
+            newBitmapConfig = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
         }
         Bitmap newBitmap = Bitmap.createBitmap(result.imageWidth, result.imageHeight, newBitmapConfig);
         Canvas canvas = new Canvas(newBitmap);

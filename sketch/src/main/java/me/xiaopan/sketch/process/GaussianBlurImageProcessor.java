@@ -17,7 +17,7 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
     private boolean isDarkHandle;
 
     /**
-     * @param radius 模糊半径，取值为0到100，默认为15
+     * @param radius       模糊半径，取值为0到100，默认为15
      * @param isDarkHandle 是否让模糊后的图片看起来更暗一些，实现原理就是加上一层#88000000颜色。常用于页面背景，因为太亮的背景会影响页面上展示的内容，默认为false
      */
     public GaussianBlurImageProcessor(int radius, boolean isDarkHandle) {
@@ -44,16 +44,11 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        builder.append(NAME);
-        builder.append(" - ");
-        builder.append("radius");
-        builder.append("=");
-        builder.append(radius);
-        builder.append(";");
-        builder.append("isDarkHandle");
-        builder.append("=");
-        builder.append(isDarkHandle);
-        return builder;
+        return builder.append(NAME)
+                .append(". ")
+                .append("radius").append("=").append(radius)
+                .append(",")
+                .append("isDarkHandle").append("=").append(isDarkHandle);
     }
 
     @Override
@@ -65,18 +60,18 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
     public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
         // cut handle
         Bitmap resizeBitmap = super.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
-        if(resizeBitmap == null){
+        if (resizeBitmap == null) {
             return null;
         }
 
         // blur handle
-        Bitmap blurBitmap= fastGaussianBlur(resizeBitmap, radius, false, lowQualityImage);
-        if(resizeBitmap != bitmap){
+        Bitmap blurBitmap = fastGaussianBlur(resizeBitmap, radius, false, lowQualityImage);
+        if (resizeBitmap != bitmap) {
             resizeBitmap.recycle();
         }
 
         // dark handle
-        if(blurBitmap != null && isDarkHandle){
+        if (blurBitmap != null && isDarkHandle) {
             Canvas canvas = new Canvas(blurBitmap);
             canvas.drawColor(Color.parseColor("#55000000"));
         }
@@ -86,6 +81,7 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
 
     /**
      * 快速高斯模糊
+     *
      * @param sentBitmap
      * @param radius
      * @param canReuseInBitmap
@@ -99,7 +95,7 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
             bitmap = sentBitmap.copy(Bitmap.Config.ARGB_8888, true);
         }
 
-        try{
+        try {
             if (radius < 1) {
                 return (null);
             }
@@ -296,9 +292,9 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
             bitmap.setPixels(pix, 0, w, 0, 0, w, h);
 
             return (bitmap);
-        }catch(Throwable throwable){
+        } catch (Throwable throwable) {
             throwable.printStackTrace();
-            if(bitmap != null && bitmap != sentBitmap){
+            if (bitmap != null && bitmap != sentBitmap) {
                 bitmap.recycle();
             }
             return null;

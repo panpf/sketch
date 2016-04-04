@@ -26,14 +26,16 @@ public interface LoadListener {
 
     /**
      * load complete
-     * @param drawable RecycleBitmapDrawable:normal image; RecycleGifDrawable:gif image; null:exception
+     *
+     * @param drawable  RecycleBitmapDrawable:normal image; RecycleGifDrawable:gif image; null:exception
      * @param imageFrom image from
-     * @param mimeType image type
+     * @param mimeType  image type
      */
     void onCompleted(Drawable drawable, ImageFrom imageFrom, String mimeType);
 
     /**
      * load fail
+     *
      * @param failCause fail cause
      */
     void onFailed(FailCause failCause);

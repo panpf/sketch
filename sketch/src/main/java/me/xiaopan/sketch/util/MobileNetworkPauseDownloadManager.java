@@ -20,35 +20,35 @@ public class MobileNetworkPauseDownloadManager {
         this.context = context;
     }
 
-    public void setPauseDownload(boolean pauseDownloadImage){
-        if(pauseDownloadImage){
+    public void setPauseDownload(boolean pauseDownloadImage) {
+        if (pauseDownloadImage) {
             updateStatus(context);
-            if(receiver == null){
+            if (receiver == null) {
                 receiver = new NetworkChangedBroadcastReceiver();
             }
-            try{
+            try {
                 context.registerReceiver(receiver, new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION));
-            }catch(IllegalArgumentException e){
+            } catch (IllegalArgumentException e) {
 
             }
-        }else{
+        } else {
             Sketch.with(context).getConfiguration().setPauseDownload(false);
-            if(receiver != null){
-                try{
+            if (receiver != null) {
+                try {
                     context.unregisterReceiver(receiver);
-                }catch(IllegalArgumentException e){
+                } catch (IllegalArgumentException e) {
                 }
             }
         }
     }
 
-    private void updateStatus(Context context){
+    private void updateStatus(Context context) {
         NetworkInfo networkInfo = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         boolean isPause = networkInfo != null && networkInfo.isAvailable() && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
         Sketch.with(context).getConfiguration().setPauseDownload(isPause);
     }
 
-    private class NetworkChangedBroadcastReceiver extends BroadcastReceiver{
+    private class NetworkChangedBroadcastReceiver extends BroadcastReceiver {
 
         @Override
         public void onReceive(Context context, Intent intent) {

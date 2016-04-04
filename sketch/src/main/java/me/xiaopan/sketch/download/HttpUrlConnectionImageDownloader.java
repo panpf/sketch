@@ -21,10 +21,8 @@ import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.Closeable;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
@@ -42,6 +40,7 @@ import me.xiaopan.sketch.DownloadRequest;
 import me.xiaopan.sketch.DownloadResult;
 import me.xiaopan.sketch.RequestStatus;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -50,15 +49,15 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     private static final String NAME = "HttpUrlConnectionImageDownloader";
 
-	private Map<String, ReentrantLock> urlLocks;
+    private Map<String, ReentrantLock> urlLocks;
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
     private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
     private int readTimeout = DEFAULT_READ_TIMEOUT;
     private int progressCallbackNumber = DEFAULT_PROGRESS_CALLBACK_NUMBER;
 
-	public HttpUrlConnectionImageDownloader() {
-		this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
-	}
+    public HttpUrlConnectionImageDownloader() {
+        this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
+    }
 
     @Override
     public void setMaxRetryCount(int maxRetryCount) {
@@ -83,7 +82,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(NAME)
-                .append(" - ")
+                .append(". ")
                 .append("maxRetryCount").append("=").append(maxRetryCount)
                 .append(", ")
                 .append("progressCallbackNumber").append("=").append(progressCallbackNumber)
@@ -95,17 +94,18 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
 
     /**
      * 获取一个URL锁，通过此锁可以防止重复下载
+     *
      * @param url 下载地址
      * @return URL锁
      */
-	public synchronized ReentrantLock getUrlLock(String url){
-		ReentrantLock urlLock = urlLocks.get(url);
-		if(urlLock == null){
-			urlLock = new ReentrantLock();
-			urlLocks.put(url, urlLock);
-		}
-		return urlLock;
-	}
+    public synchronized ReentrantLock getUrlLock(String url) {
+        ReentrantLock urlLock = urlLocks.get(url);
+        if (urlLock == null) {
+            urlLock = new ReentrantLock();
+            urlLocks.put(url, urlLock);
+        }
+        return urlLock;
+    }
 
     private HttpURLConnection openUrlConnection(String url) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(url).openConnection();
@@ -119,7 +119,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     @Override
-	public DownloadResult download(DownloadRequest request) {
+    public DownloadResult download(DownloadRequest request) {
         // 根据下载地址加锁，防止重复下载
         request.setRequestStatus(RequestStatus.GET_DOWNLOAD_LOCK);
         ReentrantLock urlLock = getUrlLock(request.getUri());
@@ -128,17 +128,17 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         request.setRequestStatus(RequestStatus.DOWNLOADING);
         DownloadResult result = null;
         int number = 0;
-        while(true){
+        while (true) {
             // 如果已经取消了就直接结束
             if (request.isCanceled()) {
-                if (Sketch.isDebugMode()){
+                if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "get lock after", " - ", request.getName()));
                 }
                 break;
             }
 
             // 如果缓存文件已经存在了就直接返回缓存文件
-            if(request.isCacheInDisk()){
+            if (request.isCacheInDisk()) {
                 File cacheFile = request.getSketch().getConfiguration().getDiskCache().getCacheFile(request.getUri());
                 if (cacheFile != null && cacheFile.exists()) {
                     result = DownloadResult.createByFile(cacheFile, false);
@@ -151,18 +151,18 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
                 break;
             } catch (Throwable e) {
                 boolean retry = (e instanceof SocketTimeoutException || e instanceof InterruptedIOException) && number < maxRetryCount;
-                if(retry){
+                if (retry) {
                     number++;
                     if (Sketch.isDebugMode()) {
                         Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "download failed", " - ", "retry", " - ", request.getName()));
                     }
-                }else{
+                } else {
                     if (Sketch.isDebugMode()) {
                         Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "download failed", " - ", "end", " - ", request.getName()));
                     }
                 }
                 e.printStackTrace();
-                if(!retry){
+                if (!retry) {
                     break;
                 }
             }
@@ -240,75 +240,52 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     private DownloadResult readData(DownloadRequest request, HttpURLConnection connection, int contentLength) throws IOException {
-        // 生成缓存文件和临时缓存文件
-        File tempFile = null;
-        File cacheFile = null;
-        if(request.isCacheInDisk()){
-            cacheFile = request.getSketch().getConfiguration().getDiskCache().generateCacheFile(request.getUri());
-            if(cacheFile != null && request.getSketch().getConfiguration().getDiskCache().applyForSpace(contentLength)){
-                tempFile = new File(cacheFile.getPath()+".temp");
-                if(!SketchUtils.createFile(tempFile)){
-                    tempFile = null;
-                    cacheFile = null;
-                }
-            }
-        }
-
         // 获取输入流
-        InputStream inputStream;
-        try {
-            inputStream = connection.getInputStream();
-        } catch (IOException e) {
-            if (tempFile != null && tempFile.exists() && !tempFile.delete() && Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete temp download file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
-            }
-            throw e;
-        }
+        InputStream inputStream = connection.getInputStream();
+
         if (request.isCanceled()) {
-            close(inputStream);
-            if (Sketch.isDebugMode()){
+            SketchUtils.close(inputStream);
+            if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "get input stream after", " - ", request.getName()));
-            }
-            if (tempFile != null && tempFile.exists() && !tempFile.delete() && Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete temp download file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
             }
             return null;
         }
 
         // 当不需要将数据缓存到本地的时候就使用ByteArrayOutputStream来存储数据
+        DiskLruCache.Editor editor = null;
+        if (request.isCacheInDisk()) {
+            editor = request.getSketch().getConfiguration().getDiskCache().edit(request.getUri());
+        }
         OutputStream outputStream;
-        if(tempFile != null){
+        if (editor != null) {
             try {
-                outputStream = new BufferedOutputStream(new FileOutputStream(tempFile, false), BUFFER_SIZE);
+                outputStream = new BufferedOutputStream(editor.newOutputStream(0), BUFFER_SIZE);
             } catch (FileNotFoundException e) {
-                close(inputStream);
+                SketchUtils.close(inputStream);
+                editor.abort();
                 throw e;
             }
-        }else{
+        } else {
             outputStream = new ByteArrayOutputStream();
         }
 
         // 读取数据
         int completedLength = 0;
-        boolean exception = false;
         try {
             completedLength = readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
         } catch (IOException e) {
-            exception = true;
-            throw e;
-        }finally {
-            close(outputStream);
-            close(inputStream);
-            if (exception && tempFile != null && tempFile.exists() && !tempFile.delete() && Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete temp download file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
+            if (editor != null) {
+                editor.abort();
             }
+            throw e;
+        } finally {
+            SketchUtils.close(outputStream);
+            SketchUtils.close(inputStream);
         }
+
         if (request.isCanceled()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "read data after", " - ", request.getName()));
-            }
-            if (tempFile != null && tempFile.exists() && !tempFile.delete() && Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete temp download file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
             }
             return null;
         }
@@ -318,47 +295,18 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         }
 
         // 转换结果
-        if(tempFile != null && tempFile.exists()){
-            if(!tempFile.renameTo(cacheFile)){
-                if(Sketch.isDebugMode()){
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "rename failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
-                }
-                if (!tempFile.delete() && Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete temp download file failed", " - ", "tempFilePath:", tempFile.getPath(), " - ", request.getName()));
-                }
-                return null;
-            }
-
-            return DownloadResult.createByFile(cacheFile, true);
-        }else if(outputStream instanceof ByteArrayOutputStream){
+        if (request.isCacheInDisk() && editor != null) {
+            editor.commit();
+            return DownloadResult.createByFile(request.getSketch().getConfiguration().getDiskCache().getCacheFile(request.getUri()), true);
+        } else if (outputStream instanceof ByteArrayOutputStream) {
             return DownloadResult.createByByteArray(((ByteArrayOutputStream) outputStream).toByteArray(), true);
-        }else{
+        } else {
             return null;
         }
     }
 
-    public static void close(Closeable closeable){
-        if(closeable == null){
-            return;
-        }
-
-        if(closeable instanceof OutputStream){
-            try {
-                ((OutputStream) closeable).flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        try {
-            closeable.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void releaseConnection(HttpURLConnection connection, DownloadRequest request){
-        if(connection == null){
+    public static void releaseConnection(HttpURLConnection connection, DownloadRequest request) {
+        if (connection == null) {
             return;
         }
 
@@ -371,19 +319,19 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             }
             return;
         }
-        close(inputStream);
+        SketchUtils.close(inputStream);
     }
 
     public static int readData(InputStream inputStream, OutputStream outputStream, DownloadRequest downloadRequest, int contentLength, int progressCallbackAccuracy) throws IOException {
         int readNumber;
         int completedLength = 0;
-        int averageLength = contentLength/progressCallbackAccuracy;
+        int averageLength = contentLength / progressCallbackAccuracy;
         int callbackNumber = 0;
-        byte[] cacheBytes = new byte[4*1024];
-        while(!downloadRequest.isCanceled() && (readNumber = inputStream.read(cacheBytes)) != -1){
+        byte[] cacheBytes = new byte[4 * 1024];
+        while (!downloadRequest.isCanceled() && (readNumber = inputStream.read(cacheBytes)) != -1) {
             outputStream.write(cacheBytes, 0, readNumber);
             completedLength += readNumber;
-            if(completedLength >= (callbackNumber+1)*averageLength || completedLength == contentLength){
+            if (completedLength >= (callbackNumber + 1) * averageLength || completedLength == contentLength) {
                 callbackNumber++;
                 downloadRequest.updateProgress(contentLength, completedLength);
             }
@@ -392,15 +340,15 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         return completedLength;
     }
 
-    public static String getResponseHeadersString(HttpURLConnection urlConnection){
+    public static String getResponseHeadersString(HttpURLConnection urlConnection) {
         Map<String, List<String>> headers = urlConnection.getHeaderFields();
-        if(headers == null){
+        if (headers == null) {
             return null;
         }
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("[");
-        for(Map.Entry<String, List<String>> entry : headers.entrySet()){
-            if(stringBuilder.length() != 1){
+        for (Map.Entry<String, List<String>> entry : headers.entrySet()) {
+            if (stringBuilder.length() != 1) {
                 stringBuilder.append(", ");
             }
 
@@ -411,11 +359,11 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             stringBuilder.append(":");
 
             List<String> values = entry.getValue();
-            if(values.size() == 0){
+            if (values.size() == 0) {
                 stringBuilder.append("");
-            }else if(values.size() == 1){
+            } else if (values.size() == 1) {
                 stringBuilder.append(values.get(0));
-            }else{
+            } else {
                 stringBuilder.append(values.toString());
             }
 

@@ -24,24 +24,24 @@ import me.xiaopan.sketch.SketchImageViewInterface;
  * 默认的图片显示器，没有任何动画效果
  */
 public class DefaultImageDisplayer implements ImageDisplayer {
-	private static final String NAME = "DefaultImageDisplayer";
+    private static final String NAME = "DefaultImageDisplayer";
 
-	@Override
-	public void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable) {
-    	if(newDrawable == null){
+    @Override
+    public void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable) {
+        if (newDrawable == null) {
             return;
         }
         sketchImageViewInterface.clearAnimation();
-		sketchImageViewInterface.setImageDrawable(newDrawable);
-	}
+        sketchImageViewInterface.setImageDrawable(newDrawable);
+    }
 
-	@Override
-	public String getIdentifier() {
+    @Override
+    public String getIdentifier() {
         return NAME;
-	}
+    }
 
-	@Override
-	public StringBuilder appendIdentifier(StringBuilder builder) {
-		return builder.append(NAME);
-	}
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(NAME);
+    }
 }

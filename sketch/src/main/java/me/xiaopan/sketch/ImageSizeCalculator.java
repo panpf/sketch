@@ -25,6 +25,7 @@ import android.content.Context;
 public interface ImageSizeCalculator {
     /**
      * 计算MaxSize
+     *
      * @param sketchImageViewInterface 你需要根据ImageView的宽高来计算
      * @return MaxSize
      */
@@ -32,6 +33,7 @@ public interface ImageSizeCalculator {
 
     /**
      * 计算Resize
+     *
      * @param sketchImageViewInterface 你需要根据ImageView的宽高来计算
      * @return Resize
      */
@@ -39,6 +41,7 @@ public interface ImageSizeCalculator {
 
     /**
      * 计算FixedSize
+     *
      * @param sketchImageViewInterface 你需要根据ImageView的宽高来计算
      * @return FixedSize
      */
@@ -46,6 +49,7 @@ public interface ImageSizeCalculator {
 
     /**
      * 获取默认的maxSize
+     *
      * @param context 上下文
      * @return maxSize
      */
@@ -53,6 +57,7 @@ public interface ImageSizeCalculator {
 
     /**
      * 比较两个maxSize的大小，在使用options()方法批量设置属性的时候会使用此方法比较RequestOptions的maxSize和已有的maxSize，如果前者小于后者就会使用前者代替后者
+     *
      * @param maxSize1 maxSize1
      * @param maxSize2 maxSize2
      * @return 等于0：两者相等；小于0：maxSize1小于maxSize2；大于0：maxSize1大于maxSize2
@@ -61,9 +66,10 @@ public interface ImageSizeCalculator {
 
     /**
      * 计算InSampleSize
-     * @param outWidth 原始宽
-     * @param outHeight 原始高
-     * @param targetWidth 目标宽
+     *
+     * @param outWidth     原始宽
+     * @param outHeight    原始高
+     * @param targetWidth  目标宽
      * @param targetHeight 目标高
      * @return 合适的InSampleSize
      */
@@ -71,6 +77,7 @@ public interface ImageSizeCalculator {
 
     /**
      * 获取标识符
+     *
      * @return 标识符
      */
     String getIdentifier();

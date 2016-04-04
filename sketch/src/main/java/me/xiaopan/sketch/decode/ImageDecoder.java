@@ -22,21 +22,23 @@ import me.xiaopan.sketch.LoadRequest;
  * 图片解码器
  */
 public interface ImageDecoder {
-	/**
-	 * 解码
+    /**
+     * 解码
+     *
      * @param loadRequest 加载请求
-	 * @return null：解码失败；Bitmap：一般的图片；RecycleGifDrawable：GIF图片
-	 */
-	Object decode(LoadRequest loadRequest);
+     * @return null：解码失败；Bitmap：一般的图片；RecycleGifDrawable：GIF图片
+     */
+    Object decode(LoadRequest loadRequest);
 
-	/**
-	 * 获取标识符
-	 * @return 标识符
-	 */
-	String getIdentifier();
+    /**
+     * 获取标识符
+     *
+     * @return 标识符
+     */
+    String getIdentifier();
 
-	/**
-	 * 追加标识符
-	 */
-	StringBuilder appendIdentifier(StringBuilder builder);
+    /**
+     * 追加标识符
+     */
+    StringBuilder appendIdentifier(StringBuilder builder);
 }

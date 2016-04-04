@@ -30,7 +30,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * DisplayHelper
  */
-public class DefaultDisplayHelper implements DisplayHelper{
+public class DefaultDisplayHelper implements DisplayHelper {
     private static final String NAME = "DefaultDisplayHelper";
 
     // 基本属性
@@ -68,16 +68,17 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
     /**
      * 创建显示请求生成器
-     * @param sketch Sketch
-     * @param uri 图片Uri，支持以下几种
-     * <blockquote>"http://site.com/image.png"; // from Web
-     * <br>"https://site.com/image.png"; // from Web
-     * <br>"/mnt/sdcard/image.png"; // from SD card
-     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     * <br>"content://media/external/audio/albumart/13"; // from content provider
-     * <br>"asset://image.png"; // from assets
-     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     * </blockquote>
+     *
+     * @param sketch                   Sketch
+     * @param uri                      图片Uri，支持以下几种
+     *                                 <blockquote>"http://site.com/image.png"; // from Web
+     *                                 <br>"https://site.com/image.png"; // from Web
+     *                                 <br>"/mnt/sdcard/image.png"; // from SD card
+     *                                 <br>"/mnt/sdcard/app.apk"; // from SD card apk file
+     *                                 <br>"content://media/external/audio/albumart/13"; // from content provider
+     *                                 <br>"asset://image.png"; // from assets
+     *                                 <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+     *                                 </blockquote>
      * @param sketchImageViewInterface 图片View
      */
     public DefaultDisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
@@ -86,16 +87,17 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
     /**
      * 创建显示请求生成器
-     * @param sketch Sketch
-     * @param displayParams 参数集
-     * <blockquote>"http://site.com/image.png"; // from Web
-     * <br>"https://site.com/image.png"; // from Web
-     * <br>"/mnt/sdcard/image.png"; // from SD card
-     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     * <br>"content://media/external/audio/albumart/13"; // from content provider
-     * <br>"asset://image.png"; // from assets
-     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     * </blockquote>
+     *
+     * @param sketch                   Sketch
+     * @param displayParams            参数集
+     *                                 <blockquote>"http://site.com/image.png"; // from Web
+     *                                 <br>"https://site.com/image.png"; // from Web
+     *                                 <br>"/mnt/sdcard/image.png"; // from SD card
+     *                                 <br>"/mnt/sdcard/app.apk"; // from SD card apk file
+     *                                 <br>"content://media/external/audio/albumart/13"; // from content provider
+     *                                 <br>"asset://image.png"; // from assets
+     *                                 <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+     *                                 </blockquote>
      * @param sketchImageViewInterface 图片View
      */
     public DefaultDisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
@@ -103,17 +105,17 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public DefaultDisplayHelper init(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface){
+    public DefaultDisplayHelper init(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
         this.context = sketch.getConfiguration().getContext();
         this.sketch = sketch;
         this.uri = uri;
         this.sketchImageViewInterface = sketchImageViewInterface;
 
-        if(sketch.getConfiguration().isPauseDownload()){
+        if (sketch.getConfiguration().isPauseDownload()) {
             this.requestLevel = RequestLevel.LOCAL;
             this.requestLevelFrom = RequestLevelFrom.PAUSE_DOWNLOAD;
         }
-        if(sketch.getConfiguration().isPauseLoad()){
+        if (sketch.getConfiguration().isPauseLoad()) {
             this.requestLevel = RequestLevel.MEMORY;
             this.requestLevelFrom = RequestLevelFrom.PAUSE_LOAD;
         }
@@ -171,7 +173,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public void reset(){
+    public void reset() {
         sketch = null;
         uri = null;
         name = null;
@@ -200,10 +202,10 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public void saveDisplayParams(){
-        if(sketchImageViewInterface != null){
+    public void saveDisplayParams() {
+        if (sketchImageViewInterface != null) {
             DisplayParams displayParams = sketchImageViewInterface.getDisplayParams();
-            if(displayParams == null){
+            if (displayParams == null) {
                 displayParams = new DisplayParams();
             }
 
@@ -235,13 +237,13 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public DefaultDisplayHelper name(String name){
+    public DefaultDisplayHelper name(String name) {
         this.name = name;
         return this;
     }
 
     @Override
-    public DefaultDisplayHelper memoryCacheId(String memoryCacheId){
+    public DefaultDisplayHelper memoryCacheId(String memoryCacheId) {
         this.memoryCacheId = memoryCacheId;
         return this;
     }
@@ -259,19 +261,19 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public DefaultDisplayHelper maxSize(MaxSize maxSize){
+    public DefaultDisplayHelper maxSize(MaxSize maxSize) {
         this.maxSize = maxSize;
         return this;
     }
 
     @Override
-    public DefaultDisplayHelper maxSize(int width, int height){
+    public DefaultDisplayHelper maxSize(int width, int height) {
         this.maxSize = new MaxSize(width, height);
         return this;
     }
 
     @Override
-    public DefaultDisplayHelper resize(int width, int height){
+    public DefaultDisplayHelper resize(int width, int height) {
         this.resize = new Resize(width, height);
         return this;
     }
@@ -283,7 +285,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public DefaultDisplayHelper resizeByFixedSize(){
+    public DefaultDisplayHelper resizeByFixedSize() {
         this.resize = sketch.getConfiguration().getImageSizeCalculator().calculateImageResize(sketchImageViewInterface);
         return this;
     }
@@ -301,7 +303,7 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public DefaultDisplayHelper processor(ImageProcessor processor){
+    public DefaultDisplayHelper processor(ImageProcessor processor) {
         this.imageProcessor = processor;
         return this;
     }
@@ -361,14 +363,14 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public DefaultDisplayHelper progressListener(ProgressListener progressListener){
+    public DefaultDisplayHelper progressListener(ProgressListener progressListener) {
         this.progressListener = progressListener;
         return this;
     }
 
     @Override
-    public DefaultDisplayHelper requestLevel(RequestLevel requestLevel){
-        if(requestLevel != null){
+    public DefaultDisplayHelper requestLevel(RequestLevel requestLevel) {
+        if (requestLevel != null) {
             this.requestLevel = requestLevel;
             this.requestLevelFrom = null;
         }
@@ -376,48 +378,48 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public DefaultDisplayHelper options(DisplayOptions options){
-        if(options == null){
+    public DefaultDisplayHelper options(DisplayOptions options) {
+        if (options == null) {
             return this;
         }
 
         this.cacheInDisk = options.isCacheInDisk();
         this.cacheInMemory = options.isCacheInMemory();
-        if(this.maxSize == null || (options.getMaxSize() != null && sketch.getConfiguration().getImageSizeCalculator().compareMaxSize(options.getMaxSize(), this.maxSize) < 0)){
+        if (this.maxSize == null || (options.getMaxSize() != null && sketch.getConfiguration().getImageSizeCalculator().compareMaxSize(options.getMaxSize(), this.maxSize) < 0)) {
             this.maxSize = options.getMaxSize();
         }
-        if(this.resize == null){
-            if(options.isResizeByFixedSize()){
+        if (this.resize == null) {
+            if (options.isResizeByFixedSize()) {
                 resizeByFixedSize();
-            }else if(options.getResize() != null){
+            } else if (options.getResize() != null) {
                 this.resize = new Resize(options.getResize());
             }
         }
         this.forceUseResize = options.isForceUseResize();
         this.lowQualityImage = options.isLowQualityImage();
-        if(this.imageProcessor == null){
+        if (this.imageProcessor == null) {
             this.imageProcessor = options.getImageProcessor();
         }
-        if(this.imageDisplayer == null){
+        if (this.imageDisplayer == null) {
             this.imageDisplayer = options.getImageDisplayer();
         }
         this.decodeGifImage = options.isDecodeGifImage();
-        if(this.loadingImageHolder == null){
+        if (this.loadingImageHolder == null) {
             this.loadingImageHolder = options.getLoadingImageHolder();
         }
-        if(this.failureImageHolder == null){
+        if (this.failureImageHolder == null) {
             this.failureImageHolder = options.getFailureImage();
         }
-        if(this.pauseDownloadImageHolder == null){
+        if (this.pauseDownloadImageHolder == null) {
             this.pauseDownloadImageHolder = options.getPauseDownloadImage();
         }
         RequestLevel optionRequestLevel = options.getRequestLevel();
-        if(requestLevel != null && optionRequestLevel != null){
-            if(optionRequestLevel.getLevel() < requestLevel.getLevel()){
+        if (requestLevel != null && optionRequestLevel != null) {
+            if (optionRequestLevel.getLevel() < requestLevel.getLevel()) {
                 this.requestLevel = optionRequestLevel;
                 this.requestLevelFrom = null;
             }
-        }else if(optionRequestLevel != null){
+        } else if (optionRequestLevel != null) {
             this.requestLevel = optionRequestLevel;
             this.requestLevelFrom = null;
         }
@@ -426,45 +428,45 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public DefaultDisplayHelper options(Enum<?> optionsName){
+    public DefaultDisplayHelper options(Enum<?> optionsName) {
         return options((DisplayOptions) Sketch.getOptions(optionsName));
     }
 
     /**
      * 处理一下参数
      */
-    protected void handleParams(){
-        if(resize != null && resize.getScaleType() == null && sketchImageViewInterface != null){
+    protected void handleParams() {
+        if (resize != null && resize.getScaleType() == null && sketchImageViewInterface != null) {
             resize.setScaleType(sketchImageViewInterface.getScaleType());
         }
-        if(resize != null && imageProcessor == null){
+        if (resize != null && imageProcessor == null) {
             imageProcessor = sketch.getConfiguration().getDefaultCutImageProcessor();
         }
-        if(maxSize == null){
+        if (maxSize == null) {
             maxSize = sketch.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(sketch.getConfiguration().getContext());
         }
-        if(name == null && memoryCacheId != null){
+        if (name == null && memoryCacheId != null) {
             name = memoryCacheId;
         }
-        if(!sketch.getConfiguration().isDecodeGifImage()){
+        if (!sketch.getConfiguration().isDecodeGifImage()) {
             decodeGifImage = false;
         }
-        if(!sketch.getConfiguration().isCacheInDisk()){
+        if (!sketch.getConfiguration().isCacheInDisk()) {
             cacheInDisk = false;
         }
-        if(!sketch.getConfiguration().isCacheInMemory()){
+        if (!sketch.getConfiguration().isCacheInMemory()) {
             cacheInMemory = false;
         }
-        if(sketch.getConfiguration().isLowQualityImage()){
+        if (sketch.getConfiguration().isLowQualityImage()) {
             lowQualityImage = true;
         }
-        if(imageDisplayer instanceof TransitionImageDisplayer){
-            if(fixedSize != null){
-                if(loadingImageHolder != null && scaleType != ScaleType.CENTER_CROP){
+        if (imageDisplayer instanceof TransitionImageDisplayer) {
+            if (fixedSize != null) {
+                if (loadingImageHolder != null && scaleType != ScaleType.CENTER_CROP) {
                     throw new IllegalArgumentException("When using TransitionImageDisplayer ImageView wide tall if is fixed and set the loadingImage, then ScaleType must be CENTER_CTOP");
                 }
-            }else{
-                if(loadingImageHolder != null){
+            } else {
+                if (loadingImageHolder != null) {
                     throw new IllegalArgumentException("When using TransitionImageDisplayer ImageView wide tall if is unknown may not be used then loadingImage");
                 }
             }
@@ -477,16 +479,16 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
         handleParams();
 
-        if(displayListener != null){
+        if (displayListener != null) {
             displayListener.onStarted();
         }
 
         // 验证imageView参数
-        if(sketchImageViewInterface == null){
-            if(Sketch.isDebugMode()){
+        if (sketchImageViewInterface == null) {
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "sketchImageViewInterface is null", " - ", (name != null ? name : uri)));
             }
-            if(displayListener != null){
+            if (displayListener != null) {
                 displayListener.onFailed(FailCause.IMAGE_VIEW_NULL);
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
@@ -494,18 +496,18 @@ public class DefaultDisplayHelper implements DisplayHelper{
         }
 
         // 验证uri参数
-        if(uri == null || "".equals(uri.trim())){
-            if(Sketch.isDebugMode()){
+        if (uri == null || "".equals(uri.trim())) {
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
             }
-            if(sketchImageViewInterface != null){
+            if (sketchImageViewInterface != null) {
                 sketchImageViewInterface.setDisplayRequest(null);
             }
             Drawable failureDrawable = failureImageHolder != null ? failureImageHolder.getRecycleBitmapDrawable(context) : null;
-            if(failureDrawable != null){
+            if (failureDrawable != null) {
                 sketchImageViewInterface.setImageDrawable(failureDrawable);
             }
-            if(displayListener != null){
+            if (displayListener != null) {
                 displayListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
@@ -514,18 +516,18 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
         // 过滤掉不支持的URI协议类型
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
-        if(uriScheme == null){
-            if(Sketch.isDebugMode()){
+        if (uriScheme == null) {
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme: ", uri, " - ", (name != null ? name : uri)));
             }
-            if(sketchImageViewInterface != null){
+            if (sketchImageViewInterface != null) {
                 sketchImageViewInterface.setDisplayRequest(null);
             }
-            Drawable failureDrawable = failureImageHolder != null ? failureImageHolder .getRecycleBitmapDrawable(context) : null;
-            if(failureDrawable != null){
+            Drawable failureDrawable = failureImageHolder != null ? failureImageHolder.getRecycleBitmapDrawable(context) : null;
+            if (failureDrawable != null) {
                 sketchImageViewInterface.setImageDrawable(failureDrawable);
             }
-            if(displayListener != null){
+            if (displayListener != null) {
                 displayListener.onFailed(FailCause.URI_NO_SUPPORT);
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
@@ -533,30 +535,30 @@ public class DefaultDisplayHelper implements DisplayHelper{
         }
 
         // 尝试从内存中寻找缓存图片
-        String memoryCacheId = this.memoryCacheId !=null? this.memoryCacheId : generateMemoryCacheId(uri, maxSize, resize, forceUseResize, lowQualityImage, imageProcessor);
-        if(name == null){
+        String memoryCacheId = this.memoryCacheId != null ? this.memoryCacheId : generateMemoryCacheId(uri, maxSize, resize, forceUseResize, lowQualityImage, imageProcessor);
+        if (name == null) {
             name = memoryCacheId;
         }
-        if(cacheInMemory){
+        if (cacheInMemory) {
             Drawable cacheDrawable = sketch.getConfiguration().getMemoryCache().get(memoryCacheId);
-            if(cacheDrawable != null){
+            if (cacheDrawable != null) {
                 RecycleDrawableInterface recycleDrawable = (RecycleDrawableInterface) cacheDrawable;
-                if(!recycleDrawable.isRecycled()){
-                    if(Sketch.isDebugMode()){
+                if (!recycleDrawable.isRecycled()) {
+                    if (Sketch.isDebugMode()) {
                         Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "from memory get bitmap", " - ", recycleDrawable.getInfo(), " - ", name));
                     }
-                    if(sketchImageViewInterface != null){
+                    if (sketchImageViewInterface != null) {
                         sketchImageViewInterface.setDisplayRequest(null);
                     }
                     sketchImageViewInterface.setImageDrawable(cacheDrawable);
-                    if(displayListener != null){
+                    if (displayListener != null) {
                         displayListener.onCompleted(ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
                     }
                     sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
                     return null;
-                }else{
+                } else {
                     sketch.getConfiguration().getMemoryCache().remove(memoryCacheId);
-                    if(Sketch.isDebugMode()){
+                    if (Sketch.isDebugMode()) {
                         Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "bitmap recycled", " - ", recycleDrawable.getInfo(), " - ", name));
                     }
                 }
@@ -564,17 +566,17 @@ public class DefaultDisplayHelper implements DisplayHelper{
         }
 
         // 如果已经暂停了的话就不再从本地或网络加载了
-        if(requestLevel == RequestLevel.MEMORY){
+        if (requestLevel == RequestLevel.MEMORY) {
             Drawable loadingDrawable = loadingImageHolder != null ? loadingImageHolder.getRecycleBitmapDrawable(context) : null;
             sketchImageViewInterface.clearAnimation();
             sketchImageViewInterface.setImageDrawable(loadingDrawable);
-            if(displayListener != null){
-                displayListener.onCanceled(requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? CancelCause.PAUSE_LOAD :CancelCause.LEVEL_IS_MEMORY);
-                if(Sketch.isDebugMode()){
+            if (displayListener != null) {
+                displayListener.onCanceled(requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? CancelCause.PAUSE_LOAD : CancelCause.LEVEL_IS_MEMORY);
+                if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", (requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? "pause load" : "requestLevel is memory"), " - ", name));
                 }
             }
-            if(sketchImageViewInterface != null){
+            if (sketchImageViewInterface != null) {
                 sketchImageViewInterface.setDisplayRequest(null);
             }
             return null;
@@ -582,14 +584,14 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
         // 试图取消已经存在的请求
         DisplayRequest potentialRequest = BindFixedRecycleBitmapDrawable.getDisplayRequestBySketchImageInterface(sketchImageViewInterface);
-        if(potentialRequest != null && !potentialRequest.isFinished()){
-            if(memoryCacheId.equals(potentialRequest.getMemoryCacheId())){
-                if(Sketch.isDebugMode()){
+        if (potentialRequest != null && !potentialRequest.isFinished()) {
+            if (memoryCacheId.equals(potentialRequest.getMemoryCacheId())) {
+                if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "don't need to cancel", "；", "ImageViewCode", "=", Integer.toHexString(sketchImageViewInterface.hashCode()), "；", potentialRequest.getName()));
                 }
                 sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
                 return potentialRequest;
-            }else{
+            } else {
                 potentialRequest.cancel();
             }
         }
@@ -620,19 +622,19 @@ public class DefaultDisplayHelper implements DisplayHelper{
 
         // 显示默认图片
         Drawable loadingBindDrawable;
-        if(loadingImageHolder != null){
+        if (loadingImageHolder != null) {
             RecycleBitmapDrawable loadingDrawable = loadingImageHolder.getRecycleBitmapDrawable(context);
             FixedSize tempFixedSize = null;
-            if(imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ScaleType.CENTER_CROP){
+            if (imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ScaleType.CENTER_CROP) {
                 tempFixedSize = fixedSize;
             }
             loadingBindDrawable = new BindFixedRecycleBitmapDrawable(loadingDrawable, tempFixedSize, request);
-        }else{
+        } else {
             loadingBindDrawable = new BindFixedRecycleBitmapDrawable(null, request);
         }
         sketchImageViewInterface.setImageDrawable(loadingBindDrawable);
 
-        if(sketchImageViewInterface != null){
+        if (sketchImageViewInterface != null) {
             sketchImageViewInterface.setDisplayRequest(request);
         }
 
@@ -643,26 +645,26 @@ public class DefaultDisplayHelper implements DisplayHelper{
     }
 
     @Override
-    public String generateMemoryCacheId(String uri, MaxSize maxSize, Resize resize, boolean forceUseResize, boolean lowQualityImage, ImageProcessor imageProcessor){
+    public String generateMemoryCacheId(String uri, MaxSize maxSize, Resize resize, boolean forceUseResize, boolean lowQualityImage, ImageProcessor imageProcessor) {
         StringBuilder builder = new StringBuilder();
         builder.append(uri);
-        if(maxSize != null){
+        if (maxSize != null) {
             builder.append("_");
             maxSize.appendIdentifier(builder);
         }
-        if(resize != null){
+        if (resize != null) {
             builder.append("_");
             resize.appendIdentifier(builder);
         }
-        if(forceUseResize){
+        if (forceUseResize) {
             builder.append("_");
             builder.append("forceUseResize");
         }
-        if(lowQualityImage){
+        if (lowQualityImage) {
             builder.append("_");
             builder.append("lowQualityImage");
         }
-        if(imageProcessor != null){
+        if (imageProcessor != null) {
             builder.append("_");
             imageProcessor.appendIdentifier(builder);
         }

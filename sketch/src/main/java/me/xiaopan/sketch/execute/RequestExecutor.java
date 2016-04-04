@@ -39,6 +39,7 @@ public interface RequestExecutor {
 
     /**
      * 获取标识符
+     *
      * @return 标识符
      */
     String getIdentifier();

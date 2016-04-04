@@ -17,13 +17,13 @@
 package me.xiaopan.sketch;
 
 public interface ImageSize {
-	int getWidth();
+    int getWidth();
 
-	int getHeight();
+    int getHeight();
 
-	void set(int width, int height);
+    void set(int width, int height);
 
-	String getIdentifier();
+    String getIdentifier();
 
-	StringBuilder appendIdentifier(StringBuilder builder);
+    StringBuilder appendIdentifier(StringBuilder builder);
 }

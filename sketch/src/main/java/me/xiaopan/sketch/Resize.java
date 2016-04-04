@@ -18,68 +18,68 @@ package me.xiaopan.sketch;
 
 import android.widget.ImageView;
 
-public class Resize implements ImageSize{
-	private int width;
-	private int height;
+public class Resize implements ImageSize {
+    private int width;
+    private int height;
 
-	private ImageView.ScaleType scaleType = ImageView.ScaleType.CENTER_CROP;
+    private ImageView.ScaleType scaleType = ImageView.ScaleType.CENTER_CROP;
 
-	public Resize(Resize sourceResize){
-		this.width = sourceResize.width;
-		this.height = sourceResize.height;
-		this.scaleType = sourceResize.scaleType;
-	}
+    public Resize(Resize sourceResize) {
+        this.width = sourceResize.width;
+        this.height = sourceResize.height;
+        this.scaleType = sourceResize.scaleType;
+    }
 
-	public Resize(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
+    public Resize(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
 
-	public Resize(int width, int height, ImageView.ScaleType scaleType) {
-		this(width, height);
-		this.scaleType = scaleType;
-	}
+    public Resize(int width, int height, ImageView.ScaleType scaleType) {
+        this(width, height);
+        this.scaleType = scaleType;
+    }
 
-	public ImageView.ScaleType getScaleType() {
-		return scaleType;
-	}
+    public ImageView.ScaleType getScaleType() {
+        return scaleType;
+    }
 
-	public void setScaleType(ImageView.ScaleType scaleType) {
-		this.scaleType = scaleType;
-	}
+    public void setScaleType(ImageView.ScaleType scaleType) {
+        this.scaleType = scaleType;
+    }
 
-	@Override
-	public int getWidth() {
-		return width;
-	}
+    @Override
+    public int getWidth() {
+        return width;
+    }
 
-	@Override
-	public int getHeight() {
-		return height;
-	}
+    @Override
+    public int getHeight() {
+        return height;
+    }
 
-	@Override
-	public void set(int width, int height) {
-		this.width = width;
-		this.height = height;
-	}
+    @Override
+    public void set(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
 
-	@Override
-	public String getIdentifier(){
-		return appendIdentifier(new StringBuilder()).toString();
-	}
+    @Override
+    public String getIdentifier() {
+        return appendIdentifier(new StringBuilder()).toString();
+    }
 
-	@Override
-	public StringBuilder appendIdentifier(StringBuilder builder){
-		builder.append("Resize(");
-		builder.append(width);
-		builder.append("x");
-		builder.append(height);
-		if(scaleType != null){
-			builder.append(":");
-			builder.append(scaleType.name());
-		}
-		builder.append(")");
-		return builder;
-	}
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        builder.append("Resize(");
+        builder.append(width);
+        builder.append("x");
+        builder.append(height);
+        if (scaleType != null) {
+            builder.append(":");
+            builder.append(scaleType.name());
+        }
+        builder.append(")");
+        return builder;
+    }
 }

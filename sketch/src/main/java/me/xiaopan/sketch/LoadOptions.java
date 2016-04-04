@@ -21,7 +21,7 @@ import me.xiaopan.sketch.process.ImageProcessor;
 /**
  * 显示选项
  */
-public class LoadOptions extends DownloadOptions{
+public class LoadOptions extends DownloadOptions {
     private Resize resize;
     private MaxSize maxSize;
     private boolean decodeGifImage = true;
@@ -32,7 +32,7 @@ public class LoadOptions extends DownloadOptions{
     public LoadOptions() {
     }
 
-    public LoadOptions(LoadOptions from){
+    public LoadOptions(LoadOptions from) {
         copyOf(from);
     }
 
@@ -44,6 +44,7 @@ public class LoadOptions extends DownloadOptions{
 
     /**
      * 获取最大尺寸
+     *
      * @return 最大尺寸
      */
     public MaxSize getMaxSize() {
@@ -52,27 +53,30 @@ public class LoadOptions extends DownloadOptions{
 
     /**
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
+     *
      * @param maxSize 最大尺寸
      * @return LoadOptions
      */
-    public LoadOptions setMaxSize(MaxSize maxSize){
+    public LoadOptions setMaxSize(MaxSize maxSize) {
         this.maxSize = maxSize;
         return this;
     }
 
     /**
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
-     * @param width 宽
+     *
+     * @param width  宽
      * @param height 高
      * @return LoadOptions
      */
-    public LoadOptions setMaxSize(int width, int height){
+    public LoadOptions setMaxSize(int width, int height) {
         this.maxSize = new MaxSize(width, height);
         return this;
     }
 
     /**
      * 获取新尺寸
+     *
      * @return 新尺寸
      */
     public Resize getResize() {
@@ -81,27 +85,30 @@ public class LoadOptions extends DownloadOptions{
 
     /**
      * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
+     *
      * @param resize 新的尺寸
      * @return LoadOptions
      */
-    public LoadOptions setResize(Resize resize){
+    public LoadOptions setResize(Resize resize) {
         this.resize = resize;
         return this;
     }
 
     /**
      * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
-     * @param width 宽
+     *
+     * @param width  宽
      * @param height 高
      * @return LoadOptions
      */
-    public LoadOptions setResize(int width, int height){
+    public LoadOptions setResize(int width, int height) {
         this.resize = new Resize(width, height);
         return this;
     }
 
     /**
      * 获取图片处理器
+     *
      * @return 图片处理器
      */
     public ImageProcessor getImageProcessor() {
@@ -110,16 +117,18 @@ public class LoadOptions extends DownloadOptions{
 
     /**
      * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
+     *
      * @param processor 图片处理器
      * @return LoadOptions
      */
-    public LoadOptions setImageProcessor(ImageProcessor processor){
+    public LoadOptions setImageProcessor(ImageProcessor processor) {
         this.imageProcessor = processor;
         return this;
     }
 
     /**
      * 是否解码GIF图片
+     *
      * @return true：是
      */
     public boolean isDecodeGifImage() {
@@ -128,6 +137,7 @@ public class LoadOptions extends DownloadOptions{
 
     /**
      * 设置是否解码GIF图片
+     *
      * @param decodeGifImage true：是
      */
     public LoadOptions setDecodeGifImage(boolean decodeGifImage) {
@@ -143,6 +153,7 @@ public class LoadOptions extends DownloadOptions{
 
     /**
      * 是否返回低质量的图片
+     *
      * @return true: 是
      */
     public boolean isLowQualityImage() {
@@ -151,6 +162,7 @@ public class LoadOptions extends DownloadOptions{
 
     /**
      * 设置是否返回低质量的图片
+     *
      * @param lowQualityImage true：是
      */
     public LoadOptions setLowQualityImage(boolean lowQualityImage) {
@@ -160,6 +172,7 @@ public class LoadOptions extends DownloadOptions{
 
     /**
      * 是否强制使经过resize返回的图片同resize的尺寸一致
+     *
      * @return true：强制使经过resize返回的图片同resize的尺寸一致
      */
     public boolean isForceUseResize() {
@@ -168,6 +181,7 @@ public class LoadOptions extends DownloadOptions{
 
     /**
      * 设置是否强制使经过resize返回的图片同resize的尺寸一致
+     *
      * @param forceUseResize true：强制使经过resize返回的图片同resize的尺寸一致
      */
     public LoadOptions setForceUseResize(boolean forceUseResize) {
@@ -175,7 +189,7 @@ public class LoadOptions extends DownloadOptions{
         return this;
     }
 
-    public void copyOf(LoadOptions loadOptions){
+    public void copyOf(LoadOptions loadOptions) {
         this.maxSize = loadOptions.getMaxSize();
         this.resize = loadOptions.getResize();
         this.lowQualityImage = loadOptions.lowQualityImage;

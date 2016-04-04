@@ -18,13 +18,18 @@ package me.xiaopan.sketch;
 
 public interface HelperFactory {
     DownloadHelper getDownloadHelper(Sketch sketch, String uri);
+
     LoadHelper getLoadHelper(Sketch sketch, String uri);
+
     DisplayHelper getDisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface);
+
     DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface);
+
     void recycleDisplayHelper(DisplayHelper obsoletingDisplayHelper);
 
     /**
      * 获取标识符
+     *
      * @return 标识符
      */
     String getIdentifier();

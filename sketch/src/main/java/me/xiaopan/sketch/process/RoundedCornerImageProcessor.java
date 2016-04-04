@@ -35,20 +35,21 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
 
     private int roundPixels;
 
-	/**
-	 * 创建一个圆角图片显示器
-	 * @param roundPixels 圆角度数
-	 */
-	public RoundedCornerImageProcessor(int roundPixels){
-		this.roundPixels = roundPixels;
-	}
-	
-	/**
-	 * 创建一个圆角图片显示器，圆角角度默认为18
-	 */
-	public RoundedCornerImageProcessor(){
-		this(18);
-	}
+    /**
+     * 创建一个圆角图片显示器
+     *
+     * @param roundPixels 圆角度数
+     */
+    public RoundedCornerImageProcessor(int roundPixels) {
+        this.roundPixels = roundPixels;
+    }
+
+    /**
+     * 创建一个圆角图片显示器，圆角角度默认为18
+     */
+    public RoundedCornerImageProcessor() {
+        this(18);
+    }
 
     @Override
     public String getIdentifier() {
@@ -57,21 +58,22 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME).append(" - ").append("roundPixels").append("=").append(roundPixels);
+        return builder.append(NAME)
+                .append(". ").append("roundPixels").append("=").append(roundPixels);
     }
 
     @Override
     public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if(bitmap == null || bitmap.isRecycled()){
+        if (bitmap == null || bitmap.isRecycled()) {
             return null;
         }
 
         ResizeCalculator.Result result = sketch.getConfiguration().getResizeCalculator().calculator(bitmap.getWidth(), bitmap.getHeight(), resize != null ? resize.getWidth() : bitmap.getWidth(), resize != null ? resize.getHeight() : bitmap.getHeight(), resize != null ? resize.getScaleType() : null, forceUseResize);
-        if(result == null){
+        if (result == null) {
             return bitmap;
         }
 
-        Bitmap output = Bitmap.createBitmap(result.imageWidth, result.imageHeight, lowQualityImage?Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888);
+        Bitmap output = Bitmap.createBitmap(result.imageWidth, result.imageHeight, lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -85,11 +87,11 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, result.srcRect, result.destRect, paint);
         return output;
-	}
+    }
 
     public int getRoundPixels() {
-		return roundPixels;
-	}
+        return roundPixels;
+    }
 
     public void setRoundPixels(int roundPixels) {
         this.roundPixels = roundPixels;

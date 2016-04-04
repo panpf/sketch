@@ -4,7 +4,7 @@ import android.graphics.drawable.Drawable;
 
 import java.lang.ref.WeakReference;
 
-public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable{
+public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable {
     private WeakReference<DisplayRequest> displayRequestWeakReference;
 
     public BindFixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, DisplayRequest displayRequest) {
@@ -19,6 +19,7 @@ public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable{
 
     /**
      * 获取显示请求
+     *
      * @return 显示请求
      */
     public DisplayRequest getDisplayRequest() {
@@ -27,6 +28,7 @@ public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable{
 
     /**
      * 获取与给定SketchImageViewInterface所持有的DisplayRequest
+     *
      * @param sketchImageViewInterface SketchImageViewInterface
      * @return 给定ImageView所持有的DisplayRequest
      */

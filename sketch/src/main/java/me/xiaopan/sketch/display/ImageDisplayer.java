@@ -24,22 +24,25 @@ import me.xiaopan.sketch.SketchImageViewInterface;
  * 图片显示器
  */
 public interface ImageDisplayer {
-	int DEFAULT_ANIMATION_DURATION = 400;
-	/**
-	 * 显示
-	 * @param sketchImageViewInterface ImageView
-	 * @param newDrawable 图片
-	 */
-	void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable);
+    int DEFAULT_ANIMATION_DURATION = 400;
 
-	/**
-	 * 获取标识符
-	 * @return 标识符
-	 */
-	String getIdentifier();
+    /**
+     * 显示
+     *
+     * @param sketchImageViewInterface ImageView
+     * @param newDrawable              图片
+     */
+    void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable);
 
-	/**
-	 * 追加标识符
-	 */
-	StringBuilder appendIdentifier(StringBuilder builder);
+    /**
+     * 获取标识符
+     *
+     * @return 标识符
+     */
+    String getIdentifier();
+
+    /**
+     * 追加标识符
+     */
+    StringBuilder appendIdentifier(StringBuilder builder);
 }

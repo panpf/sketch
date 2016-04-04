@@ -43,26 +43,26 @@ public class DefaultImageDecoder implements ImageDecoder {
     private static final String NAME = "DefaultImageDecoder";
 
     @Override
-	public Object decode(LoadRequest loadRequest){
-        try{
-            if(loadRequest.getUriScheme() == UriScheme.HTTP || loadRequest.getUriScheme() == UriScheme.HTTPS){
+    public Object decode(LoadRequest loadRequest) {
+        try {
+            if (loadRequest.getUriScheme() == UriScheme.HTTP || loadRequest.getUriScheme() == UriScheme.HTTPS) {
                 return decodeHttpOrHttps(loadRequest);
-            }else if(loadRequest.getUriScheme() == UriScheme.FILE){
+            } else if (loadRequest.getUriScheme() == UriScheme.FILE) {
                 return decodeFile(loadRequest);
-            }else if(loadRequest.getUriScheme() == UriScheme.CONTENT){
+            } else if (loadRequest.getUriScheme() == UriScheme.CONTENT) {
                 return decodeContent(loadRequest);
-            }else if(loadRequest.getUriScheme() == UriScheme.ASSET){
+            } else if (loadRequest.getUriScheme() == UriScheme.ASSET) {
                 return decodeAsset(loadRequest);
-            }else if(loadRequest.getUriScheme() == UriScheme.DRAWABLE){
+            } else if (loadRequest.getUriScheme() == UriScheme.DRAWABLE) {
                 return decodeDrawable(loadRequest);
-            }else{
+            } else {
                 return null;
             }
-        }catch(Throwable e){
+        } catch (Throwable e) {
             e.printStackTrace();
             return null;
         }
-	}
+    }
 
     @Override
     public String getIdentifier() {
@@ -74,41 +74,41 @@ public class DefaultImageDecoder implements ImageDecoder {
         return builder.append(NAME);
     }
 
-    public Object decodeHttpOrHttps(LoadRequest loadRequest){
+    public Object decodeHttpOrHttps(LoadRequest loadRequest) {
         File cacheFile = loadRequest.getCacheFile();
-        if(cacheFile != null && cacheFile.exists()){
+        if (cacheFile != null && cacheFile.exists()) {
             return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(cacheFile, loadRequest));
         }
 
         byte[] imageData = loadRequest.getImageData();
-        if (imageData != null && imageData.length > 0){
+        if (imageData != null && imageData.length > 0) {
             return decodeFromHelper(loadRequest, new ByteArrayDecodeHelper(imageData, loadRequest));
         }
 
         return null;
     }
 
-    public Object decodeFile(LoadRequest loadRequest){
-        if(loadRequest.isLocalApkFile() && loadRequest.getCacheFile() != null){
+    public Object decodeFile(LoadRequest loadRequest) {
+        if (loadRequest.isLocalApkFile() && loadRequest.getCacheFile() != null) {
             return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(loadRequest.getCacheFile(), loadRequest));
-        }else{
+        } else {
             return decodeFromHelper(loadRequest, new FileDecodeHelper(new File(loadRequest.getUri()), loadRequest));
         }
     }
 
-    public Object decodeContent(LoadRequest loadRequest){
+    public Object decodeContent(LoadRequest loadRequest) {
         return decodeFromHelper(loadRequest, new ContentDecodeHelper(Uri.parse(loadRequest.getUri()), loadRequest));
     }
 
-    public Object decodeAsset(LoadRequest loadRequest){
+    public Object decodeAsset(LoadRequest loadRequest) {
         return decodeFromHelper(loadRequest, new AssetsDecodeHelper(UriScheme.ASSET.crop(loadRequest.getUri()), loadRequest));
     }
 
-    public Object decodeDrawable(LoadRequest loadRequest){
+    public Object decodeDrawable(LoadRequest loadRequest) {
         return decodeFromHelper(loadRequest, new DrawableDecodeHelper(Integer.valueOf(UriScheme.DRAWABLE.crop(loadRequest.getUri())), loadRequest));
     }
 
-    public static Object decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper){
+    public static Object decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper) {
         // just decode bounds
         Options options = new Options();
         options.inJustDecodeBounds = true;
@@ -118,23 +118,23 @@ public class DefaultImageDecoder implements ImageDecoder {
         // setup best bitmap config by MimeType
         loadRequest.setMimeType(options.outMimeType);
         ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
-        if(imageFormat != null){
+        if (imageFormat != null) {
             options.inPreferredConfig = imageFormat.getConfig(loadRequest.isLowQualityImage());
         }
 
         // decode gif image
-        if(imageFormat != null && imageFormat == ImageFormat.GIF && loadRequest.isDecodeGifImage()){
+        if (imageFormat != null && imageFormat == ImageFormat.GIF && loadRequest.isDecodeGifImage()) {
             try {
                 return decodeHelper.getGifDrawable();
-            }catch (UnsatisfiedLinkError e){
+            } catch (UnsatisfiedLinkError e) {
                 Log.e(Sketch.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, unable to process the GIF images, has automatically according to the common image decoding, and has set up a closed automatically decoding GIF image feature. If you need to decode the GIF figure please go to “https://github.com/xiaopansky/sketch” to download “libpl_droidsonroids_gif.so” file and put in your project");
                 loadRequest.getSketch().getConfiguration().setDecodeGifImage(false);
                 e.printStackTrace();
-            }catch (ExceptionInInitializerError e){
+            } catch (ExceptionInInitializerError e) {
                 Log.e(Sketch.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, unable to process the GIF images, has automatically according to the common image decoding, and has set up a closed automatically decoding GIF image feature. If you need to decode the GIF figure please go to “https://github.com/xiaopansky/sketch” to download “libpl_droidsonroids_gif.so” file and put in your project");
                 loadRequest.getSketch().getConfiguration().setDecodeGifImage(false);
                 e.printStackTrace();
-            }catch (Throwable e){
+            } catch (Throwable e) {
                 Log.e(Sketch.TAG, "When decoding GIF figure some unknown exception, has shut down automatically GIF picture decoding function");
                 loadRequest.getSketch().getConfiguration().setDecodeGifImage(false);
                 e.printStackTrace();
@@ -144,7 +144,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         // decode normal image
         Bitmap bitmap = null;
         Point originalSize = new Point(options.outWidth, options.outHeight);
-        if(options.outWidth != 1 && options.outHeight != 1){
+        if (options.outWidth != 1 && options.outHeight != 1) {
             // calculate inSampleSize
             MaxSize maxSize = loadRequest.getMaxSize();
             if (maxSize != null) {
@@ -153,23 +153,23 @@ public class DefaultImageDecoder implements ImageDecoder {
 
             // Decoding and exclude the width or height of 1 pixel image
             bitmap = decodeHelper.decode(options);
-            if(bitmap != null && (bitmap.getWidth() == 1 || bitmap.getHeight() == 1)){
-                if(Sketch.isDebugMode()){
+            if (bitmap != null && (bitmap.getWidth() == 1 || bitmap.getHeight() == 1)) {
+                if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "bitmap width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", "BitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(), " - ", loadRequest.getName()));
                 }
                 bitmap.recycle();
                 bitmap = null;
             }
-        }else{
-            if(Sketch.isDebugMode()) {
+        } else {
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "image width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", loadRequest.getName()));
             }
         }
 
         // Results the callback
-        if(bitmap != null && !bitmap.isRecycled()){
+        if (bitmap != null && !bitmap.isRecycled()) {
             decodeHelper.onDecodeSuccess(bitmap, originalSize, options.inSampleSize);
-        }else{
+        } else {
             bitmap = null;
             decodeHelper.onDecodeFailed();
         }
@@ -183,6 +183,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     public interface DecodeHelper {
         /**
          * 解码
+         *
          * @param options 解码选项
          */
         Bitmap decode(BitmapFactory.Options options);
@@ -222,7 +223,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 e.printStackTrace();
             }
             Bitmap bitmap = null;
-            if(inputStream != null){
+            if (inputStream != null) {
                 bitmap = BitmapFactory.decodeStream(inputStream, null, options);
                 try {
                     inputStream.close();
@@ -235,15 +236,15 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 StringBuilder stringBuilder = new StringBuilder(NAME)
                         .append(" - ").append("decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxSize() != null){
+                if (bitmap != null && loadRequest.getMaxSize() != null) {
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
-                }else{
+                } else {
                     stringBuilder.append(" - ").append("unchanged");
                 }
                 stringBuilder.append(" - ").append(loadRequest.getName());
@@ -253,7 +254,7 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeFailed() {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", assetsFilePath));
             }
         }
@@ -286,15 +287,15 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 StringBuilder stringBuilder = new StringBuilder(NAME)
                         .append(" - ").append("decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxSize() != null){
+                if (bitmap != null && loadRequest.getMaxSize() != null) {
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
-                }else{
+                } else {
                     stringBuilder.append(" - ").append("unchanged");
                 }
                 stringBuilder.append(" - ").append(loadRequest.getName());
@@ -304,7 +305,7 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeFailed() {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", loadRequest.getName()));
             }
         }
@@ -332,8 +333,8 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public Bitmap decode(BitmapFactory.Options options) {
-            if(!file.canRead()){
-                if(Sketch.isDebugMode()){
+            if (!file.canRead()) {
+                if (Sketch.isDebugMode()) {
                     Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can not read", " - ", file.getPath()));
                 }
                 return null;
@@ -344,20 +345,20 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
-            if(!file.setLastModified(System.currentTimeMillis())){
-                if(Sketch.isDebugMode()){
+            if (!file.setLastModified(System.currentTimeMillis())) {
+                if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "update last modified failed", " - ", file.getPath()));
                 }
             }
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 StringBuilder stringBuilder = new StringBuilder(NAME)
                         .append(" - ").append("decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxSize() != null){
+                if (bitmap != null && loadRequest.getMaxSize() != null) {
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
-                }else{
+                } else {
                     stringBuilder.append(" - ").append("unchanged");
                 }
                 stringBuilder.append(" - ").append(loadRequest.getName());
@@ -367,18 +368,18 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeFailed() {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 StringBuilder logContent = new StringBuilder(NAME);
                 logContent.append(" - ").append("decode failed");
                 logContent.append(", ").append("filePath").append("=").append(file.getPath());
-                if(file.exists()){
+                if (file.exists()) {
                     logContent.append(",  ").append("fileLength").append("=").append(file.length());
                 }
                 logContent.append(",  ").append("imageUri").append("=").append(loadRequest.getUri());
                 Log.e(Sketch.TAG, logContent.toString());
             }
-            if(!file.delete()){
-                if(Sketch.isDebugMode()){
+            if (!file.delete()) {
+                if (Sketch.isDebugMode()) {
                     Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete damaged disk cache file failed", " - ", file.getPath()));
                 }
             }
@@ -412,15 +413,15 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 StringBuilder stringBuilder = new StringBuilder(NAME)
                         .append(" - ").append("decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxSize() != null){
+                if (bitmap != null && loadRequest.getMaxSize() != null) {
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(",  ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(",  ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
-                }else{
+                } else {
                     stringBuilder.append(" - ").append("unchanged");
                 }
                 stringBuilder.append(" - ").append(loadRequest.getName());
@@ -430,7 +431,7 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeFailed() {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", String.valueOf(drawableId)));
             }
         }
@@ -458,10 +459,10 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public Bitmap decode(BitmapFactory.Options options) {
-            if(file.canRead()){
+            if (file.canRead()) {
                 return BitmapFactory.decodeFile(file.getPath(), options);
-            }else{
-                if(Sketch.isDebugMode()){
+            } else {
+                if (Sketch.isDebugMode()) {
                     Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can not read", " - ", file.getPath()));
                 }
                 return null;
@@ -470,15 +471,15 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 StringBuilder stringBuilder = new StringBuilder(NAME)
-                        .append(" - "+"decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxSize() != null){
+                        .append(" - " + "decodeSuccess");
+                if (bitmap != null && loadRequest.getMaxSize() != null) {
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
-                }else{
+                } else {
                     stringBuilder.append(" - ").append("unchanged");
                 }
                 stringBuilder.append(" - ").append(loadRequest.getName());
@@ -488,11 +489,11 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeFailed() {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 StringBuilder log = new StringBuilder(NAME);
                 log.append(" - ").append("decode failed");
                 log.append(", ").append("filePath").append("=").append(file.getPath());
-                if(file.exists()){
+                if (file.exists()) {
                     log.append(", ").append("fileLength").append("=").append(file.length());
                 }
                 Log.e(Sketch.TAG, log.toString());
@@ -529,7 +530,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 e.printStackTrace();
             }
             Bitmap bitmap = null;
-            if(inputStream != null){
+            if (inputStream != null) {
                 bitmap = BitmapFactory.decodeStream(inputStream, null, options);
                 try {
                     inputStream.close();
@@ -542,15 +543,15 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 StringBuilder stringBuilder = new StringBuilder(NAME)
                         .append(" - ").append("decodeSuccess");
-                if(bitmap != null && loadRequest.getMaxSize() != null){
+                if (bitmap != null && loadRequest.getMaxSize() != null) {
                     stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                     stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
                     stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                     stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
-                }else{
+                } else {
                     stringBuilder.append(" - ").append("unchanged");
                 }
                 stringBuilder.append(" - ").append(loadRequest.getName());
@@ -560,7 +561,7 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         @Override
         public void onDecodeFailed() {
-            if(Sketch.isDebugMode()){
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", contentUri.toString()));
             }
         }

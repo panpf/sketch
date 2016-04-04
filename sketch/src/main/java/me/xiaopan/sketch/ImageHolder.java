@@ -78,46 +78,46 @@ public class ImageHolder {
         return this;
     }
 
-    public RecycleBitmapDrawable getRecycleBitmapDrawable(Context context){
-        if(drawable != null && !drawable.isRecycled()){
+    public RecycleBitmapDrawable getRecycleBitmapDrawable(Context context) {
+        if (drawable != null && !drawable.isRecycled()) {
             return drawable;
         }
 
         // 从内存缓存中取
-        if(memoryCacheId == null){
+        if (memoryCacheId == null) {
             memoryCacheId = generateMemoryCacheId(resId, resize, forceUseResize, lowQualityImage, imageProcessor);
         }
         MemoryCache lruMemoryCache = Sketch.with(context).getConfiguration().getPlaceholderImageMemoryCache();
         RecycleBitmapDrawable newDrawable = (RecycleBitmapDrawable) lruMemoryCache.get(memoryCacheId);
-        if(newDrawable != null && !newDrawable.isRecycled()){
+        if (newDrawable != null && !newDrawable.isRecycled()) {
             this.drawable = newDrawable;
             return drawable;
         }
 
-        if(newDrawable != null){
+        if (newDrawable != null) {
             lruMemoryCache.remove(memoryCacheId);
         }
 
         // 创建新的图片
         Bitmap bitmap;
         boolean tempLowQualityImage = this.lowQualityImage;
-        if(Sketch.with(context).getConfiguration().isLowQualityImage()){
+        if (Sketch.with(context).getConfiguration().isLowQualityImage()) {
             tempLowQualityImage = true;
         }
         boolean canRecycle = false;
 
         Drawable resDrawable = context.getResources().getDrawable(resId);
-        if(resDrawable != null && resDrawable instanceof BitmapDrawable){
+        if (resDrawable != null && resDrawable instanceof BitmapDrawable) {
             bitmap = ((BitmapDrawable) resDrawable).getBitmap();
-        }else{
+        } else {
             bitmap = SketchUtils.drawableToBitmap(resDrawable, tempLowQualityImage);
             canRecycle = true;
         }
 
-        if(bitmap != null && !bitmap.isRecycled() && imageProcessor != null){
+        if (bitmap != null && !bitmap.isRecycled() && imageProcessor != null) {
             Bitmap newBitmap = imageProcessor.process(Sketch.with(context), bitmap, resize, forceUseResize, tempLowQualityImage);
-            if(newBitmap != bitmap){
-                if(canRecycle){
+            if (newBitmap != bitmap) {
+                if (canRecycle) {
                     bitmap.recycle();
                 }
                 bitmap = newBitmap;
@@ -125,10 +125,10 @@ public class ImageHolder {
             }
         }
 
-        if(bitmap != null && !bitmap.isRecycled()){
+        if (bitmap != null && !bitmap.isRecycled()) {
             newDrawable = new RecycleBitmapDrawable(bitmap);
             newDrawable.setAllowRecycle(canRecycle);
-            if(canRecycle){
+            if (canRecycle) {
                 lruMemoryCache.put(memoryCacheId, newDrawable);
             }
             drawable = newDrawable;
@@ -137,22 +137,22 @@ public class ImageHolder {
         return drawable;
     }
 
-    protected String generateMemoryCacheId(int resId, Resize resize, boolean forceUseResize, boolean lowQualityImage, ImageProcessor imageProcessor){
+    protected String generateMemoryCacheId(int resId, Resize resize, boolean forceUseResize, boolean lowQualityImage, ImageProcessor imageProcessor) {
         StringBuilder builder = new StringBuilder();
         builder.append(resId);
-        if(resize != null){
+        if (resize != null) {
             builder.append("_");
             resize.appendIdentifier(builder);
         }
-        if(forceUseResize){
+        if (forceUseResize) {
             builder.append("_");
             builder.append("forceUseResize");
         }
-        if(lowQualityImage){
+        if (lowQualityImage) {
             builder.append("_");
             builder.append("lowQualityImage");
         }
-        if(imageProcessor != null){
+        if (imageProcessor != null) {
             builder.append("_");
             imageProcessor.appendIdentifier(builder);
         }

@@ -23,24 +23,25 @@ import me.xiaopan.sketch.process.ImageProcessor;
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
-    private boolean cacheInMemory = true;	//是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
-    private ImageDisplayer imageDisplayer;	// 图片显示器
-    private ImageHolder loadingImageHolder;	//当正在加载时显示的图片
-    private ImageHolder failureImageHolder;	//当失败时显示的图片
-    private ImageHolder pauseDownloadImageHolder;	//暂停下载时显示的图片
+    private boolean cacheInMemory = true;    //是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+    private ImageDisplayer imageDisplayer;    // 图片显示器
+    private ImageHolder loadingImageHolder;    //当正在加载时显示的图片
+    private ImageHolder failureImageHolder;    //当失败时显示的图片
+    private ImageHolder pauseDownloadImageHolder;    //暂停下载时显示的图片
 
     private boolean resizeByFixedSize;
 
     public DisplayOptions() {
     }
 
-    public DisplayOptions(DisplayOptions from){
+    public DisplayOptions(DisplayOptions from) {
         super(from);
         copyOf(from);
     }
 
     /**
      * 是否将图片缓存在内存中
+     *
      * @return 是否将图片缓存在内存中（默认是）
      */
     public boolean isCacheInMemory() {
@@ -49,6 +50,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 设置是否将图片缓存在内存中
+     *
      * @param cacheInMemory 是否将图片缓存在内存中（默认是）
      * @return DisplayOptions
      */
@@ -59,6 +61,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 获取图片显示器
+     *
      * @return 图片显示器
      */
     public ImageDisplayer getImageDisplayer() {
@@ -67,6 +70,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 设置图片显示器，在加载完成后会调用此显示器来显示图片
+     *
      * @param displayer 图片显示器
      * @return DisplayOptions
      */
@@ -77,6 +81,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 获取正在加载时显示的图片
+     *
      * @return 正在加载时显示的图片
      */
     public ImageHolder getLoadingImageHolder() {
@@ -85,6 +90,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 设置正在加载时显示的图片
+     *
      * @param loadingImageHolder 正在加载时显示的图片
      */
     public DisplayOptions setLoadingImage(ImageHolder loadingImageHolder) {
@@ -94,6 +100,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 设置正在加载时显示的图片
+     *
      * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
@@ -104,6 +111,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 获取失败时显示的图片
+     *
      * @return 失败时显示的图片
      */
     public ImageHolder getFailureImage() {
@@ -112,6 +120,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 设置失败时显示的图片
+     *
      * @param failureImageHolder 失败时显示的图片
      */
     public DisplayOptions setFailureImage(ImageHolder failureImageHolder) {
@@ -121,6 +130,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 设置失败时显示的图片
+     *
      * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
@@ -131,6 +141,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 获取暂停下载时显示的图片
+     *
      * @return 暂停下载时显示的图片
      */
     public ImageHolder getPauseDownloadImage() {
@@ -139,6 +150,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 设置暂停下载时显示的图片
+     *
      * @param pauseDownloadImageHolder 暂停下载时显示的图片
      */
     public DisplayOptions setPauseDownloadImage(ImageHolder pauseDownloadImageHolder) {
@@ -148,6 +160,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 设置暂停下载时显示的图片
+     *
      * @param drawableResId 资源图片ID
      * @return DisplayOptions
      */
@@ -158,6 +171,7 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 是否使用ImageView的LayoutSize作为resize
+     *
      * @return true：是
      */
     public boolean isResizeByFixedSize() {
@@ -166,11 +180,12 @@ public class DisplayOptions extends LoadOptions {
 
     /**
      * 设置是否使用ImageView的LayoutSize作为resize
+     *
      * @param isResizeByFixedSize true：是
      */
     public DisplayOptions setResizeByFixedSize(boolean isResizeByFixedSize) {
         this.resizeByFixedSize = isResizeByFixedSize;
-        if(this.resizeByFixedSize && getResize() != null){
+        if (this.resizeByFixedSize && getResize() != null) {
             super.setResize(null);
         }
         return this;
@@ -189,7 +204,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setMaxSize(MaxSize maxSize){
+    public DisplayOptions setMaxSize(MaxSize maxSize) {
         super.setMaxSize(maxSize);
         return this;
     }
@@ -201,7 +216,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setResize(Resize resize){
+    public DisplayOptions setResize(Resize resize) {
         super.setResize(resize);
         this.resizeByFixedSize = false;
         return this;
@@ -238,7 +253,7 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
-    public void copyOf(DisplayOptions displayOptions){
+    public void copyOf(DisplayOptions displayOptions) {
         this.cacheInMemory = displayOptions.cacheInMemory;
         this.imageDisplayer = displayOptions.imageDisplayer;
         this.resizeByFixedSize = displayOptions.resizeByFixedSize;

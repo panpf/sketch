@@ -29,19 +29,22 @@ public interface DownloadListener {
 
     /**
      * 已完成，当选择本地缓存的时候才会回调这个方法
-     * @param cacheFile 本地缓存文件
+     *
+     * @param cacheFile     本地缓存文件
      * @param isFromNetwork true：图片文件是否是刚从网络下载的；false：图片文件是从本地缓存来的
      */
     void onCompleted(File cacheFile, boolean isFromNetwork);
 
     /**
      * 已完成，当没有选择本地缓存的时候将回调这个方法
+     *
      * @param data 数据
      */
     void onCompleted(byte[] data);
 
     /**
      * 已失败
+     *
      * @param failCause 失败原因
      */
     void onFailed(FailCause failCause);

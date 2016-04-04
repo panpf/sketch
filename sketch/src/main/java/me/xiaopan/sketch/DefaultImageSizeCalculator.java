@@ -27,21 +27,21 @@ import java.lang.reflect.Field;
 /**
  * 默认的图片尺寸计算器
  */
-public class DefaultImageSizeCalculator implements ImageSizeCalculator{
+public class DefaultImageSizeCalculator implements ImageSizeCalculator {
     private static final String NAME = "DefaultImageSizeCalculator";
 
     @Override
     public MaxSize calculateImageMaxSize(SketchImageViewInterface sketchImageViewInterface) {
         View imageView = sketchImageViewInterface.getSelf();
-        if(imageView == null){
+        if (imageView == null) {
             return null;
         }
 
         int width = getWidth(imageView, true, true, false);
         int height = getHeight(imageView, true, true, false);
-        if (width > 0 || height > 0){
+        if (width > 0 || height > 0) {
             return new MaxSize(width, height);
-        }else{
+        } else {
             return null;
         }
     }
@@ -49,15 +49,15 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
     @Override
     public Resize calculateImageResize(SketchImageViewInterface sketchImageViewInterface) {
         View imageView = sketchImageViewInterface.getSelf();
-        if(imageView == null){
+        if (imageView == null) {
             return null;
         }
 
         int width = getWidth(imageView, false, false, true);
         int height = getHeight(imageView, false, false, true);
-        if (width > 0 && height > 0){
+        if (width > 0 && height > 0) {
             return new Resize(width, height, sketchImageViewInterface.getScaleType());
-        }else{
+        } else {
             return null;
         }
     }
@@ -65,13 +65,13 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
     @Override
     public FixedSize calculateImageFixedSize(SketchImageViewInterface sketchImageViewInterface) {
         View imageView = sketchImageViewInterface.getSelf();
-        if(imageView == null){
+        if (imageView == null) {
             return null;
         }
 
         ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
-        if(layoutParams != null && layoutParams.width > 0 && layoutParams.height > 0){
-            return new FixedSize(layoutParams.width-(imageView.getPaddingLeft()+imageView.getPaddingRight()), layoutParams.height-(imageView.getPaddingTop()+imageView.getPaddingBottom()));
+        if (layoutParams != null && layoutParams.width > 0 && layoutParams.height > 0) {
+            return new FixedSize(layoutParams.width - (imageView.getPaddingLeft() + imageView.getPaddingRight()), layoutParams.height - (imageView.getPaddingTop() + imageView.getPaddingBottom()));
         }
         return null;
     }
@@ -79,12 +79,12 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
     @Override
     public MaxSize getDefaultImageMaxSize(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return new MaxSize((int) (displayMetrics.widthPixels*1.5f), (int) (displayMetrics.heightPixels*1.5f));
+        return new MaxSize((int) (displayMetrics.widthPixels * 1.5f), (int) (displayMetrics.heightPixels * 1.5f));
     }
 
     @Override
     public int compareMaxSize(MaxSize maxSize1, MaxSize maxSize2) {
-        if(maxSize1 == null || maxSize2 == null){
+        if (maxSize1 == null || maxSize2 == null) {
             return 0;
         }
         return (maxSize1.getWidth() * maxSize1.getHeight()) - (maxSize2.getWidth() - maxSize2.getHeight());
@@ -144,46 +144,46 @@ public class DefaultImageSizeCalculator implements ImageSizeCalculator{
     }
 
     public static int getWidth(View imageView, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {
-        if(imageView == null){
+        if (imageView == null) {
             return 0;
         }
 
         int width = 0;
         final ViewGroup.LayoutParams params = imageView.getLayoutParams();
-        if (params != null){
+        if (params != null) {
             width = params.width;
-            if(subtractPadding && width > 0  && (width - imageView.getPaddingLeft() - imageView.getPaddingRight()) > 0){
-                width -= imageView.getPaddingLeft()+imageView.getPaddingRight();
+            if (subtractPadding && width > 0 && (width - imageView.getPaddingLeft() - imageView.getPaddingRight()) > 0) {
+                width -= imageView.getPaddingLeft() + imageView.getPaddingRight();
                 return width;
             }
         }
-        if(width <= 0 && checkMaxWidth){
+        if (width <= 0 && checkMaxWidth) {
             width = getViewFieldValue(imageView, "mMaxWidth");
         }
-        if(width <= 0 && acceptWrapContent && params != null && params.width == ViewGroup.LayoutParams.WRAP_CONTENT){
+        if (width <= 0 && acceptWrapContent && params != null && params.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
             width = -1;
         }
         return width;
     }
 
     public static int getHeight(View imageView, boolean checkMaxHeight, boolean acceptWrapContent, boolean subtractPadding) {
-        if(imageView == null){
+        if (imageView == null) {
             return 0;
         }
 
         int height = 0;
         final ViewGroup.LayoutParams params = imageView.getLayoutParams();
-        if (params != null){
+        if (params != null) {
             height = params.height;
-            if(subtractPadding && height > 0 && (height - imageView.getPaddingTop() - imageView.getPaddingBottom()) > 0){
-                height -= imageView.getPaddingTop()+imageView.getPaddingBottom();
+            if (subtractPadding && height > 0 && (height - imageView.getPaddingTop() - imageView.getPaddingBottom()) > 0) {
+                height -= imageView.getPaddingTop() + imageView.getPaddingBottom();
                 return height;
             }
         }
-        if(height <= 0 && checkMaxHeight){
+        if (height <= 0 && checkMaxHeight) {
             height = getViewFieldValue(imageView, "mMaxHeight");
         }
-        if(height <= 0 && acceptWrapContent && params != null && params.height == ViewGroup.LayoutParams.WRAP_CONTENT){
+        if (height <= 0 && acceptWrapContent && params != null && params.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
             height = -1;
         }
         return height;

@@ -23,7 +23,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * DownloadHelper
  */
-public class DefaultDownloadHelper implements DownloadHelper{
+public class DefaultDownloadHelper implements DownloadHelper {
     private static final String NAME = "DefaultDownloadHelper";
 
     // 基本属性
@@ -40,29 +40,30 @@ public class DefaultDownloadHelper implements DownloadHelper{
 
     /**
      * 创建下载请求生成器
+     *
      * @param sketch Sketch
-     * @param uri 图片Uri，支持以下几种
-     * <blockquote>“http://site.com/image.png“  // from Web
-     * <br>“https://site.com/image.png“ // from Web
-     * </blockquote>
+     * @param uri    图片Uri，支持以下几种
+     *               <blockquote>“http://site.com/image.png“  // from Web
+     *               <br>“https://site.com/image.png“ // from Web
+     *               </blockquote>
      */
     public DefaultDownloadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
         this.uri = uri;
-        if(sketch.getConfiguration().isPauseDownload()){
+        if (sketch.getConfiguration().isPauseDownload()) {
             this.requestLevel = RequestLevel.LOCAL;
             this.requestLevelFrom = null;
         }
     }
 
     @Override
-    public DefaultDownloadHelper name(String name){
+    public DefaultDownloadHelper name(String name) {
         this.name = name;
         return this;
     }
 
     @Override
-    public DefaultDownloadHelper listener(DownloadListener downloadListener){
+    public DefaultDownloadHelper listener(DownloadListener downloadListener) {
         this.downloadListener = downloadListener;
         return this;
     }
@@ -74,25 +75,25 @@ public class DefaultDownloadHelper implements DownloadHelper{
     }
 
     @Override
-    public DefaultDownloadHelper progressListener(ProgressListener progressListener){
+    public DefaultDownloadHelper progressListener(ProgressListener progressListener) {
         this.progressListener = progressListener;
         return this;
     }
 
     @Override
-    public DefaultDownloadHelper options(DownloadOptions options){
-        if(options == null){
+    public DefaultDownloadHelper options(DownloadOptions options) {
+        if (options == null) {
             return this;
         }
 
         this.cacheInDisk = options.isCacheInDisk();
         RequestLevel optionRequestLevel = options.getRequestLevel();
-        if(requestLevel != null && optionRequestLevel != null){
-            if(optionRequestLevel.getLevel() < requestLevel.getLevel()){
+        if (requestLevel != null && optionRequestLevel != null) {
+            if (optionRequestLevel.getLevel() < requestLevel.getLevel()) {
                 this.requestLevel = optionRequestLevel;
                 this.requestLevelFrom = null;
             }
-        }else if(optionRequestLevel != null){
+        } else if (optionRequestLevel != null) {
             this.requestLevel = optionRequestLevel;
             this.requestLevelFrom = null;
         }
@@ -101,13 +102,13 @@ public class DefaultDownloadHelper implements DownloadHelper{
     }
 
     @Override
-    public DefaultDownloadHelper options(Enum<?> optionsName){
+    public DefaultDownloadHelper options(Enum<?> optionsName) {
         return options((DownloadOptions) Sketch.getOptions(optionsName));
     }
 
     @Override
-    public DefaultDownloadHelper requestLevel(RequestLevel requestLevel){
-        if(requestLevel != null){
+    public DefaultDownloadHelper requestLevel(RequestLevel requestLevel) {
+        if (requestLevel != null) {
             this.requestLevel = requestLevel;
             this.requestLevelFrom = null;
         }
@@ -117,52 +118,52 @@ public class DefaultDownloadHelper implements DownloadHelper{
     /**
      * 处理一下参数
      */
-    protected void handleParams(){
-        if(!sketch.getConfiguration().isCacheInDisk()){
+    protected void handleParams() {
+        if (!sketch.getConfiguration().isCacheInDisk()) {
             cacheInDisk = false;
         }
     }
 
     @Override
-    public Request commit(){
+    public Request commit() {
         handleParams();
 
-        if(downloadListener != null){
+        if (downloadListener != null) {
             downloadListener.onStarted();
         }
 
         // 验证uri参数
-        if(uri == null || "".equals(uri.trim())){
-            if(Sketch.isDebugMode()){
+        if (uri == null || "".equals(uri.trim())) {
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
             }
-            if(downloadListener != null){
+            if (downloadListener != null) {
                 downloadListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
             }
             return null;
         }
 
-        if(name == null){
+        if (name == null) {
             name = uri;
         }
 
         // 过滤掉不支持的URI协议类型
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
-        if(uriScheme == null){
-            if(Sketch.isDebugMode()){
+        if (uriScheme == null) {
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", name));
             }
-            if(downloadListener != null){
+            if (downloadListener != null) {
                 downloadListener.onFailed(FailCause.URI_NO_SUPPORT);
             }
             return null;
         }
 
-        if(!(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS)){
-            if(Sketch.isDebugMode()){
+        if (!(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS)) {
+            if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "only support http ot https", " - ", name));
             }
-            if(downloadListener != null){
+            if (downloadListener != null) {
                 downloadListener.onFailed(FailCause.URI_NO_SUPPORT);
             }
             return null;

@@ -20,7 +20,7 @@ public enum ImageFormat {
     }
 
     public Bitmap.Config getConfig(boolean lowQualityImage) {
-        return lowQualityImage?lowQualityConfig:bestConfig;
+        return lowQualityImage ? lowQualityConfig : bestConfig;
     }
 
     public String getMimeType() {
@@ -35,13 +35,13 @@ public enum ImageFormat {
         this.lowQualityConfig = lowQualityConfig;
     }
 
-    public boolean equals(String mimeType){
+    public boolean equals(String mimeType) {
         return this.mimeType.equalsIgnoreCase(mimeType);
     }
 
-    public static ImageFormat valueOfMimeType(String mimeType){
-        for(ImageFormat imageFormat : values()){
-            if(imageFormat.equals(mimeType)){
+    public static ImageFormat valueOfMimeType(String mimeType) {
+        for (ImageFormat imageFormat : values()) {
+            if (imageFormat.equals(mimeType)) {
                 return imageFormat;
             }
         }

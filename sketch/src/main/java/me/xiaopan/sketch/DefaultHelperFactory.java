@@ -16,7 +16,7 @@
 
 package me.xiaopan.sketch;
 
-public class DefaultHelperFactory implements HelperFactory{
+public class DefaultHelperFactory implements HelperFactory {
     private static final String NAME = "DefaultHelperFactory";
     private DisplayHelper obsoletingDisplayHelper;
 
@@ -32,9 +32,9 @@ public class DefaultHelperFactory implements HelperFactory{
 
     @Override
     public DisplayHelper getDisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
-        if(this.obsoletingDisplayHelper == null){
+        if (this.obsoletingDisplayHelper == null) {
             return new DefaultDisplayHelper(sketch, uri, sketchImageViewInterface);
-        }else{
+        } else {
             DisplayHelper displayHelper = this.obsoletingDisplayHelper;
             this.obsoletingDisplayHelper = null;
             displayHelper.init(sketch, uri, sketchImageViewInterface);
@@ -44,9 +44,9 @@ public class DefaultHelperFactory implements HelperFactory{
 
     @Override
     public DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
-        if(this.obsoletingDisplayHelper == null){
+        if (this.obsoletingDisplayHelper == null) {
             return new DefaultDisplayHelper(sketch, displayParams, sketchImageViewInterface);
-        }else{
+        } else {
             DisplayHelper displayHelper = this.obsoletingDisplayHelper;
             this.obsoletingDisplayHelper = null;
             displayHelper.init(sketch, displayParams, sketchImageViewInterface);
@@ -55,9 +55,9 @@ public class DefaultHelperFactory implements HelperFactory{
     }
 
     @Override
-    public void recycleDisplayHelper(DisplayHelper obsoletingDisplayHelper){
+    public void recycleDisplayHelper(DisplayHelper obsoletingDisplayHelper) {
         obsoletingDisplayHelper.reset();
-        if(this.obsoletingDisplayHelper == null){
+        if (this.obsoletingDisplayHelper == null) {
             this.obsoletingDisplayHelper = obsoletingDisplayHelper;
         }
     }

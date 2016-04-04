@@ -377,7 +377,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 refreshCacheSizeInfo(false, 0, Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getMaxSize());
                 break;
             case R.id.item_main_cleanDiskCache :
-                refreshCacheSizeInfo(true, 0, Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getMaxSize());
+                refreshCacheSizeInfo(true, 0, Sketch.with(getBaseContext()).getConfiguration().getDiskCache().getMaxSize());
                 new AsyncTask<Integer, Integer, Integer>(){
                     @Override
                     protected Integer doInBackground(Integer... params) {

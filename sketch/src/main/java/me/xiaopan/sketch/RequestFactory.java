@@ -21,11 +21,14 @@ package me.xiaopan.sketch;
  */
 public interface RequestFactory {
     DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface);
+
     LoadRequest newLoadRequest(Sketch sketch, String uri, UriScheme uriScheme);
+
     DownloadRequest newDownloadRequest(Sketch sketch, String uri, UriScheme uriScheme);
 
     /**
      * 获取标识符
+     *
      * @return 标识符
      */
     String getIdentifier();

@@ -10,7 +10,7 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawableInterface{
+public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawableInterface {
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
     private int bitmapWidth;
     private int bitmapHeight;
@@ -23,24 +23,24 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
 
     public FixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, FixedSize fixedSize) {
         this.recycleBitmapDrawable = recycleBitmapDrawable;
-        this.bitmap = recycleBitmapDrawable!=null?recycleBitmapDrawable.getBitmap():null;
-        if(bitmap != null){
+        this.bitmap = recycleBitmapDrawable != null ? recycleBitmapDrawable.getBitmap() : null;
+        if (bitmap != null) {
             this.bitmapWidth = bitmap.getWidth();
             this.bitmapHeight = bitmap.getHeight();
             this.paint = new Paint(DEFAULT_PAINT_FLAGS);
             this.destRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
             this.fixedSize = fixedSize;
-            if(fixedSize == null){
+            if (fixedSize == null) {
                 this.srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
                 setBounds(0, 0, bitmapWidth, bitmapHeight);
-            }else{
+            } else {
                 int fixedWidth = fixedSize.getWidth();
                 int fixedHeight = fixedSize.getHeight();
-                if(bitmapWidth == 0 || bitmapHeight == 0){
+                if (bitmapWidth == 0 || bitmapHeight == 0) {
                     this.srcRect = new Rect(0, 0, 0, 0);
-                }else if((float)bitmapWidth/(float)bitmapHeight == (float)fixedWidth/(float)fixedHeight){
+                } else if ((float) bitmapWidth / (float) bitmapHeight == (float) fixedWidth / (float) fixedHeight) {
                     this.srcRect = new Rect(0, 0, bitmapWidth, bitmapHeight);
-                }else{
+                } else {
                     this.srcRect = new Rect();
                     SketchUtils.mapping(bitmapWidth, bitmapHeight, fixedWidth, fixedHeight, srcRect);
                 }
@@ -73,7 +73,7 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
 
     @Override
     public void setAlpha(int alpha) {
-        if(paint != null){
+        if (paint != null) {
             final int oldAlpha = paint.getAlpha();
             if (alpha != oldAlpha) {
                 paint.setAlpha(alpha);
@@ -84,12 +84,12 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
 
     @Override
     public ColorFilter getColorFilter() {
-        return paint!=null?paint.getColorFilter():null;
+        return paint != null ? paint.getColorFilter() : null;
     }
 
     @Override
     public void setColorFilter(ColorFilter cf) {
-        if(paint != null){
+        if (paint != null) {
             paint.setColorFilter(cf);
             invalidateSelf();
         }
@@ -97,7 +97,7 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
 
     @Override
     public void setDither(boolean dither) {
-        if(paint != null){
+        if (paint != null) {
             paint.setDither(dither);
             invalidateSelf();
         }
@@ -105,7 +105,7 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
 
     @Override
     public void setFilterBitmap(boolean filter) {
-        if(paint != null){
+        if (paint != null) {
             paint.setFilterBitmap(filter);
             invalidateSelf();
         }
@@ -119,7 +119,7 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
-        if(destRect != null){
+        if (destRect != null) {
             destRect.set(0, 0, bounds.width(), bounds.height());
         }
     }
@@ -134,77 +134,77 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
 
     @Override
     public void setIsDisplayed(String callingStation, boolean displayed) {
-        if(recycleBitmapDrawable != null){
+        if (recycleBitmapDrawable != null) {
             recycleBitmapDrawable.setIsDisplayed(callingStation, displayed);
         }
     }
 
     @Override
     public void setIsCached(String callingStation, boolean cached) {
-        if(recycleBitmapDrawable != null){
+        if (recycleBitmapDrawable != null) {
             recycleBitmapDrawable.setIsCached(callingStation, cached);
         }
     }
 
     @Override
     public void setIsWaitDisplay(String callingStation, boolean waitDisplay) {
-        if(recycleBitmapDrawable != null){
+        if (recycleBitmapDrawable != null) {
             recycleBitmapDrawable.setIsWaitDisplay(callingStation, waitDisplay);
         }
     }
 
     @Override
     public int getByteCount() {
-        return recycleBitmapDrawable!=null?recycleBitmapDrawable.getByteCount():0;
+        return recycleBitmapDrawable != null ? recycleBitmapDrawable.getByteCount() : 0;
     }
 
     @Override
     public boolean isRecycled() {
-        return recycleBitmapDrawable==null || recycleBitmapDrawable.isRecycled();
+        return recycleBitmapDrawable == null || recycleBitmapDrawable.isRecycled();
     }
 
     @Override
     public String getMimeType() {
-        return recycleBitmapDrawable!=null?recycleBitmapDrawable.getMimeType():null;
+        return recycleBitmapDrawable != null ? recycleBitmapDrawable.getMimeType() : null;
     }
 
     @Override
     public void setMimeType(String mimeType) {
-        if(recycleBitmapDrawable != null){
+        if (recycleBitmapDrawable != null) {
             recycleBitmapDrawable.setMimeType(mimeType);
         }
     }
 
     @Override
     public void recycle() {
-        if(recycleBitmapDrawable != null){
+        if (recycleBitmapDrawable != null) {
             recycleBitmapDrawable.recycle();
         }
     }
 
     @Override
     public String getSize() {
-        return recycleBitmapDrawable!=null?recycleBitmapDrawable.getSize():null;
+        return recycleBitmapDrawable != null ? recycleBitmapDrawable.getSize() : null;
     }
 
     @Override
     public String getConfig() {
-        return recycleBitmapDrawable!=null?recycleBitmapDrawable.getConfig():null;
+        return recycleBitmapDrawable != null ? recycleBitmapDrawable.getConfig() : null;
     }
 
     @Override
     public String getInfo() {
-        return recycleBitmapDrawable!=null?recycleBitmapDrawable.getInfo():null;
+        return recycleBitmapDrawable != null ? recycleBitmapDrawable.getInfo() : null;
     }
 
     @Override
     public boolean canRecycle() {
-        return recycleBitmapDrawable!=null&&recycleBitmapDrawable.canRecycle();
+        return recycleBitmapDrawable != null && recycleBitmapDrawable.canRecycle();
     }
 
     @Override
     public void setAllowRecycle(boolean allowRecycle) {
-        if(recycleBitmapDrawable != null){
+        if (recycleBitmapDrawable != null) {
             recycleBitmapDrawable.setAllowRecycle(allowRecycle);
         }
     }
