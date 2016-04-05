@@ -26,8 +26,8 @@ import android.util.Log;
 
 import java.io.File;
 
-import me.xiaopan.sketch.cache.DefaultLruDiskCache;
-import me.xiaopan.sketch.cache.DefaultLruMemoryCache;
+import me.xiaopan.sketch.cache.LruDiskCache;
+import me.xiaopan.sketch.cache.LruMemoryCache;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.decode.DefaultImageDecoder;
@@ -87,23 +87,23 @@ public class Configuration {
             e.printStackTrace();
         }
         SketchUtils.deleteOldCacheFiles(cacheDir);
-        this.diskCache = new DefaultLruDiskCache(context, cacheDir, appVersionCode, DISK_CACHE_MAX_SIZE);
+        this.diskCache = new LruDiskCache(context, cacheDir, appVersionCode, DISK_CACHE_MAX_SIZE);
 
-        this.memoryCache = new DefaultLruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 8));
+        this.memoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 8));
         this.imageDecoder = new DefaultImageDecoder();
-        this.helperFactory = new DefaultHelperFactory();
-        this.requestFactory = new DefaultRequestFactory();
+        this.helperFactory = new HelperFactory();
+        this.requestFactory = new RequestFactory();
         if (Build.VERSION.SDK_INT >= 9) {
             this.imageDownloader = new HttpUrlConnectionImageDownloader();
         } else {
             this.imageDownloader = new HttpClientImageDownloader();
         }
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
-        this.resizeCalculator = new DefaultResizeCalculator();
-        this.imageSizeCalculator = new DefaultImageSizeCalculator();
+        this.resizeCalculator = new ResizeCalculator();
+        this.imageSizeCalculator = new ImageSizeCalculator();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.defaultCutImageProcessor = new DefaultImageProcessor();
-        this.placeholderImageMemoryCache = new DefaultLruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 16));
+        this.placeholderImageMemoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 16));
         this.handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
             @Override
             public boolean handleMessage(Message msg) {

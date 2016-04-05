@@ -48,7 +48,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
     private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;
 
-    private Request displayRequest;
+    private DisplayRequest displayRequest;
     private MyListener myListener;
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
@@ -398,22 +398,22 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     @Override
-    public Request displayImage(String uri) {
+    public DisplayRequest displayImage(String uri) {
         return Sketch.with(getContext()).display(uri, this).commit();
     }
 
     @Override
-    public Request displayResourceImage(int drawableResId) {
+    public DisplayRequest displayResourceImage(int drawableResId) {
         return Sketch.with(getContext()).displayFromResource(drawableResId, this).commit();
     }
 
     @Override
-    public Request displayAssetImage(String imageFileName) {
+    public DisplayRequest displayAssetImage(String imageFileName) {
         return Sketch.with(getContext()).displayFromAsset(imageFileName, this).commit();
     }
 
     @Override
-    public Request displayURIImage(Uri uri) {
+    public DisplayRequest displayURIImage(Uri uri) {
         return Sketch.with(getContext()).displayFromURI(uri, this).commit();
     }
 
@@ -473,12 +473,12 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     @Override
-    public Request getDisplayRequest() {
+    public DisplayRequest getDisplayRequest() {
         return displayRequest;
     }
 
     @Override
-    public void setDisplayRequest(Request displayRequest) {
+    public void setDisplayRequest(DisplayRequest displayRequest) {
         this.displayRequest = displayRequest;
     }
 
@@ -533,6 +533,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      *
      * @param pressedStatusColor 按下状态的颜色
      */
+    @SuppressWarnings("unused")
     public void setPressedStatusColor(int pressedStatusColor) {
         this.pressedStatusColor = pressedStatusColor;
         if (pressedStatusPaint != null) {
@@ -545,6 +546,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      *
      * @param downloadProgressColor 下载进度的颜色
      */
+    @SuppressWarnings("unused")
     public void setDownloadProgressColor(int downloadProgressColor) {
         this.downloadProgressColor = downloadProgressColor;
         if (progressPaint != null) {
@@ -552,22 +554,27 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         }
     }
 
+    @SuppressWarnings("unused")
     public int getDownloadProgressColor() {
         return downloadProgressColor;
     }
 
+    @SuppressWarnings("unused")
     public int getFromFlagColor() {
         return fromFlagColor;
     }
 
+    @SuppressWarnings("unused")
     public int getPressedStatusColor() {
         return pressedStatusColor;
     }
 
+    @SuppressWarnings("unused")
     public boolean isShowFromFlag() {
         return showFromFlag;
     }
 
+    @SuppressWarnings("unused")
     public boolean isShowPressedStatus() {
         return showPressedStatus;
     }
@@ -591,6 +598,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      *
      * @return GIF图片标识
      */
+    @SuppressWarnings("unused")
     public Drawable getGifFlagDrawable() {
         return gifFlagDrawable;
     }
@@ -600,6 +608,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      *
      * @param gifFlagDrawable GIF图片标识
      */
+    @SuppressWarnings("unused")
     public void setGifFlagDrawable(Drawable gifFlagDrawable) {
         this.gifFlagDrawable = gifFlagDrawable;
         if (this.gifFlagDrawable != null) {
@@ -624,6 +633,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      *
      * @return 图片形状
      */
+    @SuppressWarnings("unused")
     public ImageShape getImageShape() {
         return imageShape;
     }
@@ -645,7 +655,8 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      *
      * @return 圆角半径
      */
-    public int getRoundedRadiud() {
+    @SuppressWarnings("unused")
+    public int getRoundedRadius() {
         return roundedRadius;
     }
 

@@ -29,7 +29,6 @@ public class SketchManager {
         Configuration sketchConfiguration = Sketch.with(context).getConfiguration();
         sketchConfiguration.setMobileNetworkPauseDownload(settings.isMobileNetworkPauseDownload());
         sketchConfiguration.setLowQualityImage(settings.isLowQualityImage());
-        sketchConfiguration.setLowQualityImage(settings.isLowQualityImage());
         sketchConfiguration.setCacheInDisk(settings.isCacheInDisk());
         sketchConfiguration.setCacheInMemory(settings.isCacheInMemory());
     }

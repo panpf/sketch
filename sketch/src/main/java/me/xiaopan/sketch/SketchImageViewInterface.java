@@ -82,7 +82,7 @@ public interface SketchImageViewInterface {
      *            </blockquote>
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    Request displayImage(String uri);
+    DisplayRequest displayImage(String uri);
 
     /**
      * 显示Drawable资源里的图片
@@ -90,7 +90,7 @@ public interface SketchImageViewInterface {
      * @param drawableResId Drawable ID
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    Request displayResourceImage(int drawableResId);
+    DisplayRequest displayResourceImage(int drawableResId);
 
     /**
      * 显示asset里的图片
@@ -98,7 +98,7 @@ public interface SketchImageViewInterface {
      * @param imageFileName ASSETS文件加下的图片文件的名称
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    Request displayAssetImage(String imageFileName);
+    DisplayRequest displayAssetImage(String imageFileName);
 
     /**
      * 显示URI指向的图片
@@ -106,7 +106,7 @@ public interface SketchImageViewInterface {
      * @param uri 图片URI
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
-    Request displayURIImage(Uri uri);
+    DisplayRequest displayURIImage(Uri uri);
 
     /**
      * 获取显示参数
@@ -162,14 +162,14 @@ public interface SketchImageViewInterface {
      *
      * @return 显示请求
      */
-    Request getDisplayRequest();
+    DisplayRequest getDisplayRequest();
 
     /**
      * 设置显示请求，此方法由Sketch调用，你无需理会即可
      *
      * @param displayRequest 显示请求
      */
-    void setDisplayRequest(Request displayRequest);
+    void setDisplayRequest(DisplayRequest displayRequest);
 
     /**
      * 获取显示参数集

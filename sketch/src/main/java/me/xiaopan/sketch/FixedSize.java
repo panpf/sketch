@@ -16,7 +16,7 @@
 
 package me.xiaopan.sketch;
 
-public class FixedSize implements ImageSize {
+public class FixedSize {
     private int width;
     private int height;
 
@@ -25,28 +25,23 @@ public class FixedSize implements ImageSize {
         this.height = height;
     }
 
-    @Override
     public int getWidth() {
         return width;
     }
 
-    @Override
     public int getHeight() {
         return height;
     }
 
-    @Override
     public void set(int width, int height) {
         this.width = width;
         this.height = height;
     }
 
-    @Override
     public String getIdentifier() {
         return appendIdentifier(new StringBuilder()).toString();
     }
 
-    @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append("MaxSize(");
         builder.append(width);

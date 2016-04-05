@@ -16,9 +16,9 @@ import me.xiaopan.sketch.CancelCause;
 import me.xiaopan.sketch.FailCause;
 import me.xiaopan.sketch.ImageFrom;
 import me.xiaopan.sketch.LoadListener;
+import me.xiaopan.sketch.LoadRequest;
 import me.xiaopan.sketch.RecycleBitmapDrawable;
 import me.xiaopan.sketch.RecycleDrawableInterface;
-import me.xiaopan.sketch.Request;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
@@ -84,7 +84,7 @@ public class WindowBackgroundManager {
     public static class WindowBackgroundLoader {
         private Context context;
         private String windowBackgroundImageUri;
-        private Request loadBackgroundRequest;
+        private LoadRequest loadBackgroundRequest;
         private OnSetWindowBackgroundListener onSetWindowBackgroundListener;
         private boolean userVisible;
 

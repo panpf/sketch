@@ -16,26 +16,65 @@
 
 package me.xiaopan.sketch;
 
-public interface HelperFactory {
-    DownloadHelper getDownloadHelper(Sketch sketch, String uri);
+public class HelperFactory {
+    private static final String NAME = "HelperFactory";
 
-    LoadHelper getLoadHelper(Sketch sketch, String uri);
+    private DisplayHelper obsoletingDisplayHelper;
 
-    DisplayHelper getDisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface);
+    public DownloadHelper getDownloadHelper(Sketch sketch, String uri) {
+        return new DownloadHelper(sketch, uri);
+    }
 
-    DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface);
+    public LoadHelper getLoadHelper(Sketch sketch, String uri) {
+        return new LoadHelper(sketch, uri);
+    }
 
-    void recycleDisplayHelper(DisplayHelper obsoletingDisplayHelper);
+    public DisplayHelper getDisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
+        if (this.obsoletingDisplayHelper == null) {
+            return new DisplayHelper(sketch, uri, sketchImageViewInterface);
+        } else {
+            DisplayHelper displayHelper = this.obsoletingDisplayHelper;
+            this.obsoletingDisplayHelper = null;
+            displayHelper.init(sketch, uri, sketchImageViewInterface);
+            return displayHelper;
+        }
+    }
+
+    public DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
+        if (this.obsoletingDisplayHelper == null) {
+            return new DisplayHelper(sketch, displayParams, sketchImageViewInterface);
+        } else {
+            DisplayHelper displayHelper = this.obsoletingDisplayHelper;
+            this.obsoletingDisplayHelper = null;
+            displayHelper.init(sketch, displayParams, sketchImageViewInterface);
+            return displayHelper;
+        }
+    }
+
+    /**
+     * 用完了要回收
+     * @param obsoletingDisplayHelper DisplayHelper
+     */
+    public void recycleDisplayHelper(DisplayHelper obsoletingDisplayHelper) {
+        obsoletingDisplayHelper.reset();
+        if (this.obsoletingDisplayHelper == null) {
+            this.obsoletingDisplayHelper = obsoletingDisplayHelper;
+        }
+    }
 
     /**
      * 获取标识符
      *
      * @return 标识符
      */
-    String getIdentifier();
+    public String getIdentifier() {
+        return NAME;
+    }
 
     /**
      * 追加标识符
      */
-    StringBuilder appendIdentifier(StringBuilder builder);
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(NAME);
+    }
 }

@@ -295,7 +295,7 @@ public class LoadHelper {
      *
      * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
      */
-    public Request commit() {
+    public LoadRequest commit() {
         handleParams();
 
         if (loadListener != null) {

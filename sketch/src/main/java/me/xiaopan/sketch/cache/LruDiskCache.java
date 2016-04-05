@@ -27,8 +27,8 @@ import java.net.URLEncoder;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class DefaultLruDiskCache implements DiskCache {
-    private static final String NAME = "DefaultLruDiskCache";
+public class LruDiskCache implements DiskCache {
+    private static final String NAME = "LruDiskCache";
 
     private Context context;
     private File cacheDir;
@@ -37,7 +37,7 @@ public class DefaultLruDiskCache implements DiskCache {
 
     private DiskLruCache cache;
 
-    public DefaultLruDiskCache(Context context, File cacheDir, int appVersionCode, int maxSize) {
+    public LruDiskCache(Context context, File cacheDir, int appVersionCode, int maxSize) {
         this.context = context;
         this.cacheDir = cacheDir;
         this.maxSize = maxSize;

@@ -26,12 +26,12 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class DefaultLruMemoryCache implements MemoryCache {
-    private static final String NAME = "DefaultLruMemoryCache";
+public class LruMemoryCache implements MemoryCache {
+    private static final String NAME = "LruMemoryCache";
     private Context context;
     private LruCache<String, Drawable> drawableLruCache;
 
-    public DefaultLruMemoryCache(Context context, int maxSize) {
+    public LruMemoryCache(Context context, int maxSize) {
         this.context = context;
         this.drawableLruCache = new DrawableLruCache(maxSize);
     }
