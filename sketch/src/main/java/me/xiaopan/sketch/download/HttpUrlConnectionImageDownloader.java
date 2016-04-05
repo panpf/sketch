@@ -53,7 +53,6 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
     private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
     private int readTimeout = DEFAULT_READ_TIMEOUT;
-    private int progressCallbackNumber = DEFAULT_PROGRESS_CALLBACK_NUMBER;
 
     public HttpUrlConnectionImageDownloader() {
         this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
@@ -70,11 +69,6 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public void setProgressCallbackNumber(int progressCallbackNumber) {
-        this.progressCallbackNumber = progressCallbackNumber;
-    }
-
-    @Override
     public String getIdentifier() {
         return appendIdentifier(new StringBuilder()).toString();
     }
@@ -84,8 +78,6 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         return builder.append(NAME)
                 .append(". ")
                 .append("maxRetryCount").append("=").append(maxRetryCount)
-                .append(", ")
-                .append("progressCallbackNumber").append("=").append(progressCallbackNumber)
                 .append(", ")
                 .append("connectTimeout").append("=").append(connectTimeout)
                 .append(", ")
@@ -175,17 +167,8 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
 
     private DownloadResult realDownload(DownloadRequest request) throws IOException {
         // 打开连接
-        HttpURLConnection connection;
-        try {
-            connection = openUrlConnection(request.getUri());
-        } catch (IOException e) {
-            throw e;
-        }
-        try {
-            connection.connect();
-        } catch (IOException e) {
-            throw e;
-        }
+        HttpURLConnection connection = openUrlConnection(request.getUri());
+        connection.connect();
 
         if (request.isCanceled()) {
             releaseConnection(connection, request);
@@ -272,7 +255,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         // 读取数据
         int completedLength = 0;
         try {
-            completedLength = readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
+            completedLength = readData(inputStream, outputStream, request, contentLength);
         } catch (IOException e) {
             if (editor != null) {
                 editor.abort();
@@ -322,18 +305,31 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         SketchUtils.close(inputStream);
     }
 
-    public static int readData(InputStream inputStream, OutputStream outputStream, DownloadRequest downloadRequest, int contentLength, int progressCallbackAccuracy) throws IOException {
-        int readNumber;
+    public static int readData(InputStream inputStream, OutputStream outputStream, DownloadRequest downloadRequest, int contentLength) throws IOException {
+        int realReadCount;
         int completedLength = 0;
-        int averageLength = contentLength / progressCallbackAccuracy;
-        int callbackNumber = 0;
-        byte[] cacheBytes = new byte[4 * 1024];
-        while (!downloadRequest.isCanceled() && (readNumber = inputStream.read(cacheBytes)) != -1) {
-            outputStream.write(cacheBytes, 0, readNumber);
-            completedLength += readNumber;
-            if (completedLength >= (callbackNumber + 1) * averageLength || completedLength == contentLength) {
-                callbackNumber++;
+        long lastCallbackTime = 0;
+        byte[] buffer = new byte[8 * 1024];
+        while (true) {
+            if(downloadRequest.isCanceled()){
+                break;
+            }
+
+            realReadCount = inputStream.read(buffer);
+            if(realReadCount != -1){
+                outputStream.write(buffer, 0, realReadCount);
+                completedLength += realReadCount;
+
+                // 每秒钟回调一次进度
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastCallbackTime >= 1000) {
+                    lastCallbackTime = currentTime;
+                    downloadRequest.updateProgress(contentLength, completedLength);
+                }
+            }else{
+                // 结束的时候再次回调一下进度，确保页面上能显示100%
                 downloadRequest.updateProgress(contentLength, completedLength);
+                break;
             }
         }
         outputStream.flush();

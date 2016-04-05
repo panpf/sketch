@@ -27,7 +27,6 @@ public interface ImageDownloader {
     int DEFAULT_READ_TIMEOUT = 20 * 1000;   // 默认读取超时时间
     int DEFAULT_CONNECT_TIMEOUT = 20 * 1000;    // 默认连接超时时间
     int DEFAULT_MAX_RETRY_COUNT = 1;    // 默认最大重试次数
-    int DEFAULT_PROGRESS_CALLBACK_NUMBER = 10;    // 默认进度回调次数
 
     /**
      * 下载
@@ -47,13 +46,6 @@ public interface ImageDownloader {
      * @param connectTimeout 连接超时时间，单位毫秒，默认2000毫秒
      */
     void setConnectTimeout(int connectTimeout);
-
-    /**
-     * 设置进度回调次数
-     *
-     * @param progressCallbackNumber 进度回调次数，默认为10，意思是整个下载过程中进度回调10次，例如第一次是10%，第二次是20%，以此类推
-     */
-    void setProgressCallbackNumber(int progressCallbackNumber);
 
     /**
      * 获取标识符

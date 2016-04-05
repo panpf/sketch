@@ -80,7 +80,6 @@ public class HttpClientImageDownloader implements ImageDownloader {
     private DefaultHttpClient httpClient;
     private Map<String, ReentrantLock> urlLocks;
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
-    private int progressCallbackNumber = DEFAULT_PROGRESS_CALLBACK_NUMBER;
 
     public HttpClientImageDownloader() {
         this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
@@ -111,11 +110,6 @@ public class HttpClientImageDownloader implements ImageDownloader {
     public void setConnectTimeout(int connectTimeout) {
         HttpParams httpParams = httpClient.getParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, connectTimeout);
-    }
-
-    @Override
-    public void setProgressCallbackNumber(int progressCallbackNumber) {
-        this.progressCallbackNumber = progressCallbackNumber;
     }
 
     @Override
@@ -283,7 +277,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         // 读取数据
         int completedLength = 0;
         try {
-            completedLength = HttpUrlConnectionImageDownloader.readData(inputStream, outputStream, request, contentLength, progressCallbackNumber);
+            completedLength = HttpUrlConnectionImageDownloader.readData(inputStream, outputStream, request, contentLength);
         } catch (IOException e) {
             if (editor != null) {
                 editor.abort();
