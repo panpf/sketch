@@ -37,72 +37,6 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class DefaultImageDecoder implements ImageDecoder {
     private static final String NAME = "DefaultImageDecoder";
 
-    @Override
-    public Object decode(LoadRequest loadRequest) {
-        try {
-            if (loadRequest.getUriScheme() == UriScheme.HTTP || loadRequest.getUriScheme() == UriScheme.HTTPS) {
-                return decodeHttpOrHttps(loadRequest);
-            } else if (loadRequest.getUriScheme() == UriScheme.FILE) {
-                return decodeFile(loadRequest);
-            } else if (loadRequest.getUriScheme() == UriScheme.CONTENT) {
-                return decodeContent(loadRequest);
-            } else if (loadRequest.getUriScheme() == UriScheme.ASSET) {
-                return decodeAsset(loadRequest);
-            } else if (loadRequest.getUriScheme() == UriScheme.DRAWABLE) {
-                return decodeDrawable(loadRequest);
-            } else {
-                return null;
-            }
-        } catch (Throwable e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Override
-    public String getIdentifier() {
-        return NAME;
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME);
-    }
-
-    public Object decodeHttpOrHttps(LoadRequest loadRequest) {
-        File cacheFile = loadRequest.getCacheFile();
-        if (cacheFile != null && cacheFile.exists()) {
-            return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(cacheFile, loadRequest));
-        }
-
-        byte[] imageData = loadRequest.getImageData();
-        if (imageData != null && imageData.length > 0) {
-            return decodeFromHelper(loadRequest, new ByteArrayDecodeHelper(imageData, loadRequest));
-        }
-
-        return null;
-    }
-
-    public Object decodeFile(LoadRequest loadRequest) {
-        if (loadRequest.isLocalApkFile() && loadRequest.getCacheFile() != null) {
-            return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(loadRequest.getCacheFile(), loadRequest));
-        } else {
-            return decodeFromHelper(loadRequest, new FileDecodeHelper(new File(loadRequest.getUri()), loadRequest));
-        }
-    }
-
-    public Object decodeContent(LoadRequest loadRequest) {
-        return decodeFromHelper(loadRequest, new ContentDecodeHelper(Uri.parse(loadRequest.getUri()), loadRequest));
-    }
-
-    public Object decodeAsset(LoadRequest loadRequest) {
-        return decodeFromHelper(loadRequest, new AssetsDecodeHelper(UriScheme.ASSET.crop(loadRequest.getUri()), loadRequest));
-    }
-
-    public Object decodeDrawable(LoadRequest loadRequest) {
-        return decodeFromHelper(loadRequest, new DrawableDecodeHelper(Integer.valueOf(UriScheme.DRAWABLE.crop(loadRequest.getUri())), loadRequest));
-    }
-
     public static Object decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper) {
         // just decode bounds
         Options options = new Options();
@@ -170,5 +104,78 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         return bitmap;
+    }
+
+    @Override
+    public Object decode(LoadRequest loadRequest) {
+        try {
+            if (loadRequest.getUriScheme() == UriScheme.HTTP || loadRequest.getUriScheme() == UriScheme.HTTPS) {
+                return decodeHttpOrHttps(loadRequest);
+            } else if (loadRequest.getUriScheme() == UriScheme.FILE) {
+                return decodeFile(loadRequest);
+            } else if (loadRequest.getUriScheme() == UriScheme.CONTENT) {
+                return decodeContent(loadRequest);
+            } else if (loadRequest.getUriScheme() == UriScheme.ASSET) {
+                return decodeAsset(loadRequest);
+            } else if (loadRequest.getUriScheme() == UriScheme.DRAWABLE) {
+                return decodeDrawable(loadRequest);
+            } else {
+                return null;
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public String getIdentifier() {
+        return NAME;
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(NAME);
+    }
+
+    public Object decodeHttpOrHttps(LoadRequest loadRequest) {
+        File cacheFile = loadRequest.getCacheFile();
+        if (cacheFile != null && cacheFile.exists()) {
+            return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(cacheFile, loadRequest));
+        }
+
+        byte[] imageData = loadRequest.getImageData();
+        if (imageData != null && imageData.length > 0) {
+            return decodeFromHelper(loadRequest, new ByteArrayDecodeHelper(imageData, loadRequest));
+        }
+
+        return null;
+    }
+
+    public Object decodeFile(LoadRequest loadRequest) {
+        if (loadRequest.isLocalApkFile()) {
+            if (loadRequest.getCacheFile() != null) {
+                return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(loadRequest.getCacheFile(), loadRequest));
+            } else {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed, not found apk icon disk cache file. ", loadRequest.getUri()));
+                }
+                return null;
+            }
+        } else {
+            return decodeFromHelper(loadRequest, new FileDecodeHelper(new File(loadRequest.getUri()), loadRequest));
+        }
+    }
+
+    public Object decodeContent(LoadRequest loadRequest) {
+        return decodeFromHelper(loadRequest, new ContentDecodeHelper(Uri.parse(loadRequest.getUri()), loadRequest));
+    }
+
+    public Object decodeAsset(LoadRequest loadRequest) {
+        return decodeFromHelper(loadRequest, new AssetsDecodeHelper(UriScheme.ASSET.crop(loadRequest.getUri()), loadRequest));
+    }
+
+    public Object decodeDrawable(LoadRequest loadRequest) {
+        return decodeFromHelper(loadRequest, new DrawableDecodeHelper(Integer.valueOf(UriScheme.DRAWABLE.crop(loadRequest.getUri())), loadRequest));
     }
 }
