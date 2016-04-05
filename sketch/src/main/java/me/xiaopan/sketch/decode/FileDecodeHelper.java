@@ -12,6 +12,7 @@ import java.io.RandomAccessFile;
 import me.xiaopan.sketch.LoadRequest;
 import me.xiaopan.sketch.RecycleGifDrawable;
 import me.xiaopan.sketch.Sketch;
+
 /*
  * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
  *
@@ -28,8 +29,6 @@ import me.xiaopan.sketch.Sketch;
  * limitations under the License.
  */
 
-import me.xiaopan.sketch.util.SketchUtils;
-
 public class FileDecodeHelper implements DecodeHelper {
     private static final String NAME = "FileDecodeHelper";
     private File file;
@@ -42,14 +41,7 @@ public class FileDecodeHelper implements DecodeHelper {
 
     @Override
     public Bitmap decode(BitmapFactory.Options options) {
-        if (file.canRead()) {
-            return BitmapFactory.decodeFile(file.getPath(), options);
-        } else {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can not read", " - ", file.getPath()));
-            }
-            return null;
-        }
+        return BitmapFactory.decodeFile(file.getPath(), options);
     }
 
     @Override

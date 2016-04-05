@@ -42,13 +42,6 @@ public class CacheFileDecodeHelper implements DecodeHelper {
 
     @Override
     public Bitmap decode(BitmapFactory.Options options) {
-        if (!file.canRead()) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can not read", " - ", file.getPath()));
-            }
-            return null;
-        }
-
         return BitmapFactory.decodeFile(file.getPath(), options);
     }
 
