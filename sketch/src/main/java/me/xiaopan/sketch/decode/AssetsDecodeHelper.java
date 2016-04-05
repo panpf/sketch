@@ -62,18 +62,19 @@ public class AssetsDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
         if (Sketch.isDebugMode()) {
-            StringBuilder stringBuilder = new StringBuilder(NAME)
+            StringBuilder builder = new StringBuilder(NAME)
                     .append(" - ").append("decodeSuccess");
             if (bitmap != null && loadRequest.getMaxSize() != null) {
-                stringBuilder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                stringBuilder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
-                stringBuilder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
-                stringBuilder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+                builder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
+                builder.append(", ").append("targetSize").append("=").append(loadRequest.getMaxSize().getWidth()).append("x").append(loadRequest.getMaxSize().getHeight());
+                builder.append(", ").append("targetSizeScaleInSampleSize").append("=").append(loadRequest.getSketch().getConfiguration().getImageSizeCalculator().getTargetSizeScaleInSampleSize());
+                builder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
+                builder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
             } else {
-                stringBuilder.append(" - ").append("unchanged");
+                builder.append(" - ").append("unchanged");
             }
-            stringBuilder.append(" - ").append(loadRequest.getName());
-            Log.d(Sketch.TAG, stringBuilder.toString());
+            builder.append(" - ").append(loadRequest.getName());
+            Log.d(Sketch.TAG, builder.toString());
         }
     }
 

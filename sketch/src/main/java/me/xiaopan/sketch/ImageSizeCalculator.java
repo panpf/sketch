@@ -31,6 +31,8 @@ import java.lang.reflect.Field;
 public class ImageSizeCalculator {
     private static final String NAME = "ImageSizeCalculator";
 
+    private float targetSizeScaleInSampleSize = 1.25f;
+
     /**
      * 计算MaxSize
      *
@@ -93,14 +95,14 @@ public class ImageSizeCalculator {
     }
 
     /**
-     * 获取默认的maxSize
+     * 获取默认的maxSize，默认maxSize是屏幕宽高的70%
      *
      * @param context 上下文
      * @return maxSize
      */
     public MaxSize getDefaultImageMaxSize(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return new MaxSize((int) (displayMetrics.widthPixels * 1.5f), (int) (displayMetrics.heightPixels * 1.5f));
+        return new MaxSize((int) (displayMetrics.widthPixels * 0.50f), (int) (displayMetrics.heightPixels * 0.50f));
     }
 
     /**
@@ -127,6 +129,10 @@ public class ImageSizeCalculator {
      * @return 合适的InSampleSize
      */
     public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight) {
+        // 将目标尺寸稍微变的大一点儿，这样做是为了当原图尺寸比目标尺寸只小一点点的时候，就不要再缩小原图了
+        targetWidth *= targetSizeScaleInSampleSize;
+        targetHeight *= targetSizeScaleInSampleSize;
+
         // 如果目标尺寸都大于等于原始尺寸，也别计算了没意义
         if (targetWidth >= outWidth && targetHeight >= outHeight) {
             return 1;
@@ -166,6 +172,20 @@ public class ImageSizeCalculator {
         }
 
         return inSampleSize;
+    }
+
+    /**
+     * 计算inSampleSize的时候将targetSize稍微放大一点儿，就是乘以这个倍数，默认值是1.25f
+     * @param targetSizeScaleInSampleSize 将targetSize稍微放大一点儿
+     */
+    @SuppressWarnings("unused")
+    public void setTargetSizeScaleInSampleSize(float targetSizeScaleInSampleSize) {
+        this.targetSizeScaleInSampleSize = targetSizeScaleInSampleSize;
+    }
+
+    @SuppressWarnings("unused")
+    public float getTargetSizeScaleInSampleSize() {
+        return targetSizeScaleInSampleSize;
     }
 
     /**
