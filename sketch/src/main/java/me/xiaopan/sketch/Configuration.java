@@ -17,7 +17,6 @@
 package me.xiaopan.sketch;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
@@ -26,9 +25,9 @@ import android.util.Log;
 
 import java.io.File;
 
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.cache.LruDiskCache;
 import me.xiaopan.sketch.cache.LruMemoryCache;
-import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.decode.DefaultImageDecoder;
 import me.xiaopan.sketch.decode.ImageDecoder;
@@ -80,14 +79,9 @@ public class Configuration {
             cacheDir = context.getCacheDir();
         }
         cacheDir = new File(cacheDir, DISK_CACHE_DIR_NAME);
-        int appVersionCode = 0;
-        try {
-            appVersionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException e) {
-            e.printStackTrace();
-        }
         SketchUtils.deleteOldCacheFiles(cacheDir);
-        this.diskCache = new LruDiskCache(context, cacheDir, appVersionCode, DISK_CACHE_MAX_SIZE);
+        // appVersionCode固定死，因为当appVersionCode改变时DiskLruCache会清除旧的缓存，可我们不需要这个功能
+        this.diskCache = new LruDiskCache(context, cacheDir, 1, DISK_CACHE_MAX_SIZE);
 
         this.memoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 8));
         this.imageDecoder = new DefaultImageDecoder();
