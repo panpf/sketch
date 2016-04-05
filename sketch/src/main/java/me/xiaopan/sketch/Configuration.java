@@ -180,6 +180,9 @@ public class Configuration {
     @SuppressWarnings("unused")
     public Configuration setDiskCache(DiskCache diskCache) {
         if (diskCache != null) {
+            if(this.diskCache != null){
+                this.diskCache.close();
+            }
             this.diskCache = diskCache;
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, NAME + ": " + "set" + " - diskCache" + " (" + diskCache.getIdentifier() + ")");

@@ -76,6 +76,11 @@ public interface DiskCache {
     void clear();
 
     /**
+     * 关闭
+     */
+    void close();
+
+    /**
      * 获取标识符
      *
      * @return 标识符

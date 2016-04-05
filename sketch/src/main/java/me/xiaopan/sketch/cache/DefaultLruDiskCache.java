@@ -124,6 +124,15 @@ public class DefaultLruDiskCache implements DiskCache {
     }
 
     @Override
+    public void close() {
+        try {
+            cache.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     public String getIdentifier() {
         return appendIdentifier(new StringBuilder()).toString();
     }
