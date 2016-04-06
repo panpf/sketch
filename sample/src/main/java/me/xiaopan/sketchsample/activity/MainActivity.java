@@ -315,6 +315,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 if (type != Type.SEARCH) {
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
+                    getSupportActionBar().setTitle("图片搜索");
                     type = Type.SEARCH;
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
