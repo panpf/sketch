@@ -35,6 +35,7 @@ import java.util.List;
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.prl.PullRefreshLayout;
+import me.xiaopan.sketch.UriScheme;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.DetailActivity;
@@ -129,7 +130,9 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
                 return null;
             }
 
-            List<String> imagePathList = new ArrayList<>(mCursor.getCount());
+            List<String> imagePathList = new ArrayList<>(mCursor.getCount()+2);
+            imagePathList.add(UriScheme.ASSET.createUri("card.png"));
+            imagePathList.add(UriScheme.ASSET.createUri("large_image.jpg"));
             while (mCursor.moveToNext()) {
                 //获取图片的路径
                 imagePathList.add(mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA)));

@@ -152,7 +152,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
 
-        starButton.performClick();
+        photoAlbumButton.performClick();
     }
 
     @Override
