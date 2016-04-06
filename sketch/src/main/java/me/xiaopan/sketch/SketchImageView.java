@@ -60,10 +60,10 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     private boolean clickRedisplayOnFailed;
     private boolean isSetImage;
 
-    protected int fromFlagColor = NONE;
     protected Path fromFlagPath;
     protected Paint fromFlagPaint;
     protected boolean showFromFlag;
+    protected ImageFrom imageFrom;
 
     protected int downloadProgressColor = DEFAULT_PROGRESS_COLOR;
     protected Paint progressPaint;
@@ -214,6 +214,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+
         if (!isSetImage && displayParams != null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, "：", "restore image on attached to window", " - ", displayParams.uri));
@@ -225,14 +226,15 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
+
         this.isSetImage = false;
         if (displayRequest != null && !displayRequest.isFinished()) {
             displayRequest.cancel();
         }
+
         final Drawable oldDrawable = getDrawable();
-        if (oldDrawable != null) {
+        if (oldDrawable != null && notifyDrawable("onDetachedFromWindow", oldDrawable, false)) {
             super.setImageDrawable(null);
-            notifyDrawable("onDetachedFromWindow", oldDrawable, false);
         }
     }
 
@@ -351,7 +353,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     protected void drawFromFlag(Canvas canvas) {
-        if (showFromFlag && fromFlagColor != NONE) {
+        if (showFromFlag && imageFrom != null) {
             if (fromFlagPath == null) {
                 fromFlagPath = new Path();
                 int x = getWidth() / 10;
@@ -367,7 +369,22 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
                 fromFlagPaint = new Paint();
                 fromFlagPaint.setAntiAlias(true);
             }
-            fromFlagPaint.setColor(fromFlagColor);
+            switch (imageFrom) {
+                case MEMORY_CACHE:
+                    fromFlagPaint.setColor(FROM_FLAG_COLOR_MEMORY);
+                    break;
+                case DISK_CACHE:
+                    fromFlagPaint.setColor(FROM_FLAG_COLOR_DISK_CACHE);
+                    break;
+                case NETWORK:
+                    fromFlagPaint.setColor(FROM_FLAG_COLOR_NETWORK);
+                    break;
+                case LOCAL:
+                    fromFlagPaint.setColor(FROM_FLAG_COLOR_LOCAL);
+                    break;
+                default:
+                    return;
+            }
             canvas.drawPath(fromFlagPath, fromFlagPaint);
         }
     }
@@ -560,11 +577,6 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     }
 
     @SuppressWarnings("unused")
-    public int getFromFlagColor() {
-        return fromFlagColor;
-    }
-
-    @SuppressWarnings("unused")
     public int getPressedStatusColor() {
         return pressedStatusColor;
     }
@@ -585,10 +597,10 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      * @param showFromFlag 是否开启调试模式
      */
     public void setShowFromFlag(boolean showFromFlag) {
-        boolean oldDebugMode = this.showFromFlag;
+        boolean oldShowFromFlag = this.showFromFlag;
         this.showFromFlag = showFromFlag;
-        if (oldDebugMode) {
-            fromFlagColor = NONE;
+        if (oldShowFromFlag) {
+            imageFrom = null;
             invalidate();
         }
     }
@@ -672,6 +684,15 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         }
     }
 
+    /**
+     * 获取图片来源
+     * @return 图片来源；null：不显示图片来源
+     */
+    @SuppressWarnings("unused")
+    public ImageFrom getImageFrom() {
+        return imageFrom;
+    }
+
     private static boolean isGifImage(Drawable newDrawable) {
         if (newDrawable == null) {
             return false;
@@ -692,8 +713,9 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
      * @param callingStation 调用位置
      * @param drawable       Drawable
      * @param isDisplayed    是否已显示
+     * @return true：drawable或其子Drawable是RecycleDrawable
      */
-    private static void notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
+    private static boolean notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
         if (drawable instanceof BindFixedRecycleBitmapDrawable) {
             BindFixedRecycleBitmapDrawable bindFixedRecycleBitmapDrawable = (BindFixedRecycleBitmapDrawable) drawable;
             DisplayRequest displayRequest = bindFixedRecycleBitmapDrawable.getDisplayRequest();
@@ -701,13 +723,19 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
                 displayRequest.cancel();
             }
             bindFixedRecycleBitmapDrawable.setIsDisplayed(callingStation, isDisplayed);
+            return true;
         } else if (drawable instanceof RecycleDrawableInterface) {
             ((RecycleDrawableInterface) drawable).setIsDisplayed(callingStation, isDisplayed);
+            return true;
         } else if (drawable instanceof LayerDrawable) {
             LayerDrawable layerDrawable = (LayerDrawable) drawable;
+            boolean result = false;
             for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
-                notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);
+                result |= notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);
             }
+            return result;
+        } else {
+            return false;
         }
     }
 
@@ -715,7 +743,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         @Override
         public void onStarted() {
             if (showFromFlag) {
-                fromFlagColor = NONE;
+                imageFrom = null;
             }
             if (showDownloadProgress) {
                 progress = 0;
@@ -731,27 +759,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         @Override
         public void onCompleted(ImageFrom imageFrom, String mimeType) {
             if (showFromFlag) {
-                if (imageFrom != null) {
-                    switch (imageFrom) {
-                        case MEMORY_CACHE:
-                            fromFlagColor = FROM_FLAG_COLOR_MEMORY;
-                            break;
-                        case DISK_CACHE:
-                            fromFlagColor = FROM_FLAG_COLOR_DISK_CACHE;
-                            break;
-                        case NETWORK:
-                            fromFlagColor = FROM_FLAG_COLOR_NETWORK;
-                            break;
-                        case LOCAL:
-                            fromFlagColor = FROM_FLAG_COLOR_LOCAL;
-                            break;
-                        default:
-                            fromFlagColor = NONE;
-                            break;
-                    }
-                } else {
-                    fromFlagColor = NONE;
-                }
+                SketchImageView.this.imageFrom = imageFrom;
             }
             if (showDownloadProgress) {
                 progress = NONE;
@@ -767,7 +775,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         @Override
         public void onFailed(FailCause failCause) {
             if (showFromFlag) {
-                fromFlagColor = NONE;
+                imageFrom = null;
             }
             if (showDownloadProgress) {
                 progress = NONE;
