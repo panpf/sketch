@@ -89,13 +89,13 @@ public class ImageHolder {
         }
         MemoryCache lruMemoryCache = Sketch.with(context).getConfiguration().getPlaceholderImageMemoryCache();
         RecycleBitmapDrawable newDrawable = (RecycleBitmapDrawable) lruMemoryCache.get(memoryCacheId);
-        if (newDrawable != null && !newDrawable.isRecycled()) {
-            this.drawable = newDrawable;
-            return drawable;
-        }
-
         if (newDrawable != null) {
-            lruMemoryCache.remove(memoryCacheId);
+            if (!newDrawable.isRecycled()) {
+                this.drawable = newDrawable;
+                return drawable;
+            } else {
+                lruMemoryCache.remove(memoryCacheId);
+            }
         }
 
         // 创建新的图片
