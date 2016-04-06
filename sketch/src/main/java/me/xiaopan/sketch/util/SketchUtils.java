@@ -33,6 +33,9 @@ public class SketchUtils {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "get packageInfo is null", " - ", apkFilePath));
+            }
             return null;
         }
 
@@ -41,6 +44,9 @@ public class SketchUtils {
 
         Drawable drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo);
         if (drawable == null) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "get application icon is null", " - ", apkFilePath));
+            }
             return null;
         }
         if (drawable instanceof BitmapDrawable && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) packageManager.getDefaultActivityIcon()).getBitmap()) {

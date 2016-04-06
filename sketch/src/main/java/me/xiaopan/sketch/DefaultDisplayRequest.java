@@ -43,7 +43,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     private static final int WHAT_CALLBACK_PROGRESS = 105;
     private static final int WHAT_CALLBACK_PAUSE_DOWNLOAD = 106;
     private static final String NAME = "DefaultDisplayRequest";
-
+    protected ImageView.ScaleType scaleType;
     // Base fields
     private Sketch sketch;  // Sketch
     private String uri;    // 图片地址
@@ -51,11 +51,9 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     private UriScheme uriScheme;    // Uri协议格式
     private RequestLevel requestLevel = RequestLevel.NET;  // 请求Level
     private RequestLevelFrom requestLevelFrom;
-
     // Download fields
     private boolean cacheInDisk = true;    // 是否开启磁盘缓存
     private ProgressListener progressListener;  // 下载进度监听器
-
     // Load fields
     private Resize resize;    // 裁剪尺寸，ImageProcessor会根据此尺寸来裁剪图片
     private boolean decodeGifImage = true; // 是否解码GIF图
@@ -63,7 +61,6 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     private boolean lowQualityImage;   // 是否返回低质量的图片
     private MaxSize maxSize;    // 最大尺寸，用于读取图片时计算inSampleSize
     private ImageProcessor imageProcessor;    // 图片处理器
-
     // Display fields
     private String memoryCacheId;    // 内存缓存ID
     private boolean cacheInMemory = true;    // 是否开启内存缓存
@@ -72,7 +69,6 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     private ImageHolder pauseDownloadImageHolder;    // 当暂停下载时显示的图片
     private ImageDisplayer imageDisplayer;    // 图片显示器
     private DisplayListener displayListener;    // 监听器
-
     // Runtime fields
     private File cacheFile;    // 缓存文件
     private byte[] imageData;   // 如果不使用磁盘缓存的话下载完成后图片数据就用字节数组保存着
@@ -85,8 +81,6 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     private CancelCause cancelCause;  // 取消原因
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
     private SketchImageViewInterfaceHolder sketchImageViewInterfaceHolder;    // 绑定ImageView
-
-    protected ImageView.ScaleType scaleType;
 
     public DefaultDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface) {
         this.context = sketch.getConfiguration().getContext();
@@ -136,17 +130,17 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
         this.requestLevelFrom = requestLevelFrom;
     }
 
+    @Override
+    public boolean isCacheInDisk() {
+        return cacheInDisk;
+    }
+
     /******************************************
      * Download methods
      ******************************************/
     @Override
     public void setCacheInDisk(boolean cacheInDisk) {
         this.cacheInDisk = cacheInDisk;
-    }
-
-    @Override
-    public boolean isCacheInDisk() {
-        return cacheInDisk;
     }
 
     @Override
@@ -671,28 +665,51 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
      * @return APK图片的缓存文件
      */
     private File getApkCacheIconFile() {
-        File apkIconCacheFile = sketch.getConfiguration().getDiskCache().getCacheFile(uri);
-        if (apkIconCacheFile == null) {
-            Bitmap iconBitmap = SketchUtils.decodeIconFromApk(context, uri, lowQualityImage, NAME);
-            if (iconBitmap != null && !iconBitmap.isRecycled()) {
-                DiskLruCache.Editor editor = sketch.getConfiguration().getDiskCache().edit(uri);
-                BufferedOutputStream outputStream = null;
-                try {
-                    outputStream = new BufferedOutputStream(editor.newOutputStream(0), 8 * 1024);
-                    iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-                    editor.commit();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    try {
-                        editor.abort();
-                    } catch (IOException e1) {
-                        e1.printStackTrace();
-                    }
-                } finally {
-                    SketchUtils.close(outputStream);
-                }
+        File apkFile = new File(uri);
+        if (!apkFile.exists()) {
+            return null;
+        }
+        long lastModifyTime = apkFile.lastModified();
+        String diskCacheKey = uri + "." + lastModifyTime;
 
-                apkIconCacheFile = sketch.getConfiguration().getDiskCache().getCacheFile(uri);
+        File apkIconCacheFile = sketch.getConfiguration().getDiskCache().getCacheFile(diskCacheKey);
+        if (apkIconCacheFile != null) {
+            return apkIconCacheFile;
+        }
+
+        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(context, uri, lowQualityImage, NAME);
+        if (iconBitmap == null) {
+            return null;
+        }
+
+        if (iconBitmap.isRecycled()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "apk icon bitmap recycled", " - ", uri));
+            }
+            return null;
+        }
+
+        DiskLruCache.Editor editor = sketch.getConfiguration().getDiskCache().edit(diskCacheKey);
+        BufferedOutputStream outputStream = null;
+        try {
+            outputStream = new BufferedOutputStream(editor.newOutputStream(0), 8 * 1024);
+            iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            editor.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+            try {
+                editor.abort();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        } finally {
+            SketchUtils.close(outputStream);
+        }
+
+        apkIconCacheFile = sketch.getConfiguration().getDiskCache().getCacheFile(diskCacheKey);
+        if (apkIconCacheFile == null) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found apk icon cache file", " - ", uri));
             }
         }
 
