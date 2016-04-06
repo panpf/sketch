@@ -676,9 +676,7 @@ public class DisplayHelper {
         // 过滤掉不支持的URI协议类型
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if (uriScheme == null) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme: ", uri, " - ", (name != null ? name : uri)));
-            }
+            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme: ", uri, " - ", (name != null ? name : uri)));
             if (sketchImageViewInterface != null) {
                 sketchImageViewInterface.setDisplayRequest(null);
             }

@@ -316,9 +316,7 @@ public class LoadHelper {
         // 过滤掉不支持的URI协议类型
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if (uriScheme == null) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", name));
-            }
+            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", name));
             if (loadListener != null) {
                 loadListener.onFailed(FailCause.URI_NO_SUPPORT);
             }
