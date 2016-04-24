@@ -133,25 +133,6 @@ inBitmap的意思是找一个字节数一样的旧bitmap对象来装新的图片
 2.3以上不再主动回收图片了
 支持vector
 改善scheme的设计模式，视图支持自定义scheme以及处理方式
-
-其它：
-参考Glide、Fresco和Picasso
-写一个系列博客介绍Sketch，也算是做一个总结
-用一下其它的几款图片加载器，例如UIL、fresco、glide、picasso对比一下，特别是对RecyclerView的兼容性，然后写博客
-
-更新日志：
-磁盘缓存全新升级：
-    新增DefaultLruDiskCache作为默认的磁盘缓存实现，其内部采用DiskLruCache实现，旧的LruDiskCache已经删除
-    DiskCache接口增加了edit(String)方法，去掉了generateCacheFile(String)、applyForSpace(long)、setCacheDir(File)、setReserveSize(int)、getReserveSize()、setMaxSize(int)、saveBitmap(Bitmap, String)方法
-    旧的图片缓存当然是不能用了，Sketch会自动删除
-LruMemoryCache重命名为DefaultLruMemoryCache
-去掉了一些多余的接口设计，例如HelperFactory、ImageSizeCalculator、RequestFactory、ResizeCalculator、ImageSize、Request、DisplayHelper、LoadHelper、DownloadHelper
-下载进度回调方式改为每秒钟一次
-默认maxSize，由屏幕宽高的1.5倍改为0.5倍，这样可以大幅减少大图的内存占用，对图片的清晰度影响也较小
-默认inSampleSize计算规则优化，targetSize默认放大1.25倍，能让原始尺寸跟targetSize较为接近的图片不被缩小直接显示，这样显示效果会比较好
-apk文件图标的磁盘缓存KEY加上了文件的最后修改时间，这么做是为了避免包路径一样，但是内容已经发生了变化的时候不能及时刷新缓存图标
-修复使用普通图片时在列表中一滑动图片就没了的BUG
-
 所有参数配置封装成一个类，这样helper和request就可以共用一个参数类了，还能减少代码量。这样参数类得提供一个计算出KEY的方法，KEY加上Uri就是图片的内存缓存ID，完美
 试着让DisplayRequest继承自LoadRequest，这样加载部分的代码就简单多了
 再定义一个接口
@@ -172,3 +153,25 @@ apk文件图标的磁盘缓存KEY加上了文件的最后修改时间，这么�
 还有在主线程中调用的是不是也可以封装一下
 缓存文件的删除方式有问题，搞一个DiskCacheItem，里面包含文件以及key，删除的时候要用key
 缓存文件的名称不能再用uri.encode来加密了，要用MD5
+考虑重新设计一下RequestLevel，感觉现在的有点儿繁琐并且意思不太明确
+Sketch会自动从SketchImageVie身上去listener，那要是listener被重新设置了呢？
+
+其它：
+参考Glide、Fresco和Picasso
+写一个系列博客介绍Sketch，也算是做一个总结
+用一下其它的几款图片加载器，例如UIL、fresco、glide、picasso对比一下，特别是对RecyclerView的兼容性，然后写博客
+
+更新日志：
+磁盘缓存全新升级：
+    新增DefaultLruDiskCache作为默认的磁盘缓存实现，其内部采用DiskLruCache实现，旧的LruDiskCache已经删除
+    DiskCache接口增加了edit(String)方法，去掉了generateCacheFile(String)、applyForSpace(long)、setCacheDir(File)、setReserveSize(int)、getReserveSize()、setMaxSize(int)、saveBitmap(Bitmap, String)方法
+    旧的图片缓存当然是不能用了，Sketch会自动删除
+LruMemoryCache重命名为DefaultLruMemoryCache
+去掉了一些多余的接口设计，例如HelperFactory、ImageSizeCalculator、RequestFactory、ResizeCalculator、ImageSize、Request、DisplayHelper、LoadHelper、DownloadHelper
+下载进度回调方式改为每秒钟一次
+默认maxSize，由屏幕宽高的1.5倍改为0.5倍，这样可以大幅减少大图的内存占用，对图片的清晰度影响也较小
+默认inSampleSize计算规则优化，targetSize默认放大1.25倍，能让原始尺寸跟targetSize较为接近的图片不被缩小直接显示，这样显示效果会比较好
+apk文件图标的磁盘缓存KEY加上了文件的最后修改时间，这么做是为了避免包路径一样，但是内容已经发生了变化的时候不能及时刷新缓存图标
+修复使用普通图片时在列表中一滑动图片就没了的BUG
+新增LocalImagePerProcessor可以处理一些特殊的本地文件，然后提取出它们的当中包含的图片，这样Sketch就可以直接显示这些特殊文件中包含的图片了
+兼容jdk1.6
