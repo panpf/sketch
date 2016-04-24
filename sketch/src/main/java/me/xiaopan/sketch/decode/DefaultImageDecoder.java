@@ -29,6 +29,7 @@ import me.xiaopan.sketch.LoadRequest;
 import me.xiaopan.sketch.MaxSize;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.UriScheme;
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -139,9 +140,9 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public Object decodeHttpOrHttps(LoadRequest loadRequest) {
-        File cacheFile = loadRequest.getCacheFile();
-        if (cacheFile != null && cacheFile.exists()) {
-            return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(cacheFile, loadRequest));
+        DiskCache.Entry diskCacheEntry = loadRequest.getDiskCacheEntry();
+        if (diskCacheEntry != null) {
+            return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest));
         }
 
         byte[] imageData = loadRequest.getImageData();
@@ -153,15 +154,9 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public Object decodeFile(LoadRequest loadRequest) {
-        if (loadRequest.isLocalApkFile()) {
-            if (loadRequest.getCacheFile() != null) {
-                return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(loadRequest.getCacheFile(), loadRequest));
-            } else {
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed, not found apk icon disk cache file. ", loadRequest.getUri()));
-                }
-                return null;
-            }
+        DiskCache.Entry diskCacheEntry = loadRequest.getDiskCacheEntry();
+        if (diskCacheEntry != null) {
+            return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest));
         } else {
             return decodeFromHelper(loadRequest, new FileDecodeHelper(new File(loadRequest.getUri()), loadRequest));
         }

@@ -21,7 +21,6 @@ import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,6 +39,7 @@ import me.xiaopan.sketch.DownloadRequest;
 import me.xiaopan.sketch.DownloadResult;
 import me.xiaopan.sketch.RequestStatus;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -131,9 +131,9 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
 
             // 如果缓存文件已经存在了就直接返回缓存文件
             if (request.isCacheInDisk()) {
-                File cacheFile = request.getSketch().getConfiguration().getDiskCache().getCacheFile(request.getUri());
-                if (cacheFile != null && cacheFile.exists()) {
-                    result = DownloadResult.createByFile(cacheFile, false);
+                DiskCache.Entry diskCacheEntry = request.getSketch().getConfiguration().getDiskCache().get(request.getUri());
+                if (diskCacheEntry != null) {
+                    result = new DownloadResult(diskCacheEntry, false);
                     break;
                 }
             }
@@ -280,9 +280,9 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         // 转换结果
         if (request.isCacheInDisk() && editor != null) {
             editor.commit();
-            return DownloadResult.createByFile(request.getSketch().getConfiguration().getDiskCache().getCacheFile(request.getUri()), true);
+            return new DownloadResult(request.getSketch().getConfiguration().getDiskCache().get(request.getUri()), true);
         } else if (outputStream instanceof ByteArrayOutputStream) {
-            return DownloadResult.createByByteArray(((ByteArrayOutputStream) outputStream).toByteArray(), true);
+            return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray());
         } else {
             return null;
         }

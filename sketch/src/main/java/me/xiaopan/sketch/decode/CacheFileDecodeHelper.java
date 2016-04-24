@@ -21,28 +21,40 @@ import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.util.Log;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.RandomAccessFile;
 
 import me.xiaopan.sketch.LoadRequest;
 import me.xiaopan.sketch.RecycleGifDrawable;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class CacheFileDecodeHelper implements DecodeHelper {
     private static final String NAME = "CacheFileDecodeHelper";
-    private File file;
+    private DiskCache.Entry diskCacheEntry;
     private LoadRequest loadRequest;
 
-    public CacheFileDecodeHelper(File file, LoadRequest loadRequest) {
-        this.file = file;
+    public CacheFileDecodeHelper(DiskCache.Entry diskCacheEntry, LoadRequest loadRequest) {
+        this.diskCacheEntry = diskCacheEntry;
         this.loadRequest = loadRequest;
     }
 
     @Override
     public Bitmap decode(BitmapFactory.Options options) {
-        return BitmapFactory.decodeFile(file.getPath(), options);
+        Bitmap bitmap = null;
+        InputStream inputStream = null;
+        try {
+            inputStream = diskCacheEntry.newInputStream();
+            bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            SketchUtils.close(inputStream);
+        }
+
+        return bitmap;
     }
 
     @Override
@@ -67,18 +79,14 @@ public class CacheFileDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeFailed() {
         if (Sketch.isDebugMode()) {
-            StringBuilder builder = new StringBuilder(NAME);
-            builder.append(" - ").append("decode failed");
-            builder.append(", ").append("filePath").append("=").append(file.getPath());
-            if (file.exists()) {
-                builder.append(",  ").append("fileLength").append("=").append(file.length());
-            }
-            builder.append(",  ").append("imageUri").append("=").append(loadRequest.getUri());
-            Log.e(Sketch.TAG, builder.toString());
+            String builder = NAME + " - " + "decode failed" +
+                    ", " + "uri" + "=" + diskCacheEntry.getUri() +
+                    ",  " + "imageUri" + "=" + loadRequest.getUri();
+            Log.e(Sketch.TAG, builder);
         }
-        if (!file.delete()) {
+        if (!diskCacheEntry.delete()) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete damaged disk cache file failed", " - ", file.getPath()));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete damaged disk cache file failed", " - ", diskCacheEntry.getUri()));
             }
         }
     }
@@ -86,7 +94,7 @@ public class CacheFileDecodeHelper implements DecodeHelper {
     @Override
     public RecycleGifDrawable getGifDrawable() {
         try {
-            return new RecycleGifDrawable(new RandomAccessFile(file.getPath(), "r").getFD());
+            return new RecycleGifDrawable(new RandomAccessFile(diskCacheEntry.getFile().getPath(), "r").getFD());
         } catch (IOException e) {
             e.printStackTrace();
             return null;

@@ -468,13 +468,6 @@ public final class DiskLruCache implements Closeable {
         }
     }
 
-    public synchronized Entry getEntry(String key) {
-        checkNotClosed();
-        validateKey(key);
-        Entry entry = lruEntries.get(key);
-        return entry != null && entry.readable ? entry : null;
-    }
-
     /**
      * Returns a snapshot of the entry named {@code key}, or null if it doesn't
      * exist is not currently readable. If a value is returned, it is moved to
@@ -514,6 +507,42 @@ public final class DiskLruCache implements Closeable {
         }
 
         return new Snapshot(key, entry.sequenceNumber, ins);
+    }
+
+    /**
+     * Returns a snapshot of the entry named {@code key}, or null if it doesn't
+     * exist is not currently readable. If a value is returned, it is moved to
+     * the head of the LRU queue.
+     */
+    public synchronized SimpleSnapshot getSimpleSnapshot(String key) throws IOException {
+        checkNotClosed();
+        validateKey(key);
+        Entry entry = lruEntries.get(key);
+        if (entry == null) {
+            return null;
+        }
+
+        if (!entry.readable) {
+            return null;
+        }
+
+        /*
+         * Open all streams eagerly to guarantee that we see a single published
+         * snapshot. If we opened streams lazily then the streams could come
+         * from different edits.
+         */
+        File[] cleanFiles = new File[valueCount];
+        for (int i = 0; i < valueCount; i++) {
+            cleanFiles[i] = entry.getCleanFile(i);
+        }
+
+        redundantOpCount++;
+        journalWriter.append(READ + ' ' + key + '\n');
+        if (journalRebuildRequired()) {
+            executorService.submit(cleanupCallable);
+        }
+
+        return new SimpleSnapshot(key, entry.sequenceNumber, cleanFiles, this);
     }
 
     /**
@@ -776,6 +805,61 @@ public final class DiskLruCache implements Closeable {
             for (InputStream in : ins) {
                 closeQuietly(in);
             }
+        }
+    }
+
+    /**
+     * A snapshot of the values for an entry.
+     */
+    public final class SimpleSnapshot {
+        private final String key;
+        private final DiskLruCache diskLruCache;
+        private final long sequenceNumber;
+        private final File[] cleanFiles;
+
+        private SimpleSnapshot(String key, long sequenceNumber, File[] cleanFiles, DiskLruCache diskLruCache) {
+            this.key = key;
+            this.sequenceNumber = sequenceNumber;
+            this.cleanFiles = cleanFiles;
+            this.diskLruCache = diskLruCache;
+        }
+
+        /**
+         * Returns an editor for this snapshot's entry, or null if either the
+         * entry has changed since this snapshot was created or if another edit
+         * is in progress.
+         */
+        public Editor edit() throws IOException {
+            return DiskLruCache.this.edit(key, sequenceNumber);
+        }
+
+        /**
+         * Returns the unbuffered stream with the value for {@code index}.
+         */
+        public InputStream newInputStream(int index) throws FileNotFoundException {
+            return new FileInputStream(cleanFiles[index]);
+        }
+
+        /**
+         * Returns the string value for {@code index}.
+         */
+        public String getString(int index) throws IOException {
+            return inputStreamToString(newInputStream(index));
+        }
+
+        /**
+         * Returns cache file for {@code index}.
+         */
+        public File getFile(int index){
+            return cleanFiles[index];
+        }
+
+        public String getKey() {
+            return key;
+        }
+
+        public DiskLruCache getDiskLruCache() {
+            return diskLruCache;
         }
     }
 

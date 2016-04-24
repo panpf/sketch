@@ -23,14 +23,10 @@ import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.ImageProcessor;
-import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -70,7 +66,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     private ImageDisplayer imageDisplayer;    // 图片显示器
     private DisplayListener displayListener;    // 监听器
     // Runtime fields
-    private File cacheFile;    // 缓存文件
+    private DiskCache.Entry diskCacheEntry;    // 缓存文件
     private byte[] imageData;   // 如果不使用磁盘缓存的话下载完成后图片数据就用字节数组保存着
     private String mimeType;
     private Context context;
@@ -299,8 +295,8 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     }
 
     @Override
-    public File getCacheFile() {
-        return cacheFile;
+    public DiskCache.Entry getDiskCacheEntry() {
+        return diskCacheEntry;
     }
 
     @Override
@@ -420,9 +416,9 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
         if (uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS) {
-            File diskCacheFile = cacheInDisk ? sketch.getConfiguration().getDiskCache().getCacheFile(uri) : null;
-            if (diskCacheFile != null && diskCacheFile.exists()) {
-                this.cacheFile = diskCacheFile;
+            DiskCache.Entry diskCacheEntry = cacheInDisk ? sketch.getConfiguration().getDiskCache().get(uri) : null;
+            if (diskCacheEntry != null) {
+                this.diskCacheEntry = diskCacheEntry;
                 this.imageFrom = ImageFrom.DISK_CACHE;
                 postRunLoad();
                 if (Sketch.isDebugMode()) {
@@ -479,13 +475,11 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
             return;
         }
 
-        if (downloadResult != null && downloadResult.getResult() != null) {
-            if (downloadResult.getResult().getClass().isAssignableFrom(File.class)) {
-                this.cacheFile = (File) downloadResult.getResult();
-            } else {
-                this.imageData = (byte[]) downloadResult.getResult();
-            }
-            this.imageFrom = downloadResult.isFromNetwork() ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
+        if (downloadResult != null && (downloadResult.diskCacheEntry != null || downloadResult.imageData != null)) {
+            this.diskCacheEntry = downloadResult.diskCacheEntry;
+            this.imageData = downloadResult.imageData;
+            this.imageFrom = downloadResult.fromNetwork ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
+
             postRunLoad();
         } else {
             toFailedStatus(FailCause.DOWNLOAD_FAIL);
@@ -529,11 +523,14 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
 
         setRequestStatus(RequestStatus.LOADING);
 
-        // 如果是本地APK文件就尝试得到其缓存文件
-        if (isLocalApkFile()) {
-            File apkIconCacheFile = getApkCacheIconFile();
-            if (apkIconCacheFile != null) {
-                this.cacheFile = apkIconCacheFile;
+        // 尝试用本地图片处理器处理一下特殊的本地图片，并得到他们的缓存
+        if (sketch.getConfiguration().getLocalImageProcessor().isSpecific(this)) {
+            DiskCache.Entry specificLocalImageDiskCacheEntry = sketch.getConfiguration().getLocalImageProcessor().getDiskCacheEntry(this);
+            if (specificLocalImageDiskCacheEntry != null) {
+                this.diskCacheEntry = specificLocalImageDiskCacheEntry;
+            } else {
+                toFailedStatus(FailCause.NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE);
+                return;
             }
         }
 
@@ -657,63 +654,6 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     @Override
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
-    }
-
-    /**
-     * 获取APK图片的缓存文件
-     *
-     * @return APK图片的缓存文件
-     */
-    private File getApkCacheIconFile() {
-        File apkFile = new File(uri);
-        if (!apkFile.exists()) {
-            return null;
-        }
-        long lastModifyTime = apkFile.lastModified();
-        String diskCacheKey = uri + "." + lastModifyTime;
-
-        File apkIconCacheFile = sketch.getConfiguration().getDiskCache().getCacheFile(diskCacheKey);
-        if (apkIconCacheFile != null) {
-            return apkIconCacheFile;
-        }
-
-        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(context, uri, lowQualityImage, NAME);
-        if (iconBitmap == null) {
-            return null;
-        }
-
-        if (iconBitmap.isRecycled()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "apk icon bitmap recycled", " - ", uri));
-            }
-            return null;
-        }
-
-        DiskLruCache.Editor editor = sketch.getConfiguration().getDiskCache().edit(diskCacheKey);
-        BufferedOutputStream outputStream = null;
-        try {
-            outputStream = new BufferedOutputStream(editor.newOutputStream(0), 8 * 1024);
-            iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            editor.commit();
-        } catch (Exception e) {
-            e.printStackTrace();
-            try {
-                editor.abort();
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        } finally {
-            SketchUtils.close(outputStream);
-        }
-
-        apkIconCacheFile = sketch.getConfiguration().getDiskCache().getCacheFile(diskCacheKey);
-        if (apkIconCacheFile == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found apk icon cache file", " - ", uri));
-            }
-        }
-
-        return apkIconCacheFile;
     }
 
     private void handleCompletedOnMainThread() {

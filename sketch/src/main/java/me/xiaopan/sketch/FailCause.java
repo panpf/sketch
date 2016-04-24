@@ -44,4 +44,9 @@ public enum FailCause {
      * 解码失败
      */
     DECODE_FAIL,
+
+    /**
+     * 没有获取到特殊本地图片的缓存文件
+     */
+    NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE,
 }

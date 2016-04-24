@@ -16,43 +16,20 @@
 
 package me.xiaopan.sketch;
 
-import java.io.File;
+import me.xiaopan.sketch.cache.DiskCache;
 
 public class DownloadResult {
-    private Object result;
-    private boolean fromNetwork;
+    public DiskCache.Entry diskCacheEntry;
+    public byte[] imageData;
+    public boolean fromNetwork;
 
-    private DownloadResult() {
-
-    }
-
-    public Object getResult() {
-        return result;
-    }
-
-    public void setResult(Object result) {
-        this.result = result;
-    }
-
-    public boolean isFromNetwork() {
-        return fromNetwork;
-    }
-
-    public void setFromNetwork(boolean fromNetwork) {
+    public DownloadResult(DiskCache.Entry diskCacheEntry, boolean fromNetwork) {
+        this.diskCacheEntry = diskCacheEntry;
         this.fromNetwork = fromNetwork;
     }
 
-    public static DownloadResult createByFile(File resultFile, boolean fromNetwork) {
-        DownloadResult result = new DownloadResult();
-        result.setResult(resultFile);
-        result.setFromNetwork(fromNetwork);
-        return result;
-    }
-
-    public static DownloadResult createByByteArray(byte[] resultDate, boolean fromNetwork) {
-        DownloadResult result = new DownloadResult();
-        result.setResult(resultDate);
-        result.setFromNetwork(fromNetwork);
-        return result;
+    public DownloadResult(byte[] imageData) {
+        this.imageData = imageData;
+        this.fromNetwork = true;
     }
 }

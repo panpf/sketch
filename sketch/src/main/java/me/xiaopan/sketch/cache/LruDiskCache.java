@@ -21,6 +21,7 @@ import android.text.format.Formatter;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -63,21 +64,26 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public synchronized File getCacheFile(String uri) {
-        DiskLruCache.Entry entry = cache.getEntry(uriToFileName(uri));
-        return entry != null ? entry.getCleanFile(0) : null;
+    public synchronized Entry get(String uri) {
+        DiskLruCache.SimpleSnapshot snapshot = null;
+        try {
+            snapshot = cache.getSimpleSnapshot(uriToDiskCacheKey(uri));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return snapshot != null ? new LruDiskCacheEntry(uri, snapshot) : null;
     }
 
     @Override
     public synchronized DiskLruCache.Editor edit(String uri) {
         try {
-            return cache.edit(uriToFileName(uri));
+            return cache.edit(uriToDiskCacheKey(uri));
         } catch (IOException e) {
             e.printStackTrace();
             // 发生异常的时候（比如SD卡被拔出，导致不能使用），尝试重建DiskLryCache，能显著提高遇错恢复能力
             resetCache();
             try {
-                return cache.edit(uriToFileName(uri));
+                return cache.edit(uriToDiskCacheKey(uri));
             } catch (IOException e1) {
                 e1.printStackTrace();
                 return null;
@@ -96,7 +102,7 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public String uriToFileName(String uri) {
+    public String uriToDiskCacheKey(String uri) {
         if (SketchUtils.checkSuffix(uri, ".apk")) {
             uri += ".icon";
         }
@@ -146,5 +152,41 @@ public class LruDiskCache implements DiskCache {
                 .append("maxSize").append("=").append(Formatter.formatFileSize(context, maxSize))
                 .append(", ")
                 .append("appVersionCode").append("=").append(appVersionCode);
+    }
+
+    public static class LruDiskCacheEntry implements Entry {
+        private String uri;
+        private DiskLruCache.SimpleSnapshot snapshot;
+
+        public LruDiskCacheEntry(String uri, DiskLruCache.SimpleSnapshot snapshot) {
+            this.uri = uri;
+            this.snapshot = snapshot;
+        }
+
+        @Override
+        public InputStream newInputStream() throws IOException {
+            return snapshot.newInputStream(0);
+        }
+
+        @Override
+        public File getFile(){
+            return snapshot.getFile(0);
+        }
+
+        @Override
+        public String getUri(){
+            return uri;
+        }
+
+        @Override
+        public boolean delete(){
+            try {
+                snapshot.getDiskLruCache().remove(snapshot.getKey());
+                return true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
     }
 }

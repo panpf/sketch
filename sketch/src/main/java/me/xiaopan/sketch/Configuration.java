@@ -62,6 +62,7 @@ public class Configuration {
     private RequestExecutor requestExecutor;    //请求执行器
     private ResizeCalculator resizeCalculator;  // resize计算器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
+    private LocalImageProcessor localImageProcessor;    // 本地图片处理器
 
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean cacheInDisk = true;
@@ -95,6 +96,7 @@ public class Configuration {
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
         this.resizeCalculator = new ResizeCalculator();
         this.imageSizeCalculator = new ImageSizeCalculator();
+        this.localImageProcessor = new DefaultLocalImageProcessor();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.defaultCutImageProcessor = new DefaultImageProcessor();
         this.placeholderImageMemoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 16));
@@ -604,6 +606,26 @@ public class Configuration {
         return this;
     }
 
+    /**
+     * 获取本地图片处理器
+     */
+    public LocalImageProcessor getLocalImageProcessor() {
+        return localImageProcessor;
+    }
+
+    /**
+     * 设置本地图片处理器
+     */
+    public Configuration setLocalImageProcessor(LocalImageProcessor localImageProcessor) {
+        if(localImageProcessor != null){
+            this.localImageProcessor = localImageProcessor;
+            if (Sketch.isDebugMode()) {
+                Log.i(Sketch.TAG, NAME + ": " + "set" + " - localImageProcessor" + " (" + localImageProcessor.getIdentifier() + ")");
+            }
+        }
+        return this;
+    }
+
     public String getInfo() {
         StringBuilder builder = new StringBuilder();
         builder.append(NAME).append(": ");
@@ -690,6 +712,13 @@ public class Configuration {
             builder.append("resizeCalculator");
             builder.append("：");
             resizeCalculator.appendIdentifier(builder);
+        }
+
+        if (localImageProcessor != null) {
+            if (builder.length() > 0) builder.append("\n");
+            builder.append("specificLocalImageProcessor");
+            builder.append("：");
+            localImageProcessor.appendIdentifier(builder);
         }
 
         if (builder.length() > 0) builder.append("\n");

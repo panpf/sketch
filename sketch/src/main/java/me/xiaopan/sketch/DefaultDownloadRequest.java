@@ -19,8 +19,7 @@ package me.xiaopan.sketch;
 import android.os.Message;
 import android.util.Log;
 
-import java.io.File;
-
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -47,7 +46,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private DownloadListener downloadListener;  // 下载监听器
 
     // Runtime fields
-    private File resultFile;
+    private DiskCache.Entry diskCacheEntry;
     private byte[] resultBytes;
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
     private FailCause failCause;    // 失败原因
@@ -254,13 +253,13 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
         if (uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS) {
-            File diskCacheFile = cacheInDisk ? sketch.getConfiguration().getDiskCache().getCacheFile(uri) : null;
-            if (diskCacheFile != null && diskCacheFile.exists()) {
+            DiskCache.Entry diskCacheEntry = cacheInDisk ? sketch.getConfiguration().getDiskCache().get(uri) : null;
+            if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
                 }
                 this.imageFrom = ImageFrom.DISK_CACHE;
-                this.resultFile = diskCacheFile;
+                this.diskCacheEntry = diskCacheEntry;
                 sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
             } else {
                 if (requestLevel == RequestLevel.LOCAL) {
@@ -311,17 +310,13 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
             return;
         }
 
-        if (downloadResult != null && downloadResult.getResult() != null) {
-            this.imageFrom = downloadResult.isFromNetwork() ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
+        if (downloadResult != null && (downloadResult.diskCacheEntry != null || downloadResult.imageData != null)) {
+            this.imageFrom = downloadResult.fromNetwork ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
             this.requestStatus = RequestStatus.COMPLETED;
-            if (downloadListener != null) {
-                if (downloadResult.getResult().getClass().isAssignableFrom(File.class)) {
-                    this.resultFile = (File) downloadResult.getResult();
-                } else {
-                    this.resultBytes = (byte[]) downloadResult.getResult();
-                }
-                sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
-            }
+            this.diskCacheEntry = downloadResult.diskCacheEntry;
+            this.resultBytes = downloadResult.imageData;
+
+            sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
         } else {
             toFailedStatus(FailCause.DOWNLOAD_FAIL);
         }
@@ -337,8 +332,8 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
 
         setRequestStatus(RequestStatus.COMPLETED);
         if (downloadListener != null) {
-            if (resultFile != null) {
-                downloadListener.onCompleted(resultFile, imageFrom == ImageFrom.NETWORK);
+            if (diskCacheEntry != null) {
+                downloadListener.onCompleted(diskCacheEntry.getFile(), imageFrom == ImageFrom.NETWORK);
             } else if (resultBytes != null) {
                 downloadListener.onCompleted(resultBytes);
             }

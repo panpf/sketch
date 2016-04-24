@@ -17,6 +17,8 @@
 package me.xiaopan.sketch.cache;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 
 import me.xiaopan.sketch.util.DiskLruCache;
 
@@ -26,12 +28,12 @@ import me.xiaopan.sketch.util.DiskLruCache;
 public interface DiskCache {
 
     /**
-     * 获取缓存文件
+     * 获取缓存实体
      *
      * @param uri 图片uri
      * @return null：没有
      */
-    File getCacheFile(String uri);
+    Entry get(String uri);
 
     /**
      * 编辑缓存
@@ -61,7 +63,7 @@ public interface DiskCache {
      * @param uri 图片uri
      * @return 文件名字
      */
-    String uriToFileName(String uri);
+    String uriToDiskCacheKey(String uri);
 
     /**
      * 获取已用容量
@@ -91,4 +93,14 @@ public interface DiskCache {
      * 追加标识符
      */
     StringBuilder appendIdentifier(StringBuilder builder);
+
+    interface Entry {
+        InputStream newInputStream() throws IOException;
+
+        File getFile();
+
+        String getUri();
+
+        boolean delete();
+    }
 }

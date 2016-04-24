@@ -16,8 +16,7 @@
 
 package me.xiaopan.sketch;
 
-import java.io.File;
-
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.process.ImageProcessor;
 
 /**
@@ -94,11 +93,11 @@ public interface LoadRequest extends DownloadRequest {
     void setDecodeGifImage(boolean isDecodeGifImage);
 
     /**
-     * 获取缓存文件
+     * 获取磁盘缓存实体
      *
-     * @return 缓存文件
+     * @return 磁盘缓存实体
      */
-    File getCacheFile();
+    DiskCache.Entry getDiskCacheEntry();
 
     /**
      * 获取图片数据
