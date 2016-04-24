@@ -34,6 +34,7 @@ import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.ImageFragmentAdapter;
@@ -186,12 +187,12 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
             Toast.makeText(getActivity(), type+"，当前图片的URL是空的，没法拿到图片", Toast.LENGTH_LONG).show();
             return null;
         }else if(currentUrl.startsWith("http://") || currentUrl.startsWith("https://")){
-            File  file = Sketch.with(getActivity()).getConfiguration().getDiskCache().getCacheFile(currentUrl);
-            if(file == null || !file.exists()){
+            DiskCache.Entry diskCacheEntry = Sketch.with(getActivity()).getConfiguration().getDiskCache().get(currentUrl);
+            if(diskCacheEntry != null){
+                return diskCacheEntry.getFile();
+            }else{
                 Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
                 return null;
-            }else{
-                return file;
             }
         }else if(currentUrl.startsWith("/")){
             return new File(currentUrl);
@@ -244,11 +245,11 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
                 if(currentUrl == null || "".equals(currentUrl.trim())){
                     Toast.makeText(getActivity(), "保存图片失败，因为当前图片的URL是空的，没法拿到图片", Toast.LENGTH_LONG).show();
                 }else if(currentUrl.startsWith("http://") || currentUrl.startsWith("https://")){
-                    File imageFile3 = Sketch.with(getActivity()).getConfiguration().getDiskCache().getCacheFile(currentUrl);
-                    if(imageFile3 == null || !imageFile3.exists()){
-                        Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
+                    DiskCache.Entry imageFile3DiskCacheEntry = Sketch.with(getActivity()).getConfiguration().getDiskCache().get(currentUrl);
+                    if(imageFile3DiskCacheEntry != null){
+                        new SaveImageAsyncTask(getActivity(), imageFile3DiskCacheEntry.getFile()).execute("");
                     }else{
-                        new SaveImageAsyncTask(getActivity(), imageFile3).execute("");
+                        Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
                     }
                 }else if(currentUrl.startsWith("/")){
                     Toast.makeText(getActivity(), "当前图片本就是本地的无需保存", Toast.LENGTH_LONG).show();
