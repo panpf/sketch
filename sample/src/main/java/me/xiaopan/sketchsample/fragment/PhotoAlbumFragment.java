@@ -130,7 +130,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
                 return null;
             }
 
-            List<String> imagePathList = new ArrayList<>(mCursor.getCount()+2);
+            List<String> imagePathList = new ArrayList<String>(mCursor.getCount()+2);
             imagePathList.add(UriScheme.ASSET.createUri("card.png"));
             imagePathList.add(UriScheme.ASSET.createUri("large_image.jpg"));
             while (mCursor.moveToNext()) {

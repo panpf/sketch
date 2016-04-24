@@ -83,7 +83,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
 
     public void append(List<HotStarRequest.HotStar> hotStarList){
         if(items == null){
-            items = new ArrayList<>();
+            items = new ArrayList<Object>();
         }
         for(HotStarRequest.HotStar hotStar : hotStarList){
             items.add(hotStar.getName());

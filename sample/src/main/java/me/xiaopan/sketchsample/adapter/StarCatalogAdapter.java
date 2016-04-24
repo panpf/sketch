@@ -52,7 +52,7 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             return;
         }
         if(items == null){
-            items = new ArrayList<>(starList.size());
+            items = new ArrayList<Object>(starList.size());
         }
         items.add(result.getTitle());
         for(int w = 0, size = starList.size(); w < size;){

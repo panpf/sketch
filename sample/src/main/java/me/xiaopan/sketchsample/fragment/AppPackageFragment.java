@@ -76,7 +76,7 @@ public class AppPackageFragment extends MyFragment {
                 }
 
                 PackageManager packageManager = context.getPackageManager();
-                List<AppInfo> appInfoList = new ArrayList<>();
+                List<AppInfo> appInfoList = new ArrayList<AppInfo>();
 
                 Queue<File> dirs = new LinkedBlockingQueue<File>();
                 dirs.add(Environment.getExternalStorageDirectory());
