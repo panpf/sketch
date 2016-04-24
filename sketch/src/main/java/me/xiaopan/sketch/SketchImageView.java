@@ -446,7 +446,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         } else if (this.displayOptions == null) {
             this.displayOptions = new DisplayOptions(displayOptions);
         } else {
-            this.displayOptions.copyOf(displayOptions);
+            this.displayOptions.copy(displayOptions);
         }
     }
 

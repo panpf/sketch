@@ -20,22 +20,23 @@ package me.xiaopan.sketch;
  * 下载选项
  */
 public class DownloadOptions implements RequestOptions {
-    private boolean cacheInDisk = true;    //是否开启磁盘缓存
+    private boolean cacheInDisk;
     private RequestLevel requestLevel;
+    private RequestLevelFrom requestLevelFrom;
 
     public DownloadOptions() {
-
-    }
-
-    public DownloadOptions(DownloadOptions from) {
-        copyOf(from);
+        reset();
     }
 
     /**
-     * 设置是否将图片缓存在本地
-     *
-     * @param cacheInDisk 是否将图片缓存在本地（默认是）
-     * @return DownloadOptions
+     * 是否将图片缓存在本地（默认是）
+     */
+    public boolean isCacheInDisk() {
+        return cacheInDisk;
+    }
+
+    /**
+     * 设置是否将图片缓存在本地（默认是）
      */
     public DownloadOptions setCacheInDisk(boolean cacheInDisk) {
         this.cacheInDisk = cacheInDisk;
@@ -43,18 +44,7 @@ public class DownloadOptions implements RequestOptions {
     }
 
     /**
-     * 是否将图片缓存在本地
-     *
-     * @return 是否将图片缓存在本地（默认是）
-     */
-    public boolean isCacheInDisk() {
-        return cacheInDisk;
-    }
-
-    /**
      * 获取请求Level
-     *
-     * @return 请求Level
      */
     public RequestLevel getRequestLevel() {
         return requestLevel;
@@ -62,16 +52,68 @@ public class DownloadOptions implements RequestOptions {
 
     /**
      * 设置请求Level
-     *
-     * @param requestLevel 请求Level
      */
     public DownloadOptions setRequestLevel(RequestLevel requestLevel) {
         this.requestLevel = requestLevel;
         return this;
     }
 
-    public void copyOf(DownloadOptions downloadOptions) {
-        this.cacheInDisk = downloadOptions.isCacheInDisk();
-        this.requestLevel = downloadOptions.getRequestLevel();
+    /**
+     * 获取请求Level的来源
+     */
+    public RequestLevelFrom getRequestLevelFrom() {
+        return requestLevelFrom;
+    }
+
+    /**
+     * 设置请求Level的来源
+     */
+    public DownloadOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
+        this.requestLevelFrom = requestLevelFrom;
+        return this;
+    }
+
+    /**
+     * 重置所有属性
+     */
+    public void reset() {
+        cacheInDisk = true;
+        requestLevel = null;
+        requestLevelFrom = null;
+    }
+
+    /**
+     * 拷贝属性，绝对的覆盖
+     */
+    public void copy(DownloadOptions options) {
+        if(options == null){
+            return;
+        }
+
+        cacheInDisk = options.isCacheInDisk();
+        requestLevel = options.getRequestLevel();
+        requestLevelFrom = options.requestLevelFrom;
+    }
+
+    /**
+     * 应用属性，应用的过程并不是绝对的覆盖
+     */
+    public void apply(DownloadOptions options) {
+        if(options == null){
+            return;
+        }
+
+        cacheInDisk = options.isCacheInDisk();
+
+        RequestLevel optionRequestLevel = options.getRequestLevel();
+        if (requestLevel != null && optionRequestLevel != null) {
+            if (optionRequestLevel.getLevel() < requestLevel.getLevel()) {
+                requestLevel = optionRequestLevel;
+                requestLevelFrom = null;
+            }
+        } else if (optionRequestLevel != null) {
+            requestLevel = optionRequestLevel;
+            requestLevelFrom = null;
+        }
     }
 }

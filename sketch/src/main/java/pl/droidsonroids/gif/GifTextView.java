@@ -139,7 +139,9 @@ public class GifTextView extends TextView {
         if (!isInEditMode() && "drawable".equals(resources.getResourceTypeName(resId))) {
             try {
                 return new GifDrawable(resources, resId);
-            } catch (IOException | NotFoundException ignored) {
+            } catch (IOException ignored) {
+                // ignored
+            } catch (NotFoundException ignored) {
                 // ignored
             }
         }

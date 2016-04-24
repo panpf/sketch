@@ -25,54 +25,34 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class LoadHelper {
     private static final String NAME = "LoadHelper";
 
-    // 基本属性
     protected Sketch sketch;
     protected String uri;
     protected String name;
-    protected RequestLevel requestLevel = RequestLevel.NET;
-    protected RequestLevelFrom requestLevelFrom;
 
-    // 下载属性
-    protected boolean cacheInDisk = true;
+    protected LoadOptions options;
+
+    protected LoadListener loadListener;
     protected ProgressListener progressListener;
 
-    // 加载属性
-    protected Resize resize;
-    protected boolean decodeGifImage = true;
-    protected boolean forceUseResize;
-    protected boolean lowQualityImage;
-    protected MaxSize maxSize;
-    protected LoadListener loadListener;
-    protected ImageProcessor imageProcessor;
-
     /**
-     * 创建加载请求生成器
-     *
-     * @param sketch Sketch
-     * @param uri    图片Uri，支持以下几种
-     *               <blockquote>"http://site.com/image.png"; // from Web
-     *               <br>"https://site.com/image.png"; // from Web
-     *               <br>"/mnt/sdcard/image.png"; // from SD card
-     *               <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     *               <br>"content://media/external/audio/albumart/13"; // from content provider
-     *               <br>"asset://image.png"; // from assets
-     *               <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     *               </blockquote>
+     * 支持以下几种图片Uri
+     * <blockQuote>"http://site.com/image.png"; // from Web
+     * <br>"https://site.com/image.png"; // from Web
+     * <br>"/mnt/sdcard/image.png"; // from SD card
+     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
+     * <br>"content://media/external/audio/albumart/13"; // from content provider
+     * <br>"asset://image.png"; // from assets
+     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+     * </blockQuote>
      */
     public LoadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
         this.uri = uri;
-        if (sketch.getConfiguration().isPauseDownload()) {
-            this.requestLevel = RequestLevel.LOCAL;
-            this.requestLevelFrom = RequestLevelFrom.PAUSE_DOWNLOAD;
-        }
+        this.options = new LoadOptions();
     }
 
     /**
      * 设置名称，用于在log总区分请求
-     *
-     * @param name 名称
-     * @return LoadHelper
      */
     public LoadHelper name(String name) {
         this.name = name;
@@ -81,122 +61,99 @@ public class LoadHelper {
 
     /**
      * 关闭硬盘缓存
-     *
-     * @return LoadHelper
      */
     @SuppressWarnings("unused")
     public LoadHelper disableDiskCache() {
-        this.cacheInDisk = false;
+        options.setCacheInDisk(false);
+        return this;
+    }
+
+    /**
+     * 设置请求Level
+     */
+    public LoadHelper requestLevel(RequestLevel requestLevel) {
+        if (requestLevel != null) {
+            options.setRequestLevel(requestLevel);
+            options.setRequestLevelFrom(null);
+        }
         return this;
     }
 
     /**
      * 不解码Gif图片
-     *
-     * @return LoadHelper
      */
     @SuppressWarnings("unused")
     public LoadHelper disableDecodeGifImage() {
-        this.decodeGifImage = false;
+        options.setDecodeGifImage(false);
         return this;
     }
 
     /**
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
-     *
-     * @param maxSize 最大尺寸
-     * @return LoadHelper
-     */
-    public LoadHelper maxSize(MaxSize maxSize) {
-        this.maxSize = maxSize;
-        return this;
-    }
-
-    /**
-     * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
-     *
-     * @param width  宽
-     * @param height 高
-     * @return LoadHelper
      */
     public LoadHelper maxSize(int width, int height) {
-        this.maxSize = new MaxSize(width, height);
+        options.setMaxSize(width, height);
         return this;
     }
 
     /**
      * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
-     *
-     * @param width  宽
-     * @param height 高
-     * @return LoadHelper
      */
     public LoadHelper resize(int width, int height) {
-        this.resize = new Resize(width, height);
+        options.setResize(width, height);
         return this;
     }
 
     /**
-     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
-     *
-     * @param width     宽
-     * @param height    高
-     * @param scaleType 缩放方式
-     * @return LoadHelper
+     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
      */
     public LoadHelper resize(int width, int height, ScaleType scaleType) {
-        this.resize = new Resize(width, height, scaleType);
+        options.setResize(new Resize(width, height, scaleType));
         return this;
     }
 
     /**
-     * 强制使经过resize返回的图片同resize的尺寸一致
-     *
-     * @return DisplayHelper
+     * 强制使经过resize处理后的图片同resize的尺寸一致
      */
     public LoadHelper forceUseResize() {
-        this.forceUseResize = true;
+        options.setForceUseResize(true);
         return this;
     }
 
     /**
      * 返回低质量的图片
-     *
-     * @return LoadHelper
      */
     public LoadHelper lowQualityImage() {
-        this.lowQualityImage = true;
+        options.setLowQualityImage(true);
         return this;
     }
 
     /**
      * 设置图片处理器，图片处理器会根据resize创建一张新的图片
-     *
-     * @param processor 图片处理器
-     * @return LoadHelper
      */
     @SuppressWarnings("unused")
     public LoadHelper processor(ImageProcessor processor) {
-        this.imageProcessor = processor;
+        options.setImageProcessor(processor);
         return this;
     }
 
     /**
-     * 设置加载监听器
-     *
-     * @param loadListener 加载监听器
-     * @return LoadHelper
+     * 批量设置加载参数，这会是一个合并的过程，并不会完全覆盖
      */
-    public LoadHelper listener(LoadListener loadListener) {
-        this.loadListener = loadListener;
+    public LoadHelper options(LoadOptions newOptions) {
+        options.apply(newOptions);
         return this;
+    }
+
+    /**
+     * 批量设置加载参数，你只需要提前将LoadOptions通过Sketch.putOptions()方法存起来，然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
+     */
+    public LoadHelper options(Enum<?> optionsName) {
+        return options((LoadOptions) Sketch.getOptions(optionsName));
     }
 
     /**
      * 设置进度监听器
-     *
-     * @param progressListener 进度监听器
-     * @return LoadHelper
      */
     @SuppressWarnings("unused")
     public LoadHelper progressListener(ProgressListener progressListener) {
@@ -205,88 +162,57 @@ public class LoadHelper {
     }
 
     /**
-     * 设置加载参数
-     *
-     * @param options 加载参数
-     * @return LoadHelper
+     * 设置加载监听器
      */
-    public LoadHelper options(LoadOptions options) {
-        if (options == null) {
-            return this;
+    public LoadHelper listener(LoadListener loadListener) {
+        this.loadListener = loadListener;
+        return this;
+    }
+
+    /**
+     * 对属性进行预处理
+     */
+    protected void preProcess() {
+        Configuration configuration = sketch.getConfiguration();
+
+        // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
+        if (options.getImageProcessor() == null && options.getResize() != null) {
+            options.setImageProcessor(configuration.getDefaultCutImageProcessor());
         }
 
-        this.cacheInDisk = options.isCacheInDisk();
-        if (this.maxSize == null) {
-            this.maxSize = options.getMaxSize();
+        // 没有设置maxSize的话，就用默认的maxSize
+        if (options.getMaxSize() == null) {
+            options.setMaxSize(configuration.getImageSizeCalculator().getDefaultImageMaxSize(configuration.getContext()));
         }
-        if (this.resize == null && options.getResize() != null) {
-            this.resize = new Resize(options.getResize());
+
+        // 如果设置了全局禁止解码GIF图的话就强制关闭解码GIF图功能
+        if (!configuration.isDecodeGifImage()) {
+            options.setDecodeGifImage(false);
         }
-        this.forceUseResize = options.isForceUseResize();
-        this.lowQualityImage = options.isLowQualityImage();
-        if (this.imageProcessor == null) {
-            this.imageProcessor = options.getImageProcessor();
+
+        // 如果设置了全局禁止使用磁盘缓存的话就强制关闭磁盘缓存功能
+        if (!configuration.isCacheInDisk()) {
+            options.setCacheInDisk(false);
         }
-        this.decodeGifImage = options.isDecodeGifImage();
-        RequestLevel optionRequestLevel = options.getRequestLevel();
-        if (requestLevel != null && optionRequestLevel != null) {
-            if (optionRequestLevel.getLevel() < requestLevel.getLevel()) {
-                this.requestLevel = optionRequestLevel;
-                this.requestLevelFrom = null;
+
+        // 如果设置了全局使用低质量图片的话就强制使用低质量的图片
+        if (configuration.isLowQualityImage()) {
+            options.setLowQualityImage(true);
+        }
+
+        // 如果没有设置请求Level的话就跟据暂停下载和暂停加载功能来设置请求Level
+        if (options.getRequestLevel() == null) {
+            if (configuration.isPauseDownload()) {
+                options.setRequestLevel(RequestLevel.LOCAL);
+                options.setRequestLevelFrom(RequestLevelFrom.PAUSE_DOWNLOAD);
             }
-        } else if (optionRequestLevel != null) {
-            this.requestLevel = optionRequestLevel;
-            this.requestLevelFrom = null;
+
+            // 暂停加载对于加载请求并不起作用，因此这里不予处理
         }
 
-        return this;
-    }
-
-    /**
-     * 设置加载参数，你只需要提前将LoadOptions通过Sketch.putOptions()方法存起来，然后在这里指定其名称即可
-     *
-     * @param optionsName 参数名称
-     * @return LoadHelper
-     */
-    public LoadHelper options(Enum<?> optionsName) {
-        return options((LoadOptions) Sketch.getOptions(optionsName));
-    }
-
-    /**
-     * 设置请求Level
-     *
-     * @param requestLevel 请求Level
-     * @return DisplayHelper
-     */
-    public LoadHelper requestLevel(RequestLevel requestLevel) {
-        if (requestLevel != null) {
-            this.requestLevel = requestLevel;
-            this.requestLevelFrom = null;
-        }
-        return this;
-    }
-
-    /**
-     * 处理一下参数
-     */
-    protected void handleParams() {
-        if (imageProcessor == null && resize != null) {
-            imageProcessor = sketch.getConfiguration().getDefaultCutImageProcessor();
-        }
-        if (maxSize == null) {
-            maxSize = sketch.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(sketch.getConfiguration().getContext());
-        }
+        // 没有设置名称的话就用uri作为名称，名称主要用来在log中区分请求的
         if (name == null) {
             name = uri;
-        }
-        if (!sketch.getConfiguration().isDecodeGifImage()) {
-            decodeGifImage = false;
-        }
-        if (!sketch.getConfiguration().isCacheInDisk()) {
-            cacheInDisk = false;
-        }
-        if (sketch.getConfiguration().isLowQualityImage()) {
-            lowQualityImage = true;
         }
     }
 
@@ -296,7 +222,7 @@ public class LoadHelper {
      * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
      */
     public LoadRequest commit() {
-        handleParams();
+        preProcess();
 
         if (loadListener != null) {
             loadListener.onStarted();
@@ -327,19 +253,19 @@ public class LoadHelper {
         LoadRequest request = sketch.getConfiguration().getRequestFactory().newLoadRequest(sketch, uri, uriScheme);
 
         request.setName(name);
-        request.setRequestLevel(requestLevel);
-        request.setRequestLevelFrom(requestLevelFrom);
+        request.setRequestLevel(options.getRequestLevel());
+        request.setRequestLevelFrom(options.getRequestLevelFrom());
 
-        request.setCacheInDisk(cacheInDisk);
+        request.setCacheInDisk(options.isCacheInDisk());
         request.setProgressListener(progressListener);
 
-        request.setResize(resize);
-        request.setMaxSize(maxSize);
-        request.setForceUseResize(forceUseResize);
-        request.setLowQualityImage(lowQualityImage);
+        request.setResize(options.getResize());
+        request.setMaxSize(options.getMaxSize());
+        request.setForceUseResize(options.isForceUseResize());
+        request.setLowQualityImage(options.isLowQualityImage());
         request.setLoadListener(loadListener);
-        request.setImageProcessor(imageProcessor);
-        request.setDecodeGifImage(decodeGifImage);
+        request.setImageProcessor(options.getImageProcessor());
+        request.setDecodeGifImage(options.isDecodeGifImage());
 
         request.postRunDispatch();
 

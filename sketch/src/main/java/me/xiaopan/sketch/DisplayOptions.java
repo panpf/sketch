@@ -23,7 +23,7 @@ import me.xiaopan.sketch.process.ImageProcessor;
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
-    private boolean cacheInMemory = true;    //是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
+    private boolean cacheInMemory;    //是否每次加载图片的时候先从内存中去找，并且加载完成后将图片缓存在内存中
     private ImageDisplayer imageDisplayer;    // 图片显示器
     private ImageHolder loadingImageHolder;    //当正在加载时显示的图片
     private ImageHolder failureImageHolder;    //当失败时显示的图片
@@ -32,174 +32,29 @@ public class DisplayOptions extends LoadOptions {
     private boolean resizeByFixedSize;
 
     public DisplayOptions() {
+        reset();
     }
 
     public DisplayOptions(DisplayOptions from) {
         super(from);
-        copyOf(from);
-    }
-
-    /**
-     * 是否将图片缓存在内存中
-     *
-     * @return 是否将图片缓存在内存中（默认是）
-     */
-    public boolean isCacheInMemory() {
-        return cacheInMemory;
-    }
-
-    /**
-     * 设置是否将图片缓存在内存中
-     *
-     * @param cacheInMemory 是否将图片缓存在内存中（默认是）
-     * @return DisplayOptions
-     */
-    public DisplayOptions setCacheInMemory(boolean cacheInMemory) {
-        this.cacheInMemory = cacheInMemory;
-        return this;
-    }
-
-    /**
-     * 获取图片显示器
-     *
-     * @return 图片显示器
-     */
-    public ImageDisplayer getImageDisplayer() {
-        return imageDisplayer;
-    }
-
-    /**
-     * 设置图片显示器，在加载完成后会调用此显示器来显示图片
-     *
-     * @param displayer 图片显示器
-     * @return DisplayOptions
-     */
-    public DisplayOptions setImageDisplayer(ImageDisplayer displayer) {
-        this.imageDisplayer = displayer;
-        return this;
-    }
-
-    /**
-     * 获取正在加载时显示的图片
-     *
-     * @return 正在加载时显示的图片
-     */
-    public ImageHolder getLoadingImageHolder() {
-        return loadingImageHolder;
-    }
-
-    /**
-     * 设置正在加载时显示的图片
-     *
-     * @param loadingImageHolder 正在加载时显示的图片
-     */
-    public DisplayOptions setLoadingImage(ImageHolder loadingImageHolder) {
-        this.loadingImageHolder = loadingImageHolder;
-        return this;
-    }
-
-    /**
-     * 设置正在加载时显示的图片
-     *
-     * @param drawableResId 资源图片ID
-     * @return DisplayOptions
-     */
-    public DisplayOptions setLoadingImage(int drawableResId) {
-        setLoadingImage(new ImageHolder(drawableResId));
-        return this;
-    }
-
-    /**
-     * 获取失败时显示的图片
-     *
-     * @return 失败时显示的图片
-     */
-    public ImageHolder getFailureImage() {
-        return failureImageHolder;
-    }
-
-    /**
-     * 设置失败时显示的图片
-     *
-     * @param failureImageHolder 失败时显示的图片
-     */
-    public DisplayOptions setFailureImage(ImageHolder failureImageHolder) {
-        this.failureImageHolder = failureImageHolder;
-        return this;
-    }
-
-    /**
-     * 设置失败时显示的图片
-     *
-     * @param drawableResId 资源图片ID
-     * @return DisplayOptions
-     */
-    public DisplayOptions setFailureImage(int drawableResId) {
-        setFailureImage(new ImageHolder(drawableResId));
-        return this;
-    }
-
-    /**
-     * 获取暂停下载时显示的图片
-     *
-     * @return 暂停下载时显示的图片
-     */
-    public ImageHolder getPauseDownloadImage() {
-        return pauseDownloadImageHolder;
-    }
-
-    /**
-     * 设置暂停下载时显示的图片
-     *
-     * @param pauseDownloadImageHolder 暂停下载时显示的图片
-     */
-    public DisplayOptions setPauseDownloadImage(ImageHolder pauseDownloadImageHolder) {
-        this.pauseDownloadImageHolder = pauseDownloadImageHolder;
-        return this;
-    }
-
-    /**
-     * 设置暂停下载时显示的图片
-     *
-     * @param drawableResId 资源图片ID
-     * @return DisplayOptions
-     */
-    public DisplayOptions setPauseDownloadImage(int drawableResId) {
-        setPauseDownloadImage(new ImageHolder(drawableResId));
-        return this;
-    }
-
-    /**
-     * 是否使用ImageView的LayoutSize作为resize
-     *
-     * @return true：是
-     */
-    public boolean isResizeByFixedSize() {
-        return resizeByFixedSize;
-    }
-
-    /**
-     * 设置是否使用ImageView的LayoutSize作为resize
-     *
-     * @param isResizeByFixedSize true：是
-     */
-    public DisplayOptions setResizeByFixedSize(boolean isResizeByFixedSize) {
-        this.resizeByFixedSize = isResizeByFixedSize;
-        if (this.resizeByFixedSize && getResize() != null) {
-            super.setResize(null);
-        }
-        return this;
-    }
-
-    @Override
-    public DisplayOptions setImageProcessor(ImageProcessor processor) {
-        super.setImageProcessor(processor);
-        return this;
+        copy(from);
     }
 
     @Override
     public DisplayOptions setCacheInDisk(boolean cacheInDisk) {
         super.setCacheInDisk(cacheInDisk);
+        return this;
+    }
+
+    @Override
+    public DisplayOptions setRequestLevel(RequestLevel requestLevel) {
+        super.setRequestLevel(requestLevel);
+        return this;
+    }
+
+    @Override
+    public DisplayOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
+        super.setRequestLevelFrom(requestLevelFrom);
         return this;
     }
 
@@ -242,32 +97,218 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setRequestLevel(RequestLevel requestLevel) {
-        super.setRequestLevel(requestLevel);
-        return this;
-    }
-
-    @Override
     public DisplayOptions setForceUseResize(boolean forceUseResize) {
         super.setForceUseResize(forceUseResize);
         return this;
     }
 
-    public void copyOf(DisplayOptions displayOptions) {
-        this.cacheInMemory = displayOptions.cacheInMemory;
-        this.imageDisplayer = displayOptions.imageDisplayer;
-        this.resizeByFixedSize = displayOptions.resizeByFixedSize;
-        this.loadingImageHolder = displayOptions.loadingImageHolder;
-        this.failureImageHolder = displayOptions.failureImageHolder;
-        this.pauseDownloadImageHolder = displayOptions.pauseDownloadImageHolder;
+    @Override
+    public DisplayOptions setImageProcessor(ImageProcessor processor) {
+        super.setImageProcessor(processor);
+        return this;
+    }
 
-        super.setMaxSize(displayOptions.getMaxSize());
-        super.setResize(displayOptions.getResize());
-        super.setLowQualityImage(displayOptions.isLowQualityImage());
-        super.setImageProcessor(displayOptions.getImageProcessor());
-        super.setDecodeGifImage(displayOptions.isDecodeGifImage());
+    /**
+     * 是否将图片缓存在内存中（默认是）
+     */
+    public boolean isCacheInMemory() {
+        return cacheInMemory;
+    }
 
-        super.setCacheInDisk(displayOptions.isCacheInDisk());
-        super.setRequestLevel(displayOptions.getRequestLevel());
+    /**
+     * 设置是否将图片缓存在内存中（默认是）
+     */
+    public DisplayOptions setCacheInMemory(boolean cacheInMemory) {
+        this.cacheInMemory = cacheInMemory;
+        return this;
+    }
+
+    /**
+     * 获取图片显示器
+     */
+    public ImageDisplayer getImageDisplayer() {
+        return imageDisplayer;
+    }
+
+    /**
+     * 设置图片显示器，在加载完成后会调用此显示器来显示图片
+     */
+    public DisplayOptions setImageDisplayer(ImageDisplayer displayer) {
+        this.imageDisplayer = displayer;
+        return this;
+    }
+
+    /**
+     * 获取正在加载时显示的图片
+     */
+    public ImageHolder getLoadingImageHolder() {
+        return loadingImageHolder;
+    }
+
+    /**
+     * 设置正在加载时显示的图片
+     */
+    public DisplayOptions setLoadingImage(ImageHolder loadingImageHolder) {
+        this.loadingImageHolder = loadingImageHolder;
+        return this;
+    }
+
+    /**
+     * 设置正在加载时显示的图片
+     */
+    public DisplayOptions setLoadingImage(int drawableResId) {
+        setLoadingImage(new ImageHolder(drawableResId));
+        return this;
+    }
+
+    /**
+     * 获取失败时显示的图片
+     */
+    public ImageHolder getFailureImage() {
+        return failureImageHolder;
+    }
+
+    /**
+     * 设置失败时显示的图片
+     */
+    public DisplayOptions setFailureImage(ImageHolder failureImageHolder) {
+        this.failureImageHolder = failureImageHolder;
+        return this;
+    }
+
+    /**
+     * 设置失败时显示的图片
+     */
+    public DisplayOptions setFailureImage(int drawableResId) {
+        setFailureImage(new ImageHolder(drawableResId));
+        return this;
+    }
+
+    /**
+     * 获取暂停下载时显示的图片
+     */
+    public ImageHolder getPauseDownloadImage() {
+        return pauseDownloadImageHolder;
+    }
+
+    /**
+     * 设置暂停下载时显示的图片
+     */
+    public DisplayOptions setPauseDownloadImage(ImageHolder pauseDownloadImageHolder) {
+        this.pauseDownloadImageHolder = pauseDownloadImageHolder;
+        return this;
+    }
+
+    /**
+     * 设置暂停下载时显示的图片
+     */
+    public DisplayOptions setPauseDownloadImage(int drawableResId) {
+        setPauseDownloadImage(new ImageHolder(drawableResId));
+        return this;
+    }
+
+    /**
+     * 是否使用ImageView的layout_width和layout_height作为resize
+     */
+    public boolean isResizeByFixedSize() {
+        return resizeByFixedSize;
+    }
+
+    /**
+     * 设置是否使用ImageView的layout_width和layout_height作为resize
+     */
+    public DisplayOptions setResizeByFixedSize(boolean isResizeByFixedSize) {
+        this.resizeByFixedSize = isResizeByFixedSize;
+        if (this.resizeByFixedSize && getResize() != null) {
+            super.setResize(null);
+        }
+        return this;
+    }
+
+    @Override
+    public void reset(){
+        super.reset();
+
+        cacheInMemory = true;
+        imageDisplayer = null;
+        resizeByFixedSize = false;
+        loadingImageHolder = null;
+        failureImageHolder = null;
+        pauseDownloadImageHolder = null;
+    }
+
+    /**
+     * 拷贝属性，绝对的覆盖
+     */
+    public void copy(DisplayOptions options) {
+        if(options == null){
+            return;
+        }
+
+        super.copy(options);
+
+        cacheInMemory = options.cacheInMemory;
+        imageDisplayer = options.imageDisplayer;
+        resizeByFixedSize = options.resizeByFixedSize;
+        loadingImageHolder = options.loadingImageHolder;
+        failureImageHolder = options.failureImageHolder;
+        pauseDownloadImageHolder = options.pauseDownloadImageHolder;
+    }
+
+    /**
+     * 应用属性，应用的过程并不是绝对的覆盖
+     */
+    public void apply(DisplayOptions options){
+        if(options == null){
+            return;
+        }
+
+        super.apply(options);
+
+        cacheInMemory = options.isCacheInMemory();
+
+        if (imageDisplayer == null) {
+            imageDisplayer = options.getImageDisplayer();
+        }
+
+        if (loadingImageHolder == null) {
+            loadingImageHolder = options.getLoadingImageHolder();
+        }
+
+        if (failureImageHolder == null) {
+            failureImageHolder = options.getFailureImage();
+        }
+
+        if (pauseDownloadImageHolder == null) {
+            pauseDownloadImageHolder = options.getPauseDownloadImage();
+        }
+
+        if(!resizeByFixedSize && options.isResizeByFixedSize()){
+            resizeByFixedSize = true;
+        }
+    }
+
+    public StringBuilder appendMemoryCacheKey(StringBuilder builder) {
+        if (getMaxSize() != null) {
+            builder.append("_");
+            getMaxSize().appendIdentifier(builder);
+        }
+        if (getResize() != null) {
+            builder.append("_");
+            getResize().appendIdentifier(builder);
+        }
+        if (isForceUseResize()) {
+            builder.append("_");
+            builder.append("forceUseResize");
+        }
+        if (isLowQualityImage()) {
+            builder.append("_");
+            builder.append("lowQualityImage");
+        }
+        if (getImageProcessor() != null) {
+            builder.append("_");
+            getImageProcessor().appendIdentifier(builder);
+        }
+        return builder;
     }
 }

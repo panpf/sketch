@@ -19,7 +19,6 @@ package me.xiaopan.sketch;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.display.ImageDisplayer;
@@ -30,230 +29,111 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class DisplayHelper {
     private static final String NAME = "DisplayHelper";
 
-    // 基本属性
     protected Sketch sketch;
     protected String uri;
     protected String name;
-    protected RequestLevel requestLevel = RequestLevel.NET;
-    protected RequestLevelFrom requestLevelFrom;
 
-    // 下载属性
-    protected boolean cacheInDisk = true;
+    protected String memoryCacheId;
+    protected DisplayOptions options;
+
+    protected DisplayListener displayListener;
     protected ProgressListener progressListener;
 
-    // 加载属性
-    protected Resize resize;
-    protected boolean decodeGifImage = true;
-    protected boolean forceUseResize;
-    protected boolean lowQualityImage;
-    protected MaxSize maxSize;
-    protected ImageProcessor imageProcessor;
-
-    // 显示属性
-    protected String memoryCacheId;
-    protected boolean cacheInMemory = true;
     protected FixedSize fixedSize;
-    protected ImageDisplayer imageDisplayer;
-    protected DisplayListener displayListener;
-    protected ImageHolder loadingImageHolder;
-    protected ImageHolder failureImageHolder;
-    protected ImageHolder pauseDownloadImageHolder;
+    protected ScaleType scaleType;
     protected SketchImageViewInterface sketchImageViewInterface;
 
-    protected Context context;
-    protected ImageView.ScaleType scaleType;
-
     /**
-     * 创建显示请求生成器
-     *
-     * @param sketch                   Sketch
-     * @param uri                      图片Uri，支持以下几种
-     *                                 <blockquote>"http://site.com/image.png"; // from Web
-     *                                 <br>"https://site.com/image.png"; // from Web
-     *                                 <br>"/mnt/sdcard/image.png"; // from SD card
-     *                                 <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     *                                 <br>"content://media/external/audio/albumart/13"; // from content provider
-     *                                 <br>"asset://image.png"; // from assets
-     *                                 <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     *                                 </blockquote>
-     * @param sketchImageViewInterface 图片View
+     * 支持以下几种图片Uri
+     * <blockQuote>"http://site.com/image.png"; // from Web
+     * <br>"https://site.com/image.png"; // from Web
+     * <br>"/mnt/sdcard/image.png"; // from SD card
+     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
+     * <br>"content://media/external/audio/albumart/13"; // from content provider
+     * <br>"asset://image.png"; // from assets
+     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+     * </blockQuote>
      */
     public DisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
+        this.options = new DisplayOptions();
         init(sketch, uri, sketchImageViewInterface);
     }
 
-    /**
-     * 创建显示请求生成器
-     *
-     * @param sketch                   Sketch
-     * @param displayParams            参数集
-     *                                 <blockquote>"http://site.com/image.png"; // from Web
-     *                                 <br>"https://site.com/image.png"; // from Web
-     *                                 <br>"/mnt/sdcard/image.png"; // from SD card
-     *                                 <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     *                                 <br>"content://media/external/audio/albumart/13"; // from content provider
-     *                                 <br>"asset://image.png"; // from assets
-     *                                 <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     *                                 </blockquote>
-     * @param sketchImageViewInterface 图片View
-     */
     public DisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
+        this.options = new DisplayOptions();
         init(sketch, displayParams, sketchImageViewInterface);
     }
 
     /**
      * 初始化
-     *
-     * @param sketch Sketch
-     * @param uri 图片uri
-     * @param sketchImageViewInterface ImageView
      */
     public DisplayHelper init(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
-        this.context = sketch.getConfiguration().getContext();
         this.sketch = sketch;
-        this.uri = uri;
         this.sketchImageViewInterface = sketchImageViewInterface;
 
-        if (sketch.getConfiguration().isPauseDownload()) {
-            this.requestLevel = RequestLevel.LOCAL;
-            this.requestLevelFrom = RequestLevelFrom.PAUSE_DOWNLOAD;
-        }
-        if (sketch.getConfiguration().isPauseLoad()) {
-            this.requestLevel = RequestLevel.MEMORY;
-            this.requestLevelFrom = RequestLevelFrom.PAUSE_LOAD;
-        }
-
-        this.scaleType = sketchImageViewInterface.getScaleType();
-        this.fixedSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageFixedSize(sketchImageViewInterface);
-        this.maxSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageMaxSize(sketchImageViewInterface);
-
-        this.sketchImageViewInterface.onDisplay();
+        this.uri = uri;
         options(this.sketchImageViewInterface.getDisplayOptions());
-
-        this.displayListener = sketchImageViewInterface.getDisplayListener(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD);
-        this.progressListener = sketchImageViewInterface.getProgressListener();
 
         return this;
     }
 
     /**
      * 初始化，此方法用来在RecyclerView中恢复使用
-     *
-     * @param sketch Sketch
-     * @param displayParams 显示参数
-     * @param sketchImageViewInterface ImageView
      */
     public DisplayHelper init(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
-        this.context = sketch.getConfiguration().getContext();
-
         this.sketch = sketch;
-        this.uri = displayParams.uri;
-        this.name = displayParams.name;
-        this.requestLevel = displayParams.requestLevel;
-        this.requestLevelFrom = displayParams.requestLevelFrom;
-
-        this.cacheInDisk = displayParams.cacheInDisk;
-        this.progressListener = displayParams.progressListener;
-
-        this.resize = displayParams.resize;
-        this.maxSize = displayParams.maxSize;
-        this.forceUseResize = displayParams.forceUseResize;
-        this.lowQualityImage = displayParams.lowQualityImage;
-        this.requestLevel = displayParams.requestLevel;
-        this.imageProcessor = displayParams.imageProcessor;
-        this.decodeGifImage = displayParams.decodeGifImage;
-
         this.sketchImageViewInterface = sketchImageViewInterface;
-        this.fixedSize = displayParams.fixedSize;
-        this.memoryCacheId = displayParams.memoryCacheId;
-        this.cacheInMemory = displayParams.cacheInMemory;
-        this.imageDisplayer = displayParams.imageDisplayer;
-        this.loadingImageHolder = displayParams.loadingImageHolder;
-        this.failureImageHolder = displayParams.loadFailImageHolder;
-        this.pauseDownloadImageHolder = displayParams.pauseDownloadImageHolder;
 
-        this.sketchImageViewInterface.onDisplay();
-
-        this.scaleType = sketchImageViewInterface.getScaleType();
-        this.displayListener = sketchImageViewInterface.getDisplayListener(requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD);
-        this.progressListener = sketchImageViewInterface.getProgressListener();
+        recoverParamsFromImageView(displayParams);
 
         return this;
     }
 
     /**
-     * 恢复默认值
+     * 重置所有属性
      */
     public void reset() {
         sketch = null;
         uri = null;
         name = null;
-        requestLevel = RequestLevel.NET;
-        requestLevelFrom = null;
-
-        cacheInDisk = true;
-        progressListener = null;
-
-        resize = null;
-        maxSize = null;
-        forceUseResize = false;
-        lowQualityImage = false;
-        imageProcessor = null;
-        decodeGifImage = true;
 
         memoryCacheId = null;
-        fixedSize = null;
-        cacheInMemory = true;
-        sketchImageViewInterface = null;
-        imageDisplayer = null;
-        loadingImageHolder = null;
-        failureImageHolder = null;
-        pauseDownloadImageHolder = null;
+        options.reset();
         displayListener = null;
+        progressListener = null;
+
+        fixedSize = null;
+        scaleType = null;
+        sketchImageViewInterface = null;
     }
 
     /**
-     * 填充SketchImageView的显示参数
+     * 将相关信息保存在SketchImageView中，以便在RecyclerView中恢复显示使用
      */
-    public void saveDisplayParams() {
-        if (sketchImageViewInterface != null) {
-            DisplayParams displayParams = sketchImageViewInterface.getDisplayParams();
-            if (displayParams == null) {
-                displayParams = new DisplayParams();
-            }
-
-            displayParams.uri = uri;
-            displayParams.name = name;
-            displayParams.requestLevel = requestLevel;
-            displayParams.requestLevelFrom = requestLevelFrom;
-
-            displayParams.cacheInDisk = cacheInDisk;
-            displayParams.progressListener = progressListener;
-
-            displayParams.resize = resize;
-            displayParams.maxSize = maxSize;
-            displayParams.forceUseResize = forceUseResize;
-            displayParams.lowQualityImage = lowQualityImage;
-            displayParams.imageProcessor = imageProcessor;
-            displayParams.decodeGifImage = decodeGifImage;
-
-            displayParams.memoryCacheId = memoryCacheId;
-            displayParams.fixedSize = fixedSize;
-            displayParams.cacheInMemory = cacheInMemory;
-            displayParams.imageDisplayer = imageDisplayer;
-            displayParams.loadingImageHolder = loadingImageHolder;
-            displayParams.loadFailImageHolder = failureImageHolder;
-            displayParams.pauseDownloadImageHolder = pauseDownloadImageHolder;
-
+    public void saveParamToImageView() {
+        DisplayParams displayParams = sketchImageViewInterface.getDisplayParams();
+        if (displayParams == null) {
+            displayParams = new DisplayParams();
+            displayParams.options = new DisplayOptions(options);
             sketchImageViewInterface.setDisplayParams(displayParams);
         }
+
+        displayParams.uri = uri;
+        displayParams.name = name;
+        displayParams.options.copy(options);
+    }
+
+    /**
+     * SketchImageView的DisplayParams中恢复相关属性
+     */
+    private void recoverParamsFromImageView(DisplayParams displayParams) {
+        this.uri = displayParams.uri;
+        this.name = displayParams.name;
+        this.options.copy(displayParams.options);
     }
 
     /**
      * 设置名称，用于在log总区分请求
-     *
-     * @param name 名称
-     * @return DisplayHelper
      */
     public DisplayHelper name(String name) {
         this.name = name;
@@ -261,168 +141,131 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置内存缓存ID（大多数情况下你不需要手动设置缓存ID，除非你想使用通过putBitmap()放到缓存中的图片）
-     *
-     * @param memoryCacheId 内存缓存ID
-     * @return DisplayHelper
+     * 关闭硬盘缓存
      */
+    @SuppressWarnings("unused")
+    public DisplayHelper disableDiskCache() {
+        options.setCacheInDisk(false);
+        return this;
+    }
+
+    /**
+     * 设置请求Level
+     */
+    public DisplayHelper requestLevel(RequestLevel requestLevel) {
+        if (requestLevel != null) {
+            options.setRequestLevel(requestLevel);
+            options.setRequestLevelFrom(null);
+        }
+        return this;
+    }
+
+    /**
+     * 禁止解码Gif图片
+     */
+    @SuppressWarnings("unused")
+    public DisplayHelper disableDecodeGifImage() {
+        options.setDecodeGifImage(false);
+        return this;
+    }
+
+    /**
+     * 设置最大尺寸，在解码时会使用此Size来计算inSimpleSize
+     */
+    public DisplayHelper maxSize(int width, int height) {
+        options.setMaxSize(width, height);
+        return this;
+    }
+
+    /**
+     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resize，也有可能小于resize
+     */
+    public DisplayHelper resize(int width, int height) {
+        options.setResize(width, height);
+        return this;
+    }
+
+    /**
+     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
+     */
+    public DisplayHelper resize(int width, int height, ScaleType scaleType) {
+        options.setResize(new Resize(width, height, scaleType));
+        return this;
+    }
+
+    /**
+     * 使用ImageView的layout_width和layout_height作为resize
+     */
+    @SuppressWarnings("unused")
+    public DisplayHelper resizeByFixedSize() {
+        options.setResizeByFixedSize(true);
+        return this;
+    }
+
+    /**
+     * 强制使经过resize处理后的图片同resize的尺寸一致
+     */
+    public DisplayHelper forceUseResize() {
+        options.setForceUseResize(true);
+        return this;
+    }
+
+    /**
+     * 返回低质量的图片
+     */
+    public DisplayHelper lowQualityImage() {
+        options.setLowQualityImage(true);
+        return this;
+    }
+
+    /**
+     * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
+     */
+    @SuppressWarnings("unused")
+    public DisplayHelper processor(ImageProcessor processor) {
+        options.setImageProcessor(processor);
+        return this;
+    }
+
+    /**
+     * 关闭内存缓存
+     */
+    @SuppressWarnings("unused")
+    public DisplayHelper disableMemoryCache() {
+        options.setCacheInMemory(false);
+        return this;
+    }
+
+    /**
+     * 设置图片显示器，在加载完成后会调用此显示器来显示图片
+     */
+    @SuppressWarnings("unused")
+    public DisplayHelper displayer(ImageDisplayer displayer) {
+        options.setImageDisplayer(displayer);
+        return this;
+    }
+
+    /**
+     * 设置内存缓存ID（大多数情况下你不需要手动设置缓存ID，除非你想使用通过putBitmap()放到缓存中的图片）
+     */
+    @SuppressWarnings("unused")
     public DisplayHelper memoryCacheId(String memoryCacheId) {
         this.memoryCacheId = memoryCacheId;
         return this;
     }
 
     /**
-     * 关闭硬盘缓存
-     *
-     * @return DisplayHelper
-     */
-    public DisplayHelper disableDiskCache() {
-        this.cacheInDisk = false;
-        return this;
-    }
-
-    /**
-     * 禁止解码Gif图片
-     *
-     * @return LoadHelper
-     */
-    public DisplayHelper disableDecodeGifImage() {
-        this.decodeGifImage = false;
-        return this;
-    }
-
-    /**
-     * 设置最大尺寸，在解码时会使用此Size来计算inSimpleSize
-     *
-     * @param maxSize 最大尺寸
-     * @return DisplayHelper
-     */
-    public DisplayHelper maxSize(MaxSize maxSize) {
-        this.maxSize = maxSize;
-        return this;
-    }
-
-    /**
-     * 设置最大尺寸，在解码时会使用此Size来计算inSimpleSize
-     *
-     * @param width  宽
-     * @param height 高
-     * @return DisplayHelper
-     */
-    public DisplayHelper maxSize(int width, int height) {
-        this.maxSize = new MaxSize(width, height);
-        return this;
-    }
-
-    /**
-     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
-     *
-     * @param width  宽
-     * @param height 高
-     * @return DisplayHelper
-     */
-    public DisplayHelper resize(int width, int height) {
-        this.resize = new Resize(width, height);
-        return this;
-    }
-
-    /**
-     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resize，也有可能小于resize
-     *
-     * @param width     宽
-     * @param height    高
-     * @param scaleType
-     * @return LoadHelper
-     */
-    public DisplayHelper resize(int width, int height, ScaleType scaleType) {
-        this.resize = new Resize(width, height, scaleType);
-        return this;
-    }
-
-    /**
-     * 使用ImageView的LayoutSize作为resize
-     */
-    public DisplayHelper resizeByFixedSize() {
-        this.resize = sketch.getConfiguration().getImageSizeCalculator().calculateImageResize(sketchImageViewInterface);
-        return this;
-    }
-
-    /**
-     * 强制使经过resize返回的图片同resize的尺寸一致
-     *
-     * @return DisplayHelper
-     */
-    public DisplayHelper forceUseResize() {
-        this.forceUseResize = true;
-        return this;
-    }
-
-    /**
-     * 返回低质量的图片
-     *
-     * @return LoadHelper
-     */
-    public DisplayHelper lowQualityImage() {
-        this.lowQualityImage = true;
-        return this;
-    }
-
-    /**
-     * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
-     *
-     * @param processor Bitmap处理器
-     * @return DisplayHelper
-     */
-    public DisplayHelper processor(ImageProcessor processor) {
-        this.imageProcessor = processor;
-        return this;
-    }
-
-    /**
-     * 关闭内存缓存
-     *
-     * @return DisplayHelper
-     */
-    public DisplayHelper disableMemoryCache() {
-        this.cacheInMemory = false;
-        return this;
-    }
-
-    /**
-     * 设置显示监听器
-     *
-     * @param displayListener 显示监听器
-     */
-    public DisplayHelper listener(DisplayListener displayListener) {
-        this.displayListener = displayListener;
-        return this;
-    }
-
-    /**
-     * 设置图片显示器，在加载完成后会调用此显示器来显示图片
-     *
-     * @param displayer 图片显示器
-     */
-    public DisplayHelper displayer(ImageDisplayer displayer) {
-        this.imageDisplayer = displayer;
-        return this;
-    }
-
-    /**
      * 设置正在加载时显示的图片
-     *
-     * @param loadingImageHolder 正在加载时显示的图片
      */
     public DisplayHelper loadingImage(ImageHolder loadingImageHolder) {
-        this.loadingImageHolder = loadingImageHolder;
+        options.setLoadingImage(loadingImageHolder);
         return this;
     }
 
     /**
      * 设置正在加载时显示的图片
-     *
-     * @param drawableResId 资源图片ID
      */
+    @SuppressWarnings("unused")
     public DisplayHelper loadingImage(int drawableResId) {
         loadingImage(new ImageHolder(drawableResId));
         return this;
@@ -430,19 +273,16 @@ public class DisplayHelper {
 
     /**
      * 设置失败时显示的图片
-     *
-     * @param failureImageHolder 失败时显示的图片
      */
     public DisplayHelper failureImage(ImageHolder failureImageHolder) {
-        this.failureImageHolder = failureImageHolder;
+        options.setFailureImage(failureImageHolder);
         return this;
     }
 
     /**
      * 设置失败时显示的图片
-     *
-     * @param drawableResId 资源图片ID
      */
+    @SuppressWarnings("unused")
     public DisplayHelper failureImage(int drawableResId) {
         failureImage(new ImageHolder(drawableResId));
         return this;
@@ -450,182 +290,130 @@ public class DisplayHelper {
 
     /**
      * 设置暂停下载时显示的图片
-     *
-     * @param pauseDownloadImageHolder 暂停下载时显示的图片
      */
     public DisplayHelper pauseDownloadImage(ImageHolder pauseDownloadImageHolder) {
-        this.pauseDownloadImageHolder = pauseDownloadImageHolder;
+        options.setPauseDownloadImage(pauseDownloadImageHolder);
         return this;
     }
 
     /**
      * 设置暂停下载时显示的图片
-     *
-     * @param drawableResId 资源图片ID
      */
+    @SuppressWarnings("unused")
     public DisplayHelper pauseDownloadImage(int drawableResId) {
         pauseDownloadImage(new ImageHolder(drawableResId));
         return this;
     }
 
     /**
-     * 设置进度监听器
-     *
-     * @param progressListener 进度监听器
-     * @return DisplayHelper
+     * 批量设置显示参数，这会是一个合并的过程，并不会完全覆盖
      */
-    public DisplayHelper progressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
+    public DisplayHelper options(DisplayOptions newOptions) {
+        options.apply(newOptions);
         return this;
     }
 
     /**
-     * 设置请求Level
-     *
-     * @param requestLevel 请求Level
-     * @return DisplayHelper
-     */
-    public DisplayHelper requestLevel(RequestLevel requestLevel) {
-        if (requestLevel != null) {
-            this.requestLevel = requestLevel;
-            this.requestLevelFrom = null;
-        }
-        return this;
-    }
-
-    /**
-     * 设置显示参数
-     *
-     * @param options 显示参数
-     * @return DisplayHelper
-     */
-    public DisplayHelper options(DisplayOptions options) {
-        if (options == null) {
-            return this;
-        }
-
-        this.cacheInDisk = options.isCacheInDisk();
-        this.cacheInMemory = options.isCacheInMemory();
-        if (this.maxSize == null || (options.getMaxSize() != null && sketch.getConfiguration().getImageSizeCalculator().compareMaxSize(options.getMaxSize(), this.maxSize) < 0)) {
-            this.maxSize = options.getMaxSize();
-        }
-        if (this.resize == null) {
-            if (options.isResizeByFixedSize()) {
-                resizeByFixedSize();
-            } else if (options.getResize() != null) {
-                this.resize = new Resize(options.getResize());
-            }
-        }
-        this.forceUseResize = options.isForceUseResize();
-        this.lowQualityImage = options.isLowQualityImage();
-        if (this.imageProcessor == null) {
-            this.imageProcessor = options.getImageProcessor();
-        }
-        if (this.imageDisplayer == null) {
-            this.imageDisplayer = options.getImageDisplayer();
-        }
-        this.decodeGifImage = options.isDecodeGifImage();
-        if (this.loadingImageHolder == null) {
-            this.loadingImageHolder = options.getLoadingImageHolder();
-        }
-        if (this.failureImageHolder == null) {
-            this.failureImageHolder = options.getFailureImage();
-        }
-        if (this.pauseDownloadImageHolder == null) {
-            this.pauseDownloadImageHolder = options.getPauseDownloadImage();
-        }
-        RequestLevel optionRequestLevel = options.getRequestLevel();
-        if (requestLevel != null && optionRequestLevel != null) {
-            if (optionRequestLevel.getLevel() < requestLevel.getLevel()) {
-                this.requestLevel = optionRequestLevel;
-                this.requestLevelFrom = null;
-            }
-        } else if (optionRequestLevel != null) {
-            this.requestLevel = optionRequestLevel;
-            this.requestLevelFrom = null;
-        }
-
-        return this;
-    }
-
-    /**
-     * 设置显示参数，你只需要提前将DisplayOptions通过Sketch.putOptions()方法存起来，然后在这里指定其名称即可
-     *
-     * @param optionsName 参数名称
-     * @return DisplayHelper
+     * 批量设置显示参数，你只需要提前将DisplayOptions通过Sketch.putOptions()方法存起来，然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
      */
     public DisplayHelper options(Enum<?> optionsName) {
         return options((DisplayOptions) Sketch.getOptions(optionsName));
     }
 
     /**
-     * 处理一下参数
+     * 对属性进行预处理
      */
-    protected void handleParams() {
-        if (resize != null && resize.getScaleType() == null && sketchImageViewInterface != null) {
-            resize.setScaleType(sketchImageViewInterface.getScaleType());
+    protected void preProcess() {
+        Configuration configuration = sketch.getConfiguration();
+
+        scaleType = sketchImageViewInterface.getScaleType();
+
+        // 计算ImageVie的固定大小
+        fixedSize = configuration.getImageSizeCalculator().calculateImageFixedSize(sketchImageViewInterface);
+
+        // 根据ImageVie的固定大小计算resize
+        if (options.isResizeByFixedSize()) {
+            options.setResize(configuration.getImageSizeCalculator().calculateImageResize(sketchImageViewInterface));
         }
-        if (resize != null && imageProcessor == null) {
-            imageProcessor = sketch.getConfiguration().getDefaultCutImageProcessor();
+
+        // 如果没有设置ScaleType的话就从ImageView身上取
+        if (options.getResize() != null && options.getResize().getScaleType() == null && sketchImageViewInterface != null) {
+            options.getResize().setScaleType(scaleType);
         }
-        if (maxSize == null) {
-            maxSize = sketch.getConfiguration().getImageSizeCalculator().getDefaultImageMaxSize(sketch.getConfiguration().getContext());
+
+        // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
+        if (options.getImageProcessor() == null && options.getResize() != null) {
+            options.setImageProcessor(configuration.getDefaultCutImageProcessor());
         }
-        if (name == null && memoryCacheId != null) {
-            name = memoryCacheId;
+
+        // 没有设置maxSize的话，如果ImageView的宽高是的固定的就根据ImageView的宽高来作为maxSize，否则就用默认的maxSize
+        if (options.getMaxSize() == null) {
+            MaxSize maxSize = configuration.getImageSizeCalculator().calculateImageMaxSize(sketchImageViewInterface);
+            if (maxSize == null) {
+                maxSize = configuration.getImageSizeCalculator().getDefaultImageMaxSize(configuration.getContext());
+            }
+            options.setMaxSize(maxSize);
         }
-        if (!sketch.getConfiguration().isDecodeGifImage()) {
-            decodeGifImage = false;
+
+        // 如果设置了全局禁止解码GIF图的话就强制关闭解码GIF图功能
+        if (!configuration.isDecodeGifImage()) {
+            options.setDecodeGifImage(false);
         }
-        if (!sketch.getConfiguration().isCacheInDisk()) {
-            cacheInDisk = false;
+
+        // 如果设置了全局禁止使用磁盘缓存的话就强制关闭磁盘缓存功能
+        if (!configuration.isCacheInDisk()) {
+            options.setCacheInDisk(false);
         }
-        if (!sketch.getConfiguration().isCacheInMemory()) {
-            cacheInMemory = false;
+
+        // 如果设置了全局禁止使用内存缓存的话就强制内存磁盘缓存功能
+        if (!configuration.isCacheInMemory()) {
+            options.setCacheInMemory(false);
         }
-        if (sketch.getConfiguration().isLowQualityImage()) {
-            lowQualityImage = true;
+
+        // 如果设置了全局使用低质量图片的话就强制使用低质量的图片
+        if (configuration.isLowQualityImage()) {
+            options.setLowQualityImage(true);
         }
-        if (imageDisplayer instanceof TransitionImageDisplayer) {
-            if (fixedSize != null) {
-                if (loadingImageHolder != null && scaleType != ScaleType.CENTER_CROP) {
-                    throw new IllegalArgumentException("When using TransitionImageDisplayer ImageView wide tall if is fixed and set the loadingImage, then ScaleType must be CENTER_CTOP");
-                }
-            } else {
-                if (loadingImageHolder != null) {
-                    throw new IllegalArgumentException("When using TransitionImageDisplayer ImageView wide tall if is unknown may not be used then loadingImage");
-                }
+
+        // 如果没有设置请求Level的话就跟据暂停下载和暂停加载功能来设置请求Level
+        if (options.getRequestLevel() == null) {
+            if (configuration.isPauseDownload()) {
+                options.setRequestLevel(RequestLevel.LOCAL);
+                options.setRequestLevelFrom(RequestLevelFrom.PAUSE_DOWNLOAD);
+            }
+
+            if (configuration.isPauseLoad()) {
+                options.setRequestLevel(RequestLevel.MEMORY);
+                options.setRequestLevelFrom(RequestLevelFrom.PAUSE_LOAD);
             }
         }
-    }
 
-    /**
-     * 生成内存缓存ID
-     */
-    public String generateMemoryCacheId(String uri, MaxSize maxSize, Resize resize, boolean forceUseResize, boolean lowQualityImage, ImageProcessor imageProcessor) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(uri);
-        if (maxSize != null) {
-            builder.append("_");
-            maxSize.appendIdentifier(builder);
+        // 使用过渡图片显示器的时候，如果使用了loadingImage的话ImageView就必须采用固定宽高以及ScaleType必须是CENTER_CROP
+        if (options.getImageDisplayer() instanceof TransitionImageDisplayer
+                && options.getLoadingImageHolder() != null
+                && (fixedSize == null || scaleType != ScaleType.CENTER_CROP)) {
+            String errorInfo = "If you use TransitionImageDisplayer and loadingImage, ImageView layout_width and layout_height must be fixed as well as the ScaleType must be CENTER_CROP.";
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", errorInfo, " - ", uri));
+            }
+            throw new IllegalArgumentException(errorInfo);
         }
-        if (resize != null) {
-            builder.append("_");
-            resize.appendIdentifier(builder);
+
+        // 没有设置内存缓存ID的话就计算内存缓存ID，这个通常是不是需要使用者主动设置的，除非你想使用你自己放入MemoryCache中的图片
+        if (memoryCacheId == null) {
+            memoryCacheId = options.appendMemoryCacheKey(new StringBuilder(uri)).toString();
         }
-        if (forceUseResize) {
-            builder.append("_");
-            builder.append("forceUseResize");
+
+        // 没有设置名称的话就用内存缓存ID作为名称，名称主要用来在log中区分请求的
+        if (name == null) {
+            name = memoryCacheId;
         }
-        if (lowQualityImage) {
-            builder.append("_");
-            builder.append("lowQualityImage");
-        }
-        if (imageProcessor != null) {
-            builder.append("_");
-            imageProcessor.appendIdentifier(builder);
-        }
-        return builder.toString();
+
+        // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
+        sketchImageViewInterface.onDisplay();
+
+        displayListener = sketchImageViewInterface.getDisplayListener(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD);
+        progressListener = sketchImageViewInterface.getProgressListener();
     }
 
     /**
@@ -634,9 +422,12 @@ public class DisplayHelper {
      * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
      */
     public DisplayRequest commit() {
-        saveDisplayParams();
+        saveParamToImageView();
 
-        handleParams();
+        preProcess();
+
+        Configuration configuration = sketch.getConfiguration();
+        Context context = configuration.getContext();
 
         if (displayListener != null) {
             displayListener.onStarted();
@@ -650,7 +441,7 @@ public class DisplayHelper {
             if (displayListener != null) {
                 displayListener.onFailed(FailCause.IMAGE_VIEW_NULL);
             }
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+            configuration.getHelperFactory().recycleDisplayHelper(this);
             return null;
         }
 
@@ -662,14 +453,14 @@ public class DisplayHelper {
             if (sketchImageViewInterface != null) {
                 sketchImageViewInterface.setDisplayRequest(null);
             }
-            Drawable failureDrawable = failureImageHolder != null ? failureImageHolder.getRecycleBitmapDrawable(context) : null;
+            Drawable failureDrawable = options.getFailureImage() != null ? options.getFailureImage().getRecycleBitmapDrawable(context) : null;
             if (failureDrawable != null) {
                 sketchImageViewInterface.setImageDrawable(failureDrawable);
             }
             if (displayListener != null) {
                 displayListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
             }
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+            configuration.getHelperFactory().recycleDisplayHelper(this);
             return null;
         }
 
@@ -680,24 +471,20 @@ public class DisplayHelper {
             if (sketchImageViewInterface != null) {
                 sketchImageViewInterface.setDisplayRequest(null);
             }
-            Drawable failureDrawable = failureImageHolder != null ? failureImageHolder.getRecycleBitmapDrawable(context) : null;
+            Drawable failureDrawable = options.getFailureImage() != null ? options.getFailureImage().getRecycleBitmapDrawable(context) : null;
             if (failureDrawable != null) {
                 sketchImageViewInterface.setImageDrawable(failureDrawable);
             }
             if (displayListener != null) {
                 displayListener.onFailed(FailCause.URI_NO_SUPPORT);
             }
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+            configuration.getHelperFactory().recycleDisplayHelper(this);
             return null;
         }
 
         // 尝试从内存中寻找缓存图片
-        String memoryCacheId = this.memoryCacheId != null ? this.memoryCacheId : generateMemoryCacheId(uri, maxSize, resize, forceUseResize, lowQualityImage, imageProcessor);
-        if (name == null) {
-            name = memoryCacheId;
-        }
-        if (cacheInMemory) {
-            Drawable cacheDrawable = sketch.getConfiguration().getMemoryCache().get(memoryCacheId);
+        if (options.isCacheInMemory()) {
+            Drawable cacheDrawable = configuration.getMemoryCache().get(memoryCacheId);
             if (cacheDrawable != null) {
                 RecycleDrawableInterface recycleDrawable = (RecycleDrawableInterface) cacheDrawable;
                 if (!recycleDrawable.isRecycled()) {
@@ -711,10 +498,10 @@ public class DisplayHelper {
                     if (displayListener != null) {
                         displayListener.onCompleted(ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
                     }
-                    sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+                    configuration.getHelperFactory().recycleDisplayHelper(this);
                     return null;
                 } else {
-                    sketch.getConfiguration().getMemoryCache().remove(memoryCacheId);
+                    configuration.getMemoryCache().remove(memoryCacheId);
                     if (Sketch.isDebugMode()) {
                         Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "bitmap recycled", " - ", recycleDrawable.getInfo(), " - ", name));
                     }
@@ -723,14 +510,14 @@ public class DisplayHelper {
         }
 
         // 如果已经暂停了的话就不再从本地或网络加载了
-        if (requestLevel == RequestLevel.MEMORY) {
-            Drawable loadingDrawable = loadingImageHolder != null ? loadingImageHolder.getRecycleBitmapDrawable(context) : null;
+        if (options.getRequestLevel() == RequestLevel.MEMORY) {
+            Drawable loadingDrawable = options.getLoadingImageHolder() != null ? options.getLoadingImageHolder().getRecycleBitmapDrawable(context) : null;
             sketchImageViewInterface.clearAnimation();
             sketchImageViewInterface.setImageDrawable(loadingDrawable);
             if (displayListener != null) {
-                displayListener.onCanceled(requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? CancelCause.PAUSE_LOAD : CancelCause.LEVEL_IS_MEMORY);
+                displayListener.onCanceled(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD ? CancelCause.PAUSE_LOAD : CancelCause.LEVEL_IS_MEMORY);
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", (requestLevelFrom == RequestLevelFrom.PAUSE_LOAD ? "pause load" : "requestLevel is memory"), " - ", name));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", (options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD ? "pause load" : "requestLevel is memory"), " - ", name));
                 }
             }
             if (sketchImageViewInterface != null) {
@@ -746,7 +533,7 @@ public class DisplayHelper {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "don't need to cancel", "；", "ImageViewCode", "=", Integer.toHexString(sketchImageViewInterface.hashCode()), "；", potentialRequest.getName()));
                 }
-                sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+                configuration.getHelperFactory().recycleDisplayHelper(this);
                 return potentialRequest;
             } else {
                 potentialRequest.cancel();
@@ -754,35 +541,36 @@ public class DisplayHelper {
         }
 
         // 组织请求
-        final DisplayRequest request = sketch.getConfiguration().getRequestFactory().newDisplayRequest(sketch, uri, uriScheme, memoryCacheId, sketchImageViewInterface);
+        final DisplayRequest request = configuration.getRequestFactory().newDisplayRequest(sketch, uri, uriScheme, memoryCacheId, sketchImageViewInterface);
 
         request.setName(name);
-        request.setRequestLevel(requestLevel);
-        request.setRequestLevelFrom(requestLevelFrom);
+        request.setRequestLevel(options.getRequestLevel());
+        request.setRequestLevelFrom(options.getRequestLevelFrom());
 
-        request.setCacheInDisk(cacheInDisk);
+        request.setCacheInDisk(options.isCacheInDisk());
         request.setProgressListener(progressListener);
 
-        request.setResize(resize);
-        request.setMaxSize(maxSize);
-        request.setForceUseResize(forceUseResize);
-        request.setLowQualityImage(lowQualityImage);
-        request.setImageProcessor(imageProcessor);
-        request.setDecodeGifImage(decodeGifImage);
+        request.setResize(options.getResize());
+        request.setMaxSize(options.getMaxSize());
+        request.setForceUseResize(options.isForceUseResize());
+        request.setLowQualityImage(options.isLowQualityImage());
+        request.setImageProcessor(options.getImageProcessor());
+        request.setDecodeGifImage(options.isDecodeGifImage());
 
         request.setFixedSize(fixedSize);
-        request.setImageDisplayer(imageDisplayer);
+        request.setImageDisplayer(options.getImageDisplayer());
         request.setDisplayListener(displayListener);
-        request.setCacheInMemory(cacheInMemory);
-        request.setFailureImageHolder(failureImageHolder);
-        request.setPauseDownloadImageHolder(pauseDownloadImageHolder);
+        request.setCacheInMemory(options.isCacheInMemory());
+        request.setFailureImageHolder(options.getFailureImage());
+        request.setPauseDownloadImageHolder(options.getPauseDownloadImage());
 
         // 显示默认图片
         Drawable loadingBindDrawable;
-        if (loadingImageHolder != null) {
-            RecycleBitmapDrawable loadingDrawable = loadingImageHolder.getRecycleBitmapDrawable(context);
+        if (options.getLoadingImageHolder() != null) {
+            RecycleBitmapDrawable loadingDrawable = options.getLoadingImageHolder().getRecycleBitmapDrawable(context);
+            // 如果使用了TransitionImageDisplayer并且ImageVie是固定大小并且ScaleType是CENT_CROP那么就需要根据ImageVie的固定大小来裁剪loadingImage
             FixedSize tempFixedSize = null;
-            if (imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ScaleType.CENTER_CROP) {
+            if (options.getImageDisplayer() != null && options.getImageDisplayer() instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ScaleType.CENTER_CROP) {
                 tempFixedSize = fixedSize;
             }
             loadingBindDrawable = new BindFixedRecycleBitmapDrawable(loadingDrawable, tempFixedSize, request);
@@ -797,7 +585,7 @@ public class DisplayHelper {
 
         // 分发请求
         request.postRunDispatch();
-        sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+        configuration.getHelperFactory().recycleDisplayHelper(this);
         return request;
     }
 }

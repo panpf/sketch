@@ -54,7 +54,9 @@ final class GifViewUtils {
                     view.setBackgroundDrawable(d);
                 }
                 return true;
-            } catch (IOException | Resources.NotFoundException ignored) {
+            } catch (IOException ignored) {
+                //ignored
+            } catch (Resources.NotFoundException ignored) {
                 //ignored
             }
         }

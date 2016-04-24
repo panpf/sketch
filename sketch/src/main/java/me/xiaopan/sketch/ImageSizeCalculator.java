@@ -112,6 +112,7 @@ public class ImageSizeCalculator {
      * @param maxSize2 maxSize2
      * @return 等于0：两者相等；小于0：maxSize1小于maxSize2；大于0：maxSize1大于maxSize2
      */
+    @Deprecated
     public int compareMaxSize(MaxSize maxSize1, MaxSize maxSize2) {
         if (maxSize1 == null || maxSize2 == null) {
             return 0;

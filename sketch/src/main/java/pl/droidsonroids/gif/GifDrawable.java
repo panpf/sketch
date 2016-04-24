@@ -56,7 +56,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      */
     final Bitmap mBuffer;
     final GifInfoHandle mNativeInfoHandle;
-    final ConcurrentLinkedQueue<AnimationListener> mListeners = new ConcurrentLinkedQueue<>();
+    final ConcurrentLinkedQueue<AnimationListener> mListeners = new ConcurrentLinkedQueue<AnimationListener>();
     private ColorStateList mTint;
     private PorterDuffColorFilter mTintFilter;
     private PorterDuff.Mode mTintMode;

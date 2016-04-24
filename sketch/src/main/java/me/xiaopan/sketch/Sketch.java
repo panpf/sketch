@@ -104,6 +104,7 @@ public class Sketch {
      * @param loadListener 加载监听器
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
+    @SuppressWarnings("unused")
     public LoadHelper loadFromAsset(String fileName, LoadListener loadListener) {
         return configuration.getHelperFactory().getLoadHelper(this, UriScheme.ASSET.createUri(fileName)).listener(loadListener);
     }
@@ -115,6 +116,7 @@ public class Sketch {
      * @param loadListener  加载监听器
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
+    @SuppressWarnings("unused")
     public LoadHelper loadFromResource(int drawableResId, LoadListener loadListener) {
         return configuration.getHelperFactory().getLoadHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId))).listener(loadListener);
     }
@@ -126,6 +128,7 @@ public class Sketch {
      * @param loadListener 加载监听器
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
+    @SuppressWarnings("unused")
     public LoadHelper loadFromURI(Uri uri, LoadListener loadListener) {
         return configuration.getHelperFactory().getLoadHelper(this, uri.toString()).listener(loadListener);
     }
