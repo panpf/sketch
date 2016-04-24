@@ -47,6 +47,10 @@
                 style="@style/menu_item"
                 android:text="本地APP"/>
             <TextView
+                android:id="@+id/button_main_largeImage"
+                style="@style/menu_item"
+                android:text="超大图片"/>
+            <TextView
                 android:id="@+id/button_main_about"
                 style="@style/menu_item"
                 android:text="关于Sketch"/>

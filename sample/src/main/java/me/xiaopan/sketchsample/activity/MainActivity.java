@@ -43,6 +43,7 @@ import me.xiaopan.sketchsample.MyBaseActivity;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
+import me.xiaopan.sketchsample.fragment.LargeImageFragment;
 import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.StarIndexFragment;
@@ -66,6 +67,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     @InjectView(R.id.button_main_star) private View starButton;
     @InjectView(R.id.button_main_photoAlbum) private View photoAlbumButton;
     @InjectView(R.id.button_main_appList) private View appListButton;
+    @InjectView(R.id.button_main_largeImage) private View largeImageButton;
     @InjectView(R.id.button_main_about) private View aboutButton;
     @InjectView(R.id.item_main_scrollingPauseLoad) private View scrollingPauseLoadItem;
     @InjectView(R.id.checkBox_main_scrollingPauseLoad) private CheckBox scrollingPauseLoadCheckBox;
@@ -135,6 +137,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         searchButton.setOnClickListener(this);
         photoAlbumButton.setOnClickListener(this);
         appListButton.setOnClickListener(this);
+        largeImageButton.setOnClickListener(this);
         aboutButton.setOnClickListener(this);
         showImageDownloadProgressItem.setOnClickListener(this);
         scrollingPauseLoadItem.setOnClickListener(this);
@@ -336,6 +339,19 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                             .commit();
                 }
                 break;
+            case R.id.button_main_largeImage :
+                slidingPaneLayout.closePane();
+                if (type != Type.LARGE_IMAGE) {
+                    getSupportActionBar().setTitle("超大图片");
+                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
+                    type = Type.LARGE_IMAGE;
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
+                            .replace(R.id.frame_main_content, new LargeImageFragment())
+                            .commit();
+                }
+                break;
             case R.id.item_main_mobileNetworkPauseDownload :
                 boolean newMobileNetStopDownloadValue = !settings.isMobileNetworkPauseDownload();
                 settings.setMobileNetworkPauseDownload(newMobileNetStopDownloadValue);
@@ -486,5 +502,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         LOCAL_PHOTO_ALBUM,
         ABOUT,
         APP_LIST,
+        LARGE_IMAGE,
     }
 }
