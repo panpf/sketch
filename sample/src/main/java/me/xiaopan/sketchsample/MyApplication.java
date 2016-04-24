@@ -24,6 +24,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 
 import me.xiaopan.gohttp.GoHttp;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketchsample.util.MyLocalImageProcessor;
 
 public class MyApplication extends Application {
 
@@ -37,6 +38,7 @@ public class MyApplication extends Application {
         SketchManager sketchManager = new SketchManager(getBaseContext());
         sketchManager.initConfig();
         sketchManager.initDisplayOptions();
+        Sketch.with(this).getConfiguration().setLocalImageProcessor(new MyLocalImageProcessor());
     }
 
     @Override
