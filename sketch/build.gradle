@@ -21,6 +21,10 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_6
+    }
 }
 
 apply from: "https://raw.githubusercontent.com/xiaopansky/android-library-publish-to-jcenter/master/bintrayUpload.gradle"
