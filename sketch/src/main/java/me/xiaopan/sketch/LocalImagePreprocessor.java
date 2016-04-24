@@ -3,9 +3,9 @@ package me.xiaopan.sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 
 /**
- * 本地图片处理器
+ * 本地图片预处理器
  */
-public interface LocalImageProcessor {
+public interface LocalImagePreprocessor {
     /**
      * 是不是特殊的本地图片
      */

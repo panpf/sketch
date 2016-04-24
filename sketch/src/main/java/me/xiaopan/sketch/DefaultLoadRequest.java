@@ -429,9 +429,9 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
 
         setRequestStatus(RequestStatus.LOADING);
 
-        // 尝试用本地图片处理器处理一下特殊的本地图片，并得到他们的缓存
-        if (sketch.getConfiguration().getLocalImageProcessor().isSpecific(this)) {
-            DiskCache.Entry specificLocalImageDiskCacheEntry = sketch.getConfiguration().getLocalImageProcessor().getDiskCacheEntry(this);
+        // 尝试用本地图片预处理器处理一下特殊的本地图片，并得到他们的缓存
+        if (sketch.getConfiguration().getLocalImagePreprocessor().isSpecific(this)) {
+            DiskCache.Entry specificLocalImageDiskCacheEntry = sketch.getConfiguration().getLocalImagePreprocessor().getDiskCacheEntry(this);
             if (specificLocalImageDiskCacheEntry != null) {
                 this.diskCacheEntry = specificLocalImageDiskCacheEntry;
             } else {

@@ -62,7 +62,7 @@ public class Configuration {
     private RequestExecutor requestExecutor;    //请求执行器
     private ResizeCalculator resizeCalculator;  // resize计算器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
-    private LocalImageProcessor localImageProcessor;    // 本地图片处理器
+    private LocalImagePreprocessor localImagePreprocessor;    // 本地图片预处理器
 
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean cacheInDisk = true;
@@ -96,8 +96,8 @@ public class Configuration {
         this.requestExecutor = new DefaultRequestExecutor.Builder().build();
         this.resizeCalculator = new ResizeCalculator();
         this.imageSizeCalculator = new ImageSizeCalculator();
-        this.localImageProcessor = new DefaultLocalImageProcessor();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
+        this.localImagePreprocessor = new DefaultLocalImagePreprocessor();
         this.defaultCutImageProcessor = new DefaultImageProcessor();
         this.placeholderImageMemoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 16));
         this.handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
@@ -607,20 +607,20 @@ public class Configuration {
     }
 
     /**
-     * 获取本地图片处理器
+     * 获取本地图片预处理器
      */
-    public LocalImageProcessor getLocalImageProcessor() {
-        return localImageProcessor;
+    public LocalImagePreprocessor getLocalImagePreprocessor() {
+        return localImagePreprocessor;
     }
 
     /**
-     * 设置本地图片处理器
+     * 设置本地图片预处理器
      */
-    public Configuration setLocalImageProcessor(LocalImageProcessor localImageProcessor) {
-        if(localImageProcessor != null){
-            this.localImageProcessor = localImageProcessor;
+    public Configuration setLocalImagePreprocessor(LocalImagePreprocessor localImagePreprocessor) {
+        if(localImagePreprocessor != null){
+            this.localImagePreprocessor = localImagePreprocessor;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, NAME + ": " + "set" + " - localImageProcessor" + " (" + localImageProcessor.getIdentifier() + ")");
+                Log.i(Sketch.TAG, NAME + ": " + "set" + " - localImagePreprocessor" + " (" + localImagePreprocessor.getIdentifier() + ")");
             }
         }
         return this;
@@ -714,11 +714,11 @@ public class Configuration {
             resizeCalculator.appendIdentifier(builder);
         }
 
-        if (localImageProcessor != null) {
+        if (localImagePreprocessor != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("specificLocalImageProcessor");
+            builder.append("localImagePreprocessor");
             builder.append("：");
-            localImageProcessor.appendIdentifier(builder);
+            localImagePreprocessor.appendIdentifier(builder);
         }
 
         if (builder.length() > 0) builder.append("\n");

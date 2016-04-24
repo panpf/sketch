@@ -12,10 +12,10 @@ import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 默认的本地图片处理器，可解析APK文件的图标
+ * 默认的本地图片预处理器，可解析APK文件的图标
  */
-public class DefaultLocalImageProcessor implements LocalImageProcessor {
-    private static final String NAME = "DefaultSpecificLocalImageProcessor";
+public class DefaultLocalImagePreprocessor implements LocalImagePreprocessor {
+    private static final String NAME = "DefaultLocalImagePreprocessor";
 
     @Override
     public boolean isSpecific(LoadRequest loadRequest) {
