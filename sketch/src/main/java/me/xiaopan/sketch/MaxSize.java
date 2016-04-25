@@ -16,7 +16,7 @@
 
 package me.xiaopan.sketch;
 
-public class MaxSize {
+public class MaxSize implements Identifier{
     private int width;
     private int height;
 
@@ -38,10 +38,12 @@ public class MaxSize {
         this.height = height;
     }
 
+    @Override
     public String getIdentifier() {
         return appendIdentifier(new StringBuilder()).toString();
     }
 
+    @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append("MaxSize(");
         builder.append(width);

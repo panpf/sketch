@@ -28,7 +28,7 @@ import java.lang.reflect.Field;
 /**
  * 图片最大尺寸和修正尺寸计算器
  */
-public class ImageSizeCalculator {
+public class ImageSizeCalculator implements Identifier{
     private static final String NAME = "ImageSizeCalculator";
 
     private float targetSizeScaleInSampleSize = 1.25f;
@@ -189,18 +189,12 @@ public class ImageSizeCalculator {
         return targetSizeScaleInSampleSize;
     }
 
-    /**
-     * 获取标识符
-     *
-     * @return 标识符
-     */
+    @Override
     public String getIdentifier() {
         return NAME;
     }
 
-    /**
-     * 追加标识符
-     */
+    @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(NAME);
     }

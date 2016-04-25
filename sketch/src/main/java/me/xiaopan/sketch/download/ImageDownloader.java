@@ -18,11 +18,12 @@ package me.xiaopan.sketch.download;
 
 import me.xiaopan.sketch.DownloadRequest;
 import me.xiaopan.sketch.DownloadResult;
+import me.xiaopan.sketch.Identifier;
 
 /**
  * 下载器
  */
-public interface ImageDownloader {
+public interface ImageDownloader extends Identifier {
     int BUFFER_SIZE = 8 * 1024;   // 默认缓存池大小
     int DEFAULT_READ_TIMEOUT = 20 * 1000;   // 默认读取超时时间
     int DEFAULT_CONNECT_TIMEOUT = 20 * 1000;    // 默认连接超时时间
@@ -34,28 +35,12 @@ public interface ImageDownloader {
     DownloadResult download(DownloadRequest downloadRequest);
 
     /**
-     * 设置最大重试次数
-     *
-     * @param maxRetryCount 最大重试次数，默认1
+     * 设置最大重试次数（默认1）
      */
     void setMaxRetryCount(int maxRetryCount);
 
     /**
-     * 设置连接超时时间
-     *
-     * @param connectTimeout 连接超时时间，单位毫秒，默认2000毫秒
+     * 设置连接超时时间（默认20 * 1000）
      */
     void setConnectTimeout(int connectTimeout);
-
-    /**
-     * 获取标识符
-     *
-     * @return 标识符
-     */
-    String getIdentifier();
-
-    /**
-     * 追加标识符
-     */
-    StringBuilder appendIdentifier(StringBuilder builder);
 }

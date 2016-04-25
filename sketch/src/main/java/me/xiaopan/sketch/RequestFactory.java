@@ -19,7 +19,7 @@ package me.xiaopan.sketch;
 /**
  * Request创建工厂
  */
-public class RequestFactory {
+public class RequestFactory implements Identifier{
     private static final String NAME = "RequestFactory";
 
     public DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface) {
@@ -34,18 +34,12 @@ public class RequestFactory {
         return new DefaultDownloadRequest(sketch, uri, uriScheme);
     }
 
-    /**
-     * 获取标识符
-     *
-     * @return 标识符
-     */
+    @Override
     public String getIdentifier() {
         return NAME;
     }
 
-    /**
-     * 追加标识符
-     */
+    @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(NAME);
     }

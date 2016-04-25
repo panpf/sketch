@@ -18,10 +18,12 @@ package me.xiaopan.sketch.execute;
 
 import java.util.concurrent.Executor;
 
+import me.xiaopan.sketch.Identifier;
+
 /**
  * 请求执行器
  */
-public interface RequestExecutor {
+public interface RequestExecutor extends Identifier {
     /**
      * 获取请求分发执行器
      */
@@ -36,16 +38,4 @@ public interface RequestExecutor {
      * 获取网络任务执行器
      */
     Executor getNetRequestExecutor();
-
-    /**
-     * 获取标识符
-     *
-     * @return 标识符
-     */
-    String getIdentifier();
-
-    /**
-     * 追加标识符
-     */
-    StringBuilder appendIdentifier(StringBuilder builder);
 }

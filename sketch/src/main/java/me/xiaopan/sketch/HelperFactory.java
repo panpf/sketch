@@ -16,7 +16,7 @@
 
 package me.xiaopan.sketch;
 
-public class HelperFactory {
+public class HelperFactory implements Identifier{
     private static final String NAME = "HelperFactory";
 
     private DisplayHelper obsoletingDisplayHelper;
@@ -53,7 +53,6 @@ public class HelperFactory {
 
     /**
      * 用完了要回收
-     * @param obsoletingDisplayHelper DisplayHelper
      */
     public void recycleDisplayHelper(DisplayHelper obsoletingDisplayHelper) {
         obsoletingDisplayHelper.reset();
@@ -62,18 +61,12 @@ public class HelperFactory {
         }
     }
 
-    /**
-     * 获取标识符
-     *
-     * @return 标识符
-     */
+    @Override
     public String getIdentifier() {
         return NAME;
     }
 
-    /**
-     * 追加标识符
-     */
+    @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(NAME);
     }

@@ -20,12 +20,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
+import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.util.DiskLruCache;
 
 /**
  * 磁盘缓存器
  */
-public interface DiskCache {
+public interface DiskCache extends Identifier {
 
     /**
      * 获取缓存实体
@@ -81,18 +82,6 @@ public interface DiskCache {
      * 关闭
      */
     void close();
-
-    /**
-     * 获取标识符
-     *
-     * @return 标识符
-     */
-    String getIdentifier();
-
-    /**
-     * 追加标识符
-     */
-    StringBuilder appendIdentifier(StringBuilder builder);
 
     interface Entry {
         InputStream newInputStream() throws IOException;

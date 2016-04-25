@@ -18,7 +18,7 @@ package me.xiaopan.sketch;
 
 import android.widget.ImageView;
 
-public class Resize {
+public class Resize implements Identifier{
     private int width;
     private int height;
 
@@ -61,10 +61,12 @@ public class Resize {
         this.height = height;
     }
 
+    @Override
     public String getIdentifier() {
         return appendIdentifier(new StringBuilder()).toString();
     }
 
+    @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append("Resize(");
         builder.append(width);

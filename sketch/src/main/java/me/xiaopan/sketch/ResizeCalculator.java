@@ -3,13 +3,15 @@ package me.xiaopan.sketch;
 import android.graphics.Rect;
 import android.widget.ImageView;
 
-public class ResizeCalculator {
+public class ResizeCalculator implements Identifier{
     private static final String NAME = "ResizeCalculator";
 
+    @Override
     public String getIdentifier() {
         return NAME;
     }
 
+    @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(NAME);
     }
