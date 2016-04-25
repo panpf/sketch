@@ -17,113 +17,35 @@
 package me.xiaopan.sketch;
 
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.process.ImageProcessor;
 
 /**
  * 加载请求
  */
 public interface LoadRequest extends DownloadRequest {
-    /**
-     * 获取新的尺寸，ImageProcessor会根据此尺寸来裁剪图片
-     */
-    Resize getResize();
 
     /**
-     * 设置新的尺寸，ImageProcessor会根据此尺寸来裁剪图片
+     * 获取加载选项
      */
-    void setResize(Resize resize);
-
-    /**
-     * 是否强制使用resize
-     *
-     * @return true：最终返回的图片尺寸一定跟resize一样
-     */
-    boolean isForceUseResize();
-
-    /**
-     * 设置是否强制使用resize
-     *
-     * @param forceUseResize true：最终返回的图片尺寸一定跟resize一样
-     */
-    void setForceUseResize(boolean forceUseResize);
-
-    /**
-     * 获取最大尺寸，用于读取图片时计算inSampleSize
-     */
-    MaxSize getMaxSize();
-
-    /**
-     * 设置最大尺寸，用于读取图片时计算inSampleSize
-     */
-    void setMaxSize(MaxSize maxSize);
-
-    /**
-     * 是否返回低质量的图片
-     */
-    boolean isLowQualityImage();
-
-    /**
-     * 设置是否返回低质量的图片
-     */
-    void setLowQualityImage(boolean lowQualityImage);
-
-    /**
-     * 获取图片处理器
-     */
-    ImageProcessor getImageProcessor();
-
-    /**
-     * 设置图片处理器
-     */
-    void setImageProcessor(ImageProcessor imageProcessor);
-
-    /**
-     * 设置加载监听器
-     */
-    void setLoadListener(LoadListener loadListener);
-
-    /**
-     * 是否解码Gif图片，如果为false，Gif图将使用BitmapFactory来解码
-     */
-    boolean isDecodeGifImage();
-
-    /**
-     * 设置是否解码Gif图，如果为false，Gif图将使用BitmapFactory来解码
-     */
-    void setDecodeGifImage(boolean isDecodeGifImage);
+    @Override
+    LoadOptions getOptions();
 
     /**
      * 获取磁盘缓存实体
-     *
-     * @return 磁盘缓存实体
      */
     DiskCache.Entry getDiskCacheEntry();
 
     /**
      * 获取图片数据
-     *
-     * @return 图片数据
      */
     byte[] getImageData();
 
     /**
-     * 是否是本地APK文件
-     *
-     * @return true：是
-     */
-    boolean isLocalApkFile();
-
-    /**
      * 获取图片类型
-     *
-     * @return 图片类型
      */
     String getMimeType();
 
     /**
      * 设置图片类型
-     *
-     * @param mimeType 图片类型
      */
     void setMimeType(String mimeType);
 }

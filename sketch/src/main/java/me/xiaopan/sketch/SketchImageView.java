@@ -52,7 +52,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
     private MyListener myListener;
     private DisplayOptions displayOptions;
     private DisplayListener displayListener;
-    private ProgressListener progressListener;
+    private DownloadProgressListener downloadProgressListener;
     private DisplayParams displayParams;
     private View.OnClickListener onClickListener;
     private boolean replacedClickListener;
@@ -472,21 +472,19 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         this.displayListener = displayListener;
     }
 
-    @Override
-    public ProgressListener getProgressListener() {
+    public DownloadProgressListener getDownloadProgressListener() {
         if (showDownloadProgress) {
             if (myListener == null) {
                 myListener = new MyListener();
             }
             return myListener;
         } else {
-            return progressListener;
+            return downloadProgressListener;
         }
     }
 
-    @Override
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
+    public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
+        this.downloadProgressListener = downloadProgressListener;
     }
 
     @Override
@@ -739,7 +737,7 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         }
     }
 
-    private class MyListener implements DisplayListener, ProgressListener, View.OnClickListener {
+    private class MyListener implements DisplayListener, DownloadProgressListener, View.OnClickListener {
         @Override
         public void onStarted() {
             if (showFromFlag) {
@@ -804,13 +802,13 @@ public class SketchImageView extends ImageView implements SketchImageViewInterfa
         }
 
         @Override
-        public void onUpdateProgress(int totalLength, int completedLength) {
+        public void onUpdateDownloadProgress(int totalLength, int completedLength) {
             if (showDownloadProgress) {
                 progress = (float) completedLength / totalLength;
                 invalidate();
             }
-            if (progressListener != null) {
-                progressListener.onUpdateProgress(totalLength, completedLength);
+            if (downloadProgressListener != null) {
+                downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
             }
         }
 

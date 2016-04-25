@@ -32,7 +32,7 @@ public class LoadHelper {
     protected LoadOptions options;
 
     protected LoadListener loadListener;
-    protected ProgressListener progressListener;
+    protected DownloadProgressListener downloadProgressListener;
 
     /**
      * 支持以下几种图片Uri
@@ -156,8 +156,8 @@ public class LoadHelper {
      * 设置进度监听器
      */
     @SuppressWarnings("unused")
-    public LoadHelper progressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
+    public LoadHelper progressListener(DownloadProgressListener downloadProgressListener) {
+        this.downloadProgressListener = downloadProgressListener;
         return this;
     }
 
@@ -250,22 +250,10 @@ public class LoadHelper {
         }
 
         // 创建请求
-        LoadRequest request = sketch.getConfiguration().getRequestFactory().newLoadRequest(sketch, uri, uriScheme);
+        LoadRequest request = sketch.getConfiguration().getRequestFactory().newLoadRequest(sketch, uri, uriScheme, options, loadListener);
 
         request.setName(name);
-        request.setRequestLevel(options.getRequestLevel());
-        request.setRequestLevelFrom(options.getRequestLevelFrom());
-
-        request.setCacheInDisk(options.isCacheInDisk());
-        request.setProgressListener(progressListener);
-
-        request.setResize(options.getResize());
-        request.setMaxSize(options.getMaxSize());
-        request.setForceUseResize(options.isForceUseResize());
-        request.setLowQualityImage(options.isLowQualityImage());
-        request.setLoadListener(loadListener);
-        request.setImageProcessor(options.getImageProcessor());
-        request.setDecodeGifImage(options.isDecodeGifImage());
+        request.setDownloadProgressListener(downloadProgressListener);
 
         request.postRunDispatch();
 

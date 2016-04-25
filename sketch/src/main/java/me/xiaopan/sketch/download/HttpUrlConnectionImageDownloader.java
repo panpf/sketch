@@ -130,7 +130,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             }
 
             // 如果缓存文件已经存在了就直接返回缓存文件
-            if (request.isCacheInDisk()) {
+            if (request.getOptions().isCacheInDisk()) {
                 DiskCache.Entry diskCacheEntry = request.getSketch().getConfiguration().getDiskCache().get(request.getUri());
                 if (diskCacheEntry != null) {
                     result = new DownloadResult(diskCacheEntry, false);
@@ -236,7 +236,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
 
         // 当不需要将数据缓存到本地的时候就使用ByteArrayOutputStream来存储数据
         DiskLruCache.Editor editor = null;
-        if (request.isCacheInDisk()) {
+        if (request.getOptions().isCacheInDisk()) {
             editor = request.getSketch().getConfiguration().getDiskCache().edit(request.getUri());
         }
         OutputStream outputStream;
@@ -278,7 +278,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         }
 
         // 转换结果
-        if (request.isCacheInDisk() && editor != null) {
+        if (request.getOptions().isCacheInDisk() && editor != null) {
             editor.commit();
             return new DownloadResult(request.getSketch().getConfiguration().getDiskCache().get(request.getUri()), true);
         } else if (outputStream instanceof ByteArrayOutputStream) {

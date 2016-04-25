@@ -22,16 +22,17 @@ package me.xiaopan.sketch;
 public class RequestFactory implements Identifier{
     private static final String NAME = "RequestFactory";
 
-    public DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface) {
-        return new DefaultDisplayRequest(sketch, uri, uriScheme, memoryCacheId, sketchImageViewInterface);
+    public DisplayRequest newDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, FixedSize fixedSize, SketchImageViewInterface sketchImageViewInterface, DisplayOptions options, DisplayListener listener) {
+        // 由于DisplayHelper会被重复利用，因此其DisplayOptions不能直接拿来用，要重新New一个
+        return new DefaultDisplayRequest(sketch, uri, uriScheme, memoryCacheId, fixedSize, sketchImageViewInterface, new DisplayOptions(options), listener);
     }
 
-    public LoadRequest newLoadRequest(Sketch sketch, String uri, UriScheme uriScheme) {
-        return new DefaultLoadRequest(sketch, uri, uriScheme);
+    public LoadRequest newLoadRequest(Sketch sketch, String uri, UriScheme uriScheme, LoadOptions options, LoadListener listener) {
+        return new DefaultLoadRequest(sketch, uri, uriScheme, options, listener);
     }
 
-    public DownloadRequest newDownloadRequest(Sketch sketch, String uri, UriScheme uriScheme) {
-        return new DefaultDownloadRequest(sketch, uri, uriScheme);
+    public DownloadRequest newDownloadRequest(Sketch sketch, String uri, UriScheme uriScheme, DownloadOptions options, DownloadListener listener) {
+        return new DefaultDownloadRequest(sketch, uri, uriScheme, options, listener);
     }
 
     @Override

@@ -185,12 +185,12 @@ public class LoadOptions extends DownloadOptions {
 
         super.copy(options);
 
-        maxSize = options.getMaxSize();
-        resize = options.getResize();
+        maxSize = options.maxSize;
+        resize = options.resize;
         lowQualityImage = options.lowQualityImage;
-        imageProcessor = options.getImageProcessor();
-        decodeGifImage = options.isDecodeGifImage();
-        forceUseResize = options.isForceUseResize();
+        imageProcessor = options.imageProcessor;
+        decodeGifImage = options.decodeGifImage;
+        forceUseResize = options.forceUseResize;
     }
 
     /**

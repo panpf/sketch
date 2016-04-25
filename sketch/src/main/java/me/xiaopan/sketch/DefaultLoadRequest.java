@@ -35,28 +35,15 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
     private static final int WHAT_CALLBACK_PROGRESS = 205;
     private static final String NAME = "DefaultLoadRequest";
 
-    // Base fields
     private Sketch sketch;  // Sketch
     private String uri;    // 图片地址
     private String name;    // 名称，用于在输出LOG的时候区分不同的请求
     private UriScheme uriScheme;    // Uri协议格式
-    private RequestLevel requestLevel = RequestLevel.NET;  // 请求Level
-    private RequestLevelFrom requestLevelFrom; // 请求Level的来源
 
-    // Download fields
-    private boolean cacheInDisk = true;    // 是否开启磁盘缓存
-    private ProgressListener progressListener;  // 下载进度监听器
+    private LoadOptions options;
+    private LoadListener loadListener;
+    private DownloadProgressListener downloadProgressListener;
 
-    // Load fields
-    private Resize resize;    // 裁剪尺寸，ImageProcessor会根据此尺寸来裁剪图片
-    private boolean decodeGifImage = true;  // 是否解码GIF图片
-    private boolean forceUseResize; // 是否强制使用resize
-    private boolean lowQualityImage;   // 是否返回低质量的图片
-    private MaxSize maxSize;    // 最大尺寸，用于读取图片时计算inSampleSize
-    private LoadListener loadListener;    // 监听器
-    private ImageProcessor imageProcessor;    // 图片处理器
-
-    // Runtime fields
     private DiskCache.Entry diskCacheEntry;    // 磁盘缓存实体
     private byte[] imageData;
     private Drawable resultBitmap;
@@ -67,15 +54,14 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
     private CancelCause cancelCause;  // 取消原因
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
 
-    public DefaultLoadRequest(Sketch sketch, String uri, UriScheme uriScheme) {
+    public DefaultLoadRequest(Sketch sketch, String uri, UriScheme uriScheme, LoadOptions options, LoadListener loadListener) {
         this.sketch = sketch;
         this.uri = uri;
         this.uriScheme = uriScheme;
+        this.options = options;
+        this.loadListener = loadListener;
     }
 
-    /******************************************
-     * Base methods
-     ******************************************/
     @Override
     public Sketch getSketch() {
         return sketch;
@@ -102,104 +88,14 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
     }
 
     @Override
-    public void setRequestLevel(RequestLevel requestLevel) {
-        this.requestLevel = requestLevel;
+    public LoadOptions getOptions() {
+        return options;
     }
 
-    @Override
-    public void setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
-        this.requestLevelFrom = requestLevelFrom;
+    public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
+        this.downloadProgressListener = downloadProgressListener;
     }
 
-    /******************************************
-     * Download methods
-     ******************************************/
-    @Override
-    public void setCacheInDisk(boolean cacheInDisk) {
-        this.cacheInDisk = cacheInDisk;
-    }
-
-    @Override
-    public boolean isCacheInDisk() {
-        return cacheInDisk;
-    }
-
-    @Override
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    /******************************************
-     * Load methods
-     ******************************************/
-    @Override
-    public Resize getResize() {
-        return resize;
-    }
-
-    @Override
-    public void setResize(Resize resize) {
-        this.resize = resize;
-    }
-
-    @Override
-    public boolean isForceUseResize() {
-        return forceUseResize;
-    }
-
-    @Override
-    public void setForceUseResize(boolean forceUseResize) {
-        this.forceUseResize = forceUseResize;
-    }
-
-    @Override
-    public MaxSize getMaxSize() {
-        return maxSize;
-    }
-
-    @Override
-    public void setMaxSize(MaxSize maxSize) {
-        this.maxSize = maxSize;
-    }
-
-    @Override
-    public boolean isLowQualityImage() {
-        return lowQualityImage;
-    }
-
-    @Override
-    public void setLowQualityImage(boolean lowQualityImage) {
-        this.lowQualityImage = lowQualityImage;
-    }
-
-    @Override
-    public ImageProcessor getImageProcessor() {
-        return imageProcessor;
-    }
-
-    @Override
-    public void setImageProcessor(ImageProcessor imageProcessor) {
-        this.imageProcessor = imageProcessor;
-    }
-
-    @Override
-    public void setLoadListener(LoadListener loadListener) {
-        this.loadListener = loadListener;
-    }
-
-    @Override
-    public boolean isDecodeGifImage() {
-        return decodeGifImage;
-    }
-
-    @Override
-    public void setDecodeGifImage(boolean isDecodeGifImage) {
-        this.decodeGifImage = isDecodeGifImage;
-    }
-
-    /******************************************
-     * Runtime methods
-     ******************************************/
     @Override
     public DiskCache.Entry getDiskCacheEntry() {
         return diskCacheEntry;
@@ -226,10 +122,6 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
     }
 
     @Override
-    public void setDownloadListener(DownloadListener downloadListener) {
-    }
-
-    @Override
     public FailCause getFailCause() {
         return failCause;
     }
@@ -239,9 +131,6 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
         return cancelCause;
     }
 
-    /******************************************
-     * Other methods
-     ******************************************/
     @Override
     public boolean isFinished() {
         return requestStatus == RequestStatus.COMPLETED || requestStatus == RequestStatus.CANCELED || requestStatus == RequestStatus.FAILED;
@@ -284,7 +173,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
 
     @Override
     public void updateProgress(int totalLength, int completedLength) {
-        if (progressListener != null) {
+        if (downloadProgressListener != null) {
             sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
         }
     }
@@ -347,7 +236,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
         if (uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS) {
-            DiskCache.Entry diskCacheEntry = cacheInDisk ? sketch.getConfiguration().getDiskCache().get(uri) : null;
+            DiskCache.Entry diskCacheEntry = options.isCacheInDisk() ? sketch.getConfiguration().getDiskCache().get(uri) : null;
             if (diskCacheEntry != null) {
                 this.diskCacheEntry = diskCacheEntry;
                 this.imageFrom = ImageFrom.DISK_CACHE;
@@ -356,8 +245,8 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
                 }
             } else {
-                if (requestLevel == RequestLevel.LOCAL) {
-                    if (requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD) {
+                if (options.getRequestLevel() == RequestLevel.LOCAL) {
+                    if (options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD) {
                         toCanceledStatus(CancelCause.PAUSE_DOWNLOAD);
                         if (Sketch.isDebugMode()) {
                             Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", name));
@@ -469,9 +358,9 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
 
             //处理
             if (!bitmap.isRecycled()) {
-                ImageProcessor imageProcessor = getImageProcessor();
+                ImageProcessor imageProcessor = options.getImageProcessor();
                 if (imageProcessor != null) {
-                    Bitmap newBitmap = imageProcessor.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
+                    Bitmap newBitmap = imageProcessor.process(sketch, bitmap, options.getResize(), options.isForceUseResize(), options.isLowQualityImage());
                     if (newBitmap != null && newBitmap != bitmap && Sketch.isDebugMode()) {
                         Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "process after", " - ", "newBitmap", " - ", RecycleBitmapDrawable.getInfo(newBitmap, mimeType), " - ", "recycled old bitmap", " - ", name));
                     }
@@ -513,11 +402,6 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
         } else {
             toFailedStatus(FailCause.DECODE_FAIL);
         }
-    }
-
-    @Override
-    public boolean isLocalApkFile() {
-        return uriScheme == UriScheme.FILE && SketchUtils.checkSuffix(uri, ".apk");
     }
 
     @Override
@@ -575,8 +459,8 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
             return;
         }
 
-        if (progressListener != null) {
-            progressListener.onUpdateProgress(totalLength, completedLength);
+        if (downloadProgressListener != null) {
+            downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
         }
     }
 }

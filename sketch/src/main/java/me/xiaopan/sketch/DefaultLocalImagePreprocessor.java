@@ -81,7 +81,7 @@ public class DefaultLocalImagePreprocessor implements LocalImagePreprocessor {
             return apkIconDiskCacheEntry;
         }
 
-        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(configuration.getContext(), uri, loadRequest.isLowQualityImage(), NAME);
+        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(configuration.getContext(), uri, loadRequest.getOptions().isLowQualityImage(), NAME);
         if (iconBitmap == null) {
             return null;
         }

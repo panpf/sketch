@@ -25,15 +25,16 @@ public interface DownloadRequest extends RequestRunManager {
 
     /**
      * 获取Sketch
-     *
-     * @return Sketch
      */
     Sketch getSketch();
 
     /**
+     * 获取名称，常用来在log中区分请求
+     */
+    String getName();
+
+    /**
      * 设置请求名称，用于在log中区分请求
-     *
-     * @param name 请求名称
      */
     void setName(String name);
 
@@ -44,57 +45,36 @@ public interface DownloadRequest extends RequestRunManager {
 
     /**
      * 获取图片Uri
-     *
-     * @return 图片Uri
      */
     String getUri();
 
     /**
-     * 获取名称，常用来在log中区分请求
-     *
-     * @return 请求名称
+     * 获取下载选项
      */
-    String getName();
-
-    /**
-     * 获取请求的状态
-     *
-     * @return 请求的状态
-     */
-    RequestStatus getRequestStatus();
+    DownloadOptions getOptions();
 
     /**
      * 获取结果图片来源
-     *
-     * @return 结果图片来源
      */
     ImageFrom getImageFrom();
 
     /**
      * 获取失败原因
-     *
-     * @return 失败原因
      */
     FailCause getFailCause();
 
     /**
      * 获取取消原因
-     *
-     * @return 取消原因
      */
     CancelCause getCancelCause();
 
     /**
      * 是否已经结束
-     *
-     * @return true：已经结束了；false：还在处理中
      */
     boolean isFinished();
 
     /**
      * 是否已经取消
-     *
-     * @return true：请求已经取消了；false：请求尚未取消
      */
     boolean isCanceled();
 
@@ -107,50 +87,16 @@ public interface DownloadRequest extends RequestRunManager {
 
     /**
      * 设置进度监听器
-     *
-     * @param progressListener 进度监听器
      */
-    void setProgressListener(ProgressListener progressListener);
+    void setDownloadProgressListener(DownloadProgressListener downloadProgressListener);
 
     /**
-     * 是否将图片缓存在本地
-     *
-     * @return 是否将图片缓存在本地（默认是）
+     * 获取状态
      */
-    boolean isCacheInDisk();
-
-    /**
-     * 设置是否将图片缓存在本地
-     *
-     * @param cacheInDisk 是否将图片缓存在本地（默认是）
-     */
-    void setCacheInDisk(boolean cacheInDisk);
-
-    /**
-     * 设置下载监听器
-     *
-     * @param downloadListener 下载监听器
-     */
-    void setDownloadListener(DownloadListener downloadListener);
-
-    /**
-     * 设置请求Level
-     *
-     * @param requestLevel 请求Level
-     */
-    void setRequestLevel(RequestLevel requestLevel);
-
-    /**
-     * 设置请求Level的来源
-     *
-     * @param requestLevelFrom 请求Level的来源
-     */
-    void setRequestLevelFrom(RequestLevelFrom requestLevelFrom);
+    RequestStatus getRequestStatus();
 
     /**
      * 设置状态
-     *
-     * @param requestStatus 状态
      */
     void setRequestStatus(RequestStatus requestStatus);
 

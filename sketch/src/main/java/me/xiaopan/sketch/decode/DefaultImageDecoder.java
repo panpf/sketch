@@ -49,11 +49,11 @@ public class DefaultImageDecoder implements ImageDecoder {
         loadRequest.setMimeType(options.outMimeType);
         ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
         if (imageFormat != null) {
-            options.inPreferredConfig = imageFormat.getConfig(loadRequest.isLowQualityImage());
+            options.inPreferredConfig = imageFormat.getConfig(loadRequest.getOptions().isLowQualityImage());
         }
 
         // decode gif image
-        if (imageFormat != null && imageFormat == ImageFormat.GIF && loadRequest.isDecodeGifImage()) {
+        if (imageFormat != null && imageFormat == ImageFormat.GIF && loadRequest.getOptions().isDecodeGifImage()) {
             try {
                 return decodeHelper.getGifDrawable();
             } catch (UnsatisfiedLinkError e) {
@@ -76,7 +76,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         Point originalSize = new Point(options.outWidth, options.outHeight);
         if (options.outWidth != 1 && options.outHeight != 1) {
             // calculate inSampleSize
-            MaxSize maxSize = loadRequest.getMaxSize();
+            MaxSize maxSize = loadRequest.getOptions().getMaxSize();
             if (maxSize != null) {
                 options.inSampleSize = loadRequest.getSketch().getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxSize.getWidth(), maxSize.getHeight());
             }

@@ -17,15 +17,15 @@
 package me.xiaopan.sketch;
 
 /**
- * 进度监听器
+ * 下载进度监听器
  */
-public interface ProgressListener {
+public interface DownloadProgressListener {
 
     /**
-     * 更新进度
+     * 更新下载进度
      *
      * @param totalLength     总长度
      * @param completedLength 已完成长度
      */
-    void onUpdateProgress(int totalLength, int completedLength);
+    void onUpdateDownloadProgress(int totalLength, int completedLength);
 }

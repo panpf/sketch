@@ -29,7 +29,7 @@ public class DownloadHelper {
 
     protected DownloadOptions options;
 
-    protected ProgressListener progressListener;
+    protected DownloadProgressListener downloadProgressListener;
     protected DownloadListener downloadListener;
 
     /**
@@ -81,8 +81,8 @@ public class DownloadHelper {
      * 设置进度监听器
      */
     @SuppressWarnings("unused")
-    public DownloadHelper progressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
+    public DownloadHelper progressListener(DownloadProgressListener downloadProgressListener) {
+        this.downloadProgressListener = downloadProgressListener;
         return this;
     }
 
@@ -160,16 +160,10 @@ public class DownloadHelper {
         }
 
         // 创建请求
-        DownloadRequest request = sketch.getConfiguration().getRequestFactory().newDownloadRequest(sketch, uri, uriScheme);
+        DownloadRequest request = sketch.getConfiguration().getRequestFactory().newDownloadRequest(sketch, uri, uriScheme, options, downloadListener);
 
         request.setName(name);
-        request.setRequestLevel(options.getRequestLevel());
-        request.setRequestLevelFrom(options.getRequestLevelFrom());
-
-        request.setCacheInDisk(options.isCacheInDisk());
-
-        request.setDownloadListener(downloadListener);
-        request.setProgressListener(progressListener);
+        request.setDownloadProgressListener(downloadProgressListener);
 
         request.postRunDispatch();
 

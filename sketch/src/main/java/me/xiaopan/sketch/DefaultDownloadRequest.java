@@ -32,20 +32,15 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private static final int WHAT_CALLBACK_PROGRESS = 305;
     private static final String NAME = "DefaultDownloadRequest";
 
-    // Base fields
     private Sketch sketch;  // Sketch
     private String uri;    // 图片地址
     private String name;    // 名称，用于在输出LOG的时候区分不同的请求
     private UriScheme uriScheme;    // Uri协议格式
-    private RequestLevel requestLevel = RequestLevel.NET;  // 请求Level
-    private RequestLevelFrom requestLevelFrom; // 请求Level的来源
 
-    // Download fields
-    private boolean cacheInDisk = true;    // 是否开启磁盘缓存
-    private ProgressListener progressListener;  // 下载进度监听器
+    private DownloadOptions options;
+    private DownloadProgressListener downloadProgressListener;  // 下载进度监听器
     private DownloadListener downloadListener;  // 下载监听器
 
-    // Runtime fields
     private DiskCache.Entry diskCacheEntry;
     private byte[] resultBytes;
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
@@ -53,15 +48,14 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private ImageFrom imageFrom;    // 图片来源
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
 
-    public DefaultDownloadRequest(Sketch sketch, String uri, UriScheme uriScheme) {
+    public DefaultDownloadRequest(Sketch sketch, String uri, UriScheme uriScheme, DownloadOptions options, DownloadListener downloadListener) {
         this.sketch = sketch;
         this.uri = uri;
         this.uriScheme = uriScheme;
+        this.options = options;
+        this.downloadListener = downloadListener;
     }
 
-    /******************************************
-     * Base methods
-     ******************************************/
     @Override
     public Sketch getSketch() {
         return sketch;
@@ -88,36 +82,14 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     }
 
     @Override
-    public void setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
-        this.requestLevelFrom = requestLevelFrom;
+    public DownloadOptions getOptions() {
+        return options;
     }
 
-    @Override
-    public void setRequestLevel(RequestLevel requestLevel) {
-        this.requestLevel = requestLevel;
+    public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
+        this.downloadProgressListener = downloadProgressListener;
     }
 
-    /******************************************
-     * Download methods
-     ******************************************/
-    @Override
-    public void setCacheInDisk(boolean cacheInDisk) {
-        this.cacheInDisk = cacheInDisk;
-    }
-
-    @Override
-    public boolean isCacheInDisk() {
-        return cacheInDisk;
-    }
-
-    @Override
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    /******************************************
-     * Runtime methods
-     ******************************************/
     @Override
     public RequestStatus getRequestStatus() {
         return requestStatus;
@@ -126,11 +98,6 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     @Override
     public void setRequestStatus(RequestStatus requestStatus) {
         this.requestStatus = requestStatus;
-    }
-
-    @Override
-    public void setDownloadListener(DownloadListener downloadListener) {
-        this.downloadListener = downloadListener;
     }
 
     @Override
@@ -148,9 +115,6 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
         return imageFrom;
     }
 
-    /******************************************
-     * Other methods
-     ******************************************/
     @Override
     public boolean isFinished() {
         return requestStatus == RequestStatus.COMPLETED || requestStatus == RequestStatus.CANCELED || requestStatus == RequestStatus.FAILED;
@@ -227,7 +191,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
 
     @Override
     public void updateProgress(int totalLength, int completedLength) {
-        if (progressListener != null) {
+        if (downloadProgressListener != null) {
             sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
         }
     }
@@ -253,7 +217,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
         if (uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS) {
-            DiskCache.Entry diskCacheEntry = cacheInDisk ? sketch.getConfiguration().getDiskCache().get(uri) : null;
+            DiskCache.Entry diskCacheEntry = options.isCacheInDisk() ? sketch.getConfiguration().getDiskCache().get(uri) : null;
             if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
@@ -262,8 +226,8 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
                 this.diskCacheEntry = diskCacheEntry;
                 sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
             } else {
-                if (requestLevel == RequestLevel.LOCAL) {
-                    if (requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD) {
+                if (options.getRequestLevel() == RequestLevel.LOCAL) {
+                    if (options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD) {
                         toCanceledStatus(CancelCause.PAUSE_DOWNLOAD);
                         if (Sketch.isDebugMode()) {
                             Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", name));
@@ -367,8 +331,8 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
             }
             return;
         }
-        if (progressListener != null) {
-            progressListener.onUpdateProgress(totalLength, completedLength);
+        if (downloadProgressListener != null) {
+            downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
         }
     }
 }

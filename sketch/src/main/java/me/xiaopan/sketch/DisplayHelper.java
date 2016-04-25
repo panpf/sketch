@@ -37,7 +37,7 @@ public class DisplayHelper {
     protected DisplayOptions options;
 
     protected DisplayListener displayListener;
-    protected ProgressListener progressListener;
+    protected DownloadProgressListener downloadProgressListener;
 
     protected FixedSize fixedSize;
     protected ScaleType scaleType;
@@ -100,7 +100,7 @@ public class DisplayHelper {
         memoryCacheId = null;
         options.reset();
         displayListener = null;
-        progressListener = null;
+        downloadProgressListener = null;
 
         fixedSize = null;
         scaleType = null;
@@ -413,7 +413,7 @@ public class DisplayHelper {
         sketchImageViewInterface.onDisplay();
 
         displayListener = sketchImageViewInterface.getDisplayListener(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD);
-        progressListener = sketchImageViewInterface.getProgressListener();
+        downloadProgressListener = sketchImageViewInterface.getDownloadProgressListener();
     }
 
     /**
@@ -541,28 +541,10 @@ public class DisplayHelper {
         }
 
         // 组织请求
-        final DisplayRequest request = configuration.getRequestFactory().newDisplayRequest(sketch, uri, uriScheme, memoryCacheId, sketchImageViewInterface);
+        final DisplayRequest request = configuration.getRequestFactory().newDisplayRequest(sketch, uri, uriScheme, memoryCacheId, fixedSize, sketchImageViewInterface, options, displayListener);
 
         request.setName(name);
-        request.setRequestLevel(options.getRequestLevel());
-        request.setRequestLevelFrom(options.getRequestLevelFrom());
-
-        request.setCacheInDisk(options.isCacheInDisk());
-        request.setProgressListener(progressListener);
-
-        request.setResize(options.getResize());
-        request.setMaxSize(options.getMaxSize());
-        request.setForceUseResize(options.isForceUseResize());
-        request.setLowQualityImage(options.isLowQualityImage());
-        request.setImageProcessor(options.getImageProcessor());
-        request.setDecodeGifImage(options.isDecodeGifImage());
-
-        request.setFixedSize(fixedSize);
-        request.setImageDisplayer(options.getImageDisplayer());
-        request.setDisplayListener(displayListener);
-        request.setCacheInMemory(options.isCacheInMemory());
-        request.setFailureImageHolder(options.getFailureImage());
-        request.setPauseDownloadImageHolder(options.getPauseDownloadImage());
+        request.setDownloadProgressListener(downloadProgressListener);
 
         // 显示默认图片
         Drawable loadingBindDrawable;

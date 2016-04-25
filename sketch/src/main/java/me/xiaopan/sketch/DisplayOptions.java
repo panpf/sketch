@@ -28,7 +28,6 @@ public class DisplayOptions extends LoadOptions {
     private ImageHolder loadingImageHolder;    //当正在加载时显示的图片
     private ImageHolder failureImageHolder;    //当失败时显示的图片
     private ImageHolder pauseDownloadImageHolder;    //暂停下载时显示的图片
-
     private boolean resizeByFixedSize;
 
     public DisplayOptions() {
@@ -36,7 +35,6 @@ public class DisplayOptions extends LoadOptions {
     }
 
     public DisplayOptions(DisplayOptions from) {
-        super(from);
         copy(from);
     }
 

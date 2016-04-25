@@ -22,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.display.ImageDisplayer;
@@ -39,33 +40,19 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     private static final int WHAT_CALLBACK_PROGRESS = 105;
     private static final int WHAT_CALLBACK_PAUSE_DOWNLOAD = 106;
     private static final String NAME = "DefaultDisplayRequest";
-    protected ImageView.ScaleType scaleType;
-    // Base fields
+
     private Sketch sketch;  // Sketch
     private String uri;    // 图片地址
     private String name;    // 名称，用于在输出LOG的时候区分不同的请求
     private UriScheme uriScheme;    // Uri协议格式
-    private RequestLevel requestLevel = RequestLevel.NET;  // 请求Level
-    private RequestLevelFrom requestLevelFrom;
-    // Download fields
-    private boolean cacheInDisk = true;    // 是否开启磁盘缓存
-    private ProgressListener progressListener;  // 下载进度监听器
-    // Load fields
-    private Resize resize;    // 裁剪尺寸，ImageProcessor会根据此尺寸来裁剪图片
-    private boolean decodeGifImage = true; // 是否解码GIF图
-    private boolean forceUseResize; // 是否强制使用resize
-    private boolean lowQualityImage;   // 是否返回低质量的图片
-    private MaxSize maxSize;    // 最大尺寸，用于读取图片时计算inSampleSize
-    private ImageProcessor imageProcessor;    // 图片处理器
-    // Display fields
+
     private String memoryCacheId;    // 内存缓存ID
-    private boolean cacheInMemory = true;    // 是否开启内存缓存
+    private ScaleType scaleType;
     private FixedSize fixedSize;    // 固定尺寸
-    private ImageHolder failureImageHolder;    // 当失败时显示的图片
-    private ImageHolder pauseDownloadImageHolder;    // 当暂停下载时显示的图片
-    private ImageDisplayer imageDisplayer;    // 图片显示器
+    private DisplayOptions options;
     private DisplayListener displayListener;    // 监听器
-    // Runtime fields
+    private DownloadProgressListener downloadProgressListener;  // 下载进度监听器
+
     private DiskCache.Entry diskCacheEntry;    // 缓存文件
     private byte[] imageData;   // 如果不使用磁盘缓存的话下载完成后图片数据就用字节数组保存着
     private String mimeType;
@@ -78,19 +65,19 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
     private SketchImageViewInterfaceHolder sketchImageViewInterfaceHolder;    // 绑定ImageView
 
-    public DefaultDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, SketchImageViewInterface sketchImageViewInterface) {
+    public DefaultDisplayRequest(Sketch sketch, String uri, UriScheme uriScheme, String memoryCacheId, FixedSize fixedSize, SketchImageViewInterface sketchImageViewInterface, DisplayOptions options, DisplayListener listener) {
         this.context = sketch.getConfiguration().getContext();
         this.sketch = sketch;
         this.uri = uri;
         this.uriScheme = uriScheme;
         this.memoryCacheId = memoryCacheId;
+        this.fixedSize = fixedSize;
         this.sketchImageViewInterfaceHolder = new SketchImageViewInterfaceHolder(sketchImageViewInterface, this);
         this.scaleType = sketchImageViewInterface.getScaleType();
+        this.options = options;
+        this.displayListener = listener;
     }
 
-    /******************************************
-     * Base methods
-     ******************************************/
     @Override
     public Sketch getSketch() {
         return sketch;
@@ -116,150 +103,15 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
         return uriScheme;
     }
 
-    @Override
-    public void setRequestLevel(RequestLevel requestLevel) {
-        this.requestLevel = requestLevel;
+    public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
+        this.downloadProgressListener = downloadProgressListener;
     }
 
-    @Override
-    public void setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
-        this.requestLevelFrom = requestLevelFrom;
-    }
-
-    @Override
-    public boolean isCacheInDisk() {
-        return cacheInDisk;
-    }
-
-    /******************************************
-     * Download methods
-     ******************************************/
-    @Override
-    public void setCacheInDisk(boolean cacheInDisk) {
-        this.cacheInDisk = cacheInDisk;
-    }
-
-    @Override
-    public void setProgressListener(ProgressListener progressListener) {
-        this.progressListener = progressListener;
-    }
-
-    /******************************************
-     * Load methods
-     ******************************************/
-    @Override
-    public Resize getResize() {
-        return resize;
-    }
-
-    @Override
-    public void setResize(Resize resize) {
-        this.resize = resize;
-    }
-
-    @Override
-    public boolean isForceUseResize() {
-        return forceUseResize;
-    }
-
-    @Override
-    public void setForceUseResize(boolean forceUseResize) {
-        this.forceUseResize = forceUseResize;
-    }
-
-    @Override
-    public MaxSize getMaxSize() {
-        return maxSize;
-    }
-
-    @Override
-    public void setMaxSize(MaxSize maxSize) {
-        this.maxSize = maxSize;
-    }
-
-    @Override
-    public boolean isLowQualityImage() {
-        return lowQualityImage;
-    }
-
-    @Override
-    public void setLowQualityImage(boolean lowQualityImage) {
-        this.lowQualityImage = lowQualityImage;
-    }
-
-    @Override
-    public ImageProcessor getImageProcessor() {
-        return imageProcessor;
-    }
-
-    @Override
-    public void setImageProcessor(ImageProcessor imageProcessor) {
-        this.imageProcessor = imageProcessor;
-    }
-
-    /******************************************
-     * Display methods
-     ******************************************/
     @Override
     public String getMemoryCacheId() {
         return memoryCacheId;
     }
 
-    @Override
-    public void setCacheInMemory(boolean cacheInMemory) {
-        this.cacheInMemory = cacheInMemory;
-    }
-
-    @Override
-    public void setImageDisplayer(ImageDisplayer imageDisplayer) {
-        this.imageDisplayer = imageDisplayer;
-    }
-
-    @Override
-    public void setFailureImageHolder(ImageHolder failureImageHolder) {
-        this.failureImageHolder = failureImageHolder;
-    }
-
-    @Override
-    public Drawable getFailureDrawable() {
-        if (failureImageHolder == null) {
-            return null;
-        } else if (imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP) {
-            return new FixedRecycleBitmapDrawable(failureImageHolder.getRecycleBitmapDrawable(context), fixedSize);
-        } else {
-            return failureImageHolder.getRecycleBitmapDrawable(context);
-        }
-    }
-
-    @Override
-    public void setPauseDownloadImageHolder(ImageHolder pauseDownloadImageHolder) {
-        this.pauseDownloadImageHolder = pauseDownloadImageHolder;
-    }
-
-    @Override
-    public Drawable getPauseDownloadDrawable() {
-        if (pauseDownloadImageHolder == null) {
-            return null;
-        } else if (imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP) {
-            return new FixedRecycleBitmapDrawable(pauseDownloadImageHolder.getRecycleBitmapDrawable(context), fixedSize);
-        } else {
-            return pauseDownloadImageHolder.getRecycleBitmapDrawable(context);
-        }
-    }
-
-    @Override
-    public void setDisplayListener(DisplayListener displayListener) {
-        this.displayListener = displayListener;
-    }
-
-    @Override
-    public void setFixedSize(FixedSize fixedSize) {
-        this.fixedSize = fixedSize;
-    }
-
-    /******************************************
-     * Runtime methods
-     ******************************************/
     @Override
     public RequestStatus getRequestStatus() {
         return requestStatus;
@@ -295,6 +147,11 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     }
 
     @Override
+    public DisplayOptions getOptions() {
+        return options;
+    }
+
+    @Override
     public DiskCache.Entry getDiskCacheEntry() {
         return diskCacheEntry;
     }
@@ -309,9 +166,6 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
         return imageFrom;
     }
 
-    /******************************************
-     * Other methods
-     ******************************************/
     @Override
     public boolean isCanceled() {
         boolean isCanceled = requestStatus == RequestStatus.CANCELED;
@@ -322,6 +176,26 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
             }
         }
         return isCanceled;
+    }
+
+    public Drawable getFailureDrawable() {
+        if (options.getFailureImage() == null) {
+            return null;
+        } else if (options.getImageDisplayer() != null && options.getImageDisplayer() instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP) {
+            return new FixedRecycleBitmapDrawable(options.getFailureImage().getRecycleBitmapDrawable(context), fixedSize);
+        } else {
+            return options.getFailureImage().getRecycleBitmapDrawable(context);
+        }
+    }
+
+    public Drawable getPauseDownloadDrawable() {
+        if (options.getPauseDownloadImage() == null) {
+            return null;
+        } else if (options.getImageDisplayer() != null && options.getImageDisplayer() instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP) {
+            return new FixedRecycleBitmapDrawable(options.getPauseDownloadImage().getRecycleBitmapDrawable(context), fixedSize);
+        } else {
+            return options.getPauseDownloadImage().getRecycleBitmapDrawable(context);
+        }
     }
 
     @Override
@@ -366,7 +240,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
 
     @Override
     public void updateProgress(int totalLength, int completedLength) {
-        if (progressListener != null) {
+        if (downloadProgressListener != null) {
             sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
         }
     }
@@ -416,7 +290,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
         if (uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS) {
-            DiskCache.Entry diskCacheEntry = cacheInDisk ? sketch.getConfiguration().getDiskCache().get(uri) : null;
+            DiskCache.Entry diskCacheEntry = options.isCacheInDisk() ? sketch.getConfiguration().getDiskCache().get(uri) : null;
             if (diskCacheEntry != null) {
                 this.diskCacheEntry = diskCacheEntry;
                 this.imageFrom = ImageFrom.DISK_CACHE;
@@ -425,8 +299,8 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
                 }
             } else {
-                if (requestLevel == RequestLevel.LOCAL) {
-                    if (requestLevelFrom == RequestLevelFrom.PAUSE_DOWNLOAD) {
+                if (options.getRequestLevel() == RequestLevel.LOCAL) {
+                    if (options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD) {
                         setRequestStatus(RequestStatus.WAIT_DISPLAY);
                         sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PAUSE_DOWNLOAD, this).sendToTarget();
                         if (Sketch.isDebugMode()) {
@@ -497,8 +371,8 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
             return;
         }
 
-        // 检查是否已经有了
-        if (cacheInMemory) {
+        // 检查内存缓存中是否已经存在了
+        if (options.isCacheInMemory()) {
             Drawable cacheDrawable = sketch.getConfiguration().getMemoryCache().get(memoryCacheId);
             if (cacheDrawable != null) {
                 RecycleDrawableInterface recycleDrawable = (RecycleDrawableInterface) cacheDrawable;
@@ -563,9 +437,9 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
 
             //处理
             if (!bitmap.isRecycled()) {
-                ImageProcessor imageProcessor = getImageProcessor();
+                ImageProcessor imageProcessor = options.getImageProcessor();
                 if (imageProcessor != null) {
-                    Bitmap newBitmap = imageProcessor.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
+                    Bitmap newBitmap = imageProcessor.process(sketch, bitmap, options.getResize(), options.isForceUseResize(), options.isLowQualityImage());
                     if (newBitmap != null && newBitmap != bitmap && Sketch.isDebugMode()) {
                         Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeLoad", " - ", "process after", " - ", "newBitmap", " - ", RecycleBitmapDrawable.getInfo(newBitmap, mimeType), " - ", "recycled old bitmap", " - ", name));
                     }
@@ -588,7 +462,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
 
             if (bitmap != null && !bitmap.isRecycled()) {
                 RecycleBitmapDrawable bitmapDrawable = new RecycleBitmapDrawable(bitmap);
-                if (cacheInMemory && memoryCacheId != null) {
+                if (options.isCacheInMemory() && memoryCacheId != null) {
                     sketch.getConfiguration().getMemoryCache().put(memoryCacheId, bitmapDrawable);
                 }
                 bitmapDrawable.setMimeType(mimeType);
@@ -608,7 +482,7 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
             }
 
             if (!gifDrawable.isRecycled()) {
-                if (cacheInMemory && memoryCacheId != null) {
+                if (options.isCacheInMemory() && memoryCacheId != null) {
                     sketch.getConfiguration().getMemoryCache().put(memoryCacheId, gifDrawable);
                 }
                 this.resultDrawable = gifDrawable;
@@ -621,29 +495,6 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
         } else {
             toFailedStatus(FailCause.DECODE_FAIL);
         }
-    }
-
-    @Override
-    public void setLoadListener(LoadListener loadListener) {
-    }
-
-    @Override
-    public boolean isDecodeGifImage() {
-        return decodeGifImage;
-    }
-
-    @Override
-    public void setDecodeGifImage(boolean isDecodeGifImage) {
-        this.decodeGifImage = isDecodeGifImage;
-    }
-
-    @Override
-    public void setDownloadListener(DownloadListener downloadListener) {
-    }
-
-    @Override
-    public boolean isLocalApkFile() {
-        return uriScheme == UriScheme.FILE && SketchUtils.checkSuffix(uri, ".apk");
     }
 
     @Override
@@ -669,18 +520,20 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
 
         setRequestStatus(RequestStatus.DISPLAYING);
 
+        ImageDisplayer displayer = options.getImageDisplayer();
+
         // Set FixedSize
         Drawable finalDrawable;
-        if (imageDisplayer != null && imageDisplayer instanceof TransitionImageDisplayer && resultDrawable instanceof RecycleBitmapDrawable && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP) {
+        if (displayer != null && displayer instanceof TransitionImageDisplayer && resultDrawable instanceof RecycleBitmapDrawable && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP) {
             finalDrawable = new FixedRecycleBitmapDrawable((RecycleBitmapDrawable) resultDrawable, fixedSize);
         } else {
             finalDrawable = resultDrawable;
         }
 
-        if (imageDisplayer == null) {
-            imageDisplayer = sketch.getConfiguration().getDefaultImageDisplayer();
+        if (displayer == null) {
+            displayer = sketch.getConfiguration().getDefaultImageDisplayer();
         }
-        imageDisplayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), finalDrawable);
+        displayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), finalDrawable);
         ((RecycleDrawableInterface) resultDrawable).setIsWaitDisplay("completedCallback", false);
         setRequestStatus(RequestStatus.COMPLETED);
         if (displayListener != null) {
@@ -697,10 +550,12 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
         }
 
         setRequestStatus(RequestStatus.DISPLAYING);
-        if (imageDisplayer == null) {
-            imageDisplayer = sketch.getConfiguration().getDefaultImageDisplayer();
+
+        ImageDisplayer displayer = options.getImageDisplayer();
+        if (displayer == null) {
+            displayer = sketch.getConfiguration().getDefaultImageDisplayer();
         }
-        imageDisplayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), getFailureDrawable());
+        displayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), getFailureDrawable());
         setRequestStatus(RequestStatus.FAILED);
         if (displayListener != null) {
             displayListener.onFailed(failCause);
@@ -721,12 +576,13 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
             return;
         }
 
-        if (pauseDownloadImageHolder != null) {
+        if (options.getPauseDownloadImage() != null) {
             setRequestStatus(RequestStatus.DISPLAYING);
-            if (imageDisplayer == null) {
-                imageDisplayer = sketch.getConfiguration().getDefaultImageDisplayer();
+            ImageDisplayer displayer = options.getImageDisplayer();
+            if (displayer == null) {
+                displayer = sketch.getConfiguration().getDefaultImageDisplayer();
             }
-            imageDisplayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), getPauseDownloadDrawable());
+            displayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), getPauseDownloadDrawable());
         }
 
         cancelCause = CancelCause.PAUSE_DOWNLOAD;
@@ -744,8 +600,8 @@ public class DefaultDisplayRequest implements DisplayRequest, Runnable {
             return;
         }
 
-        if (progressListener != null) {
-            progressListener.onUpdateProgress(totalLength, completedLength);
+        if (downloadProgressListener != null) {
+            downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
         }
     }
 }

@@ -90,8 +90,8 @@ public class DownloadOptions implements RequestOptions {
             return;
         }
 
-        cacheInDisk = options.isCacheInDisk();
-        requestLevel = options.getRequestLevel();
+        cacheInDisk = options.cacheInDisk;
+        requestLevel = options.requestLevel;
         requestLevelFrom = options.requestLevelFrom;
     }
 
