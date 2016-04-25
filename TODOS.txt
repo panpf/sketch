@@ -91,6 +91,10 @@
 （完成于2016-04-06）还要在解决一下apk icon 被缩小的问题
 （完成于2016-04-06，采用apk路径加最后修改时间即可满足需求）突然想到由于目前apk icon有本地缓存，那么重新安装app的时候如果图标变化了是否能识别到并及时刷新缓存
 （完成于2016-04-06）是RecycleDrawable在onDetachedFromWindow的时候才需要setDrawable为null
+（完成于2016-04-24）缓存文件的删除方式有问题，搞一个DiskCacheItem，里面包含文件以及key，删除的时候要用key
+（完成于2016-04-24）Sketch会自动从SketchImageVie身上去listener，那要是listener被重新设置了呢？（DisplayHelper上的listener去掉了）
+（完成与2016-04-25）定义一个统一的Identifier接口
+（完成与2016-04-25）所有参数配置封装成一个类，这样helper和request就可以共用一个参数类了，还能减少代码量。这样参数类得提供一个计算出KEY的方法，KEY加上Uri就是图片的内存缓存ID，完美
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -133,28 +137,12 @@ inBitmap的意思是找一个字节数一样的旧bitmap对象来装新的图片
 2.3以上不再主动回收图片了
 支持vector
 改善scheme的设计模式，视图支持自定义scheme以及处理方式
-所有参数配置封装成一个类，这样helper和request就可以共用一个参数类了，还能减少代码量。这样参数类得提供一个计算出KEY的方法，KEY加上Uri就是图片的内存缓存ID，完美
 试着让DisplayRequest继承自LoadRequest，这样加载部分的代码就简单多了
-再定义一个接口
-
-    /**
-     * 获取标识符
-     *
-     * @return 标识符
-     */
-    String getIdentifier();
-
-    /**
-     * 追加标识符
-     */
-    StringBuilder appendIdentifier(StringBuilder builder);
-
 线程间跳转的是不是可以封装一下
 还有在主线程中调用的是不是也可以封装一下
-缓存文件的删除方式有问题，搞一个DiskCacheItem，里面包含文件以及key，删除的时候要用key
 缓存文件的名称不能再用uri.encode来加密了，要用MD5
 考虑重新设计一下RequestLevel，感觉现在的有点儿繁琐并且意思不太明确
-Sketch会自动从SketchImageVie身上去listener，那要是listener被重新设置了呢？
+将基础属性封装成一个单独的类，将运行中状态封装成一个单独的类，将下载结果、加载结果封装成一个单独的类，将display特有的属性封装成一个单独的类
 
 其它：
 参考Glide、Fresco和Picasso
@@ -175,3 +163,4 @@ apk文件图标的磁盘缓存KEY加上了文件的最后修改时间，这么�
 修复使用普通图片时在列表中一滑动图片就没了的BUG
 新增LocalImagePerProcessor可以处理一些特殊的本地文件，然后提取出它们的当中包含的图片，这样Sketch就可以直接显示这些特殊文件中包含的图片了
 兼容jdk1.6
+去掉了DisplayHelper上的listener和progressListener设置，你只能通过SketchImageView来设置listener了
