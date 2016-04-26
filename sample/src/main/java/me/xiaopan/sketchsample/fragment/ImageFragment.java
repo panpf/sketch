@@ -9,7 +9,7 @@ import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.CancelCause;
 import me.xiaopan.sketch.DisplayListener;
-import me.xiaopan.sketch.FailCause;
+import me.xiaopan.sketch.FailedCause;
 import me.xiaopan.sketch.ImageFrom;
 import me.xiaopan.sketch.RequestLevel;
 import me.xiaopan.sketch.Sketch;
@@ -69,7 +69,7 @@ public class ImageFragment extends MyFragment {
             }
 
             @Override
-            public void onFailed(FailCause failCause) {
+            public void onFailed(FailedCause failedCause) {
                 hintView.hint(R.drawable.ic_failure, "图片显示失败", "重新显示", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {

@@ -13,7 +13,7 @@ import android.util.Log;
 import android.view.Window;
 
 import me.xiaopan.sketch.CancelCause;
-import me.xiaopan.sketch.FailCause;
+import me.xiaopan.sketch.FailedCause;
 import me.xiaopan.sketch.ImageFrom;
 import me.xiaopan.sketch.LoadListener;
 import me.xiaopan.sketch.LoadRequest;
@@ -151,7 +151,7 @@ public class WindowBackgroundManager {
                 }
 
                 @Override
-                public void onFailed(FailCause failCause) {
+                public void onFailed(FailedCause failedCause) {
 
                 }
 
