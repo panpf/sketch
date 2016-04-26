@@ -30,6 +30,10 @@ public abstract class SketchRequest implements Runnable {
     private RunStatus runStatus;
     private RequestExecutor requestExecutor;
 
+    private Status status;
+    private FailedCause failedCause;
+    private CancelCause cancelCause;
+
     public SketchRequest(RequestExecutor requestExecutor) {
         this.requestExecutor = requestExecutor;
     }
@@ -186,5 +190,156 @@ public abstract class SketchRequest implements Runnable {
          * 下载
          */
         DOWNLOAD,
+    }
+
+    /**
+     * 获取状态
+     */
+    public Status getStatus() {
+        return status;
+    }
+
+    /**
+     * 设置状态
+     */
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    /**
+     * 获取失败原因
+     */
+    public FailedCause getFailedCause() {
+        return failedCause;
+    }
+
+    /**
+     * 设置失败原因
+     */
+    @SuppressWarnings("unused")
+    protected void setFailedCause(FailedCause failedCause) {
+        this.failedCause = failedCause;
+    }
+
+    /**
+     * 获取取消原因
+     */
+    public CancelCause getCancelCause() {
+        return cancelCause;
+    }
+
+    /**
+     * 设置取消原因
+     */
+    protected void setCancelCause(CancelCause cancelCause) {
+        this.cancelCause = cancelCause;
+    }
+
+    /**
+     * 请求是否已经结束了
+     */
+    public boolean isFinished() {
+        return status == Status.COMPLETED || status == Status.CANCELED || status == Status.FAILED;
+    }
+
+    /**
+     * 请求是不是已经取消了
+     */
+    public boolean isCanceled() {
+        return status == Status.CANCELED;
+    }
+
+    /**
+     * 失败了
+     */
+    protected void failed(FailedCause failedCause){
+        this.status = Status.FAILED;
+        this.failedCause = failedCause;
+    }
+
+    /**
+     * 取消了
+     */
+    protected void canceled(CancelCause cancelCause){
+        this.status = Status.CANCELED;
+        this.cancelCause = cancelCause;
+    }
+
+    /**
+     * 取消请求
+     * @return false：请求已经结束了
+     */
+    public boolean cancel() {
+        if (!isFinished()) {
+            canceled(CancelCause.NORMAL);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 请求的状态
+     */
+    public enum Status {
+        /**
+         * 等待分发
+         */
+        WAIT_DISPATCH,
+
+        /**
+         * 正在分发
+         */
+        DISPATCHING,
+
+        /**
+         * 等待下载
+         */
+        WAIT_DOWNLOAD,
+
+        /**
+         * 正在获取下载锁
+         */
+        GET_DOWNLOAD_LOCK,
+
+        /**
+         * 正在下载
+         */
+        DOWNLOADING,
+
+        /**
+         * 等待加载
+         */
+        WAIT_LOAD,
+
+        /**
+         * 正在加载
+         */
+        LOADING,
+
+        /**
+         * 等待显示
+         */
+        WAIT_DISPLAY,
+
+        /**
+         * 正在显示
+         */
+        DISPLAYING,
+
+        /**
+         * 已完成
+         */
+        COMPLETED,
+
+        /**
+         * 已失败
+         */
+        FAILED,
+
+        /**
+         * 已取消
+         */
+        CANCELED,
     }
 }

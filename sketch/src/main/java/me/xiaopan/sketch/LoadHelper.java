@@ -32,7 +32,7 @@ public class LoadHelper {
     protected LoadOptions options;
 
     protected LoadListener loadListener;
-    protected DownloadProgressListener downloadProgressListener;
+    protected DownloadProgressListener progressListener;
 
     /**
      * 支持以下几种图片Uri
@@ -157,7 +157,7 @@ public class LoadHelper {
      */
     @SuppressWarnings("unused")
     public LoadHelper progressListener(DownloadProgressListener downloadProgressListener) {
-        this.downloadProgressListener = downloadProgressListener;
+        this.progressListener = downloadProgressListener;
         return this;
     }
 
@@ -234,7 +234,7 @@ public class LoadHelper {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
             }
             if (loadListener != null) {
-                loadListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
+                loadListener.onFailed(FailedCause.URI_NULL_OR_EMPTY);
             }
             return null;
         }
@@ -244,16 +244,14 @@ public class LoadHelper {
         if (uriScheme == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", name));
             if (loadListener != null) {
-                loadListener.onFailed(FailCause.URI_NO_SUPPORT);
+                loadListener.onFailed(FailedCause.URI_NO_SUPPORT);
             }
             return null;
         }
 
         // 创建请求
         RequestAttrs attrs = new RequestAttrs(sketch, uri, uriScheme, name);
-        LoadRequest request = sketch.getConfiguration().getRequestFactory().newLoadRequest(attrs, options, loadListener);
-
-        request.setDownloadProgressListener(downloadProgressListener);
+        LoadRequest request = sketch.getConfiguration().getRequestFactory().newLoadRequest(attrs, options, loadListener, progressListener);
 
         request.submit();
 

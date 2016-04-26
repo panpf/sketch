@@ -771,7 +771,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
 
         @Override
-        public void onFailed(FailCause failCause) {
+        public void onFailed(FailedCause failedCause) {
             if (showFromFlag) {
                 imageFrom = null;
             }
@@ -781,12 +781,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (showDownloadProgress || showFromFlag) {
                 invalidate();
             }
-            if (clickRedisplayOnFailed && failCause != FailCause.URI_NULL_OR_EMPTY && failCause != FailCause.IMAGE_VIEW_NULL && failCause != FailCause.URI_NO_SUPPORT) {
+            if (clickRedisplayOnFailed && failedCause != FailedCause.URI_NULL_OR_EMPTY && failedCause != FailedCause.IMAGE_VIEW_NULL && failedCause != FailedCause.URI_NO_SUPPORT) {
                 SketchImageView.super.setOnClickListener(this);
                 replacedClickListener = true;
             }
             if (displayListener != null) {
-                displayListener.onFailed(failCause);
+                displayListener.onFailed(failedCause);
             }
         }
 

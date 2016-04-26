@@ -31,20 +31,18 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
 
     private RequestAttrs attrs;
     private LoadOptions options;
-    private LoadListener loadListener;
-    private DownloadProgressListener downloadProgressListener;
 
+    private LoadListener loadListener;
+    private DownloadProgressListener progressListener;
     private DownloadResult downloadResult;
     private LoadResult loadResult;
-    private FailCause failCause;
-    private CancelCause cancelCause;
-    private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;
 
-    public DefaultLoadRequest(RequestAttrs attrs, LoadOptions options, LoadListener loadListener) {
+    public DefaultLoadRequest(RequestAttrs attrs, LoadOptions options, LoadListener loadListener, DownloadProgressListener progressListener) {
         super(attrs.getConfiguration().getRequestExecutor());
         this.attrs = attrs;
         this.options = options;
         this.loadListener = loadListener;
+        this.progressListener = progressListener;
     }
 
     @Override
@@ -55,10 +53,6 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
     @Override
     public LoadOptions getOptions() {
         return options;
-    }
-
-    public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
-        this.downloadProgressListener = downloadProgressListener;
     }
 
     @Override
@@ -72,85 +66,51 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
     }
 
     @Override
-    public RequestStatus getRequestStatus() {
-        return requestStatus;
-    }
-
-    @Override
-    public void setRequestStatus(RequestStatus requestStatus) {
-        this.requestStatus = requestStatus;
-    }
-
-    @Override
-    public FailCause getFailCause() {
-        return failCause;
-    }
-
-    @Override
-    public CancelCause getCancelCause() {
-        return cancelCause;
-    }
-
-    @Override
-    public boolean isFinished() {
-        return requestStatus == RequestStatus.COMPLETED || requestStatus == RequestStatus.CANCELED || requestStatus == RequestStatus.FAILED;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return requestStatus == RequestStatus.CANCELED;
-    }
-
-    @Override
-    public boolean cancel() {
-        if (isFinished()) {
-            return false;
-        }
-        toCanceledStatus(CancelCause.NORMAL);
-        return true;
-    }
-
-    @Override
     public void updateProgress(int totalLength, int completedLength) {
-        if (downloadProgressListener != null) {
+        if (progressListener != null) {
             postRunUpdateProgress(totalLength, completedLength);
         }
     }
 
     @Override
-    public void toFailedStatus(FailCause failCause) {
-        this.failCause = failCause;
-        postRunFailed();
+    public void failed(FailedCause failedCause) {
+        super.failed(failedCause);
+
+        if (loadListener != null) {
+            postRunFailed();
+        }
     }
 
     @Override
-    public void toCanceledStatus(CancelCause cancelCause) {
-        this.cancelCause = cancelCause;
-        setRequestStatus(RequestStatus.CANCELED);
-        postRunCanceled();
+    public void canceled(CancelCause cancelCause) {
+        super.canceled(cancelCause);
+
+        if (loadListener != null) {
+            postRunCanceled();
+        }
     }
 
     @Override
     protected void submitRunDispatch() {
-        setRequestStatus(RequestStatus.WAIT_DISPATCH);
+        setStatus(Status.WAIT_DISPATCH);
         super.submitRunDispatch();
     }
 
     @Override
     protected void submitRunDownload() {
-        setRequestStatus(RequestStatus.WAIT_DOWNLOAD);
+        setStatus(Status.WAIT_DOWNLOAD);
         super.submitRunDownload();
     }
 
     @Override
     protected void submitRunLoad() {
-        setRequestStatus(RequestStatus.WAIT_LOAD);
+        setStatus(Status.WAIT_LOAD);
         super.submitRunLoad();
     }
 
     @Override
     protected void runDispatch() {
-        setRequestStatus(RequestStatus.DISPATCHING);
+        setStatus(Status.DISPATCHING);
 
         // 本地请求直接执行加载
         if (attrs.getUriScheme() != UriScheme.HTTP && attrs.getUriScheme() != UriScheme.HTTPS) {
@@ -176,7 +136,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
 
         // 在下载之前判断如果请求Level限制只能从本地加载的话就取消了
         if (options.getRequestLevel() == RequestLevel.LOCAL) {
-            toCanceledStatus(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
+            canceled(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "canceled", " - ", options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
             }
@@ -211,7 +171,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
 
         // 都是空的就算下载失败
         if (justDownloadResult == null || (justDownloadResult.getDiskCacheEntry() == null && justDownloadResult.getImageData() == null)) {
-            toFailedStatus(FailCause.DOWNLOAD_FAIL);
+            failed(FailedCause.DOWNLOAD_FAIL);
             return;
         }
 
@@ -229,7 +189,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
             return;
         }
 
-        setRequestStatus(RequestStatus.LOADING);
+        setStatus(Status.LOADING);
 
         // 尝试用本地图片预处理器处理一下特殊的本地图片，并得到他们的缓存
         if (attrs.getConfiguration().getLocalImagePreprocessor().isSpecific(this)) {
@@ -237,7 +197,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
             if (specificLocalImageDiskCacheEntry != null) {
                 this.downloadResult = new DownloadResult(specificLocalImageDiskCacheEntry, false);
             } else {
-                toFailedStatus(FailCause.NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE);
+                failed(FailedCause.NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE);
                 return;
             }
         }
@@ -245,7 +205,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
         // 解码
         DecodeResult decodeResult = attrs.getConfiguration().getImageDecoder().decode(this);
         if (decodeResult == null) {
-            toFailedStatus(FailCause.DECODE_FAIL);
+            failed(FailedCause.DECODE_FAIL);
             return;
         }
 
@@ -301,7 +261,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
                 loadResult = new LoadResult(bitmapDrawable, decodeResult.getImageFrom(), decodeResult.getMimeType());
                 postRunCompleted();
             } else {
-                toFailedStatus(FailCause.DECODE_FAIL);
+                failed(FailedCause.DECODE_FAIL);
             }
         } else if (decodeResult.getResultGifDrawable() != null) {
             RecycleGifDrawable gifDrawable = decodeResult.getResultGifDrawable();
@@ -320,23 +280,38 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
                     Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "gif drawable recycled", " - ", gifDrawable.getInfo(), " - ", attrs.getName()));
                 }
 
-                toFailedStatus(FailCause.DECODE_FAIL);
+                failed(FailedCause.DECODE_FAIL);
             }
         } else {
-            toFailedStatus(FailCause.DECODE_FAIL);
+            failed(FailedCause.DECODE_FAIL);
+        }
+    }
+
+    @Override
+    protected void runUpdateProgressInMainThread(int totalLength, int completedLength) {
+        if (isFinished()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runUpdateProgressInMainThread", " - ", "finished", " - ", attrs.getName()));
+            }
+            return;
+        }
+
+        if (progressListener != null) {
+            progressListener.onUpdateDownloadProgress(totalLength, completedLength);
         }
     }
 
     @Override
     protected void runCanceledInMainThread() {
         if (loadListener != null) {
-            loadListener.onCanceled(cancelCause);
+            loadListener.onCanceled(getCancelCause());
         }
     }
 
     @Override
     protected void runCompletedInMainThread() {
         if (isCanceled()) {
+            // 已经取消了就直接把图片回收了
             if (loadResult != null && loadResult.getDrawable() instanceof RecycleDrawableInterface) {
                 ((RecycleDrawableInterface) loadResult.getDrawable()).recycle();
             }
@@ -346,7 +321,8 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
             return;
         }
 
-        setRequestStatus(RequestStatus.COMPLETED);
+        setStatus(Status.COMPLETED);
+
         if (loadListener != null && loadResult != null) {
             loadListener.onCompleted(loadResult.getDrawable(), loadResult.getImageFrom(), loadResult.getMimeType());
         }
@@ -361,23 +337,8 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
             return;
         }
 
-        setRequestStatus(RequestStatus.FAILED);
         if (loadListener != null) {
-            loadListener.onFailed(failCause);
-        }
-    }
-
-    @Override
-    protected void runUpdateProgressInMainThread(int totalLength, int completedLength) {
-        if (isFinished()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runUpdateProgressInMainThread", " - ", "finished", " - ", attrs.getName()));
-            }
-            return;
-        }
-
-        if (downloadProgressListener != null) {
-            downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
+            loadListener.onFailed(getFailedCause());
         }
     }
 }

@@ -29,7 +29,7 @@ public class DownloadHelper {
 
     protected DownloadOptions options;
 
-    protected DownloadProgressListener downloadProgressListener;
+    protected DownloadProgressListener progressListener;
     protected DownloadListener downloadListener;
 
     /**
@@ -82,7 +82,7 @@ public class DownloadHelper {
      */
     @SuppressWarnings("unused")
     public DownloadHelper progressListener(DownloadProgressListener downloadProgressListener) {
-        this.downloadProgressListener = downloadProgressListener;
+        this.progressListener = downloadProgressListener;
         return this;
     }
 
@@ -130,7 +130,7 @@ public class DownloadHelper {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
             }
             if (downloadListener != null) {
-                downloadListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
+                downloadListener.onFailed(FailedCause.URI_NULL_OR_EMPTY);
             }
             return null;
         }
@@ -144,7 +144,7 @@ public class DownloadHelper {
         if (uriScheme == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", name));
             if (downloadListener != null) {
-                downloadListener.onFailed(FailCause.URI_NO_SUPPORT);
+                downloadListener.onFailed(FailedCause.URI_NO_SUPPORT);
             }
             return null;
         }
@@ -154,16 +154,14 @@ public class DownloadHelper {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "only support http ot https", " - ", name));
             }
             if (downloadListener != null) {
-                downloadListener.onFailed(FailCause.URI_NO_SUPPORT);
+                downloadListener.onFailed(FailedCause.URI_NO_SUPPORT);
             }
             return null;
         }
 
         // 创建请求
         RequestAttrs attrs = new RequestAttrs(sketch, uri, uriScheme, name);
-        DownloadRequest request = sketch.getConfiguration().getRequestFactory().newDownloadRequest(attrs, options, downloadListener);
-
-        request.setDownloadProgressListener(downloadProgressListener);
+        DownloadRequest request = sketch.getConfiguration().getRequestFactory().newDownloadRequest(attrs, options, downloadListener, progressListener);
 
         request.submit();
 

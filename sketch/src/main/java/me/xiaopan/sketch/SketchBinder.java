@@ -47,7 +47,7 @@ public class SketchBinder {
         }
     }
 
-    public boolean isCollected() {
+    public boolean isBroken() {
         return getImageViewInterface() == null;
     }
 }

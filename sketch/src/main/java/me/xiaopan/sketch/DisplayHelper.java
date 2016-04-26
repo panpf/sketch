@@ -37,7 +37,7 @@ public class DisplayHelper {
     protected DisplayOptions options;
 
     protected DisplayListener displayListener;
-    protected DownloadProgressListener downloadProgressListener;
+    protected DownloadProgressListener progressListener;
 
     protected FixedSize fixedSize;
     protected ScaleType scaleType;
@@ -100,7 +100,7 @@ public class DisplayHelper {
         memoryCacheId = null;
         options.reset();
         displayListener = null;
-        downloadProgressListener = null;
+        progressListener = null;
 
         fixedSize = null;
         scaleType = null;
@@ -413,7 +413,7 @@ public class DisplayHelper {
         imageViewInterface.onDisplay();
 
         displayListener = imageViewInterface.getDisplayListener(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD);
-        downloadProgressListener = imageViewInterface.getDownloadProgressListener();
+        progressListener = imageViewInterface.getDownloadProgressListener();
     }
 
     /**
@@ -439,7 +439,7 @@ public class DisplayHelper {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "sketchImageViewInterface is null", " - ", (name != null ? name : uri)));
             }
             if (displayListener != null) {
-                displayListener.onFailed(FailCause.IMAGE_VIEW_NULL);
+                displayListener.onFailed(FailedCause.IMAGE_VIEW_NULL);
             }
             configuration.getHelperFactory().recycleDisplayHelper(this);
             return null;
@@ -458,7 +458,7 @@ public class DisplayHelper {
                 imageViewInterface.setImageDrawable(failureDrawable);
             }
             if (displayListener != null) {
-                displayListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
+                displayListener.onFailed(FailedCause.URI_NULL_OR_EMPTY);
             }
             configuration.getHelperFactory().recycleDisplayHelper(this);
             return null;
@@ -476,7 +476,7 @@ public class DisplayHelper {
                 imageViewInterface.setImageDrawable(failureDrawable);
             }
             if (displayListener != null) {
-                displayListener.onFailed(FailCause.URI_NO_SUPPORT);
+                displayListener.onFailed(FailedCause.URI_NO_SUPPORT);
             }
             configuration.getHelperFactory().recycleDisplayHelper(this);
             return null;
@@ -543,9 +543,7 @@ public class DisplayHelper {
         // 组织请求
         RequestAttrs requestAttrs = new RequestAttrs(sketch, uri, uriScheme, name);
         DisplayAttrs displayAttrs = new DisplayAttrs(memoryCacheId, fixedSize, imageViewInterface);
-        final DisplayRequest request = configuration.getRequestFactory().newDisplayRequest(requestAttrs, displayAttrs, options, displayListener);
-
-        request.setDownloadProgressListener(downloadProgressListener);
+        final DisplayRequest request = configuration.getRequestFactory().newDisplayRequest(requestAttrs, displayAttrs, options, displayListener, progressListener);
 
         // 显示默认图片
         Drawable loadingBindDrawable;

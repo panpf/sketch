@@ -36,9 +36,9 @@ public interface LoadListener {
     /**
      * load fail
      *
-     * @param failCause fail cause
+     * @param failedCause fail cause
      */
-    void onFailed(FailCause failCause);
+    void onFailed(FailedCause failedCause);
 
     /**
      * cancel

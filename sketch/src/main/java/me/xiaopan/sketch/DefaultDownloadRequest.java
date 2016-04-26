@@ -29,19 +29,17 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
 
     private RequestAttrs attrs;
     private DownloadOptions options;
+
+    private DownloadResult result;
     private DownloadListener downloadListener;
-    private DownloadProgressListener downloadProgressListener;
+    private DownloadProgressListener progressListener;
 
-    private DownloadResult downloadResult;
-    private FailCause failCause;
-    private CancelCause cancelCause;
-    private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;
-
-    public DefaultDownloadRequest(RequestAttrs attrs, DownloadOptions options, DownloadListener downloadListener) {
+    public DefaultDownloadRequest(RequestAttrs attrs, DownloadOptions options, DownloadListener downloadListener, DownloadProgressListener progressListener) {
         super(attrs.getConfiguration().getRequestExecutor());
         this.attrs = attrs;
         this.options = options;
         this.downloadListener = downloadListener;
+        this.progressListener = progressListener;
     }
 
     @Override
@@ -56,93 +54,55 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
 
     @Override
     public DownloadResult getDownloadResult() {
-        return downloadResult;
-    }
-
-    public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
-        this.downloadProgressListener = downloadProgressListener;
+        return result;
     }
 
     @Override
-    public RequestStatus getRequestStatus() {
-        return requestStatus;
-    }
+    public void failed(FailedCause failedCause) {
+        super.failed(failedCause);
 
-    @Override
-    public void setRequestStatus(RequestStatus requestStatus) {
-        this.requestStatus = requestStatus;
-    }
-
-    @Override
-    public FailCause getFailCause() {
-        return failCause;
-    }
-
-    @Override
-    public CancelCause getCancelCause() {
-        return cancelCause;
-    }
-
-    @Override
-    public boolean isFinished() {
-        return requestStatus == RequestStatus.COMPLETED || requestStatus == RequestStatus.CANCELED || requestStatus == RequestStatus.FAILED;
-    }
-
-    @Override
-    public boolean isCanceled() {
-        return requestStatus == RequestStatus.CANCELED;
-    }
-
-    @Override
-    public boolean cancel() {
-        if (isFinished()) {
-            return false;
+        if (downloadListener != null) {
+            postRunFailed();
         }
-        toCanceledStatus(CancelCause.NORMAL);
-        return true;
     }
 
     @Override
-    public void toFailedStatus(FailCause failCause) {
-        this.failCause = failCause;
-        postRunFailed();
-    }
+    public void canceled(CancelCause cancelCause) {
+        super.canceled(cancelCause);
 
-    @Override
-    public void toCanceledStatus(CancelCause cancelCause) {
-        this.cancelCause = cancelCause;
-        setRequestStatus(RequestStatus.CANCELED);
-        postRunCanceled();
+        if (downloadListener != null) {
+            postRunCanceled();
+        }
     }
 
     @Override
     protected void submitRunDispatch() {
-        setRequestStatus(RequestStatus.WAIT_DISPATCH);
+        setStatus(Status.WAIT_DISPATCH);
         super.submitRunDispatch();
     }
 
     @Override
     protected void submitRunDownload() {
-        setRequestStatus(RequestStatus.WAIT_DOWNLOAD);
+        setStatus(Status.WAIT_DOWNLOAD);
         super.submitRunDownload();
     }
 
     @Override
     protected void submitRunLoad() {
-        setRequestStatus(RequestStatus.WAIT_LOAD);
+        setStatus(Status.WAIT_LOAD);
         super.submitRunLoad();
     }
 
     @Override
     protected void runDispatch() {
-        setRequestStatus(RequestStatus.DISPATCHING);
+        setStatus(Status.DISPATCHING);
 
         // 先过滤掉不支持的URI协议
         if (attrs.getUriScheme() != UriScheme.HTTP && attrs.getUriScheme() != UriScheme.HTTPS) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "not support uri:", attrs.getUri(), " - ", attrs.getName()));
             }
-            toFailedStatus(FailCause.URI_NO_SUPPORT);
+            failed(FailedCause.URI_NO_SUPPORT);
             return;
         }
 
@@ -153,7 +113,7 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "diskCache", " - ", attrs.getName()));
                 }
-                downloadResult = new DownloadResult(diskCacheEntry, false);
+                result = new DownloadResult(diskCacheEntry, false);
                 postRunCompleted();
                 return;
             }
@@ -161,7 +121,7 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
 
         // 在下载之前判断如果请求Level限制只能从本地加载的话就取消了
         if (options.getRequestLevel() == RequestLevel.LOCAL) {
-            toCanceledStatus(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
+            canceled(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "canceled", " - ", options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
             }
@@ -196,12 +156,12 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
 
         // 都是空的就算下载失败
         if (justDownloadResult == null || (justDownloadResult.getDiskCacheEntry() == null && justDownloadResult.getImageData() == null)) {
-            toFailedStatus(FailCause.DOWNLOAD_FAIL);
+            failed(FailedCause.DOWNLOAD_FAIL);
             return;
         }
 
         // 下载成功了
-        downloadResult = justDownloadResult;
+        result = justDownloadResult;
         postRunCompleted();
     }
 
@@ -212,7 +172,7 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
 
     @Override
     public void updateProgress(int totalLength, int completedLength) {
-        if (downloadProgressListener != null) {
+        if (progressListener != null) {
             postRunUpdateProgress(totalLength, completedLength);
         }
     }
@@ -226,15 +186,15 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
             return;
         }
 
-        if (downloadProgressListener != null) {
-            downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
+        if (progressListener != null) {
+            progressListener.onUpdateDownloadProgress(totalLength, completedLength);
         }
     }
 
     @Override
     protected void runCanceledInMainThread() {
         if (downloadListener != null) {
-            downloadListener.onCanceled(cancelCause);
+            downloadListener.onCanceled(getCancelCause());
         }
     }
 
@@ -247,13 +207,13 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
             return;
         }
 
-        setRequestStatus(RequestStatus.COMPLETED);
+        setStatus(Status.COMPLETED);
 
         if (downloadListener != null) {
-            if (downloadResult.getDiskCacheEntry() != null) {
-                downloadListener.onCompleted(downloadResult.getDiskCacheEntry().getFile(), downloadResult.isFromNetwork());
-            } else if (downloadResult.getImageData() != null) {
-                downloadListener.onCompleted(downloadResult.getImageData());
+            if (result.getDiskCacheEntry() != null) {
+                downloadListener.onCompleted(result.getDiskCacheEntry().getFile(), result.isFromNetwork());
+            } else if (result.getImageData() != null) {
+                downloadListener.onCompleted(result.getImageData());
             }
         }
     }
@@ -267,10 +227,8 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
             return;
         }
 
-        setRequestStatus(RequestStatus.FAILED);
-
         if (downloadListener != null) {
-            downloadListener.onFailed(failCause);
+            downloadListener.onFailed(getFailedCause());
         }
     }
 }

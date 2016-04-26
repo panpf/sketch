@@ -45,9 +45,9 @@ public interface DownloadListener {
     /**
      * 已失败
      *
-     * @param failCause 失败原因
+     * @param failedCause 失败原因
      */
-    void onFailed(FailCause failCause);
+    void onFailed(FailedCause failedCause);
 
     /**
      * 已取消

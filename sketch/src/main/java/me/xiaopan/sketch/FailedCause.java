@@ -19,7 +19,7 @@ package me.xiaopan.sketch;
 /**
  * 失败原因
  */
-public enum FailCause {
+public enum FailedCause {
     /**
      * URI为NULL或空
      */

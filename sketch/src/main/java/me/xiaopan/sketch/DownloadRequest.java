@@ -39,7 +39,7 @@ public interface DownloadRequest {
     /**
      * 获取失败原因
      */
-    FailCause getFailCause();
+    FailedCause getFailedCause();
 
     /**
      * 获取取消原因
@@ -64,34 +64,14 @@ public interface DownloadRequest {
     boolean cancel();
 
     /**
-     * 设置进度监听器
-     */
-    void setDownloadProgressListener(DownloadProgressListener downloadProgressListener);
-
-    /**
-     * 获取状态
-     */
-    RequestStatus getRequestStatus();
-
-    /**
      * 设置状态
      */
-    void setRequestStatus(RequestStatus requestStatus);
+    void setStatus(SketchRequest.Status status);
 
     /**
      * 更新进度
      */
     void updateProgress(int totalLength, int completedLength);
-
-    /**
-     * 失败了
-     */
-    void toFailedStatus(FailCause failCause);
-
-    /**
-     * 取消了
-     */
-    void toCanceledStatus(CancelCause cancelCause);
 
     /**
      * 提交
