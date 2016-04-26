@@ -33,7 +33,7 @@ public class Sketch {
 
     private static Sketch instance;
     private static boolean debugMode;    //调试模式，在控制台输出日志
-    private static Map<Enum<?>, RequestOptions> optionsMap;
+    private static Map<Enum<?>, Object> optionsMap;
 
     private Configuration configuration;
 
@@ -215,42 +215,61 @@ public class Sketch {
     }
 
     /**
-     * 获取选项
-     *
-     * @param optionsName 选项名称
-     * @return 选项
+     * 获取下载选项
      */
-    public static RequestOptions getOptions(Enum<?> optionsName) {
-        if (optionsMap == null) {
-            return null;
-        }
-        return optionsMap.get(optionsName);
+    public static DownloadOptions getDownloadOptions(Enum<?> optionsName) {
+        return optionsMap != null ? (DownloadOptions) optionsMap.get(optionsName) : null;
     }
 
     /**
-     * 放入选项
-     *
-     * @param optionsName 选项名称
-     * @param options     选项
+     * 获取加载选项
      */
-    public static void putOptions(Enum<?> optionsName, RequestOptions options) {
+    public static LoadOptions getLoadOptions(Enum<?> optionsName) {
+        return optionsMap != null ? (LoadOptions) optionsMap.get(optionsName) : null;
+    }
+
+    /**
+     * 获取显示选项
+     */
+    public static DisplayOptions getDisplayOptions(Enum<?> optionsName) {
+        return optionsMap != null ? (DisplayOptions) optionsMap.get(optionsName) : null;
+    }
+
+    /**
+     * 安装选项Map
+     */
+    private static void installOptionsMap(){
         if (optionsMap == null) {
             synchronized (Sketch.class) {
                 if (optionsMap == null) {
-                    optionsMap = new HashMap<Enum<?>, RequestOptions>();
+                    optionsMap = new HashMap<Enum<?>, Object>();
                 }
             }
         }
+    }
+
+    /**
+     * 放入下载选项
+     */
+    public static void putOptions(Enum<?> optionsName, DownloadOptions options) {
+        installOptionsMap();
         optionsMap.put(optionsName, options);
     }
 
     /**
-     * 获取OptionMap
-     *
-     * @return OptionMap
+     * 放入加载选项
      */
-    public static Map<Enum<?>, RequestOptions> getOptionsMap() {
-        return optionsMap;
+    public static void putOptions(Enum<?> optionsName, LoadOptions options) {
+        installOptionsMap();
+        optionsMap.put(optionsName, options);
+    }
+
+    /**
+     * 放入显示选项
+     */
+    public static void putOptions(Enum<?> optionsName, DisplayOptions options) {
+        installOptionsMap();
+        optionsMap.put(optionsName, options);
     }
 
     /**

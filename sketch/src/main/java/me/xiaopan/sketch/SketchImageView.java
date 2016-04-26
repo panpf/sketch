@@ -451,7 +451,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     @Override
     public void setDisplayOptions(Enum<?> optionsName) {
-        setDisplayOptions((DisplayOptions) Sketch.getOptions(optionsName));
+        setDisplayOptions(Sketch.getDisplayOptions(optionsName));
     }
 
     @Override

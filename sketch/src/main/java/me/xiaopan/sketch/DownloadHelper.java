@@ -70,11 +70,11 @@ public class DownloadHelper {
     }
 
     /**
-     * 批量设置下载参数，你只需要提前将DownloadOptions通过Sketch.putOptions()方法存起来，然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
+     * 批量设置下载参数，你只需要提前将DownloadOptions通过Sketch.putDownloadOptions()方法存起来，然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
      */
     @SuppressWarnings("unused")
     public DownloadHelper options(Enum<?> optionsName) {
-        return options((DownloadOptions) Sketch.getOptions(optionsName));
+        return options(Sketch.getDownloadOptions(optionsName));
     }
 
     /**

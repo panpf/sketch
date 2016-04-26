@@ -104,12 +104,12 @@ public interface ImageViewInterface {
     DisplayOptions getDisplayOptions();
 
     /**
-     * 设置显示参数
+     * 批量设置显示参数
      */
     void setDisplayOptions(DisplayOptions displayOptions);
 
     /**
-     * 设置显示参数的名称
+     * 批量设置显示参数，你只需要提前将DisplayOptions通过Sketch.putDisplayOptions()方法存起来，然后在这里指定其名称即可
      */
     void setDisplayOptions(Enum<?> optionsName);
 

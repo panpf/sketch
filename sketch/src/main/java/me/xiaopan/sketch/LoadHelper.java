@@ -146,10 +146,10 @@ public class LoadHelper {
     }
 
     /**
-     * 批量设置加载参数，你只需要提前将LoadOptions通过Sketch.putOptions()方法存起来，然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
+     * 批量设置加载参数，你只需要提前将LoadOptions通过Sketch.putLoadOptions()方法存起来，然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
      */
     public LoadHelper options(Enum<?> optionsName) {
-        return options((LoadOptions) Sketch.getOptions(optionsName));
+        return options(Sketch.getLoadOptions(optionsName));
     }
 
     /**

@@ -19,7 +19,7 @@ package me.xiaopan.sketch;
 /**
  * 下载选项
  */
-public class DownloadOptions implements RequestOptions {
+public class DownloadOptions {
     private boolean cacheInDisk;
     private RequestLevel requestLevel;
     private RequestLevelFrom requestLevelFrom;
