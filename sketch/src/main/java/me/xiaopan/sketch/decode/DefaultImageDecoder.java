@@ -24,7 +24,9 @@ import android.util.Log;
 
 import java.io.File;
 
+import me.xiaopan.sketch.DecodeResult;
 import me.xiaopan.sketch.ImageFormat;
+import me.xiaopan.sketch.ImageFrom;
 import me.xiaopan.sketch.LoadRequest;
 import me.xiaopan.sketch.MaxSize;
 import me.xiaopan.sketch.Sketch;
@@ -38,7 +40,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class DefaultImageDecoder implements ImageDecoder {
     private static final String NAME = "DefaultImageDecoder";
 
-    public static Object decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper) {
+    public static DecodeResult decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper) {
         // just decode bounds
         Options options = new Options();
         options.inJustDecodeBounds = true;
@@ -46,8 +48,8 @@ public class DefaultImageDecoder implements ImageDecoder {
         options.inJustDecodeBounds = false;
 
         // setup best bitmap config by MimeType
-        loadRequest.setMimeType(options.outMimeType);
-        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
+        String mimeType = options.outMimeType;
+        ImageFormat imageFormat = ImageFormat.valueOfMimeType(mimeType);
         if (imageFormat != null) {
             options.inPreferredConfig = imageFormat.getConfig(loadRequest.getOptions().isLowQualityImage());
         }
@@ -55,7 +57,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         // decode gif image
         if (imageFormat != null && imageFormat == ImageFormat.GIF && loadRequest.getOptions().isDecodeGifImage()) {
             try {
-                return decodeHelper.getGifDrawable();
+                return new DecodeResult(mimeType, decodeHelper.getGifDrawable());
             } catch (UnsatisfiedLinkError e) {
                 Log.e(Sketch.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, unable to process the GIF images, has automatically according to the common image decoding, and has set up a closed automatically decoding GIF image feature. If you need to decode the GIF figure please go to “https://github.com/xiaopansky/sketch” to download “libpl_droidsonroids_gif.so” file and put in your project");
                 loadRequest.getAttrs().getSketch().getConfiguration().setDecodeGifImage(false);
@@ -104,11 +106,11 @@ public class DefaultImageDecoder implements ImageDecoder {
             decodeHelper.onDecodeFailed();
         }
 
-        return bitmap;
+        return bitmap != null ? new DecodeResult(mimeType, bitmap) : null;
     }
 
     @Override
-    public Object decode(LoadRequest loadRequest) {
+    public DecodeResult decode(LoadRequest loadRequest) {
         try {
             if (loadRequest.getAttrs().getUriScheme() == UriScheme.HTTP || loadRequest.getAttrs().getUriScheme() == UriScheme.HTTPS) {
                 return decodeHttpOrHttps(loadRequest);
@@ -139,38 +141,68 @@ public class DefaultImageDecoder implements ImageDecoder {
         return builder.append(NAME);
     }
 
-    public Object decodeHttpOrHttps(LoadRequest loadRequest) {
-        DiskCache.Entry diskCacheEntry = loadRequest.getDownloadResult() != null ? loadRequest.getDownloadResult().getDiskCacheEntry() : null;
-        if (diskCacheEntry != null) {
-            return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest));
+    public DecodeResult decodeHttpOrHttps(LoadRequest loadRequest) {
+        DecodeResult decodeResult = null;
+
+        if (loadRequest.getDownloadResult() != null) {
+            DiskCache.Entry diskCacheEntry = loadRequest.getDownloadResult().getDiskCacheEntry();
+            if (diskCacheEntry != null) {
+                decodeResult = decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest));
+            }
+
+            byte[] imageData = loadRequest.getDownloadResult().getImageData();
+            if (imageData != null && imageData.length > 0) {
+                decodeResult = decodeFromHelper(loadRequest, new ByteArrayDecodeHelper(imageData, loadRequest));
+            }
+
+            if (decodeResult != null) {
+                decodeResult.setImageFrom(loadRequest.getDownloadResult().isFromNetwork() ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE);
+            }
         }
 
-        byte[] imageData = loadRequest.getDownloadResult() != null ? loadRequest.getDownloadResult().getImageData() : null;
-        if (imageData != null && imageData.length > 0) {
-            return decodeFromHelper(loadRequest, new ByteArrayDecodeHelper(imageData, loadRequest));
-        }
-
-        return null;
+        return decodeResult;
     }
 
-    public Object decodeFile(LoadRequest loadRequest) {
+    public DecodeResult decodeFile(LoadRequest loadRequest) {
+        DecodeResult decodeResult;
+
         DiskCache.Entry diskCacheEntry = loadRequest.getDownloadResult() != null ? loadRequest.getDownloadResult().getDiskCacheEntry() : null;
         if (diskCacheEntry != null) {
-            return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest));
+            decodeResult = decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest));
+            if (decodeResult != null) {
+                decodeResult.setImageFrom(ImageFrom.DISK_CACHE);
+            }
         } else {
-            return decodeFromHelper(loadRequest, new FileDecodeHelper(new File(loadRequest.getAttrs().getUri()), loadRequest));
+            decodeResult = decodeFromHelper(loadRequest, new FileDecodeHelper(new File(loadRequest.getAttrs().getUri()), loadRequest));
+            if (decodeResult != null) {
+                decodeResult.setImageFrom(ImageFrom.LOCAL);
+            }
         }
+
+        return decodeResult;
     }
 
-    public Object decodeContent(LoadRequest loadRequest) {
-        return decodeFromHelper(loadRequest, new ContentDecodeHelper(Uri.parse(loadRequest.getAttrs().getUri()), loadRequest));
+    public DecodeResult decodeContent(LoadRequest loadRequest) {
+        DecodeResult decodeResult = decodeFromHelper(loadRequest, new ContentDecodeHelper(Uri.parse(loadRequest.getAttrs().getUri()), loadRequest));
+        if (decodeResult != null) {
+            decodeResult.setImageFrom(ImageFrom.LOCAL);
+        }
+        return decodeResult;
     }
 
-    public Object decodeAsset(LoadRequest loadRequest) {
-        return decodeFromHelper(loadRequest, new AssetsDecodeHelper(UriScheme.ASSET.crop(loadRequest.getAttrs().getUri()), loadRequest));
+    public DecodeResult decodeAsset(LoadRequest loadRequest) {
+        DecodeResult decodeResult = decodeFromHelper(loadRequest, new AssetsDecodeHelper(UriScheme.ASSET.crop(loadRequest.getAttrs().getUri()), loadRequest));
+        if (decodeResult != null) {
+            decodeResult.setImageFrom(ImageFrom.LOCAL);
+        }
+        return decodeResult;
     }
 
-    public Object decodeDrawable(LoadRequest loadRequest) {
-        return decodeFromHelper(loadRequest, new DrawableDecodeHelper(Integer.valueOf(UriScheme.DRAWABLE.crop(loadRequest.getAttrs().getUri())), loadRequest));
+    public DecodeResult decodeDrawable(LoadRequest loadRequest) {
+        DecodeResult decodeResult = decodeFromHelper(loadRequest, new DrawableDecodeHelper(Integer.valueOf(UriScheme.DRAWABLE.crop(loadRequest.getAttrs().getUri())), loadRequest));
+        if (decodeResult != null) {
+            decodeResult.setImageFrom(ImageFrom.LOCAL);
+        }
+        return decodeResult;
     }
 }

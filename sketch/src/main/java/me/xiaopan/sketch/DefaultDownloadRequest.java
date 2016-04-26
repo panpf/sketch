@@ -58,6 +58,11 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
         return options;
     }
 
+    @Override
+    public DownloadResult getDownloadResult() {
+        return downloadResult;
+    }
+
     public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
         this.downloadProgressListener = downloadProgressListener;
     }

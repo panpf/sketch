@@ -28,17 +28,7 @@ public interface LoadRequest extends DownloadRequest {
     LoadOptions getOptions();
 
     /**
-     * 获取下载结果
+     * 获取加载结果
      */
-    DownloadResult getDownloadResult();
-
-    /**
-     * 获取图片类型
-     */
-    String getMimeType();
-
-    /**
-     * 设置图片类型
-     */
-    void setMimeType(String mimeType);
+    LoadResult getLoadResult();
 }
