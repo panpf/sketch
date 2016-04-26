@@ -32,11 +32,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 显示请求
  */
 public class DefaultDisplayRequest extends SketchRequest implements DisplayRequest {
-    private static final int WHAT_CALLBACK_COMPLETED = 102;
-    private static final int WHAT_CALLBACK_FAILED = 103;
-    private static final int WHAT_CALLBACK_CANCELED = 104;
-    private static final int WHAT_CALLBACK_PROGRESS = 105;
-    private static final int WHAT_CALLBACK_PAUSE_DOWNLOAD = 106;
+    private static final int WHAT_RUN_PAUSE_DOWNLOAD = 44006;
     private static final String NAME = "DefaultDisplayRequest";
 
     private RequestAttrs requestAttrs;
@@ -112,7 +108,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
 
     @Override
     public LoadResult getLoadResult() {
-        return null;
+        return loadResult;
     }
 
     @Override
@@ -166,7 +162,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
     public void toFailedStatus(FailCause failCause) {
         this.failCause = failCause;
         setRequestStatus(RequestStatus.WAIT_DISPLAY);
-        requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_FAILED, this).sendToTarget();
+        postRunFailed();
     }
 
     @Override
@@ -174,57 +170,33 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         this.cancelCause = cancelCause;
         setRequestStatus(RequestStatus.CANCELED);
         if (displayListener != null) {
-            requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_CANCELED, this).sendToTarget();
-        }
-    }
-
-    @Override
-    public void invokeInMainThread(Message msg) {
-        switch (msg.what) {
-            case WHAT_CALLBACK_COMPLETED:
-                handleCompletedOnMainThread();
-                break;
-            case WHAT_CALLBACK_PROGRESS:
-                updateProgressOnMainThread(msg.arg1, msg.arg2);
-                break;
-            case WHAT_CALLBACK_FAILED:
-                handleFailedOnMainThread();
-                break;
-            case WHAT_CALLBACK_CANCELED:
-                handleCanceledOnMainThread();
-                break;
-            case WHAT_CALLBACK_PAUSE_DOWNLOAD:
-                handlePauseDownloadOnMainThread();
-                break;
-            default:
-                new IllegalArgumentException("unknown message what: " + msg.what).printStackTrace();
-                break;
+            postRunCanceled();
         }
     }
 
     @Override
     public void updateProgress(int totalLength, int completedLength) {
         if (downloadProgressListener != null) {
-            requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
+            postRunUpdateProgress(totalLength, completedLength);
         }
     }
 
     @Override
-    protected void onPostRunDispatch() {
-        super.onPostRunDispatch();
+    protected void submitRunDispatch() {
         setRequestStatus(RequestStatus.WAIT_DISPATCH);
+        super.submitRunDispatch();
     }
 
     @Override
-    protected void onPostRunDownload() {
-        super.onPostRunDownload();
+    protected void submitRunDownload() {
         setRequestStatus(RequestStatus.WAIT_DOWNLOAD);
+        super.submitRunDownload();
     }
 
     @Override
-    protected void onPostRunLoad() {
-        super.onPostRunLoad();
+    protected void submitRunLoad() {
         setRequestStatus(RequestStatus.WAIT_LOAD);
+        super.submitRunLoad();
     }
 
     @Override
@@ -236,7 +208,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "local", " - ", requestAttrs.getName()));
             }
-            postRunLoad();
+            submitRunLoad();
             return;
         }
 
@@ -248,16 +220,23 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "diskCache", " - ", requestAttrs.getName()));
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, false);
-                postRunLoad();
+                submitRunLoad();
                 return;
             }
         }
 
         // 在下载之前判断如果请求Level限制只能从本地加载的话就取消了
         if (displayOptions.getRequestLevel() == RequestLevel.LOCAL) {
-            toCanceledStatus(displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", requestAttrs.getName()));
+            if (displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "canceled", " - ", "pause download", " - ", requestAttrs.getName()));
+                }
+                postRunPauseDownload();
+            } else {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "canceled", " - ", "requestLevel is local", " - ", requestAttrs.getName()));
+                }
+                toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
             }
             return;
         }
@@ -266,7 +245,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "download", " - ", requestAttrs.getName()));
         }
-        postRunDownload();
+        submitRunDownload();
     }
 
     @Override
@@ -296,7 +275,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
 
         // 下载成功了，执行加载
         downloadResult = justDownloadResult;
-        postRunLoad();
+        submitRunLoad();
     }
 
     @Override
@@ -320,7 +299,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
                     this.loadResult = new LoadResult(cacheDrawable, ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
                     setRequestStatus(RequestStatus.WAIT_DISPLAY);
                     recycleDrawable.setIsWaitDisplay("executeLoad:fromMemory", true);
-                    requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                    postRunCompleted();
                     return;
                 } else {
                     requestAttrs.getConfiguration().getMemoryCache().remove(displayAttrs.getMemoryCacheId());
@@ -407,7 +386,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
 
                 setRequestStatus(RequestStatus.WAIT_DISPLAY);
                 bitmapDrawable.setIsWaitDisplay("executeLoad:new", true);
-                requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                postRunCompleted();
             } else {
                 toFailedStatus(FailCause.DECODE_FAIL);
             }
@@ -427,9 +406,9 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
 
                 loadResult = new LoadResult(gifDrawable, decodeResult.getImageFrom(), decodeResult.getMimeType());
 
-                setRequestStatus(RequestStatus.WAIT_DISPLAY);
                 gifDrawable.setIsWaitDisplay("executeLoad:new", true);
-                requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                setRequestStatus(RequestStatus.WAIT_DISPLAY);
+                postRunCompleted();
             } else {
                 if (Sketch.isDebugMode()) {
                     Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "gif drawable recycled", " - ", gifDrawable.getInfo(), " - ", requestAttrs.getName()));
@@ -442,13 +421,21 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         }
     }
 
-    private void handleCompletedOnMainThread() {
+    @Override
+    protected void runCanceledInMainThread() {
+        if (displayListener != null) {
+            displayListener.onCanceled(cancelCause);
+        }
+    }
+
+    @Override
+    protected void runCompletedInMainThread() {
         if (isCanceled()) {
             if (loadResult != null && loadResult.getDrawable() instanceof RecycleDrawableInterface) {
                 ((RecycleDrawableInterface) loadResult.getDrawable()).setIsWaitDisplay("completedCallback:cancel", false);
             }
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", requestAttrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runCompletedInMainThread", " - ", "canceled", " - ", requestAttrs.getName()));
             }
             return;
         }
@@ -479,10 +466,11 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         }
     }
 
-    private void handleFailedOnMainThread() {
+    @Override
+    protected void runFailedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", requestAttrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runFailedInMainThread", " - ", "canceled", " - ", requestAttrs.getName()));
             }
             return;
         }
@@ -500,16 +488,43 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         }
     }
 
-    private void handleCanceledOnMainThread() {
-        if (displayListener != null) {
-            displayListener.onCanceled(cancelCause);
+    @Override
+    protected void runUpdateProgressInMainThread(int totalLength, int completedLength) {
+        if (isFinished()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runUpdateProgressInMainThread", " - ", "finished", " - ", requestAttrs.getName()));
+            }
+            return;
+        }
+
+        if (downloadProgressListener != null) {
+            downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
         }
     }
 
-    private void handlePauseDownloadOnMainThread() {
+    /**
+     * 推到主线程处理暂停下载
+     */
+    protected void postRunPauseDownload() {
+        handler.obtainMessage(WHAT_RUN_PAUSE_DOWNLOAD, this).sendToTarget();
+    }
+
+    @Override
+    protected void runInMainThread(int what, Message msg) {
+        if (msg.what == WHAT_RUN_PAUSE_DOWNLOAD) {
+            runPauseDownloadOnMainThread();
+        } else {
+            super.runInMainThread(what, msg);
+        }
+    }
+
+    /**
+     * 在主线程处理暂停下载
+     */
+    private void runPauseDownloadOnMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handlePauseDownloadOnMainThread", " - ", "canceled", " - ", requestAttrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runPauseDownloadOnMainThread", " - ", "canceled", " - ", requestAttrs.getName()));
             }
             return;
         }
@@ -527,19 +542,6 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         setRequestStatus(RequestStatus.CANCELED);
         if (displayListener != null) {
             displayListener.onCanceled(cancelCause);
-        }
-    }
-
-    private void updateProgressOnMainThread(int totalLength, int completedLength) {
-        if (isFinished()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", requestAttrs.getName()));
-            }
-            return;
-        }
-
-        if (downloadProgressListener != null) {
-            downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
         }
     }
 }

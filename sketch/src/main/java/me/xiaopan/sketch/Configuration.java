@@ -18,9 +18,6 @@ package me.xiaopan.sketch;
 
 import android.content.Context;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
 import android.util.Log;
 
 import java.io.File;
@@ -49,7 +46,6 @@ public class Configuration {
     private static final int DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024;
 
     private Context context;    //上下文
-    private Handler handler;    // 异步线程回调用
     private DiskCache diskCache;    // 磁盘缓存器
     private MemoryCache memoryCache;    //图片缓存器
     private MemoryCache placeholderImageMemoryCache;    // 占位图内存缓存器
@@ -100,17 +96,7 @@ public class Configuration {
         this.localImagePreprocessor = new DefaultLocalImagePreprocessor();
         this.defaultCutImageProcessor = new DefaultImageProcessor();
         this.placeholderImageMemoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 16));
-        this.handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                if (msg.obj instanceof DownloadRequest) {
-                    ((DownloadRequest) msg.obj).invokeInMainThread(msg);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        });
+
         if (Sketch.isDebugMode()) {
             Log.i(Sketch.TAG, getInfo());
         }
@@ -123,15 +109,6 @@ public class Configuration {
      */
     public Context getContext() {
         return context;
-    }
-
-    /**
-     * 获取Handler
-     *
-     * @return Handler
-     */
-    public Handler getHandler() {
-        return handler;
     }
 
     /**

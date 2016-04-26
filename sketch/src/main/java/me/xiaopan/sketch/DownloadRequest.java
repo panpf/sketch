@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch;
 
-import android.os.Message;
-
 /**
  * 下载请求
  */
@@ -94,11 +92,6 @@ public interface DownloadRequest {
      * 取消了
      */
     void toCanceledStatus(CancelCause cancelCause);
-
-    /**
-     * 在主线程中执行
-     */
-    void invokeInMainThread(Message msg);
 
     /**
      * 提交

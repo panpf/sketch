@@ -17,7 +17,6 @@
 package me.xiaopan.sketch;
 
 import android.graphics.Bitmap;
-import android.os.Message;
 import android.util.Log;
 
 import me.xiaopan.sketch.cache.DiskCache;
@@ -28,10 +27,6 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 加载请求
  */
 public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
-    private static final int WHAT_CALLBACK_COMPLETED = 202;
-    private static final int WHAT_CALLBACK_FAILED = 203;
-    private static final int WHAT_CALLBACK_CANCELED = 204;
-    private static final int WHAT_CALLBACK_PROGRESS = 205;
     private static final String NAME = "DefaultLoadRequest";
 
     private RequestAttrs attrs;
@@ -41,9 +36,9 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
 
     private DownloadResult downloadResult;
     private LoadResult loadResult;
-    private FailCause failCause;    // 失败原因
-    private CancelCause cancelCause;  // 取消原因
-    private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
+    private FailCause failCause;
+    private CancelCause cancelCause;
+    private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;
 
     public DefaultLoadRequest(RequestAttrs attrs, LoadOptions options, LoadListener loadListener) {
         super(attrs.getConfiguration().getRequestExecutor());
@@ -118,60 +113,39 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
     @Override
     public void updateProgress(int totalLength, int completedLength) {
         if (downloadProgressListener != null) {
-            attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
+            postRunUpdateProgress(totalLength, completedLength);
         }
     }
 
     @Override
     public void toFailedStatus(FailCause failCause) {
         this.failCause = failCause;
-        attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_FAILED, this).sendToTarget();
+        postRunFailed();
     }
 
     @Override
     public void toCanceledStatus(CancelCause cancelCause) {
         this.cancelCause = cancelCause;
         setRequestStatus(RequestStatus.CANCELED);
-        attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_CANCELED, this).sendToTarget();
+        postRunCanceled();
     }
 
     @Override
-    public void invokeInMainThread(Message msg) {
-        switch (msg.what) {
-            case WHAT_CALLBACK_COMPLETED:
-                handleCompletedOnMainThread();
-                break;
-            case WHAT_CALLBACK_PROGRESS:
-                updateProgressOnMainThread(msg.arg1, msg.arg2);
-                break;
-            case WHAT_CALLBACK_FAILED:
-                handleFailedOnMainThread();
-                break;
-            case WHAT_CALLBACK_CANCELED:
-                handleCanceledOnMainThread();
-                break;
-            default:
-                new IllegalArgumentException("unknown message what: " + msg.what).printStackTrace();
-                break;
-        }
-    }
-
-    @Override
-    protected void onPostRunDispatch() {
-        super.onPostRunDispatch();
+    protected void submitRunDispatch() {
         setRequestStatus(RequestStatus.WAIT_DISPATCH);
+        super.submitRunDispatch();
     }
 
     @Override
-    protected void onPostRunDownload() {
-        super.onPostRunDownload();
+    protected void submitRunDownload() {
         setRequestStatus(RequestStatus.WAIT_DOWNLOAD);
+        super.submitRunDownload();
     }
 
     @Override
-    protected void onPostRunLoad() {
-        super.onPostRunLoad();
+    protected void submitRunLoad() {
         setRequestStatus(RequestStatus.WAIT_LOAD);
+        super.submitRunLoad();
     }
 
     @Override
@@ -183,7 +157,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "local", " - ", attrs.getName()));
             }
-            postRunLoad();
+            submitRunLoad();
             return;
         }
 
@@ -195,7 +169,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "diskCache", " - ", attrs.getName()));
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, false);
-                postRunLoad();
+                submitRunLoad();
                 return;
             }
         }
@@ -204,7 +178,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
         if (options.getRequestLevel() == RequestLevel.LOCAL) {
             toCanceledStatus(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "canceled", " - ", options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
             }
             return;
         }
@@ -213,7 +187,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "download", " - ", attrs.getName()));
         }
-        postRunDownload();
+        submitRunDownload();
     }
 
     @Override
@@ -243,7 +217,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
 
         // 下载成功了，执行加载
         downloadResult = justDownloadResult;
-        postRunLoad();
+        submitRunLoad();
     }
 
     @Override
@@ -325,8 +299,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
                 bitmapDrawable.setMimeType(decodeResult.getMimeType());
 
                 loadResult = new LoadResult(bitmapDrawable, decodeResult.getImageFrom(), decodeResult.getMimeType());
-
-                attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                postRunCompleted();
             } else {
                 toFailedStatus(FailCause.DECODE_FAIL);
             }
@@ -341,8 +314,7 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
                 }
 
                 loadResult = new LoadResult(gifDrawable, decodeResult.getImageFrom(), decodeResult.getMimeType());
-
-                attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                postRunCompleted();
             }else{
                 if (Sketch.isDebugMode()) {
                     Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "gif drawable recycled", " - ", gifDrawable.getInfo(), " - ", attrs.getName()));
@@ -355,13 +327,21 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
         }
     }
 
-    private void handleCompletedOnMainThread() {
+    @Override
+    protected void runCanceledInMainThread() {
+        if (loadListener != null) {
+            loadListener.onCanceled(cancelCause);
+        }
+    }
+
+    @Override
+    protected void runCompletedInMainThread() {
         if (isCanceled()) {
             if (loadResult != null && loadResult.getDrawable() instanceof RecycleDrawableInterface) {
                 ((RecycleDrawableInterface) loadResult.getDrawable()).recycle();
             }
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runCompletedInMainThread", " - ", "canceled", " - ", attrs.getName()));
             }
             return;
         }
@@ -372,10 +352,11 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
         }
     }
 
-    private void handleFailedOnMainThread() {
+    @Override
+    protected void runFailedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runFailedInMainThread", " - ", "canceled", " - ", attrs.getName()));
             }
             return;
         }
@@ -386,16 +367,11 @@ public class DefaultLoadRequest extends SketchRequest implements LoadRequest {
         }
     }
 
-    private void handleCanceledOnMainThread() {
-        if (loadListener != null) {
-            loadListener.onCanceled(cancelCause);
-        }
-    }
-
-    private void updateProgressOnMainThread(int totalLength, int completedLength) {
+    @Override
+    protected void runUpdateProgressInMainThread(int totalLength, int completedLength) {
         if (isFinished()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runUpdateProgressInMainThread", " - ", "finished", " - ", attrs.getName()));
             }
             return;
         }

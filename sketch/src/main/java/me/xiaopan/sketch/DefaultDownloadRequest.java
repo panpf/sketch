@@ -16,7 +16,6 @@
 
 package me.xiaopan.sketch;
 
-import android.os.Message;
 import android.util.Log;
 
 import me.xiaopan.sketch.cache.DiskCache;
@@ -26,10 +25,6 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 下载请求
  */
 public class DefaultDownloadRequest extends SketchRequest implements DownloadRequest {
-    private static final int WHAT_CALLBACK_COMPLETED = 302;
-    private static final int WHAT_CALLBACK_FAILED = 303;
-    private static final int WHAT_CALLBACK_CANCELED = 304;
-    private static final int WHAT_CALLBACK_PROGRESS = 305;
     private static final String NAME = "DefaultDownloadRequest";
 
     private RequestAttrs attrs;
@@ -38,9 +33,9 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
     private DownloadProgressListener downloadProgressListener;
 
     private DownloadResult downloadResult;
-    private FailCause failCause;    // 失败原因
-    private CancelCause cancelCause;  // 取消原因
-    private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
+    private FailCause failCause;
+    private CancelCause cancelCause;
+    private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;
 
     public DefaultDownloadRequest(RequestAttrs attrs, DownloadOptions options, DownloadListener downloadListener) {
         super(attrs.getConfiguration().getRequestExecutor());
@@ -110,60 +105,32 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
     @Override
     public void toFailedStatus(FailCause failCause) {
         this.failCause = failCause;
-        attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_FAILED, this).sendToTarget();
+        postRunFailed();
     }
 
     @Override
     public void toCanceledStatus(CancelCause cancelCause) {
         this.cancelCause = cancelCause;
         setRequestStatus(RequestStatus.CANCELED);
-        attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_CANCELED, this).sendToTarget();
+        postRunCanceled();
     }
 
     @Override
-    public void invokeInMainThread(Message msg) {
-        switch (msg.what) {
-            case WHAT_CALLBACK_COMPLETED:
-                handleCompletedOnMainThread();
-                break;
-            case WHAT_CALLBACK_PROGRESS:
-                updateProgressOnMainThread(msg.arg1, msg.arg2);
-                break;
-            case WHAT_CALLBACK_FAILED:
-                handleFailedOnMainThread();
-                break;
-            case WHAT_CALLBACK_CANCELED:
-                handleCanceledOnMainThread();
-                break;
-            default:
-                new IllegalArgumentException("unknown message what: " + msg.what).printStackTrace();
-                break;
-        }
-    }
-
-    @Override
-    protected void onPostRunDispatch() {
-        super.onPostRunDispatch();
+    protected void submitRunDispatch() {
         setRequestStatus(RequestStatus.WAIT_DISPATCH);
+        super.submitRunDispatch();
     }
 
     @Override
-    protected void onPostRunDownload() {
-        super.onPostRunDownload();
+    protected void submitRunDownload() {
         setRequestStatus(RequestStatus.WAIT_DOWNLOAD);
+        super.submitRunDownload();
     }
 
     @Override
-    protected void onPostRunLoad() {
-        super.onPostRunLoad();
+    protected void submitRunLoad() {
         setRequestStatus(RequestStatus.WAIT_LOAD);
-    }
-
-    @Override
-    public void updateProgress(int totalLength, int completedLength) {
-        if (downloadProgressListener != null) {
-            attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
-        }
+        super.submitRunLoad();
     }
 
     @Override
@@ -187,7 +154,7 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "diskCache", " - ", attrs.getName()));
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, false);
-                attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                postRunCompleted();
                 return;
             }
         }
@@ -196,7 +163,7 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
         if (options.getRequestLevel() == RequestLevel.LOCAL) {
             toCanceledStatus(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "canceled", " - ", options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
             }
             return;
         }
@@ -205,7 +172,7 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "download", " - ", attrs.getName()));
         }
-        postRunDownload();
+        submitRunDownload();
     }
 
     @Override
@@ -235,7 +202,7 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
 
         // 下载成功了
         downloadResult = justDownloadResult;
-        attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+        postRunCompleted();
     }
 
     @Override
@@ -243,15 +210,45 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
 
     }
 
-    private void handleCompletedOnMainThread() {
+    @Override
+    public void updateProgress(int totalLength, int completedLength) {
+        if (downloadProgressListener != null) {
+            postRunUpdateProgress(totalLength, completedLength);
+        }
+    }
+
+    @Override
+    protected void runUpdateProgressInMainThread(int totalLength, int completedLength) {
+        if (isFinished()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runUpdateProgressInMainThread", " - ", "finished", " - ", attrs.getName()));
+            }
+            return;
+        }
+
+        if (downloadProgressListener != null) {
+            downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
+        }
+    }
+
+    @Override
+    protected void runCanceledInMainThread() {
+        if (downloadListener != null) {
+            downloadListener.onCanceled(cancelCause);
+        }
+    }
+
+    @Override
+    protected void runCompletedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runCompletedInMainThread", " - ", "canceled", " - ", attrs.getName()));
             }
             return;
         }
 
         setRequestStatus(RequestStatus.COMPLETED);
+
         if (downloadListener != null) {
             if (downloadResult.getDiskCacheEntry() != null) {
                 downloadListener.onCompleted(downloadResult.getDiskCacheEntry().getFile(), downloadResult.isFromNetwork());
@@ -261,35 +258,19 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
         }
     }
 
-    private void handleFailedOnMainThread() {
+    @Override
+    protected void runFailedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runFailedInMainThread", " - ", "canceled", " - ", attrs.getName()));
             }
             return;
         }
 
         setRequestStatus(RequestStatus.FAILED);
+
         if (downloadListener != null) {
             downloadListener.onFailed(failCause);
-        }
-    }
-
-    private void handleCanceledOnMainThread() {
-        if (downloadListener != null) {
-            downloadListener.onCanceled();
-        }
-    }
-
-    private void updateProgressOnMainThread(int totalLength, int completedLength) {
-        if (isFinished()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", attrs.getName()));
-            }
-            return;
-        }
-        if (downloadProgressListener != null) {
-            downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
         }
     }
 }

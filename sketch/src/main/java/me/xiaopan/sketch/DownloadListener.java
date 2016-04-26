@@ -52,5 +52,5 @@ public interface DownloadListener {
     /**
      * 已取消
      */
-    void onCanceled();
+    void onCanceled(CancelCause cancelCause);
 }
