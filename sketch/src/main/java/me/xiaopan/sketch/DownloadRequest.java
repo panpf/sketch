@@ -112,7 +112,7 @@ public class DownloadRequest extends SketchRequest {
 
         // 然后从磁盘缓存中找缓存文件
         if (options.isCacheInDisk()) {
-            DiskCache.Entry diskCacheEntry = attrs.getConfiguration().getDiskCache().get(attrs.getUri());
+            DiskCache.Entry diskCacheEntry = attrs.getConfiguration().getDiskCache().get(attrs.getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runDispatch", " - ", "diskCache", " - ", attrs.getName()));

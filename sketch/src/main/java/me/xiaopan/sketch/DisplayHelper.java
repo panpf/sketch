@@ -47,6 +47,7 @@ public class DisplayHelper {
      * 支持以下几种图片Uri
      * <blockQuote>"http://site.com/image.png"; // from Web
      * <br>"https://site.com/image.png"; // from Web
+     * <br>"file:///mnt/sdcard/image.png"; // from SD card
      * <br>"/mnt/sdcard/image.png"; // from SD card
      * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
      * <br>"content://media/external/audio/albumart/13"; // from content provider

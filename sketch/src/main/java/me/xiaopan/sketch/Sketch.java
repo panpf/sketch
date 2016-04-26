@@ -67,9 +67,9 @@ public class Sketch {
      * 下载图片
      *
      * @param uri              图片Uri，支持以下几种
-     *                         <blockquote>“http://site.com/image.png“  // from Web
+     *                         <blockQuote>“http://site.com/image.png“  // from Web
      *                         <br>“https://site.com/image.png“ // from Web
-     *                         </blockquote>
+     *                         </blockQuote>
      * @param downloadListener 下载监听器
      * @return DownloadHelper 你可以继续设置一些参数，最后调用fire()方法开始下载
      */
@@ -82,14 +82,15 @@ public class Sketch {
      * 根据URI加载图片
      *
      * @param uri          图片Uri，支持以下几种
-     *                     <blockquote>"http://site.com/image.png"; // from Web
+     *                     <blockQuote>"http://site.com/image.png"; // from Web
      *                     <br>"https://site.com/image.png"; // from Web
+     *                     <br>"file:///mnt/sdcard/image.png"; // from SD card
      *                     <br>"/mnt/sdcard/image.png"; // from SD card
      *                     <br>"/mnt/sdcard/app.apk"; // from SD card apk file
      *                     <br>"content://media/external/audio/albumart/13"; // from content provider
      *                     <br>"asset://image.png"; // from assets
      *                     <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     *                     </blockquote>
+     *                     </blockQuote>
      * @param loadListener 加载监听器
      * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
@@ -138,14 +139,15 @@ public class Sketch {
      * 显示图片
      *
      * @param uri                      图片Uri，支持以下几种
-     *                                 <blockquote>"http://site.com/image.png"; // from Web
+     *                                 <blockQuote>"http://site.com/image.png"; // from Web
      *                                 <br>"https://site.com/image.png"; // from Web
+     *                                 <br>"file:///mnt/sdcard/image.png"; // from SD card
      *                                 <br>"/mnt/sdcard/image.png"; // from SD card
      *                                 <br>"/mnt/sdcard/app.apk"; // from SD card apk file
      *                                 <br>"content://media/external/audio/albumart/13"; // from content provider
      *                                 <br>"asset://image.png"; // from assets
      *                                 <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     *                                 </blockquote>
+     *                                 </blockQuote>
      * @param imageViewInterface 显示图片的视图
      * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */

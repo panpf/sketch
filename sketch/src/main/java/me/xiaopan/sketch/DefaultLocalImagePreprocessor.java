@@ -57,7 +57,7 @@ public class DefaultLocalImagePreprocessor implements LocalImagePreprocessor {
     }
 
     private boolean isApkFile(LoadRequest loadRequest){
-        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getAttrs().getUri(), ".apk");
+        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getAttrs().getRealUri(), ".apk");
     }
 
     /**
@@ -66,29 +66,29 @@ public class DefaultLocalImagePreprocessor implements LocalImagePreprocessor {
      * @return APK图标的缓存文件
      */
     private DiskCache.Entry getApkIconCacheFile(LoadRequest loadRequest) {
-        String uri = loadRequest.getAttrs().getUri();
+        String realUri = loadRequest.getAttrs().getRealUri();
         Configuration configuration = loadRequest.getAttrs().getSketch().getConfiguration();
 
-        File apkFile = new File(uri);
+        File apkFile = new File(realUri);
         if (!apkFile.exists()) {
             return null;
         }
         long lastModifyTime = apkFile.lastModified();
-        String diskCacheKey = uri + "." + lastModifyTime;
+        String diskCacheKey = realUri + "." + lastModifyTime;
 
         DiskCache.Entry apkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (apkIconDiskCacheEntry != null) {
             return apkIconDiskCacheEntry;
         }
 
-        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(configuration.getContext(), uri, loadRequest.getOptions().isLowQualityImage(), NAME);
+        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(configuration.getContext(), realUri, loadRequest.getOptions().isLowQualityImage(), NAME);
         if (iconBitmap == null) {
             return null;
         }
 
         if (iconBitmap.isRecycled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "apk icon bitmap recycled", " - ", uri));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "apk icon bitmap recycled", " - ", realUri));
             }
             return null;
         }
@@ -113,7 +113,7 @@ public class DefaultLocalImagePreprocessor implements LocalImagePreprocessor {
         apkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (apkIconDiskCacheEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found apk icon cache file", " - ", uri));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found apk icon cache file", " - ", realUri));
             }
         }
 

@@ -149,7 +149,7 @@ public class DownloadHelper {
             return null;
         }
 
-        if (!(uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS)) {
+        if (uriScheme != UriScheme.NET) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "only support http ot https", " - ", name));
             }

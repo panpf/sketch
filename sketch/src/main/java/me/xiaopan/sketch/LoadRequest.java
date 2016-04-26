@@ -86,7 +86,7 @@ public class LoadRequest extends DownloadRequest {
         setStatus(Status.DISPATCHING);
 
         // 本地请求直接执行加载
-        if (getAttrs().getUriScheme() != UriScheme.HTTP && getAttrs().getUriScheme() != UriScheme.HTTPS) {
+        if (getAttrs().getUriScheme() != UriScheme.NET) {
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runDispatch", " - ", "local", " - ", getAttrs().getName()));
             }

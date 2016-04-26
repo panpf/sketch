@@ -79,14 +79,11 @@ public class CacheFileDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeFailed() {
         if (Sketch.isDebugMode()) {
-            String builder = NAME + " - " + "decode failed" +
-                    ", " + "uri" + "=" + diskCacheEntry.getUri() +
-                    ",  " + "imageUri" + "=" + loadRequest.getAttrs().getUri();
-            Log.e(Sketch.TAG, builder);
+            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", "diskCacheKey", "=", diskCacheEntry.getUri(), ", ", " - ", loadRequest.getAttrs().getName()));
         }
         if (!diskCacheEntry.delete()) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete damaged disk cache file failed", " - ", diskCacheEntry.getUri()));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete damaged disk cache file failed", " - ", "diskCacheKey", "=", diskCacheEntry.getUri(), ", ", " - ", loadRequest.getAttrs().getName()));
             }
         }
     }

@@ -20,7 +20,7 @@ package me.xiaopan.sketch;
  * 支持的协议类型
  */
 public enum UriScheme {
-    HTTP("http://") {
+    NET("http://", "https://") {
         @Override
         public String createUri(String uri) {
             return uri;
@@ -32,7 +32,7 @@ public enum UriScheme {
         }
     },
 
-    HTTPS("https://") {
+    FILE("/", "file://") {
         @Override
         public String createUri(String uri) {
             return uri;
@@ -40,19 +40,17 @@ public enum UriScheme {
 
         @Override
         public String crop(String uri) {
-            return uri;
-        }
-    },
+            String uriPrefix = getUriPrefix();
+            if(uri.startsWith(uriPrefix)){
+                return uri;
+            }
 
-    FILE("/") {
-        @Override
-        public String createUri(String uri) {
-            return uri;
-        }
+            uriPrefix = getSecondaryUriPrefix();
+            if(uri.startsWith(uriPrefix)){
+                return uri.substring(uriPrefix.length());
+            }
 
-        @Override
-        public String crop(String uri) {
-            return uri;
+            return null;
         }
     },
 
@@ -79,10 +77,17 @@ public enum UriScheme {
 
         @Override
         public String crop(String uri) {
-            if (!uri.startsWith(getUriPrefix())) {
-                throw new IllegalArgumentException(String.format("URI [%1$s] doesn't have expected scheme [%2$s]", uri, getUriPrefix()));
+            String uriPrefix = getUriPrefix();
+            if(uri.startsWith(uriPrefix)){
+                return uri.substring(uriPrefix.length());
             }
-            return uri.substring(getUriPrefix().length());
+
+            uriPrefix = getSecondaryUriPrefix();
+            if(uri.startsWith(uriPrefix)){
+                return uri.substring(uriPrefix.length());
+            }
+
+            return null;
         }
     },
 
@@ -97,17 +102,30 @@ public enum UriScheme {
 
         @Override
         public String crop(String uri) {
-            if (!uri.startsWith(getUriPrefix())) {
-                throw new IllegalArgumentException(String.format("URI [%1$s] doesn't have expected scheme [%2$s]", uri, getUriPrefix()));
+            String uriPrefix = getUriPrefix();
+            if(uri.startsWith(uriPrefix)){
+                return uri.substring(uriPrefix.length());
             }
-            return uri.substring(getUriPrefix().length());
+
+            uriPrefix = getSecondaryUriPrefix();
+            if(uri.startsWith(uriPrefix)){
+                return uri.substring(uriPrefix.length());
+            }
+
+            return null;
         }
     };
 
     private String uriPrefix;
+    private String secondaryUriPrefix;
 
     UriScheme(String uriPrefix) {
         this.uriPrefix = uriPrefix;
+    }
+
+    UriScheme(String uriPrefix, String secondaryUriPrefix) {
+        this.uriPrefix = uriPrefix;
+        this.secondaryUriPrefix = secondaryUriPrefix;
     }
 
     public abstract String createUri(String content);
@@ -118,10 +136,15 @@ public enum UriScheme {
         return uriPrefix;
     }
 
+    public String getSecondaryUriPrefix() {
+        return secondaryUriPrefix;
+    }
+
     public static UriScheme valueOfUri(String uri) {
         if (uri != null && !"".equals(uri.trim())) {
             for (UriScheme uriScheme : values()) {
-                if (uri.startsWith(uriScheme.getUriPrefix())) {
+                if ((uriScheme.uriPrefix != null && uri.startsWith(uriScheme.uriPrefix))
+                        || (uriScheme.secondaryUriPrefix != null && uri.startsWith(uriScheme.secondaryUriPrefix))) {
                     return uriScheme;
                 }
             }

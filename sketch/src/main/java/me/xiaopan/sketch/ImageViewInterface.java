@@ -62,14 +62,15 @@ public interface ImageViewInterface {
      * 显示图片
      *
      * @param uri 图片Uri，支持以下几种
-     *            <blockquote>"http://site.com/image.png"; // from Web
+     *            <blockQuote>"http://site.com/image.png"; // from Web
      *            <br>"https://site.com/image.png"; // from Web
+     *            <br>"file:///mnt/sdcard/image.png"; // from SD card
      *            <br>"/mnt/sdcard/image.png"; // from SD card
      *            <br>"/mnt/sdcard/app.apk"; // from SD card apk file
      *            <br>"content://media/external/audio/albumart/13"; // from content provider
      *            <br>"asset://image.png"; // from assets
      *            <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     *            </blockquote>
+     *            </blockQuote>
      * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
     DisplayRequest displayImage(String uri);
