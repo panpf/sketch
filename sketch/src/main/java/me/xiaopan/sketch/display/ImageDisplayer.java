@@ -19,7 +19,7 @@ package me.xiaopan.sketch.display;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Identifier;
-import me.xiaopan.sketch.SketchImageViewInterface;
+import me.xiaopan.sketch.ImageViewInterface;
 
 /**
  * 图片显示器
@@ -30,5 +30,5 @@ public interface ImageDisplayer extends Identifier {
     /**
      * 显示
      */
-    void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable);
+    void display(ImageViewInterface imageViewInterface, Drawable newDrawable);
 }

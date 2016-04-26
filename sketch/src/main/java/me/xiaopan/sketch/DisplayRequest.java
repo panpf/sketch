@@ -28,7 +28,7 @@ public interface DisplayRequest extends LoadRequest {
     DisplayOptions getOptions();
 
     /**
-     * 获取内存缓存ID
+     * 获取显示属性
      */
-    String getMemoryCacheId();
+    DisplayAttrs getDisplayAttrs();
 }

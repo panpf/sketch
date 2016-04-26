@@ -41,7 +41,7 @@ public class DisplayHelper {
 
     protected FixedSize fixedSize;
     protected ScaleType scaleType;
-    protected SketchImageViewInterface sketchImageViewInterface;
+    protected ImageViewInterface imageViewInterface;
 
     /**
      * 支持以下几种图片Uri
@@ -54,25 +54,25 @@ public class DisplayHelper {
      * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      * </blockQuote>
      */
-    public DisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
+    public DisplayHelper(Sketch sketch, String uri, ImageViewInterface imageViewInterface) {
         this.options = new DisplayOptions();
-        init(sketch, uri, sketchImageViewInterface);
+        init(sketch, uri, imageViewInterface);
     }
 
-    public DisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
+    public DisplayHelper(Sketch sketch, DisplayParams displayParams, ImageViewInterface imageViewInterface) {
         this.options = new DisplayOptions();
-        init(sketch, displayParams, sketchImageViewInterface);
+        init(sketch, displayParams, imageViewInterface);
     }
 
     /**
      * 初始化
      */
-    public DisplayHelper init(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
+    public DisplayHelper init(Sketch sketch, String uri, ImageViewInterface imageViewInterface) {
         this.sketch = sketch;
-        this.sketchImageViewInterface = sketchImageViewInterface;
+        this.imageViewInterface = imageViewInterface;
 
         this.uri = uri;
-        options(this.sketchImageViewInterface.getDisplayOptions());
+        options(this.imageViewInterface.getDisplayOptions());
 
         return this;
     }
@@ -80,9 +80,9 @@ public class DisplayHelper {
     /**
      * 初始化，此方法用来在RecyclerView中恢复使用
      */
-    public DisplayHelper init(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
+    public DisplayHelper init(Sketch sketch, DisplayParams displayParams, ImageViewInterface imageViewInterface) {
         this.sketch = sketch;
-        this.sketchImageViewInterface = sketchImageViewInterface;
+        this.imageViewInterface = imageViewInterface;
 
         recoverParamsFromImageView(displayParams);
 
@@ -104,18 +104,18 @@ public class DisplayHelper {
 
         fixedSize = null;
         scaleType = null;
-        sketchImageViewInterface = null;
+        imageViewInterface = null;
     }
 
     /**
      * 将相关信息保存在SketchImageView中，以便在RecyclerView中恢复显示使用
      */
     public void saveParamToImageView() {
-        DisplayParams displayParams = sketchImageViewInterface.getDisplayParams();
+        DisplayParams displayParams = imageViewInterface.getDisplayParams();
         if (displayParams == null) {
             displayParams = new DisplayParams();
             displayParams.options = new DisplayOptions(options);
-            sketchImageViewInterface.setDisplayParams(displayParams);
+            imageViewInterface.setDisplayParams(displayParams);
         }
 
         displayParams.uri = uri;
@@ -326,18 +326,18 @@ public class DisplayHelper {
     protected void preProcess() {
         Configuration configuration = sketch.getConfiguration();
 
-        scaleType = sketchImageViewInterface.getScaleType();
+        scaleType = imageViewInterface.getScaleType();
 
         // 计算ImageVie的固定大小
-        fixedSize = configuration.getImageSizeCalculator().calculateImageFixedSize(sketchImageViewInterface);
+        fixedSize = configuration.getImageSizeCalculator().calculateImageFixedSize(imageViewInterface);
 
         // 根据ImageVie的固定大小计算resize
         if (options.isResizeByFixedSize()) {
-            options.setResize(configuration.getImageSizeCalculator().calculateImageResize(sketchImageViewInterface));
+            options.setResize(configuration.getImageSizeCalculator().calculateImageResize(imageViewInterface));
         }
 
         // 如果没有设置ScaleType的话就从ImageView身上取
-        if (options.getResize() != null && options.getResize().getScaleType() == null && sketchImageViewInterface != null) {
+        if (options.getResize() != null && options.getResize().getScaleType() == null && imageViewInterface != null) {
             options.getResize().setScaleType(scaleType);
         }
 
@@ -348,7 +348,7 @@ public class DisplayHelper {
 
         // 没有设置maxSize的话，如果ImageView的宽高是的固定的就根据ImageView的宽高来作为maxSize，否则就用默认的maxSize
         if (options.getMaxSize() == null) {
-            MaxSize maxSize = configuration.getImageSizeCalculator().calculateImageMaxSize(sketchImageViewInterface);
+            MaxSize maxSize = configuration.getImageSizeCalculator().calculateImageMaxSize(imageViewInterface);
             if (maxSize == null) {
                 maxSize = configuration.getImageSizeCalculator().getDefaultImageMaxSize(configuration.getContext());
             }
@@ -410,10 +410,10 @@ public class DisplayHelper {
         }
 
         // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
-        sketchImageViewInterface.onDisplay();
+        imageViewInterface.onDisplay();
 
-        displayListener = sketchImageViewInterface.getDisplayListener(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD);
-        downloadProgressListener = sketchImageViewInterface.getDownloadProgressListener();
+        displayListener = imageViewInterface.getDisplayListener(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD);
+        downloadProgressListener = imageViewInterface.getDownloadProgressListener();
     }
 
     /**
@@ -434,7 +434,7 @@ public class DisplayHelper {
         }
 
         // 验证imageView参数
-        if (sketchImageViewInterface == null) {
+        if (imageViewInterface == null) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "sketchImageViewInterface is null", " - ", (name != null ? name : uri)));
             }
@@ -450,12 +450,12 @@ public class DisplayHelper {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
             }
-            if (sketchImageViewInterface != null) {
-                sketchImageViewInterface.setDisplayRequest(null);
+            if (imageViewInterface != null) {
+                imageViewInterface.setDisplayRequest(null);
             }
             Drawable failureDrawable = options.getFailureImage() != null ? options.getFailureImage().getRecycleBitmapDrawable(context) : null;
             if (failureDrawable != null) {
-                sketchImageViewInterface.setImageDrawable(failureDrawable);
+                imageViewInterface.setImageDrawable(failureDrawable);
             }
             if (displayListener != null) {
                 displayListener.onFailed(FailCause.URI_NULL_OR_EMPTY);
@@ -468,12 +468,12 @@ public class DisplayHelper {
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if (uriScheme == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme: ", uri, " - ", (name != null ? name : uri)));
-            if (sketchImageViewInterface != null) {
-                sketchImageViewInterface.setDisplayRequest(null);
+            if (imageViewInterface != null) {
+                imageViewInterface.setDisplayRequest(null);
             }
             Drawable failureDrawable = options.getFailureImage() != null ? options.getFailureImage().getRecycleBitmapDrawable(context) : null;
             if (failureDrawable != null) {
-                sketchImageViewInterface.setImageDrawable(failureDrawable);
+                imageViewInterface.setImageDrawable(failureDrawable);
             }
             if (displayListener != null) {
                 displayListener.onFailed(FailCause.URI_NO_SUPPORT);
@@ -491,10 +491,10 @@ public class DisplayHelper {
                     if (Sketch.isDebugMode()) {
                         Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "from memory get bitmap", " - ", recycleDrawable.getInfo(), " - ", name));
                     }
-                    if (sketchImageViewInterface != null) {
-                        sketchImageViewInterface.setDisplayRequest(null);
+                    if (imageViewInterface != null) {
+                        imageViewInterface.setDisplayRequest(null);
                     }
-                    sketchImageViewInterface.setImageDrawable(cacheDrawable);
+                    imageViewInterface.setImageDrawable(cacheDrawable);
                     if (displayListener != null) {
                         displayListener.onCompleted(ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
                     }
@@ -512,26 +512,26 @@ public class DisplayHelper {
         // 如果已经暂停了的话就不再从本地或网络加载了
         if (options.getRequestLevel() == RequestLevel.MEMORY) {
             Drawable loadingDrawable = options.getLoadingImageHolder() != null ? options.getLoadingImageHolder().getRecycleBitmapDrawable(context) : null;
-            sketchImageViewInterface.clearAnimation();
-            sketchImageViewInterface.setImageDrawable(loadingDrawable);
+            imageViewInterface.clearAnimation();
+            imageViewInterface.setImageDrawable(loadingDrawable);
             if (displayListener != null) {
                 displayListener.onCanceled(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD ? CancelCause.PAUSE_LOAD : CancelCause.LEVEL_IS_MEMORY);
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", (options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD ? "pause load" : "requestLevel is memory"), " - ", name));
                 }
             }
-            if (sketchImageViewInterface != null) {
-                sketchImageViewInterface.setDisplayRequest(null);
+            if (imageViewInterface != null) {
+                imageViewInterface.setDisplayRequest(null);
             }
             return null;
         }
 
         // 试图取消已经存在的请求
-        DisplayRequest potentialRequest = BindFixedRecycleBitmapDrawable.getDisplayRequestBySketchImageInterface(sketchImageViewInterface);
+        DisplayRequest potentialRequest = BindFixedRecycleBitmapDrawable.findDisplayRequest(imageViewInterface);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
-            if (memoryCacheId.equals(potentialRequest.getMemoryCacheId())) {
+            if (memoryCacheId.equals(potentialRequest.getDisplayAttrs().getMemoryCacheId())) {
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "don't need to cancel", "；", "ImageViewCode", "=", Integer.toHexString(sketchImageViewInterface.hashCode()), "；", potentialRequest.getAttrs().getName()));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "don't need to cancel", "；", "ImageViewCode", "=", Integer.toHexString(imageViewInterface.hashCode()), "；", potentialRequest.getAttrs().getName()));
                 }
                 configuration.getHelperFactory().recycleDisplayHelper(this);
                 return potentialRequest;
@@ -541,8 +541,9 @@ public class DisplayHelper {
         }
 
         // 组织请求
-        RequestAttrs attrs = new RequestAttrs(sketch, uri, uriScheme, name);
-        final DisplayRequest request = configuration.getRequestFactory().newDisplayRequest(attrs, memoryCacheId, fixedSize, sketchImageViewInterface, options, displayListener);
+        RequestAttrs requestAttrs = new RequestAttrs(sketch, uri, uriScheme, name);
+        DisplayAttrs displayAttrs = new DisplayAttrs(memoryCacheId, fixedSize, imageViewInterface);
+        final DisplayRequest request = configuration.getRequestFactory().newDisplayRequest(requestAttrs, displayAttrs, options, displayListener);
 
         request.setDownloadProgressListener(downloadProgressListener);
 
@@ -559,10 +560,10 @@ public class DisplayHelper {
         } else {
             loadingBindDrawable = new BindFixedRecycleBitmapDrawable(null, request);
         }
-        sketchImageViewInterface.setImageDrawable(loadingBindDrawable);
+        imageViewInterface.setImageDrawable(loadingBindDrawable);
 
-        if (sketchImageViewInterface != null) {
-            sketchImageViewInterface.setDisplayRequest(request);
+        if (imageViewInterface != null) {
+            imageViewInterface.setDisplayRequest(request);
         }
 
         // 分发请求

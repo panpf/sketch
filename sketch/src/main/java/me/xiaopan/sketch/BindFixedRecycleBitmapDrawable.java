@@ -27,14 +27,11 @@ public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable {
     }
 
     /**
-     * 获取与给定SketchImageViewInterface所持有的DisplayRequest
-     *
-     * @param sketchImageViewInterface SketchImageViewInterface
-     * @return 给定ImageView所持有的DisplayRequest
+     * 从ImageViewInterface上查找DisplayRequest
      */
-    public static DisplayRequest getDisplayRequestBySketchImageInterface(SketchImageViewInterface sketchImageViewInterface) {
-        if (sketchImageViewInterface != null) {
-            final Drawable drawable = sketchImageViewInterface.getDrawable();
+    public static DisplayRequest findDisplayRequest(ImageViewInterface imageViewInterface) {
+        if (imageViewInterface != null) {
+            final Drawable drawable = imageViewInterface.getDrawable();
             if (drawable != null && drawable instanceof BindFixedRecycleBitmapDrawable) {
                 return ((BindFixedRecycleBitmapDrawable) drawable).getDisplayRequest();
             }

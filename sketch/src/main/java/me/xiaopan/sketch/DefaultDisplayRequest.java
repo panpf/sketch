@@ -21,7 +21,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Message;
 import android.util.Log;
 import android.widget.ImageView;
-import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.display.ImageDisplayer;
@@ -40,45 +39,36 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
     private static final int WHAT_CALLBACK_PAUSE_DOWNLOAD = 106;
     private static final String NAME = "DefaultDisplayRequest";
 
-    private RequestAttrs attrs;
-
-    private String memoryCacheId;    // 内存缓存ID
-    private ScaleType scaleType;
-    private FixedSize fixedSize;    // 固定尺寸
-    private DisplayOptions options;
-    private DisplayListener displayListener;    // 监听器
-    private DownloadProgressListener downloadProgressListener;  // 下载进度监听器
+    private RequestAttrs requestAttrs;
+    private DisplayAttrs displayAttrs;
+    private DisplayOptions displayOptions;
+    private DisplayListener displayListener;
+    private DownloadProgressListener downloadProgressListener;
 
     private DownloadResult downloadResult;
     private LoadResult loadResult;
-    private FailCause failCause;    // 失败原因
-    private CancelCause cancelCause;  // 取消原因
-    private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
-    private SketchImageViewInterfaceHolder sketchImageViewInterfaceHolder;    // 绑定ImageView
+    private FailCause failCause;
+    private CancelCause cancelCause;
+    private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;
 
-    public DefaultDisplayRequest(RequestAttrs attrs, String memoryCacheId, FixedSize fixedSize, SketchImageViewInterface sketchImageViewInterface, DisplayOptions options, DisplayListener listener) {
-        super(attrs.getConfiguration().getRequestExecutor());
-        this.attrs = attrs;
-        this.memoryCacheId = memoryCacheId;
-        this.fixedSize = fixedSize;
-        this.sketchImageViewInterfaceHolder = new SketchImageViewInterfaceHolder(sketchImageViewInterface, this);
-        this.scaleType = sketchImageViewInterface.getScaleType();
-        this.options = options;
+    public DefaultDisplayRequest(RequestAttrs requestAttrs, DisplayAttrs displayAttrs, DisplayOptions displayOptions, DisplayListener listener) {
+        super(requestAttrs.getConfiguration().getRequestExecutor());
+        this.requestAttrs = requestAttrs;
+        this.displayAttrs = displayAttrs;
+        this.displayOptions = displayOptions;
         this.displayListener = listener;
+
+        displayAttrs.getSketchBinder().setDisplayRequest(this);
     }
 
     @Override
     public RequestAttrs getAttrs() {
-        return attrs;
-    }
-
-    public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
-        this.downloadProgressListener = downloadProgressListener;
+        return requestAttrs;
     }
 
     @Override
-    public String getMemoryCacheId() {
-        return memoryCacheId;
+    public DisplayAttrs getDisplayAttrs() {
+        return displayAttrs;
     }
 
     @Override
@@ -117,7 +107,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
 
     @Override
     public DisplayOptions getOptions() {
-        return options;
+        return displayOptions;
     }
 
     @Override
@@ -134,7 +124,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
     public boolean isCanceled() {
         boolean isCanceled = requestStatus == RequestStatus.CANCELED;
         if (!isCanceled) {
-            isCanceled = sketchImageViewInterfaceHolder != null && sketchImageViewInterfaceHolder.isCollected();
+            isCanceled = displayAttrs.getSketchBinder().isCollected();
             if (isCanceled) {
                 toCanceledStatus(CancelCause.NORMAL);
             }
@@ -142,23 +132,33 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         return isCanceled;
     }
 
+    public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
+        this.downloadProgressListener = downloadProgressListener;
+    }
+
     public Drawable getFailureDrawable() {
-        if (options.getFailureImage() == null) {
+        if (displayOptions.getFailureImage() == null) {
             return null;
-        } else if (options.getImageDisplayer() != null && options.getImageDisplayer() instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP) {
-            return new FixedRecycleBitmapDrawable(options.getFailureImage().getRecycleBitmapDrawable(attrs.getConfiguration().getContext()), fixedSize);
+        } else if (displayOptions.getImageDisplayer() != null
+                && displayOptions.getImageDisplayer() instanceof TransitionImageDisplayer
+                && displayAttrs.getFixedSize() != null
+                && displayAttrs.getScaleType() == ImageView.ScaleType.CENTER_CROP) {
+            return new FixedRecycleBitmapDrawable(displayOptions.getFailureImage().getRecycleBitmapDrawable(requestAttrs.getConfiguration().getContext()), displayAttrs.getFixedSize());
         } else {
-            return options.getFailureImage().getRecycleBitmapDrawable(attrs.getConfiguration().getContext());
+            return displayOptions.getFailureImage().getRecycleBitmapDrawable(requestAttrs.getConfiguration().getContext());
         }
     }
 
     public Drawable getPauseDownloadDrawable() {
-        if (options.getPauseDownloadImage() == null) {
+        if (displayOptions.getPauseDownloadImage() == null) {
             return null;
-        } else if (options.getImageDisplayer() != null && options.getImageDisplayer() instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP) {
-            return new FixedRecycleBitmapDrawable(options.getPauseDownloadImage().getRecycleBitmapDrawable(attrs.getConfiguration().getContext()), fixedSize);
+        } else if (displayOptions.getImageDisplayer() != null
+                && displayOptions.getImageDisplayer() instanceof TransitionImageDisplayer
+                && displayAttrs.getFixedSize() != null
+                && displayAttrs.getScaleType() == ImageView.ScaleType.CENTER_CROP) {
+            return new FixedRecycleBitmapDrawable(displayOptions.getPauseDownloadImage().getRecycleBitmapDrawable(requestAttrs.getConfiguration().getContext()), displayAttrs.getFixedSize());
         } else {
-            return options.getPauseDownloadImage().getRecycleBitmapDrawable(attrs.getConfiguration().getContext());
+            return displayOptions.getPauseDownloadImage().getRecycleBitmapDrawable(requestAttrs.getConfiguration().getContext());
         }
     }
 
@@ -166,7 +166,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
     public void toFailedStatus(FailCause failCause) {
         this.failCause = failCause;
         setRequestStatus(RequestStatus.WAIT_DISPLAY);
-        attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_FAILED, this).sendToTarget();
+        requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_FAILED, this).sendToTarget();
     }
 
     @Override
@@ -174,7 +174,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         this.cancelCause = cancelCause;
         setRequestStatus(RequestStatus.CANCELED);
         if (displayListener != null) {
-            attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_CANCELED, this).sendToTarget();
+            requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_CANCELED, this).sendToTarget();
         }
     }
 
@@ -205,7 +205,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
     @Override
     public void updateProgress(int totalLength, int completedLength) {
         if (downloadProgressListener != null) {
-            attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
+            requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
         }
     }
 
@@ -232,20 +232,20 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         setRequestStatus(RequestStatus.DISPATCHING);
 
         // 本地请求直接执行加载
-        if (attrs.getUriScheme() != UriScheme.HTTP && attrs.getUriScheme() != UriScheme.HTTPS) {
+        if (requestAttrs.getUriScheme() != UriScheme.HTTP && requestAttrs.getUriScheme() != UriScheme.HTTPS) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "local", " - ", attrs.getName()));
+                Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "local", " - ", requestAttrs.getName()));
             }
             postRunLoad();
             return;
         }
 
         // 然后从磁盘缓存中找缓存文件
-        if (options.isCacheInDisk()) {
-            DiskCache.Entry diskCacheEntry = attrs.getConfiguration().getDiskCache().get(attrs.getUri());
+        if (displayOptions.isCacheInDisk()) {
+            DiskCache.Entry diskCacheEntry = requestAttrs.getConfiguration().getDiskCache().get(requestAttrs.getUri());
             if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "diskCache", " - ", attrs.getName()));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "diskCache", " - ", requestAttrs.getName()));
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, false);
                 postRunLoad();
@@ -254,17 +254,17 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         }
 
         // 在下载之前判断如果请求Level限制只能从本地加载的话就取消了
-        if (options.getRequestLevel() == RequestLevel.LOCAL) {
-            toCanceledStatus(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
+        if (displayOptions.getRequestLevel() == RequestLevel.LOCAL) {
+            toCanceledStatus(displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", requestAttrs.getName()));
             }
             return;
         }
 
         // 执行下载
         if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "download", " - ", attrs.getName()));
+            Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "download", " - ", requestAttrs.getName()));
         }
         postRunDownload();
     }
@@ -273,17 +273,17 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
     protected void runDownload() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDownload", " - ", "canceled", " - ", "startDownload", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDownload", " - ", "canceled", " - ", "startDownload", " - ", requestAttrs.getName()));
             }
             return;
         }
 
         // 调用下载器下载
-        DownloadResult justDownloadResult = attrs.getConfiguration().getImageDownloader().download(this);
+        DownloadResult justDownloadResult = requestAttrs.getConfiguration().getImageDownloader().download(this);
 
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDownload", " - ", "canceled", " - ", "downloadAfter", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDownload", " - ", "canceled", " - ", "downloadAfter", " - ", requestAttrs.getName()));
             }
             return;
         }
@@ -303,29 +303,29 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
     protected void runLoad() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "canceled", " - ", "startLoad", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "canceled", " - ", "startLoad", " - ", requestAttrs.getName()));
             }
             return;
         }
 
         // 检查内存缓存中是否已经存在了
-        if (options.isCacheInMemory()) {
-            Drawable cacheDrawable = attrs.getConfiguration().getMemoryCache().get(memoryCacheId);
+        if (displayOptions.isCacheInMemory()) {
+            Drawable cacheDrawable = requestAttrs.getConfiguration().getMemoryCache().get(displayAttrs.getMemoryCacheId());
             if (cacheDrawable != null) {
                 RecycleDrawableInterface recycleDrawable = (RecycleDrawableInterface) cacheDrawable;
                 if (!recycleDrawable.isRecycled()) {
                     if (Sketch.isDebugMode()) {
-                        Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "from memory get drawable", " - ", recycleDrawable.getInfo(), " - ", attrs.getName()));
+                        Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "from memory get drawable", " - ", recycleDrawable.getInfo(), " - ", requestAttrs.getName()));
                     }
                     this.loadResult = new LoadResult(cacheDrawable, ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
                     setRequestStatus(RequestStatus.WAIT_DISPLAY);
                     recycleDrawable.setIsWaitDisplay("executeLoad:fromMemory", true);
-                    attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                    requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
                     return;
                 } else {
-                    attrs.getConfiguration().getMemoryCache().remove(memoryCacheId);
+                    requestAttrs.getConfiguration().getMemoryCache().remove(displayAttrs.getMemoryCacheId());
                     if (Sketch.isDebugMode()) {
-                        Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", "bitmap recycled", " - ", recycleDrawable.getInfo(), " - ", attrs.getName()));
+                        Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", "bitmap recycled", " - ", recycleDrawable.getInfo(), " - ", requestAttrs.getName()));
                     }
                 }
             }
@@ -334,8 +334,8 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         setRequestStatus(RequestStatus.LOADING);
 
         // 尝试用本地图片预处理器处理一下特殊的本地图片，并得到他们的缓存
-        if (attrs.getConfiguration().getLocalImagePreprocessor().isSpecific(this)) {
-            DiskCache.Entry specificLocalImageDiskCacheEntry = attrs.getConfiguration().getLocalImagePreprocessor().getDiskCacheEntry(this);
+        if (requestAttrs.getConfiguration().getLocalImagePreprocessor().isSpecific(this)) {
+            DiskCache.Entry specificLocalImageDiskCacheEntry = requestAttrs.getConfiguration().getLocalImagePreprocessor().getDiskCacheEntry(this);
             if (specificLocalImageDiskCacheEntry != null) {
                 this.downloadResult = new DownloadResult(specificLocalImageDiskCacheEntry, false);
             } else {
@@ -345,7 +345,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
         }
 
         // 解码
-        DecodeResult decodeResult = attrs.getConfiguration().getImageDecoder().decode(this);
+        DecodeResult decodeResult = requestAttrs.getConfiguration().getImageDecoder().decode(this);
         if (decodeResult == null) {
             toFailedStatus(FailCause.DECODE_FAIL);
             return;
@@ -355,17 +355,17 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
             Bitmap bitmap = decodeResult.getResultBitmap();
             if (!bitmap.isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "new bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, decodeResult.getMimeType()), " - ", attrs.getName()));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "new bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, decodeResult.getMimeType()), " - ", requestAttrs.getName()));
                 }
             } else {
                 if (Sketch.isDebugMode()) {
-                    Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "decode failed bitmap recycled", " - ", "decode after", " - ", RecycleBitmapDrawable.getInfo(bitmap, decodeResult.getMimeType()), " - ", attrs.getName()));
+                    Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "decode failed bitmap recycled", " - ", "decode after", " - ", RecycleBitmapDrawable.getInfo(bitmap, decodeResult.getMimeType()), " - ", requestAttrs.getName()));
                 }
             }
 
             if (isCanceled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "canceled", " - ", "decode after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, decodeResult.getMimeType()), " - ", attrs.getName()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "canceled", " - ", "decode after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, decodeResult.getMimeType()), " - ", requestAttrs.getName()));
                 }
                 bitmap.recycle();
                 return;
@@ -373,11 +373,11 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
 
             //处理
             if (!bitmap.isRecycled()) {
-                ImageProcessor imageProcessor = options.getImageProcessor();
+                ImageProcessor imageProcessor = displayOptions.getImageProcessor();
                 if (imageProcessor != null) {
-                    Bitmap newBitmap = imageProcessor.process(attrs.getSketch(), bitmap, options.getResize(), options.isForceUseResize(), options.isLowQualityImage());
+                    Bitmap newBitmap = imageProcessor.process(requestAttrs.getSketch(), bitmap, displayOptions.getResize(), displayOptions.isForceUseResize(), displayOptions.isLowQualityImage());
                     if (newBitmap != null && newBitmap != bitmap && Sketch.isDebugMode()) {
-                        Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "process after", " - ", "newBitmap", " - ", RecycleBitmapDrawable.getInfo(newBitmap, decodeResult.getMimeType()), " - ", "recycled old bitmap", " - ", attrs.getName()));
+                        Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "process after", " - ", "newBitmap", " - ", RecycleBitmapDrawable.getInfo(newBitmap, decodeResult.getMimeType()), " - ", "recycled old bitmap", " - ", requestAttrs.getName()));
                     }
                     if (newBitmap == null || newBitmap != bitmap) {
                         bitmap.recycle();
@@ -388,7 +388,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
 
             if (isCanceled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "canceled", " - ", "process after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, decodeResult.getMimeType()), " - ", attrs.getName()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "canceled", " - ", "process after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(bitmap, decodeResult.getMimeType()), " - ", requestAttrs.getName()));
                 }
                 if (bitmap != null) {
                     bitmap.recycle();
@@ -398,8 +398,8 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
 
             if (bitmap != null && !bitmap.isRecycled()) {
                 RecycleBitmapDrawable bitmapDrawable = new RecycleBitmapDrawable(bitmap);
-                if (options.isCacheInMemory() && memoryCacheId != null) {
-                    attrs.getConfiguration().getMemoryCache().put(memoryCacheId, bitmapDrawable);
+                if (displayOptions.isCacheInMemory() && displayAttrs.getMemoryCacheId() != null) {
+                    requestAttrs.getConfiguration().getMemoryCache().put(displayAttrs.getMemoryCacheId(), bitmapDrawable);
                 }
                 bitmapDrawable.setMimeType(decodeResult.getMimeType());
 
@@ -407,7 +407,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
 
                 setRequestStatus(RequestStatus.WAIT_DISPLAY);
                 bitmapDrawable.setIsWaitDisplay("executeLoad:new", true);
-                attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
             } else {
                 toFailedStatus(FailCause.DECODE_FAIL);
             }
@@ -418,21 +418,21 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
                 gifDrawable.setMimeType(decodeResult.getMimeType());
 
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "new gif drawable", " - ", gifDrawable.getInfo(), " - ", attrs.getName()));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "new gif drawable", " - ", gifDrawable.getInfo(), " - ", requestAttrs.getName()));
                 }
 
-                if (options.isCacheInMemory() && memoryCacheId != null) {
-                    attrs.getConfiguration().getMemoryCache().put(memoryCacheId, gifDrawable);
+                if (displayOptions.isCacheInMemory() && displayAttrs.getMemoryCacheId() != null) {
+                    requestAttrs.getConfiguration().getMemoryCache().put(displayAttrs.getMemoryCacheId(), gifDrawable);
                 }
 
                 loadResult = new LoadResult(gifDrawable, decodeResult.getImageFrom(), decodeResult.getMimeType());
 
                 setRequestStatus(RequestStatus.WAIT_DISPLAY);
                 gifDrawable.setIsWaitDisplay("executeLoad:new", true);
-                attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                requestAttrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
             } else {
                 if (Sketch.isDebugMode()) {
-                    Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "gif drawable recycled", " - ", gifDrawable.getInfo(), " - ", attrs.getName()));
+                    Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runLoad", " - ", "gif drawable recycled", " - ", gifDrawable.getInfo(), " - ", requestAttrs.getName()));
                 }
 
                 toFailedStatus(FailCause.DECODE_FAIL);
@@ -448,27 +448,30 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
                 ((RecycleDrawableInterface) loadResult.getDrawable()).setIsWaitDisplay("completedCallback:cancel", false);
             }
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", requestAttrs.getName()));
             }
             return;
         }
 
         setRequestStatus(RequestStatus.DISPLAYING);
 
-        ImageDisplayer displayer = options.getImageDisplayer();
+        ImageDisplayer displayer = displayOptions.getImageDisplayer();
 
         // Set FixedSize
         Drawable finalDrawable;
-        if (displayer != null && displayer instanceof TransitionImageDisplayer && loadResult.getDrawable() instanceof RecycleBitmapDrawable && fixedSize != null && scaleType == ImageView.ScaleType.CENTER_CROP) {
-            finalDrawable = new FixedRecycleBitmapDrawable((RecycleBitmapDrawable) loadResult.getDrawable(), fixedSize);
+        if (displayer != null
+                && displayer instanceof TransitionImageDisplayer
+                && loadResult.getDrawable() instanceof RecycleBitmapDrawable
+                && displayAttrs.getFixedSize() != null && displayAttrs.getScaleType() == ImageView.ScaleType.CENTER_CROP) {
+            finalDrawable = new FixedRecycleBitmapDrawable((RecycleBitmapDrawable) loadResult.getDrawable(), displayAttrs.getFixedSize());
         } else {
             finalDrawable = loadResult.getDrawable();
         }
 
         if (displayer == null) {
-            displayer = attrs.getConfiguration().getDefaultImageDisplayer();
+            displayer = requestAttrs.getConfiguration().getDefaultImageDisplayer();
         }
-        displayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), finalDrawable);
+        displayer.display(displayAttrs.getSketchBinder().getImageViewInterface(), finalDrawable);
         ((RecycleDrawableInterface) loadResult.getDrawable()).setIsWaitDisplay("completedCallback", false);
         setRequestStatus(RequestStatus.COMPLETED);
         if (displayListener != null) {
@@ -479,18 +482,18 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
     private void handleFailedOnMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", requestAttrs.getName()));
             }
             return;
         }
 
         setRequestStatus(RequestStatus.DISPLAYING);
 
-        ImageDisplayer displayer = options.getImageDisplayer();
+        ImageDisplayer displayer = displayOptions.getImageDisplayer();
         if (displayer == null) {
-            displayer = attrs.getConfiguration().getDefaultImageDisplayer();
+            displayer = requestAttrs.getConfiguration().getDefaultImageDisplayer();
         }
-        displayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), getFailureDrawable());
+        displayer.display(displayAttrs.getSketchBinder().getImageViewInterface(), getFailureDrawable());
         setRequestStatus(RequestStatus.FAILED);
         if (displayListener != null) {
             displayListener.onFailed(failCause);
@@ -506,18 +509,18 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
     private void handlePauseDownloadOnMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handlePauseDownloadOnMainThread", " - ", "canceled", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handlePauseDownloadOnMainThread", " - ", "canceled", " - ", requestAttrs.getName()));
             }
             return;
         }
 
-        if (options.getPauseDownloadImage() != null) {
+        if (displayOptions.getPauseDownloadImage() != null) {
             setRequestStatus(RequestStatus.DISPLAYING);
-            ImageDisplayer displayer = options.getImageDisplayer();
+            ImageDisplayer displayer = displayOptions.getImageDisplayer();
             if (displayer == null) {
-                displayer = attrs.getConfiguration().getDefaultImageDisplayer();
+                displayer = requestAttrs.getConfiguration().getDefaultImageDisplayer();
             }
-            displayer.display(sketchImageViewInterfaceHolder.getSketchImageViewInterface(), getPauseDownloadDrawable());
+            displayer.display(displayAttrs.getSketchBinder().getImageViewInterface(), getPauseDownloadDrawable());
         }
 
         cancelCause = CancelCause.PAUSE_DOWNLOAD;
@@ -530,7 +533,7 @@ public class DefaultDisplayRequest extends SketchRequest implements DisplayReque
     private void updateProgressOnMainThread(int totalLength, int completedLength) {
         if (isFinished()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", requestAttrs.getName()));
             }
             return;
         }

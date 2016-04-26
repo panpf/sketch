@@ -22,7 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 
 import me.xiaopan.sketch.RecycleGifDrawable;
-import me.xiaopan.sketch.SketchImageViewInterface;
+import me.xiaopan.sketch.ImageViewInterface;
 
 /**
  * 过渡效果的图片显示器
@@ -40,21 +40,21 @@ public class TransitionImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable) {
+    public void display(ImageViewInterface imageViewInterface, Drawable newDrawable) {
         if (newDrawable == null) {
             return;
         }
         if (newDrawable instanceof RecycleGifDrawable) {
-            sketchImageViewInterface.clearAnimation();
-            sketchImageViewInterface.setImageDrawable(newDrawable);
+            imageViewInterface.clearAnimation();
+            imageViewInterface.setImageDrawable(newDrawable);
         } else {
-            Drawable oldDrawable = sketchImageViewInterface.getDrawable();
+            Drawable oldDrawable = imageViewInterface.getDrawable();
             if (oldDrawable == null) {
                 new ColorDrawable(Color.TRANSPARENT);
             }
             TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, newDrawable});
-            sketchImageViewInterface.clearAnimation();
-            sketchImageViewInterface.setImageDrawable(transitionDrawable);
+            imageViewInterface.clearAnimation();
+            imageViewInterface.setImageDrawable(transitionDrawable);
             transitionDrawable.setCrossFadeEnabled(true);
             transitionDrawable.startTransition(duration);
         }

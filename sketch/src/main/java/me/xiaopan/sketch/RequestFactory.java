@@ -22,9 +22,9 @@ package me.xiaopan.sketch;
 public class RequestFactory implements Identifier{
     private static final String NAME = "RequestFactory";
 
-    public DisplayRequest newDisplayRequest(RequestAttrs attrs, String memoryCacheId, FixedSize fixedSize, SketchImageViewInterface sketchImageViewInterface, DisplayOptions options, DisplayListener listener) {
+    public DisplayRequest newDisplayRequest(RequestAttrs attrs, DisplayAttrs displayAttrs, DisplayOptions options, DisplayListener listener) {
         // 由于DisplayHelper会被重复利用，因此其DisplayOptions不能直接拿来用，要重新New一个
-        return new DefaultDisplayRequest(attrs, memoryCacheId, fixedSize, sketchImageViewInterface, new DisplayOptions(options), listener);
+        return new DefaultDisplayRequest(attrs, displayAttrs, new DisplayOptions(options), listener);
     }
 
     public LoadRequest newLoadRequest(RequestAttrs attrs, LoadOptions options, LoadListener listener) {

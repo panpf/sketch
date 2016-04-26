@@ -36,11 +36,11 @@ public class ImageSizeCalculator implements Identifier{
     /**
      * 计算MaxSize
      *
-     * @param sketchImageViewInterface 你需要根据ImageView的宽高来计算
+     * @param imageViewInterface 你需要根据ImageView的宽高来计算
      * @return MaxSize
      */
-    public MaxSize calculateImageMaxSize(SketchImageViewInterface sketchImageViewInterface) {
-        View imageView = sketchImageViewInterface.getSelf();
+    public MaxSize calculateImageMaxSize(ImageViewInterface imageViewInterface) {
+        View imageView = imageViewInterface.getSelf();
         if (imageView == null) {
             return null;
         }
@@ -57,11 +57,11 @@ public class ImageSizeCalculator implements Identifier{
     /**
      * 计算Resize
      *
-     * @param sketchImageViewInterface 你需要根据ImageView的宽高来计算
+     * @param imageViewInterface 你需要根据ImageView的宽高来计算
      * @return Resize
      */
-    public Resize calculateImageResize(SketchImageViewInterface sketchImageViewInterface) {
-        View imageView = sketchImageViewInterface.getSelf();
+    public Resize calculateImageResize(ImageViewInterface imageViewInterface) {
+        View imageView = imageViewInterface.getSelf();
         if (imageView == null) {
             return null;
         }
@@ -69,7 +69,7 @@ public class ImageSizeCalculator implements Identifier{
         int width = getWidth(imageView, false, false, true);
         int height = getHeight(imageView, false, false, true);
         if (width > 0 && height > 0) {
-            return new Resize(width, height, sketchImageViewInterface.getScaleType());
+            return new Resize(width, height, imageViewInterface.getScaleType());
         } else {
             return null;
         }
@@ -78,11 +78,11 @@ public class ImageSizeCalculator implements Identifier{
     /**
      * 计算FixedSize
      *
-     * @param sketchImageViewInterface 你需要根据ImageView的宽高来计算
+     * @param imageViewInterface 你需要根据ImageView的宽高来计算
      * @return FixedSize
      */
-    public FixedSize calculateImageFixedSize(SketchImageViewInterface sketchImageViewInterface) {
-        View imageView = sketchImageViewInterface.getSelf();
+    public FixedSize calculateImageFixedSize(ImageViewInterface imageViewInterface) {
+        View imageView = imageViewInterface.getSelf();
         if (imageView == null) {
             return null;
         }

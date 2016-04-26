@@ -16,36 +16,38 @@
 
 package me.xiaopan.sketch;
 
-import java.lang.ref.Reference;
 import java.lang.ref.WeakReference;
 
 /**
- * ImageView持有器，以弱引用的方式持有关联的ImageView
+ * Request与ImageView的关系绑定器
  */
-public class SketchImageViewInterfaceHolder {
+public class SketchBinder {
     private DisplayRequest displayRequest;
-    private Reference<SketchImageViewInterface> sketchImageViewInterfaceReference;
+    private WeakReference<ImageViewInterface> imageViewReference;
 
-    public SketchImageViewInterfaceHolder(SketchImageViewInterface imageView, DisplayRequest displayRequest) {
-        this.sketchImageViewInterfaceReference = new WeakReference<SketchImageViewInterface>(imageView);
+    public SketchBinder(ImageViewInterface imageView) {
+        this.imageViewReference = new WeakReference<ImageViewInterface>(imageView);
+    }
+
+    public void setDisplayRequest(DisplayRequest displayRequest) {
         this.displayRequest = displayRequest;
     }
 
-    public SketchImageViewInterface getSketchImageViewInterface() {
-        final SketchImageViewInterface sketchImageViewInterface = sketchImageViewInterfaceReference.get();
+    public ImageViewInterface getImageViewInterface() {
+        final ImageViewInterface imageViewInterface = imageViewReference.get();
         if (displayRequest != null) {
-            DisplayRequest holderDisplayRequest = BindFixedRecycleBitmapDrawable.getDisplayRequestBySketchImageInterface(sketchImageViewInterface);
+            DisplayRequest holderDisplayRequest = BindFixedRecycleBitmapDrawable.findDisplayRequest(imageViewInterface);
             if (holderDisplayRequest != null && holderDisplayRequest == displayRequest) {
-                return sketchImageViewInterface;
+                return imageViewInterface;
             } else {
                 return null;
             }
         } else {
-            return sketchImageViewInterface;
+            return imageViewInterface;
         }
     }
 
     public boolean isCollected() {
-        return getSketchImageViewInterface() == null;
+        return getImageViewInterface() == null;
     }
 }

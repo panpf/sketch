@@ -29,24 +29,24 @@ public class HelperFactory implements Identifier{
         return new LoadHelper(sketch, uri);
     }
 
-    public DisplayHelper getDisplayHelper(Sketch sketch, String uri, SketchImageViewInterface sketchImageViewInterface) {
+    public DisplayHelper getDisplayHelper(Sketch sketch, String uri, ImageViewInterface imageViewInterface) {
         if (this.obsoletingDisplayHelper == null) {
-            return new DisplayHelper(sketch, uri, sketchImageViewInterface);
+            return new DisplayHelper(sketch, uri, imageViewInterface);
         } else {
             DisplayHelper displayHelper = this.obsoletingDisplayHelper;
             this.obsoletingDisplayHelper = null;
-            displayHelper.init(sketch, uri, sketchImageViewInterface);
+            displayHelper.init(sketch, uri, imageViewInterface);
             return displayHelper;
         }
     }
 
-    public DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, SketchImageViewInterface sketchImageViewInterface) {
+    public DisplayHelper getDisplayHelper(Sketch sketch, DisplayParams displayParams, ImageViewInterface imageViewInterface) {
         if (this.obsoletingDisplayHelper == null) {
-            return new DisplayHelper(sketch, displayParams, sketchImageViewInterface);
+            return new DisplayHelper(sketch, displayParams, imageViewInterface);
         } else {
             DisplayHelper displayHelper = this.obsoletingDisplayHelper;
             this.obsoletingDisplayHelper = null;
-            displayHelper.init(sketch, displayParams, sketchImageViewInterface);
+            displayHelper.init(sketch, displayParams, imageViewInterface);
             return displayHelper;
         }
     }

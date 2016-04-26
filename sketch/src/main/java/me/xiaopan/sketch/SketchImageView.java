@@ -37,7 +37,7 @@ import android.widget.Scroller;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class SketchImageView extends ImageView implements SketchImageViewInterface {
+public class SketchImageView extends ImageView implements ImageViewInterface {
     private static final String NAME = "SketchImageView";
 
     private static final int NONE = -1;
