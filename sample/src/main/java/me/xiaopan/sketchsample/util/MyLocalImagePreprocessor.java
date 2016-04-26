@@ -38,24 +38,22 @@ public class MyLocalImagePreprocessor extends DefaultLocalImagePreprocessor {
     }
 
     private boolean isXpkFile(LoadRequest loadRequest) {
-        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getAttrs().getUri(), ".xpk");
+        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getAttrs().getRealUri(), ".xpk");
     }
 
     /**
      * 获取XPK图标的缓存文件
-     *
-     * @return XPK图标的缓存文件
      */
     private DiskCache.Entry getXpkIconCacheFile(LoadRequest loadRequest) {
-        String uri = loadRequest.getAttrs().getUri();
+        String realUri = loadRequest.getAttrs().getRealUri();
         Configuration configuration = loadRequest.getAttrs().getSketch().getConfiguration();
 
-        File apkFile = new File(uri);
+        File apkFile = new File(realUri);
         if (!apkFile.exists()) {
             return null;
         }
         long lastModifyTime = apkFile.lastModified();
-        String diskCacheKey = uri + "." + lastModifyTime;
+        String diskCacheKey = realUri + "." + lastModifyTime;
 
         DiskCache.Entry xpkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (xpkIconDiskCacheEntry != null) {
@@ -64,7 +62,7 @@ public class MyLocalImagePreprocessor extends DefaultLocalImagePreprocessor {
 
         ZipFile zipFile;
         try {
-            zipFile = new ZipFile(uri);
+            zipFile = new ZipFile(realUri);
         } catch (IOException e) {
             e.printStackTrace();
             return null;
@@ -73,7 +71,7 @@ public class MyLocalImagePreprocessor extends DefaultLocalImagePreprocessor {
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if(zipEntry == null){
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found icon.png in ", uri));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found icon.png in ", realUri));
             }
             return null;
         }
@@ -127,7 +125,7 @@ public class MyLocalImagePreprocessor extends DefaultLocalImagePreprocessor {
         xpkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (xpkIconDiskCacheEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found xpk icon cache file", " - ", uri));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found xpk icon cache file", " - ", realUri));
             }
         }
 

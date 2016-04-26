@@ -135,7 +135,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
             imagePathList.add(UriScheme.ASSET.createUri("large_image.jpg"));
             while (mCursor.moveToNext()) {
                 //获取图片的路径
-                imagePathList.add(mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+                imagePathList.add("file://"+mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
             }
             mCursor.close();
             return imagePathList;
