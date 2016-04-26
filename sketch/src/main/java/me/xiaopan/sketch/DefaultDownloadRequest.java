@@ -32,14 +32,10 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private static final int WHAT_CALLBACK_PROGRESS = 305;
     private static final String NAME = "DefaultDownloadRequest";
 
-    private Sketch sketch;  // Sketch
-    private String uri;    // 图片地址
-    private String name;    // 名称，用于在输出LOG的时候区分不同的请求
-    private UriScheme uriScheme;    // Uri协议格式
-
+    private RequestAttrs attrs;
     private DownloadOptions options;
-    private DownloadProgressListener downloadProgressListener;  // 下载进度监听器
-    private DownloadListener downloadListener;  // 下载监听器
+    private DownloadListener downloadListener;
+    private DownloadProgressListener downloadProgressListener;
 
     private DiskCache.Entry diskCacheEntry;
     private byte[] resultBytes;
@@ -48,37 +44,15 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private ImageFrom imageFrom;    // 图片来源
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
 
-    public DefaultDownloadRequest(Sketch sketch, String uri, UriScheme uriScheme, DownloadOptions options, DownloadListener downloadListener) {
-        this.sketch = sketch;
-        this.uri = uri;
-        this.uriScheme = uriScheme;
+    public DefaultDownloadRequest(RequestAttrs attrs, DownloadOptions options, DownloadListener downloadListener) {
+        this.attrs = attrs;
         this.options = options;
         this.downloadListener = downloadListener;
     }
 
     @Override
-    public Sketch getSketch() {
-        return sketch;
-    }
-
-    @Override
-    public String getUri() {
-        return uri;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    @Override
-    public UriScheme getUriScheme() {
-        return uriScheme;
+    public RequestAttrs getAttrs() {
+        return attrs;
     }
 
     @Override
@@ -137,14 +111,14 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     @Override
     public void toFailedStatus(FailCause failCause) {
         this.failCause = failCause;
-        sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_FAILED, this).sendToTarget();
+        attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_FAILED, this).sendToTarget();
     }
 
     @Override
     public void toCanceledStatus(CancelCause cancelCause) {
         this.requestStatus = RequestStatus.CANCELED;
         setRequestStatus(RequestStatus.CANCELED);
-        sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_CANCELED, this).sendToTarget();
+        attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_CANCELED, this).sendToTarget();
     }
 
     @Override
@@ -172,27 +146,27 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     public void postRunDispatch() {
         setRequestStatus(RequestStatus.WAIT_DISPATCH);
         this.runStatus = RunStatus.DISPATCH;
-        sketch.getConfiguration().getRequestExecutor().getRequestDispatchExecutor().execute(this);
+        attrs.getConfiguration().getRequestExecutor().getRequestDispatchExecutor().execute(this);
     }
 
     @Override
     public void postRunDownload() {
         setRequestStatus(RequestStatus.WAIT_DOWNLOAD);
         this.runStatus = RunStatus.DOWNLOAD;
-        sketch.getConfiguration().getRequestExecutor().getNetRequestExecutor().execute(this);
+        attrs.getConfiguration().getRequestExecutor().getNetRequestExecutor().execute(this);
     }
 
     @Override
     public void postRunLoad() {
         setRequestStatus(RequestStatus.WAIT_LOAD);
         this.runStatus = RunStatus.LOAD;
-        sketch.getConfiguration().getRequestExecutor().getLocalRequestExecutor().execute(this);
+        attrs.getConfiguration().getRequestExecutor().getLocalRequestExecutor().execute(this);
     }
 
     @Override
     public void updateProgress(int totalLength, int completedLength) {
         if (downloadProgressListener != null) {
-            sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
+            attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_PROGRESS, totalLength, completedLength, this).sendToTarget();
         }
     }
 
@@ -216,26 +190,26 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
      */
     private void executeDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
-        if (uriScheme == UriScheme.HTTP || uriScheme == UriScheme.HTTPS) {
-            DiskCache.Entry diskCacheEntry = options.isCacheInDisk() ? sketch.getConfiguration().getDiskCache().get(uri) : null;
+        if (attrs.getUriScheme() == UriScheme.HTTP || attrs.getUriScheme() == UriScheme.HTTPS) {
+            DiskCache.Entry diskCacheEntry = options.isCacheInDisk() ? attrs.getConfiguration().getDiskCache().get(attrs.getUri()) : null;
             if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", name));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", attrs.getName()));
                 }
                 this.imageFrom = ImageFrom.DISK_CACHE;
                 this.diskCacheEntry = diskCacheEntry;
-                sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
             } else {
                 if (options.getRequestLevel() == RequestLevel.LOCAL) {
                     if (options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD) {
                         toCanceledStatus(CancelCause.PAUSE_DOWNLOAD);
                         if (Sketch.isDebugMode()) {
-                            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", name));
+                            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", attrs.getName()));
                         }
                     } else {
                         toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
                         if (Sketch.isDebugMode()) {
-                            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "requestLevel is local", " - ", name));
+                            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "requestLevel is local", " - ", attrs.getName()));
                         }
                     }
                     return;
@@ -243,12 +217,12 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
 
                 postRunDownload();
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "download", " - ", name));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "download", " - ", attrs.getName()));
                 }
             }
         } else {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "not support uri:", uri, " - ", name));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "not support uri:", attrs.getUri(), " - ", attrs.getName()));
             }
             toFailedStatus(FailCause.URI_NO_SUPPORT);
         }
@@ -260,16 +234,16 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private void executeDownload() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "startDownload", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "startDownload", " - ", attrs.getName()));
             }
             return;
         }
 
-        DownloadResult downloadResult = sketch.getConfiguration().getImageDownloader().download(this);
+        DownloadResult downloadResult = attrs.getConfiguration().getImageDownloader().download(this);
 
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "downloadAfter", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "downloadAfter", " - ", attrs.getName()));
             }
             return;
         }
@@ -280,7 +254,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
             this.diskCacheEntry = downloadResult.diskCacheEntry;
             this.resultBytes = downloadResult.imageData;
 
-            sketch.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+            attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
         } else {
             toFailedStatus(FailCause.DOWNLOAD_FAIL);
         }
@@ -289,7 +263,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private void handleCompletedOnMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleCompletedOnMainThread", " - ", "canceled", " - ", attrs.getName()));
             }
             return;
         }
@@ -307,7 +281,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private void handleFailedOnMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "handleFailedOnMainThread", " - ", "canceled", " - ", attrs.getName()));
             }
             return;
         }
@@ -327,7 +301,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private void updateProgressOnMainThread(int totalLength, int completedLength) {
         if (isFinished()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", name));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "updateProgressOnMainThread", " - ", "finished", " - ", attrs.getName()));
             }
             return;
         }

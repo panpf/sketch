@@ -250,9 +250,9 @@ public class LoadHelper {
         }
 
         // 创建请求
-        LoadRequest request = sketch.getConfiguration().getRequestFactory().newLoadRequest(sketch, uri, uriScheme, options, loadListener);
+        RequestAttrs attrs = new RequestAttrs(sketch, uri, uriScheme, name);
+        LoadRequest request = sketch.getConfiguration().getRequestFactory().newLoadRequest(attrs, options, loadListener);
 
-        request.setName(name);
         request.setDownloadProgressListener(downloadProgressListener);
 
         request.postRunDispatch();

@@ -44,7 +44,7 @@ public class ContentDecodeHelper implements DecodeHelper {
     public Bitmap decode(BitmapFactory.Options options) {
         InputStream inputStream = null;
         try {
-            inputStream = loadRequest.getSketch().getConfiguration().getContext().getContentResolver().openInputStream(contentUri);
+            inputStream = loadRequest.getAttrs().getSketch().getConfiguration().getContext().getContentResolver().openInputStream(contentUri);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -68,13 +68,13 @@ public class ContentDecodeHelper implements DecodeHelper {
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 builder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                 builder.append(", ").append("targetSize").append("=").append(loadRequest.getOptions().getMaxSize().getWidth()).append("x").append(loadRequest.getOptions().getMaxSize().getHeight());
-                builder.append(", ").append("targetSizeScaleInSampleSize").append("=").append(loadRequest.getSketch().getConfiguration().getImageSizeCalculator().getTargetSizeScaleInSampleSize());
+                builder.append(", ").append("targetSizeScaleInSampleSize").append("=").append(loadRequest.getAttrs().getSketch().getConfiguration().getImageSizeCalculator().getTargetSizeScaleInSampleSize());
                 builder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                 builder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
             } else {
                 builder.append(" - ").append("unchanged");
             }
-            builder.append(" - ").append(loadRequest.getName());
+            builder.append(" - ").append(loadRequest.getAttrs().getName());
             Log.d(Sketch.TAG, builder.toString());
         }
     }
@@ -89,7 +89,7 @@ public class ContentDecodeHelper implements DecodeHelper {
     @Override
     public RecycleGifDrawable getGifDrawable() {
         try {
-            return new RecycleGifDrawable(loadRequest.getSketch().getConfiguration().getContext().getContentResolver(), contentUri);
+            return new RecycleGifDrawable(loadRequest.getAttrs().getSketch().getConfiguration().getContext().getContentResolver(), contentUri);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

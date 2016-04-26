@@ -57,7 +57,7 @@ public class DefaultLocalImagePreprocessor implements LocalImagePreprocessor {
     }
 
     private boolean isApkFile(LoadRequest loadRequest){
-        return loadRequest.getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getUri(), ".apk");
+        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getAttrs().getUri(), ".apk");
     }
 
     /**
@@ -66,8 +66,8 @@ public class DefaultLocalImagePreprocessor implements LocalImagePreprocessor {
      * @return APK图标的缓存文件
      */
     private DiskCache.Entry getApkIconCacheFile(LoadRequest loadRequest) {
-        String uri = loadRequest.getUri();
-        Configuration configuration = loadRequest.getSketch().getConfiguration();
+        String uri = loadRequest.getAttrs().getUri();
+        Configuration configuration = loadRequest.getAttrs().getSketch().getConfiguration();
 
         File apkFile = new File(uri);
         if (!apkFile.exists()) {

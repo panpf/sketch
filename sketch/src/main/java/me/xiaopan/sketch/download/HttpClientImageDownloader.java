@@ -143,7 +143,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
     public DownloadResult download(DownloadRequest request) {
         // 根据下载地址加锁，防止重复下载
         request.setRequestStatus(RequestStatus.GET_DOWNLOAD_LOCK);
-        ReentrantLock urlLock = getUrlLock(request.getUri());
+        ReentrantLock urlLock = getUrlLock(request.getAttrs().getUri());
         urlLock.lock();
 
         request.setRequestStatus(RequestStatus.DOWNLOADING);
@@ -153,14 +153,14 @@ public class HttpClientImageDownloader implements ImageDownloader {
             // 如果已经取消了就直接结束
             if (request.isCanceled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "get lock after", " - ", request.getName()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "get lock after", " - ", request.getAttrs().getName()));
                 }
                 break;
             }
 
             // 如果缓存文件已经存在了就直接返回缓存文件
             if (request.getOptions().isCacheInDisk()) {
-                DiskCache.Entry diskCacheEntry = request.getSketch().getConfiguration().getDiskCache().get(request.getUri());
+                DiskCache.Entry diskCacheEntry = request.getAttrs().getSketch().getConfiguration().getDiskCache().get(request.getAttrs().getUri());
                 if (diskCacheEntry != null) {
                     result = new DownloadResult(diskCacheEntry, false);
                     break;
@@ -175,11 +175,11 @@ public class HttpClientImageDownloader implements ImageDownloader {
                 if (retry) {
                     number++;
                     if (Sketch.isDebugMode()) {
-                        Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "download failed", " - ", "retry", " - ", request.getName()));
+                        Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "download failed", " - ", "retry", " - ", request.getAttrs().getName()));
                     }
                 } else {
                     if (Sketch.isDebugMode()) {
-                        Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "download failed", " - ", "end", " - ", request.getName()));
+                        Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "download failed", " - ", "end", " - ", request.getAttrs().getName()));
                     }
                 }
                 e.printStackTrace();
@@ -197,14 +197,14 @@ public class HttpClientImageDownloader implements ImageDownloader {
     private DownloadResult realDownload(DownloadRequest request) throws IOException {
         HttpResponse httpResponse;
         try {
-            httpResponse = httpClient.execute(new HttpGet(request.getUri()));
+            httpResponse = httpClient.execute(new HttpGet(request.getAttrs().getUri()));
         } catch (IOException e) {
             throw e;
         }
         if (request.isCanceled()) {
             releaseConnection(httpResponse);
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "get response after", " - ", request.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "get response after", " - ", request.getAttrs().getName()));
             }
             return null;
         }
@@ -214,7 +214,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         if (statusLine == null) {
             releaseConnection(httpResponse);
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "get status line failed", " - ", request.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "get status line failed", " - ", request.getAttrs().getName()));
             }
             return null;
         }
@@ -222,7 +222,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         if (responseCode != 200) {
             releaseConnection(httpResponse);
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "response code exception", " - ", "responseCode:", String.valueOf(responseCode), "; responseMessage:", httpResponse.getStatusLine().getReasonPhrase(), " - ", request.getName()));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "response code exception", " - ", "responseCode:", String.valueOf(responseCode), "; responseMessage:", httpResponse.getStatusLine().getReasonPhrase(), " - ", request.getAttrs().getName()));
             }
             return null;
         }
@@ -236,7 +236,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         if (contentLength <= 0) {
             releaseConnection(httpResponse);
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "content length exception", " - ", "contentLength:" + contentLength, " - ", request.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "content length exception", " - ", "contentLength:" + contentLength, " - ", request.getAttrs().getName()));
             }
             return null;
         }
@@ -251,7 +251,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         if (request.isCanceled()) {
             SketchUtils.close(inputStream);
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "get input stream after", " - ", request.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "get input stream after", " - ", request.getAttrs().getName()));
             }
             return null;
         }
@@ -259,7 +259,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         // 当不需要将数据缓存到本地的时候就使用ByteArrayOutputStream来存储数据
         DiskLruCache.Editor editor = null;
         if (request.getOptions().isCacheInDisk()) {
-            editor = request.getSketch().getConfiguration().getDiskCache().edit(request.getUri());
+            editor = request.getAttrs().getSketch().getConfiguration().getDiskCache().edit(request.getAttrs().getUri());
         }
         OutputStream outputStream;
         if (editor != null) {
@@ -289,13 +289,13 @@ public class HttpClientImageDownloader implements ImageDownloader {
         }
 
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "download success", " - ", "fileLength:", String.valueOf(completedLength), "/", String.valueOf(contentLength), " - ", request.getName()));
+            Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "download success", " - ", "fileLength:", String.valueOf(completedLength), "/", String.valueOf(contentLength), " - ", request.getAttrs().getName()));
         }
 
         // 转换结果
         if (request.getOptions().isCacheInDisk() && editor != null) {
             editor.commit();
-            return new DownloadResult(request.getSketch().getConfiguration().getDiskCache().get(request.getUri()), true);
+            return new DownloadResult(request.getAttrs().getSketch().getConfiguration().getDiskCache().get(request.getAttrs().getUri()), true);
         } else if (outputStream instanceof ByteArrayOutputStream) {
             return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray());
         } else {

@@ -531,7 +531,7 @@ public class DisplayHelper {
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (memoryCacheId.equals(potentialRequest.getMemoryCacheId())) {
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "don't need to cancel", "；", "ImageViewCode", "=", Integer.toHexString(sketchImageViewInterface.hashCode()), "；", potentialRequest.getName()));
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "don't need to cancel", "；", "ImageViewCode", "=", Integer.toHexString(sketchImageViewInterface.hashCode()), "；", potentialRequest.getAttrs().getName()));
                 }
                 configuration.getHelperFactory().recycleDisplayHelper(this);
                 return potentialRequest;
@@ -541,9 +541,9 @@ public class DisplayHelper {
         }
 
         // 组织请求
-        final DisplayRequest request = configuration.getRequestFactory().newDisplayRequest(sketch, uri, uriScheme, memoryCacheId, fixedSize, sketchImageViewInterface, options, displayListener);
+        RequestAttrs attrs = new RequestAttrs(sketch, uri, uriScheme, name);
+        final DisplayRequest request = configuration.getRequestFactory().newDisplayRequest(attrs, memoryCacheId, fixedSize, sketchImageViewInterface, options, displayListener);
 
-        request.setName(name);
         request.setDownloadProgressListener(downloadProgressListener);
 
         // 显示默认图片

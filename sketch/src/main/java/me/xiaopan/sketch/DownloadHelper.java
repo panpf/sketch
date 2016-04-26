@@ -160,9 +160,9 @@ public class DownloadHelper {
         }
 
         // 创建请求
-        DownloadRequest request = sketch.getConfiguration().getRequestFactory().newDownloadRequest(sketch, uri, uriScheme, options, downloadListener);
+        RequestAttrs attrs = new RequestAttrs(sketch, uri, uriScheme, name);
+        DownloadRequest request = sketch.getConfiguration().getRequestFactory().newDownloadRequest(attrs, options, downloadListener);
 
-        request.setName(name);
         request.setDownloadProgressListener(downloadProgressListener);
 
         request.postRunDispatch();

@@ -24,29 +24,9 @@ import android.os.Message;
 public interface DownloadRequest extends RequestRunManager {
 
     /**
-     * 获取Sketch
+     * 获取请求基本属性
      */
-    Sketch getSketch();
-
-    /**
-     * 获取名称，常用来在log中区分请求
-     */
-    String getName();
-
-    /**
-     * 设置请求名称，用于在log中区分请求
-     */
-    void setName(String name);
-
-    /**
-     * 获取Uri协议类型
-     */
-    UriScheme getUriScheme();
-
-    /**
-     * 获取图片Uri
-     */
-    String getUri();
+    RequestAttrs getAttrs();
 
     /**
      * 获取下载选项

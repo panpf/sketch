@@ -38,7 +38,7 @@ public class MyLocalImagePreprocessor extends DefaultLocalImagePreprocessor {
     }
 
     private boolean isXpkFile(LoadRequest loadRequest) {
-        return loadRequest.getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getUri(), ".xpk");
+        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getAttrs().getUri(), ".xpk");
     }
 
     /**
@@ -47,8 +47,8 @@ public class MyLocalImagePreprocessor extends DefaultLocalImagePreprocessor {
      * @return XPK图标的缓存文件
      */
     private DiskCache.Entry getXpkIconCacheFile(LoadRequest loadRequest) {
-        String uri = loadRequest.getUri();
-        Configuration configuration = loadRequest.getSketch().getConfiguration();
+        String uri = loadRequest.getAttrs().getUri();
+        Configuration configuration = loadRequest.getAttrs().getSketch().getConfiguration();
 
         File apkFile = new File(uri);
         if (!apkFile.exists()) {
