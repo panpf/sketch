@@ -95,6 +95,12 @@
 （完成于2016-04-24）Sketch会自动从SketchImageVie身上去listener，那要是listener被重新设置了呢？（DisplayHelper上的listener去掉了）
 （完成与2016-04-25）定义一个统一的Identifier接口
 （完成与2016-04-25）所有参数配置封装成一个类，这样helper和request就可以共用一个参数类了，还能减少代码量。这样参数类得提供一个计算出KEY的方法，KEY加上Uri就是图片的内存缓存ID，完美
+（完成与2016-04-26）将基础属性封装成一个单独的类，将运行中状态封装成一个单独的类，将下载结果、加载结果封装成一个单独的类，将display特有的属性封装成一个单独的类
+（完成与2016-04-26）线程间跳转的是不是可以封装一下（已封装在了SketchRequest中）
+（完成与2016-04-26）还有在主线程中调用的是不是也可以封装一下（已封装在了SketchRequest中）
+（完成与2016-04-27）试着让DisplayRequest继承自LoadRequest，这样加载部分的代码就简单多了
+（完成与2016-04-27）Sketch.putOptions(RequestOptions)改成了Sketch.putDisplayOptions(DisplayOptions)...
+（完成与2016-04-27）兼容file://（直接改成了每种类型可以有两种协议类型，这样还顺便把http://和https://融合成了一种）
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -125,7 +131,6 @@ loading支持bitmap
 想办法支持一次加载两张图一张小图一张大图
 把昨晚看的一篇处理原型图文章里的原型背景拿过来试试
 解码缓存文件失败的时候要再次下载
-发现了v7包里的一个drawableWrapper考虑用这个改一下sketch
 考虑优化apk icon读取逻辑，直接读取流
 搞一个悬浮窗，用来显示所有加载任务，这样是不是很酷炫呢，每个任务还可以显示走到哪一步了
 inBitmap的意思是找一个字节数一样的旧bitmap对象来装新的图片，因此要好好利用起来，这样将就有很大的内存节省，但是在3.0和4.4上有，些许的限制差异需要先搞明白了再用
@@ -133,16 +138,13 @@ inBitmap的意思是找一个字节数一样的旧bitmap对象来装新的图片
 支持显示超大图，候选者有largeImage，subSamplingScaleImageView，搞一个LargeImageDrawable
 试图解决硬件加速时对图片尺寸的限制，OpenGLRenderer: Bitmap too large to be uploaded into a texture (440x4540, max=4096x4096)
 采用httpStack模式 改进imageDownloader，
-兼容file://
 2.3以上不再主动回收图片了
 支持vector
-改善scheme的设计模式，视图支持自定义scheme以及处理方式
-试着让DisplayRequest继承自LoadRequest，这样加载部分的代码就简单多了
-线程间跳转的是不是可以封装一下
-还有在主线程中调用的是不是也可以封装一下
+改善scheme的设计模式，试图支持自定义scheme以及处理方式
 缓存文件的名称不能再用uri.encode来加密了，要用MD5
 考虑重新设计一下RequestLevel，感觉现在的有点儿繁琐并且意思不太明确
-将基础属性封装成一个单独的类，将运行中状态封装成一个单独的类，将下载结果、加载结果封装成一个单独的类，将display特有的属性封装成一个单独的类
+load请求默认不解码GIF（这样真的好吗，好好思考一下load的使用场景，再判断），并且load的结果不用再包装成Drawable了
+RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
 
 其它：
 参考Glide、Fresco和Picasso
@@ -164,3 +166,6 @@ apk文件图标的磁盘缓存KEY加上了文件的最后修改时间，这么�
 新增LocalImagePerProcessor可以处理一些特殊的本地文件，然后提取出它们的当中包含的图片，这样Sketch就可以直接显示这些特殊文件中包含的图片了
 兼容jdk1.6
 去掉了DisplayHelper上的listener和progressListener设置，你只能通过SketchImageView来设置listener了
+重构Request部分的实现，简化逻辑处理
+Sketch.putOptions(RequestOptions)改成了Sketch.putDisplayOptions(DisplayOptions)、Sketch.putLoadOptions(LoadOptions)...
+支持file://
