@@ -18,7 +18,7 @@ package me.xiaopan.sketchsample.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import me.xiaopan.androidinjector.InjectContentView;
@@ -81,8 +81,8 @@ public class StarHomeActivity extends MyBaseActivity implements WindowBackground
     }
 
     @Override
-    public void onSetWindowBackground(String uri, Drawable drawable) {
-        windowBackgroundManager.setBackground(uri, drawable);
+    public void onSetWindowBackground(String uri, Bitmap bitmap) {
+        windowBackgroundManager.setBackground(uri, bitmap);
     }
 
     @Override

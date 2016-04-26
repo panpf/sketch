@@ -18,8 +18,8 @@ package me.xiaopan.sketchsample.activity;
 
 import android.content.Context;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -434,8 +434,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     }
 
     @Override
-    public void onSetWindowBackground(String currentBackgroundUri, Drawable newDrawable) {
-        windowBackgroundManager.setBackground(currentBackgroundUri, newDrawable);
+    public void onSetWindowBackground(String currentBackgroundUri, Bitmap bitmap) {
+        windowBackgroundManager.setBackground(currentBackgroundUri, bitmap);
     }
 
     @Override

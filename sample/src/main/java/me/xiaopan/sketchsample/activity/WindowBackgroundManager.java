@@ -18,11 +18,12 @@ import me.xiaopan.sketch.ImageFrom;
 import me.xiaopan.sketch.LoadListener;
 import me.xiaopan.sketch.LoadRequest;
 import me.xiaopan.sketch.RecycleBitmapDrawable;
-import me.xiaopan.sketch.RecycleDrawableInterface;
+import me.xiaopan.sketch.RecycleDrawable;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.util.DeviceUtils;
+import pl.droidsonroids.gif.GifDrawable;
 
 public class WindowBackgroundManager {
     private Activity activity;
@@ -35,8 +36,9 @@ public class WindowBackgroundManager {
         this.activity.getWindow().setFormat(PixelFormat.TRANSLUCENT); // 要先将Window的格式设为透明的，如果不这么做的话第一次改变Window的背景的话屏幕会快速的闪一下（黑色的）
     }
 
-    public void setBackground(String currentBackgroundUri, Drawable newDrawable) {
+    public void setBackground(String currentBackgroundUri, Bitmap bitmap) {
         this.currentBackgroundUri = currentBackgroundUri;
+        Drawable newDrawable = new BitmapDrawable(bitmap);
         Drawable oldOneDrawable = oneDrawable;
         Window window = activity.getWindow();
         Drawable oneDrawable = twoDrawable!=null?twoDrawable:activity.getResources().getDrawable(R.drawable.shape_window_background);
@@ -64,9 +66,9 @@ public class WindowBackgroundManager {
             return;
         }
 
-        if(drawable instanceof RecycleDrawableInterface){
-            Log.d(Sketch.TAG, "old window bitmap recycled - " + ((RecycleDrawableInterface) drawable).getInfo());
-            ((RecycleDrawableInterface) drawable).recycle();
+        if(drawable instanceof RecycleDrawable){
+            Log.d(Sketch.TAG, "old window bitmap recycled - " + ((RecycleDrawable) drawable).getInfo());
+            ((RecycleDrawable) drawable).recycle();
         }else if(drawable instanceof BitmapDrawable){
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
             if(bitmap != null && !bitmap.isRecycled()){
@@ -77,7 +79,7 @@ public class WindowBackgroundManager {
     }
 
     public interface OnSetWindowBackgroundListener {
-        void onSetWindowBackground(String uri, Drawable drawable);
+        void onSetWindowBackground(String uri, Bitmap bitmap);
         String getCurrentBackgroundUri();
     }
 
@@ -131,8 +133,8 @@ public class WindowBackgroundManager {
             if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT){
                 resizeHeight -= DeviceUtils.getStatusBarHeight(context.getResources());
             }
-            resizeWidth /= 2;
-            resizeHeight /= 2;
+            resizeWidth /= 4;
+            resizeHeight /= 4;
             loadBackgroundRequest = Sketch.with(context).load(imageUri, new LoadListener() {
                 @Override
                 public void onStarted() {
@@ -140,14 +142,19 @@ public class WindowBackgroundManager {
                 }
 
                 @Override
-                public void onCompleted(Drawable gifDrawable, ImageFrom imageFrom, String mimeType) {
+                public void onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType) {
                     if (onSetWindowBackgroundListener != null) {
                         if (userVisible) {
-                            onSetWindowBackgroundListener.onSetWindowBackground(imageUri, gifDrawable);
+                            onSetWindowBackgroundListener.onSetWindowBackground(imageUri, bitmap);
                         } else {
-                            ((RecycleDrawableInterface) gifDrawable).recycle();
+                            bitmap.recycle();
                         }
                     }
+                }
+
+                @Override
+                public void onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType) {
+
                 }
 
                 @Override
