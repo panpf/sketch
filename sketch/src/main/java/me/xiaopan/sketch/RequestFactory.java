@@ -24,15 +24,15 @@ public class RequestFactory implements Identifier{
 
     public DisplayRequest newDisplayRequest(RequestAttrs attrs, DisplayAttrs displayAttrs, DisplayOptions options, DisplayListener listener, DownloadProgressListener progressListener) {
         // 由于DisplayHelper会被重复利用，因此其DisplayOptions不能直接拿来用，要重新New一个
-        return new DefaultDisplayRequest(attrs, displayAttrs, new DisplayOptions(options), listener, progressListener);
+        return new DisplayRequest(attrs, displayAttrs, new DisplayOptions(options), listener, progressListener);
     }
 
     public LoadRequest newLoadRequest(RequestAttrs attrs, LoadOptions options, LoadListener listener, DownloadProgressListener progressListener) {
-        return new DefaultLoadRequest(attrs, options, listener, progressListener);
+        return new LoadRequest(attrs, options, listener, progressListener);
     }
 
     public DownloadRequest newDownloadRequest(RequestAttrs attrs, DownloadOptions options, DownloadListener listener, DownloadProgressListener progressListener) {
-        return new DefaultDownloadRequest(attrs, options, listener, progressListener);
+        return new DownloadRequest(attrs, options, listener, progressListener);
     }
 
     @Override

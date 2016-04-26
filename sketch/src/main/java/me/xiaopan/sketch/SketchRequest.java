@@ -30,6 +30,7 @@ public abstract class SketchRequest implements Runnable {
     private RunStatus runStatus;
     private RequestExecutor requestExecutor;
 
+    private String logName = "SketchRequest";
     private Status status;
     private FailedCause failedCause;
     private CancelCause cancelCause;
@@ -56,6 +57,14 @@ public abstract class SketchRequest implements Runnable {
                     break;
             }
         }
+    }
+
+    public String getLogName() {
+        return logName;
+    }
+
+    protected void setLogName(String logName) {
+        this.logName = logName;
     }
 
     /**
