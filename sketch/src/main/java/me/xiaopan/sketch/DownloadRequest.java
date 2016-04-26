@@ -21,7 +21,7 @@ import android.os.Message;
 /**
  * 下载请求
  */
-public interface DownloadRequest extends RequestRunManager {
+public interface DownloadRequest {
 
     /**
      * 获取请求基本属性
@@ -82,30 +82,26 @@ public interface DownloadRequest extends RequestRunManager {
 
     /**
      * 更新进度
-     *
-     * @param totalLength     总长度
-     * @param completedLength 已完成长度
      */
     void updateProgress(int totalLength, int completedLength);
 
     /**
      * 失败了
-     *
-     * @param failCause 失败原因
      */
     void toFailedStatus(FailCause failCause);
 
     /**
      * 取消了
-     *
-     * @param cancelCause 取消原因
      */
     void toCanceledStatus(CancelCause cancelCause);
 
     /**
      * 在主线程中执行
-     *
-     * @param msg 消息
      */
     void invokeInMainThread(Message msg);
+
+    /**
+     * 提交
+     */
+    void submit();
 }

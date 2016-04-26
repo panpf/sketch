@@ -25,7 +25,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 下载请求
  */
-public class DefaultDownloadRequest implements DownloadRequest, Runnable {
+public class DefaultDownloadRequest extends SketchRequest implements DownloadRequest {
     private static final int WHAT_CALLBACK_COMPLETED = 302;
     private static final int WHAT_CALLBACK_FAILED = 303;
     private static final int WHAT_CALLBACK_CANCELED = 304;
@@ -38,11 +38,12 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private DownloadProgressListener downloadProgressListener;
 
     private DownloadResult downloadResult;
-    private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
     private FailCause failCause;    // 失败原因
+    private CancelCause cancelCause;  // 取消原因
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
 
     public DefaultDownloadRequest(RequestAttrs attrs, DownloadOptions options, DownloadListener downloadListener) {
+        super(attrs.getConfiguration().getRequestExecutor());
         this.attrs = attrs;
         this.options = options;
         this.downloadListener = downloadListener;
@@ -84,7 +85,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
 
     @Override
     public CancelCause getCancelCause() {
-        return null;
+        return cancelCause;
     }
 
     @Override
@@ -114,7 +115,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
 
     @Override
     public void toCanceledStatus(CancelCause cancelCause) {
-        this.requestStatus = RequestStatus.CANCELED;
+        this.cancelCause = cancelCause;
         setRequestStatus(RequestStatus.CANCELED);
         attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_CANCELED, this).sendToTarget();
     }
@@ -141,24 +142,21 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     }
 
     @Override
-    public void postRunDispatch() {
+    protected void onPostRunDispatch() {
+        super.onPostRunDispatch();
         setRequestStatus(RequestStatus.WAIT_DISPATCH);
-        this.runStatus = RunStatus.DISPATCH;
-        attrs.getConfiguration().getRequestExecutor().getRequestDispatchExecutor().execute(this);
     }
 
     @Override
-    public void postRunDownload() {
+    protected void onPostRunDownload() {
+        super.onPostRunDownload();
         setRequestStatus(RequestStatus.WAIT_DOWNLOAD);
-        this.runStatus = RunStatus.DOWNLOAD;
-        attrs.getConfiguration().getRequestExecutor().getNetRequestExecutor().execute(this);
     }
 
     @Override
-    public void postRunLoad() {
+    protected void onPostRunLoad() {
+        super.onPostRunLoad();
         setRequestStatus(RequestStatus.WAIT_LOAD);
-        this.runStatus = RunStatus.LOAD;
-        attrs.getConfiguration().getRequestExecutor().getLocalRequestExecutor().execute(this);
     }
 
     @Override
@@ -169,90 +167,80 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     }
 
     @Override
-    public void run() {
-        switch (runStatus) {
-            case DISPATCH:
-                executeDispatch();
-                break;
-            case DOWNLOAD:
-                executeDownload();
-                break;
-            default:
-                new IllegalArgumentException("unknown runStatus: " + runStatus.name()).printStackTrace();
-                break;
-        }
-    }
-
-    /**
-     * 分发请求
-     */
-    private void executeDispatch() {
+    protected void runDispatch() {
         setRequestStatus(RequestStatus.DISPATCHING);
-        if (attrs.getUriScheme() == UriScheme.HTTP || attrs.getUriScheme() == UriScheme.HTTPS) {
-            DiskCache.Entry diskCacheEntry = options.isCacheInDisk() ? attrs.getConfiguration().getDiskCache().get(attrs.getUri()) : null;
-            if (diskCacheEntry != null) {
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", attrs.getName()));
-                }
-                this.downloadResult = new DownloadResult(diskCacheEntry, false);
-                attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
-            } else {
-                if (options.getRequestLevel() == RequestLevel.LOCAL) {
-                    if (options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD) {
-                        toCanceledStatus(CancelCause.PAUSE_DOWNLOAD);
-                        if (Sketch.isDebugMode()) {
-                            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "pause download", " - ", attrs.getName()));
-                        }
-                    } else {
-                        toCanceledStatus(CancelCause.LEVEL_IS_LOCAL);
-                        if (Sketch.isDebugMode()) {
-                            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "requestLevel is local", " - ", attrs.getName()));
-                        }
-                    }
-                    return;
-                }
 
-                postRunDownload();
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "download", " - ", attrs.getName()));
-                }
-            }
-        } else {
+        // 先过滤掉不支持的URI协议
+        if (attrs.getUriScheme() != UriScheme.HTTP && attrs.getUriScheme() != UriScheme.HTTPS) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "not support uri:", attrs.getUri(), " - ", attrs.getName()));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "not support uri:", attrs.getUri(), " - ", attrs.getName()));
             }
             toFailedStatus(FailCause.URI_NO_SUPPORT);
+            return;
         }
-    }
 
-    /**
-     * 执行下载
-     */
-    private void executeDownload() {
-        if (isCanceled()) {
+        // 然后从磁盘缓存中找缓存文件
+        if (options.isCacheInDisk()) {
+            DiskCache.Entry diskCacheEntry = attrs.getConfiguration().getDiskCache().get(attrs.getUri());
+            if (diskCacheEntry != null) {
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "diskCache", " - ", attrs.getName()));
+                }
+                downloadResult = new DownloadResult(diskCacheEntry, false);
+                attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+                return;
+            }
+        }
+
+        // 在下载之前判断如果请求Level限制只能从本地加载的话就取消了
+        if (options.getRequestLevel() == RequestLevel.LOCAL) {
+            toCanceledStatus(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "startDownload", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
             }
             return;
         }
 
+        // 执行下载
+        if (Sketch.isDebugMode()) {
+            Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "download", " - ", attrs.getName()));
+        }
+        postRunDownload();
+    }
+
+    @Override
+    protected void runDownload() {
+        if (isCanceled()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDownload", " - ", "canceled", " - ", "startDownload", " - ", attrs.getName()));
+            }
+            return;
+        }
+
+        // 调用下载器下载
         DownloadResult justDownloadResult = attrs.getConfiguration().getImageDownloader().download(this);
 
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDownload", " - ", "canceled", " - ", "downloadAfter", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDownload", " - ", "canceled", " - ", "downloadAfter", " - ", attrs.getName()));
             }
             return;
         }
 
-        if (justDownloadResult != null && (justDownloadResult.getDiskCacheEntry() != null || justDownloadResult.getImageData() != null)) {
-            this.requestStatus = RequestStatus.COMPLETED;
-            this.downloadResult = justDownloadResult;
-
-            attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
-        } else {
+        // 都是空的就算下载失败
+        if (justDownloadResult == null || (justDownloadResult.getDiskCacheEntry() == null && justDownloadResult.getImageData() == null)) {
             toFailedStatus(FailCause.DOWNLOAD_FAIL);
+            return;
         }
+
+        // 下载成功了
+        downloadResult = justDownloadResult;
+        attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
+    }
+
+    @Override
+    protected void runLoad() {
+
     }
 
     private void handleCompletedOnMainThread() {

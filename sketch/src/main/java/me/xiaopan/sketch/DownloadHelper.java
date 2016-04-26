@@ -165,7 +165,7 @@ public class DownloadHelper {
 
         request.setDownloadProgressListener(downloadProgressListener);
 
-        request.postRunDispatch();
+        request.submit();
 
         return request;
     }

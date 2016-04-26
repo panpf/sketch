@@ -566,7 +566,7 @@ public class DisplayHelper {
         }
 
         // 分发请求
-        request.postRunDispatch();
+        request.submit();
         configuration.getHelperFactory().recycleDisplayHelper(this);
         return request;
     }
