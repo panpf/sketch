@@ -21,7 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.text.format.Formatter;
 import android.util.Log;
 
-import me.xiaopan.sketch.RecycleDrawableInterface;
+import me.xiaopan.sketch.RecycleDrawable;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -38,7 +38,7 @@ public class LruMemoryCache implements MemoryCache {
 
     @Override
     public synchronized void put(String key, Drawable value) {
-        if (!(value instanceof RecycleDrawableInterface)) {
+        if (!(value instanceof RecycleDrawable)) {
             throw new IllegalArgumentException("drawable must be implemented RecycleDrawableInterface");
         }
         int cacheSize = 0;
@@ -47,7 +47,7 @@ public class LruMemoryCache implements MemoryCache {
         }
         drawableLruCache.put(key, value);
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "put", " - ", "beforeCacheSize=", Formatter.formatFileSize(context, cacheSize), " - ", ((RecycleDrawableInterface) value).getInfo(), " - ", "afterCacheSize=", Formatter.formatFileSize(context, drawableLruCache.size())));
+            Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "put", " - ", "beforeCacheSize=", Formatter.formatFileSize(context, cacheSize), " - ", ((RecycleDrawable) value).getInfo(), " - ", "afterCacheSize=", Formatter.formatFileSize(context, drawableLruCache.size())));
         }
     }
 
@@ -103,19 +103,19 @@ public class LruMemoryCache implements MemoryCache {
 
         @Override
         public Drawable put(String key, Drawable value) {
-            ((RecycleDrawableInterface) value).setIsCached(NAME + ":put", true);
+            ((RecycleDrawable) value).setIsCached(NAME + ":put", true);
             return super.put(key, value);
         }
 
         @Override
         public int sizeOf(String key, Drawable value) {
-            int bitmapSize = ((RecycleDrawableInterface) value).getByteCount();
+            int bitmapSize = ((RecycleDrawable) value).getByteCount();
             return bitmapSize == 0 ? 1 : bitmapSize;
         }
 
         @Override
         protected void entryRemoved(boolean evicted, String key, Drawable oldValue, Drawable newValue) {
-            ((RecycleDrawableInterface) oldValue).setIsCached(NAME + ":entryRemoved", false);
+            ((RecycleDrawable) oldValue).setIsCached(NAME + ":entryRemoved", false);
         }
     }
 }

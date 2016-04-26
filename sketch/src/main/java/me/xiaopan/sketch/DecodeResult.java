@@ -19,19 +19,19 @@ package me.xiaopan.sketch;
 import android.graphics.Bitmap;
 
 public class DecodeResult {
-    private Bitmap resultBitmap;
-    private RecycleGifDrawable resultGifDrawable;
+    private Bitmap bitmap;
+    private RecycleGifDrawable gifDrawable;
     private String mimeType;
     private ImageFrom imageFrom;
 
-    public DecodeResult(String mimeType, RecycleGifDrawable resultGifDrawable) {
+    public DecodeResult(String mimeType, RecycleGifDrawable gifDrawable) {
         this.mimeType = mimeType;
-        this.resultGifDrawable = resultGifDrawable;
+        this.gifDrawable = gifDrawable;
     }
 
-    public DecodeResult(String mimeType, Bitmap resultBitmap) {
+    public DecodeResult(String mimeType, Bitmap bitmap) {
         this.mimeType = mimeType;
-        this.resultBitmap = resultBitmap;
+        this.bitmap = bitmap;
     }
 
     public void setImageFrom(ImageFrom imageFrom) {
@@ -46,11 +46,15 @@ public class DecodeResult {
         return mimeType;
     }
 
-    public Bitmap getResultBitmap() {
-        return resultBitmap;
+    public void setBitmap(Bitmap bitmap) {
+        this.bitmap = bitmap;
     }
 
-    public RecycleGifDrawable getResultGifDrawable() {
-        return resultGifDrawable;
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public RecycleGifDrawable getGifDrawable() {
+        return gifDrawable;
     }
 }

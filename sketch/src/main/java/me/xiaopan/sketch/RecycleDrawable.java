@@ -16,18 +16,31 @@
 
 package me.xiaopan.sketch;
 
-import android.graphics.Bitmap;
+public interface RecycleDrawable {
 
-import pl.droidsonroids.gif.GifDrawable;
+    void setIsDisplayed(String callingStation, boolean displayed);
 
-public interface LoadListener {
-    void onStarted();
+    void setIsCached(String callingStation, boolean cached);
 
-    void onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType);
+    void setIsWaitDisplay(String callingStation, boolean waitDisplay);
 
-    void onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType);
+    int getByteCount();
 
-    void onFailed(FailedCause failedCause);
+    boolean isRecycled();
 
-    void onCanceled(CancelCause cancelCause);
+    String getMimeType();
+
+    void setMimeType(String mimeType);
+
+    void recycle();
+
+    String getSize();
+
+    String getConfig();
+
+    String getInfo();
+
+    boolean canRecycle();
+
+    void setAllowRecycle(boolean allowRecycle);
 }

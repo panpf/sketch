@@ -16,21 +16,32 @@
 
 package me.xiaopan.sketch;
 
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 
 public class LoadResult {
-    private Drawable drawable;
+    private Bitmap bitmap;
+    private RecycleGifDrawable gifDrawable;
     private String mimeType;
     private ImageFrom imageFrom;
 
-    public LoadResult(Drawable drawable, ImageFrom imageFrom, String mimeType) {
-        this.drawable = drawable;
+    public LoadResult(Bitmap bitmap, ImageFrom imageFrom, String mimeType) {
+        this.bitmap = bitmap;
         this.imageFrom = imageFrom;
         this.mimeType = mimeType;
     }
 
-    public Drawable getDrawable() {
-        return drawable;
+    public LoadResult(RecycleGifDrawable gifDrawable, ImageFrom imageFrom, String mimeType) {
+        this.gifDrawable = gifDrawable;
+        this.imageFrom = imageFrom;
+        this.mimeType = mimeType;
+    }
+
+    public Bitmap getBitmap() {
+        return bitmap;
+    }
+
+    public RecycleGifDrawable getGifDrawable() {
+        return gifDrawable;
     }
 
     public ImageFrom getImageFrom() {

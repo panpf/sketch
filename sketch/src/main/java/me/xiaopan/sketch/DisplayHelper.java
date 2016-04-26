@@ -388,6 +388,11 @@ public class DisplayHelper {
             }
         }
 
+        // ImageDisplayer必须得有
+        if (options.getImageDisplayer() == null) {
+            options.setImageDisplayer(sketch.getConfiguration().getDefaultImageDisplayer());
+        }
+
         // 使用过渡图片显示器的时候，如果使用了loadingImage的话ImageView就必须采用固定宽高以及ScaleType必须是CENTER_CROP
         if (options.getImageDisplayer() instanceof TransitionImageDisplayer
                 && options.getLoadingImageHolder() != null
@@ -486,7 +491,7 @@ public class DisplayHelper {
         if (options.isCacheInMemory()) {
             Drawable cacheDrawable = configuration.getMemoryCache().get(memoryCacheId);
             if (cacheDrawable != null) {
-                RecycleDrawableInterface recycleDrawable = (RecycleDrawableInterface) cacheDrawable;
+                RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
                 if (!recycleDrawable.isRecycled()) {
                     if (Sketch.isDebugMode()) {
                         Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "from memory get bitmap", " - ", recycleDrawable.getInfo(), " - ", name));
@@ -551,7 +556,9 @@ public class DisplayHelper {
             RecycleBitmapDrawable loadingDrawable = options.getLoadingImageHolder().getRecycleBitmapDrawable(context);
             // 如果使用了TransitionImageDisplayer并且ImageVie是固定大小并且ScaleType是CENT_CROP那么就需要根据ImageVie的固定大小来裁剪loadingImage
             FixedSize tempFixedSize = null;
-            if (options.getImageDisplayer() != null && options.getImageDisplayer() instanceof TransitionImageDisplayer && fixedSize != null && scaleType == ScaleType.CENTER_CROP) {
+            if (options.getImageDisplayer() instanceof TransitionImageDisplayer
+                    && fixedSize != null
+                    && scaleType == ScaleType.CENTER_CROP) {
                 tempFixedSize = fixedSize;
             }
             loadingBindDrawable = new BindFixedRecycleBitmapDrawable(loadingDrawable, tempFixedSize, request);

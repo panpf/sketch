@@ -30,7 +30,7 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
     private RequestAttrs attrs;
     private DownloadOptions options;
 
-    private DownloadResult result;
+    private DownloadResult downloadResult;
     private DownloadListener downloadListener;
     private DownloadProgressListener progressListener;
 
@@ -54,7 +54,11 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
 
     @Override
     public DownloadResult getDownloadResult() {
-        return result;
+        return downloadResult;
+    }
+
+    protected void setDownloadResult(DownloadResult downloadResult) {
+        this.downloadResult = downloadResult;
     }
 
     @Override
@@ -97,15 +101,6 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
     protected void runDispatch() {
         setStatus(Status.DISPATCHING);
 
-        // 先过滤掉不支持的URI协议
-        if (attrs.getUriScheme() != UriScheme.HTTP && attrs.getUriScheme() != UriScheme.HTTPS) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "not support uri:", attrs.getUri(), " - ", attrs.getName()));
-            }
-            failed(FailedCause.URI_NO_SUPPORT);
-            return;
-        }
-
         // 然后从磁盘缓存中找缓存文件
         if (options.isCacheInDisk()) {
             DiskCache.Entry diskCacheEntry = attrs.getConfiguration().getDiskCache().get(attrs.getUri());
@@ -113,18 +108,15 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "diskCache", " - ", attrs.getName()));
                 }
-                result = new DownloadResult(diskCacheEntry, false);
-                postRunCompleted();
+                downloadResult = new DownloadResult(diskCacheEntry, false);
+                downloadCompleted();
                 return;
             }
         }
 
         // 在下载之前判断如果请求Level限制只能从本地加载的话就取消了
         if (options.getRequestLevel() == RequestLevel.LOCAL) {
-            canceled(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "canceled", " - ", options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
-            }
+            requestLevelIsLocal();
             return;
         }
 
@@ -161,8 +153,8 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
         }
 
         // 下载成功了
-        result = justDownloadResult;
-        postRunCompleted();
+        downloadResult = justDownloadResult;
+        downloadCompleted();
     }
 
     @Override
@@ -175,6 +167,20 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
         if (progressListener != null) {
             postRunUpdateProgress(totalLength, completedLength);
         }
+    }
+
+    protected void requestLevelIsLocal(){
+        canceled(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "runDispatch", " - ", "canceled", " - ", options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
+        }
+    }
+
+    /**
+     * 下载完成后续处理
+     */
+    protected void downloadCompleted(){
+        postRunCompleted();
     }
 
     @Override
@@ -210,10 +216,10 @@ public class DefaultDownloadRequest extends SketchRequest implements DownloadReq
         setStatus(Status.COMPLETED);
 
         if (downloadListener != null) {
-            if (result.getDiskCacheEntry() != null) {
-                downloadListener.onCompleted(result.getDiskCacheEntry().getFile(), result.isFromNetwork());
-            } else if (result.getImageData() != null) {
-                downloadListener.onCompleted(result.getImageData());
+            if (downloadResult.getDiskCacheEntry() != null) {
+                downloadListener.onCompleted(downloadResult.getDiskCacheEntry().getFile(), downloadResult.isFromNetwork());
+            } else if (downloadResult.getImageData() != null) {
+                downloadListener.onCompleted(downloadResult.getImageData());
             }
         }
     }

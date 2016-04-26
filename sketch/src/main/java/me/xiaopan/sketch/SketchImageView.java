@@ -23,7 +23,6 @@ import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
@@ -696,13 +695,14 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             return false;
         }
 
-        if (newDrawable instanceof TransitionDrawable) {
-            TransitionDrawable transitionDrawable = (TransitionDrawable) newDrawable;
-            if (transitionDrawable.getNumberOfLayers() >= 2) {
-                newDrawable = transitionDrawable.getDrawable(1);
+        // 如果是LayerDrawable的话就取最后一个判断
+        if (newDrawable instanceof LayerDrawable) {
+            LayerDrawable layerDrawable = (LayerDrawable) newDrawable;
+            if (layerDrawable.getNumberOfLayers() > 0) {
+                newDrawable = layerDrawable.getDrawable(layerDrawable.getNumberOfLayers() - 1);
             }
         }
-        return newDrawable instanceof RecycleDrawableInterface && ImageFormat.GIF.getMimeType().equals(((RecycleDrawableInterface) newDrawable).getMimeType());
+        return newDrawable instanceof RecycleDrawable && ImageFormat.GIF.getMimeType().equals(((RecycleDrawable) newDrawable).getMimeType());
     }
 
     /**
@@ -722,8 +722,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             }
             bindFixedRecycleBitmapDrawable.setIsDisplayed(callingStation, isDisplayed);
             return true;
-        } else if (drawable instanceof RecycleDrawableInterface) {
-            ((RecycleDrawableInterface) drawable).setIsDisplayed(callingStation, isDisplayed);
+        } else if (drawable instanceof RecycleDrawable) {
+            ((RecycleDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
             return true;
         } else if (drawable instanceof LayerDrawable) {
             LayerDrawable layerDrawable = (LayerDrawable) drawable;

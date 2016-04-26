@@ -16,31 +16,28 @@
 
 package me.xiaopan.sketch;
 
-public interface RecycleDrawableInterface {
+import android.graphics.drawable.Drawable;
 
-    void setIsDisplayed(String callingStation, boolean displayed);
+public class DisplayResult {
+    private Drawable drawable;
+    private String mimeType;
+    private ImageFrom imageFrom;
 
-    void setIsCached(String callingStation, boolean cached);
+    public DisplayResult(Drawable drawable, ImageFrom imageFrom, String mimeType) {
+        this.drawable = drawable;
+        this.imageFrom = imageFrom;
+        this.mimeType = mimeType;
+    }
 
-    void setIsWaitDisplay(String callingStation, boolean waitDisplay);
+    public Drawable getDrawable() {
+        return drawable;
+    }
 
-    int getByteCount();
+    public ImageFrom getImageFrom() {
+        return imageFrom;
+    }
 
-    boolean isRecycled();
-
-    String getMimeType();
-
-    void setMimeType(String mimeType);
-
-    void recycle();
-
-    String getSize();
-
-    String getConfig();
-
-    String getInfo();
-
-    boolean canRecycle();
-
-    void setAllowRecycle(boolean allowRecycle);
+    public String getMimeType() {
+        return mimeType;
+    }
 }

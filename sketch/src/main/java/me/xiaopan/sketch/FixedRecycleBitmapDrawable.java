@@ -10,7 +10,7 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawableInterface {
+public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawable {
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
     private int bitmapWidth;
     private int bitmapHeight;
@@ -128,6 +128,7 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
         return bitmap;
     }
 
+    @SuppressWarnings("unused")
     public FixedSize getFixedSize() {
         return fixedSize;
     }

@@ -23,7 +23,7 @@ import android.util.Log;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDrawableInterface {
+public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDrawable {
     private static final String NAME = "RecycleBitmapDrawable";
 
     private int cacheRefCount;

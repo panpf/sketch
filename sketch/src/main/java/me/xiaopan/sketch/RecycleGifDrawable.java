@@ -33,7 +33,7 @@ import java.nio.ByteBuffer;
 import me.xiaopan.sketch.util.SketchUtils;
 import pl.droidsonroids.gif.GifDrawable;
 
-public class RecycleGifDrawable extends GifDrawable implements RecycleDrawableInterface {
+public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
     private static final String NAME = "RecycleGifDrawable";
 
     private int cacheRefCount;
