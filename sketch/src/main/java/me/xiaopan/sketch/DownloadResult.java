@@ -19,9 +19,9 @@ package me.xiaopan.sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 
 public class DownloadResult {
-    public DiskCache.Entry diskCacheEntry;
-    public byte[] imageData;
-    public boolean fromNetwork;
+    private DiskCache.Entry diskCacheEntry;
+    private byte[] imageData;
+    private boolean fromNetwork;
 
     public DownloadResult(DiskCache.Entry diskCacheEntry, boolean fromNetwork) {
         this.diskCacheEntry = diskCacheEntry;

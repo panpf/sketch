@@ -40,7 +40,6 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private DownloadResult downloadResult;
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
     private FailCause failCause;    // 失败原因
-    private ImageFrom imageFrom;    // 图片来源
     private RequestStatus requestStatus = RequestStatus.WAIT_DISPATCH;  // 状态
 
     public DefaultDownloadRequest(RequestAttrs attrs, DownloadOptions options, DownloadListener downloadListener) {
@@ -81,11 +80,6 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     @Override
     public CancelCause getCancelCause() {
         return null;
-    }
-
-    @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
     }
 
     @Override
@@ -195,7 +189,6 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", attrs.getName()));
                 }
-                this.imageFrom = ImageFrom.DISK_CACHE;
                 this.downloadResult = new DownloadResult(diskCacheEntry, false);
                 attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
             } else {
@@ -247,8 +240,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
             return;
         }
 
-        if (justDownloadResult != null && (justDownloadResult.diskCacheEntry != null || justDownloadResult.imageData != null)) {
-            this.imageFrom = justDownloadResult.fromNetwork ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
+        if (justDownloadResult != null && (justDownloadResult.getDiskCacheEntry() != null || justDownloadResult.getImageData() != null)) {
             this.requestStatus = RequestStatus.COMPLETED;
             this.downloadResult = justDownloadResult;
 
@@ -268,10 +260,10 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
 
         setRequestStatus(RequestStatus.COMPLETED);
         if (downloadListener != null) {
-            if (downloadResult.diskCacheEntry != null) {
-                downloadListener.onCompleted(downloadResult.diskCacheEntry.getFile(), imageFrom == ImageFrom.NETWORK);
-            } else if (downloadResult.imageData != null) {
-                downloadListener.onCompleted(downloadResult.imageData);
+            if (downloadResult.getDiskCacheEntry() != null) {
+                downloadListener.onCompleted(downloadResult.getDiskCacheEntry().getFile(), downloadResult.isFromNetwork());
+            } else if (downloadResult.getImageData() != null) {
+                downloadListener.onCompleted(downloadResult.getImageData());
             }
         }
     }

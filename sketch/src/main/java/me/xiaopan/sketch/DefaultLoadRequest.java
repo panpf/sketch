@@ -75,11 +75,6 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
     }
 
     @Override
-    public ImageFrom getImageFrom() {
-        return imageFrom;
-    }
-
-    @Override
     public RequestStatus getRequestStatus() {
         return requestStatus;
     }
@@ -262,9 +257,9 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
             return;
         }
 
-        if (justDownloadResult != null && (justDownloadResult.diskCacheEntry != null || justDownloadResult.imageData != null)) {
+        if (justDownloadResult != null && (justDownloadResult.getDiskCacheEntry() != null || justDownloadResult.getImageData() != null)) {
             this.downloadResult = justDownloadResult;
-            this.imageFrom = justDownloadResult.fromNetwork ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
+            this.imageFrom = justDownloadResult.isFromNetwork() ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
 
             postRunLoad();
         } else {

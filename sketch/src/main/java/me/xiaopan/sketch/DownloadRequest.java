@@ -34,11 +34,6 @@ public interface DownloadRequest extends RequestRunManager {
     DownloadOptions getOptions();
 
     /**
-     * 获取结果图片来源
-     */
-    ImageFrom getImageFrom();
-
-    /**
      * 获取失败原因
      */
     FailCause getFailCause();
