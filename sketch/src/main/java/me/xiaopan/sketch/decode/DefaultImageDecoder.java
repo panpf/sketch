@@ -140,12 +140,12 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public Object decodeHttpOrHttps(LoadRequest loadRequest) {
-        DiskCache.Entry diskCacheEntry = loadRequest.getDiskCacheEntry();
+        DiskCache.Entry diskCacheEntry = loadRequest.getDownloadResult() != null ? loadRequest.getDownloadResult().getDiskCacheEntry() : null;
         if (diskCacheEntry != null) {
             return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest));
         }
 
-        byte[] imageData = loadRequest.getImageData();
+        byte[] imageData = loadRequest.getDownloadResult() != null ? loadRequest.getDownloadResult().getImageData() : null;
         if (imageData != null && imageData.length > 0) {
             return decodeFromHelper(loadRequest, new ByteArrayDecodeHelper(imageData, loadRequest));
         }
@@ -154,7 +154,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public Object decodeFile(LoadRequest loadRequest) {
-        DiskCache.Entry diskCacheEntry = loadRequest.getDiskCacheEntry();
+        DiskCache.Entry diskCacheEntry = loadRequest.getDownloadResult() != null ? loadRequest.getDownloadResult().getDiskCacheEntry() : null;
         if (diskCacheEntry != null) {
             return decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest));
         } else {

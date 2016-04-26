@@ -37,8 +37,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
     private DownloadListener downloadListener;
     private DownloadProgressListener downloadProgressListener;
 
-    private DiskCache.Entry diskCacheEntry;
-    private byte[] resultBytes;
+    private DownloadResult downloadResult;
     private RunStatus runStatus = RunStatus.DISPATCH;    // 运行状态，用于在执行run方法时知道该干什么
     private FailCause failCause;    // 失败原因
     private ImageFrom imageFrom;    // 图片来源
@@ -197,7 +196,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "executeDispatch", " - ", "diskCache", " - ", attrs.getName()));
                 }
                 this.imageFrom = ImageFrom.DISK_CACHE;
-                this.diskCacheEntry = diskCacheEntry;
+                this.downloadResult = new DownloadResult(diskCacheEntry, false);
                 attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
             } else {
                 if (options.getRequestLevel() == RequestLevel.LOCAL) {
@@ -239,7 +238,7 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
             return;
         }
 
-        DownloadResult downloadResult = attrs.getConfiguration().getImageDownloader().download(this);
+        DownloadResult justDownloadResult = attrs.getConfiguration().getImageDownloader().download(this);
 
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
@@ -248,11 +247,10 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
             return;
         }
 
-        if (downloadResult != null && (downloadResult.diskCacheEntry != null || downloadResult.imageData != null)) {
-            this.imageFrom = downloadResult.fromNetwork ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
+        if (justDownloadResult != null && (justDownloadResult.diskCacheEntry != null || justDownloadResult.imageData != null)) {
+            this.imageFrom = justDownloadResult.fromNetwork ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
             this.requestStatus = RequestStatus.COMPLETED;
-            this.diskCacheEntry = downloadResult.diskCacheEntry;
-            this.resultBytes = downloadResult.imageData;
+            this.downloadResult = justDownloadResult;
 
             attrs.getConfiguration().getHandler().obtainMessage(WHAT_CALLBACK_COMPLETED, this).sendToTarget();
         } else {
@@ -270,10 +268,10 @@ public class DefaultDownloadRequest implements DownloadRequest, Runnable {
 
         setRequestStatus(RequestStatus.COMPLETED);
         if (downloadListener != null) {
-            if (diskCacheEntry != null) {
-                downloadListener.onCompleted(diskCacheEntry.getFile(), imageFrom == ImageFrom.NETWORK);
-            } else if (resultBytes != null) {
-                downloadListener.onCompleted(resultBytes);
+            if (downloadResult.diskCacheEntry != null) {
+                downloadListener.onCompleted(downloadResult.diskCacheEntry.getFile(), imageFrom == ImageFrom.NETWORK);
+            } else if (downloadResult.imageData != null) {
+                downloadListener.onCompleted(downloadResult.imageData);
             }
         }
     }

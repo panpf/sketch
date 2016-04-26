@@ -32,4 +32,16 @@ public class DownloadResult {
         this.imageData = imageData;
         this.fromNetwork = true;
     }
+
+    public DiskCache.Entry getDiskCacheEntry() {
+        return diskCacheEntry;
+    }
+
+    public boolean isFromNetwork() {
+        return fromNetwork;
+    }
+
+    public byte[] getImageData() {
+        return imageData;
+    }
 }

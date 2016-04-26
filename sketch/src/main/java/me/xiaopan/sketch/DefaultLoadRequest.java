@@ -40,8 +40,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
     private LoadListener loadListener;
     private DownloadProgressListener downloadProgressListener;
 
-    private DiskCache.Entry diskCacheEntry;    // 磁盘缓存实体
-    private byte[] imageData;
+    private DownloadResult downloadResult;
     private Drawable resultBitmap;
     private String mimeType;
     private ImageFrom imageFrom;    // 图片来源
@@ -71,13 +70,8 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
     }
 
     @Override
-    public DiskCache.Entry getDiskCacheEntry() {
-        return diskCacheEntry;
-    }
-
-    @Override
-    public byte[] getImageData() {
-        return imageData;
+    public DownloadResult getDownloadResult() {
+        return downloadResult;
     }
 
     @Override
@@ -212,7 +206,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
         if (attrs.getUriScheme() == UriScheme.HTTP || attrs.getUriScheme() == UriScheme.HTTPS) {
             DiskCache.Entry diskCacheEntry = options.isCacheInDisk() ? attrs.getConfiguration().getDiskCache().get(attrs.getUri()) : null;
             if (diskCacheEntry != null) {
-                this.diskCacheEntry = diskCacheEntry;
+                this.downloadResult = new DownloadResult(diskCacheEntry, false);
                 this.imageFrom = ImageFrom.DISK_CACHE;
                 postRunLoad();
                 if (Sketch.isDebugMode()) {
@@ -259,7 +253,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
             return;
         }
 
-        DownloadResult downloadResult = attrs.getConfiguration().getImageDownloader().download(this);
+        DownloadResult justDownloadResult = attrs.getConfiguration().getImageDownloader().download(this);
 
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
@@ -268,10 +262,9 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
             return;
         }
 
-        if (downloadResult != null && (downloadResult.diskCacheEntry != null || downloadResult.imageData != null)) {
-            this.diskCacheEntry = downloadResult.diskCacheEntry;
-            this.imageData = downloadResult.imageData;
-            this.imageFrom = downloadResult.fromNetwork ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
+        if (justDownloadResult != null && (justDownloadResult.diskCacheEntry != null || justDownloadResult.imageData != null)) {
+            this.downloadResult = justDownloadResult;
+            this.imageFrom = justDownloadResult.fromNetwork ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
 
             postRunLoad();
         } else {
@@ -296,7 +289,7 @@ public class DefaultLoadRequest implements LoadRequest, Runnable {
         if (attrs.getConfiguration().getLocalImagePreprocessor().isSpecific(this)) {
             DiskCache.Entry specificLocalImageDiskCacheEntry = attrs.getConfiguration().getLocalImagePreprocessor().getDiskCacheEntry(this);
             if (specificLocalImageDiskCacheEntry != null) {
-                this.diskCacheEntry = specificLocalImageDiskCacheEntry;
+                this.downloadResult = new DownloadResult(specificLocalImageDiskCacheEntry, false);
             } else {
                 toFailedStatus(FailCause.NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE);
                 return;

@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch;
 
-import me.xiaopan.sketch.cache.DiskCache;
-
 /**
  * 加载请求
  */
@@ -30,14 +28,9 @@ public interface LoadRequest extends DownloadRequest {
     LoadOptions getOptions();
 
     /**
-     * 获取磁盘缓存实体
+     * 获取下载结果
      */
-    DiskCache.Entry getDiskCacheEntry();
-
-    /**
-     * 获取图片数据
-     */
-    byte[] getImageData();
+    DownloadResult getDownloadResult();
 
     /**
      * 获取图片类型
