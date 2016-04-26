@@ -8,7 +8,7 @@ Sketch is for Android on a picture of the loader, the purpose is to help the dev
 
 ###特点（Features）
 >* ``支持GIF图片``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示GIF图片，感谢koral--
->* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``/sdcard/sample.jpg``、``drawable://``等6种URI。
+>* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``等7种URI。
 >* ``异步加载``. 采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
 >* ``二级缓存支持``. 采用Lru算法在本地和内存中缓存图片，本地缓存默认最大容量为100M，内存缓存默认最大容量为最大可用内存的八分之一。
 >* ``支持ViewHolder``. 即使你在ListView中使用了ViewHolder也依然可以使用Sketch来加载图片，在不占用setTag()方法的同时保证图片显示绝对不会混乱。
@@ -38,7 +38,7 @@ Sketch is for Android on a picture of the loader, the purpose is to help the dev
 |Type|Scheme|Fetch method used in SketchImageView|
 |:--|:--|:--|
 |File in network|http://, https:// |displayImage(String)|
-|File in SDCard|/|displayImage(String)|
+|File in SDCard|/, file://|displayImage(String)|
 |Content Provider|content://|displayURIImage(Uri)|
 |Asset in app|asset://|displayAssetImage(String)|
 |Resource in app|resource://|displayResourceImage(int)|
@@ -48,7 +48,7 @@ Sketch is for Android on a picture of the loader, the purpose is to help the dev
 |Type|Scheme|jpeg|png|webp|gif|apk icon|
 |:--|:--|:--|:--|:--|:--|:--|:--|
 |File in network|http://, http:// |YES|YES|YES（Android4.0 above）|YES|NO|
-|File in SDCard|/|YES|YES|YES（Android4.0 above）|YES|YES|
+|File in SDCard|/, file://|YES|YES|YES（Android4.0 above）|YES|YES|
 |Content Provider|content://|YES|YES|YES（Android4.0 above）|YES|NO|
 |Asset in app|asset://|YES|YES|YES（Android4.0 above）|YES|NO|
 |Resource in app|resource://|YES|YES|YES（Android4.0 above）|YES|NO|
@@ -62,6 +62,7 @@ sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x76
 
 // display image from SDCard
 sketchImageView.displayImage("/sdcard/sample.png");
+sketchImageView.displayImage("file:///sdcard/sample.png");
 
 // display apk icon from SDCard
 sketchImageView.displayImage("/sdcard/google_play.apk");
