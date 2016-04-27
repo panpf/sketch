@@ -237,24 +237,40 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
     }
 
-    /**
-     * @param uri The Uri of an image
-     * @deprecated Use the new displayURIImage(Uri) method
-     */
     @Override
-    @Deprecated
     public void setImageURI(Uri uri) {
+        // 不显示GIF角标
+        if (gifFlagDrawable != null && currentIsGifDrawable) {
+            currentIsGifDrawable = false;
+            invalidate();
+        }
+
+        final Drawable oldDrawable = getDrawable();
         super.setImageURI(uri);
+        final Drawable newDrawable = getDrawable();
+
+        // 图片确实发生改变了就处理一下旧的图片
+        if (oldDrawable != null && oldDrawable != newDrawable) {
+            notifyDrawable("setImageURI:oldDrawable", oldDrawable, false);
+        }
     }
 
-    /**
-     * @param resId the resource identifier of the drawable
-     * @deprecated Use the new displayResourceImage(int) method
-     */
     @Override
-    @Deprecated
     public void setImageResource(int resId) {
+        // 不显示GIF角标
+        if (gifFlagDrawable != null && currentIsGifDrawable) {
+            currentIsGifDrawable = false;
+            invalidate();
+        }
+
+        final Drawable oldDrawable = getDrawable();
         super.setImageResource(resId);
+        final Drawable newDrawable = getDrawable();
+
+        // 图片确实发生改变了就处理一下旧的图片
+        if (oldDrawable != null && oldDrawable != newDrawable) {
+            notifyDrawable("setImageResource:oldDrawable", oldDrawable, false);
+        }
     }
 
     @Override
