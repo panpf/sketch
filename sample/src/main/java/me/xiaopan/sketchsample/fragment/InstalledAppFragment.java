@@ -74,6 +74,7 @@ public class InstalledAppFragment extends MyFragment {
                     appInfo.setVersionName(packageInfo.versionName);
                     appInfo.setApkFilePath(packageInfo.applicationInfo.publicSourceDir);
                     appInfo.setAppSize(Formatter.formatFileSize(context, new File(appInfo.getApkFilePath()).length()));
+                    appInfo.setVersionCode(packageInfo.versionCode);
                     appInfoList.add(appInfo);
                 }
 

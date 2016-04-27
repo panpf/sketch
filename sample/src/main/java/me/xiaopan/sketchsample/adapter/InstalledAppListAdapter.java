@@ -52,7 +52,7 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter{
             AppInfo appInfo = appInfoList.get(position-1);
             AppInfoViewHolder appInfoViewHolder = (AppInfoViewHolder) holder;
 
-            appInfoViewHolder.iconSketchImageView.displayImage(appInfo.getApkFilePath());
+            appInfoViewHolder.iconSketchImageView.displayInstalledAppIcon(appInfo.getId(), appInfo.getVersionCode());
 
             appInfoViewHolder.nameTextView.setText(appInfo.getName());
             appInfoViewHolder.infoTextView.setText("v"+appInfo.getVersionName()+"  |  "+appInfo.getAppSize());
