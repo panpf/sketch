@@ -405,7 +405,7 @@ public class DisplayHelper {
 
         // 没有设置内存缓存ID的话就计算内存缓存ID，这个通常是不是需要使用者主动设置的，除非你想使用你自己放入MemoryCache中的图片
         if (memoryCacheId == null) {
-            memoryCacheId = options.appendMemoryCacheKey(new StringBuilder(uri)).toString();
+            memoryCacheId = options.appendMemoryCacheKey(new StringBuilder().append(uri)).toString();
         }
 
         // 没有设置名称的话就用内存缓存ID作为名称，名称主要用来在log中区分请求的
