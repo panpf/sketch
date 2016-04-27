@@ -5,8 +5,8 @@ import android.widget.ImageView;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.DisplayOptions;
-import me.xiaopan.sketch.LoadOptions;
 import me.xiaopan.sketch.ImageHolder;
+import me.xiaopan.sketch.LoadOptions;
 import me.xiaopan.sketch.Resize;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
@@ -14,6 +14,7 @@ import me.xiaopan.sketch.process.CircleImageProcessor;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
 import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
 import me.xiaopan.sketchsample.util.DeviceUtils;
+import me.xiaopan.sketchsample.util.MyLocalImagePreprocessor;
 import me.xiaopan.sketchsample.util.Settings;
 
 public class SketchManager {
@@ -31,6 +32,7 @@ public class SketchManager {
         sketchConfiguration.setLowQualityImage(settings.isLowQualityImage());
         sketchConfiguration.setCacheInDisk(settings.isCacheInDisk());
         sketchConfiguration.setCacheInMemory(settings.isCacheInMemory());
+        sketchConfiguration.setLocalImagePreprocessor(new MyLocalImagePreprocessor());
     }
 
     public void initDisplayOptions(){

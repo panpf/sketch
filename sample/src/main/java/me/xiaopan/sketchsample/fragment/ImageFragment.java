@@ -47,7 +47,7 @@ public class ImageFragment extends MyFragment {
         super.onViewCreated(view, savedInstanceState);
 
         photoViewAttacher = new PhotoViewAttacher(imageView);
-        imageView.setDisplayOptions(OptionsType.DETAIL);
+        imageView.setOptionsByName(OptionsType.DETAIL);
         imageView.setAutoApplyGlobalAttr(false);
 
         imageView.setDisplayListener(new DisplayListener() {

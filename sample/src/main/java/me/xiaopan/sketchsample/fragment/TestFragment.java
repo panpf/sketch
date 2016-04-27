@@ -25,8 +25,8 @@ public class TestFragment extends MyFragment{
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        imageView1.setDisplayOptions(new DisplayOptions().setLoadingImage(R.drawable.image_loading).setImageDisplayer(new TransitionImageDisplayer()));
-        imageView2.setDisplayOptions(new DisplayOptions().setImageDisplayer(new TransitionImageDisplayer()));
+        imageView1.setOptions(new DisplayOptions().setLoadingImage(R.drawable.image_loading).setImageDisplayer(new TransitionImageDisplayer()));
+        imageView2.setOptions(new DisplayOptions().setImageDisplayer(new TransitionImageDisplayer()));
 
         imageView1.displayImage("http://h.hiphotos.baidu.com/image/pic/item/908fa0ec08fa513d6999b9df3f6d55fbb2fbd984.jpg");
         imageView2.displayImage("http://h.hiphotos.baidu.com/image/pic/item/908fa0ec08fa513d6999b9df3f6d55fbb2fbd984.jpg");

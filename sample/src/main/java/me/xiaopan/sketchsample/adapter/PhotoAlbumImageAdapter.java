@@ -94,7 +94,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         ItemViewHolder itemViewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_photo_album_image, parent, false));
 
         itemViewHolder.sketchImageView.setOnClickListener(itemClickListener);
-        itemViewHolder.sketchImageView.setDisplayOptions(displayOptions);
+        itemViewHolder.sketchImageView.setOptions(displayOptions);
         itemViewHolder.sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
         itemViewHolder.sketchImageView.setRoundedRadius(roundRadius);
         if(itemWidth != -1){
