@@ -34,7 +34,7 @@ public class MyImageView extends SketchImageView {
 
         if(autoApplyGlobalAttr){
             setShowPressedStatus(settings.isShowPressedStatus());
-            setShowFromFlag(settings.isShowImageFromFlag());
+            setShowImageFrom(settings.isShowImageFromFlag());
             setShowDownloadProgress(settings.isShowImageDownloadProgress());
             setClickDisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
             setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());

@@ -95,8 +95,8 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
 
         itemViewHolder.sketchImageView.setOnClickListener(itemClickListener);
         itemViewHolder.sketchImageView.setOptions(displayOptions);
-        itemViewHolder.sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-        itemViewHolder.sketchImageView.setRoundedRadius(roundRadius);
+        itemViewHolder.sketchImageView.setMaskShape(SketchImageView.MaskShape.ROUNDED_RECT);
+        itemViewHolder.sketchImageView.setMaskRoundedRadius(roundRadius);
         if(itemWidth != -1){
             ViewGroup.LayoutParams layoutParams = itemViewHolder.sketchImageView.getLayoutParams();
             layoutParams.width = itemWidth;

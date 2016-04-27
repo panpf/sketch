@@ -113,9 +113,9 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             itemHolder.twoImageView.setOptionsByName(OptionsType.NORMAL_CIRCULAR);
             itemHolder.threeImageView.setOptionsByName(OptionsType.NORMAL_CIRCULAR);
 
-            itemHolder.oneImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
-            itemHolder.twoImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
-            itemHolder.threeImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
+            itemHolder.oneImageView.setMaskShape(SketchImageView.MaskShape.CIRCLE);
+            itemHolder.twoImageView.setMaskShape(SketchImageView.MaskShape.CIRCLE);
+            itemHolder.threeImageView.setMaskShape(SketchImageView.MaskShape.CIRCLE);
 
             ViewGroup.LayoutParams params = itemHolder.oneImageView.getLayoutParams();
             params.width = itemWidth;
