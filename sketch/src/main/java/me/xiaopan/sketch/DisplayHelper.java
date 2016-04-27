@@ -19,6 +19,8 @@ package me.xiaopan.sketch;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.display.ImageDisplayer;
@@ -396,7 +398,15 @@ public class DisplayHelper {
         if (options.getImageDisplayer() instanceof TransitionImageDisplayer
                 && options.getLoadingImageHolder() != null
                 && (fixedSize == null || scaleType != ScaleType.CENTER_CROP)) {
-            String errorInfo = "If you use TransitionImageDisplayer and loadingImage, ImageView layout_width and layout_height must be fixed as well as the ScaleType must be CENTER_CROP.";
+            View imageView = imageViewInterface.getSelf();
+            ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
+            String errorInfo = SketchUtils.concat(
+                    "If you use TransitionImageDisplayer and loadingImage, ",
+                    "ImageView width and height must be fixed as well as the ScaleType must be CENTER_CROP. ",
+                    "Now ",
+                    " width is ", SketchUtils.viewLayoutFormatted(layoutParams.width),
+                    ", height is ", SketchUtils.viewLayoutFormatted(layoutParams.height),
+                    ", ScaleType is ", scaleType.name());
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", errorInfo, " - ", uri));
             }
@@ -426,6 +436,18 @@ public class DisplayHelper {
      * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
      */
     public DisplayRequest commit() {
+        // 验证imageView
+        if (imageViewInterface == null) {
+            if (Sketch.isDebugMode()) {
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "sketchImageViewInterface is null", " - ", (name != null ? name : uri)));
+            }
+            if (displayListener != null) {
+                displayListener.onFailed(FailedCause.IMAGE_VIEW_NULL);
+            }
+            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+            return null;
+        }
+
         saveParamToImageView();
 
         preProcess();
@@ -437,19 +459,7 @@ public class DisplayHelper {
             displayListener.onStarted();
         }
 
-        // 验证imageView参数
-        if (imageViewInterface == null) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "sketchImageViewInterface is null", " - ", (name != null ? name : uri)));
-            }
-            if (displayListener != null) {
-                displayListener.onFailed(FailedCause.IMAGE_VIEW_NULL);
-            }
-            configuration.getHelperFactory().recycleDisplayHelper(this);
-            return null;
-        }
-
-        // 验证uri参数
+        // 验证uri
         if (uri == null || "".equals(uri.trim())) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));

@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.Log;
+import android.view.ViewGroup;
 
 import java.io.Closeable;
 import java.io.File;
@@ -260,5 +261,17 @@ public class SketchUtils {
         }
 
         return false;
+    }
+
+    public static String viewLayoutFormatted(int size) {
+        if (size >= 0) {
+            return String.valueOf(size);
+        } else if (size == ViewGroup.LayoutParams.MATCH_PARENT) {
+            return "MATCH_PARENT";
+        } else if (size == ViewGroup.LayoutParams.WRAP_CONTENT) {
+            return "WRAP_CONTENT";
+        } else {
+            return "Unknown";
+        }
     }
 }
