@@ -80,7 +80,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected GestureDetector gestureDetector;
     protected boolean showRect;
 
-    protected boolean currentIsGifDrawable;
+    protected boolean isGifDrawable;
     protected float gifDrawableLeft = -1;
     protected float gifDrawableTop = -1;
     protected Drawable gifFlagDrawable;
@@ -89,7 +89,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected int roundedRadius;
     protected ImageShape imageShape = ImageShape.RECT;
     protected boolean applyClip = false;
-    RectF rectF;
+    protected RectF rectF;
 
     public SketchImageView(Context context) {
         super(context);
@@ -239,59 +239,82 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     @Override
     public void setImageURI(Uri uri) {
-        // 不显示GIF角标
-        if (gifFlagDrawable != null && currentIsGifDrawable) {
-            currentIsGifDrawable = false;
-            invalidate();
-        }
-
         final Drawable oldDrawable = getDrawable();
         super.setImageURI(uri);
         final Drawable newDrawable = getDrawable();
 
-        // 图片确实发生改变了就处理一下旧的图片
-        if (oldDrawable != null && oldDrawable != newDrawable) {
+        // 图片确实改变了就处理一下旧的图片
+        if (oldDrawable != newDrawable) {
             notifyDrawable("setImageURI:oldDrawable", oldDrawable, false);
+
+            // 不显示GIF角标
+            if (gifFlagDrawable != null && isGifDrawable) {
+                isGifDrawable = false;
+                invalidate();
+            }
+
+            imageFrom = null;
+            displayParams = null;
+            if(displayRequest != null && !displayRequest.isFinished()){
+                displayRequest.cancel();
+            }
+            displayRequest = null;
         }
     }
 
     @Override
     public void setImageResource(int resId) {
-        // 不显示GIF角标
-        if (gifFlagDrawable != null && currentIsGifDrawable) {
-            currentIsGifDrawable = false;
-            invalidate();
-        }
-
         final Drawable oldDrawable = getDrawable();
         super.setImageResource(resId);
         final Drawable newDrawable = getDrawable();
 
-        // 图片确实发生改变了就处理一下旧的图片
-        if (oldDrawable != null && oldDrawable != newDrawable) {
+        // 图片确实改变了就处理一下旧的图片
+        if (oldDrawable != newDrawable) {
             notifyDrawable("setImageResource:oldDrawable", oldDrawable, false);
+
+            // 不显示GIF角标
+            if (gifFlagDrawable != null && isGifDrawable) {
+                isGifDrawable = false;
+                invalidate();
+            }
+
+            imageFrom = null;
+            displayParams = null;
+            if(displayRequest != null && !displayRequest.isFinished()){
+                displayRequest.cancel();
+            }
+            displayRequest = null;
         }
     }
 
     @Override
-    public void setImageDrawable(Drawable newDrawable) {
-        // refresh gif flag
-        if (gifFlagDrawable != null) {
-            boolean newDrawableIsGif = isGifImage(newDrawable);
-            if (newDrawableIsGif != currentIsGifDrawable) {
-                currentIsGifDrawable = newDrawableIsGif;
-                invalidate();
-            }
-        }
-
+    public void setImageDrawable(Drawable drawable) {
         final Drawable oldDrawable = getDrawable();
-        super.setImageDrawable(newDrawable);
+        super.setImageDrawable(drawable);
+        final Drawable newDrawable = getDrawable();
 
-        if (newDrawable != null) {
-            notifyDrawable("setImageDrawable:newDrawable", newDrawable, true);
-        }
-        if (oldDrawable != null) {
+        // 图片确实改变了
+        if (oldDrawable != newDrawable) {
             notifyDrawable("setImageDrawable:oldDrawable", oldDrawable, false);
+            boolean newDrawableFromSketch = notifyDrawable("setImageDrawable:newDrawable", newDrawable, true);
+
+            // 刷新GIF标志
+            boolean newDrawableIsGif = SketchUtils.isGifDrawable(newDrawable);
+            if (newDrawableIsGif != isGifDrawable) {
+                isGifDrawable = newDrawableIsGif;
+                if(gifFlagDrawable != null){
+                    invalidate();
+                }
+            }
+
+            if(!newDrawableFromSketch){
+                imageFrom = null;
+                displayParams = null;
+                if(displayRequest != null && !displayRequest.isFinished()){
+                    displayRequest.cancel();
+                }
+                displayRequest = null;
+            }
         }
     }
 
@@ -405,7 +428,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     protected void drawGifFlag(Canvas canvas) {
-        if (currentIsGifDrawable && gifFlagDrawable != null) {
+        if (isGifDrawable && gifFlagDrawable != null) {
             if (gifDrawableLeft == -1) {
                 gifDrawableLeft = getWidth() - getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
                 gifDrawableTop = getHeight() - getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
@@ -666,6 +689,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      *
      * @param imageShape 图片形状
      */
+    // TODO SHAPE相关的都重命名加上Mask
     public void setImageShape(ImageShape imageShape) {
         this.imageShape = imageShape;
         if (getWidth() != 0) {
@@ -704,21 +728,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         return imageFrom;
     }
 
-    private static boolean isGifImage(Drawable newDrawable) {
-        if (newDrawable == null) {
-            return false;
-        }
-
-        // 如果是LayerDrawable的话就取最后一个判断
-        if (newDrawable instanceof LayerDrawable) {
-            LayerDrawable layerDrawable = (LayerDrawable) newDrawable;
-            if (layerDrawable.getNumberOfLayers() > 0) {
-                newDrawable = layerDrawable.getDrawable(layerDrawable.getNumberOfLayers() - 1);
-            }
-        }
-        return newDrawable instanceof RecycleDrawable && ImageFormat.GIF.getMimeType().equals(((RecycleDrawable) newDrawable).getMimeType());
-    }
-
     /**
      * 修改Drawable显示状态
      *
@@ -728,7 +737,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * @return true：drawable或其子Drawable是RecycleDrawable
      */
     private static boolean notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
-        if (drawable instanceof BindFixedRecycleBitmapDrawable) {
+        if (drawable == null) {
+            return false;
+        } else if (drawable instanceof BindFixedRecycleBitmapDrawable) {
             BindFixedRecycleBitmapDrawable bindFixedRecycleBitmapDrawable = (BindFixedRecycleBitmapDrawable) drawable;
             DisplayRequest displayRequest = bindFixedRecycleBitmapDrawable.getDisplayRequest();
             if (displayRequest != null && !displayRequest.isFinished()) {

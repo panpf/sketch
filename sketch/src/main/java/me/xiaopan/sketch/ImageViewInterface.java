@@ -102,6 +102,7 @@ public interface ImageViewInterface {
     /**
      * 获取显示参数
      */
+    // TODO 改名options
     DisplayOptions getDisplayOptions();
 
     /**

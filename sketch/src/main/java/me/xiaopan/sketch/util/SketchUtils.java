@@ -8,6 +8,7 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.LayerDrawable;
 import android.util.Log;
 
 import java.io.Closeable;
@@ -18,6 +19,8 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import me.xiaopan.sketch.ImageFormat;
+import me.xiaopan.sketch.RecycleDrawable;
 import me.xiaopan.sketch.Sketch;
 
 public class SketchUtils {
@@ -240,5 +243,22 @@ public class SketchUtils {
                 deleteFile(cacheDir);
             }
         }
+    }
+
+    public static boolean isGifDrawable(Drawable drawable) {
+        if (drawable != null) {
+            LayerDrawable layerDrawable;
+            while (drawable instanceof LayerDrawable) {
+                layerDrawable = (LayerDrawable) drawable;
+                if (layerDrawable.getNumberOfLayers() > 0) {
+                    drawable = layerDrawable.getDrawable(layerDrawable.getNumberOfLayers() - 1);
+                } else {
+                    drawable = null;
+                }
+            }
+            return drawable instanceof RecycleDrawable && ImageFormat.GIF.getMimeType().equals(((RecycleDrawable) drawable).getMimeType());
+        }
+
+        return false;
     }
 }
