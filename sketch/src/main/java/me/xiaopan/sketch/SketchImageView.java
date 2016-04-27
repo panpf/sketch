@@ -473,6 +473,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
+    public DisplayRequest displayInstalledAppIcon(String packageName, int versionCode) {
+        return Sketch.with(getContext()).display(DefaultLocalImagePreprocessor.createInstalledAppIconUri(packageName, versionCode), this).commit();
+    }
+
+    @Override
     public DisplayOptions getDisplayOptions() {
         return displayOptions;
     }

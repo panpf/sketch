@@ -18,14 +18,14 @@ package me.xiaopan.sketch;
 
 public class RequestAttrs {
     private Sketch sketch;
-    private String diskCacheKey;    // 磁盘缓存KEY
+    private String uri;
     private String realUri;    // 真正的图片地址，例如原图片uri是asset://test.png的，realUri就是test.png
     private String name;    // 名称，用于在输出LOG的时候区分不同的请求
     private UriScheme uriScheme;    // Uri协议类型
 
     public RequestAttrs(Sketch sketch, String uri, UriScheme uriScheme, String name) {
         this.sketch = sketch;
-        this.diskCacheKey = uri;
+        this.uri = uri;
         this.realUri = uriScheme.crop(uri);
         this.uriScheme = uriScheme;
         this.name = name;
@@ -39,8 +39,12 @@ public class RequestAttrs {
         return sketch;
     }
 
+    public String getUri() {
+        return uri;
+    }
+
     public String getDiskCacheKey(){
-        return diskCacheKey;
+        return uri;
     }
 
     public String getRealUri() {

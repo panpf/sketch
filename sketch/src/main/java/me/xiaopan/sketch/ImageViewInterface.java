@@ -100,6 +100,15 @@ public interface ImageViewInterface {
     DisplayRequest displayURIImage(Uri uri);
 
     /**
+     * 显示已安装APP的图标
+     *
+     * @param packageName APP包名
+     * @param versionCode APP版本号
+     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
+     */
+    DisplayRequest displayInstalledAppIcon(String packageName, int versionCode);
+
+    /**
      * 获取显示参数
      */
     // TODO 改名options
