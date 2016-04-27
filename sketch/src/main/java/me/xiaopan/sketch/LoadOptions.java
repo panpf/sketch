@@ -50,7 +50,7 @@ public class LoadOptions extends DownloadOptions {
     }
 
     @Override
-    public LoadOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
+    LoadOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
         super.setRequestLevelFrom(requestLevelFrom);
         return this;
     }

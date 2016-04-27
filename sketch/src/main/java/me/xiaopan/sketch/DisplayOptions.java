@@ -51,7 +51,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
+    DisplayOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
         super.setRequestLevelFrom(requestLevelFrom);
         return this;
     }

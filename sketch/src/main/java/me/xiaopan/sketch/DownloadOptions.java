@@ -68,7 +68,7 @@ public class DownloadOptions {
     /**
      * 设置请求Level的来源
      */
-    public DownloadOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
+    DownloadOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
         this.requestLevelFrom = requestLevelFrom;
         return this;
     }

@@ -29,7 +29,7 @@ public class LoadHelper {
     protected String uri;
     protected String name;
 
-    protected LoadOptions options;
+    protected LoadOptions options = new LoadOptions();
 
     protected LoadListener loadListener;
     protected DownloadProgressListener progressListener;
@@ -49,7 +49,6 @@ public class LoadHelper {
     public LoadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
         this.uri = uri;
-        this.options = new LoadOptions();
     }
 
     /**
@@ -149,7 +148,7 @@ public class LoadHelper {
     /**
      * 批量设置加载参数，你只需要提前将LoadOptions通过Sketch.putLoadOptions()方法存起来，然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
      */
-    public LoadHelper options(Enum<?> optionsName) {
+    public LoadHelper optionsByName(Enum<?> optionsName) {
         return options(Sketch.getLoadOptions(optionsName));
     }
 

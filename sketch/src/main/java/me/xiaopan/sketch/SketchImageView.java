@@ -49,7 +49,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     private DisplayRequest displayRequest;
     private MyListener myListener;
-    private DisplayOptions displayOptions;
+    private DisplayOptions displayOptions = new DisplayOptions();
     private DisplayListener displayListener;
     private DownloadProgressListener downloadProgressListener;
     private DisplayParams displayParams;
@@ -439,19 +439,17 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
-    public void setDisplayOptions(DisplayOptions displayOptions) {
-        if (displayOptions == null) {
-            this.displayOptions = null;
-        } else if (this.displayOptions == null) {
-            this.displayOptions = new DisplayOptions(displayOptions);
+    public void setOptions(DisplayOptions newDisplayOptions) {
+        if (newDisplayOptions == null) {
+            this.displayOptions.reset();
         } else {
-            this.displayOptions.copy(displayOptions);
+            this.displayOptions.copy(newDisplayOptions);
         }
     }
 
     @Override
-    public void setDisplayOptions(Enum<?> optionsName) {
-        setDisplayOptions(Sketch.getDisplayOptions(optionsName));
+    public void setOptionsByName(Enum<?> optionsName) {
+        setOptions(Sketch.getDisplayOptions(optionsName));
     }
 
     @Override
