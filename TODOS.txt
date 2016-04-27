@@ -101,6 +101,9 @@
 （完成与2016-04-27）试着让DisplayRequest继承自LoadRequest，这样加载部分的代码就简单多了
 （完成与2016-04-27）Sketch.putOptions(RequestOptions)改成了Sketch.putDisplayOptions(DisplayOptions)...
 （完成与2016-04-27）兼容file://（直接改成了每种类型可以有两种协议类型，这样还顺便把http://和https://融合成了一种）
+（完成与2016-04-27）SketchImageView.setDisplayOptions(Enum)改为setOptionsByName(Enum) ...Helper.options(Enum)改为optionsByName(Enum)
+（完成与2016-04-28）当使用setResource设置了新的图片的时候，那么displayParams是不是该清除了，确保在onAttch的时候不被恢复
+（完成与2016-04-28）TransitionImageDisplayer异常的时候说明是哪个没设置对
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -145,6 +148,7 @@ inBitmap的意思是找一个字节数一样的旧bitmap对象来装新的图片
 考虑重新设计一下RequestLevel，感觉现在的有点儿繁琐并且意思不太明确
 load请求默认不解码GIF（这样真的好吗，好好思考一下load的使用场景，再判断），并且load的结果不用再包装成Drawable了
 RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
+似乎想到一种能读取webp缩略图的方法了，方案就是将webp在本地转成png，然后再读取
 
 其它：
 参考Glide、Fresco和Picasso
@@ -164,8 +168,11 @@ LruMemoryCache重命名为DefaultLruMemoryCache
 apk文件图标的磁盘缓存KEY加上了文件的最后修改时间，这么做是为了避免包路径一样，但是内容已经发生了变化的时候不能及时刷新缓存图标
 修复使用普通图片时在列表中一滑动图片就没了的BUG
 新增LocalImagePerProcessor可以处理一些特殊的本地文件，然后提取出它们的当中包含的图片，这样Sketch就可以直接显示这些特殊文件中包含的图片了
-兼容jdk1.6
+兼容jdk1.6w
 去掉了DisplayHelper上的listener和progressListener设置，你只能通过SketchImageView来设置listener了
 重构Request部分的实现，简化逻辑处理
 Sketch.putOptions(RequestOptions)改成了Sketch.putDisplayOptions(DisplayOptions)、Sketch.putLoadOptions(LoadOptions)...
 支持file://
+SketchImageView.setDisplayOptions(Enum)改为setOptionsByName(Enum) ...Helper.options(Enum)改为optionsByName(Enum)
+原生支持通过包名和版本号显示已安装APP的图标
+修复使用SketchImageView.setImageURI或setImageResource方法设置图片可能导致异常的问题
