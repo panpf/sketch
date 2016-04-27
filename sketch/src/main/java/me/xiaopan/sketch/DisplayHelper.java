@@ -71,7 +71,7 @@ public class DisplayHelper {
         this.imageViewInterface = imageViewInterface;
 
         this.uri = uri;
-        this.options.copy(imageViewInterface.getDisplayOptions());
+        this.options.copy(imageViewInterface.getOptions());
 
         return this;
     }

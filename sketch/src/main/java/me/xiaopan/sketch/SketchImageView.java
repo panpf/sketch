@@ -478,7 +478,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
-    public DisplayOptions getDisplayOptions() {
+    public DisplayOptions getOptions() {
         return displayOptions;
     }
 
