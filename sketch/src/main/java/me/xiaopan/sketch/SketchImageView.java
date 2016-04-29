@@ -77,10 +77,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected GestureDetector gestureDetector;
     protected boolean showRect;
 
-    protected boolean isGifDrawable;
-    protected float gifDrawableLeft = -1;
-    protected float gifDrawableTop = -1;
-    protected Drawable gifFlagDrawable;
+//    protected boolean isGifDrawable;
+//    protected float gifDrawableLeft = -1;
+//    protected float gifDrawableTop = -1;
+//    protected Drawable gifFlagDrawable;
+    private ShowGifFlagFunction showGifFlagFunction;
 
     protected Path maskShapeClipPath;
     protected int maskRoundedRadius;
@@ -114,7 +115,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if(showImageFromFunction != null){
             showImageFromFunction.onLayout(changed, left, top, right, bottom);
         }
-        initGifFlag();
+//        initGifFlag();
+        if(showGifFlagFunction != null){
+            showGifFlagFunction.onLayout(changed, left, top, right, bottom);
+        }
         initImageShapePath();
     }
 
@@ -138,12 +142,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 //        imageFromPath.close();
 //    }
 
-    protected void initGifFlag() {
-        if (gifFlagDrawable != null) {
-            gifDrawableLeft = getWidth() - getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
-            gifDrawableTop = getHeight() - getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
-        }
-    }
+//    protected void initGifFlag() {
+//        if (gifFlagDrawable != null) {
+//            gifDrawableLeft = getWidth() - getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
+//            gifDrawableTop = getHeight() - getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
+//        }
+//    }
 
     protected void initImageShapePath() {
         if (maskShape == MaskShape.RECT) {
@@ -184,7 +188,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if(showImageFromFunction != null){
             showImageFromFunction.draw(canvas);
         }
-        drawGifFlag(canvas);
+//        drawGifFlag(canvas);
+        if(showGifFlagFunction != null){
+            showGifFlagFunction.draw(canvas);
+        }
     }
 
     @Override
@@ -245,8 +252,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             notifyDrawable("setImageURI:oldDrawable", oldDrawable, false);
 
             // 不显示GIF角标
-            if (gifFlagDrawable != null && isGifDrawable) {
-                isGifDrawable = false;
+//            if (gifFlagDrawable != null && isGifDrawable) {
+//                isGifDrawable = false;
+//                invalidate();
+//            }
+            if (showGifFlagFunction != null && showGifFlagFunction.isGifDrawable) {
+                showGifFlagFunction.setIsGifDrawable(false);
                 invalidate();
             }
 
@@ -274,8 +285,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             notifyDrawable("setImageResource:oldDrawable", oldDrawable, false);
 
             // 不显示GIF角标
-            if (gifFlagDrawable != null && isGifDrawable) {
-                isGifDrawable = false;
+//            if (gifFlagDrawable != null && isGifDrawable) {
+//                isGifDrawable = false;
+//                invalidate();
+//            }
+            if (showGifFlagFunction != null && showGifFlagFunction.isGifDrawable) {
+                showGifFlagFunction.setIsGifDrawable(false);
                 invalidate();
             }
 
@@ -304,10 +319,17 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             boolean newDrawableFromSketch = notifyDrawable("setImageDrawable:newDrawable", newDrawable, true);
 
             // 刷新GIF标志
-            boolean newDrawableIsGif = SketchUtils.isGifDrawable(newDrawable);
-            if (newDrawableIsGif != isGifDrawable) {
-                isGifDrawable = newDrawableIsGif;
-                if(gifFlagDrawable != null){
+//            boolean newDrawableIsGif = SketchUtils.isGifDrawable(newDrawable);
+//            if (newDrawableIsGif != isGifDrawable) {
+//                isGifDrawable = newDrawableIsGif;
+//                if(gifFlagDrawable != null){
+//                    invalidate();
+//                }
+//            }
+            if(showGifFlagFunction != null){
+                boolean newDrawableIsGif = SketchUtils.isGifDrawable(newDrawable);
+                if (newDrawableIsGif != showGifFlagFunction.isGifDrawable) {
+                    showGifFlagFunction.setIsGifDrawable(newDrawableIsGif);
                     invalidate();
                 }
             }
@@ -436,18 +458,18 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 //        }
 //    }
 
-    protected void drawGifFlag(Canvas canvas) {
-        if (isGifDrawable && gifFlagDrawable != null) {
-            if (gifDrawableLeft == -1) {
-                gifDrawableLeft = getWidth() - getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
-                gifDrawableTop = getHeight() - getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
-            }
-            canvas.save();
-            canvas.translate(gifDrawableLeft, gifDrawableTop);
-            gifFlagDrawable.draw(canvas);
-            canvas.restore();
-        }
-    }
+//    protected void drawGifFlag(Canvas canvas) {
+//        if (isGifDrawable && gifFlagDrawable != null) {
+//            if (gifDrawableLeft == -1) {
+//                gifDrawableLeft = getWidth() - getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
+//                gifDrawableTop = getHeight() - getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
+//            }
+//            canvas.save();
+//            canvas.translate(gifDrawableLeft, gifDrawableTop);
+//            gifFlagDrawable.draw(canvas);
+//            canvas.restore();
+//        }
+//    }
 
     @Override
     public void onDisplay() {
@@ -660,7 +682,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     @SuppressWarnings("unused")
     public Drawable getGifFlagDrawable() {
-        return gifFlagDrawable;
+//        return gifFlagDrawable;
+        return showGifFlagFunction != null ? showGifFlagFunction.getGifFlagDrawable() : null;
     }
 
     /**
@@ -668,9 +691,14 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     @SuppressWarnings("unused")
     public void setGifFlagDrawable(Drawable gifFlagDrawable) {
-        this.gifFlagDrawable = gifFlagDrawable;
-        if (this.gifFlagDrawable != null) {
-            this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
+//        this.gifFlagDrawable = gifFlagDrawable;
+//        if (this.gifFlagDrawable != null) {
+//            this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
+//        }
+        if(gifFlagDrawable != null){
+            showGifFlagFunction = new ShowGifFlagFunction(this, gifFlagDrawable);
+        }else{
+            showGifFlagFunction = null;
         }
     }
 
@@ -678,10 +706,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置GIF标识图片
      */
     public void setGifFlagDrawable(int gifFlagResId) {
-        this.gifFlagDrawable = getResources().getDrawable(gifFlagResId);
-        if (this.gifFlagDrawable != null) {
-            this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
-        }
+//        this.gifFlagDrawable = getResources().getDrawable(gifFlagResId);
+//        if (this.gifFlagDrawable != null) {
+//            this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
+//        }
+        setGifFlagDrawable(getResources().getDrawable(gifFlagResId));
     }
 
     /**

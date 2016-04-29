@@ -3,7 +3,7 @@ package me.xiaopan.sketch;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.widget.ImageView;
+import android.view.View;
 
 public class ShowImageFromFunction implements ImageViewFunction{
     private static final int FROM_FLAG_COLOR_MEMORY = 0x8800FF00;
@@ -11,14 +11,14 @@ public class ShowImageFromFunction implements ImageViewFunction{
     private static final int FROM_FLAG_COLOR_DISK_CACHE = 0x88FFFF00;
     private static final int FROM_FLAG_COLOR_NETWORK = 0x88FF0000;
 
-    private ImageView imageView;
+    private View view;
 
     private Path imageFromPath;
     private Paint imageFromPaint;
     private ImageFrom imageFrom;
 
-    public ShowImageFromFunction(ImageView imageView) {
-        this.imageView = imageView;
+    public ShowImageFromFunction(View view) {
+        this.view = view;
     }
 
     @Override
@@ -28,10 +28,10 @@ public class ShowImageFromFunction implements ImageViewFunction{
         } else {
             imageFromPath.reset();
         }
-        int x = imageView.getWidth() / 10;
-        int y = imageView.getWidth() / 10;
-        int left2 = imageView.getPaddingLeft();
-        int top2 = imageView.getPaddingTop();
+        int x = view.getWidth() / 10;
+        int y = view.getWidth() / 10;
+        int left2 = view.getPaddingLeft();
+        int top2 = view.getPaddingTop();
         imageFromPath.moveTo(left2, top2);
         imageFromPath.lineTo(left2 + x, top2);
         imageFromPath.lineTo(left2, top2 + y);
@@ -46,10 +46,10 @@ public class ShowImageFromFunction implements ImageViewFunction{
 
         if (imageFromPath == null) {
             imageFromPath = new Path();
-            int x = imageView.getWidth() / 10;
-            int y = imageView.getWidth() / 10;
-            int left2 = imageView.getPaddingLeft();
-            int top2 = imageView.getPaddingTop();
+            int x = view.getWidth() / 10;
+            int y = view.getWidth() / 10;
+            int left2 = view.getPaddingLeft();
+            int top2 = view.getPaddingTop();
             imageFromPath.moveTo(left2, top2);
             imageFromPath.lineTo(left2 + x, top2);
             imageFromPath.lineTo(left2, top2 + y);
