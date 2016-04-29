@@ -40,10 +40,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     private static final String NAME = "SketchImageView";
 
     private static final int NONE = -1;
-    private static final int FROM_FLAG_COLOR_MEMORY = 0x8800FF00;
-    private static final int FROM_FLAG_COLOR_LOCAL = 0x880000FF;
-    private static final int FROM_FLAG_COLOR_DISK_CACHE = 0x88FFFF00;
-    private static final int FROM_FLAG_COLOR_NETWORK = 0x88FF0000;
     private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
     private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;
 
@@ -59,10 +55,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     private boolean clickRedisplayOnFailed;
     private boolean isSetImage;
 
-    protected Path imageFromPath;
-    protected Paint imageFromPaint;
-    protected boolean showImageFrom;
-    protected ImageFrom imageFrom;
+//    protected Path imageFromPath;
+//    protected Paint imageFromPaint;
+//    protected boolean showImageFrom;
+//    protected ImageFrom imageFrom;
+    private ShowImageFromFunction showImageFromFunction;
 
     protected int downloadProgressColor = DEFAULT_PROGRESS_COLOR;
     protected Paint progressPaint;
@@ -113,30 +110,33 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        initFromFlag();
+//        initFromFlag();
+        if(showImageFromFunction != null){
+            showImageFromFunction.onLayout(changed, left, top, right, bottom);
+        }
         initGifFlag();
         initImageShapePath();
     }
 
-    protected void initFromFlag() {
-        if (!showImageFrom) {
-            return;
-        }
-
-        if (imageFromPath == null) {
-            imageFromPath = new Path();
-        } else {
-            imageFromPath.reset();
-        }
-        int x = getWidth() / 10;
-        int y = getWidth() / 10;
-        int left2 = getPaddingLeft();
-        int top2 = getPaddingTop();
-        imageFromPath.moveTo(left2, top2);
-        imageFromPath.lineTo(left2 + x, top2);
-        imageFromPath.lineTo(left2, top2 + y);
-        imageFromPath.close();
-    }
+//    protected void initFromFlag() {
+//        if (!showImageFrom) {
+//            return;
+//        }
+//
+//        if (imageFromPath == null) {
+//            imageFromPath = new Path();
+//        } else {
+//            imageFromPath.reset();
+//        }
+//        int x = getWidth() / 10;
+//        int y = getWidth() / 10;
+//        int left2 = getPaddingLeft();
+//        int top2 = getPaddingTop();
+//        imageFromPath.moveTo(left2, top2);
+//        imageFromPath.lineTo(left2 + x, top2);
+//        imageFromPath.lineTo(left2, top2 + y);
+//        imageFromPath.close();
+//    }
 
     protected void initGifFlag() {
         if (gifFlagDrawable != null) {
@@ -180,7 +180,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
         drawPressedStatus(canvas);
         drawDownloadProgress(canvas);
-        drawFromFlag(canvas);
+//        drawFromFlag(canvas);
+        if(showImageFromFunction != null){
+            showImageFromFunction.draw(canvas);
+        }
         drawGifFlag(canvas);
     }
 
@@ -247,7 +250,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
                 invalidate();
             }
 
-            imageFrom = null;
+//            imageFrom = null;
+            if(showImageFromFunction != null){
+                showImageFromFunction.setImageFrom(null);
+                invalidate();
+            }
             displayParams = null;
             if(displayRequest != null && !displayRequest.isFinished()){
                 displayRequest.cancel();
@@ -272,7 +279,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
                 invalidate();
             }
 
-            imageFrom = null;
+//            imageFrom = null;
+            if(showImageFromFunction != null){
+                showImageFromFunction.setImageFrom(null);
+                invalidate();
+            }
             displayParams = null;
             if(displayRequest != null && !displayRequest.isFinished()){
                 displayRequest.cancel();
@@ -302,7 +313,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             }
 
             if(!newDrawableFromSketch){
-                imageFrom = null;
+//                imageFrom = null;
+                if(showImageFromFunction != null){
+                    showImageFromFunction.setImageFrom(null);
+                    invalidate();
+                }
                 displayParams = null;
                 if(displayRequest != null && !displayRequest.isFinished()){
                     displayRequest.cancel();
@@ -384,42 +399,42 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
     }
 
-    protected void drawFromFlag(Canvas canvas) {
-        if (showImageFrom && imageFrom != null) {
-            if (imageFromPath == null) {
-                imageFromPath = new Path();
-                int x = getWidth() / 10;
-                int y = getWidth() / 10;
-                int left2 = getPaddingLeft();
-                int top2 = getPaddingTop();
-                imageFromPath.moveTo(left2, top2);
-                imageFromPath.lineTo(left2 + x, top2);
-                imageFromPath.lineTo(left2, top2 + y);
-                imageFromPath.close();
-            }
-            if (imageFromPaint == null) {
-                imageFromPaint = new Paint();
-                imageFromPaint.setAntiAlias(true);
-            }
-            switch (imageFrom) {
-                case MEMORY_CACHE:
-                    imageFromPaint.setColor(FROM_FLAG_COLOR_MEMORY);
-                    break;
-                case DISK_CACHE:
-                    imageFromPaint.setColor(FROM_FLAG_COLOR_DISK_CACHE);
-                    break;
-                case NETWORK:
-                    imageFromPaint.setColor(FROM_FLAG_COLOR_NETWORK);
-                    break;
-                case LOCAL:
-                    imageFromPaint.setColor(FROM_FLAG_COLOR_LOCAL);
-                    break;
-                default:
-                    return;
-            }
-            canvas.drawPath(imageFromPath, imageFromPaint);
-        }
-    }
+//    protected void drawFromFlag(Canvas canvas) {
+//        if (showImageFrom && imageFrom != null) {
+//            if (imageFromPath == null) {
+//                imageFromPath = new Path();
+//                int x = getWidth() / 10;
+//                int y = getWidth() / 10;
+//                int left2 = getPaddingLeft();
+//                int top2 = getPaddingTop();
+//                imageFromPath.moveTo(left2, top2);
+//                imageFromPath.lineTo(left2 + x, top2);
+//                imageFromPath.lineTo(left2, top2 + y);
+//                imageFromPath.close();
+//            }
+//            if (imageFromPaint == null) {
+//                imageFromPaint = new Paint();
+//                imageFromPaint.setAntiAlias(true);
+//            }
+//            switch (imageFrom) {
+//                case MEMORY_CACHE:
+//                    imageFromPaint.setColor(FROM_FLAG_COLOR_MEMORY);
+//                    break;
+//                case DISK_CACHE:
+//                    imageFromPaint.setColor(FROM_FLAG_COLOR_DISK_CACHE);
+//                    break;
+//                case NETWORK:
+//                    imageFromPaint.setColor(FROM_FLAG_COLOR_NETWORK);
+//                    break;
+//                case LOCAL:
+//                    imageFromPaint.setColor(FROM_FLAG_COLOR_LOCAL);
+//                    break;
+//                default:
+//                    return;
+//            }
+//            canvas.drawPath(imageFromPath, imageFromPaint);
+//        }
+//    }
 
     protected void drawGifFlag(Canvas canvas) {
         if (isGifDrawable && gifFlagDrawable != null) {
@@ -492,7 +507,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     @Override
     public DisplayListener getDisplayListener(boolean isPauseDownload) {
-        if (showImageFrom || showDownloadProgress || (isPauseDownload && clickDisplayOnPauseDownload) || clickRedisplayOnFailed) {
+        if (
+//                showImageFrom
+        showImageFromFunction != null
+                || showDownloadProgress || (isPauseDownload && clickDisplayOnPauseDownload) || clickRedisplayOnFailed) {
             if (myListener == null) {
                 myListener = new MyListener();
             }
@@ -615,23 +633,22 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @SuppressWarnings("unused")
-    public boolean isShowImageFrom() {
-        return showImageFrom;
+    public boolean isShowPressedStatus() {
+        return showPressedStatus;
     }
 
     @SuppressWarnings("unused")
-    public boolean isShowPressedStatus() {
-        return showPressedStatus;
+    public boolean isShowImageFrom() {
+        return showImageFromFunction != null;
     }
 
     /**
      * 设置是否显示图片来源，开启后会在View的左上角显示一个纯色三角形，红色代表本次是从网络加载的，黄色代表本次是从本地加载的，绿色代表本次是从内存加载的
      */
     public void setShowImageFrom(boolean showImageFrom) {
-        boolean oldShowFromFlag = this.showImageFrom;
-        this.showImageFrom = showImageFrom;
-        if (oldShowFromFlag) {
-            imageFrom = null;
+        ShowImageFromFunction oldShowImageFromFunction = showImageFromFunction;
+        showImageFromFunction = showImageFrom ? new ShowImageFromFunction(this) : null;
+        if(oldShowImageFromFunction != null){
             invalidate();
         }
     }
@@ -709,7 +726,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     @SuppressWarnings("unused")
     public ImageFrom getImageFrom() {
-        return imageFrom;
+//        return imageFrom;
+        return showImageFromFunction != null ? showImageFromFunction.getImageFrom() : null;
     }
 
     /**
@@ -749,13 +767,20 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     private class MyListener implements DisplayListener, DownloadProgressListener, View.OnClickListener {
         @Override
         public void onStarted() {
-            if (showImageFrom) {
-                imageFrom = null;
+//            if (showImageFromFunction) {
+//                imageFrom = null;
+//            }
+            boolean needInvokeInvalidate = false;
+            if (showImageFromFunction != null) {
+                needInvokeInvalidate |= showImageFromFunction.onDisplayStarted();
             }
             if (showDownloadProgress) {
                 progress = 0;
             }
-            if (showImageFrom || showDownloadProgress) {
+//            if (showImageFromFunction || showDownloadProgress) {
+//                invalidate();
+//            }
+            if (needInvokeInvalidate || showDownloadProgress) {
                 invalidate();
             }
             if (displayListener != null) {
@@ -765,13 +790,20 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
         @Override
         public void onCompleted(ImageFrom imageFrom, String mimeType) {
-            if (showImageFrom) {
-                SketchImageView.this.imageFrom = imageFrom;
+//            if (showImageFrom) {
+//                SketchImageView.this.imageFrom = imageFrom;
+//            }
+            boolean needInvokeInvalidate = false;
+            if (showImageFromFunction != null) {
+                needInvokeInvalidate |= showImageFromFunction.onDisplayCompleted(imageFrom, mimeType);
             }
             if (showDownloadProgress) {
                 progress = NONE;
             }
-            if (showImageFrom || showDownloadProgress) {
+//            if (showImageFrom || showDownloadProgress) {
+//                invalidate();
+//            }
+            if (needInvokeInvalidate || showDownloadProgress) {
                 invalidate();
             }
             if (displayListener != null) {
@@ -781,13 +813,20 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
         @Override
         public void onFailed(FailedCause failedCause) {
-            if (showImageFrom) {
-                imageFrom = null;
+//            if (showImageFrom) {
+//                imageFrom = null;
+//            }
+            boolean needInvokeInvalidate = false;
+            if (showImageFromFunction != null) {
+                needInvokeInvalidate |= showImageFromFunction.onDisplayFailed(failedCause);
             }
             if (showDownloadProgress) {
                 progress = NONE;
             }
-            if (showDownloadProgress || showImageFrom) {
+//            if (showDownloadProgress || showImageFrom) {
+//                invalidate();
+//            }
+            if (showDownloadProgress || needInvokeInvalidate) {
                 invalidate();
             }
             if (clickRedisplayOnFailed && failedCause != FailedCause.URI_NULL_OR_EMPTY && failedCause != FailedCause.IMAGE_VIEW_NULL && failedCause != FailedCause.URI_NO_SUPPORT) {
