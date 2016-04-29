@@ -102,7 +102,7 @@ public class ImageSizeCalculator implements Identifier{
      */
     public MaxSize getDefaultImageMaxSize(Context context) {
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return new MaxSize((int) (displayMetrics.widthPixels * 0.50f), (int) (displayMetrics.heightPixels * 0.50f));
+        return new MaxSize((int) (displayMetrics.widthPixels * 0.75f), (int) (displayMetrics.heightPixels * 0.75f));
     }
 
     /**
