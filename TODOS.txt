@@ -104,6 +104,7 @@
 （完成与2016-04-27）SketchImageView.setDisplayOptions(Enum)改为setOptionsByName(Enum) ...Helper.options(Enum)改为optionsByName(Enum)
 （完成与2016-04-28）当使用setResource设置了新的图片的时候，那么displayParams是不是该清除了，确保在onAttch的时候不被恢复
 （完成与2016-04-28）TransitionImageDisplayer异常的时候说明是哪个没设置对
+（完成与2016-04-28）修复DiskLruCache的removeBUG，当要删除的缓存文件已经不存在了就会remove失败，解决办法就是先验证文件是否存在
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -147,8 +148,9 @@ inBitmap的意思是找一个字节数一样的旧bitmap对象来装新的图片
 缓存文件的名称不能再用uri.encode来加密了，要用MD5
 考虑重新设计一下RequestLevel，感觉现在的有点儿繁琐并且意思不太明确
 load请求默认不解码GIF（这样真的好吗，好好思考一下load的使用场景，再判断），并且load的结果不用再包装成Drawable了
-RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
+RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper，这样loadingImage就可以使用各种图片了，要实现Fixed的话就直接设置bounds
 似乎想到一种能读取webp缩略图的方法了，方案就是将webp在本地转成png，然后再读取
+拆分SketchImageView
 
 其它：
 参考Glide、Fresco和Picasso
@@ -163,8 +165,8 @@ RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
 LruMemoryCache重命名为DefaultLruMemoryCache
 去掉了一些多余的接口设计，例如HelperFactory、ImageSizeCalculator、RequestFactory、ResizeCalculator、ImageSize、Request、DisplayHelper、LoadHelper、DownloadHelper
 下载进度回调方式改为每秒钟一次
-默认maxSize，由屏幕宽高的1.5倍改为0.5倍，这样可以大幅减少大图的内存占用，对图片的清晰度影响也较小
-默认inSampleSize计算规则优化，targetSize默认放大1.25倍，能让原始尺寸跟targetSize较为接近的图片不被缩小直接显示，这样显示效果会比较好
+默认maxSize，由屏幕宽高的1.5倍改为0.75倍，这样可以大幅减少大图的内存占用，对图片的清晰度影响也较小
+默认inSampleSize计算规则优化，targetSize默认放大1.25倍，目的是让原始尺寸跟targetSize较为接近的图片不被缩小直接显示，这样显示效果会比较好
 apk文件图标的磁盘缓存KEY加上了文件的最后修改时间，这么做是为了避免包路径一样，但是内容已经发生了变化的时候不能及时刷新缓存图标
 修复使用普通图片时在列表中一滑动图片就没了的BUG
 新增LocalImagePerProcessor可以处理一些特殊的本地文件，然后提取出它们的当中包含的图片，这样Sketch就可以直接显示这些特殊文件中包含的图片了
