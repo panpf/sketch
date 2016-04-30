@@ -20,16 +20,23 @@ import android.graphics.Canvas;
 import android.view.MotionEvent;
 
 public interface ImageViewFunction {
+    void onDisplay();
+
     boolean onTouchEvent(MotionEvent event);
 
     void onLayout(boolean changed, int left, int top, int right, int bottom);
 
-    void draw(Canvas canvas);
+    void onDraw(Canvas canvas);
 
     /**
      * @return 是否需要调用ImageView的invalidate()刷新显示
      */
     boolean onDisplayStarted();
+
+    /**
+     * @return 是否需要调用ImageView的invalidate()刷新显示
+     */
+    boolean onUpdateDownloadProgress(int totalLength, int completedLength);
 
     /**
      * @return 是否需要调用ImageView的invalidate()刷新显示
@@ -40,4 +47,9 @@ public interface ImageViewFunction {
      * @return 是否需要调用ImageView的invalidate()刷新显示
      */
     boolean onDisplayFailed(FailedCause failedCause);
+
+    /**
+     * @return 是否需要调用ImageView的invalidate()刷新显示
+     */
+    boolean onCanceled(CancelCause cancelCause);
 }

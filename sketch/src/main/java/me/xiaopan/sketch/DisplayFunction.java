@@ -5,6 +5,11 @@ import android.view.MotionEvent;
 
 public class DisplayFunction implements ImageViewFunction{
     @Override
+    public void onDisplay() {
+
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         return false;
     }
@@ -15,12 +20,17 @@ public class DisplayFunction implements ImageViewFunction{
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void onDraw(Canvas canvas) {
 
     }
 
     @Override
     public boolean onDisplayStarted() {
+        return false;
+    }
+
+    @Override
+    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
         return false;
     }
 
@@ -31,6 +41,11 @@ public class DisplayFunction implements ImageViewFunction{
 
     @Override
     public boolean onDisplayFailed(FailedCause failedCause) {
+        return false;
+    }
+
+    @Override
+    public boolean onCanceled(CancelCause cancelCause) {
         return false;
     }
 }

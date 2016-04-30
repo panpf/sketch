@@ -33,60 +33,73 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected static final String NAME = "SketchImageView";
 
     private DisplayRequest displayRequest;
-    private MyListener myListener;
     private DisplayOptions displayOptions = new DisplayOptions();
-    private DisplayListener displayListener;
-    private DownloadProgressListener downloadProgressListener;
     private DisplayParams displayParams;
-    private View.OnClickListener onClickListener;
-    private boolean replacedClickListener;
-    private boolean clickDisplayOnPauseDownload;
-    private boolean clickRedisplayOnFailed;
     private boolean isSetImage;
+
+    private DisplayListener wrapperDisplayListener;
+    private DownloadProgressListener wrapperDownloadProgressListener;
+    private MyDisplayListener displayListener;
+    private MyProgressListener downloadProgressListener;
 
     private ShowImageFromFunction showImageFromFunction;
     private ShowProgressFunction showProgressFunction;
     private ShowPressedFunction showPressedFunction;
     private ShowGifFlagFunction showGifFlagFunction;
-
-    private ImageShapeFunction imageShapeFunction = new ImageShapeFunction(this);
+    private ImageShapeFunction imageShapeFunction;
+    private ClickRetryFunction clickRetryFunction;
 
     public SketchImageView(Context context) {
         super(context);
+        init();
     }
 
     public SketchImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        init();
     }
 
     public SketchImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
+        init();
+    }
+
+    private void init(){
+        imageShapeFunction = new ImageShapeFunction(this);
+        clickRetryFunction = new ClickRetryFunction(this, new MyRetryListener());
+        displayListener = new MyDisplayListener();
+        downloadProgressListener = new MyProgressListener();
+
+        super.setOnClickListener(clickRetryFunction);
     }
 
     @Override
     public void setOnClickListener(OnClickListener l) {
-        super.setOnClickListener(l);
-        this.onClickListener = l;
+        clickRetryFunction.setWrapperClickListener(l);
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if(showProgressFunction != null){
-            showProgressFunction.onLayout(changed, left, top, right, bottom);
-        }
-        if(showPressedFunction != null){
-            showPressedFunction.onLayout(changed, left, top, right, bottom);
-        }
         if(showImageFromFunction != null){
             showImageFromFunction.onLayout(changed, left, top, right, bottom);
+        }
+        if(showProgressFunction != null){
+            showProgressFunction.onLayout(changed, left, top, right, bottom);
         }
         if(showGifFlagFunction != null){
             showGifFlagFunction.onLayout(changed, left, top, right, bottom);
         }
-
-        imageShapeFunction.onLayout(changed, left, top, right, bottom);
+        if(showPressedFunction != null){
+            showPressedFunction.onLayout(changed, left, top, right, bottom);
+        }
+        if(imageShapeFunction != null){
+            imageShapeFunction.onLayout(changed, left, top, right, bottom);
+        }
+        if(clickRetryFunction != null){
+            clickRetryFunction.onLayout(changed, left, top, right, bottom);
+        }
     }
 
     @Override
@@ -94,16 +107,22 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         super.onDraw(canvas);
 
         if(showPressedFunction != null){
-            showPressedFunction.draw(canvas);
+            showPressedFunction.onDraw(canvas);
         }
         if(showProgressFunction != null){
-            showProgressFunction.draw(canvas);
+            showProgressFunction.onDraw(canvas);
         }
         if(showImageFromFunction != null){
-            showImageFromFunction.draw(canvas);
+            showImageFromFunction.onDraw(canvas);
         }
         if(showGifFlagFunction != null){
-            showGifFlagFunction.draw(canvas);
+            showGifFlagFunction.onDraw(canvas);
+        }
+        if(imageShapeFunction != null){
+            imageShapeFunction.onDraw(canvas);
+        }
+        if(clickRetryFunction != null){
+            clickRetryFunction.onDraw(canvas);
         }
     }
 
@@ -111,6 +130,21 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     public boolean onTouchEvent(MotionEvent event) {
         if(showPressedFunction != null){
             showPressedFunction.onTouchEvent(event);
+        }
+        if(showProgressFunction != null){
+            showProgressFunction.onTouchEvent(event);
+        }
+        if(showImageFromFunction != null){
+            showImageFromFunction.onTouchEvent(event);
+        }
+        if(showGifFlagFunction != null){
+            showGifFlagFunction.onTouchEvent(event);
+        }
+        if(imageShapeFunction != null){
+            imageShapeFunction.onTouchEvent(event);
+        }
+        if(clickRetryFunction != null){
+            clickRetryFunction.onTouchEvent(event);
         }
 
         return super.onTouchEvent(event);
@@ -249,12 +283,24 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     @Override
     public void onDisplay() {
         this.isSetImage = true;
-        if (replacedClickListener) {
-            setOnClickListener(onClickListener);
-            if (onClickListener == null) {
-                setClickable(false);
-            }
-            replacedClickListener = false;
+
+        if(showPressedFunction != null){
+            showPressedFunction.onDisplay();
+        }
+        if(showProgressFunction != null){
+            showProgressFunction.onDisplay();
+        }
+        if(showGifFlagFunction != null){
+            showGifFlagFunction.onDisplay();
+        }
+        if(showImageFromFunction != null){
+            showImageFromFunction.onDisplay();
+        }
+        if(imageShapeFunction != null){
+            imageShapeFunction.onDisplay();
+        }
+        if(clickRetryFunction != null){
+            clickRetryFunction.onDisplay();
         }
     }
 
@@ -304,37 +350,26 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     @Override
     public DisplayListener getDisplayListener(boolean isPauseDownload) {
-        if (
-        showImageFromFunction != null
-                || showProgressFunction != null
-                || (isPauseDownload && clickDisplayOnPauseDownload) || clickRedisplayOnFailed) {
-            if (myListener == null) {
-                myListener = new MyListener();
-            }
-            return myListener;
-        } else {
-            return displayListener;
-        }
+        return displayListener;
     }
 
     @Override
     public void setDisplayListener(DisplayListener displayListener) {
-        this.displayListener = displayListener;
+        this.wrapperDisplayListener = displayListener;
     }
 
+    @Override
     public DownloadProgressListener getDownloadProgressListener() {
-        if (showProgressFunction != null) {
-            if (myListener == null) {
-                myListener = new MyListener();
-            }
-            return myListener;
-        } else {
+        if (showProgressFunction != null || wrapperDisplayListener != null) {
             return downloadProgressListener;
+        } else {
+            return null;
         }
     }
 
+    @Override
     public void setDownloadProgressListener(DownloadProgressListener downloadProgressListener) {
-        this.downloadProgressListener = downloadProgressListener;
+        this.wrapperDownloadProgressListener = downloadProgressListener;
     }
 
     @Override
@@ -359,27 +394,37 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     /**
      * 设置当暂停下载的时候点击显示图片
-     *
-     * @param clickDisplayOnPauseDownload true：是
      */
-    public void setClickDisplayOnPauseDownload(boolean clickDisplayOnPauseDownload) {
-        this.clickDisplayOnPauseDownload = clickDisplayOnPauseDownload;
+    public void setClickRetryOnPauseDownload(boolean clickRetryOnPauseDownload) {
+        clickRetryFunction.setClickRetryOnPauseDownload(clickRetryOnPauseDownload);
     }
 
     /**
      * 设置当失败的时候点击重新显示图片
-     *
-     * @param clickRedisplayOnFailed true：是
      */
-    public void setClickRedisplayOnFailed(boolean clickRedisplayOnFailed) {
-        this.clickRedisplayOnFailed = clickRedisplayOnFailed;
+    public void setClickRetryOnFailed(boolean clickRetryOnFailed) {
+        clickRetryFunction.setClickRetryOnFailed(clickRetryOnFailed);
+    }
+
+    /**
+     * 是否显示下载进度
+     */
+    @SuppressWarnings("unused")
+    public boolean isShowDownloadProgress(){
+        return showProgressFunction != null;
     }
 
     /**
      * 设置是否显示下载进度，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
      */
     public void setShowDownloadProgress(boolean showDownloadProgress) {
-        this.showProgressFunction = showDownloadProgress ? new ShowProgressFunction(this, imageShapeFunction) : null;
+        if(showDownloadProgress){
+            if(showProgressFunction == null){
+                showProgressFunction = new ShowProgressFunction(this, imageShapeFunction);
+            }
+        }else{
+            showProgressFunction = null;
+        }
     }
 
     /**
@@ -404,7 +449,13 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置是否显示按下状态，开启后按下的时候会在ImageView表面覆盖一个黑色半透明图层，长按的时候还会有类似Android5.0的涟漪效果。此功能需要注册点击事件或设置Clickable为true
      */
     public void setShowPressedStatus(boolean showPressedStatus) {
-        this.showPressedFunction = showPressedStatus ? new ShowPressedFunction(this, imageShapeFunction) : null;
+        if(showPressedStatus){
+            if(showPressedFunction == null){
+                showPressedFunction = new ShowPressedFunction(this, imageShapeFunction);
+            }
+        }else{
+            showPressedFunction = null;
+        }
     }
 
     /**
@@ -430,33 +481,51 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     public void setShowImageFrom(boolean showImageFrom) {
         ShowImageFromFunction oldShowImageFromFunction = showImageFromFunction;
-        showImageFromFunction = showImageFrom ? new ShowImageFromFunction(this) : null;
+
+        if(showImageFrom){
+            if(showImageFromFunction == null){
+                showImageFromFunction = new ShowImageFromFunction(this);
+            }
+        }else{
+            showImageFromFunction = null;
+        }
+
         if(oldShowImageFromFunction != null){
             invalidate();
         }
     }
 
     /**
-     * 获取GIF图片标识
+     * 是否显示GIF标识
      */
     @SuppressWarnings("unused")
-    public Drawable getGifFlagDrawable() {
-        return showGifFlagFunction != null ? showGifFlagFunction.getGifFlagDrawable() : null;
+    public boolean isShowGifFlag() {
+        return showGifFlagFunction != null;
+    }
+
+    /**
+     * 设置是否显示GIF标识
+     */
+    @SuppressWarnings("unused")
+    public void setShowGifFlag(Drawable gifFlagDrawable) {
+        if(gifFlagDrawable != null){
+            if(showGifFlagFunction == null){
+                showGifFlagFunction = new ShowGifFlagFunction(this, gifFlagDrawable);
+                invalidate();
+            }else if(gifFlagDrawable != showGifFlagFunction.getGifFlagDrawable()){
+                invalidate();
+            }
+        }else{
+            showGifFlagFunction = null;
+            invalidate();
+        }
     }
 
     /**
      * 设置GIF标识图片
      */
-    @SuppressWarnings("unused")
-    public void setGifFlagDrawable(Drawable gifFlagDrawable) {
-        showGifFlagFunction = gifFlagDrawable != null ? new ShowGifFlagFunction(this, gifFlagDrawable) : null;
-    }
-
-    /**
-     * 设置GIF标识图片
-     */
-    public void setGifFlagDrawable(int gifFlagResId) {
-        setGifFlagDrawable(getResources().getDrawable(gifFlagResId));
+    public void setShowGifFlag(int gifFlagDrawableResId) {
+        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
     }
 
     /**
@@ -464,14 +533,16 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     @SuppressWarnings("unused")
     public ImageShape getImageShape() {
-        return imageShapeFunction.getImageShape();
+        return imageShapeFunction != null ? imageShapeFunction.getImageShape() : null;
     }
 
     /**
      * 设置图片形状，下载进度和按下效果的蒙层会适应此形状
      */
     public void setImageShape(ImageShape imageShape) {
-        imageShapeFunction.setImageShape(imageShape);
+        if(imageShapeFunction != null){
+            imageShapeFunction.setImageShape(imageShape);
+        }
     }
 
     /**
@@ -479,14 +550,16 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     @SuppressWarnings("unused")
     public int getImageShapeRoundedRadius() {
-        return imageShapeFunction.getRoundedRadius();
+        return imageShapeFunction != null ? imageShapeFunction.getRoundedRadius() : 0;
     }
 
     /**
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
     public void setImageShapeRoundedRadius(int radius) {
-        imageShapeFunction.setRoundedRadius(radius);
+        if(imageShapeFunction != null){
+            imageShapeFunction.setRoundedRadius(radius);
+        }
     }
 
     /**
@@ -531,7 +604,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
     }
 
-    private class MyListener implements DisplayListener, DownloadProgressListener, View.OnClickListener {
+    private class MyDisplayListener implements DisplayListener {
         @Override
         public void onStarted() {
             boolean needInvokeInvalidate = false;
@@ -542,11 +615,24 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if(showProgressFunction != null){
                 needInvokeInvalidate |= showProgressFunction.onDisplayStarted();
             }
+            if(showGifFlagFunction != null){
+                needInvokeInvalidate |= showGifFlagFunction.onDisplayStarted();
+            }
+            if(showPressedFunction != null){
+                needInvokeInvalidate |= showPressedFunction.onDisplayStarted();
+            }
+            if(imageShapeFunction != null){
+                needInvokeInvalidate |= imageShapeFunction.onDisplayStarted();
+            }
+            if(clickRetryFunction != null){
+                needInvokeInvalidate |= clickRetryFunction.onDisplayStarted();
+            }
             if (needInvokeInvalidate) {
                 invalidate();
             }
-            if (displayListener != null) {
-                displayListener.onStarted();
+
+            if (wrapperDisplayListener != null) {
+                wrapperDisplayListener.onStarted();
             }
         }
 
@@ -560,11 +646,24 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if(showProgressFunction != null){
                 needInvokeInvalidate |= showProgressFunction.onDisplayCompleted(imageFrom, mimeType);
             }
+            if(showGifFlagFunction != null){
+                needInvokeInvalidate |= showGifFlagFunction.onDisplayCompleted(imageFrom, mimeType);
+            }
+            if(showPressedFunction != null){
+                needInvokeInvalidate |= showPressedFunction.onDisplayCompleted(imageFrom, mimeType);
+            }
+            if(imageShapeFunction != null){
+                needInvokeInvalidate |= imageShapeFunction.onDisplayCompleted(imageFrom, mimeType);
+            }
+            if(clickRetryFunction != null){
+                needInvokeInvalidate |= clickRetryFunction.onDisplayCompleted(imageFrom, mimeType);
+            }
             if (needInvokeInvalidate) {
                 invalidate();
             }
-            if (displayListener != null) {
-                displayListener.onCompleted(imageFrom, mimeType);
+
+            if (wrapperDisplayListener != null) {
+                wrapperDisplayListener.onCompleted(imageFrom, mimeType);
             }
         }
 
@@ -578,42 +677,97 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if(showProgressFunction != null){
                 needInvokeInvalidate |= showProgressFunction.onDisplayFailed(failedCause);
             }
+            if(showGifFlagFunction != null){
+                needInvokeInvalidate |= showGifFlagFunction.onDisplayFailed(failedCause);
+            }
+            if(showPressedFunction != null){
+                needInvokeInvalidate |= showPressedFunction.onDisplayFailed(failedCause);
+            }
+            if(imageShapeFunction != null){
+                needInvokeInvalidate |= imageShapeFunction.onDisplayFailed(failedCause);
+            }
+            if(clickRetryFunction != null){
+                needInvokeInvalidate |= clickRetryFunction.onDisplayFailed(failedCause);
+            }
             if (needInvokeInvalidate) {
                 invalidate();
             }
-            if (clickRedisplayOnFailed && failedCause != FailedCause.URI_NULL_OR_EMPTY && failedCause != FailedCause.IMAGE_VIEW_NULL && failedCause != FailedCause.URI_NO_SUPPORT) {
-                SketchImageView.super.setOnClickListener(this);
-                replacedClickListener = true;
-            }
-            if (displayListener != null) {
-                displayListener.onFailed(failedCause);
+
+            if (wrapperDisplayListener != null) {
+                wrapperDisplayListener.onFailed(failedCause);
             }
         }
 
         @Override
         public void onCanceled(CancelCause cancelCause) {
-            if (cancelCause != null && cancelCause == CancelCause.PAUSE_DOWNLOAD && clickDisplayOnPauseDownload) {
-                SketchImageView.super.setOnClickListener(this);
-                replacedClickListener = true;
+            boolean needInvokeInvalidate = false;
+            if (showImageFromFunction != null) {
+                //noinspection ConstantConditions
+                needInvokeInvalidate |= showImageFromFunction.onCanceled(cancelCause);
             }
-            if (displayListener != null) {
-                displayListener.onCanceled(cancelCause);
+            if(showProgressFunction != null){
+                needInvokeInvalidate |= showProgressFunction.onCanceled(cancelCause);
+            }
+            if(showGifFlagFunction != null){
+                needInvokeInvalidate |= showGifFlagFunction.onCanceled(cancelCause);
+            }
+            if(showPressedFunction != null){
+                needInvokeInvalidate |= showPressedFunction.onCanceled(cancelCause);
+            }
+            if(imageShapeFunction != null){
+                needInvokeInvalidate |= imageShapeFunction.onCanceled(cancelCause);
+            }
+            if(clickRetryFunction != null){
+                needInvokeInvalidate |= clickRetryFunction.onCanceled(cancelCause);
+            }
+            if (needInvokeInvalidate) {
+                invalidate();
+            }
+
+            if (wrapperDisplayListener != null) {
+                wrapperDisplayListener.onCanceled(cancelCause);
             }
         }
+    }
+
+    private class MyProgressListener implements DownloadProgressListener{
 
         @Override
         public void onUpdateDownloadProgress(int totalLength, int completedLength) {
+            boolean needInvokeInvalidate = false;
+            if (showImageFromFunction != null) {
+                //noinspection ConstantConditions
+                needInvokeInvalidate |= showImageFromFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            }
             if(showProgressFunction != null){
-                showProgressFunction.setProgress((float) completedLength / totalLength);
+                needInvokeInvalidate |= showProgressFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            }
+            if(showPressedFunction != null){
+                needInvokeInvalidate |= showPressedFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            }
+            if(showGifFlagFunction != null){
+                needInvokeInvalidate |= showGifFlagFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            }
+            if(imageShapeFunction != null){
+                needInvokeInvalidate |= imageShapeFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            }
+            if(clickRetryFunction != null){
+                needInvokeInvalidate |= clickRetryFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            }
+            if (needInvokeInvalidate) {
                 invalidate();
             }
-            if (downloadProgressListener != null) {
-                downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
+
+            if (wrapperDownloadProgressListener != null) {
+                wrapperDownloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
             }
         }
+    }
+
+    private class MyRetryListener implements ClickRetryFunction.OnRetryListener{
 
         @Override
-        public void onClick(View v) {
+        public void onRetry() {
             if (displayParams != null) {
                 Sketch.with(getContext()).display(displayParams, SketchImageView.this).requestLevel(RequestLevel.NET).commit();
             }

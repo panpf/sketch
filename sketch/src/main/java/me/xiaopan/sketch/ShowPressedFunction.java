@@ -49,6 +49,11 @@ public class ShowPressedFunction implements ImageViewFunction{
     }
 
     @Override
+    public void onDisplay() {
+
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (view.isClickable()) {
             gestureDetector.onTouchEvent(event);
@@ -70,7 +75,7 @@ public class ShowPressedFunction implements ImageViewFunction{
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void onDraw(Canvas canvas) {
         if (allowShowPressedStatus || animationRunning || showRect) {
 
             boolean applyMaskClip = imageShapeFunction.getClipPath() != null;
@@ -110,12 +115,22 @@ public class ShowPressedFunction implements ImageViewFunction{
     }
 
     @Override
+    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
+        return false;
+    }
+
+    @Override
     public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
         return false;
     }
 
     @Override
     public boolean onDisplayFailed(FailedCause failedCause) {
+        return false;
+    }
+
+    @Override
+    public boolean onCanceled(CancelCause cancelCause) {
         return false;
     }
 

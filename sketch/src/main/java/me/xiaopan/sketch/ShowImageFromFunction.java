@@ -23,6 +23,11 @@ public class ShowImageFromFunction implements ImageViewFunction{
     }
 
     @Override
+    public void onDisplay() {
+
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         return false;
     }
@@ -45,7 +50,7 @@ public class ShowImageFromFunction implements ImageViewFunction{
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void onDraw(Canvas canvas) {
         if (imageFrom == null) {
             return;
         }
@@ -91,6 +96,11 @@ public class ShowImageFromFunction implements ImageViewFunction{
     }
 
     @Override
+    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
+        return false;
+    }
+
+    @Override
     public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
         this.imageFrom = imageFrom;
         return true;
@@ -100,6 +110,11 @@ public class ShowImageFromFunction implements ImageViewFunction{
     public boolean onDisplayFailed(FailedCause failedCause) {
         imageFrom = null;
         return true;
+    }
+
+    @Override
+    public boolean onCanceled(CancelCause cancelCause) {
+        return false;
     }
 
     public ImageFrom getImageFrom() {

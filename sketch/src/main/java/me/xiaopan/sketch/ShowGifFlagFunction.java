@@ -37,6 +37,11 @@ public class ShowGifFlagFunction implements ImageViewFunction{
     }
 
     @Override
+    public void onDisplay() {
+
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         return false;
     }
@@ -47,7 +52,7 @@ public class ShowGifFlagFunction implements ImageViewFunction{
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void onDraw(Canvas canvas) {
         if (!isGifDrawable) {
             return;
         }
@@ -68,12 +73,22 @@ public class ShowGifFlagFunction implements ImageViewFunction{
     }
 
     @Override
+    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
+        return false;
+    }
+
+    @Override
     public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
         return false;
     }
 
     @Override
     public boolean onDisplayFailed(FailedCause failedCause) {
+        return false;
+    }
+
+    @Override
+    public boolean onCanceled(CancelCause cancelCause) {
         return false;
     }
 

@@ -40,6 +40,11 @@ public class ShowProgressFunction implements ImageViewFunction{
     }
 
     @Override
+    public void onDisplay() {
+        onDisplayStarted();
+    }
+
+    @Override
     public boolean onTouchEvent(MotionEvent event) {
         return false;
     }
@@ -50,7 +55,7 @@ public class ShowProgressFunction implements ImageViewFunction{
     }
 
     @Override
-    public void draw(Canvas canvas) {
+    public void onDraw(Canvas canvas) {
         if (progress == NONE) {
             return;
         }
@@ -83,20 +88,31 @@ public class ShowProgressFunction implements ImageViewFunction{
 
     @Override
     public boolean onDisplayStarted() {
-        setProgress(0);
+        progress = 0;
+        return true;
+    }
+
+    @Override
+    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
+        progress = (float) completedLength / totalLength;
         return true;
     }
 
     @Override
     public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
-        setProgress(NONE);
+        progress = NONE;
         return true;
     }
 
     @Override
     public boolean onDisplayFailed(FailedCause failedCause) {
-        setProgress(NONE);
+        progress = NONE;
         return true;
+    }
+
+    @Override
+    public boolean onCanceled(CancelCause cancelCause) {
+        return false;
     }
 
     @SuppressWarnings("unused")
@@ -105,9 +121,5 @@ public class ShowProgressFunction implements ImageViewFunction{
         if (progressPaint != null) {
             progressPaint.setColor(downloadProgressColor);
         }
-    }
-
-    public void setProgress(float progress){
-        this.progress = progress;
     }
 }
