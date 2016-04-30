@@ -21,6 +21,8 @@ import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 
+import me.xiaopan.sketch.util.SketchUtils;
+
 public class ShowGifFlagFunction implements ImageViewFunction{
     private View view;
 
@@ -34,6 +36,11 @@ public class ShowGifFlagFunction implements ImageViewFunction{
 
         this.gifFlagDrawable = gifFlagDrawable;
         this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+
     }
 
     @Override
@@ -68,6 +75,18 @@ public class ShowGifFlagFunction implements ImageViewFunction{
     }
 
     @Override
+    public boolean onDetachedFromWindow() {
+        return false;
+    }
+
+    @Override
+    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+        boolean oldIsGifDrawable = isGifDrawable;
+        isGifDrawable = SketchUtils.isGifDrawable(newDrawable);
+        return isGifDrawable != oldIsGifDrawable;
+    }
+
+    @Override
     public boolean onDisplayStarted() {
         return false;
     }
@@ -90,10 +109,6 @@ public class ShowGifFlagFunction implements ImageViewFunction{
     @Override
     public boolean onCanceled(CancelCause cancelCause) {
         return false;
-    }
-
-    public void setIsGifDrawable(boolean gifDrawable) {
-        isGifDrawable = gifDrawable;
     }
 
     public Drawable getGifFlagDrawable() {

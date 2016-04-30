@@ -18,6 +18,7 @@ package me.xiaopan.sketch;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.MotionEvent;
@@ -37,6 +38,11 @@ public class ShowProgressFunction implements ImageViewFunction{
     public ShowProgressFunction(View view, ImageShapeFunction imageShapeFunction) {
         this.view = view;
         this.imageShapeFunction = imageShapeFunction;
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+
     }
 
     @Override
@@ -84,6 +90,16 @@ public class ShowProgressFunction implements ImageViewFunction{
         if (applyMaskClip) {
             canvas.restore();
         }
+    }
+
+    @Override
+    public boolean onDetachedFromWindow() {
+        return false;
+    }
+
+    @Override
+    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+        return false;
     }
 
     @Override

@@ -19,28 +19,22 @@ package me.xiaopan.sketch;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
-import me.xiaopan.sketch.util.SketchUtils;
-
 public class SketchImageView extends ImageView implements ImageViewInterface {
     protected static final String NAME = "SketchImageView";
-
-    private DisplayRequest displayRequest;
-    private DisplayOptions displayOptions = new DisplayOptions();
-    private DisplayParams displayParams;
-    private boolean isSetImage;
 
     private DisplayListener wrapperDisplayListener;
     private DownloadProgressListener wrapperDownloadProgressListener;
     private MyDisplayListener displayListener;
     private MyProgressListener downloadProgressListener;
+
+    private RequestFunction requestFunction;
+    private ResumeDisplayFunction resumeDisplayFunction;
 
     private ShowImageFromFunction showImageFromFunction;
     private ShowProgressFunction showProgressFunction;
@@ -65,12 +59,18 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     private void init(){
+        requestFunction = new RequestFunction(this);
+        resumeDisplayFunction = new ResumeDisplayFunction(getContext(), this, requestFunction);
+
         imageShapeFunction = new ImageShapeFunction(this);
-        clickRetryFunction = new ClickRetryFunction(this, new MyRetryListener());
+        clickRetryFunction = new ClickRetryFunction(this, requestFunction, this);
+
         displayListener = new MyDisplayListener();
         downloadProgressListener = new MyProgressListener();
 
         super.setOnClickListener(clickRetryFunction);
+
+        clickRetryFunction.updateClickable();
     }
 
     @Override
@@ -100,6 +100,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if(clickRetryFunction != null){
             clickRetryFunction.onLayout(changed, left, top, right, bottom);
         }
+        if(requestFunction != null){
+            requestFunction.onLayout(changed,left, top, right, bottom);
+        }
+        if(resumeDisplayFunction != null){
+            resumeDisplayFunction.onLayout(changed, left, top, right, bottom);
+        }
     }
 
     @Override
@@ -124,6 +130,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if(clickRetryFunction != null){
             clickRetryFunction.onDraw(canvas);
         }
+        if(requestFunction != null){
+            requestFunction.onDraw(canvas);
+        }
+        if(resumeDisplayFunction != null){
+            resumeDisplayFunction.onDraw(canvas);
+        }
     }
 
     @Override
@@ -146,6 +158,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if(clickRetryFunction != null){
             clickRetryFunction.onTouchEvent(event);
         }
+        if(requestFunction != null){
+            requestFunction.onTouchEvent(event);
+        }
+        if(resumeDisplayFunction != null){
+            resumeDisplayFunction.onTouchEvent(event);
+        }
 
         return super.onTouchEvent(event);
     }
@@ -154,11 +172,29 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        if (!isSetImage && displayParams != null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, "：", "restore image on attached to window", " - ", displayParams.uri));
-            }
-            Sketch.with(getContext()).display(displayParams, SketchImageView.this).commit();
+        if(requestFunction != null){
+            requestFunction.onAttachedToWindow();
+        }
+        if(resumeDisplayFunction != null){
+            resumeDisplayFunction.onAttachedToWindow();
+        }
+        if(showPressedFunction != null){
+            showPressedFunction.onAttachedToWindow();
+        }
+        if(showProgressFunction != null){
+            showProgressFunction.onAttachedToWindow();
+        }
+        if(showGifFlagFunction != null){
+            showGifFlagFunction.onAttachedToWindow();
+        }
+        if(showImageFromFunction != null){
+            showImageFromFunction.onAttachedToWindow();
+        }
+        if(imageShapeFunction != null){
+            imageShapeFunction.onAttachedToWindow();
+        }
+        if(clickRetryFunction != null){
+            clickRetryFunction.onAttachedToWindow();
         }
     }
 
@@ -166,13 +202,35 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
 
-        this.isSetImage = false;
-        if (displayRequest != null && !displayRequest.isFinished()) {
-            displayRequest.cancel();
+        boolean needSetImageNull = false;
+
+        if(requestFunction != null){
+            //noinspection ConstantConditions
+            needSetImageNull |= requestFunction.onDetachedFromWindow();
+        }
+        if(resumeDisplayFunction != null){
+            needSetImageNull |= resumeDisplayFunction.onDetachedFromWindow();
+        }
+        if(showPressedFunction != null){
+            needSetImageNull |= showPressedFunction.onDetachedFromWindow();
+        }
+        if(showProgressFunction != null){
+            needSetImageNull |= showProgressFunction.onDetachedFromWindow();
+        }
+        if(showGifFlagFunction != null){
+            needSetImageNull |= showGifFlagFunction.onDetachedFromWindow();
+        }
+        if(showImageFromFunction != null){
+            needSetImageNull |= showImageFromFunction.onDetachedFromWindow();
+        }
+        if(imageShapeFunction != null){
+            needSetImageNull |= imageShapeFunction.onDetachedFromWindow();
+        }
+        if(clickRetryFunction != null){
+            needSetImageNull |= clickRetryFunction.onDetachedFromWindow();
         }
 
-        final Drawable oldDrawable = getDrawable();
-        if (oldDrawable != null && notifyDrawable("onDetachedFromWindow", oldDrawable, false)) {
+        if(needSetImageNull){
             super.setImageDrawable(null);
         }
     }
@@ -183,27 +241,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         super.setImageURI(uri);
         final Drawable newDrawable = getDrawable();
 
-        // 图片确实改变了就处理一下旧的图片
-        if (oldDrawable != newDrawable) {
-            notifyDrawable("setImageURI:oldDrawable", oldDrawable, false);
-
-            // 不显示GIF角标
-            if (showGifFlagFunction != null && showGifFlagFunction.isGifDrawable) {
-                showGifFlagFunction.setIsGifDrawable(false);
-                invalidate();
-            }
-
-            if(showImageFromFunction != null){
-                showImageFromFunction.setImageFrom(null);
-                invalidate();
-            }
-
-            displayParams = null;
-            if(displayRequest != null && !displayRequest.isFinished()){
-                displayRequest.cancel();
-            }
-            displayRequest = null;
-        }
+        setDrawable(oldDrawable, newDrawable);
     }
 
     @Override
@@ -212,27 +250,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         super.setImageResource(resId);
         final Drawable newDrawable = getDrawable();
 
-        // 图片确实改变了就处理一下旧的图片
-        if (oldDrawable != newDrawable) {
-            notifyDrawable("setImageResource:oldDrawable", oldDrawable, false);
-
-            // 不显示GIF角标
-            if (showGifFlagFunction != null && showGifFlagFunction.isGifDrawable) {
-                showGifFlagFunction.setIsGifDrawable(false);
-                invalidate();
-            }
-
-            if(showImageFromFunction != null){
-                showImageFromFunction.setImageFrom(null);
-                invalidate();
-            }
-
-            displayParams = null;
-            if(displayRequest != null && !displayRequest.isFinished()){
-                displayRequest.cancel();
-            }
-            displayRequest = null;
-        }
+        setDrawable(oldDrawable, newDrawable);
     }
 
     @Override
@@ -241,31 +259,42 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         super.setImageDrawable(drawable);
         final Drawable newDrawable = getDrawable();
 
+        setDrawable(oldDrawable, newDrawable);
+    }
+
+    private void setDrawable(Drawable oldDrawable, Drawable newDrawable){
         // 图片确实改变了
         if (oldDrawable != newDrawable) {
-            notifyDrawable("setImageDrawable:oldDrawable", oldDrawable, false);
-            boolean newDrawableFromSketch = notifyDrawable("setImageDrawable:newDrawable", newDrawable, true);
+            boolean needInvokeInvalidate = false;
 
-            // 刷新GIF标志
+            if(requestFunction != null){
+                //noinspection ConstantConditions
+                needInvokeInvalidate |= requestFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+            }
             if(showGifFlagFunction != null){
-                boolean newDrawableIsGif = SketchUtils.isGifDrawable(newDrawable);
-                if (newDrawableIsGif != showGifFlagFunction.isGifDrawable) {
-                    showGifFlagFunction.setIsGifDrawable(newDrawableIsGif);
-                    invalidate();
-                }
+                needInvokeInvalidate |= showGifFlagFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+            }
+            if(showImageFromFunction != null){
+                needInvokeInvalidate |= showImageFromFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+            }
+            if(showPressedFunction != null){
+                needInvokeInvalidate |= showPressedFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+            }
+            if(showProgressFunction != null){
+                needInvokeInvalidate |= showProgressFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+            }
+            if(imageShapeFunction != null){
+                needInvokeInvalidate |= imageShapeFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+            }
+            if(clickRetryFunction != null){
+                needInvokeInvalidate |= clickRetryFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+            }
+            if(resumeDisplayFunction != null){
+                needInvokeInvalidate |= resumeDisplayFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
             }
 
-            if(!newDrawableFromSketch){
-                if(showImageFromFunction != null){
-                    showImageFromFunction.setImageFrom(null);
-                    invalidate();
-                }
-
-                displayParams = null;
-                if(displayRequest != null && !displayRequest.isFinished()){
-                    displayRequest.cancel();
-                }
-                displayRequest = null;
+            if(needInvokeInvalidate){
+                invalidate();
             }
         }
     }
@@ -282,8 +311,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     @Override
     public void onDisplay() {
-        this.isSetImage = true;
-
+        if(requestFunction != null){
+            requestFunction.onDisplay();
+        }
+        if(resumeDisplayFunction != null){
+            resumeDisplayFunction.onDisplay();
+        }
         if(showPressedFunction != null){
             showPressedFunction.onDisplay();
         }
@@ -331,15 +364,15 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     @Override
     public DisplayOptions getOptions() {
-        return displayOptions;
+        return requestFunction.getDisplayOptions();
     }
 
     @Override
     public void setOptions(DisplayOptions newDisplayOptions) {
         if (newDisplayOptions == null) {
-            this.displayOptions.reset();
+            this.requestFunction.getDisplayOptions().reset();
         } else {
-            this.displayOptions.copy(newDisplayOptions);
+            this.requestFunction.getDisplayOptions().copy(newDisplayOptions);
         }
     }
 
@@ -373,23 +406,13 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
-    public DisplayRequest getDisplayRequest() {
-        return displayRequest;
-    }
-
-    @Override
-    public void setDisplayRequest(DisplayRequest displayRequest) {
-        this.displayRequest = displayRequest;
-    }
-
-    @Override
     public DisplayParams getDisplayParams() {
-        return displayParams;
+        return requestFunction.getDisplayParams();
     }
 
     @Override
     public void setDisplayParams(DisplayParams displayParams) {
-        this.displayParams = displayParams;
+        requestFunction.setDisplayParams(displayParams);
     }
 
     /**
@@ -484,7 +507,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
         if(showImageFrom){
             if(showImageFromFunction == null){
-                showImageFromFunction = new ShowImageFromFunction(this);
+                showImageFromFunction = new ShowImageFromFunction(this, requestFunction);
             }
         }else{
             showImageFromFunction = null;
@@ -570,40 +593,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         return showImageFromFunction != null ? showImageFromFunction.getImageFrom() : null;
     }
 
-    /**
-     * 修改Drawable显示状态
-     *
-     * @param callingStation 调用位置
-     * @param drawable       Drawable
-     * @param isDisplayed    是否已显示
-     * @return true：drawable或其子Drawable是RecycleDrawable
-     */
-    private static boolean notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
-        if (drawable == null) {
-            return false;
-        } else if (drawable instanceof BindFixedRecycleBitmapDrawable) {
-            BindFixedRecycleBitmapDrawable bindFixedRecycleBitmapDrawable = (BindFixedRecycleBitmapDrawable) drawable;
-            DisplayRequest displayRequest = bindFixedRecycleBitmapDrawable.getDisplayRequest();
-            if (displayRequest != null && !displayRequest.isFinished()) {
-                displayRequest.cancel();
-            }
-            bindFixedRecycleBitmapDrawable.setIsDisplayed(callingStation, isDisplayed);
-            return true;
-        } else if (drawable instanceof RecycleDrawable) {
-            ((RecycleDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
-            return true;
-        } else if (drawable instanceof LayerDrawable) {
-            LayerDrawable layerDrawable = (LayerDrawable) drawable;
-            boolean result = false;
-            for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
-                result |= notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);
-            }
-            return result;
-        } else {
-            return false;
-        }
-    }
-
     private class MyDisplayListener implements DisplayListener {
         @Override
         public void onStarted() {
@@ -626,6 +615,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             }
             if(clickRetryFunction != null){
                 needInvokeInvalidate |= clickRetryFunction.onDisplayStarted();
+            }
+            if(requestFunction != null){
+                needInvokeInvalidate |= requestFunction.onDisplayStarted();
+            }
+            if(resumeDisplayFunction != null){
+                needInvokeInvalidate |= resumeDisplayFunction.onDisplayStarted();
             }
             if (needInvokeInvalidate) {
                 invalidate();
@@ -658,6 +653,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if(clickRetryFunction != null){
                 needInvokeInvalidate |= clickRetryFunction.onDisplayCompleted(imageFrom, mimeType);
             }
+            if(requestFunction != null){
+                needInvokeInvalidate |= requestFunction.onDisplayCompleted(imageFrom, mimeType);
+            }
+            if(resumeDisplayFunction != null){
+                needInvokeInvalidate |= resumeDisplayFunction.onDisplayCompleted(imageFrom, mimeType);
+            }
             if (needInvokeInvalidate) {
                 invalidate();
             }
@@ -689,6 +690,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if(clickRetryFunction != null){
                 needInvokeInvalidate |= clickRetryFunction.onDisplayFailed(failedCause);
             }
+            if(requestFunction != null){
+                needInvokeInvalidate |= requestFunction.onDisplayFailed(failedCause);
+            }
+            if(resumeDisplayFunction != null){
+                needInvokeInvalidate |= resumeDisplayFunction.onDisplayFailed(failedCause);
+            }
             if (needInvokeInvalidate) {
                 invalidate();
             }
@@ -719,6 +726,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             }
             if(clickRetryFunction != null){
                 needInvokeInvalidate |= clickRetryFunction.onCanceled(cancelCause);
+            }
+            if(requestFunction != null){
+                needInvokeInvalidate |= requestFunction.onCanceled(cancelCause);
+            }
+            if(resumeDisplayFunction != null){
+                needInvokeInvalidate |= resumeDisplayFunction.onCanceled(cancelCause);
             }
             if (needInvokeInvalidate) {
                 invalidate();
@@ -754,22 +767,18 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if(clickRetryFunction != null){
                 needInvokeInvalidate |= clickRetryFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
+            if(requestFunction != null){
+                needInvokeInvalidate |= requestFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            }
+            if(resumeDisplayFunction != null){
+                needInvokeInvalidate |= resumeDisplayFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            }
             if (needInvokeInvalidate) {
                 invalidate();
             }
 
             if (wrapperDownloadProgressListener != null) {
                 wrapperDownloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
-            }
-        }
-    }
-
-    private class MyRetryListener implements ClickRetryFunction.OnRetryListener{
-
-        @Override
-        public void onRetry() {
-            if (displayParams != null) {
-                Sketch.with(getContext()).display(displayParams, SketchImageView.this).requestLevel(RequestLevel.NET).commit();
             }
         }
     }

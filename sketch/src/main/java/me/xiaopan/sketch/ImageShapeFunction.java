@@ -19,6 +19,7 @@ package me.xiaopan.sketch;
 import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.RectF;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -35,6 +36,11 @@ public class ImageShapeFunction implements ImageViewFunction{
 
     public ImageShapeFunction(View view) {
         this.view = view;
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+
     }
 
     @Override
@@ -55,6 +61,16 @@ public class ImageShapeFunction implements ImageViewFunction{
     @Override
     public void onDraw(Canvas canvas) {
 
+    }
+
+    @Override
+    public boolean onDetachedFromWindow() {
+        return false;
+    }
+
+    @Override
+    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+        return false;
     }
 
     @Override

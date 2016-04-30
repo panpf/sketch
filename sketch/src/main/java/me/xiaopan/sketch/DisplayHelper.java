@@ -464,9 +464,6 @@ public class DisplayHelper {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
             }
-            if (imageViewInterface != null) {
-                imageViewInterface.setDisplayRequest(null);
-            }
             Drawable failureDrawable = options.getFailureImage() != null ? options.getFailureImage().getRecycleBitmapDrawable(context) : null;
             if (failureDrawable != null) {
                 imageViewInterface.setImageDrawable(failureDrawable);
@@ -482,9 +479,6 @@ public class DisplayHelper {
         UriScheme uriScheme = UriScheme.valueOfUri(uri);
         if (uriScheme == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme: ", uri, " - ", (name != null ? name : uri)));
-            if (imageViewInterface != null) {
-                imageViewInterface.setDisplayRequest(null);
-            }
             Drawable failureDrawable = options.getFailureImage() != null ? options.getFailureImage().getRecycleBitmapDrawable(context) : null;
             if (failureDrawable != null) {
                 imageViewInterface.setImageDrawable(failureDrawable);
@@ -504,9 +498,6 @@ public class DisplayHelper {
                 if (!recycleDrawable.isRecycled()) {
                     if (Sketch.isDebugMode()) {
                         Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "from memory get bitmap", " - ", recycleDrawable.getInfo(), " - ", name));
-                    }
-                    if (imageViewInterface != null) {
-                        imageViewInterface.setDisplayRequest(null);
                     }
                     imageViewInterface.setImageDrawable(cacheDrawable);
                     if (displayListener != null) {
@@ -533,9 +524,6 @@ public class DisplayHelper {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", (options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD ? "pause load" : "requestLevel is memory"), " - ", name));
                 }
-            }
-            if (imageViewInterface != null) {
-                imageViewInterface.setDisplayRequest(null);
             }
             return null;
         }
@@ -575,10 +563,6 @@ public class DisplayHelper {
             loadingBindDrawable = new BindFixedRecycleBitmapDrawable(null, request);
         }
         imageViewInterface.setImageDrawable(loadingBindDrawable);
-
-        if (imageViewInterface != null) {
-            imageViewInterface.setDisplayRequest(request);
-        }
 
         // 分发请求
         request.submit();

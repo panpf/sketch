@@ -144,16 +144,6 @@ public interface ImageViewInterface {
     void setDownloadProgressListener(DownloadProgressListener downloadProgressListener);
 
     /**
-     * 获取显示请求，你可通过这个对象来查看状态或主动取消请求
-     */
-    DisplayRequest getDisplayRequest();
-
-    /**
-     * 设置显示请求，此方法由Sketch调用，你无需理会即可
-     */
-    void setDisplayRequest(DisplayRequest displayRequest);
-
-    /**
      * 获取显示参数，此方法由Sketch调用，你无需理会即可
      */
     DisplayParams getDisplayParams();

@@ -18,6 +18,7 @@ package me.xiaopan.sketch;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -46,6 +47,11 @@ public class ShowPressedFunction implements ImageViewFunction{
         this.view = view;
         this.imageShapeFunction = imageShapeFunction;
         this.gestureDetector = new GestureDetector(view.getContext(), new PressedStatusManager());
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+
     }
 
     @Override
@@ -107,6 +113,16 @@ public class ShowPressedFunction implements ImageViewFunction{
                 canvas.restore();
             }
         }
+    }
+
+    @Override
+    public boolean onDetachedFromWindow() {
+        return false;
+    }
+
+    @Override
+    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+        return false;
     }
 
     @Override

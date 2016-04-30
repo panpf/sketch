@@ -17,9 +17,12 @@
 package me.xiaopan.sketch;
 
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 
 public interface ImageViewFunction {
+    void onAttachedToWindow();
+
     void onDisplay();
 
     boolean onTouchEvent(MotionEvent event);
@@ -27,6 +30,16 @@ public interface ImageViewFunction {
     void onLayout(boolean changed, int left, int top, int right, int bottom);
 
     void onDraw(Canvas canvas);
+
+    /**
+     * @return true：调用父setImageDrawable清空图片
+     */
+    boolean onDetachedFromWindow();
+
+    /**
+     * @return 是否需要调用ImageView的invalidate()刷新显示
+     */
+    boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable);
 
     /**
      * @return 是否需要调用ImageView的invalidate()刷新显示

@@ -3,6 +3,7 @@ package me.xiaopan.sketch;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -13,13 +14,20 @@ public class ShowImageFromFunction implements ImageViewFunction{
     private static final int FROM_FLAG_COLOR_NETWORK = 0x88FF0000;
 
     private View view;
+    private RequestFunction requestFunction;
 
     private Path imageFromPath;
     private Paint imageFromPaint;
     private ImageFrom imageFrom;
 
-    public ShowImageFromFunction(View view) {
+    public ShowImageFromFunction(View view, RequestFunction requestFunction) {
         this.view = view;
+        this.requestFunction = requestFunction;
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+
     }
 
     @Override
@@ -87,6 +95,21 @@ public class ShowImageFromFunction implements ImageViewFunction{
                 return;
         }
         canvas.drawPath(imageFromPath, imageFromPaint);
+    }
+
+    @Override
+    public boolean onDetachedFromWindow() {
+        return false;
+    }
+
+    @Override
+    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+        if(!requestFunction.isNewDrawableFromSketch()){
+            imageFrom = null;
+            return true;
+        }
+
+        return false;
     }
 
     @Override

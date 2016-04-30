@@ -1,6 +1,7 @@
 package me.xiaopan.sketch;
 
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -13,11 +14,18 @@ public class ClickRetryFunction implements ImageViewFunction, View.OnClickListen
     private boolean pauseDownload;
 
     private View view;
-    private OnRetryListener retryListener;
+    private RequestFunction requestFunction;
+    private ImageViewInterface imageViewInterface;
 
-    public ClickRetryFunction(View view, OnRetryListener retryListener) {
+    public ClickRetryFunction(View view, RequestFunction requestFunction, ImageViewInterface imageViewInterface) {
         this.view = view;
-        this.retryListener = retryListener;
+        this.requestFunction = requestFunction;
+        this.imageViewInterface = imageViewInterface;
+    }
+
+    @Override
+    public void onAttachedToWindow() {
+
     }
 
     @Override
@@ -42,6 +50,16 @@ public class ClickRetryFunction implements ImageViewFunction, View.OnClickListen
     @Override
     public void onDraw(Canvas canvas) {
 
+    }
+
+    @Override
+    public boolean onDetachedFromWindow() {
+        return false;
+    }
+
+    @Override
+    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+        return false;
     }
 
     @Override
@@ -82,7 +100,9 @@ public class ClickRetryFunction implements ImageViewFunction, View.OnClickListen
     @Override
     public void onClick(View v) {
         if((clickRetryOnFailed && displayFailed) || (clickRetryOnPauseDownload && pauseDownload)){
-            retryListener.onRetry();
+            if (requestFunction.getDisplayParams() != null) {
+                Sketch.with(view.getContext()).display(requestFunction.getDisplayParams(), imageViewInterface).requestLevel(RequestLevel.NET).commit();
+            }
         }
 
         if(wrapperClickListener != null){
@@ -111,13 +131,9 @@ public class ClickRetryFunction implements ImageViewFunction, View.OnClickListen
         updateClickable();
     }
 
-    private void updateClickable(){
+    public void updateClickable(){
         view.setClickable((clickRetryOnFailed && displayFailed)
         || (clickRetryOnPauseDownload && pauseDownload)
         || wrapperClickListener != null);
-    }
-
-    public interface OnRetryListener{
-        void onRetry();
     }
 }
