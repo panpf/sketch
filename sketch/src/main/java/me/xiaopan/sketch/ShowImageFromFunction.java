@@ -3,6 +3,7 @@ package me.xiaopan.sketch;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.view.MotionEvent;
 import android.view.View;
 
 public class ShowImageFromFunction implements ImageViewFunction{
@@ -19,6 +20,11 @@ public class ShowImageFromFunction implements ImageViewFunction{
 
     public ShowImageFromFunction(View view) {
         this.view = view;
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        return false;
     }
 
     @Override

@@ -18,30 +18,19 @@ package me.xiaopan.sketch;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.Path;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
-import android.widget.Scroller;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class SketchImageView extends ImageView implements ImageViewInterface {
-    private static final String NAME = "SketchImageView";
-
-    private static final int NONE = -1;
-    private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
-    private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;
+    protected static final String NAME = "SketchImageView";
 
     private DisplayRequest displayRequest;
     private MyListener myListener;
@@ -55,39 +44,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     private boolean clickRedisplayOnFailed;
     private boolean isSetImage;
 
-//    protected Path imageFromPath;
-//    protected Paint imageFromPaint;
-//    protected boolean showImageFrom;
-//    protected ImageFrom imageFrom;
     private ShowImageFromFunction showImageFromFunction;
-
-    protected int downloadProgressColor = DEFAULT_PROGRESS_COLOR;
-    protected Paint progressPaint;
-    protected float progress = NONE;
-    protected boolean showDownloadProgress;
-
-    protected int touchX;
-    protected int touchY;
-    protected int pressedStatusColor = DEFAULT_PRESSED_STATUS_COLOR;
-    protected int rippleRadius;
-    protected boolean allowShowPressedStatus;
-    protected boolean showPressedStatus;
-    protected boolean animationRunning;
-    protected Paint pressedStatusPaint;
-    protected GestureDetector gestureDetector;
-    protected boolean showRect;
-
-//    protected boolean isGifDrawable;
-//    protected float gifDrawableLeft = -1;
-//    protected float gifDrawableTop = -1;
-//    protected Drawable gifFlagDrawable;
+    private ShowProgressFunction showProgressFunction;
+    private ShowPressedFunction showPressedFunction;
     private ShowGifFlagFunction showGifFlagFunction;
 
-    protected Path maskShapeClipPath;
-    protected int maskRoundedRadius;
-    protected MaskShape maskShape = MaskShape.RECT;
-    protected boolean applyMaskClip = false;
-    protected RectF maskRectF;
+    private ImageShapeFunction imageShapeFunction = new ImageShapeFunction(this);
 
     public SketchImageView(Context context) {
         super(context);
@@ -111,84 +73,35 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-//        initFromFlag();
+        if(showProgressFunction != null){
+            showProgressFunction.onLayout(changed, left, top, right, bottom);
+        }
+        if(showPressedFunction != null){
+            showPressedFunction.onLayout(changed, left, top, right, bottom);
+        }
         if(showImageFromFunction != null){
             showImageFromFunction.onLayout(changed, left, top, right, bottom);
         }
-//        initGifFlag();
         if(showGifFlagFunction != null){
             showGifFlagFunction.onLayout(changed, left, top, right, bottom);
         }
-        initImageShapePath();
-    }
 
-//    protected void initFromFlag() {
-//        if (!showImageFrom) {
-//            return;
-//        }
-//
-//        if (imageFromPath == null) {
-//            imageFromPath = new Path();
-//        } else {
-//            imageFromPath.reset();
-//        }
-//        int x = getWidth() / 10;
-//        int y = getWidth() / 10;
-//        int left2 = getPaddingLeft();
-//        int top2 = getPaddingTop();
-//        imageFromPath.moveTo(left2, top2);
-//        imageFromPath.lineTo(left2 + x, top2);
-//        imageFromPath.lineTo(left2, top2 + y);
-//        imageFromPath.close();
-//    }
-
-//    protected void initGifFlag() {
-//        if (gifFlagDrawable != null) {
-//            gifDrawableLeft = getWidth() - getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
-//            gifDrawableTop = getHeight() - getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
-//        }
-//    }
-
-    protected void initImageShapePath() {
-        if (maskShape == MaskShape.RECT) {
-            maskShapeClipPath = null;
-        } else if (maskShape == MaskShape.CIRCLE) {
-            if (maskShapeClipPath == null) {
-                maskShapeClipPath = new Path();
-            } else {
-                maskShapeClipPath.reset();
-            }
-            int xRadius = (getWidth() - getPaddingLeft() - getPaddingRight()) / 2;
-            int yRadius = (getHeight() - getPaddingTop() - getPaddingBottom()) / 2;
-            maskShapeClipPath.addCircle(xRadius, yRadius, xRadius < yRadius ? xRadius : yRadius, Path.Direction.CW);
-        } else if (maskShape == MaskShape.ROUNDED_RECT) {
-            if (maskShapeClipPath == null) {
-                maskShapeClipPath = new Path();
-            } else {
-                maskShapeClipPath.reset();
-            }
-            if (maskRectF == null) {
-                maskRectF = new RectF(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
-            } else {
-                maskRectF.set(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom());
-            }
-            maskShapeClipPath.addRoundRect(maskRectF, maskRoundedRadius, maskRoundedRadius, Path.Direction.CW);
-        } else {
-            maskShapeClipPath = null;
-        }
+        imageShapeFunction.onLayout(changed, left, top, right, bottom);
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        drawPressedStatus(canvas);
-        drawDownloadProgress(canvas);
-//        drawFromFlag(canvas);
+        if(showPressedFunction != null){
+            showPressedFunction.draw(canvas);
+        }
+        if(showProgressFunction != null){
+            showProgressFunction.draw(canvas);
+        }
         if(showImageFromFunction != null){
             showImageFromFunction.draw(canvas);
         }
-//        drawGifFlag(canvas);
         if(showGifFlagFunction != null){
             showGifFlagFunction.draw(canvas);
         }
@@ -196,19 +109,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (showPressedStatus && isClickable()) {
-            if (gestureDetector == null) {
-                gestureDetector = new GestureDetector(getContext(), new PressedStatusManager());
-            }
-            gestureDetector.onTouchEvent(event);
-            switch (event.getAction() & MotionEvent.ACTION_MASK) {
-                case MotionEvent.ACTION_UP:
-                case MotionEvent.ACTION_CANCEL:
-                case MotionEvent.ACTION_OUTSIDE:
-                    allowShowPressedStatus = false;
-                    invalidate();
-                    break;
-            }
+        if(showPressedFunction != null){
+            showPressedFunction.onTouchEvent(event);
         }
 
         return super.onTouchEvent(event);
@@ -252,20 +154,16 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             notifyDrawable("setImageURI:oldDrawable", oldDrawable, false);
 
             // 不显示GIF角标
-//            if (gifFlagDrawable != null && isGifDrawable) {
-//                isGifDrawable = false;
-//                invalidate();
-//            }
             if (showGifFlagFunction != null && showGifFlagFunction.isGifDrawable) {
                 showGifFlagFunction.setIsGifDrawable(false);
                 invalidate();
             }
 
-//            imageFrom = null;
             if(showImageFromFunction != null){
                 showImageFromFunction.setImageFrom(null);
                 invalidate();
             }
+
             displayParams = null;
             if(displayRequest != null && !displayRequest.isFinished()){
                 displayRequest.cancel();
@@ -285,20 +183,16 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             notifyDrawable("setImageResource:oldDrawable", oldDrawable, false);
 
             // 不显示GIF角标
-//            if (gifFlagDrawable != null && isGifDrawable) {
-//                isGifDrawable = false;
-//                invalidate();
-//            }
             if (showGifFlagFunction != null && showGifFlagFunction.isGifDrawable) {
                 showGifFlagFunction.setIsGifDrawable(false);
                 invalidate();
             }
 
-//            imageFrom = null;
             if(showImageFromFunction != null){
                 showImageFromFunction.setImageFrom(null);
                 invalidate();
             }
+
             displayParams = null;
             if(displayRequest != null && !displayRequest.isFinished()){
                 displayRequest.cancel();
@@ -319,13 +213,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             boolean newDrawableFromSketch = notifyDrawable("setImageDrawable:newDrawable", newDrawable, true);
 
             // 刷新GIF标志
-//            boolean newDrawableIsGif = SketchUtils.isGifDrawable(newDrawable);
-//            if (newDrawableIsGif != isGifDrawable) {
-//                isGifDrawable = newDrawableIsGif;
-//                if(gifFlagDrawable != null){
-//                    invalidate();
-//                }
-//            }
             if(showGifFlagFunction != null){
                 boolean newDrawableIsGif = SketchUtils.isGifDrawable(newDrawable);
                 if (newDrawableIsGif != showGifFlagFunction.isGifDrawable) {
@@ -335,11 +222,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             }
 
             if(!newDrawableFromSketch){
-//                imageFrom = null;
                 if(showImageFromFunction != null){
                     showImageFromFunction.setImageFrom(null);
                     invalidate();
                 }
+
                 displayParams = null;
                 if(displayRequest != null && !displayRequest.isFinished()){
                     displayRequest.cancel();
@@ -358,118 +245,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     public View getSelf() {
         return this;
     }
-
-    protected void drawPressedStatus(Canvas canvas) {
-        if (allowShowPressedStatus || animationRunning || showRect) {
-            applyMaskClip = maskShapeClipPath != null;
-            if (applyMaskClip) {
-                canvas.save();
-                try {
-                    canvas.clipPath(maskShapeClipPath);
-                } catch (UnsupportedOperationException e) {
-                    Log.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                    }
-                    e.printStackTrace();
-                }
-            }
-
-            if (pressedStatusPaint == null) {
-                pressedStatusPaint = new Paint();
-                pressedStatusPaint.setColor(pressedStatusColor);
-                pressedStatusPaint.setAntiAlias(true);
-            }
-            if (allowShowPressedStatus || animationRunning) {
-                canvas.drawCircle(touchX, touchY, rippleRadius, pressedStatusPaint);
-            } else if (showRect) {
-                canvas.drawRect(getPaddingLeft(), getPaddingTop(), getWidth() - getPaddingRight(), getHeight() - getPaddingBottom(), pressedStatusPaint);
-            }
-
-            if (applyMaskClip) {
-                canvas.restore();
-            }
-        }
-    }
-
-    protected void drawDownloadProgress(Canvas canvas) {
-        if (showDownloadProgress && progress != NONE) {
-            applyMaskClip = maskShapeClipPath != null;
-            if (applyMaskClip) {
-                canvas.save();
-                try {
-                    canvas.clipPath(maskShapeClipPath);
-                } catch (UnsupportedOperationException e) {
-                    Log.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
-                        setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-                    }
-                    e.printStackTrace();
-                }
-            }
-
-            if (progressPaint == null) {
-                progressPaint = new Paint();
-                progressPaint.setColor(downloadProgressColor);
-                progressPaint.setAntiAlias(true);
-            }
-            canvas.drawRect(getPaddingLeft(), getPaddingTop() + (progress * getHeight()), getWidth() - getPaddingLeft() - getPaddingRight(), getHeight() - getPaddingTop() - getPaddingBottom(), progressPaint);
-
-            if (applyMaskClip) {
-                canvas.restore();
-            }
-        }
-    }
-
-//    protected void drawFromFlag(Canvas canvas) {
-//        if (showImageFrom && imageFrom != null) {
-//            if (imageFromPath == null) {
-//                imageFromPath = new Path();
-//                int x = getWidth() / 10;
-//                int y = getWidth() / 10;
-//                int left2 = getPaddingLeft();
-//                int top2 = getPaddingTop();
-//                imageFromPath.moveTo(left2, top2);
-//                imageFromPath.lineTo(left2 + x, top2);
-//                imageFromPath.lineTo(left2, top2 + y);
-//                imageFromPath.close();
-//            }
-//            if (imageFromPaint == null) {
-//                imageFromPaint = new Paint();
-//                imageFromPaint.setAntiAlias(true);
-//            }
-//            switch (imageFrom) {
-//                case MEMORY_CACHE:
-//                    imageFromPaint.setColor(FROM_FLAG_COLOR_MEMORY);
-//                    break;
-//                case DISK_CACHE:
-//                    imageFromPaint.setColor(FROM_FLAG_COLOR_DISK_CACHE);
-//                    break;
-//                case NETWORK:
-//                    imageFromPaint.setColor(FROM_FLAG_COLOR_NETWORK);
-//                    break;
-//                case LOCAL:
-//                    imageFromPaint.setColor(FROM_FLAG_COLOR_LOCAL);
-//                    break;
-//                default:
-//                    return;
-//            }
-//            canvas.drawPath(imageFromPath, imageFromPaint);
-//        }
-//    }
-
-//    protected void drawGifFlag(Canvas canvas) {
-//        if (isGifDrawable && gifFlagDrawable != null) {
-//            if (gifDrawableLeft == -1) {
-//                gifDrawableLeft = getWidth() - getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
-//                gifDrawableTop = getHeight() - getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
-//            }
-//            canvas.save();
-//            canvas.translate(gifDrawableLeft, gifDrawableTop);
-//            gifFlagDrawable.draw(canvas);
-//            canvas.restore();
-//        }
-//    }
 
     @Override
     public void onDisplay() {
@@ -530,9 +305,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     @Override
     public DisplayListener getDisplayListener(boolean isPauseDownload) {
         if (
-//                showImageFrom
         showImageFromFunction != null
-                || showDownloadProgress || (isPauseDownload && clickDisplayOnPauseDownload) || clickRedisplayOnFailed) {
+                || showProgressFunction != null
+                || (isPauseDownload && clickDisplayOnPauseDownload) || clickRedisplayOnFailed) {
             if (myListener == null) {
                 myListener = new MyListener();
             }
@@ -548,7 +323,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     public DownloadProgressListener getDownloadProgressListener() {
-        if (showDownloadProgress) {
+        if (showProgressFunction != null) {
             if (myListener == null) {
                 myListener = new MyListener();
             }
@@ -601,64 +376,50 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
-     * 设置是否显示按下状态，开启后按下的时候会在ImageView表面覆盖一个黑色半透明图层，长按的时候还会有类似Android5.0的涟漪效果。此功能需要注册点击事件或设置Clickable为true
-     *
-     * @param showPressedStatus 是否显示点击状态
+     * 设置是否显示下载进度，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
      */
-    public void setShowPressedStatus(boolean showPressedStatus) {
-        this.showPressedStatus = showPressedStatus;
+    public void setShowDownloadProgress(boolean showDownloadProgress) {
+        this.showProgressFunction = showDownloadProgress ? new ShowProgressFunction(this, imageShapeFunction) : null;
     }
 
     /**
-     * 设置是否显示下载进度
-     *
-     * @param showDownloadProgress 是否显示进度
+     * 设置下载进度蒙层的颜色
      */
-    public void setShowDownloadProgress(boolean showDownloadProgress) {
-        this.showDownloadProgress = showDownloadProgress;
+    @SuppressWarnings("unused")
+    public void setDownloadProgressColor(int downloadProgressColor) {
+        if(showProgressFunction != null){
+            showProgressFunction.setDownloadProgressColor(downloadProgressColor);
+        }
+    }
+
+    /**
+     * 是否显示按下状态
+     */
+    @SuppressWarnings("unused")
+    public boolean isShowPressedStatus() {
+        return showPressedFunction != null;
+    }
+
+    /**
+     * 设置是否显示按下状态，开启后按下的时候会在ImageView表面覆盖一个黑色半透明图层，长按的时候还会有类似Android5.0的涟漪效果。此功能需要注册点击事件或设置Clickable为true
+     */
+    public void setShowPressedStatus(boolean showPressedStatus) {
+        this.showPressedFunction = showPressedStatus ? new ShowPressedFunction(this, imageShapeFunction) : null;
     }
 
     /**
      * 设置按下状态的颜色
-     *
-     * @param pressedStatusColor 按下状态的颜色
      */
     @SuppressWarnings("unused")
     public void setPressedStatusColor(int pressedStatusColor) {
-        this.pressedStatusColor = pressedStatusColor;
-        if (pressedStatusPaint != null) {
-            pressedStatusPaint.setColor(pressedStatusColor);
+        if(showPressedFunction != null){
+            showPressedFunction.setPressedStatusColor(pressedStatusColor);
         }
     }
 
     /**
-     * 设置下载进度的颜色
-     *
-     * @param downloadProgressColor 下载进度的颜色
+     * 是否显示图片来源
      */
-    @SuppressWarnings("unused")
-    public void setDownloadProgressColor(int downloadProgressColor) {
-        this.downloadProgressColor = downloadProgressColor;
-        if (progressPaint != null) {
-            progressPaint.setColor(downloadProgressColor);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    public int getDownloadProgressColor() {
-        return downloadProgressColor;
-    }
-
-    @SuppressWarnings("unused")
-    public int getPressedStatusColor() {
-        return pressedStatusColor;
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isShowPressedStatus() {
-        return showPressedStatus;
-    }
-
     @SuppressWarnings("unused")
     public boolean isShowImageFrom() {
         return showImageFromFunction != null;
@@ -677,12 +438,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     /**
      * 获取GIF图片标识
-     *
-     * @return GIF图片标识
      */
     @SuppressWarnings("unused")
     public Drawable getGifFlagDrawable() {
-//        return gifFlagDrawable;
         return showGifFlagFunction != null ? showGifFlagFunction.getGifFlagDrawable() : null;
     }
 
@@ -691,71 +449,51 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     @SuppressWarnings("unused")
     public void setGifFlagDrawable(Drawable gifFlagDrawable) {
-//        this.gifFlagDrawable = gifFlagDrawable;
-//        if (this.gifFlagDrawable != null) {
-//            this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
-//        }
-        if(gifFlagDrawable != null){
-            showGifFlagFunction = new ShowGifFlagFunction(this, gifFlagDrawable);
-        }else{
-            showGifFlagFunction = null;
-        }
+        showGifFlagFunction = gifFlagDrawable != null ? new ShowGifFlagFunction(this, gifFlagDrawable) : null;
     }
 
     /**
      * 设置GIF标识图片
      */
     public void setGifFlagDrawable(int gifFlagResId) {
-//        this.gifFlagDrawable = getResources().getDrawable(gifFlagResId);
-//        if (this.gifFlagDrawable != null) {
-//            this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
-//        }
         setGifFlagDrawable(getResources().getDrawable(gifFlagResId));
     }
 
     /**
-     * 获取下载进度、按下效果蒙层的形状
+     * 获取图片形状，下载进度和按下效果的蒙层会适应此形状
      */
     @SuppressWarnings("unused")
-    public MaskShape getMaskShape() {
-        return maskShape;
+    public ImageShape getImageShape() {
+        return imageShapeFunction.getImageShape();
     }
 
     /**
-     * 设置下载进度、按下效果蒙层的形状
+     * 设置图片形状，下载进度和按下效果的蒙层会适应此形状
      */
-    public void setMaskShape(MaskShape maskShape) {
-        this.maskShape = maskShape;
-        if (getWidth() != 0) {
-            initImageShapePath();
-        }
+    public void setImageShape(ImageShape imageShape) {
+        imageShapeFunction.setImageShape(imageShape);
     }
 
     /**
-     * 获取下载进度、按下效果蒙层的圆角半径
+     * 获取图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
     @SuppressWarnings("unused")
-    public int getMaskRoundedRadius() {
-        return maskRoundedRadius;
+    public int getImageShapeRoundedRadius() {
+        return imageShapeFunction.getRoundedRadius();
     }
 
     /**
-     * 设置下载进度、按下效果蒙层的圆角半径
+     * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
-    public void setMaskRoundedRadius(int radius) {
-        this.maskRoundedRadius = radius;
-        if (getWidth() != 0) {
-            initImageShapePath();
-        }
+    public void setImageShapeRoundedRadius(int radius) {
+        imageShapeFunction.setRoundedRadius(radius);
     }
 
     /**
      * 获取图片来源
-     * @return 图片来源；null：不显示图片来源
      */
     @SuppressWarnings("unused")
     public ImageFrom getImageFrom() {
-//        return imageFrom;
         return showImageFromFunction != null ? showImageFromFunction.getImageFrom() : null;
     }
 
@@ -796,20 +534,15 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     private class MyListener implements DisplayListener, DownloadProgressListener, View.OnClickListener {
         @Override
         public void onStarted() {
-//            if (showImageFromFunction) {
-//                imageFrom = null;
-//            }
             boolean needInvokeInvalidate = false;
             if (showImageFromFunction != null) {
+                //noinspection ConstantConditions
                 needInvokeInvalidate |= showImageFromFunction.onDisplayStarted();
             }
-            if (showDownloadProgress) {
-                progress = 0;
+            if(showProgressFunction != null){
+                needInvokeInvalidate |= showProgressFunction.onDisplayStarted();
             }
-//            if (showImageFromFunction || showDownloadProgress) {
-//                invalidate();
-//            }
-            if (needInvokeInvalidate || showDownloadProgress) {
+            if (needInvokeInvalidate) {
                 invalidate();
             }
             if (displayListener != null) {
@@ -819,20 +552,15 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
         @Override
         public void onCompleted(ImageFrom imageFrom, String mimeType) {
-//            if (showImageFrom) {
-//                SketchImageView.this.imageFrom = imageFrom;
-//            }
             boolean needInvokeInvalidate = false;
             if (showImageFromFunction != null) {
+                //noinspection ConstantConditions
                 needInvokeInvalidate |= showImageFromFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (showDownloadProgress) {
-                progress = NONE;
+            if(showProgressFunction != null){
+                needInvokeInvalidate |= showProgressFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-//            if (showImageFrom || showDownloadProgress) {
-//                invalidate();
-//            }
-            if (needInvokeInvalidate || showDownloadProgress) {
+            if (needInvokeInvalidate) {
                 invalidate();
             }
             if (displayListener != null) {
@@ -842,20 +570,15 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
         @Override
         public void onFailed(FailedCause failedCause) {
-//            if (showImageFrom) {
-//                imageFrom = null;
-//            }
             boolean needInvokeInvalidate = false;
             if (showImageFromFunction != null) {
+                //noinspection ConstantConditions
                 needInvokeInvalidate |= showImageFromFunction.onDisplayFailed(failedCause);
             }
-            if (showDownloadProgress) {
-                progress = NONE;
+            if(showProgressFunction != null){
+                needInvokeInvalidate |= showProgressFunction.onDisplayFailed(failedCause);
             }
-//            if (showDownloadProgress || showImageFrom) {
-//                invalidate();
-//            }
-            if (showDownloadProgress || needInvokeInvalidate) {
+            if (needInvokeInvalidate) {
                 invalidate();
             }
             if (clickRedisplayOnFailed && failedCause != FailedCause.URI_NULL_OR_EMPTY && failedCause != FailedCause.IMAGE_VIEW_NULL && failedCause != FailedCause.URI_NO_SUPPORT) {
@@ -880,8 +603,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
         @Override
         public void onUpdateDownloadProgress(int totalLength, int completedLength) {
-            if (showDownloadProgress) {
-                progress = (float) completedLength / totalLength;
+            if(showProgressFunction != null){
+                showProgressFunction.setProgress((float) completedLength / totalLength);
                 invalidate();
             }
             if (downloadProgressListener != null) {
@@ -898,111 +621,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
-     * 蒙层的形状
+     * 图片的形状
      */
-    public enum MaskShape {
+    public enum ImageShape {
         RECT,
         CIRCLE,
         ROUNDED_RECT,
-    }
-
-    private class PressedStatusManager extends GestureDetector.SimpleOnGestureListener implements Runnable {
-        private boolean showPress;
-        private Scroller scroller;
-        private Runnable cancelRunnable;
-
-        public PressedStatusManager() {
-            scroller = new Scroller(getContext());
-        }
-
-        @Override
-        public void run() {
-            animationRunning = scroller.computeScrollOffset();
-            if (animationRunning) {
-                rippleRadius = scroller.getCurrX();
-                post(this);
-            }
-            invalidate();
-        }
-
-        @Override
-        public boolean onDown(MotionEvent event) {
-            if (!scroller.isFinished()) {
-                scroller.forceFinished(true);
-                removeCallbacks(this);
-                animationRunning = false;
-                invalidate();
-            }
-
-            touchX = (int) event.getX();
-            touchY = (int) event.getY();
-            showPress = false;
-            return false;
-        }
-
-        @Override
-        public void onShowPress(MotionEvent e) {
-            allowShowPressedStatus = true;
-            showPress = true;
-            startAnimation(1000);
-        }
-
-        @Override
-        public void onLongPress(MotionEvent e) {
-            super.onLongPress(e);
-        }
-
-        @Override
-        public boolean onSingleTapUp(MotionEvent e) {
-            if (!showPress) {
-                showRect = true;
-                invalidate();
-                if (cancelRunnable == null) {
-                    cancelRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            showRect = false;
-                            invalidate();
-                        }
-                    };
-                }
-                postDelayed(cancelRunnable, 200);
-            }
-            return super.onSingleTapUp(e);
-        }
-
-        private void startAnimation(int duration) {
-            if (scroller == null) {
-                scroller = new Scroller(getContext(), new DecelerateInterpolator());
-            }
-            scroller.startScroll(0, 0, computeRippleRadius(), 0, duration);
-            post(this);
-        }
-
-        /**
-         * 计算涟漪的半径
-         *
-         * @return 涟漪的半径
-         */
-        private int computeRippleRadius() {
-            // 先计算按下点到四边的距离
-            int toLeftDistance = touchX - getPaddingLeft();
-            int toTopDistance = touchY - getPaddingTop();
-            int toRightDistance = Math.abs(getWidth() - getPaddingRight() - touchX);
-            int toBottomDistance = Math.abs(getHeight() - getPaddingBottom() - touchY);
-
-            // 当按下位置在第一或第四象限的时候，比较按下位置在左上角到右下角这条线上距离谁最远就以谁为半径，否则在左下角到右上角这条线上比较
-            int centerX = getWidth() / 2;
-            int centerY = getHeight() / 2;
-            if ((touchX < centerX && touchY < centerY) || (touchX > centerX && touchY > centerY)) {
-                int toLeftTopDistance = (int) Math.sqrt((toLeftDistance * toLeftDistance) + (toTopDistance * toTopDistance));
-                int toRightBottomDistance = (int) Math.sqrt((toRightDistance * toRightDistance) + (toBottomDistance * toBottomDistance));
-                return toLeftTopDistance > toRightBottomDistance ? toLeftTopDistance : toRightBottomDistance;
-            } else {
-                int toLeftBottomDistance = (int) Math.sqrt((toLeftDistance * toLeftDistance) + (toBottomDistance * toBottomDistance));
-                int toRightTopDistance = (int) Math.sqrt((toRightDistance * toRightDistance) + (toTopDistance * toTopDistance));
-                return toLeftBottomDistance > toRightTopDistance ? toLeftBottomDistance : toRightTopDistance;
-            }
-        }
     }
 }

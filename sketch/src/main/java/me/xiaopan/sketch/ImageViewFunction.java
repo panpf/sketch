@@ -17,11 +17,11 @@
 package me.xiaopan.sketch;
 
 import android.graphics.Canvas;
-
-import me.xiaopan.sketch.FailedCause;
-import me.xiaopan.sketch.ImageFrom;
+import android.view.MotionEvent;
 
 public interface ImageViewFunction {
+    boolean onTouchEvent(MotionEvent event);
+
     void onLayout(boolean changed, int left, int top, int right, int bottom);
 
     void draw(Canvas canvas);
