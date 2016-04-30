@@ -24,7 +24,7 @@ public class MyImageView extends SketchImageView {
     private void onInit(Context context){
         settings = Settings.with(context);
         if(!isInEditMode()){
-            setGifFlagDrawable(R.drawable.ic_gif);
+            setShowGifFlag(R.drawable.ic_gif);
         }
     }
 
@@ -36,8 +36,8 @@ public class MyImageView extends SketchImageView {
             setShowPressedStatus(settings.isShowPressedStatus());
             setShowImageFrom(settings.isShowImageFromFlag());
             setShowDownloadProgress(settings.isShowImageDownloadProgress());
-            setClickDisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
-            setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
+            setClickRetryOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+            setClickRetryOnFailed(settings.isClickDisplayOnFailed());
         }
     }
 
