@@ -102,6 +102,7 @@ public class ClickRetryFunction implements ImageViewFunction, View.OnClickListen
         if((clickRetryOnFailed && displayFailed) || (clickRetryOnPauseDownload && pauseDownload)){
             if (requestFunction.getDisplayParams() != null) {
                 Sketch.with(view.getContext()).display(requestFunction.getDisplayParams(), imageViewInterface).requestLevel(RequestLevel.NET).commit();
+                return;
             }
         }
 
