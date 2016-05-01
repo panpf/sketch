@@ -45,11 +45,13 @@ public class RequestFunction implements ImageViewFunction{
 
     @Override
     public boolean onDetachedFromWindow() {
+        // 主动取消请求
         DisplayRequest potentialRequest = BindFixedRecycleBitmapDrawable.findDisplayRequest(imageViewInterface);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             potentialRequest.cancel();
         }
 
+        // 如果当前图片是来自Sketch，那么就有可能在这里被主动回收，因此要主动设置ImageView的drawable为null
         final Drawable oldDrawable = imageViewInterface.getDrawable();
         return oldDrawable != null && notifyDrawable("onDetachedFromWindow", oldDrawable, false);
     }
@@ -81,9 +83,11 @@ public class RequestFunction implements ImageViewFunction{
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable){
+        // 当Drawable改变的时候旧Drawable的显示引用计数减1，新Drawable的显示引用计数加1
         oldDrawableFromSketch = notifyDrawable(callPosition + ":oldDrawable", oldDrawable, false);
         newDrawableFromSketch = notifyDrawable(callPosition + ":newDrawable", newDrawable, true);
 
+        // 如果新Drawable不是来自Sketch，那么就要清空显示参数，防止被ResumeDisplayFunction在onAttachedToWindow的时候错误的恢复成上一张图片
         if(!newDrawableFromSketch){
             displayParams = null;
         }
@@ -99,6 +103,7 @@ public class RequestFunction implements ImageViewFunction{
         this.displayParams = displayParams;
     }
 
+    @SuppressWarnings("unused")
     public boolean isOldDrawableFromSketch() {
         return oldDrawableFromSketch;
     }
