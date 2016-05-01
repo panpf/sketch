@@ -76,6 +76,8 @@ public class ShowGifFlagFunction implements ImageViewFunction{
 
     @Override
     public boolean onDetachedFromWindow() {
+        // drawable都已经被清空了，GIF标识当然要重置了
+        isGifDrawable = false;
         return false;
     }
 

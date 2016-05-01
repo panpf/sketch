@@ -99,6 +99,8 @@ public class ShowImageFromFunction implements ImageViewFunction{
 
     @Override
     public boolean onDetachedFromWindow() {
+        // drawable都已经被清空了，图片来源标识当然要重置了
+        imageFrom = null;
         return false;
     }
 

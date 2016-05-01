@@ -83,7 +83,6 @@ public class ShowPressedFunction implements ImageViewFunction{
     @Override
     public void onDraw(Canvas canvas) {
         if (allowShowPressedStatus || animationRunning || showRect) {
-
             boolean applyMaskClip = imageShapeFunction.getClipPath() != null;
             if (applyMaskClip) {
                 canvas.save();
