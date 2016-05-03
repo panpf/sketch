@@ -19,7 +19,7 @@ package me.xiaopan.sketch.display;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Identifier;
-import me.xiaopan.sketch.ImageViewInterface;
+import me.xiaopan.sketch.request.ImageViewInterface;
 
 /**
  * 图片显示器

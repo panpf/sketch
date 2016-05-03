@@ -58,10 +58,10 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.GZIPInputStream;
 
-import me.xiaopan.sketch.DownloadRequest;
-import me.xiaopan.sketch.DownloadResult;
+import me.xiaopan.sketch.request.DownloadRequest;
+import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SketchRequest;
+import me.xiaopan.sketch.request.BaseRequest;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -142,11 +142,11 @@ public class HttpClientImageDownloader implements ImageDownloader {
     @Override
     public DownloadResult download(DownloadRequest request) {
         // 根据下载地址加锁，防止重复下载
-        request.setStatus(SketchRequest.Status.GET_DOWNLOAD_LOCK);
+        request.setStatus(BaseRequest.Status.GET_DOWNLOAD_LOCK);
         ReentrantLock urlLock = getUrlLock(request.getAttrs().getRealUri());
         urlLock.lock();
 
-        request.setStatus(SketchRequest.Status.DOWNLOADING);
+        request.setStatus(BaseRequest.Status.DOWNLOADING);
         DownloadResult result = null;
         int number = 0;
         while (true) {

@@ -18,7 +18,7 @@ package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
 
-import me.xiaopan.sketch.ImageViewInterface;
+import me.xiaopan.sketch.request.ImageViewInterface;
 
 /**
  * 默认的图片显示器，没有任何动画效果

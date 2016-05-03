@@ -19,7 +19,7 @@ package me.xiaopan.sketch.process;
 import android.graphics.Bitmap;
 
 import me.xiaopan.sketch.Identifier;
-import me.xiaopan.sketch.Resize;
+import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.Sketch;
 
 /**

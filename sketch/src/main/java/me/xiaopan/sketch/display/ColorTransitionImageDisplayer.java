@@ -20,7 +20,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 
-import me.xiaopan.sketch.ImageViewInterface;
+import me.xiaopan.sketch.request.ImageViewInterface;
 
 /**
  * 颜色渐入图片显示器

@@ -16,9 +16,8 @@
 
 package me.xiaopan.sketch.decode;
 
-import me.xiaopan.sketch.DecodeResult;
 import me.xiaopan.sketch.Identifier;
-import me.xiaopan.sketch.LoadRequest;
+import me.xiaopan.sketch.request.LoadRequest;
 
 /**
  * 图片解码器

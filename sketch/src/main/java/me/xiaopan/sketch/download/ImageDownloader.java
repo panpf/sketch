@@ -16,8 +16,8 @@
 
 package me.xiaopan.sketch.download;
 
-import me.xiaopan.sketch.DownloadRequest;
-import me.xiaopan.sketch.DownloadResult;
+import me.xiaopan.sketch.request.DownloadRequest;
+import me.xiaopan.sketch.request.DownloadResult;
 import me.xiaopan.sketch.Identifier;
 
 /**

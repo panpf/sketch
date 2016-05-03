@@ -21,8 +21,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 
-import me.xiaopan.sketch.RecycleGifDrawable;
-import me.xiaopan.sketch.ImageViewInterface;
+import me.xiaopan.sketch.drawable.RecycleGifDrawable;
+import me.xiaopan.sketch.request.ImageViewInterface;
 
 /**
  * 过渡效果的图片显示器

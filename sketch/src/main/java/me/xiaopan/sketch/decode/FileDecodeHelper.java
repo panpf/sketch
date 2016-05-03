@@ -1,18 +1,3 @@
-package me.xiaopan.sketch.decode;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
-import android.util.Log;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-
-import me.xiaopan.sketch.LoadRequest;
-import me.xiaopan.sketch.RecycleGifDrawable;
-import me.xiaopan.sketch.Sketch;
-
 /*
  * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
  *
@@ -28,6 +13,21 @@ import me.xiaopan.sketch.Sketch;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+package me.xiaopan.sketch.decode;
+
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Point;
+import android.util.Log;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+
+import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.drawable.RecycleGifDrawable;
+import me.xiaopan.sketch.Sketch;
 
 public class FileDecodeHelper implements DecodeHelper {
     private static final String NAME = "FileDecodeHelper";

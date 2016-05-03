@@ -21,7 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.text.format.Formatter;
 import android.util.Log;
 
-import me.xiaopan.sketch.RecycleDrawable;
+import me.xiaopan.sketch.drawable.RecycleDrawable;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;

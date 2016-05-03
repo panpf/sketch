@@ -20,7 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 
-import me.xiaopan.sketch.RecycleGifDrawable;
+import me.xiaopan.sketch.drawable.RecycleGifDrawable;
 
 /**
  * 解码监听器

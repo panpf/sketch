@@ -4,7 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
-import me.xiaopan.sketch.Resize;
+import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.Sketch;
 
 /**

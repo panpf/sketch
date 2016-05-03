@@ -35,9 +35,14 @@ import me.xiaopan.sketch.download.HttpUrlConnectionImageDownloader;
 import me.xiaopan.sketch.download.ImageDownloader;
 import me.xiaopan.sketch.execute.DefaultRequestExecutor;
 import me.xiaopan.sketch.execute.RequestExecutor;
+import me.xiaopan.sketch.feture.LocalImagePreprocessor;
+import me.xiaopan.sketch.feture.ResizeCalculator;
 import me.xiaopan.sketch.process.DefaultImageProcessor;
 import me.xiaopan.sketch.process.ImageProcessor;
-import me.xiaopan.sketch.util.MobileNetworkPauseDownloadManager;
+import me.xiaopan.sketch.feture.HelperFactory;
+import me.xiaopan.sketch.feture.ImageSizeCalculator;
+import me.xiaopan.sketch.feture.RequestFactory;
+import me.xiaopan.sketch.feture.MobileNetworkPauseDownloadManager;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class Configuration {
@@ -93,7 +98,7 @@ public class Configuration {
         this.resizeCalculator = new ResizeCalculator();
         this.imageSizeCalculator = new ImageSizeCalculator();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
-        this.localImagePreprocessor = new DefaultLocalImagePreprocessor();
+        this.localImagePreprocessor = new LocalImagePreprocessor();
         this.defaultCutImageProcessor = new DefaultImageProcessor();
         this.placeholderImageMemoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 16));
 

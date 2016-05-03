@@ -24,13 +24,11 @@ import android.util.Log;
 
 import java.io.File;
 
-import me.xiaopan.sketch.DecodeResult;
-import me.xiaopan.sketch.ImageFormat;
-import me.xiaopan.sketch.ImageFrom;
-import me.xiaopan.sketch.LoadRequest;
-import me.xiaopan.sketch.MaxSize;
+import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.MaxSize;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.UriScheme;
+import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.SketchUtils;
 

@@ -23,8 +23,8 @@ import android.util.Log;
 
 import java.io.IOException;
 
-import me.xiaopan.sketch.LoadRequest;
-import me.xiaopan.sketch.RecycleGifDrawable;
+import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.drawable.RecycleGifDrawable;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.SketchUtils;
 

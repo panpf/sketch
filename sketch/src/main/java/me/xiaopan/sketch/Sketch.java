@@ -23,7 +23,20 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
+import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
+import me.xiaopan.sketch.request.DisplayHelper;
+import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.DisplayParams;
+import me.xiaopan.sketch.request.DisplayRequest;
+import me.xiaopan.sketch.request.DownloadHelper;
+import me.xiaopan.sketch.request.DownloadListener;
+import me.xiaopan.sketch.request.DownloadOptions;
+import me.xiaopan.sketch.request.LoadHelper;
+import me.xiaopan.sketch.request.LoadListener;
+import me.xiaopan.sketch.request.LoadOptions;
+import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.request.ImageViewInterface;
 
 /**
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存

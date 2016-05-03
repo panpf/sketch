@@ -16,13 +16,10 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
-import java.util.LinkedList;
-import java.util.List;
 
-import me.xiaopan.sketch.ImageFormat;
-import me.xiaopan.sketch.RecycleDrawable;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.decode.ImageFormat;
+import me.xiaopan.sketch.drawable.RecycleDrawable;
 
 public class SketchUtils {
 
@@ -83,69 +80,6 @@ public class SketchUtils {
             drawable.draw(canvas);
             return bitmap;
         }
-    }
-
-    /**
-     * 创建文件
-     *
-     * @param file
-     * @return
-     */
-    public static boolean createFile(File file) {
-        if (file.exists()) {
-            return true;
-        }
-
-        File parentDir = file.getParentFile();
-        if (!parentDir.exists() && !parentDir.mkdirs()) {
-            return false;
-        }
-        try {
-            if (!file.createNewFile()) {
-                return false;
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * 计算文件长度，此方法的关键点在于，他也能获取目录的长度
-     *
-     * @param file 要计算的文件
-     * @return 长度
-     */
-    public static long countFileLength(File file) {
-        if (!file.exists()) {
-            return 0;
-        }
-
-        if (file.isFile()) {
-            return file.length();
-        }
-
-        File[] childFiles = file.listFiles();
-        if (childFiles == null || childFiles.length <= 0) {
-            return 0;
-        }
-
-        List<File> fileList = new LinkedList<File>();
-        Collections.addAll(fileList, childFiles);
-        long length = 0;
-        for (File childFile : fileList) {
-            if (childFile.isFile()) {
-                length += childFile.length();
-            } else {
-                childFiles = childFile.listFiles();
-                if (childFiles == null || childFiles.length <= 0) {
-                    continue;
-                }
-                Collections.addAll(fileList, childFiles);
-            }
-        }
-        return length;
     }
 
     /**
