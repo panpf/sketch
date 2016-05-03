@@ -178,3 +178,4 @@ Sketch.putOptions(RequestOptions)改成了Sketch.putDisplayOptions(DisplayOption
 SketchImageView.setDisplayOptions(Enum)改为setOptionsByName(Enum) ...Helper.options(Enum)改为optionsByName(Enum)
 原生支持通过包名和版本号显示已安装APP的图标
 修复使用SketchImageView.setImageURI或setImageResource方法设置图片可能导致异常的问题
+所有failure改为failed
