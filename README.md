@@ -104,7 +104,7 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 |memoryCacheId|-|-|null|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
-|failureImage|-|-|null|
+|failedImage|-|-|null|
 |pauseDownloadImage|-|-|null|
 
 ###使用指南（Usage guide）
