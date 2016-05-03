@@ -107,7 +107,7 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
                     }
                 }, 1000);
                 if (adapter == null) {
-                    hintView.failure(failure, new View.OnClickListener() {
+                    hintView.failed(failure, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             refreshLayout.startRefresh();

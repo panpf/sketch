@@ -7,7 +7,7 @@ import android.view.View;
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectParentMember;
 import me.xiaopan.androidinjector.InjectView;
-import me.xiaopan.sketch.DisplayOptions;
+import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;

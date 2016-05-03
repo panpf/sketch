@@ -212,7 +212,7 @@ public class HintView extends LinearLayout {
 	 * @param failure 失败了
 	 * @param reloadButtonClickListener 重新加载按钮点击监听器
 	 */
-	public void failure(HttpRequest.Failure failure, OnClickListener reloadButtonClickListener){
+	public void failed(HttpRequest.Failure failure, OnClickListener reloadButtonClickListener){
 		String message;
 		if(failure != null){
 			message = failure.getMessage();
@@ -241,7 +241,7 @@ public class HintView extends LinearLayout {
 		}else{
 			message = "加载失败了";
 		}
-		hint(R.drawable.ic_failure, message, "刷新", reloadButtonClickListener, false);
+		hint(R.drawable.ic_failed, message, "刷新", reloadButtonClickListener, false);
 	}
 	
 	/**
@@ -249,7 +249,7 @@ public class HintView extends LinearLayout {
 	 * @param type
 	 */
 	public void empty(String type){
-		hint(R.drawable.ic_failure, String.format("没有%s", type), null, null, false);
+		hint(R.drawable.ic_failed, String.format("没有%s", type), null, null, false);
 	}
 	
 	/**

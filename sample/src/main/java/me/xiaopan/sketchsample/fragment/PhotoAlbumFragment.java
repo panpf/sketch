@@ -35,7 +35,7 @@ import java.util.List;
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.prl.PullRefreshLayout;
-import me.xiaopan.sketch.UriScheme;
+import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.DetailActivity;

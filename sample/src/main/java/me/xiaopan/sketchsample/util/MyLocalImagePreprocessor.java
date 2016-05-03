@@ -10,18 +10,18 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.DefaultLocalImagePreprocessor;
-import me.xiaopan.sketch.LoadRequest;
+import me.xiaopan.sketch.feture.LocalImagePreprocessor;
+import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.UriScheme;
+import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 在继承DefaultLocalImagePreprocessor的基础上扩展了解析XPK文件的图标
+ * 在继承LocalImagePreprocessor的基础上扩展了解析XPK文件的图标
  */
-public class MyLocalImagePreprocessor extends DefaultLocalImagePreprocessor {
+public class MyLocalImagePreprocessor extends LocalImagePreprocessor {
     private static final String NAME = "MyLocalImagePreprocessor";
 
     @Override
