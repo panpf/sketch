@@ -11,8 +11,6 @@ import me.xiaopan.sketch.Sketch;
  * 高斯模糊图片处理器
  */
 public class GaussianBlurImageProcessor extends DefaultImageProcessor {
-    private static final String NAME = "GaussianBlurImageProcessor";
-
     private int radius = 15;
     private boolean isDarkHandle;
 
@@ -44,7 +42,7 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME)
+        return builder.append("GaussianBlurImageProcessor")
                 .append(". ")
                 .append("radius").append("=").append(radius)
                 .append(",")

@@ -30,7 +30,6 @@ import me.xiaopan.sketch.Sketch;
  * 圆形图片处理器
  */
 public class CircleImageProcessor implements ImageProcessor {
-    private static final String NAME = "CircleImageProcessor";
     private static CircleImageProcessor instance;
 
     public static CircleImageProcessor getInstance() {
@@ -50,12 +49,12 @@ public class CircleImageProcessor implements ImageProcessor {
 
     @Override
     public String getIdentifier() {
-        return NAME;
+        return appendIdentifier(new StringBuilder()).toString();
     }
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME);
+        return builder.append("CircleImageProcessor");
     }
 
     @Override

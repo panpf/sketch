@@ -31,8 +31,6 @@ import me.xiaopan.sketch.Sketch;
  * 圆角图片处理器
  */
 public class RoundedCornerImageProcessor implements ImageProcessor {
-    private static final String NAME = "RoundedCornerImageProcessor";
-
     private int roundPixels;
 
     /**
@@ -58,7 +56,7 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME)
+        return builder.append("RoundedCornerImageProcessor")
                 .append(". ").append("roundPixels").append("=").append(roundPixels);
     }
 

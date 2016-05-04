@@ -33,7 +33,6 @@ import me.xiaopan.sketch.Sketch;
  * 倒影图片处理器
  */
 public class ReflectionImageProcessor implements ImageProcessor {
-    private static final String NAME = "ReflectionImageProcessor";
     private int reflectionSpacing;
     private float reflectionScale;
 
@@ -59,7 +58,7 @@ public class ReflectionImageProcessor implements ImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME)
+        return builder.append("ReflectionImageProcessor")
                 .append(". ")
                 .append("scale").append("=").append(reflectionScale)
                 .append(", ")

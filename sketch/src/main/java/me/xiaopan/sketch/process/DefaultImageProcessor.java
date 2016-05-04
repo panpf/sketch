@@ -24,16 +24,15 @@ import me.xiaopan.sketch.feture.ResizeCalculator;
 import me.xiaopan.sketch.Sketch;
 
 public class DefaultImageProcessor implements ImageProcessor {
-    private static final String NAME = "DefaultImageProcessor";
 
     @Override
     public String getIdentifier() {
-        return NAME;
+        return appendIdentifier(new StringBuilder()).toString();
     }
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME);
+        return builder.append("DefaultImageProcessor");
     }
 
     @Override
