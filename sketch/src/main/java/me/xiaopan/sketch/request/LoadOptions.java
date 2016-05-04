@@ -33,6 +33,7 @@ public class LoadOptions extends DownloadOptions {
         reset();
     }
 
+    @SuppressWarnings("unused")
     public LoadOptions(LoadOptions from) {
         copy(from);
     }

@@ -28,6 +28,11 @@ public class DownloadOptions {
         reset();
     }
 
+    @SuppressWarnings("unused")
+    public DownloadOptions(DownloadOptions from) {
+        copy(from);
+    }
+
     /**
      * 是否将图片缓存在本地（默认是）
      */
