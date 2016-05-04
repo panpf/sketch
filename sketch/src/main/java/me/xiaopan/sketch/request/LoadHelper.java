@@ -73,6 +73,7 @@ public class LoadHelper {
     /**
      * 设置请求Level
      */
+    @SuppressWarnings("unused")
     public LoadHelper requestLevel(RequestLevel requestLevel) {
         if (requestLevel != null) {
             options.setRequestLevel(requestLevel);
