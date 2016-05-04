@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.request;
 
+import android.graphics.Bitmap;
+
 import me.xiaopan.sketch.process.ImageProcessor;
 
 /**
@@ -28,6 +30,7 @@ public class LoadOptions extends DownloadOptions {
     private boolean forceUseResize;
     private boolean lowQualityImage;
     private ImageProcessor imageProcessor;
+    private Bitmap.Config bitmapConfig;
 
     public LoadOptions() {
         reset();
@@ -164,6 +167,21 @@ public class LoadOptions extends DownloadOptions {
         return this;
     }
 
+    /**
+     * 获取图片质量配置
+     */
+    public Bitmap.Config getBitmapConfig() {
+        return bitmapConfig;
+    }
+
+    /**
+     * 设置图片质量配置
+     */
+    public LoadOptions setBitmapConfig(Bitmap.Config bitmapConfig) {
+        this.bitmapConfig = bitmapConfig;
+        return this;
+    }
+
     @Override
     public void reset() {
         super.reset();
@@ -174,6 +192,7 @@ public class LoadOptions extends DownloadOptions {
         imageProcessor = null;
         decodeGifImage = true;
         forceUseResize = false;
+        bitmapConfig = null;
     }
 
     /**
@@ -192,6 +211,7 @@ public class LoadOptions extends DownloadOptions {
         imageProcessor = options.imageProcessor;
         decodeGifImage = options.decodeGifImage;
         forceUseResize = options.forceUseResize;
+        bitmapConfig = options.bitmapConfig;
     }
 
     /**
@@ -227,5 +247,9 @@ public class LoadOptions extends DownloadOptions {
         }
 
         decodeGifImage = options.isDecodeGifImage();
+
+        if(bitmapConfig == null){
+            bitmapConfig = options.bitmapConfig;
+        }
     }
 }

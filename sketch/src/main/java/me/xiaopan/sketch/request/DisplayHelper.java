@@ -17,19 +17,20 @@
 package me.xiaopan.sketch.request;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
-import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
-import me.xiaopan.sketch.drawable.RecycleDrawable;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
+import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
+import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
+import me.xiaopan.sketch.drawable.RecycleDrawable;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -230,6 +231,15 @@ public class DisplayHelper {
     @SuppressWarnings("unused")
     public DisplayHelper processor(ImageProcessor processor) {
         options.setImageProcessor(processor);
+        return this;
+    }
+
+    /**
+     * 设置图片质量
+     */
+    @SuppressWarnings("unused")
+    public DisplayHelper bitmapConfig(Bitmap.Config config){
+        options.setBitmapConfig(config);
         return this;
     }
 

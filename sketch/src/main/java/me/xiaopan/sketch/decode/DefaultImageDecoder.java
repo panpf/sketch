@@ -24,12 +24,12 @@ import android.util.Log;
 
 import java.io.File;
 
+import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.UriScheme;
-import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -45,10 +45,15 @@ public class DefaultImageDecoder implements ImageDecoder {
         decodeHelper.decode(options);
         options.inJustDecodeBounds = false;
 
-        // setup best bitmap config by MimeType
         String mimeType = options.outMimeType;
         ImageFormat imageFormat = ImageFormat.valueOfMimeType(mimeType);
-        if (imageFormat != null) {
+
+        // setup bitmap config
+        if (loadRequest.getOptions().getBitmapConfig() != null) {
+            // by user
+            options.inPreferredConfig = loadRequest.getOptions().getBitmapConfig();
+        } else if (imageFormat != null) {
+            // best bitmap config by MimeType
             options.inPreferredConfig = imageFormat.getConfig(loadRequest.getOptions().isLowQualityImage());
         }
 

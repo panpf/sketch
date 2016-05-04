@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.request;
 
+import android.graphics.Bitmap;
 import android.util.Log;
 import android.widget.ImageView.ScaleType;
 
@@ -137,6 +138,15 @@ public class LoadHelper {
     @SuppressWarnings("unused")
     public LoadHelper processor(ImageProcessor processor) {
         options.setImageProcessor(processor);
+        return this;
+    }
+
+    /**
+     * 设置图片质量
+     */
+    @SuppressWarnings("unused")
+    public LoadHelper bitmapConfig(Bitmap.Config config){
+        options.setBitmapConfig(config);
         return this;
     }
 

@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.request;
 
+import android.graphics.Bitmap;
+
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.process.ImageProcessor;
 
@@ -103,6 +105,12 @@ public class DisplayOptions extends LoadOptions {
     @Override
     public DisplayOptions setImageProcessor(ImageProcessor processor) {
         super.setImageProcessor(processor);
+        return this;
+    }
+
+    @Override
+    public DisplayOptions setBitmapConfig(Bitmap.Config bitmapConfig) {
+        super.setBitmapConfig(bitmapConfig);
         return this;
     }
 
@@ -302,6 +310,10 @@ public class DisplayOptions extends LoadOptions {
         if (isLowQualityImage()) {
             builder.append("_");
             builder.append("lowQualityImage");
+        }
+        if (getBitmapConfig() != null) {
+            builder.append("_");
+            builder.append(getBitmapConfig().name());
         }
         if (getImageProcessor() != null) {
             builder.append("_");
