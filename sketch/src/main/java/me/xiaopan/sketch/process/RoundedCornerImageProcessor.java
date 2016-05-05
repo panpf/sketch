@@ -19,34 +19,27 @@ package me.xiaopan.sketch.process;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 
-import me.xiaopan.sketch.request.Resize;
-import me.xiaopan.sketch.feture.ResizeCalculator;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.feture.ResizeCalculator;
+import me.xiaopan.sketch.request.Resize;
 
 /**
  * 圆角图片处理器
  */
 public class RoundedCornerImageProcessor implements ImageProcessor {
-    private int roundPixels;
+    private float[] cornerRadius;
 
-    /**
-     * 创建一个圆角图片显示器
-     *
-     * @param roundPixels 圆角度数
-     */
-    public RoundedCornerImageProcessor(int roundPixels) {
-        this.roundPixels = roundPixels;
+    public RoundedCornerImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
+        cornerRadius = new float[]{topLeftRadius, topLeftRadius, topRightRadius, topRightRadius, bottomLeftRadius, bottomLeftRadius, bottomRightRadius, bottomRightRadius};
     }
 
-    /**
-     * 创建一个圆角图片显示器，圆角角度默认为18
-     */
-    public RoundedCornerImageProcessor() {
-        this(18);
+    public RoundedCornerImageProcessor(float cornerRadius) {
+        this(cornerRadius, cornerRadius, cornerRadius, cornerRadius);
     }
 
     @Override
@@ -56,8 +49,11 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append("RoundedCornerImageProcessor")
-                .append(". ").append("roundPixels").append("=").append(roundPixels);
+        builder.append("RoundedCornerImageProcessor");
+        if (cornerRadius != null) {
+            builder.append(". ").append("cornerRadius").append("=").append(cornerRadius.toString());
+        }
+        return builder;
     }
 
     @Override
@@ -79,7 +75,9 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
         paint.setColor(0xFFFF0000);
 
         // 绘制圆角的罩子
-        canvas.drawRoundRect(new RectF(0, 0, result.imageWidth, result.imageHeight), roundPixels, roundPixels, paint);
+        Path path = new Path();
+        path.addRoundRect(new RectF(0, 0, result.imageWidth, result.imageHeight), cornerRadius, Path.Direction.CW);
+        canvas.drawPath(path, paint);
 
         // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
@@ -87,11 +85,7 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
         return output;
     }
 
-    public int getRoundPixels() {
-        return roundPixels;
-    }
-
-    public void setRoundPixels(int roundPixels) {
-        this.roundPixels = roundPixels;
+    public float[] getCornerRadius() {
+        return cornerRadius;
     }
 }
