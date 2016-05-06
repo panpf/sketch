@@ -41,7 +41,6 @@ public class SketchManager {
                         .setLoadingImage(R.drawable.image_loading)
                         .setFailedImage(R.drawable.image_failed)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
-                        .setDecodeGifImage(false)
                         .setImageDisplayer(transitionImageDisplayer)
         );
 
@@ -51,7 +50,6 @@ public class SketchManager {
                         .setLoadingImage(new ImageHolder(R.drawable.image_loading).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
                         .setFailedImage(new ImageHolder(R.drawable.image_failed).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
                         .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
-                        .setDecodeGifImage(false)
                         .setResizeByFixedSize(true)
                         .setForceUseResize(true)
                         .setImageDisplayer(transitionImageDisplayer)
@@ -60,20 +58,19 @@ public class SketchManager {
 
         Sketch.putOptions(OptionsType.DETAIL, new DisplayOptions()
                         .setImageDisplayer(transitionImageDisplayer)
+                        .setDecodeGifImage(true)
         );
 
         Sketch.putOptions(OptionsType.NORMAL_CIRCULAR, new DisplayOptions()
                         .setLoadingImage(new ImageHolder(R.drawable.image_loading).setImageProcessor(CircleImageProcessor.getInstance()))
                         .setFailedImage(new ImageHolder(R.drawable.image_failed).setImageProcessor(CircleImageProcessor.getInstance()))
                         .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download).setImageProcessor(CircleImageProcessor.getInstance()))
-                        .setDecodeGifImage(false)
                         .setImageDisplayer(transitionImageDisplayer)
                         .setImageProcessor(CircleImageProcessor.getInstance())
         );
 
         Sketch.putOptions(OptionsType.WINDOW_BACKGROUND, new LoadOptions()
                         .setImageProcessor(new GaussianBlurImageProcessor(true))
-                        .setDecodeGifImage(false)
         );
     }
 }

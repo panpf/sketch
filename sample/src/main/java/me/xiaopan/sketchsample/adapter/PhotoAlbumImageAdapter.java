@@ -69,7 +69,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
                 .setFailedImage(new ImageHolder(R.drawable.image_failed).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
                 .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
                 .setImageProcessor(imageProcessor)
-                .setDecodeGifImage(false)
                 .setResizeByFixedSize(true)
                 .setForceUseResize(true)
                 .setImageDisplayer(new TransitionImageDisplayer());
