@@ -123,14 +123,14 @@ public class LoadOptions extends DownloadOptions {
     }
 
     /**
-     * 是否解码GIF图片（默认是）
+     * 是否解码GIF图片（默认否）
      */
     public boolean isDecodeGifImage() {
         return decodeGifImage;
     }
 
     /**
-     * 设置是否解码GIF图片（默认是）
+     * 设置是否解码GIF图片（默认否）
      */
     public LoadOptions setDecodeGifImage(boolean decodeGifImage) {
         this.decodeGifImage = decodeGifImage;
@@ -190,7 +190,7 @@ public class LoadOptions extends DownloadOptions {
         resize = null;
         lowQualityImage = false;
         imageProcessor = null;
-        decodeGifImage = true;
+        decodeGifImage = false;
         forceUseResize = false;
         bitmapConfig = null;
     }

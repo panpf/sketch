@@ -84,11 +84,11 @@ public class LoadHelper {
     }
 
     /**
-     * 不解码Gif图片
+     * 解码Gif图片
      */
     @SuppressWarnings("unused")
-    public LoadHelper disableDecodeGifImage() {
-        options.setDecodeGifImage(false);
+    public LoadHelper decodeGifImage() {
+        options.setDecodeGifImage(true);
         return this;
     }
 
@@ -196,11 +196,6 @@ public class LoadHelper {
         // 没有设置maxSize的话，就用默认的maxSize
         if (options.getMaxSize() == null) {
             options.setMaxSize(configuration.getImageSizeCalculator().getDefaultImageMaxSize(configuration.getContext()));
-        }
-
-        // 如果设置了全局禁止解码GIF图的话就强制关闭解码GIF图功能
-        if (!configuration.isDecodeGifImage()) {
-            options.setDecodeGifImage(false);
         }
 
         // 如果设置了全局禁止使用磁盘缓存的话就强制关闭磁盘缓存功能

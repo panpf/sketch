@@ -69,7 +69,6 @@ public class Configuration {
     private boolean cacheInDisk = true;
     private boolean cacheInMemory = true;
     private boolean pauseDownload;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
-    private boolean decodeGifImage = true; // 是否解码GIF图
     private boolean lowQualityImage; // 是否返回低质量的图片
     private MobileNetworkPauseDownloadManager mobileNetworkPauseDownloadManager;
 
@@ -493,30 +492,6 @@ public class Configuration {
     }
 
     /**
-     * 是否解码GIF图
-     *
-     * @return true：解码；false：不解码
-     */
-    public boolean isDecodeGifImage() {
-        return decodeGifImage;
-    }
-
-    /**
-     * 设置是否解码GIF图
-     *
-     * @param decodeGifImage true：解码；false：不解码
-     */
-    public Configuration setDecodeGifImage(boolean decodeGifImage) {
-        if (this.decodeGifImage != decodeGifImage) {
-            this.decodeGifImage = decodeGifImage;
-            if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, NAME + ": " + "set" + " - decodeGifImage" + " (" + decodeGifImage + ")");
-            }
-        }
-        return this;
-    }
-
-    /**
      * 是否返回低质量的图片
      *
      * @return true: 是
@@ -712,11 +687,6 @@ public class Configuration {
         builder.append("pauseDownload");
         builder.append("：");
         builder.append(pauseDownload);
-
-        if (builder.length() > 0) builder.append("\n");
-        builder.append("decodeGifImage");
-        builder.append("：");
-        builder.append(decodeGifImage);
 
         if (builder.length() > 0) builder.append("\n");
         builder.append("lowQualityImage");

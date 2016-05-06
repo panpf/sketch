@@ -168,11 +168,11 @@ public class DisplayHelper {
     }
 
     /**
-     * 禁止解码Gif图片
+     * 解码Gif图片
      */
     @SuppressWarnings("unused")
-    public DisplayHelper disableDecodeGifImage() {
-        options.setDecodeGifImage(false);
+    public DisplayHelper decodeGifImage() {
+        options.setDecodeGifImage(true);
         return this;
     }
 
@@ -370,11 +370,6 @@ public class DisplayHelper {
                 maxSize = configuration.getImageSizeCalculator().getDefaultImageMaxSize(configuration.getContext());
             }
             options.setMaxSize(maxSize);
-        }
-
-        // 如果设置了全局禁止解码GIF图的话就强制关闭解码GIF图功能
-        if (!configuration.isDecodeGifImage()) {
-            options.setDecodeGifImage(false);
         }
 
         // 如果设置了全局禁止使用磁盘缓存的话就强制关闭磁盘缓存功能
