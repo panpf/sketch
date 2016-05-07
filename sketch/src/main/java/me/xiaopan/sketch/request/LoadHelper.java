@@ -283,7 +283,7 @@ public class LoadHelper {
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
         if (options.getRequestLevel() == RequestLevel.LOCAL
                 && attrs.getUriScheme() == UriScheme.NET
-                && sketch.getConfiguration().getDiskCache().get(attrs.getUri()) == null) {
+                && sketch.getConfiguration().getDiskCache().exist(attrs.getDiskCacheKey())) {
             boolean isPauseDownload = options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (Sketch.isDebugMode()) {

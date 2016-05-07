@@ -64,7 +64,6 @@ public class RequestAttrs {
     }
 
     public String getDiskCacheKey() {
-        // TODO 这个要好好容易下
         return uri;
     }
 

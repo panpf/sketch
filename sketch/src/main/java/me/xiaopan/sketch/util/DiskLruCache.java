@@ -546,6 +546,16 @@ public final class DiskLruCache implements Closeable {
     }
 
     /**
+     * Returns exisr of the entry named {@code key}
+     */
+    public synchronized boolean exist(String key) {
+        checkNotClosed();
+        validateKey(key);
+        Entry entry = lruEntries.get(key);
+        return entry != null && entry.readable;
+    }
+
+    /**
      * Returns an editor for the entry named {@code key}, or null if another
      * edit is in progress.
      */

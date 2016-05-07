@@ -64,6 +64,11 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
+    public boolean exist(String uri) {
+        return cache.exist(uriToDiskCacheKey(uri));
+    }
+
+    @Override
     public synchronized Entry get(String uri) {
         DiskLruCache.SimpleSnapshot snapshot = null;
         try {

@@ -29,47 +29,37 @@ import me.xiaopan.sketch.util.DiskLruCache;
 public interface DiskCache extends Identifier {
 
     /**
+     * 是否存在
+     */
+    boolean exist(String uri);
+
+    /**
      * 获取缓存实体
-     *
-     * @param uri 图片uri
-     * @return null：没有
      */
     Entry get(String uri);
 
     /**
      * 编辑缓存
-     *
-     * @param uri 图片uri
-     * @return 编辑器
      */
     DiskLruCache.Editor edit(String uri);
 
     /**
      * 获取缓存目录
-     *
-     * @return 缓存目录
      */
     File getCacheDir();
 
     /**
-     * 获取最大容量
-     *
-     * @return 最大容量，默认为100M
+     * 获取最大容量（默认为100M）
      */
     long getMaxSize();
 
     /**
      * 将uri地址进行转码作为缓存文件的名字
-     *
-     * @param uri 图片uri
-     * @return 文件名字
      */
     String uriToDiskCacheKey(String uri);
 
     /**
      * 获取已用容量
-     *
-     * @return 已用容量
      */
     long getSize();
 
