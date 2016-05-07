@@ -99,7 +99,7 @@ public class Configuration {
         this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.localImagePreprocessor = new LocalImagePreprocessor();
         this.defaultCutImageProcessor = new DefaultImageProcessor();
-        this.placeholderImageMemoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 16));
+        this.placeholderImageMemoryCache = new LruMemoryCache(context, Math.min((int) (Runtime.getRuntime().maxMemory() / 16), 8 * 1024 * 1024));
 
         if (Sketch.isDebugMode()) {
             Log.i(Sketch.TAG, getInfo());
