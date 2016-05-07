@@ -57,7 +57,7 @@ public class ByteArrayDecodeHelper implements DecodeHelper {
             } else {
                 builder.append(" - ").append("unchanged");
             }
-            builder.append(" - ").append(loadRequest.getAttrs().getName());
+            builder.append(" - ").append(loadRequest.getRequestAttrs().getName());
             Log.d(Sketch.TAG, builder.toString());
         }
     }
@@ -65,7 +65,7 @@ public class ByteArrayDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeFailed() {
         if (Sketch.isDebugMode()) {
-            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", loadRequest.getAttrs().getName()));
+            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", loadRequest.getRequestAttrs().getName()));
         }
     }
 

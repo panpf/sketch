@@ -83,7 +83,8 @@ public class DownloadHelper {
     }
 
     /**
-     * 批量设置下载参数，你只需要提前将DownloadOptions通过Sketch.putDownloadOptions()方法存起来，然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
+     * 批量设置下载参数，你只需要提前将DownloadOptions通过Sketch.putDownloadOptions()方法存起来，
+     * 然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
      */
     @SuppressWarnings("unused")
     public DownloadHelper optionsByName(Enum<?> optionsName) {
@@ -137,18 +138,18 @@ public class DownloadHelper {
 
         preProcess();
 
-        if(!checkUri()){
+        if (!checkUri()) {
             return null;
         }
 
-        if(!checkUriScheme()){
+        if (!checkUriScheme()) {
             return null;
         }
 
         return submitRequest();
     }
 
-    private boolean checkUri(){
+    private boolean checkUri() {
         if (attrs.getUri() == null || "".equals(attrs.getUri().trim())) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
@@ -162,7 +163,7 @@ public class DownloadHelper {
         return true;
     }
 
-    private boolean checkUriScheme(){
+    private boolean checkUriScheme() {
         if (attrs.getUriScheme() == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", attrs.getName()));
             if (downloadListener != null) {
@@ -184,7 +185,7 @@ public class DownloadHelper {
         return true;
     }
 
-    private DownloadRequest submitRequest(){
+    private DownloadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         DownloadRequest request = requestFactory.newDownloadRequest(sketch, attrs, options, downloadListener, progressListener);
         request.submit();

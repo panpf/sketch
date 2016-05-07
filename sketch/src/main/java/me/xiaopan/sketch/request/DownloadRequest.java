@@ -26,17 +26,20 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 下载请求
  */
 public class DownloadRequest extends BaseRequest {
-    private RequestAttrs attrs;
+    private RequestAttrs requestAttrs;
     private DownloadOptions options;
     private DownloadListener downloadListener;
     private DownloadProgressListener progressListener;
 
     private DownloadResult downloadResult;
 
-    public DownloadRequest(Sketch sketch, RequestAttrs attrs, DownloadOptions options, DownloadListener downloadListener, DownloadProgressListener progressListener) {
+    public DownloadRequest(
+            Sketch sketch, RequestAttrs requestAttrs,
+            DownloadOptions options, DownloadListener downloadListener,
+            DownloadProgressListener progressListener) {
         super(sketch);
 
-        this.attrs = attrs;
+        this.requestAttrs = requestAttrs;
         this.options = options;
         this.downloadListener = downloadListener;
         this.progressListener = progressListener;
@@ -47,8 +50,8 @@ public class DownloadRequest extends BaseRequest {
     /**
      * 获取请求基本属性
      */
-    public RequestAttrs getAttrs() {
-        return attrs;
+    public RequestAttrs getRequestAttrs() {
+        return requestAttrs;
     }
 
     /**
@@ -114,10 +117,14 @@ public class DownloadRequest extends BaseRequest {
 
         // 然后从磁盘缓存中找缓存文件
         if (options.isCacheInDisk()) {
-            DiskCache.Entry diskCacheEntry = getSketch().getConfiguration().getDiskCache().get(attrs.getDiskCacheKey());
+            DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+            DiskCache.Entry diskCacheEntry = diskCache.get(requestAttrs.getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runDispatch", " - ", "diskCache", " - ", attrs.getName()));
+                    Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
+                            " - ", "runDispatch",
+                            " - ", "diskCache",
+                            " - ", requestAttrs.getName()));
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, false);
                 downloadComplete();
@@ -133,7 +140,10 @@ public class DownloadRequest extends BaseRequest {
 
         // 执行下载
         if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runDispatch", " - ", "download", " - ", attrs.getName()));
+            Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
+                    " - ", "runDispatch",
+                    " - ", "download",
+                    " - ", requestAttrs.getName()));
         }
         submitRunDownload();
     }
@@ -142,7 +152,11 @@ public class DownloadRequest extends BaseRequest {
     protected void runDownload() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runDownload", " - ", "canceled", " - ", "startDownload", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "canceled",
+                        " - ", "startDownload",
+                        " - ", requestAttrs.getName()));
             }
             return;
         }
@@ -152,13 +166,18 @@ public class DownloadRequest extends BaseRequest {
 
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runDownload", " - ", "canceled", " - ", "downloadAfter", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "canceled",
+                        " - ", "downloadAfter",
+                        " - ", requestAttrs.getName()));
             }
             return;
         }
 
         // 都是空的就算下载失败
-        if (justDownloadResult == null || (justDownloadResult.getDiskCacheEntry() == null && justDownloadResult.getImageData() == null)) {
+        if (justDownloadResult == null
+                || (justDownloadResult.getDiskCacheEntry() == null && justDownloadResult.getImageData() == null)) {
             failed(FailedCause.DOWNLOAD_FAIL);
             return;
         }
@@ -188,11 +207,17 @@ public class DownloadRequest extends BaseRequest {
      * 处理RequestLevel是LOCAL
      */
     protected void requestLevelIsLocal(){
+        boolean isPauseDownload = options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
+
         if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runDispatch", " - ", "canceled", " - ", options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
+            Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                    " - ", "runDispatch",
+                    " - ", "canceled",
+                    " - ", isPauseDownload ? "pause download" : "requestLevel is local",
+                    " - ", requestAttrs.getName()));
         }
 
-        canceled(options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
+        canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
     }
 
     /**
@@ -206,7 +231,10 @@ public class DownloadRequest extends BaseRequest {
     protected void runUpdateProgressInMainThread(int totalLength, int completedLength) {
         if (isFinished()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runUpdateProgressInMainThread", " - ", "finished", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runUpdateProgressInMainThread",
+                        " - ", "finished",
+                        " - ", requestAttrs.getName()));
             }
             return;
         }
@@ -227,7 +255,10 @@ public class DownloadRequest extends BaseRequest {
     protected void runCompletedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runCompletedInMainThread", " - ", "canceled", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runCompletedInMainThread",
+                        " - ", "canceled",
+                        " - ", requestAttrs.getName()));
             }
             return;
         }
@@ -247,7 +278,10 @@ public class DownloadRequest extends BaseRequest {
     protected void runFailedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runFailedInMainThread", " - ", "canceled", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runFailedInMainThread",
+                        " - ", "canceled",
+                        " - ", requestAttrs.getName()));
             }
             return;
         }

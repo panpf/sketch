@@ -72,11 +72,11 @@ public class LocalImagePreprocessor implements Identifier {
     }
 
     private boolean isApkFile(LoadRequest loadRequest){
-        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getAttrs().getRealUri(), ".apk");
+        return loadRequest.getRequestAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getRequestAttrs().getRealUri(), ".apk");
     }
 
     private boolean isInstalledApp(LoadRequest loadRequest){
-        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE && loadRequest.getAttrs().getRealUri().startsWith(INSTALLED_APP_URI_HOST);
+        return loadRequest.getRequestAttrs().getUriScheme() == UriScheme.FILE && loadRequest.getRequestAttrs().getRealUri().startsWith(INSTALLED_APP_URI_HOST);
     }
 
     /**
@@ -85,7 +85,7 @@ public class LocalImagePreprocessor implements Identifier {
      * @return APK图标的缓存文件
      */
     private DiskCache.Entry getApkIconDiskCache(LoadRequest loadRequest) {
-        String realUri = loadRequest.getAttrs().getRealUri();
+        String realUri = loadRequest.getRequestAttrs().getRealUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
 
         File apkFile = new File(realUri);
@@ -140,17 +140,17 @@ public class LocalImagePreprocessor implements Identifier {
     }
 
     private DiskCache.Entry getInstalledAppIconDiskCache(LoadRequest loadRequest) {
-        String realUri = loadRequest.getAttrs().getRealUri();
+        String realUri = loadRequest.getRequestAttrs().getRealUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
 
-        String diskCacheKey = loadRequest.getAttrs().getDiskCacheKey();
+        String diskCacheKey = loadRequest.getRequestAttrs().getDiskCacheKey();
 
         DiskCache.Entry appIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (appIconDiskCacheEntry != null) {
             return appIconDiskCacheEntry;
         }
 
-        Uri uri = Uri.parse(loadRequest.getAttrs().getUri());
+        Uri uri = Uri.parse(loadRequest.getRequestAttrs().getUri());
 
         String packageName = uri.getQueryParameter(INSTALLED_APP_URI_PARAM_PACKAGE_NAME);
         int versionCode = Integer.valueOf(uri.getQueryParameter(INSTALLED_APP_URI_PARAM_VERSION_CODE));

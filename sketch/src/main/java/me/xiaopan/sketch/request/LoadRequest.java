@@ -23,6 +23,7 @@ import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.feture.LocalImagePreprocessor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -35,8 +36,11 @@ public class LoadRequest extends DownloadRequest {
 
     private LoadResult loadResult;
 
-    public LoadRequest(Sketch sketch, RequestAttrs attrs, LoadOptions loadOptions, LoadListener loadListener, DownloadProgressListener progressListener) {
-        super(sketch, attrs, loadOptions, null, progressListener);
+    public LoadRequest(
+            Sketch sketch, RequestAttrs requestAttrs,
+            LoadOptions loadOptions, LoadListener loadListener,
+            DownloadProgressListener progressListener) {
+        super(sketch, requestAttrs, loadOptions, null, progressListener);
 
         this.loadOptions = loadOptions;
         this.loadListener = loadListener;
@@ -90,9 +94,12 @@ public class LoadRequest extends DownloadRequest {
         setStatus(Status.DISPATCHING);
 
         // 本地请求直接执行加载
-        if (getAttrs().getUriScheme() != UriScheme.NET) {
+        if (getRequestAttrs().getUriScheme() != UriScheme.NET) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runDispatch", " - ", "local", " - ", getAttrs().getName()));
+                Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDispatch",
+                        " - ", "local",
+                        " - ", getRequestAttrs().getName()));
             }
             submitRunLoad();
             return;
@@ -110,7 +117,11 @@ public class LoadRequest extends DownloadRequest {
     protected void runLoad() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runLoad", " - ", "canceled", " - ", "startLoad", " - ", getAttrs().getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runLoad",
+                        " - ", "canceled",
+                        " - ", "startLoad",
+                        " - ", getRequestAttrs().getName()));
             }
             return;
         }
@@ -118,8 +129,9 @@ public class LoadRequest extends DownloadRequest {
         setStatus(Status.LOADING);
 
         // 尝试用本地图片预处理器处理一下特殊的本地图片，并得到他们的缓存
-        if (getSketch().getConfiguration().getLocalImagePreprocessor().isSpecific(this)) {
-            DiskCache.Entry specificLocalImageDiskCacheEntry = getSketch().getConfiguration().getLocalImagePreprocessor().getDiskCacheEntry(this);
+        LocalImagePreprocessor imagePreprocessor = getSketch().getConfiguration().getLocalImagePreprocessor();
+        if (imagePreprocessor.isSpecific(this)) {
+            DiskCache.Entry specificLocalImageDiskCacheEntry = imagePreprocessor.getDiskCacheEntry(this);
             if (specificLocalImageDiskCacheEntry != null) {
                 setDownloadResult(new DownloadResult(specificLocalImageDiskCacheEntry, false));
             } else {
@@ -140,19 +152,34 @@ public class LoadRequest extends DownloadRequest {
             // 过滤已回收
             if (decodeResult.getBitmap().isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.e(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runLoad", " - ", "decode failed bitmap recycled", " - ", "decode after", " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()), " - ", getAttrs().getName()));
+                    Log.e(Sketch.TAG, SketchUtils.concat(getLogName(),
+                            " - ", "runLoad",
+                            " - ", "decode failed bitmap recycled",
+                            " - ", "decode after",
+                            " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
+                            " - ", getRequestAttrs().getName()));
                 }
                 failed(FailedCause.DECODE_FAIL);
                 return;
             }
 
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runLoad", " - ", "new bitmap", " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()), " - ", getAttrs().getName()));
+                Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runLoad",
+                        " - ", "new bitmap",
+                        " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
+                        " - ", getRequestAttrs().getName()));
             }
 
             if (isCanceled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runLoad", " - ", "canceled", " - ", "decode after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()), " - ", getAttrs().getName()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                            " - ", "runLoad",
+                            " - ", "canceled",
+                            " - ", "decode after",
+                            " - ", "recycle bitmap",
+                            " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
+                            " - ", getRequestAttrs().getName()));
                 }
                 decodeResult.getBitmap().recycle();
                 return;
@@ -161,12 +188,21 @@ public class LoadRequest extends DownloadRequest {
             // 处理
             ImageProcessor imageProcessor = loadOptions.getImageProcessor();
             if (imageProcessor != null) {
-                Bitmap newBitmap = imageProcessor.process(getSketch(), decodeResult.getBitmap(), loadOptions.getResize(), loadOptions.isForceUseResize(), loadOptions.isLowQualityImage());
+                Bitmap newBitmap = imageProcessor.process(
+                        getSketch(), decodeResult.getBitmap(),
+                        loadOptions.getResize(), loadOptions.isForceUseResize(),
+                        loadOptions.isLowQualityImage());
 
                 // 确实是一张新图片，就替换掉旧图片
                 if (newBitmap != null && !newBitmap.isRecycled() && newBitmap != decodeResult.getBitmap()) {
                     if (Sketch.isDebugMode()) {
-                        Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runLoad", " - ", "process after", " - ", "newBitmap", " - ", RecycleBitmapDrawable.getInfo(newBitmap, decodeResult.getMimeType()), " - ", "recycled old bitmap", " - ", getAttrs().getName()));
+                        Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                                " - ", "runLoad",
+                                " - ", "process after",
+                                " - ", "newBitmap",
+                                " - ", RecycleBitmapDrawable.getInfo(newBitmap, decodeResult.getMimeType()),
+                                " - ", "recycled old bitmap",
+                                " - ", getRequestAttrs().getName()));
                     }
 
                     decodeResult.getBitmap().recycle();
@@ -176,7 +212,13 @@ public class LoadRequest extends DownloadRequest {
 
             if (isCanceled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runLoad", " - ", "canceled", " - ", "process after", " - ", "recycle bitmap", " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()), " - ", getAttrs().getName()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                            " - ", "runLoad",
+                            " - ", "canceled",
+                            " - ", "process after",
+                            " - ", "recycle bitmap",
+                            " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
+                            " - ", getRequestAttrs().getName()));
                 }
                 decodeResult.getBitmap().recycle();
                 return;
@@ -198,14 +240,22 @@ public class LoadRequest extends DownloadRequest {
             // 验证一下
             if (decodeResult.getGifDrawable().isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.e(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runLoad", " - ", "gif drawable recycled", " - ", decodeResult.getGifDrawable().getInfo(), " - ", getAttrs().getName()));
+                    Log.e(Sketch.TAG, SketchUtils.concat(getLogName(),
+                            " - ", "runLoad",
+                            " - ", "gif drawable recycled",
+                            " - ", decodeResult.getGifDrawable().getInfo(),
+                            " - ", getRequestAttrs().getName()));
                 }
                 failed(FailedCause.DECODE_FAIL);
                 return;
             }
 
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runLoad", " - ", "new gif drawable", " - ", decodeResult.getGifDrawable().getInfo(), " - ", getAttrs().getName()));
+                Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runLoad",
+                        " - ", "new gif drawable",
+                        " - ", decodeResult.getGifDrawable().getInfo(),
+                        " - ", getRequestAttrs().getName()));
             }
 
             decodeResult.getGifDrawable().setMimeType(decodeResult.getMimeType());
@@ -241,7 +291,10 @@ public class LoadRequest extends DownloadRequest {
                 }
             }
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runCompletedInMainThread", " - ", "canceled", " - ", getAttrs().getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runCompletedInMainThread",
+                        " - ", "canceled",
+                        " - ", getRequestAttrs().getName()));
             }
             return;
         }
@@ -261,7 +314,10 @@ public class LoadRequest extends DownloadRequest {
     protected void runFailedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runFailedInMainThread", " - ", "canceled", " - ", getAttrs().getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runFailedInMainThread",
+                        " - ", "canceled",
+                        " - ", getRequestAttrs().getName()));
             }
             return;
         }

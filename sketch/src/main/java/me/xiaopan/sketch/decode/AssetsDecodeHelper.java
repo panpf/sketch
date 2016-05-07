@@ -73,7 +73,7 @@ public class AssetsDecodeHelper implements DecodeHelper {
             } else {
                 builder.append(" - ").append("unchanged");
             }
-            builder.append(" - ").append(loadRequest.getAttrs().getName());
+            builder.append(" - ").append(loadRequest.getRequestAttrs().getName());
             Log.d(Sketch.TAG, builder.toString());
         }
     }

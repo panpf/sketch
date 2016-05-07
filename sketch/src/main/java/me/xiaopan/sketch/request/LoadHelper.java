@@ -100,7 +100,8 @@ public class LoadHelper {
     }
 
     /**
-     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resi，也有可能小于resize
+     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，
+     * 但尺寸不一定会等于resi，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
      */
     public LoadHelper resize(int width, int height) {
         options.setResize(width, height);
@@ -108,7 +109,8 @@ public class LoadHelper {
     }
 
     /**
-     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
+     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，
+     * 但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
      */
     public LoadHelper resize(int width, int height, ScaleType scaleType) {
         options.setResize(new Resize(width, height, scaleType));
@@ -144,7 +146,7 @@ public class LoadHelper {
      * 设置图片质量
      */
     @SuppressWarnings("unused")
-    public LoadHelper bitmapConfig(Bitmap.Config config){
+    public LoadHelper bitmapConfig(Bitmap.Config config) {
         options.setBitmapConfig(config);
         return this;
     }
@@ -158,7 +160,8 @@ public class LoadHelper {
     }
 
     /**
-     * 批量设置加载参数，你只需要提前将LoadOptions通过Sketch.putLoadOptions()方法存起来，然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
+     * 批量设置加载参数，你只需要提前将LoadOptions通过Sketch.putLoadOptions()方法存起来，
+     * 然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
      */
     public LoadHelper optionsByName(Enum<?> optionsName) {
         return options(Sketch.getLoadOptions(optionsName));
@@ -235,22 +238,22 @@ public class LoadHelper {
 
         preProcess();
 
-        if(!checkUri()){
+        if (!checkUri()) {
             return null;
         }
 
-        if(!checkUriScheme()){
+        if (!checkUriScheme()) {
             return null;
         }
 
-        if(!checkRequestLevel()){
+        if (!checkRequestLevel()) {
             return null;
         }
 
         return submitRequest();
     }
 
-    private boolean checkUri(){
+    private boolean checkUri() {
         if (attrs.getUri() == null || "".equals(attrs.getUri().trim())) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
@@ -264,7 +267,7 @@ public class LoadHelper {
         return true;
     }
 
-    private boolean checkUriScheme(){
+    private boolean checkUriScheme() {
         if (attrs.getUriScheme() == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", attrs.getName()));
             if (listener != null) {
@@ -276,16 +279,21 @@ public class LoadHelper {
         return true;
     }
 
-    private boolean checkRequestLevel(){
+    private boolean checkRequestLevel() {
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
-        if (options.getRequestLevel() == RequestLevel.LOCAL && attrs.getUriScheme() == UriScheme.NET && sketch.getConfiguration().getDiskCache().get(attrs.getUri()) == null) {
+        if (options.getRequestLevel() == RequestLevel.LOCAL
+                && attrs.getUriScheme() == UriScheme.NET
+                && sketch.getConfiguration().getDiskCache().get(attrs.getUri()) == null) {
             boolean isPauseDownload = options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", isPauseDownload ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME,
+                        " - ", "canceled",
+                        " - ", isPauseDownload ? "pause download" : "requestLevel is local",
+                        " - ", attrs.getName()));
             }
 
-            if(listener != null){
+            if (listener != null) {
                 listener.onCanceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
             }
 
@@ -295,7 +303,7 @@ public class LoadHelper {
         return true;
     }
 
-    private LoadRequest submitRequest(){
+    private LoadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         LoadRequest request = requestFactory.newLoadRequest(sketch, attrs, options, listener, progressListener);
         request.submit();

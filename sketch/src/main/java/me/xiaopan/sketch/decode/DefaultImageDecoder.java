@@ -87,14 +87,14 @@ public class DefaultImageDecoder implements ImageDecoder {
             bitmap = decodeHelper.decode(options);
             if (bitmap != null && (bitmap.getWidth() == 1 || bitmap.getHeight() == 1)) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "bitmap width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", "BitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(), " - ", loadRequest.getAttrs().getName()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "bitmap width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", "BitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(), " - ", loadRequest.getRequestAttrs().getName()));
                 }
                 bitmap.recycle();
                 bitmap = null;
             }
         } else {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "image width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", loadRequest.getAttrs().getName()));
+                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "image width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", loadRequest.getRequestAttrs().getName()));
             }
         }
 
@@ -112,15 +112,15 @@ public class DefaultImageDecoder implements ImageDecoder {
     @Override
     public DecodeResult decode(LoadRequest loadRequest) {
         try {
-            if (loadRequest.getAttrs().getUriScheme() == UriScheme.NET) {
+            if (loadRequest.getRequestAttrs().getUriScheme() == UriScheme.NET) {
                 return decodeHttpOrHttps(loadRequest);
-            } else if (loadRequest.getAttrs().getUriScheme() == UriScheme.FILE) {
+            } else if (loadRequest.getRequestAttrs().getUriScheme() == UriScheme.FILE) {
                 return decodeFile(loadRequest);
-            } else if (loadRequest.getAttrs().getUriScheme() == UriScheme.CONTENT) {
+            } else if (loadRequest.getRequestAttrs().getUriScheme() == UriScheme.CONTENT) {
                 return decodeContent(loadRequest);
-            } else if (loadRequest.getAttrs().getUriScheme() == UriScheme.ASSET) {
+            } else if (loadRequest.getRequestAttrs().getUriScheme() == UriScheme.ASSET) {
                 return decodeAsset(loadRequest);
-            } else if (loadRequest.getAttrs().getUriScheme() == UriScheme.DRAWABLE) {
+            } else if (loadRequest.getRequestAttrs().getUriScheme() == UriScheme.DRAWABLE) {
                 return decodeDrawable(loadRequest);
             } else {
                 return null;
@@ -173,7 +173,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 decodeResult.setImageFrom(ImageFrom.DISK_CACHE);
             }
         } else {
-            decodeResult = decodeFromHelper(loadRequest, new FileDecodeHelper(new File(loadRequest.getAttrs().getRealUri()), loadRequest));
+            decodeResult = decodeFromHelper(loadRequest, new FileDecodeHelper(new File(loadRequest.getRequestAttrs().getRealUri()), loadRequest));
             if (decodeResult != null) {
                 decodeResult.setImageFrom(ImageFrom.LOCAL);
             }
@@ -183,7 +183,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public DecodeResult decodeContent(LoadRequest loadRequest) {
-        DecodeResult decodeResult = decodeFromHelper(loadRequest, new ContentDecodeHelper(Uri.parse(loadRequest.getAttrs().getRealUri()), loadRequest));
+        DecodeResult decodeResult = decodeFromHelper(loadRequest, new ContentDecodeHelper(Uri.parse(loadRequest.getRequestAttrs().getRealUri()), loadRequest));
         if (decodeResult != null) {
             decodeResult.setImageFrom(ImageFrom.LOCAL);
         }
@@ -191,7 +191,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public DecodeResult decodeAsset(LoadRequest loadRequest) {
-        DecodeResult decodeResult = decodeFromHelper(loadRequest, new AssetsDecodeHelper(loadRequest.getAttrs().getRealUri(), loadRequest));
+        DecodeResult decodeResult = decodeFromHelper(loadRequest, new AssetsDecodeHelper(loadRequest.getRequestAttrs().getRealUri(), loadRequest));
         if (decodeResult != null) {
             decodeResult.setImageFrom(ImageFrom.LOCAL);
         }
@@ -199,7 +199,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public DecodeResult decodeDrawable(LoadRequest loadRequest) {
-        DecodeResult decodeResult = decodeFromHelper(loadRequest, new DrawableDecodeHelper(Integer.valueOf(loadRequest.getAttrs().getRealUri()), loadRequest));
+        DecodeResult decodeResult = decodeFromHelper(loadRequest, new DrawableDecodeHelper(Integer.valueOf(loadRequest.getRequestAttrs().getRealUri()), loadRequest));
         if (decodeResult != null) {
             decodeResult.setImageFrom(ImageFrom.LOCAL);
         }
