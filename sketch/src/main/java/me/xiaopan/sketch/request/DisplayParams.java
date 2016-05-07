@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.request;
 
 public class DisplayParams {
-    public String uri;
-    public String name;
-    public DisplayOptions options;
+    public RequestAttrs attrs = new RequestAttrs();
+    public DisplayOptions options = new DisplayOptions();
 }

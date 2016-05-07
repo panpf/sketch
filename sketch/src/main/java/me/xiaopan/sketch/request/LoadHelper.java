@@ -22,19 +22,18 @@ import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.feture.RequestFactory;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class LoadHelper {
-    private static final String NAME = "LoadHelper";
+    protected static final String NAME = "LoadHelper";
 
     protected Sketch sketch;
-    protected String uri;
-    protected String name;
 
+    protected RequestAttrs attrs = new RequestAttrs();
     protected LoadOptions options = new LoadOptions();
-
-    protected LoadListener loadListener;
+    protected LoadListener listener;
     protected DownloadProgressListener progressListener;
 
     /**
@@ -51,14 +50,14 @@ public class LoadHelper {
      */
     public LoadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
-        this.uri = uri;
+        this.attrs.reset(uri);
     }
 
     /**
      * 设置名称，用于在log总区分请求
      */
     public LoadHelper name(String name) {
-        this.name = name;
+        this.attrs.setName(name);
         return this;
     }
 
@@ -178,7 +177,7 @@ public class LoadHelper {
      * 设置加载监听器
      */
     public LoadHelper listener(LoadListener loadListener) {
-        this.loadListener = loadListener;
+        this.listener = loadListener;
         return this;
     }
 
@@ -219,50 +218,87 @@ public class LoadHelper {
         }
 
         // 没有设置名称的话就用uri作为名称，名称主要用来在log中区分请求的
-        if (name == null) {
-            name = uri;
+        if (attrs.getName() == null) {
+            attrs.setName(attrs.getUri());
         }
     }
 
     /**
      * 提交请求
      *
-     * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
+     * @return LoadRequest 你可以通过Request来查看请求的状态或者取消这个请求
      */
     public LoadRequest commit() {
-        preProcess();
-
-        if (loadListener != null) {
-            loadListener.onStarted();
+        if (listener != null) {
+            listener.onStarted();
         }
 
-        // 验证uri参数
-        if (uri == null || "".equals(uri.trim())) {
+        preProcess();
+
+        if(!checkUri()){
+            return null;
+        }
+
+        if(!checkUriScheme()){
+            return null;
+        }
+
+        if(!checkRequestLevel()){
+            return null;
+        }
+
+        return submitRequest();
+    }
+
+    private boolean checkUri(){
+        if (attrs.getUri() == null || "".equals(attrs.getUri().trim())) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
             }
-            if (loadListener != null) {
-                loadListener.onFailed(FailedCause.URI_NULL_OR_EMPTY);
+            if (listener != null) {
+                listener.onFailed(FailedCause.URI_NULL_OR_EMPTY);
             }
-            return null;
+            return false;
         }
 
-        // 过滤掉不支持的URI协议类型
-        UriScheme uriScheme = UriScheme.valueOfUri(uri);
-        if (uriScheme == null) {
-            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", name));
-            if (loadListener != null) {
-                loadListener.onFailed(FailedCause.URI_NO_SUPPORT);
+        return true;
+    }
+
+    private boolean checkUriScheme(){
+        if (attrs.getUriScheme() == null) {
+            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", attrs.getName()));
+            if (listener != null) {
+                listener.onFailed(FailedCause.URI_NO_SUPPORT);
             }
-            return null;
+            return false;
         }
 
-        // 创建请求
-        RequestAttrs attrs = new RequestAttrs(sketch, uri, uriScheme, name);
-        LoadRequest request = sketch.getConfiguration().getRequestFactory().newLoadRequest(attrs, options, loadListener, progressListener);
+        return true;
+    }
 
+    private boolean checkRequestLevel(){
+        // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
+        if (options.getRequestLevel() == RequestLevel.LOCAL && attrs.getUriScheme() == UriScheme.NET && sketch.getConfiguration().getDiskCache().get(attrs.getUri()) == null) {
+            boolean isPauseDownload = options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
+
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", isPauseDownload ? "pause download" : "requestLevel is local", " - ", attrs.getName()));
+            }
+
+            if(listener != null){
+                listener.onCanceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
+            }
+
+            return false;
+        }
+
+        return true;
+    }
+
+    private LoadRequest submitRequest(){
+        RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
+        LoadRequest request = requestFactory.newLoadRequest(sketch, attrs, options, listener, progressListener);
         request.submit();
-
         return request;
     }
 }

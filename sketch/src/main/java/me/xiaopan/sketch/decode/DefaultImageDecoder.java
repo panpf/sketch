@@ -80,7 +80,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             // calculate inSampleSize
             MaxSize maxSize = loadRequest.getOptions().getMaxSize();
             if (maxSize != null) {
-                options.inSampleSize = loadRequest.getAttrs().getSketch().getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxSize.getWidth(), maxSize.getHeight());
+                options.inSampleSize = loadRequest.getSketch().getConfiguration().getImageSizeCalculator().calculateInSampleSize(options.outWidth, options.outHeight, maxSize.getWidth(), maxSize.getHeight());
             }
 
             // Decoding and exclude the width or height of 1 pixel image

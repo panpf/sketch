@@ -17,7 +17,9 @@
 package me.xiaopan.sketch.feture;
 
 import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.DisplayAttrs;
+import me.xiaopan.sketch.request.DisplayBinder;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayRequest;
@@ -36,17 +38,30 @@ import me.xiaopan.sketch.request.RequestAttrs;
 public class RequestFactory implements Identifier {
     private static final String NAME = "RequestFactory";
 
-    public DisplayRequest newDisplayRequest(RequestAttrs attrs, DisplayAttrs displayAttrs, DisplayOptions options, DisplayListener listener, DownloadProgressListener progressListener) {
-        // 由于DisplayHelper会被重复利用，因此其DisplayOptions不能直接拿来用，要重新New一个
-        return new DisplayRequest(attrs, displayAttrs, new DisplayOptions(options), listener, progressListener);
+    public DisplayRequest newDisplayRequest(
+            Sketch sketch, RequestAttrs requestAttrs, DisplayAttrs displayAttrs,
+            DisplayOptions displayOptions, DisplayBinder displayBinder,
+            DisplayListener displayListener, DownloadProgressListener progressListener) {
+        // 由于DisplayHelper会被重复利用
+        // 因此RequestAttrs、DisplayAttrs和DisplayOptions不能直接拿来用，要重新New一个
+        return new DisplayRequest(
+                sketch,
+                new RequestAttrs(requestAttrs),
+                new DisplayAttrs(displayAttrs),
+                new DisplayOptions(displayOptions),
+                displayBinder, displayListener, progressListener);
     }
 
-    public LoadRequest newLoadRequest(RequestAttrs attrs, LoadOptions options, LoadListener listener, DownloadProgressListener progressListener) {
-        return new LoadRequest(attrs, options, listener, progressListener);
+    public LoadRequest newLoadRequest(
+            Sketch sketch, RequestAttrs attrs, LoadOptions options,
+            LoadListener listener, DownloadProgressListener progressListener) {
+        return new LoadRequest(sketch, attrs, options, listener, progressListener);
     }
 
-    public DownloadRequest newDownloadRequest(RequestAttrs attrs, DownloadOptions options, DownloadListener listener, DownloadProgressListener progressListener) {
-        return new DownloadRequest(attrs, options, listener, progressListener);
+    public DownloadRequest newDownloadRequest(
+            Sketch sketch, RequestAttrs attrs, DownloadOptions options,
+            DownloadListener listener, DownloadProgressListener progressListener) {
+        return new DownloadRequest(sketch, attrs, options, listener, progressListener);
     }
 
     @Override

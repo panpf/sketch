@@ -11,6 +11,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.util.Log;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import java.io.Closeable;
 import java.io.File;
@@ -19,7 +20,10 @@ import java.io.OutputStream;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.ImageFormat;
+import me.xiaopan.sketch.display.ImageDisplayer;
+import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.RecycleDrawable;
+import me.xiaopan.sketch.request.FixedSize;
 
 public class SketchUtils {
 
@@ -207,5 +211,11 @@ public class SketchUtils {
         } else {
             return "Unknown";
         }
+    }
+
+    public static boolean isFixedSize(ImageDisplayer imageDisplayer, FixedSize fixedSize, ImageView.ScaleType scaleType){
+        return imageDisplayer instanceof TransitionImageDisplayer
+                && fixedSize != null
+                && scaleType == ImageView.ScaleType.CENTER_CROP;
     }
 }

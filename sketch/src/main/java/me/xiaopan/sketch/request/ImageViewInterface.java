@@ -126,7 +126,7 @@ public interface ImageViewInterface {
     /**
      * 获取显示监听器
      */
-    DisplayListener getDisplayListener(boolean isPauseDownload);
+    DisplayListener getDisplayListener();
 
     /**
      * 设置显示监听器

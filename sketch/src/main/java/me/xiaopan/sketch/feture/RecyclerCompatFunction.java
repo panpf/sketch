@@ -62,7 +62,7 @@ public class RecyclerCompatFunction implements ImageViewFunction {
         }
 
         if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, SketchUtils.concat(NAME, "：", "restore image on attached to window", " - ", displayParams.uri));
+            Log.w(Sketch.TAG, SketchUtils.concat(NAME, "：", "restore image on attached to window", " - ", displayParams.attrs.getUri()));
         }
         Sketch.with(context).display(displayParams, imageViewInterface).commit();
     }

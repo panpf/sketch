@@ -26,11 +26,6 @@ public enum FailedCause {
     URI_NULL_OR_EMPTY,
 
     /**
-     * ImageView为NULL
-     */
-    IMAGE_VIEW_NULL,
-
-    /**
      * URI不支持
      */
     URI_NO_SUPPORT,

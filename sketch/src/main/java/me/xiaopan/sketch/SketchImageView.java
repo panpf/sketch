@@ -399,7 +399,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
-    public DisplayListener getDisplayListener(boolean isPauseDownload) {
+    public DisplayListener getDisplayListener() {
         return displayListener;
     }
 

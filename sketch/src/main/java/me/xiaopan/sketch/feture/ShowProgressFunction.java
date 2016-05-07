@@ -137,6 +137,7 @@ public class ShowProgressFunction implements ImageViewFunction {
 
     @Override
     public boolean onCanceled(CancelCause cancelCause) {
+        progress = NONE;
         return false;
     }
 

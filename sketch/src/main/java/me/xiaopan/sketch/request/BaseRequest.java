@@ -20,7 +20,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 
-import me.xiaopan.sketch.execute.RequestExecutor;
+import me.xiaopan.sketch.Sketch;
 
 public abstract class BaseRequest implements Runnable {
     protected static final Handler handler;
@@ -43,16 +43,17 @@ public abstract class BaseRequest implements Runnable {
         });
     }
 
+    private Sketch sketch;
+
     private RunStatus runStatus;
-    private RequestExecutor requestExecutor;
 
     private String logName = "SketchRequest";
     private Status status;
     private FailedCause failedCause;
     private CancelCause cancelCause;
 
-    public BaseRequest(RequestExecutor requestExecutor) {
-        this.requestExecutor = requestExecutor;
+    public BaseRequest(Sketch sketch) {
+        this.sketch = sketch;
     }
 
     @Override
@@ -75,6 +76,10 @@ public abstract class BaseRequest implements Runnable {
         }
     }
 
+    public Sketch getSketch() {
+        return sketch;
+    }
+
     public String getLogName() {
         return logName;
     }
@@ -88,7 +93,7 @@ public abstract class BaseRequest implements Runnable {
      */
     protected void submitRunDispatch() {
         this.runStatus = RunStatus.DISPATCH;
-        requestExecutor.getRequestDispatchExecutor().execute(this);
+        sketch.getConfiguration().getRequestExecutor().getRequestDispatchExecutor().execute(this);
     }
 
     /**
@@ -96,7 +101,7 @@ public abstract class BaseRequest implements Runnable {
      */
     protected void submitRunDownload() {
         this.runStatus = RunStatus.DOWNLOAD;
-        requestExecutor.getNetRequestExecutor().execute(this);
+        sketch.getConfiguration().getRequestExecutor().getNetRequestExecutor().execute(this);
     }
 
     /**
@@ -104,7 +109,7 @@ public abstract class BaseRequest implements Runnable {
      */
     protected void submitRunLoad() {
         this.runStatus = RunStatus.LOAD;
-        requestExecutor.getLocalRequestExecutor().execute(this);
+        sketch.getConfiguration().getRequestExecutor().getLocalRequestExecutor().execute(this);
     }
 
     /**

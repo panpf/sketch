@@ -28,13 +28,14 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class DownloadRequest extends BaseRequest {
     private RequestAttrs attrs;
     private DownloadOptions options;
-
-    private DownloadResult downloadResult;
     private DownloadListener downloadListener;
     private DownloadProgressListener progressListener;
 
-    public DownloadRequest(RequestAttrs attrs, DownloadOptions options, DownloadListener downloadListener, DownloadProgressListener progressListener) {
-        super(attrs.getConfiguration().getRequestExecutor());
+    private DownloadResult downloadResult;
+
+    public DownloadRequest(Sketch sketch, RequestAttrs attrs, DownloadOptions options, DownloadListener downloadListener, DownloadProgressListener progressListener) {
+        super(sketch);
+
         this.attrs = attrs;
         this.options = options;
         this.downloadListener = downloadListener;
@@ -113,7 +114,7 @@ public class DownloadRequest extends BaseRequest {
 
         // 然后从磁盘缓存中找缓存文件
         if (options.isCacheInDisk()) {
-            DiskCache.Entry diskCacheEntry = attrs.getConfiguration().getDiskCache().get(attrs.getDiskCacheKey());
+            DiskCache.Entry diskCacheEntry = getSketch().getConfiguration().getDiskCache().get(attrs.getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runDispatch", " - ", "diskCache", " - ", attrs.getName()));
@@ -147,7 +148,7 @@ public class DownloadRequest extends BaseRequest {
         }
 
         // 调用下载器下载
-        DownloadResult justDownloadResult = attrs.getConfiguration().getImageDownloader().download(this);
+        DownloadResult justDownloadResult = getSketch().getConfiguration().getImageDownloader().download(this);
 
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {

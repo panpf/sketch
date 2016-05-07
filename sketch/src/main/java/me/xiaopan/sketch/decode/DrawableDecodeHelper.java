@@ -40,7 +40,7 @@ public class DrawableDecodeHelper implements DecodeHelper {
 
     @Override
     public Bitmap decode(BitmapFactory.Options options) {
-        return BitmapFactory.decodeResource(loadRequest.getAttrs().getSketch().getConfiguration().getContext().getResources(), drawableId, options);
+        return BitmapFactory.decodeResource(loadRequest.getSketch().getConfiguration().getContext().getResources(), drawableId, options);
     }
 
     @Override
@@ -51,7 +51,7 @@ public class DrawableDecodeHelper implements DecodeHelper {
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 builder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                 builder.append(", ").append("targetSize").append("=").append(loadRequest.getOptions().getMaxSize().getWidth()).append("x").append(loadRequest.getOptions().getMaxSize().getHeight());
-                builder.append(", ").append("targetSizeScaleInSampleSize").append("=").append(loadRequest.getAttrs().getSketch().getConfiguration().getImageSizeCalculator().getTargetSizeScaleInSampleSize());
+                builder.append(", ").append("targetSizeScaleInSampleSize").append("=").append(loadRequest.getSketch().getConfiguration().getImageSizeCalculator().getTargetSizeScaleInSampleSize());
                 builder.append(",  ").append("inSampleSize").append("=").append(inSampleSize);
                 builder.append(",  ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
             } else {
@@ -72,7 +72,7 @@ public class DrawableDecodeHelper implements DecodeHelper {
     @Override
     public RecycleGifDrawable getGifDrawable() {
         try {
-            return new RecycleGifDrawable(loadRequest.getAttrs().getSketch().getConfiguration().getContext().getResources(), drawableId);
+            return new RecycleGifDrawable(loadRequest.getSketch().getConfiguration().getContext().getResources(), drawableId);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

@@ -86,7 +86,7 @@ public class LocalImagePreprocessor implements Identifier {
      */
     private DiskCache.Entry getApkIconDiskCache(LoadRequest loadRequest) {
         String realUri = loadRequest.getAttrs().getRealUri();
-        Configuration configuration = loadRequest.getAttrs().getSketch().getConfiguration();
+        Configuration configuration = loadRequest.getSketch().getConfiguration();
 
         File apkFile = new File(realUri);
         if (!apkFile.exists()) {
@@ -141,7 +141,7 @@ public class LocalImagePreprocessor implements Identifier {
 
     private DiskCache.Entry getInstalledAppIconDiskCache(LoadRequest loadRequest) {
         String realUri = loadRequest.getAttrs().getRealUri();
-        Configuration configuration = loadRequest.getAttrs().getSketch().getConfiguration();
+        Configuration configuration = loadRequest.getSketch().getConfiguration();
 
         String diskCacheKey = loadRequest.getAttrs().getDiskCacheKey();
 
@@ -157,7 +157,7 @@ public class LocalImagePreprocessor implements Identifier {
 
         PackageInfo packageInfo;
         try {
-            packageInfo = loadRequest.getAttrs().getConfiguration().getContext().getPackageManager().getPackageInfo(packageName, 0);
+            packageInfo = loadRequest.getSketch().getConfiguration().getContext().getPackageManager().getPackageInfo(packageName, 0);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             return null;

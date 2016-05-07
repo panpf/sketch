@@ -61,7 +61,7 @@ public class ShowImageFromFunction implements ImageViewFunction {
 
     @Override
     public void onDisplay() {
-
+         imageFrom = null;
     }
 
     @Override

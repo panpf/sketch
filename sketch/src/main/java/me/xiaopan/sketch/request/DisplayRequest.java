@@ -17,36 +17,38 @@
 package me.xiaopan.sketch.request;
 
 import android.graphics.drawable.Drawable;
-import android.os.Message;
 import android.util.Log;
-import android.widget.ImageView;
 
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.FixedRecycleBitmapDrawable;
 import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
 import me.xiaopan.sketch.drawable.RecycleDrawable;
-import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 显示请求
  */
 public class DisplayRequest extends LoadRequest {
-    private static final int WHAT_RUN_PAUSE_DOWNLOAD = 44006;
-
     private DisplayAttrs displayAttrs;
     private DisplayOptions displayOptions;
-    
-    private DisplayResult displayResult;
+    private DisplayBinder displayBinder;
     private DisplayListener displayListener;
 
-    public DisplayRequest(RequestAttrs requestAttrs, DisplayAttrs displayAttrs, DisplayOptions displayOptions, DisplayListener listener, DownloadProgressListener progressListener) {
-        super(requestAttrs, displayOptions, null, progressListener);
+    private DisplayResult displayResult;
+
+    public DisplayRequest(
+            Sketch sketch, RequestAttrs requestAttrs,
+            DisplayAttrs displayAttrs, DisplayOptions displayOptions,
+            DisplayBinder displayBinder, DisplayListener displayListener,
+            DownloadProgressListener progressListener) {
+        super(sketch, requestAttrs, displayOptions, null, progressListener);
+
         this.displayAttrs = displayAttrs;
         this.displayOptions = displayOptions;
-        this.displayListener = listener;
+        this.displayBinder = displayBinder;
+        this.displayListener = displayListener;
 
-        displayAttrs.getDisplayBinder().setDisplayRequest(this);
+        this.displayBinder.setDisplayRequest(this);
         setLogName("DisplayRequest");
     }
 
@@ -72,57 +74,12 @@ public class DisplayRequest extends LoadRequest {
         }
 
         // 绑定关系已经断了的话就直接取消请求
-        if (displayAttrs.getDisplayBinder().isBroken()) {
+        if (displayBinder.isBroken()) {
             canceled(CancelCause.NORMAL);
             return true;
         }
 
         return false;
-    }
-
-    /**
-     * 是否需要使用固定尺寸
-     */
-    private boolean isNeedFixedSize() {
-        return displayOptions.getImageDisplayer() instanceof TransitionImageDisplayer
-                && displayAttrs.getFixedSize() != null
-                && displayAttrs.getScaleType() == ImageView.ScaleType.CENTER_CROP;
-    }
-
-    private Drawable getFailedDrawable() {
-        if (displayOptions.getFailedImage() == null) {
-            return null;
-        }
-
-        Drawable failedDrawable = displayOptions.getFailedImage().getRecycleBitmapDrawable(getAttrs().getConfiguration().getContext());
-        if (failedDrawable != null && isNeedFixedSize()) {
-            failedDrawable = new FixedRecycleBitmapDrawable((RecycleBitmapDrawable) failedDrawable, displayAttrs.getFixedSize());
-        }
-        return failedDrawable;
-    }
-
-    private Drawable getPauseDownloadDrawable() {
-        if (displayOptions.getPauseDownloadImage() == null) {
-            return null;
-        }
-
-        Drawable pauseDownloadDrawable = displayOptions.getPauseDownloadImage().getRecycleBitmapDrawable(getAttrs().getConfiguration().getContext());
-        if (pauseDownloadDrawable != null && isNeedFixedSize()) {
-            pauseDownloadDrawable = new FixedRecycleBitmapDrawable((RecycleBitmapDrawable) pauseDownloadDrawable, displayAttrs.getFixedSize());
-        }
-        return pauseDownloadDrawable;
-    }
-
-    private Drawable getCompletedDrawable() {
-        if (displayResult == null || displayResult.getDrawable() == null) {
-            return null;
-        }
-
-        Drawable completedDrawable = displayResult.getDrawable();
-        if (completedDrawable instanceof RecycleBitmapDrawable && isNeedFixedSize()) {
-            completedDrawable = new FixedRecycleBitmapDrawable((RecycleBitmapDrawable) completedDrawable, displayAttrs.getFixedSize());
-        }
-        return completedDrawable;
     }
 
     @Override
@@ -188,7 +145,7 @@ public class DisplayRequest extends LoadRequest {
 
         // 检查内存缓存中是否已经存在了
         if (displayOptions.isCacheInMemory()) {
-            Drawable cacheDrawable = getAttrs().getConfiguration().getMemoryCache().get(displayAttrs.getMemoryCacheId());
+            Drawable cacheDrawable = getSketch().getConfiguration().getMemoryCache().get(displayAttrs.getMemoryCacheId());
             if (cacheDrawable != null) {
                 RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
                 if (!recycleDrawable.isRecycled()) {
@@ -199,7 +156,7 @@ public class DisplayRequest extends LoadRequest {
                     displayCompleted();
                     return;
                 } else {
-                    getAttrs().getConfiguration().getMemoryCache().remove(displayAttrs.getMemoryCacheId());
+                    getSketch().getConfiguration().getMemoryCache().remove(displayAttrs.getMemoryCacheId());
                     if (Sketch.isDebugMode()) {
                         Log.e(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runLoad", "bitmap recycled", " - ", recycleDrawable.getInfo(), " - ", getAttrs().getName()));
                     }
@@ -208,21 +165,6 @@ public class DisplayRequest extends LoadRequest {
         }
 
         super.runLoad();
-    }
-
-    @Override
-    protected void requestLevelIsLocal() {
-        if (displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runDispatch", " - ", "canceled", " - ", "pause download", " - ", getAttrs().getName()));
-            }
-            postRunPauseDownload();
-        } else {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runDispatch", " - ", "canceled", " - ", "requestLevel is local", " - ", getAttrs().getName()));
-            }
-            canceled(CancelCause.LEVEL_IS_LOCAL);
-        }
     }
 
     @Override
@@ -246,7 +188,7 @@ public class DisplayRequest extends LoadRequest {
             RecycleBitmapDrawable bitmapDrawable = new RecycleBitmapDrawable(loadResult.getBitmap());
             bitmapDrawable.setMimeType(loadResult.getMimeType());
             if (displayOptions.isCacheInMemory() && displayAttrs.getMemoryCacheId() != null) {
-                getAttrs().getConfiguration().getMemoryCache().put(displayAttrs.getMemoryCacheId(), bitmapDrawable);
+                getSketch().getConfiguration().getMemoryCache().put(displayAttrs.getMemoryCacheId(), bitmapDrawable);
             }
 
             displayResult = new DisplayResult(bitmapDrawable, loadResult.getImageFrom(), loadResult.getMimeType());
@@ -270,7 +212,7 @@ public class DisplayRequest extends LoadRequest {
             // 将GIF图放入内存缓存
             loadResult.getGifDrawable().setMimeType(loadResult.getMimeType());
             if (displayOptions.isCacheInMemory() && displayAttrs.getMemoryCacheId() != null) {
-                getAttrs().getConfiguration().getMemoryCache().put(displayAttrs.getMemoryCacheId(), loadResult.getGifDrawable());
+                getSketch().getConfiguration().getMemoryCache().put(displayAttrs.getMemoryCacheId(), loadResult.getGifDrawable());
             }
 
             displayResult = new DisplayResult(loadResult.getGifDrawable(), loadResult.getImageFrom(), loadResult.getMimeType());
@@ -315,9 +257,13 @@ public class DisplayRequest extends LoadRequest {
         setStatus(Status.DISPLAYING);
 
         // 显示图片
-        Drawable completedDrawable = getCompletedDrawable();
-        if (completedDrawable != null) {
-            displayOptions.getImageDisplayer().display(displayAttrs.getDisplayBinder().getImageViewInterface(), completedDrawable);
+        if (displayResult != null && displayResult.getDrawable() != null) {
+            Drawable completedDrawable = displayResult.getDrawable();
+            boolean isFixedSize = SketchUtils.isFixedSize(displayOptions.getImageDisplayer(), displayAttrs.getFixedSize(), displayAttrs.getScaleType());
+            if (completedDrawable instanceof RecycleBitmapDrawable && isFixedSize) {
+                completedDrawable = new FixedRecycleBitmapDrawable((RecycleBitmapDrawable) completedDrawable, displayAttrs.getFixedSize());
+            }
+            displayOptions.getImageDisplayer().display(displayBinder.getImageViewInterface(), completedDrawable);
         } else {
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runCompletedInMainThread", " - ", "completedDrawable is null", " - ", getAttrs().getName()));
@@ -349,9 +295,13 @@ public class DisplayRequest extends LoadRequest {
         setStatus(Status.DISPLAYING);
 
         // 显示失败图片
-        Drawable failedDrawable = getFailedDrawable();
-        if (failedDrawable != null) {
-            displayOptions.getImageDisplayer().display(displayAttrs.getDisplayBinder().getImageViewInterface(), failedDrawable);
+        if (displayOptions.getFailedImage() != null) {
+            Drawable failedDrawable = displayOptions.getFailedImage().getDrawable(
+                    getSketch().getConfiguration().getContext(),
+                    displayOptions.getImageDisplayer(),
+                    displayAttrs.getFixedSize(),
+                    displayAttrs.getScaleType());
+            displayOptions.getImageDisplayer().display(displayBinder.getImageViewInterface(), failedDrawable);
         } else {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runFailedInMainThread", " - ", "failedDrawable is null", " - ", getAttrs().getName()));
@@ -362,54 +312,6 @@ public class DisplayRequest extends LoadRequest {
 
         if (displayListener != null) {
             displayListener.onFailed(getFailedCause());
-        }
-    }
-
-    /**
-     * 推到主线程处理暂停下载
-     */
-    protected void postRunPauseDownload() {
-        setStatus(Status.WAIT_DISPLAY);
-        handler.obtainMessage(WHAT_RUN_PAUSE_DOWNLOAD, this).sendToTarget();
-    }
-
-    @Override
-    protected void runInMainThread(int what, Message msg) {
-        if (msg.what == WHAT_RUN_PAUSE_DOWNLOAD) {
-            runPauseDownloadOnMainThread();
-        } else {
-            super.runInMainThread(what, msg);
-        }
-    }
-
-    /**
-     * 在主线程处理暂停下载
-     */
-    private void runPauseDownloadOnMainThread() {
-        if (isCanceled()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runPauseDownloadOnMainThread", " - ", "canceled", " - ", getAttrs().getName()));
-            }
-            return;
-        }
-
-        setStatus(Status.DISPLAYING);
-
-        // 显示暂停下载图片
-        Drawable pauseDownloadDrawable = getPauseDownloadDrawable();
-        if (pauseDownloadDrawable != null) {
-            displayOptions.getImageDisplayer().display(displayAttrs.getDisplayBinder().getImageViewInterface(), pauseDownloadDrawable);
-        } else {
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(getLogName(), " - ", "runPauseDownloadOnMainThread", " - ", "pauseDownloadDrawable is null", " - ", getAttrs().getName()));
-            }
-        }
-
-        setStatus(Status.CANCELED);
-        setCancelCause(CancelCause.PAUSE_DOWNLOAD);
-
-        if (displayListener != null) {
-            displayListener.onCanceled(getCancelCause());
         }
     }
 }

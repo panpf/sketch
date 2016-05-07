@@ -111,7 +111,7 @@ public class ClickRetryFunction implements ImageViewFunction, View.OnClickListen
     @Override
     public boolean onDisplayFailed(FailedCause failedCause) {
         // 正常的失败才能重试，因此要过滤一下失败原因
-        displayFailed = failedCause != FailedCause.URI_NULL_OR_EMPTY && failedCause != FailedCause.IMAGE_VIEW_NULL && failedCause != FailedCause.URI_NO_SUPPORT;
+        displayFailed = failedCause != FailedCause.URI_NULL_OR_EMPTY && failedCause != FailedCause.URI_NO_SUPPORT;
         updateClickable();
         return false;
     }

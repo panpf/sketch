@@ -18,17 +18,41 @@ package me.xiaopan.sketch.request;
 
 import android.widget.ImageView.ScaleType;
 
+import me.xiaopan.sketch.Sketch;
+
 public class DisplayAttrs {
     private String memoryCacheId;
     private ScaleType scaleType;
     private FixedSize fixedSize;
-    private DisplayBinder displayBinder;
 
-    public DisplayAttrs(String memoryCacheId, FixedSize fixedSize, ImageViewInterface imageViewInterface) {
+    public DisplayAttrs() {
+
+    }
+
+    public DisplayAttrs(DisplayAttrs displayAttrs) {
+        copy(displayAttrs);
+    }
+
+    public void copy(DisplayAttrs displayAttrs) {
+        this.memoryCacheId = displayAttrs.memoryCacheId;
+        this.scaleType = displayAttrs.scaleType;
+        this.fixedSize = displayAttrs.fixedSize;
+    }
+
+    public void reset(ImageViewInterface imageViewInterface, Sketch sketch) {
+        if (imageViewInterface != null) {
+            this.memoryCacheId = null;
+            this.scaleType = imageViewInterface.getScaleType();
+            this.fixedSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageFixedSize(imageViewInterface);
+        } else {
+            this.memoryCacheId = null;
+            this.scaleType = null;
+            this.fixedSize = null;
+        }
+    }
+
+    void setMemoryCacheId(String memoryCacheId) {
         this.memoryCacheId = memoryCacheId;
-        this.fixedSize = fixedSize;
-        this.displayBinder = new DisplayBinder(imageViewInterface);
-        this.scaleType = imageViewInterface.getScaleType();
     }
 
     public FixedSize getFixedSize() {
@@ -41,9 +65,5 @@ public class DisplayAttrs {
 
     public ScaleType getScaleType() {
         return scaleType;
-    }
-
-    public DisplayBinder getDisplayBinder() {
-        return displayBinder;
     }
 }

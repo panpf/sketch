@@ -16,37 +16,55 @@
 
 package me.xiaopan.sketch.request;
 
-import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.Sketch;
-
 public class RequestAttrs {
-    private Sketch sketch;
     private String uri;
     private String realUri;    // 真正的图片地址，例如原图片uri是asset://test.png的，realUri就是test.png
     private String name;    // 名称，用于在输出LOG的时候区分不同的请求
     private UriScheme uriScheme;    // Uri协议类型
 
-    public RequestAttrs(Sketch sketch, String uri, UriScheme uriScheme, String name) {
-        this.sketch = sketch;
-        this.uri = uri;
-        this.realUri = uriScheme.crop(uri);
-        this.uriScheme = uriScheme;
-        this.name = name;
+    public RequestAttrs(RequestAttrs requestAttrs) {
+        copy(requestAttrs);
+    }
+
+    public RequestAttrs() {
+
+    }
+
+    void reset(String uri) {
+        if (uri != null) {
+            this.uri = uri;
+            this.uriScheme = UriScheme.valueOfUri(uri);
+            this.realUri = uriScheme != null ? uriScheme.crop(uri) : null;
+            this.name = null;
+        } else {
+            this.uri = null;
+            this.uriScheme = null;
+            this.realUri = null;
+            this.name = null;
+        }
+    }
+
+    void copy(RequestAttrs requestAttrs) {
+        this.uri = requestAttrs.uri;
+        this.realUri = requestAttrs.realUri;
+        this.uriScheme = requestAttrs.uriScheme;
+        this.name = requestAttrs.name;
     }
 
     public String getName() {
         return name;
     }
 
-    public Sketch getSketch() {
-        return sketch;
+    void setName(String name) {
+        this.name = name;
     }
 
     public String getUri() {
         return uri;
     }
 
-    public String getDiskCacheKey(){
+    public String getDiskCacheKey() {
+        // TODO 这个要好好容易下
         return uri;
     }
 
@@ -56,9 +74,5 @@ public class RequestAttrs {
 
     public UriScheme getUriScheme() {
         return uriScheme;
-    }
-
-    public Configuration getConfiguration() {
-        return sketch.getConfiguration();
     }
 }

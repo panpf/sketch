@@ -160,7 +160,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
 
             // 如果缓存文件已经存在了就直接返回缓存文件
             if (request.getOptions().isCacheInDisk()) {
-                DiskCache.Entry diskCacheEntry = request.getAttrs().getSketch().getConfiguration().getDiskCache().get(request.getAttrs().getDiskCacheKey());
+                DiskCache.Entry diskCacheEntry = request.getSketch().getConfiguration().getDiskCache().get(request.getAttrs().getDiskCacheKey());
                 if (diskCacheEntry != null) {
                     result = new DownloadResult(diskCacheEntry, false);
                     break;
@@ -259,7 +259,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         // 当不需要将数据缓存到本地的时候就使用ByteArrayOutputStream来存储数据
         DiskLruCache.Editor editor = null;
         if (request.getOptions().isCacheInDisk()) {
-            editor = request.getAttrs().getSketch().getConfiguration().getDiskCache().edit(request.getAttrs().getDiskCacheKey());
+            editor = request.getSketch().getConfiguration().getDiskCache().edit(request.getAttrs().getDiskCacheKey());
         }
         OutputStream outputStream;
         if (editor != null) {
@@ -295,7 +295,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         // 转换结果
         if (request.getOptions().isCacheInDisk() && editor != null) {
             editor.commit();
-            return new DownloadResult(request.getAttrs().getSketch().getConfiguration().getDiskCache().get(request.getAttrs().getDiskCacheKey()), true);
+            return new DownloadResult(request.getSketch().getConfiguration().getDiskCache().get(request.getAttrs().getDiskCacheKey()), true);
         } else if (outputStream instanceof ByteArrayOutputStream) {
             return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray());
         } else {

@@ -31,12 +31,13 @@ import me.xiaopan.sketch.util.SketchUtils;
  */
 public class LoadRequest extends DownloadRequest {
     private LoadOptions loadOptions;
-
-    private LoadResult loadResult;
     private LoadListener loadListener;
 
-    public LoadRequest(RequestAttrs attrs, LoadOptions loadOptions, LoadListener loadListener, DownloadProgressListener progressListener) {
-        super(attrs, loadOptions, null, progressListener);
+    private LoadResult loadResult;
+
+    public LoadRequest(Sketch sketch, RequestAttrs attrs, LoadOptions loadOptions, LoadListener loadListener, DownloadProgressListener progressListener) {
+        super(sketch, attrs, loadOptions, null, progressListener);
+
         this.loadOptions = loadOptions;
         this.loadListener = loadListener;
         
@@ -117,8 +118,8 @@ public class LoadRequest extends DownloadRequest {
         setStatus(Status.LOADING);
 
         // 尝试用本地图片预处理器处理一下特殊的本地图片，并得到他们的缓存
-        if (getAttrs().getConfiguration().getLocalImagePreprocessor().isSpecific(this)) {
-            DiskCache.Entry specificLocalImageDiskCacheEntry = getAttrs().getConfiguration().getLocalImagePreprocessor().getDiskCacheEntry(this);
+        if (getSketch().getConfiguration().getLocalImagePreprocessor().isSpecific(this)) {
+            DiskCache.Entry specificLocalImageDiskCacheEntry = getSketch().getConfiguration().getLocalImagePreprocessor().getDiskCacheEntry(this);
             if (specificLocalImageDiskCacheEntry != null) {
                 setDownloadResult(new DownloadResult(specificLocalImageDiskCacheEntry, false));
             } else {
@@ -128,7 +129,7 @@ public class LoadRequest extends DownloadRequest {
         }
 
         // 解码
-        DecodeResult decodeResult = getAttrs().getConfiguration().getImageDecoder().decode(this);
+        DecodeResult decodeResult = getSketch().getConfiguration().getImageDecoder().decode(this);
         if (decodeResult == null || (decodeResult.getBitmap() == null && decodeResult.getGifDrawable() == null)) {
             failed(FailedCause.DECODE_FAIL);
             return;
@@ -160,7 +161,7 @@ public class LoadRequest extends DownloadRequest {
             // 处理
             ImageProcessor imageProcessor = loadOptions.getImageProcessor();
             if (imageProcessor != null) {
-                Bitmap newBitmap = imageProcessor.process(getAttrs().getSketch(), decodeResult.getBitmap(), loadOptions.getResize(), loadOptions.isForceUseResize(), loadOptions.isLowQualityImage());
+                Bitmap newBitmap = imageProcessor.process(getSketch(), decodeResult.getBitmap(), loadOptions.getResize(), loadOptions.isForceUseResize(), loadOptions.isLowQualityImage());
 
                 // 确实是一张新图片，就替换掉旧图片
                 if (newBitmap != null && !newBitmap.isRecycled() && newBitmap != decodeResult.getBitmap()) {
