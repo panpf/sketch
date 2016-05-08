@@ -38,21 +38,21 @@ public class MyLocalImagePreprocessor extends LocalImagePreprocessor {
     }
 
     private boolean isXpkFile(LoadRequest loadRequest) {
-        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getAttrs().getRealUri(), ".xpk");
+        return loadRequest.getRequestAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getRequestAttrs().getRealUri(), ".xpk");
     }
 
     /**
      * 获取XPK图标的缓存文件
      */
     private DiskCache.Entry getXpkIconCacheFile(LoadRequest loadRequest) {
-        String realUri = loadRequest.getAttrs().getRealUri();
-        Configuration configuration = loadRequest.getAttrs().getSketch().getConfiguration();
+        String realUri = loadRequest.getRequestAttrs().getRealUri();
+        Configuration configuration = loadRequest.getSketch().getConfiguration();
 
-        File apkFile = new File(realUri);
-        if (!apkFile.exists()) {
+        File xpkFile = new File(realUri);
+        if (!xpkFile.exists()) {
             return null;
         }
-        long lastModifyTime = apkFile.lastModified();
+        long lastModifyTime = xpkFile.lastModified();
         String diskCacheKey = realUri + "." + lastModifyTime;
 
         DiskCache.Entry xpkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
