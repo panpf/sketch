@@ -21,12 +21,7 @@ import java.io.File;
 /**
  * 下载监听器
  */
-public interface DownloadListener {
-    /**
-     * 已开始
-     */
-    void onStarted();
-
+public interface DownloadListener extends BaseListener{
     /**
      * 已完成，当选择本地缓存的时候才会回调这个方法
      *
@@ -41,16 +36,4 @@ public interface DownloadListener {
      * @param data 数据
      */
     void onCompleted(byte[] data);
-
-    /**
-     * 已失败
-     *
-     * @param failedCause 失败原因
-     */
-    void onFailed(FailedCause failedCause);
-
-    /**
-     * 已取消
-     */
-    void onCanceled(CancelCause cancelCause);
 }

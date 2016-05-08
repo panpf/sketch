@@ -16,32 +16,9 @@
 
 package me.xiaopan.sketch.request;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.os.Message;
-
 import me.xiaopan.sketch.Sketch;
 
 public abstract class BaseRequest implements Runnable {
-    protected static final Handler handler;
-    private static final int WHAT_RUN_COMPLETED = 33002;
-    private static final int WHAT_RUN_FAILED = 33003;
-    private static final int WHAT_RUN_CANCELED = 33004;
-    private static final int WHAT_RUN_UPDATE_PROGRESS = 33005;
-
-    static {
-        handler = new Handler(Looper.getMainLooper(), new Handler.Callback() {
-            @Override
-            public boolean handleMessage(Message msg) {
-                if (msg.obj instanceof BaseRequest) {
-                    ((BaseRequest) msg.obj).runInMainThread(msg.what, msg);
-                    return true;
-                }
-
-                return false;
-            }
-        });
-    }
 
     private Sketch sketch;
 
@@ -113,34 +90,6 @@ public abstract class BaseRequest implements Runnable {
     }
 
     /**
-     * 推到主线程处理完成
-     */
-    protected void postRunCompleted() {
-        handler.obtainMessage(WHAT_RUN_COMPLETED, this).sendToTarget();
-    }
-
-    /**
-     * 推到主线程处理取消
-     */
-    protected void postRunCanceled() {
-        handler.obtainMessage(WHAT_RUN_CANCELED, this).sendToTarget();
-    }
-
-    /**
-     * 推到主线程处理失败
-     */
-    protected void postRunFailed() {
-        handler.obtainMessage(WHAT_RUN_FAILED, this).sendToTarget();
-    }
-
-    /**
-     * 推到主线程处理进度
-     */
-    protected void postRunUpdateProgress(int totalLength, int completedLength) {
-        handler.obtainMessage(WHAT_RUN_UPDATE_PROGRESS, totalLength, completedLength, this).sendToTarget();
-    }
-
-    /**
      * 提交请求
      */
     public final void submit() {
@@ -148,23 +97,31 @@ public abstract class BaseRequest implements Runnable {
     }
 
     /**
-     * 在主线程执行
+     * 推到主线程处理完成
      */
-    protected void runInMainThread(int what, Message msg) {
-        switch (what) {
-            case WHAT_RUN_UPDATE_PROGRESS:
-                runUpdateProgressInMainThread(msg.arg1, msg.arg2);
-                break;
-            case WHAT_RUN_CANCELED:
-                runCanceledInMainThread();
-                break;
-            case WHAT_RUN_COMPLETED:
-                runCompletedInMainThread();
-                break;
-            case WHAT_RUN_FAILED:
-                runFailedInMainThread();
-                break;
-        }
+    protected void postRunCompleted() {
+        CallbackHandler.postRunCompleted(this);
+    }
+
+    /**
+     * 推到主线程处理取消
+     */
+    protected void postRunCanceled() {
+        CallbackHandler.postRunCanceled(this);
+    }
+
+    /**
+     * 推到主线程处理失败
+     */
+    protected void postRunFailed() {
+        CallbackHandler.postRunFailed(this);
+    }
+
+    /**
+     * 推到主线程处理进度
+     */
+    protected void postRunUpdateProgress(int totalLength, int completedLength) {
+        CallbackHandler.postRunUpdateProgress(this, totalLength, completedLength);
     }
 
     /**

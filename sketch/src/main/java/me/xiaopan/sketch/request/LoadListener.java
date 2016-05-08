@@ -20,14 +20,8 @@ import android.graphics.Bitmap;
 
 import pl.droidsonroids.gif.GifDrawable;
 
-public interface LoadListener {
-    void onStarted();
-
+public interface LoadListener extends BaseListener{
     void onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType);
 
     void onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType);
-
-    void onFailed(FailedCause failedCause);
-
-    void onCanceled(CancelCause cancelCause);
 }

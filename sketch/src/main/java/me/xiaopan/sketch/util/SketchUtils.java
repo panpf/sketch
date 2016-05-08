@@ -9,6 +9,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.Looper;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -217,5 +218,9 @@ public class SketchUtils {
         return imageDisplayer instanceof TransitionImageDisplayer
                 && fixedSize != null
                 && scaleType == ImageView.ScaleType.CENTER_CROP;
+    }
+
+    public static boolean isMainThread(){
+        return Looper.getMainLooper().getThread() == Thread.currentThread();
     }
 }

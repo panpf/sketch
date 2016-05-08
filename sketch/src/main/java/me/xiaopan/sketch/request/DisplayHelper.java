@@ -314,9 +314,12 @@ public class DisplayHelper {
      * @return DisplayRequest 你可以通过Request来查看请求的状态或者取消这个请求
      */
     public DisplayRequest commit() {
-        if (displayListener != null) {
-            displayListener.onStarted();
+        if(!SketchUtils.isMainThread()){
+            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "Please perform a commit in the UI thread", " - ", requestAttrs.getUri()));
+            return null;
         }
+
+        CallbackHandler.postCallbackStarted(displayListener);
 
         saveParams();
         preProcess();
@@ -479,9 +482,7 @@ public class DisplayHelper {
                         displayAttrs.getScaleType());
                 imageViewInterface.setImageDrawable(failedDrawable);
             }
-            if (displayListener != null) {
-                displayListener.onFailed(FailedCause.URI_NULL_OR_EMPTY);
-            }
+            CallbackHandler.postCallbackFailed(displayListener, FailedCause.URI_NULL_OR_EMPTY);
             return false;
         }
 
@@ -501,9 +502,7 @@ public class DisplayHelper {
                         displayAttrs.getScaleType());
                 imageViewInterface.setImageDrawable(failedDrawable);
             }
-            if (displayListener != null) {
-                displayListener.onFailed(FailedCause.URI_NO_SUPPORT);
-            }
+            CallbackHandler.postCallbackFailed(displayListener, FailedCause.URI_NO_SUPPORT);
             return false;
         }
 
@@ -565,10 +564,8 @@ public class DisplayHelper {
             imageViewInterface.clearAnimation();
             imageViewInterface.setImageDrawable(loadingDrawable);
 
-            if (displayListener != null) {
-                displayListener.onCanceled(isPauseLoad ? CancelCause.PAUSE_LOAD : CancelCause.LEVEL_IS_MEMORY);
-            }
-
+            CancelCause cancelCause = isPauseLoad ? CancelCause.PAUSE_LOAD : CancelCause.LEVEL_IS_MEMORY;
+            CallbackHandler.postCallbackCanceled(displayListener, cancelCause);
             return false;
         }
 
@@ -600,10 +597,8 @@ public class DisplayHelper {
                 }
             }
 
-            if (displayListener != null) {
-                displayListener.onCanceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
-            }
-
+            CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL;
+            CallbackHandler.postCallbackCanceled(displayListener, cancelCause);
             return false;
         }
 

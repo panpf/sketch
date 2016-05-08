@@ -16,15 +16,21 @@
 
 package me.xiaopan.sketch.request;
 
-/**
- * 显示监听器，值的注意的是DisplayListener中所有的方法都会在主线中执行，所以实现着不必考虑异步线程中刷新UI的问题
- */
-public interface DisplayListener extends BaseListener{
+public interface BaseListener {
     /**
-     * 已完成
-     *
-     * @param imageFrom 图片来源
-     * @param mimeType  图片类型
+     * 已开始
      */
-    void onCompleted(ImageFrom imageFrom, String mimeType);
+    void onStarted();
+
+    /**
+     * 已失败
+     *
+     * @param failedCause 失败原因
+     */
+    void onFailed(FailedCause failedCause);
+
+    /**
+     * 已取消
+     */
+    void onCanceled(CancelCause cancelCause);
 }
