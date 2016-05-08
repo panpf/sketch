@@ -98,8 +98,9 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 |resizeByFixedSize|-|false|false|
 |forceUseResize|-|false|false|
 |processor|-|null|null|
-|decodeGifImage|-|null|null|
+|decodeGifImage|-|false|false|
 |lowQualityImage|-|false|false|
+|bitmapConfig|-|null|null|
 |memoryCache|-|-|true|
 |memoryCacheId|-|-|null|
 |displayer|-|-|DefaultImageDisplayer|
