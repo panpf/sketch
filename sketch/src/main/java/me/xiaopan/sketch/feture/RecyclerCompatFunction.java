@@ -28,6 +28,7 @@ import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -68,8 +69,9 @@ public class RecyclerCompatFunction implements ImageViewFunction {
     }
 
     @Override
-    public void onDisplay() {
+    public boolean onDisplay(UriScheme uriScheme) {
         isSetImage = true;
+        return false;
     }
 
     @Override

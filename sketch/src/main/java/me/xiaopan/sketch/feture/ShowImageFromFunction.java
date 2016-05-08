@@ -26,6 +26,7 @@ import android.view.View;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.UriScheme;
 
 /**
  * 显示图片来源功能，会在ImageView的左上角显示一个三角形的色块用于标识本次图片是从哪里来的
@@ -60,8 +61,9 @@ public class ShowImageFromFunction implements ImageViewFunction {
     }
 
     @Override
-    public void onDisplay() {
-         imageFrom = null;
+    public boolean onDisplay(UriScheme uriScheme) {
+        imageFrom = null;
+        return true;
     }
 
     @Override

@@ -23,10 +23,11 @@ import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 
-import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.SketchImageView.ImageShape;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
+import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.UriScheme;
 
 /**
  * 定制图片形状功能，可以设置图片的形状，然后下载进度和按下效果蒙层就会根据此形状改变形状，以保证蒙层和图片的形状锲合
@@ -50,8 +51,8 @@ public class ImageShapeFunction implements ImageViewFunction{
     }
 
     @Override
-    public void onDisplay() {
-
+    public boolean onDisplay(UriScheme uriScheme) {
+        return false;
     }
 
     @Override

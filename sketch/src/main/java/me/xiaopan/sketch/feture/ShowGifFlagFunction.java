@@ -21,9 +21,10 @@ import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 
-import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
+import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -50,8 +51,8 @@ public class ShowGifFlagFunction implements ImageViewFunction {
     }
 
     @Override
-    public void onDisplay() {
-
+    public boolean onDisplay(UriScheme uriScheme) {
+        return false;
     }
 
     @Override

@@ -23,11 +23,12 @@ import android.view.MotionEvent;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.UriScheme;
 
 public interface ImageViewFunction {
     void onAttachedToWindow();
 
-    void onDisplay();
+    boolean onDisplay(UriScheme uriScheme);
 
     boolean onTouchEvent(MotionEvent event);
 

@@ -26,7 +26,7 @@ public interface ImageViewInterface {
     /**
      * 显示图片
      */
-    void onDisplay();
+    void onDisplay(UriScheme uriScheme);
 
     /**
      * 获取Drawable

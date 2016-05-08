@@ -27,6 +27,7 @@ import android.view.View;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.UriScheme;
 
 /**
  * 显示下载进度功能，会在ImageView上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
@@ -55,8 +56,9 @@ public class ShowProgressFunction implements ImageViewFunction {
     }
 
     @Override
-    public void onDisplay() {
-        onDisplayStarted();
+    public boolean onDisplay(UriScheme uriScheme) {
+        progress = uriScheme == UriScheme.NET ? 0 : NONE;
+        return true;
     }
 
     @Override
@@ -114,7 +116,7 @@ public class ShowProgressFunction implements ImageViewFunction {
     @Override
     public boolean onDisplayStarted() {
         progress = 0;
-        return true;
+        return false;
     }
 
     @Override

@@ -43,6 +43,7 @@ import me.xiaopan.sketch.feture.ShowGifFlagFunction;
 import me.xiaopan.sketch.feture.ShowImageFromFunction;
 import me.xiaopan.sketch.feture.ShowPressedFunction;
 import me.xiaopan.sketch.feture.ShowProgressFunction;
+import me.xiaopan.sketch.request.UriScheme;
 
 public class SketchImageView extends ImageView implements ImageViewInterface {
     private DisplayListener wrapperDisplayListener;
@@ -327,30 +328,37 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
-    public void onDisplay() {
+    public void onDisplay(UriScheme uriScheme) {
+        boolean needInvokeInvalidate = false;
+
         if(requestFunction != null){
-            requestFunction.onDisplay();
+            //noinspection ConstantConditions
+            needInvokeInvalidate |= requestFunction.onDisplay(uriScheme);
         }
         if(recyclerCompatFunction != null){
-            recyclerCompatFunction.onDisplay();
+            needInvokeInvalidate |= recyclerCompatFunction.onDisplay(uriScheme);
         }
         if(showPressedFunction != null){
-            showPressedFunction.onDisplay();
+            needInvokeInvalidate |= showPressedFunction.onDisplay(uriScheme);
         }
         if(showProgressFunction != null){
-            showProgressFunction.onDisplay();
+            needInvokeInvalidate |= showProgressFunction.onDisplay(uriScheme);
         }
         if(showGifFlagFunction != null){
-            showGifFlagFunction.onDisplay();
+            needInvokeInvalidate |= showGifFlagFunction.onDisplay(uriScheme);
         }
         if(showImageFromFunction != null){
-            showImageFromFunction.onDisplay();
+            needInvokeInvalidate |= showImageFromFunction.onDisplay(uriScheme);
         }
         if(imageShapeFunction != null){
-            imageShapeFunction.onDisplay();
+            needInvokeInvalidate |= imageShapeFunction.onDisplay(uriScheme);
         }
         if(clickRetryFunction != null){
-            clickRetryFunction.onDisplay();
+            needInvokeInvalidate |= clickRetryFunction.onDisplay(uriScheme);
+        }
+
+        if(needInvokeInvalidate){
+            invalidate();
         }
     }
 

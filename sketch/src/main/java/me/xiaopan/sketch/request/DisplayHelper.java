@@ -463,7 +463,7 @@ public class DisplayHelper {
 
         // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
         // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
-        imageViewInterface.onDisplay();
+        imageViewInterface.onDisplay(requestAttrs.getUriScheme());
 
         displayListener = imageViewInterface.getDisplayListener();
         progressListener = imageViewInterface.getDownloadProgressListener();

@@ -30,6 +30,7 @@ import android.widget.Scroller;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.UriScheme;
 
 /**
  * 显示按下状态，按下后会在ImageView上显示一个黑色半透明的蒙层，松手后小时
@@ -63,8 +64,8 @@ public class ShowPressedFunction implements ImageViewFunction {
     }
 
     @Override
-    public void onDisplay() {
-
+    public boolean onDisplay(UriScheme uriScheme) {
+        return false;
     }
 
     @Override
