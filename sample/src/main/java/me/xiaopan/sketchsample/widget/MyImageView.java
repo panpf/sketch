@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.util.Settings;
 
@@ -29,9 +30,7 @@ public class MyImageView extends SketchImageView {
     }
 
     @Override
-    public void onDisplay() {
-        super.onDisplay();
-
+    public void onDisplay(UriScheme uriScheme) {
         if(autoApplyGlobalAttr){
             setShowPressedStatus(settings.isShowPressedStatus());
             setShowImageFrom(settings.isShowImageFromFlag());
@@ -39,6 +38,8 @@ public class MyImageView extends SketchImageView {
             setClickRetryOnPauseDownload(settings.isClickDisplayOnPauseDownload());
             setClickRetryOnFailed(settings.isClickDisplayOnFailed());
         }
+
+        super.onDisplay(uriScheme);
     }
 
     public void setAutoApplyGlobalAttr(boolean autoApplyGlobalAttr){
