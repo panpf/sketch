@@ -76,6 +76,13 @@ public class DisplayHelper {
         displayAttrs.reset(imageViewInterface, sketch);
         displayOptions.copy(imageViewInterface.getOptions());
 
+        // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
+        // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
+        imageViewInterface.onDisplay(requestAttrs.getUriScheme());
+
+        displayListener = imageViewInterface.getDisplayListener();
+        progressListener = imageViewInterface.getDownloadProgressListener();
+
         return this;
     }
 
@@ -89,6 +96,13 @@ public class DisplayHelper {
         requestAttrs.copy(params.attrs);
         displayAttrs.reset(imageViewInterface, sketch);
         displayOptions.copy(params.options);
+
+        // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
+        // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
+        imageViewInterface.onDisplay(requestAttrs.getUriScheme());
+
+        displayListener = imageViewInterface.getDisplayListener();
+        progressListener = imageViewInterface.getDownloadProgressListener();
 
         return this;
     }
@@ -460,13 +474,6 @@ public class DisplayHelper {
         if (requestAttrs.getName() == null) {
             requestAttrs.setName(displayAttrs.getMemoryCacheId());
         }
-
-        // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
-        // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
-        imageViewInterface.onDisplay(requestAttrs.getUriScheme());
-
-        displayListener = imageViewInterface.getDisplayListener();
-        progressListener = imageViewInterface.getDownloadProgressListener();
     }
 
     private boolean checkUri() {
