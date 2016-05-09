@@ -611,10 +611,10 @@ public final class DiskLruCache implements Closeable {
         return size;
     }
 
-    private synchronized void completeEdit(Editor editor, boolean success) throws IOException {
+    private synchronized void completeEdit(Editor editor, boolean success) throws IOException, EditorChangedException {
         Entry entry = editor.entry;
         if (entry.currentEditor != editor) {
-            throw new IllegalStateException();
+            throw new EditorChangedException();
         }
 
         // if this edit is creating the entry for the first time, every index must have a value
@@ -736,7 +736,11 @@ public final class DiskLruCache implements Closeable {
         }
         for (Entry entry : new ArrayList<Entry>(lruEntries.values())) {
             if (entry.currentEditor != null) {
-                entry.currentEditor.abort();
+                try {
+                    entry.currentEditor.abort();
+                } catch (EditorChangedException e) {
+                    e.printStackTrace();
+                }
             }
         }
         trimToSize();
@@ -942,7 +946,7 @@ public final class DiskLruCache implements Closeable {
          * Commits this edit so it is visible to readers.  This releases the
          * edit lock so another edit may be started on the same key.
          */
-        public void commit() throws IOException {
+        public void commit() throws IOException, EditorChangedException {
             if (hasErrors) {
                 completeEdit(this, false);
                 remove(entry.key); // the previous entry is stale
@@ -955,7 +959,7 @@ public final class DiskLruCache implements Closeable {
          * Aborts this edit. This releases the edit lock so another edit may be
          * started on the same key.
          */
-        public void abort() throws IOException {
+        public void abort() throws IOException, EditorChangedException {
             completeEdit(this, false);
         }
 
@@ -1066,5 +1070,9 @@ public final class DiskLruCache implements Closeable {
         public File getDirtyFile(int i) {
             return new File(directory, key + "." + i + ".tmp");
         }
+    }
+
+    public static class EditorChangedException extends Exception{
+
     }
 }

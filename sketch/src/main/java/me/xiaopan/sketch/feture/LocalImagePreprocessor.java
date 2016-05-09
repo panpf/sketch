@@ -24,7 +24,6 @@ import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.IOException;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Identifier;
@@ -122,7 +121,7 @@ public class LocalImagePreprocessor implements Identifier {
             e.printStackTrace();
             try {
                 editor.abort();
-            } catch (IOException e1) {
+            } catch (Exception e1) {
                 e1.printStackTrace();
             }
         } finally {
@@ -188,7 +187,7 @@ public class LocalImagePreprocessor implements Identifier {
             e.printStackTrace();
             try {
                 editor.abort();
-            } catch (IOException e1) {
+            } catch (Exception e1) {
                 e1.printStackTrace();
             }
         } finally {

@@ -165,7 +165,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         return result;
     }
 
-    private DownloadResult realDownload(DownloadRequest request) throws IOException {
+    private DownloadResult realDownload(DownloadRequest request) throws IOException, DiskLruCache.EditorChangedException {
         // 打开连接
         HttpURLConnection connection = openUrlConnection(request.getRequestAttrs().getRealUri());
         connection.connect();
@@ -222,7 +222,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
         return readData(request, connection, contentLength);
     }
 
-    private DownloadResult readData(DownloadRequest request, HttpURLConnection connection, int contentLength) throws IOException {
+    private DownloadResult readData(DownloadRequest request, HttpURLConnection connection, int contentLength) throws IOException, DiskLruCache.EditorChangedException {
         // 获取输入流
         InputStream inputStream = connection.getInputStream();
 
@@ -245,7 +245,11 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
                 outputStream = new BufferedOutputStream(editor.newOutputStream(0), BUFFER_SIZE);
             } catch (FileNotFoundException e) {
                 SketchUtils.close(inputStream);
-                editor.abort();
+                try {
+                    editor.abort();
+                } catch (DiskLruCache.EditorChangedException e1) {
+                    e1.printStackTrace();
+                }
                 throw e;
             }
         } else {
@@ -258,7 +262,11 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
             completedLength = readData(inputStream, outputStream, request, contentLength);
         } catch (IOException e) {
             if (editor != null) {
-                editor.abort();
+                try {
+                    editor.abort();
+                } catch (DiskLruCache.EditorChangedException e1) {
+                    e1.printStackTrace();
+                }
             }
             throw e;
         } finally {

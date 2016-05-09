@@ -194,7 +194,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         return result;
     }
 
-    private DownloadResult realDownload(DownloadRequest request) throws IOException {
+    private DownloadResult realDownload(DownloadRequest request) throws IOException, DiskLruCache.EditorChangedException {
         HttpResponse httpResponse;
         try {
             httpResponse = httpClient.execute(new HttpGet(request.getRequestAttrs().getRealUri()));
@@ -244,7 +244,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         return readData(request, httpResponse, contentLength);
     }
 
-    private DownloadResult readData(DownloadRequest request, HttpResponse httpResponse, int contentLength) throws IOException {
+    private DownloadResult readData(DownloadRequest request, HttpResponse httpResponse, int contentLength) throws IOException, DiskLruCache.EditorChangedException {
         // 获取输入流后判断是否已取消
         InputStream inputStream = httpResponse.getEntity().getContent();
 
@@ -267,7 +267,11 @@ public class HttpClientImageDownloader implements ImageDownloader {
                 outputStream = new BufferedOutputStream(editor.newOutputStream(0), BUFFER_SIZE);
             } catch (FileNotFoundException e) {
                 SketchUtils.close(inputStream);
-                editor.abort();
+                try {
+                    editor.abort();
+                } catch (DiskLruCache.EditorChangedException e1) {
+                    e1.printStackTrace();
+                }
                 throw e;
             }
         } else {
@@ -280,7 +284,11 @@ public class HttpClientImageDownloader implements ImageDownloader {
             completedLength = HttpUrlConnectionImageDownloader.readData(inputStream, outputStream, request, contentLength);
         } catch (IOException e) {
             if (editor != null) {
-                editor.abort();
+                try {
+                    editor.abort();
+                } catch (DiskLruCache.EditorChangedException e1) {
+                    e1.printStackTrace();
+                }
             }
             throw e;
         } finally {
