@@ -118,4 +118,12 @@ public class LruMemoryCache implements MemoryCache {
             ((RecycleDrawable) oldValue).setIsCached(NAME + ":entryRemoved", false);
         }
     }
+
+    public static LruMemoryCache create(Context context){
+        return new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 8));
+    }
+
+    public static LruMemoryCache createPlaceholder(Context context){
+        return new LruMemoryCache(context, Math.min((int) (Runtime.getRuntime().maxMemory() / 16), 8 * 1024 * 1024));
+    }
 }

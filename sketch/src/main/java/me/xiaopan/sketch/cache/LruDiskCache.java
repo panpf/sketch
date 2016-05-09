@@ -30,6 +30,8 @@ import me.xiaopan.sketch.util.SketchUtils;
 
 public class LruDiskCache implements DiskCache {
     private static final String NAME = "LruDiskCache";
+    private static final String DISK_CACHE_DIR_NAME = "sketch";
+    private static final int DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024;
 
     private Context context;
     private File cacheDir;
@@ -38,15 +40,14 @@ public class LruDiskCache implements DiskCache {
 
     private DiskLruCache cache;
 
-    public LruDiskCache(Context context, File cacheDir, int appVersionCode, int maxSize) {
+    public LruDiskCache(Context context, int appVersionCode, int maxSize) {
         this.context = context;
-        this.cacheDir = cacheDir;
         this.maxSize = maxSize;
         this.appVersionCode = appVersionCode;
-        resetCache();
+        reset();
     }
 
-    private synchronized void resetCache() {
+    private synchronized void reset() {
         if (cache != null) {
             try {
                 cache.close();
@@ -54,6 +55,13 @@ public class LruDiskCache implements DiskCache {
                 e.printStackTrace();
             }
         }
+
+        cacheDir = context.getExternalCacheDir();
+        if (cacheDir == null) {
+            cacheDir = context.getCacheDir();
+        }
+        cacheDir = new File(cacheDir, DISK_CACHE_DIR_NAME);
+        SketchUtils.deleteOldCacheFiles(cacheDir);
 
         try {
             cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
@@ -64,12 +72,22 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public boolean exist(String uri) {
+    public synchronized boolean exist(String uri) {
+        // 缓存目录不存在就重建，提高自我恢复能力
+        if(!cacheDir.exists()){
+            reset();
+        }
+
         return cache.exist(uriToDiskCacheKey(uri));
     }
 
     @Override
     public synchronized Entry get(String uri) {
+        // 缓存目录不存在就重建，提高自我恢复能力
+        if(!cacheDir.exists()){
+            reset();
+        }
+
         DiskLruCache.SimpleSnapshot snapshot = null;
         try {
             snapshot = cache.getSimpleSnapshot(uriToDiskCacheKey(uri));
@@ -81,12 +99,17 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public synchronized DiskLruCache.Editor edit(String uri) {
+        // 缓存目录不存在就重建，提高自我恢复能力
+        if(!cacheDir.exists()){
+            reset();
+        }
+
         try {
             return cache.edit(uriToDiskCacheKey(uri));
         } catch (IOException e) {
             e.printStackTrace();
             // 发生异常的时候（比如SD卡被拔出，导致不能使用），尝试重建DiskLryCache，能显著提高遇错恢复能力
-            resetCache();
+            reset();
             try {
                 return cache.edit(uriToDiskCacheKey(uri));
             } catch (IOException e1) {
@@ -131,7 +154,7 @@ public class LruDiskCache implements DiskCache {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        resetCache();
+        reset();
     }
 
     @Override
@@ -193,5 +216,10 @@ public class LruDiskCache implements DiskCache {
                 return false;
             }
         }
+    }
+
+    public static LruDiskCache open(Context context){
+        // appVersionCode固定死，因为当appVersionCode改变时DiskLruCache会清除旧的缓存，可我们不需要这个功能
+        return new LruDiskCache(context, 1, DISK_CACHE_MAX_SIZE);
     }
 }

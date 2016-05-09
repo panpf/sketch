@@ -20,8 +20,6 @@ import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
-import java.io.File;
-
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.cache.LruDiskCache;
 import me.xiaopan.sketch.cache.LruMemoryCache;
@@ -35,20 +33,17 @@ import me.xiaopan.sketch.download.HttpUrlConnectionImageDownloader;
 import me.xiaopan.sketch.download.ImageDownloader;
 import me.xiaopan.sketch.execute.DefaultRequestExecutor;
 import me.xiaopan.sketch.execute.RequestExecutor;
+import me.xiaopan.sketch.feture.HelperFactory;
+import me.xiaopan.sketch.feture.ImageSizeCalculator;
 import me.xiaopan.sketch.feture.LocalImagePreprocessor;
+import me.xiaopan.sketch.feture.MobileNetworkPauseDownloadManager;
+import me.xiaopan.sketch.feture.RequestFactory;
 import me.xiaopan.sketch.feture.ResizeCalculator;
 import me.xiaopan.sketch.process.DefaultImageProcessor;
 import me.xiaopan.sketch.process.ImageProcessor;
-import me.xiaopan.sketch.feture.HelperFactory;
-import me.xiaopan.sketch.feture.ImageSizeCalculator;
-import me.xiaopan.sketch.feture.RequestFactory;
-import me.xiaopan.sketch.feture.MobileNetworkPauseDownloadManager;
-import me.xiaopan.sketch.util.SketchUtils;
 
 public class Configuration {
     private static final String NAME = "Configuration";
-    private static final String DISK_CACHE_DIR_NAME = "sketch";
-    private static final int DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024;
 
     private Context context;    //上下文
     private DiskCache diskCache;    // 磁盘缓存器
@@ -75,16 +70,8 @@ public class Configuration {
     public Configuration(Context tempContext) {
         this.context = tempContext.getApplicationContext();
 
-        File cacheDir = context.getExternalCacheDir();
-        if (cacheDir == null) {
-            cacheDir = context.getCacheDir();
-        }
-        cacheDir = new File(cacheDir, DISK_CACHE_DIR_NAME);
-        SketchUtils.deleteOldCacheFiles(cacheDir);
-        // appVersionCode固定死，因为当appVersionCode改变时DiskLruCache会清除旧的缓存，可我们不需要这个功能
-        this.diskCache = new LruDiskCache(context, cacheDir, 1, DISK_CACHE_MAX_SIZE);
-
-        this.memoryCache = new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 8));
+        this.diskCache = LruDiskCache.open(context);
+        this.memoryCache = LruMemoryCache.create(context);
         this.imageDecoder = new DefaultImageDecoder();
         this.helperFactory = new HelperFactory();
         this.requestFactory = new RequestFactory();
@@ -99,7 +86,7 @@ public class Configuration {
         this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.localImagePreprocessor = new LocalImagePreprocessor();
         this.defaultCutImageProcessor = new DefaultImageProcessor();
-        this.placeholderImageMemoryCache = new LruMemoryCache(context, Math.min((int) (Runtime.getRuntime().maxMemory() / 16), 8 * 1024 * 1024));
+        this.placeholderImageMemoryCache = LruMemoryCache.createPlaceholder(context);
 
         if (Sketch.isDebugMode()) {
             Log.i(Sketch.TAG, getInfo());
