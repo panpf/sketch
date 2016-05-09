@@ -91,7 +91,7 @@ public class MyLocalImagePreprocessor extends LocalImagePreprocessor {
             e.printStackTrace();
             try {
                 editor.abort();
-            } catch (IOException e1) {
+            } catch (Exception e1) {
                 e1.printStackTrace();
             }
             SketchUtils.close(inputStream);
@@ -109,11 +109,11 @@ public class MyLocalImagePreprocessor extends LocalImagePreprocessor {
                 outputStream.write(buffer, 0, realLength);
             }
             editor.commit();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             try {
                 editor.abort();
-            } catch (IOException e1) {
+            } catch (Exception e1) {
                 e1.printStackTrace();
             }
             return null;
