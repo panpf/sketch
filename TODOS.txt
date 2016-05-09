@@ -114,6 +114,8 @@
 （完成与2016-05-08）统一使用getDiskCacheKey访问磁盘缓存
 （完成与2016-05-08）listener回调在commit也要检查是不是在主线程不再的话就放到主线程执行
 （完成与2016-05-08）本地图片就不再显示进度蒙层了
+（完成与2016-05-09）diskLruCache abort和commit的时候会抛出运行时异常，捕获一下
+（完成与2016-05-09）提高DiskLruCache的遇错自我恢复能力
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
