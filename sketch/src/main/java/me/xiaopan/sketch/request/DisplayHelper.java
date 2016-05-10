@@ -74,12 +74,12 @@ public class DisplayHelper {
 
         requestAttrs.reset(uri);
         displayAttrs.reset(imageViewInterface, sketch);
-        displayOptions.copy(imageViewInterface.getOptions());
 
         // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
         // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
-        imageViewInterface.onDisplay(requestAttrs.getUriScheme());
+        this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
 
+        displayOptions.copy(imageViewInterface.getOptions());
         displayListener = imageViewInterface.getDisplayListener();
         progressListener = imageViewInterface.getDownloadProgressListener();
 
@@ -95,12 +95,12 @@ public class DisplayHelper {
 
         requestAttrs.copy(params.attrs);
         displayAttrs.reset(imageViewInterface, sketch);
-        displayOptions.copy(params.options);
 
         // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
         // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
-        imageViewInterface.onDisplay(requestAttrs.getUriScheme());
+        this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
 
+        displayOptions.copy(imageViewInterface.getOptions());
         displayListener = imageViewInterface.getDisplayListener();
         progressListener = imageViewInterface.getDownloadProgressListener();
 
@@ -380,7 +380,7 @@ public class DisplayHelper {
         }
 
         displayParams.attrs.copy(requestAttrs);
-        displayParams.options.copy(displayOptions);
+        imageViewInterface.getOptions().copy(displayOptions);
     }
 
     protected void preProcess() {
