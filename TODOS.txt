@@ -116,6 +116,7 @@
 （完成与2016-05-08）本地图片就不再显示进度蒙层了
 （完成与2016-05-09）diskLruCache abort和commit的时候会抛出运行时异常，捕获一下
 （完成与2016-05-09）提高DiskLruCache的遇错自我恢复能力
+（完成与2016-05-09）LruDiskCache兼容多进程
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -197,3 +198,5 @@ RoundedCornerImageProcessor增加扩展构造函数，支持定义每个角的�
 由于显示GIF的场景较少，所以默认不解码GIF图，在需要解码的地方你可以主动调用Options.setDecodeGifImage(true)或Helper.decodeGifImage()开启
 LoadOptions增加BitmapConfig参数
 DownloadHelper支持设置requestLevel
+文档和更新日志中说明要如果是在Application中首次调用Sketch.with()那么需要过滤非主线程
+LruDiskCache兼容多进程，多进程下会采用不同的disk缓存目录，顺便讲解一下多进程的坑
