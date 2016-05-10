@@ -1,5 +1,6 @@
 package me.xiaopan.sketch.util;
 
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -18,6 +19,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.ImageFormat;
@@ -222,5 +224,34 @@ public class SketchUtils {
 
     public static boolean isMainThread(){
         return Looper.getMainLooper().getThread() == Thread.currentThread();
+    }
+
+    public static String getProcessName(Context context) {
+        int pid = android.os.Process.myPid();
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        List<ActivityManager.RunningAppProcessInfo> runningApps = am.getRunningAppProcesses();
+        if (runningApps == null) {
+            return null;
+        }
+        for (ActivityManager.RunningAppProcessInfo procInfo : runningApps) {
+            if (procInfo.pid == pid) {
+                return procInfo.processName;
+            }
+        }
+        return null;
+    }
+
+    public static boolean isMainProcess(Context context){
+        return context.getPackageName().equalsIgnoreCase(getProcessName(context));
+    }
+
+    public static String getSimpleProcessName(Context context){
+        String processName = getProcessName(context);
+        if(processName == null){
+            return null;
+        }
+        String packageName = context.getPackageName();
+        int lastIndex = processName.lastIndexOf(packageName);
+        return lastIndex != -1 ? processName.substring(lastIndex + packageName.length()) : null;
     }
 }

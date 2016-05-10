@@ -56,11 +56,21 @@ public class LruDiskCache implements DiskCache {
             }
         }
 
-        cacheDir = context.getExternalCacheDir();
-        if (cacheDir == null) {
-            cacheDir = context.getCacheDir();
+        File appCacheDir = context.getExternalCacheDir();
+        if (appCacheDir == null) {
+            appCacheDir = context.getCacheDir();
         }
-        cacheDir = new File(cacheDir, DISK_CACHE_DIR_NAME);
+
+        // 缓存目录名字加上进程名字的后缀，不同的进程不同缓存目录，以兼容多进程
+        String diskCacheDirName = DISK_CACHE_DIR_NAME;
+        String simpleProcessName = SketchUtils.getSimpleProcessName(context);
+        if(simpleProcessName != null){
+            diskCacheDirName += simpleProcessName;
+        }
+
+        cacheDir = new File(appCacheDir, diskCacheDirName);
+
+        // 尝试删除旧的缓存文件，删除依据就是缓存目录下面有没有journal文件没有的话就是旧版的缓存需要删除
         SketchUtils.deleteOldCacheFiles(cacheDir);
 
         try {
