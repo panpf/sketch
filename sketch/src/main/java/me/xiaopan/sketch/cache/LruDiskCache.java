@@ -54,6 +54,7 @@ public class LruDiskCache implements DiskCache {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+            cache = null;
         }
 
         File appCacheDir = context.getExternalCacheDir();
@@ -77,7 +78,24 @@ public class LruDiskCache implements DiskCache {
             cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("cacheDir disable. " + cacheDir.getPath());
+
+            // 换目录名称
+            int count = 0;
+            while (count < 1000){
+                cacheDir = new File(appCacheDir, diskCacheDirName+count);
+                try {
+                    cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
+                    break;
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                    count++;
+                }
+            }
+
+            // 试了一千次都没找到可以用的那就崩吧
+            if(cache == null){
+                throw new RuntimeException("cacheDir disable. " + cacheDir.getPath());
+            }
         }
     }
 
