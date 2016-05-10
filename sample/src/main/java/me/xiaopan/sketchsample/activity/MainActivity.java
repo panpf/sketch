@@ -17,6 +17,7 @@
 package me.xiaopan.sketchsample.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -40,6 +41,7 @@ import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.MyBaseActivity;
+import me.xiaopan.sketchsample.NotificationService;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
@@ -156,6 +158,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
 
         photoAlbumButton.performClick();
+
+        startService(new Intent(getBaseContext(), NotificationService.class));
     }
 
     @Override
