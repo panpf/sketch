@@ -31,8 +31,7 @@ import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.download.HttpClientImageDownloader;
 import me.xiaopan.sketch.download.HttpUrlConnectionImageDownloader;
 import me.xiaopan.sketch.download.ImageDownloader;
-import me.xiaopan.sketch.execute.DefaultRequestExecutor;
-import me.xiaopan.sketch.execute.RequestExecutor;
+import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.feture.HelperFactory;
 import me.xiaopan.sketch.feture.ImageSizeCalculator;
 import me.xiaopan.sketch.feture.LocalImagePreprocessor;
@@ -80,7 +79,7 @@ public class Configuration {
         } else {
             this.imageDownloader = new HttpClientImageDownloader();
         }
-        this.requestExecutor = new DefaultRequestExecutor.Builder().build();
+        this.requestExecutor = new RequestExecutor();
         this.resizeCalculator = new ResizeCalculator();
         this.imageSizeCalculator = new ImageSizeCalculator();
         this.defaultImageDisplayer = new DefaultImageDisplayer();

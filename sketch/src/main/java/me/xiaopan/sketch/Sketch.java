@@ -46,6 +46,7 @@ public class Sketch {
 
     private static Sketch instance;
     private static boolean debugMode;    //调试模式，在控制台输出日志
+    private static boolean outElapsedTime;    // 输出display在主线程的耗时
     private static Map<Enum<?>, Object> optionsMap;
 
     private Configuration configuration;
@@ -67,9 +68,7 @@ public class Sketch {
     }
 
     /**
-     * 获取配置对象
-     *
-     * @return 配置对象
+     * 获取配置
      */
     public Configuration getConfiguration() {
         return configuration;
@@ -83,8 +82,6 @@ public class Sketch {
      *                         <blockQuote>“http://site.com/image.png“  // from Web
      *                         <br>“https://site.com/image.png“ // from Web
      *                         </blockQuote>
-     * @param downloadListener 下载监听器
-     * @return DownloadHelper 你可以继续设置一些参数，最后调用fire()方法开始下载
      */
     public DownloadHelper download(String uri, DownloadListener downloadListener) {
         return configuration.getHelperFactory().getDownloadHelper(this, uri).listener(downloadListener);
@@ -104,8 +101,6 @@ public class Sketch {
      *                     <br>"asset://image.png"; // from assets
      *                     <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      *                     </blockQuote>
-     * @param loadListener 加载监听器
-     * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
     public LoadHelper load(String uri, LoadListener loadListener) {
         return configuration.getHelperFactory().getLoadHelper(this, uri).listener(loadListener);
@@ -113,10 +108,6 @@ public class Sketch {
 
     /**
      * 加载Asset中的图片
-     *
-     * @param fileName     文件名称
-     * @param loadListener 加载监听器
-     * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
     @SuppressWarnings("unused")
     public LoadHelper loadFromAsset(String fileName, LoadListener loadListener) {
@@ -125,10 +116,6 @@ public class Sketch {
 
     /**
      * 加载资源中的图片
-     *
-     * @param drawableResId 图片资源ID
-     * @param loadListener  加载监听器
-     * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
     @SuppressWarnings("unused")
     public LoadHelper loadFromResource(int drawableResId, LoadListener loadListener) {
@@ -137,10 +124,6 @@ public class Sketch {
 
     /**
      * 加载URI指向的图片
-     *
-     * @param uri          图片URI
-     * @param loadListener 加载监听器
-     * @return LoadHelper 你可以继续设置一些参数，最后调用fire()方法开始加载
      */
     @SuppressWarnings("unused")
     public LoadHelper loadFromURI(Uri uri, LoadListener loadListener) {
@@ -161,8 +144,6 @@ public class Sketch {
      *                                 <br>"asset://image.png"; // from assets
      *                                 <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
      *                                 </blockQuote>
-     * @param imageViewInterface 显示图片的视图
-     * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(String uri, ImageViewInterface imageViewInterface) {
         return configuration.getHelperFactory().getDisplayHelper(this, uri, imageViewInterface);
@@ -170,10 +151,6 @@ public class Sketch {
 
     /**
      * 显示Asset中的图片
-     *
-     * @param fileName                 文件名称
-     * @param imageViewInterface 显示图片的视图
-     * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper displayFromAsset(String fileName, ImageViewInterface imageViewInterface) {
         return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.ASSET.createUri(fileName), imageViewInterface);
@@ -181,10 +158,6 @@ public class Sketch {
 
     /**
      * 显示资源中的图片
-     *
-     * @param drawableResId            图片资源ID
-     * @param imageViewInterface 显示图片的视图
-     * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper displayFromResource(int drawableResId, ImageViewInterface imageViewInterface) {
         return configuration.getHelperFactory().getDisplayHelper(this, UriScheme.DRAWABLE.createUri(String.valueOf(drawableResId)), imageViewInterface);
@@ -192,10 +165,6 @@ public class Sketch {
 
     /**
      * 显示URI指向的图片
-     *
-     * @param uri                      图片URI
-     * @param imageViewInterface 显示图片的视图
-     * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper displayFromURI(Uri uri, ImageViewInterface imageViewInterface) {
         return configuration.getHelperFactory().getDisplayHelper(this, uri != null ? uri.toString() : null, imageViewInterface);
@@ -203,10 +172,6 @@ public class Sketch {
 
     /**
      * 显示图片，主要用于配合SketchImageView兼容RecyclerView
-     *
-     * @param displayParams            参数集
-     * @param imageViewInterface 显示图片的视图
-     * @return DisplayHelper 你可以继续设置一些参数，最后调用fire()方法开始显示
      */
     public DisplayHelper display(DisplayParams displayParams, ImageViewInterface imageViewInterface) {
         return configuration.getHelperFactory().getDisplayHelper(this, displayParams, imageViewInterface);
@@ -215,8 +180,6 @@ public class Sketch {
 
     /**
      * 取消
-     *
-     * @param imageViewInterface ImageView
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
      */
     public static boolean cancel(ImageViewInterface imageViewInterface) {
@@ -266,6 +229,7 @@ public class Sketch {
     /**
      * 放入下载选项
      */
+    @SuppressWarnings("unused")
     public static void putOptions(Enum<?> optionsName, DownloadOptions options) {
         installOptionsMap();
         optionsMap.put(optionsName, options);
@@ -288,20 +252,31 @@ public class Sketch {
     }
 
     /**
-     * 是否开启调试模式
-     *
-     * @return 是否开启调试模式，开启调试模式后会在控制台输出LOG
+     * 是否开启调试模式，开启调试模式后会在控制台输出LOG
      */
     public static boolean isDebugMode() {
         return debugMode;
     }
 
     /**
-     * 设置是否开启调试模式
-     *
-     * @param debugMode 是否开启调试模式，开启调试模式后会在控制台输出LOG
+     * 设置是否开启调试模式，开启调试模式后会在控制台输出LOG
      */
     public static void setDebugMode(boolean debugMode) {
         Sketch.debugMode = debugMode;
+    }
+
+    /**
+     * 是否输出display在主线程的耗时
+     */
+    public static boolean isOutElapsedTime() {
+        return outElapsedTime;
+    }
+
+    /**
+     * 设置是否输出display在主线程的耗时
+     */
+    @SuppressWarnings("unused")
+    public static void setOutElapsedTime(boolean outElapsedTime) {
+        Sketch.outElapsedTime = outElapsedTime;
     }
 }

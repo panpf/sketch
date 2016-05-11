@@ -32,6 +32,7 @@ import me.xiaopan.sketch.feture.ImageSizeCalculator;
 import me.xiaopan.sketch.feture.RequestFactory;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.util.Stopwatch;
 
 public class DisplayHelper {
     protected static final String NAME = "DisplayHelper";
@@ -72,12 +73,19 @@ public class DisplayHelper {
         this.sketch = sketch;
         this.imageViewInterface = imageViewInterface;
 
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().start(uri);
+        }
+
         requestAttrs.reset(uri);
         displayAttrs.reset(imageViewInterface, sketch);
 
         // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
         // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
         this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("onDisplay");
+        }
 
         displayOptions.copy(imageViewInterface.getOptions());
         displayListener = imageViewInterface.getDisplayListener();
@@ -93,12 +101,19 @@ public class DisplayHelper {
         this.sketch = sketch;
         this.imageViewInterface = imageViewInterface;
 
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().start(params.attrs.getUri());
+        }
+
         requestAttrs.copy(params.attrs);
         displayAttrs.reset(imageViewInterface, sketch);
 
         // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
         // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
         this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("onDisplay");
+        }
 
         displayOptions.copy(imageViewInterface.getOptions());
         displayListener = imageViewInterface.getDisplayListener();
@@ -328,44 +343,92 @@ public class DisplayHelper {
      * @return DisplayRequest 你可以通过Request来查看请求的状态或者取消这个请求
      */
     public DisplayRequest commit() {
-        if(!SketchUtils.isMainThread()){
+        if (!SketchUtils.isMainThread()) {
             Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "Please perform a commit in the UI thread", " - ", requestAttrs.getUri()));
+            if (Sketch.isOutElapsedTime()) {
+                Stopwatch.getInstance().print();
+            }
             return null;
         }
 
         CallbackHandler.postCallbackStarted(displayListener);
 
         saveParams();
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("saveParams");
+        }
+
         preProcess();
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("preProcess");
+        }
 
-        if (!checkUri()) {
+        boolean checkResult = checkUri();
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("checkUri");
+        }
+        if (!checkResult) {
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+            if (Sketch.isOutElapsedTime()) {
+                Stopwatch.getInstance().print();
+            }
             return null;
         }
 
-        if (!checkUriScheme()) {
+        checkResult = checkUriScheme();
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("checkUriScheme");
+        }
+        if (!checkResult) {
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+            if (Sketch.isOutElapsedTime()) {
+                Stopwatch.getInstance().print();
+            }
             return null;
         }
 
-        if (!checkMemoryCache()) {
+        checkResult = checkMemoryCache();
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("checkMemoryCache");
+        }
+        if (!checkResult) {
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+            if (Sketch.isOutElapsedTime()) {
+                Stopwatch.getInstance().print();
+            }
             return null;
         }
 
-        if (!checkRequestLevel()) {
+        checkResult = checkRequestLevel();
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("checkRequestLevel");
+        }
+        if (!checkResult) {
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+            if (Sketch.isOutElapsedTime()) {
+                Stopwatch.getInstance().print();
+            }
             return null;
         }
 
         DisplayRequest potentialRequest = checkRepeatRequest();
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("checkRepeatRequest");
+        }
         if (potentialRequest != null) {
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+            if (Sketch.isOutElapsedTime()) {
+                Stopwatch.getInstance().print();
+            }
             return potentialRequest;
         }
 
         DisplayRequest request = submitRequest();
+
         sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().print();
+        }
         return request;
     }
 
@@ -667,6 +730,9 @@ public class DisplayHelper {
         DisplayRequest request = requestFactory.newDisplayRequest(
                 sketch, requestAttrs, displayAttrs, displayOptions,
                 displayBinder, displayListener, progressListener);
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("submitRequest-createRequest");
+        }
 
         // 显示默认图片
         Drawable loadingBindDrawable;
@@ -675,9 +741,20 @@ public class DisplayHelper {
         } else {
             loadingBindDrawable = new BindFixedRecycleBitmapDrawable(null, request);
         }
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("submitRequest-createLoadingImage");
+        }
+
         imageViewInterface.setImageDrawable(loadingBindDrawable);
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("submitRequest-setLoadingImage");
+        }
 
         request.submit();
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.getInstance().record("submitRequest-submit");
+        }
+
         return request;
     }
 }

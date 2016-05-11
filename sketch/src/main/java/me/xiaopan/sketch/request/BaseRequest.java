@@ -70,7 +70,7 @@ public abstract class BaseRequest implements Runnable {
      */
     protected void submitRunDispatch() {
         this.runStatus = RunStatus.DISPATCH;
-        sketch.getConfiguration().getRequestExecutor().getRequestDispatchExecutor().execute(this);
+        sketch.getConfiguration().getRequestExecutor().submitDispatch(this);
     }
 
     /**
@@ -78,7 +78,7 @@ public abstract class BaseRequest implements Runnable {
      */
     protected void submitRunDownload() {
         this.runStatus = RunStatus.DOWNLOAD;
-        sketch.getConfiguration().getRequestExecutor().getNetRequestExecutor().execute(this);
+        sketch.getConfiguration().getRequestExecutor().submitDownload(this);
     }
 
     /**
@@ -86,7 +86,7 @@ public abstract class BaseRequest implements Runnable {
      */
     protected void submitRunLoad() {
         this.runStatus = RunStatus.LOAD;
-        sketch.getConfiguration().getRequestExecutor().getLocalRequestExecutor().execute(this);
+        sketch.getConfiguration().getRequestExecutor().submitLoad(this);
     }
 
     /**
