@@ -66,7 +66,7 @@ public class LruDiskCache implements DiskCache {
         String diskCacheDirName = DISK_CACHE_DIR_NAME;
         String simpleProcessName = SketchUtils.getSimpleProcessName(context);
         if(simpleProcessName != null){
-            diskCacheDirName += simpleProcessName;
+            diskCacheDirName += URLEncoder.encode(simpleProcessName);
         }
 
         cacheDir = new File(appCacheDir, diskCacheDirName);
@@ -81,7 +81,7 @@ public class LruDiskCache implements DiskCache {
 
             // 换目录名称
             int count = 0;
-            while (count < 1000){
+            while (count < 10){
                 cacheDir = new File(appCacheDir, diskCacheDirName+count);
                 try {
                     cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
