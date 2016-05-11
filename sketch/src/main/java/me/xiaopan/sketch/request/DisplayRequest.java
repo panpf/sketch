@@ -191,7 +191,7 @@ public class DisplayRequest extends LoadRequest {
             if (loadResult.getBitmap().isRecycled()) {
                 if (Sketch.isDebugMode()) {
                     Log.e(Sketch.TAG, SketchUtils.concat(getLogName(),
-                            " - ", "runLoad",
+                            " - ", "loadCompleted",
                             " - ", "bitmap recycled",
                             " - ", loadResult.getGifDrawable().getInfo(),
                             " - ", getRequestAttrs().getName()));
@@ -216,7 +216,7 @@ public class DisplayRequest extends LoadRequest {
             if (loadResult.getGifDrawable().isRecycled()) {
                 if (Sketch.isDebugMode()) {
                     Log.e(Sketch.TAG, SketchUtils.concat(getLogName(),
-                            " - ", "runLoad",
+                            " - ", "loadCompleted",
                             " - ", "gif drawable recycled",
                             " - ", loadResult.getGifDrawable().getInfo(),
                             " - ", getRequestAttrs().getName()));
@@ -227,7 +227,7 @@ public class DisplayRequest extends LoadRequest {
 
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
-                        " - ", "runLoad",
+                        " - ", "loadCompleted",
                         " - ", "new gif drawable",
                         " - ", loadResult.getGifDrawable().getInfo(),
                         " - ", getRequestAttrs().getName()));
@@ -250,7 +250,8 @@ public class DisplayRequest extends LoadRequest {
     protected void displayCompleted() {
         if (displayResult.getDrawable() instanceof RecycleDrawable) {
             RecycleDrawable recycleDrawable = (RecycleDrawable) displayResult.getDrawable();
-            String callingStation = displayResult.getImageFrom() == ImageFrom.MEMORY_CACHE ? "executeLoad:fromMemory" : "executeLoad:new";
+            boolean fromMemoryCache = displayResult.getImageFrom() == ImageFrom.MEMORY_CACHE;
+            String callingStation =  fromMemoryCache? "displayCompleted:fromMemory" : "displayCompleted:new";
             recycleDrawable.setIsWaitDisplay(callingStation, true);
         }
 

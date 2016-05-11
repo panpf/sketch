@@ -113,9 +113,9 @@ public class RequestFunction implements ImageViewFunction {
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable){
-        // 当Drawable改变的时候旧Drawable的显示引用计数减1，新Drawable的显示引用计数加1
-        oldDrawableFromSketch = notifyDrawable(callPosition + ":oldDrawable", oldDrawable, false);
+        // 当Drawable改变的时候新Drawable的显示引用计数加1，旧Drawable的显示引用计数减1，一定要先处理newDrawable
         newDrawableFromSketch = notifyDrawable(callPosition + ":newDrawable", newDrawable, true);
+        oldDrawableFromSketch = notifyDrawable(callPosition + ":oldDrawable", oldDrawable, false);
 
         // 如果新Drawable不是来自Sketch，那么就要清空显示参数，防止被RecyclerCompatFunction在onAttachedToWindow的时候错误的恢复成上一张图片
         if(!newDrawableFromSketch){

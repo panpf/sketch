@@ -259,7 +259,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         super.setImageURI(uri);
         final Drawable newDrawable = getDrawable();
 
-        setDrawable(oldDrawable, newDrawable);
+        setDrawable("setImageURI", oldDrawable, newDrawable);
     }
 
     @Override
@@ -268,7 +268,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         super.setImageResource(resId);
         final Drawable newDrawable = getDrawable();
 
-        setDrawable(oldDrawable, newDrawable);
+        setDrawable("setImageResource", oldDrawable, newDrawable);
     }
 
     @Override
@@ -277,38 +277,38 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         super.setImageDrawable(drawable);
         final Drawable newDrawable = getDrawable();
 
-        setDrawable(oldDrawable, newDrawable);
+        setDrawable("setImageDrawable", oldDrawable, newDrawable);
     }
 
-    private void setDrawable(Drawable oldDrawable, Drawable newDrawable){
+    private void setDrawable(String callPosition, Drawable oldDrawable, Drawable newDrawable){
         // 图片确实改变了
         if (oldDrawable != newDrawable) {
             boolean needInvokeInvalidate = false;
 
             if(requestFunction != null){
                 //noinspection ConstantConditions
-                needInvokeInvalidate |= requestFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+                needInvokeInvalidate |= requestFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
             if(showGifFlagFunction != null){
-                needInvokeInvalidate |= showGifFlagFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+                needInvokeInvalidate |= showGifFlagFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
             if(showImageFromFunction != null){
-                needInvokeInvalidate |= showImageFromFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+                needInvokeInvalidate |= showImageFromFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
             if(showPressedFunction != null){
-                needInvokeInvalidate |= showPressedFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+                needInvokeInvalidate |= showPressedFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
             if(showProgressFunction != null){
-                needInvokeInvalidate |= showProgressFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+                needInvokeInvalidate |= showProgressFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
             if(imageShapeFunction != null){
-                needInvokeInvalidate |= imageShapeFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+                needInvokeInvalidate |= imageShapeFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
             if(clickRetryFunction != null){
-                needInvokeInvalidate |= clickRetryFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+                needInvokeInvalidate |= clickRetryFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
             if(recyclerCompatFunction != null){
-                needInvokeInvalidate |= recyclerCompatFunction.onDrawableChanged("setImageURI", oldDrawable, newDrawable);
+                needInvokeInvalidate |= recyclerCompatFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
 
             if(needInvokeInvalidate){
