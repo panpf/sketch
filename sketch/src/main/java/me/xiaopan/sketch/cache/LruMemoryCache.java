@@ -84,6 +84,11 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
+    public void close() {
+        clear();
+    }
+
+    @Override
     public String getIdentifier() {
         return appendIdentifier(new StringBuilder()).toString();
     }

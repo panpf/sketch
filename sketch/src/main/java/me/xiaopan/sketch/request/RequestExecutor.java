@@ -16,11 +16,12 @@
 
 package me.xiaopan.sketch.request;
 
+import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 
-import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -32,15 +33,21 @@ import me.xiaopan.sketch.Identifier;
  */
 public class RequestExecutor implements Identifier {
     private static final String NAME = "RequestExecutor";
-    private Executor netTaskExecutor;    //网络任务执行器
-    private Executor localTaskExecutor;    //本地任务执行器
+    private ExecutorService netTaskExecutor;    //网络任务执行器
+    private ExecutorService localTaskExecutor;    //本地任务执行器
     private Handler dispatchHandler;
+    private DispatchThread dispatchThread;
+    private boolean shutdown;
 
     public void submitDispatch(Runnable runnable) {
-        if(dispatchHandler == null){
-            synchronized (RequestExecutor.this){
-                if(dispatchHandler == null){
-                    DispatchThread dispatchThread = new DispatchThread("DispatchThread");
+        if (shutdown) {
+            return;
+        }
+
+        if (dispatchHandler == null || dispatchThread == null) {
+            synchronized (RequestExecutor.this) {
+                if (dispatchHandler == null) {
+                    dispatchThread = new DispatchThread("DispatchThread");
                     dispatchThread.start();
                     dispatchHandler = new Handler(dispatchThread.getLooper(), new DispatchCallback());
                 }
@@ -50,8 +57,12 @@ public class RequestExecutor implements Identifier {
     }
 
     public void submitLoad(Runnable runnable) {
+        if (shutdown) {
+            return;
+        }
+
         if (localTaskExecutor == null) {
-            synchronized (RequestExecutor.this){
+            synchronized (RequestExecutor.this) {
                 if (localTaskExecutor == null) {
                     localTaskExecutor = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
                 }
@@ -61,8 +72,12 @@ public class RequestExecutor implements Identifier {
     }
 
     public void submitDownload(Runnable runnable) {
+        if (shutdown) {
+            return;
+        }
+
         if (netTaskExecutor == null) {
-            synchronized (RequestExecutor.this){
+            synchronized (RequestExecutor.this) {
                 if (netTaskExecutor == null) {
                     netTaskExecutor = new ThreadPoolExecutor(5, 5, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
                 }
@@ -72,12 +87,20 @@ public class RequestExecutor implements Identifier {
     }
 
     @SuppressWarnings("unused")
-    public void setLocalTaskExecutor(Executor localTaskExecutor) {
+    public void setLocalTaskExecutor(ExecutorService localTaskExecutor) {
+        if (shutdown) {
+            return;
+        }
+
         this.localTaskExecutor = localTaskExecutor;
     }
 
     @SuppressWarnings("unused")
-    public void setNetTaskExecutor(Executor netTaskExecutor) {
+    public void setNetTaskExecutor(ExecutorService netTaskExecutor) {
+        if (shutdown) {
+            return;
+        }
+
         this.netTaskExecutor = netTaskExecutor;
     }
 
@@ -88,7 +111,34 @@ public class RequestExecutor implements Identifier {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME);
+        return builder.append(NAME).append("(").append(shutdown ? "shutdown" : "running");
+    }
+
+    public void shutdown() {
+        if(dispatchHandler != null){
+            dispatchHandler = null;
+        }
+
+        if (dispatchThread != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+                dispatchThread.quitSafely();
+            } else {
+                dispatchThread.quit();
+            }
+            dispatchThread = null;
+        }
+
+        if (netTaskExecutor != null) {
+            netTaskExecutor.shutdown();
+            netTaskExecutor = null;
+        }
+
+        if (localTaskExecutor != null) {
+            localTaskExecutor.shutdown();
+            localTaskExecutor = null;
+        }
+
+        shutdown = true;
     }
 
     private static final class DispatchThread extends HandlerThread {
@@ -99,7 +149,7 @@ public class RequestExecutor implements Identifier {
         }
     }
 
-    private static final class DispatchCallback implements Handler.Callback{
+    private static final class DispatchCallback implements Handler.Callback {
         @Override
         public boolean handleMessage(Message msg) {
             ((Runnable) msg.obj).run();

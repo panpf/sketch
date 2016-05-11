@@ -113,12 +113,16 @@ public class Configuration {
     /**
      * 设置请求执行器
      *
-     * @param requestExecutor 请求执行器
+     * @param newRequestExecutor 请求执行器
      */
     @SuppressWarnings("unused")
-    public Configuration setRequestExecutor(RequestExecutor requestExecutor) {
-        if (requestExecutor != null) {
-            this.requestExecutor = requestExecutor;
+    public Configuration setRequestExecutor(RequestExecutor newRequestExecutor) {
+        if (newRequestExecutor != null) {
+            RequestExecutor oldRequestExecutor = requestExecutor;
+            requestExecutor = newRequestExecutor;
+            if(oldRequestExecutor != null){
+                oldRequestExecutor.shutdown();
+            }
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, NAME + ": " + "set" + " - requestExecutor" + " (" + requestExecutor.getIdentifier() + ")");
             }
@@ -138,15 +142,16 @@ public class Configuration {
     /**
      * 设置磁盘缓存器
      *
-     * @param diskCache 磁盘缓存器
+     * @param newDiskCache 磁盘缓存器
      */
     @SuppressWarnings("unused")
-    public Configuration setDiskCache(DiskCache diskCache) {
-        if (diskCache != null) {
-            if(this.diskCache != null){
-                this.diskCache.close();
+    public Configuration setDiskCache(DiskCache newDiskCache) {
+        if (newDiskCache != null) {
+            DiskCache oldDiskCache = diskCache;
+            diskCache = newDiskCache;
+            if(oldDiskCache != null){
+                oldDiskCache.close();
             }
-            this.diskCache = diskCache;
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, NAME + ": " + "set" + " - diskCache" + " (" + diskCache.getIdentifier() + ")");
             }
@@ -174,7 +179,7 @@ public class Configuration {
             MemoryCache oldMemoryCache = this.memoryCache;
             this.memoryCache = memoryCache;
             if (oldMemoryCache != null) {
-                oldMemoryCache.clear();
+                oldMemoryCache.close();
             }
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, NAME + ": " + "set" + " - memoryCache" + " (" + memoryCache.getIdentifier() + ")");
@@ -195,15 +200,15 @@ public class Configuration {
     /**
      * 设置占位图内存缓存器
      *
-     * @param placeholderImageMemoryCache 占位图内存缓存器
+     * @param newPlaceholderImageMemoryCache 占位图内存缓存器
      */
     @SuppressWarnings("unused")
-    public Configuration setPlaceholderImageMemoryCache(MemoryCache placeholderImageMemoryCache) {
-        if (placeholderImageMemoryCache != null) {
-            MemoryCache oldMemoryCache = this.placeholderImageMemoryCache;
-            this.placeholderImageMemoryCache = placeholderImageMemoryCache;
-            if (oldMemoryCache != null) {
-                oldMemoryCache.clear();
+    public Configuration setPlaceholderImageMemoryCache(MemoryCache newPlaceholderImageMemoryCache) {
+        if (newPlaceholderImageMemoryCache != null) {
+            MemoryCache oldPlaceholderImageMemoryCache = placeholderImageMemoryCache;
+            placeholderImageMemoryCache = newPlaceholderImageMemoryCache;
+            if (oldPlaceholderImageMemoryCache != null) {
+                oldPlaceholderImageMemoryCache.close();
             }
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, NAME + ": " + "set" + " - placeholderImageMemoryCache" + " (" + placeholderImageMemoryCache.getIdentifier() + ")");

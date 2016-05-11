@@ -53,4 +53,9 @@ public interface MemoryCache extends Identifier{
      * 清除缓存
      */
     void clear();
+
+    /**
+     * 关闭
+     */
+    void close();
 }
