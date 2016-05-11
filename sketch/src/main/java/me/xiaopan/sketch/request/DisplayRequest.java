@@ -333,8 +333,8 @@ public class DisplayRequest extends LoadRequest {
         setStatus(Status.DISPLAYING);
 
         // 显示失败图片
-        if (displayOptions.getFailedImage() != null) {
-            Drawable failedDrawable = displayOptions.getFailedImage().getDrawable(
+        if (displayOptions.getFailedImageHolder() != null) {
+            Drawable failedDrawable = displayOptions.getFailedImageHolder().getDrawable(
                     getSketch().getConfiguration().getContext(),
                     displayOptions.getImageDisplayer(),
                     displayAttrs.getFixedSize(),

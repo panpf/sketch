@@ -481,14 +481,23 @@ public class DisplayHelper {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
             }
-            if (displayOptions.getFailedImage() != null) {
-                Drawable failedDrawable = displayOptions.getFailedImage().getDrawable(
+
+            Drawable drawable = null;
+            if (displayOptions.getFailedImageHolder() != null) {
+                drawable = displayOptions.getFailedImageHolder().getDrawable(
                         sketch.getConfiguration().getContext(),
                         displayOptions.getImageDisplayer(),
                         displayAttrs.getFixedSize(),
                         displayAttrs.getScaleType());
-                imageViewInterface.setImageDrawable(failedDrawable);
+            } else if (displayOptions.getLoadingImageHolder() != null) {
+                drawable = displayOptions.getLoadingImageHolder().getDrawable(
+                        sketch.getConfiguration().getContext(),
+                        displayOptions.getImageDisplayer(),
+                        displayAttrs.getFixedSize(),
+                        displayAttrs.getScaleType());
             }
+            imageViewInterface.setImageDrawable(drawable);
+
             CallbackHandler.postCallbackFailed(displayListener, FailedCause.URI_NULL_OR_EMPTY);
             return false;
         }
@@ -501,14 +510,23 @@ public class DisplayHelper {
             Log.e(Sketch.TAG, SketchUtils.concat(NAME,
                     " - ", "unknown uri scheme: ", requestAttrs.getUri(),
                     " - ", requestAttrs.getName()));
-            if (displayOptions.getFailedImage() != null) {
-                Drawable failedDrawable = displayOptions.getFailedImage().getDrawable(
+
+            Drawable drawable = null;
+            if (displayOptions.getFailedImageHolder() != null) {
+                drawable = displayOptions.getFailedImageHolder().getDrawable(
                         sketch.getConfiguration().getContext(),
                         displayOptions.getImageDisplayer(),
                         displayAttrs.getFixedSize(),
                         displayAttrs.getScaleType());
-                imageViewInterface.setImageDrawable(failedDrawable);
+            } else if (displayOptions.getLoadingImageHolder() != null) {
+                drawable = displayOptions.getLoadingImageHolder().getDrawable(
+                        sketch.getConfiguration().getContext(),
+                        displayOptions.getImageDisplayer(),
+                        displayAttrs.getFixedSize(),
+                        displayAttrs.getScaleType());
             }
+            imageViewInterface.setImageDrawable(drawable);
+
             CallbackHandler.postCallbackFailed(displayListener, FailedCause.URI_NO_SUPPORT);
             return false;
         }
@@ -590,19 +608,26 @@ public class DisplayHelper {
             }
 
             // 显示暂停下载图片
-            if (displayOptions.getPauseDownloadImage() != null) {
-                Drawable pauseDownloadDrawable = displayOptions.getPauseDownloadImage().getDrawable(
+            Drawable drawable = null;
+            if (displayOptions.getPauseDownloadImageHolder() != null) {
+                drawable = displayOptions.getPauseDownloadImageHolder().getDrawable(
                         sketch.getConfiguration().getContext(),
                         displayOptions.getImageDisplayer(),
                         displayAttrs.getFixedSize(),
                         displayAttrs.getScaleType());
                 imageViewInterface.clearAnimation();
-                imageViewInterface.setImageDrawable(pauseDownloadDrawable);
+            } else if (displayOptions.getLoadingImageHolder() != null) {
+                drawable = displayOptions.getLoadingImageHolder().getDrawable(
+                        sketch.getConfiguration().getContext(),
+                        displayOptions.getImageDisplayer(),
+                        displayAttrs.getFixedSize(),
+                        displayAttrs.getScaleType());
             } else {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "pauseDownloadDrawable is null", " - ", requestAttrs.getName()));
                 }
             }
+            imageViewInterface.setImageDrawable(drawable);
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL;
             CallbackHandler.postCallbackCanceled(displayListener, cancelCause);

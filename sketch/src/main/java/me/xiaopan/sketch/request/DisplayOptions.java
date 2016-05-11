@@ -170,7 +170,7 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 获取失败时显示的图片
      */
-    public ImageHolder getFailedImage() {
+    public ImageHolder getFailedImageHolder() {
         return failedImageHolder;
     }
 
@@ -193,7 +193,7 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 获取暂停下载时显示的图片
      */
-    public ImageHolder getPauseDownloadImage() {
+    public ImageHolder getPauseDownloadImageHolder() {
         return pauseDownloadImageHolder;
     }
 
@@ -282,11 +282,11 @@ public class DisplayOptions extends LoadOptions {
         }
 
         if (failedImageHolder == null) {
-            failedImageHolder = options.getFailedImage();
+            failedImageHolder = options.getFailedImageHolder();
         }
 
         if (pauseDownloadImageHolder == null) {
-            pauseDownloadImageHolder = options.getPauseDownloadImage();
+            pauseDownloadImageHolder = options.getPauseDownloadImageHolder();
         }
 
         if(!resizeByFixedSize && options.isResizeByFixedSize()){
