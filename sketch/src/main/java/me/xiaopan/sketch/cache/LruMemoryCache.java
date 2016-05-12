@@ -129,6 +129,11 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     public static LruMemoryCache createPlaceholder(Context context){
-        return new LruMemoryCache(context, Math.min((int) (Runtime.getRuntime().maxMemory() / 16), 8 * 1024 * 1024));
+        long placeholderMemoryMaxSize = Runtime.getRuntime().maxMemory() / 32;
+
+        // 不能小于2M
+        placeholderMemoryMaxSize = Math.max(placeholderMemoryMaxSize, 2 * 1024 * 1024);
+
+        return new LruMemoryCache(context, (int) placeholderMemoryMaxSize);
     }
 }
