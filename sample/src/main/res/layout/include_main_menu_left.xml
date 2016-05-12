@@ -281,6 +281,24 @@
             </LinearLayout>
 
             <LinearLayout
+                android:id="@+id/item_main_cleanPlaceholderMemoryCache"
+                android:clickable="true"
+                style="@style/menu_item">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="清除占位图内存缓存"/>
+                <TextView
+                    android:id="@+id/text_main_placeholderMemoryCacheSize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:textColor="@color/default_text_color_subtitle"
+                    android:text="已用16M"/>
+            </LinearLayout>
+
+            <LinearLayout
                 android:id="@+id/item_main_cleanDiskCache"
                 android:clickable="true"
                 style="@style/menu_item">

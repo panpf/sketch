@@ -87,6 +87,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     @InjectView(R.id.checkBox_main_showPressedStatus) private CheckBox showPressedStatusCheckBox;
     @InjectView(R.id.item_main_cleanMemoryCache) private View cleanMemoryCacheItem;
     @InjectView(R.id.text_main_memoryCacheSize) private TextView memoryCacheSizeTextView;
+    @InjectView(R.id.item_main_cleanPlaceholderMemoryCache) private View cleanPlaceholderMemoryCacheItem;
+    @InjectView(R.id.text_main_placeholderMemoryCacheSize) private TextView placeholderMemoryCacheSizeTextView;
     @InjectView(R.id.item_main_cleanDiskCache) private View cleanDiskCacheItem;
     @InjectView(R.id.text_main_diskCacheSize) private TextView diskCacheSizeTextView;
     @InjectView(R.id.item_main_cacheInMemory) private View cacheMemoryItem;
@@ -149,6 +151,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         clickDisplayOnPauseDownloadItem.setOnClickListener(this);
         cleanDiskCacheItem.setOnClickListener(this);
         cleanMemoryCacheItem.setOnClickListener(this);
+        cleanPlaceholderMemoryCacheItem.setOnClickListener(this);
         showPressedStatusItem.setOnClickListener(this);
         cacheInDiskItem.setOnClickListener(this);
         cacheMemoryItem.setOnClickListener(this);
@@ -206,18 +209,9 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             @Override
             public void onPanelOpened(View panel) {
                 toggleDrawable.onDrawerOpened(panel);
-                refreshCacheSizeInfo(false, Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getSize(), Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getMaxSize());
-                new AsyncTask<Integer, Integer, Long>() {
-                    @Override
-                    protected Long doInBackground(Integer... params) {
-                        return Sketch.with(getBaseContext()).getConfiguration().getDiskCache().getSize();
-                    }
-
-                    @Override
-                    protected void onPostExecute(Long diskUsedSize) {
-                        refreshCacheSizeInfo(true, diskUsedSize, Sketch.with(getBaseContext()).getConfiguration().getDiskCache().getMaxSize());
-                    }
-                }.execute(0);
+                refreshMemoryCacheSizeInfo();
+                refreshPlaceholderMemoryCacheSizeInfo();
+                refreshDiskCacheSizeInfo();
             }
 
             @Override
@@ -227,15 +221,25 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         });
     }
 
-    private void refreshCacheSizeInfo(boolean disk, long useSize, long maxSize){
-        String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), useSize);
-        String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), maxSize);
+    private void refreshMemoryCacheSizeInfo(){
+        String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getSize());
+        String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getMaxSize());
         String cacheInfo = usedSizeFormat+"/"+maxSizeFormat;
-        if(disk){
-            diskCacheSizeTextView.setText(cacheInfo);
-        }else{
-            memoryCacheSizeTextView.setText(cacheInfo);
-        }
+        memoryCacheSizeTextView.setText(cacheInfo);
+    }
+
+    private void refreshPlaceholderMemoryCacheSizeInfo(){
+        String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getPlaceholderImageMemoryCache().getSize());
+        String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getPlaceholderImageMemoryCache().getMaxSize());
+        String cacheInfo = usedSizeFormat+"/"+maxSizeFormat;
+        placeholderMemoryCacheSizeTextView.setText(cacheInfo);
+    }
+
+    private void refreshDiskCacheSizeInfo(){
+        String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getDiskCache().getSize());
+        String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getDiskCache().getMaxSize());
+        String cacheInfo = usedSizeFormat+"/"+maxSizeFormat;
+        diskCacheSizeTextView.setText(cacheInfo);
     }
 
     @Override
@@ -395,15 +399,24 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 break;
             case R.id.item_main_cleanMemoryCache :
                 Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
-                refreshCacheSizeInfo(false, 0, Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getMaxSize());
+                refreshMemoryCacheSizeInfo();
+                break;
+            case R.id.item_main_cleanPlaceholderMemoryCache :
+                Sketch.with(getBaseContext()).getConfiguration().getPlaceholderImageMemoryCache().clear();
+                refreshPlaceholderMemoryCacheSizeInfo();
                 break;
             case R.id.item_main_cleanDiskCache :
-                refreshCacheSizeInfo(true, 0, Sketch.with(getBaseContext()).getConfiguration().getDiskCache().getMaxSize());
                 new AsyncTask<Integer, Integer, Integer>(){
                     @Override
                     protected Integer doInBackground(Integer... params) {
                         Sketch.with(getBaseContext()).getConfiguration().getDiskCache().clear();
                         return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Integer integer) {
+                        super.onPostExecute(integer);
+                        refreshDiskCacheSizeInfo();
                     }
                 }.execute(0);
                 break;
