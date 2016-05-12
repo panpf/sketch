@@ -44,6 +44,7 @@ public class RequestExecutor implements Identifier {
             return;
         }
 
+        // 之所有这里采用了懒加载的方式是为了兼容多进程，避免资源浪费
         if (dispatchHandler == null || dispatchThread == null) {
             synchronized (RequestExecutor.this) {
                 if (dispatchHandler == null) {
@@ -61,6 +62,7 @@ public class RequestExecutor implements Identifier {
             return;
         }
 
+        // 之所有这里采用了懒加载的方式是为了兼容多进程，避免资源浪费
         if (localTaskExecutor == null) {
             synchronized (RequestExecutor.this) {
                 if (localTaskExecutor == null) {
@@ -76,6 +78,7 @@ public class RequestExecutor implements Identifier {
             return;
         }
 
+        // 之所有这里采用了懒加载的方式是为了兼容多进程，避免资源浪费
         if (netTaskExecutor == null) {
             synchronized (RequestExecutor.this) {
                 if (netTaskExecutor == null) {

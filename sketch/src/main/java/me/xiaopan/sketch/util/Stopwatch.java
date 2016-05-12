@@ -8,8 +8,9 @@ public class Stopwatch {
     private long lastTime;
     private String name;
     private StringBuilder builder;
+    private String logTag;
 
-    public static Stopwatch getInstance() {
+    public static Stopwatch with() {
         if (instance == null) {
             synchronized (Stopwatch.class) {
                 if (instance == null) {
@@ -20,7 +21,8 @@ public class Stopwatch {
         return instance;
     }
 
-    public void start(String name) {
+    public void start(String logTag, String name) {
+        this.logTag = logTag;
         this.name = name;
         startTime = System.currentTimeMillis();
         lastTime = startTime;
@@ -54,7 +56,7 @@ public class Stopwatch {
             }
 
             builder.append("total of ").append(totalTime).append("ms");
-            Log.d("Stopwatch", builder.toString());
+            Log.d(logTag, builder.toString());
             builder = null;
         }
     }

@@ -74,7 +74,7 @@ public class DisplayHelper {
         this.imageViewInterface = imageViewInterface;
 
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().start(uri);
+            Stopwatch.with().start(Sketch.TAG, "DisplayTimeAnalysis. " + uri);
         }
 
         requestAttrs.reset(uri);
@@ -84,7 +84,7 @@ public class DisplayHelper {
         // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
         this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("onDisplay");
+            Stopwatch.with().record("onDisplay");
         }
 
         displayOptions.copy(imageViewInterface.getOptions());
@@ -102,7 +102,7 @@ public class DisplayHelper {
         this.imageViewInterface = imageViewInterface;
 
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().start(params.attrs.getUri());
+            Stopwatch.with().start(Sketch.TAG, "DisplayTimeAnalysis. " + params.attrs.getUri());
         }
 
         requestAttrs.copy(params.attrs);
@@ -112,7 +112,7 @@ public class DisplayHelper {
         // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
         this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("onDisplay");
+            Stopwatch.with().record("onDisplay");
         }
 
         displayOptions.copy(imageViewInterface.getOptions());
@@ -346,7 +346,7 @@ public class DisplayHelper {
         if (!SketchUtils.isMainThread()) {
             Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "Please perform a commit in the UI thread", " - ", requestAttrs.getUri()));
             if (Sketch.isOutElapsedTime()) {
-                Stopwatch.getInstance().print();
+                Stopwatch.with().print();
             }
             return null;
         }
@@ -355,70 +355,70 @@ public class DisplayHelper {
 
         saveParams();
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("saveParams");
+            Stopwatch.with().record("saveParams");
         }
 
         preProcess();
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("preProcess");
+            Stopwatch.with().record("preProcess");
         }
 
         boolean checkResult = checkUri();
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("checkUri");
+            Stopwatch.with().record("checkUri");
         }
         if (!checkResult) {
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             if (Sketch.isOutElapsedTime()) {
-                Stopwatch.getInstance().print();
+                Stopwatch.with().print();
             }
             return null;
         }
 
         checkResult = checkUriScheme();
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("checkUriScheme");
+            Stopwatch.with().record("checkUriScheme");
         }
         if (!checkResult) {
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             if (Sketch.isOutElapsedTime()) {
-                Stopwatch.getInstance().print();
+                Stopwatch.with().print();
             }
             return null;
         }
 
         checkResult = checkMemoryCache();
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("checkMemoryCache");
+            Stopwatch.with().record("checkMemoryCache");
         }
         if (!checkResult) {
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             if (Sketch.isOutElapsedTime()) {
-                Stopwatch.getInstance().print();
+                Stopwatch.with().print();
             }
             return null;
         }
 
         checkResult = checkRequestLevel();
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("checkRequestLevel");
+            Stopwatch.with().record("checkRequestLevel");
         }
         if (!checkResult) {
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             if (Sketch.isOutElapsedTime()) {
-                Stopwatch.getInstance().print();
+                Stopwatch.with().print();
             }
             return null;
         }
 
         DisplayRequest potentialRequest = checkRepeatRequest();
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("checkRepeatRequest");
+            Stopwatch.with().record("checkRepeatRequest");
         }
         if (potentialRequest != null) {
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             if (Sketch.isOutElapsedTime()) {
-                Stopwatch.getInstance().print();
+                Stopwatch.with().print();
             }
             return potentialRequest;
         }
@@ -427,7 +427,7 @@ public class DisplayHelper {
 
         sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().print();
+            Stopwatch.with().print();
         }
         return request;
     }
@@ -731,7 +731,7 @@ public class DisplayHelper {
                 sketch, requestAttrs, displayAttrs, displayOptions,
                 displayBinder, displayListener, progressListener);
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("submitRequest-createRequest");
+            Stopwatch.with().record("submitRequest-createRequest");
         }
 
         // 显示默认图片
@@ -742,17 +742,17 @@ public class DisplayHelper {
             loadingBindDrawable = new BindFixedRecycleBitmapDrawable(null, request);
         }
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("submitRequest-createLoadingImage");
+            Stopwatch.with().record("submitRequest-createLoadingImage");
         }
 
         imageViewInterface.setImageDrawable(loadingBindDrawable);
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("submitRequest-setLoadingImage");
+            Stopwatch.with().record("submitRequest-setLoadingImage");
         }
 
         request.submit();
         if (Sketch.isOutElapsedTime()) {
-            Stopwatch.getInstance().record("submitRequest-submit");
+            Stopwatch.with().record("submitRequest-submit");
         }
 
         return request;
