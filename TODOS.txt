@@ -117,6 +117,8 @@
 （完成与2016-05-09）diskLruCache abort和commit的时候会抛出运行时异常，捕获一下
 （完成与2016-05-09）提高DiskLruCache的遇错自我恢复能力
 （完成与2016-05-09）LruDiskCache兼容多进程
+（完成与2016-05-09）优化分发效率以及支持输出display在主线程的耗时
+（完成与2016-05-12）减少占位图缓存最大容量，调整为最大可用内存的32分之一，但又不能少于2M
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -200,3 +202,5 @@ LoadOptions增加BitmapConfig参数
 DownloadHelper支持设置requestLevel
 文档和更新日志中说明要如果是在Application中首次调用Sketch.with()那么需要过滤非主线程
 LruDiskCache兼容多进程，多进程下会采用不同的disk缓存目录，顺便讲解一下多进程的坑
+优化分发效率以及支持输出display在主线程的耗时
+减少占位图缓存最大容量，调整为最大可用内存的32分之一，但又不能少于2M
