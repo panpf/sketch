@@ -202,12 +202,13 @@ public class LruDiskCache implements DiskCache {
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(NAME)
-                .append(". ")
+                .append("(")
                 .append("dir").append("=").append(cacheDir.getPath())
-                .append(", ")
+                .append(",")
                 .append("maxSize").append("=").append(Formatter.formatFileSize(context, maxSize))
-                .append(", ")
-                .append("appVersionCode").append("=").append(appVersionCode);
+                .append(",")
+                .append("appVersionCode").append("=").append(appVersionCode)
+                .append(")");
     }
 
     public static class LruDiskCacheEntry implements Entry {

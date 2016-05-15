@@ -252,4 +252,33 @@ public class LoadOptions extends DownloadOptions {
             bitmapConfig = options.bitmapConfig;
         }
     }
+
+    @Override
+    public StringBuilder appendOptionsToId(StringBuilder builder) {
+        if (maxSize != null) {
+            builder.append("_");
+            maxSize.appendIdentifier(builder);
+        }
+        if (resize != null) {
+            builder.append("_");
+            resize.appendIdentifier(builder);
+        }
+        if (forceUseResize) {
+            builder.append("_");
+            builder.append("forceUseResize");
+        }
+        if (lowQualityImage) {
+            builder.append("_");
+            builder.append("lowQualityImage");
+        }
+        if (bitmapConfig != null) {
+            builder.append("_");
+            builder.append(bitmapConfig.name());
+        }
+        if (imageProcessor != null) {
+            builder.append("_");
+            imageProcessor.appendIdentifier(builder);
+        }
+        return builder;
+    }
 }

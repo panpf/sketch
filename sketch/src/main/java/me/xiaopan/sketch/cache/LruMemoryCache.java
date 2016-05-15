@@ -96,8 +96,9 @@ public class LruMemoryCache implements MemoryCache {
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(NAME)
-                .append(". ")
-                .append("maxSize").append("=").append(Formatter.formatFileSize(context, getMaxSize()));
+                .append("(")
+                .append("maxSize").append("=").append(Formatter.formatFileSize(context, getMaxSize()))
+                .append(")");
     }
 
     private class DrawableLruCache extends LruCache<String, Drawable> {

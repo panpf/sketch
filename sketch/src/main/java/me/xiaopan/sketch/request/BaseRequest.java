@@ -16,21 +16,29 @@
 
 package me.xiaopan.sketch.request;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
 import me.xiaopan.sketch.Sketch;
 
 public abstract class BaseRequest implements Runnable {
+    private static final Map<String, ReentrantLock> loadLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
 
     private Sketch sketch;
+    private RequestAttrs requestAttrs;
 
     private RunStatus runStatus;
 
-    private String logName = "SketchRequest";
+    private String logName = "BaseRequest";
     private Status status;
     private FailedCause failedCause;
     private CancelCause cancelCause;
 
-    public BaseRequest(Sketch sketch) {
+    public BaseRequest(Sketch sketch, RequestAttrs requestAttrs) {
         this.sketch = sketch;
+        this.requestAttrs = requestAttrs;
     }
 
     @Override
@@ -44,7 +52,15 @@ public abstract class BaseRequest implements Runnable {
                     runDownload();
                     break;
                 case LOAD:
+                    String lockId = requestAttrs.getId();
+                    ReentrantLock loadLock = lockId != null ? loadLocks.get(lockId) : null;
+                    if(loadLock != null){
+                        loadLock.lock();
+                    }
                     runLoad();
+                    if(loadLock != null){
+                        loadLock.unlock();
+                    }
                     break;
                 default:
                     new IllegalArgumentException("unknown runStatus: " + runStatus.name()).printStackTrace();
@@ -57,10 +73,23 @@ public abstract class BaseRequest implements Runnable {
         return sketch;
     }
 
+    /**
+     * 获取请求基本属性
+     */
+    public RequestAttrs getRequestAttrs() {
+        return requestAttrs;
+    }
+
+    /**
+     * 获取日志名称
+     */
     public String getLogName() {
         return logName;
     }
 
+    /**
+     * 日志名称
+     */
     protected void setLogName(String logName) {
         this.logName = logName;
     }

@@ -59,10 +59,11 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(NAME)
-                .append(". ")
+                .append("(")
                 .append("duration").append("=").append(duration)
-                .append(", ")
-                .append("color").append("=").append(color);
+                .append(",")
+                .append("color").append("=").append(color)
+                .append(")");
     }
 
     public int getColor() {

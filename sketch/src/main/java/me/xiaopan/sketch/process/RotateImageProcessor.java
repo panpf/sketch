@@ -59,7 +59,8 @@ public class RotateImageProcessor extends DefaultImageProcessor {
     @Override
     public StringBuilder appendIdentifier(StringBuilder stringBuilder) {
         return stringBuilder.append("RotateImageProcessor")
-                .append(". ")
-                .append("degrees").append("=").append(degrees);
+                .append("(")
+                .append("degrees").append("=").append(degrees)
+                .append(")");
     }
 }

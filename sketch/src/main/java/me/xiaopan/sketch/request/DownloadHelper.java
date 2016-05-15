@@ -119,9 +119,14 @@ public class DownloadHelper {
 
         // 暂停下载对于下载请求并不起作用，就相当于暂停加载对加载请求并不起作用一样，因此这里不予处理
 
+        // 根据URI和下载选项生成请求ID
+        if (requestAttrs.getId() == null) {
+            requestAttrs.createIdByUriAndOptions(downloadOptions);
+        }
+
         // 没有设置名称的话就用uri作为名称，名称主要用来在log中区分请求的
         if (requestAttrs.getName() == null) {
-            requestAttrs.setName(requestAttrs.getUri());
+            requestAttrs.setName(requestAttrs.getId());
         }
     }
 

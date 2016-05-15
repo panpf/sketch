@@ -68,8 +68,9 @@ public class TransitionImageDisplayer implements ImageDisplayer {
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(NAME)
-                .append(". ")
-                .append("duration").append("=").append(duration);
+                .append("(")
+                .append("duration").append("=").append(duration)
+                .append(")");
     }
 
     public int getDuration() {

@@ -150,7 +150,7 @@ public class DisplayRequest extends LoadRequest {
 
         // 检查内存缓存中是否已经存在了
         if (displayOptions.isCacheInMemory()) {
-            Drawable cacheDrawable = getSketch().getConfiguration().getMemoryCache().get(displayAttrs.getMemoryCacheId());
+            Drawable cacheDrawable = getSketch().getConfiguration().getMemoryCache().get(getRequestAttrs().getId());
             if (cacheDrawable != null) {
                 RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
                 if (!recycleDrawable.isRecycled()) {
@@ -165,7 +165,7 @@ public class DisplayRequest extends LoadRequest {
                     displayCompleted();
                     return;
                 } else {
-                    getSketch().getConfiguration().getMemoryCache().remove(displayAttrs.getMemoryCacheId());
+                    getSketch().getConfiguration().getMemoryCache().remove(getRequestAttrs().getId());
                     if (Sketch.isDebugMode()) {
                         Log.e(Sketch.TAG, SketchUtils.concat(getLogName(),
                                 " - ", "runLoad", "memory cache drawable recycled",
@@ -203,8 +203,8 @@ public class DisplayRequest extends LoadRequest {
             // 包装Bitmap并放入内存缓存池
             RecycleBitmapDrawable bitmapDrawable = new RecycleBitmapDrawable(loadResult.getBitmap());
             bitmapDrawable.setMimeType(loadResult.getMimeType());
-            if (displayOptions.isCacheInMemory() && displayAttrs.getMemoryCacheId() != null) {
-                getSketch().getConfiguration().getMemoryCache().put(displayAttrs.getMemoryCacheId(), bitmapDrawable);
+            if (displayOptions.isCacheInMemory() && getRequestAttrs().getId() != null) {
+                getSketch().getConfiguration().getMemoryCache().put(getRequestAttrs().getId(), bitmapDrawable);
             }
 
             displayResult = new DisplayResult(bitmapDrawable, loadResult.getImageFrom(), loadResult.getMimeType());
@@ -235,9 +235,9 @@ public class DisplayRequest extends LoadRequest {
 
             // 将GIF图放入内存缓存
             loadResult.getGifDrawable().setMimeType(loadResult.getMimeType());
-            if (displayOptions.isCacheInMemory() && displayAttrs.getMemoryCacheId() != null) {
+            if (displayOptions.isCacheInMemory() && getRequestAttrs().getId() != null) {
                 MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
-                memoryCache.put(displayAttrs.getMemoryCacheId(), loadResult.getGifDrawable());
+                memoryCache.put(getRequestAttrs().getId(), loadResult.getGifDrawable());
             }
 
             displayResult = new DisplayResult(loadResult.getGifDrawable(), loadResult.getImageFrom(), loadResult.getMimeType());

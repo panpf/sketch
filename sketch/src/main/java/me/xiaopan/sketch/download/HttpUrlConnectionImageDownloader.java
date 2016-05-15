@@ -76,12 +76,13 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(NAME)
-                .append(". ")
+                .append("(")
                 .append("maxRetryCount").append("=").append(maxRetryCount)
-                .append(", ")
+                .append(",")
                 .append("connectTimeout").append("=").append(connectTimeout)
-                .append(", ")
-                .append("readTimeout").append("=").append(readTimeout);
+                .append(",")
+                .append("readTimeout").append("=").append(readTimeout)
+                .append(")");
     }
 
     /**

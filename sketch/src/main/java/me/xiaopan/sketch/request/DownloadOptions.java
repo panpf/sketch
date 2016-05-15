@@ -121,4 +121,8 @@ public class DownloadOptions {
             requestLevelFrom = null;
         }
     }
+
+    public StringBuilder appendOptionsToId(StringBuilder builder) {
+        return builder;
+    }
 }

@@ -51,7 +51,17 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
     public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append("RoundedCornerImageProcessor");
         if (cornerRadius != null) {
-            builder.append(". ").append("cornerRadius").append("=").append(cornerRadius.toString());
+            builder.append("(")
+                    .append("cornerRadius").append("=").append("[")
+                    .append(cornerRadius[0]).append("x").append(cornerRadius[1])
+                    .append(",")
+                    .append(cornerRadius[2]).append("x").append(cornerRadius[3])
+                    .append(",")
+                    .append(cornerRadius[4]).append("x").append(cornerRadius[5])
+                    .append(",")
+                    .append(cornerRadius[6]).append("x").append(cornerRadius[7])
+                    .append("]")
+                    .append(")");
         }
         return builder;
     }

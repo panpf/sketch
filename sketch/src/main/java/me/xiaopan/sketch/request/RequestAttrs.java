@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.request;
 
 public class RequestAttrs {
+    private String id;
     private String uri;
     private String realUri;    // 真正的图片地址，例如原图片uri是asset://test.png的，realUri就是test.png
     private String name;    // 名称，用于在输出LOG的时候区分不同的请求
@@ -32,11 +33,13 @@ public class RequestAttrs {
 
     void reset(String uri) {
         if (uri != null) {
+            this.id = null;
             this.uri = uri;
             this.uriScheme = UriScheme.valueOfUri(uri);
             this.realUri = uriScheme != null ? uriScheme.crop(uri) : null;
             this.name = null;
         } else {
+            this.id = null;
             this.uri = null;
             this.uriScheme = null;
             this.realUri = null;
@@ -45,18 +48,36 @@ public class RequestAttrs {
     }
 
     void copy(RequestAttrs requestAttrs) {
+        this.id = requestAttrs.id;
         this.uri = requestAttrs.uri;
         this.realUri = requestAttrs.realUri;
         this.uriScheme = requestAttrs.uriScheme;
         this.name = requestAttrs.name;
     }
 
+    void setName(String name) {
+        this.name = name;
+    }
+
+    void setId(String id) {
+        this.id = id;
+    }
+
+    void createIdByUriAndOptions(DownloadOptions options) {
+        StringBuilder idBuilder = new StringBuilder();
+        idBuilder.append(uri);
+        if (options != null) {
+            options.appendOptionsToId(idBuilder);
+        }
+        id = idBuilder.toString();
+    }
+
     public String getName() {
         return name;
     }
 
-    void setName(String name) {
-        this.name = name;
+    public String getId() {
+        return id;
     }
 
     public String getUri() {

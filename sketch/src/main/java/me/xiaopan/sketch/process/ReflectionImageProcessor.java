@@ -59,10 +59,11 @@ public class ReflectionImageProcessor implements ImageProcessor {
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append("ReflectionImageProcessor")
-                .append(". ")
+                .append("(")
                 .append("scale").append("=").append(reflectionScale)
-                .append(", ")
-                .append("spacing").append("=").append(reflectionSpacing);
+                .append(",")
+                .append("spacing").append("=").append(reflectionSpacing)
+                .append(")");
     }
 
     @Override

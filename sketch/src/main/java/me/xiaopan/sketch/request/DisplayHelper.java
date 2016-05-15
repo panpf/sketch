@@ -176,6 +176,7 @@ public class DisplayHelper {
     /**
      * 设置最大尺寸，在解码时会使用此Size来计算inSimpleSize
      */
+    @SuppressWarnings("unused")
     public DisplayHelper maxSize(int width, int height) {
         displayOptions.setMaxSize(width, height);
         return this;
@@ -265,7 +266,7 @@ public class DisplayHelper {
      */
     @SuppressWarnings("unused")
     public DisplayHelper memoryCacheId(String memoryCacheId) {
-        this.displayAttrs.setMemoryCacheId(memoryCacheId);
+        this.requestAttrs.setId(memoryCacheId);
         return this;
     }
 
@@ -353,14 +354,14 @@ public class DisplayHelper {
 
         CallbackHandler.postCallbackStarted(displayListener);
 
-        saveParams();
-        if (Sketch.isOutElapsedTime()) {
-            Stopwatch.with().record("saveParams");
-        }
-
         preProcess();
         if (Sketch.isOutElapsedTime()) {
             Stopwatch.with().record("preProcess");
+        }
+
+        saveParams();
+        if (Sketch.isOutElapsedTime()) {
+            Stopwatch.with().record("saveParams");
         }
 
         boolean checkResult = checkUri();
@@ -433,19 +434,8 @@ public class DisplayHelper {
     }
 
     /**
-     * 将相关信息保存在SketchImageView中，以便在RecyclerView中恢复显示使用
+     * 对相关参数进行预处理
      */
-    private void saveParams() {
-        DisplayParams displayParams = imageViewInterface.getDisplayParams();
-        if (displayParams == null) {
-            displayParams = new DisplayParams();
-            imageViewInterface.setDisplayParams(displayParams);
-        }
-
-        displayParams.attrs.copy(requestAttrs);
-        imageViewInterface.getOptions().copy(displayOptions);
-    }
-
     protected void preProcess() {
         ImageSizeCalculator imageSizeCalculator = sketch.getConfiguration().getImageSizeCalculator();
 
@@ -527,16 +517,29 @@ public class DisplayHelper {
             throw new IllegalArgumentException(errorInfo);
         }
 
-        // 没有设置内存缓存ID的话就计算内存缓存ID，这个通常是不是需要使用者主动设置的，除非你想使用你自己放入MemoryCache中的图片
-        if (displayAttrs.getMemoryCacheId() == null) {
-            StringBuilder memoryCacheIdBuilder = new StringBuilder().append(requestAttrs.getUri());
-            displayAttrs.setMemoryCacheId(displayOptions.appendMemoryCacheKey(memoryCacheIdBuilder).toString());
+        // 根据URI和显示选项生成请求ID
+        if (requestAttrs.getId() == null) {
+            requestAttrs.createIdByUriAndOptions(displayOptions);
         }
 
         // 没有设置名称的话就用内存缓存ID作为名称，名称主要用来在log中区分请求的
         if (requestAttrs.getName() == null) {
-            requestAttrs.setName(displayAttrs.getMemoryCacheId());
+            requestAttrs.setName(requestAttrs.getId());
         }
+    }
+
+    /**
+     * 将相关信息保存在SketchImageView中，以便在RecyclerView中恢复显示使用
+     */
+    private void saveParams() {
+        DisplayParams displayParams = imageViewInterface.getDisplayParams();
+        if (displayParams == null) {
+            displayParams = new DisplayParams();
+            imageViewInterface.setDisplayParams(displayParams);
+        }
+
+        displayParams.attrs.copy(requestAttrs);
+        imageViewInterface.getOptions().copy(displayOptions);
     }
 
     private boolean checkUri() {
@@ -599,7 +602,7 @@ public class DisplayHelper {
 
     private boolean checkMemoryCache() {
         if (displayOptions.isCacheInMemory()) {
-            Drawable cacheDrawable = sketch.getConfiguration().getMemoryCache().get(displayAttrs.getMemoryCacheId());
+            Drawable cacheDrawable = sketch.getConfiguration().getMemoryCache().get(requestAttrs.getId());
             if (cacheDrawable != null) {
                 RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
                 if (!recycleDrawable.isRecycled()) {
@@ -615,7 +618,7 @@ public class DisplayHelper {
                     }
                     return false;
                 } else {
-                    sketch.getConfiguration().getMemoryCache().remove(displayAttrs.getMemoryCacheId());
+                    sketch.getConfiguration().getMemoryCache().remove(requestAttrs.getId());
                     if (Sketch.isDebugMode()) {
                         Log.e(Sketch.TAG, SketchUtils.concat(NAME,
                                 " - ", "memory cache drawable recycled",
@@ -708,7 +711,7 @@ public class DisplayHelper {
     private DisplayRequest checkRepeatRequest() {
         DisplayRequest potentialRequest = BindFixedRecycleBitmapDrawable.findDisplayRequest(imageViewInterface);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
-            if (displayAttrs.getMemoryCacheId().equals(potentialRequest.getDisplayAttrs().getMemoryCacheId())) {
+            if (requestAttrs.getId().equals(potentialRequest.getRequestAttrs().getId())) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(NAME,
                             " - ", "don't need to cancel",

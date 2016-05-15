@@ -26,7 +26,6 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 下载请求
  */
 public class DownloadRequest extends BaseRequest {
-    private RequestAttrs requestAttrs;
     private DownloadOptions options;
     private DownloadListener downloadListener;
     private DownloadProgressListener progressListener;
@@ -37,21 +36,13 @@ public class DownloadRequest extends BaseRequest {
             Sketch sketch, RequestAttrs requestAttrs,
             DownloadOptions options, DownloadListener downloadListener,
             DownloadProgressListener progressListener) {
-        super(sketch);
+        super(sketch, requestAttrs);
 
-        this.requestAttrs = requestAttrs;
         this.options = options;
         this.downloadListener = downloadListener;
         this.progressListener = progressListener;
 
         setLogName("DownloadRequest");
-    }
-
-    /**
-     * 获取请求基本属性
-     */
-    public RequestAttrs getRequestAttrs() {
-        return requestAttrs;
     }
 
     /**
@@ -118,13 +109,13 @@ public class DownloadRequest extends BaseRequest {
         // 然后从磁盘缓存中找缓存文件
         if (options.isCacheInDisk()) {
             DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
-            DiskCache.Entry diskCacheEntry = diskCache.get(requestAttrs.getDiskCacheKey());
+            DiskCache.Entry diskCacheEntry = diskCache.get(getRequestAttrs().getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
                             " - ", "runDispatch",
                             " - ", "diskCache",
-                            " - ", requestAttrs.getName()));
+                            " - ", getRequestAttrs().getName()));
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, false);
                 downloadComplete();
@@ -143,7 +134,7 @@ public class DownloadRequest extends BaseRequest {
             Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
                     " - ", "runDispatch",
                     " - ", "download",
-                    " - ", requestAttrs.getName()));
+                    " - ", getRequestAttrs().getName()));
         }
         submitRunDownload();
     }
@@ -156,7 +147,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "startDownload",
-                        " - ", requestAttrs.getName()));
+                        " - ", getRequestAttrs().getName()));
             }
             return;
         }
@@ -170,7 +161,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "downloadAfter",
-                        " - ", requestAttrs.getName()));
+                        " - ", getRequestAttrs().getName()));
             }
             return;
         }
@@ -214,7 +205,7 @@ public class DownloadRequest extends BaseRequest {
                     " - ", "runDispatch",
                     " - ", "canceled",
                     " - ", isPauseDownload ? "pause download" : "requestLevel is local",
-                    " - ", requestAttrs.getName()));
+                    " - ", getRequestAttrs().getName()));
         }
 
         canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
@@ -234,7 +225,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runUpdateProgressInMainThread",
                         " - ", "finished",
-                        " - ", requestAttrs.getName()));
+                        " - ", getRequestAttrs().getName()));
             }
             return;
         }
@@ -258,7 +249,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runCompletedInMainThread",
                         " - ", "canceled",
-                        " - ", requestAttrs.getName()));
+                        " - ", getRequestAttrs().getName()));
             }
             return;
         }
@@ -281,7 +272,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runFailedInMainThread",
                         " - ", "canceled",
-                        " - ", requestAttrs.getName()));
+                        " - ", getRequestAttrs().getName()));
             }
             return;
         }

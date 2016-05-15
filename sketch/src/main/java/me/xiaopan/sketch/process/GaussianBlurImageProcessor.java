@@ -18,6 +18,7 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
      * @param radius       模糊半径，取值为0到100，默认为15
      * @param isDarkHandle 是否让模糊后的图片看起来更暗一些，实现原理就是加上一层#88000000颜色。常用于页面背景，因为太亮的背景会影响页面上展示的内容，默认为false
      */
+    @SuppressWarnings("unused")
     public GaussianBlurImageProcessor(int radius, boolean isDarkHandle) {
         this.radius = radius;
         this.isDarkHandle = isDarkHandle;
@@ -26,6 +27,7 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
     /**
      * @param radius 模糊半径，取值为0到100，默认为15
      */
+    @SuppressWarnings("unused")
     public GaussianBlurImageProcessor(int radius) {
         this.radius = radius;
     }
@@ -37,16 +39,18 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
         this.isDarkHandle = isDarkHandle;
     }
 
+    @SuppressWarnings("unused")
     public GaussianBlurImageProcessor() {
     }
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append("GaussianBlurImageProcessor")
-                .append(". ")
+                .append("(")
                 .append("radius").append("=").append(radius)
                 .append(",")
-                .append("isDarkHandle").append("=").append(isDarkHandle);
+                .append("isDarkHandle").append("=").append(isDarkHandle)
+                .append(")");
     }
 
     @Override

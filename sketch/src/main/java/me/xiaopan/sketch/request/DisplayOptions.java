@@ -293,32 +293,4 @@ public class DisplayOptions extends LoadOptions {
             resizeByFixedSize = true;
         }
     }
-
-    public StringBuilder appendMemoryCacheKey(StringBuilder builder) {
-        if (getMaxSize() != null) {
-            builder.append("_");
-            getMaxSize().appendIdentifier(builder);
-        }
-        if (getResize() != null) {
-            builder.append("_");
-            getResize().appendIdentifier(builder);
-        }
-        if (isForceUseResize()) {
-            builder.append("_");
-            builder.append("forceUseResize");
-        }
-        if (isLowQualityImage()) {
-            builder.append("_");
-            builder.append("lowQualityImage");
-        }
-        if (getBitmapConfig() != null) {
-            builder.append("_");
-            builder.append(getBitmapConfig().name());
-        }
-        if (getImageProcessor() != null) {
-            builder.append("_");
-            getImageProcessor().appendIdentifier(builder);
-        }
-        return builder;
-    }
 }

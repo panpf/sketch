@@ -120,8 +120,9 @@ public class HttpClientImageDownloader implements ImageDownloader {
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(NAME)
-                .append(". ")
-                .append("maxRetryCount").append("=").append(maxRetryCount);
+                .append("(")
+                .append("maxRetryCount").append("=").append(maxRetryCount)
+                .append(")");
     }
 
     /**

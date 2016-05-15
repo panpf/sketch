@@ -66,7 +66,7 @@ public class RequestExecutor implements Identifier {
         if (localTaskExecutor == null) {
             synchronized (RequestExecutor.this) {
                 if (localTaskExecutor == null) {
-                    localTaskExecutor = new ThreadPoolExecutor(1, 1, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
+                    localTaskExecutor = new ThreadPoolExecutor(3, 3, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
                 }
             }
         }
@@ -82,7 +82,7 @@ public class RequestExecutor implements Identifier {
         if (netTaskExecutor == null) {
             synchronized (RequestExecutor.this) {
                 if (netTaskExecutor == null) {
-                    netTaskExecutor = new ThreadPoolExecutor(5, 5, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
+                    netTaskExecutor = new ThreadPoolExecutor(3, 3, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
                 }
             }
         }
@@ -114,7 +114,7 @@ public class RequestExecutor implements Identifier {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME).append("(").append(shutdown ? "shutdown" : "running");
+        return builder.append(NAME).append("(").append(shutdown ? "shutdown" : "running").append(")");
     }
 
     public void shutdown() {
