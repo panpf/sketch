@@ -119,6 +119,8 @@
 （完成与2016-05-09）LruDiskCache兼容多进程
 （完成与2016-05-09）优化分发效率以及支持输出display在主线程的耗时
 （完成与2016-05-12）减少占位图缓存最大容量，调整为最大可用内存的32分之一，但又不能少于2M
+（完成与2016-05-11）各种异常情况如果没有配置相应的占位image就设置drawable为空，这是之前的BUG
+（完成与2016-05-11）缓存文件的名称不能再用uri.encode来加密了，要用MD5（不必了之前有这样的考虑是因为可能会因为后缀可能为.apk而导致被误识别，但是DiskLruCache会在最后加上序号就没这问题了）
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -159,14 +161,13 @@ inBitmap的意思是找一个字节数一样的旧bitmap对象来装新的图片
 采用httpStack模式 改进imageDownloader，
 2.3以上不再主动回收图片了
 支持vector
-缓存文件的名称不能再用uri.encode来加密了，要用MD5
 考虑重新设计一下RequestLevel，感觉现在的有点儿繁琐并且意思不太明确
 RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper，这样loadingImage就可以使用各种图片了，要实现Fixed的话就直接设置bounds
 似乎想到一种能读取webp缩略图的方法了，方案就是将webp在本地转成png，然后再读取
 利用BitmapShader实现各种形状的图片
 displayHelper根据内存缓存ID过滤一下相同的请求
 本地任务考虑多线程，加快处理速度
-uri为空的请求设置drawable为空
+增强一下FixedBitmapDrawable，尽量在使用原生BitmapDrawable的基础上实现CenterType的功能，然后定义一个牛逼的SketchBitmapDrawable，然后在搞一个专门的RecyclerDrawable可以包装SketchBitmapDrawable个GIfDrawable
 
 其它：
 参考Glide、Fresco和Picasso
@@ -197,10 +198,11 @@ SketchImageView.setDisplayOptions(Enum)改为setOptionsByName(Enum) ...Helper.op
 所有failure改为failed
 新增旋转图片处理器RotateImageProcessor
 RoundedCornerImageProcessor增加扩展构造函数，支持定义每个角的大小
-由于显示GIF的场景较少，所以默认不解码GIF图，在需要解码的地方你可以主动调用Options.setDecodeGifImage(true)或Helper.decodeGifImage()开启
+由于显示GIF的场景较少，所以默认不再解码GIF图，在需要解码的地方你可以主动调用Options.setDecodeGifImage(true)或Helper.decodeGifImage()开启
 LoadOptions增加BitmapConfig参数
 DownloadHelper支持设置requestLevel
 文档和更新日志中说明要如果是在Application中首次调用Sketch.with()那么需要过滤非主线程
 LruDiskCache兼容多进程，多进程下会采用不同的disk缓存目录，顺便讲解一下多进程的坑
 优化分发效率以及支持输出display在主线程的耗时
 减少占位图缓存最大容量，调整为最大可用内存的32分之一，但又不能少于2M
+各种异常情况如果没有配置相应的占位image就设置drawable为空，这是之前的BUG
