@@ -121,6 +121,7 @@
 （完成与2016-05-12）减少占位图缓存最大容量，调整为最大可用内存的32分之一，但又不能少于2M
 （完成与2016-05-11）各种异常情况如果没有配置相应的占位image就设置drawable为空，这是之前的BUG
 （完成与2016-05-11）缓存文件的名称不能再用uri.encode来加密了，要用MD5（不必了之前有这样的考虑是因为可能会因为后缀可能为.apk而导致被误识别，但是DiskLruCache会在最后加上序号就没这问题了）
+（完成与2016-05-16）本地任务支持多线程，加快处理速度
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -166,7 +167,6 @@ RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
 似乎想到一种能读取webp缩略图的方法了，方案就是将webp在本地转成png，然后再读取
 利用BitmapShader实现各种形状的图片
 displayHelper根据内存缓存ID过滤一下相同的请求
-本地任务考虑多线程，加快处理速度
 增强一下FixedBitmapDrawable，尽量在使用原生BitmapDrawable的基础上实现CenterType的功能，然后定义一个牛逼的SketchBitmapDrawable，然后在搞一个专门的RecyclerDrawable可以包装SketchBitmapDrawable个GIfDrawable
 
 其它：
@@ -206,3 +206,4 @@ LruDiskCache兼容多进程，多进程下会采用不同的disk缓存目录，�
 优化分发效率以及支持输出display在主线程的耗时
 减少占位图缓存最大容量，调整为最大可用内存的32分之一，但又不能少于2M
 各种异常情况如果没有配置相应的占位image就设置drawable为空，这是之前的BUG
+本地任务支持多线程，加快处理速度
