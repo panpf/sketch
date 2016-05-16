@@ -54,13 +54,13 @@ public abstract class BaseRequest implements Runnable {
                 case LOAD:
                     String lockId = requestAttrs.getId();
                     ReentrantLock loadLock = lockId != null ? loadLocks.get(lockId) : null;
-                    if(loadLock != null){
-                        loadLock.lock();
+                    if(loadLock == null){
+                        loadLock = new ReentrantLock();
+                        loadLocks.put(lockId, loadLock);
                     }
+                    loadLock.lock();
                     runLoad();
-                    if(loadLock != null){
-                        loadLock.unlock();
-                    }
+                    loadLock.unlock();
                     break;
                 default:
                     new IllegalArgumentException("unknown runStatus: " + runStatus.name()).printStackTrace();

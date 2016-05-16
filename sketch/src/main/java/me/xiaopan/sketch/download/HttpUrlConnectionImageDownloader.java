@@ -49,13 +49,13 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     private static final String NAME = "HttpUrlConnectionImageDownloader";
 
-    private Map<String, ReentrantLock> urlLocks;
+    private Map<String, ReentrantLock> downloadLocks;
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
     private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
     private int readTimeout = DEFAULT_READ_TIMEOUT;
 
     public HttpUrlConnectionImageDownloader() {
-        this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
+        this.downloadLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
     }
 
     @Override
@@ -92,10 +92,10 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
      * @return URL锁
      */
     public synchronized ReentrantLock getUrlLock(String url) {
-        ReentrantLock urlLock = urlLocks.get(url);
+        ReentrantLock urlLock = downloadLocks.get(url);
         if (urlLock == null) {
             urlLock = new ReentrantLock();
-            urlLocks.put(url, urlLock);
+            downloadLocks.put(url, urlLock);
         }
         return urlLock;
     }
