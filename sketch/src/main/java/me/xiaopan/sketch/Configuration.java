@@ -388,14 +388,14 @@ public class Configuration {
     }
 
     /**
-     * 是否暂停下载图片，开启后将不再从网络下载图片，只影响display请求
+     * 是否暂停下载图片，开启后将不再从网络下载图片，只影响display请求和load请求
      */
     public boolean isPauseDownload() {
         return pauseDownload;
     }
 
     /**
-     * 设置暂停下载图片，开启后将不再从网络下载图片，只影响display请求
+     * 设置暂停下载图片，开启后将不再从网络下载图片，只影响display请求和load请求
      */
     public Configuration setPauseDownload(boolean pauseDownload) {
         if (this.pauseDownload != pauseDownload) {
