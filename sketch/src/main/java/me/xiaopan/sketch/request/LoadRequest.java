@@ -59,6 +59,7 @@ public class LoadRequest extends DownloadRequest {
     /**
      * 获取加载结果
      */
+    @SuppressWarnings("WeakerAccess")
     public LoadResult getLoadResult() {
         return loadResult;
     }

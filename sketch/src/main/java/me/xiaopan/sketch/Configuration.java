@@ -31,7 +31,6 @@ import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.download.HttpClientImageDownloader;
 import me.xiaopan.sketch.download.HttpUrlConnectionImageDownloader;
 import me.xiaopan.sketch.download.ImageDownloader;
-import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.feture.HelperFactory;
 import me.xiaopan.sketch.feture.ImageSizeCalculator;
 import me.xiaopan.sketch.feture.LocalImagePreprocessor;
@@ -40,6 +39,7 @@ import me.xiaopan.sketch.feture.RequestFactory;
 import me.xiaopan.sketch.feture.ResizeCalculator;
 import me.xiaopan.sketch.process.DefaultImageProcessor;
 import me.xiaopan.sketch.process.ImageProcessor;
+import me.xiaopan.sketch.request.RequestExecutor;
 
 public class Configuration {
     private static final String NAME = "Configuration";
@@ -120,7 +120,7 @@ public class Configuration {
         if (newRequestExecutor != null) {
             RequestExecutor oldRequestExecutor = requestExecutor;
             requestExecutor = newRequestExecutor;
-            if(oldRequestExecutor != null){
+            if (oldRequestExecutor != null) {
                 oldRequestExecutor.shutdown();
             }
             if (Sketch.isDebugMode()) {
@@ -149,7 +149,7 @@ public class Configuration {
         if (newDiskCache != null) {
             DiskCache oldDiskCache = diskCache;
             diskCache = newDiskCache;
-            if(oldDiskCache != null){
+            if (oldDiskCache != null) {
                 oldDiskCache.close();
             }
             if (Sketch.isDebugMode()) {
@@ -565,7 +565,7 @@ public class Configuration {
      * 设置本地图片预处理器
      */
     public Configuration setLocalImagePreprocessor(LocalImagePreprocessor localImagePreprocessor) {
-        if(localImagePreprocessor != null){
+        if (localImagePreprocessor != null) {
             this.localImagePreprocessor = localImagePreprocessor;
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, NAME + ": " + "set" + " - localImagePreprocessor" + " (" + localImagePreprocessor.getIdentifier() + ")");

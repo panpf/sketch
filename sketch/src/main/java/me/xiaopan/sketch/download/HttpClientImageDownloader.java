@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch.download;
 
-import android.util.Log;
-
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -29,6 +27,7 @@ import org.apache.http.HttpResponseInterceptor;
 import org.apache.http.HttpVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -44,55 +43,41 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HttpContext;
 
-import java.io.BufferedOutputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
-import java.io.OutputStream;
 import java.net.SocketTimeoutException;
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.GZIPInputStream;
 
-import me.xiaopan.sketch.request.DownloadRequest;
-import me.xiaopan.sketch.request.DownloadResult;
-import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.request.BaseRequest;
-import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
-/**
- * 使用HttpClient来访问网络的下载器
- */
+@SuppressWarnings("deprecation")
 public class HttpClientImageDownloader implements ImageDownloader {
     private static final String NAME = "HttpClientImageDownloader";
+
     private static final int DEFAULT_WAIT_TIMEOUT = 60 * 1000;   // 默认从连接池中获取连接的最大等待时间
     private static final int DEFAULT_MAX_ROUTE_CONNECTIONS = 400;    // 默认每个路由的最大连接数
     private static final int DEFAULT_MAX_CONNECTIONS = 800;  // 默认最大连接数
-    private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8192;  // 默认Socket缓存大小
-    private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
+    private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8 * 1024;  // 默认Socket缓存大小
+
+    private int readTimeout = DEFAULT_READ_TIMEOUT;
+    private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
+    private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
+    private String userAgent = DEFAULT_USER_AGENT;
 
     private DefaultHttpClient httpClient;
-    private Map<String, ReentrantLock> urlLocks;
-    private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
 
     public HttpClientImageDownloader() {
-        this.urlLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
         BasicHttpParams httpParams = new BasicHttpParams();
         ConnManagerParams.setTimeout(httpParams, DEFAULT_WAIT_TIMEOUT);
         ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(DEFAULT_MAX_ROUTE_CONNECTIONS));
         ConnManagerParams.setMaxTotalConnections(httpParams, DEFAULT_MAX_CONNECTIONS);
         HttpConnectionParams.setTcpNoDelay(httpParams, true);
-        HttpConnectionParams.setSoTimeout(httpParams, DEFAULT_READ_TIMEOUT);
-        HttpConnectionParams.setConnectionTimeout(httpParams, DEFAULT_CONNECT_TIMEOUT);
+        HttpConnectionParams.setSoTimeout(httpParams, readTimeout);
+        HttpConnectionParams.setConnectionTimeout(httpParams, connectTimeout);
         HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setUserAgent(httpParams, DEFAULT_USER_AGENT);
+        HttpProtocolParams.setUserAgent(httpParams, userAgent);
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
         schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
@@ -102,14 +87,61 @@ public class HttpClientImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public void setMaxRetryCount(int maxRetryCount) {
-        this.maxRetryCount = maxRetryCount;
+    public int getMaxRetryCount() {
+        return maxRetryCount;
     }
 
     @Override
-    public void setConnectTimeout(int connectTimeout) {
+    public HttpClientImageDownloader setMaxRetryCount(int maxRetryCount) {
+        this.maxRetryCount = maxRetryCount;
+        return this;
+    }
+
+    @Override
+    public int getConnectTimeout() {
+        return connectTimeout;
+    }
+
+    @Override
+    public HttpClientImageDownloader setConnectTimeout(int connectTimeout) {
         HttpParams httpParams = httpClient.getParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, connectTimeout);
+
+        this.connectTimeout = connectTimeout;
+        return this;
+    }
+
+    @Override
+    public int getReadTimeout() {
+        return readTimeout;
+    }
+
+    @Override
+    public HttpClientImageDownloader setReadTimeout(int readTimeout) {
+        HttpParams httpParams = httpClient.getParams();
+        HttpConnectionParams.setSoTimeout(httpParams, readTimeout);
+
+        this.readTimeout = readTimeout;
+        return this;
+    }
+
+    @Override
+    public String getUserAgent() {
+        return userAgent;
+    }
+
+    @Override
+    public HttpClientImageDownloader setUserAgent(String userAgent) {
+        HttpParams httpParams = httpClient.getParams();
+        HttpProtocolParams.setUserAgent(httpParams, userAgent);
+
+        this.userAgent = userAgent;
+        return this;
+    }
+
+    @Override
+    public boolean canRetry(Throwable throwable) {
+        return throwable instanceof SocketTimeoutException || throwable instanceof InterruptedIOException;
     }
 
     @Override
@@ -122,233 +154,38 @@ public class HttpClientImageDownloader implements ImageDownloader {
         return builder.append(NAME)
                 .append("(")
                 .append("maxRetryCount").append("=").append(maxRetryCount)
+                .append(",")
+                .append("connectTimeout").append("=").append(connectTimeout)
+                .append(",")
+                .append("readTimeout").append("=").append(readTimeout)
+                .append(",")
+                .append("userAgent").append("=").append(userAgent)
                 .append(")");
     }
 
-    /**
-     * 获取一个URL锁，通过此锁可以防止重复下载
-     *
-     * @param url 下载地址
-     * @return URL锁
-     */
-    public synchronized ReentrantLock getUrlLock(String url) {
-        ReentrantLock urlLock = urlLocks.get(url);
-        if (urlLock == null) {
-            urlLock = new ReentrantLock();
-            urlLocks.put(url, urlLock);
-        }
-        return urlLock;
-    }
-
     @Override
-    public DownloadResult download(DownloadRequest request) {
-        // 根据下载地址加锁，防止重复下载
-        request.setStatus(BaseRequest.Status.GET_DOWNLOAD_LOCK);
-        ReentrantLock urlLock = getUrlLock(request.getRequestAttrs().getRealUri());
-        urlLock.lock();
-
-        request.setStatus(BaseRequest.Status.DOWNLOADING);
-        DownloadResult result = null;
-        int number = 0;
-        while (true) {
-            // 如果已经取消了就直接结束
-            if (request.isCanceled()) {
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "get lock after", " - ", request.getRequestAttrs().getName()));
-                }
-                break;
-            }
-
-            // 如果缓存文件已经存在了就直接返回缓存文件
-            if (request.getOptions().isCacheInDisk()) {
-                DiskCache.Entry diskCacheEntry = request.getSketch().getConfiguration().getDiskCache().get(request.getRequestAttrs().getDiskCacheKey());
-                if (diskCacheEntry != null) {
-                    result = new DownloadResult(diskCacheEntry, false);
-                    break;
-                }
-            }
-
-            try {
-                result = realDownload(request);
-                break;
-            } catch (Throwable e) {
-                boolean retry = (e instanceof SocketTimeoutException || e instanceof InterruptedIOException) && number < maxRetryCount;
-                if (retry) {
-                    number++;
-                    if (Sketch.isDebugMode()) {
-                        Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "download failed", " - ", "retry", " - ", request.getRequestAttrs().getName()));
-                    }
-                } else {
-                    if (Sketch.isDebugMode()) {
-                        Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "download failed", " - ", "end", " - ", request.getRequestAttrs().getName()));
-                    }
-                }
-                e.printStackTrace();
-                if (!retry) {
-                    break;
-                }
-            }
-        }
-
-        // 释放锁
-        urlLock.unlock();
-        return result;
+    public ImageHttpResponse getHttpResponse(String uri) throws IOException {
+        HttpUriRequest httpUriRequest = new HttpGet(uri);
+        processRequest(uri, httpUriRequest);
+        HttpResponse httpResponse = httpClient.execute(httpUriRequest);
+        return new HttpClientHttpResponse(httpResponse);
     }
 
-    private DownloadResult realDownload(DownloadRequest request) throws IOException, DiskLruCache.EditorChangedException {
-        HttpResponse httpResponse;
-        try {
-            httpResponse = httpClient.execute(new HttpGet(request.getRequestAttrs().getRealUri()));
-        } catch (IOException e) {
-            throw e;
-        }
-        if (request.isCanceled()) {
-            releaseConnection(httpResponse);
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "get response after", " - ", request.getRequestAttrs().getName()));
-            }
-            return null;
-        }
-
-        // 检查状态码
-        StatusLine statusLine = httpResponse.getStatusLine();
-        if (statusLine == null) {
-            releaseConnection(httpResponse);
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "get status line failed", " - ", request.getRequestAttrs().getName()));
-            }
-            return null;
-        }
-        int responseCode = statusLine.getStatusCode();
-        if (responseCode != 200) {
-            releaseConnection(httpResponse);
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "response code exception", " - ", "responseCode:", String.valueOf(responseCode), "; responseMessage:", httpResponse.getStatusLine().getReasonPhrase(), " - ", request.getRequestAttrs().getName()));
-            }
-            return null;
-        }
-
-        // 检查内容长度
-        int contentLength = 0;
-        Header[] headers = httpResponse.getHeaders("Content-Length");
-        if (headers != null && headers.length > 0) {
-            contentLength = Integer.valueOf(headers[0].getValue());
-        }
-        if (contentLength <= 0) {
-            releaseConnection(httpResponse);
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "content length exception", " - ", "contentLength:" + contentLength, " - ", request.getRequestAttrs().getName()));
-            }
-            return null;
-        }
-
-        return readData(request, httpResponse, contentLength);
-    }
-
-    private DownloadResult readData(DownloadRequest request, HttpResponse httpResponse, int contentLength) throws IOException, DiskLruCache.EditorChangedException {
-        // 获取输入流后判断是否已取消
-        InputStream inputStream = httpResponse.getEntity().getContent();
-
-        if (request.isCanceled()) {
-            SketchUtils.close(inputStream);
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "canceled", " - ", "get input stream after", " - ", request.getRequestAttrs().getName()));
-            }
-            return null;
-        }
-
-        // 当不需要将数据缓存到本地的时候就使用ByteArrayOutputStream来存储数据
-        DiskLruCache.Editor editor = null;
-        if (request.getOptions().isCacheInDisk()) {
-            editor = request.getSketch().getConfiguration().getDiskCache().edit(request.getRequestAttrs().getDiskCacheKey());
-        }
-        OutputStream outputStream;
-        if (editor != null) {
-            try {
-                outputStream = new BufferedOutputStream(editor.newOutputStream(0), BUFFER_SIZE);
-            } catch (FileNotFoundException e) {
-                SketchUtils.close(inputStream);
-                try {
-                    editor.abort();
-                } catch (DiskLruCache.EditorChangedException e1) {
-                    e1.printStackTrace();
-                }
-                throw e;
-            }
-        } else {
-            outputStream = new ByteArrayOutputStream();
-        }
-
-        // 读取数据
-        int completedLength = 0;
-        try {
-            completedLength = HttpUrlConnectionImageDownloader.readData(inputStream, outputStream, request, contentLength);
-        } catch (IOException e) {
-            if (editor != null) {
-                try {
-                    editor.abort();
-                } catch (DiskLruCache.EditorChangedException e1) {
-                    e1.printStackTrace();
-                }
-            }
-            throw e;
-        } finally {
-            SketchUtils.close(outputStream);
-            SketchUtils.close(inputStream);
-        }
-
-        if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "download success", " - ", "fileLength:", String.valueOf(completedLength), "/", String.valueOf(contentLength), " - ", request.getRequestAttrs().getName()));
-        }
-
-        // 转换结果
-        if (request.getOptions().isCacheInDisk() && editor != null) {
-            editor.commit();
-            return new DownloadResult(request.getSketch().getConfiguration().getDiskCache().get(request.getRequestAttrs().getDiskCacheKey()), true);
-        } else if (outputStream instanceof ByteArrayOutputStream) {
-            return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray());
-        } else {
-            return null;
-        }
-    }
-
-    public static void releaseConnection(HttpResponse httpResponse) {
-        if (httpResponse == null) {
-            return;
-        }
-
-        HttpEntity httpEntity = httpResponse.getEntity();
-        if (httpEntity == null) {
-            return;
-        }
-
-        InputStream inputStream = null;
-        try {
-            inputStream = httpEntity.getContent();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        if (inputStream == null) {
-            return;
-        }
-
-        try {
-            inputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+    @SuppressWarnings("WeakerAccess")
+    protected void processRequest(@SuppressWarnings("UnusedParameters") String uri,
+                                  @SuppressWarnings("UnusedParameters") HttpUriRequest httpUriRequest){
     }
 
     private static class GzipProcessRequestInterceptor implements HttpRequestInterceptor {
         /**
          * 头字段 - 接受的编码
          */
-        public static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
+        static final String HEADER_ACCEPT_ENCODING = "Accept-Encoding";
 
         /**
          * 编码 - gzip
          */
-        public static final String ENCODING_GZIP = "gzip";
+        static final String ENCODING_GZIP = "gzip";
 
         @Override
         public void process(HttpRequest request, HttpContext context) throws HttpException, IOException {
@@ -378,7 +215,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
         }
 
         private static class InflatingEntity extends HttpEntityWrapper {
-            public InflatingEntity(HttpEntity wrapped) {
+            InflatingEntity(HttpEntity wrapped) {
                 super(wrapped);
             }
 
@@ -390,6 +227,71 @@ public class HttpClientImageDownloader implements ImageDownloader {
             @Override
             public long getContentLength() {
                 return -1;
+            }
+        }
+    }
+
+    private static class HttpClientHttpResponse implements ImageHttpResponse {
+        @SuppressWarnings("deprecation")
+        private HttpResponse httpResponse;
+
+        HttpClientHttpResponse(HttpResponse httpResponse) {
+            this.httpResponse = httpResponse;
+        }
+
+        @Override
+        public int getResponseCode() throws IOException {
+            StatusLine statusLine = httpResponse.getStatusLine();
+            return statusLine != null ? statusLine.getStatusCode() : -1;
+        }
+
+        @Override
+        public String getResponseMessage() throws IOException {
+            StatusLine statusLine = httpResponse.getStatusLine();
+            return statusLine != null ? statusLine.getReasonPhrase() : null;
+        }
+
+        @Override
+        public long getContentLength() {
+            HttpEntity httpEntity = httpResponse.getEntity();
+            return httpEntity != null ? httpResponse.getEntity().getContentLength() : -1;
+        }
+
+        @Override
+        public String getResponseHeadersString() {
+            Header[] headers = httpResponse.getAllHeaders();
+            if (headers == null || headers.length == 0) {
+                return null;
+            }
+            StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.append("[");
+            for (Header header : headers) {
+                if (stringBuilder.length() != 1) {
+                    stringBuilder.append(", ");
+                }
+
+                stringBuilder.append("{");
+                stringBuilder.append(header.getName());
+                stringBuilder.append(":");
+                stringBuilder.append(header.getValue());
+                stringBuilder.append("}");
+            }
+            stringBuilder.append("]");
+            return stringBuilder.toString();
+        }
+
+        @Override
+        public InputStream getContent() throws IOException {
+            HttpEntity httpEntity = httpResponse.getEntity();
+            return httpEntity != null ? httpEntity.getContent() : null;
+        }
+
+        @Override
+        public void releaseConnection() {
+            try {
+                SketchUtils.close(getContent());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
     }

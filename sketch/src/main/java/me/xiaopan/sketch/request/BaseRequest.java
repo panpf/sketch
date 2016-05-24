@@ -23,8 +23,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
 
-public abstract class BaseRequest implements Runnable {
+abstract class BaseRequest implements Runnable {
     private static final Map<String, ReentrantLock> loadLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
+    private static final Map<String, ReentrantLock> downloadLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
 
     private Sketch sketch;
     private RequestAttrs requestAttrs;
@@ -36,9 +37,33 @@ public abstract class BaseRequest implements Runnable {
     private FailedCause failedCause;
     private CancelCause cancelCause;
 
-    public BaseRequest(Sketch sketch, RequestAttrs requestAttrs) {
+    BaseRequest(Sketch sketch, RequestAttrs requestAttrs) {
         this.sketch = sketch;
         this.requestAttrs = requestAttrs;
+    }
+
+    private ReentrantLock getLoadLock(String key){
+        if(key == null){
+            return null;
+        }
+        ReentrantLock loadLock = loadLocks.get(key);
+        if(loadLock == null){
+            loadLock = new ReentrantLock();
+            loadLocks.put(key, loadLock);
+        }
+        return loadLock;
+    }
+
+    private ReentrantLock getDownloadLock(String key){
+        if(key == null){
+            return null;
+        }
+        ReentrantLock downloadLock = downloadLocks.get(key);
+        if(downloadLock == null){
+            downloadLock = new ReentrantLock();
+            downloadLocks.put(key, downloadLock);
+        }
+        return downloadLock;
     }
 
     @Override
@@ -49,15 +74,15 @@ public abstract class BaseRequest implements Runnable {
                     runDispatch();
                     break;
                 case DOWNLOAD:
+                    setStatus(BaseRequest.Status.GET_DOWNLOAD_LOCK);
+                    ReentrantLock downloadLock = getDownloadLock(requestAttrs.getRealUri());
+                    downloadLock.lock();
                     runDownload();
+                    downloadLock.unlock();
                     break;
                 case LOAD:
-                    String lockId = requestAttrs.getId();
-                    ReentrantLock loadLock = lockId != null ? loadLocks.get(lockId) : null;
-                    if(loadLock == null){
-                        loadLock = new ReentrantLock();
-                        loadLocks.put(lockId, loadLock);
-                    }
+                    setStatus(BaseRequest.Status.GET_LOAD_LOCK);
+                    ReentrantLock loadLock = getLoadLock(requestAttrs.getId());
                     loadLock.lock();
                     runLoad();
                     loadLock.unlock();
@@ -83,6 +108,7 @@ public abstract class BaseRequest implements Runnable {
     /**
      * 获取日志名称
      */
+    @SuppressWarnings("WeakerAccess")
     public String getLogName() {
         return logName;
     }
@@ -90,7 +116,7 @@ public abstract class BaseRequest implements Runnable {
     /**
      * 日志名称
      */
-    protected void setLogName(String logName) {
+    void setLogName(String logName) {
         this.logName = logName;
     }
 
@@ -121,7 +147,7 @@ public abstract class BaseRequest implements Runnable {
     /**
      * 提交请求
      */
-    public final void submit() {
+    final void submit() {
         submitRunDispatch();
     }
 
@@ -135,7 +161,7 @@ public abstract class BaseRequest implements Runnable {
     /**
      * 推到主线程处理取消
      */
-    protected void postRunCanceled() {
+    void postRunCanceled() {
         CallbackHandler.postRunCanceled(this);
     }
 
@@ -149,7 +175,7 @@ public abstract class BaseRequest implements Runnable {
     /**
      * 推到主线程处理进度
      */
-    protected void postRunUpdateProgress(int totalLength, int completedLength) {
+    void postRunUpdateProgress(int totalLength, int completedLength) {
         CallbackHandler.postRunUpdateProgress(this, totalLength, completedLength);
     }
 
@@ -211,6 +237,7 @@ public abstract class BaseRequest implements Runnable {
     /**
      * 获取状态
      */
+    @SuppressWarnings("WeakerAccess")
     public Status getStatus() {
         return status;
     }
@@ -218,7 +245,7 @@ public abstract class BaseRequest implements Runnable {
     /**
      * 设置状态
      */
-    public void setStatus(Status status) {
+    void setStatus(Status status) {
         this.status = status;
     }
 
@@ -297,6 +324,7 @@ public abstract class BaseRequest implements Runnable {
     /**
      * 请求的状态
      */
+    @SuppressWarnings("WeakerAccess")
     public enum Status {
         /**
          * 等待分发
@@ -327,6 +355,11 @@ public abstract class BaseRequest implements Runnable {
          * 等待加载
          */
         WAIT_LOAD,
+
+        /**
+         * 正在获取加载锁
+         */
+        GET_LOAD_LOCK,
 
         /**
          * 正在加载

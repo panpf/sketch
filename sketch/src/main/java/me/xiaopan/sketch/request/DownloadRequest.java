@@ -18,8 +18,17 @@ package me.xiaopan.sketch.request;
 
 import android.util.Log;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.download.ImageDownloader;
+import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -62,7 +71,7 @@ public class DownloadRequest extends BaseRequest {
     /**
      * 设置下载结果
      */
-    protected void setDownloadResult(DownloadResult downloadResult) {
+    void setDownloadResult(DownloadResult downloadResult) {
         this.downloadResult = downloadResult;
     }
 
@@ -139,6 +148,24 @@ public class DownloadRequest extends BaseRequest {
         submitRunDownload();
     }
 
+    /**
+     * 处理RequestLevel是LOCAL
+     */
+    @SuppressWarnings("WeakerAccess")
+    void requestLevelIsLocal() {
+        boolean isPauseDownload = options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
+
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                    " - ", "runDispatch",
+                    " - ", "canceled",
+                    " - ", isPauseDownload ? "pause download" : "requestLevel is local",
+                    " - ", getRequestAttrs().getName()));
+        }
+
+        canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
+    }
+
     @Override
     protected void runDownload() {
         if (isCanceled()) {
@@ -152,8 +179,10 @@ public class DownloadRequest extends BaseRequest {
             return;
         }
 
+        setStatus(BaseRequest.Status.DOWNLOADING);
+
         // 调用下载器下载
-        DownloadResult justDownloadResult = getSketch().getConfiguration().getImageDownloader().download(this);
+        DownloadResult justDownloadResult = executeDownload();
 
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
@@ -178,6 +207,256 @@ public class DownloadRequest extends BaseRequest {
         downloadComplete();
     }
 
+    private DownloadResult executeDownload() {
+        ImageDownloader imageDownloader = getSketch().getConfiguration().getImageDownloader();
+        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+        int retryCount = 0;
+        int maxRetryCount = imageDownloader.getMaxRetryCount();
+        DownloadResult result = null;
+
+        while (true) {
+            if (isCanceled()) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                            " - ", "runDownload",
+                            " - ", "canceled",
+                            " - ", "get lock after",
+                            " - ", getRequestAttrs().getName()));
+                }
+                break;
+            }
+
+            // 如果缓存文件已经存在了就直接返回缓存文件
+            if (getOptions().isCacheInDisk()) {
+                DiskCache.Entry diskCacheEntry = diskCache.get(getRequestAttrs().getDiskCacheKey());
+                if (diskCacheEntry != null) {
+                    result = new DownloadResult(diskCacheEntry, false);
+                    break;
+                }
+            }
+
+            try {
+                result = realDownload(imageDownloader, diskCache);
+                break;
+            } catch (Throwable e) {
+                e.printStackTrace();
+
+                if (imageDownloader.canRetry(e) && retryCount < maxRetryCount) {
+                    retryCount++;
+                    if (Sketch.isDebugMode()) {
+                        Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                                " - ", "runDownload",
+                                " - ", "download failed",
+                                " - ", "retry",
+                                " - ", getRequestAttrs().getName()));
+                    }
+                } else {
+                    if (Sketch.isDebugMode()) {
+                        Log.e(Sketch.TAG, SketchUtils.concat(getLogName(),
+                                " - ", "runDownload",
+                                " - ", "download failed",
+                                " - ", "end",
+                                " - ", getRequestAttrs().getName()));
+                    }
+                    break;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private DownloadResult realDownload(ImageDownloader imageDownloader, DiskCache diskCache) throws IOException, DiskLruCache.EditorChangedException {
+        ImageDownloader.ImageHttpResponse httpResponse = imageDownloader.getHttpResponse(getRequestAttrs().getRealUri());
+
+        if (isCanceled()) {
+            httpResponse.releaseConnection();
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "canceled",
+                        " - ", "connect after",
+                        " - ", getRequestAttrs().getName()));
+            }
+            return null;
+        }
+
+        // 检查状态码
+        int responseCode;
+        try {
+            responseCode = httpResponse.getResponseCode();
+        } catch (IOException e) {
+            e.printStackTrace();
+            httpResponse.releaseConnection();
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "get response code failed",
+                        " - ", getRequestAttrs().getName(),
+                        " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString()));
+            }
+            return null;
+        }
+        String responseMessage;
+        try {
+            responseMessage = httpResponse.getResponseMessage();
+        } catch (IOException e) {
+            e.printStackTrace();
+            httpResponse.releaseConnection();
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "get response message failed",
+                        " - ", getRequestAttrs().getName(),
+                        " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString()));
+            }
+            return null;
+        }
+        if (responseCode != 200) {
+            httpResponse.releaseConnection();
+            if (Sketch.isDebugMode()) {
+                Log.e(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "response code exception",
+                        " - ", "responseCode:", String.valueOf(responseCode),
+                        " - ", "responseMessage:", responseMessage,
+                        " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString(),
+                        " - ", getRequestAttrs().getName()));
+            }
+            return null;
+        }
+
+        // 检查内容长度
+        long contentLength = httpResponse.getContentLength();
+        if (contentLength <= 0) {
+            httpResponse.releaseConnection();
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "content length exception",
+                        " - ", "contentLength:" + contentLength,
+                        " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString(),
+                        " - ", getRequestAttrs().getName()));
+            }
+            return null;
+        }
+
+        // 获取输入流
+        InputStream inputStream = httpResponse.getContent();
+
+        if (isCanceled()) {
+            SketchUtils.close(inputStream);
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "canceled",
+                        " - ", "get input stream after",
+                        " - ", getRequestAttrs().getName()));
+            }
+            return null;
+        }
+
+        DiskLruCache.Editor diskCacheEditor = null;
+        if (getOptions().isCacheInDisk()) {
+            diskCacheEditor = diskCache.edit(getRequestAttrs().getDiskCacheKey());
+        }
+        OutputStream outputStream;
+        if (diskCacheEditor != null) {
+            try {
+                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(0), 8 * 1024);
+            } catch (FileNotFoundException e) {
+                SketchUtils.close(inputStream);
+                try {
+                    diskCacheEditor.abort();
+                } catch (DiskLruCache.EditorChangedException e1) {
+                    e1.printStackTrace();
+                }
+                throw e;
+            }
+        } else {
+            // 不需要将数据缓存到本地或本地缓存不可用的时候就使用ByteArrayOutputStream来存储数据
+            outputStream = new ByteArrayOutputStream();
+        }
+
+        // 读取数据
+        int completedLength = 0;
+        try {
+            completedLength = readData(inputStream, outputStream, (int) contentLength);
+        } catch (IOException e) {
+            if (diskCacheEditor != null) {
+                try {
+                    diskCacheEditor.abort();
+                } catch (DiskLruCache.EditorChangedException e1) {
+                    e1.printStackTrace();
+                }
+            }
+            throw e;
+        } finally {
+            SketchUtils.close(outputStream);
+            SketchUtils.close(inputStream);
+        }
+
+        if (isCanceled()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "canceled",
+                        " - ", "read data after",
+                        " - ", getRequestAttrs().getName()));
+            }
+            return null;
+        }
+
+        if (Sketch.isDebugMode()) {
+            Log.i(Sketch.TAG, SketchUtils.concat(getLogName(),
+                    " - ", "runDownload",
+                    " - ", "download success",
+                    " - ", "fileLength:", completedLength, "/", contentLength,
+                    " - ", getRequestAttrs().getName()));
+        }
+
+        // 返回结果
+        if (getOptions().isCacheInDisk() && diskCacheEditor != null) {
+            diskCacheEditor.commit();
+            return new DownloadResult(diskCache.get(getRequestAttrs().getDiskCacheKey()), true);
+        } else if (outputStream instanceof ByteArrayOutputStream) {
+            return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray());
+        } else {
+            return null;
+        }
+    }
+
+    private int readData(InputStream inputStream, OutputStream outputStream, int contentLength) throws IOException {
+        int realReadCount;
+        int completedLength = 0;
+        long lastCallbackTime = 0;
+        byte[] buffer = new byte[8 * 1024];
+        while (true) {
+            if (isCanceled()) {
+                break;
+            }
+
+            realReadCount = inputStream.read(buffer);
+            if (realReadCount != -1) {
+                outputStream.write(buffer, 0, realReadCount);
+                completedLength += realReadCount;
+
+                // 每秒钟回调一次进度
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastCallbackTime >= 1000) {
+                    lastCallbackTime = currentTime;
+                    updateProgress(contentLength, completedLength);
+                }
+            } else {
+                // 结束的时候再次回调一下进度，确保页面上能显示100%
+                updateProgress(contentLength, completedLength);
+                break;
+            }
+        }
+        outputStream.flush();
+        return completedLength;
+    }
+
     @Override
     protected void runLoad() {
 
@@ -185,36 +464,20 @@ public class DownloadRequest extends BaseRequest {
 
     /**
      * 更新进度
-     * @param totalLength 文件总长度
+     *
+     * @param totalLength     文件总长度
      * @param completedLength 已完成长度
      */
-    public void updateProgress(int totalLength, int completedLength) {
+    private void updateProgress(int totalLength, int completedLength) {
         if (progressListener != null) {
             postRunUpdateProgress(totalLength, completedLength);
         }
     }
 
     /**
-     * 处理RequestLevel是LOCAL
-     */
-    protected void requestLevelIsLocal(){
-        boolean isPauseDownload = options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
-
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                    " - ", "runDispatch",
-                    " - ", "canceled",
-                    " - ", isPauseDownload ? "pause download" : "requestLevel is local",
-                    " - ", getRequestAttrs().getName()));
-        }
-
-        canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
-    }
-
-    /**
      * 下载完成后续处理
      */
-    protected void downloadComplete(){
+    protected void downloadComplete() {
         postRunCompleted();
     }
 

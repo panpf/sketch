@@ -56,6 +56,7 @@ public class DisplayRequest extends LoadRequest {
     /**
      * 获取显示属性
      */
+    @SuppressWarnings("WeakerAccess")
     public DisplayAttrs getDisplayAttrs() {
         return displayAttrs;
     }
@@ -247,11 +248,12 @@ public class DisplayRequest extends LoadRequest {
         }
     }
 
+    @SuppressWarnings("WeakerAccess")
     protected void displayCompleted() {
         if (displayResult.getDrawable() instanceof RecycleDrawable) {
             RecycleDrawable recycleDrawable = (RecycleDrawable) displayResult.getDrawable();
             boolean fromMemoryCache = displayResult.getImageFrom() == ImageFrom.MEMORY_CACHE;
-            String callingStation =  fromMemoryCache? "displayCompleted:fromMemory" : "displayCompleted:new";
+            String callingStation = fromMemoryCache ? "displayCompleted:fromMemory" : "displayCompleted:new";
             recycleDrawable.setIsWaitDisplay(callingStation, true);
         }
 
