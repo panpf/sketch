@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.download;
+package me.xiaopan.sketch.http;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -53,8 +53,8 @@ import java.util.zip.GZIPInputStream;
 import me.xiaopan.sketch.util.SketchUtils;
 
 @SuppressWarnings("deprecation")
-public class HttpClientImageDownloader implements ImageDownloader {
-    private static final String NAME = "HttpClientImageDownloader";
+public class HttpClientStack implements HttpStack {
+    private static final String NAME = "HttpClientStack";
 
     private static final int DEFAULT_WAIT_TIMEOUT = 60 * 1000;   // 默认从连接池中获取连接的最大等待时间
     private static final int DEFAULT_MAX_ROUTE_CONNECTIONS = 400;    // 默认每个路由的最大连接数
@@ -71,7 +71,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
 
     private DefaultHttpClient httpClient;
 
-    public HttpClientImageDownloader() {
+    public HttpClientStack() {
         BasicHttpParams httpParams = new BasicHttpParams();
         ConnManagerParams.setTimeout(httpParams, DEFAULT_WAIT_TIMEOUT);
         ConnManagerParams.setMaxConnectionsPerRoute(httpParams, new ConnPerRouteBean(DEFAULT_MAX_ROUTE_CONNECTIONS));
@@ -96,7 +96,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpClientImageDownloader setMaxRetryCount(int maxRetryCount) {
+    public HttpClientStack setMaxRetryCount(int maxRetryCount) {
         this.maxRetryCount = maxRetryCount;
         return this;
     }
@@ -107,7 +107,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpClientImageDownloader setConnectTimeout(int connectTimeout) {
+    public HttpClientStack setConnectTimeout(int connectTimeout) {
         HttpParams httpParams = httpClient.getParams();
         HttpConnectionParams.setConnectionTimeout(httpParams, connectTimeout);
 
@@ -121,7 +121,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpClientImageDownloader setReadTimeout(int readTimeout) {
+    public HttpClientStack setReadTimeout(int readTimeout) {
         HttpParams httpParams = httpClient.getParams();
         HttpConnectionParams.setSoTimeout(httpParams, readTimeout);
 
@@ -135,7 +135,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpClientImageDownloader setUserAgent(String userAgent) {
+    public HttpClientStack setUserAgent(String userAgent) {
         HttpParams httpParams = httpClient.getParams();
         HttpProtocolParams.setUserAgent(httpParams, userAgent);
 
@@ -149,7 +149,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpClientImageDownloader setExtraHeaders(Map<String, String> extraHeaders) {
+    public HttpClientStack setExtraHeaders(Map<String, String> extraHeaders) {
         this.setExtraHeaders = extraHeaders;
         return this;
     }
@@ -160,7 +160,7 @@ public class HttpClientImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpClientImageDownloader addExtraHeaders(Map<String, String> extraHeaders) {
+    public HttpClientStack addExtraHeaders(Map<String, String> extraHeaders) {
         this.addExtraHeaders = extraHeaders;
         return this;
     }

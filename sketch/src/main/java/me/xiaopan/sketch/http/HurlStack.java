@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.download;
+package me.xiaopan.sketch.http;
 
 import android.os.Build;
 
@@ -29,8 +29,8 @@ import java.util.Map;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class HttpUrlConnectionImageDownloader implements ImageDownloader {
-    private static final String NAME = "HttpUrlConnectionImageDownloader";
+public class HurlStack implements HttpStack {
+    private static final String NAME = "HurlStack";
 
     private int readTimeout = DEFAULT_READ_TIMEOUT;
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
@@ -45,7 +45,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpUrlConnectionImageDownloader setMaxRetryCount(int maxRetryCount) {
+    public HurlStack setMaxRetryCount(int maxRetryCount) {
         this.maxRetryCount = maxRetryCount;
         return this;
     }
@@ -56,7 +56,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpUrlConnectionImageDownloader setConnectTimeout(int connectTimeout) {
+    public HurlStack setConnectTimeout(int connectTimeout) {
         this.connectTimeout = connectTimeout;
         return this;
     }
@@ -67,7 +67,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpUrlConnectionImageDownloader setReadTimeout(int readTimeout) {
+    public HurlStack setReadTimeout(int readTimeout) {
         this.readTimeout = readTimeout;
         return this;
     }
@@ -78,7 +78,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpUrlConnectionImageDownloader setUserAgent(String userAgent) {
+    public HurlStack setUserAgent(String userAgent) {
         this.userAgent = userAgent;
         return this;
     }
@@ -89,7 +89,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpUrlConnectionImageDownloader setExtraHeaders(Map<String, String> extraHeaders) {
+    public HurlStack setExtraHeaders(Map<String, String> extraHeaders) {
         this.setExtraHeaders = extraHeaders;
         return this;
     }
@@ -100,7 +100,7 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     @Override
-    public HttpUrlConnectionImageDownloader addExtraHeaders(Map<String, String> extraHeaders) {
+    public HurlStack addExtraHeaders(Map<String, String> extraHeaders) {
         this.addExtraHeaders = extraHeaders;
         return this;
     }

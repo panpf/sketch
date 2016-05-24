@@ -27,7 +27,7 @@ import java.io.OutputStream;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.download.ImageDownloader;
+import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -208,10 +208,10 @@ public class DownloadRequest extends BaseRequest {
     }
 
     private DownloadResult executeDownload() {
-        ImageDownloader imageDownloader = getSketch().getConfiguration().getImageDownloader();
+        HttpStack httpStack = getSketch().getConfiguration().getHttpStack();
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
         int retryCount = 0;
-        int maxRetryCount = imageDownloader.getMaxRetryCount();
+        int maxRetryCount = httpStack.getMaxRetryCount();
         DownloadResult result = null;
 
         while (true) {
@@ -236,12 +236,12 @@ public class DownloadRequest extends BaseRequest {
             }
 
             try {
-                result = realDownload(imageDownloader, diskCache);
+                result = realDownload(httpStack, diskCache);
                 break;
             } catch (Throwable e) {
                 e.printStackTrace();
 
-                if (imageDownloader.canRetry(e) && retryCount < maxRetryCount) {
+                if (httpStack.canRetry(e) && retryCount < maxRetryCount) {
                     retryCount++;
                     if (Sketch.isDebugMode()) {
                         Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
@@ -266,8 +266,8 @@ public class DownloadRequest extends BaseRequest {
         return result;
     }
 
-    private DownloadResult realDownload(ImageDownloader imageDownloader, DiskCache diskCache) throws IOException, DiskLruCache.EditorChangedException {
-        ImageDownloader.ImageHttpResponse httpResponse = imageDownloader.getHttpResponse(getRequestAttrs().getRealUri());
+    private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache) throws IOException, DiskLruCache.EditorChangedException {
+        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getRequestAttrs().getRealUri());
 
         if (isCanceled()) {
             httpResponse.releaseConnection();

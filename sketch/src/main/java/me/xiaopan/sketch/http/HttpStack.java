@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.download;
+package me.xiaopan.sketch.http;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,10 +22,7 @@ import java.util.Map;
 
 import me.xiaopan.sketch.Identifier;
 
-/**
- * 下载器
- */
-public interface ImageDownloader extends Identifier {
+public interface HttpStack extends Identifier {
     int DEFAULT_READ_TIMEOUT = 20 * 1000;   // 默认读取超时时间
     int DEFAULT_CONNECT_TIMEOUT = 15 * 1000;    // 默认连接超时时间
     int DEFAULT_MAX_RETRY_COUNT = 1;    // 默认最大重试次数
@@ -39,7 +36,7 @@ public interface ImageDownloader extends Identifier {
      * 设置最大重试次数（默认1）
      */
     @SuppressWarnings("unused")
-    ImageDownloader setMaxRetryCount(int maxRetryCount);
+    HttpStack setMaxRetryCount(int maxRetryCount);
 
     /**
      * 获取连接超时时间（默认15s）
@@ -51,7 +48,7 @@ public interface ImageDownloader extends Identifier {
      * 设置连接超时时间（默认15s）
      */
     @SuppressWarnings("unused")
-    ImageDownloader setConnectTimeout(int connectTimeout);
+    HttpStack setConnectTimeout(int connectTimeout);
 
     /**
      * 获取读取超时时间（默认20s）
@@ -63,7 +60,7 @@ public interface ImageDownloader extends Identifier {
      * 设置读取超时时间（默认20s）
      */
     @SuppressWarnings("unused")
-    ImageDownloader setReadTimeout(int readTimeout);
+    HttpStack setReadTimeout(int readTimeout);
 
     /**
      * 获取User-Agent
@@ -75,7 +72,7 @@ public interface ImageDownloader extends Identifier {
      * 设置User-Agent
      */
     @SuppressWarnings("unused")
-    ImageDownloader setUserAgent(String userAgent);
+    HttpStack setUserAgent(String userAgent);
 
     /**
      * 获取扩展请求属性
@@ -87,7 +84,7 @@ public interface ImageDownloader extends Identifier {
      * 设置扩展请求属性
      */
     @SuppressWarnings("unused")
-    ImageDownloader setExtraHeaders(Map<String, String> extraHeaders);
+    HttpStack setExtraHeaders(Map<String, String> extraHeaders);
 
     /**
      * 获取可存在多个的请求属性
@@ -99,7 +96,7 @@ public interface ImageDownloader extends Identifier {
      * 添加可存在多个的请求属性
      */
     @SuppressWarnings("unused")
-    ImageDownloader addExtraHeaders(Map<String, String> extraHeaders);
+    HttpStack addExtraHeaders(Map<String, String> extraHeaders);
 
     /**
      * 获取响应
