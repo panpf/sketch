@@ -165,7 +165,7 @@ public class ImageHolder {
         return drawable;
     }
 
-    public Drawable getBindDrawable(DisplayRequest displayRequest){
+    public Drawable getBindDrawable(DisplayRequest displayRequest) {
         RecycleBitmapDrawable loadingDrawable = getRecycleBitmapDrawable(displayRequest.getSketch().getConfiguration().getContext());
 
         // 如果使用了TransitionImageDisplayer并且ImageVie是固定大小并且ScaleType是CENT_CROP那么就需要根据ImageVie的固定大小来裁剪loadingImage
@@ -178,7 +178,7 @@ public class ImageHolder {
         return new BindFixedRecycleBitmapDrawable(loadingDrawable, tempFixedSize, displayRequest);
     }
 
-    public Drawable getDrawable(Context context, ImageDisplayer imageDisplayer, FixedSize fixedSize, ImageView.ScaleType scaleType){
+    public Drawable getDrawable(Context context, ImageDisplayer imageDisplayer, FixedSize fixedSize, ImageView.ScaleType scaleType) {
         Drawable failedDrawable = getRecycleBitmapDrawable(context);
         boolean isFixedSize = SketchUtils.isFixedSize(imageDisplayer, fixedSize, scaleType);
         if (failedDrawable != null && isFixedSize) {

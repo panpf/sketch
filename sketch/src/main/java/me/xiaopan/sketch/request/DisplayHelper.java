@@ -345,7 +345,10 @@ public class DisplayHelper {
      */
     public DisplayRequest commit() {
         if (!SketchUtils.isMainThread()) {
-            Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "Please perform a commit in the UI thread", " - ", requestAttrs.getUri()));
+            Log.w(Sketch.TAG, SketchUtils.concat(NAME,
+                    " - ", "Please perform a commit in the UI thread",
+                    " - ", requestAttrs.getUri()));
+            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             if (Sketch.isOutElapsedTime()) {
                 Stopwatch.with().print();
             }
@@ -690,7 +693,9 @@ public class DisplayHelper {
                         displayAttrs.getScaleType());
             } else {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "pauseDownloadDrawable is null", " - ", requestAttrs.getName()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(NAME,
+                            " - ", "pauseDownloadDrawable is null",
+                            " - ", requestAttrs.getName()));
                 }
             }
             imageViewInterface.setImageDrawable(drawable);

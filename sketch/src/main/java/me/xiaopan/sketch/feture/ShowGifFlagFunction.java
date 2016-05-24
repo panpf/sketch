@@ -71,7 +71,7 @@ public class ShowGifFlagFunction implements ImageViewFunction {
             return;
         }
 
-        if(gifDrawableLeft == -1 || gifDrawableTop == -1){
+        if (gifDrawableLeft == -1 || gifDrawableTop == -1) {
             initLeftAndTop();
         }
 
@@ -124,7 +124,7 @@ public class ShowGifFlagFunction implements ImageViewFunction {
         return gifFlagDrawable;
     }
 
-    private void initLeftAndTop(){
+    private void initLeftAndTop() {
         gifDrawableLeft = view.getWidth() - view.getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
         gifDrawableTop = view.getHeight() - view.getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
     }

@@ -23,7 +23,7 @@ import me.xiaopan.sketch.Identifier;
 /**
  * 内存缓存器
  */
-public interface MemoryCache extends Identifier{
+public interface MemoryCache extends Identifier {
     /**
      * 放进去一张图片
      */

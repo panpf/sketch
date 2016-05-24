@@ -41,12 +41,12 @@ public enum UriScheme {
         @Override
         public String crop(String uri) {
             String uriPrefix = getUriPrefix();
-            if(uri.startsWith(uriPrefix)){
+            if (uri.startsWith(uriPrefix)) {
                 return uri;
             }
 
             uriPrefix = getSecondaryUriPrefix();
-            if(uri.startsWith(uriPrefix)){
+            if (uri.startsWith(uriPrefix)) {
                 return uri.substring(uriPrefix.length());
             }
 
@@ -78,12 +78,12 @@ public enum UriScheme {
         @Override
         public String crop(String uri) {
             String uriPrefix = getUriPrefix();
-            if(uri.startsWith(uriPrefix)){
+            if (uri.startsWith(uriPrefix)) {
                 return uri.substring(uriPrefix.length());
             }
 
             uriPrefix = getSecondaryUriPrefix();
-            if(uri.startsWith(uriPrefix)){
+            if (uri.startsWith(uriPrefix)) {
                 return uri.substring(uriPrefix.length());
             }
 
@@ -103,12 +103,12 @@ public enum UriScheme {
         @Override
         public String crop(String uri) {
             String uriPrefix = getUriPrefix();
-            if(uri.startsWith(uriPrefix)){
+            if (uri.startsWith(uriPrefix)) {
                 return uri.substring(uriPrefix.length());
             }
 
             uriPrefix = getSecondaryUriPrefix();
-            if(uri.startsWith(uriPrefix)){
+            if (uri.startsWith(uriPrefix)) {
                 return uri.substring(uriPrefix.length());
             }
 

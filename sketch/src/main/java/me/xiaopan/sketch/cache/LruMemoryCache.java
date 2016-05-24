@@ -21,8 +21,8 @@ import android.graphics.drawable.Drawable;
 import android.text.format.Formatter;
 import android.util.Log;
 
-import me.xiaopan.sketch.drawable.RecycleDrawable;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.drawable.RecycleDrawable;
 import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -125,11 +125,11 @@ public class LruMemoryCache implements MemoryCache {
         }
     }
 
-    public static LruMemoryCache create(Context context){
+    public static LruMemoryCache create(Context context) {
         return new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 8));
     }
 
-    public static LruMemoryCache createPlaceholder(Context context){
+    public static LruMemoryCache createPlaceholder(Context context) {
         long placeholderMemoryMaxSize = Runtime.getRuntime().maxMemory() / 32;
 
         // 不能小于2M

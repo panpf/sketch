@@ -27,9 +27,9 @@ import java.lang.reflect.Field;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.request.FixedSize;
+import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.MaxSize;
 import me.xiaopan.sketch.request.Resize;
-import me.xiaopan.sketch.request.ImageViewInterface;
 
 /**
  * 图片最大尺寸和修正尺寸计算器
@@ -183,6 +183,7 @@ public class ImageSizeCalculator implements Identifier {
 
     /**
      * 计算inSampleSize的时候将targetSize稍微放大一点儿，就是乘以这个倍数，默认值是1.25f
+     *
      * @param targetSizeScaleInSampleSize 将targetSize稍微放大一点儿
      */
     @SuppressWarnings("unused")

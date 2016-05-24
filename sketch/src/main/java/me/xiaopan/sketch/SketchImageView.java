@@ -25,7 +25,15 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
+import me.xiaopan.sketch.feture.ClickRetryFunction;
+import me.xiaopan.sketch.feture.ImageShapeFunction;
 import me.xiaopan.sketch.feture.LocalImagePreprocessor;
+import me.xiaopan.sketch.feture.RecyclerCompatFunction;
+import me.xiaopan.sketch.feture.RequestFunction;
+import me.xiaopan.sketch.feture.ShowGifFlagFunction;
+import me.xiaopan.sketch.feture.ShowImageFromFunction;
+import me.xiaopan.sketch.feture.ShowPressedFunction;
+import me.xiaopan.sketch.feture.ShowProgressFunction;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -34,15 +42,7 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadProgressListener;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.feture.ClickRetryFunction;
-import me.xiaopan.sketch.feture.ImageShapeFunction;
 import me.xiaopan.sketch.request.ImageViewInterface;
-import me.xiaopan.sketch.feture.RecyclerCompatFunction;
-import me.xiaopan.sketch.feture.RequestFunction;
-import me.xiaopan.sketch.feture.ShowGifFlagFunction;
-import me.xiaopan.sketch.feture.ShowImageFromFunction;
-import me.xiaopan.sketch.feture.ShowPressedFunction;
-import me.xiaopan.sketch.feture.ShowProgressFunction;
 import me.xiaopan.sketch.request.UriScheme;
 
 public class SketchImageView extends ImageView implements ImageViewInterface {
@@ -76,7 +76,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         init();
     }
 
-    private void init(){
+    private void init() {
         requestFunction = new RequestFunction(this);
         recyclerCompatFunction = new RecyclerCompatFunction(getContext(), this, requestFunction);
 
@@ -100,28 +100,28 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if(showImageFromFunction != null){
+        if (showImageFromFunction != null) {
             showImageFromFunction.onLayout(changed, left, top, right, bottom);
         }
-        if(showProgressFunction != null){
+        if (showProgressFunction != null) {
             showProgressFunction.onLayout(changed, left, top, right, bottom);
         }
-        if(showGifFlagFunction != null){
+        if (showGifFlagFunction != null) {
             showGifFlagFunction.onLayout(changed, left, top, right, bottom);
         }
-        if(showPressedFunction != null){
+        if (showPressedFunction != null) {
             showPressedFunction.onLayout(changed, left, top, right, bottom);
         }
-        if(imageShapeFunction != null){
+        if (imageShapeFunction != null) {
             imageShapeFunction.onLayout(changed, left, top, right, bottom);
         }
-        if(clickRetryFunction != null){
+        if (clickRetryFunction != null) {
             clickRetryFunction.onLayout(changed, left, top, right, bottom);
         }
-        if(requestFunction != null){
-            requestFunction.onLayout(changed,left, top, right, bottom);
+        if (requestFunction != null) {
+            requestFunction.onLayout(changed, left, top, right, bottom);
         }
-        if(recyclerCompatFunction != null){
+        if (recyclerCompatFunction != null) {
             recyclerCompatFunction.onLayout(changed, left, top, right, bottom);
         }
     }
@@ -130,56 +130,56 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if(showPressedFunction != null){
+        if (showPressedFunction != null) {
             showPressedFunction.onDraw(canvas);
         }
-        if(showProgressFunction != null){
+        if (showProgressFunction != null) {
             showProgressFunction.onDraw(canvas);
         }
-        if(showImageFromFunction != null){
+        if (showImageFromFunction != null) {
             showImageFromFunction.onDraw(canvas);
         }
-        if(showGifFlagFunction != null){
+        if (showGifFlagFunction != null) {
             showGifFlagFunction.onDraw(canvas);
         }
-        if(imageShapeFunction != null){
+        if (imageShapeFunction != null) {
             imageShapeFunction.onDraw(canvas);
         }
-        if(clickRetryFunction != null){
+        if (clickRetryFunction != null) {
             clickRetryFunction.onDraw(canvas);
         }
-        if(requestFunction != null){
+        if (requestFunction != null) {
             requestFunction.onDraw(canvas);
         }
-        if(recyclerCompatFunction != null){
+        if (recyclerCompatFunction != null) {
             recyclerCompatFunction.onDraw(canvas);
         }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if(showPressedFunction != null){
+        if (showPressedFunction != null) {
             showPressedFunction.onTouchEvent(event);
         }
-        if(showProgressFunction != null){
+        if (showProgressFunction != null) {
             showProgressFunction.onTouchEvent(event);
         }
-        if(showImageFromFunction != null){
+        if (showImageFromFunction != null) {
             showImageFromFunction.onTouchEvent(event);
         }
-        if(showGifFlagFunction != null){
+        if (showGifFlagFunction != null) {
             showGifFlagFunction.onTouchEvent(event);
         }
-        if(imageShapeFunction != null){
+        if (imageShapeFunction != null) {
             imageShapeFunction.onTouchEvent(event);
         }
-        if(clickRetryFunction != null){
+        if (clickRetryFunction != null) {
             clickRetryFunction.onTouchEvent(event);
         }
-        if(requestFunction != null){
+        if (requestFunction != null) {
             requestFunction.onTouchEvent(event);
         }
-        if(recyclerCompatFunction != null){
+        if (recyclerCompatFunction != null) {
             recyclerCompatFunction.onTouchEvent(event);
         }
 
@@ -190,28 +190,28 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        if(requestFunction != null){
+        if (requestFunction != null) {
             requestFunction.onAttachedToWindow();
         }
-        if(recyclerCompatFunction != null){
+        if (recyclerCompatFunction != null) {
             recyclerCompatFunction.onAttachedToWindow();
         }
-        if(showPressedFunction != null){
+        if (showPressedFunction != null) {
             showPressedFunction.onAttachedToWindow();
         }
-        if(showProgressFunction != null){
+        if (showProgressFunction != null) {
             showProgressFunction.onAttachedToWindow();
         }
-        if(showGifFlagFunction != null){
+        if (showGifFlagFunction != null) {
             showGifFlagFunction.onAttachedToWindow();
         }
-        if(showImageFromFunction != null){
+        if (showImageFromFunction != null) {
             showImageFromFunction.onAttachedToWindow();
         }
-        if(imageShapeFunction != null){
+        if (imageShapeFunction != null) {
             imageShapeFunction.onAttachedToWindow();
         }
-        if(clickRetryFunction != null){
+        if (clickRetryFunction != null) {
             clickRetryFunction.onAttachedToWindow();
         }
     }
@@ -222,33 +222,33 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
         boolean needSetImageNull = false;
 
-        if(requestFunction != null){
+        if (requestFunction != null) {
             //noinspection ConstantConditions
             needSetImageNull |= requestFunction.onDetachedFromWindow();
         }
-        if(recyclerCompatFunction != null){
+        if (recyclerCompatFunction != null) {
             needSetImageNull |= recyclerCompatFunction.onDetachedFromWindow();
         }
-        if(showPressedFunction != null){
+        if (showPressedFunction != null) {
             needSetImageNull |= showPressedFunction.onDetachedFromWindow();
         }
-        if(showProgressFunction != null){
+        if (showProgressFunction != null) {
             needSetImageNull |= showProgressFunction.onDetachedFromWindow();
         }
-        if(showGifFlagFunction != null){
+        if (showGifFlagFunction != null) {
             needSetImageNull |= showGifFlagFunction.onDetachedFromWindow();
         }
-        if(showImageFromFunction != null){
+        if (showImageFromFunction != null) {
             needSetImageNull |= showImageFromFunction.onDetachedFromWindow();
         }
-        if(imageShapeFunction != null){
+        if (imageShapeFunction != null) {
             needSetImageNull |= imageShapeFunction.onDetachedFromWindow();
         }
-        if(clickRetryFunction != null){
+        if (clickRetryFunction != null) {
             needSetImageNull |= clickRetryFunction.onDetachedFromWindow();
         }
 
-        if(needSetImageNull){
+        if (needSetImageNull) {
             super.setImageDrawable(null);
         }
     }
@@ -280,38 +280,38 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         setDrawable("setImageDrawable", oldDrawable, newDrawable);
     }
 
-    private void setDrawable(String callPosition, Drawable oldDrawable, Drawable newDrawable){
+    private void setDrawable(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
         // 图片确实改变了
         if (oldDrawable != newDrawable) {
             boolean needInvokeInvalidate = false;
 
-            if(requestFunction != null){
+            if (requestFunction != null) {
                 //noinspection ConstantConditions
                 needInvokeInvalidate |= requestFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
-            if(showGifFlagFunction != null){
+            if (showGifFlagFunction != null) {
                 needInvokeInvalidate |= showGifFlagFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
-            if(showImageFromFunction != null){
+            if (showImageFromFunction != null) {
                 needInvokeInvalidate |= showImageFromFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
-            if(showPressedFunction != null){
+            if (showPressedFunction != null) {
                 needInvokeInvalidate |= showPressedFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
-            if(showProgressFunction != null){
+            if (showProgressFunction != null) {
                 needInvokeInvalidate |= showProgressFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
-            if(imageShapeFunction != null){
+            if (imageShapeFunction != null) {
                 needInvokeInvalidate |= imageShapeFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
-            if(clickRetryFunction != null){
+            if (clickRetryFunction != null) {
                 needInvokeInvalidate |= clickRetryFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
-            if(recyclerCompatFunction != null){
+            if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
 
-            if(needInvokeInvalidate){
+            if (needInvokeInvalidate) {
                 invalidate();
             }
         }
@@ -331,33 +331,33 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     public void onDisplay(UriScheme uriScheme) {
         boolean needInvokeInvalidate = false;
 
-        if(requestFunction != null){
+        if (requestFunction != null) {
             //noinspection ConstantConditions
             needInvokeInvalidate |= requestFunction.onDisplay(uriScheme);
         }
-        if(recyclerCompatFunction != null){
+        if (recyclerCompatFunction != null) {
             needInvokeInvalidate |= recyclerCompatFunction.onDisplay(uriScheme);
         }
-        if(showPressedFunction != null){
+        if (showPressedFunction != null) {
             needInvokeInvalidate |= showPressedFunction.onDisplay(uriScheme);
         }
-        if(showProgressFunction != null){
+        if (showProgressFunction != null) {
             needInvokeInvalidate |= showProgressFunction.onDisplay(uriScheme);
         }
-        if(showGifFlagFunction != null){
+        if (showGifFlagFunction != null) {
             needInvokeInvalidate |= showGifFlagFunction.onDisplay(uriScheme);
         }
-        if(showImageFromFunction != null){
+        if (showImageFromFunction != null) {
             needInvokeInvalidate |= showImageFromFunction.onDisplay(uriScheme);
         }
-        if(imageShapeFunction != null){
+        if (imageShapeFunction != null) {
             needInvokeInvalidate |= imageShapeFunction.onDisplay(uriScheme);
         }
-        if(clickRetryFunction != null){
+        if (clickRetryFunction != null) {
             needInvokeInvalidate |= clickRetryFunction.onDisplay(uriScheme);
         }
 
-        if(needInvokeInvalidate){
+        if (needInvokeInvalidate) {
             invalidate();
         }
     }
@@ -458,7 +458,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 是否显示下载进度
      */
     @SuppressWarnings("unused")
-    public boolean isShowDownloadProgress(){
+    public boolean isShowDownloadProgress() {
         return showProgressFunction != null;
     }
 
@@ -466,11 +466,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置是否显示下载进度，开启后会在ImageView表面覆盖一层默认为黑色半透明的蒙层来显示进度
      */
     public void setShowDownloadProgress(boolean showDownloadProgress) {
-        if(showDownloadProgress){
-            if(showProgressFunction == null){
+        if (showDownloadProgress) {
+            if (showProgressFunction == null) {
                 showProgressFunction = new ShowProgressFunction(this, imageShapeFunction);
             }
-        }else{
+        } else {
             showProgressFunction = null;
         }
     }
@@ -480,7 +480,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     @SuppressWarnings("unused")
     public void setDownloadProgressColor(int downloadProgressColor) {
-        if(showProgressFunction != null){
+        if (showProgressFunction != null) {
             showProgressFunction.setDownloadProgressColor(downloadProgressColor);
         }
     }
@@ -497,11 +497,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置是否显示按下状态，开启后按下的时候会在ImageView表面覆盖一个黑色半透明图层，长按的时候还会有类似Android5.0的涟漪效果。此功能需要注册点击事件或设置Clickable为true
      */
     public void setShowPressedStatus(boolean showPressedStatus) {
-        if(showPressedStatus){
-            if(showPressedFunction == null){
+        if (showPressedStatus) {
+            if (showPressedFunction == null) {
                 showPressedFunction = new ShowPressedFunction(this, imageShapeFunction);
             }
-        }else{
+        } else {
             showPressedFunction = null;
         }
     }
@@ -511,7 +511,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     @SuppressWarnings("unused")
     public void setPressedStatusColor(int pressedStatusColor) {
-        if(showPressedFunction != null){
+        if (showPressedFunction != null) {
             showPressedFunction.setPressedStatusColor(pressedStatusColor);
         }
     }
@@ -530,15 +530,15 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     public void setShowImageFrom(boolean showImageFrom) {
         ShowImageFromFunction oldShowImageFromFunction = showImageFromFunction;
 
-        if(showImageFrom){
-            if(showImageFromFunction == null){
+        if (showImageFrom) {
+            if (showImageFromFunction == null) {
                 showImageFromFunction = new ShowImageFromFunction(this, requestFunction);
             }
-        }else{
+        } else {
             showImageFromFunction = null;
         }
 
-        if(oldShowImageFromFunction != null){
+        if (oldShowImageFromFunction != null) {
             invalidate();
         }
     }
@@ -556,14 +556,14 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     @SuppressWarnings("unused")
     public void setShowGifFlag(Drawable gifFlagDrawable) {
-        if(gifFlagDrawable != null){
-            if(showGifFlagFunction == null){
+        if (gifFlagDrawable != null) {
+            if (showGifFlagFunction == null) {
                 showGifFlagFunction = new ShowGifFlagFunction(this, gifFlagDrawable);
                 invalidate();
-            }else if(gifFlagDrawable != showGifFlagFunction.getGifFlagDrawable()){
+            } else if (gifFlagDrawable != showGifFlagFunction.getGifFlagDrawable()) {
                 invalidate();
             }
-        }else{
+        } else {
             showGifFlagFunction = null;
             invalidate();
         }
@@ -588,7 +588,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置图片形状，下载进度和按下效果的蒙层会适应此形状
      */
     public void setImageShape(ImageShape imageShape) {
-        if(imageShapeFunction != null){
+        if (imageShapeFunction != null) {
             imageShapeFunction.setImageShape(imageShape);
         }
     }
@@ -605,7 +605,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
     public void setImageShapeRoundedRadius(int radius) {
-        if(imageShapeFunction != null){
+        if (imageShapeFunction != null) {
             imageShapeFunction.setRoundedRadius(radius);
         }
     }
@@ -626,25 +626,25 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
                 //noinspection ConstantConditions
                 needInvokeInvalidate |= showImageFromFunction.onDisplayStarted();
             }
-            if(showProgressFunction != null){
+            if (showProgressFunction != null) {
                 needInvokeInvalidate |= showProgressFunction.onDisplayStarted();
             }
-            if(showGifFlagFunction != null){
+            if (showGifFlagFunction != null) {
                 needInvokeInvalidate |= showGifFlagFunction.onDisplayStarted();
             }
-            if(showPressedFunction != null){
+            if (showPressedFunction != null) {
                 needInvokeInvalidate |= showPressedFunction.onDisplayStarted();
             }
-            if(imageShapeFunction != null){
+            if (imageShapeFunction != null) {
                 needInvokeInvalidate |= imageShapeFunction.onDisplayStarted();
             }
-            if(clickRetryFunction != null){
+            if (clickRetryFunction != null) {
                 needInvokeInvalidate |= clickRetryFunction.onDisplayStarted();
             }
-            if(requestFunction != null){
+            if (requestFunction != null) {
                 needInvokeInvalidate |= requestFunction.onDisplayStarted();
             }
-            if(recyclerCompatFunction != null){
+            if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDisplayStarted();
             }
             if (needInvokeInvalidate) {
@@ -663,25 +663,25 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
                 //noinspection ConstantConditions
                 needInvokeInvalidate |= showImageFromFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if(showProgressFunction != null){
+            if (showProgressFunction != null) {
                 needInvokeInvalidate |= showProgressFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if(showGifFlagFunction != null){
+            if (showGifFlagFunction != null) {
                 needInvokeInvalidate |= showGifFlagFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if(showPressedFunction != null){
+            if (showPressedFunction != null) {
                 needInvokeInvalidate |= showPressedFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if(imageShapeFunction != null){
+            if (imageShapeFunction != null) {
                 needInvokeInvalidate |= imageShapeFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if(clickRetryFunction != null){
+            if (clickRetryFunction != null) {
                 needInvokeInvalidate |= clickRetryFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if(requestFunction != null){
+            if (requestFunction != null) {
                 needInvokeInvalidate |= requestFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if(recyclerCompatFunction != null){
+            if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDisplayCompleted(imageFrom, mimeType);
             }
             if (needInvokeInvalidate) {
@@ -700,25 +700,25 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
                 //noinspection ConstantConditions
                 needInvokeInvalidate |= showImageFromFunction.onDisplayFailed(failedCause);
             }
-            if(showProgressFunction != null){
+            if (showProgressFunction != null) {
                 needInvokeInvalidate |= showProgressFunction.onDisplayFailed(failedCause);
             }
-            if(showGifFlagFunction != null){
+            if (showGifFlagFunction != null) {
                 needInvokeInvalidate |= showGifFlagFunction.onDisplayFailed(failedCause);
             }
-            if(showPressedFunction != null){
+            if (showPressedFunction != null) {
                 needInvokeInvalidate |= showPressedFunction.onDisplayFailed(failedCause);
             }
-            if(imageShapeFunction != null){
+            if (imageShapeFunction != null) {
                 needInvokeInvalidate |= imageShapeFunction.onDisplayFailed(failedCause);
             }
-            if(clickRetryFunction != null){
+            if (clickRetryFunction != null) {
                 needInvokeInvalidate |= clickRetryFunction.onDisplayFailed(failedCause);
             }
-            if(requestFunction != null){
+            if (requestFunction != null) {
                 needInvokeInvalidate |= requestFunction.onDisplayFailed(failedCause);
             }
-            if(recyclerCompatFunction != null){
+            if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDisplayFailed(failedCause);
             }
             if (needInvokeInvalidate) {
@@ -737,25 +737,25 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
                 //noinspection ConstantConditions
                 needInvokeInvalidate |= showImageFromFunction.onCanceled(cancelCause);
             }
-            if(showProgressFunction != null){
+            if (showProgressFunction != null) {
                 needInvokeInvalidate |= showProgressFunction.onCanceled(cancelCause);
             }
-            if(showGifFlagFunction != null){
+            if (showGifFlagFunction != null) {
                 needInvokeInvalidate |= showGifFlagFunction.onCanceled(cancelCause);
             }
-            if(showPressedFunction != null){
+            if (showPressedFunction != null) {
                 needInvokeInvalidate |= showPressedFunction.onCanceled(cancelCause);
             }
-            if(imageShapeFunction != null){
+            if (imageShapeFunction != null) {
                 needInvokeInvalidate |= imageShapeFunction.onCanceled(cancelCause);
             }
-            if(clickRetryFunction != null){
+            if (clickRetryFunction != null) {
                 needInvokeInvalidate |= clickRetryFunction.onCanceled(cancelCause);
             }
-            if(requestFunction != null){
+            if (requestFunction != null) {
                 needInvokeInvalidate |= requestFunction.onCanceled(cancelCause);
             }
-            if(recyclerCompatFunction != null){
+            if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onCanceled(cancelCause);
             }
             if (needInvokeInvalidate) {
@@ -768,7 +768,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
     }
 
-    private class MyProgressListener implements DownloadProgressListener{
+    private class MyProgressListener implements DownloadProgressListener {
 
         @Override
         public void onUpdateDownloadProgress(int totalLength, int completedLength) {
@@ -777,25 +777,25 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
                 //noinspection ConstantConditions
                 needInvokeInvalidate |= showImageFromFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if(showProgressFunction != null){
+            if (showProgressFunction != null) {
                 needInvokeInvalidate |= showProgressFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if(showPressedFunction != null){
+            if (showPressedFunction != null) {
                 needInvokeInvalidate |= showPressedFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if(showGifFlagFunction != null){
+            if (showGifFlagFunction != null) {
                 needInvokeInvalidate |= showGifFlagFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if(imageShapeFunction != null){
+            if (imageShapeFunction != null) {
                 needInvokeInvalidate |= imageShapeFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if(clickRetryFunction != null){
+            if (clickRetryFunction != null) {
                 needInvokeInvalidate |= clickRetryFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if(requestFunction != null){
+            if (requestFunction != null) {
                 needInvokeInvalidate |= requestFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if(recyclerCompatFunction != null){
+            if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
             if (needInvokeInvalidate) {

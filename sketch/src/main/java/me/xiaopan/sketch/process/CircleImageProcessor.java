@@ -22,9 +22,9 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 
-import me.xiaopan.sketch.request.Resize;
-import me.xiaopan.sketch.feture.ResizeCalculator;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.feture.ResizeCalculator;
+import me.xiaopan.sketch.request.Resize;
 
 /**
  * 圆形图片处理器

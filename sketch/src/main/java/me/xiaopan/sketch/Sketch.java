@@ -31,12 +31,12 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadHelper;
 import me.xiaopan.sketch.request.DownloadListener;
 import me.xiaopan.sketch.request.DownloadOptions;
+import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.LoadHelper;
 import me.xiaopan.sketch.request.LoadListener;
 import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketch.request.ImageViewInterface;
 
 /**
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
@@ -78,10 +78,10 @@ public class Sketch {
     /**
      * 下载图片
      *
-     * @param uri              图片Uri，支持以下几种
-     *                         <blockQuote>“http://site.com/image.png“  // from Web
-     *                         <br>“https://site.com/image.png“ // from Web
-     *                         </blockQuote>
+     * @param uri 图片Uri，支持以下几种
+     *            <blockQuote>“http://site.com/image.png“  // from Web
+     *            <br>“https://site.com/image.png“ // from Web
+     *            </blockQuote>
      */
     public DownloadHelper download(String uri, DownloadListener downloadListener) {
         return configuration.getHelperFactory().getDownloadHelper(this, uri).listener(downloadListener);
@@ -91,16 +91,16 @@ public class Sketch {
     /**
      * 根据URI加载图片
      *
-     * @param uri          图片Uri，支持以下几种
-     *                     <blockQuote>"http://site.com/image.png"; // from Web
-     *                     <br>"https://site.com/image.png"; // from Web
-     *                     <br>"file:///mnt/sdcard/image.png"; // from SD card
-     *                     <br>"/mnt/sdcard/image.png"; // from SD card
-     *                     <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     *                     <br>"content://media/external/audio/albumart/13"; // from content provider
-     *                     <br>"asset://image.png"; // from assets
-     *                     <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     *                     </blockQuote>
+     * @param uri 图片Uri，支持以下几种
+     *            <blockQuote>"http://site.com/image.png"; // from Web
+     *            <br>"https://site.com/image.png"; // from Web
+     *            <br>"file:///mnt/sdcard/image.png"; // from SD card
+     *            <br>"/mnt/sdcard/image.png"; // from SD card
+     *            <br>"/mnt/sdcard/app.apk"; // from SD card apk file
+     *            <br>"content://media/external/audio/albumart/13"; // from content provider
+     *            <br>"asset://image.png"; // from assets
+     *            <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+     *            </blockQuote>
      */
     public LoadHelper load(String uri, LoadListener loadListener) {
         return configuration.getHelperFactory().getLoadHelper(this, uri).listener(loadListener);
@@ -134,16 +134,16 @@ public class Sketch {
     /**
      * 显示图片
      *
-     * @param uri                      图片Uri，支持以下几种
-     *                                 <blockQuote>"http://site.com/image.png"; // from Web
-     *                                 <br>"https://site.com/image.png"; // from Web
-     *                                 <br>"file:///mnt/sdcard/image.png"; // from SD card
-     *                                 <br>"/mnt/sdcard/image.png"; // from SD card
-     *                                 <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     *                                 <br>"content://media/external/audio/albumart/13"; // from content provider
-     *                                 <br>"asset://image.png"; // from assets
-     *                                 <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     *                                 </blockQuote>
+     * @param uri 图片Uri，支持以下几种
+     *            <blockQuote>"http://site.com/image.png"; // from Web
+     *            <br>"https://site.com/image.png"; // from Web
+     *            <br>"file:///mnt/sdcard/image.png"; // from SD card
+     *            <br>"/mnt/sdcard/image.png"; // from SD card
+     *            <br>"/mnt/sdcard/app.apk"; // from SD card apk file
+     *            <br>"content://media/external/audio/albumart/13"; // from content provider
+     *            <br>"asset://image.png"; // from assets
+     *            <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
+     *            </blockQuote>
      */
     public DisplayHelper display(String uri, ImageViewInterface imageViewInterface) {
         return configuration.getHelperFactory().getDisplayHelper(this, uri, imageViewInterface);
@@ -180,6 +180,7 @@ public class Sketch {
 
     /**
      * 取消
+     *
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
      */
     public static boolean cancel(ImageViewInterface imageViewInterface) {
@@ -216,7 +217,7 @@ public class Sketch {
     /**
      * 安装选项Map
      */
-    private static void installOptionsMap(){
+    private static void installOptionsMap() {
         if (optionsMap == null) {
             synchronized (Sketch.class) {
                 if (optionsMap == null) {

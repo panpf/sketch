@@ -111,12 +111,17 @@ public interface ImageDownloader extends Identifier {
      */
     boolean canRetry(Throwable throwable);
 
-    interface ImageHttpResponse{
+    interface ImageHttpResponse {
         int getResponseCode() throws IOException;
+
         String getResponseMessage() throws IOException;
+
         long getContentLength();
+
         String getResponseHeadersString();
+
         InputStream getContent() throws IOException;
+
         void releaseConnection();
     }
 }

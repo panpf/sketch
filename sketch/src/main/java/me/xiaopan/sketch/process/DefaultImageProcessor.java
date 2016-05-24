@@ -19,9 +19,9 @@ package me.xiaopan.sketch.process;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 
-import me.xiaopan.sketch.request.Resize;
-import me.xiaopan.sketch.feture.ResizeCalculator;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.feture.ResizeCalculator;
+import me.xiaopan.sketch.request.Resize;
 
 public class DefaultImageProcessor implements ImageProcessor {
 

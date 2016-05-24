@@ -19,10 +19,10 @@ package me.xiaopan.sketch.request;
 import android.graphics.Bitmap;
 import android.util.Log;
 
-import me.xiaopan.sketch.decode.DecodeResult;
-import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.decode.DecodeResult;
+import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
 import me.xiaopan.sketch.feture.LocalImagePreprocessor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -44,7 +44,7 @@ public class LoadRequest extends DownloadRequest {
 
         this.loadOptions = loadOptions;
         this.loadListener = loadListener;
-        
+
         setLogName("LoadRequest");
     }
 

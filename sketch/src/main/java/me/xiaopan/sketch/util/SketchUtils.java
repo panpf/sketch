@@ -216,13 +216,13 @@ public class SketchUtils {
         }
     }
 
-    public static boolean isFixedSize(ImageDisplayer imageDisplayer, FixedSize fixedSize, ImageView.ScaleType scaleType){
+    public static boolean isFixedSize(ImageDisplayer imageDisplayer, FixedSize fixedSize, ImageView.ScaleType scaleType) {
         return imageDisplayer instanceof TransitionImageDisplayer
                 && fixedSize != null
                 && scaleType == ImageView.ScaleType.CENTER_CROP;
     }
 
-    public static boolean isMainThread(){
+    public static boolean isMainThread() {
         return Looper.getMainLooper().getThread() == Thread.currentThread();
     }
 
@@ -241,13 +241,13 @@ public class SketchUtils {
         return null;
     }
 
-    public static boolean isMainProcess(Context context){
+    public static boolean isMainProcess(Context context) {
         return context.getPackageName().equalsIgnoreCase(getProcessName(context));
     }
 
-    public static String getSimpleProcessName(Context context){
+    public static String getSimpleProcessName(Context context) {
         String processName = getProcessName(context);
-        if(processName == null){
+        if (processName == null) {
             return null;
         }
         String packageName = context.getPackageName();

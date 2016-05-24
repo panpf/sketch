@@ -232,7 +232,7 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public void reset(){
+    public void reset() {
         super.reset();
 
         cacheInMemory = true;
@@ -247,7 +247,7 @@ public class DisplayOptions extends LoadOptions {
      * 拷贝属性，绝对的覆盖
      */
     public void copy(DisplayOptions options) {
-        if(options == null){
+        if (options == null) {
             return;
         }
 
@@ -264,8 +264,8 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 应用属性，应用的过程并不是绝对的覆盖
      */
-    public void apply(DisplayOptions options){
-        if(options == null){
+    public void apply(DisplayOptions options) {
+        if (options == null) {
             return;
         }
 
@@ -289,7 +289,7 @@ public class DisplayOptions extends LoadOptions {
             pauseDownloadImageHolder = options.getPauseDownloadImageHolder();
         }
 
-        if(!resizeByFixedSize && options.isResizeByFixedSize()){
+        if (!resizeByFixedSize && options.isResizeByFixedSize()) {
             resizeByFixedSize = true;
         }
     }

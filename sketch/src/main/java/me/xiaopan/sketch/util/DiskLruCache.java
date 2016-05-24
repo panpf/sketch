@@ -864,7 +864,7 @@ public final class DiskLruCache implements Closeable {
         /**
          * Returns cache file for {@code index}.
          */
-        public File getFile(int index){
+        public File getFile(int index) {
             return cleanFiles[index];
         }
 
@@ -1072,7 +1072,7 @@ public final class DiskLruCache implements Closeable {
         }
     }
 
-    public static class EditorChangedException extends Exception{
+    public static class EditorChangedException extends Exception {
 
     }
 }

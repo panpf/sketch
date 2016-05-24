@@ -94,6 +94,7 @@ public class LoadHelper {
     /**
      * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
      */
+    @SuppressWarnings("unused")
     public LoadHelper maxSize(int width, int height) {
         loadOptions.setMaxSize(width, height);
         return this;

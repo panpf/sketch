@@ -36,7 +36,7 @@ public class RotateImageProcessor extends DefaultImageProcessor {
     public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
         Bitmap resizeBitmap = super.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
 
-        if(degrees == 0){
+        if (degrees == 0) {
             return resizeBitmap;
         }
 
@@ -44,7 +44,7 @@ public class RotateImageProcessor extends DefaultImageProcessor {
         matrix.setRotate(degrees);
         Bitmap rotateBitmap = Bitmap.createBitmap(resizeBitmap, 0, 0, resizeBitmap.getWidth(), resizeBitmap.getHeight(), matrix, true);
 
-        if(resizeBitmap != bitmap){
+        if (resizeBitmap != bitmap) {
             resizeBitmap.recycle();
         }
 

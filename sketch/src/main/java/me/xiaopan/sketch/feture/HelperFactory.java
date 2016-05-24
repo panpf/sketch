@@ -17,12 +17,12 @@
 package me.xiaopan.sketch.feture;
 
 import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.DisplayHelper;
 import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.request.DownloadHelper;
-import me.xiaopan.sketch.request.LoadHelper;
 import me.xiaopan.sketch.request.ImageViewInterface;
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.request.LoadHelper;
 
 public class HelperFactory implements Identifier {
     private static final String NAME = "HelperFactory";

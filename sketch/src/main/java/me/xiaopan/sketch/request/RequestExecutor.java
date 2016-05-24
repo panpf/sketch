@@ -118,7 +118,7 @@ public class RequestExecutor implements Identifier {
     }
 
     public void shutdown() {
-        if(dispatchHandler != null){
+        if (dispatchHandler != null) {
             dispatchHandler = null;
         }
 

@@ -25,9 +25,9 @@ import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 
-import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.drawable.RecycleGifDrawable;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.drawable.RecycleGifDrawable;
+import me.xiaopan.sketch.request.LoadRequest;
 
 public class FileDecodeHelper implements DecodeHelper {
     private static final String NAME = "FileDecodeHelper";

@@ -49,11 +49,11 @@ public class LocalImagePreprocessor implements Identifier {
     }
 
     public DiskCache.Entry getDiskCacheEntry(LoadRequest loadRequest) {
-        if(isApkFile(loadRequest)){
+        if (isApkFile(loadRequest)) {
             return getApkIconDiskCache(loadRequest);
         }
 
-        if(isInstalledApp(loadRequest)){
+        if (isInstalledApp(loadRequest)) {
             return getInstalledAppIconDiskCache(loadRequest);
         }
 
@@ -70,11 +70,11 @@ public class LocalImagePreprocessor implements Identifier {
         return builder.append(NAME);
     }
 
-    private boolean isApkFile(LoadRequest loadRequest){
+    private boolean isApkFile(LoadRequest loadRequest) {
         return loadRequest.getRequestAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getRequestAttrs().getRealUri(), ".apk");
     }
 
-    private boolean isInstalledApp(LoadRequest loadRequest){
+    private boolean isInstalledApp(LoadRequest loadRequest) {
         return loadRequest.getRequestAttrs().getUriScheme() == UriScheme.FILE && loadRequest.getRequestAttrs().getRealUri().startsWith(INSTALLED_APP_URI_HOST);
     }
 
@@ -161,7 +161,7 @@ public class LocalImagePreprocessor implements Identifier {
             e.printStackTrace();
             return null;
         }
-        if(packageInfo.versionCode != versionCode){
+        if (packageInfo.versionCode != versionCode) {
             return null;
         }
 

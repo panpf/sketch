@@ -42,24 +42,24 @@ abstract class BaseRequest implements Runnable {
         this.requestAttrs = requestAttrs;
     }
 
-    private ReentrantLock getLoadLock(String key){
-        if(key == null){
+    private ReentrantLock getLoadLock(String key) {
+        if (key == null) {
             return null;
         }
         ReentrantLock loadLock = loadLocks.get(key);
-        if(loadLock == null){
+        if (loadLock == null) {
             loadLock = new ReentrantLock();
             loadLocks.put(key, loadLock);
         }
         return loadLock;
     }
 
-    private ReentrantLock getDownloadLock(String key){
-        if(key == null){
+    private ReentrantLock getDownloadLock(String key) {
+        if (key == null) {
             return null;
         }
         ReentrantLock downloadLock = downloadLocks.get(key);
-        if(downloadLock == null){
+        if (downloadLock == null) {
             downloadLock = new ReentrantLock();
             downloadLocks.put(key, downloadLock);
         }
@@ -295,7 +295,7 @@ abstract class BaseRequest implements Runnable {
     /**
      * 失败了
      */
-    protected void failed(FailedCause failedCause){
+    protected void failed(FailedCause failedCause) {
         this.status = Status.FAILED;
         this.failedCause = failedCause;
     }
@@ -303,13 +303,14 @@ abstract class BaseRequest implements Runnable {
     /**
      * 取消了
      */
-    protected void canceled(CancelCause cancelCause){
+    protected void canceled(CancelCause cancelCause) {
         this.status = Status.CANCELED;
         this.cancelCause = cancelCause;
     }
 
     /**
      * 取消请求
+     *
      * @return false：请求已经结束了
      */
     public boolean cancel() {

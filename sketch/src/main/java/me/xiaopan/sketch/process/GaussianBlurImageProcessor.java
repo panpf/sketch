@@ -4,8 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 
-import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.request.Resize;
 
 /**
  * 高斯模糊图片处理器

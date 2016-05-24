@@ -18,8 +18,8 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 
-import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.drawable.RecycleGifDrawable;
+import me.xiaopan.sketch.request.ImageFrom;
 
 public class DecodeResult {
     private Bitmap bitmap;

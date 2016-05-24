@@ -65,7 +65,7 @@ public class LruDiskCache implements DiskCache {
         // 缓存目录名字加上进程名字的后缀，不同的进程不同缓存目录，以兼容多进程
         String diskCacheDirName = DISK_CACHE_DIR_NAME;
         String simpleProcessName = SketchUtils.getSimpleProcessName(context);
-        if(simpleProcessName != null){
+        if (simpleProcessName != null) {
             diskCacheDirName += URLEncoder.encode(simpleProcessName);
         }
 
@@ -81,8 +81,8 @@ public class LruDiskCache implements DiskCache {
 
             // 换目录名称
             int count = 0;
-            while (count < 10){
-                cacheDir = new File(appCacheDir, diskCacheDirName+count);
+            while (count < 10) {
+                cacheDir = new File(appCacheDir, diskCacheDirName + count);
                 try {
                     cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
                     break;
@@ -93,7 +93,7 @@ public class LruDiskCache implements DiskCache {
             }
 
             // 试了一千次都没找到可以用的那就崩吧
-            if(cache == null){
+            if (cache == null) {
                 throw new RuntimeException("cacheDir disable. " + cacheDir.getPath());
             }
         }
@@ -102,7 +102,7 @@ public class LruDiskCache implements DiskCache {
     @Override
     public synchronized boolean exist(String uri) {
         // 缓存目录不存在就重建，提高自我恢复能力
-        if(!cacheDir.exists()){
+        if (!cacheDir.exists()) {
             reset();
         }
 
@@ -112,7 +112,7 @@ public class LruDiskCache implements DiskCache {
     @Override
     public synchronized Entry get(String uri) {
         // 缓存目录不存在就重建，提高自我恢复能力
-        if(!cacheDir.exists()){
+        if (!cacheDir.exists()) {
             reset();
         }
 
@@ -128,7 +128,7 @@ public class LruDiskCache implements DiskCache {
     @Override
     public synchronized DiskLruCache.Editor edit(String uri) {
         // 缓存目录不存在就重建，提高自我恢复能力
-        if(!cacheDir.exists()){
+        if (!cacheDir.exists()) {
             reset();
         }
 
@@ -226,17 +226,17 @@ public class LruDiskCache implements DiskCache {
         }
 
         @Override
-        public File getFile(){
+        public File getFile() {
             return snapshot.getFile(0);
         }
 
         @Override
-        public String getUri(){
+        public String getUri() {
             return uri;
         }
 
         @Override
-        public boolean delete(){
+        public boolean delete() {
             try {
                 snapshot.getDiskLruCache().remove(snapshot.getKey());
                 return true;
@@ -247,7 +247,7 @@ public class LruDiskCache implements DiskCache {
         }
     }
 
-    public static LruDiskCache open(Context context){
+    public static LruDiskCache open(Context context) {
         // appVersionCode固定死，因为当appVersionCode改变时DiskLruCache会清除旧的缓存，可我们不需要这个功能
         return new LruDiskCache(context, 1, DISK_CACHE_MAX_SIZE);
     }

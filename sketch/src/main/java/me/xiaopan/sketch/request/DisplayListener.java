@@ -19,7 +19,7 @@ package me.xiaopan.sketch.request;
 /**
  * 显示监听器，值的注意的是DisplayListener中所有的方法都会在主线中执行，所以实现着不必考虑异步线程中刷新UI的问题
  */
-public interface DisplayListener extends BaseListener{
+public interface DisplayListener extends BaseListener {
     /**
      * 已完成
      *

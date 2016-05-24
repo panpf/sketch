@@ -91,7 +91,7 @@ public class DownloadOptions {
      * 拷贝属性，绝对的覆盖
      */
     public void copy(DownloadOptions options) {
-        if(options == null){
+        if (options == null) {
             return;
         }
 
@@ -104,7 +104,7 @@ public class DownloadOptions {
      * 应用属性，应用的过程并不是绝对的覆盖
      */
     public void apply(DownloadOptions options) {
-        if(options == null){
+        if (options == null) {
             return;
         }
 

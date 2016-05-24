@@ -32,7 +32,7 @@ import me.xiaopan.sketch.request.UriScheme;
 /**
  * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击View重新或强制显示图片
  */
-public class ClickRetryFunction implements ImageViewFunction, View.OnClickListener{
+public class ClickRetryFunction implements ImageViewFunction, View.OnClickListener {
     private boolean clickRetryOnFailed;
     private boolean clickRetryOnPauseDownload;
     private View.OnClickListener wrapperClickListener;
@@ -128,14 +128,14 @@ public class ClickRetryFunction implements ImageViewFunction, View.OnClickListen
 
     @Override
     public void onClick(View v) {
-        if((clickRetryOnFailed && displayFailed) || (clickRetryOnPauseDownload && pauseDownload)){
+        if ((clickRetryOnFailed && displayFailed) || (clickRetryOnPauseDownload && pauseDownload)) {
             if (requestFunction.getDisplayParams() != null) {
                 Sketch.with(view.getContext()).display(requestFunction.getDisplayParams(), imageViewInterface).requestLevel(RequestLevel.NET).commit();
                 return;
             }
         }
 
-        if(wrapperClickListener != null){
+        if (wrapperClickListener != null) {
             wrapperClickListener.onClick(v);
         }
     }
@@ -161,9 +161,9 @@ public class ClickRetryFunction implements ImageViewFunction, View.OnClickListen
         updateClickable();
     }
 
-    public void updateClickable(){
+    public void updateClickable() {
         view.setClickable((clickRetryOnFailed && displayFailed)
-        || (clickRetryOnPauseDownload && pauseDownload)
-        || wrapperClickListener != null);
+                || (clickRetryOnPauseDownload && pauseDownload)
+                || wrapperClickListener != null);
     }
 }

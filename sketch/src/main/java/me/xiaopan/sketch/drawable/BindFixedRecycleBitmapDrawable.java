@@ -20,9 +20,9 @@ import android.graphics.drawable.Drawable;
 
 import java.lang.ref.WeakReference;
 
+import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.request.ImageViewInterface;
-import me.xiaopan.sketch.request.DisplayRequest;
 
 public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable {
     private WeakReference<DisplayRequest> displayRequestWeakReference;
@@ -38,15 +38,6 @@ public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable {
     }
 
     /**
-     * 获取显示请求
-     *
-     * @return 显示请求
-     */
-    public DisplayRequest getDisplayRequest() {
-        return displayRequestWeakReference.get();
-    }
-
-    /**
      * 从ImageViewInterface上查找DisplayRequest
      */
     public static DisplayRequest findDisplayRequest(ImageViewInterface imageViewInterface) {
@@ -57,5 +48,14 @@ public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable {
             }
         }
         return null;
+    }
+
+    /**
+     * 获取显示请求
+     *
+     * @return 显示请求
+     */
+    public DisplayRequest getDisplayRequest() {
+        return displayRequestWeakReference.get();
     }
 }
