@@ -207,3 +207,4 @@ LruDiskCache兼容多进程，多进程下会采用不同的disk缓存目录，�
 减少占位图缓存最大容量，调整为最大可用内存的32分之一，但又不能少于2M
 各种异常情况如果没有配置相应的占位image就设置drawable为空，这是之前的BUG
 本地任务支持多线程，加快处理速度
+重构ImageDownloader,新增可设置User-Agent、readTimeout和批量添加header
