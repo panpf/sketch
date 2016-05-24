@@ -35,7 +35,9 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     private int readTimeout = DEFAULT_READ_TIMEOUT;
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
     private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
-    private String userAgent = DEFAULT_USER_AGENT;
+    private String userAgent;
+    private Map<String, String> setExtraHeaders;
+    private Map<String, String> addExtraHeaders;
 
     @Override
     public int getMaxRetryCount() {
@@ -82,6 +84,28 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     }
 
     @Override
+    public Map<String, String> getExtraHeaders() {
+        return setExtraHeaders;
+    }
+
+    @Override
+    public HttpUrlConnectionImageDownloader setExtraHeaders(Map<String, String> extraHeaders) {
+        this.setExtraHeaders = extraHeaders;
+        return this;
+    }
+
+    @Override
+    public Map<String, String> getAddExtraHeaders() {
+        return addExtraHeaders;
+    }
+
+    @Override
+    public HttpUrlConnectionImageDownloader addExtraHeaders(Map<String, String> extraHeaders) {
+        this.addExtraHeaders = extraHeaders;
+        return this;
+    }
+
+    @Override
     public boolean canRetry(Throwable throwable) {
         return throwable instanceof SocketTimeoutException || throwable instanceof InterruptedIOException;
     }
@@ -108,23 +132,40 @@ public class HttpUrlConnectionImageDownloader implements ImageDownloader {
     @Override
     public ImageHttpResponse getHttpResponse(String uri) throws IOException {
         HttpURLConnection connection = (HttpURLConnection) new URL(uri).openConnection();
+
         connection.setConnectTimeout(connectTimeout);
         connection.setReadTimeout(readTimeout);
-        connection.setRequestProperty("User-Agent", userAgent);
+        if (userAgent != null) {
+            connection.setRequestProperty("User-Agent", userAgent);
+        }
+        connection.setDoInput(true);
 
         // HTTP connection reuse which was buggy pre-froyo
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO) {
             connection.setRequestProperty("http.keepAlive", "false");
         }
 
+        if (addExtraHeaders != null && addExtraHeaders.size() > 0) {
+            for (Map.Entry<String, String> entry : addExtraHeaders.entrySet()) {
+                connection.addRequestProperty(entry.getKey(), entry.getValue());
+            }
+        }
+        if (setExtraHeaders != null && setExtraHeaders.size() > 0) {
+            for (Map.Entry<String, String> entry : setExtraHeaders.entrySet()) {
+                connection.setRequestProperty(entry.getKey(), entry.getValue());
+            }
+        }
+
         processRequest(uri, connection);
+
+        connection.connect();
 
         return new HttpUrlConnectionResponse(connection);
     }
 
     @SuppressWarnings("WeakerAccess")
     protected void processRequest(@SuppressWarnings("UnusedParameters") String uri,
-                                  @SuppressWarnings("UnusedParameters") HttpURLConnection connection){
+                                  @SuppressWarnings("UnusedParameters") HttpURLConnection connection) {
 
     }
 

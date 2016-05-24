@@ -18,6 +18,7 @@ package me.xiaopan.sketch.download;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Map;
 
 import me.xiaopan.sketch.Identifier;
 
@@ -28,7 +29,6 @@ public interface ImageDownloader extends Identifier {
     int DEFAULT_READ_TIMEOUT = 20 * 1000;   // 默认读取超时时间
     int DEFAULT_CONNECT_TIMEOUT = 15 * 1000;    // 默认连接超时时间
     int DEFAULT_MAX_RETRY_COUNT = 1;    // 默认最大重试次数
-    String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
 
     /**
      * 获取最大重试次数
@@ -76,6 +76,30 @@ public interface ImageDownloader extends Identifier {
      */
     @SuppressWarnings("unused")
     ImageDownloader setUserAgent(String userAgent);
+
+    /**
+     * 获取扩展请求属性
+     */
+    @SuppressWarnings("unused")
+    Map<String, String> getExtraHeaders();
+
+    /**
+     * 设置扩展请求属性
+     */
+    @SuppressWarnings("unused")
+    ImageDownloader setExtraHeaders(Map<String, String> extraHeaders);
+
+    /**
+     * 获取可存在多个的请求属性
+     */
+    @SuppressWarnings("unused")
+    Map<String, String> getAddExtraHeaders();
+
+    /**
+     * 添加可存在多个的请求属性
+     */
+    @SuppressWarnings("unused")
+    ImageDownloader addExtraHeaders(Map<String, String> extraHeaders);
 
     /**
      * 获取响应

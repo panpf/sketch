@@ -47,6 +47,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InterruptedIOException;
 import java.net.SocketTimeoutException;
+import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
 import me.xiaopan.sketch.util.SketchUtils;
@@ -59,11 +60,14 @@ public class HttpClientImageDownloader implements ImageDownloader {
     private static final int DEFAULT_MAX_ROUTE_CONNECTIONS = 400;    // 默认每个路由的最大连接数
     private static final int DEFAULT_MAX_CONNECTIONS = 800;  // 默认最大连接数
     private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8 * 1024;  // 默认Socket缓存大小
+    private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
 
     private int readTimeout = DEFAULT_READ_TIMEOUT;
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
     private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
     private String userAgent = DEFAULT_USER_AGENT;
+    private Map<String, String> setExtraHeaders;
+    private Map<String, String> addExtraHeaders;
 
     private DefaultHttpClient httpClient;
 
@@ -140,6 +144,28 @@ public class HttpClientImageDownloader implements ImageDownloader {
     }
 
     @Override
+    public Map<String, String> getExtraHeaders() {
+        return setExtraHeaders;
+    }
+
+    @Override
+    public HttpClientImageDownloader setExtraHeaders(Map<String, String> extraHeaders) {
+        this.setExtraHeaders = extraHeaders;
+        return this;
+    }
+
+    @Override
+    public Map<String, String> getAddExtraHeaders() {
+        return addExtraHeaders;
+    }
+
+    @Override
+    public HttpClientImageDownloader addExtraHeaders(Map<String, String> extraHeaders) {
+        this.addExtraHeaders = extraHeaders;
+        return this;
+    }
+
+    @Override
     public boolean canRetry(Throwable throwable) {
         return throwable instanceof SocketTimeoutException || throwable instanceof InterruptedIOException;
     }
@@ -166,14 +192,27 @@ public class HttpClientImageDownloader implements ImageDownloader {
     @Override
     public ImageHttpResponse getHttpResponse(String uri) throws IOException {
         HttpUriRequest httpUriRequest = new HttpGet(uri);
+
+        if (addExtraHeaders != null && addExtraHeaders.size() > 0) {
+            for (Map.Entry<String, String> entry : addExtraHeaders.entrySet()) {
+                httpUriRequest.addHeader(entry.getKey(), entry.getValue());
+            }
+        }
+        if (setExtraHeaders != null && setExtraHeaders.size() > 0) {
+            for (Map.Entry<String, String> entry : setExtraHeaders.entrySet()) {
+                httpUriRequest.setHeader(entry.getKey(), entry.getValue());
+            }
+        }
+
         processRequest(uri, httpUriRequest);
+
         HttpResponse httpResponse = httpClient.execute(httpUriRequest);
         return new HttpClientHttpResponse(httpResponse);
     }
 
     @SuppressWarnings("WeakerAccess")
     protected void processRequest(@SuppressWarnings("UnusedParameters") String uri,
-                                  @SuppressWarnings("UnusedParameters") HttpUriRequest httpUriRequest){
+                                  @SuppressWarnings("UnusedParameters") HttpUriRequest httpUriRequest) {
     }
 
     private static class GzipProcessRequestInterceptor implements HttpRequestInterceptor {
