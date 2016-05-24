@@ -58,14 +58,13 @@ public class HttpClientStack implements HttpStack {
     private static final int DEFAULT_MAX_ROUTE_CONNECTIONS = 400;    // 默认每个路由的最大连接数
     private static final int DEFAULT_MAX_CONNECTIONS = 800;  // 默认最大连接数
     private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8 * 1024;  // 默认Socket缓存大小
-    private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
 
     protected String logName = "HttpClientStack";
 
     private int readTimeout = DEFAULT_READ_TIMEOUT;
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
     private int connectTimeout = DEFAULT_CONNECT_TIMEOUT;
-    private String userAgent = DEFAULT_USER_AGENT;
+    private String userAgent;
     private Map<String, String> setExtraHeaders;
     private Map<String, String> addExtraHeaders;
 
@@ -81,7 +80,6 @@ public class HttpClientStack implements HttpStack {
         HttpConnectionParams.setConnectionTimeout(httpParams, connectTimeout);
         HttpConnectionParams.setSocketBufferSize(httpParams, DEFAULT_SOCKET_BUFFER_SIZE);
         HttpProtocolParams.setVersion(httpParams, HttpVersion.HTTP_1_1);
-        HttpProtocolParams.setUserAgent(httpParams, userAgent);
         SchemeRegistry schemeRegistry = new SchemeRegistry();
         schemeRegistry.register(new Scheme("http", PlainSocketFactory.getSocketFactory(), 80));
         schemeRegistry.register(new Scheme("https", SSLSocketFactory.getSocketFactory(), 443));
@@ -192,6 +190,10 @@ public class HttpClientStack implements HttpStack {
     @Override
     public ImageHttpResponse getHttpResponse(String uri) throws IOException {
         HttpUriRequest httpUriRequest = new HttpGet(uri);
+
+        if(userAgent != null){
+            httpUriRequest.setHeader("User-Agent", userAgent);
+        }
 
         if (addExtraHeaders != null && addExtraHeaders.size() > 0) {
             for (Map.Entry<String, String> entry : addExtraHeaders.entrySet()) {

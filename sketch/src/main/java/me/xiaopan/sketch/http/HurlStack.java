@@ -135,14 +135,15 @@ public class HurlStack implements HttpStack {
 
         connection.setConnectTimeout(connectTimeout);
         connection.setReadTimeout(readTimeout);
-        if (userAgent != null) {
-            connection.setRequestProperty("User-Agent", userAgent);
-        }
         connection.setDoInput(true);
 
         // HTTP connection reuse which was buggy pre-froyo
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.FROYO) {
             connection.setRequestProperty("http.keepAlive", "false");
+        }
+
+        if (userAgent != null) {
+            connection.setRequestProperty("User-Agent", userAgent);
         }
 
         if (addExtraHeaders != null && addExtraHeaders.size() > 0) {
