@@ -22,7 +22,10 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 在继承LocalImagePreprocessor的基础上扩展了解析XPK文件的图标
  */
 public class MyLocalImagePreprocessor extends LocalImagePreprocessor {
-    private static final String NAME = "MyLocalImagePreprocessor";
+
+    public MyLocalImagePreprocessor() {
+        logName = "MyLocalImagePreprocessor";
+    }
 
     @Override
     public boolean isSpecific(LoadRequest loadRequest) {
@@ -71,7 +74,7 @@ public class MyLocalImagePreprocessor extends LocalImagePreprocessor {
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if(zipEntry == null){
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found icon.png in ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found icon.png in ", realUri));
             }
             return null;
         }
@@ -125,7 +128,7 @@ public class MyLocalImagePreprocessor extends LocalImagePreprocessor {
         xpkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (xpkIconDiskCacheEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found xpk icon cache file", " - ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found xpk icon cache file", " - ", realUri));
             }
         }
 
