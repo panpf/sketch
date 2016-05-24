@@ -28,7 +28,8 @@ import me.xiaopan.sketch.request.ImageViewInterface;
  * 过渡效果的图片显示器
  */
 public class TransitionImageDisplayer implements ImageDisplayer {
-    private static final String NAME = "TransitionImageDisplayer";
+    protected String logName = "TransitionImageDisplayer";
+
     private int duration;
 
     public TransitionImageDisplayer(int duration) {
@@ -67,7 +68,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME)
+        return builder.append(logName)
                 .append("(")
                 .append("duration").append("=").append(duration)
                 .append(")");

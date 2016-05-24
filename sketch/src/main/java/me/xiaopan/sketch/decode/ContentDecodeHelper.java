@@ -31,7 +31,8 @@ import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class ContentDecodeHelper implements DecodeHelper {
-    private static final String NAME = "ContentDecodeHelper";
+    protected String logName = "ContentDecodeHelper";
+
     private Uri contentUri;
     private LoadRequest loadRequest;
 
@@ -63,7 +64,7 @@ public class ContentDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
         if (Sketch.isDebugMode()) {
-            StringBuilder builder = new StringBuilder(NAME)
+            StringBuilder builder = new StringBuilder(logName)
                     .append(" - ").append("decodeSuccess");
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 builder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
@@ -82,7 +83,7 @@ public class ContentDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeFailed() {
         if (Sketch.isDebugMode()) {
-            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", contentUri.toString()));
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "decode failed", " - ", contentUri.toString()));
         }
     }
 

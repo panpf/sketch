@@ -25,8 +25,10 @@ import me.xiaopan.sketch.request.ImageViewInterface;
 /**
  * 颜色渐入图片显示器
  */
+@SuppressWarnings("unused")
 public class ColorTransitionImageDisplayer implements ImageDisplayer {
-    private static final String NAME = "ColorTransitionImageDisplayer";
+    protected String logName = "ColorTransitionImageDisplayer";
+
     private int duration;
     private int color;
 
@@ -58,7 +60,7 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME)
+        return builder.append(logName)
                 .append("(")
                 .append("duration").append("=").append(duration)
                 .append(",")

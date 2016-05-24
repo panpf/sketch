@@ -32,7 +32,8 @@ import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class CacheFileDecodeHelper implements DecodeHelper {
-    private static final String NAME = "CacheFileDecodeHelper";
+    protected String logName = "CacheFileDecodeHelper";
+
     private DiskCache.Entry diskCacheEntry;
     private LoadRequest loadRequest;
 
@@ -60,7 +61,7 @@ public class CacheFileDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
         if (Sketch.isDebugMode()) {
-            StringBuilder builder = new StringBuilder(NAME)
+            StringBuilder builder = new StringBuilder(logName)
                     .append(" - ").append("decodeSuccess");
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 builder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
@@ -79,11 +80,11 @@ public class CacheFileDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeFailed() {
         if (Sketch.isDebugMode()) {
-            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", "diskCacheKey", "=", diskCacheEntry.getUri(), ", ", " - ", loadRequest.getRequestAttrs().getName()));
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "decode failed", " - ", "diskCacheKey", "=", diskCacheEntry.getUri(), ", ", " - ", loadRequest.getRequestAttrs().getName()));
         }
         if (!diskCacheEntry.delete()) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "delete damaged disk cache file failed", " - ", "diskCacheKey", "=", diskCacheEntry.getUri(), ", ", " - ", loadRequest.getRequestAttrs().getName()));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "delete damaged disk cache file failed", " - ", "diskCacheKey", "=", diskCacheEntry.getUri(), ", ", " - ", loadRequest.getRequestAttrs().getName()));
             }
         }
     }

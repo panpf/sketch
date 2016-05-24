@@ -38,11 +38,12 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 本地图片预处理器，可读取APK文件的图标以及根据包名和版本号读取已安装APP的图标
  */
 public class LocalImagePreprocessor implements Identifier {
-    private static final String NAME = "LocalImagePreprocessor";
 
     private static final String INSTALLED_APP_URI_HOST = "installedApp";
     private static final String INSTALLED_APP_URI_PARAM_PACKAGE_NAME = "packageName";
     private static final String INSTALLED_APP_URI_PARAM_VERSION_CODE = "versionCode";
+
+    protected String logName = "LocalImagePreprocessor";
 
     public boolean isSpecific(LoadRequest loadRequest) {
         return isApkFile(loadRequest) || isInstalledApp(loadRequest);
@@ -62,12 +63,12 @@ public class LocalImagePreprocessor implements Identifier {
 
     @Override
     public String getIdentifier() {
-        return NAME;
+        return logName;
     }
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME);
+        return builder.append(logName);
     }
 
     private boolean isApkFile(LoadRequest loadRequest) {
@@ -99,14 +100,14 @@ public class LocalImagePreprocessor implements Identifier {
             return apkIconDiskCacheEntry;
         }
 
-        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(configuration.getContext(), realUri, loadRequest.getOptions().isLowQualityImage(), NAME);
+        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(configuration.getContext(), realUri, loadRequest.getOptions().isLowQualityImage(), logName);
         if (iconBitmap == null) {
             return null;
         }
 
         if (iconBitmap.isRecycled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "apk icon bitmap recycled", " - ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "apk icon bitmap recycled", " - ", realUri));
             }
             return null;
         }
@@ -131,7 +132,7 @@ public class LocalImagePreprocessor implements Identifier {
         apkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (apkIconDiskCacheEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found apk icon cache file", " - ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found apk icon cache file", " - ", realUri));
             }
         }
 
@@ -165,14 +166,14 @@ public class LocalImagePreprocessor implements Identifier {
             return null;
         }
 
-        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(configuration.getContext(), packageInfo.applicationInfo.sourceDir, loadRequest.getOptions().isLowQualityImage(), NAME);
+        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(configuration.getContext(), packageInfo.applicationInfo.sourceDir, loadRequest.getOptions().isLowQualityImage(), logName);
         if (iconBitmap == null) {
             return null;
         }
 
         if (iconBitmap.isRecycled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "apk icon bitmap recycled", " - ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "apk icon bitmap recycled", " - ", realUri));
             }
             return null;
         }
@@ -197,7 +198,7 @@ public class LocalImagePreprocessor implements Identifier {
         appIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (appIconDiskCacheEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "not found apk icon cache file", " - ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found apk icon cache file", " - ", realUri));
             }
         }
 

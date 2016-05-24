@@ -27,8 +27,10 @@ import me.xiaopan.sketch.request.ImageViewInterface;
 /**
  * 由小到大图片显示器
  */
+@SuppressWarnings("unused")
 public class ZoomInImageDisplayer implements ImageDisplayer {
-    private static final String NAME = "ZoomInImageDisplayer";
+    protected String logName = "ZoomInImageDisplayer";
+
     private int duration;
     private float fromX;
     private float fromY;
@@ -81,7 +83,7 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        builder.append(NAME)
+        builder.append(logName)
                 .append("(")
                 .append("duration").append("=").append(duration)
                 .append(",")

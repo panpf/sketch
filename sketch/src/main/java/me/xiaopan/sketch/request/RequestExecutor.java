@@ -32,7 +32,8 @@ import me.xiaopan.sketch.Identifier;
  * 请求执行器
  */
 public class RequestExecutor implements Identifier {
-    private static final String NAME = "RequestExecutor";
+    protected String logName = "RequestExecutor";
+
     private ExecutorService netTaskExecutor;    //网络任务执行器
     private ExecutorService localTaskExecutor;    //本地任务执行器
     private Handler dispatchHandler;
@@ -109,12 +110,12 @@ public class RequestExecutor implements Identifier {
 
     @Override
     public String getIdentifier() {
-        return NAME;
+        return logName;
     }
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME).append("(").append(shutdown ? "shutdown" : "running").append(")");
+        return builder.append(logName).append("(").append(shutdown ? "shutdown" : "running").append(")");
     }
 
     public void shutdown() {

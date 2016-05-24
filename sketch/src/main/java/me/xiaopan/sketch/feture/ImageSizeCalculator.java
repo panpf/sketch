@@ -35,7 +35,7 @@ import me.xiaopan.sketch.request.Resize;
  * 图片最大尺寸和修正尺寸计算器
  */
 public class ImageSizeCalculator implements Identifier {
-    private static final String NAME = "ImageSizeCalculator";
+    protected String logName = "ImageSizeCalculator";
 
     private float targetSizeScaleInSampleSize = 1.25f;
 
@@ -198,12 +198,12 @@ public class ImageSizeCalculator implements Identifier {
 
     @Override
     public String getIdentifier() {
-        return NAME;
+        return logName;
     }
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME);
+        return builder.append(logName);
     }
 
     public static int getWidth(View imageView, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {

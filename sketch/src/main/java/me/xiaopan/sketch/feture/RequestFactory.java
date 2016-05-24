@@ -36,7 +36,7 @@ import me.xiaopan.sketch.request.RequestAttrs;
  * Request创建工厂
  */
 public class RequestFactory implements Identifier {
-    private static final String NAME = "RequestFactory";
+    protected String logName = "RequestFactory";
 
     public DisplayRequest newDisplayRequest(
             Sketch sketch, RequestAttrs requestAttrs, DisplayAttrs displayAttrs,
@@ -66,11 +66,11 @@ public class RequestFactory implements Identifier {
 
     @Override
     public String getIdentifier() {
-        return NAME;
+        return logName;
     }
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME);
+        return builder.append(logName);
     }
 }

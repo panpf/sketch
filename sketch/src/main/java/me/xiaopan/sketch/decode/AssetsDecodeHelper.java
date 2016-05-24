@@ -30,7 +30,8 @@ import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class AssetsDecodeHelper implements DecodeHelper {
-    private static final String NAME = "AssetsDecodeHelper";
+    protected String logName = "AssetsDecodeHelper";
+
     private String assetsFilePath;
     private LoadRequest loadRequest;
 
@@ -62,7 +63,7 @@ public class AssetsDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
         if (Sketch.isDebugMode()) {
-            StringBuilder builder = new StringBuilder(NAME)
+            StringBuilder builder = new StringBuilder(logName)
                     .append(" - ").append("decodeSuccess");
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 builder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
@@ -81,7 +82,7 @@ public class AssetsDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeFailed() {
         if (Sketch.isDebugMode()) {
-            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "decode failed", " - ", assetsFilePath));
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "decode failed", " - ", assetsFilePath));
         }
     }
 

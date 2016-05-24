@@ -35,7 +35,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 import pl.droidsonroids.gif.GifDrawable;
 
 public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
-    private static final String NAME = "RecycleGifDrawable";
+    protected String logName = "RecycleGifDrawable";
 
     private int cacheRefCount;
     private int displayRefCount;
@@ -188,12 +188,12 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "recycled gif drawable", " - ", callingStation, ":", type, " - ", getInfo()));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "recycled gif drawable", " - ", callingStation, ":", type, " - ", getInfo()));
             }
             recycle();
         } else {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can't recycle gif drawable", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, " - ", "can't recycle gif drawable", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
             }
         }
     }

@@ -30,7 +30,8 @@ import me.xiaopan.sketch.drawable.RecycleGifDrawable;
 import me.xiaopan.sketch.request.LoadRequest;
 
 public class FileDecodeHelper implements DecodeHelper {
-    private static final String NAME = "FileDecodeHelper";
+    protected String logName = "FileDecodeHelper";
+
     private File file;
     private LoadRequest loadRequest;
 
@@ -47,7 +48,7 @@ public class FileDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
         if (Sketch.isDebugMode()) {
-            StringBuilder builder = new StringBuilder(NAME)
+            StringBuilder builder = new StringBuilder(logName)
                     .append(" - " + "decodeSuccess");
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 builder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
@@ -66,7 +67,7 @@ public class FileDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeFailed() {
         if (Sketch.isDebugMode()) {
-            StringBuilder builder = new StringBuilder(NAME);
+            StringBuilder builder = new StringBuilder(logName);
             builder.append(" - ").append("decode failed");
             builder.append(", ").append("filePath").append("=").append(file.getPath());
             if (file.exists()) {

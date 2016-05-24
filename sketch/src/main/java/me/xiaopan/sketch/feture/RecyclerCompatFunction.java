@@ -37,7 +37,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * <br>因此RecyclerCompatFunction就判断了如果在onAttachedToWindow之前没有调用相关显示图片的方法就会根据DisplayParams恢复之前的图片
  */
 public class RecyclerCompatFunction implements ImageViewFunction {
-    private static final String NAME = "RecyclerCompatFunction";
+    protected String logName = "RecyclerCompatFunction";
 
     private Context context;
     private RequestFunction requestFunction;
@@ -60,7 +60,7 @@ public class RecyclerCompatFunction implements ImageViewFunction {
         DisplayParams displayParams = requestFunction.getDisplayParams();
         if (displayParams != null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, "：", "restore image on attached to window", " - ", displayParams.attrs.getUri()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, "：", "restore image on attached to window", " - ", displayParams.attrs.getUri()));
             }
             Sketch.with(context).display(displayParams, imageViewInterface).commit();
         }

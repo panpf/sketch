@@ -22,16 +22,16 @@ import android.widget.ImageView;
 import me.xiaopan.sketch.Identifier;
 
 public class ResizeCalculator implements Identifier {
-    private static final String NAME = "ResizeCalculator";
+    protected String logName = "ResizeCalculator";
 
     @Override
     public String getIdentifier() {
-        return NAME;
+        return logName;
     }
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME);
+        return builder.append(logName);
     }
 
     public Result calculator(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight, ImageView.ScaleType scaleType, boolean forceUseResize) {

@@ -36,8 +36,9 @@ import me.xiaopan.sketch.request.UriScheme;
  * 显示按下状态，按下后会在ImageView上显示一个黑色半透明的蒙层，松手后小时
  */
 public class ShowPressedFunction implements ImageViewFunction {
-    private static final String NAME = "ShowPressedFunction";
     private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;
+
+    protected String logName = "ShowPressedFunction";
 
     private View view;
     private ImageShapeFunction imageShapeFunction;
@@ -98,7 +99,7 @@ public class ShowPressedFunction implements ImageViewFunction {
                 try {
                     canvas.clipPath(imageShapeFunction.getClipPath());
                 } catch (UnsupportedOperationException e) {
-                    Log.e(NAME, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
+                    Log.e(logName, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                         view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                     }

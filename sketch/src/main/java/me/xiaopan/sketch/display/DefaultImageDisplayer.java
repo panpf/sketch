@@ -24,7 +24,7 @@ import me.xiaopan.sketch.request.ImageViewInterface;
  * 默认的图片显示器，没有任何动画效果
  */
 public class DefaultImageDisplayer implements ImageDisplayer {
-    private static final String NAME = "DefaultImageDisplayer";
+    protected String logName = "DefaultImageDisplayer";
 
     @Override
     public void display(ImageViewInterface imageViewInterface, Drawable newDrawable) {
@@ -37,11 +37,11 @@ public class DefaultImageDisplayer implements ImageDisplayer {
 
     @Override
     public String getIdentifier() {
-        return NAME;
+        return logName;
     }
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME);
+        return builder.append(logName);
     }
 }

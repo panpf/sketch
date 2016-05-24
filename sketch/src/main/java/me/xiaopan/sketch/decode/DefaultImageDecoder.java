@@ -36,9 +36,9 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 默认的图片解码器
  */
 public class DefaultImageDecoder implements ImageDecoder {
-    private static final String NAME = "DefaultImageDecoder";
+    protected String logName = "DefaultImageDecoder";
 
-    public static DecodeResult decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper) {
+    public static DecodeResult decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper, String logName) {
         // just decode bounds
         Options options = new Options();
         options.inJustDecodeBounds = true;
@@ -87,14 +87,14 @@ public class DefaultImageDecoder implements ImageDecoder {
             bitmap = decodeHelper.decode(options);
             if (bitmap != null && (bitmap.getWidth() == 1 || bitmap.getHeight() == 1)) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "bitmap width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", "BitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(), " - ", loadRequest.getRequestAttrs().getName()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "bitmap width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", "BitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(), " - ", loadRequest.getRequestAttrs().getName()));
                 }
                 bitmap.recycle();
                 bitmap = null;
             }
         } else {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "image width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", loadRequest.getRequestAttrs().getName()));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "image width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", loadRequest.getRequestAttrs().getName()));
             }
         }
 
@@ -133,12 +133,12 @@ public class DefaultImageDecoder implements ImageDecoder {
 
     @Override
     public String getIdentifier() {
-        return NAME;
+        return logName;
     }
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME);
+        return builder.append(logName);
     }
 
     public DecodeResult decodeHttpOrHttps(LoadRequest loadRequest) {
@@ -147,12 +147,12 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (loadRequest.getDownloadResult() != null) {
             DiskCache.Entry diskCacheEntry = loadRequest.getDownloadResult().getDiskCacheEntry();
             if (diskCacheEntry != null) {
-                decodeResult = decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest));
+                decodeResult = decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest), logName);
             }
 
             byte[] imageData = loadRequest.getDownloadResult().getImageData();
             if (imageData != null && imageData.length > 0) {
-                decodeResult = decodeFromHelper(loadRequest, new ByteArrayDecodeHelper(imageData, loadRequest));
+                decodeResult = decodeFromHelper(loadRequest, new ByteArrayDecodeHelper(imageData, loadRequest), logName);
             }
 
             if (decodeResult != null) {
@@ -168,12 +168,12 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         DiskCache.Entry diskCacheEntry = loadRequest.getDownloadResult() != null ? loadRequest.getDownloadResult().getDiskCacheEntry() : null;
         if (diskCacheEntry != null) {
-            decodeResult = decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest));
+            decodeResult = decodeFromHelper(loadRequest, new CacheFileDecodeHelper(diskCacheEntry, loadRequest), logName);
             if (decodeResult != null) {
                 decodeResult.setImageFrom(ImageFrom.DISK_CACHE);
             }
         } else {
-            decodeResult = decodeFromHelper(loadRequest, new FileDecodeHelper(new File(loadRequest.getRequestAttrs().getRealUri()), loadRequest));
+            decodeResult = decodeFromHelper(loadRequest, new FileDecodeHelper(new File(loadRequest.getRequestAttrs().getRealUri()), loadRequest), logName);
             if (decodeResult != null) {
                 decodeResult.setImageFrom(ImageFrom.LOCAL);
             }
@@ -183,7 +183,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public DecodeResult decodeContent(LoadRequest loadRequest) {
-        DecodeResult decodeResult = decodeFromHelper(loadRequest, new ContentDecodeHelper(Uri.parse(loadRequest.getRequestAttrs().getRealUri()), loadRequest));
+        DecodeResult decodeResult = decodeFromHelper(loadRequest, new ContentDecodeHelper(Uri.parse(loadRequest.getRequestAttrs().getRealUri()), loadRequest), logName);
         if (decodeResult != null) {
             decodeResult.setImageFrom(ImageFrom.LOCAL);
         }
@@ -191,7 +191,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public DecodeResult decodeAsset(LoadRequest loadRequest) {
-        DecodeResult decodeResult = decodeFromHelper(loadRequest, new AssetsDecodeHelper(loadRequest.getRequestAttrs().getRealUri(), loadRequest));
+        DecodeResult decodeResult = decodeFromHelper(loadRequest, new AssetsDecodeHelper(loadRequest.getRequestAttrs().getRealUri(), loadRequest), logName);
         if (decodeResult != null) {
             decodeResult.setImageFrom(ImageFrom.LOCAL);
         }
@@ -199,7 +199,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     public DecodeResult decodeDrawable(LoadRequest loadRequest) {
-        DecodeResult decodeResult = decodeFromHelper(loadRequest, new DrawableDecodeHelper(Integer.valueOf(loadRequest.getRequestAttrs().getRealUri()), loadRequest));
+        DecodeResult decodeResult = decodeFromHelper(loadRequest, new DrawableDecodeHelper(Integer.valueOf(loadRequest.getRequestAttrs().getRealUri()), loadRequest), logName);
         if (decodeResult != null) {
             decodeResult.setImageFrom(ImageFrom.LOCAL);
         }

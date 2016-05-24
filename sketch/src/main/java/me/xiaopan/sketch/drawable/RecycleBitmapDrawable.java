@@ -25,7 +25,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDrawable {
-    private static final String NAME = "RecycleBitmapDrawable";
+    protected String logName = "RecycleBitmapDrawable";
 
     private int cacheRefCount;
     private int displayRefCount;
@@ -151,12 +151,12 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME, " - ", "recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo()));
             }
             getBitmap().recycle();
         } else {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "can't recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, " - ", "can't recycled bitmap", " - ", callingStation, ":", type, " - ", getInfo(), " - ", "references(cacheRefCount=", cacheRefCount, "; displayRefCount=", displayRefCount, "; waitDisplayRefCount=", waitDisplayRefCount, "; canRecycle=", canRecycle(), ")"));
             }
         }
     }

@@ -54,13 +54,13 @@ import me.xiaopan.sketch.util.SketchUtils;
 
 @SuppressWarnings("deprecation")
 public class HttpClientStack implements HttpStack {
-    private static final String NAME = "HttpClientStack";
-
     private static final int DEFAULT_WAIT_TIMEOUT = 60 * 1000;   // 默认从连接池中获取连接的最大等待时间
     private static final int DEFAULT_MAX_ROUTE_CONNECTIONS = 400;    // 默认每个路由的最大连接数
     private static final int DEFAULT_MAX_CONNECTIONS = 800;  // 默认最大连接数
     private static final int DEFAULT_SOCKET_BUFFER_SIZE = 8 * 1024;  // 默认Socket缓存大小
     private static final String DEFAULT_USER_AGENT = "Mozilla/5.0 (Windows NT 6.0; WOW64) AppleWebKit/534.24 (KHTML, like Gecko) Chrome/11.0.696.16 Safari/534.24";
+
+    protected String logName = "HttpClientStack";
 
     private int readTimeout = DEFAULT_READ_TIMEOUT;
     private int maxRetryCount = DEFAULT_MAX_RETRY_COUNT;
@@ -177,7 +177,7 @@ public class HttpClientStack implements HttpStack {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME)
+        return builder.append(logName)
                 .append("(")
                 .append("maxRetryCount").append("=").append(maxRetryCount)
                 .append(",")

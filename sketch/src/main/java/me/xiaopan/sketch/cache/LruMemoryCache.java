@@ -27,7 +27,8 @@ import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class LruMemoryCache implements MemoryCache {
-    private static final String NAME = "LruMemoryCache";
+    protected String logName = "LruMemoryCache";
+
     private Context context;
     private LruCache<String, Drawable> drawableLruCache;
 
@@ -47,7 +48,7 @@ public class LruMemoryCache implements MemoryCache {
         }
         drawableLruCache.put(key, value);
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "put", " - ", "beforeCacheSize=", Formatter.formatFileSize(context, cacheSize), " - ", ((RecycleDrawable) value).getInfo(), " - ", "afterCacheSize=", Formatter.formatFileSize(context, drawableLruCache.size())));
+            Log.i(Sketch.TAG, SketchUtils.concat(logName, " - ", "put", " - ", "beforeCacheSize=", Formatter.formatFileSize(context, cacheSize), " - ", ((RecycleDrawable) value).getInfo(), " - ", "afterCacheSize=", Formatter.formatFileSize(context, drawableLruCache.size())));
         }
     }
 
@@ -60,7 +61,7 @@ public class LruMemoryCache implements MemoryCache {
     public synchronized Drawable remove(String key) {
         Drawable drawable = drawableLruCache.remove(key);
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "remove", " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+            Log.i(Sketch.TAG, SketchUtils.concat(logName, " - ", "remove", " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
         }
         return drawable;
     }
@@ -78,7 +79,7 @@ public class LruMemoryCache implements MemoryCache {
     @Override
     public synchronized void clear() {
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "clear", " - ", "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+            Log.i(Sketch.TAG, SketchUtils.concat(logName, " - ", "clear", " - ", "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
         }
         drawableLruCache.evictAll();
     }
@@ -95,7 +96,7 @@ public class LruMemoryCache implements MemoryCache {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME)
+        return builder.append(logName)
                 .append("(")
                 .append("maxSize").append("=").append(Formatter.formatFileSize(context, getMaxSize()))
                 .append(")");
@@ -109,7 +110,7 @@ public class LruMemoryCache implements MemoryCache {
 
         @Override
         public Drawable put(String key, Drawable value) {
-            ((RecycleDrawable) value).setIsCached(NAME + ":put", true);
+            ((RecycleDrawable) value).setIsCached(logName + ":put", true);
             return super.put(key, value);
         }
 
@@ -121,7 +122,7 @@ public class LruMemoryCache implements MemoryCache {
 
         @Override
         protected void entryRemoved(boolean evicted, String key, Drawable oldValue, Drawable newValue) {
-            ((RecycleDrawable) oldValue).setIsCached(NAME + ":entryRemoved", false);
+            ((RecycleDrawable) oldValue).setIsCached(logName + ":entryRemoved", false);
         }
     }
 

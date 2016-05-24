@@ -29,9 +29,10 @@ import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class LruDiskCache implements DiskCache {
-    private static final String NAME = "LruDiskCache";
     private static final String DISK_CACHE_DIR_NAME = "sketch";
     private static final int DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024;
+
+    protected String logName = "LruDiskCache";
 
     private Context context;
     private File cacheDir;
@@ -201,7 +202,7 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME)
+        return builder.append(logName)
                 .append("(")
                 .append("dir").append("=").append(cacheDir.getPath())
                 .append(",")
