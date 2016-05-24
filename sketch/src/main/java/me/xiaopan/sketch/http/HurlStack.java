@@ -20,7 +20,6 @@ import android.os.Build;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InterruptedIOException;
 import java.net.HttpURLConnection;
 import java.net.SocketTimeoutException;
 import java.net.URL;
@@ -107,7 +106,7 @@ public class HurlStack implements HttpStack {
 
     @Override
     public boolean canRetry(Throwable throwable) {
-        return throwable instanceof SocketTimeoutException || throwable instanceof InterruptedIOException;
+        return throwable instanceof SocketTimeoutException;
     }
 
     @Override

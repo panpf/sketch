@@ -28,6 +28,7 @@ import org.apache.http.HttpVersion;
 import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpUriRequest;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.conn.params.ConnManagerParams;
 import org.apache.http.conn.params.ConnPerRouteBean;
 import org.apache.http.conn.scheme.PlainSocketFactory;
@@ -45,8 +46,6 @@ import org.apache.http.protocol.HttpContext;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InterruptedIOException;
-import java.net.SocketTimeoutException;
 import java.util.Map;
 import java.util.zip.GZIPInputStream;
 
@@ -165,7 +164,7 @@ public class HttpClientStack implements HttpStack {
 
     @Override
     public boolean canRetry(Throwable throwable) {
-        return throwable instanceof SocketTimeoutException || throwable instanceof InterruptedIOException;
+        return throwable instanceof ConnectTimeoutException;
     }
 
     @Override
