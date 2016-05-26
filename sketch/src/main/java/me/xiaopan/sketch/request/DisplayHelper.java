@@ -115,7 +115,7 @@ public class DisplayHelper {
             Stopwatch.with().record("onDisplay");
         }
 
-        displayOptions.copy(imageViewInterface.getOptions());
+        displayOptions.copy(params.options);
         displayListener = imageViewInterface.getDisplayListener();
         progressListener = imageViewInterface.getDownloadProgressListener();
 
@@ -542,7 +542,7 @@ public class DisplayHelper {
         }
 
         displayParams.attrs.copy(requestAttrs);
-        imageViewInterface.getOptions().copy(displayOptions);
+        displayParams.options.copy(displayOptions);
     }
 
     private boolean checkUri() {
