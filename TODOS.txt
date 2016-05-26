@@ -122,6 +122,9 @@
 （完成与2016-05-11）各种异常情况如果没有配置相应的占位image就设置drawable为空，这是之前的BUG
 （完成与2016-05-11）缓存文件的名称不能再用uri.encode来加密了，要用MD5（不必了之前有这样的考虑是因为可能会因为后缀可能为.apk而导致被误识别，但是DiskLruCache会在最后加上序号就没这问题了）
 （完成与2016-05-16）本地任务支持多线程，加快处理速度
+（完成与2016-05-24）重构ImageDownloader,新增可设置User-Agent、readTimeout和批量添加header
+（完成与2016-05-24）采用httpStack模式 改进imageDownloader
+（完成与2016-05-26）不再用DisplayHelper中的options覆盖ImageView的options,这是之前重构DisplayHelper时候改出来的BUG,现在依然要放到DisplayParams中去
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -137,6 +140,7 @@
 （不必了，之前加这个参数主要为了解决圆角图片的问题，现在在圆角处理器中加入了这个功能，解决了这个问题）resize加一个参数，一定要拿到的图跟resize尺寸一样
 （不用考虑了）考虑如何处理下载的垃圾文件，申请空间的时候清理文件要处理那些下载垃圾
 （已通过一个scheme可以有多个值的方式解决了问题）改善scheme的设计模式，试图支持自定义scheme以及处理方式
+（不搞了）displayHelper根据内存缓存ID过滤一下相同的请求
 
 待办池：
 考虑如何支持用已缓存的小缩略图作为默认图片（比如支持从内存缓存中加载默认图）
@@ -159,15 +163,13 @@ inBitmap的意思是找一个字节数一样的旧bitmap对象来装新的图片
 考虑支持显示各种多媒体文件的缩略图的缩略图，包括但不限于视频文件，音频文件等等，这些文件首先就是要提取出他们的缩略图或封面图
 支持显示超大图，候选者有largeImage，subSamplingScaleImageView，搞一个LargeImageDrawable
 试图解决硬件加速时对图片尺寸的限制，OpenGLRenderer: Bitmap too large to be uploaded into a texture (440x4540, max=4096x4096)
-采用httpStack模式 改进imageDownloader，
 2.3以上不再主动回收图片了
 支持vector
 考虑重新设计一下RequestLevel，感觉现在的有点儿繁琐并且意思不太明确
 RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper，这样loadingImage就可以使用各种图片了，要实现Fixed的话就直接设置bounds
 似乎想到一种能读取webp缩略图的方法了，方案就是将webp在本地转成png，然后再读取
 利用BitmapShader实现各种形状的图片
-displayHelper根据内存缓存ID过滤一下相同的请求
-增强一下FixedBitmapDrawable，尽量在使用原生BitmapDrawable的基础上实现CenterType的功能，然后定义一个牛逼的SketchBitmapDrawable，然后在搞一个专门的RecyclerDrawable可以包装SketchBitmapDrawable个GIfDrawable
+增强一下FixedBitmapDrawable，尽量在使用原生BitmapDrawable的基础上实现ScaleType的功能，然后定义一个牛逼的SketchBitmapDrawable，然后在搞一个专门的RecyclerDrawable可以包装SketchBitmapDrawable个GIfDrawable
 
 其它：
 参考Glide、Fresco和Picasso
@@ -187,7 +189,7 @@ LruMemoryCache重命名为DefaultLruMemoryCache
 apk文件图标的磁盘缓存KEY加上了文件的最后修改时间，这么做是为了避免包路径一样，但是内容已经发生了变化的时候不能及时刷新缓存图标
 修复使用普通图片时在列表中一滑动图片就没了的BUG
 新增LocalImagePerProcessor可以处理一些特殊的本地文件，然后提取出它们的当中包含的图片，这样Sketch就可以直接显示这些特殊文件中包含的图片了
-兼容jdk1.6w
+兼容jdk1.6
 去掉了DisplayHelper上的listener和progressListener设置，你只能通过SketchImageView来设置listener了
 重构Request部分的实现，简化逻辑处理
 Sketch.putOptions(RequestOptions)改成了Sketch.putDisplayOptions(DisplayOptions)、Sketch.putLoadOptions(LoadOptions)...
