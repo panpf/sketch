@@ -10,7 +10,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.feture.LocalImagePreprocessor;
+import me.xiaopan.sketch.feture.ImagePreprocessor;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.UriScheme;
@@ -21,9 +21,9 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 在继承LocalImagePreprocessor的基础上扩展了解析XPK文件的图标
  */
-public class MyLocalImagePreprocessor extends LocalImagePreprocessor {
+public class MyImagePreprocessor extends ImagePreprocessor {
 
-    public MyLocalImagePreprocessor() {
+    public MyImagePreprocessor() {
         logName = "MyLocalImagePreprocessor";
     }
 

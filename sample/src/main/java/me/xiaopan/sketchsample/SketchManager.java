@@ -14,7 +14,7 @@ import me.xiaopan.sketch.process.CircleImageProcessor;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
 import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
 import me.xiaopan.sketchsample.util.DeviceUtils;
-import me.xiaopan.sketchsample.util.MyLocalImagePreprocessor;
+import me.xiaopan.sketchsample.util.MyImagePreprocessor;
 import me.xiaopan.sketchsample.util.Settings;
 
 public class SketchManager {
@@ -33,7 +33,7 @@ public class SketchManager {
         sketchConfiguration.setInPreferQualityOverSpeed(settings.isInPreferQualityOverSpeed());
         sketchConfiguration.setCacheInDisk(settings.isCacheInDisk());
         sketchConfiguration.setCacheInMemory(settings.isCacheInMemory());
-        sketchConfiguration.setLocalImagePreprocessor(new MyLocalImagePreprocessor());
+        sketchConfiguration.setImagePreprocessor(new MyImagePreprocessor());
     }
 
     public void initDisplayOptions(){
