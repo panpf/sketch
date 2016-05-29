@@ -30,6 +30,7 @@ public class SketchManager {
         Configuration sketchConfiguration = Sketch.with(context).getConfiguration();
         sketchConfiguration.setMobileNetworkPauseDownload(settings.isMobileNetworkPauseDownload());
         sketchConfiguration.setLowQualityImage(settings.isLowQualityImage());
+        sketchConfiguration.setInPreferQualityOverSpeed(settings.isInPreferQualityOverSpeed());
         sketchConfiguration.setCacheInDisk(settings.isCacheInDisk());
         sketchConfiguration.setCacheInMemory(settings.isCacheInMemory());
         sketchConfiguration.setLocalImagePreprocessor(new MyLocalImagePreprocessor());

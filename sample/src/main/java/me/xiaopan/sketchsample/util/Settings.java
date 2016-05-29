@@ -16,6 +16,7 @@ public class Settings {
     private static final String PREFERENCE_CACHE_IN_MEMORY = "PREFERENCE_CACHE_IN_MEMORY";
     private static final String PREFERENCE_CACHE_IN_DISK = "PREFERENCE_CACHE_IN_DISK";
     private static final String PREFERENCE_IMAGES_OF_LOW_QUALITY = "PREFERENCE_IMAGES_OF_LOW_QUALITY";
+    private static final String PREFERENCE_IN_PREFER_QUALITY_OVER_SPEED = "PREFERENCE_IN_PREFER_QUALITY_OVER_SPEED";
 
     private static Settings settingsInstance;
 
@@ -29,6 +30,7 @@ public class Settings {
     private boolean cacheInMemory;
     private boolean cacheInDisk;
     private boolean lowQualityImage;
+    private boolean inPreferQualityOverSpeed;
 
     private SharedPreferences.Editor editor;
 
@@ -46,6 +48,7 @@ public class Settings {
         this.cacheInMemory = preferences.getBoolean(PREFERENCE_CACHE_IN_MEMORY, true);
         this.cacheInDisk = preferences.getBoolean(PREFERENCE_CACHE_IN_DISK, true);
         this.lowQualityImage = preferences.getBoolean(PREFERENCE_IMAGES_OF_LOW_QUALITY, false);
+        this.inPreferQualityOverSpeed = preferences.getBoolean(PREFERENCE_IN_PREFER_QUALITY_OVER_SPEED, false);
     }
 
     public static Settings with(Context context){
@@ -196,6 +199,16 @@ public class Settings {
     public void setLowQualityImage(boolean lowQualityImage) {
         this.lowQualityImage = lowQualityImage;
         editor.putBoolean(PREFERENCE_IMAGES_OF_LOW_QUALITY, lowQualityImage);
+        apply();
+    }
+
+    public boolean isInPreferQualityOverSpeed() {
+        return inPreferQualityOverSpeed;
+    }
+
+    public void setInPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
+        this.inPreferQualityOverSpeed = inPreferQualityOverSpeed;
+        editor.putBoolean(PREFERENCE_IN_PREFER_QUALITY_OVER_SPEED, inPreferQualityOverSpeed);
         apply();
     }
 }

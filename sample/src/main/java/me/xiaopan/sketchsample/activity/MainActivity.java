@@ -97,6 +97,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     @InjectView(R.id.checkBox_main_cacheInDisk) private CheckBox cacheInDiskCheckBox;
     @InjectView(R.id.item_main_lowQualityImge) private View lowQualityImageItem;
     @InjectView(R.id.checkBox_main_lowQualityImage) private CheckBox lowQualityImageCheckBox;
+    @InjectView(R.id.item_main_inPreferQualityOverSpeed) private View inPreferQualityOverSpeedItem;
+    @InjectView(R.id.checkBox_main_inPreferQualityOverSpeed) private CheckBox inPreferQualityOverSpeedCheckBox;
 
     private long lastClickBackTime;
     private Type type;
@@ -136,6 +138,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         cacheInMemoryCheckBox.setChecked(settings.isCacheInMemory());
         cacheInDiskCheckBox.setChecked(settings.isCacheInDisk());
         lowQualityImageCheckBox.setChecked(settings.isLowQualityImage());
+        inPreferQualityOverSpeedCheckBox.setChecked(settings.isInPreferQualityOverSpeed());
 
         starButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
@@ -156,6 +159,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         cacheInDiskItem.setOnClickListener(this);
         cacheMemoryItem.setOnClickListener(this);
         lowQualityImageItem.setOnClickListener(this);
+        inPreferQualityOverSpeedItem.setOnClickListener(this);
 
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
@@ -445,6 +449,13 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 lowQualityImageCheckBox.setChecked(newLowQualityImageValue);
                 settings.setLowQualityImage(newLowQualityImageValue);
                 Sketch.with(getBaseContext()).getConfiguration().setLowQualityImage(newLowQualityImageValue);
+                slidingPaneLayout.closePane();
+                break;
+            case R.id.item_main_inPreferQualityOverSpeed:
+                boolean inPreferQualityOverSpeed = !settings.isInPreferQualityOverSpeed();
+                inPreferQualityOverSpeedCheckBox.setChecked(inPreferQualityOverSpeed);
+                settings.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
+                Sketch.with(getBaseContext()).getConfiguration().setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
                 slidingPaneLayout.closePane();
                 break;
         }
