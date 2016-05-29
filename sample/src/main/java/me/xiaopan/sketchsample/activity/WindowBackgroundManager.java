@@ -10,16 +10,18 @@ import android.graphics.drawable.TransitionDrawable;
 import android.os.Build;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.ViewGroup;
 import android.view.Window;
+import android.widget.ImageView;
 
+import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
+import me.xiaopan.sketch.drawable.RecycleDrawable;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadListener;
 import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
-import me.xiaopan.sketch.drawable.RecycleDrawable;
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.util.DeviceUtils;
@@ -30,10 +32,18 @@ public class WindowBackgroundManager {
     private Drawable oneDrawable;
     private Drawable twoDrawable;
     private String currentBackgroundUri;
+    private ImageView backgroundImageView;
 
     public WindowBackgroundManager(Activity activity) {
         this.activity = activity;
         this.activity.getWindow().setFormat(PixelFormat.TRANSLUCENT); // 要先将Window的格式设为透明的，如果不这么做的话第一次改变Window的背景的话屏幕会快速的闪一下（黑色的）
+        backgroundImageView = (ImageView) activity.findViewById(R.id.image_mainLeftMenu_background);
+        if (backgroundImageView != null) {
+            ViewGroup.LayoutParams layoutParams = backgroundImageView.getLayoutParams();
+            layoutParams.width = activity.getResources().getDisplayMetrics().widthPixels;
+            layoutParams.height = activity.getResources().getDisplayMetrics().heightPixels;
+            backgroundImageView.setLayoutParams(layoutParams);
+        }
     }
 
     public void setBackground(String currentBackgroundUri, Bitmap bitmap) {
@@ -41,7 +51,7 @@ public class WindowBackgroundManager {
         Drawable newDrawable = new BitmapDrawable(bitmap);
         Drawable oldOneDrawable = oneDrawable;
         Window window = activity.getWindow();
-        Drawable oneDrawable = twoDrawable!=null?twoDrawable:activity.getResources().getDrawable(R.drawable.shape_window_background);
+        Drawable oneDrawable = twoDrawable != null ? twoDrawable : activity.getResources().getDrawable(R.drawable.shape_window_background);
         Drawable[] drawables = new Drawable[]{oneDrawable, newDrawable};
         TransitionDrawable transitionDrawable = new TransitionDrawable(drawables);
         transitionDrawable.setCrossFadeEnabled(true);
@@ -50,6 +60,9 @@ public class WindowBackgroundManager {
         this.oneDrawable = oneDrawable;
         this.twoDrawable = newDrawable;
         recycleDrawable(oldOneDrawable);
+        if (backgroundImageView != null) {
+            backgroundImageView.setImageBitmap(bitmap);
+        }
     }
 
     public String getCurrentBackgroundUri() {
@@ -61,17 +74,17 @@ public class WindowBackgroundManager {
         recycleDrawable(twoDrawable);
     }
 
-    private void recycleDrawable(Drawable drawable){
-        if(drawable == null){
+    private void recycleDrawable(Drawable drawable) {
+        if (drawable == null) {
             return;
         }
 
-        if(drawable instanceof RecycleDrawable){
+        if (drawable instanceof RecycleDrawable) {
             Log.d(Sketch.TAG, "old window bitmap recycled - " + ((RecycleDrawable) drawable).getInfo());
             ((RecycleDrawable) drawable).recycle();
-        }else if(drawable instanceof BitmapDrawable){
+        } else if (drawable instanceof BitmapDrawable) {
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
-            if(bitmap != null && !bitmap.isRecycled()){
+            if (bitmap != null && !bitmap.isRecycled()) {
                 Log.d(Sketch.TAG, "old window bitmap recycled - " + RecycleBitmapDrawable.getInfo(bitmap, null));
                 bitmap.recycle();
             }
@@ -80,6 +93,7 @@ public class WindowBackgroundManager {
 
     public interface OnSetWindowBackgroundListener {
         void onSetWindowBackground(String uri, Bitmap bitmap);
+
         String getCurrentBackgroundUri();
     }
 
@@ -95,42 +109,42 @@ public class WindowBackgroundManager {
             this.onSetWindowBackgroundListener = onSetWindowBackgroundListener;
         }
 
-        public void restore(){
-            if(onSetWindowBackgroundListener != null && windowBackgroundImageUri != null){
+        public void restore() {
+            if (onSetWindowBackgroundListener != null && windowBackgroundImageUri != null) {
                 load(windowBackgroundImageUri);
             }
         }
 
-        public void detach(){
+        public void detach() {
             cancel();
             onSetWindowBackgroundListener = null;
         }
 
-        public void cancel(){
-            if(loadBackgroundRequest != null && !loadBackgroundRequest.isFinished()){
+        public void cancel() {
+            if (loadBackgroundRequest != null && !loadBackgroundRequest.isFinished()) {
                 loadBackgroundRequest.cancel();
             }
         }
 
         public void setUserVisible(boolean userVisible) {
             this.userVisible = userVisible;
-            if(userVisible && windowBackgroundImageUri != null){
+            if (userVisible && windowBackgroundImageUri != null) {
                 load(windowBackgroundImageUri);
             }
         }
 
-        public void load(final String imageUri){
-            if(imageUri == null || imageUri.equals(onSetWindowBackgroundListener.getCurrentBackgroundUri())){
+        public void load(final String imageUri) {
+            if (imageUri == null || imageUri.equals(onSetWindowBackgroundListener.getCurrentBackgroundUri())) {
                 return;
             }
             this.windowBackgroundImageUri = imageUri;
-            if(loadBackgroundRequest != null && !loadBackgroundRequest.isFinished()){
+            if (loadBackgroundRequest != null && !loadBackgroundRequest.isFinished()) {
                 loadBackgroundRequest.cancel();
             }
             DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             int resizeWidth = displayMetrics.widthPixels;
             int resizeHeight = displayMetrics.heightPixels;
-            if(Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT){
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
                 resizeHeight -= DeviceUtils.getStatusBarHeight(context.getResources());
             }
             resizeWidth /= 4;
