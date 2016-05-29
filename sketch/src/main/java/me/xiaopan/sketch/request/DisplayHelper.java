@@ -483,6 +483,11 @@ public class DisplayHelper {
             displayOptions.setLowQualityImage(true);
         }
 
+        // 如果设置了全局解码质量优先
+        if (sketch.getConfiguration().isInPreferQualityOverSpeed()) {
+            displayOptions.setInPreferQualityOverSpeed(true);
+        }
+
         // 如果没有设置请求Level的话就跟据暂停下载和暂停加载功能来设置请求Level
         if (displayOptions.getRequestLevel() == null) {
             if (sketch.getConfiguration().isPauseDownload()) {
@@ -522,7 +527,7 @@ public class DisplayHelper {
 
         // 根据URI和显示选项生成请求ID
         if (requestAttrs.getId() == null) {
-            requestAttrs.createIdByUriAndOptions(displayOptions);
+            requestAttrs.setId(requestAttrs.generateId(displayOptions));
         }
 
         // 没有设置名称的话就用内存缓存ID作为名称，名称主要用来在log中区分请求的

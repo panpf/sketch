@@ -20,6 +20,7 @@ public class RequestAttrs {
     private String id;
     private String uri;
     private String realUri;    // 真正的图片地址，例如原图片uri是asset://test.png的，realUri就是test.png
+    // TODO 去掉name,直接使用id
     private String name;    // 名称，用于在输出LOG的时候区分不同的请求
     private UriScheme uriScheme;    // Uri协议类型
 
@@ -55,29 +56,29 @@ public class RequestAttrs {
         this.name = requestAttrs.name;
     }
 
-    void setName(String name) {
-        this.name = name;
-    }
-
-    void setId(String id) {
-        this.id = id;
-    }
-
-    void createIdByUriAndOptions(DownloadOptions options) {
-        StringBuilder idBuilder = new StringBuilder();
-        idBuilder.append(uri);
+    String generateId(DownloadOptions options) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(uri);
         if (options != null) {
-            options.appendOptionsToId(idBuilder);
+            options.appendOptionsToId(builder);
         }
-        id = idBuilder.toString();
+        return builder.toString();
     }
 
     public String getName() {
         return name;
     }
 
+    void setName(String name) {
+        this.name = name;
+    }
+
     public String getId() {
         return id;
+    }
+
+    void setId(String id) {
+        this.id = id;
     }
 
     public String getUri() {

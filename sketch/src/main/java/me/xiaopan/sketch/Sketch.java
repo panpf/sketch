@@ -46,6 +46,7 @@ public class Sketch {
 
     private static Sketch instance;
     private static boolean debugMode;    //调试模式，在控制台输出日志
+    // todo  去掉outElapsedTime,直接使用debugmode
     private static boolean outElapsedTime;    // 输出display在主线程的耗时
     private static Map<Enum<?>, Object> optionsMap;
 

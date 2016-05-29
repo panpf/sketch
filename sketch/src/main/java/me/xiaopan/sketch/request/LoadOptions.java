@@ -29,6 +29,7 @@ public class LoadOptions extends DownloadOptions {
     private boolean decodeGifImage;
     private boolean forceUseResize;
     private boolean lowQualityImage;
+    private boolean inPreferQualityOverSpeed;
     private ImageProcessor imageProcessor;
     private Bitmap.Config bitmapConfig;
 
@@ -182,6 +183,25 @@ public class LoadOptions extends DownloadOptions {
         return this;
     }
 
+    /**
+     * 解码时优先考虑速度还是质量 (默认优先考虑速度)
+     *
+     * @return true:质量;false:速度
+     */
+    public boolean isInPreferQualityOverSpeed() {
+        return inPreferQualityOverSpeed;
+    }
+
+    /**
+     * 设置解码时优先考虑速度还是质量 (默认优先考虑速度)
+     *
+     * @param inPreferQualityOverSpeed true:质量;false:速度
+     */
+    public LoadOptions setInPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
+        this.inPreferQualityOverSpeed = inPreferQualityOverSpeed;
+        return this;
+    }
+
     @Override
     public void reset() {
         super.reset();
@@ -193,6 +213,7 @@ public class LoadOptions extends DownloadOptions {
         decodeGifImage = false;
         forceUseResize = false;
         bitmapConfig = null;
+        inPreferQualityOverSpeed = false;
     }
 
     /**
@@ -212,6 +233,7 @@ public class LoadOptions extends DownloadOptions {
         decodeGifImage = options.decodeGifImage;
         forceUseResize = options.forceUseResize;
         bitmapConfig = options.bitmapConfig;
+        inPreferQualityOverSpeed = options.inPreferQualityOverSpeed;
     }
 
     /**
@@ -235,26 +257,39 @@ public class LoadOptions extends DownloadOptions {
             }
         }
 
-        if (resize == null && options.getResize() != null) {
-            resize = new Resize(options.getResize());
+        if (resize == null) {
+            resize = options.getResize();
         }
 
-        forceUseResize = options.isForceUseResize();
-        lowQualityImage = options.isLowQualityImage();
+        if (!forceUseResize) {
+            forceUseResize = options.forceUseResize;
+        }
+
+        if (!lowQualityImage) {
+            lowQualityImage = options.lowQualityImage;
+        }
 
         if (imageProcessor == null) {
-            imageProcessor = options.getImageProcessor();
+            imageProcessor = options.imageProcessor;
         }
 
-        decodeGifImage = options.isDecodeGifImage();
+        if (!decodeGifImage) {
+            decodeGifImage = options.decodeGifImage;
+        }
 
         if (bitmapConfig == null) {
             bitmapConfig = options.bitmapConfig;
+        }
+
+        if (!inPreferQualityOverSpeed) {
+            inPreferQualityOverSpeed = options.inPreferQualityOverSpeed;
         }
     }
 
     @Override
     public StringBuilder appendOptionsToId(StringBuilder builder) {
+        super.appendOptionsToId(builder);
+
         if (maxSize != null) {
             builder.append("_");
             maxSize.appendIdentifier(builder);
@@ -270,6 +305,10 @@ public class LoadOptions extends DownloadOptions {
         if (lowQualityImage) {
             builder.append("_");
             builder.append("lowQualityImage");
+        }
+        if (inPreferQualityOverSpeed) {
+            builder.append("_");
+            builder.append("preferQuality");
         }
         if (bitmapConfig != null) {
             builder.append("_");

@@ -108,17 +108,19 @@ public class DownloadOptions {
             return;
         }
 
-        cacheInDisk = options.isCacheInDisk();
+        if (!cacheInDisk) {
+            cacheInDisk = options.cacheInDisk;
+        }
 
-        RequestLevel optionRequestLevel = options.getRequestLevel();
-        if (requestLevel != null && optionRequestLevel != null) {
-            if (optionRequestLevel.getLevel() < requestLevel.getLevel()) {
+        if (requestLevel == null) {
+            requestLevel = options.requestLevel;
+            requestLevelFrom = null;
+        } else {
+            RequestLevel optionRequestLevel = options.getRequestLevel();
+            if (optionRequestLevel != null && optionRequestLevel.getLevel() < requestLevel.getLevel()) {
                 requestLevel = optionRequestLevel;
                 requestLevelFrom = null;
             }
-        } else if (optionRequestLevel != null) {
-            requestLevel = optionRequestLevel;
-            requestLevelFrom = null;
         }
     }
 

@@ -121,7 +121,7 @@ public class DownloadHelper {
 
         // 根据URI和下载选项生成请求ID
         if (requestAttrs.getId() == null) {
-            requestAttrs.createIdByUriAndOptions(downloadOptions);
+            requestAttrs.setId(requestAttrs.generateId(downloadOptions));
         }
 
         // 没有设置名称的话就用uri作为名称，名称主要用来在log中区分请求的

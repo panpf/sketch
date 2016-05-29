@@ -28,15 +28,15 @@ import me.xiaopan.sketch.decode.DefaultImageDecoder;
 import me.xiaopan.sketch.decode.ImageDecoder;
 import me.xiaopan.sketch.display.DefaultImageDisplayer;
 import me.xiaopan.sketch.display.ImageDisplayer;
-import me.xiaopan.sketch.http.HttpClientStack;
-import me.xiaopan.sketch.http.HurlStack;
-import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.feture.HelperFactory;
 import me.xiaopan.sketch.feture.ImageSizeCalculator;
 import me.xiaopan.sketch.feture.LocalImagePreprocessor;
 import me.xiaopan.sketch.feture.MobileNetworkPauseDownloadManager;
 import me.xiaopan.sketch.feture.RequestFactory;
 import me.xiaopan.sketch.feture.ResizeCalculator;
+import me.xiaopan.sketch.http.HttpClientStack;
+import me.xiaopan.sketch.http.HttpStack;
+import me.xiaopan.sketch.http.HurlStack;
 import me.xiaopan.sketch.process.DefaultImageProcessor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.RequestExecutor;
@@ -64,6 +64,7 @@ public class Configuration {
     private boolean cacheInMemory = true;
     private boolean pauseDownload;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean lowQualityImage; // 是否返回低质量的图片
+    private boolean inPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
     private MobileNetworkPauseDownloadManager mobileNetworkPauseDownloadManager;
 
     public Configuration(Context tempContext) {
@@ -445,6 +446,30 @@ public class Configuration {
     }
 
     /**
+     * 解码时优先考虑速度还是质量 (默认优先考虑速度)
+     *
+     * @return true:质量;false:速度
+     */
+    public boolean isInPreferQualityOverSpeed() {
+        return inPreferQualityOverSpeed;
+    }
+
+    /**
+     * 设置解码时优先考虑速度还是质量 (默认优先考虑速度)
+     *
+     * @param inPreferQualityOverSpeed true:质量;false:速度
+     */
+    public Configuration setInPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
+        if (this.inPreferQualityOverSpeed != inPreferQualityOverSpeed) {
+            this.inPreferQualityOverSpeed = inPreferQualityOverSpeed;
+            if (Sketch.isDebugMode()) {
+                Log.i(Sketch.TAG, logName + ": " + "set" + " - inPreferQualityOverSpeed" + " (" + inPreferQualityOverSpeed + ")");
+            }
+        }
+        return this;
+    }
+
+    /**
      * 是否将图片缓存在本地（默认是）
      */
     public boolean isCacheInDisk() {
@@ -613,6 +638,11 @@ public class Configuration {
         builder.append("lowQualityImage");
         builder.append("：");
         builder.append(lowQualityImage);
+
+        if (builder.length() > 0) builder.append("\n");
+        builder.append("inPreferQualityOverSpeed");
+        builder.append("：");
+        builder.append(inPreferQualityOverSpeed);
 
         if (builder.length() > 0) builder.append("\n");
         builder.append("cacheInMemory");

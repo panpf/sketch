@@ -211,6 +211,11 @@ public class LoadHelper {
             loadOptions.setLowQualityImage(true);
         }
 
+        // 如果设置了全局解码质量优先
+        if (sketch.getConfiguration().isInPreferQualityOverSpeed()) {
+            loadOptions.setInPreferQualityOverSpeed(true);
+        }
+
         // 如果没有设置请求Level的话就跟据暂停下载和暂停加载功能来设置请求Level
         if (loadOptions.getRequestLevel() == null) {
             if (configuration.isPauseDownload()) {
@@ -223,7 +228,7 @@ public class LoadHelper {
 
         // 根据URI和加载选项生成请求ID
         if (requestAttrs.getId() == null) {
-            requestAttrs.createIdByUriAndOptions(loadOptions);
+            requestAttrs.setId(requestAttrs.generateId(loadOptions));
         }
 
         // 没有设置名称的话就用uri作为名称，名称主要用来在log中区分请求的

@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory.Options;
 import android.graphics.Point;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
@@ -36,11 +37,21 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 默认的图片解码器
  */
 public class DefaultImageDecoder implements ImageDecoder {
+    private volatile static long decodeCount;
+    private volatile static long useTimeCount;
     protected String logName = "DefaultImageDecoder";
 
     public static DecodeResult decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper, String logName) {
         // just decode bounds
         Options options = new Options();
+
+        // 设置优先考虑质量还是速度
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1
+                && loadRequest.getOptions().isInPreferQualityOverSpeed()) {
+            options.inPreferQualityOverSpeed = true;
+        }
+
+        // 读取图片的宽高以及格式信息
         options.inJustDecodeBounds = true;
         decodeHelper.decode(options);
         options.inJustDecodeBounds = false;
@@ -111,24 +122,44 @@ public class DefaultImageDecoder implements ImageDecoder {
 
     @Override
     public DecodeResult decode(LoadRequest loadRequest) {
+        long startTime = 0;
+        if (Sketch.isDebugMode()) {
+            startTime = System.currentTimeMillis();
+        }
+
+        DecodeResult result = null;
         try {
             if (loadRequest.getRequestAttrs().getUriScheme() == UriScheme.NET) {
-                return decodeHttpOrHttps(loadRequest);
+                result = decodeHttpOrHttps(loadRequest);
             } else if (loadRequest.getRequestAttrs().getUriScheme() == UriScheme.FILE) {
-                return decodeFile(loadRequest);
+                result = decodeFile(loadRequest);
             } else if (loadRequest.getRequestAttrs().getUriScheme() == UriScheme.CONTENT) {
-                return decodeContent(loadRequest);
+                result = decodeContent(loadRequest);
             } else if (loadRequest.getRequestAttrs().getUriScheme() == UriScheme.ASSET) {
-                return decodeAsset(loadRequest);
+                result = decodeAsset(loadRequest);
             } else if (loadRequest.getRequestAttrs().getUriScheme() == UriScheme.DRAWABLE) {
-                return decodeDrawable(loadRequest);
+                result = decodeDrawable(loadRequest);
             } else {
-                return null;
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "unknown uri is ", loadRequest.getRequestAttrs().getUri()));
             }
         } catch (Throwable e) {
             e.printStackTrace();
-            return null;
         }
+
+        if (Sketch.isDebugMode()) {
+            long useTime = System.currentTimeMillis() - startTime;
+            synchronized (DefaultImageDecoder.this) {
+                if ((Long.MAX_VALUE - decodeCount) < 1 || (Long.MAX_VALUE - useTimeCount) < useTime) {
+                    decodeCount = 0;
+                    useTimeCount = 0;
+                }
+                decodeCount++;
+                useTimeCount += useTime;
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, " - ", "UseTime: ", useTime, "ms", ", ", "average: ", (double) useTimeCount / decodeCount, "ms", " - ", loadRequest.getRequestAttrs().getId()));
+            }
+        }
+
+        return result;
     }
 
     @Override

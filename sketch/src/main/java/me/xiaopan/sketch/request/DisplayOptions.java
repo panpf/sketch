@@ -114,6 +114,12 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
+    @Override
+    public DisplayOptions setInPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
+        super.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
+        return this;
+    }
+
     /**
      * 是否将图片缓存在内存中（默认是）
      */
@@ -271,7 +277,9 @@ public class DisplayOptions extends LoadOptions {
 
         super.apply(options);
 
-        cacheInMemory = options.isCacheInMemory();
+        if (!cacheInMemory) {
+            cacheInMemory = options.isCacheInMemory();
+        }
 
         if (imageDisplayer == null) {
             imageDisplayer = options.getImageDisplayer();
@@ -289,8 +297,8 @@ public class DisplayOptions extends LoadOptions {
             pauseDownloadImageHolder = options.getPauseDownloadImageHolder();
         }
 
-        if (!resizeByFixedSize && options.isResizeByFixedSize()) {
-            resizeByFixedSize = true;
+        if (!resizeByFixedSize) {
+            resizeByFixedSize = options.isResizeByFixedSize();
         }
     }
 }
