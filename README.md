@@ -1,4 +1,4 @@
-#![Logo](https://github.com/xiaopansky/Sketch/raw/master/docs/logo.png) Sketch
+# ![Logo](https://github.com/xiaopansky/Sketch/raw/master/docs/logo.png) Sketch
 
 Sketch是用于Android上的一个图片加载器，目的是为了帮助开发者从本地或网络读取图片，然后处理并显示在页面上
 
@@ -6,7 +6,7 @@ Sketch is for Android on a picture of the loader, the purpose is to help the dev
 
 ![sample](https://github.com/xiaopansky/Sketch/raw/master/docs/sample.jpg)
 
-###特点（Features）
+### 特点（Features）
 >* ``支持GIF图片``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示GIF图片，感谢koral--
 >* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``等7种URI。
 >* ``异步加载``. 采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
@@ -26,27 +26,27 @@ Sketch is for Android on a picture of the loader, the purpose is to help the dev
 >* ``占位图支持内存缓存``. 对经过ImageProcessor处理的占位图支持内存缓存
 >* ``自动选择合适的Bimtap.Config``. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，最明显的例子就是对于JPEG类型的图片使用Bitmap.Config.RGB_565解码。
 
-###示例APP（Sample app）
+### 示例APP（Sample app）
 ![SampleApp](https://github.com/xiaopansky/Sketch/raw/master/docs/sketch-sample.png)
 
 扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](https://github.com/xiaopansky/Sketch/raw/master/docs/sketch-sample.apk)
 
-###简介（Introduction）
+### 简介（Introduction）
 
-####支持的URI以及使用的方法（Support URI and the use of the method）：
+#### 支持的URI以及使用的方法（Support URI and the use of the method）：
 
 |Type|Scheme|Fetch method used in SketchImageView|
-|:--|:--|:--|
+|:---|:---|:---|
 |File in network|http://, https:// |displayImage(String)|
 |File in SDCard|/, file://|displayImage(String)|
 |Content Provider|content://|displayURIImage(Uri)|
 |Asset in app|asset://|displayAssetImage(String)|
 |Resource in app|resource://|displayResourceImage(int)|
 
-####支持的图片类型（Support picture type）
+#### 支持的图片类型（Support picture type）
 
 |Type|Scheme|jpeg|png|webp|gif|apk icon|
-|:--|:--|:--|:--|:--|:--|:--|:--|
+|:-- |:--   |:-- |:--|:-- |:--|:--|:--|
 |File in network|http://, http:// |YES|YES|YES（Android4.0 above）|YES|NO|
 |File in SDCard|/, file://|YES|YES|YES（Android4.0 above）|YES|YES|
 |Content Provider|content://|YES|YES|YES（Android4.0 above）|YES|NO|
@@ -78,7 +78,7 @@ Uri uri = ...;
 sketchImageView.displayURIImage(uri);
 ```
 
-####download()、load()、display()
+#### download()、load()、display()
 Sketch共有display()、load()、download()三个方法可供使用，你可以根据你的需求选择合适的方法
 >* download()方法会下载图片到本地，并实现本地缓存；
 >* load()方法在download()方法的基础上，加载图片到内存中，并对图片进行处理；
@@ -108,9 +108,9 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 |failedImage|-|-|null|
 |pauseDownloadImage|-|-|null|
 
-###使用指南（Usage guide）
+### 使用指南（Usage guide）
 
-####1. 导入Sketch（Import Sketch）
+#### 1. 导入Sketch（Import Sketch）
 add gradle dependency
 ```groovy
 dependencies{
@@ -128,7 +128,7 @@ dependencies{
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 ```
 
-####2. 在XML中使用SketchImageView
+#### 2. 在XML中使用SketchImageView
 res/layout/item_user.xml
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
@@ -139,14 +139,14 @@ res/layout/item_user.xml
   />
 ```
 
-####3. 在代码中设置URI显示图片
+#### 3. 在代码中设置URI显示图片
 ```java
 SketchImageView headImageView = ...;
 headImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
 ```
 [点击查看SketchImageView详细使用说明](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
 
-####4. 你可能还感兴趣的功能：
+#### 4. 你可能还感兴趣的功能：
 增强用户体验：
 >* [使用SketchImageView代替ImageView显示图片](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
 >* [使用ImageProcessor将图片变成圆形的、圆角的或者高斯模糊的](https://github.com/xiaopansky/Sketch/wiki/ImageProcessor)
@@ -171,10 +171,10 @@ headImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/
 >* [了解何时取消请求以及如何主动取消请求](https://github.com/xiaopansky/Sketch/wiki/CancelRequest)
 >* [配置混淆（Proguard）](https://github.com/xiaopansky/Sketch/wiki/proguard-configuration)
 
-###Thanks
+### Thanks
 [koral](https://github.com/koral--) - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
 
-###License
+### License
     Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
 
     Licensed under the Apache License, Version 2.0 (the "License");

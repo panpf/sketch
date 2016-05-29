@@ -125,6 +125,8 @@
 （完成与2016-05-24）重构ImageDownloader,新增可设置User-Agent、readTimeout和批量添加header
 （完成与2016-05-24）采用httpStack模式 改进imageDownloader
 （完成与2016-05-26）不再用DisplayHelper中的options覆盖ImageView的options,这是之前重构DisplayHelper时候改出来的BUG,现在依然要放到DisplayParams中去
+（完成与2016-05-29）支持设置inPreferQualityOverSpeed
+（完成与2016-05-30）LocalImagePreprocessor rename to ImagePreprocessor
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -175,38 +177,3 @@ RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
 参考Glide、Fresco和Picasso
 写一个系列博客介绍Sketch，也算是做一个总结
 用一下其它的几款图片加载器，例如UIL、fresco、glide、picasso对比一下，特别是对RecyclerView的兼容性，然后写博客
-
-更新日志：
-磁盘缓存全新升级：
-    新增DefaultLruDiskCache作为默认的磁盘缓存实现，其内部采用DiskLruCache实现，旧的LruDiskCache已经删除
-    DiskCache接口增加了edit(String)方法，去掉了generateCacheFile(String)、applyForSpace(long)、setCacheDir(File)、setReserveSize(int)、getReserveSize()、setMaxSize(int)、saveBitmap(Bitmap, String)方法
-    旧的图片缓存当然是不能用了，Sketch会自动删除
-LruMemoryCache重命名为DefaultLruMemoryCache
-去掉了一些多余的接口设计，例如HelperFactory、ImageSizeCalculator、RequestFactory、ResizeCalculator、ImageSize、Request、DisplayHelper、LoadHelper、DownloadHelper
-下载进度回调方式改为每秒钟一次
-默认maxSize，由屏幕宽高的1.5倍改为0.75倍，这样可以大幅减少大图的内存占用，对图片的清晰度影响也较小
-默认inSampleSize计算规则优化，targetSize默认放大1.25倍，目的是让原始尺寸跟targetSize较为接近的图片不被缩小直接显示，这样显示效果会比较好
-apk文件图标的磁盘缓存KEY加上了文件的最后修改时间，这么做是为了避免包路径一样，但是内容已经发生了变化的时候不能及时刷新缓存图标
-修复使用普通图片时在列表中一滑动图片就没了的BUG
-新增LocalImagePerProcessor可以处理一些特殊的本地文件，然后提取出它们的当中包含的图片，这样Sketch就可以直接显示这些特殊文件中包含的图片了
-兼容jdk1.6
-去掉了DisplayHelper上的listener和progressListener设置，你只能通过SketchImageView来设置listener了
-重构Request部分的实现，简化逻辑处理
-Sketch.putOptions(RequestOptions)改成了Sketch.putDisplayOptions(DisplayOptions)、Sketch.putLoadOptions(LoadOptions)...
-支持file://
-SketchImageView.setDisplayOptions(Enum)改为setOptionsByName(Enum) ...Helper.options(Enum)改为optionsByName(Enum)
-原生支持通过包名和版本号显示已安装APP的图标
-修复使用SketchImageView.setImageURI或setImageResource方法设置图片可能导致异常的问题
-所有failure改为failed
-新增旋转图片处理器RotateImageProcessor
-RoundedCornerImageProcessor增加扩展构造函数，支持定义每个角的大小
-由于显示GIF的场景较少，所以默认不再解码GIF图，在需要解码的地方你可以主动调用Options.setDecodeGifImage(true)或Helper.decodeGifImage()开启
-LoadOptions增加BitmapConfig参数
-DownloadHelper支持设置requestLevel
-文档和更新日志中说明要如果是在Application中首次调用Sketch.with()那么需要过滤非主线程
-LruDiskCache兼容多进程，多进程下会采用不同的disk缓存目录，顺便讲解一下多进程的坑
-优化分发效率以及支持输出display在主线程的耗时
-减少占位图缓存最大容量，调整为最大可用内存的32分之一，但又不能少于2M
-各种异常情况如果没有配置相应的占位image就设置drawable为空，这是之前的BUG
-本地任务支持多线程，加快处理速度
-重构ImageDownloader,新增可设置User-Agent、readTimeout和批量添加header
