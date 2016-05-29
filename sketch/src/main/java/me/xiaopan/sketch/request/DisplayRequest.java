@@ -142,7 +142,7 @@ public class DisplayRequest extends LoadRequest {
                         " - ", "runLoad",
                         " - ", "canceled",
                         " - ", "startLoad",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return;
         }
@@ -160,7 +160,7 @@ public class DisplayRequest extends LoadRequest {
                                 " - ", "runLoad",
                                 " - ", "from memory get drawable",
                                 " - ", recycleDrawable.getInfo(),
-                                " - ", getRequestAttrs().getName()));
+                                " - ", getRequestAttrs().getId()));
                     }
                     this.displayResult = new DisplayResult(cacheDrawable, ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
                     displayCompleted();
@@ -171,7 +171,7 @@ public class DisplayRequest extends LoadRequest {
                         Log.e(Sketch.TAG, SketchUtils.concat(getLogName(),
                                 " - ", "runLoad", "memory cache drawable recycled",
                                 " - ", recycleDrawable.getInfo(),
-                                " - ", getRequestAttrs().getName()));
+                                " - ", getRequestAttrs().getId()));
                     }
                 }
             }
@@ -195,7 +195,7 @@ public class DisplayRequest extends LoadRequest {
                             " - ", "loadCompleted",
                             " - ", "bitmap recycled",
                             " - ", loadResult.getGifDrawable().getInfo(),
-                            " - ", getRequestAttrs().getName()));
+                            " - ", getRequestAttrs().getId()));
                 }
                 failed(FailedCause.DECODE_FAIL);
                 return;
@@ -220,7 +220,7 @@ public class DisplayRequest extends LoadRequest {
                             " - ", "loadCompleted",
                             " - ", "gif drawable recycled",
                             " - ", loadResult.getGifDrawable().getInfo(),
-                            " - ", getRequestAttrs().getName()));
+                            " - ", getRequestAttrs().getId()));
                 }
                 failed(FailedCause.DECODE_FAIL);
                 return;
@@ -231,7 +231,7 @@ public class DisplayRequest extends LoadRequest {
                         " - ", "loadCompleted",
                         " - ", "new gif drawable",
                         " - ", loadResult.getGifDrawable().getInfo(),
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
 
             // 将GIF图放入内存缓存
@@ -274,7 +274,7 @@ public class DisplayRequest extends LoadRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runCompletedInMainThread",
                         " - ", "canceled",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
 
             // 更新等待显示的引用计数
@@ -304,7 +304,7 @@ public class DisplayRequest extends LoadRequest {
                 Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runCompletedInMainThread",
                         " - ", "completedDrawable is null",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
         }
 
@@ -328,7 +328,7 @@ public class DisplayRequest extends LoadRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runFailedInMainThread",
                         " - ", "canceled",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return;
         }
@@ -348,7 +348,7 @@ public class DisplayRequest extends LoadRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runFailedInMainThread",
                         " - ", "failedDrawable is null",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
         }
 

@@ -58,7 +58,7 @@ public class DrawableDecodeHelper implements DecodeHelper {
             } else {
                 builder.append(" - ").append("unchanged");
             }
-            builder.append(" - ").append(loadRequest.getRequestAttrs().getName());
+            builder.append(" - ").append(loadRequest.getRequestAttrs().getId());
             Log.d(Sketch.TAG, builder.toString());
         }
     }

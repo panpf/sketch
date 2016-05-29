@@ -137,14 +137,6 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置名称，用于在log总区分请求
-     */
-    public DisplayHelper name(String name) {
-        this.requestAttrs.setName(name);
-        return this;
-    }
-
-    /**
      * 关闭硬盘缓存
      */
     @SuppressWarnings("unused")
@@ -517,11 +509,6 @@ public class DisplayHelper {
         if (requestAttrs.getId() == null) {
             requestAttrs.setId(requestAttrs.generateId(displayOptions));
         }
-
-        // 没有设置名称的话就用内存缓存ID作为名称，名称主要用来在log中区分请求的
-        if (requestAttrs.getName() == null) {
-            requestAttrs.setName(requestAttrs.getId());
-        }
     }
 
     /**
@@ -567,7 +554,7 @@ public class DisplayHelper {
         if (requestAttrs.getUriScheme() == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(logName,
                     " - ", "unknown uri scheme: ", requestAttrs.getUri(),
-                    " - ", requestAttrs.getName()));
+                    " - ", requestAttrs.getId()));
 
             Drawable drawable = null;
             if (displayOptions.getFailedImageHolder() != null) {
@@ -602,7 +589,7 @@ public class DisplayHelper {
                         Log.i(Sketch.TAG, SketchUtils.concat(logName,
                                 " - ", "from memory get bitmap",
                                 " - ", recycleDrawable.getInfo(),
-                                " - ", requestAttrs.getName()));
+                                " - ", requestAttrs.getId()));
                     }
                     imageViewInterface.setImageDrawable(cacheDrawable);
                     if (displayListener != null) {
@@ -615,7 +602,7 @@ public class DisplayHelper {
                         Log.e(Sketch.TAG, SketchUtils.concat(logName,
                                 " - ", "memory cache drawable recycled",
                                 " - ", recycleDrawable.getInfo(),
-                                " - ", requestAttrs.getName()));
+                                " - ", requestAttrs.getId()));
                     }
                 }
             }
@@ -633,7 +620,7 @@ public class DisplayHelper {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
                         " - ", "canceled",
                         " - ", isPauseLoad ? "pause load" : "requestLevel is memory",
-                        " - ", requestAttrs.getName()));
+                        " - ", requestAttrs.getId()));
             }
 
             Drawable loadingDrawable = null;
@@ -662,7 +649,7 @@ public class DisplayHelper {
                 Log.d(Sketch.TAG, SketchUtils.concat(logName,
                         " - ", "canceled",
                         " - ", isPauseDownload ? "pause download" : "requestLevel is local",
-                        " - ", requestAttrs.getName()));
+                        " - ", requestAttrs.getId()));
             }
 
             // 显示暂停下载图片
@@ -684,7 +671,7 @@ public class DisplayHelper {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
                             " - ", "pauseDownloadDrawable is null",
-                            " - ", requestAttrs.getName()));
+                            " - ", requestAttrs.getId()));
                 }
             }
             imageViewInterface.setImageDrawable(drawable);
@@ -710,7 +697,7 @@ public class DisplayHelper {
                     Log.d(Sketch.TAG, SketchUtils.concat(logName,
                             " - ", "don't need to cancel",
                             "；", "ImageViewCode", "=", Integer.toHexString(imageViewInterface.hashCode()),
-                            "；", potentialRequest.getRequestAttrs().getName()));
+                            "；", potentialRequest.getRequestAttrs().getId()));
                 }
                 return potentialRequest;
             } else {

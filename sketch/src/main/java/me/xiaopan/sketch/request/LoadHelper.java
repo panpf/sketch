@@ -54,14 +54,6 @@ public class LoadHelper {
     }
 
     /**
-     * 设置名称，用于在log总区分请求
-     */
-    public LoadHelper name(String name) {
-        this.requestAttrs.setName(name);
-        return this;
-    }
-
-    /**
      * 关闭硬盘缓存
      */
     @SuppressWarnings("unused")
@@ -230,11 +222,6 @@ public class LoadHelper {
         if (requestAttrs.getId() == null) {
             requestAttrs.setId(requestAttrs.generateId(loadOptions));
         }
-
-        // 没有设置名称的话就用uri作为名称，名称主要用来在log中区分请求的
-        if (requestAttrs.getName() == null) {
-            requestAttrs.setName(requestAttrs.getId());
-        }
     }
 
     /**
@@ -276,7 +263,7 @@ public class LoadHelper {
 
     private boolean checkUriScheme() {
         if (requestAttrs.getUriScheme() == null) {
-            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "unknown uri scheme", " - ", requestAttrs.getName()));
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "unknown uri scheme", " - ", requestAttrs.getId()));
             CallbackHandler.postCallbackFailed(loadListener, FailedCause.URI_NO_SUPPORT);
             return false;
         }
@@ -295,7 +282,7 @@ public class LoadHelper {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
                         " - ", "canceled",
                         " - ", isPauseDownload ? "pause download" : "requestLevel is local",
-                        " - ", requestAttrs.getName()));
+                        " - ", requestAttrs.getId()));
             }
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL;

@@ -100,7 +100,7 @@ public class LoadRequest extends DownloadRequest {
                 Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runDispatch",
                         " - ", "local",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             submitRunLoad();
             return;
@@ -122,7 +122,7 @@ public class LoadRequest extends DownloadRequest {
                         " - ", "runLoad",
                         " - ", "canceled",
                         " - ", "startLoad",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return;
         }
@@ -158,7 +158,7 @@ public class LoadRequest extends DownloadRequest {
                             " - ", "decode failed bitmap recycled",
                             " - ", "decode after",
                             " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
-                            " - ", getRequestAttrs().getName()));
+                            " - ", getRequestAttrs().getId()));
                 }
                 failed(FailedCause.DECODE_FAIL);
                 return;
@@ -169,7 +169,7 @@ public class LoadRequest extends DownloadRequest {
                         " - ", "runLoad",
                         " - ", "new bitmap",
                         " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
 
             if (isCanceled()) {
@@ -180,7 +180,7 @@ public class LoadRequest extends DownloadRequest {
                             " - ", "decode after",
                             " - ", "recycle bitmap",
                             " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
-                            " - ", getRequestAttrs().getName()));
+                            " - ", getRequestAttrs().getId()));
                 }
                 decodeResult.getBitmap().recycle();
                 return;
@@ -203,7 +203,7 @@ public class LoadRequest extends DownloadRequest {
                                 " - ", "newBitmap",
                                 " - ", RecycleBitmapDrawable.getInfo(newBitmap, decodeResult.getMimeType()),
                                 " - ", "recycled old bitmap",
-                                " - ", getRequestAttrs().getName()));
+                                " - ", getRequestAttrs().getId()));
                     }
 
                     decodeResult.getBitmap().recycle();
@@ -219,7 +219,7 @@ public class LoadRequest extends DownloadRequest {
                             " - ", "process after",
                             " - ", "recycle bitmap",
                             " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
-                            " - ", getRequestAttrs().getName()));
+                            " - ", getRequestAttrs().getId()));
                 }
                 decodeResult.getBitmap().recycle();
                 return;
@@ -245,7 +245,7 @@ public class LoadRequest extends DownloadRequest {
                             " - ", "runLoad",
                             " - ", "gif drawable recycled",
                             " - ", decodeResult.getGifDrawable().getInfo(),
-                            " - ", getRequestAttrs().getName()));
+                            " - ", getRequestAttrs().getId()));
                 }
                 failed(FailedCause.DECODE_FAIL);
                 return;
@@ -256,7 +256,7 @@ public class LoadRequest extends DownloadRequest {
                         " - ", "runLoad",
                         " - ", "new gif drawable",
                         " - ", decodeResult.getGifDrawable().getInfo(),
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
 
             decodeResult.getGifDrawable().setMimeType(decodeResult.getMimeType());
@@ -295,7 +295,7 @@ public class LoadRequest extends DownloadRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runCompletedInMainThread",
                         " - ", "canceled",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return;
         }
@@ -318,7 +318,7 @@ public class LoadRequest extends DownloadRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runFailedInMainThread",
                         " - ", "canceled",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return;
         }

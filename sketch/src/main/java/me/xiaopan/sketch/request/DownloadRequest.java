@@ -124,7 +124,7 @@ public class DownloadRequest extends BaseRequest {
                     Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
                             " - ", "runDispatch",
                             " - ", "diskCache",
-                            " - ", getRequestAttrs().getName()));
+                            " - ", getRequestAttrs().getId()));
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, false);
                 downloadComplete();
@@ -143,7 +143,7 @@ public class DownloadRequest extends BaseRequest {
             Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
                     " - ", "runDispatch",
                     " - ", "download",
-                    " - ", getRequestAttrs().getName()));
+                    " - ", getRequestAttrs().getId()));
         }
         submitRunDownload();
     }
@@ -160,7 +160,7 @@ public class DownloadRequest extends BaseRequest {
                     " - ", "runDispatch",
                     " - ", "canceled",
                     " - ", isPauseDownload ? "pause download" : "requestLevel is local",
-                    " - ", getRequestAttrs().getName()));
+                    " - ", getRequestAttrs().getId()));
         }
 
         canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
@@ -174,7 +174,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "startDownload",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return;
         }
@@ -190,7 +190,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "downloadAfter",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return;
         }
@@ -221,7 +221,7 @@ public class DownloadRequest extends BaseRequest {
                             " - ", "runDownload",
                             " - ", "canceled",
                             " - ", "get lock after",
-                            " - ", getRequestAttrs().getName()));
+                            " - ", getRequestAttrs().getId()));
                 }
                 break;
             }
@@ -248,7 +248,7 @@ public class DownloadRequest extends BaseRequest {
                                 " - ", "runDownload",
                                 " - ", "download failed",
                                 " - ", "retry",
-                                " - ", getRequestAttrs().getName()));
+                                " - ", getRequestAttrs().getId()));
                     }
                 } else {
                     if (Sketch.isDebugMode()) {
@@ -256,7 +256,7 @@ public class DownloadRequest extends BaseRequest {
                                 " - ", "runDownload",
                                 " - ", "download failed",
                                 " - ", "end",
-                                " - ", getRequestAttrs().getName()));
+                                " - ", getRequestAttrs().getId()));
                     }
                     break;
                 }
@@ -276,7 +276,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "connect after",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return null;
         }
@@ -292,7 +292,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runDownload",
                         " - ", "get response code failed",
-                        " - ", getRequestAttrs().getName(),
+                        " - ", getRequestAttrs().getId(),
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString()));
             }
             return null;
@@ -307,7 +307,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runDownload",
                         " - ", "get response message failed",
-                        " - ", getRequestAttrs().getName(),
+                        " - ", getRequestAttrs().getId(),
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString()));
             }
             return null;
@@ -321,7 +321,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "responseCode:", String.valueOf(responseCode),
                         " - ", "responseMessage:", responseMessage,
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString(),
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return null;
         }
@@ -336,7 +336,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "content length exception",
                         " - ", "contentLength:" + contentLength,
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString(),
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return null;
         }
@@ -351,7 +351,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "get input stream after",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return null;
         }
@@ -402,7 +402,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "read data after",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return null;
         }
@@ -412,7 +412,7 @@ public class DownloadRequest extends BaseRequest {
                     " - ", "runDownload",
                     " - ", "download success",
                     " - ", "fileLength:", completedLength, "/", contentLength,
-                    " - ", getRequestAttrs().getName()));
+                    " - ", getRequestAttrs().getId()));
         }
 
         // 返回结果
@@ -488,7 +488,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runUpdateProgressInMainThread",
                         " - ", "finished",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return;
         }
@@ -512,7 +512,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runCompletedInMainThread",
                         " - ", "canceled",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return;
         }
@@ -535,7 +535,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runFailedInMainThread",
                         " - ", "canceled",
-                        " - ", getRequestAttrs().getName()));
+                        " - ", getRequestAttrs().getId()));
             }
             return;
         }

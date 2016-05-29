@@ -72,7 +72,7 @@ public class CacheFileDecodeHelper implements DecodeHelper {
             } else {
                 builder.append(" - ").append("unchanged");
             }
-            builder.append(" - ").append(loadRequest.getRequestAttrs().getName());
+            builder.append(" - ").append(loadRequest.getRequestAttrs().getId());
             Log.d(Sketch.TAG, builder.toString());
         }
     }
@@ -80,11 +80,11 @@ public class CacheFileDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeFailed() {
         if (Sketch.isDebugMode()) {
-            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "decode failed", " - ", "diskCacheKey", "=", diskCacheEntry.getUri(), ", ", " - ", loadRequest.getRequestAttrs().getName()));
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "decode failed", " - ", "diskCacheKey", "=", diskCacheEntry.getUri(), ", ", " - ", loadRequest.getRequestAttrs().getId()));
         }
         if (!diskCacheEntry.delete()) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "delete damaged disk cache file failed", " - ", "diskCacheKey", "=", diskCacheEntry.getUri(), ", ", " - ", loadRequest.getRequestAttrs().getName()));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "delete damaged disk cache file failed", " - ", "diskCacheKey", "=", diskCacheEntry.getUri(), ", ", " - ", loadRequest.getRequestAttrs().getId()));
             }
         }
     }

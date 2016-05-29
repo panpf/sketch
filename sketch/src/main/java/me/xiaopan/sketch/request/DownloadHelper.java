@@ -45,14 +45,6 @@ public class DownloadHelper {
     }
 
     /**
-     * 设置名称，用于在log总区分请求
-     */
-    public DownloadHelper name(String name) {
-        this.requestAttrs.setName(name);
-        return this;
-    }
-
-    /**
      * 关闭硬盘缓存
      */
     @SuppressWarnings("unused")
@@ -123,11 +115,6 @@ public class DownloadHelper {
         if (requestAttrs.getId() == null) {
             requestAttrs.setId(requestAttrs.generateId(downloadOptions));
         }
-
-        // 没有设置名称的话就用uri作为名称，名称主要用来在log中区分请求的
-        if (requestAttrs.getName() == null) {
-            requestAttrs.setName(requestAttrs.getId());
-        }
     }
 
     /**
@@ -165,14 +152,14 @@ public class DownloadHelper {
 
     private boolean checkUriScheme() {
         if (requestAttrs.getUriScheme() == null) {
-            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "unknown uri scheme", " - ", requestAttrs.getName()));
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "unknown uri scheme", " - ", requestAttrs.getId()));
             CallbackHandler.postCallbackFailed(downloadListener, FailedCause.URI_NO_SUPPORT);
             return false;
         }
 
         if (requestAttrs.getUriScheme() != UriScheme.NET) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "only support http ot https", " - ", requestAttrs.getName()));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "only support http ot https", " - ", requestAttrs.getId()));
             }
             CallbackHandler.postCallbackFailed(downloadListener, FailedCause.URI_NO_SUPPORT);
             return false;

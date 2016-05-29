@@ -100,14 +100,14 @@ public class DefaultImageDecoder implements ImageDecoder {
             bitmap = decodeHelper.decode(options);
             if (bitmap != null && (bitmap.getWidth() == 1 || bitmap.getHeight() == 1)) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "bitmap width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", "BitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(), " - ", loadRequest.getRequestAttrs().getName()));
+                    Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "bitmap width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", "BitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(), " - ", loadRequest.getRequestAttrs().getId()));
                 }
                 bitmap.recycle();
                 bitmap = null;
             }
         } else {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "image width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", loadRequest.getRequestAttrs().getName()));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "image width or height is 1px", " - ", "ImageSize: ", originalSize.x, "x", originalSize.y, " - ", loadRequest.getRequestAttrs().getId()));
             }
         }
 
