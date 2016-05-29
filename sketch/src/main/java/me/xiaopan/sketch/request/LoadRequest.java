@@ -23,7 +23,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
-import me.xiaopan.sketch.feture.LocalImagePreprocessor;
+import me.xiaopan.sketch.feture.ImagePreprocessor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -129,8 +129,8 @@ public class LoadRequest extends DownloadRequest {
 
         setStatus(Status.LOADING);
 
-        // 尝试用本地图片预处理器处理一下特殊的本地图片，并得到他们的缓存
-        LocalImagePreprocessor imagePreprocessor = getSketch().getConfiguration().getLocalImagePreprocessor();
+        // 尝试用图片预处理器处理一下特殊的本地图片，并得到他们的缓存
+        ImagePreprocessor imagePreprocessor = getSketch().getConfiguration().getImagePreprocessor();
         if (imagePreprocessor.isSpecific(this)) {
             DiskCache.Entry specificLocalImageDiskCacheEntry = imagePreprocessor.getDiskCacheEntry(this);
             if (specificLocalImageDiskCacheEntry != null) {

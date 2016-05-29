@@ -30,7 +30,7 @@ import me.xiaopan.sketch.display.DefaultImageDisplayer;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.feture.HelperFactory;
 import me.xiaopan.sketch.feture.ImageSizeCalculator;
-import me.xiaopan.sketch.feture.LocalImagePreprocessor;
+import me.xiaopan.sketch.feture.ImagePreprocessor;
 import me.xiaopan.sketch.feture.MobileNetworkPauseDownloadManager;
 import me.xiaopan.sketch.feture.RequestFactory;
 import me.xiaopan.sketch.feture.ResizeCalculator;
@@ -57,7 +57,7 @@ public class Configuration {
     private RequestExecutor requestExecutor;    //请求执行器
     private ResizeCalculator resizeCalculator;  // resize计算器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
-    private LocalImagePreprocessor localImagePreprocessor;    // 本地图片预处理器
+    private ImagePreprocessor imagePreprocessor;    // 本地图片预处理器
 
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean cacheInDisk = true;
@@ -84,7 +84,7 @@ public class Configuration {
         this.resizeCalculator = new ResizeCalculator();
         this.imageSizeCalculator = new ImageSizeCalculator();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
-        this.localImagePreprocessor = new LocalImagePreprocessor();
+        this.imagePreprocessor = new ImagePreprocessor();
         this.defaultCutImageProcessor = new DefaultImageProcessor();
         this.placeholderImageMemoryCache = LruMemoryCache.createPlaceholder(context);
 
@@ -510,20 +510,20 @@ public class Configuration {
     }
 
     /**
-     * 获取本地图片预处理器
+     * 获取图片预处理器
      */
-    public LocalImagePreprocessor getLocalImagePreprocessor() {
-        return localImagePreprocessor;
+    public ImagePreprocessor getImagePreprocessor() {
+        return imagePreprocessor;
     }
 
     /**
-     * 设置本地图片预处理器
+     * 设置图片预处理器
      */
-    public Configuration setLocalImagePreprocessor(LocalImagePreprocessor localImagePreprocessor) {
-        if (localImagePreprocessor != null) {
-            this.localImagePreprocessor = localImagePreprocessor;
+    public Configuration setImagePreprocessor(ImagePreprocessor imagePreprocessor) {
+        if (imagePreprocessor != null) {
+            this.imagePreprocessor = imagePreprocessor;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - localImagePreprocessor" + " (" + localImagePreprocessor.getIdentifier() + ")");
+                Log.i(Sketch.TAG, logName + ": " + "set" + " - imagePreprocessor" + " (" + imagePreprocessor.getIdentifier() + ")");
             }
         }
         return this;
@@ -617,11 +617,11 @@ public class Configuration {
             resizeCalculator.appendIdentifier(builder);
         }
 
-        if (localImagePreprocessor != null) {
+        if (imagePreprocessor != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("localImagePreprocessor");
+            builder.append("imagePreprocessor");
             builder.append("：");
-            localImagePreprocessor.appendIdentifier(builder);
+            imagePreprocessor.appendIdentifier(builder);
         }
 
         if (builder.length() > 0) builder.append("\n");
