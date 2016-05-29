@@ -24,6 +24,7 @@ import android.os.Build;
 import android.util.Log;
 
 import java.io.File;
+import java.text.DecimalFormat;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
@@ -39,6 +40,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class DefaultImageDecoder implements ImageDecoder {
     private volatile static long decodeCount;
     private volatile static long useTimeCount;
+    private static DecimalFormat decimalFormat;
     protected String logName = "DefaultImageDecoder";
 
     public static DecodeResult decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper, String logName) {
@@ -155,7 +157,14 @@ public class DefaultImageDecoder implements ImageDecoder {
                 }
                 decodeCount++;
                 useTimeCount += useTime;
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, " - ", "UseTime: ", useTime, "ms", ", ", "average: ", (double) useTimeCount / decodeCount, "ms", " - ", loadRequest.getRequestAttrs().getId()));
+                if(decimalFormat == null){
+                    decimalFormat = new DecimalFormat("#.##");
+                }
+                Log.d(Sketch.TAG, SketchUtils.concat(logName,
+                        " - ", "DecodeUseTime",
+                        " - ", useTime, "ms", ", ",
+                        "average", "=", decimalFormat.format((double) useTimeCount / decodeCount), "ms",
+                        " - ", loadRequest.getRequestAttrs().getId()));
             }
         }
 

@@ -46,8 +46,6 @@ public class Sketch {
 
     private static Sketch instance;
     private static boolean debugMode;    //调试模式，在控制台输出日志
-    // todo  去掉outElapsedTime,直接使用debugmode
-    private static boolean outElapsedTime;    // 输出display在主线程的耗时
     private static Map<Enum<?>, Object> optionsMap;
 
     private Configuration configuration;
@@ -84,6 +82,7 @@ public class Sketch {
      *            <br>“https://site.com/image.png“ // from Web
      *            </blockQuote>
      */
+    @SuppressWarnings("unused")
     public DownloadHelper download(String uri, DownloadListener downloadListener) {
         return configuration.getHelperFactory().getDownloadHelper(this, uri).listener(downloadListener);
     }
@@ -265,20 +264,5 @@ public class Sketch {
      */
     public static void setDebugMode(boolean debugMode) {
         Sketch.debugMode = debugMode;
-    }
-
-    /**
-     * 是否输出display在主线程的耗时
-     */
-    public static boolean isOutElapsedTime() {
-        return outElapsedTime;
-    }
-
-    /**
-     * 设置是否输出display在主线程的耗时
-     */
-    @SuppressWarnings("unused")
-    public static void setOutElapsedTime(boolean outElapsedTime) {
-        Sketch.outElapsedTime = outElapsedTime;
     }
 }

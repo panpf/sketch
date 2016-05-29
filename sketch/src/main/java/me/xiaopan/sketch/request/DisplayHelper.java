@@ -35,7 +35,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.Stopwatch;
 
 public class DisplayHelper {
-    protected static final String NAME = "DisplayHelper";
+    protected String logName = "DisplayHelper";
 
     protected Sketch sketch;
 
@@ -73,8 +73,8 @@ public class DisplayHelper {
         this.sketch = sketch;
         this.imageViewInterface = imageViewInterface;
 
-        if (Sketch.isOutElapsedTime()) {
-            Stopwatch.with().start(Sketch.TAG, "DisplayTimeAnalysis. " + uri);
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().start(Sketch.TAG, logName + " - " + "DisplayUseTime");
         }
 
         requestAttrs.reset(uri);
@@ -83,7 +83,7 @@ public class DisplayHelper {
         // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
         // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
         this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
-        if (Sketch.isOutElapsedTime()) {
+        if (Sketch.isDebugMode()) {
             Stopwatch.with().record("onDisplay");
         }
 
@@ -101,8 +101,8 @@ public class DisplayHelper {
         this.sketch = sketch;
         this.imageViewInterface = imageViewInterface;
 
-        if (Sketch.isOutElapsedTime()) {
-            Stopwatch.with().start(Sketch.TAG, "DisplayTimeAnalysis. " + params.attrs.getUri());
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().start(Sketch.TAG, logName + " - " + "DisplayUseTime");
         }
 
         requestAttrs.copy(params.attrs);
@@ -111,7 +111,7 @@ public class DisplayHelper {
         // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
         // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
         this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
-        if (Sketch.isOutElapsedTime()) {
+        if (Sketch.isDebugMode()) {
             Stopwatch.with().record("onDisplay");
         }
 
@@ -345,94 +345,82 @@ public class DisplayHelper {
      */
     public DisplayRequest commit() {
         if (!SketchUtils.isMainThread()) {
-            Log.w(Sketch.TAG, SketchUtils.concat(NAME,
+            Log.w(Sketch.TAG, SketchUtils.concat(logName,
                     " - ", "Please perform a commit in the UI thread",
                     " - ", requestAttrs.getUri()));
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
-            if (Sketch.isOutElapsedTime()) {
-                Stopwatch.with().print();
+            if (Sketch.isDebugMode()) {
+                Stopwatch.with().print(requestAttrs.getUri());
             }
+            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
         }
 
         CallbackHandler.postCallbackStarted(displayListener);
 
         preProcess();
-        if (Sketch.isOutElapsedTime()) {
+        if (Sketch.isDebugMode()) {
             Stopwatch.with().record("preProcess");
         }
 
         saveParams();
-        if (Sketch.isOutElapsedTime()) {
+        if (Sketch.isDebugMode()) {
             Stopwatch.with().record("saveParams");
         }
 
         boolean checkResult = checkUri();
-        if (Sketch.isOutElapsedTime()) {
+        if (Sketch.isDebugMode()) {
             Stopwatch.with().record("checkUri");
         }
         if (!checkResult) {
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
-            if (Sketch.isOutElapsedTime()) {
-                Stopwatch.with().print();
+            if (Sketch.isDebugMode()) {
+                Stopwatch.with().print(requestAttrs.getId());
             }
-            return null;
-        }
-
-        checkResult = checkUriScheme();
-        if (Sketch.isOutElapsedTime()) {
-            Stopwatch.with().record("checkUriScheme");
-        }
-        if (!checkResult) {
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
-            if (Sketch.isOutElapsedTime()) {
-                Stopwatch.with().print();
-            }
             return null;
         }
 
         checkResult = checkMemoryCache();
-        if (Sketch.isOutElapsedTime()) {
+        if (Sketch.isDebugMode()) {
             Stopwatch.with().record("checkMemoryCache");
         }
         if (!checkResult) {
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
-            if (Sketch.isOutElapsedTime()) {
-                Stopwatch.with().print();
+            if (Sketch.isDebugMode()) {
+                Stopwatch.with().print(requestAttrs.getId());
             }
+            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
         }
 
         checkResult = checkRequestLevel();
-        if (Sketch.isOutElapsedTime()) {
+        if (Sketch.isDebugMode()) {
             Stopwatch.with().record("checkRequestLevel");
         }
         if (!checkResult) {
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
-            if (Sketch.isOutElapsedTime()) {
-                Stopwatch.with().print();
+            if (Sketch.isDebugMode()) {
+                Stopwatch.with().print(requestAttrs.getId());
             }
+            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
         }
 
         DisplayRequest potentialRequest = checkRepeatRequest();
-        if (Sketch.isOutElapsedTime()) {
+        if (Sketch.isDebugMode()) {
             Stopwatch.with().record("checkRepeatRequest");
         }
         if (potentialRequest != null) {
-            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
-            if (Sketch.isOutElapsedTime()) {
-                Stopwatch.with().print();
+            if (Sketch.isDebugMode()) {
+                Stopwatch.with().print(requestAttrs.getId());
             }
+            sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return potentialRequest;
         }
 
         DisplayRequest request = submitRequest();
 
-        sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
-        if (Sketch.isOutElapsedTime()) {
-            Stopwatch.with().print();
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().print(requestAttrs.getId());
         }
+        sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
         return request;
     }
 
@@ -520,7 +508,7 @@ public class DisplayHelper {
                     ", height is ", SketchUtils.viewLayoutFormatted(layoutParams.height),
                     ", ScaleType is ", displayAttrs.getScaleType().name());
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", errorInfo, " - ", requestAttrs.getUri()));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, " - ", errorInfo, " - ", requestAttrs.getUri()));
             }
             throw new IllegalArgumentException(errorInfo);
         }
@@ -553,7 +541,7 @@ public class DisplayHelper {
     private boolean checkUri() {
         if (requestAttrs.getUri() == null || "".equals(requestAttrs.getUri().trim())) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "uri is null or empty"));
             }
 
             Drawable drawable = null;
@@ -576,12 +564,8 @@ public class DisplayHelper {
             return false;
         }
 
-        return true;
-    }
-
-    private boolean checkUriScheme() {
         if (requestAttrs.getUriScheme() == null) {
-            Log.e(Sketch.TAG, SketchUtils.concat(NAME,
+            Log.e(Sketch.TAG, SketchUtils.concat(logName,
                     " - ", "unknown uri scheme: ", requestAttrs.getUri(),
                     " - ", requestAttrs.getName()));
 
@@ -615,7 +599,7 @@ public class DisplayHelper {
                 RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
                 if (!recycleDrawable.isRecycled()) {
                     if (Sketch.isDebugMode()) {
-                        Log.i(Sketch.TAG, SketchUtils.concat(NAME,
+                        Log.i(Sketch.TAG, SketchUtils.concat(logName,
                                 " - ", "from memory get bitmap",
                                 " - ", recycleDrawable.getInfo(),
                                 " - ", requestAttrs.getName()));
@@ -628,7 +612,7 @@ public class DisplayHelper {
                 } else {
                     sketch.getConfiguration().getMemoryCache().remove(requestAttrs.getId());
                     if (Sketch.isDebugMode()) {
-                        Log.e(Sketch.TAG, SketchUtils.concat(NAME,
+                        Log.e(Sketch.TAG, SketchUtils.concat(logName,
                                 " - ", "memory cache drawable recycled",
                                 " - ", recycleDrawable.getInfo(),
                                 " - ", requestAttrs.getName()));
@@ -646,7 +630,7 @@ public class DisplayHelper {
             boolean isPauseLoad = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD;
 
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME,
+                Log.w(Sketch.TAG, SketchUtils.concat(logName,
                         " - ", "canceled",
                         " - ", isPauseLoad ? "pause load" : "requestLevel is memory",
                         " - ", requestAttrs.getName()));
@@ -675,7 +659,7 @@ public class DisplayHelper {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(NAME,
+                Log.d(Sketch.TAG, SketchUtils.concat(logName,
                         " - ", "canceled",
                         " - ", isPauseDownload ? "pause download" : "requestLevel is local",
                         " - ", requestAttrs.getName()));
@@ -698,7 +682,7 @@ public class DisplayHelper {
                         displayAttrs.getScaleType());
             } else {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(NAME,
+                    Log.w(Sketch.TAG, SketchUtils.concat(logName,
                             " - ", "pauseDownloadDrawable is null",
                             " - ", requestAttrs.getName()));
                 }
@@ -723,7 +707,7 @@ public class DisplayHelper {
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (requestAttrs.getId().equals(potentialRequest.getRequestAttrs().getId())) {
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, SketchUtils.concat(NAME,
+                    Log.d(Sketch.TAG, SketchUtils.concat(logName,
                             " - ", "don't need to cancel",
                             "；", "ImageViewCode", "=", Integer.toHexString(imageViewInterface.hashCode()),
                             "；", potentialRequest.getRequestAttrs().getName()));
@@ -743,8 +727,8 @@ public class DisplayHelper {
         DisplayRequest request = requestFactory.newDisplayRequest(
                 sketch, requestAttrs, displayAttrs, displayOptions,
                 displayBinder, displayListener, progressListener);
-        if (Sketch.isOutElapsedTime()) {
-            Stopwatch.with().record("submitRequest-createRequest");
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().record("createRequest");
         }
 
         // 显示默认图片
@@ -754,18 +738,18 @@ public class DisplayHelper {
         } else {
             loadingBindDrawable = new BindFixedRecycleBitmapDrawable(null, request);
         }
-        if (Sketch.isOutElapsedTime()) {
-            Stopwatch.with().record("submitRequest-createLoadingImage");
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().record("createLoadingImage");
         }
 
         imageViewInterface.setImageDrawable(loadingBindDrawable);
-        if (Sketch.isOutElapsedTime()) {
-            Stopwatch.with().record("submitRequest-setLoadingImage");
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().record("setLoadingImage");
         }
 
         request.submit();
-        if (Sketch.isOutElapsedTime()) {
-            Stopwatch.with().record("submitRequest-submit");
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().record("submitRequest");
         }
 
         return request;

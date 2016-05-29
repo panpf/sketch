@@ -27,7 +27,7 @@ import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class LoadHelper {
-    protected static final String NAME = "LoadHelper";
+    protected String logName = "LoadHelper";
 
     protected Sketch sketch;
 
@@ -265,7 +265,7 @@ public class LoadHelper {
     private boolean checkUri() {
         if (requestAttrs.getUri() == null || "".equals(requestAttrs.getUri().trim())) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "uri is null or empty"));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "uri is null or empty"));
             }
             CallbackHandler.postCallbackFailed(loadListener, FailedCause.URI_NULL_OR_EMPTY);
             return false;
@@ -276,7 +276,7 @@ public class LoadHelper {
 
     private boolean checkUriScheme() {
         if (requestAttrs.getUriScheme() == null) {
-            Log.e(Sketch.TAG, SketchUtils.concat(NAME, " - ", "unknown uri scheme", " - ", requestAttrs.getName()));
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "unknown uri scheme", " - ", requestAttrs.getName()));
             CallbackHandler.postCallbackFailed(loadListener, FailedCause.URI_NO_SUPPORT);
             return false;
         }
@@ -292,7 +292,7 @@ public class LoadHelper {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(NAME,
+                Log.w(Sketch.TAG, SketchUtils.concat(logName,
                         " - ", "canceled",
                         " - ", isPauseDownload ? "pause download" : "requestLevel is local",
                         " - ", requestAttrs.getName()));
