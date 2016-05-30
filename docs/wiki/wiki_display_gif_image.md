@@ -9,4 +9,4 @@ GifDrawable不能使用maxSize、resize、TransitionImageDisplayer
 同时还集成了GifImageView、GifTextView以及GifImageButton
 
 SketchImageView还支持当显示的图片是GIF图时在右下角显示一个图标，告诉用户这是一张GIF图，你只需调用setGifFlagDrawable(Drawable)设置图标即可，如下：
-![gif](https://github.com/xiaopansky/Sketch/raw/master/docs/gif_flag_drawable.png)
+![gif](https://github.com/xiaopansky/Sketch/raw/master/docs/res/gif_flag_drawable.png)

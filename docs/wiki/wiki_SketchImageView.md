@@ -131,11 +131,11 @@ sketchImageView.setShowPressedStatus(true);
 
 没按下时是这样的：
 
-![image_shape1](https://github.com/xiaopansky/Sketch/raw/master/docs/image_shape1.png)
+![image_shape1](https://github.com/xiaopansky/Sketch/raw/master/docs/res/image_shape1.png)
 
 按下时是这样的：
 
-![image_shape2](https://github.com/xiaopansky/Sketch/raw/master/docs/image_shape2.png)
+![image_shape2](https://github.com/xiaopansky/Sketch/raw/master/docs/res/image_shape2.png)
 
 这样当然不行了，ImageShape就是来解决这个问题的，你可以执行如下代码设置ImageShape为圆形的
 ```java
@@ -143,7 +143,7 @@ sketchImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
 ```
 这时候按下后效果是这样的：
 
-![image_shape3](https://github.com/xiaopansky/Sketch/raw/master/docs/image_shape3.png)
+![image_shape3](https://github.com/xiaopansky/Sketch/raw/master/docs/res/image_shape3.png)
 
 可能有同学会说为什么不用ClipPath实现这个效果呢？这样也不用裁剪图片了，省事。经实际测试后发现ClipPath会有明显的锯齿，效果很不好，并且部分机型硬件加速还不支持ClipPath。
 
@@ -159,7 +159,7 @@ resizeByFixedSize意思就是使用ImageView的layout size作为resize，然后�
 #### 8.设置GIF图标识（可选）
 Sketch支持解码GIF图，因此SketchImageView在发现显示的是GIF图的时候可以在SketchImageView的右下角显示一个图标，以告诉用户这是一张GIF图，如下：
 
-![gif](https://github.com/xiaopansky/Sketch/raw/master/docs/ic_gif.png)
+![gif](https://github.com/xiaopansky/Sketch/raw/master/docs/res/ic_gif.png)
 
 ```java
 sketchImageView.setGifFlagDrawable(R.drawable.ic_gif);
@@ -167,7 +167,7 @@ sketchImageView.setGifFlagDrawable(R.drawable.ic_gif);
 
 然后效果是这样的
 
-![gif](https://github.com/xiaopansky/Sketch/raw/master/docs/gif_flag_drawable.png)
+![gif](https://github.com/xiaopansky/Sketch/raw/master/docs/res/gif_flag_drawable.png)
 
 ####9. 设置显示图片来源（可选）
 SketchImageView还支持显示图片来源，如下：
@@ -180,7 +180,7 @@ sketchImageView.setShowFromFlag(true);
 >* 黄色表示是从本地缓存加载的；
 >* 红色表示是刚刚从网络下载的。
 
-![sample](https://github.com/xiaopansky/Sketch/raw/master/docs/sampe_debug_mode.jpeg)
+![sample](https://github.com/xiaopansky/Sketch/raw/master/docs/res/sampe_debug_mode.jpeg)
 
 #### 10. 开启点击重新显示功能
 SketchImageView还支持在显示失败时点击重新显示和暂停下载时候点击直接显示功能，如下：
