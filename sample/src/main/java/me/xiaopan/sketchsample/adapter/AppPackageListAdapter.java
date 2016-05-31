@@ -38,7 +38,7 @@ public class AppPackageListAdapter extends RecyclerView.Adapter{
             AppInfoViewHolder appInfoViewHolder = new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
             appInfoViewHolder.iconSketchImageView.setOptionsByName(OptionsType.APP_ICON);
             appInfoViewHolder.iconSketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-            appInfoViewHolder.iconSketchImageView.setImageShapeRoundedRadius(DeviceUtils.dp2px(parent.getContext(), 10));
+            appInfoViewHolder.iconSketchImageView.setImageShapeCornerRadius(DeviceUtils.dp2px(parent.getContext(), 10));
             appInfoViewHolder.iconSketchImageView.setAutoApplyGlobalAttr(false);
             return appInfoViewHolder;
         }

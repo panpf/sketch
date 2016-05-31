@@ -35,7 +35,7 @@ import me.xiaopan.sketch.request.UriScheme;
 public class ImageShapeFunction implements ImageViewFunction {
 
     protected Path clipPath;
-    protected int roundedRadius;
+    protected float[] cornerRadius;
     protected ImageShape imageShape = ImageShape.RECT;
     protected RectF rectF;
 
@@ -128,7 +128,7 @@ public class ImageShapeFunction implements ImageViewFunction {
             } else {
                 rectF.set(view.getPaddingLeft(), view.getPaddingTop(), view.getWidth() - view.getPaddingRight(), view.getHeight() - view.getPaddingBottom());
             }
-            clipPath.addRoundRect(rectF, roundedRadius, roundedRadius, Path.Direction.CW);
+            clipPath.addRoundRect(rectF, cornerRadius, Path.Direction.CW);
         } else {
             clipPath = null;
         }
@@ -147,12 +147,16 @@ public class ImageShapeFunction implements ImageViewFunction {
     }
 
     @SuppressWarnings("unused")
-    public int getRoundedRadius() {
-        return roundedRadius;
+    public float[] getCornerRadius() {
+        return cornerRadius;
     }
 
-    public void setRoundedRadius(int radius) {
-        this.roundedRadius = radius;
+    public void setCornerRadius(float cornerRadius) {
+        setCornerRadius(cornerRadius, cornerRadius, cornerRadius, cornerRadius);
+    }
+
+    public void setCornerRadius(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
+        this.cornerRadius = new float[]{topLeftRadius, topLeftRadius, topRightRadius, topRightRadius, bottomLeftRadius, bottomLeftRadius, bottomRightRadius, bottomRightRadius};
         if (view.getWidth() != 0) {
             initImageShapePath();
         }
