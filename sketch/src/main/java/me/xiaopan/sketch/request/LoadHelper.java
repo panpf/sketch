@@ -145,6 +145,15 @@ public class LoadHelper {
     }
 
     /**
+     * 设置优先考虑质量还是速度
+     */
+    @SuppressWarnings("unused")
+    public LoadHelper inPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
+        loadOptions.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
+        return this;
+    }
+
+    /**
      * 批量设置加载参数，这会是一个合并的过程，并不会完全覆盖
      */
     public LoadHelper options(LoadOptions newOptions) {

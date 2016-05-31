@@ -236,6 +236,15 @@ public class DisplayHelper {
     }
 
     /**
+     * 设置优先考虑质量还是速度
+     */
+    @SuppressWarnings("unused")
+    public DisplayHelper inPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
+        displayOptions.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
+        return this;
+    }
+
+    /**
      * 关闭内存缓存
      */
     @SuppressWarnings("unused")
