@@ -141,7 +141,7 @@ sketchImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
 当图片是圆角的时候，需要如下设置：
 ```java
 sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-sketchImaegView.setImageShapeRoundedRadius(20);
+sketchImaegView.setImageShapeCornerRadius(20);
 ```
 圆角还有一个比较麻烦的地方是当一个列表内图片的尺寸不一致并且ImageView的ScaleType又是CNTER_CROP或FIT_CENTER的时候会放大或缩小图片，那么图片的圆角也会随之放大或缩小，最终的效果就是不同尺寸的图片的圆角大小不一样，效果比较难看。要解决这个问题就需要先设置ImageView宽高为固定值，然后使用设置resizeByFixedSize并且设置forceUseResize让最终返回的图片的尺寸都一样，如下：
 ```java
