@@ -1,10 +1,17 @@
-DiskCache用来在本地磁盘上缓存图片。默认实现是LruDiskCache，其根据文件最后修改时间实现了LRU算法，默认最大容量为100M，保留空间为100M。
+DiskCache用来在本地磁盘上缓存图片，默认实现是LruDiskCache，其核心是DiskLruCache
 
-####相关方法
-DiskCache定义了以下方法可供实现自定义配置
->* setCacheDir(File)：设置缓存文件存放目录，默认为当前应用缓存目录下的sketch文件夹
->* setReserveSize(int)：设置保留空间，单位字节，当磁盘剩余空间小于给定值的时候就会自动回收最少使用的图片，默认为100M
->* setMaxSize(int): 设置本地缓存可用的最大容量，默认为100M
->* getCacheFile(String)：获取缓存文件，返回null表示没有
->* getSize()：获取已用缓存容量，此方法可能比较耗时
->* clear()：清除缓存
+#### 相关方法
+>* boolean exist(String)：判断缓存是否存在
+>* DiskCache.Entry get(String)：获取缓存
+>* DiskCache.Editor edit(String)：
+>* File getCacheDir()：获取缓存目录
+>* long getMaxSize()：获取最大容量
+>* long getSize()：获取当前缓存大小
+>* void clear()：清除缓存
+>* void close()：关闭
+
+#### 配置磁盘缓存最大容量
+```java
+Configuration configuration = Sketch.with(context).getConfiguration();
+configuration.setDiskCache(new LruDiskCache(context, 1, 50 * 1024 * 1024));
+```
