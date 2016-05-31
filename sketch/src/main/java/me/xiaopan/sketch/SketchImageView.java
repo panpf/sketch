@@ -27,7 +27,6 @@ import android.widget.ImageView;
 
 import me.xiaopan.sketch.feture.ClickRetryFunction;
 import me.xiaopan.sketch.feture.ImageShapeFunction;
-import me.xiaopan.sketch.feture.ImagePreprocessor;
 import me.xiaopan.sketch.feture.RecyclerCompatFunction;
 import me.xiaopan.sketch.feture.RequestFunction;
 import me.xiaopan.sketch.feture.ShowGifFlagFunction;
@@ -384,7 +383,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     @Override
     public DisplayRequest displayInstalledAppIcon(String packageName, int versionCode) {
-        return Sketch.with(getContext()).display(ImagePreprocessor.createInstalledAppIconUri(packageName, versionCode), this).commit();
+        return Sketch.with(getContext()).displayInstalledAppIcon(packageName, versionCode, this).commit();
     }
 
     @Override

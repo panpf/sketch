@@ -24,6 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
+import me.xiaopan.sketch.feture.ImagePreprocessor;
 import me.xiaopan.sketch.request.DisplayHelper;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayParams;
@@ -130,6 +131,14 @@ public class Sketch {
         return configuration.getHelperFactory().getLoadHelper(this, uri.toString()).listener(loadListener);
     }
 
+    /**
+     * 加载已安装APP的图标
+     */
+    @SuppressWarnings("unused")
+    public LoadHelper loadInstalledAppIcon(String packageName, int versionCode, LoadListener loadListener) {
+        return configuration.getHelperFactory().getLoadHelper(this, ImagePreprocessor.createInstalledAppIconUri(packageName, versionCode)).listener(loadListener);
+    }
+
 
     /**
      * 显示图片
@@ -168,6 +177,13 @@ public class Sketch {
      */
     public DisplayHelper displayFromURI(Uri uri, ImageViewInterface imageViewInterface) {
         return configuration.getHelperFactory().getDisplayHelper(this, uri != null ? uri.toString() : null, imageViewInterface);
+    }
+
+    /**
+     * 显示已安装APP的图标
+     */
+    public DisplayHelper displayInstalledAppIcon(String packageName, int versionCode, ImageViewInterface imageViewInterface) {
+        return configuration.getHelperFactory().getDisplayHelper(this, ImagePreprocessor.createInstalledAppIconUri(packageName, versionCode), imageViewInterface);
     }
 
     /**
