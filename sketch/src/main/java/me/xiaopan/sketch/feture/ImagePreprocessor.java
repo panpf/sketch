@@ -31,7 +31,6 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.UriScheme;
-import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -98,7 +97,7 @@ public class ImagePreprocessor implements Identifier {
             return apkIconDiskCacheEntry;
         }
 
-        DiskLruCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
+        DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
         if (diskCacheEditor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", loadRequest.getRequestAttrs().getId()));
@@ -130,7 +129,7 @@ public class ImagePreprocessor implements Identifier {
 
         BufferedOutputStream outputStream = null;
         try {
-            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(0), 8 * 1024);
+            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
             iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             diskCacheEditor.commit();
         } catch (Exception e) {
@@ -167,7 +166,7 @@ public class ImagePreprocessor implements Identifier {
             return appIconDiskCacheEntry;
         }
 
-        DiskLruCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
+        DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
         if (diskCacheEditor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", loadRequest.getRequestAttrs().getId()));
@@ -225,7 +224,7 @@ public class ImagePreprocessor implements Identifier {
 
         BufferedOutputStream outputStream = null;
         try {
-            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(0), 8 * 1024);
+            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
             iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
             diskCacheEditor.commit();
         } catch (Exception e) {

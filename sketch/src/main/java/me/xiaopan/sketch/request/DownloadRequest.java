@@ -356,14 +356,14 @@ public class DownloadRequest extends BaseRequest {
             return null;
         }
 
-        DiskLruCache.Editor diskCacheEditor = null;
+        DiskCache.Editor diskCacheEditor = null;
         if (getOptions().isCacheInDisk()) {
             diskCacheEditor = diskCache.edit(getRequestAttrs().getDiskCacheKey());
         }
         OutputStream outputStream;
         if (diskCacheEditor != null) {
             try {
-                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(0), 8 * 1024);
+                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
             } catch (FileNotFoundException e) {
                 SketchUtils.close(inputStream);
                 try {

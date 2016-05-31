@@ -19,6 +19,7 @@ package me.xiaopan.sketch.cache;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.util.DiskLruCache;
@@ -41,7 +42,7 @@ public interface DiskCache extends Identifier {
     /**
      * 编辑缓存
      */
-    DiskLruCache.Editor edit(String uri);
+    Editor edit(String uri);
 
     /**
      * 获取缓存目录
@@ -81,5 +82,13 @@ public interface DiskCache extends Identifier {
         String getUri();
 
         boolean delete();
+    }
+
+    interface Editor {
+        OutputStream newOutputStream() throws IOException;
+
+        void commit() throws IOException, DiskLruCache.EditorChangedException;
+
+        void abort() throws IOException, DiskLruCache.EditorChangedException;
     }
 }

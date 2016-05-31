@@ -23,6 +23,7 @@ import android.text.format.Formatter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
@@ -132,25 +133,26 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public synchronized DiskLruCache.Editor edit(String uri) {
+    public synchronized Editor edit(String uri) {
         // 缓存目录不存在就重建，提高自我恢复能力
         if (cache == null || cacheDir == null || !cacheDir.exists()) {
             reset();
         }
 
+        DiskLruCache.Editor diskEditor = null;
         try {
-            return cache != null ? cache.edit(uriToDiskCacheKey(uri)) : null;
+            diskEditor = cache != null ? cache.edit(uriToDiskCacheKey(uri)) : null;
         } catch (IOException e) {
             e.printStackTrace();
             // 发生异常的时候（比如SD卡被拔出，导致不能使用），尝试重建DiskLryCache，能显著提高遇错恢复能力
             reset();
             try {
-                return cache != null ? cache.edit(uriToDiskCacheKey(uri)) : null;
+                diskEditor = cache != null ? cache.edit(uriToDiskCacheKey(uri)) : null;
             } catch (IOException e1) {
                 e1.printStackTrace();
-                return null;
             }
         }
+        return diskEditor != null ? new LruDiskCacheEditor(diskEditor) : null;
     }
 
     @Override
@@ -254,6 +256,29 @@ public class LruDiskCache implements DiskCache {
                 e.printStackTrace();
                 return false;
             }
+        }
+    }
+
+    public static class LruDiskCacheEditor implements Editor{
+        private DiskLruCache.Editor diskEditor;
+
+        public LruDiskCacheEditor(DiskLruCache.Editor diskEditor) {
+            this.diskEditor = diskEditor;
+        }
+
+        @Override
+        public OutputStream newOutputStream() throws IOException {
+            return diskEditor.newOutputStream(0);
+        }
+
+        @Override
+        public void commit() throws IOException, DiskLruCache.EditorChangedException {
+            diskEditor.commit();
+        }
+
+        @Override
+        public void abort() throws IOException, DiskLruCache.EditorChangedException {
+            diskEditor.abort();
         }
     }
 }

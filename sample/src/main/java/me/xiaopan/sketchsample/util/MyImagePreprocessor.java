@@ -15,7 +15,6 @@ import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feture.ImagePreprocessor;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.UriScheme;
-import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -63,7 +62,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
             return xpkIconDiskCacheEntry;
         }
 
-        DiskLruCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
+        DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
         if (diskCacheEditor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", loadRequest.getRequestAttrs().getId()));
@@ -111,7 +110,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
 
         BufferedOutputStream outputStream;
         try {
-            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(0), 8 * 1024);
+            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
         } catch (IOException e) {
             e.printStackTrace();
             try {
