@@ -101,11 +101,12 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 |bitmapConfig|-|null|null|
 |inPreferQualityOverSpeed|-|false|false|
 |memoryCache|-|-|true|
-|memoryCacheId|-|-|null|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
 |failedImage|-|-|null|
 |pauseDownloadImage|-|-|null|
+
+各属性的作用请参考[配置显示、加载、下载选项.md](https://github.com/xiaopansky/Sketch/wiki/Options)
 
 ### 使用指南（Usage guide）
 
@@ -147,6 +148,7 @@ headImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/
 #### 4. 你可能还感兴趣的功能：
 增强用户体验：
 >* [SketchImageView详细使用说明](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
+>* [配置显示、加载、下载选项](https://github.com/xiaopansky/Sketch/wiki/Options)
 >* [使用ImageProcessor将图片变成圆形的、圆角的或者高斯模糊的](https://github.com/xiaopansky/Sketch/wiki/ImageProcessor)
 >* [使用ImageDisplayer以更炫酷的方式显示图片（过渡、缩放等）](https://github.com/xiaopansky/Sketch/wiki/ImageDisplayer)
 >* [使用ImagePreprocessor显示特殊文件的缩略图或图标](https://github.com/xiaopansky/Sketch/wiki/ImagePreprocessor)
@@ -162,11 +164,9 @@ headImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/
 >* [了解和配置本地缓存](https://github.com/xiaopansky/Sketch/wiki/DiskCache)
 >* [了解和配置下载器](https://github.com/xiaopansky/Sketch/wiki/ImageDownloader)
 >* [了解和配置任务执行器](https://github.com/xiaopansky/Sketch/wiki/RequestExecutor)
->* [配置显示、加载、下载选项](https://github.com/xiaopansky/Sketch/wiki/Options)
 
 其它：
 >* [监听加载开始、成功、失败以及进度](https://github.com/xiaopansky/Sketch/wiki/listener)
->* [使用RequestOptions定义属性模板来简化属性设置](https://github.com/xiaopansky/Sketch/wiki/RequestOptions)
 >* [显示APK的图标](https://github.com/xiaopansky/Sketch/wiki/display-apk-icon)
 >* [了解何时取消请求以及如何主动取消请求](https://github.com/xiaopansky/Sketch/wiki/CancelRequest)
 >* [配置混淆（Proguard）](https://github.com/xiaopansky/Sketch/wiki/proguard-configuration)

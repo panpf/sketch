@@ -1,1 +1,2 @@
-修复在RecyclerView中使用SketchImageView的时候会由于没有重新读取ScaleType导致抛出IllegalArgumentException: When using TransitionImageDisplayer ImageView wide tall if is fixed and set the loadingImage, then ScaleType must be CENTER_CTOP异常的BUG
+请求：
+>* ``BUG`` 修复在RecyclerView中使用SketchImageView的时候会由于没有重新读取ScaleType导致抛出IllegalArgumentException异常的BUG
