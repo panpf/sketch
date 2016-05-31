@@ -112,7 +112,7 @@ public class ImageSizeCalculator implements Identifier {
     }
 
     /**
-     * 比较两个maxSize的大小，在使用options()方法批量设置属性的时候会使用此方法比较RequestOptions的maxSize和已有的maxSize，如果前者小于后者就会使用前者代替后者
+     * 比较两个maxSize的大小，在使用options()方法批量设置属性的时候会使用此方法比较Options的maxSize和已有的maxSize，如果前者小于后者就会使用前者代替后者
      *
      * @param maxSize1 maxSize1
      * @param maxSize2 maxSize2
