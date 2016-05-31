@@ -194,7 +194,7 @@ public class LoadHelper {
 
         // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
         if (loadOptions.getImageProcessor() == null && loadOptions.getResize() != null) {
-            loadOptions.setImageProcessor(configuration.getDefaultCutImageProcessor());
+            loadOptions.setImageProcessor(configuration.getResizeImageProcessor());
         }
 
         // 没有设置maxSize的话，就用默认的maxSize

@@ -445,7 +445,7 @@ public class DisplayHelper {
 
         // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
         if (displayOptions.getImageProcessor() == null && displayOptions.getResize() != null) {
-            displayOptions.setImageProcessor(sketch.getConfiguration().getDefaultCutImageProcessor());
+            displayOptions.setImageProcessor(sketch.getConfiguration().getResizeImageProcessor());
         }
 
         // 没有设置maxSize的话，如果ImageView的宽高是的固定的就根据ImageView的宽高来作为maxSize，否则就用默认的maxSize

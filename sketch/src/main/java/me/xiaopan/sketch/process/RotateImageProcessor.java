@@ -25,7 +25,7 @@ import me.xiaopan.sketch.request.Resize;
 /**
  * 旋转图片处理器
  */
-public class RotateImageProcessor extends DefaultImageProcessor {
+public class RotateImageProcessor extends ResizeImageProcessor {
     private int degrees;
 
     public RotateImageProcessor(int degrees) {

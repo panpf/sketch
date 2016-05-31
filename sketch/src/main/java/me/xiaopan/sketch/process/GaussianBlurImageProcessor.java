@@ -10,7 +10,7 @@ import me.xiaopan.sketch.request.Resize;
 /**
  * 高斯模糊图片处理器
  */
-public class GaussianBlurImageProcessor extends DefaultImageProcessor {
+public class GaussianBlurImageProcessor extends ResizeImageProcessor {
     private int radius = 15;
     private boolean isDarkHandle;
 
@@ -67,7 +67,7 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
         }
 
         // blur handle
-        Bitmap blurBitmap = fastGaussianBlur(resizeBitmap, radius, false, lowQualityImage);
+        Bitmap blurBitmap = fastGaussianBlur(resizeBitmap, radius, false);
         if (resizeBitmap != bitmap) {
             resizeBitmap.recycle();
         }
@@ -83,13 +83,8 @@ public class GaussianBlurImageProcessor extends DefaultImageProcessor {
 
     /**
      * 快速高斯模糊
-     *
-     * @param sentBitmap
-     * @param radius
-     * @param canReuseInBitmap
-     * @return
      */
-    public Bitmap fastGaussianBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap, boolean lowQualityImage) {
+    public static Bitmap fastGaussianBlur(Bitmap sentBitmap, int radius, boolean canReuseInBitmap) {
         Bitmap bitmap;
         if (canReuseInBitmap) {
             bitmap = sentBitmap;

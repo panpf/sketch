@@ -37,27 +37,27 @@ import me.xiaopan.sketch.feture.ResizeCalculator;
 import me.xiaopan.sketch.http.HttpClientStack;
 import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.http.HurlStack;
-import me.xiaopan.sketch.process.DefaultImageProcessor;
+import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.RequestExecutor;
 
 public class Configuration {
     protected String logName = "Configuration";
 
-    private Context context;    //上下文
-    private DiskCache diskCache;    // 磁盘缓存器
-    private MemoryCache memoryCache;    //图片缓存器
+    private Context context;    // 上下文
+    private DiskCache diskCache;    // 磁盘缓存
+    private HttpStack httpStack;    // 网络
+    private MemoryCache memoryCache;    //图片内存缓存
     private MemoryCache placeholderImageMemoryCache;    // 占位图内存缓存器
     private ImageDecoder imageDecoder;    //图片解码器
     private HelperFactory helperFactory;    // 协助器工厂
     private ImageDisplayer defaultImageDisplayer;   // 默认的图片显示器，当DisplayRequest中没有指定显示器的时候就会用到
-    private ImageProcessor defaultCutImageProcessor;    // 默认的图片裁剪处理器
+    private ImageProcessor resizeImageProcessor;    // Resize图片处理器
     private RequestFactory requestFactory;  // 请求工厂
-    private HttpStack httpStack;    //图片下载器
     private RequestExecutor requestExecutor;    //请求执行器
     private ResizeCalculator resizeCalculator;  // resize计算器
-    private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
     private ImagePreprocessor imagePreprocessor;    // 本地图片预处理器
+    private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
 
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean cacheInDisk = true;
@@ -75,17 +75,13 @@ public class Configuration {
         this.imageDecoder = new DefaultImageDecoder();
         this.helperFactory = new HelperFactory();
         this.requestFactory = new RequestFactory();
-        if (Build.VERSION.SDK_INT >= 9) {
-            this.httpStack = new HurlStack();
-        } else {
-            this.httpStack = new HttpClientStack();
-        }
+        this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
         this.requestExecutor = new RequestExecutor();
         this.resizeCalculator = new ResizeCalculator();
         this.imageSizeCalculator = new ImageSizeCalculator();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.imagePreprocessor = new ImagePreprocessor();
-        this.defaultCutImageProcessor = new DefaultImageProcessor();
+        this.resizeImageProcessor = new ResizeImageProcessor();
         this.placeholderImageMemoryCache = LruMemoryCache.createPlaceholder(context);
 
         if (Sketch.isDebugMode()) {
@@ -285,21 +281,21 @@ public class Configuration {
     }
 
     /**
-     * 获取默认的图片裁剪处理器
+     * 获取Resize图片处理器
      */
-    public ImageProcessor getDefaultCutImageProcessor() {
-        return defaultCutImageProcessor;
+    public ImageProcessor getResizeImageProcessor() {
+        return resizeImageProcessor;
     }
 
     /**
-     * 默认的默认的图片裁剪处理器
+     * 设置Resize图片处理器
      */
     @SuppressWarnings("unused")
-    public Configuration setDefaultCutImageProcessor(ImageProcessor defaultCutImageProcessor) {
-        if (defaultCutImageProcessor != null) {
-            this.defaultCutImageProcessor = defaultCutImageProcessor;
+    public Configuration setResizeImageProcessor(ImageProcessor resizeImageProcessor) {
+        if (resizeImageProcessor != null) {
+            this.resizeImageProcessor = resizeImageProcessor;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - defaultCutImageProcessor" + " (" + defaultCutImageProcessor.getIdentifier() + ")");
+                Log.i(Sketch.TAG, logName + ": " + "set" + " - resizeImageProcessor" + " (" + resizeImageProcessor.getIdentifier() + ")");
             }
         }
         return this;
@@ -575,11 +571,11 @@ public class Configuration {
             defaultImageDisplayer.appendIdentifier(builder);
         }
 
-        if (defaultCutImageProcessor != null) {
+        if (resizeImageProcessor != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("defaultCutImageProcessor");
+            builder.append("resizeImageProcessor");
             builder.append("：");
-            defaultCutImageProcessor.appendIdentifier(builder);
+            resizeImageProcessor.appendIdentifier(builder);
         }
 
         if (requestFactory != null) {

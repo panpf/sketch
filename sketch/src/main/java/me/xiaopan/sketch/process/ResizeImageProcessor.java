@@ -23,7 +23,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.feture.ResizeCalculator;
 import me.xiaopan.sketch.request.Resize;
 
-public class DefaultImageProcessor implements ImageProcessor {
+public class ResizeImageProcessor implements ImageProcessor {
 
     @Override
     public String getIdentifier() {
@@ -32,7 +32,7 @@ public class DefaultImageProcessor implements ImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append("DefaultImageProcessor");
+        return builder.append("ResizeImageProcessor");
     }
 
     @Override
