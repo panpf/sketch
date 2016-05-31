@@ -32,6 +32,9 @@ import me.xiaopan.sketch.Identifier;
  * 请求执行器
  */
 public class RequestExecutor implements Identifier {
+    public static final int DEFAULT_LOCAL_THREAD_POOL_SIZE = 3;
+    public static final int DEFAULT_NET_THREAD_POOL_SIZE = 3;
+
     protected String logName = "RequestExecutor";
 
     private ExecutorService netTaskExecutor;    //网络任务执行器
@@ -39,6 +42,17 @@ public class RequestExecutor implements Identifier {
     private Handler dispatchHandler;
     private DispatchThread dispatchThread;
     private boolean shutdown;
+    private int localThreadPoolSize;
+    private int netThreadPoolSize;
+
+    public RequestExecutor(int localThreadPoolSize, int netThreadPoolSize) {
+        this.localThreadPoolSize = localThreadPoolSize;
+        this.netThreadPoolSize = netThreadPoolSize;
+    }
+
+    public RequestExecutor() {
+        this(DEFAULT_LOCAL_THREAD_POOL_SIZE, DEFAULT_NET_THREAD_POOL_SIZE);
+    }
 
     public void submitDispatch(Runnable runnable) {
         if (shutdown) {
@@ -67,7 +81,7 @@ public class RequestExecutor implements Identifier {
         if (localTaskExecutor == null) {
             synchronized (RequestExecutor.this) {
                 if (localTaskExecutor == null) {
-                    localTaskExecutor = new ThreadPoolExecutor(3, 3, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
+                    localTaskExecutor = new ThreadPoolExecutor(localThreadPoolSize, localThreadPoolSize, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
                 }
             }
         }
@@ -83,7 +97,7 @@ public class RequestExecutor implements Identifier {
         if (netTaskExecutor == null) {
             synchronized (RequestExecutor.this) {
                 if (netTaskExecutor == null) {
-                    netTaskExecutor = new ThreadPoolExecutor(3, 3, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
+                    netTaskExecutor = new ThreadPoolExecutor(netThreadPoolSize, netThreadPoolSize, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
                 }
             }
         }
