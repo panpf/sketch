@@ -128,6 +128,8 @@
 （完成与2016-05-29）支持设置inPreferQualityOverSpeed
 （完成与2016-05-30）LocalImagePreprocessor rename to ImagePreprocessor
 （完成与2016-05-31）Sketch增加displayInstalledAppIcon(String, int, ImageViewInterface)和loadInstalledAppIcon(String, int, LoadListener)方法
+（完成与2016-05-31）DefaultImageProcessor rename to ResizeImageProcessor
+（完成与2016-05-31）SketchImageView的ImageShape的圆角角度支持更详细的定义，并且setImageShapeRoundedRadius方法改名为setImageShapeCornerRadius，getImageShapeRoundedRadius方法改名为getImageShapeCornerRadius
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -174,7 +176,6 @@ RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
 利用BitmapShader实现各种形状的图片
 增强一下FixedBitmapDrawable，尽量在使用原生BitmapDrawable的基础上实现ScaleType的功能，然后定义一个牛逼的SketchBitmapDrawable，然后在搞一个专门的RecyclerDrawable可以包装SketchBitmapDrawable个GIfDrawable
 由于现在本地任务支持多线程了，就会有同时编辑同一个diskCache的情况，需要想办法搞一个同步
-ImageShape角度支持更详细的定义
 
 其它：
 参考Glide、Fresco和Picasso
