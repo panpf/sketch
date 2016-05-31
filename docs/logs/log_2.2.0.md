@@ -44,6 +44,8 @@ GIF：
 SketchImageView：
 >* ``修改`` SketchImageView.setDisplayOptions(Enum)改名为setOptionsByName(Enum)
 >* ``BUG`` 修复使用setImageResource等方法设置图片后在列表中一滑动图片就没了的BUG
+>* ``优化`` SketchImageView的ImageShape的圆角角度支持设置每个角的角度
+>* ``修改`` SketchImageView的setImageShapeRoundedRadius方法改名为setImageShapeCornerRadius，getImageShapeRoundedRadius方法改名为getImageShapeCornerRadius
 
 其它：
 >* ``修改`` 去掉了一些多余的接口设计，例如HelperFactory、ImageSizeCalculator、RequestFactory、
