@@ -80,9 +80,7 @@ public class ImagePreprocessor implements Identifier {
     }
 
     /**
-     * 获取APK图标的缓存文件
-     *
-     * @return APK图标的缓存文件
+     * 获取APK图标的缓存
      */
     private DiskCache.Entry getApkIconDiskCache(LoadRequest loadRequest) {
         String realUri = loadRequest.getRequestAttrs().getRealUri();
@@ -100,28 +98,45 @@ public class ImagePreprocessor implements Identifier {
             return apkIconDiskCacheEntry;
         }
 
+        DiskLruCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
+        if (diskCacheEditor == null) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", loadRequest.getRequestAttrs().getId()));
+            }
+            return null;
+        }
+
         Bitmap iconBitmap = SketchUtils.decodeIconFromApk(configuration.getContext(), realUri, loadRequest.getOptions().isLowQualityImage(), logName);
         if (iconBitmap == null) {
+            try {
+                diskCacheEditor.abort();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
             return null;
         }
 
         if (iconBitmap.isRecycled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "apk icon bitmap recycled", " - ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "apk icon bitmap recycled", " - ", loadRequest.getRequestAttrs().getId()));
+            }
+            try {
+                diskCacheEditor.abort();
+            } catch (Exception e1) {
+                e1.printStackTrace();
             }
             return null;
         }
 
-        DiskLruCache.Editor editor = configuration.getDiskCache().edit(diskCacheKey);
         BufferedOutputStream outputStream = null;
         try {
-            outputStream = new BufferedOutputStream(editor.newOutputStream(0), 8 * 1024);
+            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(0), 8 * 1024);
             iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            editor.commit();
+            diskCacheEditor.commit();
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                editor.abort();
+                diskCacheEditor.abort();
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -132,15 +147,17 @@ public class ImagePreprocessor implements Identifier {
         apkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (apkIconDiskCacheEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found apk icon cache file", " - ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found apk icon cache file", " - ", loadRequest.getRequestAttrs().getId()));
             }
         }
 
         return apkIconDiskCacheEntry;
     }
 
+    /**
+     * 获取已安装APP图标的缓存
+     */
     private DiskCache.Entry getInstalledAppIconDiskCache(LoadRequest loadRequest) {
-        String realUri = loadRequest.getRequestAttrs().getRealUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
 
         String diskCacheKey = loadRequest.getRequestAttrs().getDiskCacheKey();
@@ -148,6 +165,14 @@ public class ImagePreprocessor implements Identifier {
         DiskCache.Entry appIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (appIconDiskCacheEntry != null) {
             return appIconDiskCacheEntry;
+        }
+
+        DiskLruCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
+        if (diskCacheEditor == null) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", loadRequest.getRequestAttrs().getId()));
+            }
+            return null;
         }
 
         Uri uri = Uri.parse(loadRequest.getRequestAttrs().getUri());
@@ -160,34 +185,53 @@ public class ImagePreprocessor implements Identifier {
             packageInfo = loadRequest.getSketch().getConfiguration().getContext().getPackageManager().getPackageInfo(packageName, 0);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
+            try {
+                diskCacheEditor.abort();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
             return null;
         }
         if (packageInfo.versionCode != versionCode) {
+            try {
+                diskCacheEditor.abort();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
             return null;
         }
 
         Bitmap iconBitmap = SketchUtils.decodeIconFromApk(configuration.getContext(), packageInfo.applicationInfo.sourceDir, loadRequest.getOptions().isLowQualityImage(), logName);
         if (iconBitmap == null) {
+            try {
+                diskCacheEditor.abort();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
             return null;
         }
 
         if (iconBitmap.isRecycled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "apk icon bitmap recycled", " - ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "apk icon bitmap recycled", " - ", loadRequest.getRequestAttrs().getId()));
+            }
+            try {
+                diskCacheEditor.abort();
+            } catch (Exception e1) {
+                e1.printStackTrace();
             }
             return null;
         }
 
-        DiskLruCache.Editor editor = configuration.getDiskCache().edit(diskCacheKey);
         BufferedOutputStream outputStream = null;
         try {
-            outputStream = new BufferedOutputStream(editor.newOutputStream(0), 8 * 1024);
+            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(0), 8 * 1024);
             iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            editor.commit();
+            diskCacheEditor.commit();
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                editor.abort();
+                diskCacheEditor.abort();
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -198,7 +242,7 @@ public class ImagePreprocessor implements Identifier {
         appIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (appIconDiskCacheEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found apk icon cache file", " - ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found apk icon cache file", " - ", loadRequest.getRequestAttrs().getId()));
             }
         }
 

@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.cache;
 
 import android.content.Context;
+import android.os.Environment;
 import android.text.format.Formatter;
 
 import java.io.File;
@@ -48,6 +49,11 @@ public class LruDiskCache implements DiskCache {
         reset();
     }
 
+    public static LruDiskCache open(Context context) {
+        // appVersionCode固定死，因为当appVersionCode改变时DiskLruCache会清除旧的缓存，可我们不需要这个功能
+        return new LruDiskCache(context, 1, DISK_CACHE_MAX_SIZE);
+    }
+
     private synchronized void reset() {
         if (cache != null) {
             try {
@@ -58,44 +64,43 @@ public class LruDiskCache implements DiskCache {
             cache = null;
         }
 
-        File appCacheDir = context.getExternalCacheDir();
-        if (appCacheDir == null) {
-            appCacheDir = context.getCacheDir();
-        }
-
         // 缓存目录名字加上进程名字的后缀，不同的进程不同缓存目录，以兼容多进程
         String diskCacheDirName = DISK_CACHE_DIR_NAME;
         String simpleProcessName = SketchUtils.getSimpleProcessName(context);
         if (simpleProcessName != null) {
-            diskCacheDirName += URLEncoder.encode(simpleProcessName);
+            try {
+                diskCacheDirName += URLEncoder.encode(simpleProcessName, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
         }
 
-        cacheDir = new File(appCacheDir, diskCacheDirName);
-
-        // 尝试删除旧的缓存文件，删除依据就是缓存目录下面有没有journal文件没有的话就是旧版的缓存需要删除
-        SketchUtils.deleteOldCacheFiles(cacheDir);
-
-        try {
-            cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
-        } catch (IOException e) {
-            e.printStackTrace();
-
-            // 换目录名称
-            int count = 0;
-            while (count < 10) {
-                cacheDir = new File(appCacheDir, diskCacheDirName + count);
-                try {
-                    cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
-                    break;
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                    count++;
-                }
+        int count = 0;
+        while (true) {
+            File appCacheDir = null;
+            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                appCacheDir = context.getExternalCacheDir();
+            }
+            if (appCacheDir == null) {
+                appCacheDir = context.getCacheDir();
             }
 
-            // 试了一千次都没找到可以用的那就崩吧
-            if (cache == null) {
-                throw new RuntimeException("cacheDir disable. " + cacheDir.getPath());
+            String finalDiskCacheDirName = count == 0 ? diskCacheDirName : diskCacheDirName + count;
+            cacheDir = new File(appCacheDir, finalDiskCacheDirName);
+
+            // 尝试删除旧的缓存文件，删除依据就是缓存目录下面有没有journal文件没有的话就是旧版的缓存需要删除
+            SketchUtils.deleteOldCacheFiles(cacheDir);
+
+            try {
+                cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
+                break;
+            } catch (IOException e) {
+                e.printStackTrace();
+                if (count < 10) {
+                    count++;
+                } else {
+                    break;
+                }
             }
         }
     }
@@ -103,23 +108,23 @@ public class LruDiskCache implements DiskCache {
     @Override
     public synchronized boolean exist(String uri) {
         // 缓存目录不存在就重建，提高自我恢复能力
-        if (!cacheDir.exists()) {
+        if (cache == null || cacheDir == null || !cacheDir.exists()) {
             reset();
         }
 
-        return cache.exist(uriToDiskCacheKey(uri));
+        return cache != null && cache.exist(uriToDiskCacheKey(uri));
     }
 
     @Override
     public synchronized Entry get(String uri) {
         // 缓存目录不存在就重建，提高自我恢复能力
-        if (!cacheDir.exists()) {
+        if (cache == null || cacheDir == null || !cacheDir.exists()) {
             reset();
         }
 
         DiskLruCache.SimpleSnapshot snapshot = null;
         try {
-            snapshot = cache.getSimpleSnapshot(uriToDiskCacheKey(uri));
+            snapshot = cache != null ? cache.getSimpleSnapshot(uriToDiskCacheKey(uri)) : null;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -129,18 +134,18 @@ public class LruDiskCache implements DiskCache {
     @Override
     public synchronized DiskLruCache.Editor edit(String uri) {
         // 缓存目录不存在就重建，提高自我恢复能力
-        if (!cacheDir.exists()) {
+        if (cache == null || cacheDir == null || !cacheDir.exists()) {
             reset();
         }
 
         try {
-            return cache.edit(uriToDiskCacheKey(uri));
+            return cache != null ? cache.edit(uriToDiskCacheKey(uri)) : null;
         } catch (IOException e) {
             e.printStackTrace();
             // 发生异常的时候（比如SD卡被拔出，导致不能使用），尝试重建DiskLryCache，能显著提高遇错恢复能力
             reset();
             try {
-                return cache.edit(uriToDiskCacheKey(uri));
+                return cache != null ? cache.edit(uriToDiskCacheKey(uri)) : null;
             } catch (IOException e1) {
                 e1.printStackTrace();
                 return null;
@@ -173,25 +178,29 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public synchronized long getSize() {
-        return cache.size();
+        return cache != null ? cache.size() : 0;
     }
 
     @Override
     public synchronized void clear() {
-        try {
-            cache.delete();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (cache != null) {
+            try {
+                cache.delete();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         reset();
     }
 
     @Override
     public void close() {
-        try {
-            cache.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (cache != null) {
+            try {
+                cache.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -204,7 +213,7 @@ public class LruDiskCache implements DiskCache {
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(logName)
                 .append("(")
-                .append("dir").append("=").append(cacheDir.getPath())
+                .append("dir").append("=").append(cacheDir != null ? cacheDir.getPath() : null)
                 .append(",")
                 .append("maxSize").append("=").append(Formatter.formatFileSize(context, maxSize))
                 .append(",")
@@ -246,10 +255,5 @@ public class LruDiskCache implements DiskCache {
                 return false;
             }
         }
-    }
-
-    public static LruDiskCache open(Context context) {
-        // appVersionCode固定死，因为当appVersionCode改变时DiskLruCache会清除旧的缓存，可我们不需要这个功能
-        return new LruDiskCache(context, 1, DISK_CACHE_MAX_SIZE);
     }
 }

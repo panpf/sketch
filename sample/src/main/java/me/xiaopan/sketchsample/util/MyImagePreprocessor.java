@@ -10,11 +10,11 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import me.xiaopan.sketch.Configuration;
+import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feture.ImagePreprocessor;
 import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.UriScheme;
-import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -34,7 +34,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
 
     @Override
     public DiskCache.Entry getDiskCacheEntry(LoadRequest loadRequest) {
-        if(isXpkFile(loadRequest)){
+        if (isXpkFile(loadRequest)) {
             return getXpkIconCacheFile(loadRequest);
         }
         return super.getDiskCacheEntry(loadRequest);
@@ -63,18 +63,36 @@ public class MyImagePreprocessor extends ImagePreprocessor {
             return xpkIconDiskCacheEntry;
         }
 
+        DiskLruCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
+        if (diskCacheEditor == null) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", loadRequest.getRequestAttrs().getId()));
+            }
+            return null;
+        }
+
         ZipFile zipFile;
         try {
             zipFile = new ZipFile(realUri);
         } catch (IOException e) {
             e.printStackTrace();
+            try {
+                diskCacheEditor.abort();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
             return null;
         }
         InputStream inputStream;
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
-        if(zipEntry == null){
+        if (zipEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found icon.png in ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found icon.png in ", loadRequest.getRequestAttrs().getId()));
+            }
+            try {
+                diskCacheEditor.abort();
+            } catch (Exception e1) {
+                e1.printStackTrace();
             }
             return null;
         }
@@ -83,17 +101,21 @@ public class MyImagePreprocessor extends ImagePreprocessor {
             inputStream = zipFile.getInputStream(zipEntry);
         } catch (IOException e) {
             e.printStackTrace();
+            try {
+                diskCacheEditor.abort();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
             return null;
         }
 
-        DiskLruCache.Editor editor = configuration.getDiskCache().edit(diskCacheKey);
         BufferedOutputStream outputStream;
         try {
-            outputStream = new BufferedOutputStream(editor.newOutputStream(0), 8 * 1024);
+            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(0), 8 * 1024);
         } catch (IOException e) {
             e.printStackTrace();
             try {
-                editor.abort();
+                diskCacheEditor.abort();
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -111,11 +133,11 @@ public class MyImagePreprocessor extends ImagePreprocessor {
                 }
                 outputStream.write(buffer, 0, realLength);
             }
-            editor.commit();
+            diskCacheEditor.commit();
         } catch (Exception e) {
             e.printStackTrace();
             try {
-                editor.abort();
+                diskCacheEditor.abort();
             } catch (Exception e1) {
                 e1.printStackTrace();
             }
@@ -128,7 +150,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         xpkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (xpkIconDiskCacheEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found xpk icon cache file", " - ", realUri));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found xpk icon cache file", " - ", loadRequest.getRequestAttrs().getId()));
             }
         }
 
