@@ -5,6 +5,7 @@ applyForSpace(long)、setCacheDir(File)、setReserveSize(int)、getReserveSize()
 setMaxSize(int)、saveBitmap(Bitmap, String)方法
 >* ``优化`` 旧的缓存文件会自动删除
 >* ``优化`` `LruDiskCache兼容多进程，多进程下会采用不同的disk缓存目录，防止多进程持有同一目录造成目录被锁不能使用的问题`
+>* ``优化`` 磁盘缓存编辑加同步锁
 
 下载：
 >* ``优化`` 下载进度回调方式改为每秒钟一次（之前是每10%一次）
@@ -40,6 +41,8 @@ GIF：
 >* ``修改`` 由于显示GIF的场景较少，所以默认不再解码GIF图，在需要解码的地方你可以主动调用 ***Options.setDecodeGifImage(true)或
 ***Helper.decodeGifImage()开启，``注意由于默认值改变了因此你需要改一下项目中对GIF开关的配置``
 >* ``修改`` 删除\***Helper.disableDecodeGif()方法替换为\***Helper.decodeGifImage()
+>* ``修改`` 禁止gif图禁止使用内存缓存，因为GifDrawable需要依赖Callback才能播放，
+如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
 
 SketchImageView：
 >* ``修改`` SketchImageView.setDisplayOptions(Enum)改名为setOptionsByName(Enum)
@@ -58,6 +61,7 @@ Sketch增加displayInstalledAppIcon(String, int, ImageViewInterface)和loadInsta
 >* ``优化`` 减少占位图缓存最大容量，调整为最大可用内存的32分之一，但又不能少于2M
 >* ``修改`` Sketch.putOptions(RequestOptions)拆分成了Sketch.putDisplayOptions(DisplayOptions)、
 Sketch.putLoadOptions(LoadOptions)、Sketch.putDownloadOptions(LoadOptions)
+>* ``新增`` 新增ErrorCallback，开发者为通过ErrorCallback接收到解码失败，磁盘缓存安装失败等异常
 
 WIKI：
 >* 文档和更新日志中说明一下在Application中首次调用Sketch.with()的时候最好过滤一下非主线程，并说一下原因
