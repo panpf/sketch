@@ -28,18 +28,21 @@ import me.xiaopan.sketch.decode.DefaultImageDecoder;
 import me.xiaopan.sketch.decode.ImageDecoder;
 import me.xiaopan.sketch.display.DefaultImageDisplayer;
 import me.xiaopan.sketch.display.ImageDisplayer;
+import me.xiaopan.sketch.feture.DefaultErrorCallback;
+import me.xiaopan.sketch.feture.ErrorCallback;
 import me.xiaopan.sketch.feture.HelperFactory;
-import me.xiaopan.sketch.feture.ImageSizeCalculator;
 import me.xiaopan.sketch.feture.ImagePreprocessor;
+import me.xiaopan.sketch.feture.ImageSizeCalculator;
 import me.xiaopan.sketch.feture.MobileNetworkPauseDownloadManager;
 import me.xiaopan.sketch.feture.RequestFactory;
 import me.xiaopan.sketch.feture.ResizeCalculator;
 import me.xiaopan.sketch.http.HttpClientStack;
 import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.http.HurlStack;
-import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.process.ImageProcessor;
+import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.RequestExecutor;
+import me.xiaopan.sketch.util.SketchUtils;
 
 public class Configuration {
     protected String logName = "Configuration";
@@ -51,6 +54,7 @@ public class Configuration {
     private MemoryCache placeholderImageMemoryCache;    // 占位图内存缓存器
     private ImageDecoder imageDecoder;    //图片解码器
     private HelperFactory helperFactory;    // 协助器工厂
+    private ErrorCallback errorCallback;    // 错误回调
     private ImageDisplayer defaultImageDisplayer;   // 默认的图片显示器，当DisplayRequest中没有指定显示器的时候就会用到
     private ImageProcessor resizeImageProcessor;    // Resize图片处理器
     private RequestFactory requestFactory;  // 请求工厂
@@ -70,17 +74,20 @@ public class Configuration {
     public Configuration(Context tempContext) {
         this.context = tempContext.getApplicationContext();
 
-        this.diskCache = LruDiskCache.open(context);
+        // LruDiskCache需要依赖所以先创建
+        this.errorCallback = new DefaultErrorCallback();
+
+        this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
+        this.diskCache = new LruDiskCache(context, this, 1, LruDiskCache.DISK_CACHE_MAX_SIZE);
         this.memoryCache = LruMemoryCache.create(context);
         this.imageDecoder = new DefaultImageDecoder();
         this.helperFactory = new HelperFactory();
         this.requestFactory = new RequestFactory();
-        this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
         this.requestExecutor = new RequestExecutor();
         this.resizeCalculator = new ResizeCalculator();
+        this.imagePreprocessor = new ImagePreprocessor();
         this.imageSizeCalculator = new ImageSizeCalculator();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
-        this.imagePreprocessor = new ImagePreprocessor();
         this.resizeImageProcessor = new ResizeImageProcessor();
         this.placeholderImageMemoryCache = LruMemoryCache.createPlaceholder(context);
 
@@ -115,7 +122,8 @@ public class Configuration {
                 oldRequestExecutor.shutdown();
             }
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - requestExecutor" + " (" + requestExecutor.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "requestExecutor", " (", requestExecutor.getIdentifier(), ")"));
             }
         }
         return this;
@@ -140,7 +148,8 @@ public class Configuration {
                 oldDiskCache.close();
             }
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - diskCache" + " (" + diskCache.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "diskCache", " (", diskCache.getIdentifier(), ")"));
             }
         }
         return this;
@@ -165,7 +174,8 @@ public class Configuration {
                 oldMemoryCache.close();
             }
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - memoryCache" + " (" + memoryCache.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "memoryCache", " (", memoryCache.getIdentifier(), ")"));
             }
         }
         return this;
@@ -190,7 +200,8 @@ public class Configuration {
                 oldPlaceholderImageMemoryCache.close();
             }
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - placeholderImageMemoryCache" + " (" + placeholderImageMemoryCache.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "placeholderImageMemoryCache", " (", placeholderImageMemoryCache.getIdentifier(), ")"));
             }
         }
         return this;
@@ -211,7 +222,8 @@ public class Configuration {
         if (imageDecoder != null) {
             this.imageDecoder = imageDecoder;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - imageDecoder" + " (" + imageDecoder.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "imageDecoder", " (", imageDecoder.getIdentifier(), ")"));
             }
         }
         return this;
@@ -232,7 +244,8 @@ public class Configuration {
         if (httpStack != null) {
             this.httpStack = httpStack;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - httpStack" + " (" + httpStack.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "httpStack", " (", httpStack.getIdentifier(), ")"));
             }
         }
         return this;
@@ -253,7 +266,8 @@ public class Configuration {
         if (imageSizeCalculator != null) {
             this.imageSizeCalculator = imageSizeCalculator;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - imageSizeCalculator" + " (" + imageSizeCalculator.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "imageSizeCalculator", " (", imageSizeCalculator.getIdentifier(), ")"));
             }
         }
         return this;
@@ -274,7 +288,8 @@ public class Configuration {
         if (defaultImageDisplayer != null) {
             this.defaultImageDisplayer = defaultImageDisplayer;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - defaultImageDisplayer" + " (" + defaultImageDisplayer.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "defaultImageDisplayer", " (", defaultImageDisplayer.getIdentifier(), ")"));
             }
         }
         return this;
@@ -295,7 +310,8 @@ public class Configuration {
         if (resizeImageProcessor != null) {
             this.resizeImageProcessor = resizeImageProcessor;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - resizeImageProcessor" + " (" + resizeImageProcessor.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "resizeImageProcessor", " (", resizeImageProcessor.getIdentifier(), ")"));
             }
         }
         return this;
@@ -316,7 +332,8 @@ public class Configuration {
         if (helperFactory != null) {
             this.helperFactory = helperFactory;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - helperFactory" + " (" + helperFactory.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "helperFactory", " (", helperFactory.getIdentifier(), ")"));
             }
         }
         return this;
@@ -337,7 +354,8 @@ public class Configuration {
         if (requestFactory != null) {
             this.requestFactory = requestFactory;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - requestFactory" + " (" + requestFactory.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "requestFactory", " (", requestFactory.getIdentifier(), ")"));
             }
         }
         return this;
@@ -358,7 +376,8 @@ public class Configuration {
         if (resizeCalculator != null) {
             this.resizeCalculator = resizeCalculator;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - resizeCalculator" + " (" + resizeCalculator.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "resizeCalculator", " (", resizeCalculator.getIdentifier(), ")"));
             }
         }
         return this;
@@ -378,7 +397,8 @@ public class Configuration {
         if (this.pauseLoad != pauseLoad) {
             this.pauseLoad = pauseLoad;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - pauseLoad" + " (" + pauseLoad + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "pauseLoad", " (", pauseLoad, ")"));
             }
         }
         return this;
@@ -398,7 +418,8 @@ public class Configuration {
         if (this.pauseDownload != pauseDownload) {
             this.pauseDownload = pauseDownload;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - pauseDownload" + " (" + pauseDownload + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "pauseDownload", " (", pauseDownload, ")"));
             }
         }
         return this;
@@ -435,7 +456,8 @@ public class Configuration {
         if (this.lowQualityImage != lowQualityImage) {
             this.lowQualityImage = lowQualityImage;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - lowQualityImage" + " (" + lowQualityImage + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "lowQualityImage", " (", lowQualityImage, ")"));
             }
         }
         return this;
@@ -459,7 +481,8 @@ public class Configuration {
         if (this.inPreferQualityOverSpeed != inPreferQualityOverSpeed) {
             this.inPreferQualityOverSpeed = inPreferQualityOverSpeed;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - inPreferQualityOverSpeed" + " (" + inPreferQualityOverSpeed + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "inPreferQualityOverSpeed", " (", inPreferQualityOverSpeed, ")"));
             }
         }
         return this;
@@ -479,7 +502,8 @@ public class Configuration {
         if (this.cacheInDisk != cacheInDisk) {
             this.cacheInDisk = cacheInDisk;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - cacheInDisk" + " (" + cacheInDisk + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "cacheInDisk", " (", cacheInDisk, ")"));
             }
         }
         return this;
@@ -499,7 +523,8 @@ public class Configuration {
         if (this.cacheInMemory != cacheInMemory) {
             this.cacheInMemory = cacheInMemory;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - cacheInMemory" + " (" + cacheInMemory + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "cacheInMemory", " (", cacheInMemory, ")"));
             }
         }
         return this;
@@ -519,10 +544,33 @@ public class Configuration {
         if (imagePreprocessor != null) {
             this.imagePreprocessor = imagePreprocessor;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ": " + "set" + " - imagePreprocessor" + " (" + imagePreprocessor.getIdentifier() + ")");
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "imagePreprocessor", " (", imagePreprocessor.getIdentifier(), ")"));
             }
         }
         return this;
+    }
+
+    /**
+     * 获取错误回调
+     */
+    @SuppressWarnings("unused")
+    public ErrorCallback getErrorCallback() {
+        return errorCallback;
+    }
+
+    /**
+     * 设置错误回调
+     */
+    @SuppressWarnings("unused")
+    public void setErrorCallback(ErrorCallback errorCallback) {
+        if (errorCallback != null) {
+            this.errorCallback = errorCallback;
+            if (Sketch.isDebugMode()) {
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "errorCallback", " (", errorCallback.getIdentifier(), ")"));
+            }
+        }
     }
 
     public String getInfo() {
@@ -618,6 +666,13 @@ public class Configuration {
             builder.append("imagePreprocessor");
             builder.append("：");
             imagePreprocessor.appendIdentifier(builder);
+        }
+
+        if (errorCallback != null) {
+            if (builder.length() > 0) builder.append("\n");
+            builder.append("errorCallback");
+            builder.append("：");
+            errorCallback.appendIdentifier(builder);
         }
 
         if (builder.length() > 0) builder.append("\n");

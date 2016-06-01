@@ -118,13 +118,13 @@ public class DownloadRequest extends BaseRequest {
         // 然后从磁盘缓存中找缓存文件
         if (options.isCacheInDisk()) {
             DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
-            DiskCache.Entry diskCacheEntry = diskCache.get(getRequestAttrs().getDiskCacheKey());
+            DiskCache.Entry diskCacheEntry = diskCache.get(getAttrs().getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
                             " - ", "runDispatch",
                             " - ", "diskCache",
-                            " - ", getRequestAttrs().getId()));
+                            " - ", getAttrs().getId()));
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, false);
                 downloadComplete();
@@ -143,7 +143,7 @@ public class DownloadRequest extends BaseRequest {
             Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
                     " - ", "runDispatch",
                     " - ", "download",
-                    " - ", getRequestAttrs().getId()));
+                    " - ", getAttrs().getId()));
         }
         submitRunDownload();
     }
@@ -160,7 +160,7 @@ public class DownloadRequest extends BaseRequest {
                     " - ", "runDispatch",
                     " - ", "canceled",
                     " - ", isPauseDownload ? "pause download" : "requestLevel is local",
-                    " - ", getRequestAttrs().getId()));
+                    " - ", getAttrs().getId()));
         }
 
         canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
@@ -174,7 +174,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "startDownload",
-                        " - ", getRequestAttrs().getId()));
+                        " - ", getAttrs().getId()));
             }
             return;
         }
@@ -190,7 +190,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "downloadAfter",
-                        " - ", getRequestAttrs().getId()));
+                        " - ", getAttrs().getId()));
             }
             return;
         }
@@ -221,14 +221,14 @@ public class DownloadRequest extends BaseRequest {
                             " - ", "runDownload",
                             " - ", "canceled",
                             " - ", "get lock after",
-                            " - ", getRequestAttrs().getId()));
+                            " - ", getAttrs().getId()));
                 }
                 break;
             }
 
             // 如果缓存文件已经存在了就直接返回缓存文件
             if (getOptions().isCacheInDisk()) {
-                DiskCache.Entry diskCacheEntry = diskCache.get(getRequestAttrs().getDiskCacheKey());
+                DiskCache.Entry diskCacheEntry = diskCache.get(getAttrs().getDiskCacheKey());
                 if (diskCacheEntry != null) {
                     result = new DownloadResult(diskCacheEntry, false);
                     break;
@@ -248,7 +248,7 @@ public class DownloadRequest extends BaseRequest {
                                 " - ", "runDownload",
                                 " - ", "download failed",
                                 " - ", "retry",
-                                " - ", getRequestAttrs().getId()));
+                                " - ", getAttrs().getId()));
                     }
                 } else {
                     if (Sketch.isDebugMode()) {
@@ -256,7 +256,7 @@ public class DownloadRequest extends BaseRequest {
                                 " - ", "runDownload",
                                 " - ", "download failed",
                                 " - ", "end",
-                                " - ", getRequestAttrs().getId()));
+                                " - ", getAttrs().getId()));
                     }
                     break;
                 }
@@ -267,7 +267,7 @@ public class DownloadRequest extends BaseRequest {
     }
 
     private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache) throws IOException, DiskLruCache.EditorChangedException {
-        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getRequestAttrs().getRealUri());
+        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getAttrs().getRealUri());
 
         if (isCanceled()) {
             httpResponse.releaseConnection();
@@ -276,7 +276,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "connect after",
-                        " - ", getRequestAttrs().getId()));
+                        " - ", getAttrs().getId()));
             }
             return null;
         }
@@ -292,7 +292,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runDownload",
                         " - ", "get response code failed",
-                        " - ", getRequestAttrs().getId(),
+                        " - ", getAttrs().getId(),
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString()));
             }
             return null;
@@ -307,7 +307,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runDownload",
                         " - ", "get response message failed",
-                        " - ", getRequestAttrs().getId(),
+                        " - ", getAttrs().getId(),
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString()));
             }
             return null;
@@ -321,7 +321,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "responseCode:", String.valueOf(responseCode),
                         " - ", "responseMessage:", responseMessage,
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString(),
-                        " - ", getRequestAttrs().getId()));
+                        " - ", getAttrs().getId()));
             }
             return null;
         }
@@ -336,7 +336,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "content length exception",
                         " - ", "contentLength:" + contentLength,
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString(),
-                        " - ", getRequestAttrs().getId()));
+                        " - ", getAttrs().getId()));
             }
             return null;
         }
@@ -351,14 +351,14 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "get input stream after",
-                        " - ", getRequestAttrs().getId()));
+                        " - ", getAttrs().getId()));
             }
             return null;
         }
 
         DiskCache.Editor diskCacheEditor = null;
         if (getOptions().isCacheInDisk()) {
-            diskCacheEditor = diskCache.edit(getRequestAttrs().getDiskCacheKey());
+            diskCacheEditor = diskCache.edit(getAttrs().getDiskCacheKey());
         }
         OutputStream outputStream;
         if (diskCacheEditor != null) {
@@ -402,7 +402,7 @@ public class DownloadRequest extends BaseRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "read data after",
-                        " - ", getRequestAttrs().getId()));
+                        " - ", getAttrs().getId()));
             }
             return null;
         }
@@ -412,13 +412,13 @@ public class DownloadRequest extends BaseRequest {
                     " - ", "runDownload",
                     " - ", "download success",
                     " - ", "fileLength:", completedLength, "/", contentLength,
-                    " - ", getRequestAttrs().getId()));
+                    " - ", getAttrs().getId()));
         }
 
         // 返回结果
         if (getOptions().isCacheInDisk() && diskCacheEditor != null) {
             diskCacheEditor.commit();
-            return new DownloadResult(diskCache.get(getRequestAttrs().getDiskCacheKey()), true);
+            return new DownloadResult(diskCache.get(getAttrs().getDiskCacheKey()), true);
         } else if (outputStream instanceof ByteArrayOutputStream) {
             return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray());
         } else {
@@ -488,7 +488,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runUpdateProgressInMainThread",
                         " - ", "finished",
-                        " - ", getRequestAttrs().getId()));
+                        " - ", getAttrs().getId()));
             }
             return;
         }
@@ -512,7 +512,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runCompletedInMainThread",
                         " - ", "canceled",
-                        " - ", getRequestAttrs().getId()));
+                        " - ", getAttrs().getId()));
             }
             return;
         }
@@ -535,7 +535,7 @@ public class DownloadRequest extends BaseRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runFailedInMainThread",
                         " - ", "canceled",
-                        " - ", getRequestAttrs().getId()));
+                        " - ", getAttrs().getId()));
             }
             return;
         }

@@ -701,12 +701,12 @@ public class DisplayHelper {
     private DisplayRequest checkRepeatRequest() {
         DisplayRequest potentialRequest = BindFixedRecycleBitmapDrawable.findDisplayRequest(imageViewInterface);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
-            if (requestAttrs.getId().equals(potentialRequest.getRequestAttrs().getId())) {
+            if (requestAttrs.getId().equals(potentialRequest.getAttrs().getId())) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(logName,
                             " - ", "don't need to cancel",
                             "；", "ImageViewCode", "=", Integer.toHexString(imageViewInterface.hashCode()),
-                            "；", potentialRequest.getRequestAttrs().getId()));
+                            "；", potentialRequest.getAttrs().getId()));
                 }
                 return potentialRequest;
             } else {

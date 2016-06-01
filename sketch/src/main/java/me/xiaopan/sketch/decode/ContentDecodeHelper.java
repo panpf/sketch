@@ -75,7 +75,7 @@ public class ContentDecodeHelper implements DecodeHelper {
             } else {
                 builder.append(" - ").append("unchanged");
             }
-            builder.append(" - ").append(loadRequest.getRequestAttrs().getId());
+            builder.append(" - ").append(loadRequest.getAttrs().getId());
             Log.d(Sketch.TAG, builder.toString());
         }
     }

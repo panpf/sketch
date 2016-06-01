@@ -28,7 +28,7 @@ abstract class BaseRequest implements Runnable {
     private static final Map<String, ReentrantLock> downloadLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
 
     private Sketch sketch;
-    private RequestAttrs requestAttrs;
+    private RequestAttrs attrs;
 
     private RunStatus runStatus;
 
@@ -37,9 +37,9 @@ abstract class BaseRequest implements Runnable {
     private FailedCause failedCause;
     private CancelCause cancelCause;
 
-    BaseRequest(Sketch sketch, RequestAttrs requestAttrs) {
+    BaseRequest(Sketch sketch, RequestAttrs attrs) {
         this.sketch = sketch;
-        this.requestAttrs = requestAttrs;
+        this.attrs = attrs;
     }
 
     private ReentrantLock getLoadLock(String key) {
@@ -75,14 +75,14 @@ abstract class BaseRequest implements Runnable {
                     break;
                 case DOWNLOAD:
                     setStatus(BaseRequest.Status.GET_DOWNLOAD_LOCK);
-                    ReentrantLock downloadLock = getDownloadLock(requestAttrs.getRealUri());
+                    ReentrantLock downloadLock = getDownloadLock(attrs.getRealUri());
                     downloadLock.lock();
                     runDownload();
                     downloadLock.unlock();
                     break;
                 case LOAD:
                     setStatus(BaseRequest.Status.GET_LOAD_LOCK);
-                    ReentrantLock loadLock = getLoadLock(requestAttrs.getId());
+                    ReentrantLock loadLock = getLoadLock(attrs.getId());
                     loadLock.lock();
                     runLoad();
                     loadLock.unlock();
@@ -101,8 +101,8 @@ abstract class BaseRequest implements Runnable {
     /**
      * 获取请求基本属性
      */
-    public RequestAttrs getRequestAttrs() {
-        return requestAttrs;
+    public RequestAttrs getAttrs() {
+        return attrs;
     }
 
     /**

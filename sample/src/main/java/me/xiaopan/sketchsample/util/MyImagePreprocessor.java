@@ -40,14 +40,14 @@ public class MyImagePreprocessor extends ImagePreprocessor {
     }
 
     private boolean isXpkFile(LoadRequest loadRequest) {
-        return loadRequest.getRequestAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getRequestAttrs().getRealUri(), ".xpk");
+        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE && SketchUtils.checkSuffix(loadRequest.getAttrs().getRealUri(), ".xpk");
     }
 
     /**
      * 获取XPK图标的缓存文件
      */
     private DiskCache.Entry getXpkIconCacheFile(LoadRequest loadRequest) {
-        String realUri = loadRequest.getRequestAttrs().getRealUri();
+        String realUri = loadRequest.getAttrs().getRealUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
 
         File xpkFile = new File(realUri);
@@ -65,7 +65,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
         if (diskCacheEditor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", loadRequest.getRequestAttrs().getId()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", loadRequest.getAttrs().getId()));
             }
             return null;
         }
@@ -86,7 +86,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found icon.png in ", loadRequest.getRequestAttrs().getId()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found icon.png in ", loadRequest.getAttrs().getId()));
             }
             try {
                 diskCacheEditor.abort();
@@ -149,7 +149,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         xpkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (xpkIconDiskCacheEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found xpk icon cache file", " - ", loadRequest.getRequestAttrs().getId()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found xpk icon cache file", " - ", loadRequest.getAttrs().getId()));
             }
         }
 

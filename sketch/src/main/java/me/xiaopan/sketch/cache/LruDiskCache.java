@@ -27,15 +27,17 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class LruDiskCache implements DiskCache {
-    private static final String DISK_CACHE_DIR_NAME = "sketch";
-    private static final int DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024;
+    public static final String DISK_CACHE_DIR_NAME = "sketch";
+    public static final int DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024;
 
     protected String logName = "LruDiskCache";
 
+    private Configuration configuration;
     private Context context;
     private File cacheDir;
     private int maxSize;
@@ -43,19 +45,21 @@ public class LruDiskCache implements DiskCache {
 
     private DiskLruCache cache;
 
-    public LruDiskCache(Context context, int appVersionCode, int maxSize) {
+    public LruDiskCache(Context context, Configuration configuration, int appVersionCode, int maxSize) {
         this.context = context;
         this.maxSize = maxSize;
         this.appVersionCode = appVersionCode;
-        reset();
+        this.configuration = configuration;
     }
 
-    public static LruDiskCache open(Context context) {
-        // appVersionCode固定死，因为当appVersionCode改变时DiskLruCache会清除旧的缓存，可我们不需要这个功能
-        return new LruDiskCache(context, 1, DISK_CACHE_MAX_SIZE);
-    }
+    /**
+     * 安装磁盘缓存，当缓存目录不存在的时候回再次安装
+     */
+    private synchronized void installDiskCache(boolean force) {
+        if(!force && cache != null && cacheDir != null && cacheDir.exists()){
+            return;
+        }
 
-    private synchronized void reset() {
         if (cache != null) {
             try {
                 cache.close();
@@ -97,6 +101,9 @@ public class LruDiskCache implements DiskCache {
                 break;
             } catch (IOException e) {
                 e.printStackTrace();
+                if(configuration.getErrorCallback() != null){
+                    configuration.getErrorCallback().onInstallDiskCacheFailed(e, cacheDir, count);
+                }
                 if (count < 10) {
                     count++;
                 } else {
@@ -108,20 +115,13 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public synchronized boolean exist(String uri) {
-        // 缓存目录不存在就重建，提高自我恢复能力
-        if (cache == null || cacheDir == null || !cacheDir.exists()) {
-            reset();
-        }
-
+        installDiskCache(false);
         return cache != null && cache.exist(uriToDiskCacheKey(uri));
     }
 
     @Override
     public synchronized Entry get(String uri) {
-        // 缓存目录不存在就重建，提高自我恢复能力
-        if (cache == null || cacheDir == null || !cacheDir.exists()) {
-            reset();
-        }
+        installDiskCache(false);
 
         DiskLruCache.SimpleSnapshot snapshot = null;
         try {
@@ -134,18 +134,15 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public synchronized Editor edit(String uri) {
-        // 缓存目录不存在就重建，提高自我恢复能力
-        if (cache == null || cacheDir == null || !cacheDir.exists()) {
-            reset();
-        }
+        installDiskCache(false);
 
         DiskLruCache.Editor diskEditor = null;
         try {
             diskEditor = cache != null ? cache.edit(uriToDiskCacheKey(uri)) : null;
         } catch (IOException e) {
             e.printStackTrace();
-            // 发生异常的时候（比如SD卡被拔出，导致不能使用），尝试重建DiskLryCache，能显著提高遇错恢复能力
-            reset();
+            // 发生异常的时候（比如SD卡被拔出，导致不能使用），尝试重建DiskLruCache，能显著提高遇错恢复能力
+            installDiskCache(true);
             try {
                 diskEditor = cache != null ? cache.edit(uriToDiskCacheKey(uri)) : null;
             } catch (IOException e1) {
@@ -157,6 +154,7 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public File getCacheDir() {
+        installDiskCache(false);
         return cacheDir;
     }
 
@@ -192,7 +190,7 @@ public class LruDiskCache implements DiskCache {
                 e.printStackTrace();
             }
         }
-        reset();
+        installDiskCache(true);
     }
 
     @Override
