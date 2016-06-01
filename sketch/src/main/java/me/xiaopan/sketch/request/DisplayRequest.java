@@ -20,7 +20,6 @@ import android.graphics.drawable.Drawable;
 import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.FixedRecycleBitmapDrawable;
 import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
 import me.xiaopan.sketch.drawable.RecycleDrawable;
@@ -234,12 +233,10 @@ public class DisplayRequest extends LoadRequest {
                         " - ", getAttrs().getId()));
             }
 
-            // 将GIF图放入内存缓存
             loadResult.getGifDrawable().setMimeType(loadResult.getMimeType());
-            if (displayOptions.isCacheInMemory() && getAttrs().getId() != null) {
-                MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
-                memoryCache.put(getAttrs().getId(), loadResult.getGifDrawable());
-            }
+
+            // GifDrawable不能在内存中缓存，因为GifDrawable需要依赖Callback才能播放，
+            // 如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
 
             displayResult = new DisplayResult(loadResult.getGifDrawable(), loadResult.getImageFrom(), loadResult.getMimeType());
             displayCompleted();

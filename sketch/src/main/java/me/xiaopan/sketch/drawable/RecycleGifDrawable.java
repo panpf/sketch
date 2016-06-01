@@ -188,7 +188,7 @@ public class RecycleGifDrawable extends GifDrawable implements RecycleDrawable {
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "recycled gif drawable", " - ", callingStation, ":", type, " - ", getInfo()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "recycled gif drawable", " - ", callingStation, ":", type, " - ", getInfo()));
             }
             recycle();
         } else {
