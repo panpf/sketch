@@ -42,7 +42,7 @@ abstract class BaseRequest implements Runnable {
         this.attrs = attrs;
     }
 
-    private ReentrantLock getLoadLock(String key) {
+    private synchronized ReentrantLock getLoadLock(String key) {
         if (key == null) {
             return null;
         }
@@ -54,7 +54,7 @@ abstract class BaseRequest implements Runnable {
         return loadLock;
     }
 
-    private ReentrantLock getDownloadLock(String key) {
+    private synchronized ReentrantLock getDownloadLock(String key) {
         if (key == null) {
             return null;
         }

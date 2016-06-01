@@ -26,6 +26,10 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.util.DiskLruCache;
@@ -44,6 +48,7 @@ public class LruDiskCache implements DiskCache {
     private int appVersionCode;
 
     private DiskLruCache cache;
+    private Map<String, ReentrantLock> diskCacheEditorLocks;
 
     public LruDiskCache(Context context, Configuration configuration, int appVersionCode, int maxSize) {
         this.context = context;
@@ -56,7 +61,7 @@ public class LruDiskCache implements DiskCache {
      * 安装磁盘缓存，当缓存目录不存在的时候回再次安装
      */
     private synchronized void installDiskCache(boolean force) {
-        if(!force && cache != null && cacheDir != null && cacheDir.exists()){
+        if (!force && cache != null && cacheDir != null && cacheDir.exists()) {
             return;
         }
 
@@ -101,7 +106,7 @@ public class LruDiskCache implements DiskCache {
                 break;
             } catch (IOException e) {
                 e.printStackTrace();
-                if(configuration.getErrorCallback() != null){
+                if (configuration.getErrorCallback() != null) {
                     configuration.getErrorCallback().onInstallDiskCacheFailed(e, cacheDir, count);
                 }
                 if (count < 10) {
@@ -205,6 +210,26 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
+    public synchronized ReentrantLock getEditorLock(String key) {
+        if (key == null) {
+            return null;
+        }
+        if (diskCacheEditorLocks == null) {
+            synchronized (LruDiskCache.this) {
+                if (diskCacheEditorLocks == null) {
+                    diskCacheEditorLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
+                }
+            }
+        }
+        ReentrantLock lock = diskCacheEditorLocks.get(key);
+        if (lock == null) {
+            lock = new ReentrantLock();
+            diskCacheEditorLocks.put(key, lock);
+        }
+        return lock;
+    }
+
+    @Override
     public String getIdentifier() {
         return appendIdentifier(new StringBuilder()).toString();
     }
@@ -257,7 +282,7 @@ public class LruDiskCache implements DiskCache {
         }
     }
 
-    public static class LruDiskCacheEditor implements Editor{
+    public static class LruDiskCacheEditor implements Editor {
         private DiskLruCache.Editor diskEditor;
 
         public LruDiskCacheEditor(DiskLruCache.Editor diskEditor) {

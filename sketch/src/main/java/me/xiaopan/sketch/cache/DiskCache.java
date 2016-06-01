@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.util.DiskLruCache;
@@ -47,6 +48,7 @@ public interface DiskCache extends Identifier {
     /**
      * 获取缓存目录
      */
+    @SuppressWarnings("unused")
     File getCacheDir();
 
     /**
@@ -73,6 +75,11 @@ public interface DiskCache extends Identifier {
      * 关闭
      */
     void close();
+
+    /**
+     * 获取编辑锁
+     */
+    ReentrantLock getEditorLock(String key);
 
     interface Entry {
         InputStream newInputStream() throws IOException;

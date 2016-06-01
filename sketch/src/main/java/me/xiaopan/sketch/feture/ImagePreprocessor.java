@@ -24,6 +24,7 @@ import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Identifier;
@@ -42,7 +43,7 @@ public class ImagePreprocessor implements Identifier {
     private static final String INSTALLED_APP_URI_PARAM_PACKAGE_NAME = "packageName";
     private static final String INSTALLED_APP_URI_PARAM_VERSION_CODE = "versionCode";
 
-    protected String logName = "LocalImagePreprocessor";
+    protected String logName = "ImagePreprocessor";
 
     public boolean isSpecific(LoadRequest loadRequest) {
         return isApkFile(loadRequest) || isInstalledApp(loadRequest);
@@ -92,6 +93,18 @@ public class ImagePreprocessor implements Identifier {
         long lastModifyTime = apkFile.lastModified();
         String diskCacheKey = realUri + "." + lastModifyTime;
 
+        ReentrantLock lock = configuration.getDiskCache().getEditorLock(diskCacheKey);
+        lock.lock();
+
+        DiskCache.Entry diskCacheEntry = readApkIcon(configuration, loadRequest, diskCacheKey, realUri);
+
+        lock.unlock();
+
+        return diskCacheEntry;
+    }
+
+    private DiskCache.Entry readApkIcon(Configuration configuration, LoadRequest loadRequest, String diskCacheKey, String realUri){
+
         DiskCache.Entry apkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (apkIconDiskCacheEntry != null) {
             return apkIconDiskCacheEntry;
@@ -100,7 +113,7 @@ public class ImagePreprocessor implements Identifier {
         DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
         if (diskCacheEditor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", loadRequest.getAttrs().getId()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", " - ", loadRequest.getAttrs().getId()));
             }
             return null;
         }
@@ -157,9 +170,20 @@ public class ImagePreprocessor implements Identifier {
      * 获取已安装APP图标的缓存
      */
     private DiskCache.Entry getInstalledAppIconDiskCache(LoadRequest loadRequest) {
+        String diskCacheKey = loadRequest.getAttrs().getUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
 
-        String diskCacheKey = loadRequest.getAttrs().getDiskCacheKey();
+        ReentrantLock lock = configuration.getDiskCache().getEditorLock(diskCacheKey);
+        lock.lock();
+
+        DiskCache.Entry diskCacheEntry = readInstalledAppIcon(configuration, loadRequest, diskCacheKey);
+
+        lock.unlock();
+
+        return diskCacheEntry;
+    }
+
+    private DiskCache.Entry readInstalledAppIcon(Configuration configuration, LoadRequest loadRequest, String diskCacheKey){
 
         DiskCache.Entry appIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (appIconDiskCacheEntry != null) {
@@ -169,7 +193,7 @@ public class ImagePreprocessor implements Identifier {
         DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
         if (diskCacheEditor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", loadRequest.getAttrs().getId()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", " - ", loadRequest.getAttrs().getId()));
             }
             return null;
         }
@@ -181,7 +205,7 @@ public class ImagePreprocessor implements Identifier {
 
         PackageInfo packageInfo;
         try {
-            packageInfo = loadRequest.getSketch().getConfiguration().getContext().getPackageManager().getPackageInfo(packageName, 0);
+            packageInfo = configuration.getContext().getPackageManager().getPackageInfo(packageName, 0);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
             try {

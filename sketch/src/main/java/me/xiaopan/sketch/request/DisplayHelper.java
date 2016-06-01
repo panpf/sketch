@@ -651,7 +651,7 @@ public class DisplayHelper {
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
         if (displayOptions.getRequestLevel() == RequestLevel.LOCAL
                 && requestAttrs.getUriScheme() == UriScheme.NET
-                && !sketch.getConfiguration().getDiskCache().exist(requestAttrs.getDiskCacheKey())) {
+                && !sketch.getConfiguration().getDiskCache().exist(requestAttrs.getUri())) {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (Sketch.isDebugMode()) {

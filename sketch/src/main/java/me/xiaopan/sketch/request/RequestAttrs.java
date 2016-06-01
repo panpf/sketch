@@ -72,10 +72,6 @@ public class RequestAttrs {
         return uri;
     }
 
-    public String getDiskCacheKey() {
-        return uri;
-    }
-
     public String getRealUri() {
         return realUri;
     }

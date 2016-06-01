@@ -24,6 +24,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
@@ -118,7 +119,8 @@ public class DownloadRequest extends BaseRequest {
         // 然后从磁盘缓存中找缓存文件
         if (options.isCacheInDisk()) {
             DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
-            DiskCache.Entry diskCacheEntry = diskCache.get(getAttrs().getDiskCacheKey());
+            String diskCacheKey = getAttrs().getUri();
+            DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
             if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
@@ -226,18 +228,14 @@ public class DownloadRequest extends BaseRequest {
                 break;
             }
 
-            // 如果缓存文件已经存在了就直接返回缓存文件
-            if (getOptions().isCacheInDisk()) {
-                DiskCache.Entry diskCacheEntry = diskCache.get(getAttrs().getDiskCacheKey());
-                if (diskCacheEntry != null) {
-                    result = new DownloadResult(diskCacheEntry, false);
-                    break;
-                }
-            }
+            String diskCacheKey = getAttrs().getUri();
+            ReentrantLock lock = diskCache.getEditorLock(diskCacheKey);
+            lock.lock();
 
+            boolean isBreak = false;
             try {
-                result = realDownload(httpStack, diskCache);
-                break;
+                result = realDownload(httpStack, diskCache, diskCacheKey);
+                isBreak = true;
             } catch (Throwable e) {
                 e.printStackTrace();
 
@@ -258,15 +256,28 @@ public class DownloadRequest extends BaseRequest {
                                 " - ", "end",
                                 " - ", getAttrs().getId()));
                     }
-                    break;
+                    isBreak = true;
                 }
+            }
+
+            lock.unlock();
+            if(isBreak){
+                break;
             }
         }
 
         return result;
     }
 
-    private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache) throws IOException, DiskLruCache.EditorChangedException {
+    private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey) throws IOException, DiskLruCache.EditorChangedException {
+        // 如果缓存文件已经存在了就直接返回缓存文件
+        if (getOptions().isCacheInDisk()) {
+            DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
+            if (diskCacheEntry != null) {
+                return new DownloadResult(diskCacheEntry, false);
+            }
+        }
+
         HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getAttrs().getRealUri());
 
         if (isCanceled()) {
@@ -358,7 +369,7 @@ public class DownloadRequest extends BaseRequest {
 
         DiskCache.Editor diskCacheEditor = null;
         if (getOptions().isCacheInDisk()) {
-            diskCacheEditor = diskCache.edit(getAttrs().getDiskCacheKey());
+            diskCacheEditor = diskCache.edit(diskCacheKey);
         }
         OutputStream outputStream;
         if (diskCacheEditor != null) {
@@ -418,7 +429,7 @@ public class DownloadRequest extends BaseRequest {
         // 返回结果
         if (getOptions().isCacheInDisk() && diskCacheEditor != null) {
             diskCacheEditor.commit();
-            return new DownloadResult(diskCache.get(getAttrs().getDiskCacheKey()), true);
+            return new DownloadResult(diskCache.get(diskCacheKey), true);
         } else if (outputStream instanceof ByteArrayOutputStream) {
             return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray());
         } else {
