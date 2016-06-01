@@ -1,8 +1,8 @@
-# ![Logo](https://github.com/xiaopansky/Sketch/raw/master/docs/res/logo.png) Sketch
+# ![Logo](docs/res/logo.png) Sketch
 
 Sketch是Android上的一个图片加载器，能够帮助开发者从本地或网络读取图片，处理后显示在页面上
 
-![sample](https://github.com/xiaopansky/Sketch/raw/master/docs/res/sample.jpg)
+![sample](docs/res/sample.jpg)
 
 ### 特点（Features）
 >* ``支持GIF图``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示GIF图片，感谢koral--
@@ -23,9 +23,9 @@ Sketch是Android上的一个图片加载器，能够帮助开发者从本地或�
 >* ``强大且灵活的自定义``. 可自定义下载、缓存、解码、处理、显示、占位图等各个环节
 
 ### 示例APP（Sample app）
-![SampleApp](https://github.com/xiaopansky/Sketch/raw/master/docs/sketch-sample.png)
+![SampleApp](docs/sketch-sample.png)
 
-扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](https://github.com/xiaopansky/Sketch/raw/master/docs/sketch-sample.apk)
+扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](docs/sketch-sample.apk)
 
 ### 简介（Introduction）
 
@@ -34,20 +34,20 @@ Sketch是Android上的一个图片加载器，能够帮助开发者从本地或�
 |Type|Scheme|Method|
 |:---|:---|:---|
 |File in network|http://, https:// |displayImage(String)|
-|File in SDCard|/, file://|displayImage(String)|
-|Content Provider|content://|displayURIImage(Uri)|
-|Asset in app|asset://|displayAssetImage(String)|
-|Resource in app|resource://|displayResourceImage(int)|
+|File in SDCard|/, file:// |displayImage(String)|
+|Content Provider|content:// |displayURIImage(Uri)|
+|Asset in app|asset:// |displayAssetImage(String)|
+|Resource in app|resource:// |displayResourceImage(int)|
 
 #### 支持的图片类型（Support picture type）
 
 |Type|Scheme|jpeg|png|webp|gif|apk icon|
-|:-- |:--   |:-- |:--|:-- |:--|:--|:--|
+|:---|:---|:---|:--|:---|:--|:---|:---|
 |File in network|http://, http:// |YES|YES|YES（Android4.0 above）|YES|NO|
-|File in SDCard|/, file://|YES|YES|YES（Android4.0 above）|YES|YES|
-|Content Provider|content://|YES|YES|YES（Android4.0 above）|YES|NO|
-|Asset in app|asset://|YES|YES|YES（Android4.0 above）|YES|NO|
-|Resource in app|resource://|YES|YES|YES（Android4.0 above）|YES|NO|
+|File in SDCard|/, file:// |YES|YES|YES（Android4.0 above）|YES|YES|
+|Content Provider|content:// |YES|YES|YES（Android4.0 above）|YES|NO|
+|Asset in app|asset:// |YES|YES|YES（Android4.0 above）|YES|NO|
+|Resource in app|resource:// |YES|YES|YES（Android4.0 above）|YES|NO|
 
 示例（Sample）：
 ```java
@@ -106,7 +106,7 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 |failedImage|-|-|null|
 |pauseDownloadImage|-|-|null|
 
-各属性的作用请参考[配置显示、加载、下载选项.md](https://github.com/xiaopansky/Sketch/wiki/Options)
+各属性的作用请参考[配置显示、加载、下载选项.md](docs/wiki/download_load_display_options.md)
 
 ### 使用指南（Usage guide）
 
@@ -135,8 +135,7 @@ res/layout/item_user.xml
 <me.xiaopan.sketch.SketchImageView
     android:id="@+id/image_main_head"
     android:layout_width="130dp"
-    android:layout_height="130dp"
-  />
+    android:layout_height="130dp"/>
 ```
 
 #### 3. 在代码中设置URI显示图片
@@ -147,29 +146,27 @@ headImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/
 
 #### 4. 你可能还感兴趣的功能：
 增强用户体验：
->* [SketchImageView详细使用说明](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
->* [配置显示、加载、下载选项](https://github.com/xiaopansky/Sketch/wiki/Options)
->* [使用ImageProcessor将图片变成圆形的、圆角的或者高斯模糊的](https://github.com/xiaopansky/Sketch/wiki/ImageProcessor)
->* [使用ImageDisplayer以更炫酷的方式显示图片（过渡、缩放等）](https://github.com/xiaopansky/Sketch/wiki/ImageDisplayer)
->* [使用ImagePreprocessor显示特殊文件的缩略图或图标](https://github.com/xiaopansky/Sketch/wiki/ImagePreprocessor)
->* [显示GIF图片](https://github.com/xiaopansky/Sketch/wiki/display-gif-image)
->* [使用maxSize防止加载过大的图片以节省内存](https://github.com/xiaopansky/Sketch/wiki/maxSize)
->* [使用resize裁剪图片](https://github.com/xiaopansky/Sketch/wiki/resize)
->* [移动网络下暂停下载图片，节省流量](https://github.com/xiaopansky/Sketch/wiki/pauseDownload)
->* [列表滑动时暂停加载图片，提升流畅度](https://github.com/xiaopansky/Sketch/wiki/pauseLoad)
-
-改变Sketch的配置：
->* [了解和自定义inSampleSize计算规则](https://github.com/xiaopansky/Spear/wiki/inSampleSize)
->* [了解和配置内存缓存](https://github.com/xiaopansky/Sketch/wiki/MemoryCache)
->* [了解和配置本地缓存](https://github.com/xiaopansky/Sketch/wiki/DiskCache)
->* [了解和配置下载器](https://github.com/xiaopansky/Sketch/wiki/ImageDownloader)
->* [了解和配置任务执行器](https://github.com/xiaopansky/Sketch/wiki/RequestExecutor)
+>* [SketchImageView详细使用说明](docs/wiki/sketch_image_view.md)
+>* [配置显示、加载、下载选项](docs/wiki/download_load_display_options.md)
+>* [显示GIF图片](docs/wiki/display-gif-image.md)
+>* [使用ImageProcessor将图片变成圆形的、圆角的或者高斯模糊的](docs/wiki/process_image.md)
+>* [使用ImageDisplayer以更炫酷的方式显示图片（过渡、缩放等）](docs/wiki/displayer.md)
+>* [使用ImagePreprocessor显示特殊文件的缩略图或图标](docs/wiki/pre_process_image.md)
+>* [使用maxSize控制图片大小](docs/wiki/maxsize_resize_in_sample_size.md)
+>* [使用resize修剪图片尺寸](docs/wiki/maxsize_resize_in_sample_size.md)
+>* [移动网络下暂停下载图片，节省流量](docs/wiki/mobile_network_pause_download.md)
+>* [列表滑动时暂停加载图片，提升流畅度](docs/wiki/sliding_pause_load.md)
 
 其它：
->* [监听加载开始、成功、失败以及进度](https://github.com/xiaopansky/Sketch/wiki/listener)
->* [显示APK的图标](https://github.com/xiaopansky/Sketch/wiki/display-apk-icon)
->* [了解何时取消请求以及如何主动取消请求](https://github.com/xiaopansky/Sketch/wiki/CancelRequest)
->* [配置混淆（Proguard）](https://github.com/xiaopansky/Sketch/wiki/proguard-configuration)
+>* [了解和自定义inSampleSize计算规则](docs/wiki/maxsize_resize_in_sample_size.md)
+>* [了解和配置内存缓存](docs/wiki/memory_cache.md)
+>* [了解和配置本地缓存](docs/wiki/disk_cache.md)
+>* [自定义Http](docs/wiki/http_stack.md)
+>* [监听加载开始、成功、失败以及进度](docs/wiki/listener.md)
+>* [显示APK或已安装APP的图标](docs/wiki/display_apk_or_app_icon.md)
+>* [了解何时取消请求以及如何主动取消请求](docs/wiki/cancel_request.md)
+>* [使用ErrorCallback监控Sketch的异常](docs/wiki/error_callback.md)
+>* [配置混淆（Proguard）](docs/wiki/proguard_config.md)
 
 ### Thanks
 [koral](https://github.com/koral--) - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
