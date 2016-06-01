@@ -93,43 +93,46 @@
 （完成于2016-04-06）是RecycleDrawable在onDetachedFromWindow的时候才需要setDrawable为null
 （完成于2016-04-24）缓存文件的删除方式有问题，搞一个DiskCacheItem，里面包含文件以及key，删除的时候要用key
 （完成于2016-04-24）Sketch会自动从SketchImageVie身上去listener，那要是listener被重新设置了呢？（DisplayHelper上的listener去掉了）
-（完成与2016-04-25）定义一个统一的Identifier接口
-（完成与2016-04-25）所有参数配置封装成一个类，这样helper和request就可以共用一个参数类了，还能减少代码量。这样参数类得提供一个计算出KEY的方法，KEY加上Uri就是图片的内存缓存ID，完美
-（完成与2016-04-26）将基础属性封装成一个单独的类，将运行中状态封装成一个单独的类，将下载结果、加载结果封装成一个单独的类，将display特有的属性封装成一个单独的类
-（完成与2016-04-26）线程间跳转的是不是可以封装一下（已封装在了SketchRequest中）
-（完成与2016-04-26）还有在主线程中调用的是不是也可以封装一下（已封装在了SketchRequest中）
-（完成与2016-04-27）试着让DisplayRequest继承自LoadRequest，这样加载部分的代码就简单多了
-（完成与2016-04-27）Sketch.putOptions(RequestOptions)改成了Sketch.putDisplayOptions(DisplayOptions)...
-（完成与2016-04-27）兼容file://（直接改成了每种类型可以有两种协议类型，这样还顺便把http://和https://融合成了一种）
-（完成与2016-04-27）SketchImageView.setDisplayOptions(Enum)改为setOptionsByName(Enum) ...Helper.options(Enum)改为optionsByName(Enum)
-（完成与2016-04-28）当使用setResource设置了新的图片的时候，那么displayParams是不是该清除了，确保在onAttch的时候不被恢复
-（完成与2016-04-28）TransitionImageDisplayer异常的时候说明是哪个没设置对
-（完成与2016-04-28）修复DiskLruCache的removeBUG，当要删除的缓存文件已经不存在了就会remove失败，解决办法就是先验证文件是否存在
-（完成与2016-05-02）拆分SketchImageView
-（完成与2016-05-03）重组目录结构
-（完成与2016-05-04）新增旋转图片处理器RotateImageProcessor
-（完成与2016-05-05）默认不再解码GIF图
-（完成与2016-05-07）当暂停下载时尽可能在commit的时候就判断如果没有磁盘缓存就结束，这样体验会更好
-（完成与2016-05-08）LruDiskCache添加一个判断是否存在的方法，这样DisplayHelper用的时候能少创建几个对象
-（完成与2016-05-08）统一使用getDiskCacheKey访问磁盘缓存
-（完成与2016-05-08）listener回调在commit也要检查是不是在主线程不再的话就放到主线程执行
-（完成与2016-05-08）本地图片就不再显示进度蒙层了
-（完成与2016-05-09）diskLruCache abort和commit的时候会抛出运行时异常，捕获一下
-（完成与2016-05-09）提高DiskLruCache的遇错自我恢复能力
-（完成与2016-05-09）LruDiskCache兼容多进程
-（完成与2016-05-09）优化分发效率以及支持输出display在主线程的耗时
-（完成与2016-05-12）减少占位图缓存最大容量，调整为最大可用内存的32分之一，但又不能少于2M
-（完成与2016-05-11）各种异常情况如果没有配置相应的占位image就设置drawable为空，这是之前的BUG
-（完成与2016-05-11）缓存文件的名称不能再用uri.encode来加密了，要用MD5（不必了之前有这样的考虑是因为可能会因为后缀可能为.apk而导致被误识别，但是DiskLruCache会在最后加上序号就没这问题了）
-（完成与2016-05-16）本地任务支持多线程，加快处理速度
-（完成与2016-05-24）重构ImageDownloader,新增可设置User-Agent、readTimeout和批量添加header
-（完成与2016-05-24）采用httpStack模式 改进imageDownloader
-（完成与2016-05-26）不再用DisplayHelper中的options覆盖ImageView的options,这是之前重构DisplayHelper时候改出来的BUG,现在依然要放到DisplayParams中去
-（完成与2016-05-29）支持设置inPreferQualityOverSpeed
-（完成与2016-05-30）LocalImagePreprocessor rename to ImagePreprocessor
-（完成与2016-05-31）Sketch增加displayInstalledAppIcon(String, int, ImageViewInterface)和loadInstalledAppIcon(String, int, LoadListener)方法
-（完成与2016-05-31）DefaultImageProcessor rename to ResizeImageProcessor
-（完成与2016-05-31）SketchImageView的ImageShape的圆角角度支持更详细的定义，并且setImageShapeRoundedRadius方法改名为setImageShapeCornerRadius，getImageShapeRoundedRadius方法改名为getImageShapeCornerRadius
+（完成于2016-04-25）定义一个统一的Identifier接口
+（完成于2016-04-25）所有参数配置封装成一个类，这样helper和request就可以共用一个参数类了，还能减少代码量。这样参数类得提供一个计算出KEY的方法，KEY加上Uri就是图片的内存缓存ID，完美
+（完成于2016-04-26）将基础属性封装成一个单独的类，将运行中状态封装成一个单独的类，将下载结果、加载结果封装成一个单独的类，将display特有的属性封装成一个单独的类
+（完成于2016-04-26）线程间跳转的是不是可以封装一下（已封装在了SketchRequest中）
+（完成于2016-04-26）还有在主线程中调用的是不是也可以封装一下（已封装在了SketchRequest中）
+（完成于2016-04-27）试着让DisplayRequest继承自LoadRequest，这样加载部分的代码就简单多了
+（完成于2016-04-27）Sketch.putOptions(RequestOptions)改成了Sketch.putDisplayOptions(DisplayOptions)...
+（完成于2016-04-27）兼容file://（直接改成了每种类型可以有两种协议类型，这样还顺便把http://和https://融合成了一种）
+（完成于2016-04-27）SketchImageView.setDisplayOptions(Enum)改为setOptionsByName(Enum) ...Helper.options(Enum)改为optionsByName(Enum)
+（完成于2016-04-28）当使用setResource设置了新的图片的时候，那么displayParams是不是该清除了，确保在onAttch的时候不被恢复
+（完成于2016-04-28）TransitionImageDisplayer异常的时候说明是哪个没设置对
+（完成于2016-04-28）修复DiskLruCache的removeBUG，当要删除的缓存文件已经不存在了就会remove失败，解决办法就是先验证文件是否存在
+（完成于2016-05-02）拆分SketchImageView
+（完成于2016-05-03）重组目录结构
+（完成于2016-05-04）新增旋转图片处理器RotateImageProcessor
+（完成于2016-05-05）默认不再解码GIF图
+（完成于2016-05-07）当暂停下载时尽可能在commit的时候就判断如果没有磁盘缓存就结束，这样体验会更好
+（完成于2016-05-08）LruDiskCache添加一个判断是否存在的方法，这样DisplayHelper用的时候能少创建几个对象
+（完成于2016-05-08）统一使用getDiskCacheKey访问磁盘缓存
+（完成于2016-05-08）listener回调在commit也要检查是不是在主线程不再的话就放到主线程执行
+（完成于2016-05-08）本地图片就不再显示进度蒙层了
+（完成于2016-05-09）diskLruCache abort和commit的时候会抛出运行时异常，捕获一下
+（完成于2016-05-09）提高DiskLruCache的遇错自我恢复能力
+（完成于2016-05-09）LruDiskCache兼容多进程
+（完成于2016-05-09）优化分发效率以及支持输出display在主线程的耗时
+（完成于2016-05-12）减少占位图缓存最大容量，调整为最大可用内存的32分之一，但又不能少于2M
+（完成于2016-05-11）各种异常情况如果没有配置相应的占位image就设置drawable为空，这是之前的BUG
+（完成于2016-05-11）缓存文件的名称不能再用uri.encode来加密了，要用MD5（不必了之前有这样的考虑是因为可能会因为后缀可能为.apk而导致被误识别，但是DiskLruCache会在最后加上序号就没这问题了）
+（完成于2016-05-16）本地任务支持多线程，加快处理速度
+（完成于2016-05-24）重构ImageDownloader,新增可设置User-Agent、readTimeout和批量添加header
+（完成于2016-05-24）采用httpStack模式 改进imageDownloader
+（完成于2016-05-26）不再用DisplayHelper中的options覆盖ImageView的options,这是之前重构DisplayHelper时候改出来的BUG,现在依然要放到DisplayParams中去
+（完成于2016-05-29）支持设置inPreferQualityOverSpeed
+（完成于2016-05-30）LocalImagePreprocessor rename to ImagePreprocessor
+（完成于2016-05-31）Sketch增加displayInstalledAppIcon(String, int, ImageViewInterface)和loadInstalledAppIcon(String, int, LoadListener)方法
+（完成于2016-05-31）DefaultImageProcessor rename to ResizeImageProcessor
+（完成于2016-05-31）SketchImageView的ImageShape的圆角角度支持更详细的定义，并且setImageShapeRoundedRadius方法改名为setImageShapeCornerRadius，getImageShapeRoundedRadius方法改名为getImageShapeCornerRadius
+（完成于2016-06-01）新增ErrorCallback可让使用者接收解码失败、安装磁盘缓存失败等异常
+（完成于2016-06-01）禁止GifDrawable使用内存缓存，因为GifDrawable需要依赖Callback才能播放， 如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
+（完成于2016-06-01）磁盘缓存编辑加同步锁
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -175,7 +178,6 @@ RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
 似乎想到一种能读取webp缩略图的方法了，方案就是将webp在本地转成png，然后再读取
 利用BitmapShader实现各种形状的图片
 增强一下FixedBitmapDrawable，尽量在使用原生BitmapDrawable的基础上实现ScaleType的功能，然后定义一个牛逼的SketchBitmapDrawable，然后在搞一个专门的RecyclerDrawable可以包装SketchBitmapDrawable个GIfDrawable
-由于现在本地任务支持多线程了，就会有同时编辑同一个diskCache的情况，需要想办法搞一个同步
 
 其它：
 参考Glide、Fresco和Picasso
