@@ -61,7 +61,7 @@ sketchImageView.getOptions()
 ```java
 sketchImageView.setOptions(DisplayOptions)
 ```
-具体的配置项请参考[配置显示、加载、下载选项.md](https://github.com/xiaopansky/Sketch/wiki/Options)
+具体的配置项请参考[配置显示、加载、下载选项.md](download_load_display_options.md)
 
 ####  2. 监听显示过程和下载进度
 ```java
@@ -122,11 +122,11 @@ sketchImageView.setShowPressedStatus(true);
 
 没按下时是这样的：
 
-![image_shape1](https://github.com/xiaopansky/Sketch/raw/master/docs/res/image_shape1.png)
+![image_shape1](../res/image_shape1.png)
 
 按下时是这样的：
 
-![image_shape2](https://github.com/xiaopansky/Sketch/raw/master/docs/res/image_shape2.png)
+![image_shape2](../res/image_shape2.png)
 
 这样当然不行了，ImageShape就是来解决这个问题的，你可以执行如下代码设置ImageShape为圆形的
 ```java
@@ -134,7 +134,7 @@ sketchImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
 ```
 这时候按下后效果是这样的：
 
-![image_shape3](https://github.com/xiaopansky/Sketch/raw/master/docs/res/image_shape3.png)
+![image_shape3](../res/image_shape3.png)
 
 可能有同学会说为什么不用ClipPath实现这个效果呢？这样也不用裁剪图片了，省事。经实际测试后发现ClipPath会有明显的锯齿，效果不好，并且部分机型硬件加速还不支持ClipPath。
 
@@ -160,7 +160,7 @@ sketchImageView.setGifFlagDrawable(R.drawable.ic_gif);
 
 效果如下：
 
-![gif](https://github.com/xiaopansky/Sketch/raw/master/docs/res/gif_flag_drawable.png)
+![gif](../res/gif_flag_drawable.png)
 
 #### 7 显示图片来源
 SketchImageView还支持显示图片来源，如下：
@@ -176,7 +176,7 @@ sketchImageView.setShowFromFlag(true);
 
 效果如下：
 
-![sample](https://github.com/xiaopansky/Sketch/raw/master/docs/res/sampe_debug_mode.jpeg)
+![sample](../res/sample_debug_mode.jpeg)
 
 #### 8. 失败时点击重新显示
 一句话开启即可

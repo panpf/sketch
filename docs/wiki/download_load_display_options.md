@@ -1,4 +1,5 @@
 Sketch共有display()、load()、download()三个方法可供使用，你可以根据你的需求选择合适的方法
+
 |方法|作用|Options|Helper|
 |:--|:--|:--|:--|
 |download()|下载图片到本地，并实现本地缓存|DownloadOptions|DownloadHelper|

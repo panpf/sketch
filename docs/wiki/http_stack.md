@@ -56,6 +56,6 @@ Sketch.with(context).getConfiguration().getImageDownloader().setProgressCallback
 8. 实现重试机制，并根据maxRetryCount决定重试次数
 9. 在读取数据的时候要回调progressCallback，同时还要严格遵守progressCallbackNumber所限制的回调次数
 
-详情请参考[HttpUrlConnectionImageDownloader](https://github.com/xiaopansky/Sketch/blob/master/sketch/src/main/java/me/xiaopan/sketch/download/HttpUrlConnectionImageDownloader.java)
+详情请参考[HurlStack.java](https://github.com/xiaopansky/Sketch/blob/master/sketch/src/main/java/me/xiaopan/sketch/http/HurlStack.java)
 
-自定义完成之后调用Sketch.with(context).getConfiguration().setImageDownloader(ImageDownloader)设置即可
+自定义完成之后调用Sketch.with(context).getConfiguration().setHttpStack(HttpStack)设置即可

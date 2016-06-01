@@ -28,4 +28,4 @@ Sketch.with(context).loadInstalledAppIcon("com.tencent.qq", 50001, new LoadListe
 }).commit();
 ```
 
-![apps](https://github.com/xiaopansky/Sketch/raw/master/docs/res/apps.png)
+![apps](../res/apps.png)
