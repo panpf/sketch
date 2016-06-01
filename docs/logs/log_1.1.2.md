@@ -1,0 +1,1 @@
+>* ``修改``. 修改DisplayRequest.Builder、LoadRequest.Builder、DownloadRequest.Builder的名字为DisplayRequest.Helper、LoadRequest.Helper、DownloadRequest.Helper，这是因为DisplayRequest.Builder原本应有的build()方法被fire()代替了，而功能也是大不一样，所以觉得叫Builder不太合适
