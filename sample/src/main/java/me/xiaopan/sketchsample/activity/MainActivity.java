@@ -39,6 +39,7 @@ import me.xiaopan.androidinjector.InjectParentMember;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketchsample.BuildConfig;
 import me.xiaopan.sketchsample.MyBaseActivity;
 import me.xiaopan.sketchsample.NotificationService;
 import me.xiaopan.sketchsample.R;
@@ -48,6 +49,7 @@ import me.xiaopan.sketchsample.fragment.LargeImageFragment;
 import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.StarIndexFragment;
+import me.xiaopan.sketchsample.fragment.TestFragment;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.util.Settings;
@@ -80,6 +82,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     private View appListButton;
     @InjectView(R.id.button_main_largeImage)
     private View largeImageButton;
+    @InjectView(R.id.button_main_test)
+    private View testButton;
     @InjectView(R.id.button_main_about)
     private View aboutButton;
     @InjectView(R.id.item_main_scrollingPauseLoad)
@@ -185,6 +189,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         photoAlbumButton.setOnClickListener(this);
         appListButton.setOnClickListener(this);
         largeImageButton.setOnClickListener(this);
+        testButton.setOnClickListener(this);
         aboutButton.setOnClickListener(this);
         showImageDownloadProgressItem.setOnClickListener(this);
         scrollingPauseLoadItem.setOnClickListener(this);
@@ -203,6 +208,10 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
+
+        if (!BuildConfig.DEBUG) {
+            testButton.setVisibility(View.GONE);
+        }
 
         starButton.performClick();
 
@@ -409,6 +418,19 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                             .commit();
                 }
                 break;
+            case R.id.button_main_test:
+                drawerLayout.closeDrawer(Gravity.LEFT);
+                if (type != Type.TEST) {
+                    getSupportActionBar().setTitle("测试");
+                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
+                    type = Type.TEST;
+                    getSupportFragmentManager().beginTransaction()
+                            .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
+                            .replace(R.id.frame_main_content, new TestFragment())
+                            .commit();
+                }
+                break;
             case R.id.item_main_mobileNetworkPauseDownload:
                 boolean newMobileNetStopDownloadValue = !settings.isMobileNetworkPauseDownload();
                 settings.setMobileNetworkPauseDownload(newMobileNetStopDownloadValue);
@@ -534,6 +556,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         ABOUT,
         APP_LIST,
         LARGE_IMAGE,
+        TEST,
     }
 
     private static class TitleTabFactory implements PagerSlidingTabStrip.TabViewFactory {

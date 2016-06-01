@@ -6,6 +6,7 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -18,12 +19,12 @@ import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 在继承LocalImagePreprocessor的基础上扩展了解析XPK文件的图标
+ * 在继承ImagePreprocessor的基础上扩展了解析XPK文件的图标
  */
 public class MyImagePreprocessor extends ImagePreprocessor {
 
     public MyImagePreprocessor() {
-        logName = "MyLocalImagePreprocessor";
+        logName = "MyImagePreprocessor";
     }
 
     @Override
@@ -57,6 +58,18 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         long lastModifyTime = xpkFile.lastModified();
         String diskCacheKey = realUri + "." + lastModifyTime;
 
+        ReentrantLock lock = configuration.getDiskCache().getEditorLock(diskCacheKey);
+        lock.lock();
+
+        DiskCache.Entry diskCacheEntry = readXpkIcon(configuration, loadRequest, diskCacheKey, realUri);
+
+        lock.unlock();
+
+        return diskCacheEntry;
+    }
+
+    private DiskCache.Entry readXpkIcon(Configuration configuration, LoadRequest loadRequest, String diskCacheKey, String realUri){
+
         DiskCache.Entry xpkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (xpkIconDiskCacheEntry != null) {
             return xpkIconDiskCacheEntry;
@@ -65,7 +78,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
         if (diskCacheEditor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", loadRequest.getAttrs().getId()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "disk cache disable", " - ", loadRequest.getAttrs().getId()));
             }
             return null;
         }
@@ -86,7 +99,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found icon.png in ", loadRequest.getAttrs().getId()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "not found icon.png in ", " - ", loadRequest.getAttrs().getId()));
             }
             try {
                 diskCacheEditor.abort();

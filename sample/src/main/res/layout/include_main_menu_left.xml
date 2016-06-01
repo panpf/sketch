@@ -74,6 +74,11 @@
                     android:text="关于Sketch" />
 
                 <TextView
+                    android:id="@+id/button_main_test"
+                    style="@style/menu_item"
+                    android:text="测试" />
+
+                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="16dp"
