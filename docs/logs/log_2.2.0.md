@@ -10,6 +10,7 @@ setMaxSize(int)、saveBitmap(Bitmap, String)方法
 下载：
 >* ``优化`` 下载进度回调方式改为每秒钟一次（之前是每10%一次）
 >* ``优化`` 重构ImageDownloader，新增可设置User-Agent、readTimeout和批量添加header
+>* ``修改`` ``cacheInDisk改成了disableCacheInDisk``
 
 加载：
 >* ``优化`` 默认maxSize由屏幕宽高的1.5倍改为0.75倍，这样可以大幅减少大图的内存占用，但对图片的清晰度影响却较小
@@ -17,6 +18,9 @@ setMaxSize(int)、saveBitmap(Bitmap, String)方法
 >* ``新增`` 新增ImagePreprocessor可以处理一些特殊的本地文件，然后提取出它们的当中包含的图片，这样Sketch就可以直接显示这些特殊文件中包含的图片了
 >* ``新增`` LoadOptions支持设置BitmapConfig，你可以单独定制某张图片的配置
 >* ``新增`` LoadOptions支持设置inPreferQualityOverSpeed（也可在Configuration中统一配置），你可以在解码速度和图片质量上自由选择
+
+显示：
+>* ``修改`` ``cacheInMemory改成了disableCacheInMemory``
 
 请求：
 >* ``新增`` 支持file:///****.jpg
@@ -38,11 +42,9 @@ setMaxSize(int)、saveBitmap(Bitmap, String)方法
 >* ``新增`` 解码支持设置Options.inPreferQualityOverSpeed（通过LoadOptions配置，也可在Configuration中统一配置），你可以在解码速度和图片质量上自由选择
 
 GIF：
->* ``修改`` 由于显示GIF的场景较少，所以默认不再解码GIF图，在需要解码的地方你可以主动调用 ***Options.setDecodeGifImage(true)或
-***Helper.decodeGifImage()开启，``注意由于默认值改变了因此你需要改一下项目中对GIF开关的配置``
+>* ``修改`` ``由于显示GIF的场景较少，所以默认不再解码GIF图，在需要解码的地方你可以主动调用 ***Options.setDecodeGifImage(true)或***Helper.decodeGifImage()开启``
 >* ``修改`` 删除\***Helper.disableDecodeGif()方法替换为\***Helper.decodeGifImage()
->* ``修改`` 禁止gif图禁止使用内存缓存，因为GifDrawable需要依赖Callback才能播放，
-如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
+>* ``修改`` 禁止gif图禁止使用内存缓存，因为GifDrawable需要依赖Callback才能播放，如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
 
 SketchImageView：
 >* ``修改`` SketchImageView.setDisplayOptions(Enum)改名为setOptionsByName(Enum)
@@ -62,6 +64,6 @@ Sketch增加displayInstalledAppIcon(String, int, ImageViewInterface)和loadInsta
 >* ``修改`` Sketch.putOptions(RequestOptions)拆分成了Sketch.putDisplayOptions(DisplayOptions)、
 Sketch.putLoadOptions(LoadOptions)、Sketch.putDownloadOptions(LoadOptions)
 >* ``新增`` 新增ErrorCallback，开发者为通过ErrorCallback接收到解码失败，磁盘缓存安装失败等异常
+>* ``修改`` ``读取APK图标时不再过滤默认图标``
 
-WIKI：
->* 文档和更新日志中说明一下在Application中首次调用Sketch.with()的时候最好过滤一下非主线程，并说一下原因
+``注意：本次更新cacheInMemory改成了disableCacheInMemory，cacheInDisk改成了disableCacheInDisk，decodeGifImage的默认值改成了false，所以对这三个属性的调用和设置已定义要重点关注``
