@@ -31,8 +31,8 @@ public class SketchManager {
         sketchConfiguration.setMobileNetworkPauseDownload(settings.isMobileNetworkPauseDownload());
         sketchConfiguration.setLowQualityImage(settings.isLowQualityImage());
         sketchConfiguration.setInPreferQualityOverSpeed(settings.isInPreferQualityOverSpeed());
-        sketchConfiguration.setCacheInDisk(settings.isCacheInDisk());
-        sketchConfiguration.setCacheInMemory(settings.isCacheInMemory());
+        sketchConfiguration.setGlobalDisableCacheInDisk(settings.isGlobalDisableCacheInDisk());
+        sketchConfiguration.setGlobalDisableCacheInMemory(settings.isGlobalDisableCacheInMemory());
         sketchConfiguration.setImagePreprocessor(new MyImagePreprocessor());
     }
 

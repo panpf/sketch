@@ -126,14 +126,14 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     private View cleanDiskCacheItem;
     @InjectView(R.id.text_main_diskCacheSize)
     private TextView diskCacheSizeTextView;
-    @InjectView(R.id.item_main_cacheInMemory)
+    @InjectView(R.id.item_main_globalDisableCacheInMemory)
     private View cacheMemoryItem;
-    @InjectView(R.id.checkBox_main_cacheInMemory)
-    private CheckBox cacheInMemoryCheckBox;
-    @InjectView(R.id.item_main_cacheInDisk)
+    @InjectView(R.id.checkBox_main_globalDisableCacheInMemory)
+    private CheckBox globalDisableCacheInMemoryCheckBox;
+    @InjectView(R.id.item_main_globalDisableCacheInDisk)
     private View cacheInDiskItem;
-    @InjectView(R.id.checkBox_main_cacheInDisk)
-    private CheckBox cacheInDiskCheckBox;
+    @InjectView(R.id.checkBox_main_globalDisableCacheInDisk)
+    private CheckBox globalDisableCacheInDiskCheckBox;
     @InjectView(R.id.item_main_lowQualityImge)
     private View lowQualityImageItem;
     @InjectView(R.id.checkBox_main_lowQualityImage)
@@ -179,8 +179,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         clickDisplayOnFailedCheckBox.setChecked(settings.isClickDisplayOnFailed());
         clickDisplayOnPauseDownloadCheckBox.setChecked(settings.isClickDisplayOnPauseDownload());
         showPressedStatusCheckBox.setChecked(settings.isShowPressedStatus());
-        cacheInMemoryCheckBox.setChecked(settings.isCacheInMemory());
-        cacheInDiskCheckBox.setChecked(settings.isCacheInDisk());
+        globalDisableCacheInMemoryCheckBox.setChecked(settings.isGlobalDisableCacheInMemory());
+        globalDisableCacheInDiskCheckBox.setChecked(settings.isGlobalDisableCacheInDisk());
         lowQualityImageCheckBox.setChecked(settings.isLowQualityImage());
         inPreferQualityOverSpeedCheckBox.setChecked(settings.isInPreferQualityOverSpeed());
 
@@ -497,18 +497,18 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 settings.setShowPressedStatus(newShowPressedStatusValue);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
-            case R.id.item_main_cacheInDisk:
-                boolean newCacheInDiskValue = !settings.isCacheInDisk();
-                settings.setCacheInDisk(newCacheInDiskValue);
-                cacheInDiskCheckBox.setChecked(newCacheInDiskValue);
-                Sketch.with(getBaseContext()).getConfiguration().setCacheInDisk(newCacheInDiskValue);
+            case R.id.item_main_globalDisableCacheInDisk:
+                boolean newGlobalDisableCacheInDiskValue = !settings.isGlobalDisableCacheInDisk();
+                settings.setGlobalDisableCacheInDisk(newGlobalDisableCacheInDiskValue);
+                globalDisableCacheInDiskCheckBox.setChecked(newGlobalDisableCacheInDiskValue);
+                Sketch.with(getBaseContext()).getConfiguration().setGlobalDisableCacheInDisk(newGlobalDisableCacheInDiskValue);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
-            case R.id.item_main_cacheInMemory:
-                boolean newCacheInMemoryValue = !settings.isCacheInMemory();
-                cacheInMemoryCheckBox.setChecked(newCacheInMemoryValue);
-                settings.setCacheInMemory(newCacheInMemoryValue);
-                Sketch.with(getBaseContext()).getConfiguration().setCacheInMemory(newCacheInMemoryValue);
+            case R.id.item_main_globalDisableCacheInMemory:
+                boolean newGlobalDisableCacheInMemoryValue = !settings.isGlobalDisableCacheInMemory();
+                globalDisableCacheInMemoryCheckBox.setChecked(newGlobalDisableCacheInMemoryValue);
+                settings.setGlobalDisableCacheInMemory(newGlobalDisableCacheInMemoryValue);
+                Sketch.with(getBaseContext()).getConfiguration().setGlobalDisableCacheInMemory(newGlobalDisableCacheInMemoryValue);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
             case R.id.item_main_lowQualityImge:

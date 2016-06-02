@@ -243,7 +243,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/item_main_cacheInMemory"
+                    android:id="@+id/item_main_globalDisableCacheInMemory"
                     style="@style/menu_item"
                     android:clickable="true">
 
@@ -251,10 +251,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="开启内存缓存" />
+                        android:text="全局禁用内存缓存" />
 
                     <CheckBox
-                        android:id="@+id/checkBox_main_cacheInMemory"
+                        android:id="@+id/checkBox_main_globalDisableCacheInMemory"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
@@ -264,7 +264,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/item_main_cacheInDisk"
+                    android:id="@+id/item_main_globalDisableCacheInDisk"
                     style="@style/menu_item"
                     android:clickable="true">
 
@@ -272,10 +272,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="开启磁盘缓存" />
+                        android:text="全局禁用磁盘缓存" />
 
                     <CheckBox
-                        android:id="@+id/checkBox_main_cacheInDisk"
+                        android:id="@+id/checkBox_main_globalDisableCacheInDisk"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"

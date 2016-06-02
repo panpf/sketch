@@ -13,8 +13,8 @@ public class Settings {
     private static final String PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD = "PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD";
     private static final String PREFERENCE_CLICK_DISPLAY_ON_FAILED = "PREFERENCE_CLICK_DISPLAY_ON_FAILED";
     private static final String PREFERENCE_CLICK_SHOW_PRESSED_STATUS = "PREFERENCE_CLICK_SHOW_PRESSED_STATUS";
-    private static final String PREFERENCE_CACHE_IN_MEMORY = "PREFERENCE_CACHE_IN_MEMORY";
-    private static final String PREFERENCE_CACHE_IN_DISK = "PREFERENCE_CACHE_IN_DISK";
+    private static final String PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY = "PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY";
+    private static final String PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK = "PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK";
     private static final String PREFERENCE_IMAGES_OF_LOW_QUALITY = "PREFERENCE_IMAGES_OF_LOW_QUALITY";
     private static final String PREFERENCE_IN_PREFER_QUALITY_OVER_SPEED = "PREFERENCE_IN_PREFER_QUALITY_OVER_SPEED";
 
@@ -27,8 +27,8 @@ public class Settings {
     private boolean clickDisplayOnPauseDownload;
     private boolean clickDisplayOnFailed;
     private boolean showPressedStatus;
-    private boolean cacheInMemory;
-    private boolean cacheInDisk;
+    private boolean globalDisableCacheInMemory;
+    private boolean globalDisableCacheInDisk;
     private boolean lowQualityImage;
     private boolean inPreferQualityOverSpeed;
 
@@ -45,8 +45,8 @@ public class Settings {
         this.clickDisplayOnPauseDownload = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, true);
         this.clickDisplayOnFailed = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, true);
         this.showPressedStatus = preferences.getBoolean(PREFERENCE_CLICK_SHOW_PRESSED_STATUS, true);
-        this.cacheInMemory = preferences.getBoolean(PREFERENCE_CACHE_IN_MEMORY, true);
-        this.cacheInDisk = preferences.getBoolean(PREFERENCE_CACHE_IN_DISK, true);
+        this.globalDisableCacheInMemory = preferences.getBoolean(PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY, false);
+        this.globalDisableCacheInDisk = preferences.getBoolean(PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK, false);
         this.lowQualityImage = preferences.getBoolean(PREFERENCE_IMAGES_OF_LOW_QUALITY, false);
         this.inPreferQualityOverSpeed = preferences.getBoolean(PREFERENCE_IN_PREFER_QUALITY_OVER_SPEED, false);
     }
@@ -172,23 +172,23 @@ public class Settings {
         apply();
     }
 
-    public boolean isCacheInDisk() {
-        return cacheInDisk;
+    public boolean isGlobalDisableCacheInDisk() {
+        return globalDisableCacheInDisk;
     }
 
-    public void setCacheInDisk(boolean cacheInDisk) {
-        this.cacheInDisk = cacheInDisk;
-        editor.putBoolean(PREFERENCE_CACHE_IN_DISK, cacheInDisk);
+    public void setGlobalDisableCacheInDisk(boolean globalDisableCacheInDisk) {
+        this.globalDisableCacheInDisk = globalDisableCacheInDisk;
+        editor.putBoolean(PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK, globalDisableCacheInDisk);
         apply();
     }
 
-    public boolean isCacheInMemory() {
-        return cacheInMemory;
+    public boolean isGlobalDisableCacheInMemory() {
+        return globalDisableCacheInMemory;
     }
 
-    public void setCacheInMemory(boolean cacheInMemory) {
-        this.cacheInMemory = cacheInMemory;
-        editor.putBoolean(PREFERENCE_CACHE_IN_MEMORY, cacheInMemory);
+    public void setGlobalDisableCacheInMemory(boolean globalDisableCacheInMemory) {
+        this.globalDisableCacheInMemory = globalDisableCacheInMemory;
+        editor.putBoolean(PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY, globalDisableCacheInMemory);
         apply();
     }
 
