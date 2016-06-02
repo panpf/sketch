@@ -35,7 +35,7 @@ DisplayOptions `extends` LoadOptions `extends` DownloadOptions
 |requestLevel|NET|NET|NET|setRequestLevel()|
 |listener|null|null|null|listener()|
 |progressListener|null|null|null|progressListener()|
-|diskCache|true|true|true|disableDiskCache()|
+|disableCacheInDisk|false|false|false|disableCacheInDisk()|
 |maxSize|-|屏幕的0.75倍|优先考虑ImageView的layout_width和layout_height|maxSize()|
 |resize|-|null|null|resize()|
 |resizeByFixedSize|-|false|false|resizeByFixedSize()|
@@ -45,7 +45,7 @@ DisplayOptions `extends` LoadOptions `extends` DownloadOptions
 |lowQualityImage|-|false|false|lowQualityImage()|
 |bitmapConfig|-|null|null|bitmapConfig()|
 |inPreferQualityOverSpeed|-|false|false|inPreferQualityOverSpeed()|
-|memoryCache|-|-|true|disableMemoryCache()|
+|disableCacheInMemory|-|-|false|disableCacheInMemory()|
 |displayer|-|-|DefaultImageDisplayer|displayer()|
 |loadingImage|-|-|null|loadingImage()|
 |failedImage|-|-|null|failedImage()|
@@ -59,7 +59,7 @@ DisplayOptions displayOptions = new DisplayOptions();
 displayOptions.setRequestLevel(RequestLevel.LOCAL);
 
 // 禁用磁盘缓存
-displayOptions.setCacheInDisk(false);
+displayOptions.setDisableCacheInDisk(true);
 
 // 设置最大尺寸，用来解码Bitmap时计算inSampleSize，防止加载过大的图片到内存中。默认会先尝试用SketchImageView的layout_width和layout_height作为maxSize，否则会用当前屏幕宽高的0.75倍作为maxSize
 displayOptions.setMaxSize(1000, 1000);
@@ -89,7 +89,7 @@ displayOptions.setInPreferQualityOverSpeed(true);
 displayOptions.setImageProcessor(new CircleImageProcessor());
 
 // 禁用内存缓存
-displayOptions.setCacheInMemory(false);
+displayOptions.setDisableCacheInMemory(true);
 
 // 设置正在加载的时候显示的图片
 displayOptions.setLoadingImage(R.drawable.image_loading);
@@ -123,7 +123,7 @@ Sketch.with(context).load("http://biying.png", new LoadListener() {...})
 
 // 下载
 Sketch.with(context).download("http://biying.png", new DownloadListener(){...})
-	.disableDiskCache()
+	.disableCacheInDisk()
 	...
 	.commit();
 ```
