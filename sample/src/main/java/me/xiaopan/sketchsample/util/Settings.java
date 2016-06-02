@@ -15,8 +15,8 @@ public class Settings {
     private static final String PREFERENCE_CLICK_SHOW_PRESSED_STATUS = "PREFERENCE_CLICK_SHOW_PRESSED_STATUS";
     private static final String PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY = "PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY";
     private static final String PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK = "PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK";
-    private static final String PREFERENCE_IMAGES_OF_LOW_QUALITY = "PREFERENCE_IMAGES_OF_LOW_QUALITY";
-    private static final String PREFERENCE_IN_PREFER_QUALITY_OVER_SPEED = "PREFERENCE_IN_PREFER_QUALITY_OVER_SPEED";
+    private static final String PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE = "PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE";
+    private static final String PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED = "PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED";
 
     private static Settings settingsInstance;
 
@@ -29,8 +29,8 @@ public class Settings {
     private boolean showPressedStatus;
     private boolean globalDisableCacheInMemory;
     private boolean globalDisableCacheInDisk;
-    private boolean lowQualityImage;
-    private boolean inPreferQualityOverSpeed;
+    private boolean globalLowQualityImage;
+    private boolean globalInPreferQualityOverSpeed;
 
     private SharedPreferences.Editor editor;
 
@@ -47,8 +47,8 @@ public class Settings {
         this.showPressedStatus = preferences.getBoolean(PREFERENCE_CLICK_SHOW_PRESSED_STATUS, true);
         this.globalDisableCacheInMemory = preferences.getBoolean(PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY, false);
         this.globalDisableCacheInDisk = preferences.getBoolean(PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK, false);
-        this.lowQualityImage = preferences.getBoolean(PREFERENCE_IMAGES_OF_LOW_QUALITY, false);
-        this.inPreferQualityOverSpeed = preferences.getBoolean(PREFERENCE_IN_PREFER_QUALITY_OVER_SPEED, false);
+        this.globalLowQualityImage = preferences.getBoolean(PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE, false);
+        this.globalInPreferQualityOverSpeed = preferences.getBoolean(PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, false);
     }
 
     public static Settings with(Context context){
@@ -192,23 +192,23 @@ public class Settings {
         apply();
     }
 
-    public boolean isLowQualityImage() {
-        return lowQualityImage;
+    public boolean isGlobalLowQualityImage() {
+        return globalLowQualityImage;
     }
 
-    public void setLowQualityImage(boolean lowQualityImage) {
-        this.lowQualityImage = lowQualityImage;
-        editor.putBoolean(PREFERENCE_IMAGES_OF_LOW_QUALITY, lowQualityImage);
+    public void setGlobalLowQualityImage(boolean globalLowQualityImage) {
+        this.globalLowQualityImage = globalLowQualityImage;
+        editor.putBoolean(PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE, globalLowQualityImage);
         apply();
     }
 
-    public boolean isInPreferQualityOverSpeed() {
-        return inPreferQualityOverSpeed;
+    public boolean isGlobalInPreferQualityOverSpeed() {
+        return globalInPreferQualityOverSpeed;
     }
 
-    public void setInPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
-        this.inPreferQualityOverSpeed = inPreferQualityOverSpeed;
-        editor.putBoolean(PREFERENCE_IN_PREFER_QUALITY_OVER_SPEED, inPreferQualityOverSpeed);
+    public void setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
+        this.globalInPreferQualityOverSpeed = globalInPreferQualityOverSpeed;
+        editor.putBoolean(PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, globalInPreferQualityOverSpeed);
         apply();
     }
 }

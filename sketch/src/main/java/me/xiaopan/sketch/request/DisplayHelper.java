@@ -470,12 +470,12 @@ public class DisplayHelper {
         }
 
         // 如果设置了全局使用低质量图片的话就强制使用低质量的图片
-        if (configuration.isLowQualityImage()) {
+        if (configuration.isGlobalLowQualityImage()) {
             displayOptions.setLowQualityImage(true);
         }
 
         // 如果设置了全局解码质量优先
-        if (configuration.isInPreferQualityOverSpeed()) {
+        if (configuration.isGlobalInPreferQualityOverSpeed()) {
             displayOptions.setInPreferQualityOverSpeed(true);
         }
 

@@ -64,10 +64,10 @@ public class Configuration {
 
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean pauseDownload;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
-    private boolean lowQualityImage; // 是否返回低质量的图片
-    private boolean inPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
+    private boolean globalLowQualityImage; // 全局使用低质量的图片
     private boolean globalDisableCacheInDisk;   // 全局禁用磁盘缓存
     private boolean globalDisableCacheInMemory; // 全局禁用内存缓存
+    private boolean globalInPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
     private MobileNetworkPauseDownloadManager mobileNetworkPauseDownloadManager;
 
     public Configuration(Context tempContext) {
@@ -442,46 +442,45 @@ public class Configuration {
     }
 
     /**
-     * 是否返回低质量的图片
+     * 是否全局使用低质量的图片
      */
-    public boolean isLowQualityImage() {
-        return lowQualityImage;
+    public boolean isGlobalLowQualityImage() {
+        return globalLowQualityImage;
     }
 
     /**
-     * 设置是否返回低质量的图片
+     * 设置是否全局使用低质量的图片
      */
-    public Configuration setLowQualityImage(boolean lowQualityImage) {
-        if (this.lowQualityImage != lowQualityImage) {
-            this.lowQualityImage = lowQualityImage;
+    public Configuration setGlobalLowQualityImage(boolean globalLowQualityImage) {
+        if (this.globalLowQualityImage != globalLowQualityImage) {
+            this.globalLowQualityImage = globalLowQualityImage;
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "lowQualityImage", " (", lowQualityImage, ")"));
+                        "set", " - ", "globalLowQualityImage", " (", globalLowQualityImage, ")"));
             }
         }
         return this;
     }
 
     /**
-     * 解码时优先考虑速度还是质量 (默认优先考虑速度)
+     * 全局解码时优先考虑速度还是质量 (默认优先考虑速度)
      *
      * @return true:质量;false:速度
      */
-    public boolean isInPreferQualityOverSpeed() {
-        return inPreferQualityOverSpeed;
+    public boolean isGlobalInPreferQualityOverSpeed() {
+        return globalInPreferQualityOverSpeed;
     }
 
     /**
-     * 设置解码时优先考虑速度还是质量 (默认优先考虑速度)
-     *
-     * @param inPreferQualityOverSpeed true:质量;false:速度
+     * 设置全局解码时优先考虑速度还是质量 (默认优先考虑速度)
+     * @param globalInPreferQualityOverSpeed true:质量;false:速度
      */
-    public Configuration setInPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
-        if (this.inPreferQualityOverSpeed != inPreferQualityOverSpeed) {
-            this.inPreferQualityOverSpeed = inPreferQualityOverSpeed;
+    public Configuration setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
+        if (this.globalInPreferQualityOverSpeed != globalInPreferQualityOverSpeed) {
+            this.globalInPreferQualityOverSpeed = globalInPreferQualityOverSpeed;
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "inPreferQualityOverSpeed", " (", inPreferQualityOverSpeed, ")"));
+                        "set", " - ", "globalInPreferQualityOverSpeed", " (", globalInPreferQualityOverSpeed, ")"));
             }
         }
         return this;
@@ -685,14 +684,14 @@ public class Configuration {
         builder.append(pauseDownload);
 
         if (builder.length() > 0) builder.append("\n");
-        builder.append("lowQualityImage");
+        builder.append("globalLowQualityImage");
         builder.append("：");
-        builder.append(lowQualityImage);
+        builder.append(globalLowQualityImage);
 
         if (builder.length() > 0) builder.append("\n");
-        builder.append("inPreferQualityOverSpeed");
+        builder.append("globalInPreferQualityOverSpeed");
         builder.append("：");
-        builder.append(inPreferQualityOverSpeed);
+        builder.append(globalInPreferQualityOverSpeed);
 
         if (builder.length() > 0) builder.append("\n");
         builder.append("globalDisableCacheInMemory");

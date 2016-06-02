@@ -208,12 +208,12 @@ public class LoadHelper {
         }
 
         // 如果设置了全局使用低质量图片的话就强制使用低质量的图片
-        if (configuration.isLowQualityImage()) {
+        if (configuration.isGlobalLowQualityImage()) {
             loadOptions.setLowQualityImage(true);
         }
 
         // 如果设置了全局解码质量优先
-        if (sketch.getConfiguration().isInPreferQualityOverSpeed()) {
+        if (sketch.getConfiguration().isGlobalInPreferQualityOverSpeed()) {
             loadOptions.setInPreferQualityOverSpeed(true);
         }
 

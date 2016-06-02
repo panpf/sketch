@@ -285,7 +285,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/item_main_lowQualityImge"
+                    android:id="@+id/item_main_globalLowQualityImage"
                     style="@style/menu_item"
                     android:clickable="true">
 
@@ -293,10 +293,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="低质量图片" />
+                        android:text="全局使用低质量图片" />
 
                     <CheckBox
-                        android:id="@+id/checkBox_main_lowQualityImage"
+                        android:id="@+id/checkBox_main_globalLowQualityImage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"
@@ -306,7 +306,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/item_main_inPreferQualityOverSpeed"
+                    android:id="@+id/item_main_globalInPreferQualityOverSpeed"
                     style="@style/menu_item"
                     android:clickable="true">
 
@@ -314,10 +314,10 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="解码时质量优先" />
+                        android:text="全局解码时质量优先" />
 
                     <CheckBox
-                        android:id="@+id/checkBox_main_inPreferQualityOverSpeed"
+                        android:id="@+id/checkBox_main_globalInPreferQualityOverSpeed"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"

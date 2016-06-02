@@ -134,14 +134,14 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     private View cacheInDiskItem;
     @InjectView(R.id.checkBox_main_globalDisableCacheInDisk)
     private CheckBox globalDisableCacheInDiskCheckBox;
-    @InjectView(R.id.item_main_lowQualityImge)
+    @InjectView(R.id.item_main_globalLowQualityImage)
     private View lowQualityImageItem;
-    @InjectView(R.id.checkBox_main_lowQualityImage)
-    private CheckBox lowQualityImageCheckBox;
-    @InjectView(R.id.item_main_inPreferQualityOverSpeed)
+    @InjectView(R.id.checkBox_main_globalLowQualityImage)
+    private CheckBox globalLowQualityImageCheckBox;
+    @InjectView(R.id.item_main_globalInPreferQualityOverSpeed)
     private View inPreferQualityOverSpeedItem;
-    @InjectView(R.id.checkBox_main_inPreferQualityOverSpeed)
-    private CheckBox inPreferQualityOverSpeedCheckBox;
+    @InjectView(R.id.checkBox_main_globalInPreferQualityOverSpeed)
+    private CheckBox globalInPreferQualityOverSpeedCheckBox;
 
     private long lastClickBackTime;
     private Type type;
@@ -181,8 +181,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         showPressedStatusCheckBox.setChecked(settings.isShowPressedStatus());
         globalDisableCacheInMemoryCheckBox.setChecked(settings.isGlobalDisableCacheInMemory());
         globalDisableCacheInDiskCheckBox.setChecked(settings.isGlobalDisableCacheInDisk());
-        lowQualityImageCheckBox.setChecked(settings.isLowQualityImage());
-        inPreferQualityOverSpeedCheckBox.setChecked(settings.isInPreferQualityOverSpeed());
+        globalLowQualityImageCheckBox.setChecked(settings.isGlobalLowQualityImage());
+        globalInPreferQualityOverSpeedCheckBox.setChecked(settings.isGlobalInPreferQualityOverSpeed());
 
         starButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
@@ -511,18 +511,18 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 Sketch.with(getBaseContext()).getConfiguration().setGlobalDisableCacheInMemory(newGlobalDisableCacheInMemoryValue);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
-            case R.id.item_main_lowQualityImge:
-                boolean newLowQualityImageValue = !settings.isLowQualityImage();
-                lowQualityImageCheckBox.setChecked(newLowQualityImageValue);
-                settings.setLowQualityImage(newLowQualityImageValue);
-                Sketch.with(getBaseContext()).getConfiguration().setLowQualityImage(newLowQualityImageValue);
+            case R.id.item_main_globalLowQualityImage:
+                boolean newGlobalLowQualityImageValue = !settings.isGlobalLowQualityImage();
+                globalLowQualityImageCheckBox.setChecked(newGlobalLowQualityImageValue);
+                settings.setGlobalLowQualityImage(newGlobalLowQualityImageValue);
+                Sketch.with(getBaseContext()).getConfiguration().setGlobalLowQualityImage(newGlobalLowQualityImageValue);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
-            case R.id.item_main_inPreferQualityOverSpeed:
-                boolean inPreferQualityOverSpeed = !settings.isInPreferQualityOverSpeed();
-                inPreferQualityOverSpeedCheckBox.setChecked(inPreferQualityOverSpeed);
-                settings.setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
-                Sketch.with(getBaseContext()).getConfiguration().setInPreferQualityOverSpeed(inPreferQualityOverSpeed);
+            case R.id.item_main_globalInPreferQualityOverSpeed:
+                boolean globalInPreferQualityOverSpeed = !settings.isGlobalInPreferQualityOverSpeed();
+                globalInPreferQualityOverSpeedCheckBox.setChecked(globalInPreferQualityOverSpeed);
+                settings.setGlobalInPreferQualityOverSpeed(globalInPreferQualityOverSpeed);
+                Sketch.with(getBaseContext()).getConfiguration().setGlobalInPreferQualityOverSpeed(globalInPreferQualityOverSpeed);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
         }
