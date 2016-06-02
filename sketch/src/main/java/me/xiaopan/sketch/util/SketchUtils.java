@@ -4,6 +4,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -45,7 +46,12 @@ public class SketchUtils {
         packageInfo.applicationInfo.sourceDir = apkFilePath;
         packageInfo.applicationInfo.publicSourceDir = apkFilePath;
 
-        Drawable drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo);
+        Drawable drawable = null;
+        try {
+            drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo);
+        } catch (Resources.NotFoundException e) {
+            e.printStackTrace();
+        }
         if (drawable == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "app icon is null", " - ", apkFilePath));
