@@ -90,7 +90,7 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 |requestLevel|NET|NET|NET|
 |listener|null|null|null|
 |progressListener|null|null|null|
-|diskCache|true|true|true|
+|disableCacheInDisk|false|false|false|
 |maxSize|-|屏幕的0.75倍|优先考虑ImageView的layout_width和layout_height|
 |resize|-|null|null|
 |resizeByFixedSize|-|false|false|
@@ -100,7 +100,7 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 |lowQualityImage|-|false|false|
 |bitmapConfig|-|null|null|
 |inPreferQualityOverSpeed|-|false|false|
-|memoryCache|-|-|true|
+|disableCacheInMemory|-|-|false|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
 |failedImage|-|-|null|
@@ -158,6 +158,7 @@ headImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/
 >* [列表滑动时暂停加载图片，提升流畅度](docs/wiki/sliding_pause_load.md)
 
 其它：
+>* [非主线程不要初始化Sketch](docs/wiki/filtering_non_main_process.md)
 >* [了解和自定义inSampleSize计算规则](docs/wiki/maxsize_resize_in_sample_size.md)
 >* [了解和配置内存缓存](docs/wiki/memory_cache.md)
 >* [了解和配置本地缓存](docs/wiki/disk_cache.md)
