@@ -26,18 +26,15 @@ import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.RecycleDrawable;
+import me.xiaopan.sketch.feture.ErrorCallback;
 import me.xiaopan.sketch.request.FixedSize;
 
 public class SketchUtils {
 
     /**
-     * 解压APK的图标
-     *
-     * @param context     上下文
-     * @param apkFilePath APK文件的位置
-     * @return APK的图标
+     * 读取APK的图标
      */
-    public static Bitmap decodeIconFromApk(Context context, String apkFilePath, boolean lowQualityImage, String logName) {
+    public static Bitmap decodeIconFromApk(Context context, String apkFilePath, boolean lowQualityImage, String logName, ErrorCallback errorCallback) {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
@@ -57,20 +54,27 @@ public class SketchUtils {
             }
             return null;
         }
-        if (drawable instanceof BitmapDrawable && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) packageManager.getDefaultActivityIcon()).getBitmap()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "icon not found", " - ", apkFilePath));
+        if (drawable instanceof BitmapDrawable) {
+            Drawable defaultActivityIcon = packageManager.getDefaultActivityIcon();
+            if (defaultActivityIcon == null) {
+                if (errorCallback != null) {
+                    errorCallback.onNotFoundDefaultActivityIcon();
+                }
+                return null;
             }
-            return null;
+            if (defaultActivityIcon instanceof BitmapDrawable
+                    && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) defaultActivityIcon).getBitmap()) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "icon not found", " - ", apkFilePath));
+                }
+                return null;
+            }
         }
         return drawableToBitmap(drawable, lowQualityImage);
     }
 
     /**
      * Drawable转成Bitmap
-     *
-     * @param drawable drawable
-     * @return bitmap
      */
     public static Bitmap drawableToBitmap(Drawable drawable, boolean lowQualityImage) {
         if (drawable == null) {
@@ -82,7 +86,10 @@ public class SketchUtils {
                 return null;
             }
 
-            Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
+            Bitmap bitmap = Bitmap.createBitmap(
+                    drawable.getIntrinsicWidth(),
+                    drawable.getIntrinsicHeight(),
+                    lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             drawable.draw(canvas);
             return bitmap;
@@ -241,6 +248,7 @@ public class SketchUtils {
         return null;
     }
 
+    @SuppressWarnings("unused")
     public static boolean isMainProcess(Context context) {
         return context.getPackageName().equalsIgnoreCase(getProcessName(context));
     }

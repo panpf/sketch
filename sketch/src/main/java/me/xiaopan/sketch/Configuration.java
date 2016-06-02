@@ -28,7 +28,6 @@ import me.xiaopan.sketch.decode.DefaultImageDecoder;
 import me.xiaopan.sketch.decode.ImageDecoder;
 import me.xiaopan.sketch.display.DefaultImageDisplayer;
 import me.xiaopan.sketch.display.ImageDisplayer;
-import me.xiaopan.sketch.feture.DefaultErrorCallback;
 import me.xiaopan.sketch.feture.ErrorCallback;
 import me.xiaopan.sketch.feture.HelperFactory;
 import me.xiaopan.sketch.feture.ImagePreprocessor;
@@ -75,7 +74,7 @@ public class Configuration {
         this.context = tempContext.getApplicationContext();
 
         // LruDiskCache需要依赖所以先创建
-        this.errorCallback = new DefaultErrorCallback();
+        this.errorCallback = new ErrorCallback();
 
         this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
         this.diskCache = new LruDiskCache(context, this, 1, LruDiskCache.DISK_CACHE_MAX_SIZE);
