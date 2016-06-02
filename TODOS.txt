@@ -133,6 +133,8 @@
 （完成于2016-06-01）新增ErrorCallback可让使用者接收解码失败、安装磁盘缓存失败等异常
 （完成于2016-06-01）禁止GifDrawable使用内存缓存，因为GifDrawable需要依赖Callback才能播放， 如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
 （完成于2016-06-01）磁盘缓存编辑加同步锁
+（完成于2016-06-02）读取APK图标时不再过滤默认图标
+（完成于2016-06-03）cacheInDisk to disableCacheInDisk, cacheInMemory to disableCacheInMemory
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
