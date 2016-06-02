@@ -43,8 +43,8 @@ public class LoadOptions extends DownloadOptions {
     }
 
     @Override
-    public LoadOptions setCacheInDisk(boolean cacheInDisk) {
-        super.setCacheInDisk(cacheInDisk);
+    public LoadOptions setDisableCacheInDisk(boolean disableCacheInDisk) {
+        super.setDisableCacheInDisk(disableCacheInDisk);
         return this;
     }
 

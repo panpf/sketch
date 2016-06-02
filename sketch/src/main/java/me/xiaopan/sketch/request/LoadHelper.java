@@ -54,11 +54,11 @@ public class LoadHelper {
     }
 
     /**
-     * 关闭硬盘缓存
+     * 禁用磁盘缓存
      */
     @SuppressWarnings("unused")
-    public LoadHelper disableDiskCache() {
-        loadOptions.setCacheInDisk(false);
+    public LoadHelper disableCacheInDisk() {
+        loadOptions.setDisableCacheInDisk(true);
         return this;
     }
 
@@ -202,9 +202,9 @@ public class LoadHelper {
             loadOptions.setMaxSize(configuration.getImageSizeCalculator().getDefaultImageMaxSize(configuration.getContext()));
         }
 
-        // 如果设置了全局禁止使用磁盘缓存的话就强制关闭磁盘缓存功能
-        if (!configuration.isCacheInDisk()) {
-            loadOptions.setCacheInDisk(false);
+        // 如果设置了全局禁用磁盘缓存就强制关闭磁盘缓存功能
+        if (configuration.isGlobalDisableCacheInDisk()) {
+            loadOptions.setDisableCacheInDisk(true);
         }
 
         // 如果设置了全局使用低质量图片的话就强制使用低质量的图片

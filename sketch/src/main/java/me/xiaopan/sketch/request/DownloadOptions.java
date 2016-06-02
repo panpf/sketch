@@ -20,7 +20,7 @@ package me.xiaopan.sketch.request;
  * 下载选项
  */
 public class DownloadOptions {
-    private boolean cacheInDisk;
+    private boolean disableCacheInDisk;
     private RequestLevel requestLevel;
     private RequestLevelFrom requestLevelFrom;
 
@@ -34,17 +34,17 @@ public class DownloadOptions {
     }
 
     /**
-     * 是否将图片缓存在本地（默认是）
+     * 是否禁用磁盘缓存
      */
-    public boolean isCacheInDisk() {
-        return cacheInDisk;
+    public boolean isDisableCacheInDisk() {
+        return disableCacheInDisk;
     }
 
     /**
-     * 设置是否将图片缓存在本地（默认是）
+     * 设置是否禁用磁盘缓存
      */
-    public DownloadOptions setCacheInDisk(boolean cacheInDisk) {
-        this.cacheInDisk = cacheInDisk;
+    public DownloadOptions setDisableCacheInDisk(boolean disableCacheInDisk) {
+        this.disableCacheInDisk = disableCacheInDisk;
         return this;
     }
 
@@ -82,7 +82,7 @@ public class DownloadOptions {
      * 重置所有属性
      */
     public void reset() {
-        cacheInDisk = true;
+        disableCacheInDisk = false;
         requestLevel = null;
         requestLevelFrom = null;
     }
@@ -95,7 +95,7 @@ public class DownloadOptions {
             return;
         }
 
-        cacheInDisk = options.cacheInDisk;
+        disableCacheInDisk = options.disableCacheInDisk;
         requestLevel = options.requestLevel;
         requestLevelFrom = options.requestLevelFrom;
     }
@@ -108,8 +108,8 @@ public class DownloadOptions {
             return;
         }
 
-        if (!cacheInDisk) {
-            cacheInDisk = options.cacheInDisk;
+        if (!disableCacheInDisk) {
+            disableCacheInDisk = options.disableCacheInDisk;
         }
 
         if (requestLevel == null) {

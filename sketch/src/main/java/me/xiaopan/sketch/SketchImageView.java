@@ -537,7 +537,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             showImageFromFunction = null;
         }
 
-        if (oldShowImageFromFunction != null) {
+        if (oldShowImageFromFunction != showImageFromFunction) {
             invalidate();
         }
     }
@@ -572,6 +572,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置GIF标识图片
      */
     public void setShowGifFlag(int gifFlagDrawableResId) {
+        //noinspection deprecation
         setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
     }
 
@@ -612,6 +613,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     /**
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
+    @SuppressWarnings("unused")
     public void setImageShapeCornerRadius(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
         if (imageShapeFunction != null) {
             imageShapeFunction.setCornerRadius(topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius);

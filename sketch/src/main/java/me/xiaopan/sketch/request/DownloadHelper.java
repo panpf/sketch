@@ -45,11 +45,11 @@ public class DownloadHelper {
     }
 
     /**
-     * 关闭硬盘缓存
+     * 禁用磁盘缓存
      */
     @SuppressWarnings("unused")
-    public DownloadHelper disableDiskCache() {
-        downloadOptions.setCacheInDisk(false);
+    public DownloadHelper disableCacheInDisk() {
+        downloadOptions.setDisableCacheInDisk(true);
         return this;
     }
 
@@ -105,8 +105,9 @@ public class DownloadHelper {
     protected void preProcess() {
         Configuration configuration = sketch.getConfiguration();
 
-        if (!configuration.isCacheInDisk()) {
-            downloadOptions.setCacheInDisk(false);
+        // 如果设置了全局禁用磁盘缓存就强制关闭磁盘缓存功能
+        if (configuration.isGlobalDisableCacheInDisk()) {
+            downloadOptions.setDisableCacheInDisk(true);
         }
 
         // 暂停下载对于下载请求并不起作用，就相当于暂停加载对加载请求并不起作用一样，因此这里不予处理

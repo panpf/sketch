@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView.ScaleType;
 
+import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
@@ -137,11 +138,11 @@ public class DisplayHelper {
     }
 
     /**
-     * 关闭硬盘缓存
+     * 禁用磁盘缓存
      */
     @SuppressWarnings("unused")
-    public DisplayHelper disableDiskCache() {
-        displayOptions.setCacheInDisk(false);
+    public DisplayHelper disableCacheInDisk() {
+        displayOptions.setDisableCacheInDisk(true);
         return this;
     }
 
@@ -245,11 +246,11 @@ public class DisplayHelper {
     }
 
     /**
-     * 关闭内存缓存
+     * 禁用内存缓存
      */
     @SuppressWarnings("unused")
-    public DisplayHelper disableMemoryCache() {
-        displayOptions.setCacheInMemory(false);
+    public DisplayHelper disableCacheInMemory() {
+        displayOptions.setDisableCacheInMemory(true);
         return this;
     }
 
@@ -429,6 +430,7 @@ public class DisplayHelper {
      * 对相关参数进行预处理
      */
     protected void preProcess() {
+        Configuration configuration = sketch.getConfiguration();
         ImageSizeCalculator imageSizeCalculator = sketch.getConfiguration().getImageSizeCalculator();
 
         // 根据ImageVie的固定大小计算resize
@@ -445,46 +447,46 @@ public class DisplayHelper {
 
         // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
         if (displayOptions.getImageProcessor() == null && displayOptions.getResize() != null) {
-            displayOptions.setImageProcessor(sketch.getConfiguration().getResizeImageProcessor());
+            displayOptions.setImageProcessor(configuration.getResizeImageProcessor());
         }
 
         // 没有设置maxSize的话，如果ImageView的宽高是的固定的就根据ImageView的宽高来作为maxSize，否则就用默认的maxSize
         if (displayOptions.getMaxSize() == null) {
             MaxSize maxSize = imageSizeCalculator.calculateImageMaxSize(imageViewInterface);
             if (maxSize == null) {
-                maxSize = imageSizeCalculator.getDefaultImageMaxSize(sketch.getConfiguration().getContext());
+                maxSize = imageSizeCalculator.getDefaultImageMaxSize(configuration.getContext());
             }
             displayOptions.setMaxSize(maxSize);
         }
 
-        // 如果设置了全局禁止使用磁盘缓存的话就强制关闭磁盘缓存功能
-        if (!sketch.getConfiguration().isCacheInDisk()) {
-            displayOptions.setCacheInDisk(false);
+        // 如果设置了全局禁用磁盘缓存就强制关闭磁盘缓存功能
+        if (configuration.isGlobalDisableCacheInDisk()) {
+            displayOptions.setDisableCacheInDisk(true);
         }
 
-        // 如果设置了全局禁止使用内存缓存的话就强制内存磁盘缓存功能
-        if (!sketch.getConfiguration().isCacheInMemory()) {
-            displayOptions.setCacheInMemory(false);
+        // 如果设置了全局禁用内存缓存就强制关闭内存缓存功能
+        if (configuration.isGlobalDisableCacheInMemory()) {
+            displayOptions.setDisableCacheInMemory(true);
         }
 
         // 如果设置了全局使用低质量图片的话就强制使用低质量的图片
-        if (sketch.getConfiguration().isLowQualityImage()) {
+        if (configuration.isLowQualityImage()) {
             displayOptions.setLowQualityImage(true);
         }
 
         // 如果设置了全局解码质量优先
-        if (sketch.getConfiguration().isInPreferQualityOverSpeed()) {
+        if (configuration.isInPreferQualityOverSpeed()) {
             displayOptions.setInPreferQualityOverSpeed(true);
         }
 
         // 如果没有设置请求Level的话就跟据暂停下载和暂停加载功能来设置请求Level
         if (displayOptions.getRequestLevel() == null) {
-            if (sketch.getConfiguration().isPauseDownload()) {
+            if (configuration.isPauseDownload()) {
                 displayOptions.setRequestLevel(RequestLevel.LOCAL);
                 displayOptions.setRequestLevelFrom(RequestLevelFrom.PAUSE_DOWNLOAD);
             }
 
-            if (sketch.getConfiguration().isPauseLoad()) {
+            if (configuration.isPauseLoad()) {
                 displayOptions.setRequestLevel(RequestLevel.MEMORY);
                 displayOptions.setRequestLevelFrom(RequestLevelFrom.PAUSE_LOAD);
             }
@@ -492,7 +494,7 @@ public class DisplayHelper {
 
         // ImageDisplayer必须得有
         if (displayOptions.getImageDisplayer() == null) {
-            displayOptions.setImageDisplayer(sketch.getConfiguration().getDefaultImageDisplayer());
+            displayOptions.setImageDisplayer(configuration.getDefaultImageDisplayer());
         }
 
         // 使用过渡图片显示器的时候，如果使用了loadingImage的话ImageView就必须采用固定宽高以及ScaleType必须是CENTER_CROP
@@ -589,7 +591,7 @@ public class DisplayHelper {
     }
 
     private boolean checkMemoryCache() {
-        if (displayOptions.isCacheInMemory()) {
+        if (!displayOptions.isDisableCacheInMemory()) {
             Drawable cacheDrawable = sketch.getConfiguration().getMemoryCache().get(requestAttrs.getId());
             if (cacheDrawable != null) {
                 RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;

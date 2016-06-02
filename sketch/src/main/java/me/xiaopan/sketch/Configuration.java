@@ -63,11 +63,11 @@ public class Configuration {
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
 
     private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
-    private boolean cacheInDisk = true;
-    private boolean cacheInMemory = true;
     private boolean pauseDownload;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean lowQualityImage; // 是否返回低质量的图片
     private boolean inPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
+    private boolean globalDisableCacheInDisk;   // 全局禁用磁盘缓存
+    private boolean globalDisableCacheInMemory; // 全局禁用内存缓存
     private MobileNetworkPauseDownloadManager mobileNetworkPauseDownloadManager;
 
     public Configuration(Context tempContext) {
@@ -488,42 +488,42 @@ public class Configuration {
     }
 
     /**
-     * 是否将图片缓存在本地（默认是）
+     * 是否全局禁用磁盘缓存
      */
-    public boolean isCacheInDisk() {
-        return cacheInDisk;
+    public boolean isGlobalDisableCacheInDisk() {
+        return globalDisableCacheInDisk;
     }
 
     /**
-     * 设置是否将图片缓存在本地（默认是）
+     * 设置是否全局禁用磁盘缓存
      */
-    public Configuration setCacheInDisk(boolean cacheInDisk) {
-        if (this.cacheInDisk != cacheInDisk) {
-            this.cacheInDisk = cacheInDisk;
+    public Configuration setGlobalDisableCacheInDisk(boolean globalDisableCacheInDisk) {
+        if (this.globalDisableCacheInDisk != globalDisableCacheInDisk) {
+            this.globalDisableCacheInDisk = globalDisableCacheInDisk;
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "cacheInDisk", " (", cacheInDisk, ")"));
+                        "set", " - ", "globalDisableCacheInDisk", " (", globalDisableCacheInDisk, ")"));
             }
         }
         return this;
     }
 
     /**
-     * 是否将图片缓存在内存中（默认是）
+     * 是否全局禁用内存缓存
      */
-    public boolean isCacheInMemory() {
-        return cacheInMemory;
+    public boolean isGlobalDisableCacheInMemory() {
+        return globalDisableCacheInMemory;
     }
 
     /**
-     * 设置是否将图片缓存在内存中（默认是）
+     * 设置是否全局禁用内存缓存
      */
-    public Configuration setCacheInMemory(boolean cacheInMemory) {
-        if (this.cacheInMemory != cacheInMemory) {
-            this.cacheInMemory = cacheInMemory;
+    public Configuration setGlobalDisableCacheInMemory(boolean globalDisableCacheInMemory) {
+        if (this.globalDisableCacheInMemory != globalDisableCacheInMemory) {
+            this.globalDisableCacheInMemory = globalDisableCacheInMemory;
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "cacheInMemory", " (", cacheInMemory, ")"));
+                        "set", " - ", "globalDisableCacheInMemory", " (", globalDisableCacheInMemory, ")"));
             }
         }
         return this;
@@ -695,14 +695,14 @@ public class Configuration {
         builder.append(inPreferQualityOverSpeed);
 
         if (builder.length() > 0) builder.append("\n");
-        builder.append("cacheInMemory");
+        builder.append("globalDisableCacheInMemory");
         builder.append("：");
-        builder.append(cacheInMemory);
+        builder.append(globalDisableCacheInMemory);
 
         if (builder.length() > 0) builder.append("\n");
-        builder.append("cacheInDisk");
+        builder.append("globalDisableCacheInDisk");
         builder.append("：");
-        builder.append(cacheInDisk);
+        builder.append(globalDisableCacheInDisk);
 
         return builder.toString();
     }

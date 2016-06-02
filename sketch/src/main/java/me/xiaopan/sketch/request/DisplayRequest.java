@@ -149,7 +149,7 @@ public class DisplayRequest extends LoadRequest {
         setStatus(Status.LOADING);
 
         // 检查内存缓存中是否已经存在了
-        if (displayOptions.isCacheInMemory()) {
+        if (!displayOptions.isDisableCacheInMemory()) {
             Drawable cacheDrawable = getSketch().getConfiguration().getMemoryCache().get(getAttrs().getId());
             if (cacheDrawable != null) {
                 RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
@@ -203,7 +203,7 @@ public class DisplayRequest extends LoadRequest {
             // 包装Bitmap并放入内存缓存池
             RecycleBitmapDrawable bitmapDrawable = new RecycleBitmapDrawable(loadResult.getBitmap());
             bitmapDrawable.setMimeType(loadResult.getMimeType());
-            if (displayOptions.isCacheInMemory() && getAttrs().getId() != null) {
+            if (!displayOptions.isDisableCacheInMemory() && getAttrs().getId() != null) {
                 getSketch().getConfiguration().getMemoryCache().put(getAttrs().getId(), bitmapDrawable);
             }
 

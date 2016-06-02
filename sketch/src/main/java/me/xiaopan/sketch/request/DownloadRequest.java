@@ -116,8 +116,8 @@ public class DownloadRequest extends BaseRequest {
     protected void runDispatch() {
         setStatus(Status.DISPATCHING);
 
-        // 然后从磁盘缓存中找缓存文件
-        if (options.isCacheInDisk()) {
+        // 从磁盘中找缓存文件
+        if (!options.isDisableCacheInDisk()) {
             DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
             String diskCacheKey = getAttrs().getUri();
             DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
@@ -282,7 +282,7 @@ public class DownloadRequest extends BaseRequest {
 
     private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey) throws IOException, DiskLruCache.EditorChangedException {
         // 如果缓存文件已经存在了就直接返回缓存文件
-        if (getOptions().isCacheInDisk()) {
+        if (!getOptions().isDisableCacheInDisk()) {
             DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
             if (diskCacheEntry != null) {
                 return new DownloadResult(diskCacheEntry, false);
@@ -379,7 +379,7 @@ public class DownloadRequest extends BaseRequest {
         }
 
         DiskCache.Editor diskCacheEditor = null;
-        if (getOptions().isCacheInDisk()) {
+        if (!getOptions().isDisableCacheInDisk()) {
             diskCacheEditor = diskCache.edit(diskCacheKey);
         }
         OutputStream outputStream;
@@ -438,7 +438,7 @@ public class DownloadRequest extends BaseRequest {
         }
 
         // 返回结果
-        if (getOptions().isCacheInDisk() && diskCacheEditor != null) {
+        if (!getOptions().isDisableCacheInDisk() && diskCacheEditor != null) {
             diskCacheEditor.commit();
             return new DownloadResult(diskCache.get(diskCacheKey), true);
         } else if (outputStream instanceof ByteArrayOutputStream) {
