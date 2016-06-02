@@ -222,7 +222,7 @@ public class DownloadRequest extends BaseRequest {
                     Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                             " - ", "runDownload",
                             " - ", "canceled",
-                            " - ", "get lock after",
+                            " - ", "download while",
                             " - ", getAttrs().getId()));
                 }
                 break;
@@ -231,6 +231,17 @@ public class DownloadRequest extends BaseRequest {
             String diskCacheKey = getAttrs().getUri();
             ReentrantLock lock = diskCache.getEditorLock(diskCacheKey);
             lock.lock();
+
+            if (isCanceled()) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                            " - ", "runDownload",
+                            " - ", "canceled",
+                            " - ", "get diskCacheEditorLock after",
+                            " - ", getAttrs().getId()));
+                }
+                break;
+            }
 
             boolean isBreak = false;
             try {
