@@ -121,12 +121,11 @@ public class ImagePreprocessor implements Identifier {
             return null;
         }
 
-        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(
+        Bitmap iconBitmap = SketchUtils.readApkIcon(
                 configuration.getContext(),
                 realUri,
                 loadRequest.getOptions().isLowQualityImage(),
-                logName,
-                configuration.getErrorCallback());
+                logName);
         if (iconBitmap == null) {
             try {
                 diskCacheEditor.abort();
@@ -163,6 +162,7 @@ public class ImagePreprocessor implements Identifier {
                 e1.printStackTrace();
             }
         } finally {
+            iconBitmap.recycle();
             SketchUtils.close(outputStream);
         }
 
@@ -237,12 +237,11 @@ public class ImagePreprocessor implements Identifier {
             return null;
         }
 
-        Bitmap iconBitmap = SketchUtils.decodeIconFromApk(
+        Bitmap iconBitmap = SketchUtils.readApkIcon(
                 configuration.getContext(),
                 packageInfo.applicationInfo.sourceDir,
                 loadRequest.getOptions().isLowQualityImage(),
-                logName,
-                configuration.getErrorCallback());
+                logName);
         if (iconBitmap == null) {
             try {
                 diskCacheEditor.abort();
@@ -279,6 +278,7 @@ public class ImagePreprocessor implements Identifier {
                 e1.printStackTrace();
             }
         } finally {
+            iconBitmap.recycle();
             SketchUtils.close(outputStream);
         }
 

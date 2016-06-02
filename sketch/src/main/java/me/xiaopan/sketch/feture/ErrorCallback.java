@@ -59,10 +59,10 @@ public class ErrorCallback implements Identifier {
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "DecodeNormalImageFailed", ": ", request.getAttrs().getId()));
     }
-
-    public void onNotFoundDefaultActivityIcon() {
-        Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "NotFoundDefaultActivityIcon"));
-    }
+//
+//    public void onNotFoundDefaultActivityIcon() {
+//        Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "NotFoundDefaultActivityIcon"));
+//    }
 
     @Override
     public String getIdentifier() {

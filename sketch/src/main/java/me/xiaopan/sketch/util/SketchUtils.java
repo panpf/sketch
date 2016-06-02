@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.os.Looper;
@@ -26,7 +25,6 @@ import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.RecycleDrawable;
-import me.xiaopan.sketch.feture.ErrorCallback;
 import me.xiaopan.sketch.request.FixedSize;
 
 public class SketchUtils {
@@ -34,7 +32,7 @@ public class SketchUtils {
     /**
      * 读取APK的图标
      */
-    public static Bitmap decodeIconFromApk(Context context, String apkFilePath, boolean lowQualityImage, String logName, ErrorCallback errorCallback) {
+    public static Bitmap readApkIcon(Context context, String apkFilePath, boolean lowQualityImage, String logName) {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
@@ -50,26 +48,29 @@ public class SketchUtils {
         Drawable drawable = packageManager.getApplicationIcon(packageInfo.applicationInfo);
         if (drawable == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "get application icon is null", " - ", apkFilePath));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "app icon is null", " - ", apkFilePath));
             }
             return null;
         }
-        if (drawable instanceof BitmapDrawable) {
-            Drawable defaultActivityIcon = packageManager.getDefaultActivityIcon();
-            if (defaultActivityIcon == null) {
-                if (errorCallback != null) {
-                    errorCallback.onNotFoundDefaultActivityIcon();
-                }
-                return null;
-            }
-            if (defaultActivityIcon instanceof BitmapDrawable
-                    && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) defaultActivityIcon).getBitmap()) {
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "icon not found", " - ", apkFilePath));
-                }
-                return null;
-            }
-        }
+
+        // 不过滤系统默认app icon了，艹，谁他妈想到三星A5上packageManager.getDefaultActivityIcon()还会返回NinePathDrawable
+//        if (drawable instanceof BitmapDrawable) {
+//            Drawable defaultActivityIcon = packageManager.getDefaultActivityIcon();
+//            if (defaultActivityIcon == null) {
+//                if (errorCallback != null) {
+//                    errorCallback.onNotFoundDefaultActivityIcon();
+//                }
+//                return null;
+//            }
+//            if (defaultActivityIcon instanceof BitmapDrawable
+//                    && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) defaultActivityIcon).getBitmap()) {
+//                if (Sketch.isDebugMode()) {
+//                    Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "icon not found", " - ", apkFilePath));
+//                }
+//                return null;
+//            }
+//        }
+
         return drawableToBitmap(drawable, lowQualityImage);
     }
 
@@ -77,23 +78,19 @@ public class SketchUtils {
      * Drawable转成Bitmap
      */
     public static Bitmap drawableToBitmap(Drawable drawable, boolean lowQualityImage) {
-        if (drawable == null) {
+        if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
             return null;
-        } else if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
-        } else {
-            if (drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
-                return null;
-            }
-
-            Bitmap bitmap = Bitmap.createBitmap(
-                    drawable.getIntrinsicWidth(),
-                    drawable.getIntrinsicHeight(),
-                    lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(bitmap);
-            drawable.draw(canvas);
-            return bitmap;
         }
+
+        drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        drawable.draw(canvas);
+        return bitmap;
     }
 
     /**
