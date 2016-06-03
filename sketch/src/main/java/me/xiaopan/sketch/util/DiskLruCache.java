@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.util;
 
+import android.util.Log;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -261,7 +263,8 @@ public final class DiskLruCache implements Closeable {
                 deleteContents(file);
             }
             if (!file.delete()) {
-                throw new IOException("failed to delete file: " + file);
+//                throw new IOException("failed to delete file: " + file);
+                Log.w("DiskLruCache", "failed to delete file: " + file.getPath());
             }
         }
     }
