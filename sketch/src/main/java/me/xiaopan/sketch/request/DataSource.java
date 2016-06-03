@@ -18,27 +18,27 @@ package me.xiaopan.sketch.request;
 
 import me.xiaopan.sketch.cache.DiskCache;
 
-public class DownloadResult {
+public class DataSource {
     private DiskCache.Entry diskCacheEntry;
     private byte[] imageData;
-    private boolean fromNetwork;
+    private ImageFrom imageFrom;
 
-    public DownloadResult(DiskCache.Entry diskCacheEntry, boolean fromNetwork) {
+    public DataSource(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
         this.diskCacheEntry = diskCacheEntry;
-        this.fromNetwork = fromNetwork;
+        this.imageFrom = imageFrom;
     }
 
-    public DownloadResult(byte[] imageData, boolean fromNetwork) {
+    public DataSource(byte[] imageData, ImageFrom imageFrom) {
         this.imageData = imageData;
-        this.fromNetwork = fromNetwork;
+        this.imageFrom = imageFrom;
     }
 
     public DiskCache.Entry getDiskCacheEntry() {
         return diskCacheEntry;
     }
 
-    public boolean isFromNetwork() {
-        return fromNetwork;
+    public ImageFrom getImageFrom() {
+        return imageFrom;
     }
 
     public byte[] getImageData() {

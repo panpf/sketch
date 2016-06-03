@@ -14,34 +14,23 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.request;
+package me.xiaopan.sketch.feture;
 
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.request.ImageFrom;
 
-public class DownloadResult {
-    private DiskCache.Entry diskCacheEntry;
-    private byte[] imageData;
-    private boolean fromNetwork;
+public class PreProcessResult {
+    public DiskCache.Entry diskCacheEntry;
+    public byte[] imageData;
+    public ImageFrom imageFrom;
 
-    public DownloadResult(DiskCache.Entry diskCacheEntry, boolean fromNetwork) {
+    public PreProcessResult(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
         this.diskCacheEntry = diskCacheEntry;
-        this.fromNetwork = fromNetwork;
+        this.imageFrom = imageFrom;
     }
 
-    public DownloadResult(byte[] imageData, boolean fromNetwork) {
+    public PreProcessResult(byte[] imageData, ImageFrom imageFrom) {
         this.imageData = imageData;
-        this.fromNetwork = fromNetwork;
-    }
-
-    public DiskCache.Entry getDiskCacheEntry() {
-        return diskCacheEntry;
-    }
-
-    public boolean isFromNetwork() {
-        return fromNetwork;
-    }
-
-    public byte[] getImageData() {
-        return imageData;
+        this.imageFrom = imageFrom;
     }
 }

@@ -20,10 +20,10 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
 import me.xiaopan.sketch.feture.ImagePreprocessor;
+import me.xiaopan.sketch.feture.PreProcessResult;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -34,6 +34,7 @@ public class LoadRequest extends DownloadRequest {
     private LoadOptions loadOptions;
     private LoadListener loadListener;
 
+    private DataSource dataSource;
     private LoadResult loadResult;
 
     public LoadRequest(
@@ -70,6 +71,13 @@ public class LoadRequest extends DownloadRequest {
     @SuppressWarnings("unused")
     protected void setLoadResult(LoadResult loadResult) {
         this.loadResult = loadResult;
+    }
+
+    /**
+     * 获取数据源
+     */
+    public DataSource getDataSource() {
+        return dataSource;
     }
 
     @Override
@@ -111,6 +119,22 @@ public class LoadRequest extends DownloadRequest {
 
     @Override
     protected void downloadComplete() {
+        DownloadResult downloadResult = getDownloadResult();
+        if (downloadResult == null || (downloadResult.getDiskCacheEntry() == null && downloadResult.getImageData() == null)) {
+            failed(FailedCause.DOWNLOAD_FAIL);
+            return;
+        }
+
+        ImageFrom imageFrom = downloadResult.isFromNetwork() ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
+        if (downloadResult.getDiskCacheEntry() != null) {
+            dataSource = new DataSource(downloadResult.getDiskCacheEntry(), imageFrom);
+        } else if (downloadResult.getImageData() != null && downloadResult.getImageData().length > 0) {
+            dataSource = new DataSource(downloadResult.getImageData(), imageFrom);
+        } else {
+            failed(FailedCause.DOWNLOAD_FAIL);
+            return;
+        }
+
         submitRunLoad();
     }
 
@@ -132,9 +156,16 @@ public class LoadRequest extends DownloadRequest {
         // 尝试用图片预处理器处理一下特殊的本地图片，并得到他们的缓存
         ImagePreprocessor imagePreprocessor = getSketch().getConfiguration().getImagePreprocessor();
         if (imagePreprocessor.isSpecific(this)) {
-            DiskCache.Entry specificLocalImageDiskCacheEntry = imagePreprocessor.getDiskCacheEntry(this);
-            if (specificLocalImageDiskCacheEntry != null) {
-                setDownloadResult(new DownloadResult(specificLocalImageDiskCacheEntry, false));
+            PreProcessResult prePrecessResult = imagePreprocessor.getDiskCacheEntry(this);
+            if (prePrecessResult != null) {
+                if (prePrecessResult.diskCacheEntry != null) {
+                    dataSource = new DataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
+                } else if (prePrecessResult.imageData != null) {
+                    dataSource = new DataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
+                } else {
+                    failed(FailedCause.NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE);
+                    return;
+                }
             } else {
                 failed(FailedCause.NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE);
                 return;

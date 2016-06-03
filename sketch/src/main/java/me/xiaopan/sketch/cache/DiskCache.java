@@ -99,6 +99,6 @@ public interface DiskCache extends Identifier {
 
         void commit() throws IOException, DiskLruCache.EditorChangedException;
 
-        void abort() throws IOException, DiskLruCache.EditorChangedException;
+        void abort();
     }
 }

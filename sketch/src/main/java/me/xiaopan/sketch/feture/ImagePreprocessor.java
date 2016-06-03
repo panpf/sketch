@@ -23,13 +23,16 @@ import android.net.Uri;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -45,11 +48,21 @@ public class ImagePreprocessor implements Identifier {
 
     protected String logName = "ImagePreprocessor";
 
+    public static String createInstalledAppIconUri(String packageName, int versionCode) {
+        return SketchUtils.concat(
+                UriScheme.FILE.getSecondaryUriPrefix(),
+                INSTALLED_APP_URI_HOST,
+                "?",
+                INSTALLED_APP_URI_PARAM_PACKAGE_NAME, "=", packageName,
+                "&",
+                INSTALLED_APP_URI_PARAM_VERSION_CODE, "=", versionCode);
+    }
+
     public boolean isSpecific(LoadRequest loadRequest) {
         return isApkFile(loadRequest) || isInstalledApp(loadRequest);
     }
 
-    public DiskCache.Entry getDiskCacheEntry(LoadRequest loadRequest) {
+    public PreProcessResult getDiskCacheEntry(LoadRequest loadRequest) {
         if (isApkFile(loadRequest)) {
             return getApkIconDiskCache(loadRequest);
         }
@@ -84,7 +97,7 @@ public class ImagePreprocessor implements Identifier {
     /**
      * 获取APK图标的缓存
      */
-    private DiskCache.Entry getApkIconDiskCache(LoadRequest loadRequest) {
+    private PreProcessResult getApkIconDiskCache(LoadRequest loadRequest) {
         String realUri = loadRequest.getAttrs().getRealUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
 
@@ -98,27 +111,17 @@ public class ImagePreprocessor implements Identifier {
         ReentrantLock lock = configuration.getDiskCache().getEditorLock(diskCacheKey);
         lock.lock();
 
-        DiskCache.Entry diskCacheEntry = readApkIcon(configuration, loadRequest, diskCacheKey, realUri);
+        PreProcessResult result = readApkIcon(configuration, loadRequest, diskCacheKey, realUri);
 
         lock.unlock();
 
-        return diskCacheEntry;
+        return result;
     }
 
-    private DiskCache.Entry readApkIcon(Configuration configuration, LoadRequest loadRequest, String diskCacheKey, String realUri){
+    private PreProcessResult readApkIcon(Configuration configuration, LoadRequest loadRequest, String diskCacheKey, String realUri) {
         DiskCache.Entry apkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (apkIconDiskCacheEntry != null) {
-            return apkIconDiskCacheEntry;
-        }
-
-        DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
-        if (diskCacheEditor == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "disk cache disable",
-                        " - ", loadRequest.getAttrs().getId()));
-            }
-            return null;
+            return new PreProcessResult(apkIconDiskCacheEntry, ImageFrom.DISK_CACHE);
         }
 
         Bitmap iconBitmap = SketchUtils.readApkIcon(
@@ -127,88 +130,77 @@ public class ImagePreprocessor implements Identifier {
                 loadRequest.getOptions().isLowQualityImage(),
                 logName);
         if (iconBitmap == null) {
-            try {
-                diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
             return null;
         }
-
         if (iconBitmap.isRecycled()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
                         " - ", "apk icon bitmap recycled",
                         " - ", loadRequest.getAttrs().getId()));
             }
-            try {
-                diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
             return null;
         }
 
-        BufferedOutputStream outputStream = null;
+        DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
+        OutputStream outputStream = null;
         try {
-            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
+            if (diskCacheEditor != null) {
+                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
+            } else {
+                outputStream = new ByteArrayOutputStream();
+            }
             iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            diskCacheEditor.commit();
+            if (diskCacheEditor != null) {
+                diskCacheEditor.commit();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            try {
+            if (diskCacheEditor != null) {
                 diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
             }
         } finally {
             iconBitmap.recycle();
             SketchUtils.close(outputStream);
         }
 
-        apkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
-        if (apkIconDiskCacheEntry == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "not found apk icon cache file",
-                        " - ", loadRequest.getAttrs().getId()));
+        if (diskCacheEditor != null) {
+            apkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
+            if (apkIconDiskCacheEntry == null) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, SketchUtils.concat(logName,
+                            " - ", "not found apk icon cache file",
+                            " - ", loadRequest.getAttrs().getId()));
+                }
             }
+            return new PreProcessResult(apkIconDiskCacheEntry, ImageFrom.LOCAL);
+        } else if (outputStream != null) {
+            return new PreProcessResult(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.LOCAL);
+        } else {
+            return null;
         }
-
-        return apkIconDiskCacheEntry;
     }
 
     /**
      * 获取已安装APP图标的缓存
      */
-    private DiskCache.Entry getInstalledAppIconDiskCache(LoadRequest loadRequest) {
+    private PreProcessResult getInstalledAppIconDiskCache(LoadRequest loadRequest) {
         String diskCacheKey = loadRequest.getAttrs().getUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
 
         ReentrantLock lock = configuration.getDiskCache().getEditorLock(diskCacheKey);
         lock.lock();
 
-        DiskCache.Entry diskCacheEntry = readInstalledAppIcon(configuration, loadRequest, diskCacheKey);
+        PreProcessResult result = readInstalledAppIcon(configuration, loadRequest, diskCacheKey);
 
         lock.unlock();
 
-        return diskCacheEntry;
+        return result;
     }
 
-    private DiskCache.Entry readInstalledAppIcon(Configuration configuration, LoadRequest loadRequest, String diskCacheKey){
+    private PreProcessResult readInstalledAppIcon(Configuration configuration, LoadRequest loadRequest, String diskCacheKey) {
         DiskCache.Entry appIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (appIconDiskCacheEntry != null) {
-            return appIconDiskCacheEntry;
-        }
-
-        DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
-        if (diskCacheEditor == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "disk cache disable",
-                        " - ", loadRequest.getAttrs().getId()));
-            }
-            return null;
+            return new PreProcessResult(appIconDiskCacheEntry, ImageFrom.DISK_CACHE);
         }
 
         Uri uri = Uri.parse(loadRequest.getAttrs().getUri());
@@ -221,19 +213,9 @@ public class ImagePreprocessor implements Identifier {
             packageInfo = configuration.getContext().getPackageManager().getPackageInfo(packageName, 0);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-            try {
-                diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
             return null;
         }
         if (packageInfo.versionCode != versionCode) {
-            try {
-                diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
             return null;
         }
 
@@ -243,11 +225,6 @@ public class ImagePreprocessor implements Identifier {
                 loadRequest.getOptions().isLowQualityImage(),
                 logName);
         if (iconBitmap == null) {
-            try {
-                diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
             return null;
         }
 
@@ -257,50 +234,45 @@ public class ImagePreprocessor implements Identifier {
                         " - ", "apk icon bitmap recycled",
                         " - ", loadRequest.getAttrs().getId()));
             }
-            try {
-                diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
             return null;
         }
 
-        BufferedOutputStream outputStream = null;
+        DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
+        OutputStream outputStream = null;
         try {
-            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
+            if (diskCacheEditor != null) {
+                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
+            } else {
+                outputStream = new ByteArrayOutputStream();
+            }
             iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-            diskCacheEditor.commit();
+            if (diskCacheEditor != null) {
+                diskCacheEditor.commit();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            try {
+            if (diskCacheEditor != null) {
                 diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
             }
         } finally {
             iconBitmap.recycle();
             SketchUtils.close(outputStream);
         }
 
-        appIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
-        if (appIconDiskCacheEntry == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "not found apk icon cache file",
-                        " - ", loadRequest.getAttrs().getId()));
+        if (diskCacheEditor != null) {
+            appIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
+            if (appIconDiskCacheEntry == null) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, SketchUtils.concat(logName,
+                            " - ", "not found apk icon cache file",
+                            " - ", loadRequest.getAttrs().getId()));
+                }
             }
+            return new PreProcessResult(appIconDiskCacheEntry, ImageFrom.LOCAL);
+        } else if (outputStream != null) {
+            return new PreProcessResult(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.LOCAL);
+        } else {
+            return null;
         }
-
-        return appIconDiskCacheEntry;
-    }
-
-    public static String createInstalledAppIconUri(String packageName, int versionCode) {
-        return SketchUtils.concat(
-                UriScheme.FILE.getSecondaryUriPrefix(),
-                INSTALLED_APP_URI_HOST,
-                "?",
-                INSTALLED_APP_URI_PARAM_PACKAGE_NAME, "=", packageName,
-                "&",
-                INSTALLED_APP_URI_PARAM_VERSION_CODE, "=", versionCode);
     }
 }

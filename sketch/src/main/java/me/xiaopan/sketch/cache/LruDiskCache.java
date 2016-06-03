@@ -274,8 +274,14 @@ public class LruDiskCache implements DiskCache {
         }
 
         @Override
-        public void abort() throws IOException, DiskLruCache.EditorChangedException {
-            diskEditor.abort();
+        public void abort()  {
+            try {
+                diskEditor.abort();
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (DiskLruCache.EditorChangedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

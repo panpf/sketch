@@ -65,15 +65,9 @@ public class DownloadRequest extends BaseRequest {
     /**
      * 获取下载结果
      */
+    @SuppressWarnings("unused")
     public DownloadResult getDownloadResult() {
         return downloadResult;
-    }
-
-    /**
-     * 设置下载结果
-     */
-    void setDownloadResult(DownloadResult downloadResult) {
-        this.downloadResult = downloadResult;
     }
 
     @Override
@@ -388,11 +382,7 @@ public class DownloadRequest extends BaseRequest {
                 outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
             } catch (FileNotFoundException e) {
                 SketchUtils.close(inputStream);
-                try {
-                    diskCacheEditor.abort();
-                } catch (DiskLruCache.EditorChangedException e1) {
-                    e1.printStackTrace();
-                }
+                diskCacheEditor.abort();
                 throw e;
             }
         } else {
@@ -406,11 +396,7 @@ public class DownloadRequest extends BaseRequest {
             completedLength = readData(inputStream, outputStream, (int) contentLength);
         } catch (IOException e) {
             if (diskCacheEditor != null) {
-                try {
-                    diskCacheEditor.abort();
-                } catch (DiskLruCache.EditorChangedException e1) {
-                    e1.printStackTrace();
-                }
+                diskCacheEditor.abort();
             }
             throw e;
         } finally {
@@ -442,7 +428,7 @@ public class DownloadRequest extends BaseRequest {
             diskCacheEditor.commit();
             return new DownloadResult(diskCache.get(diskCacheKey), true);
         } else if (outputStream instanceof ByteArrayOutputStream) {
-            return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray());
+            return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray(), true);
         } else {
             return null;
         }

@@ -3,9 +3,11 @@ package me.xiaopan.sketchsample.util;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
@@ -14,6 +16,8 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feture.ImagePreprocessor;
+import me.xiaopan.sketch.feture.PreProcessResult;
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -33,7 +37,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
     }
 
     @Override
-    public DiskCache.Entry getDiskCacheEntry(LoadRequest loadRequest) {
+    public PreProcessResult getDiskCacheEntry(LoadRequest loadRequest) {
         if (isXpkFile(loadRequest)) {
             return getXpkIconCacheFile(loadRequest);
         }
@@ -48,7 +52,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
     /**
      * 获取XPK图标的缓存文件
      */
-    private DiskCache.Entry getXpkIconCacheFile(LoadRequest loadRequest) {
+    private PreProcessResult getXpkIconCacheFile(LoadRequest loadRequest) {
         String realUri = loadRequest.getAttrs().getRealUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
 
@@ -62,27 +66,17 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         ReentrantLock lock = configuration.getDiskCache().getEditorLock(diskCacheKey);
         lock.lock();
 
-        DiskCache.Entry diskCacheEntry = readXpkIcon(configuration, loadRequest, diskCacheKey, realUri);
+        PreProcessResult result = readXpkIcon(configuration, loadRequest, diskCacheKey, realUri);
 
         lock.unlock();
 
-        return diskCacheEntry;
+        return result;
     }
 
-    private DiskCache.Entry readXpkIcon(Configuration configuration, LoadRequest loadRequest, String diskCacheKey, String realUri){
+    private PreProcessResult readXpkIcon(Configuration configuration, LoadRequest loadRequest, String diskCacheKey, String realUri) {
         DiskCache.Entry xpkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
         if (xpkIconDiskCacheEntry != null) {
-            return xpkIconDiskCacheEntry;
-        }
-
-        DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
-        if (diskCacheEditor == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "disk cache disable",
-                        " - ", loadRequest.getAttrs().getId()));
-            }
-            return null;
+            return new PreProcessResult(xpkIconDiskCacheEntry, ImageFrom.DISK_CACHE);
         }
 
         ZipFile zipFile;
@@ -90,11 +84,6 @@ public class MyImagePreprocessor extends ImagePreprocessor {
             zipFile = new ZipFile(realUri);
         } catch (IOException e) {
             e.printStackTrace();
-            try {
-                diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
             return null;
         }
         InputStream inputStream;
@@ -105,11 +94,6 @@ public class MyImagePreprocessor extends ImagePreprocessor {
                         " - ", "not found icon.png in ",
                         " - ", loadRequest.getAttrs().getId()));
             }
-            try {
-                diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
             return null;
         }
 
@@ -117,24 +101,20 @@ public class MyImagePreprocessor extends ImagePreprocessor {
             inputStream = zipFile.getInputStream(zipEntry);
         } catch (IOException e) {
             e.printStackTrace();
-            try {
-                diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
             return null;
         }
 
-        BufferedOutputStream outputStream;
+        DiskCache.Editor diskCacheEditor = configuration.getDiskCache().edit(diskCacheKey);
+        OutputStream outputStream;
         try {
-            outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
+            if (diskCacheEditor != null) {
+                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
+            } else {
+                outputStream = new ByteArrayOutputStream();
+            }
         } catch (IOException e) {
             e.printStackTrace();
-            try {
-                diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
-            }
+            diskCacheEditor.abort();
             SketchUtils.close(inputStream);
             return null;
         }
@@ -149,13 +129,13 @@ public class MyImagePreprocessor extends ImagePreprocessor {
                 }
                 outputStream.write(buffer, 0, realLength);
             }
-            diskCacheEditor.commit();
+            if (diskCacheEditor != null) {
+                diskCacheEditor.commit();
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            try {
+            if (diskCacheEditor != null) {
                 diskCacheEditor.abort();
-            } catch (Exception e1) {
-                e1.printStackTrace();
             }
             return null;
         } finally {
@@ -163,15 +143,18 @@ public class MyImagePreprocessor extends ImagePreprocessor {
             SketchUtils.close(outputStream);
         }
 
-        xpkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
-        if (xpkIconDiskCacheEntry == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "not found xpk icon cache file",
-                        " - ", loadRequest.getAttrs().getId()));
+        if (diskCacheEditor != null) {
+            xpkIconDiskCacheEntry = configuration.getDiskCache().get(diskCacheKey);
+            if (xpkIconDiskCacheEntry == null) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, SketchUtils.concat(logName,
+                            " - ", "not found xpk icon cache file",
+                            " - ", loadRequest.getAttrs().getId()));
+                }
             }
+            return new PreProcessResult(xpkIconDiskCacheEntry, ImageFrom.LOCAL);
+        } else {
+            return new PreProcessResult(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.LOCAL);
         }
-
-        return xpkIconDiskCacheEntry;
     }
 }
