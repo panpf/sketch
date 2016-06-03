@@ -91,6 +91,9 @@ public class DisplayHelper {
         displayOptions.copy(imageViewInterface.getOptions());
         displayListener = imageViewInterface.getDisplayListener();
         progressListener = imageViewInterface.getDownloadProgressListener();
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().record("copyOptions");
+        }
 
         return this;
     }
@@ -119,6 +122,9 @@ public class DisplayHelper {
         displayOptions.copy(params.options);
         displayListener = imageViewInterface.getDisplayListener();
         progressListener = imageViewInterface.getDownloadProgressListener();
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().record("copyOptions");
+        }
 
         return this;
     }
@@ -358,6 +364,9 @@ public class DisplayHelper {
         }
 
         CallbackHandler.postCallbackStarted(displayListener);
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().record("callbackStarted");
+        }
 
         preProcess();
         if (Sketch.isDebugMode()) {
