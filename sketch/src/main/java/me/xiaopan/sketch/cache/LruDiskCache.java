@@ -119,13 +119,13 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public synchronized boolean exist(String uri) {
+    public boolean exist(String uri) {
         installDiskCache(false);
         return cache != null && cache.exist(uriToDiskCacheKey(uri));
     }
 
     @Override
-    public synchronized Entry get(String uri) {
+    public Entry get(String uri) {
         installDiskCache(false);
 
         DiskLruCache.SimpleSnapshot snapshot = null;
@@ -138,7 +138,7 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public synchronized Editor edit(String uri) {
+    public Editor edit(String uri) {
         installDiskCache(false);
 
         DiskLruCache.Editor diskEditor = null;
@@ -182,12 +182,12 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public synchronized long getSize() {
+    public long getSize() {
         return cache != null ? cache.size() : 0;
     }
 
     @Override
-    public synchronized void clear() {
+    public void clear() {
         if (cache != null) {
             try {
                 cache.delete();

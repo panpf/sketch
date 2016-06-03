@@ -27,41 +27,60 @@ import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class LruMemoryCache implements MemoryCache {
+    private final LruCache<String, Drawable> drawableLruCache;
     protected String logName = "LruMemoryCache";
-
     private Context context;
-    private LruCache<String, Drawable> drawableLruCache;
 
     public LruMemoryCache(Context context, int maxSize) {
         this.context = context;
         this.drawableLruCache = new DrawableLruCache(maxSize);
     }
 
+    public static LruMemoryCache create(Context context) {
+        return new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 8));
+    }
+
+    public static LruMemoryCache createPlaceholder(Context context) {
+        long placeholderMemoryMaxSize = Runtime.getRuntime().maxMemory() / 32;
+
+        // 不能小于2M
+        placeholderMemoryMaxSize = Math.max(placeholderMemoryMaxSize, 2 * 1024 * 1024);
+
+        return new LruMemoryCache(context, (int) placeholderMemoryMaxSize);
+    }
+
     @Override
-    public synchronized void put(String key, Drawable value) {
+    public void put(String key, Drawable value) {
         if (!(value instanceof RecycleDrawable)) {
             throw new IllegalArgumentException("drawable must be implemented RecycleDrawableInterface");
         }
-        int cacheSize = 0;
+        int oldCacheSize = 0;
         if (Sketch.isDebugMode()) {
-            cacheSize = drawableLruCache.size();
+            oldCacheSize = drawableLruCache.size();
         }
         drawableLruCache.put(key, value);
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(logName, " - ", "put", " - ", "beforeCacheSize=", Formatter.formatFileSize(context, cacheSize), " - ", ((RecycleDrawable) value).getInfo(), " - ", "afterCacheSize=", Formatter.formatFileSize(context, drawableLruCache.size())));
+            int newCacheSize = drawableLruCache.size();
+            Log.i(Sketch.TAG, SketchUtils.concat(logName,
+                    " - ", "put",
+                    " - ", "beforeCacheSize=", Formatter.formatFileSize(context, oldCacheSize),
+                    " - ", ((RecycleDrawable) value).getInfo(),
+                    " - ", "afterCacheSize=", Formatter.formatFileSize(context, newCacheSize)));
         }
     }
 
     @Override
-    public synchronized Drawable get(String key) {
+    public Drawable get(String key) {
         return drawableLruCache.get(key);
     }
 
     @Override
-    public synchronized Drawable remove(String key) {
+    public Drawable remove(String key) {
         Drawable drawable = drawableLruCache.remove(key);
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(logName, " - ", "remove", " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+            Log.i(Sketch.TAG, SketchUtils.concat(logName,
+                    " - ", "remove",
+                    " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
         }
         return drawable;
     }
@@ -77,9 +96,11 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public synchronized void clear() {
+    public void clear() {
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(logName, " - ", "clear", " - ", "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+            Log.i(Sketch.TAG, SketchUtils.concat(logName,
+                    " - ", "clear",
+                    " - ", "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
         }
         drawableLruCache.evictAll();
     }
@@ -124,18 +145,5 @@ public class LruMemoryCache implements MemoryCache {
         protected void entryRemoved(boolean evicted, String key, Drawable oldValue, Drawable newValue) {
             ((RecycleDrawable) oldValue).setIsCached(logName + ":entryRemoved", false);
         }
-    }
-
-    public static LruMemoryCache create(Context context) {
-        return new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 8));
-    }
-
-    public static LruMemoryCache createPlaceholder(Context context) {
-        long placeholderMemoryMaxSize = Runtime.getRuntime().maxMemory() / 32;
-
-        // 不能小于2M
-        placeholderMemoryMaxSize = Math.max(placeholderMemoryMaxSize, 2 * 1024 * 1024);
-
-        return new LruMemoryCache(context, (int) placeholderMemoryMaxSize);
     }
 }
