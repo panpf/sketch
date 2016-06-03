@@ -10,7 +10,11 @@ import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.os.Build;
+import android.os.Environment;
 import android.os.Looper;
+import android.os.StatFs;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -19,6 +23,8 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 
 import me.xiaopan.sketch.Sketch;
@@ -100,45 +106,62 @@ public class SketchUtils {
     }
 
     /**
+     * 清空目录
+     *
+     * @return true：清空成功；false：清空失败
+     */
+    public static boolean cleanDir(File dir) {
+        if (dir == null || !dir.exists() || !dir.isDirectory()) {
+            return true;
+        }
+
+        File[] files = dir.listFiles();
+        boolean cleanSuccess = true;
+        if (files != null) {
+            for (File tempFile : files) {
+                if (tempFile.isDirectory()) {
+                    cleanSuccess &= cleanDir(tempFile);
+                }
+                cleanSuccess &= tempFile.delete();
+            }
+        }
+        return cleanSuccess;
+    }
+
+    /**
      * 删除给定的文件，如果当前文件是目录则会删除其包含的所有的文件或目录
      *
      * @param file 给定的文件
      * @return true：删除成功；false：删除失败
      */
+    @SuppressWarnings("unused")
     public static boolean deleteFile(File file) {
-        if (!file.exists()) {
+        if (file == null || !file.exists()) {
             return true;
         }
 
-        if (file.isFile()) {
-            return file.delete();
+        if(file.isDirectory()){
+            cleanDir(file);
         }
-
-        File[] files = file.listFiles();
-        boolean deleteSuccess = true;
-        if (files != null) {
-            for (File tempFile : files) {
-                if (!deleteFile(tempFile)) {
-                    deleteSuccess = false;
-                }
-            }
-        }
-        if (deleteSuccess) {
-            deleteSuccess = file.delete();
-        }
-        return deleteSuccess;
+        return file.delete();
     }
 
-    public static boolean checkSuffix(String name, String suffix) {
-        if (name == null) {
+    /**
+     * 检查文件名是不是指定的后缀
+     *
+     * @param fileName 例如：test.txt
+     * @param suffix   例如：.txt
+     */
+    public static boolean checkSuffix(String fileName, String suffix) {
+        if (fileName == null) {
             return false;
         }
 
         // 截取后缀名
         String fileNameSuffix;
-        int lastIndex = name.lastIndexOf(".");
+        int lastIndex = fileName.lastIndexOf(".");
         if (lastIndex > -1) {
-            fileNameSuffix = name.substring(lastIndex);
+            fileNameSuffix = fileName.substring(lastIndex);
         } else {
             return false;
         }
@@ -188,15 +211,6 @@ public class SketchUtils {
         }
     }
 
-    public static void deleteOldCacheFiles(File cacheDir) {
-        if (cacheDir.exists()) {
-            File journalFile = new File(cacheDir, DiskLruCache.JOURNAL_FILE);
-            if (!journalFile.exists()) {
-                deleteFile(cacheDir);
-            }
-        }
-    }
-
     public static boolean isGifDrawable(Drawable drawable) {
         if (drawable != null) {
             LayerDrawable layerDrawable;
@@ -232,10 +246,16 @@ public class SketchUtils {
                 && scaleType == ImageView.ScaleType.CENTER_CROP;
     }
 
+    /**
+     * 是不是主线程
+     */
     public static boolean isMainThread() {
         return Looper.getMainLooper().getThread() == Thread.currentThread();
     }
 
+    /**
+     * 获取当前进程的名字
+     */
     public static String getProcessName(Context context) {
         int pid = android.os.Process.myPid();
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -251,11 +271,18 @@ public class SketchUtils {
         return null;
     }
 
+    /**
+     * 当前进程是不是主进程
+     */
     @SuppressWarnings("unused")
     public static boolean isMainProcess(Context context) {
         return context.getPackageName().equalsIgnoreCase(getProcessName(context));
     }
 
+    /**
+     * 获取短的当前进程的名字，例如进程名字为com.my.app:push，那么短名字就是:push
+     */
+    @SuppressWarnings("unused")
     public static String getSimpleProcessName(Context context) {
         String processName = getProcessName(context);
         if (processName == null) {
@@ -264,5 +291,128 @@ public class SketchUtils {
         String packageName = context.getPackageName();
         int lastIndex = processName.lastIndexOf(packageName);
         return lastIndex != -1 ? processName.substring(lastIndex + packageName.length()) : null;
+    }
+
+    /**
+     * 获取App缓存目录，优先考虑SDCard上的缓存目录
+     */
+    public static File getAppCacheDir(Context context) {
+        File appCacheDir = null;
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+            appCacheDir = context.getExternalCacheDir();
+        }
+        if (appCacheDir == null) {
+            appCacheDir = context.getCacheDir();
+        }
+        return appCacheDir;
+    }
+
+    /**
+     * 获取给定目录的可用大小
+     */
+    public static long getAvailableBytes(File dir) {
+        if (!dir.exists() && !dir.mkdirs()) {
+            return 0;
+        }
+        StatFs dirStatFs = new StatFs(dir.getPath());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            return dirStatFs.getAvailableBytes();
+        } else {
+            return (long) dirStatFs.getAvailableBlocks() * dirStatFs.getBlockSize();
+        }
+    }
+
+    /**
+     * 获取给定目录的总大小
+     */
+    @SuppressWarnings("unused")
+    public static long getTotalBytes(File dir) {
+        if (!dir.exists() && !dir.mkdirs()) {
+            return 0;
+        }
+        StatFs dirStatFs = new StatFs(dir.getPath());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            return dirStatFs.getTotalBytes();
+        } else {
+            return (long) dirStatFs.getBlockCount() * dirStatFs.getBlockSize();
+        }
+    }
+
+    /**
+     * 获取一个缓存目录
+     *
+     * @param dirName            目录名称
+     * @param compatManyProcess  是否兼容多进程，兼容的话会在目录名字后面加上进程名字，以达到不同的进程不同的目录名字
+     * @param minSpaceSize       最小空间
+     * @param cleanOnNoSpace     空间不够用时就尝试清理一下
+     * @param cleanOldCacheFiles 清除旧的缓存文件
+     * @param expandNumber       当dirName无法使用时就会尝试dirName1、dirName2、dirName3...
+     * @throws NoSpaceException 目录空间小于minSize，无法使用
+     */
+    public static File getCacheDir(Context context, String dirName,
+                                   boolean compatManyProcess, long minSpaceSize, boolean cleanOnNoSpace,
+                                   boolean cleanOldCacheFiles, int expandNumber) throws NoSpaceException {
+        // 目录名字加上进程名字的后缀，不同的进程不同目录，以兼容多进程
+        if (compatManyProcess) {
+            String simpleProcessName = SketchUtils.getSimpleProcessName(context);
+            if (simpleProcessName != null) {
+                try {
+                    dirName += URLEncoder.encode(simpleProcessName, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        int expandCount = 0;
+        while (expandCount <= expandNumber) {
+            File appCacheDir = SketchUtils.getAppCacheDir(context);
+            File diskCacheDir = new File(appCacheDir, dirName + (expandCount > 0 ? expandCount : ""));
+            if (diskCacheDir.exists()) {
+                // 目录已存在的话就尝试清除旧的缓存文件
+                if (cleanOldCacheFiles) {
+                    File journalFile = new File(diskCacheDir, DiskLruCache.JOURNAL_FILE);
+                    if (!journalFile.exists()) {
+                        SketchUtils.cleanDir(diskCacheDir);
+                    }
+                }
+            } else {
+                // 目录不存在就创建，创建结果返回false后检查还是不存在就说明创建失败
+                if (!diskCacheDir.mkdirs() && !diskCacheDir.exists()) {
+                    expandCount++;
+                    continue;
+                }
+            }
+
+            // 检查空间，少于minSpaceSize就不能用了
+            long availableBytes = SketchUtils.getAvailableBytes(diskCacheDir);
+            if (availableBytes < minSpaceSize) {
+                // 空间不够用的时候直接清空，然后再次计算可用空间
+                if (cleanOnNoSpace) {
+                    SketchUtils.cleanDir(diskCacheDir);
+                    availableBytes = SketchUtils.getAvailableBytes(diskCacheDir);
+                }
+
+                // 依然不够用，那不好意思了
+                if (availableBytes < minSpaceSize) {
+                    String availableFormatted = Formatter.formatFileSize(context, availableBytes);
+                    throw new NoSpaceException(diskCacheDir, "available space is " + availableFormatted +
+                            ", disk cache dir path is " + diskCacheDir.getPath());
+                }
+            }
+
+            return diskCacheDir;
+        }
+
+        return new File(SketchUtils.getAppCacheDir(context), dirName);
+    }
+
+    public static class NoSpaceException extends Exception {
+        public File dir;
+
+        public NoSpaceException(File dir, String detailMessage) {
+            super(detailMessage);
+            this.dir = dir;
+        }
     }
 }

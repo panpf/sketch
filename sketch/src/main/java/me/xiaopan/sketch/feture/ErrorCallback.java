@@ -8,7 +8,6 @@ import android.text.format.Formatter;
 import android.util.Log;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
 
 import me.xiaopan.sketch.Identifier;
@@ -19,9 +18,9 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class ErrorCallback implements Identifier {
     protected String logName = "DefaultErrorCallback";
 
-    public void onInstallDiskCacheFailed(IOException e, File cacheDir, int count) {
+    public void onInstallDiskCacheFailed(Exception e, File cacheDir) {
         Log.e(Sketch.TAG, SketchUtils.concat("InstallDiskCacheFailed. ", "SDCardState", "=", Environment.getExternalStorageState()));
-        Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "InstallDiskCacheFailed", ": ", e.getMessage(), " - ", cacheDir.getPath(), " - ", count));
+        Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "InstallDiskCacheFailed", ": ", e.getMessage(), " - ", cacheDir.getPath()));
     }
 
     public void onDecodeGifImageFailed(Throwable error, LoadRequest request, BitmapFactory.Options options) {
@@ -59,10 +58,6 @@ public class ErrorCallback implements Identifier {
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "DecodeNormalImageFailed", ": ", request.getAttrs().getId()));
     }
-//
-//    public void onNotFoundDefaultActivityIcon() {
-//        Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "NotFoundDefaultActivityIcon"));
-//    }
 
     @Override
     public String getIdentifier() {

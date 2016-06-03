@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.cache;
 
 import android.content.Context;
-import android.os.Environment;
 import android.text.format.Formatter;
 
 import java.io.File;
@@ -36,18 +35,14 @@ import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class LruDiskCache implements DiskCache {
-    public static final String DISK_CACHE_DIR_NAME = "sketch";
-    public static final int DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024;
-
     protected String logName = "LruDiskCache";
 
-    private Configuration configuration;
-    private Context context;
-    private File cacheDir;
     private int maxSize;
     private int appVersionCode;
-
+    private File cacheDir;
+    private Context context;
     private DiskLruCache cache;
+    private Configuration configuration;
     private Map<String, ReentrantLock> diskCacheEditorLocks;
 
     public LruDiskCache(Context context, Configuration configuration, int appVersionCode, int maxSize) {
@@ -61,6 +56,7 @@ public class LruDiskCache implements DiskCache {
      * 安装磁盘缓存，当缓存目录不存在的时候回再次安装
      */
     private synchronized void installDiskCache(boolean force) {
+        // 好好的就不安装了
         if (!force && cache != null && cacheDir != null && cacheDir.exists()) {
             return;
         }
@@ -74,53 +70,33 @@ public class LruDiskCache implements DiskCache {
             cache = null;
         }
 
-        // 缓存目录名字加上进程名字的后缀，不同的进程不同缓存目录，以兼容多进程
-        String diskCacheDirName = DISK_CACHE_DIR_NAME;
-        String simpleProcessName = SketchUtils.getSimpleProcessName(context);
-        if (simpleProcessName != null) {
-            try {
-                diskCacheDirName += URLEncoder.encode(simpleProcessName, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
+        try {
+            cacheDir = SketchUtils.getCacheDir(context, DISK_CACHE_DIR_NAME, true, DISK_CACHE_RESERVED_SPACE_SIZE, true, true, 10);
+        } catch (SketchUtils.NoSpaceException e) {
+            e.printStackTrace();
+            cacheDir = e.dir;
+
+            if (configuration.getErrorCallback() != null) {
+                configuration.getErrorCallback().onInstallDiskCacheFailed(e, cacheDir);
             }
+            return;
         }
 
-        int count = 0;
-        while (true) {
-            File appCacheDir = null;
-            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
-                appCacheDir = context.getExternalCacheDir();
-            }
-            if (appCacheDir == null) {
-                appCacheDir = context.getCacheDir();
-            }
+        try {
+            cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
+        } catch (IOException e) {
+            e.printStackTrace();
 
-            String finalDiskCacheDirName = count == 0 ? diskCacheDirName : diskCacheDirName + count;
-            cacheDir = new File(appCacheDir, finalDiskCacheDirName);
-
-            // 尝试删除旧的缓存文件，删除依据就是缓存目录下面有没有journal文件没有的话就是旧版的缓存需要删除
-            SketchUtils.deleteOldCacheFiles(cacheDir);
-
-            try {
-                cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
-                break;
-            } catch (IOException e) {
-                e.printStackTrace();
-                if (configuration.getErrorCallback() != null) {
-                    configuration.getErrorCallback().onInstallDiskCacheFailed(e, cacheDir, count);
-                }
-                if (count < 10) {
-                    count++;
-                } else {
-                    break;
-                }
+            if (configuration.getErrorCallback() != null) {
+                configuration.getErrorCallback().onInstallDiskCacheFailed(e, cacheDir);
             }
         }
     }
 
     @Override
     public boolean exist(String uri) {
-        installDiskCache(false);
+        // 由于这个方法目前只在Helper中用到，所以为了性能考虑就不尝试安装DiskLruCache了
+//        installDiskCache(false);
         return cache != null && cache.exist(uriToDiskCacheKey(uri));
     }
 
@@ -238,8 +214,6 @@ public class LruDiskCache implements DiskCache {
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(logName)
                 .append("(")
-                .append("dir").append("=").append(cacheDir != null ? cacheDir.getPath() : null)
-                .append(",")
                 .append("maxSize").append("=").append(Formatter.formatFileSize(context, maxSize))
                 .append(",")
                 .append("appVersionCode").append("=").append(appVersionCode)

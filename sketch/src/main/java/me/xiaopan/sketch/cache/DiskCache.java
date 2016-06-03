@@ -29,6 +29,9 @@ import me.xiaopan.sketch.util.DiskLruCache;
  * 磁盘缓存器
  */
 public interface DiskCache extends Identifier {
+    String DISK_CACHE_DIR_NAME = "sketch";
+    int DISK_CACHE_MAX_SIZE = 100 * 1024 * 1024;
+    int DISK_CACHE_RESERVED_SPACE_SIZE = 200 * 1024 * 1024;
 
     /**
      * 是否存在

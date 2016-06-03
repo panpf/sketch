@@ -77,7 +77,7 @@ public class Configuration {
         this.errorCallback = new ErrorCallback();
 
         this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
-        this.diskCache = new LruDiskCache(context, this, 1, LruDiskCache.DISK_CACHE_MAX_SIZE);
+        this.diskCache = new LruDiskCache(context, this, 1, DiskCache.DISK_CACHE_MAX_SIZE);
         this.memoryCache = LruMemoryCache.create(context);
         this.imageDecoder = new DefaultImageDecoder();
         this.helperFactory = new HelperFactory();
