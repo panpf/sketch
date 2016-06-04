@@ -435,7 +435,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 boolean newMobileNetStopDownloadValue = !settings.isMobileNetworkPauseDownload();
                 settings.setMobileNetworkPauseDownload(newMobileNetStopDownloadValue);
                 mobileNetworkPauseDownloadCheckBox.setChecked(newMobileNetStopDownloadValue);
-                Sketch.with(getBaseContext()).getConfiguration().setMobileNetworkPauseDownload(newMobileNetStopDownloadValue);
+                Sketch.with(getBaseContext()).getConfiguration().setMobileNetworkGlobalPauseDownload(newMobileNetStopDownloadValue);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
             case R.id.item_main_scrollingPauseLoad:

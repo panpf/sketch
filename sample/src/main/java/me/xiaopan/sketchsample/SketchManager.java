@@ -28,7 +28,7 @@ public class SketchManager {
         Sketch.setDebugMode(BuildConfig.DEBUG);
         Settings settings = Settings.with(context);
         Configuration sketchConfiguration = Sketch.with(context).getConfiguration();
-        sketchConfiguration.setMobileNetworkPauseDownload(settings.isMobileNetworkPauseDownload());
+        sketchConfiguration.setMobileNetworkGlobalPauseDownload(settings.isMobileNetworkPauseDownload());
         sketchConfiguration.setGlobalLowQualityImage(settings.isGlobalLowQualityImage());
         sketchConfiguration.setGlobalInPreferQualityOverSpeed(settings.isGlobalInPreferQualityOverSpeed());
         sketchConfiguration.setGlobalDisableCacheInDisk(settings.isGlobalDisableCacheInDisk());

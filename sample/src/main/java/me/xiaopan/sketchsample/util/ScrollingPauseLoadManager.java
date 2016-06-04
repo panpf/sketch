@@ -37,10 +37,10 @@ public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener imp
 
         if(settings.isScrollingPauseLoad() && recyclerView.getAdapter() != null){
             if(newState == RecyclerView.SCROLL_STATE_DRAGGING){
-                sketch.getConfiguration().setPauseLoad(true);
+                sketch.getConfiguration().setGlobalPauseLoad(true);
             } else if(newState == RecyclerView.SCROLL_STATE_IDLE){
-                if(sketch.getConfiguration().isPauseLoad()){
-                    sketch.getConfiguration().setPauseLoad(false);
+                if(sketch.getConfiguration().isGlobalPauseLoad()){
+                    sketch.getConfiguration().setGlobalPauseLoad(false);
                     recyclerView.getAdapter().notifyDataSetChanged();
                 }
             }
@@ -60,12 +60,12 @@ public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener imp
             }
             if(listAdapter instanceof BaseAdapter){
                 if(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL){
-                    if(!sketch.getConfiguration().isPauseLoad()){
-                        sketch.getConfiguration().setPauseLoad(true);
+                    if(!sketch.getConfiguration().isGlobalPauseLoad()){
+                        sketch.getConfiguration().setGlobalPauseLoad(true);
                     }
                 } else if(scrollState == AbsListView.OnScrollListener.SCROLL_STATE_IDLE){
-                    if(sketch.getConfiguration().isPauseLoad()){
-                        sketch.getConfiguration().setPauseLoad(false);
+                    if(sketch.getConfiguration().isGlobalPauseLoad()){
+                        sketch.getConfiguration().setGlobalPauseLoad(false);
                         ((BaseAdapter)listAdapter).notifyDataSetChanged();
                     }
                 }
