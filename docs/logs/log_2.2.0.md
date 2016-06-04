@@ -65,6 +65,11 @@ Sketch增加displayInstalledAppIcon(String, int, ImageViewInterface)和loadInsta
 Sketch.putLoadOptions(LoadOptions)、Sketch.putDownloadOptions(LoadOptions)
 >* ``新增`` 新增ErrorCallback，开发者为通过ErrorCallback接收到解码失败，磁盘缓存安装失败等异常
 >* ``修改`` ``读取APK图标时不再过滤默认图标``
->* ``修改`` Configuration中lowQualityImage重命名为globalLowQualityImage
+>* ``修改`` Configuration中相关参数重命名：
+    >* pauseLoad --> globalPauseLoad
+    >* pauseDownload --> globalPauseDownload
+    >* lowQualityImage --> globalLowQualityImage
+    >* cacheInDisk --> globalDisableCacheInDisk
+    >* cacheInMemory --> globalDisableCacheInMemory
 
 ``注意：本次更新cacheInMemory改成了disableCacheInMemory，cacheInDisk改成了disableCacheInDisk，decodeGifImage的默认值改成了false，所以对这三个属性的调用和设置已定义要重点关注``
