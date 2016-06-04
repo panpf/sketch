@@ -111,7 +111,7 @@ Sketch共有display()、load()、download()三个方法可供使用，你可以�
 ### 使用指南（Usage guide）
 
 #### 1. 导入Sketch（Import Sketch）
-add gradle dependency
+add dependency from JCenter
 ```groovy
 dependencies{
 	compile compile 'me.xiaopan:sketch:lastVersionName'
@@ -119,14 +119,14 @@ dependencies{
 ```
 `lastVersionName`是最新版本名称的意思，你可以在[release](https://github.com/xiaopansky/Sketch/releases)页面看到最新的版本名称
 
-最低支持`Android2.2`
-
 然后在AndroidManifest.xml文件中添加以下权限
 ```xml
 <uses-permission android:name="android.permission.INTERNET"/>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 ```
+
+最低支持`Android2.2`
 
 #### 2. 在XML中使用SketchImageView
 res/layout/item_user.xml
