@@ -136,6 +136,8 @@
 （完成于2016-06-02）读取APK图标时不再过滤默认图标
 （完成于2016-06-03）cacheInDisk to disableCacheInDisk, cacheInMemory to disableCacheInMemory
 （完成于2016-06-04）Configuration中lowQualityImage rename to globalLowQualityImage
+（完成于2016-06-04）支持同步加载和下载
+（完成于2016-06-04）progressListener改名为downloadProgressListener
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
