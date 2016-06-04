@@ -1,57 +1,35 @@
-Sketch共有display()、load()、download()三个方法可供使用，你可以根据你的需求选择合适的方法
+Sketch有display()、load()、download()三大方法，我们可以通过其专属的Options或Helper（[显示（display()）、加载（load()）和下载（download()））](docs/wiki/load_download.md)）来配置各种属性
 
-|方法|作用|Options|Helper|
-|:--|:--|:--|:--|
-|download()|下载图片到本地，并实现本地缓存|DownloadOptions|DownloadHelper|
-|load()|在download()方法的基础上，加载图片到内存中，并对图片进行处理|LoadOptions|LoadHelper|
-|display()|在load()方法的基础上，将图片缓存在内存中并显示在ImageView上|DisplayOptions|DisplayHelper|
+三大方法支持属性如下（'-'代表不支持，非'-'代表支持并且默认值是什么）：
 
-示例：
-```
-// 显示
-Sketch.with(context).display("http://biying.png", sketchImageView)
-	...
-	.commit();
+|属性|download()|load()|display()|
+|:--|:--|:--|:--|:--|
+|sync|false|false|-|
+|requestLevel|NET|NET|NET|
+|listener|null|null|null|
+|downloadProgressListener|null|null|null|
+|disableCacheInDisk|false|false|false|
+|maxSize|-|屏幕的0.75倍|优先考虑layout_width和layout_height|
+|resize|-|null|null|
+|resizeByFixedSize|-|false|false|
+|forceUseResize|-|false|false|
+|processor|-|null|null|
+|decodeGifImage|-|false|false|
+|lowQualityImage|-|false|false|
+|bitmapConfig|-|null|null|
+|inPreferQualityOverSpeed|-|false|false|
+|disableCacheInMemory|-|-|false|
+|displayer|-|-|DefaultImageDisplayer|
+|loadingImage|-|-|null|
+|failedImage|-|-|null|
+|pauseDownloadImage|-|-|null|
 
-// 加载
-Sketch.with(context).load("http://biying.png", new LoadListener() {...})
-	...
-	.commit();
-
-// 下载
-Sketch.with(context).download("http://biying.png", new DownloadListener(){...})
-	...
-	.commit();
-```
-
-### Options
+#### 属性详解
 
 DisplayOptions `extends` LoadOptions `extends` DownloadOptions
 
-支持属性如下（'-'代表不支持，非'-'代表支持并且默认值是什么）：
+Options支持的属性Helper中都有对应的方法，只是方法名不一样（没有set）
 
-|属性|DownloadOptions|LoadOptions|DisplayOptions|Helper Method|
-|:--|:--|:--|:--|:--|
-|requestLevel|NET|NET|NET|setRequestLevel()|
-|listener|null|null|null|listener()|
-|progressListener|null|null|null|progressListener()|
-|disableCacheInDisk|false|false|false|disableCacheInDisk()|
-|maxSize|-|屏幕的0.75倍|优先考虑ImageView的layout_width和layout_height|maxSize()|
-|resize|-|null|null|resize()|
-|resizeByFixedSize|-|false|false|resizeByFixedSize()|
-|forceUseResize|-|false|false|forceUseResize()|
-|processor|-|null|null|processor()|
-|decodeGifImage|-|false|false|decodeGifImage()|
-|lowQualityImage|-|false|false|lowQualityImage()|
-|bitmapConfig|-|null|null|bitmapConfig()|
-|inPreferQualityOverSpeed|-|false|false|inPreferQualityOverSpeed()|
-|disableCacheInMemory|-|-|false|disableCacheInMemory()|
-|displayer|-|-|DefaultImageDisplayer|displayer()|
-|loadingImage|-|-|null|loadingImage()|
-|failedImage|-|-|null|failedImage()|
-|pauseDownloadImage|-|-|null|pauseDownloadImage()|
-
-#### 属性详解
 ```java
 DisplayOptions displayOptions = new DisplayOptions();
 

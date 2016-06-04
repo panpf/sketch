@@ -18,25 +18,22 @@ BitmapFactory提供了一个Options来配置读取图片的相关选项，其中
 那么最终读到内存的图片的尺寸就是1632x920，宽高都缩小了2倍，其所占内存从23M缩小到1632x920x4/1024/1024=5.7M，缩小了4倍。
 
 ####缺省值
->* 在使用load()方法加载图片的时候maxSize的缺省值是当前设备屏幕的1.5倍
->* 在使用SketchImageView以及display()方法显示图片的时候Sketch会先根据SketchImageView的layout size或最大宽高来计算maxSize，如果这两个条件都不满足就会使用当前屏幕宽高的1.5倍来作为maxSize
+>* 在使用load()方法加载图片的时候maxSize的缺省值是当前设备屏幕的0.75倍
+>* 在使用SketchImageView的时候如果layout_width和layout_height是固定的那么就会用layout_width和layout_height来作为maxSize，否则就使用当前屏幕宽高的0.75倍来作为maxSize
 
 因此在大多数情况下你不需要主动设置maxSize，Sketch会自动帮你搞定
 
-####自定义maxsize计算规则
-如果你对现有的maxSize计算规则不满意，那么你可以继承DefaultImageSizeCalculator类重写calculateImageMaxSize()方法实现你自己的计算规则
-
-最后调用Sketch.with(context).getConfiguration().setImageSizeCalculator(ImageSizeCalculator)方法来使用你自定义的ImageSizeCalculator即可
+####自定义maxSize计算规则
+如果你对现有的maxSize计算规则不满意，那么你可以继承ImageSizeCalculator类重写calculateImageMaxSize()方法实现你自己的计算规则
+然后调用Sketch.with(context).getConfiguration().setImageSizeCalculator(ImageSizeCalculator)方法来使用你自定义的ImageSizeCalculator
 
 
 ### resize
-resize用来修剪图片以及调整宽高比例，以最大限度的节省内存
+resize用来修剪图片以及调整宽高比例，使用maxSize可以加载合适尺寸的图片到内存中，那么有的时候我们可能还需要固定尺寸的图片或固定宽高比例的图片，resize就是 用来解决这个问题的。
 
-使用maxSize可以加载合适尺寸的图片到内存中，那么有的时候我们可能还需要固定尺寸的图片或固定宽高比例的图片，resize就是 用来解决这个问题的。
-
-ImageProcessor在处理图片的时候，如果原图的尺寸大于resize则按resize裁剪，如果小于resize则会按照resize的比例修剪原图，让原图的宽高比同resize一样。
-
-如果forceUseResize为true，则即使原图尺寸小于resize，则也会按照resize的尺寸创建一张新的图片。
+规则如下：
+>* 如果原图的尺寸大于resize则按resize裁剪，如果小于resize则会按照resize的比例修剪原图，让原图的宽高比同resize一样。
+>* 如果forceUseResize为true，则即使原图尺寸小于resize，则也会按照resize的尺寸创建一张新的图片。
 
 ####使用
 ```java
@@ -53,11 +50,11 @@ Sketch.with(context).load(R.drawable.ic_launcher, new LoadListener(){
 .commit();
 ```
 
-使用DisplayOptions的时候还可以使用resizeByFixedSize(true)方法，使用SketchImageView的layout size作为resize
+使用DisplayOptions的时候还可以使用resizeByFixedSize(true)方法自动使用SketchImageView的layout_width和layout_height作为resize
 
 
 ### inSampleSize
-inSampleSize是用来减小读到内存中的图片的尺寸，非常重要，默认的实现是DefaultImageSizeCalculator.calculateInSampleSize(int, int, int, int)方法
+inSampleSize是用来减小读到内存中的图片的尺寸，非常重要，默认的实现是ImageSizeCalculator.calculateInSampleSize(int, int, int, int)方法
 ```java
 @Override
 public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight) {
@@ -98,5 +95,5 @@ public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, i
 >* 然后开始每次乘以2计算inSampleSize，直到应用inSampleSize后原图的宽或高小于目标尺寸的宽或高即可
 >* 接下来开始按照总像素数进行就算inSampleSize，直到应用inSampleSize后原图的总像素数小于目标尺寸总像素数的2倍即可
 
-如果你想自定义inSampleSize的话，你只需继承DefaultImageSizeCalculator，并重写calculateInSampleSize(int, int, int, int)方法，
+如果你想自定义inSampleSize的话，你只需继承ImageSizeCalculator，并重写calculateInSampleSize(int, int, int, int)方法，
 然后调用Sketch.with(context).getConfiguration().setImageSizeCalculator(ImageSizeCalculator)方法应用即可

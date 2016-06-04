@@ -61,7 +61,7 @@ sketchImageView.getOptions()
 ```java
 sketchImageView.setOptions(DisplayOptions)
 ```
-具体的配置项请参考[配置显示、加载、下载选项.md](download_load_display_options.md)
+具体的配置项请参考[配置各种属性](options.md)
 
 ####  2. 监听显示过程和下载进度
 ```java
@@ -91,7 +91,7 @@ sketchImageView.setDisplayListener(new DisplayListener() {
 // 监听下载进度
 sketchImageView.setDownloadProgressListener(new DownloadProgressListener() {
     @Override
-    public void onUpdateProgress(int totalLength, int completedLength) {
+    public void onUpdateDownloadProgress(int totalLength, int completedLength) {
         Log.i("progressListener", "文件总大小："+totalLength+"; 已完成："+comletedLength);
     }
 });
