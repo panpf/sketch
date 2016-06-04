@@ -31,6 +31,7 @@ public class LoadHelper {
 
     protected Sketch sketch;
 
+    protected boolean sync;
     protected RequestAttrs requestAttrs = new RequestAttrs();
     protected LoadOptions loadOptions = new LoadOptions();
     protected LoadListener loadListener;
@@ -170,7 +171,15 @@ public class LoadHelper {
     }
 
     /**
-     * 设置进度监听器
+     * 设置加载监听器
+     */
+    public LoadHelper listener(LoadListener loadListener) {
+        this.loadListener = loadListener;
+        return this;
+    }
+
+    /**
+     * 设置下载进度监听器
      */
     @SuppressWarnings("unused")
     public LoadHelper progressListener(DownloadProgressListener downloadProgressListener) {
@@ -179,11 +188,39 @@ public class LoadHelper {
     }
 
     /**
-     * 设置加载监听器
+     * 同步处理
      */
-    public LoadHelper listener(LoadListener loadListener) {
-        this.loadListener = loadListener;
+    @SuppressWarnings("unused")
+    public LoadHelper sync() {
+        this.sync = true;
         return this;
+    }
+
+    /**
+     * 提交
+     */
+    public LoadRequest commit() {
+        if(sync && SketchUtils.isMainThread()){
+            throw new IllegalStateException("Cannot sync perform the load in the UI thread ");
+        }
+
+        CallbackHandler.postCallbackStarted(loadListener, sync);
+
+        preProcess();
+
+        if (!checkUri()) {
+            return null;
+        }
+
+        if (!checkUriScheme()) {
+            return null;
+        }
+
+        if (!checkRequestLevel()) {
+            return null;
+        }
+
+        return submitRequest();
     }
 
     /**
@@ -233,37 +270,12 @@ public class LoadHelper {
         }
     }
 
-    /**
-     * 提交请求
-     *
-     * @return LoadRequest 你可以通过Request来查看请求的状态或者取消这个请求
-     */
-    public LoadRequest commit() {
-        CallbackHandler.postCallbackStarted(loadListener);
-
-        preProcess();
-
-        if (!checkUri()) {
-            return null;
-        }
-
-        if (!checkUriScheme()) {
-            return null;
-        }
-
-        if (!checkRequestLevel()) {
-            return null;
-        }
-
-        return submitRequest();
-    }
-
     private boolean checkUri() {
         if (requestAttrs.getUri() == null || "".equals(requestAttrs.getUri().trim())) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "uri is null or empty"));
             }
-            CallbackHandler.postCallbackFailed(loadListener, FailedCause.URI_NULL_OR_EMPTY);
+            CallbackHandler.postCallbackFailed(loadListener, FailedCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
@@ -273,7 +285,7 @@ public class LoadHelper {
     private boolean checkUriScheme() {
         if (requestAttrs.getUriScheme() == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "unknown uri scheme", " - ", requestAttrs.getId()));
-            CallbackHandler.postCallbackFailed(loadListener, FailedCause.URI_NO_SUPPORT);
+            CallbackHandler.postCallbackFailed(loadListener, FailedCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
@@ -295,7 +307,7 @@ public class LoadHelper {
             }
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL;
-            CallbackHandler.postCallbackCanceled(loadListener, cancelCause);
+            CallbackHandler.postCallbackCanceled(loadListener, cancelCause, sync);
 
             return false;
         }
@@ -306,6 +318,7 @@ public class LoadHelper {
     private LoadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         LoadRequest request = requestFactory.newLoadRequest(sketch, requestAttrs, loadOptions, loadListener, progressListener);
+        request.setSync(sync);
         request.submit();
         return request;
     }

@@ -348,8 +348,6 @@ public class DisplayHelper {
 
     /**
      * 提交请求
-     *
-     * @return DisplayRequest 你可以通过Request来查看请求的状态或者取消这个请求
      */
     public DisplayRequest commit() {
         if (!SketchUtils.isMainThread()) {
@@ -363,7 +361,7 @@ public class DisplayHelper {
             return null;
         }
 
-        CallbackHandler.postCallbackStarted(displayListener);
+        CallbackHandler.postCallbackStarted(displayListener, false);
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("callbackStarted");
         }
@@ -567,7 +565,7 @@ public class DisplayHelper {
             }
             imageViewInterface.setImageDrawable(drawable);
 
-            CallbackHandler.postCallbackFailed(displayListener, FailedCause.URI_NULL_OR_EMPTY);
+            CallbackHandler.postCallbackFailed(displayListener, FailedCause.URI_NULL_OR_EMPTY, false);
             return false;
         }
 
@@ -592,7 +590,7 @@ public class DisplayHelper {
             }
             imageViewInterface.setImageDrawable(drawable);
 
-            CallbackHandler.postCallbackFailed(displayListener, FailedCause.URI_NO_SUPPORT);
+            CallbackHandler.postCallbackFailed(displayListener, FailedCause.URI_NO_SUPPORT, false);
             return false;
         }
 
@@ -655,7 +653,7 @@ public class DisplayHelper {
             imageViewInterface.setImageDrawable(loadingDrawable);
 
             CancelCause cancelCause = isPauseLoad ? CancelCause.PAUSE_LOAD : CancelCause.LEVEL_IS_MEMORY;
-            CallbackHandler.postCallbackCanceled(displayListener, cancelCause);
+            CallbackHandler.postCallbackCanceled(displayListener, cancelCause, false);
             return false;
         }
 
@@ -697,7 +695,7 @@ public class DisplayHelper {
             imageViewInterface.setImageDrawable(drawable);
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL;
-            CallbackHandler.postCallbackCanceled(displayListener, cancelCause);
+            CallbackHandler.postCallbackCanceled(displayListener, cancelCause, false);
             return false;
         }
 

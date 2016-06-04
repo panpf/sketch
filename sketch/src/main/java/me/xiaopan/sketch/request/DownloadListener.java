@@ -21,7 +21,7 @@ import java.io.File;
 /**
  * 下载监听器
  */
-public interface DownloadListener extends BaseListener {
+public interface DownloadListener extends Listener {
     /**
      * 已完成，当选择本地缓存的时候才会回调这个方法
      *

@@ -16,7 +16,7 @@
 
 package me.xiaopan.sketch.request;
 
-public interface BaseListener {
+public interface Listener {
     /**
      * 已开始
      */

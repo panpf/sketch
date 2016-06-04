@@ -35,7 +35,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 下载请求
  */
-public class DownloadRequest extends BaseRequest {
+public class DownloadRequest extends AsyncRequest {
     private DownloadOptions options;
     private DownloadListener downloadListener;
     private DownloadProgressListener progressListener;
@@ -175,7 +175,7 @@ public class DownloadRequest extends BaseRequest {
             return;
         }
 
-        setStatus(BaseRequest.Status.DOWNLOADING);
+        setStatus(Status.DOWNLOADING);
 
         // 调用下载器下载
         DownloadResult justDownloadResult = executeDownload();

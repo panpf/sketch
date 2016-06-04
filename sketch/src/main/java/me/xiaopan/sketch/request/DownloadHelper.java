@@ -28,6 +28,7 @@ public class DownloadHelper {
 
     protected Sketch sketch;
 
+    protected boolean sync;
     protected RequestAttrs requestAttrs = new RequestAttrs();
     protected DownloadOptions downloadOptions = new DownloadOptions();
     protected DownloadListener downloadListener;
@@ -83,7 +84,15 @@ public class DownloadHelper {
     }
 
     /**
-     * 设置进度监听器
+     * 设置下载监听器
+     */
+    public DownloadHelper listener(DownloadListener downloadListener) {
+        this.downloadListener = downloadListener;
+        return this;
+    }
+
+    /**
+     * 设置下载进度监听器
      */
     @SuppressWarnings("unused")
     public DownloadHelper progressListener(DownloadProgressListener downloadProgressListener) {
@@ -92,11 +101,35 @@ public class DownloadHelper {
     }
 
     /**
-     * 设置下载监听器
+     * 同步处理
      */
-    public DownloadHelper listener(DownloadListener downloadListener) {
-        this.downloadListener = downloadListener;
+    @SuppressWarnings("unused")
+    public DownloadHelper sync() {
+        this.sync = true;
         return this;
+    }
+
+    /**
+     * 提交
+     */
+    public DownloadRequest commit() {
+        if(sync && SketchUtils.isMainThread()){
+            throw new IllegalStateException("Cannot sync perform the download in the UI thread ");
+        }
+
+        CallbackHandler.postCallbackStarted(downloadListener, sync);
+
+        preProcess();
+
+        if (!checkUri()) {
+            return null;
+        }
+
+        if (!checkUriScheme()) {
+            return null;
+        }
+
+        return submitRequest();
     }
 
     /**
@@ -118,33 +151,12 @@ public class DownloadHelper {
         }
     }
 
-    /**
-     * 提交请求
-     *
-     * @return Request 你可以通过Request来查看请求的状态或者取消这个请求
-     */
-    public DownloadRequest commit() {
-        CallbackHandler.postCallbackStarted(downloadListener);
-
-        preProcess();
-
-        if (!checkUri()) {
-            return null;
-        }
-
-        if (!checkUriScheme()) {
-            return null;
-        }
-
-        return submitRequest();
-    }
-
     private boolean checkUri() {
         if (requestAttrs.getUri() == null || "".equals(requestAttrs.getUri().trim())) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "uri is null or empty"));
             }
-            CallbackHandler.postCallbackFailed(downloadListener, FailedCause.URI_NULL_OR_EMPTY);
+            CallbackHandler.postCallbackFailed(downloadListener, FailedCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
@@ -154,7 +166,7 @@ public class DownloadHelper {
     private boolean checkUriScheme() {
         if (requestAttrs.getUriScheme() == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "unknown uri scheme", " - ", requestAttrs.getId()));
-            CallbackHandler.postCallbackFailed(downloadListener, FailedCause.URI_NO_SUPPORT);
+            CallbackHandler.postCallbackFailed(downloadListener, FailedCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
@@ -162,7 +174,7 @@ public class DownloadHelper {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "only support http ot https", " - ", requestAttrs.getId()));
             }
-            CallbackHandler.postCallbackFailed(downloadListener, FailedCause.URI_NO_SUPPORT);
+            CallbackHandler.postCallbackFailed(downloadListener, FailedCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
@@ -172,6 +184,7 @@ public class DownloadHelper {
     private DownloadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         DownloadRequest request = requestFactory.newDownloadRequest(sketch, requestAttrs, downloadOptions, downloadListener, progressListener);
+        request.setSync(sync);
         request.submit();
         return request;
     }

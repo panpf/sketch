@@ -43,27 +43,27 @@ public class CallbackHandler {
             @Override
             public boolean handleMessage(Message msg) {
                 switch (msg.what) {
-                    case WHAT_RUN_UPDATE_PROGRESS:
-                        ((BaseRequest) msg.obj).runUpdateProgressInMainThread(msg.arg1, msg.arg2);
+                    case WHAT_RUN_COMPLETED:
+                        ((AsyncRequest) msg.obj).runCompletedInMainThread();
                         break;
                     case WHAT_RUN_CANCELED:
-                        ((BaseRequest) msg.obj).runCanceledInMainThread();
+                        ((AsyncRequest) msg.obj).runCanceledInMainThread();
                         break;
-                    case WHAT_RUN_COMPLETED:
-                        ((BaseRequest) msg.obj).runCompletedInMainThread();
+                    case WHAT_RUN_UPDATE_PROGRESS:
+                        ((AsyncRequest) msg.obj).runUpdateProgressInMainThread(msg.arg1, msg.arg2);
                         break;
                     case WHAT_RUN_FAILED:
-                        ((BaseRequest) msg.obj).runFailedInMainThread();
+                        ((AsyncRequest) msg.obj).runFailedInMainThread();
                         break;
 
                     case WHAT_CALLBACK_STARTED:
-                        postCallbackStarted((BaseListener) msg.obj);
+                        ((Listener) msg.obj).onStarted();
                         break;
                     case WHAT_CALLBACK_FAILED:
-                        postCallbackFailed((BaseListener) msg.obj, FailedCause.valueOf(msg.getData().getString(PARAM_FAILED_CAUSE)));
+                        ((Listener) msg.obj).onFailed(FailedCause.valueOf(msg.getData().getString(PARAM_FAILED_CAUSE)));
                         break;
                     case WHAT_CALLBACK_CANCELED:
-                        postCallbackCanceled((BaseListener) msg.obj, CancelCause.valueOf(msg.getData().getString(PARAM_CANCELED_CAUSE)));
+                        ((Listener) msg.obj).onCanceled(CancelCause.valueOf(msg.getData().getString(PARAM_CANCELED_CAUSE)));
                         break;
                 }
 
@@ -72,37 +72,56 @@ public class CallbackHandler {
         });
     }
 
+    private CallbackHandler() {
+    }
+
     /**
      * 推到主线程处理完成
      */
-    static void postRunCompleted(BaseRequest request) {
-        handler.obtainMessage(WHAT_RUN_COMPLETED, request).sendToTarget();
+    static void postRunCompleted(AsyncRequest request) {
+        if (request.isSync()) {
+            request.runCompletedInMainThread();
+        } else {
+            handler.obtainMessage(WHAT_RUN_COMPLETED, request).sendToTarget();
+        }
     }
 
     /**
      * 推到主线程处理取消
      */
-    static void postRunCanceled(BaseRequest request) {
-        handler.obtainMessage(WHAT_RUN_CANCELED, request).sendToTarget();
+    static void postRunCanceled(AsyncRequest request) {
+        if (request.isSync()) {
+            request.runCanceledInMainThread();
+        } else {
+            handler.obtainMessage(WHAT_RUN_CANCELED, request).sendToTarget();
+        }
     }
 
     /**
      * 推到主线程处理失败
      */
-    static void postRunFailed(BaseRequest request) {
-        handler.obtainMessage(WHAT_RUN_FAILED, request).sendToTarget();
+    static void postRunFailed(AsyncRequest request) {
+        if (request.isSync()) {
+            request.runFailedInMainThread();
+        } else {
+            handler.obtainMessage(WHAT_RUN_FAILED, request).sendToTarget();
+        }
     }
 
     /**
      * 推到主线程处理进度
      */
-    static void postRunUpdateProgress(BaseRequest request, int totalLength, int completedLength) {
-        handler.obtainMessage(WHAT_RUN_UPDATE_PROGRESS, totalLength, completedLength, request).sendToTarget();
+    static void postRunUpdateProgress(AsyncRequest request, int totalLength, int completedLength) {
+        if (request.isSync()) {
+            request.runUpdateProgressInMainThread(totalLength, completedLength);
+        } else {
+            handler.obtainMessage(WHAT_RUN_UPDATE_PROGRESS, totalLength, completedLength, request).sendToTarget();
+        }
     }
 
-    static void postCallbackStarted(BaseListener listener) {
+    static void postCallbackStarted(Listener listener, boolean sync) {
         if (listener != null) {
-            if (SketchUtils.isMainThread()) {
+            if (sync || SketchUtils.isMainThread()) {
                 listener.onStarted();
             } else {
                 handler.obtainMessage(WHAT_CALLBACK_STARTED, listener).sendToTarget();
@@ -110,9 +129,9 @@ public class CallbackHandler {
         }
     }
 
-    static void postCallbackFailed(BaseListener listener, FailedCause failedCause) {
+    static void postCallbackFailed(Listener listener, FailedCause failedCause, boolean sync) {
         if (listener != null) {
-            if (SketchUtils.isMainThread()) {
+            if (sync || SketchUtils.isMainThread()) {
                 listener.onFailed(failedCause);
             } else {
                 Message message = handler.obtainMessage(WHAT_CALLBACK_FAILED, listener);
@@ -126,9 +145,9 @@ public class CallbackHandler {
         }
     }
 
-    static void postCallbackCanceled(BaseListener listener, CancelCause cancelCause) {
+    static void postCallbackCanceled(Listener listener, CancelCause cancelCause, boolean sync) {
         if (listener != null) {
-            if (SketchUtils.isMainThread()) {
+            if (sync || SketchUtils.isMainThread()) {
                 listener.onCanceled(cancelCause);
             } else {
                 Message message = handler.obtainMessage(WHAT_CALLBACK_CANCELED, listener);
