@@ -1,4 +1,4 @@
-Sketch有display()、load()、download()三大方法，我们可以通过其专属的Options或Helper（[显示（display()）、加载（load()）和下载（download()））](docs/wiki/load_download.md)）来配置各种属性
+Sketch有display()、load()、download()三大方法，我们可以通过其专属的Options或Helper（[显示（display()）、加载（load()）和下载（download()））](load_download.md)）来配置各种属性
 
 三大方法支持属性如下（'-'代表不支持，非'-'代表支持并且默认值是什么）：
 
