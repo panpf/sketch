@@ -95,8 +95,11 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public boolean exist(String uri) {
-        // 由于这个方法目前只在Helper中用到，所以为了性能考虑就不尝试安装DiskLruCache了
-//        installDiskCache(false);
+        // 这里有些特殊，只有当没有尝试安装过的时候才会尝试安装，这是由于目前此方法只在helper中用到，而Helper对性能要求较高
+        if(cacheDir == null){
+            installDiskCache(false);
+        }
+
         return cache != null && cache.exist(uriToDiskCacheKey(uri));
     }
 
