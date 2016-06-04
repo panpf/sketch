@@ -23,7 +23,7 @@ public class ErrorCallback implements Identifier {
         Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "InstallDiskCacheFailed", ": ", e.getMessage(), " - ", cacheDir.getPath()));
     }
 
-    public void onDecodeGifImageFailed(Throwable error, LoadRequest request, BitmapFactory.Options options) {
+    public void onDecodeGifImageFailed(Throwable error, LoadRequest request, BitmapFactory.Options boundsOptions) {
         if (error instanceof UnsatisfiedLinkError || error instanceof ExceptionInInitializerError) {
             Log.e(Sketch.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, " +
                     "unable to process the GIF images. If you need to decode the GIF figure " +
@@ -38,10 +38,14 @@ public class ErrorCallback implements Identifier {
             Log.e(Sketch.TAG, SketchUtils.concat("Didn't find libpl_droidsonroids_gif.so. ", abiInfo));
         }
 
-        Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "DecodeGifImageFailed", ": ", request.getAttrs().getId()));
+        Log.e(Sketch.TAG, SketchUtils.concat(logName,
+                " - ", "DecodeGifImageFailed",
+                " - ", "outWidth", "=", boundsOptions.outWidth, ", ", "outHeight", "=", boundsOptions.outHeight, ", " +
+                        "", "outMimeType", "=", boundsOptions.outMimeType,
+                " - ", request.getAttrs().getId()));
     }
 
-    public void onDecodeNormalImageFailed(Throwable error, LoadRequest request, BitmapFactory.Options options) {
+    public void onDecodeNormalImageFailed(Throwable error, LoadRequest request, BitmapFactory.Options boundsOptions) {
         if (error instanceof OutOfMemoryError) {
             long maxMemory = Runtime.getRuntime().maxMemory();
             long freeMemory = Runtime.getRuntime().freeMemory();
@@ -56,7 +60,11 @@ public class ErrorCallback implements Identifier {
                     "totalMemory", "=", totalMemoryFormatted));
         }
 
-        Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "DecodeNormalImageFailed", ": ", request.getAttrs().getId()));
+        Log.e(Sketch.TAG, SketchUtils.concat(logName,
+                " - ", "DecodeNormalImageFailed",
+                " - ", "outWidth", "=", boundsOptions.outWidth, ", ", "outHeight", "=", boundsOptions.outHeight, ", " +
+                        "", "outMimeType", "=", boundsOptions.outMimeType,
+                " - ", request.getAttrs().getId()));
     }
 
     @Override

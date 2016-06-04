@@ -104,6 +104,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 error.printStackTrace();
                 ErrorCallback errorCallback = loadRequest.getSketch().getConfiguration().getErrorCallback();
                 if (errorCallback != null) {
+                    boundsOptions.inSampleSize = decodeOptions.inSampleSize;
                     errorCallback.onDecodeNormalImageFailed(error, loadRequest, boundsOptions);
                 }
             }
