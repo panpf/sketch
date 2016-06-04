@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
-import me.xiaopan.sketch.feture.ImagePreprocessor;
+import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.request.DisplayHelper;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayParams;

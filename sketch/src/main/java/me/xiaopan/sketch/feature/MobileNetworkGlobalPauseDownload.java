@@ -1,4 +1,4 @@
-package me.xiaopan.sketch.feture;
+package me.xiaopan.sketch.feature;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -10,18 +10,28 @@ import android.net.NetworkInfo;
 import me.xiaopan.sketch.Sketch;
 
 /**
- * 移动网络下暂停下载新图片管理器
+ * 移动网络下全局暂停下载图片
  */
-public class MobileNetworkPauseDownloadManager {
+public class MobileNetworkGlobalPauseDownload {
     private Context context;
     private BroadcastReceiver receiver;
+    private boolean opened;
 
-    public MobileNetworkPauseDownloadManager(Context context) {
+    public MobileNetworkGlobalPauseDownload(Context context) {
         this.context = context;
     }
 
-    public void setPauseDownload(boolean pauseDownloadImage) {
-        if (pauseDownloadImage) {
+    public boolean isOpened() {
+        return opened;
+    }
+
+    public void setOpened(boolean opened) {
+        if(this.opened == opened){
+            return;
+        }
+        this.opened = opened;
+
+        if (this.opened) {
             updateStatus(context);
             if (receiver == null) {
                 receiver = new NetworkChangedBroadcastReceiver();

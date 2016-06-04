@@ -28,8 +28,8 @@ import java.text.DecimalFormat;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.feture.ErrorCallback;
-import me.xiaopan.sketch.feture.ImageSizeCalculator;
+import me.xiaopan.sketch.feature.ErrorCallback;
+import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.DataSource;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;

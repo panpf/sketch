@@ -22,8 +22,8 @@ import android.util.Log;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
-import me.xiaopan.sketch.feture.ImagePreprocessor;
-import me.xiaopan.sketch.feture.PreProcessResult;
+import me.xiaopan.sketch.feature.ImagePreprocessor;
+import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 

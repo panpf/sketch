@@ -23,7 +23,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.feture.ResizeCalculator;
+import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.Resize;
 
 /**

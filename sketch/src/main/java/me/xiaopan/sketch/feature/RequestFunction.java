@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.feture;
+package me.xiaopan.sketch.feature;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;

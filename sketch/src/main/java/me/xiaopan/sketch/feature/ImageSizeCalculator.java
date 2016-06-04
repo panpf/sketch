@@ -15,7 +15,7 @@
  */
 
 
-package me.xiaopan.sketch.feture;
+package me.xiaopan.sketch.feature;
 
 import android.content.Context;
 import android.util.DisplayMetrics;

@@ -28,13 +28,13 @@ import me.xiaopan.sketch.decode.DefaultImageDecoder;
 import me.xiaopan.sketch.decode.ImageDecoder;
 import me.xiaopan.sketch.display.DefaultImageDisplayer;
 import me.xiaopan.sketch.display.ImageDisplayer;
-import me.xiaopan.sketch.feture.ErrorCallback;
-import me.xiaopan.sketch.feture.HelperFactory;
-import me.xiaopan.sketch.feture.ImagePreprocessor;
-import me.xiaopan.sketch.feture.ImageSizeCalculator;
-import me.xiaopan.sketch.feture.MobileNetworkPauseDownloadManager;
-import me.xiaopan.sketch.feture.RequestFactory;
-import me.xiaopan.sketch.feture.ResizeCalculator;
+import me.xiaopan.sketch.feature.ErrorCallback;
+import me.xiaopan.sketch.feature.HelperFactory;
+import me.xiaopan.sketch.feature.ImagePreprocessor;
+import me.xiaopan.sketch.feature.ImageSizeCalculator;
+import me.xiaopan.sketch.feature.MobileNetworkGlobalPauseDownload;
+import me.xiaopan.sketch.feature.RequestFactory;
+import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.http.HttpClientStack;
 import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.http.HurlStack;
@@ -68,7 +68,7 @@ public class Configuration {
     private boolean globalDisableCacheInDisk;   // 全局禁用磁盘缓存
     private boolean globalDisableCacheInMemory; // 全局禁用内存缓存
     private boolean globalInPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
-    private MobileNetworkPauseDownloadManager mobileNetworkPauseDownloadManager;
+    private MobileNetworkGlobalPauseDownload mobileNetworkGlobalPauseDownload;
 
     public Configuration(Context tempContext) {
         this.context = tempContext.getApplicationContext();
@@ -425,17 +425,32 @@ public class Configuration {
     }
 
     /**
-     * 设置是否开启移动网络下暂停下载的功能
+     * 是否移动网络下全局暂停下载，只影响display请求和load请求
      */
-    public Configuration setMobileNetworkPauseDownload(boolean mobileNetworkPauseDownload) {
-        if (mobileNetworkPauseDownload) {
-            if (mobileNetworkPauseDownloadManager == null) {
-                mobileNetworkPauseDownloadManager = new MobileNetworkPauseDownloadManager(context);
+    @SuppressWarnings("unused")
+    public boolean isMobileNetworkGlobalPauseDownload() {
+        return mobileNetworkGlobalPauseDownload != null && mobileNetworkGlobalPauseDownload.isOpened();
+    }
+
+    /**
+     * 设置是否开启移动网络下暂停下载的功能，只影响display请求和load请求
+     */
+    public Configuration setMobileNetworkGlobalPauseDownload(boolean mobileNetworkGlobalPauseDownload) {
+        if(isMobileNetworkGlobalPauseDownload() != mobileNetworkGlobalPauseDownload){
+            if (mobileNetworkGlobalPauseDownload) {
+                if (this.mobileNetworkGlobalPauseDownload == null) {
+                    this.mobileNetworkGlobalPauseDownload = new MobileNetworkGlobalPauseDownload(context);
+                }
+                this.mobileNetworkGlobalPauseDownload.setOpened(true);
+            } else {
+                if (this.mobileNetworkGlobalPauseDownload != null) {
+                    this.mobileNetworkGlobalPauseDownload.setOpened(false);
+                }
             }
-            mobileNetworkPauseDownloadManager.setPauseDownload(true);
-        } else {
-            if (mobileNetworkPauseDownloadManager != null) {
-                mobileNetworkPauseDownloadManager.setPauseDownload(false);
+
+            if (Sketch.isDebugMode()) {
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
+                        "set", " - ", "mobileNetworkGlobalPauseDownload", " (", isMobileNetworkGlobalPauseDownload(), ")"));
             }
         }
         return this;
@@ -703,6 +718,11 @@ public class Configuration {
         builder.append("globalDisableCacheInDisk");
         builder.append("：");
         builder.append(globalDisableCacheInDisk);
+
+        if (builder.length() > 0) builder.append("\n");
+        builder.append("mobileNetworkGlobalPauseDownload");
+        builder.append("：");
+        builder.append(isMobileNetworkGlobalPauseDownload());
 
         return builder.toString();
     }

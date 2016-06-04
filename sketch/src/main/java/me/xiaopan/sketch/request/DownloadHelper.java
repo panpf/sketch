@@ -20,7 +20,7 @@ import android.util.Log;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.feture.RequestFactory;
+import me.xiaopan.sketch.feature.RequestFactory;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class DownloadHelper {

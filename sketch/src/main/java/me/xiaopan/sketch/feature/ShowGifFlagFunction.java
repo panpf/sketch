@@ -14,61 +14,44 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.feture;
+package me.xiaopan.sketch.feature;
 
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.CancelCause;
-import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 由于RecyclerView在往回滚动的时候遇到可以直接使用的ItemView（位置没有变）会不走onBindViewHolder而直接走onAttachedToWindow然后显示，
- * <br>可是RequestFunction在onDetachedFromWindow的时候会主动清空Drawable导致没有重新走onBindViewHolder的ItemView会没有Drawable而显示空白
- * <br>因此RecyclerCompatFunction就判断了如果在onAttachedToWindow之前没有调用相关显示图片的方法就会根据DisplayParams恢复之前的图片
+ * 显示GIF图标识功能，使用者指定一个小图标，如果当前显示的图片是GIF图就会在ImageView的右下角显示这个小图标
  */
-public class RecyclerCompatFunction implements ImageViewFunction {
-    protected String logName = "RecyclerCompatFunction";
+public class ShowGifFlagFunction implements ImageViewFunction {
+    private View view;
 
-    private Context context;
-    private RequestFunction requestFunction;
-    private ImageViewInterface imageViewInterface;
+    protected boolean isGifDrawable;
+    protected float gifDrawableLeft = -1;
+    protected float gifDrawableTop = -1;
+    protected Drawable gifFlagDrawable;
 
-    private boolean isSetImage;
+    public ShowGifFlagFunction(View view, Drawable gifFlagDrawable) {
+        this.view = view;
 
-    public RecyclerCompatFunction(Context context, ImageViewInterface imageViewInterface, RequestFunction requestFunction) {
-        this.context = context;
-        this.imageViewInterface = imageViewInterface;
-        this.requestFunction = requestFunction;
+        this.gifFlagDrawable = gifFlagDrawable;
+        this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
     }
 
     @Override
     public void onAttachedToWindow() {
-        if (isSetImage) {
-            return;
-        }
 
-        DisplayParams displayParams = requestFunction.getDisplayParams();
-        if (displayParams != null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, "：", "restore image on attached to window", " - ", displayParams.attrs.getUri()));
-            }
-            Sketch.with(context).display(displayParams, imageViewInterface).commit();
-        }
     }
 
     @Override
     public boolean onDisplay(UriScheme uriScheme) {
-        isSetImage = true;
         return false;
     }
 
@@ -79,23 +62,37 @@ public class RecyclerCompatFunction implements ImageViewFunction {
 
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-
+        initLeftAndTop();
     }
 
     @Override
     public void onDraw(Canvas canvas) {
+        if (!isGifDrawable) {
+            return;
+        }
 
+        if (gifDrawableLeft == -1 || gifDrawableTop == -1) {
+            initLeftAndTop();
+        }
+
+        canvas.save();
+        canvas.translate(gifDrawableLeft, gifDrawableTop);
+        gifFlagDrawable.draw(canvas);
+        canvas.restore();
     }
 
     @Override
     public boolean onDetachedFromWindow() {
-        this.isSetImage = false;
+        // drawable都已经被清空了，GIF标识当然要重置了
+        isGifDrawable = false;
         return false;
     }
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        return false;
+        boolean oldIsGifDrawable = isGifDrawable;
+        isGifDrawable = SketchUtils.isGifDrawable(newDrawable);
+        return isGifDrawable != oldIsGifDrawable;
     }
 
     @Override
@@ -121,5 +118,14 @@ public class RecyclerCompatFunction implements ImageViewFunction {
     @Override
     public boolean onCanceled(CancelCause cancelCause) {
         return false;
+    }
+
+    public Drawable getGifFlagDrawable() {
+        return gifFlagDrawable;
+    }
+
+    private void initLeftAndTop() {
+        gifDrawableLeft = view.getWidth() - view.getPaddingRight() - gifFlagDrawable.getIntrinsicWidth();
+        gifDrawableTop = view.getHeight() - view.getPaddingBottom() - gifFlagDrawable.getIntrinsicHeight();
     }
 }

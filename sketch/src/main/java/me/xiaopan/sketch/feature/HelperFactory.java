@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.feture;
+package me.xiaopan.sketch.feature;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
