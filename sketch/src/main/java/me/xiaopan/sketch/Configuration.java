@@ -62,8 +62,8 @@ public class Configuration {
     private ImagePreprocessor imagePreprocessor;    // 本地图片预处理器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
 
-    private boolean pauseLoad;   // 暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
-    private boolean pauseDownload;   // 暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
+    private boolean globalPauseLoad;   // 全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+    private boolean globalPauseDownload;   // 全局暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean globalLowQualityImage; // 全局使用低质量的图片
     private boolean globalDisableCacheInDisk;   // 全局禁用磁盘缓存
     private boolean globalDisableCacheInMemory; // 全局禁用内存缓存
@@ -383,42 +383,42 @@ public class Configuration {
     }
 
     /**
-     * 是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+     * 是否全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
      */
-    public boolean isPauseLoad() {
-        return pauseLoad;
+    public boolean isGlobalPauseLoad() {
+        return globalPauseLoad;
     }
 
     /**
-     * 设置是否暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+     * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
      */
-    public Configuration setPauseLoad(boolean pauseLoad) {
-        if (this.pauseLoad != pauseLoad) {
-            this.pauseLoad = pauseLoad;
+    public Configuration setGlobalPauseLoad(boolean globalPauseLoad) {
+        if (this.globalPauseLoad != globalPauseLoad) {
+            this.globalPauseLoad = globalPauseLoad;
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "pauseLoad", " (", pauseLoad, ")"));
+                        "set", " - ", "globalPauseLoad", " (", globalPauseLoad, ")"));
             }
         }
         return this;
     }
 
     /**
-     * 是否暂停下载图片，开启后将不再从网络下载图片，只影响display请求和load请求
+     * 是否全局暂停下载图片，开启后将不再从网络下载图片，只影响display请求和load请求
      */
-    public boolean isPauseDownload() {
-        return pauseDownload;
+    public boolean isGlobalPauseDownload() {
+        return globalPauseDownload;
     }
 
     /**
-     * 设置暂停下载图片，开启后将不再从网络下载图片，只影响display请求和load请求
+     * 设置全局暂停下载图片，开启后将不再从网络下载图片，只影响display请求和load请求
      */
-    public Configuration setPauseDownload(boolean pauseDownload) {
-        if (this.pauseDownload != pauseDownload) {
-            this.pauseDownload = pauseDownload;
+    public Configuration setGlobalPauseDownload(boolean globalPauseDownload) {
+        if (this.globalPauseDownload != globalPauseDownload) {
+            this.globalPauseDownload = globalPauseDownload;
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "pauseDownload", " (", pauseDownload, ")"));
+                        "set", " - ", "globalPauseDownload", " (", globalPauseDownload, ")"));
             }
         }
         return this;
@@ -449,7 +449,7 @@ public class Configuration {
     }
 
     /**
-     * 设置是否全局使用低质量的图片
+     * 设置全局使用低质量的图片
      */
     public Configuration setGlobalLowQualityImage(boolean globalLowQualityImage) {
         if (this.globalLowQualityImage != globalLowQualityImage) {
@@ -465,7 +465,7 @@ public class Configuration {
     /**
      * 全局解码时优先考虑速度还是质量 (默认优先考虑速度)
      *
-     * @return true:质量;false:速度
+     * @return true：质量；false：速度
      */
     public boolean isGlobalInPreferQualityOverSpeed() {
         return globalInPreferQualityOverSpeed;
@@ -473,7 +473,8 @@ public class Configuration {
 
     /**
      * 设置全局解码时优先考虑速度还是质量 (默认优先考虑速度)
-     * @param globalInPreferQualityOverSpeed true:质量;false:速度
+     *
+     * @param globalInPreferQualityOverSpeed true：质量；false：速度
      */
     public Configuration setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
         if (this.globalInPreferQualityOverSpeed != globalInPreferQualityOverSpeed) {
@@ -674,14 +675,14 @@ public class Configuration {
         }
 
         if (builder.length() > 0) builder.append("\n");
-        builder.append("pauseLoad");
+        builder.append("globalPauseLoad");
         builder.append("：");
-        builder.append(pauseLoad);
+        builder.append(globalPauseLoad);
 
         if (builder.length() > 0) builder.append("\n");
-        builder.append("pauseDownload");
+        builder.append("globalPauseDownload");
         builder.append("：");
-        builder.append(pauseDownload);
+        builder.append(globalPauseDownload);
 
         if (builder.length() > 0) builder.append("\n");
         builder.append("globalLowQualityImage");

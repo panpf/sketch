@@ -32,7 +32,7 @@ public class MobileNetworkPauseDownloadManager {
 
             }
         } else {
-            Sketch.with(context).getConfiguration().setPauseDownload(false);
+            Sketch.with(context).getConfiguration().setGlobalPauseDownload(false);
             if (receiver != null) {
                 try {
                     context.unregisterReceiver(receiver);
@@ -45,7 +45,7 @@ public class MobileNetworkPauseDownloadManager {
     private void updateStatus(Context context) {
         NetworkInfo networkInfo = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo();
         boolean isPause = networkInfo != null && networkInfo.isAvailable() && networkInfo.getType() == ConnectivityManager.TYPE_MOBILE;
-        Sketch.with(context).getConfiguration().setPauseDownload(isPause);
+        Sketch.with(context).getConfiguration().setGlobalPauseDownload(isPause);
     }
 
     private class NetworkChangedBroadcastReceiver extends BroadcastReceiver {

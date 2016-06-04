@@ -256,7 +256,7 @@ public class LoadHelper {
 
         // 如果没有设置请求Level的话就跟据暂停下载和暂停加载功能来设置请求Level
         if (loadOptions.getRequestLevel() == null) {
-            if (configuration.isPauseDownload()) {
+            if (configuration.isGlobalPauseDownload()) {
                 loadOptions.setRequestLevel(RequestLevel.LOCAL);
                 loadOptions.setRequestLevelFrom(RequestLevelFrom.PAUSE_DOWNLOAD);
             }

@@ -488,12 +488,12 @@ public class DisplayHelper {
 
         // 如果没有设置请求Level的话就跟据暂停下载和暂停加载功能来设置请求Level
         if (displayOptions.getRequestLevel() == null) {
-            if (configuration.isPauseDownload()) {
+            if (configuration.isGlobalPauseDownload()) {
                 displayOptions.setRequestLevel(RequestLevel.LOCAL);
                 displayOptions.setRequestLevelFrom(RequestLevelFrom.PAUSE_DOWNLOAD);
             }
 
-            if (configuration.isPauseLoad()) {
+            if (configuration.isGlobalPauseLoad()) {
                 displayOptions.setRequestLevel(RequestLevel.MEMORY);
                 displayOptions.setRequestLevelFrom(RequestLevelFrom.PAUSE_LOAD);
             }

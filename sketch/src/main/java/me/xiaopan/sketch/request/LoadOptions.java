@@ -186,7 +186,7 @@ public class LoadOptions extends DownloadOptions {
     /**
      * 解码时优先考虑速度还是质量 (默认优先考虑速度)
      *
-     * @return true:质量;false:速度
+     * @return true：质量；false：速度
      */
     public boolean isInPreferQualityOverSpeed() {
         return inPreferQualityOverSpeed;
@@ -195,7 +195,7 @@ public class LoadOptions extends DownloadOptions {
     /**
      * 设置解码时优先考虑速度还是质量 (默认优先考虑速度)
      *
-     * @param inPreferQualityOverSpeed true:质量;false:速度
+     * @param inPreferQualityOverSpeed true：质量；false：速度
      */
     public LoadOptions setInPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
         this.inPreferQualityOverSpeed = inPreferQualityOverSpeed;
