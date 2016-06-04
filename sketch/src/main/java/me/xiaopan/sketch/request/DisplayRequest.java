@@ -60,6 +60,11 @@ public class DisplayRequest extends LoadRequest {
         return displayAttrs;
     }
 
+    @Override
+    protected boolean allowLoadLock() {
+        return true;
+    }
+
     /**
      * 获取显示选项
      */

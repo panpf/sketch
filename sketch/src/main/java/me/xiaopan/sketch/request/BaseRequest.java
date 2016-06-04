@@ -81,11 +81,19 @@ abstract class BaseRequest implements Runnable {
                     downloadLock.unlock();
                     break;
                 case LOAD:
-                    setStatus(BaseRequest.Status.GET_LOAD_LOCK);
-                    ReentrantLock loadLock = getLoadLock(attrs.getId());
-                    loadLock.lock();
+                    boolean allowLoadLock = allowLoadLock();
+                    ReentrantLock loadLock = null;
+                    if(allowLoadLock){
+                        setStatus(BaseRequest.Status.GET_LOAD_LOCK);
+                        loadLock = getLoadLock(attrs.getId());
+                        loadLock.lock();
+                    }
+
                     runLoad();
-                    loadLock.unlock();
+
+                    if(allowLoadLock){
+                        loadLock.unlock();
+                    }
                     break;
                 default:
                     new IllegalArgumentException("unknown runStatus: " + runStatus.name()).printStackTrace();
@@ -214,24 +222,8 @@ abstract class BaseRequest implements Runnable {
      */
     protected abstract void runFailedInMainThread();
 
-    /**
-     * 运行状态
-     */
-    private enum RunStatus {
-        /**
-         * 分发
-         */
-        DISPATCH,
-
-        /**
-         * 加载
-         */
-        LOAD,
-
-        /**
-         * 下载
-         */
-        DOWNLOAD,
+    protected boolean allowLoadLock() {
+        return false;
     }
 
     /**
@@ -320,6 +312,26 @@ abstract class BaseRequest implements Runnable {
         } else {
             return false;
         }
+    }
+
+    /**
+     * 运行状态
+     */
+    private enum RunStatus {
+        /**
+         * 分发
+         */
+        DISPATCH,
+
+        /**
+         * 加载
+         */
+        LOAD,
+
+        /**
+         * 下载
+         */
+        DOWNLOAD,
     }
 
     /**
