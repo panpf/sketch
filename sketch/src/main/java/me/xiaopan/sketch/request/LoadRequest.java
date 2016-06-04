@@ -40,8 +40,8 @@ public class LoadRequest extends DownloadRequest {
     public LoadRequest(
             Sketch sketch, RequestAttrs requestAttrs,
             LoadOptions loadOptions, LoadListener loadListener,
-            DownloadProgressListener progressListener) {
-        super(sketch, requestAttrs, loadOptions, null, progressListener);
+            DownloadProgressListener downloadProgressListener) {
+        super(sketch, requestAttrs, loadOptions, null, downloadProgressListener);
 
         this.loadOptions = loadOptions;
         this.loadListener = loadListener;

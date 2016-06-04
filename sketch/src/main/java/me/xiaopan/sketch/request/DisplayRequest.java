@@ -40,8 +40,8 @@ public class DisplayRequest extends LoadRequest {
             Sketch sketch, RequestAttrs requestAttrs,
             DisplayAttrs displayAttrs, DisplayOptions displayOptions,
             DisplayBinder displayBinder, DisplayListener displayListener,
-            DownloadProgressListener progressListener) {
-        super(sketch, requestAttrs, displayOptions, null, progressListener);
+            DownloadProgressListener downloadProgressListener) {
+        super(sketch, requestAttrs, displayOptions, null, downloadProgressListener);
 
         this.displayAttrs = displayAttrs;
         this.displayOptions = displayOptions;

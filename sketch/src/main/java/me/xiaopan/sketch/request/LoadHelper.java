@@ -35,7 +35,7 @@ public class LoadHelper {
     protected RequestAttrs requestAttrs = new RequestAttrs();
     protected LoadOptions loadOptions = new LoadOptions();
     protected LoadListener loadListener;
-    protected DownloadProgressListener progressListener;
+    protected DownloadProgressListener downloadProgressListener;
 
     /**
      * 支持以下几种图片Uri
@@ -182,8 +182,8 @@ public class LoadHelper {
      * 设置下载进度监听器
      */
     @SuppressWarnings("unused")
-    public LoadHelper progressListener(DownloadProgressListener downloadProgressListener) {
-        this.progressListener = downloadProgressListener;
+    public LoadHelper downloadProgressListener(DownloadProgressListener downloadProgressListener) {
+        this.downloadProgressListener = downloadProgressListener;
         return this;
     }
 
@@ -317,7 +317,7 @@ public class LoadHelper {
 
     private LoadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        LoadRequest request = requestFactory.newLoadRequest(sketch, requestAttrs, loadOptions, loadListener, progressListener);
+        LoadRequest request = requestFactory.newLoadRequest(sketch, requestAttrs, loadOptions, loadListener, downloadProgressListener);
         request.setSync(sync);
         request.submit();
         return request;

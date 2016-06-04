@@ -38,19 +38,19 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class DownloadRequest extends AsyncRequest {
     private DownloadOptions options;
     private DownloadListener downloadListener;
-    private DownloadProgressListener progressListener;
+    private DownloadProgressListener downloadProgressListener;
 
     private DownloadResult downloadResult;
 
     public DownloadRequest(
             Sketch sketch, RequestAttrs requestAttrs,
             DownloadOptions options, DownloadListener downloadListener,
-            DownloadProgressListener progressListener) {
+            DownloadProgressListener downloadProgressListener) {
         super(sketch, requestAttrs);
 
         this.options = options;
         this.downloadListener = downloadListener;
-        this.progressListener = progressListener;
+        this.downloadProgressListener = downloadProgressListener;
 
         setLogName("DownloadRequest");
     }
@@ -477,7 +477,7 @@ public class DownloadRequest extends AsyncRequest {
      * @param completedLength 已完成长度
      */
     private void updateProgress(int totalLength, int completedLength) {
-        if (progressListener != null) {
+        if (downloadProgressListener != null) {
             postRunUpdateProgress(totalLength, completedLength);
         }
     }
@@ -501,8 +501,8 @@ public class DownloadRequest extends AsyncRequest {
             return;
         }
 
-        if (progressListener != null) {
-            progressListener.onUpdateDownloadProgress(totalLength, completedLength);
+        if (downloadProgressListener != null) {
+            downloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
         }
     }
 

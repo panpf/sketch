@@ -41,7 +41,7 @@ public class RequestFactory implements Identifier {
     public DisplayRequest newDisplayRequest(
             Sketch sketch, RequestAttrs requestAttrs, DisplayAttrs displayAttrs,
             DisplayOptions displayOptions, DisplayBinder displayBinder,
-            DisplayListener displayListener, DownloadProgressListener progressListener) {
+            DisplayListener displayListener, DownloadProgressListener downloadProgressListener) {
         // 由于DisplayHelper会被重复利用
         // 因此RequestAttrs、DisplayAttrs和DisplayOptions不能直接拿来用，要重新New一个
         return new DisplayRequest(
@@ -49,19 +49,19 @@ public class RequestFactory implements Identifier {
                 new RequestAttrs(requestAttrs),
                 new DisplayAttrs(displayAttrs),
                 new DisplayOptions(displayOptions),
-                displayBinder, displayListener, progressListener);
+                displayBinder, displayListener, downloadProgressListener);
     }
 
     public LoadRequest newLoadRequest(
             Sketch sketch, RequestAttrs attrs, LoadOptions options,
-            LoadListener listener, DownloadProgressListener progressListener) {
-        return new LoadRequest(sketch, attrs, options, listener, progressListener);
+            LoadListener listener, DownloadProgressListener downloadProgressListener) {
+        return new LoadRequest(sketch, attrs, options, listener, downloadProgressListener);
     }
 
     public DownloadRequest newDownloadRequest(
             Sketch sketch, RequestAttrs attrs, DownloadOptions options,
-            DownloadListener listener, DownloadProgressListener progressListener) {
-        return new DownloadRequest(sketch, attrs, options, listener, progressListener);
+            DownloadListener listener, DownloadProgressListener downloadProgressListener) {
+        return new DownloadRequest(sketch, attrs, options, listener, downloadProgressListener);
     }
 
     @Override

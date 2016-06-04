@@ -44,7 +44,7 @@ public class DisplayHelper {
     protected DisplayAttrs displayAttrs = new DisplayAttrs();
     protected DisplayOptions displayOptions = new DisplayOptions();
     protected DisplayListener displayListener;
-    protected DownloadProgressListener progressListener;
+    protected DownloadProgressListener downloadProgressListener;
     protected ImageViewInterface imageViewInterface;
 
     /**
@@ -90,7 +90,7 @@ public class DisplayHelper {
 
         displayOptions.copy(imageViewInterface.getOptions());
         displayListener = imageViewInterface.getDisplayListener();
-        progressListener = imageViewInterface.getDownloadProgressListener();
+        downloadProgressListener = imageViewInterface.getDownloadProgressListener();
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("copyOptions");
         }
@@ -121,7 +121,7 @@ public class DisplayHelper {
 
         displayOptions.copy(params.options);
         displayListener = imageViewInterface.getDisplayListener();
-        progressListener = imageViewInterface.getDownloadProgressListener();
+        downloadProgressListener = imageViewInterface.getDownloadProgressListener();
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("copyOptions");
         }
@@ -138,7 +138,7 @@ public class DisplayHelper {
         requestAttrs.reset(null);
         displayOptions.reset();
         displayListener = null;
-        progressListener = null;
+        downloadProgressListener = null;
         displayAttrs.reset(null, null);
         imageViewInterface = null;
     }
@@ -731,7 +731,7 @@ public class DisplayHelper {
         DisplayBinder displayBinder = new DisplayBinder(imageViewInterface);
         DisplayRequest request = requestFactory.newDisplayRequest(
                 sketch, requestAttrs, displayAttrs, displayOptions,
-                displayBinder, displayListener, progressListener);
+                displayBinder, displayListener, downloadProgressListener);
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("createRequest");
         }

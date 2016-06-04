@@ -32,7 +32,7 @@ public class DownloadHelper {
     protected RequestAttrs requestAttrs = new RequestAttrs();
     protected DownloadOptions downloadOptions = new DownloadOptions();
     protected DownloadListener downloadListener;
-    protected DownloadProgressListener progressListener;
+    protected DownloadProgressListener downloadProgressListener;
 
     /**
      * 图片Uri，支持以下几种
@@ -95,8 +95,8 @@ public class DownloadHelper {
      * 设置下载进度监听器
      */
     @SuppressWarnings("unused")
-    public DownloadHelper progressListener(DownloadProgressListener downloadProgressListener) {
-        this.progressListener = downloadProgressListener;
+    public DownloadHelper downloadProgressListener(DownloadProgressListener downloadProgressListener) {
+        this.downloadProgressListener = downloadProgressListener;
         return this;
     }
 
@@ -183,7 +183,7 @@ public class DownloadHelper {
 
     private DownloadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        DownloadRequest request = requestFactory.newDownloadRequest(sketch, requestAttrs, downloadOptions, downloadListener, progressListener);
+        DownloadRequest request = requestFactory.newDownloadRequest(sketch, requestAttrs, downloadOptions, downloadListener, downloadProgressListener);
         request.setSync(sync);
         request.submit();
         return request;
