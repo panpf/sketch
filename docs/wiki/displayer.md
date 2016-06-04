@@ -1,3 +1,5 @@
+#### 简介
+
 ImageDisplayer是最后用来显示图片的，目前Sketch内置了以下五种ImageDisplayer：
 >* DefaultImageDisplayer： 默认的图片显示器，没有任何动画效果；
 >* ZoomInImageDisplayer：由小到大的显示图片，缩放比例是从0.5f到1.0f；
@@ -5,6 +7,7 @@ ImageDisplayer是最后用来显示图片的，目前Sketch内置了以下五种
 >* TransitionImageDisplayer： 过渡效果显示器，如果SketchImageView当前显示的有图片，就会用已有的图片和新的图片生成一个TransitionDrawable，以过渡渐变的方式显示。如果当前没有显示图片的话就用一张透明的ColorDrawable作为旧图片和新的图片生成一个TransitionDrawable，以过渡渐变的方式显示。
 >* ColorTransitionImageDisplayer：颜色过渡显示器，你可以指定一种颜色作为过渡效果的起始色。
 
+#### TransitionImageDisplayer
 在使用TransitionDrawable的时候，当两张图片的比例不一致，TransitionDrawable会依照尺寸比较大的图片强行将另一张图片拉伸，这样最终显示出来的效果就是变形的。
 
 为了解决这个问题，在使用TransitionImageDisplayer的时候如果Sketch检测到SketchImageView的layout_width和layout_height是写死的，

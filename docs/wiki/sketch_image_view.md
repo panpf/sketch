@@ -1,3 +1,5 @@
+#### 简介
+
 SketchImageView用来代替ImageView，你必须使用SketchImageView才能保证图片会被正常回收
 
 SketchImageView有以下特点：
@@ -61,7 +63,7 @@ sketchImageView.getOptions()
 ```java
 sketchImageView.setOptions(DisplayOptions)
 ```
-具体的配置项请参考[配置各种属性](options.md)
+具体的配置项请参考[配置各种属性.md](options.md)
 
 ####  2. 监听显示过程和下载进度
 ```java

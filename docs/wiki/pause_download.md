@@ -11,6 +11,7 @@ Sketch.with(context).getConfiguration().setGlobalPauseDownload(true);
 Sketch.with(context).getConfiguration().setGlobalPauseDownload(false);
 ```
 
+#### 移动网络下暂停下载
 结合此功能Sketch还提供了切换到移动网络的时候自动暂停下载图片的功能，如下：
 ```java
 // 开启移动网络下自动暂停下载图片功能

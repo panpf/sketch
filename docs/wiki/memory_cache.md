@@ -1,3 +1,5 @@
+#### 简介
+
 MemoryCache用来在内存中缓存图片，默认的实现是LruMemoryCache，自动根据最少使用原则释放旧的图片
 
 #### 相关方法：
@@ -8,7 +10,7 @@ MemoryCache用来在内存中缓存图片，默认的实现是LruMemoryCache，�
 >* get(String)：获取缓存中指定的keu的图片
 >* put(String, Drawable)：将图片放到缓存中，注意Drawable必须实现RecycleDrawableInterface接口
 
-自定义内存缓存最大容量
+#### 自定义内存缓存最大容量
 ```java
 // 最大容量为APP最大可用内存的十分之一
 int newMemoryCacheMaxSize = (int) (Runtime.getRuntime().maxMemory() / 10);

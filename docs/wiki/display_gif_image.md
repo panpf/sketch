@@ -3,9 +3,9 @@ Sketch集成了android-gif-drawable 1.1.7支持GIF图片，使用时只需像显
 关键点：
 >* Sketch会根据mimeType判断是否是GIF图，因此不用担心识别不了伪装成jpg的GIF图
 >* Sketch提供了decodeGifImage属性来可以控制是否使用GifDrawable解码GIF图，默认false，
-如果为false的话就会使用BitmapFactory只读取第一帧，属性配置请参考[配置各种属性](options.md)
+如果为false的话就会使用BitmapFactory只读取第一帧，属性配置请参考[配置各种属性.md](options.md)
 >* GifDrawable不能使用maxSize、resize、TransitionImageDisplayer
 >* Gif图还不能使用内存缓存，因为GifDrawable需要依赖Callback才能播放，
 如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
 
-SketchImageView还支持当显示的图片是GIF图时在右下角显示一个图标，告诉用户这是一张GIF图，详情请参考[SketchImageView详细使用说明](sketch_image_view.md)
+SketchImageView还支持当显示的图片是GIF图时在右下角显示一个图标，告诉用户这是一张GIF图，详情请参考[SketchImageView详细使用说明.md](sketch_image_view.md)

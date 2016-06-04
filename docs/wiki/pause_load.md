@@ -1,3 +1,5 @@
+#### 简介
+
 Sketch支持全局暂停从本地加载图片，暂停后Sketch将只会从内存中去找图片
 
 ``暂停加载功能只对display请求有效``
@@ -11,6 +13,7 @@ Sketch.with(context).getConfiguration().setGlobalPauseLoad(true);
 Sketch.with(context).getConfiguration().setGlobalPauseLoad(false);
 ```
 
+#### 滑动时停止加载
 你可以利用这个功能实现列表滑动中不加载图片，进一步提升列表的滑动流畅度
 
 首先你需要添加ScrollingPauseLoadManager.java到你的项目中，支持RecyclerView和AbsListView
