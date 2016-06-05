@@ -136,7 +136,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 下面是三种方法所支持的属性（'-'代表不支持）
 
 |属性|download()|load()|display()|
-|:--|:--|:--|:--|
+|:---|:---|:---|:---|
 |sync|false|false|-|
 |requestLevel|NET|NET|NET|
 |listener|null|null|null|
