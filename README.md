@@ -5,7 +5,7 @@ Sketch是Android上的一个图片加载器，能够帮助开发者从本地或�
 ![sample](docs/res/sample.jpg)
 
 ### 特点
->* ``支持GIF图``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示GIF图片，感谢koral--
+>* ``支持gif图``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示gif图片，感谢koral--
 >* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``等7种URI
 >* ``二级缓存``. 采用Lru算法在本地和内存中缓存图片，本地缓存默认最大容量为100M，内存缓存默认最大容量为最大可用内存的八分之一
 >* ``各种列表支持``. 在各种列表（ListView、RecyclerView）中循环使用不错位，并且不占用setTag()方法
@@ -163,7 +163,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 增强用户体验：
 >* [SketchImageView详细使用说明.md](docs/wiki/sketch_image_view.md)
 >* [配置各种属性.md](docs/wiki/options.md)
->* [显示GIF图片.md](docs/wiki/display_gif_image.md)
+>* [显示gif图片.md](docs/wiki/display_gif_image.md)
 >* [使用ImageProcessor将图片变成圆形的、圆角的或者高斯模糊的.md](docs/wiki/process_image.md)
 >* [使用ImageDisplayer以更炫酷的方式显示图片（过渡、缩放等）.md](docs/wiki/displayer.md)
 >* [使用ImagePreprocessor显示特殊文件的缩略图或图标.md](docs/wiki/pre_process_image.md)
