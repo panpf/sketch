@@ -32,6 +32,8 @@ setMaxSize(int)、saveBitmap(Bitmap, String)方法
 >* ``新增`` 支持在debug模式下输出display在主线程部分的耗时
 >* ``优化`` 本地任务支持多线程，加快处理速度
 >* ``BUG`` 修复在Display的commit阶段显示失败时如果没有配置相应的图片就不设置Drawable而导致页面上显示的还是上一个图片的BUG
+>* ``新增`` 支持load()和download()支持同步执行 
+>* ``修改`` 方法名progressListener()改为了downloadProgressListener() 
 
 处理：
 >* ``新增`` 新增旋转图片处理器RotateImageProcessor
