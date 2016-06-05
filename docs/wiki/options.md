@@ -13,7 +13,6 @@ Sketch有display()、load()、download()三大方法，我们可以通过其专�
 |disableCacheInDisk|false|false|false|
 |maxSize|-|屏幕的0.75倍|优先考虑layout_width和layout_height|
 |resize|-|null|null|
-|resizeByFixedSize|-|false|false|
 |forceUseResize|-|false|false|
 |processor|-|null|null|
 |decodeGifImage|-|false|false|
@@ -25,6 +24,7 @@ Sketch有display()、load()、download()三大方法，我们可以通过其专�
 |loadingImage|-|-|null|
 |failedImage|-|-|null|
 |pauseDownloadImage|-|-|null|
+|resizeByFixedSize|-|-|false|
 
 #### 属性详解
 

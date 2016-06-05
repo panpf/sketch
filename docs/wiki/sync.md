@@ -1,4 +1,4 @@
-load()和download()还支持同步执行，只需调用sync()方法开启即可，如：
+load()和download()还支持同步执行，只需调用sync()方法开启即可：
 ```java
 Sketch.with(context).load("http://biying.png", new LoadListener() {
     @Override

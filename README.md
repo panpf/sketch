@@ -144,7 +144,6 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 |disableCacheInDisk|false|false|false|
 |maxSize|-|屏幕的0.75倍|优先考虑ImageView的layout_width和layout_height|
 |resize|-|null|null|
-|resizeByFixedSize|-|false|false|
 |forceUseResize|-|false|false|
 |processor|-|null|null|
 |decodeGifImage|-|false|false|
@@ -156,6 +155,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 |loadingImage|-|-|null|
 |failedImage|-|-|null|
 |pauseDownloadImage|-|-|null|
+|resizeByFixedSize|-|-|false|
 
 各属性的详细说明请参考[配置各种属性.md](docs/wiki/options.md)
 
