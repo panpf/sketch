@@ -18,11 +18,11 @@ abstract class SafeRunnable implements Runnable {
                 doWork();
             }
         } catch (Throwable throwable) {
+            throwable.printStackTrace();
             final Thread.UncaughtExceptionHandler uncaughtExceptionHandler = Thread.getDefaultUncaughtExceptionHandler();
             if (uncaughtExceptionHandler != null) {
                 uncaughtExceptionHandler.uncaughtException(Thread.currentThread(), throwable);
             }
-            throw throwable;
         }
     }
 

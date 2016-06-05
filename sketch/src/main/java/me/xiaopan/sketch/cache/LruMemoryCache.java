@@ -21,104 +21,129 @@ import android.graphics.drawable.Drawable;
 import android.text.format.Formatter;
 import android.util.Log;
 
-import me.xiaopan.sketch.RecycleDrawableInterface;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.drawable.RecycleDrawable;
 import me.xiaopan.sketch.util.LruCache;
+import me.xiaopan.sketch.util.SketchUtils;
 
-/**
- * 使用Lru算法来缓存图片
- */
 public class LruMemoryCache implements MemoryCache {
-	private static final String NAME = "LruMemoryCache";
-	private Context context;
-	private LruCache<String, Drawable> drawableLruCache;
+    private final LruCache<String, Drawable> drawableLruCache;
+    protected String logName = "LruMemoryCache";
+    private Context context;
 
-	public LruMemoryCache(Context context, int maxSize){
-		this.context = context;
+    public LruMemoryCache(Context context, int maxSize) {
+        this.context = context;
         this.drawableLruCache = new DrawableLruCache(maxSize);
-	}
+    }
 
-	@Override
-	public synchronized void put(String key, Drawable value) {
-		if(!(value instanceof RecycleDrawableInterface)){
-			throw new IllegalArgumentException("drawable must be implemented RecycleDrawableInterface");
-		}
-		int cacheSize = 0;
-		if(Sketch.isDebugMode()){
-			cacheSize = drawableLruCache.size();
-		}
-		drawableLruCache.put(key, value);
-		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "put", " - ", "beforeCacheSize=", Formatter.formatFileSize(context, cacheSize), " - ", ((RecycleDrawableInterface) value).getInfo(), " - ", "afterCacheSize=", Formatter.formatFileSize(context, drawableLruCache.size())));
-		}
-	}
+    public static LruMemoryCache create(Context context) {
+        return new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 8));
+    }
 
-	@Override
-	public synchronized Drawable get(String key) {
-		return drawableLruCache.get(key);
-	}
+    public static LruMemoryCache createPlaceholder(Context context) {
+        long placeholderMemoryMaxSize = Runtime.getRuntime().maxMemory() / 32;
 
-	@Override
-	public synchronized Drawable remove(String key) {
-		Drawable drawable = drawableLruCache.remove(key);
-		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "remove", " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
-		}
-		return drawable;
-	}
+        // 不能小于2M
+        placeholderMemoryMaxSize = Math.max(placeholderMemoryMaxSize, 2 * 1024 * 1024);
 
-	@Override
-	public long getSize() {
-		return drawableLruCache.size();
-	}
+        return new LruMemoryCache(context, (int) placeholderMemoryMaxSize);
+    }
 
-	@Override
-	public long getMaxSize() {
-		return drawableLruCache.maxSize();
-	}
+    @Override
+    public void put(String key, Drawable value) {
+        if (!(value instanceof RecycleDrawable)) {
+            throw new IllegalArgumentException("drawable must be implemented RecycleDrawableInterface");
+        }
+        int oldCacheSize = 0;
+        if (Sketch.isDebugMode()) {
+            oldCacheSize = drawableLruCache.size();
+        }
+        drawableLruCache.put(key, value);
+        if (Sketch.isDebugMode()) {
+            int newCacheSize = drawableLruCache.size();
+            Log.i(Sketch.TAG, SketchUtils.concat(logName,
+                    " - ", "put",
+                    " - ", "beforeCacheSize=", Formatter.formatFileSize(context, oldCacheSize),
+                    " - ", ((RecycleDrawable) value).getInfo(),
+                    " - ", "afterCacheSize=", Formatter.formatFileSize(context, newCacheSize)));
+        }
+    }
 
-	@Override
-	public synchronized void clear() {
-		if(Sketch.isDebugMode()){
-			Log.i(Sketch.TAG, SketchUtils.concat(NAME, " - ", "clear", " - ", "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
-		}
-		drawableLruCache.evictAll();
-	}
+    @Override
+    public Drawable get(String key) {
+        return drawableLruCache.get(key);
+    }
 
-	@Override
-	public String getIdentifier() {
-		return appendIdentifier(new StringBuilder()).toString();
-	}
+    @Override
+    public Drawable remove(String key) {
+        Drawable drawable = drawableLruCache.remove(key);
+        if (Sketch.isDebugMode()) {
+            Log.i(Sketch.TAG, SketchUtils.concat(logName,
+                    " - ", "remove",
+                    " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+        }
+        return drawable;
+    }
 
-	@Override
-	public StringBuilder appendIdentifier(StringBuilder builder) {
-		return builder.append(NAME)
-				.append(" - ")
-				.append("maxSize").append("=").append(Formatter.formatFileSize(context, getMaxSize()));
-	}
+    @Override
+    public long getSize() {
+        return drawableLruCache.size();
+    }
 
-	private class DrawableLruCache extends LruCache<String, Drawable> {
+    @Override
+    public long getMaxSize() {
+        return drawableLruCache.maxSize();
+    }
 
-		public DrawableLruCache(int maxSize) {
-			super(maxSize);
-		}
+    @Override
+    public void clear() {
+        if (Sketch.isDebugMode()) {
+            Log.i(Sketch.TAG, SketchUtils.concat(logName,
+                    " - ", "clear",
+                    " - ", "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+        }
+        drawableLruCache.evictAll();
+    }
 
-		@Override
-		public Drawable put(String key, Drawable value) {
-			((RecycleDrawableInterface) value).setIsCached(NAME+":put", true);
-			return super.put(key, value);
-		}
+    @Override
+    public void close() {
+        clear();
+    }
 
-		@Override
-		public int sizeOf(String key, Drawable value) {
-			int bitmapSize = ((RecycleDrawableInterface) value).getByteCount();
-			return bitmapSize == 0 ? 1 : bitmapSize;
-		}
+    @Override
+    public String getIdentifier() {
+        return appendIdentifier(new StringBuilder()).toString();
+    }
 
-		@Override
-		protected void entryRemoved(boolean evicted, String key, Drawable oldValue, Drawable newValue) {
-			((RecycleDrawableInterface) oldValue).setIsCached(NAME+":entryRemoved", false);
-		}
-	}
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(logName)
+                .append("(")
+                .append("maxSize").append("=").append(Formatter.formatFileSize(context, getMaxSize()))
+                .append(")");
+    }
+
+    private class DrawableLruCache extends LruCache<String, Drawable> {
+
+        public DrawableLruCache(int maxSize) {
+            super(maxSize);
+        }
+
+        @Override
+        public Drawable put(String key, Drawable value) {
+            ((RecycleDrawable) value).setIsCached(logName + ":put", true);
+            return super.put(key, value);
+        }
+
+        @Override
+        public int sizeOf(String key, Drawable value) {
+            int bitmapSize = ((RecycleDrawable) value).getByteCount();
+            return bitmapSize == 0 ? 1 : bitmapSize;
+        }
+
+        @Override
+        protected void entryRemoved(boolean evicted, String key, Drawable oldValue, Drawable newValue) {
+            ((RecycleDrawable) oldValue).setIsCached(logName + ":entryRemoved", false);
+        }
+    }
 }

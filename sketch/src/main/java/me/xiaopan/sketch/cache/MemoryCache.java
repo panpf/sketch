@@ -18,54 +18,44 @@ package me.xiaopan.sketch.cache;
 
 import android.graphics.drawable.Drawable;
 
+import me.xiaopan.sketch.Identifier;
+
 /**
  * 内存缓存器
  */
-public interface MemoryCache {
-	/**
-	 * 放进去一张图片
-	 * @param key 键
-	 * @param value 值
-	 */
-	void put(String key, Drawable value);
-	
-	/**
-	 * 根据给定的key获取图片
-	 * @param key 键
-	 */
-	Drawable get(String key);
-	
-	/**
-	 * 根据给定的key删除图片
-	 * @param key 键
-	 */
-	Drawable remove(String key);
+public interface MemoryCache extends Identifier {
+    /**
+     * 放进去一张图片
+     */
+    void put(String key, Drawable value);
 
-	/**
-	 * 获取已用容量
-	 * @return 已用容量
-	 */
-	long getSize();
+    /**
+     * 根据给定的key获取图片
+     */
+    Drawable get(String key);
 
-	/**
-	 * 获取最大容量
-	 * @return 最大容量
-	 */
-	long getMaxSize();
-	
-	/**
-	 * 清除内存缓存
-	 */
-	void clear();
+    /**
+     * 根据给定的key删除图片
+     */
+    Drawable remove(String key);
 
-	/**
-	 * 获取标识符
-	 * @return 标识符
-	 */
-	String getIdentifier();
+    /**
+     * 获取已用容量
+     */
+    long getSize();
 
-	/**
-	 * 追加标识符
-	 */
-	StringBuilder appendIdentifier(StringBuilder builder);
+    /**
+     * 获取最大容量
+     */
+    long getMaxSize();
+
+    /**
+     * 清除缓存
+     */
+    void clear();
+
+    /**
+     * 关闭
+     */
+    void close();
 }

@@ -18,7 +18,7 @@ package me.xiaopan.sketchsample.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
@@ -100,8 +100,8 @@ public class DetailActivity extends MyBaseActivity implements DetailFragment.Set
     }
 
     @Override
-    public void onSetWindowBackground(String uri, Drawable drawable) {
-        windowBackgroundManager.setBackground(uri, drawable);
+    public void onSetWindowBackground(String uri, Bitmap bitmap) {
+        windowBackgroundManager.setBackground(uri, bitmap);
     }
 
     @Override

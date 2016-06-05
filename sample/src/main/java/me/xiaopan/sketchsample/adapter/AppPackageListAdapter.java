@@ -36,9 +36,9 @@ public class AppPackageListAdapter extends RecyclerView.Adapter{
             return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app_list_header, parent, false));
         }else{
             AppInfoViewHolder appInfoViewHolder = new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
-            appInfoViewHolder.iconSketchImageView.setDisplayOptions(OptionsType.APP_ICON);
+            appInfoViewHolder.iconSketchImageView.setOptionsByName(OptionsType.APP_ICON);
             appInfoViewHolder.iconSketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-            appInfoViewHolder.iconSketchImageView.setRoundedRadius(DeviceUtils.dp2px(parent.getContext(), 10));
+            appInfoViewHolder.iconSketchImageView.setImageShapeCornerRadius(DeviceUtils.dp2px(parent.getContext(), 10));
             appInfoViewHolder.iconSketchImageView.setAutoApplyGlobalAttr(false);
             return appInfoViewHolder;
         }
@@ -63,7 +63,7 @@ public class AppPackageListAdapter extends RecyclerView.Adapter{
             appInfoViewHolder.infoTextView.setText("v" + appInfo.getVersionName() + "  |  " + appInfo.getAppSize());
 
             appInfoViewHolder.iconSketchImageView.setShowPressedStatus(settings.isShowPressedStatus());
-            appInfoViewHolder.iconSketchImageView.setShowFromFlag(settings.isShowImageFromFlag());
+            appInfoViewHolder.iconSketchImageView.setShowImageFrom(settings.isShowImageFromFlag());
         }
     }
 

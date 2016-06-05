@@ -37,6 +37,7 @@ public abstract class InputSource {
      * take a faster drawing case than non-opaque one. See {@link GifTextureView#setOpaque(boolean)}
      * for more information.<br>
      * Currently it is used only by {@link GifTextureView}, not by {@link GifDrawable}
+     *
      * @param isOpaque whether the content of this source is opaque
      * @return this InputSource
      */
@@ -241,6 +242,7 @@ public abstract class InputSource {
 
         /**
          * Constructs new source.
+         *
          * @param assetFileDescriptor source asset file descriptor.
          */
         public AssetFileDescriptorSource(AssetFileDescriptor assetFileDescriptor) {

@@ -16,7 +16,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class MultiCallback implements Callback {
 
-    private final CopyOnWriteArrayList<ViewWeakReference> mViewList = new CopyOnWriteArrayList<>();
+    private final CopyOnWriteArrayList<ViewWeakReference> mViewList = new CopyOnWriteArrayList<ViewWeakReference>();
 
     @Override
     public void invalidateDrawable(final Drawable who) {

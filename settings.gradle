@@ -1,1 +1,1 @@
-include ':sample', ':sketch'
+include ':sample', ':sketch', 'scale-image', 'scale-sample'

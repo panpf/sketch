@@ -19,36 +19,28 @@ package me.xiaopan.sketch.process;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
 
-import me.xiaopan.sketch.Resize;
-import me.xiaopan.sketch.ResizeCalculator;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.feature.ResizeCalculator;
+import me.xiaopan.sketch.request.Resize;
 
 /**
  * 圆角图片处理器
  */
 public class RoundedCornerImageProcessor implements ImageProcessor {
-    private static final String NAME = "RoundedCornerImageProcessor";
+    private float[] cornerRadius;
 
-    private int roundPixels;
+    public RoundedCornerImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
+        cornerRadius = new float[]{topLeftRadius, topLeftRadius, topRightRadius, topRightRadius, bottomLeftRadius, bottomLeftRadius, bottomRightRadius, bottomRightRadius};
+    }
 
-	/**
-	 * 创建一个圆角图片显示器
-	 * @param roundPixels 圆角度数
-	 */
-	public RoundedCornerImageProcessor(int roundPixels){
-		this.roundPixels = roundPixels;
-	}
-	
-	/**
-	 * 创建一个圆角图片显示器，圆角角度默认为18
-	 */
-	public RoundedCornerImageProcessor(){
-		this(18);
-	}
+    public RoundedCornerImageProcessor(float cornerRadius) {
+        this(cornerRadius, cornerRadius, cornerRadius, cornerRadius);
+    }
 
     @Override
     public String getIdentifier() {
@@ -57,21 +49,35 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(NAME).append(" - ").append("roundPixels").append("=").append(roundPixels);
+        builder.append("RoundedCornerImageProcessor");
+        if (cornerRadius != null) {
+            builder.append("(")
+                    .append("cornerRadius").append("=").append("[")
+                    .append(cornerRadius[0]).append("x").append(cornerRadius[1])
+                    .append(",")
+                    .append(cornerRadius[2]).append("x").append(cornerRadius[3])
+                    .append(",")
+                    .append(cornerRadius[4]).append("x").append(cornerRadius[5])
+                    .append(",")
+                    .append(cornerRadius[6]).append("x").append(cornerRadius[7])
+                    .append("]")
+                    .append(")");
+        }
+        return builder;
     }
 
     @Override
     public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if(bitmap == null || bitmap.isRecycled()){
+        if (bitmap == null || bitmap.isRecycled()) {
             return null;
         }
 
         ResizeCalculator.Result result = sketch.getConfiguration().getResizeCalculator().calculator(bitmap.getWidth(), bitmap.getHeight(), resize != null ? resize.getWidth() : bitmap.getWidth(), resize != null ? resize.getHeight() : bitmap.getHeight(), resize != null ? resize.getScaleType() : null, forceUseResize);
-        if(result == null){
+        if (result == null) {
             return bitmap;
         }
 
-        Bitmap output = Bitmap.createBitmap(result.imageWidth, result.imageHeight, lowQualityImage?Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888);
+        Bitmap output = Bitmap.createBitmap(result.imageWidth, result.imageHeight, lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -79,19 +85,17 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
         paint.setColor(0xFFFF0000);
 
         // 绘制圆角的罩子
-        canvas.drawRoundRect(new RectF(0, 0, result.imageWidth, result.imageHeight), roundPixels, roundPixels, paint);
+        Path path = new Path();
+        path.addRoundRect(new RectF(0, 0, result.imageWidth, result.imageHeight), cornerRadius, Path.Direction.CW);
+        canvas.drawPath(path, paint);
 
         // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, result.srcRect, result.destRect, paint);
         return output;
-	}
+    }
 
-    public int getRoundPixels() {
-		return roundPixels;
-	}
-
-    public void setRoundPixels(int roundPixels) {
-        this.roundPixels = roundPixels;
+    public float[] getCornerRadius() {
+        return cornerRadius;
     }
 }

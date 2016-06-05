@@ -137,7 +137,8 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
             }
 
             @Override
-            public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.Failure failure, boolean b, boolean b2) {
+            public void onFailed(HttpRequest httpRequest, HttpResponse httpResponse, HttpRequest.
+                    Failure failure, boolean b, boolean b2) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
@@ -145,7 +146,7 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
                     }
                 }, 1000);
                 if (adapter == null) {
-                    hintView.failure(failure, new View.OnClickListener() {
+                    hintView.failed(failure, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             refreshLayout.startRefresh();

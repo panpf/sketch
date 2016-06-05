@@ -132,8 +132,8 @@ public class GifAnimationMetaData implements Serializable, Parcelable {
      * Buffer can be larger than size of the GIF data. Bytes beyond GIF terminator are not accessed.
      *
      * @param buffer buffer containing GIF data
-     * @throws IOException              if buffer does not contain valid GIF data or is indirect
-     * @throws NullPointerException     if buffer is null
+     * @throws IOException          if buffer does not contain valid GIF data or is indirect
+     * @throws NullPointerException if buffer is null
      */
     public GifAnimationMetaData(ByteBuffer buffer) throws IOException {
         this(GifInfoHandle.openDirectByteBuffer(buffer, true));

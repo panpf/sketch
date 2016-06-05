@@ -10,6 +10,7 @@ public class AppInfo {
     private String appSize;
     private String sortName;
     private String apkFilePath;
+    private int versionCode;
 
     public String getName() {
         return name;
@@ -57,5 +58,13 @@ public class AppInfo {
 
     public void setApkFilePath(String apkFilePath) {
         this.apkFilePath = apkFilePath;
+    }
+
+    public int getVersionCode() {
+        return versionCode;
+    }
+
+    public void setVersionCode(int versionCode) {
+        this.versionCode = versionCode;
     }
 }

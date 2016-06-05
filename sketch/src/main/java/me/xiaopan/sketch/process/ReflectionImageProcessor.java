@@ -25,31 +25,31 @@ import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader.TileMode;
 
-import me.xiaopan.sketch.Resize;
-import me.xiaopan.sketch.ResizeCalculator;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.feature.ResizeCalculator;
+import me.xiaopan.sketch.request.Resize;
 
 /**
  * 倒影图片处理器
  */
 public class ReflectionImageProcessor implements ImageProcessor {
-    private static final String NAME = "ReflectionImageProcessor";
-	private int reflectionSpacing;
-	private float reflectionScale;
+    private int reflectionSpacing;
+    private float reflectionScale;
 
-	/**
-	 * 创建一个倒影图片处理器
-	 * @param reflectionSpacing 倒影和图片之间的距离
-	 * @param reflectionScale 倒影的高度所占原图高度比例，取值为0.0到1
-	 */
-	public ReflectionImageProcessor(int reflectionSpacing, float reflectionScale) {
-		this.reflectionSpacing = reflectionSpacing;
-		this.reflectionScale = reflectionScale;
-	}
-	
-	public ReflectionImageProcessor(){
-		this(2, 0.3f);
-	}
+    /**
+     * 创建一个倒影图片处理器
+     *
+     * @param reflectionSpacing 倒影和图片之间的距离
+     * @param reflectionScale   倒影的高度所占原图高度比例，取值为0.0到1
+     */
+    public ReflectionImageProcessor(int reflectionSpacing, float reflectionScale) {
+        this.reflectionSpacing = reflectionSpacing;
+        this.reflectionScale = reflectionScale;
+    }
+
+    public ReflectionImageProcessor() {
+        this(2, 0.3f);
+    }
 
     @Override
     public String getIdentifier() {
@@ -58,36 +58,36 @@ public class ReflectionImageProcessor implements ImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        builder.append(NAME)
-                .append(" - ")
+        return builder.append("ReflectionImageProcessor")
+                .append("(")
                 .append("scale").append("=").append(reflectionScale)
-                .append(", ")
-                .append("spacing").append("=").append(reflectionSpacing);
-        return builder;
+                .append(",")
+                .append("spacing").append("=").append(reflectionSpacing)
+                .append(")");
     }
 
     @Override
     public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if(bitmap == null){
+        if (bitmap == null) {
             return null;
         }
 
         ResizeCalculator.Result result = sketch.getConfiguration().getResizeCalculator().calculator(bitmap.getWidth(), bitmap.getHeight(), resize != null ? resize.getWidth() : bitmap.getWidth(), resize != null ? resize.getHeight() : bitmap.getHeight(), resize != null ? resize.getScaleType() : null, forceUseResize);
-        if(result == null){
+        if (result == null) {
             return bitmap;
         }
 
         Bitmap srcBitmap;
-        if(bitmap.getWidth() == result.imageWidth && bitmap.getHeight() == result.imageHeight){
+        if (bitmap.getWidth() == result.imageWidth && bitmap.getHeight() == result.imageHeight) {
             srcBitmap = bitmap;
-        }else{
-            srcBitmap = Bitmap.createBitmap(result.imageWidth, result.imageHeight, lowQualityImage ? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888);
+        } else {
+            srcBitmap = Bitmap.createBitmap(result.imageWidth, result.imageHeight, lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(srcBitmap);
             canvas.drawBitmap(bitmap, result.srcRect, result.destRect, null);
         }
 
         // 初始化画布
-        Bitmap bitmapWithReflection = Bitmap.createBitmap(result.imageWidth, (int) (result.imageHeight+reflectionSpacing+(result.imageHeight*reflectionScale)), lowQualityImage ? Bitmap.Config.ARGB_4444:Bitmap.Config.ARGB_8888);
+        Bitmap bitmapWithReflection = Bitmap.createBitmap(result.imageWidth, (int) (result.imageHeight + reflectionSpacing + (result.imageHeight * reflectionScale)), lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmapWithReflection);
 
         // 在上半部分绘制原图
@@ -97,15 +97,15 @@ public class ReflectionImageProcessor implements ImageProcessor {
         Matrix matrix = new Matrix();
         matrix.preScale(1, -1);
         Bitmap reflectionImage = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.getWidth(), srcBitmap.getHeight(), matrix, false);
-        if(srcBitmap != bitmap){
+        if (srcBitmap != bitmap) {
             srcBitmap.recycle();
         }
-        canvas.drawBitmap(reflectionImage, 0, result.imageHeight+reflectionSpacing, null);
+        canvas.drawBitmap(reflectionImage, 0, result.imageHeight + reflectionSpacing, null);
         reflectionImage.recycle();
 
         // 在下半部分绘制半透明遮罩
         Paint paint = new Paint();
-        paint.setShader(new LinearGradient(0, result.imageHeight+reflectionSpacing, 0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
+        paint.setShader(new LinearGradient(0, result.imageHeight + reflectionSpacing, 0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
         paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
         canvas.drawRect(0, result.imageHeight + reflectionSpacing, bitmapWithReflection.getWidth(), bitmapWithReflection.getHeight(), paint);
 

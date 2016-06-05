@@ -1,0 +1,2 @@
+请求：
+>* ``BUG`` 修复在RecyclerView中使用SketchImageView的时候会由于没有重新读取ScaleType导致抛出IllegalArgumentException异常的BUG

@@ -13,9 +13,9 @@ import android.widget.ImageView;
 
 import java.util.List;
 
-import me.xiaopan.sketch.DisplayOptions;
-import me.xiaopan.sketch.ImageHolder;
-import me.xiaopan.sketch.Resize;
+import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.ImageHolder;
+import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
@@ -66,10 +66,9 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         Resize resize = new Resize(itemWidth, itemWidth, ImageView.ScaleType.CENTER_CROP);
         displayOptions = new DisplayOptions()
                 .setLoadingImage(new ImageHolder(R.drawable.image_loading).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
-                .setFailureImage(new ImageHolder(R.drawable.image_failure).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
+                .setFailedImage(new ImageHolder(R.drawable.image_failed).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
                 .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
                 .setImageProcessor(imageProcessor)
-                .setDecodeGifImage(false)
                 .setResizeByFixedSize(true)
                 .setForceUseResize(true)
                 .setImageDisplayer(new TransitionImageDisplayer());
@@ -94,9 +93,9 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         ItemViewHolder itemViewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_photo_album_image, parent, false));
 
         itemViewHolder.sketchImageView.setOnClickListener(itemClickListener);
-        itemViewHolder.sketchImageView.setDisplayOptions(displayOptions);
+        itemViewHolder.sketchImageView.setOptions(displayOptions);
         itemViewHolder.sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-        itemViewHolder.sketchImageView.setRoundedRadius(roundRadius);
+        itemViewHolder.sketchImageView.setImageShapeCornerRadius(roundRadius);
         if(itemWidth != -1){
             ViewGroup.LayoutParams layoutParams = itemViewHolder.sketchImageView.getLayoutParams();
             layoutParams.width = itemWidth;

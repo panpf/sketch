@@ -213,7 +213,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                 }
 
                 if(responseObject == null || responseObject.getImages() == null || responseObject.getImages().size() == 0){
-                    hintView.failure(new HttpRequest.Failure(0, "咦，图片去哪儿了？"), new View.OnClickListener() {
+                    hintView.failed(new HttpRequest.Failure(0, "咦，图片去哪儿了？"), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             pullRefreshLayout.startRefresh();
@@ -267,7 +267,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                     }
                 }, 1000);
                 if (searchImageListAdapter == null) {
-                    hintView.failure(failure, new View.OnClickListener() {
+                    hintView.failed(failure, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
                             pullRefreshLayout.startRefresh();

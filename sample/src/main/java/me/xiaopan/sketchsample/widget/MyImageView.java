@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.util.Settings;
 
@@ -24,21 +25,21 @@ public class MyImageView extends SketchImageView {
     private void onInit(Context context){
         settings = Settings.with(context);
         if(!isInEditMode()){
-            setGifFlagDrawable(R.drawable.ic_gif);
+            setShowGifFlag(R.drawable.ic_gif);
         }
     }
 
     @Override
-    public void onDisplay() {
-        super.onDisplay();
-
+    public void onDisplay(UriScheme uriScheme) {
         if(autoApplyGlobalAttr){
             setShowPressedStatus(settings.isShowPressedStatus());
-            setShowFromFlag(settings.isShowImageFromFlag());
+            setShowImageFrom(settings.isShowImageFromFlag());
             setShowDownloadProgress(settings.isShowImageDownloadProgress());
-            setClickDisplayOnPauseDownload(settings.isClickDisplayOnPauseDownload());
-            setClickRedisplayOnFailed(settings.isClickDisplayOnFailed());
+            setClickRetryOnPauseDownload(settings.isClickDisplayOnPauseDownload());
+            setClickRetryOnFailed(settings.isClickDisplayOnFailed());
         }
+
+        super.onDisplay(uriScheme);
     }
 
     public void setAutoApplyGlobalAttr(boolean autoApplyGlobalAttr){

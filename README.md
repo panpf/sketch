@@ -1,70 +1,47 @@
-#![Logo](docs/logo.png) Sketch
+# ![Logo](docs/res/logo.png) Sketch
 
-Sketch是用于Android上的一个图片加载器，目的是为了帮助开发者从本地或网络读取图片，然后处理并显示在页面上
+Sketch是Android上的一个图片加载器，能够帮助开发者从本地或网络读取图片，处理后显示在页面上
 
-Sketch is for Android on a picture of the loader, the purpose is to help the developers to read the image from a local or network, then processed and displayed on the page
+![sample](docs/res/sample.jpg)
 
-![sample](docs/sample.jpg)
+### 特点
+>* ``支持gif图``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示gif图片，感谢koral--
+>* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``等7种URI
+>* ``二级缓存``. 采用Lru算法在本地和内存中缓存图片，本地缓存默认最大容量为100M，内存缓存默认最大容量为最大可用内存的八分之一
+>* ``各种列表支持``. 在各种列表（ListView、RecyclerView）中循环使用不错位，并且不占用setTag()方法
+>* ``SketchImageView``. 提供功能SketchImageView，只需调用display***Image()系列方法即可显示各种图片，并且支持显示下载进度，显示按下效果，点击重试等常用功能
+>* ``重复下载过滤``. 如果两个请求的图片地址一样的话，第二个就会等待第一个下载完成之后直接使用第一个下载的图片
+>* ``即时取消无用请求``. SketchImageView在onDetachedFromWindow()或被重复利用的时候会主动取消之前的请求
+>* ``自动防止加载过大Bitmap`` 可通过maxSize来控制加载到内存的图片的尺寸，默认为屏幕宽高的0.75倍，还会自动根据ImageView的layout_width和layout_height来调整maxSize
+>* ``独家TransitionDrawable支持``. 独家支持任意尺寸的两张图片使用TransitionDrawable过渡显示，保证不变形
+>* ``只加载或只下载``. 除了display()方法可以显示图片之外，你还可以通过load()方法只加载图片到内存中或通过download()方法只下载图片到本地
+>* ``支持读取APK图标``. 支持直接读取本地APK文件的图标或根据包名和版本号读取已安装APP的图标
+>* ``移动网络下暂停下载``. 内置了移动网络下暂停下载图片的功能，你只需开启即可
+>* ``自动选择合适的Bimtap.Config``. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，例如对于JPEG格式的图片就会使用Bitmap.Config.RGB_565解码
+>* ``特殊文件预处理``. 提供ImagePreprocessor，可对本地的特殊文件（例如多媒体文件）进行预处理，Sketch便可直接显示其封面，读取APK文件的图标就是通过这个功能实现的
+>* ``强大且灵活的自定义``. 可自定义下载、缓存、解码、处理、显示、占位图等各个环节
 
-###特点（Features）
->* ``支持GIF图片``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示GIF图片，感谢koral--
->* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``/sdcard/sample.jpg``、``drawable://``等6种URI。
->* ``异步加载``. 采用线程池来处理每一个请求，并且网络加载和本地加载会放在不同的线程池中执行，保证不会因为网络加载而堵塞本地加载。
->* ``二级缓存支持``. 采用Lru算法在本地和内存中缓存图片，本地缓存默认最大容量为100M，内存缓存默认最大容量为最大可用内存的八分之一。
->* ``支持ViewHolder``. 即使你在ListView中使用了ViewHolder也依然可以使用Sketch来加载图片，在不占用setTag()方法的同时保证图片显示绝对不会混乱。
->* ``SketchImageView``. 提供功能更强大的SketchImageView，只需调用display***Image()系列方法即可显示各种图片，并且支持显示下载进度，按下效果，显示失败时点击重新显示以及显示GIF标识等功能。
->* ``重复下载过滤``. 如果两个请求的图片地址一样的话，第二个就会等待第一个下载完成之后直接使用第一个下载的图片。
->* ``即时取消无用请求``. SketchImageView在onDetachedFromWindow()或被重复利用的时候会及时取消之前的请求。
->* ``自动防止加载过大Bitmap`` 提供maxSize参数来控制加载到内存的图片的尺寸，默认为屏幕宽高的1.5倍，在使用display()方法显示图片的时候还会自动根据ImageView的layout size来调整maxSize。
->* ``TransitionDrawable支持``. 自定义了一个FixedSizeBitmapDrawable，用于支持任意尺寸的两张图片使用TransitionDrawable过渡显示，保证不变形。
->* ``兼容RecyclerView``. RecyclerView增加了一些新的特性，导致在onDetachedFromWindow()中直接回收图片或设置drawable为null会导致一些显示异常和崩溃，现已完美兼容。
->* ``多种方式玩转图片``. 除了display()方法可用来显示图片之外，你还可以通过load()方法加载图片或通过download()方法下载图片。
->* ``强大的自定义功能``. 可自定义参数组织、请求分发与执行、图片缓存、图片解码、图片处理、图片显示、默认或失败占位图、计算inSampleSize以及整个流程等。
->* ``支持读取APK图标``. 支持直接读取本地APK文件的图标，只需想指定本地图片的路径那样指定APK文件的路径即可。
->* ``提供RequestOptions``. 通过RequestOptions你可以提前定义好一系列的属性，然后在显示图片的时候一次性设置，另外你还可以通过Sketch.putOptions(Enum<?>, RequestOptions)存储RequestOptions。然后在使用的时候指定名称即可。
->* ``提供移动网络下暂停下载功能``. 内置了移动网络下暂停下载图片的功能，你只需调用Sketch.with(context).getConfiguration().setMobileNetworkPauseDownload(true)开启即可。
->* ``占位图支持内存缓存``. 对经过ImageProcessor处理的占位图支持内存缓存
->* ``自动选择合适的Bimtap.Config``. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，最明显的例子就是对于JPEG类型的图片使用Bitmap.Config.RGB_565解码。
-
-###示例APP（Sample app）
+### 示例APP
 ![SampleApp](docs/sketch-sample.png)
 
-扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](https://github.com/xiaopansky/Sketch/raw/master/docs/sketch-sample.apk)
+扫描二维码下载示例APP，也可[点击直接下载（Click download APK）](docs/sketch-sample.apk)
 
-###简介（Introduction）
-
-####支持的URI以及使用的方法（Support URI and the use of the method）：
-
-|Type|Scheme|Fetch method used in SketchImageView|
-|:--|:--|:--|
-|File in network|http://, https:// |displayImage(String)|
-|File in SDCard|/|displayImage(String)|
-|Content Provider|content://|displayURIImage(Uri)|
-|Asset in app|asset://|displayAssetImage(String)|
-|Resource in app|resource://|displayResourceImage(int)|
-
-####支持的图片类型（Support picture type）
-
-|Type|Scheme|jpeg|png|webp|gif|apk icon|
-|:--|:--|:--|:--|:--|:--|:--|:--|
-|File in network|http://, http:// |YES|YES|YES（Android4.0 above）|YES|NO|
-|File in SDCard|/|YES|YES|YES（Android4.0 above）|YES|YES|
-|Content Provider|content://|YES|YES|YES（Android4.0 above）|YES|NO|
-|Asset in app|asset://|YES|YES|YES（Android4.0 above）|YES|NO|
-|Resource in app|resource://|YES|YES|YES（Android4.0 above）|YES|NO|
-
-示例（Sample）：
+### 示例
 ```java
-SketchImageView sketchImageView = ...;
+SketchImageView sketchImageView = findViewByID(R.id.image_main);
 
-// display from image network
+// display image from network
 sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
 
 // display image from SDCard
 sketchImageView.displayImage("/sdcard/sample.png");
+sketchImageView.displayImage("file:///sdcard/sample.png");
 
 // display apk icon from SDCard
 sketchImageView.displayImage("/sdcard/google_play.apk");
+
+// display installed app icon
+sketchImageView.displayInstalledAppIcon("com.tencent.qq", 50001);
 
 // display resource drawable
 sketchImageView.displayResourceImage(R.drawable.sample);
@@ -77,186 +54,150 @@ Uri uri = ...;
 sketchImageView.displayURIImage(uri);
 ```
 
-####download()、load()、display()
-Sketch共有display()、load()、download()三个方法可供使用，你可以根据你的需求选择合适的方法
->* download()方法会下载图片到本地，并实现本地缓存；
->* load()方法在download()方法的基础上，加载图片到内存中，并对图片进行处理；
->* display()方法在load()方法的基础上，将图片缓存在内存中并显示在ImageView上。
+[SketchImageView详细使用说明.md](docs/wiki/sketch_image_view.md)
 
-下面是三种方法所属支持的属性表（'-'代表不支持，非'-'代表支持并且默认值是什么）
+### 使用指南
+
+#### 导入
+从JCenter导入
+```groovy
+dependencies{
+	compile compile 'me.xiaopan:sketch:lastVersionName'
+}
+```
+`lastVersionName`是指最新版本，你可以在[release](https://github.com/xiaopansky/Sketch/releases)页面看到最新的版本
+
+添加以下权限
+```xml
+<uses-permission android:name="android.permission.INTERNET"/>
+<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+```
+
+最低支持`Android2.2 API 7`
+
+#### 支持的URI
+|Type|Scheme|Method|
+|:---|:---|:---|
+|File in network|http://, https:// |displayImage(String)|
+|File in SDCard|/, file:// |displayImage(String)|
+|Content Provider|content:// |displayURIImage(Uri)|
+|Asset in app|asset:// |displayAssetImage(String)|
+|Resource in app|resource:// |displayResourceImage(int)|
+
+#### 支持的图片类型
+|Type|Scheme|jpeg|png|webp|gif|apk icon|
+|:---|:---|:---|:--|:---|:--|:---|:---|
+|File in network|http://, http:// |YES|YES|YES（Android4.0 above）|YES|NO|
+|File in SDCard|/, file:// |YES|YES|YES（Android4.0 above）|YES|YES|
+|Content Provider|content:// |YES|YES|YES（Android4.0 above）|YES|NO|
+|Asset in app|asset:// |YES|YES|YES（Android4.0 above）|YES|NO|
+|Resource in app|resource:// |YES|YES|YES（Android4.0 above）|YES|NO|
+
+#### download()、load()、display()
+Sketch共有display()、load()、download()三个方法可供使用，你可以根据你的需求选择合适的方法
+>* download()方法会下载图片到本地，并实现本地缓存
+>* load()方法在download()方法的基础上，加载图片到内存中，并对图片进行处理
+>* display()方法在load()方法的基础上，将图片缓存在内存中并显示在ImageView上
+
+示例：
+```
+// 显示
+Sketch.with(context).display("http://biying.png", sketchImageView)
+    .loadingImage(R.drawable.image_loading)
+    .commit();
+
+// 加载
+Sketch.with(context).load("http://biying.png", new LoadListener() {
+    @Override
+    public void onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType) {
+
+    }
+
+    @Override
+    public void onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType) {
+
+    }
+	...
+}).maxSize(100, 100).commit();
+
+// 下载
+Sketch.with(context).download("http://biying.png", new DownloadListener() {
+    @Override
+    public void onCompleted(File cacheFile, boolean isFromNetwork) {
+        
+    }
+	...
+}).commit();
+```
+
+load()和download()还支持同步执行，详情请参考[同步执行load和download.md](docs/wiki/sync.md)
+
+下面是三种方法所支持的属性（'-'代表不支持）
 
 |属性|download()|load()|display()|
-|:--|:--|:--|:--|
-|name|uri|uri|memoryCacheId|
+|:---|:---|:---|:---|
+|sync|false|false|-|
 |requestLevel|NET|NET|NET|
 |listener|null|null|null|
-|progressListener|null|null|null|
-|diskCache|true|true|true|
-|maxSize|-|屏幕的1.5倍|默认会先尝试用SketchImageView的layout size作为maxSize，否则会用当前屏幕宽高的1.5倍作为maxSize|
+|downloadProgressListener|null|null|null|
+|disableCacheInDisk|false|false|false|
+|maxSize|-|屏幕的0.75倍|优先考虑ImageView的layout_width和layout_height|
 |resize|-|null|null|
-|resizeByFixedSize|-|false|false|
 |forceUseResize|-|false|false|
 |processor|-|null|null|
-|decodeGifImage|-|null|null|
+|decodeGifImage|-|false|false|
 |lowQualityImage|-|false|false|
-|memoryCache|-|-|true|
-|memoryCacheId|-|-|null|
+|bitmapConfig|-|null|null|
+|inPreferQualityOverSpeed|-|false|false|
+|disableCacheInMemory|-|-|false|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
-|failureImage|-|-|null|
+|failedImage|-|-|null|
 |pauseDownloadImage|-|-|null|
+|resizeByFixedSize|-|-|false|
 
-###使用指南（Usage guide）
-`lastVersionName`是最新版本名称的意思，你可以在[release](https://github.com/xiaopansky/Sketch/releases)页面看到最新的版本名称
+各属性的详细说明请参考[配置各种属性.md](docs/wiki/options.md)
 
-####1. 导入Sketch（Import Sketch to your project）
-
-#####使用Gradle（Use Gradle）
-``从JCenter仓库导入（Import from jcenter）``
-
-```groovy
-dependencies{
-	compile 'me.xiaopan:sketch:lastVersionName'
-}
-```
-
-``离线模式（Offline work）``
-
-首先到[JCenter](https://bintray.com/xiaopansky/maven/Sketch/view)下载最新版的aar包，然后放到你module的libs目录下
-
-然后在你module的build.gradle文件中添加以下代码：
-```groovy
-repositories{
-    flatDir(){
-        dirs 'libs'
-    }
-}
-
-dependencies{
-    compile(name:'sketch-lastVersionName', ext:'aar')
-}
-```
-最后同步一下Gradle即可
-
-#####使用Eclipse（Use Eclipse）
-1. 首先到[JCenter](https://bintray.com/xiaopansky/maven/Sketch/view)下载最新版的aar包
-2. 然后改后缀名为zip并解压
-3. 接下来将classes.jar文件重命名为sketch-lastVersionName.jar
-4. 最后将sketch-lastVersionName.jar和jni目录下的全部文件拷贝到你的项目的libs目录下即可
-
-####2. 配置最低版本（Configure min sdk version）
-Sketch最低兼容API v8
-
-#####使用Gradle（Use Gradle）
-在app/build.gradle文件文件中配置最低版本为8
-```groovy
-android {
-	...
-
-    defaultConfig {
-        minSdkVersion 8
-        ...
-    }
-}
-```
-
-#####使用Eclipse（Use Eclipse）
-在AndroidManifest.xml文件中配置最低版本为8
-```xml
-<manifest
-	...
-	>
-    <uses-sdk android:minSdkVersion="8"/>
-    <application>
-    ...
-    </application>
-</manifest>
-```
-
-####3. 配置权限（Configure the required permissions）
-在AndroidManifest.xml文件中添加以下权限
-```xml
-<manifest
-	...
-	>
-	<uses-permission android:name="android.permission.INTERNET"/>
-	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
-    <application>
-    ...
-    </application>
-</manifest>
-```
-
-####4. 在XML中使用SketchImageView
-res/layout/item_user.xml
-```xml
-<?xml version="1.0" encoding="utf-8"?>
-<me.xiaopan.sketch.SketchImageView
-    android:id="@+id/image_main_head"
-    android:layout_width="130dp"
-    android:layout_height="130dp"
-  />
-```
-
-####5. 在Adapter中设置URI显示图片
-```java
-@Override
-public View getView(int position, View convertView, ViewGroup parent) {
-	if(convertView == null){
-		convertView = LayoutInflater.from(context).inflate(R.layout.item_user, parent, false);
-	}
-
-	SketchImageView headImageView = (SketchImageView) convertView;
-	headImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
-	return convertView;
-}
-```
-[点击查看SketchImageView详细使用说明](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
-
-####6. 你可能还感兴趣的功能：
+#### 你可能还感兴趣的功能：
 增强用户体验：
->* [使用SketchImageView代替ImageView显示图片](https://github.com/xiaopansky/Sketch/wiki/SketchImageView)
->* [使用ImageProcessor将图片变成圆形的、圆角的或者高斯模糊的](https://github.com/xiaopansky/Sketch/wiki/ImageProcessor)
->* [以渐变、缩放或更加炫酷的方式显示图片](https://github.com/xiaopansky/Sketch/wiki/ImageDisplayer)
->* [显示GIF图片](https://github.com/xiaopansky/Sketch/wiki/display-gif-image)
->* [使用maxSize防止加载过大的图片以节省内存](https://github.com/xiaopansky/Sketch/wiki/maxSize)
->* [使用resize裁剪图片](https://github.com/xiaopansky/Sketch/wiki/resize)
->* [移动网络下暂停下载图片，节省流量](https://github.com/xiaopansky/Sketch/wiki/pauseDownload)
->* [实现列表滑动时暂停加载图片，在较旧的设备上进一步提升滑动流畅度](https://github.com/xiaopansky/Sketch/wiki/pauseLoad)
+>* [SketchImageView详细使用说明.md](docs/wiki/sketch_image_view.md)
+>* [配置各种属性.md](docs/wiki/options.md)
+>* [显示gif图片.md](docs/wiki/display_gif_image.md)
+>* [使用ImageProcessor将图片变成圆形的、圆角的或者高斯模糊的.md](docs/wiki/process_image.md)
+>* [使用ImageDisplayer以更炫酷的方式显示图片（过渡、缩放等）.md](docs/wiki/displayer.md)
+>* [使用ImagePreprocessor显示特殊文件的缩略图或图标.md](docs/wiki/pre_process_image.md)
+>* [使用maxSize控制图片大小.md](docs/wiki/max_size.md)
+>* [使用resize修剪图片尺寸.md](docs/wiki/resize.md)
+>* [移动网络下暂停下载图片，节省流量.md](docs/wiki/pause_download.md)
+>* [列表滑动时暂停加载图片，提升流畅度.md](docs/wiki/pause_load.md)
 
-改变Sketch的配置：
->* [了解和自定义inSampleSize计算规则](https://github.com/xiaopansky/Spear/wiki/inSampleSize)
->* [了解和配置内存缓存](https://github.com/xiaopansky/Sketch/wiki/MemoryCache)
->* [了解和配置本地缓存](https://github.com/xiaopansky/Sketch/wiki/DiskCache)
->* [了解和配置下载器](https://github.com/xiaopansky/Sketch/wiki/ImageDownloader)
->* [了解和配置任务执行器](https://github.com/xiaopansky/Sketch/wiki/RequestExecutor)
+其它：
+>* [同步执行load和download.md](docs/wiki/sync.md)
+>* [了解inSampleSize计算规则.md](docs/wiki/in_sample_size.md)
+>* [了解并配置内存缓存.md](docs/wiki/memory_cache.md)
+>* [了解并配置本地缓存.md](docs/wiki/disk_cache.md)
+>* [了解并配置HttpStack.md](docs/wiki/http_stack.md)
+>* [监听加载开始、成功、失败以及下载进度.md](docs/wiki/listener.md)
+>* [显示APK或已安装APP的图标.md](docs/wiki/display_apk_or_app_icon.md)
+>* [了解何时取消请求以及如何主动取消请求.md](docs/wiki/cancel_request.md)
+>* [使用ErrorCallback监控Sketch的异常.md](docs/wiki/error_callback.md)
+>* [配置混淆（Proguard）.md](docs/wiki/proguard_config.md)
 
-其它功能：
->* [监听加载开始、成功、失败以及进度](https://github.com/xiaopansky/Sketch/wiki/listener)
->* [使用RequestOptions定义属性模板来简化属性设置](https://github.com/xiaopansky/Sketch/wiki/RequestOptions)
->* [显示APK的图标](https://github.com/xiaopansky/Sketch/wiki/display-apk-icon)
->* [了解何时取消请求以及如何主动取消请求](https://github.com/xiaopansky/Sketch/wiki/CancelRequest)
->* [配置混淆（Proguard）](https://github.com/xiaopansky/Sketch/wiki/proguard-configuration)
-
-###Thanks
+### Thanks
 [koral](https://github.com/koral--) - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
 
-###License
-```java
-/*
- * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-```
+### License
+    Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.

@@ -65,7 +65,7 @@ public class InstalledAppFragment extends MyFragment {
             protected List<AppInfo> doInBackground(Integer... params) {
                 PackageManager packageManager = context.getPackageManager();
                 List<PackageInfo> packageInfoList = packageManager.getInstalledPackages(0);
-                List<AppInfo> appInfoList = new ArrayList<>(packageInfoList.size());
+                List<AppInfo> appInfoList = new ArrayList<AppInfo>(packageInfoList.size());
                 for(PackageInfo packageInfo : packageInfoList){
                     AppInfo appInfo = new AppInfo();
                     appInfo.setName(String.valueOf(packageInfo.applicationInfo.loadLabel(packageManager)));
@@ -74,6 +74,7 @@ public class InstalledAppFragment extends MyFragment {
                     appInfo.setVersionName(packageInfo.versionName);
                     appInfo.setApkFilePath(packageInfo.applicationInfo.publicSourceDir);
                     appInfo.setAppSize(Formatter.formatFileSize(context, new File(appInfo.getApkFilePath()).length()));
+                    appInfo.setVersionCode(packageInfo.versionCode);
                     appInfoList.add(appInfo);
                 }
 

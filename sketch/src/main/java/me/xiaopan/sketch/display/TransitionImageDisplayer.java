@@ -21,62 +21,64 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 
-import me.xiaopan.sketch.RecycleGifDrawable;
-import me.xiaopan.sketch.SketchImageViewInterface;
+import me.xiaopan.sketch.drawable.RecycleGifDrawable;
+import me.xiaopan.sketch.request.ImageViewInterface;
 
 /**
  * 过渡效果的图片显示器
  */
 public class TransitionImageDisplayer implements ImageDisplayer {
-	private static final String NAME = "TransitionImageDisplayer";
-	private int duration;
+    protected String logName = "TransitionImageDisplayer";
 
-	public TransitionImageDisplayer(int duration){
-		this.duration = duration;
-	}
-	
-	public TransitionImageDisplayer(){
-		this(400);
-	}
-	
-	@Override
-	public void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable) {
-		if(newDrawable == null){
+    private int duration;
+
+    public TransitionImageDisplayer(int duration) {
+        this.duration = duration;
+    }
+
+    public TransitionImageDisplayer() {
+        this(400);
+    }
+
+    @Override
+    public void display(ImageViewInterface imageViewInterface, Drawable newDrawable) {
+        if (newDrawable == null) {
             return;
         }
-		if(newDrawable instanceof RecycleGifDrawable){
-        	sketchImageViewInterface.clearAnimation();
-			sketchImageViewInterface.setImageDrawable(newDrawable);
-		}else{
-			Drawable oldDrawable = sketchImageViewInterface.getDrawable();
-			if(oldDrawable == null){
-				new ColorDrawable(Color.TRANSPARENT);
-			}
-			TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, newDrawable});
-        	sketchImageViewInterface.clearAnimation();
-			sketchImageViewInterface.setImageDrawable(transitionDrawable);
-			transitionDrawable.setCrossFadeEnabled(true);
-			transitionDrawable.startTransition(duration);
-		}
-	}
+        if (newDrawable instanceof RecycleGifDrawable) {
+            imageViewInterface.clearAnimation();
+            imageViewInterface.setImageDrawable(newDrawable);
+        } else {
+            Drawable oldDrawable = imageViewInterface.getDrawable();
+            if (oldDrawable == null) {
+                new ColorDrawable(Color.TRANSPARENT);
+            }
+            TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, newDrawable});
+            imageViewInterface.clearAnimation();
+            imageViewInterface.setImageDrawable(transitionDrawable);
+            transitionDrawable.setCrossFadeEnabled(true);
+            transitionDrawable.startTransition(duration);
+        }
+    }
 
-	@Override
-	public String getIdentifier() {
-		return appendIdentifier(new StringBuilder()).toString();
-	}
+    @Override
+    public String getIdentifier() {
+        return appendIdentifier(new StringBuilder()).toString();
+    }
 
-	@Override
-	public StringBuilder appendIdentifier(StringBuilder builder) {
-		return builder.append(NAME)
-				.append(" - ")
-				.append("duration").append("=").append(duration);
-	}
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(logName)
+                .append("(")
+                .append("duration").append("=").append(duration)
+                .append(")");
+    }
 
-	public int getDuration() {
-		return duration;
-	}
+    public int getDuration() {
+        return duration;
+    }
 
-	public void setDuration(int duration) {
-		this.duration = duration;
-	}
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
 }

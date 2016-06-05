@@ -20,14 +20,17 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.zip.ZipFile;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.AppPackageListAdapter;
 import me.xiaopan.sketchsample.bean.AppInfo;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
+import me.xiaopan.sketchsample.util.XpkInfo;
 import me.xiaopan.sketchsample.widget.HintView;
 
 /**
@@ -73,7 +76,7 @@ public class AppPackageFragment extends MyFragment {
                 }
 
                 PackageManager packageManager = context.getPackageManager();
-                List<AppInfo> appInfoList = new ArrayList<>();
+                List<AppInfo> appInfoList = new ArrayList<AppInfo>();
 
                 Queue<File> dirs = new LinkedBlockingQueue<File>();
                 dirs.add(Environment.getExternalStorageDirectory());
@@ -104,25 +107,18 @@ public class AppPackageFragment extends MyFragment {
                             continue;
                         }
 
-                        if(!(childFile.getName().endsWith(".apk") || childFile.getName().endsWith(".APK"))){
-                            continue;
+                        String fileName = childFile.getName();
+                        if(SketchUtils.checkSuffix(fileName, ".apk")){
+                            AppInfo appInfo = parseFromApk(context, childFile);
+                            if(appInfo != null){
+                                appInfoList.add(appInfo);
+                            }
+                        }else if(SketchUtils.checkSuffix(fileName, ".xpk")){
+                            AppInfo appInfo = parseFromXpk(childFile);
+                            if(appInfo != null){
+                                appInfoList.add(appInfo);
+                            }
                         }
-
-                        PackageInfo packageInfo = context.getPackageManager().getPackageArchiveInfo(childFile.getPath(), PackageManager.GET_ACTIVITIES);
-                        if(packageInfo == null){
-                            continue;
-                        }
-                        packageInfo.applicationInfo.sourceDir = childFile.getPath();
-                        packageInfo.applicationInfo.publicSourceDir = childFile.getPath();
-
-                        AppInfo appInfo = new AppInfo();
-                        appInfo.setName(String.valueOf(packageInfo.applicationInfo.loadLabel(packageManager)));
-                        appInfo.setSortName(toPinYin(appInfo.getName()));
-                        appInfo.setId(packageInfo.packageName);
-                        appInfo.setVersionName(packageInfo.versionName);
-                        appInfo.setApkFilePath(childFile.getPath());
-                        appInfo.setAppSize(Formatter.formatFileSize(context, childFile.length()));
-                        appInfoList.add(appInfo);
                     }
                 }
 
@@ -147,6 +143,47 @@ public class AppPackageFragment extends MyFragment {
                     }
                 }
                 return stringBuilder.toString();
+            }
+
+            private AppInfo parseFromApk(Context context, File file){
+                PackageInfo packageInfo = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_ACTIVITIES);
+                if(packageInfo == null){
+                    return null;
+                }
+                packageInfo.applicationInfo.sourceDir = file.getPath();
+                packageInfo.applicationInfo.publicSourceDir = file.getPath();
+
+                AppInfo appInfo = new AppInfo();
+                appInfo.setName(String.valueOf(packageInfo.applicationInfo.loadLabel(context.getPackageManager())));
+                appInfo.setSortName(toPinYin(appInfo.getName()));
+                appInfo.setId(packageInfo.packageName);
+                appInfo.setVersionName(packageInfo.versionName);
+                appInfo.setApkFilePath(file.getPath());
+                appInfo.setAppSize(Formatter.formatFileSize(context, file.length()));
+
+                return appInfo;
+            }
+
+            private AppInfo parseFromXpk(File file) {
+                try {
+                    AppInfo appInfo = new AppInfo();
+                    XpkInfo xpkInfo = XpkInfo.getXPKManifestDom(new ZipFile(file));
+                    if (xpkInfo == null) {
+                        throw new Exception();
+                    }
+
+                    appInfo.setName(xpkInfo.getAppName());
+                    appInfo.setSortName(toPinYin(appInfo.getName()));
+                    appInfo.setId(xpkInfo.getPackageName());
+                    appInfo.setVersionName(xpkInfo.getVersionName());
+                    appInfo.setApkFilePath(file.getPath());
+                    appInfo.setAppSize(Formatter.formatFileSize(context, file.length()));
+
+                    return appInfo;
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
             }
 
             @Override

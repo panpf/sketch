@@ -18,28 +18,17 @@ package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
 
-import me.xiaopan.sketch.SketchImageViewInterface;
+import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.request.ImageViewInterface;
 
 /**
  * 图片显示器
  */
-public interface ImageDisplayer {
-	int DEFAULT_ANIMATION_DURATION = 400;
-	/**
-	 * 显示
-	 * @param sketchImageViewInterface ImageView
-	 * @param newDrawable 图片
-	 */
-	void display(SketchImageViewInterface sketchImageViewInterface, Drawable newDrawable);
+public interface ImageDisplayer extends Identifier {
+    int DEFAULT_ANIMATION_DURATION = 400;
 
-	/**
-	 * 获取标识符
-	 * @return 标识符
-	 */
-	String getIdentifier();
-
-	/**
-	 * 追加标识符
-	 */
-	StringBuilder appendIdentifier(StringBuilder builder);
+    /**
+     * 显示
+     */
+    void display(ImageViewInterface imageViewInterface, Drawable newDrawable);
 }

@@ -27,7 +27,7 @@ public abstract class HotStarRequest implements Request{
 
         @Override
         public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, String sourceContent, boolean b, boolean b2) throws Throwable {
-            List<HotStar> hotStarList = new LinkedList<>();
+            List<HotStar> hotStarList = new LinkedList<HotStar>();
             hotStarList.add(new HotStar("内地最热"+starType, parse(NetUtils.substring(sourceContent, "type : \"nd\",", "\\}\\)\\;", "imgs : "))));
             hotStarList.add(new HotStar("港台最热"+starType, parse(NetUtils.substring(sourceContent, "type : \"gt\",", "\\}\\)\\;", "imgs : "))));
             hotStarList.add(new HotStar("日韩最热"+starType, parse(NetUtils.substring(sourceContent, "type : \"rh\",", "\\}\\)\\;", "imgs : "))));
