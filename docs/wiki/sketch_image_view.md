@@ -2,12 +2,12 @@
 
 SketchImageView用来代替ImageView，你必须使用SketchImageView才能保证图片会被正常回收
 
-SketchImageView有以下特点：
+特点：
 >* 使用display***Image()系列方法即可方便的显示各种图片
 >* 支持显示下载进度
 >* 支持显示按下状态，长按的时候还会显示类似Android 5.0的涟漪效果
 >* 支持显示图片来源，能方便的看出当前图片来自内存还是本地缓存还是刚从网络下载的
->* 支持显示GIF图标，当显示的是GIF图的时候会在右下角显示一个图标，用于提醒用户这是一张GIF图片
+>* 支持显示gif图标，当显示的是gif图的时候会在右下角显示一个图标，用于提醒用户这是一张gif图片
 >* 支持显示失败的时候点击重新显示图片
 >* 支持暂停下载的时候点击强制显示图片
 >* onDetachedFromWindow的时候主动释放图片以及取消请求
@@ -59,9 +59,14 @@ sketchImageView.getOptions()
     .set***()
     .set***();
 ```
-或批量通过setOptions方法批量设置
+或通过setOptions(DisplayOptions)方法批量设置
 ```java
-sketchImageView.setOptions(DisplayOptions)
+DisplayOptions displayOptions = new DisplayOptions();
+displayOptions.setLoadingImage(R.drawable.image_loading);
+displayOptions.setFailedImage(R.drawable.image_failed);
+....
+
+sketchImageView.setOptions(displayOptions)
 ```
 具体的配置项请参考[配置各种属性.md](options.md)
 
@@ -111,7 +116,7 @@ sketchImageView.setShowDownloadProgress(true);
 ####4. 在SketchImageView上显示按下状态
 SketchImageView支持点击的时候在图片上面显示一层黑色半透明层，表示按下状态，长按的时候还会有类似Android5.0的涟漪效果，这样你就无需在ImageView上面放一个黑色半透明的View来实现这种效果了。
 ```java
-// 你需要先开启点击事件
+// 你需要先设置点击Listener
 sketchImageView.setOnClickListener(...);
 
 // 然后开启按下状态
@@ -120,7 +125,7 @@ sketchImageView.setShowPressedStatus(true);
 ``如果图片是圆角或者圆形的那么还需要通过ImageShape来改变按下蒙层的形状``[查看如何使用ImageShape](#ImageShape)
 
 <h4 id="ImageShape">5. 设置ImageShape改变蒙层的形状</h4>
-下载进度和按下状态默认是矩形的，如果你使用了CircleImageProcessor将图片处理成了圆形的，那么这时候
+下载进度和按下状态蒙层默认是矩形的，如果你使用了CircleImageProcessor将图片处理成了圆形的，那么这时候
 
 没按下时是这样的：
 
@@ -153,12 +158,14 @@ new DisplayOptions()
 ```
 resizeByFixedSize意思就是使用ImageView的layout_width和layout_height作为resize，然后forceUseResize的作用是让最终返回的图片的尺寸一定是resize
 
-#### 6. 显示GIF图标识
-Sketch支持解码GIF图，因此SketchImageView在发现显示的是GIF图的时候可以在SketchImageView的右下角显示一个图标，以告诉用户这是一张GIF图，如下：
+#### 6. 显示gif图标识
+Sketch支持解码gif图，因此SketchImageView在发现显示的是gif图的时候可以在SketchImageView的右下角显示一个图标，以告诉用户这是一张gif图，如下：
 
 ```java
 sketchImageView.setGifFlagDrawable(R.drawable.ic_gif);
 ```
+
+Sketch通过mimeType来识别gif图，所以即使你没有调用decodeGifImage()也会认为这是一张gif图，这个功能主要用来在列表中告诉用户这是一张gif图，然后点击图片到大图详情页再播放gif
 
 效果如下：
 

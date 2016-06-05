@@ -53,7 +53,7 @@ displayOptions.setResizeByFixedSize(true);
 // 强制使经过最终返回的图片同resize的尺寸一致
 displayOptions.setForceUseResize(true);
 
-// 解码GIF图返回GifDrawable
+// 解码gif图返回GifDrawable
 displayOptions.setDecodeGifImage(true);
 
 // 尝试返回低质量的图片，例如PNG图片将使用ARGB_4444解析，具体的请查看ImageFormat类

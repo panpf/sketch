@@ -5,7 +5,7 @@ DiskCache用来在本地磁盘上缓存图片，默认实现是LruDiskCache，�
 #### 相关方法
 >* boolean exist(String)：判断缓存是否存在
 >* DiskCache.Entry get(String)：获取缓存
->* DiskCache.Editor edit(String)：
+>* DiskCache.Editor edit(String)：编辑缓存
 >* File getCacheDir()：获取缓存目录
 >* long getMaxSize()：获取最大容量
 >* long getSize()：获取当前缓存大小

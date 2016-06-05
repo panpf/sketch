@@ -10,7 +10,7 @@ ErrorCallback包含以下方法：
 >* onInstallDiskCacheFailed(Exception, File)：安装DiskLruCache失败，但Sketch还是可以正常运行的。
     一旦失败了这个方法就会被频繁回调，这是因为每一次需要用到DiskCache的时候都会尝试恢复，再次失败就会再次回调。
     因此你在记录日志的时候不必每次失败都记，可以每隔一个小时记一次
->* onDecodeGifImageFailed(Throwable, LoadRequest, BitmapFactory.Options)：解码GIF图片失败。你需要过滤一下Throwable，
+>* onDecodeGifImageFailed(Throwable, LoadRequest, BitmapFactory.Options)：解码gif图片失败。你需要过滤一下Throwable，
     如果是UnsatisfiedLinkError或ExceptionInInitializerError就是找到libpl_droidsonroids_gif.so，
     这个时候你就要记录一下当前设备的abi类型，Sketch中包含的libpl_droidsonroids_gif.so已经覆盖了全平台了，如果还找不到就说明有其他的问题了。
     另外这里的Options是只含有outWidth、outHeight、outMimeType信息的
