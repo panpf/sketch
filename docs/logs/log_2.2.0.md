@@ -1,3 +1,7 @@
+2.2.0版本是一次大的升级，重构了大部分的实现，修复了一些BUG，也改善了一些API的设计
+
+``由于改了一些API所以此次无法无缝升级，需要你该些代码``
+
 磁盘缓存:
 >* ``优化`` 升级LruDiskCache，内部采用DiskLruCache实现
 >* ``修改`` DiskCache接口增加了edit(String)方法，去掉了generateCacheFile(String)、
