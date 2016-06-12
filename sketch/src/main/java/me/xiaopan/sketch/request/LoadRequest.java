@@ -156,7 +156,7 @@ public class LoadRequest extends DownloadRequest {
         // 尝试用图片预处理器处理一下特殊的本地图片，并得到他们的缓存
         ImagePreprocessor imagePreprocessor = getSketch().getConfiguration().getImagePreprocessor();
         if (imagePreprocessor.isSpecific(this)) {
-            PreProcessResult prePrecessResult = imagePreprocessor.getDiskCacheEntry(this);
+            PreProcessResult prePrecessResult = imagePreprocessor.prePrecess(this);
             if (prePrecessResult != null) {
                 if (prePrecessResult.diskCacheEntry != null) {
                     dataSource = new DataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);

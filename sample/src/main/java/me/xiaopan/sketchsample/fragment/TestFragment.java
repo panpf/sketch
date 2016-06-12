@@ -20,10 +20,6 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 @InjectParentMember
 @InjectContentView(R.layout.fragment_test)
 public class TestFragment extends MyFragment{
-//    @InjectView(R.id.image1)
-//    MyImageView imageView1;
-//    @InjectView(R.id.image2)
-//    MyImageView imageView2;
 
     @InjectView(R.id.image1) private MyImageView imageView1;
     @InjectView(R.id.image2) private MyImageView imageView2;
@@ -34,31 +30,47 @@ public class TestFragment extends MyFragment{
     @InjectView(R.id.image7) private MyImageView imageView7;
     @InjectView(R.id.image8) private MyImageView imageView8;
 
+    @InjectView(R.id.image9) private MyImageView imageView9;
+    @InjectView(R.id.image10) private MyImageView imageView10;
+    @InjectView(R.id.image11) private MyImageView imageView11;
+    @InjectView(R.id.image12) private MyImageView imageView12;
+    @InjectView(R.id.image13) private MyImageView imageView13;
+    @InjectView(R.id.image14) private MyImageView imageView14;
+    @InjectView(R.id.image15) private MyImageView imageView15;
+    @InjectView(R.id.image16) private MyImageView imageView16;
+
+    @InjectView(R.id.image31) private MyImageView imageView31;
+    @InjectView(R.id.image32) private MyImageView imageView32;
+    @InjectView(R.id.image33) private MyImageView imageView33;
+    @InjectView(R.id.image34) private MyImageView imageView34;
+    @InjectView(R.id.image35) private MyImageView imageView35;
+    @InjectView(R.id.image36) private MyImageView imageView36;
+    @InjectView(R.id.image37) private MyImageView imageView37;
+    @InjectView(R.id.image38) private MyImageView imageView38;
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        imageView1.setOptions(new DisplayOptions().setLoadingImage(R.drawable.image_loading).setImageDisplayer(new TransitionImageDisplayer()));
-//        imageView2.setOptions(new DisplayOptions().setImageDisplayer(new TransitionImageDisplayer()));
-//
-//        imageView1.displayImage("http://h.hiphotos.baidu.com/image/pic/item/908fa0ec08fa513d6999b9df3f6d55fbb2fbd984.jpg");
-//        imageView2.displayImage("http://h.hiphotos.baidu.com/image/pic/item/908fa0ec08fa513d6999b9df3f6d55fbb2fbd984.jpg");
-//
-//        imageView1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.e("", "");
-//            }
-//        });
-//
-//        imageView2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.e("", "");
-//            }
-//        });
-
         loadAppList();
+
+        imageView9.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView10.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView11.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView12.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView13.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView14.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView15.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView16.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+
+        imageView31.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView32.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView33.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView34.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView35.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView36.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView37.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView38.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
     }
 
     private void loadAppList(){

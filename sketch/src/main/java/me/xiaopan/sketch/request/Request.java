@@ -161,30 +161,44 @@ abstract class Request {
          */
         DISPATCHING,
 
+
         /**
          * 等待下载
          */
         WAIT_DOWNLOAD,
 
         /**
-         * 正在获取下载锁
+         * 获取磁盘缓存编辑锁
          */
-        GET_DOWNLOAD_LOCK,
+        GET_DISK_CACHE_EDIT_LOCK,
+
+        /**
+         * 检查磁盘缓存
+         */
+        CHECK_DISK_CACHE,
 
         /**
          * 正在下载
          */
         DOWNLOADING,
 
+
         /**
          * 等待加载
          */
         WAIT_LOAD,
 
+
         /**
-         * 正在获取加载锁
+         * 获取内存缓存编辑锁
          */
-        GET_LOAD_LOCK,
+        GET_MEMORY_CACHE_EDIT_LOCK,
+
+        /**
+         * 检查内存缓存
+         */
+        CHECK_MEMORY_CACHE,
+
 
         /**
          * 正在加载
@@ -200,6 +214,7 @@ abstract class Request {
          * 正在显示
          */
         DISPLAYING,
+
 
         /**
          * 已完成

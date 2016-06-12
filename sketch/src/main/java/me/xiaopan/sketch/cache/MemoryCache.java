@@ -18,6 +18,8 @@ package me.xiaopan.sketch.cache;
 
 import android.graphics.drawable.Drawable;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import me.xiaopan.sketch.Identifier;
 
 /**
@@ -58,4 +60,9 @@ public interface MemoryCache extends Identifier {
      * 关闭
      */
     void close();
+
+    /**
+     * 获取编辑锁
+     */
+    ReentrantLock getEditLock(String key);
 }

@@ -37,11 +37,11 @@ public class MyImagePreprocessor extends ImagePreprocessor {
     }
 
     @Override
-    public PreProcessResult getDiskCacheEntry(LoadRequest loadRequest) {
+    public PreProcessResult prePrecess(LoadRequest loadRequest) {
         if (isXpkFile(loadRequest)) {
             return getXpkIconCacheFile(loadRequest);
         }
-        return super.getDiskCacheEntry(loadRequest);
+        return super.prePrecess(loadRequest);
     }
 
     private boolean isXpkFile(LoadRequest loadRequest) {
@@ -63,13 +63,10 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         long lastModifyTime = xpkFile.lastModified();
         String diskCacheKey = realUri + "." + lastModifyTime;
 
-        ReentrantLock lock = configuration.getDiskCache().getEditorLock(diskCacheKey);
-        lock.lock();
-
+        ReentrantLock diskCacheEditLock = configuration.getDiskCache().getEditLock(diskCacheKey);
+        diskCacheEditLock.lock();
         PreProcessResult result = readXpkIcon(configuration, loadRequest, diskCacheKey, realUri);
-
-        lock.unlock();
-
+        diskCacheEditLock.unlock();
         return result;
     }
 

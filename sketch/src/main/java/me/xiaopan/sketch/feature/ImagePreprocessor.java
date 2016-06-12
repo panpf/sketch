@@ -62,7 +62,7 @@ public class ImagePreprocessor implements Identifier {
         return isApkFile(loadRequest) || isInstalledApp(loadRequest);
     }
 
-    public PreProcessResult getDiskCacheEntry(LoadRequest loadRequest) {
+    public PreProcessResult prePrecess(LoadRequest loadRequest) {
         if (isApkFile(loadRequest)) {
             return getApkIconDiskCache(loadRequest);
         }
@@ -108,13 +108,10 @@ public class ImagePreprocessor implements Identifier {
         long lastModifyTime = apkFile.lastModified();
         String diskCacheKey = realUri + "." + lastModifyTime;
 
-        ReentrantLock lock = configuration.getDiskCache().getEditorLock(diskCacheKey);
-        lock.lock();
-
+        ReentrantLock diskCacheEditLock = configuration.getDiskCache().getEditLock(diskCacheKey);
+        diskCacheEditLock.lock();
         PreProcessResult result = readApkIcon(configuration, loadRequest, diskCacheKey, realUri);
-
-        lock.unlock();
-
+        diskCacheEditLock.unlock();
         return result;
     }
 
@@ -171,6 +168,7 @@ public class ImagePreprocessor implements Identifier {
                             " - ", "not found apk icon cache file",
                             " - ", loadRequest.getAttrs().getId()));
                 }
+                return null;
             }
             return new PreProcessResult(apkIconDiskCacheEntry, ImageFrom.LOCAL);
         } else if (outputStream != null) {
@@ -187,13 +185,10 @@ public class ImagePreprocessor implements Identifier {
         String diskCacheKey = loadRequest.getAttrs().getUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
 
-        ReentrantLock lock = configuration.getDiskCache().getEditorLock(diskCacheKey);
-        lock.lock();
-
+        ReentrantLock diskCacheEditLock = configuration.getDiskCache().getEditLock(diskCacheKey);
+        diskCacheEditLock.lock();
         PreProcessResult result = readInstalledAppIcon(configuration, loadRequest, diskCacheKey);
-
-        lock.unlock();
-
+        diskCacheEditLock.unlock();
         return result;
     }
 
@@ -267,6 +262,7 @@ public class ImagePreprocessor implements Identifier {
                             " - ", "not found apk icon cache file",
                             " - ", loadRequest.getAttrs().getId()));
                 }
+                return null;
             }
             return new PreProcessResult(appIconDiskCacheEntry, ImageFrom.LOCAL);
         } else if (outputStream != null) {

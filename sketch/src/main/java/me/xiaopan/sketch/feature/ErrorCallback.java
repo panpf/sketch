@@ -23,8 +23,8 @@ public class ErrorCallback implements Identifier {
         Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "InstallDiskCacheFailed", ": ", e.getMessage(), " - ", cacheDir.getPath()));
     }
 
-    public void onDecodeGifImageFailed(Throwable error, LoadRequest request, BitmapFactory.Options boundsOptions) {
-        if (error instanceof UnsatisfiedLinkError || error instanceof ExceptionInInitializerError) {
+    public void onDecodeGifImageFailed(Throwable throwable, LoadRequest request, BitmapFactory.Options boundsOptions) {
+        if (throwable instanceof UnsatisfiedLinkError || throwable instanceof ExceptionInInitializerError) {
             Log.e(Sketch.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, " +
                     "unable to process the GIF images. If you need to decode the GIF figure " +
                     "please go to “https://github.com/xiaopansky/sketch” " +
@@ -45,8 +45,8 @@ public class ErrorCallback implements Identifier {
                 " - ", request.getAttrs().getId()));
     }
 
-    public void onDecodeNormalImageFailed(Throwable error, LoadRequest request, BitmapFactory.Options boundsOptions) {
-        if (error instanceof OutOfMemoryError) {
+    public void onDecodeNormalImageFailed(Throwable throwable, LoadRequest request, BitmapFactory.Options boundsOptions) {
+        if (throwable instanceof OutOfMemoryError) {
             long maxMemory = Runtime.getRuntime().maxMemory();
             long freeMemory = Runtime.getRuntime().freeMemory();
             long totalMemory = Runtime.getRuntime().totalMemory();

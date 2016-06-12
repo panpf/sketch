@@ -21,6 +21,11 @@ import android.graphics.drawable.Drawable;
 import android.text.format.Formatter;
 import android.util.Log;
 
+import java.util.Collections;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.locks.ReentrantLock;
+
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.RecycleDrawable;
 import me.xiaopan.sketch.util.LruCache;
@@ -30,6 +35,7 @@ public class LruMemoryCache implements MemoryCache {
     private final LruCache<String, Drawable> drawableLruCache;
     protected String logName = "LruMemoryCache";
     private Context context;
+    private Map<String, ReentrantLock> editLockMap;
 
     public LruMemoryCache(Context context, int maxSize) {
         this.context = context;
@@ -121,6 +127,26 @@ public class LruMemoryCache implements MemoryCache {
                 .append("(")
                 .append("maxSize").append("=").append(Formatter.formatFileSize(context, getMaxSize()))
                 .append(")");
+    }
+
+    @Override
+    public synchronized ReentrantLock getEditLock(String key) {
+        if (key == null) {
+            return null;
+        }
+        if (editLockMap == null) {
+            synchronized (LruMemoryCache.this) {
+                if (editLockMap == null) {
+                    editLockMap = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
+                }
+            }
+        }
+        ReentrantLock lock = editLockMap.get(key);
+        if (lock == null) {
+            lock = new ReentrantLock();
+            editLockMap.put(key, lock);
+        }
+        return lock;
     }
 
     private class DrawableLruCache extends LruCache<String, Drawable> {
