@@ -39,6 +39,15 @@ public class TestFragment extends MyFragment{
     @InjectView(R.id.image15) private MyImageView imageView15;
     @InjectView(R.id.image16) private MyImageView imageView16;
 
+    @InjectView(R.id.image31) private MyImageView imageView31;
+    @InjectView(R.id.image32) private MyImageView imageView32;
+    @InjectView(R.id.image33) private MyImageView imageView33;
+    @InjectView(R.id.image34) private MyImageView imageView34;
+    @InjectView(R.id.image35) private MyImageView imageView35;
+    @InjectView(R.id.image36) private MyImageView imageView36;
+    @InjectView(R.id.image37) private MyImageView imageView37;
+    @InjectView(R.id.image38) private MyImageView imageView38;
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -53,6 +62,15 @@ public class TestFragment extends MyFragment{
         imageView14.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
         imageView15.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
         imageView16.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+
+        imageView31.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView32.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView33.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView34.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView35.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView36.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView37.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
+        imageView38.displayImage("http://img3.duitang.com/uploads/item/201604/26/20160426001415_teGBZ.jpeg");
     }
 
     private void loadAppList(){
