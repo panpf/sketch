@@ -20,10 +20,6 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 @InjectParentMember
 @InjectContentView(R.layout.fragment_test)
 public class TestFragment extends MyFragment{
-//    @InjectView(R.id.image1)
-//    MyImageView imageView1;
-//    @InjectView(R.id.image2)
-//    MyImageView imageView2;
 
     @InjectView(R.id.image1) private MyImageView imageView1;
     @InjectView(R.id.image2) private MyImageView imageView2;
@@ -34,31 +30,29 @@ public class TestFragment extends MyFragment{
     @InjectView(R.id.image7) private MyImageView imageView7;
     @InjectView(R.id.image8) private MyImageView imageView8;
 
+    @InjectView(R.id.image9) private MyImageView imageView9;
+    @InjectView(R.id.image10) private MyImageView imageView10;
+    @InjectView(R.id.image11) private MyImageView imageView11;
+    @InjectView(R.id.image12) private MyImageView imageView12;
+    @InjectView(R.id.image13) private MyImageView imageView13;
+    @InjectView(R.id.image14) private MyImageView imageView14;
+    @InjectView(R.id.image15) private MyImageView imageView15;
+    @InjectView(R.id.image16) private MyImageView imageView16;
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-//        imageView1.setOptions(new DisplayOptions().setLoadingImage(R.drawable.image_loading).setImageDisplayer(new TransitionImageDisplayer()));
-//        imageView2.setOptions(new DisplayOptions().setImageDisplayer(new TransitionImageDisplayer()));
-//
-//        imageView1.displayImage("http://h.hiphotos.baidu.com/image/pic/item/908fa0ec08fa513d6999b9df3f6d55fbb2fbd984.jpg");
-//        imageView2.displayImage("http://h.hiphotos.baidu.com/image/pic/item/908fa0ec08fa513d6999b9df3f6d55fbb2fbd984.jpg");
-//
-//        imageView1.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.e("", "");
-//            }
-//        });
-//
-//        imageView2.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                Log.e("", "");
-//            }
-//        });
-
         loadAppList();
+
+        imageView9.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView10.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView11.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView12.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView13.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView14.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView15.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
+        imageView16.displayImage("http://img3.imgtn.bdimg.com/it/u=1671737159,3601566602&fm=21&gp=0.jpg");
     }
 
     private void loadAppList(){
