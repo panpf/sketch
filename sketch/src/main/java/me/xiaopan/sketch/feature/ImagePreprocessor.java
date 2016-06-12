@@ -62,7 +62,7 @@ public class ImagePreprocessor implements Identifier {
         return isApkFile(loadRequest) || isInstalledApp(loadRequest);
     }
 
-    public PreProcessResult getDiskCacheEntry(LoadRequest loadRequest) {
+    public PreProcessResult prePrecess(LoadRequest loadRequest) {
         if (isApkFile(loadRequest)) {
             return getApkIconDiskCache(loadRequest);
         }

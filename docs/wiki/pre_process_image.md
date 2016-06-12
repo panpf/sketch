@@ -11,8 +11,8 @@ ImagePreprocessor用来辅助显示特殊文件中包含的图片，例如读取
 
 首先要继承ImagePreprocessor，重写以下方法：
 >* boolean isSpecific(LoadRequest)：判断这个请求是否可以用ImagePreprocessor预处理
->* PreProcessResult getDiskCacheEntry(LoadRequest)：isSpecific返回true之后才会调用这个方法进行处理并返回缓存文件
+>* PreProcessResult prePrecess(LoadRequest)：isSpecific返回true之后才会调用这个方法进行处理并返回缓存文件
 
-需要注意的是在getDiskCacheEntry方法中编辑磁盘缓存的时候要开同步锁，详情可参考[ImagePreprocessor](../../sketch/src/main/java/me/xiaopan/sketch/feature/ImagePreprocessor.java)源码
+需要注意的是在prePrecess方法中编辑磁盘缓存的时候要上锁，详情可参考[ImagePreprocessor](../../sketch/src/main/java/me/xiaopan/sketch/feature/ImagePreprocessor.java)源码
 
 然后调用Sketch.with(context).getConfiguration().setImagePreprocessor()设置即可
