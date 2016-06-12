@@ -9,7 +9,6 @@ import me.xiaopan.sketch.Sketch;
 
 abstract class AsyncRequest extends Request implements Runnable{
     private static final Map<String, ReentrantLock> loadLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
-    private static final Map<String, ReentrantLock> downloadLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
 
     private RunStatus runStatus;
     private boolean sync;
@@ -28,18 +27,6 @@ abstract class AsyncRequest extends Request implements Runnable{
             loadLocks.put(key, loadLock);
         }
         return loadLock;
-    }
-
-    private synchronized ReentrantLock getDownloadLock(String key) {
-        if (key == null) {
-            return null;
-        }
-        ReentrantLock downloadLock = downloadLocks.get(key);
-        if (downloadLock == null) {
-            downloadLock = new ReentrantLock();
-            downloadLocks.put(key, downloadLock);
-        }
-        return downloadLock;
     }
 
     @Override
@@ -108,11 +95,7 @@ abstract class AsyncRequest extends Request implements Runnable{
      * 执行下载
      */
     private void executeRunDownload() {
-        setStatus(Request.Status.GET_DOWNLOAD_LOCK);
-        ReentrantLock downloadLock = getDownloadLock(getAttrs().getRealUri());
-        downloadLock.lock();
         runDownload();
-        downloadLock.unlock();
     }
 
     /**

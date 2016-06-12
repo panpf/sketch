@@ -175,61 +175,26 @@ public class DownloadRequest extends AsyncRequest {
             return;
         }
 
+        // 使用磁盘缓存就必须要上锁
+        setStatus(Status.GET_DOWNLOAD_LOCK);
+        ReentrantLock diskCacheLock = null;
+        if (!getOptions().isDisableCacheInDisk()) {
+            String diskCacheKey = getAttrs().getUri();
+            diskCacheLock = getSketch().getConfiguration().getDiskCache().getEditorLock(diskCacheKey);
+            diskCacheLock.lock();
+        }
+
+        // 开始下载
         setStatus(Status.DOWNLOADING);
-
-        // 调用下载器下载
-        DownloadResult justDownloadResult = executeDownload();
-
-        if (isCanceled()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                        " - ", "runDownload",
-                        " - ", "canceled",
-                        " - ", "downloadAfter",
-                        " - ", getAttrs().getId()));
-            }
-            return;
-        }
-
-        // 都是空的就算下载失败
-        if (justDownloadResult == null
-                || (justDownloadResult.getDiskCacheEntry() == null && justDownloadResult.getImageData() == null)) {
-            failed(FailedCause.DOWNLOAD_FAIL);
-            return;
-        }
-
-        // 下载成功了
-        downloadResult = justDownloadResult;
-        downloadComplete();
-    }
-
-    private DownloadResult executeDownload() {
         HttpStack httpStack = getSketch().getConfiguration().getHttpStack();
-        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+        DownloadResult justDownloadResult = null;
         int retryCount = 0;
         int maxRetryCount = httpStack.getMaxRetryCount();
-        DownloadResult result = null;
-
-        while (true) {
-            if (isCanceled()) {
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                            " - ", "runDownload",
-                            " - ", "canceled",
-                            " - ", "download while",
-                            " - ", getAttrs().getId()));
-                }
-                break;
-            }
-
-            String diskCacheKey = getAttrs().getUri();
-            ReentrantLock lock = diskCache.getEditorLock(diskCacheKey);
-            lock.lock();
-
-            boolean isBreak = false;
+        boolean running = true;
+        while (running) {
             try {
-                result = realDownload(httpStack, diskCache, diskCacheKey);
-                isBreak = true;
+                justDownloadResult = realDownload(httpStack);
+                running = false;
             } catch (Throwable e) {
                 e.printStackTrace();
 
@@ -250,30 +215,53 @@ public class DownloadRequest extends AsyncRequest {
                                 " - ", "end",
                                 " - ", getAttrs().getId()));
                     }
-                    isBreak = true;
+                    running = false;
                 }
-            }
-
-            lock.unlock();
-            if(isBreak){
-                break;
             }
         }
 
-        return result;
-    }
+        // 开锁
+        if (diskCacheLock != null) {
+            diskCacheLock.unlock();
+        }
 
-    private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey) throws IOException, DiskLruCache.EditorChangedException {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runDownload",
                         " - ", "canceled",
-                        " - ", "get diskCacheEditorLock after",
+                        " - ", "downloadAfter",
+                        " - ", getAttrs().getId()));
+            }
+            return;
+        }
+
+        // 都是空的就算下载失败
+        if (justDownloadResult == null || (justDownloadResult.getDiskCacheEntry() == null
+                && justDownloadResult.getImageData() == null)) {
+            failed(FailedCause.DOWNLOAD_FAIL);
+            return;
+        }
+
+        // 下载成功了
+        downloadResult = justDownloadResult;
+        downloadComplete();
+    }
+
+    private DownloadResult realDownload(HttpStack httpStack) throws IOException, DiskLruCache.EditorChangedException {
+        if (isCanceled()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "canceled",
+                        " - ", "realDownload start",
                         " - ", getAttrs().getId()));
             }
             return null;
         }
+
+        String diskCacheKey = getAttrs().getUri();
+        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
 
         // 如果缓存文件已经存在了就直接返回缓存文件
         if (!getOptions().isDisableCacheInDisk()) {
