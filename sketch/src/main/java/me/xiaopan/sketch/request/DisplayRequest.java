@@ -19,6 +19,8 @@ package me.xiaopan.sketch.request;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import java.util.concurrent.locks.ReentrantLock;
+
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.FixedRecycleBitmapDrawable;
 import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
@@ -55,14 +57,8 @@ public class DisplayRequest extends LoadRequest {
     /**
      * 获取显示属性
      */
-    @SuppressWarnings("WeakerAccess")
     public DisplayAttrs getDisplayAttrs() {
         return displayAttrs;
-    }
-
-    @Override
-    protected boolean allowLoadLock() {
-        return true;
     }
 
     /**
@@ -79,7 +75,7 @@ public class DisplayRequest extends LoadRequest {
             return true;
         }
 
-        // 绑定关系已经断了的话就直接取消请求
+        // 绑定关系已经断了就直接取消请求
         if (displayBinder.isBroken()) {
             canceled(CancelCause.NORMAL);
             return true;
@@ -121,24 +117,6 @@ public class DisplayRequest extends LoadRequest {
     }
 
     @Override
-    protected void submitRunDispatch() {
-        setStatus(Status.WAIT_DISPATCH);
-        super.submitRunDispatch();
-    }
-
-    @Override
-    protected void submitRunDownload() {
-        setStatus(Status.WAIT_DOWNLOAD);
-        super.submitRunDownload();
-    }
-
-    @Override
-    protected void submitRunLoad() {
-        setStatus(Status.WAIT_LOAD);
-        super.submitRunLoad();
-    }
-
-    @Override
     protected void runLoad() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
@@ -151,10 +129,34 @@ public class DisplayRequest extends LoadRequest {
             return;
         }
 
-        setStatus(Status.LOADING);
+        // 要使用内存缓存就必须上锁
+        ReentrantLock memoryCacheEditLock = null;
+        if (!displayOptions.isDisableCacheInDisk()) {
+            setStatus(Request.Status.GET_MEMORY_CACHE_EDIT_LOCK);
+            memoryCacheEditLock = getSketch().getConfiguration().getMemoryCache().getEditLock(getAttrs().getId());
+            memoryCacheEditLock.lock();
+        }
 
-        // 检查内存缓存中是否已经存在了
+        load();
+
+        // 解锁
+        if (memoryCacheEditLock != null) {
+            memoryCacheEditLock.unlock();
+        }
+    }
+
+    private void load(){
+        if (isCanceled()) {
+            Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                    " - ", "runDownload",
+                    " - ", "canceled",
+                    " - ", "get memory cache edit lock after",
+                    " - ", getAttrs().getId()));
+        }
+
+        // 检查内存缓存
         if (!displayOptions.isDisableCacheInMemory()) {
+            setStatus(Status.CHECK_MEMORY_CACHE);
             Drawable cacheDrawable = getSketch().getConfiguration().getMemoryCache().get(getAttrs().getId());
             if (cacheDrawable != null) {
                 RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
@@ -166,7 +168,7 @@ public class DisplayRequest extends LoadRequest {
                                 " - ", recycleDrawable.getInfo(),
                                 " - ", getAttrs().getId()));
                     }
-                    this.displayResult = new DisplayResult(cacheDrawable, ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
+                    displayResult = new DisplayResult(cacheDrawable, ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
                     displayCompleted();
                     return;
                 } else {
@@ -181,6 +183,7 @@ public class DisplayRequest extends LoadRequest {
             }
         }
 
+        // 加载
         super.runLoad();
     }
 
@@ -250,7 +253,6 @@ public class DisplayRequest extends LoadRequest {
         }
     }
 
-    @SuppressWarnings("WeakerAccess")
     protected void displayCompleted() {
         if (displayResult.getDrawable() instanceof RecycleDrawable) {
             RecycleDrawable recycleDrawable = (RecycleDrawable) displayResult.getDrawable();

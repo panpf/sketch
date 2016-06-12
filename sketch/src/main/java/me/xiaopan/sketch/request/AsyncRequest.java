@@ -1,14 +1,8 @@
 package me.xiaopan.sketch.request;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.locks.ReentrantLock;
-
 import me.xiaopan.sketch.Sketch;
 
 abstract class AsyncRequest extends Request implements Runnable{
-    private static final Map<String, ReentrantLock> loadLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
 
     private RunStatus runStatus;
     private boolean sync;
@@ -17,30 +11,18 @@ abstract class AsyncRequest extends Request implements Runnable{
         super(sketch, attrs);
     }
 
-    private synchronized ReentrantLock getLoadLock(String key) {
-        if (key == null) {
-            return null;
-        }
-        ReentrantLock loadLock = loadLocks.get(key);
-        if (loadLock == null) {
-            loadLock = new ReentrantLock();
-            loadLocks.put(key, loadLock);
-        }
-        return loadLock;
-    }
-
     @Override
     public final void run() {
         if (runStatus != null) {
             switch (runStatus) {
                 case DISPATCH:
-                    executeRunDispatch();
+                    runDispatch();
                     break;
                 case DOWNLOAD:
-                    executeRunDownload();
+                    runDownload();
                     break;
                 case LOAD:
-                    executeRunLoad();
+                    runLoad();
                     break;
                 default:
                     new IllegalArgumentException("unknown runStatus: " + runStatus.name()).printStackTrace();
@@ -49,12 +31,15 @@ abstract class AsyncRequest extends Request implements Runnable{
         }
     }
 
+    /**
+     * 是否同步执行
+     */
     public boolean isSync() {
         return sync;
     }
 
     /**
-     * 设置是否同步处理
+     * 设置是否同步执行
      */
     public void setSync(boolean sync) {
         this.sync = sync;
@@ -66,18 +51,12 @@ abstract class AsyncRequest extends Request implements Runnable{
     protected void submitRunDispatch() {
         this.runStatus = RunStatus.DISPATCH;
         if (sync) {
-            executeRunDispatch();
+            runDispatch();
         } else {
             getSketch().getConfiguration().getRequestExecutor().submitDispatch(this);
         }
     }
 
-    /**
-     * 执行分发
-     */
-    private void executeRunDispatch() {
-        runDispatch();
-    }
 
     /**
      * 提交到网络线程执行下载
@@ -85,17 +64,10 @@ abstract class AsyncRequest extends Request implements Runnable{
     protected void submitRunDownload() {
         this.runStatus = RunStatus.DOWNLOAD;
         if (sync) {
-            executeRunDownload();
+            runDownload();
         } else {
             getSketch().getConfiguration().getRequestExecutor().submitDownload(this);
         }
-    }
-
-    /**
-     * 执行下载
-     */
-    private void executeRunDownload() {
-        runDownload();
     }
 
     /**
@@ -104,28 +76,9 @@ abstract class AsyncRequest extends Request implements Runnable{
     protected void submitRunLoad() {
         this.runStatus = RunStatus.LOAD;
         if (sync) {
-            executeRunLoad();
+            runLoad();
         } else {
             getSketch().getConfiguration().getRequestExecutor().submitLoad(this);
-        }
-    }
-
-    /**
-     * 执行加载
-     */
-    private void executeRunLoad() {
-        boolean allowLoadLock = allowLoadLock();
-        ReentrantLock loadLock = null;
-        if (allowLoadLock) {
-            setStatus(Request.Status.GET_LOAD_LOCK);
-            loadLock = getLoadLock(getAttrs().getId());
-            loadLock.lock();
-        }
-
-        runLoad();
-
-        if (allowLoadLock) {
-            loadLock.unlock();
         }
     }
 
@@ -198,13 +151,6 @@ abstract class AsyncRequest extends Request implements Runnable{
      * 在主线程处理失败
      */
     protected abstract void runFailedInMainThread();
-
-    /**
-     * 是否允许给加载上锁
-     */
-    protected boolean allowLoadLock() {
-        return false;
-    }
 
     /**
      * 运行状态

@@ -43,7 +43,7 @@ public class LruDiskCache implements DiskCache {
     private Context context;
     private DiskLruCache cache;
     private Configuration configuration;
-    private Map<String, ReentrantLock> diskCacheEditorLocks;
+    private Map<String, ReentrantLock> editLockMap;
 
     public LruDiskCache(Context context, Configuration configuration, int appVersionCode, int maxSize) {
         this.context = context;
@@ -189,21 +189,21 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public synchronized ReentrantLock getEditorLock(String key) {
+    public synchronized ReentrantLock getEditLock(String key) {
         if (key == null) {
             return null;
         }
-        if (diskCacheEditorLocks == null) {
+        if (editLockMap == null) {
             synchronized (LruDiskCache.this) {
-                if (diskCacheEditorLocks == null) {
-                    diskCacheEditorLocks = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
+                if (editLockMap == null) {
+                    editLockMap = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
                 }
             }
         }
-        ReentrantLock lock = diskCacheEditorLocks.get(key);
+        ReentrantLock lock = editLockMap.get(key);
         if (lock == null) {
             lock = new ReentrantLock();
-            diskCacheEditorLocks.put(key, lock);
+            editLockMap.put(key, lock);
         }
         return lock;
     }

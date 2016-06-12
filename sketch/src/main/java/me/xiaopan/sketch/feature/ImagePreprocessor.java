@@ -108,13 +108,10 @@ public class ImagePreprocessor implements Identifier {
         long lastModifyTime = apkFile.lastModified();
         String diskCacheKey = realUri + "." + lastModifyTime;
 
-        ReentrantLock lock = configuration.getDiskCache().getEditorLock(diskCacheKey);
-        lock.lock();
-
+        ReentrantLock diskCacheEditLock = configuration.getDiskCache().getEditLock(diskCacheKey);
+        diskCacheEditLock.lock();
         PreProcessResult result = readApkIcon(configuration, loadRequest, diskCacheKey, realUri);
-
-        lock.unlock();
-
+        diskCacheEditLock.unlock();
         return result;
     }
 
@@ -188,13 +185,10 @@ public class ImagePreprocessor implements Identifier {
         String diskCacheKey = loadRequest.getAttrs().getUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
 
-        ReentrantLock lock = configuration.getDiskCache().getEditorLock(diskCacheKey);
-        lock.lock();
-
+        ReentrantLock diskCacheEditLock = configuration.getDiskCache().getEditLock(diskCacheKey);
+        diskCacheEditLock.lock();
         PreProcessResult result = readInstalledAppIcon(configuration, loadRequest, diskCacheKey);
-
-        lock.unlock();
-
+        diskCacheEditLock.unlock();
         return result;
     }
 

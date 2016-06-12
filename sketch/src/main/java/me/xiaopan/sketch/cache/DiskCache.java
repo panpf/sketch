@@ -82,7 +82,7 @@ public interface DiskCache extends Identifier {
     /**
      * 获取编辑锁
      */
-    ReentrantLock getEditorLock(String key);
+    ReentrantLock getEditLock(String key);
 
     interface Entry {
         InputStream newInputStream() throws IOException;
