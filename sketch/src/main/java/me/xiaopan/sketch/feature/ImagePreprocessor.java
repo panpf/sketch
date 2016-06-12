@@ -171,6 +171,7 @@ public class ImagePreprocessor implements Identifier {
                             " - ", "not found apk icon cache file",
                             " - ", loadRequest.getAttrs().getId()));
                 }
+                return null;
             }
             return new PreProcessResult(apkIconDiskCacheEntry, ImageFrom.LOCAL);
         } else if (outputStream != null) {
@@ -267,6 +268,7 @@ public class ImagePreprocessor implements Identifier {
                             " - ", "not found apk icon cache file",
                             " - ", loadRequest.getAttrs().getId()));
                 }
+                return null;
             }
             return new PreProcessResult(appIconDiskCacheEntry, ImageFrom.LOCAL);
         } else if (outputStream != null) {
