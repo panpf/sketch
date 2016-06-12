@@ -226,17 +226,6 @@ public class DownloadRequest extends AsyncRequest {
             ReentrantLock lock = diskCache.getEditorLock(diskCacheKey);
             lock.lock();
 
-            if (isCanceled()) {
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                            " - ", "runDownload",
-                            " - ", "canceled",
-                            " - ", "get diskCacheEditorLock after",
-                            " - ", getAttrs().getId()));
-                }
-                break;
-            }
-
             boolean isBreak = false;
             try {
                 result = realDownload(httpStack, diskCache, diskCacheKey);
@@ -275,6 +264,17 @@ public class DownloadRequest extends AsyncRequest {
     }
 
     private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey) throws IOException, DiskLruCache.EditorChangedException {
+        if (isCanceled()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "canceled",
+                        " - ", "get diskCacheEditorLock after",
+                        " - ", getAttrs().getId()));
+            }
+            return null;
+        }
+
         // 如果缓存文件已经存在了就直接返回缓存文件
         if (!getOptions().isDisableCacheInDisk()) {
             DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
