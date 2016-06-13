@@ -16,13 +16,13 @@ abstract class AsyncRequest extends Request implements Runnable{
         if (runStatus != null) {
             switch (runStatus) {
                 case DISPATCH:
-                    runDispatch();
+                    executeDispatch();
                     break;
                 case DOWNLOAD:
-                    runDownload();
+                    executeDownload();
                     break;
                 case LOAD:
-                    runLoad();
+                    executeLoad();
                     break;
                 default:
                     new IllegalArgumentException("unknown runStatus: " + runStatus.name()).printStackTrace();
@@ -51,12 +51,16 @@ abstract class AsyncRequest extends Request implements Runnable{
     protected void submitRunDispatch() {
         this.runStatus = RunStatus.DISPATCH;
         if (sync) {
-            runDispatch();
+            executeDispatch();
         } else {
             getSketch().getConfiguration().getRequestExecutor().submitDispatch(this);
         }
     }
 
+    private void executeDispatch(){
+        setStatus(Status.START_DISPATCH);
+        runDispatch();
+    }
 
     /**
      * 提交到网络线程执行下载
@@ -64,10 +68,15 @@ abstract class AsyncRequest extends Request implements Runnable{
     protected void submitRunDownload() {
         this.runStatus = RunStatus.DOWNLOAD;
         if (sync) {
-            runDownload();
+            executeDownload();
         } else {
             getSketch().getConfiguration().getRequestExecutor().submitDownload(this);
         }
+    }
+
+    private void executeDownload(){
+        setStatus(Status.START_DOWNLOAD);
+        runDownload();
     }
 
     /**
@@ -76,10 +85,15 @@ abstract class AsyncRequest extends Request implements Runnable{
     protected void submitRunLoad() {
         this.runStatus = RunStatus.LOAD;
         if (sync) {
-            runLoad();
+            executeLoad();
         } else {
             getSketch().getConfiguration().getRequestExecutor().submitLoad(this);
         }
+    }
+
+    private void executeLoad(){
+        setStatus(Status.START_LOAD);
+        runLoad();
     }
 
     /**

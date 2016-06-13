@@ -19,7 +19,6 @@ package me.xiaopan.sketch.request;
 import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.util.SketchUtils;
 
 abstract class Request {
     private Sketch sketch;
@@ -49,7 +48,6 @@ abstract class Request {
     /**
      * 获取日志名称
      */
-    @SuppressWarnings("WeakerAccess")
     public String getLogName() {
         return logName;
     }
@@ -64,7 +62,7 @@ abstract class Request {
     /**
      * 获取状态
      */
-    @SuppressWarnings("WeakerAccess")
+    @SuppressWarnings("unused")
     public Status getStatus() {
         return status;
     }
@@ -74,11 +72,14 @@ abstract class Request {
      */
     void setStatus(Status status) {
         this.status = status;
-        if(Sketch.isDebugMode()){
-            Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
-                    " - ", "setStatus: ", status != null ? status.name() : null,
-                    " - ", getThreadName(),
-                    " - ", getAttrs().getId()));
+        if (Sketch.isDebugMode()) {
+            if (status == Status.FAILED) {
+                printLogW("setStatus", status.getLog(), failedCause != null ? failedCause.name() : null);
+            } else if (status == Status.CANCELED) {
+                printLogW("setStatus", status.getLog(), cancelCause != null ? cancelCause.name() : null);
+            } else {
+                printLogD("setStatus", status != null ? status.getLog() : null);
+            }
         }
     }
 
@@ -129,7 +130,7 @@ abstract class Request {
      * 失败了
      */
     protected void failed(FailedCause failedCause) {
-        this.status = Status.FAILED;
+        setStatus(Status.FAILED);
         this.failedCause = failedCause;
     }
 
@@ -137,7 +138,7 @@ abstract class Request {
      * 取消了
      */
     protected void canceled(CancelCause cancelCause) {
-        this.status = Status.CANCELED;
+        setStatus(Status.CANCELED);
         this.cancelCause = cancelCause;
     }
 
@@ -155,93 +156,175 @@ abstract class Request {
         }
     }
 
-    protected String getThreadName(){
+    protected String getThreadName() {
         return Thread.currentThread().getName();
+    }
+
+    private void printLog(int level, String... items) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(getLogName());
+
+        if (items != null && items.length > 0) {
+            for (String item : items) {
+                builder.append(" - ").append(item);
+            }
+        }
+
+        builder.append(" - ").append(getThreadName());
+        builder.append(" - ").append(getAttrs().getId());
+
+        if (level == 0) {
+            Log.d(Sketch.TAG, builder.toString());
+        } else if (level == 1) {
+            Log.i(Sketch.TAG, builder.toString());
+        } else if (level == 2) {
+            Log.w(Sketch.TAG, builder.toString());
+        } else if (level == 3) {
+            Log.e(Sketch.TAG, builder.toString());
+        }
+    }
+
+    protected void printLogD(String... items) {
+        printLog(0, items);
+    }
+
+    protected void printLogI(String... items) {
+        printLog(1, items);
+    }
+
+    protected void printLogW(String... items) {
+        printLog(2, items);
+    }
+
+    protected void printLogE(String... items) {
+        printLog(3, items);
     }
 
     /**
      * 请求的状态
      */
-    @SuppressWarnings("WeakerAccess")
     public enum Status {
         /**
          * 等待分发
          */
-        WAIT_DISPATCH,
+        WAIT_DISPATCH("wait dispatch"),
 
         /**
-         * 正在分发
+         * 开始分发
          */
-        DISPATCHING,
+        START_DISPATCH("start dispatch"),
+
+        /**
+         * 拦截本地任务
+         */
+        INTERCEPT_LOCAL_TASK("intercept local task"),
 
 
         /**
          * 等待下载
          */
-        WAIT_DOWNLOAD,
+        WAIT_DOWNLOAD("wait download"),
+
+        /**
+         * 开始下载
+         */
+        START_DOWNLOAD("start download"),
 
         /**
          * 获取磁盘缓存编辑锁
          */
-        GET_DISK_CACHE_EDIT_LOCK,
+        GET_DISK_CACHE_EDIT_LOCK("get disk cache edit lock"),
 
         /**
          * 检查磁盘缓存
          */
-        CHECK_DISK_CACHE,
+        CHECK_DISK_CACHE("check disk cache"),
 
         /**
-         * 正在下载
+         * 连接中
          */
-        DOWNLOADING,
+        CONNECTING("connecting"),
+
+        /**
+         * 检查响应
+         */
+        CHECK_RESPONSE("check response"),
+
+        /**
+         * 读取数据
+         */
+        READ_DATA("read data"),
 
 
         /**
          * 等待加载
          */
-        WAIT_LOAD,
+        WAIT_LOAD("wait load"),
 
+        /**
+         * 开始加载
+         */
+        START_LOAD("start load"),
 
         /**
          * 获取内存缓存编辑锁
          */
-        GET_MEMORY_CACHE_EDIT_LOCK,
+        GET_MEMORY_CACHE_EDIT_LOCK("get memory cache edit lock"),
 
         /**
          * 检查内存缓存
          */
-        CHECK_MEMORY_CACHE,
-
+        CHECK_MEMORY_CACHE("check memory cache"),
 
         /**
-         * 正在加载
+         * 预处理
          */
-        LOADING,
+        PRE_PROCESS("pre process"),
+
+        /**
+         * 解码中
+         */
+        DECODING("decoding"),
+
+        /**
+         * 处理中
+         */
+        PROCESSING("processing"),
 
         /**
          * 等待显示
          */
-        WAIT_DISPLAY,
+        WAIT_DISPLAY("wait display"),
 
         /**
          * 正在显示
          */
-        DISPLAYING,
+        DISPLAYING("displaying"),
 
 
         /**
          * 已完成
          */
-        COMPLETED,
+        COMPLETED("completed"),
 
         /**
          * 已失败
          */
-        FAILED,
+        FAILED("failed"),
 
         /**
          * 已取消
          */
-        CANCELED,
+        CANCELED("canceled"),;
+
+        private String log;
+
+        Status(String log) {
+            this.log = log;
+        }
+
+        public String getLog() {
+            return log;
+        }
     }
 }

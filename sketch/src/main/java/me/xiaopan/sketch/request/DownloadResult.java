@@ -44,4 +44,8 @@ public class DownloadResult {
     public byte[] getImageData() {
         return imageData;
     }
+
+    public ImageFrom getImageFrom(){
+        return fromNetwork ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
+    }
 }
