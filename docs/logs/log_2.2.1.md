@@ -15,4 +15,4 @@ display：
 >* 内存缓存编辑锁：根据内存缓存ID加锁，防止同样的图片重复加载和同一内存缓存内容被重复添加
 
 ImagePreprocessor：
->* getDiskCacheEntry()方法名字改为了preProcess()，你需要修改你的实现
+>* getDiskCacheEntry()方法名字改为了prePrecess()，你需要修改你的实现
