@@ -16,7 +16,10 @@
 
 package me.xiaopan.sketch.request;
 
+import android.util.Log;
+
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.util.SketchUtils;
 
 abstract class Request {
     private Sketch sketch;
@@ -71,6 +74,12 @@ abstract class Request {
      */
     void setStatus(Status status) {
         this.status = status;
+        if(Sketch.isDebugMode()){
+            Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
+                    " - ", "setStatus: ", status != null ? status.name() : null,
+                    " - ", getThreadName(),
+                    " - ", getAttrs().getId()));
+        }
     }
 
     /**
@@ -144,6 +153,10 @@ abstract class Request {
         } else {
             return false;
         }
+    }
+
+    protected String getThreadName(){
+        return Thread.currentThread().getName();
     }
 
     /**

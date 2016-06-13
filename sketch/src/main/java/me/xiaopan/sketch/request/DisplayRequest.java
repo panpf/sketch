@@ -123,7 +123,8 @@ public class DisplayRequest extends LoadRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runLoad",
                         " - ", "canceled",
-                        " - ", "startLoad",
+                        " - ", "start display",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
             return;
@@ -147,11 +148,15 @@ public class DisplayRequest extends LoadRequest {
 
     private void load(){
         if (isCanceled()) {
-            Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                    " - ", "runDownload",
-                    " - ", "canceled",
-                    " - ", "get memory cache edit lock after",
-                    " - ", getAttrs().getId()));
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "canceled",
+                        " - ", "get memory cache edit lock after",
+                        " - ", getThreadName(),
+                        " - ", getAttrs().getId()));
+            }
+            return;
         }
 
         // 检查内存缓存
@@ -166,6 +171,7 @@ public class DisplayRequest extends LoadRequest {
                                 " - ", "runLoad",
                                 " - ", "from memory get drawable",
                                 " - ", recycleDrawable.getInfo(),
+                                " - ", getThreadName(),
                                 " - ", getAttrs().getId()));
                     }
                     displayResult = new DisplayResult(cacheDrawable, ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
@@ -177,6 +183,7 @@ public class DisplayRequest extends LoadRequest {
                         Log.e(Sketch.TAG, SketchUtils.concat(getLogName(),
                                 " - ", "runLoad", "memory cache drawable recycled",
                                 " - ", recycleDrawable.getInfo(),
+                                " - ", getThreadName(),
                                 " - ", getAttrs().getId()));
                     }
                 }
@@ -202,6 +209,7 @@ public class DisplayRequest extends LoadRequest {
                             " - ", "loadCompleted",
                             " - ", "bitmap recycled",
                             " - ", loadResult.getGifDrawable().getInfo(),
+                            " - ", getThreadName(),
                             " - ", getAttrs().getId()));
                 }
                 failed(FailedCause.DECODE_FAIL);
@@ -227,6 +235,7 @@ public class DisplayRequest extends LoadRequest {
                             " - ", "loadCompleted",
                             " - ", "gif drawable recycled",
                             " - ", loadResult.getGifDrawable().getInfo(),
+                            " - ", getThreadName(),
                             " - ", getAttrs().getId()));
                 }
                 failed(FailedCause.DECODE_FAIL);
@@ -238,6 +247,7 @@ public class DisplayRequest extends LoadRequest {
                         " - ", "loadCompleted",
                         " - ", "new gif drawable",
                         " - ", loadResult.getGifDrawable().getInfo(),
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
 
@@ -278,6 +288,7 @@ public class DisplayRequest extends LoadRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runCompletedInMainThread",
                         " - ", "canceled",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
 
@@ -308,6 +319,7 @@ public class DisplayRequest extends LoadRequest {
                 Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runCompletedInMainThread",
                         " - ", "completedDrawable is null",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
         }
@@ -332,6 +344,7 @@ public class DisplayRequest extends LoadRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runFailedInMainThread",
                         " - ", "canceled",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
             return;
@@ -352,6 +365,7 @@ public class DisplayRequest extends LoadRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runFailedInMainThread",
                         " - ", "failedDrawable is null",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
         }

@@ -120,6 +120,7 @@ public class DownloadRequest extends AsyncRequest {
                     Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
                             " - ", "runDispatch",
                             " - ", "diskCache",
+                            " - ", getThreadName(),
                             " - ", getAttrs().getId()));
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, false);
@@ -139,6 +140,7 @@ public class DownloadRequest extends AsyncRequest {
             Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
                     " - ", "runDispatch",
                     " - ", "download",
+                    " - ", getThreadName(),
                     " - ", getAttrs().getId()));
         }
         submitRunDownload();
@@ -156,6 +158,7 @@ public class DownloadRequest extends AsyncRequest {
                     " - ", "runDispatch",
                     " - ", "canceled",
                     " - ", isPauseDownload ? "pause download" : "requestLevel is local",
+                    " - ", getThreadName(),
                     " - ", getAttrs().getId()));
         }
 
@@ -169,7 +172,8 @@ public class DownloadRequest extends AsyncRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runDownload",
                         " - ", "canceled",
-                        " - ", "startDownload",
+                        " - ", "start download",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
             return;
@@ -198,7 +202,8 @@ public class DownloadRequest extends AsyncRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runDownload",
                         " - ", "canceled",
-                        " - ", "downloadAfter",
+                        " - ", "download after",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
             return;
@@ -216,13 +221,17 @@ public class DownloadRequest extends AsyncRequest {
         downloadComplete();
     }
 
-    private DownloadResult download(DiskCache diskCache, String diskCacheKey){
+    private DownloadResult download(DiskCache diskCache, String diskCacheKey) {
         if (isCanceled()) {
-            Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                    " - ", "runDownload",
-                    " - ", "canceled",
-                    " - ", "get disk cache edit lock after",
-                    " - ", getAttrs().getId()));
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
+                        " - ", "runDownload",
+                        " - ", "canceled",
+                        " - ", "get disk cache edit lock after",
+                        " - ", getThreadName(),
+                        " - ", getAttrs().getId()));
+            }
+            return null;
         }
 
         // 检查磁盘缓存
@@ -252,6 +261,7 @@ public class DownloadRequest extends AsyncRequest {
                                 " - ", "runDownload",
                                 " - ", "canceled",
                                 " - ", "download failed",
+                                " - ", getThreadName(),
                                 " - ", getAttrs().getId()));
                     }
                     break;
@@ -264,6 +274,7 @@ public class DownloadRequest extends AsyncRequest {
                                 " - ", "runDownload",
                                 " - ", "download failed",
                                 " - ", "retry",
+                                " - ", getThreadName(),
                                 " - ", getAttrs().getId()));
                     }
                 } else {
@@ -272,6 +283,7 @@ public class DownloadRequest extends AsyncRequest {
                                 " - ", "runDownload",
                                 " - ", "download failed",
                                 " - ", "end",
+                                " - ", getThreadName(),
                                 " - ", getAttrs().getId()));
                     }
                     break;
@@ -293,6 +305,7 @@ public class DownloadRequest extends AsyncRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "connect after",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
             return null;
@@ -309,6 +322,7 @@ public class DownloadRequest extends AsyncRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runDownload",
                         " - ", "get response code failed",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId(),
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString()));
             }
@@ -324,6 +338,7 @@ public class DownloadRequest extends AsyncRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runDownload",
                         " - ", "get response message failed",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId(),
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString()));
             }
@@ -338,6 +353,7 @@ public class DownloadRequest extends AsyncRequest {
                         " - ", "responseCode:", String.valueOf(responseCode),
                         " - ", "responseMessage:", responseMessage,
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString(),
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
             return null;
@@ -353,6 +369,7 @@ public class DownloadRequest extends AsyncRequest {
                         " - ", "content length exception",
                         " - ", "contentLength:" + contentLength,
                         " - ", "ResponseHeaders:", httpResponse.getResponseHeadersString(),
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
             return null;
@@ -368,6 +385,7 @@ public class DownloadRequest extends AsyncRequest {
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "get input stream after",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
             return null;
@@ -406,12 +424,22 @@ public class DownloadRequest extends AsyncRequest {
         }
 
         if (isCanceled()) {
+            boolean readFully = completedLength == contentLength;
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runDownload",
                         " - ", "canceled",
                         " - ", "read data after",
+                        " - ", readFully ? "read fully" : "not read fully",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
+            }
+            if (diskCacheEditor != null) {
+                if (readFully) {
+                    diskCacheEditor.commit();
+                } else {
+                    diskCacheEditor.abort();
+                }
             }
             return null;
         }
@@ -421,6 +449,7 @@ public class DownloadRequest extends AsyncRequest {
                     " - ", "runDownload",
                     " - ", "download success",
                     " - ", "fileLength:", completedLength, "/", contentLength,
+                    " - ", getThreadName(),
                     " - ", getAttrs().getId()));
         }
 
@@ -497,6 +526,7 @@ public class DownloadRequest extends AsyncRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runUpdateProgressInMainThread",
                         " - ", "finished",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
             return;
@@ -521,6 +551,7 @@ public class DownloadRequest extends AsyncRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runCompletedInMainThread",
                         " - ", "canceled",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
             return;
@@ -544,6 +575,7 @@ public class DownloadRequest extends AsyncRequest {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
                         " - ", "runFailedInMainThread",
                         " - ", "canceled",
+                        " - ", getThreadName(),
                         " - ", getAttrs().getId()));
             }
             return;

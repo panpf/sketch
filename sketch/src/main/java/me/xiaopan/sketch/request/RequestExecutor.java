@@ -23,8 +23,10 @@ import android.os.Message;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import me.xiaopan.sketch.Identifier;
 
@@ -81,7 +83,13 @@ public class RequestExecutor implements Identifier {
         if (localTaskExecutor == null) {
             synchronized (RequestExecutor.this) {
                 if (localTaskExecutor == null) {
-                    localTaskExecutor = new ThreadPoolExecutor(localThreadPoolSize, localThreadPoolSize, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
+                    localTaskExecutor = new ThreadPoolExecutor(
+                            localThreadPoolSize,
+                            localThreadPoolSize,
+                            60, TimeUnit.SECONDS,
+                            new LinkedBlockingQueue<Runnable>(200),
+                            new DefaultThreadFactory("LoadThread"),
+                            new ThreadPoolExecutor.DiscardOldestPolicy());
                 }
             }
         }
@@ -97,7 +105,13 @@ public class RequestExecutor implements Identifier {
         if (netTaskExecutor == null) {
             synchronized (RequestExecutor.this) {
                 if (netTaskExecutor == null) {
-                    netTaskExecutor = new ThreadPoolExecutor(netThreadPoolSize, netThreadPoolSize, 60, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(200), new ThreadPoolExecutor.DiscardOldestPolicy());
+                    netTaskExecutor = new ThreadPoolExecutor(
+                            netThreadPoolSize,
+                            netThreadPoolSize,
+                            60, TimeUnit.SECONDS,
+                            new LinkedBlockingQueue<Runnable>(200),
+                            new DefaultThreadFactory("DownloadThread"),
+                            new ThreadPoolExecutor.DiscardOldestPolicy());
                 }
             }
         }
@@ -172,6 +186,30 @@ public class RequestExecutor implements Identifier {
         public boolean handleMessage(Message msg) {
             ((Runnable) msg.obj).run();
             return true;
+        }
+    }
+
+    private static class DefaultThreadFactory implements ThreadFactory {
+        private final ThreadGroup group;
+        private final AtomicInteger threadNumber = new AtomicInteger(1);
+        private final String namePrefix;
+
+        private DefaultThreadFactory(String namePrefix) {
+            SecurityManager s = System.getSecurityManager();
+            group = (s != null) ? s.getThreadGroup() :
+                    Thread.currentThread().getThreadGroup();
+            this.namePrefix = namePrefix;
+        }
+
+        public Thread newThread(Runnable r) {
+            Thread t = new Thread(group, r,
+                    namePrefix + threadNumber.getAndIncrement(),
+                    0);
+            if (t.isDaemon())
+                t.setDaemon(false);
+            if (t.getPriority() != Thread.NORM_PRIORITY)
+                t.setPriority(Thread.NORM_PRIORITY);
+            return t;
         }
     }
 }
