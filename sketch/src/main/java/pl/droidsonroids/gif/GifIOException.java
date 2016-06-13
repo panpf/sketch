@@ -19,8 +19,7 @@ public class GifIOException extends IOException {
         this.reason = reason;
     }
 
-    @SuppressWarnings("WeakerAccess")
-        //invoked from native code
+    //invoked from native code
     GifIOException(int errorCode) {
         this(GifError.fromCode(errorCode));
     }
