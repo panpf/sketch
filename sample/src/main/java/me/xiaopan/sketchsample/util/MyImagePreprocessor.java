@@ -37,11 +37,11 @@ public class MyImagePreprocessor extends ImagePreprocessor {
     }
 
     @Override
-    public PreProcessResult prePrecess(LoadRequest loadRequest) {
+    public PreProcessResult process(LoadRequest loadRequest) {
         if (isXpkFile(loadRequest)) {
             return getXpkIconCacheFile(loadRequest);
         }
-        return super.prePrecess(loadRequest);
+        return super.process(loadRequest);
     }
 
     private boolean isXpkFile(LoadRequest loadRequest) {
