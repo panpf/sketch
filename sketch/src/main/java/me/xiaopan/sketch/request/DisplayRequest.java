@@ -86,13 +86,12 @@ public class DisplayRequest extends LoadRequest {
 
     @Override
     public void failed(FailedCause failedCause) {
-        // 显示请求里 失败的时候不能直接改状态为失败，要等到在主线程中显示了失败图片后才能改为失败状态，因此这里恢复一下
-        Status oldStatus = getStatus();
-        super.failed(failedCause);
-        setStatus(oldStatus);
-
-        // 不能过滤displayListener != null，因为还要显示失败图片呢
-        postRunFailed();
+        if (displayListener != null || displayOptions.getFailedImageHolder() != null) {
+            setFailedCause(failedCause);
+            postRunFailed();
+        } else {
+            super.failed(failedCause);
+        }
     }
 
     @Override
@@ -146,7 +145,7 @@ public class DisplayRequest extends LoadRequest {
         }
     }
 
-    private void load(){
+    private void load() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
