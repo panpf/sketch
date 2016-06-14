@@ -125,7 +125,7 @@ public class DownloadRequest extends AsyncRequest {
                     printLogD("runDispatch", "diskCache");
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, false);
-                downloadComplete();
+                downloadCompleted();
                 return;
             }
         }
@@ -151,7 +151,7 @@ public class DownloadRequest extends AsyncRequest {
         if (Sketch.isDebugMode()) {
             printLogW("runDispatch", "canceled", isPauseDownload ? "pause download" : "requestLevel is local");
         }
-        canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL);
+        canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL);
     }
 
     @Override
@@ -188,16 +188,8 @@ public class DownloadRequest extends AsyncRequest {
             return;
         }
 
-        // 都是空的就算下载失败
-        if (justDownloadResult == null || (justDownloadResult.getDiskCacheEntry() == null
-                && justDownloadResult.getImageData() == null)) {
-            failed(FailedCause.DOWNLOAD_FAIL);
-            return;
-        }
-
-        // 下载成功了
         downloadResult = justDownloadResult;
-        downloadComplete();
+        downloadCompleted();
     }
 
     private DownloadResult download(DiskCache diskCache, String diskCacheKey) {
@@ -419,8 +411,12 @@ public class DownloadRequest extends AsyncRequest {
     /**
      * 下载完成后续处理
      */
-    protected void downloadComplete() {
-        postRunCompleted();
+    protected void downloadCompleted() {
+        if (downloadResult != null && downloadResult.hasData()) {
+            postRunCompleted();
+        } else {
+            failed(FailedCause.DOWNLOAD_FAIL);
+        }
     }
 
     @Override
@@ -438,13 +434,6 @@ public class DownloadRequest extends AsyncRequest {
     }
 
     @Override
-    protected void runCanceledInMainThread() {
-        if (downloadListener != null) {
-            downloadListener.onCanceled(getCancelCause());
-        }
-    }
-
-    @Override
     protected void runCompletedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
@@ -455,7 +444,7 @@ public class DownloadRequest extends AsyncRequest {
 
         setStatus(Status.COMPLETED);
 
-        if (downloadListener != null) {
+        if (downloadListener != null && downloadResult != null && downloadResult.hasData()) {
             if (downloadResult.getDiskCacheEntry() != null) {
                 downloadListener.onCompleted(downloadResult.getDiskCacheEntry().getFile(), downloadResult.isFromNetwork());
             } else if (downloadResult.getImageData() != null) {
@@ -475,6 +464,13 @@ public class DownloadRequest extends AsyncRequest {
 
         if (downloadListener != null) {
             downloadListener.onFailed(getFailedCause());
+        }
+    }
+
+    @Override
+    protected void runCanceledInMainThread() {
+        if (downloadListener != null) {
+            downloadListener.onCanceled(getCancelCause());
         }
     }
 }

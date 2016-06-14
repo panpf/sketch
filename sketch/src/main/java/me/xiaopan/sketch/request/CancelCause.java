@@ -20,9 +20,58 @@ package me.xiaopan.sketch.request;
  * 取消的原因
  */
 public enum CancelCause {
-    NORMAL,
-    LEVEL_IS_LOCAL,
-    LEVEL_IS_MEMORY,
+    /**
+     * 通过Sketch.cancel()方法取消
+     */
+    BE_CANCELLED,
+
+    /**
+     * RequestLevel是LOCAL
+     */
+    REQUEST_LEVEL_IS_LOCAL,
+
+    /**
+     * RequestLevel是MEMORY
+     */
+    REQUEST_LEVEL_IS_MEMORY,
+
+    /**
+     * 暂停下载
+     */
     PAUSE_DOWNLOAD,
+
+    /**
+     * 暂停加载
+     */
     PAUSE_LOAD,
+
+    /**
+     * ImageView从Window移除
+     */
+    ON_DETACHED_FROM_WINDOW,
+
+    /**
+     * 被替换了
+     */
+    BE_REPLACED,
+
+    /**
+     * 在DisplayHelper中替换取消
+     */
+    BE_REPLACED_ON_HELPER,
+
+    /**
+     * 在setImageDrawable的时候替换取消
+     */
+    BE_REPLACED_ON_SET_DRAWABLE,
+
+    /**
+     * 页面隐藏用户看不见
+     */
+    USERS_NOT_VISIBLE,
+
+    /**
+     * 检测到绑定关系断开
+     */
+    BIND_DISCONNECT,
 }

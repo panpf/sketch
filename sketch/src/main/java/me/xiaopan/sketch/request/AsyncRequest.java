@@ -152,11 +152,6 @@ abstract class AsyncRequest extends Request implements Runnable{
     protected abstract void runUpdateProgressInMainThread(int totalLength, int completedLength);
 
     /**
-     * 在主线程处理取消
-     */
-    protected abstract void runCanceledInMainThread();
-
-    /**
      * 在主线程处理完成
      */
     protected abstract void runCompletedInMainThread();
@@ -165,6 +160,11 @@ abstract class AsyncRequest extends Request implements Runnable{
      * 在主线程处理失败
      */
     protected abstract void runFailedInMainThread();
+
+    /**
+     * 在主线程处理取消
+     */
+    protected abstract void runCanceledInMainThread();
 
     /**
      * 运行状态

@@ -116,7 +116,7 @@ abstract class Request {
      * 请求是否已经结束了
      */
     public boolean isFinished() {
-        return status == Status.COMPLETED || status == Status.CANCELED || status == Status.FAILED;
+        return status == null || status == Status.COMPLETED || status == Status.CANCELED || status == Status.FAILED;
     }
 
     /**
@@ -130,16 +130,16 @@ abstract class Request {
      * 失败了
      */
     protected void failed(FailedCause failedCause) {
+        setFailedCause(failedCause);
         setStatus(Status.FAILED);
-        this.failedCause = failedCause;
     }
 
     /**
      * 取消了
      */
     protected void canceled(CancelCause cancelCause) {
+        setCancelCause(cancelCause);
         setStatus(Status.CANCELED);
-        this.cancelCause = cancelCause;
     }
 
     /**
@@ -147,9 +147,9 @@ abstract class Request {
      *
      * @return false：请求已经结束了
      */
-    public boolean cancel() {
+    public boolean cancel(CancelCause cancelCause) {
         if (!isFinished()) {
-            canceled(CancelCause.NORMAL);
+            canceled(cancelCause);
             return true;
         } else {
             return false;
@@ -295,11 +295,6 @@ abstract class Request {
          * 等待显示
          */
         WAIT_DISPLAY("wait display"),
-
-        /**
-         * 正在显示
-         */
-        DISPLAYING("displaying"),
 
 
         /**

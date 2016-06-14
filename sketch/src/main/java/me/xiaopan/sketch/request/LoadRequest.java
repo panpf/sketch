@@ -118,7 +118,7 @@ public class LoadRequest extends DownloadRequest {
     }
 
     @Override
-    protected void downloadComplete() {
+    protected void downloadCompleted() {
         DownloadResult downloadResult = getDownloadResult();
         if (downloadResult != null && downloadResult.getDiskCacheEntry() != null) {
             dataSource = new DataSource(downloadResult.getDiskCacheEntry(), downloadResult.getImageFrom());
@@ -128,7 +128,7 @@ public class LoadRequest extends DownloadRequest {
             submitRunLoad();
         } else {
             if (Sketch.isDebugMode()) {
-                printLogE("downloadComplete", "are all null");
+                printLogE("downloadCompleted", "are all null");
             }
             failed(FailedCause.DOWNLOAD_FAIL);
         }
@@ -148,17 +148,12 @@ public class LoadRequest extends DownloadRequest {
         if (imagePreprocessor.isSpecific(this)) {
             setStatus(Status.PRE_PROCESS);
             PreProcessResult prePrecessResult = imagePreprocessor.process(this);
-            if (prePrecessResult != null) {
-                if (prePrecessResult.diskCacheEntry != null) {
-                    dataSource = new DataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
-                } else if (prePrecessResult.imageData != null) {
-                    dataSource = new DataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
-                } else {
-                    failed(FailedCause.NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE);
-                    return;
-                }
+            if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
+                dataSource = new DataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
+            } else if (prePrecessResult != null && prePrecessResult.imageData != null) {
+                dataSource = new DataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
             } else {
-                failed(FailedCause.NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE);
+                failed(FailedCause.PRE_PROCESS_RESULT_IS_NULL);
                 return;
             }
         }
@@ -173,7 +168,7 @@ public class LoadRequest extends DownloadRequest {
                 if (Sketch.isDebugMode()) {
                     printLogE("runLoad", "decode failed", "bitmap recycled", "bitmapInfo: " + RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()));
                 }
-                failed(FailedCause.DECODE_FAIL);
+                failed(FailedCause.BITMAP_RECYCLED);
                 return;
             }
 
@@ -207,7 +202,7 @@ public class LoadRequest extends DownloadRequest {
                 } else {
                     // 有可能处理后没得到新图片就图片也没了，这叫赔了夫人又折兵
                     if (decodeResult.getBitmap() == null || decodeResult.getBitmap().isRecycled()) {
-                        failed(FailedCause.DECODE_FAIL);
+                        failed(FailedCause.SOURCE_BITMAP_RECYCLED);
                         return;
                     }
                 }
@@ -229,7 +224,7 @@ public class LoadRequest extends DownloadRequest {
                 if (Sketch.isDebugMode()) {
                     printLogE("runLoad", "decode failed", "gif drawable recycled", "gifInfo: " + decodeResult.getGifDrawable().getInfo());
                 }
-                failed(FailedCause.DECODE_FAIL);
+                failed(FailedCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
@@ -258,13 +253,6 @@ public class LoadRequest extends DownloadRequest {
 
     protected void loadCompleted() {
         postRunCompleted();
-    }
-
-    @Override
-    protected void runCanceledInMainThread() {
-        if (loadListener != null) {
-            loadListener.onCanceled(getCancelCause());
-        }
     }
 
     @Override
@@ -307,6 +295,13 @@ public class LoadRequest extends DownloadRequest {
 
         if (loadListener != null) {
             loadListener.onFailed(getFailedCause());
+        }
+    }
+
+    @Override
+    protected void runCanceledInMainThread() {
+        if (loadListener != null) {
+            loadListener.onCanceled(getCancelCause());
         }
     }
 }

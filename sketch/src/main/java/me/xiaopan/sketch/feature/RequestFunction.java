@@ -78,7 +78,7 @@ public class RequestFunction implements ImageViewFunction {
         // 主动取消请求
         DisplayRequest potentialRequest = BindFixedRecycleBitmapDrawable.findDisplayRequest(imageViewInterface);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
-            potentialRequest.cancel();
+            potentialRequest.cancel(CancelCause.ON_DETACHED_FROM_WINDOW);
         }
 
         // 如果当前图片是来自Sketch，那么就有可能在这里被主动回收，因此要主动设置ImageView的drawable为null
@@ -161,7 +161,7 @@ public class RequestFunction implements ImageViewFunction {
             BindFixedRecycleBitmapDrawable bindFixedRecycleBitmapDrawable = (BindFixedRecycleBitmapDrawable) drawable;
             DisplayRequest displayRequest = bindFixedRecycleBitmapDrawable.getDisplayRequest();
             if (displayRequest != null && !displayRequest.isFinished()) {
-                displayRequest.cancel();
+                displayRequest.cancel(CancelCause.BE_REPLACED_ON_SET_DRAWABLE);
             }
             bindFixedRecycleBitmapDrawable.setIsDisplayed(callingStation, isDisplayed);
             return true;

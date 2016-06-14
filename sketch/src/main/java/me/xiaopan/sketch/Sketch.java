@@ -25,6 +25,7 @@ import java.util.Map;
 
 import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
+import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayHelper;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayParams;
@@ -202,7 +203,7 @@ public class Sketch {
     public static boolean cancel(ImageViewInterface imageViewInterface) {
         final DisplayRequest displayRequest = BindFixedRecycleBitmapDrawable.findDisplayRequest(imageViewInterface);
         if (displayRequest != null && !displayRequest.isFinished()) {
-            displayRequest.cancel();
+            displayRequest.cancel(CancelCause.BE_CANCELLED);
             return true;
         } else {
             return false;

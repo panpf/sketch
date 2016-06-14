@@ -76,7 +76,7 @@ public class DisplayRequest extends LoadRequest {
 
         // 绑定关系已经断了就直接取消请求
         if (displayBinder.isBroken()) {
-            canceled(CancelCause.NORMAL);
+            canceled(CancelCause.BIND_DISCONNECT);
             return true;
         }
 
@@ -126,7 +126,7 @@ public class DisplayRequest extends LoadRequest {
         // 要使用内存缓存就必须上锁
         ReentrantLock memoryCacheEditLock = null;
         if (!displayOptions.isDisableCacheInDisk()) {
-            setStatus(Request.Status.GET_MEMORY_CACHE_EDIT_LOCK);
+            setStatus(Status.GET_MEMORY_CACHE_EDIT_LOCK);
             memoryCacheEditLock = getSketch().getConfiguration().getMemoryCache().getEditLock(getAttrs().getId());
             memoryCacheEditLock.lock();
         }
@@ -181,7 +181,7 @@ public class DisplayRequest extends LoadRequest {
                 if (Sketch.isDebugMode()) {
                     printLogE("loadCompleted", "decode failed", "bitmap recycled", "bitmapInfo: " + loadResult.getGifDrawable().getInfo());
                 }
-                failed(FailedCause.DECODE_FAIL);
+                failed(FailedCause.BITMAP_RECYCLED);
                 return;
             }
 
@@ -200,7 +200,7 @@ public class DisplayRequest extends LoadRequest {
                 if (Sketch.isDebugMode()) {
                     printLogE("loadCompleted", "decode failed", "gif drawable recycled", "gifInfo: " + loadResult.getGifDrawable().getInfo());
                 }
-                failed(FailedCause.DECODE_FAIL);
+                failed(FailedCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
@@ -229,13 +229,6 @@ public class DisplayRequest extends LoadRequest {
     }
 
     @Override
-    protected void runCanceledInMainThread() {
-        if (displayListener != null) {
-            displayListener.onCanceled(getCancelCause());
-        }
-    }
-
-    @Override
     protected void runCompletedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
@@ -250,7 +243,7 @@ public class DisplayRequest extends LoadRequest {
             return;
         }
 
-        setStatus(Status.DISPLAYING);
+        setStatus(Status.COMPLETED);
 
         // 显示图片
         if (displayResult != null && displayResult.getDrawable() != null) {
@@ -276,8 +269,6 @@ public class DisplayRequest extends LoadRequest {
             recycleDrawable.setIsWaitDisplay("completedCallback", false);
         }
 
-        setStatus(Status.COMPLETED);
-
         if (displayListener != null) {
             displayListener.onCompleted(displayResult.getImageFrom(), displayResult.getMimeType());
         }
@@ -292,7 +283,7 @@ public class DisplayRequest extends LoadRequest {
             return;
         }
 
-        setStatus(Status.DISPLAYING);
+        setStatus(Status.FAILED);
 
         // 显示失败图片
         if (displayOptions.getFailedImageHolder() != null) {
@@ -308,10 +299,15 @@ public class DisplayRequest extends LoadRequest {
             }
         }
 
-        setStatus(Status.FAILED);
-
         if (displayListener != null) {
             displayListener.onFailed(getFailedCause());
+        }
+    }
+
+    @Override
+    protected void runCanceledInMainThread() {
+        if (displayListener != null) {
+            displayListener.onCanceled(getCancelCause());
         }
     }
 }

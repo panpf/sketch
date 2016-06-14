@@ -48,4 +48,8 @@ public class DownloadResult {
     public ImageFrom getImageFrom(){
         return fromNetwork ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
     }
+
+    public boolean hasData(){
+        return diskCacheEntry != null || (imageData != null && imageData.length > 0);
+    }
 }

@@ -41,7 +41,22 @@ public enum FailedCause {
     DECODE_FAIL,
 
     /**
-     * 没有获取到特殊本地图片的缓存文件
+     * Bitmap已回收
      */
-    NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE,
+    BITMAP_RECYCLED,
+
+    /**
+     * 旧的Bitmap被回收了
+     */
+    SOURCE_BITMAP_RECYCLED,
+
+    /**
+     * GifDrawable已回收
+     */
+    GIF_DRAWABLE_RECYCLED,
+
+    /**
+     * 预处理结果是空的
+     */
+    PRE_PROCESS_RESULT_IS_NULL,
 }

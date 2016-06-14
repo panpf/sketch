@@ -306,7 +306,7 @@ public class LoadHelper {
                         " - ", requestAttrs.getId()));
             }
 
-            CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.LEVEL_IS_LOCAL;
+            CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
             CallbackHandler.postCallbackCanceled(loadListener, cancelCause, sync);
 
             return false;
