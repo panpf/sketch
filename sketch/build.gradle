@@ -8,7 +8,7 @@ android {
         minSdkVersion 8
         targetSdkVersion 22
         versionCode 222
-        versionName "2.2.2 beta2"
+        versionName "2.2.2 beta3"
     }
 
     buildTypes {
