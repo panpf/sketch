@@ -116,13 +116,13 @@ public class WindowBackgroundManager {
         }
 
         public void detach() {
-            cancel();
+            cancel(CancelCause.ON_DETACHED_FROM_WINDOW);
             onSetWindowBackgroundListener = null;
         }
 
-        public void cancel() {
+        public void cancel(CancelCause cancelCause) {
             if (loadBackgroundRequest != null && !loadBackgroundRequest.isFinished()) {
-                loadBackgroundRequest.cancel();
+                loadBackgroundRequest.cancel(cancelCause);
             }
         }
 
@@ -139,7 +139,7 @@ public class WindowBackgroundManager {
             }
             this.windowBackgroundImageUri = imageUri;
             if (loadBackgroundRequest != null && !loadBackgroundRequest.isFinished()) {
-                loadBackgroundRequest.cancel();
+                loadBackgroundRequest.cancel(CancelCause.BE_REPLACED);
             }
             DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
             int resizeWidth = displayMetrics.widthPixels;

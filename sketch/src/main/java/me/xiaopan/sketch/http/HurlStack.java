@@ -163,7 +163,6 @@ public class HurlStack implements HttpStack {
         return new HttpUrlConnectionResponse(connection);
     }
 
-    @SuppressWarnings("WeakerAccess")
     protected void processRequest(@SuppressWarnings("UnusedParameters") String uri,
                                   @SuppressWarnings("UnusedParameters") HttpURLConnection connection) {
 

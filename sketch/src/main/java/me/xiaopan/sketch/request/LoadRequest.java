@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.DecodeResult;
@@ -25,7 +24,6 @@ import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.process.ImageProcessor;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 加载请求
@@ -60,7 +58,6 @@ public class LoadRequest extends DownloadRequest {
     /**
      * 获取加载结果
      */
-    @SuppressWarnings("WeakerAccess")
     public LoadResult getLoadResult() {
         return loadResult;
     }
@@ -100,15 +97,18 @@ public class LoadRequest extends DownloadRequest {
 
     @Override
     protected void runDispatch() {
-        setStatus(Status.DISPATCHING);
+        if (isCanceled()) {
+            if (Sketch.isDebugMode()) {
+                printLogW("runDispatch", "canceled", "intercept local task before");
+            }
+            return;
+        }
 
         // 本地请求直接执行加载
+        setStatus(Status.INTERCEPT_LOCAL_TASK);
         if (getAttrs().getUriScheme() != UriScheme.NET) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
-                        " - ", "runDispatch",
-                        " - ", "local",
-                        " - ", getAttrs().getId()));
+                printLogD("runDispatch", "local");
             }
             submitRunLoad();
             return;
@@ -118,196 +118,141 @@ public class LoadRequest extends DownloadRequest {
     }
 
     @Override
-    protected void downloadComplete() {
+    protected void downloadCompleted() {
         DownloadResult downloadResult = getDownloadResult();
-        if (downloadResult == null || (downloadResult.getDiskCacheEntry() == null && downloadResult.getImageData() == null)) {
-            failed(FailedCause.DOWNLOAD_FAIL);
-            return;
-        }
-
-        ImageFrom imageFrom = downloadResult.isFromNetwork() ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
-        if (downloadResult.getDiskCacheEntry() != null) {
-            dataSource = new DataSource(downloadResult.getDiskCacheEntry(), imageFrom);
-        } else if (downloadResult.getImageData() != null && downloadResult.getImageData().length > 0) {
-            dataSource = new DataSource(downloadResult.getImageData(), imageFrom);
+        if (downloadResult != null && downloadResult.getDiskCacheEntry() != null) {
+            dataSource = new DataSource(downloadResult.getDiskCacheEntry(), downloadResult.getImageFrom());
+            submitRunLoad();
+        } else if (downloadResult != null && downloadResult.getImageData() != null && downloadResult.getImageData().length > 0) {
+            dataSource = new DataSource(downloadResult.getImageData(), downloadResult.getImageFrom());
+            submitRunLoad();
         } else {
+            if (Sketch.isDebugMode()) {
+                printLogE("downloadCompleted", "are all null");
+            }
             failed(FailedCause.DOWNLOAD_FAIL);
-            return;
         }
-
-        submitRunLoad();
     }
 
     @Override
     protected void runLoad() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                        " - ", "runLoad",
-                        " - ", "canceled",
-                        " - ", "startLoad",
-                        " - ", getAttrs().getId()));
+                printLogW("runLoad", "canceled", "start load");
             }
             return;
         }
 
-        setStatus(Status.LOADING);
-
-        // 尝试用图片预处理器处理一下特殊的本地图片，并得到他们的缓存
+        // 预处理
         ImagePreprocessor imagePreprocessor = getSketch().getConfiguration().getImagePreprocessor();
         if (imagePreprocessor.isSpecific(this)) {
-            PreProcessResult prePrecessResult = imagePreprocessor.prePrecess(this);
-            if (prePrecessResult != null) {
-                if (prePrecessResult.diskCacheEntry != null) {
-                    dataSource = new DataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
-                } else if (prePrecessResult.imageData != null) {
-                    dataSource = new DataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
-                } else {
-                    failed(FailedCause.NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE);
-                    return;
-                }
+            setStatus(Status.PRE_PROCESS);
+            PreProcessResult prePrecessResult = imagePreprocessor.process(this);
+            if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
+                dataSource = new DataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
+            } else if (prePrecessResult != null && prePrecessResult.imageData != null) {
+                dataSource = new DataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
             } else {
-                failed(FailedCause.NOT_GET_SPECIFIC_LOCAL_IMAGE_CACHE_FILE);
+                failed(FailedCause.PRE_PROCESS_RESULT_IS_NULL);
                 return;
             }
         }
 
         // 解码
+        setStatus(Status.DECODING);
         DecodeResult decodeResult = getSketch().getConfiguration().getImageDecoder().decode(this);
-        if (decodeResult == null || (decodeResult.getBitmap() == null && decodeResult.getGifDrawable() == null)) {
-            failed(FailedCause.DECODE_FAIL);
-            return;
-        }
 
-        // 是Bitmap
-        if (decodeResult.getBitmap() != null) {
-            // 过滤已回收
+        if (decodeResult != null && decodeResult.getBitmap() != null) {
+            // 是普通图片
             if (decodeResult.getBitmap().isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.e(Sketch.TAG, SketchUtils.concat(getLogName(),
-                            " - ", "runLoad",
-                            " - ", "decode failed bitmap recycled",
-                            " - ", "decode after",
-                            " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
-                            " - ", getAttrs().getId()));
+                    printLogE("runLoad", "decode failed", "bitmap recycled", "bitmapInfo: " + RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()));
                 }
-                failed(FailedCause.DECODE_FAIL);
+                failed(FailedCause.BITMAP_RECYCLED);
                 return;
             }
 
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
-                        " - ", "runLoad",
-                        " - ", "new bitmap",
-                        " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
-                        " - ", getAttrs().getId()));
+                printLogI("runLoad", "decode success", "bitmapInfo: " + RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()));
             }
 
             if (isCanceled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                            " - ", "runLoad",
-                            " - ", "canceled",
-                            " - ", "decode after",
-                            " - ", "recycle bitmap",
-                            " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
-                            " - ", getAttrs().getId()));
+                    printLogW("runLoad", "canceled", "decode after", "bitmapInfo: " + RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()));
                 }
                 decodeResult.getBitmap().recycle();
                 return;
             }
 
-            // 处理
+            // 处理一下
             ImageProcessor imageProcessor = loadOptions.getImageProcessor();
             if (imageProcessor != null) {
+                setStatus(Status.PROCESSING);
                 Bitmap newBitmap = imageProcessor.process(
                         getSketch(), decodeResult.getBitmap(),
                         loadOptions.getResize(), loadOptions.isForceUseResize(),
                         loadOptions.isLowQualityImage());
-
                 // 确实是一张新图片，就替换掉旧图片
                 if (newBitmap != null && !newBitmap.isRecycled() && newBitmap != decodeResult.getBitmap()) {
                     if (Sketch.isDebugMode()) {
-                        Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                                " - ", "runLoad",
-                                " - ", "process after",
-                                " - ", "newBitmap",
-                                " - ", RecycleBitmapDrawable.getInfo(newBitmap, decodeResult.getMimeType()),
-                                " - ", "recycled old bitmap",
-                                " - ", getAttrs().getId()));
+                        printLogW("runLoad", "process new bitmap", "bitmapInfo: " + RecycleBitmapDrawable.getInfo(newBitmap, decodeResult.getMimeType()));
                     }
-
                     decodeResult.getBitmap().recycle();
                     decodeResult.setBitmap(newBitmap);
+                } else {
+                    // 有可能处理后没得到新图片就图片也没了，这叫赔了夫人又折兵
+                    if (decodeResult.getBitmap() == null || decodeResult.getBitmap().isRecycled()) {
+                        failed(FailedCause.SOURCE_BITMAP_RECYCLED);
+                        return;
+                    }
                 }
-            }
 
-            if (isCanceled()) {
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                            " - ", "runLoad",
-                            " - ", "canceled",
-                            " - ", "process after",
-                            " - ", "recycle bitmap",
-                            " - ", RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()),
-                            " - ", getAttrs().getId()));
+                if (isCanceled()) {
+                    if (Sketch.isDebugMode()) {
+                        printLogW("runLoad", "canceled", "process after", "bitmapInfo: " + RecycleBitmapDrawable.getInfo(decodeResult.getBitmap(), decodeResult.getMimeType()));
+                    }
+                    decodeResult.getBitmap().recycle();
+                    return;
                 }
-                decodeResult.getBitmap().recycle();
-                return;
-            }
-
-            // 最后一次验证
-            if (decodeResult.getBitmap() == null || decodeResult.getBitmap().isRecycled()) {
-                failed(FailedCause.DECODE_FAIL);
-                return;
             }
 
             loadResult = new LoadResult(decodeResult.getBitmap(), decodeResult.getImageFrom(), decodeResult.getMimeType());
             loadCompleted();
-            return;
-        }
-
-        // 是GIF图
-        if (decodeResult.getGifDrawable() != null) {
-            // 验证一下
+        } else if (decodeResult != null && decodeResult.getGifDrawable() != null) {
+            // 是GIF
             if (decodeResult.getGifDrawable().isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.e(Sketch.TAG, SketchUtils.concat(getLogName(),
-                            " - ", "runLoad",
-                            " - ", "gif drawable recycled",
-                            " - ", decodeResult.getGifDrawable().getInfo(),
-                            " - ", getAttrs().getId()));
+                    printLogE("runLoad", "decode failed", "gif drawable recycled", "gifInfo: " + decodeResult.getGifDrawable().getInfo());
                 }
-                failed(FailedCause.DECODE_FAIL);
+                failed(FailedCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(getLogName(),
-                        " - ", "runLoad",
-                        " - ", "new gif drawable",
-                        " - ", decodeResult.getGifDrawable().getInfo(),
-                        " - ", getAttrs().getId()));
+                printLogI("runLoad", "decode success", "gifInfo: " + decodeResult.getGifDrawable().getInfo());
+            }
+
+            if (isCanceled()) {
+                if (Sketch.isDebugMode()) {
+                    printLogW("runLoad", "canceled", "decode after", "gifInfo: " + decodeResult.getGifDrawable().getInfo());
+                }
+                decodeResult.getGifDrawable().recycle();
+                return;
             }
 
             decodeResult.getGifDrawable().setMimeType(decodeResult.getMimeType());
-
             loadResult = new LoadResult(decodeResult.getGifDrawable(), decodeResult.getImageFrom(), decodeResult.getMimeType());
             loadCompleted();
-            //noinspection UnnecessaryReturnStatement
-            return;
+        } else {
+            if (Sketch.isDebugMode()) {
+                printLogE("runLoad", "are all null");
+            }
+            failed(FailedCause.DECODE_FAIL);
         }
     }
 
     protected void loadCompleted() {
         postRunCompleted();
-    }
-
-    @Override
-    protected void runCanceledInMainThread() {
-        if (loadListener != null) {
-            loadListener.onCanceled(getCancelCause());
-        }
     }
 
     @Override
@@ -323,10 +268,7 @@ public class LoadRequest extends DownloadRequest {
                 }
             }
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                        " - ", "runCompletedInMainThread",
-                        " - ", "canceled",
-                        " - ", getAttrs().getId()));
+                printLogW("runCompletedInMainThread", "canceled");
             }
             return;
         }
@@ -346,16 +288,20 @@ public class LoadRequest extends DownloadRequest {
     protected void runFailedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(getLogName(),
-                        " - ", "runFailedInMainThread",
-                        " - ", "canceled",
-                        " - ", getAttrs().getId()));
+                printLogW("runFailedInMainThread", "canceled");
             }
             return;
         }
 
         if (loadListener != null) {
             loadListener.onFailed(getFailedCause());
+        }
+    }
+
+    @Override
+    protected void runCanceledInMainThread() {
+        if (loadListener != null) {
+            loadListener.onCanceled(getCancelCause());
         }
     }
 }

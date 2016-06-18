@@ -211,7 +211,6 @@ public class HttpClientStack implements HttpStack {
         return new HttpClientHttpResponse(httpResponse);
     }
 
-    @SuppressWarnings("WeakerAccess")
     protected void processRequest(@SuppressWarnings("UnusedParameters") String uri,
                                   @SuppressWarnings("UnusedParameters") HttpUriRequest httpUriRequest) {
     }

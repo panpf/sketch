@@ -87,7 +87,7 @@ public class ImageFragment extends MyFragment {
                 }
 
                 switch (cancelCause){
-                    case LEVEL_IS_LOCAL:
+                    case REQUEST_LEVEL_IS_LOCAL:
                         hintView.hint(R.drawable.ic_failed, "level is local", "直接显示", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -96,7 +96,7 @@ public class ImageFragment extends MyFragment {
                             }
                         });
                         break;
-                    case LEVEL_IS_MEMORY:
+                    case REQUEST_LEVEL_IS_MEMORY:
                         hintView.hint(R.drawable.ic_failed, "level is memory", "直接显示", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
@@ -105,7 +105,7 @@ public class ImageFragment extends MyFragment {
                             }
                         });
                         break;
-                    case NORMAL:
+                    case BE_CANCELLED:
                         break;
                     case PAUSE_DOWNLOAD:
                         hintView.hint(R.drawable.ic_failed, "为节省流量已暂停下载新图片", "不管了，直接下载", new View.OnClickListener() {
@@ -127,7 +127,7 @@ public class ImageFragment extends MyFragment {
                         break;
                 }
 
-                if(cancelCause != CancelCause.NORMAL){
+                if(cancelCause != CancelCause.BE_CANCELLED){
                     photoViewAttacher.update();
                 }
             }
@@ -150,7 +150,7 @@ public class ImageFragment extends MyFragment {
             if(isVisibleToUser){
                 windowBackgroundLoader.load(imageUri);
             }else{
-                windowBackgroundLoader.cancel();
+                windowBackgroundLoader.cancel(CancelCause.USERS_NOT_VISIBLE);
             }
         }
     }

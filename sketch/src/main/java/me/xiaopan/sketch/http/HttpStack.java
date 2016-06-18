@@ -23,9 +23,9 @@ import java.util.Map;
 import me.xiaopan.sketch.Identifier;
 
 public interface HttpStack extends Identifier {
-    int DEFAULT_READ_TIMEOUT = 20 * 1000;   // 默认读取超时时间
-    int DEFAULT_CONNECT_TIMEOUT = 15 * 1000;    // 默认连接超时时间
-    int DEFAULT_MAX_RETRY_COUNT = 1;    // 默认最大重试次数
+    int DEFAULT_READ_TIMEOUT = 7 * 1000;   // 默认读取超时时间
+    int DEFAULT_CONNECT_TIMEOUT = 7 * 1000;    // 默认连接超时时间
+    int DEFAULT_MAX_RETRY_COUNT = 0;    // 默认最大重试次数
 
     /**
      * 获取最大重试次数
@@ -33,31 +33,31 @@ public interface HttpStack extends Identifier {
     int getMaxRetryCount();
 
     /**
-     * 设置最大重试次数（默认1）
+     * 设置最大重试次数（默认HttpStack.DEFAULT_MAX_RETRY_COUNT）
      */
     @SuppressWarnings("unused")
     HttpStack setMaxRetryCount(int maxRetryCount);
 
     /**
-     * 获取连接超时时间（默认15s）
+     * 获取连接超时时间（默认HttpStack.DEFAULT_CONNECT_TIMEOUT）
      */
     @SuppressWarnings("unused")
     int getConnectTimeout();
 
     /**
-     * 设置连接超时时间（默认15s）
+     * 设置连接超时时间（默认HttpStack.DEFAULT_CONNECT_TIMEOUT）
      */
     @SuppressWarnings("unused")
     HttpStack setConnectTimeout(int connectTimeout);
 
     /**
-     * 获取读取超时时间（默认20s）
+     * 获取读取超时时间（默认HttpStack.DEFAULT_READ_TIMEOUT）
      */
     @SuppressWarnings("unused")
     int getReadTimeout();
 
     /**
-     * 设置读取超时时间（默认20s）
+     * 设置读取超时时间（默认HttpStack.DEFAULT_READ_TIMEOUT）
      */
     @SuppressWarnings("unused")
     HttpStack setReadTimeout(int readTimeout);
@@ -111,6 +111,7 @@ public interface HttpStack extends Identifier {
     interface ImageHttpResponse {
         int getResponseCode() throws IOException;
 
+        @SuppressWarnings("unused")
         String getResponseMessage() throws IOException;
 
         long getContentLength();
