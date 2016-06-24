@@ -59,13 +59,14 @@ sketchImageView.displayURIImage(uri);
 ### 使用指南
 
 #### 导入
-从JCenter导入
+从JCenter导入 
+
+`lastVersionName`：[![version](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg)]()
 ```groovy
 dependencies{
 	compile compile 'me.xiaopan:sketch:lastVersionName'
 }
 ```
-`lastVersionName`是指最新版本，你可以在[release](https://github.com/xiaopansky/Sketch/releases)页面看到最新的版本
 
 添加以下权限
 ```xml
