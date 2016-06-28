@@ -16,7 +16,7 @@ import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class ErrorCallback implements Identifier {
-    protected String logName = "DefaultErrorCallback";
+    protected String logName = "ErrorCallback";
 
     public void onInstallDiskCacheFailed(Exception e, File cacheDir) {
         Log.e(Sketch.TAG, SketchUtils.concat("InstallDiskCacheFailed. ", "SDCardState", "=", Environment.getExternalStorageState()));

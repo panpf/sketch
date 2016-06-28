@@ -82,6 +82,15 @@ public class LruDiskCache implements DiskCache {
             return;
         }
 
+        if (!cacheDir.exists() && !cacheDir.mkdirs()) {
+            Exception exception = new IllegalStateException("Unable to create the disk cache directory: " + cacheDir.getPath());
+            exception.printStackTrace();
+            if (configuration.getErrorCallback() != null) {
+                configuration.getErrorCallback().onInstallDiskCacheFailed(exception, cacheDir);
+            }
+            return;
+        }
+
         try {
             cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
         } catch (IOException e) {
@@ -96,7 +105,7 @@ public class LruDiskCache implements DiskCache {
     @Override
     public boolean exist(String uri) {
         // 这里有些特殊，只有当没有尝试安装过的时候才会尝试安装，这是由于目前此方法只在helper中用到，而Helper对性能要求较高
-        if(cacheDir == null){
+        if (cacheDir == null) {
             installDiskCache(false);
         }
 
@@ -277,7 +286,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         @Override
-        public void abort()  {
+        public void abort() {
             try {
                 diskEditor.abort();
             } catch (IOException e) {
