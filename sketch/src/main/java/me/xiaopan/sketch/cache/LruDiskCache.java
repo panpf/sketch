@@ -32,7 +32,9 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.util.DiskLruCache;
+import me.xiaopan.sketch.util.NoSpaceException;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.util.UnableCreateDirException;
 
 public class LruDiskCache implements DiskCache {
     protected String logName = "LruDiskCache";
@@ -72,7 +74,7 @@ public class LruDiskCache implements DiskCache {
 
         try {
             cacheDir = SketchUtils.getCacheDir(context, DISK_CACHE_DIR_NAME, true, DISK_CACHE_RESERVED_SPACE_SIZE, true, true, 10);
-        } catch (SketchUtils.NoSpaceException e) {
+        } catch (NoSpaceException e) {
             e.printStackTrace();
             cacheDir = e.dir;
 
@@ -83,7 +85,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (!cacheDir.exists() && !cacheDir.mkdirs()) {
-            Exception exception = new IllegalStateException("Unable to create the disk cache directory: " + cacheDir.getPath());
+            UnableCreateDirException exception = new UnableCreateDirException("Unable to create dir: " + cacheDir.getPath());
             exception.printStackTrace();
             if (configuration.getErrorCallback() != null) {
                 configuration.getErrorCallback().onInstallDiskCacheFailed(exception, cacheDir);

@@ -80,9 +80,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             } catch (Throwable e) {
                 e.printStackTrace();
                 ErrorCallback errorCallback = loadRequest.getSketch().getConfiguration().getErrorCallback();
-                if (errorCallback != null) {
-                    errorCallback.onDecodeGifImageFailed(e, loadRequest, boundsOptions);
-                }
+                errorCallback.onDecodeGifImageFailed(e, loadRequest, boundsOptions);
             }
         }
 
@@ -103,10 +101,8 @@ public class DefaultImageDecoder implements ImageDecoder {
             } catch (Throwable error) {
                 error.printStackTrace();
                 ErrorCallback errorCallback = loadRequest.getSketch().getConfiguration().getErrorCallback();
-                if (errorCallback != null) {
-                    boundsOptions.inSampleSize = decodeOptions.inSampleSize;
-                    errorCallback.onDecodeNormalImageFailed(error, loadRequest, boundsOptions);
-                }
+                boundsOptions.inSampleSize = decodeOptions.inSampleSize;
+                errorCallback.onDecodeNormalImageFailed(error, loadRequest, boundsOptions);
             }
             if (bitmap != null && (bitmap.getWidth() == 1 || bitmap.getHeight() == 1)) {
                 if (Sketch.isDebugMode()) {

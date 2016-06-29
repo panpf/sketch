@@ -397,7 +397,7 @@ public class SketchUtils {
                 if (availableBytes < minSpaceSize) {
                     String availableFormatted = Formatter.formatFileSize(context, availableBytes);
                     throw new NoSpaceException(diskCacheDir, "available space is " + availableFormatted +
-                            ", disk cache dir path is " + diskCacheDir.getPath());
+                            ", dir path is " + diskCacheDir.getPath());
                 }
             }
 
@@ -407,12 +407,4 @@ public class SketchUtils {
         return new File(SketchUtils.getAppCacheDir(context), dirName);
     }
 
-    public static class NoSpaceException extends Exception {
-        public File dir;
-
-        public NoSpaceException(File dir, String detailMessage) {
-            super(detailMessage);
-            this.dir = dir;
-        }
-    }
 }
