@@ -28,6 +28,7 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.format.Formatter;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -213,7 +214,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             testButton.setVisibility(View.GONE);
         }
 
-        starButton.performClick();
+        largeImageButton.performClick();
 
         startService(new Intent(getBaseContext(), NotificationService.class));
     }
@@ -547,6 +548,18 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     @Override
     public void onToggleToGifSample() {
         searchButton.performClick();
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        boolean result = true;
+        try {
+            result = super.dispatchTouchEvent(ev);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
     private enum Type {

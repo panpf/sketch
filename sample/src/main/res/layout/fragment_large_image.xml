@@ -2,7 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <me.xiaopan.sketchsample.widget.LargeImageView
+    <me.xiaopan.sketch.SketchImageView
         android:id="@+id/largeImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
