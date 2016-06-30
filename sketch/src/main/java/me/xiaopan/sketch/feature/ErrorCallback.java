@@ -96,21 +96,26 @@ public class ErrorCallback implements Identifier {
 
     /**
      * 处理图片失败
-     * @param error OutOfMemoryError：内存溢出
+     * @param e OutOfMemoryError：内存溢出
      * @param imageUri 图片uri
      * @param processor 所使用的处理器
      */
-    public void onProcessImageFailed(OutOfMemoryError error, String imageUri, ImageProcessor processor){
-        long maxMemory = Runtime.getRuntime().maxMemory();
-        long freeMemory = Runtime.getRuntime().freeMemory();
-        long totalMemory = Runtime.getRuntime().totalMemory();
-        String maxMemoryFormatted = Formatter.formatFileSize(context, maxMemory);
-        String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
-        String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
+    public void onProcessImageFailed(Throwable e, String imageUri, ImageProcessor processor){
+        if (e instanceof OutOfMemoryError) {
+            long maxMemory = Runtime.getRuntime().maxMemory();
+            long freeMemory = Runtime.getRuntime().freeMemory();
+            long totalMemory = Runtime.getRuntime().totalMemory();
+            String maxMemoryFormatted = Formatter.formatFileSize(context, maxMemory);
+            String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
+            String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
+            Log.d(Sketch.TAG, SketchUtils.concat("OutOfMemoryError. appMemoryInfo: ",
+                    "maxMemory", "=", maxMemoryFormatted,
+                    ", freeMemory", "=", freeMemoryFormatted,
+                    ", totalMemory", "=", totalMemoryFormatted));
+        }
+
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
                 " - ", "onProcessImageFailed",
-                " - ", "OutOfMemoryError", ": ", error.getMessage(),
-                " - ", "appMemoryInfo: ", "maxMemory", "=", maxMemoryFormatted, ", freeMemory", "=", freeMemoryFormatted, ", totalMemory", "=", totalMemoryFormatted,
                 " - ", "imageUri", ": ", imageUri,
                 " - ", "processor", ": ", processor.getIdentifier()));
     }

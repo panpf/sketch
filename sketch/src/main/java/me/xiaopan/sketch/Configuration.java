@@ -74,7 +74,7 @@ public class Configuration {
         this.context = tempContext.getApplicationContext();
 
         // LruDiskCache需要依赖所以先创建
-        this.errorCallback = new ErrorCallback();
+        this.errorCallback = new ErrorCallback(context);
 
         this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
         this.diskCache = new LruDiskCache(context, this, 1, DiskCache.DISK_CACHE_MAX_SIZE);
