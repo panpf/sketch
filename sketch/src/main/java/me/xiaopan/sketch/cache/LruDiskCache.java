@@ -18,6 +18,7 @@ package me.xiaopan.sketch.cache;
 
 import android.content.Context;
 import android.text.format.Formatter;
+import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +32,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Configuration;
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.NoSpaceException;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -54,7 +56,7 @@ public class LruDiskCache implements DiskCache {
         this.maxSize = maxSize;
         this.appVersionCode = appVersionCode;
         this.configuration = configuration;
-        this.cacheDir = SketchUtils.getSketchCacheDir(context, true, DISK_CACHE_DIR_NAME);
+        this.cacheDir = SketchUtils.getDefaultSketchCacheDir(context, DISK_CACHE_DIR_NAME, true);
     }
 
     private boolean checkCache(boolean checkCacheDir) {
@@ -83,12 +85,9 @@ public class LruDiskCache implements DiskCache {
             cache = null;
         }
 
-        // 重置缓存目录
-        cacheDir = SketchUtils.getSketchCacheDir(context, true, DISK_CACHE_DIR_NAME);
-
         // 创建缓存目录，然后检查空间并创建个文件测试一下
         try {
-            cacheDir = SketchUtils.buildCacheDir(context, cacheDir, DISK_CACHE_RESERVED_SPACE_SIZE, true, true, 10);
+            cacheDir = SketchUtils.buildCacheDir(context, DISK_CACHE_DIR_NAME, true, DISK_CACHE_RESERVED_SPACE_SIZE, true, true, 10);
         } catch (NoSpaceException e) {
             e.printStackTrace();
             configuration.getErrorCallback().onInstallDiskCacheFailed(e, cacheDir);
@@ -101,6 +100,10 @@ public class LruDiskCache implements DiskCache {
             e.printStackTrace();
             configuration.getErrorCallback().onInstallDiskCacheFailed(e, cacheDir);
             return;
+        }
+
+        if (Sketch.isDebugMode()) {
+            Log.d(Sketch.TAG, logName + " - " + "diskCacheDir: " + cacheDir.getPath());
         }
 
         try {

@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.util;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.content.pm.PackageInfo;
@@ -30,6 +32,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
 import android.os.StatFs;
+import android.os.storage.StorageManager;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -40,7 +43,12 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URLEncoder;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 
 import me.xiaopan.sketch.Sketch;
@@ -354,21 +362,100 @@ public class SketchUtils {
         }
     }
 
-    public static File getSketchCacheDir(Context context, boolean compatManyProcess, String dirName) {
-        // 目录名字加上进程名字的后缀，不同的进程不同目录，以兼容多进程
-        if (compatManyProcess) {
-            String simpleProcessName = SketchUtils.getSimpleProcessName(context);
-            if (simpleProcessName != null) {
-                try {
-                    dirName += URLEncoder.encode(simpleProcessName, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
+    /**
+     * 获取所有可用的SD卡的路径
+     *
+     * @return 所有可用的SD卡的路径
+     */
+    @SuppressLint("LongLogTag")
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD)
+    public static String[] getAllAvailableSdcardPath(Context context) {
+        // 获取所有的存储器的路径
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                return new String[]{Environment.getExternalStorageDirectory().getPath()};
+            } else {
+                return null;
             }
         }
 
+        String[] paths;
+        Method getVolumePathsMethod;
+        try {
+            getVolumePathsMethod = StorageManager.class.getMethod("getVolumePaths");
+        } catch (NoSuchMethodException e) {
+            Log.e("getAllAvailableSdcardPath", "not found StorageManager.getVolumePaths() method");
+            if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
+                return new String[]{Environment.getExternalStorageDirectory().getPath()};
+            } else {
+                return null;
+            }
+        }
+
+        StorageManager sm = (StorageManager) context.getSystemService(Context.STORAGE_SERVICE);
+        try {
+            paths = (String[]) getVolumePathsMethod.invoke(sm);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return null;
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        if (paths == null || paths.length == 0) {
+            return null;
+        }
+
+        // 去掉不可用的存储器
+        List<String> storagePathList = new LinkedList<String>();
+        Collections.addAll(storagePathList, paths);
+        Iterator<String> storagePathIterator = storagePathList.iterator();
+
+        String path;
+        Method getVolumeStateMethod = null;
+        while (storagePathIterator.hasNext()) {
+            path = storagePathIterator.next();
+            if (getVolumeStateMethod == null) {
+                try {
+                    getVolumeStateMethod = StorageManager.class.getMethod("getVolumeState", String.class);
+                } catch (NoSuchMethodException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            }
+            String status;
+            try {
+                status = (String) getVolumeStateMethod.invoke(sm, path);
+            } catch (Exception e) {
+                e.printStackTrace();
+                storagePathIterator.remove();
+                continue;
+            }
+            if (!(Environment.MEDIA_MOUNTED.equals(status) || Environment.MEDIA_MOUNTED_READ_ONLY.equals(status))) {
+                storagePathIterator.remove();
+            }
+        }
+        return storagePathList.toArray(new String[storagePathList.size()]);
+    }
+
+    public static String addProcessName(Context context, String dirName) {
+        // 目录名字加上进程名字的后缀，不同的进程不同目录，以兼容多进程
+        String simpleProcessName = SketchUtils.getSimpleProcessName(context);
+        if (simpleProcessName != null) {
+            try {
+                dirName += URLEncoder.encode(simpleProcessName, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return dirName;
+    }
+
+    public static File getDefaultSketchCacheDir(Context context, String dirName, boolean compatManyProcess) {
         File appCacheDir = SketchUtils.getAppCacheDir(context);
-        return new File(appCacheDir, dirName);
+        return new File(appCacheDir, compatManyProcess ? addProcessName(context, dirName) : dirName);
     }
 
     public static boolean testCreateFile(File cacheDir) throws Exception {
@@ -406,9 +493,10 @@ public class SketchUtils {
     }
 
     /**
-     * 初始化缓存目录
+     * 创建缓存目录，会优先在sdcard上创建
      *
-     * @param cacheDir           缓存目录
+     * @param dirName            目录名称
+     * @param compatManyProcess  目录名称是否加上进程名
      * @param minSpaceSize       最小空间
      * @param cleanOnNoSpace     空间不够用时就尝试清理一下
      * @param cleanOldCacheFiles 清除旧的缓存文件
@@ -416,58 +504,86 @@ public class SketchUtils {
      * @return 你应当以返回的目录为最终可用的目录
      * @throws NoSpaceException：可用空间小于minSpaceSize；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
      */
-    public static File buildCacheDir(Context context, File cacheDir, long minSpaceSize, boolean cleanOnNoSpace,
+    public static File buildCacheDir(Context context, String dirName, boolean compatManyProcess, long minSpaceSize, boolean cleanOnNoSpace,
                                      boolean cleanOldCacheFiles, int expandNumber) throws NoSpaceException, UnableCreateDirException, UnableCreateFileException {
-        int expandCount = 0;
-        while (expandCount <= expandNumber) {
-            File diskCacheDir = new File(cacheDir.getPath() + (expandCount > 0 ? expandCount : ""));
+        List<File> appCacheDirs = new LinkedList<File>();
 
-            if (diskCacheDir.exists()) {
-                // 目录已存在的话就尝试清除旧的缓存文件
-                if (cleanOldCacheFiles) {
-                    File journalFile = new File(diskCacheDir, DiskLruCache.JOURNAL_FILE);
-                    if (!journalFile.exists()) {
-                        cleanDir(diskCacheDir);
+        String[] sdcardPaths = getAllAvailableSdcardPath(context);
+        if (sdcardPaths != null && sdcardPaths.length > 0) {
+            for (String sdcardPath : sdcardPaths) {
+                appCacheDirs.add(new File(sdcardPath, "Android" + File.separator + "data" + File.separator + context.getPackageName() + File.separator + "cache"));
+            }
+        }
+        appCacheDirs.add(context.getCacheDir());
+
+        String diskCacheDirName = compatManyProcess ? addProcessName(context, dirName) : dirName;
+
+        NoSpaceException noSpaceException = null;
+        UnableCreateFileException unableCreateFileException = null;
+        File diskCacheDir = null;
+        int expandCount;
+
+        for (File appCacheDir : appCacheDirs) {
+            expandCount = 0;
+            while (expandCount <= expandNumber) {
+                diskCacheDir = new File(appCacheDir, diskCacheDirName + (expandCount > 0 ? expandCount : ""));
+
+                if (diskCacheDir.exists()) {
+                    // 目录已存在的话就尝试清除旧的缓存文件
+                    if (cleanOldCacheFiles) {
+                        File journalFile = new File(diskCacheDir, DiskLruCache.JOURNAL_FILE);
+                        if (!journalFile.exists()) {
+                            cleanDir(diskCacheDir);
+                        }
+                    }
+                } else {
+                    // 目录不存在就创建，创建结果返回false后检查还是不存在就说明创建失败
+                    if (!diskCacheDir.mkdirs() && !diskCacheDir.exists()) {
+                        expandCount++;
+                        continue;
                     }
                 }
-            } else {
-                // 目录不存在就创建，创建结果返回false后检查还是不存在就说明创建失败
-                if (!diskCacheDir.mkdirs() && !diskCacheDir.exists()) {
-                    expandCount++;
-                    continue;
-                }
-            }
 
-            // 检查空间，少于minSpaceSize就不能用了
-            long availableBytes = getAvailableBytes(diskCacheDir);
-            if (availableBytes < minSpaceSize) {
-                // 空间不够用的时候直接清空，然后再次计算可用空间
-                if (cleanOnNoSpace) {
-                    cleanDir(diskCacheDir);
-                    availableBytes = getAvailableBytes(diskCacheDir);
-                }
-
-                // 依然不够用，那不好意思了
+                // 检查空间，少于minSpaceSize就不能用了
+                long availableBytes = getAvailableBytes(diskCacheDir);
                 if (availableBytes < minSpaceSize) {
-                    String availableFormatted = Formatter.formatFileSize(context, availableBytes);
-                    String minSpaceFormatted = Formatter.formatFileSize(context, minSpaceSize);
-                    throw new NoSpaceException("Need " + availableFormatted + ", with only " + minSpaceFormatted + " in " + diskCacheDir.getPath());
+                    // 空间不够用的时候直接清空，然后再次计算可用空间
+                    if (cleanOnNoSpace) {
+                        cleanDir(diskCacheDir);
+                        availableBytes = getAvailableBytes(diskCacheDir);
+                    }
+
+                    // 依然不够用，那不好意思了
+                    if (availableBytes < minSpaceSize) {
+                        String availableFormatted = Formatter.formatFileSize(context, availableBytes);
+                        String minSpaceFormatted = Formatter.formatFileSize(context, minSpaceSize);
+                        noSpaceException = new NoSpaceException("Need " + availableFormatted + ", with only " + minSpaceFormatted + " in " + diskCacheDir.getPath());
+                        break;
+                    }
+                }
+
+                // 创建文件测试
+                try {
+                    if (testCreateFile(diskCacheDir)) {
+                        return diskCacheDir;
+                    } else {
+                        unableCreateFileException = new UnableCreateFileException("Unable create file in " + diskCacheDir.getPath());
+                        expandCount++;
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    unableCreateFileException = new UnableCreateFileException(e.getClass().getSimpleName() + ": " + e.getMessage());
+                    expandCount++;
                 }
             }
-
-            // 创建文件测试
-            try {
-                if (!testCreateFile(cacheDir)) {
-                    throw new UnableCreateFileException("Unable create file in " + cacheDir.getPath());
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                throw new UnableCreateFileException(e.getClass().getSimpleName() + ": " + e.getMessage());
-            }
-
-            return diskCacheDir;
         }
 
-        throw new UnableCreateDirException("Unable create dir: " + cacheDir.getPath());
+        if (noSpaceException != null) {
+            throw noSpaceException;
+        } else if (unableCreateFileException != null) {
+            throw unableCreateFileException;
+        } else {
+            throw new UnableCreateDirException("Unable create dir: " + (diskCacheDir != null ? diskCacheDir.getPath() : "null"));
+        }
     }
 }
