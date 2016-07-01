@@ -75,12 +75,19 @@ public interface DiskCache extends Identifier {
     void clear();
 
     /**
+     * 是否已关闭
+     */
+    @SuppressWarnings("unused")
+    boolean isClosed();
+
+    /**
      * 关闭
      */
     void close();
 
     /**
      * 获取编辑锁
+     * @return null：已关闭
      */
     ReentrantLock getEditLock(String key);
 

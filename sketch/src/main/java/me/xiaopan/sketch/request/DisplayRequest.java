@@ -128,7 +128,9 @@ public class DisplayRequest extends LoadRequest {
         if (!displayOptions.isDisableCacheInDisk()) {
             setStatus(Status.GET_MEMORY_CACHE_EDIT_LOCK);
             memoryCacheEditLock = getSketch().getConfiguration().getMemoryCache().getEditLock(getAttrs().getId());
-            memoryCacheEditLock.lock();
+            if (memoryCacheEditLock != null) {
+                memoryCacheEditLock.lock();
+            }
         }
 
         load();

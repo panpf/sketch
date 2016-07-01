@@ -64,9 +64,13 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         String diskCacheKey = realUri + "." + lastModifyTime;
 
         ReentrantLock diskCacheEditLock = configuration.getDiskCache().getEditLock(diskCacheKey);
-        diskCacheEditLock.lock();
+        if (diskCacheEditLock != null) {
+            diskCacheEditLock.lock();
+        }
         PreProcessResult result = readXpkIcon(configuration, loadRequest, diskCacheKey, realUri);
-        diskCacheEditLock.unlock();
+        if (diskCacheEditLock != null) {
+            diskCacheEditLock.unlock();
+        }
         return result;
     }
 

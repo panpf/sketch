@@ -171,7 +171,9 @@ public class DownloadRequest extends AsyncRequest {
         if (!getOptions().isDisableCacheInDisk()) {
             setStatus(Status.GET_DISK_CACHE_EDIT_LOCK);
             diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
-            diskCacheEditLock.lock();
+            if (diskCacheEditLock != null) {
+                diskCacheEditLock.lock();
+            }
         }
 
         DownloadResult justDownloadResult = download(diskCache, diskCacheKey);

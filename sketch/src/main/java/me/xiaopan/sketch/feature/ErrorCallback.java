@@ -27,7 +27,7 @@ public class ErrorCallback implements Identifier {
 
     /**
      * 安装磁盘缓存失败
-     * @param e NoSpaceException：空间不足；UnableCreateDirException：无法创建缓存目录
+     * @param e NoSpaceException：空间不足；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
      * @param cacheDir 默认的缓存目录
      */
     public void onInstallDiskCacheFailed(Exception e, File cacheDir) {

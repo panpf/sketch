@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2011 The Android Open Source Project
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.xiaopan.sketch.util;
 
 import android.app.ActivityManager;
@@ -140,7 +156,7 @@ public class SketchUtils {
             return true;
         }
 
-        if(file.isDirectory()){
+        if (file.isDirectory()) {
             cleanDir(file);
         }
         return file.delete();
@@ -338,20 +354,7 @@ public class SketchUtils {
         }
     }
 
-    /**
-     * 获取一个缓存目录
-     *
-     * @param dirName            目录名称
-     * @param compatManyProcess  是否兼容多进程，兼容的话会在目录名字后面加上进程名字，以达到不同的进程不同的目录名字
-     * @param minSpaceSize       最小空间
-     * @param cleanOnNoSpace     空间不够用时就尝试清理一下
-     * @param cleanOldCacheFiles 清除旧的缓存文件
-     * @param expandNumber       当dirName无法使用时就会尝试dirName1、dirName2、dirName3...
-     * @throws NoSpaceException 目录空间小于minSize，无法使用
-     */
-    public static File getCacheDir(Context context, String dirName,
-                                   boolean compatManyProcess, long minSpaceSize, boolean cleanOnNoSpace,
-                                   boolean cleanOldCacheFiles, int expandNumber) throws NoSpaceException {
+    public static File getSketchCacheDir(Context context, boolean compatManyProcess, String dirName) {
         // 目录名字加上进程名字的后缀，不同的进程不同目录，以兼容多进程
         if (compatManyProcess) {
             String simpleProcessName = SketchUtils.getSimpleProcessName(context);
@@ -364,16 +367,67 @@ public class SketchUtils {
             }
         }
 
+        File appCacheDir = SketchUtils.getAppCacheDir(context);
+        return new File(appCacheDir, dirName);
+    }
+
+    public static boolean testCreateFile(File cacheDir) throws Exception {
+        File parentDir = cacheDir;
+        while (parentDir != null) {
+            // 先向上找到一个已存在的目录
+            if (!parentDir.exists()) {
+                parentDir = cacheDir.getParentFile();
+                continue;
+            }
+
+            // 然后尝试创建文件
+            File file = new File(parentDir, "create_test.temp");
+
+            // 已存在就先删除，删除失败就抛异常
+            if (file.exists() && !file.delete()) {
+                throw new Exception("Delete old test file failed: " + file.getPath());
+            }
+
+            //noinspection ResultOfMethodCallIgnored
+            file.createNewFile();
+
+            if (file.exists()) {
+                if (file.delete()) {
+                    return true;
+                } else {
+                    throw new Exception("Delete test file failed: " + file.getPath());
+                }
+            } else {
+                return false;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * 初始化缓存目录
+     *
+     * @param cacheDir           缓存目录
+     * @param minSpaceSize       最小空间
+     * @param cleanOnNoSpace     空间不够用时就尝试清理一下
+     * @param cleanOldCacheFiles 清除旧的缓存文件
+     * @param expandNumber       当dirName无法使用时就会尝试dirName1、dirName2、dirName3...
+     * @return 你应当以返回的目录为最终可用的目录
+     * @throws NoSpaceException：可用空间小于minSpaceSize；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
+     */
+    public static File buildCacheDir(Context context, File cacheDir, long minSpaceSize, boolean cleanOnNoSpace,
+                                     boolean cleanOldCacheFiles, int expandNumber) throws NoSpaceException, UnableCreateDirException, UnableCreateFileException {
         int expandCount = 0;
         while (expandCount <= expandNumber) {
-            File appCacheDir = SketchUtils.getAppCacheDir(context);
-            File diskCacheDir = new File(appCacheDir, dirName + (expandCount > 0 ? expandCount : ""));
+            File diskCacheDir = new File(cacheDir.getPath() + (expandCount > 0 ? expandCount : ""));
+
             if (diskCacheDir.exists()) {
                 // 目录已存在的话就尝试清除旧的缓存文件
                 if (cleanOldCacheFiles) {
                     File journalFile = new File(diskCacheDir, DiskLruCache.JOURNAL_FILE);
                     if (!journalFile.exists()) {
-                        SketchUtils.cleanDir(diskCacheDir);
+                        cleanDir(diskCacheDir);
                     }
                 }
             } else {
@@ -385,26 +439,35 @@ public class SketchUtils {
             }
 
             // 检查空间，少于minSpaceSize就不能用了
-            long availableBytes = SketchUtils.getAvailableBytes(diskCacheDir);
+            long availableBytes = getAvailableBytes(diskCacheDir);
             if (availableBytes < minSpaceSize) {
                 // 空间不够用的时候直接清空，然后再次计算可用空间
                 if (cleanOnNoSpace) {
-                    SketchUtils.cleanDir(diskCacheDir);
-                    availableBytes = SketchUtils.getAvailableBytes(diskCacheDir);
+                    cleanDir(diskCacheDir);
+                    availableBytes = getAvailableBytes(diskCacheDir);
                 }
 
                 // 依然不够用，那不好意思了
                 if (availableBytes < minSpaceSize) {
                     String availableFormatted = Formatter.formatFileSize(context, availableBytes);
-                    throw new NoSpaceException(diskCacheDir, "available space is " + availableFormatted +
-                            ", dir path is " + diskCacheDir.getPath());
+                    String minSpaceFormatted = Formatter.formatFileSize(context, minSpaceSize);
+                    throw new NoSpaceException("Need " + availableFormatted + ", with only " + minSpaceFormatted + " in " + diskCacheDir.getPath());
                 }
+            }
+
+            // 创建文件测试
+            try {
+                if (!testCreateFile(cacheDir)) {
+                    throw new UnableCreateFileException("Unable create file in " + cacheDir.getPath());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                throw new UnableCreateFileException(e.getClass().getSimpleName() + ": " + e.getMessage());
             }
 
             return diskCacheDir;
         }
 
-        return new File(SketchUtils.getAppCacheDir(context), dirName);
+        throw new UnableCreateDirException("Unable create dir: " + cacheDir.getPath());
     }
-
 }

@@ -16,9 +16,9 @@
 
 package me.xiaopan.sketch.util;
 
-public class NoSpaceException extends Exception {
+public class UnableCreateFileException extends Exception {
 
-    public NoSpaceException(String detailMessage) {
+    public UnableCreateFileException(String detailMessage) {
         super(detailMessage);
     }
 }
