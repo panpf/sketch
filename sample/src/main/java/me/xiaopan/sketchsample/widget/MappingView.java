@@ -6,7 +6,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketchsample.util.DeviceUtils;
@@ -57,7 +56,7 @@ public class MappingView extends SketchImageView {
         int selfWidth = getWidth();
         float scale = (float) selfWidth / sourceWidth;
         this.srcRect.set(sourceSrcRect.left * scale, sourceSrcRect.top * scale, sourceSrcRect.right * scale, sourceSrcRect.bottom * scale);
-        Log.d("test", "sourceSrcRect: " + sourceSrcRect.toString() + ", scale: " + scale + ", mapping: " + srcRect.toString());
+//        Log.d("test", "sourceSrcRect: " + sourceSrcRect.toString() + ", scale: " + scale + ", mapping: " + srcRect.toString());
         invalidate();
     }
 }

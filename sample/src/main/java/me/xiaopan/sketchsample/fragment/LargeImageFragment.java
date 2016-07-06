@@ -72,12 +72,11 @@ public class LargeImageFragment extends MyFragment {
                 }
                 Log.w("test", "displayRect: " + displayRect.toString());
 
-                RectF srcRectF = imageAmplifier.getSrcRect();
-                RectF visibleRectF = imageAmplifier.getVisibleRect();
+                RectF visibleRect = imageAmplifier.getVisibleRect();
                 float scale= imageAmplifier.getScale();
-                mappingView.update(drawable.getIntrinsicWidth(), srcRectF);
+                mappingView.update(drawable.getIntrinsicWidth(), visibleRect);
                 scaleTextView.setText(String.valueOf(scale));
-                largeImageView.update(imageAmplifier.getDrawMatrix(), visibleRectF, srcRectF, scale);
+                largeImageView.update(imageAmplifier.getDrawMatrix(), visibleRect, imageAmplifier.getDrawableWidth());
             }
         });
         mappingView.getOptions().setMaxSize(300, 300);

@@ -1,13 +1,17 @@
 package me.xiaopan.sketchsample.largeimage;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.decode.ImageFormat;
 
 public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
     private static final String NAME = "DecodeRegionImageTask";
@@ -16,11 +20,15 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
     private WeakReference<ImageRegionDecoder> decoderReference;
     private Rect srcRect;
     private boolean canceled;
+    private RectF visibleRect;
+    private int inSampleSize;
 
-    public DecodeRegionImageTask(LargeImageController controller, ImageRegionDecoder decoder, Rect srcRect) {
+    public DecodeRegionImageTask(LargeImageController controller, ImageRegionDecoder decoder, Rect srcRect, RectF visibleRect, int inSampleSize) {
         this.controllerReference = new WeakReference<LargeImageController>(controller);
         this.decoderReference = new WeakReference<ImageRegionDecoder>(decoder);
         this.srcRect = srcRect;
+        this.visibleRect = visibleRect;
+        this.inSampleSize = inSampleSize;
     }
 
     public boolean isCanceled() {
@@ -43,7 +51,12 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
         }
 
         if (!decoder.isReady()) {
-            decoder.init();
+            try {
+                decoder.init();
+            } catch (IOException e) {
+                e.printStackTrace();
+                return null;
+            }
 
             if (!decoder.isReady()) {
                 Log.d(Sketch.TAG, NAME + ". init ImageRegionDecoder failed");
@@ -55,7 +68,14 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
             return null;
         }
 
-        Bitmap bitmap = decoder.decodeRegion(srcRect, null);
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = inSampleSize;
+        ImageFormat imageFormat = decoder.getImageFormat();
+        if (imageFormat != null) {
+            options.inPreferredConfig = imageFormat.getConfig(false);
+        }
+
+        Bitmap bitmap = decoder.decodeRegion(srcRect, options);
         if (bitmap == null || bitmap.isRecycled()) {
             Log.d(Sketch.TAG, NAME + ". bitmap is null or recycled");
             return null;
@@ -66,6 +86,13 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
             return null;
         }
 
+        Bitmap.Config config = bitmap.getConfig();
+        Log.d(Sketch.TAG, NAME + ". decode success - "
+                + "visibleRect=" + visibleRect.toString()
+                + ", srcRect=" + srcRect.toString()
+                + ", inSampleSize=" + inSampleSize
+                + ", bitmapSize=" + bitmap.getWidth() + "x" + bitmap.getHeight()
+                + ", bitmapConfig=" + (config != null ? config.name() : null));
         return bitmap;
     }
 
@@ -88,6 +115,6 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
             return;
         }
 
-        controller.onDecodeCompleted(bitmap, srcRect);
+        controller.onDecodeCompleted(bitmap, srcRect, visibleRect);
     }
 }
