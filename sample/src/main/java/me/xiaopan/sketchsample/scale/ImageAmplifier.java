@@ -64,6 +64,7 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
     private FlingTranslateRunner currentFlingTranslateRunner;
     private ScaleDragGestureDetector scaleDragGestureDetector;
     private final RectF srcRect = new RectF();
+    private final RectF visibleRect = new RectF();
     private final RectF displayRect = new RectF();
     private final Matrix baseMatrix = new Matrix();
     private final Matrix drawMatrix = new Matrix();
@@ -469,7 +470,7 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
         return getDisplayRect(getDrawMatrix());
     }
 
-    private RectF getSrcRect() {
+    public RectF getSrcRect() {
         ImageView imageView = getImageView();
         if (imageView == null) {
             return null;
@@ -522,6 +523,53 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
 
         srcRect.set(srcLeft, srcTop, srcRight, srcBottom);
         return srcRect;
+    }
+
+    public RectF getVisibleRect() {
+        ImageView imageView = getImageView();
+        if (imageView == null) {
+            return null;
+        }
+
+        Drawable drawable = imageView.getDrawable();
+        if (drawable == null || drawable.getIntrinsicWidth() == 0) {
+            return null;
+        }
+
+        RectF displayRect = getDisplayRect();
+        int viewWidth = imageView.getWidth();
+        int viewHeight = imageView.getHeight();
+        float displayWidth = displayRect.width();
+        float displayHeight = displayRect.height();
+
+        float srcLeft;
+        float srcRight;
+        if (displayRect.left >= 0) {
+            srcLeft = 0;
+        } else {
+            srcLeft = Math.abs(displayRect.left);
+        }
+        if (displayWidth >= viewWidth) {
+            srcRight = viewWidth + srcLeft;
+        } else {
+            srcRight = displayRect.right - displayRect.left;
+        }
+
+        float srcTop;
+        float srcBottom;
+        if (displayRect.top >= 0) {
+            srcTop = 0;
+        } else {
+            srcTop = Math.abs(displayRect.top);
+        }
+        if (displayHeight >= viewHeight) {
+            srcBottom = viewHeight + srcTop;
+        } else {
+            srcBottom = displayRect.bottom - displayRect.top;
+        }
+
+        visibleRect.set(srcLeft, srcTop, srcRight, srcBottom);
+        return visibleRect;
     }
 
     int getImageViewWidth(ImageView imageView) {
@@ -620,7 +668,7 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
             if (onMatrixChangedListener != null) {
                 RectF displayRect = getDisplayRect(matrix);
                 if (null != displayRect) {
-                    onMatrixChangedListener.onMatrixChanged(displayRect, getSrcRect());
+                    onMatrixChangedListener.onMatrixChanged(displayRect);
                 }
             }
         }
@@ -836,7 +884,7 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
     }
 
     public interface OnMatrixChangedListener {
-        void onMatrixChanged(RectF displayRect, RectF srcRect);
+        void onMatrixChanged(RectF displayRect);
     }
 
     public interface OnScaleChangeListener {
