@@ -26,7 +26,7 @@ import me.xiaopan.sketchsample.scale.gestures.ScaleDragGestureDetectorCompat;
 public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener, FlingTranslateRunner.FlingTranslateListener {
     public static final String LOG_TAG = "ImageAmplifier";
     public static boolean DEBUG = Log.isLoggable(LOG_TAG, Log.DEBUG);
-    public static final float DEFAULT_MAX_SCALE = 3.0f;
+    public static final float DEFAULT_MAX_SCALE = 15.0f;
     public static final float DEFAULT_MID_SCALE = 1.75f;
     public static final float DEFAULT_MIN_SCALE = 1.0f;
     public static final int DEFAULT_ZOOM_DURATION = 200;
@@ -64,7 +64,6 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
     private FlingTranslateRunner currentFlingTranslateRunner;
     private ScaleDragGestureDetector scaleDragGestureDetector;
     private final RectF srcRect = new RectF();
-    private final RectF visibleRect = new RectF();
     private final RectF displayRect = new RectF();
     private final Matrix baseMatrix = new Matrix();
     private final Matrix drawMatrix = new Matrix();
@@ -308,6 +307,34 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
         matrix.set(getDrawMatrix());
     }
 
+    public int getDrawableWidth(){
+        ImageView imageView = imageViewWeakReference.get();
+        if (imageView == null) {
+            return 0;
+        }
+
+        Drawable drawable = imageView.getDrawable();
+        if(drawable == null){
+            return 0;
+        }
+
+        return drawable.getIntrinsicWidth();
+    }
+
+    public int getDrawableHeight(){
+        ImageView imageView = imageViewWeakReference.get();
+        if (imageView == null) {
+            return 0;
+        }
+
+        Drawable drawable = imageView.getDrawable();
+        if(drawable == null){
+            return 0;
+        }
+
+        return drawable.getIntrinsicHeight();
+    }
+
     /**
      * Method should be private
      * Use {@link #getDisplayMatrix(Matrix)}
@@ -470,7 +497,7 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
         return getDisplayRect(getDrawMatrix());
     }
 
-    public RectF getSrcRect() {
+    public RectF getVisibleRect() {
         ImageView imageView = getImageView();
         if (imageView == null) {
             return null;
@@ -490,86 +517,39 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
 
         float scale = displayWidth / drawableWidth;
 
-        float srcLeft;
-        float srcRight;
+        float left;
+        float right;
         if (displayRect.left >= 0) {
-            srcLeft = 0;
+            left = 0;
         } else {
-            srcLeft = Math.abs(displayRect.left);
+            left = Math.abs(displayRect.left);
         }
         if (displayWidth >= viewWidth) {
-            srcRight = viewWidth + srcLeft;
+            right = viewWidth + left;
         } else {
-            srcRight = displayRect.right - displayRect.left;
+            right = displayRect.right - displayRect.left;
         }
 
-        float srcTop;
-        float srcBottom;
+        float top;
+        float bottom;
         if (displayRect.top >= 0) {
-            srcTop = 0;
+            top = 0;
         } else {
-            srcTop = Math.abs(displayRect.top);
+            top = Math.abs(displayRect.top);
         }
         if (displayHeight >= viewHeight) {
-            srcBottom = viewHeight + srcTop;
+            bottom = viewHeight + top;
         } else {
-            srcBottom = displayRect.bottom - displayRect.top;
+            bottom = displayRect.bottom - displayRect.top;
         }
 
-        srcLeft /= scale;
-        srcRight /= scale;
-        srcTop /= scale;
-        srcBottom /= scale;
+        left /= scale;
+        right /= scale;
+        top /= scale;
+        bottom /= scale;
 
-        srcRect.set(srcLeft, srcTop, srcRight, srcBottom);
+        srcRect.set(left, top, right, bottom);
         return srcRect;
-    }
-
-    public RectF getVisibleRect() {
-        ImageView imageView = getImageView();
-        if (imageView == null) {
-            return null;
-        }
-
-        Drawable drawable = imageView.getDrawable();
-        if (drawable == null || drawable.getIntrinsicWidth() == 0) {
-            return null;
-        }
-
-        RectF displayRect = getDisplayRect();
-        int viewWidth = imageView.getWidth();
-        int viewHeight = imageView.getHeight();
-        float displayWidth = displayRect.width();
-        float displayHeight = displayRect.height();
-
-        float srcLeft;
-        float srcRight;
-        if (displayRect.left >= 0) {
-            srcLeft = 0;
-        } else {
-            srcLeft = Math.abs(displayRect.left);
-        }
-        if (displayWidth >= viewWidth) {
-            srcRight = viewWidth + srcLeft;
-        } else {
-            srcRight = displayRect.right - displayRect.left;
-        }
-
-        float srcTop;
-        float srcBottom;
-        if (displayRect.top >= 0) {
-            srcTop = 0;
-        } else {
-            srcTop = Math.abs(displayRect.top);
-        }
-        if (displayHeight >= viewHeight) {
-            srcBottom = viewHeight + srcTop;
-        } else {
-            srcBottom = displayRect.bottom - displayRect.top;
-        }
-
-        visibleRect.set(srcLeft, srcTop, srcRight, srcBottom);
-        return visibleRect;
     }
 
     int getImageViewWidth(ImageView imageView) {

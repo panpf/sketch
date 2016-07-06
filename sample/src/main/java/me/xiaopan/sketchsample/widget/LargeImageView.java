@@ -72,9 +72,9 @@ public class LargeImageView extends SketchImageView {
         }
     }
 
-    public void update(Matrix drawMatrix, RectF visibleRectF, RectF srcRectF, float scale){
+    public void update(Matrix drawMatrix, RectF visibleRect, int drawableWidth){
         if(largeImageController != null){
-            largeImageController.update(drawMatrix, visibleRectF, srcRectF, scale);
+            largeImageController.update(drawMatrix, visibleRect, drawableWidth);
         }
     }
 }

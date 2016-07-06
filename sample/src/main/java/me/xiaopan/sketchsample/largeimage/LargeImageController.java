@@ -1,15 +1,19 @@
 package me.xiaopan.sketchsample.largeimage;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.graphics.drawable.BitmapDrawable;
+import android.util.DisplayMetrics;
+import android.util.Log;
 import android.widget.ImageView;
 
-import me.xiaopan.sketchsample.R;
+import java.io.IOException;
+
+import me.xiaopan.sketch.Sketch;
 
 public class LargeImageController {
     private static final String NAME = "LargeImageController";
@@ -20,15 +24,20 @@ public class LargeImageController {
     private Bitmap bitmap;
     private Rect bitmapRect;
     private Matrix matrix = new Matrix();
-    private Rect srcRect = new Rect();
-    private Rect visibleRect = new Rect();
+    private Rect currentSrcRect = new Rect();
+    private RectF visibleRect = new RectF();
     private Paint paint;
     private DecodeRegionImageTask lastTask;
 
     public LargeImageController(ImageView imageView) {
         this.imageView = imageView;
-        bitmap = ((BitmapDrawable) imageView.getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap();
-        bitmapRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+    }
+
+    private static int getSimpleSize(Context context, Rect srcRect) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return Sketch.with(context).getConfiguration().getImageSizeCalculator().calculateInSampleSize(
+                srcRect.width(), srcRect.height(),
+                displayMetrics.widthPixels, displayMetrics.heightPixels);
     }
 
     public void onAttachedToWindow() {
@@ -40,7 +49,7 @@ public class LargeImageController {
     }
 
     public void onDraw(Canvas canvas) {
-        if (bitmap == null || bitmap.isRecycled()) {
+        if (bitmap == null || bitmap.isRecycled() || bitmapRect == null || visibleRect.isEmpty()) {
             return;
         }
 
@@ -50,14 +59,8 @@ public class LargeImageController {
 
         int saveCount = canvas.save();
 
-//        canvas.setMatrix(matrix);
-//        visibleRect.left = (imageView.getWidth() - bitmap.getWidth()) / 2;
-//        visibleRect.top = (imageView.getHeight() - bitmap.getHeight()) / 2;
-//        visibleRect.right = visibleRect.left + imageView.getWidth();
-//        visibleRect.bottom = visibleRect.top + imageView.getHeight();
-//        canvas.drawBitmap(bitmap, bitmapRect, visibleRect, paint);
         canvas.concat(matrix);
-        canvas.drawBitmap(bitmap, 0, 0, paint);
+        canvas.drawBitmap(bitmap, bitmapRect, visibleRect, paint);
 
         canvas.restoreToCount(saveCount);
     }
@@ -68,59 +71,82 @@ public class LargeImageController {
 
     public void setImage(String uri) {
         decoder = new ImageRegionDecoder(imageView.getContext(), uri);
-        decoder.init();
-//        if (!decoder.isReady()) {
-//            Log.d(Sketch.TAG, NAME + ". init ImageRegionDecoder failed");
-//            return;
-//        }
-//
-//        int widthAverage = decoder.getImageWidth() / 3;
-//        int heightAverage = decoder.getImageHeight() / 3;
-//        int left = widthAverage;
-//        int top = heightAverage;
-//        int right = left + widthAverage;
-//        int bottom = top + heightAverage;
-//        srcRect.set(left, top, right, bottom);
+        try {
+            decoder.init();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void onDecodeCompleted(Bitmap newBitmap, Rect srcRect) {
-        if (!this.srcRect.equals(srcRect)) {
+    void onDecodeCompleted(Bitmap newBitmap, Rect srcRect, RectF visibleRectF) {
+        if (!this.currentSrcRect.equals(srcRect)) {
             return;
         }
+
+        visibleRect.set(visibleRectF.left, visibleRectF.top, visibleRectF.right, visibleRectF.bottom);
 
         Bitmap oldBitmap = bitmap;
         if (oldBitmap != null) {
             oldBitmap.recycle();
         }
+
         bitmap = newBitmap;
+        bitmapRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+
         imageView.invalidate();
     }
 
-    public void update(Matrix drawMatrix, RectF visibleRectF, RectF srcRectF, float scale) {
+    public void update(Matrix drawMatrix, RectF visibleRect, int drawableWidth) {
+        if (decoder == null || !decoder.isReady() || drawMatrix == null || visibleRect == null || visibleRect.isEmpty() || drawableWidth == 0) {
+            return;
+        }
+
+        // 抛弃旧的任务
         if (lastTask != null) {
             lastTask.cancel();
             lastTask = null;
         }
 
-        if (visibleRectF != null) {
-            visibleRect.set((int) visibleRectF.left, (int) visibleRectF.top, (int) visibleRectF.right, (int) visibleRectF.bottom);
-        } else {
-            visibleRect.setEmpty();
+        // 立即更新Matrix，一起缩放滑动
+        matrix.set(drawMatrix);
+
+        // 根据现实区域计算Src区域
+        float scale = (float) decoder.getImageWidth() / drawableWidth;
+        Rect newSrcRect = new Rect((int) (visibleRect.left * scale), (int) (visibleRect.top * scale), (int) (visibleRect.right * scale), (int) (visibleRect.bottom * scale));
+
+        // 别超出范围了
+        newSrcRect.left = Math.max(0, newSrcRect.left);
+        newSrcRect.top = Math.max(0, newSrcRect.top);
+        newSrcRect.right = Math.max(0, newSrcRect.right);
+        newSrcRect.bottom = Math.max(0, newSrcRect.bottom);
+        newSrcRect.left = Math.min(newSrcRect.left, decoder.getImageWidth());
+        newSrcRect.top = Math.min(newSrcRect.top, decoder.getImageHeight());
+        newSrcRect.right = Math.min(newSrcRect.right, decoder.getImageWidth());
+        newSrcRect.bottom = Math.min(newSrcRect.bottom, decoder.getImageHeight());
+
+        if (newSrcRect.isEmpty()) {
+            Log.d(Sketch.TAG, NAME + ". update - " +
+                    "imageSize=" + decoder.getImageWidth() + "x" + decoder.getImageHeight()
+                    + ", visibleRect=" + visibleRect.toString()
+                    + ", scale=" + scale
+                    + ", newSrcRect=" + newSrcRect.toString());
+            return;
         }
 
-        if (srcRectF != null) {
-            srcRect.set((int) srcRectF.left, (int) srcRectF.top, (int) srcRectF.right, (int) srcRectF.bottom);
-        } else {
-            srcRect.setEmpty();
+        currentSrcRect.set(newSrcRect.left, newSrcRect.top, newSrcRect.right, newSrcRect.bottom);
+
+        int inSampleSize = getSimpleSize(decoder.getContext(), newSrcRect);
+
+        if (Sketch.isDebugMode()) {
+            Log.d(Sketch.TAG, NAME + ". update - "
+                    + "visibleRect=" + visibleRect.toString()
+                    + ", srcRect=" + newSrcRect.toString()
+                    + ", inSampleSize=" + inSampleSize
+                    + ", imageSize=" + decoder.getImageWidth() + "x" + decoder.getImageHeight()
+                    + ", scale=" + scale);
         }
 
-        if (drawMatrix != null) {
-            matrix.set(drawMatrix);
-        } else {
-            matrix.reset();
-        }
-
-//        lastTask = new DecodeRegionImageTask(this, decoder, new Rect(srcRect));
-//        lastTask.execute(0);
+        lastTask = new DecodeRegionImageTask(this, decoder, newSrcRect, new RectF(visibleRect), inSampleSize);
+        lastTask.execute(0);
     }
 }
