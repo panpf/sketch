@@ -57,7 +57,7 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public void put(String key, Drawable value) {
+    public synchronized void put(String key, Drawable value) {
         if (closed) {
             return;
         }
@@ -81,7 +81,7 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public Drawable get(String key) {
+    public synchronized Drawable get(String key) {
         if (closed) {
             return null;
         }
@@ -90,7 +90,7 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public Drawable remove(String key) {
+    public synchronized Drawable remove(String key) {
         if (closed) {
             return null;
         }
@@ -105,7 +105,7 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public long getSize() {
+    public synchronized long getSize() {
         if (closed) {
             return 0;
         }
@@ -119,7 +119,7 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public void clear() {
+    public synchronized void clear() {
         if (closed) {
             return;
         }
@@ -133,12 +133,12 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public boolean isClosed() {
+    public synchronized boolean isClosed() {
         return closed;
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
         if (closed) {
             return;
         }

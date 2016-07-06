@@ -59,18 +59,24 @@ public class LruDiskCache implements DiskCache {
         this.cacheDir = SketchUtils.getDefaultSketchCacheDir(context, DISK_CACHE_DIR_NAME, true);
     }
 
-    private boolean checkCache(boolean checkCacheDir) {
-        if (checkCacheDir) {
-            return cache != null && !cache.isClosed() && cacheDir != null && cacheDir.exists();
-        } else {
-            return cache != null && !cache.isClosed();
-        }
+    /**
+     * 检查磁盘缓存器是否可用
+     */
+    protected boolean checkDiskCache() {
+        return cache != null && !cache.isClosed();
+    }
+
+    /**
+     * 检查缓存目录是否存在并可用
+     */
+    protected boolean checkCacheDir() {
+        return cacheDir != null && cacheDir.exists();
     }
 
     /**
      * 安装磁盘缓存
      */
-    private synchronized void reinstallDiskCache() {
+    protected synchronized void installDiskCache() {
         if (closed) {
             return;
         }
@@ -114,59 +120,99 @@ public class LruDiskCache implements DiskCache {
         }
     }
 
+    // 这个方法性能优先，因此不加synchronized
     @Override
     public boolean exist(String uri) {
         if (closed) {
             return false;
         }
 
-        // 这里有些特殊，只有当没有尝试安装过的时候才会尝试安装，这是由于目前此方法只在helper中用到，而Helper对性能要求较高
-        if (!checkCache(false)) {
-            reinstallDiskCache();
+        // 这个方法性能优先，因此不检查缓存目录
+        if (!checkDiskCache()) {
+            installDiskCache();
+            if (!checkDiskCache()) {
+                return false;
+            }
         }
 
-        return cache != null && cache.exist(uriToDiskCacheKey(uri));
+        try {
+            return cache.exist(uriToDiskCacheKey(uri));
+        } catch (DiskLruCache.ClosedException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     @Override
-    public Entry get(String uri) {
+    public synchronized Entry get(String uri) {
         if (closed) {
             return null;
         }
 
-        if (!checkCache(true)) {
-            reinstallDiskCache();
+        if (!checkDiskCache() || !checkCacheDir()) {
+            installDiskCache();
+            if (!checkDiskCache()) {
+                return null;
+            }
         }
 
         DiskLruCache.SimpleSnapshot snapshot = null;
         try {
-            snapshot = cache != null ? cache.getSimpleSnapshot(uriToDiskCacheKey(uri)) : null;
+            snapshot = cache.getSimpleSnapshot(uriToDiskCacheKey(uri));
         } catch (IOException e) {
+            e.printStackTrace();
+        } catch (DiskLruCache.ClosedException e) {
             e.printStackTrace();
         }
         return snapshot != null ? new LruDiskCacheEntry(uri, snapshot) : null;
     }
 
     @Override
-    public Editor edit(String uri) {
+    public synchronized Editor edit(String uri) {
         if (closed) {
             return null;
         }
 
-        if (!checkCache(true)) {
-            reinstallDiskCache();
+        if (!checkDiskCache() || !checkCacheDir()) {
+            installDiskCache();
+            if (!checkDiskCache()) {
+                return null;
+            }
         }
 
         DiskLruCache.Editor diskEditor = null;
         try {
-            diskEditor = cache != null ? cache.edit(uriToDiskCacheKey(uri)) : null;
+            diskEditor = cache.edit(uriToDiskCacheKey(uri));
         } catch (IOException e) {
             e.printStackTrace();
-            // 发生异常的时候（比如SD卡被拔出，导致不能使用），尝试重建DiskLruCache，能显著提高遇错恢复能力
-            reinstallDiskCache();
+
+            // 发生异常的时候（比如SD卡被拔出，导致不能使用），尝试重装DiskLruCache，能显著提高遇错恢复能力
+            installDiskCache();
+            if (!checkDiskCache()) {
+                return null;
+            }
+
             try {
-                diskEditor = cache != null ? cache.edit(uriToDiskCacheKey(uri)) : null;
+                diskEditor = cache.edit(uriToDiskCacheKey(uri));
             } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (DiskLruCache.ClosedException e1) {
+                e1.printStackTrace();
+            }
+        } catch (DiskLruCache.ClosedException e) {
+            e.printStackTrace();
+
+            // 旧的关闭了，必须要重装DiskLruCache
+            installDiskCache();
+            if (!checkDiskCache()) {
+                return null;
+            }
+
+            try {
+                diskEditor = cache.edit(uriToDiskCacheKey(uri));
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            } catch (DiskLruCache.ClosedException e1) {
                 e1.printStackTrace();
             }
         }
@@ -174,7 +220,7 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public File getCacheDir() {
+    public synchronized File getCacheDir() {
         return cacheDir;
     }
 
@@ -185,7 +231,7 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public String uriToDiskCacheKey(String uri) {
-        // 由于DiskLruCache会在文件名后面加序列号，因此这里不用再处理了
+        // 由于DiskLruCache会在uri后面加序列号，因此这里不用再对apk文件的名称做特殊处理了
 //        if (SketchUtils.checkSuffix(uri, ".apk")) {
 //            uri += ".icon";
 //        }
@@ -198,16 +244,20 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public long getSize() {
+    public synchronized long getSize() {
         if (closed) {
             return 0;
         }
 
-        return cache != null ? cache.size() : 0;
+        if (!checkDiskCache()) {
+            return 0;
+        }
+
+        return cache.size();
     }
 
     @Override
-    public void clear() {
+    public synchronized void clear() {
         if (closed) {
             return;
         }
@@ -221,16 +271,16 @@ public class LruDiskCache implements DiskCache {
             cache = null;
         }
 
-        reinstallDiskCache();
+        installDiskCache();
     }
 
     @Override
-    public boolean isClosed() {
+    public synchronized boolean isClosed() {
         return closed;
     }
 
     @Override
-    public void close() {
+    public synchronized void close() {
         if (closed) {
             return;
         }
@@ -261,6 +311,7 @@ public class LruDiskCache implements DiskCache {
         if (key == null) {
             return null;
         }
+
         if (editLockMap == null) {
             synchronized (LruDiskCache.this) {
                 if (editLockMap == null) {
@@ -268,6 +319,7 @@ public class LruDiskCache implements DiskCache {
                 }
             }
         }
+
         ReentrantLock lock = editLockMap.get(key);
         if (lock == null) {
             lock = new ReentrantLock();
@@ -325,6 +377,9 @@ public class LruDiskCache implements DiskCache {
             } catch (IOException e) {
                 e.printStackTrace();
                 return false;
+            } catch (DiskLruCache.ClosedException e) {
+                e.printStackTrace();
+                return false;
             }
         }
     }
@@ -342,7 +397,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         @Override
-        public void commit() throws IOException, DiskLruCache.EditorChangedException {
+        public void commit() throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException {
             diskEditor.commit();
         }
 

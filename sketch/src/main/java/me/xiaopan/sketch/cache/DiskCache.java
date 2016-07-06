@@ -104,7 +104,7 @@ public interface DiskCache extends Identifier {
     interface Editor {
         OutputStream newOutputStream() throws IOException;
 
-        void commit() throws IOException, DiskLruCache.EditorChangedException;
+        void commit() throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException;
 
         void abort();
     }
