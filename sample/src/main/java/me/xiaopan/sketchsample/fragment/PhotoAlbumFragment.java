@@ -47,9 +47,11 @@ import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
  * 本地相册页面
  */
 @InjectContentView(R.layout.fragment_photo_album)
-public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAdapter.OnImageClickListener, PullRefreshLayout.OnRefreshListener{
-    @InjectView(R.id.refreshLayout_photoAlbum) private PullRefreshLayout pullRefreshLayout;
-    @InjectView(R.id.recyclerView_photoAlbum_content) private RecyclerView recyclerView;
+public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAdapter.OnImageClickListener, PullRefreshLayout.OnRefreshListener {
+    @InjectView(R.id.refreshLayout_photoAlbum)
+    private PullRefreshLayout pullRefreshLayout;
+    @InjectView(R.id.recyclerView_photoAlbum_content)
+    private RecyclerView recyclerView;
 
     private PhotoAlbumImageAdapter imageAdapter;
     private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
@@ -57,7 +59,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if(activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener){
+        if (activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener) {
             windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
         }
     }
@@ -70,13 +72,13 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
         recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
-        if(imageAdapter != null){
+        if (imageAdapter != null) {
             recyclerView.setAdapter(imageAdapter);
             recyclerView.scheduleLayoutAnimation();
-            if(windowBackgroundLoader != null){
+            if (windowBackgroundLoader != null) {
                 windowBackgroundLoader.restore();
             }
-        }else{
+        } else {
             pullRefreshLayout.startRefresh();
         }
     }
@@ -88,14 +90,14 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
 
     @Override
     public void onRefresh() {
-        if(getActivity() != null){
+        if (getActivity() != null) {
             new ReadImagesTask(getActivity().getBaseContext()).execute();
         }
     }
 
     @Override
     public void onDetach() {
-        if(windowBackgroundLoader != null){
+        if (windowBackgroundLoader != null) {
             windowBackgroundLoader.detach();
         }
         super.onDetach();
@@ -103,7 +105,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if(windowBackgroundLoader != null){
+        if (windowBackgroundLoader != null) {
             windowBackgroundLoader.setUserVisible(isVisibleToUser);
         }
     }
@@ -126,17 +128,17 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
 
             ContentResolver mContentResolver = context.getContentResolver();
             Cursor mCursor = mContentResolver.query(mImageUri, columns, null, null, sortOrder);
-            if(mCursor == null){
+            if (mCursor == null) {
                 return null;
             }
 
-            List<String> imagePathList = new ArrayList<String>(mCursor.getCount()+2);
+            List<String> imagePathList = new ArrayList<String>(mCursor.getCount() + 2);
             imagePathList.add(UriScheme.ASSET.createUri("test_card.png"));
             imagePathList.add(UriScheme.ASSET.createUri("qing_ming_shang_he_tu.jpg"));
             imagePathList.add(UriScheme.ASSET.createUri("chang_wei_bo.jpg"));
             while (mCursor.moveToNext()) {
                 //获取图片的路径
-                imagePathList.add("file://"+mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
+                imagePathList.add("file://" + mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA)));
             }
             mCursor.close();
             return imagePathList;
@@ -144,7 +146,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
 
         @Override
         protected void onPostExecute(List<String> strings) {
-            if(getActivity() == null){
+            if (getActivity() == null) {
                 return;
             }
 
@@ -156,7 +158,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
                     pullRefreshLayout.stopRefresh();
                 }
             }, 1000);
-            if(windowBackgroundLoader != null && strings != null && strings.size() > 0){
+            if (windowBackgroundLoader != null && strings != null && strings.size() > 0) {
                 windowBackgroundLoader.load(strings.get(0));
             }
         }

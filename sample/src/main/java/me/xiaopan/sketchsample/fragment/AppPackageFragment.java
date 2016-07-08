@@ -38,8 +38,10 @@ import me.xiaopan.sketchsample.widget.HintView;
  */
 @InjectContentView(R.layout.fragment_installed_app)
 public class AppPackageFragment extends MyFragment {
-    @InjectView(R.id.recyclerView_installedApp_content) private RecyclerView contentRecyclerView;
-    @InjectView(R.id.hint_installedApp_hint) private HintView hintView;
+    @InjectView(R.id.recyclerView_installedApp_content)
+    private RecyclerView contentRecyclerView;
+    @InjectView(R.id.hint_installedApp_hint)
+    private HintView hintView;
     private AppPackageListAdapter adapter = null;
 
     @Override
@@ -49,16 +51,16 @@ public class AppPackageFragment extends MyFragment {
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
-        if(adapter != null){
+        if (adapter != null) {
             contentRecyclerView.setAdapter(adapter);
             contentRecyclerView.scheduleLayoutAnimation();
-        }else{
+        } else {
             loadAppList();
         }
     }
 
-    private void loadAppList(){
-        new AsyncTask<Integer, Integer, List<AppInfo>>(){
+    private void loadAppList() {
+        new AsyncTask<Integer, Integer, List<AppInfo>>() {
             private Context context = getActivity().getBaseContext();
             private long time;
 
@@ -71,7 +73,7 @@ public class AppPackageFragment extends MyFragment {
 
             @Override
             protected List<AppInfo> doInBackground(Integer... params) {
-                if(!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+                if (!Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                     return null;
                 }
 
@@ -82,40 +84,40 @@ public class AppPackageFragment extends MyFragment {
                 dirs.add(Environment.getExternalStorageDirectory());
                 File dir;
                 File[] childDirs;
-                while(!dirs.isEmpty()){
-                    if(getActivity() == null){
+                while (!dirs.isEmpty()) {
+                    if (getActivity() == null) {
                         break;
                     }
 
                     dir = dirs.poll();
-                    if(dir == null){
+                    if (dir == null) {
                         continue;
                     }
 
                     childDirs = dir.listFiles();
-                    if(childDirs == null || childDirs.length == 0){
+                    if (childDirs == null || childDirs.length == 0) {
                         continue;
                     }
 
-                    for(File childFile : childDirs){
-                        if(getActivity() == null){
+                    for (File childFile : childDirs) {
+                        if (getActivity() == null) {
                             break;
                         }
 
-                        if(childFile.isDirectory()){
+                        if (childFile.isDirectory()) {
                             dirs.add(childFile);
                             continue;
                         }
 
                         String fileName = childFile.getName();
-                        if(SketchUtils.checkSuffix(fileName, ".apk")){
+                        if (SketchUtils.checkSuffix(fileName, ".apk")) {
                             AppInfo appInfo = parseFromApk(context, childFile);
-                            if(appInfo != null){
+                            if (appInfo != null) {
                                 appInfoList.add(appInfo);
                             }
-                        }else if(SketchUtils.checkSuffix(fileName, ".xpk")){
+                        } else if (SketchUtils.checkSuffix(fileName, ".xpk")) {
                             AppInfo appInfo = parseFromXpk(childFile);
-                            if(appInfo != null){
+                            if (appInfo != null) {
                                 appInfoList.add(appInfo);
                             }
                         }
@@ -132,22 +134,22 @@ public class AppPackageFragment extends MyFragment {
                 return appInfoList;
             }
 
-            private String toPinYin(String text){
+            private String toPinYin(String text) {
                 StringBuilder stringBuilder = new StringBuilder();
-                for(char c : text.toCharArray()){
+                for (char c : text.toCharArray()) {
                     String[] a = PinyinHelper.toHanyuPinyinStringArray(c);
-                    if(a != null){
+                    if (a != null) {
                         stringBuilder.append(a[0]);
-                    }else{
+                    } else {
                         stringBuilder.append(c);
                     }
                 }
                 return stringBuilder.toString();
             }
 
-            private AppInfo parseFromApk(Context context, File file){
+            private AppInfo parseFromApk(Context context, File file) {
                 PackageInfo packageInfo = context.getPackageManager().getPackageArchiveInfo(file.getPath(), PackageManager.GET_ACTIVITIES);
-                if(packageInfo == null){
+                if (packageInfo == null) {
                     return null;
                 }
                 packageInfo.applicationInfo.sourceDir = file.getPath();
@@ -188,7 +190,7 @@ public class AppPackageFragment extends MyFragment {
 
             @Override
             protected void onPostExecute(List<AppInfo> appInfoList) {
-                if(getActivity() == null){
+                if (getActivity() == null) {
                     return;
                 }
 

@@ -18,7 +18,8 @@ import me.xiaopan.sketchsample.adapter.FragmentAdapter;
  */
 @InjectContentView(R.layout.fragment_app_list)
 public class AppListFragment extends MyFragment {
-    @InjectView(R.id.pager_appList_content) private ViewPager viewPager;
+    @InjectView(R.id.pager_appList_content)
+    private ViewPager viewPager;
     private GetAppListTagStripListener getPagerSlidingTagStripListener;
     private FragmentAdapter fragmentAdapter;
 
@@ -26,9 +27,9 @@ public class AppListFragment extends MyFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if(activity instanceof GetAppListTagStripListener){
+        if (activity instanceof GetAppListTagStripListener) {
             getPagerSlidingTagStripListener = (GetAppListTagStripListener) activity;
-        }else{
+        } else {
             getPagerSlidingTagStripListener = null;
         }
     }
@@ -36,7 +37,7 @@ public class AppListFragment extends MyFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if(getPagerSlidingTagStripListener != null){
+        if (getPagerSlidingTagStripListener != null) {
             getPagerSlidingTagStripListener = null;
         }
     }
@@ -49,7 +50,7 @@ public class AppListFragment extends MyFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(fragmentAdapter == null){
+        if (fragmentAdapter == null) {
             Fragment[] fragments = new Fragment[2];
             fragments[0] = new InstalledAppFragment();
             fragments[1] = new AppPackageFragment();
@@ -59,7 +60,7 @@ public class AppListFragment extends MyFragment {
         getPagerSlidingTagStripListener.onGetAppListTabStrip().setViewPager(viewPager);
     }
 
-    public interface GetAppListTagStripListener{
+    public interface GetAppListTagStripListener {
         PagerSlidingTabStrip onGetAppListTabStrip();
     }
 }

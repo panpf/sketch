@@ -28,7 +28,7 @@ public class LargeImageView extends SketchImageView {
         init();
     }
 
-    private void init(){
+    private void init() {
         largeImageController = new LargeImageController(this);
     }
 
@@ -72,8 +72,8 @@ public class LargeImageView extends SketchImageView {
         }
     }
 
-    public void update(Matrix drawMatrix, RectF visibleRect, int drawableWidth, int drawableHeight){
-        if(largeImageController != null){
+    public void update(Matrix drawMatrix, RectF visibleRect, int drawableWidth, int drawableHeight) {
+        if (largeImageController != null) {
             largeImageController.update(drawMatrix, visibleRect, drawableWidth, drawableHeight);
         }
     }

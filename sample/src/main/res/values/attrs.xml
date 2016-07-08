@@ -13,7 +13,7 @@
     </declare-styleable>
 
     <declare-styleable name="LargeImageView">
-        <attr name="android:src"/>
+        <attr name="android:src" />
     </declare-styleable>
 
 </resources>

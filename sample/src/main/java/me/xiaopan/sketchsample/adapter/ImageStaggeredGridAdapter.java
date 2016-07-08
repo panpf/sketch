@@ -29,18 +29,18 @@ public class ImageStaggeredGridAdapter extends BaseAdapter {
     private List<String> urlList;
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public ImageStaggeredGridAdapter(Context context, StaggeredGridView staggeredGridView, List<StarImageRequest.Image> imageList, final OnItemClickListener onItemClickListener){
+    public ImageStaggeredGridAdapter(Context context, StaggeredGridView staggeredGridView, List<StarImageRequest.Image> imageList, final OnItemClickListener onItemClickListener) {
         this.context = context;
         append(imageList);
         itemWidth = staggeredGridView.getColumnWidth();
         initListener(onItemClickListener);
     }
 
-    private void initListener(final OnItemClickListener onItemClickListener){
+    private void initListener(final OnItemClickListener onItemClickListener) {
         itemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(onItemClickListener != null){
+                if (onItemClickListener != null) {
                     ItemViewHolder viewHolder = (ItemViewHolder) v.getTag();
                     onItemClickListener.onItemClick(viewHolder.position, viewHolder.image);
                 }
@@ -68,20 +68,20 @@ public class ImageStaggeredGridAdapter extends BaseAdapter {
         return 3;
     }
 
-    public int getDataSize(){
+    public int getDataSize() {
         return imageList.size();
     }
 
     public void append(List<StarImageRequest.Image> imageList) {
-        if(this.imageList == null){
+        if (this.imageList == null) {
             this.imageList = imageList;
-        }else{
+        } else {
             this.imageList.addAll(imageList);
         }
-        if(urlList == null){
+        if (urlList == null) {
             urlList = new ArrayList<String>();
         }
-        for(StarImageRequest.Image image : imageList){
+        for (StarImageRequest.Image image : imageList) {
             urlList.add(image.getSourceUrl());
         }
     }
@@ -92,7 +92,7 @@ public class ImageStaggeredGridAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if(convertView == null){
+        if (convertView == null) {
             convertView = onCreateViewHolder(parent);
         }
 
@@ -115,7 +115,7 @@ public class ImageStaggeredGridAdapter extends BaseAdapter {
 
         ViewGroup.LayoutParams headParams = itemViewHolder.imageView.getLayoutParams();
         headParams.width = itemWidth;
-        headParams.height = (int) (itemWidth / (image.getWidth()/(float) image.getHeight()));
+        headParams.height = (int) (itemWidth / (image.getWidth() / (float) image.getHeight()));
         itemViewHolder.imageView.setLayoutParams(headParams);
 
         itemViewHolder.imageView.displayImage(image.getSourceUrl());
@@ -135,7 +135,7 @@ public class ImageStaggeredGridAdapter extends BaseAdapter {
         }
     }
 
-    public interface OnItemClickListener{
+    public interface OnItemClickListener {
         void onItemClick(int position, StarImageRequest.Image image);
     }
 }

@@ -6,6 +6,7 @@ import android.view.View;
 
 public class DepthPageTransformer implements ViewPager.PageTransformer {
     private static float MIN_SCALE = 0.75f;
+
     @SuppressLint("NewApi")
     @Override
     public void transformPage(View view, float position) {

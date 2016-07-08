@@ -30,17 +30,18 @@ import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.androidinjector.app.InjectAppCompatActivity;
 
 public abstract class MyBaseActivity extends InjectAppCompatActivity {
-    @InjectView(R.id.toolbar) protected Toolbar toolbar;
+    @InjectView(R.id.toolbar)
+    protected Toolbar toolbar;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-        if(toolbar != null){
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (toolbar != null) {
             onPreSetSupportActionBar();
             setSupportActionBar(toolbar);
             onPostSetSupportActionBar();
         }
-	}
+    }
 
     @Override
     public void setContentView(int layoutResID) {
@@ -60,20 +61,20 @@ public abstract class MyBaseActivity extends InjectAppCompatActivity {
         super.setContentView(view);
     }
 
-    protected void onPreSetSupportActionBar(){
+    protected void onPreSetSupportActionBar() {
 
     }
 
-    protected void onPostSetSupportActionBar(){
+    protected void onPostSetSupportActionBar() {
 
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        if(item.getItemId() == android.R.id.home){
+        if (item.getItemId() == android.R.id.home) {
             onBackPressed();
             return true;
-        }else{
+        } else {
             return super.onOptionsItemSelected(item);
         }
     }
@@ -81,7 +82,7 @@ public abstract class MyBaseActivity extends InjectAppCompatActivity {
     @Override
     public void onContentChanged() {
         super.onContentChanged();
-        if(!isDisableSetFitsSystemWindows()){
+        if (!isDisableSetFitsSystemWindows()) {
             setFitsSystemWindows();
         }
     }
@@ -89,8 +90,8 @@ public abstract class MyBaseActivity extends InjectAppCompatActivity {
     /**
      * 让状态栏完全透明
      */
-    private void setTransparentStatusBar(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    private void setTransparentStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
@@ -99,16 +100,16 @@ public abstract class MyBaseActivity extends InjectAppCompatActivity {
         }
     }
 
-    private void setFitsSystemWindows(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT){
+    private void setFitsSystemWindows() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             ViewGroup contentViewGroup = (ViewGroup) findViewById(android.R.id.content);
-            if(contentViewGroup != null && contentViewGroup.getChildCount() > 0){
+            if (contentViewGroup != null && contentViewGroup.getChildCount() > 0) {
                 contentViewGroup.getChildAt(0).setFitsSystemWindows(true);
             }
         }
     }
 
-    protected boolean isDisableSetFitsSystemWindows(){
+    protected boolean isDisableSetFitsSystemWindows() {
         return false;
     }
 }

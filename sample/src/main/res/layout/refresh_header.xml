@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="46dp"
     android:padding="8dp">
+
     <TextView
         android:id="@+id/text_refreshHeader"
         android:layout_width="100dp"
@@ -11,13 +11,14 @@
         android:gravity="center"
         android:layout_centerInParent="true"
         android:text="下拉刷新"
-        android:tag="hintText"/>
+        android:tag="hintText" />
 
     <FrameLayout
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_toLeftOf="@id/text_refreshHeader"
         android:layout_marginRight="16dp">
+
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="30dp"
@@ -25,7 +26,7 @@
             android:indeterminateDrawable="@drawable/progressbar_indeterminate_spinner_blue"
             android:layout_gravity="center"
             android:visibility="invisible"
-            android:tag="progressBar"/>
+            android:tag="progressBar" />
 
         <ImageView
             android:id="@+id/image_arrow"
@@ -34,6 +35,6 @@
             android:src="@drawable/ic_pull_down"
             android:layout_gravity="center"
             android:tag="arrowImage"
-            android:contentDescription="@string/app_name"/>
+            android:contentDescription="@string/app_name" />
     </FrameLayout>
 </RelativeLayout>

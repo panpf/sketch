@@ -20,7 +20,7 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 /**
  * 已安装APP列表适配器
  */
-public class InstalledAppListAdapter extends RecyclerView.Adapter{
+public class InstalledAppListAdapter extends RecyclerView.Adapter {
     private List<AppInfo> appInfoList;
     private Settings settings;
 
@@ -31,9 +31,9 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter{
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(viewType == 0){
+        if (viewType == 0) {
             return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app_list_header, parent, false));
-        }else{
+        } else {
             AppInfoViewHolder appInfoViewHolder = new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
             appInfoViewHolder.iconSketchImageView.setOptionsByName(OptionsType.APP_ICON);
             appInfoViewHolder.iconSketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
@@ -45,17 +45,17 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof HeaderViewHolder){
+        if (holder instanceof HeaderViewHolder) {
             HeaderViewHolder headerViewHolder = (HeaderViewHolder) holder;
-            headerViewHolder.appCountTextView.setText("您的设备上共安装了"+(appInfoList!=null?appInfoList.size():0)+"款应用");
-        }else{
-            AppInfo appInfo = appInfoList.get(position-1);
+            headerViewHolder.appCountTextView.setText("您的设备上共安装了" + (appInfoList != null ? appInfoList.size() : 0) + "款应用");
+        } else {
+            AppInfo appInfo = appInfoList.get(position - 1);
             AppInfoViewHolder appInfoViewHolder = (AppInfoViewHolder) holder;
 
             appInfoViewHolder.iconSketchImageView.displayInstalledAppIcon(appInfo.getId(), appInfo.getVersionCode());
 
             appInfoViewHolder.nameTextView.setText(appInfo.getName());
-            appInfoViewHolder.infoTextView.setText("v"+appInfo.getVersionName()+"  |  "+appInfo.getAppSize());
+            appInfoViewHolder.infoTextView.setText("v" + appInfo.getVersionName() + "  |  " + appInfo.getAppSize());
 
             appInfoViewHolder.iconSketchImageView.setShowPressedStatus(settings.isShowPressedStatus());
             appInfoViewHolder.iconSketchImageView.setShowImageFrom(settings.isShowImageFromFlag());
@@ -64,15 +64,15 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter{
 
     @Override
     public int getItemCount() {
-        return appInfoList!=null?appInfoList.size()+1:0;
+        return appInfoList != null ? appInfoList.size() + 1 : 0;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return position==0?0:1;
+        return position == 0 ? 0 : 1;
     }
 
-    public static class AppInfoViewHolder extends RecyclerView.ViewHolder{
+    public static class AppInfoViewHolder extends RecyclerView.ViewHolder {
         private MyImageView iconSketchImageView;
         private TextView nameTextView;
         private TextView infoTextView;
@@ -86,7 +86,7 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter{
         }
     }
 
-    private static class HeaderViewHolder extends RecyclerView.ViewHolder{
+    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
         private TextView appCountTextView;
 
         public HeaderViewHolder(View itemView) {

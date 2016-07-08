@@ -32,8 +32,10 @@ import me.xiaopan.sketchsample.widget.HintView;
  */
 @InjectContentView(R.layout.fragment_installed_app)
 public class InstalledAppFragment extends MyFragment {
-    @InjectView(R.id.recyclerView_installedApp_content) private RecyclerView contentRecyclerView;
-    @InjectView(R.id.hint_installedApp_hint) private HintView hintView;
+    @InjectView(R.id.recyclerView_installedApp_content)
+    private RecyclerView contentRecyclerView;
+    @InjectView(R.id.hint_installedApp_hint)
+    private HintView hintView;
     private InstalledAppListAdapter adapter = null;
 
     @Override
@@ -43,16 +45,16 @@ public class InstalledAppFragment extends MyFragment {
         contentRecyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
         contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
-        if(adapter != null){
+        if (adapter != null) {
             contentRecyclerView.setAdapter(adapter);
             contentRecyclerView.scheduleLayoutAnimation();
-        }else{
+        } else {
             loadAppList();
         }
     }
 
-    private void loadAppList(){
-        new AsyncTask<Integer, Integer, List<AppInfo>>(){
+    private void loadAppList() {
+        new AsyncTask<Integer, Integer, List<AppInfo>>() {
             private Context context = getActivity().getBaseContext();
 
             @Override
@@ -66,7 +68,7 @@ public class InstalledAppFragment extends MyFragment {
                 PackageManager packageManager = context.getPackageManager();
                 List<PackageInfo> packageInfoList = packageManager.getInstalledPackages(0);
                 List<AppInfo> appInfoList = new ArrayList<AppInfo>(packageInfoList.size());
-                for(PackageInfo packageInfo : packageInfoList){
+                for (PackageInfo packageInfo : packageInfoList) {
                     AppInfo appInfo = new AppInfo();
                     appInfo.setName(String.valueOf(packageInfo.applicationInfo.loadLabel(packageManager)));
                     appInfo.setSortName(toPinYin(appInfo.getName()));
@@ -88,13 +90,13 @@ public class InstalledAppFragment extends MyFragment {
                 return appInfoList;
             }
 
-            private String toPinYin(String text){
+            private String toPinYin(String text) {
                 StringBuilder stringBuilder = new StringBuilder();
-                for(char c : text.toCharArray()){
+                for (char c : text.toCharArray()) {
                     String[] a = PinyinHelper.toHanyuPinyinStringArray(c);
-                    if(a != null){
+                    if (a != null) {
                         stringBuilder.append(a[0]);
-                    }else{
+                    } else {
                         stringBuilder.append(c);
                     }
                 }
@@ -103,7 +105,7 @@ public class InstalledAppFragment extends MyFragment {
 
             @Override
             protected void onPostExecute(List<AppInfo> appInfoList) {
-                if(getActivity() == null){
+                if (getActivity() == null) {
                     return;
                 }
 

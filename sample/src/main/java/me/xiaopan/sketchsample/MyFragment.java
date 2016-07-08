@@ -7,7 +7,7 @@ public class MyFragment extends InjectFragment {
     @Override
     public void onPause() {
         super.onPause();
-        if(getUserVisibleHint()){
+        if (getUserVisibleHint()) {
             onUserVisibleChanged(false);
         }
     }
@@ -15,7 +15,7 @@ public class MyFragment extends InjectFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(getUserVisibleHint()){
+        if (getUserVisibleHint()) {
             onUserVisibleChanged(true);
         }
     }
@@ -23,16 +23,16 @@ public class MyFragment extends InjectFragment {
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if(isResumed()){
+        if (isResumed()) {
             onUserVisibleChanged(isVisibleToUser);
         }
     }
 
-    protected void onUserVisibleChanged(boolean isVisibleToUser){
+    protected void onUserVisibleChanged(boolean isVisibleToUser) {
 
     }
 
-    public boolean isVisibleToUser(){
+    public boolean isVisibleToUser() {
         return isResumed() && getUserVisibleHint();
     }
 }

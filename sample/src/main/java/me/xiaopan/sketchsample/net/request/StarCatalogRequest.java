@@ -15,7 +15,7 @@ import me.xiaopan.sketchsample.net.NetUtils;
 /**
  * 明星目录请求
  */
-public abstract class StarCatalogRequest implements Request{
+public abstract class StarCatalogRequest implements Request {
 
     public static class ResponseHandler implements HttpRequest.ResponseHandleCompletedAfterListener<String> {
         public boolean isMan;
@@ -27,9 +27,10 @@ public abstract class StarCatalogRequest implements Request{
         @Override
         public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, String sourceContent, boolean b, boolean b2) throws Throwable {
             Result result = new Result();
-            result.setTitle(isMan?"男明星":"女明星");
+            result.setTitle(isMan ? "男明星" : "女明星");
             String json = NetUtils.substring(sourceContent, "\"data\" : ", "\\}\\)\\;", null);
-            result.setStarList((List<Star>) new Gson().fromJson(json, new TypeToken<List<Star>>() {}.getType()));
+            result.setStarList((List<Star>) new Gson().fromJson(json, new TypeToken<List<Star>>() {
+            }.getType()));
             return result;
         }
     }
@@ -55,9 +56,10 @@ public abstract class StarCatalogRequest implements Request{
         }
     }
 
-    public static class Star{
+    public static class Star {
         private String name;
-        @SerializedName("avatar") private String avatarUrl;
+        @SerializedName("avatar")
+        private String avatarUrl;
 
         public String getName() {
             return name;

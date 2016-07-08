@@ -51,10 +51,10 @@ public class Settings {
         this.globalInPreferQualityOverSpeed = preferences.getBoolean(PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, false);
     }
 
-    public static Settings with(Context context){
-        if(settingsInstance == null){
-            synchronized (Settings.class){
-                if(settingsInstance == null){
+    public static Settings with(Context context) {
+        if (settingsInstance == null) {
+            synchronized (Settings.class) {
+                if (settingsInstance == null) {
                     settingsInstance = new Settings(context);
                 }
             }
@@ -62,27 +62,29 @@ public class Settings {
         return settingsInstance;
     }
 
-    private void apply(){
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD){
+    private void apply() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD) {
             editor.apply();
-        }else{
+        } else {
             editor.commit();
         }
     }
 
     /**
      * 滚动的时候是否暂停加载新图片
+     *
      * @return 滚动的时候是否暂停加载新图片
      */
-    public boolean isScrollingPauseLoad(){
+    public boolean isScrollingPauseLoad() {
         return scrollingPauseLoad;
     }
 
     /**
      * 设置滚动的时候是否暂停加载新图片
+     *
      * @param scrollingPauseLoad 滚动的时候是否暂停加载新图片
      */
-    public void setScrollingPauseLoad(boolean scrollingPauseLoad){
+    public void setScrollingPauseLoad(boolean scrollingPauseLoad) {
         this.scrollingPauseLoad = scrollingPauseLoad;
         editor.putBoolean(PREFERENCE_SCROLLING_PAUSE_LOAD, scrollingPauseLoad);
         apply();
@@ -90,6 +92,7 @@ public class Settings {
 
     /**
      * 是否显示图片下载进度
+     *
      * @return 是否显示图片下载进度
      */
     public boolean isShowImageDownloadProgress() {
@@ -98,6 +101,7 @@ public class Settings {
 
     /**
      * 设置是否显示图片下载进度
+     *
      * @param showImageDownloadProgress 是否显示图片下载进度
      */
     public void setShowImageDownloadProgress(boolean showImageDownloadProgress) {
@@ -108,6 +112,7 @@ public class Settings {
 
     /**
      * 移动网络下是否暂停下载新图片
+     *
      * @return 移动网络下是否暂停下载新图片
      */
     public boolean isMobileNetworkPauseDownload() {
@@ -116,6 +121,7 @@ public class Settings {
 
     /**
      * 设置移动网络下是否暂停下载新图片
+     *
      * @param mobileNetworkPauseDownload 移动网络下是否暂停下载新图片
      */
     public void setMobileNetworkPauseDownload(boolean mobileNetworkPauseDownload) {
@@ -126,6 +132,7 @@ public class Settings {
 
     /**
      * 是否显示图片来源标记
+     *
      * @return 显示图片来源标记
      */
     public boolean isShowImageFromFlag() {
@@ -134,6 +141,7 @@ public class Settings {
 
     /**
      * 设置显示图片来源标记
+     *
      * @param showImageFromFlag 显示图片来源标记
      */
     public void setShowImageFromFlag(boolean showImageFromFlag) {

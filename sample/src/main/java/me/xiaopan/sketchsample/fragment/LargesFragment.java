@@ -19,7 +19,8 @@ import me.xiaopan.sketchsample.adapter.FragmentAdapter;
  */
 @InjectContentView(R.layout.fragment_app_list)
 public class LargesFragment extends MyFragment {
-    @InjectView(R.id.pager_appList_content) private ViewPager viewPager;
+    @InjectView(R.id.pager_appList_content)
+    private ViewPager viewPager;
     private GetLargeTagStripListener getPagerSlidingTagStripListener;
     private FragmentAdapter fragmentAdapter;
 
@@ -27,9 +28,9 @@ public class LargesFragment extends MyFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if(activity instanceof GetLargeTagStripListener){
+        if (activity instanceof GetLargeTagStripListener) {
             getPagerSlidingTagStripListener = (GetLargeTagStripListener) activity;
-        }else{
+        } else {
             getPagerSlidingTagStripListener = null;
         }
     }
@@ -37,7 +38,7 @@ public class LargesFragment extends MyFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if(getPagerSlidingTagStripListener != null){
+        if (getPagerSlidingTagStripListener != null) {
             getPagerSlidingTagStripListener = null;
         }
     }
@@ -50,7 +51,7 @@ public class LargesFragment extends MyFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(fragmentAdapter == null){
+        if (fragmentAdapter == null) {
             Fragment[] fragments = new Fragment[4];
             fragments[0] = LargeImageFragment.build(UriScheme.ASSET.createUri("world_map.jpg"));
             fragments[1] = LargeImageFragment.build(UriScheme.ASSET.createUri("qing_ming_shang_he_tu.jpg"));

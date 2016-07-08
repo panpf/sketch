@@ -246,14 +246,14 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
     }
 
     private void setImageViewScaleTypeMatrix(ImageView imageView) {
-        if (imageView != null  && !ImageView.ScaleType.MATRIX.equals(imageView.getScaleType())) {
+        if (imageView != null && !ImageView.ScaleType.MATRIX.equals(imageView.getScaleType())) {
             imageView.setScaleType(ImageView.ScaleType.MATRIX);
         }
     }
 
     private boolean hasDrawable() {
         ImageView imageView = getImageView();
-        return imageView != null  && imageView.getDrawable() != null;
+        return imageView != null && imageView.getDrawable() != null;
     }
 
     private void checkZoomLevels(float minZoom, float midZoom, float maxZoom) {
@@ -308,28 +308,28 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
         matrix.set(getDrawMatrix());
     }
 
-    public int getDrawableWidth(){
+    public int getDrawableWidth() {
         ImageView imageView = imageViewWeakReference.get();
         if (imageView == null) {
             return 0;
         }
 
         Drawable drawable = imageView.getDrawable();
-        if(drawable == null){
+        if (drawable == null) {
             return 0;
         }
 
         return drawable.getIntrinsicWidth();
     }
 
-    public int getDrawableHeight(){
+    public int getDrawableHeight() {
         ImageView imageView = imageViewWeakReference.get();
         if (imageView == null) {
             return 0;
         }
 
         Drawable drawable = imageView.getDrawable();
-        if(drawable == null){
+        if (drawable == null) {
             return 0;
         }
 
@@ -740,6 +740,7 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
 
     /**
      * Set the zoom interpolator
+     *
      * @param interpolator the zoom interpolator
      */
     public void setZoomInterpolator(Interpolator interpolator) {

@@ -41,9 +41,9 @@ public class DetailActivity extends MyBaseActivity implements DetailFragment.Set
 
     private WindowBackgroundManager windowBackgroundManager;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         windowBackgroundManager = new WindowBackgroundManager(this);
 
@@ -56,18 +56,18 @@ public class DetailActivity extends MyBaseActivity implements DetailFragment.Set
                 .beginTransaction()
                 .replace(R.id.frame_onlyFragment_content, detailFragment)
                 .commit();
-	}
+    }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         boolean result = true;
-        try{
+        try {
             result = super.dispatchTouchEvent(ev);
-        }catch(RuntimeException e){
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
 
-        if(dispatchTouchEventListener != null){
+        if (dispatchTouchEventListener != null) {
             dispatchTouchEventListener.dispatchTouchEvent(ev);
         }
 
@@ -91,7 +91,7 @@ public class DetailActivity extends MyBaseActivity implements DetailFragment.Set
         windowBackgroundManager.destroy();
     }
 
-    public static void launch(Activity activity, ArrayList<String> imageUrlList, int defaultPosition){
+    public static void launch(Activity activity, ArrayList<String> imageUrlList, int defaultPosition) {
         Intent intent = new Intent(activity, DetailActivity.class);
         intent.putStringArrayListExtra(DetailFragment.PARAM_REQUIRED_STRING_ARRAY_LIST_URLS, imageUrlList);
         intent.putExtra(DetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION, defaultPosition);

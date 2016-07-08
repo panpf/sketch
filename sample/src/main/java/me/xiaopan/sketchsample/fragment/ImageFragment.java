@@ -7,12 +7,12 @@ import android.view.View;
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.RequestLevel;
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
@@ -25,10 +25,13 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 public class ImageFragment extends MyFragment {
     public static final String PARAM_REQUIRED_IMAGE_URI = "PARAM_REQUIRED_IMAGE_URI";
 
-    @InjectView(R.id.image_imageFragment_image) private MyImageView imageView;
-    @InjectView(R.id.hint_imageFragment_hint) private HintView hintView;
+    @InjectView(R.id.image_imageFragment_image)
+    private MyImageView imageView;
+    @InjectView(R.id.hint_imageFragment_hint)
+    private HintView hintView;
 
-    @InjectExtra(PARAM_REQUIRED_IMAGE_URI) private String imageUri;
+    @InjectExtra(PARAM_REQUIRED_IMAGE_URI)
+    private String imageUri;
     private boolean completedAfterUpdateBackground;
 
     private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
@@ -37,7 +40,7 @@ public class ImageFragment extends MyFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if(activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener){
+        if (activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener) {
             windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
         }
     }
@@ -60,9 +63,9 @@ public class ImageFragment extends MyFragment {
             public void onCompleted(ImageFrom imageFrom, String mimeType) {
                 hintView.hidden();
                 photoViewAttacher.update();
-                if(completedAfterUpdateBackground){
+                if (completedAfterUpdateBackground) {
                     completedAfterUpdateBackground = false;
-                    if(isResumed() && getUserVisibleHint()){
+                    if (isResumed() && getUserVisibleHint()) {
                         windowBackgroundLoader.load(imageUri);
                     }
                 }
@@ -82,11 +85,11 @@ public class ImageFragment extends MyFragment {
 
             @Override
             public void onCanceled(CancelCause cancelCause) {
-                if(cancelCause == null){
+                if (cancelCause == null) {
                     return;
                 }
 
-                switch (cancelCause){
+                switch (cancelCause) {
                     case REQUEST_LEVEL_IS_LOCAL:
                         hintView.hint(R.drawable.ic_failed, "level is local", "直接显示", new View.OnClickListener() {
                             @Override
@@ -127,7 +130,7 @@ public class ImageFragment extends MyFragment {
                         break;
                 }
 
-                if(cancelCause != CancelCause.BE_CANCELLED){
+                if (cancelCause != CancelCause.BE_CANCELLED) {
                     photoViewAttacher.update();
                 }
             }
@@ -137,19 +140,19 @@ public class ImageFragment extends MyFragment {
 
     @Override
     public void onDetach() {
-        if(windowBackgroundLoader != null){
+        if (windowBackgroundLoader != null) {
             windowBackgroundLoader.detach();
         }
         super.onDetach();
     }
 
     @Override
-    public void onUserVisibleChanged(boolean isVisibleToUser){
-        if(windowBackgroundLoader != null){
+    public void onUserVisibleChanged(boolean isVisibleToUser) {
+        if (windowBackgroundLoader != null) {
             windowBackgroundLoader.setUserVisible(isVisibleToUser);
-            if(isVisibleToUser){
+            if (isVisibleToUser) {
                 windowBackgroundLoader.load(imageUri);
-            }else{
+            } else {
                 windowBackgroundLoader.cancel(CancelCause.USERS_NOT_VISIBLE);
             }
         }
