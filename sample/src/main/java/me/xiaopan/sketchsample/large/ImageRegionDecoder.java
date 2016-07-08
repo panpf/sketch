@@ -1,4 +1,4 @@
-package me.xiaopan.sketchsample.largeimage;
+package me.xiaopan.sketchsample.large;
 
 import android.annotation.TargetApi;
 import android.content.Context;

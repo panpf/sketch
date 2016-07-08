@@ -18,7 +18,7 @@ import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
-import me.xiaopan.sketchsample.scale.ImageAmplifier;
+import me.xiaopan.sketchsample.zoom.ImageZoomer;
 import me.xiaopan.sketchsample.widget.LargeImageView;
 import me.xiaopan.sketchsample.widget.MappingView;
 
@@ -57,12 +57,12 @@ public class LargeImageFragment extends MyFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final ImageAmplifier imageAmplifier = new ImageAmplifier(largeImageView);
+        final ImageZoomer imageZoomer = new ImageZoomer(largeImageView);
 
         largeImageView.setDisplayListener(new DisplayListener() {
             @Override
             public void onCompleted(ImageFrom imageFrom, String mimeType) {
-                imageAmplifier.update();
+                imageZoomer.update();
             }
 
             @Override
@@ -72,7 +72,7 @@ public class LargeImageFragment extends MyFragment {
 
             @Override
             public void onFailed(FailedCause failedCause) {
-                imageAmplifier.update();
+                imageZoomer.update();
             }
 
             @Override
@@ -83,7 +83,7 @@ public class LargeImageFragment extends MyFragment {
 
         largeImageView.displayImage(imageUri);
 
-        imageAmplifier.setOnMatrixChangeListener(new ImageAmplifier.OnMatrixChangedListener() {
+        imageZoomer.setOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
             @Override
             public void onMatrixChanged(RectF displayRect) {
                 Drawable drawable = largeImageView.getDrawable();
@@ -92,11 +92,11 @@ public class LargeImageFragment extends MyFragment {
                 }
                 Log.w("test", "displayRect: " + displayRect.toString());
 
-                RectF visibleRect = imageAmplifier.getVisibleRect();
-                float scale = imageAmplifier.getScale();
+                RectF visibleRect = imageZoomer.getVisibleRect();
+                float scale = imageZoomer.getScale();
                 mappingView.update(drawable.getIntrinsicWidth(), visibleRect);
                 scaleTextView.setText(String.valueOf(scale));
-                largeImageView.update(imageAmplifier.getDrawMatrix(), visibleRect, imageAmplifier.getDrawableWidth(), imageAmplifier.getDrawableHeight());
+                largeImageView.update(imageZoomer.getDrawMatrix(), visibleRect, imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
             }
         });
         mappingView.getOptions().setMaxSize(300, 300);

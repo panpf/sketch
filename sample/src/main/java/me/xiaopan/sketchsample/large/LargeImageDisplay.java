@@ -1,4 +1,4 @@
-package me.xiaopan.sketchsample.largeimage;
+package me.xiaopan.sketchsample.large;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,13 +16,13 @@ import java.io.IOException;
 
 import me.xiaopan.sketch.Sketch;
 
-public class LargeImageController {
-    private static final String NAME = "LargeImageController";
+public class LargeImageDisplay {
+    private static final String NAME = "LargeImageDisplay";
 
     private ImageView imageView;
 
     private ImageRegionDecoder decoder;
-    private DecodeRegionImageTask lastTask;
+    private RegionDecodeTask lastTask;
 
     private Bitmap bitmap;
     private Rect bitmapSrcRect = new Rect();
@@ -30,7 +30,7 @@ public class LargeImageController {
     private Paint paint = new Paint();
     private Matrix matrix = new Matrix();
 
-    public LargeImageController(ImageView imageView) {
+    public LargeImageDisplay(ImageView imageView) {
         this.imageView = imageView;
     }
 
@@ -207,7 +207,7 @@ public class LargeImageController {
         }
 
         // 读取图片
-        lastTask = new DecodeRegionImageTask(this, decoder, srcRect, largeVisibleRect, inSampleSize);
+        lastTask = new RegionDecodeTask(this, decoder, srcRect, largeVisibleRect, inSampleSize);
         lastTask.execute(0);
     }
 

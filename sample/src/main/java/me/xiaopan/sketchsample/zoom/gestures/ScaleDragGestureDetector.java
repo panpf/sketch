@@ -13,15 +13,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package me.xiaopan.sketchsample.scale.gestures;
+package me.xiaopan.sketchsample.zoom.gestures;
 
-public interface OnScaleDragGestureListener {
+import android.view.MotionEvent;
 
-    void onDrag(float dx, float dy);
+public interface ScaleDragGestureDetector {
 
-    void onFling(float startX, float startY, float velocityX,
-                 float velocityY);
+    boolean onTouchEvent(MotionEvent ev);
 
-    void onScale(float scaleFactor, float focusX, float focusY);
+    boolean isScaling();
+
+    boolean isDragging();
+
+    void setOnGestureListener(OnScaleDragGestureListener listener);
 
 }

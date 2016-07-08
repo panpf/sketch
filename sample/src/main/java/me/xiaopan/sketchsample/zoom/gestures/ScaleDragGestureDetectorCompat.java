@@ -1,4 +1,4 @@
-package me.xiaopan.sketchsample.scale.gestures;
+package me.xiaopan.sketchsample.zoom.gestures;
 
 import android.content.Context;
 import android.os.Build;

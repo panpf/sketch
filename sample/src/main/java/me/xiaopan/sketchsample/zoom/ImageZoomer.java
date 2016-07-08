@@ -1,4 +1,4 @@
-package me.xiaopan.sketchsample.scale;
+package me.xiaopan.sketchsample.zoom;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,13 +19,13 @@ import android.widget.ImageView.ScaleType;
 
 import java.lang.ref.WeakReference;
 
-import me.xiaopan.sketchsample.scale.gestures.OnScaleDragGestureListener;
-import me.xiaopan.sketchsample.scale.gestures.ScaleDragGestureDetector;
-import me.xiaopan.sketchsample.scale.gestures.ScaleDragGestureDetectorCompat;
+import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketchsample.zoom.gestures.OnScaleDragGestureListener;
+import me.xiaopan.sketchsample.zoom.gestures.ScaleDragGestureDetector;
+import me.xiaopan.sketchsample.zoom.gestures.ScaleDragGestureDetectorCompat;
 
-public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener, FlingTranslateRunner.FlingTranslateListener {
-    public static final String LOG_TAG = "ImageAmplifier";
-    public static boolean DEBUG = Log.isLoggable(LOG_TAG, Log.DEBUG);
+public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener, FlingTranslateRunner.FlingTranslateListener {
+    public static final String NAME = "ImageZoomer";
     public static final float DEFAULT_MAX_SCALE = 15.0f;
     public static final float DEFAULT_MID_SCALE = 1.75f;
     public static final float DEFAULT_MIN_SCALE = 1.0f;
@@ -63,14 +63,12 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
     private GestureDetector tapGestureDetector;
     private FlingTranslateRunner currentFlingTranslateRunner;
     private ScaleDragGestureDetector scaleDragGestureDetector;
-    private final RectF srcRect = new RectF();
-    private final RectF displayRect = new RectF();
     private final Matrix baseMatrix = new Matrix();
     private final Matrix drawMatrix = new Matrix();
     private final Matrix suppMatrix = new Matrix();
     private final float[] matrixValues = new float[9];
 
-    public ImageAmplifier(ImageView imageView) {
+    public ImageZoomer(ImageView imageView) {
         context = imageView.getContext();
         imageViewWeakReference = new WeakReference<ImageView>(imageView);
 
@@ -162,8 +160,8 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
             return;
         }
 
-        if (DEBUG) {
-            Log.d(LOG_TAG, String.format("onDrag: dx: %.2f. dy: %.2f", dx, dy));
+        if (Sketch.isDebugMode()) {
+            Log.d(Sketch.TAG, NAME + ". " + String.format("onDrag: dx: %.2f. dy: %.2f", dx, dy));
         }
 
         suppMatrix.postTranslate(dx, dy);
@@ -232,7 +230,7 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
         if (null != imageView) {
             // Check to see if the scale is within bounds
             if (scale < minScale || scale > maxScale) {
-                Log.i(LOG_TAG, "Scale must be within the range of minScale and maxScale");
+                Log.i(Sketch.TAG, NAME + ". Scale must be within the range of minScale and maxScale");
                 return;
             }
 
@@ -273,7 +271,7 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
 
         ImageView imageView = imageViewWeakReference.get();
         if (imageView == null) {
-            Log.i(LOG_TAG, "ImageView no longer exists. You should not use this ImageAmplifier any more.");
+            Log.i(Sketch.TAG, NAME + ". ImageView no longer exists. You should not use this ImageAmplifier any more.");
             cleanup();
         }
 
@@ -484,8 +482,7 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
         if (null != imageView) {
             Drawable d = imageView.getDrawable();
             if (null != d) {
-                displayRect.set(0, 0, d.getIntrinsicWidth(),
-                        d.getIntrinsicHeight());
+                RectF displayRect = new RectF(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
                 matrix.mapRect(displayRect);
                 return displayRect;
             }

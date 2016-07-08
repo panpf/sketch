@@ -1,16 +1,16 @@
-package me.xiaopan.sketchsample.scale;
+package me.xiaopan.sketchsample.zoom;
 
 import android.widget.ImageView;
 
 class ZoomRunner implements Runnable {
 
-    private ImageAmplifier imageAmplifier;
+    private ImageZoomer imageZoomer;
     private final float mFocalX, mFocalY;
     private final long mStartTime;
     private final float mZoomStart, mZoomEnd;
 
-    public ZoomRunner(ImageAmplifier imageAmplifier, final float currentZoom, final float targetZoom, final float focalX, final float focalY) {
-        this.imageAmplifier = imageAmplifier;
+    public ZoomRunner(ImageZoomer imageZoomer, final float currentZoom, final float targetZoom, final float focalX, final float focalY) {
+        this.imageZoomer = imageZoomer;
         mFocalX = focalX;
         mFocalY = focalY;
         mStartTime = System.currentTimeMillis();
@@ -20,16 +20,16 @@ class ZoomRunner implements Runnable {
 
     @Override
     public void run() {
-        ImageView imageView = imageAmplifier.getImageView();
+        ImageView imageView = imageZoomer.getImageView();
         if (imageView == null) {
             return;
         }
 
         float t = interpolate();
         float scale = mZoomStart + t * (mZoomEnd - mZoomStart);
-        float deltaScale = scale / imageAmplifier.getScale();
+        float deltaScale = scale / imageZoomer.getScale();
 
-        imageAmplifier.onScale(deltaScale, mFocalX, mFocalY);
+        imageZoomer.onScale(deltaScale, mFocalX, mFocalY);
 
         // We haven't hit our target scale yet, so post ourselves again
         if (t < 1f) {
@@ -38,9 +38,9 @@ class ZoomRunner implements Runnable {
     }
 
     private float interpolate() {
-        float t = 1f * (System.currentTimeMillis() - mStartTime) / imageAmplifier.getZoomDuration();
+        float t = 1f * (System.currentTimeMillis() - mStartTime) / imageZoomer.getZoomDuration();
         t = Math.min(1f, t);
-        t = imageAmplifier.getZoomInterpolator().getInterpolation(t);
+        t = imageZoomer.getZoomInterpolator().getInterpolation(t);
         return t;
     }
 }

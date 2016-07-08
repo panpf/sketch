@@ -8,10 +8,10 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketchsample.largeimage.LargeImageController;
+import me.xiaopan.sketchsample.large.LargeImageDisplay;
 
 public class LargeImageView extends SketchImageView {
-    private LargeImageController largeImageController;
+    private LargeImageDisplay largeImageDisplay;
 
     public LargeImageView(Context context) {
         super(context);
@@ -29,52 +29,52 @@ public class LargeImageView extends SketchImageView {
     }
 
     private void init() {
-        largeImageController = new LargeImageController(this);
+        largeImageDisplay = new LargeImageDisplay(this);
     }
 
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        if (largeImageController != null) {
-            largeImageController.onAttachedToWindow();
+        if (largeImageDisplay != null) {
+            largeImageDisplay.onAttachedToWindow();
         }
     }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        if (largeImageController != null) {
-            largeImageController.onLayout(changed, left, top, right, bottom);
+        if (largeImageDisplay != null) {
+            largeImageDisplay.onLayout(changed, left, top, right, bottom);
         }
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (largeImageController != null) {
-            largeImageController.onDraw(canvas);
+        if (largeImageDisplay != null) {
+            largeImageDisplay.onDraw(canvas);
         }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        if (largeImageController != null) {
-            largeImageController.onDetachedFromWindow();
+        if (largeImageDisplay != null) {
+            largeImageDisplay.onDetachedFromWindow();
         }
     }
 
     @Override
     public void setImageDrawable(Drawable drawable) {
         super.setImageDrawable(drawable);
-        if (largeImageController != null) {
-            largeImageController.setImage(getDisplayParams().attrs.getUri());
+        if (largeImageDisplay != null) {
+            largeImageDisplay.setImage(getDisplayParams().attrs.getUri());
         }
     }
 
     public void update(Matrix drawMatrix, RectF visibleRect, int drawableWidth, int drawableHeight) {
-        if (largeImageController != null) {
-            largeImageController.update(drawMatrix, visibleRect, drawableWidth, drawableHeight);
+        if (largeImageDisplay != null) {
+            largeImageDisplay.update(drawMatrix, visibleRect, drawableWidth, drawableHeight);
         }
     }
 }

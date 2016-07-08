@@ -1,4 +1,4 @@
-package me.xiaopan.sketchsample.largeimage;
+package me.xiaopan.sketchsample.large;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -13,10 +13,10 @@ import java.lang.ref.WeakReference;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.ImageFormat;
 
-public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
-    private static final String NAME = "DecodeRegionImageTask";
+public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
+    private static final String NAME = "RegionDecodeTask";
 
-    private WeakReference<LargeImageController> controllerReference;
+    private WeakReference<LargeImageDisplay> controllerReference;
     private WeakReference<ImageRegionDecoder> decoderReference;
     private Rect srcRect;
     private boolean canceled;
@@ -25,8 +25,8 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
 
     // TODO 自定义任务执行器以及线程池
 
-    public DecodeRegionImageTask(LargeImageController controller, ImageRegionDecoder decoder, Rect srcRect, RectF visibleRect, int inSampleSize) {
-        this.controllerReference = new WeakReference<LargeImageController>(controller);
+    public RegionDecodeTask(LargeImageDisplay controller, ImageRegionDecoder decoder, Rect srcRect, RectF visibleRect, int inSampleSize) {
+        this.controllerReference = new WeakReference<LargeImageDisplay>(controller);
         this.decoderReference = new WeakReference<ImageRegionDecoder>(decoder);
         this.srcRect = srcRect;
         this.visibleRect = visibleRect;
@@ -138,7 +138,7 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
 //            return;
 //        }
 
-        LargeImageController controller = controllerReference.get();
+        LargeImageDisplay controller = controllerReference.get();
         if (controller == null) {
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, NAME + ". onPostExecute. controller is null");

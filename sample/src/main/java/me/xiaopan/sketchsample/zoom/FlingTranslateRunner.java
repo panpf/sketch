@@ -1,41 +1,42 @@
-package me.xiaopan.sketchsample.scale;
+package me.xiaopan.sketchsample.zoom;
 
 import android.content.Context;
 import android.graphics.RectF;
 import android.util.Log;
 import android.widget.ImageView;
 
-import me.xiaopan.sketchsample.scale.scrollerproxy.ScrollerProxy;
+import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketchsample.zoom.scrollerproxy.ScrollerProxy;
 
 class FlingTranslateRunner implements Runnable {
     private final ScrollerProxy mScroller;
     private FlingTranslateListener flingTranslateListener;
-    private ImageAmplifier imageAmplifier;
+    private ImageZoomer imageZoomer;
     private int mCurrentX, mCurrentY;
 
-    public FlingTranslateRunner(Context context, ImageAmplifier imageAmplifier) {
+    public FlingTranslateRunner(Context context, ImageZoomer imageZoomer) {
         this.mScroller = ScrollerProxy.getScroller(context);
-        this.flingTranslateListener = imageAmplifier;
-        this.imageAmplifier = imageAmplifier;
+        this.flingTranslateListener = imageZoomer;
+        this.imageZoomer = imageZoomer;
     }
 
     public void fling(int velocityX, int velocityY) {
-        ImageView imageView = imageAmplifier.getImageView();
+        ImageView imageView = imageZoomer.getImageView();
         if (imageView == null) {
-            if (ImageAmplifier.DEBUG) {
-                Log.d(ImageAmplifier.LOG_TAG, "fling. imageView is null");
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, ImageZoomer.NAME + ". fling. imageView is null");
             }
             return;
         }
 
-        final RectF rect = imageAmplifier.getDisplayRect();
+        final RectF rect = imageZoomer.getDisplayRect();
         if (null == rect) {
             return;
         }
 
         final int startX = Math.round(-rect.left);
         final int minX, maxX, minY, maxY;
-        int viewWidth = imageAmplifier.getImageViewWidth(imageView);
+        int viewWidth = imageZoomer.getImageViewWidth(imageView);
         if (viewWidth < rect.width()) {
             minX = 0;
             maxX = Math.round(rect.width() - viewWidth);
@@ -43,7 +44,7 @@ class FlingTranslateRunner implements Runnable {
             minX = maxX = startX;
         }
 
-        int viewHeight = imageAmplifier.getImageViewHeight(imageView);
+        int viewHeight = imageZoomer.getImageViewHeight(imageView);
         final int startY = Math.round(-rect.top);
         if (viewHeight < rect.height()) {
             minY = 0;
@@ -55,8 +56,8 @@ class FlingTranslateRunner implements Runnable {
         mCurrentX = startX;
         mCurrentY = startY;
 
-        if (ImageAmplifier.DEBUG) {
-            Log.d(ImageAmplifier.LOG_TAG, "fling. StartX:" + startX + " StartY:" + startY + " MaxX:" + maxX + " MaxY:" + maxY);
+        if (Sketch.isDebugMode()) {
+            Log.d(Sketch.TAG, ImageZoomer.NAME + ". fling. StartX:" + startX + " StartY:" + startY + " MaxX:" + maxX + " MaxY:" + maxY);
         }
 
         // If we actually can move, fling the scroller
@@ -75,14 +76,14 @@ class FlingTranslateRunner implements Runnable {
             return; // remaining post that should not be handled
         }
 
-        ImageView imageView = imageAmplifier.getImageView();
+        ImageView imageView = imageZoomer.getImageView();
         if (null != imageView && mScroller.computeScrollOffset()) {
 
             final int newX = mScroller.getCurrX();
             final int newY = mScroller.getCurrY();
 
-            if (ImageAmplifier.DEBUG) {
-                Log.d(ImageAmplifier.LOG_TAG, "fling run(). CurrentX:" + mCurrentX + " CurrentY:" + mCurrentY + " NewX:" + newX + " NewY:" + newY);
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, ImageZoomer.NAME + ". fling run(). CurrentX:" + mCurrentX + " CurrentY:" + mCurrentY + " NewX:" + newX + " NewY:" + newY);
             }
 
             flingTranslateListener.onFlingTranslate(mCurrentX - newX, mCurrentY - newY);
@@ -96,14 +97,14 @@ class FlingTranslateRunner implements Runnable {
     }
 
     public void cancelFling() {
-        if (ImageAmplifier.DEBUG) {
-            Log.d(ImageAmplifier.LOG_TAG, "Cancel Fling");
+        if (Sketch.isDebugMode()) {
+            Log.d(Sketch.TAG, ImageZoomer.NAME + ". Cancel Fling");
         }
 
         if (mScroller != null) {
             mScroller.forceFinished(true);
         }
-        ImageView imageView = imageAmplifier.getImageView();
+        ImageView imageView = imageZoomer.getImageView();
         if (imageView != null) {
             imageView.removeCallbacks(this);
         }
