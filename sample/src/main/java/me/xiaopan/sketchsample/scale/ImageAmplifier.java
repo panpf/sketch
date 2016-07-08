@@ -548,8 +548,9 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
         top /= scale;
         bottom /= scale;
 
-        srcRect.set(left, top, right, bottom);
-        return srcRect;
+//        srcRect.set(left, top, right, bottom);
+//        return srcRect;
+        return new RectF(left, top, right, bottom);
     }
 
     int getImageViewWidth(ImageView imageView) {

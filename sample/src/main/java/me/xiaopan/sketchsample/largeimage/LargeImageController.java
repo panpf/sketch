@@ -26,7 +26,7 @@ public class LargeImageController {
     private Matrix matrix = new Matrix();
     private Rect currentSrcRect = new Rect();
     private RectF visibleRect = new RectF();
-    private Paint paint;
+    private Paint paint = new Paint();
     private DecodeRegionImageTask lastTask;
 
     public LargeImageController(ImageView imageView) {
@@ -51,11 +51,10 @@ public class LargeImageController {
 
     public void onDraw(Canvas canvas) {
         if (bitmap == null || bitmap.isRecycled() || bitmapRect == null || visibleRect.isEmpty()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". onDraw. failed");
+            }
             return;
-        }
-
-        if (paint == null) {
-            paint = new Paint();
         }
 
         int saveCount = canvas.save();
@@ -81,15 +80,18 @@ public class LargeImageController {
 
     void onDecodeCompleted(Bitmap newBitmap, Rect srcRect, RectF visibleRectF) {
         if (!this.currentSrcRect.equals(srcRect)) {
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". onDecodeCompleted. src not match");
+            }
             return;
         }
-
-        visibleRect.set(visibleRectF.left, visibleRectF.top, visibleRectF.right, visibleRectF.bottom);
 
         Bitmap oldBitmap = bitmap;
         if (oldBitmap != null) {
             oldBitmap.recycle();
         }
+
+        visibleRect.set(visibleRectF.left, visibleRectF.top, visibleRectF.right, visibleRectF.bottom);
 
         bitmap = newBitmap;
         bitmapRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
@@ -98,8 +100,8 @@ public class LargeImageController {
     }
 
     // todo 这个触发点，要再优化优化，比如说慢慢滑动的时候就一直触发，快速滑动的时候就停止的时候触发
-    public void update(Matrix drawMatrix, RectF visibleRect, int drawableWidth) {
-        if (decoder == null || !decoder.isReady() || drawMatrix == null || visibleRect == null || visibleRect.isEmpty() || drawableWidth == 0) {
+    public void update(Matrix drawMatrix, RectF visibleRect, int drawableWidth, int drawableHeight) {
+        if (decoder == null || !decoder.isReady() || drawMatrix == null || visibleRect == null || visibleRect.isEmpty() || drawableWidth == 0 || drawableHeight == 0) {
             return;
         }
 
@@ -112,10 +114,24 @@ public class LargeImageController {
         // 立即更新Matrix，一起缩放滑动
         matrix.set(drawMatrix);
 
-        // TODO src区域要适当的大一点儿
-        // 根据现实区域计算Src区域
-        float scale = (float) decoder.getImageWidth() / drawableWidth;
-        Rect newSrcRect = new Rect((int) (visibleRect.left * scale), (int) (visibleRect.top * scale), (int) (visibleRect.right * scale), (int) (visibleRect.bottom * scale));
+        // visible区域适当的大一点儿
+        int addWidth = (int) (visibleRect.width() * 0.12);
+        int addHeight = (int) (visibleRect.height() * 0.2);
+        RectF largeVisibleRect = new RectF(
+                Math.max(0, visibleRect.left - addWidth),
+                Math.max(0, visibleRect.top - addHeight),
+                Math.min(drawableWidth, visibleRect.right + addWidth),
+                Math.min(drawableHeight, visibleRect.bottom + addHeight));
+
+        // 计算显示区域在完整图片中对应的区域
+        // 各用个的缩放比例（这很重要），因为宽或高的比例可能不一样
+        float widthScale = (float) decoder.getImageWidth() / drawableWidth;
+        float heightScale = (float) decoder.getImageHeight() / drawableHeight;
+        Rect newSrcRect = new Rect(
+                (int) (largeVisibleRect.left * widthScale),
+                (int) (largeVisibleRect.top * heightScale),
+                (int) (largeVisibleRect.right * widthScale),
+                (int) (largeVisibleRect.bottom * heightScale));
 
         // 别超出范围了
         newSrcRect.left = Math.max(0, newSrcRect.left);
@@ -127,29 +143,37 @@ public class LargeImageController {
         newSrcRect.right = Math.min(newSrcRect.right, decoder.getImageWidth());
         newSrcRect.bottom = Math.min(newSrcRect.bottom, decoder.getImageHeight());
 
+        // 无效的区域不要
         if (newSrcRect.isEmpty()) {
-            Log.d(Sketch.TAG, NAME + ". update - " +
-                    "imageSize=" + decoder.getImageWidth() + "x" + decoder.getImageHeight()
-                    + ", visibleRect=" + visibleRect.toString()
-                    + ", scale=" + scale
-                    + ", newSrcRect=" + newSrcRect.toString());
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". update - " +
+                        "imageSize=" + decoder.getImageWidth() + "x" + decoder.getImageHeight()
+                        + ", visibleRect=" + visibleRect.toString()
+                        + ", largeVisibleRect=" + largeVisibleRect.toString()
+                        + ", scale=" + widthScale + "x" + heightScale
+                        + ", newSrcRect=" + newSrcRect.toString());
+            }
             return;
         }
 
+        // 立马记住当前区域为了后续比较用
         currentSrcRect.set(newSrcRect.left, newSrcRect.top, newSrcRect.right, newSrcRect.bottom);
 
+        // 根据src区域大小计算缩放比例
         int inSampleSize = getSimpleSize(decoder.getContext(), newSrcRect);
 
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, NAME + ". update - "
                     + "visibleRect=" + visibleRect.toString()
+                    + ", largeVisibleRect=" + largeVisibleRect.toString()
                     + ", srcRect=" + newSrcRect.toString()
                     + ", inSampleSize=" + inSampleSize
                     + ", imageSize=" + decoder.getImageWidth() + "x" + decoder.getImageHeight()
-                    + ", scale=" + scale);
+                    + ", scale=" + widthScale + "x" + heightScale);
         }
 
-        lastTask = new DecodeRegionImageTask(this, decoder, newSrcRect, new RectF(visibleRect), inSampleSize);
+        // 读取图片
+        lastTask = new DecodeRegionImageTask(this, decoder, newSrcRect, largeVisibleRect, inSampleSize);
         lastTask.execute(0);
     }
 }

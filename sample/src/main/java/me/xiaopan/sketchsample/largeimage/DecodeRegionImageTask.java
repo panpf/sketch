@@ -42,11 +42,17 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
     @Override
     protected Bitmap doInBackground(Integer... params) {
         if (canceled) {
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". canceled");
+            }
             return null;
         }
 
         ImageRegionDecoder decoder = decoderReference.get();
         if (decoder == null) {
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". decoder is null");
+            }
             return null;
         }
 
@@ -55,16 +61,24 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
                 decoder.init();
             } catch (IOException e) {
                 e.printStackTrace();
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". decoder init exception");
+                }
                 return null;
             }
 
             if (!decoder.isReady()) {
-                Log.d(Sketch.TAG, NAME + ". init ImageRegionDecoder failed");
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". init ImageRegionDecoder failed");
+                }
                 return null;
             }
         }
 
         if (canceled) {
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". canceled");
+            }
             return null;
         }
 
@@ -77,22 +91,29 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
 
         Bitmap bitmap = decoder.decodeRegion(srcRect, options);
         if (bitmap == null || bitmap.isRecycled()) {
-            Log.d(Sketch.TAG, NAME + ". bitmap is null or recycled");
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". bitmap is null or recycled");
+            }
             return null;
         }
 
         if (canceled) {
             bitmap.recycle();
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". canceled");
+            }
             return null;
         }
 
         Bitmap.Config config = bitmap.getConfig();
-        Log.d(Sketch.TAG, NAME + ". decode success - "
-                + "visibleRect=" + visibleRect.toString()
-                + ", srcRect=" + srcRect.toString()
-                + ", inSampleSize=" + inSampleSize
-                + ", bitmapSize=" + bitmap.getWidth() + "x" + bitmap.getHeight()
-                + ", bitmapConfig=" + (config != null ? config.name() : null));
+        if (Sketch.isDebugMode()) {
+            Log.d(Sketch.TAG, NAME + ". decode success - "
+                    + "visibleRect=" + visibleRect.toString()
+                    + ", srcRect=" + srcRect.toString()
+                    + ", inSampleSize=" + inSampleSize
+                    + ", bitmapSize=" + bitmap.getWidth() + "x" + bitmap.getHeight()
+                    + ", bitmapConfig=" + (config != null ? config.name() : null));
+        }
         return bitmap;
     }
 
@@ -101,16 +122,25 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
         super.onPostExecute(bitmap);
 
         if (bitmap == null) {
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". onPostExecute. bitmap is null");
+            }
             return;
         }
 
         if (canceled) {
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". onPostExecute. bitmap recycled");
+            }
             bitmap.recycle();
             return;
         }
 
         LargeImageController controller = controllerReference.get();
         if (controller == null) {
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". onPostExecute. controller is null");
+            }
             bitmap.recycle();
             return;
         }

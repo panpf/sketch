@@ -57,8 +57,8 @@ public class LargeImageFragment extends MyFragment {
             }
         });
 
-        String imageName = "large_image.jpg";
-//        String imageName = "long_wei_bo.jpg";
+//        String imageName = "large_image.jpg";
+        String imageName = "long_wei_bo.jpg";
 //        String imageName = "card.png";
 
         largeImageView.displayAssetImage(imageName);
@@ -76,7 +76,7 @@ public class LargeImageFragment extends MyFragment {
                 float scale= imageAmplifier.getScale();
                 mappingView.update(drawable.getIntrinsicWidth(), visibleRect);
                 scaleTextView.setText(String.valueOf(scale));
-                largeImageView.update(imageAmplifier.getDrawMatrix(), visibleRect, imageAmplifier.getDrawableWidth());
+                largeImageView.update(imageAmplifier.getDrawMatrix(), visibleRect, imageAmplifier.getDrawableWidth(), imageAmplifier.getDrawableHeight());
             }
         });
         mappingView.getOptions().setMaxSize(300, 300);
