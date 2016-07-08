@@ -24,7 +24,6 @@ public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
     private int inSampleSize;
 
     // TODO 自定义任务执行器以及线程池
-
     public RegionDecodeTask(LargeImageDisplay controller, ImageRegionDecoder decoder, Rect srcRect, RectF visibleRect, int inSampleSize) {
         this.controllerReference = new WeakReference<LargeImageDisplay>(controller);
         this.decoderReference = new WeakReference<ImageRegionDecoder>(decoder);
@@ -33,6 +32,7 @@ public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
         this.inSampleSize = inSampleSize;
     }
 
+    @SuppressWarnings("unused")
     public boolean isCanceled() {
         return canceled;
     }
@@ -99,14 +99,6 @@ public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
             return null;
         }
 
-//        if (canceled) {
-//            bitmap.recycle();
-//            if (Sketch.isDebugMode()) {
-//                Log.d(Sketch.TAG, NAME + ". canceled");
-//            }
-//            return null;
-//        }
-
         Bitmap.Config config = bitmap.getConfig();
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, NAME + ". decode success - "
@@ -129,14 +121,6 @@ public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
             }
             return;
         }
-
-//        if (canceled) {
-//            if (Sketch.isDebugMode()) {
-//                Log.d(Sketch.TAG, NAME + ". onPostExecute. bitmap recycled");
-//            }
-//            bitmap.recycle();
-//            return;
-//        }
 
         LargeImageDisplay controller = controllerReference.get();
         if (controller == null) {

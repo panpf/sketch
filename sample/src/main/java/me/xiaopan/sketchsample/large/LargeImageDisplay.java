@@ -35,11 +35,12 @@ public class LargeImageDisplay {
     }
 
     private static int getSimpleSize(Context context, Rect srcRect) {
-        // TODO 这个算法还要再调一调，现在缩放比例还有有点儿小
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        int targetWidth = (int) (displayMetrics.widthPixels * 1.5f);
+        int targetHeight = (int) (displayMetrics.heightPixels * 1.5f);
         return Sketch.with(context).getConfiguration().getImageSizeCalculator().calculateInSampleSize(
                 srcRect.width(), srcRect.height(),
-                displayMetrics.widthPixels, displayMetrics.heightPixels);
+                targetWidth, targetHeight);
     }
 
     public void onAttachedToWindow() {
