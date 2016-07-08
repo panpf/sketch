@@ -60,6 +60,6 @@ public class StarIndexFragment extends MyFragment {
     }
 
     public interface GetStarTagStripListener{
-        public PagerSlidingTabStrip onGetStarTabStrip();
+        PagerSlidingTabStrip onGetStarTabStrip();
     }
 }

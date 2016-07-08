@@ -138,7 +138,7 @@ public class LargeImageController {
         matrix.set(drawMatrix);
 
         // visible区域适当的大一点儿
-        int addWidth = (int) (visibleRect.width() * 0.12);
+        int addWidth = (int) (visibleRect.width() * 0.2);
         int addHeight = (int) (visibleRect.height() * 0.2);
         RectF largeVisibleRect = new RectF(
                 Math.max(0, visibleRect.left - addWidth),

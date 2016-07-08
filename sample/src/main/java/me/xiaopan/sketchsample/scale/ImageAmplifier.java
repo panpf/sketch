@@ -97,6 +97,7 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
         }
     }
 
+    // TODO 嵌套ViewPager时滑动还是有问题，比如放大的时候就不能滑动了
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (!zoomEnabled || !hasDrawable()) {

@@ -18,14 +18,20 @@
             <me.xiaopan.psts.PagerSlidingTabStrip
                 android:id="@+id/tabStrip_main_star"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right" />
+                android:layout_height="match_parent"
+                android:layout_gravity="right|center_vertical" />
 
             <me.xiaopan.psts.PagerSlidingTabStrip
                 android:id="@+id/tabStrip_main_appList"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right" />
+                android:layout_height="match_parent"
+                android:layout_gravity="right|center_vertical" />
+
+            <me.xiaopan.psts.PagerSlidingTabStrip
+                android:id="@+id/tabStrip_main_large"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="right|center_vertical" />
         </FrameLayout>
 
         <FrameLayout
