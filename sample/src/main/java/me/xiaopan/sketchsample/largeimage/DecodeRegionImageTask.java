@@ -23,6 +23,8 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
     private RectF visibleRect;
     private int inSampleSize;
 
+    // TODO 自定义任务执行器以及线程池
+
     public DecodeRegionImageTask(LargeImageController controller, ImageRegionDecoder decoder, Rect srcRect, RectF visibleRect, int inSampleSize) {
         this.controllerReference = new WeakReference<LargeImageController>(controller);
         this.decoderReference = new WeakReference<ImageRegionDecoder>(decoder);
@@ -97,13 +99,13 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
             return null;
         }
 
-        if (canceled) {
-            bitmap.recycle();
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". canceled");
-            }
-            return null;
-        }
+//        if (canceled) {
+//            bitmap.recycle();
+//            if (Sketch.isDebugMode()) {
+//                Log.d(Sketch.TAG, NAME + ". canceled");
+//            }
+//            return null;
+//        }
 
         Bitmap.Config config = bitmap.getConfig();
         if (Sketch.isDebugMode()) {
@@ -128,13 +130,13 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
             return;
         }
 
-        if (canceled) {
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". onPostExecute. bitmap recycled");
-            }
-            bitmap.recycle();
-            return;
-        }
+//        if (canceled) {
+//            if (Sketch.isDebugMode()) {
+//                Log.d(Sketch.TAG, NAME + ". onPostExecute. bitmap recycled");
+//            }
+//            bitmap.recycle();
+//            return;
+//        }
 
         LargeImageController controller = controllerReference.get();
         if (controller == null) {
@@ -145,6 +147,6 @@ public class DecodeRegionImageTask extends AsyncTask<Integer, Integer, Bitmap> {
             return;
         }
 
-        controller.onDecodeCompleted(bitmap, srcRect, visibleRect);
+        controller.onDecodeCompleted(bitmap, visibleRect);
     }
 }

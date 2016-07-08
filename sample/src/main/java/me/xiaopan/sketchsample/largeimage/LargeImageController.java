@@ -7,6 +7,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.widget.ImageView;
@@ -21,13 +22,13 @@ public class LargeImageController {
     private ImageView imageView;
 
     private ImageRegionDecoder decoder;
-    private Bitmap bitmap;
-    private Rect bitmapRect;
-    private Matrix matrix = new Matrix();
-    private Rect currentSrcRect = new Rect();
-    private RectF visibleRect = new RectF();
-    private Paint paint = new Paint();
     private DecodeRegionImageTask lastTask;
+
+    private Bitmap bitmap;
+    private Rect bitmapSrcRect = new Rect();
+    private RectF bitmapVisibleRect = new RectF();
+    private Paint paint = new Paint();
+    private Matrix matrix = new Matrix();
 
     public LargeImageController(ImageView imageView) {
         this.imageView = imageView;
@@ -50,17 +51,14 @@ public class LargeImageController {
     }
 
     public void onDraw(Canvas canvas) {
-        if (bitmap == null || bitmap.isRecycled() || bitmapRect == null || visibleRect.isEmpty()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". onDraw. failed");
-            }
+        if (bitmap == null || bitmap.isRecycled() || bitmapSrcRect.isEmpty() || bitmapVisibleRect.isEmpty()) {
             return;
         }
 
         int saveCount = canvas.save();
 
         canvas.concat(matrix);
-        canvas.drawBitmap(bitmap, bitmapRect, visibleRect, paint);
+        canvas.drawBitmap(bitmap, bitmapSrcRect, bitmapVisibleRect, paint);
 
         canvas.restoreToCount(saveCount);
     }
@@ -69,39 +67,64 @@ public class LargeImageController {
 
     }
 
-    public void setImage(String uri) {
-        decoder = new ImageRegionDecoder(imageView.getContext(), uri);
-        try {
-            decoder.init();
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void reset() {
+        if (bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
         }
+
+        if (decoder != null) {
+            decoder.recycle();
+            decoder = null;
+        }
+
+        bitmapSrcRect.setEmpty();
+        bitmapVisibleRect.setEmpty();
+        matrix.reset();
     }
 
-    void onDecodeCompleted(Bitmap newBitmap, Rect srcRect, RectF visibleRectF) {
-        if (!this.currentSrcRect.equals(srcRect)) {
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". onDecodeCompleted. src not match");
-            }
-            return;
-        }
-
+    private void cleanBitmap() {
         Bitmap oldBitmap = bitmap;
         if (oldBitmap != null) {
             oldBitmap.recycle();
         }
 
-        visibleRect.set(visibleRectF.left, visibleRectF.top, visibleRectF.right, visibleRectF.bottom);
+        bitmap = null;
+        bitmapSrcRect.setEmpty();
+        bitmapVisibleRect.setEmpty();
+    }
 
-        bitmap = newBitmap;
-        bitmapRect = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+    private void invalidate() {
+        if (imageView != null) {
+            imageView.invalidate();
+        }
+    }
 
-        imageView.invalidate();
+    public void setImage(String uri) {
+        if (uri != null && decoder != null && uri.equals(decoder.getImageUri())) {
+            return;
+        }
+
+        reset();
+
+        if (!TextUtils.isEmpty(uri)) {
+            decoder = new ImageRegionDecoder(imageView.getContext(), uri);
+            try {
+                decoder.init();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
+        invalidate();
     }
 
     // todo 这个触发点，要再优化优化，比如说慢慢滑动的时候就一直触发，快速滑动的时候就停止的时候触发
     public void update(Matrix drawMatrix, RectF visibleRect, int drawableWidth, int drawableHeight) {
         if (decoder == null || !decoder.isReady() || drawMatrix == null || visibleRect == null || visibleRect.isEmpty() || drawableWidth == 0 || drawableHeight == 0) {
+            cleanBitmap();
+            matrix.reset();
+            invalidate();
             return;
         }
 
@@ -123,57 +146,80 @@ public class LargeImageController {
                 Math.min(drawableWidth, visibleRect.right + addWidth),
                 Math.min(drawableHeight, visibleRect.bottom + addHeight));
 
+        // 如果是全部显示的话就不解码了
+        if (largeVisibleRect.width() == drawableWidth && largeVisibleRect.height() == drawableHeight) {
+            cleanBitmap();
+            invalidate();
+            return;
+        }
+
+        // 如果largeVisibleRect没有变化的话就不解码了
+        if (largeVisibleRect.equals(bitmapVisibleRect)) {
+            return;
+        }
+
         // 计算显示区域在完整图片中对应的区域
         // 各用个的缩放比例（这很重要），因为宽或高的比例可能不一样
         float widthScale = (float) decoder.getImageWidth() / drawableWidth;
         float heightScale = (float) decoder.getImageHeight() / drawableHeight;
-        Rect newSrcRect = new Rect(
+        Rect srcRect = new Rect(
                 (int) (largeVisibleRect.left * widthScale),
                 (int) (largeVisibleRect.top * heightScale),
                 (int) (largeVisibleRect.right * widthScale),
                 (int) (largeVisibleRect.bottom * heightScale));
 
         // 别超出范围了
-        newSrcRect.left = Math.max(0, newSrcRect.left);
-        newSrcRect.top = Math.max(0, newSrcRect.top);
-        newSrcRect.right = Math.max(0, newSrcRect.right);
-        newSrcRect.bottom = Math.max(0, newSrcRect.bottom);
-        newSrcRect.left = Math.min(newSrcRect.left, decoder.getImageWidth());
-        newSrcRect.top = Math.min(newSrcRect.top, decoder.getImageHeight());
-        newSrcRect.right = Math.min(newSrcRect.right, decoder.getImageWidth());
-        newSrcRect.bottom = Math.min(newSrcRect.bottom, decoder.getImageHeight());
+        srcRect.left = Math.max(0, srcRect.left);
+        srcRect.top = Math.max(0, srcRect.top);
+        srcRect.right = Math.max(0, srcRect.right);
+        srcRect.bottom = Math.max(0, srcRect.bottom);
+        srcRect.left = Math.min(srcRect.left, decoder.getImageWidth());
+        srcRect.top = Math.min(srcRect.top, decoder.getImageHeight());
+        srcRect.right = Math.min(srcRect.right, decoder.getImageWidth());
+        srcRect.bottom = Math.min(srcRect.bottom, decoder.getImageHeight());
 
         // 无效的区域不要
-        if (newSrcRect.isEmpty()) {
+        if (srcRect.isEmpty()) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". update - " +
+                Log.d(Sketch.TAG, NAME + ". update - srcRect is empty - " +
                         "imageSize=" + decoder.getImageWidth() + "x" + decoder.getImageHeight()
                         + ", visibleRect=" + visibleRect.toString()
                         + ", largeVisibleRect=" + largeVisibleRect.toString()
                         + ", scale=" + widthScale + "x" + heightScale
-                        + ", newSrcRect=" + newSrcRect.toString());
+                        + ", newSrcRect=" + srcRect.toString());
             }
+            cleanBitmap();
+            invalidate();
             return;
         }
 
-        // 立马记住当前区域为了后续比较用
-        currentSrcRect.set(newSrcRect.left, newSrcRect.top, newSrcRect.right, newSrcRect.bottom);
-
         // 根据src区域大小计算缩放比例
-        int inSampleSize = getSimpleSize(decoder.getContext(), newSrcRect);
+        int inSampleSize = getSimpleSize(decoder.getContext(), srcRect);
 
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, NAME + ". update - "
                     + "visibleRect=" + visibleRect.toString()
                     + ", largeVisibleRect=" + largeVisibleRect.toString()
-                    + ", srcRect=" + newSrcRect.toString()
+                    + ", srcRect=" + srcRect.toString()
                     + ", inSampleSize=" + inSampleSize
                     + ", imageSize=" + decoder.getImageWidth() + "x" + decoder.getImageHeight()
                     + ", scale=" + widthScale + "x" + heightScale);
         }
 
         // 读取图片
-        lastTask = new DecodeRegionImageTask(this, decoder, newSrcRect, largeVisibleRect, inSampleSize);
+        lastTask = new DecodeRegionImageTask(this, decoder, srcRect, largeVisibleRect, inSampleSize);
         lastTask.execute(0);
+    }
+
+    void onDecodeCompleted(Bitmap newBitmap, RectF visibleRect) {
+        cleanBitmap();
+
+        if (newBitmap != null && !newBitmap.isRecycled()) {
+            bitmap = newBitmap;
+            bitmapSrcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
+            bitmapVisibleRect.set(visibleRect.left, visibleRect.top, visibleRect.right, visibleRect.bottom);
+        }
+
+        invalidate();
     }
 }

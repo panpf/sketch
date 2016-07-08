@@ -57,8 +57,8 @@ public class LargeImageFragment extends MyFragment {
             }
         });
 
-//        String imageName = "large_image.jpg";
-        String imageName = "long_wei_bo.jpg";
+        String imageName = "large_image.jpg";
+//        String imageName = "long_wei_bo.jpg";
 //        String imageName = "card.png";
 
         largeImageView.displayAssetImage(imageName);

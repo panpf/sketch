@@ -48,6 +48,14 @@ public class ImageRegionDecoder {
         return imageWidth;
     }
 
+    public ImageFormat getImageFormat() {
+        return imageFormat;
+    }
+
+    public String getImageUri() {
+        return imageUri;
+    }
+
     @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
     public boolean isReady() {
         return decoder != null && !decoder.isRecycled();
@@ -241,10 +249,6 @@ public class ImageRegionDecoder {
             Log.e(Sketch.TAG, NAME + ". init BitmapRegionDecoder failed: " + imageUri);
             throw e;
         }
-    }
-
-    public ImageFormat getImageFormat() {
-        return imageFormat;
     }
 
     @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)

@@ -458,7 +458,7 @@ public class ImageAmplifier implements View.OnTouchListener, OnScaleDragGestureL
         if (imageView == null) {
             return;
         }
-
+        // TODO 优化最大、最小以及默认缩放比例，要根据图片的宽高以及ImageView的宽高来计算
         if (zoomEnabled) {
             // Make sure we using MATRIX Scale Type
             setImageViewScaleTypeMatrix(imageView);
