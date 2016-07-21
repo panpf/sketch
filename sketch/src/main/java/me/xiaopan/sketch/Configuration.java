@@ -28,7 +28,7 @@ import me.xiaopan.sketch.decode.DefaultImageDecoder;
 import me.xiaopan.sketch.decode.ImageDecoder;
 import me.xiaopan.sketch.display.DefaultImageDisplayer;
 import me.xiaopan.sketch.display.ImageDisplayer;
-import me.xiaopan.sketch.feature.ErrorCallback;
+import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.feature.HelperFactory;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
@@ -53,7 +53,7 @@ public class Configuration {
     private MemoryCache placeholderImageMemoryCache;    // 占位图内存缓存器
     private ImageDecoder imageDecoder;    //图片解码器
     private HelperFactory helperFactory;    // 协助器工厂
-    private ErrorCallback errorCallback;    // 错误回调
+    private ExceptionMonitor exceptionMonitor;    // 错误回调
     private ImageDisplayer defaultImageDisplayer;   // 默认的图片显示器，当DisplayRequest中没有指定显示器的时候就会用到
     private ImageProcessor resizeImageProcessor;    // Resize图片处理器
     private RequestFactory requestFactory;  // 请求工厂
@@ -74,7 +74,7 @@ public class Configuration {
         this.context = tempContext.getApplicationContext();
 
         // LruDiskCache需要依赖所以先创建
-        this.errorCallback = new ErrorCallback(context);
+        this.exceptionMonitor = new ExceptionMonitor(context);
 
         this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
         this.diskCache = new LruDiskCache(context, this, 1, DiskCache.DISK_CACHE_MAX_SIZE);
@@ -569,20 +569,20 @@ public class Configuration {
      * 获取错误回调
      */
     @SuppressWarnings("unused")
-    public ErrorCallback getErrorCallback() {
-        return errorCallback;
+    public ExceptionMonitor getExceptionMonitor() {
+        return exceptionMonitor;
     }
 
     /**
      * 设置错误回调
      */
     @SuppressWarnings("unused")
-    public void setErrorCallback(ErrorCallback errorCallback) {
-        if (errorCallback != null) {
-            this.errorCallback = errorCallback;
+    public void setExceptionMonitor(ExceptionMonitor exceptionMonitor) {
+        if (exceptionMonitor != null) {
+            this.exceptionMonitor = exceptionMonitor;
             if (Sketch.isDebugMode()) {
                 Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "errorCallback", " (", errorCallback.getIdentifier(), ")"));
+                        "set", " - ", "errorCallback", " (", exceptionMonitor.getIdentifier(), ")"));
             }
         }
     }
@@ -682,11 +682,11 @@ public class Configuration {
             imagePreprocessor.appendIdentifier(builder);
         }
 
-        if (errorCallback != null) {
+        if (exceptionMonitor != null) {
             if (builder.length() > 0) builder.append("\n");
             builder.append("errorCallback");
             builder.append("：");
-            errorCallback.appendIdentifier(builder);
+            exceptionMonitor.appendIdentifier(builder);
         }
 
         if (builder.length() > 0) builder.append("\n");

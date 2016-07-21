@@ -96,15 +96,15 @@ public class LruDiskCache implements DiskCache {
             cacheDir = SketchUtils.buildCacheDir(context, DISK_CACHE_DIR_NAME, true, DISK_CACHE_RESERVED_SPACE_SIZE, true, true, 10);
         } catch (NoSpaceException e) {
             e.printStackTrace();
-            configuration.getErrorCallback().onInstallDiskCacheFailed(e, cacheDir);
+            configuration.getExceptionMonitor().onInstallDiskCacheFailed(e, cacheDir);
             return;
         } catch (UnableCreateDirException e) {
             e.printStackTrace();
-            configuration.getErrorCallback().onInstallDiskCacheFailed(e, cacheDir);
+            configuration.getExceptionMonitor().onInstallDiskCacheFailed(e, cacheDir);
             return;
         } catch (UnableCreateFileException e) {
             e.printStackTrace();
-            configuration.getErrorCallback().onInstallDiskCacheFailed(e, cacheDir);
+            configuration.getExceptionMonitor().onInstallDiskCacheFailed(e, cacheDir);
             return;
         }
 
@@ -116,7 +116,7 @@ public class LruDiskCache implements DiskCache {
             cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
         } catch (IOException e) {
             e.printStackTrace();
-            configuration.getErrorCallback().onInstallDiskCacheFailed(e, cacheDir);
+            configuration.getExceptionMonitor().onInstallDiskCacheFailed(e, cacheDir);
         }
     }
 

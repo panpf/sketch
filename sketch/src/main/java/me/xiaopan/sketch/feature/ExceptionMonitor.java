@@ -13,21 +13,23 @@ import java.util.Arrays;
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.process.ImageProcessor;
+import me.xiaopan.sketch.request.DownloadRequest;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class ErrorCallback implements Identifier {
-    protected String logName = "ErrorCallback";
+public class ExceptionMonitor implements Identifier {
+    protected String logName = "ExceptionMonitor";
 
     private Context context;
 
-    public ErrorCallback(Context context) {
+    public ExceptionMonitor(Context context) {
         this.context = context;
     }
 
     /**
      * 安装磁盘缓存失败
-     * @param e NoSpaceException：空间不足；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
+     *
+     * @param e        NoSpaceException：空间不足；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
      * @param cacheDir 默认的缓存目录
      */
     public void onInstallDiskCacheFailed(Exception e, File cacheDir) {
@@ -43,8 +45,9 @@ public class ErrorCallback implements Identifier {
 
     /**
      * 解码GIF图片失败
-     * @param throwable UnsatisfiedLinkError或ExceptionInInitializerError：找不到对应到的so文件
-     * @param request 请求
+     *
+     * @param throwable     UnsatisfiedLinkError或ExceptionInInitializerError：找不到对应到的so文件
+     * @param request       请求
      * @param boundsOptions 图片尺寸信息
      */
     public void onDecodeGifImageFailed(Throwable throwable, LoadRequest request, BitmapFactory.Options boundsOptions) {
@@ -70,8 +73,9 @@ public class ErrorCallback implements Identifier {
 
     /**
      * 解码普通图片失败
-     * @param throwable OutOfMemoryError：内存溢出
-     * @param request 请求
+     *
+     * @param throwable     OutOfMemoryError：内存溢出
+     * @param request       请求
      * @param boundsOptions 图片尺寸信息
      */
     public void onDecodeNormalImageFailed(Throwable throwable, LoadRequest request, BitmapFactory.Options boundsOptions) {
@@ -96,11 +100,12 @@ public class ErrorCallback implements Identifier {
 
     /**
      * 处理图片失败
-     * @param e OutOfMemoryError：内存溢出
-     * @param imageUri 图片uri
+     *
+     * @param e         OutOfMemoryError：内存溢出
+     * @param imageUri  图片uri
      * @param processor 所使用的处理器
      */
-    public void onProcessImageFailed(Throwable e, String imageUri, ImageProcessor processor){
+    public void onProcessImageFailed(Throwable e, String imageUri, ImageProcessor processor) {
         if (e instanceof OutOfMemoryError) {
             long maxMemory = Runtime.getRuntime().maxMemory();
             long freeMemory = Runtime.getRuntime().freeMemory();
@@ -118,6 +123,10 @@ public class ErrorCallback implements Identifier {
                 " - ", "onProcessImageFailed",
                 " - ", "imageUri", ": ", imageUri,
                 " - ", "processor", ": ", processor.getIdentifier()));
+    }
+
+    public void onDownloadFailed(DownloadRequest request, Throwable throwable) {
+
     }
 
     @Override

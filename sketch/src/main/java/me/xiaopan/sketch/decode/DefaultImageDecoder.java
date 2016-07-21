@@ -28,7 +28,7 @@ import java.text.DecimalFormat;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.feature.ErrorCallback;
+import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.DataSource;
 import me.xiaopan.sketch.request.ImageFrom;
@@ -79,8 +79,8 @@ public class DefaultImageDecoder implements ImageDecoder {
                 return new DecodeResult(mimeType, decodeHelper.getGifDrawable());
             } catch (Throwable e) {
                 e.printStackTrace();
-                ErrorCallback errorCallback = loadRequest.getSketch().getConfiguration().getErrorCallback();
-                errorCallback.onDecodeGifImageFailed(e, loadRequest, boundsOptions);
+                ExceptionMonitor exceptionMonitor = loadRequest.getSketch().getConfiguration().getExceptionMonitor();
+                exceptionMonitor.onDecodeGifImageFailed(e, loadRequest, boundsOptions);
             }
         }
 
@@ -103,9 +103,9 @@ public class DefaultImageDecoder implements ImageDecoder {
                 bitmap = decodeHelper.decode(decodeOptions);
             } catch (Throwable error) {
                 error.printStackTrace();
-                ErrorCallback errorCallback = loadRequest.getSketch().getConfiguration().getErrorCallback();
+                ExceptionMonitor exceptionMonitor = loadRequest.getSketch().getConfiguration().getExceptionMonitor();
                 boundsOptions.inSampleSize = decodeOptions.inSampleSize;
-                errorCallback.onDecodeNormalImageFailed(error, loadRequest, boundsOptions);
+                exceptionMonitor.onDecodeNormalImageFailed(error, loadRequest, boundsOptions);
             }
             if (bitmap != null && (bitmap.getWidth() == 1 || bitmap.getHeight() == 1)) {
                 if (Sketch.isDebugMode()) {

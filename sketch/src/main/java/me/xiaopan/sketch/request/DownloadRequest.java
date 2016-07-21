@@ -223,6 +223,8 @@ public class DownloadRequest extends AsyncRequest {
             } catch (Throwable e) {
                 e.printStackTrace();
 
+                getSketch().getConfiguration().getExceptionMonitor().onDownloadFailed(this, e);
+
                 if (isCanceled()) {
                     if (Sketch.isDebugMode()) {
                         printLogW("runDownload", "canceled", "download failed");

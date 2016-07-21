@@ -29,7 +29,7 @@ import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
 import me.xiaopan.sketch.drawable.FixedRecycleBitmapDrawable;
 import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
-import me.xiaopan.sketch.feature.ErrorCallback;
+import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -153,8 +153,8 @@ public class ImageHolder {
                 newBitmap = imageProcessor.process(sketch, bitmap, resize, forceUseResize, tempLowQualityImage);
             } catch (OutOfMemoryError e) {
                 e.printStackTrace();
-                ErrorCallback errorCallback = sketch.getConfiguration().getErrorCallback();
-                errorCallback.onProcessImageFailed(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), imageProcessor);
+                ExceptionMonitor exceptionMonitor = sketch.getConfiguration().getExceptionMonitor();
+                exceptionMonitor.onProcessImageFailed(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), imageProcessor);
             }
             if (newBitmap != bitmap) {
                 if (canRecycle) {
