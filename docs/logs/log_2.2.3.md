@@ -3,6 +3,8 @@ ErrorCallback:
 >* ``新增``. onInstallDiskCacheFailed异常细分出UnableCreateFileException，标明无法缓存目录中创建文件
 >* ``新增``. 新增onProcessImageFailed(OutOfMemoryError, String, ImageProcessor)方法
 >* ``新增``. 新增构造函数ErrorCallback(Context) 
+>* ``修改``. ErrorCallback重命名为ExceptionMonitor 
+>* ``新增``. 新增onDownloadFailed(DownloadRequest, Throwable)，可监控下载失败异常 
    
 DiskCache：
 >* ``优化``. DiskCache在执行close的时候，顺便把缓存编辑锁清了 
