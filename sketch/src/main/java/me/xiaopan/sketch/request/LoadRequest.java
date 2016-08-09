@@ -21,6 +21,7 @@ import android.graphics.Bitmap;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
+import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -188,10 +189,19 @@ public class LoadRequest extends DownloadRequest {
             ImageProcessor imageProcessor = loadOptions.getImageProcessor();
             if (imageProcessor != null) {
                 setStatus(Status.PROCESSING);
-                Bitmap newBitmap = imageProcessor.process(
-                        getSketch(), decodeResult.getBitmap(),
-                        loadOptions.getResize(), loadOptions.isForceUseResize(),
-                        loadOptions.isLowQualityImage());
+
+                Bitmap newBitmap = null;
+                try {
+                    newBitmap = imageProcessor.process(
+                            getSketch(), decodeResult.getBitmap(),
+                            loadOptions.getResize(), loadOptions.isForceUseResize(),
+                            loadOptions.isLowQualityImage());
+                } catch (OutOfMemoryError e) {
+                    e.printStackTrace();
+                    ExceptionMonitor exceptionMonitor = getSketch().getConfiguration().getExceptionMonitor();
+                    exceptionMonitor.onProcessImageFailed(e, getAttrs().getId(), imageProcessor);
+                }
+
                 // 确实是一张新图片，就替换掉旧图片
                 if (newBitmap != null && !newBitmap.isRecycled() && newBitmap != decodeResult.getBitmap()) {
                     if (Sketch.isDebugMode()) {

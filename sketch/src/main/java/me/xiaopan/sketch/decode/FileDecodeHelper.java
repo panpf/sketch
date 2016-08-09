@@ -53,7 +53,7 @@ public class FileDecodeHelper implements DecodeHelper {
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 builder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                 builder.append(", ").append("targetSize").append("=").append(loadRequest.getOptions().getMaxSize().getWidth()).append("x").append(loadRequest.getOptions().getMaxSize().getHeight());
-                builder.append(", ").append("targetSizeScaleInSampleSize").append("=").append(loadRequest.getSketch().getConfiguration().getImageSizeCalculator().getTargetSizeScaleInSampleSize());
+                builder.append(", ").append("targetSizeScale").append("=").append(loadRequest.getSketch().getConfiguration().getImageSizeCalculator().getTargetSizeScale());
                 builder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                 builder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
             } else {

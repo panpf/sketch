@@ -26,7 +26,8 @@ import android.os.Parcelable;
  * hierarchies to ensure the state of all classes along the chain is saved.
  */
 public abstract class ClassLoaderSavedState implements Parcelable {
-    public static final ClassLoaderSavedState EMPTY_STATE = new ClassLoaderSavedState() {};
+    public static final ClassLoaderSavedState EMPTY_STATE = new ClassLoaderSavedState() {
+    };
 
     private Parcelable mSuperState = EMPTY_STATE;
     private ClassLoader mClassLoader;
@@ -48,8 +49,7 @@ public abstract class ClassLoaderSavedState implements Parcelable {
         mClassLoader = classLoader;
         if (superState == null) {
             throw new IllegalArgumentException("superState must not be null");
-        }
-        else {
+        } else {
             mSuperState = superState != EMPTY_STATE ? superState : null;
         }
     }

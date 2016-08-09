@@ -25,7 +25,7 @@ import android.support.annotation.Nullable;
 /**
  * 这个Service只是为了测试Sketch在多进程下的兼容性
  */
-public class NotificationService extends Service{
+public class NotificationService extends Service {
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {

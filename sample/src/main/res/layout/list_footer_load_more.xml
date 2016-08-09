@@ -12,13 +12,13 @@
     <ProgressBar
         android:id="@+id/progress_loadMoreFooter"
         android:layout_width="20dp"
-        android:layout_height="20dp"/>
+        android:layout_height="20dp" />
 
     <TextView
         android:id="@+id/text_loadMoreFooter_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="快递马上就来，别急哦！"
-        android:layout_marginLeft="8dp"/>
+        android:layout_marginLeft="8dp" />
 
 </LinearLayout>

@@ -476,7 +476,7 @@ public final class DiskLruCache implements Closeable {
      * exist is not currently readable. If a value is returned, it is moved to
      * the head of the LRU queue.
      */
-    public synchronized Snapshot get(String key) throws IOException {
+    public synchronized Snapshot get(String key) throws IOException, ClosedException {
         checkNotClosed();
         validateKey(key);
         Entry entry = lruEntries.get(key);
@@ -517,7 +517,7 @@ public final class DiskLruCache implements Closeable {
      * exist is not currently readable. If a value is returned, it is moved to
      * the head of the LRU queue.
      */
-    public synchronized SimpleSnapshot getSimpleSnapshot(String key) throws IOException {
+    public synchronized SimpleSnapshot getSimpleSnapshot(String key) throws IOException, ClosedException {
         checkNotClosed();
         validateKey(key);
         Entry entry = lruEntries.get(key);
@@ -551,7 +551,7 @@ public final class DiskLruCache implements Closeable {
     /**
      * Returns exisr of the entry named {@code key}
      */
-    public synchronized boolean exist(String key) {
+    public synchronized boolean exist(String key) throws ClosedException {
         checkNotClosed();
         validateKey(key);
         Entry entry = lruEntries.get(key);
@@ -562,11 +562,11 @@ public final class DiskLruCache implements Closeable {
      * Returns an editor for the entry named {@code key}, or null if another
      * edit is in progress.
      */
-    public Editor edit(String key) throws IOException {
+    public Editor edit(String key) throws IOException, ClosedException {
         return edit(key, ANY_SEQUENCE_NUMBER);
     }
 
-    private synchronized Editor edit(String key, long expectedSequenceNumber) throws IOException {
+    private synchronized Editor edit(String key, long expectedSequenceNumber) throws IOException, ClosedException {
         checkNotClosed();
         validateKey(key);
         Entry entry = lruEntries.get(key);
@@ -680,7 +680,7 @@ public final class DiskLruCache implements Closeable {
      *
      * @return true if an entry was removed.
      */
-    public synchronized boolean remove(String key) throws IOException {
+    public synchronized boolean remove(String key) throws IOException, ClosedException {
         checkNotClosed();
         validateKey(key);
         Entry entry = lruEntries.get(key);
@@ -715,16 +715,16 @@ public final class DiskLruCache implements Closeable {
         return journalWriter == null;
     }
 
-    private void checkNotClosed() {
+    private void checkNotClosed() throws ClosedException{
         if (journalWriter == null) {
-            throw new IllegalStateException("cache is closed");
+            throw new ClosedException("cache is closed");
         }
     }
 
     /**
      * Force buffered operations to the filesystem.
      */
-    public synchronized void flush() throws IOException {
+    public synchronized void flush() throws IOException, ClosedException {
         checkNotClosed();
         trimToSize();
         journalWriter.flush();
@@ -746,12 +746,16 @@ public final class DiskLruCache implements Closeable {
                 }
             }
         }
-        trimToSize();
+        try {
+            trimToSize();
+        } catch (ClosedException e) {
+            e.printStackTrace();
+        }
         journalWriter.close();
         journalWriter = null;
     }
 
-    private void trimToSize() throws IOException {
+    private void trimToSize() throws IOException, ClosedException {
         while (size > maxSize) {
 //            Map.Entry<String, Entry> toEvict = lruEntries.eldest();
             final Map.Entry<String, Entry> toEvict = lruEntries.entrySet().iterator().next();
@@ -799,7 +803,7 @@ public final class DiskLruCache implements Closeable {
          * entry has changed since this snapshot was created or if another edit
          * is in progress.
          */
-        public Editor edit() throws IOException {
+        public Editor edit() throws IOException, ClosedException {
             return DiskLruCache.this.edit(key, sequenceNumber);
         }
 
@@ -846,7 +850,7 @@ public final class DiskLruCache implements Closeable {
          * entry has changed since this snapshot was created or if another edit
          * is in progress.
          */
-        public Editor edit() throws IOException {
+        public Editor edit() throws IOException, ClosedException {
             return DiskLruCache.this.edit(key, sequenceNumber);
         }
 
@@ -949,7 +953,7 @@ public final class DiskLruCache implements Closeable {
          * Commits this edit so it is visible to readers.  This releases the
          * edit lock so another edit may be started on the same key.
          */
-        public void commit() throws IOException, EditorChangedException {
+        public void commit() throws IOException, EditorChangedException, ClosedException {
             if (hasErrors) {
                 completeEdit(this, false);
                 remove(entry.key); // the previous entry is stale
@@ -1077,5 +1081,11 @@ public final class DiskLruCache implements Closeable {
 
     public static class EditorChangedException extends Exception {
 
+    }
+
+    public static class ClosedException extends Exception {
+        public ClosedException(String detailMessage) {
+            super(detailMessage);
+        }
     }
 }

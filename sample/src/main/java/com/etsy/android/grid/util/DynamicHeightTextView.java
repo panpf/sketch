@@ -5,7 +5,6 @@ import android.util.AttributeSet;
 import android.widget.TextView;
 
 /**
- *
  * A {@link android.widget.TextView} that maintains a consistent width to height aspect ratio.
  * In the real world this would likely extend ImageView.
  */
@@ -39,8 +38,7 @@ public class DynamicHeightTextView extends TextView {
             int width = MeasureSpec.getSize(widthMeasureSpec);
             int height = (int) (width * mHeightRatio);
             setMeasuredDimension(width, height);
-        }
-        else {
+        } else {
             super.onMeasure(widthMeasureSpec, heightMeasureSpec);
         }
     }

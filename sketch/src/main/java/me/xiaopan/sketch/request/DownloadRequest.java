@@ -171,7 +171,9 @@ public class DownloadRequest extends AsyncRequest {
         if (!getOptions().isDisableCacheInDisk()) {
             setStatus(Status.GET_DISK_CACHE_EDIT_LOCK);
             diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
-            diskCacheEditLock.lock();
+            if (diskCacheEditLock != null) {
+                diskCacheEditLock.lock();
+            }
         }
 
         DownloadResult justDownloadResult = download(diskCache, diskCacheKey);
@@ -221,6 +223,8 @@ public class DownloadRequest extends AsyncRequest {
             } catch (Throwable e) {
                 e.printStackTrace();
 
+                getSketch().getConfiguration().getExceptionMonitor().onDownloadFailed(this, e);
+
                 if (isCanceled()) {
                     if (Sketch.isDebugMode()) {
                         printLogW("runDownload", "canceled", "download failed");
@@ -245,7 +249,7 @@ public class DownloadRequest extends AsyncRequest {
         return justDownloadResult;
     }
 
-    private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey) throws IOException, DiskLruCache.EditorChangedException {
+    private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey) throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException {
         setStatus(Status.CONNECTING);
 
         HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getAttrs().getRealUri());
@@ -315,18 +319,32 @@ public class DownloadRequest extends AsyncRequest {
                 throw e;
             }
         } else {
-            // 不需要将数据缓存到本地或本地缓存不可用的时候就使用ByteArrayOutputStream来存储数据
             outputStream = new ByteArrayOutputStream();
         }
 
         // 读取数据
         int completedLength = 0;
+        boolean readFully;
         try {
             completedLength = readData(inputStream, outputStream, (int) contentLength);
+
+            readFully = completedLength == contentLength;
+            if (diskCacheEditor != null) {
+                if (readFully) {
+                    diskCacheEditor.commit();
+                } else {
+                    diskCacheEditor.abort();
+                }
+            }
         } catch (IOException e) {
             if (diskCacheEditor != null) {
                 diskCacheEditor.abort();
+                diskCacheEditor = null;
             }
+            throw e;
+        } catch (DiskLruCache.ClosedException e) {
+            e.printStackTrace();
+            diskCacheEditor.abort();
             throw e;
         } finally {
             SketchUtils.close(outputStream);
@@ -334,16 +352,8 @@ public class DownloadRequest extends AsyncRequest {
         }
 
         if (isCanceled()) {
-            boolean readFully = completedLength == contentLength;
             if (Sketch.isDebugMode()) {
                 printLogW("runDownload", "canceled", "read data after", readFully ? "read fully" : "not read fully");
-            }
-            if (diskCacheEditor != null) {
-                if (readFully) {
-                    diskCacheEditor.commit();
-                } else {
-                    diskCacheEditor.abort();
-                }
             }
             return null;
         }
@@ -352,14 +362,19 @@ public class DownloadRequest extends AsyncRequest {
             printLogI("runDownload", "download success", "fileLength: " + completedLength + "/" + contentLength);
         }
 
-        // 返回结果
-        if (!getOptions().isDisableCacheInDisk() && diskCacheEditor != null) {
-            diskCacheEditor.commit();
-            return new DownloadResult(diskCache.get(diskCacheKey), true);
-        } else if (outputStream instanceof ByteArrayOutputStream) {
-            return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray(), true);
+        // 提交磁盘缓存并返回
+        if (diskCacheEditor != null) {
+            DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
+            if (diskCacheEntry != null) {
+                return new DownloadResult(diskCacheEntry, true);
+            } else {
+                if (Sketch.isDebugMode()) {
+                    printLogW("runDownload", "download after", "not found disk cache");
+                }
+                return null;
+            }
         } else {
-            return null;
+            return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray(), true);
         }
     }
 

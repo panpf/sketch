@@ -22,16 +22,16 @@ public class MyImageView extends SketchImageView {
         onInit(context);
     }
 
-    private void onInit(Context context){
+    private void onInit(Context context) {
         settings = Settings.with(context);
-        if(!isInEditMode()){
+        if (!isInEditMode()) {
             setShowGifFlag(R.drawable.ic_gif);
         }
     }
 
     @Override
     public void onDisplay(UriScheme uriScheme) {
-        if(autoApplyGlobalAttr){
+        if (autoApplyGlobalAttr) {
             setShowPressedStatus(settings.isShowPressedStatus());
             setShowImageFrom(settings.isShowImageFromFlag());
             setShowDownloadProgress(settings.isShowImageDownloadProgress());
@@ -42,7 +42,7 @@ public class MyImageView extends SketchImageView {
         super.onDisplay(uriScheme);
     }
 
-    public void setAutoApplyGlobalAttr(boolean autoApplyGlobalAttr){
+    public void setAutoApplyGlobalAttr(boolean autoApplyGlobalAttr) {
         this.autoApplyGlobalAttr = autoApplyGlobalAttr;
     }
 }

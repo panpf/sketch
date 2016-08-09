@@ -47,9 +47,12 @@ import me.xiaopan.sketchsample.widget.LoadMoreFooterView;
 public class SearchFragment extends MyFragment implements ImageStaggeredGridAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener, LoadMoreFooterView.OnLoadMoreListener {
     public static final String PARAM_OPTIONAL_STRING_SEARCH_KEYWORD = "PARAM_OPTIONAL_STRING_SEARCH_KEYWORD";
 
-    @InjectView(R.id.refreshLayout_search) PullRefreshLayout pullRefreshLayout;
-    @InjectView(R.id.list_search) private StaggeredGridView staggeredGridView;
-    @InjectView(R.id.hintView_search) private HintView hintView;
+    @InjectView(R.id.refreshLayout_search)
+    PullRefreshLayout pullRefreshLayout;
+    @InjectView(R.id.list_search)
+    private StaggeredGridView staggeredGridView;
+    @InjectView(R.id.hintView_search)
+    private HintView hintView;
 
     private SearchImageRequest searchImageRequest;
     private HttpRequestFuture refreshRequestFuture;
@@ -58,12 +61,13 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
     private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
     private LoadMoreFooterView loadMoreFooterView;
 
-    @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD) private String searchKeyword = "GIF";
+    @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD)
+    private String searchKeyword = "GIF";
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if(activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener){
+        if (activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener) {
             windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
         }
     }
@@ -81,10 +85,10 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
         setTitle(searchKeyword);
     }
 
-    private void setTitle(String subtitle){
-        if(getActivity() != null && getActivity() instanceof ActionBarActivity){
+    private void setTitle(String subtitle) {
+        if (getActivity() != null && getActivity() instanceof ActionBarActivity) {
             ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
-            if(actionBar != null){
+            if (actionBar != null) {
                 actionBar.setTitle(subtitle);
             }
         }
@@ -144,7 +148,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
             pullRefreshLayout.startRefresh();
         } else {
             setAdapter(searchImageListAdapter);
-            if(windowBackgroundLoader != null){
+            if (windowBackgroundLoader != null) {
                 windowBackgroundLoader.restore();
             }
         }
@@ -161,7 +165,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
         if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             refreshRequestFuture.cancel(true);
         }
-        if(windowBackgroundLoader != null){
+        if (windowBackgroundLoader != null) {
             windowBackgroundLoader.detach();
         }
         super.onDetach();
@@ -169,13 +173,13 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if(windowBackgroundLoader != null){
+        if (windowBackgroundLoader != null) {
             windowBackgroundLoader.setUserVisible(isVisibleToUser);
         }
     }
 
-    private void setAdapter(ImageStaggeredGridAdapter adapter){
-        if(loadMoreFooterView == null){
+    private void setAdapter(ImageStaggeredGridAdapter adapter) {
+        if (loadMoreFooterView == null) {
             loadMoreFooterView = new LoadMoreFooterView(getActivity());
             loadMoreFooterView.setOnLoadMoreListener(this);
             staggeredGridView.setOnGetFooterViewListener(loadMoreFooterView);
@@ -191,11 +195,11 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
             return;
         }
 
-        if(loadMoreRequestFuture != null && !loadMoreRequestFuture.isFinished()){
+        if (loadMoreRequestFuture != null && !loadMoreRequestFuture.isFinished()) {
             loadMoreRequestFuture.cancel(true);
         }
 
-        if(loadMoreFooterView != null){
+        if (loadMoreFooterView != null) {
             loadMoreFooterView.setPause(true);
         }
 
@@ -212,7 +216,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                     return;
                 }
 
-                if(responseObject == null || responseObject.getImages() == null || responseObject.getImages().size() == 0){
+                if (responseObject == null || responseObject.getImages() == null || responseObject.getImages().size() == 0) {
                     hintView.failed(new HttpRequest.Failure(0, "咦，图片去哪儿了？"), new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -225,7 +229,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                             pullRefreshLayout.stopRefresh();
                         }
                     }, 1000);
-                }else{
+                } else {
                     List<StarImageRequest.Image> imageList = new ArrayList<StarImageRequest.Image>();
                     for (SearchImageRequest.Image image : responseObject.getImages()) {
                         imageList.add(image);
@@ -239,14 +243,14 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                         }
                     }, 1000);
 
-                    if(loadMoreFooterView != null){
+                    if (loadMoreFooterView != null) {
                         loadMoreFooterView.setPause(false);
-                        if(loadMoreFooterView.isEnd()){
+                        if (loadMoreFooterView.isEnd()) {
                             loadMoreFooterView.setEnd(false);
                         }
                     }
 
-                    if(windowBackgroundLoader != null && imageList.size() > 0){
+                    if (windowBackgroundLoader != null && imageList.size() > 0) {
                         windowBackgroundLoader.load(imageList.get(0).getSourceUrl());
                     }
                 }
@@ -257,7 +261,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                 if (getActivity() == null) {
                     return;
                 }
-                if(loadMoreFooterView != null){
+                if (loadMoreFooterView != null) {
                     loadMoreFooterView.setPause(false);
                 }
                 new Handler().postDelayed(new Runnable() {
@@ -280,7 +284,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
 
             @Override
             public void onCanceled(HttpRequest httpRequest) {
-                if(loadMoreFooterView != null){
+                if (loadMoreFooterView != null) {
                     loadMoreFooterView.setPause(false);
                 }
             }

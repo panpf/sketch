@@ -32,9 +32,12 @@ import me.xiaopan.sketchsample.widget.HintView;
 @InjectContentView(R.layout.fragment_star_catalog)
 public class StarCatalogFragment extends MyFragment implements PullRefreshLayout.OnRefreshListener, StarCatalogAdapter.OnImageClickListener {
 
-    @InjectView(R.id.refreshLayout_starCatalog) private PullRefreshLayout refreshLayout;
-    @InjectView(R.id.hint_starCatalog) private HintView hintView;
-    @InjectView(R.id.recyclerView_starCatalog_content) private RecyclerView contentRecyclerView;
+    @InjectView(R.id.refreshLayout_starCatalog)
+    private PullRefreshLayout refreshLayout;
+    @InjectView(R.id.hint_starCatalog)
+    private HintView hintView;
+    @InjectView(R.id.recyclerView_starCatalog_content)
+    private RecyclerView contentRecyclerView;
 
     private HttpRequestFuture httpRequestFuture;
     private StarCatalogAdapter adapter;
@@ -47,9 +50,9 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
         contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
         refreshLayout.setOnRefreshListener(this);
 
-        if(adapter == null){
+        if (adapter == null) {
             refreshLayout.startRefresh();
-        }else{
+        } else {
             contentRecyclerView.setAdapter(adapter);
             contentRecyclerView.scheduleLayoutAnimation();
         }
@@ -57,7 +60,7 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
 
     @Override
     public void onRefresh() {
-        if(httpRequestFuture != null && !httpRequestFuture.isFinished()){
+        if (httpRequestFuture != null && !httpRequestFuture.isFinished()) {
             return;
         }
 
@@ -66,15 +69,15 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
 
     @Override
     public void onDetach() {
-        if(httpRequestFuture != null && !httpRequestFuture.isFinished()){
+        if (httpRequestFuture != null && !httpRequestFuture.isFinished()) {
             httpRequestFuture.cancel(true);
         }
 
         super.onDetach();
     }
 
-    private void load(boolean isMan, final boolean last){
-        httpRequestFuture = GoHttp.with(getActivity()).newRequest(isMan?new ManStarCatalogRequest():new WomanStarCatalogRequest(), new StringHttpResponseHandler(), new HttpRequest.Listener<StarCatalogRequest.Result>() {
+    private void load(boolean isMan, final boolean last) {
+        httpRequestFuture = GoHttp.with(getActivity()).newRequest(isMan ? new ManStarCatalogRequest() : new WomanStarCatalogRequest(), new StringHttpResponseHandler(), new HttpRequest.Listener<StarCatalogRequest.Result>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
                 hintView.hidden();
@@ -82,7 +85,7 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
 
             @Override
             public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, StarCatalogRequest.Result result, boolean b, boolean b2) {
-                if(last){
+                if (last) {
                     adapter.append(result);
                     contentRecyclerView.setAdapter(adapter);
                     contentRecyclerView.scheduleLayoutAnimation();
@@ -92,7 +95,7 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
                             refreshLayout.stopRefresh();
                         }
                     }, 1000);
-                }else{
+                } else {
                     adapter = new StarCatalogAdapter(getActivity(), result, StarCatalogFragment.this);
                     load(true, true);
                 }

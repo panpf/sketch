@@ -35,15 +35,15 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
     @Override
     protected String doInBackground(String... params) {
         File dir = null;
-        if(Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())){
+        if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
             dir = new File(Environment.getExternalStorageDirectory(), "download");
         }
-        if(dir == null){
+        if (dir == null) {
             dir = context.getFilesDir();
         }
-        if(dir == null){
+        if (dir == null) {
             return "无法获取目录";
-        }else if(!dir.exists()){
+        } else if (!dir.exists()) {
             dir.mkdirs();
         }
 
@@ -62,14 +62,14 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
             inputStream = new FileInputStream(imageFile);
             byte[] data = new byte[1024];
             int length;
-            while((length = inputStream.read(data)) != -1){
+            while ((length = inputStream.read(data)) != -1) {
                 outputStream.write(data, 0, length);
             }
         } catch (IOException e) {
             e.printStackTrace();
             return "保存图片失败，请重试";
         } finally {
-            if(outputStream != null){
+            if (outputStream != null) {
                 try {
                     outputStream.flush();
                 } catch (IOException e) {
@@ -81,7 +81,7 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
                     e.printStackTrace();
                 }
             }
-            if(inputStream != null){
+            if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {
@@ -91,7 +91,7 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
         }
 
         context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.fromFile(outImageFile)));
-        return "已保存到 "+outImageFile.getParentFile().getPath()+"目录";
+        return "已保存到 " + outImageFile.getParentFile().getPath() + "目录";
     }
 
     @Override

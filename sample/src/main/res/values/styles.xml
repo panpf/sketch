@@ -1,4 +1,5 @@
 <resources>
+
     <style name="TextAppearance_ImageTitle">
         <item name="android:background">@drawable/shape_linear_gradient_transparent_to_black</item>
         <item name="android:textColor">@android:color/white</item>

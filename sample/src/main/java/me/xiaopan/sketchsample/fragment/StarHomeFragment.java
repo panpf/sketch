@@ -42,16 +42,21 @@ import me.xiaopan.sketchsample.widget.MyImageView;
  * 明星个人页面
  */
 @InjectContentView(R.layout.fragment_star_home)
-public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener, LoadMoreFooterView.OnLoadMoreListener{
+public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener, LoadMoreFooterView.OnLoadMoreListener {
     public static final String PARAM_REQUIRED_STRING_STAR_TITLE = "PARAM_REQUIRED_STRING_STAR_TITLE";
     public static final String PARAM_REQUIRED_STRING_STAR_URL = "PARAM_REQUIRED_STRING_STAR_URL";
 
-    @InjectView(R.id.refreshLayout_starHome) private PullRefreshLayout pullRefreshLayout;
-    @InjectView(R.id.list_starHome) private StaggeredGridView staggeredGridView;
-    @InjectView(R.id.hintView_starHome) private HintView hintView;
+    @InjectView(R.id.refreshLayout_starHome)
+    private PullRefreshLayout pullRefreshLayout;
+    @InjectView(R.id.list_starHome)
+    private StaggeredGridView staggeredGridView;
+    @InjectView(R.id.hintView_starHome)
+    private HintView hintView;
 
-    @InjectExtra(PARAM_REQUIRED_STRING_STAR_TITLE) private String starTitle;
-    @InjectExtra(PARAM_REQUIRED_STRING_STAR_URL) private String starHomeUrl;
+    @InjectExtra(PARAM_REQUIRED_STRING_STAR_TITLE)
+    private String starTitle;
+    @InjectExtra(PARAM_REQUIRED_STRING_STAR_URL)
+    private String starHomeUrl;
 
     private StarImageRequest starImageRequest;
     private HttpRequestFuture refreshRequestFuture;
@@ -64,7 +69,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if(activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener){
+        if (activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener) {
             windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
         }
     }
@@ -87,7 +92,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
             pullRefreshLayout.startRefresh();
         } else {
             setAdapter(starImageAdapter);
-            if(windowBackgroundLoader != null){
+            if (windowBackgroundLoader != null) {
                 windowBackgroundLoader.restore();
             }
         }
@@ -105,7 +110,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
         if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             refreshRequestFuture.cancel(true);
         }
-        if(windowBackgroundLoader != null){
+        if (windowBackgroundLoader != null) {
             windowBackgroundLoader.detach();
         }
         super.onDetach();
@@ -113,7 +118,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if(windowBackgroundLoader != null){
+        if (windowBackgroundLoader != null) {
             windowBackgroundLoader.setUserVisible(isVisibleToUser);
         }
     }
@@ -123,8 +128,8 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
         DetailActivity.launch(getActivity(), (ArrayList<String>) starImageAdapter.getImageUrlList(), position);
     }
 
-    private void setAdapter(ImageStaggeredGridAdapter adapter){
-        if(loadMoreFooterView == null){
+    private void setAdapter(ImageStaggeredGridAdapter adapter) {
+        if (loadMoreFooterView == null) {
             loadMoreFooterView = new LoadMoreFooterView(getActivity());
             loadMoreFooterView.setOnLoadMoreListener(this);
             staggeredGridView.setOnGetFooterViewListener(loadMoreFooterView);
@@ -140,11 +145,11 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
             return;
         }
 
-        if(loadMoreRequestFuture != null && !loadMoreRequestFuture.isFinished()){
+        if (loadMoreRequestFuture != null && !loadMoreRequestFuture.isFinished()) {
             loadMoreRequestFuture.cancel(true);
         }
 
-        if(loadMoreFooterView != null){
+        if (loadMoreFooterView != null) {
             loadMoreFooterView.setPause(true);
         }
 
@@ -169,7 +174,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     return;
                 }
 
-                if(loadMoreFooterView != null){
+                if (loadMoreFooterView != null) {
                     loadMoreFooterView.setPause(false);
                 }
 
@@ -193,7 +198,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
 
             @Override
             public void onCanceled(HttpRequest httpRequest) {
-                if(loadMoreFooterView != null){
+                if (loadMoreFooterView != null) {
                     loadMoreFooterView.setPause(false);
                 }
             }
@@ -214,8 +219,8 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     return;
                 }
 
-                if(backgroundImageUrl != null){
-                    if(headImageView == null){
+                if (backgroundImageUrl != null) {
+                    if (headImageView == null) {
                         View view = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_heade_image, staggeredGridView, false);
                         headImageView = (MyImageView) view.findViewById(R.id.image_headImageItem);
                         headImageView.setOptionsByName(OptionsType.NORMAL_RECT);
@@ -239,9 +244,9 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     }
                 }, 1000);
 
-                if(loadMoreFooterView != null){
+                if (loadMoreFooterView != null) {
                     loadMoreFooterView.setPause(false);
-                    if(loadMoreFooterView.isEnd()){
+                    if (loadMoreFooterView.isEnd()) {
                         loadMoreFooterView.setEnd(false);
                     }
                 }
@@ -257,7 +262,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     return;
                 }
 
-                if(loadMoreFooterView != null){
+                if (loadMoreFooterView != null) {
                     loadMoreFooterView.setPause(false);
                 }
 
@@ -281,7 +286,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
 
             @Override
             public void onCanceled(HttpRequest httpRequest) {
-                if(loadMoreFooterView != null){
+                if (loadMoreFooterView != null) {
                     loadMoreFooterView.setPause(false);
                 }
             }

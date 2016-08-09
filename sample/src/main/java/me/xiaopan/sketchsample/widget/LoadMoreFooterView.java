@@ -12,7 +12,7 @@ import com.etsy.android.grid.HeaderViewListAdapter;
 
 import me.xiaopan.sketchsample.R;
 
-public class LoadMoreFooterView extends FrameLayout implements HeaderViewListAdapter.OnGetFooterViewListener{
+public class LoadMoreFooterView extends FrameLayout implements HeaderViewListAdapter.OnGetFooterViewListener {
     private boolean loading;
     private boolean end;
     private OnLoadMoreListener onLoadMoreListener;
@@ -35,7 +35,7 @@ public class LoadMoreFooterView extends FrameLayout implements HeaderViewListAda
         init();
     }
 
-    private void init(){
+    private void init() {
         LayoutInflater.from(getContext()).inflate(R.layout.list_footer_load_more, this);
         progressBar = (ProgressBar) findViewById(R.id.progress_loadMoreFooter);
         tipsTextView = (TextView) findViewById(R.id.text_loadMoreFooter_content);
@@ -59,10 +59,10 @@ public class LoadMoreFooterView extends FrameLayout implements HeaderViewListAda
 
     public void setEnd(boolean end) {
         this.end = end;
-        if(end){
+        if (end) {
             progressBar.setVisibility(View.GONE);
             tipsTextView.setText("没有您的包裹了！");
-        }else{
+        } else {
             progressBar.setVisibility(View.VISIBLE);
             tipsTextView.setText("别着急，您的包裹马上就来！");
         }
@@ -73,8 +73,8 @@ public class LoadMoreFooterView extends FrameLayout implements HeaderViewListAda
         this.onLoadMoreListener = onLoadMoreListener;
     }
 
-    public void loadFinished(boolean success){
-        if(!success){
+    public void loadFinished(boolean success) {
+        if (!success) {
             progressBar.setVisibility(View.GONE);
             tipsTextView.setText("Sorry！您的包裹运送失败！");
         }
@@ -83,19 +83,19 @@ public class LoadMoreFooterView extends FrameLayout implements HeaderViewListAda
 
     @Override
     public void onGetFooterView(View view) {
-        if(view != this){
+        if (view != this) {
             return;
         }
 
-        if(end){
+        if (end) {
             progressBar.setVisibility(View.GONE);
             tipsTextView.setText("没有您的包裹了！");
-        }else{
+        } else {
             progressBar.setVisibility(View.VISIBLE);
             tipsTextView.setText("别着急，您的包裹马上就来！");
         }
 
-        if(onLoadMoreListener == null || end || pause || loading){
+        if (onLoadMoreListener == null || end || pause || loading) {
             return;
         }
 

@@ -1,100 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="16dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sketch是Android上的一个图片加载器，能够帮助开发者从本地或网络读取图片，处理后显示在页面上，特性如下："/>
+                android:text="Sketch是Android上的一个图片加载器，能够帮助开发者从本地或网络读取图片，处理后显示在页面上，特性如下：" />
+
             <TextView
                 android:id="@+id/text_about_gifIntro"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="1. 支持GIF图. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示GIF图片，感谢koral--"/>
+                android:text="1. 支持GIF图. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示GIF图片，感谢koral--" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="2. 多种URI支持. 支持http://、https://、asset://、content://、file:///sdcard/sample.png、/sdcard/sample.jpg、drawable://等7种URI"/>
+                android:text="2. 多种URI支持. 支持http://、https://、asset://、content://、file:///sdcard/sample.png、/sdcard/sample.jpg、drawable://等7种URI" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="3. 二级缓存. 采用Lru算法在本地和内存中缓存图片，本地缓存默认最大容量为100M，内存缓存默认最大容量为最大可用内存的八分之一"/>
+                android:text="3. 二级缓存. 采用Lru算法在本地和内存中缓存图片，本地缓存默认最大容量为100M，内存缓存默认最大容量为最大可用内存的八分之一" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="4. 各种列表支持. 在各种列表（ListView、RecyclerView）中循环使用不错位，并且不占用setTag()方法"/>
+                android:text="4. 各种列表支持. 在各种列表（ListView、RecyclerView）中循环使用不错位，并且不占用setTag()方法" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="5. SketchImageView. 提供功能SketchImageView，只需调用display***Image()系列方法即可显示各种图片，并且支持显示下载进度，显示按下效果，点击重试等常用功能"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:autoLink="all"
-                android:text="6. 重复下载过滤. 如果两个请求的图片地址一样的话，第二个就会等待第一个下载完成之后直接使用第一个下载的图片"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="7. 即时取消无用请求. SketchImageView在onDetachedFromWindow()或被重复利用的时候会主动取消之前的请求"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="8. 自动防止加载过大Bitmap 可通过maxSize来控制加载到内存的图片的尺寸，默认为屏幕宽高的0.75倍，还会自动根据ImageView的layout_width和layout_height来调整maxSize"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="9. 独家TransitionDrawable支持. 独家支持任意尺寸的两张图片使用TransitionDrawable过渡显示，保证不变形"/>
+                android:text="5. SketchImageView. 提供功能SketchImageView，只需调用display***Image()系列方法即可显示各种图片，并且支持显示下载进度，显示按下效果，点击重试等常用功能" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:autoLink="all"
-                android:text="10. 只加载或只下载. 除了display()方法可以显示图片之外，你还可以通过load()方法只加载图片到内存中或通过download()方法只下载图片到本地"/>
+                android:text="6. 重复下载过滤. 如果两个请求的图片地址一样的话，第二个就会等待第一个下载完成之后直接使用第一个下载的图片" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="11. 支持读取APK图标. 支持直接读取本地APK文件的图标或根据包名和版本号读取已安装APP的图标"/>
+                android:text="7. 即时取消无用请求. SketchImageView在onDetachedFromWindow()或被重复利用的时候会主动取消之前的请求" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="12. 移动网络下暂停下载. 内置了移动网络下暂停下载图片的功能，你只需开启即可"/>
+                android:text="8. 自动防止加载过大Bitmap 可通过maxSize来控制加载到内存的图片的尺寸，默认为屏幕宽高的0.75倍，还会自动根据ImageView的layout_width和layout_height来调整maxSize" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="13. 自动选择合适的Bimtap.Config. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，例如对于JPEG格式的图片就会使用Bitmap.Config.RGB_565解码"/>
+                android:text="9. 独家TransitionDrawable支持. 独家支持任意尺寸的两张图片使用TransitionDrawable过渡显示，保证不变形" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="14. 特殊文件预处理. 提供ImagePreprocessor，可对本地的特殊文件（例如多媒体文件）进行预处理，Sketch便可直接显示其封面，读取APK文件的图标就是通过这个功能实现的"/>
+                android:autoLink="all"
+                android:text="10. 只加载或只下载. 除了display()方法可以显示图片之外，你还可以通过load()方法只加载图片到内存中或通过download()方法只下载图片到本地" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="15. 强大且灵活的自定义. 可自定义下载、缓存、解码、处理、显示、占位图等各个环节"/>
+                android:text="11. 支持读取APK图标. 支持直接读取本地APK文件的图标或根据包名和版本号读取已安装APP的图标" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="12. 移动网络下暂停下载. 内置了移动网络下暂停下载图片的功能，你只需开启即可" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="13. 自动选择合适的Bimtap.Config. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，例如对于JPEG格式的图片就会使用Bitmap.Config.RGB_565解码" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="14. 特殊文件预处理. 提供ImagePreprocessor，可对本地的特殊文件（例如多媒体文件）进行预处理，Sketch便可直接显示其封面，读取APK文件的图标就是通过这个功能实现的" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="15. 强大且灵活的自定义. 可自定义下载、缓存、解码、处理、显示、占位图等各个环节" />
         </LinearLayout>
     </ScrollView>
 
@@ -106,7 +123,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
         android:autoLink="all"
-        android:text="Github: http://github.com/xiaopansky/sketch"/>
+        android:text="Github: http://github.com/xiaopansky/sketch" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -114,24 +131,27 @@
         android:layout_marginTop="8dp"
         android:layout_marginBottom="16dp"
         android:gravity="center">
+
         <TextView
             android:id="@+id/text_about_supportLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="#88ffffff"
-            android:text="Powered by："/>
+            android:text="Powered by：" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/text_about_supportLabel"
             android:textColor="#88ffffff"
-            android:text="android-gif-drawable"/>
+            android:text="android-gif-drawable" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toRightOf="@id/text_about_supportLabel"
             android:layout_below="@id/text_about_supportLabel"
             android:textColor="#88ffffff"
-            android:text="http://image.baidu.com"/>
+            android:text="http://image.baidu.com" />
     </RelativeLayout>
 </LinearLayout>

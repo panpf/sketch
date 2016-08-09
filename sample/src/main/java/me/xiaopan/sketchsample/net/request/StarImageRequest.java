@@ -19,21 +19,28 @@ import me.xiaopan.gohttp.requestobject.URL;
  */
 @URL("http://image.baidu.com/data/star/listjson")
 @Method(MethodType.GET)
-public class StarImageRequest implements Request{
-    @Param("pn") private int start = 0;
-    @Param("rn") private int size = 60;
-    @Param("name") private String name;
-    @Param("sorttype") private int sorttype = 0;
-    @Param("p") private String page = "star.home";
-    @Param("col") private String col = "明星";
-    @Param("tag") private String tag;
+public class StarImageRequest implements Request {
+    @Param("pn")
+    private int start = 0;
+    @Param("rn")
+    private int size = 60;
+    @Param("name")
+    private String name;
+    @Param("sorttype")
+    private int sorttype = 0;
+    @Param("p")
+    private String page = "star.home";
+    @Param("col")
+    private String col = "明星";
+    @Param("tag")
+    private String tag;
 
     public StarImageRequest(String name) {
         this.name = name;
         this.tag = name;
     }
 
-    public void setStart(int newStart){
+    public void setStart(int newStart) {
         this.start = newStart;
     }
 
@@ -41,10 +48,13 @@ public class StarImageRequest implements Request{
         return size;
     }
 
-    public static class Response{
-        @SerializedName("totalNum") private int total;
-        @SerializedName("return_number") private int returnNumber;
-        @SerializedName("data") private List<Image> images;
+    public static class Response {
+        @SerializedName("totalNum")
+        private int total;
+        @SerializedName("return_number")
+        private int returnNumber;
+        @SerializedName("data")
+        private List<Image> images;
 
         public int getTotal() {
             return total;
@@ -55,11 +65,15 @@ public class StarImageRequest implements Request{
         }
     }
 
-    public static class Image{
-        @SerializedName("thumbnail_url") private String thumbUrl;
-        @SerializedName("image_url") private String sourceUrl;
-        @SerializedName("image_width") private int width;
-        @SerializedName("image_height") private int height;
+    public static class Image {
+        @SerializedName("thumbnail_url")
+        private String thumbUrl;
+        @SerializedName("image_url")
+        private String sourceUrl;
+        @SerializedName("image_width")
+        private int width;
+        @SerializedName("image_height")
+        private int height;
 
         public String getThumbUrl() {
             return thumbUrl;
@@ -78,16 +92,16 @@ public class StarImageRequest implements Request{
         }
     }
 
-    public static class ResponseHandler implements HttpRequest.ResponseHandleCompletedAfterListener<Response>{
+    public static class ResponseHandler implements HttpRequest.ResponseHandleCompletedAfterListener<Response> {
 
         @Override
         public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, Response response, boolean b, boolean b2) throws Throwable {
-            if(response.getImages() != null && response.returnNumber < response.getImages().size()){
+            if (response.getImages() != null && response.returnNumber < response.getImages().size()) {
                 Iterator<Image> iterator = response.getImages().iterator();
                 int number = 0;
-                while (iterator.hasNext()){
+                while (iterator.hasNext()) {
                     iterator.next();
-                    if(number++ >= response.returnNumber){
+                    if (number++ >= response.returnNumber) {
                         iterator.remove();
                     }
                 }

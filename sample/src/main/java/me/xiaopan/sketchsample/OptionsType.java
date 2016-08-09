@@ -19,7 +19,7 @@ package me.xiaopan.sketchsample;
 public enum OptionsType {
     /**
      * 通用矩形
-      */
+     */
     NORMAL_RECT,
 
     /**

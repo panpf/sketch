@@ -16,28 +16,28 @@ import me.xiaopan.sketchsample.net.NetUtils;
 /**
  * 热门明星请求
  */
-public abstract class HotStarRequest implements Request{
+public abstract class HotStarRequest implements Request {
 
     public static class ResponseHandler implements HttpRequest.ResponseHandleCompletedAfterListener<String> {
         private String starType;
 
         public ResponseHandler(boolean isMan) {
-            this.starType = isMan?"男明星":"女明星";
+            this.starType = isMan ? "男明星" : "女明星";
         }
 
         @Override
         public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, String sourceContent, boolean b, boolean b2) throws Throwable {
             List<HotStar> hotStarList = new LinkedList<HotStar>();
-            hotStarList.add(new HotStar("内地最热"+starType, parse(NetUtils.substring(sourceContent, "type : \"nd\",", "\\}\\)\\;", "imgs : "))));
-            hotStarList.add(new HotStar("港台最热"+starType, parse(NetUtils.substring(sourceContent, "type : \"gt\",", "\\}\\)\\;", "imgs : "))));
-            hotStarList.add(new HotStar("日韩最热"+starType, parse(NetUtils.substring(sourceContent, "type : \"rh\",", "\\}\\)\\;", "imgs : "))));
-            hotStarList.add(new HotStar("欧美最热"+starType, parse(NetUtils.substring(sourceContent, "type : \"om\",", "\\}\\)\\;", "imgs : "))));
+            hotStarList.add(new HotStar("内地最热" + starType, parse(NetUtils.substring(sourceContent, "type : \"nd\",", "\\}\\)\\;", "imgs : "))));
+            hotStarList.add(new HotStar("港台最热" + starType, parse(NetUtils.substring(sourceContent, "type : \"gt\",", "\\}\\)\\;", "imgs : "))));
+            hotStarList.add(new HotStar("日韩最热" + starType, parse(NetUtils.substring(sourceContent, "type : \"rh\",", "\\}\\)\\;", "imgs : "))));
+            hotStarList.add(new HotStar("欧美最热" + starType, parse(NetUtils.substring(sourceContent, "type : \"om\",", "\\}\\)\\;", "imgs : "))));
             return hotStarList;
         }
 
-        private List<Star> parse(String jsonContent){
+        private List<Star> parse(String jsonContent) {
 
-            if(jsonContent == null){
+            if (jsonContent == null) {
                 return null;
             }
             JSONArray jsonArray;
@@ -49,7 +49,7 @@ public abstract class HotStarRequest implements Request{
             }
 
             List<Star> stars = new ArrayList<Star>();
-            for(int w = 0; w < jsonArray.length(); w++){
+            for (int w = 0; w < jsonArray.length(); w++) {
                 JSONObject jsonObject;
                 try {
                     jsonObject = jsonArray.getJSONObject(w);
@@ -103,10 +103,10 @@ public abstract class HotStarRequest implements Request{
         }
     }
 
-    public static class Star{
-       private String name;
-       private Image widthImage;
-       private Image heightImage;
+    public static class Star {
+        private String name;
+        private Image widthImage;
+        private Image heightImage;
 
         public String getName() {
             return name;
@@ -133,7 +133,7 @@ public abstract class HotStarRequest implements Request{
         }
     }
 
-    public static class Image{
+    public static class Image {
         private int width;
         private int height;
         private String url;

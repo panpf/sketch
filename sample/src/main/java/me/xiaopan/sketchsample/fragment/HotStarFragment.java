@@ -36,9 +36,12 @@ import me.xiaopan.sketchsample.widget.HintView;
 @InjectContentView(R.layout.fragment_hot_star)
 public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnRefreshListener, HotStarAdapter.OnImageClickListener {
 
-    @InjectView(R.id.refreshLayout_hotStar) private PullRefreshLayout refreshLayout;
-    @InjectView(R.id.hint_hotStar) private HintView hintView;
-    @InjectView(R.id.recyclerView_hotStar_content) private RecyclerView contentRecyclerView;
+    @InjectView(R.id.refreshLayout_hotStar)
+    private PullRefreshLayout refreshLayout;
+    @InjectView(R.id.hint_hotStar)
+    private HintView hintView;
+    @InjectView(R.id.recyclerView_hotStar_content)
+    private RecyclerView contentRecyclerView;
 
     private HttpRequestFuture httpRequestFuture;
     private HotStarAdapter adapter;
@@ -47,7 +50,7 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if(activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener){
+        if (activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener) {
             windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
         }
     }
@@ -60,12 +63,12 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
         contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
         refreshLayout.setOnRefreshListener(this);
 
-        if(adapter == null){
+        if (adapter == null) {
             refreshLayout.startRefresh();
-        }else{
+        } else {
             contentRecyclerView.setAdapter(adapter);
             contentRecyclerView.scheduleLayoutAnimation();
-            if(windowBackgroundLoader != null){
+            if (windowBackgroundLoader != null) {
                 windowBackgroundLoader.restore();
             }
         }
@@ -73,7 +76,7 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
 
     @Override
     public void onRefresh() {
-        if(httpRequestFuture != null && !httpRequestFuture.isFinished()){
+        if (httpRequestFuture != null && !httpRequestFuture.isFinished()) {
             return;
         }
 
@@ -82,10 +85,10 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
 
     @Override
     public void onDetach() {
-        if(httpRequestFuture != null && !httpRequestFuture.isFinished()){
+        if (httpRequestFuture != null && !httpRequestFuture.isFinished()) {
             httpRequestFuture.cancel(true);
         }
-        if(windowBackgroundLoader != null){
+        if (windowBackgroundLoader != null) {
             windowBackgroundLoader.detach();
         }
         super.onDetach();
@@ -93,7 +96,7 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if(windowBackgroundLoader != null){
+        if (windowBackgroundLoader != null) {
             windowBackgroundLoader.setUserVisible(isVisibleToUser);
         }
     }
@@ -103,7 +106,7 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
         StarHomeActivity.launch(getActivity(), star.getName());
     }
 
-    private void load(boolean isMan, final boolean last, final boolean haveSetWindowBackground){
+    private void load(boolean isMan, final boolean last, final boolean haveSetWindowBackground) {
         httpRequestFuture = GoHttp.with(getActivity()).newRequest(isMan ? new HotManStarRequest() : new HotWomanStarRequest(), new StringHttpResponseHandler(), new HttpRequest.Listener<List<HotStarRequest.HotStar>>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {

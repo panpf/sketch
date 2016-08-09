@@ -36,6 +36,7 @@ public class LruMemoryCache implements MemoryCache {
     protected String logName = "LruMemoryCache";
     private Context context;
     private Map<String, ReentrantLock> editLockMap;
+    private boolean closed;
 
     public LruMemoryCache(Context context, int maxSize) {
         this.context = context;
@@ -56,7 +57,11 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public void put(String key, Drawable value) {
+    public synchronized void put(String key, Drawable value) {
+        if (closed) {
+            return;
+        }
+
         if (!(value instanceof RecycleDrawable)) {
             throw new IllegalArgumentException("drawable must be implemented RecycleDrawableInterface");
         }
@@ -76,12 +81,20 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public Drawable get(String key) {
+    public synchronized Drawable get(String key) {
+        if (closed) {
+            return null;
+        }
+
         return drawableLruCache.get(key);
     }
 
     @Override
-    public Drawable remove(String key) {
+    public synchronized Drawable remove(String key) {
+        if (closed) {
+            return null;
+        }
+
         Drawable drawable = drawableLruCache.remove(key);
         if (Sketch.isDebugMode()) {
             Log.i(Sketch.TAG, SketchUtils.concat(logName,
@@ -92,7 +105,11 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public long getSize() {
+    public synchronized long getSize() {
+        if (closed) {
+            return 0;
+        }
+
         return drawableLruCache.size();
     }
 
@@ -102,7 +119,11 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public void clear() {
+    public synchronized void clear() {
+        if (closed) {
+            return;
+        }
+
         if (Sketch.isDebugMode()) {
             Log.i(Sketch.TAG, SketchUtils.concat(logName,
                     " - ", "clear",
@@ -112,25 +133,32 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public void close() {
-        clear();
+    public synchronized boolean isClosed() {
+        return closed;
     }
 
     @Override
-    public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
-    }
+    public synchronized void close() {
+        if (closed) {
+            return;
+        }
 
-    @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(logName)
-                .append("(")
-                .append("maxSize").append("=").append(Formatter.formatFileSize(context, getMaxSize()))
-                .append(")");
+        closed = true;
+
+        drawableLruCache.evictAll();
+
+        if (editLockMap != null) {
+            editLockMap.clear();
+            editLockMap = null;
+        }
     }
 
     @Override
     public synchronized ReentrantLock getEditLock(String key) {
+        if (closed) {
+            return null;
+        }
+
         if (key == null) {
             return null;
         }
@@ -147,6 +175,19 @@ public class LruMemoryCache implements MemoryCache {
             editLockMap.put(key, lock);
         }
         return lock;
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(StringBuilder builder) {
+        return builder.append(logName)
+                .append("(")
+                .append("maxSize").append("=").append(Formatter.formatFileSize(context, getMaxSize()))
+                .append(")");
+    }
+
+    @Override
+    public String getIdentifier() {
+        return appendIdentifier(new StringBuilder()).toString();
     }
 
     private class DrawableLruCache extends LruCache<String, Drawable> {
