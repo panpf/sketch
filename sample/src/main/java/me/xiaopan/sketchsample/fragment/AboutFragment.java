@@ -21,14 +21,15 @@ import me.xiaopan.sketchsample.R;
  */
 @InjectContentView(R.layout.fragment_about)
 public class AboutFragment extends MyFragment {
-    @InjectView(R.id.text_about_gifIntro) TextView gifIntroTextView;
+    @InjectView(R.id.text_about_gifIntro)
+    TextView gifIntroTextView;
     private TogglePageListener togglePageListener;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if(activity instanceof TogglePageListener){
+        if (activity instanceof TogglePageListener) {
             togglePageListener = (TogglePageListener) activity;
         }
     }
@@ -41,7 +42,7 @@ public class AboutFragment extends MyFragment {
         string.setSpan(new ClickableSpan() {
             @Override
             public void onClick(View widget) {
-                if(togglePageListener != null){
+                if (togglePageListener != null) {
                     togglePageListener.onToggleToGifSample();
                 }
             }
@@ -57,7 +58,7 @@ public class AboutFragment extends MyFragment {
         gifIntroTextView.append(string);
     }
 
-    public interface TogglePageListener{
+    public interface TogglePageListener {
         void onToggleToGifSample();
     }
 }

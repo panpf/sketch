@@ -1,19 +1,19 @@
 apply plugin: 'com.android.application'
 
-def loadProperties(String fileName){
+def loadProperties(String fileName) {
     FileInputStream inputStream = new FileInputStream(new File(fileName))
     Properties properties = new Properties()
     properties.load(inputStream)
     inputStream.close()
-    for(Map.Entry property in properties){
+    for (Map.Entry property in properties) {
         ext[property.key] = property.value
-        println(property.key+"="+property.value)
+        println(property.key + "=" + property.value)
     }
 }
 
 // 加载签名配置文件
 String projectPath = projectDir;
-loadProperties projectPath+'/local.properties'
+loadProperties projectPath + '/local.properties'
 
 android {
     compileSdkVersion 22
@@ -26,8 +26,8 @@ android {
         versionName "2.2.0"
     }
 
-    signingConfigs{
-        release{
+    signingConfigs {
+        release {
             storeFile file(property("sample.storeFile"))
             storePassword property('sample.storePassword')
             keyAlias property('sample.keyAlias')
@@ -43,8 +43,8 @@ android {
         }
     }
 
-    productFlavors{
-        normal{
+    productFlavors {
+        normal {
             applicationId "me.xiaopan.sketchsample"
         }
     }
@@ -69,8 +69,8 @@ dependencies {
     compile 'me.xiaopan:pullrefreshlayout:1.4.0'
 }
 
-repositories{
-    flatDir{
+repositories {
+    flatDir {
         dirs 'libs'
     }
     mavenCentral()

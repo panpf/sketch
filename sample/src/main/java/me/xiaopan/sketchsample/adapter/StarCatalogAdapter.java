@@ -19,7 +19,7 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 /**
  * 明星目录适配器
  */
-public class StarCatalogAdapter extends RecyclerView.Adapter{
+public class StarCatalogAdapter extends RecyclerView.Adapter {
     private static final int ITEM_TYPE_DATA = 0;
     private static final int ITEM_TYPE_CATEGORY_TITLE = 1;
 
@@ -33,12 +33,12 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
         append(result);
         int space = (int) context.getResources().getDimension(R.dimen.home_category_margin_border);
         int screenWidth = context.getResources().getDisplayMetrics().widthPixels;
-        itemWidth = (screenWidth - (space*4))/3;
+        itemWidth = (screenWidth - (space * 4)) / 3;
         this.onClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getTag() instanceof StarCatalogRequest.Star){
-                    if(onImageClickListener != null){
+                if (v.getTag() instanceof StarCatalogRequest.Star) {
+                    if (onImageClickListener != null) {
                         onImageClickListener.onClickImage((StarCatalogRequest.Star) v.getTag());
                     }
                 }
@@ -46,27 +46,27 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
         };
     }
 
-    public void append(StarCatalogRequest.Result result){
+    public void append(StarCatalogRequest.Result result) {
         List<StarCatalogRequest.Star> starList = result.getStarList();
-        if(starList == null){
+        if (starList == null) {
             return;
         }
-        if(items == null){
+        if (items == null) {
             items = new ArrayList<Object>(starList.size());
         }
         items.add(result.getTitle());
-        for(int w = 0, size = starList.size(); w < size;){
+        for (int w = 0, size = starList.size(); w < size; ) {
             int number = size - w;
-            if(number == 1){
+            if (number == 1) {
                 DataItem dataItem = new DataItem();
                 dataItem.star1 = starList.get(w++);
                 items.add(dataItem);
-            }else if(number == 2){
+            } else if (number == 2) {
                 DataItem dataItem = new DataItem();
                 dataItem.star1 = starList.get(w++);
                 dataItem.star2 = starList.get(w++);
                 items.add(dataItem);
-            }else{
+            } else {
                 DataItem dataItem = new DataItem();
                 dataItem.star1 = starList.get(w++);
                 dataItem.star2 = starList.get(w++);
@@ -84,11 +84,11 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
     @Override
     public int getItemViewType(int position) {
         Object object = items.get(position);
-        if(object instanceof DataItem){
+        if (object instanceof DataItem) {
             return ITEM_TYPE_DATA;
-        }else if(object instanceof String){
+        } else if (object instanceof String) {
             return ITEM_TYPE_CATEGORY_TITLE;
-        }else{
+        } else {
             return super.getItemViewType(position);
         }
     }
@@ -96,9 +96,9 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder = null;
-        if(viewType == ITEM_TYPE_CATEGORY_TITLE){
+        if (viewType == ITEM_TYPE_CATEGORY_TITLE) {
             viewHolder = new CategoryTitleHolder(LayoutInflater.from(context).inflate(R.layout.list_item_title, parent, false));
-        }else if(viewType == ITEM_TYPE_DATA){
+        } else if (viewType == ITEM_TYPE_DATA) {
             ItemHolder itemHolder = new ItemHolder(LayoutInflater.from(context).inflate(R.layout.list_item_star_head_portrait, parent, false));
 
             itemHolder.oneLayout.setOnClickListener(onClickListener);
@@ -152,7 +152,7 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof ItemHolder){
+        if (holder instanceof ItemHolder) {
             DataItem dataItem = (DataItem) items.get(position);
             ItemHolder itemHolder = (ItemHolder) holder;
 
@@ -161,33 +161,33 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
             itemHolder.oneLayout.setTag(dataItem.star1);
             itemHolder.oneImageView.setTag(dataItem.star1);
 
-            if(dataItem.star2 != null){
+            if (dataItem.star2 != null) {
                 itemHolder.twoNameTextView.setText(dataItem.star2.getName());
                 itemHolder.twoImageView.displayImage(dataItem.star2.getAvatarUrl());
                 itemHolder.twoLayout.setTag(dataItem.star2);
                 itemHolder.twoImageView.setTag(dataItem.star2);
                 itemHolder.twoLayout.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 itemHolder.twoLayout.setVisibility(View.INVISIBLE);
             }
 
-            if(dataItem.star3 != null){
+            if (dataItem.star3 != null) {
                 itemHolder.threeNameTextView.setText(dataItem.star3.getName());
                 itemHolder.threeImageView.displayImage(dataItem.star3.getAvatarUrl());
                 itemHolder.threeLayout.setTag(dataItem.star3);
                 itemHolder.threeImageView.setTag(dataItem.star3);
                 itemHolder.threeLayout.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 itemHolder.threeLayout.setVisibility(View.INVISIBLE);
             }
-        }else if(holder instanceof CategoryTitleHolder){
+        } else if (holder instanceof CategoryTitleHolder) {
             String title = (String) items.get(position);
             CategoryTitleHolder titleHolder = (CategoryTitleHolder) holder;
             titleHolder.categoryTitleTextView.setText(title);
         }
     }
 
-    private static class CategoryTitleHolder extends RecyclerView.ViewHolder{
+    private static class CategoryTitleHolder extends RecyclerView.ViewHolder {
         private TextView categoryTitleTextView;
 
         public CategoryTitleHolder(View itemView) {
@@ -196,7 +196,7 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
         }
     }
 
-    private static class ItemHolder extends RecyclerView.ViewHolder{
+    private static class ItemHolder extends RecyclerView.ViewHolder {
         private View oneLayout;
         private MyImageView oneImageView;
         private TextView oneNameTextView;
@@ -226,11 +226,11 @@ public class StarCatalogAdapter extends RecyclerView.Adapter{
         }
     }
 
-    public interface OnImageClickListener{
+    public interface OnImageClickListener {
         void onClickImage(StarCatalogRequest.Star star);
     }
 
-    private static class DataItem{
+    private static class DataItem {
         private StarCatalogRequest.Star star1;
         private StarCatalogRequest.Star star2;
         private StarCatalogRequest.Star star3;

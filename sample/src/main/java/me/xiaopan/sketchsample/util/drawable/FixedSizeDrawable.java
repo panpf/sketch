@@ -10,7 +10,7 @@ import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.widget.ImageView;
 
-public class FixedSizeDrawable extends Drawable implements Drawable.Callback{
+public class FixedSizeDrawable extends Drawable implements Drawable.Callback {
     private int width;
     private int height;
     private Drawable mDrawable;

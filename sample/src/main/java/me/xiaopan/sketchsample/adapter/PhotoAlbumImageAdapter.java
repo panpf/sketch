@@ -13,12 +13,12 @@ import android.widget.ImageView;
 
 import java.util.List;
 
-import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.ImageHolder;
-import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
+import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.ImageHolder;
+import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -36,29 +36,29 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public PhotoAlbumImageAdapter(final Context context, final List<String> imageUris, final OnImageClickListener onImageClickListener, final RecyclerView recyclerView){
+    public PhotoAlbumImageAdapter(final Context context, final List<String> imageUris, final OnImageClickListener onImageClickListener, final RecyclerView recyclerView) {
         this.context = context;
         this.imageUris = imageUris;
         this.itemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(onImageClickListener != null && v.getTag() != null && v.getTag() instanceof ItemViewHolder){
+                if (onImageClickListener != null && v.getTag() != null && v.getTag() instanceof ItemViewHolder) {
                     onImageClickListener.onImageClick(((ItemViewHolder) v.getTag()).getPosition());
                 }
             }
         };
 
         RecyclerView.LayoutManager layoutManager = recyclerView.getLayoutManager();
-        if(layoutManager instanceof GridLayoutManager){
+        if (layoutManager instanceof GridLayoutManager) {
             spanCount = ((GridLayoutManager) recyclerView.getLayoutManager()).getSpanCount();
-        }else if(layoutManager instanceof StaggeredGridLayoutManager){
+        } else if (layoutManager instanceof StaggeredGridLayoutManager) {
             spanCount = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).getSpanCount();
         }
-        if(spanCount != -1){
+        if (spanCount != -1) {
             borderMargin = DeviceUtils.dp2px(context, 8);
             middleMargin = DeviceUtils.dp2px(context, 4);
-            int maxScreenWidth = context.getResources().getDisplayMetrics().widthPixels - ((borderMargin * (spanCount+1)));
-            itemWidth = maxScreenWidth/spanCount;
+            int maxScreenWidth = context.getResources().getDisplayMetrics().widthPixels - ((borderMargin * (spanCount + 1)));
+            itemWidth = maxScreenWidth / spanCount;
         }
 
         roundRadius = DeviceUtils.dp2px(context, 10);
@@ -81,7 +81,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemCount() {
-        return imageUris!=null?imageUris.size():0;
+        return imageUris != null ? imageUris.size() : 0;
     }
 
     public List<String> getImageUrlList() {
@@ -96,7 +96,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         itemViewHolder.sketchImageView.setOptions(displayOptions);
         itemViewHolder.sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
         itemViewHolder.sketchImageView.setImageShapeCornerRadius(roundRadius);
-        if(itemWidth != -1){
+        if (itemWidth != -1) {
             ViewGroup.LayoutParams layoutParams = itemViewHolder.sketchImageView.getLayoutParams();
             layoutParams.width = itemWidth;
             layoutParams.height = itemWidth;
@@ -110,27 +110,27 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         ItemViewHolder itemViewHolder = (ItemViewHolder) holder;
 
-        if(spanCount != -1){
+        if (spanCount != -1) {
             ViewGroup.MarginLayoutParams marginLayoutParams = (ViewGroup.MarginLayoutParams) itemViewHolder.rootView.getLayoutParams();
             int remainder = position % spanCount;
-            if(remainder == 0){
+            if (remainder == 0) {
                 marginLayoutParams.leftMargin = borderMargin;
                 marginLayoutParams.rightMargin = middleMargin;
-            }else if(remainder == spanCount-1){
+            } else if (remainder == spanCount - 1) {
                 marginLayoutParams.leftMargin = middleMargin;
                 marginLayoutParams.rightMargin = borderMargin;
-            }else{
+            } else {
                 marginLayoutParams.leftMargin = middleMargin;
                 marginLayoutParams.rightMargin = middleMargin;
             }
 
-            if(position < spanCount){
+            if (position < spanCount) {
                 marginLayoutParams.topMargin = borderMargin;
                 marginLayoutParams.bottomMargin = middleMargin;
-            }else if(position >= getItemCount() - 1 - (remainder == 0?spanCount:remainder)){
+            } else if (position >= getItemCount() - 1 - (remainder == 0 ? spanCount : remainder)) {
                 marginLayoutParams.topMargin = middleMargin;
                 marginLayoutParams.bottomMargin = borderMargin;
-            }else{
+            } else {
                 marginLayoutParams.topMargin = middleMargin;
                 marginLayoutParams.bottomMargin = middleMargin;
             }
@@ -141,7 +141,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         itemViewHolder.sketchImageView.setTag(itemViewHolder);
     }
 
-    private static class ItemViewHolder extends RecyclerView.ViewHolder{
+    private static class ItemViewHolder extends RecyclerView.ViewHolder {
         private View rootView;
         private MyImageView sketchImageView;
 
@@ -153,7 +153,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         }
     }
 
-    public interface OnImageClickListener{
+    public interface OnImageClickListener {
         void onImageClick(int position);
     }
 }

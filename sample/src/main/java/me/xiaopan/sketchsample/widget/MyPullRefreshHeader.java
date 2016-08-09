@@ -35,8 +35,8 @@ public class MyPullRefreshHeader extends LinearLayout implements PullRefreshLayo
         hintTextView = (TextView) findViewWithTag("hintText");
 
         adjustArrowImageViewPadding(arrowImageView);
-        px = arrowImageView.getDrawable().getIntrinsicWidth() /2;
-        py = arrowImageView.getDrawable().getIntrinsicHeight() /2;
+        px = arrowImageView.getDrawable().getIntrinsicWidth() / 2;
+        py = arrowImageView.getDrawable().getIntrinsicHeight() / 2;
         arrowImageView.setScaleType(ImageView.ScaleType.MATRIX);
         matrix = new Matrix();
         maxDegrees = 180;
@@ -48,16 +48,16 @@ public class MyPullRefreshHeader extends LinearLayout implements PullRefreshLayo
     @Override
     public void onScroll(int distance) {
         // 如果当前正在刷新，就什么也不做
-        if(status == Status.REFRESHING){
+        if (status == Status.REFRESHING) {
             return;
         }
 
         // 计算旋转角度并旋转箭头
         float degrees;
-        if(distance >= getTriggerHeight()){
+        if (distance >= getTriggerHeight()) {
             degrees = maxDegrees;
-        }else{
-            degrees = ((float) distance/ getTriggerHeight()) * maxDegrees;
+        } else {
+            degrees = ((float) distance / getTriggerHeight()) * maxDegrees;
         }
         matrix.setRotate(degrees, px, py);
         arrowImageView.setImageMatrix(matrix);
@@ -97,7 +97,7 @@ public class MyPullRefreshHeader extends LinearLayout implements PullRefreshLayo
     @Override
     public int getTriggerHeight() {
         // 初始化触发高度
-        if(triggerHeight == -1){
+        if (triggerHeight == -1) {
             triggerHeight = getMeasuredHeight();
         }
         return triggerHeight;
@@ -106,8 +106,8 @@ public class MyPullRefreshHeader extends LinearLayout implements PullRefreshLayo
     /**
      * 调整箭头图片的内边距，保证在旋转箭头的时候不会被遮盖
      */
-    private void adjustArrowImageViewPadding(ImageView arrowImageView){
-        if(arrowImageView.getDrawable() == null){
+    private void adjustArrowImageViewPadding(ImageView arrowImageView) {
+        if (arrowImageView.getDrawable() == null) {
             return;
         }
 
@@ -117,20 +117,20 @@ public class MyPullRefreshHeader extends LinearLayout implements PullRefreshLayo
         int paddingTop = arrowImageView.getPaddingTop();
         int paddingRight = arrowImageView.getPaddingRight();
         int paddingBottom = arrowImageView.getPaddingBottom();
-        if(width > height){
-            int offset = (width - height)/2;
-            if(paddingTop<offset){
+        if (width > height) {
+            int offset = (width - height) / 2;
+            if (paddingTop < offset) {
                 paddingTop = offset;
             }
-            if(paddingBottom<offset){
+            if (paddingBottom < offset) {
                 paddingBottom = offset;
             }
-        }else if(width < height){
-            int offset = (height - width)/2;
-            if(paddingLeft<offset){
+        } else if (width < height) {
+            int offset = (height - width) / 2;
+            if (paddingLeft < offset) {
                 paddingLeft = offset;
             }
-            if(paddingRight<offset){
+            if (paddingRight < offset) {
                 paddingRight = offset;
             }
         }

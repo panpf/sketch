@@ -34,13 +34,14 @@ import me.xiaopan.sketchsample.fragment.StarHomeFragment;
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
 public class StarHomeActivity extends MyBaseActivity implements WindowBackgroundManager.OnSetWindowBackgroundListener {
-    @InjectExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE) private String starTitle;
+    @InjectExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE)
+    private String starTitle;
 
     private WindowBackgroundManager windowBackgroundManager;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -53,7 +54,7 @@ public class StarHomeActivity extends MyBaseActivity implements WindowBackground
                 .beginTransaction()
                 .replace(R.id.frame_onlyFragment_content, starHomeFragment)
                 .commit();
-	}
+    }
 
     @Override
     protected void onPreSetSupportActionBar() {
@@ -66,7 +67,7 @@ public class StarHomeActivity extends MyBaseActivity implements WindowBackground
         overridePendingTransition(R.anim.window_pop_enter, R.anim.window_pop_exit);
     }
 
-    public static void launch(Activity activity, String starName){
+    public static void launch(Activity activity, String starName) {
         Intent intent = new Intent(activity, StarHomeActivity.class);
         intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE, starName);
         intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_URL, "http://image.baidu.com/channel/star/" + starName);

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <me.xiaopan.sketchsample.widget.MyPullRefreshLayout
         android:id="@+id/refreshLayout_search"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <com.etsy.android.grid.StaggeredGridView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
+
+        <com.etsy.android.grid.StaggeredGridView xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/list_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -17,10 +17,11 @@
             android:divider="@android:color/transparent"
             app:column_count_portrait="2"
             app:column_count_landscape="3"
-            app:item_margin="8dp"/>
+            app:item_margin="8dp" />
     </me.xiaopan.sketchsample.widget.MyPullRefreshLayout>
+
     <me.xiaopan.sketchsample.widget.HintView
         android:id="@+id/hintView_search"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 </FrameLayout>

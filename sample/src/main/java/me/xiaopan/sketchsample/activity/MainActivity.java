@@ -26,8 +26,10 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.text.format.Formatter;
+import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
@@ -45,7 +47,7 @@ import me.xiaopan.sketchsample.NotificationService;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
-import me.xiaopan.sketchsample.fragment.LargeImageFragment;
+import me.xiaopan.sketchsample.fragment.LargesFragment;
 import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.StarIndexFragment;
@@ -59,13 +61,15 @@ import me.xiaopan.sketchsample.util.Settings;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
-public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener, AboutFragment.TogglePageListener {
+public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, LargesFragment.GetLargeTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener, AboutFragment.TogglePageListener {
     @InjectView(R.id.layout_main_content)
     private View contentView;
     @InjectView(R.id.tabStrip_main_star)
     private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList)
     private PagerSlidingTabStrip appListTabStrip;
+    @InjectView(R.id.tabStrip_main_large)
+    private PagerSlidingTabStrip largeTabStrip;
     @InjectView(R.id.drawer_main_content)
     private DrawerLayout drawerLayout;
     @InjectView(R.id.layout_main_leftMenu)
@@ -208,12 +212,13 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
+        largeTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"WORLD", "QMSHT", "CWB", "CARD"}, getBaseContext()));
 
         if (!BuildConfig.DEBUG) {
             testButton.setVisibility(View.GONE);
         }
 
-        starButton.performClick();
+        largeImageButton.performClick();
 
         startService(new Intent(getBaseContext(), NotificationService.class));
     }
@@ -344,6 +349,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 if (type != Type.ABOUT) {
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
                     getSupportActionBar().setTitle("关于Sketch");
                     type = Type.ABOUT;
                     getSupportFragmentManager().beginTransaction()
@@ -358,6 +364,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                     getSupportActionBar().setTitle("本地APP");
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.visibleViewByAlpha(appListTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
                     type = Type.APP_LIST;
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
@@ -370,6 +377,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 if (type != Type.LOCAL_PHOTO_ALBUM) {
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
                     getSupportActionBar().setTitle("本地相册");
                     type = Type.LOCAL_PHOTO_ALBUM;
                     getSupportFragmentManager()
@@ -384,6 +392,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 if (type != Type.SEARCH) {
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
                     getSupportActionBar().setTitle("图片搜索");
                     type = Type.SEARCH;
                     getSupportFragmentManager().beginTransaction()
@@ -398,6 +407,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                     getSupportActionBar().setTitle("明星图片");
                     AnimationUtils.visibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
                     type = Type.STAR;
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
@@ -411,10 +421,11 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                     getSupportActionBar().setTitle("超大图片");
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
+                    AnimationUtils.visibleViewByAlpha(largeTabStrip);
                     type = Type.LARGE_IMAGE;
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                            .replace(R.id.frame_main_content, new LargeImageFragment())
+                            .replace(R.id.frame_main_content, new LargesFragment())
                             .commit();
                 }
                 break;
@@ -424,6 +435,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                     getSupportActionBar().setTitle("测试");
                     AnimationUtils.invisibleViewByAlpha(starTabStrip);
                     AnimationUtils.invisibleViewByAlpha(appListTabStrip);
+                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
                     type = Type.TEST;
                     getSupportFragmentManager().beginTransaction()
                             .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
@@ -549,6 +561,23 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         searchButton.performClick();
     }
 
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        boolean result = true;
+        try {
+            result = super.dispatchTouchEvent(ev);
+        } catch (RuntimeException e) {
+            e.printStackTrace();
+        }
+
+        return result;
+    }
+
+    @Override
+    public PagerSlidingTabStrip onGetLargeTabStrip() {
+        return largeTabStrip;
+    }
+
     private enum Type {
         STAR,
         SEARCH,
@@ -574,27 +603,29 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             for (String title : titles) {
                 TextView textView = new TextView(context);
                 textView.setText(title);
+                int padding = DeviceUtils.dp2px(context, 12);
                 if (number == 0) {
                     textView.setPadding(
-                            DeviceUtils.dp2px(context, 16),
-                            DeviceUtils.dp2px(context, 16),
-                            DeviceUtils.dp2px(context, 8),
-                            DeviceUtils.dp2px(context, 16));
+                            padding,
+                            padding,
+                            padding / 2,
+                            padding);
                 } else if (number == titles.length - 1) {
                     textView.setPadding(
-                            DeviceUtils.dp2px(context, 8),
-                            DeviceUtils.dp2px(context, 16),
-                            DeviceUtils.dp2px(context, 16),
-                            DeviceUtils.dp2px(context, 16));
+                            padding / 2,
+                            padding,
+                            padding,
+                            padding);
                 } else {
                     textView.setPadding(
-                            DeviceUtils.dp2px(context, 8),
-                            DeviceUtils.dp2px(context, 16),
-                            DeviceUtils.dp2px(context, 8),
-                            DeviceUtils.dp2px(context, 16));
+                            padding / 2,
+                            padding,
+                            padding / 2,
+                            padding);
                 }
                 textView.setGravity(Gravity.CENTER);
                 textView.setTextColor(context.getResources().getColorStateList(R.color.tab));
+                textView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 12);
                 viewGroup.addView(textView);
                 number++;
             }

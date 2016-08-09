@@ -3,7 +3,7 @@ package me.xiaopan.sketchsample.util;
 import android.support.v4.view.ViewPager;
 import android.widget.TextView;
 
-public class PageNumberSetter implements ViewPager.OnPageChangeListener{
+public class PageNumberSetter implements ViewPager.OnPageChangeListener {
     private TextView textView;
     private ViewPager.OnPageChangeListener onPageChangeListener;
 
@@ -14,22 +14,22 @@ public class PageNumberSetter implements ViewPager.OnPageChangeListener{
 
     @Override
     public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-        if(onPageChangeListener != null){
+        if (onPageChangeListener != null) {
             onPageChangeListener.onPageScrolled(position, positionOffset, positionOffsetPixels);
         }
     }
 
     @Override
     public void onPageSelected(int position) {
-        textView.setText((position+1) + "");
-        if(onPageChangeListener != null){
+        textView.setText((position + 1) + "");
+        if (onPageChangeListener != null) {
             onPageChangeListener.onPageSelected(position);
         }
     }
 
     @Override
     public void onPageScrollStateChanged(int state) {
-        if(onPageChangeListener != null){
+        if (onPageChangeListener != null) {
             onPageChangeListener.onPageScrollStateChanged(state);
         }
     }

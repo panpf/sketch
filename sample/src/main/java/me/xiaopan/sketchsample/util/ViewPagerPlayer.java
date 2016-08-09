@@ -13,7 +13,7 @@ import java.lang.reflect.Field;
 /**
  * 播放器
  */
-public class ViewPagerPlayer implements Runnable{
+public class ViewPagerPlayer implements Runnable {
     private ViewPager viewPager;
     private boolean playing;
     private Handler handler;
@@ -33,8 +33,8 @@ public class ViewPagerPlayer implements Runnable{
         }
     }
 
-    public boolean start(){
-        if(playing){
+    public boolean start() {
+        if (playing) {
             return false;
         }
 
@@ -45,8 +45,8 @@ public class ViewPagerPlayer implements Runnable{
         return true;
     }
 
-    public boolean stop(){
-        if(!playing){
+    public boolean stop() {
+        if (!playing) {
             return false;
         }
 
@@ -56,27 +56,27 @@ public class ViewPagerPlayer implements Runnable{
         return true;
     }
 
-    public boolean isPlaying(){
+    public boolean isPlaying() {
         return playing;
     }
 
     @Override
     public void run() {
         int currentItem = viewPager.getCurrentItem();
-        if(currentItem == 0){
+        if (currentItem == 0) {
             leftToRight = true;
-        }else if(currentItem == viewPager.getAdapter().getCount() - 1){
+        } else if (currentItem == viewPager.getAdapter().getCount() - 1) {
             leftToRight = false;
         }
 
         int nextItem;
-        if(leftToRight){
+        if (leftToRight) {
             nextItem = currentItem + 1;
-        }else{
+        } else {
             nextItem = currentItem - 1;
         }
         viewPager.setCurrentItem(nextItem, true);
-        if(playing){
+        if (playing) {
             handler.postDelayed(this, delayMillis);
         }
     }

@@ -18,7 +18,8 @@ import me.xiaopan.sketchsample.adapter.FragmentAdapter;
  */
 @InjectContentView(R.layout.fragment_star_index)
 public class StarIndexFragment extends MyFragment {
-    @InjectView(R.id.pager_star_content) private ViewPager viewPager;
+    @InjectView(R.id.pager_star_content)
+    private ViewPager viewPager;
     private GetStarTagStripListener getPagerSlidingTagStripListener;
     private FragmentAdapter fragmentAdapter;
 
@@ -26,9 +27,9 @@ public class StarIndexFragment extends MyFragment {
     public void onAttach(Activity activity) {
         super.onAttach(activity);
 
-        if(activity instanceof GetStarTagStripListener){
+        if (activity instanceof GetStarTagStripListener) {
             getPagerSlidingTagStripListener = (GetStarTagStripListener) activity;
-        }else{
+        } else {
             getPagerSlidingTagStripListener = null;
         }
     }
@@ -36,7 +37,7 @@ public class StarIndexFragment extends MyFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        if(getPagerSlidingTagStripListener != null){
+        if (getPagerSlidingTagStripListener != null) {
             getPagerSlidingTagStripListener = null;
         }
     }
@@ -49,7 +50,7 @@ public class StarIndexFragment extends MyFragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        if(fragmentAdapter == null){
+        if (fragmentAdapter == null) {
             Fragment[] fragments = new Fragment[2];
             fragments[0] = new HotStarFragment();
             fragments[1] = new StarCatalogFragment();
@@ -59,7 +60,7 @@ public class StarIndexFragment extends MyFragment {
         getPagerSlidingTagStripListener.onGetStarTabStrip().setViewPager(viewPager);
     }
 
-    public interface GetStarTagStripListener{
-        public PagerSlidingTabStrip onGetStarTabStrip();
+    public interface GetStarTagStripListener {
+        PagerSlidingTabStrip onGetStarTabStrip();
     }
 }

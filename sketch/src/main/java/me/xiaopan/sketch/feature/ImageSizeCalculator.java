@@ -37,7 +37,7 @@ import me.xiaopan.sketch.request.Resize;
 public class ImageSizeCalculator implements Identifier {
     protected String logName = "ImageSizeCalculator";
 
-    private float targetSizeScaleInSampleSize = 1.25f;
+    private float targetSizeScale = 1.25f;
 
     /**
      * 计算MaxSize
@@ -136,10 +136,6 @@ public class ImageSizeCalculator implements Identifier {
      * @return 合适的InSampleSize
      */
     public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight) {
-        // 将目标尺寸稍微变的大一点儿，这样做是为了当原图尺寸比目标尺寸只小一点点的时候，就不要再缩小原图了
-        targetWidth *= targetSizeScaleInSampleSize;
-        targetHeight *= targetSizeScaleInSampleSize;
-
         // 如果目标尺寸都大于等于原始尺寸，也别计算了没意义
         if (targetWidth >= outWidth && targetHeight >= outHeight) {
             return 1;
@@ -184,16 +180,16 @@ public class ImageSizeCalculator implements Identifier {
     /**
      * 计算inSampleSize的时候将targetSize稍微放大一点儿，就是乘以这个倍数，默认值是1.25f
      *
-     * @param targetSizeScaleInSampleSize 将targetSize稍微放大一点儿
+     * @param targetSizeScale 将targetSize稍微放大一点儿
      */
     @SuppressWarnings("unused")
-    public void setTargetSizeScaleInSampleSize(float targetSizeScaleInSampleSize) {
-        this.targetSizeScaleInSampleSize = targetSizeScaleInSampleSize;
+    public void setTargetSizeScale(float targetSizeScale) {
+        this.targetSizeScale = targetSizeScale;
     }
 
     @SuppressWarnings("unused")
-    public float getTargetSizeScaleInSampleSize() {
-        return targetSizeScaleInSampleSize;
+    public float getTargetSizeScale() {
+        return targetSizeScale;
     }
 
     @Override

@@ -1,25 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
+
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <me.xiaopan.sketchsample.widget.MyImageView
             android:id="@+id/image_hotStarThreeLeftItem_one"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:scaleType="centerCrop"
-            android:contentDescription="@string/app_name"/>
+            android:contentDescription="@string/app_name" />
+
         <TextView
             android:id="@+id/text_hotStarThreeLeftItem_one"
             style="@style/TextAppearance_ImageName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_margin="8dp"/>
+            android:layout_margin="8dp" />
     </FrameLayout>
 
     <LinearLayout
@@ -27,22 +29,25 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginLeft="8dp">
+
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
+
             <me.xiaopan.sketchsample.widget.MyImageView
                 android:id="@+id/image_hotStarThreeLeftItem_two"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
-                android:contentDescription="@string/app_name"/>
+                android:contentDescription="@string/app_name" />
+
             <TextView
                 android:id="@+id/text_hotStarThreeLeftItem_two"
                 style="@style/TextAppearance_ImageName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_margin="8dp"/>
+                android:layout_margin="8dp" />
         </FrameLayout>
 
 
@@ -50,19 +55,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp">
+
             <me.xiaopan.sketchsample.widget.MyImageView
                 android:id="@+id/image_hotStarThreeLeftItem_three"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:scaleType="centerCrop"
-                android:contentDescription="@string/app_name"/>
+                android:contentDescription="@string/app_name" />
+
             <TextView
                 android:id="@+id/text_hotStarThreeLeftItem_three"
                 style="@style/TextAppearance_ImageName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom"
-                android:layout_margin="8dp"/>
+                android:layout_margin="8dp" />
         </FrameLayout>
     </LinearLayout>
 </LinearLayout>

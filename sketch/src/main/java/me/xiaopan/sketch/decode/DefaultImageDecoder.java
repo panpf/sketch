@@ -80,9 +80,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             } catch (Throwable e) {
                 e.printStackTrace();
                 ErrorCallback errorCallback = loadRequest.getSketch().getConfiguration().getErrorCallback();
-                if (errorCallback != null) {
-                    errorCallback.onDecodeGifImageFailed(e, loadRequest, boundsOptions);
-                }
+                errorCallback.onDecodeGifImageFailed(e, loadRequest, boundsOptions);
             }
         }
 
@@ -94,7 +92,10 @@ public class DefaultImageDecoder implements ImageDecoder {
             MaxSize maxSize = loadRequest.getOptions().getMaxSize();
             if (maxSize != null) {
                 ImageSizeCalculator imageSizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
-                decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(boundsOptions.outWidth, boundsOptions.outHeight, maxSize.getWidth(), maxSize.getHeight());
+                // 将目标尺寸稍微变的大一点儿，这样做是为了当原图尺寸比目标尺寸只小一点点的时候，就不要再缩小原图了
+                int targetWidth = (int) (maxSize.getWidth() * imageSizeCalculator.getTargetSizeScale());
+                int targetHeight = (int) (maxSize.getHeight() * imageSizeCalculator.getTargetSizeScale());
+                decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(boundsOptions.outWidth, boundsOptions.outHeight, targetWidth, targetHeight);
             }
 
             // Decoding and exclude the width or height of 1 pixel image
@@ -103,10 +104,8 @@ public class DefaultImageDecoder implements ImageDecoder {
             } catch (Throwable error) {
                 error.printStackTrace();
                 ErrorCallback errorCallback = loadRequest.getSketch().getConfiguration().getErrorCallback();
-                if (errorCallback != null) {
-                    boundsOptions.inSampleSize = decodeOptions.inSampleSize;
-                    errorCallback.onDecodeNormalImageFailed(error, loadRequest, boundsOptions);
-                }
+                boundsOptions.inSampleSize = decodeOptions.inSampleSize;
+                errorCallback.onDecodeNormalImageFailed(error, loadRequest, boundsOptions);
             }
             if (bitmap != null && (bitmap.getWidth() == 1 || bitmap.getHeight() == 1)) {
                 if (Sketch.isDebugMode()) {

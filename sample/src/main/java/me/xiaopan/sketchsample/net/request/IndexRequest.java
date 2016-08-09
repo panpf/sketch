@@ -22,8 +22,8 @@ import me.xiaopan.gohttp.requestobject.URL;
  * 百度图片首页请求
  */
 @URL("http://image.baidu.com/")
-public class IndexRequest implements Request{
-    public static class ResponseHandler implements HttpRequest.ResponseHandleCompletedAfterListener<String>{
+public class IndexRequest implements Request {
+    public static class ResponseHandler implements HttpRequest.ResponseHandleCompletedAfterListener<String> {
         private static final String PREFIX = "var sliderData = [";
         private static final String SUFFIX = "];";
 
@@ -41,55 +41,56 @@ public class IndexRequest implements Request{
         public List<ImageGroup> parseRecommendImage(String baiduImageHomeSourceCode) throws JSONException {
             String sliderRegex = "var sliderData = \\[[\\d\\D\\s\\S]*?\\];";
             Matcher matcher2 = Pattern.compile(sliderRegex).matcher(baiduImageHomeSourceCode);
-            if(matcher2.find()){
-                String  sliderJson = matcher2.group();
+            if (matcher2.find()) {
+                String sliderJson = matcher2.group();
 
                 // 截掉前面的“var sliderData = “和后面的"];"
-                if(sliderJson.length() < PREFIX.length()+SUFFIX.length()){
+                if (sliderJson.length() < PREFIX.length() + SUFFIX.length()) {
                     throw new IllegalArgumentException("轮播图数据异常，可能是百度把首页改了");
                 }
-                sliderJson = sliderJson.substring(PREFIX.length(), sliderJson.length()-SUFFIX.length()).trim();
+                sliderJson = sliderJson.substring(PREFIX.length(), sliderJson.length() - SUFFIX.length()).trim();
 
                 // 解析数据
                 JSONArray jsonArray = new JSONArray(sliderJson);
                 List<ImageGroup> imageList = null;
-                for(int w = 0, size = jsonArray.length(); w < size; w++){
-                    if(imageList == null){
+                for (int w = 0, size = jsonArray.length(); w < size; w++) {
+                    if (imageList == null) {
                         imageList = new ArrayList<ImageGroup>();
                     }
                     imageList.add(ImageGroup.parse(jsonArray.getJSONObject(w)));
                 }
-                if(imageList == null || imageList.size() == 0){
+                if (imageList == null || imageList.size() == 0) {
                     throw new IllegalArgumentException("分类推荐中没有图片，可能是百度把首页改了");
                 }
 
                 return imageList;
-            }else{
+            } else {
                 return null;
             }
         }
 
-        private List<ImageCategory> parseImageCategory(String baiduImageHomeSourceCode){
+        private List<ImageCategory> parseImageCategory(String baiduImageHomeSourceCode) {
             String categoryRecommendRegex = "var data = \\[[\\d\\D\\s\\S]*?\\];";
 
             Matcher matcher = Pattern.compile(categoryRecommendRegex).matcher(baiduImageHomeSourceCode);
             List<ImageCategory> imageCategories = null;
             Gson gson = null;
-            while(matcher.find()){
+            while (matcher.find()) {
                 String jsonContent = matcher.group();
 
                 // 截掉前面的“var data = “和后面的";"
-                if(jsonContent.length() < PREFIX2.length()+SUFFIX2.length()){
+                if (jsonContent.length() < PREFIX2.length() + SUFFIX2.length()) {
                     throw new IllegalArgumentException("分类推荐数据异常，可能是百度把首页改了");
                 }
-                jsonContent = jsonContent.substring(PREFIX2.length(), jsonContent.length()-SUFFIX2.length()).trim();
+                jsonContent = jsonContent.substring(PREFIX2.length(), jsonContent.length() - SUFFIX2.length()).trim();
 
                 // 解析
-                if(gson == null){
+                if (gson == null) {
                     gson = new Gson();
                 }
-                List<Image> imageList = gson.fromJson(jsonContent, new TypeToken<List<Image>>(){}.getType());
-                if(imageList == null || imageList.size() == 0){
+                List<Image> imageList = gson.fromJson(jsonContent, new TypeToken<List<Image>>() {
+                }.getType());
+                if (imageList == null || imageList.size() == 0) {
                     throw new IllegalArgumentException("分类推荐中没有图片，可能是百度把首页改了");
                 }
 
@@ -97,7 +98,7 @@ public class IndexRequest implements Request{
                 ImageCategory imageCategory = new ImageCategory();
                 imageCategory.setImageList(imageList);
                 imageCategory.setName(imageList.get(0).getCategory());
-                if(imageCategories == null){
+                if (imageCategories == null) {
                     imageCategories = new ArrayList<ImageCategory>();
                 }
                 imageCategories.add(imageCategory);
@@ -113,7 +114,7 @@ public class IndexRequest implements Request{
 
         @Override
         public String toString() {
-            return "recommendImages="+recommendImages.toString()+"; imageCategories="+imageCategories.toString();
+            return "recommendImages=" + recommendImages.toString() + "; imageCategories=" + imageCategories.toString();
         }
 
         public List<ImageGroup> getRecommendImages() {
@@ -133,14 +134,14 @@ public class IndexRequest implements Request{
         }
     }
 
-    public static class ImageCategory{
+    public static class ImageCategory {
         private String name;
         private String url;
         private List<Image> imageList;
 
         @Override
         public String toString() {
-            return "name="+name+"; url="+url+"; imageList="+imageList.toString();
+            return "name=" + name + "; url=" + url + "; imageList=" + imageList.toString();
         }
 
         public String getName() {
@@ -169,18 +170,26 @@ public class IndexRequest implements Request{
     }
 
     public static class Image {
-        @SerializedName("image_id") private String id;
-        @SerializedName("src") private String url;
-        @SerializedName("url") private String link;
-        @SerializedName("title") private String title;
-        @SerializedName("width") private int width;
-        @SerializedName("height") private int height;
-        @SerializedName("col") private String category;
-        @SerializedName("tag3") private String tag;
+        @SerializedName("image_id")
+        private String id;
+        @SerializedName("src")
+        private String url;
+        @SerializedName("url")
+        private String link;
+        @SerializedName("title")
+        private String title;
+        @SerializedName("width")
+        private int width;
+        @SerializedName("height")
+        private int height;
+        @SerializedName("col")
+        private String category;
+        @SerializedName("tag3")
+        private String tag;
 
         @Override
         public String toString() {
-            return "title="+title+"; id="+id+"; url="+url+"; link="+link+"; width="+width+"; height="+height+"; category="+category+"; tag="+tag;
+            return "title=" + title + "; id=" + id + "; url=" + url + "; link=" + link + "; width=" + width + "; height=" + height + "; category=" + category + "; tag=" + tag;
         }
 
         public String getId() {
@@ -249,17 +258,24 @@ public class IndexRequest implements Request{
     }
 
     public static class ImageGroup {
-        @SerializedName("width") private int width;
-        @SerializedName("height") private int height;
-        @SerializedName("title") private String title;
-        @SerializedName("coverNum") private String size;
-        @SerializedName("src") private String url;
-        @SerializedName("url") private String link;
-        @SerializedName("column") private String category;
+        @SerializedName("width")
+        private int width;
+        @SerializedName("height")
+        private int height;
+        @SerializedName("title")
+        private String title;
+        @SerializedName("coverNum")
+        private String size;
+        @SerializedName("src")
+        private String url;
+        @SerializedName("url")
+        private String link;
+        @SerializedName("column")
+        private String category;
 
         @Override
         public String toString() {
-            return "title="+title+"url="+url+"; link="+link+"; width="+width+"; height="+height+"; category="+category+"; size="+size;
+            return "title=" + title + "url=" + url + "; link=" + link + "; width=" + width + "; height=" + height + "; category=" + category + "; size=" + size;
         }
 
         public String getUrl() {
@@ -318,7 +334,7 @@ public class IndexRequest implements Request{
             this.size = size;
         }
 
-        public static ImageGroup parse(JSONObject jsonObject){
+        public static ImageGroup parse(JSONObject jsonObject) {
             ImageGroup imageGroup = new ImageGroup();
             try {
                 imageGroup.setCategory(jsonObject.getString("column"));

@@ -31,7 +31,7 @@ import java.util.ArrayList;
  * ListAdapter used when a ListView has header views. This ListAdapter
  * wraps another one and also keeps track of the header views and their
  * associated data objects.
- *<p>This is intended as a base class; you will probably not need to
+ * <p>This is intended as a base class; you will probably not need to
  * use this class directly in your own code.
  */
 public class HeaderViewListAdapter implements WrapperListAdapter, Filterable {
@@ -233,7 +233,7 @@ public class HeaderViewListAdapter implements WrapperListAdapter, Filterable {
 
         // Footer (off-limits positions will throw an ArrayIndexOutOfBoundsException)
         View footerView = mFooterViewInfos.get(adjPosition - adapterCount).view;
-        if(onGetFooterViewListener != null){
+        if (onGetFooterViewListener != null) {
             onGetFooterViewListener.onGetFooterView(footerView);
         }
         return footerView;
@@ -282,7 +282,7 @@ public class HeaderViewListAdapter implements WrapperListAdapter, Filterable {
         return mAdapter;
     }
 
-    public interface OnGetFooterViewListener{
+    public interface OnGetFooterViewListener {
         void onGetFooterView(View view);
     }
 }

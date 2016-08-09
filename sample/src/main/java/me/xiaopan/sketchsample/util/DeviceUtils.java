@@ -9,16 +9,16 @@ public class DeviceUtils {
     private static final String ATTR_NAME_NAVIGATION_BAR_HEIGHT = "navigation_bar_height";
     private static final String ATTR_NAME_NAVIGATION_BAR_HEIGHT_LANDSCAPE = "navigation_bar_height_landscape";
 
-    public static int getStatusBarHeight(Resources resources){
+    public static int getStatusBarHeight(Resources resources) {
         return getInternalDimensionSize(resources, ATTR_NAME_STATUS_BAR_HEIGHT);
     }
 
-    public static int getNavigationBarHeight(Resources resources){
-        if(resources.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT){
+    public static int getNavigationBarHeight(Resources resources) {
+        if (resources.getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
             return getInternalDimensionSize(resources, ATTR_NAME_NAVIGATION_BAR_HEIGHT);
-        }else if(resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE){
+        } else if (resources.getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             return getInternalDimensionSize(resources, ATTR_NAME_NAVIGATION_BAR_HEIGHT_LANDSCAPE);
-        }else{
+        } else {
             return getInternalDimensionSize(resources, ATTR_NAME_NAVIGATION_BAR_HEIGHT);
         }
     }
@@ -32,7 +32,7 @@ public class DeviceUtils {
         return result;
     }
 
-    public static int dp2px(Context context, int dpValue){
+    public static int dp2px(Context context, int dpValue) {
         return (int) ((dpValue * context.getResources().getDisplayMetrics().density) + 0.5);
     }
 }

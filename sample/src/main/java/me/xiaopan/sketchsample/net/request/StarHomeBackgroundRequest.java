@@ -15,8 +15,8 @@ import me.xiaopan.gohttp.requestobject.Request;
 /**
  * 明星个人主页背景请求
  */
-public class StarHomeBackgroundRequest implements Request{
-    public static class ResponseHandler implements HttpRequest.ResponseHandleCompletedAfterListener<String>{
+public class StarHomeBackgroundRequest implements Request {
+    public static class ResponseHandler implements HttpRequest.ResponseHandleCompletedAfterListener<String> {
 
         @Override
         public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, String starHomeSourceCode, boolean b, boolean b2) throws Throwable {
@@ -29,39 +29,39 @@ public class StarHomeBackgroundRequest implements Request{
         public String parseBackgroundImageUrl(String starHomeSourceCode) throws JSONException {
             String prefix = "style=\"background-image:url(";
             String suffix = ");";
-            String categoryRecommendRegex = prefix+"[\\d\\D\\s\\S]*?"+suffix;
+            String categoryRecommendRegex = prefix + "[\\d\\D\\s\\S]*?" + suffix;
             Matcher matcher2 = Pattern.compile(categoryRecommendRegex).matcher(starHomeSourceCode);
-            if(matcher2.find()){
+            if (matcher2.find()) {
                 String backgroundImageUrl = matcher2.group();
                 // 截掉前面的“var sliderData = “和后面的"];"
-                if(backgroundImageUrl.length() < prefix.length()+suffix.length()){
+                if (backgroundImageUrl.length() < prefix.length() + suffix.length()) {
                     throw new IllegalArgumentException();
                 }
-                backgroundImageUrl = backgroundImageUrl.substring(prefix.length(), backgroundImageUrl.length()-suffix.length()).trim();
+                backgroundImageUrl = backgroundImageUrl.substring(prefix.length(), backgroundImageUrl.length() - suffix.length()).trim();
                 return backgroundImageUrl;
-            }else{
+            } else {
                 return null;
             }
         }
 
-        private int parseBackgroundColor(String starHomeSourceCode){
+        private int parseBackgroundColor(String starHomeSourceCode) {
             String prefix = "background-color:";
             String suffix = ";\">";
-            String categoryRecommendRegex = prefix+"[\\d\\D\\s\\S]*?"+suffix;
+            String categoryRecommendRegex = prefix + "[\\d\\D\\s\\S]*?" + suffix;
             Matcher matcher2 = Pattern.compile(categoryRecommendRegex).matcher(starHomeSourceCode);
             int backgroundColor = Color.WHITE;
-            if(matcher2.find()){
+            if (matcher2.find()) {
                 String color = matcher2.group();
                 // 截掉前面的“var sliderData = “和后面的"];"
-                if(color.length() < prefix.length()+suffix.length()){
+                if (color.length() < prefix.length() + suffix.length()) {
                     throw new IllegalArgumentException();
                 }
-                color = color.substring(prefix.length(), color.length()-suffix.length()).trim();
-                try{
+                color = color.substring(prefix.length(), color.length() - suffix.length()).trim();
+                try {
                     backgroundColor = Color.parseColor(color);
-                }catch (IllegalArgumentException e){
+                } catch (IllegalArgumentException e) {
                     e.printStackTrace();
-                    Log.e("StarHomeBackground", "解析背景颜色失败："+color);
+                    Log.e("StarHomeBackground", "解析背景颜色失败：" + color);
                 }
             }
             return backgroundColor;

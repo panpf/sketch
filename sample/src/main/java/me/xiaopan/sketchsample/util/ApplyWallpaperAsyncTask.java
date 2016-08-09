@@ -12,7 +12,7 @@ import java.io.InputStream;
 /**
  * 应用壁纸异步任务
  */
-public class ApplyWallpaperAsyncTask extends AsyncTask<Integer, Integer, Boolean>{
+public class ApplyWallpaperAsyncTask extends AsyncTask<Integer, Integer, Boolean> {
     private Context context;
     private File imageFile;
 
@@ -31,8 +31,8 @@ public class ApplyWallpaperAsyncTask extends AsyncTask<Integer, Integer, Boolean
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        }finally {
-            if(inputStream != null){
+        } finally {
+            if (inputStream != null) {
                 try {
                     inputStream.close();
                 } catch (IOException e) {

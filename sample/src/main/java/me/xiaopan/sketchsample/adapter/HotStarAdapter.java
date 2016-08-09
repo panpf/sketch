@@ -18,7 +18,7 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 /**
  * 热门明星适配器
  */
-public class HotStarAdapter extends RecyclerView.Adapter{
+public class HotStarAdapter extends RecyclerView.Adapter {
     private static final int ITEM_TYPE_CATEGORY_TITLE = 0;
     private static final int ITEM_TYPE_THREE_ITEM_LEFT = 1;
     private static final int ITEM_TYPE_THREE_ITEM_RIGHT = 2;
@@ -33,12 +33,12 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         this.context = context;
         append(hotStarList);
         this.marginBorder = (int) context.getResources().getDimension(R.dimen.home_category_margin_border);
-        this.availableScreenWidth = context.getResources().getDisplayMetrics().widthPixels - (marginBorder*2);
+        this.availableScreenWidth = context.getResources().getDisplayMetrics().widthPixels - (marginBorder * 2);
         this.itemClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(v.getTag() instanceof HotStarRequest.Star){
-                    if(onImageClickListener != null){
+                if (v.getTag() instanceof HotStarRequest.Star) {
+                    if (onImageClickListener != null) {
                         onImageClickListener.onClickImage((HotStarRequest.Star) v.getTag());
                     }
                 }
@@ -46,30 +46,30 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         };
     }
 
-    private void parse(List<HotStarRequest.Star> starList){
-        if(starList == null){
+    private void parse(List<HotStarRequest.Star> starList) {
+        if (starList == null) {
             return;
         }
         boolean left = true;
-        for(int w = 0, size = starList.size(); w < size;){
+        for (int w = 0, size = starList.size(); w < size; ) {
             int number = size - w;
-            if(number == 1){
+            if (number == 1) {
                 TwoItem oneItem = new TwoItem();
                 oneItem.star1 = starList.get(w++);
                 items.add(oneItem);
-            }else if(number == 2){
+            } else if (number == 2) {
                 TwoItem twoItem = new TwoItem();
                 twoItem.star1 = starList.get(w++);
                 twoItem.star2 = starList.get(w++);
                 items.add(twoItem);
-            }else{
-                if(left){
+            } else {
+                if (left) {
                     ThreeItemLeft threeItemLeft = new ThreeItemLeft();
                     threeItemLeft.star1 = starList.get(w++);
                     threeItemLeft.star2 = starList.get(w++);
                     threeItemLeft.star3 = starList.get(w++);
                     items.add(threeItemLeft);
-                }else{
+                } else {
                     ThreeItemRight threeItemRight = new ThreeItemRight();
                     threeItemRight.star1 = starList.get(w++);
                     threeItemRight.star2 = starList.get(w++);
@@ -81,11 +81,11 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         }
     }
 
-    public void append(List<HotStarRequest.HotStar> hotStarList){
-        if(items == null){
+    public void append(List<HotStarRequest.HotStar> hotStarList) {
+        if (items == null) {
             items = new ArrayList<Object>();
         }
-        for(HotStarRequest.HotStar hotStar : hotStarList){
+        for (HotStarRequest.HotStar hotStar : hotStarList) {
             items.add(hotStar.getName());
             parse(hotStar.getStarList());
         }
@@ -99,15 +99,15 @@ public class HotStarAdapter extends RecyclerView.Adapter{
     @Override
     public int getItemViewType(int position) {
         Object item = items.get(position);
-        if(item instanceof String){
+        if (item instanceof String) {
             return ITEM_TYPE_CATEGORY_TITLE;
-        }else if(item instanceof ThreeItemLeft){
+        } else if (item instanceof ThreeItemLeft) {
             return ITEM_TYPE_THREE_ITEM_LEFT;
-        }else if(item instanceof ThreeItemRight){
+        } else if (item instanceof ThreeItemRight) {
             return ITEM_TYPE_THREE_ITEM_RIGHT;
-        }else if(item instanceof TwoItem){
+        } else if (item instanceof TwoItem) {
             return ITEM_TYPE_TWO_ITEM;
-        }else{
+        } else {
             return -1;
         }
     }
@@ -115,17 +115,17 @@ public class HotStarAdapter extends RecyclerView.Adapter{
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         RecyclerView.ViewHolder viewHolder;
-        if(viewType == ITEM_TYPE_CATEGORY_TITLE){
+        if (viewType == ITEM_TYPE_CATEGORY_TITLE) {
             viewHolder = new CategoryTitleHolder(LayoutInflater.from(context).inflate(R.layout.list_item_title, parent, false));
-        }else if(viewType == ITEM_TYPE_THREE_ITEM_LEFT){
+        } else if (viewType == ITEM_TYPE_THREE_ITEM_LEFT) {
             ThreeItemLeftHolder threeItemLeftHolder = new ThreeItemLeftHolder(LayoutInflater.from(context).inflate(R.layout.list_item_hot_star_three_left, parent, false));
 
             threeItemLeftHolder.oneImageView.setOnClickListener(itemClickListener);
             threeItemLeftHolder.twoImageView.setOnClickListener(itemClickListener);
             threeItemLeftHolder.threeImageView.setOnClickListener(itemClickListener);
 
-            int itemWidth = (availableScreenWidth-marginBorder)/2;
-            int itemHeight = (int) (itemWidth/0.75);
+            int itemWidth = (availableScreenWidth - marginBorder) / 2;
+            int itemHeight = (int) (itemWidth / 0.75);
 
             ViewGroup.LayoutParams params = threeItemLeftHolder.oneImageView.getLayoutParams();
             params.width = itemWidth;
@@ -135,26 +135,26 @@ public class HotStarAdapter extends RecyclerView.Adapter{
 
             params = threeItemLeftHolder.twoImageView.getLayoutParams();
             params.width = itemWidth;
-            params.height = (itemHeight-marginBorder)/2;
+            params.height = (itemHeight - marginBorder) / 2;
             threeItemLeftHolder.twoImageView.setLayoutParams(params);
             threeItemLeftHolder.twoImageView.setOptionsByName(OptionsType.NORMAL_RECT);
 
             params = threeItemLeftHolder.threeImageView.getLayoutParams();
             params.width = itemWidth;
-            params.height = (itemHeight-marginBorder)/2;
+            params.height = (itemHeight - marginBorder) / 2;
             threeItemLeftHolder.threeImageView.setLayoutParams(params);
             threeItemLeftHolder.threeImageView.setOptionsByName(OptionsType.NORMAL_RECT);
 
             viewHolder = threeItemLeftHolder;
-        }else if(viewType == ITEM_TYPE_THREE_ITEM_RIGHT){
+        } else if (viewType == ITEM_TYPE_THREE_ITEM_RIGHT) {
             ThreeItemRightHolder threeItemRightHolder = new ThreeItemRightHolder(LayoutInflater.from(context).inflate(R.layout.list_item_hot_star_three_right, parent, false));
 
             threeItemRightHolder.oneImageView.setOnClickListener(itemClickListener);
             threeItemRightHolder.twoImageView.setOnClickListener(itemClickListener);
             threeItemRightHolder.threeImageView.setOnClickListener(itemClickListener);
 
-            int itemWidth = (availableScreenWidth-marginBorder) / 2;
-            int itemHeight = (int) (itemWidth/0.75);
+            int itemWidth = (availableScreenWidth - marginBorder) / 2;
+            int itemHeight = (int) (itemWidth / 0.75);
 
             ViewGroup.LayoutParams params = threeItemRightHolder.threeImageView.getLayoutParams();
             params.width = itemWidth;
@@ -164,40 +164,40 @@ public class HotStarAdapter extends RecyclerView.Adapter{
 
             params = threeItemRightHolder.twoImageView.getLayoutParams();
             params.width = itemWidth;
-            params.height = (itemHeight-marginBorder)/2;
+            params.height = (itemHeight - marginBorder) / 2;
             threeItemRightHolder.twoImageView.setLayoutParams(params);
             threeItemRightHolder.twoImageView.setOptionsByName(OptionsType.NORMAL_RECT);
 
             params = threeItemRightHolder.oneImageView.getLayoutParams();
             params.width = itemWidth;
-            params.height = (itemHeight-marginBorder)/2;
+            params.height = (itemHeight - marginBorder) / 2;
             threeItemRightHolder.oneImageView.setLayoutParams(params);
             threeItemRightHolder.oneImageView.setOptionsByName(OptionsType.NORMAL_RECT);
 
             viewHolder = threeItemRightHolder;
-        }else if(viewType == ITEM_TYPE_TWO_ITEM){
+        } else if (viewType == ITEM_TYPE_TWO_ITEM) {
             TwoItemHolder twoItemHolder = new TwoItemHolder(LayoutInflater.from(context).inflate(R.layout.list_item_hot_star_two, parent, false));
 
             twoItemHolder.oneImageView.setOnClickListener(itemClickListener);
             twoItemHolder.twoImageView.setOnClickListener(itemClickListener);
 
-            int itemWidth = (availableScreenWidth-marginBorder) / 2;
-            int itemHeight = (int) (itemWidth/0.75);
+            int itemWidth = (availableScreenWidth - marginBorder) / 2;
+            int itemHeight = (int) (itemWidth / 0.75);
 
             ViewGroup.LayoutParams params = twoItemHolder.oneImageView.getLayoutParams();
             params.width = itemWidth;
-            params.height = (itemHeight-marginBorder)/2;
+            params.height = (itemHeight - marginBorder) / 2;
             twoItemHolder.oneImageView.setLayoutParams(params);
             twoItemHolder.oneImageView.setOptionsByName(OptionsType.NORMAL_RECT);
 
             params = twoItemHolder.twoImageView.getLayoutParams();
             params.width = itemWidth;
-            params.height = (itemHeight-marginBorder)/2;
+            params.height = (itemHeight - marginBorder) / 2;
             twoItemHolder.twoImageView.setLayoutParams(params);
             twoItemHolder.twoImageView.setOptionsByName(OptionsType.NORMAL_RECT);
 
             viewHolder = twoItemHolder;
-        }else{
+        } else {
             return null;
         }
         return viewHolder;
@@ -205,10 +205,10 @@ public class HotStarAdapter extends RecyclerView.Adapter{
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof CategoryTitleHolder){
+        if (holder instanceof CategoryTitleHolder) {
             CategoryTitleHolder categoryTitleHolder = (CategoryTitleHolder) holder;
-            categoryTitleHolder.categoryTitleTextView.setText((String)items.get(position));
-        }else if(holder instanceof ThreeItemLeftHolder){
+            categoryTitleHolder.categoryTitleTextView.setText((String) items.get(position));
+        } else if (holder instanceof ThreeItemLeftHolder) {
             ThreeItemLeftHolder threeItemLeftHolder = (ThreeItemLeftHolder) holder;
             ThreeItemLeft threeItemLeft = (ThreeItemLeft) items.get(position);
 
@@ -223,7 +223,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemLeftHolder.oneImageView.displayImage(threeItemLeft.star1.getHeightImage().getUrl());
             threeItemLeftHolder.twoImageView.displayImage(threeItemLeft.star2.getWidthImage().getUrl());
             threeItemLeftHolder.threeImageView.displayImage(threeItemLeft.star3.getWidthImage().getUrl());
-        }else if(holder instanceof ThreeItemRightHolder){
+        } else if (holder instanceof ThreeItemRightHolder) {
             ThreeItemRightHolder threeItemRightHolder = (ThreeItemRightHolder) holder;
             ThreeItemRight threeItemRight = (ThreeItemRight) items.get(position);
 
@@ -238,7 +238,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             threeItemRightHolder.oneImageView.displayImage(threeItemRight.star1.getWidthImage().getUrl());
             threeItemRightHolder.twoImageView.displayImage(threeItemRight.star2.getWidthImage().getUrl());
             threeItemRightHolder.threeImageView.displayImage(threeItemRight.star3.getHeightImage().getUrl());
-        }else if(holder instanceof TwoItemHolder){
+        } else if (holder instanceof TwoItemHolder) {
             TwoItemHolder twoItemHolder = (TwoItemHolder) holder;
             TwoItem twoItem = (TwoItem) items.get(position);
 
@@ -247,14 +247,14 @@ public class HotStarAdapter extends RecyclerView.Adapter{
             twoItemHolder.oneImageView.displayImage(twoItem.star1.getWidthImage().getUrl());
 
 
-            if(twoItem.star2 != null){
+            if (twoItem.star2 != null) {
                 twoItemHolder.twoNameTextView.setText(twoItem.star2.getName());
                 twoItemHolder.twoImageView.setTag(twoItem.star2);
                 twoItemHolder.twoImageView.displayImage(twoItem.star2.getWidthImage().getUrl());
 
                 twoItemHolder.twoNameTextView.setVisibility(View.VISIBLE);
                 twoItemHolder.twoImageView.setVisibility(View.VISIBLE);
-            }else{
+            } else {
                 twoItemHolder.twoNameTextView.setVisibility(View.INVISIBLE);
                 twoItemHolder.twoImageView.setVisibility(View.INVISIBLE);
             }
@@ -262,15 +262,15 @@ public class HotStarAdapter extends RecyclerView.Adapter{
 
         int topMargin;
         int bottomMargin;
-        if(position == 0){
+        if (position == 0) {
             topMargin = marginBorder;
-            bottomMargin = marginBorder/2;
-        }else if(position == getItemCount()-1){
-            topMargin = marginBorder/2;
+            bottomMargin = marginBorder / 2;
+        } else if (position == getItemCount() - 1) {
+            topMargin = marginBorder / 2;
             bottomMargin = marginBorder;
-        }else{
-            topMargin = marginBorder/2;
-            bottomMargin = marginBorder/2;
+        } else {
+            topMargin = marginBorder / 2;
+            bottomMargin = marginBorder / 2;
         }
         ViewGroup.MarginLayoutParams params = (ViewGroup.MarginLayoutParams) holder.itemView.getLayoutParams();
         params.topMargin = topMargin;
@@ -278,7 +278,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         holder.itemView.setLayoutParams(params);
     }
 
-    private static class ThreeItemLeftHolder extends RecyclerView.ViewHolder{
+    private static class ThreeItemLeftHolder extends RecyclerView.ViewHolder {
         private MyImageView oneImageView;
         private MyImageView twoImageView;
         private MyImageView threeImageView;
@@ -297,7 +297,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         }
     }
 
-    private static class ThreeItemRightHolder extends RecyclerView.ViewHolder{
+    private static class ThreeItemRightHolder extends RecyclerView.ViewHolder {
         private MyImageView oneImageView;
         private MyImageView twoImageView;
         private MyImageView threeImageView;
@@ -316,7 +316,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         }
     }
 
-    private static class TwoItemHolder extends RecyclerView.ViewHolder{
+    private static class TwoItemHolder extends RecyclerView.ViewHolder {
         private MyImageView oneImageView;
         private MyImageView twoImageView;
         private TextView oneNameTextView;
@@ -331,7 +331,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         }
     }
 
-    private static class CategoryTitleHolder extends RecyclerView.ViewHolder{
+    private static class CategoryTitleHolder extends RecyclerView.ViewHolder {
         private TextView categoryTitleTextView;
 
         public CategoryTitleHolder(View itemView) {
@@ -357,7 +357,7 @@ public class HotStarAdapter extends RecyclerView.Adapter{
         private HotStarRequest.Star star2;
     }
 
-    public interface OnImageClickListener{
+    public interface OnImageClickListener {
         void onClickImage(HotStarRequest.Star star);
     }
 }

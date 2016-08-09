@@ -16,21 +16,21 @@ public class SingleTapDetector extends GestureDetector.SimpleOnGestureListener {
         this.gestureDetector = new GestureDetector(context, this);
     }
 
-    public boolean onTouchEvent(MotionEvent ev){
+    public boolean onTouchEvent(MotionEvent ev) {
         return gestureDetector.onTouchEvent(ev);
     }
 
     @Override
     public boolean onSingleTapConfirmed(MotionEvent e) {
-        if(onSingleTapListener != null){
+        if (onSingleTapListener != null) {
             onSingleTapListener.onSingleTapUp(e);
             return true;
-        }else{
+        } else {
             return super.onSingleTapConfirmed(e);
         }
     }
 
-    public interface OnSingleTapListener{
+    public interface OnSingleTapListener {
         public boolean onSingleTapUp(MotionEvent e);
     }
 }
