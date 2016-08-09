@@ -13,15 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package me.xiaopan.sketchsample.zoom.gestures;
 
-public interface OnScaleDragGestureListener {
+package me.xiaopan.sketch.feature.zoom.scrollerproxy;
 
-    void onDrag(float dx, float dy);
+import android.annotation.TargetApi;
+import android.content.Context;
 
-    void onFling(float startX, float startY, float velocityX,
-                 float velocityY);
+@TargetApi(14)
+public class IcsScroller extends GingerScroller {
 
-    void onScale(float scaleFactor, float focusX, float focusY);
+    public IcsScroller(Context context) {
+        super(context);
+    }
+
+    @Override
+    public boolean computeScrollOffset() {
+        return mScroller.computeScrollOffset();
+    }
 
 }

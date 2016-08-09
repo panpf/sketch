@@ -290,11 +290,12 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     loadMoreFooterView.setPause(false);
                 }
             }
-        }).responseHandleCompletedAfterListener(new StarImageRequest.ResponseHandler()).go();
+        }).responseHandleCompletedAfterListener(new StarImageRequest.ResponseHandler(getActivity().getBaseContext())).go();
     }
 
     @Override
     public void onLoadMore(final LoadMoreFooterView loadMoreFooterView) {
+        loadMoreFooterView.loadFinished(false);
         starImageRequest.setStart(starImageAdapter.getDataSize());
         loadMoreRequestFuture = GoHttp.with(getActivity()).newRequest(starImageRequest, new JsonHttpResponseHandler(StarImageRequest.Response.class), new HttpRequest.Listener<StarImageRequest.Response>() {
             @Override
@@ -338,6 +339,6 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
             public void onCanceled(HttpRequest httpRequest) {
                 loadMoreFooterView.loadFinished(false);
             }
-        }).responseHandleCompletedAfterListener(new StarImageRequest.ResponseHandler()).go();
+        }).responseHandleCompletedAfterListener(new StarImageRequest.ResponseHandler(getActivity().getBaseContext())).go();
     }
 }

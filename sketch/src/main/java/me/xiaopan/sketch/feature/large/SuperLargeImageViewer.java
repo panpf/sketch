@@ -1,4 +1,4 @@
-package me.xiaopan.sketchsample.large;
+package me.xiaopan.sketch.feature.large;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -16,8 +16,11 @@ import java.io.IOException;
 
 import me.xiaopan.sketch.Sketch;
 
-public class LargeImageDisplay {
-    private static final String NAME = "LargeImageDisplay";
+/**
+ * 超大图片查看器
+ */
+public class SuperLargeImageViewer {
+    private static final String NAME = "SuperLargeImageViewer";
 
     private ImageView imageView;
 
@@ -30,7 +33,7 @@ public class LargeImageDisplay {
     private Paint paint = new Paint();
     private Matrix matrix = new Matrix();
 
-    public LargeImageDisplay(ImageView imageView) {
+    public SuperLargeImageViewer(ImageView imageView) {
         this.imageView = imageView;
     }
 
@@ -102,7 +105,12 @@ public class LargeImageDisplay {
     }
 
     public void setImage(String uri) {
-        if (uri != null && decoder != null && uri.equals(decoder.getImageUri())) {
+        if (uri == null) {
+            cleanBitmap();
+            return;
+        }
+
+        if (decoder != null && uri.equals(decoder.getImageUri())) {
             return;
         }
 

@@ -258,7 +258,16 @@ public class DisplayRequest extends LoadRequest {
                 RecycleBitmapDrawable recycleCompletedDrawable = (RecycleBitmapDrawable) completedDrawable;
                 completedDrawable = new FixedRecycleBitmapDrawable(recycleCompletedDrawable, displayAttrs.getFixedSize());
             }
-            displayOptions.getImageDisplayer().display(displayBinder.getImageViewInterface(), completedDrawable);
+
+            ImageViewInterface viewInterface = displayBinder.getImageViewInterface();
+            if (Sketch.isDebugMode()) {
+                printLogI("runCompletedInMainThread", "image display completed",
+                        displayResult.getImageFrom().name(),
+                        (completedDrawable instanceof RecycleDrawable) ? ((RecycleDrawable) completedDrawable).getInfo() : "unknown",
+                        "viewHashCode=" + Integer.toHexString(viewInterface.hashCode()));
+            }
+
+            displayOptions.getImageDisplayer().display(viewInterface, completedDrawable);
         } else {
             if (Sketch.isDebugMode()) {
                 printLogD("runCompletedInMainThread", "completedDrawable is null");

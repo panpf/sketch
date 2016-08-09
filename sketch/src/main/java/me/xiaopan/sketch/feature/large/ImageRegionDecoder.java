@@ -1,4 +1,4 @@
-package me.xiaopan.sketchsample.large;
+package me.xiaopan.sketch.feature.large;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -69,7 +69,6 @@ public class ImageRegionDecoder {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
     public void init() throws NumberFormatException, IOException {
         if (isReady()) {
             return;

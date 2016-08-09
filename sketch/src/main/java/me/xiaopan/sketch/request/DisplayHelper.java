@@ -521,7 +521,7 @@ public class DisplayHelper {
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(logName,
                         " - ", errorInfo,
-                        " - ", requestAttrs.getUri(),
+                        " - ", requestAttrs.getId(),
                         " - ", "viewHashCode", "=", Integer.toHexString(imageViewInterface.hashCode())));
             }
             throw new IllegalArgumentException(errorInfo);
@@ -612,7 +612,8 @@ public class DisplayHelper {
                 if (!recycleDrawable.isRecycled()) {
                     if (Sketch.isDebugMode()) {
                         Log.i(Sketch.TAG, SketchUtils.concat(logName,
-                                " - ", "from memory get bitmap",
+                                " - ", "image display completed",
+                                " - ", ImageFrom.MEMORY_CACHE.name(),
                                 " - ", recycleDrawable.getInfo(),
                                 " - ", requestAttrs.getId(),
                                 " - ", "viewHashCode", "=", Integer.toHexString(imageViewInterface.hashCode())));

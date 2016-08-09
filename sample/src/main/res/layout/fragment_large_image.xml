@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <me.xiaopan.sketchsample.widget.LargeImageView
+    <me.xiaopan.sketchsample.widget.MyImageView
         android:id="@+id/largeImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

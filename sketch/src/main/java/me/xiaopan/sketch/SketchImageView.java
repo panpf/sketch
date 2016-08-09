@@ -27,12 +27,14 @@ import android.widget.ImageView;
 
 import me.xiaopan.sketch.feature.ClickRetryFunction;
 import me.xiaopan.sketch.feature.ImageShapeFunction;
+import me.xiaopan.sketch.feature.ImageZoomFunction;
 import me.xiaopan.sketch.feature.RecyclerCompatFunction;
 import me.xiaopan.sketch.feature.RequestFunction;
 import me.xiaopan.sketch.feature.ShowGifFlagFunction;
 import me.xiaopan.sketch.feature.ShowImageFromFunction;
 import me.xiaopan.sketch.feature.ShowPressedFunction;
 import me.xiaopan.sketch.feature.ShowProgressFunction;
+import me.xiaopan.sketch.feature.SuperLargeImageFunction;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -59,6 +61,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     private ShowGifFlagFunction showGifFlagFunction;
     private ImageShapeFunction imageShapeFunction;
     private ClickRetryFunction clickRetryFunction;
+    private ImageZoomFunction imageZoomFunction;
+    private SuperLargeImageFunction superLargeImageFunction;
 
     public SketchImageView(Context context) {
         super(context);
@@ -123,6 +127,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (recyclerCompatFunction != null) {
             recyclerCompatFunction.onLayout(changed, left, top, right, bottom);
         }
+        if (imageZoomFunction != null) {
+            imageZoomFunction.onLayout(changed, left, top, right, bottom);
+        }
+        if (superLargeImageFunction != null) {
+            superLargeImageFunction.onLayout(changed, left, top, right, bottom);
+        }
     }
 
     @Override
@@ -153,36 +163,52 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (recyclerCompatFunction != null) {
             recyclerCompatFunction.onDraw(canvas);
         }
+        if (imageZoomFunction != null) {
+            imageZoomFunction.onDraw(canvas);
+        }
+        if (superLargeImageFunction != null) {
+            superLargeImageFunction.onDraw(canvas);
+        }
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        boolean handled = false;
         if (showPressedFunction != null) {
-            showPressedFunction.onTouchEvent(event);
+            //noinspection ConstantConditions
+            handled |= showPressedFunction.onTouchEvent(event);
         }
         if (showProgressFunction != null) {
-            showProgressFunction.onTouchEvent(event);
+            handled |= showProgressFunction.onTouchEvent(event);
         }
         if (showImageFromFunction != null) {
-            showImageFromFunction.onTouchEvent(event);
+            handled |= showImageFromFunction.onTouchEvent(event);
         }
         if (showGifFlagFunction != null) {
-            showGifFlagFunction.onTouchEvent(event);
+            handled |= showGifFlagFunction.onTouchEvent(event);
         }
         if (imageShapeFunction != null) {
-            imageShapeFunction.onTouchEvent(event);
+            handled |= imageShapeFunction.onTouchEvent(event);
         }
         if (clickRetryFunction != null) {
-            clickRetryFunction.onTouchEvent(event);
+            handled |= clickRetryFunction.onTouchEvent(event);
         }
         if (requestFunction != null) {
-            requestFunction.onTouchEvent(event);
+            handled |= requestFunction.onTouchEvent(event);
         }
         if (recyclerCompatFunction != null) {
-            recyclerCompatFunction.onTouchEvent(event);
+            handled |= recyclerCompatFunction.onTouchEvent(event);
+        }
+        if (imageZoomFunction != null) {
+            handled |= imageZoomFunction.onTouchEvent(event);
+        }
+        if (superLargeImageFunction != null) {
+            handled |= superLargeImageFunction.onTouchEvent(event);
         }
 
-        return super.onTouchEvent(event);
+        handled |= super.onTouchEvent(event);
+
+        return handled;
     }
 
     @Override
@@ -212,6 +238,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
         if (clickRetryFunction != null) {
             clickRetryFunction.onAttachedToWindow();
+        }
+        if (imageZoomFunction != null) {
+            imageZoomFunction.onAttachedToWindow();
+        }
+        if (superLargeImageFunction != null) {
+            superLargeImageFunction.onAttachedToWindow();
         }
     }
 
@@ -245,6 +277,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
         if (clickRetryFunction != null) {
             needSetImageNull |= clickRetryFunction.onDetachedFromWindow();
+        }
+        if (imageZoomFunction != null) {
+            needSetImageNull |= imageZoomFunction.onDetachedFromWindow();
+        }
+        if (superLargeImageFunction != null) {
+            needSetImageNull |= superLargeImageFunction.onDetachedFromWindow();
         }
 
         if (needSetImageNull) {
@@ -309,6 +347,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
+            if (imageZoomFunction != null) {
+                needInvokeInvalidate |= imageZoomFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
+            }
+            if (superLargeImageFunction != null) {
+                needInvokeInvalidate |= superLargeImageFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
+            }
 
             if (needInvokeInvalidate) {
                 invalidate();
@@ -354,6 +398,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
         if (clickRetryFunction != null) {
             needInvokeInvalidate |= clickRetryFunction.onDisplay(uriScheme);
+        }
+        if (imageZoomFunction != null) {
+            needInvokeInvalidate |= imageZoomFunction.onDisplay(uriScheme);
+        }
+        if (superLargeImageFunction != null) {
+            needInvokeInvalidate |= superLargeImageFunction.onDisplay(uriScheme);
         }
 
         if (needInvokeInvalidate) {
@@ -628,6 +678,80 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         return showImageFromFunction != null ? showImageFromFunction.getImageFrom() : null;
     }
 
+    /**
+     * 是否开启了缩放功能
+     */
+    public boolean isEnableZoomFunction() {
+        return imageZoomFunction != null;
+    }
+
+    /**
+     * 开启缩放功能
+     */
+    public void setEnableZoomFunction(boolean enableZoomFunction) {
+        if (imageZoomFunction != null) {
+            imageZoomFunction.setFromSuperLargeImagViewer(false);
+        }
+
+        if (enableZoomFunction == isEnableZoomFunction()) {
+            return;
+        }
+
+        if (enableZoomFunction) {
+            imageZoomFunction = new ImageZoomFunction(this);
+            imageZoomFunction.onDrawableChanged("setEnableZoomFunction", null, getDrawable());
+        } else {
+            imageZoomFunction.destroy();
+            imageZoomFunction = null;
+        }
+    }
+
+    public ImageZoomFunction getImageZoomFunction() {
+        return imageZoomFunction;
+    }
+
+    /**
+     * 是否开启了超大图片功能
+     */
+    public boolean isEnableSuperLargeImageFunction() {
+        return superLargeImageFunction != null;
+    }
+
+    /**
+     * 开启超大图片功能
+     */
+    public void setEnableSuperLargeImageFunction(boolean enableSuperLargeImageFunction) {
+        if (enableSuperLargeImageFunction == isEnableSuperLargeImageFunction()) {
+            return;
+        }
+
+        if (enableSuperLargeImageFunction) {
+            if (!isEnableZoomFunction()) {
+                setEnableZoomFunction(true);
+                imageZoomFunction.setFromSuperLargeImagViewer(true);
+            }
+
+            superLargeImageFunction = new SuperLargeImageFunction(this);
+            superLargeImageFunction.onDrawableChanged("setEnableSuperLargeImageViewer", null, getDrawable());
+        } else {
+            superLargeImageFunction.destroy();
+            superLargeImageFunction = null;
+
+            if (isEnableZoomFunction() && imageZoomFunction.isFromSuperLargeImagViewer()) {
+                setEnableZoomFunction(false);
+            }
+        }
+    }
+
+    /**
+     * 图片的形状
+     */
+    public enum ImageShape {
+        RECT,
+        CIRCLE,
+        ROUNDED_RECT,
+    }
+
     private class MyDisplayListener implements DisplayListener {
         @Override
         public void onStarted() {
@@ -657,6 +781,13 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDisplayStarted();
             }
+            if (imageZoomFunction != null) {
+                needInvokeInvalidate |= imageZoomFunction.onDisplayStarted();
+            }
+            if (superLargeImageFunction != null) {
+                needInvokeInvalidate |= superLargeImageFunction.onDisplayStarted();
+            }
+
             if (needInvokeInvalidate) {
                 invalidate();
             }
@@ -694,6 +825,13 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDisplayCompleted(imageFrom, mimeType);
             }
+            if (imageZoomFunction != null) {
+                needInvokeInvalidate |= imageZoomFunction.onDisplayCompleted(imageFrom, mimeType);
+            }
+            if (superLargeImageFunction != null) {
+                needInvokeInvalidate |= superLargeImageFunction.onDisplayCompleted(imageFrom, mimeType);
+            }
+
             if (needInvokeInvalidate) {
                 invalidate();
             }
@@ -731,6 +869,13 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDisplayFailed(failedCause);
             }
+            if (imageZoomFunction != null) {
+                needInvokeInvalidate |= imageZoomFunction.onDisplayFailed(failedCause);
+            }
+            if (superLargeImageFunction != null) {
+                needInvokeInvalidate |= superLargeImageFunction.onDisplayFailed(failedCause);
+            }
+
             if (needInvokeInvalidate) {
                 invalidate();
             }
@@ -768,6 +913,13 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onCanceled(cancelCause);
             }
+            if (imageZoomFunction != null) {
+                needInvokeInvalidate |= imageZoomFunction.onCanceled(cancelCause);
+            }
+            if (superLargeImageFunction != null) {
+                needInvokeInvalidate |= superLargeImageFunction.onCanceled(cancelCause);
+            }
+
             if (needInvokeInvalidate) {
                 invalidate();
             }
@@ -808,6 +960,13 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
+            if (imageZoomFunction != null) {
+                needInvokeInvalidate |= imageZoomFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            }
+            if (superLargeImageFunction != null) {
+                needInvokeInvalidate |= superLargeImageFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            }
+
             if (needInvokeInvalidate) {
                 invalidate();
             }
@@ -816,14 +975,5 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
                 wrapperDownloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
             }
         }
-    }
-
-    /**
-     * 图片的形状
-     */
-    public enum ImageShape {
-        RECT,
-        CIRCLE,
-        ROUNDED_RECT,
     }
 }

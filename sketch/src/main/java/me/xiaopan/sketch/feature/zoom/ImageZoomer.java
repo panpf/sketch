@@ -1,4 +1,20 @@
-package me.xiaopan.sketchsample.zoom;
+/*******************************************************************************
+ * Copyright 2011, 2012 Chris Banes.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *******************************************************************************/
+
+package me.xiaopan.sketch.feature.zoom;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -18,11 +34,12 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketchsample.zoom.gestures.OnScaleDragGestureListener;
-import me.xiaopan.sketchsample.zoom.gestures.ScaleDragGestureDetector;
-import me.xiaopan.sketchsample.zoom.gestures.ScaleDragGestureDetectorCompat;
+import me.xiaopan.sketch.feature.zoom.gestures.OnScaleDragGestureListener;
+import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetector;
+import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetectorCompat;
 
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener, FlingTranslateRunner.FlingTranslateListener {
     public static final String NAME = "ImageZoomer";
@@ -53,7 +70,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private OnViewTapListener onViewTapListener;
     private OnSingleFlingListener onSingleFlingListener;
     private OnScaleChangeListener onScaleChangeListener;
-    private OnMatrixChangedListener onMatrixChangedListener;
+    private ArrayList<OnMatrixChangedListener> onMatrixChangedListenerList;
 
     // run time required
     private int imageViewLeft, imageViewTop, imageViewRight, imageViewBottom;
@@ -68,7 +85,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private final Matrix suppMatrix = new Matrix();
     private final float[] matrixValues = new float[9];
 
-    public ImageZoomer(ImageView imageView) {
+    public ImageZoomer(ImageView imageView, boolean provideTouchEvent) {
         context = imageView.getContext();
         imageViewWeakReference = new WeakReference<ImageView>(imageView);
 
@@ -80,7 +97,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
         // initialize ImageView
         imageView.setDrawingCacheEnabled(true);
-        imageView.setOnTouchListener(this);
+        if (!provideTouchEvent) {
+            imageView.setOnTouchListener(this);
+        }
         setImageViewScaleTypeMatrix(imageView);
 
         // initialize
@@ -93,6 +112,11 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         if (observer != null) {
             observer.addOnGlobalLayoutListener(this);
         }
+    }
+
+    @SuppressWarnings("unused")
+    public ImageZoomer(ImageView imageView) {
+        this(imageView, false);
     }
 
     // TODO 嵌套ViewPager时滑动还是有问题，比如放大的时候就不能滑动了
@@ -244,8 +268,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     private void setImageViewScaleTypeMatrix(ImageView imageView) {
-        if (imageView != null && !ImageView.ScaleType.MATRIX.equals(imageView.getScaleType())) {
-            imageView.setScaleType(ImageView.ScaleType.MATRIX);
+        if (imageView != null && !ScaleType.MATRIX.equals(imageView.getScaleType())) {
+            imageView.setScaleType(ScaleType.MATRIX);
         }
     }
 
@@ -282,12 +306,20 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return (float) Math.sqrt((float) Math.pow(getValue(suppMatrix, Matrix.MSCALE_X), 2) + (float) Math.pow(getValue(suppMatrix, Matrix.MSKEW_Y), 2));
     }
 
+    @SuppressWarnings("unused")
     public void setScale(float scale) {
         setScale(scale, false);
     }
 
     public ScaleType getScaleType() {
         return scaleType;
+    }
+
+    public void setScaleType(ScaleType scaleType) {
+        if (scaleType != null && scaleType != ScaleType.MATRIX && scaleType != this.scaleType) {
+            this.scaleType = scaleType;
+            update();
+        }
     }
 
     /**
@@ -302,6 +334,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return matrixValues[whichValue];
     }
 
+    @SuppressWarnings("unused")
     public void getDisplayMatrix(Matrix matrix) {
         matrix.set(getDrawMatrix());
     }
@@ -345,6 +378,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return drawMatrix;
     }
 
+    @SuppressWarnings("unused")
     public boolean setDisplayMatrix(Matrix finalMatrix) {
         if (finalMatrix == null) {
             throw new IllegalArgumentException("Matrix cannot be null");
@@ -366,6 +400,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return true;
     }
 
+    @SuppressWarnings("unused")
     public void setBaseRotation(final float degrees) {
         baseRotation = degrees % 360;
         update();
@@ -373,6 +408,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         checkAndDisplayMatrix();
     }
 
+    @SuppressWarnings("unused")
     public boolean canZoom() {
         return zoomEnabled;
     }
@@ -407,7 +443,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
 
         // Clear listeners too
-        onMatrixChangedListener = null;
+        onMatrixChangedListenerList = null;
         onViewTapListener = null;
         onSingleFlingListener = null;
         onScaleChangeListener = null;
@@ -468,6 +504,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             // Reset the Matrix...
             resetMatrix();
         }
+
+        // TODO: 16/8/9 初始化完成后会调用下onMatrixChangeListener
     }
 
     /**
@@ -644,10 +682,12 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             imageView.setImageMatrix(matrix);
 
             // Call MatrixChangedListener if needed
-            if (onMatrixChangedListener != null) {
+            if (onMatrixChangedListenerList != null && !onMatrixChangedListenerList.isEmpty()) {
                 RectF displayRect = getDisplayRect(matrix);
-                if (null != displayRect) {
-                    onMatrixChangedListener.onMatrixChanged(displayRect);
+                if (displayRect != null) {
+                    for (int w = 0, size = onMatrixChangedListenerList.size(); w < size; w++) {
+                        onMatrixChangedListenerList.get(w).onMatrixChanged(displayRect);
+                    }
                 }
             }
         }
@@ -655,7 +695,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     private void checkImageViewScaleType() {
         ImageView imageView = getImageView();
-        if (null != imageView && !ImageView.ScaleType.MATRIX.equals(imageView.getScaleType())) {
+        if (null != imageView && !ScaleType.MATRIX.equals(imageView.getScaleType())) {
             throw new IllegalStateException(
                     "The ImageView's ScaleType has been changed since attaching a PhotoViewAttacher. " +
                             "You should call setScaleType on the PhotoViewAttacher instead of on the ImageView");
@@ -666,6 +706,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return maxScale;
     }
 
+    @SuppressWarnings("unused")
     public void setMaximumScale(float maximumScale) {
         checkZoomLevels(minScale, midScale, maximumScale);
         maxScale = maximumScale;
@@ -675,6 +716,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return midScale;
     }
 
+    @SuppressWarnings("unused")
     public void setMediumScale(float mediumScale) {
         checkZoomLevels(minScale, mediumScale, maxScale);
         midScale = mediumScale;
@@ -684,11 +726,13 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return minScale;
     }
 
+    @SuppressWarnings("unused")
     public void setMinimumScale(float minimumScale) {
         checkZoomLevels(minimumScale, midScale, maxScale);
         minScale = minimumScale;
     }
 
+    @SuppressWarnings("unused")
     public void setRotationTo(float degrees) {
         suppMatrix.setRotate(degrees % 360);
         checkAndDisplayMatrix();
@@ -699,49 +743,47 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         checkAndDisplayMatrix();
     }
 
+    @SuppressWarnings("unused")
     public void setOnSingleFlingListener(OnSingleFlingListener onSingleFlingListener) {
         this.onSingleFlingListener = onSingleFlingListener;
     }
 
+    @SuppressWarnings("unused")
     public void setAllowParentInterceptOnEdge(boolean allowParentInterceptOnEdge) {
         this.allowParentInterceptOnEdge = allowParentInterceptOnEdge;
     }
 
-    public void setOnViewTapListener(OnViewTapListener onViewTapListener) {
-        this.onViewTapListener = onViewTapListener;
-    }
-
+    @SuppressWarnings("unused")
     public void setOnScaleChangeListener(OnScaleChangeListener onScaleChangeListener) {
         this.onScaleChangeListener = onScaleChangeListener;
     }
 
-    public void setOnMatrixChangeListener(OnMatrixChangedListener listener) {
-        onMatrixChangedListener = listener;
+    public void addOnMatrixChangeListener(OnMatrixChangedListener listener) {
+        if (listener != null) {
+            if (onMatrixChangedListenerList == null) {
+                onMatrixChangedListenerList = new ArrayList<OnMatrixChangedListener>(1);
+            }
+            onMatrixChangedListenerList.add(listener);
+        }
     }
 
+    @SuppressWarnings("unused")
     public void setZoomable(boolean zoomable) {
         zoomEnabled = zoomable;
         update();
     }
 
+    @SuppressWarnings("unused")
     public void setZoomTransitionDuration(int milliseconds) {
         if (milliseconds < 0)
             milliseconds = DEFAULT_ZOOM_DURATION;
         this.zoomDuration = milliseconds;
     }
 
+    @SuppressWarnings("unused")
     public Bitmap getVisibleRectangleBitmap() {
         ImageView imageView = getImageView();
         return imageView == null ? null : imageView.getDrawingCache();
-    }
-
-    /**
-     * Set the zoom interpolator
-     *
-     * @param interpolator the zoom interpolator
-     */
-    public void setZoomInterpolator(Interpolator interpolator) {
-        zoomInterpolator = interpolator;
     }
 
     /**
@@ -754,6 +796,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         checkMatrixBounds();
     }
 
+    @SuppressWarnings("unused")
     public boolean isZoomEnabled() {
         return zoomEnabled;
     }
@@ -766,8 +809,23 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return onViewTapListener;
     }
 
+    @SuppressWarnings("unused")
+    public void setOnViewTapListener(OnViewTapListener onViewTapListener) {
+        this.onViewTapListener = onViewTapListener;
+    }
+
     Interpolator getZoomInterpolator() {
         return zoomInterpolator;
+    }
+
+    /**
+     * Set the zoom interpolator
+     *
+     * @param interpolator the zoom interpolator
+     */
+    @SuppressWarnings("unused")
+    public void setZoomInterpolator(Interpolator interpolator) {
+        zoomInterpolator = interpolator;
     }
 
     /**
@@ -839,13 +897,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
 
         resetMatrix();
-    }
-
-    public void setScaleType(ScaleType scaleType) {
-        if (scaleType != null && scaleType != ScaleType.MATRIX && scaleType != this.scaleType) {
-            this.scaleType = scaleType;
-            update();
-        }
     }
 
     private void cancelFling() {

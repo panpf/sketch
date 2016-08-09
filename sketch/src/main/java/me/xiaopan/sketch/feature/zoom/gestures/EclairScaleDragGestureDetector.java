@@ -13,13 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package me.xiaopan.sketchsample.zoom.gestures;
+
+package me.xiaopan.sketch.feature.zoom.gestures;
 
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.view.MotionEvent;
 
-import me.xiaopan.sketchsample.zoom.CompatUtils;
+import me.xiaopan.sketch.feature.zoom.CompatUtils;
 
 @TargetApi(5)
 public class EclairScaleDragGestureDetector extends CupcakeScaleDragGestureDetector {

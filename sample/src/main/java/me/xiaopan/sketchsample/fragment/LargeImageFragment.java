@@ -2,33 +2,29 @@ package me.xiaopan.sketchsample.fragment;
 
 import android.app.Activity;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
-import me.xiaopan.sketch.request.CancelCause;
-import me.xiaopan.sketch.request.DisplayListener;
-import me.xiaopan.sketch.request.FailedCause;
-import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
-import me.xiaopan.sketchsample.zoom.ImageZoomer;
-import me.xiaopan.sketchsample.widget.LargeImageView;
 import me.xiaopan.sketchsample.widget.MappingView;
+import me.xiaopan.sketchsample.widget.MyImageView;
 
 @InjectContentView(R.layout.fragment_large_image)
 public class LargeImageFragment extends MyFragment {
 
     @InjectView(R.id.largeImage)
-    private LargeImageView largeImageView;
+    private MyImageView imageView;
+
     @InjectView(R.id.mapping)
     private MappingView mappingView;
+
     @InjectView(R.id.text_largeImageFragment_scale)
     private TextView scaleTextView;
 
@@ -57,46 +53,17 @@ public class LargeImageFragment extends MyFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        final ImageZoomer imageZoomer = new ImageZoomer(largeImageView);
+        imageView.setEnableZoomFunction(true);
+        imageView.setEnableSuperLargeImageFunction(true);
 
-        largeImageView.setDisplayListener(new DisplayListener() {
-            @Override
-            public void onCompleted(ImageFrom imageFrom, String mimeType) {
-                imageZoomer.update();
-            }
+        imageView.displayImage(imageUri);
 
-            @Override
-            public void onStarted() {
-
-            }
-
-            @Override
-            public void onFailed(FailedCause failedCause) {
-                imageZoomer.update();
-            }
-
-            @Override
-            public void onCanceled(CancelCause cancelCause) {
-
-            }
-        });
-
-        largeImageView.displayImage(imageUri);
-
-        imageZoomer.setOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
+        final ImageZoomer imageZoomer = imageView.getImageZoomFunction().getImageZoomer();
+        imageZoomer.addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
             @Override
             public void onMatrixChanged(RectF displayRect) {
-                Drawable drawable = largeImageView.getDrawable();
-                if (drawable == null) {
-                    return;
-                }
-                Log.w("test", "displayRect: " + displayRect.toString());
-
-                RectF visibleRect = imageZoomer.getVisibleRect();
-                float scale = imageZoomer.getScale();
-                mappingView.update(drawable.getIntrinsicWidth(), visibleRect);
-                scaleTextView.setText(String.valueOf(scale));
-                largeImageView.update(imageZoomer.getDrawMatrix(), visibleRect, imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
+                mappingView.update(imageZoomer.getDrawableWidth(), imageZoomer.getVisibleRect());
+                scaleTextView.setText(String.valueOf(imageZoomer.getScale()));
             }
         });
         mappingView.getOptions().setMaxSize(300, 300);

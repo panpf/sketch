@@ -12,8 +12,4 @@
         <attr name="grid_paddingBottom" format="dimension" />
     </declare-styleable>
 
-    <declare-styleable name="LargeImageView">
-        <attr name="android:src" />
-    </declare-styleable>
-
 </resources>

@@ -13,37 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *******************************************************************************/
-package me.xiaopan.sketchsample.zoom.scrollerproxy;
 
-import android.annotation.TargetApi;
+package me.xiaopan.sketch.feature.zoom.scrollerproxy;
+
 import android.content.Context;
-import android.widget.OverScroller;
+import android.widget.Scroller;
 
-@TargetApi(9)
-public class GingerScroller extends ScrollerProxy {
+public class PreGingerScroller extends ScrollerProxy {
 
-    protected final OverScroller mScroller;
-    private boolean mFirstScroll = false;
+    private final Scroller mScroller;
 
-    public GingerScroller(Context context) {
-        mScroller = new OverScroller(context);
+    public PreGingerScroller(Context context) {
+        mScroller = new Scroller(context);
     }
 
     @Override
     public boolean computeScrollOffset() {
-        // Workaround for first scroll returning 0 for the direction of the edge it hits.
-        // Simply recompute values.
-        if (mFirstScroll) {
-            mScroller.computeScrollOffset();
-            mFirstScroll = false;
-        }
         return mScroller.computeScrollOffset();
     }
 
     @Override
     public void fling(int startX, int startY, int velocityX, int velocityY, int minX, int maxX, int minY, int maxY,
                       int overX, int overY) {
-        mScroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY, overX, overY);
+        mScroller.fling(startX, startY, velocityX, velocityY, minX, maxX, minY, maxY);
     }
 
     @Override
@@ -51,7 +43,6 @@ public class GingerScroller extends ScrollerProxy {
         mScroller.forceFinished(finished);
     }
 
-    @Override
     public boolean isFinished() {
         return mScroller.isFinished();
     }

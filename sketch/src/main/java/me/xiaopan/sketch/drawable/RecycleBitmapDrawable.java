@@ -37,6 +37,10 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
         super(bitmap);
     }
 
+    void setLogName(String logName) {
+        this.logName = logName;
+    }
+
     @Override
     public void setIsDisplayed(String callingStation, boolean displayed) {
         synchronized (this) {
@@ -132,7 +136,7 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     public String getInfo() {
         Bitmap bitmap = getBitmap();
         if (bitmap != null) {
-            return SketchUtils.concat("RecycleBitmapDrawable(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(), ")");
+            return SketchUtils.concat(logName + "(mimeType=", mimeType, "; hashCode=", Integer.toHexString(bitmap.hashCode()), "; size=", bitmap.getWidth(), "x", bitmap.getHeight(), "; config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null, "; byteCount=", getByteCount(), ")");
         } else {
             return null;
         }

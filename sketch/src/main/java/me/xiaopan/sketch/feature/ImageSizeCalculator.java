@@ -54,10 +54,33 @@ public class ImageSizeCalculator implements Identifier {
         int width = getWidth(imageView, true, true, false);
         int height = getHeight(imageView, true, true, false);
         if (width > 0 || height > 0) {
+            // 因为OpenGL对图片的宽高有上限，因此要限制一下，这里就严格一点不能大于屏幕宽高的1.5倍
+            DisplayMetrics displayMetrics = imageViewInterface.getSelf().getResources().getDisplayMetrics();
+            int maxWidth = (int) (displayMetrics.widthPixels * 1.5f);
+            int maxHeight = (int) (displayMetrics.heightPixels * 1.5f);
+            if (width > maxWidth || height > maxHeight) {
+                float widthScale = (float) width / maxWidth;
+                float heightScale = (float) height / maxHeight;
+                float finalScale = widthScale > heightScale ? widthScale : heightScale;
+
+                width /= finalScale;
+                height /= finalScale;
+            }
             return new MaxSize(width, height);
         } else {
             return null;
         }
+    }
+
+    /**
+     * 获取默认的maxSize，默认maxSize是屏幕宽高的70%
+     *
+     * @param context 上下文
+     * @return maxSize
+     */
+    public MaxSize getDefaultImageMaxSize(Context context) {
+        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
+        return new MaxSize((int) (displayMetrics.widthPixels * 0.75f), (int) (displayMetrics.heightPixels * 0.75f));
     }
 
     /**
@@ -95,20 +118,24 @@ public class ImageSizeCalculator implements Identifier {
 
         ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
         if (layoutParams != null && layoutParams.width > 0 && layoutParams.height > 0) {
-            return new FixedSize(layoutParams.width - (imageView.getPaddingLeft() + imageView.getPaddingRight()), layoutParams.height - (imageView.getPaddingTop() + imageView.getPaddingBottom()));
+            int fixedWidth = layoutParams.width - (imageView.getPaddingLeft() + imageView.getPaddingRight());
+            int fixedHeight = layoutParams.height - (imageView.getPaddingTop() + imageView.getPaddingBottom());
+
+            // 因为OpenGL对图片的宽高有上限，因此要限制一下，这里就严格一点不能大于屏幕宽高的1.5倍
+            DisplayMetrics displayMetrics = imageViewInterface.getSelf().getResources().getDisplayMetrics();
+            int maxWidth = (int) (displayMetrics.widthPixels * 1.5f);
+            int maxHeight = (int) (displayMetrics.heightPixels * 1.5f);
+            if (fixedWidth > maxWidth || fixedHeight > maxHeight) {
+                float widthScale = (float) fixedWidth / maxWidth;
+                float heightScale = (float) fixedHeight / maxHeight;
+                float finalScale = widthScale > heightScale ? widthScale : heightScale;
+
+                fixedWidth /= finalScale;
+                fixedHeight /= finalScale;
+            }
+            return new FixedSize(fixedWidth, fixedHeight);
         }
         return null;
-    }
-
-    /**
-     * 获取默认的maxSize，默认maxSize是屏幕宽高的70%
-     *
-     * @param context 上下文
-     * @return maxSize
-     */
-    public MaxSize getDefaultImageMaxSize(Context context) {
-        DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return new MaxSize((int) (displayMetrics.widthPixels * 0.75f), (int) (displayMetrics.heightPixels * 0.75f));
     }
 
     /**

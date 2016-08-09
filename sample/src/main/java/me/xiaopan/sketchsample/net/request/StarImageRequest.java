@@ -1,5 +1,7 @@
 package me.xiaopan.sketchsample.net.request;
 
+import android.content.Context;
+
 import com.google.gson.annotations.SerializedName;
 
 import org.apache.http.HttpResponse;
@@ -94,8 +96,17 @@ public class StarImageRequest implements Request {
 
     public static class ResponseHandler implements HttpRequest.ResponseHandleCompletedAfterListener<Response> {
 
+        private Context context;
+
+        public ResponseHandler(Context context) {
+            this.context = context;
+        }
+
         @Override
         public Object onResponseHandleAfter(HttpRequest httpRequest, HttpResponse httpResponse, Response response, boolean b, boolean b2) throws Throwable {
+//            String jsonContent = FileUtils.readAssetFile(context, "images.json");
+//            response = new Gson().fromJson(jsonContent, StarImageRequest.Response.class);
+
             if (response.getImages() != null && response.returnNumber < response.getImages().size()) {
                 Iterator<Image> iterator = response.getImages().iterator();
                 int number = 0;

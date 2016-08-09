@@ -19,7 +19,6 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
 import me.xiaopan.sketchsample.widget.HintView;
 import me.xiaopan.sketchsample.widget.MyImageView;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 @InjectContentView(R.layout.fragment_image)
 public class ImageFragment extends MyFragment {
@@ -35,7 +34,6 @@ public class ImageFragment extends MyFragment {
     private boolean completedAfterUpdateBackground;
 
     private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
-    private PhotoViewAttacher photoViewAttacher;
 
     @Override
     public void onAttach(Activity activity) {
@@ -49,9 +47,10 @@ public class ImageFragment extends MyFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        photoViewAttacher = new PhotoViewAttacher(imageView);
         imageView.setOptionsByName(OptionsType.DETAIL);
         imageView.setAutoApplyGlobalAttr(false);
+        imageView.setEnableZoomFunction(true);
+        imageView.setEnableSuperLargeImageFunction(true);
 
         imageView.setDisplayListener(new DisplayListener() {
             @Override
@@ -62,7 +61,6 @@ public class ImageFragment extends MyFragment {
             @Override
             public void onCompleted(ImageFrom imageFrom, String mimeType) {
                 hintView.hidden();
-                photoViewAttacher.update();
                 if (completedAfterUpdateBackground) {
                     completedAfterUpdateBackground = false;
                     if (isResumed() && getUserVisibleHint()) {
@@ -80,7 +78,6 @@ public class ImageFragment extends MyFragment {
                         imageView.displayImage(imageUri);
                     }
                 });
-                photoViewAttacher.update();
             }
 
             @Override
@@ -128,10 +125,6 @@ public class ImageFragment extends MyFragment {
                             }
                         });
                         break;
-                }
-
-                if (cancelCause != CancelCause.BE_CANCELLED) {
-                    photoViewAttacher.update();
                 }
             }
         });

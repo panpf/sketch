@@ -28,6 +28,8 @@ import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawable {
+    protected String logName = "FixedRecycleBitmapDrawable";
+
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
     private int bitmapWidth;
     private int bitmapHeight;
@@ -41,6 +43,9 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
     public FixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, FixedSize fixedSize) {
         this.recycleBitmapDrawable = recycleBitmapDrawable;
         this.bitmap = recycleBitmapDrawable != null ? recycleBitmapDrawable.getBitmap() : null;
+        if (recycleBitmapDrawable != null) {
+            recycleBitmapDrawable.setLogName(logName);
+        }
         if (bitmap != null) {
             this.bitmapWidth = bitmap.getWidth();
             this.bitmapHeight = bitmap.getHeight();
