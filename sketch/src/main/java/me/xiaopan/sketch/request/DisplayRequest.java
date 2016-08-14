@@ -181,7 +181,8 @@ public class DisplayRequest extends LoadRequest {
         if (loadResult != null && loadResult.getBitmap() != null) {
             if (loadResult.getBitmap().isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogE("loadCompleted", "decode failed", "bitmap recycled", "bitmapInfo: " + loadResult.getGifDrawable().getInfo());
+                    printLogE("loadCompleted", "decode failed", "bitmap recycled", "bitmapInfo: "
+                            + RecycleBitmapDrawable.getInfo(loadResult.getBitmap(), loadResult.getMimeType()));
                 }
                 failed(FailedCause.BITMAP_RECYCLED);
                 return;
