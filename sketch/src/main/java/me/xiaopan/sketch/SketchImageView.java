@@ -690,7 +690,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     public void setEnableZoomFunction(boolean enableZoomFunction) {
         if (imageZoomFunction != null) {
-            imageZoomFunction.setFromSuperLargeImagViewer(false);
+            imageZoomFunction.setFromSuperLargeImageFunction(false);
         }
 
         if (enableZoomFunction == isEnableZoomFunction()) {
@@ -728,7 +728,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (enableSuperLargeImageFunction) {
             if (!isEnableZoomFunction()) {
                 setEnableZoomFunction(true);
-                imageZoomFunction.setFromSuperLargeImagViewer(true);
+                imageZoomFunction.setFromSuperLargeImageFunction(true);
             }
 
             superLargeImageFunction = new SuperLargeImageFunction(this);
@@ -737,7 +737,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             superLargeImageFunction.destroy();
             superLargeImageFunction = null;
 
-            if (isEnableZoomFunction() && imageZoomFunction.isFromSuperLargeImagViewer()) {
+            if (isEnableZoomFunction() && imageZoomFunction.isFromSuperLargeImageFunction()) {
                 setEnableZoomFunction(false);
             }
         }
@@ -975,5 +975,52 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
                 wrapperDownloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
             }
         }
+    }
+
+    public interface Function {
+        void onAttachedToWindow();
+
+        boolean onDisplay(UriScheme uriScheme);
+
+        boolean onTouchEvent(MotionEvent event);
+
+        void onLayout(boolean changed, int left, int top, int right, int bottom);
+
+        void onDraw(Canvas canvas);
+
+        /**
+         * @return true：调用父setImageDrawable清空图片
+         */
+        boolean onDetachedFromWindow();
+
+        /**
+         * @return 是否需要调用ImageView的invalidate()刷新显示
+         */
+        boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable);
+
+        /**
+         * @return 是否需要调用ImageView的invalidate()刷新显示
+         */
+        boolean onDisplayStarted();
+
+        /**
+         * @return 是否需要调用ImageView的invalidate()刷新显示
+         */
+        boolean onUpdateDownloadProgress(int totalLength, int completedLength);
+
+        /**
+         * @return 是否需要调用ImageView的invalidate()刷新显示
+         */
+        boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType);
+
+        /**
+         * @return 是否需要调用ImageView的invalidate()刷新显示
+         */
+        boolean onDisplayFailed(FailedCause failedCause);
+
+        /**
+         * @return 是否需要调用ImageView的invalidate()刷新显示
+         */
+        boolean onCanceled(CancelCause cancelCause);
     }
 }

@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
+import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
@@ -30,11 +31,11 @@ import me.xiaopan.sketch.request.UriScheme;
 /**
  * ImageView缩放功能
  */
-public class ImageZoomFunction implements ImageViewFunction {
+public class ImageZoomFunction implements SketchImageView.Function {
     private ImageView imageView;
 
     private ImageZoomer imageZoomer;
-    private boolean fromSuperLargeImagViewer;
+    private boolean fromSuperLargeImageFunction;
 
     public ImageZoomFunction(ImageView imageView) {
         this.imageView = imageView;
@@ -110,11 +111,11 @@ public class ImageZoomFunction implements ImageViewFunction {
         return imageZoomer;
     }
 
-    public boolean isFromSuperLargeImagViewer() {
-        return fromSuperLargeImagViewer;
+    public boolean isFromSuperLargeImageFunction() {
+        return fromSuperLargeImageFunction;
     }
 
-    public void setFromSuperLargeImagViewer(boolean fromSuperLargeImagViewer) {
-        this.fromSuperLargeImagViewer = fromSuperLargeImagViewer;
+    public void setFromSuperLargeImageFunction(boolean fromSuperLargeImageFunction) {
+        this.fromSuperLargeImageFunction = fromSuperLargeImageFunction;
     }
 }

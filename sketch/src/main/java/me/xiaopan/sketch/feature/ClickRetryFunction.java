@@ -22,6 +22,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
@@ -32,7 +33,7 @@ import me.xiaopan.sketch.request.UriScheme;
 /**
  * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击View重新或强制显示图片
  */
-public class ClickRetryFunction implements ImageViewFunction, View.OnClickListener {
+public class ClickRetryFunction implements SketchImageView.Function, View.OnClickListener {
     private boolean clickRetryOnFailed;
     private boolean clickRetryOnPauseDownload;
     private View.OnClickListener wrapperClickListener;

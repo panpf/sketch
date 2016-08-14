@@ -23,6 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 
+import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
@@ -37,7 +38,7 @@ import me.xiaopan.sketch.request.UriScheme;
  * <li>绿色：内存缓存
  * <ul/>
  */
-public class ShowImageFromFunction implements ImageViewFunction {
+public class ShowImageFromFunction implements SketchImageView.Function {
     private static final int FROM_FLAG_COLOR_MEMORY = 0x8800FF00;
     private static final int FROM_FLAG_COLOR_LOCAL = 0x880000FF;
     private static final int FROM_FLAG_COLOR_DISK_CACHE = 0x88FFFF00;

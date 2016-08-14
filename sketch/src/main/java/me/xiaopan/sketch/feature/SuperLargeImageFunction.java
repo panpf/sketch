@@ -36,7 +36,7 @@ import me.xiaopan.sketch.request.UriScheme;
  */
 // todo BitmapRegionDecoder从api10 GINGERBREAD_MR1才开始支持
 // TODO: 16/8/9 BitmapRegionDecoder仅支持jpg，png，bmp等图片
-public class SuperLargeImageFunction implements ImageViewFunction, ImageZoomer.OnMatrixChangedListener {
+public class SuperLargeImageFunction implements SketchImageView.Function, ImageZoomer.OnMatrixChangedListener {
     private SketchImageView imageView;
     private SuperLargeImageViewer superLargeImageViewer;
 

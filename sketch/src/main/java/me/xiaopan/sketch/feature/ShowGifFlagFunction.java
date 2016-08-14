@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.view.View;
 
+import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
@@ -30,7 +31,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 显示GIF图标识功能，使用者指定一个小图标，如果当前显示的图片是GIF图就会在ImageView的右下角显示这个小图标
  */
-public class ShowGifFlagFunction implements ImageViewFunction {
+public class ShowGifFlagFunction implements SketchImageView.Function {
     private View view;
 
     protected boolean isGifDrawable;

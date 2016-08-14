@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.request.FailedCause;
@@ -36,7 +37,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * <br>可是RequestFunction在onDetachedFromWindow的时候会主动清空Drawable导致没有重新走onBindViewHolder的ItemView会没有Drawable而显示空白
  * <br>因此RecyclerCompatFunction就判断了如果在onAttachedToWindow之前没有调用相关显示图片的方法就会根据DisplayParams恢复之前的图片
  */
-public class RecyclerCompatFunction implements ImageViewFunction {
+public class RecyclerCompatFunction implements SketchImageView.Function {
     protected String logName = "RecyclerCompatFunction";
 
     private Context context;

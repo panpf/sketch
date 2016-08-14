@@ -21,6 +21,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.view.MotionEvent;
 
+import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
 import me.xiaopan.sketch.drawable.RecycleDrawable;
 import me.xiaopan.sketch.request.CancelCause;
@@ -35,7 +36,7 @@ import me.xiaopan.sketch.request.UriScheme;
 /**
  * 请求基本功能，更新图片显示引用计数和在onDetachedFromWindow的时候取消请求并清空图片
  */
-public class RequestFunction implements ImageViewFunction {
+public class RequestFunction implements SketchImageView.Function {
     private ImageViewInterface imageViewInterface;
 
     private DisplayOptions displayOptions = new DisplayOptions();

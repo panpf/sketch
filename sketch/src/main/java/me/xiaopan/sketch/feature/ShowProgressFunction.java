@@ -24,6 +24,7 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
@@ -32,7 +33,7 @@ import me.xiaopan.sketch.request.UriScheme;
 /**
  * 显示下载进度功能，会在ImageView上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
  */
-public class ShowProgressFunction implements ImageViewFunction {
+public class ShowProgressFunction implements SketchImageView.Function {
     private static final int NONE = -1;
     private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
 
