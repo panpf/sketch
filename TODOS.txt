@@ -183,6 +183,7 @@ RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
 似乎想到一种能读取webp缩略图的方法了，方案就是将webp在本地转成png，然后再读取
 利用BitmapShader实现各种形状的图片
 增强一下FixedBitmapDrawable，尽量在使用原生BitmapDrawable的基础上实现ScaleType的功能，然后定义一个牛逼的SketchBitmapDrawable，然后在搞一个专门的RecyclerDrawable可以包装SketchBitmapDrawable个GIfDrawable
+onDisplay的执行时机提前
 
 其它：
 参考Glide、Fresco和Picasso
