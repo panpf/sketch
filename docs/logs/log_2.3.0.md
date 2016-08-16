@@ -1,5 +1,5 @@
 SketchImageView:
->* ``新增``. 集成PhotoView支持缩放ImageView
+>* ``新增``. 集成PhotoView支持缩放ImageView，根据图片大小调整缩放倍数
 >* ``新增``. 通过BitmapRegionDecoder支持显示超级大图
 
 >* ````. 
