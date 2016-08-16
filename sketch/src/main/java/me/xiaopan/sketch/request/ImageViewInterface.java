@@ -61,17 +61,7 @@ public interface ImageViewInterface {
     /**
      * 显示图片
      *
-     * @param uri 图片Uri，支持以下几种
-     *            <blockQuote>"http://site.com/image.png"; // from Web
-     *            <br>"https://site.com/image.png"; // from Web
-     *            <br>"file:///mnt/sdcard/image.png"; // from SD card
-     *            <br>"/mnt/sdcard/image.png"; // from SD card
-     *            <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     *            <br>"content://media/external/audio/albumart/13"; // from content provider
-     *            <br>"asset://image.png"; // from assets
-     *            <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     *            </blockQuote>
-     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
+     * @param uri 图片Uri
      */
     DisplayRequest displayImage(String uri);
 
@@ -79,24 +69,24 @@ public interface ImageViewInterface {
      * 显示Drawable资源里的图片
      *
      * @param drawableResId Drawable ID
-     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
+    @SuppressWarnings("unused")
     DisplayRequest displayResourceImage(int drawableResId);
 
     /**
      * 显示asset里的图片
      *
      * @param imageFileName ASSETS文件加下的图片文件的名称
-     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
+    @SuppressWarnings("unused")
     DisplayRequest displayAssetImage(String imageFileName);
 
     /**
      * 显示URI指向的图片
      *
      * @param uri 图片URI
-     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
+    @SuppressWarnings("unused")
     DisplayRequest displayURIImage(Uri uri);
 
     /**
@@ -104,7 +94,6 @@ public interface ImageViewInterface {
      *
      * @param packageName APP包名
      * @param versionCode APP版本号
-     * @return Request 你可以通过Request查看请求是否完成或主动取消请求
      */
     DisplayRequest displayInstalledAppIcon(String packageName, int versionCode);
 
@@ -119,7 +108,7 @@ public interface ImageViewInterface {
     void setOptions(DisplayOptions newDisplayOptions);
 
     /**
-     * 批量设置显示参数，你只需要提前将DisplayOptions通过Sketch.putDisplayOptions()方法存起来，然后在这里指定其名称即可
+     * 批量设置显示参数，你只需要提前将DisplayOptions通过Sketch.putOptions()方法存起来，然后在这里指定其名称即可
      */
     void setOptionsByName(Enum<?> optionsName);
 
@@ -141,6 +130,7 @@ public interface ImageViewInterface {
     /**
      * 设置下载进度监听器
      */
+    @SuppressWarnings("unused")
     void setDownloadProgressListener(DownloadProgressListener downloadProgressListener);
 
     /**

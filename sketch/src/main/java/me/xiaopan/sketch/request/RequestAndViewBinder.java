@@ -18,16 +18,16 @@ package me.xiaopan.sketch.request;
 
 import java.lang.ref.WeakReference;
 
-import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * Request与ImageView的关系绑定器
  */
-public class DisplayBinder {
+public class RequestAndViewBinder {
     private DisplayRequest displayRequest;
     private WeakReference<ImageViewInterface> imageViewReference;
 
-    public DisplayBinder(ImageViewInterface imageView) {
+    public RequestAndViewBinder(ImageViewInterface imageView) {
         this.imageViewReference = new WeakReference<ImageViewInterface>(imageView);
     }
 
@@ -38,7 +38,7 @@ public class DisplayBinder {
     public ImageViewInterface getImageViewInterface() {
         final ImageViewInterface imageViewInterface = imageViewReference.get();
         if (displayRequest != null) {
-            DisplayRequest holderDisplayRequest = BindFixedRecycleBitmapDrawable.findDisplayRequest(imageViewInterface);
+            DisplayRequest holderDisplayRequest = SketchUtils.findDisplayRequest(imageViewInterface);
             if (holderDisplayRequest != null && holderDisplayRequest == displayRequest) {
                 return imageViewInterface;
             } else {

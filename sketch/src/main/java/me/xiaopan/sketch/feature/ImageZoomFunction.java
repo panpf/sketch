@@ -16,22 +16,18 @@
 
 package me.xiaopan.sketch.feature;
 
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
-import me.xiaopan.sketch.request.CancelCause;
-import me.xiaopan.sketch.request.FailedCause;
-import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriScheme;
 
 /**
  * ImageView缩放功能
  */
-public class ImageZoomFunction implements SketchImageView.Function {
+// TODO: 16/8/14 根据图片实际大小调整三级缩放比例
+public class ImageZoomFunction extends SketchImageView.Function {
     private ImageView imageView;
 
     private ImageZoomer imageZoomer;
@@ -39,17 +35,19 @@ public class ImageZoomFunction implements SketchImageView.Function {
 
     public ImageZoomFunction(ImageView imageView) {
         this.imageView = imageView;
+        init();
+    }
+
+    private void init() {
+        if (imageZoomer != null) {
+            imageZoomer.cleanup();
+        }
         imageZoomer = new ImageZoomer(imageView, true);
     }
 
     @Override
     public void onAttachedToWindow() {
-        imageZoomer.update();
-    }
-
-    @Override
-    public boolean onDisplay(UriScheme uriScheme) {
-        return false;
+        init();
     }
 
     @Override
@@ -58,17 +56,8 @@ public class ImageZoomFunction implements SketchImageView.Function {
     }
 
     @Override
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-
-    }
-
-    @Override
-    public void onDraw(Canvas canvas) {
-
-    }
-
-    @Override
     public boolean onDetachedFromWindow() {
+        imageZoomer.cleanup();
         return false;
     }
 
@@ -78,32 +67,17 @@ public class ImageZoomFunction implements SketchImageView.Function {
         return false;
     }
 
-    @Override
-    public boolean onDisplayStarted() {
-        return false;
+    public ImageView.ScaleType getScaleType() {
+        return imageZoomer.getScaleType();
     }
 
     @Override
-    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-        return false;
+    public void setScaleType(ImageView.ScaleType scaleType) {
+        super.setScaleType(scaleType);
+        imageZoomer.setScaleType(scaleType);
     }
 
-    @Override
-    public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayFailed(FailedCause failedCause) {
-        return false;
-    }
-
-    @Override
-    public boolean onCanceled(CancelCause cancelCause) {
-        return false;
-    }
-
-    public void destroy(){
+    public void destroy() {
 
     }
 

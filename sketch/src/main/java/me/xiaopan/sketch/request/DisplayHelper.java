@@ -78,22 +78,21 @@ public class DisplayHelper {
             Stopwatch.with().start(Sketch.TAG, logName + " - " + "DisplayUseTime");
         }
 
-        requestAttrs.reset(uri);
-        displayAttrs.reset(imageViewInterface, sketch);
-
-        // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
-        // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
+        // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
         this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("onDisplay");
         }
 
+        requestAttrs.reset(uri);
+        displayAttrs.reset(imageViewInterface, sketch);
         displayOptions.copy(imageViewInterface.getOptions());
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().record("init");
+        }
+
         displayListener = imageViewInterface.getDisplayListener();
         downloadProgressListener = imageViewInterface.getDownloadProgressListener();
-        if (Sketch.isDebugMode()) {
-            Stopwatch.with().record("copyOptions");
-        }
 
         return this;
     }
@@ -109,22 +108,21 @@ public class DisplayHelper {
             Stopwatch.with().start(Sketch.TAG, logName + " - " + "DisplayUseTime");
         }
 
-        requestAttrs.copy(params.attrs);
-        displayAttrs.reset(imageViewInterface, sketch);
-
-        // onDisplay一定要放在getDisplayListener()和getProgressListener()之前调用，
-        // 因为在onDisplay的时候会设置一些属性，这些属性会影响到getDisplayListener()和getProgressListener()的结果
+        // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
         this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("onDisplay");
         }
 
+        requestAttrs.copy(params.attrs);
+        displayAttrs.reset(imageViewInterface, sketch);
         displayOptions.copy(params.options);
+        if (Sketch.isDebugMode()) {
+            Stopwatch.with().record("init");
+        }
+
         displayListener = imageViewInterface.getDisplayListener();
         downloadProgressListener = imageViewInterface.getDownloadProgressListener();
-        if (Sketch.isDebugMode()) {
-            Stopwatch.with().record("copyOptions");
-        }
 
         return this;
     }
@@ -721,7 +719,7 @@ public class DisplayHelper {
      * @return DisplayRequest 非null：请求一模一样，无需取消；null：已经取消或没有已存在的请求
      */
     private DisplayRequest checkRepeatRequest() {
-        DisplayRequest potentialRequest = BindFixedRecycleBitmapDrawable.findDisplayRequest(imageViewInterface);
+        DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(imageViewInterface);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (requestAttrs.getId().equals(potentialRequest.getAttrs().getId())) {
                 if (Sketch.isDebugMode()) {
@@ -748,10 +746,10 @@ public class DisplayHelper {
 
     private DisplayRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        DisplayBinder displayBinder = new DisplayBinder(imageViewInterface);
+        RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(imageViewInterface);
         DisplayRequest request = requestFactory.newDisplayRequest(
                 sketch, requestAttrs, displayAttrs, displayOptions,
-                displayBinder, displayListener, downloadProgressListener);
+                requestAndViewBinder, displayListener, downloadProgressListener);
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("createRequest");
         }

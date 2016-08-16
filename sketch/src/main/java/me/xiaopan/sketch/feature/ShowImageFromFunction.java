@@ -20,11 +20,9 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.drawable.Drawable;
-import android.view.MotionEvent;
 import android.view.View;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.UriScheme;
@@ -38,7 +36,7 @@ import me.xiaopan.sketch.request.UriScheme;
  * <li>绿色：内存缓存
  * <ul/>
  */
-public class ShowImageFromFunction implements SketchImageView.Function {
+public class ShowImageFromFunction extends SketchImageView.Function {
     private static final int FROM_FLAG_COLOR_MEMORY = 0x8800FF00;
     private static final int FROM_FLAG_COLOR_LOCAL = 0x880000FF;
     private static final int FROM_FLAG_COLOR_DISK_CACHE = 0x88FFFF00;
@@ -57,19 +55,9 @@ public class ShowImageFromFunction implements SketchImageView.Function {
     }
 
     @Override
-    public void onAttachedToWindow() {
-
-    }
-
-    @Override
     public boolean onDisplay(UriScheme uriScheme) {
         imageFrom = null;
         return true;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return false;
     }
 
     @Override
@@ -153,11 +141,6 @@ public class ShowImageFromFunction implements SketchImageView.Function {
     }
 
     @Override
-    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-        return false;
-    }
-
-    @Override
     public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
         this.imageFrom = imageFrom;
         return true;
@@ -167,11 +150,6 @@ public class ShowImageFromFunction implements SketchImageView.Function {
     public boolean onDisplayFailed(FailedCause failedCause) {
         imageFrom = null;
         return true;
-    }
-
-    @Override
-    public boolean onCanceled(CancelCause cancelCause) {
-        return false;
     }
 
     public ImageFrom getImageFrom() {

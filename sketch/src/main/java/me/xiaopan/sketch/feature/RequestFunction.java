@@ -16,10 +16,8 @@
 
 package me.xiaopan.sketch.feature;
 
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
-import android.view.MotionEvent;
 
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
@@ -28,15 +26,13 @@ import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.request.DisplayRequest;
-import me.xiaopan.sketch.request.FailedCause;
-import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ImageViewInterface;
-import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 请求基本功能，更新图片显示引用计数和在onDetachedFromWindow的时候取消请求并清空图片
  */
-public class RequestFunction implements SketchImageView.Function {
+public class RequestFunction extends SketchImageView.Function {
     private ImageViewInterface imageViewInterface;
 
     private DisplayOptions displayOptions = new DisplayOptions();
@@ -50,34 +46,9 @@ public class RequestFunction implements SketchImageView.Function {
     }
 
     @Override
-    public void onAttachedToWindow() {
-
-    }
-
-    @Override
-    public boolean onDisplay(UriScheme uriScheme) {
-        return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return false;
-    }
-
-    @Override
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-
-    }
-
-    @Override
-    public void onDraw(Canvas canvas) {
-
-    }
-
-    @Override
     public boolean onDetachedFromWindow() {
         // 主动取消请求
-        DisplayRequest potentialRequest = BindFixedRecycleBitmapDrawable.findDisplayRequest(imageViewInterface);
+        DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(imageViewInterface);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             potentialRequest.cancel(CancelCause.ON_DETACHED_FROM_WINDOW);
         }
@@ -85,31 +56,6 @@ public class RequestFunction implements SketchImageView.Function {
         // 如果当前图片是来自Sketch，那么就有可能在这里被主动回收，因此要主动设置ImageView的drawable为null
         final Drawable oldDrawable = imageViewInterface.getDrawable();
         return oldDrawable != null && notifyDrawable("onDetachedFromWindow", oldDrawable, false);
-    }
-
-    @Override
-    public boolean onDisplayStarted() {
-        return false;
-    }
-
-    @Override
-    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayFailed(FailedCause failedCause) {
-        return false;
-    }
-
-    @Override
-    public boolean onCanceled(CancelCause cancelCause) {
-        return false;
     }
 
     @Override

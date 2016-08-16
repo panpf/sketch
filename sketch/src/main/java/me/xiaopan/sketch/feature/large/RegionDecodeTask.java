@@ -7,7 +7,6 @@ import android.graphics.RectF;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.Sketch;
@@ -59,22 +58,8 @@ public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
         }
 
         if (!decoder.isReady()) {
-            try {
-                decoder.init();
-            } catch (IOException e) {
-                e.printStackTrace();
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". decoder init exception");
-                }
-                return null;
-            }
-
-            if (!decoder.isReady()) {
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". init ImageRegionDecoder failed");
-                }
-                return null;
-            }
+            Log.d(Sketch.TAG, NAME + ". init decoder not ready");
+            return null;
         }
 
         if (canceled) {

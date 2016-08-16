@@ -18,10 +18,8 @@ package me.xiaopan.sketch.feature;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 
 import me.xiaopan.sketch.SketchImageView;
@@ -33,7 +31,7 @@ import me.xiaopan.sketch.request.UriScheme;
 /**
  * 显示下载进度功能，会在ImageView上面显示一个黑色半透明蒙层显示下载进度，蒙层会随着进度渐渐变小
  */
-public class ShowProgressFunction implements SketchImageView.Function {
+public class ShowProgressFunction extends SketchImageView.Function {
     private static final int NONE = -1;
     private static final int DEFAULT_PROGRESS_COLOR = 0x22000000;
 
@@ -52,24 +50,9 @@ public class ShowProgressFunction implements SketchImageView.Function {
     }
 
     @Override
-    public void onAttachedToWindow() {
-
-    }
-
-    @Override
     public boolean onDisplay(UriScheme uriScheme) {
         progress = uriScheme == UriScheme.NET ? 0 : NONE;
         return true;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return false;
-    }
-
-    @Override
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-
     }
 
     @Override
@@ -105,16 +88,6 @@ public class ShowProgressFunction implements SketchImageView.Function {
     }
 
     @Override
-    public boolean onDetachedFromWindow() {
-        return false;
-    }
-
-    @Override
-    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        return false;
-    }
-
-    @Override
     public boolean onDisplayStarted() {
         progress = 0;
         return false;
@@ -139,7 +112,7 @@ public class ShowProgressFunction implements SketchImageView.Function {
     }
 
     @Override
-    public boolean onCanceled(CancelCause cancelCause) {
+    public boolean onDisplayCanceled(CancelCause cancelCause) {
         progress = NONE;
         return false;
     }

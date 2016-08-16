@@ -139,6 +139,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if (imageZoomFunction != null) {
+            imageZoomFunction.onDraw(canvas);
+        }
+        if (superLargeImageFunction != null) {
+            superLargeImageFunction.onDraw(canvas);
+        }
         if (showPressedFunction != null) {
             showPressedFunction.onDraw(canvas);
         }
@@ -162,12 +168,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
         if (recyclerCompatFunction != null) {
             recyclerCompatFunction.onDraw(canvas);
-        }
-        if (imageZoomFunction != null) {
-            imageZoomFunction.onDraw(canvas);
-        }
-        if (superLargeImageFunction != null) {
-            superLargeImageFunction.onDraw(canvas);
         }
     }
 
@@ -890,34 +890,34 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             boolean needInvokeInvalidate = false;
             if (showImageFromFunction != null) {
                 //noinspection ConstantConditions
-                needInvokeInvalidate |= showImageFromFunction.onCanceled(cancelCause);
+                needInvokeInvalidate |= showImageFromFunction.onDisplayCanceled(cancelCause);
             }
             if (showProgressFunction != null) {
-                needInvokeInvalidate |= showProgressFunction.onCanceled(cancelCause);
+                needInvokeInvalidate |= showProgressFunction.onDisplayCanceled(cancelCause);
             }
             if (showGifFlagFunction != null) {
-                needInvokeInvalidate |= showGifFlagFunction.onCanceled(cancelCause);
+                needInvokeInvalidate |= showGifFlagFunction.onDisplayCanceled(cancelCause);
             }
             if (showPressedFunction != null) {
-                needInvokeInvalidate |= showPressedFunction.onCanceled(cancelCause);
+                needInvokeInvalidate |= showPressedFunction.onDisplayCanceled(cancelCause);
             }
             if (imageShapeFunction != null) {
-                needInvokeInvalidate |= imageShapeFunction.onCanceled(cancelCause);
+                needInvokeInvalidate |= imageShapeFunction.onDisplayCanceled(cancelCause);
             }
             if (clickRetryFunction != null) {
-                needInvokeInvalidate |= clickRetryFunction.onCanceled(cancelCause);
+                needInvokeInvalidate |= clickRetryFunction.onDisplayCanceled(cancelCause);
             }
             if (requestFunction != null) {
-                needInvokeInvalidate |= requestFunction.onCanceled(cancelCause);
+                needInvokeInvalidate |= requestFunction.onDisplayCanceled(cancelCause);
             }
             if (recyclerCompatFunction != null) {
-                needInvokeInvalidate |= recyclerCompatFunction.onCanceled(cancelCause);
+                needInvokeInvalidate |= recyclerCompatFunction.onDisplayCanceled(cancelCause);
             }
             if (imageZoomFunction != null) {
-                needInvokeInvalidate |= imageZoomFunction.onCanceled(cancelCause);
+                needInvokeInvalidate |= imageZoomFunction.onDisplayCanceled(cancelCause);
             }
             if (superLargeImageFunction != null) {
-                needInvokeInvalidate |= superLargeImageFunction.onCanceled(cancelCause);
+                needInvokeInvalidate |= superLargeImageFunction.onDisplayCanceled(cancelCause);
             }
 
             if (needInvokeInvalidate) {
@@ -977,50 +977,85 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
     }
 
-    public interface Function {
-        void onAttachedToWindow();
+    public static abstract class Function {
+        public void onAttachedToWindow(){
 
-        boolean onDisplay(UriScheme uriScheme);
-
-        boolean onTouchEvent(MotionEvent event);
-
-        void onLayout(boolean changed, int left, int top, int right, int bottom);
-
-        void onDraw(Canvas canvas);
+        }
 
         /**
-         * @return true：调用父setImageDrawable清空图片
+         * @return 是否拦截事件
          */
-        boolean onDetachedFromWindow();
+        public boolean onTouchEvent(MotionEvent event){
+            return false;
+        }
+
+        public void onLayout(boolean changed, int left, int top, int right, int bottom){
+
+        }
+
+        public void setScaleType(ScaleType scaleType){
+
+        }
+
+        public void onDraw(Canvas canvas){
+
+        }
 
         /**
-         * @return 是否需要调用ImageView的invalidate()刷新显示
+         * @return true：是否需要调用父setImageDrawable清空图片
          */
-        boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable);
+        public boolean onDetachedFromWindow(){
+            return false;
+        }
 
         /**
-         * @return 是否需要调用ImageView的invalidate()刷新显示
+         * @return 是否需要调用invalidate()刷新ImageView
          */
-        boolean onDisplayStarted();
+        public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable){
+            return false;
+        }
+
 
         /**
-         * @return 是否需要调用ImageView的invalidate()刷新显示
+         * @return 是否需要调用invalidate()刷新ImageView
          */
-        boolean onUpdateDownloadProgress(int totalLength, int completedLength);
+        public boolean onDisplay(UriScheme uriScheme){
+            return false;
+        }
 
         /**
-         * @return 是否需要调用ImageView的invalidate()刷新显示
+         * @return 是否需要调用invalidate()刷新ImageView
          */
-        boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType);
+        public boolean onDisplayStarted(){
+            return false;
+        }
 
         /**
-         * @return 是否需要调用ImageView的invalidate()刷新显示
+         * @return 是否需要调用invalidate()刷新ImageView
          */
-        boolean onDisplayFailed(FailedCause failedCause);
+        public boolean onUpdateDownloadProgress(int totalLength, int completedLength){
+            return false;
+        }
 
         /**
-         * @return 是否需要调用ImageView的invalidate()刷新显示
+         * @return 是否需要调用invalidate()刷新ImageView
          */
-        boolean onCanceled(CancelCause cancelCause);
+        public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType){
+            return false;
+        }
+
+        /**
+         * @return 是否需要调用invalidate()刷新ImageView
+         */
+        public boolean onDisplayFailed(FailedCause failedCause){
+            return false;
+        }
+
+        /**
+         * @return 是否需要调用invalidate()刷新ImageView
+         */
+        public boolean onDisplayCanceled(CancelCause cancelCause){
+            return false;
+        }
     }
 }

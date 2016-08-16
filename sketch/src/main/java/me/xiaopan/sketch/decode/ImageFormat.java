@@ -43,10 +43,12 @@ public enum ImageFormat {
         return mimeType;
     }
 
+    @SuppressWarnings("unused")
     public void setBestConfig(Bitmap.Config bestConfig) {
         this.bestConfig = bestConfig;
     }
 
+    @SuppressWarnings("unused")
     public void setLowQualityConfig(Bitmap.Config lowQualityConfig) {
         this.lowQualityConfig = lowQualityConfig;
     }

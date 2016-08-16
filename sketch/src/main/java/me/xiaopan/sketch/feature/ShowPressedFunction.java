@@ -18,7 +18,6 @@ package me.xiaopan.sketch.feature;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
 import android.view.GestureDetector;
@@ -28,15 +27,11 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.Scroller;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.request.CancelCause;
-import me.xiaopan.sketch.request.FailedCause;
-import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriScheme;
 
 /**
  * 显示按下状态，按下后会在ImageView上显示一个黑色半透明的蒙层，松手后小时
  */
-public class ShowPressedFunction implements SketchImageView.Function {
+public class ShowPressedFunction extends SketchImageView.Function {
     private static final int DEFAULT_PRESSED_STATUS_COLOR = 0x33000000;
 
     protected String logName = "ShowPressedFunction";
@@ -61,16 +56,6 @@ public class ShowPressedFunction implements SketchImageView.Function {
     }
 
     @Override
-    public void onAttachedToWindow() {
-
-    }
-
-    @Override
-    public boolean onDisplay(UriScheme uriScheme) {
-        return false;
-    }
-
-    @Override
     public boolean onTouchEvent(MotionEvent event) {
         if (view.isClickable()) {
             gestureDetector.onTouchEvent(event);
@@ -84,11 +69,6 @@ public class ShowPressedFunction implements SketchImageView.Function {
             }
         }
         return false;
-    }
-
-    @Override
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-
     }
 
     @Override
@@ -123,41 +103,6 @@ public class ShowPressedFunction implements SketchImageView.Function {
                 canvas.restore();
             }
         }
-    }
-
-    @Override
-    public boolean onDetachedFromWindow() {
-        return false;
-    }
-
-    @Override
-    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayStarted() {
-        return false;
-    }
-
-    @Override
-    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayFailed(FailedCause failedCause) {
-        return false;
-    }
-
-    @Override
-    public boolean onCanceled(CancelCause cancelCause) {
-        return false;
     }
 
     public void setPressedStatusColor(int pressedStatusColor) {

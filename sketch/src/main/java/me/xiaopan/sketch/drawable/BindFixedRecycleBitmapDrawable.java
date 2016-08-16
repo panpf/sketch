@@ -16,46 +16,26 @@
 
 package me.xiaopan.sketch.drawable;
 
-import android.graphics.drawable.Drawable;
-
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.FixedSize;
-import me.xiaopan.sketch.request.ImageViewInterface;
 
-public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable {
-    private WeakReference<DisplayRequest> displayRequestWeakReference;
+public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable implements BindDrawable{
+    private WeakReference<DisplayRequest> weakReference;
 
     public BindFixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, DisplayRequest displayRequest) {
         super(recycleBitmapDrawable, null);
-        this.displayRequestWeakReference = new WeakReference<DisplayRequest>(displayRequest);
+        this.weakReference = new WeakReference<DisplayRequest>(displayRequest);
     }
 
     public BindFixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, FixedSize fixedSize, DisplayRequest displayRequest) {
         super(recycleBitmapDrawable, fixedSize);
-        this.displayRequestWeakReference = new WeakReference<DisplayRequest>(displayRequest);
+        this.weakReference = new WeakReference<DisplayRequest>(displayRequest);
     }
 
-    /**
-     * 从ImageViewInterface上查找DisplayRequest
-     */
-    public static DisplayRequest findDisplayRequest(ImageViewInterface imageViewInterface) {
-        if (imageViewInterface != null) {
-            final Drawable drawable = imageViewInterface.getDrawable();
-            if (drawable != null && drawable instanceof BindFixedRecycleBitmapDrawable) {
-                return ((BindFixedRecycleBitmapDrawable) drawable).getDisplayRequest();
-            }
-        }
-        return null;
-    }
-
-    /**
-     * 获取显示请求
-     *
-     * @return 显示请求
-     */
+    @Override
     public DisplayRequest getDisplayRequest() {
-        return displayRequestWeakReference.get();
+        return weakReference.get();
     }
 }

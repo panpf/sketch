@@ -16,24 +16,17 @@
 
 package me.xiaopan.sketch.feature;
 
-import android.graphics.Canvas;
 import android.graphics.Path;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
-import android.view.MotionEvent;
 import android.view.View;
 
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.SketchImageView.ImageShape;
-import me.xiaopan.sketch.request.CancelCause;
-import me.xiaopan.sketch.request.FailedCause;
-import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriScheme;
 
 /**
  * 定制图片形状功能，可以设置图片的形状，然后下载进度和按下效果蒙层就会根据此形状改变形状，以保证蒙层和图片的形状锲合
  */
-public class ImageShapeFunction implements SketchImageView.Function {
+public class ImageShapeFunction extends SketchImageView.Function {
 
     protected Path clipPath;
     protected float[] cornerRadius;
@@ -47,63 +40,8 @@ public class ImageShapeFunction implements SketchImageView.Function {
     }
 
     @Override
-    public void onAttachedToWindow() {
-
-    }
-
-    @Override
-    public boolean onDisplay(UriScheme uriScheme) {
-        return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return false;
-    }
-
-    @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
         initImageShapePath();
-    }
-
-    @Override
-    public void onDraw(Canvas canvas) {
-
-    }
-
-    @Override
-    public boolean onDetachedFromWindow() {
-        return false;
-    }
-
-    @Override
-    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayStarted() {
-        return false;
-    }
-
-    @Override
-    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayFailed(FailedCause failedCause) {
-        return false;
-    }
-
-    @Override
-    public boolean onCanceled(CancelCause cancelCause) {
-        return false;
     }
 
     protected void initImageShapePath() {

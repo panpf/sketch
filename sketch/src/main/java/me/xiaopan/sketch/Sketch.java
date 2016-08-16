@@ -23,7 +23,6 @@ import android.util.Log;
 import java.util.HashMap;
 import java.util.Map;
 
-import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayHelper;
@@ -201,7 +200,7 @@ public class Sketch {
      * @return true：当前ImageView有正在执行的任务并且取消成功；false：当前ImageView没有正在执行的任务
      */
     public static boolean cancel(ImageViewInterface imageViewInterface) {
-        final DisplayRequest displayRequest = BindFixedRecycleBitmapDrawable.findDisplayRequest(imageViewInterface);
+        final DisplayRequest displayRequest = SketchUtils.findDisplayRequest(imageViewInterface);
         if (displayRequest != null && !displayRequest.isFinished()) {
             displayRequest.cancel(CancelCause.BE_CANCELLED);
             return true;

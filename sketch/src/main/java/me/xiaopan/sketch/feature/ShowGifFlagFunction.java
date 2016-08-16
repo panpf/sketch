@@ -18,20 +18,15 @@ package me.xiaopan.sketch.feature;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
-import android.view.MotionEvent;
 import android.view.View;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.request.CancelCause;
-import me.xiaopan.sketch.request.FailedCause;
-import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 显示GIF图标识功能，使用者指定一个小图标，如果当前显示的图片是GIF图就会在ImageView的右下角显示这个小图标
  */
-public class ShowGifFlagFunction implements SketchImageView.Function {
+public class ShowGifFlagFunction extends SketchImageView.Function {
     private View view;
 
     protected boolean isGifDrawable;
@@ -44,21 +39,6 @@ public class ShowGifFlagFunction implements SketchImageView.Function {
 
         this.gifFlagDrawable = gifFlagDrawable;
         this.gifFlagDrawable.setBounds(0, 0, this.gifFlagDrawable.getIntrinsicWidth(), this.gifFlagDrawable.getIntrinsicHeight());
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-
-    }
-
-    @Override
-    public boolean onDisplay(UriScheme uriScheme) {
-        return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return false;
     }
 
     @Override
@@ -94,31 +74,6 @@ public class ShowGifFlagFunction implements SketchImageView.Function {
         boolean oldIsGifDrawable = isGifDrawable;
         isGifDrawable = SketchUtils.isGifDrawable(newDrawable);
         return isGifDrawable != oldIsGifDrawable;
-    }
-
-    @Override
-    public boolean onDisplayStarted() {
-        return false;
-    }
-
-    @Override
-    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayFailed(FailedCause failedCause) {
-        return false;
-    }
-
-    @Override
-    public boolean onCanceled(CancelCause cancelCause) {
-        return false;
     }
 
     public Drawable getGifFlagDrawable() {

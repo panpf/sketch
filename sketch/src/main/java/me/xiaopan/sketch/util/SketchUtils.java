@@ -55,8 +55,11 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
+import me.xiaopan.sketch.drawable.BindDrawable;
 import me.xiaopan.sketch.drawable.RecycleDrawable;
+import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.FixedSize;
+import me.xiaopan.sketch.request.ImageViewInterface;
 
 public class SketchUtils {
 
@@ -585,5 +588,18 @@ public class SketchUtils {
         } else {
             throw new UnableCreateDirException("Unable create dir: " + (diskCacheDir != null ? diskCacheDir.getPath() : "null"));
         }
+    }
+
+    /**
+     * 从ImageViewInterface上查找DisplayRequest
+     */
+    public static DisplayRequest findDisplayRequest(ImageViewInterface imageViewInterface) {
+        if (imageViewInterface != null) {
+            final Drawable drawable = imageViewInterface.getDrawable();
+            if (drawable != null && drawable instanceof BindDrawable) {
+                return ((BindDrawable) drawable).getDisplayRequest();
+            }
+        }
+        return null;
     }
 }

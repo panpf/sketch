@@ -19,7 +19,7 @@ package me.xiaopan.sketch.feature;
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.DisplayAttrs;
-import me.xiaopan.sketch.request.DisplayBinder;
+import me.xiaopan.sketch.request.RequestAndViewBinder;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayRequest;
@@ -40,7 +40,7 @@ public class RequestFactory implements Identifier {
 
     public DisplayRequest newDisplayRequest(
             Sketch sketch, RequestAttrs requestAttrs, DisplayAttrs displayAttrs,
-            DisplayOptions displayOptions, DisplayBinder displayBinder,
+            DisplayOptions displayOptions, RequestAndViewBinder requestAndViewBinder,
             DisplayListener displayListener, DownloadProgressListener downloadProgressListener) {
         // 由于DisplayHelper会被重复利用
         // 因此RequestAttrs、DisplayAttrs和DisplayOptions不能直接拿来用，要重新New一个
@@ -49,7 +49,7 @@ public class RequestFactory implements Identifier {
                 new RequestAttrs(requestAttrs),
                 new DisplayAttrs(displayAttrs),
                 new DisplayOptions(displayOptions),
-                displayBinder, displayListener, downloadProgressListener);
+                requestAndViewBinder, displayListener, downloadProgressListener);
     }
 
     public LoadRequest newLoadRequest(

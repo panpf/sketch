@@ -1,7 +1,6 @@
 package me.xiaopan.sketchsample.fragment;
 
 import android.app.Activity;
-import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -61,7 +60,7 @@ public class LargeImageFragment extends MyFragment {
         final ImageZoomer imageZoomer = imageView.getImageZoomFunction().getImageZoomer();
         imageZoomer.addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
             @Override
-            public void onMatrixChanged(RectF displayRect) {
+            public void onMatrixChanged(ImageZoomer imageZoomer) {
                 mappingView.update(imageZoomer.getDrawableWidth(), imageZoomer.getVisibleRect());
                 scaleTextView.setText(String.valueOf(imageZoomer.getScale()));
             }

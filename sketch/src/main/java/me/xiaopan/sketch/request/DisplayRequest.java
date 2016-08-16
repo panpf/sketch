@@ -32,7 +32,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class DisplayRequest extends LoadRequest {
     private DisplayAttrs displayAttrs;
     private DisplayOptions displayOptions;
-    private DisplayBinder displayBinder;
+    private RequestAndViewBinder requestAndViewBinder;
     private DisplayListener displayListener;
 
     private DisplayResult displayResult;
@@ -40,16 +40,16 @@ public class DisplayRequest extends LoadRequest {
     public DisplayRequest(
             Sketch sketch, RequestAttrs requestAttrs,
             DisplayAttrs displayAttrs, DisplayOptions displayOptions,
-            DisplayBinder displayBinder, DisplayListener displayListener,
+            RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
             DownloadProgressListener downloadProgressListener) {
         super(sketch, requestAttrs, displayOptions, null, downloadProgressListener);
 
         this.displayAttrs = displayAttrs;
         this.displayOptions = displayOptions;
-        this.displayBinder = displayBinder;
+        this.requestAndViewBinder = requestAndViewBinder;
         this.displayListener = displayListener;
 
-        this.displayBinder.setDisplayRequest(this);
+        this.requestAndViewBinder.setDisplayRequest(this);
         setLogName("DisplayRequest");
     }
 
@@ -75,7 +75,7 @@ public class DisplayRequest extends LoadRequest {
         }
 
         // 绑定关系已经断了就直接取消请求
-        if (displayBinder.isBroken()) {
+        if (requestAndViewBinder.isBroken()) {
             canceled(CancelCause.BIND_DISCONNECT);
             return true;
         }
@@ -260,7 +260,7 @@ public class DisplayRequest extends LoadRequest {
                 completedDrawable = new FixedRecycleBitmapDrawable(recycleCompletedDrawable, displayAttrs.getFixedSize());
             }
 
-            ImageViewInterface viewInterface = displayBinder.getImageViewInterface();
+            ImageViewInterface viewInterface = requestAndViewBinder.getImageViewInterface();
             if (Sketch.isDebugMode()) {
                 printLogI("runCompletedInMainThread", "image display completed",
                         displayResult.getImageFrom().name(),
@@ -304,7 +304,7 @@ public class DisplayRequest extends LoadRequest {
                     displayOptions.getImageDisplayer(),
                     displayAttrs.getFixedSize(),
                     displayAttrs.getScaleType());
-            displayOptions.getImageDisplayer().display(displayBinder.getImageViewInterface(), failedDrawable);
+            displayOptions.getImageDisplayer().display(requestAndViewBinder.getImageViewInterface(), failedDrawable);
         } else {
             if (Sketch.isDebugMode()) {
                 printLogW("runFailedInMainThread", "failedDrawable is null");

@@ -17,17 +17,11 @@
 package me.xiaopan.sketch.feature;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
-import android.view.MotionEvent;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayParams;
-import me.xiaopan.sketch.request.FailedCause;
-import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -37,7 +31,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * <br>可是RequestFunction在onDetachedFromWindow的时候会主动清空Drawable导致没有重新走onBindViewHolder的ItemView会没有Drawable而显示空白
  * <br>因此RecyclerCompatFunction就判断了如果在onAttachedToWindow之前没有调用相关显示图片的方法就会根据DisplayParams恢复之前的图片
  */
-public class RecyclerCompatFunction implements SketchImageView.Function {
+public class RecyclerCompatFunction extends SketchImageView.Function {
     protected String logName = "RecyclerCompatFunction";
 
     private Context context;
@@ -74,53 +68,8 @@ public class RecyclerCompatFunction implements SketchImageView.Function {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return false;
-    }
-
-    @Override
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-
-    }
-
-    @Override
-    public void onDraw(Canvas canvas) {
-
-    }
-
-    @Override
     public boolean onDetachedFromWindow() {
         this.isSetImage = false;
-        return false;
-    }
-
-    @Override
-    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayStarted() {
-        return false;
-    }
-
-    @Override
-    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayFailed(FailedCause failedCause) {
-        return false;
-    }
-
-    @Override
-    public boolean onCanceled(CancelCause cancelCause) {
         return false;
     }
 }

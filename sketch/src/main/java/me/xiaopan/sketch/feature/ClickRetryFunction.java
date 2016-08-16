@@ -16,16 +16,12 @@
 
 package me.xiaopan.sketch.feature;
 
-import android.graphics.Canvas;
-import android.graphics.drawable.Drawable;
-import android.view.MotionEvent;
 import android.view.View;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
-import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.RequestLevel;
 import me.xiaopan.sketch.request.UriScheme;
@@ -33,7 +29,7 @@ import me.xiaopan.sketch.request.UriScheme;
 /**
  * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击View重新或强制显示图片
  */
-public class ClickRetryFunction implements SketchImageView.Function, View.OnClickListener {
+public class ClickRetryFunction extends SketchImageView.Function implements View.OnClickListener {
     private boolean clickRetryOnFailed;
     private boolean clickRetryOnPauseDownload;
     private View.OnClickListener wrapperClickListener;
@@ -52,11 +48,6 @@ public class ClickRetryFunction implements SketchImageView.Function, View.OnClic
     }
 
     @Override
-    public void onAttachedToWindow() {
-
-    }
-
-    @Override
     public boolean onDisplay(UriScheme uriScheme) {
         // 重新走了一遍显示流程，这些要重置
         displayFailed = false;
@@ -64,31 +55,6 @@ public class ClickRetryFunction implements SketchImageView.Function, View.OnClic
 
         updateClickable();
 
-        return false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        return false;
-    }
-
-    @Override
-    public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-
-    }
-
-    @Override
-    public void onDraw(Canvas canvas) {
-
-    }
-
-    @Override
-    public boolean onDetachedFromWindow() {
-        return false;
-    }
-
-    @Override
-    public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
         return false;
     }
 
@@ -103,16 +69,6 @@ public class ClickRetryFunction implements SketchImageView.Function, View.OnClic
     }
 
     @Override
-    public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
-        return false;
-    }
-
-    @Override
     public boolean onDisplayFailed(FailedCause failedCause) {
         // 正常的失败才能重试，因此要过滤一下失败原因
         displayFailed = failedCause != FailedCause.URI_NULL_OR_EMPTY && failedCause != FailedCause.URI_NO_SUPPORT;
@@ -121,7 +77,7 @@ public class ClickRetryFunction implements SketchImageView.Function, View.OnClic
     }
 
     @Override
-    public boolean onCanceled(CancelCause cancelCause) {
+    public boolean onDisplayCanceled(CancelCause cancelCause) {
         pauseDownload = cancelCause == CancelCause.PAUSE_DOWNLOAD;
         updateClickable();
         return false;
