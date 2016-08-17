@@ -40,9 +40,12 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.feature.zoom.gestures.OnScaleDragGestureListener;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetector;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetectorCompat;
+import me.xiaopan.sketch.util.MatrixUtils;
 
+// TODO DrawerLayout包ViewPager的时候左右滑动有问题
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener, FlingTranslateRunner.FlingTranslateListener {
     public static final String NAME = "ImageZoomer";
+
     public static final float DEFAULT_MAX_SCALE = 3.0f;
     public static final float DEFAULT_MID_SCALE = 1.75f;
     public static final float DEFAULT_MIN_SCALE = 1.0f;
@@ -83,7 +86,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private final Matrix baseMatrix = new Matrix();
     private final Matrix drawMatrix = new Matrix();
     private final Matrix suppMatrix = new Matrix();
-    private final float[] matrixValues = new float[9];
 
     public ImageZoomer(ImageView imageView, boolean provideTouchEvent) {
         context = imageView.getContext();
@@ -119,7 +121,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         this(imageView, false);
     }
 
-    // TODO 嵌套ViewPager时滑动还是有问题，比如放大的时候就不能滑动了
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (!zoomEnabled || !hasDrawable()) {
@@ -130,21 +131,21 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
-                // First, disable the Parent from intercepting the touch event
+                // 上来就禁止父View拦截事件
                 ViewParent parent = v.getParent();
                 if (parent != null) {
                     parent.requestDisallowInterceptTouchEvent(true);
                 }
 
-                // cancel fling
+                // 取消快速滚动
                 cancelFling();
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                // If the user has zoomed less than min scale, zoom back to min scale
+                // 如果当前缩放倍数小于最小倍数就回滚至最小倍数
                 if (getScale() < minScale) {
                     RectF rect = getDisplayRect();
-                    if (null != rect) {
+                    if (rect != null) {
                         v.post(new ZoomRunner(this, getScale(), minScale, rect.centerX(), rect.centerY()));
                         handled = true;
                     }
@@ -152,6 +153,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                 break;
         }
 
+        // 缩放、拖拽手势探测器处理
         if (scaleDragGestureDetector != null) {
             boolean wasScaling = scaleDragGestureDetector.isScaling();
             boolean wasDragging = scaleDragGestureDetector.isDragging();
@@ -164,7 +166,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             blockParentIntercept = didntScale && didntDrag;
         }
 
-        // Check to see if the user double tapped
+        // 点击手势探测器处理
         if (tapGestureDetector != null && tapGestureDetector.onTouchEvent(event)) {
             handled = true;
         }
@@ -241,6 +243,13 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
+     * 获取缩放倍数
+     */
+    public float getScale() {
+        return MatrixUtils.getMatrixScale(getDrawMatrix());
+    }
+
+    /**
      * 设置缩放倍数
      * @param scale 新的缩放倍数
      * @param animate 是否显示动画
@@ -270,6 +279,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             if (animate) {
                 imageView.post(new ZoomRunner(this, getScale(), scale, focalX, focalY));
             } else {
+                scale /= MatrixUtils.getMatrixScale(baseMatrix);
                 suppMatrix.setScale(scale, scale, focalX, focalY);
                 checkAndDisplayMatrix();
             }
@@ -295,10 +305,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return imageView;
     }
 
-    public float getScale() {
-        return (float) Math.sqrt((float) Math.pow(getValue(suppMatrix, Matrix.MSCALE_X), 2) + (float) Math.pow(getValue(suppMatrix, Matrix.MSKEW_Y), 2));
-    }
-
     @SuppressWarnings("unused")
     public void setScale(float scale) {
         setScale(scale, false);
@@ -313,23 +319,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             this.scaleType = scaleType;
             update();
         }
-    }
-
-    /**
-     * Helper method that 'unpacks' a Matrix and returns the required value
-     *
-     * @param matrix     - Matrix to unpack
-     * @param whichValue - Which value from Matrix.M* to return
-     * @return float - returned value
-     */
-    private float getValue(Matrix matrix, int whichValue) {
-        matrix.getValues(matrixValues);
-        return matrixValues[whichValue];
-    }
-
-    @SuppressWarnings("unused")
-    public void getDisplayMatrix(Matrix matrix) {
-        matrix.set(getDrawMatrix());
     }
 
     public int getDrawableWidth() {
@@ -360,15 +349,14 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return drawable.getIntrinsicHeight();
     }
 
-    /**
-     * Method should be private
-     * Use {@link #getDisplayMatrix(Matrix)}
-     */
-    @Deprecated
-    public Matrix getDrawMatrix() {
+    private Matrix getDrawMatrix() {
         drawMatrix.set(baseMatrix);
         drawMatrix.postConcat(suppMatrix);
         return drawMatrix;
+    }
+
+    public void getDrawMatrix(Matrix matrix) {
+        matrix.set(getDrawMatrix());
     }
 
     @SuppressWarnings("unused")
@@ -378,11 +366,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
 
         ImageView imageView = getImageView();
-        if (null == imageView) {
-            return false;
-        }
-
-        if (null == imageView.getDrawable()) {
+        if (imageView == null || imageView.getDrawable() == null) {
             return false;
         }
 
@@ -458,27 +442,20 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             final int bottom = imageView.getBottom();
             final int left = imageView.getLeft();
 
-            /**
-             * We need to check whether the ImageView's bounds have changed.
-             * This would be easier if we targeted API 11+ as we could just use
-             * View.OnLayoutChangeListener. Instead we have to replicate the
-             * work, keeping track of the ImageView's bounds and then checking
-             * if the values change.
-             */
             if (top != imageViewTop || bottom != imageViewBottom || left != imageViewLeft || right != imageViewRight) {
                 resetScaleMultiple();
-
-                // Update our base matrix, as the bounds have changed
                 updateBaseMatrix(imageView.getDrawable());
+                resetMatrix();
 
-                // Update values as something has changed
                 imageViewTop = top;
                 imageViewRight = right;
                 imageViewBottom = bottom;
                 imageViewLeft = left;
             }
         } else {
+            resetScaleMultiple();
             updateBaseMatrix(imageView.getDrawable());
+            resetMatrix();
         }
     }
 
@@ -488,21 +465,16 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        // TODO 优化最大、最小以及默认缩放比例，要根据图片的宽高以及ImageView的宽高来计算
         if (zoomEnabled) {
-            resetScaleMultiple();
-
-            // Make sure we using MATRIX Scale Type
             imageView.setScaleType(ScaleType.MATRIX);
 
-            // Update the base matrix using the current drawable
+            resetScaleMultiple();
             updateBaseMatrix(imageView.getDrawable());
+            resetMatrix();
         } else {
-            // Reset the Matrix...
+            resetScaleMultiple();
             resetMatrix();
         }
-
-        // TODO: 16/8/9 初始化完成后会调用下onMatrixChangeListener
     }
 
     /**
@@ -563,16 +535,18 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     private RectF getDisplayRect(Matrix matrix) {
         ImageView imageView = getImageView();
-
-        if (null != imageView) {
-            Drawable d = imageView.getDrawable();
-            if (null != d) {
-                RectF displayRect = new RectF(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-                matrix.mapRect(displayRect);
-                return displayRect;
-            }
+        if (imageView == null) {
+            return null;
         }
-        return null;
+
+        Drawable drawable = imageView.getDrawable();
+        if (drawable == null) {
+            return null;
+        }
+
+        RectF displayRect = new RectF(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        matrix.mapRect(displayRect);
+        return displayRect;
     }
 
     public RectF getDisplayRect() {
@@ -580,15 +554,17 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return getDisplayRect(getDrawMatrix());
     }
 
-    public RectF getVisibleRect() {
+    public void getVisibleRect(RectF rectF) {
         ImageView imageView = getImageView();
         if (imageView == null) {
-            return null;
+            rectF.setEmpty();
+            return;
         }
 
         Drawable drawable = imageView.getDrawable();
         if (drawable == null || drawable.getIntrinsicWidth() == 0) {
-            return null;
+            rectF.setEmpty();
+            return;
         }
 
         RectF displayRect = getDisplayRect();
@@ -631,9 +607,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         top /= scale;
         bottom /= scale;
 
-//        srcRect.set(left, top, right, bottom);
-//        return srcRect;
-        return new RectF(left, top, right, bottom);
+        rectF.set(left, top, right, bottom);
     }
 
     /**
@@ -886,38 +860,35 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                     (viewHeight - drawableHeight * scale) / 2F);
 
         } else {
-//            RectF mTempSrc = new RectF(0, 0, drawableWidth, drawableHeight);
-//            RectF mTempDst = new RectF(0, 0, viewWidth, viewHeight);
-//
-//            if ((int) baseRotation % 180 != 0) {
-//                mTempSrc = new RectF(0, 0, drawableHeight, drawableWidth);
-//            }
-//
-//            switch (scaleType) {
-//                case FIT_CENTER:
-//                    baseMatrix
-//                            .setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.CENTER);
-//                    break;
-//
-//                case FIT_START:
-//                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.START);
-//                    break;
-//
-//                case FIT_END:
-//                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.END);
-//                    break;
-//
-//                case FIT_XY:
-//                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.FILL);
-//                    break;
-//
-//                default:
-//                    break;
-//            }
-            // TODO: 16/8/16 这里禁了，但是初始显示的图特别小
-        }
+            RectF mTempSrc = new RectF(0, 0, drawableWidth, drawableHeight);
+            RectF mTempDst = new RectF(0, 0, viewWidth, viewHeight);
 
-        resetMatrix();
+            if ((int) baseRotation % 180 != 0) {
+                mTempSrc = new RectF(0, 0, drawableHeight, drawableWidth);
+            }
+
+            switch (scaleType) {
+                case FIT_CENTER:
+                    baseMatrix
+                            .setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.CENTER);
+                    break;
+
+                case FIT_START:
+                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.START);
+                    break;
+
+                case FIT_END:
+                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.END);
+                    break;
+
+                case FIT_XY:
+                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.FILL);
+                    break;
+
+                default:
+                    break;
+            }
+        }
     }
 
     private void cancelFling() {

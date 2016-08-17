@@ -303,5 +303,21 @@ public class SuperLargeImageViewer {
             previewDrawableWidth = 0;
             previewDrawableHeight = 0;
         }
+
+        public Matrix getDrawMatrix() {
+            return drawMatrix;
+        }
+
+        public RectF getVisibleRect() {
+            return visibleRect;
+        }
+
+        public void setPreviewDrawableHeight(int previewDrawableHeight) {
+            this.previewDrawableHeight = previewDrawableHeight;
+        }
+
+        public void setPreviewDrawableWidth(int previewDrawableWidth) {
+            this.previewDrawableWidth = previewDrawableWidth;
+        }
     }
 }

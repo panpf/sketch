@@ -26,7 +26,6 @@ import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 /**
  * ImageView缩放功能
  */
-// TODO: 16/8/14 根据图片实际大小调整三级缩放比例
 public class ImageZoomFunction extends SketchImageView.Function {
     private ImageView imageView;
 

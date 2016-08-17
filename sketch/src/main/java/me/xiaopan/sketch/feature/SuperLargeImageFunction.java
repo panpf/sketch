@@ -17,8 +17,6 @@
 package me.xiaopan.sketch.feature;
 
 import android.graphics.Canvas;
-import android.graphics.Matrix;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.SketchImageView;
@@ -32,7 +30,7 @@ import me.xiaopan.sketch.request.DisplayParams;
  */
 // TODO: 16/8/14 BitmapRegionDecoder从api10 GINGERBREAD_MR1才开始支持
 // TODO: 16/8/9 BitmapRegionDecoder仅支持jpg，png，bmp等图片
-// TODO: 16/8/14 异步初始化
+// TODO: 16/8/17 根据图片实际大小调整最大缩放倍数
 public class SuperLargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangedListener, SuperLargeImageViewer.InvalidateCallback {
     private SketchImageView imageView;
     private SuperLargeImageViewer superLargeImageViewer;
@@ -72,13 +70,11 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
     public void onMatrixChanged(ImageZoomer imageZoomer) {
         Drawable drawable = imageView.getDrawable();
         if (drawable != null) {
-            // TODO: 16/8/16 不再每次都new新的Matrix和RectF
             SuperLargeImageViewer.UpdateParams updateParams = superLargeImageViewer.getUpdateParams();
-            Matrix drawMatrix = imageZoomer.getDrawMatrix();
-            RectF visibleRect = imageZoomer.getVisibleRect();
-            int previewDrawableWidth = imageZoomer.getDrawableWidth();
-            int previewDrawableHeight = imageZoomer.getDrawableHeight();
-            updateParams.set(drawMatrix, visibleRect, previewDrawableWidth, previewDrawableHeight);
+            imageZoomer.getDrawMatrix(updateParams.getDrawMatrix());
+            imageZoomer.getVisibleRect(updateParams.getVisibleRect());
+            updateParams.setPreviewDrawableWidth(imageZoomer.getDrawableWidth());
+            updateParams.setPreviewDrawableHeight(imageZoomer.getDrawableHeight());
             superLargeImageViewer.update(updateParams);
         } else {
             superLargeImageViewer.update(null);
