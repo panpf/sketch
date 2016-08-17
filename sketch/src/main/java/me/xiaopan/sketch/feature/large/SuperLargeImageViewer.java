@@ -28,6 +28,7 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -39,7 +40,7 @@ public class SuperLargeImageViewer {
     private static final String NAME = "SuperLargeImageViewer";
 
     private Context context;
-    private InvalidateCallback invalidateCallback;
+    private Callback callback;
 
     private ImageRegionDecoder imageRegionDecoder;
     private RegionDecodeTask lastTask;
@@ -53,9 +54,9 @@ public class SuperLargeImageViewer {
     private UpdateParams waitUpdateParams;
     private UpdateParams updateParams = new UpdateParams();
 
-    public SuperLargeImageViewer(Context context, InvalidateCallback invalidateCallback) {
+    public SuperLargeImageViewer(Context context, Callback callback) {
         this.context = context.getApplicationContext();
-        this.invalidateCallback = invalidateCallback;
+        this.callback = callback;
     }
 
     private static int calculateRegionInSimpleSize(Context context, Rect regionSrcRect) {
@@ -99,11 +100,12 @@ public class SuperLargeImageViewer {
                     update(waitUpdateParams);
                     waitUpdateParams.reset();
                 }
+                callback.initCompleted(imageRegionDecoder.getImageWidth(), imageRegionDecoder.getImageHeight(), imageRegionDecoder.getImageFormat());
             }
 
             @Override
             public void onCreateFailed(Exception e) {
-
+                callback.initFailed();
             }
         });
     }
@@ -112,7 +114,7 @@ public class SuperLargeImageViewer {
         if (updateParams == null || updateParams.isEmpty()) {
             clean();
             matrix.reset();
-            invalidateCallback.invalidate();
+            callback.invalidate();
             return;
         }
 
@@ -146,7 +148,7 @@ public class SuperLargeImageViewer {
         // 如果是全部显示的话就不解码了
         if (largeVisibleRect.width() == updateParams.previewDrawableWidth && largeVisibleRect.height() == updateParams.previewDrawableHeight) {
             clean();
-            invalidateCallback.invalidate();
+            callback.invalidate();
             return;
         }
 
@@ -186,7 +188,7 @@ public class SuperLargeImageViewer {
                         + ", newSrcRect=" + srcRect.toString());
             }
             clean();
-            invalidateCallback.invalidate();
+            callback.invalidate();
             return;
         }
 
@@ -217,7 +219,7 @@ public class SuperLargeImageViewer {
             bitmapVisibleRect.set(visibleRect.left, visibleRect.top, visibleRect.right, visibleRect.bottom);
         }
 
-        invalidateCallback.invalidate();
+        callback.invalidate();
     }
 
     private void clean() {
@@ -261,8 +263,10 @@ public class SuperLargeImageViewer {
         return updateParams;
     }
 
-    public interface InvalidateCallback {
+    public interface Callback {
         void invalidate();
+        void initCompleted(int imageWidth, int imageHeight, ImageFormat imageFormat);
+        void initFailed();
     }
 
     public static class UpdateParams {

@@ -52,7 +52,7 @@ class FlingTranslateRunner implements Runnable {
 
         final int startX = Math.round(-rect.left);
         final int minX, maxX, minY, maxY;
-        int viewWidth = ImageZoomer.getImageViewWidth(imageView);
+        int viewWidth = imageZoomer.getImageViewWidth();
         if (viewWidth < rect.width()) {
             minX = 0;
             maxX = Math.round(rect.width() - viewWidth);
@@ -60,7 +60,7 @@ class FlingTranslateRunner implements Runnable {
             minX = maxX = startX;
         }
 
-        int viewHeight = ImageZoomer.getImageViewHeight(imageView);
+        int viewHeight = imageZoomer.getImageViewHeight();
         final int startY = Math.round(-rect.top);
         if (viewHeight < rect.height()) {
             minY = 0;

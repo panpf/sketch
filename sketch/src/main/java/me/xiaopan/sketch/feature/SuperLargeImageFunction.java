@@ -20,6 +20,7 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.drawable.BindDrawable;
 import me.xiaopan.sketch.feature.large.SuperLargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
@@ -30,8 +31,8 @@ import me.xiaopan.sketch.request.DisplayParams;
  */
 // TODO: 16/8/14 BitmapRegionDecoder从api10 GINGERBREAD_MR1才开始支持
 // TODO: 16/8/9 BitmapRegionDecoder仅支持jpg，png，bmp等图片
-// TODO: 16/8/17 根据图片实际大小调整最大缩放倍数
-public class SuperLargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangedListener, SuperLargeImageViewer.InvalidateCallback {
+// TODO: 16/8/17 原始尺寸小于屏幕宽高2倍图片就不使用超大图功能
+public class SuperLargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangedListener, SuperLargeImageViewer.Callback {
     private SketchImageView imageView;
     private SuperLargeImageViewer superLargeImageViewer;
 
@@ -102,5 +103,15 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
     @Override
     public void invalidate() {
         imageView.invalidate();
+    }
+
+    @Override
+    public void initCompleted(int imageWidth, int imageHeight, ImageFormat imageFormat) {
+
+    }
+
+    @Override
+    public void initFailed() {
+
     }
 }

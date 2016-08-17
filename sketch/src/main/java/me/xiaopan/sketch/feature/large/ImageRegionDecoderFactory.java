@@ -37,6 +37,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class ImageRegionDecoderFactory {
 
     private ImageRegionDecoderFactory() {
+
     }
 
     public static void create(Context context, final String imageUri, final CreateCallback createCallback) {

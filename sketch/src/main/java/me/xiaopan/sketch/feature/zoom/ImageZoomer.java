@@ -37,6 +37,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.zoom.gestures.OnScaleDragGestureListener;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetector;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetectorCompat;
@@ -515,8 +516,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        int viewWidth = getImageViewWidth(imageView);
-        int viewHeight = getImageViewHeight(imageView);
+        int viewWidth = getImageViewWidth();
+        int viewHeight = getImageViewHeight();
         if (viewWidth == 0 || viewHeight == 0) {
             minScale = DEFAULT_MIN_SCALE;
             midScale = DEFAULT_MID_SCALE;
@@ -542,7 +543,19 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             minScale = widthScale;
             midScale = widthScale * 2;
         }
-        maxScale = midScale * 2;
+
+        if (drawable instanceof SketchDrawable) {
+            // 根据图片的原始大小计算最大缩放比例，保证一比一显示
+            SketchDrawable sketchDrawable = (SketchDrawable) drawable;
+            int originDrawableWidth = sketchDrawable.getOriginWidth();
+            int originDrawableHeight = sketchDrawable.getOriginHeight();
+            maxScale = Math.max((float) originDrawableWidth / drawableWidth, (float) originDrawableHeight / drawableHeight);
+
+            // 最大缩放比例不能小于中间缩放比例的2倍
+            maxScale = Math.max(maxScale, midScale * 2);
+        } else {
+            maxScale = midScale * 2;
+        }
     }
 
     /**
@@ -586,8 +599,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
 
         RectF displayRect = getDisplayRect();
-        int viewWidth = imageView.getWidth();
-        int viewHeight = imageView.getHeight();
+        int viewWidth = getImageViewWidth();
+        int viewHeight = getImageViewHeight();
         float displayWidth = displayRect.width();
         float displayHeight = displayRect.height();
         int drawableWidth = drawable.getIntrinsicWidth();
@@ -651,7 +664,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         final float height = rect.height(), width = rect.width();
         float deltaX = 0, deltaY = 0;
 
-        final int viewHeight = getImageViewHeight(imageView);
+        final int viewHeight = getImageViewHeight();
         if (height <= viewHeight) {
             switch (scaleType) {
                 case FIT_START:
@@ -670,7 +683,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             deltaY = viewHeight - rect.bottom;
         }
 
-        final int viewWidth = getImageViewWidth(imageView);
+        final int viewWidth = getImageViewWidth();
         if (width <= viewWidth) {
             switch (scaleType) {
                 case FIT_START:
@@ -853,8 +866,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        final float viewWidth = getImageViewWidth(imageView);
-        final float viewHeight = getImageViewHeight(imageView);
+        final float viewWidth = getImageViewWidth();
+        final float viewHeight = getImageViewHeight();
         final int drawableWidth = d.getIntrinsicWidth();
         final int drawableHeight = d.getIntrinsicHeight();
 
@@ -926,18 +939,22 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
     }
 
-    public static int getImageViewWidth(ImageView imageView) {
-        if (null == imageView) {
+    public int getImageViewWidth() {
+        ImageView imageView = getImageView();
+        if (imageView != null) {
+            return imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
+        } else {
             return 0;
         }
-        return imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
     }
 
-    public static int getImageViewHeight(ImageView imageView) {
-        if (null == imageView) {
+    public int getImageViewHeight() {
+        ImageView imageView = getImageView();
+        if (imageView != null) {
+            return imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
+        } else {
             return 0;
         }
-        return imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
     }
 
     public interface OnSingleFlingListener {
