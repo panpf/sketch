@@ -124,7 +124,7 @@ public class DownloadRequest extends AsyncRequest {
                 if (Sketch.isDebugMode()) {
                     printLogD("runDispatch", "diskCache");
                 }
-                downloadResult = new DownloadResult(diskCacheEntry, false);
+                downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
                 downloadCompleted();
                 return;
             }
@@ -207,7 +207,7 @@ public class DownloadRequest extends AsyncRequest {
             setStatus(Status.CHECK_DISK_CACHE);
             DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
             if (diskCacheEntry != null) {
-                return new DownloadResult(diskCacheEntry, false);
+                return new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
             }
         }
 
@@ -366,7 +366,7 @@ public class DownloadRequest extends AsyncRequest {
         if (diskCacheEditor != null) {
             DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
             if (diskCacheEntry != null) {
-                return new DownloadResult(diskCacheEntry, true);
+                return new DownloadResult(diskCacheEntry, ImageFrom.NETWORK);
             } else {
                 if (Sketch.isDebugMode()) {
                     printLogW("runDownload", "download after", "not found disk cache");
@@ -374,7 +374,7 @@ public class DownloadRequest extends AsyncRequest {
                 return null;
             }
         } else {
-            return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray(), true);
+            return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.NETWORK);
         }
     }
 
@@ -460,11 +460,7 @@ public class DownloadRequest extends AsyncRequest {
         setStatus(Status.COMPLETED);
 
         if (downloadListener != null && downloadResult != null && downloadResult.hasData()) {
-            if (downloadResult.getDiskCacheEntry() != null) {
-                downloadListener.onCompleted(downloadResult.getDiskCacheEntry().getFile(), downloadResult.isFromNetwork());
-            } else if (downloadResult.getImageData() != null) {
-                downloadListener.onCompleted(downloadResult.getImageData());
-            }
+            downloadListener.onCompleted(downloadResult);
         }
     }
 

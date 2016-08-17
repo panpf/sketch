@@ -20,8 +20,9 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
-import me.xiaopan.sketch.drawable.RecycleDrawable;
+import me.xiaopan.sketch.drawable.BindFixedBitmapDrawable;
+import me.xiaopan.sketch.drawable.RecyclerDrawable;
+import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayParams;
@@ -43,6 +44,42 @@ public class RequestFunction extends SketchImageView.Function {
 
     public RequestFunction(ImageViewInterface imageViewInterface) {
         this.imageViewInterface = imageViewInterface;
+    }
+
+    /**
+     * 修改Drawable显示状态
+     *
+     * @param callingStation 调用位置
+     * @param drawable       Drawable
+     * @param isDisplayed    是否已显示
+     * @return true：drawable或其子Drawable是RecycleDrawable
+     */
+    private static boolean notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
+        if (drawable == null) {
+            return false;
+        } else if (drawable instanceof BindFixedBitmapDrawable) {
+            BindFixedBitmapDrawable bindFixedRecycleBitmapDrawable = (BindFixedBitmapDrawable) drawable;
+            DisplayRequest displayRequest = bindFixedRecycleBitmapDrawable.getRequest();
+            if (displayRequest != null && !displayRequest.isFinished()) {
+                displayRequest.cancel(CancelCause.BE_REPLACED_ON_SET_DRAWABLE);
+            }
+            bindFixedRecycleBitmapDrawable.setIsDisplayed(callingStation, isDisplayed);
+            return true;
+        } else if (drawable instanceof RecyclerDrawable) {
+            ((RecyclerDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
+            return true;
+        } else if (drawable instanceof SketchDrawable) {
+            return true;
+        } else if (drawable instanceof LayerDrawable) {
+            LayerDrawable layerDrawable = (LayerDrawable) drawable;
+            boolean result = false;
+            for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
+                result |= notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);
+            }
+            return result;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -91,39 +128,5 @@ public class RequestFunction extends SketchImageView.Function {
 
     public DisplayOptions getDisplayOptions() {
         return displayOptions;
-    }
-
-    /**
-     * 修改Drawable显示状态
-     *
-     * @param callingStation 调用位置
-     * @param drawable       Drawable
-     * @param isDisplayed    是否已显示
-     * @return true：drawable或其子Drawable是RecycleDrawable
-     */
-    private static boolean notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
-        if (drawable == null) {
-            return false;
-        } else if (drawable instanceof BindFixedRecycleBitmapDrawable) {
-            BindFixedRecycleBitmapDrawable bindFixedRecycleBitmapDrawable = (BindFixedRecycleBitmapDrawable) drawable;
-            DisplayRequest displayRequest = bindFixedRecycleBitmapDrawable.getDisplayRequest();
-            if (displayRequest != null && !displayRequest.isFinished()) {
-                displayRequest.cancel(CancelCause.BE_REPLACED_ON_SET_DRAWABLE);
-            }
-            bindFixedRecycleBitmapDrawable.setIsDisplayed(callingStation, isDisplayed);
-            return true;
-        } else if (drawable instanceof RecycleDrawable) {
-            ((RecycleDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
-            return true;
-        } else if (drawable instanceof LayerDrawable) {
-            LayerDrawable layerDrawable = (LayerDrawable) drawable;
-            boolean result = false;
-            for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
-                result |= notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);
-            }
-            return result;
-        } else {
-            return false;
-        }
     }
 }

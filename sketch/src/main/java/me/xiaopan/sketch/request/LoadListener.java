@@ -16,12 +16,6 @@
 
 package me.xiaopan.sketch.request;
 
-import android.graphics.Bitmap;
-
-import pl.droidsonroids.gif.GifDrawable;
-
 public interface LoadListener extends Listener {
-    void onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType);
-
-    void onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType);
+    void onCompleted(LoadResult loadResult);
 }

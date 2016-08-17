@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
+ * Copyright (C) 2016 Peng fei Pan <sky@xiaopan.me>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,37 +14,42 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.decode;
+package me.xiaopan.sketch.drawable;
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Point;
-
-import me.xiaopan.sketch.drawable.SketchGifDrawable;
-
-/**
- * 解码监听器
- */
-public interface DecodeHelper {
-    /**
-     * 解码
-     *
-     * @param options 解码选项
-     */
-    Bitmap decode(BitmapFactory.Options options);
+public interface SketchDrawable {
 
     /**
-     * 解码成功
+     * 获取图片原始宽
      */
-    void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize);
+    int getOriginWidth();
 
     /**
-     * 解码失败
+     * 设置图片原始宽
      */
-    void onDecodeFailed();
+    void setOriginWidth(int originWidth);
 
     /**
-     * 获取GIF图
+     * 获取图片原始高
      */
-    SketchGifDrawable getGifDrawable();
+    int getOriginHeight();
+
+    /**
+     * 设置图片原始高
+     */
+    void setOriginHeight(int originHeight);
+
+    /**
+     * 获取图片类型
+     */
+    String getMimeType();
+
+    /**
+     * 设置图片类型
+     */
+    void setMimeType(String mimeType);
+
+    /**
+     * 获取一些信息
+     */
+    String getInfo();
 }

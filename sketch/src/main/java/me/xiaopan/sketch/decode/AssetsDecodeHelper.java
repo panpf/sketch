@@ -25,7 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.RecycleGifDrawable;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -87,9 +87,9 @@ public class AssetsDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public RecycleGifDrawable getGifDrawable() {
+    public SketchGifDrawable getGifDrawable() {
         try {
-            return new RecycleGifDrawable(loadRequest.getSketch().getConfiguration().getContext().getAssets(), assetsFilePath);
+            return new SketchGifDrawable(loadRequest.getSketch().getConfiguration().getContext().getAssets(), assetsFilePath);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

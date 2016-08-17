@@ -27,7 +27,7 @@ import java.io.RandomAccessFile;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.drawable.RecycleGifDrawable;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -90,9 +90,9 @@ public class CacheFileDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public RecycleGifDrawable getGifDrawable() {
+    public SketchGifDrawable getGifDrawable() {
         try {
-            return new RecycleGifDrawable(new RandomAccessFile(diskCacheEntry.getFile().getPath(), "r").getFD());
+            return new SketchGifDrawable(new RandomAccessFile(diskCacheEntry.getFile().getPath(), "r").getFD());
         } catch (IOException e) {
             e.printStackTrace();
             return null;

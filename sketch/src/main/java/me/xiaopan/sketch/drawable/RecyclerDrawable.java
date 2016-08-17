@@ -16,7 +16,7 @@
 
 package me.xiaopan.sketch.drawable;
 
-public interface RecycleDrawable {
+public interface RecyclerDrawable extends SketchDrawable{
 
     void setIsDisplayed(String callingStation, boolean displayed);
 
@@ -24,23 +24,13 @@ public interface RecycleDrawable {
 
     void setIsWaitDisplay(String callingStation, boolean waitDisplay);
 
-    int getByteCount();
-
     boolean isRecycled();
 
-    String getMimeType();
-
-    void setMimeType(String mimeType);
-
     void recycle();
-
-    String getSize();
-
-    String getConfig();
-
-    String getInfo();
 
     boolean canRecycle();
 
     void setAllowRecycle(boolean allowRecycle);
+
+    int getByteCount();
 }

@@ -33,6 +33,7 @@ import android.os.Environment;
 import android.os.Looper;
 import android.os.StatFs;
 import android.os.storage.StorageManager;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.ViewGroup;
@@ -56,10 +57,11 @@ import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.BindDrawable;
-import me.xiaopan.sketch.drawable.RecycleDrawable;
+import me.xiaopan.sketch.drawable.RecyclerDrawable;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.request.ImageViewInterface;
+import pl.droidsonroids.gif.GifDrawable;
 
 public class SketchUtils {
 
@@ -249,7 +251,7 @@ public class SketchUtils {
                     drawable = null;
                 }
             }
-            return drawable instanceof RecycleDrawable && ImageFormat.GIF.getMimeType().equals(((RecycleDrawable) drawable).getMimeType());
+            return drawable instanceof RecyclerDrawable && ImageFormat.GIF.getMimeType().equals(((RecyclerDrawable) drawable).getMimeType());
         }
 
         return false;
@@ -597,9 +599,46 @@ public class SketchUtils {
         if (imageViewInterface != null) {
             final Drawable drawable = imageViewInterface.getDrawable();
             if (drawable != null && drawable instanceof BindDrawable) {
-                return ((BindDrawable) drawable).getDisplayRequest();
+                return ((BindDrawable) drawable).getRequest();
             }
         }
         return null;
+    }
+
+    public static int getBitmapByteCount(Bitmap bitmap) {
+        if (bitmap == null) {
+            return 0;
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            return bitmap.getAllocationByteCount();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
+            return bitmap.getByteCount();
+        } else {
+            return bitmap.getRowBytes() * bitmap.getHeight();
+        }
+    }
+
+    public static String getInfo(String type, Bitmap bitmap, String mimeType, long byteCount) {
+        if (bitmap != null) {
+            if(TextUtils.isEmpty(type)){
+                type = "Bitmap";
+            }
+            return SketchUtils.concat(type
+                    , "(", "mimeType=", mimeType
+                    , "; ", "hashCode=", Integer.toHexString(bitmap.hashCode())
+                    , "; ", "size=", bitmap.getWidth(), "x", bitmap.getHeight()
+                    , "; ", "config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null
+                    , "; ", "byteCount=", byteCount, ")");
+        } else {
+            return null;
+        }
+    }
+
+    public static String getInfo(String type, Bitmap bitmap, String mimeType) {
+        return getInfo(type, bitmap, mimeType, getBitmapByteCount(bitmap));
+    }
+
+    public static String getInfo(GifDrawable gifDrawable){
+        Bitmap bitmap = gifDrawable.getBitmap();
+        return getInfo("GifDrawable", bitmap, "image/gif", (int) gifDrawable.getAllocationByteCount());
     }
 }

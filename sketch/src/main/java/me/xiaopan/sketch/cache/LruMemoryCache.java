@@ -27,7 +27,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.RecycleDrawable;
+import me.xiaopan.sketch.drawable.RecyclerDrawable;
 import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -62,7 +62,7 @@ public class LruMemoryCache implements MemoryCache {
             return;
         }
 
-        if (!(value instanceof RecycleDrawable)) {
+        if (!(value instanceof RecyclerDrawable)) {
             throw new IllegalArgumentException("drawable must be implemented RecycleDrawableInterface");
         }
         int oldCacheSize = 0;
@@ -75,7 +75,7 @@ public class LruMemoryCache implements MemoryCache {
             Log.i(Sketch.TAG, SketchUtils.concat(logName,
                     " - ", "put",
                     " - ", "beforeCacheSize=", Formatter.formatFileSize(context, oldCacheSize),
-                    " - ", ((RecycleDrawable) value).getInfo(),
+                    " - ", ((RecyclerDrawable) value).getInfo(),
                     " - ", "afterCacheSize=", Formatter.formatFileSize(context, newCacheSize)));
         }
     }
@@ -198,19 +198,19 @@ public class LruMemoryCache implements MemoryCache {
 
         @Override
         public Drawable put(String key, Drawable value) {
-            ((RecycleDrawable) value).setIsCached(logName + ":put", true);
+            ((RecyclerDrawable) value).setIsCached(logName + ":put", true);
             return super.put(key, value);
         }
 
         @Override
         public int sizeOf(String key, Drawable value) {
-            int bitmapSize = ((RecycleDrawable) value).getByteCount();
+            int bitmapSize = ((RecyclerDrawable) value).getByteCount();
             return bitmapSize == 0 ? 1 : bitmapSize;
         }
 
         @Override
         protected void entryRemoved(boolean evicted, String key, Drawable oldValue, Drawable newValue) {
-            ((RecycleDrawable) oldValue).setIsCached(logName + ":entryRemoved", false);
+            ((RecyclerDrawable) oldValue).setIsCached(logName + ":entryRemoved", false);
         }
     }
 }

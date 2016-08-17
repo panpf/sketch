@@ -24,7 +24,7 @@ import android.util.Log;
 import java.io.IOException;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.RecycleGifDrawable;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -71,9 +71,9 @@ public class DrawableDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public RecycleGifDrawable getGifDrawable() {
+    public SketchGifDrawable getGifDrawable() {
         try {
-            return new RecycleGifDrawable(loadRequest.getSketch().getConfiguration().getContext().getResources(), drawableId);
+            return new SketchGifDrawable(loadRequest.getSketch().getConfiguration().getContext().getResources(), drawableId);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

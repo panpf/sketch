@@ -15,17 +15,16 @@ import android.view.Window;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
-import me.xiaopan.sketch.drawable.RecycleDrawable;
+import me.xiaopan.sketch.drawable.RecyclerDrawable;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
-import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadListener;
 import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.LoadResult;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.util.DeviceUtils;
-import pl.droidsonroids.gif.GifDrawable;
 
 public class WindowBackgroundManager {
     private Activity activity;
@@ -79,13 +78,13 @@ public class WindowBackgroundManager {
             return;
         }
 
-        if (drawable instanceof RecycleDrawable) {
-            Log.d(Sketch.TAG, "old window bitmap recycled - " + ((RecycleDrawable) drawable).getInfo());
-            ((RecycleDrawable) drawable).recycle();
+        if (drawable instanceof RecyclerDrawable) {
+            Log.d(Sketch.TAG, "old window bitmap recycled - " + ((RecyclerDrawable) drawable).getInfo());
+            ((RecyclerDrawable) drawable).recycle();
         } else if (drawable instanceof BitmapDrawable) {
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
             if (bitmap != null && !bitmap.isRecycled()) {
-                Log.d(Sketch.TAG, "old window bitmap recycled - " + RecycleBitmapDrawable.getInfo(bitmap, null));
+                Log.d(Sketch.TAG, "old window bitmap recycled - " + SketchUtils.getInfo(null, bitmap, null));
                 bitmap.recycle();
             }
         }
@@ -156,19 +155,16 @@ public class WindowBackgroundManager {
                 }
 
                 @Override
-                public void onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType) {
-                    if (onSetWindowBackgroundListener != null) {
-                        if (userVisible) {
-                            onSetWindowBackgroundListener.onSetWindowBackground(imageUri, bitmap);
-                        } else {
-                            bitmap.recycle();
+                public void onCompleted(LoadResult loadResult) {
+                    if (loadResult.getBitmap() != null) {
+                        if (onSetWindowBackgroundListener != null) {
+                            if (userVisible) {
+                                onSetWindowBackgroundListener.onSetWindowBackground(imageUri, loadResult.getBitmap());
+                            } else {
+                                loadResult.getBitmap().recycle();
+                            }
                         }
                     }
-                }
-
-                @Override
-                public void onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType) {
-
                 }
 
                 @Override

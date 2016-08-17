@@ -21,24 +21,20 @@ import me.xiaopan.sketch.cache.DiskCache;
 public class DownloadResult {
     private DiskCache.Entry diskCacheEntry;
     private byte[] imageData;
-    private boolean fromNetwork;
+    private ImageFrom imageFrom;
 
-    public DownloadResult(DiskCache.Entry diskCacheEntry, boolean fromNetwork) {
+    public DownloadResult(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
         this.diskCacheEntry = diskCacheEntry;
-        this.fromNetwork = fromNetwork;
+        this.imageFrom = imageFrom;
     }
 
-    public DownloadResult(byte[] imageData, boolean fromNetwork) {
+    public DownloadResult(byte[] imageData, ImageFrom imageFrom) {
         this.imageData = imageData;
-        this.fromNetwork = fromNetwork;
+        this.imageFrom = imageFrom;
     }
 
     public DiskCache.Entry getDiskCacheEntry() {
         return diskCacheEntry;
-    }
-
-    public boolean isFromNetwork() {
-        return fromNetwork;
     }
 
     public byte[] getImageData() {
@@ -46,7 +42,7 @@ public class DownloadResult {
     }
 
     public ImageFrom getImageFrom(){
-        return fromNetwork ? ImageFrom.NETWORK : ImageFrom.DISK_CACHE;
+        return imageFrom;
     }
 
     public boolean hasData(){

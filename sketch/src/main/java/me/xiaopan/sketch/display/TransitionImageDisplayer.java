@@ -21,8 +21,8 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
 
-import me.xiaopan.sketch.drawable.RecycleGifDrawable;
 import me.xiaopan.sketch.request.ImageViewInterface;
+import pl.droidsonroids.gif.GifDrawable;
 
 /**
  * 过渡效果的图片显示器
@@ -45,7 +45,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
         if (newDrawable == null) {
             return;
         }
-        if (newDrawable instanceof RecycleGifDrawable) {
+        if (newDrawable instanceof GifDrawable) {
             imageViewInterface.clearAnimation();
             imageViewInterface.setImageDrawable(newDrawable);
         } else {

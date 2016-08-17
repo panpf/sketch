@@ -23,10 +23,9 @@ import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.RandomAccessFile;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.RecycleGifDrawable;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.request.LoadRequest;
 
 public class FileDecodeHelper implements DecodeHelper {
@@ -78,9 +77,9 @@ public class FileDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public RecycleGifDrawable getGifDrawable() {
+    public SketchGifDrawable getGifDrawable() {
         try {
-            return new RecycleGifDrawable(new RandomAccessFile(file.getPath(), "r").getFD());
+            return new SketchGifDrawable(file);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

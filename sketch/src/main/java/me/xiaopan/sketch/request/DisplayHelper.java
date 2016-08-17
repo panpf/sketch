@@ -27,8 +27,8 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
-import me.xiaopan.sketch.drawable.BindFixedRecycleBitmapDrawable;
-import me.xiaopan.sketch.drawable.RecycleDrawable;
+import me.xiaopan.sketch.drawable.BindFixedBitmapDrawable;
+import me.xiaopan.sketch.drawable.RecyclerDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.RequestFactory;
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -606,19 +606,19 @@ public class DisplayHelper {
         if (!displayOptions.isDisableCacheInMemory()) {
             Drawable cacheDrawable = sketch.getConfiguration().getMemoryCache().get(requestAttrs.getId());
             if (cacheDrawable != null) {
-                RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
-                if (!recycleDrawable.isRecycled()) {
+                RecyclerDrawable recyclerDrawable = (RecyclerDrawable) cacheDrawable;
+                if (!recyclerDrawable.isRecycled()) {
                     if (Sketch.isDebugMode()) {
                         Log.i(Sketch.TAG, SketchUtils.concat(logName,
                                 " - ", "image display completed",
                                 " - ", ImageFrom.MEMORY_CACHE.name(),
-                                " - ", recycleDrawable.getInfo(),
+                                " - ", recyclerDrawable.getInfo(),
                                 " - ", requestAttrs.getId(),
                                 " - ", "viewHashCode", "=", Integer.toHexString(imageViewInterface.hashCode())));
                     }
                     imageViewInterface.setImageDrawable(cacheDrawable);
                     if (displayListener != null) {
-                        displayListener.onCompleted(ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
+                        displayListener.onCompleted(ImageFrom.MEMORY_CACHE, recyclerDrawable.getMimeType());
                     }
                     return false;
                 } else {
@@ -626,7 +626,7 @@ public class DisplayHelper {
                     if (Sketch.isDebugMode()) {
                         Log.e(Sketch.TAG, SketchUtils.concat(logName,
                                 " - ", "memory cache drawable recycled",
-                                " - ", recycleDrawable.getInfo(),
+                                " - ", recyclerDrawable.getInfo(),
                                 " - ", requestAttrs.getId(),
                                 " - ", "viewHashCode", "=", Integer.toHexString(imageViewInterface.hashCode())));
                     }
@@ -759,7 +759,7 @@ public class DisplayHelper {
         if (displayOptions.getLoadingImageHolder() != null) {
             loadingBindDrawable = displayOptions.getLoadingImageHolder().getBindDrawable(request);
         } else {
-            loadingBindDrawable = new BindFixedRecycleBitmapDrawable(null, request);
+            loadingBindDrawable = new BindFixedBitmapDrawable(null, request);
         }
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("createLoadingImage");

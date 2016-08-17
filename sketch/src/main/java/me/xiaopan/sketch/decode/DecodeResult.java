@@ -18,21 +18,27 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 
-import me.xiaopan.sketch.drawable.RecycleGifDrawable;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.request.ImageFrom;
 
 public class DecodeResult {
     private Bitmap bitmap;
-    private RecycleGifDrawable gifDrawable;
+    private SketchGifDrawable gifDrawable;
     private String mimeType;
     private ImageFrom imageFrom;
+    private int originWidth;
+    private int originHeight;
 
-    public DecodeResult(String mimeType, RecycleGifDrawable gifDrawable) {
+    public DecodeResult(int originWidth, int originHeight, String mimeType, SketchGifDrawable gifDrawable) {
+        this.originWidth = originWidth;
+        this.originHeight = originHeight;
         this.mimeType = mimeType;
         this.gifDrawable = gifDrawable;
     }
 
-    public DecodeResult(String mimeType, Bitmap bitmap) {
+    public DecodeResult(int originWidth, int originHeight, String mimeType, Bitmap bitmap) {
+        this.originWidth = originWidth;
+        this.originHeight = originHeight;
         this.mimeType = mimeType;
         this.bitmap = bitmap;
     }
@@ -49,15 +55,19 @@ public class DecodeResult {
         return mimeType;
     }
 
-    public void setBitmap(Bitmap bitmap) {
-        this.bitmap = bitmap;
-    }
-
     public Bitmap getBitmap() {
         return bitmap;
     }
 
-    public RecycleGifDrawable getGifDrawable() {
+    public SketchGifDrawable getGifDrawable() {
         return gifDrawable;
+    }
+
+    public int getOriginHeight() {
+        return originHeight;
+    }
+
+    public int getOriginWidth() {
+        return originWidth;
     }
 }

@@ -27,10 +27,11 @@ import android.graphics.drawable.Drawable;
 import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawable {
-    protected String logName = "FixedRecycleBitmapDrawable";
-
+public class FixedBitmapDrawable extends Drawable implements RecyclerDrawable {
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
+
+    protected String logName = "FixedBitmapDrawable";
+
     private int bitmapWidth;
     private int bitmapHeight;
     private Rect srcRect;
@@ -38,13 +39,13 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
     private Paint paint;
     private FixedSize fixedSize;
     private Bitmap bitmap;
-    private RecycleBitmapDrawable recycleBitmapDrawable;
+    private SketchBitmapDrawable wrapperDrawable;
 
-    public FixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, FixedSize fixedSize) {
-        this.recycleBitmapDrawable = recycleBitmapDrawable;
-        this.bitmap = recycleBitmapDrawable != null ? recycleBitmapDrawable.getBitmap() : null;
-        if (recycleBitmapDrawable != null) {
-            recycleBitmapDrawable.setLogName(logName);
+    public FixedBitmapDrawable(SketchBitmapDrawable wrapperDrawable, FixedSize fixedSize) {
+        this.wrapperDrawable = wrapperDrawable;
+        this.bitmap = wrapperDrawable != null ? wrapperDrawable.getBitmap() : null;
+        if (wrapperDrawable != null) {
+            wrapperDrawable.setLogName(logName);
         }
         if (bitmap != null) {
             this.bitmapWidth = bitmap.getWidth();
@@ -156,79 +157,93 @@ public class FixedRecycleBitmapDrawable extends Drawable implements RecycleDrawa
     }
 
     @Override
+    public int getOriginWidth() {
+        return wrapperDrawable != null ? wrapperDrawable.getOriginWidth() : 0;
+    }
+
+    @Override
+    public void setOriginWidth(int originWidth) {
+        if (wrapperDrawable != null) {
+            wrapperDrawable.setOriginWidth(originWidth);
+        }
+    }
+
+    @Override
+    public int getOriginHeight() {
+        return wrapperDrawable != null ? wrapperDrawable.getOriginHeight() : 0;
+    }
+
+    @Override
+    public void setOriginHeight(int originHeight) {
+        if (wrapperDrawable != null) {
+            wrapperDrawable.setOriginHeight(originHeight);
+        }
+    }
+
+    @Override
+    public String getMimeType() {
+        return wrapperDrawable != null ? wrapperDrawable.getMimeType() : null;
+    }
+
+    @Override
+    public void setMimeType(String mimeType) {
+        if (wrapperDrawable != null) {
+            wrapperDrawable.setMimeType(mimeType);
+        }
+    }
+
+    @Override
     public void setIsDisplayed(String callingStation, boolean displayed) {
-        if (recycleBitmapDrawable != null) {
-            recycleBitmapDrawable.setIsDisplayed(callingStation, displayed);
+        if (wrapperDrawable != null) {
+            wrapperDrawable.setIsDisplayed(callingStation, displayed);
         }
     }
 
     @Override
     public void setIsCached(String callingStation, boolean cached) {
-        if (recycleBitmapDrawable != null) {
-            recycleBitmapDrawable.setIsCached(callingStation, cached);
+        if (wrapperDrawable != null) {
+            wrapperDrawable.setIsCached(callingStation, cached);
         }
     }
 
     @Override
     public void setIsWaitDisplay(String callingStation, boolean waitDisplay) {
-        if (recycleBitmapDrawable != null) {
-            recycleBitmapDrawable.setIsWaitDisplay(callingStation, waitDisplay);
+        if (wrapperDrawable != null) {
+            wrapperDrawable.setIsWaitDisplay(callingStation, waitDisplay);
+        }
+    }
+
+    @Override
+    public boolean isRecycled() {
+        return wrapperDrawable == null || wrapperDrawable.isRecycled();
+    }
+
+    @Override
+    public void recycle() {
+        if (wrapperDrawable != null) {
+            wrapperDrawable.recycle();
+        }
+    }
+
+    @Override
+    public String getInfo() {
+        return wrapperDrawable != null ? wrapperDrawable.getInfo() : null;
+    }
+
+    @Override
+    public boolean canRecycle() {
+        return wrapperDrawable != null && wrapperDrawable.canRecycle();
+    }
+
+    @Override
+    public void setAllowRecycle(boolean allowRecycle) {
+        if (wrapperDrawable != null) {
+            wrapperDrawable.setAllowRecycle(allowRecycle);
         }
     }
 
     @Override
     public int getByteCount() {
-        return recycleBitmapDrawable != null ? recycleBitmapDrawable.getByteCount() : 0;
-    }
-
-    @Override
-    public boolean isRecycled() {
-        return recycleBitmapDrawable == null || recycleBitmapDrawable.isRecycled();
-    }
-
-    @Override
-    public String getMimeType() {
-        return recycleBitmapDrawable != null ? recycleBitmapDrawable.getMimeType() : null;
-    }
-
-    @Override
-    public void setMimeType(String mimeType) {
-        if (recycleBitmapDrawable != null) {
-            recycleBitmapDrawable.setMimeType(mimeType);
-        }
-    }
-
-    @Override
-    public void recycle() {
-        if (recycleBitmapDrawable != null) {
-            recycleBitmapDrawable.recycle();
-        }
-    }
-
-    @Override
-    public String getSize() {
-        return recycleBitmapDrawable != null ? recycleBitmapDrawable.getSize() : null;
-    }
-
-    @Override
-    public String getConfig() {
-        return recycleBitmapDrawable != null ? recycleBitmapDrawable.getConfig() : null;
-    }
-
-    @Override
-    public String getInfo() {
-        return recycleBitmapDrawable != null ? recycleBitmapDrawable.getInfo() : null;
-    }
-
-    @Override
-    public boolean canRecycle() {
-        return recycleBitmapDrawable != null && recycleBitmapDrawable.canRecycle();
-    }
-
-    @Override
-    public void setAllowRecycle(boolean allowRecycle) {
-        if (recycleBitmapDrawable != null) {
-            recycleBitmapDrawable.setAllowRecycle(allowRecycle);
-        }
+        return wrapperDrawable != null ? wrapperDrawable.getByteCount() : 0;
     }
 }

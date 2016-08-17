@@ -16,14 +16,16 @@
 
 package me.xiaopan.sketch.request;
 
+import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.FixedRecycleBitmapDrawable;
-import me.xiaopan.sketch.drawable.RecycleBitmapDrawable;
-import me.xiaopan.sketch.drawable.RecycleDrawable;
+import me.xiaopan.sketch.drawable.FixedBitmapDrawable;
+import me.xiaopan.sketch.drawable.RecyclerDrawable;
+import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -154,18 +156,18 @@ public class DisplayRequest extends LoadRequest {
             setStatus(Status.CHECK_MEMORY_CACHE);
             Drawable cacheDrawable = getSketch().getConfiguration().getMemoryCache().get(getAttrs().getId());
             if (cacheDrawable != null) {
-                RecycleDrawable recycleDrawable = (RecycleDrawable) cacheDrawable;
-                if (!recycleDrawable.isRecycled()) {
+                RecyclerDrawable recyclerDrawable = (RecyclerDrawable) cacheDrawable;
+                if (!recyclerDrawable.isRecycled()) {
                     if (Sketch.isDebugMode()) {
-                        printLogI("runLoad", "from memory get drawable", "drawableInfo: " + recycleDrawable.getInfo());
+                        printLogI("runLoad", "from memory get drawable", "drawableInfo: " + recyclerDrawable.getInfo());
                     }
-                    displayResult = new DisplayResult(cacheDrawable, ImageFrom.MEMORY_CACHE, recycleDrawable.getMimeType());
+                    displayResult = new DisplayResult(cacheDrawable, ImageFrom.MEMORY_CACHE, recyclerDrawable.getMimeType());
                     displayCompleted();
                     return;
                 } else {
                     getSketch().getConfiguration().getMemoryCache().remove(getAttrs().getId());
                     if (Sketch.isDebugMode()) {
-                        printLogE("runLoad", "memory cache drawable recycled", "drawableInfo: " + recycleDrawable.getInfo());
+                        printLogE("runLoad", "memory cache drawable recycled", "drawableInfo: " + recyclerDrawable.getInfo());
                     }
                 }
             }
@@ -179,16 +181,20 @@ public class DisplayRequest extends LoadRequest {
     protected void loadCompleted() {
         LoadResult loadResult = getLoadResult();
         if (loadResult != null && loadResult.getBitmap() != null) {
-            if (loadResult.getBitmap().isRecycled()) {
+            Bitmap bitmap = loadResult.getBitmap();
+
+            if (bitmap.isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogE("loadCompleted", "decode failed", "bitmap recycled", "bitmapInfo: "
-                            + RecycleBitmapDrawable.getInfo(loadResult.getBitmap(), loadResult.getMimeType()));
+                    printLogE("loadCompleted", "decode failed", "bitmap recycled",
+                            "bitmapInfo: ", SketchUtils.getInfo(null, bitmap, loadResult.getMimeType()));
                 }
                 failed(FailedCause.BITMAP_RECYCLED);
                 return;
             }
 
-            RecycleBitmapDrawable bitmapDrawable = new RecycleBitmapDrawable(loadResult.getBitmap());
+            SketchBitmapDrawable bitmapDrawable = new SketchBitmapDrawable(bitmap);
+            bitmapDrawable.setOriginWidth(loadResult.getOriginWidth());
+            bitmapDrawable.setOriginHeight(loadResult.getOriginHeight());
             bitmapDrawable.setMimeType(loadResult.getMimeType());
 
             // 放入内存缓存中
@@ -199,9 +205,12 @@ public class DisplayRequest extends LoadRequest {
             displayResult = new DisplayResult(bitmapDrawable, loadResult.getImageFrom(), loadResult.getMimeType());
             displayCompleted();
         } else if (loadResult != null && loadResult.getGifDrawable() != null) {
-            if (loadResult.getGifDrawable().isRecycled()) {
+            SketchGifDrawable gifDrawable = loadResult.getGifDrawable();
+
+            if (gifDrawable.isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogE("loadCompleted", "decode failed", "gif drawable recycled", "gifInfo: " + loadResult.getGifDrawable().getInfo());
+                    printLogE("loadCompleted", "decode failed", "gif drawable recycled",
+                            "gifInfo: ", SketchUtils.getInfo(gifDrawable));
                 }
                 failed(FailedCause.GIF_DRAWABLE_RECYCLED);
                 return;
@@ -210,7 +219,7 @@ public class DisplayRequest extends LoadRequest {
             // GifDrawable不能放入内存缓存中，因为GifDrawable需要依赖Callback才能播放，
             // 如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
 
-            displayResult = new DisplayResult(loadResult.getGifDrawable(), loadResult.getImageFrom(), loadResult.getMimeType());
+            displayResult = new DisplayResult(gifDrawable, loadResult.getImageFrom(), loadResult.getMimeType());
             displayCompleted();
         } else {
             if (Sketch.isDebugMode()) {
@@ -221,11 +230,11 @@ public class DisplayRequest extends LoadRequest {
     }
 
     protected void displayCompleted() {
-        if (displayResult.getDrawable() instanceof RecycleDrawable) {
-            RecycleDrawable recycleDrawable = (RecycleDrawable) displayResult.getDrawable();
+        if (displayResult.getDrawable() instanceof RecyclerDrawable) {
+            RecyclerDrawable recyclerDrawable = (RecyclerDrawable) displayResult.getDrawable();
             boolean fromMemoryCache = displayResult.getImageFrom() == ImageFrom.MEMORY_CACHE;
             String callingStation = fromMemoryCache ? "displayCompleted:fromMemory" : "displayCompleted:new";
-            recycleDrawable.setIsWaitDisplay(callingStation, true);
+            recyclerDrawable.setIsWaitDisplay(callingStation, true);
         }
 
         postRunCompleted();
@@ -239,9 +248,9 @@ public class DisplayRequest extends LoadRequest {
             }
 
             // 更新等待显示的引用计数
-            if (displayResult != null && displayResult.getDrawable() instanceof RecycleDrawable) {
-                RecycleDrawable recycleDrawable = (RecycleDrawable) displayResult.getDrawable();
-                recycleDrawable.setIsWaitDisplay("completedCallback:cancel", false);
+            if (displayResult != null && displayResult.getDrawable() instanceof RecyclerDrawable) {
+                RecyclerDrawable recyclerDrawable = (RecyclerDrawable) displayResult.getDrawable();
+                recyclerDrawable.setIsWaitDisplay("completedCallback:cancel", false);
             }
             return;
         }
@@ -255,16 +264,16 @@ public class DisplayRequest extends LoadRequest {
                     displayOptions.getImageDisplayer(),
                     displayAttrs.getFixedSize(),
                     displayAttrs.getScaleType());
-            if (completedDrawable instanceof RecycleBitmapDrawable && isFixedSize) {
-                RecycleBitmapDrawable recycleCompletedDrawable = (RecycleBitmapDrawable) completedDrawable;
-                completedDrawable = new FixedRecycleBitmapDrawable(recycleCompletedDrawable, displayAttrs.getFixedSize());
+            if (completedDrawable instanceof SketchBitmapDrawable && isFixedSize) {
+                SketchBitmapDrawable recycleCompletedDrawable = (SketchBitmapDrawable) completedDrawable;
+                completedDrawable = new FixedBitmapDrawable(recycleCompletedDrawable, displayAttrs.getFixedSize());
             }
 
             ImageViewInterface viewInterface = requestAndViewBinder.getImageViewInterface();
             if (Sketch.isDebugMode()) {
                 printLogI("runCompletedInMainThread", "image display completed",
                         displayResult.getImageFrom().name(),
-                        (completedDrawable instanceof RecycleDrawable) ? ((RecycleDrawable) completedDrawable).getInfo() : "unknown",
+                        (completedDrawable instanceof RecyclerDrawable) ? ((RecyclerDrawable) completedDrawable).getInfo() : "unknown",
                         "viewHashCode=" + Integer.toHexString(viewInterface.hashCode()));
             }
 
@@ -276,9 +285,9 @@ public class DisplayRequest extends LoadRequest {
         }
 
         // 更新等待显示的引用计数
-        if (displayResult.getDrawable() instanceof RecycleDrawable) {
-            RecycleDrawable recycleDrawable = (RecycleDrawable) displayResult.getDrawable();
-            recycleDrawable.setIsWaitDisplay("completedCallback", false);
+        if (displayResult.getDrawable() instanceof RecyclerDrawable) {
+            RecyclerDrawable recyclerDrawable = (RecyclerDrawable) displayResult.getDrawable();
+            recyclerDrawable.setIsWaitDisplay("completedCallback", false);
         }
 
         if (displayListener != null) {

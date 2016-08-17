@@ -28,6 +28,7 @@ import java.text.DecimalFormat;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.DataSource;
@@ -47,18 +48,18 @@ public class DefaultImageDecoder implements ImageDecoder {
     protected String logName = "DefaultImageDecoder";
 
     public static DecodeResult decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper, String logName) {
+        // 只读取图片的宽高以及格式信息
         Options boundsOptions = new Options();
-        Options decodeOptions = new Options();
-
-        // 读取图片的宽高以及格式信息
         boundsOptions.inJustDecodeBounds = true;
         decodeHelper.decode(boundsOptions);
 
-        // 解析图片类型
         String mimeType = boundsOptions.outMimeType;
+        int originWidth = boundsOptions.outWidth;
+        int originHeight = boundsOptions.outHeight;
         ImageFormat imageFormat = ImageFormat.valueOfMimeType(mimeType);
 
         // 设置优先考虑质量还是速度
+        Options decodeOptions = new Options();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1
                 && loadRequest.getOptions().isInPreferQualityOverSpeed()) {
             decodeOptions.inPreferQualityOverSpeed = true;
@@ -76,7 +77,13 @@ public class DefaultImageDecoder implements ImageDecoder {
         // decode gif image
         if (imageFormat != null && imageFormat == ImageFormat.GIF && loadRequest.getOptions().isDecodeGifImage()) {
             try {
-                return new DecodeResult(mimeType, decodeHelper.getGifDrawable());
+                SketchGifDrawable gifDrawable = decodeHelper.getGifDrawable();
+                if (gifDrawable != null) {
+                    gifDrawable.setOriginWidth(originWidth);
+                    gifDrawable.setOriginHeight(originHeight);
+                    gifDrawable.setMimeType(mimeType);
+                    return new DecodeResult(originWidth, originHeight, mimeType, gifDrawable);
+                }
             } catch (Throwable e) {
                 e.printStackTrace();
                 ExceptionMonitor exceptionMonitor = loadRequest.getSketch().getConfiguration().getExceptionMonitor();
@@ -135,7 +142,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             decodeHelper.onDecodeFailed();
         }
 
-        return bitmap != null ? new DecodeResult(mimeType, bitmap) : null;
+        return bitmap != null ? new DecodeResult(originWidth, originHeight, mimeType, bitmap) : null;
     }
 
     @Override

@@ -21,21 +21,21 @@ import java.lang.ref.WeakReference;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.FixedSize;
 
-public class BindFixedRecycleBitmapDrawable extends FixedRecycleBitmapDrawable implements BindDrawable{
+public class BindFixedBitmapDrawable extends FixedBitmapDrawable implements BindDrawable {
     private WeakReference<DisplayRequest> weakReference;
 
-    public BindFixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, DisplayRequest displayRequest) {
-        super(recycleBitmapDrawable, null);
+    public BindFixedBitmapDrawable(SketchBitmapDrawable bitmapDrawable, DisplayRequest displayRequest) {
+        super(bitmapDrawable, null);
         this.weakReference = new WeakReference<DisplayRequest>(displayRequest);
     }
 
-    public BindFixedRecycleBitmapDrawable(RecycleBitmapDrawable recycleBitmapDrawable, FixedSize fixedSize, DisplayRequest displayRequest) {
-        super(recycleBitmapDrawable, fixedSize);
+    public BindFixedBitmapDrawable(SketchBitmapDrawable bitmapDrawable, FixedSize fixedSize, DisplayRequest displayRequest) {
+        super(bitmapDrawable, fixedSize);
         this.weakReference = new WeakReference<DisplayRequest>(displayRequest);
     }
 
     @Override
-    public DisplayRequest getDisplayRequest() {
+    public DisplayRequest getRequest() {
         return weakReference.get();
     }
 }

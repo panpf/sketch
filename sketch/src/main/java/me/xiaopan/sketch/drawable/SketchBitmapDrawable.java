@@ -18,27 +18,59 @@ package me.xiaopan.sketch.drawable;
 
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
-import android.os.Build;
 import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDrawable {
-    protected String logName = "RecycleBitmapDrawable";
+public class SketchBitmapDrawable extends BitmapDrawable implements RecyclerDrawable {
+    protected String logName = "SketchBitmapDrawable";
+
+    private int originWidth;
+    private int originHeight;
+    private String mimeType;
 
     private int cacheRefCount;
     private int displayRefCount;
     private int waitDisplayRefCount;
-    private String mimeType;
     private boolean allowRecycle = true;
 
-    public RecycleBitmapDrawable(Bitmap bitmap) {
+    public SketchBitmapDrawable(Bitmap bitmap) {
         super(bitmap);
     }
 
     void setLogName(String logName) {
         this.logName = logName;
+    }
+
+    @Override
+    public int getOriginWidth() {
+        return originWidth;
+    }
+
+    @Override
+    public void setOriginWidth(int originWidth) {
+        this.originWidth = originWidth;
+    }
+
+    @Override
+    public int getOriginHeight() {
+        return originHeight;
+    }
+
+    @Override
+    public void setOriginHeight(int originHeight) {
+        this.originHeight = originHeight;
+    }
+
+    @Override
+    public String getMimeType() {
+        return mimeType;
+    }
+
+    @Override
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
     }
 
     @Override
@@ -84,24 +116,9 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     }
 
     @Override
-    public int getByteCount() {
-        return getByteCount(getBitmap());
-    }
-
-    @Override
     public boolean isRecycled() {
         Bitmap bitmap = getBitmap();
         return bitmap == null || bitmap.isRecycled();
-    }
-
-    @Override
-    public String getMimeType() {
-        return mimeType;
-    }
-
-    @Override
-    public void setMimeType(String mimeType) {
-        this.mimeType = mimeType;
     }
 
     @Override
@@ -113,38 +130,9 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     }
 
     @Override
-    public String getSize() {
-        Bitmap bitmap = getBitmap();
-        if (bitmap != null) {
-            return SketchUtils.concat(bitmap.getWidth(), "x", bitmap.getHeight());
-        } else {
-            return null;
-        }
-    }
-
-    @Override
-    public String getConfig() {
-        Bitmap bitmap = getBitmap();
-        if (bitmap != null && bitmap.getConfig() != null) {
-            return bitmap.getConfig().name();
-        } else {
-            return null;
-        }
-    }
-
-    @Override
     public String getInfo() {
         Bitmap bitmap = getBitmap();
-        if (bitmap != null) {
-            return SketchUtils.concat(logName
-                    , "(", "mimeType=", mimeType
-                    , "; ", "hashCode=", Integer.toHexString(bitmap.hashCode())
-                    , "; ", "size=", bitmap.getWidth(), "x", bitmap.getHeight()
-                    , "; ", "config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null
-                    , "; ", "byteCount=", getByteCount(), ")");
-        } else {
-            return null;
-        }
+        return SketchUtils.getInfo(logName, bitmap, mimeType, SketchUtils.getBitmapByteCount(bitmap));
     }
 
     @Override
@@ -155,6 +143,11 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
     @Override
     public void setAllowRecycle(boolean allowRecycle) {
         this.allowRecycle = allowRecycle;
+    }
+
+    @Override
+    public int getByteCount() {
+        return SketchUtils.getBitmapByteCount(getBitmap());
     }
 
     private synchronized void tryRecycle(String type, String callingStation) {
@@ -178,31 +171,6 @@ public class RecycleBitmapDrawable extends BitmapDrawable implements RecycleDraw
                                 "waitDisplayRefCount=", waitDisplayRefCount, "; ",
                                 "canRecycle=", canRecycle(), ")"));
             }
-        }
-    }
-
-    public static String getInfo(Bitmap bitmap, String mimeType) {
-        if (bitmap != null) {
-            return SketchUtils.concat("Bitmap", "("
-                    , "mimeType=", mimeType
-                    , "; ", "hashCode=", Integer.toHexString(bitmap.hashCode())
-                    , "; ", "size=", bitmap.getWidth(), "x", bitmap.getHeight()
-                    , "; ", "config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null
-                    , "; ", "byteCount=", getByteCount(bitmap), ")");
-        } else {
-            return null;
-        }
-    }
-
-    public static int getByteCount(Bitmap bitmap) {
-        if (bitmap == null) {
-            return 0;
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            return bitmap.getAllocationByteCount();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
-            return bitmap.getByteCount();
-        } else {
-            return bitmap.getRowBytes() * bitmap.getHeight();
         }
     }
 }

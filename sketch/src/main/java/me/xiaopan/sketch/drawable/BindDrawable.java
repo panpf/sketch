@@ -20,7 +20,7 @@ import me.xiaopan.sketch.request.DisplayRequest;
 
 public interface BindDrawable {
     /**
-     * 获取显示请求
+     * 获取绑定的请求
      */
-    DisplayRequest getDisplayRequest();
+    DisplayRequest getRequest();
 }
