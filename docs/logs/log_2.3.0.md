@@ -5,6 +5,16 @@ SketchImageView:
 >* ````. 
 
 
+Request:
+>* ``修改``. DownloadListener的onCompleted(File cacheFile, boolean isFromNetwork)和onCompleted(byte[] data)合并成一个onCompleted(DownloadResult downloadResult)
+>* ``修改``. LoadListener的onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType)和onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType)合并成一个onCompleted(LoadResult loadResult)
+
+Drawable：
+>* ``删除``. RecycleGifDrawable改名为SketchGifDrawable，并去掉了其中的recycler
+>* ``修改``. RecycleBitmapDrawable改名为SketchBitmapDrawable
+>* ``修改``. FixedRecycleBitmapDrawable改名为FixedBitmapDrawable
+>* ``修改``. BindFixedRecycleBitmapDrawable改名为BindFixedBitmapDrawable
+>* ````. 
 
 WIKI：
 >* readme中感谢[chrisbanes](https://github.com/chrisbanes)/[PhotoView](https://github.com/chrisbanes/PhotoView)
@@ -13,3 +23,11 @@ WIKI：
 >* SketchImageView中讲解如何使用缩放和显示超大图功能
 >* 增强用户体验中加入使用缩放和显示超大图功能
 >* readme的demo中介绍缩放和显示超大图功能
+
+
+在PhotoView基础上优化了以下功能：
+>* 根据图片的尺寸调整最小、中间、最大缩放比例，保证最小比例时能够看到完整的图片，中间比例时能够让图片的一边充满屏幕，然后只需在一个方向上滑动即可查看完整图片，最大比例是中间比例的两倍
+>* 手动持续缩放时可以突破最小比例 （minScale\*0.5f）和最大比例（maxScale\*1.5f）的限制，当松手时再回滚到最小或最大比例
+
+待办：
+删除RecyclerDrawable，放到显示的时候new一个gifDrawable
