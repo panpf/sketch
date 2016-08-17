@@ -8,7 +8,7 @@
         android:id="@+id/largeImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@mipmap/ic_launcher" />
+        tools:src="@mipmap/ic_launcher"/>
 
     <me.xiaopan.sketchsample.widget.MappingView
         android:id="@+id/mapping"
@@ -20,8 +20,14 @@
         android:id="@+id/text_largeImageFragment_scale"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
+        android:layout_gravity="bottom|right"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:gravity="center"
+        android:background="@drawable/shape_round_corners_black_translucent"
         android:textColor="@android:color/white"
         android:textSize="22sp"
         android:textStyle="bold"
