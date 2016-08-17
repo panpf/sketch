@@ -86,6 +86,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private final Matrix baseMatrix = new Matrix();
     private final Matrix drawMatrix = new Matrix();
     private final Matrix suppMatrix = new Matrix();
+    private float lastScaleFocusX;
+    private float lastScaleFocusY;
 
     public ImageZoomer(ImageView imageView, boolean provideTouchEvent) {
         context = imageView.getContext();
@@ -131,6 +133,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
+                lastScaleFocusX = 0;
+                lastScaleFocusY = 0;
+
                 // 上来就禁止父View拦截事件
                 ViewParent parent = v.getParent();
                 if (parent != null) {
@@ -142,11 +147,18 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                // 如果当前缩放倍数小于最小倍数就回滚至最小倍数
-                if (getScale() < minScale) {
+                float currentScale = getScale();
+                if (currentScale < minScale) {
+                    // 如果当前缩放倍数小于最小倍数就回滚至最小倍数
                     RectF rect = getDisplayRect();
                     if (rect != null) {
-                        v.post(new ZoomRunner(this, getScale(), minScale, rect.centerX(), rect.centerY()));
+                        v.post(new ZoomRunner(this, currentScale, minScale, rect.centerX(), rect.centerY()));
+                        handled = true;
+                    }
+                } else if (currentScale > maxScale) {
+                    // 如果当前缩放倍数大于最大倍数就回滚至最大倍数
+                    if (lastScaleFocusX != 0 && lastScaleFocusY != 0) {
+                        v.post(new ZoomRunner(this, currentScale, maxScale, lastScaleFocusX, lastScaleFocusY));
                         handled = true;
                     }
                 }
@@ -226,8 +238,14 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     @Override
     public void onScale(float scaleFactor, float focusX, float focusY) {
+        lastScaleFocusX = focusX;
+        lastScaleFocusY = focusY;
+
+        // 持续缩放时可以突破最大比例和最小比例的限制，这样用户体验更好
         float currentScale = getScale();
-        if ((currentScale < maxScale || scaleFactor < 1f) && (currentScale > minScale || scaleFactor > 1f)) {
+        float maxScaleEdge = maxScale * 1.5f;
+        float minScaleEdge = minScale * 0.5f;
+        if ((currentScale < maxScaleEdge || scaleFactor < 1f) && (currentScale > minScaleEdge || scaleFactor > 1f)) {
             if (onScaleChangeListener != null) {
                 onScaleChangeListener.onScaleChange(scaleFactor, focusX, focusY);
             }
