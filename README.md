@@ -66,7 +66,7 @@ sketchImageView.displayURIImage(uri);
 
 ```groovy
 dependencies{
-	compile compile 'me.xiaopan:sketch:lastVersionName'
+	compile 'me.xiaopan:sketch:lastVersionName'
 }
 ```
 `lastVersionName`：[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)`（不带v）`
