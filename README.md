@@ -1,5 +1,8 @@
 # ![Logo](docs/res/logo.png) Sketch
 
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Sketch-green.svg?style=true)](https://android-arsenal.com/details/1/4165)
+[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)
+
 Sketch是Android上的一个图片加载器，能够帮助开发者从本地或网络读取图片，处理后显示在页面上
 
 ![sample](docs/res/sample.jpg)
@@ -17,7 +20,7 @@ Sketch是Android上的一个图片加载器，能够帮助开发者从本地或�
 >* ``只加载或只下载``. 除了display()方法可以显示图片之外，你还可以通过load()方法只加载图片到内存中或通过download()方法只下载图片到本地
 >* ``支持读取APK图标``. 支持直接读取本地APK文件的图标或根据包名和版本号读取已安装APP的图标
 >* ``移动网络下暂停下载``. 内置了移动网络下暂停下载图片的功能，你只需开启即可
->* ``自动选择合适的Bimtap.Config``. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，例如对于JPEG格式的图片就会使用Bitmap.Config.RGB_565解码
+>* ``自动选择合适的Bitmap.Config``. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，例如对于JPEG格式的图片就会使用Bitmap.Config.RGB_565解码
 >* ``特殊文件预处理``. 提供ImagePreprocessor，可对本地的特殊文件（例如多媒体文件）进行预处理，Sketch便可直接显示其封面，读取APK文件的图标就是通过这个功能实现的
 >* ``强大且灵活的自定义``. 可自定义下载、缓存、解码、处理、显示、占位图等各个环节
 
@@ -63,10 +66,10 @@ sketchImageView.displayURIImage(uri);
 
 ```groovy
 dependencies{
-	compile compile 'me.xiaopan:sketch:lastVersionName'
+	compile 'me.xiaopan:sketch:lastVersionName'
 }
 ```
-`lastVersionName`：[![version](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg)]()（不带v）
+`lastVersionName`：[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)`（不带v）`
 
 添加以下权限
 ```xml
