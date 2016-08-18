@@ -36,6 +36,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  */
 // TODO: 16/8/16 再细分成一个一个的小方块
 // todo 慢慢滑动的时候就一直触发，快速滑动的时候就停止的时候触发
+// TODO: 16/8/19 当持续缩放或移动的过程中不解码
 public class SuperLargeImageViewer {
     private static final String NAME = "SuperLargeImageViewer";
 
@@ -43,7 +44,7 @@ public class SuperLargeImageViewer {
     private Callback callback;
 
     private ImageRegionDecoder imageRegionDecoder;
-    private RegionDecodeTask lastTask;
+    private ImageRegionDecodeTask lastTask;
 
     private Bitmap bitmap;
     private Rect bitmapSrcRect = new Rect();
@@ -53,6 +54,8 @@ public class SuperLargeImageViewer {
 
     private UpdateParams waitUpdateParams;
     private UpdateParams updateParams = new UpdateParams();
+    private boolean available;
+    private boolean initializing;
 
     public SuperLargeImageViewer(Context context, Callback callback) {
         this.context = context.getApplicationContext();
@@ -69,6 +72,10 @@ public class SuperLargeImageViewer {
     }
 
     public void draw(Canvas canvas) {
+        if (!available) {
+            return;
+        }
+
         if (bitmap == null || bitmap.isRecycled() || bitmapSrcRect.isEmpty() || bitmapVisibleRect.isEmpty()) {
             return;
         }
@@ -82,44 +89,79 @@ public class SuperLargeImageViewer {
     }
 
     public void setImage(String imageUri) {
-        if (TextUtils.isEmpty(imageUri)) {
-            clean();
-            return;
-        }
-
-        reset();
-
-        ImageRegionDecoderFactory.create(context, imageUri, new ImageRegionDecoderFactory.CreateCallback() {
-            @Override
-            public void onCreateCompleted(ImageRegionDecoder imageRegionDecoder) {
-                SuperLargeImageViewer.this.imageRegionDecoder = imageRegionDecoder;
-                if (waitUpdateParams != null && !waitUpdateParams.isEmpty()) {
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "Dealing waiting update params"));
+        if (!TextUtils.isEmpty(imageUri)) {
+            available = false;
+            initializing = true;
+            reset();
+            ImageRegionDecoderFactory.create(context, imageUri, new ImageRegionDecoderFactory.CreateCallback() {
+                @Override
+                public void onCreateCompleted(ImageRegionDecoder imageRegionDecoder) {
+                    initializing = false;
+                    available = true;
+                    SuperLargeImageViewer.this.imageRegionDecoder = imageRegionDecoder;
+                    if (waitUpdateParams != null && !waitUpdateParams.isEmpty()) {
+                        if (Sketch.isDebugMode()) {
+                            Log.d(Sketch.TAG, SketchUtils.concat(NAME, " - ", "Dealing waiting update params"));
+                        }
+                        update(waitUpdateParams);
+                        waitUpdateParams.reset();
                     }
-                    update(waitUpdateParams);
-                    waitUpdateParams.reset();
+                    callback.initCompleted(imageRegionDecoder.getImageWidth(), imageRegionDecoder.getImageHeight(), imageRegionDecoder.getImageFormat());
                 }
-                callback.initCompleted(imageRegionDecoder.getImageWidth(), imageRegionDecoder.getImageHeight(), imageRegionDecoder.getImageFormat());
-            }
 
-            @Override
-            public void onCreateFailed(Exception e) {
-                callback.initFailed();
-            }
-        });
+                @Override
+                public void onCreateFailed(Exception e) {
+                    initializing = false;
+                    callback.initFailed();
+                }
+            });
+        } else {
+            available = false;
+            initializing = false;
+            clean();
+        }
+    }
+
+    private void clean() {
+        if (bitmap != null) {
+            bitmap.recycle();
+            bitmap = null;
+        }
+        if (!bitmapSrcRect.isEmpty()) {
+            bitmapSrcRect.setEmpty();
+        }
+        if (!bitmapVisibleRect.isEmpty()) {
+            bitmapVisibleRect.setEmpty();
+        }
+        if (waitUpdateParams != null) {
+            waitUpdateParams.reset();
+        }
+        matrix.reset();
+        callback.invalidate();
+    }
+
+    private void reset() {
+        if (imageRegionDecoder != null) {
+            imageRegionDecoder.recycle();
+            imageRegionDecoder = null;
+        }
+        clean();
     }
 
     public void update(UpdateParams updateParams) {
-        if (updateParams == null || updateParams.isEmpty()) {
-            clean();
-            matrix.reset();
-            callback.invalidate();
+        // 不可用，也没有初始化就直接结束
+        if (!available && !initializing) {
             return;
         }
 
-        // 如果解码器尚未初始化完成就缓存当前更新参数
-        if (imageRegionDecoder == null || !imageRegionDecoder.isReady()) {
+        // 传进来的参数不能用就什么也不显示
+        if (updateParams == null || updateParams.isEmpty()) {
+            clean();
+            return;
+        }
+
+        // 如果正在初始化就就缓存当前更新参数
+        if (initializing) {
             if (waitUpdateParams == null) {
                 waitUpdateParams = new UpdateParams();
             }
@@ -127,14 +169,11 @@ public class SuperLargeImageViewer {
             return;
         }
 
-        // 抛弃旧的任务
+        // 取消旧的任务
         if (lastTask != null) {
             lastTask.cancel();
             lastTask = null;
         }
-
-        // 立即更新Matrix，一起缩放滑动
-        matrix.set(updateParams.drawMatrix);
 
         // visible区域适当的大一点儿
         int addWidth = (int) (updateParams.visibleRect.width() * 0.2);
@@ -145,10 +184,10 @@ public class SuperLargeImageViewer {
                 Math.min(updateParams.previewDrawableWidth, updateParams.visibleRect.right + addWidth),
                 Math.min(updateParams.previewDrawableHeight, updateParams.visibleRect.bottom + addHeight));
 
-        // 如果是全部显示的话就不解码了
-        if (largeVisibleRect.width() == updateParams.previewDrawableWidth && largeVisibleRect.height() == updateParams.previewDrawableHeight) {
+        // 如果全部显示的话就不解码了
+        if (largeVisibleRect.width() == updateParams.previewDrawableWidth
+                && largeVisibleRect.height() == updateParams.previewDrawableHeight) {
             clean();
-            callback.invalidate();
             return;
         }
 
@@ -180,7 +219,7 @@ public class SuperLargeImageViewer {
         // 无效的区域不要
         if (srcRect.isEmpty()) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". update - srcRect is empty - " +
+                Log.w(Sketch.TAG, NAME + ". update - srcRect is empty - " +
                         "imageSize=" + imageRegionDecoder.getImageWidth() + "x" + imageRegionDecoder.getImageHeight()
                         + ", visibleRect=" + updateParams.visibleRect.toString()
                         + ", largeVisibleRect=" + largeVisibleRect.toString()
@@ -188,9 +227,12 @@ public class SuperLargeImageViewer {
                         + ", newSrcRect=" + srcRect.toString());
             }
             clean();
-            callback.invalidate();
             return;
         }
+
+        // 立即更新Matrix，一起缩放滑动
+        matrix.set(updateParams.drawMatrix);
+        callback.invalidate();
 
         // 根据src区域大小计算缩放比例
         int inSampleSize = calculateRegionInSimpleSize(context, srcRect);
@@ -206,51 +248,30 @@ public class SuperLargeImageViewer {
         }
 
         // 读取图片
-        lastTask = new RegionDecodeTask(this, imageRegionDecoder, srcRect, largeVisibleRect, inSampleSize);
+        lastTask = new ImageRegionDecodeTask(this, imageRegionDecoder, srcRect, largeVisibleRect, inSampleSize);
         lastTask.execute(0);
     }
 
     void onDecodeCompleted(Bitmap newBitmap, RectF visibleRect) {
-        clean();
-
-        if (newBitmap != null && !newBitmap.isRecycled()) {
-            bitmap = newBitmap;
-            bitmapSrcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
-            bitmapVisibleRect.set(visibleRect.left, visibleRect.top, visibleRect.right, visibleRect.bottom);
+        if (newBitmap == null || newBitmap.isRecycled()) {
+            return;
         }
 
-        callback.invalidate();
-    }
+        if (!available) {
+            newBitmap.recycle();
+            return;
+        }
 
-    private void clean() {
         Bitmap oldBitmap = bitmap;
+        bitmap = newBitmap;
+        bitmapSrcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        bitmapVisibleRect.set(visibleRect.left, visibleRect.top, visibleRect.right, visibleRect.bottom);
+
+        callback.invalidate();
+
         if (oldBitmap != null) {
             oldBitmap.recycle();
         }
-
-        bitmap = null;
-        bitmapSrcRect.setEmpty();
-        bitmapVisibleRect.setEmpty();
-    }
-
-    private void reset() {
-        if (bitmap != null) {
-            bitmap.recycle();
-            bitmap = null;
-        }
-
-        if (imageRegionDecoder != null) {
-            imageRegionDecoder.recycle();
-            imageRegionDecoder = null;
-        }
-
-        if (waitUpdateParams != null) {
-            waitUpdateParams.reset();
-        }
-
-        bitmapSrcRect.setEmpty();
-        bitmapVisibleRect.setEmpty();
-        matrix.reset();
     }
 
     public void recycle() {
@@ -263,9 +284,19 @@ public class SuperLargeImageViewer {
         return updateParams;
     }
 
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public boolean isInitializing() {
+        return initializing;
+    }
+
     public interface Callback {
         void invalidate();
+
         void initCompleted(int imageWidth, int imageHeight, ImageFormat imageFormat);
+
         void initFailed();
     }
 

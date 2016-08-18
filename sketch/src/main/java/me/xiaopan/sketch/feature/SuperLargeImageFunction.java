@@ -52,7 +52,9 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
 
     @Override
     public void onDraw(Canvas canvas) {
-        superLargeImageViewer.draw(canvas);
+        if (superLargeImageViewer.isAvailable()) {
+            superLargeImageViewer.draw(canvas);
+        }
     }
 
     @Override
@@ -69,16 +71,18 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
 
     @Override
     public void onMatrixChanged(ImageZoomer imageZoomer) {
-        Drawable drawable = imageView.getDrawable();
-        if (drawable != null) {
-            SuperLargeImageViewer.UpdateParams updateParams = superLargeImageViewer.getUpdateParams();
-            imageZoomer.getDrawMatrix(updateParams.getDrawMatrix());
-            imageZoomer.getVisibleRect(updateParams.getVisibleRect());
-            updateParams.setPreviewDrawableWidth(imageZoomer.getDrawableWidth());
-            updateParams.setPreviewDrawableHeight(imageZoomer.getDrawableHeight());
-            superLargeImageViewer.update(updateParams);
-        } else {
-            superLargeImageViewer.update(null);
+        if (superLargeImageViewer.isAvailable() || superLargeImageViewer.isInitializing()) {
+            Drawable drawable = imageView.getDrawable();
+            if (drawable != null) {
+                SuperLargeImageViewer.UpdateParams updateParams = superLargeImageViewer.getUpdateParams();
+                imageZoomer.getDrawMatrix(updateParams.getDrawMatrix());
+                imageZoomer.getVisibleRect(updateParams.getVisibleRect());
+                updateParams.setPreviewDrawableWidth(imageZoomer.getDrawableWidth());
+                updateParams.setPreviewDrawableHeight(imageZoomer.getDrawableHeight());
+                superLargeImageViewer.update(updateParams);
+            } else {
+                superLargeImageViewer.update(null);
+            }
         }
     }
 

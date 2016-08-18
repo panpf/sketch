@@ -12,10 +12,10 @@ import java.lang.ref.WeakReference;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.ImageFormat;
 
-public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
-    private static final String NAME = "RegionDecodeTask";
+public class ImageRegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
+    private static final String NAME = "ImageRegionDecodeTask";
 
-    private WeakReference<SuperLargeImageViewer> controllerReference;
+    private WeakReference<SuperLargeImageViewer> largeImageViewerWeakReference;
     private WeakReference<ImageRegionDecoder> decoderReference;
     private Rect srcRect;
     private boolean canceled;
@@ -23,8 +23,8 @@ public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
     private int inSampleSize;
 
     // TODO 自定义任务执行器以及线程池
-    public RegionDecodeTask(SuperLargeImageViewer controller, ImageRegionDecoder decoder, Rect srcRect, RectF visibleRect, int inSampleSize) {
-        this.controllerReference = new WeakReference<SuperLargeImageViewer>(controller);
+    public ImageRegionDecodeTask(SuperLargeImageViewer largeImageViewer, ImageRegionDecoder decoder, Rect srcRect, RectF visibleRect, int inSampleSize) {
+        this.largeImageViewerWeakReference = new WeakReference<SuperLargeImageViewer>(largeImageViewer);
         this.decoderReference = new WeakReference<ImageRegionDecoder>(decoder);
         this.srcRect = srcRect;
         this.visibleRect = visibleRect;
@@ -44,7 +44,7 @@ public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
     protected Bitmap doInBackground(Integer... params) {
         if (canceled) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". canceled");
+                Log.w(Sketch.TAG, NAME + ". canceled. just started. " + Integer.toHexString(hashCode()));
             }
             return null;
         }
@@ -52,20 +52,13 @@ public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
         ImageRegionDecoder decoder = decoderReference.get();
         if (decoder == null) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". decoder is null");
+                Log.w(Sketch.TAG, NAME + ". decoder is null");
             }
             return null;
         }
 
         if (!decoder.isReady()) {
-            Log.d(Sketch.TAG, NAME + ". init decoder not ready");
-            return null;
-        }
-
-        if (canceled) {
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". canceled");
-            }
+            Log.w(Sketch.TAG, NAME + ". init decoder not ready");
             return null;
         }
 
@@ -79,14 +72,22 @@ public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
         Bitmap bitmap = decoder.decodeRegion(srcRect, options);
         if (bitmap == null || bitmap.isRecycled()) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". bitmap is null or recycled");
+                Log.w(Sketch.TAG, NAME + ". bitmap is null or recycled");
             }
+            return null;
+        }
+
+        if (isCanceled()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". canceled. decode after. " + Integer.toHexString(hashCode()));
+            }
+            bitmap.recycle();
             return null;
         }
 
         Bitmap.Config config = bitmap.getConfig();
         if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, NAME + ". decode success - "
+            Log.i(Sketch.TAG, NAME + ". decode success - "
                     + "visibleRect=" + visibleRect.toString()
                     + ", srcRect=" + srcRect.toString()
                     + ", inSampleSize=" + inSampleSize
@@ -101,21 +102,33 @@ public class RegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
         super.onPostExecute(bitmap);
 
         if (bitmap == null) {
+            return;
+        }
+
+        if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". onPostExecute. bitmap is null");
+                Log.w(Sketch.TAG, NAME + ". canceled. post execute. " + Integer.toHexString(hashCode()));
             }
             return;
         }
 
-        SuperLargeImageViewer controller = controllerReference.get();
-        if (controller == null) {
+        SuperLargeImageViewer largeImageViewer = largeImageViewerWeakReference.get();
+        if (largeImageViewer == null) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". onPostExecute. controller is null");
+                Log.w(Sketch.TAG, NAME + ". onPostExecute. largeImageViewer is null");
             }
             bitmap.recycle();
             return;
         }
 
-        controller.onDecodeCompleted(bitmap, visibleRect);
+        if (largeImageViewer.isAvailable()) {
+            largeImageViewer.onDecodeCompleted(bitmap, visibleRect);
+        } else {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". onPostExecute. largeImageViewer not available");
+            }
+            bitmap.recycle();
+        }
+
     }
 }
