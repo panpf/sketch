@@ -1,7 +1,7 @@
 # ![Logo](docs/res/logo.png) Sketch
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Sketch-green.svg?style=true)](https://android-arsenal.com/details/1/4165)
-[![version](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg)](https://bintray.com/xiaopansky/maven/Sketch)
+[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)
 
 Sketch是Android上的一个图片加载器，能够帮助开发者从本地或网络读取图片，处理后显示在页面上
 
@@ -69,7 +69,7 @@ dependencies{
 	compile compile 'me.xiaopan:sketch:lastVersionName'
 }
 ```
-`lastVersionName`：[![version](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg)](https://bintray.com/xiaopansky/maven/Sketch) （不带v）
+`lastVersionName`：[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases) （不带v）
 
 添加以下权限
 ```xml
