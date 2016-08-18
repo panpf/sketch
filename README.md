@@ -69,7 +69,7 @@ dependencies{
 	compile compile 'me.xiaopan:sketch:lastVersionName'
 }
 ```
-`lastVersionName`：[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases) （不带v）
+`lastVersionName`：[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)`（不带v）`
 
 添加以下权限
 ```xml
