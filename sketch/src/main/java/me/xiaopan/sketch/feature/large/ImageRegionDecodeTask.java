@@ -12,6 +12,7 @@ import java.lang.ref.WeakReference;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.ImageFormat;
 
+// TODO 自定义任务执行器以及线程池
 public class ImageRegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
     private static final String NAME = "ImageRegionDecodeTask";
 
@@ -24,8 +25,9 @@ public class ImageRegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
 
     private int cancelStatus;  // 0：未取消；1：软取消；2：强取消
 
-    // TODO 自定义任务执行器以及线程池
-    public ImageRegionDecodeTask(SuperLargeImageViewer largeImageViewer, ImageRegionDecoder decoder, Rect srcRect, RectF visibleRect, int inSampleSize, float scale) {
+    public ImageRegionDecodeTask(SuperLargeImageViewer largeImageViewer,
+                                 ImageRegionDecoder decoder, Rect srcRect, RectF visibleRect,
+                                 int inSampleSize, float scale) {
         this.largeImageViewerWeakReference = new WeakReference<SuperLargeImageViewer>(largeImageViewer);
         this.decoderReference = new WeakReference<ImageRegionDecoder>(decoder);
         this.srcRect = srcRect;
@@ -46,7 +48,10 @@ public class ImageRegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
 
     public void cancelTask(boolean force) {
         if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". cancelTask. " + "visibleRect=" + visibleRect.toString() + ", inSampleSize=" + inSampleSize + ", force=" + force);
+            Log.w(Sketch.TAG, NAME + ". cancelTask. "
+                    + "visibleRect=" + visibleRect.toString()
+                    + ", inSampleSize=" + inSampleSize
+                    + ", force=" + force);
         }
         cancelStatus = force ? 2 : 1;
     }
@@ -55,7 +60,9 @@ public class ImageRegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
     protected Bitmap doInBackground(Integer... params) {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". canceled on just started. " + "visibleRect=" + visibleRect.toString() + ", inSampleSize=" + inSampleSize);
+                Log.w(Sketch.TAG, NAME + ". canceled on just started. "
+                        + "visibleRect=" + visibleRect.toString()
+                        + ", inSampleSize=" + inSampleSize);
             }
             return null;
         }
@@ -63,13 +70,17 @@ public class ImageRegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
         ImageRegionDecoder decoder = decoderReference.get();
         if (decoder == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". decoder is null. " + "visibleRect=" + visibleRect.toString() + ", inSampleSize=" + inSampleSize);
+                Log.w(Sketch.TAG, NAME + ". decoder is null. "
+                        + "visibleRect=" + visibleRect.toString()
+                        + ", inSampleSize=" + inSampleSize);
             }
             return null;
         }
 
         if (!decoder.isReady()) {
-            Log.w(Sketch.TAG, NAME + ". decoder not ready. " + "visibleRect=" + visibleRect.toString() + ", inSampleSize=" + inSampleSize);
+            Log.w(Sketch.TAG, NAME + ". decoder not ready. "
+                    + "visibleRect=" + visibleRect.toString()
+                    + ", inSampleSize=" + inSampleSize);
             return null;
         }
 
@@ -83,17 +94,21 @@ public class ImageRegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
         Bitmap bitmap = decoder.decodeRegion(srcRect, options);
         if (bitmap == null || bitmap.isRecycled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". bitmap is null or recycled on decode after. " + "visibleRect=" + visibleRect.toString() + ", inSampleSize=" + inSampleSize);;
+                Log.w(Sketch.TAG, NAME + ". bitmap is null or recycled on decode after. "
+                        + "visibleRect=" + visibleRect.toString()
+                        + ", inSampleSize=" + inSampleSize);
             }
             return null;
         }
 
         // 为什么这里只过滤强制取消？
-        // 首席那都已经解码出来了，不显示就浪费了
+        // 首先都已经解码出来了，不显示就浪费了
         // 另外即使在缓慢的滑动过程中，也只有最后一个任务能够显示解码的图片，会给人一种解码速度很慢的感觉
         if (isForceCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". force canceled on decode after. " + "visibleRect=" + visibleRect.toString() + ", inSampleSize=" + inSampleSize);
+                Log.w(Sketch.TAG, NAME + ". force canceled on decode after. "
+                        + "visibleRect=" + visibleRect.toString()
+                        + ", inSampleSize=" + inSampleSize);
             }
             bitmap.recycle();
             return null;
@@ -115,7 +130,9 @@ public class ImageRegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
         // 另外即使在缓慢的滑动过程中，也只有最后一个任务能够显示解码的图片，会给人一种解码速度很慢的感觉
         if (isForceCanceled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". force canceled on post execute. " + "visibleRect=" + visibleRect.toString() + ", inSampleSize=" + inSampleSize);
+                Log.w(Sketch.TAG, NAME + ". force canceled on post execute. "
+                        + "visibleRect=" + visibleRect.toString()
+                        + ", inSampleSize=" + inSampleSize);
             }
             return;
         }
@@ -123,7 +140,9 @@ public class ImageRegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
         SuperLargeImageViewer largeImageViewer = largeImageViewerWeakReference.get();
         if (largeImageViewer == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". largeImageViewer on null in post execute. " + "visibleRect=" + visibleRect.toString() + ", inSampleSize=" + inSampleSize);
+                Log.w(Sketch.TAG, NAME + ". largeImageViewer on null in post execute. "
+                        + "visibleRect=" + visibleRect.toString()
+                        + ", inSampleSize=" + inSampleSize);
             }
             bitmap.recycle();
             return;
@@ -133,7 +152,9 @@ public class ImageRegionDecodeTask extends AsyncTask<Integer, Integer, Bitmap> {
             largeImageViewer.showImageRegion(srcRect, inSampleSize, bitmap, visibleRect, scale);
         } else {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". largeImageViewer not available on post execute. " + "visibleRect=" + visibleRect.toString() + ", inSampleSize=" + inSampleSize);
+                Log.w(Sketch.TAG, NAME + ". largeImageViewer not available on post execute. "
+                        + "visibleRect=" + visibleRect.toString()
+                        + ", inSampleSize=" + inSampleSize);
             }
             bitmap.recycle();
         }
