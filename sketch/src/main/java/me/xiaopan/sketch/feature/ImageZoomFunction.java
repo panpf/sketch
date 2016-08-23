@@ -26,6 +26,7 @@ import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 /**
  * ImageView缩放功能
  */
+// TODO: 16/8/23 支持显示滑动进度
 public class ImageZoomFunction extends SketchImageView.Function {
     private ImageView imageView;
 
