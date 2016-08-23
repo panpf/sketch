@@ -154,7 +154,7 @@ public class DownloadHelper {
     private boolean checkUri() {
         if (requestAttrs.getUri() == null || "".equals(requestAttrs.getUri().trim())) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "uri is null or empty"));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, ". uri is null or empty"));
             }
             CallbackHandler.postCallbackFailed(downloadListener, FailedCause.URI_NULL_OR_EMPTY, sync);
             return false;
@@ -165,14 +165,14 @@ public class DownloadHelper {
 
     private boolean checkUriScheme() {
         if (requestAttrs.getUriScheme() == null) {
-            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "unknown uri scheme", " - ", requestAttrs.getId()));
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri scheme", ". ", requestAttrs.getId()));
             CallbackHandler.postCallbackFailed(downloadListener, FailedCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
         if (requestAttrs.getUriScheme() != UriScheme.NET) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "only support http ot https", " - ", requestAttrs.getId()));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, ". only support http ot https", ". ", requestAttrs.getId()));
             }
             CallbackHandler.postCallbackFailed(downloadListener, FailedCause.URI_NO_SUPPORT, sync);
             return false;

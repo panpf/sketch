@@ -73,10 +73,10 @@ public class LruMemoryCache implements MemoryCache {
         if (Sketch.isDebugMode()) {
             int newCacheSize = drawableLruCache.size();
             Log.i(Sketch.TAG, SketchUtils.concat(logName,
-                    " - ", "put",
-                    " - ", "beforeCacheSize=", Formatter.formatFileSize(context, oldCacheSize),
-                    " - ", ((RecyclerDrawable) value).getInfo(),
-                    " - ", "afterCacheSize=", Formatter.formatFileSize(context, newCacheSize)));
+                    ". put",
+                    ". beforeCacheSize=", Formatter.formatFileSize(context, oldCacheSize),
+                    ". ", ((RecyclerDrawable) value).getInfo(),
+                    ". afterCacheSize=", Formatter.formatFileSize(context, newCacheSize)));
         }
     }
 
@@ -98,8 +98,8 @@ public class LruMemoryCache implements MemoryCache {
         Drawable drawable = drawableLruCache.remove(key);
         if (Sketch.isDebugMode()) {
             Log.i(Sketch.TAG, SketchUtils.concat(logName,
-                    " - ", "remove",
-                    " - ", "MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+                    ". remove",
+                    ". memoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
         }
         return drawable;
     }
@@ -126,8 +126,8 @@ public class LruMemoryCache implements MemoryCache {
 
         if (Sketch.isDebugMode()) {
             Log.i(Sketch.TAG, SketchUtils.concat(logName,
-                    " - ", "clear",
-                    " - ", "before clean MemoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+                    ". clear",
+                    ". before clean memoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
         }
         drawableLruCache.evictAll();
     }

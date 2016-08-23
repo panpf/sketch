@@ -701,7 +701,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             imageZoomFunction = new ImageZoomFunction(this);
             imageZoomFunction.onDrawableChanged("setEnableZoomFunction", null, getDrawable());
         } else {
-            imageZoomFunction.destroy();
+            imageZoomFunction.recycle();
             imageZoomFunction = null;
         }
     }
@@ -734,7 +734,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             superLargeImageFunction = new SuperLargeImageFunction(this);
             superLargeImageFunction.onDrawableChanged("setEnableSuperLargeImageViewer", null, getDrawable());
         } else {
-            superLargeImageFunction.destroy();
+            superLargeImageFunction.recycle();
             superLargeImageFunction = null;
 
             if (isEnableZoomFunction() && imageZoomFunction.isFromSuperLargeImageFunction()) {

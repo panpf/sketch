@@ -117,10 +117,10 @@ public class DefaultImageDecoder implements ImageDecoder {
             if (bitmap != null && (bitmap.getWidth() == 1 || bitmap.getHeight() == 1)) {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                            " - ", "bitmap width or height is 1px",
-                            " - ", "ImageSize: ", originalSize.x, "x", originalSize.y,
-                            " - ", "BitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
-                            " - ", loadRequest.getAttrs().getId()));
+                            ". bitmap width or height is 1px",
+                            ". imageSize: ", originalSize.x, "x", originalSize.y,
+                            ". bitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
+                            ". ", loadRequest.getAttrs().getId()));
                 }
                 bitmap.recycle();
                 bitmap = null;
@@ -128,9 +128,9 @@ public class DefaultImageDecoder implements ImageDecoder {
         } else {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "image width or height is 1px",
-                        " - ", "ImageSize: ", originalSize.x, "x", originalSize.y,
-                        " - ", loadRequest.getAttrs().getId()));
+                        ". image width or height is 1px",
+                        ". imageSize: ", originalSize.x, "x", originalSize.y,
+                        ". ", loadRequest.getAttrs().getId()));
             }
         }
 
@@ -165,7 +165,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             } else if (loadRequest.getAttrs().getUriScheme() == UriScheme.DRAWABLE) {
                 result = decodeDrawable(loadRequest);
             } else {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "unknown uri is ", loadRequest.getAttrs().getUri()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri is ", loadRequest.getAttrs().getUri()));
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -184,10 +184,9 @@ public class DefaultImageDecoder implements ImageDecoder {
                     decimalFormat = new DecimalFormat("#.##");
                 }
                 Log.d(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "DecodeUseTime",
-                        " - ", useTime, "ms", ", ",
-                        "average", "=", decimalFormat.format((double) useTimeCount / decodeCount), "ms",
-                        " - ", loadRequest.getAttrs().getId()));
+                        ". decode use time", useTime, "ms",
+                        ", average", decimalFormat.format((double) useTimeCount / decodeCount), "ms",
+                        ". ", loadRequest.getAttrs().getId()));
             }
         }
 

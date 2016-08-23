@@ -73,7 +73,9 @@ class FlingTranslateRunner implements Runnable {
         mCurrentY = startY;
 
         if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, ImageZoomer.NAME + ". fling. StartX:" + startX + " StartY:" + startY + " MaxX:" + maxX + " MaxY:" + maxY);
+            Log.d(Sketch.TAG, ImageZoomer.NAME + ". fling" +
+                    ". StartX: " + startX + ", StartY: " + startY +
+                    ", MaxX: " + maxX + ", MaxY: " + maxY);
         }
 
         // If we actually can move, fling the scroller
@@ -88,8 +90,9 @@ class FlingTranslateRunner implements Runnable {
 
     @Override
     public void run() {
+        // remaining post that should not be handled
         if (mScroller.isFinished()) {
-            return; // remaining post that should not be handled
+            return;
         }
 
         ImageView imageView = imageZoomer.getImageView();
@@ -97,10 +100,6 @@ class FlingTranslateRunner implements Runnable {
 
             final int newX = mScroller.getCurrX();
             final int newY = mScroller.getCurrY();
-
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, ImageZoomer.NAME + ". fling run(). CurrentX:" + mCurrentX + " CurrentY:" + mCurrentY + " NewX:" + newX + " NewY:" + newY);
-            }
 
             flingTranslateListener.onFlingTranslate(mCurrentX - newX, mCurrentY - newY);
 

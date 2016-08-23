@@ -36,10 +36,10 @@ public class ExceptionMonitor implements Identifier {
         //noinspection StringBufferReplaceableByString
         StringBuilder builder = new StringBuilder();
         builder.append(logName);
-        builder.append(" - ").append("InstallDiskCacheFailed");
-        builder.append(" - ").append(e.getClass().getSimpleName()).append(": ").append(e.getMessage());
-        builder.append(" - ").append("SDCardState").append(": ").append(Environment.getExternalStorageState());
-        builder.append(" - ").append("cacheDir: ").append(cacheDir.getPath());
+        builder.append(". InstallDiskCacheFailed");
+        builder.append(". ").append(e.getClass().getSimpleName()).append(": ").append(e.getMessage());
+        builder.append(". SDCardState").append(": ").append(Environment.getExternalStorageState());
+        builder.append(". cacheDir: ").append(cacheDir.getPath());
         Log.e(Sketch.TAG, builder.toString());
     }
 
@@ -66,9 +66,9 @@ public class ExceptionMonitor implements Identifier {
         }
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                " - ", "DecodeGifImageFailed",
-                " - ", "outWidth", "=", boundsOptions.outWidth, ", ", "outHeight", "=", boundsOptions.outHeight, ", ", "outMimeType", "=", boundsOptions.outMimeType,
-                " - ", request.getAttrs().getId()));
+                ". DecodeGifImageFailed",
+                ". outWidth", "=", boundsOptions.outWidth, ", ", "outHeight", "=", boundsOptions.outHeight, ", ", "outMimeType", "=", boundsOptions.outMimeType,
+                ". ", request.getAttrs().getId()));
     }
 
     /**
@@ -86,16 +86,17 @@ public class ExceptionMonitor implements Identifier {
             String maxMemoryFormatted = Formatter.formatFileSize(context, maxMemory);
             String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
             String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
-            Log.d(Sketch.TAG, SketchUtils.concat("OutOfMemoryError. appMemoryInfo: ",
+            Log.d(Sketch.TAG, SketchUtils.concat("OutOfMemoryError" +
+                    ". appMemoryInfo: ",
                     "maxMemory", "=", maxMemoryFormatted,
                     ", freeMemory", "=", freeMemoryFormatted,
                     ", totalMemory", "=", totalMemoryFormatted));
         }
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                " - ", "DecodeNormalImageFailed",
-                " - ", "outWidth", "=", boundsOptions.outWidth, ", ", "outHeight", "=", boundsOptions.outHeight, ", ", "outMimeType", "=", boundsOptions.outMimeType,
-                " - ", request.getAttrs().getId()));
+                ". DecodeNormalImageFailed",
+                ". outWidth", "=", boundsOptions.outWidth, ", ", "outHeight", "=", boundsOptions.outHeight, ", ", "outMimeType", "=", boundsOptions.outMimeType,
+                ". ", request.getAttrs().getId()));
     }
 
     /**
@@ -120,9 +121,9 @@ public class ExceptionMonitor implements Identifier {
         }
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                " - ", "onProcessImageFailed",
-                " - ", "imageUri", ": ", imageUri,
-                " - ", "processor", ": ", processor.getIdentifier()));
+                ". onProcessImageFailed",
+                ". imageUri", ": ", imageUri,
+                ". processor", ": ", processor.getIdentifier()));
     }
 
     public void onDownloadFailed(DownloadRequest request, Throwable throwable) {

@@ -64,17 +64,17 @@ public class AssetsDecodeHelper implements DecodeHelper {
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
         if (Sketch.isDebugMode()) {
             StringBuilder builder = new StringBuilder(logName)
-                    .append(" - ").append("decodeSuccess");
+                    .append(". decodeSuccess");
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
-                builder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
+                builder.append(". originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
                 builder.append(", ").append("targetSize").append("=").append(loadRequest.getOptions().getMaxSize().getWidth()).append("x").append(loadRequest.getOptions().getMaxSize().getHeight());
                 builder.append(", ").append("targetSizeScale").append("=").append(loadRequest.getSketch().getConfiguration().getImageSizeCalculator().getTargetSizeScale());
                 builder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                 builder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
             } else {
-                builder.append(" - ").append("unchanged");
+                builder.append(". ").append("unchanged");
             }
-            builder.append(" - ").append(loadRequest.getAttrs().getId());
+            builder.append(". ").append(loadRequest.getAttrs().getId());
             Log.d(Sketch.TAG, builder.toString());
         }
     }
@@ -82,7 +82,7 @@ public class AssetsDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeFailed() {
         if (Sketch.isDebugMode()) {
-            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "decode failed", " - ", assetsFilePath));
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, ". decode failed", ". ", assetsFilePath));
         }
     }
 

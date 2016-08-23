@@ -73,7 +73,7 @@ public class SketchUtils {
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "get packageInfo is null", " - ", apkFilePath));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". get packageInfo is null", ". ", apkFilePath));
             }
             return null;
         }
@@ -89,7 +89,7 @@ public class SketchUtils {
         }
         if (drawable == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "app icon is null", " - ", apkFilePath));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". app icon is null", ". ", apkFilePath));
             }
             return null;
         }
@@ -106,7 +106,7 @@ public class SketchUtils {
 //            if (defaultActivityIcon instanceof BitmapDrawable
 //                    && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) defaultActivityIcon).getBitmap()) {
 //                if (Sketch.isDebugMode()) {
-//                    Log.w(Sketch.TAG, SketchUtils.concat(logName, " - ", "icon not found", " - ", apkFilePath));
+//                    Log.w(Sketch.TAG, SketchUtils.concat(logName, ". icon not found", ". ", apkFilePath));
 //                }
 //                return null;
 //            }

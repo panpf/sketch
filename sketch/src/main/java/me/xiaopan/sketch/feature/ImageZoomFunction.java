@@ -38,10 +38,13 @@ public class ImageZoomFunction extends SketchImageView.Function {
     }
 
     private void init() {
-        if (imageZoomer != null) {
-            imageZoomer.cleanup();
-        }
+        ImageZoomer oldImageZoomer = imageZoomer;
+
         imageZoomer = new ImageZoomer(imageView, true);
+
+        if (oldImageZoomer != null) {
+            oldImageZoomer.cleanup();
+        }
     }
 
     @Override
@@ -56,7 +59,7 @@ public class ImageZoomFunction extends SketchImageView.Function {
 
     @Override
     public boolean onDetachedFromWindow() {
-        imageZoomer.cleanup();
+        recycle();
         return false;
     }
 
@@ -76,8 +79,8 @@ public class ImageZoomFunction extends SketchImageView.Function {
         imageZoomer.setScaleType(scaleType);
     }
 
-    public void destroy() {
-
+    public void recycle() {
+        imageZoomer.cleanup();
     }
 
     public ImageZoomer getImageZoomer() {

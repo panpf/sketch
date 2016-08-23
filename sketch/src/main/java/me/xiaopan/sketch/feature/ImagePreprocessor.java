@@ -136,8 +136,8 @@ public class ImagePreprocessor implements Identifier {
         if (iconBitmap.isRecycled()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "apk icon bitmap recycled",
-                        " - ", loadRequest.getAttrs().getId()));
+                        ". apk icon bitmap recycled",
+                        ". ", loadRequest.getAttrs().getId()));
             }
             return null;
         }
@@ -187,8 +187,8 @@ public class ImagePreprocessor implements Identifier {
             } else {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                            " - ", "not found apk icon cache file",
-                            " - ", loadRequest.getAttrs().getId()));
+                            ". not found apk icon cache file",
+                            ". ", loadRequest.getAttrs().getId()));
                 }
                 return null;
             }
@@ -250,8 +250,8 @@ public class ImagePreprocessor implements Identifier {
         if (iconBitmap.isRecycled()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "apk icon bitmap recycled",
-                        " - ", loadRequest.getAttrs().getId()));
+                        ". apk icon bitmap recycled",
+                        ". ", loadRequest.getAttrs().getId()));
             }
             return null;
         }
@@ -301,8 +301,8 @@ public class ImagePreprocessor implements Identifier {
             } else {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                            " - ", "not found apk icon cache file",
-                            " - ", loadRequest.getAttrs().getId()));
+                            ". not found apk icon cache file",
+                            ". ", loadRequest.getAttrs().getId()));
                 }
                 return null;
             }

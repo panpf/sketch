@@ -101,7 +101,7 @@ public class LoadRequest extends DownloadRequest {
     protected void runDispatch() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("runDispatch", "canceled", "intercept local task before");
+                printLogW("canceled", "runDispatch", "load request just start");
             }
             return;
         }
@@ -110,7 +110,7 @@ public class LoadRequest extends DownloadRequest {
         setStatus(Status.INTERCEPT_LOCAL_TASK);
         if (getAttrs().getUriScheme() != UriScheme.NET) {
             if (Sketch.isDebugMode()) {
-                printLogD("runDispatch", "local");
+                printLogD("local thread", "runDispatch");
             }
             submitRunLoad();
             return;
@@ -130,7 +130,7 @@ public class LoadRequest extends DownloadRequest {
             submitRunLoad();
         } else {
             if (Sketch.isDebugMode()) {
-                printLogE("downloadCompleted", "are all null");
+                printLogE("are all null", "downloadCompleted");
             }
             failed(FailedCause.DOWNLOAD_FAIL);
         }
@@ -140,7 +140,7 @@ public class LoadRequest extends DownloadRequest {
     protected void runLoad() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("runLoad", "canceled", "start load");
+                printLogW("canceled", "runLoad", "load request just start");
             }
             return;
         }
@@ -169,19 +169,19 @@ public class LoadRequest extends DownloadRequest {
 
             if (bitmap.isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogE("runLoad", "decode failed", "bitmap recycled", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
+                    printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
                 }
                 failed(FailedCause.BITMAP_RECYCLED);
                 return;
             }
 
             if (Sketch.isDebugMode()) {
-                printLogI("runLoad", "decode success", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
+                printLogI("decode success", "runLoad", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
             }
 
             if (isCanceled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogW("runLoad", "canceled", "decode after", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
+                    printLogW("canceled", "runLoad", "decode after", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
                 }
                 bitmap.recycle();
                 return;
@@ -207,7 +207,7 @@ public class LoadRequest extends DownloadRequest {
                 // 确实是一张新图片，就替换掉旧图片
                 if (newBitmap != null && !newBitmap.isRecycled() && newBitmap != bitmap) {
                     if (Sketch.isDebugMode()) {
-                        printLogW("runLoad", "process new bitmap", "bitmapInfo: " + SketchUtils.getInfo(null, newBitmap, decodeResult.getMimeType()));
+                        printLogW("process new bitmap", "runLoad", "bitmapInfo: " + SketchUtils.getInfo(null, newBitmap, decodeResult.getMimeType()));
                     }
                     bitmap.recycle();
                     bitmap = newBitmap;
@@ -221,7 +221,7 @@ public class LoadRequest extends DownloadRequest {
 
                 if (isCanceled()) {
                     if (Sketch.isDebugMode()) {
-                        printLogW("runLoad", "canceled", "process after", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
+                        printLogW("canceled", "runLoad", "process after", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
                     }
                     bitmap.recycle();
                     return;
@@ -235,19 +235,19 @@ public class LoadRequest extends DownloadRequest {
 
             if (gifDrawable.isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogE("runLoad", "decode failed", "gif drawable recycled", "gifInfo: " + SketchUtils.getInfo(gifDrawable));
+                    printLogE("decode failed", "runLoad", "gif drawable recycled", "gifInfo: " + SketchUtils.getInfo(gifDrawable));
                 }
                 failed(FailedCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
             if (Sketch.isDebugMode()) {
-                printLogI("runLoad", "decode gif success", "gifInfo: " + SketchUtils.getInfo(gifDrawable));
+                printLogI("decode gif success", "runLoad", "gifInfo: " + SketchUtils.getInfo(gifDrawable));
             }
 
             if (isCanceled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogW("runLoad", "canceled", "decode after", "gifInfo: " + SketchUtils.getInfo(gifDrawable));
+                    printLogW("runLoad", "runLoad", "decode after", "gifInfo: " + SketchUtils.getInfo(gifDrawable));
                 }
                 gifDrawable.recycle();
                 return;
@@ -257,7 +257,7 @@ public class LoadRequest extends DownloadRequest {
             loadCompleted();
         } else {
             if (Sketch.isDebugMode()) {
-                printLogE("runLoad", "are all null");
+                printLogE("are all null", "runLoad");
             }
             failed(FailedCause.DECODE_FAIL);
         }
@@ -280,7 +280,7 @@ public class LoadRequest extends DownloadRequest {
                 }
             }
             if (Sketch.isDebugMode()) {
-                printLogW("runCompletedInMainThread", "canceled");
+                printLogW("canceled", "runCompletedInMainThread");
             }
             return;
         }
@@ -296,7 +296,7 @@ public class LoadRequest extends DownloadRequest {
     protected void runFailedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("runFailedInMainThread", "canceled");
+                printLogW("canceled", "runFailedInMainThread");
             }
             return;
         }

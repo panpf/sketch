@@ -74,11 +74,11 @@ abstract class Request {
         this.status = status;
         if (Sketch.isDebugMode()) {
             if (status == Status.FAILED) {
-                printLogW("setStatus", status.getLog(), failedCause != null ? failedCause.name() : null);
+                printLogW("new status", status.getLog(), failedCause != null ? failedCause.name() : null);
             } else if (status == Status.CANCELED) {
-                printLogW("setStatus", status.getLog(), cancelCause != null ? cancelCause.name() : null);
+                printLogW("new status", status.getLog(), cancelCause != null ? cancelCause.name() : null);
             } else {
-                printLogD("setStatus", status != null ? status.getLog() : null);
+                printLogD("new status", (status != null ? status.getLog() : null));
             }
         }
     }
@@ -166,12 +166,12 @@ abstract class Request {
 
         if (items != null && items.length > 0) {
             for (String item : items) {
-                builder.append(" - ").append(item);
+                builder.append(". ").append(item);
             }
         }
 
-        builder.append(" - ").append(getThreadName());
-        builder.append(" - ").append(getAttrs().getId());
+        builder.append(". ").append(getThreadName());
+        builder.append(". ").append(getAttrs().getId());
 
         if (level == 0) {
             Log.d(Sketch.TAG, builder.toString());
@@ -207,38 +207,38 @@ abstract class Request {
         /**
          * 等待分发
          */
-        WAIT_DISPATCH("wait dispatch"),
+        WAIT_DISPATCH("waitDispatch"),
 
         /**
          * 开始分发
          */
-        START_DISPATCH("start dispatch"),
+        START_DISPATCH("startDispatch"),
 
         /**
          * 拦截本地任务
          */
-        INTERCEPT_LOCAL_TASK("intercept local task"),
+        INTERCEPT_LOCAL_TASK("interceptLocalTask"),
 
 
         /**
          * 等待下载
          */
-        WAIT_DOWNLOAD("wait download"),
+        WAIT_DOWNLOAD("waitDownload"),
 
         /**
          * 开始下载
          */
-        START_DOWNLOAD("start download"),
+        START_DOWNLOAD("startDownload"),
 
         /**
          * 获取磁盘缓存编辑锁
          */
-        GET_DISK_CACHE_EDIT_LOCK("get disk cache edit lock"),
+        GET_DISK_CACHE_EDIT_LOCK("getDiskCacheEditLock"),
 
         /**
          * 检查磁盘缓存
          */
-        CHECK_DISK_CACHE("check disk cache"),
+        CHECK_DISK_CACHE("checkDiskCache"),
 
         /**
          * 连接中
@@ -248,38 +248,38 @@ abstract class Request {
         /**
          * 检查响应
          */
-        CHECK_RESPONSE("check response"),
+        CHECK_RESPONSE("checkResponse"),
 
         /**
          * 读取数据
          */
-        READ_DATA("read data"),
+        READ_DATA("readData"),
 
 
         /**
          * 等待加载
          */
-        WAIT_LOAD("wait load"),
+        WAIT_LOAD("waitLoad"),
 
         /**
          * 开始加载
          */
-        START_LOAD("start load"),
+        START_LOAD("startLoad"),
 
         /**
          * 获取内存缓存编辑锁
          */
-        GET_MEMORY_CACHE_EDIT_LOCK("get memory cache edit lock"),
+        GET_MEMORY_CACHE_EDIT_LOCK("getMemoryCacheEditLock"),
 
         /**
          * 检查内存缓存
          */
-        CHECK_MEMORY_CACHE("check memory cache"),
+        CHECK_MEMORY_CACHE("checkMemoryCache"),
 
         /**
          * 预处理
          */
-        PRE_PROCESS("pre process"),
+        PRE_PROCESS("preProcess"),
 
         /**
          * 解码中
@@ -294,7 +294,7 @@ abstract class Request {
         /**
          * 等待显示
          */
-        WAIT_DISPLAY("wait display"),
+        WAIT_DISPLAY("waitDisplay"),
 
 
         /**
@@ -310,7 +310,8 @@ abstract class Request {
         /**
          * 已取消
          */
-        CANCELED("canceled"),;
+        CANCELED("canceled"),
+        ;
 
         private String log;
 

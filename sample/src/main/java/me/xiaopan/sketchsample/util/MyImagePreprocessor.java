@@ -94,8 +94,8 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         if (zipEntry == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "not found icon.png in ",
-                        " - ", loadRequest.getAttrs().getId()));
+                        ". not found icon.png in ",
+                        ". ", loadRequest.getAttrs().getId()));
             }
             return null;
         }
@@ -162,8 +162,8 @@ public class MyImagePreprocessor extends ImagePreprocessor {
             } else {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                            " - ", "not found xpk icon cache file",
-                            " - ", loadRequest.getAttrs().getId()));
+                            ". not found xpk icon cache file",
+                            ". ", loadRequest.getAttrs().getId()));
                 }
                 return null;
             }

@@ -273,7 +273,7 @@ public class LoadHelper {
     private boolean checkUri() {
         if (requestAttrs.getUri() == null || "".equals(requestAttrs.getUri().trim())) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "uri is null or empty"));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, ". uri is null or empty"));
             }
             CallbackHandler.postCallbackFailed(loadListener, FailedCause.URI_NULL_OR_EMPTY, sync);
             return false;
@@ -284,7 +284,7 @@ public class LoadHelper {
 
     private boolean checkUriScheme() {
         if (requestAttrs.getUriScheme() == null) {
-            Log.e(Sketch.TAG, SketchUtils.concat(logName, " - ", "unknown uri scheme", " - ", requestAttrs.getId()));
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri scheme", ". ", requestAttrs.getId()));
             CallbackHandler.postCallbackFailed(loadListener, FailedCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -301,9 +301,9 @@ public class LoadHelper {
 
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "canceled",
-                        " - ", isPauseDownload ? "pause download" : "requestLevel is local",
-                        " - ", requestAttrs.getId()));
+                        ". canceled",
+                        ". ", isPauseDownload ? "pause download" : "requestLevel is local",
+                        ". ", requestAttrs.getId()));
             }
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;

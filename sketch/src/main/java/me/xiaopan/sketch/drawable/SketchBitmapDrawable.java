@@ -154,21 +154,22 @@ public class SketchBitmapDrawable extends BitmapDrawable implements RecyclerDraw
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "recycled bitmap",
-                        " - ", callingStation, ":", type,
-                        " - ", getInfo()));
+                        ". recycle bitmap",
+                        ". ", callingStation, ":", type,
+                        ". ", getInfo()));
             }
             getBitmap().recycle();
         } else {
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(logName,
-                        " - ", "can't recycled bitmap",
-                        " - ", callingStation, ":", type,
-                        " - ", getInfo(),
-                        " - ", "references(",
-                                "cacheRefCount=", cacheRefCount, "; ",
-                                "displayRefCount=", displayRefCount, "; ",
-                                "waitDisplayRefCount=", waitDisplayRefCount, "; ",
+                        ". can't recycle bitmap",
+                        ". ", callingStation,
+                        ". ", type,
+                        ". ", getInfo(),
+                        ". ", "references(",
+                                "cacheRefCount=", cacheRefCount, ", ",
+                                "displayRefCount=", displayRefCount, ", ",
+                                "waitDisplayRefCount=", waitDisplayRefCount, ", ",
                                 "canRecycle=", canRecycle(), ")"));
             }
         }

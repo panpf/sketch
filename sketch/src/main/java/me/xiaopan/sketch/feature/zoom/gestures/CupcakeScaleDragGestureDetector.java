@@ -22,8 +22,10 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
+import me.xiaopan.sketch.Sketch;
+
 public class CupcakeScaleDragGestureDetector implements ScaleDragGestureDetector {
-    private static final String LOG_TAG = "CupcakeGestureDetector";
+    private static final String NAME = "CupcakeGestureDetector";
     protected final float mTouchSlop;
     protected final float mMinimumVelocity;
     protected OnScaleDragGestureListener mListener;
@@ -69,7 +71,7 @@ public class CupcakeScaleDragGestureDetector implements ScaleDragGestureDetector
                 if (null != mVelocityTracker) {
                     mVelocityTracker.addMovement(ev);
                 } else {
-                    Log.i(LOG_TAG, "Velocity tracker is null");
+                    Log.w(Sketch.TAG, NAME + ". Velocity tracker is null");
                 }
 
                 mLastTouchX = getActiveX(ev);

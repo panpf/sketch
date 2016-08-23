@@ -291,7 +291,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         ImageView imageView = getImageView();
         if (imageView != null) {
             if (scale < minScale || scale > maxScale) {
-                Log.i(Sketch.TAG, NAME + ". Scale must be within the range of minScale and maxScale");
+                Log.w(Sketch.TAG, NAME + ". Scale must be within the range of " + minScale + "(minScale) and " + maxScale + "(maxScale)");
                 return;
             }
 
@@ -895,6 +895,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             RectF mTempDst = new RectF(0, 0, viewWidth, viewHeight);
 
             if ((int) baseRotation % 180 != 0) {
+                //noinspection SuspiciousNameCombination
                 mTempSrc = new RectF(0, 0, drawableHeight, drawableWidth);
             }
 

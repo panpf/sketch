@@ -81,9 +81,9 @@ public class Stopwatch {
             useTimeCount += totalTime;
 
             Log.d(logTag, SketchUtils.concat(logName,
-                    " - ", builder.toString(),
+                    ". ", builder.toString(),
                     ", ", "average", "=", decimalFormat.format((double) useTimeCount / decodeCount), "ms",
-                    " - ", requestId));
+                    ". ", requestId));
             builder = null;
         }
     }

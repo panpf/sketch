@@ -109,7 +109,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, logName + " - " + "diskCacheDir: " + cacheDir.getPath());
+            Log.d(Sketch.TAG, logName + ". diskCacheDir: " + cacheDir.getPath());
         }
 
         try {

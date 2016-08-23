@@ -91,7 +91,7 @@ public class Configuration {
         this.placeholderImageMemoryCache = LruMemoryCache.createPlaceholder(context);
 
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, getInfo());
+            Log.d(Sketch.TAG, getInfo());
         }
     }
 
@@ -121,8 +121,7 @@ public class Configuration {
                 oldRequestExecutor.shutdown();
             }
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "requestExecutor", " (", requestExecutor.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setRequestExecutor", ". ", requestExecutor.getIdentifier()));
             }
         }
         return this;
@@ -147,8 +146,7 @@ public class Configuration {
                 oldDiskCache.close();
             }
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "diskCache", " (", diskCache.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setDiskCache", ". ", diskCache.getIdentifier()));
             }
         }
         return this;
@@ -173,8 +171,7 @@ public class Configuration {
                 oldMemoryCache.close();
             }
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "memoryCache", " (", memoryCache.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setMemoryCache", ". ", memoryCache.getIdentifier()));
             }
         }
         return this;
@@ -199,8 +196,7 @@ public class Configuration {
                 oldPlaceholderImageMemoryCache.close();
             }
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "placeholderImageMemoryCache", " (", placeholderImageMemoryCache.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setPlaceholderImageMemoryCache", ". ", placeholderImageMemoryCache.getIdentifier()));
             }
         }
         return this;
@@ -221,8 +217,7 @@ public class Configuration {
         if (imageDecoder != null) {
             this.imageDecoder = imageDecoder;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "imageDecoder", " (", imageDecoder.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setImageDecoder", ". ", imageDecoder.getIdentifier()));
             }
         }
         return this;
@@ -243,8 +238,7 @@ public class Configuration {
         if (httpStack != null) {
             this.httpStack = httpStack;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "httpStack", " (", httpStack.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setHttpStack", ". ", httpStack.getIdentifier()));
             }
         }
         return this;
@@ -265,8 +259,7 @@ public class Configuration {
         if (imageSizeCalculator != null) {
             this.imageSizeCalculator = imageSizeCalculator;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "imageSizeCalculator", " (", imageSizeCalculator.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setImageSizeCalculator", ". ", imageSizeCalculator.getIdentifier()));
             }
         }
         return this;
@@ -287,8 +280,7 @@ public class Configuration {
         if (defaultImageDisplayer != null) {
             this.defaultImageDisplayer = defaultImageDisplayer;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "defaultImageDisplayer", " (", defaultImageDisplayer.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setDefaultImageDisplayer", ". ", defaultImageDisplayer.getIdentifier()));
             }
         }
         return this;
@@ -309,8 +301,7 @@ public class Configuration {
         if (resizeImageProcessor != null) {
             this.resizeImageProcessor = resizeImageProcessor;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "resizeImageProcessor", " (", resizeImageProcessor.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setResizeImageProcessor", ". ", resizeImageProcessor.getIdentifier()));
             }
         }
         return this;
@@ -331,8 +322,7 @@ public class Configuration {
         if (helperFactory != null) {
             this.helperFactory = helperFactory;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "helperFactory", " (", helperFactory.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setHelperFactory", ". ", helperFactory.getIdentifier()));
             }
         }
         return this;
@@ -353,8 +343,7 @@ public class Configuration {
         if (requestFactory != null) {
             this.requestFactory = requestFactory;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "requestFactory", " (", requestFactory.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setRequestFactory", ". ", requestFactory.getIdentifier()));
             }
         }
         return this;
@@ -375,8 +364,7 @@ public class Configuration {
         if (resizeCalculator != null) {
             this.resizeCalculator = resizeCalculator;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "resizeCalculator", " (", resizeCalculator.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setResizeCalculator", ". ", resizeCalculator.getIdentifier()));
             }
         }
         return this;
@@ -396,8 +384,7 @@ public class Configuration {
         if (this.globalPauseLoad != globalPauseLoad) {
             this.globalPauseLoad = globalPauseLoad;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "globalPauseLoad", " (", globalPauseLoad, ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalPauseLoad", ". ", globalPauseLoad));
             }
         }
         return this;
@@ -417,8 +404,7 @@ public class Configuration {
         if (this.globalPauseDownload != globalPauseDownload) {
             this.globalPauseDownload = globalPauseDownload;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "globalPauseDownload", " (", globalPauseDownload, ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalPauseDownload", ". ", globalPauseDownload));
             }
         }
         return this;
@@ -449,8 +435,7 @@ public class Configuration {
             }
 
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "mobileNetworkGlobalPauseDownload", " (", isMobileNetworkGlobalPauseDownload(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setMobileNetworkGlobalPauseDownload", ". ", isMobileNetworkGlobalPauseDownload()));
             }
         }
         return this;
@@ -470,8 +455,7 @@ public class Configuration {
         if (this.globalLowQualityImage != globalLowQualityImage) {
             this.globalLowQualityImage = globalLowQualityImage;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "globalLowQualityImage", " (", globalLowQualityImage, ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalLowQualityImage", ". ", globalLowQualityImage));
             }
         }
         return this;
@@ -495,8 +479,7 @@ public class Configuration {
         if (this.globalInPreferQualityOverSpeed != globalInPreferQualityOverSpeed) {
             this.globalInPreferQualityOverSpeed = globalInPreferQualityOverSpeed;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "globalInPreferQualityOverSpeed", " (", globalInPreferQualityOverSpeed, ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalInPreferQualityOverSpeed", ". ", globalInPreferQualityOverSpeed));
             }
         }
         return this;
@@ -516,8 +499,7 @@ public class Configuration {
         if (this.globalDisableCacheInDisk != globalDisableCacheInDisk) {
             this.globalDisableCacheInDisk = globalDisableCacheInDisk;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "globalDisableCacheInDisk", " (", globalDisableCacheInDisk, ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalDisableCacheInDisk", ". ", globalDisableCacheInDisk));
             }
         }
         return this;
@@ -537,8 +519,7 @@ public class Configuration {
         if (this.globalDisableCacheInMemory != globalDisableCacheInMemory) {
             this.globalDisableCacheInMemory = globalDisableCacheInMemory;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "globalDisableCacheInMemory", " (", globalDisableCacheInMemory, ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalDisableCacheInMemory", ". ", globalDisableCacheInMemory));
             }
         }
         return this;
@@ -558,8 +539,7 @@ public class Configuration {
         if (imagePreprocessor != null) {
             this.imagePreprocessor = imagePreprocessor;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "imagePreprocessor", " (", imagePreprocessor.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setImagePreprocessor", ". ", imagePreprocessor.getIdentifier()));
             }
         }
         return this;
@@ -581,8 +561,7 @@ public class Configuration {
         if (exceptionMonitor != null) {
             this.exceptionMonitor = exceptionMonitor;
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ": ",
-                        "set", " - ", "errorCallback", " (", exceptionMonitor.getIdentifier(), ")"));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setExceptionMonitor", ". ", exceptionMonitor.getIdentifier()));
             }
         }
     }

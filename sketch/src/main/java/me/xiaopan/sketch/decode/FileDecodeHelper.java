@@ -26,7 +26,9 @@ import java.io.IOException;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.MaxSize;
 
 public class FileDecodeHelper implements DecodeHelper {
     protected String logName = "FileDecodeHelper";
@@ -48,17 +50,19 @@ public class FileDecodeHelper implements DecodeHelper {
     public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
         if (Sketch.isDebugMode()) {
             StringBuilder builder = new StringBuilder(logName)
-                    .append(" - " + "decodeSuccess");
+                    .append(". decodeSuccess");
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
-                builder.append(" - ").append("originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                builder.append(", ").append("targetSize").append("=").append(loadRequest.getOptions().getMaxSize().getWidth()).append("x").append(loadRequest.getOptions().getMaxSize().getHeight());
-                builder.append(", ").append("targetSizeScale").append("=").append(loadRequest.getSketch().getConfiguration().getImageSizeCalculator().getTargetSizeScale());
+                MaxSize maxSize = loadRequest.getOptions().getMaxSize();
+                ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
+                builder.append(". originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
+                builder.append(", ").append("targetSize").append("=").append(maxSize.getWidth()).append("x").append(maxSize.getHeight());
+                builder.append(", ").append("targetSizeScale").append("=").append(sizeCalculator.getTargetSizeScale());
                 builder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
                 builder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
             } else {
-                builder.append(" - ").append("unchanged");
+                builder.append(". unchanged");
             }
-            builder.append(" - ").append(loadRequest.getAttrs().getId());
+            builder.append(". ").append(loadRequest.getAttrs().getId());
             Log.d(Sketch.TAG, builder.toString());
         }
     }
@@ -67,8 +71,8 @@ public class FileDecodeHelper implements DecodeHelper {
     public void onDecodeFailed() {
         if (Sketch.isDebugMode()) {
             StringBuilder builder = new StringBuilder(logName);
-            builder.append(" - ").append("decode failed");
-            builder.append(", ").append("filePath").append("=").append(file.getPath());
+            builder.append(". decode failed");
+            builder.append(". filePath").append("=").append(file.getPath());
             if (file.exists()) {
                 builder.append(", ").append("fileLength").append("=").append(file.length());
             }

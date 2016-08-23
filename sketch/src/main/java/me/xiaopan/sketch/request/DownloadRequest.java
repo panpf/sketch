@@ -108,7 +108,7 @@ public class DownloadRequest extends AsyncRequest {
     protected void runDispatch() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("runDispatch", "canceled", "start dispatch");
+                printLogW("canceled", "runDispatch", "download request just start");
             }
             return;
         }
@@ -122,7 +122,7 @@ public class DownloadRequest extends AsyncRequest {
             DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
             if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
-                    printLogD("runDispatch", "diskCache");
+                    printLogD("from diskCache", "runDispatch");
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
                 downloadCompleted();
@@ -138,7 +138,7 @@ public class DownloadRequest extends AsyncRequest {
 
         // 下载
         if (Sketch.isDebugMode()) {
-            printLogD("runDispatch", "download");
+            printLogD("download", "runDispatch");
         }
         submitRunDownload();
     }
@@ -149,7 +149,7 @@ public class DownloadRequest extends AsyncRequest {
     void requestLevelIsLocal() {
         boolean isPauseDownload = options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
         if (Sketch.isDebugMode()) {
-            printLogW("runDispatch", "canceled", isPauseDownload ? "pause download" : "requestLevel is local");
+            printLogW("canceled", "runDispatch", isPauseDownload ? "pause download" : "requestLevel is local");
         }
         canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL);
     }
@@ -158,7 +158,7 @@ public class DownloadRequest extends AsyncRequest {
     protected void runDownload() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("runDownload", "canceled", "start download");
+                printLogW("canceled", "runDownload", "start download");
             }
             return;
         }
@@ -185,7 +185,7 @@ public class DownloadRequest extends AsyncRequest {
 
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("runDownload", "canceled", "download after");
+                printLogW("canceled", "runDownload", "download after");
             }
             return;
         }
@@ -197,7 +197,7 @@ public class DownloadRequest extends AsyncRequest {
     private DownloadResult download(DiskCache diskCache, String diskCacheKey) {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("runDownload", "canceled", "get disk cache edit lock after");
+                printLogW("canceled", "runDownload", "get disk cache edit lock after");
             }
             return null;
         }
@@ -227,7 +227,7 @@ public class DownloadRequest extends AsyncRequest {
 
                 if (isCanceled()) {
                     if (Sketch.isDebugMode()) {
-                        printLogW("runDownload", "canceled", "download failed");
+                        printLogW("canceled", "runDownload", "download failed");
                     }
                     break;
                 }
@@ -235,11 +235,11 @@ public class DownloadRequest extends AsyncRequest {
                 if (httpStack.canRetry(e) && retryCount < maxRetryCount) {
                     retryCount++;
                     if (Sketch.isDebugMode()) {
-                        printLogW("runDownload", "download failed", "retry");
+                        printLogW("download failed", "runDownload", "retry");
                     }
                 } else {
                     if (Sketch.isDebugMode()) {
-                        printLogE("runDownload", "download failed", "end");
+                        printLogE("download failed", "runDownload", "end");
                     }
                     break;
                 }
@@ -256,7 +256,7 @@ public class DownloadRequest extends AsyncRequest {
         if (isCanceled()) {
             httpResponse.releaseConnection();
             if (Sketch.isDebugMode()) {
-                printLogW("runDownload", "canceled", "connect after");
+                printLogW("canceled", "runDownload", "connect after");
             }
             return null;
         }
@@ -271,14 +271,14 @@ public class DownloadRequest extends AsyncRequest {
             e.printStackTrace();
             httpResponse.releaseConnection();
             if (Sketch.isDebugMode()) {
-                printLogE("runDownload", "get response code failed", "responseHeaders: " + httpResponse.getResponseHeadersString());
+                printLogE("get response code failed", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
             }
             return null;
         }
         if (responseCode != 200) {
             httpResponse.releaseConnection();
             if (Sketch.isDebugMode()) {
-                printLogE("runDownload", "response code exception", "responseHeaders: " + httpResponse.getResponseHeadersString());
+                printLogE("response code exception", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
             }
             return null;
         }
@@ -288,7 +288,7 @@ public class DownloadRequest extends AsyncRequest {
         if (contentLength <= 0) {
             httpResponse.releaseConnection();
             if (Sketch.isDebugMode()) {
-                printLogE("runDownload", "content length exception", "contentLength: " + contentLength, "responseHeaders: " + httpResponse.getResponseHeadersString());
+                printLogE("content length exception", "runDownload", "contentLength: " + contentLength, "responseHeaders: " + httpResponse.getResponseHeadersString());
             }
             return null;
         }
@@ -300,7 +300,7 @@ public class DownloadRequest extends AsyncRequest {
         if (isCanceled()) {
             SketchUtils.close(inputStream);
             if (Sketch.isDebugMode()) {
-                printLogW("runDownload", "canceled", "get input stream after");
+                printLogW("canceled", "runDownload", "get input stream after");
             }
             return null;
         }
@@ -353,13 +353,13 @@ public class DownloadRequest extends AsyncRequest {
 
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("runDownload", "canceled", "read data after", readFully ? "read fully" : "not read fully");
+                printLogW("canceled", "runDownload", "read data after", readFully ? "read fully" : "not read fully");
             }
             return null;
         }
 
         if (Sketch.isDebugMode()) {
-            printLogI("runDownload", "download success", "fileLength: " + completedLength + "/" + contentLength);
+            printLogI("download success", "runDownload", "fileLength: " + completedLength + "/" + contentLength);
         }
 
         // 提交磁盘缓存并返回
@@ -369,7 +369,7 @@ public class DownloadRequest extends AsyncRequest {
                 return new DownloadResult(diskCacheEntry, ImageFrom.NETWORK);
             } else {
                 if (Sketch.isDebugMode()) {
-                    printLogW("runDownload", "download after", "not found disk cache");
+                    printLogW("not found disk cache", "runDownload", "download after");
                 }
                 return null;
             }
@@ -438,7 +438,7 @@ public class DownloadRequest extends AsyncRequest {
     protected void runUpdateProgressInMainThread(int totalLength, int completedLength) {
         if (isFinished()) {
             if (Sketch.isDebugMode()) {
-                printLogW("runUpdateProgressInMainThread", "finished");
+                printLogW("finished", "runUpdateProgressInMainThread");
             }
             return;
         }
@@ -452,7 +452,7 @@ public class DownloadRequest extends AsyncRequest {
     protected void runCompletedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("runCompletedInMainThread", "canceled");
+                printLogW("canceled", "runCompletedInMainThread");
             }
             return;
         }
@@ -468,7 +468,7 @@ public class DownloadRequest extends AsyncRequest {
     protected void runFailedInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("runFailedInMainThread", "canceled");
+                printLogW("canceled", "runFailedInMainThread");
             }
             return;
         }
