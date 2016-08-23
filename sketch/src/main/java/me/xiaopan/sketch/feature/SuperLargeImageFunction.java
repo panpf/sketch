@@ -20,9 +20,9 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.drawable.BindDrawable;
 import me.xiaopan.sketch.feature.large.SuperLargeImageViewer;
+import me.xiaopan.sketch.feature.large.UpdateParams;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.DisplayParams;
 
@@ -74,7 +74,7 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
         if (superLargeImageViewer.isAvailable() || superLargeImageViewer.isInitializing()) {
             Drawable drawable = imageView.getDrawable();
             if (drawable != null) {
-                SuperLargeImageViewer.UpdateParams updateParams = superLargeImageViewer.getUpdateParams();
+                UpdateParams updateParams = superLargeImageViewer.getUpdateParams();
                 imageZoomer.getDrawMatrix(updateParams.getDrawMatrix());
                 imageZoomer.getVisibleRect(updateParams.getVisibleRect());
                 updateParams.setPreviewDrawableSize(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
@@ -96,26 +96,12 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
         }
     }
 
-    private void recycle() {
+    public void recycle() {
         superLargeImageViewer.recycle();
-    }
-
-    public void destroy() {
-        recycle();
     }
 
     @Override
     public void invalidate() {
         imageView.invalidate();
-    }
-
-    @Override
-    public void initCompleted(int imageWidth, int imageHeight, ImageFormat imageFormat) {
-
-    }
-
-    @Override
-    public void initFailed() {
-
     }
 }
