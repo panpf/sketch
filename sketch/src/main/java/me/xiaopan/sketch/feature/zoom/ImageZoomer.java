@@ -44,6 +44,8 @@ import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetectorCompat;
 import me.xiaopan.sketch.util.MatrixUtils;
 
 // TODO DrawerLayout包ViewPager的时候左右滑动有问题
+// TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
+// TODO: 16/8/23 测试旋转功能
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener, FlingTranslateRunner.FlingTranslateListener {
     public static final String NAME = "ImageZoomer";
 
@@ -242,16 +244,35 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         lastScaleFocusX = focusX;
         lastScaleFocusY = focusY;
 
-        // 持续缩放时可以突破最大比例和最小比例的限制，这样用户体验更好
-        float currentScale = getScale();
-        float maxScaleEdge = maxScale * 1.5f;
-        float minScaleEdge = minScale * 0.5f;
-        if ((currentScale < maxScaleEdge || scaleFactor < 1f) && (currentScale > minScaleEdge || scaleFactor > 1f)) {
-            if (onScaleChangeListener != null) {
-                onScaleChangeListener.onScaleChange(scaleFactor, focusX, focusY);
+        float oldSuppScale = MatrixUtils.getMatrixScale(suppMatrix);
+        float newSuppScale = oldSuppScale * scaleFactor;
+
+        if (scaleFactor > 1.0f) {
+            // 放大的时候，如果当前已经超过最大缩放比例，就调慢缩放速度
+            // 这样就能模拟出超过最大缩放比例时很难再继续放大有种拉橡皮筋的感觉
+            float maxSuppScale = maxScale / MatrixUtils.getMatrixScale(baseMatrix);
+            if (oldSuppScale >= maxSuppScale) {
+                float addScale = newSuppScale - oldSuppScale;
+                addScale *= 0.4;
+                newSuppScale = oldSuppScale + addScale;
+                scaleFactor = newSuppScale / oldSuppScale;
             }
-            suppMatrix.postScale(scaleFactor, scaleFactor, focusX, focusY);
-            checkAndDisplayMatrix();
+        } else if (scaleFactor < 1.0f) {
+            // 缩小的时候，如果当前已经小于最小缩放比例，就调慢缩放速度
+            // 这样就能模拟出小于最小缩放比例时很难再继续缩小有种拉橡皮筋的感觉
+            float minSuppScale = minScale / MatrixUtils.getMatrixScale(baseMatrix);
+            if (oldSuppScale <= minSuppScale) {
+                float addScale = newSuppScale - oldSuppScale;
+                addScale *= 0.4;
+                newSuppScale = oldSuppScale + addScale;
+                scaleFactor = newSuppScale / oldSuppScale;
+            }
+        }
+
+        suppMatrix.postScale(scaleFactor, scaleFactor, focusX, focusY);
+        checkAndDisplayMatrix();
+        if (onScaleChangeListener != null) {
+            onScaleChangeListener.onScaleChange(scaleFactor, focusX, focusY);
         }
     }
 
@@ -585,6 +606,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return getDisplayRect(getDrawMatrix());
     }
 
+    /**
+     * 获取预览图片上用户真实看到区域
+     */
     public void getVisibleRect(RectF rectF) {
         ImageView imageView = getImageView();
         if (imageView == null) {
