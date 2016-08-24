@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -601,6 +602,14 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
+     * 设置GIF标识图片
+     */
+    public void setShowGifFlag(int gifFlagDrawableResId) {
+        //noinspection deprecation
+        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
+    }
+
+    /**
      * 设置是否显示GIF标识
      */
     @SuppressWarnings("unused")
@@ -616,14 +625,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             showGifFlagFunction = null;
             invalidate();
         }
-    }
-
-    /**
-     * 设置GIF标识图片
-     */
-    public void setShowGifFlag(int gifFlagDrawableResId) {
-        //noinspection deprecation
-        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
     }
 
     /**
@@ -721,6 +722,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 开启超大图片功能
      */
     public void setEnableSuperLargeImageFunction(boolean enableSuperLargeImageFunction) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1) {
+            return;
+        }
+
         if (enableSuperLargeImageFunction == isEnableSuperLargeImageFunction()) {
             return;
         }
@@ -978,40 +983,40 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     public static abstract class Function {
-        public void onAttachedToWindow(){
+        public void onAttachedToWindow() {
 
         }
 
         /**
          * @return 是否拦截事件
          */
-        public boolean onTouchEvent(MotionEvent event){
+        public boolean onTouchEvent(MotionEvent event) {
             return false;
         }
 
-        public void onLayout(boolean changed, int left, int top, int right, int bottom){
+        public void onLayout(boolean changed, int left, int top, int right, int bottom) {
 
         }
 
-        public void setScaleType(ScaleType scaleType){
+        public void setScaleType(ScaleType scaleType) {
 
         }
 
-        public void onDraw(Canvas canvas){
+        public void onDraw(Canvas canvas) {
 
         }
 
         /**
          * @return true：是否需要调用父setImageDrawable清空图片
          */
-        public boolean onDetachedFromWindow(){
+        public boolean onDetachedFromWindow() {
             return false;
         }
 
         /**
          * @return 是否需要调用invalidate()刷新ImageView
          */
-        public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable){
+        public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
             return false;
         }
 
@@ -1019,42 +1024,42 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         /**
          * @return 是否需要调用invalidate()刷新ImageView
          */
-        public boolean onDisplay(UriScheme uriScheme){
+        public boolean onDisplay(UriScheme uriScheme) {
             return false;
         }
 
         /**
          * @return 是否需要调用invalidate()刷新ImageView
          */
-        public boolean onDisplayStarted(){
+        public boolean onDisplayStarted() {
             return false;
         }
 
         /**
          * @return 是否需要调用invalidate()刷新ImageView
          */
-        public boolean onUpdateDownloadProgress(int totalLength, int completedLength){
+        public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
             return false;
         }
 
         /**
          * @return 是否需要调用invalidate()刷新ImageView
          */
-        public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType){
+        public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
             return false;
         }
 
         /**
          * @return 是否需要调用invalidate()刷新ImageView
          */
-        public boolean onDisplayFailed(FailedCause failedCause){
+        public boolean onDisplayFailed(FailedCause failedCause) {
             return false;
         }
 
         /**
          * @return 是否需要调用invalidate()刷新ImageView
          */
-        public boolean onDisplayCanceled(CancelCause cancelCause){
+        public boolean onDisplayCanceled(CancelCause cancelCause) {
             return false;
         }
     }

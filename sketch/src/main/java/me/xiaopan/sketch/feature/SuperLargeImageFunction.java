@@ -18,6 +18,7 @@ package me.xiaopan.sketch.feature;
 
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.drawable.BindDrawable;
@@ -29,7 +30,6 @@ import me.xiaopan.sketch.request.DisplayParams;
 /**
  * 显示超级大图功能
  */
-// TODO: 16/8/14 BitmapRegionDecoder从api10 GINGERBREAD_MR1才开始支持
 // TODO: 16/8/9 BitmapRegionDecoder仅支持jpg，png，bmp等图片
 // TODO: 16/8/17 原始尺寸小于屏幕宽高2倍图片就不使用超大图功能
 public class SuperLargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangedListener, SuperLargeImageViewer.Callback {
@@ -38,70 +38,88 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
 
     public SuperLargeImageFunction(SketchImageView imageView) {
         this.imageView = imageView;
-        superLargeImageViewer = new SuperLargeImageViewer(imageView.getContext(), this);
-        if (!imageView.isEnableZoomFunction()) {
-            imageView.setEnableZoomFunction(true);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            superLargeImageViewer = new SuperLargeImageViewer(imageView.getContext(), this);
+            if (!imageView.isEnableZoomFunction()) {
+                imageView.setEnableZoomFunction(true);
+            }
+            imageView.getImageZoomFunction().getImageZoomer().addOnMatrixChangeListener(this);
         }
-        imageView.getImageZoomFunction().getImageZoomer().addOnMatrixChangeListener(this);
     }
 
     @Override
     public void onAttachedToWindow() {
-        resetImage();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            resetImage();
+        }
     }
 
     @Override
     public void onDraw(Canvas canvas) {
-        if (superLargeImageViewer.isAvailable()) {
-            superLargeImageViewer.draw(canvas);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            if (superLargeImageViewer.isAvailable()) {
+                superLargeImageViewer.draw(canvas);
+            }
         }
     }
 
     @Override
     public boolean onDetachedFromWindow() {
-        recycle();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            recycle();
+        }
         return false;
     }
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        resetImage();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            resetImage();
+        }
         return false;
     }
 
     @Override
     public void onMatrixChanged(ImageZoomer imageZoomer) {
-        if (superLargeImageViewer.isAvailable() || superLargeImageViewer.isInitializing()) {
-            Drawable drawable = imageView.getDrawable();
-            if (drawable != null) {
-                UpdateParams updateParams = superLargeImageViewer.getUpdateParams();
-                imageZoomer.getDrawMatrix(updateParams.getDrawMatrix());
-                imageZoomer.getVisibleRect(updateParams.getVisibleRect());
-                updateParams.setPreviewDrawableSize(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
-                updateParams.setImageViewSize(imageZoomer.getImageViewWidth(), imageZoomer.getImageViewHeight());
-                superLargeImageViewer.update(updateParams);
-            } else {
-                superLargeImageViewer.update(null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            if (superLargeImageViewer.isAvailable() || superLargeImageViewer.isInitializing()) {
+                Drawable drawable = imageView.getDrawable();
+                if (drawable != null) {
+                    UpdateParams updateParams = superLargeImageViewer.getUpdateParams();
+                    imageZoomer.getDrawMatrix(updateParams.getDrawMatrix());
+                    imageZoomer.getVisibleRect(updateParams.getVisibleRect());
+                    updateParams.setPreviewDrawableSize(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
+                    updateParams.setImageViewSize(imageZoomer.getImageViewWidth(), imageZoomer.getImageViewHeight());
+                    superLargeImageViewer.update(updateParams);
+                } else {
+                    superLargeImageViewer.update(null);
+                }
             }
         }
     }
 
     private void resetImage() {
-        Drawable drawable = imageView.getDrawable();
-        DisplayParams displayParams = imageView.getDisplayParams();
-        if (drawable != null && !(drawable instanceof BindDrawable) && displayParams != null) {
-            superLargeImageViewer.setImage(displayParams.attrs.getUri());
-        } else {
-            superLargeImageViewer.setImage(null);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            Drawable drawable = imageView.getDrawable();
+            DisplayParams displayParams = imageView.getDisplayParams();
+            if (drawable != null && !(drawable instanceof BindDrawable) && displayParams != null) {
+                superLargeImageViewer.setImage(displayParams.attrs.getUri());
+            } else {
+                superLargeImageViewer.setImage(null);
+            }
         }
     }
 
     public void recycle() {
-        superLargeImageViewer.recycle();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            superLargeImageViewer.recycle();
+        }
     }
 
     @Override
     public void invalidate() {
-        imageView.invalidate();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
+            imageView.invalidate();
+        }
     }
 }

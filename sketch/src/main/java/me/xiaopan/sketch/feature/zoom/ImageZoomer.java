@@ -43,7 +43,7 @@ import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetector;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetectorCompat;
 import me.xiaopan.sketch.util.MatrixUtils;
 
-// TODO DrawerLayout包ViewPager的时候左右滑动有问题
+// TODO DrawerLayout包ViewPager的时候左右滑动有问题（先看看是不是DrawerLayout与ViewPager的兼容问题导致的）
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
 // TODO: 16/8/23 测试旋转功能
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener, FlingTranslateRunner.FlingTranslateListener {
