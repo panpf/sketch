@@ -27,6 +27,7 @@ import java.text.DecimalFormat;
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
@@ -74,6 +75,7 @@ public class LargeImageFragment extends MyFragment {
         imageView.setEnableZoomFunction(true);
         imageView.setEnableSuperLargeImageFunction(true);
 
+        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
         imageView.displayImage(imageUri);
 
         final ImageZoomer imageZoomer = imageView.getImageZoomFunction().getImageZoomer();
