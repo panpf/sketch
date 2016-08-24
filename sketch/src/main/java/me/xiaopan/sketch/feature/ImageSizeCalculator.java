@@ -30,6 +30,7 @@ import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.MaxSize;
 import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.util.OpenGLUtils;
 
 /**
  * 图片最大尺寸和修正尺寸计算器
@@ -37,6 +38,7 @@ import me.xiaopan.sketch.request.Resize;
 public class ImageSizeCalculator implements Identifier {
     protected String logName = "ImageSizeCalculator";
 
+    private int openGLMaxTextureSize = -1;
     private float targetSizeScale = 1.25f;
 
     /**
@@ -175,29 +177,36 @@ public class ImageSizeCalculator implements Identifier {
 
         int inSampleSize = 1;
         if (targetWidth <= 0 && targetHeight != 0) {
+            // 目标宽小于等于0时，只要高度满足要求即可
             while (outHeight / inSampleSize > targetHeight) {
                 inSampleSize *= 2;
             }
         } else if (targetHeight <= 0) {
+            // 目标高小于等于0时，只要宽度满足要求即可
             while (outWidth / inSampleSize > targetWidth) {
                 inSampleSize *= 2;
             }
         } else {
-            // 首先根据缩放后只要有任何一边小于等于目标即可的规则计算一遍inSampleSize
-            do {
+            // 目标宽高都大于0时，首先有任意一边在缩放后小于目标尺寸即可
+            while (outWidth / inSampleSize > targetWidth && outHeight / inSampleSize > targetHeight){
                 inSampleSize *= 2;
             }
-            while ((outWidth / inSampleSize) > targetWidth && (outHeight / inSampleSize) > targetHeight);
 
             // 然后根据比较像素总数的原则过滤掉那些比较极端的一边特别小，一边特别大的图片
             // 比如目标尺寸是400x400，图片的尺寸是6000*600，缩放后是3000*300
             // 这样看来的确是满足了第一个条件了，但是图片的尺寸依然很大
             // 因此这一步我们根据像素总数来过滤，规则是总像素数不得大于目标尺寸像素数的两倍
-            long totalPixels = (outWidth / inSampleSize) * (outHeight / inSampleSize);
             final long totalReqPixelsCap = targetWidth * targetHeight * 2;
-            while (totalPixels > totalReqPixelsCap) {
+            while ((outWidth / inSampleSize) * (outHeight / inSampleSize) > totalReqPixelsCap) {
                 inSampleSize *= 2;
-                totalPixels /= 2;
+            }
+
+            // 最后宽高不能大于OpenGL所允许的最大尺寸
+            if (openGLMaxTextureSize == -1) {
+                openGLMaxTextureSize = OpenGLUtils.getMaxTextureSize();
+            }
+            while (outWidth / inSampleSize > openGLMaxTextureSize || outHeight / inSampleSize > openGLMaxTextureSize) {
+                inSampleSize *= 2;
             }
         }
 
