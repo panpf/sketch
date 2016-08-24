@@ -16,6 +16,10 @@ Drawable：
 >* ``修改``. BindFixedRecycleBitmapDrawable改名为BindFixedBitmapDrawable
 >* ````. 
 
+其它：
+优化inSampleSize计算规则，修复根据像素数过滤较大图片时应该除以4，却写成了除以2的BUG
+优化inSampleSize计算规则，防止图片超过OpenGL MAX_TEXTURE_SIZE的限制
+
 WIKI：
 >* readme中感谢[chrisbanes](https://github.com/chrisbanes)/[PhotoView](https://github.com/chrisbanes/PhotoView)
 >* readme中感谢[davemorrissey](https://github.com/davemorrissey)/[subsampling-scale-image-view](https://github.com/davemorrissey/subsampling-scale-image-view)
