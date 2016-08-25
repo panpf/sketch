@@ -16,25 +16,23 @@
 
 package me.xiaopan.sketch.feature.large;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.ImageFormat;
 
 class DecodeHandler extends Handler {
+    private static final String NAME = "DecodeHandler";
     private static final int WHAT_DECODE = 1001;
-    private static final int WHAT_INIT = 1002;
 
     private WeakReference<ImageRegionDecodeExecutor> reference;
-
-    private final Object currentDecodeButlerLock = new Object();
-    private DecodeButler currentDecodeButler;
 
     public DecodeHandler(Looper looper, ImageRegionDecodeExecutor decodeExecutor) {
         super(looper);
@@ -43,122 +41,96 @@ class DecodeHandler extends Handler {
 
     @Override
     public void handleMessage(Message msg) {
+        ImageRegionDecodeExecutor decodeExecutor = reference.get();
+        if (decodeExecutor != null) {
+            decodeExecutor.getMainHandler().cancelDelayDestroyThread();
+        }
+
         switch (msg.what) {
-            case WHAT_INIT:
-                init((String) msg.obj);
-                break;
             case WHAT_DECODE:
-                decode();
+                decode(decodeExecutor, msg.arg1);
                 break;
         }
+
+        if (decodeExecutor != null) {
+            decodeExecutor.getMainHandler().postDelayRecycleDecodeThread();
+        }
     }
 
-    public void postInit(String imageUri){
-        obtainMessage(DecodeHandler.WHAT_INIT, imageUri).sendToTarget();
+    public void postDecode(int decodeKey) {
+        removeMessages(DecodeHandler.WHAT_DECODE);
+
+        Message message = obtainMessage(DecodeHandler.WHAT_DECODE);
+        message.arg1 = decodeKey;
+        message.sendToTarget();
     }
 
-    private void init(String imageUri) {
-        ImageRegionDecodeExecutor decodeExecutor = reference.get();
+    private void decode(ImageRegionDecodeExecutor decodeExecutor, int decodeKey) {
         if (decodeExecutor == null) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeKey: " + decodeKey);
+            }
             return;
         }
 
-        Context context = decodeExecutor.getContext().getApplicationContext();
-        try {
-            final ImageRegionDecoder decoder = ImageRegionDecoder.build(context, imageUri);
-            decodeExecutor.getMainHandler().postInitCompleted(decoder);
-        } catch (final Exception e) {
-            e.printStackTrace();
-            decodeExecutor.getMainHandler().postInitFailed(e);
-        }
-    }
-
-    public void postDecode(){
-        obtainMessage(DecodeHandler.WHAT_DECODE).sendToTarget();
-    }
-
-    private void decode() {
-        ImageRegionDecodeExecutor decodeExecutor = reference.get();
-        if (decodeExecutor == null) {
+        int newestDecodeKey = decodeExecutor.getDecodeKey();
+        if (decodeKey != newestDecodeKey) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME +
+                        ". decode key expired" +
+                        ". before decode" +
+                        ". decodeKey: " + decodeKey +
+                        ", newestDecodeKey: " + newestDecodeKey);
+            }
             return;
         }
-
-        decodeExecutor.getMainHandler().cancelDelayDestroyThread();
 
         DecodeParams decodeParams = new DecodeParams();
         decodeParams.set(decodeExecutor.getDecodeParams());
-
-        if (!decodeParams.isEmpty()) {
-            DecodeButler decodeButler = new DecodeButler();
-            synchronized (currentDecodeButlerLock){
-                currentDecodeButler = decodeButler;
+        if (decodeParams.isEmpty()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". decode params is empty. decodeKey: " + decodeKey);
             }
-
-            Bitmap bitmap = decodeButler.decode(decodeExecutor.getDecoder(), decodeParams);
-            if (bitmap != null && !bitmap.isRecycled()) {
-                if (!decodeButler.isForceCanceled()) {
-                    decodeParams.setBitmap(bitmap);
-                    decodeExecutor.getMainHandler().postDecodeCompleted(decodeParams);
-                } else {
-                    bitmap.recycle();
-                }
-            }
-
-            synchronized (currentDecodeButlerLock){
-                currentDecodeButler = null;
-            }
+            return;
         }
 
-        decodeExecutor.getMainHandler().postDelayDestroyThread();
+        ImageRegionDecoder decoder = decodeExecutor.getDecoder();
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = decodeParams.getInSampleSize();
+        ImageFormat imageFormat = decoder.getImageFormat();
+        if (imageFormat != null) {
+            options.inPreferredConfig = imageFormat.getConfig(false);
+        }
+
+        Bitmap bitmap = decoder.decodeRegion(decodeParams.getSrcRect(), options);
+        if (bitmap == null || bitmap.isRecycled()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME +
+                        ". bitmap is null or recycled" +
+                        ". after decode" +
+                        ". decodeKey: " + decodeKey);
+            }
+            return;
+        }
+
+        newestDecodeKey = decodeExecutor.getDecodeKey();
+        if (decodeKey != newestDecodeKey) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME +
+                        ". decode key expired" +
+                        ". after decode" +
+                        ". decodeKey: " + decodeKey +
+                        ", newestDecodeKey: " + newestDecodeKey);
+            }
+            bitmap.recycle();
+            return;
+        }
+
+        decodeParams.setBitmap(bitmap);
+        decodeExecutor.getMainHandler().postDecodeCompleted(decodeParams, decodeKey);
     }
 
-    public void clean(){
-        removeMessages(WHAT_INIT);
-
+    public void clean() {
         removeMessages(WHAT_DECODE);
-        synchronized (currentDecodeButlerLock){
-            if (currentDecodeButler != null) {
-                currentDecodeButler.cancel(true);
-                currentDecodeButler = null;
-            }
-        }
-    }
-
-    public void cancelDecode(boolean force){
-        removeMessages(WHAT_DECODE);
-        synchronized (currentDecodeButlerLock){
-            if (currentDecodeButler != null) {
-                currentDecodeButler.cancel(force);
-                currentDecodeButler = null;
-            }
-        }
-    }
-
-    static class DecodeButler {
-        private int cancelStatus;  // 0：未取消；1：软取消；2：强取消
-
-        @SuppressWarnings("unused")
-        public boolean isCanceled() {
-            return cancelStatus != 0;
-        }
-
-        public boolean isForceCanceled() {
-            return cancelStatus == 2;
-        }
-
-        public void cancel(boolean force) {
-            cancelStatus = force ? 2 : 1;
-        }
-
-        public Bitmap decode(ImageRegionDecoder decoder, DecodeParams decodeParams) {
-            BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inSampleSize = decodeParams.getInSampleSize();
-            ImageFormat imageFormat = decoder.getImageFormat();
-            if (imageFormat != null) {
-                options.inPreferredConfig = imageFormat.getConfig(false);
-            }
-
-            return decoder.decodeRegion(decodeParams.getSrcRect(), options);
-        }
     }
 }

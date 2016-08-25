@@ -157,6 +157,30 @@ public class FixedBitmapDrawable extends Drawable implements RecyclerDrawable {
     }
 
     @Override
+    public String getImageId() {
+        return wrapperDrawable != null ? wrapperDrawable.getImageId() : null;
+    }
+
+    @Override
+    public void setImageId(String imageId) {
+        if (wrapperDrawable != null) {
+            wrapperDrawable.setImageId(imageId);
+        }
+    }
+
+    @Override
+    public String getImageUri() {
+        return wrapperDrawable != null ? wrapperDrawable.getImageUri() : null;
+    }
+
+    @Override
+    public void setImageUri(String imageUri) {
+        if (wrapperDrawable != null) {
+            wrapperDrawable.setImageUri(imageUri);
+        }
+    }
+
+    @Override
     public int getOriginWidth() {
         return wrapperDrawable != null ? wrapperDrawable.getOriginWidth() : 0;
     }

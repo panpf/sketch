@@ -193,6 +193,8 @@ public class DisplayRequest extends LoadRequest {
             }
 
             SketchBitmapDrawable bitmapDrawable = new SketchBitmapDrawable(bitmap);
+            bitmapDrawable.setImageId(getAttrs().getId());
+            bitmapDrawable.setImageUri(getAttrs().getUri());
             bitmapDrawable.setOriginWidth(loadResult.getOriginWidth());
             bitmapDrawable.setOriginHeight(loadResult.getOriginHeight());
             bitmapDrawable.setMimeType(loadResult.getMimeType());

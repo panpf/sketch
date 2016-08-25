@@ -42,10 +42,12 @@ import me.xiaopan.sketch.feature.zoom.gestures.OnScaleDragGestureListener;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetector;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetectorCompat;
 import me.xiaopan.sketch.util.MatrixUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 // TODO DrawerLayout包ViewPager的时候左右滑动有问题（先看看是不是DrawerLayout与ViewPager的兼容问题导致的）
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
 // TODO: 16/8/23 测试旋转功能
+// TODO: 16/8/23 对于竖图，可以默认使用midScale
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener, FlingTranslateRunner.FlingTranslateListener {
     public static final String NAME = "ImageZoomer";
 
@@ -565,9 +567,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             midScale = widthScale * 2;
         }
 
-        if (drawable instanceof SketchDrawable) {
+        Drawable finalDrawable = SketchUtils.getLastDrawable(drawable);
+        if (finalDrawable instanceof SketchDrawable) {
             // 根据图片的原始大小计算最大缩放比例，保证一比一显示
-            SketchDrawable sketchDrawable = (SketchDrawable) drawable;
+            SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
             int originDrawableWidth = sketchDrawable.getOriginWidth();
             int originDrawableHeight = sketchDrawable.getOriginHeight();
             maxScale = Math.max((float) originDrawableWidth / drawableWidth, (float) originDrawableHeight / drawableHeight);
@@ -577,6 +580,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         } else {
             maxScale = midScale * 2;
         }
+
+        // TODO: 16/8/24 会有minScale和midScale非常接近的情况，这样的话就直接把midScale和maxScale弄成一样的即可
     }
 
     /**

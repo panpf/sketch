@@ -81,6 +81,7 @@ public class ImageSizeCalculator implements Identifier {
      * @return maxSize
      */
     public MaxSize getDefaultImageMaxSize(Context context) {
+        // TODO: 16/8/25 调大默认的maxSize
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
         return new MaxSize((int) (displayMetrics.widthPixels * 0.75f), (int) (displayMetrics.heightPixels * 0.75f));
     }

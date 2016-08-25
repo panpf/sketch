@@ -15,9 +15,11 @@ import java.nio.ByteBuffer;
 import me.xiaopan.sketch.util.SketchUtils;
 import pl.droidsonroids.gif.GifDrawable;
 
-public class SketchGifDrawable extends GifDrawable implements SketchDrawable{
+public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
     protected String logName = "SketchGifDrawable";
 
+    private String imageId;
+    private String imageUri;
     private int originWidth;
     private int originHeight;
     private String mimeType;
@@ -60,6 +62,26 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable{
 
     public SketchGifDrawable(InputStream stream) throws IOException {
         super(stream);
+    }
+
+    @Override
+    public String getImageId() {
+        return imageId;
+    }
+
+    @Override
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
+    }
+
+    @Override
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    @Override
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 
     @Override

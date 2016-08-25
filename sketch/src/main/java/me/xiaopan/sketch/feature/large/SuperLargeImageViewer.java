@@ -23,6 +23,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.text.TextUtils;
 import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
@@ -51,6 +52,7 @@ public class SuperLargeImageViewer {
     private UpdateParams waitUpdateParams;
     private UpdateParams updateParams = new UpdateParams();
     private RectF lastVisibleRect;
+    private boolean running;
 
     public SuperLargeImageViewer(Context context, Callback callback) {
         this.context = context.getApplicationContext();
@@ -59,7 +61,7 @@ public class SuperLargeImageViewer {
     }
 
     public void draw(Canvas canvas) {
-        if (bitmap == null || bitmap.isRecycled() || bitmapSrcRect.isEmpty() || bitmapVisibleRect.isEmpty()) {
+        if (running && bitmap == null || bitmap.isRecycled() || bitmapSrcRect.isEmpty() || bitmapVisibleRect.isEmpty()) {
             return;
         }
 
@@ -71,11 +73,19 @@ public class SuperLargeImageViewer {
 
     public void setImage(String imageUri) {
         clean();
-        executor.initDecoder(imageUri);
+
+        if (!TextUtils.isEmpty(imageUri)) {
+            running = true;
+            executor.initDecoder(imageUri);
+        } else {
+            running = false;
+            executor.initDecoder(null);
+        }
     }
 
     private void clean() {
         executor.clean();
+
         if (bitmap != null) {
             bitmap.recycle();
             bitmap = null;
@@ -228,6 +238,7 @@ public class SuperLargeImageViewer {
     }
 
     public void recycle() {
+        running = false;
         executor.recycle();
     }
 
@@ -236,18 +247,18 @@ public class SuperLargeImageViewer {
     }
 
     public boolean isAvailable() {
-        return executor.isReady();
+        return running && executor.isReady();
     }
 
     public boolean isInitializing() {
-        return executor.isInitializing();
+        return running && executor.isInitializing();
     }
 
     public interface Callback {
         void invalidate();
     }
 
-    private class ExecutorCallback implements ImageRegionDecodeExecutor.Callback{
+    private class ExecutorCallback implements ImageRegionDecodeExecutor.Callback {
 
         @Override
         public Context getContext() {
@@ -255,7 +266,14 @@ public class SuperLargeImageViewer {
         }
 
         @Override
-        public void onInitCompleted(){
+        public void onInitCompleted() {
+            if (!running) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, NAME + ". stop running. initCompleted");
+                }
+                return;
+            }
+
             if (waitUpdateParams != null && !waitUpdateParams.isEmpty()) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, NAME + ". initCompleted. Dealing waiting update params");
@@ -271,6 +289,13 @@ public class SuperLargeImageViewer {
 
         @Override
         public void onInitFailed(Exception e) {
+            if (!running) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, NAME + ". stop running. initFailed");
+                }
+                return;
+            }
+
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, NAME + ". initFailed");
             }
@@ -278,10 +303,23 @@ public class SuperLargeImageViewer {
 
         @Override
         public void onDecodeCompleted(Rect srcRect, int inSampleSize, Bitmap newBitmap, RectF visibleRect, float scale) {
+            if (!running) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, NAME +
+                            ". stop running" +
+                            ". decodeCompleted" +
+                            ". visibleRect=" + visibleRect.toString() +
+                            ", inSampleSize=" + inSampleSize);
+                }
+                newBitmap.recycle();
+                return;
+            }
+
             if (newBitmap == null || newBitmap.isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". decodeCompleted" +
-                            ". newBitmap recycled on show image region" +
+                    Log.w(Sketch.TAG, NAME +
+                            ". new bitmap recycled" +
+                            ". decodeCompleted" +
                             ". visibleRect=" + visibleRect.toString() +
                             ", inSampleSize=" + inSampleSize);
                 }
@@ -290,8 +328,9 @@ public class SuperLargeImageViewer {
 
             if (SuperLargeImageViewer.this.scale != scale) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". decodeCompleted" +
-                            ". scale changed on show image region" +
+                    Log.w(Sketch.TAG, NAME +
+                            ". scale changed" +
+                            ". decodeCompleted" +
                             ". visibleRect=" + visibleRect.toString() +
                             ", inSampleSize=" + inSampleSize);
                 }
@@ -301,8 +340,9 @@ public class SuperLargeImageViewer {
 
             if (Sketch.isDebugMode()) {
                 Bitmap.Config newBitmapConfig = newBitmap.getConfig();
-                Log.i(Sketch.TAG, NAME + ". decodeCompleted" +
+                Log.i(Sketch.TAG, NAME +
                         ". show image region" +
+                        ". decodeCompleted" +
                         ". visibleRect=" + visibleRect.toString() +
                         ", inSampleSize=" + inSampleSize +
                         ", srcRect=" + srcRect.toString() +

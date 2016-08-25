@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.HandlerThread;
+import android.os.Looper;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -36,16 +37,25 @@ class ImageRegionDecodeExecutor {
     private final Object handlerThreadLock = new Object();
     private final Object decoderLock = new Object();
     private final DecodeParams decodeParams = new DecodeParams();
-    private Callback callback;
-    private ImageRegionDecoder decoder;
-    private HandlerThread handlerThread;
-    private DecodeHandler decodeHandler;
 
-    private MainHandler mainHandler;
+    private Callback callback;
+
+    private HandlerThread handlerThread;
+
+    private boolean running;
     private boolean initializing;
+    private InitHandler initHandler;
+    private MainHandler mainHandler;
+    private DecodeHandler decodeHandler;
+    private ImageRegionDecoder decoder;
+    private KeyNumber initKeyNumber;
+    private KeyNumber decodeKeyNumber;
 
     public ImageRegionDecodeExecutor(Callback callback) {
         this.callback = callback;
+        this.initKeyNumber = new KeyNumber();
+        this.decodeKeyNumber = new KeyNumber();
+        this.mainHandler = new MainHandler(Looper.getMainLooper(), this);
     }
 
     /**
@@ -66,40 +76,11 @@ class ImageRegionDecodeExecutor {
                     }
 
                     decodeHandler = new DecodeHandler(handlerThread.getLooper(), this);
-                    mainHandler = new MainHandler(this);
+                    initHandler = new InitHandler(handlerThread.getLooper(), this);
 
-                    mainHandler.postDelayDestroyThread();
+                    mainHandler.postDelayRecycleDecodeThread();
                 }
             }
-        }
-    }
-
-    /**
-     * 初始化解码器，初始化结果会通过Callback的onInitCompleted()或onInitFailed(Exception)方法回调
-     */
-    public void initDecoder(String imageUri) {
-        initializing = true;
-        synchronized (decoderLock) {
-            if (decoder != null) {
-                decoder.recycle();
-                decoder = null;
-            }
-        }
-
-        if (!TextUtils.isEmpty(imageUri)) {
-            installHandlerThread();
-            decodeHandler.postInit(imageUri);
-        }
-    }
-
-    /**
-     * 提交一个解码请求
-     */
-    public void submit(Rect srcRect, int inSampleSize, RectF visibleRect, float scale) {
-        installHandlerThread();
-        synchronized (this.decodeParams) {
-            this.decodeParams.set(srcRect, inSampleSize, visibleRect, scale);
-            decodeHandler.postDecode();
         }
     }
 
@@ -107,6 +88,13 @@ class ImageRegionDecodeExecutor {
      * 取消所有的待办任务
      */
     public void clean() {
+        initKeyNumber.refresh();
+        decodeKeyNumber.refresh();
+
+        if (initHandler != null) {
+            initHandler.clean();
+        }
+
         if (decodeHandler != null) {
             decodeHandler.clean();
         }
@@ -117,10 +105,65 @@ class ImageRegionDecodeExecutor {
     }
 
     /**
+     * 初始化解码器，初始化结果会通过Callback的onInitCompleted()或onInitFailed(Exception)方法回调
+     */
+    public void initDecoder(String imageUri) {
+        clean();
+
+        synchronized (decoderLock) {
+            if (decoder != null) {
+                decoder.recycle();
+                decoder = null;
+            }
+        }
+
+        if (!TextUtils.isEmpty(imageUri)) {
+            running = true;
+            initializing = true;
+            installHandlerThread();
+            initHandler.postInit(imageUri, initKeyNumber.getKey());
+        } else {
+            running = false;
+            initializing = false;
+        }
+    }
+
+    /**
+     * 提交一个解码请求
+     */
+    public void submit(Rect srcRect, int inSampleSize, RectF visibleRect, float scale) {
+        if (!running) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". stop running. submit");
+            }
+            return;
+        }
+
+        installHandlerThread();
+        synchronized (this.decodeParams) {
+            this.decodeParams.set(srcRect, inSampleSize, visibleRect, scale);
+            decodeHandler.postDecode(decodeKeyNumber.getKey());
+        }
+    }
+
+    /**
      * 回收所有资源
      */
     public void recycle() {
+        running = false;
         clean();
+        recycleDecodeThread();
+    }
+
+    public void recycleDecodeThread(){
+        if (initHandler != null) {
+            initHandler.clean();
+        }
+
+        if (decodeHandler != null) {
+            decodeHandler.clean();
+        }
+
         synchronized (handlerThreadLock) {
             if (handlerThread != null) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -144,36 +187,10 @@ class ImageRegionDecodeExecutor {
      * @param force 是否强制取消
      */
     public void cancelDecode(boolean force) {
-        decodeHandler.cancelDecode(force);
-    }
-
-    /**
-     * 初始化完成回调
-     */
-    void initCompleted(ImageRegionDecoder decoder) {
-        synchronized (decoderLock) {
-            this.decoder = decoder;
+        if (force) {
+            decodeKeyNumber.refresh();
         }
-
-        initializing = false;
-        callback.onInitCompleted();
-    }
-
-    /**
-     * 初始化失败回调
-     */
-    void initFailed(Exception e) {
-        initializing = false;
-        callback.onInitFailed(e);
-    }
-
-    /**
-     * 解码完成回调
-     */
-    void decodeCompleted(DecodeParams decodeParams) {
-        callback.onDecodeCompleted(decodeParams.getSrcRect(),
-                decodeParams.getInSampleSize(), decodeParams.getBitmap(),
-                decodeParams.getVisibleRect(), decodeParams.getScale());
+        decodeHandler.clean();
     }
 
     /**
@@ -181,15 +198,61 @@ class ImageRegionDecodeExecutor {
      */
     public boolean isReady() {
         synchronized (decoderLock) {
-            return decoder != null && !initializing;
+            return running && decoder != null && !initializing;
         }
+    }
+
+    void initCompleted(ImageRegionDecoder decoder) {
+        if (!running) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". stop running. initCompleted");
+            }
+            decoder.recycle();
+            return;
+        }
+
+        synchronized (decoderLock) {
+            ImageRegionDecodeExecutor.this.decoder = decoder;
+        }
+
+        initializing = false;
+        callback.onInitCompleted();
+    }
+
+    void initFailed(Exception e) {
+        if (!running) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". stop running. initFailed");
+            }
+            return;
+        }
+
+        initializing = false;
+        callback.onInitFailed(e);
+    }
+
+    void decodeCompleted(DecodeParams decodeParams) {
+        if (!running) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". stop running. decodeCompleted");
+            }
+            Bitmap bitmap = decodeParams.getBitmap();
+            if (bitmap != null) {
+                bitmap.recycle();
+            }
+            return;
+        }
+
+        callback.onDecodeCompleted(decodeParams.getSrcRect(),
+                decodeParams.getInSampleSize(), decodeParams.getBitmap(),
+                decodeParams.getVisibleRect(), decodeParams.getScale());
     }
 
     /**
      * 正在初始化？
      */
     public boolean isInitializing() {
-        return initializing;
+        return running && initializing;
     }
 
     Context getContext() {
@@ -206,6 +269,14 @@ class ImageRegionDecodeExecutor {
 
     MainHandler getMainHandler() {
         return mainHandler;
+    }
+
+    public int getDecodeKey() {
+        return decodeKeyNumber.getKey();
+    }
+
+    public int getInitKey() {
+        return initKeyNumber.getKey();
     }
 
     public interface Callback {

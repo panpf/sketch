@@ -641,4 +641,21 @@ public class SketchUtils {
         Bitmap bitmap = gifDrawable.getBitmap();
         return getInfo("GifDrawable", bitmap, "image/gif", (int) gifDrawable.getAllocationByteCount());
     }
+
+    public static Drawable getLastDrawable(Drawable drawable) {
+        if (drawable != null) {
+            if (drawable instanceof LayerDrawable) {
+                LayerDrawable layerDrawable = (LayerDrawable) drawable;
+                for (int i = layerDrawable.getNumberOfLayers() - 1; i >= 0; i--) {
+                    Drawable childDrawable = getLastDrawable(layerDrawable.getDrawable(i));
+                    if (childDrawable != null) {
+                        return childDrawable;
+                    }
+                }
+            } else {
+                return drawable;
+            }
+        }
+        return null;
+    }
 }

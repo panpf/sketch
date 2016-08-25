@@ -17,6 +17,25 @@
 package me.xiaopan.sketch.drawable;
 
 public interface SketchDrawable {
+    /**
+     * 获取图片ID
+     */
+    String getImageId();
+
+    /**
+     * 设置图片ID
+     */
+    void setImageId(String imageId);
+
+    /**
+     * 获取图片URI
+     */
+    String getImageUri();
+
+    /**
+     * 设置图片URI
+     */
+    void setImageUri(String imageUri);
 
     /**
      * 获取图片原始宽

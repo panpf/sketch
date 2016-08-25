@@ -79,6 +79,8 @@ public class DefaultImageDecoder implements ImageDecoder {
             try {
                 SketchGifDrawable gifDrawable = decodeHelper.getGifDrawable();
                 if (gifDrawable != null) {
+                    gifDrawable.setImageId(loadRequest.getAttrs().getId());
+                    gifDrawable.setImageUri(loadRequest.getAttrs().getUri());
                     gifDrawable.setOriginWidth(originWidth);
                     gifDrawable.setOriginHeight(originHeight);
                     gifDrawable.setMimeType(mimeType);
@@ -184,7 +186,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                     decimalFormat = new DecimalFormat("#.##");
                 }
                 Log.d(Sketch.TAG, SketchUtils.concat(logName,
-                        ". decode use time", useTime, "ms",
+                        ". decode use time. ", useTime, "ms",
                         ", average", decimalFormat.format((double) useTimeCount / decodeCount), "ms",
                         ". ", loadRequest.getAttrs().getId()));
             }

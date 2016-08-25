@@ -26,6 +26,8 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class SketchBitmapDrawable extends BitmapDrawable implements RecyclerDrawable {
     protected String logName = "SketchBitmapDrawable";
 
+    private String imageId;
+    private String imageUri;
     private int originWidth;
     private int originHeight;
     private String mimeType;
@@ -37,10 +39,31 @@ public class SketchBitmapDrawable extends BitmapDrawable implements RecyclerDraw
 
     public SketchBitmapDrawable(Bitmap bitmap) {
         super(bitmap);
+        setTargetDensity(bitmap.getDensity());
     }
 
     void setLogName(String logName) {
         this.logName = logName;
+    }
+
+    @Override
+    public String getImageId() {
+        return imageId;
+    }
+
+    @Override
+    public void setImageId(String imageId) {
+        this.imageId = imageId;
+    }
+
+    @Override
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    @Override
+    public void setImageUri(String imageUri) {
+        this.imageUri = imageUri;
     }
 
     @Override

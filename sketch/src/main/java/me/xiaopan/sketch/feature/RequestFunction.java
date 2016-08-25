@@ -20,7 +20,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.drawable.BindFixedBitmapDrawable;
+import me.xiaopan.sketch.drawable.BindDrawable;
 import me.xiaopan.sketch.drawable.RecyclerDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.request.CancelCause;
@@ -52,34 +52,33 @@ public class RequestFunction extends SketchImageView.Function {
      * @param callingStation 调用位置
      * @param drawable       Drawable
      * @param isDisplayed    是否已显示
-     * @return true：drawable或其子Drawable是RecycleDrawable
+     * @return true：drawable或其子Drawable是SketchDrawable
      */
     private static boolean notifyDrawable(String callingStation, Drawable drawable, final boolean isDisplayed) {
-        if (drawable == null) {
-            return false;
-        } else if (drawable instanceof BindFixedBitmapDrawable) {
-            BindFixedBitmapDrawable bindFixedRecycleBitmapDrawable = (BindFixedBitmapDrawable) drawable;
-            DisplayRequest displayRequest = bindFixedRecycleBitmapDrawable.getRequest();
-            if (displayRequest != null && !displayRequest.isFinished()) {
-                displayRequest.cancel(CancelCause.BE_REPLACED_ON_SET_DRAWABLE);
+        boolean isSketchDrawable = false;
+        if (drawable != null) {
+            if (drawable instanceof LayerDrawable) {
+                LayerDrawable layerDrawable = (LayerDrawable) drawable;
+                for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
+                    isSketchDrawable |= notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);
+                }
+            } else {
+                if (!isDisplayed && drawable instanceof BindDrawable) {
+                    BindDrawable bindDrawable = (BindDrawable) drawable;
+                    DisplayRequest displayRequest = bindDrawable.getRequest();
+                    if (displayRequest != null && !displayRequest.isFinished()) {
+                        displayRequest.cancel(CancelCause.BE_REPLACED_ON_SET_DRAWABLE);
+                    }
+                }
+
+                if (drawable instanceof RecyclerDrawable) {
+                    ((RecyclerDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
+                }
+
+                isSketchDrawable = drawable instanceof SketchDrawable;
             }
-            bindFixedRecycleBitmapDrawable.setIsDisplayed(callingStation, isDisplayed);
-            return true;
-        } else if (drawable instanceof RecyclerDrawable) {
-            ((RecyclerDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
-            return true;
-        } else if (drawable instanceof SketchDrawable) {
-            return true;
-        } else if (drawable instanceof LayerDrawable) {
-            LayerDrawable layerDrawable = (LayerDrawable) drawable;
-            boolean result = false;
-            for (int i = 0, z = layerDrawable.getNumberOfLayers(); i < z; i++) {
-                result |= notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);
-            }
-            return result;
-        } else {
-            return false;
         }
+        return isSketchDrawable;
     }
 
     @Override
