@@ -14,7 +14,7 @@ Drawable：
 >* ``修改``. RecycleBitmapDrawable改名为SketchBitmapDrawable
 >* ``修改``. FixedRecycleBitmapDrawable改名为FixedBitmapDrawable
 >* ``修改``. BindFixedRecycleBitmapDrawable改名为BindFixedBitmapDrawable
->* ````. 
+>* ``BUG``. 修复SketchBitmapDrawable由于没有设置TargetDensity导致始终以160的默认像素密度来缩小图片的BUG
 
 其它：
 优化inSampleSize计算规则，修复根据像素数过滤较大图片时应该除以4，却写成了除以2的BUG
