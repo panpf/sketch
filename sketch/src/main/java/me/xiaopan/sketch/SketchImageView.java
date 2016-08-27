@@ -680,59 +680,60 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
-     * 是否开启了缩放功能
+     * 是否支持缩放
      */
-    public boolean isEnableZoomFunction() {
+    public boolean isSupportZoom() {
         return imageZoomFunction != null;
     }
 
     /**
-     * 开启缩放功能
+     * 设置是否支持缩放
      */
-    public void setEnableZoomFunction(boolean enableZoomFunction) {
+    public void setSupportZoom(boolean supportZoom) {
         if (imageZoomFunction != null) {
             imageZoomFunction.setFromSuperLargeImageFunction(false);
         }
 
-        if (enableZoomFunction == isEnableZoomFunction()) {
+        if (supportZoom == isSupportZoom()) {
             return;
         }
 
-        if (enableZoomFunction) {
+        if (supportZoom) {
             imageZoomFunction = new ImageZoomFunction(this);
-            imageZoomFunction.onDrawableChanged("setEnableZoomFunction", null, getDrawable());
+            imageZoomFunction.onDrawableChanged("setSupportZoom", null, getDrawable());
         } else {
             imageZoomFunction.recycle();
             imageZoomFunction = null;
         }
     }
 
+    /**
+     * 获取缩放功能控制对象
+     */
     public ImageZoomFunction getImageZoomFunction() {
         return imageZoomFunction;
     }
 
-    /**
-     * 是否开启了超大图片功能
-     */
-    public boolean isEnableSuperLargeImageFunction() {
+    @Override
+    public boolean isSupportSuperLargeImage() {
         return superLargeImageFunction != null;
     }
 
     /**
-     * 开启超大图片功能
+     * 设置是否支持超大图片
      */
-    public void setEnableSuperLargeImageFunction(boolean enableSuperLargeImageFunction) {
+    public void setSupportSuperLargeImage(boolean supportSuperLargeImage) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1) {
             return;
         }
 
-        if (enableSuperLargeImageFunction == isEnableSuperLargeImageFunction()) {
+        if (supportSuperLargeImage == isSupportSuperLargeImage()) {
             return;
         }
 
-        if (enableSuperLargeImageFunction) {
-            if (!isEnableZoomFunction()) {
-                setEnableZoomFunction(true);
+        if (supportSuperLargeImage) {
+            if (!isSupportZoom()) {
+                setSupportZoom(true);
                 imageZoomFunction.setFromSuperLargeImageFunction(true);
             }
 
@@ -742,10 +743,18 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             superLargeImageFunction.recycle();
             superLargeImageFunction = null;
 
-            if (isEnableZoomFunction() && imageZoomFunction.isFromSuperLargeImageFunction()) {
-                setEnableZoomFunction(false);
+            if (isSupportZoom() && imageZoomFunction.isFromSuperLargeImageFunction()) {
+                setSupportZoom(false);
             }
         }
+    }
+
+    /**
+     * 获取超大图功能控制对象
+     */
+    @SuppressWarnings("unused")
+    public SuperLargeImageFunction getSuperLargeImageFunction() {
+        return superLargeImageFunction;
     }
 
     /**

@@ -142,4 +142,9 @@ public interface ImageViewInterface {
      * 设置显示参数集，此方法由Sketch调用，你无需理会即可
      */
     void setDisplayParams(DisplayParams displayParams);
+
+    /**
+     * 是否支持超大图片
+     */
+    boolean isSupportSuperLargeImage();
 }
