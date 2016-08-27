@@ -17,8 +17,8 @@ Drawable：
 >* ``BUG``. 修复SketchBitmapDrawable由于没有设置TargetDensity导致始终以160的默认像素密度来缩小图片的BUG
 
 其它：
-优化inSampleSize计算规则，修复根据像素数过滤较大图片时应该除以4，却写成了除以2的BUG
-优化inSampleSize计算规则，防止图片超过OpenGL MAX_TEXTURE_SIZE的限制
+优化inSampleSize计算规则，先先根据像素数过滤，然后再根据优化OpenGL的MAX_TEXTURE_SIZE过滤，最后如果是为超大图功能加载预览图的话，当缩小2倍的时为了节省内存考虑还不如缩小4倍（缩小1倍时不会启用超大图功能，因此无需处理）
+默认maxSize改为屏幕的宽高，不再乘以0.75
 
 WIKI：
 >* readme中感谢[chrisbanes](https://github.com/chrisbanes)/[PhotoView](https://github.com/chrisbanes/PhotoView)
