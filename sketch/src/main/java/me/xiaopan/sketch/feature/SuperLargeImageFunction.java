@@ -34,6 +34,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 显示超级大图功能
  */
 // TODO: 16/8/9 BitmapRegionDecoder仅支持jpg，png，bmp等图片
+// TODO: 16/8/25 当支持超大图时，如果图片无法完整显示就将预览图狠狠的压缩（非jpg、png除外）
 public class SuperLargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangedListener, SuperLargeImageViewer.Callback {
     private static final String NAME = "SuperLargeImageFunction";
 
@@ -44,8 +45,8 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
         this.imageView = imageView;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1) {
             superLargeImageViewer = new SuperLargeImageViewer(imageView.getContext(), this);
-            if (!imageView.isEnableZoomFunction()) {
-                imageView.setEnableZoomFunction(true);
+            if (!imageView.isSupportZoom()) {
+                imageView.setSupportZoom(true);
             }
             imageView.getImageZoomFunction().getImageZoomer().addOnMatrixChangeListener(this);
         }

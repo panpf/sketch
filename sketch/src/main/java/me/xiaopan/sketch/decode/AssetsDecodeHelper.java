@@ -26,6 +26,7 @@ import java.io.InputStream;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -66,13 +67,14 @@ public class AssetsDecodeHelper implements DecodeHelper {
             StringBuilder builder = new StringBuilder(logName)
                     .append(". decodeSuccess");
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
-                builder.append(". originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                builder.append(", ").append("targetSize").append("=").append(loadRequest.getOptions().getMaxSize().getWidth()).append("x").append(loadRequest.getOptions().getMaxSize().getHeight());
-                builder.append(", ").append("targetSizeScale").append("=").append(loadRequest.getSketch().getConfiguration().getImageSizeCalculator().getTargetSizeScale());
-                builder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
-                builder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+                ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
+                builder.append(". originalSize=").append(originalSize.x).append("x").append(originalSize.y);
+                builder.append(", targetSize=").append(loadRequest.getOptions().getMaxSize().getWidth()).append("x").append(loadRequest.getOptions().getMaxSize().getHeight());
+                builder.append(", targetSizeScale=").append(sizeCalculator.getTargetSizeScale());
+                builder.append(", inSampleSize=").append(inSampleSize);
+                builder.append(", finalSize=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
             } else {
-                builder.append(". ").append("unchanged");
+                builder.append(". unchanged");
             }
             builder.append(". ").append(loadRequest.getAttrs().getId());
             Log.d(Sketch.TAG, builder.toString());

@@ -32,6 +32,8 @@ import me.xiaopan.sketch.request.Resize;
  * 圆角图片处理器
  */
 public class RoundedCornerImageProcessor implements ImageProcessor {
+    protected String logName = "RoundedCornerImageProcessor";
+
     private float[] cornerRadius;
 
     public RoundedCornerImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
@@ -49,10 +51,10 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        builder.append("RoundedCornerImageProcessor");
+        builder.append(logName);
         if (cornerRadius != null) {
             builder.append("(")
-                    .append("cornerRadius").append("=").append("[")
+                    .append("cornerRadius=[")
                     .append(cornerRadius[0]).append("x").append(cornerRadius[1])
                     .append(",")
                     .append(cornerRadius[2]).append("x").append(cornerRadius[3])

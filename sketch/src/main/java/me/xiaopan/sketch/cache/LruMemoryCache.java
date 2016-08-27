@@ -181,7 +181,7 @@ public class LruMemoryCache implements MemoryCache {
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(logName)
                 .append("(")
-                .append("maxSize").append("=").append(Formatter.formatFileSize(context, getMaxSize()))
+                .append("maxSize=").append(Formatter.formatFileSize(context, getMaxSize()))
                 .append(")");
     }
 

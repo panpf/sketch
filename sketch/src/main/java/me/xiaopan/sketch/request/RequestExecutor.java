@@ -143,7 +143,7 @@ public class RequestExecutor implements Identifier {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(logName).append("(").append(shutdown ? "shutdown" : "running").append(")");
+        return builder.append(logName).append("(").append(shutdown ? "shutdown" : "running)");
     }
 
     public void shutdown() {

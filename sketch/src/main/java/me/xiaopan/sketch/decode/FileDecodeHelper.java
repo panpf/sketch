@@ -54,11 +54,11 @@ public class FileDecodeHelper implements DecodeHelper {
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
                 ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
-                builder.append(". originalSize").append("=").append(originalSize.x).append("x").append(originalSize.y);
-                builder.append(", ").append("targetSize").append("=").append(maxSize.getWidth()).append("x").append(maxSize.getHeight());
-                builder.append(", ").append("targetSizeScale").append("=").append(sizeCalculator.getTargetSizeScale());
-                builder.append(", ").append("inSampleSize").append("=").append(inSampleSize);
-                builder.append(", ").append("finalSize").append("=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+                builder.append(". originalSize=").append(originalSize.x).append("x").append(originalSize.y);
+                builder.append(", targetSize=").append(maxSize.getWidth()).append("x").append(maxSize.getHeight());
+                builder.append(", targetSizeScale=").append(sizeCalculator.getTargetSizeScale());
+                builder.append(", inSampleSize=").append(inSampleSize);
+                builder.append(", finalSize=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
             } else {
                 builder.append(". unchanged");
             }
@@ -72,9 +72,9 @@ public class FileDecodeHelper implements DecodeHelper {
         if (Sketch.isDebugMode()) {
             StringBuilder builder = new StringBuilder(logName);
             builder.append(". decode failed");
-            builder.append(". filePath").append("=").append(file.getPath());
+            builder.append(". filePath=").append(file.getPath());
             if (file.exists()) {
-                builder.append(", ").append("fileLength").append("=").append(file.length());
+                builder.append(", fileLength=").append(file.length());
             }
             Log.e(Sketch.TAG, builder.toString());
         }

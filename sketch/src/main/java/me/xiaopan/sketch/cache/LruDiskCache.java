@@ -337,11 +337,11 @@ public class LruDiskCache implements DiskCache {
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(logName)
                 .append("(")
-                .append("maxSize").append("=").append(Formatter.formatFileSize(context, maxSize))
+                .append("maxSize=").append(Formatter.formatFileSize(context, maxSize))
                 .append(",")
-                .append("appVersionCode").append("=").append(appVersionCode)
+                .append("appVersionCode=").append(appVersionCode)
                 .append(",")
-                .append("cacheDir").append("=").append(cacheDir.getPath())
+                .append("cacheDir=").append(cacheDir.getPath())
                 .append(")");
     }
 

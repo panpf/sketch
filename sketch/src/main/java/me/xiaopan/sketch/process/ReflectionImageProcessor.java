@@ -33,6 +33,8 @@ import me.xiaopan.sketch.request.Resize;
  * 倒影图片处理器
  */
 public class ReflectionImageProcessor implements ImageProcessor {
+    protected String logName = "ReflectionImageProcessor";
+
     private int reflectionSpacing;
     private float reflectionScale;
 
@@ -58,11 +60,11 @@ public class ReflectionImageProcessor implements ImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append("ReflectionImageProcessor")
+        return builder.append(logName)
                 .append("(")
-                .append("scale").append("=").append(reflectionScale)
+                .append("scale=").append(reflectionScale)
                 .append(",")
-                .append("spacing").append("=").append(reflectionSpacing)
+                .append("spacing=").append(reflectionSpacing)
                 .append(")");
     }
 

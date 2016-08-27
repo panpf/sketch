@@ -62,9 +62,9 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(logName)
                 .append("(")
-                .append("duration").append("=").append(duration)
+                .append("duration=").append(duration)
                 .append(",")
-                .append("color").append("=").append(color)
+                .append("color=").append(color)
                 .append(")");
     }
 

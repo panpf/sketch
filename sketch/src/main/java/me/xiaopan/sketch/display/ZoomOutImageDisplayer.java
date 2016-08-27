@@ -85,12 +85,12 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
     public StringBuilder appendIdentifier(StringBuilder builder) {
         builder.append(logName)
                 .append("(")
-                .append("duration").append("=").append(duration)
+                .append("duration=").append(duration)
                 .append(",")
-                .append("fromX").append("=").append(fromX)
+                .append("fromX=").append(fromX)
                 .append(",")
-                .append("fromY").append("=").append(fromY)
-                .append(",").append("interpolator").append("=").append(interpolator != null ? interpolator.getClass().getSimpleName() : null)
+                .append("fromY=").append(fromY)
+                .append(",interpolator=").append(interpolator != null ? interpolator.getClass().getSimpleName() : null)
                 .append(")");
         return builder;
     }

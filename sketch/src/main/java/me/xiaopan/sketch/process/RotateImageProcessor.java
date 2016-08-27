@@ -26,6 +26,8 @@ import me.xiaopan.sketch.request.Resize;
  * 旋转图片处理器
  */
 public class RotateImageProcessor extends ResizeImageProcessor {
+    protected String logName = "RotateImageProcessor";
+
     private int degrees;
 
     public RotateImageProcessor(int degrees) {
@@ -58,9 +60,9 @@ public class RotateImageProcessor extends ResizeImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder stringBuilder) {
-        return stringBuilder.append("RotateImageProcessor")
+        return stringBuilder.append(logName)
                 .append("(")
-                .append("degrees").append("=").append(degrees)
+                .append("degrees=").append(degrees)
                 .append(")");
     }
 }

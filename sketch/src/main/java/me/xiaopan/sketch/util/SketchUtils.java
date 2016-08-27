@@ -20,14 +20,19 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
+import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+import android.opengl.EGL14;
+import android.opengl.GLES10;
+import android.opengl.GLES20;
 import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
@@ -52,6 +57,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.microedition.khronos.egl.EGL10;
+import javax.microedition.khronos.egl.EGLConfig;
+import javax.microedition.khronos.egl.EGLContext;
+import javax.microedition.khronos.egl.EGLDisplay;
+import javax.microedition.khronos.egl.EGLSurface;
+
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.display.ImageDisplayer;
@@ -64,6 +75,8 @@ import me.xiaopan.sketch.request.ImageViewInterface;
 import pl.droidsonroids.gif.GifDrawable;
 
 public class SketchUtils {
+
+    private static final float[] matrixValues = new float[9];
 
     /**
      * 读取APK的图标
@@ -139,6 +152,7 @@ public class SketchUtils {
      *
      * @return true：清空成功；false：清空失败
      */
+    @SuppressWarnings("WeakerAccess")
     public static boolean cleanDir(File dir) {
         if (dir == null || !dir.exists() || !dir.isDirectory()) {
             return true;
@@ -285,6 +299,7 @@ public class SketchUtils {
     /**
      * 获取当前进程的名字
      */
+    @SuppressWarnings("WeakerAccess")
     public static String getProcessName(Context context) {
         int pid = android.os.Process.myPid();
         ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
@@ -311,7 +326,7 @@ public class SketchUtils {
     /**
      * 获取短的当前进程的名字，例如进程名字为com.my.app:push，那么短名字就是:push
      */
-    @SuppressWarnings("unused")
+    @SuppressWarnings({"unused", "WeakerAccess"})
     public static String getSimpleProcessName(Context context) {
         String processName = getProcessName(context);
         if (processName == null) {
@@ -325,6 +340,7 @@ public class SketchUtils {
     /**
      * 获取App缓存目录，优先考虑SDCard上的缓存目录
      */
+    @SuppressWarnings("WeakerAccess")
     public static File getAppCacheDir(Context context) {
         File appCacheDir = null;
         if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
@@ -339,6 +355,7 @@ public class SketchUtils {
     /**
      * 获取给定目录的可用大小
      */
+    @SuppressWarnings("WeakerAccess")
     public static long getAvailableBytes(File dir) {
         if (!dir.exists() && !dir.mkdirs()) {
             return 0;
@@ -347,6 +364,7 @@ public class SketchUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return dirStatFs.getAvailableBytes();
         } else {
+            //noinspection deprecation
             return (long) dirStatFs.getAvailableBlocks() * dirStatFs.getBlockSize();
         }
     }
@@ -363,6 +381,7 @@ public class SketchUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             return dirStatFs.getTotalBytes();
         } else {
+            //noinspection deprecation
             return (long) dirStatFs.getBlockCount() * dirStatFs.getBlockSize();
         }
     }
@@ -372,6 +391,7 @@ public class SketchUtils {
      *
      * @return 所有可用的SD卡的路径
      */
+    @SuppressWarnings("WeakerAccess")
     @SuppressLint("LongLogTag")
     @TargetApi(Build.VERSION_CODES.GINGERBREAD)
     public static String[] getAllAvailableSdcardPath(Context context) {
@@ -444,7 +464,8 @@ public class SketchUtils {
         return storagePathList.toArray(new String[storagePathList.size()]);
     }
 
-    public static String addProcessName(Context context, String dirName) {
+    @SuppressWarnings("WeakerAccess")
+    public static String appendProcessName(Context context, String dirName) {
         // 目录名字加上进程名字的后缀，不同的进程不同目录，以兼容多进程
         String simpleProcessName = SketchUtils.getSimpleProcessName(context);
         if (simpleProcessName != null) {
@@ -460,9 +481,10 @@ public class SketchUtils {
 
     public static File getDefaultSketchCacheDir(Context context, String dirName, boolean compatManyProcess) {
         File appCacheDir = SketchUtils.getAppCacheDir(context);
-        return new File(appCacheDir, compatManyProcess ? addProcessName(context, dirName) : dirName);
+        return new File(appCacheDir, compatManyProcess ? appendProcessName(context, dirName) : dirName);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public static boolean testCreateFile(File cacheDir) throws Exception {
         File parentDir = cacheDir;
         while (parentDir != null) {
@@ -521,7 +543,7 @@ public class SketchUtils {
         }
         appCacheDirs.add(context.getCacheDir());
 
-        String diskCacheDirName = compatManyProcess ? addProcessName(context, dirName) : dirName;
+        String diskCacheDirName = compatManyProcess ? appendProcessName(context, dirName) : dirName;
 
         NoSpaceException noSpaceException = null;
         UnableCreateFileException unableCreateFileException = null;
@@ -657,5 +679,177 @@ public class SketchUtils {
             }
         }
         return null;
+    }
+
+    /**
+     * Helper method that 'unpacks' a Matrix and returns the required value
+     *
+     * @param matrix     - Matrix to unpack
+     * @param whichValue - Which value from Matrix.M* to return
+     * @return float - returned value
+     */
+    @SuppressWarnings("unused")
+    public static float getMatrixValue(Matrix matrix, int whichValue) {
+        synchronized (matrixValues){
+            matrix.getValues(matrixValues);
+            return matrixValues[whichValue];
+        }
+    }
+
+    /**
+     * 获取Matrix的缩放比例
+     */
+    public static float getMatrixScale(Matrix matrix) {
+        synchronized (matrixValues){
+            matrix.getValues(matrixValues);
+            float scaleX = matrixValues[Matrix.MSCALE_X];
+            float scaleY = matrixValues[Matrix.MSKEW_Y];
+            return (float) Math.sqrt((float) Math.pow(scaleX, 2) + (float) Math.pow(scaleY, 2));
+        }
+    }
+
+    /**
+     * 获取OpenGL的版本
+     */
+    @SuppressWarnings("unused")
+    public static String getOpenGLVersion(Context context){
+        ActivityManager am =(ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+        ConfigurationInfo info = am.getDeviceConfigurationInfo();
+        return info.getGlEsVersion();
+    }
+
+    /**
+     * 获取OpenGL所允许的图片的最大尺寸(单边长)
+     */
+    public static int getOpenGLMaxTextureSize() {
+        int maxTextureSize = 0;
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                maxTextureSize = getOpenGLMaxTextureSizeJB1();
+            } else {
+                maxTextureSize = getOpenGLMaxTextureSizeBase();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if (maxTextureSize == 0) {
+            maxTextureSize = 4096;
+        }
+
+        return maxTextureSize;
+    }
+
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    private static int getOpenGLMaxTextureSizeJB1() {
+        // Then get a hold of the default display, and initialize.
+        // This could get more complex if you have to deal with devices that could have multiple displays,
+        // but will be sufficient for a typical phone/tablet:
+        android.opengl.EGLDisplay dpy = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
+        int[] vers = new int[2];
+        EGL14.eglInitialize(dpy, vers, 0, vers, 1);
+
+        // Next, we need to find a config. Since we won't use this context for rendering,
+        // the exact attributes aren't very critical:
+        int[] configAttr = {
+                EGL14.EGL_COLOR_BUFFER_TYPE, EGL14.EGL_RGB_BUFFER,
+                EGL14.EGL_LEVEL, 0,
+                EGL14.EGL_RENDERABLE_TYPE, EGL14.EGL_OPENGL_ES2_BIT,
+                EGL14.EGL_SURFACE_TYPE, EGL14.EGL_PBUFFER_BIT,
+                EGL14.EGL_NONE
+        };
+        android.opengl.EGLConfig[] configs = new android.opengl.EGLConfig[1];
+        int[] numConfig = new int[1];
+        EGL14.eglChooseConfig(dpy, configAttr, 0,
+                configs, 0, 1, numConfig, 0);
+        //noinspection StatementWithEmptyBody
+        if (numConfig[0] == 0) {
+            // TROUBLE! No config found.
+        }
+        android.opengl.EGLConfig config = configs[0];
+
+        // To make a context current, which we will need later,
+        // you need a rendering surface, even if you don't actually plan to render.
+        // To satisfy this requirement, create a small offscreen (Pbuffer) surface:
+        int[] surfAttr = {
+                EGL14.EGL_WIDTH, 64,
+                EGL14.EGL_HEIGHT, 64,
+                EGL14.EGL_NONE
+        };
+        android.opengl.EGLSurface surf = EGL14.eglCreatePbufferSurface(dpy, config, surfAttr, 0);
+
+        // Next, create the context:
+        int[] ctxAttrib = {
+                EGL14.EGL_CONTEXT_CLIENT_VERSION, 2,
+                EGL14.EGL_NONE
+        };
+        android.opengl.EGLContext ctx = EGL14.eglCreateContext(dpy, config, EGL14.EGL_NO_CONTEXT, ctxAttrib, 0);
+
+        // Ready to make the context current now:
+        EGL14.eglMakeCurrent(dpy, surf, surf, ctx);
+
+        // If all of the above succeeded (error checking was omitted), you can make your OpenGL calls now:
+        int[] maxSize = new int[1];
+        GLES20.glGetIntegerv(GLES20.GL_MAX_TEXTURE_SIZE, maxSize, 0);
+
+        // Once you're all done, you can tear down everything:
+        EGL14.eglMakeCurrent(dpy, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE,
+                EGL14.EGL_NO_CONTEXT);
+        EGL14.eglDestroySurface(dpy, surf);
+        EGL14.eglDestroyContext(dpy, ctx);
+        EGL14.eglTerminate(dpy);
+
+        return maxSize[0];
+    }
+
+    private static int getOpenGLMaxTextureSizeBase() {
+        // In JELLY_BEAN will collapse
+        if (Build.VERSION.SDK_INT == Build.VERSION_CODES.JELLY_BEAN) {
+            return 0;
+        }
+
+        EGL10 egl = (EGL10) EGLContext.getEGL();
+
+        EGLDisplay dpy = egl.eglGetDisplay(EGL10.EGL_DEFAULT_DISPLAY);
+        int[] vers = new int[2];
+        egl.eglInitialize(dpy, vers);
+
+        int[] configAttr = {
+                EGL10.EGL_COLOR_BUFFER_TYPE, EGL10.EGL_RGB_BUFFER,
+                EGL10.EGL_LEVEL, 0,
+                EGL10.EGL_SURFACE_TYPE, EGL10.EGL_PBUFFER_BIT,
+                EGL10.EGL_NONE
+        };
+        EGLConfig[] configs = new EGLConfig[1];
+        int[] numConfig = new int[1];
+        egl.eglChooseConfig(dpy, configAttr, configs, 1, numConfig);
+        //noinspection StatementWithEmptyBody
+        if (numConfig[0] == 0) {
+            // TROUBLE! No config found.
+        }
+        EGLConfig config = configs[0];
+
+        int[] surfAttr = new int[]{
+                EGL10.EGL_WIDTH, 64,
+                EGL10.EGL_HEIGHT, 64,
+                EGL10.EGL_NONE
+        };
+        EGLSurface surf = egl.eglCreatePbufferSurface(dpy, config, surfAttr);
+        final int EGL_CONTEXT_CLIENT_VERSION = 0x3098;  // missing in EGL10
+        int[] ctxAttrib = {
+                EGL_CONTEXT_CLIENT_VERSION, 1,
+                EGL10.EGL_NONE
+        };
+        EGLContext ctx = egl.eglCreateContext(dpy, config, EGL10.EGL_NO_CONTEXT, ctxAttrib);
+        egl.eglMakeCurrent(dpy, surf, surf, ctx);
+        int[] maxSize = new int[1];
+        GLES10.glGetIntegerv(GLES10.GL_MAX_TEXTURE_SIZE, maxSize, 0);
+
+        egl.eglMakeCurrent(dpy, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_SURFACE, EGL10.EGL_NO_CONTEXT);
+        egl.eglDestroySurface(dpy, surf);
+        egl.eglDestroyContext(dpy, ctx);
+        egl.eglTerminate(dpy);
+
+        return maxSize[0];
     }
 }

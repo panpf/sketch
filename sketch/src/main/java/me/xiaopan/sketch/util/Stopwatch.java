@@ -71,7 +71,7 @@ public class Stopwatch {
                 builder.append(". ");
             }
 
-            builder.append("useTime").append("=").append(totalTime).append("ms");
+            builder.append("useTime=").append(totalTime).append("ms");
 
             if ((Long.MAX_VALUE - decodeCount) < 1 || (Long.MAX_VALUE - useTimeCount) < totalTime) {
                 decodeCount = 0;

@@ -22,8 +22,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 
-import java.text.DecimalFormat;
-
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
@@ -72,8 +70,8 @@ public class LargeImageFragment extends MyFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        imageView.setEnableZoomFunction(true);
-        imageView.setEnableSuperLargeImageFunction(true);
+        imageView.setSupportZoom(true);
+        imageView.setSupportSuperLargeImage(true);
 
         imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
         imageView.displayImage(imageUri);
@@ -85,9 +83,10 @@ public class LargeImageFragment extends MyFragment {
                 RectF visibleRectF = new RectF();
                 imageZoomer.getVisibleRect(visibleRectF);
                 mappingView.update(imageZoomer.getDrawableWidth(), visibleRectF);
-                scaleTextView.setText(new DecimalFormat("##0.00").format(imageZoomer.getScale()));
+                scaleTextView.setText(String.valueOf(imageZoomer.getScale()));
             }
         });
+        mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
         mappingView.getOptions().setMaxSize(300, 300);
         mappingView.displayImage(imageUri);
 

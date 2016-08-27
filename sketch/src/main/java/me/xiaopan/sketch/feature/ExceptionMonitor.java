@@ -38,7 +38,7 @@ public class ExceptionMonitor implements Identifier {
         builder.append(logName);
         builder.append(". InstallDiskCacheFailed");
         builder.append(". ").append(e.getClass().getSimpleName()).append(": ").append(e.getMessage());
-        builder.append(". SDCardState").append(": ").append(Environment.getExternalStorageState());
+        builder.append(". SDCardState: ").append(Environment.getExternalStorageState());
         builder.append(". cacheDir: ").append(cacheDir.getPath());
         Log.e(Sketch.TAG, builder.toString());
     }

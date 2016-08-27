@@ -70,7 +70,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(logName)
                 .append("(")
-                .append("duration").append("=").append(duration)
+                .append("duration=").append(duration)
                 .append(")");
     }
 

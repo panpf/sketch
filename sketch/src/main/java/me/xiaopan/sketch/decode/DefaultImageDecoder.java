@@ -32,6 +32,7 @@ import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.DataSource;
+import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
@@ -100,11 +101,10 @@ public class DefaultImageDecoder implements ImageDecoder {
             // calculate inSampleSize
             MaxSize maxSize = loadRequest.getOptions().getMaxSize();
             if (maxSize != null) {
+                boolean supportSuperLargeImage = (loadRequest instanceof DisplayRequest) && ((DisplayRequest) loadRequest).getDisplayAttrs().isSupportSuperLargeImage();
                 ImageSizeCalculator imageSizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
-                // 将目标尺寸稍微变的大一点儿，这样做是为了当原图尺寸比目标尺寸只小一点点的时候，就不要再缩小原图了
-                int targetWidth = (int) (maxSize.getWidth() * imageSizeCalculator.getTargetSizeScale());
-                int targetHeight = (int) (maxSize.getHeight() * imageSizeCalculator.getTargetSizeScale());
-                decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(boundsOptions.outWidth, boundsOptions.outHeight, targetWidth, targetHeight);
+                decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(boundsOptions.outWidth, boundsOptions.outHeight,
+                        maxSize.getWidth(), maxSize.getHeight(), supportSuperLargeImage);
             }
 
             // Decoding and exclude the width or height of 1 pixel image

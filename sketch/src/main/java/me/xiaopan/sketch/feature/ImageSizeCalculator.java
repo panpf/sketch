@@ -30,7 +30,7 @@ import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.MaxSize;
 import me.xiaopan.sketch.request.Resize;
-import me.xiaopan.sketch.util.OpenGLUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 图片最大尺寸和修正尺寸计算器
@@ -39,7 +39,87 @@ public class ImageSizeCalculator implements Identifier {
     protected String logName = "ImageSizeCalculator";
 
     private int openGLMaxTextureSize = -1;
-    private float targetSizeScale = 1.25f;
+    private float targetSizeScale = 1.1f;
+
+    public static int getWidth(View imageView, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {
+        if (imageView == null) {
+            return 0;
+        }
+
+        int width = 0;
+        final ViewGroup.LayoutParams params = imageView.getLayoutParams();
+        if (params != null) {
+            width = params.width;
+            if (subtractPadding && width > 0 && (width - imageView.getPaddingLeft() - imageView.getPaddingRight()) > 0) {
+                width -= imageView.getPaddingLeft() + imageView.getPaddingRight();
+                return width;
+            }
+        }
+        if (width <= 0 && checkMaxWidth) {
+            width = getViewFieldValue(imageView, "mMaxWidth");
+        }
+        if (width <= 0 && acceptWrapContent && params != null && params.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
+            width = -1;
+        }
+        return width;
+    }
+
+    public static int getHeight(View imageView, boolean checkMaxHeight, boolean acceptWrapContent, boolean subtractPadding) {
+        if (imageView == null) {
+            return 0;
+        }
+
+        int height = 0;
+        final ViewGroup.LayoutParams params = imageView.getLayoutParams();
+        if (params != null) {
+            height = params.height;
+            if (subtractPadding && height > 0 && (height - imageView.getPaddingTop() - imageView.getPaddingBottom()) > 0) {
+                height -= imageView.getPaddingTop() + imageView.getPaddingBottom();
+                return height;
+            }
+        }
+        if (height <= 0 && checkMaxHeight) {
+            height = getViewFieldValue(imageView, "mMaxHeight");
+        }
+        if (height <= 0 && acceptWrapContent && params != null && params.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
+            height = -1;
+        }
+        return height;
+    }
+
+    private static int getViewFieldValue(Object object, String fieldName) {
+        int value = 0;
+        try {
+            Field field = ImageView.class.getDeclaredField(fieldName);
+            field.setAccessible(true);
+            int fieldValue = (Integer) field.get(object);
+            if (fieldValue > 0 && fieldValue < Integer.MAX_VALUE) {
+                value = fieldValue;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return value;
+    }
+
+    /**
+     * 获取OpenGL所允许的最大尺寸
+     */
+    @SuppressWarnings("WeakerAccess")
+    public int getOpenGLMaxTextureSize() {
+        if (openGLMaxTextureSize == -1) {
+            openGLMaxTextureSize = SketchUtils.getOpenGLMaxTextureSize();
+        }
+        return openGLMaxTextureSize;
+    }
+
+    /**
+     * 设置OpenGL所允许的最大尺寸,用来计算inSampleSize
+     */
+    @SuppressWarnings("unused")
+    public void setOpenGLMaxTextureSize(int openGLMaxTextureSize) {
+        this.openGLMaxTextureSize = openGLMaxTextureSize;
+    }
 
     /**
      * 计算MaxSize
@@ -81,9 +161,8 @@ public class ImageSizeCalculator implements Identifier {
      * @return maxSize
      */
     public MaxSize getDefaultImageMaxSize(Context context) {
-        // TODO: 16/8/25 调大默认的maxSize
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        return new MaxSize((int) (displayMetrics.widthPixels * 0.75f), (int) (displayMetrics.heightPixels * 0.75f));
+        return new MaxSize(displayMetrics.widthPixels, displayMetrics.heightPixels);
     }
 
     /**
@@ -163,21 +242,26 @@ public class ImageSizeCalculator implements Identifier {
      * @param outHeight    原始高
      * @param targetWidth  目标宽
      * @param targetHeight 目标高
+     * @param supportSuperLargeImage 是否支持超大图,超大图时会有特殊处理
      * @return 合适的InSampleSize
      */
-    public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight) {
-        // 如果目标尺寸都大于等于原始尺寸，也别计算了没意义
-        if (targetWidth >= outWidth && targetHeight >= outHeight) {
-            return 1;
-        }
-
-        // 如果目标尺寸都小于等于0，那就别计算了没意义
-        if (targetWidth <= 0 && targetHeight <= 0) {
-            return 1;
-        }
+    public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, int targetHeight, boolean supportSuperLargeImage) {
+        targetWidth *= targetSizeScale;
+        targetHeight *= targetSizeScale;
 
         int inSampleSize = 1;
-        if (targetWidth <= 0 && targetHeight != 0) {
+
+        // 如果目标宽高都小于等于0，就别计算了
+        if (targetWidth <= 0 && targetHeight <= 0) {
+            return inSampleSize;
+        }
+
+        // 如果目标宽高都大于等于原始尺寸，也别计算了
+        if (targetWidth >= outWidth && targetHeight >= outHeight) {
+            return inSampleSize;
+        }
+
+        if (targetWidth <= 0) {
             // 目标宽小于等于0时，只要高度满足要求即可
             while (outHeight / inSampleSize > targetHeight) {
                 inSampleSize *= 2;
@@ -188,30 +272,30 @@ public class ImageSizeCalculator implements Identifier {
                 inSampleSize *= 2;
             }
         } else {
-            // 目标宽高都大于0时，首先有任意一边在缩放后小于目标尺寸即可
-            while (outWidth / inSampleSize > targetWidth && outHeight / inSampleSize > targetHeight){
+            // 首先限制像素数不能超过目标宽高的像素数
+            final long maxPixels = targetWidth * targetHeight;
+            while ((outWidth / inSampleSize) * (outHeight / inSampleSize) > maxPixels) {
                 inSampleSize *= 2;
             }
 
-            // 然后根据比较像素总数的原则过滤掉那些比较极端的一边特别小，一边特别大的图片
-            // 比如目标尺寸是400x400，图片的尺寸是6000*600，缩放后是3000*300
-            // 这样看来的确是满足了第一个条件了，但是图片的尺寸依然很大
-            // 因此这一步我们根据像素总数来过滤，规则是总像素数不得大于目标尺寸像素数的两倍
-            final long totalReqPixelsCap = targetWidth * targetHeight * 2;
-            while ((outWidth / inSampleSize) * (outHeight / inSampleSize) > totalReqPixelsCap) {
+            // 然后限制宽高不能大于OpenGL所允许的最大尺寸
+            int maxSize = getOpenGLMaxTextureSize();
+            while (outWidth / inSampleSize > maxSize || outHeight / inSampleSize > maxSize) {
                 inSampleSize *= 2;
             }
 
-            // 最后宽高不能大于OpenGL所允许的最大尺寸
-            if (openGLMaxTextureSize == -1) {
-                openGLMaxTextureSize = OpenGLUtils.getMaxTextureSize();
-            }
-            while (outWidth / inSampleSize > openGLMaxTextureSize || outHeight / inSampleSize > openGLMaxTextureSize) {
-                inSampleSize *= 2;
+            // 最后如果是为差大图功能加载预览图的话,那么最小也得是4
+            if (supportSuperLargeImage && inSampleSize < 4) {
+                inSampleSize = 4;
             }
         }
 
         return inSampleSize;
+    }
+
+    @SuppressWarnings("unused")
+    public float getTargetSizeScale() {
+        return targetSizeScale;
     }
 
     /**
@@ -224,11 +308,6 @@ public class ImageSizeCalculator implements Identifier {
         this.targetSizeScale = targetSizeScale;
     }
 
-    @SuppressWarnings("unused")
-    public float getTargetSizeScale() {
-        return targetSizeScale;
-    }
-
     @Override
     public String getIdentifier() {
         return logName;
@@ -236,67 +315,10 @@ public class ImageSizeCalculator implements Identifier {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append(logName);
-    }
-
-    public static int getWidth(View imageView, boolean checkMaxWidth, boolean acceptWrapContent, boolean subtractPadding) {
-        if (imageView == null) {
-            return 0;
-        }
-
-        int width = 0;
-        final ViewGroup.LayoutParams params = imageView.getLayoutParams();
-        if (params != null) {
-            width = params.width;
-            if (subtractPadding && width > 0 && (width - imageView.getPaddingLeft() - imageView.getPaddingRight()) > 0) {
-                width -= imageView.getPaddingLeft() + imageView.getPaddingRight();
-                return width;
-            }
-        }
-        if (width <= 0 && checkMaxWidth) {
-            width = getViewFieldValue(imageView, "mMaxWidth");
-        }
-        if (width <= 0 && acceptWrapContent && params != null && params.width == ViewGroup.LayoutParams.WRAP_CONTENT) {
-            width = -1;
-        }
-        return width;
-    }
-
-    public static int getHeight(View imageView, boolean checkMaxHeight, boolean acceptWrapContent, boolean subtractPadding) {
-        if (imageView == null) {
-            return 0;
-        }
-
-        int height = 0;
-        final ViewGroup.LayoutParams params = imageView.getLayoutParams();
-        if (params != null) {
-            height = params.height;
-            if (subtractPadding && height > 0 && (height - imageView.getPaddingTop() - imageView.getPaddingBottom()) > 0) {
-                height -= imageView.getPaddingTop() + imageView.getPaddingBottom();
-                return height;
-            }
-        }
-        if (height <= 0 && checkMaxHeight) {
-            height = getViewFieldValue(imageView, "mMaxHeight");
-        }
-        if (height <= 0 && acceptWrapContent && params != null && params.height == ViewGroup.LayoutParams.WRAP_CONTENT) {
-            height = -1;
-        }
-        return height;
-    }
-
-    private static int getViewFieldValue(Object object, String fieldName) {
-        int value = 0;
-        try {
-            Field field = ImageView.class.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            int fieldValue = (Integer) field.get(object);
-            if (fieldValue > 0 && fieldValue < Integer.MAX_VALUE) {
-                value = fieldValue;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return value;
+        return builder.append(logName)
+                .append("(")
+                .append("targetSizeScale=").append(targetSizeScale)
+                .append(", openGLMaxTextureSize=").append(getOpenGLMaxTextureSize())
+                .append(")");
     }
 }

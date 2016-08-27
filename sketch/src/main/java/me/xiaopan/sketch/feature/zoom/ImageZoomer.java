@@ -34,6 +34,7 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
 import java.lang.ref.WeakReference;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import me.xiaopan.sketch.Sketch;
@@ -41,7 +42,6 @@ import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.zoom.gestures.OnScaleDragGestureListener;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetector;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetectorCompat;
-import me.xiaopan.sketch.util.MatrixUtils;
 import me.xiaopan.sketch.util.SketchUtils;
 
 // TODO DrawerLayout包ViewPager的时候左右滑动有问题（先看看是不是DrawerLayout与ViewPager的兼容问题导致的）
@@ -246,13 +246,13 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         lastScaleFocusX = focusX;
         lastScaleFocusY = focusY;
 
-        float oldSuppScale = MatrixUtils.getMatrixScale(suppMatrix);
+        float oldSuppScale = SketchUtils.getMatrixScale(suppMatrix);
         float newSuppScale = oldSuppScale * scaleFactor;
 
         if (scaleFactor > 1.0f) {
             // 放大的时候，如果当前已经超过最大缩放比例，就调慢缩放速度
             // 这样就能模拟出超过最大缩放比例时很难再继续放大有种拉橡皮筋的感觉
-            float maxSuppScale = maxScale / MatrixUtils.getMatrixScale(baseMatrix);
+            float maxSuppScale = maxScale / SketchUtils.getMatrixScale(baseMatrix);
             if (oldSuppScale >= maxSuppScale) {
                 float addScale = newSuppScale - oldSuppScale;
                 addScale *= 0.4;
@@ -262,7 +262,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         } else if (scaleFactor < 1.0f) {
             // 缩小的时候，如果当前已经小于最小缩放比例，就调慢缩放速度
             // 这样就能模拟出小于最小缩放比例时很难再继续缩小有种拉橡皮筋的感觉
-            float minSuppScale = minScale / MatrixUtils.getMatrixScale(baseMatrix);
+            float minSuppScale = minScale / SketchUtils.getMatrixScale(baseMatrix);
             if (oldSuppScale <= minSuppScale) {
                 float addScale = newSuppScale - oldSuppScale;
                 addScale *= 0.4;
@@ -288,7 +288,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 获取缩放倍数
      */
     public float getScale() {
-        return MatrixUtils.getMatrixScale(getDrawMatrix());
+        BigDecimal b = new BigDecimal(SketchUtils.getMatrixScale(getDrawMatrix()));
+        return b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
     }
 
     /**
@@ -321,7 +322,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             if (animate) {
                 imageView.post(new ZoomRunner(this, getScale(), scale, focalX, focalY));
             } else {
-                scale /= MatrixUtils.getMatrixScale(baseMatrix);
+                scale /= SketchUtils.getMatrixScale(baseMatrix);
                 suppMatrix.setScale(scale, scale, focalX, focalY);
                 checkAndDisplayMatrix();
             }

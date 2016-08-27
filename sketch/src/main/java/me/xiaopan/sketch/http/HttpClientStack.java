@@ -176,13 +176,13 @@ public class HttpClientStack implements HttpStack {
     public StringBuilder appendIdentifier(StringBuilder builder) {
         return builder.append(logName)
                 .append("(")
-                .append("maxRetryCount").append("=").append(maxRetryCount)
+                .append("maxRetryCount=").append(maxRetryCount)
                 .append(",")
-                .append("connectTimeout").append("=").append(connectTimeout)
+                .append("connectTimeout=").append(connectTimeout)
                 .append(",")
-                .append("readTimeout").append("=").append(readTimeout)
+                .append("readTimeout=").append(readTimeout)
                 .append(",")
-                .append("userAgent").append("=").append(userAgent)
+                .append("userAgent=").append(userAgent)
                 .append(")");
     }
 

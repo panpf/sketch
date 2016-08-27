@@ -11,6 +11,8 @@ import me.xiaopan.sketch.request.Resize;
  * 高斯模糊图片处理器
  */
 public class GaussianBlurImageProcessor extends ResizeImageProcessor {
+    protected String logName = "GaussianBlurImageProcessor";
+
     private int radius = 15;
     private boolean isDarkHandle;
 
@@ -45,11 +47,11 @@ public class GaussianBlurImageProcessor extends ResizeImageProcessor {
 
     @Override
     public StringBuilder appendIdentifier(StringBuilder builder) {
-        return builder.append("GaussianBlurImageProcessor")
+        return builder.append(logName)
                 .append("(")
-                .append("radius").append("=").append(radius)
+                .append("radius=").append(radius)
                 .append(",")
-                .append("isDarkHandle").append("=").append(isDarkHandle)
+                .append("isDarkHandle=").append(isDarkHandle)
                 .append(")");
     }
 

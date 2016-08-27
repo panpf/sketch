@@ -28,7 +28,7 @@ import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
-import me.xiaopan.sketch.util.MatrixUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 超大图片查看器
@@ -100,7 +100,7 @@ public class SuperLargeImageViewer {
             waitUpdateParams.reset();
         }
         matrix.reset();
-        scale = MatrixUtils.getMatrixScale(matrix);
+        scale = SketchUtils.getMatrixScale(matrix);
 
         callback.invalidate();
     }
@@ -210,7 +210,7 @@ public class SuperLargeImageViewer {
 
         // 更新Matrix
         matrix.set(updateParams.drawMatrix);
-        scale = MatrixUtils.getMatrixScale(matrix);
+        scale = SketchUtils.getMatrixScale(matrix);
 
         callback.invalidate();
 
@@ -223,7 +223,7 @@ public class SuperLargeImageViewer {
         int targetWidth = (int) (updateParams.imageViewWidth * 1.4f);
         int targetHeight = (int) (updateParams.imageViewHeight * 1.4f);
         ImageSizeCalculator imageSizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
-        int inSampleSize = imageSizeCalculator.calculateInSampleSize(srcWidth, srcHeight, targetWidth, targetHeight);
+        int inSampleSize = imageSizeCalculator.calculateInSampleSize(srcWidth, srcHeight, targetWidth, targetHeight, false);
 
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, NAME + ". update" +
