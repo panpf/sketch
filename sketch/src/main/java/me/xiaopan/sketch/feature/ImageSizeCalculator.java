@@ -284,8 +284,8 @@ public class ImageSizeCalculator implements Identifier {
                 inSampleSize *= 2;
             }
 
-            // 最后如果是为差大图功能加载预览图的话,那么最小也得是4
-            if (supportSuperLargeImage && inSampleSize < 4) {
+            // 最后如果是为超大图功能加载预览图的话，当缩小2倍的话为了节省内存考虑还不如缩小4倍（缩小1倍时不会启用超大图功能，因此无需处理）
+            if (supportSuperLargeImage && inSampleSize == 2) {
                 inSampleSize = 4;
             }
         }

@@ -51,6 +51,7 @@ import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.net.URLEncoder;
 import java.util.Collections;
 import java.util.Iterator;
@@ -851,5 +852,10 @@ public class SketchUtils {
         egl.eglTerminate(dpy);
 
         return maxSize[0];
+    }
+
+    public static float formatFloat(float floatValue, int newScale){
+        BigDecimal b = new BigDecimal(floatValue);
+        return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).floatValue();
     }
 }

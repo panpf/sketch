@@ -34,7 +34,6 @@ import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 
 import java.lang.ref.WeakReference;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 
 import me.xiaopan.sketch.Sketch;
@@ -288,8 +287,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 获取缩放倍数
      */
     public float getScale() {
-        BigDecimal b = new BigDecimal(SketchUtils.getMatrixScale(getDrawMatrix()));
-        return b.setScale(2, BigDecimal.ROUND_HALF_UP).floatValue();
+        return SketchUtils.formatFloat(SketchUtils.getMatrixScale(getDrawMatrix()), 2);
     }
 
     /**
@@ -581,6 +579,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         } else {
             maxScale = midScale * 2;
         }
+
+        minScale = SketchUtils.formatFloat(minScale, 2);
+        midScale = SketchUtils.formatFloat(midScale, 2);
+        maxScale = SketchUtils.formatFloat(maxScale, 2);
 
         // TODO: 16/8/24 会有minScale和midScale非常接近的情况，这样的话就直接把midScale和maxScale弄成一样的即可
     }
