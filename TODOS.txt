@@ -185,6 +185,7 @@ RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
 增强一下FixedBitmapDrawable，尽量在使用原生BitmapDrawable的基础上实现ScaleType的功能，然后定义一个牛逼的SketchBitmapDrawable，然后在搞一个专门的RecyclerDrawable可以包装SketchBitmapDrawable个GIfDrawable
 onDisplay的执行时机提前
 如果用100x100的ImageView去显示一张特别长的图，那么势必会先读取到一张特别模糊的图，可以先对图片进行裁剪，这样显示效果会好很多，这个功能得加个开关
+删除RecyclerDrawable，放到显示的时候new一个gifDrawable
 
 其它：
 参考Glide、Fresco和Picasso
@@ -200,6 +201,7 @@ onDisplay的执行时机提前
     第一级要显示图片的全貌
     第二级要让较小的一边充满屏幕，然后用户在一个方向上滑动即可查看全部图片
     第三级要以图片原始宽高一比一显示，这样用户能看到最清晰的图片
-    一级缩放跟二级缩放比例非常接近时直接取消二级缩放
+    一级缩放跟二级缩放比例非常接近时就用一级的两倍作为二级
+    如果三级还没有二级的两倍大，那么就用二级的两倍作为三级缩放倍数
 只有没有完整显示的图片才能使用超大图功能
 只有jpg，png格式的图片才能使用超大图功能
