@@ -43,7 +43,7 @@ class ZoomRunner implements Runnable {
 
         float t = interpolate();
         float scale = mZoomStart + t * (mZoomEnd - mZoomStart);
-        float deltaScale = scale / imageZoomer.getScale();
+        float deltaScale = scale / imageZoomer.getZoomScale();
 
         imageZoomer.onScale(deltaScale, mFocalX, mFocalY);
 

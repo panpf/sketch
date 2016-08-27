@@ -83,7 +83,7 @@ public class LargeImageFragment extends MyFragment {
                 RectF visibleRectF = new RectF();
                 imageZoomer.getVisibleRect(visibleRectF);
                 mappingView.update(imageZoomer.getDrawableWidth(), visibleRectF);
-                scaleTextView.setText(String.valueOf(imageZoomer.getScale()));
+                scaleTextView.setText(String.valueOf(imageZoomer.getZoomScale()));
             }
         });
         mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());

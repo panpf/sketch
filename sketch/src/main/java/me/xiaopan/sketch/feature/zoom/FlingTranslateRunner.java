@@ -26,13 +26,11 @@ import me.xiaopan.sketch.feature.zoom.scrollerproxy.ScrollerProxy;
 
 class FlingTranslateRunner implements Runnable {
     private final ScrollerProxy mScroller;
-    private FlingTranslateListener flingTranslateListener;
     private ImageZoomer imageZoomer;
     private int mCurrentX, mCurrentY;
 
     public FlingTranslateRunner(Context context, ImageZoomer imageZoomer) {
         this.mScroller = ScrollerProxy.getScroller(context);
-        this.flingTranslateListener = imageZoomer;
         this.imageZoomer = imageZoomer;
     }
 
@@ -45,26 +43,28 @@ class FlingTranslateRunner implements Runnable {
             return;
         }
 
-        final RectF rect = imageZoomer.getDisplayRect();
-        if (null == rect) {
+        final RectF displayRectF = new RectF();
+        imageZoomer.checkMatrixBounds();
+        imageZoomer.getDisplayRect(displayRectF);
+        if (displayRectF.isEmpty()) {
             return;
         }
 
-        final int startX = Math.round(-rect.left);
+        final int startX = Math.round(-displayRectF.left);
         final int minX, maxX, minY, maxY;
         int viewWidth = imageZoomer.getImageViewWidth();
-        if (viewWidth < rect.width()) {
+        if (viewWidth < displayRectF.width()) {
             minX = 0;
-            maxX = Math.round(rect.width() - viewWidth);
+            maxX = Math.round(displayRectF.width() - viewWidth);
         } else {
             minX = maxX = startX;
         }
 
         int viewHeight = imageZoomer.getImageViewHeight();
-        final int startY = Math.round(-rect.top);
-        if (viewHeight < rect.height()) {
+        final int startY = Math.round(-displayRectF.top);
+        if (viewHeight < displayRectF.height()) {
             minY = 0;
-            maxY = Math.round(rect.height() - viewHeight);
+            maxY = Math.round(displayRectF.height() - viewHeight);
         } else {
             minY = maxY = startY;
         }
@@ -101,7 +101,7 @@ class FlingTranslateRunner implements Runnable {
             final int newX = mScroller.getCurrX();
             final int newY = mScroller.getCurrY();
 
-            flingTranslateListener.onFlingTranslate(mCurrentX - newX, mCurrentY - newY);
+            imageZoomer.translateBy(mCurrentX - newX, mCurrentY - newY);
 
             mCurrentX = newX;
             mCurrentY = newY;
@@ -123,9 +123,5 @@ class FlingTranslateRunner implements Runnable {
         if (imageView != null) {
             imageView.removeCallbacks(this);
         }
-    }
-
-    public interface FlingTranslateListener {
-        void onFlingTranslate(float dx, float dy);
     }
 }

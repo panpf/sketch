@@ -41,16 +41,14 @@ class TapListener extends GestureDetector.SimpleOnGestureListener {
     @Override
     public boolean onDoubleTap(MotionEvent ev) {
         try {
-            float scale = imageZoomer.getScale();
+            float scale = imageZoomer.getZoomScale();
             float x = ev.getX();
             float y = ev.getY();
 
-            if (scale < imageZoomer.getMediumScale()) {
-                imageZoomer.setScale(imageZoomer.getMediumScale(), x, y, true);
-            } else if (scale >= imageZoomer.getMediumScale() && scale < imageZoomer.getMaximumScale()) {
-                imageZoomer.setScale(imageZoomer.getMaximumScale(), x, y, true);
+            if (scale < imageZoomer.getMaxZoomScale()) {
+                imageZoomer.zoom(imageZoomer.getMaxZoomScale(), x, y, true);
             } else {
-                imageZoomer.setScale(imageZoomer.getMinimumScale(), x, y, true);
+                imageZoomer.zoom(imageZoomer.getMinZoomScale(), x, y, true);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
             // Can sometimes happen when getX() and getY() is called

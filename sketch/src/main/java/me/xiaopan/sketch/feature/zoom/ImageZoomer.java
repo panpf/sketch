@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011, 2012 Chris Banes.
- *
+ * <p/>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -47,35 +47,39 @@ import me.xiaopan.sketch.util.SketchUtils;
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
 // TODO: 16/8/23 测试旋转功能
 // TODO: 16/8/23 对于竖图，可以默认使用midScale
-public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener, FlingTranslateRunner.FlingTranslateListener {
+public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener {
     public static final String NAME = "ImageZoomer";
 
-    public static final float DEFAULT_MAX_SCALE = 3.0f;
-    public static final float DEFAULT_MID_SCALE = 1.75f;
-    public static final float DEFAULT_MIN_SCALE = 1.0f;
+    public static final float DEFAULT_MAXIMIZE_SCALE = 1.75f;
+    public static final float DEFAULT_MINIMUM_SCALE = 1.0f;
+
     public static final int DEFAULT_ZOOM_DURATION = 200;
+
     public static final int EDGE_NONE = -1;
     public static final int EDGE_LEFT = 0;
     public static final int EDGE_RIGHT = 1;
     public static final int EDGE_BOTH = 2;
 
+    private final Matrix baseMatrix = new Matrix();
+    private final Matrix drawMatrix = new Matrix();
+    private final Matrix suppMatrix = new Matrix();
+
     // incoming
     private Context context;
-    private WeakReference<ImageView> imageViewWeakReference;
+    private WeakReference<ImageView> viewReference;
 
     // configurable options
     private int zoomDuration = DEFAULT_ZOOM_DURATION;
     private float baseRotation;
-    private float minScale = DEFAULT_MIN_SCALE;
-    private float midScale = DEFAULT_MID_SCALE;
-    private float maxScale = DEFAULT_MAX_SCALE;
-    private boolean zoomEnabled = true;
+    private float minZoomScale = DEFAULT_MINIMUM_SCALE;
+    private float maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
+    private boolean zoomable = true;
     private ScaleType scaleType = ScaleType.FIT_CENTER;
     private Interpolator zoomInterpolator = new AccelerateDecelerateInterpolator();
 
     // listeners
     private OnViewTapListener onViewTapListener;
-    private OnSingleFlingListener onSingleFlingListener;
+    private OnDragFlingListener onDragFlingListener;
     private OnScaleChangeListener onScaleChangeListener;
     private ArrayList<OnMatrixChangedListener> onMatrixChangedListenerList;
 
@@ -87,15 +91,16 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private GestureDetector tapGestureDetector;
     private FlingTranslateRunner currentFlingTranslateRunner;
     private ScaleDragGestureDetector scaleDragGestureDetector;
-    private final Matrix baseMatrix = new Matrix();
-    private final Matrix drawMatrix = new Matrix();
-    private final Matrix suppMatrix = new Matrix();
     private float lastScaleFocusX;
     private float lastScaleFocusY;
+    private RectF displayRectF = new RectF();
+    private float fullZoomScale; // 能够让图片完成显示的缩放比例
+    private float fillZoomScale;    // 能够让图片填满宽或高的缩放比例
+    private float originZoomScale;  // 能够让图片按照原始比例一比一显示的比例
 
     public ImageZoomer(ImageView imageView, boolean provideTouchEvent) {
         context = imageView.getContext();
-        imageViewWeakReference = new WeakReference<ImageView>(imageView);
+        viewReference = new WeakReference<ImageView>(imageView);
 
         // from ImageView get ScaleType
         scaleType = imageView.getScaleType();
@@ -129,7 +134,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (!zoomEnabled || !hasDrawable()) {
+        if (!zoomable || !hasDrawable()) {
             return false;
         }
 
@@ -151,18 +156,20 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                float currentScale = getScale();
-                if (currentScale < minScale) {
+                float currentScale = getZoomScale();
+                if (currentScale < minZoomScale) {
                     // 如果当前缩放倍数小于最小倍数就回滚至最小倍数
-                    RectF rect = getDisplayRect();
-                    if (rect != null) {
-                        v.post(new ZoomRunner(this, currentScale, minScale, rect.centerX(), rect.centerY()));
+                    RectF displayRectF = new RectF();
+                    checkMatrixBounds();
+                    getDisplayRect(displayRectF);
+                    if (!displayRectF.isEmpty()) {
+                        v.post(new ZoomRunner(this, currentScale, minZoomScale, displayRectF.centerX(), displayRectF.centerY()));
                         handled = true;
                     }
-                } else if (currentScale > maxScale) {
+                } else if (currentScale > maxZoomScale) {
                     // 如果当前缩放倍数大于最大倍数就回滚至最大倍数
                     if (lastScaleFocusX != 0 && lastScaleFocusY != 0) {
-                        v.post(new ZoomRunner(this, currentScale, maxScale, lastScaleFocusX, lastScaleFocusY));
+                        v.post(new ZoomRunner(this, currentScale, maxZoomScale, lastScaleFocusX, lastScaleFocusY));
                         handled = true;
                     }
                 }
@@ -235,8 +242,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         currentFlingTranslateRunner = new FlingTranslateRunner(context, this);
         currentFlingTranslateRunner.fling((int) velocityX, (int) velocityY);
 
-        if (onSingleFlingListener != null) {
-            onSingleFlingListener.onFling(startX, startY, velocityX, velocityY);
+        if (onDragFlingListener != null) {
+            onDragFlingListener.onFling(startX, startY, velocityX, velocityY);
         }
     }
 
@@ -251,7 +258,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         if (scaleFactor > 1.0f) {
             // 放大的时候，如果当前已经超过最大缩放比例，就调慢缩放速度
             // 这样就能模拟出超过最大缩放比例时很难再继续放大有种拉橡皮筋的感觉
-            float maxSuppScale = maxScale / SketchUtils.getMatrixScale(baseMatrix);
+            float maxSuppScale = maxZoomScale / SketchUtils.getMatrixScale(baseMatrix);
             if (oldSuppScale >= maxSuppScale) {
                 float addScale = newSuppScale - oldSuppScale;
                 addScale *= 0.4;
@@ -261,7 +268,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         } else if (scaleFactor < 1.0f) {
             // 缩小的时候，如果当前已经小于最小缩放比例，就调慢缩放速度
             // 这样就能模拟出小于最小缩放比例时很难再继续缩小有种拉橡皮筋的感觉
-            float minSuppScale = minScale / SketchUtils.getMatrixScale(baseMatrix);
+            float minSuppScale = minZoomScale / SketchUtils.getMatrixScale(baseMatrix);
             if (oldSuppScale <= minSuppScale) {
                 float addScale = newSuppScale - oldSuppScale;
                 addScale *= 0.4;
@@ -278,214 +285,21 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     @Override
-    public void onFlingTranslate(float dx, float dy) {
-        suppMatrix.postTranslate(dx, dy);
-        applyMatrix(getDrawMatrix());
-    }
-
-    /**
-     * 获取缩放倍数
-     */
-    public float getScale() {
-        return SketchUtils.formatFloat(SketchUtils.getMatrixScale(getDrawMatrix()), 2);
-    }
-
-    /**
-     * 设置缩放倍数
-     * @param scale 新的缩放倍数
-     * @param animate 是否显示动画
-     */
-    public void setScale(float scale, boolean animate) {
-        ImageView imageView = getImageView();
-        if (imageView != null) {
-            setScale(scale, (imageView.getRight()) / 2, (imageView.getBottom()) / 2, animate);
-        }
-    }
-
-    /**
-     * 设置缩放倍数
-     * @param scale 新的缩放倍数
-     * @param focalX 缩放中心的X坐标
-     * @param focalY 缩放中心的Y坐标
-     * @param animate 是否显示动画
-     */
-    public void setScale(float scale, float focalX, float focalY, boolean animate) {
-        ImageView imageView = getImageView();
-        if (imageView != null) {
-            if (scale < minScale || scale > maxScale) {
-                Log.w(Sketch.TAG, NAME + ". Scale must be within the range of " + minScale + "(minScale) and " + maxScale + "(maxScale)");
-                return;
-            }
-
-            if (animate) {
-                imageView.post(new ZoomRunner(this, getScale(), scale, focalX, focalY));
-            } else {
-                scale /= SketchUtils.getMatrixScale(baseMatrix);
-                suppMatrix.setScale(scale, scale, focalX, focalY);
-                checkAndDisplayMatrix();
-            }
-        }
-    }
-
-    private boolean hasDrawable() {
-        ImageView imageView = getImageView();
-        return imageView != null && imageView.getDrawable() != null;
-    }
-
-    public ImageView getImageView() {
-        if (imageViewWeakReference == null) {
-            return null;
-        }
-
-        ImageView imageView = imageViewWeakReference.get();
-        if (imageView == null) {
-            Log.i(Sketch.TAG, NAME + ". ImageView no longer exists. You should not use this ImageAmplifier any more.");
-            cleanup();
-        }
-
-        return imageView;
-    }
-
-    @SuppressWarnings("unused")
-    public void setScale(float scale) {
-        setScale(scale, false);
-    }
-
-    public ScaleType getScaleType() {
-        return scaleType;
-    }
-
-    public void setScaleType(ScaleType scaleType) {
-        if (scaleType != null && scaleType != ScaleType.MATRIX && scaleType != this.scaleType) {
-            this.scaleType = scaleType;
-            update();
-        }
-    }
-
-    public int getDrawableWidth() {
-        ImageView imageView = imageViewWeakReference.get();
-        if (imageView == null) {
-            return 0;
-        }
-
-        Drawable drawable = imageView.getDrawable();
-        if (drawable == null) {
-            return 0;
-        }
-
-        return drawable.getIntrinsicWidth();
-    }
-
-    public int getDrawableHeight() {
-        ImageView imageView = imageViewWeakReference.get();
-        if (imageView == null) {
-            return 0;
-        }
-
-        Drawable drawable = imageView.getDrawable();
-        if (drawable == null) {
-            return 0;
-        }
-
-        return drawable.getIntrinsicHeight();
-    }
-
-    private Matrix getDrawMatrix() {
-        drawMatrix.set(baseMatrix);
-        drawMatrix.postConcat(suppMatrix);
-        return drawMatrix;
-    }
-
-    public void getDrawMatrix(Matrix matrix) {
-        matrix.set(getDrawMatrix());
-    }
-
-    @SuppressWarnings("unused")
-    public boolean setDisplayMatrix(Matrix finalMatrix) {
-        if (finalMatrix == null) {
-            throw new IllegalArgumentException("Matrix cannot be null");
-        }
-
-        ImageView imageView = getImageView();
-        if (imageView == null || imageView.getDrawable() == null) {
-            return false;
-        }
-
-        suppMatrix.set(finalMatrix);
-        applyMatrix(getDrawMatrix());
-        checkMatrixBounds();
-
-        return true;
-    }
-
-    @SuppressWarnings("unused")
-    public void setBaseRotation(final float degrees) {
-        baseRotation = degrees % 360;
-        update();
-        setRotationBy(baseRotation);
-        checkAndDisplayMatrix();
-    }
-
-    @SuppressWarnings("unused")
-    public boolean canZoom() {
-        return zoomEnabled;
-    }
-
-    public void cleanup() {
-        if (imageViewWeakReference == null) {
-            return; // cleanup already done
-        }
-
-        final ImageView imageView = imageViewWeakReference.get();
-        if (imageView != null) {
-            // Remove this as a global layout listener
-            ViewTreeObserver observer = imageView.getViewTreeObserver();
-            if (observer != null && observer.isAlive()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    observer.removeOnGlobalLayoutListener(this);
-                } else {
-                    //noinspection deprecation
-                    observer.removeGlobalOnLayoutListener(this);
-                }
-            }
-
-            // Remove the ImageView's reference to this
-            imageView.setOnTouchListener(null);
-
-            // make sure a pending fling runnable won't be run
-            cancelFling();
-        }
-
-        if (tapGestureDetector != null) {
-            tapGestureDetector.setOnDoubleTapListener(null);
-        }
-
-        // Clear listeners too
-        onMatrixChangedListenerList = null;
-        onViewTapListener = null;
-        onSingleFlingListener = null;
-        onScaleChangeListener = null;
-
-        // Finally, clear ImageView
-        imageViewWeakReference = null;
-    }
-
-    @Override
     public void onGlobalLayout() {
         ImageView imageView = getImageView();
         if (imageView == null) {
             return;
         }
 
-        if (zoomEnabled) {
+        if (zoomable) {
             final int top = imageView.getTop();
             final int right = imageView.getRight();
             final int bottom = imageView.getBottom();
             final int left = imageView.getLeft();
 
             if (top != imageViewTop || bottom != imageViewBottom || left != imageViewLeft || right != imageViewRight) {
-                resetScaleMultiple();
-                updateBaseMatrix(imageView.getDrawable());
+                resetMinAndMaxZoomScale();
+                updateBaseMatrix();
                 resetMatrix();
 
                 imageViewTop = top;
@@ -494,124 +308,385 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                 imageViewLeft = left;
             }
         } else {
-            resetScaleMultiple();
-            updateBaseMatrix(imageView.getDrawable());
+            resetMinAndMaxZoomScale();
+            updateBaseMatrix();
             resetMatrix();
         }
     }
 
-    public void update() {
-        ImageView imageView = getImageView();
-        if (imageView == null) {
-            return;
-        }
-
-        if (zoomEnabled) {
-            imageView.setScaleType(ScaleType.MATRIX);
-
-            resetScaleMultiple();
-            updateBaseMatrix(imageView.getDrawable());
-            resetMatrix();
-        } else {
-            resetScaleMultiple();
-            resetMatrix();
-        }
-    }
+    /** -----------私有功能----------- **/
 
     /**
-     * 重置中、大缩放倍数
+     * 重置最小和最大缩放比例
      */
-    private void resetScaleMultiple(){
+    private void resetMinAndMaxZoomScale() {
         ImageView imageView = getImageView();
         if (imageView == null) {
-            minScale = DEFAULT_MIN_SCALE;
-            midScale = DEFAULT_MID_SCALE;
-            maxScale = DEFAULT_MAX_SCALE;
+            fullZoomScale = fillZoomScale = originZoomScale = 1f;
+            minZoomScale = DEFAULT_MINIMUM_SCALE;
+            maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
             return;
         }
 
         Drawable drawable = imageView.getDrawable();
-        if(drawable == null){
-            minScale = DEFAULT_MIN_SCALE;
-            midScale = DEFAULT_MID_SCALE;
-            maxScale = DEFAULT_MAX_SCALE;
+        if (drawable == null) {
+            fullZoomScale = fillZoomScale = originZoomScale = 1f;
+            minZoomScale = DEFAULT_MINIMUM_SCALE;
+            maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
             return;
         }
 
         int viewWidth = getImageViewWidth();
         int viewHeight = getImageViewHeight();
         if (viewWidth == 0 || viewHeight == 0) {
-            minScale = DEFAULT_MIN_SCALE;
-            midScale = DEFAULT_MID_SCALE;
-            maxScale = DEFAULT_MAX_SCALE;
+            fullZoomScale = fillZoomScale = originZoomScale = 1f;
+            minZoomScale = DEFAULT_MINIMUM_SCALE;
+            maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
             return;
         }
 
         int drawableWidth = drawable.getIntrinsicWidth();
         int drawableHeight = drawable.getIntrinsicHeight();
         if (drawableWidth == 0 || drawableHeight == 0) {
-            minScale = DEFAULT_MIN_SCALE;
-            midScale = DEFAULT_MID_SCALE;
-            maxScale = DEFAULT_MAX_SCALE;
+            fullZoomScale = fillZoomScale = originZoomScale = 1f;
+            minZoomScale = DEFAULT_MINIMUM_SCALE;
+            maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
             return;
         }
 
         float widthScale = (float) viewWidth / drawableWidth;
         float heightScale = (float) viewHeight / drawableHeight;
         if (widthScale != heightScale) {
-            minScale = Math.min(widthScale, heightScale);
-            midScale = Math.max(widthScale, heightScale);
+            fullZoomScale = Math.min(widthScale, heightScale);
+            fillZoomScale = Math.max(widthScale, heightScale);
         } else {
-            minScale = widthScale;
-            midScale = widthScale * 2;
+            fullZoomScale = widthScale;
+            fillZoomScale = widthScale;
         }
-
         Drawable finalDrawable = SketchUtils.getLastDrawable(drawable);
         if (finalDrawable instanceof SketchDrawable) {
-            // 根据图片的原始大小计算最大缩放比例，保证一比一显示
             SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
-            int originDrawableWidth = sketchDrawable.getOriginWidth();
-            int originDrawableHeight = sketchDrawable.getOriginHeight();
-            maxScale = Math.max((float) originDrawableWidth / drawableWidth, (float) originDrawableHeight / drawableHeight);
-
-            // 最大缩放比例不能小于中间缩放比例的2倍
-            maxScale = Math.max(maxScale, midScale * 2);
+            originZoomScale = Math.max((float) sketchDrawable.getOriginWidth() / drawableWidth,
+                    (float) sketchDrawable.getOriginHeight() / drawableHeight);
         } else {
-            maxScale = midScale * 2;
+            originZoomScale = 1f;
         }
 
-        minScale = SketchUtils.formatFloat(minScale, 2);
-        midScale = SketchUtils.formatFloat(midScale, 2);
-        maxScale = SketchUtils.formatFloat(maxScale, 2);
+        minZoomScale = fullZoomScale;
 
-        // TODO: 16/8/24 会有minScale和midScale非常接近的情况，这样的话就直接把midScale和maxScale弄成一样的即可
+        // 最大缩放比例将在原图比例和充满比例中产生
+        if (originZoomScale > fillZoomScale && (fillZoomScale * 1.2f) >= originZoomScale) {
+            // 如果原图比例仅仅比充满比例大一点点，还是用充满比例作为最大缩放比例比较好
+            maxZoomScale = fillZoomScale;
+        } else {
+            // 否则的话谁大用谁作为最大缩放比例
+            maxZoomScale = Math.max(fillZoomScale, originZoomScale);
+        }
+
+        // 最大缩放比例和最小缩放比例的差距不能太小
+        if (maxZoomScale == minZoomScale) {
+            // 如果最大缩放比例和最小比例相同，那么就用最小缩放比例的两倍作为最大缩放比例
+            maxZoomScale = minZoomScale * 2;
+        } else {
+            // 如果最大缩放比例还没有最小缩放比例的一半大，就用最小缩放比例的一半作为最大缩放比例
+            float largeMinZoomScale = minZoomScale * 1.5f;
+            if (maxZoomScale < largeMinZoomScale) {
+                maxZoomScale = largeMinZoomScale;
+            }
+        }
+
+        // 最后都保留两位小数
+        minZoomScale = SketchUtils.formatFloat(minZoomScale, 2);
+        maxZoomScale = SketchUtils.formatFloat(maxZoomScale, 2);
     }
 
     /**
-     * Helper method that maps the supplied Matrix to the current Drawable
-     *
-     * @param matrix - Matrix to map Drawable against
-     * @return RectF - Displayed Rectangle
+     * 更新基础Matrix
      */
-    private RectF getDisplayRect(Matrix matrix) {
+    private void updateBaseMatrix() {
         ImageView imageView = getImageView();
         if (imageView == null) {
-            return null;
+            return;
         }
 
         Drawable drawable = imageView.getDrawable();
         if (drawable == null) {
+            return;
+        }
+
+        final float viewWidth = getImageViewWidth();
+        final float viewHeight = getImageViewHeight();
+        final int drawableWidth = drawable.getIntrinsicWidth();
+        final int drawableHeight = drawable.getIntrinsicHeight();
+
+        baseMatrix.reset();
+
+        final float widthScale = viewWidth / drawableWidth;
+        final float heightScale = viewHeight / drawableHeight;
+
+        if (scaleType == ScaleType.CENTER) {
+            baseMatrix.postTranslate((viewWidth - drawableWidth) / 2F, (viewHeight - drawableHeight) / 2F);
+        } else if (scaleType == ScaleType.CENTER_CROP) {
+            float scale = Math.max(widthScale, heightScale);
+            baseMatrix.postScale(scale, scale);
+            baseMatrix.postTranslate((viewWidth - drawableWidth * scale) / 2F, (viewHeight - drawableHeight * scale) / 2F);
+
+        } else if (scaleType == ScaleType.CENTER_INSIDE) {
+            float scale = Math.min(1.0f, Math.min(widthScale, heightScale));
+            baseMatrix.postScale(scale, scale);
+            baseMatrix.postTranslate((viewWidth - drawableWidth * scale) / 2F, (viewHeight - drawableHeight * scale) / 2F);
+
+        } else {
+            RectF mTempSrc = new RectF(0, 0, drawableWidth, drawableHeight);
+            RectF mTempDst = new RectF(0, 0, viewWidth, viewHeight);
+
+            if ((int) baseRotation % 180 != 0) {
+                //noinspection SuspiciousNameCombination
+                mTempSrc = new RectF(0, 0, drawableHeight, drawableWidth);
+            }
+
+            switch (scaleType) {
+                case FIT_CENTER:
+                    baseMatrix
+                            .setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.CENTER);
+                    break;
+
+                case FIT_START:
+                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.START);
+                    break;
+
+                case FIT_END:
+                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.END);
+                    break;
+
+                case FIT_XY:
+                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.FILL);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    }
+
+    /**
+     * 检查应用Matrix后的边界，防止超出范围
+     */
+    boolean checkMatrixBounds() {
+        final ImageView imageView = getImageView();
+        if (null == imageView) {
+            return false;
+        }
+
+        getDisplayRect(displayRectF);
+        if (displayRectF.isEmpty()) {
+            return false;
+        }
+
+        final float height = displayRectF.height(), width = displayRectF.width();
+        float deltaX = 0, deltaY = 0;
+
+        final int viewHeight = getImageViewHeight();
+        if (height <= viewHeight) {
+            switch (scaleType) {
+                case FIT_START:
+                    deltaY = -displayRectF.top;
+                    break;
+                case FIT_END:
+                    deltaY = viewHeight - height - displayRectF.top;
+                    break;
+                default:
+                    deltaY = (viewHeight - height) / 2 - displayRectF.top;
+                    break;
+            }
+        } else if (displayRectF.top > 0) {
+            deltaY = -displayRectF.top;
+        } else if (displayRectF.bottom < viewHeight) {
+            deltaY = viewHeight - displayRectF.bottom;
+        }
+
+        final int viewWidth = getImageViewWidth();
+        if (width <= viewWidth) {
+            switch (scaleType) {
+                case FIT_START:
+                    deltaX = -displayRectF.left;
+                    break;
+                case FIT_END:
+                    deltaX = viewWidth - width - displayRectF.left;
+                    break;
+                default:
+                    deltaX = (viewWidth - width) / 2 - displayRectF.left;
+                    break;
+            }
+            scrollEdge = EDGE_BOTH;
+        } else if (displayRectF.left > 0) {
+            scrollEdge = EDGE_LEFT;
+            deltaX = -displayRectF.left;
+        } else if (displayRectF.right < viewWidth) {
+            deltaX = viewWidth - displayRectF.right;
+            scrollEdge = EDGE_RIGHT;
+        } else {
+            scrollEdge = EDGE_NONE;
+        }
+
+        // Finally actually translate the matrix
+        suppMatrix.postTranslate(deltaX, deltaY);
+        return true;
+    }
+
+    /**
+     * 重置
+     */
+    private void resetMatrix() {
+        suppMatrix.reset();
+        rotationBy(baseRotation);
+        applyMatrix(getDrawMatrix());
+        checkMatrixBounds();
+    }
+
+    /**
+     * 应用Matrix
+     */
+    private void applyMatrix(Matrix matrix) {
+        ImageView imageView = getImageView();
+        if (imageView != null) {
+            if (!ScaleType.MATRIX.equals(imageView.getScaleType())) {
+                throw new IllegalStateException("ImageView scaleType must be is MATRIX");
+            }
+
+            imageView.setImageMatrix(matrix);
+
+            if (onMatrixChangedListenerList != null && !onMatrixChangedListenerList.isEmpty()) {
+                for (int w = 0, size = onMatrixChangedListenerList.size(); w < size; w++) {
+                    onMatrixChangedListenerList.get(w).onMatrixChanged(this);
+                }
+            }
+        }
+    }
+
+    /**
+     * 检查并应用Matrix
+     */
+    private void checkAndDisplayMatrix() {
+        if (checkMatrixBounds()) {
+            applyMatrix(getDrawMatrix());
+        }
+    }
+
+    /**
+     * 取消飞速滚动
+     */
+    private void cancelFling() {
+        if (currentFlingTranslateRunner != null) {
+            currentFlingTranslateRunner.cancelFling();
+            currentFlingTranslateRunner = null;
+        }
+    }
+
+
+    /** -----------可获取信息----------- **/
+
+    /**
+     * 获取ImageView
+     */
+    public ImageView getImageView() {
+        if (viewReference == null) {
             return null;
         }
 
-        RectF displayRect = new RectF(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        matrix.mapRect(displayRect);
-        return displayRect;
+        ImageView imageView = viewReference.get();
+        if (imageView == null) {
+            Log.w(Sketch.TAG, NAME + ". ImageView no longer exists. You should not use this ImageZoomer any more.");
+            cleanup();
+        }
+
+        return imageView;
     }
 
-    public RectF getDisplayRect() {
-        checkMatrixBounds();
-        return getDisplayRect(getDrawMatrix());
+    /**
+     * 获取ImageView的宽度
+     */
+    public int getImageViewWidth() {
+        ImageView imageView = getImageView();
+        if (imageView != null) {
+            return imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 获取ImageView的高度
+     */
+    public int getImageViewHeight() {
+        ImageView imageView = getImageView();
+        if (imageView != null) {
+            return imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
+        } else {
+            return 0;
+        }
+    }
+
+    /**
+     * 是否有图片
+     */
+    public boolean hasDrawable() {
+        ImageView imageView = getImageView();
+        return imageView != null && imageView.getDrawable() != null;
+    }
+
+    /**
+     * 获取图片的宽度
+     */
+    public int getDrawableWidth() {
+        ImageView imageView = viewReference.get();
+        return imageView != null && imageView.getDrawable() != null ? imageView.getDrawable().getIntrinsicWidth() : 0;
+    }
+
+    /**
+     * 获取图片的高度
+     */
+    public int getDrawableHeight() {
+        ImageView imageView = viewReference.get();
+        return imageView != null && imageView.getDrawable() != null ? imageView.getDrawable().getIntrinsicHeight() : 0;
+    }
+
+    /**
+     * 获取绘制Matrix
+     */
+    private Matrix getDrawMatrix() {
+        drawMatrix.set(baseMatrix);
+        drawMatrix.postConcat(suppMatrix);
+        return drawMatrix;
+    }
+
+    /**
+     * 拷贝绘制Matrix的参数
+     */
+    public void getDrawMatrix(Matrix matrix) {
+        matrix.set(getDrawMatrix());
+    }
+
+    /**
+     * 获取显示边界
+     */
+    public void getDisplayRect(RectF rectF) {
+        ImageView imageView = getImageView();
+        if (imageView == null) {
+            rectF.setEmpty();
+            return;
+        }
+
+        Drawable drawable = imageView.getDrawable();
+        if (drawable == null) {
+            rectF.setEmpty();
+            return;
+        }
+
+        rectF.set(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+
+        Matrix matrix  = getDrawMatrix();
+        matrix.mapRect(rectF);
     }
 
     /**
@@ -630,7 +705,14 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        RectF displayRect = getDisplayRect();
+        RectF displayRect = new RectF();
+        checkMatrixBounds();
+        getDisplayRect(displayRect);
+        if (displayRect.isEmpty()) {
+            rectF.setEmpty();
+            return;
+        }
+
         int viewWidth = getImageViewWidth();
         int viewHeight = getImageViewHeight();
         float displayWidth = displayRect.width();
@@ -673,150 +755,381 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         rectF.set(left, top, right, bottom);
     }
 
-    /**
-     * Helper method that simply checks the Matrix, and then displays the result
-     */
-    private void checkAndDisplayMatrix() {
-        if (checkMatrixBounds()) {
-            applyMatrix(getDrawMatrix());
-        }
-    }
-
-    private boolean checkMatrixBounds() {
-        final ImageView imageView = getImageView();
-        if (null == imageView) {
-            return false;
-        }
-
-        final RectF rect = getDisplayRect(getDrawMatrix());
-        if (null == rect) {
-            return false;
-        }
-
-        final float height = rect.height(), width = rect.width();
-        float deltaX = 0, deltaY = 0;
-
-        final int viewHeight = getImageViewHeight();
-        if (height <= viewHeight) {
-            switch (scaleType) {
-                case FIT_START:
-                    deltaY = -rect.top;
-                    break;
-                case FIT_END:
-                    deltaY = viewHeight - height - rect.top;
-                    break;
-                default:
-                    deltaY = (viewHeight - height) / 2 - rect.top;
-                    break;
-            }
-        } else if (rect.top > 0) {
-            deltaY = -rect.top;
-        } else if (rect.bottom < viewHeight) {
-            deltaY = viewHeight - rect.bottom;
-        }
-
-        final int viewWidth = getImageViewWidth();
-        if (width <= viewWidth) {
-            switch (scaleType) {
-                case FIT_START:
-                    deltaX = -rect.left;
-                    break;
-                case FIT_END:
-                    deltaX = viewWidth - width - rect.left;
-                    break;
-                default:
-                    deltaX = (viewWidth - width) / 2 - rect.left;
-                    break;
-            }
-            scrollEdge = EDGE_BOTH;
-        } else if (rect.left > 0) {
-            scrollEdge = EDGE_LEFT;
-            deltaX = -rect.left;
-        } else if (rect.right < viewWidth) {
-            deltaX = viewWidth - rect.right;
-            scrollEdge = EDGE_RIGHT;
-        } else {
-            scrollEdge = EDGE_NONE;
-        }
-
-        // Finally actually translate the matrix
-        suppMatrix.postTranslate(deltaX, deltaY);
-        return true;
-    }
-
-    private void applyMatrix(Matrix matrix) {
+    @SuppressWarnings("unused")
+    public Bitmap getVisibleRectangleBitmap() {
         ImageView imageView = getImageView();
+        return imageView == null ? null : imageView.getDrawingCache();
+    }
+
+    /**
+     * 清理
+     */
+    public void cleanup() {
+        if (viewReference == null) {
+            return; // cleanup already done
+        }
+
+        final ImageView imageView = viewReference.get();
         if (imageView != null) {
-            if (!ScaleType.MATRIX.equals(imageView.getScaleType())) {
-                throw new IllegalStateException("ImageView scaleType must be is MATRIX");
-            }
-
-            imageView.setImageMatrix(matrix);
-
-            if (onMatrixChangedListenerList != null && !onMatrixChangedListenerList.isEmpty()) {
-                for (int w = 0, size = onMatrixChangedListenerList.size(); w < size; w++) {
-                    onMatrixChangedListenerList.get(w).onMatrixChanged(this);
+            // Remove this as a global layout listener
+            ViewTreeObserver observer = imageView.getViewTreeObserver();
+            if (observer != null && observer.isAlive()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    observer.removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    observer.removeGlobalOnLayoutListener(this);
                 }
             }
+
+            // Remove the ImageView's reference to this
+            imageView.setOnTouchListener(null);
+
+            // make sure a pending fling runnable won't be run
+            cancelFling();
+        }
+
+        if (tapGestureDetector != null) {
+            tapGestureDetector.setOnDoubleTapListener(null);
+        }
+
+        // Clear listeners too
+        onMatrixChangedListenerList = null;
+        onViewTapListener = null;
+        onDragFlingListener = null;
+        onScaleChangeListener = null;
+
+        // Finally, clear ImageView
+        viewReference = null;
+    }
+
+    /**
+     * 获取当前缩放比例
+     */
+    public float getZoomScale() {
+        return SketchUtils.formatFloat(SketchUtils.getMatrixScale(getDrawMatrix()), 2);
+    }
+
+    /**
+     * 获取能够让图片完整显示的缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getFullZoomScale() {
+        return fullZoomScale;
+    }
+
+    /**
+     * 获取能够让图片充满ImageView显示的缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getFillZoomScale() {
+        return fillZoomScale;
+    }
+
+    /**
+     * 获取能够让图片按原图比例一比一显示的缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getOriginZoomScale() {
+        return originZoomScale;
+    }
+
+
+    /** -----------交互功能----------- **/
+
+    /**
+     * 移动到指定位置
+     */
+    // TODO: 16/8/27 加上动画支持
+    @SuppressWarnings("unused")
+    public void translateTo(float x, float y) {
+        suppMatrix.setTranslate(x, y);
+        applyMatrix(getDrawMatrix());
+    }
+
+    /**
+     * 移动一段距离
+     */
+    public void translateBy(float dx, float dy) {
+        suppMatrix.postTranslate(dx, dy);
+        applyMatrix(getDrawMatrix());
+    }
+
+    /**
+     * 设置缩放比例
+     * @param scale 新的缩放比例
+     * @param focalX 缩放中心的X坐标
+     * @param focalY 缩放中心的Y坐标
+     * @param animate 是否显示缩放动画
+     */
+    public void zoom(float scale, float focalX, float focalY, boolean animate) {
+        ImageView imageView = getImageView();
+        if (imageView != null) {
+            if (scale < minZoomScale || scale > maxZoomScale) {
+                Log.w(Sketch.TAG, NAME + ". Scale must be within the range of " + minZoomScale + "(minScale) and " + maxZoomScale + "(maxScale)");
+                return;
+            }
+
+            if (animate) {
+                imageView.post(new ZoomRunner(this, getZoomScale(), scale, focalX, focalY));
+            } else {
+                scale /= SketchUtils.getMatrixScale(baseMatrix);
+                suppMatrix.setScale(scale, scale, focalX, focalY);
+                checkAndDisplayMatrix();
+            }
         }
     }
 
-    public float getMaximumScale() {
-        return maxScale;
+    /**
+     * 设置缩放比例
+     * @param scale 新的缩放比例
+     * @param animate 是否显示缩放动画
+     */
+    public void zoom(float scale, boolean animate) {
+        ImageView imageView = getImageView();
+        if (imageView != null && imageView.getRight() > 0 && imageView.getBottom() > 0) {
+            zoom(scale, (imageView.getRight()) / 2, (imageView.getBottom()) / 2, animate);
+        }
     }
 
+    /**
+     * 设置缩放比例
+     * @param scale 新的缩放比例
+     */
     @SuppressWarnings("unused")
-    public void setMaximumScale(float maximumScale) {
-        checkZoomLevels(minScale, midScale, maximumScale);
-        maxScale = maximumScale;
+    public void zoom(float scale) {
+        zoom(scale, false);
     }
 
-    public float getMediumScale() {
-        return midScale;
-    }
 
+    /**
+     * 设置旋转角度
+     */
     @SuppressWarnings("unused")
-    public void setMediumScale(float mediumScale) {
-        checkZoomLevels(minScale, mediumScale, maxScale);
-        midScale = mediumScale;
-    }
-
-    public float getMinimumScale() {
-        return minScale;
-    }
-
-    @SuppressWarnings("unused")
-    public void setMinimumScale(float minimumScale) {
-        checkZoomLevels(minimumScale, midScale, maxScale);
-        minScale = minimumScale;
-    }
-
-    @SuppressWarnings("unused")
-    public void setRotationTo(float degrees) {
+    public void rotationTo(float degrees) {
         suppMatrix.setRotate(degrees % 360);
         checkAndDisplayMatrix();
     }
 
-    public void setRotationBy(float degrees) {
+    /**
+     * 增加旋转角度
+     */
+    public void rotationBy(float degrees) {
         suppMatrix.postRotate(degrees % 360);
         checkAndDisplayMatrix();
     }
 
+    /**
+     * 设置一个显示Matrix
+     */
     @SuppressWarnings("unused")
-    public void setOnSingleFlingListener(OnSingleFlingListener onSingleFlingListener) {
-        this.onSingleFlingListener = onSingleFlingListener;
+    public boolean setDisplayMatrix(Matrix displayMatrix) {
+        if (displayMatrix == null) {
+            throw new IllegalArgumentException("Matrix cannot be null");
+        }
+
+        ImageView imageView = getImageView();
+        if (imageView == null || imageView.getDrawable() == null) {
+            return false;
+        }
+
+        suppMatrix.set(displayMatrix);
+        applyMatrix(getDrawMatrix());
+        checkMatrixBounds();
+
+        return true;
     }
 
+    /**
+     * 当Drawable或者ImageView的尺寸发生变化时就需要调用此方法来更新
+     */
+    public void update() {
+        ImageView imageView = getImageView();
+        if (imageView == null) {
+            return;
+        }
+
+        if (zoomable) {
+            imageView.setScaleType(ScaleType.MATRIX);
+
+            resetMinAndMaxZoomScale();
+            updateBaseMatrix();
+            resetMatrix();
+        } else {
+            resetMinAndMaxZoomScale();
+            resetMatrix();
+        }
+    }
+
+
+    /** -----------配置----------- **/
+
+    /**
+     * 是否允许缩放
+     */
+    @SuppressWarnings("unused")
+    public boolean isZoomable() {
+        return zoomable;
+    }
+
+    /**
+     * 设置是否允许缩放
+     */
+    @SuppressWarnings("unused")
+    public void setZoomable(boolean zoomable) {
+        this.zoomable = zoomable;
+        update();
+    }
+
+    /**
+     * 火球缩放动画持续时间
+     */
+    public int getZoomDuration() {
+        return zoomDuration;
+    }
+
+    /**
+     * 设置缩放动画持续时间，单位毫秒
+     */
+    @SuppressWarnings("unused")
+    public void setZoomDuration(int milliseconds) {
+        this.zoomDuration = milliseconds > 0 ? milliseconds : DEFAULT_ZOOM_DURATION;
+    }
+
+    /**
+     * 获取缩放动画插值器
+     */
+    public Interpolator getZoomInterpolator() {
+        return zoomInterpolator;
+    }
+
+    /**
+     * 设置缩放动画插值器
+     */
+    @SuppressWarnings("unused")
+    public void setZoomInterpolator(Interpolator interpolator) {
+        zoomInterpolator = interpolator;
+    }
+
+    /**
+     * 获取最大缩放比例
+     */
+    public float getMaxZoomScale() {
+        return maxZoomScale;
+    }
+
+    /**
+     * 设置最大缩放比例
+     */
+    @SuppressWarnings("unused")
+    public void setMaxZoomScale(float maxZoomScale) {
+        if (maxZoomScale <= minZoomScale) {
+            throw new IllegalArgumentException(
+                    "maxZoomScale zoom has to be is greater than minZoomScale zoom. Call setMaxZoomScale() with a more appropriate value");
+        }
+        this.maxZoomScale = maxZoomScale;
+    }
+
+    /**
+     * 获取最小缩放比例
+     */
+    public float getMinZoomScale() {
+        return minZoomScale;
+    }
+
+    /**
+     * 设置最小缩放比例
+     */
+    @SuppressWarnings("unused")
+    public void setMinZoomScale(float minZoomScale) {
+        if (minZoomScale >= maxZoomScale) {
+            throw new IllegalArgumentException(
+                    "minZoomScale zoom has to be less than maxZoomScale zoom. Call setMinZoomScale() with a more appropriate value");
+        }
+        this.minZoomScale = minZoomScale;
+    }
+
+
+    /**
+     * 设置基础旋转角度
+     */
+    @SuppressWarnings("unused")
+    public void setBaseRotation(final float degrees) {
+        baseRotation = degrees % 360;
+        update();
+        rotationBy(baseRotation);
+        checkAndDisplayMatrix();
+    }
+
+    /**
+     * 获取ScaleType
+     */
+    public ScaleType getScaleType() {
+        return scaleType;
+    }
+
+    /**
+     * 设置ScaleType
+     */
+    public void setScaleType(ScaleType scaleType) {
+        if (scaleType != null && scaleType != ScaleType.MATRIX && scaleType != this.scaleType) {
+            this.scaleType = scaleType;
+            update();
+        }
+    }
+
+
+    /**
+     * 是否允许父类在滑动到边缘的时候拦截事件（默认true）
+     */
+    @SuppressWarnings("unused")
+    public boolean isAllowParentInterceptOnEdge() {
+        return allowParentInterceptOnEdge;
+    }
+
+    /**
+     * 设置是否允许父类在滑动到边缘的时候拦截事件（默认true）
+     */
     @SuppressWarnings("unused")
     public void setAllowParentInterceptOnEdge(boolean allowParentInterceptOnEdge) {
         this.allowParentInterceptOnEdge = allowParentInterceptOnEdge;
     }
 
+
+    /**
+     * 获取单击监听器
+     */
+    OnViewTapListener getOnViewTapListener() {
+        return onViewTapListener;
+    }
+
+    /**
+     * 设置单击监听器
+     */
+    @SuppressWarnings("unused")
+    public void setOnViewTapListener(OnViewTapListener onViewTapListener) {
+        this.onViewTapListener = onViewTapListener;
+    }
+
+    /**
+     * 设置飞速滚动监听器
+     */
+    @SuppressWarnings("unused")
+    public void setOnDragFlingListener(OnDragFlingListener onDragFlingListener) {
+        this.onDragFlingListener = onDragFlingListener;
+    }
+
+    /**
+     * 设置缩放监听器
+     */
     @SuppressWarnings("unused")
     public void setOnScaleChangeListener(OnScaleChangeListener onScaleChangeListener) {
         this.onScaleChangeListener = onScaleChangeListener;
     }
 
+    /**
+     * 添加Matrix变化监听器
+     */
     public void addOnMatrixChangeListener(OnMatrixChangedListener listener) {
         if (listener != null) {
             if (onMatrixChangedListenerList == null) {
@@ -826,182 +1139,33 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
     }
 
-    @SuppressWarnings("unused")
-    public void setZoomable(boolean zoomable) {
-        zoomEnabled = zoomable;
-        update();
-    }
 
-    @SuppressWarnings("unused")
-    public void setZoomTransitionDuration(int milliseconds) {
-        if (milliseconds < 0)
-            milliseconds = DEFAULT_ZOOM_DURATION;
-        this.zoomDuration = milliseconds;
-    }
-
-    @SuppressWarnings("unused")
-    public Bitmap getVisibleRectangleBitmap() {
-        ImageView imageView = getImageView();
-        return imageView == null ? null : imageView.getDrawingCache();
-    }
+    /** -----------监听----------- **/
 
     /**
-     * Resets the Matrix back to FIT_CENTER, and then displays it.s
+     * 飞速拖拽监听器
      */
-    private void resetMatrix() {
-        suppMatrix.reset();
-        setRotationBy(baseRotation);
-        applyMatrix(getDrawMatrix());
-        checkMatrixBounds();
-    }
-
-    @SuppressWarnings("unused")
-    public boolean isZoomEnabled() {
-        return zoomEnabled;
-    }
-
-    int getZoomDuration() {
-        return zoomDuration;
-    }
-
-    OnViewTapListener getOnViewTapListener() {
-        return onViewTapListener;
-    }
-
-    @SuppressWarnings("unused")
-    public void setOnViewTapListener(OnViewTapListener onViewTapListener) {
-        this.onViewTapListener = onViewTapListener;
-    }
-
-    Interpolator getZoomInterpolator() {
-        return zoomInterpolator;
-    }
-
-    /**
-     * Set the zoom interpolator
-     *
-     * @param interpolator the zoom interpolator
-     */
-    @SuppressWarnings("unused")
-    public void setZoomInterpolator(Interpolator interpolator) {
-        zoomInterpolator = interpolator;
-    }
-
-    /**
-     * Calculate Matrix for FIT_CENTER
-     *
-     * @param d - Drawable being displayed
-     */
-    private void updateBaseMatrix(Drawable d) {
-        ImageView imageView = getImageView();
-        if (null == imageView || null == d) {
-            return;
-        }
-
-        final float viewWidth = getImageViewWidth();
-        final float viewHeight = getImageViewHeight();
-        final int drawableWidth = d.getIntrinsicWidth();
-        final int drawableHeight = d.getIntrinsicHeight();
-
-        baseMatrix.reset();
-
-        final float widthScale = viewWidth / drawableWidth;
-        final float heightScale = viewHeight / drawableHeight;
-
-        if (scaleType == ScaleType.CENTER) {
-            baseMatrix.postTranslate((viewWidth - drawableWidth) / 2F, (viewHeight - drawableHeight) / 2F);
-        } else if (scaleType == ScaleType.CENTER_CROP) {
-            float scale = Math.max(widthScale, heightScale);
-            baseMatrix.postScale(scale, scale);
-            baseMatrix.postTranslate((viewWidth - drawableWidth * scale) / 2F,
-                    (viewHeight - drawableHeight * scale) / 2F);
-
-        } else if (scaleType == ScaleType.CENTER_INSIDE) {
-            float scale = Math.min(1.0f, Math.min(widthScale, heightScale));
-            baseMatrix.postScale(scale, scale);
-            baseMatrix.postTranslate((viewWidth - drawableWidth * scale) / 2F,
-                    (viewHeight - drawableHeight * scale) / 2F);
-
-        } else {
-            RectF mTempSrc = new RectF(0, 0, drawableWidth, drawableHeight);
-            RectF mTempDst = new RectF(0, 0, viewWidth, viewHeight);
-
-            if ((int) baseRotation % 180 != 0) {
-                //noinspection SuspiciousNameCombination
-                mTempSrc = new RectF(0, 0, drawableHeight, drawableWidth);
-            }
-
-            switch (scaleType) {
-                case FIT_CENTER:
-                    baseMatrix
-                            .setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.CENTER);
-                    break;
-
-                case FIT_START:
-                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.START);
-                    break;
-
-                case FIT_END:
-                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.END);
-                    break;
-
-                case FIT_XY:
-                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.FILL);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-    }
-
-    private void cancelFling() {
-        if (currentFlingTranslateRunner != null) {
-            currentFlingTranslateRunner.cancelFling();
-            currentFlingTranslateRunner = null;
-        }
-    }
-
-    private static void checkZoomLevels(float minZoom, float midZoom, float maxZoom) {
-        if (minZoom >= midZoom) {
-            throw new IllegalArgumentException(
-                    "Minimum zoom has to be less than Medium zoom. Call setMinimumZoom() with a more appropriate value");
-        } else if (midZoom >= maxZoom) {
-            throw new IllegalArgumentException(
-                    "Medium zoom has to be less than Maximum zoom. Call setMaximumZoom() with a more appropriate value");
-        }
-    }
-
-    public int getImageViewWidth() {
-        ImageView imageView = getImageView();
-        if (imageView != null) {
-            return imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
-        } else {
-            return 0;
-        }
-    }
-
-    public int getImageViewHeight() {
-        ImageView imageView = getImageView();
-        if (imageView != null) {
-            return imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
-        } else {
-            return 0;
-        }
-    }
-
-    public interface OnSingleFlingListener {
+    public interface OnDragFlingListener {
         boolean onFling(float startX, float startY, float velocityX, float velocityY);
     }
 
+    /**
+     * 单击监听器
+     */
     public interface OnViewTapListener {
         void onViewTap(View view, float x, float y);
     }
 
+    /**
+     * Matrix变化监听器
+     */
     public interface OnMatrixChangedListener {
         void onMatrixChanged(ImageZoomer imageZoomer);
     }
 
+    /**
+     * 缩放监听器
+     */
     public interface OnScaleChangeListener {
         void onScaleChange(float scaleFactor, float focusX, float focusY);
     }
