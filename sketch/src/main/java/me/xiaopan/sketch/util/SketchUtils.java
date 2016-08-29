@@ -73,6 +73,7 @@ import me.xiaopan.sketch.drawable.RecyclerDrawable;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.request.LoadRequest;
 import pl.droidsonroids.gif.GifDrawable;
 
 public class SketchUtils {
@@ -642,7 +643,7 @@ public class SketchUtils {
 
     public static String getInfo(String type, Bitmap bitmap, String mimeType, long byteCount) {
         if (bitmap != null) {
-            if(TextUtils.isEmpty(type)){
+            if (TextUtils.isEmpty(type)) {
                 type = "Bitmap";
             }
             return SketchUtils.concat(type
@@ -660,7 +661,7 @@ public class SketchUtils {
         return getInfo(type, bitmap, mimeType, getBitmapByteCount(bitmap));
     }
 
-    public static String getInfo(GifDrawable gifDrawable){
+    public static String getInfo(GifDrawable gifDrawable) {
         Bitmap bitmap = gifDrawable.getBitmap();
         return getInfo("GifDrawable", bitmap, "image/gif", (int) gifDrawable.getAllocationByteCount());
     }
@@ -691,7 +692,7 @@ public class SketchUtils {
      */
     @SuppressWarnings("unused")
     public static float getMatrixValue(Matrix matrix, int whichValue) {
-        synchronized (matrixValues){
+        synchronized (matrixValues) {
             matrix.getValues(matrixValues);
             return matrixValues[whichValue];
         }
@@ -701,7 +702,7 @@ public class SketchUtils {
      * 获取Matrix的缩放比例
      */
     public static float getMatrixScale(Matrix matrix) {
-        synchronized (matrixValues){
+        synchronized (matrixValues) {
             matrix.getValues(matrixValues);
             float scaleX = matrixValues[Matrix.MSCALE_X];
             float scaleY = matrixValues[Matrix.MSKEW_Y];
@@ -713,8 +714,8 @@ public class SketchUtils {
      * 获取OpenGL的版本
      */
     @SuppressWarnings("unused")
-    public static String getOpenGLVersion(Context context){
-        ActivityManager am =(ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+    public static String getOpenGLVersion(Context context) {
+        ActivityManager am = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
         ConfigurationInfo info = am.getDeviceConfigurationInfo();
         return info.getGlEsVersion();
     }
@@ -854,8 +855,38 @@ public class SketchUtils {
         return maxSize[0];
     }
 
-    public static float formatFloat(float floatValue, int newScale){
+    public static float formatFloat(float floatValue, int newScale) {
         BigDecimal b = new BigDecimal(floatValue);
         return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).floatValue();
+    }
+
+    public static boolean isSupportSuperLargeImageByAPIVersion(){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1;
+    }
+
+    public static boolean isSupportSuperLargeImageByImageFormat(ImageFormat imageFormat) {
+        if (!isSupportSuperLargeImageByAPIVersion()) {
+            return false;
+        }
+
+        if (imageFormat == null) {
+            return false;
+        }
+
+        if (imageFormat == ImageFormat.JPEG || imageFormat == ImageFormat.PNG) {
+            return true;
+        } else if (imageFormat == ImageFormat.WEBP) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean isSupportSuperLargeImage(LoadRequest loadRequest, ImageFormat imageFormat) {
+        return loadRequest instanceof DisplayRequest &&
+                ((DisplayRequest) loadRequest).getDisplayAttrs().isSupportSuperLargeImage() &&
+                isSupportSuperLargeImageByImageFormat(imageFormat);
     }
 }

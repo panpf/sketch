@@ -32,7 +32,6 @@ import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.DataSource;
-import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
@@ -101,7 +100,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             // calculate inSampleSize
             MaxSize maxSize = loadRequest.getOptions().getMaxSize();
             if (maxSize != null) {
-                boolean supportSuperLargeImage = (loadRequest instanceof DisplayRequest) && ((DisplayRequest) loadRequest).getDisplayAttrs().isSupportSuperLargeImage();
+                boolean supportSuperLargeImage = SketchUtils.isSupportSuperLargeImage(loadRequest, imageFormat);
                 ImageSizeCalculator imageSizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
                 decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(boundsOptions.outWidth, boundsOptions.outHeight,
                         maxSize.getWidth(), maxSize.getHeight(), supportSuperLargeImage);
