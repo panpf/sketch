@@ -34,7 +34,6 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 超大图片查看器
  */
 // TODO: 16/8/16 再细分成一个一个的小方块
-// TODO: 16/8/27 找几张各种类型的图片，测试超大图，
 public class SuperLargeImageViewer {
     private static final String NAME = "SuperLargeImageViewer";
 
@@ -152,7 +151,9 @@ public class SuperLargeImageViewer {
         // 如果全部显示的话就清空什么也不显示
         int previewImageWidth = updateParams.previewDrawableWidth;
         int previewImageHeight = updateParams.previewDrawableHeight;
-        if (updateParams.visibleRect.width() == previewImageWidth && updateParams.visibleRect.height() == previewImageHeight) {
+        int visibleWidth = Math.round(updateParams.visibleRect.width());
+        int visibleHeight = Math.round(updateParams.visibleRect.height());
+        if (visibleWidth == previewImageWidth && visibleHeight == previewImageHeight) {
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, NAME + ". update. full display");
             }
@@ -172,9 +173,9 @@ public class SuperLargeImageViewer {
         }
 
         // 绘制区域应该比显示区域大一圈儿
-        int addWidth = (int) (updateParams.visibleRect.width() * 0.2);
-        int addHeight = (int) (updateParams.visibleRect.height() * 0.2);
-        RectF newDrawRect = new RectF(
+        int addWidth = Math.round(updateParams.visibleRect.width() * 0.2f);
+        int addHeight = Math.round(updateParams.visibleRect.height() * 0.2f);
+        RectF newDrawRectF = new RectF(
                 Math.max(0, updateParams.visibleRect.left - addWidth),
                 Math.max(0, updateParams.visibleRect.top - addHeight),
                 Math.min(previewImageWidth, updateParams.visibleRect.right + addWidth),
@@ -186,10 +187,10 @@ public class SuperLargeImageViewer {
         float widthScale = (float) originImageWidth / previewImageWidth;
         float heightScale = (float) originImageHeight / previewImageHeight;
         Rect newSrcRect = new Rect(
-                Math.max(0, (int) (newDrawRect.left * widthScale)),
-                Math.max(0, (int) (newDrawRect.top * heightScale)),
-                Math.min(originImageWidth, (int) (newDrawRect.right * widthScale)),
-                Math.min(originImageHeight, (int) (newDrawRect.bottom * heightScale)));
+                Math.max(0, Math.round (newDrawRectF.left * widthScale)),
+                Math.max(0, Math.round (newDrawRectF.top * heightScale)),
+                Math.min(originImageWidth, Math.round (newDrawRectF.right * widthScale)),
+                Math.min(originImageHeight, Math.round (newDrawRectF.bottom * heightScale)));
 
         // 更新Matrix
         matrix.set(updateParams.drawMatrix);
@@ -200,11 +201,13 @@ public class SuperLargeImageViewer {
         // 取消旧的任务
         executor.cancelDecode(false);
 
+        // 由于绘制区域比显示区域大了一圈了，因此计算inSampleSize时targetSize也得大一圈
+        int targetWidth = Math.round(updateParams.imageViewWidth * 1.4f);
+        int targetHeight = Math.round(updateParams.imageViewHeight * 1.4f);
+
         // 根据src区域大小计算缩放比例
         int srcWidth = newSrcRect.width();
         int srcHeight = newSrcRect.height();
-        int targetWidth = (int) (updateParams.imageViewWidth * 1.4f);
-        int targetHeight = (int) (updateParams.imageViewHeight * 1.4f);
         ImageSizeCalculator imageSizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
         int inSampleSize = imageSizeCalculator.calculateInSampleSize(srcWidth, srcHeight, targetWidth, targetHeight, false);
 
@@ -212,12 +215,13 @@ public class SuperLargeImageViewer {
             Log.d(Sketch.TAG, NAME + ". update" +
                     ". visibleRect=" + updateParams.visibleRect.toString() +
                     ", srcRect=" + newSrcRect.toString() +
-                    ". drawableRect=" + newDrawRect.toString() +
-                    ", inSampleSize=" + inSampleSize);
+                    ". drawRectF=" + newDrawRectF.toString() +
+                    ", inSampleSize=" + inSampleSize +
+                    ", targetSize=" + targetWidth + "x" + targetHeight);
         }
 
         // 提交解码请求
-        executor.submit(newSrcRect, newDrawRect, inSampleSize, updateParams.visibleRect, scale);
+        executor.submit(newSrcRect, newDrawRectF, inSampleSize, updateParams.visibleRect, scale);
     }
 
     public void recycle() {
@@ -329,6 +333,7 @@ public class SuperLargeImageViewer {
                         ". visibleRect=" + visibleRect.toString() +
                         ", inSampleSize=" + inSampleSize +
                         ", srcRect=" + srcRect.toString() +
+                        ", drawRectF=" + drawRectF.toString() +
                         ", originImageSize=" + executor.getDecoder().getImageWidth() + "x" + executor.getDecoder().getImageHeight() +
                         ", bitmapSize=" + newBitmap.getWidth() + "x" + newBitmap.getHeight() +
                         ", bitmapConfig=" + (newBitmapConfig != null ? newBitmapConfig.name() : null));

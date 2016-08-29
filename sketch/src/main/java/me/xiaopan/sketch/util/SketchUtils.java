@@ -864,7 +864,7 @@ public class SketchUtils {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1;
     }
 
-    public static boolean isSupportSuperLargeImageByImageFormat(ImageFormat imageFormat) {
+    public static boolean isSupportSuperLargeImage(ImageFormat imageFormat) {
         if (!isSupportSuperLargeImageByAPIVersion()) {
             return false;
         }
@@ -887,6 +887,6 @@ public class SketchUtils {
     public static boolean isSupportSuperLargeImage(LoadRequest loadRequest, ImageFormat imageFormat) {
         return loadRequest instanceof DisplayRequest &&
                 ((DisplayRequest) loadRequest).getDisplayAttrs().isSupportSuperLargeImage() &&
-                isSupportSuperLargeImageByImageFormat(imageFormat);
+                isSupportSuperLargeImage(imageFormat);
     }
 }
