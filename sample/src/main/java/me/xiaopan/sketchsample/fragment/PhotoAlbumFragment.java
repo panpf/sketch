@@ -133,6 +133,9 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
             }
 
             List<String> imagePathList = new ArrayList<String>(mCursor.getCount() + 2);
+            imagePathList.add(UriScheme.ASSET.createUri("liuyifei.bmp"));
+            imagePathList.add(UriScheme.ASSET.createUri("zhuomian.webp"));
+            imagePathList.add(UriScheme.ASSET.createUri("world_map.jpg"));
             imagePathList.add(UriScheme.ASSET.createUri("test_card.png"));
             imagePathList.add(UriScheme.ASSET.createUri("qing_ming_shang_he_tu.jpg"));
             imagePathList.add(UriScheme.ASSET.createUri("chang_wei_bo.jpg"));

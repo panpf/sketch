@@ -176,7 +176,7 @@ public class WindowBackgroundManager {
                 public void onCanceled(CancelCause cancelCause) {
 
                 }
-            }).resize(resizeWidth, resizeHeight).optionsByName(OptionsType.WINDOW_BACKGROUND).commit();
+            }).maxSize(resizeWidth, resizeHeight).resize(resizeWidth, resizeHeight).optionsByName(OptionsType.WINDOW_BACKGROUND).commit();
         }
     }
 }
