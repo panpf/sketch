@@ -186,6 +186,7 @@ RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
 onDisplay的执行时机提前
 如果用100x100的ImageView去显示一张特别长的图，那么势必会先读取到一张特别模糊的图，可以先对图片进行裁剪，这样显示效果会好很多，这个功能得加个开关
 删除RecyclerDrawable，放到显示的时候new一个gifDrawable
+4.0以下下webp转png再使用，可以解决很多问题（超大图功能对WebP的限制需要改一下）
 
 其它：
 参考Glide、Fresco和Picasso
