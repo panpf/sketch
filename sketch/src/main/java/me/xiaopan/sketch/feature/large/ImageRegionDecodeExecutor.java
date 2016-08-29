@@ -131,7 +131,7 @@ class ImageRegionDecodeExecutor {
     /**
      * 提交一个解码请求
      */
-    public void submit(Rect srcRect, int inSampleSize, RectF visibleRect, float scale) {
+    public void submit(Rect srcRect, RectF drawRectF, int inSampleSize, RectF visibleRect, float scale) {
         if (!running) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". stop running. submit");
@@ -141,7 +141,7 @@ class ImageRegionDecodeExecutor {
 
         installHandlerThread();
         synchronized (this.decodeParams) {
-            this.decodeParams.set(srcRect, inSampleSize, visibleRect, scale);
+            this.decodeParams.set(srcRect, drawRectF, inSampleSize, visibleRect, scale);
             decodeHandler.postDecode(decodeKeyNumber.getKey());
         }
     }
@@ -244,8 +244,11 @@ class ImageRegionDecodeExecutor {
         }
 
         callback.onDecodeCompleted(decodeParams.getSrcRect(),
-                decodeParams.getInSampleSize(), decodeParams.getBitmap(),
-                decodeParams.getVisibleRect(), decodeParams.getScale());
+                decodeParams.getDrawRectF(),
+                decodeParams.getInSampleSize(),
+                decodeParams.getVisibleRect(),
+                decodeParams.getScale(),
+                decodeParams.getBitmap());
     }
 
     /**
@@ -286,6 +289,6 @@ class ImageRegionDecodeExecutor {
 
         void onInitFailed(Exception e);
 
-        void onDecodeCompleted(Rect srcRect, int inSampleSize, Bitmap newBitmap, RectF visibleRect, float scale);
+        void onDecodeCompleted(Rect srcRect, RectF drawRectF, int inSampleSize, RectF visibleRect, float scale, Bitmap newBitmap);
     }
 }

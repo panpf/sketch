@@ -6,6 +6,7 @@ import android.graphics.RectF;
 
 public class DecodeParams {
     private Rect srcRect;
+    private RectF drawRectF;
     private int inSampleSize;
 
     private RectF visibleRect;
@@ -13,7 +14,7 @@ public class DecodeParams {
 
     private Bitmap bitmap;
 
-    public void set(Rect srcRect, int inSampleSize, RectF visibleRect, float scale) {
+    public void set(Rect srcRect, RectF drawRectF, int inSampleSize, RectF visibleRectF, float scale) {
         if (this.srcRect == null) {
             this.srcRect = new Rect();
         }
@@ -22,29 +23,41 @@ public class DecodeParams {
         } else {
             this.srcRect.setEmpty();
         }
+
+        if (this.drawRectF == null) {
+            this.drawRectF = new RectF();
+        }
+        if (drawRectF != null) {
+            this.drawRectF.set(drawRectF);
+        } else {
+            this.drawRectF.setEmpty();
+        }
+
         this.inSampleSize = inSampleSize;
 
         if (this.visibleRect == null) {
             this.visibleRect = new RectF();
         }
-        if (srcRect != null) {
-            this.visibleRect.set(visibleRect);
+        if (visibleRectF != null) {
+            this.visibleRect.set(visibleRectF);
         } else {
             this.visibleRect.setEmpty();
         }
+
         this.scale = scale;
     }
 
     public void set(DecodeParams decodeParams) {
         if (decodeParams != null) {
-            set(decodeParams.srcRect, decodeParams.inSampleSize, decodeParams.visibleRect, decodeParams.scale);
+            set(decodeParams.srcRect, decodeParams.drawRectF, decodeParams.inSampleSize, decodeParams.visibleRect, decodeParams.scale);
         } else {
-            set(null, 0, null, 0);
+            set(null, null, 0, null, 0);
         }
     }
 
     public boolean isEmpty() {
         return srcRect == null || srcRect.isEmpty() ||
+                drawRectF == null || drawRectF.isEmpty() ||
                 inSampleSize == 0 ||
                 visibleRect == null || visibleRect.isEmpty() ||
                 scale == 0;
@@ -60,6 +73,10 @@ public class DecodeParams {
 
     public Rect getSrcRect() {
         return srcRect;
+    }
+
+    public RectF getDrawRectF() {
+        return drawRectF;
     }
 
     public RectF getVisibleRect() {
