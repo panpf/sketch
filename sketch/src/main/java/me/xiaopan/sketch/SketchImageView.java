@@ -740,7 +740,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             superLargeImageFunction = new SuperLargeImageFunction(this);
             superLargeImageFunction.onDrawableChanged("setEnableSuperLargeImageViewer", null, getDrawable());
         } else {
-            superLargeImageFunction.recycle();
+            superLargeImageFunction.recycle("setSupportSuperLargeImage");
             superLargeImageFunction = null;
 
             if (isSupportZoom() && imageZoomFunction.isFromSuperLargeImageFunction()) {

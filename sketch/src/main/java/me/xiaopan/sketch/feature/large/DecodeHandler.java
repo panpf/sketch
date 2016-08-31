@@ -18,6 +18,7 @@ package me.xiaopan.sketch.feature.large;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -48,7 +49,7 @@ class DecodeHandler extends Handler {
 
         switch (msg.what) {
             case WHAT_DECODE:
-                decode(decodeExecutor, msg.arg1);
+                decode(decodeExecutor, msg.arg1, (Tile) msg.obj);
                 break;
         }
 
@@ -57,80 +58,94 @@ class DecodeHandler extends Handler {
         }
     }
 
-    public void postDecode(int decodeKey) {
-        removeMessages(DecodeHandler.WHAT_DECODE);
-
+    public void postDecode(int key, Tile tile) {
         Message message = obtainMessage(DecodeHandler.WHAT_DECODE);
-        message.arg1 = decodeKey;
+        message.arg1 = key;
+        message.obj = tile;
         message.sendToTarget();
     }
 
-    private void decode(ImageRegionDecodeExecutor decodeExecutor, int decodeKey) {
+    private void decode(ImageRegionDecodeExecutor decodeExecutor, int key, Tile tile) {
+        if (tile.isExpire(key)) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". key expired. before decode. key: " + key + ", tile=" + tile.getInfo());
+            }
+            decodeExecutor.getMainHandler().postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_BEFORE_KEY_EXPIRED));
+            return;
+        }
+
+        if (tile.isDecodeParamEmpty()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". decode param is empty. key: " + key + ", tile=" + tile.getInfo());
+            }
+            decodeExecutor.getMainHandler().postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_DECODE_PARAM_EMPTY));
+            return;
+        }
+
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeKey: " + decodeKey);
+                Log.w(Sketch.TAG, NAME + ". weak reference break. key: " + key + ", tile=" + tile.getInfo());
             }
             return;
         }
 
-        int newestDecodeKey = decodeExecutor.getDecodeKey();
-        if (decodeKey != newestDecodeKey) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". decode key expired" +
-                        ". before decode" +
-                        ". decodeKey: " + decodeKey +
-                        ", newestDecodeKey: " + newestDecodeKey);
-            }
-            return;
-        }
-
-        DecodeParams decodeParams = new DecodeParams();
-        decodeParams.set(decodeExecutor.getDecodeParams());
-        if (decodeParams.isEmpty()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". decode params is empty. decodeKey: " + decodeKey);
-            }
-            return;
-        }
+        Rect srcRect = new Rect(tile.srcRect);
+        int inSampleSize = tile.inSampleSize;
 
         ImageRegionDecoder decoder = decodeExecutor.getDecoder();
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = decodeParams.getInSampleSize();
+        options.inSampleSize = inSampleSize;
         ImageFormat imageFormat = decoder.getImageFormat();
         if (imageFormat != null) {
             options.inPreferredConfig = imageFormat.getConfig(false);
         }
 
-        Bitmap bitmap = decoder.decodeRegion(decodeParams.getSrcRect(), options);
+        Bitmap bitmap = decoder.decodeRegion(srcRect, options);
         if (bitmap == null || bitmap.isRecycled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". bitmap is null or recycled" +
-                        ". after decode" +
-                        ". decodeKey: " + decodeKey);
+                Log.w(Sketch.TAG, NAME + ". bitmap is null or recycled. after decode. key: " + key + ", tile=" + tile.getInfo());
             }
+            decodeExecutor.getMainHandler().postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_BITMAP_NULL));
             return;
         }
 
-        newestDecodeKey = decodeExecutor.getDecodeKey();
-        if (decodeKey != newestDecodeKey) {
+        if (tile.isExpire(key)) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". decode key expired" +
-                        ". after decode" +
-                        ". decodeKey: " + decodeKey +
-                        ", newestDecodeKey: " + newestDecodeKey);
+                Log.w(Sketch.TAG, NAME + ". key expired. after decode. key: " + key + ", tile=" + tile.getInfo());
             }
             bitmap.recycle();
+            decodeExecutor.getMainHandler().postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_AFTER_KEY_EXPIRED));
             return;
         }
 
-        decodeParams.setBitmap(bitmap);
-        decodeExecutor.getMainHandler().postDecodeCompleted(decodeParams, decodeKey);
+        decodeExecutor.getMainHandler().postDecodeCompleted(key, tile, bitmap);
     }
 
-    public void clean() {
+    public void clean(String why) {
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, NAME + ". clean. " + why);
+        }
+
         removeMessages(WHAT_DECODE);
+    }
+
+    public static class DecodeFailedException extends Exception {
+        public static final int CAUSE_BITMAP_NULL = 1101;
+        public static final int CAUSE_BEFORE_KEY_EXPIRED = 1102;
+        public static final int CAUSE_AFTER_KEY_EXPIRED = 1103;
+        public static final int CAUSE_CALLBACK_KEY_EXPIRED = 1104;
+        public static final int CAUSE_DECODE_PARAM_EMPTY = 1105;
+
+        public Tile tile;
+        private int cause;
+
+        public DecodeFailedException(Tile tile, int cause) {
+            this.tile = tile;
+            this.cause = cause;
+        }
+
+        public int getFailedCause() {
+            return cause;
+        }
     }
 }

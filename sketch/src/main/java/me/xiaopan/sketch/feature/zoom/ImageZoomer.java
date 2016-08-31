@@ -19,6 +19,7 @@ package me.xiaopan.sketch.feature.zoom;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -692,59 +693,59 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 获取预览图片上用户真实看到区域
      */
-    public void getVisibleRect(RectF rectF) {
+    public void getVisibleRect(Rect rect) {
         ImageView imageView = getImageView();
         if (imageView == null) {
-            rectF.setEmpty();
+            rect.setEmpty();
             return;
         }
 
         Drawable drawable = imageView.getDrawable();
         if (drawable == null || drawable.getIntrinsicWidth() == 0) {
-            rectF.setEmpty();
+            rect.setEmpty();
             return;
         }
 
-        RectF displayRect = new RectF();
+        RectF displayRectF = new RectF();
         checkMatrixBounds();
-        getDisplayRect(displayRect);
-        if (displayRect.isEmpty()) {
-            rectF.setEmpty();
+        getDisplayRect(displayRectF);
+        if (displayRectF.isEmpty()) {
+            rect.setEmpty();
             return;
         }
 
         int viewWidth = getImageViewWidth();
         int viewHeight = getImageViewHeight();
-        float displayWidth = displayRect.width();
-        float displayHeight = displayRect.height();
+        float displayWidth = displayRectF.width();
+        float displayHeight = displayRectF.height();
         int drawableWidth = drawable.getIntrinsicWidth();
 
         float scale = displayWidth / drawableWidth;
 
         float left;
         float right;
-        if (displayRect.left >= 0) {
+        if (displayRectF.left >= 0) {
             left = 0;
         } else {
-            left = Math.abs(displayRect.left);
+            left = Math.abs(displayRectF.left);
         }
         if (displayWidth >= viewWidth) {
             right = viewWidth + left;
         } else {
-            right = displayRect.right - displayRect.left;
+            right = displayRectF.right - displayRectF.left;
         }
 
         float top;
         float bottom;
-        if (displayRect.top >= 0) {
+        if (displayRectF.top >= 0) {
             top = 0;
         } else {
-            top = Math.abs(displayRect.top);
+            top = Math.abs(displayRectF.top);
         }
         if (displayHeight >= viewHeight) {
             bottom = viewHeight + top;
         } else {
-            bottom = displayRect.bottom - displayRect.top;
+            bottom = displayRectF.bottom - displayRectF.top;
         }
 
         left /= scale;
@@ -752,7 +753,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         top /= scale;
         bottom /= scale;
 
-        rectF.set(left, top, right, bottom);
+        rect.set(Math.round(left), Math.round(top), Math.round(right), Math.round(bottom));
     }
 
     @SuppressWarnings("unused")

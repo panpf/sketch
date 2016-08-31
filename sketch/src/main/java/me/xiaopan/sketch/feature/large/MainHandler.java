@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.feature.large;
 
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -32,6 +33,7 @@ class MainHandler extends Handler {
     private static final int WHAT_INIT_COMPLETED = 2002;
     private static final int WHAT_INIT_FAILED = 2003;
     private static final int WHAT_DECODE_COMPLETED = 2004;
+    private static final int WHAT_DECODE_FAILED = 2005;
 
     private WeakReference<ImageRegionDecodeExecutor> reference;
 
@@ -53,7 +55,10 @@ class MainHandler extends Handler {
                 initFailed((InitHandler.InitFailedException) msg.obj, msg.arg1);
                 break;
             case WHAT_DECODE_COMPLETED:
-                decodeCompleted((DecodeParams) msg.obj, msg.arg1);
+                decodeCompleted(msg.arg1, (TileDecodeResult) msg.obj);
+                break;
+            case WHAT_DECODE_FAILED:
+                decodeFailed(msg.arg1, (DecodeHandler.DecodeFailedException) msg.obj);
                 break;
         }
     }
@@ -85,34 +90,26 @@ class MainHandler extends Handler {
 
 
     public void postInitCompleted(ImageRegionDecoder decoder, int initKey) {
-        Message message = obtainMessage(MainHandler.WHAT_INIT_COMPLETED, decoder);
+        Message message = obtainMessage(MainHandler.WHAT_INIT_COMPLETED);
         message.arg1 = initKey;
+        message.obj = decoder;
         message.sendToTarget();
     }
 
-    private void initCompleted(ImageRegionDecoder decoder, int initKey) {
+    private void initCompleted(ImageRegionDecoder decoder, int key) {
         ImageRegionDecodeExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". weak reference break" +
-                        ". initCompleted" +
-                        ". initKey: " + initKey +
-                        ", imageUri: " + decoder.getImageUri());
+                Log.w(Sketch.TAG, NAME + ". weak reference break. initCompleted. key: " + key + ", imageUri: " + decoder.getImageUri());
             }
             decoder.recycle();
             return;
         }
 
-        int newestInitKey = decodeExecutor.getInitKey();
-        if (initKey != newestInitKey) {
+        int newKey = decodeExecutor.getInitKey();
+        if (key != newKey) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". init key expired" +
-                        ". initCompleted" +
-                        ". initKey: " + initKey +
-                        ". newestInitKey: " + newestInitKey +
-                        ", imageUri: " + decoder.getImageUri());
+                Log.w(Sketch.TAG, NAME + ". init key expired. initCompleted. key: " + key + ". newKey: " + newKey + ", imageUri: " + decoder.getImageUri());
             }
             decoder.recycle();
             return;
@@ -122,33 +119,26 @@ class MainHandler extends Handler {
     }
 
 
-    public void postInitFailed(InitHandler.InitFailedException e, int initKey) {
-        Message message = obtainMessage(MainHandler.WHAT_INIT_FAILED, e);
-        message.arg1 = initKey;
+    public void postInitFailed(InitHandler.InitFailedException e, int key) {
+        Message message = obtainMessage(MainHandler.WHAT_INIT_FAILED);
+        message.arg1 = key;
+        message.obj = e;
         message.sendToTarget();
     }
 
-    private void initFailed(InitHandler.InitFailedException e, int initKey) {
+    private void initFailed(InitHandler.InitFailedException e, int key) {
         ImageRegionDecodeExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". weak reference break" +
-                        ". initFailed" +
-                        ". initKey: " + initKey +
-                        ", imageUri: " + e.getImageUri());
+                Log.w(Sketch.TAG, NAME + ". weak reference break. initFailed. key: " + key + ", imageUri: " + e.getImageUri());
             }
             return;
         }
 
-        int newestInitKey = decodeExecutor.getInitKey();
-        if (initKey != newestInitKey) {
+        int newKey = decodeExecutor.getInitKey();
+        if (key != newKey) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". init key expire" +
-                        ". initFailed" +
-                        ". initKey: " + initKey +
-                        ", imageUri: " + e.getImageUri());
+                Log.w(Sketch.TAG, NAME + ". key expire. initFailed. key: " + key + ". newKey: " + newKey + ", imageUri: " + e.getImageUri());
             }
             return;
         }
@@ -157,53 +147,71 @@ class MainHandler extends Handler {
     }
 
 
-    public void postDecodeCompleted(DecodeParams decodeParams, int decodeKey) {
-        Message message = obtainMessage(MainHandler.WHAT_DECODE_COMPLETED, decodeParams);
-        message.arg1 = decodeKey;
+    public void postDecodeCompleted(int key, Tile tile, Bitmap bitmap) {
+        Message message = obtainMessage(MainHandler.WHAT_DECODE_COMPLETED);
+        message.arg1 = key;
+        message.obj = new TileDecodeResult(bitmap, tile);
         message.sendToTarget();
     }
 
-    private void decodeCompleted(DecodeParams decodeParams, int decodeKey) {
+    private void decodeCompleted(int key, TileDecodeResult result) {
         ImageRegionDecodeExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". weak reference break" +
-                        ". decodeCompleted" +
-                        ". decodeKey: " + decodeKey +
-                        ", visibleRect: " + decodeParams.getVisibleRect().toString() +
-                        ", inSample: " + decodeParams.getInSampleSize() +
-                        ", srcRect: " + decodeParams.getSrcRect().toString() +
-                        ", scale: " + decodeParams.getScale());
+                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeCompleted. key: " + key +", tile=" + result.tile.getInfo());
             }
-            decodeParams.getBitmap().recycle();
+            result.bitmap.recycle();
             return;
         }
 
-        int newestDecodeKey = decodeExecutor.getDecodeKey();
-        if (decodeKey != newestDecodeKey) {
+        if (!result.tile.isExpire(key)) {
+            decodeExecutor.decodeCompleted(result.tile, result.bitmap);
+        } else {
+            result.bitmap.recycle();
+            decodeExecutor.decodeFailed(result.tile, new DecodeHandler.DecodeFailedException(result.tile,
+                    DecodeHandler.DecodeFailedException.CAUSE_CALLBACK_KEY_EXPIRED));
+        }
+    }
+
+    public void postDecodeFailed(int key, DecodeHandler.DecodeFailedException exception) {
+        Message message = obtainMessage(MainHandler.WHAT_DECODE_FAILED);
+        message.arg1 = key;
+        message.obj = exception;
+        message.sendToTarget();
+    }
+
+    private void decodeFailed(int key, DecodeHandler.DecodeFailedException exception) {
+        ImageRegionDecodeExecutor decodeExecutor = reference.get();
+        if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". decode key expire" +
-                        ". decodeCompleted" +
-                        ". decodeKey: " + decodeKey +
-                        ", visibleRect: " + decodeParams.getVisibleRect().toString() +
-                        ", inSample: " + decodeParams.getInSampleSize() +
-                        ", srcRect: " + decodeParams.getSrcRect().toString() +
-                        ", scale: " + decodeParams.getScale());
+                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeFailed. key: " + key +", tile=" + exception.tile.getInfo());
             }
-            decodeParams.getBitmap().recycle();
             return;
         }
 
-        decodeExecutor.decodeCompleted(decodeParams);
+        decodeExecutor.decodeFailed(exception.tile, exception);
     }
 
 
-    public void clean() {
+    public void clean(String why) {
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, NAME + ". clean. " + why);
+        }
+
         removeMessages(WHAT_RECYCLE_DECODE_THREAD);
         removeMessages(WHAT_INIT_COMPLETED);
         removeMessages(WHAT_INIT_FAILED);
         removeMessages(WHAT_DECODE_COMPLETED);
+        removeMessages(WHAT_DECODE_FAILED);
+    }
+
+    public static final class TileDecodeResult {
+        public Tile tile;
+        public Bitmap bitmap;
+
+        public TileDecodeResult(Bitmap bitmap, Tile tile) {
+            this.bitmap = bitmap;
+            this.tile = tile;
+        }
     }
 }

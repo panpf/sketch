@@ -18,8 +18,6 @@ package me.xiaopan.sketch.feature.large;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Rect;
-import android.graphics.RectF;
 import android.os.Build;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -30,13 +28,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import me.xiaopan.sketch.Sketch;
 
-class ImageRegionDecodeExecutor {
+public class ImageRegionDecodeExecutor {
     private static final String NAME = "ImageRegionDecodeExecutor";
     private static final AtomicInteger THREAD_NUMBER = new AtomicInteger();
 
     private final Object handlerThreadLock = new Object();
     private final Object decoderLock = new Object();
-    private final DecodeParams decodeParams = new DecodeParams();
 
     private Callback callback;
 
@@ -49,12 +46,10 @@ class ImageRegionDecodeExecutor {
     private DecodeHandler decodeHandler;
     private ImageRegionDecoder decoder;
     private KeyNumber initKeyNumber;
-    private KeyNumber decodeKeyNumber;
 
     public ImageRegionDecodeExecutor(Callback callback) {
         this.callback = callback;
         this.initKeyNumber = new KeyNumber();
-        this.decodeKeyNumber = new KeyNumber();
         this.mainHandler = new MainHandler(Looper.getMainLooper(), this);
     }
 
@@ -87,20 +82,19 @@ class ImageRegionDecodeExecutor {
     /**
      * 取消所有的待办任务
      */
-    public void clean() {
+    public void clean(String why) {
         initKeyNumber.refresh();
-        decodeKeyNumber.refresh();
 
         if (initHandler != null) {
-            initHandler.clean();
+            initHandler.clean(why);
         }
 
         if (decodeHandler != null) {
-            decodeHandler.clean();
+            decodeHandler.clean(why);
         }
 
         if (mainHandler != null) {
-            mainHandler.clean();
+            mainHandler.clean(why);
         }
     }
 
@@ -108,7 +102,7 @@ class ImageRegionDecodeExecutor {
      * 初始化解码器，初始化结果会通过Callback的onInitCompleted()或onInitFailed(Exception)方法回调
      */
     public void initDecoder(String imageUri) {
-        clean();
+        clean("initDecoder");
 
         synchronized (decoderLock) {
             if (decoder != null) {
@@ -131,7 +125,7 @@ class ImageRegionDecodeExecutor {
     /**
      * 提交一个解码请求
      */
-    public void submit(Rect srcRect, RectF drawRectF, int inSampleSize, RectF visibleRect, float scale) {
+    public void submit(Tile tile) {
         if (!running) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". stop running. submit");
@@ -140,28 +134,27 @@ class ImageRegionDecodeExecutor {
         }
 
         installHandlerThread();
-        synchronized (this.decodeParams) {
-            this.decodeParams.set(srcRect, drawRectF, inSampleSize, visibleRect, scale);
-            decodeHandler.postDecode(decodeKeyNumber.getKey());
-        }
+
+        tile.refreshKey("postDecode");
+        decodeHandler.postDecode(tile.getKey(), tile);
     }
 
     /**
      * 回收所有资源
      */
-    public void recycle() {
+    public void recycle(String why) {
         running = false;
-        clean();
+        clean(why);
         recycleDecodeThread();
     }
 
-    public void recycleDecodeThread(){
+    public void recycleDecodeThread() {
         if (initHandler != null) {
-            initHandler.clean();
+            initHandler.clean("recycleDecodeThread");
         }
 
         if (decodeHandler != null) {
-            decodeHandler.clean();
+            decodeHandler.clean("recycleDecodeThread");
         }
 
         synchronized (handlerThreadLock) {
@@ -182,18 +175,6 @@ class ImageRegionDecodeExecutor {
     }
 
     /**
-     * 取消解码
-     *
-     * @param force 是否强制取消
-     */
-    public void cancelDecode(boolean force) {
-        if (force) {
-            decodeKeyNumber.refresh();
-        }
-        decodeHandler.clean();
-    }
-
-    /**
      * 是否已经准备好可以使用？
      */
     public boolean isReady() {
@@ -203,52 +184,39 @@ class ImageRegionDecodeExecutor {
     }
 
     void initCompleted(ImageRegionDecoder decoder) {
-        if (!running) {
+        if (running) {
+            synchronized (decoderLock) {
+                ImageRegionDecodeExecutor.this.decoder = decoder;
+            }
+            initializing = false;
+        } else {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". stop running. initCompleted");
             }
             decoder.recycle();
-            return;
         }
 
-        synchronized (decoderLock) {
-            ImageRegionDecodeExecutor.this.decoder = decoder;
-        }
-
-        initializing = false;
         callback.onInitCompleted();
     }
 
     void initFailed(Exception e) {
-        if (!running) {
+        if (running) {
+            initializing = false;
+        } else {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". stop running. initFailed");
             }
-            return;
         }
 
-        initializing = false;
         callback.onInitFailed(e);
     }
 
-    void decodeCompleted(DecodeParams decodeParams) {
-        if (!running) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". stop running. decodeCompleted");
-            }
-            Bitmap bitmap = decodeParams.getBitmap();
-            if (bitmap != null) {
-                bitmap.recycle();
-            }
-            return;
-        }
+    void decodeCompleted(Tile tile, Bitmap bitmap) {
+        callback.onDecodeCompleted(tile, bitmap);
+    }
 
-        callback.onDecodeCompleted(decodeParams.getSrcRect(),
-                decodeParams.getDrawRectF(),
-                decodeParams.getInSampleSize(),
-                decodeParams.getVisibleRect(),
-                decodeParams.getScale(),
-                decodeParams.getBitmap());
+    void decodeFailed(Tile tile, DecodeHandler.DecodeFailedException exception) {
+        callback.onDecodeFailed(tile, exception);
     }
 
     /**
@@ -262,20 +230,12 @@ class ImageRegionDecodeExecutor {
         return callback.getContext();
     }
 
-    ImageRegionDecoder getDecoder() {
+    public ImageRegionDecoder getDecoder() {
         return decoder;
-    }
-
-    DecodeParams getDecodeParams() {
-        return decodeParams;
     }
 
     MainHandler getMainHandler() {
         return mainHandler;
-    }
-
-    public int getDecodeKey() {
-        return decodeKeyNumber.getKey();
     }
 
     public int getInitKey() {
@@ -289,6 +249,8 @@ class ImageRegionDecodeExecutor {
 
         void onInitFailed(Exception e);
 
-        void onDecodeCompleted(Rect srcRect, RectF drawRectF, int inSampleSize, RectF visibleRect, float scale, Bitmap newBitmap);
+        void onDecodeCompleted(Tile tile, Bitmap bitmap);
+
+        void onDecodeFailed(Tile tile, DecodeHandler.DecodeFailedException exception);
     }
 }

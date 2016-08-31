@@ -60,31 +60,24 @@ public class InitHandler extends Handler {
     public void postInit(String imageUri, int initKey) {
         removeMessages(WHAT_INIT);
 
-        Message message = obtainMessage(WHAT_INIT, imageUri);
+        Message message = obtainMessage(WHAT_INIT);
         message.arg1 = initKey;
+        message.obj = imageUri;
         message.sendToTarget();
     }
 
-    private void init(ImageRegionDecodeExecutor decodeExecutor, String imageUri, int initKey) {
+    private void init(ImageRegionDecodeExecutor decodeExecutor, String imageUri, int key) {
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". weak reference break" +
-                        ". initKey: " + initKey +
-                        ", imageUri: " + imageUri);
+                Log.w(Sketch.TAG, NAME + ". weak reference break. key: " + key + ", imageUri: " + imageUri);
             }
             return;
         }
 
-        int newestInitKey = decodeExecutor.getInitKey();
-        if (initKey != newestInitKey) {
+        int newKey = decodeExecutor.getInitKey();
+        if (key != newKey) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". init key expired" +
-                        ". before init" +
-                        ". initKey: " + initKey +
-                        ", newestInitKey: " + newestInitKey +
-                        ", imageUri: " + imageUri);
+                Log.w(Sketch.TAG, NAME + ". init key expired. before init. key: " + key + ", newKey: " + newKey + ", imageUri: " + imageUri);
             }
         }
 
@@ -94,46 +87,37 @@ public class InitHandler extends Handler {
         } catch (final Exception e) {
             e.printStackTrace();
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". init failed" +
-                        ". exception" +
-                        ". initKey: " + initKey +
-                        ", imageUri: " + imageUri);
+                Log.w(Sketch.TAG, NAME + ". init failed. exception. key: " + key + ", imageUri: " + imageUri);
             }
-            decodeExecutor.getMainHandler().postInitFailed(new InitFailedException(e, imageUri), initKey);
+            decodeExecutor.getMainHandler().postInitFailed(new InitFailedException(e, imageUri), key);
             return;
         }
 
         if (decoder == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". init failed" +
-                        ". decode is null" +
-                        ". initKey: " + initKey +
-                        ", imageUri: " + imageUri);
+                Log.w(Sketch.TAG, NAME + ". init failed. decode is null. key: " + key + ", imageUri: " + imageUri);
             }
-            decodeExecutor.getMainHandler().postInitFailed(new InitFailedException(new Exception("decoder is null"), imageUri), initKey);
+            decodeExecutor.getMainHandler().postInitFailed(new InitFailedException(new Exception("decoder is null"), imageUri), key);
             return;
         }
 
-        newestInitKey = decodeExecutor.getInitKey();
-        if (initKey != newestInitKey) {
+        newKey = decodeExecutor.getInitKey();
+        if (key != newKey) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME +
-                        ". init key expired" +
-                        ". after init" +
-                        ". initKey: " + initKey +
-                        ". newestInitKey: " + newestInitKey +
-                        ", imageUri: " + imageUri);
+                Log.w(Sketch.TAG, NAME + ". init key expired. after init. key: " + key + ", newKey: " + newKey + ", imageUri: " + imageUri);
             }
             decoder.recycle();
             return;
         }
 
-        decodeExecutor.getMainHandler().postInitCompleted(decoder, initKey);
+        decodeExecutor.getMainHandler().postInitCompleted(decoder, key);
     }
 
-    public void clean() {
+    public void clean(String why) {
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, NAME + ". clean. " + why);
+        }
+
         removeMessages(WHAT_INIT);
     }
 

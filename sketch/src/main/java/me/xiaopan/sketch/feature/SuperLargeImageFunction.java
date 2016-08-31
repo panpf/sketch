@@ -69,7 +69,7 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
     @Override
     public boolean onDetachedFromWindow() {
         if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
-            recycle();
+            recycle("onDetachedFromWindow");
         }
         return false;
     }
@@ -89,8 +89,8 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
                 Drawable drawable = imageView.getDrawable();
                 if (drawable != null) {
                     UpdateParams updateParams = superLargeImageViewer.getUpdateParams();
-                    imageZoomer.getDrawMatrix(updateParams.getDrawMatrix());
-                    imageZoomer.getVisibleRect(updateParams.getVisibleRect());
+                    imageZoomer.getDrawMatrix(updateParams.drawMatrix);
+                    imageZoomer.getVisibleRect(updateParams.visibleRect);
                     updateParams.setPreviewDrawableSize(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
                     updateParams.setImageViewSize(imageZoomer.getImageViewWidth(), imageZoomer.getImageViewHeight());
                     superLargeImageViewer.update(updateParams);
@@ -140,9 +140,9 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
         }
     }
 
-    public void recycle() {
+    public void recycle(String why) {
         if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
-            superLargeImageViewer.recycle();
+            superLargeImageViewer.recycle(why);
         }
     }
 
@@ -151,5 +151,9 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
         if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
             imageView.invalidate();
         }
+    }
+
+    public SuperLargeImageViewer getSuperLargeImageViewer() {
+        return superLargeImageViewer;
     }
 }

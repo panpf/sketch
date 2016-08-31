@@ -17,15 +17,15 @@
 package me.xiaopan.sketch.feature.large;
 
 import android.graphics.Matrix;
-import android.graphics.RectF;
+import android.graphics.Rect;
 
 public class UpdateParams {
-    Matrix drawMatrix = new Matrix();
-    RectF visibleRect = new RectF();
-    int previewDrawableWidth;
-    int previewDrawableHeight;
-    int imageViewWidth;
-    int imageViewHeight;
+    public Matrix drawMatrix = new Matrix();
+    public Rect visibleRect = new Rect();
+    public int previewDrawableWidth;
+    public int previewDrawableHeight;
+    public int imageViewWidth;
+    public int imageViewHeight;
 
     public void set(UpdateParams updateParams) {
         if (updateParams == null) {
@@ -53,14 +53,6 @@ public class UpdateParams {
         previewDrawableHeight = 0;
         imageViewWidth = 0;
         imageViewHeight = 0;
-    }
-
-    public Matrix getDrawMatrix() {
-        return drawMatrix;
-    }
-
-    public RectF getVisibleRect() {
-        return visibleRect;
     }
 
     public void setPreviewDrawableSize(int previewDrawableWidth, int previewDrawableHeight) {

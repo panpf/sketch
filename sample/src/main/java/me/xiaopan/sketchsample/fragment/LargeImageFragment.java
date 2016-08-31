@@ -17,7 +17,7 @@
 package me.xiaopan.sketchsample.fragment;
 
 import android.app.Activity;
-import android.graphics.RectF;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -80,15 +80,17 @@ public class LargeImageFragment extends MyFragment {
         imageZoomer.addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
             @Override
             public void onMatrixChanged(ImageZoomer imageZoomer) {
-                RectF visibleRectF = new RectF();
-                imageZoomer.getVisibleRect(visibleRectF);
-                mappingView.update(imageZoomer.getDrawableWidth(), visibleRectF);
+                Rect visibleRect = new Rect();
+                imageZoomer.getVisibleRect(visibleRect);
+                mappingView.update(imageZoomer.getDrawableWidth(), visibleRect);
                 scaleTextView.setText(String.valueOf(imageZoomer.getZoomScale()));
             }
         });
         mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
-        mappingView.getOptions().setMaxSize(300, 300);
+        mappingView.getOptions().setMaxSize(600, 600);
         mappingView.displayImage(imageUri);
+
+        imageView.getSuperLargeImageFunction().getSuperLargeImageViewer().setOnTileChangedListener(mappingView);
 
         if (windowBackgroundLoader != null) {
             windowBackgroundLoader.load(imageUri);

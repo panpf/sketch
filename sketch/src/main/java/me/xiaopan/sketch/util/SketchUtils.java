@@ -860,7 +860,7 @@ public class SketchUtils {
         return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).floatValue();
     }
 
-    public static boolean isSupportSuperLargeImageByAPIVersion(){
+    public static boolean isSupportSuperLargeImageByAPIVersion() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1;
     }
 
@@ -888,5 +888,9 @@ public class SketchUtils {
         return loadRequest instanceof DisplayRequest &&
                 ((DisplayRequest) loadRequest).getDisplayAttrs().isSupportSuperLargeImage() &&
                 isSupportSuperLargeImage(imageFormat);
+    }
+
+    public static boolean isCross(Rect rect1, Rect rect2) {
+        return rect1.left < rect2.right && rect2.left < rect1.right && rect1.top < rect2.bottom && rect2.top < rect1.bottom;
     }
 }
