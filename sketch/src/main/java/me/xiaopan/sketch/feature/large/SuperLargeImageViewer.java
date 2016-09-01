@@ -132,18 +132,30 @@ public class SuperLargeImageViewer {
 
         for (Tile tile : drawTileList) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". clean tile. tile=" + tile.getInfo());
+                Log.w(Sketch.TAG, NAME + ". clean tile. " + why + ". tile=" + tile.getInfo());
             }
-            tile.refreshKey("clean");
+
+            int oldKey = tile.getKey();
+            tile.refreshKey();
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". refreshKey. clean tile. " + why + ". oldKey=" + oldKey + ". " + tile.getInfo());
+            }
+
             tile.clean();
         }
         drawTileList.clear();
 
         for (Tile tile : loadingTileList) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". clean task. tile=" + tile.getInfo());
+                Log.w(Sketch.TAG, NAME + ". clean task. " + why + ". tile=" + tile.getInfo());
             }
-            tile.refreshKey("clean");
+
+            int oldKey = tile.getKey();
+            tile.refreshKey();
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". refreshKey. clean task. " + why + ". oldKey=" + oldKey + ". " + tile.getInfo());
+            }
+
             tile.clean();
         }
         loadingTileList.clear();
@@ -309,7 +321,12 @@ public class SuperLargeImageViewer {
                     Log.d(Sketch.TAG, NAME + ". recycle task. tile=" + loadingTile.getInfo());
                 }
                 loadingTileIterator.remove();
-                loadingTile.refreshKey("recycleTask");
+
+                int oldKey = loadingTile.getKey();
+                loadingTile.refreshKey();
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, NAME + ". refreshKey. recycle task. oldKey=" + oldKey + ". " + loadingTile.getInfo());
+                }
                 continue;
             }
 
@@ -401,14 +418,19 @@ public class SuperLargeImageViewer {
                         loadTile.inSampleSize = inSampleSize;
                         loadTile.scale = scale;
 
+                        int oldKey = loadTile.getKey();
+                        loadTile.refreshKey();
+                        if (Sketch.isDebugMode()) {
+                            Log.w(Sketch.TAG, NAME + ". refreshKey. post decode. oldKey=" + oldKey + ". " + loadTile.getInfo());
+                        }
+
                         if (Sketch.isDebugMode()) {
                             Log.d(Sketch.TAG, NAME + ". submit. tile=" + loadTile.getInfo());
                         }
 
                         // 提交任务
-                        loadingTileList.remove(loadTile);
                         loadingTileList.add(loadTile);
-                        executor.submit(loadTile);
+                        executor.submit(loadTile.getKey(), loadTile);
                     } else {
                         if (Sketch.isDebugMode()) {
                             Log.w(Sketch.TAG, NAME + ". repeated tile tileDrawRect=" + loadTile.drawRect.toShortString());
@@ -579,7 +601,7 @@ public class SuperLargeImageViewer {
             loadingTileList.remove(tile);
 
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". decodeFailed. tile=" + tile.getInfo() + ", loadingTiles=" + loadingTileList.size());
+                Log.w(Sketch.TAG, NAME + ". decodeFailed. " + exception.getCauseMessage() + ". tile=" + tile.getInfo() + ", loadingTiles=" + loadingTileList.size());
             }
 
             tile.clean();

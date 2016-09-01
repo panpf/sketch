@@ -147,5 +147,21 @@ class DecodeHandler extends Handler {
         public int getFailedCause() {
             return cause;
         }
+
+        public String getCauseMessage(){
+            if (cause == CAUSE_BITMAP_NULL) {
+                return "bitmap is null or recycled";
+            } else if(cause == CAUSE_BEFORE_KEY_EXPIRED) {
+                return "key expired before decode";
+            } else if(cause == CAUSE_AFTER_KEY_EXPIRED) {
+                return "key expired after decode";
+            } else if(cause == CAUSE_CALLBACK_KEY_EXPIRED) {
+                return "key expired before callback";
+            } else if(cause == CAUSE_DECODE_PARAM_EMPTY) {
+                return "decode param is empty";
+            } else {
+                return "unknown";
+            }
+        }
     }
 }

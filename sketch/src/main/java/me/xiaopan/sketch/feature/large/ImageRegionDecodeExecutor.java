@@ -125,7 +125,7 @@ public class ImageRegionDecodeExecutor {
     /**
      * 提交一个解码请求
      */
-    public void submit(Tile tile) {
+    public void submit(int key, Tile tile) {
         if (!running) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". stop running. submit");
@@ -134,9 +134,7 @@ public class ImageRegionDecodeExecutor {
         }
 
         installHandlerThread();
-
-        tile.refreshKey("postDecode");
-        decodeHandler.postDecode(tile.getKey(), tile);
+        decodeHandler.postDecode(key, tile);
     }
 
     /**

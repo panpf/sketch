@@ -18,13 +18,8 @@ package me.xiaopan.sketch.feature.large;
 
 import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.util.Log;
-
-import me.xiaopan.sketch.Sketch;
 
 public class Tile implements ObjectPool.CacheStatus {
-    private static final String NAME = "Tile";
-
     public Rect drawRect = new Rect();
     public Rect srcRect = new Rect();
     public int inSampleSize;
@@ -69,10 +64,8 @@ public class Tile implements ObjectPool.CacheStatus {
         return keyNumber.getKey();
     }
 
-    public void refreshKey(String why) {
-        int oldKey = keyNumber.getKey();
+    public void refreshKey() {
         keyNumber.refresh();
-        Log.d(Sketch.TAG, NAME + ". refreshKey. " + why + ". oldKey=" + oldKey + ". " + getInfo());
     }
 
     public String getInfo(){
