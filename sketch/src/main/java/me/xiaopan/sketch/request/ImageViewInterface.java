@@ -144,7 +144,7 @@ public interface ImageViewInterface {
     void setDisplayParams(DisplayParams displayParams);
 
     /**
-     * 是否支持超大图片
+     * 是否支持大图片
      */
-    boolean isSupportSuperLargeImage();
+    boolean isSupportLargeImage();
 }

@@ -35,7 +35,7 @@ import me.xiaopan.sketch.feature.ShowGifFlagFunction;
 import me.xiaopan.sketch.feature.ShowImageFromFunction;
 import me.xiaopan.sketch.feature.ShowPressedFunction;
 import me.xiaopan.sketch.feature.ShowProgressFunction;
-import me.xiaopan.sketch.feature.SuperLargeImageFunction;
+import me.xiaopan.sketch.feature.LargeImageFunction;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -63,7 +63,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     private ImageShapeFunction imageShapeFunction;
     private ClickRetryFunction clickRetryFunction;
     private ImageZoomFunction imageZoomFunction;
-    private SuperLargeImageFunction superLargeImageFunction;
+    private LargeImageFunction largeImageFunction;
 
     public SketchImageView(Context context) {
         super(context);
@@ -131,8 +131,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (imageZoomFunction != null) {
             imageZoomFunction.onLayout(changed, left, top, right, bottom);
         }
-        if (superLargeImageFunction != null) {
-            superLargeImageFunction.onLayout(changed, left, top, right, bottom);
+        if (largeImageFunction != null) {
+            largeImageFunction.onLayout(changed, left, top, right, bottom);
         }
     }
 
@@ -143,8 +143,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (imageZoomFunction != null) {
             imageZoomFunction.onDraw(canvas);
         }
-        if (superLargeImageFunction != null) {
-            superLargeImageFunction.onDraw(canvas);
+        if (largeImageFunction != null) {
+            largeImageFunction.onDraw(canvas);
         }
         if (showPressedFunction != null) {
             showPressedFunction.onDraw(canvas);
@@ -203,8 +203,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (imageZoomFunction != null) {
             handled |= imageZoomFunction.onTouchEvent(event);
         }
-        if (superLargeImageFunction != null) {
-            handled |= superLargeImageFunction.onTouchEvent(event);
+        if (largeImageFunction != null) {
+            handled |= largeImageFunction.onTouchEvent(event);
         }
 
         handled |= super.onTouchEvent(event);
@@ -243,8 +243,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (imageZoomFunction != null) {
             imageZoomFunction.onAttachedToWindow();
         }
-        if (superLargeImageFunction != null) {
-            superLargeImageFunction.onAttachedToWindow();
+        if (largeImageFunction != null) {
+            largeImageFunction.onAttachedToWindow();
         }
     }
 
@@ -282,8 +282,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (imageZoomFunction != null) {
             needSetImageNull |= imageZoomFunction.onDetachedFromWindow();
         }
-        if (superLargeImageFunction != null) {
-            needSetImageNull |= superLargeImageFunction.onDetachedFromWindow();
+        if (largeImageFunction != null) {
+            needSetImageNull |= largeImageFunction.onDetachedFromWindow();
         }
 
         if (needSetImageNull) {
@@ -351,8 +351,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (imageZoomFunction != null) {
                 needInvokeInvalidate |= imageZoomFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
-            if (superLargeImageFunction != null) {
-                needInvokeInvalidate |= superLargeImageFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
+            if (largeImageFunction != null) {
+                needInvokeInvalidate |= largeImageFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
 
             if (needInvokeInvalidate) {
@@ -403,8 +403,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (imageZoomFunction != null) {
             needInvokeInvalidate |= imageZoomFunction.onDisplay(uriScheme);
         }
-        if (superLargeImageFunction != null) {
-            needInvokeInvalidate |= superLargeImageFunction.onDisplay(uriScheme);
+        if (largeImageFunction != null) {
+            needInvokeInvalidate |= largeImageFunction.onDisplay(uriScheme);
         }
 
         if (needInvokeInvalidate) {
@@ -691,7 +691,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     public void setSupportZoom(boolean supportZoom) {
         if (imageZoomFunction != null) {
-            imageZoomFunction.setFromSuperLargeImageFunction(false);
+            imageZoomFunction.setFromLargeImageFunction(false);
         }
 
         if (supportZoom == isSupportZoom()) {
@@ -715,46 +715,46 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
-    public boolean isSupportSuperLargeImage() {
-        return superLargeImageFunction != null;
+    public boolean isSupportLargeImage() {
+        return largeImageFunction != null;
     }
 
     /**
-     * 设置是否支持超大图片
+     * 设置是否支持大图片
      */
-    public void setSupportSuperLargeImage(boolean supportSuperLargeImage) {
+    public void setSupportLargeImage(boolean supportLargeImage) {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1) {
             return;
         }
 
-        if (supportSuperLargeImage == isSupportSuperLargeImage()) {
+        if (supportLargeImage == isSupportLargeImage()) {
             return;
         }
 
-        if (supportSuperLargeImage) {
+        if (supportLargeImage) {
             if (!isSupportZoom()) {
                 setSupportZoom(true);
-                imageZoomFunction.setFromSuperLargeImageFunction(true);
+                imageZoomFunction.setFromLargeImageFunction(true);
             }
 
-            superLargeImageFunction = new SuperLargeImageFunction(this);
-            superLargeImageFunction.onDrawableChanged("setEnableSuperLargeImageViewer", null, getDrawable());
+            largeImageFunction = new LargeImageFunction(this);
+            largeImageFunction.onDrawableChanged("setSupportLargeImage", null, getDrawable());
         } else {
-            superLargeImageFunction.recycle("setSupportSuperLargeImage");
-            superLargeImageFunction = null;
+            largeImageFunction.recycle("setSupportLargeImage");
+            largeImageFunction = null;
 
-            if (isSupportZoom() && imageZoomFunction.isFromSuperLargeImageFunction()) {
+            if (isSupportZoom() && imageZoomFunction.isFromLargeImageFunction()) {
                 setSupportZoom(false);
             }
         }
     }
 
     /**
-     * 获取超大图功能控制对象
+     * 获取大图功能控制对象
      */
     @SuppressWarnings("unused")
-    public SuperLargeImageFunction getSuperLargeImageFunction() {
-        return superLargeImageFunction;
+    public LargeImageFunction getLargeImageFunction() {
+        return largeImageFunction;
     }
 
     /**
@@ -798,8 +798,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (imageZoomFunction != null) {
                 needInvokeInvalidate |= imageZoomFunction.onDisplayStarted();
             }
-            if (superLargeImageFunction != null) {
-                needInvokeInvalidate |= superLargeImageFunction.onDisplayStarted();
+            if (largeImageFunction != null) {
+                needInvokeInvalidate |= largeImageFunction.onDisplayStarted();
             }
 
             if (needInvokeInvalidate) {
@@ -842,8 +842,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (imageZoomFunction != null) {
                 needInvokeInvalidate |= imageZoomFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (superLargeImageFunction != null) {
-                needInvokeInvalidate |= superLargeImageFunction.onDisplayCompleted(imageFrom, mimeType);
+            if (largeImageFunction != null) {
+                needInvokeInvalidate |= largeImageFunction.onDisplayCompleted(imageFrom, mimeType);
             }
 
             if (needInvokeInvalidate) {
@@ -886,8 +886,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (imageZoomFunction != null) {
                 needInvokeInvalidate |= imageZoomFunction.onDisplayFailed(failedCause);
             }
-            if (superLargeImageFunction != null) {
-                needInvokeInvalidate |= superLargeImageFunction.onDisplayFailed(failedCause);
+            if (largeImageFunction != null) {
+                needInvokeInvalidate |= largeImageFunction.onDisplayFailed(failedCause);
             }
 
             if (needInvokeInvalidate) {
@@ -930,8 +930,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (imageZoomFunction != null) {
                 needInvokeInvalidate |= imageZoomFunction.onDisplayCanceled(cancelCause);
             }
-            if (superLargeImageFunction != null) {
-                needInvokeInvalidate |= superLargeImageFunction.onDisplayCanceled(cancelCause);
+            if (largeImageFunction != null) {
+                needInvokeInvalidate |= largeImageFunction.onDisplayCanceled(cancelCause);
             }
 
             if (needInvokeInvalidate) {
@@ -977,8 +977,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (imageZoomFunction != null) {
                 needInvokeInvalidate |= imageZoomFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if (superLargeImageFunction != null) {
-                needInvokeInvalidate |= superLargeImageFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            if (largeImageFunction != null) {
+                needInvokeInvalidate |= largeImageFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
 
             if (needInvokeInvalidate) {

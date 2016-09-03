@@ -100,10 +100,10 @@ public class DefaultImageDecoder implements ImageDecoder {
             // calculate inSampleSize
             MaxSize maxSize = loadRequest.getOptions().getMaxSize();
             if (maxSize != null) {
-                boolean supportSuperLargeImage = SketchUtils.isSupportSuperLargeImage(loadRequest, imageFormat);
+                boolean supportLargeImage = SketchUtils.isSupportLargeImage(loadRequest, imageFormat);
                 ImageSizeCalculator imageSizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
                 decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(boundsOptions.outWidth, boundsOptions.outHeight,
-                        maxSize.getWidth(), maxSize.getHeight(), supportSuperLargeImage);
+                        maxSize.getWidth(), maxSize.getHeight(), supportLargeImage);
             }
 
             // Decoding and exclude the width or height of 1 pixel image

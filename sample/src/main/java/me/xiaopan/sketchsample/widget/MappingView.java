@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2016 Peng fei Pan <sky@xiaopan.me>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.xiaopan.sketchsample.widget;
 
 import android.content.Context;
@@ -10,13 +26,13 @@ import android.util.AttributeSet;
 import android.view.ViewGroup;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.feature.large.SuperLargeImageViewer;
+import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 
-public class MappingView extends SketchImageView implements SuperLargeImageViewer.OnTileChangedListener{
+public class MappingView extends SketchImageView implements LargeImageViewer.OnTileChangedListener{
 
-    private SuperLargeImageViewer superLargeImageViewer;
+    private LargeImageViewer largeImageViewer;
 
     private Rect visibleRect;
     private Paint visiblePaint;
@@ -72,11 +88,10 @@ public class MappingView extends SketchImageView implements SuperLargeImageViewe
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        if (largeImageViewer != null) {
+            float scale = (float) largeImageViewer.getExecutor().getDecoder().getImageWidth() / getWidth();
 
-        if (superLargeImageViewer != null) {
-            float scale = (float) superLargeImageViewer.getExecutor().getDecoder().getImageWidth() / getWidth();
-
-            for (Tile tile : superLargeImageViewer.getDrawTileList()) {
+            for (Tile tile : largeImageViewer.getTileManager().getTileList()) {
                 if (!tile.isEmpty()) {
                     canvas.drawRect((tile.srcRect.left + 1) / scale,
                             (tile.srcRect.top + 1) / scale,
@@ -90,11 +105,11 @@ public class MappingView extends SketchImageView implements SuperLargeImageViewe
                 }
             }
 
-            Rect drawRect = superLargeImageViewer.getCacheSrcRect();
-            canvas.drawRect((drawRect.left) / scale,
-                    (drawRect.top) / scale,
-                    (drawRect.right) / scale,
-                    (drawRect.bottom) / scale, drawRectPaint);
+            Rect srcRect = largeImageViewer.getTileManager().getSrcRect();
+            canvas.drawRect((srcRect.left) / scale,
+                    (srcRect.top) / scale,
+                    (srcRect.right) / scale,
+                    (srcRect.bottom) / scale, drawRectPaint);
         }
 
         if (!visibleRect.isEmpty()) {
@@ -164,8 +179,8 @@ public class MappingView extends SketchImageView implements SuperLargeImageViewe
     }
 
     @Override
-    public void onTileChanged(SuperLargeImageViewer superLargeImageViewer) {
-        this.superLargeImageViewer = superLargeImageViewer;
+    public void onTileChanged(LargeImageViewer largeImageViewer) {
+        this.largeImageViewer = largeImageViewer;
         invalidate();
     }
 }

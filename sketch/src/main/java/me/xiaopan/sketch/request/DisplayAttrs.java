@@ -23,7 +23,7 @@ import me.xiaopan.sketch.Sketch;
 public class DisplayAttrs {
     private ScaleType scaleType;
     private FixedSize fixedSize;
-    private boolean supportSuperLargeImage;
+    private boolean supportLargeImage;
 
     public DisplayAttrs() {
 
@@ -36,18 +36,18 @@ public class DisplayAttrs {
     public void copy(DisplayAttrs displayAttrs) {
         this.scaleType = displayAttrs.scaleType;
         this.fixedSize = displayAttrs.fixedSize;
-        this.supportSuperLargeImage = displayAttrs.supportSuperLargeImage;
+        this.supportLargeImage = displayAttrs.supportLargeImage;
     }
 
     public void reset(ImageViewInterface imageViewInterface, Sketch sketch) {
         if (imageViewInterface != null) {
             this.scaleType = imageViewInterface.getScaleType();
             this.fixedSize = sketch.getConfiguration().getImageSizeCalculator().calculateImageFixedSize(imageViewInterface);
-            this.supportSuperLargeImage = imageViewInterface.isSupportSuperLargeImage();
+            this.supportLargeImage = imageViewInterface.isSupportLargeImage();
         } else {
             this.scaleType = null;
             this.fixedSize = null;
-            this.supportSuperLargeImage = false;
+            this.supportLargeImage = false;
         }
     }
 
@@ -60,7 +60,7 @@ public class DisplayAttrs {
     }
 
     @SuppressWarnings("unused")
-    public boolean isSupportSuperLargeImage() {
-        return supportSuperLargeImage;
+    public boolean isSupportLargeImage() {
+        return supportLargeImage;
     }
 }

@@ -27,9 +27,13 @@ import android.util.Log;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.util.KeyCounter;
 
-public class ImageRegionDecodeExecutor {
-    private static final String NAME = "ImageRegionDecodeExecutor";
+/**
+ * 碎片解码执行器，负责初始化解码器以及管理解码线程
+ */
+public class TileDecodeExecutor {
+    private static final String NAME = "TileDecodeExecutor";
     private static final AtomicInteger THREAD_NUMBER = new AtomicInteger();
 
     private final Object handlerThreadLock = new Object();
@@ -44,12 +48,12 @@ public class ImageRegionDecodeExecutor {
     private InitHandler initHandler;
     private MainHandler mainHandler;
     private DecodeHandler decodeHandler;
-    private ImageRegionDecoder decoder;
-    private KeyNumber initKeyNumber;
+    private TileDecoder decoder;
+    private KeyCounter initKeyCounter;
 
-    public ImageRegionDecodeExecutor(Callback callback) {
+    public TileDecodeExecutor(Callback callback) {
         this.callback = callback;
-        this.initKeyNumber = new KeyNumber();
+        this.initKeyCounter = new KeyCounter();
         this.mainHandler = new MainHandler(Looper.getMainLooper(), this);
     }
 
@@ -83,7 +87,7 @@ public class ImageRegionDecodeExecutor {
      * 取消所有的待办任务
      */
     public void clean(String why) {
-        initKeyNumber.refresh();
+        initKeyCounter.refresh();
 
         if (initHandler != null) {
             initHandler.clean(why);
@@ -115,7 +119,7 @@ public class ImageRegionDecodeExecutor {
             running = true;
             initializing = true;
             installHandlerThread();
-            initHandler.postInit(imageUri, initKeyNumber.getKey());
+            initHandler.postInit(imageUri, initKeyCounter.getKey());
         } else {
             running = false;
             initializing = false;
@@ -181,10 +185,10 @@ public class ImageRegionDecodeExecutor {
         }
     }
 
-    void initCompleted(ImageRegionDecoder decoder) {
+    void initCompleted(TileDecoder decoder) {
         if (running) {
             synchronized (decoderLock) {
-                ImageRegionDecodeExecutor.this.decoder = decoder;
+                TileDecodeExecutor.this.decoder = decoder;
             }
             initializing = false;
         } else {
@@ -228,7 +232,7 @@ public class ImageRegionDecodeExecutor {
         return callback.getContext();
     }
 
-    public ImageRegionDecoder getDecoder() {
+    public TileDecoder getDecoder() {
         return decoder;
     }
 
@@ -237,7 +241,7 @@ public class ImageRegionDecodeExecutor {
     }
 
     public int getInitKey() {
-        return initKeyNumber.getKey();
+        return initKeyCounter.getKey();
     }
 
     public interface Callback {

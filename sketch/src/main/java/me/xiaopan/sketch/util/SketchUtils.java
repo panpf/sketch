@@ -860,16 +860,12 @@ public class SketchUtils {
         return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).floatValue();
     }
 
-    public static boolean isSupportSuperLargeImageByAPIVersion() {
+    public static boolean isSupportLargeImageByAPIVersion() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1;
     }
 
-    public static boolean isSupportSuperLargeImage(ImageFormat imageFormat) {
-        if (!isSupportSuperLargeImageByAPIVersion()) {
-            return false;
-        }
-
-        if (imageFormat == null) {
+    public static boolean isSupportLargeImage(ImageFormat imageFormat) {
+        if (!isSupportLargeImageByAPIVersion() || imageFormat == null) {
             return false;
         }
 
@@ -884,10 +880,10 @@ public class SketchUtils {
         return false;
     }
 
-    public static boolean isSupportSuperLargeImage(LoadRequest loadRequest, ImageFormat imageFormat) {
+    public static boolean isSupportLargeImage(LoadRequest loadRequest, ImageFormat imageFormat) {
         return loadRequest instanceof DisplayRequest &&
-                ((DisplayRequest) loadRequest).getDisplayAttrs().isSupportSuperLargeImage() &&
-                isSupportSuperLargeImage(imageFormat);
+                ((DisplayRequest) loadRequest).getDisplayAttrs().isSupportLargeImage() &&
+                isSupportLargeImage(imageFormat);
     }
 
     public static boolean isCross(Rect rect1, Rect rect2) {

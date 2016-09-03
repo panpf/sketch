@@ -1,27 +1,44 @@
-package me.xiaopan.sketch.feature.large;
+/*
+ * Copyright (C) 2016 Peng fei Pan <sky@xiaopan.me>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package me.xiaopan.sketch.util;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
 public class ObjectPool<T> {
+    private static final int MAX_POOL_SIZE = 10;
     private final Object editLock = new Object();
 
     private Queue<T> cacheQueue;
-    private NewItemCallback<T> callback;
+    private ItemFactory<T> itemFactory;
     private int maxPoolSize;
 
-    public ObjectPool(NewItemCallback<T> callback, int maxPoolSize) {
-        this.callback = callback;
+    public ObjectPool(ItemFactory<T> itemFactory, int maxPoolSize) {
+        this.itemFactory = itemFactory;
         this.maxPoolSize = maxPoolSize;
         this.cacheQueue = new LinkedList<T>();
     }
 
-    public ObjectPool(NewItemCallback<T> callback) {
-        this(callback, 20);
+    public ObjectPool(ItemFactory<T> itemFactory) {
+        this(itemFactory, MAX_POOL_SIZE);
     }
 
     public ObjectPool(final Class<T> classType, int maxPoolSize) {
-        this(new NewItemCallback<T>() {
+        this(new ItemFactory<T>() {
             @Override
             public T newItem() {
                 try {
@@ -39,12 +56,12 @@ public class ObjectPool<T> {
 
     @SuppressWarnings("unused")
     public ObjectPool(final Class<T> classType) {
-        this(classType, 50);
+        this(classType, MAX_POOL_SIZE);
     }
 
     public T get() {
         synchronized (editLock) {
-            T t = !cacheQueue.isEmpty() ? cacheQueue.poll() : callback.newItem();
+            T t = !cacheQueue.isEmpty() ? cacheQueue.poll() : itemFactory.newItem();
             if (t instanceof CacheStatus) {
                 ((CacheStatus) t).setInCachePool(false);
             }
@@ -95,7 +112,7 @@ public class ObjectPool<T> {
         }
     }
 
-    public interface NewItemCallback<T> {
+    public interface ItemFactory<T> {
         T newItem();
     }
 

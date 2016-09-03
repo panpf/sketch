@@ -31,7 +31,7 @@ public class ImageZoomFunction extends SketchImageView.Function {
     private ImageView imageView;
 
     private ImageZoomer imageZoomer;
-    private boolean fromSuperLargeImageFunction;
+    private boolean fromLargeImageFunction;
 
     public ImageZoomFunction(ImageView imageView) {
         this.imageView = imageView;
@@ -88,11 +88,11 @@ public class ImageZoomFunction extends SketchImageView.Function {
         return imageZoomer;
     }
 
-    public boolean isFromSuperLargeImageFunction() {
-        return fromSuperLargeImageFunction;
+    public boolean isFromLargeImageFunction() {
+        return fromLargeImageFunction;
     }
 
-    public void setFromSuperLargeImageFunction(boolean fromSuperLargeImageFunction) {
-        this.fromSuperLargeImageFunction = fromSuperLargeImageFunction;
+    public void setFromLargeImageFunction(boolean fromLargeImageFunction) {
+        this.fromLargeImageFunction = fromLargeImageFunction;
     }
 }

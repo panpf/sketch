@@ -29,20 +29,23 @@ import java.lang.ref.WeakReference;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.ImageFormat;
 
+/**
+ * 解码处理器，运行在解码线程中，负责解码
+ */
 class DecodeHandler extends Handler {
     private static final String NAME = "DecodeHandler";
     private static final int WHAT_DECODE = 1001;
 
-    private WeakReference<ImageRegionDecodeExecutor> reference;
+    private WeakReference<TileDecodeExecutor> reference;
 
-    public DecodeHandler(Looper looper, ImageRegionDecodeExecutor decodeExecutor) {
+    public DecodeHandler(Looper looper, TileDecodeExecutor decodeExecutor) {
         super(looper);
-        reference = new WeakReference<ImageRegionDecodeExecutor>(decodeExecutor);
+        reference = new WeakReference<TileDecodeExecutor>(decodeExecutor);
     }
 
     @Override
     public void handleMessage(Message msg) {
-        ImageRegionDecodeExecutor decodeExecutor = reference.get();
+        TileDecodeExecutor decodeExecutor = reference.get();
         if (decodeExecutor != null) {
             decodeExecutor.getMainHandler().cancelDelayDestroyThread();
         }
@@ -65,8 +68,8 @@ class DecodeHandler extends Handler {
         message.sendToTarget();
     }
 
-    private void decode(ImageRegionDecodeExecutor decodeExecutor, int key, Tile tile) {
-        if (tile.isExpire(key)) {
+    private void decode(TileDecodeExecutor decodeExecutor, int key, Tile tile) {
+        if (tile.isExpired(key)) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". key expired. before decode. key: " + key + ", tile=" + tile.getInfo());
             }
@@ -92,7 +95,7 @@ class DecodeHandler extends Handler {
         Rect srcRect = new Rect(tile.srcRect);
         int inSampleSize = tile.inSampleSize;
 
-        ImageRegionDecoder decoder = decodeExecutor.getDecoder();
+        TileDecoder decoder = decodeExecutor.getDecoder();
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
         ImageFormat imageFormat = decoder.getImageFormat();
@@ -109,7 +112,7 @@ class DecodeHandler extends Handler {
             return;
         }
 
-        if (tile.isExpire(key)) {
+        if (tile.isExpired(key)) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". key expired. after decode. key: " + key + ", tile=" + tile.getInfo());
             }

@@ -26,22 +26,22 @@ import java.lang.ref.WeakReference;
 import me.xiaopan.sketch.Sketch;
 
 /**
- * 专门负责初始化ImageRegionDecoder
+ * 运行在解码线程中，负责初始化TileDecoder
  */
-public class InitHandler extends Handler {
+class InitHandler extends Handler {
     private static final String NAME = "InitHandler";
     private static final int WHAT_INIT = 1002;
 
-    private WeakReference<ImageRegionDecodeExecutor> reference;
+    private WeakReference<TileDecodeExecutor> reference;
 
-    public InitHandler(Looper looper, ImageRegionDecodeExecutor decodeExecutor) {
+    public InitHandler(Looper looper, TileDecodeExecutor decodeExecutor) {
         super(looper);
-        reference = new WeakReference<ImageRegionDecodeExecutor>(decodeExecutor);
+        reference = new WeakReference<TileDecodeExecutor>(decodeExecutor);
     }
 
     @Override
     public void handleMessage(Message msg) {
-        ImageRegionDecodeExecutor decodeExecutor = reference.get();
+        TileDecodeExecutor decodeExecutor = reference.get();
         if (decodeExecutor != null) {
             decodeExecutor.getMainHandler().cancelDelayDestroyThread();
         }
@@ -66,7 +66,7 @@ public class InitHandler extends Handler {
         message.sendToTarget();
     }
 
-    private void init(ImageRegionDecodeExecutor decodeExecutor, String imageUri, int key) {
+    private void init(TileDecodeExecutor decodeExecutor, String imageUri, int key) {
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. key: " + key + ", imageUri: " + imageUri);
@@ -81,9 +81,9 @@ public class InitHandler extends Handler {
             }
         }
 
-        ImageRegionDecoder decoder;
+        TileDecoder decoder;
         try {
-            decoder = ImageRegionDecoder.build(decodeExecutor.getContext(), imageUri);
+            decoder = TileDecoder.build(decodeExecutor.getContext(), imageUri);
         } catch (final Exception e) {
             e.printStackTrace();
             if (Sketch.isDebugMode()) {

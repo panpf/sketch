@@ -71,7 +71,7 @@ public class LargeImageFragment extends MyFragment {
         super.onViewCreated(view, savedInstanceState);
 
         imageView.setSupportZoom(true);
-        imageView.setSupportSuperLargeImage(true);
+        imageView.setSupportLargeImage(true);
 
         imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
         imageView.displayImage(imageUri);
@@ -90,7 +90,7 @@ public class LargeImageFragment extends MyFragment {
         mappingView.getOptions().setMaxSize(600, 600);
         mappingView.displayImage(imageUri);
 
-        imageView.getSuperLargeImageFunction().getSuperLargeImageViewer().setOnTileChangedListener(mappingView);
+        imageView.getLargeImageFunction().getLargeImageViewer().getTileManager().setOnTileChangedListener(mappingView);
 
         if (windowBackgroundLoader != null) {
             windowBackgroundLoader.load(imageUri);

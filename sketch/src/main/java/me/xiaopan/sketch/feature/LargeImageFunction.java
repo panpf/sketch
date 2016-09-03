@@ -25,24 +25,24 @@ import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.drawable.BindDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
-import me.xiaopan.sketch.feature.large.SuperLargeImageViewer;
+import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.large.UpdateParams;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 显示超级大图功能
+ * 大图功能
  */
-public class SuperLargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangedListener, SuperLargeImageViewer.Callback {
-    private static final String NAME = "SuperLargeImageFunction";
+public class LargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangedListener, LargeImageViewer.Callback {
+    private static final String NAME = "LargeImageFunction";
 
     private SketchImageView imageView;
-    private SuperLargeImageViewer superLargeImageViewer;
+    private LargeImageViewer largeImageViewer;
 
-    public SuperLargeImageFunction(SketchImageView imageView) {
+    public LargeImageFunction(SketchImageView imageView) {
         this.imageView = imageView;
-        if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
-            superLargeImageViewer = new SuperLargeImageViewer(imageView.getContext(), this);
+        if (SketchUtils.isSupportLargeImageByAPIVersion()) {
+            largeImageViewer = new LargeImageViewer(imageView.getContext(), this);
             if (!imageView.isSupportZoom()) {
                 imageView.setSupportZoom(true);
             }
@@ -52,23 +52,23 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
 
     @Override
     public void onAttachedToWindow() {
-        if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
+        if (SketchUtils.isSupportLargeImageByAPIVersion()) {
             resetImage();
         }
     }
 
     @Override
     public void onDraw(Canvas canvas) {
-        if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
-            if (superLargeImageViewer.isAvailable()) {
-                superLargeImageViewer.draw(canvas);
+        if (SketchUtils.isSupportLargeImageByAPIVersion()) {
+            if (largeImageViewer.isAvailable()) {
+                largeImageViewer.draw(canvas);
             }
         }
     }
 
     @Override
     public boolean onDetachedFromWindow() {
-        if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
+        if (SketchUtils.isSupportLargeImageByAPIVersion()) {
             recycle("onDetachedFromWindow");
         }
         return false;
@@ -76,7 +76,7 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
+        if (SketchUtils.isSupportLargeImageByAPIVersion()) {
             resetImage();
         }
         return false;
@@ -84,25 +84,25 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
 
     @Override
     public void onMatrixChanged(ImageZoomer imageZoomer) {
-        if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
-            if (superLargeImageViewer.isAvailable() || superLargeImageViewer.isInitializing()) {
+        if (SketchUtils.isSupportLargeImageByAPIVersion()) {
+            if (largeImageViewer.isAvailable() || largeImageViewer.isInitializing()) {
                 Drawable drawable = imageView.getDrawable();
                 if (drawable != null) {
-                    UpdateParams updateParams = superLargeImageViewer.getUpdateParams();
+                    UpdateParams updateParams = largeImageViewer.getUpdateParams();
                     imageZoomer.getDrawMatrix(updateParams.drawMatrix);
                     imageZoomer.getVisibleRect(updateParams.visibleRect);
                     updateParams.setPreviewDrawableSize(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
                     updateParams.setImageViewSize(imageZoomer.getImageViewWidth(), imageZoomer.getImageViewHeight());
-                    superLargeImageViewer.update(updateParams);
+                    largeImageViewer.update(updateParams);
                 } else {
-                    superLargeImageViewer.update(null);
+                    largeImageViewer.update(null);
                 }
             }
         }
     }
 
     private void resetImage() {
-        if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
+        if (SketchUtils.isSupportLargeImageByAPIVersion()) {
             Drawable drawable = SketchUtils.getLastDrawable(imageView.getDrawable());
             boolean drawableQualified = false;
             if (drawable != null && drawable instanceof SketchDrawable && !(drawable instanceof BindDrawable)) {
@@ -111,11 +111,11 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
                 drawableQualified |= drawable.getIntrinsicHeight() < sketchDrawable.getOriginHeight();
 
                 String mimeType = sketchDrawable.getMimeType();
-                drawableQualified &= SketchUtils.isSupportSuperLargeImage(ImageFormat.valueOfMimeType(mimeType));
+                drawableQualified &= SketchUtils.isSupportLargeImage(ImageFormat.valueOfMimeType(mimeType));
 
                 if (drawableQualified) {
                     if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". Use large figure function" +
+                        Log.d(Sketch.TAG, NAME + ". Use large image function" +
                                 ". previewDrawableSize: " + drawable.getIntrinsicWidth() + "x" + drawable.getIntrinsicHeight() +
                                 ", originImageSize: " + sketchDrawable.getOriginWidth() + "x" + sketchDrawable.getOriginHeight() +
                                 ", mimeType: " + mimeType +
@@ -123,7 +123,7 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
                     }
                 } else {
                     if (Sketch.isDebugMode()) {
-                        Log.w(Sketch.TAG, NAME + ". Don't need to use large figure function" +
+                        Log.w(Sketch.TAG, NAME + ". Don't need to use large image function" +
                                 ". previewDrawableSize: " + drawable.getIntrinsicWidth() + "x" + drawable.getIntrinsicHeight() +
                                 ", originImageSize: " + sketchDrawable.getOriginWidth() + "x" + sketchDrawable.getOriginHeight() +
                                 ", mimeType: " + mimeType +
@@ -133,27 +133,27 @@ public class SuperLargeImageFunction extends SketchImageView.Function implements
             }
 
             if (drawableQualified) {
-                superLargeImageViewer.setImage(((SketchDrawable) drawable).getImageUri());
+                largeImageViewer.setImage(((SketchDrawable) drawable).getImageUri());
             } else {
-                superLargeImageViewer.setImage(null);
+                largeImageViewer.setImage(null);
             }
         }
     }
 
     public void recycle(String why) {
-        if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
-            superLargeImageViewer.recycle(why);
+        if (SketchUtils.isSupportLargeImageByAPIVersion()) {
+            largeImageViewer.recycle(why);
         }
     }
 
     @Override
     public void invalidate() {
-        if (SketchUtils.isSupportSuperLargeImageByAPIVersion()) {
+        if (SketchUtils.isSupportLargeImageByAPIVersion()) {
             imageView.invalidate();
         }
     }
 
-    public SuperLargeImageViewer getSuperLargeImageViewer() {
-        return superLargeImageViewer;
+    public LargeImageViewer getLargeImageViewer() {
+        return largeImageViewer;
     }
 }

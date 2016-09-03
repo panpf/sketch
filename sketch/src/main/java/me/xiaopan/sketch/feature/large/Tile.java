@@ -19,7 +19,12 @@ package me.xiaopan.sketch.feature.large;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
-public class Tile implements ObjectPool.CacheStatus {
+import me.xiaopan.sketch.util.KeyCounter;
+
+/**
+ * 碎片
+ */
+public class Tile {
     public Rect drawRect = new Rect();
     public Rect srcRect = new Rect();
     public int inSampleSize;
@@ -28,11 +33,10 @@ public class Tile implements ObjectPool.CacheStatus {
     public Bitmap bitmap;
     public Rect bitmapDrawSrcRect = new Rect();
 
-    private boolean inCachePool;
-    private KeyNumber keyNumber = new KeyNumber();
-
-    public Tile() {
-    }
+    // 用来取消解码任务，开始解码这个碎片的时候会获取当时的key
+    // 然后在解码过程的各个环节都会检验key是否已经失效
+    // 因此如果想取消解码这个碎片，只需刷新key即可
+    private KeyCounter keyCounter = new KeyCounter();
 
     public boolean isEmpty() {
         return bitmap == null || bitmap.isRecycled() || isDecodeParamEmpty();
@@ -43,6 +47,10 @@ public class Tile implements ObjectPool.CacheStatus {
                 || srcRect.isEmpty() || srcRect.isEmpty()
                 || inSampleSize == 0
                 || scale == -1;
+    }
+
+    public boolean isExpired(int key) {
+        return keyCounter.getKey() != key;
     }
 
     @SuppressWarnings("unused")
@@ -61,11 +69,11 @@ public class Tile implements ObjectPool.CacheStatus {
     }
 
     public int getKey() {
-        return keyNumber.getKey();
+        return keyCounter.getKey();
     }
 
     public void refreshKey() {
-        keyNumber.refresh();
+        keyCounter.refresh();
     }
 
     public String getInfo(){
@@ -80,24 +88,10 @@ public class Tile implements ObjectPool.CacheStatus {
         builder.append(",");
         builder.append("scale:").append(scale);
         builder.append(",");
-        builder.append("key:").append(keyNumber.getKey());
+        builder.append("key:").append(keyCounter.getKey());
         builder.append(",");
         builder.append("hashCode:").append(Integer.toHexString(hashCode()));
         builder.append(")");
         return builder.toString();
-    }
-
-    public boolean isExpire(int key) {
-        return keyNumber.getKey() != key;
-    }
-
-    @Override
-    public boolean isInCachePool() {
-        return inCachePool;
-    }
-
-    @Override
-    public void setInCachePool(boolean inCachePool) {
-        this.inCachePool = inCachePool;
     }
 }

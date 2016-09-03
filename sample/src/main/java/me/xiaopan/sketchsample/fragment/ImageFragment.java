@@ -50,7 +50,7 @@ public class ImageFragment extends MyFragment {
         imageView.setOptionsByName(OptionsType.DETAIL);
         imageView.setAutoApplyGlobalAttr(false);
         imageView.setSupportZoom(true);
-        imageView.setSupportSuperLargeImage(true);
+        imageView.setSupportLargeImage(true);
 
         imageView.setDisplayListener(new DisplayListener() {
             @Override

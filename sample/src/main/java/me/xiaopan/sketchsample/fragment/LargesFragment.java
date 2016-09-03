@@ -15,7 +15,7 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.FragmentAdapter;
 
 /**
- * 大图页面，用来展示Sketch显示超大图
+ * 大图页面，用来展示Sketch显示大图的能力
  */
 @InjectContentView(R.layout.fragment_app_list)
 public class LargesFragment extends MyFragment {
