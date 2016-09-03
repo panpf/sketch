@@ -229,17 +229,12 @@ public class SuperLargeImageViewer {
         splitLoad(updateParams);
     }
 
-    // TODO: 16/8/30 缓存 drawRect，当哟足够的差别时再处理
-    // TODO: 16/8/31 还有对不齐的情况（主要是垂直方向上）
     // TODO: 16/8/31 对象池的对象的回收好好查一下
     // TODO: 16/8/31 有些许的卡顿感，看怎么优化比较好，例如控制刷新率，或者降低图片数量
-    // TODO: 16/9/3 还有一点儿稍稍的错位
+    // TODO: 16/9/3 优化一下绘制区域，有的时候会变得比较大
+    // TODO: 16/9/3 将分块管理的代码抽离
     private void splitLoad(UpdateParams updateParams) {
         Rect visibleRect = updateParams.visibleRect;
-
-        // 可见区域碎片的宽高
-        float visibleTileWidth = (float) visibleRect.width() / tiles;
-        float visibleTileHeight = (float) visibleRect.height() / tiles;
 
         // 原始图片的宽高
         int originImageWidth = executor.getDecoder().getImageWidth();
@@ -250,15 +245,15 @@ public class SuperLargeImageViewer {
         float originHeightScale = (float) originImageHeight / updateParams.previewDrawableHeight;
 
         // 计算绘制区域时，每边应该增加的量
-        float drawWidthAdd = visibleTileWidth / 2;
-        float drawHeightAdd = visibleTileHeight / 2;
+        int drawWidthAdd = (int) ((float) visibleRect.width() / tiles / 2);
+        int drawHeightAdd = (int) ((float) visibleRect.height() / tiles / 2);
 
         // 将显示区域加大一圈，计算出绘制区域，宽高各增加一个平均值，为的是提前将四周加载出来，用户缓慢滑动的时候可以提前看到四周的图像
         Rect drawRect = rectPool.get();
-        drawRect.left = Math.max(0, Math.round(visibleRect.left - drawWidthAdd));
-        drawRect.top = Math.max(0, Math.round(visibleRect.top - drawHeightAdd));
-        drawRect.right = Math.min(updateParams.previewDrawableWidth, Math.round(visibleRect.right + drawWidthAdd));
-        drawRect.bottom = Math.min(updateParams.previewDrawableHeight, Math.round(visibleRect.bottom + drawHeightAdd));
+        drawRect.left = Math.max(0, visibleRect.left - drawWidthAdd);
+        drawRect.top = Math.max(0, visibleRect.top - drawHeightAdd);
+        drawRect.right = Math.min(updateParams.previewDrawableWidth, visibleRect.right + drawWidthAdd);
+        drawRect.bottom = Math.min(updateParams.previewDrawableHeight, visibleRect.bottom + drawHeightAdd);
 
         // 计算碎片的尺寸
         int finalTiles = tiles + 1;
@@ -300,7 +295,6 @@ public class SuperLargeImageViewer {
             cacheDrawRect.setEmpty();
         }
         if (!cacheDrawRect.isEmpty()) {
-            // TODO: 16/9/3 到不了最边上
             int leftAndRightEdge = Math.round(drawWidthAdd * 0.8f);
             int topAndBottomEdge = Math.round(drawHeightAdd * 0.8f);
             int leftSpace = Math.abs(drawRect.left - cacheDrawRect.left);
@@ -310,7 +304,7 @@ public class SuperLargeImageViewer {
 
             Rect newDrawRect = rectPool.get();
             newDrawRect.set(cacheDrawRect);
-            if (drawRect.left < cacheDrawRect.left && leftSpace > leftAndRightEdge) {
+            if (drawRect.left < cacheDrawRect.left && (leftSpace > leftAndRightEdge || cacheDrawRect.left - drawTileWidth <=0)) {
                 newDrawRect.left = Math.max(0, cacheDrawRect.left - drawTileWidth);
                 int newDrawRight = cacheDrawRect.right;
                 while (drawRect.right <= newDrawRight - drawTileWidth) {
@@ -324,7 +318,7 @@ public class SuperLargeImageViewer {
                 needLoad = true;
             }
 
-            if (drawRect.top < cacheDrawRect.top && topSpace > topAndBottomEdge) {
+            if (drawRect.top < cacheDrawRect.top && (topSpace > topAndBottomEdge || cacheDrawRect.top - drawTileHeight <= 0)) {
                 newDrawRect.top = Math.max(0, cacheDrawRect.top - drawTileHeight);
                 int newDrawBottom = cacheDrawRect.bottom;
                 while (drawRect.bottom <= Math.round(newDrawBottom - drawTileHeight)) {
@@ -338,7 +332,7 @@ public class SuperLargeImageViewer {
                 needLoad = true;
             }
 
-            if (rightSpace > leftAndRightEdge && drawRect.right > cacheDrawRect.right) {
+            if (drawRect.right > cacheDrawRect.right && (rightSpace > leftAndRightEdge || cacheDrawRect.right + drawTileWidth >= updateParams.previewDrawableWidth)) {
                 int newDrawLeft = cacheDrawRect.left;
                 while (drawRect.left >= newDrawLeft + drawTileWidth) {
                     newDrawLeft = newDrawLeft + drawTileWidth;
@@ -352,7 +346,7 @@ public class SuperLargeImageViewer {
                 needLoad = true;
             }
 
-            if (bottomSpace > topAndBottomEdge && drawRect.bottom > cacheDrawRect.bottom) {
+            if (drawRect.bottom > cacheDrawRect.bottom && (bottomSpace > topAndBottomEdge || cacheDrawRect.bottom + drawTileHeight >= updateParams.previewDrawableHeight)) {
                 int newDrawTop = cacheDrawRect.top;
                 while (drawRect.top >= newDrawTop + drawTileHeight) {
                     newDrawTop = newDrawTop + drawTileHeight;
@@ -468,6 +462,8 @@ public class SuperLargeImageViewer {
                     }
                 }
             }
+        } else {
+            Log.w(Sketch.TAG, NAME + ". not found empty rect");
         }
 
         if (Sketch.isDebugMode()) {
@@ -480,6 +476,19 @@ public class SuperLargeImageViewer {
         if (onTileChangedListener != null) {
             onTileChangedListener.onTileChanged(this);
         }
+    }
+
+    private boolean canLoad(int left, int top, int right, int bottom) {
+        for (Tile drawTile : drawTileList) {
+            if (drawTile.drawRect.left == left &&
+                    drawTile.drawRect.top == top &&
+                    drawTile.drawRect.right == right &&
+                    drawTile.drawRect.bottom == bottom) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     public UpdateParams getUpdateParams() {
@@ -514,19 +523,6 @@ public class SuperLargeImageViewer {
     public void setShowDrawRect(boolean showDrawRect) {
         this.showDrawRect = showDrawRect;
         callback.invalidate();
-    }
-
-    private boolean canLoad(int left, int top, int right, int bottom) {
-        for (Tile drawTile : drawTileList) {
-            if (drawTile.drawRect.left == left &&
-                    drawTile.drawRect.top == top &&
-                    drawTile.drawRect.right == right &&
-                    drawTile.drawRect.bottom == bottom) {
-                return false;
-            }
-        }
-
-        return true;
     }
 
     public interface Callback {
