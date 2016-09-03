@@ -19,13 +19,15 @@ package me.xiaopan.sketch.feature.large;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.text.TextUtils;
 import android.util.Log;
 
-import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -39,6 +41,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  */
 // TODO: 16/8/16 再细分成一个一个的小方块
 // TODO: 16/8/29 加上旋转之后，不知道会有什么异常问题
+// TODO: 16/9/1 缩放中的时候不变
 public class SuperLargeImageViewer {
     private static final String NAME = "SuperLargeImageViewer";
 
@@ -46,21 +49,24 @@ public class SuperLargeImageViewer {
     private Callback callback;
 
     private Rect visibleRect;
-    private Rect srcRect;
-    private Rect drawRect;
+    private Rect cacheSrcRect;
+    private Rect cacheDrawRect;
     private Matrix matrix;
+    private float lastScale;
+    private float scale;
 
     private boolean running;
     private Paint drawTilePaint;
+    private Paint drawTileRectPaint;
+    private Paint loadingTileRectPaint;
     private ImageRegionDecodeExecutor executor;
+    private boolean showDrawRect;
 
     private UpdateParams waitUpdateParams;
     private UpdateParams updateParams;
 
     private int tiles;
     private List<Tile> drawTileList;
-    private List<Tile> loadingTileList;
-    private List<Rect> loadRectList;
     private ObjectPool<Tile> tilePool;
     private ObjectPool<Rect> rectPool;
     private OnTileChangedListener onTileChangedListener;
@@ -71,8 +77,6 @@ public class SuperLargeImageViewer {
         this.executor = new ImageRegionDecodeExecutor(new ExecutorCallback());
 
         this.drawTileList = new LinkedList<Tile>();
-        this.loadingTileList = new LinkedList<Tile>();
-        this.loadRectList = new ArrayList<Rect>();
         this.tilePool = new ObjectPool<Tile>(new ObjectPool.NewItemCallback<Tile>() {
             @Override
             public Tile newItem() {
@@ -88,10 +92,11 @@ public class SuperLargeImageViewer {
         this.tiles = 3;
 
         visibleRect = new Rect();
-        drawRect = new Rect();
-        srcRect = new Rect();
+        cacheDrawRect = new Rect();
+        cacheSrcRect = new Rect();
         matrix = new Matrix();
         updateParams = new UpdateParams();
+
         drawTilePaint = new Paint();
     }
 
@@ -103,6 +108,21 @@ public class SuperLargeImageViewer {
             for (Tile tile : drawTileList) {
                 if (!tile.isEmpty()) {
                     canvas.drawBitmap(tile.bitmap, tile.bitmapDrawSrcRect, tile.drawRect, drawTilePaint);
+                    if (showDrawRect) {
+                        if (drawTileRectPaint == null) {
+                            drawTileRectPaint = new Paint();
+                            drawTileRectPaint.setColor(Color.parseColor("#88FF0000"));
+                        }
+                        canvas.drawRect(tile.drawRect, drawTileRectPaint);
+                    }
+                } else if (!tile.isDecodeParamEmpty()) {
+                    if (showDrawRect) {
+                        if (loadingTileRectPaint == null) {
+                            loadingTileRectPaint = new Paint();
+                            loadingTileRectPaint.setColor(Color.parseColor("#880000FF"));
+                        }
+                        canvas.drawRect(tile.drawRect, loadingTileRectPaint);
+                    }
                 }
             }
 
@@ -129,36 +149,17 @@ public class SuperLargeImageViewer {
             waitUpdateParams.reset();
         }
         matrix.reset();
+        lastScale = 0;
+        scale = 0;
 
         for (Tile tile : drawTileList) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". clean tile. " + why + ". tile=" + tile.getInfo());
-            }
-
-            int oldKey = tile.getKey();
             tile.refreshKey();
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". refreshKey. clean tile. " + why + ". oldKey=" + oldKey + ". " + tile.getInfo());
-            }
-
             tile.clean();
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". clean tile and refresh key. " + why + ". tile=" + tile.getInfo());
+            }
         }
         drawTileList.clear();
-
-        for (Tile tile : loadingTileList) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". clean task. " + why + ". tile=" + tile.getInfo());
-            }
-
-            int oldKey = tile.getKey();
-            tile.refreshKey();
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". refreshKey. clean task. " + why + ". oldKey=" + oldKey + ". " + tile.getInfo());
-            }
-
-            tile.clean();
-        }
-        loadingTileList.clear();
 
         callback.invalidate();
     }
@@ -219,7 +220,10 @@ public class SuperLargeImageViewer {
         }
 
         // 取消旧的任务并更新Matrix
+        lastScale = scale;
         matrix.set(updateParams.drawMatrix);
+        scale = SketchUtils.formatFloat(SketchUtils.getMatrixScale(matrix), 2);
+
         callback.invalidate();
 
         splitLoad(updateParams);
@@ -227,11 +231,10 @@ public class SuperLargeImageViewer {
 
     // TODO: 16/8/30 缓存 drawRect，当哟足够的差别时再处理
     // TODO: 16/8/31 还有对不齐的情况（主要是垂直方向上）
-    // TODO: 16/8/31 还是有部分没有显示出来
     // TODO: 16/8/31 对象池的对象的回收好好查一下
     // TODO: 16/8/31 有些许的卡顿感，看怎么优化比较好，例如控制刷新率，或者降低图片数量
+    // TODO: 16/9/3 还有一点儿稍稍的错位
     private void splitLoad(UpdateParams updateParams) {
-        float scale = SketchUtils.getMatrixScale(matrix);
         Rect visibleRect = updateParams.visibleRect;
 
         // 可见区域碎片的宽高
@@ -256,7 +259,15 @@ public class SuperLargeImageViewer {
         drawRect.top = Math.max(0, Math.round(visibleRect.top - drawHeightAdd));
         drawRect.right = Math.min(updateParams.previewDrawableWidth, Math.round(visibleRect.right + drawWidthAdd));
         drawRect.bottom = Math.min(updateParams.previewDrawableHeight, Math.round(visibleRect.bottom + drawHeightAdd));
-        this.drawRect.set(drawRect);
+
+        // 计算碎片的尺寸
+        int finalTiles = tiles + 1;
+        int drawTileWidth = drawRect.width() / finalTiles;
+        int drawTileHeight = drawRect.height() / finalTiles;
+
+        // 根据碎片尺寸修剪drawRect，使其正好能整除碎片
+        drawRect.right = drawRect.left + (finalTiles * drawTileWidth);
+        drawRect.bottom = drawRect.top + (finalTiles * drawTileHeight);
 
         // 计算显示区域在完整图片中对应的区域，重点是各用各的缩放比例（这很重要），因为宽或高的比例可能不一样
         Rect srcRect = new Rect(
@@ -264,7 +275,6 @@ public class SuperLargeImageViewer {
                 Math.max(0, Math.round(drawRect.top * originHeightScale)),
                 Math.min(originImageWidth, Math.round(drawRect.right * originWidthScale)),
                 Math.min(originImageHeight, Math.round(drawRect.bottom * originHeightScale)));
-        this.srcRect.set(srcRect);
 
         // 根据src区域大小计算缩放比例，由于绘制区域比显示区域大了一圈了，因此计算inSampleSize时targetSize也得大一圈
         float targetSizeScale = ((float) tiles / 10) + 1;
@@ -273,142 +283,158 @@ public class SuperLargeImageViewer {
         ImageSizeCalculator imageSizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
         int inSampleSize = imageSizeCalculator.calculateInSampleSize(srcRect.width(), srcRect.height(), targetWidth, targetHeight, false);
 
-        Log.i(Sketch.TAG, NAME + ". split start" +
-                ". visibleRect=" + visibleRect.toShortString() +
-                ", drawRect=" + drawRect.toShortString() +
-                ", scale=" + scale +
-                ", loadingTiles=" + loadingTileList.size() +
-                ", drawTiles=" + drawTileList.size());
+        if (Sketch.isDebugMode()) {
+            Log.i(Sketch.TAG, NAME + ". split start" +
+                    ". visibleRect=" + visibleRect.toShortString() +
+                    ", lastScale=" + lastScale +
+                    ", scale=" + scale +
+                    ". drawRect=" + drawRect.toShortString() +
+                    ". cacheDrawRect=" + cacheDrawRect.toShortString() +
+                    ". inSampleSize=" + inSampleSize +
+                    ", drawTiles=" + drawTileList.size());
+        }
 
-        // 回收那些已经完全不可见的碎片，并计算已绘制区域
-        Tile haveDrawTile;
+        // 哪边可以扩展了就扩大哪边
+        boolean needLoad = false;
+        if (scale != lastScale) {
+            cacheDrawRect.setEmpty();
+        }
+        if (!cacheDrawRect.isEmpty()) {
+            // TODO: 16/9/3 到不了最边上
+            int leftAndRightEdge = Math.round(drawWidthAdd * 0.8f);
+            int topAndBottomEdge = Math.round(drawHeightAdd * 0.8f);
+            int leftSpace = Math.abs(drawRect.left - cacheDrawRect.left);
+            int topSpace = Math.abs(drawRect.top - cacheDrawRect.top);
+            int rightSpace = Math.abs(drawRect.right - cacheDrawRect.right);
+            int bottomSpace = Math.abs(drawRect.bottom - cacheDrawRect.bottom);
+
+            Rect newDrawRect = rectPool.get();
+            newDrawRect.set(cacheDrawRect);
+            if (drawRect.left < cacheDrawRect.left && leftSpace > leftAndRightEdge) {
+                newDrawRect.left = Math.max(0, cacheDrawRect.left - drawTileWidth);
+                int newDrawRight = cacheDrawRect.right;
+                while (drawRect.right <= newDrawRight - drawTileWidth) {
+                    newDrawRight = newDrawRight - drawTileWidth;
+                }
+                newDrawRect.right = newDrawRight;
+
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". draw rect left expand. newDrawRect=" + newDrawRect.toShortString());
+                }
+                needLoad = true;
+            }
+
+            if (drawRect.top < cacheDrawRect.top && topSpace > topAndBottomEdge) {
+                newDrawRect.top = Math.max(0, cacheDrawRect.top - drawTileHeight);
+                int newDrawBottom = cacheDrawRect.bottom;
+                while (drawRect.bottom <= Math.round(newDrawBottom - drawTileHeight)) {
+                    newDrawBottom = newDrawBottom - drawTileHeight;
+                }
+                newDrawRect.bottom = newDrawBottom;
+
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". draw rect top expand. newDrawRect=" + newDrawRect.toShortString());
+                }
+                needLoad = true;
+            }
+
+            if (rightSpace > leftAndRightEdge && drawRect.right > cacheDrawRect.right) {
+                int newDrawLeft = cacheDrawRect.left;
+                while (drawRect.left >= newDrawLeft + drawTileWidth) {
+                    newDrawLeft = newDrawLeft + drawTileWidth;
+                }
+                newDrawRect.left = newDrawLeft;
+                newDrawRect.right = Math.min(updateParams.previewDrawableWidth, cacheDrawRect.right + drawTileWidth);
+
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". draw rect right expand. newDrawRect=" + newDrawRect.toShortString());
+                }
+                needLoad = true;
+            }
+
+            if (bottomSpace > topAndBottomEdge && drawRect.bottom > cacheDrawRect.bottom) {
+                int newDrawTop = cacheDrawRect.top;
+                while (drawRect.top >= newDrawTop + drawTileHeight) {
+                    newDrawTop = newDrawTop + drawTileHeight;
+                }
+                newDrawRect.top = newDrawTop;
+                newDrawRect.bottom = Math.min(updateParams.previewDrawableHeight, cacheDrawRect.bottom + drawTileHeight);
+
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". draw rect bottom expand. newDrawRect=" + newDrawRect.toShortString());
+                }
+                needLoad = true;
+            }
+
+            drawRect.set(newDrawRect);
+            newDrawRect.setEmpty();
+            rectPool.put(newDrawRect);
+        } else {
+            needLoad = true;
+        }
+
+        // 不需要扩展说明，当前已加载的区域够用，那就结束吧
+        if (!needLoad) {
+            Log.e(Sketch.TAG, NAME + ". split finished draw rect no change" +
+                    ". visibleRect=" + visibleRect.toShortString() +
+                    ". drawRect=" + drawRect.toShortString() +
+                    ". cacheDrawRect=" + cacheDrawRect.toShortString() +
+                    ", drawTiles=" + drawTileList.size());
+            return;
+        }
+
+        this.cacheDrawRect.set(drawRect);
+        srcRect = new Rect(
+                Math.max(0, Math.round(drawRect.left * originWidthScale)),
+                Math.max(0, Math.round(drawRect.top * originHeightScale)),
+                Math.min(originImageWidth, Math.round(drawRect.right * originWidthScale)),
+                Math.min(originImageHeight, Math.round(drawRect.bottom * originHeightScale)));
+        this.cacheSrcRect.set(srcRect);
+
+        // 回收那些已经完全不可见的碎片
+        Tile tile;
         Iterator<Tile> tileIterator = drawTileList.iterator();
-        Rect haveDrawRect = rectPool.get();
-        haveDrawRect.set(-1, -1, -1, -1);
         while (tileIterator.hasNext()) {
-            haveDrawTile = tileIterator.next();
+            tile = tileIterator.next();
 
             // 缩放比例已经变了或者这个碎片已经跟当前显示区域毫无交集，那么就可以回收这个碎片了
-            if (scale != haveDrawTile.scale || !SketchUtils.isCross(haveDrawTile.drawRect, drawRect)) {
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". recycle tile. tile=" + haveDrawTile.getInfo());
+            if (scale != tile.scale || !SketchUtils.isCross(tile.drawRect, drawRect)) {
+                if (!tile.isEmpty()) {
+                    if (Sketch.isDebugMode()) {
+                        Log.d(Sketch.TAG, NAME + ". recycle tile. tile=" + tile.getInfo());
+                    }
+                    tileIterator.remove();
+                    tile.clean();
+                    tilePool.put(tile);
+                } else {
+                    tile.refreshKey();
+                    tileIterator.remove();
+                    if (Sketch.isDebugMode()) {
+                        Log.d(Sketch.TAG, NAME + ". recycle loading tile and refresh key. tile=" + tile.getInfo());
+                    }
                 }
-                tileIterator.remove();
-                haveDrawTile.clean();
-                tilePool.put(haveDrawTile);
-                continue;
             }
-
-            // 接下来需要计算当前已经绘制的边界
-            haveDrawRect.left = haveDrawRect.left != -1 ? Math.min(haveDrawRect.left, haveDrawTile.drawRect.left) : haveDrawTile.drawRect.left;
-            haveDrawRect.top = haveDrawRect.top != -1 ? Math.min(haveDrawRect.top, haveDrawTile.drawRect.top) : haveDrawTile.drawRect.top;
-            haveDrawRect.right = haveDrawRect.right != -1 ? Math.max(haveDrawRect.right, haveDrawTile.drawRect.right) : haveDrawTile.drawRect.right;
-            haveDrawRect.bottom = haveDrawRect.bottom != -1 ? Math.max(haveDrawRect.bottom, haveDrawTile.drawRect.bottom) : haveDrawTile.drawRect.bottom;
         }
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, NAME + ". recycle tiles. haveBeenDrawRect=" + haveDrawRect.toShortString() + ", drawTiles=" + loadingTileList.size());
+            Log.d(Sketch.TAG, NAME + ". recycle tiles. drawTiles=" + drawTileList.size());
         }
 
-        // 删除没用的任务
-        Tile loadingTile;
-        Iterator<Tile> loadingTileIterator = loadingTileList.iterator();
-        while (loadingTileIterator.hasNext()) {
-            loadingTile = loadingTileIterator.next();
-
-            // 缩放比例已经变了或者这个碎片已经跟当前显示区域毫无交集，那么就可以停止这个任务了
-            if (scale != loadingTile.scale || !SketchUtils.isCross(loadingTile.drawRect, drawRect)) {
+        // 找出所有的空白区域，然后一个一个加载
+        List<Rect> emptyRectList = findEmptyRect(drawRect, drawTileList);
+        if (emptyRectList != null && emptyRectList.size() > 0) {
+            for(Rect emptyRect : emptyRectList){
+                int tileLeft = emptyRect.left, tileTop = emptyRect.top;
+                int tileRight = 0, tileBottom = 0;
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". recycle task. tile=" + loadingTile.getInfo());
+                    Log.i(Sketch.TAG, NAME + ". load emptyRect=" + emptyRect.toShortString());
                 }
-                loadingTileIterator.remove();
+                while (Math.round(tileRight) < emptyRect.right || Math.round(tileBottom) < emptyRect.bottom) {
+                    tileRight = Math.min(tileLeft + drawTileWidth, emptyRect.right);
+                    tileBottom = Math.min(tileTop + drawTileHeight, emptyRect.bottom);
 
-                int oldKey = loadingTile.getKey();
-                loadingTile.refreshKey();
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". refreshKey. recycle task. oldKey=" + oldKey + ". " + loadingTile.getInfo());
-                }
-                continue;
-            }
-
-            // 接下来需要计算当前已经绘制的边界
-            haveDrawRect.left = haveDrawRect.left != -1 ? Math.min(haveDrawRect.left, loadingTile.drawRect.left) : loadingTile.drawRect.left;
-            haveDrawRect.top = haveDrawRect.top != -1 ? Math.min(haveDrawRect.top, loadingTile.drawRect.top) : loadingTile.drawRect.top;
-            haveDrawRect.right = haveDrawRect.right != -1 ? Math.max(haveDrawRect.right, loadingTile.drawRect.right) : loadingTile.drawRect.right;
-            haveDrawRect.bottom = haveDrawRect.bottom != -1 ? Math.max(haveDrawRect.bottom, loadingTile.drawRect.bottom) : loadingTile.drawRect.bottom;
-        }
-        if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, NAME + ". recycle tasks. loadingTiles=" + loadingTileList.size());
-        }
-
-        // 没有完全显示还需要加载新的碎片
-        if (haveDrawRect.left > drawRect.left || haveDrawRect.top > drawRect.top || haveDrawRect.right < drawRect.right || haveDrawRect.bottom < drawRect.bottom) {
-            // 先收集所有需要显示的区域
-            loadRectList.clear();
-            if (haveDrawRect.left == -1 && haveDrawRect.top == -1 && haveDrawRect.right == -1 && haveDrawRect.bottom == -1) {
-                // 需要全部读取
-                Rect fullVisibleRect = rectPool.get();
-                fullVisibleRect.set(drawRect);
-                loadRectList.add(fullVisibleRect);
-            } else {
-                // 只需要读取部分时，检查四周的空白是否大于增加宽度的80%，如果大于就加载一列或一行完整的块
-                int leftAndRightEdge = Math.round(drawWidthAdd * 0.8f);
-                int topAndBottomEdge = Math.round(drawHeightAdd * 0.8f);
-
-                int leftSpace = Math.abs(drawRect.left - haveDrawRect.left);
-                int topSpace = Math.abs(drawRect.top - haveDrawRect.top);
-                int rightSpace = Math.abs(drawRect.right - haveDrawRect.right);
-                int bottomSpace = Math.abs(drawRect.bottom - haveDrawRect.bottom);
-
-                if (haveDrawRect.left > drawRect.left && leftSpace > leftAndRightEdge) {
-                    Rect leftLoadRect = rectPool.get();
-                    leftLoadRect.set(Math.round(haveDrawRect.left - visibleTileWidth), drawRect.top, haveDrawRect.left, drawRect.bottom);
-                    loadRectList.add(leftLoadRect);
-
-                    Log.d(Sketch.TAG, NAME + ". leftLoadRect=" + leftLoadRect.toShortString() + ", leftSpace=" + leftSpace + ", leftAndRightEdge=" + leftAndRightEdge);
-                }
-
-                if (haveDrawRect.top > drawRect.top && topSpace > topAndBottomEdge) {
-                    Rect topLoadRect = rectPool.get();
-                    topLoadRect.set(haveDrawRect.left, Math.round(haveDrawRect.top - visibleTileHeight), haveDrawRect.right, haveDrawRect.top);
-                    loadRectList.add(topLoadRect);
-
-                    Log.d(Sketch.TAG, NAME + ". topLoadRect=" + topLoadRect.toShortString() + ", topSpace=" + topSpace + ", topAndBottomEdge=" + topAndBottomEdge);
-                }
-
-                if (haveDrawRect.right < drawRect.right && rightSpace > leftAndRightEdge) {
-                    Rect rightLoadRect = rectPool.get();
-                    rightLoadRect.set(haveDrawRect.right, drawRect.top, Math.round(haveDrawRect.right + visibleTileWidth), drawRect.bottom);
-                    loadRectList.add(rightLoadRect);
-
-                    Log.d(Sketch.TAG, NAME + ". rightLoadRect=" + rightLoadRect.toShortString() + ", rightSpace=" + rightSpace + ", leftAndRightEdge=" + leftAndRightEdge);
-                }
-
-                if (haveDrawRect.bottom < drawRect.bottom && bottomSpace > topAndBottomEdge) {
-                    Rect bottomLoadRect = rectPool.get();
-                    bottomLoadRect.set(haveDrawRect.left, haveDrawRect.bottom, haveDrawRect.right, Math.round(haveDrawRect.bottom + visibleTileHeight));
-                    loadRectList.add(bottomLoadRect);
-
-                    Log.d(Sketch.TAG, NAME + ". bottomLoadRect=" + bottomLoadRect.toShortString() + ", bottomSpace=" + bottomSpace + ", topAndBottomEdge=" + topAndBottomEdge);
-                }
-            }
-
-            // 然后分割所有的显示区域
-            Tile loadTile;
-            float drawTileWidth = (float) drawRect.width() / (tiles + 1);
-            float drawTileHeight = (float) drawRect.height() / (tiles + 1);
-            for (Rect loadBlockRect : loadRectList) {
-                float tileLeft = loadBlockRect.left, tileTop = loadBlockRect.top;
-                float tileRight = 0, tileBottom = 0;
-                Log.i(Sketch.TAG, NAME + ". split loadBlockRect=" + loadBlockRect.toShortString());
-                while (Math.round(tileRight) < loadBlockRect.right || Math.round(tileBottom) < loadBlockRect.bottom) {
-                    loadTile = tilePool.get();
-
-                    tileRight = Math.min(tileLeft + drawTileWidth, loadBlockRect.right);
-                    tileBottom = Math.min(tileTop + drawTileHeight, loadBlockRect.bottom);
-
-                    loadTile.drawRect.set(Math.round(tileLeft), Math.round(tileTop), Math.round(tileRight), Math.round(tileBottom));
-
-                    if (!contais(loadTile.drawRect)) {
+                    if (canLoad(Math.round(tileLeft), Math.round(tileTop), Math.round(tileRight), Math.round(tileBottom))) {
+                        Tile loadTile = tilePool.get();
+                        loadTile.drawRect.set(Math.round(tileLeft), Math.round(tileTop), Math.round(tileRight), Math.round(tileBottom));
                         loadTile.srcRect.set(
                                 Math.max(0, Math.round(tileLeft * originWidthScale)),
                                 Math.max(0, Math.round(tileTop * originHeightScale)),
@@ -418,29 +444,24 @@ public class SuperLargeImageViewer {
                         loadTile.inSampleSize = inSampleSize;
                         loadTile.scale = scale;
 
-                        int oldKey = loadTile.getKey();
-                        loadTile.refreshKey();
-                        if (Sketch.isDebugMode()) {
-                            Log.w(Sketch.TAG, NAME + ". refreshKey. post decode. oldKey=" + oldKey + ". " + loadTile.getInfo());
-                        }
-
-                        if (Sketch.isDebugMode()) {
-                            Log.d(Sketch.TAG, NAME + ". submit. tile=" + loadTile.getInfo());
-                        }
-
                         // 提交任务
-                        loadingTileList.add(loadTile);
+                        loadTile.refreshKey();
+                        drawTileList.add(loadTile);
+                        if (Sketch.isDebugMode()) {
+                            Log.d(Sketch.TAG, NAME + ". submit and refresh key" +
+                                    ". drawRect=" + drawRect.toShortString() + ", tile=" + loadTile.getInfo());
+                        }
                         executor.submit(loadTile.getKey(), loadTile);
                     } else {
                         if (Sketch.isDebugMode()) {
-                            Log.w(Sketch.TAG, NAME + ". repeated tile tileDrawRect=" + loadTile.drawRect.toShortString());
+                            Log.w(Sketch.TAG, NAME + ". repeated tile tileDrawRect=" +
+                                    Math.round(tileLeft) + ", " + Math.round(tileTop) + ", " +
+                                    Math.round(tileRight) + ", " + Math.round(tileBottom));
                         }
-                        loadTile.clean();
-                        tilePool.put(loadTile);
                     }
 
-                    if (Math.round(tileRight) >= loadBlockRect.right) {
-                        tileLeft = loadBlockRect.left;
+                    if (Math.round(tileRight) >= emptyRect.right) {
+                        tileLeft = emptyRect.left;
                         tileTop = tileBottom;
                     } else {
                         tileLeft = tileRight;
@@ -449,11 +470,12 @@ public class SuperLargeImageViewer {
             }
         }
 
-        Log.e(Sketch.TAG, NAME + ". split finished" +
-                ". visibleRect=" + visibleRect.toShortString() +
-                ", drawRect=" + drawRect.toShortString() +
-                ", loadingTiles=" + loadingTileList.size() +
-                ", drawTiles=" + drawTileList.size());
+        if (Sketch.isDebugMode()) {
+            Log.e(Sketch.TAG, NAME + ". split finished" +
+                    ". visibleRect=" + visibleRect.toShortString() +
+                    ", drawRect=" + drawRect.toShortString() +
+                    ", drawTiles=" + drawTileList.size());
+        }
 
         if (onTileChangedListener != null) {
             onTileChangedListener.onTileChanged(this);
@@ -484,25 +506,27 @@ public class SuperLargeImageViewer {
         return drawTileList;
     }
 
-    public List<Tile> getLoadingTileList() {
-        return loadingTileList;
+    public Rect getCacheSrcRect() {
+        return cacheSrcRect;
     }
 
-    public Rect getSrcRect() {
-        return srcRect;
+    @SuppressWarnings("unused")
+    public void setShowDrawRect(boolean showDrawRect) {
+        this.showDrawRect = showDrawRect;
+        callback.invalidate();
     }
 
-    private boolean contais(Rect tileDrawRect) {
-        Iterator<Tile> loadingTileIterator = loadingTileList.iterator();
-        Tile destTile;
-        while (loadingTileIterator.hasNext()) {
-            destTile = loadingTileIterator.next();
-            if (tileDrawRect.equals(destTile.drawRect)) {
-                return true;
+    private boolean canLoad(int left, int top, int right, int bottom) {
+        for (Tile drawTile : drawTileList) {
+            if (drawTile.drawRect.left == left &&
+                    drawTile.drawRect.top == top &&
+                    drawTile.drawRect.right == right &&
+                    drawTile.drawRect.bottom == bottom) {
+                return false;
             }
         }
 
-        return false;
+        return true;
     }
 
     public interface Callback {
@@ -566,22 +590,16 @@ public class SuperLargeImageViewer {
                 return;
             }
 
-            tile.bitmap = bitmap;
-            tile.bitmapDrawSrcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
-
-            loadingTileList.remove(tile);
-            drawTileList.remove(tile);
-            drawTileList.add(tile);
-
             if (Sketch.isDebugMode()) {
                 String bitmapConfig = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
                 Log.i(Sketch.TAG, NAME + ". decodeCompleted" +
                         ". tile=" + tile.getInfo() +
                         ", bitmap=" + bitmap.getWidth() + "x" + bitmap.getHeight() + "(" + bitmapConfig + ")" +
-                        ", loadingTiles=" + loadingTileList.size() +
                         ", drawTiles=" + drawTileList.size());
             }
 
+            tile.bitmap = bitmap;
+            tile.bitmapDrawSrcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
             callback.invalidate();
 
             if (onTileChangedListener != null) {
@@ -598,10 +616,10 @@ public class SuperLargeImageViewer {
                 return;
             }
 
-            loadingTileList.remove(tile);
+            drawTileList.remove(tile);
 
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". decodeFailed. " + exception.getCauseMessage() + ". tile=" + tile.getInfo() + ", loadingTiles=" + loadingTileList.size());
+                Log.w(Sketch.TAG, NAME + ". decodeFailed. " + exception.getCauseMessage() + ". tile=" + tile.getInfo() + ", drawTiles=" + drawTileList.size());
             }
 
             tile.clean();
@@ -611,5 +629,128 @@ public class SuperLargeImageViewer {
                 onTileChangedListener.onTileChanged(SuperLargeImageViewer.this);
             }
         }
+    }
+
+    /**
+     * 假如有一个矩形，并且已知这个矩形中的N个碎片，那么要找出所有的空白碎片（不可用的碎片会从已知列表中删除）
+     * @param rect 那个矩形
+     * @param tileList 已知碎片
+     * @return 所有空白的碎片
+     */
+    public static List<Rect> findEmptyRect(Rect rect, List<Tile> tileList) {
+        if (rect.isEmpty()) {
+            return null;
+        }
+
+        List<Rect> emptyRectList = null;
+        if (tileList == null || tileList.size() == 0) {
+            emptyRectList = new LinkedList<Rect>();
+            emptyRectList.add(rect);
+            return emptyRectList;
+        }
+
+        // 按离左上角的距离排序
+        Collections.sort(tileList, new Comparator<Tile>() {
+            @Override
+            public int compare(Tile o1, Tile o2) {
+                if (o1.drawRect.top >= o2.drawRect.bottom || o2.drawRect.top >= o1.drawRect.bottom) {
+                    return o1.drawRect.top - o2.drawRect.top;
+                } else {
+                    return o1.drawRect.left - o2.drawRect.left;
+                }
+            }
+        });
+
+        int left = rect.left, top = rect.top, right = 0, bottom = -1;
+        Tile lastRect = null;
+        Tile childRect;
+        Iterator<Tile> rectIterator = tileList.iterator();
+        while (rectIterator.hasNext()) {
+            childRect = rectIterator.next();
+
+            boolean newLine = lastRect == null || (childRect.drawRect.top >= bottom);
+            if (newLine) {
+                // 首先要处理上一行的最后一个
+                if (lastRect != null) {
+                    if (lastRect.drawRect.right < rect.right) {
+                        Rect rightEmptyRect = new Rect(lastRect.drawRect.right, top, rect.right, bottom);
+                        if (emptyRectList == null) {
+                            emptyRectList = new LinkedList<Rect>();
+                        }
+                        emptyRectList.add(rightEmptyRect);
+                    }
+                }
+
+                // 然后要更新top和bottom
+                top = bottom != -1 ? bottom : top;
+                bottom = childRect.drawRect.bottom;
+
+                // 左边有空隙
+                if (childRect.drawRect.left > left) {
+                    Rect leftEmptyRect = new Rect(left, childRect.drawRect.top, childRect.drawRect.left, childRect.drawRect.bottom);
+                    if (emptyRectList == null) {
+                        emptyRectList = new LinkedList<Rect>();
+                    }
+                    emptyRectList.add(leftEmptyRect);
+                }
+
+                // 顶部有空隙
+                if (childRect.drawRect.top > top) {
+                    Rect topEmptyRect = new Rect(left, top, childRect.drawRect.right, childRect.drawRect.top);
+                    if (emptyRectList == null) {
+                        emptyRectList = new LinkedList<Rect>();
+                    }
+                    emptyRectList.add(topEmptyRect);
+                }
+
+                right = childRect.drawRect.right;
+                lastRect = childRect;
+            } else {
+                boolean available = childRect.drawRect.bottom == lastRect.drawRect.bottom;
+                if (available) {
+                    // 左边有空隙
+                    if (childRect.drawRect.left > right) {
+                        Rect leftEmptyRect = new Rect(right, top, childRect.drawRect.left, bottom);
+                        if (emptyRectList == null) {
+                            emptyRectList = new LinkedList<Rect>();
+                        }
+                        emptyRectList.add(leftEmptyRect);
+                    }
+
+                    // 顶部有空隙
+                    if (childRect.drawRect.top > top) {
+                        Rect topEmptyRect = new Rect(childRect.drawRect.left, top, childRect.drawRect.right, childRect.drawRect.top);
+                        if (emptyRectList == null) {
+                            emptyRectList = new LinkedList<Rect>();
+                        }
+                        emptyRectList.add(topEmptyRect);
+                    }
+
+                    right = childRect.drawRect.right;
+                    lastRect = childRect;
+                } else {
+                    rectIterator.remove();
+                }
+            }
+        }
+
+        // 最后的结尾处理
+        if (right < rect.right) {
+            Rect rightEmptyRect = new Rect(right, top, rect.right, bottom);
+            if (emptyRectList == null) {
+                emptyRectList = new LinkedList<Rect>();
+            }
+            emptyRectList.add(rightEmptyRect);
+        }
+
+        if (bottom < rect.bottom) {
+            Rect bottomEmptyRect = new Rect(rect.left, bottom, rect.right, rect.bottom);
+            if (emptyRectList == null) {
+                emptyRectList = new LinkedList<Rect>();
+            }
+            emptyRectList.add(bottomEmptyRect);
+        }
+
+        return emptyRectList;
     }
 }

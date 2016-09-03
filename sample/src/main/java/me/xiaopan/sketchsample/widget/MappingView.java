@@ -5,7 +5,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
@@ -16,16 +15,17 @@ import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 
 public class MappingView extends SketchImageView implements SuperLargeImageViewer.OnTileChangedListener{
-    private RectF srcRect;
-    private Paint paint;
 
-    private int cacheSourceWidth;
-    private Rect cacheSourceSrcRect;
+    private SuperLargeImageViewer superLargeImageViewer;
 
+    private Rect visibleRect;
+    private Paint visiblePaint;
     private Paint drawTilesPaint;
     private Paint drawRectPaint;
-    private Paint loadingStrokePaint;
-    private SuperLargeImageViewer superLargeImageViewer;
+    private Paint loadingTilePaint;
+
+    private int cacheOriginImageWidth;
+    private Rect cacheVisibleRect;
 
     public MappingView(Context context) {
         super(context);
@@ -43,11 +43,11 @@ public class MappingView extends SketchImageView implements SuperLargeImageViewe
     }
 
     private void init(Context context) {
-        srcRect = new RectF();
-        paint = new Paint();
-        paint.setColor(Color.RED);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        visibleRect = new Rect();
+        visiblePaint = new Paint();
+        visiblePaint.setColor(Color.RED);
+        visiblePaint.setStyle(Paint.Style.STROKE);
+        visiblePaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
 
         setScaleType(ScaleType.FIT_XY);
 
@@ -57,10 +57,10 @@ public class MappingView extends SketchImageView implements SuperLargeImageViewe
         drawTilesPaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
         drawTilesPaint.setStyle(Paint.Style.STROKE);
 
-        loadingStrokePaint = new Paint();
-        loadingStrokePaint.setColor(Color.parseColor("#880000CD"));
-        loadingStrokePaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
-        loadingStrokePaint.setStyle(Paint.Style.STROKE);
+        loadingTilePaint = new Paint();
+        loadingTilePaint.setColor(Color.parseColor("#880000CD"));
+        loadingTilePaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        loadingTilePaint.setStyle(Paint.Style.STROKE);
 
         drawRectPaint = new Paint();
         drawRectPaint.setColor(Color.parseColor("#8800CD00"));
@@ -76,33 +76,29 @@ public class MappingView extends SketchImageView implements SuperLargeImageViewe
         if (superLargeImageViewer != null) {
             float scale = (float) superLargeImageViewer.getExecutor().getDecoder().getImageWidth() / getWidth();
 
-            for (Tile drawTile : superLargeImageViewer.getDrawTileList()) {
-                if (!drawTile.isEmpty()) {
-                    canvas.drawRect((drawTile.srcRect.left + 1) / scale,
-                            (drawTile.srcRect.top + 1) / scale,
-                            (drawTile.srcRect.right - 1) / scale,
-                            (drawTile.srcRect.bottom - 1) / scale, drawTilesPaint);
+            for (Tile tile : superLargeImageViewer.getDrawTileList()) {
+                if (!tile.isEmpty()) {
+                    canvas.drawRect((tile.srcRect.left + 1) / scale,
+                            (tile.srcRect.top + 1) / scale,
+                            (tile.srcRect.right - 1) / scale,
+                            (tile.srcRect.bottom - 1) / scale, drawTilesPaint);
+                } else if (!tile.isDecodeParamEmpty()) {
+                    canvas.drawRect((tile.srcRect.left + 1) / scale,
+                            (tile.srcRect.top + 1) / scale,
+                            (tile.srcRect.right - 1) / scale,
+                            (tile.srcRect.bottom - 1) / scale, loadingTilePaint);
                 }
             }
 
-            for (Tile loadingTile : superLargeImageViewer.getLoadingTileList()) {
-                if (!loadingTile.isDecodeParamEmpty()) {
-                    canvas.drawRect((loadingTile.srcRect.left + 1) / scale,
-                            (loadingTile.srcRect.top + 1) / scale,
-                            (loadingTile.srcRect.right - 1) / scale,
-                            (loadingTile.srcRect.bottom - 1) / scale, loadingStrokePaint);
-                }
-            }
-
-            Rect drawRect = superLargeImageViewer.getSrcRect();
+            Rect drawRect = superLargeImageViewer.getCacheSrcRect();
             canvas.drawRect((drawRect.left) / scale,
                     (drawRect.top) / scale,
                     (drawRect.right) / scale,
                     (drawRect.bottom) / scale, drawRectPaint);
         }
 
-        if (!srcRect.isEmpty()) {
-            canvas.drawRect(srcRect, paint);
+        if (!visibleRect.isEmpty()) {
+            canvas.drawRect(visibleRect, visiblePaint);
         }
     }
 
@@ -110,10 +106,10 @@ public class MappingView extends SketchImageView implements SuperLargeImageViewe
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if (cacheSourceWidth != 0 && cacheSourceSrcRect != null && !cacheSourceSrcRect.isEmpty()) {
-            update(cacheSourceWidth, cacheSourceSrcRect);
-            cacheSourceWidth = 0;
-            cacheSourceSrcRect.setEmpty();
+        if (cacheOriginImageWidth != 0 && cacheVisibleRect != null && !cacheVisibleRect.isEmpty()) {
+            update(cacheOriginImageWidth, cacheVisibleRect);
+            cacheOriginImageWidth = 0;
+            cacheVisibleRect.setEmpty();
         }
     }
 
@@ -134,32 +130,36 @@ public class MappingView extends SketchImageView implements SuperLargeImageViewe
         super.setImageDrawable(drawable);
     }
 
-    public void update(int sourceWidth, Rect sourceSrcRect) {
-        if (sourceWidth == 0 || sourceSrcRect.isEmpty()) {
-            if (!srcRect.isEmpty()) {
-                srcRect.setEmpty();
+    public void update(int originImageWidth, Rect newVisibleRect) {
+        if (originImageWidth == 0 || newVisibleRect.isEmpty()) {
+            if (!visibleRect.isEmpty()) {
+                visibleRect.setEmpty();
                 invalidate();
             }
             return;
         }
 
         if (getWidth() == 0 || getDrawable() == null) {
-            if (!srcRect.isEmpty()) {
-                srcRect.setEmpty();
+            if (!visibleRect.isEmpty()) {
+                visibleRect.setEmpty();
                 invalidate();
             }
 
-            cacheSourceWidth = sourceWidth;
-            if (cacheSourceSrcRect == null) {
-                cacheSourceSrcRect = new Rect();
+            cacheOriginImageWidth = originImageWidth;
+            if (cacheVisibleRect == null) {
+                cacheVisibleRect = new Rect();
             }
-            cacheSourceSrcRect.set(sourceSrcRect);
+            cacheVisibleRect.set(newVisibleRect);
             return;
         }
 
         int selfWidth = getWidth();
-        float scale = (float) selfWidth / sourceWidth;
-        this.srcRect.set(sourceSrcRect.left * scale, sourceSrcRect.top * scale, sourceSrcRect.right * scale, sourceSrcRect.bottom * scale);
+        float scale = (float) selfWidth / originImageWidth;
+        this.visibleRect.set(
+                Math.round(newVisibleRect.left * scale),
+                Math.round(newVisibleRect.top * scale),
+                Math.round(newVisibleRect.right * scale),
+                Math.round(newVisibleRect.bottom * scale));
         invalidate();
     }
 
