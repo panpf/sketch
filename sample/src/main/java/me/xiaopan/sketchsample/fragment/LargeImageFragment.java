@@ -91,6 +91,7 @@ public class LargeImageFragment extends MyFragment {
         mappingView.displayImage(imageUri);
 
         imageView.getLargeImageFunction().getLargeImageViewer().getTileManager().setOnTileChangedListener(mappingView);
+        imageView.getLargeImageFunction().getLargeImageViewer().setShowDrawRect(true);
 
         if (windowBackgroundLoader != null) {
             windowBackgroundLoader.load(imageUri);

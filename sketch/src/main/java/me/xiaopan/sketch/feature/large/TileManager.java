@@ -46,8 +46,8 @@ public class TileManager {
     private LargeImageViewer largeImageViewer;
 
     private int tiles = 3;
-    private Rect drawRect = new Rect();
-    private Rect srcRect = new Rect();
+    private Rect lastDrawRect = new Rect();
+    private Rect lastSrcRect = new Rect();
 
     private List<Tile> tileList = new LinkedList<Tile>();
     private LargeImageViewer.OnTileChangedListener onTileChangedListener;
@@ -70,248 +70,231 @@ public class TileManager {
         this.largeImageViewer = largeImageViewer;
     }
 
-    public void update(UpdateParams updateParams){
-        Rect visibleRect = updateParams.visibleRect;
-
-        // 原始图片的宽高
-        int imageWidth = largeImageViewer.getExecutor().getDecoder().getImageWidth();
-        int imageHeight = largeImageViewer.getExecutor().getDecoder().getImageHeight();
-
+    public void update(Rect visibleRect, int viewWidth, int viewHeight,
+                       int imageWidth, int imageHeight,
+                       int previewImageWidth, int previewImageHeight) {
         // 原始图和预览图对比的缩放比例
-        float originWidthScale = (float) imageWidth / updateParams.previewDrawableWidth;
-        float originHeightScale = (float) imageHeight / updateParams.previewDrawableHeight;
+        float originWidthScale = (float) imageWidth / previewImageWidth;
+        float originHeightScale = (float) imageHeight / previewImageHeight;
 
         // 计算绘制区域时，每边应该增加的量
         int drawWidthAdd = (int) ((float) visibleRect.width() / tiles / 2);
         int drawHeightAdd = (int) ((float) visibleRect.height() / tiles / 2);
 
-        // 将显示区域加大一圈，计算出绘制区域，宽高各增加一个平均值，为的是提前将四周加载出来，用户缓慢滑动的时候可以提前看到四周的图像
+        // 将显示区域加大一圈，计算出绘制区域，宽高各增加一个平均值
+        // 为的是提前将四周加载出来，用户缓慢滑动的时候可以提前看到四周的图像
         Rect newDrawRect = rectPool.get();
         newDrawRect.left = Math.max(0, visibleRect.left - drawWidthAdd);
         newDrawRect.top = Math.max(0, visibleRect.top - drawHeightAdd);
-        newDrawRect.right = Math.min(updateParams.previewDrawableWidth, visibleRect.right + drawWidthAdd);
-        newDrawRect.bottom = Math.min(updateParams.previewDrawableHeight, visibleRect.bottom + drawHeightAdd);
+        newDrawRect.right = Math.min(previewImageWidth, visibleRect.right + drawWidthAdd);
+        newDrawRect.bottom = Math.min(previewImageHeight, visibleRect.bottom + drawHeightAdd);
 
         // 计算碎片的尺寸
         int finalTiles = tiles + 1;
-        int drawTileWidth = newDrawRect.width() / finalTiles;
-        int drawTileHeight = newDrawRect.height() / finalTiles;
+        int tileWidth = newDrawRect.width() / finalTiles;
+        int tileHeight = newDrawRect.height() / finalTiles;
 
         // 根据碎片尺寸修剪drawRect，使其正好能整除碎片
-        newDrawRect.right = newDrawRect.left + (finalTiles * drawTileWidth);
-        newDrawRect.bottom = newDrawRect.top + (finalTiles * drawTileHeight);
+        if (newDrawRect.right < previewImageWidth) {
+            newDrawRect.right = newDrawRect.left + (finalTiles * tileWidth);
+        } else if (newDrawRect.left > 0) {
+            newDrawRect.left = newDrawRect.right - (finalTiles * tileWidth);
+        }
+        if (newDrawRect.bottom < previewImageHeight) {
+            newDrawRect.bottom = newDrawRect.top + (finalTiles * tileHeight);
+        } else if (newDrawRect.top > 0) {
+            newDrawRect.top = newDrawRect.bottom - (finalTiles * tileHeight);
+        }
 
-        // 计算显示区域在完整图片中对应的区域，重点是各用各的缩放比例（这很重要），因为宽或高的比例可能不一样
-        Rect newSrcRect = new Rect(
-                Math.max(0, Math.round(newDrawRect.left * originWidthScale)),
-                Math.max(0, Math.round(newDrawRect.top * originHeightScale)),
-                Math.min(imageWidth, Math.round(newDrawRect.right * originWidthScale)),
-                Math.min(imageHeight, Math.round(newDrawRect.bottom * originHeightScale)));
-
-        // 根据src区域大小计算缩放比例，由于绘制区域比显示区域大了一圈了，因此计算inSampleSize时targetSize也得大一圈
-        float targetSizeScale = ((float) tiles / 10) + 1;
-        int targetWidth = Math.round(updateParams.imageViewWidth * targetSizeScale);
-        int targetHeight = Math.round(updateParams.imageViewHeight * targetSizeScale);
-        ImageSizeCalculator imageSizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
-        int inSampleSize = imageSizeCalculator.calculateInSampleSize(newSrcRect.width(), newSrcRect.height(), targetWidth, targetHeight, false);
+        int inSampleSize = calculateInSampleSize(newDrawRect, imageWidth, imageHeight,
+                viewWidth, viewHeight, originWidthScale, originHeightScale);
 
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, NAME + ". split start" +
+            Log.i(Sketch.TAG, NAME + ". update start" +
                     ". visibleRect=" + visibleRect.toShortString() +
+                    ", newDrawRect=" + newDrawRect.toShortString() +
+                    ", lastDrawRect=" + lastDrawRect.toShortString() +
+                    ", inSampleSize=" + inSampleSize +
                     ", lastScale=" + largeImageViewer.getLastScale() +
                     ", scale=" + largeImageViewer.getScale() +
-                    ". new drawRect=" + newDrawRect.toShortString() +
-                    ". old drawRect=" + drawRect.toShortString() +
-                    ". inSampleSize=" + inSampleSize +
                     ", tiles=" + tileList.size());
         }
 
-        // 哪边可以扩展了就扩大哪边
-        boolean needLoad = false;
-        if (largeImageViewer.getScale() == largeImageViewer.getLastScale() && !drawRect.isEmpty()) {
-            int leftAndRightEdge = Math.round(drawWidthAdd * 0.8f);
-            int topAndBottomEdge = Math.round(drawHeightAdd * 0.8f);
-            int leftSpace = Math.abs(newDrawRect.left - drawRect.left);
-            int topSpace = Math.abs(newDrawRect.top - drawRect.top);
-            int rightSpace = Math.abs(newDrawRect.right - drawRect.right);
-            int bottomSpace = Math.abs(newDrawRect.bottom - drawRect.bottom);
+        // 根据上一次绘制区域的和新绘制区域的差异计算出最终的绘制区域
+        Rect finalDrawRect = rectPool.get();
+        calculateTilesDrawRect(finalDrawRect, newDrawRect, drawWidthAdd, drawHeightAdd,
+                tileWidth, tileHeight, previewImageWidth, previewImageHeight);
 
-            Rect finalNewDrawRect = rectPool.get();
-            finalNewDrawRect.set(drawRect);
-            if (newDrawRect.left < drawRect.left && (leftSpace > leftAndRightEdge || drawRect.left - drawTileWidth <=0)) {
-                finalNewDrawRect.left = Math.max(0, drawRect.left - drawTileWidth);
-                int newDrawRight = drawRect.right;
-                while (newDrawRect.right <= newDrawRight - drawTileWidth) {
-                    newDrawRight = newDrawRight - drawTileWidth;
-                }
-                finalNewDrawRect.right = newDrawRight;
+        newDrawRect.setEmpty();
+        rectPool.put(newDrawRect);
+        //noinspection UnusedAssignment
+        newDrawRect = null;
 
+        // 如果最终绘制区域跟上一次没有变化就不继续了
+        if (!finalDrawRect.equals(lastDrawRect)) {
+            this.lastDrawRect.set(finalDrawRect);
+            calculateSrcRect(this.lastSrcRect, finalDrawRect, imageWidth, imageHeight,
+                    originWidthScale, originHeightScale);
+
+            // 回收那些已经超出绘制区域的碎片
+            recycleTiles(tileList, finalDrawRect);
+
+            // 找出所有的空白区域，然后一个一个加载
+            List<Rect> emptyRectList = findEmptyRect(finalDrawRect, tileList);
+            if (emptyRectList != null && emptyRectList.size() > 0) {
+                loadTiles(emptyRectList, tileWidth, tileHeight, imageWidth, imageHeight,
+                        originWidthScale, originHeightScale, inSampleSize, finalDrawRect);
+            } else {
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". draw rect left expand. newDrawRect=" + finalNewDrawRect.toShortString());
+                    Log.d(Sketch.TAG, NAME + ". not found empty rect");
                 }
-                needLoad = true;
             }
 
-            if (newDrawRect.top < drawRect.top && (topSpace > topAndBottomEdge || drawRect.top - drawTileHeight <= 0)) {
-                finalNewDrawRect.top = Math.max(0, drawRect.top - drawTileHeight);
-                int newDrawBottom = drawRect.bottom;
-                while (newDrawRect.bottom <= Math.round(newDrawBottom - drawTileHeight)) {
-                    newDrawBottom = newDrawBottom - drawTileHeight;
-                }
-                finalNewDrawRect.bottom = newDrawBottom;
-
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". draw rect top expand. newDrawRect=" + finalNewDrawRect.toShortString());
-                }
-                needLoad = true;
+            if (onTileChangedListener != null) {
+                onTileChangedListener.onTileChanged(largeImageViewer);
             }
 
-            if (newDrawRect.right > drawRect.right && (rightSpace > leftAndRightEdge || drawRect.right + drawTileWidth >= updateParams.previewDrawableWidth)) {
-                int newDrawLeft = drawRect.left;
-                while (newDrawRect.left >= newDrawLeft + drawTileWidth) {
-                    newDrawLeft = newDrawLeft + drawTileWidth;
-                }
-                finalNewDrawRect.left = newDrawLeft;
-                finalNewDrawRect.right = Math.min(updateParams.previewDrawableWidth, drawRect.right + drawTileWidth);
-
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". draw rect right expand. newDrawRect=" + finalNewDrawRect.toShortString());
-                }
-                needLoad = true;
+            if (Sketch.isDebugMode()) {
+                Log.e(Sketch.TAG, NAME + ". update finished" +
+                        ", drawRect=" + finalDrawRect.toShortString() +
+                        ", tiles=" + tileList.size());
             }
-
-            if (newDrawRect.bottom > drawRect.bottom && (bottomSpace > topAndBottomEdge || drawRect.bottom + drawTileHeight >= updateParams.previewDrawableHeight)) {
-                int newDrawTop = drawRect.top;
-                while (newDrawRect.top >= newDrawTop + drawTileHeight) {
-                    newDrawTop = newDrawTop + drawTileHeight;
-                }
-                finalNewDrawRect.top = newDrawTop;
-                finalNewDrawRect.bottom = Math.min(updateParams.previewDrawableHeight, drawRect.bottom + drawTileHeight);
-
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". draw rect bottom expand. newDrawRect=" + finalNewDrawRect.toShortString());
-                }
-                needLoad = true;
-            }
-
-            newDrawRect.set(finalNewDrawRect);
-            finalNewDrawRect.setEmpty();
-            rectPool.put(finalNewDrawRect);
         } else {
-            needLoad = true;
+
+            if (Sketch.isDebugMode()) {
+                Log.e(Sketch.TAG, NAME + ". update finished draw rect no change");
+            }
         }
 
-        // 不需要扩展说明，当前已加载的区域够用，那就结束吧
-        if (!needLoad) {
-            Log.e(Sketch.TAG, NAME + ". split finished draw rect no change" +
-                    ". visibleRect=" + visibleRect.toShortString() +
-                    ". new drawRect=" + newDrawRect.toShortString() +
-                    ". old drawRect=" + drawRect.toShortString() +
-                    ", tiles=" + tileList.size());
+        finalDrawRect.setEmpty();
+        rectPool.put(finalDrawRect);
+        //noinspection UnusedAssignment
+        finalDrawRect = null;
+    }
+
+    /**
+     * 计算绘制区域在完整图片中对应的区域，重点是各用各的缩放比例（这很重要），因为宽或高的比例可能不一样
+     */
+    private void calculateSrcRect(Rect srcRect, Rect drawRect, int imageWidth, int imageHeight,
+                                  float originWidthScale, float originHeightScale) {
+        srcRect.left = Math.max(0, Math.round(drawRect.left * originWidthScale));
+        srcRect.top = Math.max(0, Math.round(drawRect.top * originHeightScale));
+        srcRect.right = Math.min(imageWidth, Math.round(drawRect.right * originWidthScale));
+        srcRect.bottom = Math.min(imageHeight, Math.round(drawRect.bottom * originHeightScale));
+    }
+
+    /**
+     * 计算解码时的缩放比例
+     */
+    private int calculateInSampleSize(Rect drawRect, int imageWidth, int imageHeight,
+                                      int viewWidth, int viewHeight,
+                                      float originWidthScale, float originHeightScale) {
+        Rect srcRect = rectPool.get();
+
+        calculateSrcRect(srcRect, drawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
+
+        // 由于绘制区域比显示区域大了一圈，因此targetSize也得大一圈
+        float targetSizeScale = ((float) tiles / 10) + 1;
+        int targetWidth = Math.round(viewWidth * targetSizeScale);
+        int targetHeight = Math.round(viewHeight * targetSizeScale);
+
+        ImageSizeCalculator imageSizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
+        int inSampleSize = imageSizeCalculator.calculateInSampleSize(srcRect.width(), srcRect.height(), targetWidth, targetHeight, false);
+
+        srcRect.setEmpty();
+        rectPool.put(srcRect);
+
+        return inSampleSize;
+    }
+
+    /**
+     * 在上一个绘制区域的基础上计算出根据新的绘制区域，计算出最终的绘制区域
+     */
+    private void calculateTilesDrawRect(Rect finalDrawRect, Rect newDrawRect,
+                                        int drawWidthAdd, int drawHeightAdd,
+                                        int drawTileWidth, int drawTileHeight,
+                                        int maxDrawWidth, int maxDrawHeight) {
+        // 缩放比例已改变或者这是第一次就直接用新的绘制区域
+        if (largeImageViewer.getScale() != largeImageViewer.getLastScale() || lastDrawRect.isEmpty()) {
+            finalDrawRect.set(newDrawRect);
             return;
         }
 
-        this.drawRect.set(newDrawRect);
-        newSrcRect = new Rect(
-                Math.max(0, Math.round(newDrawRect.left * originWidthScale)),
-                Math.max(0, Math.round(newDrawRect.top * originHeightScale)),
-                Math.min(imageWidth, Math.round(newDrawRect.right * originWidthScale)),
-                Math.min(imageHeight, Math.round(newDrawRect.bottom * originHeightScale)));
-        this.srcRect.set(newSrcRect);
+        int leftAndRightEdge = Math.round(drawWidthAdd * 0.8f);
+        int topAndBottomEdge = Math.round(drawHeightAdd * 0.8f);
+        int leftSpace = Math.abs(newDrawRect.left - lastDrawRect.left);
+        int topSpace = Math.abs(newDrawRect.top - lastDrawRect.top);
+        int rightSpace = Math.abs(newDrawRect.right - lastDrawRect.right);
+        int bottomSpace = Math.abs(newDrawRect.bottom - lastDrawRect.bottom);
 
-        // 回收那些已经完全不可见的碎片
-        Tile tile;
-        Iterator<Tile> tileIterator = tileList.iterator();
-        while (tileIterator.hasNext()) {
-            tile = tileIterator.next();
+        // 以上一次的绘制区域为基础
+        finalDrawRect.set(lastDrawRect);
 
-            // 缩放比例已经变了或者这个碎片已经跟当前显示区域毫无交集，那么就可以回收这个碎片了
-            if (largeImageViewer.getScale() != tile.scale || !SketchUtils.isCross(tile.drawRect, newDrawRect)) {
-                if (!tile.isEmpty()) {
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". recycle tile. tile=" + tile.getInfo());
-                    }
-                    tileIterator.remove();
-                    tile.clean();
-                    tilePool.put(tile);
-                } else {
-                    tile.refreshKey();
-                    tileIterator.remove();
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". recycle loading tile and refresh key. tile=" + tile.getInfo());
-                    }
-                }
+        // 左边需要加一列
+        if (newDrawRect.left < lastDrawRect.left &&
+                (leftSpace > leftAndRightEdge || lastDrawRect.left - drawTileWidth <= 0)) {
+            finalDrawRect.left = Math.max(0, lastDrawRect.left - drawTileWidth);
+            int newDrawRight = lastDrawRect.right;
+            while (newDrawRect.right <= newDrawRight - drawTileWidth) {
+                newDrawRight = newDrawRight - drawTileWidth;
+            }
+            finalDrawRect.right = newDrawRight;
+
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". draw rect left expand. finalDrawRect=" + finalDrawRect.toShortString());
             }
         }
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, NAME + ". recycle tiles. tiles=" + tileList.size());
-        }
 
-        // 找出所有的空白区域，然后一个一个加载
-        List<Rect> emptyRectList = findEmptyRect(newDrawRect, tileList);
-        if (emptyRectList != null && emptyRectList.size() > 0) {
-            for(Rect emptyRect : emptyRectList){
-                int tileLeft = emptyRect.left, tileTop = emptyRect.top;
-                int tileRight = 0, tileBottom = 0;
-                if (Sketch.isDebugMode()) {
-                    Log.i(Sketch.TAG, NAME + ". load emptyRect=" + emptyRect.toShortString());
-                }
-                while (Math.round(tileRight) < emptyRect.right || Math.round(tileBottom) < emptyRect.bottom) {
-                    tileRight = Math.min(tileLeft + drawTileWidth, emptyRect.right);
-                    tileBottom = Math.min(tileTop + drawTileHeight, emptyRect.bottom);
-
-                    if (canLoad(Math.round(tileLeft), Math.round(tileTop), Math.round(tileRight), Math.round(tileBottom))) {
-                        Tile loadTile = tilePool.get();
-                        loadTile.drawRect.set(Math.round(tileLeft), Math.round(tileTop), Math.round(tileRight), Math.round(tileBottom));
-                        loadTile.srcRect.set(
-                                Math.max(0, Math.round(tileLeft * originWidthScale)),
-                                Math.max(0, Math.round(tileTop * originHeightScale)),
-                                Math.min(imageWidth, Math.round(tileRight * originWidthScale)),
-                                Math.min(imageHeight, Math.round(tileBottom * originHeightScale))
-                        );
-                        loadTile.inSampleSize = inSampleSize;
-                        loadTile.scale = largeImageViewer.getScale();
-
-                        // 提交任务
-                        loadTile.refreshKey();
-                        tileList.add(loadTile);
-                        if (Sketch.isDebugMode()) {
-                            Log.d(Sketch.TAG, NAME + ". submit and refresh key" +
-                                    ". drawRect=" + newDrawRect.toShortString() + ", tile=" + loadTile.getInfo());
-                        }
-                        largeImageViewer.getExecutor().submit(loadTile.getKey(), loadTile);
-                    } else {
-                        if (Sketch.isDebugMode()) {
-                            Log.w(Sketch.TAG, NAME + ". repeated tile tileDrawRect=" +
-                                    Math.round(tileLeft) + ", " + Math.round(tileTop) + ", " +
-                                    Math.round(tileRight) + ", " + Math.round(tileBottom));
-                        }
-                    }
-
-                    if (Math.round(tileRight) >= emptyRect.right) {
-                        tileLeft = emptyRect.left;
-                        tileTop = tileBottom;
-                    } else {
-                        tileLeft = tileRight;
-                    }
-                }
+        // 顶部需要加一行
+        if (newDrawRect.top < lastDrawRect.top &&
+                (topSpace > topAndBottomEdge || lastDrawRect.top - drawTileHeight <= 0)) {
+            finalDrawRect.top = Math.max(0, lastDrawRect.top - drawTileHeight);
+            int newDrawBottom = lastDrawRect.bottom;
+            while (newDrawRect.bottom <= Math.round(newDrawBottom - drawTileHeight)) {
+                newDrawBottom = newDrawBottom - drawTileHeight;
             }
-        } else {
-            Log.w(Sketch.TAG, NAME + ". not found empty rect");
+            finalDrawRect.bottom = newDrawBottom;
+
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". draw rect top expand. finalDrawRect=" + finalDrawRect.toShortString());
+            }
         }
 
-        if (Sketch.isDebugMode()) {
-            Log.e(Sketch.TAG, NAME + ". split finished" +
-                    ". visibleRect=" + visibleRect.toShortString() +
-                    ", drawRect=" + newDrawRect.toShortString() +
-                    ", tiles=" + tileList.size());
+
+        // 右边需要加一列
+        if (newDrawRect.right > lastDrawRect.right &&
+                (rightSpace > leftAndRightEdge || lastDrawRect.right + drawTileWidth >= maxDrawWidth)) {
+            int newDrawLeft = lastDrawRect.left;
+            while (newDrawRect.left >= newDrawLeft + drawTileWidth) {
+                newDrawLeft = newDrawLeft + drawTileWidth;
+            }
+            finalDrawRect.left = newDrawLeft;
+            finalDrawRect.right = Math.min(maxDrawWidth, lastDrawRect.right + drawTileWidth);
+
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". draw rect right expand. finalDrawRect=" + finalDrawRect.toShortString());
+            }
         }
 
-        if (onTileChangedListener != null) {
-            onTileChangedListener.onTileChanged(largeImageViewer);
+        // 底部需要加一行
+        if (newDrawRect.bottom > lastDrawRect.bottom &&
+                (bottomSpace > topAndBottomEdge || lastDrawRect.bottom + drawTileHeight >= maxDrawHeight)) {
+            int newDrawTop = lastDrawRect.top;
+            while (newDrawRect.top >= newDrawTop + drawTileHeight) {
+                newDrawTop = newDrawTop + drawTileHeight;
+            }
+            finalDrawRect.top = newDrawTop;
+            finalDrawRect.bottom = Math.min(maxDrawHeight, lastDrawRect.bottom + drawTileHeight);
+
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". draw rect bottom expand. finalDrawRect=" + finalDrawRect.toShortString());
+            }
         }
     }
 
+    /**
+     * 去重
+     */
     private boolean canLoad(int left, int top, int right, int bottom) {
         for (Tile drawTile : tileList) {
             if (drawTile.drawRect.left == left &&
@@ -327,7 +310,8 @@ public class TileManager {
 
     /**
      * 假如有一个矩形，并且已知这个矩形中的N个碎片，那么要找出所有的空白碎片（不可用的碎片会从已知列表中删除）
-     * @param rect 那个矩形
+     *
+     * @param rect     那个矩形
      * @param tileList 已知碎片
      * @return 所有空白的碎片
      */
@@ -448,10 +432,86 @@ public class TileManager {
         return emptyRectList;
     }
 
+    /**
+     * 回收哪些已经超出绘制区域的碎片
+     */
+    private void recycleTiles(List<Tile> tileList, Rect drawRect) {
+        Tile tile;
+        Iterator<Tile> tileIterator = tileList.iterator();
+        while (tileIterator.hasNext()) {
+            tile = tileIterator.next();
+
+            // 缩放比例已经变了或者这个碎片已经跟当前显示区域毫无交集，那么就可以回收这个碎片了
+            if (largeImageViewer.getScale() != tile.scale || !SketchUtils.isCross(tile.drawRect, drawRect)) {
+                if (!tile.isEmpty()) {
+                    if (Sketch.isDebugMode()) {
+                        Log.d(Sketch.TAG, NAME + ". recycle tile. tile=" + tile.getInfo());
+                    }
+                    tileIterator.remove();
+                    tile.clean();
+                    tilePool.put(tile);
+                } else {
+                    if (Sketch.isDebugMode()) {
+                        Log.w(Sketch.TAG, NAME + ". recycle loading tile and refresh key. tile=" + tile.getInfo());
+                    }
+                    tile.refreshKey();
+                    tileIterator.remove();
+                }
+            }
+        }
+    }
+
+    private void loadTiles(List<Rect> emptyRectList, int tileWidth, int tileHeight,
+                           int imageWidth, int imageHeight, float originWidthScale, float originHeightScale,
+                           int inSampleSize, Rect finalDrawRect) {
+        for (Rect emptyRect : emptyRectList) {
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, NAME + ". load emptyRect=" + emptyRect.toShortString());
+            }
+
+            int tileLeft = emptyRect.left, tileTop = emptyRect.top, tileRight = 0, tileBottom = 0;
+            while (Math.round(tileRight) < emptyRect.right || Math.round(tileBottom) < emptyRect.bottom) {
+                tileRight = Math.min(tileLeft + tileWidth, emptyRect.right);
+                tileBottom = Math.min(tileTop + tileHeight, emptyRect.bottom);
+
+                if (canLoad(tileLeft, tileTop, tileRight, tileBottom)) {
+                    Tile loadTile = tilePool.get();
+
+                    loadTile.drawRect.set(tileLeft, tileTop, tileRight, tileBottom);
+                    loadTile.inSampleSize = inSampleSize;
+                    loadTile.scale = largeImageViewer.getScale();
+                    calculateSrcRect(loadTile.srcRect, loadTile.drawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
+
+                    tileList.add(loadTile);
+                    if (Sketch.isDebugMode()) {
+                        Log.d(Sketch.TAG, NAME + ". submit and refresh key" +
+                                ". drawRect=" + finalDrawRect.toShortString() + ", tile=" + loadTile.getInfo());
+                    }
+
+                    loadTile.refreshKey();
+                    largeImageViewer.getExecutor().submit(loadTile.getKey(), loadTile);
+                } else {
+                    if (Sketch.isDebugMode()) {
+                        Log.w(Sketch.TAG, NAME + ". repeated tile. tileDrawRect=" +
+                                Math.round(tileLeft) + ", " + Math.round(tileTop) + ", " +
+                                Math.round(tileRight) + ", " + Math.round(tileBottom));
+                    }
+                }
+
+                if (Math.round(tileRight) >= emptyRect.right) {
+                    tileLeft = emptyRect.left;
+                    tileTop = tileBottom;
+                } else {
+                    tileLeft = tileRight;
+                }
+            }
+        }
+    }
+
     public void decodeCompleted(Tile tile, Bitmap bitmap) {
         if (Sketch.isDebugMode()) {
             String bitmapConfig = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
-            Log.i(Sketch.TAG, NAME + ". decodeCompleted" +
+            Log.i(Sketch.TAG, NAME + ". decode completed" +
                     ". tile=" + tile.getInfo() +
                     ", bitmap=" + bitmap.getWidth() + "x" + bitmap.getHeight() + "(" + bitmapConfig + ")" +
                     ", tiles=" + tileList.size());
@@ -471,14 +531,16 @@ public class TileManager {
         tileList.remove(tile);
 
         if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". decodeFailed. " + exception.getCauseMessage() + ". tile=" + tile.getInfo() + ", tiles=" + tileList.size());
+            Log.w(Sketch.TAG, NAME + ". decode failed. " + exception.getCauseMessage() + "" +
+                    ". tile=" + tile.getInfo() + "" +
+                    ", tiles=" + tileList.size());
         }
 
         tile.clean();
         tilePool.put(tile);
     }
 
-    public void clean(String why){
+    public void clean(String why) {
         for (Tile tile : tileList) {
             tile.refreshKey();
             tile.clean();
@@ -489,18 +551,18 @@ public class TileManager {
         tileList.clear();
     }
 
-    public void recycle(@SuppressWarnings("UnusedParameters") String why){
+    public void recycle(@SuppressWarnings("UnusedParameters") String why) {
         tilePool.clear();
         rectPool.clear();
     }
 
     @SuppressWarnings("unused")
     public Rect getDrawRect() {
-        return drawRect;
+        return lastDrawRect;
     }
 
     public Rect getSrcRect() {
-        return srcRect;
+        return lastSrcRect;
     }
 
     public List<Tile> getTileList() {

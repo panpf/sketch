@@ -100,6 +100,9 @@ public class LargeImageViewer {
         }
     }
 
+    /**
+     * 设置新的图片
+     */
     public void setImage(String imageUri) {
         clean("setImage");
 
@@ -118,13 +121,16 @@ public class LargeImageViewer {
     public void update(UpdateParams updateParams) {
         // 不可用，也没有初始化就直接结束
         if (!isAvailable() && !isInitializing()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". unavailable");
+            }
             return;
         }
 
         // 传进来的参数不能用就什么也不显示
         if (updateParams == null || updateParams.isEmpty()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". params is empty. update");
+                Log.w(Sketch.TAG, NAME + ". update params is empty. update");
             }
             clean("update param is empty");
             return;
@@ -169,7 +175,10 @@ public class LargeImageViewer {
 
         callback.invalidate();
 
-        tileManager.update(updateParams);
+        tileManager.update(updateParams.visibleRect,
+                updateParams.imageViewWidth, updateParams.imageViewHeight,
+                executor.getDecoder().getImageWidth(), executor.getDecoder().getImageHeight(),
+                updateParams.previewDrawableWidth, updateParams.previewDrawableHeight);
     }
 
     private void clean(String why) {

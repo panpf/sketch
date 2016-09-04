@@ -693,6 +693,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 获取预览图片上用户真实看到区域
      */
+    // TODO: 16/9/4 不准，总是差一点儿
     public void getVisibleRect(Rect rect) {
         ImageView imageView = getImageView();
         if (imageView == null) {
