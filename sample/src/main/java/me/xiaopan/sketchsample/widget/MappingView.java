@@ -30,7 +30,7 @@ import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 
-public class MappingView extends SketchImageView implements LargeImageViewer.OnTileChangedListener{
+public class MappingView extends SketchImageView implements LargeImageViewer.OnTileChangedListener {
 
     private LargeImageViewer largeImageViewer;
 
@@ -106,10 +106,12 @@ public class MappingView extends SketchImageView implements LargeImageViewer.OnT
             }
 
             Rect srcRect = largeImageViewer.getTileManager().getSrcRect();
-            canvas.drawRect((srcRect.left) / scale,
-                    (srcRect.top) / scale,
-                    (srcRect.right) / scale,
-                    (srcRect.bottom) / scale, drawRectPaint);
+            if (!srcRect.isEmpty()) {
+                canvas.drawRect((srcRect.left) / scale,
+                        (srcRect.top) / scale,
+                        (srcRect.right) / scale,
+                        (srcRect.bottom) / scale, drawRectPaint);
+            }
         }
 
         if (!visibleRect.isEmpty()) {

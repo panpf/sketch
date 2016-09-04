@@ -157,20 +157,20 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                float currentScale = getZoomScale();
-                if (currentScale < minZoomScale) {
+                float currentScale = SketchUtils.formatFloat(getZoomScale(), 2);
+                if (currentScale < SketchUtils.formatFloat(minZoomScale, 2)) {
                     // 如果当前缩放倍数小于最小倍数就回滚至最小倍数
                     RectF displayRectF = new RectF();
                     checkMatrixBounds();
                     getDisplayRect(displayRectF);
                     if (!displayRectF.isEmpty()) {
-                        v.post(new ZoomRunner(this, currentScale, minZoomScale, displayRectF.centerX(), displayRectF.centerY()));
+                        zoom(minZoomScale, displayRectF.centerX(), displayRectF.centerY(), true);
                         handled = true;
                     }
-                } else if (currentScale > maxZoomScale) {
+                } else if (currentScale > SketchUtils.formatFloat(maxZoomScale, 2)) {
                     // 如果当前缩放倍数大于最大倍数就回滚至最大倍数
                     if (lastScaleFocusX != 0 && lastScaleFocusY != 0) {
-                        v.post(new ZoomRunner(this, currentScale, maxZoomScale, lastScaleFocusX, lastScaleFocusY));
+                        zoom(maxZoomScale, lastScaleFocusX, lastScaleFocusY, true);
                         handled = true;
                     }
                 }
@@ -395,10 +395,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                 maxZoomScale = largeMinZoomScale;
             }
         }
-
-        // 最后都保留两位小数
-        minZoomScale = SketchUtils.formatFloat(minZoomScale, 2);
-        maxZoomScale = SketchUtils.formatFloat(maxZoomScale, 2);
     }
 
     /**
@@ -693,7 +689,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 获取预览图片上用户真实看到区域
      */
-    // TODO: 16/9/4 不准，总是差一点儿
     public void getVisibleRect(Rect rect) {
         ImageView imageView = getImageView();
         if (imageView == null) {
@@ -809,7 +804,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 获取当前缩放比例
      */
     public float getZoomScale() {
-        return SketchUtils.formatFloat(SketchUtils.getMatrixScale(getDrawMatrix()), 2);
+        return SketchUtils.getMatrixScale(getDrawMatrix());
     }
 
     /**

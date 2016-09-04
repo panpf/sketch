@@ -27,6 +27,7 @@ import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
@@ -83,7 +84,7 @@ public class LargeImageFragment extends MyFragment {
                 Rect visibleRect = new Rect();
                 imageZoomer.getVisibleRect(visibleRect);
                 mappingView.update(imageZoomer.getDrawableWidth(), visibleRect);
-                scaleTextView.setText(String.valueOf(imageZoomer.getZoomScale()));
+                scaleTextView.setText(String.valueOf(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2)));
             }
         });
         mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());

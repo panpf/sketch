@@ -20,6 +20,8 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
+import me.xiaopan.sketch.util.SketchUtils;
+
 class TapListener extends GestureDetector.SimpleOnGestureListener {
 
     private ImageZoomer imageZoomer;
@@ -45,7 +47,7 @@ class TapListener extends GestureDetector.SimpleOnGestureListener {
             float x = ev.getX();
             float y = ev.getY();
 
-            if (scale < imageZoomer.getMaxZoomScale()) {
+            if (SketchUtils.formatFloat(scale, 2) < SketchUtils.formatFloat(imageZoomer.getMaxZoomScale(), 2)) {
                 imageZoomer.zoom(imageZoomer.getMaxZoomScale(), x, y, true);
             } else {
                 imageZoomer.zoom(imageZoomer.getMinZoomScale(), x, y, true);
