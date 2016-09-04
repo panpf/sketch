@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.drawable;
 
+import android.graphics.Bitmap;
+
 public interface SketchDrawable {
     /**
      * 获取图片ID
@@ -71,4 +73,14 @@ public interface SketchDrawable {
      * 获取一些信息
      */
     String getInfo();
+
+    /**
+     * 获取占用内存，单位字节
+     */
+    int getByteCount();
+
+    /**
+     * 获取Bitmap配置
+     */
+    Bitmap.Config getBitmapConfig();
 }

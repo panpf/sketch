@@ -4,10 +4,10 @@
     <alpha
         android:fromAlpha="0.0"
         android:toAlpha="1.0"
-        android:duration="400" />
+        android:duration="200" />
     <translate
         android:fromYDelta="100%p"
         android:toYDelta="0"
-        android:duration="400"
+        android:duration="200"
         android:interpolator="@android:anim/accelerate_decelerate_interpolator" />
 </set>

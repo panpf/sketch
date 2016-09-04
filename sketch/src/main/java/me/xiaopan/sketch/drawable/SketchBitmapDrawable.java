@@ -173,6 +173,12 @@ public class SketchBitmapDrawable extends BitmapDrawable implements RecyclerDraw
         return SketchUtils.getBitmapByteCount(getBitmap());
     }
 
+    @Override
+    public Bitmap.Config getBitmapConfig() {
+        Bitmap bitmap = getBitmap();
+        return bitmap != null ? bitmap.getConfig() : null;
+    }
+
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if (Sketch.isDebugMode()) {

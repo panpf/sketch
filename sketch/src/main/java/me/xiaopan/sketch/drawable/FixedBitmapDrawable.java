@@ -270,4 +270,9 @@ public class FixedBitmapDrawable extends Drawable implements RecyclerDrawable {
     public int getByteCount() {
         return wrapperDrawable != null ? wrapperDrawable.getByteCount() : 0;
     }
+
+    @Override
+    public Bitmap.Config getBitmapConfig() {
+        return wrapperDrawable != null ? wrapperDrawable.getBitmapConfig() : null;
+    }
 }

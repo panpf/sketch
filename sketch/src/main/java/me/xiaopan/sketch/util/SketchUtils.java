@@ -667,17 +667,19 @@ public class SketchUtils {
     }
 
     public static Drawable getLastDrawable(Drawable drawable) {
-        if (drawable != null) {
-            if (drawable instanceof LayerDrawable) {
-                LayerDrawable layerDrawable = (LayerDrawable) drawable;
-                for (int i = layerDrawable.getNumberOfLayers() - 1; i >= 0; i--) {
-                    Drawable childDrawable = getLastDrawable(layerDrawable.getDrawable(i));
-                    if (childDrawable != null) {
-                        return childDrawable;
-                    }
-                }
-            } else {
-                return drawable;
+        if (drawable == null) {
+            return null;
+        }
+
+        if (!(drawable instanceof LayerDrawable)) {
+            return drawable;
+        }
+
+        LayerDrawable layerDrawable = (LayerDrawable) drawable;
+        for (int i = layerDrawable.getNumberOfLayers() - 1; i >= 0; i--) {
+            Drawable childDrawable = getLastDrawable(layerDrawable.getDrawable(i));
+            if (childDrawable != null) {
+                return childDrawable;
             }
         }
         return null;

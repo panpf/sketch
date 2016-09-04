@@ -36,8 +36,7 @@ import me.xiaopan.sketchsample.fragment.DetailFragment;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
-public class DetailActivity extends MyBaseActivity implements DetailFragment.SetDispatchTouchEventListener, WindowBackgroundManager.OnSetWindowBackgroundListener {
-    private DetailFragment.DispatchTouchEventListener dispatchTouchEventListener;
+public class DetailActivity extends MyBaseActivity implements WindowBackgroundManager.OnSetWindowBackgroundListener {
 
     private WindowBackgroundManager windowBackgroundManager;
 
@@ -67,16 +66,7 @@ public class DetailActivity extends MyBaseActivity implements DetailFragment.Set
             e.printStackTrace();
         }
 
-        if (dispatchTouchEventListener != null) {
-            dispatchTouchEventListener.dispatchTouchEvent(ev);
-        }
-
         return result;
-    }
-
-    @Override
-    public void setDispatchTouchEventListener(DetailFragment.DispatchTouchEventListener dispatchTouchEventListener) {
-        this.dispatchTouchEventListener = dispatchTouchEventListener;
     }
 
     @Override

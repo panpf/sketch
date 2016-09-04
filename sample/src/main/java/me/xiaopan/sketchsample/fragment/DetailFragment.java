@@ -18,11 +18,15 @@ package me.xiaopan.sketchsample.fragment;
 
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.view.MotionEvent;
+import android.support.v7.app.AlertDialog;
+import android.text.format.Formatter;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +39,12 @@ import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.drawable.BindDrawable;
+import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.feature.large.LargeImageViewer;
+import me.xiaopan.sketch.feature.zoom.ImageZoomer;
+import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.ImageFragmentAdapter;
@@ -43,15 +53,15 @@ import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.ApplyWallpaperAsyncTask;
 import me.xiaopan.sketchsample.util.PageNumberSetter;
 import me.xiaopan.sketchsample.util.SaveImageAsyncTask;
-import me.xiaopan.sketchsample.util.SingleTapDetector;
 import me.xiaopan.sketchsample.util.ViewPagerPlayer;
 import me.xiaopan.sketchsample.widget.DepthPageTransformer;
+import me.xiaopan.sketchsample.widget.MyImageView;
 
 /**
  * 图片详情页面
  */
 @InjectContentView(R.layout.fragment_detail)
-public class DetailFragment extends MyFragment implements SingleTapDetector.OnSingleTapListener, View.OnClickListener {
+public class DetailFragment extends MyFragment implements View.OnClickListener, ImageZoomer.OnViewTapListener {
     public static final String PARAM_REQUIRED_STRING_ARRAY_LIST_URLS = "PARAM_REQUIRED_STRING_ARRAY_LIST_URLS";
     public static final String PARAM_OPTIONAL_INT_DEFAULT_POSITION = "PARAM_OPTIONAL_INT_DEFAULT_POSITION";
 
@@ -65,6 +75,8 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
     private View applyWallpaperButton;
     @InjectView(R.id.button_detail_save)
     private View saveButton;
+    @InjectView(R.id.button_detail_info)
+    private View infoButton;
     @InjectView(R.id.text_detail_currentItem)
     private TextView currentItemTextView;
     @InjectView(R.id.text_detail_countItem)
@@ -85,24 +97,24 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
     private ViewPagerPlayer viewPagerPlayer;
     private boolean recoverPlay;
     private StartPlay startPlay;
-    private SingleTapDetector singleTapDetector;
-    private boolean disableSingleTap;
+
+    public static String parseFileType(String fileName) {
+        int lastIndexOf = fileName.lastIndexOf(".");
+        if (lastIndexOf < 0) {
+            return null;
+        }
+        String fileType = fileName.substring(lastIndexOf + 1);
+        if ("".equals(fileType.trim())) {
+            return null;
+        }
+        return fileType;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         handler = new Handler();
         startPlay = new StartPlay();
-        singleTapDetector = new SingleTapDetector(getActivity(), this);
-
-        if (getActivity() instanceof SetDispatchTouchEventListener) {
-            ((SetDispatchTouchEventListener) getActivity()).setDispatchTouchEventListener(new DispatchTouchEventListener() {
-                @Override
-                public void dispatchTouchEvent(MotionEvent ev) {
-                    singleTapDetector.onTouchEvent(ev);
-                }
-            });
-        }
     }
 
     @Override
@@ -114,9 +126,12 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
         applyWallpaperButton.setVisibility(View.INVISIBLE);
         playButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
+        infoButton.setVisibility(View.INVISIBLE);
         toolbarLayout.setVisibility(View.GONE);
 
-        animationBatchExecutor = new AnimationBatchExecutor(getActivity(), R.anim.action_show, R.anim.action_hidden, 70, shareButton, applyWallpaperButton, playButton, saveButton);
+        animationBatchExecutor = new AnimationBatchExecutor(getActivity(),
+                R.anim.action_show, R.anim.action_hidden, 70,
+                shareButton, applyWallpaperButton, playButton, saveButton, infoButton);
         viewPagerPlayer = new ViewPagerPlayer(viewPager);
         new PageNumberSetter(currentItemTextView, viewPager);
         viewPager.setPageTransformer(true, new DepthPageTransformer());
@@ -125,6 +140,7 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
         applyWallpaperButton.setOnClickListener(this);
         playButton.setOnClickListener(this);
         saveButton.setOnClickListener(this);
+        infoButton.setOnClickListener(this);
 
         if (uris != null) {
             viewPager.setAdapter(new ImageFragmentAdapter(getChildFragmentManager(), uris));
@@ -168,30 +184,6 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
         }
     }
 
-    @Override
-    public boolean onSingleTapUp(MotionEvent e) {
-        if (disableSingleTap) {
-            disableSingleTap = false;
-            return true;
-        }
-
-        // 如果正在播放就关闭自动播放
-        if (viewPagerPlayer.isPlaying()) {
-            viewPagerPlayer.stop();
-        }
-
-        toggleToolbarVisibleState();
-        return true;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (getActivity() instanceof SetDispatchTouchEventListener) {
-            ((SetDispatchTouchEventListener) getActivity()).setDispatchTouchEventListener(null);
-        }
-    }
-
     private File getImageFile(String imageUrl, String type) {
         String currentUrl = uris.get(viewPager.getCurrentItem());
         if (currentUrl == null || "".equals(currentUrl.trim())) {
@@ -217,7 +209,6 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.button_detail_share:
-                disableSingleTap = true;
                 File imageFile = getImageFile(uris.get(viewPager.getCurrentItem()), "分享");
                 if (imageFile != null) {
                     Intent intent = new Intent(Intent.ACTION_SEND);
@@ -232,7 +223,6 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
                 }
                 break;
             case R.id.button_detail_applyWallpaper:
-                disableSingleTap = true;
                 File imageFile2 = getImageFile(uris.get(viewPager.getCurrentItem()), "设置壁纸");
                 if (imageFile2 != null) {
                     new ApplyWallpaperAsyncTask(getActivity(), imageFile2) {
@@ -246,12 +236,10 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
                 }
                 break;
             case R.id.button_detail_play:
-                disableSingleTap = true;
                 viewPagerPlayer.start();
                 toggleToolbarVisibleState();
                 break;
             case R.id.button_detail_save:
-                disableSingleTap = true;
                 String currentUrl = uris.get(viewPager.getCurrentItem());
                 if (currentUrl == null || "".equals(currentUrl.trim())) {
                     Toast.makeText(getActivity(), "保存图片失败，因为当前图片的URL是空的，没法拿到图片", Toast.LENGTH_LONG).show();
@@ -268,7 +256,109 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
                     Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + currentUrl, Toast.LENGTH_LONG).show();
                 }
                 break;
+            case R.id.button_detail_info:
+                List<Fragment> childFragmentList = getChildFragmentManager().getFragments();
+                for (Fragment childFragment : childFragmentList) {
+                    if (childFragment != null && childFragment.isResumed() && childFragment.getUserVisibleHint() && childFragment instanceof ImageFragment) {
+                        ImageFragment imageFragment = (ImageFragment) childFragment;
+                        MyImageView imageView = imageFragment.getImageView();
+                        Drawable drawable = SketchUtils.getLastDrawable(imageView != null ? imageView.getDrawable() : null);
+
+                        if (drawable instanceof BindDrawable) {
+                            Toast.makeText(getActivity(), "正在读取图片，请稍后", Toast.LENGTH_LONG).show();
+                        } else if (drawable instanceof SketchDrawable) {
+                            SketchDrawable sketchDrawable = (SketchDrawable) drawable;
+
+                            StringBuilder messageBuilder = new StringBuilder();
+                            messageBuilder.append("URI：").append(sketchDrawable.getImageUri());
+                            messageBuilder.append("\n");
+                            messageBuilder.append("类型：").append(sketchDrawable.getMimeType());
+                            messageBuilder.append("\n");
+                            messageBuilder.append("尺寸：").append(sketchDrawable.getOriginWidth()).append("x").append(sketchDrawable.getOriginHeight());
+
+                            File image = null;
+                            UriScheme uriScheme = UriScheme.valueOfUri(sketchDrawable.getImageUri());
+                            if (uriScheme == UriScheme.FILE) {
+                                image = new File(UriScheme.FILE.crop(sketchDrawable.getImageUri()));
+                            } else if (uriScheme == UriScheme.NET) {
+                                DiskCache.Entry diskCacheEntry = Sketch.with(getActivity()).getConfiguration().getDiskCache().get(sketchDrawable.getImageUri());
+                                if (diskCacheEntry != null) {
+                                    image = diskCacheEntry.getFile();
+                                }
+                            }
+                            messageBuilder.append("\n");
+                            if (image != null) {
+                                messageBuilder.append("占用空间：").append(Formatter.formatFileSize(getActivity(), image.length()));
+                            } else {
+                                messageBuilder.append("占用空间：").append("未知");
+                            }
+
+                            int previewDrawableByteCount = sketchDrawable.getByteCount();
+                            int pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
+                            int originImageByteCount = sketchDrawable.getOriginWidth() * sketchDrawable.getOriginHeight() * pixelByteCount;
+                            messageBuilder.append("\n");
+                            messageBuilder.append("占用内存：").append(Formatter.formatFileSize(getActivity(), originImageByteCount));
+
+                            messageBuilder.append("\n");
+                            messageBuilder.append("\n");
+                            messageBuilder.append("预览图尺寸：").append(drawable.getIntrinsicWidth()).append("x").append(drawable.getIntrinsicHeight());
+                            messageBuilder.append("\n");
+                            messageBuilder.append("预览图Config：").append(sketchDrawable.getBitmapConfig());
+                            messageBuilder.append("\n");
+                            messageBuilder.append("预览图占用内存：").append(Formatter.formatFileSize(getActivity(), previewDrawableByteCount));
+
+                            messageBuilder.append("\n");
+                            messageBuilder.append("\n");
+                            messageBuilder.append("缩放倍数：").append(SketchUtils.formatFloat(imageView.getImageZoomFunction().getImageZoomer().getZoomScale(), 2));
+
+                            messageBuilder.append("\n");
+                            Rect visibleRect = new Rect();
+                            imageView.getImageZoomFunction().getImageZoomer().getVisibleRect(visibleRect);
+                            messageBuilder.append("可见区域：").append(visibleRect.toShortString());
+
+                            if (imageView.isSupportLargeImage()) {
+                                messageBuilder.append("\n");
+                                LargeImageViewer largeImageViewer = imageView.getLargeImageFunction().getLargeImageViewer();
+                                if (largeImageViewer.isAvailable()) {
+                                    messageBuilder.append("\n");
+                                    messageBuilder.append("大图功能占用内存：").append(Formatter.formatFileSize(getActivity(), largeImageViewer.getTileManager().getBytes()));
+                                    messageBuilder.append("\n");
+                                    messageBuilder.append("碎片数量：").append(largeImageViewer.getTileManager().getTileList().size());
+                                    messageBuilder.append("\n");
+                                    messageBuilder.append("绘制区域：").append(largeImageViewer.getTileManager().getRealDrawRect().toShortString());
+                                    messageBuilder.append("\n");
+                                    messageBuilder.append("SRC区域：").append(largeImageViewer.getTileManager().getRealSrcRect().toShortString());
+                                } else if (largeImageViewer.isInitializing()) {
+                                    messageBuilder.append("\n");
+                                    messageBuilder.append("大图功能正在初始化...");
+                                } else {
+                                    messageBuilder.append("\n");
+                                    messageBuilder.append("无需使用大图功能");
+                                }
+                            }
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                            builder.setMessage(messageBuilder.toString());
+                            builder.setNegativeButton("取消", null);
+                            builder.show();
+                        } else {
+                            Toast.makeText(getActivity(), "未知来源的图片，无法获取其详细信息", Toast.LENGTH_LONG).show();
+                        }
+                        break;
+                    }
+                }
+                break;
         }
+    }
+
+    @Override
+    public void onViewTap(View view, float x, float y) {
+        // 如果正在播放就关闭自动播放
+        if (viewPagerPlayer.isPlaying()) {
+            viewPagerPlayer.stop();
+        }
+
+        toggleToolbarVisibleState();
     }
 
     private class StartPlay implements Runnable {
@@ -277,25 +367,5 @@ public class DetailFragment extends MyFragment implements SingleTapDetector.OnSi
             viewPagerPlayer.start();
             recoverPlay = false;
         }
-    }
-
-    public interface DispatchTouchEventListener {
-        void dispatchTouchEvent(MotionEvent ev);
-    }
-
-    public interface SetDispatchTouchEventListener {
-        void setDispatchTouchEventListener(DispatchTouchEventListener dispatchTouchEventListener);
-    }
-
-    public static String parseFileType(String fileName) {
-        int lastIndexOf = fileName.lastIndexOf(".");
-        if (lastIndexOf < 0) {
-            return null;
-        }
-        String fileType = fileName.substring(lastIndexOf + 1);
-        if ("".equals(fileType.trim())) {
-            return null;
-        }
-        return fileType;
     }
 }

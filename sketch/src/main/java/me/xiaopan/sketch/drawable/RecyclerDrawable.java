@@ -31,6 +31,4 @@ public interface RecyclerDrawable extends SketchDrawable{
     boolean canRecycle();
 
     void setAllowRecycle(boolean allowRecycle);
-
-    int getByteCount();
 }

@@ -1,13 +1,16 @@
 package me.xiaopan.sketchsample.fragment;
 
 import android.app.Activity;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.FailedCause;
@@ -129,6 +132,16 @@ public class ImageFragment extends MyFragment {
             }
         });
         imageView.displayImage(imageUri);
+
+        imageView.getImageZoomFunction().getImageZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {
+            @Override
+            public void onViewTap(View view, float x, float y) {
+                Fragment parentFragment = getParentFragment();
+                if (parentFragment != null && parentFragment instanceof ImageZoomer.OnViewTapListener) {
+                    ((ImageZoomer.OnViewTapListener) parentFragment).onViewTap(view, x, y);
+                }
+            }
+        });
     }
 
     @Override
@@ -149,5 +162,9 @@ public class ImageFragment extends MyFragment {
                 windowBackgroundLoader.cancel(CancelCause.USERS_NOT_VISIBLE);
             }
         }
+    }
+
+    public MyImageView getImageView() {
+        return imageView;
     }
 }

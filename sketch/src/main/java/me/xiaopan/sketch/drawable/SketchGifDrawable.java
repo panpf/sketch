@@ -4,6 +4,7 @@ import android.content.ContentResolver;
 import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
 import android.content.res.Resources;
+import android.graphics.Bitmap;
 import android.net.Uri;
 
 import java.io.File;
@@ -117,5 +118,16 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
     @Override
     public String getInfo() {
         return SketchUtils.getInfo(logName, getBitmap(), mimeType, getAllocationByteCount());
+    }
+
+    @Override
+    public int getByteCount() {
+        return getFrameByteCount();
+    }
+
+    @Override
+    public Bitmap.Config getBitmapConfig() {
+        Bitmap bitmap = getBitmap();
+        return bitmap != null ? bitmap.getConfig() : null;
     }
 }

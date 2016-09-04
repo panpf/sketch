@@ -1,6 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager_detail_content"
@@ -12,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
+        tools:layout_gravity="center"
         android:background="@drawable/shape_linear_gradient_transparent_to_black"
         android:gravity="center">
 
@@ -22,10 +24,10 @@
             android:background="@drawable/selector_list_item"
             android:contentDescription="@string/app_name"
             android:drawableTop="@drawable/ic_action_share"
-            android:padding="12dp"
+            android:padding="14dp"
             android:gravity="center"
             android:textSize="12sp"
-            android:text="    分享    " />
+            android:text="分享" />
 
         <TextView
             android:id="@+id/button_detail_applyWallpaper"
@@ -34,10 +36,10 @@
             android:background="@drawable/selector_list_item"
             android:contentDescription="@string/app_name"
             android:drawableTop="@drawable/ic_action_picture"
-            android:padding="12dp"
+            android:padding="14dp"
             android:gravity="center"
             android:textSize="12sp"
-            android:text="设为壁纸" />
+            android:text="壁纸" />
 
         <TextView
             android:id="@+id/button_detail_play"
@@ -46,10 +48,10 @@
             android:background="@drawable/selector_list_item"
             android:contentDescription="@string/app_name"
             android:drawableTop="@drawable/ic_action_play"
-            android:padding="12dp"
+            android:padding="14dp"
             android:gravity="center"
             android:textSize="12sp"
-            android:text="自动播放" />
+            android:text="播放" />
 
         <TextView
             android:id="@+id/button_detail_save"
@@ -58,10 +60,22 @@
             android:background="@drawable/selector_list_item"
             android:contentDescription="@string/app_name"
             android:drawableTop="@drawable/ic_action_save"
-            android:padding="12dp"
+            android:padding="14dp"
             android:gravity="center"
             android:textSize="12sp"
-            android:text="    保存    " />
+            android:text="保存" />
+
+        <TextView
+            android:id="@+id/button_detail_info"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/selector_list_item"
+            android:contentDescription="@string/app_name"
+            android:drawableTop="@drawable/ic_action_about"
+            android:padding="14dp"
+            android:gravity="center"
+            android:textSize="12sp"
+            android:text="详情" />
     </LinearLayout>
 
     <LinearLayout
