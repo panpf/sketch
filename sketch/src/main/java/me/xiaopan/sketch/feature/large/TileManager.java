@@ -35,10 +35,8 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 碎片管理器
  */
-// TODO: 16/8/31 对象池的对象的回收好好查一下
-// TODO: 16/8/31 有些许的卡顿感，看怎么优化比较好，例如控制刷新率，或者降低图片数量
 // TODO: 16/9/3 优化一下绘制区域，有的时候会变得比较大
-// TODO: 16/9/3 将分块管理的代码抽离
+// TODO: 16/9/4 缩放过程中不解码
 public class TileManager {
     private static final String NAME = "TileManager";
 

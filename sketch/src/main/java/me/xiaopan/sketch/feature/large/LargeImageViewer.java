@@ -35,7 +35,6 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 大图片查看器
  */
 // TODO: 16/8/29 加上旋转之后，不知道会有什么异常问题
-// TODO: 16/9/1 缩放中的时候不变
 public class LargeImageViewer {
     private static final String NAME = "LargeImageViewer";
 
