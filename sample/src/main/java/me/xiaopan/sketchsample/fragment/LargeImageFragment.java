@@ -19,6 +19,7 @@ package me.xiaopan.sketchsample.fragment;
 import android.app.Activity;
 import android.graphics.Rect;
 import android.os.Bundle;
+import android.text.format.Formatter;
 import android.view.View;
 import android.widget.TextView;
 
@@ -26,6 +27,7 @@ import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
+import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
@@ -50,6 +52,9 @@ public class LargeImageFragment extends MyFragment {
     private String imageUri;
 
     private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
+
+    private String scale;
+    private String bytes = "0.0 B";
 
     public static LargeImageFragment build(String imageUri) {
         Bundle bundle = new Bundle();
@@ -84,15 +89,23 @@ public class LargeImageFragment extends MyFragment {
                 Rect visibleRect = new Rect();
                 imageZoomer.getVisibleRect(visibleRect);
                 mappingView.update(imageZoomer.getDrawableWidth(), visibleRect);
-                scaleTextView.setText(String.valueOf(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2)));
+                scale = String.valueOf(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
+                scaleTextView.setText(String.format("%s · %s", scale, bytes));
             }
         });
         mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
         mappingView.getOptions().setMaxSize(600, 600);
         mappingView.displayImage(imageUri);
 
-        imageView.getLargeImageFunction().getLargeImageViewer().getTileManager().setOnTileChangedListener(mappingView);
-        imageView.getLargeImageFunction().getLargeImageViewer().setShowDrawRect(true);
+        imageView.getLargeImageFunction().getLargeImageViewer().getTileManager().setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
+            @Override
+            public void onTileChanged(LargeImageViewer largeImageViewer) {
+                mappingView.onTileChanged(largeImageViewer);
+                bytes = Formatter.formatShortFileSize(getActivity(), largeImageViewer.getTileManager().getBytes());
+                scaleTextView.setText(String.format("%s · %s", scale, bytes));
+            }
+        });
+//        imageView.getLargeImageFunction().getLargeImageViewer().setShowDrawRect(true);
 
         if (windowBackgroundLoader != null) {
             windowBackgroundLoader.load(imageUri);

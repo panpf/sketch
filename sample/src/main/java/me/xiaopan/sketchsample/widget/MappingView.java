@@ -30,14 +30,15 @@ import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 
-public class MappingView extends SketchImageView implements LargeImageViewer.OnTileChangedListener {
+public class MappingView extends SketchImageView {
 
     private LargeImageViewer largeImageViewer;
 
     private Rect visibleRect;
     private Paint visiblePaint;
     private Paint drawTilesPaint;
-    private Paint drawRectPaint;
+    private Paint realSrcRectPaint;
+    private Paint originSrcRectPaint;
     private Paint loadingTilePaint;
 
     private int cacheOriginImageWidth;
@@ -78,10 +79,15 @@ public class MappingView extends SketchImageView implements LargeImageViewer.OnT
         loadingTilePaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
         loadingTilePaint.setStyle(Paint.Style.STROKE);
 
-        drawRectPaint = new Paint();
-        drawRectPaint.setColor(Color.parseColor("#8800CD00"));
-        drawRectPaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
-        drawRectPaint.setStyle(Paint.Style.STROKE);
+        realSrcRectPaint = new Paint();
+        realSrcRectPaint.setColor(Color.parseColor("#8800CD00"));
+        realSrcRectPaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        realSrcRectPaint.setStyle(Paint.Style.STROKE);
+
+        originSrcRectPaint = new Paint();
+        originSrcRectPaint.setColor(Color.parseColor("#88FF7F24"));
+        originSrcRectPaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        originSrcRectPaint.setStyle(Paint.Style.STROKE);
     }
 
     @Override
@@ -105,12 +111,20 @@ public class MappingView extends SketchImageView implements LargeImageViewer.OnT
                 }
             }
 
-            Rect srcRect = largeImageViewer.getTileManager().getSrcRect();
-            if (!srcRect.isEmpty()) {
-                canvas.drawRect((srcRect.left) / scale,
-                        (srcRect.top) / scale,
-                        (srcRect.right) / scale,
-                        (srcRect.bottom) / scale, drawRectPaint);
+            Rect originSrcRect = largeImageViewer.getTileManager().getOriginSrcRect();
+            if (!originSrcRect.isEmpty()) {
+                canvas.drawRect((originSrcRect.left) / scale,
+                        (originSrcRect.top) / scale,
+                        (originSrcRect.right) / scale,
+                        (originSrcRect.bottom) / scale, originSrcRectPaint);
+            }
+
+            Rect realSrcRect = largeImageViewer.getTileManager().getRealSrcRect();
+            if (!realSrcRect.isEmpty()) {
+                canvas.drawRect((realSrcRect.left) / scale,
+                        (realSrcRect.top) / scale,
+                        (realSrcRect.right) / scale,
+                        (realSrcRect.bottom) / scale, realSrcRectPaint);
             }
         }
 
@@ -180,7 +194,6 @@ public class MappingView extends SketchImageView implements LargeImageViewer.OnT
         invalidate();
     }
 
-    @Override
     public void onTileChanged(LargeImageViewer largeImageViewer) {
         this.largeImageViewer = largeImageViewer;
         invalidate();
