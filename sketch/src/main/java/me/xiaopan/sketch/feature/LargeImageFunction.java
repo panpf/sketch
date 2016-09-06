@@ -38,16 +38,16 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     private SketchImageView imageView;
     private LargeImageViewer largeImageViewer;
+    private UpdateParams updateParams;
 
     public LargeImageFunction(SketchImageView imageView) {
         this.imageView = imageView;
-        if (SketchUtils.isSupportLargeImageByAPIVersion()) {
-            largeImageViewer = new LargeImageViewer(imageView.getContext(), this);
-            if (!imageView.isSupportZoom()) {
-                imageView.setSupportZoom(true);
-            }
-            imageView.getImageZoomFunction().getImageZoomer().addOnMatrixChangeListener(this);
+        this.updateParams = new UpdateParams();
+        largeImageViewer = new LargeImageViewer(imageView.getContext(), this);
+        if (!imageView.isSupportZoom()) {
+            imageView.setSupportZoom(true);
         }
+        imageView.getImageZoomFunction().getImageZoomer().addOnMatrixChangeListener(this);
     }
 
     @Override
@@ -88,11 +88,13 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             if (largeImageViewer.isAvailable() || largeImageViewer.isInitializing()) {
                 Drawable drawable = imageView.getDrawable();
                 if (drawable != null) {
-                    UpdateParams updateParams = largeImageViewer.getUpdateParams();
+                    updateParams.reset();
+
                     imageZoomer.getDrawMatrix(updateParams.drawMatrix);
                     imageZoomer.getVisibleRect(updateParams.visibleRect);
                     updateParams.setPreviewDrawableSize(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
                     updateParams.setImageViewSize(imageZoomer.getImageViewWidth(), imageZoomer.getImageViewHeight());
+
                     largeImageViewer.update(updateParams);
                 } else {
                     largeImageViewer.update(null);

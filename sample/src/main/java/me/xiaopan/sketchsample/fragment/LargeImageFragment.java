@@ -105,7 +105,7 @@ public class LargeImageFragment extends MyFragment {
                 scaleTextView.setText(String.format("%s · %s", scale, bytes));
             }
         });
-//        imageView.getLargeImageFunction().getLargeImageViewer().setShowDrawRect(true);
+        imageView.getLargeImageFunction().getLargeImageViewer().setShowDrawRect(true);
 
         if (windowBackgroundLoader != null) {
             windowBackgroundLoader.load(imageUri);

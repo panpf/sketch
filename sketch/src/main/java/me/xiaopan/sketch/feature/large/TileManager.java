@@ -319,8 +319,11 @@ public class TileManager {
 
         List<Rect> emptyRectList = null;
         if (tileList == null || tileList.size() == 0) {
+            Rect fullRect = rectPool.get();
+            fullRect.set(rect);
+
             emptyRectList = new LinkedList<Rect>();
-            emptyRectList.add(rect);
+            emptyRectList.add(fullRect);
             return emptyRectList;
         }
 
@@ -348,7 +351,8 @@ public class TileManager {
                 // 首先要处理上一行的最后一个
                 if (lastRect != null) {
                     if (lastRect.drawRect.right < rect.right) {
-                        Rect rightEmptyRect = new Rect(lastRect.drawRect.right, top, rect.right, bottom);
+                        Rect rightEmptyRect = rectPool.get();
+                        rightEmptyRect.set(lastRect.drawRect.right, top, rect.right, bottom);
                         if (emptyRectList == null) {
                             emptyRectList = new LinkedList<Rect>();
                         }
@@ -362,7 +366,8 @@ public class TileManager {
 
                 // 左边有空隙
                 if (childRect.drawRect.left > left) {
-                    Rect leftEmptyRect = new Rect(left, childRect.drawRect.top, childRect.drawRect.left, childRect.drawRect.bottom);
+                    Rect leftEmptyRect = rectPool.get();
+                    leftEmptyRect.set(left, childRect.drawRect.top, childRect.drawRect.left, childRect.drawRect.bottom);
                     if (emptyRectList == null) {
                         emptyRectList = new LinkedList<Rect>();
                     }
@@ -371,7 +376,8 @@ public class TileManager {
 
                 // 顶部有空隙
                 if (childRect.drawRect.top > top) {
-                    Rect topEmptyRect = new Rect(left, top, childRect.drawRect.right, childRect.drawRect.top);
+                    Rect topEmptyRect = rectPool.get();
+                    topEmptyRect.set(left, top, childRect.drawRect.right, childRect.drawRect.top);
                     if (emptyRectList == null) {
                         emptyRectList = new LinkedList<Rect>();
                     }
@@ -385,7 +391,8 @@ public class TileManager {
                 if (available) {
                     // 左边有空隙
                     if (childRect.drawRect.left > right) {
-                        Rect leftEmptyRect = new Rect(right, top, childRect.drawRect.left, bottom);
+                        Rect leftEmptyRect = rectPool.get();
+                        leftEmptyRect.set(right, top, childRect.drawRect.left, bottom);
                         if (emptyRectList == null) {
                             emptyRectList = new LinkedList<Rect>();
                         }
@@ -394,7 +401,8 @@ public class TileManager {
 
                     // 顶部有空隙
                     if (childRect.drawRect.top > top) {
-                        Rect topEmptyRect = new Rect(childRect.drawRect.left, top, childRect.drawRect.right, childRect.drawRect.top);
+                        Rect topEmptyRect = rectPool.get();
+                        topEmptyRect.set(childRect.drawRect.left, top, childRect.drawRect.right, childRect.drawRect.top);
                         if (emptyRectList == null) {
                             emptyRectList = new LinkedList<Rect>();
                         }
@@ -411,7 +419,8 @@ public class TileManager {
 
         // 最后的结尾处理
         if (right < rect.right) {
-            Rect rightEmptyRect = new Rect(right, top, rect.right, bottom);
+            Rect rightEmptyRect = rectPool.get();
+            rightEmptyRect.set(right, top, rect.right, bottom);
             if (emptyRectList == null) {
                 emptyRectList = new LinkedList<Rect>();
             }
@@ -419,7 +428,8 @@ public class TileManager {
         }
 
         if (bottom < rect.bottom) {
-            Rect bottomEmptyRect = new Rect(rect.left, bottom, rect.right, rect.bottom);
+            Rect bottomEmptyRect = rectPool.get();
+            bottomEmptyRect.set(rect.left, bottom, rect.right, rect.bottom);
             if (emptyRectList == null) {
                 emptyRectList = new LinkedList<Rect>();
             }
@@ -502,6 +512,9 @@ public class TileManager {
                     tileLeft = tileRight;
                 }
             }
+
+            emptyRect.setEmpty();
+            rectPool.put(emptyRect);
         }
     }
 

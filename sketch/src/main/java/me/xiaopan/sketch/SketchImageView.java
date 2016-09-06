@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
@@ -722,11 +723,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     /**
      * 设置是否支持大图片
      */
+    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
     public void setSupportLargeImage(boolean supportLargeImage) {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1) {
-            return;
-        }
-
         if (supportLargeImage == isSupportLargeImage()) {
             return;
         }

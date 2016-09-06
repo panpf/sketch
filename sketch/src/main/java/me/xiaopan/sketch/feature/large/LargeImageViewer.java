@@ -53,7 +53,6 @@ public class LargeImageViewer {
     private boolean running;
     private Rect visibleRect = new Rect();
     private UpdateParams waitUpdateParams;
-    private UpdateParams updateParams;
     private TileManager tileManager;
     private TileDecodeExecutor executor;
 
@@ -63,7 +62,6 @@ public class LargeImageViewer {
 
         this.matrix = new Matrix();
         this.executor = new TileDecodeExecutor(new ExecutorCallback());
-        this.updateParams = new UpdateParams();
         this.drawTilePaint = new Paint();
         this.tileManager = new TileManager(context.getApplicationContext(), this);
     }
@@ -221,11 +219,6 @@ public class LargeImageViewer {
         callback.invalidate();
     }
 
-
-
-    public UpdateParams getUpdateParams() {
-        return updateParams;
-    }
 
     public TileDecodeExecutor getExecutor() {
         return executor;
