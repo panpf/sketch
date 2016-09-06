@@ -137,39 +137,44 @@ public class TileManager {
         //noinspection UnusedAssignment
         newDrawRect = null;
 
-        // 如果最终绘制区域跟上一次没有变化就不继续了
-        if (!finalDrawRect.equals(lastRealDrawRect)) {
-            this.lastRealDrawRect.set(finalDrawRect);
-            calculateSrcRect(this.lastRealSrcRect, finalDrawRect, imageWidth, imageHeight,
-                    originWidthScale, originHeightScale);
+        if (!finalDrawRect.isEmpty()) {
+            // 如果最终绘制区域跟上一次没有变化就不继续了
+            if (!finalDrawRect.equals(lastRealDrawRect)) {
+                this.lastRealDrawRect.set(finalDrawRect);
+                calculateSrcRect(this.lastRealSrcRect, finalDrawRect, imageWidth, imageHeight,
+                        originWidthScale, originHeightScale);
 
-            // 回收那些已经超出绘制区域的碎片
-            recycleTiles(tileList, finalDrawRect);
+                // 回收那些已经超出绘制区域的碎片
+                recycleTiles(tileList, finalDrawRect);
 
-            // 找出所有的空白区域，然后一个一个加载
-            List<Rect> emptyRectList = findEmptyRect(finalDrawRect, tileList);
-            if (emptyRectList != null && emptyRectList.size() > 0) {
-                loadTiles(emptyRectList, tileWidth, tileHeight, imageWidth, imageHeight,
-                        originWidthScale, originHeightScale, inSampleSize, finalDrawRect);
+                // 找出所有的空白区域，然后一个一个加载
+                List<Rect> emptyRectList = findEmptyRect(finalDrawRect, tileList);
+                if (emptyRectList != null && emptyRectList.size() > 0) {
+                    loadTiles(emptyRectList, tileWidth, tileHeight, imageWidth, imageHeight,
+                            originWidthScale, originHeightScale, inSampleSize, finalDrawRect);
+                } else {
+                    if (Sketch.isDebugMode()) {
+                        Log.d(Sketch.TAG, NAME + ". not found empty rect");
+                    }
+                }
+
+                if (onTileChangedListener != null) {
+                    onTileChangedListener.onTileChanged(largeImageViewer);
+                }
+
+                if (Sketch.isDebugMode()) {
+                    Log.e(Sketch.TAG, NAME + ". update finished" +
+                            ", drawRect=" + finalDrawRect.toShortString() +
+                            ", tiles=" + tileList.size());
+                }
             } else {
                 if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". not found empty rect");
+                    Log.e(Sketch.TAG, NAME + ". update finished draw rect no change");
                 }
             }
-
-            if (onTileChangedListener != null) {
-                onTileChangedListener.onTileChanged(largeImageViewer);
-            }
-
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, NAME + ". update finished" +
-                        ", drawRect=" + finalDrawRect.toShortString() +
-                        ", tiles=" + tileList.size());
-            }
         } else {
-
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, NAME + ". update finished draw rect no change");
+                Log.e(Sketch.TAG, NAME + ". update finished. final draw rect is empty. finalDrawRect=" + finalDrawRect.toShortString());
             }
         }
 
@@ -219,72 +224,125 @@ public class TileManager {
             return;
         }
 
-        int leftAndRightEdge = Math.round(drawWidthAdd * 0.8f);
-        int topAndBottomEdge = Math.round(drawHeightAdd * 0.8f);
-        int leftSpace = Math.abs(newDrawRect.left - lastRealDrawRect.left);
-        int topSpace = Math.abs(newDrawRect.top - lastRealDrawRect.top);
-        int rightSpace = Math.abs(newDrawRect.right - lastRealDrawRect.right);
-        int bottomSpace = Math.abs(newDrawRect.bottom - lastRealDrawRect.bottom);
-
         // 以上一次的绘制区域为基础
         finalDrawRect.set(lastRealDrawRect);
 
-        // 左边需要加一列
-        if (newDrawRect.left < lastRealDrawRect.left &&
-                (leftSpace > leftAndRightEdge || lastRealDrawRect.left - drawTileWidth <= 0)) {
-            finalDrawRect.left = Math.max(0, lastRealDrawRect.left - drawTileWidth);
+        int leftAndRightEdge = Math.round(drawWidthAdd * 0.8f);
+        int topAndBottomEdge = Math.round(drawHeightAdd * 0.8f);
+        int leftSpace = Math.abs(newDrawRect.left - finalDrawRect.left);
+        int topSpace = Math.abs(newDrawRect.top - finalDrawRect.top);
+        int rightSpace = Math.abs(newDrawRect.right - finalDrawRect.right);
+        int bottomSpace = Math.abs(newDrawRect.bottom - finalDrawRect.bottom);
 
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". draw rect left expand");
+        // 左边需要加一列
+        if (newDrawRect.left < finalDrawRect.left) {
+            if (newDrawRect.left == 0) {
+                // 如果已经到边了，管它还差多少，直接顶到边
+                finalDrawRect.left = 0;
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". final draw rect left to 0" + ", finalDrawRect=" + finalDrawRect.toShortString());
+                }
+            } else if (leftSpace > leftAndRightEdge || finalDrawRect.left - drawTileWidth <= 0) {
+                // 如果间距比较大或者再加一个碎片的宽度就到边了就扩展
+                // 由于间距可能会大于一个碎片的宽度，因此要循环不停的加
+                while (finalDrawRect.left > newDrawRect.left) {
+                    finalDrawRect.left = Math.max(0, finalDrawRect.left - drawTileWidth);
+                    if (Sketch.isDebugMode()) {
+                        Log.d(Sketch.TAG, NAME + ". final draw rect left expand " + drawTileWidth + ", finalDrawRect=" + finalDrawRect.toShortString());
+                    }
+                }
             }
         }
 
         // 顶部需要加一行
-        if (newDrawRect.top < lastRealDrawRect.top &&
-                (topSpace > topAndBottomEdge || lastRealDrawRect.top - drawTileHeight <= 0)) {
-            finalDrawRect.top = Math.max(0, lastRealDrawRect.top - drawTileHeight);
-
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". draw rect top expand");
+        if (newDrawRect.top < finalDrawRect.top) {
+            if (newDrawRect.top == 0) {
+                // 如果已经到边了，管它还差多少，直接顶到边
+                finalDrawRect.top = 0;
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". final draw rect top to 0" + ", finalDrawRect=" + finalDrawRect.toShortString());
+                }
+            } else if (topSpace > topAndBottomEdge || finalDrawRect.top - drawTileHeight <= 0) {
+                // 如果间距比较大或者再加一个碎片的高度就到边了就扩展
+                // 由于间距可能会大于一个碎片的高度，因此要循环不停的加
+                while (finalDrawRect.top > newDrawRect.top) {
+                    finalDrawRect.top = Math.max(0, finalDrawRect.top - drawTileHeight);
+                    if (Sketch.isDebugMode()) {
+                        Log.d(Sketch.TAG, NAME + ". final draw rect top expand " + drawTileHeight + ", finalDrawRect=" + finalDrawRect.toShortString());
+                    }
+                }
             }
         }
 
 
         // 右边需要加一列
-        if (newDrawRect.right > lastRealDrawRect.right &&
-                (rightSpace > leftAndRightEdge || lastRealDrawRect.right + drawTileWidth >= maxDrawWidth)) {
-            finalDrawRect.right = Math.min(maxDrawWidth, lastRealDrawRect.right + drawTileWidth);
-
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". draw rect right expand");
+        if (newDrawRect.right > finalDrawRect.right) {
+            if (newDrawRect.right == maxDrawWidth) {
+                // 如果已经到边了，管它还差多少，直接顶到边
+                finalDrawRect.right = maxDrawWidth;
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". final draw rect right to " + maxDrawWidth + ", finalDrawRect=" + finalDrawRect.toShortString());
+                }
+            } else if (rightSpace > leftAndRightEdge || finalDrawRect.right + drawTileWidth >= maxDrawWidth) {
+                // 如果间距比较大或者再加一个碎片的宽度就到边了就扩展
+                // 由于间距可能会大于一个碎片的宽度，因此要循环不停的加
+                while (finalDrawRect.right < newDrawRect.right) {
+                    finalDrawRect.right = Math.min(maxDrawWidth, finalDrawRect.right + drawTileWidth);
+                    if (Sketch.isDebugMode()) {
+                        Log.d(Sketch.TAG, NAME + ". final draw rect right expand " + drawTileWidth + ", finalDrawRect=" + finalDrawRect.toShortString());
+                    }
+                }
             }
         }
 
         // 底部需要加一行
-        if (newDrawRect.bottom > lastRealDrawRect.bottom &&
-                (bottomSpace > topAndBottomEdge || lastRealDrawRect.bottom + drawTileHeight >= maxDrawHeight)) {
-            finalDrawRect.bottom = Math.min(maxDrawHeight, lastRealDrawRect.bottom + drawTileHeight);
-
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". draw rect bottom expand");
+        if (newDrawRect.bottom > finalDrawRect.bottom) {
+            if (newDrawRect.bottom > maxDrawHeight) {
+                // 如果已经到边了，管它还差多少，直接顶到边
+                finalDrawRect.bottom = maxDrawHeight;
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". final draw rect bottom to " + maxDrawHeight + ", finalDrawRect=" + finalDrawRect.toShortString());
+                }
+            } else if (bottomSpace > topAndBottomEdge || finalDrawRect.bottom + drawTileHeight >= maxDrawHeight) {
+                // 如果间距比较大或者再加一个碎片的高度就到边了就扩展
+                // 由于间距可能会大于一个碎片的高度，因此要循环不停的加
+                while (finalDrawRect.bottom < newDrawRect.bottom) {
+                    finalDrawRect.bottom = Math.min(maxDrawHeight, finalDrawRect.bottom + drawTileHeight);
+                    if (Sketch.isDebugMode()) {
+                        Log.d(Sketch.TAG, NAME + ". final draw rect bottom expand " + drawTileHeight + ", finalDrawRect=" + finalDrawRect.toShortString());
+                    }
+                }
             }
         }
 
+        // 前面把四周给加大了一圈，这里要把多余的剪掉
         while (finalDrawRect.left + drawTileWidth < newDrawRect.left ||
                 finalDrawRect.top + drawTileHeight < newDrawRect.top ||
                 finalDrawRect.right - drawTileWidth > newDrawRect.right ||
                 finalDrawRect.bottom - drawTileHeight > newDrawRect.bottom) {
             if (finalDrawRect.left + drawTileWidth < newDrawRect.left) {
                 finalDrawRect.left += drawTileWidth;
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". final draw rect left reduced " + drawTileWidth + ", finalDrawRect=" + finalDrawRect.toShortString());
+                }
             }
             if (finalDrawRect.top + drawTileHeight < newDrawRect.top) {
                 finalDrawRect.top += drawTileHeight;
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". final draw rect top reduced " + drawTileHeight + ", finalDrawRect=" + finalDrawRect.toShortString());
+                }
             }
             if (finalDrawRect.right - drawTileWidth > newDrawRect.right) {
                 finalDrawRect.right -= drawTileWidth;
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". final draw rect right reduced " + drawTileWidth + ", finalDrawRect=" + finalDrawRect.toShortString());
+                }
             }
             if (finalDrawRect.bottom - drawTileHeight > newDrawRect.bottom) {
                 finalDrawRect.bottom -= drawTileHeight;
+                if (Sketch.isDebugMode()) {
+                    Log.d(Sketch.TAG, NAME + ". final draw rect bottom reduced " + drawTileHeight + ", finalDrawRect=" + finalDrawRect.toShortString());
+                }
             }
         }
     }

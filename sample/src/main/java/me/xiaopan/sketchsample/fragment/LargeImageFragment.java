@@ -84,11 +84,11 @@ public class LargeImageFragment extends MyFragment {
 
         final ImageZoomer imageZoomer = imageView.getImageZoomFunction().getImageZoomer();
         imageZoomer.addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
+            Rect visibleRect = new Rect();
             @Override
             public void onMatrixChanged(ImageZoomer imageZoomer) {
-                Rect visibleRect = new Rect();
                 imageZoomer.getVisibleRect(visibleRect);
-                mappingView.update(imageZoomer.getDrawableWidth(), visibleRect);
+                mappingView.update(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight(), visibleRect);
                 scale = String.valueOf(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
                 scaleTextView.setText(String.format("%s · %s", scale, bytes));
             }
@@ -105,7 +105,7 @@ public class LargeImageFragment extends MyFragment {
                 scaleTextView.setText(String.format("%s · %s", scale, bytes));
             }
         });
-        imageView.getLargeImageFunction().getLargeImageViewer().setShowDrawRect(true);
+//        imageView.getLargeImageFunction().getLargeImageViewer().setShowDrawRect(true);
 
         if (windowBackgroundLoader != null) {
             windowBackgroundLoader.load(imageUri);

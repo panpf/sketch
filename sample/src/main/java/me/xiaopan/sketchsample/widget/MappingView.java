@@ -42,6 +42,7 @@ public class MappingView extends SketchImageView {
     private Paint loadingTilePaint;
 
     private int cacheOriginImageWidth;
+    private int cacheOriginImageHeight;
     private Rect cacheVisibleRect;
 
     public MappingView(Context context) {
@@ -95,36 +96,37 @@ public class MappingView extends SketchImageView {
         super.onDraw(canvas);
 
         if (largeImageViewer != null) {
-            float scale = (float) largeImageViewer.getExecutor().getDecoder().getImageWidth() / getWidth();
+            float widthScale = (float) largeImageViewer.getExecutor().getDecoder().getImageWidth() / getWidth();
+            float heightScale = (float) largeImageViewer.getExecutor().getDecoder().getImageHeight() / getHeight();
 
             for (Tile tile : largeImageViewer.getTileManager().getTileList()) {
                 if (!tile.isEmpty()) {
-                    canvas.drawRect((tile.srcRect.left + 1) / scale,
-                            (tile.srcRect.top + 1) / scale,
-                            (tile.srcRect.right - 1) / scale,
-                            (tile.srcRect.bottom - 1) / scale, drawTilesPaint);
+                    canvas.drawRect((tile.srcRect.left + 1) / widthScale,
+                            (tile.srcRect.top + 1) / heightScale,
+                            (tile.srcRect.right - 1) / widthScale,
+                            (tile.srcRect.bottom - 1) / heightScale, drawTilesPaint);
                 } else if (!tile.isDecodeParamEmpty()) {
-                    canvas.drawRect((tile.srcRect.left + 1) / scale,
-                            (tile.srcRect.top + 1) / scale,
-                            (tile.srcRect.right - 1) / scale,
-                            (tile.srcRect.bottom - 1) / scale, loadingTilePaint);
+                    canvas.drawRect((tile.srcRect.left + 1) / widthScale,
+                            (tile.srcRect.top + 1) / heightScale,
+                            (tile.srcRect.right - 1) / widthScale,
+                            (tile.srcRect.bottom - 1) / heightScale, loadingTilePaint);
                 }
             }
 
             Rect originSrcRect = largeImageViewer.getTileManager().getOriginSrcRect();
             if (!originSrcRect.isEmpty()) {
-                canvas.drawRect((originSrcRect.left) / scale,
-                        (originSrcRect.top) / scale,
-                        (originSrcRect.right) / scale,
-                        (originSrcRect.bottom) / scale, originSrcRectPaint);
+                canvas.drawRect((originSrcRect.left) / widthScale,
+                        (originSrcRect.top) / heightScale,
+                        (originSrcRect.right) / widthScale,
+                        (originSrcRect.bottom) / heightScale, originSrcRectPaint);
             }
 
             Rect realSrcRect = largeImageViewer.getTileManager().getRealSrcRect();
             if (!realSrcRect.isEmpty()) {
-                canvas.drawRect((realSrcRect.left) / scale,
-                        (realSrcRect.top) / scale,
-                        (realSrcRect.right) / scale,
-                        (realSrcRect.bottom) / scale, realSrcRectPaint);
+                canvas.drawRect((realSrcRect.left) / widthScale,
+                        (realSrcRect.top) / heightScale,
+                        (realSrcRect.right) / widthScale,
+                        (realSrcRect.bottom) / heightScale, realSrcRectPaint);
             }
         }
 
@@ -138,7 +140,7 @@ public class MappingView extends SketchImageView {
         super.onLayout(changed, left, top, right, bottom);
 
         if (cacheOriginImageWidth != 0 && cacheVisibleRect != null && !cacheVisibleRect.isEmpty()) {
-            update(cacheOriginImageWidth, cacheVisibleRect);
+            update(cacheOriginImageWidth, cacheOriginImageHeight, cacheVisibleRect);
             cacheOriginImageWidth = 0;
             cacheVisibleRect.setEmpty();
         }
@@ -161,7 +163,7 @@ public class MappingView extends SketchImageView {
         super.setImageDrawable(drawable);
     }
 
-    public void update(int originImageWidth, Rect newVisibleRect) {
+    public void update(int originImageWidth, int originImageHeight, Rect newVisibleRect) {
         if (originImageWidth == 0 || newVisibleRect.isEmpty()) {
             if (!visibleRect.isEmpty()) {
                 visibleRect.setEmpty();
@@ -177,6 +179,7 @@ public class MappingView extends SketchImageView {
             }
 
             cacheOriginImageWidth = originImageWidth;
+            cacheOriginImageHeight = originImageHeight;
             if (cacheVisibleRect == null) {
                 cacheVisibleRect = new Rect();
             }
@@ -185,12 +188,14 @@ public class MappingView extends SketchImageView {
         }
 
         int selfWidth = getWidth();
-        float scale = (float) selfWidth / originImageWidth;
+        int selfHeight = getHeight();
+        float widthScale = (float) selfWidth / originImageWidth;
+        float heightScale = (float) selfHeight / originImageHeight;
         this.visibleRect.set(
-                Math.round(newVisibleRect.left * scale),
-                Math.round(newVisibleRect.top * scale),
-                Math.round(newVisibleRect.right * scale),
-                Math.round(newVisibleRect.bottom * scale));
+                Math.round(newVisibleRect.left * widthScale),
+                Math.round(newVisibleRect.top * heightScale),
+                Math.round(newVisibleRect.right * widthScale),
+                Math.round(newVisibleRect.bottom * heightScale));
         invalidate();
     }
 
