@@ -47,7 +47,6 @@ import me.xiaopan.sketch.util.SketchUtils;
 // TODO DrawerLayout包ViewPager的时候左右滑动有问题（先看看是不是DrawerLayout与ViewPager的兼容问题导致的）
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
 // TODO: 16/8/23 测试旋转功能
-// TODO: 16/8/27 添加阅读模式，阅读模式下对于竖图默认显示fillZoomScale
 // TODO: 16/9/7 初始化完成后的回调有问题，看一下是先后顺序导致的还是怎么着
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener {
     public static final String NAME = "ImageZoomer";
