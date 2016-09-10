@@ -61,7 +61,7 @@ import me.xiaopan.sketchsample.util.Settings;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
-public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, LargesFragment.GetLargeTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetWindowBackgroundListener, AboutFragment.TogglePageListener {
+public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, LargesFragment.GetLargeTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetListener, AboutFragment.TogglePageListener {
     @InjectView(R.id.layout_main_content)
     private View contentView;
     @InjectView(R.id.tabStrip_main_star)

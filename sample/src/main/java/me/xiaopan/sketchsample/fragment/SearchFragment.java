@@ -58,7 +58,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
     private HttpRequestFuture refreshRequestFuture;
     private HttpRequestFuture loadMoreRequestFuture;
     private ImageStaggeredGridAdapter searchImageListAdapter;
-    private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
+    private WindowBackgroundManager.Loader loader;
     private LoadMoreFooterView loadMoreFooterView;
 
     @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD)
@@ -67,8 +67,8 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener) {
-            windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
+        if (activity != null && activity instanceof WindowBackgroundManager.OnSetListener) {
+            loader = new WindowBackgroundManager.Loader(activity.getBaseContext(), (WindowBackgroundManager.OnSetListener) activity);
         }
     }
 
@@ -148,8 +148,8 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
             pullRefreshLayout.startRefresh();
         } else {
             setAdapter(searchImageListAdapter);
-            if (windowBackgroundLoader != null) {
-                windowBackgroundLoader.restore();
+            if (loader != null) {
+                loader.restore();
             }
         }
     }
@@ -165,16 +165,16 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
         if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             refreshRequestFuture.cancel(true);
         }
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.detach();
+        if (loader != null) {
+            loader.detach();
         }
         super.onDetach();
     }
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.setUserVisible(isVisibleToUser);
+        if (loader != null) {
+            loader.setUserVisible(isVisibleToUser);
         }
     }
 
@@ -250,8 +250,8 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                         }
                     }
 
-                    if (windowBackgroundLoader != null && imageList.size() > 0) {
-                        windowBackgroundLoader.load(imageList.get(0).getSourceUrl());
+                    if (loader != null && imageList.size() > 0) {
+                        loader.load(imageList.get(0).getSourceUrl());
                     }
                 }
             }

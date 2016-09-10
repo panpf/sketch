@@ -48,6 +48,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
 // TODO: 16/8/23 测试旋转功能
 // TODO: 16/8/27 添加阅读模式，阅读模式下对于竖图默认显示fillZoomScale
+// TODO: 16/9/7 初始化完成后的回调有问题，看一下是先后顺序导致的还是怎么着
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener {
     public static final String NAME = "ImageZoomer";
 
@@ -75,6 +76,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private float minZoomScale = DEFAULT_MINIMUM_SCALE;
     private float maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
     private boolean zoomable = true;
+    private boolean readMode;   // 阅读模式下，竖图将默认横向充满屏幕
     private ScaleType scaleType = ScaleType.FIT_CENTER;
     private Interpolator zoomInterpolator = new AccelerateDecelerateInterpolator();
 
@@ -82,6 +84,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private OnViewTapListener onViewTapListener;
     private OnDragFlingListener onDragFlingListener;
     private OnScaleChangeListener onScaleChangeListener;
+    private OnViewLongPressListener onViewLongPressListener;
     private ArrayList<OnMatrixChangedListener> onMatrixChangedListenerList;
 
     // run time required
@@ -107,8 +110,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         scaleType = imageView.getScaleType();
         if (scaleType == ScaleType.MATRIX) {
             scaleType = ScaleType.FIT_CENTER;
+        } else {
+            imageView.setScaleType(ScaleType.MATRIX);
         }
-        imageView.setScaleType(ScaleType.MATRIX);
 
         // initialize ImageView
         imageView.setDrawingCacheEnabled(true);
@@ -337,8 +341,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        int viewWidth = getImageViewWidth();
-        int viewHeight = getImageViewHeight();
+        final int viewWidth = getImageViewWidth();
+        final int viewHeight = getImageViewHeight();
         if (viewWidth == 0 || viewHeight == 0) {
             fullZoomScale = fillZoomScale = originZoomScale = 1f;
             minZoomScale = DEFAULT_MINIMUM_SCALE;
@@ -346,8 +350,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        int drawableWidth = drawable.getIntrinsicWidth();
-        int drawableHeight = drawable.getIntrinsicHeight();
+        final int drawableWidth = drawable.getIntrinsicWidth();
+        final int drawableHeight = drawable.getIntrinsicHeight();
         if (drawableWidth == 0 || drawableHeight == 0) {
             fullZoomScale = fillZoomScale = originZoomScale = 1f;
             minZoomScale = DEFAULT_MINIMUM_SCALE;
@@ -355,8 +359,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        float widthScale = (float) viewWidth / drawableWidth;
-        float heightScale = (float) viewHeight / drawableHeight;
+        final float widthScale = (float) viewWidth / drawableWidth;
+        final float heightScale = (float) viewHeight / drawableHeight;
         if (widthScale != heightScale) {
             fullZoomScale = Math.min(widthScale, heightScale);
             fillZoomScale = Math.max(widthScale, heightScale);
@@ -373,27 +377,28 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             originZoomScale = 1f;
         }
 
-        minZoomScale = fullZoomScale;
-
-        // 最大缩放比例将在原图比例和充满比例中产生
-        if (originZoomScale > fillZoomScale && (fillZoomScale * 1.2f) >= originZoomScale) {
-            // 如果原图比例仅仅比充满比例大一点点，还是用充满比例作为最大缩放比例比较好
-            maxZoomScale = fillZoomScale;
-        } else {
-            // 否则的话谁大用谁作为最大缩放比例
-            maxZoomScale = Math.max(fillZoomScale, originZoomScale);
-        }
-
-        // 最大缩放比例和最小缩放比例的差距不能太小
-        if (maxZoomScale == minZoomScale) {
-            // 如果最大缩放比例和最小比例相同，那么就用最小缩放比例的两倍作为最大缩放比例
-            maxZoomScale = minZoomScale * 2;
-        } else {
-            // 如果最大缩放比例还没有最小缩放比例的一半大，就用最小缩放比例的一半作为最大缩放比例
-            float largeMinZoomScale = minZoomScale * 1.5f;
-            if (maxZoomScale < largeMinZoomScale) {
-                maxZoomScale = largeMinZoomScale;
+        if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
+            if (originZoomScale > fillZoomScale) {
+                minZoomScale = fillZoomScale;
+                maxZoomScale = originZoomScale;
+            } else {
+                minZoomScale = originZoomScale;
+                maxZoomScale = fillZoomScale;
             }
+        } else {
+            minZoomScale = fullZoomScale;
+
+            // 最大缩放比例将在原始比例和充满比例中产生
+            if (originZoomScale > fillZoomScale && (fillZoomScale * 1.2f) >= originZoomScale) {
+                // 如果原始比例仅仅比充满比例大一点点，还是用充满比例作为最大缩放比例比较好
+                maxZoomScale = fillZoomScale;
+            } else {
+                // 否则的话谁大用谁作为最大缩放比例
+                maxZoomScale = Math.max(fillZoomScale, originZoomScale);
+            }
+
+            // 最大缩放比例和最小缩放比例的差距不能太小，最小得是最小缩放比例的1.5倍
+            maxZoomScale = Math.max(maxZoomScale, minZoomScale * 1.5f);
         }
     }
 
@@ -411,15 +416,15 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        final float viewWidth = getImageViewWidth();
-        final float viewHeight = getImageViewHeight();
+        final int viewWidth = getImageViewWidth();
+        final int viewHeight = getImageViewHeight();
         final int drawableWidth = drawable.getIntrinsicWidth();
         final int drawableHeight = drawable.getIntrinsicHeight();
 
-        baseMatrix.reset();
+        final float widthScale = (float) viewWidth / drawableWidth;
+        final float heightScale = (float) viewHeight / drawableHeight;
 
-        final float widthScale = viewWidth / drawableWidth;
-        final float heightScale = viewHeight / drawableHeight;
+        baseMatrix.reset();
 
         if (scaleType == ScaleType.CENTER) {
             baseMatrix.postTranslate((viewWidth - drawableWidth) / 2F, (viewHeight - drawableHeight) / 2F);
@@ -444,8 +449,11 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
             switch (scaleType) {
                 case FIT_CENTER:
-                    baseMatrix
-                            .setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.CENTER);
+                    if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
+                        baseMatrix.postScale(widthScale, widthScale);
+                    } else {
+                        baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.CENTER);
+                    }
                     break;
 
                 case FIT_START:
@@ -580,6 +588,13 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
     }
 
+    /**
+     * 是否可以使用阅读模式
+     */
+    private boolean canUseReadMode(int drawableWidth, int drawableHeight, int viewHeight){
+        return readMode && drawableHeight > drawableWidth && drawableHeight > viewHeight;
+    }
+
 
     /** -----------可获取信息----------- **/
 
@@ -682,8 +697,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
         rectF.set(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 
-        Matrix matrix  = getDrawMatrix();
-        matrix.mapRect(rectF);
+        getDrawMatrix().mapRect(rectF);
     }
 
     /**
@@ -854,9 +868,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     /**
      * 设置缩放比例
-     * @param scale 新的缩放比例
-     * @param focalX 缩放中心的X坐标
-     * @param focalY 缩放中心的Y坐标
+     *
+     * @param scale   新的缩放比例
+     * @param focalX  缩放中心的X坐标
+     * @param focalY  缩放中心的Y坐标
      * @param animate 是否显示缩放动画
      */
     public void zoom(float scale, float focalX, float focalY, boolean animate) {
@@ -879,7 +894,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     /**
      * 设置缩放比例
-     * @param scale 新的缩放比例
+     *
+     * @param scale   新的缩放比例
      * @param animate 是否显示缩放动画
      */
     public void zoom(float scale, boolean animate) {
@@ -891,6 +907,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     /**
      * 设置缩放比例
+     *
      * @param scale 新的缩放比例
      */
     @SuppressWarnings("unused")
@@ -1075,6 +1092,23 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
     }
 
+    /**
+     * 是否开启了阅读模式
+     */
+    public boolean isReadMode() {
+        return readMode;
+    }
+
+    /**
+     * 设置阅读模式，开启后竖图将默认宽度充满屏幕
+     */
+    public void setReadMode(boolean readMode) {
+        if (this.readMode != readMode) {
+            this.readMode = readMode;
+            update();
+        }
+    }
+
 
     /**
      * 是否允许父类在滑动到边缘的时候拦截事件（默认true）
@@ -1136,6 +1170,20 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
     }
 
+    /**
+     * 获取长按监听器
+     */
+    OnViewLongPressListener getOnViewLongPressListener() {
+        return onViewLongPressListener;
+    }
+
+    /**
+     * 设置长按监听器
+     */
+    public void setOnViewLongPressListener(OnViewLongPressListener onViewLongPressListener) {
+        this.onViewLongPressListener = onViewLongPressListener;
+    }
+
 
     /** -----------监听----------- **/
 
@@ -1165,5 +1213,12 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     public interface OnScaleChangeListener {
         void onScaleChange(float scaleFactor, float focusX, float focusY);
+    }
+
+    /**
+     * 长按监听器
+     */
+    public interface OnViewLongPressListener {
+        void onViewLongPress(View view, float x, float y);
     }
 }

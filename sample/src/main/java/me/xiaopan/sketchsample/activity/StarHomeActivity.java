@@ -33,7 +33,7 @@ import me.xiaopan.sketchsample.fragment.StarHomeFragment;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
-public class StarHomeActivity extends MyBaseActivity implements WindowBackgroundManager.OnSetWindowBackgroundListener {
+public class StarHomeActivity extends MyBaseActivity implements WindowBackgroundManager.OnSetListener {
     @InjectExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE)
     private String starTitle;
 

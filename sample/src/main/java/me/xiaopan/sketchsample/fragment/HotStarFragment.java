@@ -45,13 +45,13 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
 
     private HttpRequestFuture httpRequestFuture;
     private HotStarAdapter adapter;
-    private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
+    private WindowBackgroundManager.Loader loader;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener) {
-            windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
+        if (activity != null && activity instanceof WindowBackgroundManager.OnSetListener) {
+            loader = new WindowBackgroundManager.Loader(activity.getBaseContext(), (WindowBackgroundManager.OnSetListener) activity);
         }
     }
 
@@ -68,8 +68,8 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
         } else {
             contentRecyclerView.setAdapter(adapter);
             contentRecyclerView.scheduleLayoutAnimation();
-            if (windowBackgroundLoader != null) {
-                windowBackgroundLoader.restore();
+            if (loader != null) {
+                loader.restore();
             }
         }
     }
@@ -88,16 +88,16 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
         if (httpRequestFuture != null && !httpRequestFuture.isFinished()) {
             httpRequestFuture.cancel(true);
         }
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.detach();
+        if (loader != null) {
+            loader.detach();
         }
         super.onDetach();
     }
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.setUserVisible(isVisibleToUser);
+        if (loader != null) {
+            loader.setUserVisible(isVisibleToUser);
         }
     }
 
@@ -125,14 +125,14 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
                             refreshLayout.stopRefresh();
                         }
                     }, 1000);
-                    if (!haveSetWindowBackground && windowBackgroundLoader != null && hotStarList.size() > 0 && hotStarList.get(0).getStarList().size() > 0) {
-                        windowBackgroundLoader.load(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());
+                    if (!haveSetWindowBackground && loader != null && hotStarList.size() > 0 && hotStarList.get(0).getStarList().size() > 0) {
+                        loader.load(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());
                     }
                 } else {
                     adapter = new HotStarAdapter(getActivity(), hotStarList, HotStarFragment.this);
                     boolean result = false;
-                    if (windowBackgroundLoader != null && hotStarList.size() > 0 && hotStarList.get(0).getStarList().size() > 0) {
-                        windowBackgroundLoader.load(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());
+                    if (loader != null && hotStarList.size() > 0 && hotStarList.get(0).getStarList().size() > 0) {
+                        loader.load(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());
                         result = true;
                     }
                     load(true, true, result);

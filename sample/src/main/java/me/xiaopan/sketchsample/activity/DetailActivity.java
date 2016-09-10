@@ -36,7 +36,7 @@ import me.xiaopan.sketchsample.fragment.DetailFragment;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
-public class DetailActivity extends MyBaseActivity implements WindowBackgroundManager.OnSetWindowBackgroundListener {
+public class DetailActivity extends MyBaseActivity implements WindowBackgroundManager.OnSetListener {
 
     private WindowBackgroundManager windowBackgroundManager;
 

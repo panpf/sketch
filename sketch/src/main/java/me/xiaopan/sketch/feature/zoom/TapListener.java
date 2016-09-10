@@ -64,4 +64,14 @@ class TapListener extends GestureDetector.SimpleOnGestureListener {
         // Wait for the confirmed onDoubleTap() instead
         return false;
     }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+        super.onLongPress(e);
+
+        ImageView imageView = imageZoomer.getImageView();
+        if (imageView != null && imageZoomer.getOnViewLongPressListener() != null) {
+            imageZoomer.getOnViewLongPressListener().onViewLongPress(imageView, e.getX(), e.getY());
+        }
+    }
 }

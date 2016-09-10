@@ -30,13 +30,13 @@ import android.widget.ImageView;
 import me.xiaopan.sketch.feature.ClickRetryFunction;
 import me.xiaopan.sketch.feature.ImageShapeFunction;
 import me.xiaopan.sketch.feature.ImageZoomFunction;
+import me.xiaopan.sketch.feature.LargeImageFunction;
 import me.xiaopan.sketch.feature.RecyclerCompatFunction;
 import me.xiaopan.sketch.feature.RequestFunction;
 import me.xiaopan.sketch.feature.ShowGifFlagFunction;
 import me.xiaopan.sketch.feature.ShowImageFromFunction;
 import me.xiaopan.sketch.feature.ShowPressedFunction;
 import me.xiaopan.sketch.feature.ShowProgressFunction;
-import me.xiaopan.sketch.feature.LargeImageFunction;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -489,6 +489,15 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     @Override
     public void setDisplayParams(DisplayParams displayParams) {
         requestFunction.setDisplayParams(displayParams);
+    }
+
+    @Override
+    public void setScaleType(ScaleType scaleType) {
+        if (imageZoomFunction == null || scaleType == ScaleType.MATRIX) {
+            super.setScaleType(scaleType);
+        } else {
+            imageZoomFunction.setScaleType(scaleType);
+        }
     }
 
     /**

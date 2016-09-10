@@ -41,7 +41,7 @@ public class LargeImageViewer {
     private Context context;
     private Callback callback;
 
-    private boolean showDrawRect;
+    private boolean showTileRect;
 
     private float lastScale;
     private float scale;
@@ -75,7 +75,7 @@ public class LargeImageViewer {
             for (Tile tile : tileList) {
                 if (!tile.isEmpty()) {
                     canvas.drawBitmap(tile.bitmap, tile.bitmapDrawSrcRect, tile.drawRect, drawTilePaint);
-                    if (showDrawRect) {
+                    if (showTileRect) {
                         if (drawTileRectPaint == null) {
                             drawTileRectPaint = new Paint();
                             drawTileRectPaint.setColor(Color.parseColor("#88FF0000"));
@@ -83,7 +83,7 @@ public class LargeImageViewer {
                         canvas.drawRect(tile.drawRect, drawTileRectPaint);
                     }
                 } else if (!tile.isDecodeParamEmpty()) {
-                    if (showDrawRect) {
+                    if (showTileRect) {
                         if (loadingTileRectPaint == null) {
                             loadingTileRectPaint = new Paint();
                             loadingTileRectPaint.setColor(Color.parseColor("#880000FF"));
@@ -212,10 +212,13 @@ public class LargeImageViewer {
         return running && executor.isInitializing();
     }
 
+    public boolean isShowTileRect() {
+        return showTileRect;
+    }
 
     @SuppressWarnings("unused")
-    public void setShowDrawRect(boolean showDrawRect) {
-        this.showDrawRect = showDrawRect;
+    public void setShowTileRect(boolean showTileRect) {
+        this.showTileRect = showTileRect;
         callback.invalidate();
     }
 

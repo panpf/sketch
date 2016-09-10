@@ -90,33 +90,33 @@ public class WindowBackgroundManager {
         }
     }
 
-    public interface OnSetWindowBackgroundListener {
+    public interface OnSetListener {
         void onSetWindowBackground(String uri, Bitmap bitmap);
 
         String getCurrentBackgroundUri();
     }
 
-    public static class WindowBackgroundLoader {
+    public static class Loader {
         private Context context;
         private String windowBackgroundImageUri;
         private LoadRequest loadBackgroundRequest;
-        private OnSetWindowBackgroundListener onSetWindowBackgroundListener;
+        private OnSetListener onSetListener;
         private boolean userVisible;
 
-        public WindowBackgroundLoader(Context context, OnSetWindowBackgroundListener onSetWindowBackgroundListener) {
+        public Loader(Context context, OnSetListener onSetListener) {
             this.context = context;
-            this.onSetWindowBackgroundListener = onSetWindowBackgroundListener;
+            this.onSetListener = onSetListener;
         }
 
         public void restore() {
-            if (onSetWindowBackgroundListener != null && windowBackgroundImageUri != null) {
+            if (onSetListener != null && windowBackgroundImageUri != null) {
                 load(windowBackgroundImageUri);
             }
         }
 
         public void detach() {
             cancel(CancelCause.ON_DETACHED_FROM_WINDOW);
-            onSetWindowBackgroundListener = null;
+            onSetListener = null;
         }
 
         public void cancel(CancelCause cancelCause) {
@@ -133,7 +133,7 @@ public class WindowBackgroundManager {
         }
 
         public void load(final String imageUri) {
-            if (imageUri == null || imageUri.equals(onSetWindowBackgroundListener.getCurrentBackgroundUri())) {
+            if (imageUri == null || imageUri.equals(onSetListener.getCurrentBackgroundUri())) {
                 return;
             }
             this.windowBackgroundImageUri = imageUri;
@@ -157,9 +157,9 @@ public class WindowBackgroundManager {
                 @Override
                 public void onCompleted(LoadResult loadResult) {
                     if (loadResult.getBitmap() != null) {
-                        if (onSetWindowBackgroundListener != null) {
+                        if (onSetListener != null) {
                             if (userVisible) {
-                                onSetWindowBackgroundListener.onSetWindowBackground(imageUri, loadResult.getBitmap());
+                                onSetListener.onSetWindowBackground(imageUri, loadResult.getBitmap());
                             } else {
                                 loadResult.getBitmap().recycle();
                             }

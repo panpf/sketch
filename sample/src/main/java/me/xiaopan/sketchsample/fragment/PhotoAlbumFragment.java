@@ -54,13 +54,13 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
     private RecyclerView recyclerView;
 
     private PhotoAlbumImageAdapter imageAdapter;
-    private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
+    private WindowBackgroundManager.Loader loader;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener) {
-            windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
+        if (activity != null && activity instanceof WindowBackgroundManager.OnSetListener) {
+            loader = new WindowBackgroundManager.Loader(activity.getBaseContext(), (WindowBackgroundManager.OnSetListener) activity);
         }
     }
 
@@ -75,8 +75,8 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
         if (imageAdapter != null) {
             recyclerView.setAdapter(imageAdapter);
             recyclerView.scheduleLayoutAnimation();
-            if (windowBackgroundLoader != null) {
-                windowBackgroundLoader.restore();
+            if (loader != null) {
+                loader.restore();
             }
         } else {
             pullRefreshLayout.startRefresh();
@@ -97,16 +97,16 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
 
     @Override
     public void onDetach() {
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.detach();
+        if (loader != null) {
+            loader.detach();
         }
         super.onDetach();
     }
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.setUserVisible(isVisibleToUser);
+        if (loader != null) {
+            loader.setUserVisible(isVisibleToUser);
         }
     }
 
@@ -161,8 +161,8 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
                     pullRefreshLayout.stopRefresh();
                 }
             }, 1000);
-            if (windowBackgroundLoader != null && strings != null && strings.size() > 0) {
-                windowBackgroundLoader.load(strings.get(0));
+            if (loader != null && strings != null && strings.size() > 0) {
+                loader.load(strings.get(0));
             }
         }
     }

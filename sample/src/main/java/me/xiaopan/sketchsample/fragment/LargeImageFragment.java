@@ -33,6 +33,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
+import me.xiaopan.sketchsample.menu.ImageMenu;
 import me.xiaopan.sketchsample.widget.MappingView;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
@@ -51,7 +52,7 @@ public class LargeImageFragment extends MyFragment {
     @InjectExtra("imageUri")
     private String imageUri;
 
-    private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
+    private WindowBackgroundManager.Loader loader;
 
     private String scale;
     private String bytes = "0.0 B";
@@ -67,8 +68,8 @@ public class LargeImageFragment extends MyFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener) {
-            windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
+        if (activity != null && activity instanceof WindowBackgroundManager.OnSetListener) {
+            loader = new WindowBackgroundManager.Loader(activity.getBaseContext(), (WindowBackgroundManager.OnSetListener) activity);
         }
     }
 
@@ -105,25 +106,31 @@ public class LargeImageFragment extends MyFragment {
                 scaleTextView.setText(String.format("%s · %s", scale, bytes));
             }
         });
-//        imageView.getLargeImageFunction().getLargeImageViewer().setShowDrawRect(true);
 
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.load(imageUri);
+        imageView.getImageZoomFunction().getImageZoomer().setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
+            @Override
+            public void onViewLongPress(View view, float x, float y) {
+                new ImageMenu(getActivity(), imageView).show();
+            }
+        });
+
+        if (loader != null) {
+            loader.load(imageUri);
         }
     }
 
     @Override
     public void onDetach() {
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.detach();
+        if (loader != null) {
+            loader.detach();
         }
         super.onDetach();
     }
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.setUserVisible(isVisibleToUser);
+        if (loader != null) {
+            loader.setUserVisible(isVisibleToUser);
         }
     }
 }

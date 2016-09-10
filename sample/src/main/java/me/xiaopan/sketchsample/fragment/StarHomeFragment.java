@@ -61,7 +61,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
     private StarImageRequest starImageRequest;
     private HttpRequestFuture refreshRequestFuture;
     private ImageStaggeredGridAdapter starImageAdapter;
-    private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
+    private WindowBackgroundManager.Loader loader;
     private LoadMoreFooterView loadMoreFooterView;
     private MyImageView headImageView;
     private HttpRequestFuture loadMoreRequestFuture;
@@ -69,8 +69,8 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener) {
-            windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
+        if (activity != null && activity instanceof WindowBackgroundManager.OnSetListener) {
+            loader = new WindowBackgroundManager.Loader(activity.getBaseContext(), (WindowBackgroundManager.OnSetListener) activity);
         }
     }
 
@@ -92,8 +92,8 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
             pullRefreshLayout.startRefresh();
         } else {
             setAdapter(starImageAdapter);
-            if (windowBackgroundLoader != null) {
-                windowBackgroundLoader.restore();
+            if (loader != null) {
+                loader.restore();
             }
         }
     }
@@ -110,16 +110,16 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
         if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             refreshRequestFuture.cancel(true);
         }
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.detach();
+        if (loader != null) {
+            loader.detach();
         }
         super.onDetach();
     }
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.setUserVisible(isVisibleToUser);
+        if (loader != null) {
+            loader.setUserVisible(isVisibleToUser);
         }
     }
 
@@ -251,8 +251,8 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     }
                 }
 
-                if (windowBackgroundLoader != null && responseObject.getImages() != null && responseObject.getImages().size() > 0) {
-                    windowBackgroundLoader.load(responseObject.getImages().get(0).getSourceUrl());
+                if (loader != null && responseObject.getImages() != null && responseObject.getImages().size() > 0) {
+                    loader.load(responseObject.getImages().get(0).getSourceUrl());
                 }
             }
 

@@ -1,7 +1,6 @@
 package me.xiaopan.sketchsample.fragment;
 
 import android.app.Activity;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.View;
@@ -20,6 +19,7 @@ import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
+import me.xiaopan.sketchsample.menu.ImageMenu;
 import me.xiaopan.sketchsample.widget.HintView;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
@@ -36,13 +36,13 @@ public class ImageFragment extends MyFragment {
     private String imageUri;
     private boolean completedAfterUpdateBackground;
 
-    private WindowBackgroundManager.WindowBackgroundLoader windowBackgroundLoader;
+    private WindowBackgroundManager.Loader loader;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity != null && activity instanceof WindowBackgroundManager.OnSetWindowBackgroundListener) {
-            windowBackgroundLoader = new WindowBackgroundManager.WindowBackgroundLoader(activity.getBaseContext(), (WindowBackgroundManager.OnSetWindowBackgroundListener) activity);
+        if (activity != null && activity instanceof WindowBackgroundManager.OnSetListener) {
+            loader = new WindowBackgroundManager.Loader(activity.getBaseContext(), (WindowBackgroundManager.OnSetListener) activity);
         }
     }
 
@@ -54,6 +54,7 @@ public class ImageFragment extends MyFragment {
         imageView.setAutoApplyGlobalAttr(false);
         imageView.setSupportZoom(true);
         imageView.setSupportLargeImage(true);
+        imageView.getImageZoomFunction().getImageZoomer().setReadMode(true);
 
         imageView.setDisplayListener(new DisplayListener() {
             @Override
@@ -67,7 +68,7 @@ public class ImageFragment extends MyFragment {
                 if (completedAfterUpdateBackground) {
                     completedAfterUpdateBackground = false;
                     if (isResumed() && getUserVisibleHint()) {
-                        windowBackgroundLoader.load(imageUri);
+                        loader.load(imageUri);
                     }
                 }
             }
@@ -142,24 +143,31 @@ public class ImageFragment extends MyFragment {
                 }
             }
         });
+
+        imageView.getImageZoomFunction().getImageZoomer().setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
+            @Override
+            public void onViewLongPress(View view, float x, float y) {
+                new ImageMenu(getActivity(), imageView).show();
+            }
+        });
     }
 
     @Override
     public void onDetach() {
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.detach();
+        if (loader != null) {
+            loader.detach();
         }
         super.onDetach();
     }
 
     @Override
     public void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (windowBackgroundLoader != null) {
-            windowBackgroundLoader.setUserVisible(isVisibleToUser);
+        if (loader != null) {
+            loader.setUserVisible(isVisibleToUser);
             if (isVisibleToUser) {
-                windowBackgroundLoader.load(imageUri);
+                loader.load(imageUri);
             } else {
-                windowBackgroundLoader.cancel(CancelCause.USERS_NOT_VISIBLE);
+                loader.cancel(CancelCause.USERS_NOT_VISIBLE);
             }
         }
     }
