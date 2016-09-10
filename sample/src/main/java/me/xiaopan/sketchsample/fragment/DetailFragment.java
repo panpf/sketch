@@ -319,7 +319,7 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
                             if (imageView.isSupportLargeImage()) {
                                 messageBuilder.append("\n");
                                 LargeImageViewer largeImageViewer = imageView.getLargeImageFunction().getLargeImageViewer();
-                                if (largeImageViewer.isAvailable()) {
+                                if (largeImageViewer.isReady()) {
                                     messageBuilder.append("\n");
                                     messageBuilder.append("大图功能占用内存：").append(Formatter.formatFileSize(getActivity(), largeImageViewer.getTileManager().getBytes()));
                                     messageBuilder.append("\n");

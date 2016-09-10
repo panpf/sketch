@@ -349,11 +349,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
-            if (imageZoomFunction != null) {
-                needInvokeInvalidate |= imageZoomFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
-            }
             if (largeImageFunction != null) {
                 needInvokeInvalidate |= largeImageFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
+            }
+            if (imageZoomFunction != null) {
+                needInvokeInvalidate |= imageZoomFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
 
             if (needInvokeInvalidate) {

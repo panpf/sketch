@@ -64,4 +64,12 @@ public class UpdateParams {
         this.imageViewWidth = imageViewWidth;
         this.imageViewHeight = imageViewHeight;
     }
+
+    public String getInfo(){
+        return "visibleRect=" + visibleRect.toShortString() +
+                ", " +
+                "previewDrawableSize=" + previewDrawableWidth + "x" + previewDrawableHeight +
+                ", " +
+                "imageViewSize=" + imageViewWidth + "x" + imageViewHeight;
+    }
 }

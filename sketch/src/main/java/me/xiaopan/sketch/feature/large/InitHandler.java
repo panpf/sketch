@@ -28,6 +28,7 @@ import me.xiaopan.sketch.Sketch;
 /**
  * 运行在解码线程中，负责初始化TileDecoder
  */
+// TODO: 16/9/11 完成的消息，如果直接给取消了，那么BitmapRegionDecoder怎么办
 class InitHandler extends Handler {
     private static final String NAME = "InitHandler";
     private static final int WHAT_INIT = 1002;
@@ -113,9 +114,9 @@ class InitHandler extends Handler {
         decodeExecutor.getMainHandler().postInitCompleted(decoder, key);
     }
 
-    public void clean(String why) {
+    public void clean(String why, String imageUri) {
         if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". clean. " + why);
+            Log.w(Sketch.TAG, NAME + ". clean. " + why + ". " + imageUri);
         }
 
         removeMessages(WHAT_INIT);

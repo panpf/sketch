@@ -124,9 +124,9 @@ class DecodeHandler extends Handler {
         decodeExecutor.getMainHandler().postDecodeCompleted(key, tile, bitmap);
     }
 
-    public void clean(String why) {
+    public void clean(String why, String imageUri) {
         if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". clean. " + why);
+            Log.w(Sketch.TAG, NAME + ". clean. " + why + ". " + imageUri);
         }
 
         removeMessages(WHAT_DECODE);

@@ -29,6 +29,7 @@ import me.xiaopan.sketch.Sketch;
 /**
  * 运行在主线程，负责将执行器的结果发送到主线程
  */
+// TODO: 16/9/11 完成的消息，如果直接给取消了，那么bitmap怎么办
 class MainHandler extends Handler {
     private static final String NAME = "MainHandler";
 
@@ -196,9 +197,18 @@ class MainHandler extends Handler {
     }
 
 
-    public void clean(String why) {
+    public void cleanDecode(String why, String imageUri) {
         if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". clean. " + why);
+            Log.w(Sketch.TAG, NAME + ". clean decode. " + why + ". " + imageUri);
+        }
+
+        removeMessages(WHAT_DECODE_COMPLETED);
+        removeMessages(WHAT_DECODE_FAILED);
+    }
+
+    public void cleanAll(String why, String imageUri) {
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, NAME + ". clean all. " + why + ". " + imageUri);
         }
 
         removeMessages(WHAT_RECYCLE_DECODE_THREAD);

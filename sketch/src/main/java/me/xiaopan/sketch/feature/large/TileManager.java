@@ -122,8 +122,8 @@ public class TileManager {
                     ", newDrawRect=" + newDrawRect.toShortString() +
                     ", lastDrawRect=" + lastRealDrawRect.toShortString() +
                     ", inSampleSize=" + inSampleSize +
-                    ", lastScale=" + largeImageViewer.getLastScale() +
-                    ", scale=" + largeImageViewer.getScale() +
+                    ", lastScale=" + largeImageViewer.getLastZoomScale() +
+                    ", scale=" + largeImageViewer.getZoomScale() +
                     ", tiles=" + tileList.size());
         }
 
@@ -219,7 +219,7 @@ public class TileManager {
                                         int drawTileWidth, int drawTileHeight,
                                         int maxDrawWidth, int maxDrawHeight) {
         // 缩放比例已改变或者这是第一次就直接用新的绘制区域
-        if (largeImageViewer.getScale() != largeImageViewer.getLastScale() || lastRealDrawRect.isEmpty()) {
+        if (largeImageViewer.getZoomScale() != largeImageViewer.getLastZoomScale() || lastRealDrawRect.isEmpty()) {
             finalDrawRect.set(newDrawRect);
             return;
         }
@@ -507,7 +507,7 @@ public class TileManager {
             tile = tileIterator.next();
 
             // 缩放比例已经变了或者这个碎片已经跟当前显示区域毫无交集，那么就可以回收这个碎片了
-            if (largeImageViewer.getScale() != tile.scale || !SketchUtils.isCross(tile.drawRect, drawRect)) {
+            if (largeImageViewer.getZoomScale() != tile.scale || !SketchUtils.isCross(tile.drawRect, drawRect)) {
                 if (!tile.isEmpty()) {
                     if (Sketch.isDebugMode()) {
                         Log.d(Sketch.TAG, NAME + ". recycle tile. tile=" + tile.getInfo());
@@ -544,7 +544,7 @@ public class TileManager {
 
                     loadTile.drawRect.set(tileLeft, tileTop, tileRight, tileBottom);
                     loadTile.inSampleSize = inSampleSize;
-                    loadTile.scale = largeImageViewer.getScale();
+                    loadTile.scale = largeImageViewer.getZoomScale();
                     calculateSrcRect(loadTile.srcRect, loadTile.drawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
 
                     tileList.add(loadTile);

@@ -50,6 +50,7 @@ public class TileDecodeExecutor {
     private DecodeHandler decodeHandler;
     private TileDecoder decoder;
     private KeyCounter initKeyCounter;
+    private String imageUri;
 
     public TileDecodeExecutor(Callback callback) {
         this.callback = callback;
@@ -71,7 +72,7 @@ public class TileDecodeExecutor {
                     handlerThread.start();
 
                     if (Sketch.isDebugMode()) {
-                        Log.i(Sketch.TAG, NAME + ". image region decode thread " + handlerThread.getName() + " started");
+                        Log.i(Sketch.TAG, NAME + ". image region decode thread " + handlerThread.getName() + " started. " + imageUri);
                     }
 
                     decodeHandler = new DecodeHandler(handlerThread.getLooper(), this);
@@ -84,29 +85,10 @@ public class TileDecodeExecutor {
     }
 
     /**
-     * 取消所有的待办任务
-     */
-    public void clean(String why) {
-        initKeyCounter.refresh();
-
-        if (initHandler != null) {
-            initHandler.clean(why);
-        }
-
-        if (decodeHandler != null) {
-            decodeHandler.clean(why);
-        }
-
-        if (mainHandler != null) {
-            mainHandler.clean(why);
-        }
-    }
-
-    /**
      * 初始化解码器，初始化结果会通过Callback的onInitCompleted()或onInitFailed(Exception)方法回调
      */
     public void initDecoder(String imageUri) {
-        clean("initDecoder");
+        cleanAll("initDecoder");
 
         synchronized (decoderLock) {
             if (decoder != null) {
@@ -114,6 +96,8 @@ public class TileDecodeExecutor {
                 decoder = null;
             }
         }
+
+        this.imageUri = imageUri;
 
         if (!TextUtils.isEmpty(imageUri)) {
             running = true;
@@ -132,7 +116,7 @@ public class TileDecodeExecutor {
     public void submit(int key, Tile tile) {
         if (!running) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". stop running. submit");
+                Log.w(Sketch.TAG, NAME + ". stop running. submit. " + imageUri);
             }
             return;
         }
@@ -142,21 +126,52 @@ public class TileDecodeExecutor {
     }
 
     /**
+     * 取消所有的解码任务
+     */
+    public void cleanDecode(String why) {
+        if (decodeHandler != null) {
+            decodeHandler.clean(why, imageUri);
+        }
+
+        if (mainHandler != null) {
+            mainHandler.cleanDecode(why, imageUri);
+        }
+    }
+
+    /**
+     * 取消所有的待办任务
+     */
+    public void cleanAll(String why){
+        initKeyCounter.refresh();
+        if (initHandler != null) {
+            initHandler.clean(why, imageUri);
+        }
+
+        if (decodeHandler != null) {
+            decodeHandler.clean(why, imageUri);
+        }
+
+        if (mainHandler != null) {
+            mainHandler.cleanAll(why, imageUri);
+        }
+    }
+
+    /**
      * 回收所有资源
      */
     public void recycle(String why) {
         running = false;
-        clean(why);
+        cleanAll(why);
         recycleDecodeThread();
     }
 
     public void recycleDecodeThread() {
         if (initHandler != null) {
-            initHandler.clean("recycleDecodeThread");
+            initHandler.clean("recycleDecodeThread", imageUri);
         }
 
         if (decodeHandler != null) {
-            decodeHandler.clean("recycleDecodeThread");
+            decodeHandler.clean("recycleDecodeThread", imageUri);
         }
 
         synchronized (handlerThreadLock) {
@@ -168,20 +183,11 @@ public class TileDecodeExecutor {
                 }
 
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". image region decode thread " + handlerThread.getName() + " quit");
+                    Log.w(Sketch.TAG, NAME + ". image region decode thread " + handlerThread.getName() + " quit. " + imageUri);
                 }
 
                 handlerThread = null;
             }
-        }
-    }
-
-    /**
-     * 是否已经准备好可以使用？
-     */
-    public boolean isReady() {
-        synchronized (decoderLock) {
-            return running && decoder != null && !initializing;
         }
     }
 
@@ -193,7 +199,7 @@ public class TileDecodeExecutor {
             initializing = false;
         } else {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". stop running. initCompleted");
+                Log.w(Sketch.TAG, NAME + ". stop running. initCompleted. " + imageUri);
             }
             decoder.recycle();
         }
@@ -206,7 +212,7 @@ public class TileDecodeExecutor {
             initializing = false;
         } else {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". stop running. initFailed");
+                Log.w(Sketch.TAG, NAME + ". stop running. initFailed. " + imageUri);
             }
         }
 
@@ -219,6 +225,15 @@ public class TileDecodeExecutor {
 
     void decodeFailed(Tile tile, DecodeHandler.DecodeFailedException exception) {
         callback.onDecodeFailed(tile, exception);
+    }
+
+    /**
+     * 是否已经准备好可以使用？
+     */
+    public boolean isReady() {
+        synchronized (decoderLock) {
+            return running && decoder != null && !initializing;
+        }
     }
 
     /**

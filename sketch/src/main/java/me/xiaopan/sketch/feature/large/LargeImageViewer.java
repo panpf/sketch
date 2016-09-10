@@ -43,8 +43,8 @@ public class LargeImageViewer {
 
     private boolean showTileRect;
 
-    private float lastScale;
-    private float scale;
+    private float zoomScale;
+    private float lastZoomScale;
     private Paint drawTilePaint;
     private Paint drawTileRectPaint;
     private Paint loadingTileRectPaint;
@@ -55,6 +55,7 @@ public class LargeImageViewer {
     private UpdateParams waitUpdateParams;
     private TileManager tileManager;
     private TileDecodeExecutor executor;
+    private String imageUri;
 
     public LargeImageViewer(Context context, Callback callback) {
         this.context = context.getApplicationContext();
@@ -103,6 +104,7 @@ public class LargeImageViewer {
     public void setImage(String imageUri) {
         clean("setImage");
 
+        this.imageUri = imageUri;
         if (!TextUtils.isEmpty(imageUri)) {
             running = true;
             executor.initDecoder(imageUri);
@@ -117,26 +119,26 @@ public class LargeImageViewer {
      */
     public void update(UpdateParams updateParams) {
         // 不可用，也没有初始化就直接结束
-        if (!isAvailable() && !isInitializing()) {
+        if (!isReady() && !isInitializing()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". unavailable");
+                Log.w(Sketch.TAG, NAME + ". not available. " + imageUri);
             }
             return;
         }
 
         // 传进来的参数不能用就什么也不显示
-        if (updateParams == null || updateParams.isEmpty()) {
+        if (updateParams.isEmpty()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". update params is empty. update");
+                Log.w(Sketch.TAG, NAME + ". update params is empty. update. " + updateParams.getInfo() + ". " + imageUri);
             }
             clean("update param is empty");
             return;
         }
 
         // 如果正在初始化就就缓存当前更新参数
-        if (!isAvailable() && isInitializing()) {
+        if (!isReady() && isInitializing()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". initializing. update");
+                Log.w(Sketch.TAG, NAME + ". initializing. update. " + imageUri);
             }
             if (waitUpdateParams == null) {
                 waitUpdateParams = new UpdateParams();
@@ -148,7 +150,7 @@ public class LargeImageViewer {
         // 过滤掉重复的刷新
         if (visibleRect.equals(updateParams.visibleRect)) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". visible rect no changed. update. visibleRect=" + updateParams.visibleRect.toShortString() + ", oldVisibleRect=" + visibleRect.toShortString());
+                Log.w(Sketch.TAG, NAME + ". visible rect no changed. update. visibleRect=" + updateParams.visibleRect.toShortString() + ", oldVisibleRect=" + visibleRect.toShortString() + ". " + imageUri);
             }
             return;
         }
@@ -159,16 +161,16 @@ public class LargeImageViewer {
         int visibleHeight = updateParams.visibleRect.height();
         if (visibleWidth == updateParams.previewDrawableWidth && visibleHeight == updateParams.previewDrawableHeight) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". full display. update");
+                Log.d(Sketch.TAG, NAME + ". full display. update. " + imageUri);
             }
             clean("full display");
             return;
         }
 
         // 取消旧的任务并更新Matrix
-        lastScale = scale;
+        lastZoomScale = zoomScale;
         matrix.set(updateParams.drawMatrix);
-        scale = SketchUtils.formatFloat(SketchUtils.getMatrixScale(matrix), 2);
+        zoomScale = SketchUtils.formatFloat(SketchUtils.getMatrixScale(matrix), 2);
 
         callback.invalidate();
 
@@ -178,21 +180,27 @@ public class LargeImageViewer {
                 updateParams.previewDrawableWidth, updateParams.previewDrawableHeight);
     }
 
+    /**
+     * 清理资源（不影响继续使用）
+     */
     private void clean(String why) {
-        executor.clean(why);
+        executor.cleanDecode(why);
 
         if (waitUpdateParams != null) {
             waitUpdateParams.reset();
         }
         matrix.reset();
-        lastScale = 0;
-        scale = 0;
+        lastZoomScale = 0;
+        zoomScale = 0;
 
         tileManager.clean(why);
 
         callback.invalidate();
     }
 
+    /**
+     * 回收资源（回收后需要重新setImage()才能使用）
+     */
     public void recycle(String why) {
         running = false;
         clean(why);
@@ -204,35 +212,52 @@ public class LargeImageViewer {
         callback.invalidate();
     }
 
-    public boolean isAvailable() {
+    /**
+     * 准备好了？
+     */
+    public boolean isReady() {
         return running && executor.isReady();
     }
 
+    /**
+     * 初始化中？
+     */
     public boolean isInitializing() {
         return running && executor.isInitializing();
     }
 
+    /**
+     * 是否显示碎片的范围（红色表示已加载，蓝色表示正在加载）
+     */
     public boolean isShowTileRect() {
         return showTileRect;
     }
 
+    /**
+     * 设置是否显示碎片的范围（红色表示已加载，蓝色表示正在加载）
+     */
     @SuppressWarnings("unused")
     public void setShowTileRect(boolean showTileRect) {
         this.showTileRect = showTileRect;
         callback.invalidate();
     }
 
+    /**
+     * 获取当前缩放比例
+     */
+    public float getZoomScale() {
+        return zoomScale;
+    }
+
+    /**
+     * 获取上次的缩放比例
+     */
+    public float getLastZoomScale() {
+        return lastZoomScale;
+    }
 
     public TileDecodeExecutor getExecutor() {
         return executor;
-    }
-
-    public float getScale() {
-        return scale;
-    }
-
-    public float getLastScale() {
-        return lastScale;
     }
 
     public TileManager getTileManager() {
@@ -241,6 +266,7 @@ public class LargeImageViewer {
 
     public interface Callback {
         void invalidate();
+        void updateMatrix();
     }
 
     public interface OnTileChangedListener {
@@ -274,6 +300,8 @@ public class LargeImageViewer {
 
                 update(updateParams);
             }
+
+            callback.updateMatrix();
         }
 
         @Override
