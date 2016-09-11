@@ -143,7 +143,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         tempPreviewDrawableSize.set(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
         tempImageViewSize.set(imageZoomer.getImageViewWidth(), imageZoomer.getImageViewHeight());
 
-        largeImageViewer.update(tempDrawMatrix, tempVisibleRect, tempPreviewDrawableSize, tempImageViewSize);
+        largeImageViewer.update(tempDrawMatrix, tempVisibleRect, tempPreviewDrawableSize, tempImageViewSize, imageZoomer.isZooming());
     }
 
     private void resetImage() {

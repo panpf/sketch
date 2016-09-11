@@ -25,4 +25,7 @@ public interface OnScaleDragGestureListener {
 
     void onScale(float scaleFactor, float focusX, float focusY);
 
+    boolean onScaleBegin();
+
+    void onScaleEnd();
 }

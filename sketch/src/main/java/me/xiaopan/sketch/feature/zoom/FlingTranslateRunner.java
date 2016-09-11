@@ -113,7 +113,7 @@ class FlingTranslateRunner implements Runnable {
 
     public void cancelFling() {
         if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, ImageZoomer.NAME + ". Cancel Fling");
+            Log.d(Sketch.TAG, ImageZoomer.NAME + ". cancel fling");
         }
 
         if (mScroller != null) {

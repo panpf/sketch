@@ -52,7 +52,6 @@ public class LargeImageViewer {
     private Matrix matrix;
 
     private boolean running;
-    private Rect lastVisibleRect = new Rect();
     private TileManager tileManager;
     private TileDecodeExecutor executor;
     private String imageUri;
@@ -117,7 +116,7 @@ public class LargeImageViewer {
     /**
      * 更新
      */
-    public void update(Matrix drawMatrix, Rect visibleRect, Point previewDrawableSize, Point imageViewSize) {
+    public void update(Matrix drawMatrix, Rect visibleRect, Point previewDrawableSize, Point imageViewSize, boolean zooming) {
         // 没有准备好就不往下走了
         if (!isReady()) {
             if (Sketch.isDebugMode()) {
@@ -139,15 +138,6 @@ public class LargeImageViewer {
             return;
         }
 
-        // 过滤掉重复的刷新
-        if (lastVisibleRect.equals(visibleRect)) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". visible rect no changed. update. visibleRect=" + visibleRect.toShortString() + ", oldVisibleRect=" + lastVisibleRect.toShortString() + ". " + imageUri);
-            }
-            return;
-        }
-        lastVisibleRect.set(visibleRect);
-
         // 如果当前完整显示预览图的话就清空什么也不显示
         if (visibleRect.width() == previewDrawableSize.x && visibleRect.height() == previewDrawableSize.y) {
             if (Sketch.isDebugMode()) {
@@ -157,14 +147,14 @@ public class LargeImageViewer {
             return;
         }
 
-        // 取消旧的任务并更新Matrix
+        // 更新Matrix
         lastZoomScale = zoomScale;
         matrix.set(drawMatrix);
         zoomScale = SketchUtils.formatFloat(SketchUtils.getMatrixScale(matrix), 2);
 
         callback.invalidate();
 
-        tileManager.update(visibleRect, previewDrawableSize, imageViewSize, executor.getDecoder().getImageSize());
+        tileManager.update(visibleRect, previewDrawableSize, imageViewSize, executor.getDecoder().getImageSize(), zooming);
     }
 
     /**

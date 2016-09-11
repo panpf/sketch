@@ -36,7 +36,6 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 碎片管理器
  */
-// TODO: 16/9/4 缩放过程中不解码
 public class TileManager {
     private static final String NAME = "TileManager";
 
@@ -44,6 +43,7 @@ public class TileManager {
     private LargeImageViewer largeImageViewer;
 
     private int tiles = 3;
+    private Rect lastVisibleRect = new Rect();
     private Rect lastOriginDrawRect = new Rect();
     private Rect lastOriginSrcRect = new Rect();
     private Rect lastRealDrawRect = new Rect();
@@ -70,7 +70,21 @@ public class TileManager {
         this.largeImageViewer = largeImageViewer;
     }
 
-    public void update(Rect visibleRect, Point previewDrawableSize, Point imageViewSize, Point imageSize) {
+    public void update(Rect visibleRect, Point previewDrawableSize, Point imageViewSize, Point imageSize, boolean zooming) {
+        if (zooming) {
+            Log.w(Sketch.TAG, NAME + ". zooming. visibleRect=" + visibleRect.toShortString() + ", tiles=" + tileList.size());
+            return;
+        }
+
+        // 过滤掉重复的刷新
+        if (lastVisibleRect.equals(visibleRect)) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". visible rect no changed. update. visibleRect=" + visibleRect.toShortString() + ", oldVisibleRect=" + lastVisibleRect.toShortString());
+            }
+            return;
+        }
+        lastVisibleRect.set(visibleRect);
+
         final int viewWidth = imageViewSize.x;
         final int viewHeight = imageViewSize.y;
         final int previewImageWidth = previewDrawableSize.x;

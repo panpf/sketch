@@ -44,12 +44,12 @@ public class FroyoScaleDragGestureDetector extends EclairScaleDragGestureDetecto
 
             @Override
             public boolean onScaleBegin(ScaleGestureDetector detector) {
-                return true;
+                return mListener.onScaleBegin();
             }
 
             @Override
             public void onScaleEnd(ScaleGestureDetector detector) {
-                // NO-OP
+                mListener.onScaleEnd();
             }
         };
         mDetector = new ScaleGestureDetector(context, mScaleListener);

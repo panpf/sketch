@@ -44,11 +44,13 @@ class ZoomRunner implements Runnable {
         float t = interpolate();
         float scale = mZoomStart + t * (mZoomEnd - mZoomStart);
         float deltaScale = scale / imageZoomer.getZoomScale();
+        boolean continueZoom = t < 1f;
 
+        imageZoomer.setZooming(continueZoom);
         imageZoomer.onScale(deltaScale, mFocalX, mFocalY);
 
         // We haven't hit our target scale yet, so post ourselves again
-        if (t < 1f) {
+        if (continueZoom) {
             CompatUtils.postOnAnimation(imageView, this);
         }
     }
