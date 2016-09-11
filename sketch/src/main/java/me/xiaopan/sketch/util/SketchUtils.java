@@ -891,4 +891,17 @@ public class SketchUtils {
     public static boolean isCross(Rect rect1, Rect rect2) {
         return rect1.left < rect2.right && rect2.left < rect1.right && rect1.top < rect2.bottom && rect2.top < rect1.bottom;
     }
+
+    /**
+     * 安全处理比较结果用于兼容jdk7
+     */
+    public static int safeCompareResult(int compareResult) {
+        if (compareResult > 0) {
+            return 1;
+        } else if (compareResult < 0) {
+            return -1;
+        } else {
+            return 0;
+        }
+    }
 }
