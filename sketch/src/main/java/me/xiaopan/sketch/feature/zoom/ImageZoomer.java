@@ -345,12 +345,12 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             if (top != tempViewBounds.top || bottom != tempViewBounds.bottom || left != tempViewBounds.left || right != tempViewBounds.right) {
                 tempViewBounds.set(left, top, right, bottom);
 
-                resetMinAndMaxZoomScale();
+                resetZoomScales();
                 updateBaseMatrix();
                 resetMatrix();
             }
         } else {
-            resetMinAndMaxZoomScale();
+            resetZoomScales();
             updateBaseMatrix();
             resetMatrix();
         }
@@ -361,7 +361,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 重置最小和最大缩放比例
      */
-    private void resetMinAndMaxZoomScale() {
+    private void resetZoomScales() {
         ImageView imageView = getImageView();
         if (imageView == null) {
             fullZoomScale = fillZoomScale = originZoomScale = 1f;
@@ -445,6 +445,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
             // 二级缩放比例和一级缩放比例的差距不能太小，最小得是一级缩放比例的1.5倍
             twoLevelZoomScale = Math.max(twoLevelZoomScale, oneLevelZoomScale * 1.5f);
+
+            maxZoomScale = twoLevelZoomScale;
         }
         doubleClickZoomScales = new float[]{oneLevelZoomScale, twoLevelZoomScale};
         Arrays.sort(doubleClickZoomScales);
@@ -1051,11 +1053,11 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         if (zoomable) {
             imageView.setScaleType(ScaleType.MATRIX);
 
-            resetMinAndMaxZoomScale();
+            resetZoomScales();
             updateBaseMatrix();
             resetMatrix();
         } else {
-            resetMinAndMaxZoomScale();
+            resetZoomScales();
             resetMatrix();
         }
     }
