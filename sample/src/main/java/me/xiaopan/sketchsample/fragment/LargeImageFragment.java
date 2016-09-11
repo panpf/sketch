@@ -80,10 +80,10 @@ public class LargeImageFragment extends MyFragment {
         imageView.setSupportZoom(true);
         imageView.setSupportLargeImage(true);
 
-        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
-        imageView.displayImage(imageUri);
-
         final ImageZoomer imageZoomer = imageView.getImageZoomFunction().getImageZoomer();
+        final LargeImageViewer largeImageViewer = imageView.getLargeImageFunction().getLargeImageViewer();
+
+        // MappingView跟随Matrix变化刷新各种区域
         imageZoomer.addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
             Rect visibleRect = new Rect();
             @Override
@@ -94,11 +94,9 @@ public class LargeImageFragment extends MyFragment {
                 scaleTextView.setText(String.format("%s · %s", scale, bytes));
             }
         });
-        mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
-        mappingView.getOptions().setMaxSize(600, 600);
-        mappingView.displayImage(imageUri);
 
-        imageView.getLargeImageFunction().getLargeImageViewer().getTileManager().setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
+        // MappingView跟随碎片变化刷新碎片区域
+        largeImageViewer.getTileManager().setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
             @Override
             public void onTileChanged(LargeImageViewer largeImageViewer) {
                 mappingView.onTileChanged(largeImageViewer);
@@ -107,12 +105,20 @@ public class LargeImageFragment extends MyFragment {
             }
         });
 
-        imageView.getImageZoomFunction().getImageZoomer().setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
+        // 长按显示菜单
+        imageZoomer.setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
             @Override
             public void onViewLongPress(View view, float x, float y) {
                 new ImageMenu(getActivity(), imageView).show();
             }
         });
+
+        mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        mappingView.getOptions().setMaxSize(600, 600);
+        mappingView.displayImage(imageUri);
+
+        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        imageView.displayImage(imageUri);
 
         if (loader != null) {
             loader.load(imageUri);
