@@ -21,6 +21,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
@@ -40,8 +41,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class TileDecoder {
     private final Object decodeLock = new Object();
 
-    private int imageWidth;
-    private int imageHeight;
+    private Point imageSize;
     private String imageUri;
     private ImageFormat imageFormat;
 
@@ -50,27 +50,21 @@ public class TileDecoder {
 
     TileDecoder(String imageUri, int imageWidth, int imageHeight, ImageFormat imageFormat, BitmapRegionDecoder regionDecoder) {
         this.imageUri = imageUri;
-        this.imageWidth = imageWidth;
-        this.imageHeight = imageHeight;
+        this.imageSize = new Point(imageWidth, imageHeight);
         this.imageFormat = imageFormat;
         this.regionDecoder = regionDecoder;
     }
 
     TileDecoder(String imageUri, int imageWidth, int imageHeight, ImageFormat imageFormat, BitmapRegionDecoder regionDecoder, InputStream sourceInputStream) {
         this.imageUri = imageUri;
-        this.imageWidth = imageWidth;
-        this.imageHeight = imageHeight;
+        this.imageSize = new Point(imageWidth, imageHeight);
         this.imageFormat = imageFormat;
         this.regionDecoder = regionDecoder;
         this.sourceInputStream = sourceInputStream;
     }
 
-    public int getImageHeight() {
-        return imageHeight;
-    }
-
-    public int getImageWidth() {
-        return imageWidth;
+    public Point getImageSize() {
+        return imageSize;
     }
 
     public ImageFormat getImageFormat() {

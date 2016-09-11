@@ -18,6 +18,7 @@ package me.xiaopan.sketch.feature.large;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.Log;
 
@@ -69,16 +70,21 @@ public class TileManager {
         this.largeImageViewer = largeImageViewer;
     }
 
-    public void update(Rect visibleRect, int viewWidth, int viewHeight,
-                       int imageWidth, int imageHeight,
-                       int previewImageWidth, int previewImageHeight) {
+    public void update(Rect visibleRect, Point previewDrawableSize, Point imageViewSize, Point imageSize) {
+        final int viewWidth = imageViewSize.x;
+        final int viewHeight = imageViewSize.y;
+        final int previewImageWidth = previewDrawableSize.x;
+        final int previewImageHeight = previewDrawableSize.y;
+        final int imageWidth = imageSize.x;
+        final int imageHeight = imageSize.y;
+
         // 原始图和预览图对比的缩放比例
-        float originWidthScale = (float) imageWidth / previewImageWidth;
-        float originHeightScale = (float) imageHeight / previewImageHeight;
+        final float originWidthScale = (float) imageWidth / previewImageWidth;
+        final float originHeightScale = (float) imageHeight / previewImageHeight;
 
         // 计算绘制区域时，每边应该增加的量
-        int drawWidthAdd = (int) ((float) visibleRect.width() / tiles / 2);
-        int drawHeightAdd = (int) ((float) visibleRect.height() / tiles / 2);
+        final int drawWidthAdd = (int) ((float) visibleRect.width() / tiles / 2);
+        final int drawHeightAdd = (int) ((float) visibleRect.height() / tiles / 2);
 
         // 将显示区域加大一圈，计算出绘制区域，宽高各增加一个平均值
         // 为的是提前将四周加载出来，用户缓慢滑动的时候可以提前看到四周的图像
@@ -89,9 +95,9 @@ public class TileManager {
         newDrawRect.bottom = Math.min(previewImageHeight, visibleRect.bottom + drawHeightAdd);
 
         // 计算碎片的尺寸
-        int finalTiles = tiles + 1;
-        int tileWidth = newDrawRect.width() / finalTiles;
-        int tileHeight = newDrawRect.height() / finalTiles;
+        final int finalTiles = tiles + 1;
+        final int tileWidth = newDrawRect.width() / finalTiles;
+        final int tileHeight = newDrawRect.height() / finalTiles;
 
         // 根据碎片尺寸修剪drawRect，使其正好能整除碎片
         if (newDrawRect.right < previewImageWidth) {

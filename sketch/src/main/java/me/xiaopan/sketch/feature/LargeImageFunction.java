@@ -17,6 +17,9 @@
 package me.xiaopan.sketch.feature;
 
 import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Point;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
@@ -26,26 +29,28 @@ import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.drawable.BindDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
-import me.xiaopan.sketch.feature.large.UpdateParams;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 大图功能
  */
-// TODO: 16/9/11 不再需要wait updateParams了，因为初始化完成后会主动更新，最后也不再需要updateParams了，只需在LargeImageFunction中缓存这些数据即可
+// TODO: 16/9/11 各种设置的方法挪到这里，确保唯一入口的地位
 public class LargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangedListener, LargeImageViewer.Callback {
     private static final String NAME = "LargeImageFunction";
 
     private SketchImageView imageView;
     private LargeImageViewer largeImageViewer;
-    private UpdateParams updateParams;
+
+    private Matrix tempDrawMatrix;
+    private Rect tempVisibleRect;
+    private Point tempPreviewDrawableSize;
+    private Point tempImageViewSize;
 
     private String imageUri;
 
     public LargeImageFunction(SketchImageView imageView) {
         this.imageView = imageView;
-        this.updateParams = new UpdateParams();
         largeImageViewer = new LargeImageViewer(imageView.getContext(), this);
         if (!imageView.isSupportZoom()) {
             imageView.setSupportZoom(true);
@@ -121,22 +126,24 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             return;
         }
 
-        Drawable drawable = imageView.getDrawable();
-        if (drawable != null) {
-            updateParams.reset();
-
-            imageZoomer.getDrawMatrix(updateParams.drawMatrix);
-            imageZoomer.getVisibleRect(updateParams.visibleRect);
-            updateParams.setPreviewDrawableSize(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
-            updateParams.setImageViewSize(imageZoomer.getImageViewWidth(), imageZoomer.getImageViewHeight());
-
-            largeImageViewer.update(updateParams);
-        } else {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". drawable is null. onMatrixChanged. " + imageUri);
-            }
-            largeImageViewer.update(null);
+        if (tempDrawMatrix == null) {
+            tempDrawMatrix = new Matrix();
+            tempVisibleRect = new Rect();
+            tempPreviewDrawableSize = new Point();
+            tempImageViewSize = new Point();
         }
+
+        tempDrawMatrix.reset();
+        tempVisibleRect.setEmpty();
+        tempPreviewDrawableSize.set(0, 0);
+        tempImageViewSize.set(0, 0);
+
+        imageZoomer.getDrawMatrix(tempDrawMatrix);
+        imageZoomer.getVisibleRect(tempVisibleRect);
+        tempPreviewDrawableSize.set(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
+        tempImageViewSize.set(imageZoomer.getImageViewWidth(), imageZoomer.getImageViewHeight());
+
+        largeImageViewer.update(tempDrawMatrix, tempVisibleRect, tempPreviewDrawableSize, tempImageViewSize);
     }
 
     private void resetImage() {
