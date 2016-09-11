@@ -36,6 +36,7 @@ import android.widget.ImageView.ScaleType;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.SketchDrawable;
@@ -47,8 +48,6 @@ import me.xiaopan.sketch.util.SketchUtils;
 // TODO DrawerLayout包ViewPager的时候左右滑动有问题（先看看是不是DrawerLayout与ViewPager的兼容问题导致的）
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
 // TODO: 16/8/23 测试旋转功能
-// TODO: 16/9/7 初始化完成后的回调有问题，看一下是先后顺序导致的还是怎么着
-// TODO: 16/9/11 将双击缩放的比例和最大最小限制比例分开
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener {
     public static final String NAME = "ImageZoomer";
 
@@ -75,6 +74,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private float baseRotation;
     private float minZoomScale = DEFAULT_MINIMUM_SCALE;
     private float maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
+    private float[] doubleClickZoomScales = new float[]{DEFAULT_MINIMUM_SCALE, DEFAULT_MAXIMIZE_SCALE};
     private boolean zoomable = true;
     private boolean readMode;   // 阅读模式下，竖图将默认横向充满屏幕
     private ScaleType scaleType = ScaleType.FIT_CENTER;
@@ -330,6 +330,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             fullZoomScale = fillZoomScale = originZoomScale = 1f;
             minZoomScale = DEFAULT_MINIMUM_SCALE;
             maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
+            doubleClickZoomScales = new float[]{DEFAULT_MINIMUM_SCALE, DEFAULT_MAXIMIZE_SCALE};
             return;
         }
 
@@ -338,6 +339,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             fullZoomScale = fillZoomScale = originZoomScale = 1f;
             minZoomScale = DEFAULT_MINIMUM_SCALE;
             maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
+            doubleClickZoomScales = new float[]{DEFAULT_MINIMUM_SCALE, DEFAULT_MAXIMIZE_SCALE};
             return;
         }
 
@@ -347,6 +349,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             fullZoomScale = fillZoomScale = originZoomScale = 1f;
             minZoomScale = DEFAULT_MINIMUM_SCALE;
             maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
+            doubleClickZoomScales = new float[]{DEFAULT_MINIMUM_SCALE, DEFAULT_MAXIMIZE_SCALE};
             return;
         }
 
@@ -356,6 +359,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             fullZoomScale = fillZoomScale = originZoomScale = 1f;
             minZoomScale = DEFAULT_MINIMUM_SCALE;
             maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
+            doubleClickZoomScales = new float[]{DEFAULT_MINIMUM_SCALE, DEFAULT_MAXIMIZE_SCALE};
             return;
         }
 
@@ -377,29 +381,36 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             originZoomScale = 1f;
         }
 
+        minZoomScale = fullZoomScale;
+        maxZoomScale = Math.max(originZoomScale, fillZoomScale);
+
+        float oneLevelZoomScale;
+        float twoLevelZoomScale;
         if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
             if (originZoomScale > fillZoomScale) {
-                minZoomScale = fillZoomScale;
-                maxZoomScale = originZoomScale;
+                oneLevelZoomScale = fillZoomScale;
+                twoLevelZoomScale = originZoomScale;
             } else {
-                minZoomScale = originZoomScale;
-                maxZoomScale = fillZoomScale;
+                oneLevelZoomScale = originZoomScale;
+                twoLevelZoomScale = fillZoomScale;
             }
         } else {
-            minZoomScale = fullZoomScale;
+            oneLevelZoomScale = fullZoomScale;
 
-            // 最大缩放比例将在原始比例和充满比例中产生
+            // 二级缩放比例将在原始比例和充满比例中产生
             if (originZoomScale > fillZoomScale && (fillZoomScale * 1.2f) >= originZoomScale) {
-                // 如果原始比例仅仅比充满比例大一点点，还是用充满比例作为最大缩放比例比较好
-                maxZoomScale = fillZoomScale;
+                // 如果原始比例仅仅比充满比例大一点点，还是用充满比例作为二级缩放比例比较好
+                twoLevelZoomScale = fillZoomScale;
             } else {
-                // 否则的话谁大用谁作为最大缩放比例
-                maxZoomScale = Math.max(fillZoomScale, originZoomScale);
+                // 否则的话谁大用谁作为二级缩放比例
+                twoLevelZoomScale = Math.max(fillZoomScale, originZoomScale);
             }
 
-            // 最大缩放比例和最小缩放比例的差距不能太小，最小得是最小缩放比例的1.5倍
-            maxZoomScale = Math.max(maxZoomScale, minZoomScale * 1.5f);
+            // 二级缩放比例和一级缩放比例的差距不能太小，最小得是一级缩放比例的1.5倍
+            twoLevelZoomScale = Math.max(twoLevelZoomScale, oneLevelZoomScale * 1.5f);
         }
+        doubleClickZoomScales = new float[]{oneLevelZoomScale, twoLevelZoomScale};
+        Arrays.sort(doubleClickZoomScales);
     }
 
     /**
@@ -845,6 +856,28 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return originZoomScale;
     }
 
+    /**
+     * 获取最小缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getMinZoomScale() {
+        return minZoomScale;
+    }
+
+    /**
+     * 获取最大缩放比例
+     */
+    @SuppressWarnings("unused")
+    public float getMaxZoomScale() {
+        return maxZoomScale;
+    }
+
+    /**
+     * 获取双击缩放比例
+     */
+    public float[] getDoubleClickZoomScales() {
+        return doubleClickZoomScales;
+    }
 
     /** -----------交互功能----------- **/
 
@@ -878,7 +911,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         ImageView imageView = getImageView();
         if (imageView != null) {
             if (scale < minZoomScale || scale > maxZoomScale) {
-                Log.w(Sketch.TAG, NAME + ". Scale must be within the range of " + minZoomScale + "(minScale) and " + maxZoomScale + "(maxScale)");
+                Log.w(Sketch.TAG, NAME + ". Scale must be within the range of " + minZoomScale + "(minScale) and " + maxZoomScale + "(maxScale). " + scale);
                 return;
             }
 
@@ -1026,13 +1059,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
-     * 获取最大缩放比例
-     */
-    public float getMaxZoomScale() {
-        return maxZoomScale;
-    }
-
-    /**
      * 设置最大缩放比例
      */
     @SuppressWarnings("unused")
@@ -1042,13 +1068,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                     "maxZoomScale zoom has to be is greater than minZoomScale zoom. Call setMaxZoomScale() with a more appropriate value");
         }
         this.maxZoomScale = maxZoomScale;
-    }
-
-    /**
-     * 获取最小缩放比例
-     */
-    public float getMinZoomScale() {
-        return minZoomScale;
     }
 
     /**
