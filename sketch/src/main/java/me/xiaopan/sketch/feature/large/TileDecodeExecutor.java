@@ -132,10 +132,6 @@ public class TileDecodeExecutor {
         if (decodeHandler != null) {
             decodeHandler.clean(why, imageUri);
         }
-
-        if (mainHandler != null) {
-            mainHandler.cleanDecode(why, imageUri);
-        }
     }
 
     /**

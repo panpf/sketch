@@ -618,14 +618,20 @@ public class TileManager {
         for (Tile tile : tileList) {
             tile.refreshKey();
             tile.clean();
+            tilePool.put(tile);
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". clean tile and refresh key. " + why + ". tile=" + tile.getInfo());
             }
         }
         tileList.clear();
+        lastOriginDrawRect.setEmpty();
+        lastOriginSrcRect.setEmpty();
+        lastRealDrawRect.setEmpty();
+        lastRealSrcRect.setEmpty();
     }
 
     public void recycle(@SuppressWarnings("UnusedParameters") String why) {
+        clean(why);
         tilePool.clear();
         rectPool.clear();
     }
