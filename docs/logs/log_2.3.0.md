@@ -16,6 +16,9 @@ Drawable：
 >* ``修改``. BindFixedRecycleBitmapDrawable改名为BindFixedBitmapDrawable
 >* ``BUG``. 修复SketchBitmapDrawable由于没有设置TargetDensity导致始终以160的默认像素密度来缩小图片的BUG
 
+DiskCache：
+>* [#11](https://github.com/xiaopansky/Sketch/issues/11) 修复最后一条缓存无效的BUG，这是DiskLruCache的BUG，因为在commit的时候没有持久化操作记录
+
 其它：
 优化inSampleSize计算规则，先先根据像素数过滤，然后再根据优化OpenGL的MAX_TEXTURE_SIZE过滤，最后如果是为大图功能加载预览图的话，当缩小2倍的时为了节省内存考虑还不如缩小4倍（缩小1倍时不会启用大图功能，因此无需处理）
 默认maxSize改为屏幕的宽高，不再乘以0.75
