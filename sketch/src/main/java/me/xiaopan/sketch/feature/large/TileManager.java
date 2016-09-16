@@ -412,9 +412,9 @@ class TileManager {
             @Override
             public int compare(Tile o1, Tile o2) {
                 if (o1.drawRect.top >= o2.drawRect.bottom || o2.drawRect.top >= o1.drawRect.bottom) {
-                    return SketchUtils.safeCompareResult(o1.drawRect.top - o2.drawRect.top);
+                    return SketchUtils.safeCompareResult(o1.drawRect.top, o2.drawRect.top);
                 } else {
-                    return SketchUtils.safeCompareResult(o1.drawRect.left - o2.drawRect.left);
+                    return SketchUtils.safeCompareResult(o1.drawRect.left, o2.drawRect.left);
                 }
             }
         });
