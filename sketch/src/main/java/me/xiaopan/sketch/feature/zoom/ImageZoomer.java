@@ -424,12 +424,12 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         float oneLevelZoomScale;
         float twoLevelZoomScale;
         if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
-            if (originZoomScale > fillZoomScale) {
-                oneLevelZoomScale = fillZoomScale;
-                twoLevelZoomScale = originZoomScale;
-            } else {
-                oneLevelZoomScale = originZoomScale;
+            if (fullZoomScale < fillZoomScale) {
+                oneLevelZoomScale = fullZoomScale;
                 twoLevelZoomScale = fillZoomScale;
+            } else {
+                oneLevelZoomScale = fillZoomScale;
+                twoLevelZoomScale = fullZoomScale;
             }
         } else {
             oneLevelZoomScale = fullZoomScale;
@@ -643,7 +643,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 是否可以使用阅读模式
      */
     private boolean canUseReadMode(int drawableWidth, int drawableHeight, int viewHeight){
-        return readMode && drawableHeight > drawableWidth && drawableHeight > viewHeight;
+        return readMode && drawableHeight > drawableWidth && drawableHeight > (viewHeight * 1.3f);
     }
 
 
