@@ -36,18 +36,18 @@ class DecodeHandler extends Handler {
     private static final String NAME = "DecodeHandler";
     private static final int WHAT_DECODE = 1001;
 
-    private WeakReference<TileDecodeExecutor> reference;
+    private WeakReference<TileExecutor> reference;
 
-    public DecodeHandler(Looper looper, TileDecodeExecutor decodeExecutor) {
+    public DecodeHandler(Looper looper, TileExecutor decodeExecutor) {
         super(looper);
-        reference = new WeakReference<TileDecodeExecutor>(decodeExecutor);
+        reference = new WeakReference<TileExecutor>(decodeExecutor);
     }
 
     @Override
     public void handleMessage(Message msg) {
-        TileDecodeExecutor decodeExecutor = reference.get();
+        TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor != null) {
-            decodeExecutor.getMainHandler().cancelDelayDestroyThread();
+            decodeExecutor.mainHandler.cancelDelayDestroyThread();
         }
 
         switch (msg.what) {
@@ -57,7 +57,7 @@ class DecodeHandler extends Handler {
         }
 
         if (decodeExecutor != null) {
-            decodeExecutor.getMainHandler().postDelayRecycleDecodeThread();
+            decodeExecutor.mainHandler.postDelayRecycleDecodeThread();
         }
     }
 
@@ -68,12 +68,12 @@ class DecodeHandler extends Handler {
         message.sendToTarget();
     }
 
-    private void decode(TileDecodeExecutor decodeExecutor, int key, Tile tile) {
+    private void decode(TileExecutor decodeExecutor, int key, Tile tile) {
         if (tile.isExpired(key)) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". key expired. before decode. key: " + key + ", tile=" + tile.getInfo());
             }
-            decodeExecutor.getMainHandler().postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_BEFORE_KEY_EXPIRED));
+            decodeExecutor.mainHandler.postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_BEFORE_KEY_EXPIRED));
             return;
         }
 
@@ -81,7 +81,7 @@ class DecodeHandler extends Handler {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". decode param is empty. key: " + key + ", tile=" + tile.getInfo());
             }
-            decodeExecutor.getMainHandler().postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_DECODE_PARAM_EMPTY));
+            decodeExecutor.mainHandler.postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_DECODE_PARAM_EMPTY));
             return;
         }
 
@@ -95,7 +95,7 @@ class DecodeHandler extends Handler {
         Rect srcRect = new Rect(tile.srcRect);
         int inSampleSize = tile.inSampleSize;
 
-        TileDecoder decoder = decodeExecutor.getDecoder();
+        TileDecoder decoder = decodeExecutor.decoder;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
         ImageFormat imageFormat = decoder.getImageFormat();
@@ -108,7 +108,7 @@ class DecodeHandler extends Handler {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". bitmap is null or recycled. after decode. key: " + key + ", tile=" + tile.getInfo());
             }
-            decodeExecutor.getMainHandler().postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_BITMAP_NULL));
+            decodeExecutor.mainHandler.postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_BITMAP_NULL));
             return;
         }
 
@@ -117,11 +117,11 @@ class DecodeHandler extends Handler {
                 Log.w(Sketch.TAG, NAME + ". key expired. after decode. key: " + key + ", tile=" + tile.getInfo());
             }
             bitmap.recycle();
-            decodeExecutor.getMainHandler().postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_AFTER_KEY_EXPIRED));
+            decodeExecutor.mainHandler.postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_AFTER_KEY_EXPIRED));
             return;
         }
 
-        decodeExecutor.getMainHandler().postDecodeCompleted(key, tile, bitmap);
+        decodeExecutor.mainHandler.postDecodeCompleted(key, tile, bitmap);
     }
 
     public void clean(String why, String imageUri) {

@@ -24,6 +24,7 @@ import me.xiaopan.sketch.util.KeyCounter;
 /**
  * 碎片
  */
+// TODO: 16/9/16 将解码器放到这里来
 public class Tile {
     public Rect drawRect = new Rect();
     public Rect srcRect = new Rect();

@@ -32,27 +32,28 @@ import me.xiaopan.sketch.util.KeyCounter;
 /**
  * 碎片解码执行器，负责初始化解码器以及管理解码线程
  */
-public class TileDecodeExecutor {
+// TODO: 16/9/16 将解码器和执行器分开
+class TileExecutor {
     private static final String NAME = "TileDecodeExecutor";
     private static final AtomicInteger THREAD_NUMBER = new AtomicInteger();
 
     private final Object handlerThreadLock = new Object();
     private final Object decoderLock = new Object();
 
-    private Callback callback;
+    Callback callback;
 
     private HandlerThread handlerThread;
 
     private boolean running;
     private boolean initializing;
     private InitHandler initHandler;
-    private MainHandler mainHandler;
+    MainHandler mainHandler;
     private DecodeHandler decodeHandler;
-    private TileDecoder decoder;
-    private KeyCounter initKeyCounter;
+    TileDecoder decoder;
+    KeyCounter initKeyCounter;
     private String imageUri;
 
-    public TileDecodeExecutor(Callback callback) {
+    public TileExecutor(Callback callback) {
         this.callback = callback;
         this.initKeyCounter = new KeyCounter();
         this.mainHandler = new MainHandler(Looper.getMainLooper(), this);
@@ -190,7 +191,7 @@ public class TileDecodeExecutor {
     void initCompleted(TileDecoder decoder) {
         if (running) {
             synchronized (decoderLock) {
-                TileDecodeExecutor.this.decoder = decoder;
+                TileExecutor.this.decoder = decoder;
             }
             initializing = false;
         } else {
@@ -237,22 +238,6 @@ public class TileDecodeExecutor {
      */
     public boolean isInitializing() {
         return running && initializing;
-    }
-
-    Context getContext() {
-        return callback.getContext();
-    }
-
-    public TileDecoder getDecoder() {
-        return decoder;
-    }
-
-    MainHandler getMainHandler() {
-        return mainHandler;
-    }
-
-    public int getInitKey() {
-        return initKeyCounter.getKey();
     }
 
     public interface Callback {

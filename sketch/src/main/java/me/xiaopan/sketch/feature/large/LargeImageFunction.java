@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.feature;
+package me.xiaopan.sketch.feature.large;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -28,7 +28,6 @@ import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.drawable.BindDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
-import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.util.SketchUtils;
 

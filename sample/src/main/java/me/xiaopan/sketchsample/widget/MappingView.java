@@ -96,10 +96,10 @@ public class MappingView extends SketchImageView {
         super.onDraw(canvas);
 
         if (largeImageViewer != null) {
-            float widthScale = (float) largeImageViewer.getExecutor().getDecoder().getImageSize().x / getWidth();
-            float heightScale = (float) largeImageViewer.getExecutor().getDecoder().getImageSize().y / getHeight();
+            float widthScale = (float) largeImageViewer.getImageSize().x / getWidth();
+            float heightScale = (float) largeImageViewer.getImageSize().y / getHeight();
 
-            for (Tile tile : largeImageViewer.getTileManager().getTileList()) {
+            for (Tile tile : largeImageViewer.getTileList()) {
                 if (!tile.isEmpty()) {
                     canvas.drawRect((tile.srcRect.left + 1) / widthScale,
                             (tile.srcRect.top + 1) / heightScale,
@@ -113,20 +113,20 @@ public class MappingView extends SketchImageView {
                 }
             }
 
-            Rect originSrcRect = largeImageViewer.getTileManager().getOriginSrcRect();
-            if (!originSrcRect.isEmpty()) {
-                canvas.drawRect((originSrcRect.left) / widthScale,
-                        (originSrcRect.top) / heightScale,
-                        (originSrcRect.right) / widthScale,
-                        (originSrcRect.bottom) / heightScale, originSrcRectPaint);
+            Rect drawSrcRect = largeImageViewer.getDrawSrcRect();
+            if (!drawSrcRect.isEmpty()) {
+                canvas.drawRect((drawSrcRect.left) / widthScale,
+                        (drawSrcRect.top) / heightScale,
+                        (drawSrcRect.right) / widthScale,
+                        (drawSrcRect.bottom) / heightScale, originSrcRectPaint);
             }
 
-            Rect realSrcRect = largeImageViewer.getTileManager().getRealSrcRect();
-            if (!realSrcRect.isEmpty()) {
-                canvas.drawRect((realSrcRect.left) / widthScale,
-                        (realSrcRect.top) / heightScale,
-                        (realSrcRect.right) / widthScale,
-                        (realSrcRect.bottom) / heightScale, realSrcRectPaint);
+            Rect decodeSrcRect = largeImageViewer.getDecodeSrcRect();
+            if (!decodeSrcRect.isEmpty()) {
+                canvas.drawRect((decodeSrcRect.left) / widthScale,
+                        (decodeSrcRect.top) / heightScale,
+                        (decodeSrcRect.right) / widthScale,
+                        (decodeSrcRect.bottom) / heightScale, realSrcRectPaint);
             }
         }
 

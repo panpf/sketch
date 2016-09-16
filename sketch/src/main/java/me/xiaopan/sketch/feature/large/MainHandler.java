@@ -38,11 +38,11 @@ class MainHandler extends Handler {
     private static final int WHAT_DECODE_COMPLETED = 2004;
     private static final int WHAT_DECODE_FAILED = 2005;
 
-    private WeakReference<TileDecodeExecutor> reference;
+    private WeakReference<TileExecutor> reference;
 
-    public MainHandler(Looper looper, TileDecodeExecutor decodeExecutor) {
+    public MainHandler(Looper looper, TileExecutor decodeExecutor) {
         super(looper);
-        reference = new WeakReference<TileDecodeExecutor>(decodeExecutor);
+        reference = new WeakReference<TileExecutor>(decodeExecutor);
     }
 
     @Override
@@ -78,7 +78,7 @@ class MainHandler extends Handler {
     }
 
     private void recycleDecodeThread() {
-        TileDecodeExecutor decodeExecutor = reference.get();
+        TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor != null) {
             decodeExecutor.recycleDecodeThread();
         }
@@ -100,7 +100,7 @@ class MainHandler extends Handler {
     }
 
     private void initCompleted(TileDecoder decoder, int key) {
-        TileDecodeExecutor decodeExecutor = reference.get();
+        TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. initCompleted. key: " + key + ", imageUri: " + decoder.getImageUri());
@@ -109,7 +109,7 @@ class MainHandler extends Handler {
             return;
         }
 
-        int newKey = decodeExecutor.getInitKey();
+        int newKey = decodeExecutor.initKeyCounter.getKey();
         if (key != newKey) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". init key expired. initCompleted. key: " + key + ". newKey: " + newKey + ", imageUri: " + decoder.getImageUri());
@@ -130,7 +130,7 @@ class MainHandler extends Handler {
     }
 
     private void initFailed(InitHandler.InitFailedException e, int key) {
-        TileDecodeExecutor decodeExecutor = reference.get();
+        TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. initFailed. key: " + key + ", imageUri: " + e.getImageUri());
@@ -138,7 +138,7 @@ class MainHandler extends Handler {
             return;
         }
 
-        int newKey = decodeExecutor.getInitKey();
+        int newKey = decodeExecutor.initKeyCounter.getKey();
         if (key != newKey) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". key expire. initFailed. key: " + key + ". newKey: " + newKey + ", imageUri: " + e.getImageUri());
@@ -158,7 +158,7 @@ class MainHandler extends Handler {
     }
 
     private void decodeCompleted(int key, DecodeResult result) {
-        TileDecodeExecutor decodeExecutor = reference.get();
+        TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. decodeCompleted. key: " + key +", tile=" + result.tile.getInfo());
@@ -184,7 +184,7 @@ class MainHandler extends Handler {
     }
 
     private void decodeFailed(int key, DecodeHandler.DecodeFailedException exception) {
-        TileDecodeExecutor decodeExecutor = reference.get();
+        TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. decodeFailed. key: " + key +", tile=" + exception.tile.getInfo());

@@ -81,7 +81,7 @@ public class LargeImageFragment extends MyFragment {
         imageView.setSupportLargeImage(true);
 
         final ImageZoomer imageZoomer = imageView.getImageZoomFunction().getImageZoomer();
-        final LargeImageViewer largeImageViewer = imageView.getLargeImageFunction().getLargeImageViewer();
+        final LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
 
         // MappingView跟随Matrix变化刷新各种区域
         imageZoomer.addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
@@ -96,11 +96,11 @@ public class LargeImageFragment extends MyFragment {
         });
 
         // MappingView跟随碎片变化刷新碎片区域
-        largeImageViewer.getTileManager().setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
+        largeImageViewer.setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
             @Override
             public void onTileChanged(LargeImageViewer largeImageViewer) {
                 mappingView.onTileChanged(largeImageViewer);
-                bytes = Formatter.formatShortFileSize(getActivity(), largeImageViewer.getTileManager().getBytes());
+                bytes = Formatter.formatShortFileSize(getActivity(), largeImageViewer.getTilesAllocationByteCount());
                 scaleTextView.setText(String.format("%s · %s", scale, bytes));
             }
         });

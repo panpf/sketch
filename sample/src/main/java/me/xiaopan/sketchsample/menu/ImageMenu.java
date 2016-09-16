@@ -42,7 +42,7 @@ public class ImageMenu {
 
         String[] items = new String[3];
         items[0] = "ScaleType: " + (imageView.isSupportZoom() ? imageView.getImageZoomFunction().getScaleType() : imageView.getScaleType());
-        items[1] = "显示分块区域: " + (imageView.isSupportLargeImage() && imageView.getLargeImageFunction().getLargeImageViewer().isShowTileRect());
+        items[1] = "显示分块区域: " + (imageView.isSupportLargeImage() && imageView.getLargeImageViewer().isShowTileRect());
         items[2] = "阅读模式: " + (imageView.isSupportZoom() && imageView.getImageZoomFunction().getImageZoomer().isReadMode());
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
@@ -55,8 +55,8 @@ public class ImageMenu {
                         break;
                     case 1:
                         if (imageView.isSupportLargeImage()) {
-                            boolean newShowTileRect = !imageView.getLargeImageFunction().getLargeImageViewer().isShowTileRect();
-                            imageView.getLargeImageFunction().getLargeImageViewer().setShowTileRect(newShowTileRect);
+                            boolean newShowTileRect = !imageView.getLargeImageViewer().isShowTileRect();
+                            imageView.getLargeImageViewer().setShowTileRect(newShowTileRect);
                         }
                         break;
                     case 2:

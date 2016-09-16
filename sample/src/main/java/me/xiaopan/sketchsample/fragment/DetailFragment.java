@@ -318,16 +318,18 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
 
                             if (imageView.isSupportLargeImage()) {
                                 messageBuilder.append("\n");
-                                LargeImageViewer largeImageViewer = imageView.getLargeImageFunction().getLargeImageViewer();
+                                LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
                                 if (largeImageViewer.isReady()) {
                                     messageBuilder.append("\n");
-                                    messageBuilder.append("大图功能占用内存：").append(Formatter.formatFileSize(getActivity(), largeImageViewer.getTileManager().getBytes()));
+                                    messageBuilder.append("大图功能占用内存：").append(Formatter.formatFileSize(getActivity(), largeImageViewer.getTilesAllocationByteCount()));
                                     messageBuilder.append("\n");
-                                    messageBuilder.append("碎片数量：").append(largeImageViewer.getTileManager().getTileList().size());
+                                    messageBuilder.append("碎片基数：").append(largeImageViewer.getTiles());
                                     messageBuilder.append("\n");
-                                    messageBuilder.append("绘制区域：").append(largeImageViewer.getTileManager().getRealDrawRect().toShortString());
+                                    messageBuilder.append("碎片数量：").append(largeImageViewer.getTileList().size());
                                     messageBuilder.append("\n");
-                                    messageBuilder.append("SRC区域：").append(largeImageViewer.getTileManager().getRealSrcRect().toShortString());
+                                    messageBuilder.append("解码区域：").append(largeImageViewer.getDecodeRect().toShortString());
+                                    messageBuilder.append("\n");
+                                    messageBuilder.append("解码SRC区域：").append(largeImageViewer.getDecodeSrcRect().toShortString());
                                 } else if (largeImageViewer.isInitializing()) {
                                     messageBuilder.append("\n");
                                     messageBuilder.append("大图功能正在初始化...");

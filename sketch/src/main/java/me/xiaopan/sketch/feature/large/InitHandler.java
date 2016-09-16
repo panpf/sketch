@@ -32,18 +32,18 @@ class InitHandler extends Handler {
     private static final String NAME = "InitHandler";
     private static final int WHAT_INIT = 1002;
 
-    private WeakReference<TileDecodeExecutor> reference;
+    private WeakReference<TileExecutor> reference;
 
-    public InitHandler(Looper looper, TileDecodeExecutor decodeExecutor) {
+    public InitHandler(Looper looper, TileExecutor decodeExecutor) {
         super(looper);
-        reference = new WeakReference<TileDecodeExecutor>(decodeExecutor);
+        reference = new WeakReference<TileExecutor>(decodeExecutor);
     }
 
     @Override
     public void handleMessage(Message msg) {
-        TileDecodeExecutor decodeExecutor = reference.get();
+        TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor != null) {
-            decodeExecutor.getMainHandler().cancelDelayDestroyThread();
+            decodeExecutor.mainHandler.cancelDelayDestroyThread();
         }
 
         switch (msg.what) {
@@ -53,7 +53,7 @@ class InitHandler extends Handler {
         }
 
         if (decodeExecutor != null) {
-            decodeExecutor.getMainHandler().postDelayRecycleDecodeThread();
+            decodeExecutor.mainHandler.postDelayRecycleDecodeThread();
         }
     }
 
@@ -66,7 +66,7 @@ class InitHandler extends Handler {
         message.sendToTarget();
     }
 
-    private void init(TileDecodeExecutor decodeExecutor, String imageUri, int key) {
+    private void init(TileExecutor decodeExecutor, String imageUri, int key) {
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. key: " + key + ", imageUri: " + imageUri);
@@ -74,7 +74,7 @@ class InitHandler extends Handler {
             return;
         }
 
-        int newKey = decodeExecutor.getInitKey();
+        int newKey = decodeExecutor.initKeyCounter.getKey();
         if (key != newKey) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". init key expired. before init. key: " + key + ", newKey: " + newKey + ", imageUri: " + imageUri);
@@ -83,13 +83,13 @@ class InitHandler extends Handler {
 
         TileDecoder decoder;
         try {
-            decoder = TileDecoder.build(decodeExecutor.getContext(), imageUri);
+            decoder = TileDecoder.build(decodeExecutor.callback.getContext(), imageUri);
         } catch (final Exception e) {
             e.printStackTrace();
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". init failed. exception. key: " + key + ", imageUri: " + imageUri);
             }
-            decodeExecutor.getMainHandler().postInitFailed(new InitFailedException(e, imageUri), key);
+            decodeExecutor.mainHandler.postInitFailed(new InitFailedException(e, imageUri), key);
             return;
         }
 
@@ -97,11 +97,11 @@ class InitHandler extends Handler {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". init failed. decode is null. key: " + key + ", imageUri: " + imageUri);
             }
-            decodeExecutor.getMainHandler().postInitFailed(new InitFailedException(new Exception("decoder is null"), imageUri), key);
+            decodeExecutor.mainHandler.postInitFailed(new InitFailedException(new Exception("decoder is null"), imageUri), key);
             return;
         }
 
-        newKey = decodeExecutor.getInitKey();
+        newKey = decodeExecutor.initKeyCounter.getKey();
         if (key != newKey) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". init key expired. after init. key: " + key + ", newKey: " + newKey + ", imageUri: " + imageUri);
@@ -110,7 +110,7 @@ class InitHandler extends Handler {
             return;
         }
 
-        decodeExecutor.getMainHandler().postInitCompleted(decoder, key);
+        decodeExecutor.mainHandler.postInitCompleted(decoder, key);
     }
 
     public void clean(String why, String imageUri) {

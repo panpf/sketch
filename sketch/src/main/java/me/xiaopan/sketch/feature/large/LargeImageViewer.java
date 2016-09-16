@@ -30,6 +30,7 @@ import android.util.Log;
 import java.util.List;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -53,7 +54,7 @@ public class LargeImageViewer {
 
     private boolean running;
     private TileManager tileManager;
-    private TileDecodeExecutor executor;
+    private TileExecutor executor;
     private String imageUri;
 
     public LargeImageViewer(Context context, Callback callback) {
@@ -61,18 +62,17 @@ public class LargeImageViewer {
         this.callback = callback;
 
         this.matrix = new Matrix();
-        this.executor = new TileDecodeExecutor(new ExecutorCallback());
+        this.executor = new TileExecutor(new ExecutorCallback());
         this.drawTilePaint = new Paint();
         this.tileManager = new TileManager(context.getApplicationContext(), this);
     }
 
-    public void draw(Canvas canvas) {
-        List<Tile> tileList = tileManager.getTileList();
-        if (tileList != null && tileList.size() > 0) {
+    void draw(Canvas canvas) {
+        if (tileManager.tileList != null && tileManager.tileList.size() > 0) {
             int saveCount = canvas.save();
             canvas.concat(matrix);
 
-            for (Tile tile : tileList) {
+            for (Tile tile : tileManager.tileList) {
                 if (!tile.isEmpty()) {
                     canvas.drawBitmap(tile.bitmap, tile.bitmapDrawSrcRect, tile.drawRect, drawTilePaint);
                     if (showTileRect) {
@@ -100,7 +100,7 @@ public class LargeImageViewer {
     /**
      * 设置新的图片
      */
-    public void setImage(String imageUri) {
+    void setImage(String imageUri) {
         clean("setImage");
 
         this.imageUri = imageUri;
@@ -116,7 +116,7 @@ public class LargeImageViewer {
     /**
      * 更新
      */
-    public void update(Matrix drawMatrix, Rect visibleRect, Point previewDrawableSize, Point imageViewSize, boolean zooming) {
+    void update(Matrix drawMatrix, Rect visibleRect, Point previewDrawableSize, Point imageViewSize, boolean zooming) {
         // 没有准备好就不往下走了
         if (!isReady()) {
             if (Sketch.isDebugMode()) {
@@ -154,7 +154,7 @@ public class LargeImageViewer {
 
         callback.invalidate();
 
-        tileManager.update(visibleRect, previewDrawableSize, imageViewSize, executor.getDecoder().getImageSize(), zooming);
+        tileManager.update(visibleRect, previewDrawableSize, imageViewSize, executor.decoder.getImageSize(), zooming);
     }
 
     /**
@@ -175,14 +175,14 @@ public class LargeImageViewer {
     /**
      * 回收资源（回收后需要重新setImage()才能使用）
      */
-    public void recycle(String why) {
+    void recycle(String why) {
         running = false;
         clean(why);
         executor.recycle(why);
         tileManager.recycle(why);
     }
 
-    public void invalidateView(){
+    void invalidateView(){
         callback.invalidate();
     }
 
@@ -230,12 +230,106 @@ public class LargeImageViewer {
         return lastZoomScale;
     }
 
-    public TileDecodeExecutor getExecutor() {
+    /**
+     * 获取图片的尺寸
+     */
+    public Point getImageSize(){
+        return executor.isReady() ? executor.decoder.getImageSize() : null;
+    }
+
+    /**
+     * 获取图片的格式
+     */
+    @SuppressWarnings("unused")
+    public ImageFormat getImageFormat(){
+        return executor.isReady() ? executor.decoder.getImageFormat() : null;
+    }
+
+    TileExecutor getExecutor() {
         return executor;
     }
 
-    public TileManager getTileManager() {
-        return tileManager;
+    /**
+     * 获取图片URI
+     */
+    public String getImageUri() {
+        return imageUri;
+    }
+
+    /**
+     * 获取绘制区域
+     */
+    @SuppressWarnings("unused")
+    public Rect getDrawRect() {
+        return tileManager.drawRect;
+    }
+
+    /**
+     * 获取绘制区域在原图中对应的位置
+     */
+    public Rect getDrawSrcRect() {
+        return tileManager.drawSrcRect;
+    }
+
+    /**
+     * 获取解码区域
+     */
+    public Rect getDecodeRect() {
+        return tileManager.decodeRect;
+    }
+
+    /**
+     * 获取解码区域在原图中对应的位置
+     */
+    public Rect getDecodeSrcRect() {
+        return tileManager.decodeSrcRect;
+    }
+
+    /**
+     * 获取碎片列表
+     */
+    public List<Tile> getTileList() {
+        return tileManager.tileList;
+    }
+
+    /**
+     * 获取碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
+     */
+    public int getTiles() {
+        return tileManager.tiles;
+    }
+
+    /**
+     * 获取碎片变化监听器
+     */
+    @SuppressWarnings("unused")
+    public OnTileChangedListener getOnTileChangedListener(){
+        return tileManager.onTileChangedListener;
+    }
+
+    /**
+     * 获取碎片变化监听器
+     */
+    public void setOnTileChangedListener(LargeImageViewer.OnTileChangedListener onTileChangedListener) {
+        tileManager.onTileChangedListener = onTileChangedListener;
+    }
+
+    /**
+     * 获取碎片占用的内存，单位字节
+     */
+    @SuppressWarnings("unused")
+    public long getTilesAllocationByteCount() {
+        if (tileManager.tileList == null || tileManager.tileList.size() <= 0) {
+            return 0;
+        }
+
+        long bytes = 0;
+        for (Tile tile : tileManager.tileList) {
+            if (!tile.isEmpty()) {
+                bytes += SketchUtils.getBitmapByteCount(tile.bitmap);
+            }
+        }
+        return bytes;
     }
 
     public interface Callback {
@@ -247,7 +341,7 @@ public class LargeImageViewer {
         void onTileChanged(LargeImageViewer largeImageViewer);
     }
 
-    private class ExecutorCallback implements TileDecodeExecutor.Callback {
+    private class ExecutorCallback implements TileExecutor.Callback {
 
         @Override
         public Context getContext() {
