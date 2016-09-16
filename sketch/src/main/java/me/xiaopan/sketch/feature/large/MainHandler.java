@@ -25,6 +25,7 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.util.KeyCounter;
 
 /**
  * 运行在主线程，负责将执行器的结果发送到主线程
@@ -52,16 +53,20 @@ class MainHandler extends Handler {
                 recycleDecodeThread();
                 break;
             case WHAT_INIT_COMPLETED:
-                initCompleted((TileDecoder) msg.obj, msg.arg1);
+                InitResult initResult = (InitResult) msg.obj;
+                initCompleted(initResult.imageRegionDecoder, initResult.imageUrl, msg.arg1, initResult.keyCounter);
                 break;
             case WHAT_INIT_FAILED:
-                initFailed((InitHandler.InitFailedException) msg.obj, msg.arg1);
+                InitFailedResult initFailedResult = (InitFailedResult) msg.obj;
+                initFailed(initFailedResult.exception, initFailedResult.imageUrl, msg.arg1, initFailedResult.keyCounter);
                 break;
             case WHAT_DECODE_COMPLETED:
-                decodeCompleted(msg.arg1, (DecodeResult) msg.obj);
+                DecodeResult decodeResult = (DecodeResult) msg.obj;
+                decodeCompleted(msg.arg1, decodeResult.tile, decodeResult.bitmap);
                 break;
             case WHAT_DECODE_FAILED:
-                decodeFailed(msg.arg1, (DecodeHandler.DecodeFailedException) msg.obj);
+                DecodeFailedResult decodeFailedResult = (DecodeFailedResult) msg.obj;
+                decodeFailed(msg.arg1, decodeFailedResult.tile, decodeFailedResult.exception);
                 break;
         }
     }
@@ -92,14 +97,38 @@ class MainHandler extends Handler {
     }
 
 
-    public void postInitCompleted(TileDecoder decoder, int initKey) {
+    public void postInitCompleted(ImageRegionDecoder decoder, String imageUri, int initKey, KeyCounter keyCounter) {
         Message message = obtainMessage(MainHandler.WHAT_INIT_COMPLETED);
         message.arg1 = initKey;
-        message.obj = decoder;
+        message.obj = new InitResult(decoder, imageUri, keyCounter);
         message.sendToTarget();
     }
 
-    private void initCompleted(TileDecoder decoder, int key) {
+    public void postInitFailed(Exception e, String imageUri, int key, KeyCounter keyCounter) {
+        Message message = obtainMessage(MainHandler.WHAT_INIT_FAILED);
+        message.arg1 = key;
+        message.obj = new InitFailedResult(e, imageUri, keyCounter);
+        message.sendToTarget();
+    }
+
+    public void postDecodeCompleted(int key, Tile tile, Bitmap bitmap) {
+        Message message = obtainMessage(MainHandler.WHAT_DECODE_COMPLETED);
+        message.arg1 = key;
+        message.obj = new DecodeResult(bitmap, tile);
+        message.sendToTarget();
+    }
+
+    public void postDecodeFailed(int key, Tile tile, DecodeHandler.DecodeFailedException exception) {
+        Message message = obtainMessage(MainHandler.WHAT_DECODE_FAILED);
+        message.arg1 = key;
+        message.obj = new DecodeFailedResult(tile, exception);
+        message.sendToTarget();
+    }
+
+
+
+
+    private void initCompleted(ImageRegionDecoder decoder, String imageUri, int key, KeyCounter keyCounter) {
         TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
@@ -109,7 +138,7 @@ class MainHandler extends Handler {
             return;
         }
 
-        int newKey = decodeExecutor.initKeyCounter.getKey();
+        int newKey = keyCounter.getKey();
         if (key != newKey) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". init key expired. initCompleted. key: " + key + ". newKey: " + newKey + ", imageUri: " + decoder.getImageUri());
@@ -118,90 +147,58 @@ class MainHandler extends Handler {
             return;
         }
 
-        decodeExecutor.initCompleted(decoder);
+        decodeExecutor.callback.onInitCompleted(imageUri, decoder);
     }
 
-
-    public void postInitFailed(InitHandler.InitFailedException e, int key) {
-        Message message = obtainMessage(MainHandler.WHAT_INIT_FAILED);
-        message.arg1 = key;
-        message.obj = e;
-        message.sendToTarget();
-    }
-
-    private void initFailed(InitHandler.InitFailedException e, int key) {
+    private void initFailed(Exception exception, String imageUri, int key, KeyCounter keyCounter) {
         TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. initFailed. key: " + key + ", imageUri: " + e.getImageUri());
+                Log.w(Sketch.TAG, NAME + ". weak reference break. initFailed. key: " + key + ", imageUri: " + imageUri);
             }
             return;
         }
 
-        int newKey = decodeExecutor.initKeyCounter.getKey();
+        int newKey = keyCounter.getKey();
         if (key != newKey) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". key expire. initFailed. key: " + key + ". newKey: " + newKey + ", imageUri: " + e.getImageUri());
+                Log.w(Sketch.TAG, NAME + ". key expire. initFailed. key: " + key + ". newKey: " + newKey + ", imageUri: " + imageUri);
             }
             return;
         }
 
-        decodeExecutor.initFailed(e.getException());
+        decodeExecutor.callback.onInitFailed(imageUri, exception);
     }
 
-
-    public void postDecodeCompleted(int key, Tile tile, Bitmap bitmap) {
-        Message message = obtainMessage(MainHandler.WHAT_DECODE_COMPLETED);
-        message.arg1 = key;
-        message.obj = new DecodeResult(bitmap, tile);
-        message.sendToTarget();
-    }
-
-    private void decodeCompleted(int key, DecodeResult result) {
+    private void decodeCompleted(int key, Tile tile, Bitmap bitmap) {
         TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeCompleted. key: " + key +", tile=" + result.tile.getInfo());
+                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeCompleted. key: " + key +", tile=" + tile.getInfo());
             }
-            result.bitmap.recycle();
+            bitmap.recycle();
             return;
         }
 
-        if (!result.tile.isExpired(key)) {
-            decodeExecutor.decodeCompleted(result.tile, result.bitmap);
+        if (!tile.isExpired(key)) {
+            decodeExecutor.callback.onDecodeCompleted(tile, bitmap);
         } else {
-            result.bitmap.recycle();
-            decodeExecutor.decodeFailed(result.tile, new DecodeHandler.DecodeFailedException(result.tile,
-                    DecodeHandler.DecodeFailedException.CAUSE_CALLBACK_KEY_EXPIRED));
+            bitmap.recycle();
+            decodeExecutor.callback.onDecodeFailed(tile,
+                    new DecodeHandler.DecodeFailedException(DecodeHandler.DecodeFailedException.CAUSE_CALLBACK_KEY_EXPIRED));
         }
     }
 
-    public void postDecodeFailed(int key, DecodeHandler.DecodeFailedException exception) {
-        Message message = obtainMessage(MainHandler.WHAT_DECODE_FAILED);
-        message.arg1 = key;
-        message.obj = exception;
-        message.sendToTarget();
-    }
-
-    private void decodeFailed(int key, DecodeHandler.DecodeFailedException exception) {
+    private void decodeFailed(int key, Tile tile, DecodeHandler.DecodeFailedException exception) {
         TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeFailed. key: " + key +", tile=" + exception.tile.getInfo());
+                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeFailed. key: " + key +", tile=" + tile.getInfo());
             }
             return;
         }
 
-        decodeExecutor.decodeFailed(exception.tile, exception);
-    }
-
-
-    public void cleanAll(String why, String imageUri) {
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". clean all. " + why + ". " + imageUri);
-        }
-
-        removeMessages(WHAT_RECYCLE_DECODE_THREAD);
+        decodeExecutor.callback.onDecodeFailed(tile, exception);
     }
 
     private static final class DecodeResult {
@@ -211,6 +208,40 @@ class MainHandler extends Handler {
         public DecodeResult(Bitmap bitmap, Tile tile) {
             this.bitmap = bitmap;
             this.tile = tile;
+        }
+    }
+
+    private static final class DecodeFailedResult{
+        public Tile tile;
+        public DecodeHandler.DecodeFailedException exception;
+
+        public DecodeFailedResult(Tile tile, DecodeHandler.DecodeFailedException exception) {
+            this.tile = tile;
+            this.exception = exception;
+        }
+    }
+
+    private static final class InitResult{
+        public String imageUrl;
+        public ImageRegionDecoder imageRegionDecoder;
+        public KeyCounter keyCounter;
+
+        public InitResult(ImageRegionDecoder imageRegionDecoder, String imageUrl, KeyCounter keyCounter) {
+            this.imageRegionDecoder = imageRegionDecoder;
+            this.imageUrl = imageUrl;
+            this.keyCounter = keyCounter;
+        }
+    }
+
+    private static final class InitFailedResult{
+        public String imageUrl;
+        public Exception exception;
+        public KeyCounter keyCounter;
+
+        public InitFailedResult(Exception exception, String imageUrl, KeyCounter keyCounter) {
+            this.exception = exception;
+            this.imageUrl = imageUrl;
+            this.keyCounter = keyCounter;
         }
     }
 }

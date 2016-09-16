@@ -24,12 +24,13 @@ import me.xiaopan.sketch.util.KeyCounter;
 /**
  * 碎片
  */
-// TODO: 16/9/16 将解码器放到这里来
 public class Tile {
     public Rect drawRect = new Rect();
     public Rect srcRect = new Rect();
     public int inSampleSize;
     public float scale = -1;
+
+    public ImageRegionDecoder decoder;
 
     public Bitmap bitmap;
     public Rect bitmapDrawSrcRect = new Rect();
@@ -67,6 +68,7 @@ public class Tile {
 
         inSampleSize = 0;
         scale = -1;
+        decoder = null;
     }
 
     public int getKey() {

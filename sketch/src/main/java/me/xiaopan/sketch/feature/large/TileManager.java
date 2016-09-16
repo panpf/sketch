@@ -36,7 +36,6 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 碎片管理器
  */
-// TODO: 16/9/16 将解码器挪到这里来
 class TileManager {
     private static final String NAME = "TileManager";
 
@@ -75,7 +74,9 @@ class TileManager {
 
     void update(Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, Point imageSize, boolean zooming) {
         if (zooming) {
-            Log.w(Sketch.TAG, NAME + ". zooming. newVisibleRect=" + newVisibleRect.toShortString() + ", tiles=" + tileList.size());
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". zooming. newVisibleRect=" + newVisibleRect.toShortString() + ", tiles=" + tileList.size());
+            }
             return;
         }
 
@@ -575,7 +576,7 @@ class TileManager {
                     }
 
                     loadTile.refreshKey();
-                    largeImageViewer.getExecutor().submit(loadTile.getKey(), loadTile);
+                    largeImageViewer.getTileDecoder().decodeTile(loadTile);
                 } else {
                     if (Sketch.isDebugMode()) {
                         Log.w(Sketch.TAG, NAME + ". repeated tile. tileDrawRect=" +
@@ -608,6 +609,7 @@ class TileManager {
 
         tile.bitmap = bitmap;
         tile.bitmapDrawSrcRect.set(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        tile.decoder = null;
 
         largeImageViewer.invalidateView();
 
@@ -617,13 +619,13 @@ class TileManager {
     }
 
     void decodeFailed(Tile tile, DecodeHandler.DecodeFailedException exception) {
-        tileList.remove(tile);
-
         if (Sketch.isDebugMode()) {
             Log.w(Sketch.TAG, NAME + ". decode failed. " + exception.getCauseMessage() + "" +
                     ". tile=" + tile.getInfo() + "" +
                     ", tiles=" + tileList.size());
         }
+
+        tileList.remove(tile);
 
         tile.clean();
         tilePool.put(tile);
@@ -639,6 +641,7 @@ class TileManager {
             }
         }
         tileList.clear();
+        visibleRect.setEmpty();
         drawRect.setEmpty();
         drawSrcRect.setEmpty();
         decodeRect.setEmpty();

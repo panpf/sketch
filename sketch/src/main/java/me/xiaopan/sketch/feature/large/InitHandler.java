@@ -24,6 +24,7 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.util.KeyCounter;
 
 /**
  * 运行在解码线程中，负责初始化TileDecoder
@@ -48,7 +49,8 @@ class InitHandler extends Handler {
 
         switch (msg.what) {
             case WHAT_INIT:
-                init(decodeExecutor, (String) msg.obj, msg.arg1);
+                Wrapper wrapper = (Wrapper) msg.obj;
+                init(decodeExecutor, wrapper.imageUri, msg.arg1, wrapper.keyCounter);
                 break;
         }
 
@@ -57,16 +59,16 @@ class InitHandler extends Handler {
         }
     }
 
-    public void postInit(String imageUri, int initKey) {
+    public void postInit(String imageUri, int key, KeyCounter keyCounter) {
         removeMessages(WHAT_INIT);
 
         Message message = obtainMessage(WHAT_INIT);
-        message.arg1 = initKey;
-        message.obj = imageUri;
+        message.arg1 = key;
+        message.obj = new Wrapper(imageUri, keyCounter);
         message.sendToTarget();
     }
 
-    private void init(TileExecutor decodeExecutor, String imageUri, int key) {
+    private void init(TileExecutor decodeExecutor, String imageUri, int key, KeyCounter keyCounter) {
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. key: " + key + ", imageUri: " + imageUri);
@@ -74,34 +76,29 @@ class InitHandler extends Handler {
             return;
         }
 
-        int newKey = decodeExecutor.initKeyCounter.getKey();
+        int newKey = keyCounter.getKey();
         if (key != newKey) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". init key expired. before init. key: " + key + ", newKey: " + newKey + ", imageUri: " + imageUri);
             }
+            return;
         }
 
-        TileDecoder decoder;
+        ImageRegionDecoder decoder;
         try {
-            decoder = TileDecoder.build(decodeExecutor.callback.getContext(), imageUri);
+            decoder = ImageRegionDecoder.build(decodeExecutor.callback.getContext(), imageUri);
         } catch (final Exception e) {
             e.printStackTrace();
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". init failed. exception. key: " + key + ", imageUri: " + imageUri);
-            }
-            decodeExecutor.mainHandler.postInitFailed(new InitFailedException(e, imageUri), key);
+            decodeExecutor.mainHandler.postInitFailed(e, imageUri, key, keyCounter);
             return;
         }
 
-        if (decoder == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". init failed. decode is null. key: " + key + ", imageUri: " + imageUri);
-            }
-            decodeExecutor.mainHandler.postInitFailed(new InitFailedException(new Exception("decoder is null"), imageUri), key);
+        if (decoder == null || !decoder.isReady()) {
+            decodeExecutor.mainHandler.postInitFailed(new Exception("decoder is null or not ready"), imageUri, key, keyCounter);
             return;
         }
 
-        newKey = decodeExecutor.initKeyCounter.getKey();
+        newKey = keyCounter.getKey();
         if (key != newKey) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". init key expired. after init. key: " + key + ", newKey: " + newKey + ", imageUri: " + imageUri);
@@ -110,31 +107,24 @@ class InitHandler extends Handler {
             return;
         }
 
-        decodeExecutor.mainHandler.postInitCompleted(decoder, key);
+        decodeExecutor.mainHandler.postInitCompleted(decoder, imageUri, key, keyCounter);
     }
 
-    public void clean(String why, String imageUri) {
+    public void clean(String why) {
         if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". clean. " + why + ". " + imageUri);
+            Log.w(Sketch.TAG, NAME + ". clean. " + why);
         }
 
         removeMessages(WHAT_INIT);
     }
 
-    public static class InitFailedException extends Exception {
-        private String imageUri;
+    public static class Wrapper{
+        public String imageUri;
+        public KeyCounter keyCounter;
 
-        public InitFailedException(Exception throwable, String imageUri) {
-            super(throwable);
+        public Wrapper(String imageUri, KeyCounter keyCounter) {
             this.imageUri = imageUri;
-        }
-
-        public String getImageUri() {
-            return imageUri;
-        }
-
-        public Exception getException() {
-            return (Exception) getCause();
+            this.keyCounter = keyCounter;
         }
     }
 }

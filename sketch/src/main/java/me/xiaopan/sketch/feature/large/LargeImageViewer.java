@@ -43,28 +43,31 @@ public class LargeImageViewer {
     private Context context;
     private Callback callback;
 
-    private boolean showTileRect;
+    private TileExecutor tileExecutor;
+    private TileDecoder tileDecoder;
+    private TileManager tileManager;
 
+    private boolean showTileRect;
     private float zoomScale;
     private float lastZoomScale;
     private Paint drawTilePaint;
     private Paint drawTileRectPaint;
-    private Paint loadingTileRectPaint;
+    private Paint drawLoadingTileRectPaint;
     private Matrix matrix;
 
     private boolean running;
-    private TileManager tileManager;
-    private TileExecutor executor;
     private String imageUri;
 
     public LargeImageViewer(Context context, Callback callback) {
         this.context = context.getApplicationContext();
         this.callback = callback;
 
-        this.matrix = new Matrix();
-        this.executor = new TileExecutor(new ExecutorCallback());
-        this.drawTilePaint = new Paint();
+        this.tileExecutor = new TileExecutor(new ExecutorCallback());
         this.tileManager = new TileManager(context.getApplicationContext(), this);
+        this.tileDecoder = new TileDecoder(this);
+
+        this.matrix = new Matrix();
+        this.drawTilePaint = new Paint();
     }
 
     void draw(Canvas canvas) {
@@ -84,11 +87,11 @@ public class LargeImageViewer {
                     }
                 } else if (!tile.isDecodeParamEmpty()) {
                     if (showTileRect) {
-                        if (loadingTileRectPaint == null) {
-                            loadingTileRectPaint = new Paint();
-                            loadingTileRectPaint.setColor(Color.parseColor("#880000FF"));
+                        if (drawLoadingTileRectPaint == null) {
+                            drawLoadingTileRectPaint = new Paint();
+                            drawLoadingTileRectPaint.setColor(Color.parseColor("#880000FF"));
                         }
-                        canvas.drawRect(tile.drawRect, loadingTileRectPaint);
+                        canvas.drawRect(tile.drawRect, drawLoadingTileRectPaint);
                     }
                 }
             }
@@ -104,19 +107,14 @@ public class LargeImageViewer {
         clean("setImage");
 
         this.imageUri = imageUri;
-        if (!TextUtils.isEmpty(imageUri)) {
-            running = true;
-            executor.initDecoder(imageUri);
-        } else {
-            running = false;
-            executor.initDecoder(null);
-        }
+        this.running = !TextUtils.isEmpty(imageUri);
+        tileDecoder.setImage(imageUri);
     }
 
     /**
      * 更新
      */
-    void update(Matrix drawMatrix, Rect visibleRect, Point previewDrawableSize, Point imageViewSize, boolean zooming) {
+    void update(Matrix drawMatrix, Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, boolean zooming) {
         // 没有准备好就不往下走了
         if (!isReady()) {
             if (Sketch.isDebugMode()) {
@@ -126,10 +124,10 @@ public class LargeImageViewer {
         }
 
         // 传进来的参数不能用就什么也不显示
-        if (visibleRect.isEmpty() || previewDrawableSize.x == 0 || previewDrawableSize.y == 0 || imageViewSize.x == 0 || imageViewSize.y == 0) {
+        if (newVisibleRect.isEmpty() || previewDrawableSize.x == 0 || previewDrawableSize.y == 0 || imageViewSize.x == 0 || imageViewSize.y == 0) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". update params is empty. update" +
-                        ". visibleRect=" + visibleRect.toShortString() +
+                        ". newVisibleRect=" + newVisibleRect.toShortString() +
                         ", previewDrawableSize=" + previewDrawableSize.x + "x" + previewDrawableSize.y +
                         ", imageViewSize=" + imageViewSize.x + "x" + imageViewSize.y +
                         ". " + imageUri);
@@ -139,9 +137,9 @@ public class LargeImageViewer {
         }
 
         // 如果当前完整显示预览图的话就清空什么也不显示
-        if (visibleRect.width() == previewDrawableSize.x && visibleRect.height() == previewDrawableSize.y) {
+        if (newVisibleRect.width() == previewDrawableSize.x && newVisibleRect.height() == previewDrawableSize.y) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". full display. update. " + imageUri);
+                Log.d(Sketch.TAG, NAME + ". full display. update. newVisibleRect=" + newVisibleRect.toShortString() + ". " + imageUri);
             }
             clean("full display");
             return;
@@ -154,14 +152,14 @@ public class LargeImageViewer {
 
         callback.invalidate();
 
-        tileManager.update(visibleRect, previewDrawableSize, imageViewSize, executor.decoder.getImageSize(), zooming);
+        tileManager.update(newVisibleRect, previewDrawableSize, imageViewSize, getImageSize(), zooming);
     }
 
     /**
      * 清理资源（不影响继续使用）
      */
     private void clean(String why) {
-        executor.cleanDecode(why);
+        tileExecutor.cleanDecode(why);
 
         matrix.reset();
         lastZoomScale = 0;
@@ -178,26 +176,35 @@ public class LargeImageViewer {
     void recycle(String why) {
         running = false;
         clean(why);
-        executor.recycle(why);
+        tileExecutor.recycle(why);
         tileManager.recycle(why);
+        tileDecoder.recycle(why);
     }
 
-    void invalidateView(){
+    void invalidateView() {
         callback.invalidate();
+    }
+
+    TileDecoder getTileDecoder() {
+        return tileDecoder;
+    }
+
+    TileExecutor getTileExecutor() {
+        return tileExecutor;
     }
 
     /**
      * 准备好了？
      */
     public boolean isReady() {
-        return running && executor.isReady();
+        return running && tileDecoder.isReady();
     }
 
     /**
      * 初始化中？
      */
     public boolean isInitializing() {
-        return running && executor.isInitializing();
+        return running && tileDecoder.isInitializing();
     }
 
     /**
@@ -233,20 +240,16 @@ public class LargeImageViewer {
     /**
      * 获取图片的尺寸
      */
-    public Point getImageSize(){
-        return executor.isReady() ? executor.decoder.getImageSize() : null;
+    public Point getImageSize() {
+        return tileDecoder.isReady() ? tileDecoder.getDecoder().getImageSize() : null;
     }
 
     /**
      * 获取图片的格式
      */
     @SuppressWarnings("unused")
-    public ImageFormat getImageFormat(){
-        return executor.isReady() ? executor.decoder.getImageFormat() : null;
-    }
-
-    TileExecutor getExecutor() {
-        return executor;
+    public ImageFormat getImageFormat() {
+        return tileDecoder.isReady() ? tileDecoder.getDecoder().getImageFormat() : null;
     }
 
     /**
@@ -303,7 +306,7 @@ public class LargeImageViewer {
      * 获取碎片变化监听器
      */
     @SuppressWarnings("unused")
-    public OnTileChangedListener getOnTileChangedListener(){
+    public OnTileChangedListener getOnTileChangedListener() {
         return tileManager.onTileChangedListener;
     }
 
@@ -334,6 +337,7 @@ public class LargeImageViewer {
 
     public interface Callback {
         void invalidate();
+
         void updateMatrix();
     }
 
@@ -349,33 +353,29 @@ public class LargeImageViewer {
         }
 
         @Override
-        public void onInitCompleted() {
+        public void onInitCompleted(String imageUri, ImageRegionDecoder decoder) {
             if (!running) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". stop running. initCompleted");
+                    Log.w(Sketch.TAG, NAME + ". stop running. initCompleted. " + imageUri);
                 }
                 return;
             }
 
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". init completed");
-            }
+            tileDecoder.initCompleted(imageUri, decoder);
 
             callback.updateMatrix();
         }
 
         @Override
-        public void onInitFailed(Exception e) {
+        public void onInitFailed(String imageUri, Exception e) {
             if (!running) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". stop running. initFailed");
+                    Log.w(Sketch.TAG, NAME + ". stop running. initFailed. " + imageUri);
                 }
                 return;
             }
 
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". init failed");
-            }
+            tileDecoder.initFailed(imageUri, e);
         }
 
         @Override

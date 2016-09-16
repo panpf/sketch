@@ -69,22 +69,6 @@ class DecodeHandler extends Handler {
     }
 
     private void decode(TileExecutor decodeExecutor, int key, Tile tile) {
-        if (tile.isExpired(key)) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". key expired. before decode. key: " + key + ", tile=" + tile.getInfo());
-            }
-            decodeExecutor.mainHandler.postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_BEFORE_KEY_EXPIRED));
-            return;
-        }
-
-        if (tile.isDecodeParamEmpty()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". decode param is empty. key: " + key + ", tile=" + tile.getInfo());
-            }
-            decodeExecutor.mainHandler.postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_DECODE_PARAM_EMPTY));
-            return;
-        }
-
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. key: " + key + ", tile=" + tile.getInfo());
@@ -92,41 +76,49 @@ class DecodeHandler extends Handler {
             return;
         }
 
+        if (tile.isExpired(key)) {
+            decodeExecutor.mainHandler.postDecodeFailed(key, tile, new DecodeFailedException(DecodeFailedException.CAUSE_BEFORE_KEY_EXPIRED));
+            return;
+        }
+
+        if (tile.isDecodeParamEmpty()) {
+            decodeExecutor.mainHandler.postDecodeFailed(key, tile, new DecodeFailedException(DecodeFailedException.CAUSE_DECODE_PARAM_EMPTY));
+            return;
+        }
+
+        if (tile.decoder == null || !tile.decoder.isReady()) {
+            decodeExecutor.mainHandler.postDecodeFailed(key, tile, new DecodeFailedException(DecodeFailedException.CAUSE_DECODER_NULL_OR_NOT_READY));
+            return;
+        }
+
         Rect srcRect = new Rect(tile.srcRect);
         int inSampleSize = tile.inSampleSize;
 
-        TileDecoder decoder = decodeExecutor.decoder;
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
-        ImageFormat imageFormat = decoder.getImageFormat();
+        ImageFormat imageFormat = tile.decoder.getImageFormat();
         if (imageFormat != null) {
             options.inPreferredConfig = imageFormat.getConfig(false);
         }
 
-        Bitmap bitmap = decoder.decodeRegion(srcRect, options);
+        Bitmap bitmap = tile.decoder.decodeRegion(srcRect, options);
         if (bitmap == null || bitmap.isRecycled()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". bitmap is null or recycled. after decode. key: " + key + ", tile=" + tile.getInfo());
-            }
-            decodeExecutor.mainHandler.postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_BITMAP_NULL));
+            decodeExecutor.mainHandler.postDecodeFailed(key, tile, new DecodeFailedException(DecodeFailedException.CAUSE_BITMAP_NULL));
             return;
         }
 
         if (tile.isExpired(key)) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". key expired. after decode. key: " + key + ", tile=" + tile.getInfo());
-            }
             bitmap.recycle();
-            decodeExecutor.mainHandler.postDecodeFailed(key, new DecodeFailedException(tile, DecodeFailedException.CAUSE_AFTER_KEY_EXPIRED));
+            decodeExecutor.mainHandler.postDecodeFailed(key, tile, new DecodeFailedException(DecodeFailedException.CAUSE_AFTER_KEY_EXPIRED));
             return;
         }
 
         decodeExecutor.mainHandler.postDecodeCompleted(key, tile, bitmap);
     }
 
-    public void clean(String why, String imageUri) {
+    public void clean(String why) {
         if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". clean. " + why + ". " + imageUri);
+            Log.w(Sketch.TAG, NAME + ". clean. " + why);
         }
 
         removeMessages(WHAT_DECODE);
@@ -138,12 +130,11 @@ class DecodeHandler extends Handler {
         public static final int CAUSE_AFTER_KEY_EXPIRED = 1103;
         public static final int CAUSE_CALLBACK_KEY_EXPIRED = 1104;
         public static final int CAUSE_DECODE_PARAM_EMPTY = 1105;
+        public static final int CAUSE_DECODER_NULL_OR_NOT_READY = 1106;
 
-        public Tile tile;
         private int cause;
 
-        public DecodeFailedException(Tile tile, int cause) {
-            this.tile = tile;
+        public DecodeFailedException(int cause) {
             this.cause = cause;
         }
 
@@ -162,6 +153,8 @@ class DecodeHandler extends Handler {
                 return "key expired before callback";
             } else if(cause == CAUSE_DECODE_PARAM_EMPTY) {
                 return "decode param is empty";
+            } else if(cause == CAUSE_DECODER_NULL_OR_NOT_READY) {
+                return "decoder is null or not ready";
             } else {
                 return "unknown";
             }

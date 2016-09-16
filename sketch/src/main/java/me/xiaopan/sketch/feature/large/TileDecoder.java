@@ -16,222 +16,108 @@
 
 package me.xiaopan.sketch.feature.large;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.BitmapRegionDecoder;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.net.Uri;
-import android.os.Build;
-
-import java.io.IOException;
-import java.io.InputStream;
+import android.text.TextUtils;
+import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.decode.ImageFormat;
-import me.xiaopan.sketch.request.UriScheme;
-import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketch.util.KeyCounter;
 
 /**
  * 碎片解码器
  */
-public class TileDecoder {
-    private final Object decodeLock = new Object();
+class TileDecoder {
 
-    private Point imageSize;
-    private String imageUri;
-    private ImageFormat imageFormat;
+    private static final String NAME = "TileDecoder";
 
-    private InputStream sourceInputStream;
-    private BitmapRegionDecoder regionDecoder;
+    private KeyCounter initKeyCounter;
+    private ImageRegionDecoder decoder;
+    private LargeImageViewer largeImageViewer;
+    private boolean running;
+    private boolean initializing;
 
-    TileDecoder(String imageUri, int imageWidth, int imageHeight, ImageFormat imageFormat, BitmapRegionDecoder regionDecoder) {
-        this.imageUri = imageUri;
-        this.imageSize = new Point(imageWidth, imageHeight);
-        this.imageFormat = imageFormat;
-        this.regionDecoder = regionDecoder;
+    public TileDecoder(LargeImageViewer largeImageViewer) {
+        this.largeImageViewer = largeImageViewer;
+        this.initKeyCounter = new KeyCounter();
     }
 
-    TileDecoder(String imageUri, int imageWidth, int imageHeight, ImageFormat imageFormat, BitmapRegionDecoder regionDecoder, InputStream sourceInputStream) {
-        this.imageUri = imageUri;
-        this.imageSize = new Point(imageWidth, imageHeight);
-        this.imageFormat = imageFormat;
-        this.regionDecoder = regionDecoder;
-        this.sourceInputStream = sourceInputStream;
-    }
+    /**
+     * 设置新的图片
+     */
+    void setImage(String imageUri) {
+        clean("setImage");
 
-    public Point getImageSize() {
-        return imageSize;
-    }
-
-    public ImageFormat getImageFormat() {
-        return imageFormat;
-    }
-
-    @SuppressWarnings("unused")
-    public String getImageUri() {
-        return imageUri;
-    }
-
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    public boolean isReady() {
-        return regionDecoder != null && !regionDecoder.isRecycled();
-    }
-
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    public void recycle() {
-        if (isReady()) {
-            regionDecoder.recycle();
-            regionDecoder = null;
-            if (sourceInputStream != null) {
-                SketchUtils.close(sourceInputStream);
-                sourceInputStream = null;
-            }
+        if (decoder != null) {
+            decoder.recycle();
+            decoder = null;
         }
-    }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    public Bitmap decodeRegion(Rect srcRect, BitmapFactory.Options options) {
-        synchronized (decodeLock) {
-            if (isReady()) {
-                return regionDecoder.decodeRegion(srcRect, options);
-            } else {
-                return null;
-            }
-        }
-    }
-
-    public static TileDecoder build(Context context, final String imageUri) throws Exception {
-        UriScheme uriScheme = UriScheme.valueOfUri(imageUri);
-        if (uriScheme == UriScheme.NET) {
-            return createDecoderFromHttp(context, imageUri);
-        } else if (uriScheme == UriScheme.FILE) {
-            return createDecoderFromFile(imageUri);
-        } else if (uriScheme == UriScheme.CONTENT) {
-            return createDecoderFromContent(context, imageUri);
-        } else if (uriScheme == UriScheme.ASSET) {
-            return createDecoderFromAsset(context, imageUri);
-        } else if (uriScheme == UriScheme.DRAWABLE) {
-            return createDecoderFromDrawable(context, imageUri);
+        if (!TextUtils.isEmpty(imageUri)) {
+            running = initializing = true;
+            largeImageViewer.getTileExecutor().submitInit(imageUri, initKeyCounter);
         } else {
-            throw new Exception("Unknown scheme uri: " + imageUri);
+            running = initializing = false;
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    private static TileDecoder createDecoderFromHttp(Context context, String imageUri) throws Exception {
-        DiskCache.Entry diskCacheEntry = Sketch.with(context).getConfiguration().getDiskCache().get(imageUri);
-        if (diskCacheEntry == null) {
-            throw new Exception("Not found disk cache: " + imageUri);
-        }
-        String diskCacheFilePath = diskCacheEntry.getFile().getPath();
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(diskCacheFilePath, options);
-
-        BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(diskCacheFilePath, false);
-        int imageWidth = options.outWidth;
-        int imageHeight = options.outHeight;
-        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
-
-        return new TileDecoder(imageUri, imageWidth, imageHeight, imageFormat, regionDecoder);
-    }
-
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    private static TileDecoder createDecoderFromFile(String imageUri) throws IOException {
-        String filePath = UriScheme.FILE.crop(imageUri);
-
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeFile(filePath, options);
-
-        BitmapRegionDecoder regionDecoder = BitmapRegionDecoder.newInstance(filePath, false);
-        int imageWidth = options.outWidth;
-        int imageHeight = options.outHeight;
-        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
-
-        return new TileDecoder(imageUri, imageWidth, imageHeight, imageFormat, regionDecoder);
-    }
-
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    private static TileDecoder createDecoderFromContent(Context context, String imageUri) throws Exception {
-        Uri uri = Uri.parse(UriScheme.CONTENT.crop(imageUri));
-
-        InputStream inputStream = context.getContentResolver().openInputStream(uri);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(inputStream, null, options);
-        SketchUtils.close(inputStream);
-
-        inputStream = context.getContentResolver().openInputStream(uri);
-        BitmapRegionDecoder regionDecoder;
-        try {
-            regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false);
-        } catch (IOException e) {
-            SketchUtils.close(inputStream);
-            throw e;
+    /**
+     * 解码
+     */
+    void decodeTile(Tile tile) {
+        if (!isReady()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". not ready. decodeTile. " + tile.getInfo());
+            }
+            return;
         }
 
-        int imageWidth = options.outWidth;
-        int imageHeight = options.outHeight;
-        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
-
-        return new TileDecoder(imageUri, imageWidth, imageHeight, imageFormat, regionDecoder, inputStream);
+        tile.decoder = decoder;
+        largeImageViewer.getTileExecutor().submitDecodeTile(tile.getKey(), tile);
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    private static TileDecoder createDecoderFromAsset(Context context, String imageUri) throws IOException {
-        String assetFileName = UriScheme.ASSET.crop(imageUri);
-
-        InputStream inputStream = context.getAssets().open(assetFileName);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(inputStream, null, options);
-        SketchUtils.close(inputStream);
-
-        inputStream = context.getAssets().open(assetFileName);
-        BitmapRegionDecoder regionDecoder;
-        try {
-            regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false);
-        } catch (IOException e) {
-            SketchUtils.close(inputStream);
-            throw e;
+    void clean(String why) {
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, NAME + ". clean. " + why);
         }
 
-        int imageWidth = options.outWidth;
-        int imageHeight = options.outHeight;
-        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
-
-        return new TileDecoder(imageUri, imageWidth, imageHeight, imageFormat, regionDecoder, inputStream);
+        initKeyCounter.refresh();
     }
 
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
-    private static TileDecoder createDecoderFromDrawable(Context context, String imageUri) throws Exception {
-        int drawableResId = Integer.valueOf(UriScheme.DRAWABLE.crop(imageUri));
-
-        InputStream inputStream = context.getResources().openRawResource(drawableResId);
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inJustDecodeBounds = true;
-        BitmapFactory.decodeStream(inputStream, null, options);
-        SketchUtils.close(inputStream);
-
-        inputStream = context.getResources().openRawResource(drawableResId);
-        BitmapRegionDecoder regionDecoder;
-        try {
-            regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false);
-        } catch (IOException e) {
-            SketchUtils.close(inputStream);
-            throw e;
+    void recycle(String why) {
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, NAME + ". recycle. " + why);
         }
 
-        int imageWidth = options.outWidth;
-        int imageHeight = options.outHeight;
-        ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
+        if (decoder != null) {
+            decoder.recycle();
+        }
+    }
 
-        return new TileDecoder(imageUri, imageWidth, imageHeight, imageFormat, regionDecoder, inputStream);
+    void initCompleted(String imageUri, ImageRegionDecoder decoder) {
+        if (Sketch.isDebugMode()) {
+            Log.d(Sketch.TAG, NAME + ". init completed. " + imageUri);
+        }
+
+        initializing = false;
+        this.decoder = decoder;
+    }
+
+    void initFailed(String imageUri, Exception e) {
+        if (Sketch.isDebugMode()) {
+            Log.d(Sketch.TAG, NAME + ". init failed. " + e.getMessage() + ". " + imageUri);
+        }
+
+        initializing = false;
+    }
+
+    boolean isReady() {
+        return running && decoder != null && decoder.isReady();
+    }
+
+    boolean isInitializing() {
+        return running && initializing;
+    }
+
+    public ImageRegionDecoder getDecoder() {
+        return decoder;
     }
 }
