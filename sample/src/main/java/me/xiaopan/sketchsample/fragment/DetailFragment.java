@@ -309,11 +309,11 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
 
                             messageBuilder.append("\n");
                             messageBuilder.append("\n");
-                            messageBuilder.append("缩放倍数：").append(SketchUtils.formatFloat(imageView.getImageZoomFunction().getImageZoomer().getZoomScale(), 2));
+                            messageBuilder.append("缩放倍数：").append(SketchUtils.formatFloat(imageView.getImageZoomer().getZoomScale(), 2));
 
                             messageBuilder.append("\n");
                             Rect visibleRect = new Rect();
-                            imageView.getImageZoomFunction().getImageZoomer().getVisibleRect(visibleRect);
+                            imageView.getImageZoomer().getVisibleRect(visibleRect);
                             messageBuilder.append("可见区域：").append(visibleRect.toShortString());
 
                             if (imageView.isSupportLargeImage()) {

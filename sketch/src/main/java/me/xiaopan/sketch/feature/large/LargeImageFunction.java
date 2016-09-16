@@ -54,7 +54,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         if (!imageView.isSupportZoom()) {
             imageView.setSupportZoom(true);
         }
-        imageView.getImageZoomFunction().getImageZoomer().addOnMatrixChangeListener(this);
+        imageView.getImageZoomer().addOnMatrixChangeListener(this);
     }
 
     @Override
@@ -216,7 +216,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public void updateMatrix() {
-        ImageZoomer imageZoomer = imageView.isSupportZoom() ? imageView.getImageZoomFunction().getImageZoomer() : null;
+        ImageZoomer imageZoomer = imageView.isSupportZoom() ? imageView.getImageZoomer() : null;
         if (imageZoomer != null) {
             onMatrixChanged(imageZoomer);
         }

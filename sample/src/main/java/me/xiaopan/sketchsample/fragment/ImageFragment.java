@@ -54,7 +54,7 @@ public class ImageFragment extends MyFragment {
         imageView.setAutoApplyGlobalAttr(false);
         imageView.setSupportZoom(true);
         imageView.setSupportLargeImage(true);
-        imageView.getImageZoomFunction().getImageZoomer().setReadMode(true);
+        imageView.getImageZoomer().setReadMode(true);
 
         imageView.setDisplayListener(new DisplayListener() {
             @Override
@@ -134,7 +134,7 @@ public class ImageFragment extends MyFragment {
         });
         imageView.displayImage(imageUri);
 
-        imageView.getImageZoomFunction().getImageZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {
+        imageView.getImageZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {
             @Override
             public void onViewTap(View view, float x, float y) {
                 Fragment parentFragment = getParentFragment();
@@ -144,7 +144,7 @@ public class ImageFragment extends MyFragment {
             }
         });
 
-        imageView.getImageZoomFunction().getImageZoomer().setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
+        imageView.getImageZoomer().setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
             @Override
             public void onViewLongPress(View view, float x, float y) {
                 new ImageMenu(getActivity(), imageView).show();

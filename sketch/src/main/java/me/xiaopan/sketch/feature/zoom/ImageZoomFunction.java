@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.feature;
+package me.xiaopan.sketch.feature.zoom;
 
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 
 /**
  * ImageView缩放功能

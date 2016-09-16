@@ -80,7 +80,7 @@ public class LargeImageFragment extends MyFragment {
         imageView.setSupportZoom(true);
         imageView.setSupportLargeImage(true);
 
-        final ImageZoomer imageZoomer = imageView.getImageZoomFunction().getImageZoomer();
+        final ImageZoomer imageZoomer = imageView.getImageZoomer();
         final LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
 
         // MappingView跟随Matrix变化刷新各种区域

@@ -29,7 +29,7 @@ import android.widget.ImageView;
 
 import me.xiaopan.sketch.feature.ClickRetryFunction;
 import me.xiaopan.sketch.feature.ImageShapeFunction;
-import me.xiaopan.sketch.feature.ImageZoomFunction;
+import me.xiaopan.sketch.feature.zoom.ImageZoomFunction;
 import me.xiaopan.sketch.feature.large.LargeImageFunction;
 import me.xiaopan.sketch.feature.RecyclerCompatFunction;
 import me.xiaopan.sketch.feature.RequestFunction;
@@ -38,6 +38,7 @@ import me.xiaopan.sketch.feature.ShowImageFromFunction;
 import me.xiaopan.sketch.feature.ShowPressedFunction;
 import me.xiaopan.sketch.feature.ShowProgressFunction;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
+import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -721,8 +722,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     /**
      * 获取缩放功能控制对象
      */
-    public ImageZoomFunction getImageZoomFunction() {
-        return imageZoomFunction;
+    public ImageZoomer getImageZoomer() {
+        return imageZoomFunction != null ? imageZoomFunction.getImageZoomer() : null;
     }
 
     @Override
