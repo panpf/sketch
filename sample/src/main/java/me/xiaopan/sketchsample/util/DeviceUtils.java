@@ -32,7 +32,4 @@ public class DeviceUtils {
         return result;
     }
 
-    public static int dp2px(Context context, int dpValue) {
-        return (int) ((dpValue * context.getResources().getDisplayMetrics().density) + 0.5);
-    }
 }

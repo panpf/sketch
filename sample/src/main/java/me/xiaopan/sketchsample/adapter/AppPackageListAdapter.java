@@ -10,10 +10,10 @@ import android.widget.TextView;
 import java.util.List;
 
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.bean.AppInfo;
-import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
@@ -38,7 +38,7 @@ public class AppPackageListAdapter extends RecyclerView.Adapter {
             AppInfoViewHolder appInfoViewHolder = new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
             appInfoViewHolder.iconSketchImageView.setOptionsByName(OptionsType.APP_ICON);
             appInfoViewHolder.iconSketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-            appInfoViewHolder.iconSketchImageView.setImageShapeCornerRadius(DeviceUtils.dp2px(parent.getContext(), 10));
+            appInfoViewHolder.iconSketchImageView.setImageShapeCornerRadius(SketchUtils.dp2px(parent.getContext(), 10));
             appInfoViewHolder.iconSketchImageView.setAutoApplyGlobalAttr(false);
             return appInfoViewHolder;
         }

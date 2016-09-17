@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.feature.zoom;
 
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.view.MotionEvent;
 import android.widget.ImageView;
@@ -25,7 +26,6 @@ import me.xiaopan.sketch.SketchImageView;
 /**
  * ImageView缩放功能
  */
-// TODO: 16/8/23 支持显示滑动进度
 public class ImageZoomFunction extends SketchImageView.Function {
     private ImageView imageView;
 
@@ -45,6 +45,12 @@ public class ImageZoomFunction extends SketchImageView.Function {
         if (oldImageZoomer != null) {
             oldImageZoomer.cleanup();
         }
+    }
+
+    @Override
+    public void onDraw(Canvas canvas) {
+        super.onDraw(canvas);
+        imageZoomer.draw(canvas);
     }
 
     @Override

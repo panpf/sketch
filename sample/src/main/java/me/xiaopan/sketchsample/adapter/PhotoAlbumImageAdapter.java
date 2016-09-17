@@ -19,8 +19,8 @@ import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ImageHolder;
 import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
@@ -55,13 +55,13 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             spanCount = ((StaggeredGridLayoutManager) recyclerView.getLayoutManager()).getSpanCount();
         }
         if (spanCount != -1) {
-            borderMargin = DeviceUtils.dp2px(context, 8);
-            middleMargin = DeviceUtils.dp2px(context, 4);
+            borderMargin = SketchUtils.dp2px(context, 8);
+            middleMargin = SketchUtils.dp2px(context, 4);
             int maxScreenWidth = context.getResources().getDisplayMetrics().widthPixels - ((borderMargin * (spanCount + 1)));
             itemWidth = maxScreenWidth / spanCount;
         }
 
-        roundRadius = DeviceUtils.dp2px(context, 10);
+        roundRadius = SketchUtils.dp2px(context, 10);
         RoundedCornerImageProcessor imageProcessor = new RoundedCornerImageProcessor(roundRadius);
         Resize resize = new Resize(itemWidth, itemWidth, ImageView.ScaleType.CENTER_CROP);
         displayOptions = new DisplayOptions()

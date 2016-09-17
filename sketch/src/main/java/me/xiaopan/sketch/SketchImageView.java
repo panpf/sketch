@@ -143,11 +143,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (imageZoomFunction != null) {
-            imageZoomFunction.onDraw(canvas);
-        }
         if (largeImageFunction != null) {
             largeImageFunction.onDraw(canvas);
+        }
+        if (imageZoomFunction != null) {
+            imageZoomFunction.onDraw(canvas);
         }
         if (showPressedFunction != null) {
             showPressedFunction.onDraw(canvas);

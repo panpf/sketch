@@ -10,7 +10,7 @@ import android.view.View;
 
 import java.util.List;
 
-import me.xiaopan.sketchsample.util.DeviceUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 public class FindEmptyView extends View {
     private List<Rect> fullRectList;
@@ -40,16 +40,16 @@ public class FindEmptyView extends View {
         boundsRectPaint = new Paint();
         boundsRectPaint.setStyle(Paint.Style.STROKE);
         boundsRectPaint.setColor(Color.parseColor("#8800CD00"));
-        boundsRectPaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        boundsRectPaint.setStrokeWidth(SketchUtils.dp2px(context, 1));
 
         fullRectPaint = new Paint();
         fullRectPaint.setColor(Color.parseColor("#88FF0000"));
-        fullRectPaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        fullRectPaint.setStrokeWidth(SketchUtils.dp2px(context, 1));
         fullRectPaint.setStyle(Paint.Style.STROKE);
 
         emptyRectPaint = new Paint();
         emptyRectPaint.setColor(Color.parseColor("#880000CD"));
-        emptyRectPaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        emptyRectPaint.setStrokeWidth(SketchUtils.dp2px(context, 1));
         emptyRectPaint.setStyle(Paint.Style.STROKE);
     }
 

@@ -1,23 +1,24 @@
-/*******************************************************************************
- * Copyright 2011, 2012 Chris Banes.
- * <p/>
+/*
+ * Copyright (C) 2016 Peng fei Pan <sky@xiaopan.me>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *******************************************************************************/
+ */
 
 package me.xiaopan.sketch.feature.zoom;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.RectF;
@@ -110,6 +111,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private final Matrix scaleAndDragMatrix = new Matrix(); // 存储用户产生的缩放和拖拽信息
     private final Matrix tempDrawMatrix = new Matrix(); // 存储baseMatrix和scaleAndDragMatrix融合后的信息，用于绘制
 
+    private ScrollBarManager scrollBarManager;
+
     public ImageZoomer(ImageView imageView, boolean provideTouchEvent) {
         context = imageView.getContext();
         viewReference = new WeakReference<ImageView>(imageView);
@@ -139,11 +142,17 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         if (observer != null) {
             observer.addOnGlobalLayoutListener(this);
         }
+
+        scrollBarManager = new ScrollBarManager(context, this);
     }
 
     @SuppressWarnings("unused")
     public ImageZoomer(ImageView imageView) {
         this(imageView, false);
+    }
+
+    public void draw(Canvas canvas) {
+        scrollBarManager.drawScrollBar(canvas);
     }
 
     @Override
@@ -640,6 +649,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             if (!ScaleType.MATRIX.equals(imageView.getScaleType())) {
                 throw new IllegalStateException("ImageView scaleType must be is MATRIX");
             }
+
+            scrollBarManager.matrixChanged();
 
             imageView.setImageMatrix(matrix);
 

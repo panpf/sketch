@@ -13,7 +13,7 @@ import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ImageHolder;
 import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.Resize;
-import me.xiaopan.sketchsample.util.DeviceUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.util.MyImagePreprocessor;
 import me.xiaopan.sketchsample.util.Settings;
 
@@ -45,8 +45,8 @@ public class SketchManager {
                 .setImageDisplayer(transitionImageDisplayer)
         );
 
-        RoundedCornerImageProcessor roundedCornerImageProcessor = new RoundedCornerImageProcessor(DeviceUtils.dp2px(context, 10));
-        Resize appIconSize = new Resize(DeviceUtils.dp2px(context, 60), DeviceUtils.dp2px(context, 60), ImageView.ScaleType.CENTER_CROP);
+        RoundedCornerImageProcessor roundedCornerImageProcessor = new RoundedCornerImageProcessor(SketchUtils.dp2px(context, 10));
+        Resize appIconSize = new Resize(SketchUtils.dp2px(context, 60), SketchUtils.dp2px(context, 60), ImageView.ScaleType.CENTER_CROP);
         Sketch.putOptions(OptionsType.APP_ICON, new DisplayOptions()
                 .setLoadingImage(new ImageHolder(R.drawable.image_loading).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
                 .setFailedImage(new ImageHolder(R.drawable.image_failed).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
