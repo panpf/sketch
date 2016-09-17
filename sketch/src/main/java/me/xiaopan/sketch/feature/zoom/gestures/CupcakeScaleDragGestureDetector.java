@@ -29,6 +29,7 @@ public class CupcakeScaleDragGestureDetector implements ScaleDragGestureDetector
     protected final float mTouchSlop;
     protected final float mMinimumVelocity;
     protected OnScaleDragGestureListener mListener;
+    protected ActionListener actionListener;
     protected float mLastTouchX;
     protected float mLastTouchY;
     private VelocityTracker mVelocityTracker;
@@ -43,6 +44,11 @@ public class CupcakeScaleDragGestureDetector implements ScaleDragGestureDetector
     @Override
     public void setOnGestureListener(OnScaleDragGestureListener listener) {
         this.mListener = listener;
+    }
+
+    @Override
+    public void setActionListener(ActionListener actionListener) {
+        this.actionListener = actionListener;
     }
 
     protected float getActiveX(MotionEvent ev) {
@@ -77,6 +83,10 @@ public class CupcakeScaleDragGestureDetector implements ScaleDragGestureDetector
                 mLastTouchX = getActiveX(ev);
                 mLastTouchY = getActiveY(ev);
                 mIsDragging = false;
+
+                if (actionListener != null) {
+                    actionListener.onActionDown(ev);
+                }
                 break;
             }
 
@@ -109,6 +119,10 @@ public class CupcakeScaleDragGestureDetector implements ScaleDragGestureDetector
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
                 }
+
+                if (actionListener != null) {
+                    actionListener.onActionCancel(ev);
+                }
                 break;
             }
 
@@ -138,6 +152,10 @@ public class CupcakeScaleDragGestureDetector implements ScaleDragGestureDetector
                 if (null != mVelocityTracker) {
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
+                }
+
+                if (actionListener != null) {
+                    actionListener.onActionUp(ev);
                 }
                 break;
             }

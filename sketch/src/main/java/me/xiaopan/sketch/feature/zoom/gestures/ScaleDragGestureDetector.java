@@ -28,4 +28,5 @@ public interface ScaleDragGestureDetector {
 
     void setOnGestureListener(OnScaleDragGestureListener listener);
 
+    void setActionListener(ActionListener actionListener);
 }

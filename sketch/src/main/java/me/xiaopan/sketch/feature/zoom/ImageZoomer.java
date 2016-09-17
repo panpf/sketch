@@ -40,6 +40,7 @@ import java.util.Arrays;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.feature.zoom.gestures.ActionListener;
 import me.xiaopan.sketch.feature.zoom.gestures.OnScaleDragGestureListener;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetector;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetectorCompat;
@@ -47,7 +48,8 @@ import me.xiaopan.sketch.util.SketchUtils;
 
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
 // TODO: 16/8/23 测试旋转功能
-public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener, ViewTreeObserver.OnGlobalLayoutListener {
+public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener,
+        ViewTreeObserver.OnGlobalLayoutListener, ActionListener {
     public static final String NAME = "ImageZoomer";
 
     public static final float DEFAULT_MAXIMIZE_SCALE = 1.75f;
@@ -56,15 +58,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     public static final int DEFAULT_ZOOM_DURATION = 200;
 
     public static final int EDGE_NONE = -1;
-    public static final int EDGE_LEFT = 0;
-    public static final int EDGE_TOP = 1;
-    public static final int EDGE_RIGHT = 2;
-    public static final int EDGE_BOTTOM = 3;
-    public static final int EDGE_LEFT_TOP = 4;
-    public static final int EDGE_LEFT_BOTTOM = 5;
-    public static final int EDGE_TOP_RIGHT = 6;
-    public static final int EDGE_TOP_BOTTOM = 7;
-    public static final int EDGE_BOTH = 8;
+    public static final int EDGE_START = 0;
+    public static final int EDGE_END = 1;
+    public static final int EDGE_BOTH = 2;
 
     // incoming
     private Context context;
@@ -74,14 +70,14 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private int zoomDuration = DEFAULT_ZOOM_DURATION;   // 双击缩放动画持续时间
     private float minZoomScale = DEFAULT_MINIMUM_SCALE;
     private float maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
-    private boolean zoomable = true;    // 是否可以缩放
     private boolean readMode;   // 阅读模式下，竖图将默认横向充满屏幕
+    private boolean zoomable = true;    // 是否可以缩放
     private Interpolator zoomInterpolator = new AccelerateDecelerateInterpolator();
 
     // other configurable options
-    private boolean allowParentInterceptOnEdge = true;  // 允许父ViewGroup在滑动到边缘时拦截事件
-    private ScaleType scaleType = ScaleType.FIT_CENTER;
     private float baseRotation; // 基础旋转角度
+    private boolean allowParentInterceptOnEdge = true;  // 允许父ViewGroup在滑动到边缘时拦截事件
+    private ScaleType scaleType = ScaleType.FIT_CENTER; // ImageView的ScaleType
 
     // listeners
     private OnViewTapListener onViewTapListener;
@@ -94,20 +90,20 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private float fullZoomScale; // 能够让图片完成显示的缩放比例
     private float fillZoomScale;    // 能够让图片填满宽或高的缩放比例
     private float originZoomScale;  // 能够让图片按照原始比例一比一显示的比例
-    private float[] doubleClickZoomScales = new float[]{DEFAULT_MINIMUM_SCALE, DEFAULT_MAXIMIZE_SCALE};
+    private float[] doubleClickZoomScales = new float[]{DEFAULT_MINIMUM_SCALE, DEFAULT_MAXIMIZE_SCALE}; // 双击缩放所使用的比例
     private boolean zooming;    // 缩放中状态
 
     // other properties
-    private int scrollEdge = EDGE_BOTH; // 滚动边界
-    private GestureDetector tapGestureDetector;
-    private FlingTranslateRunner flingTranslateRunner;
-    private ScaleDragGestureDetector scaleDragGestureDetector;
+    private int horScrollEdge = EDGE_NONE; // 横向滚动边界
+    private int verScrollEdge = EDGE_NONE; // 竖向滚动边界
+    private GestureDetector tapGestureDetector; // 点击手势识别器
+    private FlingTranslateRunner flingTranslateRunner;  // 执行飞速滚动
+    private ScaleDragGestureDetector scaleDragGestureDetector;  // 缩放和拖拽手势识别器
+    private boolean disallowParentInterceptTouchEvent;  // 控制滑动或缩放中到达边缘了依然禁止父类拦截事件
 
     // info caches
-    private float tempLastScaleFocusX;
-    private float tempLastScaleFocusY;
-    private boolean tempBlockParentIntercept;
-    private final Rect tempViewBounds = new Rect();
+    private float tempLastScaleFocusX, tempLastScaleFocusY;  // 缓存最后一次缩放手势的坐标，在恢复缩放比例时使用
+    private final Rect tempViewBounds = new Rect(); // 缓存ImageView的left、top、right、bottom，在其变化时对比使用
     private final RectF tempDisplayRectF = new RectF();
 
     private final Matrix baseMatrix = new Matrix(); // 存储基础缩放、移动、旋转信息
@@ -135,6 +131,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         // initialize
         tapGestureDetector = new GestureDetector(context, new TapListener(this));
         scaleDragGestureDetector = ScaleDragGestureDetectorCompat.newInstance(imageView.getContext(), this);
+        scaleDragGestureDetector.setActionListener(this);
         baseRotation = 0.0f;
 
         // listening to the ImageView size changes
@@ -155,66 +152,64 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return false;
         }
 
-        boolean handled = false;
+        // 缩放、拖拽手势处理
+        boolean beforeInScaling = scaleDragGestureDetector.isScaling();
+        boolean beforeInDragging = scaleDragGestureDetector.isDragging();
 
-        switch (event.getActionMasked()) {
-            case MotionEvent.ACTION_DOWN:
-                tempLastScaleFocusX = 0;
-                tempLastScaleFocusY = 0;
+        boolean scaleDragHandled = scaleDragGestureDetector.onTouchEvent(event);
 
-                // 上来就禁止父View拦截事件
-                ViewParent parent = v.getParent();
-                if (parent != null) {
-                    if (Sketch.isDebugMode()) {
-                        Log.w(Sketch.TAG, NAME + ". disallow intercept touch event. onTouch ACTION_DOWN");
-                    }
-                    parent.requestDisallowInterceptTouchEvent(true);
-                }
+        boolean afterInScaling = scaleDragGestureDetector.isScaling();
+        boolean afterInDragging = scaleDragGestureDetector.isDragging();
 
-                // 取消快速滚动
-                cancelFling();
-                break;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                float currentScale = SketchUtils.formatFloat(getZoomScale(), 2);
-                if (currentScale < SketchUtils.formatFloat(minZoomScale, 2)) {
-                    // 如果当前缩放倍数小于最小倍数就回滚至最小倍数
-                    RectF displayRectF = new RectF();
-                    checkMatrixBounds();
-                    getDisplayRect(displayRectF);
-                    if (!displayRectF.isEmpty()) {
-                        zoom(minZoomScale, displayRectF.centerX(), displayRectF.centerY(), true);
-                        handled = true;
-                    }
-                } else if (currentScale > SketchUtils.formatFloat(maxZoomScale, 2)) {
-                    // 如果当前缩放倍数大于最大倍数就回滚至最大倍数
-                    if (tempLastScaleFocusX != 0 && tempLastScaleFocusY != 0) {
-                        zoom(maxZoomScale, tempLastScaleFocusX, tempLastScaleFocusY, true);
-                        handled = true;
-                    }
-                }
-                break;
+        disallowParentInterceptTouchEvent = !beforeInScaling && !afterInScaling && beforeInDragging && afterInDragging;
+
+        // 点击手势处理
+        boolean tapHandled = tapGestureDetector != null && tapGestureDetector.onTouchEvent(event);
+
+        return scaleDragHandled || tapHandled;
+    }
+
+    @Override
+    public void onActionDown(MotionEvent ev) {
+        tempLastScaleFocusX = 0;
+        tempLastScaleFocusY = 0;
+
+        // 上来就禁止父View拦截事件
+        ImageView imageView = getImageView();
+        ViewParent parent = imageView.getParent();
+        if (parent != null) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. onActionDown");
+            }
+            parent.requestDisallowInterceptTouchEvent(true);
         }
 
-        // 缩放、拖拽手势探测器处理
-        if (scaleDragGestureDetector != null) {
-            boolean wasScaling = scaleDragGestureDetector.isScaling();
-            boolean wasDragging = scaleDragGestureDetector.isDragging();
+        // 取消快速滚动
+        cancelFling();
+    }
 
-            handled = scaleDragGestureDetector.onTouchEvent(event);
-
-            boolean didntScale = !wasScaling && !scaleDragGestureDetector.isScaling();
-            boolean didntDrag = !wasDragging && !scaleDragGestureDetector.isDragging();
-
-            tempBlockParentIntercept = didntScale && didntDrag;
+    @Override
+    public void onActionUp(MotionEvent ev) {
+        float currentScale = SketchUtils.formatFloat(getZoomScale(), 2);
+        if (currentScale < SketchUtils.formatFloat(minZoomScale, 2)) {
+            // 如果当前缩放倍数小于最小倍数就回滚至最小倍数
+            RectF displayRectF = new RectF();
+            checkMatrixBounds();
+            getDisplayRect(displayRectF);
+            if (!displayRectF.isEmpty()) {
+                zoom(minZoomScale, displayRectF.centerX(), displayRectF.centerY(), true);
+            }
+        } else if (currentScale > SketchUtils.formatFloat(maxZoomScale, 2)) {
+            // 如果当前缩放倍数大于最大倍数就回滚至最大倍数
+            if (tempLastScaleFocusX != 0 && tempLastScaleFocusY != 0) {
+                zoom(maxZoomScale, tempLastScaleFocusX, tempLastScaleFocusY, true);
+            }
         }
+    }
 
-        // 点击手势探测器处理
-        if (tapGestureDetector != null && tapGestureDetector.onTouchEvent(event)) {
-            handled = true;
-        }
-
-        return handled;
+    @Override
+    public void onActionCancel(MotionEvent ev) {
+        onActionUp(ev);
     }
 
     @Override
@@ -224,8 +219,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        // Do not drag if we are already scaling
-        if (scaleDragGestureDetector != null && scaleDragGestureDetector.isScaling()) {
+        // 缩放中不能拖拽
+        if (scaleDragGestureDetector.isScaling()) {
             return;
         }
 
@@ -236,33 +231,31 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         scaleAndDragMatrix.postTranslate(dx, dy);
         checkAndDisplayMatrix();
 
-        /**
-         * Here we decide whether to let the ImageView's parent to start taking
-         * over the touch event.
-         *
-         * First we check whether this function is enabled. We never want the
-         * parent to take over if we're scaling. We then check the edge we're
-         * on, and the direction of the scroll (i.e. if we're pulling against
-         * the edge, aka 'overscrolling', let the parent take over).
-         */
+        // 滑动到边缘时父类可以拦截触摸事件
         ViewParent parent = imageView.getParent();
         if (parent != null) {
-            if (allowParentInterceptOnEdge && !scaleDragGestureDetector.isScaling() && !tempBlockParentIntercept) {
-                if (scrollEdge == EDGE_BOTH || (scrollEdge == EDGE_LEFT && dx >= 1f) || (scrollEdge == EDGE_RIGHT && dx <= -1f)) {
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". allow intercept touch event. onDrag. scrollEdge=" + scrollEdge + ", scaling=" + scaleDragGestureDetector.isScaling());
-                    }
-                    parent.requestDisallowInterceptTouchEvent(false);
-                } else {
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". disallow intercept touch event. scrollEdge. onDrag. scrollEdge=" + scrollEdge + ", scaling=" + scaleDragGestureDetector.isScaling());
-                    }
-                }
-            } else {
+            if (!allowParentInterceptOnEdge || scaleDragGestureDetector.isScaling() || disallowParentInterceptTouchEvent) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". disallow intercept touch event. onDrag. scaling=" + scaleDragGestureDetector.isScaling());
+                    Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. onDrag. allowParentInterceptOnEdge=" + allowParentInterceptOnEdge + ", scaling=" + scaleDragGestureDetector.isScaling() + ", tempDisallowParentInterceptTouchEvent=" + disallowParentInterceptTouchEvent);
                 }
                 parent.requestDisallowInterceptTouchEvent(true);
+                return;
+            }
+
+            // 暂时不处理顶部和底部边界
+            if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)
+//                    || verScrollEdge == EDGE_BOTH || (verScrollEdge == EDGE_START && dy >= 1f) || (verScrollEdge == EDGE_END && dy <= -1f)
+                    ) {
+                if (Sketch.isDebugMode()) {
+                    String scrollEdgeName = String.format("%s-%s", getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
+                    Log.d(Sketch.TAG, NAME + ". allow parent intercept touch event. onDrag. scrollEdge=" + scrollEdgeName);
+                }
+                parent.requestDisallowInterceptTouchEvent(false);
+            } else {
+                if (Sketch.isDebugMode()) {
+                    String scrollEdgeName = String.format("%s_%s", getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
+                    Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. onDrag. scrollEdge=" + scrollEdgeName);
+                }
             }
         }
     }
@@ -548,31 +541,33 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     boolean checkMatrixBounds() {
         final ImageView imageView = getImageView();
         if (null == imageView) {
-            scrollEdge = EDGE_NONE;
+            horScrollEdge = EDGE_NONE;
+            verScrollEdge = EDGE_NONE;
             return false;
         }
 
         final RectF displayRectF = tempDisplayRectF;
         getDisplayRect(displayRectF);
         if (displayRectF.isEmpty()) {
-            scrollEdge = EDGE_NONE;
+            horScrollEdge = EDGE_NONE;
+            verScrollEdge = EDGE_NONE;
             return false;
         }
 
-        final float height = displayRectF.height(), width = displayRectF.width();
+        final float displayHeight = displayRectF.height(), displayWidth = displayRectF.width();
         float deltaX = 0, deltaY = 0;
 
         final int viewHeight = getImageViewHeight();
-        if ((int) height <= viewHeight) {
+        if ((int) displayHeight <= viewHeight) {
             switch (scaleType) {
                 case FIT_START:
                     deltaY = -displayRectF.top;
                     break;
                 case FIT_END:
-                    deltaY = viewHeight - height - displayRectF.top;
+                    deltaY = viewHeight - displayHeight - displayRectF.top;
                     break;
                 default:
-                    deltaY = (viewHeight - height) / 2 - displayRectF.top;
+                    deltaY = (viewHeight - displayHeight) / 2 - displayRectF.top;
                     break;
             }
         } else if ((int) displayRectF.top > 0) {
@@ -582,16 +577,16 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
 
         final int viewWidth = getImageViewWidth();
-        if ((int) width <= viewWidth) {
+        if ((int) displayWidth <= viewWidth) {
             switch (scaleType) {
                 case FIT_START:
                     deltaX = -displayRectF.left;
                     break;
                 case FIT_END:
-                    deltaX = viewWidth - width - displayRectF.left;
+                    deltaX = viewWidth - displayWidth - displayRectF.left;
                     break;
                 default:
-                    deltaX = (viewWidth - width) / 2 - displayRectF.left;
+                    deltaX = (viewWidth - displayWidth) / 2 - displayRectF.left;
                     break;
             }
         } else if ((int) displayRectF.left > 0) {
@@ -603,14 +598,24 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         // Finally actually translate the matrix
         scaleAndDragMatrix.postTranslate(deltaX, deltaY);
 
-        if ((int) width <= viewWidth) {
-            scrollEdge = EDGE_BOTH;
-        } else if ((int) displayRectF.left >= 0) {
-            scrollEdge = EDGE_LEFT;
-        } else if ((int) displayRectF.right <= viewWidth) {
-            scrollEdge = EDGE_RIGHT;
+        if ((int) displayHeight <= viewHeight) {
+            verScrollEdge = EDGE_BOTH;
+        } else if ((int) displayRectF.top >= 0) {
+            verScrollEdge = EDGE_START;
+        } else if ((int) displayRectF.bottom <= viewHeight) {
+            verScrollEdge = EDGE_END;
         } else {
-            scrollEdge = EDGE_NONE;
+            verScrollEdge = EDGE_NONE;
+        }
+
+        if ((int) displayWidth <= viewWidth) {
+            horScrollEdge = EDGE_BOTH;
+        } else if ((int) displayRectF.left >= 0) {
+            horScrollEdge = EDGE_START;
+        } else if ((int) displayRectF.right <= viewWidth) {
+            horScrollEdge = EDGE_END;
+        } else {
+            horScrollEdge = EDGE_NONE;
         }
 
         return true;
@@ -672,6 +677,19 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return readMode && drawableHeight > drawableWidth && drawableHeight > (viewHeight * 1.3f);
     }
 
+    private String getScrollEdgeName(int scrollEdge){
+        if (scrollEdge == EDGE_NONE) {
+            return "NONE";
+        } else if (scrollEdge == EDGE_START) {
+            return "START";
+        } else if (scrollEdge == EDGE_END) {
+            return "END";
+        } else if (scrollEdge == EDGE_BOTH) {
+            return "BOTH";
+        } else {
+            return "UNKNOWN";
+        }
+    }
 
     /** -----------可获取信息----------- **/
 
