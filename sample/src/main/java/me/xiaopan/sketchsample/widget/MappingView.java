@@ -28,7 +28,7 @@ import android.view.ViewGroup;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.large.Tile;
-import me.xiaopan.sketchsample.util.DeviceUtils;
+import me.xiaopan.sketch.util.SketchUtils;
 
 public class MappingView extends SketchImageView {
 
@@ -65,29 +65,29 @@ public class MappingView extends SketchImageView {
         visiblePaint = new Paint();
         visiblePaint.setColor(Color.RED);
         visiblePaint.setStyle(Paint.Style.STROKE);
-        visiblePaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        visiblePaint.setStrokeWidth(SketchUtils.dp2px(context, 1));
 
         setScaleType(ScaleType.FIT_XY);
 
 
         drawTilesPaint = new Paint();
         drawTilesPaint.setColor(Color.parseColor("#88A020F0"));
-        drawTilesPaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        drawTilesPaint.setStrokeWidth(SketchUtils.dp2px(context, 1));
         drawTilesPaint.setStyle(Paint.Style.STROKE);
 
         loadingTilePaint = new Paint();
         loadingTilePaint.setColor(Color.parseColor("#880000CD"));
-        loadingTilePaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        loadingTilePaint.setStrokeWidth(SketchUtils.dp2px(context, 1));
         loadingTilePaint.setStyle(Paint.Style.STROKE);
 
         realSrcRectPaint = new Paint();
         realSrcRectPaint.setColor(Color.parseColor("#8800CD00"));
-        realSrcRectPaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        realSrcRectPaint.setStrokeWidth(SketchUtils.dp2px(context, 1));
         realSrcRectPaint.setStyle(Paint.Style.STROKE);
 
         originSrcRectPaint = new Paint();
         originSrcRectPaint.setColor(Color.parseColor("#88FF7F24"));
-        originSrcRectPaint.setStrokeWidth(DeviceUtils.dp2px(context, 1));
+        originSrcRectPaint.setStrokeWidth(SketchUtils.dp2px(context, 1));
         originSrcRectPaint.setStyle(Paint.Style.STROKE);
     }
 

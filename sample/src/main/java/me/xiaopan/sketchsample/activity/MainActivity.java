@@ -41,6 +41,7 @@ import me.xiaopan.androidinjector.InjectParentMember;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.BuildConfig;
 import me.xiaopan.sketchsample.MyBaseActivity;
 import me.xiaopan.sketchsample.NotificationService;
@@ -603,7 +604,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             for (String title : titles) {
                 TextView textView = new TextView(context);
                 textView.setText(title);
-                int padding = DeviceUtils.dp2px(context, 12);
+                int padding = SketchUtils.dp2px(context, 12);
                 if (number == 0) {
                     textView.setPadding(
                             padding,

@@ -54,14 +54,17 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             imageView.setSupportZoom(true);
         }
         imageView.getImageZoomer().addOnMatrixChangeListener(this);
+
+        if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1");
+            }
+        }
     }
 
     @Override
     public void onAttachedToWindow() {
         if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1. onAttachedToWindow");
-            }
             return;
         }
 
@@ -71,9 +74,6 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
     @Override
     public void onDraw(Canvas canvas) {
         if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1. onDraw");
-            }
             return;
         }
 
@@ -85,9 +85,6 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
     @Override
     public boolean onDetachedFromWindow() {
         if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1. onDetachedFromWindow");
-            }
             return false;
         }
 
@@ -98,9 +95,6 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
         if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1. onDrawableChanged");
-            }
             return false;
         }
 
@@ -111,9 +105,6 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
     @Override
     public void onMatrixChanged(ImageZoomer imageZoomer) {
         if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1. onMatrixChanged");
-            }
             return;
         }
 
@@ -146,9 +137,6 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     private void resetImage() {
         if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1. resetImage");
-            }
             return;
         }
 
@@ -192,9 +180,6 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     public void recycle(String why) {
         if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1. recycle");
-            }
             return;
         }
 
@@ -204,9 +189,6 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
     @Override
     public void invalidate() {
         if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1. invalidate");
-            }
             return;
         }
 

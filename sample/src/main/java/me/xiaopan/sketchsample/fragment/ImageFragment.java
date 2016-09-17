@@ -205,6 +205,7 @@ public class ImageFragment extends MyFragment {
         mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
         mappingView.getOptions().setMaxSize(600, 600);
         mappingView.displayImage(imageUri);
+        mappingView.setVisibility(View.GONE);
 
         imageView.setOptionsByName(OptionsType.DETAIL);
         imageView.displayImage(imageUri);

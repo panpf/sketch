@@ -4,7 +4,6 @@ SketchImageView:
 
 >* ````. 
 
-
 Request:
 >* ``修改``. DownloadListener的onCompleted(File cacheFile, boolean isFromNetwork)和onCompleted(byte[] data)合并成一个onCompleted(DownloadResult downloadResult)
 >* ``修改``. LoadListener的onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType)和onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType)合并成一个onCompleted(LoadResult loadResult)
@@ -23,9 +22,10 @@ DiskCache：
 优化inSampleSize计算规则，先先根据像素数过滤，然后再根据优化OpenGL的MAX_TEXTURE_SIZE过滤，最后如果是为大图功能加载预览图的话，当缩小2倍的时为了节省内存考虑还不如缩小4倍（缩小1倍时不会启用大图功能，因此无需处理）
 默认maxSize改为屏幕的宽高，不再乘以0.75
 
-缩放功能
-阅读模式
-两级双击缩放
+缩放功能：
+>* 阅读模式
+>* 两级双击缩放
+>* 支持滑动条
 
 大图功能
 支持的图片类型
@@ -42,9 +42,9 @@ WIKI：
 >* 新增缩放功能介绍页
 >* 新增大图功能介绍页
 
-
 在PhotoView基础上优化了以下功能：
 >* 双击缩放比例比例闲现在有最小和最大两个 
 >* 根据图片的尺寸和ImageView的宽高动态计算合适的双击缩放比例
 >* 手动持续缩放时如果超过了最小比例或最大比例依然可以缩放，并且超过后会有种拉橡皮筋的感觉，松手后自动回滚到最小或最大缩放比例
 >* 优化了scrollEdge的判断，修复了在不能整除的缩放比例下，无法识别边缘的BUG
+>* 增加滑动条
