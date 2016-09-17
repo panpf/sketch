@@ -53,11 +53,12 @@ public class ImageMenu {
 
         builder.setTitle("菜单");
 
-        String[] items = new String[4];
+        String[] items = new String[5];
         items[0] = "显示详细信息";
         items[1] = "ScaleType: " + (imageView.isSupportZoom() ? imageView.getScaleType() : imageView.getScaleType());
         items[2] = "显示分块区域: " + (imageView.isSupportLargeImage() && imageView.getLargeImageViewer().isShowTileRect());
         items[3] = "阅读模式: " + (imageView.isSupportZoom() && imageView.getImageZoomer().isReadMode());
+        items[4] = "旋转角度: " + 0;
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -82,6 +83,12 @@ public class ImageMenu {
                             imageView.getImageZoomer().setReadMode(newReadMode);
                         }
                         break;
+                    case 4 :
+                        if (imageView.isSupportZoom()) {
+                            if(!imageView.getImageZoomer().rotationBy(90)){
+                                Toast.makeText(activity, "开启大图功能后无法使用旋转功能", Toast.LENGTH_LONG).show();
+                            }
+                        }
                 }
             }
         });

@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.zoom.gestures.ActionListener;
 import me.xiaopan.sketch.feature.zoom.gestures.OnScaleDragGestureListener;
@@ -47,7 +48,6 @@ import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetectorCompat;
 import me.xiaopan.sketch.util.SketchUtils;
 
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
-// TODO: 16/8/23 测试旋转功能
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener,
         ViewTreeObserver.OnGlobalLayoutListener, ActionListener {
     public static final String NAME = "ImageZoomer";
@@ -977,6 +977,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         this.zooming = zooming;
     }
 
+    // TODO: 16/9/17 获取旋转角度
+
 
     /** -----------交互功能----------- **/
     /**
@@ -1051,17 +1053,49 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 设置旋转角度
      */
     @SuppressWarnings("unused")
-    public void rotationTo(float degrees) {
+    public boolean rotationTo(float degrees) {
+        ImageView imageView = getImageView();
+        if (imageView == null) {
+            return false;
+        }
+
+        if (imageView instanceof SketchImageView) {
+            SketchImageView sketchImageView = (SketchImageView) imageView;
+            if (sketchImageView.isSupportLargeImage()) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, NAME + ". large image viewer is worker, cannot use the rotation function");
+                }
+                return false;
+            }
+        }
+
         scaleAndDragMatrix.setRotate(degrees % 360);
         checkAndDisplayMatrix();
+        return true;
     }
 
     /**
      * 增加旋转角度
      */
-    public void rotationBy(float degrees) {
+    public boolean rotationBy(float degrees) {
+        ImageView imageView = getImageView();
+        if (imageView == null) {
+            return false;
+        }
+
+        if (imageView instanceof SketchImageView) {
+            SketchImageView sketchImageView = (SketchImageView) imageView;
+            if (sketchImageView.isSupportLargeImage()) {
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, NAME + ". large image viewer is worker, cannot use the rotation function");
+                }
+                return false;
+            }
+        }
+
         scaleAndDragMatrix.postRotate(degrees % 360);
         checkAndDisplayMatrix();
+        return true;
     }
 
     /**

@@ -36,7 +36,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 大图片查看器
  */
-// TODO: 16/8/29 加上旋转之后，不知道会有什么异常问题
+// TODO: 16/8/29 加上旋转之后，一切都乱了，暂时禁用旋转，后续解决思路就是先恢复成未旋转时的模样去加载，显示的时候旋转一下
 public class LargeImageViewer {
     private static final String NAME = "LargeImageViewer";
 
@@ -191,6 +191,13 @@ public class LargeImageViewer {
 
     TileExecutor getTileExecutor() {
         return tileExecutor;
+    }
+
+    /**
+     * 工作中？
+     */
+    public boolean isWorker() {
+        return !TextUtils.isEmpty(imageUri);
     }
 
     /**
