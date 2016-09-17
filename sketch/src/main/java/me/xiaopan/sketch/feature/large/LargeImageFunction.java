@@ -34,7 +34,6 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 大图功能
  */
-// TODO: 16/9/11 各种设置的方法挪到这里，确保唯一入口的地位
 public class LargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangedListener, LargeImageViewer.Callback {
     private static final String NAME = "LargeImageFunction";
 
