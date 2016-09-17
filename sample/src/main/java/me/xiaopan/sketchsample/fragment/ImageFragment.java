@@ -1,26 +1,33 @@
 package me.xiaopan.sketchsample.fragment;
 
 import android.app.Activity;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.format.Formatter;
 import android.view.View;
+import android.widget.TextView;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.display.TransitionImageDisplayer;
+import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.RequestLevel;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
 import me.xiaopan.sketchsample.menu.ImageMenu;
 import me.xiaopan.sketchsample.widget.HintView;
+import me.xiaopan.sketchsample.widget.MappingView;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 @InjectContentView(R.layout.fragment_image)
@@ -29,6 +36,13 @@ public class ImageFragment extends MyFragment {
 
     @InjectView(R.id.image_imageFragment_image)
     private MyImageView imageView;
+
+    @InjectView(R.id.mapping_imageFragment)
+    private MappingView mappingView;
+
+    @InjectView(R.id.text_imageFragment_scale)
+    private TextView scaleTextView;
+
     @InjectView(R.id.hint_imageFragment_hint)
     private HintView hintView;
 
@@ -37,6 +51,19 @@ public class ImageFragment extends MyFragment {
     private boolean completedAfterUpdateBackground;
 
     private WindowBackgroundManager.Loader loader;
+
+    private String scale;
+    private String bytes = "0.0 B";
+
+    private ImageMenu imageMenu;
+
+    public static ImageFragment build(String imageUri) {
+        Bundle bundle = new Bundle();
+        bundle.putString(PARAM_REQUIRED_IMAGE_URI, imageUri);
+        ImageFragment fragment = new ImageFragment();
+        fragment.setArguments(bundle);
+        return fragment;
+    }
 
     @Override
     public void onAttach(Activity activity) {
@@ -50,8 +77,8 @@ public class ImageFragment extends MyFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        imageView.setOptionsByName(OptionsType.DETAIL);
         imageView.setAutoApplyGlobalAttr(false);
+
         imageView.setSupportZoom(true);
         imageView.setSupportLargeImage(true);
         imageView.getImageZoomer().setReadMode(true);
@@ -132,8 +159,31 @@ public class ImageFragment extends MyFragment {
                 }
             }
         });
-        imageView.displayImage(imageUri);
 
+        // MappingView跟随Matrix变化刷新各种区域
+        imageView.getImageZoomer().addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
+            Rect visibleRect = new Rect();
+
+            @Override
+            public void onMatrixChanged(ImageZoomer imageZoomer) {
+                imageZoomer.getVisibleRect(visibleRect);
+                mappingView.update(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight(), visibleRect);
+                scale = String.valueOf(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
+                scaleTextView.setText(String.format("%s · %s", scale, bytes));
+            }
+        });
+
+        // MappingView跟随碎片变化刷新碎片区域
+        imageView.getLargeImageViewer().setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
+            @Override
+            public void onTileChanged(LargeImageViewer largeImageViewer) {
+                mappingView.onTileChanged(largeImageViewer);
+                bytes = Formatter.formatShortFileSize(getActivity(), largeImageViewer.getTilesAllocationByteCount());
+                scaleTextView.setText(String.format("%s · %s", scale, bytes));
+            }
+        });
+
+        // 单击显示操作选项
         imageView.getImageZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {
             @Override
             public void onViewTap(View view, float x, float y) {
@@ -144,12 +194,22 @@ public class ImageFragment extends MyFragment {
             }
         });
 
+        // 长按显示菜单
         imageView.getImageZoomer().setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
             @Override
             public void onViewLongPress(View view, float x, float y) {
-                new ImageMenu(getActivity(), imageView).show();
+                imageMenu.show();
             }
         });
+
+        mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        mappingView.getOptions().setMaxSize(600, 600);
+        mappingView.displayImage(imageUri);
+
+        imageView.setOptionsByName(OptionsType.DETAIL);
+        imageView.displayImage(imageUri);
+
+        imageMenu = new ImageMenu(getActivity(), imageView);
     }
 
     @Override
@@ -172,7 +232,9 @@ public class ImageFragment extends MyFragment {
         }
     }
 
-    public MyImageView getImageView() {
-        return imageView;
+    public void showDetailInfo() {
+        if (imageMenu != null) {
+            imageMenu.showDetailInfo();
+        }
     }
 }

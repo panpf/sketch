@@ -1,6 +1,5 @@
 package me.xiaopan.sketchsample.adapter;
 
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -24,10 +23,6 @@ public class ImageFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int arg0) {
-        ImageFragment imageFragment = new ImageFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(ImageFragment.PARAM_REQUIRED_IMAGE_URI, uris.get(arg0));
-        imageFragment.setArguments(bundle);
-        return imageFragment;
+        return ImageFragment.build(uris.get(arg0));
     }
 }

@@ -18,15 +18,11 @@ package me.xiaopan.sketchsample.fragment;
 
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
-import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AlertDialog;
-import android.text.format.Formatter;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,12 +35,7 @@ import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.drawable.BindDrawable;
-import me.xiaopan.sketch.drawable.SketchDrawable;
-import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
-import me.xiaopan.sketch.request.UriScheme;
-import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.ImageFragmentAdapter;
@@ -55,7 +46,6 @@ import me.xiaopan.sketchsample.util.PageNumberSetter;
 import me.xiaopan.sketchsample.util.SaveImageAsyncTask;
 import me.xiaopan.sketchsample.util.ViewPagerPlayer;
 import me.xiaopan.sketchsample.widget.DepthPageTransformer;
-import me.xiaopan.sketchsample.widget.MyImageView;
 
 /**
  * 图片详情页面
@@ -261,91 +251,7 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
                 for (Fragment childFragment : childFragmentList) {
                     if (childFragment != null && childFragment.isResumed() && childFragment.getUserVisibleHint() && childFragment instanceof ImageFragment) {
                         ImageFragment imageFragment = (ImageFragment) childFragment;
-                        MyImageView imageView = imageFragment.getImageView();
-                        Drawable drawable = SketchUtils.getLastDrawable(imageView != null ? imageView.getDrawable() : null);
-
-                        if (drawable instanceof BindDrawable) {
-                            Toast.makeText(getActivity(), "正在读取图片，请稍后", Toast.LENGTH_LONG).show();
-                        } else if (drawable instanceof SketchDrawable) {
-                            SketchDrawable sketchDrawable = (SketchDrawable) drawable;
-
-                            StringBuilder messageBuilder = new StringBuilder();
-                            messageBuilder.append("URI：").append(sketchDrawable.getImageUri());
-                            messageBuilder.append("\n");
-                            messageBuilder.append("类型：").append(sketchDrawable.getMimeType());
-                            messageBuilder.append("\n");
-                            messageBuilder.append("尺寸：").append(sketchDrawable.getOriginWidth()).append("x").append(sketchDrawable.getOriginHeight());
-
-                            File image = null;
-                            UriScheme uriScheme = UriScheme.valueOfUri(sketchDrawable.getImageUri());
-                            if (uriScheme == UriScheme.FILE) {
-                                image = new File(UriScheme.FILE.crop(sketchDrawable.getImageUri()));
-                            } else if (uriScheme == UriScheme.NET) {
-                                DiskCache.Entry diskCacheEntry = Sketch.with(getActivity()).getConfiguration().getDiskCache().get(sketchDrawable.getImageUri());
-                                if (diskCacheEntry != null) {
-                                    image = diskCacheEntry.getFile();
-                                }
-                            }
-                            messageBuilder.append("\n");
-                            if (image != null) {
-                                messageBuilder.append("占用空间：").append(Formatter.formatFileSize(getActivity(), image.length()));
-                            } else {
-                                messageBuilder.append("占用空间：").append("未知");
-                            }
-
-                            int previewDrawableByteCount = sketchDrawable.getByteCount();
-                            int pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
-                            int originImageByteCount = sketchDrawable.getOriginWidth() * sketchDrawable.getOriginHeight() * pixelByteCount;
-                            messageBuilder.append("\n");
-                            messageBuilder.append("占用内存：").append(Formatter.formatFileSize(getActivity(), originImageByteCount));
-
-                            messageBuilder.append("\n");
-                            messageBuilder.append("\n");
-                            messageBuilder.append("预览图尺寸：").append(drawable.getIntrinsicWidth()).append("x").append(drawable.getIntrinsicHeight());
-                            messageBuilder.append("\n");
-                            messageBuilder.append("预览图Config：").append(sketchDrawable.getBitmapConfig());
-                            messageBuilder.append("\n");
-                            messageBuilder.append("预览图占用内存：").append(Formatter.formatFileSize(getActivity(), previewDrawableByteCount));
-
-                            messageBuilder.append("\n");
-                            messageBuilder.append("\n");
-                            messageBuilder.append("缩放倍数：").append(SketchUtils.formatFloat(imageView.getImageZoomer().getZoomScale(), 2));
-
-                            messageBuilder.append("\n");
-                            Rect visibleRect = new Rect();
-                            imageView.getImageZoomer().getVisibleRect(visibleRect);
-                            messageBuilder.append("可见区域：").append(visibleRect.toShortString());
-
-                            if (imageView.isSupportLargeImage()) {
-                                messageBuilder.append("\n");
-                                LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
-                                if (largeImageViewer.isReady()) {
-                                    messageBuilder.append("\n");
-                                    messageBuilder.append("大图功能占用内存：").append(Formatter.formatFileSize(getActivity(), largeImageViewer.getTilesAllocationByteCount()));
-                                    messageBuilder.append("\n");
-                                    messageBuilder.append("碎片基数：").append(largeImageViewer.getTiles());
-                                    messageBuilder.append("\n");
-                                    messageBuilder.append("碎片数量：").append(largeImageViewer.getTileList().size());
-                                    messageBuilder.append("\n");
-                                    messageBuilder.append("解码区域：").append(largeImageViewer.getDecodeRect().toShortString());
-                                    messageBuilder.append("\n");
-                                    messageBuilder.append("解码SRC区域：").append(largeImageViewer.getDecodeSrcRect().toShortString());
-                                } else if (largeImageViewer.isInitializing()) {
-                                    messageBuilder.append("\n");
-                                    messageBuilder.append("大图功能正在初始化...");
-                                } else {
-                                    messageBuilder.append("\n");
-                                    messageBuilder.append("无需使用大图功能");
-                                }
-                            }
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                            builder.setMessage(messageBuilder.toString());
-                            builder.setNegativeButton("取消", null);
-                            builder.show();
-                        } else {
-                            Toast.makeText(getActivity(), "未知来源的图片，无法获取其详细信息", Toast.LENGTH_LONG).show();
-                        }
+                        imageFragment.showDetailInfo();
                         break;
                     }
                 }

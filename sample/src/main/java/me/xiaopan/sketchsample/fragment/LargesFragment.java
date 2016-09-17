@@ -53,10 +53,10 @@ public class LargesFragment extends MyFragment {
         super.onViewCreated(view, savedInstanceState);
         if (fragmentAdapter == null) {
             Fragment[] fragments = new Fragment[4];
-            fragments[0] = LargeImageFragment.build(UriScheme.ASSET.createUri("world_map.jpg"));
-            fragments[1] = LargeImageFragment.build(UriScheme.ASSET.createUri("qing_ming_shang_he_tu.jpg"));
-            fragments[2] = LargeImageFragment.build(UriScheme.ASSET.createUri("chang_wei_bo.jpg"));
-            fragments[3] = LargeImageFragment.build(UriScheme.ASSET.createUri("test_card.png"));
+            fragments[0] = ImageFragment.build(UriScheme.ASSET.createUri("world_map.jpg"));
+            fragments[1] = ImageFragment.build(UriScheme.ASSET.createUri("qing_ming_shang_he_tu.jpg"));
+            fragments[2] = ImageFragment.build(UriScheme.ASSET.createUri("chang_wei_bo.jpg"));
+            fragments[3] = ImageFragment.build(UriScheme.ASSET.createUri("test_card.png"));
             fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments);
         }
         viewPager.setAdapter(fragmentAdapter);

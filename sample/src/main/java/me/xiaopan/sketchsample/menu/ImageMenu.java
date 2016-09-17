@@ -18,10 +18,23 @@ package me.xiaopan.sketchsample.menu;
 
 import android.app.Activity;
 import android.content.DialogInterface;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.support.v7.app.AlertDialog;
+import android.text.format.Formatter;
 import android.widget.ImageView;
+import android.widget.Toast;
 
+import java.io.File;
+
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.drawable.BindDrawable;
+import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.feature.large.LargeImageViewer;
+import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.util.SketchUtils;
 
 public class ImageMenu {
 
@@ -40,10 +53,11 @@ public class ImageMenu {
 
         builder.setTitle("菜单");
 
-        String[] items = new String[3];
-        items[0] = "ScaleType: " + (imageView.isSupportZoom() ? imageView.getScaleType() : imageView.getScaleType());
-        items[1] = "显示分块区域: " + (imageView.isSupportLargeImage() && imageView.getLargeImageViewer().isShowTileRect());
-        items[2] = "阅读模式: " + (imageView.isSupportZoom() && imageView.getImageZoomer().isReadMode());
+        String[] items = new String[4];
+        items[0] = "显示详细信息";
+        items[1] = "ScaleType: " + (imageView.isSupportZoom() ? imageView.getScaleType() : imageView.getScaleType());
+        items[2] = "显示分块区域: " + (imageView.isSupportLargeImage() && imageView.getLargeImageViewer().isShowTileRect());
+        items[3] = "阅读模式: " + (imageView.isSupportZoom() && imageView.getImageZoomer().isReadMode());
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -51,15 +65,18 @@ public class ImageMenu {
 
                 switch (which) {
                     case 0:
-                        showScaleTypeMenu();
+                        showDetailInfo();
                         break;
                     case 1:
+                        showScaleTypeMenu();
+                        break;
+                    case 2:
                         if (imageView.isSupportLargeImage()) {
                             boolean newShowTileRect = !imageView.getLargeImageViewer().isShowTileRect();
                             imageView.getLargeImageViewer().setShowTileRect(newShowTileRect);
                         }
                         break;
-                    case 2:
+                    case 3:
                         if (imageView.isSupportZoom()) {
                             boolean newReadMode = !imageView.getImageZoomer().isReadMode();
                             imageView.getImageZoomer().setReadMode(newReadMode);
@@ -120,5 +137,92 @@ public class ImageMenu {
 
         builder.setNegativeButton("取消", null);
         tempAlertDialog = builder.show();
+    }
+
+    public void showDetailInfo(){
+        Drawable drawable = SketchUtils.getLastDrawable(imageView != null ? imageView.getDrawable() : null);
+
+        if (drawable instanceof BindDrawable) {
+            Toast.makeText(activity, "正在读取图片，请稍后", Toast.LENGTH_LONG).show();
+        } else if (drawable instanceof SketchDrawable) {
+            SketchDrawable sketchDrawable = (SketchDrawable) drawable;
+
+            StringBuilder messageBuilder = new StringBuilder();
+            messageBuilder.append("URI：").append(sketchDrawable.getImageUri());
+            messageBuilder.append("\n");
+            messageBuilder.append("类型：").append(sketchDrawable.getMimeType());
+            messageBuilder.append("\n");
+            messageBuilder.append("尺寸：").append(sketchDrawable.getOriginWidth()).append("x").append(sketchDrawable.getOriginHeight());
+
+            File image = null;
+            UriScheme uriScheme = UriScheme.valueOfUri(sketchDrawable.getImageUri());
+            if (uriScheme == UriScheme.FILE) {
+                image = new File(UriScheme.FILE.crop(sketchDrawable.getImageUri()));
+            } else if (uriScheme == UriScheme.NET) {
+                DiskCache.Entry diskCacheEntry = Sketch.with(activity).getConfiguration().getDiskCache().get(sketchDrawable.getImageUri());
+                if (diskCacheEntry != null) {
+                    image = diskCacheEntry.getFile();
+                }
+            }
+            messageBuilder.append("\n");
+            if (image != null) {
+                messageBuilder.append("占用空间：").append(Formatter.formatFileSize(activity, image.length()));
+            } else {
+                messageBuilder.append("占用空间：").append("未知");
+            }
+
+            int previewDrawableByteCount = sketchDrawable.getByteCount();
+            int pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
+            int originImageByteCount = sketchDrawable.getOriginWidth() * sketchDrawable.getOriginHeight() * pixelByteCount;
+            messageBuilder.append("\n");
+            messageBuilder.append("占用内存：").append(Formatter.formatFileSize(activity, originImageByteCount));
+
+            messageBuilder.append("\n");
+            messageBuilder.append("\n");
+            messageBuilder.append("预览图尺寸：").append(drawable.getIntrinsicWidth()).append("x").append(drawable.getIntrinsicHeight());
+            messageBuilder.append("\n");
+            messageBuilder.append("预览图Config：").append(sketchDrawable.getBitmapConfig());
+            messageBuilder.append("\n");
+            messageBuilder.append("预览图占用内存：").append(Formatter.formatFileSize(activity, previewDrawableByteCount));
+
+            messageBuilder.append("\n");
+            messageBuilder.append("\n");
+            messageBuilder.append("缩放倍数：").append(SketchUtils.formatFloat(imageView.getImageZoomer().getZoomScale(), 2));
+
+            messageBuilder.append("\n");
+            Rect visibleRect = new Rect();
+            imageView.getImageZoomer().getVisibleRect(visibleRect);
+            messageBuilder.append("可见区域：").append(visibleRect.toShortString());
+
+            if (imageView.isSupportLargeImage()) {
+                messageBuilder.append("\n");
+                LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
+                if (largeImageViewer.isReady()) {
+                    messageBuilder.append("\n");
+                    messageBuilder.append("大图功能占用内存：").append(Formatter.formatFileSize(activity, largeImageViewer.getTilesAllocationByteCount()));
+                    messageBuilder.append("\n");
+                    messageBuilder.append("碎片基数：").append(largeImageViewer.getTiles());
+                    messageBuilder.append("\n");
+                    messageBuilder.append("碎片数量：").append(largeImageViewer.getTileList().size());
+                    messageBuilder.append("\n");
+                    messageBuilder.append("解码区域：").append(largeImageViewer.getDecodeRect().toShortString());
+                    messageBuilder.append("\n");
+                    messageBuilder.append("解码SRC区域：").append(largeImageViewer.getDecodeSrcRect().toShortString());
+                } else if (largeImageViewer.isInitializing()) {
+                    messageBuilder.append("\n");
+                    messageBuilder.append("大图功能正在初始化...");
+                } else {
+                    messageBuilder.append("\n");
+                    messageBuilder.append("无需使用大图功能");
+                }
+            }
+
+            AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+            builder.setMessage(messageBuilder.toString());
+            builder.setNegativeButton("取消", null);
+            builder.show();
+        } else {
+            Toast.makeText(activity, "未知来源的图片，无法获取其详细信息", Toast.LENGTH_LONG).show();
+        }
     }
 }
