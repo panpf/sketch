@@ -114,24 +114,21 @@ Sketch.with(context).display("http://biying.png", sketchImageView)
 // 加载
 Sketch.with(context).load("http://biying.png", new LoadListener() {
     @Override
-    public void onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType) {
+    public void onCompleted(LoadResult loadResult) {
 
     }
-
-    @Override
-    public void onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType) {
-
-    }
-	...
+    
+    ...
 }).maxSize(100, 100).commit();
 
 // 下载
 Sketch.with(context).download("http://biying.png", new DownloadListener() {
     @Override
-    public void onCompleted(File cacheFile, boolean isFromNetwork) {
+    public void onCompleted(DownloadResult downloadResult) {
         
     }
-	...
+    
+    ...
 }).commit();
 ```
 

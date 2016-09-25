@@ -47,12 +47,7 @@ Sketch.with(context).load("http://biying.png", new LoadListener() {
     }
 
     @Override
-    public void onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType) {
-
-    }
-
-    @Override
-    public void onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType) {
+    public void onCompleted(LoadResult loadResult) {
 
     }
 
@@ -82,13 +77,8 @@ Sketch.with(context).download("http://biying.png", new DownloadListener() {
     }
 
     @Override
-    public void onCompleted(File cacheFile, boolean isFromNetwork) {
+    public void onCompleted(DownloadResult downloadResult) {
         
-    }
-
-    @Override
-    public void onCompleted(byte[] data) {
-
     }
 
     @Override
