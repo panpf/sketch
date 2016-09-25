@@ -26,6 +26,7 @@ public class CompatUtils {
 
     private static final int SIXTY_FPS_INTERVAL = 1000 / 60;
 
+    @SuppressWarnings("WeakerAccess")
     public static void postOnAnimation(View view, Runnable runnable) {
         if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
             postOnAnimationJellyBean(view, runnable);

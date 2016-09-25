@@ -32,7 +32,7 @@ import android.widget.Scroller;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class ScrollBarManager {
+class ScrollBar {
 
     private ImageZoomer imageZoomer;
     private Paint scrollBarPaint;
@@ -48,7 +48,7 @@ public class ScrollBarManager {
     private HiddenScrollBarRunner hiddenScrollBarRunner;
     private FadeScrollBarRunner fadeScrollBarRunner;
 
-    public ScrollBarManager(Context context, ImageZoomer imageZoomer) {
+    ScrollBar(Context context, ImageZoomer imageZoomer) {
         this.imageZoomer = imageZoomer;
 
         scrollBarPaint = new Paint();
@@ -63,7 +63,7 @@ public class ScrollBarManager {
         fadeScrollBarRunner = new FadeScrollBarRunner(context);
     }
 
-    public void drawScrollBar(Canvas canvas) {
+    void drawScrollBar(Canvas canvas) {
         ImageView imageView = imageZoomer.getImageView();
         if (imageView == null) {
             return;
@@ -152,7 +152,7 @@ public class ScrollBarManager {
         }
     }
 
-    public void matrixChanged() {
+    void matrixChanged() {
         scrollBarPaint.setAlpha(scrollBarAlpha);
 
         if (fadeScrollBarRunner.isRunning()) {
@@ -181,7 +181,7 @@ public class ScrollBarManager {
     private class FadeScrollBarRunner implements Runnable {
         private Scroller scroller;
 
-        public FadeScrollBarRunner(Context context) {
+        FadeScrollBarRunner(Context context) {
             this.scroller = new Scroller(context, new DecelerateInterpolator());
             scroller.forceFinished(true);
         }
@@ -191,11 +191,11 @@ public class ScrollBarManager {
             handler.post(this);
         }
 
-        public boolean isRunning() {
+        boolean isRunning() {
             return !scroller.isFinished();
         }
 
-        public void abort() {
+        void abort() {
             scroller.forceFinished(true);
         }
 

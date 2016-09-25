@@ -2,6 +2,7 @@ package me.xiaopan.sketchsample.fragment;
 
 import android.app.Activity;
 import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.format.Formatter;
@@ -204,10 +205,16 @@ public class ImageFragment extends MyFragment {
             }
         });
 
+        mappingView.setOnSingleClickListener(new MappingView.OnSingleClickListener() {
+            @Override
+            public boolean onSingleClick(float x, float y) {
+                return location(x, y);
+            }
+        });
+
         mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
         mappingView.getOptions().setMaxSize(600, 600);
         mappingView.displayImage(imageUri);
-        mappingView.setVisibility(View.GONE);
 
         imageView.setOptionsByName(OptionsType.DETAIL);
         imageView.displayImage(imageUri);
@@ -239,5 +246,26 @@ public class ImageFragment extends MyFragment {
         if (imageMenu != null) {
             imageMenu.showDetailInfo();
         }
+    }
+
+    private boolean location(float x, float y) {
+        if (!imageView.isSupportZoom()) {
+            return false;
+        }
+
+        Drawable mappingDrawable = mappingView.getDrawable();
+        Drawable drawable = imageView.getDrawable();
+        if (mappingDrawable == null
+                || mappingDrawable.getIntrinsicWidth() == 0 || mappingDrawable.getIntrinsicHeight() == 0
+                || drawable == null
+                || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
+            return false;
+        }
+
+        final float widthScale = (float) drawable.getIntrinsicWidth() / mappingDrawable.getIntrinsicWidth();
+        final float heightScale = (float) drawable.getIntrinsicHeight() / mappingDrawable.getIntrinsicHeight();
+
+        imageView.getImageZoomer().location(x * widthScale, y * heightScale);
+        return true;
     }
 }

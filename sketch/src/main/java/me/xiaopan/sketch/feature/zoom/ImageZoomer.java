@@ -98,6 +98,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private int horScrollEdge = EDGE_NONE; // 横向滚动边界
     private int verScrollEdge = EDGE_NONE; // 竖向滚动边界
     private GestureDetector tapGestureDetector; // 点击手势识别器
+    private LocationRunner locationRunner;  // 定位执行器
     private FlingTranslateRunner flingTranslateRunner;  // 执行飞速滚动
     private ScaleDragGestureDetector scaleDragGestureDetector;  // 缩放和拖拽手势识别器
     private boolean disallowParentInterceptTouchEvent;  // 控制滑动或缩放中到达边缘了依然禁止父类拦截事件
@@ -111,7 +112,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private final Matrix scaleAndDragMatrix = new Matrix(); // 存储用户产生的缩放和拖拽信息
     private final Matrix tempDrawMatrix = new Matrix(); // 存储baseMatrix和scaleAndDragMatrix融合后的信息，用于绘制
 
-    private ScrollBarManager scrollBarManager;
+    private ScrollBar scrollBar;
 
     public ImageZoomer(ImageView imageView, boolean provideTouchEvent) {
         context = imageView.getContext();
@@ -143,7 +144,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             observer.addOnGlobalLayoutListener(this);
         }
 
-        scrollBarManager = new ScrollBarManager(context, this);
+        scrollBar = new ScrollBar(context, this);
     }
 
     @SuppressWarnings("unused")
@@ -152,13 +153,21 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     public void draw(Canvas canvas) {
-        scrollBarManager.drawScrollBar(canvas);
+        scrollBar.drawScrollBar(canvas);
     }
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
         if (!zoomable || !hasDrawable()) {
             return false;
+        }
+
+        // 定位操作不能被打断
+        if (locationRunner != null) {
+            if (locationRunner.isRunning()) {
+                return false;
+            }
+            locationRunner = null;
         }
 
         // 缩放、拖拽手势处理
@@ -650,7 +659,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                 throw new IllegalStateException("ImageView scaleType must be is MATRIX");
             }
 
-            scrollBarManager.matrixChanged();
+            scrollBar.matrixChanged();
 
             imageView.setImageMatrix(matrix);
 
@@ -812,6 +821,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 获取预览图片上用户真实看到区域
      */
     public void getVisibleRect(Rect rect) {
+        // TODO: 16/9/26 现已查明刚刚显示的时候获取displayRect会是空的
         ImageView imageView = getImageView();
         if (imageView == null) {
             rect.setEmpty();
@@ -997,20 +1007,24 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     /** -----------交互功能----------- **/
     /**
-     * 移动到指定位置
+     * 定位到指定位置
      */
-    // TODO: 16/8/27 加上动画支持
     @SuppressWarnings("unused")
-    public void translateTo(float x, float y) {
-        scaleAndDragMatrix.setTranslate(x, y);
-        applyMatrix(getDrawMatrix());
+    public void location(float x, float y) {
+        cancelFling();
+
+        if (locationRunner != null) {
+            locationRunner.cancel();
+        }
+
+        locationRunner = new LocationRunner(context, this);
+        locationRunner.start(x, y);
     }
 
     /**
      * 移动一段距离
      */
-    @SuppressWarnings("WeakerAccess")
-    public void translateBy(float dx, float dy) {
+    void translateBy(float dx, float dy) {
         scaleAndDragMatrix.postTranslate(dx, dy);
         applyMatrix(getDrawMatrix());
     }
@@ -1149,6 +1163,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 当Drawable或者ImageView的尺寸发生变化时就需要调用此方法来更新
      */
     public void update() {
+        // TODO: 16/9/26 更新的把drawable以及宽高记下来，省得每次都得重新算
         ImageView imageView = getImageView();
         if (imageView == null) {
             return;

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2011, 2012 Chris Banes.
- *
+ * <p>
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -29,12 +29,12 @@ class FlingTranslateRunner implements Runnable {
     private ImageZoomer imageZoomer;
     private int mCurrentX, mCurrentY;
 
-    public FlingTranslateRunner(Context context, ImageZoomer imageZoomer) {
+    FlingTranslateRunner(Context context, ImageZoomer imageZoomer) {
         this.mScroller = ScrollerProxy.getScroller(context);
         this.imageZoomer = imageZoomer;
     }
 
-    public void fling(int velocityX, int velocityY) {
+    void fling(int velocityX, int velocityY) {
         ImageView imageView = imageZoomer.getImageView();
         if (imageView == null) {
             if (Sketch.isDebugMode()) {
@@ -69,17 +69,17 @@ class FlingTranslateRunner implements Runnable {
             minY = maxY = startY;
         }
 
-        mCurrentX = startX;
-        mCurrentY = startY;
-
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, ImageZoomer.NAME + ". fling" +
-                    ". StartX: " + startX + ", StartY: " + startY +
-                    ", MaxX: " + maxX + ", MaxY: " + maxY);
+                    ". start=" + startX + "x " + startY +
+                    ", min=" + minX + "x" + minY +
+                    ", max=" + maxX + "x" + maxY);
         }
 
         // If we actually can move, fling the scroller
         if (startX != maxX || startY != maxY) {
+            mCurrentX = startX;
+            mCurrentY = startY;
             mScroller.fling(startX, startY, velocityX, velocityY, minX,
                     maxX, minY, maxY, 0, 0);
         }
@@ -92,25 +92,38 @@ class FlingTranslateRunner implements Runnable {
     public void run() {
         // remaining post that should not be handled
         if (mScroller.isFinished()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". fling run. finished");
+            }
             return;
         }
 
         ImageView imageView = imageZoomer.getImageView();
-        if (null != imageView && mScroller.computeScrollOffset()) {
-
-            final int newX = mScroller.getCurrX();
-            final int newY = mScroller.getCurrY();
-
-            imageZoomer.translateBy(mCurrentX - newX, mCurrentY - newY);
-
-            mCurrentX = newX;
-            mCurrentY = newY;
-
-            // Post On animation
-            CompatUtils.postOnAnimation(imageView, this);
+        if (imageView == null) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". fling run. imageView is null");
+            }
+            return;
         }
+
+        if (!mScroller.computeScrollOffset()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". fling run. scroll finished");
+            }
+            return;
+        }
+
+        final int newX = mScroller.getCurrX();
+        final int newY = mScroller.getCurrY();
+        imageZoomer.translateBy(mCurrentX - newX, mCurrentY - newY);
+        mCurrentX = newX;
+        mCurrentY = newY;
+
+        // Post On animation
+        CompatUtils.postOnAnimation(imageView, this);
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void cancelFling() {
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, ImageZoomer.NAME + ". cancel fling");

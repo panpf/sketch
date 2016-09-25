@@ -25,7 +25,7 @@ class ZoomRunner implements Runnable {
     private final long mStartTime;
     private final float mZoomStart, mZoomEnd;
 
-    public ZoomRunner(ImageZoomer imageZoomer, final float currentZoom, final float targetZoom, final float focalX, final float focalY) {
+    ZoomRunner(ImageZoomer imageZoomer, final float currentZoom, final float targetZoom, final float focalX, final float focalY) {
         this.imageZoomer = imageZoomer;
         mFocalX = focalX;
         mFocalY = focalY;

@@ -26,7 +26,7 @@ class TapListener extends GestureDetector.SimpleOnGestureListener {
 
     private ImageZoomer imageZoomer;
 
-    public TapListener(ImageZoomer imageZoomer) {
+    TapListener(ImageZoomer imageZoomer) {
         this.imageZoomer = imageZoomer;
     }
 

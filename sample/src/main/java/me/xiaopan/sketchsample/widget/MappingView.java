@@ -23,11 +23,16 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.ViewGroup;
 
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.large.Tile;
+import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class MappingView extends SketchImageView {
@@ -44,6 +49,8 @@ public class MappingView extends SketchImageView {
     private int cacheOriginImageWidth;
     private int cacheOriginImageHeight;
     private Rect cacheVisibleRect;
+    private GestureDetector detector;
+    private OnSingleClickListener onSingleClickListener;
 
     public MappingView(Context context) {
         super(context);
@@ -163,8 +170,16 @@ public class MappingView extends SketchImageView {
         super.setImageDrawable(drawable);
     }
 
-    public void update(int originImageWidth, int originImageHeight, Rect newVisibleRect) {
-        if (originImageWidth == 0 || newVisibleRect.isEmpty()) {
+    private String getImageUri(){
+        DisplayParams displayParams = getDisplayParams();
+        return displayParams != null ? displayParams.attrs.getUri() : null;
+    }
+
+    public void update(int drawableWidth, int drawableHeight, Rect newVisibleRect) {
+        if (drawableWidth == 0 || newVisibleRect.isEmpty()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty. " + getImageUri() + ". drawableWidth=" + drawableWidth + ", newVisibleRect=" + newVisibleRect.toShortString());
+            }
             if (!visibleRect.isEmpty()) {
                 visibleRect.setEmpty();
                 invalidate();
@@ -173,13 +188,17 @@ public class MappingView extends SketchImageView {
         }
 
         if (getWidth() == 0 || getDrawable() == null) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, "MappingView. update. getWidth() is 0 or getDrawable() is null. " + getImageUri());
+            }
+
             if (!visibleRect.isEmpty()) {
                 visibleRect.setEmpty();
                 invalidate();
             }
 
-            cacheOriginImageWidth = originImageWidth;
-            cacheOriginImageHeight = originImageHeight;
+            cacheOriginImageWidth = drawableWidth;
+            cacheOriginImageHeight = drawableHeight;
             if (cacheVisibleRect == null) {
                 cacheVisibleRect = new Rect();
             }
@@ -189,8 +208,8 @@ public class MappingView extends SketchImageView {
 
         int selfWidth = getWidth();
         int selfHeight = getHeight();
-        float widthScale = (float) selfWidth / originImageWidth;
-        float heightScale = (float) selfHeight / originImageHeight;
+        final float widthScale = (float) selfWidth / drawableWidth;
+        final float heightScale = (float) selfHeight / drawableHeight;
         this.visibleRect.set(
                 Math.round(newVisibleRect.left * widthScale),
                 Math.round(newVisibleRect.top * heightScale),
@@ -202,5 +221,33 @@ public class MappingView extends SketchImageView {
     public void onTileChanged(LargeImageViewer largeImageViewer) {
         this.largeImageViewer = largeImageViewer;
         invalidate();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (detector == null) {
+            return super.onTouchEvent(event);
+        }
+
+        detector.onTouchEvent(event);
+        return true;
+    }
+
+    public void setOnSingleClickListener(OnSingleClickListener onSingleClickListener) {
+        this.onSingleClickListener = onSingleClickListener;
+        setClickable(onSingleClickListener != null);
+        if (detector == null) {
+            detector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {
+
+                @Override
+                public boolean onSingleTapUp(MotionEvent e) {
+                    return MappingView.this.onSingleClickListener.onSingleClick(e.getX(), e.getY());
+                }
+            });
+        }
+    }
+
+    public interface OnSingleClickListener {
+        boolean onSingleClick(float x, float y);
     }
 }
