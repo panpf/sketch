@@ -174,14 +174,16 @@ public class ImageFragment extends MyFragment {
         });
 
         // MappingView跟随碎片变化刷新碎片区域
-        imageView.getLargeImageViewer().setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
-            @Override
-            public void onTileChanged(LargeImageViewer largeImageViewer) {
-                mappingView.onTileChanged(largeImageViewer);
-                bytes = Formatter.formatShortFileSize(getActivity(), largeImageViewer.getTilesAllocationByteCount());
-                scaleTextView.setText(String.format("%s · %s", scale, bytes));
-            }
-        });
+        if (imageView.isSupportLargeImage()) {
+            imageView.getLargeImageViewer().setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
+                @Override
+                public void onTileChanged(LargeImageViewer largeImageViewer) {
+                    mappingView.onTileChanged(largeImageViewer);
+                    bytes = Formatter.formatShortFileSize(getActivity(), largeImageViewer.getTilesAllocationByteCount());
+                    scaleTextView.setText(String.format("%s · %s", scale, bytes));
+                }
+            });
+        }
 
         // 单击显示操作选项
         imageView.getImageZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {

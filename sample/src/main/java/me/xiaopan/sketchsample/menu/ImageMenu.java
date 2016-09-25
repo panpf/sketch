@@ -85,7 +85,7 @@ public class ImageMenu {
                         break;
                     case 4 :
                         if (imageView.isSupportZoom()) {
-                            if(!imageView.getImageZoomer().rotationBy(90)){
+                            if(!imageView.getImageZoomer().rotateBy(90)){
                                 Toast.makeText(activity, "开启大图功能后无法使用旋转功能", Toast.LENGTH_LONG).show();
                             }
                         }

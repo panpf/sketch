@@ -53,15 +53,15 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         ViewTreeObserver.OnGlobalLayoutListener, ActionListener {
     public static final String NAME = "ImageZoomer";
 
-    public static final float DEFAULT_MAXIMIZE_SCALE = 1.75f;
-    public static final float DEFAULT_MINIMUM_SCALE = 1.0f;
+    private static final float DEFAULT_MAXIMIZE_SCALE = 1.75f;
+    private static final float DEFAULT_MINIMUM_SCALE = 1.0f;
 
-    public static final int DEFAULT_ZOOM_DURATION = 200;
+    private static final int DEFAULT_ZOOM_DURATION = 200;
 
-    public static final int EDGE_NONE = -1;
-    public static final int EDGE_START = 0;
-    public static final int EDGE_END = 1;
-    public static final int EDGE_BOTH = 2;
+    private static final int EDGE_NONE = -1;
+    private static final int EDGE_START = 0;
+    private static final int EDGE_END = 1;
+    private static final int EDGE_BOTH = 2;
 
     // incoming
     private Context context;
@@ -635,7 +635,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     private void resetMatrix() {
         scaleAndDragMatrix.reset();
-        rotationBy(baseRotation);
+        rotateBy(baseRotation);
         applyMatrix(getDrawMatrix());
         checkMatrixBounds();
     }
@@ -748,6 +748,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 是否有图片
      */
+    @SuppressWarnings("WeakerAccess")
     public boolean hasDrawable() {
         ImageView imageView = getImageView();
         return imageView != null && imageView.getDrawable() != null;
@@ -788,6 +789,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 获取显示边界
      */
+    @SuppressWarnings("WeakerAccess")
     public void getDisplayRect(RectF rectF) {
         ImageView imageView = getImageView();
         if (imageView == null) {
@@ -881,6 +883,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 清理
      */
+    @SuppressWarnings("WeakerAccess")
     public void cleanup() {
         if (viewReference == null) {
             return; // cleanup already done
@@ -970,6 +973,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 获取双击缩放比例
      */
+    @SuppressWarnings("WeakerAccess")
     public float[] getDoubleClickZoomScales() {
         return doubleClickZoomScales;
     }
@@ -1005,6 +1009,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 移动一段距离
      */
+    @SuppressWarnings("WeakerAccess")
     public void translateBy(float dx, float dy) {
         scaleAndDragMatrix.postTranslate(dx, dy);
         applyMatrix(getDrawMatrix());
@@ -1064,7 +1069,12 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 设置旋转角度
      */
     @SuppressWarnings("unused")
-    public boolean rotationTo(float degrees) {
+    public boolean rotateTo(float degrees) {
+        if (degrees % 90 != 0) {
+            Log.w(Sketch.TAG, NAME + ". rotate degrees must be in multiples of 90");
+            return false;
+        }
+
         ImageView imageView = getImageView();
         if (imageView == null) {
             return false;
@@ -1074,7 +1084,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             SketchImageView sketchImageView = (SketchImageView) imageView;
             if (sketchImageView.isSupportLargeImage()) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". large image viewer is worker, cannot use the rotation function");
+                    Log.w(Sketch.TAG, NAME + ". large image viewer is worker, cannot use the rotate function");
                 }
                 return false;
             }
@@ -1088,7 +1098,12 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 增加旋转角度
      */
-    public boolean rotationBy(float degrees) {
+    public boolean rotateBy(float degrees) {
+        if (degrees % 90 != 0) {
+            Log.w(Sketch.TAG, NAME + ". rotate degrees must be in multiples of 90");
+            return false;
+        }
+
         ImageView imageView = getImageView();
         if (imageView == null) {
             return false;
@@ -1098,7 +1113,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             SketchImageView sketchImageView = (SketchImageView) imageView;
             if (sketchImageView.isSupportLargeImage()) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". large image viewer is worker, cannot use the rotation function");
+                    Log.w(Sketch.TAG, NAME + ". large image viewer is worker, cannot use the rotate function");
                 }
                 return false;
             }
@@ -1174,6 +1189,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 火球缩放动画持续时间
      */
+    @SuppressWarnings("WeakerAccess")
     public int getZoomDuration() {
         return zoomDuration;
     }
@@ -1189,6 +1205,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 获取缩放动画插值器
      */
+    @SuppressWarnings("WeakerAccess")
     public Interpolator getZoomInterpolator() {
         return zoomInterpolator;
     }
@@ -1230,11 +1247,17 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 设置基础旋转角度
      */
     @SuppressWarnings("unused")
-    public void setBaseRotation(final float degrees) {
+    public boolean setBaseRotation(final float degrees) {
+        if (degrees % 90 != 0) {
+            Log.w(Sketch.TAG, NAME + ". rotate degrees must be in multiples of 90");
+            return false;
+        }
+
         baseRotation = degrees % 360;
         update();
-        rotationBy(baseRotation);
+        rotateBy(baseRotation);
         checkAndDisplayMatrix();
+        return true;
     }
 
     /**
@@ -1352,6 +1375,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 飞速拖拽监听器
      */
+    @SuppressWarnings("WeakerAccess")
     public interface OnDragFlingListener {
         boolean onFling(float startX, float startY, float velocityX, float velocityY);
     }
@@ -1373,6 +1397,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 缩放监听器
      */
+    @SuppressWarnings("WeakerAccess")
     public interface OnScaleChangeListener {
         void onScaleChange(float scaleFactor, float focusX, float focusY);
     }
