@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -41,6 +42,7 @@ import java.util.Arrays;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.drawable.BindDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.zoom.gestures.ActionListener;
 import me.xiaopan.sketch.feature.zoom.gestures.OnScaleDragGestureListener;
@@ -113,6 +115,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private final Matrix tempDrawMatrix = new Matrix(); // 存储baseMatrix和scaleAndDragMatrix融合后的信息，用于绘制
 
     private ScrollBar scrollBar;
+    private final Point tempDrawableSize = new Point();
+    private final Point tempImageViewSize = new Point();
 
     public ImageZoomer(ImageView imageView, boolean provideTouchEvent) {
         context = imageView.getContext();
@@ -158,7 +162,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (!zoomable || !hasDrawable()) {
+        if (!zoomable || getDrawable() == null) {
             return false;
         }
 
@@ -391,8 +395,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 重置最小和最大缩放比例
      */
     private void resetZoomScales() {
-        ImageView imageView = getImageView();
-        if (imageView == null) {
+        Point imageViewSize = getImageViewSize();
+        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
             fullZoomScale = fillZoomScale = originZoomScale = 1f;
             minZoomScale = DEFAULT_MINIMUM_SCALE;
             maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
@@ -400,8 +404,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        Drawable drawable = imageView.getDrawable();
-        if (drawable == null) {
+        Point drawableSize = getDrawableSize();
+        if (drawableSize.x == 0 || drawableSize.y == 0) {
             fullZoomScale = fillZoomScale = originZoomScale = 1f;
             minZoomScale = DEFAULT_MINIMUM_SCALE;
             maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
@@ -409,25 +413,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        final int viewWidth = getImageViewWidth();
-        final int viewHeight = getImageViewHeight();
-        if (viewWidth == 0 || viewHeight == 0) {
-            fullZoomScale = fillZoomScale = originZoomScale = 1f;
-            minZoomScale = DEFAULT_MINIMUM_SCALE;
-            maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
-            doubleClickZoomScales = new float[]{DEFAULT_MINIMUM_SCALE, DEFAULT_MAXIMIZE_SCALE};
-            return;
-        }
-
-        final int drawableWidth = drawable.getIntrinsicWidth();
-        final int drawableHeight = drawable.getIntrinsicHeight();
-        if (drawableWidth == 0 || drawableHeight == 0) {
-            fullZoomScale = fillZoomScale = originZoomScale = 1f;
-            minZoomScale = DEFAULT_MINIMUM_SCALE;
-            maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
-            doubleClickZoomScales = new float[]{DEFAULT_MINIMUM_SCALE, DEFAULT_MAXIMIZE_SCALE};
-            return;
-        }
+        final int viewWidth = imageViewSize.x;
+        final int viewHeight = imageViewSize.y;
+        final int drawableWidth = drawableSize.x;
+        final int drawableHeight = drawableSize.y;
 
         final float widthScale = (float) viewWidth / drawableWidth;
         final float heightScale = (float) viewHeight / drawableHeight;
@@ -438,7 +427,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             fullZoomScale = widthScale;
             fillZoomScale = widthScale;
         }
-        Drawable finalDrawable = SketchUtils.getLastDrawable(drawable);
+        Drawable finalDrawable = SketchUtils.getLastDrawable(getDrawable());
         if (finalDrawable instanceof SketchDrawable) {
             SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
             originZoomScale = Math.max((float) sketchDrawable.getOriginWidth() / drawableWidth,
@@ -485,20 +474,20 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 更新基础Matrix
      */
     private void updateBaseMatrix() {
-        ImageView imageView = getImageView();
-        if (imageView == null) {
+        Point imageViewSize = getImageViewSize();
+        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
             return;
         }
 
-        Drawable drawable = imageView.getDrawable();
-        if (drawable == null) {
+        Point drawableSize = getDrawableSize();
+        if (drawableSize.x == 0 || drawableSize.y == 0) {
             return;
         }
 
-        final int viewWidth = getImageViewWidth();
-        final int viewHeight = getImageViewHeight();
-        final int drawableWidth = drawable.getIntrinsicWidth();
-        final int drawableHeight = drawable.getIntrinsicHeight();
+        final int viewWidth = imageViewSize.x;
+        final int viewHeight = imageViewSize.y;
+        final int drawableWidth = drawableSize.x;
+        final int drawableHeight = drawableSize.y;
 
         final float widthScale = (float) viewWidth / drawableWidth;
         final float heightScale = (float) viewHeight / drawableHeight;
@@ -557,8 +546,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 检查应用Matrix后的边界，防止超出范围
      */
     boolean checkMatrixBounds() {
-        final ImageView imageView = getImageView();
-        if (null == imageView) {
+        Point imageViewSize = getImageViewSize();
+        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
             horScrollEdge = EDGE_NONE;
             verScrollEdge = EDGE_NONE;
             return false;
@@ -575,7 +564,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         final float displayHeight = displayRectF.height(), displayWidth = displayRectF.width();
         float deltaX = 0, deltaY = 0;
 
-        final int viewHeight = getImageViewHeight();
+        final int viewHeight = imageViewSize.y;
         if ((int) displayHeight <= viewHeight) {
             switch (scaleType) {
                 case FIT_START:
@@ -594,7 +583,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             deltaY = viewHeight - displayRectF.bottom;
         }
 
-        final int viewWidth = getImageViewWidth();
+        final int viewWidth = imageViewSize.x;
         if ((int) displayWidth <= viewWidth) {
             switch (scaleType) {
                 case FIT_START:
@@ -713,9 +702,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     /** -----------可获取信息----------- **/
 
-    /**
-     * 获取ImageView
-     */
     public ImageView getImageView() {
         if (viewReference == null) {
             return null;
@@ -730,53 +716,35 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         return imageView;
     }
 
-    /**
-     * 获取ImageView的宽度
-     */
-    public int getImageViewWidth() {
+    public Point getImageViewSize() {
         ImageView imageView = getImageView();
         if (imageView != null) {
-            return imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
+            tempImageViewSize.set(imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight(), imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom());
         } else {
-            return 0;
+            tempImageViewSize.set(0, 0);
         }
+        return tempImageViewSize;
     }
 
-    /**
-     * 获取ImageView的高度
-     */
-    public int getImageViewHeight() {
+    public Drawable getDrawable() {
         ImageView imageView = getImageView();
         if (imageView != null) {
-            return imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
-        } else {
-            return 0;
+            Drawable drawable = imageView.getDrawable();
+            if (drawable != null && !(drawable instanceof BindDrawable)) {
+                return drawable;
+            }
         }
+        return null;
     }
 
-    /**
-     * 是否有图片
-     */
-    @SuppressWarnings("WeakerAccess")
-    public boolean hasDrawable() {
-        ImageView imageView = getImageView();
-        return imageView != null && imageView.getDrawable() != null;
-    }
-
-    /**
-     * 获取图片的宽度
-     */
-    public int getDrawableWidth() {
-        ImageView imageView = viewReference.get();
-        return imageView != null && imageView.getDrawable() != null ? imageView.getDrawable().getIntrinsicWidth() : 0;
-    }
-
-    /**
-     * 获取图片的高度
-     */
-    public int getDrawableHeight() {
-        ImageView imageView = viewReference.get();
-        return imageView != null && imageView.getDrawable() != null ? imageView.getDrawable().getIntrinsicHeight() : 0;
+    public Point getDrawableSize() {
+        Drawable drawable = getDrawable();
+        if (drawable != null) {
+            tempDrawableSize.set(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+        } else {
+            tempDrawableSize.set(0, 0);
+        }
+        return tempDrawableSize;
     }
 
     /**
@@ -820,16 +788,16 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 获取预览图片上用户真实看到区域
      */
+    // TODO: 16/9/26 现已查明刚刚显示的时候获取displayRect会是空的
     public void getVisibleRect(Rect rect) {
-        // TODO: 16/9/26 现已查明刚刚显示的时候获取displayRect会是空的
-        ImageView imageView = getImageView();
-        if (imageView == null) {
+        Point imageViewSize = getImageViewSize();
+        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
             rect.setEmpty();
             return;
         }
 
-        Drawable drawable = imageView.getDrawable();
-        if (drawable == null || drawable.getIntrinsicWidth() == 0) {
+        Point drawableSize = getDrawableSize();
+        if (drawableSize.x == 0 || drawableSize.y == 0) {
             rect.setEmpty();
             return;
         }
@@ -842,13 +810,13 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        int viewWidth = getImageViewWidth();
-        int viewHeight = getImageViewHeight();
-        float displayWidth = displayRectF.width();
-        float displayHeight = displayRectF.height();
-        int drawableWidth = drawable.getIntrinsicWidth();
+        final int viewWidth = imageViewSize.x;
+        final int viewHeight = imageViewSize.y;
+        final float displayWidth = displayRectF.width();
+        final float displayHeight = displayRectF.height();
+        final int drawableWidth = drawableSize.x;
 
-        float scale = displayWidth / drawableWidth;
+        final float scale = displayWidth / drawableWidth;
 
         float left;
         float right;

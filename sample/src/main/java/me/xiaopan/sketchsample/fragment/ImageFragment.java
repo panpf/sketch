@@ -168,7 +168,7 @@ public class ImageFragment extends MyFragment {
             @Override
             public void onMatrixChanged(ImageZoomer imageZoomer) {
                 imageZoomer.getVisibleRect(visibleRect);
-                mappingView.update(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight(), visibleRect);
+                mappingView.update(imageZoomer.getDrawableSize(), visibleRect);
                 scale = String.valueOf(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
                 scaleTextView.setText(String.format("%s · %s", scale, bytes));
             }
@@ -253,17 +253,15 @@ public class ImageFragment extends MyFragment {
             return false;
         }
 
-        Drawable mappingDrawable = mappingView.getDrawable();
         Drawable drawable = imageView.getDrawable();
-        if (mappingDrawable == null
-                || mappingDrawable.getIntrinsicWidth() == 0 || mappingDrawable.getIntrinsicHeight() == 0
-                || drawable == null
-                || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
+        if (drawable == null ||
+                drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0 ||
+                mappingView.getWidth() == 0 || mappingView.getHeight() == 0) {
             return false;
         }
 
-        final float widthScale = (float) drawable.getIntrinsicWidth() / mappingDrawable.getIntrinsicWidth();
-        final float heightScale = (float) drawable.getIntrinsicHeight() / mappingDrawable.getIntrinsicHeight();
+        final float widthScale = (float) drawable.getIntrinsicWidth() / mappingView.getWidth();
+        final float heightScale = (float) drawable.getIntrinsicHeight() / mappingView.getHeight();
 
         imageView.getImageZoomer().location(x * widthScale, y * heightScale);
         return true;

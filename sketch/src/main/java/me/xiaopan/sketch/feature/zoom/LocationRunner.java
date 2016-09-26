@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.feature.zoom;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
@@ -40,22 +41,16 @@ class LocationRunner implements Runnable {
     }
 
     boolean start(float x, float y) {
-        ImageView imageView = imageZoomer.getImageView();
-        if (imageView == null) {
+        Point imageViewSize = imageZoomer.getImageViewSize();
+        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, ImageZoomer.NAME + ". location start. imageView is null");
             }
             return false;
         }
 
-        final int imageViewWidth = imageZoomer.getImageViewWidth();
-        final int imageViewHeight = imageZoomer.getImageViewHeight();
-        if (imageViewWidth == 0 || imageViewHeight == 0) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". location. imageView size exception. " + imageViewWidth + "x" + imageViewHeight);
-            }
-            return false;
-        }
+        final int imageViewWidth = imageViewSize.x;
+        final int imageViewHeight = imageViewSize.y;
 
         // 充满的时候是无法移动的，因此先放到最大
         final float scale = SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2);
@@ -97,6 +92,7 @@ class LocationRunner implements Runnable {
         mCurrentY = startY;
         mScroller.startScroll(startX, startY, endX - startX, endY - startY, 300);
 
+        ImageView imageView = imageZoomer.getImageView();
         imageView.removeCallbacks(this);
         imageView.post(this);
         return true;
@@ -129,7 +125,14 @@ class LocationRunner implements Runnable {
 
         final int newX = mScroller.getCurrX();
         final int newY = mScroller.getCurrY();
-        imageZoomer.translateBy(mCurrentX - newX, mCurrentY - newY);
+        final float dx = mCurrentX - newX;
+        final float dy = mCurrentY - newY;
+        imageZoomer.translateBy(dx, dy);
+        if (Sketch.isDebugMode()) {
+            RectF displayRectF = new RectF();
+            imageZoomer.getDisplayRect(displayRectF);
+            Log.w(Sketch.TAG, ImageZoomer.NAME + ". location. scrolling. d=" + dx + "x" + dy + ", point=" + displayRectF.left + "x" + displayRectF.top);
+        }
         mCurrentX = newX;
         mCurrentY = newY;
 

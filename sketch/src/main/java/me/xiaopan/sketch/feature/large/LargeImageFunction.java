@@ -18,7 +18,6 @@ package me.xiaopan.sketch.feature.large;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
@@ -42,8 +41,6 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     private Matrix tempDrawMatrix;
     private Rect tempVisibleRect;
-    private Point tempPreviewDrawableSize;
-    private Point tempImageViewSize;
 
     private String imageUri;
 
@@ -118,21 +115,15 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         if (tempDrawMatrix == null) {
             tempDrawMatrix = new Matrix();
             tempVisibleRect = new Rect();
-            tempPreviewDrawableSize = new Point();
-            tempImageViewSize = new Point();
         }
 
         tempDrawMatrix.reset();
         tempVisibleRect.setEmpty();
-        tempPreviewDrawableSize.set(0, 0);
-        tempImageViewSize.set(0, 0);
 
         imageZoomer.getDrawMatrix(tempDrawMatrix);
         imageZoomer.getVisibleRect(tempVisibleRect);
-        tempPreviewDrawableSize.set(imageZoomer.getDrawableWidth(), imageZoomer.getDrawableHeight());
-        tempImageViewSize.set(imageZoomer.getImageViewWidth(), imageZoomer.getImageViewHeight());
 
-        largeImageViewer.update(tempDrawMatrix, tempVisibleRect, tempPreviewDrawableSize, tempImageViewSize, imageZoomer.isZooming());
+        largeImageViewer.update(tempDrawMatrix, tempVisibleRect, imageZoomer.getDrawableSize(), imageZoomer.getImageViewSize(), imageZoomer.isZooming());
     }
 
     private void resetImage() {

@@ -20,8 +20,8 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.RectF;
-import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -64,13 +64,16 @@ class ScrollBar {
     }
 
     void drawScrollBar(Canvas canvas) {
-        ImageView imageView = imageZoomer.getImageView();
-        if (imageView == null) {
+        Point imageViewSize = imageZoomer.getImageViewSize();
+        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". image view is null. drawScrollBar");
+            }
             return;
         }
 
-        Drawable drawable = imageView.getDrawable();
-        if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
+        Point drawableSize = imageZoomer.getDrawableSize();
+        if (drawableSize.x == 0 || drawableSize.y == 0) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, ImageZoomer.NAME + ". drawable not available. drawScrollBar");
             }
@@ -86,8 +89,8 @@ class ScrollBar {
             return;
         }
 
-        final int viewWidth = imageZoomer.getImageViewWidth();
-        final int viewHeight = imageZoomer.getImageViewHeight();
+        final int viewWidth = imageViewSize.x;
+        final int viewHeight = imageViewSize.y;
         final float displayWidth = displayRectF.width();
         final float displayHeight = displayRectF.height();
 
@@ -100,6 +103,7 @@ class ScrollBar {
             return;
         }
 
+        ImageView imageView = imageZoomer.getImageView();
         final int finalViewWidth = viewWidth - (scrollBarMargin * 2);
         final int finalViewHeight = viewHeight - (scrollBarMargin * 2);
 

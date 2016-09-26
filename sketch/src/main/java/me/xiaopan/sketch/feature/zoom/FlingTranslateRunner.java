@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.feature.zoom;
 
 import android.content.Context;
+import android.graphics.Point;
 import android.graphics.RectF;
 import android.util.Log;
 import android.widget.ImageView;
@@ -35,8 +36,8 @@ class FlingTranslateRunner implements Runnable {
     }
 
     void fling(int velocityX, int velocityY) {
-        ImageView imageView = imageZoomer.getImageView();
-        if (imageView == null) {
+        Point imageViewSize = imageZoomer.getImageViewSize();
+        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, ImageZoomer.NAME + ". fling. imageView is null");
             }
@@ -52,7 +53,7 @@ class FlingTranslateRunner implements Runnable {
 
         final int startX = Math.round(-displayRectF.left);
         final int minX, maxX, minY, maxY;
-        int viewWidth = imageZoomer.getImageViewWidth();
+        int viewWidth = imageViewSize.x;
         if (viewWidth < displayRectF.width()) {
             minX = 0;
             maxX = Math.round(displayRectF.width() - viewWidth);
@@ -60,7 +61,7 @@ class FlingTranslateRunner implements Runnable {
             minX = maxX = startX;
         }
 
-        int viewHeight = imageZoomer.getImageViewHeight();
+        int viewHeight = imageViewSize.y;
         final int startY = Math.round(-displayRectF.top);
         if (viewHeight < displayRectF.height()) {
             minY = 0;
@@ -84,6 +85,7 @@ class FlingTranslateRunner implements Runnable {
                     maxX, minY, maxY, 0, 0);
         }
 
+        ImageView imageView = imageZoomer.getImageView();
         imageView.removeCallbacks(this);
         imageView.post(this);
     }

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -46,8 +47,7 @@ public class MappingView extends SketchImageView {
     private Paint originSrcRectPaint;
     private Paint loadingTilePaint;
 
-    private int cacheOriginImageWidth;
-    private int cacheOriginImageHeight;
+    private Point cacheDrawableSize;
     private Rect cacheVisibleRect;
     private GestureDetector detector;
     private OnSingleClickListener onSingleClickListener;
@@ -146,9 +146,9 @@ public class MappingView extends SketchImageView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if (cacheOriginImageWidth != 0 && cacheVisibleRect != null && !cacheVisibleRect.isEmpty()) {
-            update(cacheOriginImageWidth, cacheOriginImageHeight, cacheVisibleRect);
-            cacheOriginImageWidth = 0;
+        if (cacheDrawableSize != null && cacheVisibleRect != null && !cacheVisibleRect.isEmpty()) {
+            update(cacheDrawableSize, cacheVisibleRect);
+            cacheDrawableSize = null;
             cacheVisibleRect.setEmpty();
         }
     }
@@ -175,10 +175,13 @@ public class MappingView extends SketchImageView {
         return displayParams != null ? displayParams.attrs.getUri() : null;
     }
 
-    public void update(int drawableWidth, int drawableHeight, Rect newVisibleRect) {
-        if (drawableWidth == 0 || newVisibleRect.isEmpty()) {
+    public void update(Point drawableSize, Rect newVisibleRect) {
+        if (drawableSize.x == 0 || drawableSize.y == 0 || newVisibleRect.isEmpty()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty. " + getImageUri() + ". drawableWidth=" + drawableWidth + ", newVisibleRect=" + newVisibleRect.toShortString());
+                Log.w(Sketch.TAG, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty" +
+                        ". " + getImageUri() + "" +
+                        ". drawableSize=" + drawableSize.toString() + "" +
+                        ", newVisibleRect=" + newVisibleRect.toShortString());
             }
             if (!visibleRect.isEmpty()) {
                 visibleRect.setEmpty();
@@ -187,9 +190,9 @@ public class MappingView extends SketchImageView {
             return;
         }
 
-        if (getWidth() == 0 || getDrawable() == null) {
+        if (getWidth() == 0 || getHeight() == 0 || getDrawable() == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, "MappingView. update. getWidth() is 0 or getDrawable() is null. " + getImageUri());
+                Log.w(Sketch.TAG, "MappingView. update. view size is 0 or getDrawable() is null. " + getImageUri());
             }
 
             if (!visibleRect.isEmpty()) {
@@ -197,8 +200,10 @@ public class MappingView extends SketchImageView {
                 invalidate();
             }
 
-            cacheOriginImageWidth = drawableWidth;
-            cacheOriginImageHeight = drawableHeight;
+            if (cacheDrawableSize == null) {
+                cacheDrawableSize = new Point();
+            }
+            cacheDrawableSize.set(drawableSize.x, drawableSize.y);
             if (cacheVisibleRect == null) {
                 cacheVisibleRect = new Rect();
             }
@@ -208,8 +213,8 @@ public class MappingView extends SketchImageView {
 
         int selfWidth = getWidth();
         int selfHeight = getHeight();
-        final float widthScale = (float) selfWidth / drawableWidth;
-        final float heightScale = (float) selfHeight / drawableHeight;
+        final float widthScale = (float) selfWidth / drawableSize.x;
+        final float heightScale = (float) selfHeight / drawableSize.y;
         this.visibleRect.set(
                 Math.round(newVisibleRect.left * widthScale),
                 Math.round(newVisibleRect.top * heightScale),
