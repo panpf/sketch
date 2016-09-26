@@ -895,14 +895,8 @@ public class SketchUtils {
     /**
      * 安全处理比较结果用于兼容jdk7
      */
-    public static int safeCompareResult(int one, int two) {
-        if (one > two) {
-            return 1;
-        } else if (one < two) {
-            return -1;
-        } else {
-            return 0;
-        }
+    public static int safeCompare(int one, int two) {
+        return one == two ? 0 : one > two ? 1 : -1;
     }
 
     public static int dp2px(Context context, int dpValue) {
