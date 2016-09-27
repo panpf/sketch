@@ -71,7 +71,6 @@ public class ImageZoomFunction extends SketchImageView.Function {
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        // todo 过滤掉BindDrawable，非法的时候不能使用enable来限制，要么新增一个参数
         imageZoomer.update();
         return false;
     }
