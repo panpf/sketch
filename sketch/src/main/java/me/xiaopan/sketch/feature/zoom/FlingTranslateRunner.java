@@ -44,28 +44,27 @@ class FlingTranslateRunner implements Runnable {
             return;
         }
 
-        final RectF displayRectF = new RectF();
-        imageZoomer.checkMatrixBounds();
-        imageZoomer.getDisplayRect(displayRectF);
-        if (displayRectF.isEmpty()) {
+        final RectF drawRectF = new RectF();
+        imageZoomer.getDrawRect(drawRectF);
+        if (drawRectF.isEmpty()) {
             return;
         }
 
-        final int startX = Math.round(-displayRectF.left);
+        final int startX = Math.round(-drawRectF.left);
         final int minX, maxX, minY, maxY;
         int viewWidth = imageViewSize.x;
-        if (viewWidth < displayRectF.width()) {
+        if (viewWidth < drawRectF.width()) {
             minX = 0;
-            maxX = Math.round(displayRectF.width() - viewWidth);
+            maxX = Math.round(drawRectF.width() - viewWidth);
         } else {
             minX = maxX = startX;
         }
 
         int viewHeight = imageViewSize.y;
-        final int startY = Math.round(-displayRectF.top);
-        if (viewHeight < displayRectF.height()) {
+        final int startY = Math.round(-drawRectF.top);
+        if (viewHeight < drawRectF.height()) {
             minY = 0;
-            maxY = Math.round(displayRectF.height() - viewHeight);
+            maxY = Math.round(drawRectF.height() - viewHeight);
         } else {
             minY = maxY = startY;
         }

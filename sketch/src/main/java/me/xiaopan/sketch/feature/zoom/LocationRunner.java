@@ -60,15 +60,15 @@ class LocationRunner implements Runnable {
             imageZoomer.zoom(zoomScales[zoomScales.length - 1], false);
         }
 
-        RectF displayRectF = new RectF();
-        imageZoomer.getDisplayRect(displayRectF);
+        RectF drawRectF = new RectF();
+        imageZoomer.getDrawRect(drawRectF);
 
         // 传进来的位置是预览图上的位置，需要乘以当前的缩放倍数才行
         final float currentScale = imageZoomer.getZoomScale();
         final int scaleLocationX = (int) (x * currentScale);
         final int scaleLocationY = (int) (y * currentScale);
-        final int trimScaleLocationX = Math.min(Math.max(scaleLocationX, 0), (int) displayRectF.width());
-        final int trimScaleLocationY = Math.min(Math.max(scaleLocationY, 0), (int) displayRectF.height());
+        final int trimScaleLocationX = Math.min(Math.max(scaleLocationX, 0), (int) drawRectF.width());
+        final int trimScaleLocationY = Math.min(Math.max(scaleLocationY, 0), (int) drawRectF.height());
 
         // 让定位点显示在屏幕中间
         final int centerLocationX = trimScaleLocationX - (imageViewWidth / 2);
@@ -77,8 +77,8 @@ class LocationRunner implements Runnable {
         final int trimCenterLocationY = Math.max(centerLocationY, 0);
 
         // 当前显示区域的left和top就是开始位置
-        final int startX = Math.abs((int) displayRectF.left);
-        final int startY = Math.abs((int) displayRectF.top);
+        final int startX = Math.abs((int) drawRectF.left);
+        final int startY = Math.abs((int) drawRectF.top);
         //noinspection UnnecessaryLocalVariable
         final int endX = trimCenterLocationX;
         //noinspection UnnecessaryLocalVariable
@@ -129,9 +129,9 @@ class LocationRunner implements Runnable {
         final float dy = mCurrentY - newY;
         imageZoomer.translateBy(dx, dy);
         if (Sketch.isDebugMode()) {
-            RectF displayRectF = new RectF();
-            imageZoomer.getDisplayRect(displayRectF);
-            Log.w(Sketch.TAG, ImageZoomer.NAME + ". location. scrolling. d=" + dx + "x" + dy + ", point=" + displayRectF.left + "x" + displayRectF.top);
+            RectF drawRectF = new RectF();
+            imageZoomer.getDrawRect(drawRectF);
+            Log.w(Sketch.TAG, ImageZoomer.NAME + ". location. scrolling. d=" + dx + "x" + dy + ", point=" + drawRectF.left + "x" + drawRectF.top);
         }
         mCurrentX = newX;
         mCurrentY = newY;

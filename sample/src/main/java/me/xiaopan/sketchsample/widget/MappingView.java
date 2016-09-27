@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.drawable.BindDrawable;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.request.DisplayParams;
@@ -47,8 +48,8 @@ public class MappingView extends SketchImageView {
     private Paint originSrcRectPaint;
     private Paint loadingTilePaint;
 
-    private Point cacheDrawableSize;
-    private Rect cacheVisibleRect;
+    private Point cacheDrawableSize = new Point();
+    private Rect cacheVisibleRect = new Rect();
     private GestureDetector detector;
     private OnSingleClickListener onSingleClickListener;
 
@@ -146,11 +147,7 @@ public class MappingView extends SketchImageView {
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
 
-        if (cacheDrawableSize != null && cacheVisibleRect != null && !cacheVisibleRect.isEmpty()) {
-            update(cacheDrawableSize, cacheVisibleRect);
-            cacheDrawableSize = null;
-            cacheVisibleRect.setEmpty();
-        }
+        recover();
     }
 
     @Override
@@ -168,6 +165,8 @@ public class MappingView extends SketchImageView {
         }
 
         super.setImageDrawable(drawable);
+
+        recover();
     }
 
     private String getImageUri(){
@@ -183,6 +182,9 @@ public class MappingView extends SketchImageView {
                         ". drawableSize=" + drawableSize.toString() + "" +
                         ", newVisibleRect=" + newVisibleRect.toShortString());
             }
+
+            cacheDrawableSize.set(0, 0);
+            cacheVisibleRect.setEmpty();
             if (!visibleRect.isEmpty()) {
                 visibleRect.setEmpty();
                 invalidate();
@@ -190,7 +192,10 @@ public class MappingView extends SketchImageView {
             return;
         }
 
-        if (getWidth() == 0 || getHeight() == 0 || getDrawable() == null) {
+        cacheDrawableSize.set(drawableSize.x, drawableSize.y);
+        cacheVisibleRect.set(newVisibleRect);
+
+        if (!isUsableDrawable() || getWidth() == 0 || getHeight() == 0) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, "MappingView. update. view size is 0 or getDrawable() is null. " + getImageUri());
             }
@@ -199,15 +204,6 @@ public class MappingView extends SketchImageView {
                 visibleRect.setEmpty();
                 invalidate();
             }
-
-            if (cacheDrawableSize == null) {
-                cacheDrawableSize = new Point();
-            }
-            cacheDrawableSize.set(drawableSize.x, drawableSize.y);
-            if (cacheVisibleRect == null) {
-                cacheVisibleRect = new Rect();
-            }
-            cacheVisibleRect.set(newVisibleRect);
             return;
         }
 
@@ -252,7 +248,18 @@ public class MappingView extends SketchImageView {
         }
     }
 
+    private void recover(){
+        if (!cacheVisibleRect.isEmpty()) {
+            update(cacheDrawableSize, cacheVisibleRect);
+        }
+    }
+
     public interface OnSingleClickListener {
         boolean onSingleClick(float x, float y);
+    }
+
+    public boolean isUsableDrawable(){
+        Drawable drawable = getDrawable();
+        return drawable != null && !(drawable instanceof BindDrawable);
     }
 }

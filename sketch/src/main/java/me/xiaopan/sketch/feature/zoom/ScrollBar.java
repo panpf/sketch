@@ -80,19 +80,19 @@ class ScrollBar {
             return;
         }
 
-        final RectF displayRectF = tempDisplayRectF;
-        imageZoomer.getDisplayRect(displayRectF);
-        if (displayRectF.isEmpty()) {
+        final RectF drawRectF = tempDisplayRectF;
+        imageZoomer.getDrawRect(drawRectF);
+        if (drawRectF.isEmpty()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". displayRectF is empty. drawScrollBar. displayRectF=" + displayRectF.toString());
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". displayRectF is empty. drawScrollBar. drawRectF=" + drawRectF.toString());
             }
             return;
         }
 
         final int viewWidth = imageViewSize.x;
         final int viewHeight = imageViewSize.y;
-        final float displayWidth = displayRectF.width();
-        final float displayHeight = displayRectF.height();
+        final float displayWidth = drawRectF.width();
+        final float displayHeight = drawRectF.height();
 
         if (viewWidth <= 0 || viewHeight <= 0 || displayWidth == 0 || displayHeight == 0) {
             if (Sketch.isDebugMode()) {
@@ -113,7 +113,7 @@ class ScrollBar {
 
             RectF horScrollBarRectF = scrollBarRectF;
             horScrollBarRectF.setEmpty();
-            horScrollBarRectF.left = imageView.getPaddingLeft() + scrollBarMargin + (displayRectF.left < 0 ? (int) ((Math.abs(displayRectF.left) / displayRectF.width()) * finalViewWidth) : 0);
+            horScrollBarRectF.left = imageView.getPaddingLeft() + scrollBarMargin + (drawRectF.left < 0 ? (int) ((Math.abs(drawRectF.left) / drawRectF.width()) * finalViewWidth) : 0);
             horScrollBarRectF.top = imageView.getPaddingTop() + scrollBarMargin + finalViewHeight - scrollBarSize;
             horScrollBarRectF.right = horScrollBarRectF.left + horScrollBarWidth;
             horScrollBarRectF.bottom = horScrollBarRectF.top + scrollBarSize;
@@ -138,7 +138,7 @@ class ScrollBar {
             RectF verScrollBarRectF = scrollBarRectF;
             verScrollBarRectF.setEmpty();
             verScrollBarRectF.left = imageView.getPaddingLeft() + scrollBarMargin + finalViewWidth - scrollBarSize;
-            verScrollBarRectF.top = imageView.getPaddingTop() + scrollBarMargin + (displayRectF.top < 0 ? (int) ((Math.abs(displayRectF.top) / displayRectF.height()) * finalViewHeight) : 0);
+            verScrollBarRectF.top = imageView.getPaddingTop() + scrollBarMargin + (drawRectF.top < 0 ? (int) ((Math.abs(drawRectF.top) / drawRectF.height()) * finalViewHeight) : 0);
             verScrollBarRectF.right = verScrollBarRectF.left + scrollBarSize;
             verScrollBarRectF.bottom = verScrollBarRectF.top + verScrollBarHeight;
             canvas.drawRoundRect(verScrollBarRectF, scrollBarRadius, scrollBarRadius, scrollBarPaint);
