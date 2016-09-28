@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
@@ -78,7 +79,7 @@ import pl.droidsonroids.gif.GifDrawable;
 
 public class SketchUtils {
 
-    private static final float[] matrixValues = new float[9];
+    private static final float[] MATRIX_VALUES = new float[9];
 
     /**
      * 读取APK的图标
@@ -685,30 +686,57 @@ public class SketchUtils {
         return null;
     }
 
-    /**
-     * Helper method that 'unpacks' a Matrix and returns the required value
-     *
-     * @param matrix     - Matrix to unpack
-     * @param whichValue - Which value from Matrix.M* to return
-     * @return float - returned value
-     */
     @SuppressWarnings("unused")
     public static float getMatrixValue(Matrix matrix, int whichValue) {
-        synchronized (matrixValues) {
-            matrix.getValues(matrixValues);
-            return matrixValues[whichValue];
+        synchronized (MATRIX_VALUES) {
+            matrix.getValues(MATRIX_VALUES);
+            return MATRIX_VALUES[whichValue];
         }
     }
 
     /**
-     * 获取Matrix的缩放比例
+     * 从Matrix中获取缩放比例
      */
     public static float getMatrixScale(Matrix matrix) {
-        synchronized (matrixValues) {
-            matrix.getValues(matrixValues);
-            float scaleX = matrixValues[Matrix.MSCALE_X];
-            float scaleY = matrixValues[Matrix.MSKEW_Y];
-            return (float) Math.sqrt((float) Math.pow(scaleX, 2) + (float) Math.pow(scaleY, 2));
+        synchronized (MATRIX_VALUES) {
+            matrix.getValues(MATRIX_VALUES);
+            final float scaleX = MATRIX_VALUES[Matrix.MSCALE_X];
+            final float skewY = MATRIX_VALUES[Matrix.MSKEW_Y];
+            //noinspection SuspiciousNameCombination
+            return (float) Math.sqrt((float) Math.pow(scaleX, 2) + (float) Math.pow(skewY, 2));
+        }
+    }
+
+    /**
+     * 从Matrix中获取旋转角度
+     */
+    @SuppressWarnings("unused")
+    public static int getMatrixRotateDegrees(Matrix matrix) {
+        synchronized (MATRIX_VALUES) {
+            matrix.getValues(MATRIX_VALUES);
+            final float skewX = MATRIX_VALUES[Matrix.MSKEW_X];
+            final float scaleX = MATRIX_VALUES[Matrix.MSCALE_X];
+            //noinspection SuspiciousNameCombination
+            final int degrees = (int) Math.round(Math.atan2(skewX, scaleX) * (180 / Math.PI));
+            if (degrees < 0) {
+                return Math.abs(degrees);
+            } else if (degrees > 0) {
+                return 360 - degrees;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    /**
+     * 从Matrix中获取偏移位置
+     */
+    @SuppressWarnings("unused")
+    public static void getMatrixTranslation(Matrix matrix, PointF point){
+        synchronized (MATRIX_VALUES) {
+            matrix.getValues(MATRIX_VALUES);
+            point.x = MATRIX_VALUES[Matrix.MTRANS_X];
+            point.y = MATRIX_VALUES[Matrix.MTRANS_Y];
         }
     }
 
