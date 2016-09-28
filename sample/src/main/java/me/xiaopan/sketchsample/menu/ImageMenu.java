@@ -61,7 +61,7 @@ public class ImageMenu {
 
         String[] items = new String[5];
         items[0] = "显示详细信息";
-        items[1] = "ScaleType: " + imageView.getScaleType();
+        items[1] = "ScaleType: " + (supportZoom ? imageZoomer.getScaleType() : imageView.getScaleType());
         items[2] = "显示分块区域: " + (supportLargeImage ? largeImageViewer.isShowTileRect() : "未开启大图功能");
         items[3] = "阅读模式: " + (supportZoom ? imageZoomer.isReadMode() : "未开启缩放功能");
         items[4] = "旋转角度: " + (supportZoom ? imageZoomer.getRotateDegrees() : "未开启缩放功能");
