@@ -52,6 +52,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 
 // TODO: 16/9/28 增加手势旋转功能
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
+// TODO: 16/9/28 当旋转90度或270度时，drawable宽高也跟着变换
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener,
         ViewTreeObserver.OnGlobalLayoutListener, ActionListener {
     public static final String NAME = "ImageZoomer";
