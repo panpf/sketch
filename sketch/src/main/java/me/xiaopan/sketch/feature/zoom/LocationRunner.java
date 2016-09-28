@@ -40,15 +40,11 @@ class LocationRunner implements Runnable {
         this.imageZoomer = imageZoomer;
     }
 
-    boolean start(float x, float y) {
+    /**
+     * 定位到预览图上指定的位置
+     */
+    boolean location(float x, float y) {
         Point imageViewSize = imageZoomer.getImageViewSize();
-        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". location start. imageView is null");
-            }
-            return false;
-        }
-
         final int imageViewWidth = imageViewSize.x;
         final int imageViewHeight = imageViewSize.y;
 
@@ -103,22 +99,22 @@ class LocationRunner implements Runnable {
         // remaining post that should not be handled
         if (mScroller.isFinished()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". location. finished");
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". finished. location run");
             }
             return;
         }
 
-        ImageView imageView = imageZoomer.getImageView();
-        if (imageView == null) {
+        if (!imageZoomer.isWorking()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". location run. imageView is null");
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. location run");
             }
+            mScroller.forceFinished(true);
             return;
         }
 
         if (!mScroller.computeScrollOffset()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". location. scroll finished");
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". scroll finished. location run");
             }
             return;
         }
@@ -128,16 +124,11 @@ class LocationRunner implements Runnable {
         final float dx = mCurrentX - newX;
         final float dy = mCurrentY - newY;
         imageZoomer.translateBy(dx, dy);
-        if (Sketch.isDebugMode()) {
-            RectF drawRectF = new RectF();
-            imageZoomer.getDrawRect(drawRectF);
-            Log.w(Sketch.TAG, ImageZoomer.NAME + ". location. scrolling. d=" + dx + "x" + dy + ", point=" + drawRectF.left + "x" + drawRectF.top);
-        }
         mCurrentX = newX;
         mCurrentY = newY;
 
         // Post On animation
-        CompatUtils.postOnAnimation(imageView, this);
+        CompatUtils.postOnAnimation(imageZoomer.getImageView(), this);
     }
 
     boolean isRunning() {

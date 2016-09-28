@@ -36,35 +36,36 @@ class FlingTranslateRunner implements Runnable {
     }
 
     void fling(int velocityX, int velocityY) {
-        Point imageViewSize = imageZoomer.getImageViewSize();
-        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
+        if (!imageZoomer.isWorking()) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, ImageZoomer.NAME + ". fling. imageView is null");
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. fling");
             }
             return;
         }
 
-        final RectF drawRectF = new RectF();
+        RectF drawRectF = new RectF();
         imageZoomer.getDrawRect(drawRectF);
         if (drawRectF.isEmpty()) {
             return;
         }
 
+        Point imageViewSize = imageZoomer.getImageViewSize();
+        final int imageViewWidth = imageViewSize.x;
+        final int imageViewHeight = imageViewSize.y;
+
         final int startX = Math.round(-drawRectF.left);
         final int minX, maxX, minY, maxY;
-        int viewWidth = imageViewSize.x;
-        if (viewWidth < drawRectF.width()) {
+        if (imageViewWidth < drawRectF.width()) {
             minX = 0;
-            maxX = Math.round(drawRectF.width() - viewWidth);
+            maxX = Math.round(drawRectF.width() - imageViewWidth);
         } else {
             minX = maxX = startX;
         }
 
-        int viewHeight = imageViewSize.y;
         final int startY = Math.round(-drawRectF.top);
-        if (viewHeight < drawRectF.height()) {
+        if (imageViewHeight < drawRectF.height()) {
             minY = 0;
-            maxY = Math.round(drawRectF.height() - viewHeight);
+            maxY = Math.round(drawRectF.height() - imageViewHeight);
         } else {
             minY = maxY = startY;
         }
@@ -94,22 +95,21 @@ class FlingTranslateRunner implements Runnable {
         // remaining post that should not be handled
         if (mScroller.isFinished()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". fling run. finished");
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". finished. fling run");
             }
             return;
         }
 
-        ImageView imageView = imageZoomer.getImageView();
-        if (imageView == null) {
+        if (!imageZoomer.isWorking()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". fling run. imageView is null");
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. fling run");
             }
             return;
         }
 
         if (!mScroller.computeScrollOffset()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". fling run. scroll finished");
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". scroll finished. fling run");
             }
             return;
         }
@@ -121,7 +121,7 @@ class FlingTranslateRunner implements Runnable {
         mCurrentY = newY;
 
         // Post On animation
-        CompatUtils.postOnAnimation(imageView, this);
+        CompatUtils.postOnAnimation(imageZoomer.getImageView(), this);
     }
 
     @SuppressWarnings("WeakerAccess")

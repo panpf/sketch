@@ -198,7 +198,8 @@ public class LargeImageViewer {
     /**
      * 工作中？
      */
-    public boolean isWorker() {
+    @SuppressWarnings("unused")
+    public boolean isWorking() {
         return !TextUtils.isEmpty(imageUri);
     }
 

@@ -50,6 +50,7 @@ import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetectorCompat;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.util.SketchUtils;
 
+// TODO: 16/9/28 增加手势旋转功能
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener,
         ViewTreeObserver.OnGlobalLayoutListener, ActionListener {
@@ -105,6 +106,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private FlingTranslateRunner flingTranslateRunner;  // 执行飞速滚动
     private ScaleDragGestureDetector scaleDragGestureDetector;  // 缩放和拖拽手势识别器
     private boolean disallowParentInterceptTouchEvent;  // 控制滑动或缩放中到达边缘了依然禁止父类拦截事件
+    private ScrollBar scrollBar;    // 绘制滚动条
 
     // info caches
     private float tempLastScaleFocusX, tempLastScaleFocusY;  // 缓存最后一次缩放手势的坐标，在恢复缩放比例时使用
@@ -113,11 +115,11 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     private final Matrix baseMatrix = new Matrix(); // 存储基础缩放、移动
     private final Matrix supportMatrix = new Matrix(); // 存储用户产生的缩放、拖拽和旋转信息
-    private final Matrix tempDrawMatrix = new Matrix(); // 存储baseMatrix和supportMatrix融合后的信息，用于绘制
+    private final Matrix drawMatrix = new Matrix(); // 存储baseMatrix和supportMatrix融合后的信息，用于绘制
 
-    private ScrollBar scrollBar;
-    private final Point tempDrawableSize = new Point();
-    private final Point tempImageViewSize = new Point();
+    private Drawable drawable;
+    private final Point drawableSize = new Point();
+    private final Point imageViewSize = new Point();
 
     public ImageZoomer(ImageView imageView, boolean provideTouchEvent) {
         context = imageView.getContext();
@@ -163,7 +165,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (!zoomable || !isUsableDrawable()) {
+        if (!zoomable || !isWorking() || !isUsableDrawable()) {
             return false;
         }
 
@@ -328,6 +330,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
         supportMatrix.postScale(scaleFactor, scaleFactor, focusX, focusY);
         checkAndApplyMatrix();
+
         if (onScaleChangeListener != null) {
             onScaleChangeListener.onScaleChange(scaleFactor, focusX, focusY);
         }
@@ -389,6 +392,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             imageView.setScaleType(ScaleType.MATRIX);
         }
 
+        resetDrawable();
         resetZoomScales();
         resetBaseMatrix();
         resetSupportMatrix();
@@ -399,6 +403,32 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /** -----------私有功能----------- **/
 
     /**
+     * 重置预览图信息
+     */
+    private void resetDrawable() {
+        drawable = null;
+        drawableSize.set(0, 0);
+        imageViewSize.set(0, 0);
+
+        ImageView imageView = getImageView();
+        if (imageView != null) {
+            final int imageViewWidth = imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
+            final int imageViewHeight = imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
+            imageViewSize.set(imageViewWidth, imageViewHeight);
+
+            Drawable newDrawable = imageView.getDrawable();
+            if (newDrawable != null) {
+                final int drawableWidth = newDrawable.getIntrinsicWidth();
+                final int drawableHeight = newDrawable.getIntrinsicHeight();
+                if (drawableWidth != 0 && drawableHeight != 0) {
+                    drawable = newDrawable;
+                    drawableSize.set(drawableWidth, drawableHeight);
+                }
+            }
+        }
+    }
+
+    /**
      * 重置各种缩放比例
      */
     private void resetZoomScales() {
@@ -407,13 +437,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         maxZoomScale = DEFAULT_MAXIMIZE_SCALE;
         doubleClickZoomScales = DEFAULT_DOUBLE_CLICK_ZOOM_SCALES;
 
-        Point imageViewSize = getImageViewSize();
-        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
-            return;
-        }
-
-        Point drawableSize = getDrawableSize();
-        if (drawableSize.x == 0 || drawableSize.y == 0) {
+        if (!isWorking()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. resetZoomScales");
+            }
             return;
         }
 
@@ -477,18 +504,15 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
-     * 更新基础Matrix
+     * 重置基础Matrix
      */
     private void resetBaseMatrix() {
         baseMatrix.reset();
 
-        Point imageViewSize = getImageViewSize();
-        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
-            return;
-        }
-
-        Point drawableSize = getDrawableSize();
-        if (drawableSize.x == 0 || drawableSize.y == 0) {
+        if (!isWorking()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. resetBaseMatrix");
+            }
             return;
         }
 
@@ -558,8 +582,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 检查应用Matrix后的边界，防止超出范围
      */
     private boolean checkMatrixBounds() {
-        Point imageViewSize = getImageViewSize();
-        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
+        if (!isWorking()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. checkMatrixBounds");
+            }
             horScrollEdge = EDGE_NONE;
             verScrollEdge = EDGE_NONE;
             return false;
@@ -655,6 +681,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
         scrollBar.matrixChanged();
         imageView.setImageMatrix(getDrawMatrix());
+
         if (onMatrixChangedListenerList != null && !onMatrixChangedListenerList.isEmpty()) {
             for (int w = 0, size = onMatrixChangedListenerList.size(); w < size; w++) {
                 onMatrixChangedListenerList.get(w).onMatrixChanged(this);
@@ -736,6 +763,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
         // Finally, clear ImageView
         viewReference = null;
+
+        drawable = null;
+        imageViewSize.set(0, 0);
+        drawableSize.set(0, 0);
     }
 
     /**
@@ -746,6 +777,34 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /** -----------可获取信息----------- **/
+
+    public boolean isWorking() {
+        ImageView imageView = getImageView();
+        if (imageView == null) {
+            return false;
+        }
+
+        final int imageViewWidth = imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
+        final int imageViewHeight = imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
+        if (imageViewWidth <= 0
+                || imageViewHeight <= 0
+                || imageViewWidth != imageViewSize.x
+                || imageViewHeight != imageViewSize.y) {
+            return false;
+        }
+
+        Drawable drawable = imageView.getDrawable();
+        if (drawable == null || drawable != this.drawable) {
+            return false;
+        }
+
+        final int drawableWidth = drawable.getIntrinsicWidth();
+        final int drawableHeight = drawable.getIntrinsicHeight();
+        return drawableWidth > 0
+                && drawableHeight > 0
+                && drawableWidth == drawableSize.x
+                && drawableHeight == drawableSize.y;
+    }
 
     /**
      * 获取ImageView
@@ -768,47 +827,27 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 获取ImageView的尺寸
      */
     public Point getImageViewSize() {
-        ImageView imageView = getImageView();
-        if (imageView != null) {
-            tempImageViewSize.set(imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight(), imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom());
-        } else {
-            tempImageViewSize.set(0, 0);
-        }
-        return tempImageViewSize;
+        return imageViewSize;
     }
 
     /**
      * 获取预览图
      */
     public Drawable getDrawable() {
-        ImageView imageView = getImageView();
-        if (imageView != null) {
-            Drawable drawable = imageView.getDrawable();
-            if (drawable != null && drawable.getIntrinsicWidth() != 0 && drawable.getIntrinsicHeight() != 0) {
-                return drawable;
-            }
-        }
-        return null;
+        return drawable;
     }
 
     /**
      * 获取预览图的尺寸
      */
     public Point getDrawableSize() {
-        Drawable drawable = getDrawable();
-        if (drawable != null) {
-            tempDrawableSize.set(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
-        } else {
-            tempDrawableSize.set(0, 0);
-        }
-        return tempDrawableSize;
+        return drawableSize;
     }
 
     /**
      * 图片是否可用，主要过滤掉占位图
      */
     public boolean isUsableDrawable(){
-        Drawable drawable = getDrawable();
         return drawable != null && !(drawable instanceof BindDrawable);
     }
 
@@ -816,9 +855,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 获取绘制Matrix
      */
     private Matrix getDrawMatrix() {
-        tempDrawMatrix.set(baseMatrix);
-        tempDrawMatrix.postConcat(supportMatrix);
-        return tempDrawMatrix;
+        drawMatrix.set(baseMatrix);
+        drawMatrix.postConcat(supportMatrix);
+        return drawMatrix;
     }
 
     /**
@@ -832,12 +871,15 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 获取绘制区域
      */
     public void getDrawRect(RectF rectF) {
-        Point drawableSize = getDrawableSize();
-        if (drawableSize.x == 0 || drawableSize.y == 0) {
+        if (!isWorking()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. getDrawRect");
+            }
             rectF.setEmpty();
             return;
         }
 
+        Point drawableSize = getDrawableSize();
         rectF.set(0, 0, drawableSize.x, drawableSize.y);
 
         getDrawMatrix().mapRect(rectF);
@@ -847,14 +889,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 获取预览图上用户可以看到的区域
      */
     public void getVisibleRect(Rect rect) {
-        Point imageViewSize = getImageViewSize();
-        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
-            rect.setEmpty();
-            return;
-        }
-
-        Point drawableSize = getDrawableSize();
-        if (drawableSize.x == 0 || drawableSize.y == 0) {
+        if (!isWorking()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. getVisibleRect");
+            }
             rect.setEmpty();
             return;
         }
@@ -980,10 +1018,17 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     /** -----------交互功能----------- **/
     /**
-     * 定位到指定位置
+     * 定位到预览图上指定的位置
      */
     @SuppressWarnings("unused")
-    public void location(float x, float y) {
+    public boolean location(float x, float y) {
+        if (!isWorking()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. location");
+            }
+            return false;
+        }
+
         cancelFling();
 
         if (locationRunner != null) {
@@ -991,7 +1036,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
 
         locationRunner = new LocationRunner(context, this);
-        locationRunner.start(x, y);
+        locationRunner.location(x, y);
+
+        return true;
     }
 
     /**
@@ -1003,70 +1050,75 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
-     * 设置缩放比例
-     *
-     * @param scale   新的缩放比例
-     * @param focalX  缩放中心的X坐标
-     * @param focalY  缩放中心的Y坐标
-     * @param animate 是否显示缩放动画
+     * 缩放
      */
-    public void zoom(float scale, float focalX, float focalY, boolean animate) {
-        ImageView imageView = getImageView();
-        if (imageView != null) {
-            if (scale < minZoomScale || scale > maxZoomScale) {
-                Log.w(Sketch.TAG, NAME + ". Scale must be within the range of " + minZoomScale + "(minScale) and " + maxZoomScale + "(maxScale). " + scale);
-                return;
+    public boolean zoom(float scale, float focalX, float focalY, boolean animate) {
+        if (!isWorking()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. zoom");
             }
-
-            if (animate) {
-                imageView.post(new ZoomRunner(this, getZoomScale(), scale, focalX, focalY));
-            } else {
-                scale /= SketchUtils.getMatrixScale(baseMatrix);
-                supportMatrix.setScale(scale, scale, focalX, focalY);
-                checkAndApplyMatrix();
-            }
+            return false;
         }
+
+        if (scale < minZoomScale || scale > maxZoomScale) {
+            Log.w(Sketch.TAG, NAME + ". Scale must be within the range of " + minZoomScale + "(minScale) and " + maxZoomScale + "(maxScale). " + scale);
+            return false;
+        }
+
+        if (animate) {
+            new ZoomRunner(this, getZoomScale(), scale, focalX, focalY).zoom();
+        } else {
+            scale /= SketchUtils.getMatrixScale(baseMatrix);
+            supportMatrix.setScale(scale, scale, focalX, focalY);
+            checkAndApplyMatrix();
+        }
+
+        return true;
     }
 
     /**
-     * 设置缩放比例
-     *
-     * @param scale   新的缩放比例
-     * @param animate 是否显示缩放动画
+     * 缩放
      */
-    public void zoom(float scale, boolean animate) {
-        ImageView imageView = getImageView();
-        if (imageView != null && imageView.getRight() > 0 && imageView.getBottom() > 0) {
-            zoom(scale, (imageView.getRight()) / 2, (imageView.getBottom()) / 2, animate);
+    public boolean zoom(float scale, boolean animate) {
+        if (!isWorking()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. zoom");
+            }
+            return false;
         }
+
+        ImageView imageView = getImageView();
+        return zoom(scale, (imageView.getRight()) / 2, (imageView.getBottom()) / 2, animate);
     }
 
     /**
-     * 设置缩放比例
-     *
-     * @param scale 新的缩放比例
+     * 缩放
      */
     @SuppressWarnings("unused")
-    public void zoom(float scale) {
-        zoom(scale, false);
+    public boolean zoom(float scale) {
+        return zoom(scale, false);
     }
 
 
     /**
-     * 设置旋转角度
+     * 设置旋转角度（会清除已经有的缩放和移动数据）
      */
+    // TODO: 16/9/28 支持动画旋转
     @SuppressWarnings("unused")
     public boolean rotateTo(float degrees) {
+        if (!isWorking()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. rotateTo");
+            }
+            return false;
+        }
+
         if (degrees % 90 != 0) {
             Log.w(Sketch.TAG, NAME + ". rotate degrees must be in multiples of 90");
             return false;
         }
 
         ImageView imageView = getImageView();
-        if (imageView == null) {
-            return false;
-        }
-
         if (imageView instanceof SketchImageView) {
             SketchImageView sketchImageView = (SketchImageView) imageView;
             if (sketchImageView.isSupportLargeImage()) {
@@ -1085,17 +1137,21 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 增加旋转角度
      */
+    // TODO: 16/9/28 支持动画旋转
     public boolean rotateBy(float degrees) {
+        if (!isWorking()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. rotateBy");
+            }
+            return false;
+        }
+
         if (degrees % 90 != 0) {
             Log.w(Sketch.TAG, NAME + ". rotate degrees must be in multiples of 90");
             return false;
         }
 
         ImageView imageView = getImageView();
-        if (imageView == null) {
-            return false;
-        }
-
         if (imageView instanceof SketchImageView) {
             SketchImageView sketchImageView = (SketchImageView) imageView;
             if (sketchImageView.isSupportLargeImage()) {

@@ -64,18 +64,9 @@ class ScrollBar {
     }
 
     void drawScrollBar(Canvas canvas) {
-        Point imageViewSize = imageZoomer.getImageViewSize();
-        if (imageViewSize.x == 0 || imageViewSize.y == 0) {
+        if (!imageZoomer.isWorking()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". image view is null. drawScrollBar");
-            }
-            return;
-        }
-
-        Point drawableSize = imageZoomer.getDrawableSize();
-        if (drawableSize.x == 0 || drawableSize.y == 0) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". drawable not available. drawScrollBar");
+                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. drawScrollBar");
             }
             return;
         }
@@ -89,6 +80,7 @@ class ScrollBar {
             return;
         }
 
+        Point imageViewSize = imageZoomer.getImageViewSize();
         final int viewWidth = imageViewSize.x;
         final int viewHeight = imageViewSize.y;
         final float displayWidth = drawRectF.width();
