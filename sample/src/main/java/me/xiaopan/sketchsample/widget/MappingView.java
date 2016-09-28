@@ -152,10 +152,17 @@ public class MappingView extends SketchImageView {
 
     @Override
     public void setImageDrawable(Drawable drawable) {
-        int maxWidth = getResources().getDisplayMetrics().widthPixels / 2;
-        int maxHeight = getResources().getDisplayMetrics().heightPixels / 2;
         int drawableWidth = drawable.getIntrinsicWidth();
         int drawableHeight = drawable.getIntrinsicHeight();
+        int maxWidth;
+        int maxHeight;
+        if ((float) Math.max(drawableWidth, drawableHeight) / Math.min(drawableWidth, drawableHeight) >= 4) {
+            maxWidth = getResources().getDisplayMetrics().widthPixels / 2;
+            maxHeight = getResources().getDisplayMetrics().heightPixels / 2;
+        } else {
+            maxWidth = getResources().getDisplayMetrics().widthPixels / 4;
+            maxHeight = getResources().getDisplayMetrics().heightPixels / 4;
+        }
         if (drawableWidth > maxWidth || drawableHeight > maxHeight) {
             float finalScale = Math.min((float) maxWidth / drawableWidth, (float) maxHeight / drawableHeight);
             ViewGroup.LayoutParams layoutParams = getLayoutParams();
@@ -169,7 +176,7 @@ public class MappingView extends SketchImageView {
         recover();
     }
 
-    private String getImageUri(){
+    private String getImageUri() {
         DisplayParams displayParams = getDisplayParams();
         return displayParams != null ? displayParams.attrs.getUri() : null;
     }
@@ -248,18 +255,18 @@ public class MappingView extends SketchImageView {
         }
     }
 
-    private void recover(){
+    private void recover() {
         if (!cacheVisibleRect.isEmpty()) {
             update(cacheDrawableSize, cacheVisibleRect);
         }
     }
 
-    public interface OnSingleClickListener {
-        boolean onSingleClick(float x, float y);
-    }
-
-    public boolean isUsableDrawable(){
+    public boolean isUsableDrawable() {
         Drawable drawable = getDrawable();
         return drawable != null && !(drawable instanceof BindDrawable);
+    }
+
+    public interface OnSingleClickListener {
+        boolean onSingleClick(float x, float y);
     }
 }

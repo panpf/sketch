@@ -46,11 +46,19 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     public LargeImageFunction(SketchImageView imageView) {
         this.imageView = imageView;
-        largeImageViewer = new LargeImageViewer(imageView.getContext(), this);
+        this.largeImageViewer = new LargeImageViewer(imageView.getContext(), this);
+
+        // 要想使用大图功能就必须开启缩放功能
         if (!imageView.isSupportZoom()) {
-            imageView.setSupportZoom(true);
+            throw new IllegalStateException("Use large image function must be open before the zoom function");
         }
-        imageView.getImageZoomer().addOnMatrixChangeListener(this);
+
+        // 当缩放功能产生变化时回调大图功能
+        ImageZoomer imageZoomer = imageView.getImageZoomer();
+        imageZoomer.addOnMatrixChangeListener(this);
+
+        // 大图功能的开关对缩放功能的缩放比例的计算有影响，因此需要更新一下缩放功能
+        imageZoomer.update();
 
         if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
             if (Sketch.isDebugMode()) {

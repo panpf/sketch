@@ -65,7 +65,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     private ShowGifFlagFunction showGifFlagFunction;
     private ImageShapeFunction imageShapeFunction;
     private ClickRetryFunction clickRetryFunction;
-    private ImageZoomFunction imageZoomFunction;
+    private ImageZoomFunction zoomFunction;
     private LargeImageFunction largeImageFunction;
 
     public SketchImageView(Context context) {
@@ -131,8 +131,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (recyclerCompatFunction != null) {
             recyclerCompatFunction.onLayout(changed, left, top, right, bottom);
         }
-        if (imageZoomFunction != null) {
-            imageZoomFunction.onLayout(changed, left, top, right, bottom);
+        if (zoomFunction != null) {
+            zoomFunction.onLayout(changed, left, top, right, bottom);
         }
         if (largeImageFunction != null) {
             largeImageFunction.onLayout(changed, left, top, right, bottom);
@@ -146,8 +146,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (largeImageFunction != null) {
             largeImageFunction.onDraw(canvas);
         }
-        if (imageZoomFunction != null) {
-            imageZoomFunction.onDraw(canvas);
+        if (zoomFunction != null) {
+            zoomFunction.onDraw(canvas);
         }
         if (showPressedFunction != null) {
             showPressedFunction.onDraw(canvas);
@@ -203,8 +203,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (recyclerCompatFunction != null) {
             handled |= recyclerCompatFunction.onTouchEvent(event);
         }
-        if (imageZoomFunction != null) {
-            handled |= imageZoomFunction.onTouchEvent(event);
+        if (zoomFunction != null) {
+            handled |= zoomFunction.onTouchEvent(event);
         }
         if (largeImageFunction != null) {
             handled |= largeImageFunction.onTouchEvent(event);
@@ -243,8 +243,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (clickRetryFunction != null) {
             clickRetryFunction.onAttachedToWindow();
         }
-        if (imageZoomFunction != null) {
-            imageZoomFunction.onAttachedToWindow();
+        if (zoomFunction != null) {
+            zoomFunction.onAttachedToWindow();
         }
         if (largeImageFunction != null) {
             largeImageFunction.onAttachedToWindow();
@@ -282,8 +282,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (clickRetryFunction != null) {
             needSetImageNull |= clickRetryFunction.onDetachedFromWindow();
         }
-        if (imageZoomFunction != null) {
-            needSetImageNull |= imageZoomFunction.onDetachedFromWindow();
+        if (zoomFunction != null) {
+            needSetImageNull |= zoomFunction.onDetachedFromWindow();
         }
         if (largeImageFunction != null) {
             needSetImageNull |= largeImageFunction.onDetachedFromWindow();
@@ -354,8 +354,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (largeImageFunction != null) {
                 needInvokeInvalidate |= largeImageFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
-            if (imageZoomFunction != null) {
-                needInvokeInvalidate |= imageZoomFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
+            if (zoomFunction != null) {
+                needInvokeInvalidate |= zoomFunction.onDrawableChanged(callPosition, oldDrawable, newDrawable);
             }
 
             if (needInvokeInvalidate) {
@@ -403,8 +403,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         if (clickRetryFunction != null) {
             needInvokeInvalidate |= clickRetryFunction.onDisplay(uriScheme);
         }
-        if (imageZoomFunction != null) {
-            needInvokeInvalidate |= imageZoomFunction.onDisplay(uriScheme);
+        if (zoomFunction != null) {
+            needInvokeInvalidate |= zoomFunction.onDisplay(uriScheme);
         }
         if (largeImageFunction != null) {
             needInvokeInvalidate |= largeImageFunction.onDisplay(uriScheme);
@@ -495,10 +495,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
     @Override
     public void setScaleType(ScaleType scaleType) {
-        if (imageZoomFunction == null || scaleType == ScaleType.MATRIX) {
+        if (zoomFunction == null || scaleType == ScaleType.MATRIX) {
             super.setScaleType(scaleType);
         } else {
-            imageZoomFunction.setScaleType(scaleType);
+            zoomFunction.setScaleType(scaleType);
         }
     }
 
@@ -695,15 +695,15 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 是否支持缩放
      */
     public boolean isSupportZoom() {
-        return imageZoomFunction != null;
+        return zoomFunction != null;
     }
 
     /**
      * 设置是否支持缩放
      */
     public void setSupportZoom(boolean supportZoom) {
-        if (imageZoomFunction != null) {
-            imageZoomFunction.setFromLargeImageFunction(false);
+        if (zoomFunction != null) {
+            zoomFunction.setFromLargeImageFunction(false);
         }
 
         if (supportZoom == isSupportZoom()) {
@@ -711,11 +711,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
 
         if (supportZoom) {
-            imageZoomFunction = new ImageZoomFunction(this);
-            imageZoomFunction.onDrawableChanged("setSupportZoom", null, getDrawable());
+            zoomFunction = new ImageZoomFunction(this);
+            zoomFunction.onDrawableChanged("setSupportZoom", null, getDrawable());
         } else {
-            imageZoomFunction.recycle();
-            imageZoomFunction = null;
+            zoomFunction.recycle();
+            zoomFunction = null;
         }
     }
 
@@ -723,7 +723,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 获取缩放功能控制对象
      */
     public ImageZoomer getImageZoomer() {
-        return imageZoomFunction != null ? imageZoomFunction.getImageZoomer() : null;
+        return zoomFunction != null ? zoomFunction.getImageZoomer() : null;
     }
 
     @Override
@@ -741,9 +741,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
 
         if (supportLargeImage) {
+            // 要想使用大图功能就必须开启缩放功能
             if (!isSupportZoom()) {
                 setSupportZoom(true);
-                imageZoomFunction.setFromLargeImageFunction(true);
+                zoomFunction.setFromLargeImageFunction(true);
             }
 
             largeImageFunction = new LargeImageFunction(this);
@@ -752,7 +753,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             largeImageFunction.recycle("setSupportLargeImage");
             largeImageFunction = null;
 
-            if (isSupportZoom() && imageZoomFunction.isFromLargeImageFunction()) {
+            if (isSupportZoom() && zoomFunction.isFromLargeImageFunction()) {
                 setSupportZoom(false);
             }
         }
@@ -804,8 +805,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDisplayStarted();
             }
-            if (imageZoomFunction != null) {
-                needInvokeInvalidate |= imageZoomFunction.onDisplayStarted();
+            if (zoomFunction != null) {
+                needInvokeInvalidate |= zoomFunction.onDisplayStarted();
             }
             if (largeImageFunction != null) {
                 needInvokeInvalidate |= largeImageFunction.onDisplayStarted();
@@ -848,8 +849,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (imageZoomFunction != null) {
-                needInvokeInvalidate |= imageZoomFunction.onDisplayCompleted(imageFrom, mimeType);
+            if (zoomFunction != null) {
+                needInvokeInvalidate |= zoomFunction.onDisplayCompleted(imageFrom, mimeType);
             }
             if (largeImageFunction != null) {
                 needInvokeInvalidate |= largeImageFunction.onDisplayCompleted(imageFrom, mimeType);
@@ -892,8 +893,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDisplayFailed(failedCause);
             }
-            if (imageZoomFunction != null) {
-                needInvokeInvalidate |= imageZoomFunction.onDisplayFailed(failedCause);
+            if (zoomFunction != null) {
+                needInvokeInvalidate |= zoomFunction.onDisplayFailed(failedCause);
             }
             if (largeImageFunction != null) {
                 needInvokeInvalidate |= largeImageFunction.onDisplayFailed(failedCause);
@@ -936,8 +937,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onDisplayCanceled(cancelCause);
             }
-            if (imageZoomFunction != null) {
-                needInvokeInvalidate |= imageZoomFunction.onDisplayCanceled(cancelCause);
+            if (zoomFunction != null) {
+                needInvokeInvalidate |= zoomFunction.onDisplayCanceled(cancelCause);
             }
             if (largeImageFunction != null) {
                 needInvokeInvalidate |= largeImageFunction.onDisplayCanceled(cancelCause);
@@ -983,8 +984,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (recyclerCompatFunction != null) {
                 needInvokeInvalidate |= recyclerCompatFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if (imageZoomFunction != null) {
-                needInvokeInvalidate |= imageZoomFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            if (zoomFunction != null) {
+                needInvokeInvalidate |= zoomFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
             if (largeImageFunction != null) {
                 needInvokeInvalidate |= largeImageFunction.onUpdateDownloadProgress(totalLength, completedLength);
