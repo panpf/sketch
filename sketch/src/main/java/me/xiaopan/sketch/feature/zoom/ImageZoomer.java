@@ -696,6 +696,55 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
     }
 
+    /**
+     * 清理
+     */
+    void cleanup() {
+        if (viewReference == null) {
+            return; // cleanup already done
+        }
+
+        final ImageView imageView = viewReference.get();
+        if (imageView != null) {
+            // Remove this as a global layout listener
+            ViewTreeObserver observer = imageView.getViewTreeObserver();
+            if (observer != null && observer.isAlive()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    observer.removeOnGlobalLayoutListener(this);
+                } else {
+                    //noinspection deprecation
+                    observer.removeGlobalOnLayoutListener(this);
+                }
+            }
+
+            // Remove the ImageView's reference to this
+            imageView.setOnTouchListener(null);
+
+            // make sure a pending fling runnable won't be run
+            cancelFling();
+        }
+
+        if (tapGestureDetector != null) {
+            tapGestureDetector.setOnDoubleTapListener(null);
+        }
+
+        // Clear listeners too
+        onMatrixChangedListenerList = null;
+        onViewTapListener = null;
+        onDragFlingListener = null;
+        onScaleChangeListener = null;
+
+        // Finally, clear ImageView
+        viewReference = null;
+    }
+
+    /**
+     * 设置正在缩放状态
+     */
+    void setZooming(boolean zooming) {
+        this.zooming = zooming;
+    }
+
     /** -----------可获取信息----------- **/
 
     /**
@@ -860,49 +909,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
-     * 清理
-     */
-    @SuppressWarnings("WeakerAccess")
-    void cleanup() {
-        if (viewReference == null) {
-            return; // cleanup already done
-        }
-
-        final ImageView imageView = viewReference.get();
-        if (imageView != null) {
-            // Remove this as a global layout listener
-            ViewTreeObserver observer = imageView.getViewTreeObserver();
-            if (observer != null && observer.isAlive()) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    observer.removeOnGlobalLayoutListener(this);
-                } else {
-                    //noinspection deprecation
-                    observer.removeGlobalOnLayoutListener(this);
-                }
-            }
-
-            // Remove the ImageView's reference to this
-            imageView.setOnTouchListener(null);
-
-            // make sure a pending fling runnable won't be run
-            cancelFling();
-        }
-
-        if (tapGestureDetector != null) {
-            tapGestureDetector.setOnDoubleTapListener(null);
-        }
-
-        // Clear listeners too
-        onMatrixChangedListenerList = null;
-        onViewTapListener = null;
-        onDragFlingListener = null;
-        onScaleChangeListener = null;
-
-        // Finally, clear ImageView
-        viewReference = null;
-    }
-
-    /**
      * 获取当前缩放比例
      */
     public float getZoomScale() {
@@ -965,13 +971,11 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
-     * 设置正在缩放状态
+     * 获取旋转角度
      */
-    void setZooming(boolean zooming) {
-        this.zooming = zooming;
+    public int getRotateDegrees(){
+        return SketchUtils.getMatrixRotateDegrees(getDrawMatrix());
     }
-
-    // TODO: 16/9/17 获取旋转角度
 
 
     /** -----------交互功能----------- **/

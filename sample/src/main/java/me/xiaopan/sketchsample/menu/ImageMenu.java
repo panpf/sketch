@@ -54,12 +54,17 @@ public class ImageMenu {
 
         builder.setTitle("菜单");
 
+        final boolean supportZoom = imageView.isSupportZoom();
+        final ImageZoomer imageZoomer = supportZoom ? imageView.getImageZoomer() : null;
+        final boolean supportLargeImage = imageView.isSupportLargeImage();
+        final LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
+
         String[] items = new String[5];
         items[0] = "显示详细信息";
-        items[1] = "ScaleType: " + (imageView.isSupportZoom() ? imageView.getScaleType() : imageView.getScaleType());
-        items[2] = "显示分块区域: " + (imageView.isSupportLargeImage() && imageView.getLargeImageViewer().isShowTileRect());
-        items[3] = "阅读模式: " + (imageView.isSupportZoom() && imageView.getImageZoomer().isReadMode());
-        items[4] = "旋转角度: " + 0;
+        items[1] = "ScaleType: " + imageView.getScaleType();
+        items[2] = "显示分块区域: " + (supportLargeImage ? largeImageViewer.isShowTileRect() : "未开启大图功能");
+        items[3] = "阅读模式: " + (supportZoom ? imageZoomer.isReadMode() : "未开启缩放功能");
+        items[4] = "旋转角度: " + (supportZoom ? imageZoomer.getRotateDegrees() : "未开启缩放功能");
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -73,22 +78,28 @@ public class ImageMenu {
                         showScaleTypeMenu();
                         break;
                     case 2:
-                        if (imageView.isSupportLargeImage()) {
-                            boolean newShowTileRect = !imageView.getLargeImageViewer().isShowTileRect();
-                            imageView.getLargeImageViewer().setShowTileRect(newShowTileRect);
+                        if (supportLargeImage) {
+                            boolean newShowTileRect = !largeImageViewer.isShowTileRect();
+                            largeImageViewer.setShowTileRect(newShowTileRect);
+                        } else {
+                            Toast.makeText(activity, "请先到首页左侧菜单开启大图功能", Toast.LENGTH_SHORT).show();
                         }
                         break;
                     case 3:
-                        if (imageView.isSupportZoom()) {
-                            boolean newReadMode = !imageView.getImageZoomer().isReadMode();
-                            imageView.getImageZoomer().setReadMode(newReadMode);
+                        if (supportZoom) {
+                            boolean newReadMode = !imageZoomer.isReadMode();
+                            imageZoomer.setReadMode(newReadMode);
+                        } else {
+                            Toast.makeText(activity, "请先到首页左侧菜单开启缩放功能", Toast.LENGTH_SHORT).show();
                         }
                         break;
-                    case 4 :
-                        if (imageView.isSupportZoom()) {
-                            if(!imageView.getImageZoomer().rotateBy(90)){
-                                Toast.makeText(activity, "开启大图功能后无法使用旋转功能", Toast.LENGTH_LONG).show();
+                    case 4:
+                        if (supportZoom) {
+                            if (!imageZoomer.rotateBy(90)) {
+                                Toast.makeText(activity, "旋转角度必须是90的倍数或开启大图功能后无法使用旋转功能", Toast.LENGTH_LONG).show();
                             }
+                        } else {
+                            Toast.makeText(activity, "请先到首页左侧菜单开启缩放功能", Toast.LENGTH_SHORT).show();
                         }
                 }
             }
@@ -147,7 +158,7 @@ public class ImageMenu {
         tempAlertDialog = builder.show();
     }
 
-    public void showDetailInfo(){
+    public void showDetailInfo() {
         Drawable drawable = SketchUtils.getLastDrawable(imageView != null ? imageView.getDrawable() : null);
 
         if (drawable instanceof BindDrawable) {
@@ -195,6 +206,7 @@ public class ImageMenu {
 
             if (imageView.isSupportZoom()) {
                 ImageZoomer imageZoomer = imageView.getImageZoomer();
+
                 messageBuilder.append("\n");
                 messageBuilder.append("\n");
                 messageBuilder.append("缩放倍数：").append(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
@@ -203,6 +215,10 @@ public class ImageMenu {
                 Rect visibleRect = new Rect();
                 imageZoomer.getVisibleRect(visibleRect);
                 messageBuilder.append("可见区域：").append(visibleRect.toShortString());
+            } else {
+                messageBuilder.append("\n");
+                messageBuilder.append("\n");
+                messageBuilder.append("未开启缩放功能");
             }
 
             if (imageView.isSupportLargeImage()) {
@@ -226,6 +242,10 @@ public class ImageMenu {
                     messageBuilder.append("\n");
                     messageBuilder.append("无需使用大图功能");
                 }
+            } else {
+                messageBuilder.append("\n");
+                messageBuilder.append("\n");
+                messageBuilder.append("未开启大图功能");
             }
 
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
