@@ -181,7 +181,7 @@ public class MappingView extends SketchImageView {
         return displayParams != null ? displayParams.attrs.getUri() : null;
     }
 
-    public void update(Point drawableSize, Rect newVisibleRect) {
+    public void matrixChanged(Point drawableSize, Rect newVisibleRect) {
         if (drawableSize.x == 0 || drawableSize.y == 0 || newVisibleRect.isEmpty()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty" +
@@ -226,7 +226,7 @@ public class MappingView extends SketchImageView {
         invalidate();
     }
 
-    public void onTileChanged(LargeImageViewer largeImageViewer) {
+    public void tileChanged(LargeImageViewer largeImageViewer) {
         this.largeImageViewer = largeImageViewer;
         invalidate();
     }
@@ -257,7 +257,7 @@ public class MappingView extends SketchImageView {
 
     private void recover() {
         if (!cacheVisibleRect.isEmpty()) {
-            update(cacheDrawableSize, cacheVisibleRect);
+            matrixChanged(cacheDrawableSize, cacheVisibleRect);
         }
     }
 

@@ -33,6 +33,7 @@ import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.BindDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
+import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -192,14 +193,17 @@ public class ImageMenu {
             messageBuilder.append("\n");
             messageBuilder.append("预览图占用内存：").append(Formatter.formatFileSize(activity, previewDrawableByteCount));
 
-            messageBuilder.append("\n");
-            messageBuilder.append("\n");
-            messageBuilder.append("缩放倍数：").append(SketchUtils.formatFloat(imageView.getImageZoomer().getZoomScale(), 2));
+            if (imageView.isSupportZoom()) {
+                ImageZoomer imageZoomer = imageView.getImageZoomer();
+                messageBuilder.append("\n");
+                messageBuilder.append("\n");
+                messageBuilder.append("缩放倍数：").append(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
 
-            messageBuilder.append("\n");
-            Rect visibleRect = new Rect();
-            imageView.getImageZoomer().getVisibleRect(visibleRect);
-            messageBuilder.append("可见区域：").append(visibleRect.toShortString());
+                messageBuilder.append("\n");
+                Rect visibleRect = new Rect();
+                imageZoomer.getVisibleRect(visibleRect);
+                messageBuilder.append("可见区域：").append(visibleRect.toShortString());
+            }
 
             if (imageView.isSupportLargeImage()) {
                 messageBuilder.append("\n");

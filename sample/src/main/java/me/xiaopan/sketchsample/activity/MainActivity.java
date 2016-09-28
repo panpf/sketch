@@ -63,90 +63,54 @@ import me.xiaopan.sketchsample.util.Settings;
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
 public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, LargesFragment.GetLargeTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetListener, AboutFragment.TogglePageListener {
-    @InjectView(R.id.layout_main_content)
-    private View contentView;
-    @InjectView(R.id.tabStrip_main_star)
-    private PagerSlidingTabStrip starTabStrip;
-    @InjectView(R.id.tabStrip_main_appList)
-    private PagerSlidingTabStrip appListTabStrip;
-    @InjectView(R.id.tabStrip_main_large)
-    private PagerSlidingTabStrip largeTabStrip;
-    @InjectView(R.id.drawer_main_content)
-    private DrawerLayout drawerLayout;
-    @InjectView(R.id.layout_main_leftMenu)
-    private View leftMenuView;
-    @InjectView(R.id.layout_main_leftMenuContent)
-    private View leftMenuContentView;
-    @InjectView(R.id.button_main_search)
-    private View searchButton;
-    @InjectView(R.id.button_main_star)
-    private View starButton;
-    @InjectView(R.id.button_main_photoAlbum)
-    private View photoAlbumButton;
-    @InjectView(R.id.button_main_appList)
-    private View appListButton;
-    @InjectView(R.id.button_main_largeImage)
-    private View largeImageButton;
-    @InjectView(R.id.button_main_test)
-    private View testButton;
-    @InjectView(R.id.button_main_about)
-    private View aboutButton;
-    @InjectView(R.id.item_main_scrollingPauseLoad)
-    private View scrollingPauseLoadItem;
-    @InjectView(R.id.checkBox_main_scrollingPauseLoad)
-    private CheckBox scrollingPauseLoadCheckBox;
-    @InjectView(R.id.item_main_mobileNetworkPauseDownload)
-    private View mobileNetworkPauseDownloadItem;
-    @InjectView(R.id.checkBox_main_mobileNetworkPauseDownload)
-    private CheckBox mobileNetworkPauseDownloadCheckBox;
-    @InjectView(R.id.item_main_showImageDownloadProgress)
-    private View showImageDownloadProgressItem;
-    @InjectView(R.id.checkBox_main_showImageDownloadProgress)
-    private CheckBox showImageDownloadProgressCheckBox;
-    @InjectView(R.id.item_main_showImageFromFlag)
-    private View showImageFromFlagItem;
-    @InjectView(R.id.checkBox_main_showImageFromFlag)
-    private CheckBox showImageFromFlagCheckBox;
-    @InjectView(R.id.item_main_clickDisplayOnFailed)
-    private View clickDisplayOnFailedItem;
-    @InjectView(R.id.checkBox_main_clickDisplayOnFailed)
-    private CheckBox clickDisplayOnFailedCheckBox;
-    @InjectView(R.id.item_main_clickDisplayOnPauseDownload)
-    private View clickDisplayOnPauseDownloadItem;
-    @InjectView(R.id.checkBox_main_clickDisplayOnPauseDownload)
-    private CheckBox clickDisplayOnPauseDownloadCheckBox;
-    @InjectView(R.id.item_main_showPressedStatus)
-    private View showPressedStatusItem;
-    @InjectView(R.id.checkBox_main_showPressedStatus)
-    private CheckBox showPressedStatusCheckBox;
-    @InjectView(R.id.item_main_cleanMemoryCache)
-    private View cleanMemoryCacheItem;
-    @InjectView(R.id.text_main_memoryCacheSize)
-    private TextView memoryCacheSizeTextView;
-    @InjectView(R.id.item_main_cleanPlaceholderMemoryCache)
-    private View cleanPlaceholderMemoryCacheItem;
-    @InjectView(R.id.text_main_placeholderMemoryCacheSize)
-    private TextView placeholderMemoryCacheSizeTextView;
-    @InjectView(R.id.item_main_cleanDiskCache)
-    private View cleanDiskCacheItem;
-    @InjectView(R.id.text_main_diskCacheSize)
-    private TextView diskCacheSizeTextView;
-    @InjectView(R.id.item_main_globalDisableCacheInMemory)
-    private View cacheMemoryItem;
-    @InjectView(R.id.checkBox_main_globalDisableCacheInMemory)
-    private CheckBox globalDisableCacheInMemoryCheckBox;
-    @InjectView(R.id.item_main_globalDisableCacheInDisk)
-    private View cacheInDiskItem;
-    @InjectView(R.id.checkBox_main_globalDisableCacheInDisk)
-    private CheckBox globalDisableCacheInDiskCheckBox;
-    @InjectView(R.id.item_main_globalLowQualityImage)
-    private View lowQualityImageItem;
-    @InjectView(R.id.checkBox_main_globalLowQualityImage)
-    private CheckBox globalLowQualityImageCheckBox;
-    @InjectView(R.id.item_main_globalInPreferQualityOverSpeed)
-    private View inPreferQualityOverSpeedItem;
-    @InjectView(R.id.checkBox_main_globalInPreferQualityOverSpeed)
-    private CheckBox globalInPreferQualityOverSpeedCheckBox;
+    @InjectView(R.id.layout_main_content) private View contentView;
+    @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
+    @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
+    @InjectView(R.id.tabStrip_main_large) private PagerSlidingTabStrip largeTabStrip;
+    @InjectView(R.id.drawer_main_content) private DrawerLayout drawerLayout;
+    @InjectView(R.id.layout_main_leftMenu) private View leftMenuView;
+    @InjectView(R.id.layout_main_leftMenuContent) private View leftMenuContentView;
+    @InjectView(R.id.button_main_search) private View searchButton;
+    @InjectView(R.id.button_main_star) private View starButton;
+    @InjectView(R.id.button_main_photoAlbum) private View photoAlbumButton;
+    @InjectView(R.id.button_main_appList) private View appListButton;
+    @InjectView(R.id.button_main_largeImage) private View largeImageButton;
+    @InjectView(R.id.button_main_test) private View testButton;
+    @InjectView(R.id.button_main_about) private View aboutButton;
+    @InjectView(R.id.item_main_scrollingPauseLoad) private View scrollingPauseLoadItem;
+    @InjectView(R.id.checkBox_main_scrollingPauseLoad) private CheckBox scrollingPauseLoadCheckBox;
+    @InjectView(R.id.item_main_mobileNetworkPauseDownload) private View mobileNetworkPauseDownloadItem;
+    @InjectView(R.id.checkBox_main_mobileNetworkPauseDownload) private CheckBox mobileNetworkPauseDownloadCheckBox;
+    @InjectView(R.id.item_main_showImageDownloadProgress) private View showImageDownloadProgressItem;
+    @InjectView(R.id.checkBox_main_showImageDownloadProgress) private CheckBox showImageDownloadProgressCheckBox;
+    @InjectView(R.id.item_main_showImageFromFlag) private View showImageFromFlagItem;
+    @InjectView(R.id.checkBox_main_showImageFromFlag) private CheckBox showImageFromFlagCheckBox;
+    @InjectView(R.id.item_main_clickDisplayOnFailed) private View clickDisplayOnFailedItem;
+    @InjectView(R.id.checkBox_main_clickDisplayOnFailed) private CheckBox clickDisplayOnFailedCheckBox;
+    @InjectView(R.id.item_main_clickDisplayOnPauseDownload) private View clickDisplayOnPauseDownloadItem;
+    @InjectView(R.id.checkBox_main_clickDisplayOnPauseDownload) private CheckBox clickDisplayOnPauseDownloadCheckBox;
+    @InjectView(R.id.item_main_showPressedStatus) private View showPressedStatusItem;
+    @InjectView(R.id.checkBox_main_showPressedStatus) private CheckBox showPressedStatusCheckBox;
+    @InjectView(R.id.item_main_cleanMemoryCache) private View cleanMemoryCacheItem;
+    @InjectView(R.id.text_main_memoryCacheSize) private TextView memoryCacheSizeTextView;
+    @InjectView(R.id.item_main_cleanPlaceholderMemoryCache) private View cleanPlaceholderMemoryCacheItem;
+    @InjectView(R.id.text_main_placeholderMemoryCacheSize) private TextView placeholderMemoryCacheSizeTextView;
+    @InjectView(R.id.item_main_cleanDiskCache) private View cleanDiskCacheItem;
+    @InjectView(R.id.text_main_diskCacheSize) private TextView diskCacheSizeTextView;
+    @InjectView(R.id.item_main_globalDisableCacheInMemory) private View cacheMemoryItem;
+    @InjectView(R.id.checkBox_main_globalDisableCacheInMemory) private CheckBox globalDisableCacheInMemoryCheckBox;
+    @InjectView(R.id.item_main_globalDisableCacheInDisk) private View cacheInDiskItem;
+    @InjectView(R.id.checkBox_main_globalDisableCacheInDisk) private CheckBox globalDisableCacheInDiskCheckBox;
+    @InjectView(R.id.item_main_globalLowQualityImage) private View lowQualityImageItem;
+    @InjectView(R.id.checkBox_main_globalLowQualityImage) private CheckBox globalLowQualityImageCheckBox;
+    @InjectView(R.id.item_main_globalInPreferQualityOverSpeed) private View inPreferQualityOverSpeedItem;
+    @InjectView(R.id.checkBox_main_globalInPreferQualityOverSpeed) private CheckBox globalInPreferQualityOverSpeedCheckBox;
+    @InjectView(R.id.item_main_supportZoom) private View supportZoomItem;
+    @InjectView(R.id.checkBox_main_supportZoom) private CheckBox supportZoomCheckBox;
+    @InjectView(R.id.item_main_supportLargeImage) private View supportLargeImageItem;
+    @InjectView(R.id.checkBox_main_supportLargeImage) private CheckBox supportLargeImageCheckBox;
+    @InjectView(R.id.item_main_readMode) private View readModeItem;
+    @InjectView(R.id.checkBox_main_readMode) private CheckBox readModeCheckBox;
 
     private long lastClickBackTime;
     private Type type;
@@ -188,6 +152,9 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         globalDisableCacheInDiskCheckBox.setChecked(settings.isGlobalDisableCacheInDisk());
         globalLowQualityImageCheckBox.setChecked(settings.isGlobalLowQualityImage());
         globalInPreferQualityOverSpeedCheckBox.setChecked(settings.isGlobalInPreferQualityOverSpeed());
+        supportZoomCheckBox.setChecked(settings.isSupportZoom());
+        supportLargeImageCheckBox.setChecked(settings.isSupportLargeImage());
+        readModeCheckBox.setChecked(settings.isReadMode());
 
         starButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
@@ -210,6 +177,9 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         cacheMemoryItem.setOnClickListener(this);
         lowQualityImageItem.setOnClickListener(this);
         inPreferQualityOverSpeedItem.setOnClickListener(this);
+        supportZoomItem.setOnClickListener(this);
+        supportLargeImageItem.setOnClickListener(this);
+        readModeItem.setOnClickListener(this);
 
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
@@ -536,6 +506,24 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 globalInPreferQualityOverSpeedCheckBox.setChecked(globalInPreferQualityOverSpeed);
                 settings.setGlobalInPreferQualityOverSpeed(globalInPreferQualityOverSpeed);
                 Sketch.with(getBaseContext()).getConfiguration().setGlobalInPreferQualityOverSpeed(globalInPreferQualityOverSpeed);
+                drawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.item_main_supportZoom:
+                boolean newSupportZoom = !settings.isSupportZoom();
+                supportZoomCheckBox.setChecked(newSupportZoom);
+                settings.setSupportZoom(newSupportZoom);
+                drawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.item_main_supportLargeImage:
+                boolean newLargeSupportImageValue = !settings.isSupportLargeImage();
+                supportLargeImageCheckBox.setChecked(newLargeSupportImageValue);
+                settings.setSupportLargeImage(newLargeSupportImageValue);
+                drawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.item_main_readMode:
+                boolean newReadModeValue = !settings.isReadMode();
+                readModeCheckBox.setChecked(newReadModeValue);
+                settings.setReadMode(newReadModeValue);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
         }

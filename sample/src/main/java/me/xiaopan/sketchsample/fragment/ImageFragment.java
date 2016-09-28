@@ -27,6 +27,7 @@ import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
 import me.xiaopan.sketchsample.menu.ImageMenu;
+import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.HintView;
 import me.xiaopan.sketchsample.widget.MappingView;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -79,10 +80,6 @@ public class ImageFragment extends MyFragment {
         super.onViewCreated(view, savedInstanceState);
 
         imageView.setAutoApplyGlobalAttr(false);
-
-        imageView.setSupportZoom(true);
-        imageView.setSupportLargeImage(true);
-        imageView.getImageZoomer().setReadMode(true);
 
         imageView.setDisplayListener(new DisplayListener() {
             @Override
@@ -161,25 +158,36 @@ public class ImageFragment extends MyFragment {
             }
         });
 
-        // MappingView跟随Matrix变化刷新各种区域
-        imageView.getImageZoomer().addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
-            Rect visibleRect = new Rect();
+        Settings settings = Settings.with(getActivity());
+        imageView.setSupportZoom(settings.isSupportZoom());
+        imageView.setSupportLargeImage(settings.isSupportLargeImage());
 
-            @Override
-            public void onMatrixChanged(ImageZoomer imageZoomer) {
-                imageZoomer.getVisibleRect(visibleRect);
-                mappingView.update(imageZoomer.getDrawableSize(), visibleRect);
-                scale = String.valueOf(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
-                scaleTextView.setText(String.format("%s · %s", scale, bytes));
-            }
-        });
+        if (imageView.isSupportZoom()) {
+            ImageZoomer imageZoomer = imageView.getImageZoomer();
 
-        // MappingView跟随碎片变化刷新碎片区域
+            // 开启阅读模式
+            imageZoomer.setReadMode(settings.isReadMode());
+
+            // MappingView跟随Matrix变化刷新各种区域
+            imageZoomer.addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
+                Rect visibleRect = new Rect();
+
+                @Override
+                public void onMatrixChanged(ImageZoomer imageZoomer) {
+                    imageZoomer.getVisibleRect(visibleRect);
+                    mappingView.matrixChanged(imageZoomer.getDrawableSize(), visibleRect);
+                    scale = String.valueOf(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
+                    scaleTextView.setText(String.format("%s · %s", scale, bytes));
+                }
+            });
+        }
+
         if (imageView.isSupportLargeImage()) {
+            // MappingView跟随碎片变化刷新碎片区域
             imageView.getLargeImageViewer().setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
                 @Override
                 public void onTileChanged(LargeImageViewer largeImageViewer) {
-                    mappingView.onTileChanged(largeImageViewer);
+                    mappingView.tileChanged(largeImageViewer);
                     bytes = Formatter.formatShortFileSize(getActivity(), largeImageViewer.getTilesAllocationByteCount());
                     scaleTextView.setText(String.format("%s · %s", scale, bytes));
                 }
@@ -187,23 +195,45 @@ public class ImageFragment extends MyFragment {
         }
 
         // 单击显示操作选项
-        imageView.getImageZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {
-            @Override
-            public void onViewTap(View view, float x, float y) {
-                Fragment parentFragment = getParentFragment();
-                if (parentFragment != null && parentFragment instanceof ImageZoomer.OnViewTapListener) {
-                    ((ImageZoomer.OnViewTapListener) parentFragment).onViewTap(view, x, y);
+        if (imageView.isSupportZoom()) {
+            imageView.getImageZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {
+                @Override
+                public void onViewTap(View view, float x, float y) {
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ImageZoomer.OnViewTapListener) {
+                        ((ImageZoomer.OnViewTapListener) parentFragment).onViewTap(view, x, y);
+                    }
                 }
-            }
-        });
+            });
+        } else {
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ImageZoomer.OnViewTapListener) {
+                        ((ImageZoomer.OnViewTapListener) parentFragment).onViewTap(v, 0, 0);
+                    }
+                }
+            });
+        }
 
         // 长按显示菜单
-        imageView.getImageZoomer().setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
-            @Override
-            public void onViewLongPress(View view, float x, float y) {
-                imageMenu.show();
-            }
-        });
+        if (imageView.isSupportZoom()) {
+            imageView.getImageZoomer().setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
+                @Override
+                public void onViewLongPress(View view, float x, float y) {
+                    imageMenu.show();
+                }
+            });
+        } else {
+            imageView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    imageMenu.show();
+                    return true;
+                }
+            });
+        }
 
         mappingView.setOnSingleClickListener(new MappingView.OnSingleClickListener() {
             @Override

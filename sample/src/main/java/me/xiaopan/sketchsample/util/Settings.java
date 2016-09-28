@@ -17,6 +17,9 @@ public class Settings {
     private static final String PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK = "PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK";
     private static final String PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE = "PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE";
     private static final String PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED = "PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED";
+    private static final String PREFERENCE_SUPPORT_ZOOM = "PREFERENCE_SUPPORT_ZOOM";
+    private static final String PREFERENCE_SUPPORT_LARGE_IMAGE = "PREFERENCE_SUPPORT_LARGE_IMAGE";
+    private static final String PREFERENCE_READ_MODE = "PREFERENCE_READ_MODE";
 
     private static Settings settingsInstance;
 
@@ -31,6 +34,9 @@ public class Settings {
     private boolean globalDisableCacheInDisk;
     private boolean globalLowQualityImage;
     private boolean globalInPreferQualityOverSpeed;
+    private boolean supportZoom;
+    private boolean supportLargeImage;
+    private boolean readMode;
 
     private SharedPreferences.Editor editor;
 
@@ -49,6 +55,9 @@ public class Settings {
         this.globalDisableCacheInDisk = preferences.getBoolean(PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK, false);
         this.globalLowQualityImage = preferences.getBoolean(PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE, false);
         this.globalInPreferQualityOverSpeed = preferences.getBoolean(PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, false);
+        this.supportZoom = preferences.getBoolean(PREFERENCE_SUPPORT_ZOOM, true);
+        this.supportLargeImage = preferences.getBoolean(PREFERENCE_SUPPORT_LARGE_IMAGE, true);
+        this.readMode = preferences.getBoolean(PREFERENCE_READ_MODE, true);
     }
 
     public static Settings with(Context context) {
@@ -217,6 +226,36 @@ public class Settings {
     public void setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
         this.globalInPreferQualityOverSpeed = globalInPreferQualityOverSpeed;
         editor.putBoolean(PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, globalInPreferQualityOverSpeed);
+        apply();
+    }
+
+    public boolean isSupportZoom() {
+        return supportZoom;
+    }
+
+    public void setSupportZoom(boolean supportZoom) {
+        this.supportZoom = supportZoom;
+        editor.putBoolean(PREFERENCE_SUPPORT_ZOOM, supportZoom);
+        apply();
+    }
+
+    public boolean isSupportLargeImage() {
+        return supportLargeImage;
+    }
+
+    public void setSupportLargeImage(boolean supportLargeImage) {
+        this.supportLargeImage = supportLargeImage;
+        editor.putBoolean(PREFERENCE_SUPPORT_LARGE_IMAGE, supportLargeImage);
+        apply();
+    }
+
+    public boolean isReadMode() {
+        return readMode;
+    }
+
+    public void setReadMode(boolean readMode) {
+        this.readMode = readMode;
+        editor.putBoolean(PREFERENCE_READ_MODE, readMode);
         apply();
     }
 }
