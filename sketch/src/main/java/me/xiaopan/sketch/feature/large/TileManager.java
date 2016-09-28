@@ -598,11 +598,12 @@ class TileManager {
         }
     }
 
-    void decodeCompleted(Tile tile, Bitmap bitmap) {
+    void decodeCompleted(Tile tile, Bitmap bitmap, int useTime) {
         if (Sketch.isDebugMode()) {
             String bitmapConfig = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
             Log.i(Sketch.TAG, NAME + ". decode completed" +
-                    ". tile=" + tile.getInfo() +
+                    ". useTime=" + useTime + "ms" +
+                    ", tile=" + tile.getInfo() +
                     ", bitmap=" + bitmap.getWidth() + "x" + bitmap.getHeight() + "(" + bitmapConfig + ")" +
                     ", tiles=" + tileList.size());
         }

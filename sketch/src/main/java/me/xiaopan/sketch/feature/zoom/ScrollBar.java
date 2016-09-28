@@ -110,17 +110,6 @@ class ScrollBar {
             horScrollBarRectF.right = horScrollBarRectF.left + horScrollBarWidth;
             horScrollBarRectF.bottom = horScrollBarRectF.top + scrollBarSize;
             canvas.drawRoundRect(horScrollBarRectF, scrollBarRadius, scrollBarRadius, scrollBarPaint);
-
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, ImageZoomer.NAME + ". draw horizontal scroll bar. drawScrollBar" +
-                        ". viewWidth=" + viewWidth +
-                        ", displayWidth=" + displayWidth +
-                        ", widthScale=" + widthScale +
-                        ", scrollBarSize=" + scrollBarSize +
-                        ", scrollBarMargin=" + scrollBarMargin +
-                        ", horScrollBarWidth=" + horScrollBarWidth +
-                        ", horScrollBarRectF=" + horScrollBarRectF.toString());
-            }
         }
 
         if ((int) displayHeight > viewHeight) {
@@ -134,17 +123,6 @@ class ScrollBar {
             verScrollBarRectF.right = verScrollBarRectF.left + scrollBarSize;
             verScrollBarRectF.bottom = verScrollBarRectF.top + verScrollBarHeight;
             canvas.drawRoundRect(verScrollBarRectF, scrollBarRadius, scrollBarRadius, scrollBarPaint);
-
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, ImageZoomer.NAME + ". draw vertical scroll bar. drawScrollBar" +
-                        ". viewHeight=" + viewHeight +
-                        ", displayHeight=" + displayHeight +
-                        ", heightScale=" + heightScale +
-                        ", scrollBarSize=" + scrollBarSize +
-                        ", scrollBarMargin=" + scrollBarMargin +
-                        ", verScrollBarHeight=" + verScrollBarHeight +
-                        ", verScrollBarRectF=" + verScrollBarRectF.toString());
-            }
         }
     }
 

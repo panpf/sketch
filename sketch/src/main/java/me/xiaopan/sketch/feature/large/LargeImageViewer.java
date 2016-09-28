@@ -389,7 +389,7 @@ public class LargeImageViewer {
         }
 
         @Override
-        public void onDecodeCompleted(Tile tile, Bitmap bitmap) {
+        public void onDecodeCompleted(Tile tile, Bitmap bitmap, int useTime) {
             if (!running) {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, NAME + ". stop running. decodeCompleted. tile=" + tile.getInfo());
@@ -398,7 +398,7 @@ public class LargeImageViewer {
                 return;
             }
 
-            tileManager.decodeCompleted(tile, bitmap);
+            tileManager.decodeCompleted(tile, bitmap, useTime);
         }
 
         @Override

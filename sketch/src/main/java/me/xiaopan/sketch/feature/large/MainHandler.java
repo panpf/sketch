@@ -62,7 +62,7 @@ class MainHandler extends Handler {
                 break;
             case WHAT_DECODE_COMPLETED:
                 DecodeResult decodeResult = (DecodeResult) msg.obj;
-                decodeCompleted(msg.arg1, decodeResult.tile, decodeResult.bitmap);
+                decodeCompleted(msg.arg1, decodeResult.tile, decodeResult.bitmap, decodeResult.useTime);
                 break;
             case WHAT_DECODE_FAILED:
                 DecodeFailedResult decodeFailedResult = (DecodeFailedResult) msg.obj;
@@ -111,10 +111,10 @@ class MainHandler extends Handler {
         message.sendToTarget();
     }
 
-    public void postDecodeCompleted(int key, Tile tile, Bitmap bitmap) {
+    public void postDecodeCompleted(int key, Tile tile, Bitmap bitmap, int useTime) {
         Message message = obtainMessage(MainHandler.WHAT_DECODE_COMPLETED);
         message.arg1 = key;
-        message.obj = new DecodeResult(bitmap, tile);
+        message.obj = new DecodeResult(bitmap, tile, useTime);
         message.sendToTarget();
     }
 
@@ -170,7 +170,7 @@ class MainHandler extends Handler {
         decodeExecutor.callback.onInitFailed(imageUri, exception);
     }
 
-    private void decodeCompleted(int key, Tile tile, Bitmap bitmap) {
+    private void decodeCompleted(int key, Tile tile, Bitmap bitmap, int useTime) {
         TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
@@ -181,7 +181,7 @@ class MainHandler extends Handler {
         }
 
         if (!tile.isExpired(key)) {
-            decodeExecutor.callback.onDecodeCompleted(tile, bitmap);
+            decodeExecutor.callback.onDecodeCompleted(tile, bitmap, useTime);
         } else {
             bitmap.recycle();
             decodeExecutor.callback.onDecodeFailed(tile,
@@ -204,10 +204,12 @@ class MainHandler extends Handler {
     private static final class DecodeResult {
         public Tile tile;
         public Bitmap bitmap;
+        public int useTime;
 
-        public DecodeResult(Bitmap bitmap, Tile tile) {
+        public DecodeResult(Bitmap bitmap, Tile tile, int useTime) {
             this.bitmap = bitmap;
             this.tile = tile;
+            this.useTime = useTime;
         }
     }
 

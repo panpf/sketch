@@ -101,7 +101,10 @@ class DecodeHandler extends Handler {
             options.inPreferredConfig = imageFormat.getConfig(false);
         }
 
+        long time = System.currentTimeMillis();
         Bitmap bitmap = tile.decoder.decodeRegion(srcRect, options);
+        int useTime = (int) (System.currentTimeMillis() - time);
+
         if (bitmap == null || bitmap.isRecycled()) {
             decodeExecutor.mainHandler.postDecodeFailed(key, tile, new DecodeFailedException(DecodeFailedException.CAUSE_BITMAP_NULL));
             return;
@@ -113,7 +116,7 @@ class DecodeHandler extends Handler {
             return;
         }
 
-        decodeExecutor.mainHandler.postDecodeCompleted(key, tile, bitmap);
+        decodeExecutor.mainHandler.postDecodeCompleted(key, tile, bitmap, useTime);
     }
 
     public void clean(String why) {

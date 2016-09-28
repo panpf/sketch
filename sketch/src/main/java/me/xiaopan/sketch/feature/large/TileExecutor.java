@@ -149,7 +149,7 @@ class TileExecutor {
 
         void onInitFailed(String imageUri, Exception e);
 
-        void onDecodeCompleted(Tile tile, Bitmap bitmap);
+        void onDecodeCompleted(Tile tile, Bitmap bitmap, int useTime);
 
         void onDecodeFailed(Tile tile, DecodeHandler.DecodeFailedException exception);
     }
