@@ -23,21 +23,22 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.feature.ClickRetryFunction;
 import me.xiaopan.sketch.feature.ImageShapeFunction;
-import me.xiaopan.sketch.feature.zoom.ImageZoomFunction;
-import me.xiaopan.sketch.feature.large.LargeImageFunction;
 import me.xiaopan.sketch.feature.RecyclerCompatFunction;
 import me.xiaopan.sketch.feature.RequestFunction;
 import me.xiaopan.sketch.feature.ShowGifFlagFunction;
 import me.xiaopan.sketch.feature.ShowImageFromFunction;
 import me.xiaopan.sketch.feature.ShowPressedFunction;
 import me.xiaopan.sketch.feature.ShowProgressFunction;
+import me.xiaopan.sketch.feature.large.LargeImageFunction;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
+import me.xiaopan.sketch.feature.zoom.ImageZoomFunction;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
@@ -702,6 +703,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置是否支持缩放
      */
     public void setSupportZoom(boolean supportZoom) {
+        if (!supportZoom && isSupportLargeImage()) {
+            Log.w(Sketch.TAG, "You can't close the zoom function, because of large image function need it");
+            return;
+        }
+
         if (zoomFunction != null) {
             zoomFunction.setFromLargeImageFunction(false);
         }
