@@ -8,7 +8,6 @@ import android.os.Environment;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,14 +16,14 @@ import java.io.OutputStream;
 /**
  * 保存图片异步任务
  */
-public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
+public class SaveResImageAsyncTask extends AsyncTask<String, Integer, String> {
 
     private Context context;
-    private File imageFile;
+    private int imageId;
 
-    public SaveImageAsyncTask(Context context, File imageFile) {
+    public SaveResImageAsyncTask(Context context, int imageId) {
         this.context = context;
-        this.imageFile = imageFile;
+        this.imageId = imageId;
     }
 
     @Override
@@ -47,11 +46,7 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
             dir.mkdirs();
         }
 
-        String fileName = imageFile.getName();
-        if (fileName.endsWith(".0") || fileName.endsWith(".1")) {
-            fileName = fileName.substring(0, fileName.length() - 2);
-        }
-        File outImageFile = new File(dir, fileName);
+        File outImageFile = new File(dir, imageId + ".png");
         try {
             outImageFile.createNewFile();
         } catch (IOException e) {
@@ -63,7 +58,7 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
         InputStream inputStream = null;
         try {
             outputStream = new FileOutputStream(outImageFile);
-            inputStream = new FileInputStream(imageFile);
+            inputStream = context.getResources().openRawResource(imageId);
             byte[] data = new byte[1024];
             int length;
             while ((length = inputStream.read(data)) != -1) {

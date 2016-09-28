@@ -36,6 +36,7 @@ import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
+import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.ImageFragmentAdapter;
@@ -43,7 +44,10 @@ import me.xiaopan.sketchsample.util.AnimationBatchExecutor;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.ApplyWallpaperAsyncTask;
 import me.xiaopan.sketchsample.util.PageNumberSetter;
+import me.xiaopan.sketchsample.util.SaveAssetImageAsyncTask;
+import me.xiaopan.sketchsample.util.SaveContentImageAsyncTask;
 import me.xiaopan.sketchsample.util.SaveImageAsyncTask;
+import me.xiaopan.sketchsample.util.SaveResImageAsyncTask;
 import me.xiaopan.sketchsample.util.ViewPagerPlayer;
 import me.xiaopan.sketchsample.widget.DepthPageTransformer;
 
@@ -230,20 +234,29 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
                 toggleToolbarVisibleState();
                 break;
             case R.id.button_detail_save:
-                String currentUrl = uris.get(viewPager.getCurrentItem());
-                if (currentUrl == null || "".equals(currentUrl.trim())) {
+                String currentUri = uris.get(viewPager.getCurrentItem());
+                if (currentUri == null || "".equals(currentUri.trim())) {
                     Toast.makeText(getActivity(), "保存图片失败，因为当前图片的URL是空的，没法拿到图片", Toast.LENGTH_LONG).show();
-                } else if (currentUrl.startsWith("http://") || currentUrl.startsWith("https://")) {
-                    DiskCache.Entry imageFile3DiskCacheEntry = Sketch.with(getActivity()).getConfiguration().getDiskCache().get(currentUrl);
-                    if (imageFile3DiskCacheEntry != null) {
-                        new SaveImageAsyncTask(getActivity(), imageFile3DiskCacheEntry.getFile()).execute("");
-                    } else {
-                        Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
-                    }
-                } else if (currentUrl.startsWith("/")) {
-                    Toast.makeText(getActivity(), "当前图片本就是本地的无需保存", Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + currentUrl, Toast.LENGTH_LONG).show();
+                    UriScheme uriScheme = UriScheme.valueOfUri(currentUri);
+                    if (uriScheme == UriScheme.NET) {
+                        DiskCache.Entry imageFile3DiskCacheEntry = Sketch.with(getActivity()).getConfiguration().getDiskCache().get(currentUri);
+                        if (imageFile3DiskCacheEntry != null) {
+                            new SaveImageAsyncTask(getActivity(), imageFile3DiskCacheEntry.getFile()).execute("");
+                        } else {
+                            Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
+                        }
+                    } else if(uriScheme == UriScheme.ASSET){
+                        new SaveAssetImageAsyncTask(getActivity(), UriScheme.ASSET.crop(currentUri)).execute("");
+                    } else if(uriScheme == UriScheme.CONTENT){
+                        new SaveContentImageAsyncTask(getActivity(), Uri.parse(currentUri)).execute("");
+                    } else if(uriScheme == UriScheme.DRAWABLE){
+                        new SaveResImageAsyncTask(getActivity(), Integer.valueOf(UriScheme.DRAWABLE.crop(currentUri))).execute("");
+                    } else if (uriScheme == UriScheme.FILE) {
+                        Toast.makeText(getActivity(), "当前图片本就是本地的无需保存", Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + currentUri, Toast.LENGTH_LONG).show();
+                    }
                 }
                 break;
             case R.id.button_detail_info:

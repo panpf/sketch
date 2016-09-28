@@ -8,23 +8,24 @@ import android.os.Environment;
 import android.widget.Toast;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 
 /**
  * 保存图片异步任务
  */
-public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
+public class SaveContentImageAsyncTask extends AsyncTask<String, Integer, String> {
 
     private Context context;
-    private File imageFile;
+    private Uri imageUri;
 
-    public SaveImageAsyncTask(Context context, File imageFile) {
+    public SaveContentImageAsyncTask(Context context, Uri imageUri) {
         this.context = context;
-        this.imageFile = imageFile;
+        this.imageUri = imageUri;
     }
 
     @Override
@@ -47,11 +48,12 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
             dir.mkdirs();
         }
 
-        String fileName = imageFile.getName();
-        if (fileName.endsWith(".0") || fileName.endsWith(".1")) {
-            fileName = fileName.substring(0, fileName.length() - 2);
+        File outImageFile = null;
+        try {
+            outImageFile = new File(dir, URLEncoder.encode(imageUri.toString(), "utf-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
-        File outImageFile = new File(dir, fileName);
         try {
             outImageFile.createNewFile();
         } catch (IOException e) {
@@ -63,7 +65,7 @@ public class SaveImageAsyncTask extends AsyncTask<String, Integer, String> {
         InputStream inputStream = null;
         try {
             outputStream = new FileOutputStream(outImageFile);
-            inputStream = new FileInputStream(imageFile);
+            inputStream = context.getContentResolver().openInputStream(imageUri);
             byte[] data = new byte[1024];
             int length;
             while ((length = inputStream.read(data)) != -1) {
