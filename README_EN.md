@@ -109,7 +109,7 @@ Sketch total display (), load (), download () three methods available, you can c
 >* Load () method in the download () method on the basis of loading pictures into memory, and image processing
 >* The display () method, based on the load () method, caches the image in memory and displays it on the ImageView
 
-示例：
+Examples:
 ```
 // Display
 Sketch.with(context).display("http://biying.png", sketchImageView)
@@ -144,7 +144,7 @@ Load () and download () also support synchronous execution, please refer to [Syn
 
 The following are supported by the three methods (`-` is not supported)
 
-|属性|download()|load()|display()|
+|Attributes|download()|load()|display()|
 |:---|:---|:---|:---|
 |sync|false|false|-|
 |requestLevel|NET|NET|NET|
