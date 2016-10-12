@@ -3,6 +3,8 @@
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Sketch-green.svg?style=true)](https://android-arsenal.com/details/1/4165)
 [![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)
 
+[English version of the README.md](README_EN.md)
+
 Sketch是Android上的一个图片加载器，能够帮助开发者从本地或网络读取图片，处理后显示在页面上
 
 ![sample](docs/res/sample.jpg)
@@ -12,7 +14,7 @@ Sketch是Android上的一个图片加载器，能够帮助开发者从本地或�
 >* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``等7种URI
 >* ``二级缓存``. 采用Lru算法在本地和内存中缓存图片，本地缓存默认最大容量为100M，内存缓存默认最大容量为最大可用内存的八分之一
 >* ``各种列表支持``. 在各种列表（ListView、RecyclerView）中循环使用不错位，并且不占用setTag()方法
->* ``SketchImageView``. 提供功能SketchImageView，只需调用display***Image()系列方法即可显示各种图片，并且支持显示下载进度，显示按下效果，点击重试等常用功能
+>* ``SketchImageView``. 使用SketchImageView只需调用display***Image()系列方法即可显示各种图片，并且支持显示下载进度，显示按下效果，点击重试等常用功能
 >* ``重复下载过滤``. 如果两个请求的图片地址一样的话，第二个就会等待第一个下载完成之后直接使用第一个下载的图片
 >* ``即时取消无用请求``. SketchImageView在onDetachedFromWindow()或被重复利用的时候会主动取消之前的请求
 >* ``自动防止加载过大Bitmap`` 可通过maxSize来控制加载到内存的图片的尺寸，默认为屏幕宽高的0.75倍，还会自动根据ImageView的layout_width和layout_height来调整maxSize
@@ -61,8 +63,7 @@ sketchImageView.displayURIImage(uri);
 
 ### 使用指南
 
-#### 导入
-从JCenter导入 
+#### 从JCenter导入
 
 ```groovy
 dependencies{
@@ -185,7 +186,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 >* [监听加载开始、成功、失败以及下载进度.md](docs/wiki/listener.md)
 >* [显示APK或已安装APP的图标.md](docs/wiki/display_apk_or_app_icon.md)
 >* [了解何时取消请求以及如何主动取消请求.md](docs/wiki/cancel_request.md)
->* [使用ErrorCallback监控Sketch的异常.md](docs/wiki/error_callback.md)
+>* [使用ExceptionMonitor监控Sketch的异常.md](docs/wiki/error_callback.md)
 >* [配置混淆（Proguard）.md](docs/wiki/proguard_config.md)
 
 ### Thanks
