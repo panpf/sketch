@@ -25,19 +25,9 @@ public interface SketchDrawable {
     String getImageId();
 
     /**
-     * 设置图片ID
-     */
-    void setImageId(String imageId);
-
-    /**
      * 获取图片URI
      */
     String getImageUri();
-
-    /**
-     * 设置图片URI
-     */
-    void setImageUri(String imageUri);
 
     /**
      * 获取图片原始宽
@@ -45,34 +35,14 @@ public interface SketchDrawable {
     int getOriginWidth();
 
     /**
-     * 设置图片原始宽
-     */
-    void setOriginWidth(int originWidth);
-
-    /**
      * 获取图片原始高
      */
     int getOriginHeight();
 
     /**
-     * 设置图片原始高
-     */
-    void setOriginHeight(int originHeight);
-
-    /**
      * 获取图片类型
      */
     String getMimeType();
-
-    /**
-     * 设置图片类型
-     */
-    void setMimeType(String mimeType);
-
-    /**
-     * 获取一些信息
-     */
-    String getInfo();
 
     /**
      * 获取占用内存，单位字节
@@ -83,4 +53,9 @@ public interface SketchDrawable {
      * 获取Bitmap配置
      */
     Bitmap.Config getBitmapConfig();
+
+    /**
+     * 获取一些信息
+     */
+    String getInfo();
 }

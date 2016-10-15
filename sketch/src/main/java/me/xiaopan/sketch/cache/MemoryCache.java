@@ -16,11 +16,10 @@
 
 package me.xiaopan.sketch.cache;
 
-import android.graphics.drawable.Drawable;
-
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Identifier;
+import me.xiaopan.sketch.drawable.RefBitmap;
 
 /**
  * 内存缓存器
@@ -29,17 +28,17 @@ public interface MemoryCache extends Identifier {
     /**
      * 放进去一张图片
      */
-    void put(String key, Drawable value);
+    void put(String key, RefBitmap refBitmap);
 
     /**
      * 根据给定的key获取图片
      */
-    Drawable get(String key);
+    RefBitmap get(String key);
 
     /**
      * 根据给定的key删除图片
      */
-    Drawable remove(String key);
+    RefBitmap remove(String key);
 
     /**
      * 获取已用容量

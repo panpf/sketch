@@ -15,7 +15,7 @@ import android.view.Window;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.RecyclerDrawable;
+import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.FailedCause;
 import me.xiaopan.sketch.request.LoadListener;
@@ -78,9 +78,9 @@ public class WindowBackgroundManager {
             return;
         }
 
-        if (drawable instanceof RecyclerDrawable) {
-            Log.d(Sketch.TAG, "old window bitmap recycled - " + ((RecyclerDrawable) drawable).getInfo());
-            ((RecyclerDrawable) drawable).recycle();
+        if (drawable instanceof RefDrawable) {
+            Log.d(Sketch.TAG, "old window bitmap recycled - " + ((RefDrawable) drawable).getInfo());
+            ((RefDrawable) drawable).recycle();
         } else if (drawable instanceof BitmapDrawable) {
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
             if (bitmap != null && !bitmap.isRecycled()) {

@@ -21,7 +21,7 @@ import android.graphics.drawable.LayerDrawable;
 
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.drawable.BindDrawable;
-import me.xiaopan.sketch.drawable.RecyclerDrawable;
+import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -71,8 +71,8 @@ public class RequestFunction extends SketchImageView.Function {
                     }
                 }
 
-                if (drawable instanceof RecyclerDrawable) {
-                    ((RecyclerDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
+                if (drawable instanceof RefDrawable) {
+                    ((RefDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
                 }
 
                 isSketchDrawable = drawable instanceof SketchDrawable;

@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.cache;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.text.format.Formatter;
 import android.util.Log;
 
@@ -27,12 +26,12 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.RecyclerDrawable;
+import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class LruMemoryCache implements MemoryCache {
-    private final LruCache<String, Drawable> drawableLruCache;
+    private final LruCache<String, RefBitmap> drawableLruCache;
     protected String logName = "LruMemoryCache";
     private Context context;
     private Map<String, ReentrantLock> editLockMap;
@@ -57,31 +56,28 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public synchronized void put(String key, Drawable value) {
+    public synchronized void put(String key, RefBitmap refBitmap) {
         if (closed) {
             return;
         }
 
-        if (!(value instanceof RecyclerDrawable)) {
-            throw new IllegalArgumentException("drawable must be implemented RecycleDrawableInterface");
-        }
         int oldCacheSize = 0;
         if (Sketch.isDebugMode()) {
             oldCacheSize = drawableLruCache.size();
         }
-        drawableLruCache.put(key, value);
+        drawableLruCache.put(key, refBitmap);
         if (Sketch.isDebugMode()) {
             int newCacheSize = drawableLruCache.size();
             Log.i(Sketch.TAG, SketchUtils.concat(logName,
                     ". put",
                     ". beforeCacheSize=", Formatter.formatFileSize(context, oldCacheSize),
-                    ". ", ((RecyclerDrawable) value).getInfo(),
+                    ". ", refBitmap.getInfo(),
                     ". afterCacheSize=", Formatter.formatFileSize(context, newCacheSize)));
         }
     }
 
     @Override
-    public synchronized Drawable get(String key) {
+    public synchronized RefBitmap get(String key) {
         if (closed) {
             return null;
         }
@@ -90,18 +86,18 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public synchronized Drawable remove(String key) {
+    public synchronized RefBitmap remove(String key) {
         if (closed) {
             return null;
         }
 
-        Drawable drawable = drawableLruCache.remove(key);
+        RefBitmap refBitmap = drawableLruCache.remove(key);
         if (Sketch.isDebugMode()) {
             Log.i(Sketch.TAG, SketchUtils.concat(logName,
                     ". remove",
                     ". memoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
         }
-        return drawable;
+        return refBitmap;
     }
 
     @Override
@@ -190,27 +186,27 @@ public class LruMemoryCache implements MemoryCache {
         return appendIdentifier(new StringBuilder()).toString();
     }
 
-    private class DrawableLruCache extends LruCache<String, Drawable> {
+    private class DrawableLruCache extends LruCache<String, RefBitmap> {
 
         public DrawableLruCache(int maxSize) {
             super(maxSize);
         }
 
         @Override
-        public Drawable put(String key, Drawable value) {
-            ((RecyclerDrawable) value).setIsCached(logName + ":put", true);
-            return super.put(key, value);
+        public RefBitmap put(String key, RefBitmap refBitmap) {
+            refBitmap.setIsCached(logName + ":put", true);
+            return super.put(key, refBitmap);
         }
 
         @Override
-        public int sizeOf(String key, Drawable value) {
-            int bitmapSize = ((RecyclerDrawable) value).getByteCount();
+        public int sizeOf(String key, RefBitmap refBitmap) {
+            int bitmapSize = refBitmap.getByteCount();
             return bitmapSize == 0 ? 1 : bitmapSize;
         }
 
         @Override
-        protected void entryRemoved(boolean evicted, String key, Drawable oldValue, Drawable newValue) {
-            ((RecyclerDrawable) oldValue).setIsCached(logName + ":entryRemoved", false);
+        protected void entryRemoved(boolean evicted, String key, RefBitmap oldRefBitmap, RefBitmap newRefBitmap) {
+            oldRefBitmap.setIsCached(logName + ":entryRemoved", false);
         }
     }
 }

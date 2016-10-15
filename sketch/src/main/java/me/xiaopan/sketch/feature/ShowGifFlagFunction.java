@@ -29,7 +29,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class ShowGifFlagFunction extends SketchImageView.Function {
     private View view;
 
-    protected boolean isGifDrawable;
+    protected boolean isGifImage;
     protected float gifDrawableLeft = -1;
     protected float gifDrawableTop = -1;
     protected Drawable gifFlagDrawable;
@@ -48,7 +48,7 @@ public class ShowGifFlagFunction extends SketchImageView.Function {
 
     @Override
     public void onDraw(Canvas canvas) {
-        if (!isGifDrawable) {
+        if (!isGifImage) {
             return;
         }
 
@@ -65,15 +65,15 @@ public class ShowGifFlagFunction extends SketchImageView.Function {
     @Override
     public boolean onDetachedFromWindow() {
         // drawable都已经被清空了，GIF标识当然要重置了
-        isGifDrawable = false;
+        isGifImage = false;
         return false;
     }
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        boolean oldIsGifDrawable = isGifDrawable;
-        isGifDrawable = SketchUtils.isGifDrawable(newDrawable);
-        return isGifDrawable != oldIsGifDrawable;
+        boolean oldIsGifDrawable = isGifImage;
+        isGifImage = SketchUtils.isGifImage(newDrawable);
+        return isGifImage != oldIsGifDrawable;
     }
 
     public Drawable getGifFlagDrawable() {

@@ -1,3 +1,6 @@
+Fixed bugs:
+>* 修复由于在内存中缓存了Drawable，导致同一个缓存Drawable在两个不同的地方使用时bounds被改变从而图片大小异常显示的BUG
+
 SketchImageView:
 >* ``新增``. 集成PhotoView支持缩放ImageView，根据图片大小调整缩放倍数
 >* ``新增``. 通过BitmapRegionDecoder支持显示超级大图

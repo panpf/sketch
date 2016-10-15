@@ -27,10 +27,8 @@ import android.graphics.drawable.Drawable;
 import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class FixedBitmapDrawable extends Drawable implements RecyclerDrawable {
+public class FixedSizeRefBitmapDrawable extends Drawable implements RefDrawable {
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
-
-    protected String logName = "FixedBitmapDrawable";
 
     private int bitmapWidth;
     private int bitmapHeight;
@@ -39,14 +37,14 @@ public class FixedBitmapDrawable extends Drawable implements RecyclerDrawable {
     private Paint paint;
     private FixedSize fixedSize;
     private Bitmap bitmap;
-    private SketchBitmapDrawable wrapperDrawable;
+    private RefBitmapDrawable wrapperDrawable;
 
-    public FixedBitmapDrawable(SketchBitmapDrawable wrapperDrawable, FixedSize fixedSize) {
+    public FixedSizeRefBitmapDrawable(RefBitmapDrawable wrapperDrawable, FixedSize fixedSize) {
         this.wrapperDrawable = wrapperDrawable;
-        this.bitmap = wrapperDrawable != null ? wrapperDrawable.getBitmap() : null;
         if (wrapperDrawable != null) {
-            wrapperDrawable.setLogName(logName);
+            wrapperDrawable.setLogName("FixedSizeRefBitmapDrawable");
         }
+        this.bitmap = wrapperDrawable != null ? wrapperDrawable.getBitmap() : null;
         if (bitmap != null) {
             this.bitmapWidth = bitmap.getWidth();
             this.bitmapHeight = bitmap.getHeight();
@@ -162,22 +160,8 @@ public class FixedBitmapDrawable extends Drawable implements RecyclerDrawable {
     }
 
     @Override
-    public void setImageId(String imageId) {
-        if (wrapperDrawable != null) {
-            wrapperDrawable.setImageId(imageId);
-        }
-    }
-
-    @Override
     public String getImageUri() {
         return wrapperDrawable != null ? wrapperDrawable.getImageUri() : null;
-    }
-
-    @Override
-    public void setImageUri(String imageUri) {
-        if (wrapperDrawable != null) {
-            wrapperDrawable.setImageUri(imageUri);
-        }
     }
 
     @Override
@@ -186,34 +170,13 @@ public class FixedBitmapDrawable extends Drawable implements RecyclerDrawable {
     }
 
     @Override
-    public void setOriginWidth(int originWidth) {
-        if (wrapperDrawable != null) {
-            wrapperDrawable.setOriginWidth(originWidth);
-        }
-    }
-
-    @Override
     public int getOriginHeight() {
         return wrapperDrawable != null ? wrapperDrawable.getOriginHeight() : 0;
     }
 
     @Override
-    public void setOriginHeight(int originHeight) {
-        if (wrapperDrawable != null) {
-            wrapperDrawable.setOriginHeight(originHeight);
-        }
-    }
-
-    @Override
     public String getMimeType() {
         return wrapperDrawable != null ? wrapperDrawable.getMimeType() : null;
-    }
-
-    @Override
-    public void setMimeType(String mimeType) {
-        if (wrapperDrawable != null) {
-            wrapperDrawable.setMimeType(mimeType);
-        }
     }
 
     @Override
@@ -252,18 +215,6 @@ public class FixedBitmapDrawable extends Drawable implements RecyclerDrawable {
     @Override
     public String getInfo() {
         return wrapperDrawable != null ? wrapperDrawable.getInfo() : null;
-    }
-
-    @Override
-    public boolean canRecycle() {
-        return wrapperDrawable != null && wrapperDrawable.canRecycle();
-    }
-
-    @Override
-    public void setAllowRecycle(boolean allowRecycle) {
-        if (wrapperDrawable != null) {
-            wrapperDrawable.setAllowRecycle(allowRecycle);
-        }
     }
 
     @Override

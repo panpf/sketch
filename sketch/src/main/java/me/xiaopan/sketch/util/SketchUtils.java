@@ -70,7 +70,7 @@ import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.BindDrawable;
-import me.xiaopan.sketch.drawable.RecyclerDrawable;
+import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.request.ImageViewInterface;
@@ -257,7 +257,7 @@ public class SketchUtils {
         }
     }
 
-    public static boolean isGifDrawable(Drawable drawable) {
+    public static boolean isGifImage(Drawable drawable) {
         if (drawable != null) {
             LayerDrawable layerDrawable;
             while (drawable instanceof LayerDrawable) {
@@ -268,7 +268,7 @@ public class SketchUtils {
                     drawable = null;
                 }
             }
-            return drawable instanceof RecyclerDrawable && ImageFormat.GIF.getMimeType().equals(((RecyclerDrawable) drawable).getMimeType());
+            return drawable instanceof SketchDrawable && ImageFormat.GIF.getMimeType().equals(((SketchDrawable) drawable).getMimeType());
         }
 
         return false;

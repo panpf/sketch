@@ -27,8 +27,9 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
-import me.xiaopan.sketch.drawable.BindFixedBitmapDrawable;
-import me.xiaopan.sketch.drawable.RecyclerDrawable;
+import me.xiaopan.sketch.drawable.BindFixedSizeRefBitmapDrawable;
+import me.xiaopan.sketch.drawable.RefBitmap;
+import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.RequestFactory;
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -602,21 +603,20 @@ public class DisplayHelper {
 
     private boolean checkMemoryCache() {
         if (!displayOptions.isDisableCacheInMemory()) {
-            Drawable cacheDrawable = sketch.getConfiguration().getMemoryCache().get(requestAttrs.getId());
-            if (cacheDrawable != null) {
-                RecyclerDrawable recyclerDrawable = (RecyclerDrawable) cacheDrawable;
-                if (!recyclerDrawable.isRecycled()) {
+            RefBitmap refBitmap = sketch.getConfiguration().getMemoryCache().get(requestAttrs.getId());
+            if (refBitmap != null) {
+                if (!refBitmap.isRecycled()) {
                     if (Sketch.isDebugMode()) {
                         Log.i(Sketch.TAG, SketchUtils.concat(logName,
                                 ". image display completed",
                                 ". ", ImageFrom.MEMORY_CACHE.name(),
-                                ". ", recyclerDrawable.getInfo(),
+                                ". ", refBitmap.getInfo(),
                                 ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
                                 ". ", requestAttrs.getId()));
                     }
-                    imageViewInterface.setImageDrawable(cacheDrawable);
+                    imageViewInterface.setImageDrawable(new RefBitmapDrawable(refBitmap));
                     if (displayListener != null) {
-                        displayListener.onCompleted(ImageFrom.MEMORY_CACHE, recyclerDrawable.getMimeType());
+                        displayListener.onCompleted(ImageFrom.MEMORY_CACHE, refBitmap.getMimeType());
                     }
                     return false;
                 } else {
@@ -624,7 +624,7 @@ public class DisplayHelper {
                     if (Sketch.isDebugMode()) {
                         Log.e(Sketch.TAG, SketchUtils.concat(logName,
                                 ". ", "memory cache drawable recycled",
-                                ". ", recyclerDrawable.getInfo(),
+                                ". ", refBitmap.getInfo(),
                                 ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
                                 ". ", requestAttrs.getId()));
                     }
@@ -757,7 +757,7 @@ public class DisplayHelper {
         if (displayOptions.getLoadingImageHolder() != null) {
             loadingBindDrawable = displayOptions.getLoadingImageHolder().getBindDrawable(request);
         } else {
-            loadingBindDrawable = new BindFixedBitmapDrawable(null, request);
+            loadingBindDrawable = new BindFixedSizeRefBitmapDrawable(null, request);
         }
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("createLoadingImage");

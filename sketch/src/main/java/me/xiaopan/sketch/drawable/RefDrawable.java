@@ -16,7 +16,7 @@
 
 package me.xiaopan.sketch.drawable;
 
-public interface RecyclerDrawable extends SketchDrawable{
+public interface RefDrawable extends SketchDrawable{
 
     void setIsDisplayed(String callingStation, boolean displayed);
 
@@ -27,8 +27,4 @@ public interface RecyclerDrawable extends SketchDrawable{
     boolean isRecycled();
 
     void recycle();
-
-    boolean canRecycle();
-
-    void setAllowRecycle(boolean allowRecycle);
 }

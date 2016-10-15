@@ -70,7 +70,6 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
         return imageId;
     }
 
-    @Override
     public void setImageId(String imageId) {
         this.imageId = imageId;
     }
@@ -80,7 +79,6 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
         return imageUri;
     }
 
-    @Override
     public void setImageUri(String imageUri) {
         this.imageUri = imageUri;
     }
@@ -90,7 +88,6 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
         return originWidth;
     }
 
-    @Override
     public void setOriginWidth(int originWidth) {
         this.originWidth = originWidth;
     }
@@ -100,7 +97,6 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
         return originHeight;
     }
 
-    @Override
     public void setOriginHeight(int originHeight) {
         this.originHeight = originHeight;
     }
@@ -110,7 +106,6 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
         return mimeType;
     }
 
-    @Override
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
     }

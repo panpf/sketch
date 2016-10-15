@@ -26,9 +26,10 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.display.ImageDisplayer;
-import me.xiaopan.sketch.drawable.BindFixedBitmapDrawable;
-import me.xiaopan.sketch.drawable.FixedBitmapDrawable;
-import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
+import me.xiaopan.sketch.drawable.BindFixedSizeRefBitmapDrawable;
+import me.xiaopan.sketch.drawable.FixedSizeRefBitmapDrawable;
+import me.xiaopan.sketch.drawable.RefBitmap;
+import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -40,7 +41,7 @@ public class ImageHolder {
     private boolean lowQualityImage;
     private boolean forceUseResize;
     private ImageProcessor imageProcessor;
-    private SketchBitmapDrawable drawable;
+    private RefBitmapDrawable drawable;
 
     public ImageHolder(int resId) {
         this.resId = resId;
@@ -110,7 +111,7 @@ public class ImageHolder {
         return builder.toString();
     }
 
-    private SketchBitmapDrawable getRecycleBitmapDrawable(Sketch sketch) {
+    private RefBitmapDrawable getRecycleBitmapDrawable(Sketch sketch) {
         if (drawable != null && !drawable.isRecycled()) {
             return drawable;
         }
@@ -121,10 +122,10 @@ public class ImageHolder {
         }
         Configuration configuration = sketch.getConfiguration();
         MemoryCache lruMemoryCache = configuration.getPlaceholderImageMemoryCache();
-        SketchBitmapDrawable newDrawable = (SketchBitmapDrawable) lruMemoryCache.get(memoryCacheId);
-        if (newDrawable != null) {
-            if (!newDrawable.isRecycled()) {
-                this.drawable = newDrawable;
+        RefBitmap refBitmap = lruMemoryCache.get(memoryCacheId);
+        if (refBitmap != null) {
+            if (!refBitmap.isRecycled()) {
+                this.drawable = new RefBitmapDrawable(refBitmap);
                 return drawable;
             } else {
                 lruMemoryCache.remove(memoryCacheId);
@@ -137,14 +138,14 @@ public class ImageHolder {
         if (configuration.isGlobalLowQualityImage()) {
             tempLowQualityImage = true;
         }
-        boolean canRecycle = false;
+        boolean allowRecycle = false;
 
         Drawable resDrawable = configuration.getContext().getResources().getDrawable(resId);
         if (resDrawable != null && resDrawable instanceof BitmapDrawable) {
             bitmap = ((BitmapDrawable) resDrawable).getBitmap();
         } else {
             bitmap = SketchUtils.drawableToBitmap(resDrawable, tempLowQualityImage);
-            canRecycle = true;
+            allowRecycle = true;
         }
 
         if (bitmap != null && !bitmap.isRecycled() && imageProcessor != null) {
@@ -157,28 +158,28 @@ public class ImageHolder {
                 exceptionMonitor.onProcessImageFailed(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), imageProcessor);
             }
             if (newBitmap != bitmap) {
-                if (canRecycle) {
+                if (allowRecycle) {
                     bitmap.recycle();
                 }
                 bitmap = newBitmap;
-                canRecycle = true;
+                allowRecycle = true;
             }
         }
 
         if (bitmap != null && !bitmap.isRecycled()) {
-            newDrawable = new SketchBitmapDrawable(bitmap);
-            newDrawable.setAllowRecycle(canRecycle);
-            if (canRecycle) {
-                lruMemoryCache.put(memoryCacheId, newDrawable);
+            refBitmap = new RefBitmap(bitmap);
+            refBitmap.setAllowRecycle(allowRecycle);
+            if (refBitmap.isAllowRecycle()) {
+                lruMemoryCache.put(memoryCacheId, refBitmap);
             }
-            drawable = newDrawable;
+            drawable = new RefBitmapDrawable(refBitmap);
         }
 
         return drawable;
     }
 
     public Drawable getBindDrawable(DisplayRequest displayRequest) {
-        SketchBitmapDrawable loadingDrawable = getRecycleBitmapDrawable(displayRequest.getSketch());
+        RefBitmapDrawable loadingDrawable = getRecycleBitmapDrawable(displayRequest.getSketch());
 
         // 如果使用了TransitionImageDisplayer并且ImageVie是固定大小并且ScaleType是CENT_CROP那么就需要根据ImageVie的固定大小来裁剪loadingImage
         FixedSize tempFixedSize = null;
@@ -187,14 +188,14 @@ public class ImageHolder {
             tempFixedSize = displayRequest.getDisplayAttrs().getFixedSize();
         }
 
-        return new BindFixedBitmapDrawable(loadingDrawable, tempFixedSize, displayRequest);
+        return new BindFixedSizeRefBitmapDrawable(loadingDrawable, tempFixedSize, displayRequest);
     }
 
     public Drawable getDrawable(Context context, ImageDisplayer imageDisplayer, FixedSize fixedSize, ImageView.ScaleType scaleType) {
         Drawable failedDrawable = getRecycleBitmapDrawable(Sketch.with(context));
         boolean isFixedSize = SketchUtils.isFixedSize(imageDisplayer, fixedSize, scaleType);
         if (failedDrawable != null && isFixedSize) {
-            failedDrawable = new FixedBitmapDrawable((SketchBitmapDrawable) failedDrawable, fixedSize);
+            failedDrawable = new FixedSizeRefBitmapDrawable((RefBitmapDrawable) failedDrawable, fixedSize);
         }
         return failedDrawable;
     }

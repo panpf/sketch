@@ -22,9 +22,10 @@ import android.graphics.drawable.Drawable;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.FixedBitmapDrawable;
-import me.xiaopan.sketch.drawable.RecyclerDrawable;
-import me.xiaopan.sketch.drawable.SketchBitmapDrawable;
+import me.xiaopan.sketch.drawable.FixedSizeRefBitmapDrawable;
+import me.xiaopan.sketch.drawable.RefBitmap;
+import me.xiaopan.sketch.drawable.RefBitmapDrawable;
+import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -154,20 +155,19 @@ public class DisplayRequest extends LoadRequest {
         // 检查内存缓存
         if (!displayOptions.isDisableCacheInMemory()) {
             setStatus(Status.CHECK_MEMORY_CACHE);
-            Drawable cacheDrawable = getSketch().getConfiguration().getMemoryCache().get(getAttrs().getId());
-            if (cacheDrawable != null) {
-                RecyclerDrawable recyclerDrawable = (RecyclerDrawable) cacheDrawable;
-                if (!recyclerDrawable.isRecycled()) {
+            RefBitmap cacheRefBitmap = getSketch().getConfiguration().getMemoryCache().get(getAttrs().getId());
+            if (cacheRefBitmap != null) {
+                if (!cacheRefBitmap.isRecycled()) {
                     if (Sketch.isDebugMode()) {
-                        printLogI("from memory get drawable", "runLoad", "drawableInfo=" + recyclerDrawable.getInfo());
+                        printLogI("from memory get drawable", "runLoad", "drawableInfo=" + cacheRefBitmap.getInfo());
                     }
-                    displayResult = new DisplayResult(cacheDrawable, ImageFrom.MEMORY_CACHE, recyclerDrawable.getMimeType());
+                    displayResult = new DisplayResult(new RefBitmapDrawable(cacheRefBitmap), ImageFrom.MEMORY_CACHE, cacheRefBitmap.getMimeType());
                     displayCompleted();
                     return;
                 } else {
                     getSketch().getConfiguration().getMemoryCache().remove(getAttrs().getId());
                     if (Sketch.isDebugMode()) {
-                        printLogE("memory cache drawable recycled", "runLoad", "drawableInfo=" + recyclerDrawable.getInfo());
+                        printLogE("memory cache drawable recycled", "runLoad", "drawableInfo=" + cacheRefBitmap.getInfo());
                     }
                 }
             }
@@ -192,19 +192,15 @@ public class DisplayRequest extends LoadRequest {
                 return;
             }
 
-            SketchBitmapDrawable bitmapDrawable = new SketchBitmapDrawable(bitmap);
-            bitmapDrawable.setImageId(getAttrs().getId());
-            bitmapDrawable.setImageUri(getAttrs().getUri());
-            bitmapDrawable.setOriginWidth(loadResult.getOriginWidth());
-            bitmapDrawable.setOriginHeight(loadResult.getOriginHeight());
-            bitmapDrawable.setMimeType(loadResult.getMimeType());
+            RefBitmap refBitmap = new RefBitmap(bitmap, getAttrs().getId(), getAttrs().getUri(),
+                    loadResult.getOriginWidth(), loadResult.getOriginHeight(), loadResult.getMimeType());
 
             // 放入内存缓存中
             if (!displayOptions.isDisableCacheInMemory() && getAttrs().getId() != null) {
-                getSketch().getConfiguration().getMemoryCache().put(getAttrs().getId(), bitmapDrawable);
+                getSketch().getConfiguration().getMemoryCache().put(getAttrs().getId(), refBitmap);
             }
 
-            displayResult = new DisplayResult(bitmapDrawable, loadResult.getImageFrom(), loadResult.getMimeType());
+            displayResult = new DisplayResult(new RefBitmapDrawable(refBitmap), loadResult.getImageFrom(), loadResult.getMimeType());
             displayCompleted();
         } else if (loadResult != null && loadResult.getGifDrawable() != null) {
             SketchGifDrawable gifDrawable = loadResult.getGifDrawable();
@@ -233,11 +229,11 @@ public class DisplayRequest extends LoadRequest {
     }
 
     protected void displayCompleted() {
-        if (displayResult.getDrawable() instanceof RecyclerDrawable) {
-            RecyclerDrawable recyclerDrawable = (RecyclerDrawable) displayResult.getDrawable();
+        if (displayResult.getDrawable() instanceof RefDrawable) {
+            RefDrawable refDrawable = (RefDrawable) displayResult.getDrawable();
             boolean fromMemoryCache = displayResult.getImageFrom() == ImageFrom.MEMORY_CACHE;
             String callingStation = fromMemoryCache ? "displayCompleted:fromMemory" : "displayCompleted:new";
-            recyclerDrawable.setIsWaitDisplay(callingStation, true);
+            refDrawable.setIsWaitDisplay(callingStation, true);
         }
 
         postRunCompleted();
@@ -251,9 +247,9 @@ public class DisplayRequest extends LoadRequest {
             }
 
             // 更新等待显示的引用计数
-            if (displayResult != null && displayResult.getDrawable() instanceof RecyclerDrawable) {
-                RecyclerDrawable recyclerDrawable = (RecyclerDrawable) displayResult.getDrawable();
-                recyclerDrawable.setIsWaitDisplay("completedCallback:cancel", false);
+            if (displayResult != null && displayResult.getDrawable() instanceof RefDrawable) {
+                RefDrawable refDrawable = (RefDrawable) displayResult.getDrawable();
+                refDrawable.setIsWaitDisplay("completedCallback:cancel", false);
             }
             return;
         }
@@ -267,16 +263,19 @@ public class DisplayRequest extends LoadRequest {
                     displayOptions.getImageDisplayer(),
                     displayAttrs.getFixedSize(),
                     displayAttrs.getScaleType());
-            if (completedDrawable instanceof SketchBitmapDrawable && isFixedSize) {
-                SketchBitmapDrawable recycleCompletedDrawable = (SketchBitmapDrawable) completedDrawable;
-                completedDrawable = new FixedBitmapDrawable(recycleCompletedDrawable, displayAttrs.getFixedSize());
+            if (completedDrawable instanceof RefBitmapDrawable && isFixedSize) {
+                RefBitmapDrawable recycleCompletedDrawable = (RefBitmapDrawable) completedDrawable;
+                completedDrawable = new FixedSizeRefBitmapDrawable(recycleCompletedDrawable, displayAttrs.getFixedSize());
             }
 
             ImageViewInterface viewInterface = requestAndViewBinder.getImageViewInterface();
             if (Sketch.isDebugMode()) {
+                String drawableInfo = "unknown";
+                if (completedDrawable instanceof RefDrawable) {
+                    drawableInfo = ((RefDrawable) completedDrawable).getInfo();
+                }
                 printLogI("image display completed", "runCompletedInMainThread",
-                        displayResult.getImageFrom().name(),
-                        (completedDrawable instanceof RecyclerDrawable) ? ((RecyclerDrawable) completedDrawable).getInfo() : "unknown",
+                        displayResult.getImageFrom().name(), drawableInfo,
                         "viewHashCode=" + Integer.toHexString(viewInterface.hashCode()));
             }
 
@@ -288,9 +287,9 @@ public class DisplayRequest extends LoadRequest {
         }
 
         // 更新等待显示的引用计数
-        if (displayResult.getDrawable() instanceof RecyclerDrawable) {
-            RecyclerDrawable recyclerDrawable = (RecyclerDrawable) displayResult.getDrawable();
-            recyclerDrawable.setIsWaitDisplay("completedCallback", false);
+        if (displayResult.getDrawable() instanceof RefDrawable) {
+            RefDrawable refDrawable = (RefDrawable) displayResult.getDrawable();
+            refDrawable.setIsWaitDisplay("completedCallback", false);
         }
 
         if (displayListener != null) {
