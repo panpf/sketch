@@ -22,9 +22,11 @@ import me.xiaopan.sketch.Sketch;
 
 class ZoomRunner implements Runnable {
 
-    private final float mFocalX, mFocalY;
+    private final float mFocalX;
+    private final float mFocalY;
     private final long mStartTime;
-    private final float mZoomStart, mZoomEnd;
+    private final float mZoomStart;
+    private final float mZoomEnd;
     private ImageZoomer imageZoomer;
 
     ZoomRunner(ImageZoomer imageZoomer, final float currentZoom, final float targetZoom, final float focalX, final float focalY) {
