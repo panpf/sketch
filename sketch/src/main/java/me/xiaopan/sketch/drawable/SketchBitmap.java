@@ -62,7 +62,7 @@ public class SketchBitmap {
 
     public String getInfo() {
         Bitmap bitmap = getBitmap();
-        return SketchUtils.getInfo(LOG_NAME, bitmap, mimeType, SketchUtils.getBitmapByteCount(bitmap));
+        return SketchUtils.getImageInfo(LOG_NAME, bitmap, mimeType, SketchUtils.getBitmapByteCount(bitmap));
     }
 
     public int getByteCount() {

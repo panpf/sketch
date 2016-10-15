@@ -27,6 +27,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -642,7 +643,7 @@ public class SketchUtils {
         }
     }
 
-    public static String getInfo(String type, Bitmap bitmap, String mimeType, long byteCount) {
+    public static String getImageInfo(String type, Bitmap bitmap, String mimeType, long byteCount) {
         if (bitmap != null) {
             if (TextUtils.isEmpty(type)) {
                 type = "Bitmap";
@@ -658,13 +659,13 @@ public class SketchUtils {
         }
     }
 
-    public static String getInfo(String type, Bitmap bitmap, String mimeType) {
-        return getInfo(type, bitmap, mimeType, getBitmapByteCount(bitmap));
+    public static String getImageInfo(String type, Bitmap bitmap, String mimeType) {
+        return getImageInfo(type, bitmap, mimeType, getBitmapByteCount(bitmap));
     }
 
-    public static String getInfo(GifDrawable gifDrawable) {
+    public static String getGifImageInfo(GifDrawable gifDrawable) {
         Bitmap bitmap = gifDrawable.getBitmap();
-        return getInfo("GifDrawable", bitmap, "image/gif", (int) gifDrawable.getAllocationByteCount());
+        return getImageInfo("GifDrawable", bitmap, "image/gif", (int) gifDrawable.getAllocationByteCount());
     }
 
     public static Drawable getLastDrawable(Drawable drawable) {
@@ -885,15 +886,24 @@ public class SketchUtils {
         return maxSize[0];
     }
 
+    /**
+     * 格式化小数，可以指定保留多少位小数
+     */
     public static float formatFloat(float floatValue, int newScale) {
         BigDecimal b = new BigDecimal(floatValue);
         return b.setScale(newScale, BigDecimal.ROUND_HALF_UP).floatValue();
     }
 
+    /**
+     * 根据API版本判断是否可以支持大图功能
+     */
     public static boolean isSupportLargeImageByAPIVersion() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1;
     }
 
+    /**
+     * 根据图片类型判断是否支持大图功能
+     */
     public static boolean isSupportLargeImage(ImageFormat imageFormat) {
         if (!isSupportLargeImageByAPIVersion() || imageFormat == null) {
             return false;
@@ -910,12 +920,18 @@ public class SketchUtils {
         return false;
     }
 
+    /**
+     * 根据请求和图片类型判断是否支持大图功能
+     */
     public static boolean isSupportLargeImage(LoadRequest loadRequest, ImageFormat imageFormat) {
         return loadRequest instanceof DisplayRequest &&
                 ((DisplayRequest) loadRequest).getDisplayAttrs().isSupportLargeImage() &&
                 isSupportLargeImage(imageFormat);
     }
 
+    /**
+     * 判断两个矩形是否相交
+     */
     public static boolean isCross(Rect rect1, Rect rect2) {
         return rect1.left < rect2.right && rect2.left < rect1.right && rect1.top < rect2.bottom && rect2.top < rect1.bottom;
     }
@@ -927,7 +943,53 @@ public class SketchUtils {
         return one == two ? 0 : one > two ? 1 : -1;
     }
 
+    /**
+     * dp转换成px
+     */
     public static int dp2px(Context context, int dpValue) {
         return (int) ((dpValue * context.getResources().getDisplayMetrics().density) + 0.5);
+    }
+
+    /**
+     * 将一个旋转了一定度数的矩形转回来（只能是90度的倍数）
+     */
+    public static void reverseRotateRect(Rect rect, int rotateDegrees, Point drawableSize){
+        if (rotateDegrees % 90 != 0) {
+            return;
+        }
+
+        if (rotateDegrees == 90) {
+            int cache = rect.bottom;
+            rect.bottom = rect.left;
+            rect.left = rect.top;
+            rect.top = rect.right;
+            rect.right = cache;
+
+            rect.top = drawableSize.y - rect.top;
+            rect.bottom = drawableSize.y - rect.bottom;
+        } else if(rotateDegrees == 180){
+            int cache = rect.right;
+            rect.right = rect.left;
+            rect.left = cache;
+
+            cache = rect.bottom;
+            rect.bottom = rect.top;
+            rect.top = cache;
+
+            rect.top = drawableSize.y - rect.top;
+            rect.bottom = drawableSize.y - rect.bottom;
+
+            rect.left = drawableSize.x - rect.left;
+            rect.right = drawableSize.x - rect.right;
+        } else if(rotateDegrees == 270){
+            int cache = rect.bottom;
+            rect.bottom = rect.right;
+            rect.right = rect.top;
+            rect.top = rect.left;
+            rect.left = cache;
+
+            rect.left = drawableSize.x - rect.left;
+            rect.right = drawableSize.x - rect.right;
+        }
     }
 }

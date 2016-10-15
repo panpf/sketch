@@ -41,15 +41,16 @@ public class MappingView extends SketchImageView {
 
     private LargeImageViewer largeImageViewer;
 
-    private Rect visibleRect;
+    private Rect visibleMappingRect;
     private Paint visiblePaint;
     private Paint drawTilesPaint;
     private Paint realSrcRectPaint;
     private Paint originSrcRectPaint;
     private Paint loadingTilePaint;
 
-    private Point cacheDrawableSize = new Point();
-    private Rect cacheVisibleRect = new Rect();
+    private Point drawableSize = new Point();
+    private Rect visibleRect = new Rect();
+
     private GestureDetector detector;
     private OnSingleClickListener onSingleClickListener;
 
@@ -69,14 +70,11 @@ public class MappingView extends SketchImageView {
     }
 
     private void init(Context context) {
-        visibleRect = new Rect();
+        visibleMappingRect = new Rect();
         visiblePaint = new Paint();
         visiblePaint.setColor(Color.RED);
         visiblePaint.setStyle(Paint.Style.STROKE);
         visiblePaint.setStrokeWidth(SketchUtils.dp2px(context, 1));
-
-        setScaleType(ScaleType.FIT_XY);
-
 
         drawTilesPaint = new Paint();
         drawTilesPaint.setColor(Color.parseColor("#88A020F0"));
@@ -138,8 +136,8 @@ public class MappingView extends SketchImageView {
             }
         }
 
-        if (!visibleRect.isEmpty()) {
-            canvas.drawRect(visibleRect, visiblePaint);
+        if (!visibleMappingRect.isEmpty()) {
+            canvas.drawRect(visibleMappingRect, visiblePaint);
         }
     }
 
@@ -152,83 +150,8 @@ public class MappingView extends SketchImageView {
 
     @Override
     public void setImageDrawable(Drawable drawable) {
-        int drawableWidth = drawable.getIntrinsicWidth();
-        int drawableHeight = drawable.getIntrinsicHeight();
-        int maxWidth;
-        int maxHeight;
-        if ((float) Math.max(drawableWidth, drawableHeight) / Math.min(drawableWidth, drawableHeight) >= 4) {
-            maxWidth = getResources().getDisplayMetrics().widthPixels / 2;
-            maxHeight = getResources().getDisplayMetrics().heightPixels / 2;
-        } else {
-            maxWidth = getResources().getDisplayMetrics().widthPixels / 4;
-            maxHeight = getResources().getDisplayMetrics().heightPixels / 4;
-        }
-        if (drawableWidth > maxWidth || drawableHeight > maxHeight) {
-            float finalScale = Math.min((float) maxWidth / drawableWidth, (float) maxHeight / drawableHeight);
-            ViewGroup.LayoutParams layoutParams = getLayoutParams();
-            layoutParams.width = (int) (drawableWidth * finalScale);
-            layoutParams.height = (int) (drawableHeight * finalScale);
-            setLayoutParams(layoutParams);
-        }
-
         super.setImageDrawable(drawable);
-
-        recover();
-    }
-
-    private String getImageUri() {
-        DisplayParams displayParams = getDisplayParams();
-        return displayParams != null ? displayParams.attrs.getUri() : null;
-    }
-
-    public void matrixChanged(Point drawableSize, Rect newVisibleRect) {
-        if (drawableSize.x == 0 || drawableSize.y == 0 || newVisibleRect.isEmpty()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty" +
-                        ". " + getImageUri() + "" +
-                        ". drawableSize=" + drawableSize.toString() + "" +
-                        ", newVisibleRect=" + newVisibleRect.toShortString());
-            }
-
-            cacheDrawableSize.set(0, 0);
-            cacheVisibleRect.setEmpty();
-            if (!visibleRect.isEmpty()) {
-                visibleRect.setEmpty();
-                invalidate();
-            }
-            return;
-        }
-
-        cacheDrawableSize.set(drawableSize.x, drawableSize.y);
-        cacheVisibleRect.set(newVisibleRect);
-
-        if (!isUsableDrawable() || getWidth() == 0 || getHeight() == 0) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, "MappingView. update. view size is 0 or getDrawable() is null. " + getImageUri());
-            }
-
-            if (!visibleRect.isEmpty()) {
-                visibleRect.setEmpty();
-                invalidate();
-            }
-            return;
-        }
-
-        int selfWidth = getWidth();
-        int selfHeight = getHeight();
-        final float widthScale = (float) selfWidth / drawableSize.x;
-        final float heightScale = (float) selfHeight / drawableSize.y;
-        this.visibleRect.set(
-                Math.round(newVisibleRect.left * widthScale),
-                Math.round(newVisibleRect.top * heightScale),
-                Math.round(newVisibleRect.right * widthScale),
-                Math.round(newVisibleRect.bottom * heightScale));
-        invalidate();
-    }
-
-    public void tileChanged(LargeImageViewer largeImageViewer) {
-        this.largeImageViewer = largeImageViewer;
-        invalidate();
+        resetViewSize();
     }
 
     @Override
@@ -239,6 +162,57 @@ public class MappingView extends SketchImageView {
 
         detector.onTouchEvent(event);
         return true;
+    }
+
+    private String getImageUri() {
+        DisplayParams displayParams = getDisplayParams();
+        return displayParams != null ? displayParams.attrs.getUri() : null;
+    }
+
+    public void update(Point newDrawableSize, Rect newVisibleRect) {
+        if (newDrawableSize.x == 0 || newDrawableSize.y == 0 || newVisibleRect.isEmpty()) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty" +
+                        ". " + getImageUri() + "" +
+                        ". drawableSize=" + newDrawableSize.toString() + "" +
+                        ", newVisibleRect=" + newVisibleRect.toShortString());
+            }
+
+            drawableSize.set(0, 0);
+            visibleRect.setEmpty();
+
+            if (!visibleMappingRect.isEmpty()) {
+                visibleMappingRect.setEmpty();
+                invalidate();
+            }
+            return;
+        }
+
+        drawableSize.set(newDrawableSize.x, newDrawableSize.y);
+        visibleRect.set(newVisibleRect);
+
+        if (!isUsableDrawable() || getWidth() == 0 || getHeight() == 0) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, "MappingView. update. view size is 0 or getDrawable() is null. " + getImageUri());
+            }
+
+            if (!visibleMappingRect.isEmpty()) {
+                visibleMappingRect.setEmpty();
+                invalidate();
+            }
+            return;
+        }
+
+        if (resetViewSize()) {
+            return;
+        }
+        resetVisibleMappingRect();
+        invalidate();
+    }
+
+    public void tileChanged(LargeImageViewer largeImageViewer) {
+        this.largeImageViewer = largeImageViewer;
+        invalidate();
     }
 
     public void setOnSingleClickListener(OnSingleClickListener onSingleClickListener) {
@@ -256,14 +230,62 @@ public class MappingView extends SketchImageView {
     }
 
     private void recover() {
-        if (!cacheVisibleRect.isEmpty()) {
-            matrixChanged(cacheDrawableSize, cacheVisibleRect);
+        if (!visibleRect.isEmpty()) {
+            update(drawableSize, visibleRect);
         }
     }
 
     public boolean isUsableDrawable() {
         Drawable drawable = getDrawable();
         return drawable != null && !(drawable instanceof BindDrawable);
+    }
+
+    private boolean resetViewSize() {
+        Drawable drawable = getDrawable();
+        final int drawableWidth = drawable.getIntrinsicWidth();
+        final int drawableHeight = drawable.getIntrinsicHeight();
+        int maxWidth;
+        int maxHeight;
+        if ((float) Math.max(drawableWidth, drawableHeight) / Math.min(drawableWidth, drawableHeight) >= 4) {
+            maxWidth = getResources().getDisplayMetrics().widthPixels / 2;
+            maxHeight = getResources().getDisplayMetrics().heightPixels / 2;
+        } else {
+            maxWidth = getResources().getDisplayMetrics().widthPixels / 4;
+            maxHeight = getResources().getDisplayMetrics().heightPixels / 4;
+        }
+        int newViewWidth;
+        int newViewHeight;
+        if (drawableWidth > maxWidth || drawableHeight > maxHeight) {
+            float finalScale = Math.min((float) maxWidth / drawableWidth, (float) maxHeight / drawableHeight);
+            newViewWidth = (int) (drawableWidth * finalScale);
+            newViewHeight = (int) (drawableHeight * finalScale);
+        } else {
+            newViewWidth = drawableWidth;
+            newViewHeight = drawableHeight;
+        }
+
+        ViewGroup.LayoutParams layoutParams = getLayoutParams();
+        if (newViewWidth != layoutParams.width || newViewHeight != layoutParams.height) {
+            layoutParams.width = newViewWidth;
+            layoutParams.height = newViewHeight;
+            setLayoutParams(layoutParams);
+
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void resetVisibleMappingRect() {
+        int selfWidth = getWidth();
+        int selfHeight = getHeight();
+        final float widthScale = (float) selfWidth / drawableSize.x;
+        final float heightScale = (float) selfHeight / drawableSize.y;
+        this.visibleMappingRect.set(
+                Math.round(visibleRect.left * widthScale),
+                Math.round(visibleRect.top * heightScale),
+                Math.round(visibleRect.right * widthScale),
+                Math.round(visibleRect.bottom * heightScale));
     }
 
     public interface OnSingleClickListener {

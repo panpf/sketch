@@ -169,13 +169,13 @@ public class ImageFragment extends MyFragment {
             imageZoomer.setReadMode(settings.isReadMode());
 
             // MappingView跟随Matrix变化刷新各种区域
-            imageZoomer.addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangedListener() {
+            imageZoomer.addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangeListener() {
                 Rect visibleRect = new Rect();
 
                 @Override
                 public void onMatrixChanged(ImageZoomer imageZoomer) {
                     imageZoomer.getVisibleRect(visibleRect);
-                    mappingView.matrixChanged(imageZoomer.getDrawableSize(), visibleRect);
+                    mappingView.update(imageZoomer.getDrawableSize(), visibleRect);
                     scale = String.valueOf(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
                     scaleTextView.setText(String.format("%s · %s", scale, bytes));
                 }
@@ -272,9 +272,9 @@ public class ImageFragment extends MyFragment {
         }
     }
 
-    public void showDetailInfo() {
+    public void showMenu() {
         if (imageMenu != null) {
-            imageMenu.showDetailInfo();
+            imageMenu.show();
         }
     }
 

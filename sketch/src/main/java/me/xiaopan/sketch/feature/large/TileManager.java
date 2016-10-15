@@ -113,10 +113,24 @@ class TileManager {
         newDrawRect.right = Math.min(previewImageWidth, newVisibleRect.right + drawWidthAdd);
         newDrawRect.bottom = Math.min(previewImageHeight, newVisibleRect.bottom + drawHeightAdd);
 
+        if (newDrawRect.isEmpty()) {
+            if (Sketch.isDebugMode()) {
+                Log.e(Sketch.TAG, NAME + ". newDrawRect is empty. " + newDrawRect.toShortString());
+            }
+            return;
+        }
+
         // 计算碎片的尺寸
         final int finalTiles = tiles + 1;
         final int tileWidth = newDrawRect.width() / finalTiles;
         final int tileHeight = newDrawRect.height() / finalTiles;
+
+        if (tileWidth <= 0 || tileHeight <= 0) {
+            if (Sketch.isDebugMode()) {
+                Log.e(Sketch.TAG, NAME + ". tileWidth or tileHeight exception. " + tileWidth + "x" + tileHeight);
+            }
+            return;
+        }
 
         // 根据碎片尺寸修剪drawRect，使其正好能整除碎片
         if (newDrawRect.right < previewImageWidth) {

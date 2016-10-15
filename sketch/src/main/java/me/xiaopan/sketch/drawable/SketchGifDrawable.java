@@ -112,7 +112,7 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
 
     @Override
     public String getInfo() {
-        return SketchUtils.getInfo(logName, getBitmap(), mimeType, getAllocationByteCount());
+        return SketchUtils.getImageInfo(logName, getBitmap(), mimeType, getAllocationByteCount());
     }
 
     @Override

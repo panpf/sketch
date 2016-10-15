@@ -169,19 +169,19 @@ public class LoadRequest extends DownloadRequest {
 
             if (bitmap.isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
+                    printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: " + SketchUtils.getImageInfo(null, bitmap, decodeResult.getMimeType()));
                 }
                 failed(FailedCause.BITMAP_RECYCLED);
                 return;
             }
 
             if (Sketch.isDebugMode()) {
-                printLogI("decode success", "runLoad", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
+                printLogI("decode success", "runLoad", "bitmapInfo: " + SketchUtils.getImageInfo(null, bitmap, decodeResult.getMimeType()));
             }
 
             if (isCanceled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogW("canceled", "runLoad", "decode after", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
+                    printLogW("canceled", "runLoad", "decode after", "bitmapInfo: " + SketchUtils.getImageInfo(null, bitmap, decodeResult.getMimeType()));
                 }
                 bitmap.recycle();
                 return;
@@ -207,7 +207,7 @@ public class LoadRequest extends DownloadRequest {
                 // 确实是一张新图片，就替换掉旧图片
                 if (newBitmap != null && !newBitmap.isRecycled() && newBitmap != bitmap) {
                     if (Sketch.isDebugMode()) {
-                        printLogW("process new bitmap", "runLoad", "bitmapInfo: " + SketchUtils.getInfo(null, newBitmap, decodeResult.getMimeType()));
+                        printLogW("process new bitmap", "runLoad", "bitmapInfo: " + SketchUtils.getImageInfo(null, newBitmap, decodeResult.getMimeType()));
                     }
                     bitmap.recycle();
                     bitmap = newBitmap;
@@ -221,7 +221,7 @@ public class LoadRequest extends DownloadRequest {
 
                 if (isCanceled()) {
                     if (Sketch.isDebugMode()) {
-                        printLogW("canceled", "runLoad", "process after", "bitmapInfo: " + SketchUtils.getInfo(null, bitmap, decodeResult.getMimeType()));
+                        printLogW("canceled", "runLoad", "process after", "bitmapInfo: " + SketchUtils.getImageInfo(null, bitmap, decodeResult.getMimeType()));
                     }
                     bitmap.recycle();
                     return;
@@ -235,19 +235,19 @@ public class LoadRequest extends DownloadRequest {
 
             if (gifDrawable.isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogE("decode failed", "runLoad", "gif drawable recycled", "gifInfo: " + SketchUtils.getInfo(gifDrawable));
+                    printLogE("decode failed", "runLoad", "gif drawable recycled", "gifInfo: " + SketchUtils.getGifImageInfo(gifDrawable));
                 }
                 failed(FailedCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
             if (Sketch.isDebugMode()) {
-                printLogI("decode gif success", "runLoad", "gifInfo: " + SketchUtils.getInfo(gifDrawable));
+                printLogI("decode gif success", "runLoad", "gifInfo: " + SketchUtils.getGifImageInfo(gifDrawable));
             }
 
             if (isCanceled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogW("runLoad", "runLoad", "decode after", "gifInfo: " + SketchUtils.getInfo(gifDrawable));
+                    printLogW("runLoad", "runLoad", "decode after", "gifInfo: " + SketchUtils.getGifImageInfo(gifDrawable));
                 }
                 gifDrawable.recycle();
                 return;

@@ -84,7 +84,7 @@ public class WindowBackgroundManager {
         } else if (drawable instanceof BitmapDrawable) {
             Bitmap bitmap = ((BitmapDrawable) drawable).getBitmap();
             if (bitmap != null && !bitmap.isRecycled()) {
-                Log.d(Sketch.TAG, "old window bitmap recycled - " + SketchUtils.getInfo(null, bitmap, null));
+                Log.d(Sketch.TAG, "old window bitmap recycled - " + SketchUtils.getImageInfo(null, bitmap, null));
                 bitmap.recycle();
             }
         }

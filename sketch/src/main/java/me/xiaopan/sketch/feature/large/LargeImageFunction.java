@@ -33,7 +33,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 大图功能
  */
-public class LargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangedListener, LargeImageViewer.Callback {
+public class LargeImageFunction extends SketchImageView.Function implements ImageZoomer.OnMatrixChangeListener, LargeImageViewer.Callback {
     private static final String NAME = "LargeImageFunction";
 
     private SketchImageView imageView;
@@ -120,6 +120,13 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             return;
         }
 
+        if (imageZoomer.getRotateDegrees() % 90 != 0) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". rotate degrees must be in multiples of 90. " + imageUri);
+            }
+            return;
+        }
+
         if (tempDrawMatrix == null) {
             tempDrawMatrix = new Matrix();
             tempVisibleRect = new Rect();
@@ -131,7 +138,8 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         imageZoomer.getDrawMatrix(tempDrawMatrix);
         imageZoomer.getVisibleRect(tempVisibleRect);
 
-        largeImageViewer.update(tempDrawMatrix, tempVisibleRect, imageZoomer.getDrawableSize(), imageZoomer.getImageViewSize(), imageZoomer.isZooming());
+        largeImageViewer.update(tempDrawMatrix, tempVisibleRect, imageZoomer.getDrawableSize(),
+                imageZoomer.getImageViewSize(), imageZoomer.isZooming());
     }
 
     private void resetImage() {

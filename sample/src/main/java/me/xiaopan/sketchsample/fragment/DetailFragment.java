@@ -69,7 +69,7 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
     private View applyWallpaperButton;
     @InjectView(R.id.button_detail_save)
     private View saveButton;
-    @InjectView(R.id.button_detail_info)
+    @InjectView(R.id.button_detail_settings)
     private View infoButton;
     @InjectView(R.id.text_detail_currentItem)
     private TextView currentItemTextView;
@@ -259,12 +259,12 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
                     }
                 }
                 break;
-            case R.id.button_detail_info:
+            case R.id.button_detail_settings:
                 List<Fragment> childFragmentList = getChildFragmentManager().getFragments();
                 for (Fragment childFragment : childFragmentList) {
                     if (childFragment != null && childFragment.isResumed() && childFragment.getUserVisibleHint() && childFragment instanceof ImageFragment) {
                         ImageFragment imageFragment = (ImageFragment) childFragment;
-                        imageFragment.showDetailInfo();
+                        imageFragment.showMenu();
                         break;
                     }
                 }

@@ -66,16 +66,16 @@
             android:text="保存" />
 
         <TextView
-            android:id="@+id/button_detail_info"
+            android:id="@+id/button_detail_settings"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/selector_list_item"
             android:contentDescription="@string/app_name"
-            android:drawableTop="@drawable/ic_action_about"
+            android:drawableTop="@drawable/ic_action_settings"
             android:padding="14dp"
             android:gravity="center"
             android:textSize="12sp"
-            android:text="详情" />
+            android:text="功能" />
     </LinearLayout>
 
     <LinearLayout
