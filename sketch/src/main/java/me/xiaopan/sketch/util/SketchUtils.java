@@ -992,4 +992,30 @@ public class SketchUtils {
             rect.right = drawableSize.x - rect.right;
         }
     }
+
+    /**
+     * 旋转一个点（只能是90的倍数）
+     */
+    public static void rotatePoint(PointF point, int rotateDegrees, Point drawableSize) {
+        if (rotateDegrees % 90 != 0) {
+            return;
+        }
+
+        if (rotateDegrees == 90) {
+            float newX = drawableSize.y - point.y;
+            float newY = point.x;
+            point.x = newX;
+            point.y = newY;
+        } else if (rotateDegrees == 180) {
+            float newX = drawableSize.x - point.x;
+            float newY = drawableSize.y - point.y;
+            point.x = newX;
+            point.y = newY;
+        } else if (rotateDegrees == 270) {
+            float newX = point.y;
+            float newY = drawableSize.x - point.x;
+            point.x = newX;
+            point.y = newY;
+        }
+    }
 }

@@ -20,6 +20,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
+import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -1035,6 +1036,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return false;
         }
 
+        PointF pointF = new PointF(x, y);
+        SketchUtils.rotatePoint(pointF, rotateDegrees, drawableSize);
+
         cancelFling();
 
         if (locationRunner != null) {
@@ -1042,7 +1046,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
 
         locationRunner = new LocationRunner(context, this);
-        locationRunner.location(x, y);
+        locationRunner.location(pointF.x, pointF.y);
 
         return true;
     }
