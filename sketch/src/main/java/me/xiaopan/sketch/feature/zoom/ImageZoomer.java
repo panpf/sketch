@@ -1113,7 +1113,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
 
     /**
-     * 设置旋转角度（会清除已经有的缩放和移动数据）
+     * 旋转图片（会清除已经有的缩放和移动数据，旋转角度会一直存在）
      */
     // TODO: 16/9/28 支持旋转动画
     // TODO: 16/9/28 增加手势旋转功能
