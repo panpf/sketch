@@ -17,22 +17,34 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom" />
 
-    <TextView
-        android:id="@+id/text_imageFragment_scale"
+    <LinearLayout
+        android:id="@+id/layout_imageFragment_settings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="16dp"
         android:layout_gravity="bottom|right"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        tools:layout_gravity="left"
+        android:layout_margin="16dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="8dp"
         android:paddingTop="4dp"
         android:paddingBottom="4dp"
-        android:gravity="center"
         android:background="@drawable/shape_round_corners_black_translucent"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        tools:text="1.0" />
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/text_imageFragment_scale"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#cfd0cf"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            tools:text="1.0" />
+
+        <ImageView
+            android:layout_width="23dp"
+            android:layout_height="23dp"
+            android:src="@drawable/ic_action_settings"/>
+    </LinearLayout>
 
     <me.xiaopan.sketchsample.widget.HintView
         android:id="@+id/hint_imageFragment_hint"

@@ -127,9 +127,10 @@ public class ResizeCalculator implements Identifier {
 
     public static int[] scaleTargetSize(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
         if (targetImageWidth > originalImageWidth || targetImageHeight > originalImageHeight) {
-            float scale = targetImageWidth - originalImageWidth > targetImageHeight - originalImageHeight ? (float) targetImageWidth / originalImageWidth : (float) targetImageHeight / originalImageHeight;
-            targetImageWidth /= scale;
-            targetImageHeight /= scale;
+            float scale = Math.abs(targetImageWidth - originalImageWidth) < Math.abs(targetImageHeight - originalImageHeight)
+                    ? (float) targetImageWidth / originalImageWidth : (float) targetImageHeight / originalImageHeight;
+            targetImageWidth = Math.round(targetImageWidth / scale);
+            targetImageHeight = Math.round(targetImageHeight / scale);
         }
 
         return new int[]{targetImageWidth, targetImageHeight};

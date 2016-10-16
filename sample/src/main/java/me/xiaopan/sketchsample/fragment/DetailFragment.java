@@ -21,7 +21,6 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
@@ -69,8 +68,6 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
     private View applyWallpaperButton;
     @InjectView(R.id.button_detail_save)
     private View saveButton;
-    @InjectView(R.id.button_detail_settings)
-    private View infoButton;
     @InjectView(R.id.text_detail_currentItem)
     private TextView currentItemTextView;
     @InjectView(R.id.text_detail_countItem)
@@ -120,12 +117,11 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
         applyWallpaperButton.setVisibility(View.INVISIBLE);
         playButton.setVisibility(View.INVISIBLE);
         saveButton.setVisibility(View.INVISIBLE);
-        infoButton.setVisibility(View.INVISIBLE);
         toolbarLayout.setVisibility(View.GONE);
 
         animationBatchExecutor = new AnimationBatchExecutor(getActivity(),
                 R.anim.action_show, R.anim.action_hidden, 70,
-                shareButton, applyWallpaperButton, playButton, saveButton, infoButton);
+                shareButton, applyWallpaperButton, playButton, saveButton);
         viewPagerPlayer = new ViewPagerPlayer(viewPager);
         new PageNumberSetter(currentItemTextView, viewPager);
         viewPager.setPageTransformer(true, new DepthPageTransformer());
@@ -134,7 +130,6 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
         applyWallpaperButton.setOnClickListener(this);
         playButton.setOnClickListener(this);
         saveButton.setOnClickListener(this);
-        infoButton.setOnClickListener(this);
 
         if (uris != null) {
             viewPager.setAdapter(new ImageFragmentAdapter(getChildFragmentManager(), uris));
@@ -256,16 +251,6 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
                         Toast.makeText(getActivity(), "当前图片本就是本地的无需保存", Toast.LENGTH_LONG).show();
                     } else {
                         Toast.makeText(getActivity(), "我去，怎么会有这样的URL " + currentUri, Toast.LENGTH_LONG).show();
-                    }
-                }
-                break;
-            case R.id.button_detail_settings:
-                List<Fragment> childFragmentList = getChildFragmentManager().getFragments();
-                for (Fragment childFragment : childFragmentList) {
-                    if (childFragment != null && childFragment.isResumed() && childFragment.getUserVisibleHint() && childFragment instanceof ImageFragment) {
-                        ImageFragment imageFragment = (ImageFragment) childFragment;
-                        imageFragment.showMenu();
-                        break;
                     }
                 }
                 break;

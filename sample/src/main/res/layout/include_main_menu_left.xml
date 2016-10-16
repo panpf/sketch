@@ -9,7 +9,8 @@
         android:id="@+id/image_mainLeftMenu_background"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/shape_window_background" />
+        android:src="@drawable/shape_window_background"
+        android:scaleType="fitXY"/>
 
     <LinearLayout
         android:id="@+id/layout_main_leftMenuContent"

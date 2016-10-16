@@ -247,18 +247,18 @@ public class MappingView extends SketchImageView {
         int maxWidth;
         int maxHeight;
         if ((float) Math.max(drawableWidth, drawableHeight) / Math.min(drawableWidth, drawableHeight) >= 4) {
-            maxWidth = getResources().getDisplayMetrics().widthPixels / 2;
-            maxHeight = getResources().getDisplayMetrics().heightPixels / 2;
+            maxWidth = Math.round(getResources().getDisplayMetrics().widthPixels / 2f);
+            maxHeight = Math.round(getResources().getDisplayMetrics().heightPixels / 2f);
         } else {
-            maxWidth = getResources().getDisplayMetrics().widthPixels / 4;
-            maxHeight = getResources().getDisplayMetrics().heightPixels / 4;
+            maxWidth = Math.round(getResources().getDisplayMetrics().widthPixels / 4f);
+            maxHeight = Math.round(getResources().getDisplayMetrics().heightPixels / 4f);
         }
         int newViewWidth;
         int newViewHeight;
         if (drawableWidth > maxWidth || drawableHeight > maxHeight) {
             float finalScale = Math.min((float) maxWidth / drawableWidth, (float) maxHeight / drawableHeight);
-            newViewWidth = (int) (drawableWidth * finalScale);
-            newViewHeight = (int) (drawableHeight * finalScale);
+            newViewWidth = Math.round(drawableWidth * finalScale);
+            newViewHeight = Math.round(drawableHeight * finalScale);
         } else {
             newViewWidth = drawableWidth;
             newViewHeight = drawableHeight;

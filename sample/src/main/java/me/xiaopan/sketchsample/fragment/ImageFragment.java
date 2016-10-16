@@ -5,7 +5,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.format.Formatter;
 import android.view.View;
 import android.widget.TextView;
 
@@ -48,14 +47,14 @@ public class ImageFragment extends MyFragment {
     @InjectView(R.id.hint_imageFragment_hint)
     private HintView hintView;
 
+    @InjectView(R.id.layout_imageFragment_settings)
+    private View settingsView;
+
     @InjectExtra(PARAM_REQUIRED_IMAGE_URI)
     private String imageUri;
     private boolean completedAfterUpdateBackground;
 
     private WindowBackgroundManager.Loader loader;
-
-    private String scale;
-    private String bytes = "0.0 B";
 
     private ImageMenu imageMenu;
 
@@ -176,8 +175,8 @@ public class ImageFragment extends MyFragment {
                 public void onMatrixChanged(ImageZoomer imageZoomer) {
                     imageZoomer.getVisibleRect(visibleRect);
                     mappingView.update(imageZoomer.getDrawableSize(), visibleRect);
-                    scale = String.valueOf(SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
-                    scaleTextView.setText(String.format("%s · %s", scale, bytes));
+                    String scale = String.format(" %s ·", SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
+                    scaleTextView.setText(scale);
                 }
             });
         }
@@ -188,8 +187,6 @@ public class ImageFragment extends MyFragment {
                 @Override
                 public void onTileChanged(LargeImageViewer largeImageViewer) {
                     mappingView.tileChanged(largeImageViewer);
-                    bytes = Formatter.formatShortFileSize(getActivity(), largeImageViewer.getTilesAllocationByteCount());
-                    scaleTextView.setText(String.format("%s · %s", scale, bytes));
                 }
             });
         }
@@ -217,24 +214,6 @@ public class ImageFragment extends MyFragment {
             });
         }
 
-        // 长按显示菜单
-        if (imageView.isSupportZoom()) {
-            imageView.getImageZoomer().setOnViewLongPressListener(new ImageZoomer.OnViewLongPressListener() {
-                @Override
-                public void onViewLongPress(View view, float x, float y) {
-                    imageMenu.show();
-                }
-            });
-        } else {
-            imageView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    imageMenu.show();
-                    return true;
-                }
-            });
-        }
-
         mappingView.setOnSingleClickListener(new MappingView.OnSingleClickListener() {
             @Override
             public boolean onSingleClick(float x, float y) {
@@ -250,6 +229,15 @@ public class ImageFragment extends MyFragment {
         imageView.displayImage(imageUri);
 
         imageMenu = new ImageMenu(getActivity(), imageView);
+
+        settingsView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (imageMenu != null) {
+                    imageMenu.show();
+                }
+            }
+        });
     }
 
     @Override
@@ -269,12 +257,6 @@ public class ImageFragment extends MyFragment {
             } else {
                 loader.cancel(CancelCause.USERS_NOT_VISIBLE);
             }
-        }
-    }
-
-    public void showMenu() {
-        if (imageMenu != null) {
-            imageMenu.show();
         }
     }
 
