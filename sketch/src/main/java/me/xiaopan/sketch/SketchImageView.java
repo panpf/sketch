@@ -504,39 +504,38 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
-    protected boolean setFrame(int l, int t, int r, int b) {
-        boolean changed = super.setFrame(l, t, r, b);
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
         if (requestFunction != null) {
-            requestFunction.setFrame(l, t, r, b);
+            requestFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (recyclerCompatFunction != null) {
-            recyclerCompatFunction.setFrame(l, t, r, b);
+            recyclerCompatFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (showPressedFunction != null) {
-            showPressedFunction.setFrame(l, t, r, b);
+            showPressedFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (showProgressFunction != null) {
-            showProgressFunction.setFrame(l, t, r, b);
+            showProgressFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (showGifFlagFunction != null) {
-            showGifFlagFunction.setFrame(l, t, r, b);
+            showGifFlagFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (showImageFromFunction != null) {
-            showImageFromFunction.setFrame(l, t, r, b);
+            showImageFromFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (imageShapeFunction != null) {
-            imageShapeFunction.setFrame(l, t, r, b);
+            imageShapeFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (clickRetryFunction != null) {
-            clickRetryFunction.setFrame(l, t, r, b);
+            clickRetryFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (zoomFunction != null) {
-            zoomFunction.setFrame(l, t, r, b);
+            zoomFunction.onSizeChanged(w, h, oldw, oldh);
         }
         if (largeImageFunction != null) {
-            largeImageFunction.setFrame(l, t, r, b);
+            largeImageFunction.onSizeChanged(w, h, oldw, oldh);
         }
-        return changed;
     }
 
     /**
@@ -1124,8 +1123,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             return false;
         }
 
-        public boolean setFrame(int left, int top, int right, int bottom) {
-            return false;
+        public void onSizeChanged(int left, int top, int right, int bottom) {
         }
     }
 }

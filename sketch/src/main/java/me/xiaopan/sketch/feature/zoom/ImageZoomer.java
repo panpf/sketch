@@ -394,7 +394,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             imageView.setScaleType(ScaleType.MATRIX);
         }
 
-        resetDrawable();
+        resetSizes();
         resetZoomScales();
         resetBaseMatrix();
         resetSupportMatrix();
@@ -405,29 +405,35 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /** -----------私有功能----------- **/
 
     /**
-     * 重置预览图信息
+     * 重置基础信息
      */
-    private void resetDrawable() {
+    private void resetSizes() {
         drawable = null;
         drawableSize.set(0, 0);
         imageViewSize.set(0, 0);
 
         ImageView imageView = getImageView();
-        if (imageView != null) {
-            final int imageViewWidth = imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
-            final int imageViewHeight = imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
-            imageViewSize.set(imageViewWidth, imageViewHeight);
-
-            Drawable newDrawable = imageView.getDrawable();
-            if (newDrawable != null) {
-                final int drawableWidth = newDrawable.getIntrinsicWidth();
-                final int drawableHeight = newDrawable.getIntrinsicHeight();
-                if (drawableWidth != 0 && drawableHeight != 0) {
-                    drawable = newDrawable;
-                    drawableSize.set(drawableWidth, drawableHeight);
-                }
-            }
+        if (imageView == null) {
+            return;
         }
+
+        final int imageViewWidth = imageView.getWidth() - imageView.getPaddingLeft() - imageView.getPaddingRight();
+        final int imageViewHeight = imageView.getHeight() - imageView.getPaddingTop() - imageView.getPaddingBottom();
+        imageViewSize.set(imageViewWidth, imageViewHeight);
+
+        Drawable newDrawable = imageView.getDrawable();
+        if (newDrawable == null) {
+            return;
+        }
+
+        final int drawableWidth = newDrawable.getIntrinsicWidth();
+        final int drawableHeight = newDrawable.getIntrinsicHeight();
+        if (drawableWidth == 0 || drawableHeight == 0) {
+            return;
+        }
+
+        drawable = newDrawable;
+        drawableSize.set(drawableWidth, drawableHeight);
     }
 
     /**
@@ -1131,7 +1137,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         }
 
         rotateDegrees = degrees % 360;
-        resetDrawable();
+        resetSizes();
         resetSupportMatrix();
         resetBaseMatrix();
         resetZoomScales();
@@ -1331,6 +1337,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     /**
      * 设置长按监听器
      */
+    @SuppressWarnings("unused")
     public void setOnViewLongPressListener(OnViewLongPressListener onViewLongPressListener) {
         this.onViewLongPressListener = onViewLongPressListener;
     }

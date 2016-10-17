@@ -80,11 +80,10 @@ public class ImageZoomFunction extends SketchImageView.Function {
     }
 
     @Override
-    public boolean setFrame(int left, int top, int right, int bottom) {
+    public void onSizeChanged(int left, int top, int right, int bottom) {
         if (imageZoomer != null) {
             imageZoomer.update();
         }
-        return super.setFrame(left, top, right, bottom);
     }
 
     public ImageView.ScaleType getScaleType() {
@@ -102,6 +101,7 @@ public class ImageZoomFunction extends SketchImageView.Function {
     public void recycle() {
         if (imageZoomer != null) {
             imageZoomer.cleanup();
+            imageZoomer = null;
         }
     }
 
