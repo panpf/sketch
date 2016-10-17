@@ -124,7 +124,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
                     MediaStore.Images.Media.DATA,
                     MediaStore.Images.Media.DATE_MODIFIED
             };
-            String sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " DESC";
+            String sortOrder = MediaStore.Images.Media.DATE_MODIFIED + " ASC";
 
             ContentResolver mContentResolver = context.getContentResolver();
             Cursor mCursor = mContentResolver.query(mImageUri, columns, null, null, sortOrder);
