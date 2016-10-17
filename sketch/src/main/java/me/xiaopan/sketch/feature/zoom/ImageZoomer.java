@@ -51,6 +51,7 @@ import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.util.SketchUtils;
 
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
+// TODO 先显示一下进度条
 @SuppressWarnings("SuspiciousNameCombination")
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener,
         ViewTreeObserver.OnGlobalLayoutListener, ActionListener {
@@ -93,9 +94,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private ArrayList<OnMatrixChangeListener> onMatrixChangeListenerList;
 
     // zoom properties
-    private float fullZoomScale; // 能够让图片完成显示的缩放比例
+    private float fullZoomScale; // 能够看到图片全貌的缩放比例
     private float fillZoomScale;    // 能够让图片填满宽或高的缩放比例
-    private float originZoomScale;  // 能够让图片按照原始比例一比一显示的比例
+    private float originZoomScale;  // 能够让图片按照真实尺寸一比一显示的缩放比例
     private float[] doubleClickZoomScales = DEFAULT_DOUBLE_CLICK_ZOOM_SCALES; // 双击缩放所使用的比例
     private boolean zooming;    // 缩放中状态
 
@@ -437,7 +438,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
-     * 重置各种缩放比例
+     * 重置最小、最大以及双击缩放比例
      */
     private void resetZoomScales() {
         fullZoomScale = fillZoomScale = originZoomScale = 1f;
@@ -452,66 +453,92 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        // TODO: 16/9/29 不同的scaleType，不同的缩放比例，同baseMatrix保持一致
-
         final int viewWidth = imageViewSize.x;
         final int viewHeight = imageViewSize.y;
         final int drawableWidth = rotateDegrees % 180 == 0 ? drawableSize.x : drawableSize.y;
         final int drawableHeight = rotateDegrees % 180 == 0 ? drawableSize.y : drawableSize.x;
-
         final float widthScale = (float) viewWidth / drawableWidth;
         final float heightScale = (float) viewHeight / drawableHeight;
-        if (widthScale != heightScale) {
-            fullZoomScale = Math.min(widthScale, heightScale);
-            fillZoomScale = Math.max(widthScale, heightScale);
-        } else {
-            fullZoomScale = widthScale;
-            fillZoomScale = widthScale;
-        }
-        Drawable finalDrawable = SketchUtils.getLastDrawable(getDrawable());
-        if (finalDrawable instanceof SketchDrawable
-                && getImageView() instanceof ImageViewInterface
-                && ((ImageViewInterface) getImageView()).isSupportLargeImage()) {
-            SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
-            final int originImageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginWidth()
-                    : sketchDrawable.getOriginHeight();
-            final int originImageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginHeight()
-                    : sketchDrawable.getOriginWidth();
-            originZoomScale = Math.max((float) originImageWidth / drawableWidth, (float) originImageHeight / drawableHeight);
-        } else {
-            originZoomScale = 1f;
-        }
+        boolean imageThanViewLarge = drawableWidth > viewWidth || drawableHeight > viewHeight;
 
-        minZoomScale = fullZoomScale;
-        maxZoomScale = Math.max(originZoomScale, fillZoomScale);
+        // 小的是完整显示比例，大的是充满比例
+        fullZoomScale = Math.min(widthScale, heightScale);
+        fillZoomScale = Math.max(widthScale, heightScale);
+
+        // 一般情况下原始比例是1.0f，如果大图功能正在工作就以真实尺寸计算原始比例
+        originZoomScale = 1f;
+        ImageView imageView = getImageView();
+        if (imageView instanceof ImageViewInterface && ((ImageViewInterface) imageView).isSupportLargeImage()) {
+            Drawable finalDrawable = SketchUtils.getLastDrawable(getDrawable());
+            if (finalDrawable instanceof SketchDrawable) {
+                SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
+                final int originImageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginWidth() : sketchDrawable.getOriginHeight();
+                final int originImageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginHeight() : sketchDrawable.getOriginWidth();
+                originZoomScale = Math.max((float) originImageWidth / drawableWidth, (float) originImageHeight / drawableHeight);
+            }
+        }
 
         float oneLevelZoomScale;
         float twoLevelZoomScale;
-        if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
-            if (fullZoomScale < fillZoomScale) {
+
+        if (scaleType == ScaleType.CENTER || (scaleType == ScaleType.CENTER_INSIDE && !imageThanViewLarge)) {
+            minZoomScale = 1.0f;
+            maxZoomScale = Math.max(originZoomScale, fillZoomScale);
+
+            oneLevelZoomScale = minZoomScale;
+            twoLevelZoomScale = maxZoomScale;
+        } else if (scaleType == ScaleType.CENTER_CROP) {
+            minZoomScale = fillZoomScale;
+            maxZoomScale = Math.max(originZoomScale, fillZoomScale * 1.5f);
+
+            oneLevelZoomScale = minZoomScale;
+            twoLevelZoomScale = maxZoomScale;
+        } else if (scaleType == ScaleType.FIT_START || scaleType == ScaleType.FIT_CENTER || scaleType == ScaleType.FIT_END ||
+                (scaleType == ScaleType.CENTER_INSIDE && imageThanViewLarge)) {
+            minZoomScale = fullZoomScale;
+
+            if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
+                if (fullZoomScale < fillZoomScale) {
+                    oneLevelZoomScale = fullZoomScale;
+                    twoLevelZoomScale = fillZoomScale;
+                } else {
+                    oneLevelZoomScale = fillZoomScale;
+                    twoLevelZoomScale = fullZoomScale;
+                }
+
+                maxZoomScale = Math.max(originZoomScale, fillZoomScale);
+            } else {
                 oneLevelZoomScale = fullZoomScale;
-                twoLevelZoomScale = fillZoomScale;
-            } else {
-                oneLevelZoomScale = fillZoomScale;
-                twoLevelZoomScale = fullZoomScale;
+
+                // 二级缩放比例将在原始比例和充满比例中产生
+                if (originZoomScale > fillZoomScale && (fillZoomScale * 1.2f) >= originZoomScale) {
+                    // 如果原始比例仅仅比充满比例大一点点，还是用充满比例作为二级缩放比例比较好
+                    twoLevelZoomScale = fillZoomScale;
+                } else {
+                    // 否则的话谁大用谁作为二级缩放比例
+                    twoLevelZoomScale = Math.max(fillZoomScale, originZoomScale);
+                }
+
+                // 二级缩放比例和一级缩放比例的差距不能太小，最小得是一级缩放比例的1.5倍
+                twoLevelZoomScale = Math.max(twoLevelZoomScale, oneLevelZoomScale * 1.5f);
+
+                maxZoomScale = twoLevelZoomScale;
             }
+        } else if (scaleType == ScaleType.FIT_XY) {
+            minZoomScale = fullZoomScale;
+            maxZoomScale = fullZoomScale;
+
+            oneLevelZoomScale = minZoomScale;
+            twoLevelZoomScale = maxZoomScale;
         } else {
-            oneLevelZoomScale = fullZoomScale;
+            // 基本不会走到这儿
+            minZoomScale = fullZoomScale;
+            maxZoomScale = fullZoomScale;
 
-            // 二级缩放比例将在原始比例和充满比例中产生
-            if (originZoomScale > fillZoomScale && (fillZoomScale * 1.2f) >= originZoomScale) {
-                // 如果原始比例仅仅比充满比例大一点点，还是用充满比例作为二级缩放比例比较好
-                twoLevelZoomScale = fillZoomScale;
-            } else {
-                // 否则的话谁大用谁作为二级缩放比例
-                twoLevelZoomScale = Math.max(fillZoomScale, originZoomScale);
-            }
-
-            // 二级缩放比例和一级缩放比例的差距不能太小，最小得是一级缩放比例的1.5倍
-            twoLevelZoomScale = Math.max(twoLevelZoomScale, oneLevelZoomScale * 1.5f);
-
-            maxZoomScale = twoLevelZoomScale;
+            oneLevelZoomScale = minZoomScale;
+            twoLevelZoomScale = maxZoomScale;
         }
+
         doubleClickZoomScales = new float[]{oneLevelZoomScale, twoLevelZoomScale};
         Arrays.sort(doubleClickZoomScales);
     }
@@ -533,48 +560,41 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         final int viewHeight = imageViewSize.y;
         final int drawableWidth = rotateDegrees % 180 == 0 ? drawableSize.x : drawableSize.y;
         final int drawableHeight = rotateDegrees % 180 == 0 ? drawableSize.y : drawableSize.x;
-
         final float widthScale = (float) viewWidth / drawableWidth;
         final float heightScale = (float) viewHeight / drawableHeight;
+        boolean imageThanViewLarge = drawableWidth > viewWidth || drawableHeight > viewHeight;
 
-        if (scaleType == ScaleType.CENTER) {
-            baseMatrix.postTranslate((viewWidth - drawableWidth) / 2F, (viewHeight - drawableHeight) / 2F);
+        if (scaleType == ScaleType.CENTER || (scaleType == ScaleType.CENTER_INSIDE && !imageThanViewLarge)) {
+            if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
+                baseMatrix.postScale(widthScale, widthScale);
+            } else {
+                baseMatrix.postTranslate((viewWidth - drawableWidth) / 2F, (viewHeight - drawableHeight) / 2F);
+            }
         } else if (scaleType == ScaleType.CENTER_CROP) {
             float scale = Math.max(widthScale, heightScale);
             baseMatrix.postScale(scale, scale);
             baseMatrix.postTranslate((viewWidth - drawableWidth * scale) / 2F, (viewHeight - drawableHeight * scale) / 2F);
-        } else if (scaleType == ScaleType.CENTER_INSIDE) {
-            float scale = Math.min(1.0f, Math.min(widthScale, heightScale));
-            baseMatrix.postScale(scale, scale);
-            baseMatrix.postTranslate((viewWidth - drawableWidth * scale) / 2F, (viewHeight - drawableHeight * scale) / 2F);
-        } else {
+        } else if (scaleType == ScaleType.FIT_START || scaleType == ScaleType.FIT_CENTER || scaleType == ScaleType.FIT_END ||
+                (scaleType == ScaleType.CENTER_INSIDE && imageThanViewLarge)) {
+            if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
+                baseMatrix.postScale(widthScale, widthScale);
+            } else {
+                RectF mTempSrc = new RectF(0, 0, drawableWidth, drawableHeight);
+                RectF mTempDst = new RectF(0, 0, viewWidth, viewHeight);
+                Matrix.ScaleToFit scaleToFit;
+                if (scaleType == ScaleType.FIT_START) {
+                    scaleToFit = Matrix.ScaleToFit.START;
+                } else if (scaleType == ScaleType.FIT_END) {
+                    scaleToFit = Matrix.ScaleToFit.END;
+                } else {
+                    scaleToFit = Matrix.ScaleToFit.CENTER;
+                }
+                baseMatrix.setRectToRect(mTempSrc, mTempDst, scaleToFit);
+            }
+        } else if (scaleType == ScaleType.FIT_XY) {
             RectF mTempSrc = new RectF(0, 0, drawableWidth, drawableHeight);
             RectF mTempDst = new RectF(0, 0, viewWidth, viewHeight);
-
-            switch (scaleType) {
-                case FIT_CENTER:
-                    if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
-                        baseMatrix.postScale(widthScale, widthScale);
-                    } else {
-                        baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.CENTER);
-                    }
-                    break;
-
-                case FIT_START:
-                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.START);
-                    break;
-
-                case FIT_END:
-                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.END);
-                    break;
-
-                case FIT_XY:
-                    baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.FILL);
-                    break;
-
-                default:
-                    break;
-            }
+            baseMatrix.setRectToRect(mTempSrc, mTempDst, Matrix.ScaleToFit.FILL);
         }
     }
 
@@ -1325,6 +1345,13 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             }
             onMatrixChangeListenerList.add(listener);
         }
+    }
+
+    @SuppressWarnings("unused")
+    public boolean removeOnMatrixChangeListener(OnMatrixChangeListener listener) {
+        return listener != null &&
+                onMatrixChangeListenerList != null && onMatrixChangeListenerList.size() > 0 &&
+                onMatrixChangeListenerList.remove(listener);
     }
 
     /**

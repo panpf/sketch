@@ -42,21 +42,22 @@ class TapListener extends GestureDetector.SimpleOnGestureListener {
 
     @Override
     public boolean onDoubleTap(MotionEvent ev) {
-        try {
-            float scale = SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2);
+        float scale = SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2);
 
-            float[] doubleClickZoomScales = imageZoomer.getDoubleClickZoomScales();
-            if (doubleClickZoomScales.length < 2) {
-                return true;
+        float[] doubleClickZoomScales = imageZoomer.getDoubleClickZoomScales();
+        if (doubleClickZoomScales.length < 2) {
+            return true;
+        }
+        float finalScale = doubleClickZoomScales[0];
+        for (int w = doubleClickZoomScales.length - 1; w >= 0; w--) {
+            float currentScale = doubleClickZoomScales[w];
+            if (scale < SketchUtils.formatFloat(currentScale, 2)) {
+                finalScale = currentScale;
+                break;
             }
-            float finalScale = doubleClickZoomScales[0];
-            for (int w = doubleClickZoomScales.length - 1; w >= 0; w--) {
-                float currentScale = doubleClickZoomScales[w];
-                if (scale < SketchUtils.formatFloat(currentScale, 2)) {
-                    finalScale = currentScale;
-                    break;
-                }
-            }
+        }
+
+        try {
             imageZoomer.zoom(finalScale, ev.getX(), ev.getY(), true);
         } catch (ArrayIndexOutOfBoundsException e) {
             // Can sometimes happen when getX() and getY() is called

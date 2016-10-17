@@ -35,7 +35,7 @@
             android:id="@+id/text_imageFragment_scale"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="#cfd0cf"
+            android:textColor="#dadbdc"
             android:textSize="18sp"
             android:textStyle="bold"
             tools:text="1.0" />

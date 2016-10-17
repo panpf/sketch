@@ -177,6 +177,7 @@ public class ImageFragment extends MyFragment {
                     mappingView.update(imageZoomer.getDrawableSize(), visibleRect);
                     String scale = String.format(" %s ·", SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
                     scaleTextView.setText(scale);
+                    scaleTextView.requestLayout();
                 }
             });
         }
