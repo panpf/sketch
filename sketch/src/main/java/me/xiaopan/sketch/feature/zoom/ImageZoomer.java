@@ -51,7 +51,6 @@ import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.util.SketchUtils;
 
 // TODO 解决嵌套在别的可滑动View中时，会导致ArrayIndexOutOfBoundsException异常，初步猜测requestDisallowInterceptTouchEvent引起的
-// TODO 先显示一下进度条
 @SuppressWarnings("SuspiciousNameCombination")
 public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureListener,
         ViewTreeObserver.OnGlobalLayoutListener, ActionListener {

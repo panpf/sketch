@@ -134,7 +134,7 @@ class ScrollBar {
         }
         handler.removeCallbacks(hiddenScrollBarRunner);
 
-        handler.postDelayed(hiddenScrollBarRunner, 300);
+        handler.postDelayed(hiddenScrollBarRunner, 800);
     }
 
     private void invalidateView() {
