@@ -171,10 +171,24 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return false;
         }
 
+        int touchCount = event.getPointerCount();
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_POINTER_DOWN:
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. action pointer down");
+                }
+                requestDisallowInterceptTouchEvent(true);
+                break;
+        }
+
         // 定位操作不能被打断
         if (locationRunner != null) {
             if (locationRunner.isRunning()) {
-                return false;
+                if (Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. location running");
+                }
+                requestDisallowInterceptTouchEvent(true);
+                return true;
             }
             locationRunner = null;
         }
@@ -202,14 +216,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         tempLastScaleFocusY = 0;
 
         // 上来就禁止父View拦截事件
-        ImageView imageView = getImageView();
-        ViewParent parent = imageView != null ? imageView.getParent() : null;
-        if (parent != null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. onActionDown");
-            }
-            parent.requestDisallowInterceptTouchEvent(true);
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. action down");
         }
+        requestDisallowInterceptTouchEvent(true);
 
         // 取消快速滚动
         cancelFling();
@@ -257,32 +267,32 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         supportMatrix.postTranslate(dx, dy);
         checkAndApplyMatrix();
 
-        // 滑动到边缘时父类可以拦截触摸事件
-        ViewParent parent = imageView.getParent();
-        if (parent != null) {
-            if (!allowParentInterceptOnEdge || scaleDragGestureDetector.isScaling() || disallowParentInterceptTouchEvent) {
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. onDrag. allowParentInterceptOnEdge=" + allowParentInterceptOnEdge + ", scaling=" + scaleDragGestureDetector.isScaling() + ", tempDisallowParentInterceptTouchEvent=" + disallowParentInterceptTouchEvent);
-                }
-                parent.requestDisallowInterceptTouchEvent(true);
-                return;
+        if (!allowParentInterceptOnEdge || scaleDragGestureDetector.isScaling() || disallowParentInterceptTouchEvent) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. onDrag"
+                        + ". allowParentInterceptOnEdge=" + allowParentInterceptOnEdge
+                        + ", scaling=" + scaleDragGestureDetector.isScaling()
+                        + ", tempDisallowParentInterceptTouchEvent=" + disallowParentInterceptTouchEvent);
             }
+            requestDisallowInterceptTouchEvent(true);
+            return;
+        }
 
-            // 暂时不处理顶部和底部边界
-            if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)
-//                    || verScrollEdge == EDGE_BOTH || (verScrollEdge == EDGE_START && dy >= 1f) || (verScrollEdge == EDGE_END && dy <= -1f)
-                    ) {
-                if (Sketch.isDebugMode()) {
-                    String scrollEdgeName = String.format("%s-%s", getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
-                    Log.d(Sketch.TAG, NAME + ". allow parent intercept touch event. onDrag. scrollEdge=" + scrollEdgeName);
-                }
-                parent.requestDisallowInterceptTouchEvent(false);
-            } else {
-                if (Sketch.isDebugMode()) {
-                    String scrollEdgeName = String.format("%s_%s", getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
-                    Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. onDrag. scrollEdge=" + scrollEdgeName);
-                }
+        // 滑动到边缘时父类可以拦截触摸事件，但暂时不处理顶部和底部边界
+//        if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)
+//                    || verScrollEdge == EDGE_BOTH || (verScrollEdge == EDGE_START && dy >= 1f) || (verScrollEdge == EDGE_END && dy <= -1f)) {
+        if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)) {
+            if (Sketch.isDebugMode()) {
+                String scrollEdgeName = String.format("%s-%s", getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
+                Log.i(Sketch.TAG, NAME + ". allow parent intercept touch event. onDrag. scrollEdge=" + scrollEdgeName);
             }
+            requestDisallowInterceptTouchEvent(false);
+        } else {
+            if (Sketch.isDebugMode()) {
+                String scrollEdgeName = String.format("%s_%s", getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
+                Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. onDrag. scrollEdge=" + scrollEdgeName);
+            }
+            requestDisallowInterceptTouchEvent(true);
         }
     }
 
@@ -379,6 +389,18 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             tempViewBounds.set(newViewBounds);
             update();
         }
+    }
+
+    private void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        ImageView imageView = getImageView();
+        if (imageView == null) {
+            return;
+        }
+        ViewParent parent = imageView.getParent();
+        if (parent == null) {
+            return;
+        }
+        parent.requestDisallowInterceptTouchEvent(disallowIntercept);
     }
 
     /**
