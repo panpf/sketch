@@ -478,6 +478,20 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         final int viewHeight = imageViewSize.y;
         final int drawableWidth = rotateDegrees % 180 == 0 ? drawableSize.x : drawableSize.y;
         final int drawableHeight = rotateDegrees % 180 == 0 ? drawableSize.y : drawableSize.x;
+        final int originImageWidth;
+        final int originImageHeight;
+        ImageView imageView = getImageView();
+        Drawable finalDrawable = SketchUtils.getLastDrawable(getDrawable());
+        if (finalDrawable instanceof SketchDrawable && imageView instanceof ImageViewInterface &&
+                ((ImageViewInterface) imageView).isSupportLargeImage()) {
+            SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
+            originImageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginWidth() : sketchDrawable.getOriginHeight();
+            originImageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginHeight() : sketchDrawable.getOriginWidth();
+        } else {
+            originImageWidth = drawableWidth;
+            originImageHeight = drawableHeight;
+        }
+
         final float widthScale = (float) viewWidth / drawableWidth;
         final float heightScale = (float) viewHeight / drawableHeight;
         boolean imageThanViewLarge = drawableWidth > viewWidth || drawableHeight > viewHeight;
@@ -485,19 +499,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         // 小的是完整显示比例，大的是充满比例
         fullZoomScale = Math.min(widthScale, heightScale);
         fillZoomScale = Math.max(widthScale, heightScale);
-
-        // 一般情况下原始比例是1.0f，如果大图功能正在工作就以真实尺寸计算原始比例
-        originZoomScale = 1f;
-        ImageView imageView = getImageView();
-        if (imageView instanceof ImageViewInterface && ((ImageViewInterface) imageView).isSupportLargeImage()) {
-            Drawable finalDrawable = SketchUtils.getLastDrawable(getDrawable());
-            if (finalDrawable instanceof SketchDrawable) {
-                SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
-                final int originImageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginWidth() : sketchDrawable.getOriginHeight();
-                final int originImageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginHeight() : sketchDrawable.getOriginWidth();
-                originZoomScale = Math.max((float) originImageWidth / drawableWidth, (float) originImageHeight / drawableHeight);
-            }
-        }
+        originZoomScale = Math.max((float) originImageWidth / drawableWidth, (float) originImageHeight / drawableHeight);
 
         float oneLevelZoomScale;
         float twoLevelZoomScale;
@@ -518,7 +520,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                 (scaleType == ScaleType.CENTER_INSIDE && imageThanViewLarge)) {
             minZoomScale = fullZoomScale;
 
-            if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
+            if (canUseReadModeByHeight(originImageWidth, originImageHeight) ||
+                    canUseReadModeByWidth(originImageWidth, originImageHeight)) {
                 if (fullZoomScale < fillZoomScale) {
                     oneLevelZoomScale = fullZoomScale;
                     twoLevelZoomScale = fillZoomScale;
@@ -581,13 +584,29 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         final int viewHeight = imageViewSize.y;
         final int drawableWidth = rotateDegrees % 180 == 0 ? drawableSize.x : drawableSize.y;
         final int drawableHeight = rotateDegrees % 180 == 0 ? drawableSize.y : drawableSize.x;
+        final int originImageWidth;
+        final int originImageHeight;
+        ImageView imageView = getImageView();
+        Drawable finalDrawable = SketchUtils.getLastDrawable(getDrawable());
+        if (finalDrawable instanceof SketchDrawable && imageView instanceof ImageViewInterface &&
+                ((ImageViewInterface) imageView).isSupportLargeImage()) {
+            SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
+            originImageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginWidth() : sketchDrawable.getOriginHeight();
+            originImageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginHeight() : sketchDrawable.getOriginWidth();
+        } else {
+            originImageWidth = drawableWidth;
+            originImageHeight = drawableHeight;
+        }
+
         final float widthScale = (float) viewWidth / drawableWidth;
         final float heightScale = (float) viewHeight / drawableHeight;
         boolean imageThanViewLarge = drawableWidth > viewWidth || drawableHeight > viewHeight;
 
         if (scaleType == ScaleType.CENTER || (scaleType == ScaleType.CENTER_INSIDE && !imageThanViewLarge)) {
-            if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
+            if (canUseReadModeByHeight(originImageWidth, originImageHeight)) {
                 baseMatrix.postScale(widthScale, widthScale);
+            } else if (canUseReadModeByWidth(originImageWidth, originImageHeight)) {
+                baseMatrix.postScale(heightScale, heightScale);
             } else {
                 baseMatrix.postTranslate((viewWidth - drawableWidth) / 2F, (viewHeight - drawableHeight) / 2F);
             }
@@ -597,8 +616,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             baseMatrix.postTranslate((viewWidth - drawableWidth * scale) / 2F, (viewHeight - drawableHeight * scale) / 2F);
         } else if (scaleType == ScaleType.FIT_START || scaleType == ScaleType.FIT_CENTER || scaleType == ScaleType.FIT_END ||
                 (scaleType == ScaleType.CENTER_INSIDE && imageThanViewLarge)) {
-            if (canUseReadMode(drawableWidth, drawableHeight, viewHeight)) {
+            if (canUseReadModeByHeight(originImageWidth, originImageHeight)) {
                 baseMatrix.postScale(widthScale, widthScale);
+            } else if (canUseReadModeByWidth(originImageWidth, originImageHeight)) {
+                baseMatrix.postScale(heightScale, heightScale);
             } else {
                 RectF mTempSrc = new RectF(0, 0, drawableWidth, drawableHeight);
                 RectF mTempDst = new RectF(0, 0, viewWidth, viewHeight);
@@ -749,10 +770,17 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
-     * 是否可以使用阅读模式
+     * 根据高度计算是否可以使用阅读模式
      */
-    private boolean canUseReadMode(int drawableWidth, int drawableHeight, int viewHeight){
-        return readMode && drawableHeight > drawableWidth && drawableHeight > (viewHeight * 1.3f);
+    private boolean canUseReadModeByHeight(int originImageWidth, int originImageHeight){
+        return readMode && originImageHeight > originImageWidth * 3;
+    }
+
+    /**
+     * 根据宽度度计算是否可以使用阅读模式
+     */
+    private boolean canUseReadModeByWidth(int originImageWidth, int originImageHeight){
+        return readMode && originImageWidth > originImageHeight * 3;
     }
 
     /**
