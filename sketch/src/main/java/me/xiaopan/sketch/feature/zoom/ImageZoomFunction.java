@@ -50,7 +50,9 @@ public class ImageZoomFunction extends SketchImageView.Function {
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        imageZoomer.draw(canvas);
+        if (imageZoomer != null) {
+            imageZoomer.draw(canvas);
+        }
     }
 
     @Override
@@ -60,7 +62,7 @@ public class ImageZoomFunction extends SketchImageView.Function {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return imageZoomer.onTouch(imageView, event);
+        return imageZoomer != null && imageZoomer.onTouch(imageView, event);
     }
 
     @Override
@@ -71,22 +73,36 @@ public class ImageZoomFunction extends SketchImageView.Function {
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        imageZoomer.update();
+        if (imageZoomer != null) {
+            imageZoomer.update();
+        }
         return false;
     }
 
+    @Override
+    public boolean setFrame(int left, int top, int right, int bottom) {
+        if (imageZoomer != null) {
+            imageZoomer.update();
+        }
+        return super.setFrame(left, top, right, bottom);
+    }
+
     public ImageView.ScaleType getScaleType() {
-        return imageZoomer.getScaleType();
+        return imageZoomer != null ? imageZoomer.getScaleType() : null;
     }
 
     @Override
     public void setScaleType(ImageView.ScaleType scaleType) {
         super.setScaleType(scaleType);
-        imageZoomer.setScaleType(scaleType);
+        if (imageZoomer != null) {
+            imageZoomer.setScaleType(scaleType);
+        }
     }
 
     public void recycle() {
-        imageZoomer.cleanup();
+        if (imageZoomer != null) {
+            imageZoomer.cleanup();
+        }
     }
 
     public ImageZoomer getImageZoomer() {

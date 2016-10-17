@@ -503,6 +503,42 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
     }
 
+    @Override
+    protected boolean setFrame(int l, int t, int r, int b) {
+        boolean changed = super.setFrame(l, t, r, b);
+        if (requestFunction != null) {
+            requestFunction.setFrame(l, t, r, b);
+        }
+        if (recyclerCompatFunction != null) {
+            recyclerCompatFunction.setFrame(l, t, r, b);
+        }
+        if (showPressedFunction != null) {
+            showPressedFunction.setFrame(l, t, r, b);
+        }
+        if (showProgressFunction != null) {
+            showProgressFunction.setFrame(l, t, r, b);
+        }
+        if (showGifFlagFunction != null) {
+            showGifFlagFunction.setFrame(l, t, r, b);
+        }
+        if (showImageFromFunction != null) {
+            showImageFromFunction.setFrame(l, t, r, b);
+        }
+        if (imageShapeFunction != null) {
+            imageShapeFunction.setFrame(l, t, r, b);
+        }
+        if (clickRetryFunction != null) {
+            clickRetryFunction.setFrame(l, t, r, b);
+        }
+        if (zoomFunction != null) {
+            zoomFunction.setFrame(l, t, r, b);
+        }
+        if (largeImageFunction != null) {
+            largeImageFunction.setFrame(l, t, r, b);
+        }
+        return changed;
+    }
+
     /**
      * 设置当暂停下载的时候点击显示图片
      */
@@ -1085,6 +1121,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
          * @return 是否需要调用invalidate()刷新ImageView
          */
         public boolean onDisplayCanceled(CancelCause cancelCause) {
+            return false;
+        }
+
+        public boolean setFrame(int left, int top, int right, int bottom) {
             return false;
         }
     }
