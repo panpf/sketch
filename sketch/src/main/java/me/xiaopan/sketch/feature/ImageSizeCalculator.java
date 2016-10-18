@@ -294,6 +294,29 @@ public class ImageSizeCalculator implements Identifier {
         return inSampleSize;
     }
 
+    /**
+     * 根据高度计算是否可以使用阅读模式
+     */
+    public boolean canUseReadModeByHeight(int originImageWidth, int originImageHeight){
+        return originImageHeight > originImageWidth * 3;
+    }
+
+    /**
+     * 根据宽度度计算是否可以使用阅读模式
+     */
+    public boolean canUseReadModeByWidth(int originImageWidth, int originImageHeight){
+        return originImageWidth > originImageHeight * 3;
+    }
+
+//    /**
+//     * 是否可以使用缩略图模式
+//     */
+//    public boolean canUseThumbnailMode(int outWidth, int outHeight, int resizeWidth, int resizeHeight){
+//        float resizeScale = (float) resizeWidth / resizeHeight;
+//        float originScale = (float) outWidth / outHeight;
+//        return Math.max(resizeScale, originScale) > Math.min(resizeScale, originScale) * 3;
+//    }
+
     @SuppressWarnings("unused")
     public float getTargetSizeScale() {
         return targetSizeScale;

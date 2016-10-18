@@ -43,6 +43,7 @@ import java.util.Arrays;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.BindDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.zoom.gestures.ActionListener;
 import me.xiaopan.sketch.feature.zoom.gestures.OnScaleDragGestureListener;
 import me.xiaopan.sketch.feature.zoom.gestures.ScaleDragGestureDetector;
@@ -520,8 +521,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                 (scaleType == ScaleType.CENTER_INSIDE && imageThanViewLarge)) {
             minZoomScale = fullZoomScale;
 
-            if (canUseReadModeByHeight(originImageWidth, originImageHeight) ||
-                    canUseReadModeByWidth(originImageWidth, originImageHeight)) {
+            ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
+            if (readMode && (sizeCalculator.canUseReadModeByHeight(originImageWidth, originImageHeight) ||
+                    sizeCalculator.canUseReadModeByWidth(originImageWidth, originImageHeight))) {
                 if (fullZoomScale < fillZoomScale) {
                     oneLevelZoomScale = fullZoomScale;
                     twoLevelZoomScale = fillZoomScale;
@@ -603,9 +605,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         boolean imageThanViewLarge = drawableWidth > viewWidth || drawableHeight > viewHeight;
 
         if (scaleType == ScaleType.CENTER || (scaleType == ScaleType.CENTER_INSIDE && !imageThanViewLarge)) {
-            if (canUseReadModeByHeight(originImageWidth, originImageHeight)) {
+            ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
+            if (readMode && sizeCalculator.canUseReadModeByHeight(originImageWidth, originImageHeight)) {
                 baseMatrix.postScale(widthScale, widthScale);
-            } else if (canUseReadModeByWidth(originImageWidth, originImageHeight)) {
+            } else if (readMode && sizeCalculator.canUseReadModeByWidth(originImageWidth, originImageHeight)) {
                 baseMatrix.postScale(heightScale, heightScale);
             } else {
                 baseMatrix.postTranslate((viewWidth - drawableWidth) / 2F, (viewHeight - drawableHeight) / 2F);
@@ -616,9 +619,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             baseMatrix.postTranslate((viewWidth - drawableWidth * scale) / 2F, (viewHeight - drawableHeight * scale) / 2F);
         } else if (scaleType == ScaleType.FIT_START || scaleType == ScaleType.FIT_CENTER || scaleType == ScaleType.FIT_END ||
                 (scaleType == ScaleType.CENTER_INSIDE && imageThanViewLarge)) {
-            if (canUseReadModeByHeight(originImageWidth, originImageHeight)) {
+            ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
+            if (readMode && sizeCalculator.canUseReadModeByHeight(originImageWidth, originImageHeight)) {
                 baseMatrix.postScale(widthScale, widthScale);
-            } else if (canUseReadModeByWidth(originImageWidth, originImageHeight)) {
+            } else if (readMode && sizeCalculator.canUseReadModeByWidth(originImageWidth, originImageHeight)) {
                 baseMatrix.postScale(heightScale, heightScale);
             } else {
                 RectF mTempSrc = new RectF(0, 0, drawableWidth, drawableHeight);
@@ -767,20 +771,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             flingTranslateRunner.cancelFling();
             flingTranslateRunner = null;
         }
-    }
-
-    /**
-     * 根据高度计算是否可以使用阅读模式
-     */
-    private boolean canUseReadModeByHeight(int originImageWidth, int originImageHeight){
-        return readMode && originImageHeight > originImageWidth * 3;
-    }
-
-    /**
-     * 根据宽度度计算是否可以使用阅读模式
-     */
-    private boolean canUseReadModeByWidth(int originImageWidth, int originImageHeight){
-        return readMode && originImageWidth > originImageHeight * 3;
     }
 
     /**
