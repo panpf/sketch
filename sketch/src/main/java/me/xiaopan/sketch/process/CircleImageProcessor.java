@@ -71,13 +71,17 @@ public class CircleImageProcessor implements ImageProcessor {
         int targetHeight = resize != null ? resize.getHeight() : bitmap.getHeight();
         int newBitmapSize = targetWidth < targetHeight ? targetWidth : targetHeight;
 
-        ResizeCalculator.Result result = sketch.getConfiguration().getResizeCalculator().calculator(bitmap.getWidth(), bitmap.getHeight(), newBitmapSize, newBitmapSize, resize != null ? resize.getScaleType() : null, forceUseResize);
+        ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
+        ResizeCalculator.Result result = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
+                newBitmapSize, newBitmapSize,
+                resize != null ? resize.getScaleType() : null, forceUseResize);
         if (result == null) {
             return bitmap;
         }
 
         // 初始化画布
-        Bitmap output = Bitmap.createBitmap(result.imageWidth, result.imageHeight, lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
+        Bitmap output = Bitmap.createBitmap(result.imageWidth, result.imageHeight,
+                lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
@@ -85,7 +89,8 @@ public class CircleImageProcessor implements ImageProcessor {
         paint.setColor(0xFFFF0000);
 
         // 绘制圆形的罩子
-        canvas.drawCircle(result.imageWidth / 2, result.imageHeight / 2, (result.imageWidth < result.imageHeight ? result.imageWidth : result.imageHeight) / 2, paint);
+        canvas.drawCircle(result.imageWidth / 2, result.imageHeight / 2,
+                (result.imageWidth < result.imageHeight ? result.imageWidth : result.imageHeight) / 2, paint);
 
         // 应用遮罩模式并绘制图片
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));

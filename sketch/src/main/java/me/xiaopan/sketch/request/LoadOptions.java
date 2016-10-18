@@ -24,13 +24,49 @@ import me.xiaopan.sketch.process.ImageProcessor;
  * 显示选项
  */
 public class LoadOptions extends DownloadOptions {
+    /**
+     * 修正尺寸，将原始图片加载到内存中之后根据resize进行修正。修正的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
+     */
     private Resize resize;
-    private MaxSize maxSize;
-    private boolean decodeGifImage;
+
+    /**
+     * 强制使经过resize处理的图片同resize的尺寸一致
+     */
     private boolean forceUseResize;
+
+    /**
+     * 最大尺寸，在解码的时候会使用此最大尺寸来计算inSimpleSize
+     */
+    private MaxSize maxSize;
+
+    /**
+     * 解码GIF图片（默认否）
+     */
+    private boolean decodeGifImage;
+
+    /**
+     * 返回低质量的图片（默认否）
+     */
     private boolean lowQualityImage;
+
+    /**
+     * 解码时优先考虑速度还是质量 (true：质量；false：速度，默认false)
+     */
     private boolean inPreferQualityOverSpeed;
+
+    /**
+     * 缩略图模式，当resize的宽高比同原始图片的宽高比相差非常大的时候会用BitmapRegionDecoder从原始图片中截取合适的部分
+     */
+    private boolean thumbnailMode;
+
+    /**
+     * 图片处理器，根据resize和ScaleType创建一张新的图片
+     */
     private ImageProcessor imageProcessor;
+
+    /**
+     * 图片质量配置
+     */
     private Bitmap.Config bitmapConfig;
 
     public LoadOptions() {
@@ -60,145 +96,94 @@ public class LoadOptions extends DownloadOptions {
         return this;
     }
 
-    /**
-     * 获取最大尺寸，在解码的时候会使用此最大尺寸来计算inSimpleSize
-     */
     public MaxSize getMaxSize() {
         return maxSize;
     }
 
-    /**
-     * 设置最大尺寸，在解码的时候会使用此最大尺寸来计算inSimpleSize
-     */
     public LoadOptions setMaxSize(MaxSize maxSize) {
         this.maxSize = maxSize;
         return this;
     }
 
-    /**
-     * 设置最大尺寸，在解码的时候会使用此Size来计算inSimpleSize
-     */
     public LoadOptions setMaxSize(int width, int height) {
         this.maxSize = new MaxSize(width, height);
         return this;
     }
 
-    /**
-     * 获取新尺寸
-     *
-     * @return 新尺寸
-     */
     public Resize getResize() {
         return resize;
     }
 
-    /**
-     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
-     */
     public LoadOptions setResize(Resize resize) {
         this.resize = resize;
         return this;
     }
 
-    /**
-     * 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
-     */
-    public LoadOptions setResize(int width, int height) {
-        this.resize = new Resize(width, height);
-        return this;
-    }
-
-    /**
-     * 获取图片处理器
-     */
-    public ImageProcessor getImageProcessor() {
-        return imageProcessor;
-    }
-
-    /**
-     * 设置图片处理器，图片处理器会根据resize和ScaleType创建一张新的图片
-     */
-    public LoadOptions setImageProcessor(ImageProcessor processor) {
-        this.imageProcessor = processor;
-        return this;
-    }
-
-    /**
-     * 是否解码GIF图片（默认否）
-     */
-    public boolean isDecodeGifImage() {
-        return decodeGifImage;
-    }
-
-    /**
-     * 设置是否解码GIF图片（默认否）
-     */
-    public LoadOptions setDecodeGifImage(boolean decodeGifImage) {
-        this.decodeGifImage = decodeGifImage;
-        return this;
-    }
-
-    /**
-     * 是否返回低质量的图片
-     */
-    public boolean isLowQualityImage() {
-        return lowQualityImage;
-    }
-
-    /**
-     * 设置是否返回低质量的图片
-     */
-    public LoadOptions setLowQualityImage(boolean lowQualityImage) {
-        this.lowQualityImage = lowQualityImage;
-        return this;
-    }
-
-    /**
-     * 是否强制使经过resize处理的图片同resize的尺寸一致
-     */
     public boolean isForceUseResize() {
         return forceUseResize;
     }
 
-    /**
-     * 设置是否强制使经过resize处理的图片同resize的尺寸一致
-     */
     public LoadOptions setForceUseResize(boolean forceUseResize) {
         this.forceUseResize = forceUseResize;
         return this;
     }
 
-    /**
-     * 获取图片质量配置
-     */
+    public LoadOptions setResize(int width, int height) {
+        this.resize = new Resize(width, height);
+        return this;
+    }
+
+    public ImageProcessor getImageProcessor() {
+        return imageProcessor;
+    }
+
+    public LoadOptions setImageProcessor(ImageProcessor processor) {
+        this.imageProcessor = processor;
+        return this;
+    }
+
+    public boolean isDecodeGifImage() {
+        return decodeGifImage;
+    }
+
+    public LoadOptions setDecodeGifImage(boolean decodeGifImage) {
+        this.decodeGifImage = decodeGifImage;
+        return this;
+    }
+
+    public boolean isLowQualityImage() {
+        return lowQualityImage;
+    }
+
+    public LoadOptions setLowQualityImage(boolean lowQualityImage) {
+        this.lowQualityImage = lowQualityImage;
+        return this;
+    }
+
     public Bitmap.Config getBitmapConfig() {
         return bitmapConfig;
     }
 
-    /**
-     * 设置图片质量配置
-     */
     public LoadOptions setBitmapConfig(Bitmap.Config bitmapConfig) {
         this.bitmapConfig = bitmapConfig;
         return this;
     }
 
-    /**
-     * 解码时优先考虑速度还是质量 (默认优先考虑速度)
-     *
-     * @return true：质量；false：速度
-     */
     public boolean isInPreferQualityOverSpeed() {
         return inPreferQualityOverSpeed;
     }
 
-    /**
-     * 设置解码时优先考虑速度还是质量 (默认优先考虑速度)
-     *
-     * @param inPreferQualityOverSpeed true：质量；false：速度
-     */
     public LoadOptions setInPreferQualityOverSpeed(boolean inPreferQualityOverSpeed) {
         this.inPreferQualityOverSpeed = inPreferQualityOverSpeed;
+        return this;
+    }
+
+    public boolean isThumbnailMode() {
+        return thumbnailMode;
+    }
+
+    public LoadOptions setThumbnailMode(boolean thumbnailMode) {
+        this.thumbnailMode = thumbnailMode;
         return this;
     }
 
@@ -214,6 +199,7 @@ public class LoadOptions extends DownloadOptions {
         forceUseResize = false;
         bitmapConfig = null;
         inPreferQualityOverSpeed = false;
+        thumbnailMode = false;
     }
 
     /**
@@ -234,6 +220,7 @@ public class LoadOptions extends DownloadOptions {
         forceUseResize = options.forceUseResize;
         bitmapConfig = options.bitmapConfig;
         inPreferQualityOverSpeed = options.inPreferQualityOverSpeed;
+        thumbnailMode = options.thumbnailMode;
     }
 
     /**
@@ -284,6 +271,10 @@ public class LoadOptions extends DownloadOptions {
         if (!inPreferQualityOverSpeed) {
             inPreferQualityOverSpeed = options.inPreferQualityOverSpeed;
         }
+
+        if (!thumbnailMode) {
+            thumbnailMode = options.thumbnailMode;
+        }
     }
 
     @Override
@@ -304,6 +295,9 @@ public class LoadOptions extends DownloadOptions {
         }
         if (inPreferQualityOverSpeed) {
             builder.append("_").append("preferQuality");
+        }
+        if (thumbnailMode) {
+            builder.append("_").append("thumbnailMode");
         }
         if (bitmapConfig != null) {
             builder.append("_").append(bitmapConfig.name());

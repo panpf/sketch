@@ -16,9 +16,12 @@
 
 package me.xiaopan.sketch.decode;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
+import android.graphics.BitmapRegionDecoder;
+import android.graphics.Rect;
+import android.os.Build;
 import android.util.Log;
 
 import java.io.IOException;
@@ -28,6 +31,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.MaxSize;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class AssetsDecodeHelper implements DecodeHelper {
@@ -43,33 +47,61 @@ public class AssetsDecodeHelper implements DecodeHelper {
 
     @Override
     public Bitmap decode(BitmapFactory.Options options) {
-        InputStream inputStream = null;
+        InputStream inputStream;
         try {
-            inputStream = loadRequest.getSketch().getConfiguration().getContext().getAssets().open(assetsFilePath);
+            Context context = loadRequest.getSketch().getConfiguration().getContext();
+            inputStream = context.getAssets().open(assetsFilePath);
         } catch (IOException e) {
             e.printStackTrace();
+            return null;
         }
-        Bitmap bitmap = null;
-        if (inputStream != null) {
-            bitmap = BitmapFactory.decodeStream(inputStream, null, options);
-            try {
-                inputStream.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+
+        Bitmap bitmap = BitmapFactory.decodeStream(inputStream, null, options);
+        SketchUtils.close(inputStream);
         return bitmap;
     }
 
     @Override
-    public void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize) {
+    public Bitmap decodeRegion(Rect srcRect, BitmapFactory.Options options) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.GINGERBREAD_MR1) {
+            return null;
+        }
+
+        InputStream inputStream;
+        try {
+            Context context = loadRequest.getSketch().getConfiguration().getContext();
+            inputStream = context.getAssets().open(assetsFilePath);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+
+        BitmapRegionDecoder regionDecoder;
+        try {
+            regionDecoder = BitmapRegionDecoder.newInstance(inputStream, false);
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            SketchUtils.close(inputStream);
+        }
+
+        Bitmap bitmap = regionDecoder.decodeRegion(srcRect, options);
+        regionDecoder.recycle();
+        SketchUtils.close(inputStream);
+        return bitmap;
+    }
+
+    @Override
+    public void onDecodeSuccess(Bitmap bitmap, int outWidth, int outHeight, String outMimeType, int inSampleSize) {
         if (Sketch.isDebugMode()) {
             StringBuilder builder = new StringBuilder(logName)
                     .append(". decodeSuccess");
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
+                MaxSize maxSize = loadRequest.getOptions().getMaxSize();
                 ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
-                builder.append(". originalSize=").append(originalSize.x).append("x").append(originalSize.y);
-                builder.append(", targetSize=").append(loadRequest.getOptions().getMaxSize().getWidth()).append("x").append(loadRequest.getOptions().getMaxSize().getHeight());
+                builder.append(". originalSize=").append(outWidth).append("x").append(outHeight);
+                builder.append(", targetSize=").append(maxSize.getWidth()).append("x").append(maxSize.getHeight());
                 builder.append(", targetSizeScale=").append(sizeCalculator.getTargetSizeScale());
                 builder.append(", inSampleSize=").append(inSampleSize);
                 builder.append(", finalSize=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());

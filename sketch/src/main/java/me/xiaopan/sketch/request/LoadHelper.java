@@ -155,6 +155,15 @@ public class LoadHelper {
     }
 
     /**
+     * 开启缩略图模式
+     */
+    @SuppressWarnings("unused")
+    public LoadHelper thumbnailMode(){
+        loadOptions.setThumbnailMode(true);
+        return this;
+    }
+
+    /**
      * 批量设置加载参数，这会是一个合并的过程，并不会完全覆盖
      */
     public LoadHelper options(LoadOptions newOptions) {

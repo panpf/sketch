@@ -79,7 +79,11 @@ public class ReflectionImageProcessor implements ImageProcessor {
             return null;
         }
 
-        ResizeCalculator.Result result = sketch.getConfiguration().getResizeCalculator().calculator(bitmap.getWidth(), bitmap.getHeight(), resize != null ? resize.getWidth() : bitmap.getWidth(), resize != null ? resize.getHeight() : bitmap.getHeight(), resize != null ? resize.getScaleType() : null, forceUseResize);
+        ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
+        ResizeCalculator.Result result = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
+                resize != null ? resize.getWidth() : bitmap.getWidth(),
+                resize != null ? resize.getHeight() : bitmap.getHeight(),
+                resize != null ? resize.getScaleType() : null, forceUseResize);
         if (result == null) {
             return bitmap;
         }
@@ -88,13 +92,16 @@ public class ReflectionImageProcessor implements ImageProcessor {
         if (bitmap.getWidth() == result.imageWidth && bitmap.getHeight() == result.imageHeight) {
             srcBitmap = bitmap;
         } else {
-            srcBitmap = Bitmap.createBitmap(result.imageWidth, result.imageHeight, lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
+            srcBitmap = Bitmap.createBitmap(result.imageWidth, result.imageHeight,
+                    lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(srcBitmap);
             canvas.drawBitmap(bitmap, result.srcRect, result.destRect, null);
         }
 
         // 初始化画布
-        Bitmap bitmapWithReflection = Bitmap.createBitmap(result.imageWidth, (int) (result.imageHeight + reflectionSpacing + (result.imageHeight * reflectionScale)), lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
+        Bitmap bitmapWithReflection = Bitmap.createBitmap(result.imageWidth,
+                (int) (result.imageHeight + reflectionSpacing + (result.imageHeight * reflectionScale)),
+                lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmapWithReflection);
 
         // 在上半部分绘制原图
@@ -112,9 +119,11 @@ public class ReflectionImageProcessor implements ImageProcessor {
 
         // 在下半部分绘制半透明遮罩
         Paint paint = new Paint();
-        paint.setShader(new LinearGradient(0, result.imageHeight + reflectionSpacing, 0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
+        paint.setShader(new LinearGradient(0, result.imageHeight + reflectionSpacing,
+                0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
         paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
-        canvas.drawRect(0, result.imageHeight + reflectionSpacing, bitmapWithReflection.getWidth(), bitmapWithReflection.getHeight(), paint);
+        canvas.drawRect(0, result.imageHeight + reflectionSpacing,
+                bitmapWithReflection.getWidth(), bitmapWithReflection.getHeight(), paint);
 
         return bitmapWithReflection;
     }

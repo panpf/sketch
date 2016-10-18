@@ -308,14 +308,18 @@ public class ImageSizeCalculator implements Identifier {
         return originImageWidth > originImageHeight * 3;
     }
 
-//    /**
-//     * 是否可以使用缩略图模式
-//     */
-//    public boolean canUseThumbnailMode(int outWidth, int outHeight, int resizeWidth, int resizeHeight){
-//        float resizeScale = (float) resizeWidth / resizeHeight;
-//        float originScale = (float) outWidth / outHeight;
-//        return Math.max(resizeScale, originScale) > Math.min(resizeScale, originScale) * 3;
-//    }
+    /**
+     * 是否可以使用缩略图模式
+     */
+    public boolean canUseThumbnailMode(int outWidth, int outHeight, int resizeWidth, int resizeHeight){
+        if (resizeWidth > outWidth && resizeHeight > outHeight) {
+            return false;
+        }
+
+        float resizeScale = (float) resizeWidth / resizeHeight;
+        float originScale = (float) outWidth / outHeight;
+        return Math.max(resizeScale, originScale) > Math.min(resizeScale, originScale) * 1.5f;
+    }
 
     @SuppressWarnings("unused")
     public float getTargetSizeScale() {

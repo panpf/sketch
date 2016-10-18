@@ -38,7 +38,10 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
     private float[] cornerRadius;
 
     public RoundedCornerImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
-        cornerRadius = new float[]{topLeftRadius, topLeftRadius, topRightRadius, topRightRadius, bottomLeftRadius, bottomLeftRadius, bottomRightRadius, bottomRightRadius};
+        cornerRadius = new float[]{topLeftRadius, topLeftRadius,
+                topRightRadius, topRightRadius,
+                bottomLeftRadius, bottomLeftRadius,
+                bottomRightRadius, bottomRightRadius};
     }
 
     public RoundedCornerImageProcessor(float cornerRadius) {
@@ -78,12 +81,17 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
             return null;
         }
 
-        ResizeCalculator.Result result = sketch.getConfiguration().getResizeCalculator().calculator(bitmap.getWidth(), bitmap.getHeight(), resize != null ? resize.getWidth() : bitmap.getWidth(), resize != null ? resize.getHeight() : bitmap.getHeight(), resize != null ? resize.getScaleType() : null, forceUseResize);
+        ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
+        ResizeCalculator.Result result = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
+                resize != null ? resize.getWidth() : bitmap.getWidth(),
+                resize != null ? resize.getHeight() : bitmap.getHeight(),
+                resize != null ? resize.getScaleType() : null, forceUseResize);
         if (result == null) {
             return bitmap;
         }
 
-        Bitmap output = Bitmap.createBitmap(result.imageWidth, result.imageHeight, lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
+        Bitmap output = Bitmap.createBitmap(result.imageWidth, result.imageHeight,
+                lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();
         paint.setAntiAlias(true);

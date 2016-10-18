@@ -1,7 +1,6 @@
 package me.xiaopan.sketch.feature;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -49,9 +48,11 @@ public class ExceptionMonitor implements Identifier {
      *
      * @param throwable     UnsatisfiedLinkError或ExceptionInInitializerError：找不到对应到的so文件
      * @param request       请求
-     * @param boundsOptions 图片尺寸信息
+     * @param outWidth      图片原始宽
+     * @param outHeight     图片原始高
+     * @param outMimeType   图片类型
      */
-    public void onDecodeGifImageFailed(Throwable throwable, LoadRequest request, BitmapFactory.Options boundsOptions) {
+    public void onDecodeGifImageFailed(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
         if (throwable instanceof UnsatisfiedLinkError || throwable instanceof ExceptionInInitializerError) {
             Log.e(Sketch.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, " +
                     "unable to process the GIF images. If you need to decode the GIF figure " +
@@ -68,7 +69,7 @@ public class ExceptionMonitor implements Identifier {
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
                 ". DecodeGifImageFailed",
-                ". outWidth", "=", boundsOptions.outWidth, ", ", "outHeight", "=", boundsOptions.outHeight, ", ", "outMimeType", "=", boundsOptions.outMimeType,
+                ". outWidth", "=", outWidth, ", ", "outHeight", "=", outHeight, ", ", "outMimeType", "=", outMimeType,
                 ". ", request.getAttrs().getId()));
     }
 
@@ -77,9 +78,11 @@ public class ExceptionMonitor implements Identifier {
      *
      * @param throwable     OutOfMemoryError：内存溢出
      * @param request       请求
-     * @param boundsOptions 图片尺寸信息
+     * @param outWidth      图片原始宽
+     * @param outHeight     图片原始高
+     * @param outMimeType   图片类型
      */
-    public void onDecodeNormalImageFailed(Throwable throwable, LoadRequest request, BitmapFactory.Options boundsOptions) {
+    public void onDecodeNormalImageFailed(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
         if (throwable instanceof OutOfMemoryError) {
             long maxMemory = Runtime.getRuntime().maxMemory();
             long freeMemory = Runtime.getRuntime().freeMemory();
@@ -96,7 +99,7 @@ public class ExceptionMonitor implements Identifier {
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
                 ". DecodeNormalImageFailed",
-                ". outWidth", "=", boundsOptions.outWidth, ", ", "outHeight", "=", boundsOptions.outHeight, ", ", "outMimeType", "=", boundsOptions.outMimeType,
+                ". outWidth", "=", outWidth, ", ", "outHeight", "=", outHeight, ", ", "outMimeType", "=", outMimeType,
                 ". ", request.getAttrs().getId()));
     }
 

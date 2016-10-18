@@ -142,6 +142,7 @@
 （完成于2016-08-16）onDisplay的执行时机提前
 （完成于2016-10-15）图片异常变小似乎是由于缓存的drawable在其它地方被使用了，然后bounds被改变了导致的，想办法改变缓存的bitmap，使其仅仅具备引用信息，初步设想是搞一个引用bitmap包装bitmap记录引用信息，缓存的时候也是缓存引用bitmap，然后recycledrawable支持引用bitmap
 （完成于2016-10-18）旋转处理器如果旋转角度为0或360就不往ID上加标识了
+（完成于2016-10-18）另外碰见要显示100x100 但图片是1000x2000的，如果硬是缩小然后直接显示则可能很模糊，支持处理一下，只读取中间部分，这个功能就是是否允许生成缩略图
 
 不必了：
 （没有必要，因为是BitmapDrawable的话返回的就是其自己，所以没有必要重新绘制）调用drawableToBitmap后drawable是否有必要发现是bitmapDrawable立即释放）
@@ -164,7 +165,6 @@
 考虑支持外部添加一个bitmap到内存缓存中，那么决定是否用recycleDrawable就要放在memoryCache中了
 考虑是否把Bitmap往缓存里放的时机放到主线程来搞
 用纯色定义的图片作为默认图的时候会发生什么情况呢？
-既然APK图标无需关心回收问题，那是不是就没必要费劲给搞到本地缓存区再读，直接读取显示不回收不就行了，然后再考虑如何处理的问题，因为处理之后就需要回收了
 考虑对宽高固定的ImageView和普通图片使用像GlideDrawable一样的方式实现，这样可能会更顺畅一点
 考虑支持不同的应用场景，例如background，drawableTop等
 支持断点续传
@@ -188,8 +188,7 @@ RecycleDrawable改成包装形式的，可参考v7包里的一个drawableWrapper
 增强一下FixedBitmapDrawable，尽量在使用原生BitmapDrawable的基础上实现ScaleType的功能，然后定义一个牛逼的SketchBitmapDrawable，然后在搞一个专门的RecyclerDrawable可以包装SketchBitmapDrawable个GIfDrawable
 4.0以下下webp转png再使用，可以解决很多问题（超大图功能对WebP的限制需要改一下）
 如果同时有三张大图同时工作的话，可能会比较耗内存，因此提供一些回收和恢复的方法，方便在Fragment显示或隐藏的时候主动控制
-支持对大图片进行处理，缓存小的缩略图，这样下次读取就很快了
-另外碰见要显示100x100 但图片是1000x2000的，如果硬是缩小然后直接显示则可能很模糊，支持处理一下，只读取中间部分，然后缓存一下，这个功能就是是否允许生成缩略图
+支持缓存处理过的图片，这样下次读取就很快了
 支持一次设置两张图地址 分大图小图 WiFi下可直接大图
 drawable的setvisible 和setcallback可以利用一下 这样就能试图摆脱对attachwindow的依赖了
 

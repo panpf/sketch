@@ -21,6 +21,7 @@ import me.xiaopan.sketch.request.ImageHolder;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.R;
+import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
@@ -33,6 +34,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     private int middleMargin;
     private int roundRadius;
     private DisplayOptions displayOptions;
+    private Settings settings;
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -61,6 +63,8 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             itemWidth = maxScreenWidth / spanCount;
         }
 
+        settings = Settings.with(context);
+
         roundRadius = SketchUtils.dp2px(context, 10);
         RoundedCornerImageProcessor imageProcessor = new RoundedCornerImageProcessor(roundRadius);
         Resize resize = new Resize(itemWidth, itemWidth, ImageView.ScaleType.CENTER_CROP);
@@ -71,7 +75,8 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
                 .setImageProcessor(imageProcessor)
                 .setResizeByFixedSize(true)
                 .setForceUseResize(true)
-                .setImageDisplayer(new TransitionImageDisplayer());
+                .setImageDisplayer(new TransitionImageDisplayer())
+                .setThumbnailMode(settings.isThumbnailMode());
     }
 
     @Override
@@ -136,6 +141,8 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             }
             itemViewHolder.rootView.setLayoutParams(marginLayoutParams);
         }
+
+        itemViewHolder.sketchImageView.getOptions().setThumbnailMode(settings.isThumbnailMode());
 
         itemViewHolder.sketchImageView.displayImage(imageUris.get(position));
         itemViewHolder.sketchImageView.setTag(itemViewHolder);

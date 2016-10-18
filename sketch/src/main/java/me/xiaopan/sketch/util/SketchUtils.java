@@ -895,29 +895,19 @@ public class SketchUtils {
     }
 
     /**
-     * 根据API版本判断是否可以支持大图功能
+     * 根据API版本判断是否支持读取图片碎片
      */
-    public static boolean isSupportLargeImageByAPIVersion() {
+    public static boolean isSupportBitmapRegionDecoderByApi() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1;
     }
 
     /**
-     * 根据图片类型判断是否支持大图功能
+     * 根据图片类型判断是否支持读取图片碎片
      */
-    public static boolean isSupportLargeImage(ImageFormat imageFormat) {
-        if (!isSupportLargeImageByAPIVersion() || imageFormat == null) {
-            return false;
-        }
-
-        if (imageFormat == ImageFormat.JPEG || imageFormat == ImageFormat.PNG) {
-            return true;
-        } else if (imageFormat == ImageFormat.WEBP) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-                return true;
-            }
-        }
-
-        return false;
+    public static boolean isSupportBitmapRegionDecoderByImageFormat(ImageFormat imageFormat) {
+        return isSupportBitmapRegionDecoderByApi() && imageFormat != null &&
+                (imageFormat == ImageFormat.JPEG || imageFormat == ImageFormat.PNG ||
+                        (imageFormat == ImageFormat.WEBP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH));
     }
 
     /**
@@ -926,7 +916,7 @@ public class SketchUtils {
     public static boolean isSupportLargeImage(LoadRequest loadRequest, ImageFormat imageFormat) {
         return loadRequest instanceof DisplayRequest &&
                 ((DisplayRequest) loadRequest).getDisplayAttrs().isSupportLargeImage() &&
-                isSupportLargeImage(imageFormat);
+                isSupportBitmapRegionDecoderByImageFormat(imageFormat);
     }
 
     /**

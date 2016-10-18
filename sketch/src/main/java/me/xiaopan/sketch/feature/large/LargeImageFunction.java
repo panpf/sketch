@@ -60,7 +60,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         // 大图功能的开关对缩放功能的缩放比例的计算有影响，因此需要更新一下缩放功能
         imageZoomer.update();
 
-        if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
+        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1");
             }
@@ -69,7 +69,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public void onAttachedToWindow() {
-        if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
+        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
             return;
         }
 
@@ -78,7 +78,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public void onDraw(Canvas canvas) {
-        if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
+        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
             return;
         }
 
@@ -89,7 +89,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public boolean onDetachedFromWindow() {
-        if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
+        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
             return false;
         }
 
@@ -99,7 +99,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
+        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
             return false;
         }
 
@@ -109,7 +109,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public void onMatrixChanged(ImageZoomer imageZoomer) {
-        if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
+        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
             return;
         }
 
@@ -143,7 +143,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
     }
 
     private void resetImage() {
-        if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
+        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
             return;
         }
 
@@ -155,7 +155,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             drawableQualified |= drawable.getIntrinsicHeight() < sketchDrawable.getOriginHeight();
 
             String mimeType = sketchDrawable.getMimeType();
-            drawableQualified &= SketchUtils.isSupportLargeImage(ImageFormat.valueOfMimeType(mimeType));
+            drawableQualified &= SketchUtils.isSupportBitmapRegionDecoderByImageFormat(ImageFormat.valueOfMimeType(mimeType));
 
             if (drawableQualified) {
                 if (Sketch.isDebugMode()) {
@@ -186,7 +186,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
     }
 
     public void recycle(String why) {
-        if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
+        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
             return;
         }
 
@@ -195,7 +195,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public void invalidate() {
-        if (!SketchUtils.isSupportLargeImageByAPIVersion()) {
+        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
             return;
         }
 

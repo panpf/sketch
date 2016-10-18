@@ -18,7 +18,7 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Point;
+import android.graphics.Rect;
 
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 
@@ -34,9 +34,16 @@ public interface DecodeHelper {
     Bitmap decode(BitmapFactory.Options options);
 
     /**
+     * 解码碎片
+     * @param srcRect 解码区域
+     * @param options 解码选项
+     */
+    Bitmap decodeRegion(Rect srcRect, BitmapFactory.Options options);
+
+    /**
      * 解码成功
      */
-    void onDecodeSuccess(Bitmap bitmap, Point originalSize, int inSampleSize);
+    void onDecodeSuccess(Bitmap bitmap, int outWidth, int outHeight, String outMimeType, int inSampleSize);
 
     /**
      * 解码失败

@@ -328,6 +328,27 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/item_main_thumbnailMode"
+                    style="@style/menu_item"
+                    android:clickable="true">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="开启缩略图模式" />
+
+                    <CheckBox
+                        android:id="@+id/checkBox_main_thumbnailMode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/item_main_supportZoom"
                     style="@style/menu_item"
                     android:clickable="true">

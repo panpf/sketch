@@ -251,6 +251,15 @@ public class DisplayHelper {
     }
 
     /**
+     * 开启缩略图模式
+     */
+    @SuppressWarnings("unused")
+    public DisplayHelper thumbnailMode(){
+        displayOptions.setThumbnailMode(true);
+        return this;
+    }
+
+    /**
      * 禁用内存缓存
      */
     @SuppressWarnings("unused")

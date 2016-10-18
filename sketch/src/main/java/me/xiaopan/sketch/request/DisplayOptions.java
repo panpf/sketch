@@ -25,11 +25,34 @@ import me.xiaopan.sketch.process.ImageProcessor;
  * 显示选项
  */
 public class DisplayOptions extends LoadOptions {
+    /**
+     * 禁用内存缓存（默认否）
+     */
     private boolean disableCacheInMemory;
+
+    /**
+     * 图片显示器，在加载完成后会调用此显示器来显示图片
+     */
     private ImageDisplayer imageDisplayer;
+
+    /**
+     * 正在加载时显示的图片
+     */
     private ImageHolder loadingImageHolder;
+
+    /**
+     * 加载失败时显示的图片
+     */
     private ImageHolder failedImageHolder;
+
+    /**
+     * 暂停下载时显示的图片
+     */
     private ImageHolder pauseDownloadImageHolder;
+
+    /**
+     * 使用ImageView的layout_width和layout_height作为resize（默认否）
+     */
     private boolean resizeByFixedSize;
 
     public DisplayOptions() {
@@ -120,115 +143,76 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
-    /**
-     * 是否禁用内存缓存
-     */
+    @Override
+    public DisplayOptions setThumbnailMode(boolean thumbnailMode) {
+        super.setThumbnailMode(thumbnailMode);
+        return this;
+    }
+
     public boolean isDisableCacheInMemory() {
         return disableCacheInMemory;
     }
 
-    /**
-     * 设置是否禁用内存缓存
-     */
     public DisplayOptions setDisableCacheInMemory(boolean disableCacheInMemory) {
         this.disableCacheInMemory = disableCacheInMemory;
         return this;
     }
 
-    /**
-     * 获取图片显示器
-     */
     public ImageDisplayer getImageDisplayer() {
         return imageDisplayer;
     }
 
-    /**
-     * 设置图片显示器，在加载完成后会调用此显示器来显示图片
-     */
     public DisplayOptions setImageDisplayer(ImageDisplayer displayer) {
         this.imageDisplayer = displayer;
         return this;
     }
 
-    /**
-     * 获取正在加载时显示的图片
-     */
     public ImageHolder getLoadingImageHolder() {
         return loadingImageHolder;
     }
 
-    /**
-     * 设置正在加载时显示的图片
-     */
     public DisplayOptions setLoadingImage(ImageHolder loadingImageHolder) {
         this.loadingImageHolder = loadingImageHolder;
         return this;
     }
 
-    /**
-     * 设置正在加载时显示的图片
-     */
     public DisplayOptions setLoadingImage(int drawableResId) {
         setLoadingImage(new ImageHolder(drawableResId));
         return this;
     }
 
-    /**
-     * 获取失败时显示的图片
-     */
     public ImageHolder getFailedImageHolder() {
         return failedImageHolder;
     }
 
-    /**
-     * 设置失败时显示的图片
-     */
     public DisplayOptions setFailedImage(ImageHolder failedImageHolder) {
         this.failedImageHolder = failedImageHolder;
         return this;
     }
 
-    /**
-     * 设置失败时显示的图片
-     */
     public DisplayOptions setFailedImage(int drawableResId) {
         setFailedImage(new ImageHolder(drawableResId));
         return this;
     }
 
-    /**
-     * 获取暂停下载时显示的图片
-     */
     public ImageHolder getPauseDownloadImageHolder() {
         return pauseDownloadImageHolder;
     }
 
-    /**
-     * 设置暂停下载时显示的图片
-     */
     public DisplayOptions setPauseDownloadImage(ImageHolder pauseDownloadImageHolder) {
         this.pauseDownloadImageHolder = pauseDownloadImageHolder;
         return this;
     }
 
-    /**
-     * 设置暂停下载时显示的图片
-     */
     public DisplayOptions setPauseDownloadImage(int drawableResId) {
         setPauseDownloadImage(new ImageHolder(drawableResId));
         return this;
     }
 
-    /**
-     * 是否使用ImageView的layout_width和layout_height作为resize
-     */
     public boolean isResizeByFixedSize() {
         return resizeByFixedSize;
     }
 
-    /**
-     * 设置是否使用ImageView的layout_width和layout_height作为resize
-     */
     public DisplayOptions setResizeByFixedSize(boolean isResizeByFixedSize) {
         this.resizeByFixedSize = isResizeByFixedSize;
         if (this.resizeByFixedSize && getResize() != null) {

@@ -111,6 +111,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     @InjectView(R.id.checkBox_main_supportLargeImage) private CheckBox supportLargeImageCheckBox;
     @InjectView(R.id.item_main_readMode) private View readModeItem;
     @InjectView(R.id.checkBox_main_readMode) private CheckBox readModeCheckBox;
+    @InjectView(R.id.item_main_thumbnailMode) private View thumbnailModeItem;
+    @InjectView(R.id.checkBox_main_thumbnailMode) private CheckBox thumbnailModeCheckBox;
 
     private long lastClickBackTime;
     private Type type;
@@ -155,6 +157,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         supportZoomCheckBox.setChecked(settings.isSupportZoom());
         supportLargeImageCheckBox.setChecked(settings.isSupportLargeImage());
         readModeCheckBox.setChecked(settings.isReadMode());
+        thumbnailModeCheckBox.setChecked(settings.isThumbnailMode());
 
         starButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
@@ -180,6 +183,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         supportZoomItem.setOnClickListener(this);
         supportLargeImageItem.setOnClickListener(this);
         readModeItem.setOnClickListener(this);
+        thumbnailModeItem.setOnClickListener(this);
 
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
@@ -524,6 +528,12 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 boolean newReadModeValue = !settings.isReadMode();
                 readModeCheckBox.setChecked(newReadModeValue);
                 settings.setReadMode(newReadModeValue);
+                drawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.item_main_thumbnailMode:
+                boolean newThumbnailModeValue = !settings.isThumbnailMode();
+                thumbnailModeCheckBox.setChecked(newThumbnailModeValue);
+                settings.setThumbnailMode(newThumbnailModeValue);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
         }

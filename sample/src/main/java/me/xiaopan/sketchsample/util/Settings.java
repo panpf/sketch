@@ -20,6 +20,7 @@ public class Settings {
     private static final String PREFERENCE_SUPPORT_ZOOM = "PREFERENCE_SUPPORT_ZOOM";
     private static final String PREFERENCE_SUPPORT_LARGE_IMAGE = "PREFERENCE_SUPPORT_LARGE_IMAGE";
     private static final String PREFERENCE_READ_MODE = "PREFERENCE_READ_MODE";
+    private static final String PREFERENCE_THUMBNAIL_MODE = "PREFERENCE_THUMBNAIL_MODE";
 
     private static Settings settingsInstance;
 
@@ -37,6 +38,7 @@ public class Settings {
     private boolean supportZoom;
     private boolean supportLargeImage;
     private boolean readMode;
+    private boolean thumbnailMode;
 
     private SharedPreferences.Editor editor;
 
@@ -58,6 +60,7 @@ public class Settings {
         this.supportZoom = preferences.getBoolean(PREFERENCE_SUPPORT_ZOOM, true);
         this.supportLargeImage = preferences.getBoolean(PREFERENCE_SUPPORT_LARGE_IMAGE, true);
         this.readMode = preferences.getBoolean(PREFERENCE_READ_MODE, true);
+        this.thumbnailMode = preferences.getBoolean(PREFERENCE_THUMBNAIL_MODE, true);
     }
 
     public static Settings with(Context context) {
@@ -256,6 +259,16 @@ public class Settings {
     public void setReadMode(boolean readMode) {
         this.readMode = readMode;
         editor.putBoolean(PREFERENCE_READ_MODE, readMode);
+        apply();
+    }
+
+    public boolean isThumbnailMode() {
+        return thumbnailMode;
+    }
+
+    public void setThumbnailMode(boolean thumbnailMode) {
+        this.thumbnailMode = thumbnailMode;
+        editor.putBoolean(PREFERENCE_THUMBNAIL_MODE, thumbnailMode);
         apply();
     }
 }

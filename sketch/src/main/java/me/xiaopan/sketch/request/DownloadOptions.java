@@ -20,8 +20,19 @@ package me.xiaopan.sketch.request;
  * 下载选项
  */
 public class DownloadOptions {
+    /**
+     * 禁用磁盘缓存（默认否）
+     */
     private boolean disableCacheInDisk;
+
+    /**
+     * 请求Level
+     */
     private RequestLevel requestLevel;
+
+    /**
+     * 请求Level的来源
+     */
     private RequestLevelFrom requestLevelFrom;
 
     public DownloadOptions() {
@@ -33,46 +44,28 @@ public class DownloadOptions {
         copy(from);
     }
 
-    /**
-     * 是否禁用磁盘缓存
-     */
     public boolean isDisableCacheInDisk() {
         return disableCacheInDisk;
     }
 
-    /**
-     * 设置是否禁用磁盘缓存
-     */
     public DownloadOptions setDisableCacheInDisk(boolean disableCacheInDisk) {
         this.disableCacheInDisk = disableCacheInDisk;
         return this;
     }
 
-    /**
-     * 获取请求Level
-     */
     public RequestLevel getRequestLevel() {
         return requestLevel;
     }
 
-    /**
-     * 设置请求Level
-     */
     public DownloadOptions setRequestLevel(RequestLevel requestLevel) {
         this.requestLevel = requestLevel;
         return this;
     }
 
-    /**
-     * 获取请求Level的来源
-     */
     public RequestLevelFrom getRequestLevelFrom() {
         return requestLevelFrom;
     }
 
-    /**
-     * 设置请求Level的来源
-     */
     DownloadOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
         this.requestLevelFrom = requestLevelFrom;
         return this;
@@ -124,6 +117,9 @@ public class DownloadOptions {
         }
     }
 
+    /**
+     * 协助生成请求ID
+     */
     public StringBuilder appendOptionsToId(StringBuilder builder) {
         return builder;
     }
