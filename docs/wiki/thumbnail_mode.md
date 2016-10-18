@@ -1,0 +1,1 @@
+对于原图宽高比与resize宽高比相差1.5倍的图片，将会用BitmapRegionDecoder根据resize读取原图中间的部分，这样能确保显示出较清晰的图片
