@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.request;
 
+import android.text.TextUtils;
+
 import me.xiaopan.sketch.Identifier;
 
 public class FixedSize implements Identifier {
@@ -42,12 +44,15 @@ public class FixedSize implements Identifier {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
+        return appendIdentifier(null, new StringBuilder()).toString();
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
-        builder.append("MaxSize(");
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
+        builder.append("FixedSize(");
         builder.append(width);
         builder.append("x");
         builder.append(height);

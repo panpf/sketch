@@ -21,6 +21,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
@@ -83,7 +84,10 @@ public class ImagePreprocessor implements Identifier {
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append(logName);
     }
 

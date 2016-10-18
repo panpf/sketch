@@ -3,6 +3,7 @@ package me.xiaopan.sketch.process;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.Resize;
@@ -46,18 +47,21 @@ public class GaussianBlurImageProcessor extends ResizeImageProcessor {
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public String getIdentifier() {
+        return appendIdentifier(null, new StringBuilder()).toString();
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append(logName)
                 .append("(")
                 .append("radius=").append(radius)
                 .append(",")
                 .append("isDarkHandle=").append(isDarkHandle)
                 .append(")");
-    }
-
-    @Override
-    public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
     }
 
     @Override

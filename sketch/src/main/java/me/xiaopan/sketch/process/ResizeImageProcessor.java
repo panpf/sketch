@@ -18,6 +18,7 @@ package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.feature.ResizeCalculator;
@@ -27,11 +28,14 @@ public class ResizeImageProcessor implements ImageProcessor {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
+        return appendIdentifier(null, new StringBuilder()).toString();
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append("ResizeImageProcessor");
     }
 

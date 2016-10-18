@@ -572,100 +572,75 @@ public class Configuration {
 
         if (diskCache != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("diskCache");
-            builder.append("：");
-            diskCache.appendIdentifier(builder);
+            diskCache.appendIdentifier("diskCache：", builder);
         }
 
         if (memoryCache != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("memoryCache");
-            builder.append("：");
-            memoryCache.appendIdentifier(builder);
+            memoryCache.appendIdentifier("memoryCache：", builder);
         }
 
         if (placeholderImageMemoryCache != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("placeholderImageMemoryCache");
-            builder.append("：");
-            placeholderImageMemoryCache.appendIdentifier(builder);
+            placeholderImageMemoryCache.appendIdentifier("placeholderImageMemoryCache：", builder);
         }
 
         if (imageDecoder != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("imageDecoder");
-            builder.append("：");
-            imageDecoder.appendIdentifier(builder);
+            imageDecoder.appendIdentifier("imageDecoder：", builder);
         }
 
         if (helperFactory != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("helperFactory");
-            builder.append("：");
-            helperFactory.appendIdentifier(builder);
+            helperFactory.appendIdentifier("helperFactory：", builder);
         }
 
         if (defaultImageDisplayer != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("defaultImageDisplayer");
-            builder.append("：");
-            defaultImageDisplayer.appendIdentifier(builder);
+            defaultImageDisplayer.appendIdentifier("defaultImageDisplayer：", builder);
         }
 
         if (resizeImageProcessor != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("resizeImageProcessor");
-            builder.append("：");
-            resizeImageProcessor.appendIdentifier(builder);
+            resizeImageProcessor.appendIdentifier("resizeImageProcessor：", builder);
         }
 
         if (requestFactory != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("requestFactory");
-            builder.append("：");
-            requestFactory.appendIdentifier(builder);
+            requestFactory.appendIdentifier("requestFactory：", builder);
         }
 
         if (httpStack != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("httpStack");
-            builder.append("：");
-            httpStack.appendIdentifier(builder);
+            httpStack.appendIdentifier("httpStack：", builder);
         }
 
         if (requestExecutor != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("requestExecutor");
-            builder.append("：");
-            requestExecutor.appendIdentifier(builder);
+            requestExecutor.appendIdentifier("requestExecutor：", builder);
         }
 
         if (imageSizeCalculator != null) {
             if (builder.length() > 0) builder.append("\n");
-            builder.append("imageSizeCalculator");
-            builder.append("：");
-            imageSizeCalculator.appendIdentifier(builder);
+            imageSizeCalculator.appendIdentifier("imageSizeCalculator：", builder);
         }
 
         if (resizeCalculator != null) {
             if (builder.length() > 0) builder.append("\n");
             builder.append("resizeCalculator");
-            builder.append("：");
-            resizeCalculator.appendIdentifier(builder);
+            resizeCalculator.appendIdentifier("：", builder);
         }
 
         if (imagePreprocessor != null) {
             if (builder.length() > 0) builder.append("\n");
             builder.append("imagePreprocessor");
-            builder.append("：");
-            imagePreprocessor.appendIdentifier(builder);
+            imagePreprocessor.appendIdentifier("：", builder);
         }
 
         if (exceptionMonitor != null) {
             if (builder.length() > 0) builder.append("\n");
             builder.append("errorCallback");
-            builder.append("：");
-            exceptionMonitor.appendIdentifier(builder);
+            exceptionMonitor.appendIdentifier("：", builder);
         }
 
         if (builder.length() > 0) builder.append("\n");

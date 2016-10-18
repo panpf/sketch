@@ -291,32 +291,25 @@ public class LoadOptions extends DownloadOptions {
         super.appendOptionsToId(builder);
 
         if (maxSize != null) {
-            builder.append("_");
-            maxSize.appendIdentifier(builder);
+            maxSize.appendIdentifier("_", builder);
         }
         if (resize != null) {
-            builder.append("_");
-            resize.appendIdentifier(builder);
+            resize.appendIdentifier("_", builder);
         }
         if (forceUseResize) {
-            builder.append("_");
-            builder.append("forceUseResize");
+            builder.append("_").append("forceUseResize");
         }
         if (lowQualityImage) {
-            builder.append("_");
-            builder.append("lowQualityImage");
+            builder.append("_").append("lowQualityImage");
         }
         if (inPreferQualityOverSpeed) {
-            builder.append("_");
-            builder.append("preferQuality");
+            builder.append("_").append("preferQuality");
         }
         if (bitmapConfig != null) {
-            builder.append("_");
-            builder.append(bitmapConfig.name());
+            builder.append("_").append(bitmapConfig.name());
         }
         if (imageProcessor != null) {
-            builder.append("_");
-            imageProcessor.appendIdentifier(builder);
+            imageProcessor.appendIdentifier("_", builder);
         }
         return builder;
     }

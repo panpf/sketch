@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.http;
 
+import android.text.TextUtils;
+
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
 import org.apache.http.HttpEntity;
@@ -169,11 +171,14 @@ public class HttpClientStack implements HttpStack {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
+        return appendIdentifier(null, new StringBuilder()).toString();
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append(logName)
                 .append("(")
                 .append("maxRetryCount=").append(maxRetryCount)

@@ -9,5 +9,5 @@ public interface Identifier {
     /**
      * 追加标识符
      */
-    StringBuilder appendIdentifier(StringBuilder builder);
+    StringBuilder appendIdentifier(String join, StringBuilder builder);
 }

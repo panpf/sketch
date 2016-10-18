@@ -93,20 +93,16 @@ public class ImageHolder {
         StringBuilder builder = new StringBuilder();
         builder.append(resId);
         if (resize != null) {
-            builder.append("_");
-            resize.appendIdentifier(builder);
+            resize.appendIdentifier("_", builder);
         }
         if (forceUseResize) {
-            builder.append("_");
-            builder.append("forceUseResize");
+            builder.append("_").append("forceUseResize");
         }
         if (lowQualityImage) {
-            builder.append("_");
-            builder.append("lowQualityImage");
+            builder.append("_").append("lowQualityImage");
         }
         if (imageProcessor != null) {
-            builder.append("_");
-            imageProcessor.appendIdentifier(builder);
+            imageProcessor.appendIdentifier("_", builder);
         }
         return builder.toString();
     }

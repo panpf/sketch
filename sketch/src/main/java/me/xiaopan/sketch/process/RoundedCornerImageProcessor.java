@@ -23,6 +23,7 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RectF;
+import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.feature.ResizeCalculator;
@@ -46,11 +47,14 @@ public class RoundedCornerImageProcessor implements ImageProcessor {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
+        return appendIdentifier(null, new StringBuilder()).toString();
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         builder.append(logName);
         if (cornerRadius != null) {
             builder.append("(")

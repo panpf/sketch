@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
@@ -78,11 +79,14 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
+        return appendIdentifier(null, new StringBuilder()).toString();
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         builder.append(logName)
                 .append("(")
                 .append("duration=").append(duration)

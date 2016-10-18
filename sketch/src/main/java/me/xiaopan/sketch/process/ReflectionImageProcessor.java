@@ -24,6 +24,7 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Shader.TileMode;
+import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.feature.ResizeCalculator;
@@ -32,6 +33,7 @@ import me.xiaopan.sketch.request.Resize;
 /**
  * 倒影图片处理器
  */
+@SuppressWarnings("unused")
 public class ReflectionImageProcessor implements ImageProcessor {
     protected String logName = "ReflectionImageProcessor";
 
@@ -55,11 +57,14 @@ public class ReflectionImageProcessor implements ImageProcessor {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
+        return appendIdentifier(null, new StringBuilder()).toString();
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append(logName)
                 .append("(")
                 .append("scale=").append(reflectionScale)

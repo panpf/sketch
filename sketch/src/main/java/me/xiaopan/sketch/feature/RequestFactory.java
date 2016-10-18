@@ -16,10 +16,11 @@
 
 package me.xiaopan.sketch.feature;
 
+import android.text.TextUtils;
+
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.DisplayAttrs;
-import me.xiaopan.sketch.request.RequestAndViewBinder;
 import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayRequest;
@@ -30,6 +31,7 @@ import me.xiaopan.sketch.request.DownloadRequest;
 import me.xiaopan.sketch.request.LoadListener;
 import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.RequestAndViewBinder;
 import me.xiaopan.sketch.request.RequestAttrs;
 
 /**
@@ -70,7 +72,10 @@ public class RequestFactory implements Identifier {
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append(logName);
     }
 }

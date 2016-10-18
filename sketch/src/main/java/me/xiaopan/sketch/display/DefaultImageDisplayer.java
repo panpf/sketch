@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 
 import me.xiaopan.sketch.request.ImageViewInterface;
 
@@ -41,7 +42,10 @@ public class DefaultImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append(logName);
     }
 }

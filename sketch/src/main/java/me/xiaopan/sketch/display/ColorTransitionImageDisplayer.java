@@ -19,6 +19,7 @@ package me.xiaopan.sketch.display;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
+import android.text.TextUtils;
 
 import me.xiaopan.sketch.request.ImageViewInterface;
 
@@ -55,11 +56,14 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
+        return appendIdentifier(null, new StringBuilder()).toString();
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append(logName)
                 .append("(")
                 .append("duration=").append(duration)

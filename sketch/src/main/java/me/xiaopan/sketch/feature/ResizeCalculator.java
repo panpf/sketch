@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.feature;
 
 import android.graphics.Rect;
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Identifier;
@@ -30,7 +31,10 @@ public class ResizeCalculator implements Identifier {
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append(logName);
     }
 

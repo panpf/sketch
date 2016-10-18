@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.cache;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 
@@ -330,11 +331,14 @@ public class LruDiskCache implements DiskCache {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
+        return appendIdentifier(null, new StringBuilder()).toString();
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append(logName)
                 .append("(")
                 .append("maxSize=").append(Formatter.formatFileSize(context, maxSize))

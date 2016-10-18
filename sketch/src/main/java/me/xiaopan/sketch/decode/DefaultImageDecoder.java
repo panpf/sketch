@@ -21,6 +21,7 @@ import android.graphics.BitmapFactory.Options;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.Log;
 
 import java.io.File;
@@ -200,7 +201,10 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append(logName);
     }
 

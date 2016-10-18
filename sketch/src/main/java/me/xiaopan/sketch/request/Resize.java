@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.request;
 
+import android.text.TextUtils;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Identifier;
@@ -65,11 +66,14 @@ public class Resize implements Identifier {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
+        return appendIdentifier(null, new StringBuilder()).toString();
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         builder.append("Resize(");
         builder.append(width);
         builder.append("x");

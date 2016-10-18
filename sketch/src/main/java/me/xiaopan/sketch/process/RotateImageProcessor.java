@@ -18,6 +18,7 @@ package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
+import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.Resize;
@@ -25,6 +26,7 @@ import me.xiaopan.sketch.request.Resize;
 /**
  * 旋转图片处理器
  */
+@SuppressWarnings("unused")
 public class RotateImageProcessor extends ResizeImageProcessor {
     protected String logName = "RotateImageProcessor";
 
@@ -55,12 +57,20 @@ public class RotateImageProcessor extends ResizeImageProcessor {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(new StringBuilder()).toString();
+        return appendIdentifier(null, new StringBuilder()).toString();
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder stringBuilder) {
-        return stringBuilder.append(logName)
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        // 0度或360度时不加标识，这样做是为了避免浪费合适的内存缓存
+        if (degrees % 360 == 0) {
+            return builder;
+        }
+
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
+        return builder.append(logName)
                 .append("(")
                 .append("degrees=").append(degrees)
                 .append(")");

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 
@@ -136,7 +137,10 @@ public class ExceptionMonitor implements Identifier {
     }
 
     @Override
-    public StringBuilder appendIdentifier(StringBuilder builder) {
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
         return builder.append(logName);
     }
 }
