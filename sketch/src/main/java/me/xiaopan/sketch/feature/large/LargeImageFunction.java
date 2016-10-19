@@ -60,7 +60,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         // 大图功能的开关对缩放功能的缩放比例的计算有影响，因此需要更新一下缩放功能
         imageZoomer.update();
 
-        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
+        if (!SketchUtils.isSupportBRDByApi()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1");
             }
@@ -69,7 +69,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public void onAttachedToWindow() {
-        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
+        if (!SketchUtils.isSupportBRDByApi()) {
             return;
         }
 
@@ -78,7 +78,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public void onDraw(Canvas canvas) {
-        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
+        if (!SketchUtils.isSupportBRDByApi()) {
             return;
         }
 
@@ -89,7 +89,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public boolean onDetachedFromWindow() {
-        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
+        if (!SketchUtils.isSupportBRDByApi()) {
             return false;
         }
 
@@ -99,7 +99,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
+        if (!SketchUtils.isSupportBRDByApi()) {
             return false;
         }
 
@@ -109,7 +109,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public void onMatrixChanged(ImageZoomer imageZoomer) {
-        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
+        if (!SketchUtils.isSupportBRDByApi()) {
             return;
         }
 
@@ -143,41 +143,44 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
     }
 
     private void resetImage() {
-        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
+        if (!SketchUtils.isSupportBRDByApi()) {
             return;
         }
 
-        Drawable drawable = SketchUtils.getLastDrawable(imageView.getDrawable());
+        Drawable previewDrawable = SketchUtils.getLastDrawable(imageView.getDrawable());
         boolean drawableQualified = false;
-        if (drawable != null && drawable instanceof SketchDrawable && !(drawable instanceof BindDrawable)) {
-            SketchDrawable sketchDrawable = (SketchDrawable) drawable;
-            drawableQualified = drawable.getIntrinsicWidth() < sketchDrawable.getImageWidth();
-            drawableQualified |= drawable.getIntrinsicHeight() < sketchDrawable.getImageHeight();
+        if (previewDrawable != null && previewDrawable instanceof SketchDrawable && !(previewDrawable instanceof BindDrawable)) {
+            SketchDrawable sketchDrawable = (SketchDrawable) previewDrawable;
+            final int previewWidth = previewDrawable.getIntrinsicWidth();
+            final int previewHeight = previewDrawable.getIntrinsicHeight();
+            final int imageWidth = sketchDrawable.getImageWidth();
+            final int imageHeight = sketchDrawable.getImageHeight();
 
-            String mimeType = sketchDrawable.getMimeType();
-            drawableQualified &= SketchUtils.isSupportBitmapRegionDecoderByImageFormat(ImageFormat.valueOfMimeType(mimeType));
+            drawableQualified = previewWidth < imageWidth || previewHeight < imageHeight;
+            drawableQualified &= SketchUtils.isSupportBRDByApi();
+            drawableQualified &= SketchUtils.isSupportBRDByImageFormat(ImageFormat.valueOfMimeType(sketchDrawable.getMimeType()));
 
             if (drawableQualified) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, NAME + ". Use large image function" +
-                            ". previewDrawableSize: " + drawable.getIntrinsicWidth() + "x" + drawable.getIntrinsicHeight() +
-                            ", imageSize: " + sketchDrawable.getImageWidth() + "x" + sketchDrawable.getImageHeight() +
-                            ", mimeType: " + mimeType +
+                            ". previewDrawableSize: " + previewWidth + "x" + previewHeight +
+                            ", imageSize: " + imageWidth + "x" + imageHeight +
+                            ", mimeType: " + sketchDrawable.getMimeType() +
                             ". " + sketchDrawable.getImageId());
                 }
             } else {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, NAME + ". Don't need to use large image function" +
-                            ". previewDrawableSize: " + drawable.getIntrinsicWidth() + "x" + drawable.getIntrinsicHeight() +
-                            ", imageSize: " + sketchDrawable.getImageWidth() + "x" + sketchDrawable.getImageHeight() +
-                            ", mimeType: " + mimeType +
+                            ". previewDrawableSize: " + previewWidth + "x" + previewHeight +
+                            ", imageSize: " + imageWidth + "x" + imageHeight +
+                            ", mimeType: " + sketchDrawable.getMimeType() +
                             ". " + sketchDrawable.getImageId());
                 }
             }
         }
 
         if (drawableQualified) {
-            imageUri = ((SketchDrawable) drawable).getImageUri();
+            imageUri = ((SketchDrawable) previewDrawable).getImageUri();
             largeImageViewer.setImage(imageUri);
         } else {
             imageUri = null;
@@ -186,7 +189,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
     }
 
     public void recycle(String why) {
-        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
+        if (!SketchUtils.isSupportBRDByApi()) {
             return;
         }
 
@@ -195,7 +198,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
 
     @Override
     public void invalidate() {
-        if (!SketchUtils.isSupportBitmapRegionDecoderByApi()) {
+        if (!SketchUtils.isSupportBRDByApi()) {
             return;
         }
 

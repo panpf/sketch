@@ -184,7 +184,8 @@ public class DefaultImageDecoder implements ImageDecoder {
         // 要想使用缩略图功能需要配置开启缩略图功能、配置resize并且图片格式和系统版本支持BitmapRegionDecoder才行
         LoadOptions loadOptions = loadRequest.getOptions();
         if (!loadOptions.isThumbnailMode() || loadOptions.getResize() == null
-                || !SketchUtils.isSupportBitmapRegionDecoderByImageFormat(imageFormat)) {
+                || !SketchUtils.isSupportBRDByApi()
+                || !SketchUtils.isSupportBRDByImageFormat(imageFormat)) {
             return null;
         }
 
