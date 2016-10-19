@@ -1174,8 +1174,12 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             Log.w(Sketch.TAG, NAME + ". rotate degrees must be in multiples of 90");
             return false;
         }
+        degrees %= 360;
+        if (degrees <= 0) {
+            degrees = 360 - degrees;
+        }
 
-        rotateDegrees = degrees % 360;
+        rotateDegrees = degrees;
         resetSizes();
         resetSupportMatrix();
         resetBaseMatrix();
