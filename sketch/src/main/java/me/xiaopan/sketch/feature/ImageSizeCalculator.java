@@ -297,15 +297,15 @@ public class ImageSizeCalculator implements Identifier {
     /**
      * 根据高度计算是否可以使用阅读模式
      */
-    public boolean canUseReadModeByHeight(int originImageWidth, int originImageHeight){
-        return originImageHeight > originImageWidth * 3;
+    public boolean canUseReadModeByHeight(int imageWidth, int imageHeight){
+        return imageHeight > imageWidth * 3;
     }
 
     /**
      * 根据宽度度计算是否可以使用阅读模式
      */
-    public boolean canUseReadModeByWidth(int originImageWidth, int originImageHeight){
-        return originImageWidth > originImageHeight * 3;
+    public boolean canUseReadModeByWidth(int imageWidth, int imageHeight){
+        return imageWidth > imageHeight * 3;
     }
 
     /**
@@ -317,8 +317,8 @@ public class ImageSizeCalculator implements Identifier {
         }
 
         float resizeScale = (float) resizeWidth / resizeHeight;
-        float originScale = (float) outWidth / outHeight;
-        return Math.max(resizeScale, originScale) > Math.min(resizeScale, originScale) * 1.5f;
+        float imageScale = (float) outWidth / outHeight;
+        return Math.max(resizeScale, imageScale) > Math.min(resizeScale, imageScale) * 1.5f;
     }
 
     @SuppressWarnings("unused")
