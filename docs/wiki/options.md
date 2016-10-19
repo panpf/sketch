@@ -19,6 +19,7 @@ Sketch有display()、load()、download()三大方法，我们可以通过其专�
 |lowQualityImage|-|false|false|
 |bitmapConfig|-|null|null|
 |inPreferQualityOverSpeed|-|false|false|
+|thumbnailMode|-|false|false|
 |disableCacheInMemory|-|-|false|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
@@ -64,6 +65,9 @@ displayOptions.setBitmapConfig(Bitmap.Config.RGB_565);
 
 // 解码图片的时候优先考虑质量（默认是优先考虑速度，当你要频繁的对一张图片进行读取然后写出的时候一定要设置优先考虑质量）
 displayOptions.setInPreferQualityOverSpeed(true);
+
+// 开启缩略图模式
+displayOptions.setThumbnailMode(true);
 
 // 指定一个图片处理器，将图片改成圆形的
 displayOptions.setImageProcessor(new CircleImageProcessor());

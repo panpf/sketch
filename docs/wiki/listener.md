@@ -1,4 +1,4 @@
-Sketch支持对``开始``、``完成``、``失败``、``取消``以及``下载进度``的监听
+Sketch支持对``开始``、``完成``、``失败``、``取消``以及``下载进度``进行监听
 
 SketchImageView
 ```java
@@ -78,7 +78,7 @@ Sketch.with(context).download("http://biying.png", new DownloadListener() {
 
     @Override
     public void onCompleted(DownloadResult downloadResult) {
-        
+
     }
 
     @Override

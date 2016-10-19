@@ -43,6 +43,8 @@ imageZoomer.rotateTo(180);
 imageZoomer.rotateBy(90);
 ```
 
+`目前只支持90°、180°、270°旋转`
+
 旋转角度是会一直存在的
 
 #### 定位
@@ -175,4 +177,22 @@ imageZoomer.setOnViewLongPressListener(OnViewLongPressListener)
 
 // 旋转变化监听器
 imageZoomer.setOnRotateChangeListener(OnRotateChangeListener)
+```
+
+#### ArrayIndexOutOfBoundsException
+
+由于是在PhotoView基础上做的不可避免的也有这个异常，这里推荐的处理方法是在Activity里拦截，如下：
+
+```java
+@Override
+public boolean dispatchTouchEvent(MotionEvent ev) {
+    boolean result = true;
+    try {
+        result = super.dispatchTouchEvent(ev);
+    } catch (RuntimeException e) {
+        e.printStackTrace();
+    }
+
+    return result;
+}
 ```

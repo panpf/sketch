@@ -53,7 +53,7 @@ sketchImageView.displayURIImage(uri);
 
 ### 其它功能（可选）
 
-#### 1. 设置各种参数
+#### 1.设置各种参数
 ```java
 sketchImageView.getOptions()
     .set***()
@@ -70,7 +70,13 @@ sketchImageView.setOptions(displayOptions)
 ```
 具体的配置项请参考[配置各种属性.md](options.md)
 
-####  2. 监听显示过程和下载进度
+#### 2.使用手势缩放和分块显示超大图功能
+
+[点我了解手势缩放功能](zoom.md)
+
+[点我了解分块显示超大图功能](large_image.md)
+
+#### 3.监听显示过程和下载进度
 ```java
 // 监听显示过程
 sketchImageView.setDisplayListener(new DisplayListener() {
@@ -105,7 +111,7 @@ sketchImageView.setDownloadProgressListener(new DownloadProgressListener() {
 ```
 ``注意：setDownloadProgressListener()方法一定要在displayImage()之前调用，否则不起作用``
 
-#### 3. 在SketchImageView上显示下载进度
+#### 4.在SketchImageView上显示下载进度
 SketchImageView提供了一个简易版的显示进度的功能，你只需调用如下代码开启即可，这样你就无需在ImageView上面放一个ProgressBar来实现这种效果了。
 ```java
 sketchImageView.setShowDownloadProgress(true);
@@ -113,7 +119,7 @@ sketchImageView.setShowDownloadProgress(true);
 ``同样一定要在displayImage()之前调用，否则不起作用``
 ``如果图片是圆角或者圆形的那么还需要通过ImageShape来改变进度蒙层的形状``[查看如何使用ImageShape](#ImageShape)
 
-####4. 在SketchImageView上显示按下状态
+#### 5.在SketchImageView上显示按下状态
 SketchImageView支持点击的时候在图片上面显示一层黑色半透明层，表示按下状态，长按的时候还会有类似Android5.0的涟漪效果，这样你就无需在ImageView上面放一个黑色半透明的View来实现这种效果了。
 ```java
 // 你需要先设置点击Listener
@@ -124,7 +130,7 @@ sketchImageView.setShowPressedStatus(true);
 ```
 ``如果图片是圆角或者圆形的那么还需要通过ImageShape来改变按下蒙层的形状``[查看如何使用ImageShape](#ImageShape)
 
-<h4 id="ImageShape">5. 设置ImageShape改变蒙层的形状</h4>
+<h4 id="ImageShape">6.设置ImageShape改变蒙层的形状</h4>
 下载进度和按下状态蒙层默认是矩形的，如果你使用了CircleImageProcessor将图片处理成了圆形的，那么这时候
 
 没按下时是这样的：
@@ -158,7 +164,7 @@ new DisplayOptions()
 ```
 resizeByFixedSize意思就是使用ImageView的layout_width和layout_height作为resize，然后forceUseResize的作用是让最终返回的图片的尺寸一定是resize
 
-#### 6. 显示gif图标识
+#### 7.显示gif图标识
 Sketch支持解码gif图，因此SketchImageView在发现显示的是gif图的时候可以在SketchImageView的右下角显示一个图标，以告诉用户这是一张gif图，如下：
 
 ```java
@@ -171,7 +177,7 @@ Sketch通过mimeType来识别gif图，所以即使你没有调用decodeGifImage(
 
 ![gif](../res/gif_flag_drawable.png)
 
-#### 7 显示图片来源
+#### 8.显示图片来源
 SketchImageView还支持显示图片来源，如下：
 ```
 sketchImageView.setShowFromFlag(true);
@@ -187,13 +193,13 @@ sketchImageView.setShowFromFlag(true);
 
 ![sample](../res/sample_debug_mode.jpeg)
 
-#### 8. 失败时点击重新显示
+#### 9.失败时点击重新显示
 一句话开启即可
 ```java
 sketchImageView.setClickRedisplayOnFailed(true);
 ```
 
-#### 9. 暂停下载时点击强制显示
+#### 10.暂停下载时点击强制显示
 一句话开启即可
 ```java
 sketchImageView.setClickDisplayOnPauseDownload(true);
