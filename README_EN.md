@@ -12,14 +12,12 @@ Sketch is an image loader on Android that allows developers to read images from 
 ![sample](docs/res/sample.jpg)
 
 ### Features
->* ``Support gif``. Integrated [android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable) can be easily displayed gif pictures, thanks koral--
 >* ``Multiple URL support``. Support for ``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``7 kinds of URI
->* ``Secondary cache``. Using Lru algorithm in the local and memory cache pictures, local cache default maximum capacity of 100M, memory cache default maximum capacity is one-eighth of the maximum available memory
+>* ``Support gif``. Integrated [android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable) can be easily displayed gif pictures, thanks koral--
+>* ``Exclusive gesture zoom and super large image support``. Exclusive built-in gesture zoom and block display super large image features, and the combination of better
+>* ``Secondary cache``. Using LRU algorithm in the local and memory cache pictures, improve picture utilization and display speed
 >* ``Various list support``. Can be used in a variety of lists (ListView, RecyclerView), and does not occupy the setTag () method
->* ``SketchImageView``. Use Sketch ImageView to display a variety of images by simply calling the display *** Image () method, and to display frequently used functions such as download progress, click effects, click retries, etc.
->* ``Repeat the download filter``. Repeat the same picture to download, the latter will wait for the first download completion after directly the of the use of disk cache
->* ``Immediate cancellation of useless requests``. SketchImageView onDetachedFromWindow () or reused when the initiative will cancel the previous request
->* ``Automatically prevents excessive loading Bitmap`` Can be controlled by maxSize to load the size of the image memory, the default is 0.75 times the width of the screen, but also automatically according to the ImageView layout_width and layout_height to adjust maxSize
+>* ``Automatically prevents excessive loading Bitmap`` Can be controlled by maxSize to load the size of the image memory, the default for the ImageView layout_width and layout_height or screen size
 >* ``Exclusive TransitionDrawable support``. Exclusive support for any size of the two images using TransitionDrawable transition display, to ensure that no deformation
 >* ``Only to load or only to download``. In addition to display () method can display pictures, you can also load () method to load the picture only to memory or by download () method to download the picture to the local
 >* ``Support reading APK icon``. Support to directly read the local APK file icon or according to the package name and version number to read the icon has been installed APP
@@ -171,8 +169,11 @@ For a detailed description of each attribute, see[Configuring various properties
 #### You may also be interested in the features:
 Enhance the user experience:
 >* [SketchImageView Detailed Instructions.md](docs/wiki/sketch_image_view.md)
->* [Configure various properties.md](docs/wiki/options.md)
 >* [Display gif image.md](docs/wiki/display_gif_image.md)
+>* [Use the gesture zoom feature](docs/wiki/zoom.md)
+>* [Display super large image function](docs/wiki/large_image.md)
+>* [Use thumbnails function to display clearer thumbnails](docs/wiki/thumbnail_mode.md)
+>* [Configure various properties.md](docs/wiki/options.md)
 >* [Use ImageProcessor to turn a picture into a round, rounded, or Gaussian blur.md](docs/wiki/process_image.md)
 >* [Use ImageDisplayer to display pictures in a cool way (transitions, zoom, etc.).md](docs/wiki/displayer.md)
 >* [Use ImagePreprocessor to display thumbnails or icons of special files .md](docs/wiki/pre_process_image.md)
@@ -190,11 +191,14 @@ Other：
 >* [Listen for loading start, success, failure, and download progress.md](docs/wiki/listener.md)
 >* [Display APK or installed APP icon.md](docs/wiki/display_apk_or_app_icon.md)
 >* [Learn when to cancel a request and how to cancel the request.md](docs/wiki/cancel_request.md)
->* [Use ExceptionMonitor to monitor the Sketch exception.md](docs/wiki/error_callback.md)
+>* [Use ExceptionMonitor to monitor the Sketch exception.md](docs/wiki/exception_monitor.md)
 >* [Configuration confusing (Proguard).md](docs/wiki/proguard_config.md)
 
 ### Thanks
+
 [koral](https://github.com/koral--) - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
+
+[chrisbanes](https://github.com/chrisbanes) - [PhotoView](https://github.com/chrisbanes/PhotoView)
 
 ### License
     Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>

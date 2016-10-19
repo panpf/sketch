@@ -10,14 +10,12 @@ Sketch是Android上的一个图片加载器，能够帮助开发者从本地或�
 ![sample](docs/res/sample.jpg)
 
 ### 特点
->* ``支持gif图``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示gif图片，感谢koral--
 >* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``等7种URI
->* ``二级缓存``. 采用Lru算法在本地和内存中缓存图片，本地缓存默认最大容量为100M，内存缓存默认最大容量为最大可用内存的八分之一
+>* ``支持gif图``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示gif图片，感谢koral--
+>* ``独家手势缩放和超大图支持``. 独家内置了手势缩放和分块显示超大图功能，并且结合的更好
+>* ``二级缓存``. 采用LRU算法在本地和内存中缓存图片，提高图片利用率和显示速度
 >* ``各种列表支持``. 在各种列表（ListView、RecyclerView）中循环使用不错位，并且不占用setTag()方法
->* ``SketchImageView``. 使用SketchImageView只需调用display***Image()系列方法即可显示各种图片，并且支持显示下载进度，显示按下效果，点击重试等常用功能
->* ``重复下载过滤``. 如果两个请求的图片地址一样的话，第二个就会等待第一个下载完成之后直接使用第一个下载的图片
->* ``即时取消无用请求``. SketchImageView在onDetachedFromWindow()或被重复利用的时候会主动取消之前的请求
->* ``自动防止加载过大Bitmap`` 可通过maxSize来控制加载到内存的图片的尺寸，默认为屏幕宽高的0.75倍，还会自动根据ImageView的layout_width和layout_height来调整maxSize
+>* ``自动防止加载过大Bitmap`` 可通过maxSize来控制加载到内存的图片的尺寸，默认为ImageView的layout_width和layout_height或屏幕的宽高
 >* ``独家TransitionDrawable支持``. 独家支持任意尺寸的两张图片使用TransitionDrawable过渡显示，保证不变形
 >* ``只加载或只下载``. 除了display()方法可以显示图片之外，你还可以通过load()方法只加载图片到内存中或通过download()方法只下载图片到本地
 >* ``支持读取APK图标``. 支持直接读取本地APK文件的图标或根据包名和版本号读取已安装APP的图标
@@ -118,7 +116,7 @@ Sketch.with(context).load("http://biying.png", new LoadListener() {
     public void onCompleted(LoadResult loadResult) {
 
     }
-    
+
     ...
 }).maxSize(100, 100).commit();
 
@@ -126,9 +124,9 @@ Sketch.with(context).load("http://biying.png", new LoadListener() {
 Sketch.with(context).download("http://biying.png", new DownloadListener() {
     @Override
     public void onCompleted(DownloadResult downloadResult) {
-        
+
     }
-    
+
     ...
 }).commit();
 ```
@@ -152,6 +150,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 |lowQualityImage|-|false|false|
 |bitmapConfig|-|null|null|
 |inPreferQualityOverSpeed|-|false|false|
+|thumbnailMode|-|false|false|
 |disableCacheInMemory|-|-|false|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
@@ -164,8 +163,11 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 #### 你可能还感兴趣的功能：
 增强用户体验：
 >* [SketchImageView详细使用说明.md](docs/wiki/sketch_image_view.md)
->* [配置各种属性.md](docs/wiki/options.md)
 >* [显示gif图片.md](docs/wiki/display_gif_image.md)
+>* [使用手势缩放功能](docs/wiki/zoom.md)
+>* [使用分块显示超大图功能](docs/wiki/large_image.md)
+>* [使用缩略图功能显示更清晰的缩略图](docs/wiki/thumbnail_mode.md)
+>* [配置各种属性.md](docs/wiki/options.md)
 >* [使用ImageProcessor将图片变成圆形的、圆角的或者高斯模糊的.md](docs/wiki/process_image.md)
 >* [使用ImageDisplayer以更炫酷的方式显示图片（过渡、缩放等）.md](docs/wiki/displayer.md)
 >* [使用ImagePreprocessor显示特殊文件的缩略图或图标.md](docs/wiki/pre_process_image.md)
@@ -183,11 +185,14 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 >* [监听加载开始、成功、失败以及下载进度.md](docs/wiki/listener.md)
 >* [显示APK或已安装APP的图标.md](docs/wiki/display_apk_or_app_icon.md)
 >* [了解何时取消请求以及如何主动取消请求.md](docs/wiki/cancel_request.md)
->* [使用ExceptionMonitor监控Sketch的异常.md](docs/wiki/error_callback.md)
+>* [使用ExceptionMonitor监控Sketch的异常.md](docs/wiki/exception_monitor.md)
 >* [配置混淆（Proguard）.md](docs/wiki/proguard_config.md)
 
-### Thanks
+### 特别感谢
+
 [koral](https://github.com/koral--) - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
+
+[chrisbanes](https://github.com/chrisbanes) - [PhotoView](https://github.com/chrisbanes/PhotoView)
 
 ### License
     Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
