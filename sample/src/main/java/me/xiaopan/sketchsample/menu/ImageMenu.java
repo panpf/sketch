@@ -171,7 +171,7 @@ public class ImageMenu {
             messageBuilder.append("\n");
             messageBuilder.append("类型：").append(sketchDrawable.getMimeType());
             messageBuilder.append("\n");
-            messageBuilder.append("尺寸：").append(sketchDrawable.getOriginWidth()).append("x").append(sketchDrawable.getOriginHeight());
+            messageBuilder.append("尺寸：").append(sketchDrawable.getImageWidth()).append("x").append(sketchDrawable.getImageHeight());
 
             File image = null;
             UriScheme uriScheme = UriScheme.valueOfUri(sketchDrawable.getImageUri());
@@ -192,7 +192,7 @@ public class ImageMenu {
 
             int previewDrawableByteCount = sketchDrawable.getByteCount();
             int pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
-            int originImageByteCount = sketchDrawable.getOriginWidth() * sketchDrawable.getOriginHeight() * pixelByteCount;
+            int originImageByteCount = sketchDrawable.getImageWidth() * sketchDrawable.getImageHeight() * pixelByteCount;
             messageBuilder.append("\n");
             messageBuilder.append("占用内存：").append(Formatter.formatFileSize(activity, originImageByteCount));
 

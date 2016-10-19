@@ -151,8 +151,8 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         boolean drawableQualified = false;
         if (drawable != null && drawable instanceof SketchDrawable && !(drawable instanceof BindDrawable)) {
             SketchDrawable sketchDrawable = (SketchDrawable) drawable;
-            drawableQualified = drawable.getIntrinsicWidth() < sketchDrawable.getOriginWidth();
-            drawableQualified |= drawable.getIntrinsicHeight() < sketchDrawable.getOriginHeight();
+            drawableQualified = drawable.getIntrinsicWidth() < sketchDrawable.getImageWidth();
+            drawableQualified |= drawable.getIntrinsicHeight() < sketchDrawable.getImageHeight();
 
             String mimeType = sketchDrawable.getMimeType();
             drawableQualified &= SketchUtils.isSupportBitmapRegionDecoderByImageFormat(ImageFormat.valueOfMimeType(mimeType));
@@ -161,7 +161,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, NAME + ". Use large image function" +
                             ". previewDrawableSize: " + drawable.getIntrinsicWidth() + "x" + drawable.getIntrinsicHeight() +
-                            ", originImageSize: " + sketchDrawable.getOriginWidth() + "x" + sketchDrawable.getOriginHeight() +
+                            ", imageSize: " + sketchDrawable.getImageWidth() + "x" + sketchDrawable.getImageHeight() +
                             ", mimeType: " + mimeType +
                             ". " + sketchDrawable.getImageId());
                 }
@@ -169,7 +169,7 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, NAME + ". Don't need to use large image function" +
                             ". previewDrawableSize: " + drawable.getIntrinsicWidth() + "x" + drawable.getIntrinsicHeight() +
-                            ", originImageSize: " + sketchDrawable.getOriginWidth() + "x" + sketchDrawable.getOriginHeight() +
+                            ", imageSize: " + sketchDrawable.getImageWidth() + "x" + sketchDrawable.getImageHeight() +
                             ", mimeType: " + mimeType +
                             ". " + sketchDrawable.getImageId());
                 }

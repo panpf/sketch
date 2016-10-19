@@ -84,7 +84,7 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
     }
 
     @Override
-    public int getOriginWidth() {
+    public int getImageWidth() {
         return originWidth;
     }
 
@@ -93,7 +93,7 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
     }
 
     @Override
-    public int getOriginHeight() {
+    public int getImageHeight() {
         return originHeight;
     }
 

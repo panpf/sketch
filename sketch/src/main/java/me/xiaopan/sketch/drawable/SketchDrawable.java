@@ -32,12 +32,12 @@ public interface SketchDrawable {
     /**
      * 获取图片原始宽
      */
-    int getOriginWidth();
+    int getImageWidth();
 
     /**
      * 获取图片原始高
      */
-    int getOriginHeight();
+    int getImageHeight();
 
     /**
      * 获取图片类型

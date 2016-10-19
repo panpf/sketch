@@ -51,12 +51,12 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
     }
 
     @Override
-    public int getOriginWidth() {
+    public int getImageWidth() {
         return refBitmap.getOriginWidth();
     }
 
     @Override
-    public int getOriginHeight() {
+    public int getImageHeight() {
         return refBitmap.getOriginHeight();
     }
 

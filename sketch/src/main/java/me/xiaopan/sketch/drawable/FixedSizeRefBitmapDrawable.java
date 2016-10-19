@@ -165,13 +165,13 @@ public class FixedSizeRefBitmapDrawable extends Drawable implements RefDrawable 
     }
 
     @Override
-    public int getOriginWidth() {
-        return wrapperDrawable != null ? wrapperDrawable.getOriginWidth() : 0;
+    public int getImageWidth() {
+        return wrapperDrawable != null ? wrapperDrawable.getImageWidth() : 0;
     }
 
     @Override
-    public int getOriginHeight() {
-        return wrapperDrawable != null ? wrapperDrawable.getOriginHeight() : 0;
+    public int getImageHeight() {
+        return wrapperDrawable != null ? wrapperDrawable.getImageHeight() : 0;
     }
 
     @Override
