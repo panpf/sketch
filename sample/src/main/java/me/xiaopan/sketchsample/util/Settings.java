@@ -21,6 +21,7 @@ public class Settings {
     private static final String PREFERENCE_SUPPORT_LARGE_IMAGE = "PREFERENCE_SUPPORT_LARGE_IMAGE";
     private static final String PREFERENCE_READ_MODE = "PREFERENCE_READ_MODE";
     private static final String PREFERENCE_THUMBNAIL_MODE = "PREFERENCE_THUMBNAIL_MODE";
+    private static final String PREFERENCE_LOCATIO_ANIMATE = "PREFERENCE_LOCATION_ANIMATE";
 
     private static Settings settingsInstance;
 
@@ -39,6 +40,7 @@ public class Settings {
     private boolean supportLargeImage;
     private boolean readMode;
     private boolean thumbnailMode;
+    private boolean locationAnimate;
 
     private SharedPreferences.Editor editor;
 
@@ -61,6 +63,7 @@ public class Settings {
         this.supportLargeImage = preferences.getBoolean(PREFERENCE_SUPPORT_LARGE_IMAGE, true);
         this.readMode = preferences.getBoolean(PREFERENCE_READ_MODE, true);
         this.thumbnailMode = preferences.getBoolean(PREFERENCE_THUMBNAIL_MODE, true);
+        this.locationAnimate = preferences.getBoolean(PREFERENCE_LOCATIO_ANIMATE, true);
     }
 
     public static Settings with(Context context) {
@@ -269,6 +272,16 @@ public class Settings {
     public void setThumbnailMode(boolean thumbnailMode) {
         this.thumbnailMode = thumbnailMode;
         editor.putBoolean(PREFERENCE_THUMBNAIL_MODE, thumbnailMode);
+        apply();
+    }
+
+    public boolean isLocationAnimate() {
+        return locationAnimate;
+    }
+
+    public void setLocationAnimate(boolean locationAnimate) {
+        this.locationAnimate = locationAnimate;
+        editor.putBoolean(PREFERENCE_LOCATIO_ANIMATE, locationAnimate);
         apply();
     }
 }

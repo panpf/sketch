@@ -17,15 +17,12 @@
 package me.xiaopan.sketch.feature.zoom;
 
 import android.content.Context;
-import android.graphics.Point;
-import android.graphics.RectF;
 import android.util.Log;
-import android.view.animation.DecelerateInterpolator;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 定位执行器
@@ -36,56 +33,17 @@ class LocationRunner implements Runnable {
     private int mCurrentX, mCurrentY;
 
     LocationRunner(Context context, ImageZoomer imageZoomer) {
-        this.mScroller = new Scroller(context, new DecelerateInterpolator());
+        this.mScroller = new Scroller(context, new AccelerateDecelerateInterpolator());
         this.imageZoomer = imageZoomer;
     }
 
     /**
      * 定位到预览图上指定的位置
      */
-    boolean location(float x, float y) {
-        Point imageViewSize = imageZoomer.getImageViewSize();
-        final int imageViewWidth = imageViewSize.x;
-        final int imageViewHeight = imageViewSize.y;
-
-        // 充满的时候是无法移动的，因此先放到最大
-        final float scale = SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2);
-        final float fullZoomScale = SketchUtils.formatFloat(imageZoomer.getFullZoomScale(), 2);
-        if (scale == fullZoomScale) {
-            float[] zoomScales = imageZoomer.getDoubleClickZoomScales();
-            imageZoomer.zoom(zoomScales[zoomScales.length - 1], false);
-        }
-
-        RectF drawRectF = new RectF();
-        imageZoomer.getDrawRect(drawRectF);
-
-        // 传进来的位置是预览图上的位置，需要乘以当前的缩放倍数才行
-        final float currentScale = imageZoomer.getZoomScale();
-        final int scaleLocationX = (int) (x * currentScale);
-        final int scaleLocationY = (int) (y * currentScale);
-        final int trimScaleLocationX = Math.min(Math.max(scaleLocationX, 0), (int) drawRectF.width());
-        final int trimScaleLocationY = Math.min(Math.max(scaleLocationY, 0), (int) drawRectF.height());
-
-        // 让定位点显示在屏幕中间
-        final int centerLocationX = trimScaleLocationX - (imageViewWidth / 2);
-        final int centerLocationY = trimScaleLocationY - (imageViewHeight / 2);
-        final int trimCenterLocationX = Math.max(centerLocationX, 0);
-        final int trimCenterLocationY = Math.max(centerLocationY, 0);
-
-        // 当前显示区域的left和top就是开始位置
-        final int startX = Math.abs((int) drawRectF.left);
-        final int startY = Math.abs((int) drawRectF.top);
-        //noinspection UnnecessaryLocalVariable
-        final int endX = trimCenterLocationX;
-        //noinspection UnnecessaryLocalVariable
-        final int endY = trimCenterLocationY;
-
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, ImageZoomer.NAME + ". location. start=" + startX + "x" + startY + ", end=" + endX + "x" + endY);
-        }
-
+    boolean location(int startX, int startY, int endX, int endY) {
         mCurrentX = startX;
         mCurrentY = startY;
+
         mScroller.startScroll(startX, startY, endX - startX, endY - startY, 300);
 
         ImageView imageView = imageZoomer.getImageView();

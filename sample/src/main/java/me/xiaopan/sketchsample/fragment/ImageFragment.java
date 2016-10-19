@@ -276,7 +276,8 @@ public class ImageFragment extends MyFragment {
         final float widthScale = (float) drawable.getIntrinsicWidth() / mappingView.getWidth();
         final float heightScale = (float) drawable.getIntrinsicHeight() / mappingView.getHeight();
 
-        imageView.getImageZoomer().location(x * widthScale, y * heightScale);
+        Settings settings = Settings.with(getActivity());
+        imageView.getImageZoomer().location(x * widthScale, y * heightScale, settings.isLocationAnimate());
         return true;
     }
 }

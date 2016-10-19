@@ -113,6 +113,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     @InjectView(R.id.checkBox_main_readMode) private CheckBox readModeCheckBox;
     @InjectView(R.id.item_main_thumbnailMode) private View thumbnailModeItem;
     @InjectView(R.id.checkBox_main_thumbnailMode) private CheckBox thumbnailModeCheckBox;
+    @InjectView(R.id.item_main_locationAnimate) private View locationAnimateItem;
+    @InjectView(R.id.checkBox_main_locationAnimate) private CheckBox locationAnimateCheckBox;
 
     private long lastClickBackTime;
     private Type type;
@@ -158,6 +160,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         supportLargeImageCheckBox.setChecked(settings.isSupportLargeImage());
         readModeCheckBox.setChecked(settings.isReadMode());
         thumbnailModeCheckBox.setChecked(settings.isThumbnailMode());
+        locationAnimateCheckBox.setChecked(settings.isThumbnailMode());
 
         starButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
@@ -184,6 +187,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         supportLargeImageItem.setOnClickListener(this);
         readModeItem.setOnClickListener(this);
         thumbnailModeItem.setOnClickListener(this);
+        locationAnimateItem.setOnClickListener(this);
 
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
@@ -534,6 +538,12 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 boolean newThumbnailModeValue = !settings.isThumbnailMode();
                 thumbnailModeCheckBox.setChecked(newThumbnailModeValue);
                 settings.setThumbnailMode(newThumbnailModeValue);
+                drawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.item_main_locationAnimate:
+                boolean newLocationAnimateValue = !settings.isLocationAnimate();
+                locationAnimateCheckBox.setChecked(newLocationAnimateValue);
+                settings.setLocationAnimate(newLocationAnimateValue);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
         }

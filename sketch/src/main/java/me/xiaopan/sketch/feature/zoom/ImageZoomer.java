@@ -1072,7 +1072,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 定位到预览图上指定的位置
      */
     @SuppressWarnings("unused")
-    public boolean location(float x, float y) {
+    public boolean location(float x, float y, boolean animate) {
         if (!isWorking()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. location");
@@ -1080,8 +1080,11 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return false;
         }
 
+        // 旋转定位点
         PointF pointF = new PointF(x, y);
         SketchUtils.rotatePoint(pointF, rotateDegrees, drawableSize);
+        x = pointF.x;
+        y = pointF.y;
 
         cancelFling();
 
@@ -1089,10 +1092,60 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             locationRunner.cancel();
         }
 
-        locationRunner = new LocationRunner(context, this);
-        locationRunner.location(pointF.x, pointF.y);
+        final int imageViewWidth = imageViewSize.x;
+        final int imageViewHeight = imageViewSize.y;
 
+        // 充满的时候是无法移动的，因此先放到最大
+        final float scale = SketchUtils.formatFloat(getZoomScale(), 2);
+        final float fullZoomScale = SketchUtils.formatFloat(getFullZoomScale(), 2);
+        if (scale == fullZoomScale) {
+            float[] zoomScales = getDoubleClickZoomScales();
+            zoom(zoomScales[zoomScales.length - 1], false);
+        }
+
+        RectF drawRectF = new RectF();
+        getDrawRect(drawRectF);
+
+        // 传进来的位置是预览图上的位置，需要乘以当前的缩放倍数才行
+        final float currentScale = getZoomScale();
+        final int scaleLocationX = (int) (x * currentScale);
+        final int scaleLocationY = (int) (y * currentScale);
+        final int trimScaleLocationX = Math.min(Math.max(scaleLocationX, 0), (int) drawRectF.width());
+        final int trimScaleLocationY = Math.min(Math.max(scaleLocationY, 0), (int) drawRectF.height());
+
+        // 让定位点显示在屏幕中间
+        final int centerLocationX = trimScaleLocationX - (imageViewWidth / 2);
+        final int centerLocationY = trimScaleLocationY - (imageViewHeight / 2);
+        final int trimCenterLocationX = Math.max(centerLocationX, 0);
+        final int trimCenterLocationY = Math.max(centerLocationY, 0);
+
+        // 当前显示区域的left和top就是开始位置
+        final int startX = Math.abs((int) drawRectF.left);
+        final int startY = Math.abs((int) drawRectF.top);
+        //noinspection UnnecessaryLocalVariable
+        final int endX = trimCenterLocationX;
+        //noinspection UnnecessaryLocalVariable
+        final int endY = trimCenterLocationY;
+
+        if (Sketch.isDebugMode()) {
+            Log.d(Sketch.TAG, ImageZoomer.NAME + ". location. start=" + startX + "x" + startY + ", end=" + endX + "x" + endY);
+        }
+
+        if (animate) {
+            locationRunner = new LocationRunner(context, this);
+            locationRunner.location(startX, startY, endX, endY);
+        } else {
+            translateBy(-(endX - startX), -(endY - startY));
+        }
         return true;
+    }
+
+    /**
+     * 定位到预览图上指定的位置（不使用动画）
+     */
+    @SuppressWarnings("unused")
+    public boolean location(float x, float y) {
+        return location(x, y, false);
     }
 
     /**
