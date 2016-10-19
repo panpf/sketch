@@ -522,7 +522,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
                 if (originZoomScale > fillZoomScale && (fillZoomScale * 1.2f) >= originZoomScale) {
                     maxZoomScale = fillZoomScale;
                 } else {
-                    maxZoomScale = Math.max(fillZoomScale, originZoomScale);
+                    maxZoomScale = Math.max(originZoomScale, fillZoomScale);
                 }
 
                 // 最大缩放比例和最小缩放比例的差距不能太小，最小得是最小缩放比例的1.5倍
@@ -932,7 +932,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
-     * 获取预览图上用户可以看到的区域
+     * 获取预览图上用户可以看到的区域（不受旋转影响）
      */
     public void getVisibleRect(Rect rect) {
         if (!isWorking()) {
@@ -1069,7 +1069,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     /** -----------交互功能----------- **/
     /**
-     * 定位到预览图上指定的位置
+     * 定位到预览图上指定的位置（不用考虑旋转角度）
      */
     @SuppressWarnings("unused")
     public boolean location(float x, float y, boolean animate) {
@@ -1141,7 +1141,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
-     * 定位到预览图上指定的位置（不使用动画）
+     * 定位到预览图上指定的位置（不用考虑旋转角度）
      */
     @SuppressWarnings("unused")
     public boolean location(float x, float y) {
