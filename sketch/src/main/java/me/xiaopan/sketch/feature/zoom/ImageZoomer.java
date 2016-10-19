@@ -38,7 +38,6 @@ import android.widget.ImageView.ScaleType;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.BindDrawable;
@@ -502,21 +501,13 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         fillZoomScale = Math.max(widthScale, heightScale);
         originZoomScale = Math.max((float) originImageWidth / drawableWidth, (float) originImageHeight / drawableHeight);
 
-        float oneLevelZoomScale;
-        float twoLevelZoomScale;
-
         if (scaleType == ScaleType.CENTER || (scaleType == ScaleType.CENTER_INSIDE && !imageThanViewLarge)) {
             minZoomScale = 1.0f;
             maxZoomScale = Math.max(originZoomScale, fillZoomScale);
-
-            oneLevelZoomScale = minZoomScale;
-            twoLevelZoomScale = maxZoomScale;
         } else if (scaleType == ScaleType.CENTER_CROP) {
             minZoomScale = fillZoomScale;
+            // 由于CENTER_CROP的时候最小缩放比例就是充满比例，所以最大缩放比例一定要比充满比例大的多
             maxZoomScale = Math.max(originZoomScale, fillZoomScale * 1.5f);
-
-            oneLevelZoomScale = minZoomScale;
-            twoLevelZoomScale = maxZoomScale;
         } else if (scaleType == ScaleType.FIT_START || scaleType == ScaleType.FIT_CENTER || scaleType == ScaleType.FIT_END ||
                 (scaleType == ScaleType.CENTER_INSIDE && imageThanViewLarge)) {
             minZoomScale = fullZoomScale;
@@ -524,49 +515,37 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             ImageSizeCalculator sizeCalculator = Sketch.with(context).getConfiguration().getImageSizeCalculator();
             if (readMode && (sizeCalculator.canUseReadModeByHeight(originImageWidth, originImageHeight) ||
                     sizeCalculator.canUseReadModeByWidth(originImageWidth, originImageHeight))) {
-                if (fullZoomScale < fillZoomScale) {
-                    oneLevelZoomScale = fullZoomScale;
-                    twoLevelZoomScale = fillZoomScale;
-                } else {
-                    oneLevelZoomScale = fillZoomScale;
-                    twoLevelZoomScale = fullZoomScale;
-                }
-
+                // 阅读模式下保证阅读效果最重要
                 maxZoomScale = Math.max(originZoomScale, fillZoomScale);
             } else {
-                oneLevelZoomScale = fullZoomScale;
-
-                // 二级缩放比例将在原始比例和充满比例中产生
+                // 如果原始比例仅仅比充满比例大一点点，还是用充满比例作为最大缩放比例比较好，否则谁大用谁
                 if (originZoomScale > fillZoomScale && (fillZoomScale * 1.2f) >= originZoomScale) {
-                    // 如果原始比例仅仅比充满比例大一点点，还是用充满比例作为二级缩放比例比较好
-                    twoLevelZoomScale = fillZoomScale;
+                    maxZoomScale = fillZoomScale;
                 } else {
-                    // 否则的话谁大用谁作为二级缩放比例
-                    twoLevelZoomScale = Math.max(fillZoomScale, originZoomScale);
+                    maxZoomScale = Math.max(fillZoomScale, originZoomScale);
                 }
 
-                // 二级缩放比例和一级缩放比例的差距不能太小，最小得是一级缩放比例的1.5倍
-                twoLevelZoomScale = Math.max(twoLevelZoomScale, oneLevelZoomScale * 1.5f);
-
-                maxZoomScale = twoLevelZoomScale;
+                // 最大缩放比例和最小缩放比例的差距不能太小，最小得是最小缩放比例的1.5倍
+                maxZoomScale = Math.max(maxZoomScale, minZoomScale * 1.5f);
             }
         } else if (scaleType == ScaleType.FIT_XY) {
             minZoomScale = fullZoomScale;
             maxZoomScale = fullZoomScale;
-
-            oneLevelZoomScale = minZoomScale;
-            twoLevelZoomScale = maxZoomScale;
         } else {
             // 基本不会走到这儿
             minZoomScale = fullZoomScale;
             maxZoomScale = fullZoomScale;
-
-            oneLevelZoomScale = minZoomScale;
-            twoLevelZoomScale = maxZoomScale;
         }
 
-        doubleClickZoomScales = new float[]{oneLevelZoomScale, twoLevelZoomScale};
-        Arrays.sort(doubleClickZoomScales);
+        // 这样的情况基本不会出现，不过还是加层保险
+        if (minZoomScale > maxZoomScale) {
+            minZoomScale = minZoomScale + maxZoomScale;
+            maxZoomScale = minZoomScale - maxZoomScale;
+            minZoomScale = minZoomScale - maxZoomScale;
+        }
+
+        // 双击缩放比例始终由最小缩放比例和最大缩放比例组成
+        doubleClickZoomScales = new float[]{minZoomScale, maxZoomScale};
     }
 
     /**
@@ -1182,6 +1161,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     // TODO: 16/9/28 支持旋转动画
     // TODO: 16/9/28 增加手势旋转功能
+    // TODO: 16/10/19 研究任意角度旋转和旋转时不清空位移以及缩放信息
     public boolean rotateTo(int degrees) {
         if (!isWorking()) {
             if (Sketch.isDebugMode()) {
@@ -1266,30 +1246,6 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     @SuppressWarnings("unused")
     public void setZoomInterpolator(Interpolator interpolator) {
         zoomInterpolator = interpolator;
-    }
-
-    /**
-     * 设置最大缩放比例
-     */
-    @SuppressWarnings("unused")
-    public void setMaxZoomScale(float maxZoomScale) {
-        if (maxZoomScale <= minZoomScale) {
-            throw new IllegalArgumentException(
-                    "maxZoomScale zoom has to be is greater than minZoomScale zoom. Call setMaxZoomScale() with a more appropriate value");
-        }
-        this.maxZoomScale = maxZoomScale;
-    }
-
-    /**
-     * 设置最小缩放比例
-     */
-    @SuppressWarnings("unused")
-    public void setMinZoomScale(float minZoomScale) {
-        if (minZoomScale >= maxZoomScale) {
-            throw new IllegalArgumentException(
-                    "minZoomScale zoom has to be less than maxZoomScale zoom. Call setMinZoomScale() with a more appropriate value");
-        }
-        this.minZoomScale = minZoomScale;
     }
 
     /**
