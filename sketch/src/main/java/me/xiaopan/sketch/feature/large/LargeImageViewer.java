@@ -36,6 +36,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 大图片查看器
  */
+// TODO: 16/10/20 如果同时有三张大图同时工作的话，可能会比较耗内存，因此提供一些回收和恢复的方法，方便在Fragment显示或隐藏的时候主动控制
 public class LargeImageViewer {
     private static final String NAME = "LargeImageViewer";
 
