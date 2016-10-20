@@ -20,7 +20,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.drawable.BindDrawable;
+import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.request.CancelCause;
@@ -63,9 +63,9 @@ public class RequestFunction extends SketchImageView.Function {
                     isSketchDrawable |= notifyDrawable(callingStation, layerDrawable.getDrawable(i), isDisplayed);
                 }
             } else {
-                if (!isDisplayed && drawable instanceof BindDrawable) {
-                    BindDrawable bindDrawable = (BindDrawable) drawable;
-                    DisplayRequest displayRequest = bindDrawable.getRequest();
+                if (!isDisplayed && drawable instanceof LoadingDrawable) {
+                    LoadingDrawable loadingDrawable = (LoadingDrawable) drawable;
+                    DisplayRequest displayRequest = loadingDrawable.getRequest();
                     if (displayRequest != null && !displayRequest.isFinished()) {
                         displayRequest.cancel(CancelCause.BE_REPLACED_ON_SET_DRAWABLE);
                     }

@@ -30,7 +30,7 @@ import java.io.File;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.cache.DiskCache;
-import me.xiaopan.sketch.drawable.BindDrawable;
+import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
@@ -161,7 +161,7 @@ public class ImageMenu {
     public void showDetailInfo() {
         Drawable drawable = SketchUtils.getLastDrawable(imageView != null ? imageView.getDrawable() : null);
 
-        if (drawable instanceof BindDrawable) {
+        if (drawable instanceof LoadingDrawable) {
             Toast.makeText(activity, "正在读取图片，请稍后", Toast.LENGTH_LONG).show();
         } else if (drawable instanceof SketchDrawable) {
             SketchDrawable sketchDrawable = (SketchDrawable) drawable;

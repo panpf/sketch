@@ -27,7 +27,7 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
-import me.xiaopan.sketch.drawable.BindDrawable;
+import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
@@ -761,20 +761,23 @@ public class DisplayHelper {
             Stopwatch.with().record("createRequest");
         }
 
-        // 显示加载中占位图片
-        BindDrawable loadingBindDrawable;
-        Drawable loadingDrawable = null;
+        LoadingDrawable loadingDrawable;
         ImageHolder loadingImageHolder = displayOptions.getLoadingImageHolder();
         if (loadingImageHolder != null) {
-            loadingDrawable = loadingImageHolder.getDrawable(sketch.getConfiguration().getContext(),
-                    displayOptions.getImageDisplayer(), displayAttrs.getFixedSize(), displayAttrs.getScaleType());
+            Drawable drawable = loadingImageHolder.getDrawable(
+                    sketch.getConfiguration().getContext(),
+                    displayOptions.getImageDisplayer(),
+                    displayAttrs.getFixedSize(),
+                    displayAttrs.getScaleType());
+            loadingDrawable = new LoadingDrawable(drawable, request);
+        } else {
+            loadingDrawable = new LoadingDrawable(null, request);
         }
-        loadingBindDrawable = new BindDrawable(loadingDrawable, request);
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("createLoadingImage");
         }
 
-        imageViewInterface.setImageDrawable(loadingBindDrawable);
+        imageViewInterface.setImageDrawable(loadingDrawable);
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("setLoadingImage");
         }

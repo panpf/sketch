@@ -40,7 +40,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.BindDrawable;
+import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.zoom.gestures.ActionListener;
@@ -884,7 +884,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      * 图片是否可用，主要过滤掉占位图
      */
     public boolean isUsableDrawable(){
-        return drawable != null && !(drawable instanceof BindDrawable);
+        return drawable != null && !(drawable instanceof LoadingDrawable);
     }
 
     /**

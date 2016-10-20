@@ -25,15 +25,15 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.util.DrawableWrapper;
 
 /**
- * 绑定请求专用Drawable
+ * 加载中占位图专用Drawable，可绑定请求
  */
-public class BindDrawable extends DrawableWrapper implements RefDrawable {
+public class LoadingDrawable extends DrawableWrapper implements RefDrawable {
     private WeakReference<DisplayRequest> weakReference;
 
     private RefDrawable refDrawable;
     private SketchDrawable sketchDrawable;
 
-    public BindDrawable(Drawable drawable, DisplayRequest displayRequest) {
+    public LoadingDrawable(Drawable drawable, DisplayRequest displayRequest) {
         super(drawable);
         this.weakReference = new WeakReference<DisplayRequest>(displayRequest);
 
