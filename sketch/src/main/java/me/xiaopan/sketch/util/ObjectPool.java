@@ -24,23 +24,24 @@ public class ObjectPool<T> {
     private final Object editLock = new Object();
 
     private Queue<T> cacheQueue;
-    private ItemFactory<T> itemFactory;
+    private ObjectFactory<T> objectFactory;
     private int maxPoolSize;
 
-    public ObjectPool(ItemFactory<T> itemFactory, int maxPoolSize) {
-        this.itemFactory = itemFactory;
+    public ObjectPool(ObjectFactory<T> objectFactory, int maxPoolSize) {
+        this.objectFactory = objectFactory;
         this.maxPoolSize = maxPoolSize;
         this.cacheQueue = new LinkedList<T>();
     }
 
-    public ObjectPool(ItemFactory<T> itemFactory) {
-        this(itemFactory, MAX_POOL_SIZE);
+    @SuppressWarnings("unused")
+    public ObjectPool(ObjectFactory<T> objectFactory) {
+        this(objectFactory, MAX_POOL_SIZE);
     }
 
     public ObjectPool(final Class<T> classType, int maxPoolSize) {
-        this(new ItemFactory<T>() {
+        this(new ObjectFactory<T>() {
             @Override
-            public T newItem() {
+            public T newObject() {
                 try {
                     return classType.newInstance();
                 } catch (InstantiationException e) {
@@ -61,7 +62,7 @@ public class ObjectPool<T> {
 
     public T get() {
         synchronized (editLock) {
-            T t = !cacheQueue.isEmpty() ? cacheQueue.poll() : itemFactory.newItem();
+            T t = !cacheQueue.isEmpty() ? cacheQueue.poll() : objectFactory.newObject();
             if (t instanceof CacheStatus) {
                 ((CacheStatus) t).setInCachePool(false);
             }
@@ -112,8 +113,8 @@ public class ObjectPool<T> {
         }
     }
 
-    public interface ItemFactory<T> {
-        T newItem();
+    public interface ObjectFactory<T> {
+        T newObject();
     }
 
     public interface CacheStatus {

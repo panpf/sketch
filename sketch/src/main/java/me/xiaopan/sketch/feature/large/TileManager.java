@@ -54,15 +54,15 @@ class TileManager {
     List<Tile> tileList = new LinkedList<Tile>();
     LargeImageViewer.OnTileChangedListener onTileChangedListener;
 
-    private ObjectPool<Tile> tilePool = new ObjectPool<Tile>(new ObjectPool.ItemFactory<Tile>() {
+    private ObjectPool<Tile> tilePool = new ObjectPool<Tile>(new ObjectPool.ObjectFactory<Tile>() {
         @Override
-        public Tile newItem() {
+        public Tile newObject() {
             return new Tile();
         }
     }, 60);
-    private ObjectPool<Rect> rectPool = new ObjectPool<Rect>(new ObjectPool.ItemFactory<Rect>() {
+    private ObjectPool<Rect> rectPool = new ObjectPool<Rect>(new ObjectPool.ObjectFactory<Rect>() {
         @Override
-        public Rect newItem() {
+        public Rect newObject() {
             return new Rect();
         }
     }, 20);
