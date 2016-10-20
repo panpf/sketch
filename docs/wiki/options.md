@@ -78,8 +78,11 @@ displayOptions.setDisableCacheInMemory(true);
 // 设置正在加载的时候显示的图片
 displayOptions.setLoadingImage(R.drawable.image_loading);
 
+// 设置正在加载的时候显示的图片，并且将图片改成圆形的
+displayOptions.setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, CircleImageProcessor.getInstance()));
+
 // 设置加载失败的时候显示的图片
-displayOptions.setFailureImage(R.drawable.image_load_fail);
+displayOptions.setFailedImage(R.drawable.image_load_fail);
 
 // 设置暂停下载的时候显示的图片
 displayOptions.setPauseDownloadImage(R.drawable.image_load_fail);
@@ -169,7 +172,7 @@ public class MyApplication extends Application {
 
         Sketch.putOptions(OptionsType.APP_ICON, new DisplayOptions()
                         .setLoadingImage((R.drawable.image_loading)
-                        .setFailureImage(R.drawable.image_failure)
+                        .setFailedImage(R.drawable.image_failure)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setDecodeGifImage(false)
                         .setResizeByFixedSize(true)

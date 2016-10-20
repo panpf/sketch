@@ -47,7 +47,7 @@
 >* ``新增`` 支持读取APK文件的ICON，只需APK文件的路径即可，例如/sdcard/test.apk，如果需要显示已安装APP的图标的话就通过PackageManager拿到其APK文件路径即可
 >* ``修改`` 去掉RequestFuture，commit()方法直接返回Request，这样就少创建一个对象了
 >* ``优化`` 优化处理流程，当请求取消的时候及时的回收bitmap
->* ``修改`` FailureCause重命名为FailCause
+>* ``修改`` FailureCause重命名为FailedCause
 >* ``新增`` 所有请求新增RequestLevel属性，可决定请求的处理深度，MEMORY表示只从内存加载；LOCAL：表示只从内存和本地加载；NETWORK：表示最终还会从网络加载
 >* ``新增`` 结合RequestLevel新增暂停下载图片功能，通过Sketch.getConfiguration().setPauseDownload(boolean)设置即可
 >* ``新增`` 在暂停下载功能的基础上提供移动网络下暂停下载图片功能，通过Sketch.getConfiguration().setMobileNetworkPauseDownload(boolean)开启即可
