@@ -11,6 +11,7 @@ public class RefBitmap extends SketchBitmap {
     private int cacheRefCount;
     private int displayRefCount;
     private int waitDisplayRefCount;
+
     private boolean allowRecycle = true;
 
     public RefBitmap(Bitmap bitmap, String imageId, String imageUri, int originWidth, int originHeight, String mimeType) {

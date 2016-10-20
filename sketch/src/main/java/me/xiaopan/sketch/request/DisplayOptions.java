@@ -38,17 +38,17 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 正在加载时显示的图片
      */
-    private ImageHolder loadingImageHolder;
+    private ModeImage loadingImage;
 
     /**
      * 加载失败时显示的图片
      */
-    private ImageHolder failedImageHolder;
+    private ModeImage failedImage;
 
     /**
      * 暂停下载时显示的图片
      */
-    private ImageHolder pauseDownloadImageHolder;
+    private ModeImage pauseDownloadImage;
 
     /**
      * 使用ImageView的layout_width和layout_height作为resize（默认否）
@@ -167,45 +167,45 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
-    public ImageHolder getLoadingImageHolder() {
-        return loadingImageHolder;
+    public ModeImage getLoadingImage() {
+        return loadingImage;
     }
 
-    public DisplayOptions setLoadingImage(ImageHolder loadingImageHolder) {
-        this.loadingImageHolder = loadingImageHolder;
+    public DisplayOptions setLoadingImage(ModeImage loadingImage) {
+        this.loadingImage = loadingImage;
         return this;
     }
 
     public DisplayOptions setLoadingImage(int drawableResId) {
-        setLoadingImage(new ImageHolder(drawableResId));
+        setLoadingImage(new DrawableModeImage(drawableResId));
         return this;
     }
 
-    public ImageHolder getFailedImageHolder() {
-        return failedImageHolder;
+    public ModeImage getFailedImage() {
+        return failedImage;
     }
 
-    public DisplayOptions setFailedImage(ImageHolder failedImageHolder) {
-        this.failedImageHolder = failedImageHolder;
+    public DisplayOptions setFailedImage(ModeImage failedImage) {
+        this.failedImage = failedImage;
         return this;
     }
 
     public DisplayOptions setFailedImage(int drawableResId) {
-        setFailedImage(new ImageHolder(drawableResId));
+        setFailedImage(new DrawableModeImage(drawableResId));
         return this;
     }
 
-    public ImageHolder getPauseDownloadImageHolder() {
-        return pauseDownloadImageHolder;
+    public ModeImage getPauseDownloadImage() {
+        return pauseDownloadImage;
     }
 
-    public DisplayOptions setPauseDownloadImage(ImageHolder pauseDownloadImageHolder) {
-        this.pauseDownloadImageHolder = pauseDownloadImageHolder;
+    public DisplayOptions setPauseDownloadImage(ModeImage pauseDownloadImage) {
+        this.pauseDownloadImage = pauseDownloadImage;
         return this;
     }
 
     public DisplayOptions setPauseDownloadImage(int drawableResId) {
-        setPauseDownloadImage(new ImageHolder(drawableResId));
+        setPauseDownloadImage(new DrawableModeImage(drawableResId));
         return this;
     }
 
@@ -228,9 +228,9 @@ public class DisplayOptions extends LoadOptions {
         disableCacheInMemory = false;
         imageDisplayer = null;
         resizeByFixedSize = false;
-        loadingImageHolder = null;
-        failedImageHolder = null;
-        pauseDownloadImageHolder = null;
+        loadingImage = null;
+        failedImage = null;
+        pauseDownloadImage = null;
     }
 
     /**
@@ -246,9 +246,9 @@ public class DisplayOptions extends LoadOptions {
         disableCacheInMemory = options.disableCacheInMemory;
         imageDisplayer = options.imageDisplayer;
         resizeByFixedSize = options.resizeByFixedSize;
-        loadingImageHolder = options.loadingImageHolder;
-        failedImageHolder = options.failedImageHolder;
-        pauseDownloadImageHolder = options.pauseDownloadImageHolder;
+        loadingImage = options.loadingImage;
+        failedImage = options.failedImage;
+        pauseDownloadImage = options.pauseDownloadImage;
     }
 
     /**
@@ -269,16 +269,16 @@ public class DisplayOptions extends LoadOptions {
             imageDisplayer = options.getImageDisplayer();
         }
 
-        if (loadingImageHolder == null) {
-            loadingImageHolder = options.getLoadingImageHolder();
+        if (loadingImage == null) {
+            loadingImage = options.getLoadingImage();
         }
 
-        if (failedImageHolder == null) {
-            failedImageHolder = options.getFailedImageHolder();
+        if (failedImage == null) {
+            failedImage = options.getFailedImage();
         }
 
-        if (pauseDownloadImageHolder == null) {
-            pauseDownloadImageHolder = options.getPauseDownloadImageHolder();
+        if (pauseDownloadImage == null) {
+            pauseDownloadImage = options.getPauseDownloadImage();
         }
 
         if (!resizeByFixedSize) {

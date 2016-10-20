@@ -41,6 +41,7 @@ import me.xiaopan.androidinjector.InjectParentMember;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.BuildConfig;
 import me.xiaopan.sketchsample.MyBaseActivity;
@@ -271,8 +272,9 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     }
 
     private void refreshPlaceholderMemoryCacheSizeInfo() {
-        String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getPlaceholderImageMemoryCache().getSize());
-        String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getPlaceholderImageMemoryCache().getMaxSize());
+        MemoryCache modeImageMemoryCache = Sketch.with(getBaseContext()).getConfiguration().getModeImageMemoryCache();
+        String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), modeImageMemoryCache.getSize());
+        String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), modeImageMemoryCache.getMaxSize());
         String cacheInfo = usedSizeFormat + "/" + maxSizeFormat;
         placeholderMemoryCacheSizeTextView.setText(cacheInfo);
     }
@@ -464,7 +466,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 refreshMemoryCacheSizeInfo();
                 break;
             case R.id.item_main_cleanPlaceholderMemoryCache:
-                Sketch.with(getBaseContext()).getConfiguration().getPlaceholderImageMemoryCache().clear();
+                Sketch.with(getBaseContext()).getConfiguration().getModeImageMemoryCache().clear();
                 refreshPlaceholderMemoryCacheSizeInfo();
                 break;
             case R.id.item_main_cleanDiskCache:

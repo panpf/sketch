@@ -22,6 +22,7 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.request.FixedSize;
@@ -38,14 +39,11 @@ public class FixedSizeRefBitmapDrawable extends Drawable implements RefDrawable 
     private Paint paint;
     private FixedSize fixedSize;
     private Bitmap bitmap;
-    private RefBitmapDrawable wrapperDrawable;
 
-    public FixedSizeRefBitmapDrawable(RefBitmapDrawable wrapperDrawable, FixedSize fixedSize) {
-        this.wrapperDrawable = wrapperDrawable;
-        if (wrapperDrawable != null) {
-            wrapperDrawable.setLogName("FixedSizeRefBitmapDrawable");
-        }
-        this.bitmap = wrapperDrawable != null ? wrapperDrawable.getBitmap() : null;
+    private RefBitmapDrawable drawable;
+
+    public FixedSizeRefBitmapDrawable(BitmapDrawable drawable, FixedSize fixedSize) {
+        this.bitmap = drawable != null ? drawable.getBitmap() : null;
         if (bitmap != null) {
             this.bitmapWidth = bitmap.getWidth();
             this.bitmapHeight = bitmap.getHeight();
@@ -68,6 +66,11 @@ public class FixedSizeRefBitmapDrawable extends Drawable implements RefDrawable 
                 }
                 setBounds(0, 0, fixedSize.getWidth(), fixedSize.getHeight());
             }
+        }
+
+        this.drawable = drawable instanceof RefBitmapDrawable ? (RefBitmapDrawable) drawable : null;
+        if (this.drawable != null) {
+            this.drawable.setLogName("FixedSizeRefBitmapDrawable");
         }
     }
 
@@ -157,74 +160,74 @@ public class FixedSizeRefBitmapDrawable extends Drawable implements RefDrawable 
 
     @Override
     public String getImageId() {
-        return wrapperDrawable != null ? wrapperDrawable.getImageId() : null;
+        return drawable != null ? drawable.getImageId() : null;
     }
 
     @Override
     public String getImageUri() {
-        return wrapperDrawable != null ? wrapperDrawable.getImageUri() : null;
+        return drawable != null ? drawable.getImageUri() : null;
     }
 
     @Override
     public int getImageWidth() {
-        return wrapperDrawable != null ? wrapperDrawable.getImageWidth() : 0;
+        return drawable != null ? drawable.getImageWidth() : 0;
     }
 
     @Override
     public int getImageHeight() {
-        return wrapperDrawable != null ? wrapperDrawable.getImageHeight() : 0;
+        return drawable != null ? drawable.getImageHeight() : 0;
     }
 
     @Override
     public String getMimeType() {
-        return wrapperDrawable != null ? wrapperDrawable.getMimeType() : null;
+        return drawable != null ? drawable.getMimeType() : null;
     }
 
     @Override
     public void setIsDisplayed(String callingStation, boolean displayed) {
-        if (wrapperDrawable != null) {
-            wrapperDrawable.setIsDisplayed(callingStation, displayed);
+        if (drawable != null) {
+            drawable.setIsDisplayed(callingStation, displayed);
         }
     }
 
     @Override
     public void setIsCached(String callingStation, boolean cached) {
-        if (wrapperDrawable != null) {
-            wrapperDrawable.setIsCached(callingStation, cached);
+        if (drawable != null) {
+            drawable.setIsCached(callingStation, cached);
         }
     }
 
     @Override
     public void setIsWaitDisplay(String callingStation, boolean waitDisplay) {
-        if (wrapperDrawable != null) {
-            wrapperDrawable.setIsWaitDisplay(callingStation, waitDisplay);
+        if (drawable != null) {
+            drawable.setIsWaitDisplay(callingStation, waitDisplay);
         }
     }
 
     @Override
     public boolean isRecycled() {
-        return wrapperDrawable == null || wrapperDrawable.isRecycled();
+        return drawable == null || drawable.isRecycled();
     }
 
     @Override
     public void recycle() {
-        if (wrapperDrawable != null) {
-            wrapperDrawable.recycle();
+        if (drawable != null) {
+            drawable.recycle();
         }
     }
 
     @Override
     public String getInfo() {
-        return wrapperDrawable != null ? wrapperDrawable.getInfo() : null;
+        return drawable != null ? drawable.getInfo() : null;
     }
 
     @Override
     public int getByteCount() {
-        return wrapperDrawable != null ? wrapperDrawable.getByteCount() : 0;
+        return drawable != null ? drawable.getByteCount() : 0;
     }
 
     @Override
     public Bitmap.Config getBitmapConfig() {
-        return wrapperDrawable != null ? wrapperDrawable.getBitmapConfig() : null;
+        return drawable != null ? drawable.getBitmapConfig() : null;
     }
 }

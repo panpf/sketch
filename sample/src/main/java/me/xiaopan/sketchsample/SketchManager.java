@@ -10,7 +10,7 @@ import me.xiaopan.sketch.process.CircleImageProcessor;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
 import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.ImageHolder;
+import me.xiaopan.sketch.request.MakerDrawableModeImage;
 import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -48,9 +48,9 @@ public class SketchManager {
         RoundedCornerImageProcessor roundedCornerImageProcessor = new RoundedCornerImageProcessor(SketchUtils.dp2px(context, 10));
         Resize appIconSize = new Resize(SketchUtils.dp2px(context, 60), SketchUtils.dp2px(context, 60), ImageView.ScaleType.CENTER_CROP);
         Sketch.putOptions(OptionsType.APP_ICON, new DisplayOptions()
-                .setLoadingImage(new ImageHolder(R.drawable.image_loading).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
-                .setFailedImage(new ImageHolder(R.drawable.image_failed).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
-                .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download).setImageProcessor(roundedCornerImageProcessor).setResize(appIconSize).setForceUseResize(true))
+                .setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, roundedCornerImageProcessor, appIconSize, true))
+                .setFailedImage(new MakerDrawableModeImage(R.drawable.image_failed, roundedCornerImageProcessor, appIconSize, true))
+                .setPauseDownloadImage(new MakerDrawableModeImage(R.drawable.image_pause_download, roundedCornerImageProcessor, appIconSize, true))
                 .setResizeByFixedSize(true)
                 .setForceUseResize(true)
                 .setImageDisplayer(transitionImageDisplayer)
@@ -63,9 +63,9 @@ public class SketchManager {
         );
 
         Sketch.putOptions(OptionsType.NORMAL_CIRCULAR, new DisplayOptions()
-                .setLoadingImage(new ImageHolder(R.drawable.image_loading).setImageProcessor(CircleImageProcessor.getInstance()))
-                .setFailedImage(new ImageHolder(R.drawable.image_failed).setImageProcessor(CircleImageProcessor.getInstance()))
-                .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download).setImageProcessor(CircleImageProcessor.getInstance()))
+                .setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, CircleImageProcessor.getInstance()))
+                .setFailedImage(new MakerDrawableModeImage(R.drawable.image_failed, CircleImageProcessor.getInstance()))
+                .setPauseDownloadImage(new MakerDrawableModeImage(R.drawable.image_pause_download, CircleImageProcessor.getInstance()))
                 .setImageDisplayer(transitionImageDisplayer)
                 .setImageProcessor(CircleImageProcessor.getInstance())
         );

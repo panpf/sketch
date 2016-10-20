@@ -50,7 +50,7 @@ public class Configuration {
     private DiskCache diskCache;    // 磁盘缓存
     private HttpStack httpStack;    // 网络
     private MemoryCache memoryCache;    //图片内存缓存
-    private MemoryCache placeholderImageMemoryCache;    // 占位图内存缓存器
+    private MemoryCache modeImageMemoryCache;    // 占位图内存缓存器
     private ImageDecoder imageDecoder;    //图片解码器
     private HelperFactory helperFactory;    // 协助器工厂
     private ExceptionMonitor exceptionMonitor;    // 错误回调
@@ -88,7 +88,7 @@ public class Configuration {
         this.imageSizeCalculator = new ImageSizeCalculator();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.resizeImageProcessor = new ResizeImageProcessor();
-        this.placeholderImageMemoryCache = LruMemoryCache.createPlaceholder(context);
+        this.modeImageMemoryCache = LruMemoryCache.createByModeImage(context);
 
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, getInfo());
@@ -180,23 +180,23 @@ public class Configuration {
     /**
      * 获取占位图内存缓存器
      */
-    public MemoryCache getPlaceholderImageMemoryCache() {
-        return placeholderImageMemoryCache;
+    public MemoryCache getModeImageMemoryCache() {
+        return modeImageMemoryCache;
     }
 
     /**
      * 设置占位图内存缓存器
      */
     @SuppressWarnings("unused")
-    public Configuration setPlaceholderImageMemoryCache(MemoryCache newPlaceholderImageMemoryCache) {
-        if (newPlaceholderImageMemoryCache != null) {
-            MemoryCache oldPlaceholderImageMemoryCache = placeholderImageMemoryCache;
-            placeholderImageMemoryCache = newPlaceholderImageMemoryCache;
+    public Configuration setModeImageMemoryCache(MemoryCache newModeImageMemoryCache) {
+        if (newModeImageMemoryCache != null) {
+            MemoryCache oldPlaceholderImageMemoryCache = modeImageMemoryCache;
+            modeImageMemoryCache = newModeImageMemoryCache;
             if (oldPlaceholderImageMemoryCache != null) {
                 oldPlaceholderImageMemoryCache.close();
             }
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setPlaceholderImageMemoryCache", ". ", placeholderImageMemoryCache.getIdentifier()));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setModeImageMemoryCache", ". ", modeImageMemoryCache.getIdentifier()));
             }
         }
         return this;
@@ -580,9 +580,9 @@ public class Configuration {
             memoryCache.appendIdentifier("memoryCache：", builder);
         }
 
-        if (placeholderImageMemoryCache != null) {
+        if (modeImageMemoryCache != null) {
             if (builder.length() > 0) builder.append("\n");
-            placeholderImageMemoryCache.appendIdentifier("placeholderImageMemoryCache：", builder);
+            modeImageMemoryCache.appendIdentifier("modeImageMemoryCache：", builder);
         }
 
         if (imageDecoder != null) {

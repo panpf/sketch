@@ -17,7 +17,7 @@ import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.ImageHolder;
+import me.xiaopan.sketch.request.MakerDrawableModeImage;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.R;
@@ -69,9 +69,9 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         RoundedCornerImageProcessor imageProcessor = new RoundedCornerImageProcessor(roundRadius);
         Resize resize = new Resize(itemWidth, itemWidth, ImageView.ScaleType.CENTER_CROP);
         displayOptions = new DisplayOptions()
-                .setLoadingImage(new ImageHolder(R.drawable.image_loading).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
-                .setFailedImage(new ImageHolder(R.drawable.image_failed).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
-                .setPauseDownloadImage(new ImageHolder(R.drawable.image_pause_download).setImageProcessor(imageProcessor).setResize(resize).setForceUseResize(true))
+                .setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, imageProcessor, resize, true))
+                .setFailedImage(new MakerDrawableModeImage(R.drawable.image_failed, imageProcessor, resize, true))
+                .setPauseDownloadImage(new MakerDrawableModeImage(R.drawable.image_pause_download, imageProcessor, resize, true))
                 .setImageProcessor(imageProcessor)
                 .setResizeByFixedSize(true)
                 .setForceUseResize(true)
