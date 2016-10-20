@@ -48,7 +48,7 @@ public interface DecodeHelper {
     /**
      * 解码失败
      */
-    void onDecodeFailed();
+    void onDecodeError();
 
     /**
      * 获取GIF图

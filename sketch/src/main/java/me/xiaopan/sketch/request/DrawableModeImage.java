@@ -24,22 +24,22 @@ import me.xiaopan.sketch.drawable.FixedSizeRefBitmapDrawable;
 
 @SuppressWarnings("unused")
 public class DrawableModeImage implements ModeImage {
-    private Drawable drawable;
-    private int drawableResId = -1;
+    private Drawable wrapperDrawable;
+    private int resId = -1;
 
     public DrawableModeImage(Drawable drawable) {
-        this.drawable = drawable;
+        this.wrapperDrawable = drawable;
     }
 
-    public DrawableModeImage(int drawableResId) {
-        this.drawableResId = drawableResId;
+    public DrawableModeImage(int resId) {
+        this.resId = resId;
     }
 
     @Override
     public Drawable getDrawable(Context context, FixedSize fixedSize) {
-        Drawable finalDrawable = drawable;
-        if (finalDrawable == null && drawableResId != -1) {
-            finalDrawable = context.getResources().getDrawable(drawableResId);
+        Drawable finalDrawable = wrapperDrawable;
+        if (finalDrawable == null && resId != -1) {
+            finalDrawable = context.getResources().getDrawable(resId);
         }
 
         if (fixedSize != null && finalDrawable != null && finalDrawable instanceof BitmapDrawable) {
@@ -47,5 +47,13 @@ public class DrawableModeImage implements ModeImage {
         }
 
         return finalDrawable;
+    }
+
+    public Drawable getWrapperDrawable() {
+        return wrapperDrawable;
+    }
+
+    public int getResId() {
+        return resId;
     }
 }

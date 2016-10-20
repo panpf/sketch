@@ -77,7 +77,7 @@ class TileExecutor {
     }
 
     /**
-     * 初始化解码器，初始化结果会通过Callback的onInitCompleted()或onInitFailed(Exception)方法回调
+     * 初始化解码器，初始化结果会通过Callback的onInitCompleted()或onInitError(Exception)方法回调
      */
     public void submitInit(String imageUri, KeyCounter keyCounter) {
         installHandlerThread();
@@ -147,10 +147,10 @@ class TileExecutor {
 
         void onInitCompleted(String imageUri, ImageRegionDecoder decoder);
 
-        void onInitFailed(String imageUri, Exception e);
+        void onInitError(String imageUri, Exception e);
 
         void onDecodeCompleted(Tile tile, Bitmap bitmap, int useTime);
 
-        void onDecodeFailed(Tile tile, DecodeHandler.DecodeFailedException exception);
+        void onDecodeError(Tile tile, DecodeHandler.DecodeErrorException exception);
     }
 }

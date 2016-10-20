@@ -20,3 +20,4 @@ Other：
 >* ``Drawable``. FixedRecycleBitmapDrawable更名为FixedSizeRefBitmapDrawable
 >* ``Drawable``. BindFixedRecycleBitmapDrawable改名为BindFixedSizeRefBitmapDrawable
 >* ``BindDrawable``. 重构BindDrawable，改成了LoadingDrawable
+>* ``Failed``. 所有跟Failed相关的名字全改成了Error

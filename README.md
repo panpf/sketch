@@ -154,7 +154,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 |disableCacheInMemory|-|-|false|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
-|failedImage|-|-|null|
+|errorImage|-|-|null|
 |pauseDownloadImage|-|-|null|
 |resizeByFixedSize|-|-|false|
 

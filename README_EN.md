@@ -160,7 +160,7 @@ The following are supported by the three methods (`-` is not supported)
 |disableCacheInMemory|-|-|false|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
-|failedImage|-|-|null|
+|errorImage|-|-|null|
 |pauseDownloadImage|-|-|null|
 |resizeByFixedSize|-|-|false|
 

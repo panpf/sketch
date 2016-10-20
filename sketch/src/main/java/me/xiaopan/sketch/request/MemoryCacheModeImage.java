@@ -54,4 +54,12 @@ public class MemoryCacheModeImage implements ModeImage {
 
         return defaultModeImage != null ? defaultModeImage.getDrawable(context, fixedSize) : null;
     }
+
+    public String getMemoryCacheId() {
+        return memoryCacheId;
+    }
+
+    public ModeImage getDefaultModeImage() {
+        return defaultModeImage;
+    }
 }

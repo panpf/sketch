@@ -46,7 +46,7 @@ import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadProgressListener;
-import me.xiaopan.sketch.request.FailedCause;
+import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.UriScheme;
@@ -548,8 +548,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     /**
      * 设置当失败的时候点击重新显示图片
      */
-    public void setClickRetryOnFailed(boolean clickRetryOnFailed) {
-        clickRetryFunction.setClickRetryOnFailed(clickRetryOnFailed);
+    public void setClickRetryOnError(boolean clickRetryOnError) {
+        clickRetryFunction.setClickRetryOnError(clickRetryOnError);
     }
 
     /**
@@ -907,38 +907,38 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
 
         @Override
-        public void onFailed(FailedCause failedCause) {
+        public void onError(ErrorCause errorCause) {
             boolean needInvokeInvalidate = false;
             if (showImageFromFunction != null) {
                 //noinspection ConstantConditions
-                needInvokeInvalidate |= showImageFromFunction.onDisplayFailed(failedCause);
+                needInvokeInvalidate |= showImageFromFunction.onDisplayError(errorCause);
             }
             if (showProgressFunction != null) {
-                needInvokeInvalidate |= showProgressFunction.onDisplayFailed(failedCause);
+                needInvokeInvalidate |= showProgressFunction.onDisplayError(errorCause);
             }
             if (showGifFlagFunction != null) {
-                needInvokeInvalidate |= showGifFlagFunction.onDisplayFailed(failedCause);
+                needInvokeInvalidate |= showGifFlagFunction.onDisplayError(errorCause);
             }
             if (showPressedFunction != null) {
-                needInvokeInvalidate |= showPressedFunction.onDisplayFailed(failedCause);
+                needInvokeInvalidate |= showPressedFunction.onDisplayError(errorCause);
             }
             if (imageShapeFunction != null) {
-                needInvokeInvalidate |= imageShapeFunction.onDisplayFailed(failedCause);
+                needInvokeInvalidate |= imageShapeFunction.onDisplayError(errorCause);
             }
             if (clickRetryFunction != null) {
-                needInvokeInvalidate |= clickRetryFunction.onDisplayFailed(failedCause);
+                needInvokeInvalidate |= clickRetryFunction.onDisplayError(errorCause);
             }
             if (requestFunction != null) {
-                needInvokeInvalidate |= requestFunction.onDisplayFailed(failedCause);
+                needInvokeInvalidate |= requestFunction.onDisplayError(errorCause);
             }
             if (recyclerCompatFunction != null) {
-                needInvokeInvalidate |= recyclerCompatFunction.onDisplayFailed(failedCause);
+                needInvokeInvalidate |= recyclerCompatFunction.onDisplayError(errorCause);
             }
             if (zoomFunction != null) {
-                needInvokeInvalidate |= zoomFunction.onDisplayFailed(failedCause);
+                needInvokeInvalidate |= zoomFunction.onDisplayError(errorCause);
             }
             if (largeImageFunction != null) {
-                needInvokeInvalidate |= largeImageFunction.onDisplayFailed(failedCause);
+                needInvokeInvalidate |= largeImageFunction.onDisplayError(errorCause);
             }
 
             if (needInvokeInvalidate) {
@@ -946,7 +946,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             }
 
             if (wrapperDisplayListener != null) {
-                wrapperDisplayListener.onFailed(failedCause);
+                wrapperDisplayListener.onError(errorCause);
             }
         }
 
@@ -1112,7 +1112,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         /**
          * @return 是否需要调用invalidate()刷新ImageView
          */
-        public boolean onDisplayFailed(FailedCause failedCause) {
+        public boolean onDisplayError(ErrorCause errorCause) {
             return false;
         }
 

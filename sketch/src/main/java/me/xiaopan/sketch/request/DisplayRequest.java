@@ -88,12 +88,12 @@ public class DisplayRequest extends LoadRequest {
     }
 
     @Override
-    public void failed(FailedCause failedCause) {
-        if (displayListener != null || displayOptions.getFailedImage() != null) {
-            setFailedCause(failedCause);
-            postRunFailed();
+    public void error(ErrorCause errorCause) {
+        if (displayListener != null || displayOptions.getErrorImage() != null) {
+            setErrorCause(errorCause);
+            postRunError();
         } else {
-            super.failed(failedCause);
+            super.error(errorCause);
         }
     }
 
@@ -107,9 +107,9 @@ public class DisplayRequest extends LoadRequest {
     }
 
     @Override
-    protected void postRunFailed() {
+    protected void postRunError() {
         setStatus(Status.WAIT_DISPLAY);
-        super.postRunFailed();
+        super.postRunError();
     }
 
     @Override
@@ -189,7 +189,7 @@ public class DisplayRequest extends LoadRequest {
                     printLogE("decode failed", "loadCompleted", "bitmap recycled",
                             "bitmapInfo=", SketchUtils.getImageInfo(null, bitmap, loadResult.getMimeType()));
                 }
-                failed(FailedCause.BITMAP_RECYCLED);
+                error(ErrorCause.BITMAP_RECYCLED);
                 return;
             }
 
@@ -212,7 +212,7 @@ public class DisplayRequest extends LoadRequest {
                             "gif drawable recycled",
                             "gifInfo=", SketchUtils.getGifImageInfo(gifDrawable));
                 }
-                failed(FailedCause.GIF_DRAWABLE_RECYCLED);
+                error(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
@@ -225,7 +225,7 @@ public class DisplayRequest extends LoadRequest {
             if (Sketch.isDebugMode()) {
                 printLogE("are all null", "loadCompleted");
             }
-            failed(FailedCause.DECODE_FAIL);
+            error(ErrorCause.DECODE_FAIL);
         }
     }
 
@@ -297,10 +297,10 @@ public class DisplayRequest extends LoadRequest {
     }
 
     @Override
-    protected void runFailedInMainThread() {
+    protected void runErrorInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("canceled", "runFailedInMainThread");
+                printLogW("canceled", "runErrorInMainThread");
             }
             return;
         }
@@ -308,20 +308,20 @@ public class DisplayRequest extends LoadRequest {
         setStatus(Status.FAILED);
 
         // 显示失败图片
-        if (displayOptions.getFailedImage() != null) {
+        if (displayOptions.getErrorImage() != null) {
             boolean canUseFixedSize = SketchUtils.isFixedSize(displayOptions.getImageDisplayer(),
                     displayAttrs.getFixedSize(), displayAttrs.getScaleType());
             Context context = getSketch().getConfiguration().getContext();
-            Drawable failedDrawable = displayOptions.getFailedImage().getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
+            Drawable failedDrawable = displayOptions.getErrorImage().getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
             displayOptions.getImageDisplayer().display(requestAndViewBinder.getImageViewInterface(), failedDrawable);
         } else {
             if (Sketch.isDebugMode()) {
-                printLogW("failedDrawable is null", "runFailedInMainThread");
+                printLogW("failedDrawable is null", "runErrorInMainThread");
             }
         }
 
         if (displayListener != null) {
-            displayListener.onFailed(getFailedCause());
+            displayListener.onError(getErrorCause());
         }
     }
 

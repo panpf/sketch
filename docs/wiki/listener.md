@@ -15,7 +15,7 @@ sketchImageView.setDisplayListener(new DisplayListener() {
     }
 
     @Override
-    public void onFailed(FailCause failCause) {
+    public void onError(FailCause failCause) {
 
     }
 
@@ -52,7 +52,7 @@ Sketch.with(context).load("http://biying.png", new LoadListener() {
     }
 
     @Override
-    public void onFailed(FailedCause failedCause) {
+    public void onError(ErrorCause errorCause) {
 
     }
 
@@ -82,7 +82,7 @@ Sketch.with(context).download("http://biying.png", new DownloadListener() {
     }
 
     @Override
-    public void onFailed(FailedCause failedCause) {
+    public void onError(ErrorCause errorCause) {
 
     }
 

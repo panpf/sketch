@@ -53,14 +53,14 @@ public class CallbackHandler {
                         ((AsyncRequest) msg.obj).runUpdateProgressInMainThread(msg.arg1, msg.arg2);
                         break;
                     case WHAT_RUN_FAILED:
-                        ((AsyncRequest) msg.obj).runFailedInMainThread();
+                        ((AsyncRequest) msg.obj).runErrorInMainThread();
                         break;
 
                     case WHAT_CALLBACK_STARTED:
                         ((Listener) msg.obj).onStarted();
                         break;
                     case WHAT_CALLBACK_FAILED:
-                        ((Listener) msg.obj).onFailed(FailedCause.valueOf(msg.getData().getString(PARAM_FAILED_CAUSE)));
+                        ((Listener) msg.obj).onError(ErrorCause.valueOf(msg.getData().getString(PARAM_FAILED_CAUSE)));
                         break;
                     case WHAT_CALLBACK_CANCELED:
                         ((Listener) msg.obj).onCanceled(CancelCause.valueOf(msg.getData().getString(PARAM_CANCELED_CAUSE)));
@@ -100,9 +100,9 @@ public class CallbackHandler {
     /**
      * 推到主线程处理失败
      */
-    static void postRunFailed(AsyncRequest request) {
+    static void postRunError(AsyncRequest request) {
         if (request.isSync()) {
-            request.runFailedInMainThread();
+            request.runErrorInMainThread();
         } else {
             handler.obtainMessage(WHAT_RUN_FAILED, request).sendToTarget();
         }
@@ -129,15 +129,15 @@ public class CallbackHandler {
         }
     }
 
-    static void postCallbackFailed(Listener listener, FailedCause failedCause, boolean sync) {
+    static void postCallbackError(Listener listener, ErrorCause errorCause, boolean sync) {
         if (listener != null) {
             if (sync || SketchUtils.isMainThread()) {
-                listener.onFailed(failedCause);
+                listener.onError(errorCause);
             } else {
                 Message message = handler.obtainMessage(WHAT_CALLBACK_FAILED, listener);
 
                 Bundle bundle = new Bundle();
-                bundle.putString(PARAM_FAILED_CAUSE, failedCause.name());
+                bundle.putString(PARAM_FAILED_CAUSE, errorCause.name());
                 message.setData(bundle);
 
                 message.sendToTarget();

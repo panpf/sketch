@@ -25,9 +25,9 @@ public interface Listener {
     /**
      * 已失败
      *
-     * @param failedCause 失败原因
+     * @param errorCause 失败原因
      */
-    void onFailed(FailedCause failedCause);
+    void onError(ErrorCause errorCause);
 
     /**
      * 已取消

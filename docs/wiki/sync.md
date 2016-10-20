@@ -17,7 +17,7 @@ Sketch.with(context).load("http://biying.png", new LoadListener() {
     }
 
     @Override
-    public void onFailed(FailedCause failedCause) {
+    public void onError(ErrorCause errorCause) {
 
     }
 

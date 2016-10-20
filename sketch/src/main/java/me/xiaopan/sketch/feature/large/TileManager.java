@@ -633,7 +633,7 @@ class TileManager {
         }
     }
 
-    void decodeFailed(Tile tile, DecodeHandler.DecodeFailedException exception) {
+    void decodeError(Tile tile, DecodeHandler.DecodeErrorException exception) {
         if (Sketch.isDebugMode()) {
             Log.w(Sketch.TAG, NAME + ". decode failed. " + exception.getCauseMessage() + "" +
                     ". tile=" + tile.getInfo() + "" +

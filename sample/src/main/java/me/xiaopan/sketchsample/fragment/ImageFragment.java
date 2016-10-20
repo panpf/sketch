@@ -17,7 +17,7 @@ import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
-import me.xiaopan.sketch.request.FailedCause;
+import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.RequestLevel;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -98,8 +98,8 @@ public class ImageFragment extends MyFragment {
             }
 
             @Override
-            public void onFailed(FailedCause failedCause) {
-                hintView.hint(R.drawable.ic_failed, "图片显示失败", "重新显示", new View.OnClickListener() {
+            public void onError(ErrorCause errorCause) {
+                hintView.hint(R.drawable.ic_error, "图片显示失败", "重新显示", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         completedAfterUpdateBackground = true;
@@ -116,7 +116,7 @@ public class ImageFragment extends MyFragment {
 
                 switch (cancelCause) {
                     case REQUEST_LEVEL_IS_LOCAL:
-                        hintView.hint(R.drawable.ic_failed, "level is local", "直接显示", new View.OnClickListener() {
+                        hintView.hint(R.drawable.ic_error, "level is local", "直接显示", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 completedAfterUpdateBackground = true;
@@ -125,7 +125,7 @@ public class ImageFragment extends MyFragment {
                         });
                         break;
                     case REQUEST_LEVEL_IS_MEMORY:
-                        hintView.hint(R.drawable.ic_failed, "level is memory", "直接显示", new View.OnClickListener() {
+                        hintView.hint(R.drawable.ic_error, "level is memory", "直接显示", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 completedAfterUpdateBackground = true;
@@ -136,7 +136,7 @@ public class ImageFragment extends MyFragment {
                     case BE_CANCELLED:
                         break;
                     case PAUSE_DOWNLOAD:
-                        hintView.hint(R.drawable.ic_failed, "为节省流量已暂停下载新图片", "不管了，直接下载", new View.OnClickListener() {
+                        hintView.hint(R.drawable.ic_error, "为节省流量已暂停下载新图片", "不管了，直接下载", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 completedAfterUpdateBackground = true;
@@ -145,7 +145,7 @@ public class ImageFragment extends MyFragment {
                         });
                         break;
                     case PAUSE_LOAD:
-                        hintView.hint(R.drawable.ic_failed, "已暂停加载新图片", "直接加载", new View.OnClickListener() {
+                        hintView.hint(R.drawable.ic_error, "已暂停加载新图片", "直接加载", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 completedAfterUpdateBackground = true;

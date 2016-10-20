@@ -375,15 +375,15 @@ public class LargeImageViewer {
         }
 
         @Override
-        public void onInitFailed(String imageUri, Exception e) {
+        public void onInitError(String imageUri, Exception e) {
             if (!running) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". stop running. initFailed. " + imageUri);
+                    Log.w(Sketch.TAG, NAME + ". stop running. initError. " + imageUri);
                 }
                 return;
             }
 
-            tileDecoder.initFailed(imageUri, e);
+            tileDecoder.initError(imageUri, e);
         }
 
         @Override
@@ -400,15 +400,15 @@ public class LargeImageViewer {
         }
 
         @Override
-        public void onDecodeFailed(Tile tile, DecodeHandler.DecodeFailedException exception) {
+        public void onDecodeError(Tile tile, DecodeHandler.DecodeErrorException exception) {
             if (!running) {
                 if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". stop running. decodeFailed. tile=" + tile.getInfo());
+                    Log.w(Sketch.TAG, NAME + ". stop running. decodeError. tile=" + tile.getInfo());
                 }
                 return;
             }
 
-            tileManager.decodeFailed(tile, exception);
+            tileManager.decodeError(tile, exception);
         }
     }
 }

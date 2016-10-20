@@ -69,11 +69,11 @@ public class DownloadRequest extends AsyncRequest {
     }
 
     @Override
-    public void failed(FailedCause failedCause) {
-        super.failed(failedCause);
+    public void error(ErrorCause errorCause) {
+        super.error(errorCause);
 
         if (downloadListener != null) {
-            postRunFailed();
+            postRunError();
         }
     }
 
@@ -223,7 +223,7 @@ public class DownloadRequest extends AsyncRequest {
             } catch (Throwable e) {
                 e.printStackTrace();
 
-                getSketch().getConfiguration().getExceptionMonitor().onDownloadFailed(this, e);
+                getSketch().getConfiguration().getExceptionMonitor().onDownloadError(this, e);
 
                 if (isCanceled()) {
                     if (Sketch.isDebugMode()) {
@@ -430,7 +430,7 @@ public class DownloadRequest extends AsyncRequest {
         if (downloadResult != null && downloadResult.hasData()) {
             postRunCompleted();
         } else {
-            failed(FailedCause.DOWNLOAD_FAIL);
+            error(ErrorCause.DOWNLOAD_FAIL);
         }
     }
 
@@ -465,16 +465,16 @@ public class DownloadRequest extends AsyncRequest {
     }
 
     @Override
-    protected void runFailedInMainThread() {
+    protected void runErrorInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("canceled", "runFailedInMainThread");
+                printLogW("canceled", "runErrorInMainThread");
             }
             return;
         }
 
         if (downloadListener != null) {
-            downloadListener.onFailed(getFailedCause());
+            downloadListener.onError(getErrorCause());
         }
     }
 

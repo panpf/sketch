@@ -23,7 +23,7 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.request.FailedCause;
+import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.UriScheme;
 
@@ -147,7 +147,7 @@ public class ShowImageFromFunction extends SketchImageView.Function {
     }
 
     @Override
-    public boolean onDisplayFailed(FailedCause failedCause) {
+    public boolean onDisplayError(ErrorCause errorCause) {
         imageFrom = null;
         return true;
     }

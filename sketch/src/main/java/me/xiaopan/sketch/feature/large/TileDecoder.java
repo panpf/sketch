@@ -101,7 +101,7 @@ class TileDecoder {
         this.decoder = decoder;
     }
 
-    void initFailed(String imageUri, Exception e) {
+    void initError(String imageUri, Exception e) {
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, NAME + ". init failed. " + e.getMessage() + ". " + imageUri);
         }

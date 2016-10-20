@@ -57,16 +57,16 @@ class MainHandler extends Handler {
                 initCompleted(initResult.imageRegionDecoder, initResult.imageUrl, msg.arg1, initResult.keyCounter);
                 break;
             case WHAT_INIT_FAILED:
-                InitFailedResult initFailedResult = (InitFailedResult) msg.obj;
-                initFailed(initFailedResult.exception, initFailedResult.imageUrl, msg.arg1, initFailedResult.keyCounter);
+                InitErrorResult initErrorResult = (InitErrorResult) msg.obj;
+                initError(initErrorResult.exception, initErrorResult.imageUrl, msg.arg1, initErrorResult.keyCounter);
                 break;
             case WHAT_DECODE_COMPLETED:
                 DecodeResult decodeResult = (DecodeResult) msg.obj;
                 decodeCompleted(msg.arg1, decodeResult.tile, decodeResult.bitmap, decodeResult.useTime);
                 break;
             case WHAT_DECODE_FAILED:
-                DecodeFailedResult decodeFailedResult = (DecodeFailedResult) msg.obj;
-                decodeFailed(msg.arg1, decodeFailedResult.tile, decodeFailedResult.exception);
+                DecodeErrorResult decodeErrorResult = (DecodeErrorResult) msg.obj;
+                decodeError(msg.arg1, decodeErrorResult.tile, decodeErrorResult.exception);
                 break;
         }
     }
@@ -104,10 +104,10 @@ class MainHandler extends Handler {
         message.sendToTarget();
     }
 
-    public void postInitFailed(Exception e, String imageUri, int key, KeyCounter keyCounter) {
+    public void postInitError(Exception e, String imageUri, int key, KeyCounter keyCounter) {
         Message message = obtainMessage(MainHandler.WHAT_INIT_FAILED);
         message.arg1 = key;
-        message.obj = new InitFailedResult(e, imageUri, keyCounter);
+        message.obj = new InitErrorResult(e, imageUri, keyCounter);
         message.sendToTarget();
     }
 
@@ -118,10 +118,10 @@ class MainHandler extends Handler {
         message.sendToTarget();
     }
 
-    public void postDecodeFailed(int key, Tile tile, DecodeHandler.DecodeFailedException exception) {
+    public void postDecodeError(int key, Tile tile, DecodeHandler.DecodeErrorException exception) {
         Message message = obtainMessage(MainHandler.WHAT_DECODE_FAILED);
         message.arg1 = key;
-        message.obj = new DecodeFailedResult(tile, exception);
+        message.obj = new DecodeErrorResult(tile, exception);
         message.sendToTarget();
     }
 
@@ -150,11 +150,11 @@ class MainHandler extends Handler {
         decodeExecutor.callback.onInitCompleted(imageUri, decoder);
     }
 
-    private void initFailed(Exception exception, String imageUri, int key, KeyCounter keyCounter) {
+    private void initError(Exception exception, String imageUri, int key, KeyCounter keyCounter) {
         TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. initFailed. key: " + key + ", imageUri: " + imageUri);
+                Log.w(Sketch.TAG, NAME + ". weak reference break. initError. key: " + key + ", imageUri: " + imageUri);
             }
             return;
         }
@@ -162,12 +162,12 @@ class MainHandler extends Handler {
         int newKey = keyCounter.getKey();
         if (key != newKey) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". key expire. initFailed. key: " + key + ". newKey: " + newKey + ", imageUri: " + imageUri);
+                Log.w(Sketch.TAG, NAME + ". key expire. initError. key: " + key + ". newKey: " + newKey + ", imageUri: " + imageUri);
             }
             return;
         }
 
-        decodeExecutor.callback.onInitFailed(imageUri, exception);
+        decodeExecutor.callback.onInitError(imageUri, exception);
     }
 
     private void decodeCompleted(int key, Tile tile, Bitmap bitmap, int useTime) {
@@ -184,21 +184,21 @@ class MainHandler extends Handler {
             decodeExecutor.callback.onDecodeCompleted(tile, bitmap, useTime);
         } else {
             bitmap.recycle();
-            decodeExecutor.callback.onDecodeFailed(tile,
-                    new DecodeHandler.DecodeFailedException(DecodeHandler.DecodeFailedException.CAUSE_CALLBACK_KEY_EXPIRED));
+            decodeExecutor.callback.onDecodeError(tile,
+                    new DecodeHandler.DecodeErrorException(DecodeHandler.DecodeErrorException.CAUSE_CALLBACK_KEY_EXPIRED));
         }
     }
 
-    private void decodeFailed(int key, Tile tile, DecodeHandler.DecodeFailedException exception) {
+    private void decodeError(int key, Tile tile, DecodeHandler.DecodeErrorException exception) {
         TileExecutor decodeExecutor = reference.get();
         if (decodeExecutor == null) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeFailed. key: " + key +", tile=" + tile.getInfo());
+                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeError. key: " + key +", tile=" + tile.getInfo());
             }
             return;
         }
 
-        decodeExecutor.callback.onDecodeFailed(tile, exception);
+        decodeExecutor.callback.onDecodeError(tile, exception);
     }
 
     private static final class DecodeResult {
@@ -213,11 +213,11 @@ class MainHandler extends Handler {
         }
     }
 
-    private static final class DecodeFailedResult{
+    private static final class DecodeErrorResult {
         public Tile tile;
-        public DecodeHandler.DecodeFailedException exception;
+        public DecodeHandler.DecodeErrorException exception;
 
-        public DecodeFailedResult(Tile tile, DecodeHandler.DecodeFailedException exception) {
+        public DecodeErrorResult(Tile tile, DecodeHandler.DecodeErrorException exception) {
             this.tile = tile;
             this.exception = exception;
         }
@@ -235,12 +235,12 @@ class MainHandler extends Handler {
         }
     }
 
-    private static final class InitFailedResult{
+    private static final class InitErrorResult {
         public String imageUrl;
         public Exception exception;
         public KeyCounter keyCounter;
 
-        public InitFailedResult(Exception exception, String imageUrl, KeyCounter keyCounter) {
+        public InitErrorResult(Exception exception, String imageUrl, KeyCounter keyCounter) {
             this.exception = exception;
             this.imageUrl = imageUrl;
             this.keyCounter = keyCounter;

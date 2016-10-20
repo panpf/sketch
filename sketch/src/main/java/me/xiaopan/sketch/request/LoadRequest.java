@@ -80,11 +80,11 @@ public class LoadRequest extends DownloadRequest {
     }
 
     @Override
-    public void failed(FailedCause failedCause) {
-        super.failed(failedCause);
+    public void error(ErrorCause errorCause) {
+        super.error(errorCause);
 
         if (loadListener != null) {
-            postRunFailed();
+            postRunError();
         }
     }
 
@@ -132,7 +132,7 @@ public class LoadRequest extends DownloadRequest {
             if (Sketch.isDebugMode()) {
                 printLogE("are all null", "downloadCompleted");
             }
-            failed(FailedCause.DOWNLOAD_FAIL);
+            error(ErrorCause.DOWNLOAD_FAIL);
         }
     }
 
@@ -155,7 +155,7 @@ public class LoadRequest extends DownloadRequest {
             } else if (prePrecessResult != null && prePrecessResult.imageData != null) {
                 dataSource = new DataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
             } else {
-                failed(FailedCause.PRE_PROCESS_RESULT_IS_NULL);
+                error(ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
                 return;
             }
         }
@@ -171,7 +171,7 @@ public class LoadRequest extends DownloadRequest {
                 if (Sketch.isDebugMode()) {
                     printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: " + SketchUtils.getImageInfo(null, bitmap, decodeResult.getMimeType()));
                 }
-                failed(FailedCause.BITMAP_RECYCLED);
+                error(ErrorCause.BITMAP_RECYCLED);
                 return;
             }
 
@@ -201,7 +201,7 @@ public class LoadRequest extends DownloadRequest {
                 } catch (OutOfMemoryError e) {
                     e.printStackTrace();
                     ExceptionMonitor exceptionMonitor = getSketch().getConfiguration().getExceptionMonitor();
-                    exceptionMonitor.onProcessImageFailed(e, getAttrs().getId(), imageProcessor);
+                    exceptionMonitor.onProcessImageError(e, getAttrs().getId(), imageProcessor);
                 }
 
                 // 确实是一张新图片，就替换掉旧图片
@@ -214,7 +214,7 @@ public class LoadRequest extends DownloadRequest {
                 } else {
                     // 有可能处理后没得到新图片就图片也没了，这叫赔了夫人又折兵
                     if (bitmap.isRecycled()) {
-                        failed(FailedCause.SOURCE_BITMAP_RECYCLED);
+                        error(ErrorCause.SOURCE_BITMAP_RECYCLED);
                         return;
                     }
                 }
@@ -237,7 +237,7 @@ public class LoadRequest extends DownloadRequest {
                 if (Sketch.isDebugMode()) {
                     printLogE("decode failed", "runLoad", "gif drawable recycled", "gifInfo: " + SketchUtils.getGifImageInfo(gifDrawable));
                 }
-                failed(FailedCause.GIF_DRAWABLE_RECYCLED);
+                error(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
@@ -259,7 +259,7 @@ public class LoadRequest extends DownloadRequest {
             if (Sketch.isDebugMode()) {
                 printLogE("are all null", "runLoad");
             }
-            failed(FailedCause.DECODE_FAIL);
+            error(ErrorCause.DECODE_FAIL);
         }
     }
 
@@ -293,16 +293,16 @@ public class LoadRequest extends DownloadRequest {
     }
 
     @Override
-    protected void runFailedInMainThread() {
+    protected void runErrorInMainThread() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
-                printLogW("canceled", "runFailedInMainThread");
+                printLogW("canceled", "runErrorInMainThread");
             }
             return;
         }
 
         if (loadListener != null) {
-            loadListener.onFailed(getFailedCause());
+            loadListener.onError(getErrorCause());
         }
     }
 

@@ -89,7 +89,7 @@ public class FileDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public void onDecodeFailed() {
+    public void onDecodeError() {
         if (Sketch.isDebugMode()) {
             StringBuilder builder = new StringBuilder(logName);
             builder.append(". decode failed");

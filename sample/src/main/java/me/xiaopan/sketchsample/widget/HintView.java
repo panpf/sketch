@@ -249,7 +249,7 @@ public class HintView extends LinearLayout {
         } else {
             message = "加载失败了";
         }
-        hint(R.drawable.ic_failed, message, "刷新", reloadButtonClickListener, false);
+        hint(R.drawable.ic_error, message, "刷新", reloadButtonClickListener, false);
     }
 
     /**
@@ -258,7 +258,7 @@ public class HintView extends LinearLayout {
      * @param type
      */
     public void empty(String type) {
-        hint(R.drawable.ic_failed, String.format("没有%s", type), null, null, false);
+        hint(R.drawable.ic_error, String.format("没有%s", type), null, null, false);
     }
 
     /**

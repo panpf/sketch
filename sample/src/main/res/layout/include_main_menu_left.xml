@@ -223,7 +223,7 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:id="@+id/item_main_clickDisplayOnFailed"
+                    android:id="@+id/item_main_clickRetryOnError"
                     style="@style/menu_item"
                     android:clickable="true">
 
@@ -234,7 +234,7 @@
                         android:text="显示失败时点击显示图片" />
 
                     <CheckBox
-                        android:id="@+id/checkBox_main_clickDisplayOnFailed"
+                        android:id="@+id/checkBox_main_clickRetryOnError"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="8dp"

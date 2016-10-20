@@ -21,7 +21,7 @@ import android.view.View;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.CancelCause;
-import me.xiaopan.sketch.request.FailedCause;
+import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.RequestLevel;
 import me.xiaopan.sketch.request.UriScheme;
@@ -30,11 +30,11 @@ import me.xiaopan.sketch.request.UriScheme;
  * 点击重试功能，可在显示失败或暂停下载的时候由用户手动点击View重新或强制显示图片
  */
 public class ClickRetryFunction extends SketchImageView.Function implements View.OnClickListener {
-    private boolean clickRetryOnFailed;
+    private boolean clickRetryOnError;
     private boolean clickRetryOnPauseDownload;
     private View.OnClickListener wrapperClickListener;
 
-    private boolean displayFailed;
+    private boolean displayError;
     private boolean pauseDownload;
 
     private View view;
@@ -50,7 +50,7 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
     @Override
     public boolean onDisplay(UriScheme uriScheme) {
         // 重新走了一遍显示流程，这些要重置
-        displayFailed = false;
+        displayError = false;
         pauseDownload = false;
 
         updateClickable();
@@ -61,7 +61,7 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
     @Override
     public boolean onDisplayStarted() {
         // 重新走了一遍显示流程，这些要重置
-        displayFailed = false;
+        displayError = false;
         pauseDownload = false;
 
         updateClickable();
@@ -69,9 +69,9 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
     }
 
     @Override
-    public boolean onDisplayFailed(FailedCause failedCause) {
+    public boolean onDisplayError(ErrorCause errorCause) {
         // 正常的失败才能重试，因此要过滤一下失败原因
-        displayFailed = failedCause != FailedCause.URI_NULL_OR_EMPTY && failedCause != FailedCause.URI_NO_SUPPORT;
+        displayError = errorCause != ErrorCause.URI_NULL_OR_EMPTY && errorCause != ErrorCause.URI_NO_SUPPORT;
         updateClickable();
         return false;
     }
@@ -85,7 +85,7 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
 
     @Override
     public void onClick(View v) {
-        if ((clickRetryOnFailed && displayFailed) || (clickRetryOnPauseDownload && pauseDownload)) {
+        if ((clickRetryOnError && displayError) || (clickRetryOnPauseDownload && pauseDownload)) {
             if (requestFunction.getDisplayParams() != null) {
                 Sketch.with(view.getContext()).display(requestFunction.getDisplayParams(), imageViewInterface).requestLevel(RequestLevel.NET).commit();
                 return;
@@ -108,8 +108,8 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
     /**
      * 设置当失败的时候点击重新显示图片
      */
-    public void setClickRetryOnFailed(boolean clickRedisplayOnFailed) {
-        this.clickRetryOnFailed = clickRedisplayOnFailed;
+    public void setClickRetryOnError(boolean clickRedisplayOnError) {
+        this.clickRetryOnError = clickRedisplayOnError;
         updateClickable();
     }
 
@@ -119,7 +119,7 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
     }
 
     public void updateClickable() {
-        view.setClickable((clickRetryOnFailed && displayFailed)
+        view.setClickable((clickRetryOnError && displayError)
                 || (clickRetryOnPauseDownload && pauseDownload)
                 || wrapperClickListener != null);
     }

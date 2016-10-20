@@ -63,7 +63,7 @@ sketchImageView.getOptions()
 ```java
 DisplayOptions displayOptions = new DisplayOptions();
 displayOptions.setLoadingImage(R.drawable.image_loading);
-displayOptions.setFailedImage(R.drawable.image_failed);
+displayOptions.setErrorImage(R.drawable.image_error);
 ....
 
 sketchImageView.setOptions(displayOptions)
@@ -91,7 +91,7 @@ sketchImageView.setDisplayListener(new DisplayListener() {
     }
 
     @Override
-    public void onFailed(FailCause failCause) {
+    public void onError(FailCause failCause) {
         Log.i("displayListener", "失败");
     }
 
@@ -196,7 +196,7 @@ sketchImageView.setShowFromFlag(true);
 #### 9.失败时点击重新显示
 一句话开启即可
 ```java
-sketchImageView.setClickRedisplayOnFailed(true);
+sketchImageView.setClickRetryOnError(true);
 ```
 
 #### 10.暂停下载时点击强制显示

@@ -86,8 +86,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     @InjectView(R.id.checkBox_main_showImageDownloadProgress) private CheckBox showImageDownloadProgressCheckBox;
     @InjectView(R.id.item_main_showImageFromFlag) private View showImageFromFlagItem;
     @InjectView(R.id.checkBox_main_showImageFromFlag) private CheckBox showImageFromFlagCheckBox;
-    @InjectView(R.id.item_main_clickDisplayOnFailed) private View clickDisplayOnFailedItem;
-    @InjectView(R.id.checkBox_main_clickDisplayOnFailed) private CheckBox clickDisplayOnFailedCheckBox;
+    @InjectView(R.id.item_main_clickRetryOnError) private View clickDisplayOnErrorItem;
+    @InjectView(R.id.checkBox_main_clickRetryOnError) private CheckBox clickRetryOnErrorCheckBox;
     @InjectView(R.id.item_main_clickDisplayOnPauseDownload) private View clickDisplayOnPauseDownloadItem;
     @InjectView(R.id.checkBox_main_clickDisplayOnPauseDownload) private CheckBox clickDisplayOnPauseDownloadCheckBox;
     @InjectView(R.id.item_main_showPressedStatus) private View showPressedStatusItem;
@@ -150,7 +150,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         showImageDownloadProgressCheckBox.setChecked(settings.isShowImageDownloadProgress());
         mobileNetworkPauseDownloadCheckBox.setChecked(settings.isMobileNetworkPauseDownload());
         showImageFromFlagCheckBox.setChecked(settings.isShowImageFromFlag());
-        clickDisplayOnFailedCheckBox.setChecked(settings.isClickDisplayOnFailed());
+        clickRetryOnErrorCheckBox.setChecked(settings.isClickRetryOnError());
         clickDisplayOnPauseDownloadCheckBox.setChecked(settings.isClickDisplayOnPauseDownload());
         showPressedStatusCheckBox.setChecked(settings.isShowPressedStatus());
         globalDisableCacheInMemoryCheckBox.setChecked(settings.isGlobalDisableCacheInMemory());
@@ -174,7 +174,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         scrollingPauseLoadItem.setOnClickListener(this);
         mobileNetworkPauseDownloadItem.setOnClickListener(this);
         showImageFromFlagItem.setOnClickListener(this);
-        clickDisplayOnFailedItem.setOnClickListener(this);
+        clickDisplayOnErrorItem.setOnClickListener(this);
         clickDisplayOnPauseDownloadItem.setOnClickListener(this);
         cleanDiskCacheItem.setOnClickListener(this);
         cleanMemoryCacheItem.setOnClickListener(this);
@@ -449,10 +449,10 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 showImageFromFlagCheckBox.setChecked(newShowImageFromFlag);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
-            case R.id.item_main_clickDisplayOnFailed:
-                boolean newClickDisplayOnFailed = !settings.isClickDisplayOnFailed();
-                settings.setClickDisplayOnFailed(newClickDisplayOnFailed);
-                clickDisplayOnFailedCheckBox.setChecked(newClickDisplayOnFailed);
+            case R.id.item_main_clickRetryOnError:
+                boolean newClickRetryOnError = !settings.isClickRetryOnError();
+                settings.setClickRetryOnError(newClickRetryOnError);
+                clickRetryOnErrorCheckBox.setChecked(newClickRetryOnError);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
             case R.id.item_main_clickDisplayOnPauseDownload:

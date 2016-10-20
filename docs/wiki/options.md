@@ -23,7 +23,7 @@ Sketch有display()、load()、download()三大方法，我们可以通过其专�
 |disableCacheInMemory|-|-|false|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
-|failedImage|-|-|null|
+|errorImage|-|-|null|
 |pauseDownloadImage|-|-|null|
 |resizeByFixedSize|-|-|false|
 
@@ -82,10 +82,10 @@ displayOptions.setLoadingImage(R.drawable.image_loading);
 displayOptions.setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, CircleImageProcessor.getInstance()));
 
 // 设置加载失败的时候显示的图片
-displayOptions.setFailedImage(R.drawable.image_load_fail);
+displayOptions.setErrorImage(R.drawable.image_load_error);
 
 // 设置暂停下载的时候显示的图片
-displayOptions.setPauseDownloadImage(R.drawable.image_load_fail);
+displayOptions.setPauseDownloadImage(R.drawable.image_load_pause_download);
 
 // 使用过度效果来显示图片。如果你使用了TransitionImageDisplayer并且SketchImageView的layout_width和layout_height是固定的并且ScaleType是CENTER_CROP的话，就会自动使用FixedSizeBitmapDrawable的FixedSize功能，让占位图和实际图片的比例保持一致，这样可以保证最终显示不变形
 displayOptions.setImageDisplayer(new TransitionImageDisplayer());
@@ -172,7 +172,7 @@ public class MyApplication extends Application {
 
         Sketch.putOptions(OptionsType.APP_ICON, new DisplayOptions()
                         .setLoadingImage((R.drawable.image_loading)
-                        .setFailedImage(R.drawable.image_failure)
+                        .setErrorImage(R.drawable.image_error)
                         .setPauseDownloadImage(R.drawable.image_pause_download)
                         .setDecodeGifImage(false)
                         .setResizeByFixedSize(true)

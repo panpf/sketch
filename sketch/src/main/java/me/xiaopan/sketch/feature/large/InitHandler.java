@@ -89,12 +89,12 @@ class InitHandler extends Handler {
             decoder = ImageRegionDecoder.build(decodeExecutor.callback.getContext(), imageUri);
         } catch (final Exception e) {
             e.printStackTrace();
-            decodeExecutor.mainHandler.postInitFailed(e, imageUri, key, keyCounter);
+            decodeExecutor.mainHandler.postInitError(e, imageUri, key, keyCounter);
             return;
         }
 
         if (decoder == null || !decoder.isReady()) {
-            decodeExecutor.mainHandler.postInitFailed(new Exception("decoder is null or not ready"), imageUri, key, keyCounter);
+            decodeExecutor.mainHandler.postInitError(new Exception("decoder is null or not ready"), imageUri, key, keyCounter);
             return;
         }
 

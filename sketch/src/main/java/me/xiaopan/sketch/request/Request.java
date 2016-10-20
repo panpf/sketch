@@ -26,7 +26,7 @@ abstract class Request {
 
     private String logName = "Request";
     private Status status;
-    private FailedCause failedCause;
+    private ErrorCause errorCause;
     private CancelCause cancelCause;
 
     Request(Sketch sketch, RequestAttrs attrs) {
@@ -74,7 +74,7 @@ abstract class Request {
         this.status = status;
         if (Sketch.isDebugMode()) {
             if (status == Status.FAILED) {
-                printLogW("new status", status.getLog(), failedCause != null ? failedCause.name() : null);
+                printLogW("new status", status.getLog(), errorCause != null ? errorCause.name() : null);
             } else if (status == Status.CANCELED) {
                 printLogW("new status", status.getLog(), cancelCause != null ? cancelCause.name() : null);
             } else {
@@ -86,16 +86,16 @@ abstract class Request {
     /**
      * 获取失败原因
      */
-    public FailedCause getFailedCause() {
-        return failedCause;
+    public ErrorCause getErrorCause() {
+        return errorCause;
     }
 
     /**
      * 设置失败原因
      */
     @SuppressWarnings("unused")
-    protected void setFailedCause(FailedCause failedCause) {
-        this.failedCause = failedCause;
+    protected void setErrorCause(ErrorCause errorCause) {
+        this.errorCause = errorCause;
     }
 
     /**
@@ -129,8 +129,8 @@ abstract class Request {
     /**
      * 失败了
      */
-    protected void failed(FailedCause failedCause) {
-        setFailedCause(failedCause);
+    protected void error(ErrorCause errorCause) {
+        setErrorCause(errorCause);
         setStatus(Status.FAILED);
     }
 

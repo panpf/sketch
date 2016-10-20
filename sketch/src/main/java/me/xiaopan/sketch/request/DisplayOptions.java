@@ -41,9 +41,9 @@ public class DisplayOptions extends LoadOptions {
     private ModeImage loadingImage;
 
     /**
-     * 加载失败时显示的图片
+     * 加载错误时显示的图片
      */
-    private ModeImage failedImage;
+    private ModeImage errorImage;
 
     /**
      * 暂停下载时显示的图片
@@ -181,17 +181,17 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
-    public ModeImage getFailedImage() {
-        return failedImage;
+    public ModeImage getErrorImage() {
+        return errorImage;
     }
 
-    public DisplayOptions setFailedImage(ModeImage failedImage) {
-        this.failedImage = failedImage;
+    public DisplayOptions setErrorImage(ModeImage errorImage) {
+        this.errorImage = errorImage;
         return this;
     }
 
-    public DisplayOptions setFailedImage(int drawableResId) {
-        setFailedImage(new DrawableModeImage(drawableResId));
+    public DisplayOptions setErrorImage(int drawableResId) {
+        setErrorImage(new DrawableModeImage(drawableResId));
         return this;
     }
 
@@ -229,7 +229,7 @@ public class DisplayOptions extends LoadOptions {
         imageDisplayer = null;
         resizeByFixedSize = false;
         loadingImage = null;
-        failedImage = null;
+        errorImage = null;
         pauseDownloadImage = null;
     }
 
@@ -247,7 +247,7 @@ public class DisplayOptions extends LoadOptions {
         imageDisplayer = options.imageDisplayer;
         resizeByFixedSize = options.resizeByFixedSize;
         loadingImage = options.loadingImage;
-        failedImage = options.failedImage;
+        errorImage = options.errorImage;
         pauseDownloadImage = options.pauseDownloadImage;
     }
 
@@ -273,8 +273,8 @@ public class DisplayOptions extends LoadOptions {
             loadingImage = options.getLoadingImage();
         }
 
-        if (failedImage == null) {
-            failedImage = options.getFailedImage();
+        if (errorImage == null) {
+            errorImage = options.getErrorImage();
         }
 
         if (pauseDownloadImage == null) {

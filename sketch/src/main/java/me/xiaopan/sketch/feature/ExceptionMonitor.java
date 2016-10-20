@@ -32,11 +32,11 @@ public class ExceptionMonitor implements Identifier {
      * @param e        NoSpaceException：空间不足；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
      * @param cacheDir 默认的缓存目录
      */
-    public void onInstallDiskCacheFailed(Exception e, File cacheDir) {
+    public void onInstallDiskCacheError(Exception e, File cacheDir) {
         //noinspection StringBufferReplaceableByString
         StringBuilder builder = new StringBuilder();
         builder.append(logName);
-        builder.append(". InstallDiskCacheFailed");
+        builder.append(". InstallDiskCacheError");
         builder.append(". ").append(e.getClass().getSimpleName()).append(": ").append(e.getMessage());
         builder.append(". SDCardState: ").append(Environment.getExternalStorageState());
         builder.append(". cacheDir: ").append(cacheDir.getPath());
@@ -52,7 +52,7 @@ public class ExceptionMonitor implements Identifier {
      * @param outHeight     图片原始高
      * @param outMimeType   图片类型
      */
-    public void onDecodeGifImageFailed(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
+    public void onDecodeGifImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
         if (throwable instanceof UnsatisfiedLinkError || throwable instanceof ExceptionInInitializerError) {
             Log.e(Sketch.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, " +
                     "unable to process the GIF images. If you need to decode the GIF figure " +
@@ -68,7 +68,7 @@ public class ExceptionMonitor implements Identifier {
         }
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                ". DecodeGifImageFailed",
+                ". DecodeGifImageError",
                 ". outWidth", "=", outWidth, ", ", "outHeight", "=", outHeight, ", ", "outMimeType", "=", outMimeType,
                 ". ", request.getAttrs().getId()));
     }
@@ -82,7 +82,7 @@ public class ExceptionMonitor implements Identifier {
      * @param outHeight     图片原始高
      * @param outMimeType   图片类型
      */
-    public void onDecodeNormalImageFailed(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
+    public void onDecodeNormalImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
         if (throwable instanceof OutOfMemoryError) {
             long maxMemory = Runtime.getRuntime().maxMemory();
             long freeMemory = Runtime.getRuntime().freeMemory();
@@ -98,7 +98,7 @@ public class ExceptionMonitor implements Identifier {
         }
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                ". DecodeNormalImageFailed",
+                ". DecodeNormalImageError",
                 ". outWidth", "=", outWidth, ", ", "outHeight", "=", outHeight, ", ", "outMimeType", "=", outMimeType,
                 ". ", request.getAttrs().getId()));
     }
@@ -110,7 +110,7 @@ public class ExceptionMonitor implements Identifier {
      * @param imageUri  图片uri
      * @param processor 所使用的处理器
      */
-    public void onProcessImageFailed(Throwable e, String imageUri, ImageProcessor processor) {
+    public void onProcessImageError(Throwable e, String imageUri, ImageProcessor processor) {
         if (e instanceof OutOfMemoryError) {
             long maxMemory = Runtime.getRuntime().maxMemory();
             long freeMemory = Runtime.getRuntime().freeMemory();
@@ -125,12 +125,12 @@ public class ExceptionMonitor implements Identifier {
         }
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                ". onProcessImageFailed",
+                ". onProcessImageError",
                 ". imageUri", ": ", imageUri,
                 ". processor", ": ", processor.getIdentifier()));
     }
 
-    public void onDownloadFailed(DownloadRequest request, Throwable throwable) {
+    public void onDownloadError(DownloadRequest request, Throwable throwable) {
 
     }
 

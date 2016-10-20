@@ -36,7 +36,7 @@ public class MyImageView extends SketchImageView {
             setShowImageFrom(settings.isShowImageFromFlag());
             setShowDownloadProgress(settings.isShowImageDownloadProgress());
             setClickRetryOnPauseDownload(settings.isClickDisplayOnPauseDownload());
-            setClickRetryOnFailed(settings.isClickDisplayOnFailed());
+            setClickRetryOnError(settings.isClickRetryOnError());
         }
 
         super.onDisplay(uriScheme);

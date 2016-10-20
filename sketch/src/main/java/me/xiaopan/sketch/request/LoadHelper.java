@@ -284,7 +284,7 @@ public class LoadHelper {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName, ". uri is null or empty"));
             }
-            CallbackHandler.postCallbackFailed(loadListener, FailedCause.URI_NULL_OR_EMPTY, sync);
+            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
@@ -294,7 +294,7 @@ public class LoadHelper {
     private boolean checkUriScheme() {
         if (requestAttrs.getUriScheme() == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri scheme", ". ", requestAttrs.getId()));
-            CallbackHandler.postCallbackFailed(loadListener, FailedCause.URI_NO_SUPPORT, sync);
+            CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 

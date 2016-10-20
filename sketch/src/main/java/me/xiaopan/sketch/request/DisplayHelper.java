@@ -306,20 +306,20 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置失败时显示的图片
+     * 设置错误时显示的图片
      */
     @SuppressWarnings("unused")
-    public DisplayHelper failedImage(ModeImage failedImage) {
-        displayOptions.setFailedImage(failedImage);
+    public DisplayHelper errorImage(ModeImage errorImage) {
+        displayOptions.setErrorImage(errorImage);
         return this;
     }
 
     /**
-     * 设置失败时显示的图片
+     * 设置错误时显示的图片
      */
     @SuppressWarnings("unused")
-    public DisplayHelper failedImage(int drawableResId) {
-        displayOptions.setFailedImage(drawableResId);
+    public DisplayHelper errorImage(int drawableResId) {
+        displayOptions.setErrorImage(drawableResId);
         return this;
     }
 
@@ -566,16 +566,16 @@ public class DisplayHelper {
             }
 
             Drawable drawable = null;
-            if (displayOptions.getFailedImage() != null) {
+            if (displayOptions.getErrorImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getFailedImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
+                drawable = displayOptions.getErrorImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
                 drawable = displayOptions.getLoadingImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
             }
             imageViewInterface.setImageDrawable(drawable);
 
-            CallbackHandler.postCallbackFailed(displayListener, FailedCause.URI_NULL_OR_EMPTY, false);
+            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NULL_OR_EMPTY, false);
             return false;
         }
 
@@ -586,16 +586,16 @@ public class DisplayHelper {
                     ". ", requestAttrs.getId()));
 
             Drawable drawable = null;
-            if (displayOptions.getFailedImage() != null) {
+            if (displayOptions.getErrorImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getFailedImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
+                drawable = displayOptions.getErrorImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
                 drawable = displayOptions.getLoadingImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
             }
             imageViewInterface.setImageDrawable(drawable);
 
-            CallbackHandler.postCallbackFailed(displayListener, FailedCause.URI_NO_SUPPORT, false);
+            CallbackHandler.postCallbackError(displayListener, ErrorCause.URI_NO_SUPPORT, false);
             return false;
         }
 

@@ -40,7 +40,7 @@ public class SketchManager {
         TransitionImageDisplayer transitionImageDisplayer = new TransitionImageDisplayer();
         Sketch.putOptions(OptionsType.NORMAL_RECT, new DisplayOptions()
                 .setLoadingImage(R.drawable.image_loading)
-                .setFailedImage(R.drawable.image_failed)
+                .setErrorImage(R.drawable.image_error)
                 .setPauseDownloadImage(R.drawable.image_pause_download)
                 .setImageDisplayer(transitionImageDisplayer)
         );
@@ -49,7 +49,7 @@ public class SketchManager {
         Resize appIconSize = new Resize(SketchUtils.dp2px(context, 60), SketchUtils.dp2px(context, 60), ImageView.ScaleType.CENTER_CROP);
         Sketch.putOptions(OptionsType.APP_ICON, new DisplayOptions()
                 .setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, roundedCornerImageProcessor, appIconSize, true))
-                .setFailedImage(new MakerDrawableModeImage(R.drawable.image_failed, roundedCornerImageProcessor, appIconSize, true))
+                .setErrorImage(new MakerDrawableModeImage(R.drawable.image_error, roundedCornerImageProcessor, appIconSize, true))
                 .setPauseDownloadImage(new MakerDrawableModeImage(R.drawable.image_pause_download, roundedCornerImageProcessor, appIconSize, true))
                 .setResizeByFixedSize(true)
                 .setForceUseResize(true)
@@ -64,7 +64,7 @@ public class SketchManager {
 
         Sketch.putOptions(OptionsType.NORMAL_CIRCULAR, new DisplayOptions()
                 .setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, CircleImageProcessor.getInstance()))
-                .setFailedImage(new MakerDrawableModeImage(R.drawable.image_failed, CircleImageProcessor.getInstance()))
+                .setErrorImage(new MakerDrawableModeImage(R.drawable.image_error, CircleImageProcessor.getInstance()))
                 .setPauseDownloadImage(new MakerDrawableModeImage(R.drawable.image_pause_download, CircleImageProcessor.getInstance()))
                 .setImageDisplayer(transitionImageDisplayer)
                 .setImageProcessor(CircleImageProcessor.getInstance())

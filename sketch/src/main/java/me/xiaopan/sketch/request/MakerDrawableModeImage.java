@@ -174,7 +174,7 @@ public class MakerDrawableModeImage implements ModeImage {
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
             ExceptionMonitor exceptionMonitor = sketch.getConfiguration().getExceptionMonitor();
-            exceptionMonitor.onProcessImageFailed(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), imageProcessor);
+            exceptionMonitor.onProcessImageError(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), imageProcessor);
             if (allowRecycle) {
                 bitmap.recycle();
             }

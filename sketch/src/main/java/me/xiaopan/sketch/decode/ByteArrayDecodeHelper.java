@@ -89,7 +89,7 @@ public class ByteArrayDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public void onDecodeFailed() {
+    public void onDecodeError() {
         if (Sketch.isDebugMode()) {
             Log.e(Sketch.TAG, SketchUtils.concat(logName, ". decode failed", ". ", loadRequest.getAttrs().getId()));
         }

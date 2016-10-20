@@ -30,7 +30,7 @@ public class Settings {
     private boolean mobileNetworkPauseDownload;
     private boolean showImageFromFlag;
     private boolean clickDisplayOnPauseDownload;
-    private boolean clickDisplayOnFailed;
+    private boolean clickRetryOnError;
     private boolean showPressedStatus;
     private boolean globalDisableCacheInMemory;
     private boolean globalDisableCacheInDisk;
@@ -53,7 +53,7 @@ public class Settings {
         this.mobileNetworkPauseDownload = preferences.getBoolean(PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, true);
         this.showImageFromFlag = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, false);
         this.clickDisplayOnPauseDownload = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, true);
-        this.clickDisplayOnFailed = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, true);
+        this.clickRetryOnError = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, true);
         this.showPressedStatus = preferences.getBoolean(PREFERENCE_CLICK_SHOW_PRESSED_STATUS, true);
         this.globalDisableCacheInMemory = preferences.getBoolean(PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY, false);
         this.globalDisableCacheInDisk = preferences.getBoolean(PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK, false);
@@ -165,13 +165,13 @@ public class Settings {
         apply();
     }
 
-    public boolean isClickDisplayOnFailed() {
-        return clickDisplayOnFailed;
+    public boolean isClickRetryOnError() {
+        return clickRetryOnError;
     }
 
-    public void setClickDisplayOnFailed(boolean clickDisplayOnFailed) {
-        this.clickDisplayOnFailed = clickDisplayOnFailed;
-        editor.putBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, clickDisplayOnFailed);
+    public void setClickRetryOnError(boolean clickRetryOnError) {
+        this.clickRetryOnError = clickRetryOnError;
+        editor.putBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, clickRetryOnError);
         apply();
     }
 

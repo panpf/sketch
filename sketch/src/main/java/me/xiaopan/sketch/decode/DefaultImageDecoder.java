@@ -114,7 +114,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                         ". imageSize: ", boundsOptions.outWidth, "x", boundsOptions.outHeight,
                         ". ", loadRequest.getAttrs().getId()));
             }
-            decodeHelper.onDecodeFailed();
+            decodeHelper.onDecodeError();
             return null;
         }
 
@@ -173,7 +173,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         } catch (Throwable e) {
             e.printStackTrace();
             ExceptionMonitor exceptionMonitor = loadRequest.getSketch().getConfiguration().getExceptionMonitor();
-            exceptionMonitor.onDecodeGifImageFailed(e, loadRequest, outWidth, outHeight, outMimeType);
+            exceptionMonitor.onDecodeGifImageError(e, loadRequest, outWidth, outHeight, outMimeType);
             return null;
         }
     }
@@ -209,7 +209,7 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 过滤掉无效的图片
         if (bitmap == null || bitmap.isRecycled()) {
-            decodeHelper.onDecodeFailed();
+            decodeHelper.onDecodeError();
             return null;
         }
 
@@ -223,7 +223,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                         ". ", loadRequest.getAttrs().getId()));
             }
             bitmap.recycle();
-            decodeHelper.onDecodeFailed();
+            decodeHelper.onDecodeError();
             return null;
         }
 
@@ -250,14 +250,14 @@ public class DefaultImageDecoder implements ImageDecoder {
         } catch (Throwable error) {
             error.printStackTrace();
             ExceptionMonitor exceptionMonitor = loadRequest.getSketch().getConfiguration().getExceptionMonitor();
-            exceptionMonitor.onDecodeNormalImageFailed(error, loadRequest, outWidth, outHeight, outMimeType);
-            decodeHelper.onDecodeFailed();
+            exceptionMonitor.onDecodeNormalImageError(error, loadRequest, outWidth, outHeight, outMimeType);
+            decodeHelper.onDecodeError();
             return null;
         }
 
         // 过滤掉无效的图片
         if (bitmap == null || bitmap.isRecycled()) {
-            decodeHelper.onDecodeFailed();
+            decodeHelper.onDecodeError();
             return null;
         }
 
@@ -271,7 +271,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                         ". ", loadRequest.getAttrs().getId()));
             }
             bitmap.recycle();
-            decodeHelper.onDecodeFailed();
+            decodeHelper.onDecodeError();
             return null;
         }
 

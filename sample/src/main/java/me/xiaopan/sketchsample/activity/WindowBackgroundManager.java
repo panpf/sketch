@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.request.CancelCause;
-import me.xiaopan.sketch.request.FailedCause;
+import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.LoadListener;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.LoadResult;
@@ -168,7 +168,7 @@ public class WindowBackgroundManager {
                 }
 
                 @Override
-                public void onFailed(FailedCause failedCause) {
+                public void onError(ErrorCause errorCause) {
 
                 }
 

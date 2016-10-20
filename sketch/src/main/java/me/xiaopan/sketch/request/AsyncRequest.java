@@ -120,8 +120,8 @@ abstract class AsyncRequest extends Request implements Runnable{
     /**
      * 推到主线程处理失败
      */
-    protected void postRunFailed() {
-        CallbackHandler.postRunFailed(this);
+    protected void postRunError() {
+        CallbackHandler.postRunError(this);
     }
 
     /**
@@ -159,7 +159,7 @@ abstract class AsyncRequest extends Request implements Runnable{
     /**
      * 在主线程处理失败
      */
-    protected abstract void runFailedInMainThread();
+    protected abstract void runErrorInMainThread();
 
     /**
      * 在主线程处理取消

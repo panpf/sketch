@@ -29,7 +29,7 @@
 >* ``优化`` FromFlag新增DISK_CACHE，现在就有四种了，分别是MEMORY_CACHE（绿色）、DISK_CACHE（黄色）、LOCAL（蓝色）、NETWORK（红色）
 >* ``修改`` setImageFrom()系列方法改名为displayImage()
 >* ``新增`` 支持在暂停下载的时候通过手动点击下载当前图片，只需执行setClickDisplayOnPauseDownload(true)开启此功能即可
->* ``新增`` 支持失败的时候手动点击重新显示图片，setClickRedisplayOnFailed(true)开启此功能即可
+>* ``新增`` 支持失败的时候手动点击重新显示图片，setClickRetryOnError(true)开启此功能即可
 >* ``修复`` 修复之前为了解决兼容RecyclerView，而取消了在onDetachedFromWindow中设置drawable为null的操作，从而导致在setImageDrawable的时候如果当前要设置的Drawable跟旧的是同一张，就会立马引用计数归零，最终导致图片被回收而引发崩溃的BUG
 >* ``优化`` 采用新的方式完美兼容RecyclerView
 >* ``新增`` 增加单独的DisplayOptions，支持getDisplayOptions()后单独修改属性，进一步增强了灵活性

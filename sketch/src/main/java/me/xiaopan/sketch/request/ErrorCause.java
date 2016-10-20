@@ -17,9 +17,9 @@
 package me.xiaopan.sketch.request;
 
 /**
- * 失败原因
+ * 错误原因
  */
-public enum FailedCause {
+public enum ErrorCause {
     /**
      * URI为NULL或空
      */

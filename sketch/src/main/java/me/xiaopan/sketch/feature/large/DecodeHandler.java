@@ -77,17 +77,17 @@ class DecodeHandler extends Handler {
         }
 
         if (tile.isExpired(key)) {
-            decodeExecutor.mainHandler.postDecodeFailed(key, tile, new DecodeFailedException(DecodeFailedException.CAUSE_BEFORE_KEY_EXPIRED));
+            decodeExecutor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BEFORE_KEY_EXPIRED));
             return;
         }
 
         if (tile.isDecodeParamEmpty()) {
-            decodeExecutor.mainHandler.postDecodeFailed(key, tile, new DecodeFailedException(DecodeFailedException.CAUSE_DECODE_PARAM_EMPTY));
+            decodeExecutor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODE_PARAM_EMPTY));
             return;
         }
 
         if (tile.decoder == null || !tile.decoder.isReady()) {
-            decodeExecutor.mainHandler.postDecodeFailed(key, tile, new DecodeFailedException(DecodeFailedException.CAUSE_DECODER_NULL_OR_NOT_READY));
+            decodeExecutor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODER_NULL_OR_NOT_READY));
             return;
         }
 
@@ -106,13 +106,13 @@ class DecodeHandler extends Handler {
         int useTime = (int) (System.currentTimeMillis() - time);
 
         if (bitmap == null || bitmap.isRecycled()) {
-            decodeExecutor.mainHandler.postDecodeFailed(key, tile, new DecodeFailedException(DecodeFailedException.CAUSE_BITMAP_NULL));
+            decodeExecutor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_NULL));
             return;
         }
 
         if (tile.isExpired(key)) {
             bitmap.recycle();
-            decodeExecutor.mainHandler.postDecodeFailed(key, tile, new DecodeFailedException(DecodeFailedException.CAUSE_AFTER_KEY_EXPIRED));
+            decodeExecutor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED));
             return;
         }
 
@@ -127,7 +127,7 @@ class DecodeHandler extends Handler {
         removeMessages(WHAT_DECODE);
     }
 
-    public static class DecodeFailedException extends Exception {
+    public static class DecodeErrorException extends Exception {
         public static final int CAUSE_BITMAP_NULL = 1101;
         public static final int CAUSE_BEFORE_KEY_EXPIRED = 1102;
         public static final int CAUSE_AFTER_KEY_EXPIRED = 1103;
@@ -137,11 +137,11 @@ class DecodeHandler extends Handler {
 
         private int cause;
 
-        public DecodeFailedException(int cause) {
+        public DecodeErrorException(int cause) {
             this.cause = cause;
         }
 
-        public int getFailedCause() {
+        public int getErrorCause() {
             return cause;
         }
 

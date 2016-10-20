@@ -41,7 +41,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/text_hint_hint"
                 android:gravity="center"
-                android:drawableTop="@drawable/ic_failed"
+                android:drawableTop="@drawable/ic_error"
                 android:layout_gravity="center"
                 android:drawablePadding="@dimen/padding_specialLarge" />
         </ViewSwitcher>

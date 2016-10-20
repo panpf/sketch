@@ -70,7 +70,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         Resize resize = new Resize(itemWidth, itemWidth, ImageView.ScaleType.CENTER_CROP);
         displayOptions = new DisplayOptions()
                 .setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, imageProcessor, resize, true))
-                .setFailedImage(new MakerDrawableModeImage(R.drawable.image_failed, imageProcessor, resize, true))
+                .setErrorImage(new MakerDrawableModeImage(R.drawable.image_error, imageProcessor, resize, true))
                 .setPauseDownloadImage(new MakerDrawableModeImage(R.drawable.image_pause_download, imageProcessor, resize, true))
                 .setImageProcessor(imageProcessor)
                 .setResizeByFixedSize(true)
