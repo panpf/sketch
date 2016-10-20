@@ -26,7 +26,6 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.display.ImageDisplayer;
-import me.xiaopan.sketch.drawable.BindFixedSizeRefBitmapDrawable;
 import me.xiaopan.sketch.drawable.FixedSizeRefBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
@@ -34,6 +33,7 @@ import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
+// TODO: 16/10/20 支持各种Drawable
 public class ImageHolder {
     private int resId;
     private Resize resize;
@@ -41,7 +41,8 @@ public class ImageHolder {
     private boolean lowQualityImage;
     private boolean forceUseResize;
     private ImageProcessor imageProcessor;
-    private RefBitmapDrawable drawable;
+
+    private RefBitmap refBitmap;
 
     public ImageHolder(int resId) {
         this.resId = resId;
@@ -107,9 +108,9 @@ public class ImageHolder {
         return builder.toString();
     }
 
-    private RefBitmapDrawable getRecycleBitmapDrawable(Sketch sketch) {
-        if (drawable != null && !drawable.isRecycled()) {
-            return drawable;
+    private RefBitmap getRefBitmap(Sketch sketch) {
+        if (refBitmap != null && !refBitmap.isRecycled()) {
+            return refBitmap;
         }
 
         // 从内存缓存中取
@@ -121,8 +122,8 @@ public class ImageHolder {
         RefBitmap refBitmap = lruMemoryCache.get(memoryCacheId);
         if (refBitmap != null) {
             if (!refBitmap.isRecycled()) {
-                this.drawable = new RefBitmapDrawable(refBitmap);
-                return drawable;
+                this.refBitmap = refBitmap;
+                return this.refBitmap;
             } else {
                 lruMemoryCache.remove(memoryCacheId);
             }
@@ -140,6 +141,7 @@ public class ImageHolder {
         if (resDrawable != null && resDrawable instanceof BitmapDrawable) {
             bitmap = ((BitmapDrawable) resDrawable).getBitmap();
         } else {
+            // TODO: 16/10/20 改造这个方法，其它类型的图片不需要转成bitmap
             bitmap = SketchUtils.drawableToBitmap(resDrawable, tempLowQualityImage);
             allowRecycle = true;
         }
@@ -163,36 +165,29 @@ public class ImageHolder {
         }
 
         if (bitmap != null && !bitmap.isRecycled()) {
-            refBitmap = new RefBitmap(bitmap);
+            refBitmap = new RefBitmap(bitmap, memoryCacheId, String.valueOf(resId), bitmap.getWidth(), bitmap.getHeight(), null);
             refBitmap.setAllowRecycle(allowRecycle);
             if (refBitmap.isAllowRecycle()) {
                 lruMemoryCache.put(memoryCacheId, refBitmap);
             }
-            drawable = new RefBitmapDrawable(refBitmap);
+            this.refBitmap = refBitmap;
         }
 
-        return drawable;
-    }
-
-    public Drawable getBindDrawable(DisplayRequest displayRequest) {
-        RefBitmapDrawable loadingDrawable = getRecycleBitmapDrawable(displayRequest.getSketch());
-
-        // 如果使用了TransitionImageDisplayer并且ImageVie是固定大小并且ScaleType是CENT_CROP那么就需要根据ImageVie的固定大小来裁剪loadingImage
-        FixedSize tempFixedSize = null;
-        boolean isFixedSize = SketchUtils.isFixedSize(displayRequest.getOptions().getImageDisplayer(), displayRequest.getDisplayAttrs().getFixedSize(), displayRequest.getDisplayAttrs().getScaleType());
-        if (isFixedSize) {
-            tempFixedSize = displayRequest.getDisplayAttrs().getFixedSize();
-        }
-
-        return new BindFixedSizeRefBitmapDrawable(loadingDrawable, tempFixedSize, displayRequest);
+        return this.refBitmap;
     }
 
     public Drawable getDrawable(Context context, ImageDisplayer imageDisplayer, FixedSize fixedSize, ImageView.ScaleType scaleType) {
-        Drawable failedDrawable = getRecycleBitmapDrawable(Sketch.with(context));
-        boolean isFixedSize = SketchUtils.isFixedSize(imageDisplayer, fixedSize, scaleType);
-        if (failedDrawable != null && isFixedSize) {
-            failedDrawable = new FixedSizeRefBitmapDrawable((RefBitmapDrawable) failedDrawable, fixedSize);
+        RefBitmap refBitmap = getRefBitmap(Sketch.with(context));
+        if (refBitmap == null || refBitmap.isRecycled()) {
+            return null;
         }
-        return failedDrawable;
+
+        RefBitmapDrawable refBitmapDrawable = new RefBitmapDrawable(refBitmap);
+        if (SketchUtils.isFixedSize(imageDisplayer, fixedSize, scaleType)) {
+            // 如果使用了TransitionImageDisplayer并且ImageVie是固定大小并且ScaleType是CENT_CROP那么就需要根据ImageVie的固定大小来裁剪loadingImage
+            return new FixedSizeRefBitmapDrawable(refBitmapDrawable, fixedSize);
+        } else {
+            return refBitmapDrawable;
+        }
     }
 }

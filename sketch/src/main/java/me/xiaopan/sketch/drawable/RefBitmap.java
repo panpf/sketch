@@ -17,10 +17,6 @@ public class RefBitmap extends SketchBitmap {
         super(bitmap, imageId, imageUri, originWidth, originHeight, mimeType);
     }
 
-    public RefBitmap(Bitmap bitmap) {
-        super(bitmap);
-    }
-
     public void setIsDisplayed(String callingStation, boolean displayed) {
         synchronized (this) {
             if (displayed) {

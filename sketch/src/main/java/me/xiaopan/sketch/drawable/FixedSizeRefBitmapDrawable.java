@@ -27,6 +27,7 @@ import android.graphics.drawable.Drawable;
 import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.util.SketchUtils;
 
+// TODO: 16/10/20 搞一个专用的FixedSizeBitmapDrawable
 public class FixedSizeRefBitmapDrawable extends Drawable implements RefDrawable {
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
 
