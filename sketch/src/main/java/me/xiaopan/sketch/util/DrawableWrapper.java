@@ -105,7 +105,7 @@ public class DrawableWrapper extends Drawable implements Drawable.Callback{
 
     @Override
     public void jumpToCurrentState() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && drawable != null) {
             drawable.jumpToCurrentState();
         }
     }
@@ -117,7 +117,7 @@ public class DrawableWrapper extends Drawable implements Drawable.Callback{
 
     @Override
     public boolean setVisible(boolean visible, boolean restart) {
-        return super.setVisible(visible, restart) || drawable != null && drawable.setVisible(visible, restart);
+        return super.setVisible(visible, restart) || (drawable != null && drawable.setVisible(visible, restart));
     }
 
     @Override
@@ -167,42 +167,42 @@ public class DrawableWrapper extends Drawable implements Drawable.Callback{
 
     @Override
     public void setAutoMirrored(boolean mirrored) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && drawable != null) {
             drawable.setAutoMirrored(mirrored);
         }
     }
 
     @Override
     public void setTint(int tint) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && drawable != null) {
             drawable.setTint(tint);
         }
     }
 
     @Override
     public void setTintList(ColorStateList tint) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && drawable != null) {
             drawable.setTintList(tint);
         }
     }
 
     @Override
     public void setTintMode(PorterDuff.Mode tintMode) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && drawable != null) {
             drawable.setTintMode(tintMode);
         }
     }
 
     @Override
     public void setHotspot(float x, float y) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && drawable != null) {
             drawable.setHotspot(x, y);
         }
     }
 
     @Override
     public void setHotspotBounds(int left, int top, int right, int bottom) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && drawable != null) {
             drawable.setHotspotBounds(left, top, right, bottom);
         }
     }
