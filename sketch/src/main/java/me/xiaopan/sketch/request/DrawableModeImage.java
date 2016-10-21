@@ -20,7 +20,7 @@ import android.content.Context;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import me.xiaopan.sketch.drawable.FixedSizeRefBitmapDrawable;
+import me.xiaopan.sketch.drawable.FixedSizeBitmapDrawable;
 
 @SuppressWarnings("unused")
 public class DrawableModeImage implements ModeImage {
@@ -43,7 +43,7 @@ public class DrawableModeImage implements ModeImage {
         }
 
         if (fixedSize != null && finalDrawable != null && finalDrawable instanceof BitmapDrawable) {
-            finalDrawable = new FixedSizeRefBitmapDrawable((BitmapDrawable) finalDrawable, fixedSize);
+            finalDrawable = new FixedSizeBitmapDrawable((BitmapDrawable) finalDrawable, fixedSize);
         }
 
         return finalDrawable;

@@ -21,7 +21,7 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
-import me.xiaopan.sketch.drawable.FixedSizeRefBitmapDrawable;
+import me.xiaopan.sketch.drawable.FixedSizeBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 
@@ -45,7 +45,7 @@ public class MemoryCacheModeImage implements ModeImage {
             } else {
                 RefBitmapDrawable refBitmapDrawable = new RefBitmapDrawable(cachedRefBitmap);
                 if (fixedSize != null) {
-                    return new FixedSizeRefBitmapDrawable(refBitmapDrawable, fixedSize);
+                    return new FixedSizeBitmapDrawable(refBitmapDrawable, fixedSize);
                 } else {
                     return refBitmapDrawable;
                 }

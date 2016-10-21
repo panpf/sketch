@@ -24,7 +24,7 @@ import android.graphics.drawable.Drawable;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
-import me.xiaopan.sketch.drawable.FixedSizeRefBitmapDrawable;
+import me.xiaopan.sketch.drawable.FixedSizeBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.feature.ExceptionMonitor;
@@ -123,7 +123,7 @@ public class MakerDrawableModeImage implements ModeImage {
     public Drawable getDrawable(Context context, FixedSize fixedSize) {
         BitmapDrawable bitmapDrawable = makeDrawable(Sketch.with(context));
         if (bitmapDrawable != null && fixedSize != null) {
-            return new FixedSizeRefBitmapDrawable(bitmapDrawable, fixedSize);
+            return new FixedSizeBitmapDrawable(bitmapDrawable, fixedSize);
         } else {
             return bitmapDrawable;
         }

@@ -23,7 +23,7 @@ import android.graphics.drawable.Drawable;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.FixedSizeRefBitmapDrawable;
+import me.xiaopan.sketch.drawable.FixedSizeBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefDrawable;
@@ -264,7 +264,7 @@ public class DisplayRequest extends LoadRequest {
                     displayAttrs.getFixedSize(), displayAttrs.getScaleType());
             if (completedDrawable instanceof RefBitmapDrawable && canUseFixedSize) {
                 RefBitmapDrawable recycleCompletedDrawable = (RefBitmapDrawable) completedDrawable;
-                completedDrawable = new FixedSizeRefBitmapDrawable(recycleCompletedDrawable, displayAttrs.getFixedSize());
+                completedDrawable = new FixedSizeBitmapDrawable(recycleCompletedDrawable, displayAttrs.getFixedSize());
             }
 
             ImageViewInterface viewInterface = requestAndViewBinder.getImageViewInterface();
