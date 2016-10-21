@@ -2,7 +2,7 @@ Sketch新增了LargeImageViewer可以让SketchImage支持分块显示超级大�
 
 #### 如何开启
 
-```
+```java
 SketchImageView sketchImageView = ...;
 sketchImageView.setSupportLargeImage(true);
 ```
@@ -26,7 +26,6 @@ LargeImageViewer支持跟随ImageZoomer旋转，但只支持90°、180°、270°
 #### 配置
 
 ```java
-
 // 显示碎片范围
 largeImageViewer.setShowTileRect(true);
 ```
@@ -34,7 +33,6 @@ largeImageViewer.setShowTileRect(true);
 #### 获取信息
 
 ```java
-
 // 获取当前碎片数量
 int tiles = largeImageViewer.getTiles();
 
@@ -45,7 +43,60 @@ long tilesByteCount = largeImageViewer.getTilesAllocationByteCount();
 #### 监听
 
 ```java
-
 // 设置碎片变化监听器
 largeImageViewer.setOnTileChangedListener(LargeImageViewer.OnTileChangedListener)
+```
+
+#### 在ViewPager中使用
+由于ViewPager会至少缓存三个页面，所以至少会有三个LargeImageViewer同时工作，这样对内存的消耗是非常大的
+
+因此LargeImageView特地提供了pause()和resume()方法来减少在ViewPager中的内存消耗，如下：
+
+```java
+public class MyFragment extends Fragment {
+    private SketchImageView sketchImageView;
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View view = ...;
+        sketchImageView = ...;
+        return view;
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (getUserVisibleHint()) {
+            onUserVisibleChanged(false);
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (getUserVisibleHint()) {
+            onUserVisibleChanged(true);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isResumed()) {
+            onUserVisibleChanged(isVisibleToUser);
+        }
+    }
+
+    protected void onUserVisibleChanged(boolean isVisibleToUser) {
+        // 不可见的时候暂停超大图查看器，节省内存
+        if (sketchImageView != null && sketchImageView.isSupportLargeImage()) {
+            LargeImageViewer largeImageViewer = sketchImageView.getLargeImageViewer();
+            if (isVisibleToUser) {
+                largeImageViewer.resume();
+            } else {
+                largeImageViewer.pause();
+            }
+        }
+    }
+}
 ```

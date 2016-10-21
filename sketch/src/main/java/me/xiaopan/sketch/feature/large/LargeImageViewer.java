@@ -36,7 +36,6 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 大图片查看器
  */
-// TODO: 16/10/20 如果同时有三张大图同时工作的话，可能会比较耗内存，因此提供一些回收和恢复的方法，方便在Fragment显示或隐藏的时候主动控制
 public class LargeImageViewer {
     private static final String NAME = "LargeImageViewer";
 
@@ -56,6 +55,7 @@ public class LargeImageViewer {
     private Matrix matrix;
 
     private boolean running;
+    private boolean resuming;
     private String imageUri;
 
     public LargeImageViewer(Context context, Callback callback) {
@@ -108,7 +108,8 @@ public class LargeImageViewer {
 
         this.imageUri = imageUri;
         this.running = !TextUtils.isEmpty(imageUri);
-        tileDecoder.setImage(imageUri);
+        this.resuming = running;
+        this.tileDecoder.setImage(imageUri);
     }
 
     /**
@@ -119,6 +120,14 @@ public class LargeImageViewer {
         if (!isReady()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". not ready. " + imageUri);
+            }
+            return;
+        }
+
+        // 暂停中也不走了
+        if (!resuming) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". not resuming. " + imageUri);
             }
             return;
         }
@@ -174,6 +183,7 @@ public class LargeImageViewer {
      * 回收资源（回收后需要重新setImage()才能使用）
      */
     void recycle(String why) {
+        resuming = false;
         running = false;
         clean(why);
         tileExecutor.recycle(why);
@@ -191,6 +201,41 @@ public class LargeImageViewer {
 
     TileExecutor getTileExecutor() {
         return tileExecutor;
+    }
+
+    /**
+     * 暂停
+     */
+    public void pause() {
+        if(!running || !resuming){
+            return;
+        }
+
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, NAME + ". pause . " + imageUri);
+        }
+        resuming = false;
+        clean("pause");
+    }
+
+    /**
+     * 恢复
+     */
+    public void resume() {
+        if(!running || resuming){
+            return;
+        }
+
+        if (Sketch.isDebugMode()) {
+            Log.i(Sketch.TAG, NAME + ". resume . " + imageUri);
+        }
+        resuming = true;
+        callback.updateMatrix();
+    }
+
+    @SuppressWarnings("unused")
+    public boolean isResuming(){
+        return resuming;
     }
 
     /**

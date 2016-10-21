@@ -259,6 +259,16 @@ public class ImageFragment extends MyFragment {
                 loader.cancel(CancelCause.USERS_NOT_VISIBLE);
             }
         }
+
+        // 不可见的时候暂停超大图查看器，节省内存
+        if (imageView != null && imageView.isSupportLargeImage()) {
+            LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
+            if (isVisibleToUser) {
+                largeImageViewer.resume();
+            } else {
+                largeImageViewer.pause();
+            }
+        }
     }
 
     private boolean location(float x, float y) {

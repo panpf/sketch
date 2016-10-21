@@ -2,7 +2,7 @@ Sketch新增了ImageZoomer可以让SketchImageView支持手势缩放图片，那
 
 #### 如何开启
 
-```
+```java
 SketchImageView sketchImageView = ...;
 sketchImageView.setSupportZoom(true);
 ```
