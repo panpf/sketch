@@ -9,7 +9,8 @@
         android:layout_height="match_parent"
         android:divider="@null"
         android:layoutAnimation="@anim/layout_animation"
-        android:listSelector="@null" />
+        android:listSelector="@null"
+        android:scrollbars="vertical"/>
 
     <me.xiaopan.sketchsample.widget.HintView
         android:id="@+id/hint_installedApp_hint"

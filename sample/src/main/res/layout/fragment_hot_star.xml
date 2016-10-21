@@ -14,7 +14,8 @@
             android:layout_height="match_parent"
             android:layoutAnimation="@anim/layout_animation"
             android:divider="@null"
-            android:listSelector="@null" />
+            android:listSelector="@null"
+            android:scrollbars="vertical"/>
     </me.xiaopan.sketchsample.widget.MyPullRefreshLayout>
 
     <me.xiaopan.sketchsample.widget.HintView

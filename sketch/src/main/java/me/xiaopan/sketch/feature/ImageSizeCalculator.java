@@ -298,7 +298,7 @@ public class ImageSizeCalculator implements Identifier {
      * 根据高度计算是否可以使用阅读模式
      */
     public boolean canUseReadModeByHeight(int imageWidth, int imageHeight){
-        return imageHeight > imageWidth * 3;
+        return imageHeight > imageWidth * 2;
     }
 
     /**
