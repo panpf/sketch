@@ -7,7 +7,7 @@
 
 `by Google Translate`
 
-Sketch is an image loader on Android that allows developers to read images from a local or network and display them on a page after processing
+Sketch is a powerful and comprehensive image loader on Android, with support for GIF, gesture zooming, block display super large image
 
 ![sample](docs/res/sample.jpg)
 

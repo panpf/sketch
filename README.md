@@ -5,7 +5,7 @@
 
 [English version of the README.md](README_EN.md)
 
-Sketch是Android上的一个图片加载器，能够帮助开发者从本地或网络读取图片，处理后显示在页面上
+Sketch是Android上一个强大且全面的图片加载器，支持GIF，手势缩放以及分块显示超大图片
 
 ![sample](docs/res/sample.jpg)
 
