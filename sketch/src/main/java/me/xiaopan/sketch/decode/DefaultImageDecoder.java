@@ -186,6 +186,9 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (!loadOptions.isThumbnailMode() || loadOptions.getResize() == null
                 || !SketchUtils.isSupportBRDByApi()
                 || !SketchUtils.isSupportBRDByImageFormat(imageFormat)) {
+            if (loadOptions.isThumbnailMode() && loadOptions.getResize() == null) {
+                Log.e(Sketch.TAG, "thumbnailMode need resize ");
+            }
             return null;
         }
 
