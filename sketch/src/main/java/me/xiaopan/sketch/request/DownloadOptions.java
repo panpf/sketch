@@ -120,7 +120,7 @@ public class DownloadOptions {
     /**
      * 协助生成请求ID
      */
-    public StringBuilder appendOptionsToId(StringBuilder builder) {
+    public StringBuilder getInfo(StringBuilder builder) {
         return builder;
     }
 }

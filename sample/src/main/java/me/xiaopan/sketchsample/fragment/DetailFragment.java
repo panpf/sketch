@@ -56,6 +56,7 @@ import me.xiaopan.sketchsample.widget.DepthPageTransformer;
 @InjectContentView(R.layout.fragment_detail)
 public class DetailFragment extends MyFragment implements View.OnClickListener, ImageZoomer.OnViewTapListener {
     public static final String PARAM_REQUIRED_STRING_ARRAY_LIST_URLS = "PARAM_REQUIRED_STRING_ARRAY_LIST_URLS";
+    public static final String PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO = "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO";
     public static final String PARAM_OPTIONAL_INT_DEFAULT_POSITION = "PARAM_OPTIONAL_INT_DEFAULT_POSITION";
 
     @InjectView(R.id.pager_detail_content)
@@ -79,6 +80,8 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
 
     @InjectExtra(PARAM_REQUIRED_STRING_ARRAY_LIST_URLS)
     private List<String> uris;
+    @InjectExtra(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO)
+    private String loadingImageOptionsInfo;
     @InjectExtra(PARAM_OPTIONAL_INT_DEFAULT_POSITION)
     private int position;
     private boolean show = false;
@@ -132,7 +135,7 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
         saveButton.setOnClickListener(this);
 
         if (uris != null) {
-            viewPager.setAdapter(new ImageFragmentAdapter(getChildFragmentManager(), uris));
+            viewPager.setAdapter(new ImageFragmentAdapter(getChildFragmentManager(), uris, loadingImageOptionsInfo));
             viewPager.setCurrentItem(position);
             currentItemTextView.setText(position + 1 + "");
             countTextView.setText(uris.size() + "");

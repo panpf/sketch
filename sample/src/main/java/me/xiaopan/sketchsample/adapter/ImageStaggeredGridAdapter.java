@@ -42,7 +42,7 @@ public class ImageStaggeredGridAdapter extends BaseAdapter {
             public void onClick(View v) {
                 if (onItemClickListener != null) {
                     ItemViewHolder viewHolder = (ItemViewHolder) v.getTag();
-                    onItemClickListener.onItemClick(viewHolder.position, viewHolder.image);
+                    onItemClickListener.onItemClick(viewHolder.position, viewHolder.image, viewHolder.imageView.getFinalOptionsInfo());
                 }
             }
         };
@@ -136,6 +136,6 @@ public class ImageStaggeredGridAdapter extends BaseAdapter {
     }
 
     public interface OnItemClickListener {
-        void onItemClick(int position, StarImageRequest.Image image);
+        void onItemClick(int position, StarImageRequest.Image image, String loadingImageOptionsInfo);
     }
 }

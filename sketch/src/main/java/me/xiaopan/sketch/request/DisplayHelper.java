@@ -535,7 +535,7 @@ public class DisplayHelper {
 
         // 根据URI和显示选项生成请求ID
         if (requestAttrs.getId() == null) {
-            requestAttrs.setId(requestAttrs.generateId(displayOptions));
+            requestAttrs.setId(SketchUtils.generateId(requestAttrs.getUri(), displayOptions));
         }
     }
 

@@ -51,15 +51,6 @@ public class RequestAttrs {
         this.uriScheme = requestAttrs.uriScheme;
     }
 
-    String generateId(DownloadOptions options) {
-        StringBuilder builder = new StringBuilder();
-        builder.append(uri);
-        if (options != null) {
-            options.appendOptionsToId(builder);
-        }
-        return builder.toString();
-    }
-
     public String getId() {
         return id;
     }

@@ -33,11 +33,6 @@ public enum OptionsType {
     NORMAL_CIRCULAR,
 
     /**
-     * 详情
-     */
-    DETAIL,
-
-    /**
      * 窗口背景
      */
     WINDOW_BACKGROUND,

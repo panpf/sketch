@@ -84,8 +84,8 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
     }
 
     @Override
-    public void onImageClick(int position) {
-        DetailActivity.launch(getActivity(), (ArrayList<String>) imageAdapter.getImageUrlList(), position);
+    public void onImageClick(int position, String loadingImageOptionsInfo) {
+        DetailActivity.launch(getActivity(), (ArrayList<String>) imageAdapter.getImageUrlList(), null, position);
     }
 
     @Override

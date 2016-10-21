@@ -5,6 +5,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,17 +13,20 @@ import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.display.FadeInImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
+import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
 import me.xiaopan.sketch.request.DisplayListener;
+import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
+import me.xiaopan.sketch.request.MemoryCacheModeImage;
 import me.xiaopan.sketch.request.RequestLevel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
-import me.xiaopan.sketchsample.OptionsType;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
 import me.xiaopan.sketchsample.menu.ImageMenu;
@@ -34,6 +38,7 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 @InjectContentView(R.layout.fragment_image)
 public class ImageFragment extends MyFragment {
     public static final String PARAM_REQUIRED_IMAGE_URI = "PARAM_REQUIRED_IMAGE_URI";
+    public static final String PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_INFO = "PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_INFO";
 
     @InjectView(R.id.image_imageFragment_image)
     private MyImageView imageView;
@@ -52,15 +57,20 @@ public class ImageFragment extends MyFragment {
 
     @InjectExtra(PARAM_REQUIRED_IMAGE_URI)
     private String imageUri;
+
+    @InjectExtra(PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_INFO)
+    private String loadingImageOptionsInfo;
+
     private boolean completedAfterUpdateBackground;
 
     private WindowBackgroundManager.Loader loader;
 
     private ImageMenu imageMenu;
 
-    public static ImageFragment build(String imageUri) {
+    public static ImageFragment build(String imageUri, String loadingImageOptions) {
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_REQUIRED_IMAGE_URI, imageUri);
+        bundle.putString(PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_INFO, loadingImageOptions);
         ImageFragment fragment = new ImageFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -226,7 +236,19 @@ public class ImageFragment extends MyFragment {
         mappingView.getOptions().setMaxSize(600, 600);
         mappingView.displayImage(imageUri);
 
-        imageView.setOptionsByName(OptionsType.DETAIL);
+        DisplayOptions options = imageView.getOptions();
+        if (!TextUtils.isEmpty(loadingImageOptionsInfo)) {
+            String loadingImageId = SketchUtils.generateId(imageUri, loadingImageOptionsInfo);
+            RefBitmap cachedRefBitmap = Sketch.with(getActivity()).getConfiguration().getMemoryCache().get(loadingImageId);
+            if (cachedRefBitmap != null) {
+                options.setLoadingImage(new MemoryCacheModeImage(loadingImageId, null));
+            } else {
+                options.setImageDisplayer(new FadeInImageDisplayer());
+            }
+        } else {
+            options.setImageDisplayer(new FadeInImageDisplayer());
+        }
+        options.setDecodeGifImage(true);
         imageView.displayImage(imageUri);
 
         imageMenu = new ImageMenu(getActivity(), imageView);

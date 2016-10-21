@@ -81,9 +81,10 @@ public class DetailActivity extends MyBaseActivity implements WindowBackgroundMa
         windowBackgroundManager.destroy();
     }
 
-    public static void launch(Activity activity, ArrayList<String> imageUrlList, int defaultPosition) {
+    public static void launch(Activity activity, ArrayList<String> imageUrlList, String loadingImageOptionsInfo, int defaultPosition) {
         Intent intent = new Intent(activity, DetailActivity.class);
         intent.putStringArrayListExtra(DetailFragment.PARAM_REQUIRED_STRING_ARRAY_LIST_URLS, imageUrlList);
+        intent.putExtra(DetailFragment.PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_INFO, loadingImageOptionsInfo);
         intent.putExtra(DetailFragment.PARAM_OPTIONAL_INT_DEFAULT_POSITION, defaultPosition);
         activity.startActivity(intent);
         activity.overridePendingTransition(R.anim.window_push_enter, R.anim.window_push_exit);

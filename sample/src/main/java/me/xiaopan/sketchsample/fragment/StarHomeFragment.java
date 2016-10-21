@@ -124,8 +124,8 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
     }
 
     @Override
-    public void onItemClick(int position, StarImageRequest.Image image) {
-        DetailActivity.launch(getActivity(), (ArrayList<String>) starImageAdapter.getImageUrlList(), position);
+    public void onItemClick(int position, StarImageRequest.Image image, String loadingImageOptionsInfo) {
+        DetailActivity.launch(getActivity(), (ArrayList<String>) starImageAdapter.getImageUrlList(), loadingImageOptionsInfo, position);
     }
 
     private void setAdapter(ImageStaggeredGridAdapter adapter) {

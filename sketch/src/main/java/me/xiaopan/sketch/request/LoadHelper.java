@@ -275,7 +275,7 @@ public class LoadHelper {
 
         // 根据URI和加载选项生成请求ID
         if (requestAttrs.getId() == null) {
-            requestAttrs.setId(requestAttrs.generateId(loadOptions));
+            requestAttrs.setId(SketchUtils.generateId(requestAttrs.getUri(), loadOptions));
         }
     }
 

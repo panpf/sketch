@@ -292,8 +292,8 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
     }
 
     @Override
-    public void onItemClick(int position, StarImageRequest.Image image) {
-        DetailActivity.launch(getActivity(), (ArrayList<String>) searchImageListAdapter.getImageUrlList(), position);
+    public void onItemClick(int position, StarImageRequest.Image image, String loadingImageOptionsInfo) {
+        DetailActivity.launch(getActivity(), (ArrayList<String>) searchImageListAdapter.getImageUrlList(), loadingImageOptionsInfo, position);
     }
 
     @Override

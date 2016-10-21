@@ -278,8 +278,8 @@ public class LoadOptions extends DownloadOptions {
     }
 
     @Override
-    public StringBuilder appendOptionsToId(StringBuilder builder) {
-        super.appendOptionsToId(builder);
+    public StringBuilder getInfo(StringBuilder builder) {
+        super.getInfo(builder);
 
         if (maxSize != null) {
             maxSize.appendIdentifier("_", builder);

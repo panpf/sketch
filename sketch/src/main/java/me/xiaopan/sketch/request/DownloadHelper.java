@@ -147,7 +147,7 @@ public class DownloadHelper {
 
         // 根据URI和下载选项生成请求ID
         if (requestAttrs.getId() == null) {
-            requestAttrs.setId(requestAttrs.generateId(downloadOptions));
+            requestAttrs.setId(SketchUtils.generateId(requestAttrs.getUri(), downloadOptions));
         }
     }
 

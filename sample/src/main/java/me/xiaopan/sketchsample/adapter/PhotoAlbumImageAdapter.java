@@ -45,7 +45,8 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View v) {
                 if (onImageClickListener != null && v.getTag() != null && v.getTag() instanceof ItemViewHolder) {
-                    onImageClickListener.onImageClick(((ItemViewHolder) v.getTag()).getPosition());
+                    ItemViewHolder viewHolder = (ItemViewHolder) v.getTag();
+                    onImageClickListener.onImageClick(viewHolder.getPosition(), viewHolder.sketchImageView.getFinalOptionsInfo());
                 }
             }
         };
@@ -161,6 +162,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     }
 
     public interface OnImageClickListener {
-        void onImageClick(int position);
+        void onImageClick(int position, String loadingImageOptionsInfo);
     }
 }

@@ -808,6 +808,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         return largeImageFunction != null ? largeImageFunction.getLargeImageViewer() : null;
     }
 
+    public String getFinalOptionsInfo(){
+        DisplayParams displayParams = getDisplayParams();
+        return displayParams != null ? displayParams.options.getInfo(new StringBuilder()).toString() : null;
+    }
+
     /**
      * 图片的形状
      */

@@ -5,14 +5,13 @@ import android.widget.ImageView;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.display.FadeInImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.CircleImageProcessor;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
 import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.MakerDrawableModeImage;
 import me.xiaopan.sketch.request.LoadOptions;
+import me.xiaopan.sketch.request.MakerDrawableModeImage;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.util.MyImagePreprocessor;
@@ -56,11 +55,6 @@ public class SketchManager {
                 .setForceUseResize(true)
                 .setImageDisplayer(transitionImageDisplayer)
                 .setImageProcessor(roundedCornerImageProcessor)
-        );
-
-        Sketch.putOptions(OptionsType.DETAIL, new DisplayOptions()
-                .setImageDisplayer(new FadeInImageDisplayer())
-                .setDecodeGifImage(true)
         );
 
         Sketch.putOptions(OptionsType.NORMAL_CIRCULAR, new DisplayOptions()

@@ -10,10 +10,12 @@ import me.xiaopan.sketchsample.fragment.ImageFragment;
 
 public class ImageFragmentAdapter extends FragmentStatePagerAdapter {
     private List<String> uris;
+    private String loadingImageOptionsInfo;
 
-    public ImageFragmentAdapter(FragmentManager fm, List<String> uris) {
+    public ImageFragmentAdapter(FragmentManager fm, List<String> uris, String loadingImageOptionsInfo) {
         super(fm);
         this.uris = uris;
+        this.loadingImageOptionsInfo = loadingImageOptionsInfo;
     }
 
     @Override
@@ -23,6 +25,6 @@ public class ImageFragmentAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int arg0) {
-        return ImageFragment.build(uris.get(arg0));
+        return ImageFragment.build(uris.get(arg0), loadingImageOptionsInfo);
     }
 }

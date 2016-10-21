@@ -72,6 +72,7 @@ import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.request.DisplayRequest;
+import me.xiaopan.sketch.request.DownloadOptions;
 import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -1009,5 +1010,24 @@ public class SketchUtils {
             point.x = newX;
             point.y = newY;
         }
+    }
+
+    public static String generateId(String imageUri, DownloadOptions options) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(imageUri);
+        if (options != null) {
+            options.getInfo(builder);
+        }
+        return builder.toString();
+    }
+
+    @SuppressWarnings("unused")
+    public static String generateId(String imageUri, String options) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(imageUri);
+        if (!TextUtils.isEmpty(options)) {
+            builder.append(options);
+        }
+        return builder.toString();
     }
 }
