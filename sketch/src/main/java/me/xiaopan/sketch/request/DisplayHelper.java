@@ -27,7 +27,6 @@ import android.widget.ImageView.ScaleType;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.ImageDisplayer;
-import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
@@ -517,17 +516,14 @@ public class DisplayHelper {
             displayOptions.setImageDisplayer(configuration.getDefaultImageDisplayer());
         }
 
-        // 使用过渡图片显示器的时候，如果使用了loadingImage的话ImageView就必须采用固定宽高以及ScaleType必须是CENTER_CROP
-        if (displayOptions.getImageDisplayer() instanceof TransitionImageDisplayer
-                && displayOptions.getLoadingImage() != null
-                && (displayAttrs.getFixedSize() == null || displayAttrs.getScaleType() != ScaleType.CENTER_CROP)) {
+        // 使用过渡图片显示器的时候，如果使用了loadingImage的话ImageView就必须采用固定宽高
+        if(!SketchUtils.verifyFixedSize(displayOptions.getImageDisplayer(), displayOptions.getLoadingImage(), displayAttrs.getFixedSize())){
             View imageView = imageViewInterface.getSelf();
             ViewGroup.LayoutParams layoutParams = imageView.getLayoutParams();
             String errorInfo = SketchUtils.concat(
-                    "If you use TransitionImageDisplayer and loadingImage, ImageView width and height must be fixed as well as the ScaleType must be CENTER_CROP",
+                    "If you use TransitionImageDisplayer and loadingImage, ImageView width and height must be fixed",
                     ". width=", SketchUtils.viewLayoutFormatted(layoutParams.width),
-                    ", height=", SketchUtils.viewLayoutFormatted(layoutParams.height),
-                    ", scaleType=", displayAttrs.getScaleType().name());
+                    ", height=", SketchUtils.viewLayoutFormatted(layoutParams.height));
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(logName,
                         ". ", errorInfo,
@@ -568,10 +564,14 @@ public class DisplayHelper {
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
+                boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
+                        displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
+                drawable = displayOptions.getErrorImage().getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
+                boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
+                        displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
+                drawable = displayOptions.getLoadingImage().getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
             }
             imageViewInterface.setImageDrawable(drawable);
 
@@ -588,10 +588,14 @@ public class DisplayHelper {
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
+                boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
+                        displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
+                drawable = displayOptions.getErrorImage().getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
+                boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
+                        displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
+                drawable = displayOptions.getLoadingImage().getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
             }
             imageViewInterface.setImageDrawable(drawable);
 
@@ -652,7 +656,9 @@ public class DisplayHelper {
             Drawable loadingDrawable = null;
             if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                loadingDrawable = displayOptions.getLoadingImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
+                boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
+                        displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
+                loadingDrawable = displayOptions.getLoadingImage().getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
             }
             imageViewInterface.clearAnimation();
             imageViewInterface.setImageDrawable(loadingDrawable);
@@ -680,11 +686,15 @@ public class DisplayHelper {
             Drawable drawable = null;
             if (displayOptions.getPauseDownloadImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getPauseDownloadImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
+                boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
+                        displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
+                drawable = displayOptions.getPauseDownloadImage().getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
                 imageViewInterface.clearAnimation();
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
+                boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
+                        displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
+                drawable = displayOptions.getLoadingImage().getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
             } else {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
@@ -748,7 +758,9 @@ public class DisplayHelper {
         ModeImage loadingImage = displayOptions.getLoadingImage();
         if (loadingImage != null) {
             Context context = sketch.getConfiguration().getContext();
-            Drawable drawable = loadingImage.getDrawable(context, canUseFixedSize() ? displayAttrs.getFixedSize() : null);
+            boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
+                    displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
+            Drawable drawable = loadingImage.getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
             loadingDrawable = new LoadingDrawable(drawable, request);
         } else {
             loadingDrawable = new LoadingDrawable(null, request);
@@ -775,9 +787,5 @@ public class DisplayHelper {
         }
 
         return request;
-    }
-
-    private boolean canUseFixedSize(){
-        return SketchUtils.isFixedSize(displayOptions.getImageDisplayer(), displayAttrs.getFixedSize(), displayAttrs.getScaleType());
     }
 }

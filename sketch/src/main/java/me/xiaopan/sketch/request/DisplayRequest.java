@@ -260,8 +260,8 @@ public class DisplayRequest extends LoadRequest {
         // 显示图片
         if (displayResult != null && displayResult.getDrawable() != null) {
             Drawable completedDrawable = displayResult.getDrawable();
-            boolean canUseFixedSize = SketchUtils.isFixedSize(displayOptions.getImageDisplayer(),
-                    displayAttrs.getFixedSize(), displayAttrs.getScaleType());
+            boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
+                    displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
             if (completedDrawable instanceof RefBitmapDrawable && canUseFixedSize) {
                 RefBitmapDrawable recycleCompletedDrawable = (RefBitmapDrawable) completedDrawable;
                 completedDrawable = new FixedSizeBitmapDrawable(recycleCompletedDrawable, displayAttrs.getFixedSize());
@@ -309,8 +309,8 @@ public class DisplayRequest extends LoadRequest {
 
         // 显示失败图片
         if (displayOptions.getErrorImage() != null) {
-            boolean canUseFixedSize = SketchUtils.isFixedSize(displayOptions.getImageDisplayer(),
-                    displayAttrs.getFixedSize(), displayAttrs.getScaleType());
+            boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
+                    displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
             Context context = getSketch().getConfiguration().getContext();
             Drawable failedDrawable = displayOptions.getErrorImage().getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
             displayOptions.getImageDisplayer().display(requestAndViewBinder.getImageViewInterface(), failedDrawable);

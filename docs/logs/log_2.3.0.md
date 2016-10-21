@@ -14,8 +14,10 @@ Optimizes：
 >* ``inSampleSize``. 优化inSampleSize计算规则，先根据像素数过滤，然后再根据OpenGL的MAX_TEXTURE_SIZE过滤，最后如果是为大图功能加载预览图的话，当缩小2倍的时为了节省内存考虑还不如缩小4倍（缩小1倍时不会启用大图功能，因此无需处理）
 >* ``maxSize``. 默认maxSize改为屏幕的宽高，不再乘以0.75
 >* ``Drawable``. 重构Drawable系统，现在可以用任意类型的drawable作为loading占位图了
+>* ``TransitonImageDisplayer``. 对TransitionImageDisplayer的安全验证条件中不再验证CENTER_CROP
 
 Other：
 >* ``Listener``. DownloadListener的onCompleted(File cacheFile, boolean isFromNetwork)和onCompleted(byte[] data)合并成一个onCompleted(DownloadResult downloadResult)
 >* ``Listener``. LoadListener的onCompleted(Bitmap bitmap, ImageFrom imageFrom, String mimeType)和onCompleted(GifDrawable gifDrawable, ImageFrom imageFrom, String mimeType)合并成一个onCompleted(LoadResult loadResult)
 >* ``Rename``. 所有跟Failed相关的名字全改成了Error
+>* ``FadeInImageDisplayer``. 新增渐入图片显示器FadeInImageDisplayer

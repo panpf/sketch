@@ -44,7 +44,6 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import java.io.Closeable;
 import java.io.File;
@@ -76,6 +75,7 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.LoadRequest;
+import me.xiaopan.sketch.request.ModeImage;
 import pl.droidsonroids.gif.GifDrawable;
 
 public class SketchUtils {
@@ -287,10 +287,12 @@ public class SketchUtils {
         }
     }
 
-    public static boolean isFixedSize(ImageDisplayer imageDisplayer, FixedSize fixedSize, ImageView.ScaleType scaleType) {
-        return imageDisplayer instanceof TransitionImageDisplayer
-                && fixedSize != null
-                && scaleType == ImageView.ScaleType.CENTER_CROP;
+    public static boolean canUseFixedSize(ImageDisplayer imageDisplayer, ModeImage loadingImage, FixedSize fixedSize) {
+        return imageDisplayer instanceof TransitionImageDisplayer && loadingImage != null && fixedSize != null;
+    }
+
+    public static boolean verifyFixedSize(ImageDisplayer imageDisplayer, ModeImage loadingImage, FixedSize fixedSize){
+        return !(imageDisplayer instanceof TransitionImageDisplayer) || (loadingImage == null) || fixedSize != null;
     }
 
     /**

@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.display.FadeInImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.CircleImageProcessor;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
@@ -58,7 +59,7 @@ public class SketchManager {
         );
 
         Sketch.putOptions(OptionsType.DETAIL, new DisplayOptions()
-                .setImageDisplayer(transitionImageDisplayer)
+                .setImageDisplayer(new FadeInImageDisplayer())
                 .setDecodeGifImage(true)
         );
 
