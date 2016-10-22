@@ -34,7 +34,7 @@ import me.xiaopan.sketch.request.UriScheme;
  * <li>黄色：磁盘缓存</li>
  * <li>蓝色：本地</li>
  * <li>绿色：内存缓存
- * <ul/>
+ * </ul>
  */
 public class ShowImageFromFunction extends SketchImageView.Function {
     private static final int FROM_FLAG_COLOR_MEMORY = 0x8800FF00;

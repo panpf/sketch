@@ -536,7 +536,7 @@ public class SketchUtils {
      * @param cleanOldCacheFiles 清除旧的缓存文件
      * @param expandNumber       当dirName无法使用时就会尝试dirName1、dirName2、dirName3...
      * @return 你应当以返回的目录为最终可用的目录
-     * @throws NoSpaceException：可用空间小于minSpaceSize；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
+     * @throws NoSpaceException 可用空间小于minSpaceSize；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
      */
     public static File buildCacheDir(Context context, String dirName, boolean compatManyProcess, long minSpaceSize, boolean cleanOnNoSpace,
                                      boolean cleanOldCacheFiles, int expandNumber) throws NoSpaceException, UnableCreateDirException, UnableCreateFileException {
