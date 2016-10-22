@@ -34,35 +34,23 @@ public class ImageZoomFunction extends SketchImageView.Function {
 
     public ImageZoomFunction(ImageView imageView) {
         this.imageView = imageView;
-        init();
-    }
-
-    private void init() {
-        ImageZoomer oldImageZoomer = imageZoomer;
-
-        imageZoomer = new ImageZoomer(imageView, true);
-
-        if (oldImageZoomer != null) {
-            oldImageZoomer.cleanup();
-        }
+        this.imageZoomer = new ImageZoomer(imageView, true);
     }
 
     @Override
     public void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        if (imageZoomer != null) {
-            imageZoomer.draw(canvas);
-        }
+        imageZoomer.draw(canvas);
     }
 
     @Override
     public void onAttachedToWindow() {
-        init();
+        imageZoomer.init(imageView, true);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return imageZoomer != null && imageZoomer.onTouch(imageView, event);
+        return imageZoomer.onTouch(imageView, event);
     }
 
     @Override
@@ -73,36 +61,27 @@ public class ImageZoomFunction extends SketchImageView.Function {
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        if (imageZoomer != null) {
-            imageZoomer.update();
-        }
+        imageZoomer.update();
         return false;
     }
 
     @Override
     public void onSizeChanged(int left, int top, int right, int bottom) {
-        if (imageZoomer != null) {
-            imageZoomer.update();
-        }
+        imageZoomer.update();
     }
 
     public ImageView.ScaleType getScaleType() {
-        return imageZoomer != null ? imageZoomer.getScaleType() : null;
+        return imageZoomer.getScaleType();
     }
 
     @Override
     public void setScaleType(ImageView.ScaleType scaleType) {
         super.setScaleType(scaleType);
-        if (imageZoomer != null) {
-            imageZoomer.setScaleType(scaleType);
-        }
+        imageZoomer.setScaleType(scaleType);
     }
 
     public void recycle() {
-        if (imageZoomer != null) {
-            imageZoomer.cleanup();
-            imageZoomer = null;
-        }
+        imageZoomer.cleanup();
     }
 
     public ImageZoomer getImageZoomer() {

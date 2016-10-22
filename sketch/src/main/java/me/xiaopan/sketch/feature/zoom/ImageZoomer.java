@@ -125,35 +125,16 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     private final Point imageViewSize = new Point();
 
     public ImageZoomer(ImageView imageView, boolean provideTouchEvent) {
-        context = imageView.getContext();
-        viewReference = new WeakReference<ImageView>(imageView);
-
-        // from ImageView get ScaleType
-        scaleType = imageView.getScaleType();
-        if (scaleType == ScaleType.MATRIX) {
-            scaleType = ScaleType.FIT_CENTER;
-        } else {
-            imageView.setScaleType(ScaleType.MATRIX);
-        }
-
-        // initialize ImageView
-        imageView.setDrawingCacheEnabled(true);
-        if (!provideTouchEvent) {
-            imageView.setOnTouchListener(this);
-        }
+        context = imageView.getContext().getApplicationContext();
 
         // initialize
         tapGestureDetector = new GestureDetector(context, new TapListener(this));
-        scaleDragGestureDetector = ScaleDragGestureDetectorCompat.newInstance(imageView.getContext(), this);
+        scaleDragGestureDetector = ScaleDragGestureDetectorCompat.newInstance(context, this);
         scaleDragGestureDetector.setActionListener(this);
 
-        // listening to the ImageView size changes
-        ViewTreeObserver observer = imageView.getViewTreeObserver();
-        if (observer != null) {
-            observer.addOnGlobalLayoutListener(this);
-        }
-
         scrollBar = new ScrollBar(context, this);
+
+        init(imageView, provideTouchEvent);
     }
 
     @SuppressWarnings("unused")
@@ -760,6 +741,30 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
+     * 初始化
+     */
+    void init(ImageView imageView, boolean provideTouchEvent){
+        viewReference = new WeakReference<ImageView>(imageView);
+
+        // from ImageView get ScaleType
+        scaleType = imageView.getScaleType();
+        if (scaleType == ScaleType.MATRIX) {
+            scaleType = ScaleType.FIT_CENTER;
+        } else {
+            imageView.setScaleType(ScaleType.MATRIX);
+        }
+        if (!provideTouchEvent) {
+            imageView.setOnTouchListener(this);
+        }
+
+        // listening to the ImageView size changes
+        ViewTreeObserver observer = imageView.getViewTreeObserver();
+        if (observer != null) {
+            observer.addOnGlobalLayoutListener(this);
+        }
+    }
+
+    /**
      * 清理
      */
     void cleanup() {
@@ -787,22 +792,13 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             cancelFling();
         }
 
-        if (tapGestureDetector != null) {
-            tapGestureDetector.setOnDoubleTapListener(null);
-        }
-
-        // Clear listeners too
-        onMatrixChangeListenerList = null;
-        onViewTapListener = null;
-        onDragFlingListener = null;
-        onScaleChangeListener = null;
-
-        // Finally, clear ImageView
-        viewReference = null;
-
+        scaleType = ScaleType.FIT_CENTER;
         drawable = null;
         imageViewSize.set(0, 0);
         drawableSize.set(0, 0);
+
+        // Finally, clear ImageView
+        viewReference = null;
     }
 
     /**
