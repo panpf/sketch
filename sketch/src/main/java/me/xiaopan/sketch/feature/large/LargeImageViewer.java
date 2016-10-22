@@ -55,7 +55,7 @@ public class LargeImageViewer {
     private Matrix matrix;
 
     private boolean running;
-    private boolean resuming;
+    private boolean paused;
     private String imageUri;
 
     public LargeImageViewer(Context context, Callback callback) {
@@ -108,7 +108,6 @@ public class LargeImageViewer {
 
         this.imageUri = imageUri;
         this.running = !TextUtils.isEmpty(imageUri);
-        this.resuming = running;
         this.tileDecoder.setImage(imageUri);
     }
 
@@ -125,7 +124,7 @@ public class LargeImageViewer {
         }
 
         // 暂停中也不走了
-        if (!resuming) {
+        if (paused) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". not resuming. " + imageUri);
             }
@@ -183,7 +182,6 @@ public class LargeImageViewer {
      * 回收资源（回收后需要重新setImage()才能使用）
      */
     void recycle(String why) {
-        resuming = false;
         running = false;
         clean(why);
         tileExecutor.recycle(why);
@@ -206,36 +204,34 @@ public class LargeImageViewer {
     /**
      * 暂停
      */
-    public void pause() {
-        if(!running || !resuming){
+    public void setPause(boolean pause) {
+        if (pause == paused) {
             return;
         }
+        paused = pause;
 
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". pause . " + imageUri);
-        }
-        resuming = false;
-        clean("pause");
-    }
+        if (paused) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, NAME + ". pause . " + imageUri);
+            }
 
-    /**
-     * 恢复
-     */
-    public void resume() {
-        if(!running || resuming){
-            return;
-        }
+            if (running) {
+                clean("pause");
+            }
+        } else {
+            if (Sketch.isDebugMode()) {
+                Log.i(Sketch.TAG, NAME + ". resume . " + imageUri);
+            }
 
-        if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, NAME + ". resume . " + imageUri);
+            if (running) {
+                callback.updateMatrix();
+            }
         }
-        resuming = true;
-        callback.updateMatrix();
     }
 
     @SuppressWarnings("unused")
-    public boolean isResuming(){
-        return resuming;
+    public boolean isPaused() {
+        return paused;
     }
 
     /**

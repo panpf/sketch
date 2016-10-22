@@ -50,7 +50,7 @@ largeImageViewer.setOnTileChangedListener(LargeImageViewer.OnTileChangedListener
 #### 在ViewPager中使用
 由于ViewPager会至少缓存三个页面，所以至少会有三个LargeImageViewer同时工作，这样对内存的消耗是非常大的
 
-因此LargeImageView特地提供了pause()和resume()方法来减少在ViewPager中的内存消耗，如下：
+因此LargeImageView特地提供了setPause(boolean)方法来减少在ViewPager中的内存消耗，如下：
 
 ```java
 public class MyFragment extends Fragment {
@@ -60,6 +60,10 @@ public class MyFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = ...;
         sketchImageView = ...;
+
+        // 初始化超大图查看器的暂停状态，这一步很重要
+        sketchImageView.getLargeImageViewer().setPause(!isVisibleToUser());
+
         return view;
     }
 
@@ -87,15 +91,14 @@ public class MyFragment extends Fragment {
         }
     }
 
+    public boolean isVisibleToUser() {
+        return isResumed() && getUserVisibleHint();
+    }
+
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
         // 不可见的时候暂停超大图查看器，节省内存
         if (sketchImageView != null && sketchImageView.isSupportLargeImage()) {
-            LargeImageViewer largeImageViewer = sketchImageView.getLargeImageViewer();
-            if (isVisibleToUser) {
-                largeImageViewer.resume();
-            } else {
-                largeImageViewer.pause();
-            }
+            sketchImageView.getLargeImageViewer().setPause(!isVisibleToUser);
         }
     }
 }

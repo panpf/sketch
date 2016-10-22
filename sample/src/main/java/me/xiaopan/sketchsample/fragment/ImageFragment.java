@@ -90,6 +90,72 @@ public class ImageFragment extends MyFragment {
 
         imageView.setAutoApplyGlobalAttr(false);
 
+        Settings settings = Settings.with(getActivity());
+        imageView.setSupportZoom(settings.isSupportZoom());
+        imageView.setSupportLargeImage(settings.isSupportLargeImage());
+
+        // 开启阅读模式
+        if (imageView.isSupportZoom()) {
+            imageView.getImageZoomer().setReadMode(settings.isReadMode());
+        }
+
+        // 实时显示缩放比例
+        if (imageView.isSupportZoom()) {
+            imageView.getImageZoomer().addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangeListener() {
+                @Override
+                public void onMatrixChanged(ImageZoomer imageZoomer) {
+                    String scale = String.format(" %s ·", SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
+                    scaleTextView.setText(scale);
+                    scaleTextView.requestLayout();
+                }
+            });
+        }
+
+        // 单击显示操作选项
+        if (imageView.isSupportZoom()) {
+            imageView.getImageZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {
+                @Override
+                public void onViewTap(View view, float x, float y) {
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ImageZoomer.OnViewTapListener) {
+                        ((ImageZoomer.OnViewTapListener) parentFragment).onViewTap(view, x, y);
+                    }
+                }
+            });
+        } else {
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Fragment parentFragment = getParentFragment();
+                    if (parentFragment != null && parentFragment instanceof ImageZoomer.OnViewTapListener) {
+                        ((ImageZoomer.OnViewTapListener) parentFragment).onViewTap(v, 0, 0);
+                    }
+                }
+            });
+        }
+
+        // 初始化超大图查看器的暂停状态，这一步很重要
+        if (imageView.isSupportLargeImage()) {
+            imageView.getLargeImageViewer().setPause(!isVisibleToUser());
+        }
+
+        // 配置选项，有占位图选项信息的话就使用内存缓存占位图但不使用任何显示器，否则就是用渐入显示器
+        DisplayOptions options = imageView.getOptions();
+        if (!TextUtils.isEmpty(loadingImageOptionsInfo)) {
+            String loadingImageId = SketchUtils.generateId(imageUri, loadingImageOptionsInfo);
+            RefBitmap cachedRefBitmap = Sketch.with(getActivity()).getConfiguration().getMemoryCache().get(loadingImageId);
+            if (cachedRefBitmap != null) {
+                options.setLoadingImage(new MemoryCacheModeImage(loadingImageId, null));
+            } else {
+                options.setImageDisplayer(new FadeInImageDisplayer());
+            }
+        } else {
+            options.setImageDisplayer(new FadeInImageDisplayer());
+        }
+
+        // 设置可以显示GIF图
+        options.setDecodeGifImage(true);
+
         imageView.setDisplayListener(new DisplayListener() {
             @Override
             public void onStarted() {
@@ -167,33 +233,19 @@ public class ImageFragment extends MyFragment {
             }
         });
 
-        Settings settings = Settings.with(getActivity());
-        imageView.setSupportZoom(settings.isSupportZoom());
-        imageView.setSupportLargeImage(settings.isSupportLargeImage());
+        imageView.displayImage(imageUri);
 
-        if (imageView.isSupportZoom()) {
-            ImageZoomer imageZoomer = imageView.getImageZoomer();
 
-            // 开启阅读模式
-            imageZoomer.setReadMode(settings.isReadMode());
+        // 点击MappingView定位到指定位置
+        mappingView.setOnSingleClickListener(new MappingView.OnSingleClickListener() {
+            @Override
+            public boolean onSingleClick(float x, float y) {
+                return location(x, y);
+            }
+        });
 
-            // MappingView跟随Matrix变化刷新各种区域
-            imageZoomer.addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangeListener() {
-                Rect visibleRect = new Rect();
-
-                @Override
-                public void onMatrixChanged(ImageZoomer imageZoomer) {
-                    imageZoomer.getVisibleRect(visibleRect);
-                    mappingView.update(imageZoomer.getDrawableSize(), visibleRect);
-                    String scale = String.format(" %s ·", SketchUtils.formatFloat(imageZoomer.getZoomScale(), 2));
-                    scaleTextView.setText(scale);
-                    scaleTextView.requestLayout();
-                }
-            });
-        }
-
+        // MappingView跟随碎片变化刷新碎片区域
         if (imageView.isSupportLargeImage()) {
-            // MappingView跟随碎片变化刷新碎片区域
             imageView.getLargeImageViewer().setOnTileChangedListener(new LargeImageViewer.OnTileChangedListener() {
                 @Override
                 public void onTileChanged(LargeImageViewer largeImageViewer) {
@@ -202,57 +254,24 @@ public class ImageFragment extends MyFragment {
             });
         }
 
-        // 单击显示操作选项
+        // MappingView跟随Matrix变化刷新显示区域
         if (imageView.isSupportZoom()) {
-            imageView.getImageZoomer().setOnViewTapListener(new ImageZoomer.OnViewTapListener() {
+            imageView.getImageZoomer().addOnMatrixChangeListener(new ImageZoomer.OnMatrixChangeListener() {
+                Rect visibleRect = new Rect();
+
                 @Override
-                public void onViewTap(View view, float x, float y) {
-                    Fragment parentFragment = getParentFragment();
-                    if (parentFragment != null && parentFragment instanceof ImageZoomer.OnViewTapListener) {
-                        ((ImageZoomer.OnViewTapListener) parentFragment).onViewTap(view, x, y);
-                    }
-                }
-            });
-        } else {
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Fragment parentFragment = getParentFragment();
-                    if (parentFragment != null && parentFragment instanceof ImageZoomer.OnViewTapListener) {
-                        ((ImageZoomer.OnViewTapListener) parentFragment).onViewTap(v, 0, 0);
-                    }
+                public void onMatrixChanged(ImageZoomer imageZoomer) {
+                    imageZoomer.getVisibleRect(visibleRect);
+                    mappingView.update(imageZoomer.getDrawableSize(), visibleRect);
                 }
             });
         }
-
-        mappingView.setOnSingleClickListener(new MappingView.OnSingleClickListener() {
-            @Override
-            public boolean onSingleClick(float x, float y) {
-                return location(x, y);
-            }
-        });
 
         mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
         mappingView.getOptions().setMaxSize(600, 600);
         mappingView.displayImage(imageUri);
 
-        DisplayOptions options = imageView.getOptions();
-        if (!TextUtils.isEmpty(loadingImageOptionsInfo)) {
-            String loadingImageId = SketchUtils.generateId(imageUri, loadingImageOptionsInfo);
-            RefBitmap cachedRefBitmap = Sketch.with(getActivity()).getConfiguration().getMemoryCache().get(loadingImageId);
-            if (cachedRefBitmap != null) {
-                options.setLoadingImage(new MemoryCacheModeImage(loadingImageId, null));
-            } else {
-                options.setImageDisplayer(new FadeInImageDisplayer());
-            }
-        } else {
-            options.setImageDisplayer(new FadeInImageDisplayer());
-        }
-        options.setDecodeGifImage(true);
-        imageView.displayImage(imageUri);
-
         imageMenu = new ImageMenu(getActivity(), imageView);
-
         settingsView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -284,12 +303,7 @@ public class ImageFragment extends MyFragment {
 
         // 不可见的时候暂停超大图查看器，节省内存
         if (imageView != null && imageView.isSupportLargeImage()) {
-            LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
-            if (isVisibleToUser) {
-                largeImageViewer.resume();
-            } else {
-                largeImageViewer.pause();
-            }
+            imageView.getLargeImageViewer().setPause(!isVisibleToUser);
         }
     }
 
