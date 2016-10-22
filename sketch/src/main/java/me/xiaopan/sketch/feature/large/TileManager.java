@@ -425,6 +425,7 @@ class TileManager {
         Collections.sort(tileList, new Comparator<Tile>() {
             @Override
             public int compare(Tile o1, Tile o2) {
+                // TODO: 16/10/22 这里还是会偶尔崩溃，原因好像是 A>B, B>C, 但是A<C小了
                 if (o1.drawRect.top >= o2.drawRect.bottom || o2.drawRect.top >= o1.drawRect.bottom) {
                     return SketchUtils.safeCompare(o1.drawRect.top, o2.drawRect.top);
                 } else {
