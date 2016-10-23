@@ -62,7 +62,7 @@ public class ImageMenu {
         String[] items = new String[5];
         items[0] = "查看详细信息";
         items[1] = "修改ScaleType（" + (supportZoom ? imageZoomer.getScaleType() : imageView.getScaleType()) + "）";
-        items[2] = supportLargeImage ? (largeImageViewer.isShowTileRect() ? "不显示分块区域" : "显示分块区域: ") : "分块区域（未开启大图功能）";
+        items[2] = supportLargeImage ? (largeImageViewer.isShowTileRect() ? "不显示分块区域" : "显示分块区域") : "分块区域（未开启大图功能）";
         items[3] = supportZoom ? (imageZoomer.isReadMode() ? "关闭阅读模式" : "开启阅读模式") : ("阅读模式（未开启缩放功能）");
         items[4] = supportZoom ? ("顺时针旋转90度（" + imageZoomer.getRotateDegrees() + "）") : "旋转图片（未开启缩放功能）";
         builder.setItems(items, new DialogInterface.OnClickListener() {
