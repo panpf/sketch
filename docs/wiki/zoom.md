@@ -88,12 +88,14 @@ ImageZoomer会根据图片的尺寸、ImageView的宽高以及ScaleType动态计
 
 所以在显示满足阅读模式的图片时会默认就显示最大缩放比例直接将图片放大
 
-`只有宽是高的3倍，或高是宽的3倍的图片才能使用阅读模式`
-
 ```java
 // 开启阅读模式
 imageZoomer.setReadMode(true);
 ```
+
+`只有宽是高的3倍，或高是宽的2倍的图片才能使用阅读模式`
+
+如果你想修改这个计算规则你可以继承ImageSizeCalculator重写其canUseReadModeByHeight(int, int)和canUseReadModeByWidth(int, int)方法，然后通过Sketch.with(context).getConfiguration().setImageSizeCalculator(ImageSizeCalculator)方法应用
 
 #### 滑动条
 
