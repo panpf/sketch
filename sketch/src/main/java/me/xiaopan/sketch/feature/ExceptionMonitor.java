@@ -9,9 +9,11 @@ import android.util.Log;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.List;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.request.DownloadRequest;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -29,14 +31,16 @@ public class ExceptionMonitor implements Identifier {
     /**
      * 安装磁盘缓存失败
      *
-     * @param e        NoSpaceException：空间不足；UnableCreateDirException：无法创建缓存目录；UnableCreateFileException：无法在缓存目录中创建文件
+     * @param e        NoSpaceException：空间不足；
+     *                 UnableCreateDirException：无法创建缓存目录；
+     *                 UnableCreateFileException：无法在缓存目录中创建文件
      * @param cacheDir 默认的缓存目录
      */
     public void onInstallDiskCacheError(Exception e, File cacheDir) {
         //noinspection StringBufferReplaceableByString
         StringBuilder builder = new StringBuilder();
         builder.append(logName);
-        builder.append(". InstallDiskCacheError");
+        builder.append(". onInstallDiskCacheError");
         builder.append(". ").append(e.getClass().getSimpleName()).append(": ").append(e.getMessage());
         builder.append(". SDCardState: ").append(Environment.getExternalStorageState());
         builder.append(". cacheDir: ").append(cacheDir.getPath());
@@ -46,11 +50,11 @@ public class ExceptionMonitor implements Identifier {
     /**
      * 解码GIF图片失败
      *
-     * @param throwable     UnsatisfiedLinkError或ExceptionInInitializerError：找不到对应到的so文件
-     * @param request       请求
-     * @param outWidth      图片原始宽
-     * @param outHeight     图片原始高
-     * @param outMimeType   图片类型
+     * @param throwable   UnsatisfiedLinkError或ExceptionInInitializerError：找不到对应到的so文件
+     * @param request     请求
+     * @param outWidth    图片原始宽
+     * @param outHeight   图片原始高
+     * @param outMimeType 图片类型
      */
     public void onDecodeGifImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
         if (throwable instanceof UnsatisfiedLinkError || throwable instanceof ExceptionInInitializerError) {
@@ -60,15 +64,16 @@ public class ExceptionMonitor implements Identifier {
                     "download “libpl_droidsonroids_gif.so” file and put in your project");
             String abiInfo;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                abiInfo = "abis=" + Arrays.toString(Build.SUPPORTED_ABIS);
+                abiInfo = String.format("abis=%s", Arrays.toString(Build.SUPPORTED_ABIS));
             } else {
-                abiInfo = "abi1=" + Build.CPU_ABI + ", abi2" + Build.CPU_ABI2;
+                //noinspection deprecation
+                abiInfo = String.format("abi1=%s, abi2%s", Build.CPU_ABI, Build.CPU_ABI2);
             }
             Log.e(Sketch.TAG, SketchUtils.concat("Didn't find libpl_droidsonroids_gif.so. ", abiInfo));
         }
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                ". DecodeGifImageError",
+                ". onDecodeGifImageError",
                 ". outWidth", "=", outWidth, ", ", "outHeight", "=", outHeight, ", ", "outMimeType", "=", outMimeType,
                 ". ", request.getAttrs().getId()));
     }
@@ -76,11 +81,11 @@ public class ExceptionMonitor implements Identifier {
     /**
      * 解码普通图片失败
      *
-     * @param throwable     OutOfMemoryError：内存溢出
-     * @param request       请求
-     * @param outWidth      图片原始宽
-     * @param outHeight     图片原始高
-     * @param outMimeType   图片类型
+     * @param throwable   OutOfMemoryError：内存溢出
+     * @param request     请求
+     * @param outWidth    图片原始宽
+     * @param outHeight   图片原始高
+     * @param outMimeType 图片类型
      */
     public void onDecodeNormalImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
         if (throwable instanceof OutOfMemoryError) {
@@ -91,14 +96,14 @@ public class ExceptionMonitor implements Identifier {
             String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
             String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
             Log.d(Sketch.TAG, SketchUtils.concat("OutOfMemoryError" +
-                    ". appMemoryInfo: ",
+                            ". appMemoryInfo: ",
                     "maxMemory", "=", maxMemoryFormatted,
                     ", freeMemory", "=", freeMemoryFormatted,
                     ", totalMemory", "=", totalMemoryFormatted));
         }
 
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                ". DecodeNormalImageError",
+                ". onDecodeNormalImageError",
                 ". outWidth", "=", outWidth, ", ", "outHeight", "=", outHeight, ", ", "outMimeType", "=", outMimeType,
                 ". ", request.getAttrs().getId()));
     }
@@ -130,8 +135,28 @@ public class ExceptionMonitor implements Identifier {
                 ". processor", ": ", processor.getIdentifier()));
     }
 
-    public void onDownloadError(DownloadRequest request, Throwable throwable) {
+    /**
+     * 下载出现错误
+     *
+     * @param request   出错的下载请求
+     * @param throwable 异常
+     */
+    public void onDownloadError(@SuppressWarnings("UnusedParameters") DownloadRequest request,
+                                @SuppressWarnings("UnusedParameters") Throwable throwable) {
 
+    }
+
+    /**
+     * 碎片排序错误，Java7的排序算法在检测到A>B, B>C, 但是A<=C的时候就会抛出异常
+     *
+     * @param e                  异常
+     * @param tileList           碎片列表
+     * @param useLegacyMergeSort 当前是否使用旧的排序算法
+     */
+    public void onTileSortError(@SuppressWarnings("UnusedParameters") IllegalArgumentException e,
+                                List<Tile> tileList, @SuppressWarnings("UnusedParameters") boolean useLegacyMergeSort) {
+        Log.w(Sketch.TAG, String.format("%s. onTileSortError. %s%s", logName,
+                useLegacyMergeSort ? "useLegacyMergeSort. " : "", SketchUtils.tileListToString(tileList)));
     }
 
     @Override

@@ -71,6 +71,7 @@ import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
+import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadOptions;
 import me.xiaopan.sketch.request.FixedSize;
@@ -292,7 +293,7 @@ public class SketchUtils {
         return imageDisplayer instanceof TransitionImageDisplayer && loadingImage != null && fixedSize != null;
     }
 
-    public static boolean verifyFixedSize(ImageDisplayer imageDisplayer, ModeImage loadingImage, FixedSize fixedSize){
+    public static boolean verifyFixedSize(ImageDisplayer imageDisplayer, ModeImage loadingImage, FixedSize fixedSize) {
         return !(imageDisplayer instanceof TransitionImageDisplayer) || (loadingImage == null) || fixedSize != null;
     }
 
@@ -736,7 +737,7 @@ public class SketchUtils {
      * 从Matrix中获取偏移位置
      */
     @SuppressWarnings("unused")
-    public static void getMatrixTranslation(Matrix matrix, PointF point){
+    public static void getMatrixTranslation(Matrix matrix, PointF point) {
         synchronized (MATRIX_VALUES) {
             matrix.getValues(MATRIX_VALUES);
             point.x = MATRIX_VALUES[Matrix.MTRANS_X];
@@ -909,7 +910,7 @@ public class SketchUtils {
      */
     public static boolean isSupportBRDByImageFormat(ImageFormat imageFormat) {
         return imageFormat != null && (imageFormat == ImageFormat.JPEG || imageFormat == ImageFormat.PNG ||
-                        (imageFormat == ImageFormat.WEBP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH));
+                (imageFormat == ImageFormat.WEBP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH));
     }
 
     /**
@@ -930,13 +931,6 @@ public class SketchUtils {
     }
 
     /**
-     * 安全处理比较结果用于兼容jdk7
-     */
-    public static int safeCompare(int one, int two) {
-        return one == two ? 0 : one > two ? 1 : -1;
-    }
-
-    /**
      * dp转换成px
      */
     public static int dp2px(Context context, int dpValue) {
@@ -946,21 +940,24 @@ public class SketchUtils {
     /**
      * 将一个旋转了一定度数的矩形转回来（只能是90度的倍数）
      */
-    public static void reverseRotateRect(Rect rect, int rotateDegrees, Point drawableSize){
+    public static void reverseRotateRect(Rect rect, int rotateDegrees, Point drawableSize) {
         if (rotateDegrees % 90 != 0) {
             return;
         }
 
         if (rotateDegrees == 90) {
             int cache = rect.bottom;
+            //noinspection SuspiciousNameCombination
             rect.bottom = rect.left;
+            //noinspection SuspiciousNameCombination
             rect.left = rect.top;
+            //noinspection SuspiciousNameCombination
             rect.top = rect.right;
             rect.right = cache;
 
             rect.top = drawableSize.y - rect.top;
             rect.bottom = drawableSize.y - rect.bottom;
-        } else if(rotateDegrees == 180){
+        } else if (rotateDegrees == 180) {
             int cache = rect.right;
             rect.right = rect.left;
             rect.left = cache;
@@ -974,10 +971,13 @@ public class SketchUtils {
 
             rect.left = drawableSize.x - rect.left;
             rect.right = drawableSize.x - rect.right;
-        } else if(rotateDegrees == 270){
+        } else if (rotateDegrees == 270) {
             int cache = rect.bottom;
+            //noinspection SuspiciousNameCombination
             rect.bottom = rect.right;
+            //noinspection SuspiciousNameCombination
             rect.right = rect.top;
+            //noinspection SuspiciousNameCombination
             rect.top = rect.left;
             rect.left = cache;
 
@@ -996,6 +996,7 @@ public class SketchUtils {
 
         if (rotateDegrees == 90) {
             float newX = drawableSize.y - point.y;
+            //noinspection SuspiciousNameCombination
             float newY = point.x;
             point.x = newX;
             point.y = newY;
@@ -1005,6 +1006,7 @@ public class SketchUtils {
             point.x = newX;
             point.y = newY;
         } else if (rotateDegrees == 270) {
+            //noinspection SuspiciousNameCombination
             float newX = point.y;
             float newY = drawableSize.x - point.x;
             point.x = newX;
@@ -1028,6 +1030,28 @@ public class SketchUtils {
         if (!TextUtils.isEmpty(options)) {
             builder.append(options);
         }
+        return builder.toString();
+    }
+
+    public static String tileListToString(List<Tile> tileList) {
+        if (tileList == null) {
+            return null;
+        }
+
+        StringBuilder builder = new StringBuilder();
+        builder.append("[");
+        for (Tile tile : tileList) {
+            if (builder.length() > 1) {
+                builder.append(",");
+            }
+            builder.append("\"");
+            builder.append(tile.drawRect.left).append(",");
+            builder.append(tile.drawRect.top).append(",");
+            builder.append(tile.drawRect.right).append(",");
+            builder.append(tile.drawRect.bottom);
+            builder.append("\"");
+        }
+        builder.append("]");
         return builder.toString();
     }
 }

@@ -3,9 +3,15 @@ package me.xiaopan.sketchsample;
 import android.content.Context;
 import android.widget.ImageView;
 
+import com.tencent.bugly.crashreport.CrashReport;
+
+import java.util.List;
+
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
+import me.xiaopan.sketch.feature.ExceptionMonitor;
+import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.process.CircleImageProcessor;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
 import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
@@ -21,7 +27,7 @@ public class SketchManager {
     private Context context;
 
     public SketchManager(Context context) {
-        this.context = context;
+        this.context = context.getApplicationContext();
     }
 
     public void initConfig() {
@@ -34,6 +40,7 @@ public class SketchManager {
         sketchConfiguration.setGlobalDisableCacheInDisk(settings.isGlobalDisableCacheInDisk());
         sketchConfiguration.setGlobalDisableCacheInMemory(settings.isGlobalDisableCacheInMemory());
         sketchConfiguration.setImagePreprocessor(new MyImagePreprocessor());
+        sketchConfiguration.setExceptionMonitor(new MyExceptionMonitor(context));
     }
 
     public void initDisplayOptions() {
@@ -50,7 +57,8 @@ public class SketchManager {
         Sketch.putOptions(OptionsType.APP_ICON, new DisplayOptions()
                 .setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, roundedCornerImageProcessor, appIconSize, true))
                 .setErrorImage(new MakerDrawableModeImage(R.drawable.image_error, roundedCornerImageProcessor, appIconSize, true))
-                .setPauseDownloadImage(new MakerDrawableModeImage(R.drawable.image_pause_download, roundedCornerImageProcessor, appIconSize, true))
+                .setPauseDownloadImage(new MakerDrawableModeImage(R.drawable.image_pause_download,
+                        roundedCornerImageProcessor, appIconSize, true))
                 .setResizeByFixedSize(true)
                 .setForceUseResize(true)
                 .setImageDisplayer(transitionImageDisplayer)
@@ -68,5 +76,20 @@ public class SketchManager {
         Sketch.putOptions(OptionsType.WINDOW_BACKGROUND, new LoadOptions()
                 .setImageProcessor(new GaussianBlurImageProcessor(true))
         );
+    }
+
+    private static class MyExceptionMonitor extends ExceptionMonitor {
+
+        public MyExceptionMonitor(Context context) {
+            super(context);
+        }
+
+        @Override
+        public void onTileSortError(@SuppressWarnings("UnusedParameters") IllegalArgumentException e,
+                                    List<Tile> tileList, @SuppressWarnings("UnusedParameters") boolean useLegacyMergeSort) {
+            super.onTileSortError(e, tileList, useLegacyMergeSort);
+            String message = (useLegacyMergeSort ? "useLegacyMergeSort. " : "") + SketchUtils.tileListToString(tileList);
+            CrashReport.postCatchedException(new Exception(message, e));
+        }
     }
 }

@@ -28,7 +28,9 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.util.ObjectPool;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -422,17 +424,39 @@ class TileManager {
         }
 
         // 按离左上角的距离排序
-        Collections.sort(tileList, new Comparator<Tile>() {
+        Comparator<Tile> tileComparator = new Comparator<Tile>() {
             @Override
             public int compare(Tile o1, Tile o2) {
-                // TODO: 16/10/22 这里还是会偶尔崩溃，原因好像是 A>B, B>C, 但是A<C小了
                 if (o1.drawRect.top >= o2.drawRect.bottom || o2.drawRect.top >= o1.drawRect.bottom) {
-                    return SketchUtils.safeCompare(o1.drawRect.top, o2.drawRect.top);
+                    return o1.drawRect.top == o2.drawRect.top ? 0 : o1.drawRect.top > o2.drawRect.top ? 1 : -1;
                 } else {
-                    return SketchUtils.safeCompare(o1.drawRect.left, o2.drawRect.left);
+                    return o1.drawRect.left == o2.drawRect.left ? 0 : o1.drawRect.left > o2.drawRect.left ? 1 : -1;
                 }
             }
-        });
+        };
+        try {
+            Collections.sort(tileList, tileComparator);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+
+            /**
+             * Java7的排序算法在检测到A>B, B>C, 但是A<=C的时候就会抛出异常，我们这里的处理办法是记录下异常时的数据并改用旧版的排序算法再次排序
+             */
+
+            Configuration configuration = Sketch.with(context).getConfiguration();
+            ExceptionMonitor exceptionMonitor = configuration.getExceptionMonitor();
+            exceptionMonitor.onTileSortError(e, tileList, false);
+
+            System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
+            try {
+                Collections.sort(tileList, tileComparator);
+            } catch (IllegalArgumentException e2) {
+                e2.printStackTrace();
+
+                exceptionMonitor.onTileSortError(e, tileList, true);
+            }
+            System.setProperty("java.util.Arrays.useLegacyMergeSort", "false");
+        }
 
         int left = rect.left, top = rect.top, right = 0, bottom = -1;
         Tile lastRect = null;
