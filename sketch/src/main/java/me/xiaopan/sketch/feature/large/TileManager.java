@@ -427,10 +427,12 @@ class TileManager {
         Comparator<Tile> tileComparator = new Comparator<Tile>() {
             @Override
             public int compare(Tile o1, Tile o2) {
-                if (o1.drawRect.top >= o2.drawRect.bottom || o2.drawRect.top >= o1.drawRect.bottom) {
-                    return o1.drawRect.top == o2.drawRect.top ? 0 : o1.drawRect.top > o2.drawRect.top ? 1 : -1;
+                // 同一行比较left，不同行比较top
+                if ((o1.drawRect.top <= o2.drawRect.top && o1.drawRect.bottom >= o2.drawRect.bottom)
+                        || (o1.drawRect.top >= o2.drawRect.top && o1.drawRect.bottom <= o2.drawRect.bottom)) {
+                    return o1.drawRect.left - o2.drawRect.left;
                 } else {
-                    return o1.drawRect.left == o2.drawRect.left ? 0 : o1.drawRect.left > o2.drawRect.left ? 1 : -1;
+                    return o1.drawRect.top - o2.drawRect.top;
                 }
             }
         };
