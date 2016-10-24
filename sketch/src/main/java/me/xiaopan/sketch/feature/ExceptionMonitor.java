@@ -147,7 +147,7 @@ public class ExceptionMonitor implements Identifier {
     }
 
     /**
-     * 碎片排序错误，Java7的排序算法在检测到A>B, B>C, 但是A<=C的时候就会抛出异常
+     * 碎片排序错误，Java7的排序算法在检测到A大于B, B小于C, 但是A小于等于C的时候就会抛出异常
      *
      * @param e                  异常
      * @param tileList           碎片列表
