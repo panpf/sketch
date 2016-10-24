@@ -19,7 +19,7 @@ BitmapFactory提供了一个Options来配置读取图片的相关选项，其中
 
 #### 缺省值
 >* 在使用load()方法加载图片的时候maxSize的缺省值是当前设备屏幕的宽高
->* 在使用SketchImageView的时候如果layout_width和layout_height是固定的那么就会用layout_width和layout_height来作为maxSize，否则就使用当前屏幕宽高的0.75倍来作为maxSize
+>* 在使用SketchImageView的时候如果layout_width和layout_height是固定的那么就会用layout_width和layout_height来作为maxSize，否则就使用当前屏幕的宽高来作为maxSize
 
 因此在大多数情况下你不需要主动设置maxSize，Sketch会自动帮你搞定
 

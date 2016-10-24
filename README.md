@@ -142,7 +142,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 |listener|null|null|null|
 |downloadProgressListener|null|null|null|
 |disableCacheInDisk|false|false|false|
-|maxSize|-|屏幕的0.75倍|优先考虑ImageView的layout_width和layout_height|
+|maxSize|-|屏幕的宽高|优先考虑ImageView的layout_width和layout_height|
 |resize|-|null|null|
 |forceUseResize|-|false|false|
 |processor|-|null|null|

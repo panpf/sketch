@@ -11,7 +11,7 @@ Sketch有display()、load()、download()三大方法，我们可以通过其专�
 |listener|null|null|null|
 |downloadProgressListener|null|null|null|
 |disableCacheInDisk|false|false|false|
-|maxSize|-|屏幕的0.75倍|优先考虑layout_width和layout_height|
+|maxSize|-|屏幕的宽高|优先考虑layout_width和layout_height|
 |resize|-|null|null|
 |forceUseResize|-|false|false|
 |processor|-|null|null|
@@ -42,7 +42,7 @@ displayOptions.setRequestLevel(RequestLevel.LOCAL);
 // 禁用磁盘缓存
 displayOptions.setDisableCacheInDisk(true);
 
-// 设置最大尺寸，用来解码Bitmap时计算inSampleSize，防止加载过大的图片到内存中。默认会先尝试用SketchImageView的layout_width和layout_height作为maxSize，否则会用当前屏幕宽高的0.75倍作为maxSize
+// 设置最大尺寸，用来解码Bitmap时计算inSampleSize，防止加载过大的图片到内存中。默认会先尝试用SketchImageView的layout_width和layout_height作为maxSize，否则会用当前屏幕的宽高作为maxSize
 displayOptions.setMaxSize(1000, 1000);
 
 // 裁剪图片，将原始图片加载到内存中之后根据resize进行裁剪。裁剪的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resize，也有可能小于resize

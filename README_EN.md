@@ -149,7 +149,7 @@ The following are supported by the three methods (`-` is not supported)
 |listener|null|null|null|
 |downloadProgressListener|null|null|null|
 |disableCacheInDisk|false|false|false|
-|maxSize|-|0.75 times the screen|prioritizing ImageView's layout_width and layout_height|
+|maxSize|-|screen size|prioritizing ImageView's layout_width and layout_height|
 |resize|-|null|null|
 |forceUseResize|-|false|false|
 |processor|-|null|null|
