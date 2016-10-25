@@ -1,7 +1,7 @@
 package me.xiaopan.sketchsample;
 
 import android.content.Context;
-import android.widget.ImageView;
+import android.graphics.Color;
 
 import com.tencent.bugly.crashreport.CrashReport;
 
@@ -12,13 +12,11 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.feature.large.Tile;
-import me.xiaopan.sketch.process.CircleImageProcessor;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
-import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.LoadOptions;
-import me.xiaopan.sketch.request.MakerDrawableModeImage;
-import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.shaper.CircleImageShaper;
+import me.xiaopan.sketch.shaper.RoundRectImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.util.MyImagePreprocessor;
 import me.xiaopan.sketchsample.util.Settings;
@@ -52,25 +50,20 @@ public class SketchManager {
                 .setImageDisplayer(transitionImageDisplayer)
         );
 
-        RoundedCornerImageProcessor roundedCornerImageProcessor = new RoundedCornerImageProcessor(SketchUtils.dp2px(context, 10));
-        Resize appIconSize = new Resize(SketchUtils.dp2px(context, 60), SketchUtils.dp2px(context, 60), ImageView.ScaleType.CENTER_CROP);
         Sketch.putOptions(OptionsType.APP_ICON, new DisplayOptions()
-                .setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, roundedCornerImageProcessor, appIconSize, true))
-                .setErrorImage(new MakerDrawableModeImage(R.drawable.image_error, roundedCornerImageProcessor, appIconSize, true))
-                .setPauseDownloadImage(new MakerDrawableModeImage(R.drawable.image_pause_download,
-                        roundedCornerImageProcessor, appIconSize, true))
-                .setResizeByFixedSize(true)
-                .setForceUseResize(true)
+                .setLoadingImage(R.drawable.image_loading)
+                .setErrorImage(R.drawable.image_error)
+                .setPauseDownloadImage(R.drawable.image_pause_download)
+                .setImageShaper(new RoundRectImageShaper(SketchUtils.dp2px(context, 10)))
                 .setImageDisplayer(transitionImageDisplayer)
-                .setImageProcessor(roundedCornerImageProcessor)
         );
 
         Sketch.putOptions(OptionsType.NORMAL_CIRCULAR, new DisplayOptions()
-                .setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, CircleImageProcessor.getInstance()))
-                .setErrorImage(new MakerDrawableModeImage(R.drawable.image_error, CircleImageProcessor.getInstance()))
-                .setPauseDownloadImage(new MakerDrawableModeImage(R.drawable.image_pause_download, CircleImageProcessor.getInstance()))
+                .setLoadingImage(R.drawable.image_loading)
+                .setErrorImage(R.drawable.image_error)
+                .setPauseDownloadImage(R.drawable.image_pause_download)
                 .setImageDisplayer(transitionImageDisplayer)
-                .setImageProcessor(CircleImageProcessor.getInstance())
+                .setImageShaper(new CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 2)))
         );
 
         Sketch.putOptions(OptionsType.WINDOW_BACKGROUND, new LoadOptions()

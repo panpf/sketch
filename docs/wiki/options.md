@@ -79,7 +79,7 @@ displayOptions.setDisableCacheInMemory(true);
 displayOptions.setLoadingImage(R.drawable.image_loading);
 
 // 设置正在加载的时候显示的图片，并且将图片改成圆形的
-displayOptions.setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, CircleImageProcessor.getInstance()));
+displayOptions.setLoadingImage(new MakerDrawableStateImage(R.drawable.image_loading, CircleImageProcessor.getInstance()));
 
 // 设置加载失败的时候显示的图片
 displayOptions.setErrorImage(R.drawable.image_load_error);

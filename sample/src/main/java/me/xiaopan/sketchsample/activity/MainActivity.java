@@ -248,7 +248,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             public void onDrawerOpened(View drawerView) {
                 toggleDrawable.onDrawerOpened(drawerView);
                 refreshMemoryCacheSizeInfo();
-                refreshPlaceholderMemoryCacheSizeInfo();
+                refreshStateMemoryCacheSizeInfo();
                 refreshDiskCacheSizeInfo();
             }
 
@@ -271,10 +271,10 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         memoryCacheSizeTextView.setText(cacheInfo);
     }
 
-    private void refreshPlaceholderMemoryCacheSizeInfo() {
-        MemoryCache modeImageMemoryCache = Sketch.with(getBaseContext()).getConfiguration().getModeImageMemoryCache();
-        String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), modeImageMemoryCache.getSize());
-        String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), modeImageMemoryCache.getMaxSize());
+    private void refreshStateMemoryCacheSizeInfo() {
+        MemoryCache stateImageMemoryCache = Sketch.with(getBaseContext()).getConfiguration().getStateImageMemoryCache();
+        String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), stateImageMemoryCache.getSize());
+        String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), stateImageMemoryCache.getMaxSize());
         String cacheInfo = usedSizeFormat + "/" + maxSizeFormat;
         placeholderMemoryCacheSizeTextView.setText(cacheInfo);
     }
@@ -466,8 +466,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 refreshMemoryCacheSizeInfo();
                 break;
             case R.id.item_main_cleanPlaceholderMemoryCache:
-                Sketch.with(getBaseContext()).getConfiguration().getModeImageMemoryCache().clear();
-                refreshPlaceholderMemoryCacheSizeInfo();
+                Sketch.with(getBaseContext()).getConfiguration().getStateImageMemoryCache().clear();
+                refreshStateMemoryCacheSizeInfo();
                 break;
             case R.id.item_main_cleanDiskCache:
                 new AsyncTask<Integer, Integer, Integer>() {

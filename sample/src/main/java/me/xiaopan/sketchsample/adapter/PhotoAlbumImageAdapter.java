@@ -9,16 +9,13 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import java.util.List;
 
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
-import me.xiaopan.sketch.process.RoundedCornerImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.MakerDrawableModeImage;
-import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.shaper.RoundRectImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.util.Settings;
@@ -46,7 +43,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             public void onClick(View v) {
                 if (onImageClickListener != null && v.getTag() != null && v.getTag() instanceof ItemViewHolder) {
                     ItemViewHolder viewHolder = (ItemViewHolder) v.getTag();
-                    onImageClickListener.onImageClick(viewHolder.getPosition(), viewHolder.sketchImageView.getFinalOptionsInfo());
+                    onImageClickListener.onImageClick(viewHolder.getPosition(), viewHolder.sketchImageView.getFinalOptionsMemoryCacheId());
                 }
             }
         };
@@ -67,17 +64,25 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         settings = Settings.with(context);
 
         roundRadius = SketchUtils.dp2px(context, 10);
-        RoundedCornerImageProcessor imageProcessor = new RoundedCornerImageProcessor(roundRadius);
-        Resize resize = new Resize(itemWidth, itemWidth, ImageView.ScaleType.CENTER_CROP);
+
+//        displayOptions = new DisplayOptions()
+//                .setLoadingImage(new MakerStateImage(R.drawable.image_loading))
+//                .setErrorImage(new MakerStateImage(R.drawable.image_error))
+//                .setPauseDownloadImage(new MakerStateImage(R.drawable.image_pause_download))
+//                .setImageProcessor(new RoundRectImageProcessor(roundRadius))
+//                .setResizeByFixedSize(true)
+//                .setForceUseResize(true)
+//                .setImageDisplayer(new TransitionImageDisplayer())
+//                .setThumbnailMode(settings.isThumbnailMode());
+
         displayOptions = new DisplayOptions()
-                .setLoadingImage(new MakerDrawableModeImage(R.drawable.image_loading, imageProcessor, resize, true))
-                .setErrorImage(new MakerDrawableModeImage(R.drawable.image_error, imageProcessor, resize, true))
-                .setPauseDownloadImage(new MakerDrawableModeImage(R.drawable.image_pause_download, imageProcessor, resize, true))
-                .setImageProcessor(imageProcessor)
-                .setResizeByFixedSize(true)
-                .setForceUseResize(true)
+                .setLoadingImage(R.drawable.image_loading)
+                .setErrorImage(R.drawable.image_error)
+                .setPauseDownloadImage(R.drawable.image_pause_download)
+                .setImageShaper(new RoundRectImageShaper(roundRadius))
                 .setImageDisplayer(new TransitionImageDisplayer())
-                .setThumbnailMode(settings.isThumbnailMode());
+                .setThumbnailMode(settings.isThumbnailMode())
+                .setResizeByFixedSize(true);
     }
 
     @Override

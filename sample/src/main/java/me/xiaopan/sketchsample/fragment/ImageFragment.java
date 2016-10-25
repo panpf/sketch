@@ -23,7 +23,7 @@ import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.MemoryCacheModeImage;
+import me.xiaopan.sketch.request.MemoryCacheStateImage;
 import me.xiaopan.sketch.request.RequestLevel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
@@ -142,10 +142,10 @@ public class ImageFragment extends MyFragment {
         // 配置选项，有占位图选项信息的话就使用内存缓存占位图但不使用任何显示器，否则就是用渐入显示器
         DisplayOptions options = imageView.getOptions();
         if (!TextUtils.isEmpty(loadingImageOptionsInfo)) {
-            String loadingImageId = SketchUtils.generateId(imageUri, loadingImageOptionsInfo);
+            String loadingImageId = SketchUtils.makeMemoryCacheId(imageUri, loadingImageOptionsInfo);
             RefBitmap cachedRefBitmap = Sketch.with(getActivity()).getConfiguration().getMemoryCache().get(loadingImageId);
             if (cachedRefBitmap != null) {
-                options.setLoadingImage(new MemoryCacheModeImage(loadingImageId, null));
+                options.setLoadingImage(new MemoryCacheStateImage(loadingImageId, null));
             } else {
                 options.setImageDisplayer(new FadeInImageDisplayer());
             }
