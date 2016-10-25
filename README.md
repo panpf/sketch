@@ -89,8 +89,9 @@ dependencies{
 |Resource in app|resource:// |displayResourceImage(int)|
 
 #### 支持的图片类型
+
 |Type|Scheme|jpeg|png|webp|gif|apk icon|
-|:---|:---|:---|:--|:---|:--|:---|:---|
+|:---|:---|:---|:---|:---|:---|:---|
 |File in network|http://, http:// |YES|YES|YES（Android4.0 above）|YES|NO|
 |File in SDCard|/, file:// |YES|YES|YES（Android4.0 above）|YES|YES|
 |Content Provider|content:// |YES|YES|YES（Android4.0 above）|YES|NO|
@@ -133,33 +134,6 @@ Sketch.with(context).download("http://biying.png", new DownloadListener() {
 
 load()和download()还支持同步执行，详情请参考[同步执行load和download.md](docs/wiki/sync.md)
 
-下面是三种方法所支持的属性（'-'代表不支持）
-
-|属性|download()|load()|display()|
-|:---|:---|:---|:---|
-|sync|false|false|-|
-|requestLevel|NET|NET|NET|
-|listener|null|null|null|
-|downloadProgressListener|null|null|null|
-|disableCacheInDisk|false|false|false|
-|maxSize|-|屏幕的宽高|优先考虑ImageView的layout_width和layout_height|
-|resize|-|null|null|
-|forceUseResize|-|false|false|
-|processor|-|null|null|
-|decodeGifImage|-|false|false|
-|lowQualityImage|-|false|false|
-|bitmapConfig|-|null|null|
-|inPreferQualityOverSpeed|-|false|false|
-|thumbnailMode|-|false|false|
-|disableCacheInMemory|-|-|false|
-|displayer|-|-|DefaultImageDisplayer|
-|loadingImage|-|-|null|
-|errorImage|-|-|null|
-|pauseDownloadImage|-|-|null|
-|resizeByFixedSize|-|-|false|
-
-各属性的详细说明请参考[配置各种属性.md](docs/wiki/options.md)
-
 #### 你可能还感兴趣的功能：
 增强用户体验：
 >* [SketchImageView详细使用说明.md](docs/wiki/sketch_image_view.md)
@@ -168,6 +142,8 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 >* [使用分块显示超大图功能](docs/wiki/large_image.md)
 >* [使用缩略图功能显示更清晰的缩略图](docs/wiki/thumbnail_mode.md)
 >* [配置各种属性.md](docs/wiki/options.md)
+>* [使用ImageShaper在绘制时改变图片的形状](docs/wiki/image_shaper.md)
+>* [使用ShapeSize在绘制时改变图片的尺寸](docs/wiki/shape_size.md)
 >* [使用ImageProcessor将图片变成圆形的、圆角的或者高斯模糊的.md](docs/wiki/process_image.md)
 >* [使用ImageDisplayer以更炫酷的方式显示图片（过渡、缩放等）.md](docs/wiki/displayer.md)
 >* [使用ImagePreprocessor显示特殊文件的缩略图或图标.md](docs/wiki/pre_process_image.md)

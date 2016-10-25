@@ -1,5 +1,3 @@
-#### 简介
-
 HttpStack用来发起网络请求，然后返回响应
 
 默认的实现是API9及以上使用HurlStack，以下使用HttpClientStack

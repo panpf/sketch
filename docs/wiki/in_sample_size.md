@@ -1,6 +1,6 @@
-#### 简介
+inSampleSize用来减小读到内存中的图片的尺寸
 
-inSampleSize是用来减小读到内存中的图片的尺寸，非常重要，默认的实现是ImageSizeCalculator.calculateInSampleSize(int, int, int, int)方法
+默认的实现是ImageSizeCalculator.calculateInSampleSize(int, int, int, int)方法
 ```java
 /**
  * 计算InSampleSize

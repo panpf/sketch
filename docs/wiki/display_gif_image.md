@@ -1,12 +1,14 @@
-Sketch集成了android-gif-drawable 1.1.7支持gif图片
+Sketch集成了android-gif-drawable 1.1.7，可以无障碍的播放gif图片
 
-Sketch默认不解码gif图，只会通过BitmapFactory读取其第一帧作为一个普通的图片。需要你通过各种Options的setDecodeGifImage(true)或各种Helper的decodeGifImage()明确指明可以播放gif才会使用GifDrawable播放gif，例如：
+#### 配置解码GIF图
+Sketch默认不解码gif图，只会通过BitmapFactory读取其第一帧作为一个普通的图片
+
+你可以通过Options.setDecodeGifImage(true)或Helper.decodeGifImage()明确指明可以播放才会使用GifDrawable解码gif图：
 
 ```
-sketImageView.getOptions()
-    .setDecodeGifImage(true);
+sketImageView.getOptions().setDecodeGifImage(true);
 ```
-详情请参考[配置各种属性.md](options.md)
+属性配置请参考[配置各种属性.md](options.md)
 
 注意：
 >* Sketch会根据mimeType判断是否是gif图，因此不用担心识别不了伪装成jpg的gif图

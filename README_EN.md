@@ -94,7 +94,7 @@ Minimum support for `Android2.2 API 7`
 #### Supported image types
 
 |Type|Scheme|jpeg|png|webp|gif|apk icon|
-|:---|:---|:---|:--|:---|:--|:---|:---|
+|:---|:---|:---|:---|:---|:---|:---|
 |File in network|http://, http:// |YES|YES|YES（Android4.0 above）|YES|NO|
 |File in SDCard|/, file:// |YES|YES|YES（Android4.0 above）|YES|YES|
 |Content Provider|content:// |YES|YES|YES（Android4.0 above）|YES|NO|
@@ -140,32 +140,6 @@ Sketch.with(context).download("http://biying.png", new DownloadListener() {
 
 Load () and download () also support synchronous execution, please refer to [Synchronize load and download.md](docs/wiki/sync.md)
 
-The following are supported by the three methods (`-` is not supported)
-
-|Attributes|download()|load()|display()|
-|:---|:---|:---|:---|
-|sync|false|false|-|
-|requestLevel|NET|NET|NET|
-|listener|null|null|null|
-|downloadProgressListener|null|null|null|
-|disableCacheInDisk|false|false|false|
-|maxSize|-|screen size|prioritizing ImageView's layout_width and layout_height|
-|resize|-|null|null|
-|forceUseResize|-|false|false|
-|processor|-|null|null|
-|decodeGifImage|-|false|false|
-|lowQualityImage|-|false|false|
-|bitmapConfig|-|null|null|
-|inPreferQualityOverSpeed|-|false|false|
-|disableCacheInMemory|-|-|false|
-|displayer|-|-|DefaultImageDisplayer|
-|loadingImage|-|-|null|
-|errorImage|-|-|null|
-|pauseDownloadImage|-|-|null|
-|resizeByFixedSize|-|-|false|
-
-For a detailed description of each attribute, see[Configuring various properties.md](docs/wiki/options.md)
-
 #### You may also be interested in the features:
 Enhance the user experience:
 >* [SketchImageView Detailed Instructions.md](docs/wiki/sketch_image_view.md)
@@ -174,6 +148,8 @@ Enhance the user experience:
 >* [Display super large image function](docs/wiki/large_image.md)
 >* [Use thumbnails function to display clearer thumbnails](docs/wiki/thumbnail_mode.md)
 >* [Configure various properties.md](docs/wiki/options.md)
+>* [Use ImageShaper to change the shape of the picture when drawing](docs/wiki/image_shaper.md)
+>* [Use ShapeSize to change the size of the picture when drawing](docs/wiki/shape_size.md)
 >* [Use ImageProcessor to turn a picture into a round, rounded, or Gaussian blur.md](docs/wiki/process_image.md)
 >* [Use ImageDisplayer to display pictures in a cool way (transitions, zoom, etc.).md](docs/wiki/displayer.md)
 >* [Use ImagePreprocessor to display thumbnails or icons of special files .md](docs/wiki/pre_process_image.md)

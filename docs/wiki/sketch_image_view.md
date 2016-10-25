@@ -1,5 +1,3 @@
-#### 简介
-
 SketchImageView用来代替ImageView，你必须使用SketchImageView才能保证图片会被正常回收
 
 特点：

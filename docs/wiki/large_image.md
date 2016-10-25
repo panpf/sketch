@@ -1,4 +1,4 @@
-Sketch新增了LargeImageViewer可以让SketchImage支持分块显示超级大图，现在你可以抛弃SubsamplingScaleImageView了
+Sketch通过LargeImageViewer可以让SketchImage支持分块显示超级大图，现在你可以抛弃SubsamplingScaleImageView了
 
 #### 如何开启
 

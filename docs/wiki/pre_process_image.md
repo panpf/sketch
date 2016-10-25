@@ -1,5 +1,3 @@
-#### 简介
-
 ImagePreprocessor用来辅助显示特殊文件中包含的图片，例如读取APK和已安装APP图片的功能就是用ImagePreprocessor来实现的
 
 实现原理很简单，在解码之前，先执行ImagePreprocessor读取特殊文件中的图片，然后放到磁盘缓存中，解码的时候会优先读取磁盘缓存

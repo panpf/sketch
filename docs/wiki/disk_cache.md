@@ -1,6 +1,4 @@
-#### 简介
-
-DiskCache用来在本地磁盘上缓存图片，默认实现是LruDiskCache，其核心是DiskLruCache
+DiskCache用来在磁盘上缓存图片，默认实现是LruDiskCache，其核心是DiskLruCache
 
 #### 相关方法
 >* boolean exist(String)：判断缓存是否存在
@@ -13,13 +11,14 @@ DiskCache用来在本地磁盘上缓存图片，默认实现是LruDiskCache，�
 >* void close()：关闭
 >* ReentrantLock getEditorLock(String)：获取编辑同步锁
 
-#### 配置磁盘缓存最大容量
+#### 配置最大容量
 ```java
 Configuration configuration = Sketch.with(context).getConfiguration();
 configuration.setDiskCache(new LruDiskCache(context, 1, 50 * 1024 * 1024));
 ```
 
-#### 使用缓存时加锁
+#### 编辑缓存
+
 如果你要通过edit(String)方法编辑磁盘缓存，那么你需要加同步锁，如下：
 ```java
 DiskCache diskCache = Sketch.with(context).getConfiguration().getDiskCache();
