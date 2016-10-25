@@ -8,7 +8,7 @@ ShapeSize用来在绘制图片时修改图片的尺寸
 ```java
 DisplayOptions options = new DisplayOptions();
 ...
-// 以20度圆角矩形的形状显示图片
+// 以300x300的尺寸显示图片
 options.setShapeSize(300, 300);
 
 SketchImageView sketchImageView = ...;
