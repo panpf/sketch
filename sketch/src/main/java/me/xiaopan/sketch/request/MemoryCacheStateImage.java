@@ -21,45 +21,51 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
-import me.xiaopan.sketch.drawable.FixedSizeBitmapDrawable;
+import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
+import me.xiaopan.sketch.shaper.ImageShaper;
 
+/**
+ * 从内存中获取图片作为占位图，支持ShapeSize和ImageShaper
+ */
 @SuppressWarnings("unused")
-public class MemoryCacheModeImage implements ModeImage {
+public class MemoryCacheStateImage implements StateImage {
     private String memoryCacheId;
-    private ModeImage defaultModeImage;
+    private StateImage whenEmptyImage;
 
-    public MemoryCacheModeImage(String memoryCacheId, ModeImage defaultModeImage) {
+    public MemoryCacheStateImage(String memoryCacheId, StateImage whenEmptyImage) {
         this.memoryCacheId = memoryCacheId;
-        this.defaultModeImage = defaultModeImage;
+        this.whenEmptyImage = whenEmptyImage;
     }
 
     @Override
-    public Drawable getDrawable(Context context, FixedSize fixedSize) {
+    public Drawable getDrawable(Context context, DisplayOptions displayOptions) {
         MemoryCache memoryCache = Sketch.with(context).getConfiguration().getMemoryCache();
         RefBitmap cachedRefBitmap = memoryCache.get(memoryCacheId);
         if (cachedRefBitmap != null) {
             if (cachedRefBitmap.isRecycled()) {
                 memoryCache.remove(memoryCacheId);
             } else {
-                RefBitmapDrawable refBitmapDrawable = new RefBitmapDrawable(cachedRefBitmap);
-                if (fixedSize != null) {
-                    return new FixedSizeBitmapDrawable(refBitmapDrawable, fixedSize);
+                RefBitmapDrawable bitmapDrawable = new RefBitmapDrawable(cachedRefBitmap);
+                ShapeSize shapeSize = displayOptions.getShapeSize();
+                ImageShaper imageShaper = displayOptions.getImageShaper();
+                if (shapeSize != null || imageShaper != null) {
+                    return new ShapeBitmapDrawable(bitmapDrawable, shapeSize, imageShaper);
                 } else {
-                    return refBitmapDrawable;
+                    return bitmapDrawable;
                 }
             }
         }
 
-        return defaultModeImage != null ? defaultModeImage.getDrawable(context, fixedSize) : null;
+        return whenEmptyImage != null ? whenEmptyImage.getDrawable(context, displayOptions) : null;
     }
 
     public String getMemoryCacheId() {
         return memoryCacheId;
     }
 
-    public ModeImage getDefaultModeImage() {
-        return defaultModeImage;
+    public StateImage getWhenEmptyImage() {
+        return whenEmptyImage;
     }
 }

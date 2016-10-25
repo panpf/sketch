@@ -172,6 +172,7 @@ public class ImageSizeCalculator implements Identifier {
      * @param imageViewInterface 你需要根据ImageView的宽高来计算
      * @return Resize
      */
+    @Deprecated
     public Resize calculateImageResize(ImageViewInterface imageViewInterface) {
         View imageView = imageViewInterface.getSelf();
         if (imageView == null) {
@@ -204,14 +205,10 @@ public class ImageSizeCalculator implements Identifier {
             int fixedWidth = layoutParams.width - (imageView.getPaddingLeft() + imageView.getPaddingRight());
             int fixedHeight = layoutParams.height - (imageView.getPaddingTop() + imageView.getPaddingBottom());
 
-            // 因为OpenGL对图片的宽高有上限，因此要限制一下，这里就严格一点不能大于屏幕宽高的1.5倍
-            DisplayMetrics displayMetrics = imageViewInterface.getSelf().getResources().getDisplayMetrics();
-            int maxWidth = (int) (displayMetrics.widthPixels * 1.5f);
-            int maxHeight = (int) (displayMetrics.heightPixels * 1.5f);
-            if (fixedWidth > maxWidth || fixedHeight > maxHeight) {
-                float widthScale = (float) fixedWidth / maxWidth;
-                float heightScale = (float) fixedHeight / maxHeight;
-                float finalScale = widthScale > heightScale ? widthScale : heightScale;
+            // 限制不能超过OpenGL所允许的最大尺寸
+            int maxSize = getOpenGLMaxTextureSize();
+            if (fixedWidth > maxSize || fixedHeight > maxSize) {
+                float finalScale = Math.max((float) fixedWidth / maxSize, (float) fixedHeight / maxSize);
 
                 fixedWidth /= finalScale;
                 fixedHeight /= finalScale;

@@ -20,11 +20,11 @@ import android.text.TextUtils;
 
 import me.xiaopan.sketch.Identifier;
 
-public class FixedSize implements Identifier {
+public class ShapeSize implements Identifier {
     private int width;
     private int height;
 
-    public FixedSize(int width, int height) {
+    public ShapeSize(int width, int height) {
         this.width = width;
         this.height = height;
     }
@@ -47,7 +47,7 @@ public class FixedSize implements Identifier {
         if (!TextUtils.isEmpty(join)) {
             builder.append(join);
         }
-        builder.append("FixedSize(");
+        builder.append("ShapeSize(");
         builder.append(width);
         builder.append("x");
         builder.append(height);

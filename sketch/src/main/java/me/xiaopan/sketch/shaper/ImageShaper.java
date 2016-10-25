@@ -14,14 +14,19 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.request;
+package me.xiaopan.sketch.shaper;
 
-import android.content.Context;
-import android.graphics.drawable.Drawable;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
+
+import me.xiaopan.sketch.request.ShapeSize;
 
 /**
- * 专门用于加载中、失败、暂停图片
+ * 用于绘制时改变图片的形状
  */
-public interface ModeImage {
-    Drawable getDrawable(Context context, FixedSize fixedSize);
+public interface ImageShaper {
+    void onUpdateShaderMatrix(Matrix matrix, Rect bounds, int bitmapWidth, int bitmapHeight, ShapeSize shapeSize, Rect srcRect);
+    void draw(Canvas canvas, Paint paint, Rect bounds);
 }

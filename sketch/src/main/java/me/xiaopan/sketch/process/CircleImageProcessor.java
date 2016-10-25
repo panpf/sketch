@@ -30,6 +30,7 @@ import me.xiaopan.sketch.request.Resize;
 /**
  * 圆形图片处理器
  */
+@SuppressWarnings("unused")
 public class CircleImageProcessor implements ImageProcessor {
     private static CircleImageProcessor instance;
 

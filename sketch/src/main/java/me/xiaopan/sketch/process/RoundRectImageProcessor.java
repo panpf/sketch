@@ -30,21 +30,22 @@ import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.Resize;
 
 /**
- * 圆角图片处理器
+ * 圆角矩形图片处理器
  */
-public class RoundedCornerImageProcessor implements ImageProcessor {
+@SuppressWarnings("unused")
+public class RoundRectImageProcessor implements ImageProcessor {
     protected String logName = "RoundedCornerImageProcessor";
 
     private float[] cornerRadius;
 
-    public RoundedCornerImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
+    public RoundRectImageProcessor(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
         cornerRadius = new float[]{topLeftRadius, topLeftRadius,
                 topRightRadius, topRightRadius,
                 bottomLeftRadius, bottomLeftRadius,
                 bottomRightRadius, bottomRightRadius};
     }
 
-    public RoundedCornerImageProcessor(float cornerRadius) {
+    public RoundRectImageProcessor(float cornerRadius) {
         this(cornerRadius, cornerRadius, cornerRadius, cornerRadius);
     }
 

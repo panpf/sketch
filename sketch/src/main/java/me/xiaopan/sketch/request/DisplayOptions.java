@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.process.ImageProcessor;
+import me.xiaopan.sketch.shaper.ImageShaper;
 
 /**
  * 显示选项
@@ -38,22 +39,37 @@ public class DisplayOptions extends LoadOptions {
     /**
      * 正在加载时显示的图片
      */
-    private ModeImage loadingImage;
+    private StateImage loadingImage;
 
     /**
      * 加载错误时显示的图片
      */
-    private ModeImage errorImage;
+    private StateImage errorImage;
 
     /**
      * 暂停下载时显示的图片
      */
-    private ModeImage pauseDownloadImage;
+    private StateImage pauseDownloadImage;
 
     /**
-     * 使用ImageView的layout_width和layout_height作为resize（默认否）
+     * 使用ImageView的layout_width和layout_height作为resize
      */
     private boolean resizeByFixedSize;
+
+    /**
+     * 绘制时修改图片的形状
+     */
+    private ImageShaper imageShaper;
+
+    /**
+     * 绘制时修改图片的尺寸
+     */
+    private ShapeSize shapeSize;
+
+    /**
+     * 使用ImageView的layout_width和layout_height作为shape size
+     */
+    private boolean shapeSizeByFixedSize;
 
     public DisplayOptions() {
         reset();
@@ -96,14 +112,12 @@ public class DisplayOptions extends LoadOptions {
     @Override
     public DisplayOptions setResize(Resize resize) {
         super.setResize(resize);
-        this.resizeByFixedSize = false;
         return this;
     }
 
     @Override
     public DisplayOptions setResize(int width, int height) {
         super.setResize(width, height);
-        this.resizeByFixedSize = false;
         return this;
     }
 
@@ -167,45 +181,45 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
-    public ModeImage getLoadingImage() {
+    public StateImage getLoadingImage() {
         return loadingImage;
     }
 
-    public DisplayOptions setLoadingImage(ModeImage loadingImage) {
+    public DisplayOptions setLoadingImage(int drawableResId) {
+        setLoadingImage(new DrawableStateImage(drawableResId));
+        return this;
+    }
+
+    public DisplayOptions setLoadingImage(StateImage loadingImage) {
         this.loadingImage = loadingImage;
         return this;
     }
 
-    public DisplayOptions setLoadingImage(int drawableResId) {
-        setLoadingImage(new DrawableModeImage(drawableResId));
-        return this;
-    }
-
-    public ModeImage getErrorImage() {
+    public StateImage getErrorImage() {
         return errorImage;
     }
 
-    public DisplayOptions setErrorImage(ModeImage errorImage) {
+    public DisplayOptions setErrorImage(int drawableResId) {
+        setErrorImage(new DrawableStateImage(drawableResId));
+        return this;
+    }
+
+    public DisplayOptions setErrorImage(StateImage errorImage) {
         this.errorImage = errorImage;
         return this;
     }
 
-    public DisplayOptions setErrorImage(int drawableResId) {
-        setErrorImage(new DrawableModeImage(drawableResId));
-        return this;
-    }
-
-    public ModeImage getPauseDownloadImage() {
+    public StateImage getPauseDownloadImage() {
         return pauseDownloadImage;
     }
 
-    public DisplayOptions setPauseDownloadImage(ModeImage pauseDownloadImage) {
-        this.pauseDownloadImage = pauseDownloadImage;
+    public DisplayOptions setPauseDownloadImage(int drawableResId) {
+        setPauseDownloadImage(new DrawableStateImage(drawableResId));
         return this;
     }
 
-    public DisplayOptions setPauseDownloadImage(int drawableResId) {
-        setPauseDownloadImage(new DrawableModeImage(drawableResId));
+    public DisplayOptions setPauseDownloadImage(StateImage pauseDownloadImage) {
+        this.pauseDownloadImage = pauseDownloadImage;
         return this;
     }
 
@@ -215,9 +229,38 @@ public class DisplayOptions extends LoadOptions {
 
     public DisplayOptions setResizeByFixedSize(boolean isResizeByFixedSize) {
         this.resizeByFixedSize = isResizeByFixedSize;
-        if (this.resizeByFixedSize && getResize() != null) {
-            super.setResize(null);
-        }
+        return this;
+    }
+
+    public ImageShaper getImageShaper() {
+        return imageShaper;
+    }
+
+    public DisplayOptions setImageShaper(ImageShaper imageShaper) {
+        this.imageShaper = imageShaper;
+        return this;
+    }
+
+    public ShapeSize getShapeSize() {
+        return shapeSize;
+    }
+
+    public DisplayOptions setShapeSize(ShapeSize shapeSize) {
+        this.shapeSize = shapeSize;
+        this.shapeSizeByFixedSize = false;
+        return this;
+    }
+
+    public DisplayOptions setShapeSize(int width, int height) {
+        return setShapeSize(new ShapeSize(width, height));
+    }
+
+    public boolean isShapeSizeByFixedSize() {
+        return shapeSizeByFixedSize;
+    }
+
+    public DisplayOptions setShapeSizeByFixedSize(boolean shapeSizeByFixedSize) {
+        this.shapeSizeByFixedSize = shapeSizeByFixedSize;
         return this;
     }
 
@@ -231,6 +274,9 @@ public class DisplayOptions extends LoadOptions {
         loadingImage = null;
         errorImage = null;
         pauseDownloadImage = null;
+        imageShaper = null;
+        shapeSize = null;
+        shapeSizeByFixedSize = false;
     }
 
     /**
@@ -249,6 +295,9 @@ public class DisplayOptions extends LoadOptions {
         loadingImage = options.loadingImage;
         errorImage = options.errorImage;
         pauseDownloadImage = options.pauseDownloadImage;
+        imageShaper = options.imageShaper;
+        shapeSize = options.shapeSize;
+        shapeSizeByFixedSize = options.shapeSizeByFixedSize;
     }
 
     /**
@@ -266,23 +315,35 @@ public class DisplayOptions extends LoadOptions {
         }
 
         if (imageDisplayer == null) {
-            imageDisplayer = options.getImageDisplayer();
+            imageDisplayer = options.imageDisplayer;
         }
 
         if (loadingImage == null) {
-            loadingImage = options.getLoadingImage();
+            loadingImage = options.loadingImage;
         }
 
         if (errorImage == null) {
-            errorImage = options.getErrorImage();
+            errorImage = options.errorImage;
         }
 
         if (pauseDownloadImage == null) {
-            pauseDownloadImage = options.getPauseDownloadImage();
+            pauseDownloadImage = options.pauseDownloadImage;
         }
 
         if (!resizeByFixedSize) {
-            resizeByFixedSize = options.isResizeByFixedSize();
+            resizeByFixedSize = options.resizeByFixedSize;
+        }
+
+        if (imageShaper == null) {
+            imageShaper = options.imageShaper;
+        }
+
+        if (shapeSize == null) {
+            shapeSize = options.shapeSize;
+        }
+
+        if(!shapeSizeByFixedSize){
+            shapeSizeByFixedSize = options.shapeSizeByFixedSize;
         }
     }
 }

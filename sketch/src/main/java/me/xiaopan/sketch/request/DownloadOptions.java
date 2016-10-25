@@ -118,9 +118,16 @@ public class DownloadOptions {
     }
 
     /**
-     * 协助生成请求ID
+     * 生成内存缓存ID
      */
-    public StringBuilder getInfo(StringBuilder builder) {
+    public StringBuilder makeMemoryCacheId(StringBuilder builder) {
+        return builder;
+    }
+
+    /**
+     * 协助StateImage用的内存缓存ID
+     */
+    public StringBuilder makeStateImageMemoryCacheId(StringBuilder builder) {
         return builder;
     }
 }

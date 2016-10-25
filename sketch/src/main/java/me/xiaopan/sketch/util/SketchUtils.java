@@ -67,17 +67,13 @@ import javax.microedition.khronos.egl.EGLSurface;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.decode.ImageFormat;
-import me.xiaopan.sketch.display.ImageDisplayer;
-import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadOptions;
-import me.xiaopan.sketch.request.FixedSize;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.request.ModeImage;
 import pl.droidsonroids.gif.GifDrawable;
 
 public class SketchUtils {
@@ -287,14 +283,6 @@ public class SketchUtils {
         } else {
             return "Unknown";
         }
-    }
-
-    public static boolean canUseFixedSize(ImageDisplayer imageDisplayer, ModeImage loadingImage, FixedSize fixedSize) {
-        return imageDisplayer instanceof TransitionImageDisplayer && loadingImage != null && fixedSize != null;
-    }
-
-    public static boolean verifyFixedSize(ImageDisplayer imageDisplayer, ModeImage loadingImage, FixedSize fixedSize) {
-        return !(imageDisplayer instanceof TransitionImageDisplayer) || (loadingImage == null) || fixedSize != null;
     }
 
     /**
@@ -1014,21 +1002,30 @@ public class SketchUtils {
         }
     }
 
-    public static String generateId(String imageUri, DownloadOptions options) {
+    public static String makeMemoryCacheId(String imageUri, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
         if (options != null) {
-            options.getInfo(builder);
+            options.makeMemoryCacheId(builder);
         }
         return builder.toString();
     }
 
     @SuppressWarnings("unused")
-    public static String generateId(String imageUri, String options) {
+    public static String makeMemoryCacheId(String imageUri, String options) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
         if (!TextUtils.isEmpty(options)) {
             builder.append(options);
+        }
+        return builder.toString();
+    }
+
+    public static String makeStateImageMemoryCacheId(String imageUri, DownloadOptions options) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(imageUri);
+        if (options != null) {
+            options.makeStateImageMemoryCacheId(builder);
         }
         return builder.toString();
     }

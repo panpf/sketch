@@ -59,11 +59,6 @@ public class Resize implements Identifier {
         return height;
     }
 
-    public void set(int width, int height) {
-        this.width = width;
-        this.height = height;
-    }
-
     @Override
     public String getIdentifier() {
         return appendIdentifier(null, new StringBuilder()).toString();

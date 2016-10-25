@@ -119,17 +119,17 @@ public class LoadOptions extends DownloadOptions {
         return this;
     }
 
+    public LoadOptions setResize(int width, int height) {
+        this.resize = new Resize(width, height);
+        return this;
+    }
+
     public boolean isForceUseResize() {
         return forceUseResize;
     }
 
     public LoadOptions setForceUseResize(boolean forceUseResize) {
         this.forceUseResize = forceUseResize;
-        return this;
-    }
-
-    public LoadOptions setResize(int width, int height) {
-        this.resize = new Resize(width, height);
         return this;
     }
 
@@ -245,7 +245,7 @@ public class LoadOptions extends DownloadOptions {
         }
 
         if (resize == null) {
-            resize = options.getResize();
+            resize = options.resize;
         }
 
         if (!forceUseResize) {
@@ -278,8 +278,8 @@ public class LoadOptions extends DownloadOptions {
     }
 
     @Override
-    public StringBuilder getInfo(StringBuilder builder) {
-        super.getInfo(builder);
+    public StringBuilder makeMemoryCacheId(StringBuilder builder) {
+        super.makeMemoryCacheId(builder);
 
         if (maxSize != null) {
             maxSize.appendIdentifier("_", builder);
@@ -301,6 +301,25 @@ public class LoadOptions extends DownloadOptions {
         }
         if (bitmapConfig != null) {
             builder.append("_").append(bitmapConfig.name());
+        }
+        if (imageProcessor != null) {
+            imageProcessor.appendIdentifier("_", builder);
+        }
+        return builder;
+    }
+
+    @Override
+    public StringBuilder makeStateImageMemoryCacheId(StringBuilder builder) {
+        super.makeMemoryCacheId(builder);
+
+        if (resize != null) {
+            resize.appendIdentifier("_", builder);
+        }
+        if (forceUseResize) {
+            builder.append("_").append("forceUseResize");
+        }
+        if (lowQualityImage) {
+            builder.append("_").append("lowQualityImage");
         }
         if (imageProcessor != null) {
             imageProcessor.appendIdentifier("_", builder);

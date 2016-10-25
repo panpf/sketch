@@ -17,72 +17,102 @@
 package me.xiaopan.sketch.drawable;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.ColorFilter;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import me.xiaopan.sketch.request.FixedSize;
+import me.xiaopan.sketch.request.ShapeSize;
+import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 可以显示固定尺寸的Drawable，如果bitmap的尺寸和设置的固定尺寸比例不一致，那么就截取bitmap的中间部分显示（参考CENTER_CROP的效果）
+ * 可以改变BitmapDrawable的形状和尺寸
+ * <p>
+ * fixedSize用来改变尺寸，如果bitmap的尺寸和fixedSize的比例不一致，那么就仅显示bitmap的中间部分（参考CENTER_CROP的效果）
+ * </p>
+ * <p>
+ * shapeImage用来改变形状
+ * </p>
  */
-public class FixedSizeBitmapDrawable extends Drawable implements RefDrawable {
+public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
     private static final int DEFAULT_PAINT_FLAGS = Paint.FILTER_BITMAP_FLAG | Paint.DITHER_FLAG;
 
-    private Bitmap bitmap;
-    private FixedSize fixedSize;
+    private BitmapDrawable bitmapDrawable;
+    private ShapeSize shapeSize;
+    private ImageShaper imageShaper;
 
     private Paint paint;
     private Rect srcRect;
+    private BitmapShader bitmapShader;
 
     private RefDrawable refDrawable;
 
-    public FixedSizeBitmapDrawable(BitmapDrawable drawable, FixedSize fixedSize) {
-        this.bitmap = drawable.getBitmap();
-        this.paint = new Paint(DEFAULT_PAINT_FLAGS);
-        this.fixedSize = fixedSize;
-        this.srcRect = new Rect();
-
+    public ShapeBitmapDrawable(BitmapDrawable bitmapDrawable, ShapeSize shapeSize, ImageShaper imageShaper) {
+        Bitmap bitmap = bitmapDrawable.getBitmap();
         if (bitmap == null || bitmap.isRecycled()) {
             throw new IllegalArgumentException(bitmap == null ? "bitmap is null" : "bitmap recycled");
         }
 
-        if (fixedSize == null) {
-            throw new IllegalArgumentException("fixedSize is null");
+        if (shapeSize == null && imageShaper == null) {
+            throw new IllegalArgumentException("shapeSize is null and shapeImage is null");
         }
 
-        if (drawable instanceof RefDrawable) {
-            this.refDrawable = (RefDrawable) drawable;
+        this.bitmapDrawable = bitmapDrawable;
+        this.paint = new Paint(DEFAULT_PAINT_FLAGS);
+        this.srcRect = new Rect();
+
+        setShapeSize(shapeSize);
+        setImageShaper(imageShaper);
+
+        if (bitmapDrawable instanceof RefDrawable) {
+            this.refDrawable = (RefDrawable) bitmapDrawable;
         }
 
-        if (drawable instanceof RefBitmapDrawable) {
-            ((RefBitmapDrawable) drawable).setLogName("FixedSizeBitmapDrawable");
+        if (bitmapDrawable instanceof RefBitmapDrawable) {
+            ((RefBitmapDrawable) bitmapDrawable).setLogName("ShapeBitmapDrawable");
         }
     }
 
+    @SuppressWarnings("unused")
+    public ShapeBitmapDrawable(BitmapDrawable bitmapDrawable, ShapeSize shapeSize) {
+        this(bitmapDrawable, shapeSize, null);
+    }
+
+    @SuppressWarnings("unused")
+    public ShapeBitmapDrawable(BitmapDrawable bitmapDrawable, ImageShaper imageShaper) {
+        this(bitmapDrawable, null, imageShaper);
+    }
+
     @Override
-    public void draw(Canvas canvas) {
-        Rect destRect = getBounds();
-        if (destRect.isEmpty() || bitmap == null || bitmap.isRecycled() || srcRect.isEmpty()) {
+    public void draw(@SuppressWarnings("NullableProblems") Canvas canvas) {
+        Rect bounds = getBounds();
+        Bitmap bitmap = bitmapDrawable.getBitmap();
+        if (bounds.isEmpty() || bitmap == null || bitmap.isRecycled()) {
             return;
         }
 
-        canvas.drawBitmap(bitmap, srcRect, destRect, paint);
+        if (imageShaper != null && bitmapShader != null) {
+            imageShaper.draw(canvas, paint, bounds);
+        } else {
+            canvas.drawBitmap(bitmap, srcRect != null && !srcRect.isEmpty() ? srcRect : null, bounds, paint);
+        }
     }
 
     @Override
     public int getIntrinsicWidth() {
-        return fixedSize.getWidth();
+        return shapeSize != null ? shapeSize.getWidth() : bitmapDrawable.getIntrinsicWidth();
     }
 
     @Override
     public int getIntrinsicHeight() {
-        return fixedSize.getHeight();
+        return shapeSize != null ? shapeSize.getHeight() : bitmapDrawable.getIntrinsicHeight();
     }
 
     @Override
@@ -124,6 +154,7 @@ public class FixedSizeBitmapDrawable extends Drawable implements RefDrawable {
 
     @Override
     public int getOpacity() {
+        Bitmap bitmap = bitmapDrawable.getBitmap();
         return (bitmap.hasAlpha() || paint.getAlpha() < 255) ? PixelFormat.TRANSLUCENT : PixelFormat.OPAQUE;
     }
 
@@ -133,8 +164,8 @@ public class FixedSizeBitmapDrawable extends Drawable implements RefDrawable {
 
         int boundsWidth = bounds.width();
         int boundsHeight = bounds.height();
-        int bitmapWidth = bitmap.getWidth();
-        int bitmapHeight = bitmap.getHeight();
+        int bitmapWidth = bitmapDrawable.getBitmap().getWidth();
+        int bitmapHeight = bitmapDrawable.getBitmap().getHeight();
 
         if (boundsWidth == 0 || boundsHeight == 0 || bitmapWidth == 0 || bitmapHeight == 0) {
             srcRect.setEmpty();
@@ -143,15 +174,62 @@ public class FixedSizeBitmapDrawable extends Drawable implements RefDrawable {
         } else {
             SketchUtils.mapping(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, srcRect);
         }
+
+        if (imageShaper != null && bitmapShader != null) {
+            float widthScale = (float) boundsWidth / bitmapWidth;
+            float heightScale = (float) boundsHeight / bitmapHeight;
+
+            // 缩放图片充满bounds
+            Matrix shaderMatrix = new Matrix();
+            float scale = Math.max(widthScale, heightScale);
+            shaderMatrix.postScale(scale, scale);
+
+            // 显示图片中间部分
+            if (srcRect != null && !srcRect.isEmpty()) {
+                shaderMatrix.postTranslate(-srcRect.left * scale, -srcRect.top * scale);
+            }
+
+            imageShaper.onUpdateShaderMatrix(shaderMatrix, bounds, bitmapWidth, bitmapHeight, shapeSize, srcRect);
+            bitmapShader.setLocalMatrix(shaderMatrix);
+            paint.setShader(bitmapShader);
+        }
     }
 
     public Bitmap getBitmap() {
-        return bitmap;
+        return bitmapDrawable.getBitmap();
     }
 
     @SuppressWarnings("unused")
-    public FixedSize getFixedSize() {
-        return fixedSize;
+    public ShapeSize getShapeSize() {
+        return shapeSize;
+    }
+
+    public void setShapeSize(ShapeSize shapeSize) {
+        this.shapeSize = shapeSize;
+        invalidateSelf();
+    }
+
+    @SuppressWarnings("unused")
+    public ImageShaper getImageShaper() {
+        return imageShaper;
+    }
+
+    public void setImageShaper(ImageShaper imageShaper) {
+        this.imageShaper = imageShaper;
+
+        if (this.imageShaper != null) {
+            if (bitmapShader == null) {
+                bitmapShader = new BitmapShader(bitmapDrawable.getBitmap(), Shader.TileMode.REPEAT, Shader.TileMode.REPEAT);
+                paint.setShader(bitmapShader);
+            }
+        } else {
+            if (bitmapShader != null) {
+                bitmapShader = null;
+                paint.setShader(null);
+            }
+        }
+
+        invalidateSelf();
     }
 
     @Override

@@ -808,9 +808,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         return largeImageFunction != null ? largeImageFunction.getLargeImageViewer() : null;
     }
 
-    public String getFinalOptionsInfo(){
+    public String getFinalOptionsMemoryCacheId(){
         DisplayParams displayParams = getDisplayParams();
-        return displayParams != null ? displayParams.options.getInfo(new StringBuilder()).toString() : null;
+        return displayParams != null ? displayParams.options.makeMemoryCacheId(new StringBuilder()).toString() : null;
     }
 
     /**

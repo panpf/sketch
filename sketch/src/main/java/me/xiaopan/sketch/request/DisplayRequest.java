@@ -18,15 +18,16 @@ package me.xiaopan.sketch.request;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.drawable.FixedSizeBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefDrawable;
+import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -162,7 +163,8 @@ public class DisplayRequest extends LoadRequest {
                     if (Sketch.isDebugMode()) {
                         printLogI("from memory get drawable", "runLoad", "drawableInfo=" + cachedRefBitmap.getInfo());
                     }
-                    displayResult = new DisplayResult(new RefBitmapDrawable(cachedRefBitmap), ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
+                    displayResult = new DisplayResult(new RefBitmapDrawable(cachedRefBitmap),
+                            ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
                     displayCompleted();
                     return;
                 } else {
@@ -259,26 +261,25 @@ public class DisplayRequest extends LoadRequest {
 
         // 显示图片
         if (displayResult != null && displayResult.getDrawable() != null) {
-            Drawable completedDrawable = displayResult.getDrawable();
-            boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
-                    displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
-            if (completedDrawable instanceof RefBitmapDrawable && canUseFixedSize) {
-                RefBitmapDrawable recycleCompletedDrawable = (RefBitmapDrawable) completedDrawable;
-                completedDrawable = new FixedSizeBitmapDrawable(recycleCompletedDrawable, displayAttrs.getFixedSize());
+            Drawable drawable = displayResult.getDrawable();
+            if ((displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null)
+                    && drawable instanceof BitmapDrawable) {
+                drawable = new ShapeBitmapDrawable((BitmapDrawable) drawable,
+                        displayOptions.getShapeSize(), displayOptions.getImageShaper());
             }
 
             ImageViewInterface viewInterface = requestAndViewBinder.getImageViewInterface();
             if (Sketch.isDebugMode()) {
                 String drawableInfo = "unknown";
-                if (completedDrawable instanceof RefDrawable) {
-                    drawableInfo = ((RefDrawable) completedDrawable).getInfo();
+                if (drawable instanceof RefDrawable) {
+                    drawableInfo = ((RefDrawable) drawable).getInfo();
                 }
                 printLogI("image display completed", "runCompletedInMainThread",
                         displayResult.getImageFrom().name(), drawableInfo,
                         "viewHashCode=" + Integer.toHexString(viewInterface.hashCode()));
             }
 
-            displayOptions.getImageDisplayer().display(viewInterface, completedDrawable);
+            displayOptions.getImageDisplayer().display(viewInterface, drawable);
         } else {
             if (Sketch.isDebugMode()) {
                 printLogD("completedDrawable is null", "runCompletedInMainThread");
@@ -309,11 +310,9 @@ public class DisplayRequest extends LoadRequest {
 
         // 显示失败图片
         if (displayOptions.getErrorImage() != null) {
-            boolean canUseFixedSize = SketchUtils.canUseFixedSize(displayOptions.getImageDisplayer(),
-                    displayOptions.getLoadingImage(), displayAttrs.getFixedSize());
             Context context = getSketch().getConfiguration().getContext();
-            Drawable failedDrawable = displayOptions.getErrorImage().getDrawable(context, canUseFixedSize ? displayAttrs.getFixedSize() : null);
-            displayOptions.getImageDisplayer().display(requestAndViewBinder.getImageViewInterface(), failedDrawable);
+            Drawable errorDrawable = displayOptions.getErrorImage().getDrawable(context, displayOptions);
+            displayOptions.getImageDisplayer().display(requestAndViewBinder.getImageViewInterface(), errorDrawable);
         } else {
             if (Sketch.isDebugMode()) {
                 printLogW("failedDrawable is null", "runErrorInMainThread");

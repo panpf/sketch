@@ -50,7 +50,7 @@ public class Configuration {
     private DiskCache diskCache;    // 磁盘缓存
     private HttpStack httpStack;    // 网络
     private MemoryCache memoryCache;    //图片内存缓存
-    private MemoryCache modeImageMemoryCache;    // 占位图内存缓存器
+    private MemoryCache stateImageMemoryCache;    // 占位图内存缓存器
     private ImageDecoder imageDecoder;    //图片解码器
     private HelperFactory helperFactory;    // 协助器工厂
     private ExceptionMonitor exceptionMonitor;    // 错误回调
@@ -88,7 +88,7 @@ public class Configuration {
         this.imageSizeCalculator = new ImageSizeCalculator();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.resizeImageProcessor = new ResizeImageProcessor();
-        this.modeImageMemoryCache = LruMemoryCache.createByModeImage(context);
+        this.stateImageMemoryCache = LruMemoryCache.createByStateImage(context);
 
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, getInfo());
@@ -180,23 +180,23 @@ public class Configuration {
     /**
      * 获取占位图内存缓存器
      */
-    public MemoryCache getModeImageMemoryCache() {
-        return modeImageMemoryCache;
+    public MemoryCache getStateImageMemoryCache() {
+        return stateImageMemoryCache;
     }
 
     /**
      * 设置占位图内存缓存器
      */
     @SuppressWarnings("unused")
-    public Configuration setModeImageMemoryCache(MemoryCache newModeImageMemoryCache) {
-        if (newModeImageMemoryCache != null) {
-            MemoryCache oldPlaceholderImageMemoryCache = modeImageMemoryCache;
-            modeImageMemoryCache = newModeImageMemoryCache;
+    public Configuration setStateImageMemoryCache(MemoryCache newStateImageMemoryCache) {
+        if (newStateImageMemoryCache != null) {
+            MemoryCache oldPlaceholderImageMemoryCache = stateImageMemoryCache;
+            stateImageMemoryCache = newStateImageMemoryCache;
             if (oldPlaceholderImageMemoryCache != null) {
                 oldPlaceholderImageMemoryCache.close();
             }
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setModeImageMemoryCache", ". ", modeImageMemoryCache.getIdentifier()));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setStateImageMemoryCache", ". ", stateImageMemoryCache.getIdentifier()));
             }
         }
         return this;
@@ -580,9 +580,9 @@ public class Configuration {
             memoryCache.appendIdentifier("memoryCache：", builder);
         }
 
-        if (modeImageMemoryCache != null) {
+        if (stateImageMemoryCache != null) {
             if (builder.length() > 0) builder.append("\n");
-            modeImageMemoryCache.appendIdentifier("modeImageMemoryCache：", builder);
+            stateImageMemoryCache.appendIdentifier("stateImageMemoryCache：", builder);
         }
 
         if (imageDecoder != null) {
