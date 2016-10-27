@@ -242,6 +242,10 @@ public class MappingView extends SketchImageView {
 
     private boolean resetViewSize() {
         Drawable drawable = getDrawable();
+        if (drawable == null) {
+            return true;
+        }
+
         final int drawableWidth = drawable.getIntrinsicWidth();
         final int drawableHeight = drawable.getIntrinsicHeight();
         int maxWidth;

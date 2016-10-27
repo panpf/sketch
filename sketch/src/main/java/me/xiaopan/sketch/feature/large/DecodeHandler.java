@@ -86,7 +86,8 @@ class DecodeHandler extends Handler {
             return;
         }
 
-        if (tile.decoder == null || !tile.decoder.isReady()) {
+        ImageRegionDecoder regionDecoder = tile.decoder;
+        if (regionDecoder == null || !regionDecoder.isReady()) {
             decodeExecutor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODER_NULL_OR_NOT_READY));
             return;
         }
@@ -96,13 +97,13 @@ class DecodeHandler extends Handler {
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
-        ImageFormat imageFormat = tile.decoder.getImageFormat();
+        ImageFormat imageFormat = regionDecoder.getImageFormat();
         if (imageFormat != null) {
             options.inPreferredConfig = imageFormat.getConfig(false);
         }
 
         long time = System.currentTimeMillis();
-        Bitmap bitmap = tile.decoder.decodeRegion(srcRect, options);
+        Bitmap bitmap = regionDecoder.decodeRegion(srcRect, options);
         int useTime = (int) (System.currentTimeMillis() - time);
 
         if (bitmap == null || bitmap.isRecycled()) {
