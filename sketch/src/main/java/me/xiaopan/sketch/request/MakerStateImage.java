@@ -49,7 +49,7 @@ public class MakerStateImage implements StateImage {
     }
 
     @Override
-    public Drawable getDrawable(Context context, DisplayOptions displayOptions) {
+    public Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions) {
         Drawable drawable = makeDrawable(Sketch.with(context), displayOptions);
 
         ShapeSize shapeSize = displayOptions.getShapeSize();

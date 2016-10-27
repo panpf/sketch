@@ -40,7 +40,7 @@ public class MemoryCacheStateImage implements StateImage {
     }
 
     @Override
-    public Drawable getDrawable(Context context, DisplayOptions displayOptions) {
+    public Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions) {
         MemoryCache memoryCache = Sketch.with(context).getConfiguration().getMemoryCache();
         RefBitmap cachedRefBitmap = memoryCache.get(memoryCacheId);
         if (cachedRefBitmap != null) {
@@ -58,7 +58,7 @@ public class MemoryCacheStateImage implements StateImage {
             }
         }
 
-        return whenEmptyImage != null ? whenEmptyImage.getDrawable(context, displayOptions) : null;
+        return whenEmptyImage != null ? whenEmptyImage.getDrawable(context, imageViewInterface, displayOptions) : null;
     }
 
     public String getMemoryCacheId() {

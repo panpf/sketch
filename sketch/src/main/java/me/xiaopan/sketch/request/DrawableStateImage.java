@@ -40,7 +40,7 @@ public class DrawableStateImage implements StateImage {
     }
 
     @Override
-    public Drawable getDrawable(Context context, DisplayOptions displayOptions) {
+    public Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions) {
         Drawable drawable = originDrawable;
         if (drawable == null && resId != -1) {
             drawable = context.getResources().getDrawable(resId);

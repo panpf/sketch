@@ -311,7 +311,7 @@ public class DisplayRequest extends LoadRequest {
         // 显示失败图片
         if (displayOptions.getErrorImage() != null) {
             Context context = getSketch().getConfiguration().getContext();
-            Drawable errorDrawable = displayOptions.getErrorImage().getDrawable(context, displayOptions);
+            Drawable errorDrawable = displayOptions.getErrorImage().getDrawable(context, requestAndViewBinder.getImageViewInterface(), displayOptions);
             displayOptions.getImageDisplayer().display(requestAndViewBinder.getImageViewInterface(), errorDrawable);
         } else {
             if (Sketch.isDebugMode()) {

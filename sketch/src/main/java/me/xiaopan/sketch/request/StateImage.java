@@ -23,5 +23,5 @@ import android.graphics.drawable.Drawable;
  * 专门用于加载中、失败、暂停图片
  */
 public interface StateImage {
-    Drawable getDrawable(Context context, DisplayOptions displayOptions);
+    Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions);
 }
