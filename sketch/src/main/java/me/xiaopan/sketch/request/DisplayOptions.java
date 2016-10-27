@@ -21,6 +21,8 @@ import android.graphics.Bitmap;
 import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.shaper.ImageShaper;
+import me.xiaopan.sketch.state.DrawableStateImage;
+import me.xiaopan.sketch.state.StateImage;
 
 /**
  * 显示选项

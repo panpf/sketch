@@ -14,11 +14,19 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.request;
+package me.xiaopan.sketch.state;
 
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
+
+import me.xiaopan.sketch.drawable.LoadingDrawable;
+import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
+import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.request.ShapeSize;
+import me.xiaopan.sketch.shaper.ImageShaper;
 
 /**
  * 使用当前ImageView正在显示的图片作为状态图片
@@ -42,6 +50,22 @@ public class OldStateImage implements StateImage {
         if (drawable != null && drawable instanceof LayerDrawable) {
             LayerDrawable layerDrawable = (LayerDrawable) drawable;
             drawable = layerDrawable.getDrawable(layerDrawable.getNumberOfLayers() - 1);
+        }
+
+        if (drawable != null && drawable instanceof LoadingDrawable) {
+            drawable = ((LoadingDrawable) drawable).getWrappedDrawable();
+        }
+
+        if (drawable != null) {
+            ShapeSize shapeSize = displayOptions.getShapeSize();
+            ImageShaper imageShaper = displayOptions.getImageShaper();
+            if (shapeSize != null || imageShaper != null) {
+                if (drawable instanceof ShapeBitmapDrawable) {
+                    drawable = new ShapeBitmapDrawable(((ShapeBitmapDrawable) drawable).getBitmapDrawable(), shapeSize, imageShaper);
+                } else if (drawable instanceof BitmapDrawable) {
+                    drawable = new ShapeBitmapDrawable((BitmapDrawable) drawable, shapeSize, imageShaper);
+                }
+            }
         }
 
         if (drawable == null && whenEmptyImage != null) {

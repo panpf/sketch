@@ -14,20 +14,23 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.request;
+package me.xiaopan.sketch.state;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
-import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
+import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
+import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketch.shaper.ImageShaper;
 
 /**
- * 从内存中获取图片作为占位图，支持ShapeSize和ImageShaper
+ * 从内存中获取图片作为状态图片，支持ShapeSize和ImageShaper
  */
 @SuppressWarnings("unused")
 public class MemoryCacheStateImage implements StateImage {

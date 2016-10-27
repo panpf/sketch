@@ -195,8 +195,9 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
         }
     }
 
-    public Bitmap getBitmap() {
-        return bitmapDrawable.getBitmap();
+    @SuppressWarnings("unused")
+    public BitmapDrawable getBitmapDrawable() {
+        return bitmapDrawable;
     }
 
     @SuppressWarnings("unused")

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.request;
+package me.xiaopan.sketch.state;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -30,11 +30,16 @@ import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
 import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
+import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.ImageViewInterface;
+import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.request.ShapeSize;
+import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
- * 可以利用ImageProcessor修改原图片，同样支持ShapeSize和ImageShaper
+ * 可以利用Options中配置的ImageProcessor和resize修改原图片，同样支持ShapeSize和ImageShaper
  */
 @SuppressWarnings("unused")
 public class MakerStateImage implements StateImage {

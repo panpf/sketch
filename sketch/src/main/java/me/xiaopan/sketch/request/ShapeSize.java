@@ -38,6 +38,21 @@ public class ShapeSize implements Identifier {
     }
 
     @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof ShapeSize) {
+            ShapeSize other = (ShapeSize) obj;
+            return width == other.width && height == other.height;
+        }
+        return false;
+    }
+
+    @Override
     public String getIdentifier() {
         return appendIdentifier(null, new StringBuilder()).toString();
     }

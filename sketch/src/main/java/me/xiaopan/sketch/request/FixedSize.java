@@ -38,6 +38,21 @@ public class FixedSize implements Identifier {
     }
 
     @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof FixedSize) {
+            FixedSize other = (FixedSize) obj;
+            return width == other.width && height == other.height;
+        }
+        return false;
+    }
+
+    @Override
     public String getIdentifier() {
         return appendIdentifier(null, new StringBuilder()).toString();
     }

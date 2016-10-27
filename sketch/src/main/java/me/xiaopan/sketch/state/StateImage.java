@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.request;
+package me.xiaopan.sketch.state;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+
+import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.request.ImageViewInterface;
 
 /**
  * 专门用于加载中、失败、暂停图片

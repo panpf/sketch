@@ -36,6 +36,7 @@ import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.RequestFactory;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.shaper.ImageShaper;
+import me.xiaopan.sketch.state.StateImage;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.Stopwatch;
 

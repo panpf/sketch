@@ -23,7 +23,7 @@ import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.request.MemoryCacheStateImage;
+import me.xiaopan.sketch.state.MemoryCacheStateImage;
 import me.xiaopan.sketch.request.RequestLevel;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
