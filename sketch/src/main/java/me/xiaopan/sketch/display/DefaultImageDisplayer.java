@@ -26,6 +26,7 @@ import me.xiaopan.sketch.request.ImageViewInterface;
  */
 public class DefaultImageDisplayer implements ImageDisplayer {
     protected String logName = "DefaultImageDisplayer";
+    private boolean alwaysUse;
 
     @Override
     public void display(ImageViewInterface imageViewInterface, Drawable newDrawable) {
@@ -34,6 +35,17 @@ public class DefaultImageDisplayer implements ImageDisplayer {
         }
         imageViewInterface.clearAnimation();
         imageViewInterface.setImageDrawable(newDrawable);
+    }
+
+    @SuppressWarnings("unused")
+    public DefaultImageDisplayer setAlwaysUse(boolean alwaysUse) {
+        this.alwaysUse = alwaysUse;
+        return this;
+    }
+
+    @Override
+    public boolean isAlwaysUse() {
+        return alwaysUse;
     }
 
     @Override
@@ -46,6 +58,6 @@ public class DefaultImageDisplayer implements ImageDisplayer {
         if (!TextUtils.isEmpty(join)) {
             builder.append(join);
         }
-        return builder.append(logName);
+        return builder.append(logName).append("(alwaysUse=").append(alwaysUse).append(")");
     }
 }

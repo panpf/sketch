@@ -32,6 +32,7 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
 
     private int duration;
     private int color;
+    private boolean alwaysUse;
 
     public ColorTransitionImageDisplayer(int color, int duration) {
         this.color = color;
@@ -54,6 +55,16 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
         transitionDrawable.startTransition(duration);
     }
 
+    public ColorTransitionImageDisplayer setAlwaysUse(boolean alwaysUse) {
+        this.alwaysUse = alwaysUse;
+        return this;
+    }
+
+    @Override
+    public boolean isAlwaysUse() {
+        return alwaysUse;
+    }
+
     @Override
     public String getIdentifier() {
         return appendIdentifier(null, new StringBuilder()).toString();
@@ -67,8 +78,8 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
         return builder.append(logName)
                 .append("(")
                 .append("duration=").append(duration)
-                .append(",")
-                .append("color=").append(color)
+                .append(", color=").append(color)
+                .append(", alwaysUse=").append(alwaysUse)
                 .append(")");
     }
 

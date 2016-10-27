@@ -628,10 +628,10 @@ public class DisplayHelper {
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, displayOptions);
+                drawable = displayOptions.getErrorImage().getDrawable(context, imageViewInterface, displayOptions);
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, displayOptions);
+                drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
             }
             imageViewInterface.setImageDrawable(drawable);
 
@@ -648,10 +648,10 @@ public class DisplayHelper {
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getErrorImage().getDrawable(context, displayOptions);
+                drawable = displayOptions.getErrorImage().getDrawable(context, imageViewInterface, displayOptions);
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, displayOptions);
+                drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
             }
             imageViewInterface.setImageDrawable(drawable);
 
@@ -684,7 +684,12 @@ public class DisplayHelper {
                         finalDrawable = new RefBitmapDrawable(cachedRefBitmap);
                     }
 
-                    imageViewInterface.setImageDrawable(finalDrawable);
+                    ImageDisplayer imageDisplayer = displayOptions.getImageDisplayer();
+                    if (imageDisplayer != null && imageDisplayer.isAlwaysUse()) {
+                        imageDisplayer.display(imageViewInterface, finalDrawable);
+                    } else {
+                        imageViewInterface.setImageDrawable(finalDrawable);
+                    }
                     if (displayListener != null) {
                         displayListener.onCompleted(ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
                     }
@@ -721,7 +726,7 @@ public class DisplayHelper {
             Drawable loadingDrawable = null;
             if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                loadingDrawable = displayOptions.getLoadingImage().getDrawable(context, displayOptions);
+                loadingDrawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
             }
             imageViewInterface.clearAnimation();
             imageViewInterface.setImageDrawable(loadingDrawable);
@@ -749,11 +754,11 @@ public class DisplayHelper {
             Drawable drawable = null;
             if (displayOptions.getPauseDownloadImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getPauseDownloadImage().getDrawable(context, displayOptions);
+                drawable = displayOptions.getPauseDownloadImage().getDrawable(context, imageViewInterface, displayOptions);
                 imageViewInterface.clearAnimation();
             } else if (displayOptions.getLoadingImage() != null) {
                 Context context = sketch.getConfiguration().getContext();
-                drawable = displayOptions.getLoadingImage().getDrawable(context, displayOptions);
+                drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
             } else {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
@@ -817,7 +822,7 @@ public class DisplayHelper {
         StateImage loadingImage = displayOptions.getLoadingImage();
         if (loadingImage != null) {
             Context context = sketch.getConfiguration().getContext();
-            Drawable drawable = loadingImage.getDrawable(context, displayOptions);
+            Drawable drawable = loadingImage.getDrawable(context, imageViewInterface, displayOptions);
             loadingDrawable = new LoadingDrawable(drawable, request);
         } else {
             loadingDrawable = new LoadingDrawable(null, request);

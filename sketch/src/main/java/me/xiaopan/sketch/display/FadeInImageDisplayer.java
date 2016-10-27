@@ -14,6 +14,7 @@ import me.xiaopan.sketch.request.ImageViewInterface;
 public class FadeInImageDisplayer implements ImageDisplayer {
 
     private int duration;
+    private boolean alwaysUse;
 
     public FadeInImageDisplayer(int duration) {
         this.duration = duration;
@@ -36,6 +37,16 @@ public class FadeInImageDisplayer implements ImageDisplayer {
         imageViewInterface.startAnimation(animation);
     }
 
+    public FadeInImageDisplayer setAlwaysUse(boolean alwaysUse) {
+        this.alwaysUse = alwaysUse;
+        return this;
+    }
+
+    @Override
+    public boolean isAlwaysUse() {
+        return alwaysUse;
+    }
+
     @Override
     public String getIdentifier() {
         return appendIdentifier(null, new StringBuilder()).toString();
@@ -49,6 +60,7 @@ public class FadeInImageDisplayer implements ImageDisplayer {
         return builder.append("FadeInImageDisplayer")
                 .append("(")
                 .append("duration=").append(duration)
+                .append(", alwaysUse=").append(alwaysUse)
                 .append(")");
     }
 }

@@ -31,4 +31,9 @@ public interface ImageDisplayer extends Identifier {
      * 显示
      */
     void display(ImageViewInterface imageViewInterface, Drawable newDrawable);
+
+    /**
+     * 只要涉及到显示图片就得使用ImageDisplayer（显示从内存里取出的缓存图片时也不例外）
+     */
+    boolean isAlwaysUse();
 }

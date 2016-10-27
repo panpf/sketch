@@ -36,6 +36,7 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
     private float fromX;
     private float fromY;
     private Interpolator interpolator;
+    private boolean alwaysUse;
 
     public ZoomInImageDisplayer(float fromX, float fromY, Interpolator interpolator, int duration) {
         this.duration = duration;
@@ -77,6 +78,16 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
         imageViewInterface.startAnimation(scaleAnimation);
     }
 
+    public ZoomInImageDisplayer setAlwaysUse(boolean alwaysUse) {
+        this.alwaysUse = alwaysUse;
+        return this;
+    }
+
+    @Override
+    public boolean isAlwaysUse() {
+        return alwaysUse;
+    }
+
     @Override
     public String getIdentifier() {
         return appendIdentifier(null, new StringBuilder()).toString();
@@ -90,11 +101,10 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
         builder.append(logName)
                 .append("(")
                 .append("duration=").append(duration)
-                .append(",")
-                .append("fromX=").append(fromX)
-                .append(",")
-                .append("fromY=").append(fromY)
-                .append(",interpolator=").append(interpolator != null ? interpolator.getClass().getSimpleName() : null)
+                .append(", fromX=").append(fromX)
+                .append(", fromY=").append(fromY)
+                .append(", interpolator=").append(interpolator != null ? interpolator.getClass().getSimpleName() : null)
+                .append(", alwaysUse=").append(alwaysUse)
                 .append(")");
         return builder;
     }

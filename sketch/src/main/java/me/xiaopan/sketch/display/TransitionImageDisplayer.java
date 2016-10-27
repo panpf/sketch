@@ -32,6 +32,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
     protected String logName = "TransitionImageDisplayer";
 
     private int duration;
+    private boolean alwaysUse;
 
     public TransitionImageDisplayer(int duration) {
         this.duration = duration;
@@ -52,7 +53,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
         } else {
             Drawable oldDrawable = imageViewInterface.getDrawable();
             if (oldDrawable == null) {
-                new ColorDrawable(Color.TRANSPARENT);
+                oldDrawable = new ColorDrawable(Color.TRANSPARENT);
             }
             TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, newDrawable});
             imageViewInterface.clearAnimation();
@@ -60,6 +61,17 @@ public class TransitionImageDisplayer implements ImageDisplayer {
             transitionDrawable.setCrossFadeEnabled(true);
             transitionDrawable.startTransition(duration);
         }
+    }
+
+    @SuppressWarnings("unused")
+    public TransitionImageDisplayer setAlwaysUse(boolean alwaysUse) {
+        this.alwaysUse = alwaysUse;
+        return this;
+    }
+
+    @Override
+    public boolean isAlwaysUse() {
+        return alwaysUse;
     }
 
     @Override
@@ -75,6 +87,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
         return builder.append(logName)
                 .append("(")
                 .append("duration=").append(duration)
+                .append(", alwaysUse=").append(alwaysUse)
                 .append(")");
     }
 
