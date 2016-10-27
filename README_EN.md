@@ -156,6 +156,7 @@ Enhance the user experience:
 >* [Use ImagePreprocessor to display thumbnails or icons of special files .md](docs/wiki/pre_process_image.md)
 >* [Use maxSize to control image size.md](docs/wiki/max_size.md)
 >* [Use resize to trim image size.md](docs/wiki/resize.md)
+>* [Flexible use of various images as loading image by StateImage](docs/wiki/state_image.md)
 >* [Download paused images in mobile network, saving traffic.md](docs/wiki/pause_download.md)
 >* [Pause loading of images while sliding the list to improve fluency.md](docs/wiki/pause_load.md)
 

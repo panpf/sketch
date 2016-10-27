@@ -150,6 +150,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 >* [使用ImagePreprocessor显示特殊文件的缩略图或图标.md](docs/wiki/pre_process_image.md)
 >* [使用maxSize控制图片大小.md](docs/wiki/max_size.md)
 >* [使用resize修剪图片尺寸.md](docs/wiki/resize.md)
+>* [通过StateImage灵活的使用各种图片作为loading image](docs/wiki/state_image.md)
 >* [移动网络下暂停下载图片，节省流量.md](docs/wiki/pause_download.md)
 >* [列表滑动时暂停加载图片，提升流畅度.md](docs/wiki/pause_load.md)
 

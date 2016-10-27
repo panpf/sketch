@@ -8,6 +8,8 @@ ImageDisplayer是最后用来显示图片的
 >* ColorTransitionImageDisplayer：颜色过渡显示器，你可以指定一种颜色作为过渡效果的起始色
 >* FadeInImageDisplayer：渐入显示器
 
+ImageDisplayer还可以通过setAlwaysUse(boolean)方法设置只要涉及到显示图片就得使用ImageDisplayer（显示从内存里取出的缓存图片时也不例外）
+
 #### TransitionImageDisplayer
 
 由于TransitionDrawable在碰到两张尺寸不一致的图片时，会依照尺寸比较大的图片强行将另一张图片拉伸，这样最终显示出来的效果就会变形
