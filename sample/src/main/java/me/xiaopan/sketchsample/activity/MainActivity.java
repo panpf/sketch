@@ -106,6 +106,12 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        initViews();
+        startService(new Intent(getBaseContext(), NotificationService.class));
+        switchPage(Page.LARGE_IMAGE);
+    }
+
+    private void initViews() {
         windowBackgroundManager = new WindowBackgroundManager(this);
         drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, Gravity.LEFT);
 
@@ -122,12 +128,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
         largeTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"WORLD", "QMSHT", "CWB", "CARD"}, getBaseContext()));
 
-        startService(new Intent(getBaseContext(), NotificationService.class));
-        initViews();
-        switchPage(Page.LARGE_IMAGE);
-    }
-
-    private void initViews() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             int statusBarHeight = DeviceUtils.getStatusBarHeight(getResources());
             if (statusBarHeight > 0) {
