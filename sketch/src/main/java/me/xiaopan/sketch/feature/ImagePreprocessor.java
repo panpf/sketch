@@ -162,7 +162,7 @@ public class ImagePreprocessor implements Identifier {
         }
 
         try {
-            iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            iconBitmap.compress(SketchUtils.bitmapConfigToCompressFormat(iconBitmap.getConfig()), 100, outputStream);
 
             if (diskCacheEditor != null) {
                 diskCacheEditor.commit();
@@ -276,7 +276,7 @@ public class ImagePreprocessor implements Identifier {
         }
 
         try {
-            iconBitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+            iconBitmap.compress(SketchUtils.bitmapConfigToCompressFormat(iconBitmap.getConfig()), 100, outputStream);
 
             if (diskCacheEditor != null) {
                 diskCacheEditor.commit();

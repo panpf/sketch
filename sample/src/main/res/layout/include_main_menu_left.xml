@@ -328,6 +328,27 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/item_main_cacheProcessedImage"
+                    style="@style/menu_item"
+                    android:clickable="true">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="缓存处理过的图片" />
+
+                    <CheckBox
+                        android:id="@+id/checkBox_main_cacheProcessedImage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="8dp"
+                        android:clickable="false"
+                        android:focusable="false"
+                        android:focusableInTouchMode="false" />
+                </LinearLayout>
+
+                <LinearLayout
                     android:id="@+id/item_main_locationAnimate"
                     style="@style/menu_item"
                     android:clickable="true">

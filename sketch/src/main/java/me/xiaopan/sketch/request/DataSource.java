@@ -22,6 +22,7 @@ public class DataSource {
     private DiskCache.Entry diskCacheEntry;
     private byte[] imageData;
     private ImageFrom imageFrom;
+    private boolean disableProcess;
 
     public DataSource(DiskCache.Entry diskCacheEntry, ImageFrom imageFrom) {
         this.diskCacheEntry = diskCacheEntry;
@@ -31,6 +32,14 @@ public class DataSource {
     public DataSource(byte[] imageData, ImageFrom imageFrom) {
         this.imageData = imageData;
         this.imageFrom = imageFrom;
+    }
+
+    public boolean isDisableProcess() {
+        return disableProcess;
+    }
+
+    public void setDisableProcess(boolean disableUseProcessor) {
+        this.disableProcess = disableUseProcessor;
     }
 
     public DiskCache.Entry getDiskCacheEntry() {

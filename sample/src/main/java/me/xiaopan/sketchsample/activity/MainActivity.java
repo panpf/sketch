@@ -64,6 +64,7 @@ import me.xiaopan.sketchsample.util.Settings;
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
 public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, LargesFragment.GetLargeTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetListener, AboutFragment.TogglePageListener {
+    // TODO: 16/10/28 改造这个菜单
     @InjectView(R.id.layout_main_content) private View contentView;
     @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
@@ -116,6 +117,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     @InjectView(R.id.checkBox_main_thumbnailMode) private CheckBox thumbnailModeCheckBox;
     @InjectView(R.id.item_main_locationAnimate) private View locationAnimateItem;
     @InjectView(R.id.checkBox_main_locationAnimate) private CheckBox locationAnimateCheckBox;
+    @InjectView(R.id.item_main_cacheProcessedImage) private View cacheProcessedImageItem;
+    @InjectView(R.id.checkBox_main_cacheProcessedImage) private CheckBox cacheProcessedImageCheckBox;
 
     private long lastClickBackTime;
     private Type type;
@@ -162,6 +165,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         readModeCheckBox.setChecked(settings.isReadMode());
         thumbnailModeCheckBox.setChecked(settings.isThumbnailMode());
         locationAnimateCheckBox.setChecked(settings.isThumbnailMode());
+        cacheProcessedImageCheckBox.setChecked(settings.isCacheProcessedImage());
 
         starButton.setOnClickListener(this);
         searchButton.setOnClickListener(this);
@@ -189,6 +193,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         readModeItem.setOnClickListener(this);
         thumbnailModeItem.setOnClickListener(this);
         locationAnimateItem.setOnClickListener(this);
+        cacheProcessedImageItem.setOnClickListener(this);
 
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
@@ -546,6 +551,12 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 boolean newLocationAnimateValue = !settings.isLocationAnimate();
                 locationAnimateCheckBox.setChecked(newLocationAnimateValue);
                 settings.setLocationAnimate(newLocationAnimateValue);
+                drawerLayout.closeDrawer(Gravity.LEFT);
+                break;
+            case R.id.item_main_cacheProcessedImage:
+                boolean newCacheProcessedImageValue = !settings.isCacheProcessedImage();
+                cacheProcessedImageCheckBox.setChecked(newCacheProcessedImageValue);
+                settings.setCacheProcessedImage(newCacheProcessedImageValue);
                 drawerLayout.closeDrawer(Gravity.LEFT);
                 break;
         }

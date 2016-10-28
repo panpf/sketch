@@ -138,6 +138,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         boolean thumbnailMode = settings.isThumbnailMode();
         DisplayOptions options = itemViewHolder.sketchImageView.getOptions();
         options.setThumbnailMode(thumbnailMode);
+        options.setCacheProcessedImageInDisk(settings.isCacheProcessedImage());
         if (thumbnailMode && options.getResize() == null && !options.isResizeByFixedSize()) {
             options.setResizeByFixedSize(true);
         }

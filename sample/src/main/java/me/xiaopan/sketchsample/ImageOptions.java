@@ -20,17 +20,12 @@ public enum ImageOptions {
     /**
      * 通用矩形
      */
-    NORMAL_RECT,
+    RECT,
 
     /**
-     * APP图标
+     * 带描边的圆形
      */
-    APP_ICON,
-
-    /**
-     * 通用圆形
-     */
-    NORMAL_CIRCULAR,
+    CIRCULAR_STROKE,
 
     /**
      * 窗口背景

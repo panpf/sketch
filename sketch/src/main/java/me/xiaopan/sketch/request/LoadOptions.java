@@ -69,6 +69,11 @@ public class LoadOptions extends DownloadOptions {
      */
     private Bitmap.Config bitmapConfig;
 
+    /**
+     * 为了加快速度，将经过ImageProcessor、resize或thumbnailMode处理过的图片保存到磁盘缓存中，下次就直接读取
+     */
+    private boolean cacheProcessedImageInDisk;
+
     public LoadOptions() {
         reset();
     }
@@ -187,6 +192,15 @@ public class LoadOptions extends DownloadOptions {
         return this;
     }
 
+    public boolean isCacheProcessedImageInDisk() {
+        return cacheProcessedImageInDisk;
+    }
+
+    public LoadOptions setCacheProcessedImageInDisk(boolean cacheProcessedImageInDisk) {
+        this.cacheProcessedImageInDisk = cacheProcessedImageInDisk;
+        return this;
+    }
+
     @Override
     public void reset() {
         super.reset();
@@ -200,6 +214,7 @@ public class LoadOptions extends DownloadOptions {
         bitmapConfig = null;
         inPreferQualityOverSpeed = false;
         thumbnailMode = false;
+        cacheProcessedImageInDisk = false;
     }
 
     /**
@@ -221,6 +236,7 @@ public class LoadOptions extends DownloadOptions {
         bitmapConfig = options.bitmapConfig;
         inPreferQualityOverSpeed = options.inPreferQualityOverSpeed;
         thumbnailMode = options.thumbnailMode;
+        cacheProcessedImageInDisk = options.cacheProcessedImageInDisk;
     }
 
     /**
@@ -275,6 +291,10 @@ public class LoadOptions extends DownloadOptions {
         if (!thumbnailMode) {
             thumbnailMode = options.thumbnailMode;
         }
+
+        if (!cacheProcessedImageInDisk) {
+            cacheProcessedImageInDisk = options.cacheProcessedImageInDisk;
+        }
     }
 
     @Override
@@ -286,9 +306,9 @@ public class LoadOptions extends DownloadOptions {
         }
         if (resize != null) {
             resize.appendIdentifier("_", builder);
-        }
-        if (forceUseResize) {
-            builder.append("_").append("forceUseResize");
+            if (forceUseResize) {
+                builder.append("_").append("forceUseResize");
+            }
         }
         if (lowQualityImage) {
             builder.append("_").append("lowQualityImage");
@@ -314,9 +334,9 @@ public class LoadOptions extends DownloadOptions {
 
         if (resize != null) {
             resize.appendIdentifier("_", builder);
-        }
-        if (forceUseResize) {
-            builder.append("_").append("forceUseResize");
+            if (forceUseResize) {
+                builder.append("_").append("forceUseResize");
+            }
         }
         if (lowQualityImage) {
             builder.append("_").append("lowQualityImage");

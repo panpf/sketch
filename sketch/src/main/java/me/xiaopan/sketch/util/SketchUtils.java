@@ -1051,4 +1051,9 @@ public class SketchUtils {
         builder.append("]");
         return builder.toString();
     }
+
+    public static Bitmap.CompressFormat bitmapConfigToCompressFormat(Bitmap.Config config){
+        return config == Bitmap.Config.RGB_565 ?
+                Bitmap.CompressFormat.JPEG : Bitmap.CompressFormat.PNG;
+    }
 }

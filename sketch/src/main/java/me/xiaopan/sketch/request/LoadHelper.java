@@ -164,6 +164,15 @@ public class LoadHelper {
     }
 
     /**
+     * 为了加快速度，将经过ImageProcessor、resize或thumbnailMode处理过的图片保存到磁盘缓存中，下次就直接读取
+     */
+    @SuppressWarnings("unused")
+    public LoadHelper cacheProcessedImageInDisk(){
+        loadOptions.setCacheProcessedImageInDisk(true);
+        return this;
+    }
+
+    /**
      * 批量设置加载参数，这会是一个合并的过程，并不会完全覆盖
      */
     public LoadHelper options(LoadOptions newOptions) {
@@ -239,7 +248,7 @@ public class LoadHelper {
         Configuration configuration = sketch.getConfiguration();
 
         // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
-        if (loadOptions.getImageProcessor() == null && loadOptions.getResize() != null) {
+        if (loadOptions.getResize() != null && loadOptions.getImageProcessor() == null) {
             loadOptions.setImageProcessor(configuration.getResizeImageProcessor());
         }
 

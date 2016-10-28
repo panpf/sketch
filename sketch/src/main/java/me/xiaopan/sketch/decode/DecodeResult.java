@@ -28,6 +28,7 @@ public class DecodeResult {
     private ImageFrom imageFrom;
     private int originWidth;
     private int originHeight;
+    private boolean canCacheInDiskCache;
 
     public DecodeResult(int originWidth, int originHeight, String mimeType, SketchGifDrawable gifDrawable) {
         this.originWidth = originWidth;
@@ -69,5 +70,14 @@ public class DecodeResult {
 
     public int getOriginWidth() {
         return originWidth;
+    }
+
+    public boolean isCanCacheInDiskCache() {
+        return canCacheInDiskCache;
+    }
+
+    public DecodeResult setCanCacheInDiskCache(boolean canCacheInDiskCache) {
+        this.canCacheInDiskCache = canCacheInDiskCache;
+        return this;
     }
 }

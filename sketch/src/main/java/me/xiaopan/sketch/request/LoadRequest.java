@@ -18,13 +18,19 @@ package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
 
+import java.io.BufferedOutputStream;
+import java.io.IOException;
+import java.util.concurrent.locks.ReentrantLock;
+
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.process.ImageProcessor;
+import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -79,6 +85,12 @@ public class LoadRequest extends DownloadRequest {
         return dataSource;
     }
 
+    protected boolean canUseCacheProcessedImageFunction(){
+        return loadOptions.isCacheProcessedImageInDisk() &&
+                (loadOptions.getResize() != null || loadOptions.getImageProcessor() != null ||
+                        (loadOptions.isThumbnailMode() && loadOptions.getResize() != null));
+    }
+
     @Override
     public void error(ErrorCause errorCause) {
         super.error(errorCause);
@@ -106,17 +118,41 @@ public class LoadRequest extends DownloadRequest {
             return;
         }
 
-        // 本地请求直接执行加载
         setStatus(Status.INTERCEPT_LOCAL_TASK);
+
         if (getAttrs().getUriScheme() != UriScheme.NET) {
+            // 本地请求直接执行加载
             if (Sketch.isDebugMode()) {
-                printLogD("local thread", "runDispatch");
+                printLogD("local thread", "local image", "runDispatch");
             }
             submitRunLoad();
             return;
+        } else {
+            // 是网络图片但是本地已经有缓存好的且经过处理的缓存图片可以直接用
+            if (canUseCacheProcessedImageFunction() && existProcessedDiskCache()) {
+                if (Sketch.isDebugMode()) {
+                    printLogD("local thread", "disk cache image", "runDispatch");
+                }
+                submitRunLoad();
+                return;
+            }
         }
 
         super.runDispatch();
+    }
+
+    private boolean existProcessedDiskCache() {
+        String memoryCacheId = getAttrs().getId();
+        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+        ReentrantLock editLock = diskCache.getEditLock(memoryCacheId);
+        if (editLock != null) {
+            editLock.lock();
+        }
+        boolean exist = diskCache.exist(memoryCacheId);
+        if (editLock != null) {
+            editLock.unlock();
+        }
+        return exist;
     }
 
     @Override
@@ -145,18 +181,24 @@ public class LoadRequest extends DownloadRequest {
             return;
         }
 
+        if (canUseCacheProcessedImageFunction()) {
+            dataSource = checkDiskCache();
+        }
+
         // 预处理
-        ImagePreprocessor imagePreprocessor = getSketch().getConfiguration().getImagePreprocessor();
-        if (imagePreprocessor.isSpecific(this)) {
-            setStatus(Status.PRE_PROCESS);
-            PreProcessResult prePrecessResult = imagePreprocessor.process(this);
-            if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
-                dataSource = new DataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
-            } else if (prePrecessResult != null && prePrecessResult.imageData != null) {
-                dataSource = new DataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
-            } else {
-                error(ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
-                return;
+        if (dataSource == null) {
+            ImagePreprocessor imagePreprocessor = getSketch().getConfiguration().getImagePreprocessor();
+            if (imagePreprocessor.isSpecific(this)) {
+                setStatus(Status.PRE_PROCESS);
+                PreProcessResult prePrecessResult = imagePreprocessor.process(this);
+                if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
+                    dataSource = new DataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
+                } else if (prePrecessResult != null && prePrecessResult.imageData != null) {
+                    dataSource = new DataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
+                } else {
+                    error(ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
+                    return;
+                }
             }
         }
 
@@ -188,44 +230,54 @@ public class LoadRequest extends DownloadRequest {
             }
 
             // 处理一下
-            ImageProcessor imageProcessor = loadOptions.getImageProcessor();
-            if (imageProcessor != null) {
-                setStatus(Status.PROCESSING);
+            boolean allowProcess = dataSource == null || !dataSource.isDisableProcess();
+            boolean canCacheInDiskCache = decodeResult.isCanCacheInDiskCache();
+            if (allowProcess) {
+                ImageProcessor imageProcessor = loadOptions.getImageProcessor();
+                if (imageProcessor != null) {
+                    setStatus(Status.PROCESSING);
 
-                Bitmap newBitmap = null;
-                try {
-                    newBitmap = imageProcessor.process(
-                            getSketch(), bitmap,
-                            loadOptions.getResize(), loadOptions.isForceUseResize(),
-                            loadOptions.isLowQualityImage());
-                } catch (OutOfMemoryError e) {
-                    e.printStackTrace();
-                    ExceptionMonitor exceptionMonitor = getSketch().getConfiguration().getExceptionMonitor();
-                    exceptionMonitor.onProcessImageError(e, getAttrs().getId(), imageProcessor);
-                }
-
-                // 确实是一张新图片，就替换掉旧图片
-                if (newBitmap != null && !newBitmap.isRecycled() && newBitmap != bitmap) {
-                    if (Sketch.isDebugMode()) {
-                        printLogW("process new bitmap", "runLoad", "bitmapInfo: " + SketchUtils.getImageInfo(null, newBitmap, decodeResult.getMimeType()));
+                    Bitmap newBitmap = null;
+                    try {
+                        newBitmap = imageProcessor.process(
+                                getSketch(), bitmap,
+                                loadOptions.getResize(), loadOptions.isForceUseResize(),
+                                loadOptions.isLowQualityImage());
+                    } catch (OutOfMemoryError e) {
+                        e.printStackTrace();
+                        ExceptionMonitor exceptionMonitor = getSketch().getConfiguration().getExceptionMonitor();
+                        exceptionMonitor.onProcessImageError(e, getAttrs().getId(), imageProcessor);
                     }
-                    bitmap.recycle();
-                    bitmap = newBitmap;
-                } else {
-                    // 有可能处理后没得到新图片就图片也没了，这叫赔了夫人又折兵
-                    if (bitmap.isRecycled()) {
-                        error(ErrorCause.SOURCE_BITMAP_RECYCLED);
+
+                    // 确实是一张新图片，就替换掉旧图片
+                    if (newBitmap != null && !newBitmap.isRecycled() && newBitmap != bitmap) {
+                        if (Sketch.isDebugMode()) {
+                            printLogW("process new bitmap", "runLoad", "bitmapInfo: " + SketchUtils.getImageInfo(null, newBitmap, decodeResult.getMimeType()));
+                        }
+                        bitmap.recycle();
+                        bitmap = newBitmap;
+                        canCacheInDiskCache |= true;
+                    } else {
+                        // 有可能处理后没得到新图片旧图片也没了，这叫赔了夫人又折兵
+                        if (bitmap.isRecycled()) {
+                            error(ErrorCause.SOURCE_BITMAP_RECYCLED);
+                            return;
+                        }
+                    }
+
+                    if (isCanceled()) {
+                        if (Sketch.isDebugMode()) {
+                            printLogW("canceled", "runLoad", "process after", "bitmapInfo: " + SketchUtils.getImageInfo(null, bitmap, decodeResult.getMimeType()));
+                        }
+                        bitmap.recycle();
                         return;
                     }
                 }
+            }
 
-                if (isCanceled()) {
-                    if (Sketch.isDebugMode()) {
-                        printLogW("canceled", "runLoad", "process after", "bitmapInfo: " + SketchUtils.getImageInfo(null, bitmap, decodeResult.getMimeType()));
-                    }
-                    bitmap.recycle();
-                    return;
-                }
+            // 缓存经过处理的图片
+            if (allowProcess && canCacheInDiskCache && canUseCacheProcessedImageFunction()) {
+                saveBitmapToDiskCache(bitmap);
             }
 
             loadResult = new LoadResult(bitmap, decodeResult);
@@ -260,6 +312,73 @@ public class LoadRequest extends DownloadRequest {
                 printLogE("are all null", "runLoad");
             }
             error(ErrorCause.DECODE_FAIL);
+        }
+    }
+
+    /**
+     * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
+     */
+    private DataSource checkDiskCache(){
+        String memoryCacheId = getAttrs().getId();
+        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+        ReentrantLock editLock = diskCache.getEditLock(memoryCacheId);
+        if (editLock != null) {
+            editLock.lock();
+        }
+        DiskCache.Entry diskCacheEntry = diskCache.get(memoryCacheId);
+        if (editLock != null) {
+            editLock.unlock();
+        }
+
+        if (diskCacheEntry != null) {
+            DataSource dataSource = new DataSource(diskCacheEntry, ImageFrom.DISK_CACHE);
+            dataSource.setDisableProcess(true);
+            return dataSource;
+        }
+
+        return null;
+    }
+
+    /**
+     * 保存bitmap到磁盘缓存
+     */
+    private void saveBitmapToDiskCache(Bitmap bitmap){
+        String memoryCacheId = getAttrs().getId();
+        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+
+        ReentrantLock editLock = diskCache.getEditLock(memoryCacheId);
+        if (editLock != null) {
+            editLock.lock();
+        }
+
+        DiskCache.Entry diskCacheEntry = diskCache.get(memoryCacheId);
+        if (diskCacheEntry != null) {
+            diskCacheEntry.delete();
+        }
+
+        DiskCache.Editor diskCacheEditor = diskCache.edit(memoryCacheId);
+        if (diskCacheEditor != null) {
+            BufferedOutputStream outputStream = null;
+            try {
+                outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
+                bitmap.compress(SketchUtils.bitmapConfigToCompressFormat(bitmap.getConfig()), 100, outputStream);
+                diskCacheEditor.commit();
+            } catch (DiskLruCache.EditorChangedException e) {
+                e.printStackTrace();
+                diskCacheEditor.abort();
+            } catch (IOException e) {
+                e.printStackTrace();
+                diskCacheEditor.abort();
+            } catch (DiskLruCache.ClosedException e) {
+                e.printStackTrace();
+                diskCacheEditor.abort();
+            } finally {
+                SketchUtils.close(outputStream);
+            }
+        }
+
+        if (editLock != null) {
+            editLock.unlock();
         }
     }
 

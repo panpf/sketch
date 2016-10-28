@@ -21,7 +21,8 @@ public class Settings {
     private static final String PREFERENCE_SUPPORT_LARGE_IMAGE = "PREFERENCE_SUPPORT_LARGE_IMAGE";
     private static final String PREFERENCE_READ_MODE = "PREFERENCE_READ_MODE";
     private static final String PREFERENCE_THUMBNAIL_MODE = "PREFERENCE_THUMBNAIL_MODE";
-    private static final String PREFERENCE_LOCATIO_ANIMATE = "PREFERENCE_LOCATION_ANIMATE";
+    private static final String PREFERENCE_LOCATION_ANIMATE = "PREFERENCE_LOCATION_ANIMATE";
+    private static final String PREFERENCE_CACHE_PROCESSED_IMAGE = "PREFERENCE_CACHE_PROCESSED_IMAGE";
 
     private static Settings settingsInstance;
 
@@ -41,6 +42,7 @@ public class Settings {
     private boolean readMode;
     private boolean thumbnailMode;
     private boolean locationAnimate;
+    private boolean cacheProcessedImage;
 
     private SharedPreferences.Editor editor;
 
@@ -51,7 +53,7 @@ public class Settings {
         this.scrollingPauseLoad = preferences.getBoolean(PREFERENCE_SCROLLING_PAUSE_LOAD, false);
         this.showImageDownloadProgress = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS, false);
         this.mobileNetworkPauseDownload = preferences.getBoolean(PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, true);
-        this.showImageFromFlag = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, false);
+        this.showImageFromFlag = preferences.getBoolean(PREFERENCE_SHOW_IMAGE_FROM_FLAG, true);
         this.clickDisplayOnPauseDownload = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, true);
         this.clickRetryOnError = preferences.getBoolean(PREFERENCE_CLICK_DISPLAY_ON_FAILED, true);
         this.showPressedStatus = preferences.getBoolean(PREFERENCE_CLICK_SHOW_PRESSED_STATUS, true);
@@ -63,7 +65,8 @@ public class Settings {
         this.supportLargeImage = preferences.getBoolean(PREFERENCE_SUPPORT_LARGE_IMAGE, true);
         this.readMode = preferences.getBoolean(PREFERENCE_READ_MODE, true);
         this.thumbnailMode = preferences.getBoolean(PREFERENCE_THUMBNAIL_MODE, true);
-        this.locationAnimate = preferences.getBoolean(PREFERENCE_LOCATIO_ANIMATE, true);
+        this.locationAnimate = preferences.getBoolean(PREFERENCE_LOCATION_ANIMATE, true);
+        this.cacheProcessedImage = preferences.getBoolean(PREFERENCE_CACHE_PROCESSED_IMAGE, true);
     }
 
     public static Settings with(Context context) {
@@ -281,7 +284,17 @@ public class Settings {
 
     public void setLocationAnimate(boolean locationAnimate) {
         this.locationAnimate = locationAnimate;
-        editor.putBoolean(PREFERENCE_LOCATIO_ANIMATE, locationAnimate);
+        editor.putBoolean(PREFERENCE_LOCATION_ANIMATE, locationAnimate);
+        apply();
+    }
+
+    public boolean isCacheProcessedImage() {
+        return cacheProcessedImage;
+    }
+
+    public void setCacheProcessedImage(boolean cacheProcessedImage) {
+        this.cacheProcessedImage = cacheProcessedImage;
+        editor.putBoolean(PREFERENCE_CACHE_PROCESSED_IMAGE, cacheProcessedImage);
         apply();
     }
 }

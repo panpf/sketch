@@ -18,6 +18,7 @@ Sketch共有DisplayOptions `extends` LoadOptions `extends` DownloadOptions三种
 |bitmapConfig|-|null|null|
 |inPreferQualityOverSpeed|-|false|false|
 |thumbnailMode|-|false|false|
+|cacheProcessedImageInDisk|-|false|false|
 |disableCacheInMemory|-|-|false|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
@@ -65,6 +66,9 @@ displayOptions.setThumbnailMode(true);
 
 // 将图片改成圆形的
 displayOptions.setImageProcessor(new CircleImageProcessor());
+
+// 为了加快速度，将经过ImageProcessor、resize或thumbnailMode处理过的图片保存到磁盘缓存中，下次就直接读取
+displayOptions.setCacheProcessedImageInDisk(true);
 
 // 禁用内存缓存
 displayOptions.setDisableCacheInMemory(true);

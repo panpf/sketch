@@ -128,30 +128,34 @@ public class DisplayRequest extends LoadRequest {
             return;
         }
 
-        // 要使用内存缓存就必须上锁
-        ReentrantLock memoryCacheEditLock = null;
+        // 先检查内存缓存，检查的时候要先上锁
+        boolean finished = false;
         if (!displayOptions.isDisableCacheInDisk()) {
             setStatus(Status.GET_MEMORY_CACHE_EDIT_LOCK);
-            memoryCacheEditLock = getSketch().getConfiguration().getMemoryCache().getEditLock(getAttrs().getId());
+
+            ReentrantLock memoryCacheEditLock = getSketch().getConfiguration().getMemoryCache().getEditLock(getAttrs().getId());
             if (memoryCacheEditLock != null) {
                 memoryCacheEditLock.lock();
             }
+
+            finished = checkMemoryCache();
+
+            if (memoryCacheEditLock != null) {
+                memoryCacheEditLock.unlock();
+            }
         }
 
-        load();
-
-        // 解锁
-        if (memoryCacheEditLock != null) {
-            memoryCacheEditLock.unlock();
+        if (!finished) {
+            super.runLoad();
         }
     }
 
-    private void load() {
+    private boolean checkMemoryCache() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
                 printLogW("canceled", "runDownload", "get memory cache edit lock after");
             }
-            return;
+            return true;
         }
 
         // 检查内存缓存
@@ -166,7 +170,7 @@ public class DisplayRequest extends LoadRequest {
                     displayResult = new DisplayResult(new RefBitmapDrawable(cachedRefBitmap),
                             ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
                     displayCompleted();
-                    return;
+                    return true;
                 } else {
                     getSketch().getConfiguration().getMemoryCache().remove(getAttrs().getId());
                     if (Sketch.isDebugMode()) {
@@ -176,8 +180,7 @@ public class DisplayRequest extends LoadRequest {
             }
         }
 
-        // 加载
-        super.runLoad();
+        return false;
     }
 
     @Override

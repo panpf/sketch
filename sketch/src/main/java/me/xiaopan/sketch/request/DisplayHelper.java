@@ -264,6 +264,15 @@ public class DisplayHelper {
     }
 
     /**
+     * 为了加快速度，将经过ImageProcessor、resize或thumbnailMode处理过的图片保存到磁盘缓存中，下次就直接读取
+     */
+    @SuppressWarnings("unused")
+    public DisplayHelper cacheProcessedImageInDisk(){
+        displayOptions.setCacheProcessedImageInDisk(true);
+        return this;
+    }
+
+    /**
      * 禁用内存缓存
      */
     @SuppressWarnings("unused")
@@ -523,7 +532,7 @@ public class DisplayHelper {
         }
 
         // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
-        if (displayOptions.getImageProcessor() == null && displayOptions.getResize() != null) {
+        if (displayOptions.getResize() != null && displayOptions.getImageProcessor() == null) {
             displayOptions.setImageProcessor(configuration.getResizeImageProcessor());
         }
 
