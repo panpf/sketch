@@ -16,7 +16,7 @@
 
 package me.xiaopan.sketchsample;
 
-public enum OptionsType {
+public enum ImageOptions {
     /**
      * 通用矩形
      */
@@ -36,4 +36,9 @@ public enum OptionsType {
      * 窗口背景
      */
     WINDOW_BACKGROUND,
+
+    /**
+     * 圆角矩形
+     */
+    ROUND_RECT,
 }

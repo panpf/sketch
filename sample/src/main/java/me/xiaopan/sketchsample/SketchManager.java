@@ -43,30 +43,38 @@ public class SketchManager {
 
     public void initDisplayOptions() {
         TransitionImageDisplayer transitionImageDisplayer = new TransitionImageDisplayer();
-        Sketch.putOptions(OptionsType.NORMAL_RECT, new DisplayOptions()
+        Sketch.putOptions(ImageOptions.NORMAL_RECT, new DisplayOptions()
                 .setLoadingImage(R.drawable.image_loading)
                 .setErrorImage(R.drawable.image_error)
                 .setPauseDownloadImage(R.drawable.image_pause_download)
                 .setImageDisplayer(transitionImageDisplayer)
-        );
+                .setShapeSizeByFixedSize(true));
 
-        Sketch.putOptions(OptionsType.APP_ICON, new DisplayOptions()
+        Sketch.putOptions(ImageOptions.APP_ICON, new DisplayOptions()
                 .setLoadingImage(R.drawable.image_loading)
                 .setErrorImage(R.drawable.image_error)
                 .setPauseDownloadImage(R.drawable.image_pause_download)
                 .setImageShaper(new RoundRectImageShaper(SketchUtils.dp2px(context, 10)))
                 .setImageDisplayer(transitionImageDisplayer)
-        );
+                .setShapeSizeByFixedSize(true));
 
-        Sketch.putOptions(OptionsType.NORMAL_CIRCULAR, new DisplayOptions()
+        Sketch.putOptions(ImageOptions.NORMAL_CIRCULAR, new DisplayOptions()
                 .setLoadingImage(R.drawable.image_loading)
                 .setErrorImage(R.drawable.image_error)
                 .setPauseDownloadImage(R.drawable.image_pause_download)
                 .setImageDisplayer(transitionImageDisplayer)
                 .setImageShaper(new CircleImageShaper().setStroke(Color.WHITE, SketchUtils.dp2px(context, 2)))
-        );
+                .setShapeSizeByFixedSize(true));
 
-        Sketch.putOptions(OptionsType.WINDOW_BACKGROUND, new LoadOptions()
+        Sketch.putOptions(ImageOptions.ROUND_RECT, new DisplayOptions()
+                .setLoadingImage(R.drawable.image_loading)
+                .setErrorImage(R.drawable.image_error)
+                .setPauseDownloadImage(R.drawable.image_pause_download)
+                .setImageShaper(new RoundRectImageShaper(SketchUtils.dp2px(context, 10)))
+                .setImageDisplayer(new TransitionImageDisplayer())
+                .setShapeSizeByFixedSize(true));
+
+        Sketch.putOptions(ImageOptions.WINDOW_BACKGROUND, new LoadOptions()
                 .setImageProcessor(new GaussianBlurImageProcessor(true))
         );
     }

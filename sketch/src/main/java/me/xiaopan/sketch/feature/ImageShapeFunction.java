@@ -90,15 +90,27 @@ public class ImageShapeFunction extends SketchImageView.Function {
         return cornerRadius;
     }
 
-    public void setCornerRadius(float cornerRadius) {
-        setCornerRadius(cornerRadius, cornerRadius, cornerRadius, cornerRadius);
-    }
+    public void setCornerRadius(float[] cornerRadius) {
+        if (cornerRadius == null || cornerRadius.length < 8) {
+            throw new ArrayIndexOutOfBoundsException("cornerRadius must have >= 8 values");
+        }
 
-    public void setCornerRadius(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
-        this.cornerRadius = new float[]{topLeftRadius, topLeftRadius, topRightRadius, topRightRadius, bottomLeftRadius, bottomLeftRadius, bottomRightRadius, bottomRightRadius};
+        this.cornerRadius = cornerRadius;
         if (view.getWidth() != 0) {
             initImageShapePath();
         }
+    }
+
+    public void setCornerRadius(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
+        setCornerRadius(new float[]{
+                topLeftRadius, topLeftRadius,
+                topRightRadius, topRightRadius,
+                bottomLeftRadius, bottomLeftRadius,
+                bottomRightRadius, bottomRightRadius});
+    }
+
+    public void setCornerRadius(float cornerRadius) {
+        setCornerRadius(cornerRadius, cornerRadius, cornerRadius, cornerRadius);
     }
 
     public Path getClipPath() {

@@ -11,7 +11,7 @@ import java.util.List;
 
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketchsample.OptionsType;
+import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.bean.AppInfo;
 import me.xiaopan.sketchsample.util.Settings;
@@ -35,7 +35,7 @@ public class InstalledAppListAdapter extends RecyclerView.Adapter {
             return new HeaderViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app_list_header, parent, false));
         } else {
             AppInfoViewHolder appInfoViewHolder = new AppInfoViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_app, parent, false));
-            appInfoViewHolder.iconSketchImageView.setOptionsByName(OptionsType.APP_ICON);
+            appInfoViewHolder.iconSketchImageView.setOptionsByName(ImageOptions.APP_ICON);
             appInfoViewHolder.iconSketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
             appInfoViewHolder.iconSketchImageView.setImageShapeCornerRadius(SketchUtils.dp2px(parent.getContext(), 10));
             appInfoViewHolder.iconSketchImageView.setAutoApplyGlobalAttr(false);

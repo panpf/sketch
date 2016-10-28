@@ -26,7 +26,7 @@ import me.xiaopan.gohttp.JsonHttpResponseHandler;
 import me.xiaopan.gohttp.StringHttpResponseHandler;
 import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketchsample.MyFragment;
-import me.xiaopan.sketchsample.OptionsType;
+import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.DetailActivity;
 import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
@@ -223,7 +223,7 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     if (headImageView == null) {
                         View view = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_heade_image, staggeredGridView, false);
                         headImageView = (MyImageView) view.findViewById(R.id.image_headImageItem);
-                        headImageView.setOptionsByName(OptionsType.NORMAL_RECT);
+                        headImageView.setOptionsByName(ImageOptions.NORMAL_RECT);
 
                         ViewGroup.LayoutParams headerParams = headImageView.getLayoutParams();
                         headerParams.width = getActivity().getResources().getDisplayMetrics().widthPixels;

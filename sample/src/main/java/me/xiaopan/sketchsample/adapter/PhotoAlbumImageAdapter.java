@@ -13,10 +13,11 @@ import android.view.ViewGroup;
 import java.util.List;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.request.DisplayOptions;
+import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.shaper.RoundRectImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -30,7 +31,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     private int borderMargin;
     private int middleMargin;
     private int roundRadius;
-    private DisplayOptions displayOptions;
     private Settings settings;
 
     @SuppressWarnings("deprecation")
@@ -64,25 +64,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         settings = Settings.with(context);
 
         roundRadius = SketchUtils.dp2px(context, 10);
-
-//        displayOptions = new DisplayOptions()
-//                .setLoadingImage(new MakerStateImage(R.drawable.image_loading))
-//                .setErrorImage(new MakerStateImage(R.drawable.image_error))
-//                .setPauseDownloadImage(new MakerStateImage(R.drawable.image_pause_download))
-//                .setImageProcessor(new RoundRectImageProcessor(roundRadius))
-//                .setResizeByFixedSize(true)
-//                .setForceUseResize(true)
-//                .setImageDisplayer(new TransitionImageDisplayer())
-//                .setThumbnailMode(settings.isThumbnailMode());
-
-        displayOptions = new DisplayOptions()
-                .setLoadingImage(R.drawable.image_loading)
-                .setErrorImage(R.drawable.image_error)
-                .setPauseDownloadImage(R.drawable.image_pause_download)
-                .setImageShaper(new RoundRectImageShaper(roundRadius))
-                .setImageDisplayer(new TransitionImageDisplayer())
-                .setThumbnailMode(settings.isThumbnailMode())
-                .setResizeByFixedSize(true);
     }
 
     @Override
@@ -104,9 +85,15 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         ItemViewHolder itemViewHolder = new ItemViewHolder(LayoutInflater.from(context).inflate(R.layout.list_item_photo_album_image, parent, false));
 
         itemViewHolder.sketchImageView.setOnClickListener(itemClickListener);
-        itemViewHolder.sketchImageView.setOptions(displayOptions);
-        itemViewHolder.sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
-        itemViewHolder.sketchImageView.setImageShapeCornerRadius(roundRadius);
+        itemViewHolder.sketchImageView.setOptionsByName(ImageOptions.ROUND_RECT);
+
+        ImageShaper imageShaper = itemViewHolder.sketchImageView.getOptions().getImageShaper();
+        if (imageShaper != null && imageShaper instanceof RoundRectImageShaper) {
+            RoundRectImageShaper roundRectImageShaper = (RoundRectImageShaper) imageShaper;
+            itemViewHolder.sketchImageView.setImageShape(SketchImageView.ImageShape.ROUNDED_RECT);
+            itemViewHolder.sketchImageView.setImageShapeCornerRadius(roundRectImageShaper.getOuterRadii());
+        }
+
         if (itemWidth != -1) {
             ViewGroup.LayoutParams layoutParams = itemViewHolder.sketchImageView.getLayoutParams();
             layoutParams.width = itemWidth;
@@ -148,7 +135,12 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             itemViewHolder.rootView.setLayoutParams(marginLayoutParams);
         }
 
-        itemViewHolder.sketchImageView.getOptions().setThumbnailMode(settings.isThumbnailMode());
+        boolean thumbnailMode = settings.isThumbnailMode();
+        DisplayOptions options = itemViewHolder.sketchImageView.getOptions();
+        options.setThumbnailMode(thumbnailMode);
+        if (thumbnailMode && options.getResize() == null && !options.isResizeByFixedSize()) {
+            options.setResizeByFixedSize(true);
+        }
 
         itemViewHolder.sketchImageView.displayImage(imageUris.get(position));
         itemViewHolder.sketchImageView.setTag(itemViewHolder);

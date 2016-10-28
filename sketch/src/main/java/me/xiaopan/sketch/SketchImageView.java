@@ -703,9 +703,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     /**
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
-    public void setImageShapeCornerRadius(float radius) {
+    @SuppressWarnings("unused")
+    public void setImageShapeCornerRadius(float[] radiis) {
         if (imageShapeFunction != null) {
-            imageShapeFunction.setCornerRadius(radius);
+            imageShapeFunction.setCornerRadius(radiis);
         }
     }
 
@@ -716,6 +717,15 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     public void setImageShapeCornerRadius(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
         if (imageShapeFunction != null) {
             imageShapeFunction.setCornerRadius(topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius);
+        }
+    }
+
+    /**
+     * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
+     */
+    public void setImageShapeCornerRadius(float radius) {
+        if (imageShapeFunction != null) {
+            imageShapeFunction.setCornerRadius(radius);
         }
     }
 

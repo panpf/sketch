@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketchsample.OptionsType;
+import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.net.request.StarCatalogRequest;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -109,9 +109,9 @@ public class StarCatalogAdapter extends RecyclerView.Adapter {
             itemHolder.twoImageView.setOnClickListener(onClickListener);
             itemHolder.threeImageView.setOnClickListener(onClickListener);
 
-            itemHolder.oneImageView.setOptionsByName(OptionsType.NORMAL_CIRCULAR);
-            itemHolder.twoImageView.setOptionsByName(OptionsType.NORMAL_CIRCULAR);
-            itemHolder.threeImageView.setOptionsByName(OptionsType.NORMAL_CIRCULAR);
+            itemHolder.oneImageView.setOptionsByName(ImageOptions.NORMAL_CIRCULAR);
+            itemHolder.twoImageView.setOptionsByName(ImageOptions.NORMAL_CIRCULAR);
+            itemHolder.threeImageView.setOptionsByName(ImageOptions.NORMAL_CIRCULAR);
 
             itemHolder.oneImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);
             itemHolder.twoImageView.setImageShape(SketchImageView.ImageShape.CIRCLE);

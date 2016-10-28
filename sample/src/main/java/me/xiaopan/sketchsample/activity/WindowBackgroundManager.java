@@ -22,7 +22,7 @@ import me.xiaopan.sketch.request.LoadListener;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.LoadResult;
 import me.xiaopan.sketch.util.SketchUtils;
-import me.xiaopan.sketchsample.OptionsType;
+import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 
@@ -176,7 +176,7 @@ public class WindowBackgroundManager {
                 public void onCanceled(CancelCause cancelCause) {
 
                 }
-            }).maxSize(resizeWidth, resizeHeight).resize(resizeWidth, resizeHeight).optionsByName(OptionsType.WINDOW_BACKGROUND).commit();
+            }).maxSize(resizeWidth, resizeHeight).resize(resizeWidth, resizeHeight).optionsByName(ImageOptions.WINDOW_BACKGROUND).commit();
         }
     }
 }

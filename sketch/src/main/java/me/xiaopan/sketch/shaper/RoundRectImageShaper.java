@@ -56,6 +56,10 @@ public class RoundRectImageShaper implements ImageShaper {
         this(radii, radii, radii, radii);
     }
 
+    public float[] getOuterRadii() {
+        return outerRadii;
+    }
+
     @SuppressWarnings("unused")
     public int getStrokeColor() {
         return strokeColor;

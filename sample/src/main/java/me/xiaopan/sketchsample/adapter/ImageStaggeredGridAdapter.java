@@ -13,7 +13,7 @@ import com.etsy.android.grid.StaggeredGridView;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.xiaopan.sketchsample.OptionsType;
+import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.net.request.StarImageRequest;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -104,7 +104,7 @@ public class ImageStaggeredGridAdapter extends BaseAdapter {
         View headItemView = LayoutInflater.from(context).inflate(R.layout.list_item_image, viewGroup, false);
         ItemViewHolder itemViewHolder = new ItemViewHolder(headItemView);
         itemViewHolder.imageView.setOnClickListener(itemClickListener);
-        itemViewHolder.imageView.setOptionsByName(OptionsType.NORMAL_RECT);
+        itemViewHolder.imageView.setOptionsByName(ImageOptions.NORMAL_RECT);
         headItemView.setTag(itemViewHolder);
         return headItemView;
     }
