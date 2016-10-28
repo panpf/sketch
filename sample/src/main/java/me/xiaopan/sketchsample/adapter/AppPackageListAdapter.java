@@ -1,6 +1,5 @@
 package me.xiaopan.sketchsample.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,11 +22,9 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 public class AppPackageListAdapter extends RecyclerView.Adapter {
     private List<AppInfo> appInfoList;
     private long useTime = -1;
-    private Settings settings;
 
-    public AppPackageListAdapter(Context context, List<AppInfo> appInfoList) {
+    public AppPackageListAdapter(List<AppInfo> appInfoList) {
         this.appInfoList = appInfoList;
-        this.settings = Settings.with(context);
     }
 
     @Override
@@ -62,8 +59,8 @@ public class AppPackageListAdapter extends RecyclerView.Adapter {
             appInfoViewHolder.nameTextView.setText(appInfo.getName());
             appInfoViewHolder.infoTextView.setText("v" + appInfo.getVersionName() + "  |  " + appInfo.getAppSize());
 
-            appInfoViewHolder.iconSketchImageView.setShowPressedStatus(settings.isShowPressedStatus());
-            appInfoViewHolder.iconSketchImageView.setShowImageFrom(settings.isShowImageFromFlag());
+            appInfoViewHolder.iconSketchImageView.setShowPressedStatus(Settings.getBoolean(appInfoViewHolder.iconSketchImageView.getContext(), Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS));
+            appInfoViewHolder.iconSketchImageView.setShowImageFrom(Settings.getBoolean(appInfoViewHolder.iconSketchImageView.getContext(), Settings.PREFERENCE_SHOW_IMAGE_FROM_FLAG));
         }
     }
 

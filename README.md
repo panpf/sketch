@@ -14,7 +14,7 @@ Sketch是Android上一个强大且全面的图片加载器，支持GIF，手势�
 >* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``等7种URI
 >* ``支持gif图``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示gif图片，感谢koral--
 >* ``独家手势缩放和超大图支持``. 独家内置了手势缩放和分块显示超大图功能，并且结合的更好
->* ``二级缓存``. 采用LRU算法在本地和内存中缓存图片，提高图片利用率和显示速度
+>* ``两级缓存``. 采用LRU算法在本地和内存中缓存图片，提高图片利用率和显示速度
 >* ``各种列表支持``. 在各种列表（ListView、RecyclerView）中循环使用不错位，并且不占用setTag()方法
 >* ``自动防止加载过大Bitmap`` 可通过maxSize来控制加载到内存的图片的尺寸，默认为ImageView的layout_width和layout_height或屏幕的宽高
 >* ``独家TransitionDrawable支持``. 独家支持任意尺寸的两张图片使用TransitionDrawable过渡显示，保证不变形

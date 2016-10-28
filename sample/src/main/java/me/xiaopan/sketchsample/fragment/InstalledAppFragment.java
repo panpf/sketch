@@ -110,7 +110,7 @@ public class InstalledAppFragment extends MyFragment {
                 }
 
                 hintView.hidden();
-                adapter = new InstalledAppListAdapter(getActivity(), appInfoList);
+                adapter = new InstalledAppListAdapter(appInfoList);
                 contentRecyclerView.setAdapter(adapter);
                 contentRecyclerView.scheduleLayoutAnimation();
             }

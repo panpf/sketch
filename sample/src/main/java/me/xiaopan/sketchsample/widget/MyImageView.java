@@ -9,7 +9,6 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.util.Settings;
 
 public class MyImageView extends SketchImageView {
-    private Settings settings;
     private boolean autoApplyGlobalAttr = true;
 
     public MyImageView(Context context) {
@@ -23,7 +22,6 @@ public class MyImageView extends SketchImageView {
     }
 
     private void onInit(Context context) {
-        settings = Settings.with(context);
         if (!isInEditMode()) {
             setShowGifFlag(R.drawable.ic_gif);
         }
@@ -32,11 +30,11 @@ public class MyImageView extends SketchImageView {
     @Override
     public void onDisplay(UriScheme uriScheme) {
         if (autoApplyGlobalAttr) {
-            setShowPressedStatus(settings.isShowPressedStatus());
-            setShowImageFrom(settings.isShowImageFromFlag());
-            setShowDownloadProgress(settings.isShowImageDownloadProgress());
-            setClickRetryOnPauseDownload(settings.isClickDisplayOnPauseDownload());
-            setClickRetryOnError(settings.isClickRetryOnError());
+            setShowPressedStatus(Settings.getBoolean(getContext(), Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS));
+            setShowImageFrom(Settings.getBoolean(getContext(), Settings.PREFERENCE_SHOW_IMAGE_FROM_FLAG));
+            setShowDownloadProgress(Settings.getBoolean(getContext(), Settings.PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS));
+            setClickRetryOnPauseDownload(Settings.getBoolean(getContext(), Settings.PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD));
+            setClickRetryOnError(Settings.getBoolean(getContext(), Settings.PREFERENCE_CLICK_DISPLAY_ON_FAILED));
         }
 
         super.onDisplay(uriScheme);

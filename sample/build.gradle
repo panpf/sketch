@@ -1,4 +1,14 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+    }
+}
+
 apply plugin: 'com.android.application'
+apply plugin: 'com.neenbedankt.android-apt'
 
 def loadProperties(String fileName) {
     FileInputStream inputStream = new FileInputStream(new File(fileName))
@@ -67,6 +77,10 @@ dependencies {
     compile 'me.xiaopan:androidinjector:1.5.0'
     compile 'me.xiaopan:pagerslidingtabstrip:1.6.0'
     compile 'me.xiaopan:pullrefreshlayout:1.4.0'
+    compile 'me.xiaopan:assemblyadapter:2.2.0'
+
+    compile 'com.jakewharton:butterknife:8.4.0'
+    apt 'com.jakewharton:butterknife-compiler:8.4.0'
 }
 
 repositories {

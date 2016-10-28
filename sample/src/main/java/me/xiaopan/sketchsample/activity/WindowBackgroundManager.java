@@ -36,7 +36,7 @@ public class WindowBackgroundManager {
     public WindowBackgroundManager(Activity activity) {
         this.activity = activity;
         this.activity.getWindow().setFormat(PixelFormat.TRANSLUCENT); // 要先将Window的格式设为透明的，如果不这么做的话第一次改变Window的背景的话屏幕会快速的闪一下（黑色的）
-        backgroundImageView = (ImageView) activity.findViewById(R.id.image_mainLeftMenu_background);
+        backgroundImageView = (ImageView) activity.findViewById(R.id.image_main_menuBackground);
         if (backgroundImageView != null) {
             ViewGroup.LayoutParams layoutParams = backgroundImageView.getLayoutParams();
             layoutParams.width = activity.getResources().getDisplayMetrics().widthPixels;

@@ -30,13 +30,12 @@ public class SketchManager {
 
     public void initConfig() {
         Sketch.setDebugMode(BuildConfig.DEBUG);
-        Settings settings = Settings.with(context);
         Configuration sketchConfiguration = Sketch.with(context).getConfiguration();
-        sketchConfiguration.setMobileNetworkGlobalPauseDownload(settings.isMobileNetworkPauseDownload());
-        sketchConfiguration.setGlobalLowQualityImage(settings.isGlobalLowQualityImage());
-        sketchConfiguration.setGlobalInPreferQualityOverSpeed(settings.isGlobalInPreferQualityOverSpeed());
-        sketchConfiguration.setGlobalDisableCacheInDisk(settings.isGlobalDisableCacheInDisk());
-        sketchConfiguration.setGlobalDisableCacheInMemory(settings.isGlobalDisableCacheInMemory());
+        sketchConfiguration.setMobileNetworkGlobalPauseDownload(Settings.getBoolean(context, Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD));
+        sketchConfiguration.setGlobalLowQualityImage(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE));
+        sketchConfiguration.setGlobalInPreferQualityOverSpeed(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED));
+        sketchConfiguration.setGlobalDisableCacheInDisk(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK));
+        sketchConfiguration.setGlobalDisableCacheInMemory(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY));
         sketchConfiguration.setImagePreprocessor(new MyImagePreprocessor());
         sketchConfiguration.setExceptionMonitor(new MyExceptionMonitor(context));
     }

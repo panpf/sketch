@@ -14,13 +14,11 @@ import me.xiaopan.sketch.Sketch;
  */
 public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener implements AbsListView.OnScrollListener {
     private Sketch sketch;
-    private Settings settings;
     private AbsListView.OnScrollListener absListScrollListener;
     private RecyclerView.OnScrollListener recyclerScrollListener;
 
     public ScrollingPauseLoadManager(Context context) {
         this.sketch = Sketch.with(context);
-        this.settings = Settings.with(context);
     }
 
     @Override
@@ -35,7 +33,7 @@ public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener imp
     public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
 
-        if (settings.isScrollingPauseLoad() && recyclerView.getAdapter() != null) {
+        if (Settings.getBoolean(recyclerView.getContext(), Settings.PREFERENCE_SCROLLING_PAUSE_LOAD) && recyclerView.getAdapter() != null) {
             if (newState == RecyclerView.SCROLL_STATE_DRAGGING) {
                 sketch.getConfiguration().setGlobalPauseLoad(true);
             } else if (newState == RecyclerView.SCROLL_STATE_IDLE) {
@@ -53,7 +51,7 @@ public class ScrollingPauseLoadManager extends RecyclerView.OnScrollListener imp
 
     @Override
     public void onScrollStateChanged(AbsListView view, int scrollState) {
-        if (settings.isScrollingPauseLoad() && view.getAdapter() != null) {
+        if (Settings.getBoolean(view.getContext(), Settings.PREFERENCE_SCROLLING_PAUSE_LOAD) && view.getAdapter() != null) {
             ListAdapter listAdapter = view.getAdapter();
             if (listAdapter instanceof WrapperListAdapter) {
                 listAdapter = ((WrapperListAdapter) listAdapter).getWrappedAdapter();

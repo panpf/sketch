@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="4. 二级缓存. 采用LRU算法在本地和内存中缓存图片，提高图片利用率和显示速度" />
+                android:text="4. 两级缓存. 采用LRU算法在本地和内存中缓存图片，提高图片利用率和显示速度" />
 
             <TextView
                 android:layout_width="wrap_content"

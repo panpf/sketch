@@ -90,13 +90,12 @@ public class ImageFragment extends MyFragment {
 
         imageView.setAutoApplyGlobalAttr(false);
 
-        Settings settings = Settings.with(getActivity());
-        imageView.setSupportZoom(settings.isSupportZoom());
-        imageView.setSupportLargeImage(settings.isSupportLargeImage());
+        imageView.setSupportZoom(Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_SUPPORT_ZOOM));
+        imageView.setSupportLargeImage(Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_SUPPORT_LARGE_IMAGE));
 
         // 开启阅读模式
         if (imageView.isSupportZoom()) {
-            imageView.getImageZoomer().setReadMode(settings.isReadMode());
+            imageView.getImageZoomer().setReadMode(Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_READ_MODE));
         }
 
         // 实时显示缩放比例
@@ -322,8 +321,7 @@ public class ImageFragment extends MyFragment {
         final float widthScale = (float) drawable.getIntrinsicWidth() / mappingView.getWidth();
         final float heightScale = (float) drawable.getIntrinsicHeight() / mappingView.getHeight();
 
-        Settings settings = Settings.with(getActivity());
-        imageView.getImageZoomer().location(x * widthScale, y * heightScale, settings.isLocationAnimate());
+        imageView.getImageZoomer().location(x * widthScale, y * heightScale, Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_LOCATION_ANIMATE));
         return true;
     }
 }

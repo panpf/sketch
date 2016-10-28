@@ -23,8 +23,11 @@ import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.format.Formatter;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -32,27 +35,39 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectParentMember;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.BuildConfig;
 import me.xiaopan.sketchsample.MyBaseActivity;
 import me.xiaopan.sketchsample.NotificationService;
 import me.xiaopan.sketchsample.R;
+import me.xiaopan.sketchsample.adapter.itemfactory.CheckMenuItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.InfoMenuItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.MenuTitleItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.PageMenuItemFactory;
+import me.xiaopan.sketchsample.bean.CheckMenu;
+import me.xiaopan.sketchsample.bean.InfoMenu;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
+import me.xiaopan.sketchsample.fragment.InstalledAppFragment;
 import me.xiaopan.sketchsample.fragment.LargesFragment;
 import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.StarIndexFragment;
+import me.xiaopan.sketchsample.fragment.Test2Fragment;
 import me.xiaopan.sketchsample.fragment.TestFragment;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.DeviceUtils;
@@ -63,66 +78,26 @@ import me.xiaopan.sketchsample.util.Settings;
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
-public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener, AppListFragment.GetAppListTagStripListener, LargesFragment.GetLargeTagStripListener, View.OnClickListener, WindowBackgroundManager.OnSetListener, AboutFragment.TogglePageListener {
-    // TODO: 16/10/28 改造这个菜单
-    @InjectView(R.id.layout_main_content) private View contentView;
-    @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
-    @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
-    @InjectView(R.id.tabStrip_main_large) private PagerSlidingTabStrip largeTabStrip;
-    @InjectView(R.id.drawer_main_content) private DrawerLayout drawerLayout;
-    @InjectView(R.id.layout_main_leftMenu) private View leftMenuView;
-    @InjectView(R.id.layout_main_leftMenuContent) private View leftMenuContentView;
-    @InjectView(R.id.button_main_search) private View searchButton;
-    @InjectView(R.id.button_main_star) private View starButton;
-    @InjectView(R.id.button_main_photoAlbum) private View photoAlbumButton;
-    @InjectView(R.id.button_main_appList) private View appListButton;
-    @InjectView(R.id.button_main_largeImage) private View largeImageButton;
-    @InjectView(R.id.button_main_test) private View testButton;
-    @InjectView(R.id.button_main_about) private View aboutButton;
-    @InjectView(R.id.item_main_scrollingPauseLoad) private View scrollingPauseLoadItem;
-    @InjectView(R.id.checkBox_main_scrollingPauseLoad) private CheckBox scrollingPauseLoadCheckBox;
-    @InjectView(R.id.item_main_mobileNetworkPauseDownload) private View mobileNetworkPauseDownloadItem;
-    @InjectView(R.id.checkBox_main_mobileNetworkPauseDownload) private CheckBox mobileNetworkPauseDownloadCheckBox;
-    @InjectView(R.id.item_main_showImageDownloadProgress) private View showImageDownloadProgressItem;
-    @InjectView(R.id.checkBox_main_showImageDownloadProgress) private CheckBox showImageDownloadProgressCheckBox;
-    @InjectView(R.id.item_main_showImageFromFlag) private View showImageFromFlagItem;
-    @InjectView(R.id.checkBox_main_showImageFromFlag) private CheckBox showImageFromFlagCheckBox;
-    @InjectView(R.id.item_main_clickRetryOnError) private View clickDisplayOnErrorItem;
-    @InjectView(R.id.checkBox_main_clickRetryOnError) private CheckBox clickRetryOnErrorCheckBox;
-    @InjectView(R.id.item_main_clickDisplayOnPauseDownload) private View clickDisplayOnPauseDownloadItem;
-    @InjectView(R.id.checkBox_main_clickDisplayOnPauseDownload) private CheckBox clickDisplayOnPauseDownloadCheckBox;
-    @InjectView(R.id.item_main_showPressedStatus) private View showPressedStatusItem;
-    @InjectView(R.id.checkBox_main_showPressedStatus) private CheckBox showPressedStatusCheckBox;
-    @InjectView(R.id.item_main_cleanMemoryCache) private View cleanMemoryCacheItem;
-    @InjectView(R.id.text_main_memoryCacheSize) private TextView memoryCacheSizeTextView;
-    @InjectView(R.id.item_main_cleanPlaceholderMemoryCache) private View cleanPlaceholderMemoryCacheItem;
-    @InjectView(R.id.text_main_placeholderMemoryCacheSize) private TextView placeholderMemoryCacheSizeTextView;
-    @InjectView(R.id.item_main_cleanDiskCache) private View cleanDiskCacheItem;
-    @InjectView(R.id.text_main_diskCacheSize) private TextView diskCacheSizeTextView;
-    @InjectView(R.id.item_main_globalDisableCacheInMemory) private View cacheMemoryItem;
-    @InjectView(R.id.checkBox_main_globalDisableCacheInMemory) private CheckBox globalDisableCacheInMemoryCheckBox;
-    @InjectView(R.id.item_main_globalDisableCacheInDisk) private View cacheInDiskItem;
-    @InjectView(R.id.checkBox_main_globalDisableCacheInDisk) private CheckBox globalDisableCacheInDiskCheckBox;
-    @InjectView(R.id.item_main_globalLowQualityImage) private View lowQualityImageItem;
-    @InjectView(R.id.checkBox_main_globalLowQualityImage) private CheckBox globalLowQualityImageCheckBox;
-    @InjectView(R.id.item_main_globalInPreferQualityOverSpeed) private View inPreferQualityOverSpeedItem;
-    @InjectView(R.id.checkBox_main_globalInPreferQualityOverSpeed) private CheckBox globalInPreferQualityOverSpeedCheckBox;
-    @InjectView(R.id.item_main_supportZoom) private View supportZoomItem;
-    @InjectView(R.id.checkBox_main_supportZoom) private CheckBox supportZoomCheckBox;
-    @InjectView(R.id.item_main_supportLargeImage) private View supportLargeImageItem;
-    @InjectView(R.id.checkBox_main_supportLargeImage) private CheckBox supportLargeImageCheckBox;
-    @InjectView(R.id.item_main_readMode) private View readModeItem;
-    @InjectView(R.id.checkBox_main_readMode) private CheckBox readModeCheckBox;
-    @InjectView(R.id.item_main_thumbnailMode) private View thumbnailModeItem;
-    @InjectView(R.id.checkBox_main_thumbnailMode) private CheckBox thumbnailModeCheckBox;
-    @InjectView(R.id.item_main_locationAnimate) private View locationAnimateItem;
-    @InjectView(R.id.checkBox_main_locationAnimate) private CheckBox locationAnimateCheckBox;
-    @InjectView(R.id.item_main_cacheProcessedImage) private View cacheProcessedImageItem;
-    @InjectView(R.id.checkBox_main_cacheProcessedImage) private CheckBox cacheProcessedImageCheckBox;
+public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener,
+        AppListFragment.GetAppListTagStripListener, LargesFragment.GetLargeTagStripListener,
+        WindowBackgroundManager.OnSetListener, AboutFragment.TogglePageListener {
+    @InjectView(R.id.layout_main_content)
+    private View contentView;
+    @InjectView(R.id.tabStrip_main_star)
+    private PagerSlidingTabStrip starTabStrip;
+    @InjectView(R.id.tabStrip_main_appList)
+    private PagerSlidingTabStrip appListTabStrip;
+    @InjectView(R.id.tabStrip_main_large)
+    private PagerSlidingTabStrip largeTabStrip;
+    @InjectView(R.id.drawer_main_content)
+    private DrawerLayout drawerLayout;
+    @InjectView(R.id.recycler_main_menu)
+    private RecyclerView menuRecyclerView;
+    @InjectView(R.id.layout_main_leftMenu)
+    private ViewGroup leftMenuView;
 
     private long lastClickBackTime;
-    private Type type;
-    private Settings settings;
+    private Page page;
 
     private WindowBackgroundManager windowBackgroundManager;
     private ActionBarDrawerToggle toggleDrawable;
@@ -130,13 +105,9 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        onInitLayoutTopPadding();
 
         windowBackgroundManager = new WindowBackgroundManager(this);
-
         drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, Gravity.LEFT);
-//        drawerLayout.setSliderFadeColor(Color.parseColor("#00ffffff"));
-        initSlidingPanLayoutSlideListener();
 
         // 设置左侧菜单的宽度为屏幕的一半
         ViewGroup.LayoutParams params = leftMenuView.getLayoutParams();
@@ -145,84 +116,170 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
-//        toggleDrawable = new ActionBarDrawerToggle(this, new SlidingPaneLayoutCompatDrawerLayout(getBaseContext(), drawerLayout), toolbar, R.string.drawer_open, R.string.drawer_close);
         toggleDrawable = new ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.drawer_open, R.string.drawer_close);
-
-        settings = Settings.with(getBaseContext());
-        scrollingPauseLoadCheckBox.setChecked(settings.isScrollingPauseLoad());
-        showImageDownloadProgressCheckBox.setChecked(settings.isShowImageDownloadProgress());
-        mobileNetworkPauseDownloadCheckBox.setChecked(settings.isMobileNetworkPauseDownload());
-        showImageFromFlagCheckBox.setChecked(settings.isShowImageFromFlag());
-        clickRetryOnErrorCheckBox.setChecked(settings.isClickRetryOnError());
-        clickDisplayOnPauseDownloadCheckBox.setChecked(settings.isClickDisplayOnPauseDownload());
-        showPressedStatusCheckBox.setChecked(settings.isShowPressedStatus());
-        globalDisableCacheInMemoryCheckBox.setChecked(settings.isGlobalDisableCacheInMemory());
-        globalDisableCacheInDiskCheckBox.setChecked(settings.isGlobalDisableCacheInDisk());
-        globalLowQualityImageCheckBox.setChecked(settings.isGlobalLowQualityImage());
-        globalInPreferQualityOverSpeedCheckBox.setChecked(settings.isGlobalInPreferQualityOverSpeed());
-        supportZoomCheckBox.setChecked(settings.isSupportZoom());
-        supportLargeImageCheckBox.setChecked(settings.isSupportLargeImage());
-        readModeCheckBox.setChecked(settings.isReadMode());
-        thumbnailModeCheckBox.setChecked(settings.isThumbnailMode());
-        locationAnimateCheckBox.setChecked(settings.isThumbnailMode());
-        cacheProcessedImageCheckBox.setChecked(settings.isCacheProcessedImage());
-
-        starButton.setOnClickListener(this);
-        searchButton.setOnClickListener(this);
-        photoAlbumButton.setOnClickListener(this);
-        appListButton.setOnClickListener(this);
-        largeImageButton.setOnClickListener(this);
-        testButton.setOnClickListener(this);
-        aboutButton.setOnClickListener(this);
-        showImageDownloadProgressItem.setOnClickListener(this);
-        scrollingPauseLoadItem.setOnClickListener(this);
-        mobileNetworkPauseDownloadItem.setOnClickListener(this);
-        showImageFromFlagItem.setOnClickListener(this);
-        clickDisplayOnErrorItem.setOnClickListener(this);
-        clickDisplayOnPauseDownloadItem.setOnClickListener(this);
-        cleanDiskCacheItem.setOnClickListener(this);
-        cleanMemoryCacheItem.setOnClickListener(this);
-        cleanPlaceholderMemoryCacheItem.setOnClickListener(this);
-        showPressedStatusItem.setOnClickListener(this);
-        cacheInDiskItem.setOnClickListener(this);
-        cacheMemoryItem.setOnClickListener(this);
-        lowQualityImageItem.setOnClickListener(this);
-        inPreferQualityOverSpeedItem.setOnClickListener(this);
-        supportZoomItem.setOnClickListener(this);
-        supportLargeImageItem.setOnClickListener(this);
-        readModeItem.setOnClickListener(this);
-        thumbnailModeItem.setOnClickListener(this);
-        locationAnimateItem.setOnClickListener(this);
-        cacheProcessedImageItem.setOnClickListener(this);
 
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
         largeTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"WORLD", "QMSHT", "CWB", "CARD"}, getBaseContext()));
 
-        if (!BuildConfig.DEBUG) {
-            testButton.setVisibility(View.GONE);
+        startService(new Intent(getBaseContext(), NotificationService.class));
+        initViews();
+        switchPage(Page.LARGE_IMAGE);
+    }
+
+    private void initViews() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int statusBarHeight = DeviceUtils.getStatusBarHeight(getResources());
+            if (statusBarHeight > 0) {
+                contentView.setPadding(contentView.getPaddingLeft(), statusBarHeight, contentView.getPaddingRight(), contentView.getPaddingBottom());
+                menuRecyclerView.setPadding(contentView.getPaddingLeft(), statusBarHeight, contentView.getPaddingRight(), contentView.getPaddingBottom());
+            } else {
+                drawerLayout.setFitsSystemWindows(true);
+            }
         }
 
-        largeImageButton.performClick();
+        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
+            @Override
+            public void onDrawerSlide(View drawerView, float slideOffset) {
+                toggleDrawable.onDrawerSlide(drawerView, slideOffset);
+            }
 
-        startService(new Intent(getBaseContext(), NotificationService.class));
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                toggleDrawable.onDrawerOpened(drawerView);
+                menuRecyclerView.getAdapter().notifyDataSetChanged();
+            }
+
+            @Override
+            public void onDrawerClosed(View drawerView) {
+                toggleDrawable.onDrawerClosed(drawerView);
+            }
+
+            @Override
+            public void onDrawerStateChanged(int newState) {
+
+            }
+        });
+
+        List<Object> menuList = new ArrayList<Object>();
+
+        final View.OnClickListener menuClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.closeDrawer(Gravity.LEFT);
+            }
+        };
+
+        menuList.add("页面");
+        for (Page page : Page.values()) {
+            if (!page.isDisable()) {
+                menuList.add(page);
+            }
+        }
+
+        menuList.add("内存缓存");
+        menuList.add(new CheckMenu(this, "全局禁用内存缓存", Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY, null, menuClickListener));
+        menuList.add(new InfoMenu("点击清除内存缓存") {
+            @Override
+            public String getInfo() {
+                MemoryCache memoryCache = Sketch.with(getBaseContext()).getConfiguration().getMemoryCache();
+                String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), memoryCache.getSize());
+                String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), memoryCache.getMaxSize());
+                return usedSizeFormat + "/" + maxSizeFormat;
+            }
+
+            @Override
+            public void onClick(AssemblyRecyclerAdapter adapter) {
+                Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
+                menuClickListener.onClick(null);
+                adapter.notifyDataSetChanged();
+            }
+        });
+        menuList.add(new InfoMenu("点击清除占位图内存缓存") {
+            @Override
+            public String getInfo() {
+                MemoryCache stateImageMemoryCache = Sketch.with(getBaseContext()).getConfiguration().getStateImageMemoryCache();
+                String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), stateImageMemoryCache.getSize());
+                String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), stateImageMemoryCache.getMaxSize());
+                return usedSizeFormat + "/" + maxSizeFormat;
+            }
+
+            @Override
+            public void onClick(AssemblyRecyclerAdapter adapter) {
+                Sketch.with(getBaseContext()).getConfiguration().getStateImageMemoryCache().clear();
+                menuClickListener.onClick(null);
+                adapter.notifyDataSetChanged();
+            }
+        });
+
+        menuList.add("磁盘缓存");
+        menuList.add(new CheckMenu(this, "全局禁用磁盘缓存", Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK, null, menuClickListener));
+        menuList.add(new InfoMenu("点击清除磁盘缓存") {
+            @Override
+            public String getInfo() {
+                DiskCache diskCache = Sketch.with(getBaseContext()).getConfiguration().getDiskCache();
+                String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), diskCache.getSize());
+                String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), diskCache.getMaxSize());
+                return usedSizeFormat + "/" + maxSizeFormat;
+            }
+
+            @Override
+            public void onClick(final AssemblyRecyclerAdapter adapter) {
+                new AsyncTask<Integer, Integer, Integer>() {
+                    @Override
+                    protected Integer doInBackground(Integer... params) {
+                        Sketch.with(getBaseContext()).getConfiguration().getDiskCache().clear();
+                        return null;
+                    }
+
+                    @Override
+                    protected void onPostExecute(Integer integer) {
+                        super.onPostExecute(integer);
+                        menuClickListener.onClick(null);
+                        adapter.notifyDataSetChanged();
+                    }
+                }.execute(0);
+            }
+        });
+
+        menuList.add("手势缩放与超大图");
+        menuList.add(new CheckMenu(this, "开启手势缩放", Settings.PREFERENCE_SUPPORT_ZOOM, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "开启分块显示超大图", Settings.PREFERENCE_SUPPORT_LARGE_IMAGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "使用阅读模式", Settings.PREFERENCE_READ_MODE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "定位时显示动画", Settings.PREFERENCE_LOCATION_ANIMATE, null, menuClickListener));
+
+        menuList.add("解码");
+        menuList.add(new CheckMenu(this, "全局解码时质量优先", Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "全局使用低质量图片", Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "使用缩略图模式", Settings.PREFERENCE_THUMBNAIL_MODE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "缓存处理过的图片", Settings.PREFERENCE_CACHE_PROCESSED_IMAGE, null, menuClickListener));
+
+        menuList.add("小功能");
+        menuList.add(new CheckMenu(this, "显示按下状态", Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "显示图片来源角标", Settings.PREFERENCE_SHOW_IMAGE_FROM_FLAG, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "显示图片下载进度", Settings.PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "暂停下载时点击显示图片", Settings.PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "显示失败时点击重试", Settings.PREFERENCE_CLICK_DISPLAY_ON_FAILED, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "列表滑动时不加载新图片", Settings.PREFERENCE_SCROLLING_PAUSE_LOAD, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "移动网络下不下载新图片", Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, null, menuClickListener));
+
+        AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(menuList);
+        adapter.addItemFactory(new MenuTitleItemFactory());
+        adapter.addItemFactory(new PageMenuItemFactory(new PageMenuItemFactory.OnClickItemListener() {
+            @Override
+            public void onClickItem(Page page) {
+                switchPage(page);
+            }
+        }));
+        adapter.addItemFactory(new CheckMenuItemFactory());
+        adapter.addItemFactory(new InfoMenuItemFactory());
+        menuRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+        menuRecyclerView.setAdapter(adapter);
     }
 
     @Override
     protected boolean isDisableSetFitsSystemWindows() {
         return true;
-    }
-
-    private void onInitLayoutTopPadding() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int statusBarHeight = DeviceUtils.getStatusBarHeight(getResources());
-            if (statusBarHeight > 0) {
-                contentView.setPadding(contentView.getPaddingLeft(), statusBarHeight, contentView.getPaddingRight(), contentView.getPaddingBottom());
-                leftMenuContentView.setPadding(contentView.getPaddingLeft(), statusBarHeight, contentView.getPaddingRight(), contentView.getPaddingBottom());
-            } else {
-                drawerLayout.setFitsSystemWindows(true);
-            }
-        }
     }
 
     @Override
@@ -242,53 +299,40 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         toggleDrawable.onConfigurationChanged(newConfig);
     }
 
-    private void initSlidingPanLayoutSlideListener() {
-        drawerLayout.setDrawerListener(new DrawerLayout.DrawerListener() {
-            @Override
-            public void onDrawerSlide(View drawerView, float slideOffset) {
-                toggleDrawable.onDrawerSlide(drawerView, slideOffset);
-            }
+    private void switchPage(Page newPage) {
+        if (this.page == newPage) {
+            return;
+        }
+        this.page = newPage;
 
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                toggleDrawable.onDrawerOpened(drawerView);
-                refreshMemoryCacheSizeInfo();
-                refreshStateMemoryCacheSizeInfo();
-                refreshDiskCacheSizeInfo();
-            }
+        if (page == Page.STAR) {
+            AnimationUtils.visibleViewByAlpha(starTabStrip);
+        } else {
+            AnimationUtils.invisibleViewByAlpha(starTabStrip);
+        }
+        if (page == Page.APP_LIST) {
+            AnimationUtils.visibleViewByAlpha(appListTabStrip);
+        } else {
+            AnimationUtils.invisibleViewByAlpha(appListTabStrip);
+        }
+        if (page == Page.LARGE_IMAGE) {
+            AnimationUtils.visibleViewByAlpha(largeTabStrip);
+        } else {
+            AnimationUtils.invisibleViewByAlpha(largeTabStrip);
+        }
 
-            @Override
-            public void onDrawerClosed(View drawerView) {
-                toggleDrawable.onDrawerClosed(drawerView);
-            }
+        getSupportActionBar().setTitle(page.getName());
+        getSupportFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
+                .replace(R.id.frame_main_content, page.getFragment())
+                .commit();
 
+        drawerLayout.post(new Runnable() {
             @Override
-            public void onDrawerStateChanged(int newState) {
-
+            public void run() {
+                drawerLayout.closeDrawer(Gravity.LEFT);
             }
         });
-    }
-
-    private void refreshMemoryCacheSizeInfo() {
-        String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getSize());
-        String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getMaxSize());
-        String cacheInfo = usedSizeFormat + "/" + maxSizeFormat;
-        memoryCacheSizeTextView.setText(cacheInfo);
-    }
-
-    private void refreshStateMemoryCacheSizeInfo() {
-        MemoryCache stateImageMemoryCache = Sketch.with(getBaseContext()).getConfiguration().getStateImageMemoryCache();
-        String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), stateImageMemoryCache.getSize());
-        String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), stateImageMemoryCache.getMaxSize());
-        String cacheInfo = usedSizeFormat + "/" + maxSizeFormat;
-        placeholderMemoryCacheSizeTextView.setText(cacheInfo);
-    }
-
-    private void refreshDiskCacheSizeInfo() {
-        String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getDiskCache().getSize());
-        String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getDiskCache().getMaxSize());
-        String cacheInfo = usedSizeFormat + "/" + maxSizeFormat;
-        diskCacheSizeTextView.setText(cacheInfo);
     }
 
     @Override
@@ -328,241 +372,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     }
 
     @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button_main_about:
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                if (type != Type.ABOUT) {
-                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
-                    getSupportActionBar().setTitle("关于Sketch");
-                    type = Type.ABOUT;
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                            .replace(R.id.frame_main_content, new AboutFragment())
-                            .commit();
-                }
-                break;
-            case R.id.button_main_appList:
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                if (type != Type.APP_LIST) {
-                    getSupportActionBar().setTitle("本地APP");
-                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
-                    AnimationUtils.visibleViewByAlpha(appListTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
-                    type = Type.APP_LIST;
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                            .replace(R.id.frame_main_content, new AppListFragment())
-                            .commit();
-                }
-                break;
-            case R.id.button_main_photoAlbum:
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                if (type != Type.LOCAL_PHOTO_ALBUM) {
-                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
-                    getSupportActionBar().setTitle("本地相册");
-                    type = Type.LOCAL_PHOTO_ALBUM;
-                    getSupportFragmentManager()
-                            .beginTransaction()
-                            .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                            .replace(R.id.frame_main_content, new PhotoAlbumFragment())
-                            .commit();
-                }
-                break;
-            case R.id.button_main_search:
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                if (type != Type.SEARCH) {
-                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
-                    getSupportActionBar().setTitle("图片搜索");
-                    type = Type.SEARCH;
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                            .replace(R.id.frame_main_content, new SearchFragment())
-                            .commit();
-                }
-                break;
-            case R.id.button_main_star:
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                if (type != Type.STAR) {
-                    getSupportActionBar().setTitle("明星图片");
-                    AnimationUtils.visibleViewByAlpha(starTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
-                    type = Type.STAR;
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                            .replace(R.id.frame_main_content, new StarIndexFragment())
-                            .commit();
-                }
-                break;
-            case R.id.button_main_largeImage:
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                if (type != Type.LARGE_IMAGE) {
-                    getSupportActionBar().setTitle("超大图片");
-                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
-                    AnimationUtils.visibleViewByAlpha(largeTabStrip);
-                    type = Type.LARGE_IMAGE;
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                            .replace(R.id.frame_main_content, new LargesFragment())
-                            .commit();
-                }
-                break;
-            case R.id.button_main_test:
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                if (type != Type.TEST) {
-                    getSupportActionBar().setTitle("测试");
-                    AnimationUtils.invisibleViewByAlpha(starTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(appListTabStrip);
-                    AnimationUtils.invisibleViewByAlpha(largeTabStrip);
-                    type = Type.TEST;
-                    getSupportFragmentManager().beginTransaction()
-                            .setCustomAnimations(R.anim.window_push_enter, R.anim.window_push_exit)
-                            .replace(R.id.frame_main_content, new TestFragment())
-                            .commit();
-                }
-                break;
-            case R.id.item_main_mobileNetworkPauseDownload:
-                boolean newMobileNetStopDownloadValue = !settings.isMobileNetworkPauseDownload();
-                settings.setMobileNetworkPauseDownload(newMobileNetStopDownloadValue);
-                mobileNetworkPauseDownloadCheckBox.setChecked(newMobileNetStopDownloadValue);
-                Sketch.with(getBaseContext()).getConfiguration().setMobileNetworkGlobalPauseDownload(newMobileNetStopDownloadValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_scrollingPauseLoad:
-                boolean newPauseLoadValue = !settings.isScrollingPauseLoad();
-                settings.setScrollingPauseLoad(newPauseLoadValue);
-                scrollingPauseLoadCheckBox.setChecked(newPauseLoadValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_showImageDownloadProgress:
-                boolean newShowProgressValue = !settings.isShowImageDownloadProgress();
-                settings.setShowImageDownloadProgress(newShowProgressValue);
-                showImageDownloadProgressCheckBox.setChecked(newShowProgressValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_showImageFromFlag:
-                boolean newShowImageFromFlag = !settings.isShowImageFromFlag();
-                settings.setShowImageFromFlag(newShowImageFromFlag);
-                showImageFromFlagCheckBox.setChecked(newShowImageFromFlag);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_clickRetryOnError:
-                boolean newClickRetryOnError = !settings.isClickRetryOnError();
-                settings.setClickRetryOnError(newClickRetryOnError);
-                clickRetryOnErrorCheckBox.setChecked(newClickRetryOnError);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_clickDisplayOnPauseDownload:
-                boolean newClickDisplayOnPauseDownload = !settings.isClickDisplayOnPauseDownload();
-                settings.setClickDisplayOnPauseDownload(newClickDisplayOnPauseDownload);
-                clickDisplayOnPauseDownloadCheckBox.setChecked(newClickDisplayOnPauseDownload);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_cleanMemoryCache:
-                Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
-                refreshMemoryCacheSizeInfo();
-                break;
-            case R.id.item_main_cleanPlaceholderMemoryCache:
-                Sketch.with(getBaseContext()).getConfiguration().getStateImageMemoryCache().clear();
-                refreshStateMemoryCacheSizeInfo();
-                break;
-            case R.id.item_main_cleanDiskCache:
-                new AsyncTask<Integer, Integer, Integer>() {
-                    @Override
-                    protected Integer doInBackground(Integer... params) {
-                        Sketch.with(getBaseContext()).getConfiguration().getDiskCache().clear();
-                        return null;
-                    }
-
-                    @Override
-                    protected void onPostExecute(Integer integer) {
-                        super.onPostExecute(integer);
-                        refreshDiskCacheSizeInfo();
-                    }
-                }.execute(0);
-                break;
-            case R.id.item_main_showPressedStatus:
-                boolean newShowPressedStatusValue = !settings.isShowPressedStatus();
-                showPressedStatusCheckBox.setChecked(newShowPressedStatusValue);
-                settings.setShowPressedStatus(newShowPressedStatusValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_globalDisableCacheInDisk:
-                boolean newGlobalDisableCacheInDiskValue = !settings.isGlobalDisableCacheInDisk();
-                settings.setGlobalDisableCacheInDisk(newGlobalDisableCacheInDiskValue);
-                globalDisableCacheInDiskCheckBox.setChecked(newGlobalDisableCacheInDiskValue);
-                Sketch.with(getBaseContext()).getConfiguration().setGlobalDisableCacheInDisk(newGlobalDisableCacheInDiskValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_globalDisableCacheInMemory:
-                boolean newGlobalDisableCacheInMemoryValue = !settings.isGlobalDisableCacheInMemory();
-                globalDisableCacheInMemoryCheckBox.setChecked(newGlobalDisableCacheInMemoryValue);
-                settings.setGlobalDisableCacheInMemory(newGlobalDisableCacheInMemoryValue);
-                Sketch.with(getBaseContext()).getConfiguration().setGlobalDisableCacheInMemory(newGlobalDisableCacheInMemoryValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_globalLowQualityImage:
-                boolean newGlobalLowQualityImageValue = !settings.isGlobalLowQualityImage();
-                globalLowQualityImageCheckBox.setChecked(newGlobalLowQualityImageValue);
-                settings.setGlobalLowQualityImage(newGlobalLowQualityImageValue);
-                Sketch.with(getBaseContext()).getConfiguration().setGlobalLowQualityImage(newGlobalLowQualityImageValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_globalInPreferQualityOverSpeed:
-                boolean globalInPreferQualityOverSpeed = !settings.isGlobalInPreferQualityOverSpeed();
-                globalInPreferQualityOverSpeedCheckBox.setChecked(globalInPreferQualityOverSpeed);
-                settings.setGlobalInPreferQualityOverSpeed(globalInPreferQualityOverSpeed);
-                Sketch.with(getBaseContext()).getConfiguration().setGlobalInPreferQualityOverSpeed(globalInPreferQualityOverSpeed);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_supportZoom:
-                boolean newSupportZoom = !settings.isSupportZoom();
-                supportZoomCheckBox.setChecked(newSupportZoom);
-                settings.setSupportZoom(newSupportZoom);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_supportLargeImage:
-                boolean newLargeSupportImageValue = !settings.isSupportLargeImage();
-                supportLargeImageCheckBox.setChecked(newLargeSupportImageValue);
-                settings.setSupportLargeImage(newLargeSupportImageValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_readMode:
-                boolean newReadModeValue = !settings.isReadMode();
-                readModeCheckBox.setChecked(newReadModeValue);
-                settings.setReadMode(newReadModeValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_thumbnailMode:
-                boolean newThumbnailModeValue = !settings.isThumbnailMode();
-                thumbnailModeCheckBox.setChecked(newThumbnailModeValue);
-                settings.setThumbnailMode(newThumbnailModeValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_locationAnimate:
-                boolean newLocationAnimateValue = !settings.isLocationAnimate();
-                locationAnimateCheckBox.setChecked(newLocationAnimateValue);
-                settings.setLocationAnimate(newLocationAnimateValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-            case R.id.item_main_cacheProcessedImage:
-                boolean newCacheProcessedImageValue = !settings.isCacheProcessedImage();
-                cacheProcessedImageCheckBox.setChecked(newCacheProcessedImageValue);
-                settings.setCacheProcessedImage(newCacheProcessedImageValue);
-                drawerLayout.closeDrawer(Gravity.LEFT);
-                break;
-        }
-    }
-
-    @Override
     public void onSetWindowBackground(String currentBackgroundUri, Bitmap bitmap) {
         windowBackgroundManager.setBackground(currentBackgroundUri, bitmap);
     }
@@ -580,7 +389,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
     @Override
     public void onToggleToGifSample() {
-        searchButton.performClick();
+        switchPage(Page.SEARCH);
     }
 
     @Override
@@ -600,14 +409,49 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         return largeTabStrip;
     }
 
-    private enum Type {
-        STAR,
-        SEARCH,
-        LOCAL_PHOTO_ALBUM,
-        ABOUT,
-        APP_LIST,
-        LARGE_IMAGE,
-        TEST,
+    public enum Page {
+        STAR("明星图片", StarIndexFragment.class),
+        SEARCH("图片搜索", SearchFragment.class),
+        PHOTO_ALBUM("本地相册", PhotoAlbumFragment.class),
+        APP_LIST("本地APP", InstalledAppFragment.class),
+        LARGE_IMAGE("超大图片", LargesFragment.class),
+        TES1("测试1", TestFragment.class, !BuildConfig.DEBUG),
+        TES2("测试2", Test2Fragment.class, !BuildConfig.DEBUG),
+        ABOUT("关于", AboutFragment.class),;
+
+        private String name;
+        private Class<? extends Fragment> fragmentClass;
+        private boolean disable;
+
+        Page(String name, Class<? extends Fragment> fragmentClass, boolean disable) {
+            this.name = name;
+            this.fragmentClass = fragmentClass;
+            this.disable = disable;
+        }
+
+        Page(String name, Class<? extends Fragment> fragmentClass) {
+            this(name, fragmentClass, false);
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public Fragment getFragment() {
+            try {
+                return fragmentClass.newInstance();
+            } catch (InstantiationException e) {
+                e.printStackTrace();
+                return null;
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
+                return null;
+            }
+        }
+
+        public boolean isDisable() {
+            return disable;
+        }
     }
 
     private static class TitleTabFactory implements PagerSlidingTabStrip.TabViewFactory {

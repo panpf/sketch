@@ -195,7 +195,7 @@ public class AppPackageFragment extends MyFragment {
                 }
 
                 hintView.hidden();
-                adapter = new AppPackageListAdapter(getActivity(), appInfoList);
+                adapter = new AppPackageListAdapter(appInfoList);
                 adapter.setUseTime(System.currentTimeMillis() - time);
                 contentRecyclerView.setAdapter(adapter);
                 contentRecyclerView.scheduleLayoutAnimation();

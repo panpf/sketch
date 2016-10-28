@@ -31,7 +31,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     private int borderMargin;
     private int middleMargin;
     private int roundRadius;
-    private Settings settings;
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -60,8 +59,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             int maxScreenWidth = context.getResources().getDisplayMetrics().widthPixels - ((borderMargin * (spanCount + 1)));
             itemWidth = maxScreenWidth / spanCount;
         }
-
-        settings = Settings.with(context);
 
         roundRadius = SketchUtils.dp2px(context, 10);
     }
@@ -135,10 +132,10 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             itemViewHolder.rootView.setLayoutParams(marginLayoutParams);
         }
 
-        boolean thumbnailMode = settings.isThumbnailMode();
+        boolean thumbnailMode = Settings.getBoolean(itemViewHolder.sketchImageView.getContext(), Settings.PREFERENCE_THUMBNAIL_MODE);
         DisplayOptions options = itemViewHolder.sketchImageView.getOptions();
         options.setThumbnailMode(thumbnailMode);
-        options.setCacheProcessedImageInDisk(settings.isCacheProcessedImage());
+        options.setCacheProcessedImageInDisk(Settings.getBoolean(itemViewHolder.sketchImageView.getContext(), Settings.PREFERENCE_CACHE_PROCESSED_IMAGE));
         if (thumbnailMode && options.getResize() == null && !options.isResizeByFixedSize()) {
             options.setResizeByFixedSize(true);
         }
