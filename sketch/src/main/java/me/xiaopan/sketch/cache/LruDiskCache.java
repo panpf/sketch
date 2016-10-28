@@ -141,6 +141,9 @@ public class LruDiskCache implements DiskCache {
         } catch (DiskLruCache.ClosedException e) {
             e.printStackTrace();
             return false;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 
