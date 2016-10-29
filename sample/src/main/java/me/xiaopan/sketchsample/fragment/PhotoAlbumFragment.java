@@ -38,8 +38,8 @@ import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
+import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.DetailActivity;
-import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
 import me.xiaopan.sketchsample.adapter.PhotoAlbumImageAdapter;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 
@@ -54,13 +54,15 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
     private RecyclerView recyclerView;
 
     private PhotoAlbumImageAdapter imageAdapter;
-    private WindowBackgroundManager.Loader loader;
+
+    private ApplyBackgroundCallback applyBackgroundCallback;
+    private String backgroundImageUri;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity != null && activity instanceof WindowBackgroundManager.OnSetListener) {
-            loader = new WindowBackgroundManager.Loader(activity.getBaseContext(), (WindowBackgroundManager.OnSetListener) activity);
+        if (activity instanceof ApplyBackgroundCallback) {
+            applyBackgroundCallback = (ApplyBackgroundCallback) activity;
         }
     }
 
@@ -75,9 +77,6 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
         if (imageAdapter != null) {
             recyclerView.setAdapter(imageAdapter);
             recyclerView.scheduleLayoutAnimation();
-            if (loader != null) {
-                loader.restore();
-            }
         } else {
             pullRefreshLayout.startRefresh();
         }
@@ -96,17 +95,16 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
     }
 
     @Override
-    public void onDetach() {
-        if (loader != null) {
-            loader.detach();
+    protected void onUserVisibleChanged(boolean isVisibleToUser) {
+        if (applyBackgroundCallback != null && isVisibleToUser) {
+            changeBackground(backgroundImageUri);
         }
-        super.onDetach();
     }
 
-    @Override
-    protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (loader != null) {
-            loader.setUserVisible(isVisibleToUser);
+    private void changeBackground(String imageUri) {
+        this.backgroundImageUri = imageUri;
+        if (applyBackgroundCallback != null) {
+            applyBackgroundCallback.onApplyBackground(backgroundImageUri);
         }
     }
 
@@ -161,8 +159,8 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
                     pullRefreshLayout.stopRefresh();
                 }
             }, 1000);
-            if (loader != null && strings != null && strings.size() > 0) {
-                loader.load(strings.get(0));
+            if (strings != null && strings.size() > 0) {
+                changeBackground(strings.get(0));
             }
         }
     }

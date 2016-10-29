@@ -18,26 +18,42 @@ package me.xiaopan.sketchsample.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectParentMember;
+import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.MyBaseActivity;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.fragment.StarHomeFragment;
+import me.xiaopan.sketchsample.util.DeviceUtils;
+import me.xiaopan.sketchsample.widget.MyImageView;
 
 /**
  * 明星个人主页
  */
 @InjectParentMember
 @InjectContentView(R.layout.activity_only_fragment)
-public class StarHomeActivity extends MyBaseActivity implements WindowBackgroundManager.OnSetListener {
+public class StarHomeActivity extends MyBaseActivity implements ApplyBackgroundCallback {
+
+    @InjectView(R.id.image_onlyFragment_background) MyImageView backgroundImageView;
+    @InjectView(R.id.layout_onlyFragment_content) View contentView;
+
     @InjectExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE)
     private String starTitle;
 
-    private WindowBackgroundManager windowBackgroundManager;
+    public static void launch(Activity activity, String starName) {
+        Intent intent = new Intent(activity, StarHomeActivity.class);
+        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE, starName);
+        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_URL, "http://image.baidu.com/channel/star/" + starName);
+        activity.startActivity(intent);
+        activity.overridePendingTransition(R.anim.window_push_enter, R.anim.window_push_exit);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +61,19 @@ public class StarHomeActivity extends MyBaseActivity implements WindowBackground
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        windowBackgroundManager = new WindowBackgroundManager(this);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            contentView.setPadding(contentView.getPaddingLeft(),
+                    contentView.getPaddingTop() + DeviceUtils.getStatusBarHeight(getResources()),
+                    contentView.getPaddingRight(), contentView.getPaddingBottom());
+        }
+
+        ViewGroup.LayoutParams layoutParams = backgroundImageView.getLayoutParams();
+        layoutParams.width = getResources().getDisplayMetrics().widthPixels;
+        layoutParams.height = getResources().getDisplayMetrics().heightPixels;
+        backgroundImageView.setLayoutParams(layoutParams);
+
+        backgroundImageView.setOptionsByName(ImageOptions.WINDOW_BACKGROUND);
+        backgroundImageView.setAutoApplyGlobalAttr(false);
 
         StarHomeFragment starHomeFragment = new StarHomeFragment();
         starHomeFragment.setArguments(getIntent().getExtras());
@@ -54,6 +82,11 @@ public class StarHomeActivity extends MyBaseActivity implements WindowBackground
                 .beginTransaction()
                 .replace(R.id.frame_onlyFragment_content, starHomeFragment)
                 .commit();
+    }
+
+    @Override
+    protected boolean isDisableSetFitsSystemWindows() {
+        return true;
     }
 
     @Override
@@ -67,27 +100,8 @@ public class StarHomeActivity extends MyBaseActivity implements WindowBackground
         overridePendingTransition(R.anim.window_pop_enter, R.anim.window_pop_exit);
     }
 
-    public static void launch(Activity activity, String starName) {
-        Intent intent = new Intent(activity, StarHomeActivity.class);
-        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_TITLE, starName);
-        intent.putExtra(StarHomeFragment.PARAM_REQUIRED_STRING_STAR_URL, "http://image.baidu.com/channel/star/" + starName);
-        activity.startActivity(intent);
-        activity.overridePendingTransition(R.anim.window_push_enter, R.anim.window_push_exit);
-    }
-
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        windowBackgroundManager.destroy();
-    }
-
-    @Override
-    public void onSetWindowBackground(String uri, Bitmap bitmap) {
-        windowBackgroundManager.setBackground(uri, bitmap);
-    }
-
-    @Override
-    public String getCurrentBackgroundUri() {
-        return windowBackgroundManager.getCurrentBackgroundUri();
+    public void onApplyBackground(String imageUri) {
+        backgroundImageView.displayImage(imageUri);
     }
 }

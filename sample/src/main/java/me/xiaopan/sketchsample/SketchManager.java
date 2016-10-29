@@ -14,9 +14,10 @@ import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.LoadOptions;
 import me.xiaopan.sketch.shaper.CircleImageShaper;
 import me.xiaopan.sketch.shaper.RoundRectImageShaper;
+import me.xiaopan.sketch.state.DrawableStateImage;
+import me.xiaopan.sketch.state.OldStateImage;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.util.MyImagePreprocessor;
 import me.xiaopan.sketchsample.util.Settings;
@@ -65,8 +66,14 @@ public class SketchManager {
                 .setImageDisplayer(transitionImageDisplayer)
                 .setShapeSizeByFixedSize(true));
 
-        Sketch.putOptions(ImageOptions.WINDOW_BACKGROUND, new LoadOptions()
-                .setImageProcessor(new GaussianBlurImageProcessor(true)));
+        Sketch.putOptions(ImageOptions.WINDOW_BACKGROUND, new DisplayOptions()
+                .setLoadingImage(new OldStateImage(new DrawableStateImage(R.drawable.shape_window_background)))
+                .setImageProcessor(new GaussianBlurImageProcessor(true))
+                .setCacheProcessedImageInDisk(true)
+                .setShapeSizeByFixedSize(true)
+                .setMaxSize(context.getResources().getDisplayMetrics().widthPixels / 4,
+                        context.getResources().getDisplayMetrics().heightPixels / 4)
+                .setImageDisplayer(new TransitionImageDisplayer().setAlwaysUse(true)));
     }
 
     private static class MyExceptionMonitor extends ExceptionMonitor {

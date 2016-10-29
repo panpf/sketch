@@ -31,8 +31,8 @@ import me.xiaopan.gohttp.JsonHttpResponseHandler;
 import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
+import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.DetailActivity;
-import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
 import me.xiaopan.sketchsample.adapter.ImageStaggeredGridAdapter;
 import me.xiaopan.sketchsample.net.request.SearchImageRequest;
 import me.xiaopan.sketchsample.net.request.StarImageRequest;
@@ -54,21 +54,23 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
     @InjectView(R.id.hintView_search)
     private HintView hintView;
 
+    @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD)
+    private String searchKeyword = "GIF";
+
     private SearchImageRequest searchImageRequest;
     private HttpRequestFuture refreshRequestFuture;
     private HttpRequestFuture loadMoreRequestFuture;
     private ImageStaggeredGridAdapter searchImageListAdapter;
-    private WindowBackgroundManager.Loader loader;
     private LoadMoreFooterView loadMoreFooterView;
 
-    @InjectExtra(PARAM_OPTIONAL_STRING_SEARCH_KEYWORD)
-    private String searchKeyword = "GIF";
+    private ApplyBackgroundCallback applyBackgroundCallback;
+    private String backgroundImageUri;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity != null && activity instanceof WindowBackgroundManager.OnSetListener) {
-            loader = new WindowBackgroundManager.Loader(activity.getBaseContext(), (WindowBackgroundManager.OnSetListener) activity);
+        if (activity instanceof ApplyBackgroundCallback) {
+            applyBackgroundCallback = (ApplyBackgroundCallback) activity;
         }
     }
 
@@ -148,9 +150,6 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
             pullRefreshLayout.startRefresh();
         } else {
             setAdapter(searchImageListAdapter);
-            if (loader != null) {
-                loader.restore();
-            }
         }
     }
 
@@ -165,16 +164,20 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
         if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             refreshRequestFuture.cancel(true);
         }
-        if (loader != null) {
-            loader.detach();
-        }
         super.onDetach();
     }
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (loader != null) {
-            loader.setUserVisible(isVisibleToUser);
+        if (applyBackgroundCallback != null && isVisibleToUser) {
+            changeBackground(backgroundImageUri);
+        }
+    }
+
+    private void changeBackground(String imageUri) {
+        this.backgroundImageUri = imageUri;
+        if (applyBackgroundCallback != null) {
+            applyBackgroundCallback.onApplyBackground(backgroundImageUri);
         }
     }
 
@@ -250,8 +253,8 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                         }
                     }
 
-                    if (loader != null && imageList.size() > 0) {
-                        loader.load(imageList.get(0).getSourceUrl());
+                    if (imageList.size() > 0) {
+                        changeBackground(imageList.get(0).getSourceUrl());
                     }
                 }
             }

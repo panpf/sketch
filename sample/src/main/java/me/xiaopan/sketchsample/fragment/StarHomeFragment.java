@@ -25,11 +25,11 @@ import me.xiaopan.gohttp.HttpRequestFuture;
 import me.xiaopan.gohttp.JsonHttpResponseHandler;
 import me.xiaopan.gohttp.StringHttpResponseHandler;
 import me.xiaopan.prl.PullRefreshLayout;
-import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.ImageOptions;
+import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
+import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.DetailActivity;
-import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
 import me.xiaopan.sketchsample.adapter.ImageStaggeredGridAdapter;
 import me.xiaopan.sketchsample.net.request.StarHomeBackgroundRequest;
 import me.xiaopan.sketchsample.net.request.StarImageRequest;
@@ -61,16 +61,18 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
     private StarImageRequest starImageRequest;
     private HttpRequestFuture refreshRequestFuture;
     private ImageStaggeredGridAdapter starImageAdapter;
-    private WindowBackgroundManager.Loader loader;
     private LoadMoreFooterView loadMoreFooterView;
     private MyImageView headImageView;
     private HttpRequestFuture loadMoreRequestFuture;
 
+    private ApplyBackgroundCallback applyBackgroundCallback;
+    private String backgroundImageUri;
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity != null && activity instanceof WindowBackgroundManager.OnSetListener) {
-            loader = new WindowBackgroundManager.Loader(activity.getBaseContext(), (WindowBackgroundManager.OnSetListener) activity);
+        if (activity instanceof ApplyBackgroundCallback) {
+            applyBackgroundCallback = (ApplyBackgroundCallback) activity;
         }
     }
 
@@ -92,9 +94,6 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
             pullRefreshLayout.startRefresh();
         } else {
             setAdapter(starImageAdapter);
-            if (loader != null) {
-                loader.restore();
-            }
         }
     }
 
@@ -110,16 +109,20 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
         if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
             refreshRequestFuture.cancel(true);
         }
-        if (loader != null) {
-            loader.detach();
-        }
         super.onDetach();
     }
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (loader != null) {
-            loader.setUserVisible(isVisibleToUser);
+        if (applyBackgroundCallback != null && isVisibleToUser) {
+            changeBackground(backgroundImageUri);
+        }
+    }
+
+    private void changeBackground(String imageUri) {
+        this.backgroundImageUri = imageUri;
+        if (applyBackgroundCallback != null) {
+            applyBackgroundCallback.onApplyBackground(backgroundImageUri);
         }
     }
 
@@ -251,8 +254,8 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     }
                 }
 
-                if (loader != null && responseObject.getImages() != null && responseObject.getImages().size() > 0) {
-                    loader.load(responseObject.getImages().get(0).getSourceUrl());
+                if (responseObject.getImages() != null && responseObject.getImages().size() > 0) {
+                    changeBackground(responseObject.getImages().get(0).getSourceUrl());
                 }
             }
 

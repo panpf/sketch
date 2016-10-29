@@ -1,63 +1,73 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/drawer_main_content"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
-        android:id="@+id/layout_main_content"
+    <me.xiaopan.sketchsample.widget.MyImageView
+        android:id="@+id/image_main_background"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent" />
+
+    <android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/drawer_main_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/layout_main_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <include layout="@layout/include_toolbar" />
+
+                <me.xiaopan.psts.PagerSlidingTabStrip
+                    android:id="@+id/tabStrip_main_star"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right|center_vertical" />
+
+                <me.xiaopan.psts.PagerSlidingTabStrip
+                    android:id="@+id/tabStrip_main_appList"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right|center_vertical" />
+
+                <me.xiaopan.psts.PagerSlidingTabStrip
+                    android:id="@+id/tabStrip_main_large"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="right|center_vertical" />
+            </FrameLayout>
+
+            <FrameLayout
+                android:id="@+id/frame_main_content"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
 
         <FrameLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:id="@+id/layout_main_leftMenu"
+            android:layout_width="350dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="start">
 
-            <include layout="@layout/include_toolbar" />
-
-            <me.xiaopan.psts.PagerSlidingTabStrip
-                android:id="@+id/tabStrip_main_star"
-                android:layout_width="wrap_content"
+            <me.xiaopan.sketchsample.widget.MyImageView
+                android:id="@+id/image_main_menuBackground"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="right|center_vertical" />
+                android:scaleType="fitXY"
+                android:src="@drawable/shape_window_background" />
 
-            <me.xiaopan.psts.PagerSlidingTabStrip
-                android:id="@+id/tabStrip_main_appList"
-                android:layout_width="wrap_content"
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/recycler_main_menu"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="right|center_vertical" />
-
-            <me.xiaopan.psts.PagerSlidingTabStrip
-                android:id="@+id/tabStrip_main_large"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="right|center_vertical" />
+                android:scrollbars="vertical" />
         </FrameLayout>
-
-        <FrameLayout
-            android:id="@+id/frame_main_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/layout_main_leftMenu"
-        android:layout_width="350dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start">
-
-        <ImageView
-            android:id="@+id/image_main_menuBackground"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scaleType="fitXY"
-            android:src="@drawable/shape_window_background" />
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_main_menu"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:scrollbars="vertical" />
-    </FrameLayout>
-</android.support.v4.widget.DrawerLayout>
+    </android.support.v4.widget.DrawerLayout>
+</FrameLayout>

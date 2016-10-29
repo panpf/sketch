@@ -21,8 +21,8 @@ import me.xiaopan.gohttp.StringHttpResponseHandler;
 import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
+import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.StarHomeActivity;
-import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
 import me.xiaopan.sketchsample.adapter.HotStarAdapter;
 import me.xiaopan.sketchsample.net.request.HotManStarRequest;
 import me.xiaopan.sketchsample.net.request.HotStarRequest;
@@ -36,22 +36,21 @@ import me.xiaopan.sketchsample.widget.HintView;
 @InjectContentView(R.layout.fragment_hot_star)
 public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnRefreshListener, HotStarAdapter.OnImageClickListener {
 
-    @InjectView(R.id.refreshLayout_hotStar)
-    private PullRefreshLayout refreshLayout;
-    @InjectView(R.id.hint_hotStar)
-    private HintView hintView;
-    @InjectView(R.id.recyclerView_hotStar_content)
-    private RecyclerView contentRecyclerView;
+    @InjectView(R.id.refreshLayout_hotStar) private PullRefreshLayout refreshLayout;
+    @InjectView(R.id.hint_hotStar) private HintView hintView;
+    @InjectView(R.id.recyclerView_hotStar_content) private RecyclerView contentRecyclerView;
 
     private HttpRequestFuture httpRequestFuture;
     private HotStarAdapter adapter;
-    private WindowBackgroundManager.Loader loader;
+
+    private ApplyBackgroundCallback applyBackgroundCallback;
+    private String backgroundImageUri;
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity != null && activity instanceof WindowBackgroundManager.OnSetListener) {
-            loader = new WindowBackgroundManager.Loader(activity.getBaseContext(), (WindowBackgroundManager.OnSetListener) activity);
+        if (activity instanceof ApplyBackgroundCallback) {
+            applyBackgroundCallback = (ApplyBackgroundCallback) activity;
         }
     }
 
@@ -68,9 +67,6 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
         } else {
             contentRecyclerView.setAdapter(adapter);
             contentRecyclerView.scheduleLayoutAnimation();
-            if (loader != null) {
-                loader.restore();
-            }
         }
     }
 
@@ -88,22 +84,26 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
         if (httpRequestFuture != null && !httpRequestFuture.isFinished()) {
             httpRequestFuture.cancel(true);
         }
-        if (loader != null) {
-            loader.detach();
-        }
         super.onDetach();
     }
 
     @Override
     protected void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (loader != null) {
-            loader.setUserVisible(isVisibleToUser);
+        if (applyBackgroundCallback != null && isVisibleToUser) {
+            changeBackground(backgroundImageUri);
         }
     }
 
     @Override
     public void onClickImage(HotStarRequest.Star star) {
         StarHomeActivity.launch(getActivity(), star.getName());
+    }
+
+    private void changeBackground(String imageUri) {
+        this.backgroundImageUri = imageUri;
+        if (applyBackgroundCallback != null) {
+            applyBackgroundCallback.onApplyBackground(backgroundImageUri);
+        }
     }
 
     private void load(boolean isMan, final boolean last, final boolean haveSetWindowBackground) {
@@ -125,14 +125,14 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
                             refreshLayout.stopRefresh();
                         }
                     }, 1000);
-                    if (!haveSetWindowBackground && loader != null && hotStarList.size() > 0 && hotStarList.get(0).getStarList().size() > 0) {
-                        loader.load(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());
+                    if (!haveSetWindowBackground && hotStarList.size() > 0 && hotStarList.get(0).getStarList().size() > 0) {
+                        changeBackground(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());
                     }
                 } else {
                     adapter = new HotStarAdapter(getActivity(), hotStarList, HotStarFragment.this);
                     boolean result = false;
-                    if (loader != null && hotStarList.size() > 0 && hotStarList.get(0).getStarList().size() > 0) {
-                        loader.load(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());
+                    if (hotStarList.size() > 0 && hotStarList.get(0).getStarList().size() > 0) {
+                        changeBackground(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());
                         result = true;
                     }
                     load(true, true, result);

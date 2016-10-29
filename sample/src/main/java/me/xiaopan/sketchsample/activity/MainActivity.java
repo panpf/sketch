@@ -19,7 +19,6 @@ package me.xiaopan.sketchsample.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -51,6 +50,7 @@ import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.BuildConfig;
+import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.MyBaseActivity;
 import me.xiaopan.sketchsample.NotificationService;
 import me.xiaopan.sketchsample.R;
@@ -72,6 +72,7 @@ import me.xiaopan.sketchsample.fragment.TestFragment;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.util.Settings;
+import me.xiaopan.sketchsample.widget.MyImageView;
 
 /**
  * 首页
@@ -80,26 +81,21 @@ import me.xiaopan.sketchsample.util.Settings;
 @InjectContentView(R.layout.activity_main)
 public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener,
         AppListFragment.GetAppListTagStripListener, LargesFragment.GetLargeTagStripListener,
-        WindowBackgroundManager.OnSetListener, AboutFragment.TogglePageListener {
-    @InjectView(R.id.layout_main_content)
-    private View contentView;
-    @InjectView(R.id.tabStrip_main_star)
-    private PagerSlidingTabStrip starTabStrip;
-    @InjectView(R.id.tabStrip_main_appList)
-    private PagerSlidingTabStrip appListTabStrip;
-    @InjectView(R.id.tabStrip_main_large)
-    private PagerSlidingTabStrip largeTabStrip;
-    @InjectView(R.id.drawer_main_content)
-    private DrawerLayout drawerLayout;
-    @InjectView(R.id.recycler_main_menu)
-    private RecyclerView menuRecyclerView;
-    @InjectView(R.id.layout_main_leftMenu)
-    private ViewGroup leftMenuView;
+        AboutFragment.TogglePageListener, ApplyBackgroundCallback {
+
+    @InjectView(R.id.layout_main_content) private View contentView;
+    @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
+    @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
+    @InjectView(R.id.tabStrip_main_large) private PagerSlidingTabStrip largeTabStrip;
+    @InjectView(R.id.drawer_main_content) private DrawerLayout drawerLayout;
+    @InjectView(R.id.recycler_main_menu) private RecyclerView menuRecyclerView;
+    @InjectView(R.id.layout_main_leftMenu) private ViewGroup leftMenuView;
+    @InjectView(R.id.image_main_background) private MyImageView backgroundImageView;
+    @InjectView(R.id.image_main_menuBackground) private MyImageView menuBackgroundImageView;
 
     private long lastClickBackTime;
     private Page page;
 
-    private WindowBackgroundManager windowBackgroundManager;
     private ActionBarDrawerToggle toggleDrawable;
 
     @Override
@@ -112,7 +108,23 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     }
 
     private void initViews() {
-        windowBackgroundManager = new WindowBackgroundManager(this);
+        ViewGroup.LayoutParams layoutParams = backgroundImageView.getLayoutParams();
+        layoutParams.width = getResources().getDisplayMetrics().widthPixels;
+        layoutParams.height = getResources().getDisplayMetrics().heightPixels;
+        backgroundImageView.setLayoutParams(layoutParams);
+
+        backgroundImageView.setOptionsByName(ImageOptions.WINDOW_BACKGROUND);
+        backgroundImageView.setAutoApplyGlobalAttr(false);
+
+        layoutParams = menuBackgroundImageView.getLayoutParams();
+        layoutParams.width = getResources().getDisplayMetrics().widthPixels;
+        layoutParams.height = getResources().getDisplayMetrics().heightPixels;
+        menuBackgroundImageView.setLayoutParams(layoutParams);
+
+        menuBackgroundImageView.setOptionsByName(ImageOptions.WINDOW_BACKGROUND);
+        menuBackgroundImageView.getOptions().setImageDisplayer(null);
+        menuBackgroundImageView.setAutoApplyGlobalAttr(false);
+
         drawerLayout.setDrawerShadow(R.drawable.shape_drawer_shadow_down_left, Gravity.LEFT);
 
         // 设置左侧菜单的宽度为屏幕的一半
@@ -372,22 +384,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     }
 
     @Override
-    public void onSetWindowBackground(String currentBackgroundUri, Bitmap bitmap) {
-        windowBackgroundManager.setBackground(currentBackgroundUri, bitmap);
-    }
-
-    @Override
-    public String getCurrentBackgroundUri() {
-        return windowBackgroundManager.getCurrentBackgroundUri();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        windowBackgroundManager.destroy();
-    }
-
-    @Override
     public void onToggleToGifSample() {
         switchPage(Page.SEARCH);
     }
@@ -407,6 +403,12 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     @Override
     public PagerSlidingTabStrip onGetLargeTabStrip() {
         return largeTabStrip;
+    }
+
+    @Override
+    public void onApplyBackground(String imageUri) {
+        backgroundImageView.displayImage(imageUri);
+        menuBackgroundImageView.displayImage(imageUri);
     }
 
     public enum Page {

@@ -23,12 +23,12 @@ import me.xiaopan.sketch.request.DisplayListener;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.request.ErrorCause;
 import me.xiaopan.sketch.request.ImageFrom;
-import me.xiaopan.sketch.state.MemoryCacheStateImage;
 import me.xiaopan.sketch.request.RequestLevel;
+import me.xiaopan.sketch.state.MemoryCacheStateImage;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.activity.WindowBackgroundManager;
+import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.menu.ImageMenu;
 import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.HintView;
@@ -61,9 +61,7 @@ public class ImageFragment extends MyFragment {
     @InjectExtra(PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_INFO)
     private String loadingImageOptionsInfo;
 
-    private boolean completedAfterUpdateBackground;
-
-    private WindowBackgroundManager.Loader loader;
+    private ApplyBackgroundCallback applyBackgroundCallback;
 
     private ImageMenu imageMenu;
 
@@ -79,8 +77,8 @@ public class ImageFragment extends MyFragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
-        if (activity != null && activity instanceof WindowBackgroundManager.OnSetListener) {
-            loader = new WindowBackgroundManager.Loader(activity.getBaseContext(), (WindowBackgroundManager.OnSetListener) activity);
+        if (activity instanceof ApplyBackgroundCallback) {
+            applyBackgroundCallback = (ApplyBackgroundCallback) activity;
         }
     }
 
@@ -164,11 +162,9 @@ public class ImageFragment extends MyFragment {
             @Override
             public void onCompleted(ImageFrom imageFrom, String mimeType) {
                 hintView.hidden();
-                if (completedAfterUpdateBackground) {
-                    completedAfterUpdateBackground = false;
-                    if (isResumed() && getUserVisibleHint()) {
-                        loader.load(imageUri);
-                    }
+
+                if (applyBackgroundCallback != null && isVisibleToUser()) {
+                    applyBackgroundCallback.onApplyBackground(imageUri);
                 }
             }
 
@@ -177,7 +173,6 @@ public class ImageFragment extends MyFragment {
                 hintView.hint(R.drawable.ic_error, "图片显示失败", "重新显示", new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        completedAfterUpdateBackground = true;
                         imageView.displayImage(imageUri);
                     }
                 });
@@ -194,8 +189,10 @@ public class ImageFragment extends MyFragment {
                         hintView.hint(R.drawable.ic_error, "level is local", "直接显示", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                completedAfterUpdateBackground = true;
-                                Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
+                                RequestLevel requestLevel = imageView.getOptions().getRequestLevel();
+                                imageView.getOptions().setRequestLevel(RequestLevel.NET);
+                                imageView.displayImage(imageUri);
+                                imageView.getOptions().setRequestLevel(requestLevel);
                             }
                         });
                         break;
@@ -203,8 +200,10 @@ public class ImageFragment extends MyFragment {
                         hintView.hint(R.drawable.ic_error, "level is memory", "直接显示", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                completedAfterUpdateBackground = true;
-                                Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
+                                RequestLevel requestLevel = imageView.getOptions().getRequestLevel();
+                                imageView.getOptions().setRequestLevel(RequestLevel.NET);
+                                imageView.displayImage(imageUri);
+                                imageView.getOptions().setRequestLevel(requestLevel);
                             }
                         });
                         break;
@@ -214,8 +213,10 @@ public class ImageFragment extends MyFragment {
                         hintView.hint(R.drawable.ic_error, "为节省流量已暂停下载新图片", "不管了，直接下载", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                completedAfterUpdateBackground = true;
-                                Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
+                                RequestLevel requestLevel = imageView.getOptions().getRequestLevel();
+                                imageView.getOptions().setRequestLevel(RequestLevel.NET);
+                                imageView.displayImage(imageUri);
+                                imageView.getOptions().setRequestLevel(requestLevel);
                             }
                         });
                         break;
@@ -223,8 +224,10 @@ public class ImageFragment extends MyFragment {
                         hintView.hint(R.drawable.ic_error, "已暂停加载新图片", "直接加载", new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
-                                completedAfterUpdateBackground = true;
-                                Sketch.with(getActivity()).display(imageUri, imageView).requestLevel(RequestLevel.NET).commit();
+                                RequestLevel requestLevel = imageView.getOptions().getRequestLevel();
+                                imageView.getOptions().setRequestLevel(RequestLevel.NET);
+                                imageView.displayImage(imageUri);
+                                imageView.getOptions().setRequestLevel(requestLevel);
                             }
                         });
                         break;
@@ -233,7 +236,6 @@ public class ImageFragment extends MyFragment {
         });
 
         imageView.displayImage(imageUri);
-
 
         // 点击MappingView定位到指定位置
         mappingView.setOnSingleClickListener(new MappingView.OnSingleClickListener() {
@@ -282,22 +284,9 @@ public class ImageFragment extends MyFragment {
     }
 
     @Override
-    public void onDetach() {
-        if (loader != null) {
-            loader.detach();
-        }
-        super.onDetach();
-    }
-
-    @Override
     public void onUserVisibleChanged(boolean isVisibleToUser) {
-        if (loader != null) {
-            loader.setUserVisible(isVisibleToUser);
-            if (isVisibleToUser) {
-                loader.load(imageUri);
-            } else {
-                loader.cancel(CancelCause.USERS_NOT_VISIBLE);
-            }
+        if (applyBackgroundCallback != null && isVisibleToUser) {
+            applyBackgroundCallback.onApplyBackground(imageUri);
         }
 
         // 不可见的时候暂停超大图查看器，节省内存
