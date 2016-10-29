@@ -85,7 +85,7 @@ public class LoadRequest extends DownloadRequest {
         return dataSource;
     }
 
-    protected boolean canUseCacheProcessedImageFunction(){
+    protected boolean canUseCacheProcessedImageFunction() {
         return loadOptions.isCacheProcessedImageInDisk() &&
                 (loadOptions.getResize() != null || loadOptions.getImageProcessor() != null ||
                         (loadOptions.isThumbnailMode() && loadOptions.getResize() != null));
@@ -181,24 +181,22 @@ public class LoadRequest extends DownloadRequest {
             return;
         }
 
-        if (canUseCacheProcessedImageFunction()) {
+        if (dataSource == null && canUseCacheProcessedImageFunction()) {
             dataSource = checkDiskCache();
         }
 
         // 预处理
-        if (dataSource == null) {
-            ImagePreprocessor imagePreprocessor = getSketch().getConfiguration().getImagePreprocessor();
-            if (imagePreprocessor.isSpecific(this)) {
-                setStatus(Status.PRE_PROCESS);
-                PreProcessResult prePrecessResult = imagePreprocessor.process(this);
-                if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
-                    dataSource = new DataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
-                } else if (prePrecessResult != null && prePrecessResult.imageData != null) {
-                    dataSource = new DataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
-                } else {
-                    error(ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
-                    return;
-                }
+        ImagePreprocessor imagePreprocessor = getSketch().getConfiguration().getImagePreprocessor();
+        if (dataSource == null && imagePreprocessor.isSpecific(this)) {
+            setStatus(Status.PRE_PROCESS);
+            PreProcessResult prePrecessResult = imagePreprocessor.process(this);
+            if (prePrecessResult != null && prePrecessResult.diskCacheEntry != null) {
+                dataSource = new DataSource(prePrecessResult.diskCacheEntry, prePrecessResult.imageFrom);
+            } else if (prePrecessResult != null && prePrecessResult.imageData != null) {
+                dataSource = new DataSource(prePrecessResult.imageData, prePrecessResult.imageFrom);
+            } else {
+                error(ErrorCause.PRE_PROCESS_RESULT_IS_NULL);
+                return;
             }
         }
 
@@ -318,7 +316,7 @@ public class LoadRequest extends DownloadRequest {
     /**
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
-    private DataSource checkDiskCache(){
+    private DataSource checkDiskCache() {
         String memoryCacheId = getAttrs().getId();
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
         ReentrantLock editLock = diskCache.getEditLock(memoryCacheId);
@@ -342,7 +340,7 @@ public class LoadRequest extends DownloadRequest {
     /**
      * 保存bitmap到磁盘缓存
      */
-    private void saveBitmapToDiskCache(Bitmap bitmap){
+    private void saveBitmapToDiskCache(Bitmap bitmap) {
         String memoryCacheId = getAttrs().getId();
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
 

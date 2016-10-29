@@ -165,6 +165,12 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
+    @Override
+    public DisplayOptions setCacheProcessedImageInDisk(boolean cacheProcessedImageInDisk) {
+        super.setCacheProcessedImageInDisk(cacheProcessedImageInDisk);
+        return this;
+    }
+
     public boolean isDisableCacheInMemory() {
         return disableCacheInMemory;
     }

@@ -91,8 +91,8 @@ public class DefaultImageDecoder implements ImageDecoder {
                     decimalFormat = new DecimalFormat("#.##");
                 }
                 Log.d(Sketch.TAG, SketchUtils.concat(logName,
-                        ". decode use time. ", useTime, "ms",
-                        ", average", decimalFormat.format((double) useTimeCount / decodeCount), "ms",
+                        ". decode use time ", useTime, "ms",
+                        ", average ", decimalFormat.format((double) useTimeCount / decodeCount), "ms",
                         ". ", loadRequest.getAttrs().getId()));
             }
         }
