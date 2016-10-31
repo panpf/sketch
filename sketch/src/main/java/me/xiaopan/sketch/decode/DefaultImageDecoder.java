@@ -195,6 +195,12 @@ public class DefaultImageDecoder implements ImageDecoder {
             return null;
         }
 
+        // 缩略图模式强制质量优先
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1
+                && !decodeOptions.inPreferQualityOverSpeed) {
+            decodeOptions.inPreferQualityOverSpeed = true;
+        }
+
         // 只有原始图片的宽高比和resize的宽高比相差3倍的时候才能使用略略图方式读取图片
         Resize resize = loadOptions.getResize();
         ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
@@ -285,7 +291,11 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 成功
         decodeHelper.onDecodeSuccess(bitmap, outWidth, outHeight, outMimeType, decodeOptions.inSampleSize);
-        return new DecodeResult(outWidth, outHeight, outMimeType, bitmap);
+
+        ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
+        boolean canUseCacheProcessedImageInDisk = sizeCalculator.canUseCacheProcessedImageInDisk(decodeOptions.inSampleSize);
+        return new DecodeResult(outWidth, outHeight, outMimeType, bitmap)
+                .setCanCacheInDiskCache(canUseCacheProcessedImageInDisk);
     }
 
     private DecodeResult decodeFromDataSource(LoadRequest loadRequest, DataSource dataSource) {

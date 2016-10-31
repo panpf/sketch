@@ -86,9 +86,17 @@ public class LoadRequest extends DownloadRequest {
     }
 
     protected boolean canUseCacheProcessedImageFunction() {
-        return loadOptions.isCacheProcessedImageInDisk() &&
-                (loadOptions.getResize() != null || loadOptions.getImageProcessor() != null ||
-                        (loadOptions.isThumbnailMode() && loadOptions.getResize() != null));
+        if (!loadOptions.isCacheProcessedImageInDisk()) {
+            return false;
+        }
+        if (loadOptions.getMaxSize() != null || loadOptions.getResize() != null) {
+            return true;
+        }
+        //noinspection SimplifiableIfStatement
+        if (loadOptions.getImageProcessor() != null) {
+            return true;
+        }
+        return loadOptions.isThumbnailMode() && loadOptions.getResize() != null;
     }
 
     @Override
