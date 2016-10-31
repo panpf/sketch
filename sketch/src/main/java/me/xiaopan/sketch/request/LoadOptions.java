@@ -309,15 +309,15 @@ public class LoadOptions extends DownloadOptions {
             if (forceUseResize) {
                 builder.append("_").append("forceUseResize");
             }
+            if (thumbnailMode) {
+                builder.append("_").append("thumbnailMode");
+            }
         }
         if (lowQualityImage) {
             builder.append("_").append("lowQualityImage");
         }
         if (inPreferQualityOverSpeed) {
             builder.append("_").append("preferQuality");
-        }
-        if (thumbnailMode) {
-            builder.append("_").append("thumbnailMode");
         }
         if (bitmapConfig != null) {
             builder.append("_").append(bitmapConfig.name());
