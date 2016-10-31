@@ -818,9 +818,16 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         return largeImageFunction != null ? largeImageFunction.getLargeImageViewer() : null;
     }
 
-    public String getFinalOptionsMemoryCacheId(){
+    /**
+     * 获取选项ID，可用于组装缓存ID
+     */
+    public String getOptionsId() {
         DisplayParams displayParams = getDisplayParams();
-        return displayParams != null ? displayParams.options.makeMemoryCacheId(new StringBuilder()).toString() : null;
+        if (displayParams != null) {
+            return displayParams.options.makeId(new StringBuilder()).toString();
+        } else {
+            return getOptions().makeId(new StringBuilder()).toString();
+        }
     }
 
     /**

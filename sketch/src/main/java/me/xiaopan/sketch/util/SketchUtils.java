@@ -1002,17 +1002,17 @@ public class SketchUtils {
         }
     }
 
-    public static String makeMemoryCacheId(String imageUri, DownloadOptions options) {
+    public static String makeOptionsId(String imageUri, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
         if (options != null) {
-            options.makeMemoryCacheId(builder);
+            options.makeId(builder);
         }
         return builder.toString();
     }
 
     @SuppressWarnings("unused")
-    public static String makeMemoryCacheId(String imageUri, String options) {
+    public static String makeOptionsId(String imageUri, String options) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
         if (!TextUtils.isEmpty(options)) {
@@ -1025,7 +1025,7 @@ public class SketchUtils {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
         if (options != null) {
-            options.makeStateImageMemoryCacheId(builder);
+            options.makeStateImageId(builder);
         }
         return builder.toString();
     }

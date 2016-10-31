@@ -298,8 +298,8 @@ public class LoadOptions extends DownloadOptions {
     }
 
     @Override
-    public StringBuilder makeMemoryCacheId(StringBuilder builder) {
-        super.makeMemoryCacheId(builder);
+    public StringBuilder makeId(StringBuilder builder) {
+        super.makeId(builder);
 
         if (maxSize != null) {
             maxSize.appendIdentifier("_", builder);
@@ -329,8 +329,8 @@ public class LoadOptions extends DownloadOptions {
     }
 
     @Override
-    public StringBuilder makeStateImageMemoryCacheId(StringBuilder builder) {
-        super.makeMemoryCacheId(builder);
+    public StringBuilder makeStateImageId(StringBuilder builder) {
+        super.makeId(builder);
 
         if (resize != null) {
             resize.appendIdentifier("_", builder);

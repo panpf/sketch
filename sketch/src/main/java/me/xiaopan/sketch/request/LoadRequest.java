@@ -150,13 +150,13 @@ public class LoadRequest extends DownloadRequest {
     }
 
     private boolean existProcessedDiskCache() {
-        String memoryCacheId = getAttrs().getId();
+        String diskCacheKey = getAttrs().getId();
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
-        ReentrantLock editLock = diskCache.getEditLock(memoryCacheId);
+        ReentrantLock editLock = diskCache.getEditLock(diskCacheKey);
         if (editLock != null) {
             editLock.lock();
         }
-        boolean exist = diskCache.exist(memoryCacheId);
+        boolean exist = diskCache.exist(diskCacheKey);
         if (editLock != null) {
             editLock.unlock();
         }
@@ -325,13 +325,13 @@ public class LoadRequest extends DownloadRequest {
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
     private DataSource checkDiskCache() {
-        String memoryCacheId = getAttrs().getId();
+        String diskCacheKey = getAttrs().getId();
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
-        ReentrantLock editLock = diskCache.getEditLock(memoryCacheId);
+        ReentrantLock editLock = diskCache.getEditLock(diskCacheKey);
         if (editLock != null) {
             editLock.lock();
         }
-        DiskCache.Entry diskCacheEntry = diskCache.get(memoryCacheId);
+        DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
         if (editLock != null) {
             editLock.unlock();
         }
@@ -349,20 +349,20 @@ public class LoadRequest extends DownloadRequest {
      * 保存bitmap到磁盘缓存
      */
     private void saveBitmapToDiskCache(Bitmap bitmap) {
-        String memoryCacheId = getAttrs().getId();
+        String diskCacheKey = getAttrs().getId();
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
 
-        ReentrantLock editLock = diskCache.getEditLock(memoryCacheId);
+        ReentrantLock editLock = diskCache.getEditLock(diskCacheKey);
         if (editLock != null) {
             editLock.lock();
         }
 
-        DiskCache.Entry diskCacheEntry = diskCache.get(memoryCacheId);
+        DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
         if (diskCacheEntry != null) {
             diskCacheEntry.delete();
         }
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(memoryCacheId);
+        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
         if (diskCacheEditor != null) {
             BufferedOutputStream outputStream = null;
             try {
