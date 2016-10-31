@@ -1,7 +1,7 @@
 ShapeSize用来在绘制图片时修改图片的尺寸
 
->* 不需要创建新的图片
->* 当ShapeSize同原图的宽高比不一致时就会仅显示原图中间的部分
+>* 不会创建新的图片，原理就是用BitmapShader将图片填充到画笔里，然后画一个形状即可
+>* 当ShapeSize同原图的宽高比不一致时就会仅显示原图中间的部分，类似CENTER_CROP效果
 >* loadingImage、errorImage、pauseDownloadImage以及加载的图片都会被修改
 
 在DisplayOptions中设置即可使用：

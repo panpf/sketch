@@ -14,7 +14,8 @@ Sketch的缩略图模式专门用于解决如何在一个较小的ImageView上�
 
 #### 使用条件
 
-只好满足上述对图片类型和系统版本的要求并且resize的宽高比和原图的宽高比相差1.5倍即可
+1. 首先必须要配置resize
+2. 然后满足上述对图片类型和系统版本的要求并且resize的宽高比和原图的宽高比相差1.5倍即可
 
 ```java
 public boolean canUseThumbnailMode(int outWidth, int outHeight, int resizeWidth, int resizeHeight){
@@ -52,5 +53,3 @@ options.setThumbnailMode(true);
 
 sketchImageView.displayImage("http://b.zol-img.com.cn/desk/bizhi/image/4/1366x768/1387347695254.jpg");
 ```
-
-`缩略图模式需要依赖resize`

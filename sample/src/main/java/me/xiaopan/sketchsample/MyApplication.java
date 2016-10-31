@@ -20,6 +20,7 @@ import android.app.Application;
 import android.text.format.Formatter;
 import android.util.Log;
 
+import com.squareup.leakcanary.LeakCanary;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import me.xiaopan.gohttp.GoHttp;
@@ -37,13 +38,18 @@ public class MyApplication extends Application {
         SketchManager sketchManager = new SketchManager(getBaseContext());
         sketchManager.initConfig();
         sketchManager.initDisplayOptions();
+
+        if (!LeakCanary.isInAnalyzerProcess(this)) {
+            LeakCanary.install(this);
+        }
     }
 
     @Override
     public void onLowMemory() {
         super.onLowMemory();
 
-        Log.w("Application", "Memory is very low, has automatic releasing Sketch in memory cache(" + Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getSize()) + ")");
+        Log.w("Application", "Memory is very low, has automatic releasing Sketch in memory cache("
+                + Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getSize()) + ")");
         Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
     }
 }

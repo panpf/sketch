@@ -30,7 +30,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     private int spanCount = -1;
     private int borderMargin;
     private int middleMargin;
-    private int roundRadius;
 
     @SuppressWarnings("deprecation")
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -42,7 +41,7 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             public void onClick(View v) {
                 if (onImageClickListener != null && v.getTag() != null && v.getTag() instanceof ItemViewHolder) {
                     ItemViewHolder viewHolder = (ItemViewHolder) v.getTag();
-                    onImageClickListener.onImageClick(viewHolder.getPosition(), viewHolder.sketchImageView.getFinalOptionsMemoryCacheId());
+                    onImageClickListener.onImageClick(viewHolder.getPosition(), viewHolder.sketchImageView.getOptionsId());
                 }
             }
         };
@@ -59,8 +58,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
             int maxScreenWidth = context.getResources().getDisplayMetrics().widthPixels - ((borderMargin * (spanCount + 1)));
             itemWidth = maxScreenWidth / spanCount;
         }
-
-        roundRadius = SketchUtils.dp2px(context, 10);
     }
 
     @Override
@@ -136,8 +133,12 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
         DisplayOptions options = itemViewHolder.sketchImageView.getOptions();
         options.setThumbnailMode(thumbnailMode);
         options.setCacheProcessedImageInDisk(Settings.getBoolean(itemViewHolder.sketchImageView.getContext(), Settings.PREFERENCE_CACHE_PROCESSED_IMAGE));
-        if (thumbnailMode && options.getResize() == null && !options.isResizeByFixedSize()) {
-            options.setResizeByFixedSize(true);
+        if (thumbnailMode) {
+            if (options.getResize() == null && !options.isResizeByFixedSize()) {
+                options.setResizeByFixedSize(true);
+            }
+        } else {
+            options.setResizeByFixedSize(false);
         }
 
         itemViewHolder.sketchImageView.displayImage(imageUris.get(position));
@@ -157,6 +158,6 @@ public class PhotoAlbumImageAdapter extends RecyclerView.Adapter {
     }
 
     public interface OnImageClickListener {
-        void onImageClick(int position, String loadingImageOptionsInfo);
+        void onImageClick(int position, String loadingImageOptionsId);
     }
 }

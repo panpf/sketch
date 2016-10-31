@@ -79,8 +79,14 @@ dependencies {
     compile 'me.xiaopan:pullrefreshlayout:1.4.0'
     compile 'me.xiaopan:assemblyadapter:2.2.0'
 
+    // ButterKnifeView绑定
     compile 'com.jakewharton:butterknife:8.4.0'
     apt 'com.jakewharton:butterknife-compiler:8.4.0'
+
+    // LeakCanary内存泄露监控
+    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.5'
+    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
+    testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
 }
 
 repositories {

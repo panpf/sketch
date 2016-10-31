@@ -1,4 +1,4 @@
-maxSize用来计算inSmapleSize，防止加载过大的图片到内存中
+maxSize用来计算inSampleSize，防止加载过大的图片到内存中
 
 #### 背景
 我们在移动端显示图片的时候都需要面对加载大尺寸图片的问题

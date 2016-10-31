@@ -29,6 +29,7 @@ public class Settings {
     public static final String PREFERENCE_THUMBNAIL_MODE = "PREFERENCE_THUMBNAIL_MODE";
     public static final String PREFERENCE_LOCATION_ANIMATE = "PREFERENCE_LOCATION_ANIMATE";
     public static final String PREFERENCE_CACHE_PROCESSED_IMAGE = "PREFERENCE_CACHE_PROCESSED_IMAGE";
+    public static final String PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE = "PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE";
 
     public static boolean getBoolean(Context context, @Key String key) {
         boolean defaultValue = false;
@@ -42,7 +43,9 @@ public class Settings {
                 || PREFERENCE_THUMBNAIL_MODE.equals(key)
                 || PREFERENCE_SUPPORT_ZOOM.equals(key)
                 || PREFERENCE_READ_MODE.equals(key)
-                || PREFERENCE_SUPPORT_LARGE_IMAGE.equals(key)) {
+                || PREFERENCE_SUPPORT_LARGE_IMAGE.equals(key)
+                || PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE.equals(key)
+                ) {
             defaultValue = true;
         }
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(key, defaultValue);
@@ -89,6 +92,7 @@ public class Settings {
             PREFERENCE_LOCATION_ANIMATE,
             PREFERENCE_CACHE_PROCESSED_IMAGE,
             PREFERENCE_CLICK_SHOW_PRESSED_STATUS,
+            PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Key {

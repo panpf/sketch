@@ -142,34 +142,40 @@ Sketch.with(context).download("http://biying.png", new DownloadListener() {
 Load () and download () also support synchronous execution, please refer to [Synchronize load and download.md](docs/wiki/sync.md)
 
 #### You may also be interested in the features:
-Enhance the user experience:
->* [SketchImageView Detailed Instructions.md](docs/wiki/sketch_image_view.md)
->* [Display gif image.md](docs/wiki/display_gif_image.md)
->* [Use the gesture zoom feature.md](docs/wiki/zoom.md)
->* [Display super large image function.md](docs/wiki/large_image.md)
->* [Use thumbnails function to display clearer thumbnails.md](docs/wiki/thumbnail_mode.md)
->* [Configure various properties.md](docs/wiki/options.md)
->* [Use ImageShaper to change the shape of the picture when drawing.md](docs/wiki/image_shaper.md)
->* [Use ShapeSize to change the size of the picture when drawing.md](docs/wiki/shape_size.md)
->* [Use ImageProcessor to turn a picture into a round, rounded, or Gaussian blur.md](docs/wiki/process_image.md)
->* [Use ImageDisplayer to display pictures in a cool way (transitions, zoom, etc.).md](docs/wiki/displayer.md)
->* [Use ImagePreprocessor to display thumbnails or icons of special files .md](docs/wiki/pre_process_image.md)
->* [Use maxSize to control image size.md](docs/wiki/max_size.md)
->* [Use resize to trim image size.md](docs/wiki/resize.md)
->* [Flexible use of various images as loading image by StateImage.md](docs/wiki/state_image.md)
->* [Download paused images in mobile network, saving traffic.md](docs/wiki/pause_download.md)
->* [Pause loading of images while sliding the list to improve fluency.md](docs/wiki/pause_load.md)
 
-Other：
+Basic functions:
+>* [SketchImageView Detailed Instructions.md](docs/wiki/sketch_image_view.md)
+>* [Play gif image.md](docs/wiki/display_gif_image.md)
+>* [Gesture zoom, rotate the picture.md](docs/wiki/zoom.md)
+>* [Blocked display of large images.md](docs/wiki/large_image.md)
+>* [Configure various option and option management.md](docs/wiki/options.md)
+>* [Use ShapeSize to change the size of the image when drawing.md](docs/wiki/shape_size.md)
+>* [Use ImageShaper to draw pictures in circles, rounded corners, and so on.md](docs/wiki/image_shaper.md)
+>* [ImageProcessor through the image into a Gaussian fuzzy, reflection.md](docs/wiki/process_image.md)
+>* [Through the ImageDisplay to transition, fade, etc. to display pictures.md](docs/wiki/displayer.md)
+>* [Control the picture size by MaxSize.md](docs/wiki/max_size.md)
+>* [Resize the image size by Resize.md](docs/wiki/resize.md)
+>* [Flexible use of various images as loading image by StateImage.md](docs/wiki/state_image.md)
+
+To further enhance the user experience:
+>* [So that any size of the two pictures can use TransitionDrawable transition display.md](docs/wiki/transition_displayer.md)
+>* [thumbnailMode property to show clearer thumbnails.md](docs/wiki/thumbnail_mode.md)
+>* [cacheProcessedImageInDisk property cache through the need for complex processing of pictures, to enhance the display speed.md](docs/wiki/cache_processed_image_in_disk.md)
+>* [Mobile network to suspend downloading pictures, save traffic.md](docs/wiki/pause_download.md)
+>* [Pause loading of images while sliding the list to improve fluency.md](docs/wiki/pause_load.md)
+>* [Display APK or installed APP icon.md](docs/wiki/display_apk_or_app_icon.md)
+>* [Displaying images in special files with Image Preprocessor (eg video, MP3).md](docs/wiki/pre_process_image.md)
+>* [Through the MemoryCache StateImage first show more vague picture, and then display a clear picture.md](docs/wiki/pre_process_image.md)
+
+More:
 >* [Synchronize load and download.md](docs/wiki/sync.md)
 >* [Learn about inSampleSize Calculation Rule.md](docs/wiki/in_sample_size.md)
 >* [Understanding and Configuring Memory Cache.md](docs/wiki/memory_cache.md)
 >* [Understanding and Configuring Local Cache.md](docs/wiki/disk_cache.md)
 >* [Learn and configure HttpStack.md](docs/wiki/http_stack.md)
 >* [Listen for loading start, success, failure, and download progress.md](docs/wiki/listener.md)
->* [Display APK or installed APP icon.md](docs/wiki/display_apk_or_app_icon.md)
 >* [Learn when to cancel a request and how to cancel the request.md](docs/wiki/cancel_request.md)
->* [Use ExceptionMonitor to monitor the Sketch exception.md](docs/wiki/exception_monitor.md)
+>* [The Sketch exception is monitored by ExceptionMonitor.md](docs/wiki/exception_monitor.md)
 >* [Configuration confusing (Proguard).md](docs/wiki/proguard_config.md)
 
 ### Thanks

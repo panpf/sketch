@@ -14,7 +14,6 @@ import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.FadeInImageDisplayer;
-import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
@@ -38,7 +37,7 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 @InjectContentView(R.layout.fragment_image)
 public class ImageFragment extends MyFragment {
     public static final String PARAM_REQUIRED_IMAGE_URI = "PARAM_REQUIRED_IMAGE_URI";
-    public static final String PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_INFO = "PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_INFO";
+    public static final String PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_ID = "PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_ID";
 
     @InjectView(R.id.image_imageFragment_image)
     private MyImageView imageView;
@@ -58,17 +57,17 @@ public class ImageFragment extends MyFragment {
     @InjectExtra(PARAM_REQUIRED_IMAGE_URI)
     private String imageUri;
 
-    @InjectExtra(PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_INFO)
-    private String loadingImageOptionsInfo;
+    @InjectExtra(PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_ID)
+    private String loadingImageOptionsId;
 
     private ApplyBackgroundCallback applyBackgroundCallback;
 
     private ImageMenu imageMenu;
 
-    public static ImageFragment build(String imageUri, String loadingImageOptions) {
+    public static ImageFragment build(String imageUri, String loadingImageOptionsId) {
         Bundle bundle = new Bundle();
         bundle.putString(PARAM_REQUIRED_IMAGE_URI, imageUri);
-        bundle.putString(PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_INFO, loadingImageOptions);
+        bundle.putString(PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_ID, loadingImageOptionsId);
         ImageFragment fragment = new ImageFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -132,14 +131,15 @@ public class ImageFragment extends MyFragment {
         }
 
         // 初始化超大图查看器的暂停状态，这一步很重要
-        if (imageView.isSupportLargeImage()) {
+        if (Settings.getBoolean(getActivity(), Settings.PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE)
+                && imageView.isSupportLargeImage()) {
             imageView.getLargeImageViewer().setPause(!isVisibleToUser());
         }
 
         // 配置选项，有占位图选项信息的话就使用内存缓存占位图但不使用任何显示器，否则就是用渐入显示器
         DisplayOptions options = imageView.getOptions();
-        if (!TextUtils.isEmpty(loadingImageOptionsInfo)) {
-            String loadingImageId = SketchUtils.makeMemoryCacheId(imageUri, loadingImageOptionsInfo);
+        if (!TextUtils.isEmpty(loadingImageOptionsId)) {
+            String loadingImageId = SketchUtils.makeOptionsId(imageUri, loadingImageOptionsId);
             RefBitmap cachedRefBitmap = Sketch.with(getActivity()).getConfiguration().getMemoryCache().get(loadingImageId);
             if (cachedRefBitmap != null) {
                 options.setLoadingImage(new MemoryCacheStateImage(loadingImageId, null));
@@ -268,7 +268,7 @@ public class ImageFragment extends MyFragment {
             });
         }
 
-        mappingView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
+        mappingView.getOptions().setImageDisplayer(new FadeInImageDisplayer());
         mappingView.getOptions().setMaxSize(600, 600);
         mappingView.displayImage(imageUri);
 
@@ -290,8 +290,15 @@ public class ImageFragment extends MyFragment {
         }
 
         // 不可见的时候暂停超大图查看器，节省内存
-        if (imageView != null && imageView.isSupportLargeImage()) {
-            imageView.getLargeImageViewer().setPause(!isVisibleToUser);
+        if (Settings.getBoolean(getActivity(), Settings.PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE)) {
+            if (imageView != null && imageView.isSupportLargeImage()) {
+                imageView.getLargeImageViewer().setPause(!isVisibleToUser);
+            }
+        } else {
+            if (imageView != null && imageView.isSupportLargeImage()
+                    && isVisibleToUser && imageView.getLargeImageViewer().isPaused()) {
+                imageView.getLargeImageViewer().setPause(false);
+            }
         }
     }
 

@@ -83,8 +83,14 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
     }
 
     @Override
-    public void onImageClick(int position, String loadingImageOptionsInfo) {
-        DetailActivity.launch(getActivity(), (ArrayList<String>) imageAdapter.getImageUrlList(), null, position);
+    public void onImageClick(int position, String loadingImageOptionsId) {
+        // 含有这些信息时，说明这张图片不仅仅是缩小，而是会被改变，因此不能用作loading图了
+        if (loadingImageOptionsId.contains("Resize")
+                || loadingImageOptionsId.contains("ImageProcessor")
+                || loadingImageOptionsId.contains("thumbnailMode")) {
+            loadingImageOptionsId = null;
+        }
+        DetailActivity.launch(getActivity(), (ArrayList<String>) imageAdapter.getImageUrlList(), loadingImageOptionsId, position);
     }
 
     @Override
