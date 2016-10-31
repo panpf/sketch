@@ -160,12 +160,12 @@ abstract class Request {
         return Thread.currentThread().getName();
     }
 
-    private void printLog(int level, String... items) {
+    private void printLog(int level, Object... items) {
         StringBuilder builder = new StringBuilder();
         builder.append(getLogName());
 
         if (items != null && items.length > 0) {
-            for (String item : items) {
+            for (Object item : items) {
                 builder.append(". ").append(item);
             }
         }
@@ -184,19 +184,19 @@ abstract class Request {
         }
     }
 
-    protected void printLogD(String... items) {
+    protected void printLogD(Object... items) {
         printLog(0, items);
     }
 
-    protected void printLogI(String... items) {
+    protected void printLogI(Object... items) {
         printLog(1, items);
     }
 
-    protected void printLogW(String... items) {
+    protected void printLogW(Object... items) {
         printLog(2, items);
     }
 
-    protected void printLogE(String... items) {
+    protected void printLogE(Object... items) {
         printLog(3, items);
     }
 

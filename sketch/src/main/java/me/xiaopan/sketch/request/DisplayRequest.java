@@ -28,6 +28,7 @@ import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
+import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -192,7 +193,8 @@ public class DisplayRequest extends LoadRequest {
             if (bitmap.isRecycled()) {
                 if (Sketch.isDebugMode()) {
                     printLogE("decode failed", "loadCompleted", "bitmap recycled",
-                            "bitmapInfo=", SketchUtils.getImageInfo(null, bitmap, loadResult.getMimeType()));
+                            "bitmapInfo=", SketchUtils.getImageInfo(null, bitmap, loadResult.getMimeType()),
+                            loadResult.getImageFrom());
                 }
                 error(ErrorCause.BITMAP_RECYCLED);
                 return;
@@ -213,9 +215,8 @@ public class DisplayRequest extends LoadRequest {
 
             if (gifDrawable.isRecycled()) {
                 if (Sketch.isDebugMode()) {
-                    printLogE("decode failed", "loadCompleted",
-                            "gif drawable recycled",
-                            "gifInfo=", SketchUtils.getGifImageInfo(gifDrawable));
+                    printLogE("decode failed", "loadCompleted", "gif drawable recycled",
+                            "gifInfo=", SketchUtils.getGifImageInfo(gifDrawable), loadResult.getImageFrom());
                 }
                 error(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;
@@ -247,14 +248,16 @@ public class DisplayRequest extends LoadRequest {
 
     @Override
     protected void runCompletedInMainThread() {
+        Drawable drawable = displayResult.getDrawable();
+
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
                 printLogW("canceled", "runCompletedInMainThread");
             }
 
             // 更新等待显示的引用计数
-            if (displayResult != null && displayResult.getDrawable() instanceof RefDrawable) {
-                RefDrawable refDrawable = (RefDrawable) displayResult.getDrawable();
+            if (drawable != null && drawable instanceof RefDrawable) {
+                RefDrawable refDrawable = (RefDrawable) drawable;
                 refDrawable.setIsWaitDisplay("completedCallback:cancel", false);
             }
             return;
@@ -262,27 +265,37 @@ public class DisplayRequest extends LoadRequest {
 
         setStatus(Status.COMPLETED);
 
-        // 显示图片
-        if (displayResult != null && displayResult.getDrawable() != null) {
-            Drawable drawable = displayResult.getDrawable();
-            if ((displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null)
-                    && drawable instanceof BitmapDrawable) {
-                drawable = new ShapeBitmapDrawable((BitmapDrawable) drawable,
-                        displayOptions.getShapeSize(), displayOptions.getImageShaper());
-            }
-
-            ImageViewInterface viewInterface = requestAndViewBinder.getImageViewInterface();
-            if (Sketch.isDebugMode()) {
-                String drawableInfo = "unknown";
-                if (drawable instanceof RefDrawable) {
-                    drawableInfo = ((RefDrawable) drawable).getInfo();
+        if (drawable != null) {
+            if (drawable instanceof BitmapDrawable && ((BitmapDrawable) drawable).getBitmap().isRecycled()) {
+                // 图片不可用
+                printLogD("image display exception", "bitmap recycled",
+                        ((SketchDrawable) drawable).getInfo(), displayResult.getImageFrom());
+                runErrorInMainThread();
+            } else {
+                // 显示图片
+                if ((displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null)
+                        && drawable instanceof BitmapDrawable) {
+                    drawable = new ShapeBitmapDrawable((BitmapDrawable) drawable,
+                            displayOptions.getShapeSize(), displayOptions.getImageShaper());
                 }
-                printLogI("image display completed", "runCompletedInMainThread",
-                        displayResult.getImageFrom().name(), drawableInfo,
-                        "viewHashCode=" + Integer.toHexString(viewInterface.hashCode()));
-            }
 
-            displayOptions.getImageDisplayer().display(viewInterface, drawable);
+                ImageViewInterface viewInterface = requestAndViewBinder.getImageViewInterface();
+                if (Sketch.isDebugMode()) {
+                    String drawableInfo = "unknown";
+                    if (drawable instanceof RefDrawable) {
+                        drawableInfo = ((RefDrawable) drawable).getInfo();
+                    }
+                    printLogI("image display completed", "runCompletedInMainThread",
+                            displayResult.getImageFrom().name(), drawableInfo,
+                            "viewHashCode=" + Integer.toHexString(viewInterface.hashCode()));
+                }
+
+                displayOptions.getImageDisplayer().display(viewInterface, drawable);
+
+                if (displayListener != null) {
+                    displayListener.onCompleted(displayResult.getImageFrom(), displayResult.getMimeType());
+                }
+            }
         } else {
             if (Sketch.isDebugMode()) {
                 printLogD("completedDrawable is null", "runCompletedInMainThread");
@@ -290,13 +303,9 @@ public class DisplayRequest extends LoadRequest {
         }
 
         // 更新等待显示的引用计数
-        if (displayResult.getDrawable() instanceof RefDrawable) {
-            RefDrawable refDrawable = (RefDrawable) displayResult.getDrawable();
+        if (drawable != null && drawable instanceof RefDrawable) {
+            RefDrawable refDrawable = (RefDrawable) drawable;
             refDrawable.setIsWaitDisplay("completedCallback", false);
-        }
-
-        if (displayListener != null) {
-            displayListener.onCompleted(displayResult.getImageFrom(), displayResult.getMimeType());
         }
     }
 
