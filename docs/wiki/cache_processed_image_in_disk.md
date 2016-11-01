@@ -15,3 +15,9 @@ displayOptions.setCacheProcessedImageInDisk(true);
 >* 有resize
 >* 有ImageProcessor，并且确实生成了一张新的图片
 >* thumbnailMode为true并且resize不为null
+
+#### 存在的问题
+
+由于Android天然存在的BUG，导致读到内存里的图片，再保存到磁盘后图片会发生轻微的色彩变化（通常是发黄），因此在使用此功能时还是要慎重考虑此因素带来的影响
+
+参考文章：http://www.cnblogs.com/zhucai/p/inPreferQualityOverSpeed.html
