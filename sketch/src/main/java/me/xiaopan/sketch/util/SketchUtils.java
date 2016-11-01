@@ -1002,7 +1002,7 @@ public class SketchUtils {
         }
     }
 
-    public static String makeOptionsId(String imageUri, DownloadOptions options) {
+    public static String makeRequestId(String imageUri, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
         if (options != null) {
@@ -1012,7 +1012,7 @@ public class SketchUtils {
     }
 
     @SuppressWarnings("unused")
-    public static String makeOptionsId(String imageUri, String options) {
+    public static String makeRequestId(String imageUri, String options) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
         if (!TextUtils.isEmpty(options)) {
@@ -1021,7 +1021,7 @@ public class SketchUtils {
         return builder.toString();
     }
 
-    public static String makeStateImageMemoryCacheId(String imageUri, DownloadOptions options) {
+    public static String makeStateImageRequestId(String imageUri, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
         if (options != null) {

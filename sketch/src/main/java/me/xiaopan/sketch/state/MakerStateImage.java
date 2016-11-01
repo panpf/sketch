@@ -79,7 +79,7 @@ public class MakerStateImage implements StateImage {
         }
 
         // 从内存缓存中取
-        String memoryCacheId = SketchUtils.makeStateImageMemoryCacheId(String.valueOf(resId), displayOptions);
+        String memoryCacheId = SketchUtils.makeStateImageRequestId(String.valueOf(resId), displayOptions);
         MemoryCache stateImageMemoryCache = configuration.getStateImageMemoryCache();
         RefBitmap cachedRefBitmap = stateImageMemoryCache.get(memoryCacheId);
         if (cachedRefBitmap != null) {

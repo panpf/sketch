@@ -139,10 +139,10 @@ public class ImageFragment extends MyFragment {
         // 配置选项，有占位图选项信息的话就使用内存缓存占位图但不使用任何显示器，否则就是用渐入显示器
         DisplayOptions options = imageView.getOptions();
         if (!TextUtils.isEmpty(loadingImageOptionsId)) {
-            String loadingImageId = SketchUtils.makeOptionsId(imageUri, loadingImageOptionsId);
-            RefBitmap cachedRefBitmap = Sketch.with(getActivity()).getConfiguration().getMemoryCache().get(loadingImageId);
+            String loadingImageMemoryCacheId = SketchUtils.makeRequestId(imageUri, loadingImageOptionsId);
+            RefBitmap cachedRefBitmap = Sketch.with(getActivity()).getConfiguration().getMemoryCache().get(loadingImageMemoryCacheId);
             if (cachedRefBitmap != null) {
-                options.setLoadingImage(new MemoryCacheStateImage(loadingImageId, null));
+                options.setLoadingImage(new MemoryCacheStateImage(loadingImageMemoryCacheId, null));
             } else {
                 options.setImageDisplayer(new FadeInImageDisplayer());
             }

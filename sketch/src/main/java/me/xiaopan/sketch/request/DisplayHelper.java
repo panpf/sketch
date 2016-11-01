@@ -609,7 +609,7 @@ public class DisplayHelper {
 
         // 根据URI和显示选项生成请求ID
         if (requestAttrs.getId() == null) {
-            requestAttrs.setId(SketchUtils.makeOptionsId(requestAttrs.getUri(), displayOptions));
+            requestAttrs.setId(SketchUtils.makeRequestId(requestAttrs.getUri(), displayOptions));
         }
     }
 
