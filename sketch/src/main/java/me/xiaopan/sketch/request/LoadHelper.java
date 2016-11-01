@@ -22,7 +22,6 @@ import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.feature.RequestFactory;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -32,7 +31,7 @@ public class LoadHelper {
     protected Sketch sketch;
 
     protected boolean sync;
-    protected RequestAttrs requestAttrs = new RequestAttrs();
+    protected LoadInfo loadInfo = new LoadInfo();
     protected LoadOptions loadOptions = new LoadOptions();
     protected LoadListener loadListener;
     protected DownloadProgressListener downloadProgressListener;
@@ -51,7 +50,7 @@ public class LoadHelper {
      */
     public LoadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
-        this.requestAttrs.reset(uri);
+        this.loadInfo.reset(uri);
     }
 
     /**
@@ -283,13 +282,13 @@ public class LoadHelper {
         }
 
         // 根据URI和加载选项生成请求ID
-        if (requestAttrs.getId() == null) {
-            requestAttrs.setId(SketchUtils.makeRequestId(requestAttrs.getUri(), loadOptions));
+        if (loadInfo.getId() == null) {
+            loadInfo.setId(SketchUtils.makeRequestId(loadInfo.getUri(), loadOptions));
         }
     }
 
     private boolean checkUri() {
-        if (requestAttrs.getUri() == null || "".equals(requestAttrs.getUri().trim())) {
+        if (loadInfo.getUri() == null || "".equals(loadInfo.getUri().trim())) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName, ". uri is null or empty"));
             }
@@ -301,8 +300,8 @@ public class LoadHelper {
     }
 
     private boolean checkUriScheme() {
-        if (requestAttrs.getUriScheme() == null) {
-            Log.e(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri scheme", ". ", requestAttrs.getId()));
+        if (loadInfo.getUriScheme() == null) {
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri scheme", ". ", loadInfo.getId()));
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -313,15 +312,15 @@ public class LoadHelper {
     private boolean checkRequestLevel() {
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
         if (loadOptions.getRequestLevel() == RequestLevel.LOCAL
-                && requestAttrs.getUriScheme() == UriScheme.NET
-                && !sketch.getConfiguration().getDiskCache().exist(requestAttrs.getUri())) {
+                && loadInfo.getUriScheme() == UriScheme.NET
+                && !sketch.getConfiguration().getDiskCache().exist(loadInfo.getDiskCacheKey())) {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
                         ". canceled",
                         ". ", isPauseDownload ? "pause download" : "requestLevel is local",
-                        ". ", requestAttrs.getId()));
+                        ". ", loadInfo.getId()));
             }
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
@@ -335,7 +334,7 @@ public class LoadHelper {
 
     private LoadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        LoadRequest request = requestFactory.newLoadRequest(sketch, requestAttrs, loadOptions, loadListener, downloadProgressListener);
+        LoadRequest request = requestFactory.newLoadRequest(sketch, loadInfo, loadOptions, loadListener, downloadProgressListener);
         request.setSync(sync);
         request.submit();
         return request;

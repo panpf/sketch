@@ -92,20 +92,20 @@ public class ImagePreprocessor implements Identifier {
     }
 
     private boolean isApkFile(LoadRequest loadRequest) {
-        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE
-                && SketchUtils.checkSuffix(loadRequest.getAttrs().getRealUri(), ".apk");
+        return loadRequest.getUriScheme() == UriScheme.FILE
+                && SketchUtils.checkSuffix(loadRequest.getRealUri(), ".apk");
     }
 
     private boolean isInstalledApp(LoadRequest loadRequest) {
-        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE
-                && loadRequest.getAttrs().getRealUri().startsWith(INSTALLED_APP_URI_HOST);
+        return loadRequest.getUriScheme() == UriScheme.FILE
+                && loadRequest.getRealUri().startsWith(INSTALLED_APP_URI_HOST);
     }
 
     /**
      * 获取APK图标的缓存
      */
     private PreProcessResult getApkIconDiskCache(LoadRequest loadRequest) {
-        String realUri = loadRequest.getAttrs().getRealUri();
+        String realUri = loadRequest.getRealUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
         DiskCache diskCache = configuration.getDiskCache();
 
@@ -141,7 +141,7 @@ public class ImagePreprocessor implements Identifier {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
                         ". apk icon bitmap recycled",
-                        ". ", loadRequest.getAttrs().getId()));
+                        ". ", loadRequest.getId()));
             }
             return null;
         }
@@ -192,7 +192,7 @@ public class ImagePreprocessor implements Identifier {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
                             ". not found apk icon cache file",
-                            ". ", loadRequest.getAttrs().getId()));
+                            ". ", loadRequest.getId()));
                 }
                 return null;
             }
@@ -205,7 +205,7 @@ public class ImagePreprocessor implements Identifier {
      * 获取已安装APP图标的缓存
      */
     private PreProcessResult getInstalledAppIconDiskCache(LoadRequest loadRequest) {
-        String diskCacheKey = loadRequest.getAttrs().getUri();
+        String diskCacheKey = loadRequest.getUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
         DiskCache diskCache = configuration.getDiskCache();
 
@@ -226,7 +226,7 @@ public class ImagePreprocessor implements Identifier {
             return new PreProcessResult(appIconDiskCacheEntry, ImageFrom.DISK_CACHE);
         }
 
-        Uri uri = Uri.parse(loadRequest.getAttrs().getUri());
+        Uri uri = Uri.parse(loadRequest.getUri());
 
         String packageName = uri.getQueryParameter(INSTALLED_APP_URI_PARAM_PACKAGE_NAME);
         int versionCode = Integer.valueOf(uri.getQueryParameter(INSTALLED_APP_URI_PARAM_VERSION_CODE));
@@ -255,7 +255,7 @@ public class ImagePreprocessor implements Identifier {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
                         ". apk icon bitmap recycled",
-                        ". ", loadRequest.getAttrs().getId()));
+                        ". ", loadRequest.getId()));
             }
             return null;
         }
@@ -306,7 +306,7 @@ public class ImagePreprocessor implements Identifier {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
                             ". not found apk icon cache file",
-                            ". ", loadRequest.getAttrs().getId()));
+                            ". ", loadRequest.getId()));
                 }
                 return null;
             }

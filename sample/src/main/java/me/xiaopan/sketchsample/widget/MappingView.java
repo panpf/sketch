@@ -166,7 +166,7 @@ public class MappingView extends SketchImageView {
 
     private String getImageUri() {
         DisplayParams displayParams = getDisplayParams();
-        return displayParams != null ? displayParams.attrs.getUri() : null;
+        return displayParams != null ? displayParams.info.getUri() : null;
     }
 
     public void update(Point newDrawableSize, Rect newVisibleRect) {

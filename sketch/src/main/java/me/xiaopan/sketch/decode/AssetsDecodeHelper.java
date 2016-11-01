@@ -108,7 +108,7 @@ public class AssetsDecodeHelper implements DecodeHelper {
             } else {
                 builder.append(". unchanged");
             }
-            builder.append(". ").append(loadRequest.getAttrs().getId());
+            builder.append(". ").append(loadRequest.getId());
             Log.d(Sketch.TAG, builder.toString());
         }
     }

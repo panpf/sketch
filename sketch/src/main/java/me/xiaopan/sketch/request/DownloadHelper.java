@@ -20,7 +20,6 @@ import android.util.Log;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.feature.RequestFactory;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class DownloadHelper {
@@ -29,7 +28,7 @@ public class DownloadHelper {
     protected Sketch sketch;
 
     protected boolean sync;
-    protected RequestAttrs requestAttrs = new RequestAttrs();
+    protected DownloadInfo downloadInfo = new DownloadInfo();
     protected DownloadOptions downloadOptions = new DownloadOptions();
     protected DownloadListener downloadListener;
     protected DownloadProgressListener downloadProgressListener;
@@ -42,7 +41,7 @@ public class DownloadHelper {
      */
     public DownloadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
-        this.requestAttrs.reset(uri);
+        this.downloadInfo.reset(uri);
     }
 
     /**
@@ -146,13 +145,13 @@ public class DownloadHelper {
         // 暂停下载对于下载请求并不起作用，就相当于暂停加载对加载请求并不起作用一样，因此这里不予处理
 
         // 根据URI和下载选项生成请求ID
-        if (requestAttrs.getId() == null) {
-            requestAttrs.setId(SketchUtils.makeRequestId(requestAttrs.getUri(), downloadOptions));
+        if (downloadInfo.getId() == null) {
+            downloadInfo.setId(SketchUtils.makeRequestId(downloadInfo.getUri(), downloadOptions));
         }
     }
 
     private boolean checkUri() {
-        if (requestAttrs.getUri() == null || "".equals(requestAttrs.getUri().trim())) {
+        if (downloadInfo.getUri() == null || "".equals(downloadInfo.getUri().trim())) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName, ". uri is null or empty"));
             }
@@ -164,15 +163,15 @@ public class DownloadHelper {
     }
 
     private boolean checkUriScheme() {
-        if (requestAttrs.getUriScheme() == null) {
-            Log.e(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri scheme", ". ", requestAttrs.getId()));
+        if (downloadInfo.getUriScheme() == null) {
+            Log.e(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri scheme", ". ", downloadInfo.getId()));
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
-        if (requestAttrs.getUriScheme() != UriScheme.NET) {
+        if (downloadInfo.getUriScheme() != UriScheme.NET) {
             if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName, ". only support http ot https", ". ", requestAttrs.getId()));
+                Log.e(Sketch.TAG, SketchUtils.concat(logName, ". only support http ot https", ". ", downloadInfo.getId()));
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
@@ -183,7 +182,7 @@ public class DownloadHelper {
 
     private DownloadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        DownloadRequest request = requestFactory.newDownloadRequest(sketch, requestAttrs, downloadOptions, downloadListener, downloadProgressListener);
+        DownloadRequest request = requestFactory.newDownloadRequest(sketch, downloadInfo, downloadOptions, downloadListener, downloadProgressListener);
         request.setSync(sync);
         request.submit();
         return request;

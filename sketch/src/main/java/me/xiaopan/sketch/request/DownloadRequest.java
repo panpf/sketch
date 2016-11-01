@@ -41,16 +41,23 @@ public class DownloadRequest extends AsyncRequest {
     private DownloadResult downloadResult;
 
     public DownloadRequest(
-            Sketch sketch, RequestAttrs requestAttrs,
+            Sketch sketch, DownloadInfo info,
             DownloadOptions options, DownloadListener downloadListener,
             DownloadProgressListener downloadProgressListener) {
-        super(sketch, requestAttrs);
+        super(sketch, info);
 
         this.options = options;
         this.downloadListener = downloadListener;
         this.downloadProgressListener = downloadProgressListener;
 
         setLogName("DownloadRequest");
+    }
+
+    /**
+     * 获取磁盘缓存key
+     */
+    public String getDiskCacheKey(){
+        return ((DownloadInfo) info).getDiskCacheKey();
     }
 
     /**
@@ -118,8 +125,7 @@ public class DownloadRequest extends AsyncRequest {
             setStatus(Status.CHECK_DISK_CACHE);
 
             DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
-            String diskCacheKey = getAttrs().getUri();
-            DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
+            DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (Sketch.isDebugMode()) {
                     printLogD("from diskCache", "runDispatch");
@@ -163,20 +169,19 @@ public class DownloadRequest extends AsyncRequest {
             return;
         }
 
-        String diskCacheKey = getAttrs().getUri();
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
 
         // 使用磁盘缓存就必须要上锁
         ReentrantLock diskCacheEditLock = null;
         if (!getOptions().isDisableCacheInDisk()) {
             setStatus(Status.GET_DISK_CACHE_EDIT_LOCK);
-            diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
+            diskCacheEditLock = diskCache.getEditLock(getDiskCacheKey());
             if (diskCacheEditLock != null) {
                 diskCacheEditLock.lock();
             }
         }
 
-        DownloadResult justDownloadResult = download(diskCache, diskCacheKey);
+        DownloadResult justDownloadResult = download(diskCache, getDiskCacheKey());
 
         // 解锁
         if (diskCacheEditLock != null) {
@@ -252,7 +257,7 @@ public class DownloadRequest extends AsyncRequest {
     private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey) throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException {
         setStatus(Status.CONNECTING);
 
-        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getAttrs().getRealUri());
+        HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getRealUri());
         if (isCanceled()) {
             httpResponse.releaseConnection();
             if (Sketch.isDebugMode()) {

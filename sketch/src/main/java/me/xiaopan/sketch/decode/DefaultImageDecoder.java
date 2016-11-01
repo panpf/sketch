@@ -60,7 +60,7 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         DecodeResult result = null;
         try {
-            UriScheme uriScheme = loadRequest.getAttrs().getUriScheme();
+            UriScheme uriScheme = loadRequest.getUriScheme();
             if (uriScheme == UriScheme.NET) {
                 result = decodeHttpOrHttps(loadRequest);
             } else if (uriScheme == UriScheme.FILE) {
@@ -72,7 +72,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             } else if (uriScheme == UriScheme.DRAWABLE) {
                 result = decodeDrawable(loadRequest);
             } else {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri is ", loadRequest.getAttrs().getUri()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri is ", loadRequest.getUri()));
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -93,7 +93,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 Log.d(Sketch.TAG, SketchUtils.concat(logName,
                         ". decode use time ", useTime, "ms",
                         ", average ", decimalFormat.format((double) useTimeCount / decodeCount), "ms",
-                        ". ", loadRequest.getAttrs().getId()));
+                        ". ", loadRequest.getId()));
             }
         }
 
@@ -112,7 +112,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName,
                         ". image width or height is 1px",
                         ". imageSize: ", boundsOptions.outWidth, "x", boundsOptions.outHeight,
-                        ". ", loadRequest.getAttrs().getId()));
+                        ". ", loadRequest.getId()));
             }
             decodeHelper.onDecodeError();
             return null;
@@ -167,8 +167,8 @@ public class DefaultImageDecoder implements ImageDecoder {
                 return null;
             }
 
-            gifDrawable.setImageId(loadRequest.getAttrs().getId());
-            gifDrawable.setImageUri(loadRequest.getAttrs().getUri());
+            gifDrawable.setImageId(loadRequest.getId());
+            gifDrawable.setImageUri(loadRequest.getUri());
             gifDrawable.setOriginWidth(outWidth);
             gifDrawable.setOriginHeight(outHeight);
             gifDrawable.setMimeType(outMimeType);
@@ -232,7 +232,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                         ". bitmap width or height is 1px",
                         ". imageSize: ", outWidth, "x", outHeight,
                         ". bitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
-                        ". ", loadRequest.getAttrs().getId()));
+                        ". ", loadRequest.getId()));
             }
             bitmap.recycle();
             decodeHelper.onDecodeError();
@@ -282,7 +282,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                         ". bitmap width or height is 1px",
                         ". imageSize: ", outWidth, "x", outHeight,
                         ". bitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
-                        ". ", loadRequest.getAttrs().getId()));
+                        ". ", loadRequest.getId()));
             }
             bitmap.recycle();
             decodeHelper.onDecodeError();
@@ -337,7 +337,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (dataSource != null) {
             decodeResult = decodeFromDataSource(loadRequest, dataSource);
         } else {
-            DecodeHelper decodeHelper = new FileDecodeHelper(new File(loadRequest.getAttrs().getRealUri()), loadRequest);
+            DecodeHelper decodeHelper = new FileDecodeHelper(new File(loadRequest.getRealUri()), loadRequest);
             decodeResult = decodeFromHelper(loadRequest, decodeHelper, false);
             if (decodeResult != null) {
                 decodeResult.setImageFrom(ImageFrom.LOCAL);
@@ -354,7 +354,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (dataSource != null) {
             decodeResult = decodeFromDataSource(loadRequest, dataSource);
         } else {
-            DecodeHelper decodeHelper = new ContentDecodeHelper(Uri.parse(loadRequest.getAttrs().getRealUri()), loadRequest);
+            DecodeHelper decodeHelper = new ContentDecodeHelper(Uri.parse(loadRequest.getRealUri()), loadRequest);
             decodeResult = decodeFromHelper(loadRequest, decodeHelper, false);
             if (decodeResult != null) {
                 decodeResult.setImageFrom(ImageFrom.LOCAL);
@@ -371,7 +371,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (dataSource != null) {
             decodeResult = decodeFromDataSource(loadRequest, dataSource);
         } else {
-            DecodeHelper decodeHelper = new AssetsDecodeHelper(loadRequest.getAttrs().getRealUri(), loadRequest);
+            DecodeHelper decodeHelper = new AssetsDecodeHelper(loadRequest.getRealUri(), loadRequest);
             decodeResult = decodeFromHelper(loadRequest, decodeHelper, false);
             if (decodeResult != null) {
                 decodeResult.setImageFrom(ImageFrom.LOCAL);
@@ -388,7 +388,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (dataSource != null) {
             decodeResult = decodeFromDataSource(loadRequest, dataSource);
         } else {
-            DecodeHelper decodeHelper = new DrawableDecodeHelper(Integer.valueOf(loadRequest.getAttrs().getRealUri()), loadRequest);
+            DecodeHelper decodeHelper = new DrawableDecodeHelper(Integer.valueOf(loadRequest.getRealUri()), loadRequest);
             decodeResult = decodeFromHelper(loadRequest, decodeHelper, false);
             if (decodeResult != null) {
                 decodeResult.setImageFrom(ImageFrom.LOCAL);

@@ -33,7 +33,6 @@ import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
-import me.xiaopan.sketch.feature.RequestFactory;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.state.StateImage;
@@ -45,7 +44,7 @@ public class DisplayHelper {
 
     protected Sketch sketch;
 
-    protected RequestAttrs requestAttrs = new RequestAttrs();
+    protected DisplayInfo displayInfo = new DisplayInfo();
     protected DisplayAttrs displayAttrs = new DisplayAttrs();
     protected DisplayOptions displayOptions = new DisplayOptions();
     protected DisplayListener displayListener;
@@ -84,12 +83,12 @@ public class DisplayHelper {
         }
 
         // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
-        this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
+        this.imageViewInterface.onDisplay(displayInfo.getUriScheme());
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("onDisplay");
         }
 
-        requestAttrs.reset(uri);
+        displayInfo.reset(uri);
         displayAttrs.reset(imageViewInterface, sketch);
         displayOptions.copy(imageViewInterface.getOptions());
         if (Sketch.isDebugMode()) {
@@ -114,12 +113,12 @@ public class DisplayHelper {
         }
 
         // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
-        this.imageViewInterface.onDisplay(requestAttrs.getUriScheme());
+        this.imageViewInterface.onDisplay(displayInfo.getUriScheme());
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("onDisplay");
         }
 
-        requestAttrs.copy(params.attrs);
+        displayInfo.copy(params.info);
         displayAttrs.reset(imageViewInterface, sketch);
         displayOptions.copy(params.options);
         if (Sketch.isDebugMode()) {
@@ -138,7 +137,7 @@ public class DisplayHelper {
     public void reset() {
         sketch = null;
 
-        requestAttrs.reset(null);
+        displayInfo.reset(null);
         displayOptions.reset();
         displayListener = null;
         downloadProgressListener = null;
@@ -291,15 +290,6 @@ public class DisplayHelper {
     }
 
     /**
-     * 设置内存缓存ID（大多数情况下你不需要手动设置缓存ID，除非你想使用通过putBitmap()放到缓存中的图片）
-     */
-    @SuppressWarnings("unused")
-    public DisplayHelper memoryCacheId(String memoryCacheId) {
-        this.requestAttrs.setId(memoryCacheId);
-        return this;
-    }
-
-    /**
      * 设置正在加载时显示的图片
      */
     @SuppressWarnings("unused")
@@ -415,9 +405,9 @@ public class DisplayHelper {
             Log.w(Sketch.TAG, SketchUtils.concat(logName,
                     ". Please perform a commit in the UI thread",
                     ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
-                    ". ", requestAttrs.getUri()));
+                    ". ", displayInfo.getUri()));
             if (Sketch.isDebugMode()) {
-                Stopwatch.with().print(requestAttrs.getUri());
+                Stopwatch.with().print(displayInfo.getUri());
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
@@ -444,7 +434,7 @@ public class DisplayHelper {
         }
         if (!checkResult) {
             if (Sketch.isDebugMode()) {
-                Stopwatch.with().print(requestAttrs.getId());
+                Stopwatch.with().print(displayInfo.getId());
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
@@ -456,7 +446,7 @@ public class DisplayHelper {
         }
         if (!checkResult) {
             if (Sketch.isDebugMode()) {
-                Stopwatch.with().print(requestAttrs.getId());
+                Stopwatch.with().print(displayInfo.getId());
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
@@ -468,7 +458,7 @@ public class DisplayHelper {
         }
         if (!checkResult) {
             if (Sketch.isDebugMode()) {
-                Stopwatch.with().print(requestAttrs.getId());
+                Stopwatch.with().print(displayInfo.getId());
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return null;
@@ -480,7 +470,7 @@ public class DisplayHelper {
         }
         if (potentialRequest != null) {
             if (Sketch.isDebugMode()) {
-                Stopwatch.with().print(requestAttrs.getId());
+                Stopwatch.with().print(displayInfo.getId());
             }
             sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
             return potentialRequest;
@@ -489,7 +479,7 @@ public class DisplayHelper {
         DisplayRequest request = submitRequest();
 
         if (Sketch.isDebugMode()) {
-            Stopwatch.with().print(requestAttrs.getId());
+            Stopwatch.with().print(displayInfo.getId());
         }
         sketch.getConfiguration().getHelperFactory().recycleDisplayHelper(this);
         return request;
@@ -601,15 +591,15 @@ public class DisplayHelper {
                     Log.d(Sketch.TAG, SketchUtils.concat(logName,
                             ". ", errorInfo,
                             ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
-                            ". ", requestAttrs.getId()));
+                            ". ", displayInfo.getId()));
                 }
                 throw new IllegalArgumentException(errorInfo);
             }
         }
 
         // 根据URI和显示选项生成请求ID
-        if (requestAttrs.getId() == null) {
-            requestAttrs.setId(SketchUtils.makeRequestId(requestAttrs.getUri(), displayOptions));
+        if (displayInfo.getId() == null) {
+            displayInfo.setId(SketchUtils.makeRequestId(displayInfo.getUri(), displayOptions));
         }
     }
 
@@ -623,12 +613,12 @@ public class DisplayHelper {
             imageViewInterface.setDisplayParams(displayParams);
         }
 
-        displayParams.attrs.copy(requestAttrs);
+        displayParams.info.copy(displayInfo);
         displayParams.options.copy(displayOptions);
     }
 
     private boolean checkUri() {
-        if (requestAttrs.getUri() == null || "".equals(requestAttrs.getUri().trim())) {
+        if (displayInfo.getUri() == null || "".equals(displayInfo.getUri().trim())) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName,
                         ". uri is null or empty",
@@ -649,11 +639,11 @@ public class DisplayHelper {
             return false;
         }
 
-        if (requestAttrs.getUriScheme() == null) {
+        if (displayInfo.getUriScheme() == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                    ". unknown uri scheme: ", requestAttrs.getUri(),
+                    ". unknown uri scheme: ", displayInfo.getUri(),
                     ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
-                    ". ", requestAttrs.getId()));
+                    ". ", displayInfo.getId()));
 
             Drawable drawable = null;
             if (displayOptions.getErrorImage() != null) {
@@ -674,7 +664,7 @@ public class DisplayHelper {
 
     private boolean checkMemoryCache() {
         if (!displayOptions.isDisableCacheInMemory()) {
-            RefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(requestAttrs.getId());
+            RefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(displayInfo.getMemoryCacheKey());
             if (cachedRefBitmap != null) {
                 if (!cachedRefBitmap.isRecycled()) {
                     if (Sketch.isDebugMode()) {
@@ -683,7 +673,7 @@ public class DisplayHelper {
                                 ". ", ImageFrom.MEMORY_CACHE.name(),
                                 ". ", cachedRefBitmap.getInfo(),
                                 ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
-                                ". ", requestAttrs.getId()));
+                                ". ", displayInfo.getId()));
                     }
 
                     Drawable finalDrawable;
@@ -705,13 +695,13 @@ public class DisplayHelper {
                     }
                     return false;
                 } else {
-                    sketch.getConfiguration().getMemoryCache().remove(requestAttrs.getId());
+                    sketch.getConfiguration().getMemoryCache().remove(displayInfo.getMemoryCacheKey());
                     if (Sketch.isDebugMode()) {
                         Log.e(Sketch.TAG, SketchUtils.concat(logName,
                                 ". ", "memory cache drawable recycled",
                                 ". ", cachedRefBitmap.getInfo(),
                                 ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
-                                ". ", requestAttrs.getId()));
+                                ". ", displayInfo.getId()));
                     }
                 }
             }
@@ -730,7 +720,7 @@ public class DisplayHelper {
                         ". canceled",
                         ". ", isPauseLoad ? "pause load" : "requestLevel is memory",
                         ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
-                        ". ", requestAttrs.getId()));
+                        ". ", displayInfo.getId()));
             }
 
             Drawable loadingDrawable = null;
@@ -748,8 +738,8 @@ public class DisplayHelper {
 
         // 如果只从本地加载并且是网络请求并且磁盘中没有缓存就结束吧
         if (displayOptions.getRequestLevel() == RequestLevel.LOCAL
-                && requestAttrs.getUriScheme() == UriScheme.NET
-                && !sketch.getConfiguration().getDiskCache().exist(requestAttrs.getUri())) {
+                && displayInfo.getUriScheme() == UriScheme.NET
+                && !sketch.getConfiguration().getDiskCache().exist(displayInfo.getDiskCacheKey())) {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
             if (Sketch.isDebugMode()) {
@@ -757,7 +747,7 @@ public class DisplayHelper {
                         ". canceled",
                         ". ", isPauseDownload ? "pause download" : "requestLevel is local",
                         ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
-                        ". ", requestAttrs.getId()));
+                        ". ", displayInfo.getId()));
             }
 
             // 显示暂停下载图片
@@ -774,7 +764,7 @@ public class DisplayHelper {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
                             ". pauseDownloadDrawable is null",
                             ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
-                            ". ", requestAttrs.getId()));
+                            ". ", displayInfo.getId()));
                 }
             }
             imageViewInterface.setImageDrawable(drawable);
@@ -795,11 +785,11 @@ public class DisplayHelper {
     private DisplayRequest checkRepeatRequest() {
         DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(imageViewInterface);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
-            if (requestAttrs.getId().equals(potentialRequest.getAttrs().getId())) {
+            if (displayInfo.getId().equals(potentialRequest.getId())) {
                 if (Sketch.isDebugMode()) {
                     Log.d(Sketch.TAG, SketchUtils.concat(logName,
                             ". repeat request",
-                            ". newId=", requestAttrs.getId(),
+                            ". newId=", displayInfo.getId(),
                             ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode())));
                 }
                 return potentialRequest;
@@ -807,8 +797,8 @@ public class DisplayHelper {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
                             ". cancel old request",
-                            ". newId=", requestAttrs.getId(),
-                            ". oldId=", potentialRequest.getAttrs().getId(),
+                            ". newId=", displayInfo.getId(),
+                            ". oldId=", potentialRequest.getId(),
                             ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode())));
                 }
                 potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER);
@@ -822,7 +812,7 @@ public class DisplayHelper {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(imageViewInterface);
         DisplayRequest request = requestFactory.newDisplayRequest(
-                sketch, requestAttrs, displayAttrs, displayOptions,
+                sketch, displayInfo, displayAttrs, displayOptions,
                 requestAndViewBinder, displayListener, downloadProgressListener);
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("createRequest");
@@ -850,7 +840,7 @@ public class DisplayHelper {
             Log.d(Sketch.TAG, SketchUtils.concat(logName,
                     ". submit request",
                     ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
-                    ". ", requestAttrs.getId()));
+                    ". ", displayInfo.getId()));
         }
 
         request.submit();

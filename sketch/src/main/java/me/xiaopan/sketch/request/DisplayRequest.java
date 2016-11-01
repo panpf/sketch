@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefDrawable;
@@ -44,11 +45,11 @@ public class DisplayRequest extends LoadRequest {
     private DisplayResult displayResult;
 
     public DisplayRequest(
-            Sketch sketch, RequestAttrs requestAttrs,
+            Sketch sketch, DisplayInfo requestInfo,
             DisplayAttrs displayAttrs, DisplayOptions displayOptions,
             RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
             DownloadProgressListener downloadProgressListener) {
-        super(sketch, requestAttrs, displayOptions, null, downloadProgressListener);
+        super(sketch, requestInfo, displayOptions, null, downloadProgressListener);
 
         this.displayAttrs = displayAttrs;
         this.displayOptions = displayOptions;
@@ -57,6 +58,13 @@ public class DisplayRequest extends LoadRequest {
 
         this.requestAndViewBinder.setDisplayRequest(this);
         setLogName("DisplayRequest");
+    }
+
+    /**
+     * 获取内存缓存key
+     */
+    public String getMemoryCacheKey() {
+        return ((DisplayInfo) info).getMemoryCacheKey();
     }
 
     /**
@@ -134,7 +142,8 @@ public class DisplayRequest extends LoadRequest {
         if (!displayOptions.isDisableCacheInDisk()) {
             setStatus(Status.GET_MEMORY_CACHE_EDIT_LOCK);
 
-            ReentrantLock memoryCacheEditLock = getSketch().getConfiguration().getMemoryCache().getEditLock(getAttrs().getId());
+            MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
+            ReentrantLock memoryCacheEditLock = memoryCache.getEditLock(getMemoryCacheKey());
             if (memoryCacheEditLock != null) {
                 memoryCacheEditLock.lock();
             }
@@ -162,7 +171,8 @@ public class DisplayRequest extends LoadRequest {
         // 检查内存缓存
         if (!displayOptions.isDisableCacheInMemory()) {
             setStatus(Status.CHECK_MEMORY_CACHE);
-            RefBitmap cachedRefBitmap = getSketch().getConfiguration().getMemoryCache().get(getAttrs().getId());
+            MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
+            RefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
             if (cachedRefBitmap != null) {
                 if (!cachedRefBitmap.isRecycled()) {
                     if (Sketch.isDebugMode()) {
@@ -173,7 +183,7 @@ public class DisplayRequest extends LoadRequest {
                     displayCompleted();
                     return true;
                 } else {
-                    getSketch().getConfiguration().getMemoryCache().remove(getAttrs().getId());
+                    memoryCache.remove(getMemoryCacheKey());
                     if (Sketch.isDebugMode()) {
                         printLogE("memory cache drawable recycled", "runLoad", "drawableInfo=" + cachedRefBitmap.getInfo());
                     }
@@ -200,12 +210,12 @@ public class DisplayRequest extends LoadRequest {
                 return;
             }
 
-            RefBitmap refBitmap = new RefBitmap(bitmap, getAttrs().getId(), getAttrs().getUri(),
+            RefBitmap refBitmap = new RefBitmap(bitmap, getId(), getUri(),
                     loadResult.getOriginWidth(), loadResult.getOriginHeight(), loadResult.getMimeType());
 
             // 放入内存缓存中
-            if (!displayOptions.isDisableCacheInMemory() && getAttrs().getId() != null) {
-                getSketch().getConfiguration().getMemoryCache().put(getAttrs().getId(), refBitmap);
+            if (!displayOptions.isDisableCacheInMemory() && getMemoryCacheKey() != null) {
+                getSketch().getConfiguration().getMemoryCache().put(getMemoryCacheKey(), refBitmap);
             }
 
             displayResult = new DisplayResult(new RefBitmapDrawable(refBitmap), loadResult.getImageFrom(), loadResult.getMimeType());

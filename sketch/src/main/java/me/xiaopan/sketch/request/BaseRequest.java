@@ -20,18 +20,18 @@ import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
 
-abstract class Request {
+abstract class BaseRequest {
     private Sketch sketch;
-    private RequestAttrs attrs;
+    protected BaseInfo info;
 
     private String logName = "Request";
     private Status status;
     private ErrorCause errorCause;
     private CancelCause cancelCause;
 
-    Request(Sketch sketch, RequestAttrs attrs) {
+    BaseRequest(Sketch sketch, BaseInfo info) {
         this.sketch = sketch;
-        this.attrs = attrs;
+        this.info = info;
     }
 
     public Sketch getSketch() {
@@ -39,10 +39,31 @@ abstract class Request {
     }
 
     /**
-     * 获取请求基本属性
+     * 获取ID
      */
-    public RequestAttrs getAttrs() {
-        return attrs;
+    public String getId() {
+        return info.getId();
+    }
+
+    /**
+     * 获取uri
+     */
+    public String getUri() {
+        return info.getUri();
+    }
+
+    /**
+     * 获取真实的uri，例如原始uri是asset://sample.png，那么真实uri就是sample.png
+     */
+    public String getRealUri() {
+        return info.getRealUri();
+    }
+
+    /**
+     * 获取uri类型
+     */
+    public UriScheme getUriScheme() {
+        return info.getUriScheme();
     }
 
     /**
@@ -171,7 +192,7 @@ abstract class Request {
         }
 
         builder.append(". ").append(getThreadName());
-        builder.append(". ").append(getAttrs().getId());
+        builder.append(". ").append(getId());
 
         if (level == 0) {
             Log.d(Sketch.TAG, builder.toString());

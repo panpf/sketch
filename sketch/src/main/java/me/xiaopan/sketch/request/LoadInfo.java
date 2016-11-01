@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>
+ * Copyright (C) 2016 Peng fei Pan <sky@xiaopan.me>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,19 @@
 
 package me.xiaopan.sketch.request;
 
-public class DisplayParams {
-    public DisplayInfo info = new DisplayInfo();
-    public DisplayOptions options = new DisplayOptions();
+public class LoadInfo extends DownloadInfo {
+
+    public LoadInfo() {
+    }
+
+    public LoadInfo(LoadInfo info) {
+        super(info);
+    }
+
+    /**
+     * 获取处理过的图片的磁盘缓存key
+     */
+    public String getProcessedImageDiskCacheKey() {
+        return getId();
+    }
 }

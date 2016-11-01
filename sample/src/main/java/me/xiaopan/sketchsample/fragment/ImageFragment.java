@@ -13,6 +13,7 @@ import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.display.FadeInImageDisplayer;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
@@ -139,10 +140,11 @@ public class ImageFragment extends MyFragment {
         // 配置选项，有占位图选项信息的话就使用内存缓存占位图但不使用任何显示器，否则就是用渐入显示器
         DisplayOptions options = imageView.getOptions();
         if (!TextUtils.isEmpty(loadingImageOptionsId)) {
-            String loadingImageMemoryCacheId = SketchUtils.makeRequestId(imageUri, loadingImageOptionsId);
-            RefBitmap cachedRefBitmap = Sketch.with(getActivity()).getConfiguration().getMemoryCache().get(loadingImageMemoryCacheId);
+            String loadingImageMemoryCacheKey = SketchUtils.makeRequestId(imageUri, loadingImageOptionsId);
+            MemoryCache memoryCache = Sketch.with(getActivity()).getConfiguration().getMemoryCache();
+            RefBitmap cachedRefBitmap = memoryCache.get(loadingImageMemoryCacheKey);
             if (cachedRefBitmap != null) {
-                options.setLoadingImage(new MemoryCacheStateImage(loadingImageMemoryCacheId, null));
+                options.setLoadingImage(new MemoryCacheStateImage(loadingImageMemoryCacheKey, null));
             } else {
                 options.setImageDisplayer(new FadeInImageDisplayer());
             }

@@ -33,7 +33,7 @@ import me.xiaopan.sketch.feature.HelperFactory;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.MobileNetworkGlobalPauseDownload;
-import me.xiaopan.sketch.feature.RequestFactory;
+import me.xiaopan.sketch.request.RequestFactory;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.http.HttpClientStack;
 import me.xiaopan.sketch.http.HttpStack;

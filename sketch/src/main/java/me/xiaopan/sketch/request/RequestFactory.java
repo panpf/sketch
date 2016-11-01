@@ -14,25 +14,12 @@
  * limitations under the License.
  */
 
-package me.xiaopan.sketch.feature;
+package me.xiaopan.sketch.request;
 
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.request.DisplayAttrs;
-import me.xiaopan.sketch.request.DisplayListener;
-import me.xiaopan.sketch.request.DisplayOptions;
-import me.xiaopan.sketch.request.DisplayRequest;
-import me.xiaopan.sketch.request.DownloadListener;
-import me.xiaopan.sketch.request.DownloadOptions;
-import me.xiaopan.sketch.request.DownloadProgressListener;
-import me.xiaopan.sketch.request.DownloadRequest;
-import me.xiaopan.sketch.request.LoadListener;
-import me.xiaopan.sketch.request.LoadOptions;
-import me.xiaopan.sketch.request.LoadRequest;
-import me.xiaopan.sketch.request.RequestAndViewBinder;
-import me.xiaopan.sketch.request.RequestAttrs;
 
 /**
  * Request创建工厂
@@ -41,29 +28,29 @@ public class RequestFactory implements Identifier {
     protected String logName = "RequestFactory";
 
     public DisplayRequest newDisplayRequest(
-            Sketch sketch, RequestAttrs requestAttrs, DisplayAttrs displayAttrs,
+            Sketch sketch, DisplayInfo requestInfo, DisplayAttrs displayAttrs,
             DisplayOptions displayOptions, RequestAndViewBinder requestAndViewBinder,
             DisplayListener displayListener, DownloadProgressListener downloadProgressListener) {
         // 由于DisplayHelper会被重复利用
         // 因此RequestAttrs、DisplayAttrs和DisplayOptions不能直接拿来用，要重新New一个
         return new DisplayRequest(
                 sketch,
-                new RequestAttrs(requestAttrs),
+                new DisplayInfo(requestInfo),
                 new DisplayAttrs(displayAttrs),
                 new DisplayOptions(displayOptions),
                 requestAndViewBinder, displayListener, downloadProgressListener);
     }
 
     public LoadRequest newLoadRequest(
-            Sketch sketch, RequestAttrs attrs, LoadOptions options,
+            Sketch sketch, LoadInfo requestInfo, LoadOptions options,
             LoadListener listener, DownloadProgressListener downloadProgressListener) {
-        return new LoadRequest(sketch, attrs, options, listener, downloadProgressListener);
+        return new LoadRequest(sketch, requestInfo, options, listener, downloadProgressListener);
     }
 
     public DownloadRequest newDownloadRequest(
-            Sketch sketch, RequestAttrs attrs, DownloadOptions options,
+            Sketch sketch, DownloadInfo requestInfo, DownloadOptions options,
             DownloadListener listener, DownloadProgressListener downloadProgressListener) {
-        return new DownloadRequest(sketch, attrs, options, listener, downloadProgressListener);
+        return new DownloadRequest(sketch, requestInfo, options, listener, downloadProgressListener);
     }
 
     @Override

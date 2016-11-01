@@ -44,15 +44,22 @@ public class LoadRequest extends DownloadRequest {
     private LoadResult loadResult;
 
     public LoadRequest(
-            Sketch sketch, RequestAttrs requestAttrs,
+            Sketch sketch, LoadInfo info,
             LoadOptions loadOptions, LoadListener loadListener,
             DownloadProgressListener downloadProgressListener) {
-        super(sketch, requestAttrs, loadOptions, null, downloadProgressListener);
+        super(sketch, info, loadOptions, null, downloadProgressListener);
 
         this.loadOptions = loadOptions;
         this.loadListener = loadListener;
 
         setLogName("LoadRequest");
+    }
+
+    /**
+     * 获取磁盘缓存key
+     */
+    public String getProcessedImageDiskCacheKey() {
+        return ((LoadInfo) info).getProcessedImageDiskCacheKey();
     }
 
     /**
@@ -128,7 +135,7 @@ public class LoadRequest extends DownloadRequest {
 
         setStatus(Status.INTERCEPT_LOCAL_TASK);
 
-        if (getAttrs().getUriScheme() != UriScheme.NET) {
+        if (getUriScheme() != UriScheme.NET) {
             // 本地请求直接执行加载
             if (Sketch.isDebugMode()) {
                 printLogD("local thread", "local image", "runDispatch");
@@ -137,7 +144,7 @@ public class LoadRequest extends DownloadRequest {
             return;
         } else {
             // 是网络图片但是本地已经有缓存好的且经过处理的缓存图片可以直接用
-            if (canUseCacheProcessedImageFunction() && existProcessedDiskCache()) {
+            if (canUseCacheProcessedImageFunction() && existProcessedImageDiskCache()) {
                 if (Sketch.isDebugMode()) {
                     printLogD("local thread", "disk cache image", "runDispatch");
                 }
@@ -149,14 +156,13 @@ public class LoadRequest extends DownloadRequest {
         super.runDispatch();
     }
 
-    private boolean existProcessedDiskCache() {
-        String diskCacheKey = getAttrs().getId();
+    private boolean existProcessedImageDiskCache() {
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
-        ReentrantLock editLock = diskCache.getEditLock(diskCacheKey);
+        ReentrantLock editLock = diskCache.getEditLock(getProcessedImageDiskCacheKey());
         if (editLock != null) {
             editLock.lock();
         }
-        boolean exist = diskCache.exist(diskCacheKey);
+        boolean exist = diskCache.exist(getProcessedImageDiskCacheKey());
         if (editLock != null) {
             editLock.unlock();
         }
@@ -190,7 +196,7 @@ public class LoadRequest extends DownloadRequest {
         }
 
         if (dataSource == null && canUseCacheProcessedImageFunction()) {
-            dataSource = checkDiskCache();
+            dataSource = checkProcessedImageDiskCache();
         }
 
         // 预处理
@@ -252,7 +258,7 @@ public class LoadRequest extends DownloadRequest {
                     } catch (OutOfMemoryError e) {
                         e.printStackTrace();
                         ExceptionMonitor exceptionMonitor = getSketch().getConfiguration().getExceptionMonitor();
-                        exceptionMonitor.onProcessImageError(e, getAttrs().getId(), imageProcessor);
+                        exceptionMonitor.onProcessImageError(e, getId(), imageProcessor);
                     }
 
                     // 确实是一张新图片，就替换掉旧图片
@@ -283,7 +289,7 @@ public class LoadRequest extends DownloadRequest {
 
             // 缓存经过处理的图片
             if (allowProcess && canCacheInDiskCache && canUseCacheProcessedImageFunction()) {
-                saveBitmapToDiskCache(bitmap);
+                saveProcessedImageToDiskCache(bitmap);
             }
 
             loadResult = new LoadResult(bitmap, decodeResult);
@@ -324,14 +330,13 @@ public class LoadRequest extends DownloadRequest {
     /**
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
-    private DataSource checkDiskCache() {
-        String diskCacheKey = getAttrs().getId();
+    private DataSource checkProcessedImageDiskCache() {
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
-        ReentrantLock editLock = diskCache.getEditLock(diskCacheKey);
+        ReentrantLock editLock = diskCache.getEditLock(getProcessedImageDiskCacheKey());
         if (editLock != null) {
             editLock.lock();
         }
-        DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
+        DiskCache.Entry diskCacheEntry = diskCache.get(getProcessedImageDiskCacheKey());
         if (editLock != null) {
             editLock.unlock();
         }
@@ -348,21 +353,20 @@ public class LoadRequest extends DownloadRequest {
     /**
      * 保存bitmap到磁盘缓存
      */
-    private void saveBitmapToDiskCache(Bitmap bitmap) {
-        String diskCacheKey = getAttrs().getId();
+    private void saveProcessedImageToDiskCache(Bitmap bitmap) {
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
 
-        ReentrantLock editLock = diskCache.getEditLock(diskCacheKey);
+        ReentrantLock editLock = diskCache.getEditLock(getProcessedImageDiskCacheKey());
         if (editLock != null) {
             editLock.lock();
         }
 
-        DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
+        DiskCache.Entry diskCacheEntry = diskCache.get(getProcessedImageDiskCacheKey());
         if (diskCacheEntry != null) {
             diskCacheEntry.delete();
         }
 
-        DiskCache.Editor diskCacheEditor = diskCache.edit(diskCacheKey);
+        DiskCache.Editor diskCacheEditor = diskCache.edit(getProcessedImageDiskCacheKey());
         if (diskCacheEditor != null) {
             BufferedOutputStream outputStream = null;
             try {

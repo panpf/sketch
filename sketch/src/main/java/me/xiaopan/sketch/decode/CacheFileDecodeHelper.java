@@ -107,7 +107,7 @@ public class CacheFileDecodeHelper implements DecodeHelper {
             } else {
                 builder.append(". unchanged");
             }
-            builder.append(". ").append(loadRequest.getAttrs().getId());
+            builder.append(". ").append(loadRequest.getId());
             Log.d(Sketch.TAG, builder.toString());
         }
     }
@@ -118,14 +118,14 @@ public class CacheFileDecodeHelper implements DecodeHelper {
             Log.e(Sketch.TAG, SketchUtils.concat(logName,
                     ". decode failed",
                     ". diskCacheKey=", diskCacheEntry.getUri(),
-                    ". ", loadRequest.getAttrs().getId()));
+                    ". ", loadRequest.getId()));
         }
         if (!diskCacheEntry.delete()) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName,
                         ". delete damaged disk cache file failed",
                         ". diskCacheKey", "=", diskCacheEntry.getUri(),
-                        ". ", loadRequest.getAttrs().getId()));
+                        ". ", loadRequest.getId()));
             }
         }
     }

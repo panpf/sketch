@@ -75,7 +75,7 @@ public class ExceptionMonitor implements Identifier {
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
                 ". onDecodeGifImageError",
                 ". outWidth", "=", outWidth, ", ", "outHeight", "=", outHeight, ", ", "outMimeType", "=", outMimeType,
-                ". ", request.getAttrs().getId()));
+                ". ", request.getId()));
     }
 
     /**
@@ -105,7 +105,7 @@ public class ExceptionMonitor implements Identifier {
         Log.e(Sketch.TAG, SketchUtils.concat(logName,
                 ". onDecodeNormalImageError",
                 ". outWidth", "=", outWidth, ", ", "outHeight", "=", outHeight, ", ", "outMimeType", "=", outMimeType,
-                ". ", request.getAttrs().getId()));
+                ". ", request.getId()));
     }
 
     /**

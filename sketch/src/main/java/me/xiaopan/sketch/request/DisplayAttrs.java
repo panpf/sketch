@@ -20,6 +20,7 @@ import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.Sketch;
 
+// TODO: 16/11/1 融合进DisplayRequestInfo里
 public class DisplayAttrs {
     private ScaleType scaleType;
     private FixedSize fixedSize;

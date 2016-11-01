@@ -16,17 +16,17 @@
 
 package me.xiaopan.sketch.request;
 
-public class RequestAttrs {
+public abstract class BaseInfo {
     private String id;
     private String uri;
     private String realUri;    // 真正的图片地址，例如原图片uri是asset://test.png的，realUri就是test.png
     private UriScheme uriScheme;    // Uri协议类型
 
-    public RequestAttrs(RequestAttrs requestAttrs) {
-        copy(requestAttrs);
+    public BaseInfo(BaseInfo info) {
+        copy(info);
     }
 
-    public RequestAttrs() {
+    public BaseInfo() {
 
     }
 
@@ -44,11 +44,11 @@ public class RequestAttrs {
         }
     }
 
-    void copy(RequestAttrs requestAttrs) {
-        this.id = requestAttrs.id;
-        this.uri = requestAttrs.uri;
-        this.realUri = requestAttrs.realUri;
-        this.uriScheme = requestAttrs.uriScheme;
+    void copy(BaseInfo info) {
+        this.id = info.id;
+        this.uri = info.uri;
+        this.realUri = info.realUri;
+        this.uriScheme = info.uriScheme;
     }
 
     public String getId() {

@@ -34,21 +34,21 @@ import me.xiaopan.sketch.shaper.ImageShaper;
  */
 @SuppressWarnings("unused")
 public class MemoryCacheStateImage implements StateImage {
-    private String memoryCacheId;
+    private String memoryCacheKey;
     private StateImage whenEmptyImage;
 
-    public MemoryCacheStateImage(String memoryCacheId, StateImage whenEmptyImage) {
-        this.memoryCacheId = memoryCacheId;
+    public MemoryCacheStateImage(String memoryCacheKey, StateImage whenEmptyImage) {
+        this.memoryCacheKey = memoryCacheKey;
         this.whenEmptyImage = whenEmptyImage;
     }
 
     @Override
     public Drawable getDrawable(Context context, ImageViewInterface imageViewInterface, DisplayOptions displayOptions) {
         MemoryCache memoryCache = Sketch.with(context).getConfiguration().getMemoryCache();
-        RefBitmap cachedRefBitmap = memoryCache.get(memoryCacheId);
+        RefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
         if (cachedRefBitmap != null) {
             if (cachedRefBitmap.isRecycled()) {
-                memoryCache.remove(memoryCacheId);
+                memoryCache.remove(memoryCacheKey);
             } else {
                 RefBitmapDrawable bitmapDrawable = new RefBitmapDrawable(cachedRefBitmap);
                 ShapeSize shapeSize = displayOptions.getShapeSize();
@@ -64,8 +64,8 @@ public class MemoryCacheStateImage implements StateImage {
         return whenEmptyImage != null ? whenEmptyImage.getDrawable(context, imageViewInterface, displayOptions) : null;
     }
 
-    public String getMemoryCacheId() {
-        return memoryCacheId;
+    public String getMemoryCacheKey() {
+        return memoryCacheKey;
     }
 
     public StateImage getWhenEmptyImage() {

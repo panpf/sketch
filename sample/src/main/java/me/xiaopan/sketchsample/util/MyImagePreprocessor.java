@@ -46,15 +46,15 @@ public class MyImagePreprocessor extends ImagePreprocessor {
     }
 
     private boolean isXpkFile(LoadRequest loadRequest) {
-        return loadRequest.getAttrs().getUriScheme() == UriScheme.FILE
-                && SketchUtils.checkSuffix(loadRequest.getAttrs().getRealUri(), ".xpk");
+        return loadRequest.getUriScheme() == UriScheme.FILE
+                && SketchUtils.checkSuffix(loadRequest.getRealUri(), ".xpk");
     }
 
     /**
      * 获取XPK图标的缓存文件
      */
     private PreProcessResult getXpkIconCacheFile(LoadRequest loadRequest) {
-        String realUri = loadRequest.getAttrs().getRealUri();
+        String realUri = loadRequest.getRealUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
         DiskCache diskCache = configuration.getDiskCache();
 
@@ -95,7 +95,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
                         ". not found icon.png in ",
-                        ". ", loadRequest.getAttrs().getId()));
+                        ". ", loadRequest.getId()));
             }
             return null;
         }
@@ -163,7 +163,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, SketchUtils.concat(logName,
                             ". not found xpk icon cache file",
-                            ". ", loadRequest.getAttrs().getId()));
+                            ". ", loadRequest.getId()));
                 }
                 return null;
             }

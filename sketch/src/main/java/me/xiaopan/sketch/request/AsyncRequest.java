@@ -2,13 +2,13 @@ package me.xiaopan.sketch.request;
 
 import me.xiaopan.sketch.Sketch;
 
-abstract class AsyncRequest extends Request implements Runnable{
+abstract class AsyncRequest extends BaseRequest implements Runnable{
 
     private RunStatus runStatus;
     private boolean sync;
 
-    AsyncRequest(Sketch sketch, RequestAttrs attrs) {
-        super(sketch, attrs);
+    AsyncRequest(Sketch sketch, BaseInfo info) {
+        super(sketch, info);
     }
 
     @Override

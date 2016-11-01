@@ -79,12 +79,12 @@ public class MakerStateImage implements StateImage {
         }
 
         // 从内存缓存中取
-        String memoryCacheId = SketchUtils.makeStateImageRequestId(String.valueOf(resId), displayOptions);
+        String memoryCacheKey = SketchUtils.makeStateImageRequestId(String.valueOf(resId), displayOptions);
         MemoryCache stateImageMemoryCache = configuration.getStateImageMemoryCache();
-        RefBitmap cachedRefBitmap = stateImageMemoryCache.get(memoryCacheId);
+        RefBitmap cachedRefBitmap = stateImageMemoryCache.get(memoryCacheKey);
         if (cachedRefBitmap != null) {
             if (cachedRefBitmap.isRecycled()) {
-                stateImageMemoryCache.remove(memoryCacheId);
+                stateImageMemoryCache.remove(memoryCacheKey);
             } else {
                 return new RefBitmapDrawable(cachedRefBitmap);
             }
@@ -145,10 +145,10 @@ public class MakerStateImage implements StateImage {
 
         // 允许收说明是创建了一张新的图片，不能回收说明还是从res中获取的BitmapDrawable可以直接使用
         if (allowRecycle) {
-            RefBitmap newRefBitmap = new RefBitmap(bitmap, memoryCacheId,
+            RefBitmap newRefBitmap = new RefBitmap(bitmap, memoryCacheKey,
                     String.valueOf(resId), bitmap.getWidth(), bitmap.getHeight(), null);
             newRefBitmap.setAllowRecycle(true);
-            stateImageMemoryCache.put(memoryCacheId, newRefBitmap);
+            stateImageMemoryCache.put(memoryCacheKey, newRefBitmap);
             return new RefBitmapDrawable(newRefBitmap);
         } else {
             return drawable;
