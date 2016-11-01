@@ -906,7 +906,7 @@ public class SketchUtils {
      */
     public static boolean isSupportLargeImage(LoadRequest loadRequest, ImageFormat imageFormat) {
         return loadRequest instanceof DisplayRequest &&
-                ((DisplayRequest) loadRequest).getDisplayAttrs().isSupportLargeImage() &&
+                ((DisplayRequest) loadRequest).getViewInfo().isSupportLargeImage() &&
                 SketchUtils.isSupportBRDByApi() &&
                 isSupportBRDByImageFormat(imageFormat);
     }

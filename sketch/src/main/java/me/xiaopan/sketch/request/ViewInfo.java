@@ -20,24 +20,23 @@ import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.Sketch;
 
-// TODO: 16/11/1 融合进DisplayRequestInfo里
-public class DisplayAttrs {
+public class ViewInfo {
     private ScaleType scaleType;
     private FixedSize fixedSize;
     private boolean supportLargeImage;
 
-    public DisplayAttrs() {
+    public ViewInfo() {
 
     }
 
-    public DisplayAttrs(DisplayAttrs displayAttrs) {
-        copy(displayAttrs);
+    public ViewInfo(ViewInfo viewInfo) {
+        copy(viewInfo);
     }
 
-    public void copy(DisplayAttrs displayAttrs) {
-        this.scaleType = displayAttrs.scaleType;
-        this.fixedSize = displayAttrs.fixedSize;
-        this.supportLargeImage = displayAttrs.supportLargeImage;
+    public void copy(ViewInfo viewInfo) {
+        this.scaleType = viewInfo.scaleType;
+        this.fixedSize = viewInfo.fixedSize;
+        this.supportLargeImage = viewInfo.supportLargeImage;
     }
 
     public void reset(ImageViewInterface imageViewInterface, Sketch sketch) {

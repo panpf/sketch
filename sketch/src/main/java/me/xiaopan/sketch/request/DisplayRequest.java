@@ -37,21 +37,20 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 显示请求
  */
 public class DisplayRequest extends LoadRequest {
-    private DisplayAttrs displayAttrs;
     private DisplayOptions displayOptions;
-    private RequestAndViewBinder requestAndViewBinder;
     private DisplayListener displayListener;
+
+    private ViewInfo viewInfo;
+    private RequestAndViewBinder requestAndViewBinder;
 
     private DisplayResult displayResult;
 
-    public DisplayRequest(
-            Sketch sketch, DisplayInfo requestInfo,
-            DisplayAttrs displayAttrs, DisplayOptions displayOptions,
-            RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
+    public DisplayRequest(Sketch sketch, DisplayInfo requestInfo,DisplayOptions displayOptions,
+            ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
             DownloadProgressListener downloadProgressListener) {
         super(sketch, requestInfo, displayOptions, null, downloadProgressListener);
 
-        this.displayAttrs = displayAttrs;
+        this.viewInfo = viewInfo;
         this.displayOptions = displayOptions;
         this.requestAndViewBinder = requestAndViewBinder;
         this.displayListener = displayListener;
@@ -68,10 +67,10 @@ public class DisplayRequest extends LoadRequest {
     }
 
     /**
-     * 获取显示属性
+     * 获取View信息
      */
-    public DisplayAttrs getDisplayAttrs() {
-        return displayAttrs;
+    public ViewInfo getViewInfo() {
+        return viewInfo;
     }
 
     /**

@@ -45,10 +45,11 @@ public class DisplayHelper {
     protected Sketch sketch;
 
     protected DisplayInfo displayInfo = new DisplayInfo();
-    protected DisplayAttrs displayAttrs = new DisplayAttrs();
     protected DisplayOptions displayOptions = new DisplayOptions();
     protected DisplayListener displayListener;
     protected DownloadProgressListener downloadProgressListener;
+
+    protected ViewInfo viewInfo = new ViewInfo();
     protected ImageViewInterface imageViewInterface;
 
     /**
@@ -89,7 +90,7 @@ public class DisplayHelper {
         }
 
         displayInfo.reset(uri);
-        displayAttrs.reset(imageViewInterface, sketch);
+        viewInfo.reset(imageViewInterface, sketch);
         displayOptions.copy(imageViewInterface.getOptions());
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("init");
@@ -119,7 +120,7 @@ public class DisplayHelper {
         }
 
         displayInfo.copy(params.info);
-        displayAttrs.reset(imageViewInterface, sketch);
+        viewInfo.reset(imageViewInterface, sketch);
         displayOptions.copy(params.options);
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("init");
@@ -141,7 +142,7 @@ public class DisplayHelper {
         displayOptions.reset();
         displayListener = null;
         downloadProgressListener = null;
-        displayAttrs.reset(null, null);
+        viewInfo.reset(null, null);
         imageViewInterface = null;
     }
 
@@ -494,7 +495,7 @@ public class DisplayHelper {
 
         // 用ImageVie的固定宽高作为resize
         if (displayOptions.isResizeByFixedSize()) {
-            FixedSize fixedSize = displayAttrs.getFixedSize();
+            FixedSize fixedSize = viewInfo.getFixedSize();
             if (fixedSize != null) {
                 displayOptions.setResize(fixedSize.getWidth(), fixedSize.getHeight());
             } else {
@@ -505,7 +506,7 @@ public class DisplayHelper {
 
         // 用ImageVie的固定宽高作为shape size
         if (displayOptions.isShapeSizeByFixedSize()) {
-            FixedSize fixedSize = displayAttrs.getFixedSize();
+            FixedSize fixedSize = viewInfo.getFixedSize();
             if (fixedSize != null) {
                 displayOptions.setShapeSize(fixedSize.getWidth(), fixedSize.getHeight());
             } else {
@@ -518,7 +519,7 @@ public class DisplayHelper {
         if (displayOptions.getResize() != null
                 && displayOptions.getResize().getScaleType() == null
                 && imageViewInterface != null) {
-            displayOptions.getResize().setScaleType(displayAttrs.getScaleType());
+            displayOptions.getResize().setScaleType(viewInfo.getScaleType());
         }
 
         // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
@@ -576,7 +577,7 @@ public class DisplayHelper {
         // 使用过渡图片显示器的时候，如果使用了loadingImage的话就必须配合ShapeSize才行，如果没有ShapeSize就取ImageView的宽高作为ShapeSize
         if (displayOptions.getImageDisplayer() instanceof TransitionImageDisplayer
                 && displayOptions.getLoadingImage() != null && displayOptions.getShapeSize() == null) {
-            FixedSize fixedSize = displayAttrs.getFixedSize();
+            FixedSize fixedSize = viewInfo.getFixedSize();
             if (fixedSize != null) {
                 displayOptions.setShapeSize(fixedSize.getWidth(), fixedSize.getHeight());
             } else {
@@ -812,7 +813,7 @@ public class DisplayHelper {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
         RequestAndViewBinder requestAndViewBinder = new RequestAndViewBinder(imageViewInterface);
         DisplayRequest request = requestFactory.newDisplayRequest(
-                sketch, displayInfo, displayAttrs, displayOptions,
+                sketch, displayInfo, displayOptions, viewInfo,
                 requestAndViewBinder, displayListener, downloadProgressListener);
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("createRequest");

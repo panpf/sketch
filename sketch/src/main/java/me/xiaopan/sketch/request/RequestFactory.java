@@ -28,29 +28,26 @@ public class RequestFactory implements Identifier {
     protected String logName = "RequestFactory";
 
     public DisplayRequest newDisplayRequest(
-            Sketch sketch, DisplayInfo requestInfo, DisplayAttrs displayAttrs,
-            DisplayOptions displayOptions, RequestAndViewBinder requestAndViewBinder,
+            Sketch sketch, DisplayInfo displayInfo, DisplayOptions displayOptions,
+            ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder,
             DisplayListener displayListener, DownloadProgressListener downloadProgressListener) {
         // 由于DisplayHelper会被重复利用
         // 因此RequestAttrs、DisplayAttrs和DisplayOptions不能直接拿来用，要重新New一个
         return new DisplayRequest(
-                sketch,
-                new DisplayInfo(requestInfo),
-                new DisplayAttrs(displayAttrs),
-                new DisplayOptions(displayOptions),
-                requestAndViewBinder, displayListener, downloadProgressListener);
+                sketch, new DisplayInfo(displayInfo), new DisplayOptions(displayOptions),
+                new ViewInfo(viewInfo), requestAndViewBinder, displayListener, downloadProgressListener);
     }
 
     public LoadRequest newLoadRequest(
-            Sketch sketch, LoadInfo requestInfo, LoadOptions options,
+            Sketch sketch, LoadInfo loadInfo, LoadOptions options,
             LoadListener listener, DownloadProgressListener downloadProgressListener) {
-        return new LoadRequest(sketch, requestInfo, options, listener, downloadProgressListener);
+        return new LoadRequest(sketch, loadInfo, options, listener, downloadProgressListener);
     }
 
     public DownloadRequest newDownloadRequest(
-            Sketch sketch, DownloadInfo requestInfo, DownloadOptions options,
+            Sketch sketch, DownloadInfo downloadInfo, DownloadOptions options,
             DownloadListener listener, DownloadProgressListener downloadProgressListener) {
-        return new DownloadRequest(sketch, requestInfo, options, listener, downloadProgressListener);
+        return new DownloadRequest(sketch, downloadInfo, options, listener, downloadProgressListener);
     }
 
     @Override
