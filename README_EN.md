@@ -165,7 +165,7 @@ To further enhance the user experience:
 >* [Pause loading of images while sliding the list to improve fluency.md](docs/wiki/pause_load.md)
 >* [Display APK or installed APP icon.md](docs/wiki/display_apk_or_app_icon.md)
 >* [Displaying images in special files with Image Preprocessor (eg video, MP3).md](docs/wiki/pre_process_image.md)
->* [Through the MemoryCache StateImage first show more vague picture, and then display a clear picture.md](docs/wiki/pre_process_image.md)
+>* [Through the MemoryCache StateImage first show more vague picture, and then display a clear picture.md](docs/wiki/memory_cache_state_image.md)
 
 More:
 >* [Synchronize load and download.md](docs/wiki/sync.md)

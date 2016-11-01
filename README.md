@@ -159,7 +159,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 >* [列表滑动时暂停加载图片，提升流畅度.md](docs/wiki/pause_load.md)
 >* [显示APK或已安装APP的图标.md](docs/wiki/display_apk_or_app_icon.md)
 >* [通过ImagePreprocessor显示特殊文件中的图片（例如视频、MP3）.md](docs/wiki/pre_process_image.md)
->* [通过MemoryCacheStateImage先显示较模糊的图片，然后再显示清晰的图片.md](docs/wiki/pre_process_image.md)
+>* [通过MemoryCacheStateImage先显示较模糊的图片，然后再显示清晰的图片.md](docs/wiki/memory_cache_state_image.md)
 
 更多：
 >* [同步执行load和download.md](docs/wiki/sync.md)
