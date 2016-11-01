@@ -3,7 +3,7 @@ StateImage用来为loadingImage，errorImage，pauseDownloadImage提供图片
 #### 现支持以下几种：
 >* DrawableStateImage：给什么图片显示什么图片，支持ShapeSize和ImageShaper
 >* OldStateImage：使用当前ImageView正在显示的图片作为状态图片
->* MemoryCacheStateImage：从内存中获取图片作为状态图片，支持ShapeSize和ImageShaper，[点击查看更详细的介绍](memory_cache_state_image.md)
+>* MemoryCacheStateImage：从内存缓存中获取图片作为状态图片，支持ShapeSize和ImageShaper，[点击查看更详细的介绍](memory_cache_state_image.md)
 >* MakerStateImage：可以利用Options中配置的ImageProcessor和resize修改原图片，同样支持ShapeSize和ImageShaper
 
 #### 自定义：

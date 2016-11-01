@@ -2,7 +2,7 @@
 
 在进入图片详情页后通常的做法是先显示一个转转转的进度条，然后下载原始图片并显示，如果这时候网络较慢的话，用户会长时间在看一个空白的页面，体验不太好
 
-要优化这个问题，最容易想到的办法就是先显示在列表页已经显示的较小的图片，等原始大图加载完后在显示原始大图，并且已经有一些APP就是这么做的
+要优化这个问题，最容易想到的办法就是先显示在列表页已经显示的较小的图片，等原始大图加载完后再显示原始大图
 
 现在通过MemoryCacheStateImage就可以轻松实现这样的效果，首先MemoryCacheStateImage需要一个内存缓存key，就能从内存缓存中取出图片，然后用这张图片作为loading占位图显示，所以这里的关键就是怎么才能知道上一个页面中那些图片的内存缓存key呢？
 
@@ -51,7 +51,7 @@ public static String makeRequestId(String imageUri, DownloadOptions options) {
 }
 ```
 
-从上面我们可以看到内存缓存key就是由uri和显示选项构成，因此我们可以拿到上一个页面ImageView的Options的Id，然后在图片详情页将uri和Options的Id拼接一下就能得到内存缓存key了
+从上面我们可以看到内存缓存key就是由uri和显示选项构成，因此我们可以拿到上一个页面ImageView的Options Id，然后在图片详情页将uri和Options Id拼接一下就能得到内存缓存key了
 
 第一步，在图片列表页点击图片跳转的时候取出Options Id并传到图片详情页
 ```java
