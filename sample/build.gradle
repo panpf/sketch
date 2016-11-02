@@ -26,14 +26,14 @@ String projectPath = projectDir;
 loadProperties projectPath + '/local.properties'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion '23.0.2'
+    compileSdkVersion COMPILE_SDK_VERSION.toInteger()
+    buildToolsVersion "${BUILD_TOOLS_VERSION}"
 
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 22
-        versionCode 229
-        versionName "2.3.0-beta6"
+        minSdkVersion MIN_SDK_VERSION.toInteger()
+        targetSdkVersion TARGET_SDK_VERSION.toInteger()
+        versionCode VERSION_CODE.toInteger()
+        versionName "${VERSION_NAME}"
     }
 
     signingConfigs {
