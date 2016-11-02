@@ -181,7 +181,7 @@ imageZoomer.setOnViewLongPressListener(OnViewLongPressListener)
 imageZoomer.setOnRotateChangeListener(OnRotateChangeListener)
 ```
 
-#### ArrayIndexOutOfBoundsException
+#### ArrayIndexOutOfBoundsException与IllegalArgumentException：pointerIndex out of range
 
 由于是在PhotoView基础上做的不可避免的也有这个异常，这里推荐的处理方法是在Activity里拦截，如下：
 
