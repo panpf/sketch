@@ -110,7 +110,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (boundsOptions.outWidth <= 1 || boundsOptions.outHeight <= 1) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                        ". image width or height is 1px",
+                        ". image width or height less than or equal to 1px",
                         ". imageSize: ", boundsOptions.outWidth, "x", boundsOptions.outHeight,
                         ". ", loadRequest.getId()));
             }
@@ -229,7 +229,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        ". bitmap width or height is 1px",
+                        ". image width or height less than or equal to 1px",
                         ". imageSize: ", outWidth, "x", outHeight,
                         ". bitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
                         ". ", loadRequest.getId()));
@@ -279,7 +279,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        ". bitmap width or height is 1px",
+                        ". image width or height less than or equal to 1px",
                         ". imageSize: ", outWidth, "x", outHeight,
                         ". bitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
                         ". ", loadRequest.getId()));
