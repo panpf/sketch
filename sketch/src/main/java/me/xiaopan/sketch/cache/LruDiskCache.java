@@ -404,7 +404,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         @Override
-        public void commit() throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException {
+        public void commit() throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException {
             diskEditor.commit();
         }
 
@@ -415,6 +415,8 @@ public class LruDiskCache implements DiskCache {
             } catch (IOException e) {
                 e.printStackTrace();
             } catch (DiskLruCache.EditorChangedException e) {
+                e.printStackTrace();
+            } catch (DiskLruCache.FileNotExistException e) {
                 e.printStackTrace();
             }
         }

@@ -613,7 +613,7 @@ public final class DiskLruCache implements Closeable {
         return size;
     }
 
-    private synchronized void completeEdit(Editor editor, boolean success) throws IOException, EditorChangedException {
+    private synchronized void completeEdit(Editor editor, boolean success) throws IOException, EditorChangedException, FileNotExistException {
         Entry entry = editor.entry;
         if (entry.currentEditor != editor) {
             throw new EditorChangedException();
@@ -624,7 +624,7 @@ public final class DiskLruCache implements Closeable {
             for (int i = 0; i < valueCount; i++) {
                 if (!entry.getDirtyFile(i).exists()) {
                     editor.abort();
-                    throw new IllegalStateException("edit didn't create file " + i);
+                    throw new FileNotExistException("edit didn't create file " + i);
                 }
             }
         }
@@ -743,6 +743,8 @@ public final class DiskLruCache implements Closeable {
                 try {
                     entry.currentEditor.abort();
                 } catch (EditorChangedException e) {
+                    e.printStackTrace();
+                } catch (FileNotExistException e) {
                     e.printStackTrace();
                 }
             }
@@ -954,7 +956,7 @@ public final class DiskLruCache implements Closeable {
          * Commits this edit so it is visible to readers.  This releases the
          * edit lock so another edit may be started on the same key.
          */
-        public void commit() throws IOException, EditorChangedException, ClosedException {
+        public void commit() throws IOException, EditorChangedException, ClosedException, FileNotExistException {
             if (hasErrors) {
                 completeEdit(this, false);
                 remove(entry.key); // the previous entry is stale
@@ -967,7 +969,7 @@ public final class DiskLruCache implements Closeable {
          * Aborts this edit. This releases the edit lock so another edit may be
          * started on the same key.
          */
-        public void abort() throws IOException, EditorChangedException {
+        public void abort() throws IOException, EditorChangedException, FileNotExistException {
             completeEdit(this, false);
         }
 
@@ -1082,6 +1084,13 @@ public final class DiskLruCache implements Closeable {
 
     public static class EditorChangedException extends Exception {
 
+    }
+
+    public static class FileNotExistException extends Exception {
+
+        public FileNotExistException(String detailMessage) {
+            super(detailMessage);
+        }
     }
 
     public static class ClosedException extends Exception {

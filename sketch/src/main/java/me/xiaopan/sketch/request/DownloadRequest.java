@@ -254,7 +254,7 @@ public class DownloadRequest extends AsyncRequest {
         return justDownloadResult;
     }
 
-    private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey) throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException {
+    private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey) throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException {
         setStatus(Status.CONNECTING);
 
         HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getRealUri());
@@ -348,6 +348,10 @@ public class DownloadRequest extends AsyncRequest {
             }
             throw e;
         } catch (DiskLruCache.ClosedException e) {
+            e.printStackTrace();
+            diskCacheEditor.abort();
+            throw e;
+        } catch (DiskLruCache.FileNotExistException e) {
             e.printStackTrace();
             diskCacheEditor.abort();
             throw e;

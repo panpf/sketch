@@ -150,6 +150,10 @@ public class MyImagePreprocessor extends ImagePreprocessor {
             e.printStackTrace();
             diskCacheEditor.abort();
             return null;
+        } catch (DiskLruCache.FileNotExistException e) {
+            e.printStackTrace();
+            diskCacheEditor.abort();
+            return null;
         } finally {
             SketchUtils.close(inputStream);
             SketchUtils.close(outputStream);

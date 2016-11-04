@@ -179,6 +179,10 @@ public class ImagePreprocessor implements Identifier {
             e.printStackTrace();
             diskCacheEditor.abort();
             return null;
+        } catch (DiskLruCache.FileNotExistException e) {
+            e.printStackTrace();
+            diskCacheEditor.abort();
+            return null;
         } finally {
             iconBitmap.recycle();
             SketchUtils.close(outputStream);
@@ -290,6 +294,10 @@ public class ImagePreprocessor implements Identifier {
             diskCacheEditor.abort();
             return null;
         } catch (DiskLruCache.ClosedException e) {
+            e.printStackTrace();
+            diskCacheEditor.abort();
+            return null;
+        } catch (DiskLruCache.FileNotExistException e) {
             e.printStackTrace();
             diskCacheEditor.abort();
             return null;

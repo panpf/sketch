@@ -382,6 +382,9 @@ public class LoadRequest extends DownloadRequest {
             } catch (DiskLruCache.ClosedException e) {
                 e.printStackTrace();
                 diskCacheEditor.abort();
+            } catch (DiskLruCache.FileNotExistException e) {
+                e.printStackTrace();
+                diskCacheEditor.abort();
             } finally {
                 SketchUtils.close(outputStream);
             }
