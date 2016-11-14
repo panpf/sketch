@@ -19,12 +19,14 @@ package me.xiaopan.sketch.drawable;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
     protected String logName = "RefBitmapDrawable";
 
     private RefBitmap refBitmap;
+    private ImageFrom imageFrom;
 
     public RefBitmapDrawable(RefBitmap refBitmap) {
         super(null, refBitmap.getBitmap());
@@ -63,6 +65,16 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
     @Override
     public String getMimeType() {
         return refBitmap.getMimeType();
+    }
+
+    @Override
+    public ImageFrom getImageFrom() {
+        return imageFrom;
+    }
+
+    @Override
+    public void setImageFrom(ImageFrom imageFrom) {
+        this.imageFrom = imageFrom;
     }
 
     @Override

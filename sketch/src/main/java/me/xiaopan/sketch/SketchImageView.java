@@ -629,9 +629,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         ShowImageFromFunction oldShowImageFromFunction = showImageFromFunction;
 
         if (showImageFrom) {
-            if (showImageFromFunction == null) {
-                showImageFromFunction = new ShowImageFromFunction(this, requestFunction);
-            }
+            showImageFromFunction = new ShowImageFromFunction(this);
+            showImageFromFunction.onDrawableChanged("setShowImageFrom", null, getDrawable());
         } else {
             showImageFromFunction = null;
         }
@@ -650,14 +649,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
-     * 设置GIF标识图片
-     */
-    public void setShowGifFlag(int gifFlagDrawableResId) {
-        //noinspection deprecation
-        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
-    }
-
-    /**
      * 设置是否显示GIF标识
      */
     @SuppressWarnings("unused")
@@ -669,6 +660,14 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             showGifFlagFunction = null;
         }
         invalidate();
+    }
+
+    /**
+     * 设置GIF标识图片
+     */
+    public void setShowGifFlag(int gifFlagDrawableResId) {
+        //noinspection deprecation
+        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
     }
 
     /**
@@ -699,6 +698,15 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     /**
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
+    public void setImageShapeCornerRadius(float radius) {
+        if (imageShapeFunction != null) {
+            imageShapeFunction.setCornerRadius(radius);
+        }
+    }
+
+    /**
+     * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
+     */
     @SuppressWarnings("unused")
     public void setImageShapeCornerRadius(float[] radiis) {
         if (imageShapeFunction != null) {
@@ -713,15 +721,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     public void setImageShapeCornerRadius(float topLeftRadius, float topRightRadius, float bottomLeftRadius, float bottomRightRadius) {
         if (imageShapeFunction != null) {
             imageShapeFunction.setCornerRadius(topLeftRadius, topRightRadius, bottomLeftRadius, bottomRightRadius);
-        }
-    }
-
-    /**
-     * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
-     */
-    public void setImageShapeCornerRadius(float radius) {
-        if (imageShapeFunction != null) {
-            imageShapeFunction.setCornerRadius(radius);
         }
     }
 
@@ -762,7 +761,11 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             zoomFunction.onDrawableChanged("setSupportZoom", null, getDrawable());
         } else {
             zoomFunction.recycle();
+            ScaleType scaleType = zoomFunction.getScaleType();
             zoomFunction = null;
+
+            // 恢复ScaleType
+            setScaleType(scaleType);
         }
     }
 
@@ -833,6 +836,91 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         RECT,
         CIRCLE,
         ROUNDED_RECT,
+    }
+
+    public static abstract class Function {
+        public void onAttachedToWindow() {
+
+        }
+
+        /**
+         * @return 是否拦截事件
+         */
+        public boolean onTouchEvent(MotionEvent event) {
+            return false;
+        }
+
+        public void onLayout(boolean changed, int left, int top, int right, int bottom) {
+
+        }
+
+        public void setScaleType(ScaleType scaleType) {
+
+        }
+
+        public void onDraw(Canvas canvas) {
+
+        }
+
+        /**
+         * @return true：是否需要调用父setImageDrawable清空图片
+         */
+        public boolean onDetachedFromWindow() {
+            return false;
+        }
+
+        /**
+         * @return 是否需要调用invalidate()刷新ImageView
+         */
+        public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
+            return false;
+        }
+
+
+        /**
+         * @return 是否需要调用invalidate()刷新ImageView
+         */
+        public boolean onDisplay(UriScheme uriScheme) {
+            return false;
+        }
+
+        /**
+         * @return 是否需要调用invalidate()刷新ImageView
+         */
+        public boolean onDisplayStarted() {
+            return false;
+        }
+
+        /**
+         * @return 是否需要调用invalidate()刷新ImageView
+         */
+        public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
+            return false;
+        }
+
+        /**
+         * @return 是否需要调用invalidate()刷新ImageView
+         */
+        public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
+            return false;
+        }
+
+        /**
+         * @return 是否需要调用invalidate()刷新ImageView
+         */
+        public boolean onDisplayError(ErrorCause errorCause) {
+            return false;
+        }
+
+        /**
+         * @return 是否需要调用invalidate()刷新ImageView
+         */
+        public boolean onDisplayCanceled(CancelCause cancelCause) {
+            return false;
+        }
+
+        public void onSizeChanged(int left, int top, int right, int bottom) {
+        }
     }
 
     private class MyDisplayListener implements DisplayListener {
@@ -1057,91 +1145,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             if (wrapperDownloadProgressListener != null) {
                 wrapperDownloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
             }
-        }
-    }
-
-    public static abstract class Function {
-        public void onAttachedToWindow() {
-
-        }
-
-        /**
-         * @return 是否拦截事件
-         */
-        public boolean onTouchEvent(MotionEvent event) {
-            return false;
-        }
-
-        public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-
-        }
-
-        public void setScaleType(ScaleType scaleType) {
-
-        }
-
-        public void onDraw(Canvas canvas) {
-
-        }
-
-        /**
-         * @return true：是否需要调用父setImageDrawable清空图片
-         */
-        public boolean onDetachedFromWindow() {
-            return false;
-        }
-
-        /**
-         * @return 是否需要调用invalidate()刷新ImageView
-         */
-        public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-            return false;
-        }
-
-
-        /**
-         * @return 是否需要调用invalidate()刷新ImageView
-         */
-        public boolean onDisplay(UriScheme uriScheme) {
-            return false;
-        }
-
-        /**
-         * @return 是否需要调用invalidate()刷新ImageView
-         */
-        public boolean onDisplayStarted() {
-            return false;
-        }
-
-        /**
-         * @return 是否需要调用invalidate()刷新ImageView
-         */
-        public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
-            return false;
-        }
-
-        /**
-         * @return 是否需要调用invalidate()刷新ImageView
-         */
-        public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
-            return false;
-        }
-
-        /**
-         * @return 是否需要调用invalidate()刷新ImageView
-         */
-        public boolean onDisplayError(ErrorCause errorCause) {
-            return false;
-        }
-
-        /**
-         * @return 是否需要调用invalidate()刷新ImageView
-         */
-        public boolean onDisplayCanceled(CancelCause cancelCause) {
-            return false;
-        }
-
-        public void onSizeChanged(int left, int top, int right, int bottom) {
         }
     }
 }

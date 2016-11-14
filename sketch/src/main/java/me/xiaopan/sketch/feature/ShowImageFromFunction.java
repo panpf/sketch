@@ -23,9 +23,11 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 
 import me.xiaopan.sketch.SketchImageView;
-import me.xiaopan.sketch.request.ErrorCause;
+import me.xiaopan.sketch.drawable.LoadingDrawable;
+import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 显示图片来源功能，会在ImageView的左上角显示一个三角形的色块用于标识本次图片是从哪里来的
@@ -43,15 +45,13 @@ public class ShowImageFromFunction extends SketchImageView.Function {
     private static final int FROM_FLAG_COLOR_NETWORK = 0x88FF0000;
 
     private View view;
-    private RequestFunction requestFunction;
 
     private Path imageFromPath;
     private Paint imageFromPaint;
     private ImageFrom imageFrom;
 
-    public ShowImageFromFunction(View view, RequestFunction requestFunction) {
+    public ShowImageFromFunction(View view) {
         this.view = view;
-        this.requestFunction = requestFunction;
     }
 
     @Override
@@ -62,19 +62,7 @@ public class ShowImageFromFunction extends SketchImageView.Function {
 
     @Override
     public void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        if (imageFromPath == null) {
-            imageFromPath = new Path();
-        } else {
-            imageFromPath.reset();
-        }
-        int x = view.getWidth() / 10;
-        int y = view.getWidth() / 10;
-        int left2 = view.getPaddingLeft();
-        int top2 = view.getPaddingTop();
-        imageFromPath.moveTo(left2, top2);
-        imageFromPath.lineTo(left2 + x, top2);
-        imageFromPath.lineTo(left2, top2 + y);
-        imageFromPath.close();
+        initImageFromPath();
     }
 
     @Override
@@ -84,15 +72,7 @@ public class ShowImageFromFunction extends SketchImageView.Function {
         }
 
         if (imageFromPath == null) {
-            imageFromPath = new Path();
-            int x = view.getWidth() / 10;
-            int y = view.getWidth() / 10;
-            int left2 = view.getPaddingLeft();
-            int top2 = view.getPaddingTop();
-            imageFromPath.moveTo(left2, top2);
-            imageFromPath.lineTo(left2 + x, top2);
-            imageFromPath.lineTo(left2, top2 + y);
-            imageFromPath.close();
+            initImageFromPath();
         }
         if (imageFromPaint == null) {
             imageFromPaint = new Paint();
@@ -117,6 +97,22 @@ public class ShowImageFromFunction extends SketchImageView.Function {
         canvas.drawPath(imageFromPath, imageFromPaint);
     }
 
+    private void initImageFromPath(){
+        if (imageFromPath == null) {
+            imageFromPath = new Path();
+        } else {
+            imageFromPath.reset();
+        }
+        int x = view.getWidth() / 10;
+        int y = view.getWidth() / 10;
+        int left2 = view.getPaddingLeft();
+        int top2 = view.getPaddingTop();
+        imageFromPath.moveTo(left2, top2);
+        imageFromPath.lineTo(left2 + x, top2);
+        imageFromPath.lineTo(left2, top2 + y);
+        imageFromPath.close();
+    }
+
     @Override
     public boolean onDetachedFromWindow() {
         // drawable都已经被清空了，图片来源标识当然要重置了
@@ -126,30 +122,15 @@ public class ShowImageFromFunction extends SketchImageView.Function {
 
     @Override
     public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
-        if (!requestFunction.isNewDrawableFromSketch()) {
-            imageFrom = null;
-            return true;
+        ImageFrom oldImageFrom = imageFrom;
+        ImageFrom newImageFrom = null;
+        Drawable lastDrawable = SketchUtils.getLastDrawable(newDrawable);
+        if (!(lastDrawable instanceof LoadingDrawable) && lastDrawable instanceof SketchDrawable) {
+            SketchDrawable sketchDrawable = (SketchDrawable) lastDrawable;
+            newImageFrom = sketchDrawable.getImageFrom();
         }
-
-        return false;
-    }
-
-    @Override
-    public boolean onDisplayStarted() {
-        imageFrom = null;
-        return true;
-    }
-
-    @Override
-    public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
-        this.imageFrom = imageFrom;
-        return true;
-    }
-
-    @Override
-    public boolean onDisplayError(ErrorCause errorCause) {
-        imageFrom = null;
-        return true;
+        imageFrom = newImageFrom;
+        return oldImageFrom != newImageFrom;
     }
 
     public ImageFrom getImageFrom() {

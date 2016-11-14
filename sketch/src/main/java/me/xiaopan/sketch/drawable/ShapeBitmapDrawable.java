@@ -28,6 +28,7 @@ import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -53,6 +54,7 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
     private BitmapShader bitmapShader;
 
     private RefDrawable refDrawable;
+    private SketchDrawable sketchDrawable;
 
     public ShapeBitmapDrawable(BitmapDrawable bitmapDrawable, ShapeSize shapeSize, ImageShaper imageShaper) {
         Bitmap bitmap = bitmapDrawable.getBitmap();
@@ -73,6 +75,10 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
 
         if (bitmapDrawable instanceof RefDrawable) {
             this.refDrawable = (RefDrawable) bitmapDrawable;
+        }
+
+        if (bitmapDrawable instanceof SketchDrawable) {
+            this.sketchDrawable = (SketchDrawable) bitmapDrawable;
         }
 
         if (bitmapDrawable instanceof RefBitmapDrawable) {
@@ -235,27 +241,54 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
 
     @Override
     public String getImageId() {
-        return refDrawable != null ? refDrawable.getImageId() : null;
+        return sketchDrawable != null ? sketchDrawable.getImageId() : null;
     }
 
     @Override
     public String getImageUri() {
-        return refDrawable != null ? refDrawable.getImageUri() : null;
+        return sketchDrawable != null ? sketchDrawable.getImageUri() : null;
     }
 
     @Override
     public int getImageWidth() {
-        return refDrawable != null ? refDrawable.getImageWidth() : 0;
+        return sketchDrawable != null ? sketchDrawable.getImageWidth() : 0;
     }
 
     @Override
     public int getImageHeight() {
-        return refDrawable != null ? refDrawable.getImageHeight() : 0;
+        return sketchDrawable != null ? sketchDrawable.getImageHeight() : 0;
     }
 
     @Override
     public String getMimeType() {
-        return refDrawable != null ? refDrawable.getMimeType() : null;
+        return sketchDrawable != null ? sketchDrawable.getMimeType() : null;
+    }
+
+    @Override
+    public int getByteCount() {
+        return sketchDrawable != null ? sketchDrawable.getByteCount() : 0;
+    }
+
+    @Override
+    public Bitmap.Config getBitmapConfig() {
+        return sketchDrawable != null ? sketchDrawable.getBitmapConfig() : null;
+    }
+
+    @Override
+    public ImageFrom getImageFrom() {
+        return sketchDrawable != null ? sketchDrawable.getImageFrom() : null;
+    }
+
+    @Override
+    public void setImageFrom(ImageFrom imageFrom) {
+        if (sketchDrawable != null) {
+            sketchDrawable.setImageFrom(imageFrom);
+        }
+    }
+
+    @Override
+    public String getInfo() {
+        return sketchDrawable != null ? sketchDrawable.getInfo() : null;
     }
 
     @Override
@@ -289,20 +322,5 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
         if (refDrawable != null) {
             refDrawable.recycle();
         }
-    }
-
-    @Override
-    public String getInfo() {
-        return refDrawable != null ? refDrawable.getInfo() : null;
-    }
-
-    @Override
-    public int getByteCount() {
-        return refDrawable != null ? refDrawable.getByteCount() : 0;
-    }
-
-    @Override
-    public Bitmap.Config getBitmapConfig() {
-        return refDrawable != null ? refDrawable.getBitmapConfig() : null;
     }
 }

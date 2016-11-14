@@ -677,12 +677,15 @@ public class DisplayHelper {
                                 ". ", displayInfo.getId()));
                     }
 
+                    RefBitmapDrawable refBitmapDrawable = new RefBitmapDrawable(cachedRefBitmap);
+                    refBitmapDrawable.setImageFrom(ImageFrom.MEMORY_CACHE);
+
                     Drawable finalDrawable;
                     if (displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null) {
-                        finalDrawable = new ShapeBitmapDrawable(new RefBitmapDrawable(cachedRefBitmap),
+                        finalDrawable = new ShapeBitmapDrawable(refBitmapDrawable,
                                 displayOptions.getShapeSize(), displayOptions.getImageShaper());
                     } else {
-                        finalDrawable = new RefBitmapDrawable(cachedRefBitmap);
+                        finalDrawable = refBitmapDrawable;
                     }
 
                     ImageDisplayer imageDisplayer = displayOptions.getImageDisplayer();

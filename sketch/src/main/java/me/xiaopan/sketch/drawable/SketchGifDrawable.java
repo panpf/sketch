@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 import pl.droidsonroids.gif.GifDrawable;
 
@@ -24,6 +25,7 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
     private int originWidth;
     private int originHeight;
     private String mimeType;
+    private ImageFrom imageFrom;
 
     public SketchGifDrawable(AssetFileDescriptor afd) throws IOException {
         super(afd);
@@ -108,6 +110,16 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
 
     public void setMimeType(String mimeType) {
         this.mimeType = mimeType;
+    }
+
+    @Override
+    public ImageFrom getImageFrom() {
+        return imageFrom;
+    }
+
+    @Override
+    public void setImageFrom(ImageFrom imageFrom) {
+        this.imageFrom = imageFrom;
     }
 
     @Override

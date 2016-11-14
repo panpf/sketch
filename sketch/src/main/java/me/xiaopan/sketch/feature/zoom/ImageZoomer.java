@@ -790,6 +790,9 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
             // make sure a pending fling runnable won't be run
             cancelFling();
+
+            // 恢复Matrix
+            imageView.setImageMatrix(null);
         }
 
         scaleType = ScaleType.FIT_CENTER;

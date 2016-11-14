@@ -22,6 +22,7 @@ import android.graphics.drawable.Drawable;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.request.DisplayRequest;
+import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.DrawableWrapper;
 
 /**
@@ -115,6 +116,18 @@ public class LoadingDrawable extends DrawableWrapper implements RefDrawable {
     @Override
     public Bitmap.Config getBitmapConfig() {
         return sketchDrawable != null ? sketchDrawable.getBitmapConfig() : null;
+    }
+
+    @Override
+    public ImageFrom getImageFrom() {
+        return sketchDrawable != null ? sketchDrawable.getImageFrom() : null;
+    }
+
+    @Override
+    public void setImageFrom(ImageFrom imageFrom) {
+        if (sketchDrawable != null) {
+            sketchDrawable.setImageFrom(imageFrom);
+        }
     }
 
     @Override

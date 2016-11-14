@@ -18,6 +18,8 @@ package me.xiaopan.sketch.drawable;
 
 import android.graphics.Bitmap;
 
+import me.xiaopan.sketch.request.ImageFrom;
+
 public interface SketchDrawable {
     /**
      * 获取图片ID
@@ -53,6 +55,16 @@ public interface SketchDrawable {
      * 获取Bitmap配置
      */
     Bitmap.Config getBitmapConfig();
+
+    /**
+     * 获取图片来源
+     */
+    ImageFrom getImageFrom();
+
+    /**
+     * 设置图片来源
+     */
+    void setImageFrom(ImageFrom imageFrom);
 
     /**
      * 获取一些信息

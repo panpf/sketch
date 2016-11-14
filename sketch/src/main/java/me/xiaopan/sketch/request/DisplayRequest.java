@@ -217,7 +217,8 @@ public class DisplayRequest extends LoadRequest {
                 getSketch().getConfiguration().getMemoryCache().put(getMemoryCacheKey(), refBitmap);
             }
 
-            displayResult = new DisplayResult(new RefBitmapDrawable(refBitmap), loadResult.getImageFrom(), loadResult.getMimeType());
+            displayResult = new DisplayResult(new RefBitmapDrawable(refBitmap),
+                    loadResult.getImageFrom(), loadResult.getMimeType());
             displayCompleted();
         } else if (loadResult != null && loadResult.getGifDrawable() != null) {
             SketchGifDrawable gifDrawable = loadResult.getGifDrawable();
@@ -250,6 +251,11 @@ public class DisplayRequest extends LoadRequest {
             boolean fromMemoryCache = displayResult.getImageFrom() == ImageFrom.MEMORY_CACHE;
             String callingStation = fromMemoryCache ? "displayCompleted:fromMemory" : "displayCompleted:new";
             refDrawable.setIsWaitDisplay(callingStation, true);
+        }
+
+        if (displayResult.getDrawable() instanceof SketchDrawable) {
+            SketchDrawable sketchDrawable = (SketchDrawable) displayResult.getDrawable();
+            sketchDrawable.setImageFrom(displayResult.getImageFrom());
         }
 
         postRunCompleted();
