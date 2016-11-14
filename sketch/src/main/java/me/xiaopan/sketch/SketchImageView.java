@@ -663,16 +663,12 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     @SuppressWarnings("unused")
     public void setShowGifFlag(Drawable gifFlagDrawable) {
         if (gifFlagDrawable != null) {
-            if (showGifFlagFunction == null) {
-                showGifFlagFunction = new ShowGifFlagFunction(this, gifFlagDrawable);
-                invalidate();
-            } else if (gifFlagDrawable != showGifFlagFunction.getGifFlagDrawable()) {
-                invalidate();
-            }
+            showGifFlagFunction = new ShowGifFlagFunction(this, gifFlagDrawable);
+            showGifFlagFunction.onDrawableChanged("setShowGifFlag", null, getDrawable());
         } else {
             showGifFlagFunction = null;
-            invalidate();
         }
+        invalidate();
     }
 
     /**
