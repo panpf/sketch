@@ -5,10 +5,14 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Toast;
 
 import org.apache.http.HttpResponse;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -28,6 +32,7 @@ import me.xiaopan.sketchsample.net.request.HotManStarRequest;
 import me.xiaopan.sketchsample.net.request.HotStarRequest;
 import me.xiaopan.sketchsample.net.request.HotWomanStarRequest;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
+import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.HintView;
 
 /**
@@ -55,6 +60,12 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -68,6 +79,12 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
             contentRecyclerView.setAdapter(adapter);
             contentRecyclerView.scheduleLayoutAnimation();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
     }
 
     @Override
@@ -165,5 +182,19 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
 
             }
         }).responseHandleCompletedAfterListener(new HotStarRequest.ResponseHandler(isMan)).go();
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    void onGlobalAttrChanged(String key){
+        if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
+                || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
+                || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
+                || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
+                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)) {
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 }

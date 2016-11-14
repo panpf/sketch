@@ -101,7 +101,7 @@ public class MappingView extends SketchImageView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        if (largeImageViewer != null) {
+        if (largeImageViewer != null && largeImageViewer.isReady()) {
             float widthScale = (float) largeImageViewer.getImageSize().x / getWidth();
             float heightScale = (float) largeImageViewer.getImageSize().y / getHeight();
 

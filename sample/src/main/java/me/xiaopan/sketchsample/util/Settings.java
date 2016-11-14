@@ -30,6 +30,8 @@ public class Settings {
     public static final String PREFERENCE_LOCATION_ANIMATE = "PREFERENCE_LOCATION_ANIMATE";
     public static final String PREFERENCE_CACHE_PROCESSED_IMAGE = "PREFERENCE_CACHE_PROCESSED_IMAGE";
     public static final String PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE = "PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE";
+    public static final String PREFERENCE_PLAY_GIF_ON_LIST = "PREFERENCE_PLAY_GIF_ON_LIST";
+    public static final String PREFERENCE_SHOW_GIF_FLAG = "PREFERENCE_SHOW_GIF_FLAG";
 
     public static boolean getBoolean(Context context, @Key String key) {
         boolean defaultValue = false;
@@ -45,6 +47,7 @@ public class Settings {
                 || PREFERENCE_READ_MODE.equals(key)
                 || PREFERENCE_SUPPORT_LARGE_IMAGE.equals(key)
                 || PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE.equals(key)
+                || PREFERENCE_SHOW_GIF_FLAG.equals(key)
                 ) {
             defaultValue = true;
         }
@@ -93,6 +96,8 @@ public class Settings {
             PREFERENCE_CACHE_PROCESSED_IMAGE,
             PREFERENCE_CLICK_SHOW_PRESSED_STATUS,
             PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE,
+            PREFERENCE_PLAY_GIF_ON_LIST,
+            PREFERENCE_SHOW_GIF_FLAG,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Key {

@@ -8,15 +8,19 @@ import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.widget.SearchView;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import com.etsy.android.grid.StaggeredGridView;
 
 import org.apache.http.HttpResponse;
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +41,7 @@ import me.xiaopan.sketchsample.adapter.ImageStaggeredGridAdapter;
 import me.xiaopan.sketchsample.net.request.SearchImageRequest;
 import me.xiaopan.sketchsample.net.request.StarImageRequest;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
+import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.HintView;
 import me.xiaopan.sketchsample.widget.LoadMoreFooterView;
 
@@ -85,6 +90,12 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         setTitle(searchKeyword);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
+        return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     private void setTitle(String subtitle) {
@@ -155,6 +166,7 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
 
     @Override
     public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
         super.onDestroyView();
         loadMoreFooterView = null;
     }
@@ -352,5 +364,19 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                 loadMoreFooterView.loadFinished(false);
             }
         }).responseHandleCompletedAfterListener(new SearchImageRequest.ResponseHandler()).go();
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    void onGlobalAttrChanged(String key){
+        if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
+                || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
+                || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
+                || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
+                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)) {
+            if (searchImageListAdapter != null) {
+                searchImageListAdapter.notifyDataSetChanged();
+            }
+        }
     }
 }

@@ -3,6 +3,9 @@ package me.xiaopan.sketchsample.widget;
 import android.content.Context;
 import android.util.AttributeSet;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketchsample.R;
@@ -13,34 +16,74 @@ public class MyImageView extends SketchImageView {
 
     public MyImageView(Context context) {
         super(context);
-        onInit(context);
     }
 
     public MyImageView(Context context, AttributeSet attrs) {
         super(context, attrs);
-        onInit(context);
     }
 
-    private void onInit(Context context) {
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        EventBus.getDefault().register(this);
+
         if (!isInEditMode()) {
-            setShowGifFlag(R.drawable.ic_gif);
+            onGlobalAttrChanged(Settings.PREFERENCE_SHOW_GIF_FLAG);
         }
     }
 
     @Override
     public void onDisplay(UriScheme uriScheme) {
-        if (autoApplyGlobalAttr) {
-            setShowPressedStatus(Settings.getBoolean(getContext(), Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS));
-            setShowImageFrom(Settings.getBoolean(getContext(), Settings.PREFERENCE_SHOW_IMAGE_FROM_FLAG));
-            setShowDownloadProgress(Settings.getBoolean(getContext(), Settings.PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS));
-            setClickRetryOnPauseDownload(Settings.getBoolean(getContext(), Settings.PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD));
-            setClickRetryOnError(Settings.getBoolean(getContext(), Settings.PREFERENCE_CLICK_DISPLAY_ON_FAILED));
-        }
-
         super.onDisplay(uriScheme);
+
+        onGlobalAttrChanged(Settings.PREFERENCE_SHOW_IMAGE_FROM_FLAG);
+        onGlobalAttrChanged(Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS);
+        onGlobalAttrChanged(Settings.PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS);
+        onGlobalAttrChanged(Settings.PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD);
+        onGlobalAttrChanged(Settings.PREFERENCE_CLICK_DISPLAY_ON_FAILED);
     }
 
     public void setAutoApplyGlobalAttr(boolean autoApplyGlobalAttr) {
         this.autoApplyGlobalAttr = autoApplyGlobalAttr;
+    }
+
+    @Subscribe
+    void onGlobalAttrChanged(String key) {
+        if (Settings.PREFERENCE_SHOW_GIF_FLAG.equals(key)) {
+            if (autoApplyGlobalAttr) {
+                boolean showGifFlag = Settings.getBoolean(getContext(), Settings.PREFERENCE_SHOW_GIF_FLAG);
+                if (showGifFlag) {
+                    setShowGifFlag(R.drawable.ic_gif);
+                } else {
+                    setShowGifFlag(null);
+                }
+            }
+        } else if (Settings.PREFERENCE_SHOW_IMAGE_FROM_FLAG.equals(key)) {
+            if (autoApplyGlobalAttr) {
+                setShowImageFrom(Settings.getBoolean(getContext(), Settings.PREFERENCE_SHOW_IMAGE_FROM_FLAG));
+            }
+        } else if (Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS.equals(key)) {
+            if (autoApplyGlobalAttr) {
+                setShowPressedStatus(Settings.getBoolean(getContext(), Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS));
+            }
+        } else if (Settings.PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS.equals(key)) {
+            if (autoApplyGlobalAttr) {
+                setShowDownloadProgress(Settings.getBoolean(getContext(), Settings.PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS));
+            }
+        } else if (Settings.PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD.equals(key)) {
+            if (autoApplyGlobalAttr) {
+                setClickRetryOnPauseDownload(Settings.getBoolean(getContext(), Settings.PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD));
+            }
+        } else if (Settings.PREFERENCE_CLICK_DISPLAY_ON_FAILED.equals(key)) {
+            if (autoApplyGlobalAttr) {
+                setClickRetryOnError(Settings.getBoolean(getContext(), Settings.PREFERENCE_CLICK_DISPLAY_ON_FAILED));
+            }
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        EventBus.getDefault().unregister(this);
+        super.onDetachedFromWindow();
     }
 }

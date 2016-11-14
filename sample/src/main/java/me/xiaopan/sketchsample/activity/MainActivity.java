@@ -37,6 +37,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -255,26 +257,112 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         });
 
         menuList.add("手势缩放");
-        menuList.add(new CheckMenu(this, "开启手势缩放", Settings.PREFERENCE_SUPPORT_ZOOM, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "开启阅读模式", Settings.PREFERENCE_READ_MODE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "开启手势缩放", Settings.PREFERENCE_SUPPORT_ZOOM, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_SUPPORT_ZOOM);
+            }
+        }, menuClickListener));
+        menuList.add(new CheckMenu(this, "开启阅读模式", Settings.PREFERENCE_READ_MODE, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_READ_MODE);
+            }
+        }, menuClickListener));
         menuList.add(new CheckMenu(this, "定位时显示动画", Settings.PREFERENCE_LOCATION_ANIMATE, null, menuClickListener));
 
         menuList.add("分块显示超大图");
-        menuList.add(new CheckMenu(this, "开启分块显示超大图", Settings.PREFERENCE_SUPPORT_LARGE_IMAGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "开启分块显示超大图", Settings.PREFERENCE_SUPPORT_LARGE_IMAGE, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_SUPPORT_LARGE_IMAGE);
+            }
+        }, menuClickListener));
         menuList.add(new CheckMenu(this, "页面对用户可见时才解码超大图", Settings.PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE, null, menuClickListener));
 
+        menuList.add("GIF");
+
+        menuList.add(new CheckMenu(this, "列表中播放GIF图", Settings.PREFERENCE_PLAY_GIF_ON_LIST, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_PLAY_GIF_ON_LIST);
+            }
+        }, menuClickListener));
+
+        menuList.add(new CheckMenu(this, "在右下角GIF图标识", Settings.PREFERENCE_SHOW_GIF_FLAG, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_SHOW_GIF_FLAG);
+            }
+        }, menuClickListener));
+
         menuList.add("解码");
-        menuList.add(new CheckMenu(this, "全局解码时质量优先", Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "全局使用低质量图片", Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "使用缩略图模式", Settings.PREFERENCE_THUMBNAIL_MODE, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "缓存处理过的图片", Settings.PREFERENCE_CACHE_PROCESSED_IMAGE, null, menuClickListener));
+
+        menuList.add(new CheckMenu(this, "全局解码时质量优先", Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED);
+            }
+        }, menuClickListener));
+
+        menuList.add(new CheckMenu(this, "全局使用低质量图片", Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE);
+            }
+        }, menuClickListener));
+
+        menuList.add(new CheckMenu(this, "使用缩略图模式", Settings.PREFERENCE_THUMBNAIL_MODE, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_THUMBNAIL_MODE);
+            }
+        }, menuClickListener));
+
+        menuList.add(new CheckMenu(this, "缓存处理过的图片", Settings.PREFERENCE_CACHE_PROCESSED_IMAGE, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_CACHE_PROCESSED_IMAGE);
+            }
+        }, menuClickListener));
 
         menuList.add("其它");
-        menuList.add(new CheckMenu(this, "显示按下状态", Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "显示图片来源角标", Settings.PREFERENCE_SHOW_IMAGE_FROM_FLAG, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "显示图片下载进度", Settings.PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "暂停下载时点击显示图片", Settings.PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "显示失败时点击重试", Settings.PREFERENCE_CLICK_DISPLAY_ON_FAILED, null, menuClickListener));
+
+        menuList.add(new CheckMenu(this, "显示按下状态", Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS);
+            }
+        }, menuClickListener));
+
+        menuList.add(new CheckMenu(this, "显示图片来源角标", Settings.PREFERENCE_SHOW_IMAGE_FROM_FLAG, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_SHOW_IMAGE_FROM_FLAG);
+            }
+        }, menuClickListener));
+
+        menuList.add(new CheckMenu(this, "显示图片下载进度", Settings.PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_SHOW_IMAGE_DOWNLOAD_PROGRESS);
+            }
+        }, menuClickListener));
+
+        menuList.add(new CheckMenu(this, "暂停下载时点击显示图片", Settings.PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_CLICK_DISPLAY_ON_PAUSE_DOWNLOAD);
+            }
+        }, menuClickListener));
+
+        menuList.add(new CheckMenu(this, "显示失败时点击重试", Settings.PREFERENCE_CLICK_DISPLAY_ON_FAILED, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_CLICK_DISPLAY_ON_FAILED);
+            }
+        }, menuClickListener));
+
         menuList.add(new CheckMenu(this, "列表滑动时不加载新图片", Settings.PREFERENCE_SCROLLING_PAUSE_LOAD, null, menuClickListener));
         menuList.add(new CheckMenu(this, "移动网络时不下载新图片", Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, null, menuClickListener));
 

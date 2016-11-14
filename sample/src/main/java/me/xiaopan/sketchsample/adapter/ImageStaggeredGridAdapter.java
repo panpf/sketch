@@ -16,6 +16,7 @@ import java.util.List;
 import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.net.request.StarImageRequest;
+import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 /**
@@ -117,6 +118,11 @@ public class ImageStaggeredGridAdapter extends BaseAdapter {
         headParams.width = itemWidth;
         headParams.height = (int) (itemWidth / (image.getWidth() / (float) image.getHeight()));
         itemViewHolder.imageView.setLayoutParams(headParams);
+
+        boolean playGifOnList = Settings.getBoolean(itemViewHolder.imageView.getContext(), Settings.PREFERENCE_PLAY_GIF_ON_LIST);
+        if (playGifOnList != itemViewHolder.imageView.getOptions().isDecodeGifImage()) {
+            itemViewHolder.imageView.getOptions().setDecodeGifImage(playGifOnList);
+        }
 
         itemViewHolder.imageView.displayImage(image.getSourceUrl());
 

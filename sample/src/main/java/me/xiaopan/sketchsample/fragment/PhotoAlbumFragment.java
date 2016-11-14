@@ -27,7 +27,12 @@ import android.os.Handler;
 import android.provider.MediaStore;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +47,7 @@ import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.DetailActivity;
 import me.xiaopan.sketchsample.adapter.PhotoAlbumImageAdapter;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
+import me.xiaopan.sketchsample.util.Settings;
 
 /**
  * 本地相册页面
@@ -67,6 +73,12 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
     }
 
     @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        EventBus.getDefault().register(this);
+        return super.onCreateView(inflater, container, savedInstanceState);
+    }
+
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
@@ -80,6 +92,12 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
         } else {
             pullRefreshLayout.startRefresh();
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        EventBus.getDefault().unregister(this);
+        super.onDestroyView();
     }
 
     @Override
@@ -167,6 +185,20 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
             }, 1000);
             if (strings != null && strings.size() > 0) {
                 changeBackground(strings.get(0));
+            }
+        }
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    void onGlobalAttrChanged(String key){
+        if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
+                || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
+                || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
+                || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
+                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)) {
+            if (imageAdapter != null) {
+                imageAdapter.notifyDataSetChanged();
             }
         }
     }
