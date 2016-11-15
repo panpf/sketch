@@ -11,6 +11,11 @@ public class AppInfo {
     private String sortName;
     private String apkFilePath;
     private int versionCode;
+    private boolean tempInstalled;
+
+    public AppInfo(boolean tempInstalled) {
+        this.tempInstalled = tempInstalled;
+    }
 
     public String getName() {
         return name;
@@ -66,5 +71,9 @@ public class AppInfo {
 
     public void setVersionCode(int versionCode) {
         this.versionCode = versionCode;
+    }
+
+    public boolean isTempInstalled() {
+        return tempInstalled;
     }
 }

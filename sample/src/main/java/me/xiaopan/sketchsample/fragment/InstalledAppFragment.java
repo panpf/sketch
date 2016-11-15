@@ -20,9 +20,11 @@ import java.util.List;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.adapter.InstalledAppListAdapter;
+import me.xiaopan.sketchsample.adapter.itemfactory.AppItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.AppListHeaderItemFactory;
 import me.xiaopan.sketchsample.bean.AppInfo;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.widget.HintView;
@@ -36,7 +38,7 @@ public class InstalledAppFragment extends MyFragment {
     private RecyclerView contentRecyclerView;
     @InjectView(R.id.hint_installedApp_hint)
     private HintView hintView;
-    private InstalledAppListAdapter adapter = null;
+    private AssemblyRecyclerAdapter adapter = null;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -69,7 +71,7 @@ public class InstalledAppFragment extends MyFragment {
                 List<PackageInfo> packageInfoList = packageManager.getInstalledPackages(0);
                 List<AppInfo> appInfoList = new ArrayList<AppInfo>(packageInfoList.size());
                 for (PackageInfo packageInfo : packageInfoList) {
-                    AppInfo appInfo = new AppInfo();
+                    AppInfo appInfo = new AppInfo(true);
                     appInfo.setName(String.valueOf(packageInfo.applicationInfo.loadLabel(packageManager)));
                     appInfo.setSortName(toPinYin(appInfo.getName()));
                     appInfo.setId(packageInfo.packageName);
@@ -110,7 +112,15 @@ public class InstalledAppFragment extends MyFragment {
                 }
 
                 hintView.hidden();
-                adapter = new InstalledAppListAdapter(appInfoList);
+
+                List<Object> dataList = new ArrayList<Object>((appInfoList != null ? appInfoList.size() : 0) + 1);
+                dataList.add(String.format("您的设备上共安装了%d款应用", appInfoList != null ? appInfoList.size() : 0));
+                if (appInfoList != null) {
+                    dataList.addAll(appInfoList);
+                }
+                AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(dataList);
+                adapter.addItemFactory(new AppItemFactory());
+                adapter.addItemFactory(new AppListHeaderItemFactory());
                 contentRecyclerView.setAdapter(adapter);
                 contentRecyclerView.scheduleLayoutAnimation();
             }

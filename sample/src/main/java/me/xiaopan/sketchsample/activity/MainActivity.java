@@ -64,7 +64,6 @@ import me.xiaopan.sketchsample.bean.CheckMenu;
 import me.xiaopan.sketchsample.bean.InfoMenu;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
-import me.xiaopan.sketchsample.fragment.InstalledAppFragment;
 import me.xiaopan.sketchsample.fragment.LargesFragment;
 import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
@@ -506,7 +505,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         STAR("明星图片", StarIndexFragment.class),
         SEARCH("图片搜索", SearchFragment.class),
         PHOTO_ALBUM("本地相册", PhotoAlbumFragment.class),
-        APP_LIST("本地APP", InstalledAppFragment.class),
+        APP_LIST("本地APP", AppListFragment.class),
         LARGE_IMAGE("超大图片", LargesFragment.class),
         TES1("测试1", TestFragment.class, !BuildConfig.DEBUG),
         TES2("测试2", Test2Fragment.class, !BuildConfig.DEBUG),

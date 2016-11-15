@@ -24,10 +24,12 @@ import java.util.zip.ZipFile;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.adapter.AppPackageListAdapter;
+import me.xiaopan.sketchsample.adapter.itemfactory.AppItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.AppListHeaderItemFactory;
 import me.xiaopan.sketchsample.bean.AppInfo;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.util.XpkInfo;
@@ -42,7 +44,7 @@ public class AppPackageFragment extends MyFragment {
     private RecyclerView contentRecyclerView;
     @InjectView(R.id.hint_installedApp_hint)
     private HintView hintView;
-    private AppPackageListAdapter adapter = null;
+    private AssemblyRecyclerAdapter adapter = null;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -77,7 +79,6 @@ public class AppPackageFragment extends MyFragment {
                     return null;
                 }
 
-                PackageManager packageManager = context.getPackageManager();
                 List<AppInfo> appInfoList = new ArrayList<AppInfo>();
 
                 Queue<File> dirs = new LinkedBlockingQueue<File>();
@@ -155,7 +156,7 @@ public class AppPackageFragment extends MyFragment {
                 packageInfo.applicationInfo.sourceDir = file.getPath();
                 packageInfo.applicationInfo.publicSourceDir = file.getPath();
 
-                AppInfo appInfo = new AppInfo();
+                AppInfo appInfo = new AppInfo(false);
                 appInfo.setName(String.valueOf(packageInfo.applicationInfo.loadLabel(context.getPackageManager())));
                 appInfo.setSortName(toPinYin(appInfo.getName()));
                 appInfo.setId(packageInfo.packageName);
@@ -168,7 +169,7 @@ public class AppPackageFragment extends MyFragment {
 
             private AppInfo parseFromXpk(File file) {
                 try {
-                    AppInfo appInfo = new AppInfo();
+                    AppInfo appInfo = new AppInfo(false);
                     XpkInfo xpkInfo = XpkInfo.getXPKManifestDom(new ZipFile(file));
                     if (xpkInfo == null) {
                         throw new Exception();
@@ -195,10 +196,26 @@ public class AppPackageFragment extends MyFragment {
                 }
 
                 hintView.hidden();
-                adapter = new AppPackageListAdapter(appInfoList);
-                adapter.setUseTime(System.currentTimeMillis() - time);
+
+                long useTime = System.currentTimeMillis() - time;
+                String headerString;
+                if (useTime != -1) {
+                    headerString = String.format("您的设备上共有%d个安装包，扫描耗时%d秒", appInfoList != null ? appInfoList.size() : 0, useTime / 1000);
+                } else {
+                    headerString = String.format("您的设备上共有%d个安装包", appInfoList != null ? appInfoList.size() : 0);
+                }
+
+                List<Object> dataList = new ArrayList<Object>((appInfoList != null ? appInfoList.size() : 0) + 1);
+                dataList.add(headerString);
+                if (appInfoList != null) {
+                    dataList.addAll(appInfoList);
+                }
+                AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(dataList);
+                adapter.addItemFactory(new AppItemFactory());
+                adapter.addItemFactory(new AppListHeaderItemFactory());
                 contentRecyclerView.setAdapter(adapter);
                 contentRecyclerView.scheduleLayoutAnimation();
+                AppPackageFragment.this.adapter = adapter;
             }
         }.execute(0);
     }
