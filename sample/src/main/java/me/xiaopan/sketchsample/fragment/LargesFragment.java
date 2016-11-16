@@ -8,11 +8,11 @@ import android.view.View;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.assemblyadapter.FragmentArrayPagerAdapter;
 import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.adapter.FragmentAdapter;
 
 /**
  * 大图页面，用来展示Sketch显示大图的能力
@@ -22,7 +22,7 @@ public class LargesFragment extends MyFragment {
     @InjectView(R.id.pager_appList_content)
     private ViewPager viewPager;
     private GetLargeTagStripListener getPagerSlidingTagStripListener;
-    private FragmentAdapter fragmentAdapter;
+    private FragmentArrayPagerAdapter fragmentAdapter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -57,7 +57,7 @@ public class LargesFragment extends MyFragment {
             fragments[1] = ImageFragment.build(UriScheme.ASSET.createUri("qing_ming_shang_he_tu.jpg"), null);
             fragments[2] = ImageFragment.build(UriScheme.ASSET.createUri("chang_wei_bo.jpg"), null);
             fragments[3] = ImageFragment.build(UriScheme.ASSET.createUri("test_card.png"), null);
-            fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments);
+            fragmentAdapter = new FragmentArrayPagerAdapter(getChildFragmentManager(), fragments);
         }
         viewPager.setAdapter(fragmentAdapter);
         getPagerSlidingTagStripListener.onGetLargeTabStrip().setViewPager(viewPager);

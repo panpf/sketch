@@ -14,10 +14,12 @@ import org.apache.http.HttpResponse;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.gohttp.GoHttp;
 import me.xiaopan.gohttp.HttpRequest;
 import me.xiaopan.gohttp.HttpRequestFuture;
@@ -27,7 +29,13 @@ import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.StarHomeActivity;
-import me.xiaopan.sketchsample.adapter.HotStarAdapter;
+import me.xiaopan.sketchsample.adapter.itemfactory.HotStarThreeLeftItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.HotStarThreeRightItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.ItemTitleItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.HotStarTwoItemFactory;
+import me.xiaopan.sketchsample.bean.ThreeStarLeft;
+import me.xiaopan.sketchsample.bean.ThreeStarRight;
+import me.xiaopan.sketchsample.bean.TwoStar;
 import me.xiaopan.sketchsample.net.request.HotManStarRequest;
 import me.xiaopan.sketchsample.net.request.HotStarRequest;
 import me.xiaopan.sketchsample.net.request.HotWomanStarRequest;
@@ -39,14 +47,14 @@ import me.xiaopan.sketchsample.widget.HintView;
  * 热门明星页
  */
 @InjectContentView(R.layout.fragment_hot_star)
-public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnRefreshListener, HotStarAdapter.OnImageClickListener {
+public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnRefreshListener, HotStarThreeLeftItemFactory.OnStarClickListener {
 
     @InjectView(R.id.refreshLayout_hotStar) private PullRefreshLayout refreshLayout;
     @InjectView(R.id.hint_hotStar) private HintView hintView;
     @InjectView(R.id.recyclerView_hotStar_content) private RecyclerView contentRecyclerView;
 
     private HttpRequestFuture httpRequestFuture;
-    private HotStarAdapter adapter;
+    private AssemblyRecyclerAdapter adapter;
 
     private ApplyBackgroundCallback applyBackgroundCallback;
     private String backgroundImageUri;
@@ -133,7 +141,7 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
             @Override
             public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, List<HotStarRequest.HotStar> hotStarList, boolean b, boolean b2) {
                 if (last) {
-                    adapter.append(hotStarList);
+                    appendData(adapter, hotStarList);
                     contentRecyclerView.setAdapter(adapter);
                     contentRecyclerView.scheduleLayoutAnimation();
                     new Handler().postDelayed(new Runnable() {
@@ -146,7 +154,12 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
                         changeBackground(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());
                     }
                 } else {
-                    adapter = new HotStarAdapter(getActivity(), hotStarList, HotStarFragment.this);
+                    adapter = new AssemblyRecyclerAdapter(new ArrayList<Object>());
+                    appendData(adapter, hotStarList);
+                    adapter.addItemFactory(new HotStarThreeLeftItemFactory(HotStarFragment.this));
+                    adapter.addItemFactory(new HotStarThreeRightItemFactory(HotStarFragment.this));
+                    adapter.addItemFactory(new HotStarTwoItemFactory(HotStarFragment.this));
+                    adapter.addItemFactory(new ItemTitleItemFactory(null));
                     boolean result = false;
                     if (hotStarList.size() > 0 && hotStarList.get(0).getStarList().size() > 0) {
                         changeBackground(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());
@@ -180,6 +193,48 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
             @Override
             public void onCanceled(HttpRequest httpRequest) {
 
+            }
+
+            public void appendData(AssemblyRecyclerAdapter adapter, List<HotStarRequest.HotStar> hotStarList) {
+                for (HotStarRequest.HotStar hotStar : hotStarList) {
+                    adapter.getDataList().add(hotStar.getName());
+                    parse(adapter, hotStar.getStarList());
+                }
+            }
+
+            private void parse(AssemblyRecyclerAdapter adapter, List<HotStarRequest.Star> starList) {
+                if (starList == null) {
+                    return;
+                }
+                boolean left = true;
+                for (int w = 0, size = starList.size(); w < size; ) {
+                    int number = size - w;
+                    if (number == 1) {
+                        TwoStar oneItem = new TwoStar();
+                        oneItem.star1 = starList.get(w++);
+                        adapter.getDataList().add(oneItem);
+                    } else if (number == 2) {
+                        TwoStar twoStar = new TwoStar();
+                        twoStar.star1 = starList.get(w++);
+                        twoStar.star2 = starList.get(w++);
+                        adapter.getDataList().add(twoStar);
+                    } else {
+                        if (left) {
+                            ThreeStarLeft threeStarLeft = new ThreeStarLeft();
+                            threeStarLeft.star1 = starList.get(w++);
+                            threeStarLeft.star2 = starList.get(w++);
+                            threeStarLeft.star3 = starList.get(w++);
+                            adapter.getDataList().add(threeStarLeft);
+                        } else {
+                            ThreeStarRight threeStarRight = new ThreeStarRight();
+                            threeStarRight.star1 = starList.get(w++);
+                            threeStarRight.star2 = starList.get(w++);
+                            threeStarRight.star3 = starList.get(w++);
+                            adapter.getDataList().add(threeStarRight);
+                        }
+                        left = !left;
+                    }
+                }
             }
         }).responseHandleCompletedAfterListener(new HotStarRequest.ResponseHandler(isMan)).go();
     }

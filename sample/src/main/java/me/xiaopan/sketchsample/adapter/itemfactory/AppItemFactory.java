@@ -5,14 +5,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItem;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.shaper.ImageShaper;
 import me.xiaopan.sketch.shaper.RoundRectImageShaper;
 import me.xiaopan.sketchsample.ImageOptions;
 import me.xiaopan.sketchsample.R;
+import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
 import me.xiaopan.sketchsample.bean.AppInfo;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
@@ -27,7 +26,7 @@ public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.A
         return new AppItem(R.layout.list_item_app, viewGroup);
     }
 
-    public class AppItem extends AssemblyRecyclerItem<AppInfo> {
+    public class AppItem extends BindAssemblyRecyclerItem<AppInfo> {
         @BindView(R.id.image_installedApp_icon)
         MyImageView iconImageView;
         @BindView(R.id.text_installedApp_name)
@@ -37,11 +36,6 @@ public class AppItemFactory extends AssemblyRecyclerItemFactory<AppItemFactory.A
 
         public AppItem(int itemLayoutId, ViewGroup parent) {
             super(itemLayoutId, parent);
-        }
-
-        @Override
-        protected void onFindViews() {
-            ButterKnife.bind(this, getItemView());
         }
 
         @Override

@@ -32,13 +32,14 @@ import java.util.List;
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.assemblyadapter.AssemblyFragmentStatePagerAdapter;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.adapter.ImageFragmentAdapter;
+import me.xiaopan.sketchsample.adapter.itemfactory.ImageFragmentItemFactory;
 import me.xiaopan.sketchsample.util.AnimationBatchExecutor;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.ApplyWallpaperAsyncTask;
@@ -135,7 +136,9 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
         saveButton.setOnClickListener(this);
 
         if (uris != null) {
-            viewPager.setAdapter(new ImageFragmentAdapter(getChildFragmentManager(), uris, loadingImageOptionsInfo));
+            AssemblyFragmentStatePagerAdapter pagerAdapter = new AssemblyFragmentStatePagerAdapter(getChildFragmentManager(), uris);
+            pagerAdapter.addItemFactory(new ImageFragmentItemFactory(loadingImageOptionsInfo));
+            viewPager.setAdapter(pagerAdapter);
             viewPager.setCurrentItem(position);
             currentItemTextView.setText(position + 1 + "");
             countTextView.setText(uris.size() + "");

@@ -5,10 +5,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import butterknife.BindView;
-import butterknife.ButterKnife;
-import me.xiaopan.assemblyadapter.AssemblyRecyclerItem;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerItemFactory;
 import me.xiaopan.sketchsample.R;
+import me.xiaopan.sketchsample.adapter.BindAssemblyRecyclerItem;
 
 public class AppListHeaderItemFactory extends AssemblyRecyclerItemFactory<AppListHeaderItemFactory.AppListHeaderItem>{
     @Override
@@ -21,17 +20,12 @@ public class AppListHeaderItemFactory extends AssemblyRecyclerItemFactory<AppLis
         return new AppListHeaderItem(R.layout.list_item_app_list_header, viewGroup);
     }
 
-    public class AppListHeaderItem extends AssemblyRecyclerItem<String>{
+    public class AppListHeaderItem extends BindAssemblyRecyclerItem<String> {
         @BindView(R.id.text_appListHeaderItem)
         TextView textView;
 
         public AppListHeaderItem(int itemLayoutId, ViewGroup parent) {
             super(itemLayoutId, parent);
-        }
-
-        @Override
-        protected void onFindViews() {
-            ButterKnife.bind(this, getItemView());
         }
 
         @Override

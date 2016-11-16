@@ -8,10 +8,10 @@ import android.view.View;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.assemblyadapter.FragmentArrayPagerAdapter;
 import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
-import me.xiaopan.sketchsample.adapter.FragmentAdapter;
 
 /**
  * 明星首页
@@ -21,7 +21,7 @@ public class StarIndexFragment extends MyFragment {
     @InjectView(R.id.pager_star_content)
     private ViewPager viewPager;
     private GetStarTagStripListener getPagerSlidingTagStripListener;
-    private FragmentAdapter fragmentAdapter;
+    private FragmentArrayPagerAdapter fragmentAdapter;
 
     @Override
     public void onAttach(Activity activity) {
@@ -54,7 +54,7 @@ public class StarIndexFragment extends MyFragment {
             Fragment[] fragments = new Fragment[2];
             fragments[0] = new HotStarFragment();
             fragments[1] = new StarCatalogFragment();
-            fragmentAdapter = new FragmentAdapter(getChildFragmentManager(), fragments);
+            fragmentAdapter = new FragmentArrayPagerAdapter(getChildFragmentManager(), fragments);
         }
         viewPager.setAdapter(fragmentAdapter);
         getPagerSlidingTagStripListener.onGetStarTabStrip().setViewPager(viewPager);

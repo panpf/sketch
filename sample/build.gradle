@@ -77,7 +77,9 @@ dependencies {
     compile 'me.xiaopan:androidinjector:1.5.0'
     compile 'me.xiaopan:pagerslidingtabstrip:1.6.0'
     compile 'me.xiaopan:pullrefreshlayout:1.4.0'
-    compile 'me.xiaopan:assemblyadapter:2.2.0'
+//    compile 'me.xiaopan:assemblyadapter:2.2.0'
+
+    compile(name:'assemblyadapter-release', ext:'aar')
 
     // ButterKnifeView绑定
     compile 'com.jakewharton:butterknife:8.4.0'

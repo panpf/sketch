@@ -2,7 +2,7 @@ package me.xiaopan.sketchsample.fragment;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +13,12 @@ import org.apache.http.HttpResponse;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.gohttp.GoHttp;
 import me.xiaopan.gohttp.HttpRequest;
 import me.xiaopan.gohttp.HttpRequestFuture;
@@ -23,7 +27,9 @@ import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.StarHomeActivity;
-import me.xiaopan.sketchsample.adapter.StarCatalogAdapter;
+import me.xiaopan.sketchsample.adapter.itemfactory.ItemTitleItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.StarCatalogItemFactory;
+import me.xiaopan.sketchsample.bean.Star;
 import me.xiaopan.sketchsample.net.request.ManStarCatalogRequest;
 import me.xiaopan.sketchsample.net.request.StarCatalogRequest;
 import me.xiaopan.sketchsample.net.request.WomanStarCatalogRequest;
@@ -35,7 +41,7 @@ import me.xiaopan.sketchsample.widget.HintView;
  * 明星目录页面
  */
 @InjectContentView(R.layout.fragment_star_catalog)
-public class StarCatalogFragment extends MyFragment implements PullRefreshLayout.OnRefreshListener, StarCatalogAdapter.OnImageClickListener {
+public class StarCatalogFragment extends MyFragment implements PullRefreshLayout.OnRefreshListener, StarCatalogItemFactory.OnClickStarListener {
 
     @InjectView(R.id.refreshLayout_starCatalog)
     private PullRefreshLayout refreshLayout;
@@ -45,7 +51,7 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
     private RecyclerView contentRecyclerView;
 
     private HttpRequestFuture httpRequestFuture;
-    private StarCatalogAdapter adapter;
+    private AssemblyRecyclerAdapter adapter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -57,8 +63,19 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        contentRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 3);
+        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return adapter != null ? adapter.getSpanSize(position) : 1;
+            }
+        });
+        contentRecyclerView.setLayoutManager(gridLayoutManager);
         contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
+        int padding = (int) getResources().getDimension(R.dimen.home_category_margin_border);
+        contentRecyclerView.setPadding(padding, padding, padding, padding);
+        contentRecyclerView.setClipToPadding(false);
+
         refreshLayout.setOnRefreshListener(this);
 
         if (adapter == null) {
@@ -103,7 +120,7 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
             @Override
             public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, StarCatalogRequest.Result result, boolean b, boolean b2) {
                 if (last) {
-                    adapter.append(result);
+                    append(adapter, result);
                     contentRecyclerView.setAdapter(adapter);
                     contentRecyclerView.scheduleLayoutAnimation();
                     new Handler().postDelayed(new Runnable() {
@@ -113,7 +130,10 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
                         }
                     }, 1000);
                 } else {
-                    adapter = new StarCatalogAdapter(getActivity(), result, StarCatalogFragment.this);
+                    adapter = new AssemblyRecyclerAdapter(new ArrayList());
+                    append(adapter, result);
+                    adapter.addItemFactory(new StarCatalogItemFactory(StarCatalogFragment.this));
+                    adapter.addItemFactory(new ItemTitleItemFactory(contentRecyclerView));
                     load(true, true);
                 }
             }
@@ -142,17 +162,26 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
             public void onCanceled(HttpRequest httpRequest) {
 
             }
+
+            public void append(AssemblyRecyclerAdapter adapter, StarCatalogRequest.Result result) {
+                List<Star> starList = result.getStarList();
+                if (starList == null) {
+                    return;
+                }
+                adapter.getDataList().add(result.getTitle());
+                adapter.getDataList().addAll(starList);
+            }
         }).responseHandleCompletedAfterListener(new StarCatalogRequest.ResponseHandler(isMan)).go();
     }
 
     @Override
-    public void onClickImage(StarCatalogRequest.Star star) {
-        StarHomeActivity.launch(getActivity(), star.getName());
+    public void onClickImage(Star star) {
+        StarHomeActivity.launch(getActivity(), star.name);
     }
 
     @SuppressWarnings("unused")
     @Subscribe
-    void onGlobalAttrChanged(String key){
+    void onGlobalAttrChanged(String key) {
         if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
                 || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
                 || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)

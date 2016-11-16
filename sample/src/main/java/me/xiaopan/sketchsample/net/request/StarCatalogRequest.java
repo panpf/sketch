@@ -1,7 +1,6 @@
 package me.xiaopan.sketchsample.net.request;
 
 import com.google.gson.Gson;
-import com.google.gson.annotations.SerializedName;
 import com.google.gson.reflect.TypeToken;
 
 import org.apache.http.HttpResponse;
@@ -10,6 +9,7 @@ import java.util.List;
 
 import me.xiaopan.gohttp.HttpRequest;
 import me.xiaopan.gohttp.requestobject.Request;
+import me.xiaopan.sketchsample.bean.Star;
 import me.xiaopan.sketchsample.net.NetUtils;
 
 /**
@@ -29,8 +29,7 @@ public abstract class StarCatalogRequest implements Request {
             Result result = new Result();
             result.setTitle(isMan ? "男明星" : "女明星");
             String json = NetUtils.substring(sourceContent, "\"data\" : ", "\\}\\)\\;", null);
-            result.setStarList((List<Star>) new Gson().fromJson(json, new TypeToken<List<Star>>() {
-            }.getType()));
+            result.setStarList((List<Star>) new Gson().fromJson(json, new TypeToken<List<Star>>() {}.getType()));
             return result;
         }
     }
@@ -56,17 +55,4 @@ public abstract class StarCatalogRequest implements Request {
         }
     }
 
-    public static class Star {
-        private String name;
-        @SerializedName("avatar")
-        private String avatarUrl;
-
-        public String getName() {
-            return name;
-        }
-
-        public String getAvatarUrl() {
-            return avatarUrl;
-        }
-    }
 }
