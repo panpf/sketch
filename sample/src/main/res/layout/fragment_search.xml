@@ -8,16 +8,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.etsy.android.grid.StaggeredGridView xmlns:app="http://schemas.android.com/apk/res-auto"
+        <android.support.v7.widget.RecyclerView
             android:id="@+id/list_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layoutAnimation="@anim/layout_animation"
             android:listSelector="@android:color/transparent"
             android:divider="@android:color/transparent"
-            app:column_count_portrait="2"
-            app:column_count_landscape="3"
-            app:item_margin="8dp" />
+            android:scrollbars="vertical"/>
     </me.xiaopan.sketchsample.widget.MyPullRefreshLayout>
 
     <me.xiaopan.sketchsample.widget.HintView
