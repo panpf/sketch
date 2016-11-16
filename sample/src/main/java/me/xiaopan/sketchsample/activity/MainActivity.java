@@ -192,7 +192,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         menuList.add("内存缓存");
         menuList.add(new CheckMenu(this, "全局禁用内存缓存", Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY, null, menuClickListener));
-        menuList.add(new InfoMenu("点击清除内存缓存") {
+        menuList.add(new InfoMenu("清除缓存") {
             @Override
             public String getInfo() {
                 MemoryCache memoryCache = Sketch.with(getBaseContext()).getConfiguration().getMemoryCache();
@@ -208,7 +208,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 adapter.notifyDataSetChanged();
             }
         });
-        menuList.add(new InfoMenu("点击清除占位图内存缓存") {
+        menuList.add(new InfoMenu("清除占位图缓存") {
             @Override
             public String getInfo() {
                 MemoryCache stateImageMemoryCache = Sketch.with(getBaseContext()).getConfiguration().getStateImageMemoryCache();
@@ -227,7 +227,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         menuList.add("磁盘缓存");
         menuList.add(new CheckMenu(this, "全局禁用磁盘缓存", Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK, null, menuClickListener));
-        menuList.add(new InfoMenu("点击清除磁盘缓存") {
+        menuList.add(new InfoMenu("清除缓存") {
             @Override
             public String getInfo() {
                 DiskCache diskCache = Sketch.with(getBaseContext()).getConfiguration().getDiskCache();
