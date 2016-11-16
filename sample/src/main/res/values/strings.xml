@@ -6,5 +6,4 @@
     <string name="drawer_close">关闭</string>
 
     <string name="loadingLater">正在加载%s，请稍后…</string>
-    <string name="ingLater">正在%s，请稍后…</string>
 </resources>
