@@ -288,7 +288,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             }
         }, menuClickListener));
 
-        menuList.add(new CheckMenu(this, "在右下角GIF图标识", Settings.PREFERENCE_SHOW_GIF_FLAG, new CheckMenu.OnCheckedChangedListener() {
+        menuList.add(new CheckMenu(this, "显示GIF图标识", Settings.PREFERENCE_SHOW_GIF_FLAG, new CheckMenu.OnCheckedChangedListener() {
             @Override
             public void onCheckedChanged(boolean checked) {
                 EventBus.getDefault().post(Settings.PREFERENCE_SHOW_GIF_FLAG);

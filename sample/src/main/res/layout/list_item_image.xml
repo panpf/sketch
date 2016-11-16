@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<me.xiaopan.sketchsample.widget.MyImageView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/image_imageItem"
+<!-- 需要包一层，要不然在代码里改ImageView的高度总会有偏差 -->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    android:scaleType="centerCrop" />
+    android:layout_height="wrap_content">
+
+    <me.xiaopan.sketchsample.widget.MyImageView
+        android:id="@+id/image_imageItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        android:scaleType="centerCrop" />
+
+</FrameLayout>

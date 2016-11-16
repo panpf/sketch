@@ -62,7 +62,7 @@ public class SketchManager {
                 .setLoadingImage(R.drawable.image_loading)
                 .setErrorImage(R.drawable.image_error)
                 .setPauseDownloadImage(R.drawable.image_pause_download)
-                .setImageShaper(new RoundRectImageShaper(SketchUtils.dp2px(context, 10)))
+                .setImageShaper(new RoundRectImageShaper(SketchUtils.dp2px(context, 6)))
                 .setImageDisplayer(transitionImageDisplayer)
                 .setShapeSizeByFixedSize(true));
 

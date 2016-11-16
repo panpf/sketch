@@ -39,13 +39,15 @@ import java.util.List;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.DetailActivity;
-import me.xiaopan.sketchsample.adapter.PhotoAlbumImageAdapter;
+import me.xiaopan.sketchsample.adapter.itemfactory.PhotoAlbumItemFactory;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.util.Settings;
 
@@ -53,13 +55,13 @@ import me.xiaopan.sketchsample.util.Settings;
  * 本地相册页面
  */
 @InjectContentView(R.layout.fragment_photo_album)
-public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAdapter.OnImageClickListener, PullRefreshLayout.OnRefreshListener {
+public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFactory.OnImageClickListener, PullRefreshLayout.OnRefreshListener {
     @InjectView(R.id.refreshLayout_photoAlbum)
     private PullRefreshLayout pullRefreshLayout;
     @InjectView(R.id.recyclerView_photoAlbum_content)
     private RecyclerView recyclerView;
 
-    private PhotoAlbumImageAdapter imageAdapter;
+    private AssemblyRecyclerAdapter adapter;
 
     private ApplyBackgroundCallback applyBackgroundCallback;
     private String backgroundImageUri;
@@ -83,11 +85,15 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
         super.onViewCreated(view, savedInstanceState);
 
         pullRefreshLayout.setOnRefreshListener(this);
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
         recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
-        if (imageAdapter != null) {
-            recyclerView.setAdapter(imageAdapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
+        int padding  = SketchUtils.dp2px(getActivity(), 4);
+        recyclerView.setPadding(padding, padding, padding, padding);
+        recyclerView.setClipToPadding(false);
+
+        if (adapter != null) {
+            recyclerView.setAdapter(adapter);
             recyclerView.scheduleLayoutAnimation();
         } else {
             pullRefreshLayout.startRefresh();
@@ -108,7 +114,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
                 || loadingImageOptionsId.contains("thumbnailMode")) {
             loadingImageOptionsId = null;
         }
-        DetailActivity.launch(getActivity(), (ArrayList<String>) imageAdapter.getImageUrlList(), loadingImageOptionsId, position);
+        DetailActivity.launch(getActivity(), (ArrayList<String>) adapter.getDataList(), loadingImageOptionsId, position);
     }
 
     @Override
@@ -170,21 +176,24 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
         }
 
         @Override
-        protected void onPostExecute(List<String> strings) {
+        protected void onPostExecute(List<String> imageUriList) {
             if (getActivity() == null) {
                 return;
             }
 
-            recyclerView.setAdapter(imageAdapter = new PhotoAlbumImageAdapter(getActivity(), strings, PhotoAlbumFragment.this, recyclerView));
+            AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(imageUriList);
+            adapter.addItemFactory(new PhotoAlbumItemFactory(PhotoAlbumFragment.this));
+            recyclerView.setAdapter(adapter);
             recyclerView.scheduleLayoutAnimation();
+            PhotoAlbumFragment.this.adapter = adapter;
             new Handler().postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     pullRefreshLayout.stopRefresh();
                 }
-            }, 1000);
-            if (strings != null && strings.size() > 0) {
-                changeBackground(strings.get(0));
+            }, 500);
+            if (imageUriList != null && imageUriList.size() > 0) {
+                changeBackground(imageUriList.get(0));
             }
         }
     }
@@ -197,8 +206,8 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumImageAda
                 || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
                 || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
                 || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)) {
-            if (imageAdapter != null) {
-                imageAdapter.notifyDataSetChanged();
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
             }
         }
     }
