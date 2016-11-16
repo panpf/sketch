@@ -4,12 +4,10 @@ import android.app.Activity;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.LayoutInflater;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.etsy.android.grid.StaggeredGridView;
 
 import org.apache.http.HttpResponse;
 
@@ -19,37 +17,39 @@ import java.util.List;
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
+import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener;
 import me.xiaopan.gohttp.GoHttp;
 import me.xiaopan.gohttp.HttpRequest;
 import me.xiaopan.gohttp.HttpRequestFuture;
 import me.xiaopan.gohttp.JsonHttpResponseHandler;
 import me.xiaopan.gohttp.StringHttpResponseHandler;
 import me.xiaopan.prl.PullRefreshLayout;
-import me.xiaopan.sketchsample.ImageOptions;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.DetailActivity;
-import me.xiaopan.sketchsample.adapter.ImageStaggeredGridAdapter;
+import me.xiaopan.sketchsample.adapter.itemfactory.LoadMoreItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.StaggeredImageItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.StarHeaderItemFactory;
 import me.xiaopan.sketchsample.net.request.StarHomeBackgroundRequest;
 import me.xiaopan.sketchsample.net.request.StarImageRequest;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.widget.HintView;
-import me.xiaopan.sketchsample.widget.LoadMoreFooterView;
-import me.xiaopan.sketchsample.widget.MyImageView;
 
 /**
  * 明星个人页面
  */
 @InjectContentView(R.layout.fragment_star_home)
-public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener, LoadMoreFooterView.OnLoadMoreListener {
+public class StarHomeFragment extends MyFragment implements StaggeredImageItemFactory.OnItemClickListener, PullRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreListener {
     public static final String PARAM_REQUIRED_STRING_STAR_TITLE = "PARAM_REQUIRED_STRING_STAR_TITLE";
     public static final String PARAM_REQUIRED_STRING_STAR_URL = "PARAM_REQUIRED_STRING_STAR_URL";
 
     @InjectView(R.id.refreshLayout_starHome)
     private PullRefreshLayout pullRefreshLayout;
-    @InjectView(R.id.list_starHome)
-    private StaggeredGridView staggeredGridView;
+    @InjectView(R.id.recycler_starHome)
+    private RecyclerView recyclerView;
     @InjectView(R.id.hintView_starHome)
     private HintView hintView;
 
@@ -59,11 +59,9 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
     private String starHomeUrl;
 
     private StarImageRequest starImageRequest;
-    private HttpRequestFuture refreshRequestFuture;
-    private ImageStaggeredGridAdapter starImageAdapter;
-    private LoadMoreFooterView loadMoreFooterView;
-    private MyImageView headImageView;
-    private HttpRequestFuture loadMoreRequestFuture;
+    private HttpRequestFuture refreshRequest;
+    private AssemblyRecyclerAdapter adapter;
+    private HttpRequestFuture loadMoreRequest;
 
     private ApplyBackgroundCallback applyBackgroundCallback;
     private String backgroundImageUri;
@@ -88,26 +86,23 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
 
         pullRefreshLayout.setOnRefreshListener(this);
 
-        staggeredGridView.setOnScrollListener(new ScrollingPauseLoadManager(getActivity()));
+        recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(getActivity()));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        int padding  = SketchUtils.dp2px(getActivity(), 4);
+        recyclerView.setPadding(padding, padding, padding, padding);
+        recyclerView.setClipToPadding(false);
 
-        if (starImageAdapter == null) {
+        if (adapter == null) {
             pullRefreshLayout.startRefresh();
         } else {
-            setAdapter(starImageAdapter);
+            setAdapter(adapter);
         }
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        loadMoreFooterView = null;
-        headImageView = null;
-    }
-
-    @Override
     public void onDetach() {
-        if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
-            refreshRequestFuture.cancel(true);
+        if (refreshRequest != null && !refreshRequest.isFinished()) {
+            refreshRequest.cancel(true);
         }
         super.onDetach();
     }
@@ -128,35 +123,35 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
 
     @Override
     public void onItemClick(int position, StarImageRequest.Image image, String loadingImageOptionsInfo) {
-        DetailActivity.launch(getActivity(), (ArrayList<String>) starImageAdapter.getImageUrlList(), loadingImageOptionsInfo, position);
+        List<StarImageRequest.Image> imageList = adapter.getDataList();
+        ArrayList urlList = new ArrayList<String>();
+        for (StarImageRequest.Image imageItem : imageList) {
+            urlList.add(imageItem.getSourceUrl());
+        }
+        DetailActivity.launch(getActivity(), urlList, loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
     }
 
-    private void setAdapter(ImageStaggeredGridAdapter adapter) {
-        if (loadMoreFooterView == null) {
-            loadMoreFooterView = new LoadMoreFooterView(getActivity());
-            loadMoreFooterView.setOnLoadMoreListener(this);
-            staggeredGridView.setOnGetFooterViewListener(loadMoreFooterView);
-            staggeredGridView.addFooterView(loadMoreFooterView);
-        }
-        staggeredGridView.setAdapter(starImageAdapter = adapter);
-        staggeredGridView.scheduleLayoutAnimation();
+    private void setAdapter(AssemblyRecyclerAdapter adapter) {
+        recyclerView.setAdapter(adapter);
+        recyclerView.scheduleLayoutAnimation();
+        this.adapter = adapter;
     }
 
     @Override
     public void onRefresh() {
-        if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
+        if (refreshRequest != null && !refreshRequest.isFinished()) {
             return;
         }
 
-        if (loadMoreRequestFuture != null && !loadMoreRequestFuture.isFinished()) {
-            loadMoreRequestFuture.cancel(true);
+        if (loadMoreRequest != null && !loadMoreRequest.isFinished()) {
+            loadMoreRequest.cancel(true);
         }
 
-        if (loadMoreFooterView != null) {
-            loadMoreFooterView.setPause(true);
+        if (adapter != null) {
+            adapter.setLoadMoreEnd(false);
         }
 
-        refreshRequestFuture = GoHttp.with(getActivity()).newRequest(starHomeUrl, new StringHttpResponseHandler(), new HttpRequest.Listener<StarHomeBackgroundRequest.Background>() {
+        refreshRequest = GoHttp.with(getActivity()).newRequest(starHomeUrl, new StringHttpResponseHandler(), new HttpRequest.Listener<StarHomeBackgroundRequest.Background>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
                 hintView.hidden();
@@ -177,17 +172,13 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     return;
                 }
 
-                if (loadMoreFooterView != null) {
-                    loadMoreFooterView.setPause(false);
-                }
-
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         pullRefreshLayout.stopRefresh();
                     }
-                }, 1000);
-                if (starImageAdapter == null) {
+                }, 500);
+                if (adapter == null) {
                     hintView.failed(failure, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -201,16 +192,13 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
 
             @Override
             public void onCanceled(HttpRequest httpRequest) {
-                if (loadMoreFooterView != null) {
-                    loadMoreFooterView.setPause(false);
-                }
             }
         }).responseHandleCompletedAfterListener(new StarHomeBackgroundRequest.ResponseHandler()).go();
     }
 
     private void loadItems(final String backgroundImageUrl) {
         starImageRequest.setStart(0);
-        refreshRequestFuture = GoHttp.with(getActivity()).newRequest(starImageRequest, new JsonHttpResponseHandler(StarImageRequest.Response.class), new HttpRequest.Listener<StarImageRequest.Response>() {
+        refreshRequest = GoHttp.with(getActivity()).newRequest(starImageRequest, new JsonHttpResponseHandler(StarImageRequest.Response.class), new HttpRequest.Listener<StarImageRequest.Response>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
                 hintView.hidden();
@@ -222,37 +210,21 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     return;
                 }
 
+                AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(responseObject.getImages());
                 if (backgroundImageUrl != null) {
-                    if (headImageView == null) {
-                        View view = LayoutInflater.from(getActivity()).inflate(R.layout.list_item_heade_image, staggeredGridView, false);
-                        headImageView = (MyImageView) view.findViewById(R.id.image_headImageItem);
-                        headImageView.setOptionsByName(ImageOptions.RECT);
-
-                        ViewGroup.LayoutParams headerParams = headImageView.getLayoutParams();
-                        headerParams.width = getActivity().getResources().getDisplayMetrics().widthPixels;
-                        headerParams.height = (int) (headerParams.width / 3.2f);
-                        headImageView.setLayoutParams(headerParams);
-
-                        staggeredGridView.addHeaderView(headImageView);
-                    }
-                    headImageView.displayImage(backgroundImageUrl);
+                    adapter.addHeaderItem(new StarHeaderItemFactory(), backgroundImageUrl);
                 }
+                adapter.addItemFactory(new StaggeredImageItemFactory(StarHomeFragment.this));
+                adapter.setLoadMoreItem(new LoadMoreItemFactory(StarHomeFragment.this));
 
-                setAdapter(new ImageStaggeredGridAdapter(getActivity(), staggeredGridView, responseObject.getImages(), StarHomeFragment.this));
+                setAdapter(adapter);
 
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         pullRefreshLayout.stopRefresh();
                     }
-                }, 1000);
-
-                if (loadMoreFooterView != null) {
-                    loadMoreFooterView.setPause(false);
-                    if (loadMoreFooterView.isEnd()) {
-                        loadMoreFooterView.setEnd(false);
-                    }
-                }
+                }, 500);
 
                 if (responseObject.getImages() != null && responseObject.getImages().size() > 0) {
                     changeBackground(responseObject.getImages().get(0).getSourceUrl());
@@ -265,17 +237,13 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                     return;
                 }
 
-                if (loadMoreFooterView != null) {
-                    loadMoreFooterView.setPause(false);
-                }
-
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         pullRefreshLayout.stopRefresh();
                     }
-                }, 1000);
-                if (starImageAdapter == null) {
+                }, 500);
+                if (adapter == null) {
                     hintView.failed(failure, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -289,18 +257,14 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
 
             @Override
             public void onCanceled(HttpRequest httpRequest) {
-                if (loadMoreFooterView != null) {
-                    loadMoreFooterView.setPause(false);
-                }
             }
         }).responseHandleCompletedAfterListener(new StarImageRequest.ResponseHandler(getActivity().getBaseContext())).go();
     }
 
     @Override
-    public void onLoadMore(final LoadMoreFooterView loadMoreFooterView) {
-        loadMoreFooterView.loadFinished(false);
-        starImageRequest.setStart(starImageAdapter.getDataSize());
-        loadMoreRequestFuture = GoHttp.with(getActivity()).newRequest(starImageRequest, new JsonHttpResponseHandler(StarImageRequest.Response.class), new HttpRequest.Listener<StarImageRequest.Response>() {
+    public void onLoadMore(AssemblyRecyclerAdapter assemblyRecyclerAdapter) {
+        starImageRequest.setStart(adapter.getDataCount());
+        loadMoreRequest = GoHttp.with(getActivity()).newRequest(starImageRequest, new JsonHttpResponseHandler(StarImageRequest.Response.class), new HttpRequest.Listener<StarImageRequest.Response>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
 
@@ -314,19 +278,19 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
 
                 List<StarImageRequest.Image> newImageList = responseObject.getImages();
                 if (newImageList != null && newImageList.size() > 0) {
-                    starImageAdapter.append(newImageList);
+                    adapter.addAll(newImageList);
                     if (newImageList.size() < starImageRequest.getSize()) {
-                        loadMoreFooterView.setEnd(true);
+                        adapter.setLoadMoreEnd(true);
                         Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹，已全部送完！", Toast.LENGTH_SHORT).show();
                     } else {
-                        loadMoreFooterView.loadFinished(true);
+                        adapter.setLoadMoreEnd(false);
                         Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    loadMoreFooterView.setEnd(true);
+                    adapter.setLoadMoreEnd(true);
                     Toast.makeText(getActivity(), "没有您的包裹了", Toast.LENGTH_SHORT).show();
                 }
-                starImageAdapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -334,13 +298,13 @@ public class StarHomeFragment extends MyFragment implements ImageStaggeredGridAd
                 if (getActivity() == null) {
                     return;
                 }
-                loadMoreFooterView.loadFinished(false);
+                adapter.loadMoreFailed();
                 Toast.makeText(getActivity(), "快递投递失败", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onCanceled(HttpRequest httpRequest) {
-                loadMoreFooterView.loadFinished(false);
+                adapter.loadMoreFailed();
             }
         }).responseHandleCompletedAfterListener(new StarImageRequest.ResponseHandler(getActivity().getBaseContext())).go();
     }

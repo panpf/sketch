@@ -7,7 +7,9 @@ import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -15,8 +17,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
-
-import com.etsy.android.grid.StaggeredGridView;
 
 import org.apache.http.HttpResponse;
 import org.greenrobot.eventbus.EventBus;
@@ -28,34 +28,37 @@ import java.util.List;
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectExtra;
 import me.xiaopan.androidinjector.InjectView;
+import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
+import me.xiaopan.assemblyadapter.OnRecyclerLoadMoreListener;
 import me.xiaopan.gohttp.GoHttp;
 import me.xiaopan.gohttp.HttpRequest;
 import me.xiaopan.gohttp.HttpRequestFuture;
 import me.xiaopan.gohttp.JsonHttpResponseHandler;
 import me.xiaopan.prl.PullRefreshLayout;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
 import me.xiaopan.sketchsample.activity.DetailActivity;
-import me.xiaopan.sketchsample.adapter.ImageStaggeredGridAdapter;
+import me.xiaopan.sketchsample.adapter.itemfactory.LoadMoreItemFactory;
+import me.xiaopan.sketchsample.adapter.itemfactory.StaggeredImageItemFactory;
 import me.xiaopan.sketchsample.net.request.SearchImageRequest;
 import me.xiaopan.sketchsample.net.request.StarImageRequest;
 import me.xiaopan.sketchsample.util.ScrollingPauseLoadManager;
 import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.HintView;
-import me.xiaopan.sketchsample.widget.LoadMoreFooterView;
 
 /**
  * 图片搜索Fragment
  */
 @InjectContentView(R.layout.fragment_search)
-public class SearchFragment extends MyFragment implements ImageStaggeredGridAdapter.OnItemClickListener, PullRefreshLayout.OnRefreshListener, LoadMoreFooterView.OnLoadMoreListener {
+public class SearchFragment extends MyFragment implements StaggeredImageItemFactory.OnItemClickListener, PullRefreshLayout.OnRefreshListener, OnRecyclerLoadMoreListener {
     public static final String PARAM_OPTIONAL_STRING_SEARCH_KEYWORD = "PARAM_OPTIONAL_STRING_SEARCH_KEYWORD";
 
     @InjectView(R.id.refreshLayout_search)
     PullRefreshLayout pullRefreshLayout;
     @InjectView(R.id.list_search)
-    private StaggeredGridView staggeredGridView;
+    private RecyclerView recyclerView;
     @InjectView(R.id.hintView_search)
     private HintView hintView;
 
@@ -63,10 +66,9 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
     private String searchKeyword = "GIF";
 
     private SearchImageRequest searchImageRequest;
-    private HttpRequestFuture refreshRequestFuture;
-    private HttpRequestFuture loadMoreRequestFuture;
-    private ImageStaggeredGridAdapter searchImageListAdapter;
-    private LoadMoreFooterView loadMoreFooterView;
+    private HttpRequestFuture refreshRequest;
+    private HttpRequestFuture loadMoreRequest;
+    private AssemblyRecyclerAdapter adapter;
 
     private ApplyBackgroundCallback applyBackgroundCallback;
     private String backgroundImageUri;
@@ -155,12 +157,16 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
 
         pullRefreshLayout.setOnRefreshListener(this);
 
-        staggeredGridView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
+        recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        int padding  = SketchUtils.dp2px(getActivity(), 4);
+        recyclerView.setPadding(padding, padding, padding, padding);
+        recyclerView.setClipToPadding(false);
 
-        if (searchImageListAdapter == null) {
+        if (adapter == null) {
             pullRefreshLayout.startRefresh();
         } else {
-            setAdapter(searchImageListAdapter);
+            setAdapter(adapter);
         }
     }
 
@@ -168,13 +174,12 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
         super.onDestroyView();
-        loadMoreFooterView = null;
     }
 
     @Override
     public void onDetach() {
-        if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
-            refreshRequestFuture.cancel(true);
+        if (refreshRequest != null && !refreshRequest.isFinished()) {
+            refreshRequest.cancel(true);
         }
         super.onDetach();
     }
@@ -193,33 +198,28 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
         }
     }
 
-    private void setAdapter(ImageStaggeredGridAdapter adapter) {
-        if (loadMoreFooterView == null) {
-            loadMoreFooterView = new LoadMoreFooterView(getActivity());
-            loadMoreFooterView.setOnLoadMoreListener(this);
-            staggeredGridView.setOnGetFooterViewListener(loadMoreFooterView);
-            staggeredGridView.addFooterView(loadMoreFooterView);
-        }
-        staggeredGridView.setAdapter(searchImageListAdapter = adapter);
-        staggeredGridView.scheduleLayoutAnimation();
+    private void setAdapter(AssemblyRecyclerAdapter adapter) {
+        recyclerView.setAdapter(adapter);
+        recyclerView.scheduleLayoutAnimation();
+        this.adapter = adapter;
     }
 
     @Override
     public void onRefresh() {
-        if (refreshRequestFuture != null && !refreshRequestFuture.isFinished()) {
+        if (refreshRequest != null && !refreshRequest.isFinished()) {
             return;
         }
 
-        if (loadMoreRequestFuture != null && !loadMoreRequestFuture.isFinished()) {
-            loadMoreRequestFuture.cancel(true);
+        if (loadMoreRequest != null && !loadMoreRequest.isFinished()) {
+            loadMoreRequest.cancel(true);
         }
 
-        if (loadMoreFooterView != null) {
-            loadMoreFooterView.setPause(true);
+        if (adapter != null) {
+            adapter.setLoadMoreEnd(false);
         }
 
         searchImageRequest.setStart(0);
-        refreshRequestFuture = GoHttp.with(getActivity()).newRequest(searchImageRequest, new JsonHttpResponseHandler(SearchImageRequest.Response.class), new HttpRequest.Listener<SearchImageRequest.Response>() {
+        refreshRequest = GoHttp.with(getActivity()).newRequest(searchImageRequest, new JsonHttpResponseHandler(SearchImageRequest.Response.class), new HttpRequest.Listener<SearchImageRequest.Response>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
                 hintView.hidden();
@@ -243,30 +243,22 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                         public void run() {
                             pullRefreshLayout.stopRefresh();
                         }
-                    }, 1000);
+                    }, 500);
                 } else {
-                    List<StarImageRequest.Image> imageList = new ArrayList<StarImageRequest.Image>();
-                    for (SearchImageRequest.Image image : responseObject.getImages()) {
-                        imageList.add(image);
-                    }
-                    setAdapter(new ImageStaggeredGridAdapter(getActivity(), staggeredGridView, imageList, SearchFragment.this));
+                    AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(responseObject.getImages());
+                    adapter.addItemFactory(new StaggeredImageItemFactory(SearchFragment.this));
+                    adapter.setLoadMoreItem(new LoadMoreItemFactory(SearchFragment.this));
+                    setAdapter(adapter);
 
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
                             pullRefreshLayout.stopRefresh();
                         }
-                    }, 1000);
+                    }, 500);
 
-                    if (loadMoreFooterView != null) {
-                        loadMoreFooterView.setPause(false);
-                        if (loadMoreFooterView.isEnd()) {
-                            loadMoreFooterView.setEnd(false);
-                        }
-                    }
-
-                    if (imageList.size() > 0) {
-                        changeBackground(imageList.get(0).getSourceUrl());
+                    if (responseObject.getImages().size() > 0) {
+                        changeBackground(responseObject.getImages().get(0).getSourceUrl());
                     }
                 }
             }
@@ -276,16 +268,13 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                 if (getActivity() == null) {
                     return;
                 }
-                if (loadMoreFooterView != null) {
-                    loadMoreFooterView.setPause(false);
-                }
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         pullRefreshLayout.stopRefresh();
                     }
-                }, 1000);
-                if (searchImageListAdapter == null) {
+                }, 500);
+                if (adapter == null) {
                     hintView.failed(failure, new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
@@ -299,22 +288,38 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
 
             @Override
             public void onCanceled(HttpRequest httpRequest) {
-                if (loadMoreFooterView != null) {
-                    loadMoreFooterView.setPause(false);
-                }
             }
         }).responseHandleCompletedAfterListener(new SearchImageRequest.ResponseHandler()).go();
     }
 
     @Override
     public void onItemClick(int position, StarImageRequest.Image image, String loadingImageOptionsInfo) {
-        DetailActivity.launch(getActivity(), (ArrayList<String>) searchImageListAdapter.getImageUrlList(), loadingImageOptionsInfo, position);
+        List<StarImageRequest.Image> imageList = adapter.getDataList();
+        ArrayList urlList = new ArrayList<String>();
+        for (StarImageRequest.Image imageItem : imageList) {
+            urlList.add(imageItem.getSourceUrl());
+        }
+        DetailActivity.launch(getActivity(), urlList, loadingImageOptionsInfo, position - adapter.getHeaderItemCount());
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe
+    void onGlobalAttrChanged(String key){
+        if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
+                || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
+                || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
+                || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
+                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)) {
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        }
     }
 
     @Override
-    public void onLoadMore(final LoadMoreFooterView loadMoreFooterView) {
-        searchImageRequest.setStart(searchImageListAdapter.getDataSize());
-        loadMoreRequestFuture = GoHttp.with(getActivity()).newRequest(searchImageRequest, new JsonHttpResponseHandler(SearchImageRequest.Response.class), new HttpRequest.Listener<SearchImageRequest.Response>() {
+    public void onLoadMore(AssemblyRecyclerAdapter assemblyRecyclerAdapter) {
+        searchImageRequest.setStart(adapter.getDataCount());
+        loadMoreRequest = GoHttp.with(getActivity()).newRequest(searchImageRequest, new JsonHttpResponseHandler(SearchImageRequest.Response.class), new HttpRequest.Listener<SearchImageRequest.Response>() {
             @Override
             public void onStarted(HttpRequest httpRequest) {
 
@@ -335,19 +340,19 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                 }
 
                 if (newImageList != null && newImageList.size() > 0) {
-                    searchImageListAdapter.append(newImageList);
+                    adapter.addAll(newImageList);
                     if (newImageList.size() < searchImageRequest.getSize()) {
-                        loadMoreFooterView.setEnd(true);
+                        adapter.setLoadMoreEnd(true);
                         Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹，已全部送完！", Toast.LENGTH_SHORT).show();
                     } else {
-                        loadMoreFooterView.loadFinished(true);
+                        adapter.setLoadMoreEnd(false);
                         Toast.makeText(getActivity(), "新送达" + newImageList.size() + "个包裹", Toast.LENGTH_SHORT).show();
                     }
                 } else {
-                    loadMoreFooterView.setEnd(true);
+                    adapter.setLoadMoreEnd(true);
                     Toast.makeText(getActivity(), "没有您的包裹了", Toast.LENGTH_SHORT).show();
                 }
-                searchImageListAdapter.notifyDataSetChanged();
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -355,28 +360,14 @@ public class SearchFragment extends MyFragment implements ImageStaggeredGridAdap
                 if (getActivity() == null) {
                     return;
                 }
-                loadMoreFooterView.loadFinished(false);
+                adapter.loadMoreFailed();
                 Toast.makeText(getActivity(), "快递投递失败", Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onCanceled(HttpRequest httpRequest) {
-                loadMoreFooterView.loadFinished(false);
+                adapter.loadMoreFailed();
             }
         }).responseHandleCompletedAfterListener(new SearchImageRequest.ResponseHandler()).go();
-    }
-
-    @SuppressWarnings("unused")
-    @Subscribe
-    void onGlobalAttrChanged(String key){
-        if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
-                || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
-                || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
-                || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
-                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)) {
-            if (searchImageListAdapter != null) {
-                searchImageListAdapter.notifyDataSetChanged();
-            }
-        }
     }
 }
