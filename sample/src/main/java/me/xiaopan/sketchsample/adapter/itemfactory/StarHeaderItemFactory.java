@@ -28,7 +28,6 @@ public class StarHeaderItemFactory extends AssemblyRecyclerItemFactory<StarHeade
 
         public StarHeaderItem(int itemLayoutId, ViewGroup parent) {
             super(itemLayoutId, parent);
-            fullSpanInStaggeredGrid();
         }
 
         @Override

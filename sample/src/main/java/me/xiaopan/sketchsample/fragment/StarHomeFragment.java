@@ -212,10 +212,10 @@ public class StarHomeFragment extends MyFragment implements StaggeredImageItemFa
 
                 AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(responseObject.getImages());
                 if (backgroundImageUrl != null) {
-                    adapter.addHeaderItem(new StarHeaderItemFactory(), backgroundImageUrl);
+                    adapter.addHeaderItem(new StarHeaderItemFactory().fullSpan(recyclerView), backgroundImageUrl);
                 }
                 adapter.addItemFactory(new StaggeredImageItemFactory(StarHomeFragment.this));
-                adapter.setLoadMoreItem(new LoadMoreItemFactory(StarHomeFragment.this));
+                adapter.setLoadMoreItem(new LoadMoreItemFactory(StarHomeFragment.this).fullSpan(recyclerView));
 
                 setAdapter(adapter);
 

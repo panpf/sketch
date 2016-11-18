@@ -159,7 +159,7 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
                     adapter.addItemFactory(new HotStarThreeLeftItemFactory(HotStarFragment.this));
                     adapter.addItemFactory(new HotStarThreeRightItemFactory(HotStarFragment.this));
                     adapter.addItemFactory(new HotStarTwoItemFactory(HotStarFragment.this));
-                    adapter.addItemFactory(new ItemTitleItemFactory(null));
+                    adapter.addItemFactory(new ItemTitleItemFactory());
                     boolean result = false;
                     if (hotStarList.size() > 0 && hotStarList.get(0).getStarList().size() > 0) {
                         changeBackground(hotStarList.get(0).getStarList().get(0).getHeightImage().getUrl());

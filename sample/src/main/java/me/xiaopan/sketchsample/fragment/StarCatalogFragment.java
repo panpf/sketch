@@ -48,7 +48,7 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
     @InjectView(R.id.hint_starCatalog)
     private HintView hintView;
     @InjectView(R.id.recyclerView_starCatalog_content)
-    private RecyclerView contentRecyclerView;
+    private RecyclerView recyclerView;
 
     private HttpRequestFuture httpRequestFuture;
     private AssemblyRecyclerAdapter adapter;
@@ -70,19 +70,19 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
                 return adapter != null ? adapter.getSpanSize(position) : 1;
             }
         });
-        contentRecyclerView.setLayoutManager(gridLayoutManager);
-        contentRecyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
+        recyclerView.setLayoutManager(gridLayoutManager);
+        recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
         int padding = (int) getResources().getDimension(R.dimen.home_category_margin_border);
-        contentRecyclerView.setPadding(padding, padding, padding, padding);
-        contentRecyclerView.setClipToPadding(false);
+        recyclerView.setPadding(padding, padding, padding, padding);
+        recyclerView.setClipToPadding(false);
 
         refreshLayout.setOnRefreshListener(this);
 
         if (adapter == null) {
             refreshLayout.startRefresh();
         } else {
-            contentRecyclerView.setAdapter(adapter);
-            contentRecyclerView.scheduleLayoutAnimation();
+            recyclerView.setAdapter(adapter);
+            recyclerView.scheduleLayoutAnimation();
         }
     }
 
@@ -121,8 +121,8 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
             public void onCompleted(HttpRequest httpRequest, HttpResponse httpResponse, StarCatalogRequest.Result result, boolean b, boolean b2) {
                 if (last) {
                     append(adapter, result);
-                    contentRecyclerView.setAdapter(adapter);
-                    contentRecyclerView.scheduleLayoutAnimation();
+                    recyclerView.setAdapter(adapter);
+                    recyclerView.scheduleLayoutAnimation();
                     new Handler().postDelayed(new Runnable() {
                         @Override
                         public void run() {
@@ -133,7 +133,7 @@ public class StarCatalogFragment extends MyFragment implements PullRefreshLayout
                     adapter = new AssemblyRecyclerAdapter(new ArrayList());
                     append(adapter, result);
                     adapter.addItemFactory(new StarCatalogItemFactory(StarCatalogFragment.this));
-                    adapter.addItemFactory(new ItemTitleItemFactory(contentRecyclerView));
+                    adapter.addItemFactory(new ItemTitleItemFactory().fullSpan(recyclerView));
                     load(true, true);
                 }
             }
