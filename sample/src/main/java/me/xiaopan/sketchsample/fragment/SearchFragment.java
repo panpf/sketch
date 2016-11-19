@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
@@ -101,10 +101,10 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
     }
 
     private void setTitle(String subtitle) {
-        if (getActivity() != null && getActivity() instanceof ActionBarActivity) {
-            ActionBar actionBar = ((ActionBarActivity) getActivity()).getSupportActionBar();
+        if (getActivity() != null && getActivity() instanceof AppCompatActivity) {
+            ActionBar actionBar = ((AppCompatActivity) getActivity()).getSupportActionBar();
             if (actionBar != null) {
-                actionBar.setTitle(subtitle);
+                actionBar.setSubtitle(subtitle);
             }
         }
     }
@@ -173,6 +173,7 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
     @Override
     public void onDestroyView() {
         EventBus.getDefault().unregister(this);
+        setTitle("");
         super.onDestroyView();
     }
 
@@ -309,7 +310,9 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
                 || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
                 || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
                 || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
-                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)) {
+                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)
+                || Settings.PREFERENCE_SCROLLING_PAUSE_LOAD.equals(key)
+                || Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(key)) {
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
             }

@@ -362,8 +362,19 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             }
         }, menuClickListener));
 
-        menuList.add(new CheckMenu(this, "列表滑动时不加载新图片", Settings.PREFERENCE_SCROLLING_PAUSE_LOAD, null, menuClickListener));
-        menuList.add(new CheckMenu(this, "移动网络时不下载新图片", Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "列表滑动时不加载新图片", Settings.PREFERENCE_SCROLLING_PAUSE_LOAD, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_SCROLLING_PAUSE_LOAD);
+            }
+        }, menuClickListener));
+
+        menuList.add(new CheckMenu(this, "移动网络时不下载新图片", Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD);
+            }
+        }, menuClickListener));
 
         AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(menuList);
         adapter.addItemFactory(new MenuTitleItemFactory());

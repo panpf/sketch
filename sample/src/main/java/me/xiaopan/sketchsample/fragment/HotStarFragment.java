@@ -246,7 +246,9 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
                 || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
                 || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
                 || Settings.PREFERENCE_THUMBNAIL_MODE.equals(key)
-                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)) {
+                || Settings.PREFERENCE_CACHE_PROCESSED_IMAGE.equals(key)
+                || Settings.PREFERENCE_SCROLLING_PAUSE_LOAD.equals(key)
+                || Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(key)) {
             if (adapter != null) {
                 adapter.notifyDataSetChanged();
             }
