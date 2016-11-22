@@ -31,6 +31,7 @@ import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -264,63 +265,72 @@ public class DisplayRequest extends LoadRequest {
     @Override
     protected void runCompletedInMainThread() {
         Drawable drawable = displayResult.getDrawable();
-
-        if (isCanceled()) {
+        if (drawable == null) {
             if (Sketch.isDebugMode()) {
-                printLogW("canceled", "runCompletedInMainThread");
-            }
-
-            // 更新等待显示的引用计数
-            if (drawable != null && drawable instanceof RefDrawable) {
-                RefDrawable refDrawable = (RefDrawable) drawable;
-                refDrawable.setIsWaitDisplay("completedCallback:cancel", false);
+                printLogD("completedDrawable is null", "runCompletedInMainThread");
             }
             return;
         }
 
-        setStatus(Status.COMPLETED);
+        displayImage(drawable);
 
-        if (drawable != null) {
-            if (drawable instanceof BitmapDrawable && ((BitmapDrawable) drawable).getBitmap().isRecycled()) {
+        // 更新等待显示的引用计数
+        if (drawable instanceof RefDrawable) {
+            RefDrawable refDrawable = (RefDrawable) drawable;
+            refDrawable.setIsWaitDisplay("completedCallback", false);
+        }
+    }
+
+    private void displayImage(Drawable drawable){
+        if (isCanceled()) {
+            if (Sketch.isDebugMode()) {
+                printLogW("canceled", "runCompletedInMainThread");
+            }
+            return;
+        }
+
+        // 过滤可能已回收的图片
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if (bitmapDrawable.getBitmap().isRecycled()) {
+                // TODO: 2016/11/22 走到这里的几率还是挺高的，得弄清楚到底是咋回事，比如记录下bitmap的操作记录，当出现问题时打印记录看看
+                // TODO: 2016/11/22 初步怀疑是异步的wait display引用造成的，解决方案加锁
+                ExceptionMonitor exceptionMonitor = getSketch().getConfiguration().getExceptionMonitor();
+                exceptionMonitor.onBitmapRecycledOnDisplay(this, drawable instanceof RefDrawable ? (RefDrawable) drawable : null);
+
                 // 图片不可用
                 printLogD("image display exception", "bitmap recycled",
                         ((SketchDrawable) drawable).getInfo(), displayResult.getImageFrom());
+
                 runErrorInMainThread();
-            } else {
-                // 显示图片
-                if ((displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null)
-                        && drawable instanceof BitmapDrawable) {
-                    drawable = new ShapeBitmapDrawable((BitmapDrawable) drawable,
-                            displayOptions.getShapeSize(), displayOptions.getImageShaper());
-                }
-
-                ImageViewInterface viewInterface = requestAndViewBinder.getImageViewInterface();
-                if (Sketch.isDebugMode()) {
-                    String drawableInfo = "unknown";
-                    if (drawable instanceof RefDrawable) {
-                        drawableInfo = ((RefDrawable) drawable).getInfo();
-                    }
-                    printLogI("image display completed", "runCompletedInMainThread",
-                            displayResult.getImageFrom().name(), drawableInfo,
-                            "viewHashCode=" + Integer.toHexString(viewInterface.hashCode()));
-                }
-
-                displayOptions.getImageDisplayer().display(viewInterface, drawable);
-
-                if (displayListener != null) {
-                    displayListener.onCompleted(displayResult.getImageFrom(), displayResult.getMimeType());
-                }
-            }
-        } else {
-            if (Sketch.isDebugMode()) {
-                printLogD("completedDrawable is null", "runCompletedInMainThread");
+                return;
             }
         }
 
-        // 更新等待显示的引用计数
-        if (drawable != null && drawable instanceof RefDrawable) {
-            RefDrawable refDrawable = (RefDrawable) drawable;
-            refDrawable.setIsWaitDisplay("completedCallback", false);
+        // 显示图片
+        if ((displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null)
+                && drawable instanceof BitmapDrawable) {
+            drawable = new ShapeBitmapDrawable((BitmapDrawable) drawable,
+                    displayOptions.getShapeSize(), displayOptions.getImageShaper());
+        }
+
+        ImageViewInterface viewInterface = requestAndViewBinder.getImageViewInterface();
+        if (Sketch.isDebugMode()) {
+            String drawableInfo = "unknown";
+            if (drawable instanceof RefDrawable) {
+                drawableInfo = ((RefDrawable) drawable).getInfo();
+            }
+            printLogI("image display completed", "runCompletedInMainThread",
+                    displayResult.getImageFrom().name(), drawableInfo,
+                    "viewHashCode=" + Integer.toHexString(viewInterface.hashCode()));
+        }
+
+        displayOptions.getImageDisplayer().display(viewInterface, drawable);
+
+        setStatus(Status.COMPLETED);
+
+        if (displayListener != null) {
+            displayListener.onCompleted(displayResult.getImageFrom(), displayResult.getMimeType());
         }
     }
 

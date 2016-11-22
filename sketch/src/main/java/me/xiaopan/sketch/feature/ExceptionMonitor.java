@@ -13,8 +13,10 @@ import java.util.List;
 
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.process.ImageProcessor;
+import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadRequest;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -157,6 +159,13 @@ public class ExceptionMonitor implements Identifier {
                                 List<Tile> tileList, @SuppressWarnings("UnusedParameters") boolean useLegacyMergeSort) {
         Log.w(Sketch.TAG, String.format("%s. onTileSortError. %s%s", logName,
                 useLegacyMergeSort ? "useLegacyMergeSort. " : "", SketchUtils.tileListToString(tileList)));
+    }
+
+    /**
+     * 在即将显示时发现Bitmap被回收
+     */
+    public void onBitmapRecycledOnDisplay(DisplayRequest request, RefDrawable refDrawable){
+
     }
 
     @Override
