@@ -623,8 +623,12 @@ public class SketchUtils {
         return null;
     }
 
+    /**
+     * 获取Bitmap占用内存大小，单位字节
+     */
     public static int getBitmapByteCount(Bitmap bitmap) {
-        if (bitmap == null) {
+        // bitmap.isRecycled()过滤很关键，在4.4以及以下版本当bitmap已回收时调用其getAllocationByteCount()方法将直接崩溃
+        if (bitmap == null || bitmap.isRecycled()) {
             return 0;
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             return bitmap.getAllocationByteCount();
