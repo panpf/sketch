@@ -134,7 +134,7 @@ public class SketchUtils {
      * Drawable转成Bitmap
      */
     public static Bitmap drawableToBitmap(Drawable drawable, boolean lowQualityImage) {
-        if (drawable == null || drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
+        if (drawable == null || drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
             return null;
         }
 
