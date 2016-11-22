@@ -17,6 +17,8 @@
 package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.text.TextUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.IOException;
@@ -195,8 +197,10 @@ public class LoadRequest extends DownloadRequest {
             return;
         }
 
+        boolean dataSourceFromProcessedCache = false;
         if (dataSource == null && canUseCacheProcessedImageFunction()) {
             dataSource = checkProcessedImageDiskCache();
+            dataSourceFromProcessedCache = true;
         }
 
         // 预处理
@@ -217,6 +221,16 @@ public class LoadRequest extends DownloadRequest {
         // 解码
         setStatus(Status.DECODING);
         DecodeResult decodeResult = getSketch().getConfiguration().getImageDecoder().decode(this);
+
+        // 如果是缓存的已处理图片就需要恢复图片类型以及原始尺寸
+        if (dataSourceFromProcessedCache && decodeResult != null) {
+            BitmapFactory.Options options = getSketch().getConfiguration().getImageDecoder().decodeBounds(this);
+            if (options != null && !TextUtils.isEmpty(options.outMimeType)) {
+                decodeResult.setMimeType(options.outMimeType);
+                decodeResult.setOriginWidth(options.outWidth);
+                decodeResult.setOriginHeight(options.outHeight);
+            }
+        }
 
         if (decodeResult != null && decodeResult.getBitmap() != null) {
             Bitmap bitmap = decodeResult.getBitmap();

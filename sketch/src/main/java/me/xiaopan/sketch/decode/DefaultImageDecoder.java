@@ -52,7 +52,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     protected String logName = "DefaultImageDecoder";
 
     @Override
-    public DecodeResult decode(LoadRequest loadRequest) {
+    public DecodeResult decode(LoadRequest request) {
         long startTime = 0;
         if (Sketch.isDebugMode()) {
             startTime = System.currentTimeMillis();
@@ -60,19 +60,19 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         DecodeResult result = null;
         try {
-            UriScheme uriScheme = loadRequest.getUriScheme();
+            UriScheme uriScheme = request.getUriScheme();
             if (uriScheme == UriScheme.NET) {
-                result = decodeHttpOrHttps(loadRequest);
+                result = decodeHttpOrHttps(request);
             } else if (uriScheme == UriScheme.FILE) {
-                result = decodeFile(loadRequest);
+                result = decodeFile(request);
             } else if (uriScheme == UriScheme.CONTENT) {
-                result = decodeContent(loadRequest);
+                result = decodeContent(request);
             } else if (uriScheme == UriScheme.ASSET) {
-                result = decodeAsset(loadRequest);
+                result = decodeAsset(request);
             } else if (uriScheme == UriScheme.DRAWABLE) {
-                result = decodeDrawable(loadRequest);
+                result = decodeDrawable(request);
             } else {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri is ", loadRequest.getUri()));
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri is ", request.getUri()));
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -93,14 +93,49 @@ public class DefaultImageDecoder implements ImageDecoder {
                 Log.d(Sketch.TAG, SketchUtils.concat(logName,
                         ". decode use time ", useTime, "ms",
                         ", average ", decimalFormat.format((double) useTimeCount / decodeCount), "ms",
-                        ". ", loadRequest.getId()));
+                        ". ", request.getId()));
             }
         }
 
         return result;
     }
 
-    private DecodeResult decodeFromHelper(LoadRequest loadRequest, DecodeHelper decodeHelper, boolean disableProcess) {
+    @Override
+    public Options decodeBounds(LoadRequest request) {
+        try {
+            DecodeHelper decodeHelper = null;
+            UriScheme uriScheme = request.getUriScheme();
+            if (uriScheme == UriScheme.NET) {
+                DiskCache diskCache = request.getSketch().getConfiguration().getDiskCache();
+                DiskCache.Entry entry = diskCache.get(request.getDiskCacheKey());
+                if (entry != null) {
+                    decodeHelper = new CacheFileDecodeHelper(entry, request);
+                }
+            } else if (uriScheme == UriScheme.FILE) {
+                decodeHelper = new FileDecodeHelper(new File(request.getRealUri()), request);
+            } else if (uriScheme == UriScheme.CONTENT) {
+                decodeHelper = new ContentDecodeHelper(Uri.parse(request.getRealUri()), request);
+            } else if (uriScheme == UriScheme.ASSET) {
+                decodeHelper = new AssetsDecodeHelper(request.getRealUri(), request);
+            } else if (uriScheme == UriScheme.DRAWABLE) {
+                decodeHelper = new DrawableDecodeHelper(Integer.valueOf(request.getRealUri()), request);
+            } else {
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri is ", request.getUri()));
+            }
+
+            if (decodeHelper != null) {
+                Options options = new Options();
+                options.inJustDecodeBounds = true;
+                decodeHelper.decode(options);
+                return options;
+            }
+        } catch (Throwable e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private DecodeResult decodeFromHelper(LoadRequest request, DecodeHelper decodeHelper, boolean disableProcess) {
         // Decode bounds and mime info
         Options boundsOptions = new Options();
         boundsOptions.inJustDecodeBounds = true;
@@ -112,7 +147,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName,
                         ". image width or height less than or equal to 1px",
                         ". imageSize: ", boundsOptions.outWidth, "x", boundsOptions.outHeight,
-                        ". ", loadRequest.getId()));
+                        ". ", request.getId()));
             }
             decodeHelper.onDecodeError();
             return null;
@@ -121,7 +156,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         final ImageFormat imageFormat = ImageFormat.valueOfMimeType(boundsOptions.outMimeType);
 
         // Decode gif image
-        DecodeResult gifResult = gifImage(loadRequest, decodeHelper, boundsOptions.outWidth,
+        DecodeResult gifResult = gifImage(request, decodeHelper, boundsOptions.outWidth,
                 boundsOptions.outHeight, boundsOptions.outMimeType, imageFormat);
         if (gifResult != null) {
             return gifResult;
@@ -131,33 +166,33 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // Set whether priority is given to quality or speed
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1
-                && loadRequest.getOptions().isInPreferQualityOverSpeed()) {
+                && request.getOptions().isInPreferQualityOverSpeed()) {
             decodeOptions.inPreferQualityOverSpeed = true;
         }
 
         // Setup bitmap config
-        decodeOptions.inPreferredConfig = loadRequest.getOptions().getBitmapConfig();
+        decodeOptions.inPreferredConfig = request.getOptions().getBitmapConfig();
         if (decodeOptions.inPreferredConfig == null && imageFormat != null) {
-            decodeOptions.inPreferredConfig = imageFormat.getConfig(loadRequest.getOptions().isLowQualityImage());
+            decodeOptions.inPreferredConfig = imageFormat.getConfig(request.getOptions().isLowQualityImage());
         }
 
         // Decode image by thumbnail mode
         if (!disableProcess) {
-            DecodeResult thumbnailModeResult = thumbnailMode(loadRequest, decodeHelper,
+            DecodeResult thumbnailModeResult = thumbnailMode(request, decodeHelper,
                     boundsOptions.outWidth, boundsOptions.outHeight, boundsOptions.outMimeType, imageFormat, decodeOptions);
             if (thumbnailModeResult != null) {
                 return thumbnailModeResult;
             }
         }
 
-        return normal(loadRequest, decodeHelper, boundsOptions.outWidth, boundsOptions.outHeight,
+        return normal(request, decodeHelper, boundsOptions.outWidth, boundsOptions.outHeight,
                 boundsOptions.outMimeType, imageFormat, decodeOptions, disableProcess);
     }
 
-    private DecodeResult gifImage(LoadRequest loadRequest, DecodeHelper decodeHelper,
+    private DecodeResult gifImage(LoadRequest request, DecodeHelper decodeHelper,
                                   int outWidth, int outHeight, String outMimeType,
                                   ImageFormat imageFormat) {
-        if (imageFormat == null || imageFormat != ImageFormat.GIF || !loadRequest.getOptions().isDecodeGifImage()) {
+        if (imageFormat == null || imageFormat != ImageFormat.GIF || !request.getOptions().isDecodeGifImage()) {
             return null;
         }
 
@@ -167,25 +202,25 @@ public class DefaultImageDecoder implements ImageDecoder {
                 return null;
             }
 
-            gifDrawable.setImageId(loadRequest.getId());
-            gifDrawable.setImageUri(loadRequest.getUri());
+            gifDrawable.setImageId(request.getId());
+            gifDrawable.setImageUri(request.getUri());
             gifDrawable.setOriginWidth(outWidth);
             gifDrawable.setOriginHeight(outHeight);
             gifDrawable.setMimeType(outMimeType);
             return new DecodeResult(outWidth, outHeight, outMimeType, gifDrawable);
         } catch (Throwable e) {
             e.printStackTrace();
-            ExceptionMonitor exceptionMonitor = loadRequest.getSketch().getConfiguration().getExceptionMonitor();
-            exceptionMonitor.onDecodeGifImageError(e, loadRequest, outWidth, outHeight, outMimeType);
+            ExceptionMonitor exceptionMonitor = request.getSketch().getConfiguration().getExceptionMonitor();
+            exceptionMonitor.onDecodeGifImageError(e, request, outWidth, outHeight, outMimeType);
             return null;
         }
     }
 
-    private DecodeResult thumbnailMode(LoadRequest loadRequest, DecodeHelper decodeHelper,
+    private DecodeResult thumbnailMode(LoadRequest request, DecodeHelper decodeHelper,
                                        int outWidth, int outHeight, String outMimeType,
                                        ImageFormat imageFormat, Options decodeOptions) {
         // 要想使用缩略图功能需要配置开启缩略图功能、配置resize并且图片格式和系统版本支持BitmapRegionDecoder才行
-        LoadOptions loadOptions = loadRequest.getOptions();
+        LoadOptions loadOptions = request.getOptions();
         if (!loadOptions.isThumbnailMode() || loadOptions.getResize() == null
                 || !SketchUtils.isSupportBRDByApi()
                 || !SketchUtils.isSupportBRDByImageFormat(imageFormat)) {
@@ -203,16 +238,16 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 只有原始图片的宽高比和resize的宽高比相差3倍的时候才能使用略略图方式读取图片
         Resize resize = loadOptions.getResize();
-        ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
+        ImageSizeCalculator sizeCalculator = request.getSketch().getConfiguration().getImageSizeCalculator();
         if (!sizeCalculator.canUseThumbnailMode(outWidth, outHeight, resize.getWidth(), resize.getHeight())) {
             return null;
         }
 
         // 计算resize区域在原图中的对应区域
-        ResizeCalculator resizeCalculator = loadRequest.getSketch().getConfiguration().getResizeCalculator();
+        ResizeCalculator resizeCalculator = request.getSketch().getConfiguration().getResizeCalculator();
         ResizeCalculator.Result result = resizeCalculator.calculator(outWidth, outHeight, resize.getWidth(), resize.getHeight(), resize.getScaleType(), false);
 
-        boolean supportLargeImage = SketchUtils.isSupportLargeImage(loadRequest, imageFormat);
+        boolean supportLargeImage = SketchUtils.isSupportLargeImage(request, imageFormat);
 
         // 根据resize的大小和原图中对应区域的大小计算缩小倍数，这样会得到一个较为清晰的缩略图
         decodeOptions.inSampleSize = sizeCalculator.calculateInSampleSize(result.srcRect.width(), result.srcRect.height(),
@@ -232,7 +267,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                         ". image width or height less than or equal to 1px",
                         ". imageSize: ", outWidth, "x", outHeight,
                         ". bitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
-                        ". ", loadRequest.getId()));
+                        ". ", request.getId()));
             }
             bitmap.recycle();
             decodeHelper.onDecodeError();
@@ -244,15 +279,15 @@ public class DefaultImageDecoder implements ImageDecoder {
         return new DecodeResult(outWidth, outHeight, outMimeType, bitmap).setCanCacheInDiskCache(true);
     }
 
-    private DecodeResult normal(LoadRequest loadRequest, DecodeHelper decodeHelper,
+    private DecodeResult normal(LoadRequest request, DecodeHelper decodeHelper,
                                 int outWidth, int outHeight, String outMimeType,
                                 ImageFormat imageFormat, Options decodeOptions, boolean disableProcess) {
         // 根据maxSize计算缩小倍数
         if (!disableProcess) {
-            MaxSize maxSize = loadRequest.getOptions().getMaxSize();
+            MaxSize maxSize = request.getOptions().getMaxSize();
             if (maxSize != null) {
-                boolean supportLargeImage = SketchUtils.isSupportLargeImage(loadRequest, imageFormat);
-                ImageSizeCalculator imageSizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
+                boolean supportLargeImage = SketchUtils.isSupportLargeImage(request, imageFormat);
+                ImageSizeCalculator imageSizeCalculator = request.getSketch().getConfiguration().getImageSizeCalculator();
                 decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(outWidth, outHeight,
                         maxSize.getWidth(), maxSize.getHeight(), supportLargeImage);
             }
@@ -263,8 +298,8 @@ public class DefaultImageDecoder implements ImageDecoder {
             bitmap = decodeHelper.decode(decodeOptions);
         } catch (Throwable error) {
             error.printStackTrace();
-            ExceptionMonitor exceptionMonitor = loadRequest.getSketch().getConfiguration().getExceptionMonitor();
-            exceptionMonitor.onDecodeNormalImageError(error, loadRequest, outWidth, outHeight, outMimeType);
+            ExceptionMonitor exceptionMonitor = request.getSketch().getConfiguration().getExceptionMonitor();
+            exceptionMonitor.onDecodeNormalImageError(error, request, outWidth, outHeight, outMimeType);
             decodeHelper.onDecodeError();
             return null;
         }
@@ -282,7 +317,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                         ". image width or height less than or equal to 1px",
                         ". imageSize: ", outWidth, "x", outHeight,
                         ". bitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
-                        ". ", loadRequest.getId()));
+                        ". ", request.getId()));
             }
             bitmap.recycle();
             decodeHelper.onDecodeError();
@@ -292,24 +327,24 @@ public class DefaultImageDecoder implements ImageDecoder {
         // 成功
         decodeHelper.onDecodeSuccess(bitmap, outWidth, outHeight, outMimeType, decodeOptions.inSampleSize);
 
-        ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
+        ImageSizeCalculator sizeCalculator = request.getSketch().getConfiguration().getImageSizeCalculator();
         boolean canUseCacheProcessedImageInDisk = sizeCalculator.canUseCacheProcessedImageInDisk(decodeOptions.inSampleSize);
         return new DecodeResult(outWidth, outHeight, outMimeType, bitmap)
                 .setCanCacheInDiskCache(canUseCacheProcessedImageInDisk);
     }
 
-    private DecodeResult decodeFromDataSource(LoadRequest loadRequest, DataSource dataSource) {
+    private DecodeResult decodeFromDataSource(LoadRequest request, DataSource dataSource) {
         DecodeResult decodeResult = null;
 
         DiskCache.Entry diskCacheEntry = dataSource.getDiskCacheEntry();
         byte[] imageData = dataSource.getImageData();
 
         if (diskCacheEntry != null) {
-            DecodeHelper decodeHelper = new CacheFileDecodeHelper(diskCacheEntry, loadRequest);
-            decodeResult = decodeFromHelper(loadRequest, decodeHelper, dataSource.isDisableProcess());
+            DecodeHelper decodeHelper = new CacheFileDecodeHelper(diskCacheEntry, request);
+            decodeResult = decodeFromHelper(request, decodeHelper, dataSource.isDisableProcess());
         } else if (imageData != null && imageData.length > 0) {
-            DecodeHelper decodeHelper = new ByteArrayDecodeHelper(imageData, loadRequest);
-            decodeResult = decodeFromHelper(loadRequest, decodeHelper, dataSource.isDisableProcess());
+            DecodeHelper decodeHelper = new ByteArrayDecodeHelper(imageData, request);
+            decodeResult = decodeFromHelper(request, decodeHelper, dataSource.isDisableProcess());
         }
 
         if (decodeResult != null) {
@@ -319,26 +354,26 @@ public class DefaultImageDecoder implements ImageDecoder {
         return decodeResult;
     }
 
-    private DecodeResult decodeHttpOrHttps(LoadRequest loadRequest) {
+    private DecodeResult decodeHttpOrHttps(LoadRequest request) {
         DecodeResult decodeResult = null;
 
-        DataSource dataSource = loadRequest.getDataSource();
+        DataSource dataSource = request.getDataSource();
         if (dataSource != null) {
-            decodeResult = decodeFromDataSource(loadRequest, dataSource);
+            decodeResult = decodeFromDataSource(request, dataSource);
         }
 
         return decodeResult;
     }
 
-    private DecodeResult decodeFile(LoadRequest loadRequest) {
+    private DecodeResult decodeFile(LoadRequest request) {
         DecodeResult decodeResult;
 
-        DataSource dataSource = loadRequest.getDataSource();
+        DataSource dataSource = request.getDataSource();
         if (dataSource != null) {
-            decodeResult = decodeFromDataSource(loadRequest, dataSource);
+            decodeResult = decodeFromDataSource(request, dataSource);
         } else {
-            DecodeHelper decodeHelper = new FileDecodeHelper(new File(loadRequest.getRealUri()), loadRequest);
-            decodeResult = decodeFromHelper(loadRequest, decodeHelper, false);
+            DecodeHelper decodeHelper = new FileDecodeHelper(new File(request.getRealUri()), request);
+            decodeResult = decodeFromHelper(request, decodeHelper, false);
             if (decodeResult != null) {
                 decodeResult.setImageFrom(ImageFrom.LOCAL);
             }
@@ -347,15 +382,15 @@ public class DefaultImageDecoder implements ImageDecoder {
         return decodeResult;
     }
 
-    private DecodeResult decodeContent(LoadRequest loadRequest) {
+    private DecodeResult decodeContent(LoadRequest request) {
         DecodeResult decodeResult;
 
-        DataSource dataSource = loadRequest.getDataSource();
+        DataSource dataSource = request.getDataSource();
         if (dataSource != null) {
-            decodeResult = decodeFromDataSource(loadRequest, dataSource);
+            decodeResult = decodeFromDataSource(request, dataSource);
         } else {
-            DecodeHelper decodeHelper = new ContentDecodeHelper(Uri.parse(loadRequest.getRealUri()), loadRequest);
-            decodeResult = decodeFromHelper(loadRequest, decodeHelper, false);
+            DecodeHelper decodeHelper = new ContentDecodeHelper(Uri.parse(request.getRealUri()), request);
+            decodeResult = decodeFromHelper(request, decodeHelper, false);
             if (decodeResult != null) {
                 decodeResult.setImageFrom(ImageFrom.LOCAL);
             }
@@ -364,15 +399,15 @@ public class DefaultImageDecoder implements ImageDecoder {
         return decodeResult;
     }
 
-    private DecodeResult decodeAsset(LoadRequest loadRequest) {
+    private DecodeResult decodeAsset(LoadRequest request) {
         DecodeResult decodeResult;
 
-        DataSource dataSource = loadRequest.getDataSource();
+        DataSource dataSource = request.getDataSource();
         if (dataSource != null) {
-            decodeResult = decodeFromDataSource(loadRequest, dataSource);
+            decodeResult = decodeFromDataSource(request, dataSource);
         } else {
-            DecodeHelper decodeHelper = new AssetsDecodeHelper(loadRequest.getRealUri(), loadRequest);
-            decodeResult = decodeFromHelper(loadRequest, decodeHelper, false);
+            DecodeHelper decodeHelper = new AssetsDecodeHelper(request.getRealUri(), request);
+            decodeResult = decodeFromHelper(request, decodeHelper, false);
             if (decodeResult != null) {
                 decodeResult.setImageFrom(ImageFrom.LOCAL);
             }
@@ -381,15 +416,15 @@ public class DefaultImageDecoder implements ImageDecoder {
         return decodeResult;
     }
 
-    private DecodeResult decodeDrawable(LoadRequest loadRequest) {
+    private DecodeResult decodeDrawable(LoadRequest request) {
         DecodeResult decodeResult;
 
-        DataSource dataSource = loadRequest.getDataSource();
+        DataSource dataSource = request.getDataSource();
         if (dataSource != null) {
-            decodeResult = decodeFromDataSource(loadRequest, dataSource);
+            decodeResult = decodeFromDataSource(request, dataSource);
         } else {
-            DecodeHelper decodeHelper = new DrawableDecodeHelper(Integer.valueOf(loadRequest.getRealUri()), loadRequest);
-            decodeResult = decodeFromHelper(loadRequest, decodeHelper, false);
+            DecodeHelper decodeHelper = new DrawableDecodeHelper(Integer.valueOf(request.getRealUri()), request);
+            decodeResult = decodeFromHelper(request, decodeHelper, false);
             if (decodeResult != null) {
                 decodeResult.setImageFrom(ImageFrom.LOCAL);
             }

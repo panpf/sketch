@@ -16,6 +16,8 @@
 
 package me.xiaopan.sketch.decode;
 
+import android.graphics.BitmapFactory;
+
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.request.LoadRequest;
 
@@ -26,5 +28,10 @@ public interface ImageDecoder extends Identifier {
     /**
      * 解码
      */
-    DecodeResult decode(LoadRequest loadRequest);
+    DecodeResult decode(LoadRequest request);
+
+    /**
+     * 读取尺寸和格式信息
+     */
+    BitmapFactory.Options decodeBounds(LoadRequest request);
 }

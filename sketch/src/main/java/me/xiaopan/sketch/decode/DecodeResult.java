@@ -24,10 +24,12 @@ import me.xiaopan.sketch.request.ImageFrom;
 public class DecodeResult {
     private Bitmap bitmap;
     private SketchGifDrawable gifDrawable;
+
     private String mimeType;
-    private ImageFrom imageFrom;
     private int originWidth;
     private int originHeight;
+
+    private ImageFrom imageFrom;
     private boolean canCacheInDiskCache;
 
     public DecodeResult(int originWidth, int originHeight, String mimeType, SketchGifDrawable gifDrawable) {
@@ -56,6 +58,10 @@ public class DecodeResult {
         return mimeType;
     }
 
+    public void setMimeType(String mimeType) {
+        this.mimeType = mimeType;
+    }
+
     public Bitmap getBitmap() {
         return bitmap;
     }
@@ -70,6 +76,14 @@ public class DecodeResult {
 
     public int getOriginWidth() {
         return originWidth;
+    }
+
+    public void setOriginHeight(int originHeight) {
+        this.originHeight = originHeight;
+    }
+
+    public void setOriginWidth(int originWidth) {
+        this.originWidth = originWidth;
     }
 
     public boolean isCanCacheInDiskCache() {
