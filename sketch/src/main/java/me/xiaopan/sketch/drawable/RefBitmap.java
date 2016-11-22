@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2016 Peng fei Pan <sky@xiaopan.me>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.xiaopan.sketch.drawable;
 
 import android.graphics.Bitmap;
@@ -6,6 +22,9 @@ import android.util.Log;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.SketchUtils;
 
+/**
+ * 引用Bitmap，能够计算缓存引用、显示引用以及等待显示引用
+ */
 public class RefBitmap extends SketchBitmap {
 
     private int cacheRefCount;
@@ -18,7 +37,13 @@ public class RefBitmap extends SketchBitmap {
         super(bitmap, imageId, imageUri, originWidth, originHeight, mimeType);
     }
 
-    public void setIsDisplayed(String callingStation, boolean displayed) {
+    /**
+     * 设置显示引用
+     *
+     * @param callingStation 调用位置
+     * @param displayed      显示
+     */
+    public synchronized void setIsDisplayed(String callingStation, boolean displayed) {
         synchronized (this) {
             if (displayed) {
                 displayRefCount++;
@@ -31,7 +56,13 @@ public class RefBitmap extends SketchBitmap {
         tryRecycle((displayed ? "display" : "hide"), callingStation);
     }
 
-    public void setIsCached(String callingStation, boolean cached) {
+    /**
+     * 设置缓存引用
+     *
+     * @param callingStation 调用位置
+     * @param cached         缓存
+     */
+    public synchronized void setIsCached(String callingStation, boolean cached) {
         synchronized (this) {
             if (cached) {
                 cacheRefCount++;
@@ -44,7 +75,13 @@ public class RefBitmap extends SketchBitmap {
         tryRecycle((cached ? "putToCache" : "removedFromCache"), callingStation);
     }
 
-    public void setIsWaitDisplay(String callingStation, boolean waitDisplay) {
+    /**
+     * 设置等待缓存怒引用
+     *
+     * @param callingStation 调用位置
+     * @param waitDisplay    等待显示
+     */
+    public synchronized void setIsWaitDisplay(String callingStation, boolean waitDisplay) {
         synchronized (this) {
             if (waitDisplay) {
                 waitDisplayRefCount++;
@@ -57,31 +94,53 @@ public class RefBitmap extends SketchBitmap {
         tryRecycle((waitDisplay ? "waitDisplay" : "displayed"), callingStation);
     }
 
-    public boolean isRecycled() {
+    /**
+     * 已回收
+     */
+    public synchronized boolean isRecycled() {
         Bitmap bitmap = getBitmap();
         return bitmap == null || bitmap.isRecycled();
     }
 
-    public void recycle() {
+    /**
+     * 回收Bitmap
+     */
+    public synchronized void recycle() {
         Bitmap bitmap = getBitmap();
         if (bitmap != null) {
             bitmap.recycle();
         }
     }
 
-    public boolean canRecycle() {
+    /**
+     * 可以回收？只有三种引用都为0并且允许回收才可以回收
+     */
+    public synchronized boolean canRecycle() {
         return allowRecycle && getBitmap() != null && !getBitmap().isRecycled();
     }
 
-    public boolean isAllowRecycle() {
+    /**
+     * 允许回收（默认允许）
+     */
+    @SuppressWarnings("unused")
+    public synchronized boolean isAllowRecycle() {
         return allowRecycle;
     }
 
+    /**
+     * 设置允许回收
+     */
     @SuppressWarnings("unused")
-    public void setAllowRecycle(boolean allowRecycle) {
+    public synchronized void setAllowRecycle(boolean allowRecycle) {
         this.allowRecycle = allowRecycle;
     }
 
+    /**
+     * 尝试回收
+     *
+     * @param type           类型
+     * @param callingStation 调用位置
+     */
     private synchronized void tryRecycle(String type, String callingStation) {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if (Sketch.isDebugMode()) {
