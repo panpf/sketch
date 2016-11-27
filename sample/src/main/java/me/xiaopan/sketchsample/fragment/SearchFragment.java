@@ -248,7 +248,7 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
                 } else {
                     AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(responseObject.getImages());
                     adapter.addItemFactory(new StaggeredImageItemFactory(SearchFragment.this));
-                    adapter.setLoadMoreItem(new LoadMoreItemFactory(SearchFragment.this));
+                    adapter.setLoadMoreItem(new LoadMoreItemFactory(SearchFragment.this).fullSpan(recyclerView));
                     setAdapter(adapter);
 
                     new Handler().postDelayed(new Runnable() {
