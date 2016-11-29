@@ -48,7 +48,7 @@ public class MyImageView extends SketchImageView {
     }
 
     @Subscribe
-    void onGlobalAttrChanged(String key) {
+    public void onGlobalAttrChanged(String key) {
         if (Settings.PREFERENCE_SHOW_GIF_FLAG.equals(key)) {
             if (autoApplyGlobalAttr) {
                 boolean showGifFlag = Settings.getBoolean(getContext(), Settings.PREFERENCE_SHOW_GIF_FLAG);
