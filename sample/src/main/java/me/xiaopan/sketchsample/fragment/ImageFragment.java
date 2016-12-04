@@ -272,7 +272,7 @@ public class ImageFragment extends MyFragment {
 
     @SuppressWarnings("unused")
     @Subscribe
-    void onGlobalAttrChanged(String key) {
+    public void onGlobalAttrChanged(String key) {
         if (Settings.PREFERENCE_SUPPORT_ZOOM.equals(key)) {
             setupZoomAndLargeImage();
         } else if (Settings.PREFERENCE_READ_MODE.equals(key)) {

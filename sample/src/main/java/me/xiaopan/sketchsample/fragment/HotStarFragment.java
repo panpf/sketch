@@ -241,7 +241,7 @@ public class HotStarFragment extends MyFragment implements PullRefreshLayout.OnR
 
     @SuppressWarnings("unused")
     @Subscribe
-    void onGlobalAttrChanged(String key){
+    public void onGlobalAttrChanged(String key){
         if (Settings.PREFERENCE_PLAY_GIF_ON_LIST.equals(key)
                 || Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)
                 || Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)
