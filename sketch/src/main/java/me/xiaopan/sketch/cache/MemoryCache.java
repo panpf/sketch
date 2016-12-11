@@ -51,6 +51,14 @@ public interface MemoryCache extends Identifier {
     long getMaxSize();
 
     /**
+     * 根据level修剪内存
+     *
+     * @param level 修剪级别，对应APP的不同状态
+     * @see android.content.ComponentCallbacks2
+     */
+    void trimMemory(int level);
+
+    /**
      * 清除缓存
      */
     void clear();
@@ -68,6 +76,7 @@ public interface MemoryCache extends Identifier {
 
     /**
      * 获取编辑锁
+     *
      * @return null：已关闭
      */
     ReentrantLock getEditLock(String key);

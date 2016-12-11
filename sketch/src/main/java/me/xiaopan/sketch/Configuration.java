@@ -16,14 +16,19 @@
 
 package me.xiaopan.sketch;
 
+import android.annotation.TargetApi;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
 import android.util.Log;
 
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
+import me.xiaopan.sketch.cache.LruBitmapPool;
 import me.xiaopan.sketch.cache.LruDiskCache;
 import me.xiaopan.sketch.cache.LruMemoryCache;
 import me.xiaopan.sketch.cache.MemoryCache;
+import me.xiaopan.sketch.cache.MemorySizeCalculator;
 import me.xiaopan.sketch.decode.DefaultImageDecoder;
 import me.xiaopan.sketch.decode.ImageDecoder;
 import me.xiaopan.sketch.display.DefaultImageDisplayer;
@@ -33,7 +38,6 @@ import me.xiaopan.sketch.feature.HelperFactory;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.MobileNetworkGlobalPauseDownload;
-import me.xiaopan.sketch.request.RequestFactory;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.http.HttpClientStack;
 import me.xiaopan.sketch.http.HttpStack;
@@ -41,6 +45,7 @@ import me.xiaopan.sketch.http.HurlStack;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.RequestExecutor;
+import me.xiaopan.sketch.request.RequestFactory;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class Configuration {
@@ -49,15 +54,15 @@ public class Configuration {
     private Context context;    // 上下文
     private DiskCache diskCache;    // 磁盘缓存
     private HttpStack httpStack;    // 网络
+    private BitmapPool bitmapPool;  // Bitmap缓存
     private MemoryCache memoryCache;    //图片内存缓存
-    private MemoryCache stateImageMemoryCache;    // 占位图内存缓存器
     private ImageDecoder imageDecoder;    //图片解码器
     private HelperFactory helperFactory;    // 协助器工厂
-    private ExceptionMonitor exceptionMonitor;    // 错误回调
     private ImageDisplayer defaultImageDisplayer;   // 默认的图片显示器，当DisplayRequest中没有指定显示器的时候就会用到
     private ImageProcessor resizeImageProcessor;    // Resize图片处理器
     private RequestFactory requestFactory;  // 请求工厂
     private RequestExecutor requestExecutor;    //请求执行器
+    private ExceptionMonitor exceptionMonitor;    // 错误回调
     private ResizeCalculator resizeCalculator;  // resize计算器
     private ImagePreprocessor imagePreprocessor;    // 本地图片预处理器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
@@ -67,31 +72,36 @@ public class Configuration {
     private boolean globalLowQualityImage; // 全局使用低质量的图片
     private boolean globalDisableCacheInDisk;   // 全局禁用磁盘缓存
     private boolean globalDisableCacheInMemory; // 全局禁用内存缓存
+    // TODO: 2016/12/11 增加全局禁用bitmap pool
     private boolean globalInPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
     private MobileNetworkGlobalPauseDownload mobileNetworkGlobalPauseDownload;
 
     public Configuration(Context tempContext) {
         this.context = tempContext.getApplicationContext();
 
-        // LruDiskCache需要依赖所以先创建
-        this.exceptionMonitor = new ExceptionMonitor(context);
+        MemorySizeCalculator memorySizeCalculator = new MemorySizeCalculator(context);
 
         this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
         this.diskCache = new LruDiskCache(context, this, 1, DiskCache.DISK_CACHE_MAX_SIZE);
-        this.memoryCache = LruMemoryCache.create(context);
+        this.bitmapPool = new LruBitmapPool(context, memorySizeCalculator.getBitmapPoolSize());
+        this.memoryCache = new LruMemoryCache(context, memorySizeCalculator.getMemoryCacheSize());
         this.imageDecoder = new DefaultImageDecoder();
         this.helperFactory = new HelperFactory();
         this.requestFactory = new RequestFactory();
         this.requestExecutor = new RequestExecutor();
         this.resizeCalculator = new ResizeCalculator();
+        this.exceptionMonitor = new ExceptionMonitor(context);
         this.imagePreprocessor = new ImagePreprocessor();
         this.imageSizeCalculator = new ImageSizeCalculator();
-        this.defaultImageDisplayer = new DefaultImageDisplayer();
         this.resizeImageProcessor = new ResizeImageProcessor();
-        this.stateImageMemoryCache = LruMemoryCache.createByStateImage(context);
+        this.defaultImageDisplayer = new DefaultImageDisplayer();
 
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, getInfo());
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            context.getApplicationContext().registerComponentCallbacks(new MemoryChangedListener(this));
         }
     }
 
@@ -153,6 +163,31 @@ public class Configuration {
     }
 
     /**
+     * 获取Bitmap缓存器
+     */
+    @SuppressWarnings("unused")
+    public BitmapPool getBitmapPool() {
+        return bitmapPool;
+    }
+
+    /**
+     * 设置Bitmap缓存器
+     */
+    @SuppressWarnings("unused")
+    public void setBitmapPool(BitmapPool newBitmapPool) {
+        if (newBitmapPool != null) {
+            BitmapPool oldBitmapPool = this.bitmapPool;
+            this.bitmapPool = newBitmapPool;
+            if (oldBitmapPool != null) {
+                oldBitmapPool.close();
+            }
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setBitmapPool", ". ", bitmapPool.getIdentifier()));
+            }
+        }
+    }
+
+    /**
      * 获取内存缓存器
      */
     public MemoryCache getMemoryCache() {
@@ -172,31 +207,6 @@ public class Configuration {
             }
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setMemoryCache", ". ", memoryCache.getIdentifier()));
-            }
-        }
-        return this;
-    }
-
-    /**
-     * 获取占位图内存缓存器
-     */
-    public MemoryCache getStateImageMemoryCache() {
-        return stateImageMemoryCache;
-    }
-
-    /**
-     * 设置占位图内存缓存器
-     */
-    @SuppressWarnings("unused")
-    public Configuration setStateImageMemoryCache(MemoryCache newStateImageMemoryCache) {
-        if (newStateImageMemoryCache != null) {
-            MemoryCache oldPlaceholderImageMemoryCache = stateImageMemoryCache;
-            stateImageMemoryCache = newStateImageMemoryCache;
-            if (oldPlaceholderImageMemoryCache != null) {
-                oldPlaceholderImageMemoryCache.close();
-            }
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setStateImageMemoryCache", ". ", stateImageMemoryCache.getIdentifier()));
             }
         }
         return this;
@@ -422,7 +432,7 @@ public class Configuration {
      * 设置是否开启移动网络下暂停下载的功能，只影响display请求和load请求
      */
     public Configuration setMobileNetworkGlobalPauseDownload(boolean mobileNetworkGlobalPauseDownload) {
-        if(isMobileNetworkGlobalPauseDownload() != mobileNetworkGlobalPauseDownload){
+        if (isMobileNetworkGlobalPauseDownload() != mobileNetworkGlobalPauseDownload) {
             if (mobileNetworkGlobalPauseDownload) {
                 if (this.mobileNetworkGlobalPauseDownload == null) {
                     this.mobileNetworkGlobalPauseDownload = new MobileNetworkGlobalPauseDownload(context);
@@ -575,14 +585,14 @@ public class Configuration {
             diskCache.appendIdentifier("diskCache：", builder);
         }
 
+        if (bitmapPool != null) {
+            if (builder.length() > 0) builder.append("\n");
+            bitmapPool.appendIdentifier("bitmapPool：", builder);
+        }
+
         if (memoryCache != null) {
             if (builder.length() > 0) builder.append("\n");
             memoryCache.appendIdentifier("memoryCache：", builder);
-        }
-
-        if (stateImageMemoryCache != null) {
-            if (builder.length() > 0) builder.append("\n");
-            stateImageMemoryCache.appendIdentifier("stateImageMemoryCache：", builder);
         }
 
         if (imageDecoder != null) {
@@ -679,5 +689,29 @@ public class Configuration {
         builder.append(isMobileNetworkGlobalPauseDownload());
 
         return builder.toString();
+    }
+
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    private static class MemoryChangedListener implements ComponentCallbacks2 {
+        private Configuration configuration;
+
+        public MemoryChangedListener(Configuration configuration) {
+            this.configuration = configuration;
+        }
+
+        @Override
+        public void onTrimMemory(int level) {
+            Sketch.with(configuration.getContext()).onTrimMemory(level);
+        }
+
+        @Override
+        public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+
+        }
+
+        @Override
+        public void onLowMemory() {
+            Sketch.with(configuration.getContext()).onLowMemory();
+        }
     }
 }

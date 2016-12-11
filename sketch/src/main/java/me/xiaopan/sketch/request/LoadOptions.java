@@ -23,6 +23,7 @@ import me.xiaopan.sketch.process.ImageProcessor;
 /**
  * 显示选项
  */
+// TODO: 2016/12/11 增加禁用bitmap pool
 public class LoadOptions extends DownloadOptions {
     /**
      * 修正尺寸，将原始图片加载到内存中之后根据resize进行修正。修正的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize

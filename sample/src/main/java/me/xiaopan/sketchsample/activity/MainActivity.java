@@ -48,6 +48,7 @@ import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -64,6 +65,7 @@ import me.xiaopan.sketchsample.bean.CheckMenu;
 import me.xiaopan.sketchsample.bean.InfoMenu;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
+import me.xiaopan.sketchsample.fragment.BitmapPoolTestFragment;
 import me.xiaopan.sketchsample.fragment.LargesFragment;
 import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
@@ -105,7 +107,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         initViews();
         startService(new Intent(getBaseContext(), NotificationService.class));
-        switchPage(Page.LARGE_IMAGE);
+        switchPage(BuildConfig.DEBUG ? Page.BITMAP_POOL_TESt : Page.LARGE_IMAGE);
     }
 
     private void initViews() {
@@ -208,18 +210,20 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 adapter.notifyDataSetChanged();
             }
         });
-        menuList.add(new InfoMenu("清除占位图缓存") {
+
+        menuList.add("BitmapPool");
+        menuList.add(new InfoMenu("清空BitmapPool") {
             @Override
             public String getInfo() {
-                MemoryCache stateImageMemoryCache = Sketch.with(getBaseContext()).getConfiguration().getStateImageMemoryCache();
-                String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), stateImageMemoryCache.getSize());
-                String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), stateImageMemoryCache.getMaxSize());
+                BitmapPool bitmapPool = Sketch.with(getBaseContext()).getConfiguration().getBitmapPool();
+                String usedSizeFormat = Formatter.formatFileSize(getBaseContext(), bitmapPool.getSize());
+                String maxSizeFormat = Formatter.formatFileSize(getBaseContext(), bitmapPool.getMaxSize());
                 return usedSizeFormat + "/" + maxSizeFormat;
             }
 
             @Override
             public void onClick(AssemblyRecyclerAdapter adapter) {
-                Sketch.with(getBaseContext()).getConfiguration().getStateImageMemoryCache().clear();
+                Sketch.with(getBaseContext()).getConfiguration().getBitmapPool().clear();
                 menuClickListener.onClick(null);
                 adapter.notifyDataSetChanged();
             }
@@ -520,6 +524,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         LARGE_IMAGE("超大图片", LargesFragment.class),
         TES1("测试1", TestFragment.class, !BuildConfig.DEBUG),
         TES2("测试2", Test2Fragment.class, !BuildConfig.DEBUG),
+        BITMAP_POOL_TESt("BitmapPool测试", BitmapPoolTestFragment.class, !BuildConfig.DEBUG),
         ABOUT("关于", AboutFragment.class),;
 
         private String name;

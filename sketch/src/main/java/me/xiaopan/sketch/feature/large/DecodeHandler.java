@@ -95,6 +95,8 @@ class DecodeHandler extends Handler {
         Rect srcRect = new Rect(tile.srcRect);
         int inSampleSize = tile.inSampleSize;
 
+        // TODO: 2016/12/11 使用inBitmap
+
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
         ImageFormat imageFormat = regionDecoder.getImageFormat();

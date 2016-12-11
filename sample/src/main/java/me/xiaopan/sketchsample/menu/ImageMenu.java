@@ -226,7 +226,7 @@ public class ImageMenu {
                 LargeImageViewer largeImageViewer = imageView.getLargeImageViewer();
                 if (largeImageViewer.isReady()) {
                     messageBuilder.append("\n");
-                    messageBuilder.append("大图功能占用内存：").append(Formatter.formatFileSize(activity, largeImageViewer.getTilesAllocationByteCount()));
+                    messageBuilder.append("碎片占用内存：").append(Formatter.formatFileSize(activity, largeImageViewer.getTilesAllocationByteCount()));
                     messageBuilder.append("\n");
                     messageBuilder.append("碎片基数：").append(largeImageViewer.getTiles());
                     messageBuilder.append("\n");

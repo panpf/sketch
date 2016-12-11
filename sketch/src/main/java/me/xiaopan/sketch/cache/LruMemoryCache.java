@@ -32,7 +32,7 @@ import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class LruMemoryCache implements MemoryCache {
-    private final LruCache<String, RefBitmap> drawableLruCache;
+    private final LruCache<String, RefBitmap> cache;
     protected String logName = "LruMemoryCache";
     private Context context;
     private Map<String, ReentrantLock> editLockMap;
@@ -40,20 +40,7 @@ public class LruMemoryCache implements MemoryCache {
 
     public LruMemoryCache(Context context, int maxSize) {
         this.context = context;
-        this.drawableLruCache = new DrawableLruCache(maxSize);
-    }
-
-    public static LruMemoryCache create(Context context) {
-        return new LruMemoryCache(context, (int) (Runtime.getRuntime().maxMemory() / 8));
-    }
-
-    public static LruMemoryCache createByStateImage(Context context) {
-        long placeholderMemoryMaxSize = Runtime.getRuntime().maxMemory() / 32;
-
-        // 不能小于2M
-        placeholderMemoryMaxSize = Math.max(placeholderMemoryMaxSize, 2 * 1024 * 1024);
-
-        return new LruMemoryCache(context, (int) placeholderMemoryMaxSize);
+        this.cache = new RefBitmapLruCache(this, maxSize);
     }
 
     @Override
@@ -64,11 +51,11 @@ public class LruMemoryCache implements MemoryCache {
 
         int oldCacheSize = 0;
         if (Sketch.isDebugMode()) {
-            oldCacheSize = drawableLruCache.size();
+            oldCacheSize = cache.size();
         }
-        drawableLruCache.put(key, refBitmap);
+        cache.put(key, refBitmap);
         if (Sketch.isDebugMode()) {
-            int newCacheSize = drawableLruCache.size();
+            int newCacheSize = cache.size();
             Log.i(Sketch.TAG, SketchUtils.concat(logName,
                     ". put",
                     ". beforeCacheSize=", Formatter.formatFileSize(context, oldCacheSize),
@@ -83,7 +70,7 @@ public class LruMemoryCache implements MemoryCache {
             return null;
         }
 
-        return drawableLruCache.get(key);
+        return cache.get(key);
     }
 
     @Override
@@ -92,11 +79,11 @@ public class LruMemoryCache implements MemoryCache {
             return null;
         }
 
-        RefBitmap refBitmap = drawableLruCache.remove(key);
+        RefBitmap refBitmap = cache.remove(key);
         if (Sketch.isDebugMode()) {
             Log.i(Sketch.TAG, SketchUtils.concat(logName,
                     ". remove",
-                    ". memoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+                    ". memoryCacheSize: ", Formatter.formatFileSize(context, cache.size())));
         }
         return refBitmap;
     }
@@ -107,12 +94,35 @@ public class LruMemoryCache implements MemoryCache {
             return 0;
         }
 
-        return drawableLruCache.size();
+        return cache.size();
     }
 
     @Override
     public long getMaxSize() {
-        return drawableLruCache.maxSize();
+        return cache.maxSize();
+    }
+
+    @Override
+    public synchronized void trimMemory(int level) {
+        if (closed) {
+            return;
+        }
+
+        long memoryCacheSize = getSize();
+
+        if (level >= android.content.ComponentCallbacks2.TRIM_MEMORY_MODERATE) {
+            cache.evictAll();
+        } else if (level >= android.content.ComponentCallbacks2.TRIM_MEMORY_BACKGROUND) {
+            cache.trimToSize(cache.maxSize() / 2);
+        }
+
+        long releasedSize = memoryCacheSize - getSize();
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, SketchUtils.concat(logName,
+                    ". trimMemory",
+                    ". level=", SketchUtils.getTrimLevelName(level),
+                    ", released: ", Formatter.formatFileSize(context, releasedSize)));
+        }
     }
 
     @Override
@@ -122,11 +132,11 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(logName,
+            Log.w(Sketch.TAG, SketchUtils.concat(logName,
                     ". clear",
-                    ". before clean memoryCacheSize: ", Formatter.formatFileSize(context, drawableLruCache.size())));
+                    ". before clean memoryCacheSize: ", Formatter.formatFileSize(context, cache.size())));
         }
-        drawableLruCache.evictAll();
+        cache.evictAll();
     }
 
     @Override
@@ -142,7 +152,7 @@ public class LruMemoryCache implements MemoryCache {
 
         closed = true;
 
-        drawableLruCache.evictAll();
+        cache.evictAll();
 
         if (editLockMap != null) {
             editLockMap.clear();
@@ -190,15 +200,17 @@ public class LruMemoryCache implements MemoryCache {
                 .append(")");
     }
 
-    private class DrawableLruCache extends LruCache<String, RefBitmap> {
+    private static class RefBitmapLruCache extends LruCache<String, RefBitmap> {
+        private LruMemoryCache cache;
 
-        public DrawableLruCache(int maxSize) {
+        public RefBitmapLruCache(LruMemoryCache cache, int maxSize) {
             super(maxSize);
+            this.cache = cache;
         }
 
         @Override
         public RefBitmap put(String key, RefBitmap refBitmap) {
-            refBitmap.setIsCached(logName + ":put", true);
+            refBitmap.setIsCached(cache.logName + ":put", true);
             return super.put(key, refBitmap);
         }
 
@@ -210,7 +222,7 @@ public class LruMemoryCache implements MemoryCache {
 
         @Override
         protected void entryRemoved(boolean evicted, String key, RefBitmap oldRefBitmap, RefBitmap newRefBitmap) {
-            oldRefBitmap.setIsCached(logName + ":entryRemoved", false);
+            oldRefBitmap.setIsCached(cache.logName + ":entryRemoved", false);
         }
     }
 }

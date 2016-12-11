@@ -80,11 +80,11 @@ public class MakerStateImage implements StateImage {
 
         // 从内存缓存中取
         String memoryCacheKey = SketchUtils.makeStateImageRequestId(String.valueOf(resId), displayOptions);
-        MemoryCache stateImageMemoryCache = configuration.getStateImageMemoryCache();
-        RefBitmap cachedRefBitmap = stateImageMemoryCache.get(memoryCacheKey);
+        MemoryCache memoryCache = configuration.getMemoryCache();
+        RefBitmap cachedRefBitmap = memoryCache.get(memoryCacheKey);
         if (cachedRefBitmap != null) {
             if (cachedRefBitmap.isRecycled()) {
-                stateImageMemoryCache.remove(memoryCacheKey);
+                memoryCache.remove(memoryCacheKey);
             } else {
                 return new RefBitmapDrawable(cachedRefBitmap);
             }
@@ -148,7 +148,7 @@ public class MakerStateImage implements StateImage {
             RefBitmap newRefBitmap = new RefBitmap(bitmap, memoryCacheKey,
                     String.valueOf(resId), bitmap.getWidth(), bitmap.getHeight(), null);
             newRefBitmap.setAllowRecycle(true);
-            stateImageMemoryCache.put(memoryCacheKey, newRefBitmap);
+            memoryCache.put(memoryCacheKey, newRefBitmap);
             return new RefBitmapDrawable(newRefBitmap);
         } else {
             return drawable;

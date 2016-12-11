@@ -19,6 +19,7 @@ package me.xiaopan.sketch.util;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.pm.ConfigurationInfo;
 import android.content.pm.PackageInfo;
@@ -626,7 +627,7 @@ public class SketchUtils {
     /**
      * 获取Bitmap占用内存大小，单位字节
      */
-    public static int getBitmapByteCount(Bitmap bitmap) {
+    public static int getBitmapByteSize(Bitmap bitmap) {
         // bitmap.isRecycled()过滤很关键，在4.4以及以下版本当bitmap已回收时调用其getAllocationByteCount()方法将直接崩溃
         if (bitmap == null || bitmap.isRecycled()) {
             return 0;
@@ -639,7 +640,14 @@ public class SketchUtils {
         }
     }
 
-    public static String getImageInfo(String type, Bitmap bitmap, String mimeType, long byteCount) {
+    /**
+     * 根据给定的信息，生成最终的图片信息
+     * @param type 类型
+     * @param bitmap 图片
+     * @param mimeType 图片格式
+     * @param byteCount 占用字节数
+     */
+    public static String makeImageInfo(String type, Bitmap bitmap, String mimeType, long byteCount) {
         if (bitmap != null) {
             if (TextUtils.isEmpty(type)) {
                 type = "Bitmap";
@@ -655,15 +663,28 @@ public class SketchUtils {
         }
     }
 
-    public static String getImageInfo(String type, Bitmap bitmap, String mimeType) {
-        return getImageInfo(type, bitmap, mimeType, getBitmapByteCount(bitmap));
+    /**
+     * 根据给定的信息，生成最终的图片信息
+     * @param type 类型
+     * @param bitmap 图片
+     * @param mimeType 图片格式
+     */
+    public static String makeImageInfo(String type, Bitmap bitmap, String mimeType) {
+        return makeImageInfo(type, bitmap, mimeType, getBitmapByteSize(bitmap));
     }
 
-    public static String getGifImageInfo(GifDrawable gifDrawable) {
+    /**
+     * 从GifDrawable中获取信息，生成最终的图片信息
+     * @param gifDrawable GifDrawable
+     */
+    public static String makeGifImageInfo(GifDrawable gifDrawable) {
         Bitmap bitmap = gifDrawable.getBitmap();
-        return getImageInfo("GifDrawable", bitmap, "image/gif", (int) gifDrawable.getAllocationByteCount());
+        return makeImageInfo("GifDrawable", bitmap, "image/gif", (int) gifDrawable.getAllocationByteCount());
     }
 
+    /**
+     * 如果是LayerDrawable，则返回其最后一张图片，不是的就返回自己
+     */
     public static Drawable getLastDrawable(Drawable drawable) {
         if (drawable == null) {
             return null;
@@ -683,6 +704,11 @@ public class SketchUtils {
         return null;
     }
 
+    /**
+     * 获取矩阵中指定位置的值
+     * @param matrix Matrix
+     * @param whichValue 指定的位置，例如Matrix.MSCALE_X
+     */
     @SuppressWarnings("unused")
     public static float getMatrixValue(Matrix matrix, int whichValue) {
         synchronized (MATRIX_VALUES) {
@@ -893,14 +919,14 @@ public class SketchUtils {
     /**
      * 根据API版本判断是否支持读取图片碎片
      */
-    public static boolean isSupportBRDByApi() {
+    public static boolean sdkSupportBitmapRegionDecoder() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1;
     }
 
     /**
-     * 根据图片类型判断是否支持读取图片碎片
+     * 根据图片格式型判断是否支持读取图片碎片
      */
-    public static boolean isSupportBRDByImageFormat(ImageFormat imageFormat) {
+    public static boolean formatSupportBitmapRegionDecoder(ImageFormat imageFormat) {
         return imageFormat != null && (imageFormat == ImageFormat.JPEG || imageFormat == ImageFormat.PNG ||
                 (imageFormat == ImageFormat.WEBP && Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH));
     }
@@ -908,11 +934,11 @@ public class SketchUtils {
     /**
      * 根据请求和图片类型判断是否支持大图功能
      */
-    public static boolean isSupportLargeImage(LoadRequest loadRequest, ImageFormat imageFormat) {
+    public static boolean supportLargeImage(LoadRequest loadRequest, ImageFormat imageFormat) {
         return loadRequest instanceof DisplayRequest &&
                 ((DisplayRequest) loadRequest).getViewInfo().isSupportLargeImage() &&
-                SketchUtils.isSupportBRDByApi() &&
-                isSupportBRDByImageFormat(imageFormat);
+                SketchUtils.sdkSupportBitmapRegionDecoder() &&
+                formatSupportBitmapRegionDecoder(imageFormat);
     }
 
     /**
@@ -1006,6 +1032,11 @@ public class SketchUtils {
         }
     }
 
+    /**
+     * 根据图片地址和选项生成请求ID
+     * @param imageUri 图片地址
+     * @param options 选项
+     */
     public static String makeRequestId(String imageUri, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
@@ -1015,16 +1046,26 @@ public class SketchUtils {
         return builder.toString();
     }
 
+    /**
+     * 根据图片地址和选项ID生成请求ID
+     * @param imageUri 图片地址
+     * @param optionsId 选项ID
+     */
     @SuppressWarnings("unused")
-    public static String makeRequestId(String imageUri, String options) {
+    public static String makeRequestId(String imageUri, String optionsId) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
-        if (!TextUtils.isEmpty(options)) {
-            builder.append(options);
+        if (!TextUtils.isEmpty(optionsId)) {
+            builder.append(optionsId);
         }
         return builder.toString();
     }
 
+    /**
+     * 创建状态图片的请求ID
+     * @param imageUri 图片地址
+     * @param options 配置
+     */
     public static String makeStateImageRequestId(String imageUri, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
@@ -1034,6 +1075,9 @@ public class SketchUtils {
         return builder.toString();
     }
 
+    /**
+     * 将一个碎片列表转换成字符串
+     */
     public static String tileListToString(List<Tile> tileList) {
         if (tileList == null) {
             return null;
@@ -1056,8 +1100,99 @@ public class SketchUtils {
         return builder.toString();
     }
 
-    public static Bitmap.CompressFormat bitmapConfigToCompressFormat(Bitmap.Config config){
+    /**
+     * 根据指定的Bitmap配置获取合适的压缩格式
+     */
+    public static Bitmap.CompressFormat bitmapConfigToCompressFormat(Bitmap.Config config) {
         return config == Bitmap.Config.RGB_565 ?
                 Bitmap.CompressFormat.JPEG : Bitmap.CompressFormat.PNG;
+    }
+
+    /**
+     * 根据宽、高和配置计算所占用的字节数
+     */
+    public static int getBitmapByteSize(int width, int height, Bitmap.Config config) {
+        return width * height * getBytesPerPixel(config);
+    }
+
+    /**
+     * 获取指定配置单个像素所占的字节数
+     */
+    private static int getBytesPerPixel(Bitmap.Config config) {
+        // A bitmap by decoding a gif has null "config" in certain environments.
+        if (config == null) {
+            config = Bitmap.Config.ARGB_8888;
+        }
+
+        int bytesPerPixel;
+        switch (config) {
+            case ALPHA_8:
+                bytesPerPixel = 1;
+                break;
+            case RGB_565:
+            case ARGB_4444:
+                bytesPerPixel = 2;
+                break;
+            case ARGB_8888:
+            default:
+                bytesPerPixel = 4;
+        }
+        return bytesPerPixel;
+    }
+
+    /**
+     * 获取修剪级别的名称
+     */
+    public static String getTrimLevelName(int level) {
+        switch (level) {
+            case ComponentCallbacks2.TRIM_MEMORY_COMPLETE:
+                return "COMPLETE";
+            case ComponentCallbacks2.TRIM_MEMORY_MODERATE:
+                return "MODERATE";
+            case ComponentCallbacks2.TRIM_MEMORY_BACKGROUND:
+                return "BACKGROUND";
+            case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
+                return "UI_HIDDEN";
+            case ComponentCallbacks2.TRIM_MEMORY_RUNNING_CRITICAL:
+                return "RUNNING_CRITICAL";
+            case ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW:
+                return "RUNNING_LOW";
+            case ComponentCallbacks2.TRIM_MEMORY_RUNNING_MODERATE:
+                return "RUNNING_MODERATE";
+            default:
+                return "UNKNOWN";
+        }
+    }
+
+    /**
+     * 指定的栈历史中是否存在指定的类的指定的方法
+     */
+    public static boolean invokeIn(StackTraceElement[] stackTraceElements, Class<?> cla, String methodName) {
+        if (stackTraceElements == null || stackTraceElements.length == 0) {
+            return false;
+        }
+
+        String targetClassName = cla.getName();
+        StackTraceElement element;
+        String elementClassName;
+        String elementMethodName;
+        for (StackTraceElement stackTraceElement : stackTraceElements) {
+            element = stackTraceElement;
+
+            elementClassName = element.getClassName();
+            elementMethodName = element.getMethodName();
+            if (targetClassName.equals(elementClassName) && methodName.equals(elementMethodName)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * SDK判断是否支持inBitmap
+     */
+    public static boolean sdkSupportInBitmap(){
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
     }
 }

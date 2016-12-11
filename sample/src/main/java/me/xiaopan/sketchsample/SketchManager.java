@@ -80,6 +80,7 @@ public class SketchManager {
 
         public MyExceptionMonitor(Context context) {
             super(context);
+            logName = "MyExceptionMonitor";
         }
 
         @Override

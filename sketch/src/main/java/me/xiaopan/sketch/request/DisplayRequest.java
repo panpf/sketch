@@ -203,7 +203,7 @@ public class DisplayRequest extends LoadRequest {
             if (bitmap.isRecycled()) {
                 if (Sketch.isDebugMode()) {
                     printLogE("decode failed", "loadCompleted", "bitmap recycled",
-                            "bitmapInfo=", SketchUtils.getImageInfo(null, bitmap, loadResult.getMimeType()),
+                            "bitmapInfo=", SketchUtils.makeImageInfo(null, bitmap, loadResult.getMimeType()),
                             loadResult.getImageFrom());
                 }
                 error(ErrorCause.BITMAP_RECYCLED);
@@ -227,7 +227,7 @@ public class DisplayRequest extends LoadRequest {
             if (gifDrawable.isRecycled()) {
                 if (Sketch.isDebugMode()) {
                     printLogE("decode failed", "loadCompleted", "gif drawable recycled",
-                            "gifInfo=", SketchUtils.getGifImageInfo(gifDrawable), loadResult.getImageFrom());
+                            "gifInfo=", SketchUtils.makeGifImageInfo(gifDrawable), loadResult.getImageFrom());
                 }
                 error(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;

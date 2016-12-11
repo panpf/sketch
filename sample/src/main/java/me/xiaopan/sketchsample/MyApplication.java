@@ -17,8 +17,6 @@
 package me.xiaopan.sketchsample;
 
 import android.app.Application;
-import android.text.format.Formatter;
-import android.util.Log;
 
 import com.squareup.leakcanary.LeakCanary;
 import com.tencent.bugly.crashreport.CrashReport;
@@ -45,11 +43,14 @@ public class MyApplication extends Application {
     }
 
     @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+        Sketch.with(getBaseContext()).onTrimMemory(level);
+    }
+
+    @Override
     public void onLowMemory() {
         super.onLowMemory();
-
-        Log.w("Application", "Memory is very low, has automatic releasing Sketch in memory cache("
-                + Formatter.formatFileSize(getBaseContext(), Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().getSize()) + ")");
-        Sketch.with(getBaseContext()).getConfiguration().getMemoryCache().clear();
+        Sketch.with(getBaseContext()).onLowMemory();
     }
 }

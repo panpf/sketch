@@ -49,7 +49,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
                 }
                 if (spanCount > 1) {
                     int screenWidth = viewGroup.getResources().getDisplayMetrics().widthPixels;
-                    itemSize = (screenWidth - (SketchUtils.dp2px(viewGroup.getContext(), 8) * (spanCount + 1))) / spanCount;
+                    itemSize = (screenWidth - (SketchUtils.dp2px(viewGroup.getContext(), 4) * (spanCount + 1))) / spanCount;
                 }
             }
         }
@@ -79,7 +79,7 @@ public class PhotoAlbumItemFactory extends AssemblyRecyclerItemFactory<PhotoAlbu
                     }
                 }
             });
-            sketchImageView.setOptionsByName(ImageOptions.ROUND_RECT);
+            sketchImageView.setOptionsByName(ImageOptions.RECT);
 
             ImageShaper imageShaper = sketchImageView.getOptions().getImageShaper();
             if (imageShaper != null && imageShaper instanceof RoundRectImageShaper) {

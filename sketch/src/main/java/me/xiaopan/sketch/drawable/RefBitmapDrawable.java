@@ -79,7 +79,7 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
 
     @Override
     public String getInfo() {
-        return SketchUtils.getImageInfo(logName, getBitmap(), getMimeType(), getByteCount());
+        return SketchUtils.makeImageInfo(logName, getBitmap(), getMimeType(), getByteCount());
     }
 
     @Override

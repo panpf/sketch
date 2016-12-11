@@ -16,8 +16,10 @@
 
 package me.xiaopan.sketch;
 
+import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import java.util.HashMap;
@@ -193,6 +195,49 @@ public class Sketch {
         return configuration.getHelperFactory().getDisplayHelper(this, displayParams, imageViewInterface);
     }
 
+    /**
+     * 根据level修剪内存
+     *
+     * @param level 修剪级别，对应APP的不同状态
+     * @see android.content.ComponentCallbacks2
+     */
+    public void onTrimMemory(int level) {
+        // ICE_CREAM_SANDWICH以上版本已经自动注册了onTrimMemory监听，因此无需再在你的Application的onTrimMemory方法中调用此方法
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            StackTraceElement[] stackTraceElements = new Exception().getStackTrace();
+            if (!SketchUtils.invokeIn(stackTraceElements, Application.class, "onTrimMemory")) {
+                return;
+            }
+        }
+
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, String.format("Trim of memory, level= %s", SketchUtils.getTrimLevelName(level)));
+        }
+
+        configuration.getMemoryCache().trimMemory(level);
+        configuration.getBitmapPool().trimMemory(level);
+    }
+
+    /**
+     * 当内存低时直接清空全部内存缓存
+     */
+    public void onLowMemory() {
+        // ICE_CREAM_SANDWICH以上版本已经自动注册了onLowMemory监听，因此无需再在你的Application的onLowMemory方法中调用此方法
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            StackTraceElement[] stackTraceElements = new Exception().getStackTrace();
+            if (!SketchUtils.invokeIn(stackTraceElements, Application.class, "onLowMemory")) {
+                return;
+            }
+        }
+
+        if (Sketch.isDebugMode()) {
+            Log.w(Sketch.TAG, "Memory is very low, clean memory cache and bitmap pool");
+        }
+
+        configuration.getMemoryCache().clear();
+        configuration.getBitmapPool().clear();
+    }
+
 
     /**
      * 取消
@@ -255,6 +300,7 @@ public class Sketch {
     /**
      * 放入加载选项
      */
+    @SuppressWarnings("unused")
     public static void putOptions(Enum<?> optionsName, LoadOptions options) {
         installOptionsMap();
         optionsMap.put(optionsName, options);

@@ -149,6 +149,8 @@ public class RefBitmap extends SketchBitmap {
                         ". ", callingStation, ":", type,
                         ". ", getInfo()));
             }
+
+            // TODO: 2016/12/11 放入bitmap pool
             getBitmap().recycle();
         } else {
             if (Sketch.isDebugMode()) {

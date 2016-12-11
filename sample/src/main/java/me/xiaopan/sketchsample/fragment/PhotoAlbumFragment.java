@@ -87,8 +87,8 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
         pullRefreshLayout.setOnRefreshListener(this);
         recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 2));
-        int padding  = SketchUtils.dp2px(getActivity(), 4);
+        recyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 4));
+        int padding  = SketchUtils.dp2px(getActivity(), 2);
         recyclerView.setPadding(padding, padding, padding, padding);
         recyclerView.setClipToPadding(false);
 

@@ -135,6 +135,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         return null;
     }
 
+    // TODO: 2016/12/11 使用bitmap pool
     private DecodeResult decodeFromHelper(LoadRequest request, DecodeHelper decodeHelper, boolean disableProcess) {
         // Decode bounds and mime info
         Options boundsOptions = new Options();
@@ -222,8 +223,8 @@ public class DefaultImageDecoder implements ImageDecoder {
         // 要想使用缩略图功能需要配置开启缩略图功能、配置resize并且图片格式和系统版本支持BitmapRegionDecoder才行
         LoadOptions loadOptions = request.getOptions();
         if (!loadOptions.isThumbnailMode() || loadOptions.getResize() == null
-                || !SketchUtils.isSupportBRDByApi()
-                || !SketchUtils.isSupportBRDByImageFormat(imageFormat)) {
+                || !SketchUtils.sdkSupportBitmapRegionDecoder()
+                || !SketchUtils.formatSupportBitmapRegionDecoder(imageFormat)) {
             if (loadOptions.isThumbnailMode() && loadOptions.getResize() == null) {
                 Log.e(Sketch.TAG, "thumbnailMode need resize ");
             }
@@ -247,7 +248,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         ResizeCalculator resizeCalculator = request.getSketch().getConfiguration().getResizeCalculator();
         ResizeCalculator.Result result = resizeCalculator.calculator(outWidth, outHeight, resize.getWidth(), resize.getHeight(), resize.getScaleType(), false);
 
-        boolean supportLargeImage = SketchUtils.isSupportLargeImage(request, imageFormat);
+        boolean supportLargeImage = SketchUtils.supportLargeImage(request, imageFormat);
 
         // 根据resize的大小和原图中对应区域的大小计算缩小倍数，这样会得到一个较为清晰的缩略图
         decodeOptions.inSampleSize = sizeCalculator.calculateInSampleSize(result.srcRect.width(), result.srcRect.height(),
@@ -286,7 +287,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (!disableProcess) {
             MaxSize maxSize = request.getOptions().getMaxSize();
             if (maxSize != null) {
-                boolean supportLargeImage = SketchUtils.isSupportLargeImage(request, imageFormat);
+                boolean supportLargeImage = SketchUtils.supportLargeImage(request, imageFormat);
                 ImageSizeCalculator imageSizeCalculator = request.getSketch().getConfiguration().getImageSizeCalculator();
                 decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(outWidth, outHeight,
                         maxSize.getWidth(), maxSize.getHeight(), supportLargeImage);
