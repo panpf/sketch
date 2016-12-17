@@ -31,7 +31,7 @@ import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
-import me.xiaopan.sketch.feature.ExceptionMonitor;
+import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -295,8 +295,8 @@ public class DisplayRequest extends LoadRequest {
             if (bitmapDrawable.getBitmap().isRecycled()) {
                 // TODO: 2016/11/22 走到这里的几率还是挺高的，得弄清楚到底是咋回事，比如记录下bitmap的操作记录，当出现问题时打印记录看看
                 // TODO: 2016/11/22 初步怀疑是异步的wait display引用造成的，解决方案加锁
-                ExceptionMonitor exceptionMonitor = getSketch().getConfiguration().getExceptionMonitor();
-                exceptionMonitor.onBitmapRecycledOnDisplay(this, drawable instanceof RefDrawable ? (RefDrawable) drawable : null);
+                SketchMonitor sketchMonitor = getSketch().getConfiguration().getMonitor();
+                sketchMonitor.onBitmapRecycledOnDisplay(this, drawable instanceof RefDrawable ? (RefDrawable) drawable : null);
 
                 // 图片不可用
                 printLogD("image display exception", "bitmap recycled",

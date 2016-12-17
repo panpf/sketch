@@ -169,7 +169,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 >* [了解并配置HttpStack.md](docs/wiki/http_stack.md)
 >* [监听加载开始、成功、失败以及下载进度.md](docs/wiki/listener.md)
 >* [了解何时取消请求以及如何主动取消请求.md](docs/wiki/cancel_request.md)
->* [通过ExceptionMonitor监控Sketch的异常.md](docs/wiki/exception_monitor.md)
+>* [通过SketchMonitor监控Sketch的异常.md](docs/wiki/monitor.md)
 >* [配置混淆（Proguard）.md](docs/wiki/proguard_config.md)
 
 ### 特别感谢

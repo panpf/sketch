@@ -228,7 +228,7 @@ public class DownloadRequest extends AsyncRequest {
             } catch (Throwable e) {
                 e.printStackTrace();
 
-                getSketch().getConfiguration().getExceptionMonitor().onDownloadError(this, e);
+                getSketch().getConfiguration().getMonitor().onDownloadError(this, e);
 
                 if (isCanceled()) {
                     if (Sketch.isDebugMode()) {

@@ -127,7 +127,7 @@ public class LruBitmapPool implements BitmapPool {
         }
         if (!bitmap.isMutable() || strategy.getSize(bitmap) > maxSize || !allowedConfigs.contains(bitmap.getConfig())) {
             if (Sketch.isDebugMode()) {
-                Log.v(Sketch.TAG, logName + ". Reject bitmap from pool"
+                Log.w(Sketch.TAG, logName + ". Reject bitmap from pool"
                         + ", bitmap: " + strategy.logBitmap(bitmap)
                         + ", is mutable: " + bitmap.isMutable()
                         + ", is allowed config: " + allowedConfigs.contains(bitmap.getConfig()));
@@ -192,15 +192,15 @@ public class LruBitmapPool implements BitmapPool {
             }
             misses++;
         } else {
+            if (Sketch.isDebugMode()) {
+                Log.i(Sketch.TAG, logName + ". Get bitmap=" + strategy.logBitmap(width, height, config));
+            }
             hits++;
             currentSize -= strategy.getSize(result);
             tracker.remove(result);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR1) {
                 result.setHasAlpha(true);
             }
-        }
-        if (Sketch.isDebugMode()) {
-            Log.v(Sketch.TAG, logName + ". Get bitmap=" + strategy.logBitmap(width, height, config));
         }
         dump();
 

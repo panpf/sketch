@@ -33,7 +33,6 @@ import me.xiaopan.sketch.decode.DefaultImageDecoder;
 import me.xiaopan.sketch.decode.ImageDecoder;
 import me.xiaopan.sketch.display.DefaultImageDisplayer;
 import me.xiaopan.sketch.display.ImageDisplayer;
-import me.xiaopan.sketch.feature.ExceptionMonitor;
 import me.xiaopan.sketch.feature.HelperFactory;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
@@ -57,12 +56,12 @@ public class Configuration {
     private BitmapPool bitmapPool;  // Bitmap缓存
     private MemoryCache memoryCache;    //图片内存缓存
     private ImageDecoder imageDecoder;    //图片解码器
+    private SketchMonitor monitor;    // 监控
     private HelperFactory helperFactory;    // 协助器工厂
     private ImageDisplayer defaultImageDisplayer;   // 默认的图片显示器，当DisplayRequest中没有指定显示器的时候就会用到
     private ImageProcessor resizeImageProcessor;    // Resize图片处理器
     private RequestFactory requestFactory;  // 请求工厂
     private RequestExecutor requestExecutor;    //请求执行器
-    private ExceptionMonitor exceptionMonitor;    // 错误回调
     private ResizeCalculator resizeCalculator;  // resize计算器
     private ImagePreprocessor imagePreprocessor;    // 本地图片预处理器
     private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
@@ -81,6 +80,7 @@ public class Configuration {
 
         MemorySizeCalculator memorySizeCalculator = new MemorySizeCalculator(context);
 
+        this.monitor = new SketchMonitor(context);
         this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
         this.diskCache = new LruDiskCache(context, this, 1, DiskCache.DISK_CACHE_MAX_SIZE);
         this.bitmapPool = new LruBitmapPool(context, memorySizeCalculator.getBitmapPoolSize());
@@ -90,7 +90,6 @@ public class Configuration {
         this.requestFactory = new RequestFactory();
         this.requestExecutor = new RequestExecutor();
         this.resizeCalculator = new ResizeCalculator();
-        this.exceptionMonitor = new ExceptionMonitor(context);
         this.imagePreprocessor = new ImagePreprocessor();
         this.imageSizeCalculator = new ImageSizeCalculator();
         this.resizeImageProcessor = new ResizeImageProcessor();
@@ -556,22 +555,22 @@ public class Configuration {
     }
 
     /**
-     * 获取错误回调
+     * 获取监控器
      */
     @SuppressWarnings("unused")
-    public ExceptionMonitor getExceptionMonitor() {
-        return exceptionMonitor;
+    public SketchMonitor getMonitor() {
+        return monitor;
     }
 
     /**
-     * 设置错误回调
+     * 设置监控器
      */
     @SuppressWarnings("unused")
-    public void setExceptionMonitor(ExceptionMonitor exceptionMonitor) {
-        if (exceptionMonitor != null) {
-            this.exceptionMonitor = exceptionMonitor;
+    public void setMonitor(SketchMonitor monitor) {
+        if (monitor != null) {
+            this.monitor = monitor;
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setExceptionMonitor", ". ", exceptionMonitor.getIdentifier()));
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setMonitor", ". ", monitor.getIdentifier()));
             }
         }
     }
@@ -647,10 +646,10 @@ public class Configuration {
             imagePreprocessor.appendIdentifier("：", builder);
         }
 
-        if (exceptionMonitor != null) {
+        if (monitor != null) {
             if (builder.length() > 0) builder.append("\n");
             builder.append("errorCallback");
-            exceptionMonitor.appendIdentifier("：", builder);
+            monitor.appendIdentifier("：", builder);
         }
 
         if (builder.length() > 0) builder.append("\n");

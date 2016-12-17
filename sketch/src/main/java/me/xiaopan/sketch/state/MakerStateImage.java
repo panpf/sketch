@@ -27,7 +27,7 @@ import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
-import me.xiaopan.sketch.feature.ExceptionMonitor;
+import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -120,8 +120,8 @@ public class MakerStateImage implements StateImage {
                     displayOptions.isForceUseResize(), tempLowQualityImage);
         } catch (OutOfMemoryError e) {
             e.printStackTrace();
-            ExceptionMonitor exceptionMonitor = sketch.getConfiguration().getExceptionMonitor();
-            exceptionMonitor.onProcessImageError(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), processor);
+            SketchMonitor sketchMonitor = sketch.getConfiguration().getMonitor();
+            sketchMonitor.onProcessImageError(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), processor);
             if (allowRecycle) {
                 bitmap.recycle();
             }

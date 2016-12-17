@@ -175,7 +175,7 @@ More:
 >* [Learn and configure HttpStack.md](docs/wiki/http_stack.md)
 >* [Listen for loading start, success, failure, and download progress.md](docs/wiki/listener.md)
 >* [Learn when to cancel a request and how to cancel the request.md](docs/wiki/cancel_request.md)
->* [The Sketch exception is monitored by ExceptionMonitor.md](docs/wiki/exception_monitor.md)
+>* [The Sketch exception is monitored by SketchMonitor.md](docs/wiki/monitor.md)
 >* [Configuration confusing (Proguard).md](docs/wiki/proguard_config.md)
 
 ### Thanks

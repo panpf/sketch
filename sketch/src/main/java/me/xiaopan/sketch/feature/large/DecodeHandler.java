@@ -27,7 +27,10 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageFormat;
+import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 解码处理器，运行在解码线程中，负责解码
@@ -36,11 +39,17 @@ class DecodeHandler extends Handler {
     private static final String NAME = "DecodeHandler";
     private static final int WHAT_DECODE = 1001;
 
-    private WeakReference<TileExecutor> reference;
+    private static boolean disableInBitmap;
 
-    public DecodeHandler(Looper looper, TileExecutor decodeExecutor) {
+    private WeakReference<TileExecutor> reference;
+    private BitmapPool bitmapPool;
+    private SketchMonitor monitor;
+
+    public DecodeHandler(Looper looper, TileExecutor executor) {
         super(looper);
-        reference = new WeakReference<TileExecutor>(decodeExecutor);
+        this.reference = new WeakReference<TileExecutor>(executor);
+        this.bitmapPool = Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool();
+        this.monitor = Sketch.with(executor.callback.getContext()).getConfiguration().getMonitor();
     }
 
     @Override
@@ -68,8 +77,8 @@ class DecodeHandler extends Handler {
         message.sendToTarget();
     }
 
-    private void decode(TileExecutor decodeExecutor, int key, Tile tile) {
-        if (decodeExecutor == null) {
+    private void decode(TileExecutor executor, int key, Tile tile) {
+        if (executor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. key: " + key + ", tile=" + tile.getInfo());
             }
@@ -77,25 +86,23 @@ class DecodeHandler extends Handler {
         }
 
         if (tile.isExpired(key)) {
-            decodeExecutor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BEFORE_KEY_EXPIRED));
+            executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BEFORE_KEY_EXPIRED));
             return;
         }
 
         if (tile.isDecodeParamEmpty()) {
-            decodeExecutor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODE_PARAM_EMPTY));
+            executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODE_PARAM_EMPTY));
             return;
         }
 
         ImageRegionDecoder regionDecoder = tile.decoder;
         if (regionDecoder == null || !regionDecoder.isReady()) {
-            decodeExecutor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODER_NULL_OR_NOT_READY));
+            executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_DECODER_NULL_OR_NOT_READY));
             return;
         }
 
         Rect srcRect = new Rect(tile.srcRect);
         int inSampleSize = tile.inSampleSize;
-
-        // TODO: 2016/12/11 使用inBitmap
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = inSampleSize;
@@ -104,22 +111,42 @@ class DecodeHandler extends Handler {
             options.inPreferredConfig = imageFormat.getConfig(false);
         }
 
+        // TODO: 2016/12/17 充分在不同版本上测试
+        if (!disableInBitmap && SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+            SketchUtils.setInBitmapFromPoolForRegionDecoder(options, srcRect, bitmapPool);
+        }
+
         long time = System.currentTimeMillis();
-        Bitmap bitmap = regionDecoder.decodeRegion(srcRect, options);
+        Bitmap bitmap = null;
+        try {
+            bitmap = regionDecoder.decodeRegion(srcRect, options);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+
+            // inBitmap不能使用时会抛出IllegalArgumentException，在这里直接关闭不再使用inBitmap功能
+            if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+                if (options.inBitmap != null) {
+                    disableInBitmap = true;
+                    SketchUtils.freeBitmapToPoolForRegionDecoder(options.inBitmap, bitmapPool);
+                    monitor.onInBitmapExceptionForRegionDecoder(regionDecoder.getImageUri(), regionDecoder.getImageSize().x,
+                            regionDecoder.getImageSize().y, srcRect, options.inSampleSize, options.inBitmap);
+                }
+            }
+        }
         int useTime = (int) (System.currentTimeMillis() - time);
 
         if (bitmap == null || bitmap.isRecycled()) {
-            decodeExecutor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_NULL));
+            executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_BITMAP_NULL));
             return;
         }
 
         if (tile.isExpired(key)) {
-            bitmap.recycle();
-            decodeExecutor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED));
+            SketchUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool());
+            executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED));
             return;
         }
 
-        decodeExecutor.mainHandler.postDecodeCompleted(key, tile, bitmap, useTime);
+        executor.mainHandler.postDecodeCompleted(key, tile, bitmap, useTime);
     }
 
     public void clean(String why) {
@@ -148,18 +175,18 @@ class DecodeHandler extends Handler {
             return cause;
         }
 
-        public String getCauseMessage(){
+        public String getCauseMessage() {
             if (cause == CAUSE_BITMAP_NULL) {
                 return "bitmap is null or recycled";
-            } else if(cause == CAUSE_BEFORE_KEY_EXPIRED) {
+            } else if (cause == CAUSE_BEFORE_KEY_EXPIRED) {
                 return "key expired before decode";
-            } else if(cause == CAUSE_AFTER_KEY_EXPIRED) {
+            } else if (cause == CAUSE_AFTER_KEY_EXPIRED) {
                 return "key expired after decode";
-            } else if(cause == CAUSE_CALLBACK_KEY_EXPIRED) {
+            } else if (cause == CAUSE_CALLBACK_KEY_EXPIRED) {
                 return "key expired before callback";
-            } else if(cause == CAUSE_DECODE_PARAM_EMPTY) {
+            } else if (cause == CAUSE_DECODE_PARAM_EMPTY) {
                 return "decode param is empty";
-            } else if(cause == CAUSE_DECODER_NULL_OR_NOT_READY) {
+            } else if (cause == CAUSE_DECODER_NULL_OR_NOT_READY) {
                 return "decoder is null or not ready";
             } else {
                 return "unknown";

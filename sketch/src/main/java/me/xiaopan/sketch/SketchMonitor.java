@@ -1,6 +1,8 @@
-package me.xiaopan.sketch.feature;
+package me.xiaopan.sketch;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
@@ -11,8 +13,6 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import me.xiaopan.sketch.Identifier;
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -21,12 +21,12 @@ import me.xiaopan.sketch.request.DownloadRequest;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class ExceptionMonitor implements Identifier {
-    protected String logName = "ExceptionMonitor";
+public class SketchMonitor implements Identifier {
+    protected String logName = "SketchMonitor";
 
     private Context context;
 
-    public ExceptionMonitor(Context context) {
+    public SketchMonitor(Context context) {
         this.context = context;
     }
 
@@ -155,17 +155,32 @@ public class ExceptionMonitor implements Identifier {
      * @param tileList           碎片列表
      * @param useLegacyMergeSort 当前是否使用旧的排序算法
      */
-    public void onTileSortError(@SuppressWarnings("UnusedParameters") IllegalArgumentException e,
-                                List<Tile> tileList, @SuppressWarnings("UnusedParameters") boolean useLegacyMergeSort) {
-        Log.w(Sketch.TAG, String.format("%s. onTileSortError. %s%s", logName,
-                useLegacyMergeSort ? "useLegacyMergeSort. " : "", SketchUtils.tileListToString(tileList)));
+    public void onTileSortError(@SuppressWarnings("UnusedParameters") IllegalArgumentException e, List<Tile> tileList, @SuppressWarnings("UnusedParameters") boolean useLegacyMergeSort) {
+        Log.w(Sketch.TAG, String.format("%s. onTileSortError. %s%s",
+                logName, useLegacyMergeSort ? "useLegacyMergeSort. " : "", SketchUtils.tileListToString(tileList)));
     }
 
     /**
      * 在即将显示时发现Bitmap被回收
      */
-    public void onBitmapRecycledOnDisplay(DisplayRequest request, RefDrawable refDrawable){
+    public void onBitmapRecycledOnDisplay(DisplayRequest request, RefDrawable refDrawable) {
+        Log.w(Sketch.TAG, String.format("%s. onBitmapRecycledOnDisplay. imageUri=%s, drawable=%s",
+                logName, request.getUri(), refDrawable.getInfo()));
+    }
 
+    /**
+     * 在BitmapRegionDecoder中使用inBitmap是发生异常
+     *
+     * @param imageUri     图片url
+     * @param imageWidth   图片宽
+     * @param imageHeight  图片高
+     * @param srcRect      读取区域
+     * @param inSampleSize 缩放比例
+     * @param inBitmap     复用的inBitmap
+     */
+    public void onInBitmapExceptionForRegionDecoder(String imageUri, int imageWidth, int imageHeight, Rect srcRect, int inSampleSize, Bitmap inBitmap) {
+        Log.w(Sketch.TAG, String.format("%s. onInBitmapException. imageUri=%s, imageWidth=%d, imageHeight=%d, srcRect=%s, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
+                logName, imageUri, imageWidth, imageHeight, srcRect.toString(), inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getBitmapByteSize(inBitmap)));
     }
 
     @Override

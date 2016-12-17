@@ -29,7 +29,7 @@ import java.text.DecimalFormat;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
-import me.xiaopan.sketch.feature.ExceptionMonitor;
+import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.DataSource;
@@ -211,8 +211,8 @@ public class DefaultImageDecoder implements ImageDecoder {
             return new DecodeResult(outWidth, outHeight, outMimeType, gifDrawable);
         } catch (Throwable e) {
             e.printStackTrace();
-            ExceptionMonitor exceptionMonitor = request.getSketch().getConfiguration().getExceptionMonitor();
-            exceptionMonitor.onDecodeGifImageError(e, request, outWidth, outHeight, outMimeType);
+            SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+            sketchMonitor.onDecodeGifImageError(e, request, outWidth, outHeight, outMimeType);
             return null;
         }
     }
@@ -299,8 +299,8 @@ public class DefaultImageDecoder implements ImageDecoder {
             bitmap = decodeHelper.decode(decodeOptions);
         } catch (Throwable error) {
             error.printStackTrace();
-            ExceptionMonitor exceptionMonitor = request.getSketch().getConfiguration().getExceptionMonitor();
-            exceptionMonitor.onDecodeNormalImageError(error, request, outWidth, outHeight, outMimeType);
+            SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+            sketchMonitor.onDecodeNormalImageError(error, request, outWidth, outHeight, outMimeType);
             decodeHelper.onDecodeError();
             return null;
         }

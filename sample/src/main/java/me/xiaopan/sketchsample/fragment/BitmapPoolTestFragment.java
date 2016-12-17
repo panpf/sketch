@@ -51,7 +51,6 @@ public class BitmapPoolTestFragment extends MyFragment {
             public void onClick(View v) {
                 new AsyncTask<Integer, Integer, Bitmap>() {
                     private StringBuilder builder = new StringBuilder();
-                    ;
 
                     @Override
                     protected Bitmap doInBackground(Integer... params) {
@@ -67,27 +66,28 @@ public class BitmapPoolTestFragment extends MyFragment {
                         builder.append("outHeight=").append(options.outHeight).append("\n");
                         builder.append("inPreferredConfig=").append(options.inPreferredConfig).append("\n");
 
-                        Bitmap inBitmap = null;
                         if (SketchUtils.sdkSupportInBitmap()) {
                             int sizeInBytes = SketchUtils.getBitmapByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
                             builder.append("sizeInBytes=").append(sizeInBytes).append("\n");
-                            inBitmap = bitmapPool.get(options.outWidth, options.outHeight, options.inPreferredConfig);
-                            if (inBitmap != null) {
-                                builder.append("inBitmap=").append(inBitmap.hashCode()).append(", ").append(SketchUtils.getBitmapByteSize(inBitmap)).append("\n");
+                            if (SketchUtils.setInBitmapFromPool(options, bitmapPool)) {
+                                builder.append("inBitmap=")
+                                        .append(Integer.toHexString(options.inBitmap.hashCode()))
+                                        .append(", ")
+                                        .append(SketchUtils.getBitmapByteSize(options.inBitmap))
+                                        .append("\n");
                             } else {
                                 builder.append("inBitmap=").append("no").append("\n");
                             }
                         }
 
-                        if (SketchUtils.sdkSupportInBitmap()) {
-                            options.inBitmap = inBitmap;
-                            options.inMutable = true;
-                        }
-
                         options.inJustDecodeBounds = false;
                         Bitmap newBitmap = readImage(fileName, options);
 
-                        builder.append("newBitmap=").append(newBitmap.hashCode()).append(", ").append(SketchUtils.getBitmapByteSize(newBitmap)).append("\n");
+                        builder.append("newBitmap=")
+                                .append(Integer.toHexString(newBitmap.hashCode()))
+                                .append(", ")
+                                .append(SketchUtils.getBitmapByteSize(newBitmap))
+                                .append("\n");
 
                         return newBitmap;
                     }
@@ -104,8 +104,7 @@ public class BitmapPoolTestFragment extends MyFragment {
                         imageView.setImageBitmap(bitmap);
                         textView.setText(builder.toString());
 
-                        if (oldBitmap != null && (!SketchUtils.sdkSupportInBitmap() || !bitmapPool.put(oldBitmap))) {
-                            oldBitmap.recycle();
+                        if (!SketchUtils.freeBitmapToPool(oldBitmap, bitmapPool)) {
                             Log.w("BitmapPoolTest", "recycle");
                         }
                     }

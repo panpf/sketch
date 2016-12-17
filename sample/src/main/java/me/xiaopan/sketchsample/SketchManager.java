@@ -10,7 +10,7 @@ import java.util.List;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
-import me.xiaopan.sketch.feature.ExceptionMonitor;
+import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -38,7 +38,7 @@ public class SketchManager {
         sketchConfiguration.setGlobalDisableCacheInDisk(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK));
         sketchConfiguration.setGlobalDisableCacheInMemory(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY));
         sketchConfiguration.setImagePreprocessor(new MyImagePreprocessor());
-        sketchConfiguration.setExceptionMonitor(new MyExceptionMonitor(context));
+        sketchConfiguration.setMonitor(new MySketchMonitor(context));
     }
 
     public void initDisplayOptions() {
@@ -76,11 +76,11 @@ public class SketchManager {
                 .setImageDisplayer(new TransitionImageDisplayer().setAlwaysUse(true)));
     }
 
-    private static class MyExceptionMonitor extends ExceptionMonitor {
+    private static class MySketchMonitor extends SketchMonitor {
 
-        public MyExceptionMonitor(Context context) {
+        public MySketchMonitor(Context context) {
             super(context);
-            logName = "MyExceptionMonitor";
+            logName = "MySketchMonitor";
         }
 
         @Override

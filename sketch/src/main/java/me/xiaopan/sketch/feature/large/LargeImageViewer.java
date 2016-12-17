@@ -433,7 +433,7 @@ public class LargeImageViewer {
                 if (Sketch.isDebugMode()) {
                     Log.w(Sketch.TAG, NAME + ". stop running. decodeCompleted. tile=" + tile.getInfo());
                 }
-                bitmap.recycle();
+                SketchUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(context).getConfiguration().getBitmapPool());
                 return;
             }
 

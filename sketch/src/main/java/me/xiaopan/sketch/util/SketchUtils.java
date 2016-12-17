@@ -26,6 +26,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Point;
@@ -67,6 +68,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
@@ -642,9 +644,10 @@ public class SketchUtils {
 
     /**
      * 根据给定的信息，生成最终的图片信息
-     * @param type 类型
-     * @param bitmap 图片
-     * @param mimeType 图片格式
+     *
+     * @param type      类型
+     * @param bitmap    图片
+     * @param mimeType  图片格式
      * @param byteCount 占用字节数
      */
     public static String makeImageInfo(String type, Bitmap bitmap, String mimeType, long byteCount) {
@@ -665,8 +668,9 @@ public class SketchUtils {
 
     /**
      * 根据给定的信息，生成最终的图片信息
-     * @param type 类型
-     * @param bitmap 图片
+     *
+     * @param type     类型
+     * @param bitmap   图片
      * @param mimeType 图片格式
      */
     public static String makeImageInfo(String type, Bitmap bitmap, String mimeType) {
@@ -675,6 +679,7 @@ public class SketchUtils {
 
     /**
      * 从GifDrawable中获取信息，生成最终的图片信息
+     *
      * @param gifDrawable GifDrawable
      */
     public static String makeGifImageInfo(GifDrawable gifDrawable) {
@@ -706,7 +711,8 @@ public class SketchUtils {
 
     /**
      * 获取矩阵中指定位置的值
-     * @param matrix Matrix
+     *
+     * @param matrix     Matrix
      * @param whichValue 指定的位置，例如Matrix.MSCALE_X
      */
     @SuppressWarnings("unused")
@@ -1034,8 +1040,9 @@ public class SketchUtils {
 
     /**
      * 根据图片地址和选项生成请求ID
+     *
      * @param imageUri 图片地址
-     * @param options 选项
+     * @param options  选项
      */
     public static String makeRequestId(String imageUri, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
@@ -1048,7 +1055,8 @@ public class SketchUtils {
 
     /**
      * 根据图片地址和选项ID生成请求ID
-     * @param imageUri 图片地址
+     *
+     * @param imageUri  图片地址
      * @param optionsId 选项ID
      */
     @SuppressWarnings("unused")
@@ -1063,8 +1071,9 @@ public class SketchUtils {
 
     /**
      * 创建状态图片的请求ID
+     *
      * @param imageUri 图片地址
-     * @param options 配置
+     * @param options  配置
      */
     public static String makeStateImageRequestId(String imageUri, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
@@ -1190,9 +1199,132 @@ public class SketchUtils {
     }
 
     /**
-     * SDK判断是否支持inBitmap
+     * SDK版本是否支持inBitmap，适用于BitmapFactory
      */
-    public static boolean sdkSupportInBitmap(){
+    public static boolean sdkSupportInBitmap() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB;
+    }
+
+    /**
+     * SDK版本是否支持inBitmap，适用于BitmapRegionDecoder
+     */
+    public static boolean sdkSupportInBitmapForRegionDecoder() {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN;
+    }
+
+    /**
+     * 从bitmap poo中取出可复用的Bitmap设置到inBitmap上，适用于BitmapFactory
+     *
+     * @param options    BitmapFactory.Options 需要用到options的outWidth、outHeight、inSampleSize以及inPreferredConfig属性
+     * @param bitmapPool BitmapPool 从这个池子里找可复用的Bitmap
+     * @return true：找到了可复用的Bitmap
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static boolean setInBitmapFromPool(BitmapFactory.Options options, BitmapPool bitmapPool) {
+        if (!sdkSupportInBitmap()) {
+            return false;
+        }
+
+        if (options.outWidth == 0 || options.outHeight == 0) {
+            throw new IllegalArgumentException("outWidth or ourHeight is 0");
+        }
+
+        int inSampleSize = options.inSampleSize >= 1 ? options.inSampleSize : 1;
+
+        Bitmap inBitmap = null;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            int finalWidth = options.outWidth / inSampleSize;
+            int finalHeight = options.outHeight / inSampleSize;
+            inBitmap = bitmapPool.get(finalWidth, finalHeight, options.inPreferredConfig);
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && inSampleSize <= 1) {
+            inBitmap = bitmapPool.get(options.outWidth, options.outHeight, options.inPreferredConfig);
+        }
+
+        if (inBitmap != null && Sketch.isDebugMode()) {
+            int sizeInBytes = SketchUtils.getBitmapByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
+            Log.d(Sketch.TAG, String.format("setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+                    options.outWidth, options.outHeight, options.inPreferredConfig, inSampleSize, sizeInBytes,
+                    Integer.toHexString(options.inBitmap.hashCode()), SketchUtils.getBitmapByteSize(options.inBitmap)));
+        }
+
+        options.inBitmap = inBitmap;
+        options.inMutable = true;
+
+        return inBitmap != null;
+    }
+
+    /**
+     * 处理bitmap，首先尝试放入bitmap pool，放不进去就回收
+     *
+     * @param bitmap     要处理的bitmap
+     * @param bitmapPool BitmapPool 尝试放入这个池子
+     * @return ture：成功放入bitmap pool
+     */
+    public static boolean freeBitmapToPool(Bitmap bitmap, BitmapPool bitmapPool) {
+        if (bitmap == null || bitmap.isRecycled()) {
+            return false;
+        }
+
+        boolean success = bitmapPool.put(bitmap);
+        if (!success) {
+            bitmap.recycle();
+        }
+        return success;
+    }
+
+    /**
+     * 从bitmap poo中取出可复用的Bitmap设置到inBitmap上，适用于BitmapRegionDecoder
+     *
+     * @param options    BitmapFactory.Options 需要用到options的outWidth、outHeight、inSampleSize以及inPreferredConfig属性
+     * @param bitmapPool BitmapPool 从这个池子里找可复用的Bitmap
+     * @return true：找到了可复用的Bitmap
+     */
+    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    public static boolean setInBitmapFromPoolForRegionDecoder(BitmapFactory.Options options, Rect srcRect, BitmapPool bitmapPool) {
+        if (!sdkSupportInBitmapForRegionDecoder()) {
+            return false;
+        }
+
+        int inSampleSize = options.inSampleSize >= 1 ? options.inSampleSize : 1;
+        Bitmap.Config config = options.inPreferredConfig;
+
+        int finalWidth = srcRect.width() / inSampleSize;
+        int finalHeight = srcRect.height() / inSampleSize;
+        Bitmap inBitmap = bitmapPool.get(finalWidth, finalHeight, config);
+
+        if (inBitmap != null) {
+            if (Sketch.isDebugMode()) {
+                int sizeInBytes = SketchUtils.getBitmapByteSize(finalWidth, finalHeight, config);
+                Log.d(Sketch.TAG, String.format("setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+                        finalWidth, finalHeight, config, inSampleSize, sizeInBytes,
+                        Integer.toHexString(inBitmap.hashCode()), SketchUtils.getBitmapByteSize(inBitmap)));
+            }
+        } else {
+            // 由于BitmapRegionDecoder不支持inMutable所以就自己创建Bitmap
+            inBitmap = Bitmap.createBitmap(finalWidth, finalHeight, config);
+        }
+
+        options.inBitmap = inBitmap;
+
+        return inBitmap != null;
+    }
+
+    /**
+     * 处理bitmap，首先尝试放入bitmap pool，放不进去就回收
+     *
+     * @param bitmap     要处理的bitmap
+     * @param bitmapPool BitmapPool 尝试放入这个池子
+     * @return ture：成功放入bitmap pool
+     */
+    public static boolean freeBitmapToPoolForRegionDecoder(Bitmap bitmap, BitmapPool bitmapPool) {
+        if (bitmap == null || bitmap.isRecycled()) {
+            return false;
+        }
+
+        boolean success = sdkSupportInBitmapForRegionDecoder() && bitmapPool.put(bitmap);
+        if (!success) {
+            bitmap.recycle();
+        }
+        return success;
     }
 }

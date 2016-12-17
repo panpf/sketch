@@ -30,7 +30,8 @@ import java.util.List;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.feature.ExceptionMonitor;
+import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.util.ObjectPool;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -38,10 +39,12 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 碎片管理器
  */
+// TODO: 2016/12/17 优化碎片计算规则，尽量保证每块碎片的尺寸都是一样的，这样就能充分利用inBitmap功能减少内存分配提高流畅度
 class TileManager {
     private static final String NAME = "TileManager";
 
     private Context context;
+    private BitmapPool bitmapPool;
     private LargeImageViewer largeImageViewer;
 
     int tiles = 3;  // 碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
@@ -71,6 +74,7 @@ class TileManager {
 
     TileManager(Context context, LargeImageViewer largeImageViewer) {
         this.context = context;
+        this.bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
         this.largeImageViewer = largeImageViewer;
     }
 
@@ -442,12 +446,12 @@ class TileManager {
             e.printStackTrace();
 
             /**
-             * Java7的排序算法在检测到A>B, B>C, 但是A<=C的时候就会抛出异常，我们这里的处理办法是记录下异常时的数据并改用旧版的排序算法再次排序
+             * Java7的排序算法在检测到A>B, B>C, 但是A<=C的时候就会抛出异常，这里的处理办法是暂时改用旧版的排序算法再次排序
              */
 
             Configuration configuration = Sketch.with(context).getConfiguration();
-            ExceptionMonitor exceptionMonitor = configuration.getExceptionMonitor();
-            exceptionMonitor.onTileSortError(e, tileList, false);
+            SketchMonitor sketchMonitor = configuration.getMonitor();
+            sketchMonitor.onTileSortError(e, tileList, false);
 
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "true");
             try {
@@ -455,7 +459,7 @@ class TileManager {
             } catch (IllegalArgumentException e2) {
                 e2.printStackTrace();
 
-                exceptionMonitor.onTileSortError(e, tileList, true);
+                sketchMonitor.onTileSortError(e, tileList, true);
             }
             System.setProperty("java.util.Arrays.useLegacyMergeSort", "false");
         }
@@ -576,7 +580,7 @@ class TileManager {
                         Log.d(Sketch.TAG, NAME + ". recycle tile. tile=" + tile.getInfo());
                     }
                     tileIterator.remove();
-                    tile.clean();
+                    tile.clean(bitmapPool);
                     tilePool.put(tile);
                 } else {
                     if (Sketch.isDebugMode()) {
@@ -669,14 +673,14 @@ class TileManager {
 
         tileList.remove(tile);
 
-        tile.clean();
+        tile.clean(bitmapPool);
         tilePool.put(tile);
     }
 
     void clean(String why) {
         for (Tile tile : tileList) {
             tile.refreshKey();
-            tile.clean();
+            tile.clean(bitmapPool);
             tilePool.put(tile);
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". clean tile and refresh key. " + why + ". tile=" + tile.getInfo());

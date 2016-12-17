@@ -25,7 +25,9 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.util.KeyCounter;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 运行在主线程，负责将执行器的结果发送到主线程
@@ -39,11 +41,13 @@ class MainHandler extends Handler {
     private static final int WHAT_DECODE_COMPLETED = 2004;
     private static final int WHAT_DECODE_FAILED = 2005;
 
-    private WeakReference<TileExecutor> reference;
+    private BitmapPool bitmapPool;
+    private WeakReference<TileExecutor> executorReference;
 
-    public MainHandler(Looper looper, TileExecutor decodeExecutor) {
+    public MainHandler(Looper looper, TileExecutor executor) {
         super(looper);
-        reference = new WeakReference<TileExecutor>(decodeExecutor);
+        executorReference = new WeakReference<TileExecutor>(executor);
+        bitmapPool = Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool();
     }
 
     @Override
@@ -83,9 +87,9 @@ class MainHandler extends Handler {
     }
 
     private void recycleDecodeThread() {
-        TileExecutor decodeExecutor = reference.get();
-        if (decodeExecutor != null) {
-            decodeExecutor.recycleDecodeThread();
+        TileExecutor executor = executorReference.get();
+        if (executor != null) {
+            executor.recycleDecodeThread();
         }
     }
 
@@ -129,8 +133,8 @@ class MainHandler extends Handler {
 
 
     private void initCompleted(ImageRegionDecoder decoder, String imageUri, int key, KeyCounter keyCounter) {
-        TileExecutor decodeExecutor = reference.get();
-        if (decodeExecutor == null) {
+        TileExecutor executor = executorReference.get();
+        if (executor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. initCompleted. key: " + key + ", imageUri: " + decoder.getImageUri());
             }
@@ -147,12 +151,12 @@ class MainHandler extends Handler {
             return;
         }
 
-        decodeExecutor.callback.onInitCompleted(imageUri, decoder);
+        executor.callback.onInitCompleted(imageUri, decoder);
     }
 
     private void initError(Exception exception, String imageUri, int key, KeyCounter keyCounter) {
-        TileExecutor decodeExecutor = reference.get();
-        if (decodeExecutor == null) {
+        TileExecutor executor = executorReference.get();
+        if (executor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. initError. key: " + key + ", imageUri: " + imageUri);
             }
@@ -167,38 +171,38 @@ class MainHandler extends Handler {
             return;
         }
 
-        decodeExecutor.callback.onInitError(imageUri, exception);
+        executor.callback.onInitError(imageUri, exception);
     }
 
     private void decodeCompleted(int key, Tile tile, Bitmap bitmap, int useTime) {
-        TileExecutor decodeExecutor = reference.get();
-        if (decodeExecutor == null) {
+        TileExecutor executor = executorReference.get();
+        if (executor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. decodeCompleted. key: " + key +", tile=" + tile.getInfo());
             }
-            bitmap.recycle();
+            SketchUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
             return;
         }
 
         if (!tile.isExpired(key)) {
-            decodeExecutor.callback.onDecodeCompleted(tile, bitmap, useTime);
+            executor.callback.onDecodeCompleted(tile, bitmap, useTime);
         } else {
-            bitmap.recycle();
-            decodeExecutor.callback.onDecodeError(tile,
+            SketchUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
+            executor.callback.onDecodeError(tile,
                     new DecodeHandler.DecodeErrorException(DecodeHandler.DecodeErrorException.CAUSE_CALLBACK_KEY_EXPIRED));
         }
     }
 
     private void decodeError(int key, Tile tile, DecodeHandler.DecodeErrorException exception) {
-        TileExecutor decodeExecutor = reference.get();
-        if (decodeExecutor == null) {
+        TileExecutor executor = executorReference.get();
+        if (executor == null) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, NAME + ". weak reference break. decodeError. key: " + key +", tile=" + tile.getInfo());
             }
             return;
         }
 
-        decodeExecutor.callback.onDecodeError(tile, exception);
+        executor.callback.onDecodeError(tile, exception);
     }
 
     private static final class DecodeResult {

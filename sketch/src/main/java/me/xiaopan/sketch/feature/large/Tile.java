@@ -19,7 +19,9 @@ package me.xiaopan.sketch.feature.large;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
 
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.util.KeyCounter;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 碎片
@@ -56,9 +58,9 @@ public class Tile {
     }
 
     @SuppressWarnings("unused")
-    public void clean() {
+    public void clean(BitmapPool bitmapPool) {
         if (bitmap != null) {
-            bitmap.recycle();
+            SketchUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
             bitmap = null;
         }
         bitmapDrawSrcRect.setEmpty();
