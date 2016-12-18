@@ -7,7 +7,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class SketchBitmap {
     private static final String LOG_NAME = "SketchBitmap";
 
-    public Bitmap bitmap;
+    protected Bitmap bitmap;
 
     private String imageId;
     private String imageUri;
@@ -61,8 +61,7 @@ public class SketchBitmap {
     }
 
     public String getInfo() {
-        Bitmap bitmap = getBitmap();
-        return SketchUtils.makeImageInfo(LOG_NAME, bitmap, mimeType, SketchUtils.getBitmapByteSize(bitmap));
+        return bitmap != null ? SketchUtils.makeImageInfo(LOG_NAME, bitmap, mimeType, SketchUtils.getBitmapByteSize(bitmap)) : "Recycled";
     }
 
     public int getByteCount() {
@@ -70,7 +69,6 @@ public class SketchBitmap {
     }
 
     public Bitmap.Config getBitmapConfig() {
-        Bitmap bitmap = getBitmap();
         return bitmap != null ? bitmap.getConfig() : null;
     }
 }

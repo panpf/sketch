@@ -207,6 +207,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
         }
 
         if (oldBitmap == null) {
+            // TODO: 2016/12/18 从bitmap pool中取
             mBuffer = Bitmap.createBitmap(mNativeInfoHandle.width, mNativeInfoHandle.height, Bitmap.Config.ARGB_8888);
         } else {
             mBuffer = oldBitmap;
@@ -230,6 +231,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      */
     public void recycle() {
         shutdown();
+        // TODO: 2016/12/18 放入bitmap pool
         mBuffer.recycle();
     }
 

@@ -27,9 +27,10 @@ import java.io.File;
 import java.text.DecimalFormat;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
-import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.DataSource;
@@ -135,59 +136,58 @@ public class DefaultImageDecoder implements ImageDecoder {
         return null;
     }
 
-    // TODO: 2016/12/11 使用bitmap pool
     private DecodeResult decodeFromHelper(LoadRequest request, DecodeHelper decodeHelper, boolean disableProcess) {
         // Decode bounds and mime info
-        Options boundsOptions = new Options();
-        boundsOptions.inJustDecodeBounds = true;
-        decodeHelper.decode(boundsOptions);
+        Options options = new Options();
+        options.inJustDecodeBounds = true;
+        decodeHelper.decode(options);
+        options.inJustDecodeBounds = false;
 
         // 过滤掉原图宽高小于等于1的图片
-        if (boundsOptions.outWidth <= 1 || boundsOptions.outHeight <= 1) {
+        if (options.outWidth <= 1 || options.outHeight <= 1) {
             if (Sketch.isDebugMode()) {
                 Log.e(Sketch.TAG, SketchUtils.concat(logName,
                         ". image width or height less than or equal to 1px",
-                        ". imageSize: ", boundsOptions.outWidth, "x", boundsOptions.outHeight,
+                        ". imageSize: ", options.outWidth, "x", options.outHeight,
                         ". ", request.getId()));
             }
             decodeHelper.onDecodeError();
             return null;
         }
 
-        final ImageFormat imageFormat = ImageFormat.valueOfMimeType(boundsOptions.outMimeType);
+        final ImageFormat imageFormat = ImageFormat.valueOfMimeType(options.outMimeType);
 
-        // Decode gif image
-        DecodeResult gifResult = gifImage(request, decodeHelper, boundsOptions.outWidth,
-                boundsOptions.outHeight, boundsOptions.outMimeType, imageFormat);
+        // Try decode gif image
+        DecodeResult gifResult = gifImage(request, decodeHelper, options.outWidth,
+                options.outHeight, options.outMimeType, imageFormat);
         if (gifResult != null) {
             return gifResult;
         }
 
-        Options decodeOptions = new Options();
-
         // Set whether priority is given to quality or speed
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1
                 && request.getOptions().isInPreferQualityOverSpeed()) {
-            decodeOptions.inPreferQualityOverSpeed = true;
+            options.inPreferQualityOverSpeed = true;
         }
 
-        // Setup bitmap config
-        decodeOptions.inPreferredConfig = request.getOptions().getBitmapConfig();
-        if (decodeOptions.inPreferredConfig == null && imageFormat != null) {
-            decodeOptions.inPreferredConfig = imageFormat.getConfig(request.getOptions().isLowQualityImage());
+        // Setup preferred bitmap config
+        Bitmap.Config newConfig = request.getOptions().getBitmapConfig();
+        if (newConfig == null && imageFormat != null) {
+            newConfig = imageFormat.getConfig(request.getOptions().isLowQualityImage());
+        }
+        if (newConfig != null) {
+            options.inPreferredConfig = newConfig;
         }
 
-        // Decode image by thumbnail mode
+        // Try decode image by thumbnail mode
         if (!disableProcess) {
-            DecodeResult thumbnailModeResult = thumbnailMode(request, decodeHelper,
-                    boundsOptions.outWidth, boundsOptions.outHeight, boundsOptions.outMimeType, imageFormat, decodeOptions);
+            DecodeResult thumbnailModeResult = thumbnailMode(request, decodeHelper, imageFormat, options);
             if (thumbnailModeResult != null) {
                 return thumbnailModeResult;
             }
         }
 
-        return normal(request, decodeHelper, boundsOptions.outWidth, boundsOptions.outHeight,
-                boundsOptions.outMimeType, imageFormat, decodeOptions, disableProcess);
+        return normal(request, decodeHelper, imageFormat, options, disableProcess);
     }
 
     private DecodeResult gifImage(LoadRequest request, DecodeHelper decodeHelper,
@@ -217,9 +217,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
     }
 
-    private DecodeResult thumbnailMode(LoadRequest request, DecodeHelper decodeHelper,
-                                       int outWidth, int outHeight, String outMimeType,
-                                       ImageFormat imageFormat, Options decodeOptions) {
+    private DecodeResult thumbnailMode(LoadRequest request, DecodeHelper decodeHelper, ImageFormat imageFormat, Options options) {
         // 要想使用缩略图功能需要配置开启缩略图功能、配置resize并且图片格式和系统版本支持BitmapRegionDecoder才行
         LoadOptions loadOptions = request.getOptions();
         if (!loadOptions.isThumbnailMode() || loadOptions.getResize() == null
@@ -233,27 +231,46 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 缩略图模式强制质量优先
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.GINGERBREAD_MR1
-                && !decodeOptions.inPreferQualityOverSpeed) {
-            decodeOptions.inPreferQualityOverSpeed = true;
+                && !options.inPreferQualityOverSpeed) {
+            options.inPreferQualityOverSpeed = true;
         }
 
         // 只有原始图片的宽高比和resize的宽高比相差3倍的时候才能使用略略图方式读取图片
         Resize resize = loadOptions.getResize();
         ImageSizeCalculator sizeCalculator = request.getSketch().getConfiguration().getImageSizeCalculator();
-        if (!sizeCalculator.canUseThumbnailMode(outWidth, outHeight, resize.getWidth(), resize.getHeight())) {
+        if (!sizeCalculator.canUseThumbnailMode(options.outWidth, options.outHeight, resize.getWidth(), resize.getHeight())) {
             return null;
         }
 
         // 计算resize区域在原图中的对应区域
         ResizeCalculator resizeCalculator = request.getSketch().getConfiguration().getResizeCalculator();
-        ResizeCalculator.Result result = resizeCalculator.calculator(outWidth, outHeight, resize.getWidth(), resize.getHeight(), resize.getScaleType(), false);
+        ResizeCalculator.Result result = resizeCalculator.calculator(options.outWidth, options.outHeight, resize.getWidth(), resize.getHeight(), resize.getScaleType(), false);
 
         boolean supportLargeImage = SketchUtils.supportLargeImage(request, imageFormat);
 
         // 根据resize的大小和原图中对应区域的大小计算缩小倍数，这样会得到一个较为清晰的缩略图
-        decodeOptions.inSampleSize = sizeCalculator.calculateInSampleSize(result.srcRect.width(), result.srcRect.height(),
+        options.inSampleSize = sizeCalculator.calculateInSampleSize(result.srcRect.width(), result.srcRect.height(),
                 resize.getWidth(), resize.getHeight(), supportLargeImage);
-        Bitmap bitmap = decodeHelper.decodeRegion(result.srcRect, decodeOptions);
+
+        if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+            BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+            SketchUtils.setInBitmapFromPoolForRegionDecoder(options, result.srcRect, bitmapPool);
+        }
+
+        Bitmap bitmap = null;
+        try {
+            bitmap = decodeHelper.decodeRegion(result.srcRect, options);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+
+            // inBitmap不能使用时会抛出IllegalArgumentException，在这里直接关闭不再使用inBitmap功能
+            if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+                BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+                SketchMonitor monitor = request.getSketch().getConfiguration().getMonitor();
+                SketchUtils.inBitmapThrowForRegionDecoder(e, options, monitor, bitmapPool,
+                        request.getUri(), options.outWidth, options.outHeight, result.srcRect);
+            }
+        }
 
         // 过滤掉无效的图片
         if (bitmap == null || bitmap.isRecycled()) {
@@ -266,7 +283,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
                         ". image width or height less than or equal to 1px",
-                        ". imageSize: ", outWidth, "x", outHeight,
+                        ". imageSize: ", options.outWidth, "x", options.outHeight,
                         ". bitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
                         ". ", request.getId()));
             }
@@ -276,31 +293,44 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         // 成功
-        decodeHelper.onDecodeSuccess(bitmap, outWidth, outHeight, outMimeType, decodeOptions.inSampleSize);
-        return new DecodeResult(outWidth, outHeight, outMimeType, bitmap).setCanCacheInDiskCache(true);
+        decodeHelper.onDecodeSuccess(bitmap, options.outWidth, options.outHeight, options.outMimeType, options.inSampleSize);
+        return new DecodeResult(options.outWidth, options.outHeight, options.outMimeType, bitmap).setCanCacheInDiskCache(true);
     }
 
     private DecodeResult normal(LoadRequest request, DecodeHelper decodeHelper,
-                                int outWidth, int outHeight, String outMimeType,
-                                ImageFormat imageFormat, Options decodeOptions, boolean disableProcess) {
-        // 根据maxSize计算缩小倍数
+                                ImageFormat imageFormat, Options options, boolean disableProcess) {
+        // Calculate inSampleSize according to max size
         if (!disableProcess) {
             MaxSize maxSize = request.getOptions().getMaxSize();
             if (maxSize != null) {
                 boolean supportLargeImage = SketchUtils.supportLargeImage(request, imageFormat);
                 ImageSizeCalculator imageSizeCalculator = request.getSketch().getConfiguration().getImageSizeCalculator();
-                decodeOptions.inSampleSize = imageSizeCalculator.calculateInSampleSize(outWidth, outHeight,
+                options.inSampleSize = imageSizeCalculator.calculateInSampleSize(options.outWidth, options.outHeight,
                         maxSize.getWidth(), maxSize.getHeight(), supportLargeImage);
             }
         }
 
+        // Set inBitmap from bitmap pool
+        if (SketchUtils.sdkSupportInBitmap()) {
+            BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+            SketchUtils.setInBitmapFromPool(options, bitmapPool);
+        }
+
         Bitmap bitmap;
         try {
-            bitmap = decodeHelper.decode(decodeOptions);
+            bitmap = decodeHelper.decode(options);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            if (SketchUtils.sdkSupportInBitmap()) {
+                SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+                BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+                SketchUtils.inBitmapThrow(e, options, sketchMonitor, bitmapPool, request.getUri(), options.outWidth, options.outHeight);
+            }
+            return null;
         } catch (Throwable error) {
             error.printStackTrace();
             SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
-            sketchMonitor.onDecodeNormalImageError(error, request, outWidth, outHeight, outMimeType);
+            sketchMonitor.onDecodeNormalImageError(error, request, options.outWidth, options.outHeight, options.outMimeType);
             decodeHelper.onDecodeError();
             return null;
         }
@@ -316,7 +346,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat(logName,
                         ". image width or height less than or equal to 1px",
-                        ". imageSize: ", outWidth, "x", outHeight,
+                        ". imageSize: ", options.outWidth, "x", options.outHeight,
                         ". bitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
                         ". ", request.getId()));
             }
@@ -326,11 +356,11 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         // 成功
-        decodeHelper.onDecodeSuccess(bitmap, outWidth, outHeight, outMimeType, decodeOptions.inSampleSize);
+        decodeHelper.onDecodeSuccess(bitmap, options.outWidth, options.outHeight, options.outMimeType, options.inSampleSize);
 
         ImageSizeCalculator sizeCalculator = request.getSketch().getConfiguration().getImageSizeCalculator();
-        boolean canUseCacheProcessedImageInDisk = sizeCalculator.canUseCacheProcessedImageInDisk(decodeOptions.inSampleSize);
-        return new DecodeResult(outWidth, outHeight, outMimeType, bitmap)
+        boolean canUseCacheProcessedImageInDisk = sizeCalculator.canUseCacheProcessedImageInDisk(options.inSampleSize);
+        return new DecodeResult(options.outWidth, options.outHeight, options.outMimeType, bitmap)
                 .setCanCacheInDiskCache(canUseCacheProcessedImageInDisk);
     }
 

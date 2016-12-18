@@ -251,7 +251,7 @@ public class LoadRequest extends DownloadRequest {
                 if (Sketch.isDebugMode()) {
                     printLogW("canceled", "runLoad", "decode after", "bitmapInfo: " + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getMimeType()));
                 }
-                bitmap.recycle();
+                SketchUtils.freeBitmapToPool(bitmap, getSketch().getConfiguration().getBitmapPool());
                 return;
             }
 
@@ -280,7 +280,7 @@ public class LoadRequest extends DownloadRequest {
                         if (Sketch.isDebugMode()) {
                             printLogW("process new bitmap", "runLoad", "bitmapInfo: " + SketchUtils.makeImageInfo(null, newBitmap, decodeResult.getMimeType()));
                         }
-                        bitmap.recycle();
+                        SketchUtils.freeBitmapToPool(bitmap, getSketch().getConfiguration().getBitmapPool());
                         bitmap = newBitmap;
                         canCacheInDiskCache |= true;
                     } else {
@@ -295,7 +295,7 @@ public class LoadRequest extends DownloadRequest {
                         if (Sketch.isDebugMode()) {
                             printLogW("canceled", "runLoad", "process after", "bitmapInfo: " + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getMimeType()));
                         }
-                        bitmap.recycle();
+                        SketchUtils.freeBitmapToPool(bitmap, getSketch().getConfiguration().getBitmapPool());
                         return;
                     }
                 }
@@ -419,7 +419,7 @@ public class LoadRequest extends DownloadRequest {
             // 已经取消了就直接把图片回收了
             if (loadResult != null) {
                 if (loadResult.getBitmap() != null) {
-                    loadResult.getBitmap().recycle();
+                    SketchUtils.freeBitmapToPool(loadResult.getBitmap(), getSketch().getConfiguration().getBitmapPool());
                 }
                 if (loadResult.getGifDrawable() != null) {
                     loadResult.getGifDrawable().recycle();

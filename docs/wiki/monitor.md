@@ -10,6 +10,7 @@ Sketch在运行的过程中会有各种各样的异常，你可以通过SketchMo
 >* `onTileSortError(IllegalArgumentException, List<Tile>, boolean)`：分块显示超大图功能碎片排序异常
 >* `onBitmapRecycledOnDisplay(DisplayRequest, RefDrawable)`：在即将显示图片之前发现图片被回收了
 >* `onInBitmapExceptionForRegionDecoder(String, int, int, Rect, int, Bitmap)`：在BitmapRegionDecoder中使用inBitmap时发生异常
+>* `onInBitmapException(String, int, int imageHeight, int, Bitmap)`：在BitmapFactory中使用inBitmap时发生异常
 
 #### 使用
 

@@ -188,7 +188,7 @@ public class LruBitmapPool implements BitmapPool {
         final Bitmap result = strategy.get(width, height, config != null ? config : DEFAULT_CONFIG);
         if (result == null) {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, logName + ". Missing bitmap=" + strategy.logBitmap(width, height, config));
+                Log.w(Sketch.TAG, logName + ". Missing bitmap=" + strategy.logBitmap(width, height, config));
             }
             misses++;
         } else {
@@ -265,13 +265,13 @@ public class LruBitmapPool implements BitmapPool {
                 return;
             }
 
+            if (Sketch.isDebugMode()) {
+                Log.e(Sketch.TAG, logName + ". Evicting bitmap=" + strategy.logBitmap(removed));
+            }
             tracker.remove(removed);
             currentSize -= strategy.getSize(removed);
             removed.recycle();
             evictions++;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, logName + ". Evicting bitmap=" + strategy.logBitmap(removed));
-            }
             dump();
         }
     }

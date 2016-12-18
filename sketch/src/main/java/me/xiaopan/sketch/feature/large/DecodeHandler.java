@@ -27,9 +27,9 @@ import android.util.Log;
 import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageFormat;
-import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -111,7 +111,6 @@ class DecodeHandler extends Handler {
             options.inPreferredConfig = imageFormat.getConfig(false);
         }
 
-        // TODO: 2016/12/17 充分在不同版本上测试
         if (!disableInBitmap && SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
             SketchUtils.setInBitmapFromPoolForRegionDecoder(options, srcRect, bitmapPool);
         }
@@ -124,12 +123,10 @@ class DecodeHandler extends Handler {
             e.printStackTrace();
 
             // inBitmap不能使用时会抛出IllegalArgumentException，在这里直接关闭不再使用inBitmap功能
-            if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
-                if (options.inBitmap != null) {
+            if (!disableInBitmap && SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+                if (SketchUtils.inBitmapThrowForRegionDecoder(e, options, monitor, bitmapPool,
+                        regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, srcRect)) {
                     disableInBitmap = true;
-                    SketchUtils.freeBitmapToPoolForRegionDecoder(options.inBitmap, bitmapPool);
-                    monitor.onInBitmapExceptionForRegionDecoder(regionDecoder.getImageUri(), regionDecoder.getImageSize().x,
-                            regionDecoder.getImageSize().y, srcRect, options.inSampleSize, options.inBitmap);
                 }
             }
         }

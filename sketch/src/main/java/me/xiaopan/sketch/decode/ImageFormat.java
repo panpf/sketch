@@ -19,11 +19,11 @@ package me.xiaopan.sketch.decode;
 import android.graphics.Bitmap;
 
 public enum ImageFormat {
-    PNG("image/png", Bitmap.Config.ARGB_8888, Bitmap.Config.ARGB_4444),
     JPEG("image/jpeg", Bitmap.Config.RGB_565, Bitmap.Config.RGB_565),
+    PNG("image/png", Bitmap.Config.ARGB_8888, Bitmap.Config.ARGB_4444),
+    WEBP("image/webp", Bitmap.Config.ARGB_8888, Bitmap.Config.ARGB_4444),
     GIF("image/gif", Bitmap.Config.ARGB_8888, Bitmap.Config.ARGB_4444),
-    BMP("image/bmp", Bitmap.Config.RGB_565, Bitmap.Config.RGB_565),
-    WEBP("image/webp", Bitmap.Config.ARGB_8888, Bitmap.Config.ARGB_4444);
+    BMP("image/bmp", Bitmap.Config.RGB_565, Bitmap.Config.RGB_565),;
 
     String mimeType;
     Bitmap.Config bestConfig;
@@ -33,6 +33,22 @@ public enum ImageFormat {
         this.mimeType = mimeType;
         this.bestConfig = bestConfig;
         this.lowQualityConfig = lowQualityConfig;
+    }
+
+    public static ImageFormat valueOfMimeType(String mimeType) {
+        if (ImageFormat.JPEG.mimeType.equalsIgnoreCase(mimeType)) {
+            return ImageFormat.JPEG;
+        } else if (ImageFormat.PNG.mimeType.equalsIgnoreCase(mimeType)) {
+            return ImageFormat.PNG;
+        } else if (ImageFormat.WEBP.mimeType.equalsIgnoreCase(mimeType)) {
+            return ImageFormat.WEBP;
+        } else if (ImageFormat.GIF.mimeType.equalsIgnoreCase(mimeType)) {
+            return ImageFormat.GIF;
+        } else if (ImageFormat.BMP.mimeType.equalsIgnoreCase(mimeType)) {
+            return ImageFormat.BMP;
+        } else {
+            return null;
+        }
     }
 
     public Bitmap.Config getConfig(boolean lowQualityImage) {
@@ -55,14 +71,5 @@ public enum ImageFormat {
 
     public boolean equals(String mimeType) {
         return this.mimeType.equalsIgnoreCase(mimeType);
-    }
-
-    public static ImageFormat valueOfMimeType(String mimeType) {
-        for (ImageFormat imageFormat : values()) {
-            if (imageFormat.equals(mimeType)) {
-                return imageFormat;
-            }
-        }
-        return null;
     }
 }

@@ -68,6 +68,7 @@ import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
@@ -1229,14 +1230,20 @@ public class SketchUtils {
             throw new IllegalArgumentException("outWidth or ourHeight is 0");
         }
 
+        if (TextUtils.isEmpty(options.outMimeType)) {
+            throw new IllegalArgumentException("outMimeType is empty");
+        }
+
         int inSampleSize = options.inSampleSize >= 1 ? options.inSampleSize : 1;
+        ImageFormat format = ImageFormat.valueOfMimeType(options.outMimeType);
 
         Bitmap inBitmap = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             int finalWidth = options.outWidth / inSampleSize;
             int finalHeight = options.outHeight / inSampleSize;
             inBitmap = bitmapPool.get(finalWidth, finalHeight, options.inPreferredConfig);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && inSampleSize <= 1) {
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && inSampleSize <= 1
+                && (format == ImageFormat.JPEG || format == ImageFormat.PNG)) {
             inBitmap = bitmapPool.get(options.outWidth, options.outHeight, options.inPreferredConfig);
         }
 
@@ -1244,13 +1251,29 @@ public class SketchUtils {
             int sizeInBytes = SketchUtils.getBitmapByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
             Log.d(Sketch.TAG, String.format("setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                     options.outWidth, options.outHeight, options.inPreferredConfig, inSampleSize, sizeInBytes,
-                    Integer.toHexString(options.inBitmap.hashCode()), SketchUtils.getBitmapByteSize(options.inBitmap)));
+                    Integer.toHexString(inBitmap.hashCode()), SketchUtils.getBitmapByteSize(inBitmap)));
         }
 
         options.inBitmap = inBitmap;
         options.inMutable = true;
 
         return inBitmap != null;
+    }
+
+    public static boolean inBitmapThrow(Throwable throwable, BitmapFactory.Options options,
+                                        SketchMonitor monitor, BitmapPool bitmapPool, String imageUri, int imageWidth, int imageHeight) {
+        if (throwable instanceof IllegalArgumentException) {
+            if (SketchUtils.sdkSupportInBitmap()) {
+                if (options.inBitmap != null) {
+                    SketchUtils.freeBitmapToPool(options.inBitmap, bitmapPool);
+                    monitor.onInBitmapException(imageUri, imageWidth,
+                            imageHeight, options.inSampleSize, options.inBitmap);
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -1272,6 +1295,10 @@ public class SketchUtils {
         return success;
     }
 
+    // TODO: 2016/12/18 试试如果解码一个不支持的图片会发生什么异常，inBitmap该怎么处理
+    // TODO: 2016/12/18 检查decode返回结果，如果为null时，就回收inBitmap
+    // TODO: 2016/12/17 充分在不同版本上测试
+
     /**
      * 从bitmap poo中取出可复用的Bitmap设置到inBitmap上，适用于BitmapRegionDecoder
      *
@@ -1279,7 +1306,7 @@ public class SketchUtils {
      * @param bitmapPool BitmapPool 从这个池子里找可复用的Bitmap
      * @return true：找到了可复用的Bitmap
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public static boolean setInBitmapFromPoolForRegionDecoder(BitmapFactory.Options options, Rect srcRect, BitmapPool bitmapPool) {
         if (!sdkSupportInBitmapForRegionDecoder()) {
             return false;
@@ -1309,12 +1336,29 @@ public class SketchUtils {
         return inBitmap != null;
     }
 
+    public static boolean inBitmapThrowForRegionDecoder(Throwable throwable, BitmapFactory.Options options,
+                                                        SketchMonitor monitor, BitmapPool bitmapPool, String imageUri,
+                                                        int imageWidth, int imageHeight, Rect srcRect){
+        if (throwable instanceof IllegalArgumentException) {
+            if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+                if (options.inBitmap != null) {
+                    SketchUtils.freeBitmapToPoolForRegionDecoder(options.inBitmap, bitmapPool);
+                    monitor.onInBitmapExceptionForRegionDecoder(imageUri, imageWidth,
+                            imageHeight, srcRect, options.inSampleSize, options.inBitmap);
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
     /**
      * 处理bitmap，首先尝试放入bitmap pool，放不进去就回收
      *
      * @param bitmap     要处理的bitmap
      * @param bitmapPool BitmapPool 尝试放入这个池子
-     * @return ture：成功放入bitmap pool
+     * @return true：成功放入bitmap pool
      */
     public static boolean freeBitmapToPoolForRegionDecoder(Bitmap bitmap, BitmapPool bitmapPool) {
         if (bitmap == null || bitmap.isRecycled()) {

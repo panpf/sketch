@@ -23,6 +23,7 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
@@ -143,9 +144,10 @@ public class MakerStateImage implements StateImage {
             allowRecycle = true;
         }
 
-        // 允许收说明是创建了一张新的图片，不能回收说明还是从res中获取的BitmapDrawable可以直接使用
+        // 允许回收说明是创建了一张新的图片，不能回收说明还是从res中获取的BitmapDrawable可以直接使用
         if (allowRecycle) {
-            RefBitmap newRefBitmap = new RefBitmap(bitmap, memoryCacheKey,
+            BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
+            RefBitmap newRefBitmap = new RefBitmap(bitmap, bitmapPool, memoryCacheKey,
                     String.valueOf(resId), bitmap.getWidth(), bitmap.getHeight(), null);
             newRefBitmap.setAllowRecycle(true);
             memoryCache.put(memoryCacheKey, newRefBitmap);

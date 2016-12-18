@@ -20,6 +20,7 @@ import android.graphics.Bitmap;
 import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -31,10 +32,12 @@ public class RefBitmap extends SketchBitmap {
     private int displayRefCount;
     private int waitDisplayRefCount;
 
+    private BitmapPool bitmapPool;
     private boolean allowRecycle = true;
 
-    public RefBitmap(Bitmap bitmap, String imageId, String imageUri, int originWidth, int originHeight, String mimeType) {
+    public RefBitmap(Bitmap bitmap, BitmapPool bitmapPool, String imageId, String imageUri, int originWidth, int originHeight, String mimeType) {
         super(bitmap, imageId, imageUri, originWidth, originHeight, mimeType);
+        this.bitmapPool = bitmapPool;
     }
 
     /**
@@ -98,7 +101,6 @@ public class RefBitmap extends SketchBitmap {
      * 已回收
      */
     public synchronized boolean isRecycled() {
-        Bitmap bitmap = getBitmap();
         return bitmap == null || bitmap.isRecycled();
     }
 
@@ -106,9 +108,9 @@ public class RefBitmap extends SketchBitmap {
      * 回收Bitmap
      */
     public synchronized void recycle() {
-        Bitmap bitmap = getBitmap();
         if (bitmap != null) {
-            bitmap.recycle();
+            SketchUtils.freeBitmapToPool(bitmap, bitmapPool);
+            bitmap = null;
         }
     }
 
@@ -116,7 +118,7 @@ public class RefBitmap extends SketchBitmap {
      * 可以回收？只有三种引用都为0并且允许回收才可以回收
      */
     public synchronized boolean canRecycle() {
-        return allowRecycle && getBitmap() != null && !getBitmap().isRecycled();
+        return allowRecycle && bitmap != null && !bitmap.isRecycled();
     }
 
     /**
@@ -145,17 +147,15 @@ public class RefBitmap extends SketchBitmap {
         if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
             if (Sketch.isDebugMode()) {
                 Log.w(Sketch.TAG, SketchUtils.concat("RefBitmap",
-                        ". recycle bitmap",
+                        ". free bitmap",
                         ". ", callingStation, ":", type,
                         ". ", getInfo()));
             }
-
-            // TODO: 2016/12/11 放入bitmap pool
-            getBitmap().recycle();
+            recycle();
         } else {
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat("RefBitmap",
-                        ". can't recycle bitmap",
+                        ". can't free bitmap",
                         ". ", callingStation,
                         ". ", type,
                         ". ", getInfo(),

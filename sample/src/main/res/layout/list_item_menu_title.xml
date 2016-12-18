@@ -11,7 +11,7 @@
         android:layout_marginLeft="16dp"
         android:layout_marginTop="16dp"
         android:text="页面"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textStyle="bold" />
 
     <View

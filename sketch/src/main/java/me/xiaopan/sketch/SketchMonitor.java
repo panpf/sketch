@@ -179,8 +179,22 @@ public class SketchMonitor implements Identifier {
      * @param inBitmap     复用的inBitmap
      */
     public void onInBitmapExceptionForRegionDecoder(String imageUri, int imageWidth, int imageHeight, Rect srcRect, int inSampleSize, Bitmap inBitmap) {
-        Log.w(Sketch.TAG, String.format("%s. onInBitmapException. imageUri=%s, imageWidth=%d, imageHeight=%d, srcRect=%s, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
+        Log.w(Sketch.TAG, String.format("%s. onInBitmapExceptionForRegionDecoder. imageUri=%s, imageSize=%dx%d, srcRect=%s, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
                 logName, imageUri, imageWidth, imageHeight, srcRect.toString(), inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getBitmapByteSize(inBitmap)));
+    }
+
+    /**
+     * 在BitmapFactory中使用inBitmap是发生异常
+     *
+     * @param imageUri     图片url
+     * @param imageWidth   图片宽
+     * @param imageHeight  图片高
+     * @param inSampleSize 缩放比例
+     * @param inBitmap     复用的inBitmap
+     */
+    public void onInBitmapException(String imageUri, int imageWidth, int imageHeight, int inSampleSize, Bitmap inBitmap) {
+        Log.w(Sketch.TAG, String.format("%s. onInBitmapException. imageUri=%s, imageSize=%dx%d, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
+                logName, imageUri, imageWidth, imageHeight, inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getBitmapByteSize(inBitmap)));
     }
 
     @Override

@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
@@ -210,7 +211,8 @@ public class DisplayRequest extends LoadRequest {
                 return;
             }
 
-            RefBitmap refBitmap = new RefBitmap(bitmap, getId(), getUri(),
+            BitmapPool bitmapPool = getSketch().getConfiguration().getBitmapPool();
+            RefBitmap refBitmap = new RefBitmap(bitmap, bitmapPool, getId(), getUri(),
                     loadResult.getOriginWidth(), loadResult.getOriginHeight(), loadResult.getMimeType());
 
             // 放入内存缓存中

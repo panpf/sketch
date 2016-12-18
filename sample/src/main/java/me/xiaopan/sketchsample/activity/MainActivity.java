@@ -192,9 +192,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             }
         }
 
-        menuList.add("内存缓存");
-        menuList.add(new CheckMenu(this, "全局禁用内存缓存", Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY, null, menuClickListener));
-        menuList.add(new InfoMenu("清除缓存") {
+        menuList.add("缓存");
+        menuList.add(new InfoMenu("内存缓存（点击清空）") {
             @Override
             public String getInfo() {
                 MemoryCache memoryCache = Sketch.with(getBaseContext()).getConfiguration().getMemoryCache();
@@ -210,9 +209,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 adapter.notifyDataSetChanged();
             }
         });
-
-        menuList.add("BitmapPool");
-        menuList.add(new InfoMenu("清空BitmapPool") {
+        menuList.add(new InfoMenu("BitmapPool（点击清空）") {
             @Override
             public String getInfo() {
                 BitmapPool bitmapPool = Sketch.with(getBaseContext()).getConfiguration().getBitmapPool();
@@ -228,10 +225,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 adapter.notifyDataSetChanged();
             }
         });
-
-        menuList.add("磁盘缓存");
-        menuList.add(new CheckMenu(this, "全局禁用磁盘缓存", Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK, null, menuClickListener));
-        menuList.add(new InfoMenu("清除缓存") {
+        menuList.add(new InfoMenu("磁盘缓存（点击清空）") {
             @Override
             public String getInfo() {
                 DiskCache diskCache = Sketch.with(getBaseContext()).getConfiguration().getDiskCache();
@@ -258,6 +252,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 }.execute(0);
             }
         });
+        menuList.add(new CheckMenu(this, "全局禁用内存缓存", Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "全局禁用磁盘缓存", Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK, null, menuClickListener));
 
         menuList.add("手势缩放");
         menuList.add(new CheckMenu(this, "开启手势缩放", Settings.PREFERENCE_SUPPORT_ZOOM, new CheckMenu.OnCheckedChangedListener() {
@@ -285,7 +281,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         menuList.add("GIF");
 
-        menuList.add(new CheckMenu(this, "列表中播放GIF图", Settings.PREFERENCE_PLAY_GIF_ON_LIST, new CheckMenu.OnCheckedChangedListener() {
+        menuList.add(new CheckMenu(this, "搜索列表中播放GIF图", Settings.PREFERENCE_PLAY_GIF_ON_LIST, new CheckMenu.OnCheckedChangedListener() {
             @Override
             public void onCheckedChanged(boolean checked) {
                 EventBus.getDefault().post(Settings.PREFERENCE_PLAY_GIF_ON_LIST);
