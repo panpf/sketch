@@ -267,7 +267,7 @@ public class DisplayHelper {
      * 为了加快速度，将经过ImageProcessor、resize或thumbnailMode处理过的图片保存到磁盘缓存中，下次就直接读取
      */
     @SuppressWarnings("unused")
-    public DisplayHelper cacheProcessedImageInDisk(){
+    public DisplayHelper cacheProcessedImageInDisk() {
         displayOptions.setCacheProcessedImageInDisk(true);
         return this;
     }
@@ -516,15 +516,19 @@ public class DisplayHelper {
         }
 
         // 如果没有设置ScaleType的话就从ImageView身上取
-        if (displayOptions.getResize() != null
-                && displayOptions.getResize().getScaleType() == null
-                && imageViewInterface != null) {
-            displayOptions.getResize().setScaleType(viewInfo.getScaleType());
+        Resize resize = displayOptions.getResize();
+        if (resize != null && resize.getScaleType() == null && imageViewInterface != null) {
+            resize.setScaleType(viewInfo.getScaleType());
         }
 
         // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
-        if (displayOptions.getResize() != null && displayOptions.getImageProcessor() == null) {
+        if (resize != null && displayOptions.getImageProcessor() == null) {
             displayOptions.setImageProcessor(configuration.getResizeImageProcessor());
+        }
+
+        // 检查Resize的宽高都必须大于0
+        if (resize != null && (resize.getWidth() == 0 || resize.getHeight() == 0)) {
+            throw new IllegalArgumentException("Resize width and height must be > 0");
         }
 
         // 没有设置maxSize的话，如果ImageView的宽高是的固定的就根据ImageView的宽高来作为maxSize，否则就用默认的maxSize
@@ -534,6 +538,12 @@ public class DisplayHelper {
                 maxSize = imageSizeCalculator.getDefaultImageMaxSize(configuration.getContext());
             }
             displayOptions.setMaxSize(maxSize);
+        }
+
+        // 检查MaxSize的宽或高大于0即可
+        MaxSize maxSize = displayOptions.getMaxSize();
+        if (maxSize != null && maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
+            throw new IllegalArgumentException("MaxSize width or height must be > 0");
         }
 
         // 如果设置了全局禁用磁盘缓存就强制关闭磁盘缓存功能

@@ -157,7 +157,7 @@ public class LoadHelper {
      * 开启缩略图模式
      */
     @SuppressWarnings("unused")
-    public LoadHelper thumbnailMode(){
+    public LoadHelper thumbnailMode() {
         loadOptions.setThumbnailMode(true);
         return this;
     }
@@ -166,7 +166,7 @@ public class LoadHelper {
      * 为了加快速度，将经过ImageProcessor、resize或thumbnailMode处理过的图片保存到磁盘缓存中，下次就直接读取
      */
     @SuppressWarnings("unused")
-    public LoadHelper cacheProcessedImageInDisk(){
+    public LoadHelper cacheProcessedImageInDisk() {
         loadOptions.setCacheProcessedImageInDisk(true);
         return this;
     }
@@ -217,7 +217,7 @@ public class LoadHelper {
      * 提交
      */
     public LoadRequest commit() {
-        if(sync && SketchUtils.isMainThread()){
+        if (sync && SketchUtils.isMainThread()) {
             throw new IllegalStateException("Cannot sync perform the load in the UI thread ");
         }
 
@@ -247,13 +247,25 @@ public class LoadHelper {
         Configuration configuration = sketch.getConfiguration();
 
         // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
-        if (loadOptions.getResize() != null && loadOptions.getImageProcessor() == null) {
+        Resize resize = loadOptions.getResize();
+        if (resize != null && loadOptions.getImageProcessor() == null) {
             loadOptions.setImageProcessor(configuration.getResizeImageProcessor());
+        }
+
+        // 检查Resize的宽高都必须大于0
+        if (resize != null && (resize.getWidth() == 0 || resize.getHeight() == 0)) {
+            throw new IllegalArgumentException("Resize width and height must be > 0");
         }
 
         // 没有设置maxSize的话，就用默认的maxSize
         if (loadOptions.getMaxSize() == null) {
             loadOptions.setMaxSize(configuration.getImageSizeCalculator().getDefaultImageMaxSize(configuration.getContext()));
+        }
+
+        // 检查MaxSize的宽或高大于0即可
+        MaxSize maxSize = loadOptions.getMaxSize();
+        if (maxSize != null && maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
+            throw new IllegalArgumentException("MaxSize width or height must be > 0");
         }
 
         // 如果设置了全局禁用磁盘缓存就强制关闭磁盘缓存功能

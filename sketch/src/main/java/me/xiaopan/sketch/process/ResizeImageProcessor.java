@@ -46,7 +46,7 @@ public class ResizeImageProcessor implements ImageProcessor {
             return null;
         }
 
-        if (resize == null || (bitmap.getWidth() == resize.getWidth() && bitmap.getHeight() == resize.getHeight())) {
+        if (resize == null || resize.getWidth() == 0 || resize.getHeight() == 0 || (bitmap.getWidth() == resize.getWidth() && bitmap.getHeight() == resize.getHeight())) {
             return bitmap;
         }
 
