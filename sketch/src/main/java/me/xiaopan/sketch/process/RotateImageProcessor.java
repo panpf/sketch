@@ -17,10 +17,15 @@
 package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -51,7 +56,31 @@ public class RotateImageProcessor extends ResizeImageProcessor {
 
         Matrix matrix = new Matrix();
         matrix.setRotate(degrees);
-        Bitmap rotateBitmap = Bitmap.createBitmap(resizeBitmap, 0, 0, resizeBitmap.getWidth(), resizeBitmap.getHeight(), matrix, true);
+
+        // 根据旋转角度计算新的图片的尺寸
+        RectF dstR = new RectF(0, 0, resizeBitmap.getWidth(), resizeBitmap.getHeight());
+        RectF deviceR = new RectF();
+        matrix.mapRect(deviceR, dstR);
+        int newWidth = (int) deviceR.width();
+        int newHeight = (int) deviceR.height();
+
+        // 创建新图片
+        BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
+        Bitmap.Config config = resizeBitmap.getConfig() != null ? resizeBitmap.getConfig() : null;
+        if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {   // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
+            config = Bitmap.Config.ARGB_8888;
+        }
+        Bitmap rotateBitmap = bitmapPool.getOrMake(newWidth, newHeight, config);
+
+        // 绘制
+        Canvas canvas = new Canvas(rotateBitmap);
+        canvas.translate(-deviceR.left, -deviceR.top);
+        canvas.concat(matrix);
+        Paint paint = new Paint();
+
+        Rect srcR = new Rect(0, 0, resizeBitmap.getWidth(), resizeBitmap.getHeight());
+        canvas.drawBitmap(resizeBitmap, srcR, dstR, paint);
+        canvas.setBitmap(null);
 
         if (resizeBitmap != bitmap) {
             SketchUtils.freeBitmapToPool(resizeBitmap, sketch.getConfiguration().getBitmapPool());
