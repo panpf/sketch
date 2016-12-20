@@ -5,6 +5,7 @@ Sketch:
 >* `minSdkVersion` 最低支持版本升到9
 >* `bitmap pool` 增加bitmap pool，减少内存分配，减少GC回收造成的卡顿
 >* `ExceptionMonitor` ExceptionMonitor改名为SketchMonitor并挪到顶级目录
+>* :bug: `GIF` onDetachedFromWindow时主动回收GifDrawable
 
 Sample APP
 
