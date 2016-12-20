@@ -108,7 +108,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         initViews();
         startService(new Intent(getBaseContext(), NotificationService.class));
-        switchPage(BuildConfig.DEBUG ? Page.BITMAP_POOL_TESt : Page.LARGE_IMAGE);
+        switchPage(BuildConfig.DEBUG ? Page.IMAGE_PROCESSOR : Page.LARGE_IMAGE);
     }
 
     private void initViews() {
@@ -560,11 +560,11 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         }
     }
 
-    private static class TitleTabFactory implements PagerSlidingTabStrip.TabViewFactory {
+    public static class TitleTabFactory implements PagerSlidingTabStrip.TabViewFactory {
         private String[] titles;
         private Context context;
 
-        private TitleTabFactory(String[] titles, Context context) {
+        public TitleTabFactory(String[] titles, Context context) {
             this.titles = titles;
             this.context = context;
         }
