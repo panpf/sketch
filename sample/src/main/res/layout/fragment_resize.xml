@@ -32,7 +32,8 @@
         <TextView
             android:id="@+id/text_resizeFragment_width"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:gravity="right"/>
     </LinearLayout>
 
     <SeekBar
@@ -58,6 +59,7 @@
         <TextView
             android:id="@+id/text_resizeFragment_height"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:gravity="right"/>
     </LinearLayout>
 </LinearLayout>
