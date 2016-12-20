@@ -181,6 +181,7 @@ inBitmap的意思是找一个字节数一样的旧bitmap对象来装新的图片
 支持vector
 4.0以下下webp转png再使用，可以解决很多问题（超大图功能对WebP的限制需要改一下）
 支持一次设置两张图地址 分大图小图 WiFi下可直接大图
+再次考虑Drawable.setVisible
 
 其它：
 参考Glide、Fresco和Picasso
