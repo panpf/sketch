@@ -28,6 +28,7 @@ import java.io.InputStream;
 import java.io.RandomAccessFile;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
@@ -131,9 +132,9 @@ public class CacheFileDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public SketchGifDrawable getGifDrawable() {
+    public SketchGifDrawable getGifDrawable(BitmapPool bitmapPool) {
         try {
-            return new SketchGifDrawable(new RandomAccessFile(diskCacheEntry.getFile().getPath(), "r").getFD());
+            return new SketchGifDrawable(bitmapPool, new RandomAccessFile(diskCacheEntry.getFile().getPath(), "r").getFD());
         } catch (IOException e) {
             e.printStackTrace();
             return null;

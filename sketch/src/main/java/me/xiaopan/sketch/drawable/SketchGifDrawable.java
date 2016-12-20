@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.util.SketchUtils;
 import pl.droidsonroids.gif.GifDrawable;
@@ -27,44 +28,44 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
     private String mimeType;
     private ImageFrom imageFrom;
 
-    public SketchGifDrawable(AssetFileDescriptor afd) throws IOException {
-        super(afd);
+    public SketchGifDrawable(BitmapPool bitmapPool, AssetFileDescriptor afd) throws IOException {
+        super(bitmapPool, afd);
     }
 
-    public SketchGifDrawable(AssetManager assets, String assetName) throws IOException {
-        super(assets, assetName);
+    public SketchGifDrawable(BitmapPool bitmapPool, AssetManager assets, String assetName) throws IOException {
+        super(bitmapPool, assets, assetName);
     }
 
-    public SketchGifDrawable(ByteBuffer buffer) throws IOException {
-        super(buffer);
+    public SketchGifDrawable(BitmapPool bitmapPool, ByteBuffer buffer) throws IOException {
+        super(bitmapPool, buffer);
     }
 
-    public SketchGifDrawable(byte[] bytes) throws IOException {
-        super(bytes);
+    public SketchGifDrawable(BitmapPool bitmapPool, byte[] bytes) throws IOException {
+        super(bitmapPool, bytes);
     }
 
-    public SketchGifDrawable(FileDescriptor fd) throws IOException {
-        super(fd);
+    public SketchGifDrawable(BitmapPool bitmapPool, FileDescriptor fd) throws IOException {
+        super(bitmapPool, fd);
     }
 
-    public SketchGifDrawable(File file) throws IOException {
-        super(file);
+    public SketchGifDrawable(BitmapPool bitmapPool, File file) throws IOException {
+        super(bitmapPool, file);
     }
 
-    public SketchGifDrawable(String filePath) throws IOException {
-        super(filePath);
+    public SketchGifDrawable(BitmapPool bitmapPool, String filePath) throws IOException {
+        super(bitmapPool, filePath);
     }
 
-    public SketchGifDrawable(Resources res, int id) throws Resources.NotFoundException, IOException {
-        super(res, id);
+    public SketchGifDrawable(BitmapPool bitmapPool, Resources res, int id) throws Resources.NotFoundException, IOException {
+        super(bitmapPool, res, id);
     }
 
-    public SketchGifDrawable(ContentResolver resolver, Uri uri) throws IOException {
-        super(resolver, uri);
+    public SketchGifDrawable(BitmapPool bitmapPool, ContentResolver resolver, Uri uri) throws IOException {
+        super(bitmapPool, resolver, uri);
     }
 
-    public SketchGifDrawable(InputStream stream) throws IOException {
-        super(stream);
+    public SketchGifDrawable(BitmapPool bitmapPool, InputStream stream) throws IOException {
+        super(bitmapPool, stream);
     }
 
     @Override

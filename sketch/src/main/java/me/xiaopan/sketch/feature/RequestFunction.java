@@ -29,6 +29,7 @@ import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.util.SketchUtils;
+import pl.droidsonroids.gif.GifDrawable;
 
 /**
  * 请求基本功能，更新图片显示引用计数和在onDetachedFromWindow的时候取消请求并清空图片
@@ -73,6 +74,10 @@ public class RequestFunction extends SketchImageView.Function {
 
                 if (drawable instanceof RefDrawable) {
                     ((RefDrawable) drawable).setIsDisplayed(callingStation, isDisplayed);
+                } else if (drawable instanceof GifDrawable) {
+                    if (!isDisplayed) {
+                        ((GifDrawable) drawable).recycle();
+                    }
                 }
 
                 isSketchDrawable = drawable instanceof SketchDrawable;

@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.decode;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -122,9 +124,10 @@ public class ContentDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public SketchGifDrawable getGifDrawable() {
+    public SketchGifDrawable getGifDrawable(BitmapPool bitmapPool) {
+        ContentResolver contentResolver = loadRequest.getSketch().getConfiguration().getContext().getContentResolver();
         try {
-            return new SketchGifDrawable(loadRequest.getSketch().getConfiguration().getContext().getContentResolver(), contentUri);
+            return new SketchGifDrawable(bitmapPool, contentResolver, contentUri);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

@@ -311,7 +311,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             }
         }, menuClickListener));
 
-        menuList.add(new CheckMenu(this, "使用缩略图模式", Settings.PREFERENCE_THUMBNAIL_MODE, new CheckMenu.OnCheckedChangedListener() {
+        menuList.add(new CheckMenu(this, "开启缩略图模式", Settings.PREFERENCE_THUMBNAIL_MODE, new CheckMenu.OnCheckedChangedListener() {
             @Override
             public void onCheckedChanged(boolean checked) {
                 EventBus.getDefault().post(Settings.PREFERENCE_THUMBNAIL_MODE);

@@ -27,6 +27,7 @@ import java.io.File;
 import java.io.IOException;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -102,9 +103,9 @@ public class FileDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public SketchGifDrawable getGifDrawable() {
+    public SketchGifDrawable getGifDrawable(BitmapPool bitmapPool) {
         try {
-            return new SketchGifDrawable(file);
+            return new SketchGifDrawable(bitmapPool, file);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

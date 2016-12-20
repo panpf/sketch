@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.decode;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
@@ -28,6 +29,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -121,9 +123,10 @@ public class AssetsDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public SketchGifDrawable getGifDrawable() {
+    public SketchGifDrawable getGifDrawable(BitmapPool bitmapPool) {
+        AssetManager assetManager = loadRequest.getSketch().getConfiguration().getContext().getAssets();
         try {
-            return new SketchGifDrawable(loadRequest.getSketch().getConfiguration().getContext().getAssets(), assetsFilePath);
+            return new SketchGifDrawable(bitmapPool, assetManager, assetsFilePath);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

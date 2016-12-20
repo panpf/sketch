@@ -132,6 +132,8 @@ public class ImageFragment extends MyFragment {
                 if (applyBackgroundCallback != null && isVisibleToUser()) {
                     applyBackgroundCallback.onApplyBackground(imageUri);
                 }
+
+//                refreshGifStatus();
             }
 
             @Override
@@ -249,7 +251,29 @@ public class ImageFragment extends MyFragment {
                 imageView.getLargeImageViewer().setPause(false);
             }
         }
+
+//        refreshGifStatus();
     }
+
+//    /**
+//     * 显示时播放，不显示时停止
+//     */
+//    private void refreshGifStatus() {
+//        Drawable lastDrawable = SketchUtils.getLastDrawable(imageView.getDrawable());
+//        if (lastDrawable != null && lastDrawable instanceof GifDrawable) {
+//            GifDrawable gifDrawable = (GifDrawable) lastDrawable;
+//            if (isVisibleToUser()) {
+//                if (!gifDrawable.isRunning()) {
+//                    gifDrawable.start();
+//                }
+//            } else {
+//                if (gifDrawable.isRunning()) {
+//                    gifDrawable.seekToFrame(1); // 停留在第一帧
+//                    gifDrawable.stop();
+//                }
+//            }
+//        }
+//    }
 
     private boolean location(float x, float y) {
         if (!imageView.isSupportZoom()) {
@@ -284,7 +308,7 @@ public class ImageFragment extends MyFragment {
         }
     }
 
-    private void setupZoomAndLargeImage(){
+    private void setupZoomAndLargeImage() {
         imageView.setSupportZoom(Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_SUPPORT_ZOOM));
         imageView.setSupportLargeImage(Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_SUPPORT_LARGE_IMAGE));
 

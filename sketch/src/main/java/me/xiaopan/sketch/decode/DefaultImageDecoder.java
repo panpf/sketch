@@ -198,7 +198,8 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         try {
-            SketchGifDrawable gifDrawable = decodeHelper.getGifDrawable();
+            BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+            SketchGifDrawable gifDrawable = decodeHelper.getGifDrawable(bitmapPool);
             if (gifDrawable == null) {
                 return null;
             }

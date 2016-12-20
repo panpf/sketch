@@ -1295,9 +1295,7 @@ public class SketchUtils {
         return success;
     }
 
-    // TODO: 2016/12/18 试试如果解码一个不支持的图片会发生什么异常，inBitmap该怎么处理
-    // TODO: 2016/12/18 检查decode返回结果，如果为null时，就回收inBitmap
-    // TODO: 2016/12/17 充分在不同版本上测试
+    // TODO: 2016/12/17 充分在不同版本上测试，以及不同格式特别是19以下只支持jpg和png
 
     /**
      * 从bitmap poo中取出可复用的Bitmap设置到inBitmap上，适用于BitmapRegionDecoder

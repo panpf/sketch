@@ -34,6 +34,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.util.SketchUtils;
+
 /**
  * A {@link Drawable} which can be used to hold GIF images, especially animations.
  * Basic GIF metadata can also be examined.
@@ -65,6 +68,21 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 
     private final Runnable mRenderTask = new RenderTask(this);
     private final Rect mSrcRect;
+    private BitmapPool mBitmapPool;
+
+    /**
+     * Creates drawable from resource.
+     *
+     * @param bitmapPool looking for reusable bitmap from the pool
+     * @param res Resources to read from
+     * @param id  resource id (raw or drawable)
+     * @throws NotFoundException    if the given ID does not exist.
+     * @throws IOException          when opening failed
+     * @throws NullPointerException if res is null
+     */
+    public GifDrawable(BitmapPool bitmapPool, Resources res, int id) throws NotFoundException, IOException {
+        this(bitmapPool, res.openRawResourceFd(id));
+    }
 
     /**
      * Creates drawable from resource.
@@ -77,6 +95,19 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      */
     public GifDrawable(Resources res, int id) throws NotFoundException, IOException {
         this(res.openRawResourceFd(id));
+    }
+
+    /**
+     * Creates drawable from asset.
+     *
+     * @param bitmapPool looking for reusable bitmap from the pool
+     * @param assets    AssetManager to read from
+     * @param assetName name of the asset
+     * @throws IOException          when opening failed
+     * @throws NullPointerException if assets or assetName is null
+     */
+    public GifDrawable(BitmapPool bitmapPool, AssetManager assets, String assetName) throws IOException {
+        this(bitmapPool, assets.openFd(assetName));
     }
 
     /**
@@ -97,6 +128,21 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * In practice can be called from main thread. However it will violate
      * {@link StrictMode} policy if disk reads detection is enabled.<br>
      *
+     * @param bitmapPool looking for reusable bitmap from the pool
+     * @param filePath path to the GIF file
+     * @throws IOException          when opening failed
+     * @throws NullPointerException if filePath is null
+     */
+    public GifDrawable(BitmapPool bitmapPool, String filePath) throws IOException {
+        this(bitmapPool, GifInfoHandle.openFile(filePath, false), null, null, true);
+    }
+
+    /**
+     * Constructs drawable from given file path.<br>
+     * Only metadata is read, no graphic data is decoded here.
+     * In practice can be called from main thread. However it will violate
+     * {@link StrictMode} policy if disk reads detection is enabled.<br>
+     *
      * @param filePath path to the GIF file
      * @throws IOException          when opening failed
      * @throws NullPointerException if filePath is null
@@ -108,12 +154,38 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
     /**
      * Equivalent to {@code} GifDrawable(file.getPath())}
      *
+     * @param bitmapPool looking for reusable bitmap from the pool
+     * @param file the GIF file
+     * @throws IOException          when opening failed
+     * @throws NullPointerException if file is null
+     */
+    public GifDrawable(BitmapPool bitmapPool, File file) throws IOException {
+        this(bitmapPool, GifInfoHandle.openFile(file.getPath(), false), null, null, true);
+    }
+
+    /**
+     * Equivalent to {@code} GifDrawable(file.getPath())}
+     *
      * @param file the GIF file
      * @throws IOException          when opening failed
      * @throws NullPointerException if file is null
      */
     public GifDrawable(File file) throws IOException {
         this(GifInfoHandle.openFile(file.getPath(), false), null, null, true);
+    }
+
+    /**
+     * Creates drawable from InputStream.
+     * InputStream must support marking, IllegalArgumentException will be thrown otherwise.
+     *
+     * @param bitmapPool looking for reusable bitmap from the pool
+     * @param stream stream to read from
+     * @throws IOException              when opening failed
+     * @throws IllegalArgumentException if stream does not support marking
+     * @throws NullPointerException     if stream is null
+     */
+    public GifDrawable(BitmapPool bitmapPool, InputStream stream) throws IOException {
+        this(bitmapPool, GifInfoHandle.openMarkableInputStream(stream, false), null, null, true);
     }
 
     /**
@@ -133,12 +205,37 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * Creates drawable from AssetFileDescriptor.
      * Convenience wrapper for {@link GifDrawable#GifDrawable(FileDescriptor)}
      *
+     * @param bitmapPool looking for reusable bitmap from the pool
+     * @param afd source
+     * @throws NullPointerException if afd is null
+     * @throws IOException          when opening failed
+     */
+    public GifDrawable(BitmapPool bitmapPool, AssetFileDescriptor afd) throws IOException {
+        this(bitmapPool, GifInfoHandle.openAssetFileDescriptor(afd, false), null, null, true);
+    }
+
+    /**
+     * Creates drawable from AssetFileDescriptor.
+     * Convenience wrapper for {@link GifDrawable#GifDrawable(FileDescriptor)}
+     *
      * @param afd source
      * @throws NullPointerException if afd is null
      * @throws IOException          when opening failed
      */
     public GifDrawable(AssetFileDescriptor afd) throws IOException {
         this(GifInfoHandle.openAssetFileDescriptor(afd, false), null, null, true);
+    }
+
+    /**
+     * Creates drawable from FileDescriptor
+     *
+     * @param bitmapPool looking for reusable bitmap from the pool
+     * @param fd source
+     * @throws IOException          when opening failed
+     * @throws NullPointerException if fd is null
+     */
+    public GifDrawable(BitmapPool bitmapPool, FileDescriptor fd) throws IOException {
+        this(bitmapPool, GifInfoHandle.openFd(fd, 0, false), null, null, true);
     }
 
     /**
@@ -156,12 +253,38 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * Creates drawable from byte array.<br>
      * It can be larger than size of the GIF data. Bytes beyond GIF terminator are not accessed.
      *
+     * @param bitmapPool looking for reusable bitmap from the pool
+     * @param bytes raw GIF bytes
+     * @throws IOException          if bytes does not contain valid GIF data
+     * @throws NullPointerException if bytes are null
+     */
+    public GifDrawable(BitmapPool bitmapPool, byte[] bytes) throws IOException {
+        this(bitmapPool, GifInfoHandle.openByteArray(bytes, false), null, null, true);
+    }
+
+    /**
+     * Creates drawable from byte array.<br>
+     * It can be larger than size of the GIF data. Bytes beyond GIF terminator are not accessed.
+     *
      * @param bytes raw GIF bytes
      * @throws IOException          if bytes does not contain valid GIF data
      * @throws NullPointerException if bytes are null
      */
     public GifDrawable(byte[] bytes) throws IOException {
         this(GifInfoHandle.openByteArray(bytes, false), null, null, true);
+    }
+
+    /**
+     * Creates drawable from {@link ByteBuffer}. Only direct buffers are supported.
+     * Buffer can be larger than size of the GIF data. Bytes beyond GIF terminator are not accessed.
+     *
+     * @param bitmapPool looking for reusable bitmap from the pool
+     * @param buffer buffer containing GIF data
+     * @throws IOException          if buffer does not contain valid GIF data or is indirect
+     * @throws NullPointerException if buffer is null
+     */
+    public GifDrawable(BitmapPool bitmapPool, ByteBuffer buffer) throws IOException {
+        this(bitmapPool, GifInfoHandle.openDirectByteBuffer(buffer, false), null, null, true);
     }
 
     /**
@@ -181,6 +304,20 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      * {@link android.content.ContentResolver#openAssetFileDescriptor(android.net.Uri, String)}
      * is used to open an Uri.
      *
+     * @param bitmapPool looking for reusable bitmap from the pool
+     * @param uri      GIF Uri, cannot be null.
+     * @param resolver resolver used to query {@code uri}, can be null for file:// scheme Uris
+     * @throws IOException if resolution fails or destination is not a GIF.
+     */
+    public GifDrawable(BitmapPool bitmapPool, ContentResolver resolver, Uri uri) throws IOException {
+        this(bitmapPool, GifInfoHandle.openUri(resolver, uri, false), null, null, true);
+    }
+
+    /**
+     * Creates drawable from {@link android.net.Uri} which is resolved using {@code resolver}.
+     * {@link android.content.ContentResolver#openAssetFileDescriptor(android.net.Uri, String)}
+     * is used to open an Uri.
+     *
      * @param uri      GIF Uri, cannot be null.
      * @param resolver resolver used to query {@code uri}, can be null for file:// scheme Uris
      * @throws IOException if resolution fails or destination is not a GIF.
@@ -190,6 +327,10 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
     }
 
     GifDrawable(GifInfoHandle gifInfoHandle, final GifDrawable oldDrawable, ScheduledThreadPoolExecutor executor, boolean isRenderingTriggeredOnDraw) {
+        this(null, gifInfoHandle, oldDrawable, executor, isRenderingTriggeredOnDraw);
+    }
+
+    GifDrawable(BitmapPool bitmapPool, GifInfoHandle gifInfoHandle, final GifDrawable oldDrawable, ScheduledThreadPoolExecutor executor, boolean isRenderingTriggeredOnDraw) {
         mIsRenderingTriggeredOnDraw = isRenderingTriggeredOnDraw;
         mExecutor = executor != null ? executor : GifRenderingExecutor.getInstance();
         mNativeInfoHandle = gifInfoHandle;
@@ -206,9 +347,13 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
             }
         }
 
+        this.mBitmapPool = bitmapPool;
         if (oldBitmap == null) {
-            // TODO: 2016/12/18 从bitmap pool中取
-            mBuffer = Bitmap.createBitmap(mNativeInfoHandle.width, mNativeInfoHandle.height, Bitmap.Config.ARGB_8888);
+            Bitmap bufferFromPool = mBitmapPool != null ? bitmapPool.get(mNativeInfoHandle.width, mNativeInfoHandle.height, Bitmap.Config.ARGB_8888) : null;
+            if (bufferFromPool == null) {
+                bufferFromPool = Bitmap.createBitmap(mNativeInfoHandle.width, mNativeInfoHandle.height, Bitmap.Config.ARGB_8888);
+            }
+            mBuffer = bufferFromPool;
         } else {
             mBuffer = oldBitmap;
         }
@@ -231,8 +376,11 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      */
     public void recycle() {
         shutdown();
-        // TODO: 2016/12/18 放入bitmap pool
-        mBuffer.recycle();
+        if (mBitmapPool != null) {
+            SketchUtils.freeBitmapToPool(mBuffer, mBitmapPool);
+        } else {
+            mBuffer.recycle();
+        }
     }
 
     private void shutdown() {
@@ -386,6 +534,23 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
      */
     public GifError getError() {
         return GifError.fromCode(mNativeInfoHandle.getNativeErrorCode());
+    }
+
+    /**
+     * An {@link GifDrawable#GifDrawable(BitmapPool, Resources, int)} wrapper but returns null
+     * instead of throwing exception if creation fails.
+     *
+     * @param bitmapPool looking for reusable bitmap from the pool
+     * @param res        resources to read from
+     * @param resourceId resource id
+     * @return correct drawable or null if creation failed
+     */
+    public static GifDrawable createFromResource(BitmapPool bitmapPool, Resources res, int resourceId) {
+        try {
+            return new GifDrawable(bitmapPool, res, resourceId);
+        } catch (IOException ignored) {
+            return null;
+        }
     }
 
     /**
