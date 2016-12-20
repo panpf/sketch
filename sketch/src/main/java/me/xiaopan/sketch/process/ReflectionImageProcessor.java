@@ -83,36 +83,35 @@ public class ReflectionImageProcessor extends ResizeImageProcessor {
         // 先resize
         Bitmap srcBitmap = super.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
 
-        int finalHeight = (int) (srcBitmap.getHeight() + reflectionSpacing + (srcBitmap.getHeight() * reflectionScale));
+        int srcHeight = srcBitmap.getHeight();
+        int reflectionHeight = (int) (srcHeight * reflectionScale);
+        int reflectionTop = srcHeight + reflectionSpacing;
+
         Bitmap.Config config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
         BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
 
         // 创建新图片
-        Bitmap newBitmap = bitmapPool.getOrMake(srcBitmap.getWidth(), finalHeight, config);
+        Bitmap newBitmap = bitmapPool.getOrMake(srcBitmap.getWidth(), reflectionTop + reflectionHeight, config);
         Canvas canvas = new Canvas(newBitmap);
 
         // 在上半部分绘制原图
         canvas.drawBitmap(srcBitmap, 0, 0, null);
 
-        // 创建一个180度翻转的图片作为倒影
+        // 在下半部分绘制倒影
         Matrix matrix = new Matrix();
-        matrix.preScale(1, -1);
-        Bitmap reflectionImage = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.getWidth(), srcBitmap.getHeight(), matrix, false);
+        matrix.postScale(1, -1);
+        matrix.postTranslate(0, srcHeight + reflectionTop);
+        canvas.drawBitmap(srcBitmap, matrix, null);
+
+        // 在倒影部分绘制半透明遮罩，让倒影部分产生半透明渐变的效果
+        Paint paint = new Paint();
+        paint.setShader(new LinearGradient(0, reflectionTop, 0, newBitmap.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
+        paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
+        canvas.drawRect(0, reflectionTop, newBitmap.getWidth(), newBitmap.getHeight(), paint);
+
         if (srcBitmap != bitmap) {
             SketchUtils.freeBitmapToPool(srcBitmap, bitmapPool);
         }
-
-        // 在下半部分绘制倒影
-        canvas.drawBitmap(reflectionImage, 0, srcBitmap.getHeight() + reflectionSpacing, null);
-        SketchUtils.freeBitmapToPool(reflectionImage, bitmapPool);
-
-        // 在下半部分绘制半透明遮罩
-        Paint paint = new Paint();
-        paint.setShader(new LinearGradient(0, srcBitmap.getHeight() + reflectionSpacing,
-                0, newBitmap.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
-        paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
-        canvas.drawRect(0, srcBitmap.getHeight() + reflectionSpacing,
-                newBitmap.getWidth(), newBitmap.getHeight(), paint);
 
         return newBitmap;
     }
