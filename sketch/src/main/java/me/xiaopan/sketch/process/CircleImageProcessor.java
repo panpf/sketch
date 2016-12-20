@@ -24,6 +24,7 @@ import android.graphics.PorterDuffXfermode;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.Resize;
 
@@ -80,8 +81,9 @@ public class CircleImageProcessor implements ImageProcessor {
             return bitmap;
         }
 
-        // 初始化画布
-        Bitmap output = Bitmap.createBitmap(result.imageWidth, result.imageHeight,
+        // 创建新图片
+        BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
+        Bitmap output = bitmapPool.getOrMake(result.imageWidth, result.imageHeight,
                 lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
         Paint paint = new Paint();

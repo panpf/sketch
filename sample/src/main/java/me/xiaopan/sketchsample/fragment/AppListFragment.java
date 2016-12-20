@@ -16,9 +16,9 @@ import me.xiaopan.sketchsample.R;
 /**
  * App列表页面，用来展示已安装APP和本地APK列表
  */
-@InjectContentView(R.layout.fragment_app_list)
+@InjectContentView(R.layout.fragment_pager)
 public class AppListFragment extends MyFragment {
-    @InjectView(R.id.pager_appList_content)
+    @InjectView(R.id.pager_pagerFragment_content)
     private ViewPager viewPager;
     private GetAppListTagStripListener getPagerSlidingTagStripListener;
     private FragmentArrayPagerAdapter fragmentAdapter;

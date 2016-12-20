@@ -17,10 +17,11 @@ import me.xiaopan.sketchsample.R;
 /**
  * 大图页面，用来展示Sketch显示大图的能力
  */
-@InjectContentView(R.layout.fragment_app_list)
-public class LargesFragment extends MyFragment {
-    @InjectView(R.id.pager_appList_content)
+@InjectContentView(R.layout.fragment_pager)
+public class LargeImageTestFragment extends MyFragment {
+    @InjectView(R.id.pager_pagerFragment_content)
     private ViewPager viewPager;
+
     private GetLargeTagStripListener getPagerSlidingTagStripListener;
     private FragmentArrayPagerAdapter fragmentAdapter;
 

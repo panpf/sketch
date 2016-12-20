@@ -66,8 +66,9 @@ import me.xiaopan.sketchsample.bean.InfoMenu;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
 import me.xiaopan.sketchsample.fragment.BitmapPoolTestFragment;
-import me.xiaopan.sketchsample.fragment.LargesFragment;
+import me.xiaopan.sketchsample.fragment.LargeImageTestFragment;
 import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
+import me.xiaopan.sketchsample.fragment.ProcessorTestFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.StarIndexFragment;
 import me.xiaopan.sketchsample.fragment.Test2Fragment;
@@ -83,7 +84,7 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
 public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener,
-        AppListFragment.GetAppListTagStripListener, LargesFragment.GetLargeTagStripListener,
+        AppListFragment.GetAppListTagStripListener, LargeImageTestFragment.GetLargeTagStripListener,
         AboutFragment.TogglePageListener, ApplyBackgroundCallback {
 
     @InjectView(R.id.layout_main_content) private View contentView;
@@ -517,7 +518,8 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         SEARCH("图片搜索", SearchFragment.class),
         PHOTO_ALBUM("本地相册", PhotoAlbumFragment.class),
         APP_LIST("本地APP", AppListFragment.class),
-        LARGE_IMAGE("超大图片", LargesFragment.class),
+        LARGE_IMAGE("超大图片", LargeImageTestFragment.class),
+        IMAGE_PROCESSOR("ImageProcessor", ProcessorTestFragment.class),
         TES1("测试1", TestFragment.class, !BuildConfig.DEBUG),
         TES2("测试2", Test2Fragment.class, !BuildConfig.DEBUG),
         BITMAP_POOL_TESt("BitmapPool测试", BitmapPoolTestFragment.class, !BuildConfig.DEBUG),

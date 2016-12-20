@@ -34,6 +34,7 @@ import java.util.concurrent.locks.ReentrantLock;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -133,7 +134,9 @@ public class ImagePreprocessor implements Identifier {
             return new PreProcessResult(apkIconDiskCacheEntry, ImageFrom.DISK_CACHE);
         }
 
-        Bitmap iconBitmap = SketchUtils.readApkIcon(context, realUri, loadRequest.getOptions().isLowQualityImage(), logName);
+        BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
+        boolean lowQualityImage = loadRequest.getOptions().isLowQualityImage();
+        Bitmap iconBitmap = SketchUtils.readApkIcon(context, realUri, lowQualityImage, logName, bitmapPool);
         if (iconBitmap == null) {
             return null;
         }
@@ -153,7 +156,7 @@ public class ImagePreprocessor implements Identifier {
                 outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
             } catch (IOException e) {
                 e.printStackTrace();
-                iconBitmap.recycle();
+                SketchUtils.freeBitmapToPool(iconBitmap, bitmapPool);
                 diskCacheEditor.abort();
                 return null;
             }
@@ -184,7 +187,7 @@ public class ImagePreprocessor implements Identifier {
             diskCacheEditor.abort();
             return null;
         } finally {
-            iconBitmap.recycle();
+            SketchUtils.freeBitmapToPool(iconBitmap, bitmapPool);
             SketchUtils.close(outputStream);
         }
 
@@ -246,11 +249,10 @@ public class ImagePreprocessor implements Identifier {
             return null;
         }
 
-        Bitmap iconBitmap = SketchUtils.readApkIcon(
-                context,
-                packageInfo.applicationInfo.sourceDir,
-                loadRequest.getOptions().isLowQualityImage(),
-                logName);
+        String apkFilePath = packageInfo.applicationInfo.sourceDir;
+        BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
+        boolean lowQualityImage = loadRequest.getOptions().isLowQualityImage();
+        Bitmap iconBitmap = SketchUtils.readApkIcon(context, apkFilePath, lowQualityImage, logName, bitmapPool);
         if (iconBitmap == null) {
             return null;
         }
@@ -271,7 +273,7 @@ public class ImagePreprocessor implements Identifier {
                 outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
             } catch (IOException e) {
                 e.printStackTrace();
-                iconBitmap.recycle();
+                SketchUtils.freeBitmapToPool(iconBitmap, bitmapPool);
                 diskCacheEditor.abort();
                 return null;
             }
@@ -302,7 +304,7 @@ public class ImagePreprocessor implements Identifier {
             diskCacheEditor.abort();
             return null;
         } finally {
-            iconBitmap.recycle();
+            SketchUtils.freeBitmapToPool(iconBitmap, bitmapPool);
             SketchUtils.close(outputStream);
         }
 

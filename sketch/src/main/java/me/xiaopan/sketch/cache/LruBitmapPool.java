@@ -159,23 +159,6 @@ public class LruBitmapPool implements BitmapPool {
         trimToSize(maxSize);
     }
 
-    @Override
-    public synchronized Bitmap get(int width, int height, Bitmap.Config config) {
-        if (closed) {
-            return null;
-        }
-
-        Bitmap result = getDirty(width, height, config);
-        if (result != null) {
-            // Bitmaps in the pool contain random data that in some cases must be cleared for an image to be rendered
-            // correctly. we shouldn't force all consumers to independently erase the contents individually, so we do so
-            // here. See issue #131.
-            result.eraseColor(Color.TRANSPARENT);
-        }
-
-        return result;
-    }
-
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     @Override
     public synchronized Bitmap getDirty(int width, int height, Bitmap.Config config) {
@@ -203,6 +186,37 @@ public class LruBitmapPool implements BitmapPool {
             }
         }
         dump();
+
+        return result;
+    }
+
+    @Override
+    public synchronized Bitmap get(int width, int height, Bitmap.Config config) {
+        if (closed) {
+            return null;
+        }
+
+        Bitmap result = getDirty(width, height, config);
+        if (result != null) {
+            // Bitmaps in the pool contain random data that in some cases must be cleared for an image to be rendered
+            // correctly. we shouldn't force all consumers to independently erase the contents individually, so we do so
+            // here. See issue #131.
+            result.eraseColor(Color.TRANSPARENT);
+        }
+
+        return result;
+    }
+
+    @Override
+    public Bitmap getOrMake(int width, int height, Bitmap.Config config) {
+        if (closed) {
+            return null;
+        }
+
+        Bitmap result = get(width, height, config);
+        if (result == null) {
+            result = Bitmap.createBitmap(width, height, config);
+        }
 
         return result;
     }

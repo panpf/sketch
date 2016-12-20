@@ -22,6 +22,7 @@ import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 旋转图片处理器
@@ -38,6 +39,10 @@ public class RotateImageProcessor extends ResizeImageProcessor {
 
     @Override
     public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+        if (bitmap == null || bitmap.isRecycled()) {
+            return null;
+        }
+
         Bitmap resizeBitmap = super.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
 
         if (degrees == 0) {
@@ -49,7 +54,7 @@ public class RotateImageProcessor extends ResizeImageProcessor {
         Bitmap rotateBitmap = Bitmap.createBitmap(resizeBitmap, 0, 0, resizeBitmap.getWidth(), resizeBitmap.getHeight(), matrix, true);
 
         if (resizeBitmap != bitmap) {
-            resizeBitmap.recycle();
+            SketchUtils.freeBitmapToPool(resizeBitmap, sketch.getConfiguration().getBitmapPool());
         }
 
         return rotateBitmap;

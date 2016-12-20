@@ -21,6 +21,7 @@ import android.graphics.Canvas;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.Resize;
 
@@ -60,7 +61,8 @@ public class ResizeImageProcessor implements ImageProcessor {
         if (newBitmapConfig == null) {
             newBitmapConfig = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
         }
-        Bitmap newBitmap = Bitmap.createBitmap(result.imageWidth, result.imageHeight, newBitmapConfig);
+        BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
+        Bitmap newBitmap = bitmapPool.getOrMake(result.imageWidth, result.imageHeight, newBitmapConfig);
         Canvas canvas = new Canvas(newBitmap);
         canvas.drawBitmap(bitmap, result.srcRect, result.destRect, null);
         return newBitmap;

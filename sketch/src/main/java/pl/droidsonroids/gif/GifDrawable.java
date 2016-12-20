@@ -349,11 +349,11 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 
         this.mBitmapPool = bitmapPool;
         if (oldBitmap == null) {
-            Bitmap bufferFromPool = mBitmapPool != null ? bitmapPool.get(mNativeInfoHandle.width, mNativeInfoHandle.height, Bitmap.Config.ARGB_8888) : null;
-            if (bufferFromPool == null) {
-                bufferFromPool = Bitmap.createBitmap(mNativeInfoHandle.width, mNativeInfoHandle.height, Bitmap.Config.ARGB_8888);
+            if (mBitmapPool != null) {
+                mBuffer = bitmapPool.getOrMake(mNativeInfoHandle.width, mNativeInfoHandle.height, Bitmap.Config.ARGB_8888);
+            } else {
+                mBuffer = Bitmap.createBitmap(mNativeInfoHandle.width, mNativeInfoHandle.height, Bitmap.Config.ARGB_8888);
             }
-            mBuffer = bufferFromPool;
         } else {
             mBuffer = oldBitmap;
         }

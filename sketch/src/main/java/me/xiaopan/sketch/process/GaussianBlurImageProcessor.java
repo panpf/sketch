@@ -7,6 +7,7 @@ import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 高斯模糊图片处理器
@@ -15,16 +16,20 @@ public class GaussianBlurImageProcessor extends ResizeImageProcessor {
     protected String logName = "GaussianBlurImageProcessor";
 
     private int radius = 15;
-    private boolean isDarkHandle;
+    private boolean darkHandle;
+    private int darkColor;
 
     /**
      * @param radius       模糊半径，取值为0到100，默认为15
-     * @param isDarkHandle 是否让模糊后的图片看起来更暗一些，实现原理就是加上一层#88000000颜色。常用于页面背景，因为太亮的背景会影响页面上展示的内容，默认为false
+     * @param darkHandle 是否让模糊后的图片看起来更暗一些，实现原理就是加上一层#55000000。常用于页面背景，因为太亮的背景会影响页面上展示的内容，默认为false
      */
     @SuppressWarnings("unused")
-    public GaussianBlurImageProcessor(int radius, boolean isDarkHandle) {
+    public GaussianBlurImageProcessor(int radius, boolean darkHandle) {
         this.radius = radius;
-        this.isDarkHandle = isDarkHandle;
+        this.darkHandle = darkHandle;
+        if (darkHandle) {
+            darkColor = Color.parseColor("#55000000");
+        }
     }
 
     /**
@@ -36,14 +41,22 @@ public class GaussianBlurImageProcessor extends ResizeImageProcessor {
     }
 
     /**
-     * @param isDarkHandle 是否让模糊后的图片看起来更暗一些，实现原理就是加上一层#88000000颜色。常用于页面背景，因为太亮的背景会影响页面上展示的内容，默认为false
+     * @param darkHandle 是否让模糊后的图片看起来更暗一些，实现原理就是加上一层#55000000。常用于页面背景，因为太亮的背景会影响页面上展示的内容，默认为false
      */
-    public GaussianBlurImageProcessor(boolean isDarkHandle) {
-        this.isDarkHandle = isDarkHandle;
+    public GaussianBlurImageProcessor(boolean darkHandle) {
+        this.darkHandle = darkHandle;
+        if (darkHandle) {
+            darkColor = Color.parseColor("#55000000");
+        }
     }
 
     @SuppressWarnings("unused")
     public GaussianBlurImageProcessor() {
+    }
+
+    public GaussianBlurImageProcessor setDarkColor(int darkColor) {
+        this.darkColor = darkColor;
+        return this;
     }
 
     @Override
@@ -60,28 +73,28 @@ public class GaussianBlurImageProcessor extends ResizeImageProcessor {
                 .append("(")
                 .append("radius=").append(radius)
                 .append(",")
-                .append("isDarkHandle=").append(isDarkHandle)
+                .append("isDarkHandle=").append(darkHandle)
                 .append(")");
     }
 
     @Override
     public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        // cut handle
+        // resize handle
         Bitmap resizeBitmap = super.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
         if (resizeBitmap == null) {
             return null;
         }
 
         // blur handle
-        Bitmap blurBitmap = fastGaussianBlur(resizeBitmap, radius, false);
+        Bitmap blurBitmap = fastGaussianBlur(resizeBitmap, radius, resizeBitmap.isMutable());
         if (resizeBitmap != bitmap) {
-            resizeBitmap.recycle();
+            SketchUtils.freeBitmapToPool(resizeBitmap, sketch.getConfiguration().getBitmapPool());
         }
 
         // dark handle
-        if (blurBitmap != null && isDarkHandle) {
+        if (blurBitmap != null && darkHandle) {
             Canvas canvas = new Canvas(blurBitmap);
-            canvas.drawColor(Color.parseColor("#55000000"));
+            canvas.drawColor(darkColor);
         }
 
         return blurBitmap;

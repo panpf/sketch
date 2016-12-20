@@ -73,6 +73,7 @@ public class MakerStateImage implements StateImage {
 
         ImageProcessor processor = displayOptions.getImageProcessor();
         Resize resize = displayOptions.getResize();
+        BitmapPool bitmapPool = configuration.getBitmapPool();
 
         // 不需要处理的时候直接取出图片返回
         if (processor == null && resize == null) {
@@ -100,7 +101,7 @@ public class MakerStateImage implements StateImage {
         if (drawable != null && drawable instanceof BitmapDrawable) {
             bitmap = ((BitmapDrawable) drawable).getBitmap();
         } else {
-            bitmap = SketchUtils.drawableToBitmap(drawable, tempLowQualityImage);
+            bitmap = SketchUtils.drawableToBitmap(drawable, tempLowQualityImage, bitmapPool);
             allowRecycle = true;
         }
         if (bitmap == null || bitmap.isRecycled()) {
@@ -124,7 +125,7 @@ public class MakerStateImage implements StateImage {
             SketchMonitor sketchMonitor = sketch.getConfiguration().getMonitor();
             sketchMonitor.onProcessImageError(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), processor);
             if (allowRecycle) {
-                bitmap.recycle();
+                SketchUtils.freeBitmapToPool(bitmap, bitmapPool);
             }
             return null;
         }
@@ -132,7 +133,7 @@ public class MakerStateImage implements StateImage {
         // bitmap变化了，说明创建了一张全新的图片，那么就要回收掉旧的图片
         if (newBitmap != bitmap) {
             if (allowRecycle) {
-                bitmap.recycle();
+                SketchUtils.freeBitmapToPool(bitmap, bitmapPool);
             }
 
             // 新图片不能用说你处理部分出现异常了，直接返回null即可
@@ -146,10 +147,8 @@ public class MakerStateImage implements StateImage {
 
         // 允许回收说明是创建了一张新的图片，不能回收说明还是从res中获取的BitmapDrawable可以直接使用
         if (allowRecycle) {
-            BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
             RefBitmap newRefBitmap = new RefBitmap(bitmap, bitmapPool, memoryCacheKey,
                     String.valueOf(resId), bitmap.getWidth(), bitmap.getHeight(), null);
-            newRefBitmap.setAllowRecycle(true);
             memoryCache.put(memoryCacheKey, newRefBitmap);
             return new RefBitmapDrawable(newRefBitmap);
         } else {

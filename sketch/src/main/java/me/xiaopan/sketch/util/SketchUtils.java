@@ -87,7 +87,7 @@ public class SketchUtils {
     /**
      * 读取APK的图标
      */
-    public static Bitmap readApkIcon(Context context, String apkFilePath, boolean lowQualityImage, String logName) {
+    public static Bitmap readApkIcon(Context context, String apkFilePath, boolean lowQualityImage, String logName, BitmapPool bitmapPool) {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
@@ -131,23 +131,26 @@ public class SketchUtils {
 //            }
 //        }
 
-        return drawableToBitmap(drawable, lowQualityImage);
+        return drawableToBitmap(drawable, lowQualityImage, bitmapPool);
     }
 
     /**
      * Drawable转成Bitmap
      */
-    public static Bitmap drawableToBitmap(Drawable drawable, boolean lowQualityImage) {
+    public static Bitmap drawableToBitmap(Drawable drawable, boolean lowQualityImage, BitmapPool bitmapPool) {
         if (drawable == null || drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
             return null;
         }
 
         drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
 
-        Bitmap bitmap = Bitmap.createBitmap(
-                drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(),
-                lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
+        Bitmap.Config config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
+        Bitmap bitmap;
+        if (bitmapPool != null) {
+            bitmap = bitmapPool.getOrMake(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), config);
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), config);
+        }
         Canvas canvas = new Canvas(bitmap);
         drawable.draw(canvas);
         return bitmap;
@@ -1336,7 +1339,7 @@ public class SketchUtils {
 
     public static boolean inBitmapThrowForRegionDecoder(Throwable throwable, BitmapFactory.Options options,
                                                         SketchMonitor monitor, BitmapPool bitmapPool, String imageUri,
-                                                        int imageWidth, int imageHeight, Rect srcRect){
+                                                        int imageWidth, int imageHeight, Rect srcRect) {
         if (throwable instanceof IllegalArgumentException) {
             if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
                 if (options.inBitmap != null) {

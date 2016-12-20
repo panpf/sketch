@@ -27,14 +27,15 @@ import android.graphics.Shader.TileMode;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.feature.ResizeCalculator;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 倒影图片处理器
  */
 @SuppressWarnings("unused")
-public class ReflectionImageProcessor implements ImageProcessor {
+public class ReflectionImageProcessor extends ResizeImageProcessor {
     protected String logName = "ReflectionImageProcessor";
 
     private int reflectionSpacing;
@@ -75,57 +76,45 @@ public class ReflectionImageProcessor implements ImageProcessor {
 
     @Override
     public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if (bitmap == null) {
+        if (bitmap == null || bitmap.isRecycled()) {
             return null;
         }
 
-        ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
-        ResizeCalculator.Result result = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
-                resize != null ? resize.getWidth() : bitmap.getWidth(),
-                resize != null ? resize.getHeight() : bitmap.getHeight(),
-                resize != null ? resize.getScaleType() : null, forceUseResize);
-        if (result == null) {
-            return bitmap;
-        }
+        // 先resize
+        Bitmap srcBitmap = super.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
 
-        Bitmap srcBitmap;
-        if (bitmap.getWidth() == result.imageWidth && bitmap.getHeight() == result.imageHeight) {
-            srcBitmap = bitmap;
-        } else {
-            srcBitmap = Bitmap.createBitmap(result.imageWidth, result.imageHeight,
-                    lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(srcBitmap);
-            canvas.drawBitmap(bitmap, result.srcRect, result.destRect, null);
-        }
+        int finalHeight = (int) (srcBitmap.getHeight() + reflectionSpacing + (srcBitmap.getHeight() * reflectionScale));
+        Bitmap.Config config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
+        BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
 
-        // 初始化画布
-        Bitmap bitmapWithReflection = Bitmap.createBitmap(result.imageWidth,
-                (int) (result.imageHeight + reflectionSpacing + (result.imageHeight * reflectionScale)),
-                lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmapWithReflection);
+        // 创建新图片
+        Bitmap newBitmap = bitmapPool.getOrMake(srcBitmap.getWidth(), finalHeight, config);
+        Canvas canvas = new Canvas(newBitmap);
 
         // 在上半部分绘制原图
         canvas.drawBitmap(srcBitmap, 0, 0, null);
 
-        // 在下半部分绘制倒影
+        // 创建一个180度翻转的图片作为倒影
         Matrix matrix = new Matrix();
         matrix.preScale(1, -1);
         Bitmap reflectionImage = Bitmap.createBitmap(srcBitmap, 0, 0, srcBitmap.getWidth(), srcBitmap.getHeight(), matrix, false);
         if (srcBitmap != bitmap) {
-            srcBitmap.recycle();
+            SketchUtils.freeBitmapToPool(srcBitmap, bitmapPool);
         }
-        canvas.drawBitmap(reflectionImage, 0, result.imageHeight + reflectionSpacing, null);
-        reflectionImage.recycle();
+
+        // 在下半部分绘制倒影
+        canvas.drawBitmap(reflectionImage, 0, srcBitmap.getHeight() + reflectionSpacing, null);
+        SketchUtils.freeBitmapToPool(reflectionImage, bitmapPool);
 
         // 在下半部分绘制半透明遮罩
         Paint paint = new Paint();
-        paint.setShader(new LinearGradient(0, result.imageHeight + reflectionSpacing,
-                0, bitmapWithReflection.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
+        paint.setShader(new LinearGradient(0, srcBitmap.getHeight() + reflectionSpacing,
+                0, newBitmap.getHeight(), 0x70ffffff, 0x00ffffff, TileMode.CLAMP));
         paint.setXfermode(new PorterDuffXfermode(Mode.DST_IN));
-        canvas.drawRect(0, result.imageHeight + reflectionSpacing,
-                bitmapWithReflection.getWidth(), bitmapWithReflection.getHeight(), paint);
+        canvas.drawRect(0, srcBitmap.getHeight() + reflectionSpacing,
+                newBitmap.getWidth(), newBitmap.getHeight(), paint);
 
-        return bitmapWithReflection;
+        return newBitmap;
     }
 
     public float getReflectionScale() {
