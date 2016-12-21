@@ -16,12 +16,14 @@
 
 package me.xiaopan.sketch.request;
 
+import me.xiaopan.sketch.SketchImageView;
+
 /**
- * 下载选项
+ * 下载选项，适用于 {@link me.xiaopan.sketch.Sketch#download(String, DownloadListener)} 方法
  */
 public class DownloadOptions {
     /**
-     * 禁用磁盘缓存（默认否）
+     * 禁用磁盘缓存
      */
     private boolean disableCacheInDisk;
 
@@ -39,33 +41,71 @@ public class DownloadOptions {
         reset();
     }
 
+    /**
+     * 从指定的DownloadOptions中拷贝所有属性来创建新的DownloadOptions
+     *
+     * @param from 从这个DownloadOptions里拷贝属性
+     */
     @SuppressWarnings("unused")
     public DownloadOptions(DownloadOptions from) {
         copy(from);
     }
 
+    /**
+     * 不使用磁盘缓存？
+     */
     public boolean isDisableCacheInDisk() {
         return disableCacheInDisk;
     }
 
+    /**
+     * 设置不使用磁盘缓存
+     *
+     * @param disableCacheInDisk 不使用磁盘缓存
+     * @return this
+     */
     public DownloadOptions setDisableCacheInDisk(boolean disableCacheInDisk) {
         this.disableCacheInDisk = disableCacheInDisk;
         return this;
     }
 
+    /**
+     * 获取请求Level
+     *
+     * @see RequestLevel
+     */
     public RequestLevel getRequestLevel() {
         return requestLevel;
     }
 
+    /**
+     * 设置请求Level
+     *
+     * @param requestLevel {@link RequestLevelFrom}
+     * @return this
+     * @see RequestLevel
+     */
     public DownloadOptions setRequestLevel(RequestLevel requestLevel) {
         this.requestLevel = requestLevel;
         return this;
     }
 
+    /**
+     * 获取请求Level的来源
+     *
+     * @see RequestLevelFrom
+     */
     public RequestLevelFrom getRequestLevelFrom() {
         return requestLevelFrom;
     }
 
+    /**
+     * 设置请求Level的来源
+     *
+     * @param requestLevelFrom {@link RequestLevelFrom}
+     * @return this
+     * @see RequestLevelFrom
+     */
     DownloadOptions setRequestLevelFrom(RequestLevelFrom requestLevelFrom) {
         this.requestLevelFrom = requestLevelFrom;
         return this;
@@ -81,7 +121,7 @@ public class DownloadOptions {
     }
 
     /**
-     * 拷贝属性，绝对的覆盖
+     * 从指定的DownloadOptions中拷贝属性，绝对的覆盖
      */
     public void copy(DownloadOptions options) {
         if (options == null) {
@@ -94,7 +134,7 @@ public class DownloadOptions {
     }
 
     /**
-     * 应用属性，应用的过程并不是绝对的覆盖
+     * 从指定的DownloadOptions中应用属性，应用的过程并不是绝对的覆盖，专门为{@link DownloadHelper#options(DownloadOptions)}方法提供
      */
     public void apply(DownloadOptions options) {
         if (options == null) {
@@ -118,14 +158,19 @@ public class DownloadOptions {
     }
 
     /**
-     * 生成ID
+     * 生成ID，用于组装请求ID和内存缓存ID
+     *
+     * @see SketchImageView#getOptionsId()
+     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestId(String, DownloadOptions)
      */
     public StringBuilder makeId(StringBuilder builder) {
         return builder;
     }
 
     /**
-     * 生成StateImage用的ID
+     * 生成StateImage用的ID，用于组装StateImage的内存缓存ID
+     *
+     * @see me.xiaopan.sketch.util.SketchUtils#makeStateImageRequestId(String, DownloadOptions)
      */
     public StringBuilder makeStateImageId(StringBuilder builder) {
         return builder;

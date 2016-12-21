@@ -253,7 +253,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         options.inSampleSize = sizeCalculator.calculateInSampleSize(result.srcRect.width(), result.srcRect.height(),
                 resize.getWidth(), resize.getHeight(), supportLargeImage);
 
-        if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+        if (!loadOptions.isDisableBitmapPool() && SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
             BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
             SketchUtils.setInBitmapFromPoolForRegionDecoder(options, result.srcRect, bitmapPool);
         }
@@ -265,7 +265,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             e.printStackTrace();
 
             // inBitmap不能使用时会抛出IllegalArgumentException，在这里直接关闭不再使用inBitmap功能
-            if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+            if (!loadOptions.isDisableBitmapPool() && SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
                 BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
                 SketchMonitor monitor = request.getSketch().getConfiguration().getMonitor();
                 SketchUtils.inBitmapThrowForRegionDecoder(e, options, monitor, bitmapPool,
@@ -312,7 +312,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         // Set inBitmap from bitmap pool
-        if (SketchUtils.sdkSupportInBitmap()) {
+        if (!request.getOptions().isDisableBitmapPool() && SketchUtils.sdkSupportInBitmap()) {
             BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
             SketchUtils.setInBitmapFromPool(options, bitmapPool);
         }
@@ -322,7 +322,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             bitmap = decodeHelper.decode(options);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            if (SketchUtils.sdkSupportInBitmap()) {
+            if (!request.getOptions().isDisableBitmapPool() && SketchUtils.sdkSupportInBitmap()) {
                 SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
                 BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
                 SketchUtils.inBitmapThrow(e, options, sketchMonitor, bitmapPool, request.getUri(), options.outWidth, options.outHeight);

@@ -53,6 +53,7 @@ public class LruDiskCache implements DiskCache {
     private boolean closed;
 
     public LruDiskCache(Context context, Configuration configuration, int appVersionCode, int maxSize) {
+        context = context.getApplicationContext();
         this.context = context;
         this.maxSize = maxSize;
         this.appVersionCode = appVersionCode;

@@ -122,7 +122,7 @@ public interface BitmapPool extends Identifier {
      * bitmap.eraseColor(Color.TRANSPARENT);
      * }
      * </pre>
-     *
+     * <p/>
      * If you can not find reusable to create a new bitmap
      *
      * @param width  The width in pixels of the desired {@link android.graphics.Bitmap}.
@@ -131,6 +131,18 @@ public interface BitmapPool extends Identifier {
      * @see #getDirty(int, int, android.graphics.Bitmap.Config)
      */
     Bitmap getOrMake(int width, int height, Bitmap.Config config);
+
+    /**
+     * nonuser?
+     */
+    boolean isDisable();
+
+    /**
+     * Temporarily disable
+     *
+     * @param disable nonuse
+     */
+    void setDisable(boolean disable);
 
     /**
      * 清除缓存

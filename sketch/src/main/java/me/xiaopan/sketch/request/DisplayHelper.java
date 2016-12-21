@@ -156,6 +156,15 @@ public class DisplayHelper {
     }
 
     /**
+     * 禁用BitmapPool
+     */
+    @SuppressWarnings("unused")
+    public DisplayHelper disableBitmapPool() {
+        displayOptions.setDisableBitmapPool(true);
+        return this;
+    }
+
+    /**
      * 设置请求Level
      */
     public DisplayHelper requestLevel(RequestLevel requestLevel) {

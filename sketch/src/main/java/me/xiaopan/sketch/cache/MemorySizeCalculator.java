@@ -41,6 +41,7 @@ public class MemorySizeCalculator {
 
     // Visible for testing.
     MemorySizeCalculator(Context context, ActivityManager activityManager, ScreenDimensions screenDimensions) {
+        context = context.getApplicationContext();
         this.context = context;
         final int maxSize = getMaxSize(activityManager);
 

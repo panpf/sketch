@@ -27,6 +27,7 @@ public class SketchMonitor implements Identifier {
     private Context context;
 
     public SketchMonitor(Context context) {
+        context = context.getApplicationContext();
         this.context = context;
     }
 

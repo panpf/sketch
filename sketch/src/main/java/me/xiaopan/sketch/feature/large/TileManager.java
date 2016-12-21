@@ -73,6 +73,7 @@ class TileManager {
     }, 20);
 
     TileManager(Context context, LargeImageViewer largeImageViewer) {
+        context = context.getApplicationContext();
         this.context = context;
         this.bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
         this.largeImageViewer = largeImageViewer;

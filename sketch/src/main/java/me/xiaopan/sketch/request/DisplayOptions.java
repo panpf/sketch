@@ -171,6 +171,12 @@ public class DisplayOptions extends LoadOptions {
         return this;
     }
 
+    @Override
+    public DisplayOptions setDisableBitmapPool(boolean disableBitmapPool) {
+        super.setDisableBitmapPool(disableBitmapPool);
+        return this;
+    }
+
     public boolean isDisableCacheInMemory() {
         return disableCacheInMemory;
     }

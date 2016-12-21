@@ -39,6 +39,7 @@ public class LruMemoryCache implements MemoryCache {
     private boolean closed;
 
     public LruMemoryCache(Context context, int maxSize) {
+        context = context.getApplicationContext();
         this.context = context;
         this.cache = new RefBitmapLruCache(this, maxSize);
     }

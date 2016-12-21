@@ -44,6 +44,8 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 图片加载器，可以从网络或者本地加载图片，并且支持自动清除缓存
  */
+// TODO: 2016/12/21 规范注释
+// TODO: 2016/12/21 所有ID直接改成内存缓存ID
 public class Sketch {
     public static final String TAG = "Sketch";
 

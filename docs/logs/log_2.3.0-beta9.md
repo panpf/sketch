@@ -6,7 +6,11 @@ Sketch:
 >* `bitmap pool` 增加bitmap pool，减少内存分配，减少GC回收造成的卡顿
 >* `ExceptionMonitor` ExceptionMonitor改名为SketchMonitor并挪到顶级目录
 >* :bug: `GIF` onDetachedFromWindow时主动回收GifDrawable
+>* :sparkles: `disableBitmapPool` LoadOptions、LoadHelper、DisplayOptions、DisplayHelper增加disableBitmapPool属性
 
 Sample APP
 
 >* 本地相册调整成每行四个，并去掉圆角
+
+待办：
+>* 完善bitmap pool的文档

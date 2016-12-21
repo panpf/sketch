@@ -170,6 +170,7 @@ To further enhance the user experience:
 More:
 >* [Synchronize load and download.md](docs/wiki/sync.md)
 >* [Learn about inSampleSize Calculation Rule.md](docs/wiki/in_sample_size.md)
+>* [Understanding and Configuring Bitmap Pool.md](docs/wiki/bitmap_pool.md)
 >* [Understanding and Configuring Memory Cache.md](docs/wiki/memory_cache.md)
 >* [Understanding and Configuring Local Cache.md](docs/wiki/disk_cache.md)
 >* [Learn and configure HttpStack.md](docs/wiki/http_stack.md)

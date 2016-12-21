@@ -1269,8 +1269,7 @@ public class SketchUtils {
             if (SketchUtils.sdkSupportInBitmap()) {
                 if (options.inBitmap != null) {
                     SketchUtils.freeBitmapToPool(options.inBitmap, bitmapPool);
-                    monitor.onInBitmapException(imageUri, imageWidth,
-                            imageHeight, options.inSampleSize, options.inBitmap);
+                    monitor.onInBitmapException(imageUri, imageWidth, imageHeight, options.inSampleSize, options.inBitmap);
                     return true;
                 }
             }

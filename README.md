@@ -164,6 +164,7 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 更多：
 >* [同步执行load和download.md](docs/wiki/sync.md)
 >* [了解inSampleSize计算规则.md](docs/wiki/in_sample_size.md)
+>* [了解并配置BitmapPool.md](docs/wiki/bitmap_pool.md)
 >* [了解并配置内存缓存.md](docs/wiki/memory_cache.md)
 >* [了解并配置本地缓存.md](docs/wiki/disk_cache.md)
 >* [了解并配置HttpStack.md](docs/wiki/http_stack.md)

@@ -63,6 +63,15 @@ public class LoadHelper {
     }
 
     /**
+     * 禁用BitmapPool
+     */
+    @SuppressWarnings("unused")
+    public LoadHelper disableBitmapPool() {
+        loadOptions.setDisableBitmapPool(true);
+        return this;
+    }
+
+    /**
      * 设置请求Level
      */
     @SuppressWarnings("unused")

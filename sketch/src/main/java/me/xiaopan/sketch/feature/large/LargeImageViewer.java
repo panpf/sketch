@@ -59,11 +59,12 @@ public class LargeImageViewer {
     private String imageUri;
 
     public LargeImageViewer(Context context, Callback callback) {
-        this.context = context.getApplicationContext();
+        context = context.getApplicationContext();
+        this.context = context;
         this.callback = callback;
 
         this.tileExecutor = new TileExecutor(new ExecutorCallback());
-        this.tileManager = new TileManager(context.getApplicationContext(), this);
+        this.tileManager = new TileManager(context, this);
         this.tileDecoder = new TileDecoder(this);
 
         this.matrix = new Matrix();

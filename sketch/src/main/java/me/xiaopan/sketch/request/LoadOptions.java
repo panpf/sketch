@@ -21,12 +21,11 @@ import android.graphics.Bitmap;
 import me.xiaopan.sketch.process.ImageProcessor;
 
 /**
- * 显示选项
+ * 加载选项，适用于 {@link me.xiaopan.sketch.Sketch#load(String, LoadListener)} 方法
  */
-// TODO: 2016/12/11 增加禁用bitmap pool
 public class LoadOptions extends DownloadOptions {
     /**
-     * 修正尺寸，将原始图片加载到内存中之后根据resize进行修正。修正的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸不一定会等于resize，也有可能小于resize，如果需要必须同resize一致可以设置forceUseResize
+     * 修正尺寸
      */
     private Resize resize;
 
@@ -36,44 +35,55 @@ public class LoadOptions extends DownloadOptions {
     private boolean forceUseResize;
 
     /**
-     * 最大尺寸，在解码的时候会使用此最大尺寸来计算inSimpleSize
+     * 最大尺寸
      */
     private MaxSize maxSize;
 
     /**
-     * 解码GIF图片（默认否）
+     * 解码GIF图片
      */
     private boolean decodeGifImage;
 
     /**
-     * 返回低质量的图片（默认否）
+     * 在解码或创建Bitmap的时候尽量使用低质量的Bitmap.Config
+     *
+     * @see me.xiaopan.sketch.decode.ImageFormat
      */
     private boolean lowQualityImage;
 
     /**
-     * 解码时优先考虑速度还是质量 (true：质量；false：速度，默认false)
+     * 解码时优先考虑速度还是质量 (true：质量；false：速度，默认false)，优先级比 bitmapConfig 低
+     *
+     * @see #bitmapConfig
      */
     private boolean inPreferQualityOverSpeed;
 
     /**
-     * 缩略图模式，当resize的宽高比同原始图片的宽高比相差非常大的时候会用BitmapRegionDecoder从原始图片中截取合适的部分
+     * 开启缩略图模式，当resize的宽高比同原始图片的宽高比相差非常大的时候会用BitmapRegionDecoder从原始图片中截取合适的部分，这样对于现实较大图片的缩略图会有很大的帮助
      */
     private boolean thumbnailMode;
 
     /**
-     * 图片处理器，根据resize和ScaleType创建一张新的图片
+     * 图片处理器
      */
     private ImageProcessor imageProcessor;
 
     /**
-     * 图片质量配置
+     * 图片质量配置，优先级比 lowQualityImage 高
+     *
+     * @see #lowQualityImage
      */
     private Bitmap.Config bitmapConfig;
 
     /**
-     * 为了加快速度，将经过ImageProcessor、resize或thumbnailMode处理过的图片保存到磁盘缓存中，下次就直接读取
+     * 为了加快显示速度，将经过ImageProcessor、resize或thumbnailMode处理过的图片保存到磁盘缓存中，下次就直接读取
      */
     private boolean cacheProcessedImageInDisk;
+
+    /**
+     * 禁止从BitmapPool中寻找可复用的Bitmap
+     */
+    private boolean disableBitmapPool;
 
     public LoadOptions() {
         reset();
@@ -202,6 +212,15 @@ public class LoadOptions extends DownloadOptions {
         return this;
     }
 
+    public boolean isDisableBitmapPool() {
+        return disableBitmapPool;
+    }
+
+    public LoadOptions setDisableBitmapPool(boolean disableBitmapPool) {
+        this.disableBitmapPool = disableBitmapPool;
+        return this;
+    }
+
     @Override
     public void reset() {
         super.reset();
@@ -216,6 +235,7 @@ public class LoadOptions extends DownloadOptions {
         inPreferQualityOverSpeed = false;
         thumbnailMode = false;
         cacheProcessedImageInDisk = false;
+        disableBitmapPool = false;
     }
 
     /**
@@ -238,6 +258,7 @@ public class LoadOptions extends DownloadOptions {
         inPreferQualityOverSpeed = options.inPreferQualityOverSpeed;
         thumbnailMode = options.thumbnailMode;
         cacheProcessedImageInDisk = options.cacheProcessedImageInDisk;
+        disableBitmapPool = options.disableBitmapPool;
     }
 
     /**
@@ -295,6 +316,10 @@ public class LoadOptions extends DownloadOptions {
 
         if (!cacheProcessedImageInDisk) {
             cacheProcessedImageInDisk = options.cacheProcessedImageInDisk;
+        }
+
+        if (!disableBitmapPool) {
+            disableBitmapPool = options.disableBitmapPool;
         }
     }
 

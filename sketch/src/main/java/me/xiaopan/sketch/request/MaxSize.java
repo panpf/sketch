@@ -20,6 +20,9 @@ import android.text.TextUtils;
 
 import me.xiaopan.sketch.Identifier;
 
+/**
+ * 最大尺寸，在解码的时候用来计算inSimpleSize
+ */
 public class MaxSize implements Identifier {
     private int width;
     private int height;

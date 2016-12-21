@@ -254,6 +254,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             }
         });
         menuList.add(new CheckMenu(this, "全局禁用内存缓存", Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "全局禁用BitmapPool", Settings.PREFERENCE_GLOBAL_DISABLE_BITMAP_POOL, null, menuClickListener));
         menuList.add(new CheckMenu(this, "全局禁用磁盘缓存", Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK, null, menuClickListener));
 
         menuList.add("手势缩放");

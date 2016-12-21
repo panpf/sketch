@@ -21,6 +21,7 @@ public class Settings {
     public static final String PREFERENCE_CLICK_SHOW_PRESSED_STATUS = "PREFERENCE_CLICK_SHOW_PRESSED_STATUS";
     public static final String PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY = "PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY";
     public static final String PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK = "PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK";
+    public static final String PREFERENCE_GLOBAL_DISABLE_BITMAP_POOL = "PREFERENCE_GLOBAL_DISABLE_BITMAP_POOL";
     public static final String PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE = "PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE";
     public static final String PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED = "PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED";
     public static final String PREFERENCE_SUPPORT_ZOOM = "PREFERENCE_SUPPORT_ZOOM";
@@ -69,6 +70,8 @@ public class Settings {
             Sketch.with(context).getConfiguration().setGlobalDisableCacheInDisk(newValue);
         } else if (PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY.equals(key)) {
             Sketch.with(context).getConfiguration().setGlobalDisableCacheInMemory(newValue);
+        } else if (PREFERENCE_GLOBAL_DISABLE_BITMAP_POOL.equals(key)) {
+            Sketch.with(context).getConfiguration().setGlobalDisableBitmapPool(newValue);
         } else if (PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)) {
             Sketch.with(context).getConfiguration().setGlobalLowQualityImage(newValue);
         } else if (PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)) {
@@ -85,6 +88,7 @@ public class Settings {
             PREFERENCE_CLICK_DISPLAY_ON_FAILED,
             PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY,
             PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK,
+            PREFERENCE_GLOBAL_DISABLE_BITMAP_POOL,
             PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE,
             PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED,
             PREFERENCE_SUPPORT_ZOOM,

@@ -30,12 +30,12 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class LruBitmapPool implements BitmapPool {
     private static final Bitmap.Config DEFAULT_CONFIG = Bitmap.Config.ARGB_8888;
 
-    protected String logName = "LruBitmapPool";
     private final LruPoolStrategy strategy;
     private final Set<Bitmap.Config> allowedConfigs;
     private final int initialMaxSize;
     private final BitmapTracker tracker;
 
+    protected String logName = "LruBitmapPool";
     private int maxSize;
     private int currentSize;
     private int hits;
@@ -45,9 +45,11 @@ public class LruBitmapPool implements BitmapPool {
 
     private Context context;
     private boolean closed;
+    private boolean disable;
 
     // Exposed for testing only.
     LruBitmapPool(Context context, int maxSize, LruPoolStrategy strategy, Set<Bitmap.Config> allowedConfigs) {
+        context = context.getApplicationContext();
         this.context = context;
         this.initialMaxSize = maxSize;
         this.maxSize = maxSize;
@@ -97,28 +99,15 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     @Override
-    public int getMaxSize() {
-        return maxSize;
-    }
-
-    @Override
-    public int getSize() {
-        return currentSize;
-    }
-
-    @Override
-    public synchronized void setSizeMultiplier(float sizeMultiplier) {
-        if (closed) {
-            return;
-        }
-
-        maxSize = Math.round(initialMaxSize * sizeMultiplier);
-        evict();
-    }
-
-    @Override
     public synchronized boolean put(Bitmap bitmap) {
         if (closed) {
+            return false;
+        }
+
+        if (disable) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, logName + ". Disabled unable put, bitmap=" + strategy.logBitmap(bitmap));
+            }
             return false;
         }
 
@@ -151,18 +140,17 @@ public class LruBitmapPool implements BitmapPool {
         return true;
     }
 
-    private void evict() {
-        if (closed) {
-            return;
-        }
-
-        trimToSize(maxSize);
-    }
-
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
     @Override
     public synchronized Bitmap getDirty(int width, int height, Bitmap.Config config) {
         if (closed) {
+            return null;
+        }
+
+        if (disable) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, logName + ". Disabled unable get, bitmap=" + strategy.logBitmap(width, height, config));
+            }
             return null;
         }
 
@@ -192,10 +180,6 @@ public class LruBitmapPool implements BitmapPool {
 
     @Override
     public synchronized Bitmap get(int width, int height, Bitmap.Config config) {
-        if (closed) {
-            return null;
-        }
-
         Bitmap result = getDirty(width, height, config);
         if (result != null) {
             // Bitmaps in the pool contain random data that in some cases must be cleared for an image to be rendered
@@ -209,16 +193,50 @@ public class LruBitmapPool implements BitmapPool {
 
     @Override
     public Bitmap getOrMake(int width, int height, Bitmap.Config config) {
-        if (closed) {
-            return null;
-        }
-
         Bitmap result = get(width, height, config);
         if (result == null) {
             result = Bitmap.createBitmap(width, height, config);
         }
 
         return result;
+    }
+
+    private void evict() {
+        if (closed) {
+            return;
+        }
+
+        trimToSize(maxSize);
+    }
+
+    @Override
+    public int getMaxSize() {
+        return maxSize;
+    }
+
+    @Override
+    public int getSize() {
+        return currentSize;
+    }
+
+    @Override
+    public synchronized void setSizeMultiplier(float sizeMultiplier) {
+        if (closed) {
+            return;
+        }
+
+        maxSize = Math.round(initialMaxSize * sizeMultiplier);
+        evict();
+    }
+
+    @Override
+    public boolean isDisable() {
+        return disable;
+    }
+
+    @Override
+    public void setDisable(boolean disable) {
+        this.disable = disable;
     }
 
     @SuppressLint("InlinedApi")

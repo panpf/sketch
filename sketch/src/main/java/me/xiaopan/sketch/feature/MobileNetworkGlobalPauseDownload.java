@@ -18,6 +18,7 @@ public class MobileNetworkGlobalPauseDownload {
     private boolean opened;
 
     public MobileNetworkGlobalPauseDownload(Context context) {
+        context = context.getApplicationContext();
         this.context = context;
     }
 

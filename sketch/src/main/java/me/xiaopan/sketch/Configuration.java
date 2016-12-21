@@ -71,12 +71,12 @@ public class Configuration {
     private boolean globalLowQualityImage; // 全局使用低质量的图片
     private boolean globalDisableCacheInDisk;   // 全局禁用磁盘缓存
     private boolean globalDisableCacheInMemory; // 全局禁用内存缓存
-    // TODO: 2016/12/11 增加全局禁用bitmap pool
     private boolean globalInPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
     private MobileNetworkGlobalPauseDownload mobileNetworkGlobalPauseDownload;
 
-    public Configuration(Context tempContext) {
-        this.context = tempContext.getApplicationContext();
+    public Configuration(Context context) {
+        context = context.getApplicationContext();
+        this.context = context;
 
         MemorySizeCalculator memorySizeCalculator = new MemorySizeCalculator(context);
 
@@ -380,7 +380,7 @@ public class Configuration {
     }
 
     /**
-     * 是否全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+     * 全局暂停加载新图片？开启后将只从内存缓存中找寻图片，只影响display请求
      */
     public boolean isGlobalPauseLoad() {
         return globalPauseLoad;
@@ -400,7 +400,7 @@ public class Configuration {
     }
 
     /**
-     * 是否全局暂停下载图片，开启后将不再从网络下载图片，只影响display请求和load请求
+     * 全局暂停下载图片？开启后将不再从网络下载图片，只影响display请求和load请求
      */
     public boolean isGlobalPauseDownload() {
         return globalPauseDownload;
@@ -420,7 +420,7 @@ public class Configuration {
     }
 
     /**
-     * 是否移动网络下全局暂停下载，只影响display请求和load请求
+     * 移动网络下全局暂停下载？只影响display请求和load请求
      */
     @SuppressWarnings("unused")
     public boolean isMobileNetworkGlobalPauseDownload() {
@@ -428,7 +428,7 @@ public class Configuration {
     }
 
     /**
-     * 设置是否开启移动网络下暂停下载的功能，只影响display请求和load请求
+     * 设置开启移动网络下暂停下载的功能，只影响display请求和load请求
      */
     public Configuration setMobileNetworkGlobalPauseDownload(boolean mobileNetworkGlobalPauseDownload) {
         if (isMobileNetworkGlobalPauseDownload() != mobileNetworkGlobalPauseDownload) {
@@ -451,7 +451,7 @@ public class Configuration {
     }
 
     /**
-     * 是否全局使用低质量的图片
+     * 全局使用低质量的图片？
      */
     public boolean isGlobalLowQualityImage() {
         return globalLowQualityImage;
@@ -495,14 +495,14 @@ public class Configuration {
     }
 
     /**
-     * 是否全局禁用磁盘缓存
+     * 全局禁用磁盘缓存？
      */
     public boolean isGlobalDisableCacheInDisk() {
         return globalDisableCacheInDisk;
     }
 
     /**
-     * 设置是否全局禁用磁盘缓存
+     * 设置全局禁用磁盘缓存
      */
     public Configuration setGlobalDisableCacheInDisk(boolean globalDisableCacheInDisk) {
         if (this.globalDisableCacheInDisk != globalDisableCacheInDisk) {
@@ -515,14 +515,35 @@ public class Configuration {
     }
 
     /**
-     * 是否全局禁用内存缓存
+     * 全局禁用BitmapPool？
+     */
+    @SuppressWarnings("unused")
+    public boolean isGlobalDisableBitmapPool() {
+        return bitmapPool.isDisable();
+    }
+
+    /**
+     * 设置全局禁用BitmapPool
+     */
+    public Configuration setGlobalDisableBitmapPool(boolean globalDisableBitmapPool) {
+        if (bitmapPool.isDisable() != globalDisableBitmapPool) {
+            bitmapPool.setDisable(globalDisableBitmapPool);
+            if (Sketch.isDebugMode()) {
+                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalDisableBitmapPool", ". ", globalDisableBitmapPool));
+            }
+        }
+        return this;
+    }
+
+    /**
+     * 全局禁用内存缓存
      */
     public boolean isGlobalDisableCacheInMemory() {
         return globalDisableCacheInMemory;
     }
 
     /**
-     * 设置是否全局禁用内存缓存
+     * 设置全局禁用内存缓存
      */
     public Configuration setGlobalDisableCacheInMemory(boolean globalDisableCacheInMemory) {
         if (this.globalDisableCacheInMemory != globalDisableCacheInMemory) {
@@ -681,6 +702,11 @@ public class Configuration {
         builder.append("globalDisableCacheInDisk");
         builder.append("：");
         builder.append(globalDisableCacheInDisk);
+
+        if (builder.length() > 0) builder.append("\n");
+        builder.append("globalDisableBitmapPool");
+        builder.append("：");
+        builder.append(bitmapPool.isDisable());
 
         if (builder.length() > 0) builder.append("\n");
         builder.append("mobileNetworkGlobalPauseDownload");

@@ -41,6 +41,7 @@ public class RecyclerCompatFunction extends SketchImageView.Function {
     private boolean isSetImage;
 
     public RecyclerCompatFunction(Context context, ImageViewInterface imageViewInterface, RequestFunction requestFunction) {
+        context = context.getApplicationContext();
         this.context = context;
         this.imageViewInterface = imageViewInterface;
         this.requestFunction = requestFunction;
