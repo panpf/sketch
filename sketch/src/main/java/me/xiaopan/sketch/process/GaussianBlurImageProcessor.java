@@ -54,6 +54,7 @@ public class GaussianBlurImageProcessor extends ResizeImageProcessor {
     public GaussianBlurImageProcessor() {
     }
 
+    @SuppressWarnings("unused")
     public GaussianBlurImageProcessor setDarkColor(int darkColor) {
         this.darkColor = darkColor;
         return this;

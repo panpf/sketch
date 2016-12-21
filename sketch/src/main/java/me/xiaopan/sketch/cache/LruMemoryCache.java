@@ -58,6 +58,13 @@ public class LruMemoryCache implements MemoryCache {
             return;
         }
 
+        if (cache.get(key) != null) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, logName + ". Exist. key=" + key);
+            }
+            return;
+        }
+
         int oldCacheSize = 0;
         if (Sketch.isDebugMode()) {
             oldCacheSize = cache.size();

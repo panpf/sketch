@@ -693,6 +693,9 @@ public class DisplayHelper {
             return true;
         }
 
+        // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
+        cachedRefBitmap.setIsWaitingUse(logName + ":waitingUse:fromMemory", true);
+
         if (Sketch.isDebugMode()) {
             Log.i(Sketch.TAG, SketchUtils.concat(logName,
                     ". image display completed",
@@ -721,6 +724,8 @@ public class DisplayHelper {
         if (displayListener != null) {
             displayListener.onCompleted(ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
         }
+
+        cachedRefBitmap.setIsWaitingUse(logName + ":waitingUse:finish", false);
 
         return false;
     }

@@ -47,9 +47,9 @@ public class DisplayRequest extends LoadRequest {
 
     private DisplayResult displayResult;
 
-    public DisplayRequest(Sketch sketch, DisplayInfo requestInfo,DisplayOptions displayOptions,
-            ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
-            DownloadProgressListener downloadProgressListener) {
+    public DisplayRequest(Sketch sketch, DisplayInfo requestInfo, DisplayOptions displayOptions,
+                          ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
+                          DownloadProgressListener downloadProgressListener) {
         super(sketch, requestInfo, displayOptions, null, downloadProgressListener);
 
         this.viewInfo = viewInfo;
@@ -161,8 +161,7 @@ public class DisplayRequest extends LoadRequest {
         }
     }
 
-    // TODO: 2016/12/21 runLoad方法根据缓存ID加锁
-    // TODO: 从内存缓存里取出来就要立即等待使用锁加一
+    // TODO: 2016/12/21 runLoad方法根据缓存ID加锁，避免重复加载
 
     private boolean checkMemoryCache() {
         if (isCanceled()) {
@@ -182,6 +181,10 @@ public class DisplayRequest extends LoadRequest {
                     if (Sketch.isDebugMode()) {
                         printLogI("from memory get drawable", "runLoad", "bitmap=" + cachedRefBitmap.getInfo());
                     }
+
+                    // 立马标记等待使用，防止被挤出去回收掉
+                    cachedRefBitmap.setIsWaitingUse(getLogName() + ":waitingUse:fromMemory", true);
+
                     displayResult = new DisplayResult(new RefBitmapDrawable(cachedRefBitmap),
                             ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
                     displayCompleted();
@@ -218,7 +221,8 @@ public class DisplayRequest extends LoadRequest {
             RefBitmap refBitmap = new RefBitmap(bitmap, bitmapPool, getId(), getUri(),
                     loadResult.getOriginWidth(), loadResult.getOriginHeight(), loadResult.getMimeType());
 
-            // TODO 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
+            // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
+            refBitmap.setIsWaitingUse(getLogName() + ":waitingUse:new", true);
 
             // 放入内存缓存中
             if (!displayOptions.isCacheInMemoryDisabled() && getMemoryCacheKey() != null) {
@@ -271,11 +275,11 @@ public class DisplayRequest extends LoadRequest {
 
         // 使用完毕更新等待使用的引用计数
         if (drawable instanceof RefDrawable) {
-            ((RefDrawable) drawable).setIsWaitingUse("displayCompleted:finish", false);
+            ((RefDrawable) drawable).setIsWaitingUse(getLogName() + ":waitingUse:finish", false);
         }
     }
 
-    private void displayImage(Drawable drawable){
+    private void displayImage(Drawable drawable) {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
                 printLogW("canceled", "runCompletedInMainThread");
@@ -287,8 +291,7 @@ public class DisplayRequest extends LoadRequest {
         if (drawable instanceof BitmapDrawable) {
             BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
             if (bitmapDrawable.getBitmap().isRecycled()) {
-                // TODO: 2016/11/22 走到这里的几率还是挺高的，得弄清楚到底是咋回事，比如记录下bitmap的操作记录，当出现问题时打印记录看看
-                // TODO: 2016/11/22 初步怀疑是异步的wait display引用造成的，解决方案加锁
+                // 这里应该不会再出问题了
                 SketchMonitor sketchMonitor = getSketch().getConfiguration().getMonitor();
                 sketchMonitor.onBitmapRecycledOnDisplay(this, drawable instanceof RefDrawable ? (RefDrawable) drawable : null);
 
