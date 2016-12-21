@@ -190,30 +190,28 @@ public class DisplayRequest extends LoadRequest {
 
     @Override
     protected void runLoad() {
+        RequestExecutor executor = getSketch().getConfiguration().getRequestExecutor();
+        executor.registerFreeRide(this);
+
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
                 printLogW("canceled", "runLoad", "display request just started");
             }
-            return;
-        }
+        } else {
+            // 先检查内存缓存，检查的时候要先上锁
+            boolean finished = false;
+            if (!displayOptions.isCacheInDiskDisabled()) {
+                setStatus(Status.GET_MEMORY_CACHE_EDIT_LOCK);
 
-        RequestExecutor executor = getSketch().getConfiguration().getRequestExecutor();
-        executor.registerFreeRide(this);
+                finished = checkMemoryCache();
+            }
 
-        // 先检查内存缓存，检查的时候要先上锁
-        boolean finished = false;
-        if (!displayOptions.isCacheInDiskDisabled()) {
-            setStatus(Status.GET_MEMORY_CACHE_EDIT_LOCK);
-
-            finished = checkMemoryCache();
-        }
-
-        if (!finished) {
-            super.runLoad();
+            if (!finished) {
+                super.runLoad();
+            }
         }
 
         executor.unregisterFreeRide(this);
-
         processFreeRideRequests();
     }
 
