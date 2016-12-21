@@ -24,13 +24,14 @@ public class RoundRectTestFragment extends MyFragment{
     @InjectView(R.id.text_gaussianBlurFragment)
     TextView progressTextView;
 
+    private int progress = 30;
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
 
-        seekBar.setMax(100);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -44,15 +45,19 @@ public class RoundRectTestFragment extends MyFragment{
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                progress = seekBar.getProgress();
                 apply();
             }
         });
-        seekBar.setProgress(30);
+
+        seekBar.setMax(100);
+        seekBar.setProgress(progress);
+
         apply();
     }
 
     private void apply() {
-        imageView.getOptions().setImageProcessor(new RoundRectImageProcessor(seekBar.getProgress()));
+        imageView.getOptions().setImageProcessor(new RoundRectImageProcessor(progress));
         imageView.displayAssetImage("bizhi1.jpg");
     }
 }

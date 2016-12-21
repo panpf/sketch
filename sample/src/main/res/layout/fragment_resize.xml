@@ -14,9 +14,10 @@
         android:id="@+id/seekBar_resizeFragment_width"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp" />
+        android:layout_marginRight="16dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,16 +34,17 @@
             android:id="@+id/text_resizeFragment_width"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"/>
+            android:gravity="right" />
     </LinearLayout>
 
     <SeekBar
         android:id="@+id/seekBar_resizeFragment_height"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp" />
+        android:layout_marginRight="16dp"
+        android:paddingBottom="16dp"
+        android:paddingTop="16dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -60,6 +62,6 @@
             android:id="@+id/text_resizeFragment_height"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="right"/>
+            android:gravity="right" />
     </LinearLayout>
 </LinearLayout>

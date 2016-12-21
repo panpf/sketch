@@ -25,6 +25,8 @@ public class GaussianBlurTestFragment extends MyFragment {
     @InjectView(R.id.text_gaussianBlurFragment)
     TextView progressTextView;
 
+    private int progress = 15;
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -35,7 +37,6 @@ public class GaussianBlurTestFragment extends MyFragment {
 
         imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
 
-        seekBar.setMax(100);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -49,15 +50,19 @@ public class GaussianBlurTestFragment extends MyFragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                progress = seekBar.getProgress();
                 apply();
             }
         });
-        seekBar.setProgress(15);
+
+        seekBar.setMax(100);
+        seekBar.setProgress(progress);
+
         apply();
     }
 
     private void apply() {
-        imageView.getOptions().setImageProcessor(new GaussianBlurImageProcessor(seekBar.getProgress()));
+        imageView.getOptions().setImageProcessor(new GaussianBlurImageProcessor(progress));
         imageView.displayAssetImage("bizhi1.jpg");
     }
 }

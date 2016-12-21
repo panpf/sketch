@@ -29,6 +29,9 @@ public class ResizeTestFragment extends MyFragment {
     @InjectView(R.id.text_resizeFragment_height)
     TextView heightProgressTextView;
 
+    private int widthProgress = 50;
+    private int heightProgress = 50;
+
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -57,10 +60,11 @@ public class ResizeTestFragment extends MyFragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                widthProgress = widthSeekBar.getProgress();
                 apply();
             }
         });
-        widthSeekBar.setProgress(50);
+        widthSeekBar.setProgress(widthProgress);
 
         heightSeekBar.setMax(100);
         heightSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -81,17 +85,18 @@ public class ResizeTestFragment extends MyFragment {
 
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
+                heightProgress = heightSeekBar.getProgress();
                 apply();
             }
         });
-        heightSeekBar.setProgress(50);
+        heightSeekBar.setProgress(heightProgress);
 
         apply();
     }
 
     private void apply() {
-        int width = (int) ((widthSeekBar.getProgress() / 100f) * 1000);
-        int height = (int) ((heightSeekBar.getProgress() / 100f) * 1000);
+        int width = (int) ((widthProgress / 100f) * 1000);
+        int height = (int) ((heightProgress / 100f) * 1000);
 
         imageView.getOptions().setResize(width, height);
         imageView.displayAssetImage("bizhi1.jpg");

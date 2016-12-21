@@ -20,7 +20,7 @@ public class RotateTestFragment extends MyFragment {
     @InjectView(R.id.button_rotateFragment)
     Button rotateButton;
 
-    private int degrees;
+    private int degrees = 45;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -32,12 +32,15 @@ public class RotateTestFragment extends MyFragment {
             @Override
             public void onClick(View v) {
                 degrees += 45;
-                imageView.getOptions().setImageProcessor(new RotateImageProcessor(degrees));
-                imageView.displayAssetImage("bizhi1.jpg");
+                apply();
             }
         });
 
-        degrees = 0;
-        rotateButton.performClick();
+        apply();
+    }
+
+    private void apply(){
+        imageView.getOptions().setImageProcessor(new RotateImageProcessor(degrees));
+        imageView.displayAssetImage("bizhi1.jpg");
     }
 }
