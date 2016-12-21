@@ -673,54 +673,56 @@ public class DisplayHelper {
     }
 
     private boolean checkMemoryCache() {
-        if (!displayOptions.isCacheInMemoryDisabled()) {
-            RefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(displayInfo.getMemoryCacheKey());
-            if (cachedRefBitmap != null) {
-                if (!cachedRefBitmap.isRecycled()) {
-                    if (Sketch.isDebugMode()) {
-                        Log.i(Sketch.TAG, SketchUtils.concat(logName,
-                                ". image display completed",
-                                ". ", ImageFrom.MEMORY_CACHE.name(),
-                                ". ", cachedRefBitmap.getInfo(),
-                                ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
-                                ". ", displayInfo.getId()));
-                    }
-
-                    RefBitmapDrawable refBitmapDrawable = new RefBitmapDrawable(cachedRefBitmap);
-                    refBitmapDrawable.setImageFrom(ImageFrom.MEMORY_CACHE);
-
-                    Drawable finalDrawable;
-                    if (displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null) {
-                        finalDrawable = new ShapeBitmapDrawable(refBitmapDrawable,
-                                displayOptions.getShapeSize(), displayOptions.getImageShaper());
-                    } else {
-                        finalDrawable = refBitmapDrawable;
-                    }
-
-                    ImageDisplayer imageDisplayer = displayOptions.getImageDisplayer();
-                    if (imageDisplayer != null && imageDisplayer.isAlwaysUse()) {
-                        imageDisplayer.display(imageViewInterface, finalDrawable);
-                    } else {
-                        imageViewInterface.setImageDrawable(finalDrawable);
-                    }
-                    if (displayListener != null) {
-                        displayListener.onCompleted(ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
-                    }
-                    return false;
-                } else {
-                    sketch.getConfiguration().getMemoryCache().remove(displayInfo.getMemoryCacheKey());
-                    if (Sketch.isDebugMode()) {
-                        Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                                ". ", "memory cache drawable recycled",
-                                ". ", cachedRefBitmap.getInfo(),
-                                ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode()),
-                                ". ", displayInfo.getId()));
-                    }
-                }
-            }
+        if (displayOptions.isCacheInMemoryDisabled()) {
+            return true;
         }
 
-        return true;
+        RefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(displayInfo.getMemoryCacheKey());
+        if (cachedRefBitmap == null) {
+            return true;
+        }
+
+        if (cachedRefBitmap.isRecycled()) {
+            sketch.getConfiguration().getMemoryCache().remove(displayInfo.getMemoryCacheKey());
+            if (Sketch.isDebugMode()) {
+                Log.e(Sketch.TAG, SketchUtils.concat(logName,
+                        ". ", "memory cache drawable recycled",
+                        ". ", cachedRefBitmap.getInfo(),
+                        ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode())));
+            }
+            return true;
+        }
+
+        if (Sketch.isDebugMode()) {
+            Log.i(Sketch.TAG, SketchUtils.concat(logName,
+                    ". image display completed",
+                    ". ", ImageFrom.MEMORY_CACHE.name(),
+                    ". ", cachedRefBitmap.getInfo(),
+                    ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode())));
+        }
+
+        RefBitmapDrawable refBitmapDrawable = new RefBitmapDrawable(cachedRefBitmap);
+        refBitmapDrawable.setImageFrom(ImageFrom.MEMORY_CACHE);
+
+        Drawable finalDrawable;
+        if (displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null) {
+            finalDrawable = new ShapeBitmapDrawable(refBitmapDrawable,
+                    displayOptions.getShapeSize(), displayOptions.getImageShaper());
+        } else {
+            finalDrawable = refBitmapDrawable;
+        }
+
+        ImageDisplayer imageDisplayer = displayOptions.getImageDisplayer();
+        if (imageDisplayer != null && imageDisplayer.isAlwaysUse()) {
+            imageDisplayer.display(imageViewInterface, finalDrawable);
+        } else {
+            imageViewInterface.setImageDrawable(finalDrawable);
+        }
+        if (displayListener != null) {
+            displayListener.onCompleted(ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
+        }
+
+        return false;
     }
 
     private boolean checkRequestLevel() {

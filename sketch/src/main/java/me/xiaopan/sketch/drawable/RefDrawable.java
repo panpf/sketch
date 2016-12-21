@@ -22,7 +22,7 @@ public interface RefDrawable extends SketchDrawable{
 
     void setIsCached(String callingStation, boolean cached);
 
-    void setIsWaitDisplay(String callingStation, boolean waitDisplay);
+    void setIsWaitingUse(String callingStation, boolean waitingUse);
 
     boolean isRecycled();
 }

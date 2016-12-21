@@ -65,9 +65,9 @@ public class LoadingDrawable extends DrawableWrapper implements RefDrawable {
     }
 
     @Override
-    public void setIsWaitDisplay(String callingStation, boolean waitDisplay) {
+    public void setIsWaitingUse(String callingStation, boolean waitingUse) {
         if (refDrawable != null) {
-            refDrawable.setIsWaitDisplay(callingStation, waitDisplay);
+            refDrawable.setIsWaitingUse(callingStation, waitingUse);
         }
     }
 

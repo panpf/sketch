@@ -18,6 +18,8 @@ package me.xiaopan.sketch.request;
 
 import android.graphics.drawable.Drawable;
 
+import me.xiaopan.sketch.drawable.SketchDrawable;
+
 public class DisplayResult {
     private Drawable drawable;
     private String mimeType;
@@ -27,6 +29,11 @@ public class DisplayResult {
         this.drawable = drawable;
         this.imageFrom = imageFrom;
         this.mimeType = mimeType;
+
+        if (drawable instanceof SketchDrawable) {
+            SketchDrawable sketchDrawable = (SketchDrawable) drawable;
+            sketchDrawable.setImageFrom(imageFrom);
+        }
     }
 
     public Drawable getDrawable() {

@@ -29,9 +29,9 @@ import me.xiaopan.sketch.util.SketchUtils;
 public class RefBitmap extends SketchBitmap {
     private static final String LOG_NAME = "RefBitmap";
 
-    private int cacheRefCount;
-    private int displayRefCount;
-    private int waitDisplayRefCount;
+    private int memoryCacheRefCount;  // 内存缓存引用
+    private int displayRefCount;    // 真正显示引用
+    private int waitingUseRefCount; // 等待使用引用
 
     private BitmapPool bitmapPool;
 
@@ -42,28 +42,30 @@ public class RefBitmap extends SketchBitmap {
 
     public String getBitmapInfo() {
         if (isRecycled()) {
-            return "Recycled";
+            return String.format("Recycled,%s", getImageId());
         }
-        return String.format("%s,%dx%d,%s,%s,%d",
+        return String.format("%s,%dx%d,%s,%s,%d,%s",
                 Integer.toHexString(bitmap.hashCode()),
                 bitmap.getWidth(), bitmap.getHeight(),
                 getMimeType(),
                 bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
-                SketchUtils.getBitmapByteSize(bitmap));
+                SketchUtils.getBitmapByteSize(bitmap),
+                getImageId());
     }
 
     @Override
     public String getInfo() {
         if (isRecycled()) {
-            return "Recycled";
+            return String.format("%s(Recycled,%s)", LOG_NAME, getImageId());
         }
-        return String.format("%s(%s,%dx%d,%s,%s,%d)",
+        return String.format("%s(%s,%dx%d,%s,%s,%d,%s)",
                 LOG_NAME,
                 Integer.toHexString(bitmap.hashCode()),
                 bitmap.getWidth(), bitmap.getHeight(),
                 getMimeType(),
                 bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
-                SketchUtils.getBitmapByteSize(bitmap));
+                SketchUtils.getBitmapByteSize(bitmap),
+                getImageId());
     }
 
     /**
@@ -97,26 +99,26 @@ public class RefBitmap extends SketchBitmap {
      */
     public synchronized void setIsCached(String callingStation, boolean cached) {
         if (cached) {
-            cacheRefCount++;
+            memoryCacheRefCount++;
             referenceChanged(callingStation);
-        } else if (cacheRefCount > 0) {
-            cacheRefCount--;
+        } else if (memoryCacheRefCount > 0) {
+            memoryCacheRefCount--;
             referenceChanged(callingStation);
         }
     }
 
     /**
-     * 设置等待缓存怒引用
+     * 设置等待使用引用
      *
      * @param callingStation 调用位置
-     * @param waitDisplay    等待显示
+     * @param waitingUse     等待使用
      */
-    public synchronized void setIsWaitDisplay(String callingStation, boolean waitDisplay) {
-        if (waitDisplay) {
-            waitDisplayRefCount++;
+    public synchronized void setIsWaitingUse(String callingStation, boolean waitingUse) {
+        if (waitingUse) {
+            waitingUseRefCount++;
             referenceChanged(callingStation);
-        } else if (waitDisplayRefCount > 0) {
-            waitDisplayRefCount--;
+        } else if (waitingUseRefCount > 0) {
+            waitingUseRefCount--;
             referenceChanged(callingStation);
         }
     }
@@ -134,17 +136,17 @@ public class RefBitmap extends SketchBitmap {
             return;
         }
 
-        if (cacheRefCount == 0 && displayRefCount == 0 && waitDisplayRefCount == 0) {
+        if (memoryCacheRefCount == 0 && displayRefCount == 0 && waitingUseRefCount == 0) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, String.format("%s. Free. %s. bitmap(%s). %s", LOG_NAME, callingStation, getBitmapInfo(), getImageId()));
+                Log.w(Sketch.TAG, String.format("%s. Free. %s. bitmap(%s)", LOG_NAME, callingStation, getBitmapInfo()));
             }
 
             SketchUtils.freeBitmapToPool(bitmap, bitmapPool);
             bitmap = null;
         } else {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, String.format("%s. Can't free. %s. bitmap(%s). references(%d,%d,%d). %s", LOG_NAME,
-                        callingStation, getBitmapInfo(), cacheRefCount, displayRefCount, waitDisplayRefCount, getImageId()));
+                Log.d(Sketch.TAG, String.format("%s. Can't free. %s. references(%d,%d,%d). bitmap(%s)", LOG_NAME,
+                        callingStation, memoryCacheRefCount, displayRefCount, waitingUseRefCount, getBitmapInfo()));
             }
         }
     }

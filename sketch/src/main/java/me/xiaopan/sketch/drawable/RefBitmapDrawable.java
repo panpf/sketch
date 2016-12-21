@@ -31,6 +31,10 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
     public RefBitmapDrawable(RefBitmap refBitmap) {
         super(null, refBitmap.getBitmap());
 
+        if (refBitmap.isRecycled()) {
+            throw new IllegalArgumentException("refBitmap recycled. " + refBitmap.getInfo());
+        }
+
         this.refBitmap = refBitmap;
 
         // 这一步很重要，让BitmapDrawable的density和Bitmap的density保持一致
@@ -103,8 +107,8 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
     }
 
     @Override
-    public void setIsWaitDisplay(String callingStation, boolean waitDisplay) {
-        refBitmap.setIsWaitDisplay(callingStation, waitDisplay);
+    public void setIsWaitingUse(String callingStation, boolean waitingUse) {
+        refBitmap.setIsWaitingUse(callingStation, waitingUse);
     }
 
     @Override
