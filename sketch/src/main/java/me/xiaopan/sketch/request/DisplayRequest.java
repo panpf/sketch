@@ -21,6 +21,9 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -44,6 +47,7 @@ public class DisplayRequest extends LoadRequest {
     private RequestAndViewBinder requestAndViewBinder;
 
     private DisplayResult displayResult;
+    private Set<DisplayRequest> freeRaidRequestSet;
 
     public DisplayRequest(Sketch sketch, DisplayInfo requestInfo, DisplayOptions displayOptions,
                           ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
@@ -127,6 +131,63 @@ public class DisplayRequest extends LoadRequest {
         super.postRunCompleted();
     }
 
+    /**
+     * 可以使用顺风车？所谓顺风车就是，对于所有内存缓存ID一样并且内存缓存可以用，没有单独关闭内存缓存，不解码GIF图片的请求，
+     * 将所有后续的请求都绑定在第一请求上，第一个请求加载完毕后直接取出内存缓存中可以用的图片交给后续请求处理即可
+     */
+    public boolean canFreeRide() {
+        MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
+        return !memoryCache.isClosed() && !memoryCache.isDisabled()
+                && !getOptions().isCacheInMemoryDisabled()
+                && !getOptions().isDecodeGifImage();
+    }
+
+    /**
+     * 添加一个搭乘本次顺风车的请求
+     *
+     * @param request DisplayRequest
+     */
+    public void addFreeRideRequest(DisplayRequest request) {
+        synchronized (this) {
+            if (freeRaidRequestSet == null) {
+                freeRaidRequestSet = new HashSet<DisplayRequest>();
+            }
+            freeRaidRequestSet.add(request);
+        }
+    }
+
+    /**
+     * 处理那些搭顺风车的请求，有已缓存的图片就直接用，没有就重新走load
+     */
+    private void processFreeRideRequests() {
+        synchronized (this) {
+            if (freeRaidRequestSet != null) {
+                MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
+                RefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
+                if (cachedRefBitmap != null && cachedRefBitmap.isRecycled()) {
+                    memoryCache.remove(getMemoryCacheKey());
+                    if (Sketch.isDebugMode()) {
+                        printLogE("memory cache drawable recycled", "processFreeRideRequests", "bitmap=" + cachedRefBitmap.getInfo());
+                    }
+                    cachedRefBitmap = null;
+                }
+                for (DisplayRequest request : freeRaidRequestSet) {
+                    if (cachedRefBitmap != null) {
+                        // 立马标记等待使用，防止被挤出去回收掉
+                        cachedRefBitmap.setIsWaitingUse(getLogName() + ":waitingUse:fromMemory", true);
+
+                        request.displayResult = new DisplayResult(new RefBitmapDrawable(cachedRefBitmap),
+                                ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
+                        request.displayCompleted();
+                    } else {
+                        request.submitRunLoad();
+                    }
+                }
+                freeRaidRequestSet.clear();
+            }
+        }
+    }
+
     @Override
     protected void runLoad() {
         if (isCanceled()) {
@@ -135,6 +196,9 @@ public class DisplayRequest extends LoadRequest {
             }
             return;
         }
+
+        RequestExecutor executor = getSketch().getConfiguration().getRequestExecutor();
+        executor.registerFreeRide(this);
 
         // 先检查内存缓存，检查的时候要先上锁
         boolean finished = false;
@@ -147,9 +211,11 @@ public class DisplayRequest extends LoadRequest {
         if (!finished) {
             super.runLoad();
         }
-    }
 
-    // TODO: 2016/12/21 runLoad方法根据缓存ID加锁，避免重复加载
+        executor.unregisterFreeRide(this);
+
+        processFreeRideRequests();
+    }
 
     private boolean checkMemoryCache() {
         if (isCanceled()) {
