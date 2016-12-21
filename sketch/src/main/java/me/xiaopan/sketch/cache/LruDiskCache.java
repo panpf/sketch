@@ -51,6 +51,7 @@ public class LruDiskCache implements DiskCache {
     private Configuration configuration;
     private Map<String, ReentrantLock> editLockMap;
     private boolean closed;
+    private boolean disabled;
 
     public LruDiskCache(Context context, Configuration configuration, int appVersionCode, int maxSize) {
         context = context.getApplicationContext();
@@ -129,6 +130,13 @@ public class LruDiskCache implements DiskCache {
             return false;
         }
 
+        if (disabled) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, logName + ". Disabled. Unable judge exist, uri=" + uri);
+            }
+            return false;
+        }
+
         // 这个方法性能优先，因此不检查缓存目录
         if (!checkDiskCache()) {
             installDiskCache();
@@ -154,6 +162,13 @@ public class LruDiskCache implements DiskCache {
             return null;
         }
 
+        if (disabled) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, logName + ". Disabled. Unable get, uri=" + uri);
+            }
+            return null;
+        }
+
         if (!checkDiskCache() || !checkCacheDir()) {
             installDiskCache();
             if (!checkDiskCache()) {
@@ -175,6 +190,13 @@ public class LruDiskCache implements DiskCache {
     @Override
     public synchronized Editor edit(String uri) {
         if (closed) {
+            return null;
+        }
+
+        if (disabled) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, logName + ". Disabled. Unable edit, uri=" + uri);
+            }
             return null;
         }
 
@@ -259,6 +281,23 @@ public class LruDiskCache implements DiskCache {
         }
 
         return cache.size();
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    @Override
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+        if (Sketch.isDebugMode()) {
+            if (disabled) {
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + true));
+            } else {
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + false));
+            }
+        }
     }
 
     @Override

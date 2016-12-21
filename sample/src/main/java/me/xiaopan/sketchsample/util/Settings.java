@@ -67,11 +67,11 @@ public class Settings {
         if (PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD.equals(key)) {
             Sketch.with(context).getConfiguration().setMobileNetworkGlobalPauseDownload(newValue);
         } else if (PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK.equals(key)) {
-            Sketch.with(context).getConfiguration().setGlobalDisableCacheInDisk(newValue);
+            Sketch.with(context).getConfiguration().getDiskCache().setDisabled(newValue);
         } else if (PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY.equals(key)) {
-            Sketch.with(context).getConfiguration().setGlobalDisableCacheInMemory(newValue);
+            Sketch.with(context).getConfiguration().getMemoryCache().setDisabled(newValue);
         } else if (PREFERENCE_GLOBAL_DISABLE_BITMAP_POOL.equals(key)) {
-            Sketch.with(context).getConfiguration().setGlobalDisableBitmapPool(newValue);
+            Sketch.with(context).getConfiguration().getBitmapPool().setDisabled(newValue);
         } else if (PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE.equals(key)) {
             Sketch.with(context).getConfiguration().setGlobalLowQualityImage(newValue);
         } else if (PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)) {

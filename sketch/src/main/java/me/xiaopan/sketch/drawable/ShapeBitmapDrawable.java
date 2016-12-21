@@ -316,11 +316,4 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
     public boolean isRecycled() {
         return refDrawable == null || refDrawable.isRecycled();
     }
-
-    @Override
-    public void recycle() {
-        if (refDrawable != null) {
-            refDrawable.recycle();
-        }
-    }
 }

@@ -121,7 +121,7 @@ public class DownloadRequest extends AsyncRequest {
         }
 
         // 从磁盘中找缓存文件
-        if (!options.isDisableCacheInDisk()) {
+        if (!options.isCacheInDiskDisabled()) {
             setStatus(Status.CHECK_DISK_CACHE);
 
             DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
@@ -173,7 +173,7 @@ public class DownloadRequest extends AsyncRequest {
 
         // 使用磁盘缓存就必须要上锁
         ReentrantLock diskCacheEditLock = null;
-        if (!getOptions().isDisableCacheInDisk()) {
+        if (!getOptions().isCacheInDiskDisabled()) {
             setStatus(Status.GET_DISK_CACHE_EDIT_LOCK);
             diskCacheEditLock = diskCache.getEditLock(getDiskCacheKey());
             if (diskCacheEditLock != null) {
@@ -208,7 +208,7 @@ public class DownloadRequest extends AsyncRequest {
         }
 
         // 检查磁盘缓存
-        if (!getOptions().isDisableCacheInDisk()) {
+        if (!getOptions().isCacheInDiskDisabled()) {
             setStatus(Status.CHECK_DISK_CACHE);
             DiskCache.Entry diskCacheEntry = diskCache.get(diskCacheKey);
             if (diskCacheEntry != null) {
@@ -311,7 +311,7 @@ public class DownloadRequest extends AsyncRequest {
         }
 
         DiskCache.Editor diskCacheEditor = null;
-        if (!getOptions().isDisableCacheInDisk()) {
+        if (!getOptions().isCacheInDiskDisabled()) {
             diskCacheEditor = diskCache.edit(diskCacheKey);
         }
         OutputStream outputStream;

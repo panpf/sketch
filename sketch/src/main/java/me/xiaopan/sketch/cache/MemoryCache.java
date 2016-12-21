@@ -59,6 +59,19 @@ public interface MemoryCache extends Identifier {
     void trimMemory(int level);
 
     /**
+     * 禁用了？
+     */
+    @SuppressWarnings("unused")
+    boolean isDisabled();
+
+    /**
+     * 设置禁用
+     *
+     * @param disabled 禁用
+     */
+    void setDisabled(boolean disabled);
+
+    /**
      * 清除缓存
      */
     void clear();

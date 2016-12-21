@@ -25,6 +25,4 @@ public interface RefDrawable extends SketchDrawable{
     void setIsWaitDisplay(String callingStation, boolean waitDisplay);
 
     boolean isRecycled();
-
-    void recycle();
 }

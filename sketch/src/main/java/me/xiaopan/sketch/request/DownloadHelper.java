@@ -18,7 +18,6 @@ package me.xiaopan.sketch.request;
 
 import android.util.Log;
 
-import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -49,7 +48,7 @@ public class DownloadHelper {
      */
     @SuppressWarnings("unused")
     public DownloadHelper disableCacheInDisk() {
-        downloadOptions.setDisableCacheInDisk(true);
+        downloadOptions.setCacheInDiskDisabled(true);
         return this;
     }
 
@@ -135,13 +134,6 @@ public class DownloadHelper {
      * 对属性进行预处理
      */
     protected void preProcess() {
-        Configuration configuration = sketch.getConfiguration();
-
-        // 如果设置了全局禁用磁盘缓存就强制关闭磁盘缓存功能
-        if (configuration.isGlobalDisableCacheInDisk()) {
-            downloadOptions.setDisableCacheInDisk(true);
-        }
-
         // 暂停下载对于下载请求并不起作用，就相当于暂停加载对加载请求并不起作用一样，因此这里不予处理
 
         // 根据URI和下载选项生成请求ID

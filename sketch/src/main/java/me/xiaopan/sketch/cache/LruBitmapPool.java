@@ -45,7 +45,7 @@ public class LruBitmapPool implements BitmapPool {
 
     private Context context;
     private boolean closed;
-    private boolean disable;
+    private boolean disabled;
 
     // Exposed for testing only.
     LruBitmapPool(Context context, int maxSize, LruPoolStrategy strategy, Set<Bitmap.Config> allowedConfigs) {
@@ -104,9 +104,9 @@ public class LruBitmapPool implements BitmapPool {
             return false;
         }
 
-        if (disable) {
+        if (disabled) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Disabled unable put, bitmap=" + strategy.logBitmap(bitmap));
+                Log.w(Sketch.TAG, logName + ". Disabled. Unable put, bitmap=" + strategy.logBitmap(bitmap));
             }
             return false;
         }
@@ -147,9 +147,9 @@ public class LruBitmapPool implements BitmapPool {
             return null;
         }
 
-        if (disable) {
+        if (disabled) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Disabled unable get, bitmap=" + strategy.logBitmap(width, height, config));
+                Log.w(Sketch.TAG, logName + ". Disabled. Unable get, bitmap=" + strategy.logBitmap(width, height, config));
             }
             return null;
         }
@@ -230,13 +230,20 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     @Override
-    public boolean isDisable() {
-        return disable;
+    public boolean isDisabled() {
+        return disabled;
     }
 
     @Override
-    public void setDisable(boolean disable) {
-        this.disable = disable;
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+        if (Sketch.isDebugMode()) {
+            if (disabled) {
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + true));
+            } else {
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + false));
+            }
+        }
     }
 
     @SuppressLint("InlinedApi")

@@ -25,7 +25,7 @@ public class DownloadOptions {
     /**
      * 禁用磁盘缓存
      */
-    private boolean disableCacheInDisk;
+    private boolean cacheInDiskDisabled;
 
     /**
      * 请求Level
@@ -54,18 +54,18 @@ public class DownloadOptions {
     /**
      * 不使用磁盘缓存？
      */
-    public boolean isDisableCacheInDisk() {
-        return disableCacheInDisk;
+    public boolean isCacheInDiskDisabled() {
+        return cacheInDiskDisabled;
     }
 
     /**
      * 设置不使用磁盘缓存
      *
-     * @param disableCacheInDisk 不使用磁盘缓存
+     * @param cacheInDiskDisabled 不使用磁盘缓存
      * @return this
      */
-    public DownloadOptions setDisableCacheInDisk(boolean disableCacheInDisk) {
-        this.disableCacheInDisk = disableCacheInDisk;
+    public DownloadOptions setCacheInDiskDisabled(boolean cacheInDiskDisabled) {
+        this.cacheInDiskDisabled = cacheInDiskDisabled;
         return this;
     }
 
@@ -115,7 +115,7 @@ public class DownloadOptions {
      * 重置所有属性
      */
     public void reset() {
-        disableCacheInDisk = false;
+        cacheInDiskDisabled = false;
         requestLevel = null;
         requestLevelFrom = null;
     }
@@ -128,7 +128,7 @@ public class DownloadOptions {
             return;
         }
 
-        disableCacheInDisk = options.disableCacheInDisk;
+        cacheInDiskDisabled = options.cacheInDiskDisabled;
         requestLevel = options.requestLevel;
         requestLevelFrom = options.requestLevelFrom;
     }
@@ -141,8 +141,8 @@ public class DownloadOptions {
             return;
         }
 
-        if (!disableCacheInDisk) {
-            disableCacheInDisk = options.disableCacheInDisk;
+        if (!cacheInDiskDisabled) {
+            cacheInDiskDisabled = options.cacheInDiskDisabled;
         }
 
         if (requestLevel == null) {

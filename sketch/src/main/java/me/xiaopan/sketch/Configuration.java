@@ -69,8 +69,6 @@ public class Configuration {
     private boolean globalPauseLoad;   // 全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean globalPauseDownload;   // 全局暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean globalLowQualityImage; // 全局使用低质量的图片
-    private boolean globalDisableCacheInDisk;   // 全局禁用磁盘缓存
-    private boolean globalDisableCacheInMemory; // 全局禁用内存缓存
     private boolean globalInPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
     private MobileNetworkGlobalPauseDownload mobileNetworkGlobalPauseDownload;
 
@@ -495,67 +493,6 @@ public class Configuration {
     }
 
     /**
-     * 全局禁用磁盘缓存？
-     */
-    public boolean isGlobalDisableCacheInDisk() {
-        return globalDisableCacheInDisk;
-    }
-
-    /**
-     * 设置全局禁用磁盘缓存
-     */
-    public Configuration setGlobalDisableCacheInDisk(boolean globalDisableCacheInDisk) {
-        if (this.globalDisableCacheInDisk != globalDisableCacheInDisk) {
-            this.globalDisableCacheInDisk = globalDisableCacheInDisk;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalDisableCacheInDisk", ". ", globalDisableCacheInDisk));
-            }
-        }
-        return this;
-    }
-
-    /**
-     * 全局禁用BitmapPool？
-     */
-    @SuppressWarnings("unused")
-    public boolean isGlobalDisableBitmapPool() {
-        return bitmapPool.isDisable();
-    }
-
-    /**
-     * 设置全局禁用BitmapPool
-     */
-    public Configuration setGlobalDisableBitmapPool(boolean globalDisableBitmapPool) {
-        if (bitmapPool.isDisable() != globalDisableBitmapPool) {
-            bitmapPool.setDisable(globalDisableBitmapPool);
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalDisableBitmapPool", ". ", globalDisableBitmapPool));
-            }
-        }
-        return this;
-    }
-
-    /**
-     * 全局禁用内存缓存
-     */
-    public boolean isGlobalDisableCacheInMemory() {
-        return globalDisableCacheInMemory;
-    }
-
-    /**
-     * 设置全局禁用内存缓存
-     */
-    public Configuration setGlobalDisableCacheInMemory(boolean globalDisableCacheInMemory) {
-        if (this.globalDisableCacheInMemory != globalDisableCacheInMemory) {
-            this.globalDisableCacheInMemory = globalDisableCacheInMemory;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalDisableCacheInMemory", ". ", globalDisableCacheInMemory));
-            }
-        }
-        return this;
-    }
-
-    /**
      * 获取图片预处理器
      */
     public ImagePreprocessor getImagePreprocessor() {
@@ -692,21 +629,6 @@ public class Configuration {
         builder.append("globalInPreferQualityOverSpeed");
         builder.append("：");
         builder.append(globalInPreferQualityOverSpeed);
-
-        if (builder.length() > 0) builder.append("\n");
-        builder.append("globalDisableCacheInMemory");
-        builder.append("：");
-        builder.append(globalDisableCacheInMemory);
-
-        if (builder.length() > 0) builder.append("\n");
-        builder.append("globalDisableCacheInDisk");
-        builder.append("：");
-        builder.append(globalDisableCacheInDisk);
-
-        if (builder.length() > 0) builder.append("\n");
-        builder.append("globalDisableBitmapPool");
-        builder.append("：");
-        builder.append(bitmapPool.isDisable());
 
         if (builder.length() > 0) builder.append("\n");
         builder.append("mobileNetworkGlobalPauseDownload");

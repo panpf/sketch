@@ -37,6 +37,7 @@ public class LruMemoryCache implements MemoryCache {
     private Context context;
     private Map<String, ReentrantLock> editLockMap;
     private boolean closed;
+    private boolean disabled;
 
     public LruMemoryCache(Context context, int maxSize) {
         context = context.getApplicationContext();
@@ -47,6 +48,13 @@ public class LruMemoryCache implements MemoryCache {
     @Override
     public synchronized void put(String key, RefBitmap refBitmap) {
         if (closed) {
+            return;
+        }
+
+        if (disabled) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, logName + ". Disabled. Unable put, key=" + key);
+            }
             return;
         }
 
@@ -71,12 +79,26 @@ public class LruMemoryCache implements MemoryCache {
             return null;
         }
 
+        if (disabled) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, logName + ". Disabled. Unable get, key=" + key);
+            }
+            return null;
+        }
+
         return cache.get(key);
     }
 
     @Override
     public synchronized RefBitmap remove(String key) {
         if (closed) {
+            return null;
+        }
+
+        if (disabled) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, logName + ". Disabled. Unable remove, key=" + key);
+            }
             return null;
         }
 
@@ -123,6 +145,23 @@ public class LruMemoryCache implements MemoryCache {
                     ". trimMemory",
                     ". level=", SketchUtils.getTrimLevelName(level),
                     ", released: ", Formatter.formatFileSize(context, releasedSize)));
+        }
+    }
+
+    @Override
+    public boolean isDisabled() {
+        return disabled;
+    }
+
+    @Override
+    public void setDisabled(boolean disabled) {
+        this.disabled = disabled;
+        if (Sketch.isDebugMode()) {
+            if (disabled) {
+                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + true));
+            } else {
+                Log.i(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + false));
+            }
         }
     }
 

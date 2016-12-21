@@ -58,7 +58,7 @@ public class LoadHelper {
      */
     @SuppressWarnings("unused")
     public LoadHelper disableCacheInDisk() {
-        loadOptions.setDisableCacheInDisk(true);
+        loadOptions.setCacheInDiskDisabled(true);
         return this;
     }
 
@@ -67,7 +67,7 @@ public class LoadHelper {
      */
     @SuppressWarnings("unused")
     public LoadHelper disableBitmapPool() {
-        loadOptions.setDisableBitmapPool(true);
+        loadOptions.setBitmapPoolDisabled(true);
         return this;
     }
 
@@ -275,11 +275,6 @@ public class LoadHelper {
         MaxSize maxSize = loadOptions.getMaxSize();
         if (maxSize != null && maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
             throw new IllegalArgumentException("MaxSize width or height must be > 0");
-        }
-
-        // 如果设置了全局禁用磁盘缓存就强制关闭磁盘缓存功能
-        if (configuration.isGlobalDisableCacheInDisk()) {
-            loadOptions.setDisableCacheInDisk(true);
         }
 
         // 如果设置了全局使用低质量图片的话就强制使用低质量的图片

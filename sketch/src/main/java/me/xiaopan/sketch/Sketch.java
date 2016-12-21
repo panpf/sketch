@@ -46,6 +46,7 @@ import me.xiaopan.sketch.util.SketchUtils;
  */
 // TODO: 2016/12/21 规范注释
 // TODO: 2016/12/21 所有ID直接改成内存缓存ID
+// TODO: 2016/12/21 日志分类控制
 public class Sketch {
     public static final String TAG = "Sketch";
 

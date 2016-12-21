@@ -27,17 +27,50 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 引用Bitmap，能够计算缓存引用、显示引用以及等待显示引用
  */
 public class RefBitmap extends SketchBitmap {
+    private static final String LOG_NAME = "RefBitmap";
 
     private int cacheRefCount;
     private int displayRefCount;
     private int waitDisplayRefCount;
 
     private BitmapPool bitmapPool;
-    private boolean allowRecycle = true;
 
     public RefBitmap(Bitmap bitmap, BitmapPool bitmapPool, String imageId, String imageUri, int originWidth, int originHeight, String mimeType) {
         super(bitmap, imageId, imageUri, originWidth, originHeight, mimeType);
         this.bitmapPool = bitmapPool;
+    }
+
+    public String getBitmapInfo() {
+        if (isRecycled()) {
+            return "Recycled";
+        }
+        return String.format("%s,%dx%d,%s,%s,%d",
+                Integer.toHexString(bitmap.hashCode()),
+                bitmap.getWidth(), bitmap.getHeight(),
+                getMimeType(),
+                bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
+                SketchUtils.getBitmapByteSize(bitmap));
+    }
+
+    @Override
+    public String getInfo() {
+        if (isRecycled()) {
+            return "Recycled";
+        }
+        return String.format("%s(%s,%dx%d,%s,%s,%d)",
+                LOG_NAME,
+                Integer.toHexString(bitmap.hashCode()),
+                bitmap.getWidth(), bitmap.getHeight(),
+                getMimeType(),
+                bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
+                SketchUtils.getBitmapByteSize(bitmap));
+    }
+
+    /**
+     * 已回收？
+     */
+    public synchronized boolean isRecycled() {
+        return bitmap == null || bitmap.isRecycled();
     }
 
     /**
@@ -47,16 +80,13 @@ public class RefBitmap extends SketchBitmap {
      * @param displayed      显示
      */
     public synchronized void setIsDisplayed(String callingStation, boolean displayed) {
-        synchronized (this) {
-            if (displayed) {
-                displayRefCount++;
-            } else {
-                if (displayRefCount > 0) {
-                    displayRefCount--;
-                }
-            }
+        if (displayed) {
+            displayRefCount++;
+            referenceChanged(callingStation);
+        } else if (displayRefCount > 0) {
+            displayRefCount--;
+            referenceChanged(callingStation);
         }
-        tryRecycle((displayed ? "display" : "hide"), callingStation);
     }
 
     /**
@@ -66,16 +96,13 @@ public class RefBitmap extends SketchBitmap {
      * @param cached         缓存
      */
     public synchronized void setIsCached(String callingStation, boolean cached) {
-        synchronized (this) {
-            if (cached) {
-                cacheRefCount++;
-            } else {
-                if (cacheRefCount > 0) {
-                    cacheRefCount--;
-                }
-            }
+        if (cached) {
+            cacheRefCount++;
+            referenceChanged(callingStation);
+        } else if (cacheRefCount > 0) {
+            cacheRefCount--;
+            referenceChanged(callingStation);
         }
-        tryRecycle((cached ? "putToCache" : "removedFromCache"), callingStation);
     }
 
     /**
@@ -85,85 +112,39 @@ public class RefBitmap extends SketchBitmap {
      * @param waitDisplay    等待显示
      */
     public synchronized void setIsWaitDisplay(String callingStation, boolean waitDisplay) {
-        synchronized (this) {
-            if (waitDisplay) {
-                waitDisplayRefCount++;
-            } else {
-                if (waitDisplayRefCount > 0) {
-                    waitDisplayRefCount--;
-                }
-            }
-        }
-        tryRecycle((waitDisplay ? "waitDisplay" : "displayed"), callingStation);
-    }
-
-    /**
-     * 已回收
-     */
-    public synchronized boolean isRecycled() {
-        return bitmap == null || bitmap.isRecycled();
-    }
-
-    /**
-     * 回收Bitmap
-     */
-    public synchronized void recycle() {
-        if (bitmap != null) {
-            SketchUtils.freeBitmapToPool(bitmap, bitmapPool);
-            bitmap = null;
+        if (waitDisplay) {
+            waitDisplayRefCount++;
+            referenceChanged(callingStation);
+        } else if (waitDisplayRefCount > 0) {
+            waitDisplayRefCount--;
+            referenceChanged(callingStation);
         }
     }
 
     /**
-     * 可以回收？只有三种引用都为0并且允许回收才可以回收
-     */
-    public synchronized boolean canRecycle() {
-        return allowRecycle && bitmap != null && !bitmap.isRecycled();
-    }
-
-    /**
-     * 允许回收（默认允许）
-     */
-    @SuppressWarnings("unused")
-    public synchronized boolean isAllowRecycle() {
-        return allowRecycle;
-    }
-
-    /**
-     * 设置允许回收
-     */
-    @SuppressWarnings("unused")
-    public synchronized void setAllowRecycle(boolean allowRecycle) {
-        this.allowRecycle = allowRecycle;
-    }
-
-    /**
-     * 尝试回收
+     * 引用变化时执行此方法
      *
-     * @param type           类型
      * @param callingStation 调用位置
      */
-    private synchronized void tryRecycle(String type, String callingStation) {
-        if (cacheRefCount <= 0 && displayRefCount <= 0 && waitDisplayRefCount <= 0 && canRecycle()) {
+    private void referenceChanged(String callingStation) {
+        if (isRecycled()) {
             if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat("RefBitmap",
-                        ". free bitmap",
-                        ". ", callingStation, ":", type,
-                        ". ", getInfo()));
+                Log.e(Sketch.TAG, String.format("%s. Recycled. %s. %s", LOG_NAME, callingStation, getImageId()));
             }
-            recycle();
+            return;
+        }
+
+        if (cacheRefCount == 0 && displayRefCount == 0 && waitDisplayRefCount == 0) {
+            if (Sketch.isDebugMode()) {
+                Log.w(Sketch.TAG, String.format("%s. Free. %s. bitmap(%s). %s", LOG_NAME, callingStation, getBitmapInfo(), getImageId()));
+            }
+
+            SketchUtils.freeBitmapToPool(bitmap, bitmapPool);
+            bitmap = null;
         } else {
             if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat("RefBitmap",
-                        ". can't free bitmap",
-                        ". ", callingStation,
-                        ". ", type,
-                        ". ", getInfo(),
-                        ". ", "references(",
-                        "cacheRefCount=", cacheRefCount, ", ",
-                        "displayRefCount=", displayRefCount, ", ",
-                        "waitDisplayRefCount=", waitDisplayRefCount, ", ",
-                        "canRecycle=", canRecycle(), ")"));
+                Log.d(Sketch.TAG, String.format("%s. Can't free. %s. bitmap(%s). references(%d,%d,%d). %s", LOG_NAME,
+                        callingStation, getBitmapInfo(), cacheRefCount, displayRefCount, waitDisplayRefCount, getImageId()));
             }
         }
     }

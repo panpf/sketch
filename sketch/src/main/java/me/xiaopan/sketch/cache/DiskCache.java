@@ -70,6 +70,19 @@ public interface DiskCache extends Identifier {
     long getSize();
 
     /**
+     * 禁用了？
+     */
+    @SuppressWarnings("unused")
+    boolean isDisabled();
+
+    /**
+     * 设置禁用
+     *
+     * @param disabled 禁用
+     */
+    void setDisabled(boolean disabled);
+
+    /**
      * 清除缓存
      */
     void clear();
@@ -87,25 +100,70 @@ public interface DiskCache extends Identifier {
 
     /**
      * 获取编辑锁
+     *
      * @return null：已关闭
      */
     ReentrantLock getEditLock(String key);
 
+    /**
+     * 磁盘缓存实体
+     */
     interface Entry {
+        /**
+         * 创建输入流
+         *
+         * @return InputStream
+         * @throws IOException
+         */
         InputStream newInputStream() throws IOException;
 
+        /**
+         * 获取实体文件
+         *
+         * @return File
+         */
         File getFile();
 
+        /**
+         * 获取实体对应的uri
+         *
+         * @return 对应的uri，未转码的
+         */
         String getUri();
 
+        /**
+         * 删除实体
+         *
+         * @return true：删除成功
+         */
         boolean delete();
     }
 
+    /**
+     * 磁盘缓存编辑器
+     */
     interface Editor {
+        /**
+         * 创建一个输出流，用于写出文件
+         *
+         * @return OutputStream
+         * @throws IOException
+         */
         OutputStream newOutputStream() throws IOException;
 
+        /**
+         * 写完提交
+         *
+         * @throws IOException
+         * @throws DiskLruCache.EditorChangedException
+         * @throws DiskLruCache.ClosedException
+         * @throws DiskLruCache.FileNotExistException
+         */
         void commit() throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException;
 
+        /**
+         * 写的过程中出现异常情况，中断写出
+         */
         void abort();
     }
 }

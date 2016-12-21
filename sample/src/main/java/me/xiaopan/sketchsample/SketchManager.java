@@ -35,9 +35,9 @@ public class SketchManager {
         sketchConfiguration.setMobileNetworkGlobalPauseDownload(Settings.getBoolean(context, Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD));
         sketchConfiguration.setGlobalLowQualityImage(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE));
         sketchConfiguration.setGlobalInPreferQualityOverSpeed(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED));
-        sketchConfiguration.setGlobalDisableCacheInDisk(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK));
-        sketchConfiguration.setGlobalDisableBitmapPool(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_BITMAP_POOL));
-        sketchConfiguration.setGlobalDisableCacheInMemory(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY));
+        sketchConfiguration.getDiskCache().setDisabled(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_DISK));
+        sketchConfiguration.getBitmapPool().setDisabled(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_BITMAP_POOL));
+        sketchConfiguration.getMemoryCache().setDisabled(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY));
         sketchConfiguration.setImagePreprocessor(new MyImagePreprocessor());
         sketchConfiguration.setMonitor(new MySketchMonitor(context));
     }

@@ -4,8 +4,7 @@ import android.graphics.Bitmap;
 
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class SketchBitmap {
-    private static final String LOG_NAME = "SketchBitmap";
+public abstract class SketchBitmap {
 
     protected Bitmap bitmap;
 
@@ -15,7 +14,7 @@ public class SketchBitmap {
     private int originHeight;
     private String mimeType;
 
-    public SketchBitmap(Bitmap bitmap, String imageId, String imageUri, int originWidth, int originHeight, String mimeType) {
+    protected SketchBitmap(Bitmap bitmap, String imageId, String imageUri, int originWidth, int originHeight, String mimeType) {
         if (bitmap == null || bitmap.isRecycled()) {
             throw new IllegalArgumentException("bitmap is null or recycled");
         }
@@ -26,14 +25,6 @@ public class SketchBitmap {
         this.originWidth = originWidth;
         this.originHeight = originHeight;
         this.mimeType = mimeType;
-    }
-
-    public SketchBitmap(Bitmap bitmap) {
-        if (bitmap == null || bitmap.isRecycled()) {
-            throw new IllegalArgumentException("bitmap is null or recycled");
-        }
-
-        this.bitmap = bitmap;
     }
 
     public Bitmap getBitmap() {
@@ -60,9 +51,7 @@ public class SketchBitmap {
         return mimeType;
     }
 
-    public String getInfo() {
-        return bitmap != null ? SketchUtils.makeImageInfo(LOG_NAME, bitmap, mimeType, SketchUtils.getBitmapByteSize(bitmap)) : "Recycled";
-    }
+    public abstract String getInfo();
 
     public int getByteCount() {
         return SketchUtils.getBitmapByteSize(getBitmap());

@@ -10,12 +10,12 @@ import me.xiaopan.sketch.Identifier;
 public interface BitmapPool extends Identifier {
 
     /**
-     * 获取最大容量
+     * Get max size
      */
     int getMaxSize();
 
     /**
-     * 获取当前已用容量
+     * Get use size
      */
     int getSize();
 
@@ -133,38 +133,43 @@ public interface BitmapPool extends Identifier {
     Bitmap getOrMake(int width, int height, Bitmap.Config config);
 
     /**
-     * nonuser?
+     * Disabled?
      */
-    boolean isDisable();
+    @SuppressWarnings("unused")
+    boolean isDisabled();
 
     /**
-     * Temporarily disable
+     * Setup disabled
      *
-     * @param disable nonuse
+     * @param disabled nonuse
      */
-    void setDisable(boolean disable);
+    void setDisabled(boolean disabled);
 
     /**
-     * 清除缓存
+     * Clean all
      */
     void clear();
 
     /**
-     * 根据level修剪内存
+     * Trim memory
      *
-     * @param level 修剪级别，对应APP的不同状态
-     * @see android.content.ComponentCallbacks2
+     * @param level The context of the trim, giving a hint of the amount of
+     * trimming the application may like to perform.  May be
+     * {@link android.content.ComponentCallbacks2#TRIM_MEMORY_COMPLETE}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_MODERATE},
+     * {@link android.content.ComponentCallbacks2#TRIM_MEMORY_BACKGROUND}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_UI_HIDDEN},
+     * {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_CRITICAL}, {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_LOW},
+     * or {@link android.content.ComponentCallbacks2#TRIM_MEMORY_RUNNING_MODERATE}.
      */
     void trimMemory(int level);
 
     /**
-     * 是否已关闭
+     * Closed
      */
     @SuppressWarnings("unused")
     boolean isClosed();
 
     /**
-     * 关闭
+     * Close
      */
     void close();
 }

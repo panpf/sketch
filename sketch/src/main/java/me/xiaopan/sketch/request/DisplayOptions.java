@@ -29,9 +29,9 @@ import me.xiaopan.sketch.state.StateImage;
  */
 public class DisplayOptions extends LoadOptions {
     /**
-     * 禁用内存缓存（默认否）
+     * 禁用内存缓存
      */
-    private boolean disableCacheInMemory;
+    private boolean cacheInMemoryDisabled;
 
     /**
      * 图片显示器，在加载完成后会调用此显示器来显示图片
@@ -82,8 +82,8 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setDisableCacheInDisk(boolean disableCacheInDisk) {
-        super.setDisableCacheInDisk(disableCacheInDisk);
+    public DisplayOptions setCacheInDiskDisabled(boolean cacheInDiskDisabled) {
+        super.setCacheInDiskDisabled(cacheInDiskDisabled);
         return this;
     }
 
@@ -172,17 +172,17 @@ public class DisplayOptions extends LoadOptions {
     }
 
     @Override
-    public DisplayOptions setDisableBitmapPool(boolean disableBitmapPool) {
-        super.setDisableBitmapPool(disableBitmapPool);
+    public DisplayOptions setBitmapPoolDisabled(boolean bitmapPoolDisabled) {
+        super.setBitmapPoolDisabled(bitmapPoolDisabled);
         return this;
     }
 
-    public boolean isDisableCacheInMemory() {
-        return disableCacheInMemory;
+    public boolean isCacheInMemoryDisabled() {
+        return cacheInMemoryDisabled;
     }
 
-    public DisplayOptions setDisableCacheInMemory(boolean disableCacheInMemory) {
-        this.disableCacheInMemory = disableCacheInMemory;
+    public DisplayOptions setCacheInMemoryDisabled(boolean cacheInMemoryDisabled) {
+        this.cacheInMemoryDisabled = cacheInMemoryDisabled;
         return this;
     }
 
@@ -282,7 +282,7 @@ public class DisplayOptions extends LoadOptions {
     public void reset() {
         super.reset();
 
-        disableCacheInMemory = false;
+        cacheInMemoryDisabled = false;
         imageDisplayer = null;
         resizeByFixedSize = false;
         loadingImage = null;
@@ -303,7 +303,7 @@ public class DisplayOptions extends LoadOptions {
 
         super.copy(options);
 
-        disableCacheInMemory = options.disableCacheInMemory;
+        cacheInMemoryDisabled = options.cacheInMemoryDisabled;
         imageDisplayer = options.imageDisplayer;
         resizeByFixedSize = options.resizeByFixedSize;
         loadingImage = options.loadingImage;
@@ -324,8 +324,8 @@ public class DisplayOptions extends LoadOptions {
 
         super.apply(options);
 
-        if (!disableCacheInMemory) {
-            disableCacheInMemory = options.isDisableCacheInMemory();
+        if (!cacheInMemoryDisabled) {
+            cacheInMemoryDisabled = options.cacheInMemoryDisabled;
         }
 
         if (imageDisplayer == null) {

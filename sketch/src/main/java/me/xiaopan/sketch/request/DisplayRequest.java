@@ -24,6 +24,7 @@ import android.graphics.drawable.Drawable;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.RefBitmap;
@@ -32,7 +33,6 @@ import me.xiaopan.sketch.drawable.RefDrawable;
 import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
-import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -140,7 +140,7 @@ public class DisplayRequest extends LoadRequest {
 
         // 先检查内存缓存，检查的时候要先上锁
         boolean finished = false;
-        if (!displayOptions.isDisableCacheInDisk()) {
+        if (!displayOptions.isCacheInDiskDisabled()) {
             setStatus(Status.GET_MEMORY_CACHE_EDIT_LOCK);
 
             MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
@@ -161,6 +161,9 @@ public class DisplayRequest extends LoadRequest {
         }
     }
 
+    // TODO: 2016/12/21 runLoad方法根据缓存ID加锁
+    // TODO: 从内存缓存里取出来就要立即等待使用锁加一
+
     private boolean checkMemoryCache() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
@@ -170,7 +173,7 @@ public class DisplayRequest extends LoadRequest {
         }
 
         // 检查内存缓存
-        if (!displayOptions.isDisableCacheInMemory()) {
+        if (!displayOptions.isCacheInMemoryDisabled()) {
             setStatus(Status.CHECK_MEMORY_CACHE);
             MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
             RefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
@@ -216,8 +219,13 @@ public class DisplayRequest extends LoadRequest {
                     loadResult.getOriginWidth(), loadResult.getOriginHeight(), loadResult.getMimeType());
 
             // 放入内存缓存中
-            if (!displayOptions.isDisableCacheInMemory() && getMemoryCacheKey() != null) {
+            if (!displayOptions.isCacheInMemoryDisabled() && getMemoryCacheKey() != null) {
                 getSketch().getConfiguration().getMemoryCache().put(getMemoryCacheKey(), refBitmap);
+            }
+
+            if (refBitmap.getBitmap() == null) {
+                error(ErrorCause.BITMAP_RECYCLED);
+                return;
             }
 
             displayResult = new DisplayResult(new RefBitmapDrawable(refBitmap),
@@ -249,18 +257,17 @@ public class DisplayRequest extends LoadRequest {
     }
 
     protected void displayCompleted() {
-        if (displayResult.getDrawable() instanceof RefDrawable) {
-            RefDrawable refDrawable = (RefDrawable) displayResult.getDrawable();
-            boolean fromMemoryCache = displayResult.getImageFrom() == ImageFrom.MEMORY_CACHE;
-            String callingStation = fromMemoryCache ? "displayCompleted:fromMemory" : "displayCompleted:new";
-            refDrawable.setIsWaitDisplay(callingStation, true);
-        }
-
         if (displayResult.getDrawable() instanceof SketchDrawable) {
             SketchDrawable sketchDrawable = (SketchDrawable) displayResult.getDrawable();
             sketchDrawable.setImageFrom(displayResult.getImageFrom());
         }
 
+        if (displayResult.getDrawable() instanceof RefDrawable) {
+            RefDrawable refDrawable = (RefDrawable) displayResult.getDrawable();
+            boolean fromMemoryCache = displayResult.getImageFrom() == ImageFrom.MEMORY_CACHE;
+            String callingStation = fromMemoryCache ? "waitDisplay:fromMemory" : "waitDisplay:new";
+            refDrawable.setIsWaitDisplay(callingStation, true);
+        }
         postRunCompleted();
     }
 
@@ -279,7 +286,7 @@ public class DisplayRequest extends LoadRequest {
         // 更新等待显示的引用计数
         if (drawable instanceof RefDrawable) {
             RefDrawable refDrawable = (RefDrawable) drawable;
-            refDrawable.setIsWaitDisplay("completedCallback", false);
+            refDrawable.setIsWaitDisplay("waitDisplay:finish", false);
         }
     }
 

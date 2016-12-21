@@ -151,7 +151,7 @@ public class DisplayHelper {
      */
     @SuppressWarnings("unused")
     public DisplayHelper disableCacheInDisk() {
-        displayOptions.setDisableCacheInDisk(true);
+        displayOptions.setCacheInDiskDisabled(true);
         return this;
     }
 
@@ -160,7 +160,7 @@ public class DisplayHelper {
      */
     @SuppressWarnings("unused")
     public DisplayHelper disableBitmapPool() {
-        displayOptions.setDisableBitmapPool(true);
+        displayOptions.setBitmapPoolDisabled(true);
         return this;
     }
 
@@ -286,7 +286,7 @@ public class DisplayHelper {
      */
     @SuppressWarnings("unused")
     public DisplayHelper disableCacheInMemory() {
-        displayOptions.setDisableCacheInMemory(true);
+        displayOptions.setCacheInMemoryDisabled(true);
         return this;
     }
 
@@ -555,16 +555,6 @@ public class DisplayHelper {
             throw new IllegalArgumentException("MaxSize width or height must be > 0");
         }
 
-        // 如果设置了全局禁用磁盘缓存就强制关闭磁盘缓存功能
-        if (configuration.isGlobalDisableCacheInDisk()) {
-            displayOptions.setDisableCacheInDisk(true);
-        }
-
-        // 如果设置了全局禁用内存缓存就强制关闭内存缓存功能
-        if (configuration.isGlobalDisableCacheInMemory()) {
-            displayOptions.setDisableCacheInMemory(true);
-        }
-
         // 如果设置了全局使用低质量图片的话就强制使用低质量的图片
         if (configuration.isGlobalLowQualityImage()) {
             displayOptions.setLowQualityImage(true);
@@ -683,7 +673,7 @@ public class DisplayHelper {
     }
 
     private boolean checkMemoryCache() {
-        if (!displayOptions.isDisableCacheInMemory()) {
+        if (!displayOptions.isCacheInMemoryDisabled()) {
             RefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(displayInfo.getMemoryCacheKey());
             if (cachedRefBitmap != null) {
                 if (!cachedRefBitmap.isRecycled()) {

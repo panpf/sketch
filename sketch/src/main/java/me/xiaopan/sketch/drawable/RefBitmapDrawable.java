@@ -111,9 +111,4 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
     public boolean isRecycled() {
         return refBitmap.isRecycled();
     }
-
-    @Override
-    public void recycle() {
-        refBitmap.recycle();
-    }
 }

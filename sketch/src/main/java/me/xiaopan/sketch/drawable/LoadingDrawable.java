@@ -77,13 +77,6 @@ public class LoadingDrawable extends DrawableWrapper implements RefDrawable {
     }
 
     @Override
-    public void recycle() {
-        if (refDrawable != null) {
-            refDrawable.recycle();
-        }
-    }
-
-    @Override
     public String getImageId() {
         return sketchDrawable != null ? sketchDrawable.getImageId() : null;
     }

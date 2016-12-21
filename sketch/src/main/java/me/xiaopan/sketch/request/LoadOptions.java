@@ -83,7 +83,7 @@ public class LoadOptions extends DownloadOptions {
     /**
      * 禁止从BitmapPool中寻找可复用的Bitmap
      */
-    private boolean disableBitmapPool;
+    private boolean bitmapPoolDisabled;
 
     public LoadOptions() {
         reset();
@@ -95,8 +95,8 @@ public class LoadOptions extends DownloadOptions {
     }
 
     @Override
-    public LoadOptions setDisableCacheInDisk(boolean disableCacheInDisk) {
-        super.setDisableCacheInDisk(disableCacheInDisk);
+    public LoadOptions setCacheInDiskDisabled(boolean cacheInDiskDisabled) {
+        super.setCacheInDiskDisabled(cacheInDiskDisabled);
         return this;
     }
 
@@ -212,12 +212,12 @@ public class LoadOptions extends DownloadOptions {
         return this;
     }
 
-    public boolean isDisableBitmapPool() {
-        return disableBitmapPool;
+    public boolean isBitmapPoolDisabled() {
+        return bitmapPoolDisabled;
     }
 
-    public LoadOptions setDisableBitmapPool(boolean disableBitmapPool) {
-        this.disableBitmapPool = disableBitmapPool;
+    public LoadOptions setBitmapPoolDisabled(boolean bitmapPoolDisabled) {
+        this.bitmapPoolDisabled = bitmapPoolDisabled;
         return this;
     }
 
@@ -235,7 +235,7 @@ public class LoadOptions extends DownloadOptions {
         inPreferQualityOverSpeed = false;
         thumbnailMode = false;
         cacheProcessedImageInDisk = false;
-        disableBitmapPool = false;
+        bitmapPoolDisabled = false;
     }
 
     /**
@@ -258,7 +258,7 @@ public class LoadOptions extends DownloadOptions {
         inPreferQualityOverSpeed = options.inPreferQualityOverSpeed;
         thumbnailMode = options.thumbnailMode;
         cacheProcessedImageInDisk = options.cacheProcessedImageInDisk;
-        disableBitmapPool = options.disableBitmapPool;
+        bitmapPoolDisabled = options.bitmapPoolDisabled;
     }
 
     /**
@@ -318,8 +318,8 @@ public class LoadOptions extends DownloadOptions {
             cacheProcessedImageInDisk = options.cacheProcessedImageInDisk;
         }
 
-        if (!disableBitmapPool) {
-            disableBitmapPool = options.disableBitmapPool;
+        if (!bitmapPoolDisabled) {
+            bitmapPoolDisabled = options.bitmapPoolDisabled;
         }
     }
 
