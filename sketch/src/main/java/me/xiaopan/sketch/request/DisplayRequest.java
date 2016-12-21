@@ -21,8 +21,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -143,17 +141,7 @@ public class DisplayRequest extends LoadRequest {
         if (!displayOptions.isCacheInDiskDisabled()) {
             setStatus(Status.GET_MEMORY_CACHE_EDIT_LOCK);
 
-            MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
-            ReentrantLock memoryCacheEditLock = memoryCache.getEditLock(getMemoryCacheKey());
-            if (memoryCacheEditLock != null) {
-                memoryCacheEditLock.lock();
-            }
-
             finished = checkMemoryCache();
-
-            if (memoryCacheEditLock != null) {
-                memoryCacheEditLock.unlock();
-            }
         }
 
         if (!finished) {

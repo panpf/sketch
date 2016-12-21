@@ -40,6 +40,7 @@ import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
+import me.xiaopan.sketch.util.LockPool;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -108,7 +109,6 @@ public class ImagePreprocessor implements Identifier {
     private PreProcessResult getApkIconDiskCache(LoadRequest loadRequest) {
         String realUri = loadRequest.getRealUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
-        DiskCache diskCache = configuration.getDiskCache();
 
         File apkFile = new File(realUri);
         if (!apkFile.exists()) {
@@ -117,14 +117,14 @@ public class ImagePreprocessor implements Identifier {
         long lastModifyTime = apkFile.lastModified();
         String diskCacheKey = realUri + "." + lastModifyTime;
 
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
-        if (diskCacheEditLock != null) {
-            diskCacheEditLock.lock();
-        }
+        LockPool lockPool = configuration.getLockPool();
+        ReentrantLock diskCacheEditLock = lockPool.getDiskCacheEditLock(diskCacheKey);
+        diskCacheEditLock.lock();
+
+        DiskCache diskCache = configuration.getDiskCache();
         PreProcessResult result = readApkIcon(configuration.getContext(), diskCache, loadRequest, diskCacheKey, realUri);
-        if (diskCacheEditLock != null) {
-            diskCacheEditLock.unlock();
-        }
+
+        diskCacheEditLock.unlock();
         return result;
     }
 
@@ -214,16 +214,15 @@ public class ImagePreprocessor implements Identifier {
     private PreProcessResult getInstalledAppIconDiskCache(LoadRequest loadRequest) {
         String diskCacheKey = loadRequest.getUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
-        DiskCache diskCache = configuration.getDiskCache();
 
-        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
-        if (diskCacheEditLock != null) {
-            diskCacheEditLock.lock();
-        }
+        LockPool lockPool = configuration.getLockPool();
+        ReentrantLock diskCacheEditLock = lockPool.getDiskCacheEditLock(diskCacheKey);
+        diskCacheEditLock.lock();
+
+        DiskCache diskCache = configuration.getDiskCache();
         PreProcessResult result = readInstalledAppIcon(configuration.getContext(), diskCache, loadRequest, diskCacheKey);
-        if (diskCacheEditLock != null) {
-            diskCacheEditLock.unlock();
-        }
+
+        diskCacheEditLock.unlock();
         return result;
     }
 

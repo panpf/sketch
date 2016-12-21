@@ -33,6 +33,7 @@ import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.DiskLruCache;
+import me.xiaopan.sketch.util.LockPool;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -159,15 +160,14 @@ public class LoadRequest extends DownloadRequest {
     }
 
     private boolean existProcessedImageDiskCache() {
+        LockPool lockPool = getSketch().getConfiguration().getLockPool();
+        ReentrantLock editLock = lockPool.getDiskCacheEditLock(getProcessedImageDiskCacheKey());
+        editLock.lock();
+
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
-        ReentrantLock editLock = diskCache.getEditLock(getProcessedImageDiskCacheKey());
-        if (editLock != null) {
-            editLock.lock();
-        }
         boolean exist = diskCache.exist(getProcessedImageDiskCacheKey());
-        if (editLock != null) {
-            editLock.unlock();
-        }
+
+        editLock.unlock();
         return exist;
     }
 
@@ -345,15 +345,14 @@ public class LoadRequest extends DownloadRequest {
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
     private DataSource checkProcessedImageDiskCache() {
+        LockPool lockPool = getSketch().getConfiguration().getLockPool();
+        ReentrantLock editLock = lockPool.getDiskCacheEditLock(getProcessedImageDiskCacheKey());
+        editLock.lock();
+
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
-        ReentrantLock editLock = diskCache.getEditLock(getProcessedImageDiskCacheKey());
-        if (editLock != null) {
-            editLock.lock();
-        }
         DiskCache.Entry diskCacheEntry = diskCache.get(getProcessedImageDiskCacheKey());
-        if (editLock != null) {
-            editLock.unlock();
-        }
+
+        editLock.unlock();
 
         if (diskCacheEntry != null) {
             DataSource dataSource = new DataSource(diskCacheEntry, ImageFrom.DISK_CACHE);
@@ -368,14 +367,13 @@ public class LoadRequest extends DownloadRequest {
      * 保存bitmap到磁盘缓存
      */
     private void saveProcessedImageToDiskCache(Bitmap bitmap) {
+        LockPool lockPool = getSketch().getConfiguration().getLockPool();
+        ReentrantLock editLock = lockPool.getDiskCacheEditLock(getProcessedImageDiskCacheKey());
+        editLock.lock();
+
         DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
-
-        ReentrantLock editLock = diskCache.getEditLock(getProcessedImageDiskCacheKey());
-        if (editLock != null) {
-            editLock.lock();
-        }
-
         DiskCache.Entry diskCacheEntry = diskCache.get(getProcessedImageDiskCacheKey());
+
         if (diskCacheEntry != null) {
             diskCacheEntry.delete();
         }
@@ -404,9 +402,7 @@ public class LoadRequest extends DownloadRequest {
             }
         }
 
-        if (editLock != null) {
-            editLock.unlock();
-        }
+        editLock.unlock();
     }
 
     protected void loadCompleted() {

@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch.cache;
 
-import java.util.concurrent.locks.ReentrantLock;
-
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.drawable.RefBitmap;
 
@@ -86,11 +84,4 @@ public interface MemoryCache extends Identifier {
      * 关闭
      */
     void close();
-
-    /**
-     * 获取编辑锁
-     *
-     * @return null：已关闭
-     */
-    ReentrantLock getEditLock(String key);
 }

@@ -45,6 +45,7 @@ import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.request.RequestFactory;
+import me.xiaopan.sketch.util.LockPool;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class Configuration {
@@ -70,6 +71,7 @@ public class Configuration {
     private boolean globalPauseDownload;   // 全局暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean globalLowQualityImage; // 全局使用低质量的图片
     private boolean globalInPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
+    private LockPool lockPool;  // 同步锁管理池
     private MobileNetworkGlobalPauseDownload mobileNetworkGlobalPauseDownload;
 
     public Configuration(Context context) {
@@ -92,6 +94,8 @@ public class Configuration {
         this.imageSizeCalculator = new ImageSizeCalculator();
         this.resizeImageProcessor = new ResizeImageProcessor();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
+
+        this.lockPool = new LockPool();
 
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, getInfo());
@@ -531,6 +535,15 @@ public class Configuration {
                 Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setMonitor", ". ", monitor.getIdentifier()));
             }
         }
+    }
+
+    /**
+     * 获取同步锁管理池
+     *
+     * @return LockPool
+     */
+    public LockPool getLockPool() {
+        return lockPool;
     }
 
     public String getInfo() {

@@ -21,11 +21,6 @@ import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.locks.ReentrantLock;
-
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.util.LruCache;
@@ -35,7 +30,6 @@ public class LruMemoryCache implements MemoryCache {
     private final LruCache<String, RefBitmap> cache;
     protected String logName = "LruMemoryCache";
     private Context context;
-    private Map<String, ReentrantLock> editLockMap;
     private boolean closed;
     private boolean disabled;
 
@@ -196,39 +190,9 @@ public class LruMemoryCache implements MemoryCache {
         if (closed) {
             return;
         }
-
         closed = true;
 
         cache.evictAll();
-
-        if (editLockMap != null) {
-            editLockMap.clear();
-            editLockMap = null;
-        }
-    }
-
-    @Override
-    public synchronized ReentrantLock getEditLock(String key) {
-        if (closed) {
-            return null;
-        }
-
-        if (key == null) {
-            return null;
-        }
-        if (editLockMap == null) {
-            synchronized (LruMemoryCache.this) {
-                if (editLockMap == null) {
-                    editLockMap = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
-                }
-            }
-        }
-        ReentrantLock lock = editLockMap.get(key);
-        if (lock == null) {
-            lock = new ReentrantLock();
-            editLockMap.put(key, lock);
-        }
-        return lock;
     }
 
     @Override

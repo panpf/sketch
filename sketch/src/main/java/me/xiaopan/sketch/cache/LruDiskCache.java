@@ -27,10 +27,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Collections;
-import java.util.Map;
-import java.util.WeakHashMap;
-import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
@@ -49,7 +45,6 @@ public class LruDiskCache implements DiskCache {
     private Context context;
     private DiskLruCache cache;
     private Configuration configuration;
-    private Map<String, ReentrantLock> editLockMap;
     private boolean closed;
     private boolean disabled;
 
@@ -339,37 +334,6 @@ public class LruDiskCache implements DiskCache {
             }
             cache = null;
         }
-
-        if (editLockMap != null) {
-            editLockMap.clear();
-            editLockMap = null;
-        }
-    }
-
-    @Override
-    public synchronized ReentrantLock getEditLock(String key) {
-        if (closed) {
-            return null;
-        }
-
-        if (key == null) {
-            return null;
-        }
-
-        if (editLockMap == null) {
-            synchronized (LruDiskCache.this) {
-                if (editLockMap == null) {
-                    editLockMap = Collections.synchronizedMap(new WeakHashMap<String, ReentrantLock>());
-                }
-            }
-        }
-
-        ReentrantLock lock = editLockMap.get(key);
-        if (lock == null) {
-            lock = new ReentrantLock();
-            editLockMap.put(key, lock);
-        }
-        return lock;
     }
 
     @Override
