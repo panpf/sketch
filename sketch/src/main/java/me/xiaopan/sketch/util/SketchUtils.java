@@ -1237,7 +1237,12 @@ public class SketchUtils {
             throw new IllegalArgumentException("outMimeType is empty");
         }
 
-        int inSampleSize = options.inSampleSize >= 1 ? options.inSampleSize : 1;
+        // 使用inBitmap时4.4以下inSampleSize不能为0，最小也得是1
+        if (options.inSampleSize <= 0) {
+            options.inSampleSize = 1;
+        }
+
+        int inSampleSize = options.inSampleSize;
         ImageFormat format = ImageFormat.valueOfMimeType(options.outMimeType);
 
         Bitmap inBitmap = null;
@@ -1245,7 +1250,7 @@ public class SketchUtils {
             int finalWidth = options.outWidth / inSampleSize;
             int finalHeight = options.outHeight / inSampleSize;
             inBitmap = bitmapPool.get(finalWidth, finalHeight, options.inPreferredConfig);
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && inSampleSize <= 1
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && inSampleSize == 1
                 && (format == ImageFormat.JPEG || format == ImageFormat.PNG)) {
             inBitmap = bitmapPool.get(options.outWidth, options.outHeight, options.inPreferredConfig);
         }

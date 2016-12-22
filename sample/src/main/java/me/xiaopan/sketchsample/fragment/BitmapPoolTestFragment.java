@@ -30,7 +30,6 @@ import me.xiaopan.sketchsample.R;
 @InjectContentView(R.layout.fragment_bitmap_pool_test)
 public class BitmapPoolTestFragment extends MyFragment {
     private static final String[] images = new String[]{
-            "/mnt/sdcard/download/http%3A%2F%2Ff.hiphotos.baidu.com%2Fimage%2Fpic%2Fitem%2Fac4bd11373f082022707d43e49fbfbedab641b1d.jpg",
             "masichun1.jpg",
             "masichun2.jpg",
             "masichun3.jpg",
@@ -215,6 +214,11 @@ public class BitmapPoolTestFragment extends MyFragment {
             options.inJustDecodeBounds = true;
             decodeImage(assetManager, fileName, options);
 
+            if (options.outWidth <= 1 || options.outHeight <= 1) {
+                return null;
+            }
+
+            options.inSampleSize = 1;   // 这很重要4.4以下必须得是1
             configOptions(options);
 
             builder.append("fileName: ").append(fileName);
