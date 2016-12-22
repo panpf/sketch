@@ -33,70 +33,72 @@ import me.xiaopan.sketch.Sketch;
 public class FreeRideManager {
     private static final String LOG_NAME = "FreeRideManager";
 
-    private final Object freeRideProviderMapLock = new Object();
-    private Map<String, FreeRide> freeRideProviderMap;
+    private final Object displayFreeRideProviderMapLock = new Object();
+    private final Object downloadFreeRideProviderMapLock = new Object();
+    private Map<String, DisplayFreeRide> displayFreeRideProviderMap;
+    private Map<String, DownloadFreeRide> downloadFreeRideProviderMap;
 
     /**
-     * 成为顺风车主
+     * 成为显示顺风车主
      */
-    public void registerFreeRideProvider(DisplayRequest request) {
-        if (!request.canByFreeRide()) {
+    public void registerDisplayFreeRideProvider(DisplayFreeRide provider) {
+        if (!provider.canByDisplayFreeRide()) {
             return;
         }
 
-        synchronized (freeRideProviderMapLock) {
-            if (freeRideProviderMap == null) {
+        synchronized (displayFreeRideProviderMapLock) {
+            if (displayFreeRideProviderMap == null) {
                 synchronized (this) {
-                    if (freeRideProviderMap == null) {
-                        freeRideProviderMap = new WeakHashMap<String, FreeRide>();
+                    if (displayFreeRideProviderMap == null) {
+                        displayFreeRideProviderMap = new WeakHashMap<String, DisplayFreeRide>();
                     }
                 }
             }
 
-            freeRideProviderMap.put(request.getId(), request);
+            displayFreeRideProviderMap.put(provider.getDisplayFreeRideKey(), provider);
 
             if (Sketch.isDebugMode()) {
-                Log.v(Sketch.TAG, String.format("%s. register free ride provider. %s",
-                        LOG_NAME, request.getFreeRideId()));
+                Log.v(Sketch.TAG, String.format("%s. display. register free ride provider. %s",
+                        LOG_NAME, provider.getDisplayFreeRideLog()));
             }
         }
     }
 
     /**
-     * 取消顺风车主身份并回调那些顺风车
+     * 取消显示顺风车主身份并回调那些显示顺风车
      */
-    public void unregisterFreeRideProvider(DisplayRequest request) {
-        if (!request.canByFreeRide()) {
+    public void unregisterDisplayFreeRideProvider(DisplayFreeRide provider) {
+        if (!provider.canByDisplayFreeRide()) {
             return;
         }
 
         // 取消顺风车主身份
-        FreeRide freeRideProvider = null;
-        synchronized (freeRideProviderMapLock) {
-            if (freeRideProviderMap != null) {
-                freeRideProvider = freeRideProviderMap.remove(request.getId());
+        DisplayFreeRide freeRideProvider = null;
+        synchronized (displayFreeRideProviderMapLock) {
+            if (displayFreeRideProviderMap != null) {
+                freeRideProvider = displayFreeRideProviderMap.remove(provider.getDisplayFreeRideKey());
                 if (freeRideProvider != null && Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, String.format("%s. unregister free ride provider. %s",
-                            LOG_NAME, freeRideProvider.getFreeRideId()));
+                    Log.w(Sketch.TAG, String.format("%s. display. unregister free ride provider. %s",
+                            LOG_NAME, freeRideProvider.getDisplayFreeRideLog()));
                 }
             }
         }
 
         // 回调那些顺风车
         if (freeRideProvider != null) {
-            Set<FreeRide> freeRideSet = freeRideProvider.getFreeRideSet();
+            Set<DisplayFreeRide> freeRideSet = freeRideProvider.getDisplayFreeRideSet();
             if (freeRideSet == null || freeRideSet.size() == 0) {
                 return;
             }
 
-            String providerId = freeRideProvider.getFreeRideId();
-            for (FreeRide freeRide : freeRideSet) {
-                boolean success = freeRide.processFreeRideRequests();
+            String providerId = freeRideProvider.getDisplayFreeRideLog();
+            for (DisplayFreeRide childFreeRide : freeRideSet) {
+                boolean success = childFreeRide.processDisplayFreeRide();
 
                 if (Sketch.isDebugMode()) {
                     String result = success ? "success" : "failed";
-                    Log.d(Sketch.TAG, String.format("%s. callback free ride. %s. %s  <------  %s",
-                            LOG_NAME, result, freeRide.getFreeRideId(), providerId));
+                    Log.d(Sketch.TAG, String.format("%s. display. callback free ride. %s. %s  <------  %s",
+                            LOG_NAME, result, childFreeRide.getDisplayFreeRideLog(), providerId));
                 }
             }
             freeRideSet.clear();
@@ -104,61 +106,203 @@ public class FreeRideManager {
     }
 
     /**
-     * 坐个顺风车
+     * 坐个显示顺风车
      *
-     * @param request {@link DisplayRequest}
+     * @param childFreeRide {@link DisplayFreeRide}
      * @return 坐上了
      */
-    public boolean byFreeRide(DisplayRequest request) {
-        if (!request.canByFreeRide()) {
+    public boolean byDisplayFreeRide(DisplayFreeRide childFreeRide) {
+        if (!childFreeRide.canByDisplayFreeRide()) {
             return false;
         }
 
-        synchronized (freeRideProviderMapLock) {
-            FreeRide freeRideProvider = null;
-            if (freeRideProviderMap != null) {
-                freeRideProvider = freeRideProviderMap.get(request.getId());
+        synchronized (displayFreeRideProviderMapLock) {
+            DisplayFreeRide freeRideProvider = null;
+            if (displayFreeRideProviderMap != null) {
+                freeRideProvider = displayFreeRideProviderMap.get(childFreeRide.getDisplayFreeRideKey());
             }
             if (freeRideProvider == null) {
                 return false;
             }
 
-            freeRideProvider.byFreeRide(request);
+            freeRideProvider.byDisplayFreeRide(childFreeRide);
 
             if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, String.format("%s. by free ride success. %s  ------>  %s",
-                        LOG_NAME, request.getFreeRideId(), freeRideProvider.getFreeRideId()));
+                Log.i(Sketch.TAG, String.format("%s. display. by free ride. %s  ------>  %s",
+                        LOG_NAME, childFreeRide.getDisplayFreeRideLog(), freeRideProvider.getDisplayFreeRideLog()));
             }
             return true;
         }
     }
 
-    public interface FreeRide {
+    /**
+     * 成为下载顺风车主
+     */
+    public void registerDownloadFreeRideProvider(DownloadFreeRide provider) {
+        if (!provider.canByDownloadFreeRide()) {
+            return;
+        }
+
+        synchronized (downloadFreeRideProviderMapLock) {
+            if (downloadFreeRideProviderMap == null) {
+                synchronized (this) {
+                    if (downloadFreeRideProviderMap == null) {
+                        downloadFreeRideProviderMap = new WeakHashMap<String, DownloadFreeRide>();
+                    }
+                }
+            }
+
+            downloadFreeRideProviderMap.put(provider.getDownloadFreeRideKey(), provider);
+
+            if (Sketch.isDebugMode()) {
+                Log.v(Sketch.TAG, String.format("%s. download. register free ride provider. %s",
+                        LOG_NAME, provider.getDownloadFreeRideLog()));
+            }
+        }
+    }
+
+    /**
+     * 取消下载顺风车主身份并回调那些下载顺风车
+     */
+    public void unregisterDownloadFreeRideProvider(DownloadFreeRide provider) {
+        if (!provider.canByDownloadFreeRide()) {
+            return;
+        }
+
+        // 取消顺风车主身份
+        DownloadFreeRide freeRideProvider = null;
+        synchronized (downloadFreeRideProviderMapLock) {
+            if (downloadFreeRideProviderMap != null) {
+                freeRideProvider = downloadFreeRideProviderMap.remove(provider.getDownloadFreeRideKey());
+                if (freeRideProvider != null && Sketch.isDebugMode()) {
+                    Log.w(Sketch.TAG, String.format("%s. download. unregister free ride provider. %s",
+                            LOG_NAME, freeRideProvider.getDownloadFreeRideLog()));
+                }
+            }
+        }
+
+        // 回调那些顺风车
+        if (freeRideProvider != null) {
+            Set<DownloadFreeRide> freeRideSet = freeRideProvider.getDownloadFreeRideSet();
+            if (freeRideSet == null || freeRideSet.size() == 0) {
+                return;
+            }
+
+            String providerId = freeRideProvider.getDownloadFreeRideLog();
+            for (DownloadFreeRide childFreeRide : freeRideSet) {
+                boolean success = childFreeRide.processDownloadFreeRide();
+
+                if (Sketch.isDebugMode()) {
+                    String result = success ? "success" : "failed";
+                    Log.d(Sketch.TAG, String.format("%s. download. callback free ride. %s. %s  <------  %s",
+                            LOG_NAME, result, childFreeRide.getDownloadFreeRideLog(), providerId));
+                }
+            }
+            freeRideSet.clear();
+        }
+    }
+
+    /**
+     * 坐个下载顺风车
+     *
+     * @param childFreeRide {@link DownloadFreeRide}
+     * @return 坐上了
+     */
+    public boolean byDownloadFreeRide(DownloadFreeRide childFreeRide) {
+        if (!childFreeRide.canByDownloadFreeRide()) {
+            return false;
+        }
+
+        synchronized (downloadFreeRideProviderMapLock) {
+            DownloadFreeRide freeRideProvider = null;
+            if (downloadFreeRideProviderMap != null) {
+                freeRideProvider = downloadFreeRideProviderMap.get(childFreeRide.getDownloadFreeRideKey());
+            }
+            if (freeRideProvider == null) {
+                return false;
+            }
+
+            freeRideProvider.byDownloadFreeRide(childFreeRide);
+
+            if (Sketch.isDebugMode()) {
+                Log.i(Sketch.TAG, String.format("%s. download. by free ride. %s  ------>  %s",
+                        LOG_NAME, childFreeRide.getDownloadFreeRideLog(), freeRideProvider.getDownloadFreeRideLog()));
+            }
+            return true;
+        }
+    }
+
+    /**
+     * 显示顺风车
+     */
+    public interface DisplayFreeRide {
         /**
-         * 获取ID，用户日志
+         * 获取显示顺风车KEY
          */
-        String getFreeRideId();
+        String getDisplayFreeRideKey();
 
         /**
-         * 是否可以使用顺风车功能（不同类型条件不一样）
+         * 获取日志
          */
-        boolean canByFreeRide();
+        String getDisplayFreeRideLog();
 
         /**
-         * 让别人搭乘顺风车
+         * 是否可以使用显示顺风车功能（不同类型条件不一样）
          */
-        void byFreeRide(FreeRide request);
+        boolean canByDisplayFreeRide();
 
         /**
-         * 获取顺风车集合
+         * 让别人搭乘显示顺风车
          */
-        Set<FreeRide> getFreeRideSet();
+        void byDisplayFreeRide(DisplayFreeRide request);
 
         /**
-         * 执行结束，处理那些坐顺风车的请求
+         * 获取显示顺风车集合
+         */
+        Set<DisplayFreeRide> getDisplayFreeRideSet();
+
+        /**
+         * 执行结束，处理那些坐显示顺风车的请求
          *
          * @return 成功找到可以用的资源
          */
-        boolean processFreeRideRequests();
+        boolean processDisplayFreeRide();
+    }
+
+    /**
+     * 下载顺风车
+     */
+    public interface DownloadFreeRide {
+        /**
+         * 获取下载顺风车KEY
+         */
+        String getDownloadFreeRideKey();
+
+        /**
+         * 获取日志
+         */
+        String getDownloadFreeRideLog();
+
+        /**
+         * 是否可以使用下载顺风车功能（不同类型条件不一样）
+         */
+        boolean canByDownloadFreeRide();
+
+        /**
+         * 让别人搭乘下载顺风车
+         */
+        void byDownloadFreeRide(DownloadFreeRide request);
+
+        /**
+         * 获取下载顺风车集合
+         */
+        Set<DownloadFreeRide> getDownloadFreeRideSet();
+
+        /**
+         * 执行结束，处理那些坐下载顺风车的请求
+         *
+         * @return 成功找到可以用的资源
+         */
+        boolean processDownloadFreeRide();
     }
 }

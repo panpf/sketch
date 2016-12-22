@@ -33,7 +33,7 @@ public class RequestFactory implements Identifier {
             DisplayListener displayListener, DownloadProgressListener downloadProgressListener) {
         // 由于DisplayHelper会被重复利用
         // 因此RequestAttrs、DisplayAttrs和DisplayOptions不能直接拿来用，要重新New一个
-        return new DisplayRequest(
+        return new FreeRideDisplayRequest(
                 sketch, new DisplayInfo(displayInfo), new DisplayOptions(displayOptions),
                 new ViewInfo(viewInfo), requestAndViewBinder, displayListener, downloadProgressListener);
     }
@@ -47,7 +47,7 @@ public class RequestFactory implements Identifier {
     public DownloadRequest newDownloadRequest(
             Sketch sketch, DownloadInfo downloadInfo, DownloadOptions options,
             DownloadListener listener, DownloadProgressListener downloadProgressListener) {
-        return new DownloadRequest(sketch, downloadInfo, options, listener, downloadProgressListener);
+        return new FreeRideDownloadRequest(sketch, downloadInfo, options, listener, downloadProgressListener);
     }
 
     @Override

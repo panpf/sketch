@@ -43,7 +43,7 @@ public class DisplayRequest extends LoadRequest {
     private ViewInfo viewInfo;
     private RequestAndViewBinder requestAndViewBinder;
 
-    private DisplayResult displayResult;
+    protected DisplayResult displayResult;
 
     public DisplayRequest(Sketch sketch, DisplayInfo requestInfo, DisplayOptions displayOptions,
                           ViewInfo viewInfo, RequestAndViewBinder requestAndViewBinder, DisplayListener displayListener,
@@ -115,44 +115,6 @@ public class DisplayRequest extends LoadRequest {
         }
     }
 
-    /**
-     * 可以坐顺风车？条件是内存缓存ID一样并且内存缓存可以用，没有单独关闭内存缓存，不解码GIF图片的请求，没有开同步执行，请求执行器可以用
-     */
-    @Override
-    public boolean canByFreeRide() {
-        MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
-        return !memoryCache.isClosed() && !memoryCache.isDisabled()
-                && !getOptions().isCacheInMemoryDisabled()
-                && !getOptions().isDecodeGifImage()
-                && !isSync() && !getSketch().getConfiguration().getRequestExecutor().isShutdown();
-    }
-
-    @Override
-    public synchronized boolean processFreeRideRequests() {
-        MemoryCache memoryCache = getSketch().getConfiguration().getMemoryCache();
-        RefBitmap cachedRefBitmap = memoryCache.get(getMemoryCacheKey());
-        if (cachedRefBitmap != null && cachedRefBitmap.isRecycled()) {
-            memoryCache.remove(getMemoryCacheKey());
-            if (Sketch.isDebugMode()) {
-                printLogE("memory cache drawable recycled", "processFreeRideRequests", "bitmap=" + cachedRefBitmap.getInfo());
-            }
-            cachedRefBitmap = null;
-        }
-
-        if (cachedRefBitmap != null) {
-            // 立马标记等待使用，防止被挤出去回收掉
-            cachedRefBitmap.setIsWaitingUse(getLogName() + ":waitingUse:fromMemory", true);
-
-            Drawable drawable = new RefBitmapDrawable(cachedRefBitmap);
-            displayResult = new DisplayResult(drawable, ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
-            displayCompleted();
-            return true;
-        } else {
-            submitRunLoad();
-            return false;
-        }
-    }
-
     @Override
     protected void postRunError() {
         setStatus(Status.WAIT_DISPLAY);
@@ -166,44 +128,24 @@ public class DisplayRequest extends LoadRequest {
     }
 
     @Override
-    protected void submitRunLoad() {
-        // 可以坐顺风车的话，就先尝试坐别人的，坐不上就自己成为顺风车主让别人坐
-        if (canByFreeRide()) {
-            FreeRideManager freeRideManager = getSketch().getConfiguration().getFreeRideManager();
-            if (freeRideManager.byFreeRide(this)) {
-                return;
-            } else {
-                freeRideManager.registerFreeRideProvider(this);
-            }
-        }
-
-        super.submitRunLoad();
-    }
-
-    @Override
     protected void runLoad() {
         if (isCanceled()) {
             if (Sketch.isDebugMode()) {
                 printLogW("canceled", "runLoad", "display request just started");
             }
-        } else {
-            // 先检查内存缓存，检查的时候要先上锁
-            boolean finished = false;
-            if (!displayOptions.isCacheInDiskDisabled()) {
-                setStatus(Status.GET_MEMORY_CACHE_EDIT_LOCK);
-
-                finished = checkMemoryCache();
-            }
-
-            if (!finished) {
-                super.runLoad();
-            }
+            return;
         }
 
-        // 由于在submitRunLoad中会将自己注册成为顺风车主，因此一定要保证在这里取消注册
-        if (canByFreeRide()) {
-            FreeRideManager freeRideManager = getSketch().getConfiguration().getFreeRideManager();
-            freeRideManager.unregisterFreeRideProvider(this);
+        // 先检查内存缓存，检查的时候要先上锁
+        boolean finished = false;
+        if (!displayOptions.isCacheInDiskDisabled()) {
+            setStatus(Status.GET_MEMORY_CACHE_EDIT_LOCK);
+
+            finished = checkMemoryCache();
+        }
+
+        if (!finished) {
+            super.runLoad();
         }
     }
 

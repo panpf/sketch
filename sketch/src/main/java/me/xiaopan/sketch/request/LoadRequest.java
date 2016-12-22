@@ -39,7 +39,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 加载请求
  */
-public class LoadRequest extends DownloadRequest {
+public class LoadRequest extends FreeRideDownloadRequest {
     private LoadOptions loadOptions;
     private LoadListener loadListener;
 
