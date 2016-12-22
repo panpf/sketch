@@ -108,7 +108,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         initViews();
         startService(new Intent(getBaseContext(), NotificationService.class));
-        switchPage(BuildConfig.DEBUG ? Page.IMAGE_PROCESSOR : Page.LARGE_IMAGE);
+        switchPage(BuildConfig.DEBUG ? Page.BITMAP_POOL_TESt : Page.LARGE_IMAGE);
     }
 
     private void initViews() {
