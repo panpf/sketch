@@ -43,6 +43,7 @@ import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.http.HurlStack;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
+import me.xiaopan.sketch.request.FreeRideManager;
 import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.request.RequestFactory;
 import me.xiaopan.sketch.util.LockPool;
@@ -71,8 +72,10 @@ public class Configuration {
     private boolean globalPauseDownload;   // 全局暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean globalLowQualityImage; // 全局使用低质量的图片
     private boolean globalInPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
-    private LockPool lockPool;  // 同步锁管理池
     private MobileNetworkGlobalPauseDownload mobileNetworkGlobalPauseDownload;
+
+    private LockPool lockPool;  // 同步锁管理池
+    private FreeRideManager freeRideManager;
 
     public Configuration(Context context) {
         context = context.getApplicationContext();
@@ -96,6 +99,7 @@ public class Configuration {
         this.defaultImageDisplayer = new DefaultImageDisplayer();
 
         this.lockPool = new LockPool();
+        this.freeRideManager = new FreeRideManager();
 
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, getInfo());
@@ -544,6 +548,13 @@ public class Configuration {
      */
     public LockPool getLockPool() {
         return lockPool;
+    }
+
+    /**
+     * 获取顺风车管理器
+     */
+    public FreeRideManager getFreeRideManager() {
+        return freeRideManager;
     }
 
     public String getInfo() {

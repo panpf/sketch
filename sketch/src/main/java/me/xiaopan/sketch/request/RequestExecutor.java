@@ -22,8 +22,6 @@ import android.os.HandlerThread;
 import android.os.Message;
 import android.text.TextUtils;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadFactory;
@@ -49,9 +47,6 @@ public class RequestExecutor implements Identifier {
     private boolean shutdown;
     private int localThreadPoolSize;
     private int netThreadPoolSize;
-
-    private Map<String, DisplayRequest> freeRideRequestMap;
-    private final Object freeRideRequestMapLock = new Object();
 
     public RequestExecutor(int localThreadPoolSize, int netThreadPoolSize) {
         this.localThreadPoolSize = localThreadPoolSize;
@@ -85,23 +80,6 @@ public class RequestExecutor implements Identifier {
             return;
         }
 
-        // 尝试搭个顺风车
-        if (runnable instanceof DisplayRequest) {
-            DisplayRequest displayRequest = (DisplayRequest) runnable;
-            if (displayRequest.canFreeRide()) {
-                synchronized (freeRideRequestMapLock) {
-                    DisplayRequest freeRideRequest = null;
-                    if (freeRideRequestMap != null) {
-                        freeRideRequest = freeRideRequestMap.get(displayRequest.getId());
-                    }
-                    if (freeRideRequest != null) {
-                        freeRideRequest.addFreeRideRequest(displayRequest);
-                        return;
-                    }
-                }
-            }
-        }
-
         // 之所有这里采用了懒加载的方式是为了兼容多进程，避免资源浪费
         if (localTaskExecutor == null) {
             synchronized (RequestExecutor.this) {
@@ -117,14 +95,6 @@ public class RequestExecutor implements Identifier {
             }
         }
         localTaskExecutor.execute(runnable);
-
-        // 现在把自己作为顺风车主
-        if (runnable instanceof DisplayRequest) {
-            DisplayRequest displayRequest = (DisplayRequest) runnable;
-            if (displayRequest.canFreeRide()) {
-                registerFreeRide(displayRequest);
-            }
-        }
     }
 
     public void submitDownload(Runnable runnable) {
@@ -165,34 +135,6 @@ public class RequestExecutor implements Identifier {
         }
 
         this.netTaskExecutor = netTaskExecutor;
-    }
-
-    private void installFreeRideRequestMap() {
-        if (freeRideRequestMap == null) {
-            synchronized (this) {
-                if (freeRideRequestMap == null) {
-                    freeRideRequestMap = new HashMap<String, DisplayRequest>();
-                }
-            }
-        }
-    }
-
-    public synchronized void registerFreeRide(DisplayRequest request) {
-        if (request.canFreeRide()) {
-            synchronized (freeRideRequestMapLock) {
-                installFreeRideRequestMap();
-                freeRideRequestMap.put(request.getId(), request);
-            }
-        }
-    }
-
-    public synchronized void unregisterFreeRide(DisplayRequest request) {
-        if (request.canFreeRide()) {
-            synchronized (freeRideRequestMapLock) {
-                installFreeRideRequestMap();
-                freeRideRequestMap.remove(request.getId());
-            }
-        }
     }
 
     @Override
@@ -236,6 +178,10 @@ public class RequestExecutor implements Identifier {
         }
 
         shutdown = true;
+    }
+
+    public boolean isShutdown() {
+        return shutdown;
     }
 
     private static final class DispatchThread extends HandlerThread {

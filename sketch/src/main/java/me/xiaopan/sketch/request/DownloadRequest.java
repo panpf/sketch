@@ -34,7 +34,7 @@ import me.xiaopan.sketch.util.SketchUtils;
 /**
  * 下载请求
  */
-public class DownloadRequest extends AsyncRequest {
+public class DownloadRequest extends FreeRideRequest {
     private DownloadOptions options;
     private DownloadListener downloadListener;
     private DownloadProgressListener downloadProgressListener;

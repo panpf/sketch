@@ -1371,4 +1371,12 @@ public class SketchUtils {
         }
         return success;
     }
+
+    public static String toHexString(Object object) {
+        if (object == null) {
+            return null;
+        }
+
+        return Integer.toHexString(object.hashCode());
+    }
 }
