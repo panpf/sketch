@@ -39,7 +39,7 @@ class DecodeHandler extends Handler {
     private static final String NAME = "DecodeHandler";
     private static final int WHAT_DECODE = 1001;
 
-    private static boolean disableInBitmap;
+    private boolean disableInBitmap;
 
     private WeakReference<TileExecutor> reference;
     private BitmapPool bitmapPool;
@@ -122,14 +122,29 @@ class DecodeHandler extends Handler {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
-            // inBitmap不能使用时会抛出IllegalArgumentException，在这里直接关闭不再使用inBitmap功能
-            if (!disableInBitmap && SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
-                if (SketchUtils.inBitmapThrowForRegionDecoder(e, options, monitor, bitmapPool,
-                        regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, srcRect)) {
-                    disableInBitmap = true;
+            if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+                // 不再使用inBitmap功能
+                if (!disableInBitmap) {
+                    if (SketchUtils.inBitmapThrowForRegionDecoder(e, options, monitor, bitmapPool,
+                            regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, srcRect)) {
+                        disableInBitmap = true;
+                    }
+                }
+
+                // 要是因为inBitmap而解码失败就再此尝试
+                if (options.inBitmap != null) {
+                    options.inBitmap = null;
+                    try {
+                        bitmap = regionDecoder.decodeRegion(srcRect, options);
+                    } catch (Throwable error) {
+                        error.printStackTrace();
+                    }
                 }
             }
+        } catch (Throwable error) {
+            error.printStackTrace();
         }
+
         int useTime = (int) (System.currentTimeMillis() - time);
 
         if (bitmap == null || bitmap.isRecycled()) {

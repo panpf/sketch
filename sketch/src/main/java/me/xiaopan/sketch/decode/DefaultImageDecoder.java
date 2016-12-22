@@ -267,13 +267,30 @@ public class DefaultImageDecoder implements ImageDecoder {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
-            // inBitmap不能使用时会抛出IllegalArgumentException，在这里直接关闭不再使用inBitmap功能
-            if (!loadOptions.isBitmapPoolDisabled() && SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
-                BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
-                SketchMonitor monitor = request.getSketch().getConfiguration().getMonitor();
-                SketchUtils.inBitmapThrowForRegionDecoder(e, decodeOptions, monitor, bitmapPool,
-                        request.getUri(), boundOptions.outWidth, boundOptions.outHeight, result.srcRect);
+            if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+                if (!loadOptions.isBitmapPoolDisabled()) {
+                    BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+                    SketchMonitor monitor = request.getSketch().getConfiguration().getMonitor();
+                    SketchUtils.inBitmapThrowForRegionDecoder(e, decodeOptions, monitor, bitmapPool,
+                            request.getUri(), boundOptions.outWidth, boundOptions.outHeight, result.srcRect);
+                }
+
+                // 要是因为inBitmap而解码失败就再此尝试
+                if (decodeOptions.inBitmap != null) {
+                    decodeOptions.inBitmap = null;
+                    try {
+                        bitmap = decodeHelper.decodeRegion(result.srcRect, decodeOptions);
+                    } catch (Throwable error) {
+                        error.printStackTrace();
+                        SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+                        sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+                    }
+                }
             }
+        } catch (Throwable error) {
+            error.printStackTrace();
+            SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+            sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
         }
 
         // 过滤掉无效的图片
@@ -324,23 +341,35 @@ public class DefaultImageDecoder implements ImageDecoder {
             SketchUtils.setInBitmapFromPool(decodeOptions, bitmapPool);
         }
 
-        Bitmap bitmap;
+        Bitmap bitmap = null;
         try {
             bitmap = decodeHelper.decode(decodeOptions);
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
-            if (!request.getOptions().isBitmapPoolDisabled() && SketchUtils.sdkSupportInBitmap()) {
-                SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
-                BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
-                SketchUtils.inBitmapThrow(e, decodeOptions, sketchMonitor, bitmapPool, request.getUri(), boundOptions.outWidth, boundOptions.outHeight);
+
+            if (SketchUtils.sdkSupportInBitmap()) {
+                if (!request.getOptions().isBitmapPoolDisabled()) {
+                    SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+                    BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
+                    SketchUtils.inBitmapThrow(e, decodeOptions, sketchMonitor, bitmapPool, request.getUri(), boundOptions.outWidth, boundOptions.outHeight);
+                }
+
+                // 要是因为inBitmap而解码失败就再此尝试
+                if (decodeOptions.inBitmap != null) {
+                    decodeOptions.inBitmap = null;
+                    try {
+                        bitmap = decodeHelper.decode(decodeOptions);
+                    } catch (Throwable error) {
+                        error.printStackTrace();
+                        SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+                        sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+                    }
+                }
             }
-            return null;
         } catch (Throwable error) {
             error.printStackTrace();
             SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
             sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
-            decodeHelper.onDecodeError();
-            return null;
         }
 
         // 过滤掉无效的图片

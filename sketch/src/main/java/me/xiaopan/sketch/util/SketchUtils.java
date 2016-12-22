@@ -1268,8 +1268,8 @@ public class SketchUtils {
         if (throwable instanceof IllegalArgumentException) {
             if (SketchUtils.sdkSupportInBitmap()) {
                 if (options.inBitmap != null) {
-                    SketchUtils.freeBitmapToPool(options.inBitmap, bitmapPool);
                     monitor.onInBitmapException(imageUri, imageWidth, imageHeight, options.inSampleSize, options.inBitmap);
+                    SketchUtils.freeBitmapToPool(options.inBitmap, bitmapPool);
                     return true;
                 }
             }
@@ -1342,9 +1342,9 @@ public class SketchUtils {
         if (throwable instanceof IllegalArgumentException) {
             if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
                 if (options.inBitmap != null) {
-                    SketchUtils.freeBitmapToPoolForRegionDecoder(options.inBitmap, bitmapPool);
                     monitor.onInBitmapExceptionForRegionDecoder(imageUri, imageWidth,
                             imageHeight, srcRect, options.inSampleSize, options.inBitmap);
+                    SketchUtils.freeBitmapToPoolForRegionDecoder(options.inBitmap, bitmapPool);
                     return true;
                 }
             }
