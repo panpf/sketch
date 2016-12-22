@@ -40,7 +40,6 @@ import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
-import me.xiaopan.sketch.util.LockPool;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -117,11 +116,10 @@ public class ImagePreprocessor implements Identifier {
         long lastModifyTime = apkFile.lastModified();
         String diskCacheKey = realUri + "." + lastModifyTime;
 
-        LockPool lockPool = configuration.getLockPool();
-        ReentrantLock diskCacheEditLock = lockPool.getDiskCacheEditLock(diskCacheKey);
+        DiskCache diskCache = configuration.getDiskCache();
+        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
-        DiskCache diskCache = configuration.getDiskCache();
         PreProcessResult result = readApkIcon(configuration.getContext(), diskCache, loadRequest, diskCacheKey, realUri);
 
         diskCacheEditLock.unlock();
@@ -215,11 +213,10 @@ public class ImagePreprocessor implements Identifier {
         String diskCacheKey = loadRequest.getUri();
         Configuration configuration = loadRequest.getSketch().getConfiguration();
 
-        LockPool lockPool = configuration.getLockPool();
-        ReentrantLock diskCacheEditLock = lockPool.getDiskCacheEditLock(diskCacheKey);
+        DiskCache diskCache = configuration.getDiskCache();
+        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
-        DiskCache diskCache = configuration.getDiskCache();
         PreProcessResult result = readInstalledAppIcon(configuration.getContext(), diskCache, loadRequest, diskCacheKey);
 
         diskCacheEditLock.unlock();

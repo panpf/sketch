@@ -46,7 +46,6 @@ import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.FreeRideManager;
 import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.request.RequestFactory;
-import me.xiaopan.sketch.util.LockPool;
 import me.xiaopan.sketch.util.SketchUtils;
 
 public class Configuration {
@@ -74,7 +73,6 @@ public class Configuration {
     private boolean globalInPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
     private MobileNetworkGlobalPauseDownload mobileNetworkGlobalPauseDownload;
 
-    private LockPool lockPool;  // 同步锁管理池
     private FreeRideManager freeRideManager;
 
     public Configuration(Context context) {
@@ -98,7 +96,6 @@ public class Configuration {
         this.resizeImageProcessor = new ResizeImageProcessor();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
 
-        this.lockPool = new LockPool();
         this.freeRideManager = new FreeRideManager();
 
         if (Sketch.isDebugMode()) {
@@ -539,15 +536,6 @@ public class Configuration {
                 Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setMonitor", ". ", monitor.getIdentifier()));
             }
         }
-    }
-
-    /**
-     * 获取同步锁管理池
-     *
-     * @return LockPool
-     */
-    public LockPool getLockPool() {
-        return lockPool;
     }
 
     /**

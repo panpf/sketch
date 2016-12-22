@@ -8,10 +8,11 @@ Sketch:
 >* :bug: `GIF` onDetachedFromWindow时主动回收GifDrawable
 >* :sparkles: `bitmapPoolDisabled` LoadOptions、LoadHelper、DisplayOptions、DisplayHelper增加disableBitmapPool属性
 >* disableCacheInDisk和disableCacheInMemory属性改名为cacheInDiskDisabled和cacheInMemoryDisabled
->* `Lock` 磁盘缓存编辑锁挪到了LockPool中，移除内存缓存编辑锁
+>* `Lock` 移除内存缓存编辑锁
 >* :bug: 修复同一内存缓存ID可以出现多个请求同时执行的BUG
 >* :bug: 修复由于同一内存缓存ID可以出现多个请求，导致会出现同一个内存缓存ID会连续存入多个缓存对象，
 那么新存入的缓存对象就会挤掉旧的缓存对象，如果旧的缓存对象只有缓存引用，那么旧的缓存对象会被直接回收
+>* :zap: `FreeRide` 新增FreeRide机制避免重复下载和加载
 
 Sample APP
 

@@ -27,6 +27,9 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.util.Map;
+import java.util.WeakHashMap;
+import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
@@ -47,6 +50,7 @@ public class LruDiskCache implements DiskCache {
     private Configuration configuration;
     private boolean closed;
     private boolean disabled;
+    private Map<String, ReentrantLock> editLockMap;
 
     public LruDiskCache(Context context, Configuration configuration, int appVersionCode, int maxSize) {
         context = context.getApplicationContext();
@@ -334,6 +338,24 @@ public class LruDiskCache implements DiskCache {
             }
             cache = null;
         }
+    }
+
+    @Override
+    public synchronized ReentrantLock getEditLock(String uri) {
+        if (editLockMap == null) {
+            synchronized (this) {
+                if (editLockMap == null) {
+                    editLockMap = new WeakHashMap<String, ReentrantLock>();
+                }
+            }
+        }
+
+        ReentrantLock lock = editLockMap.get(uri);
+        if (lock == null) {
+            lock = new ReentrantLock();
+            editLockMap.put(uri, lock);
+        }
+        return lock;
     }
 
     @Override

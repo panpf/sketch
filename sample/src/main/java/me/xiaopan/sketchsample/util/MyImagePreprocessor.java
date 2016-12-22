@@ -21,7 +21,6 @@ import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.DiskLruCache;
-import me.xiaopan.sketch.util.LockPool;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -65,11 +64,10 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         long lastModifyTime = xpkFile.lastModified();
         String diskCacheKey = realUri + "." + lastModifyTime;
 
-        LockPool lockPool = configuration.getLockPool();
-        ReentrantLock diskCacheEditLock = lockPool.getDiskCacheEditLock(diskCacheKey);
+        DiskCache diskCache = configuration.getDiskCache();
+        ReentrantLock diskCacheEditLock = diskCache.getEditLock(diskCacheKey);
         diskCacheEditLock.lock();
 
-        DiskCache diskCache = configuration.getDiskCache();
         PreProcessResult result = readXpkIcon(diskCache, loadRequest, diskCacheKey, realUri);
 
         diskCacheEditLock.unlock();

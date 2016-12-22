@@ -8,7 +8,7 @@ Sketch共有DisplayOptions `extends` LoadOptions `extends` DownloadOptions三种
 |requestLevel|NET|NET|NET|
 |listener|null|null|null|
 |downloadProgressListener|null|null|null|
-|disableCacheInDisk|false|false|false|
+|cacheInDiskDisabled|false|false|false|
 |maxSize|-|屏幕的宽高|优先考虑ImageView的layout_width和layout_height|
 |resize|-|null|null|
 |forceUseResize|-|false|false|
@@ -19,8 +19,8 @@ Sketch共有DisplayOptions `extends` LoadOptions `extends` DownloadOptions三种
 |inPreferQualityOverSpeed|-|false|false|
 |thumbnailMode|-|false|false|
 |cacheProcessedImageInDisk|-|false|false|
-|disableBitmapPool|-|false|false|
-|disableCacheInMemory|-|-|false|
+|bitmapPoolDisabled|-|false|false|
+|cacheInMemoryDisabled|-|-|false|
 |displayer|-|-|DefaultImageDisplayer|
 |loadingImage|-|-|null|
 |errorImage|-|-|null|
@@ -39,7 +39,7 @@ DisplayOptions displayOptions = new DisplayOptions();
 displayOptions.setRequestLevel(RequestLevel.LOCAL);
 
 // 禁用磁盘缓存
-displayOptions.setDisableCacheInDisk(true);
+displayOptions.setCacheInDiskDisabled(true);
 
 // 设置最大尺寸，用来解码Bitmap时计算inSampleSize，防止加载过大的图片到内存中。默认会先尝试用SketchImageView的layout_width和layout_height作为maxSize，否则会用当前屏幕的宽高作为maxSize
 displayOptions.setMaxSize(1000, 1000);
@@ -72,10 +72,10 @@ displayOptions.setImageProcessor(new CircleImageProcessor());
 displayOptions.setCacheProcessedImageInDisk(true);
 
 // 禁用BitmapPool
-displayOptions.setDisableBitmapPool(true);
+displayOptions.setBitmapPoolDisabled(true);
 
 // 禁用内存缓存
-displayOptions.setDisableCacheInMemory(true);
+displayOptions.setCacheInMemoryDisabled(true);
 
 // 设置正在加载时显示的图片
 displayOptions.setLoadingImage(R.drawable.image_loading);

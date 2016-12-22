@@ -25,15 +25,14 @@ import java.io.IOException;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.DecodeResult;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
-import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.DiskLruCache;
-import me.xiaopan.sketch.util.LockPool;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -160,11 +159,10 @@ public class LoadRequest extends FreeRideDownloadRequest {
     }
 
     private boolean existProcessedImageDiskCache() {
-        LockPool lockPool = getSketch().getConfiguration().getLockPool();
-        ReentrantLock editLock = lockPool.getDiskCacheEditLock(getProcessedImageDiskCacheKey());
+        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+        ReentrantLock editLock = diskCache.getEditLock(getProcessedImageDiskCacheKey());
         editLock.lock();
 
-        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
         boolean exist = diskCache.exist(getProcessedImageDiskCacheKey());
 
         editLock.unlock();
@@ -345,11 +343,10 @@ public class LoadRequest extends FreeRideDownloadRequest {
      * 开启了缓存已处理图片功能，如果磁盘缓存中已经有了缓存就直接读取
      */
     private DataSource checkProcessedImageDiskCache() {
-        LockPool lockPool = getSketch().getConfiguration().getLockPool();
-        ReentrantLock editLock = lockPool.getDiskCacheEditLock(getProcessedImageDiskCacheKey());
+        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+        ReentrantLock editLock = diskCache.getEditLock(getProcessedImageDiskCacheKey());
         editLock.lock();
 
-        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
         DiskCache.Entry diskCacheEntry = diskCache.get(getProcessedImageDiskCacheKey());
 
         editLock.unlock();
@@ -367,11 +364,10 @@ public class LoadRequest extends FreeRideDownloadRequest {
      * 保存bitmap到磁盘缓存
      */
     private void saveProcessedImageToDiskCache(Bitmap bitmap) {
-        LockPool lockPool = getSketch().getConfiguration().getLockPool();
-        ReentrantLock editLock = lockPool.getDiskCacheEditLock(getProcessedImageDiskCacheKey());
+        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
+        ReentrantLock editLock = diskCache.getEditLock(getProcessedImageDiskCacheKey());
         editLock.lock();
 
-        DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
         DiskCache.Entry diskCacheEntry = diskCache.get(getProcessedImageDiskCacheKey());
 
         if (diskCacheEntry != null) {

@@ -28,7 +28,6 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.util.DiskLruCache;
-import me.xiaopan.sketch.util.LockPool;
 import me.xiaopan.sketch.util.SketchUtils;
 
 /**
@@ -177,8 +176,7 @@ public class DownloadRequest extends AsyncRequest {
         if (!getOptions().isCacheInDiskDisabled()) {
             setStatus(Status.GET_DISK_CACHE_EDIT_LOCK);
 
-            LockPool lockPool = getSketch().getConfiguration().getLockPool();
-            diskCacheEditLock = lockPool.getDiskCacheEditLock(getDiskCacheKey());
+            diskCacheEditLock = diskCache.getEditLock(getDiskCacheKey());
             if (diskCacheEditLock != null) {
                 diskCacheEditLock.lock();
             }
