@@ -38,6 +38,8 @@ public class InBitmapTestFragment extends MyFragment {
             "bizhi3.jpg",
     };
 
+    // TODO: 2016/12/23 增加inSampleSize为2时的测试
+
     @InjectView(R.id.image_inBitmapTestFragment)
     ImageView imageView;
 
