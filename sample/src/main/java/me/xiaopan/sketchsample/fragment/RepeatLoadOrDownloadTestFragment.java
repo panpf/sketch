@@ -18,58 +18,58 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 @InjectParentMember
-@InjectContentView(R.layout.fragment_test)
-public class TestFragment extends MyFragment {
+@InjectContentView(R.layout.fragment_repeat_load_or_download_test)
+public class RepeatLoadOrDownloadTestFragment extends MyFragment {
 
-    @InjectView(R.id.image1)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_1)
     private MyImageView imageView1;
-    @InjectView(R.id.image2)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_2)
     private MyImageView imageView2;
-    @InjectView(R.id.image3)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_3)
     private MyImageView imageView3;
-    @InjectView(R.id.image4)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_4)
     private MyImageView imageView4;
-    @InjectView(R.id.image5)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_5)
     private MyImageView imageView5;
-    @InjectView(R.id.image6)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_6)
     private MyImageView imageView6;
-    @InjectView(R.id.image7)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_7)
     private MyImageView imageView7;
-    @InjectView(R.id.image8)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_8)
     private MyImageView imageView8;
 
-    @InjectView(R.id.image9)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_9)
     private MyImageView imageView9;
-    @InjectView(R.id.image10)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_10)
     private MyImageView imageView10;
-    @InjectView(R.id.image11)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_11)
     private MyImageView imageView11;
-    @InjectView(R.id.image12)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_12)
     private MyImageView imageView12;
-    @InjectView(R.id.image13)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_13)
     private MyImageView imageView13;
-    @InjectView(R.id.image14)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_14)
     private MyImageView imageView14;
-    @InjectView(R.id.image15)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_15)
     private MyImageView imageView15;
-    @InjectView(R.id.image16)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_16)
     private MyImageView imageView16;
 
-    @InjectView(R.id.image31)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_31)
     private MyImageView imageView31;
-    @InjectView(R.id.image32)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_32)
     private MyImageView imageView32;
-    @InjectView(R.id.image33)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_33)
     private MyImageView imageView33;
-    @InjectView(R.id.image34)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_34)
     private MyImageView imageView34;
-    @InjectView(R.id.image35)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_35)
     private MyImageView imageView35;
-    @InjectView(R.id.image36)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_36)
     private MyImageView imageView36;
-    @InjectView(R.id.image37)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_37)
     private MyImageView imageView37;
-    @InjectView(R.id.image38)
+    @InjectView(R.id.image_repeatLoadOrDownloadTest_38)
     private MyImageView imageView38;
 
     @Override

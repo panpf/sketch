@@ -7,7 +7,7 @@
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/image_bitmapPoolTestFragment"
+        android:id="@+id/image_inBitmapTestFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
@@ -19,7 +19,7 @@
         android:background="#88000000">
 
         <TextView
-            android:id="@+id/text_bitmapPoolTestFragment"
+            android:id="@+id/text_inBitmapTestFragment"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
@@ -37,35 +37,35 @@
                 android:layout_height="wrap_content">
 
                 <Button
-                    android:id="@+id/button_bitmapPoolTestFragment_loop"
+                    android:id="@+id/button_inBitmapTestFragment_loop"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="循环切换" />
 
                 <Button
-                    android:id="@+id/button_bitmapPoolTestFragment_sizeSame"
+                    android:id="@+id/button_inBitmapTestFragment_sizeSame"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="尺寸刚好" />
 
                 <Button
-                    android:id="@+id/button_bitmapPoolTestFragment_largeSize"
+                    android:id="@+id/button_inBitmapTestFragment_largeSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="尺寸较大" />
 
                 <Button
-                    android:id="@+id/button_bitmapPoolTestFragment_sizeNoSame"
+                    android:id="@+id/button_inBitmapTestFragment_sizeNoSame"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
                     android:text="宽高互换" />
 
                 <Button
-                    android:id="@+id/button_bitmapPoolTestFragment_otherFormat"
+                    android:id="@+id/button_inBitmapTestFragment_otherFormat"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"

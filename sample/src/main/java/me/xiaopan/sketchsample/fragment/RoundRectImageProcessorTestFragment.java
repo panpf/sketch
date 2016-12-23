@@ -13,15 +13,15 @@ import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
-@InjectContentView(R.layout.fragment_gaussian_blur)
-public class RoundRectTestFragment extends MyFragment{
-    @InjectView(R.id.image_gaussianBlurFragment)
+@InjectContentView(R.layout.fragment_round_rect_image_processor)
+public class RoundRectImageProcessorTestFragment extends MyFragment{
+    @InjectView(R.id.image_roundRectImageProcessor)
     MyImageView imageView;
 
-    @InjectView(R.id.seekBar_gaussianBlurFragment)
+    @InjectView(R.id.seekBar_roundRectImageProcessor)
     SeekBar seekBar;
 
-    @InjectView(R.id.text_gaussianBlurFragment)
+    @InjectView(R.id.text_roundRectImageProcessor)
     TextView progressTextView;
 
     private int progress = 30;

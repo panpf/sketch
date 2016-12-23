@@ -15,7 +15,7 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 @InjectContentView(R.layout.fragment_gaussian_blur)
-public class GaussianBlurTestFragment extends MyFragment {
+public class GaussianBlurImageProcessorTestFragment extends MyFragment {
     @InjectView(R.id.image_gaussianBlurFragment)
     MyImageView imageView;
 

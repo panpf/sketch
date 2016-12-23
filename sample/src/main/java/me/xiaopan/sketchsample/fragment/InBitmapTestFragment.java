@@ -27,8 +27,8 @@ import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 
-@InjectContentView(R.layout.fragment_bitmap_pool_test)
-public class BitmapPoolTestFragment extends MyFragment {
+@InjectContentView(R.layout.fragment_in_bitmap_test)
+public class InBitmapTestFragment extends MyFragment {
     private static final String[] images = new String[]{
             "masichun1.jpg",
             "masichun2.jpg",
@@ -38,25 +38,25 @@ public class BitmapPoolTestFragment extends MyFragment {
             "bizhi3.jpg",
     };
 
-    @InjectView(R.id.image_bitmapPoolTestFragment)
+    @InjectView(R.id.image_inBitmapTestFragment)
     ImageView imageView;
 
-    @InjectView(R.id.text_bitmapPoolTestFragment)
+    @InjectView(R.id.text_inBitmapTestFragment)
     TextView textView;
 
-    @InjectView(R.id.button_bitmapPoolTestFragment_loop)
+    @InjectView(R.id.button_inBitmapTestFragment_loop)
     Button loopButton;
 
-    @InjectView(R.id.button_bitmapPoolTestFragment_sizeSame)
+    @InjectView(R.id.button_inBitmapTestFragment_sizeSame)
     Button sizeSameButton;
 
-    @InjectView(R.id.button_bitmapPoolTestFragment_largeSize)
+    @InjectView(R.id.button_inBitmapTestFragment_largeSize)
     Button largeSizeButton;
 
-    @InjectView(R.id.button_bitmapPoolTestFragment_sizeNoSame)
+    @InjectView(R.id.button_inBitmapTestFragment_sizeNoSame)
     Button sizeNoSameButton;
 
-    @InjectView(R.id.button_bitmapPoolTestFragment_otherFormat)
+    @InjectView(R.id.button_inBitmapTestFragment_otherFormat)
     Button otherFormatButton;
 
     int index = -1;

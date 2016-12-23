@@ -40,6 +40,7 @@ import android.widget.Toast;
 import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 import me.xiaopan.androidinjector.InjectContentView;
@@ -65,14 +66,15 @@ import me.xiaopan.sketchsample.bean.CheckMenu;
 import me.xiaopan.sketchsample.bean.InfoMenu;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
-import me.xiaopan.sketchsample.fragment.BitmapPoolTestFragment;
+import me.xiaopan.sketchsample.fragment.InBitmapTestFragment;
+import me.xiaopan.sketchsample.fragment.ImageShaperTestFragment;
 import me.xiaopan.sketchsample.fragment.LargeImageTestFragment;
 import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
-import me.xiaopan.sketchsample.fragment.ProcessorTestFragment;
+import me.xiaopan.sketchsample.fragment.ImageProcessorTestFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.StarIndexFragment;
-import me.xiaopan.sketchsample.fragment.Test2Fragment;
-import me.xiaopan.sketchsample.fragment.TestFragment;
+import me.xiaopan.sketchsample.fragment.OtherTestFragment;
+import me.xiaopan.sketchsample.fragment.RepeatLoadOrDownloadTestFragment;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.util.Settings;
@@ -108,7 +110,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         initViews();
         startService(new Intent(getBaseContext(), NotificationService.class));
-        switchPage(BuildConfig.DEBUG ? Page.BITMAP_POOL_TESt : Page.LARGE_IMAGE);
+        switchPage(BuildConfig.DEBUG ? Page.IN_BITMAP_TESt : Page.LARGE_IMAGE);
     }
 
     private void initViews() {
@@ -186,8 +188,15 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             }
         };
 
-        menuList.add("页面");
-        for (Page page : Page.values()) {
+        menuList.add("综合页面");
+        for (Page page : Page.getNormalPage()) {
+            if (!page.isDisable()) {
+                menuList.add(page);
+            }
+        }
+
+        menuList.add("测试页面");
+        for (Page page : Page.getTestPage()) {
             if (!page.isDisable()) {
                 menuList.add(page);
             }
@@ -515,29 +524,31 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
     }
 
     public enum Page {
-        STAR("明星图片", StarIndexFragment.class),
-        SEARCH("图片搜索", SearchFragment.class),
-        PHOTO_ALBUM("本地相册", PhotoAlbumFragment.class),
-        APP_LIST("本地APP", AppListFragment.class),
-        LARGE_IMAGE("超大图片", LargeImageTestFragment.class),
-        IMAGE_PROCESSOR("ImageProcessor", ProcessorTestFragment.class),
-        TES1("测试1", TestFragment.class, !BuildConfig.DEBUG),
-        TES2("测试2", Test2Fragment.class, !BuildConfig.DEBUG),
-        BITMAP_POOL_TESt("BitmapPool测试", BitmapPoolTestFragment.class, !BuildConfig.DEBUG),
-        ABOUT("关于", AboutFragment.class),;
+        STAR("明星图片", StarIndexFragment.class, false, false),
+        SEARCH("图片搜索", SearchFragment.class, false, false),
+        PHOTO_ALBUM("本地相册", PhotoAlbumFragment.class, false, false),
+        APP_LIST("本地APP", AppListFragment.class, false, false),
+        ABOUT("关于", AboutFragment.class, false, false),
+
+        LARGE_IMAGE("分块显示超大图片测试", LargeImageTestFragment.class, true, false),
+        IMAGE_PROCESSOR_TEST("ImageProcessor测试", ImageProcessorTestFragment.class, true, false),
+        IMAGE_SHAPER_TESt("ImageShaper测试", ImageShaperTestFragment.class, true, false),
+        REPEAT_LOAD_OR_DOWNLOAD_TEST("重复加载/下载测试", RepeatLoadOrDownloadTestFragment.class, true, false),
+        IN_BITMAP_TESt("inBitmap测试", InBitmapTestFragment.class, true, false),
+        OTHER_TEST("其它测试", OtherTestFragment.class, true, !BuildConfig.DEBUG),
+
+        ;
 
         private String name;
         private Class<? extends Fragment> fragmentClass;
         private boolean disable;
+        private boolean test;
 
-        Page(String name, Class<? extends Fragment> fragmentClass, boolean disable) {
+        Page(String name, Class<? extends Fragment> fragmentClass, boolean test, boolean disable) {
             this.name = name;
             this.fragmentClass = fragmentClass;
             this.disable = disable;
-        }
-
-        Page(String name, Class<? extends Fragment> fragmentClass) {
-            this(name, fragmentClass, false);
+            this.test = test;
         }
 
         public String getName() {
@@ -554,6 +565,26 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 e.printStackTrace();
                 return null;
             }
+        }
+
+        public static Page[] getNormalPage(){
+            List<Page> normalPageList = new LinkedList<Page>();
+            for(Page page : values()){
+                if(!page.test){
+                    normalPageList.add(page);
+                }
+            }
+            return normalPageList.toArray(new Page[normalPageList.size()]);
+        }
+
+        public static Page[] getTestPage(){
+            List<Page> testPageList = new LinkedList<Page>();
+            for(Page page : values()){
+                if(page.test){
+                    testPageList.add(page);
+                }
+            }
+            return testPageList.toArray(new Page[testPageList.size()]);
         }
 
         public boolean isDisable() {

@@ -38,8 +38,6 @@ public class ResizeTestFragment extends MyFragment {
 
         imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
 
-        imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
-
         widthSeekBar.setMax(100);
         widthSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override

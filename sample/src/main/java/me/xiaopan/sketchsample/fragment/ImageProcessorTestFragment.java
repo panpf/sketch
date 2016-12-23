@@ -14,7 +14,7 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.MainActivity;
 
 @InjectContentView(R.layout.fragment_pager_tab)
-public class ProcessorTestFragment extends MyFragment {
+public class ImageProcessorTestFragment extends MyFragment {
     @InjectView(R.id.tab_pagerTabFragment_tabs)
     private PagerSlidingTabStrip tabStrip;
 
@@ -25,11 +25,11 @@ public class ProcessorTestFragment extends MyFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewPager.setAdapter(new FragmentArrayPagerAdapter(getChildFragmentManager(), new Fragment[]{
-                new ReflectionTestFragment(),
-                new GaussianBlurTestFragment(),
-                new RotateTestFragment(),
-                new RoundRectTestFragment(),
-                new CircleTestFragment(),
+                new ReflectionImageProcessorTestFragment(),
+                new GaussianBlurImageProcessorTestFragment(),
+                new RotateImageProcessorTestFragment(),
+                new RoundRectImageProcessorTestFragment(),
+                new CircleImageProcessorTestFragment(),
                 new ResizeTestFragment(),
         }));
 
