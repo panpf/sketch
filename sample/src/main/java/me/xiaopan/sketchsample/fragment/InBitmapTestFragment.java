@@ -24,23 +24,12 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 
 @InjectContentView(R.layout.fragment_in_bitmap_test)
 public class InBitmapTestFragment extends MyFragment {
-    private static final String[] images = new String[]{
-            "masichun1.jpg",
-            "masichun2.jpg",
-            "masichun3.jpg",
-            "bizhi1.jpg",
-            "bizhi2.jpg",
-            "bizhi3.jpg",
-            "liuyifei_small.bmp",
-            "zhuomian.webp",
-
-            // todo 再找一张png的图和gif的图
-    };
 
     @InjectView(R.id.image_inBitmapTestFragment)
     ImageView imageView;
@@ -121,7 +110,7 @@ public class InBitmapTestFragment extends MyFragment {
             public void onClick(View v) {
                 --index;
                 if (index < 0) {
-                    index = images.length - Math.abs(index);
+                    index = AssetImage.SAMPLES.length - Math.abs(index);
                 }
                 currentMode.performClick();
             }
@@ -130,7 +119,7 @@ public class InBitmapTestFragment extends MyFragment {
         nextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                index = ++index % images.length;
+                index = ++index % AssetImage.SAMPLES.length;
                 currentMode.performClick();
             }
         });
@@ -178,7 +167,7 @@ public class InBitmapTestFragment extends MyFragment {
         newView.setEnabled(false);
         currentMode = newView;
 
-        pageNumberTextView.setText(String.format("%d/%d", index + 1, images.length));
+        pageNumberTextView.setText(String.format("%d/%d", index + 1, AssetImage.SAMPLES.length));
     }
 
     private void testSizeSame() {
@@ -191,7 +180,7 @@ public class InBitmapTestFragment extends MyFragment {
                 }
                 super.configOptions(options);
             }
-        }.execute(images[index % images.length]);
+        }.execute(AssetImage.SAMPLES[index % AssetImage.SAMPLES.length]);
     }
 
     private void testLargeSize() {
@@ -204,7 +193,7 @@ public class InBitmapTestFragment extends MyFragment {
                 }
                 super.configOptions(options);
             }
-        }.execute(images[index % images.length]);
+        }.execute(AssetImage.SAMPLES[index % AssetImage.SAMPLES.length]);
     }
 
     private void testSizeNoSame() {
@@ -217,7 +206,7 @@ public class InBitmapTestFragment extends MyFragment {
                 }
                 super.configOptions(options);
             }
-        }.execute(images[index % images.length]);
+        }.execute(AssetImage.SAMPLES[index % AssetImage.SAMPLES.length]);
     }
 
     private void inSampleSize() {
@@ -233,7 +222,7 @@ public class InBitmapTestFragment extends MyFragment {
                 }
                 super.configOptions(options);
             }
-        }.execute(images[index % images.length]);
+        }.execute(AssetImage.SAMPLES[index % AssetImage.SAMPLES.length]);
     }
 
     private class TestTask extends AsyncTask<String, Integer, Bitmap> {
@@ -258,9 +247,11 @@ public class InBitmapTestFragment extends MyFragment {
             builder.append("fileName: ").append(fileName);
 
             int sizeInBytes = SketchUtils.getBitmapByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
-            builder.append("\n").append("imageSize: ").append(options.outWidth).append("x").append(options.outHeight).append(", ").append(sizeInBytes);
+            builder.append("\n").append("image: ")
+                    .append(options.outWidth).append("x").append(options.outHeight)
+                    .append(", ").append(options.inPreferredConfig)
+                    .append(", ").append(sizeInBytes);
 
-            builder.append("\n").append("inPreferredConfig: ").append(options.inPreferredConfig);
             builder.append("\n").append("inSampleSize: ").append(options.inSampleSize);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {

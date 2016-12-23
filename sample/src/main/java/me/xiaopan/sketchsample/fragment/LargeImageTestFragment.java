@@ -11,6 +11,7 @@ import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.assemblyadapter.FragmentArrayPagerAdapter;
 import me.xiaopan.psts.PagerSlidingTabStrip;
 import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 
@@ -53,11 +54,11 @@ public class LargeImageTestFragment extends MyFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (fragmentAdapter == null) {
-            Fragment[] fragments = new Fragment[4];
-            fragments[0] = ImageFragment.build(UriScheme.ASSET.createUri("world_map.jpg"), null);
-            fragments[1] = ImageFragment.build(UriScheme.ASSET.createUri("qing_ming_shang_he_tu.jpg"), null);
-            fragments[2] = ImageFragment.build(UriScheme.ASSET.createUri("chang_wei_bo.jpg"), null);
-            fragments[3] = ImageFragment.build(UriScheme.ASSET.createUri("test_card.png"), null);
+            String[] largeAssetImageNames = AssetImage.LARGES;
+            Fragment[] fragments = new Fragment[largeAssetImageNames.length];
+            for(int w = 0; w < largeAssetImageNames.length; w++){
+                fragments[w] = ImageFragment.build(UriScheme.ASSET.createUri(largeAssetImageNames[w]), null);
+            }
             fragmentAdapter = new FragmentArrayPagerAdapter(getChildFragmentManager(), fragments);
         }
         viewPager.setAdapter(fragmentAdapter);

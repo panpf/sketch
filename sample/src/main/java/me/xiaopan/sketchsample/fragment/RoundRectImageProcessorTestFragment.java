@@ -9,6 +9,7 @@ import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.RoundRectImageProcessor;
+import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -58,6 +59,6 @@ public class RoundRectImageProcessorTestFragment extends MyFragment{
 
     private void apply() {
         imageView.getOptions().setImageProcessor(new RoundRectImageProcessor(progress));
-        imageView.displayAssetImage("bizhi1.jpg");
+        imageView.displayAssetImage(AssetImage.MEI_NV);
     }
 }

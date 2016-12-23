@@ -7,6 +7,7 @@ import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.ReflectionImageProcessor;
+import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -22,6 +23,6 @@ public class ReflectionImageProcessorTestFragment extends MyFragment{
 
         imageView.getOptions().setImageProcessor(new ReflectionImageProcessor());
         imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
-        imageView.displayAssetImage("bizhi1.jpg");
+        imageView.displayAssetImage(AssetImage.MEI_NV);
     }
 }

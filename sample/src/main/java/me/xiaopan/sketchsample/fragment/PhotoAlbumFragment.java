@@ -43,6 +43,7 @@ import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.prl.PullRefreshLayout;
 import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.activity.ApplyBackgroundCallback;
@@ -161,12 +162,9 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
             }
 
             List<String> imagePathList = new ArrayList<String>(mCursor.getCount() + 2);
-            imagePathList.add(UriScheme.ASSET.createUri("liuyifei.bmp"));
-            imagePathList.add(UriScheme.ASSET.createUri("zhuomian.webp"));
-            imagePathList.add(UriScheme.ASSET.createUri("world_map.jpg"));
-            imagePathList.add(UriScheme.ASSET.createUri("test_card.png"));
-            imagePathList.add(UriScheme.ASSET.createUri("qing_ming_shang_he_tu.jpg"));
-            imagePathList.add(UriScheme.ASSET.createUri("chang_wei_bo.jpg"));
+            for(String assetImageName : AssetImage.ALL){
+                imagePathList.add(UriScheme.ASSET.createUri(assetImageName));
+            }
             while (mCursor.moveToNext()) {
                 //获取图片的路径
                 imagePathList.add("file://" + mCursor.getString(mCursor.getColumnIndex(MediaStore.Images.Media.DATA)));

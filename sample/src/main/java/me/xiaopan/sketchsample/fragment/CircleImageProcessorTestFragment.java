@@ -9,6 +9,7 @@ import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.CircleImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
+import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -28,6 +29,6 @@ public class CircleImageProcessorTestFragment extends MyFragment{
 
         imageView.getOptions().setImageProcessor(CircleImageProcessor.getInstance());
         imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
-        imageView.displayAssetImage("bizhi1.jpg");
+        imageView.displayAssetImage(AssetImage.MEI_NV);
     }
 }

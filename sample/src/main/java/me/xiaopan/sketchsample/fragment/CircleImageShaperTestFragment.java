@@ -1,7 +1,6 @@
 package me.xiaopan.sketchsample.fragment;
 
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.SeekBar;
@@ -10,8 +9,8 @@ import android.widget.TextView;
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
-import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
 import me.xiaopan.sketch.shaper.CircleImageShaper;
+import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
@@ -62,8 +61,7 @@ public class CircleImageShaperTestFragment extends MyFragment {
     private void apply() {
         CircleImageShaper imageShaper = new CircleImageShaper().setStroke(Color.WHITE, strokeProgress);
 
-        BitmapDrawable bitmapDrawable = (BitmapDrawable) getResources().getDrawable(R.drawable.image_test);
-        ShapeBitmapDrawable shapeBitmapDrawable = new ShapeBitmapDrawable(bitmapDrawable, imageShaper);
-        imageView.setImageDrawable(shapeBitmapDrawable);
+        imageView.getOptions().setImageShaper(imageShaper);
+        imageView.displayAssetImage(AssetImage.SAMPLE_JPG);
     }
 }
