@@ -30,28 +30,28 @@ public int calculateInSampleSize(int outWidth, int outHeight, int targetWidth, i
 
     if (targetWidth <= 0) {
         // 目标宽小于等于0时，只要高度满足要求即可
-        while (outHeight / inSampleSize > targetHeight) {
+        while (SketchUtils.ceil(outHeight, inSampleSize) > targetHeight) {
             inSampleSize *= 2;
         }
     } else if (targetHeight <= 0) {
         // 目标高小于等于0时，只要宽度满足要求即可
-        while (outWidth / inSampleSize > targetWidth) {
+        while (SketchUtils.ceil(outWidth, inSampleSize) > targetWidth) {
             inSampleSize *= 2;
         }
     } else {
         // 首先限制像素数不能超过目标宽高的像素数
         final long maxPixels = targetWidth * targetHeight;
-        while ((outWidth / inSampleSize) * (outHeight / inSampleSize) > maxPixels) {
+        while ((SketchUtils.ceil(outWidth, inSampleSize)) * (SketchUtils.ceil(outHeight, inSampleSize)) > maxPixels) {
             inSampleSize *= 2;
         }
 
         // 然后限制宽高不能大于OpenGL所允许的最大尺寸
         int maxSize = getOpenGLMaxTextureSize();
-        while (outWidth / inSampleSize > maxSize || outHeight / inSampleSize > maxSize) {
+        while (SketchUtils.ceil(outWidth, inSampleSize) > maxSize || SketchUtils.ceil(outHeight, inSampleSize) > maxSize) {
             inSampleSize *= 2;
         }
 
-        // 最后如果是为大图功能加载预览图的话，当缩小2倍的时为了节省内存考虑还不如缩小4倍（缩小1倍时不会启用大图功能，因此无需处理）
+        // 最后如果是为大图功能加载预览图的话，当缩小2倍的话为了节省内存考虑还不如缩小4倍（缩小1倍时不会启用大图功能，因此无需处理）
         if (supportLargeImage && inSampleSize == 2) {
             inSampleSize = 4;
         }

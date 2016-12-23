@@ -1247,8 +1247,8 @@ public class SketchUtils {
 
         Bitmap inBitmap = null;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            int finalWidth = options.outWidth / inSampleSize;
-            int finalHeight = options.outHeight / inSampleSize;
+            int finalWidth = SketchUtils.ceil(options.outWidth, inSampleSize);
+            int finalHeight = SketchUtils.ceil(options.outHeight, inSampleSize);
             inBitmap = bitmapPool.get(finalWidth, finalHeight, options.inPreferredConfig);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB && inSampleSize == 1
                 && (format == ImageFormat.JPEG || format == ImageFormat.PNG)) {
@@ -1320,8 +1320,8 @@ public class SketchUtils {
         int inSampleSize = options.inSampleSize >= 1 ? options.inSampleSize : 1;
         Bitmap.Config config = options.inPreferredConfig;
 
-        int finalWidth = srcRect.width() / inSampleSize;
-        int finalHeight = srcRect.height() / inSampleSize;
+        int finalWidth = SketchUtils.ceil(srcRect.width(), inSampleSize);
+        int finalHeight = SketchUtils.ceil(srcRect.height(), inSampleSize);
         Bitmap inBitmap = bitmapPool.get(finalWidth, finalHeight, config);
 
         if (inBitmap != null) {
@@ -1383,5 +1383,9 @@ public class SketchUtils {
         }
 
         return Integer.toHexString(object.hashCode());
+    }
+
+    public static int ceil(int value1, float value2){
+        return (int) Math.ceil(value1 / value2);
     }
 }
