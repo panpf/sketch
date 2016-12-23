@@ -34,7 +34,9 @@ public class RoundRectImageShaper implements ImageShaper {
     private Rect boundsCached = new Rect();
 
     private Path bitmapPath = new Path();
-    private Path strokePath;
+    private Path innerStrokePath;
+    private Path outerStrokePath;
+    private Path clipPath;
 
     private int strokeWidth;
     private int strokeColor;
@@ -89,8 +91,16 @@ public class RoundRectImageShaper implements ImageShaper {
             strokePaint.setColor(strokeColor);
             strokePaint.setStrokeWidth(strokeWidth);
 
-            if (strokePath == null) {
-                strokePath = new Path();
+            if (innerStrokePath == null) {
+                innerStrokePath = new Path();
+            }
+
+            if (outerStrokePath == null) {
+                outerStrokePath = new Path();
+            }
+
+            if (clipPath == null) {
+                clipPath = new Path();
             }
         }
     }
@@ -109,20 +119,28 @@ public class RoundRectImageShaper implements ImageShaper {
     @Override
     public void draw(Canvas canvas, Paint paint, Rect bounds) {
         if (!boundsCached.equals(bounds)) {
-            RectF rectF = new RectF();
+            RectF rectF = new RectF(bounds);
 
-            rectF.set(bounds);
             bitmapPath.reset();
             bitmapPath.addRoundRect(rectF, outerRadii, Path.Direction.CW);
 
-            // 假如描边宽度是10，那么会是5个像素在图片外面，5哥像素在图片里面，
-            // 所以往图片里面偏移描边宽度的一半，让描边都在图片里面
+            // 假如描边宽度是10，那么会是5个像素在图片外面，5个像素在图片里面
+            // 因为描边会有一半是在图片外面，所以如果图片被紧紧（没有缝隙）包括在Layout中，那么描边就会丢失一半
             if (hasStroke()) {
+                // 内圈，往图片里面偏移描边宽度的一半，让描边都在图片里面，都在里面导致圆角部分会露出来一些
                 final float offset = strokeWidth / 2f;
                 rectF.set(bounds.left + offset, bounds.top + offset,
                         bounds.right - offset, bounds.bottom - offset);
-                strokePath.reset();
-                strokePath.addRoundRect(rectF, outerRadii, Path.Direction.CW);
+                innerStrokePath.reset();
+                innerStrokePath.addRoundRect(rectF, outerRadii, Path.Direction.CW);
+
+                // 外圈，主要用来盖住内圈描边无法覆盖导致露出的圆角部分
+                outerStrokePath.reset();
+                rectF.set(bounds.left, bounds.top, bounds.right, bounds.bottom);
+                outerStrokePath.addRoundRect(rectF, outerRadii, Path.Direction.CW);
+
+                rectF.set(bounds);
+                clipPath.addRoundRect(rectF, outerRadii, Path.Direction.CW);
             }
         }
 
@@ -130,7 +148,11 @@ public class RoundRectImageShaper implements ImageShaper {
         canvas.drawPath(bitmapPath, paint);
 
         if (hasStroke() && strokePaint != null) {
-            canvas.drawPath(strokePath, strokePaint);
+            // 裁掉外圈跑出图片的部分
+            canvas.clipPath(clipPath);
+
+            canvas.drawPath(innerStrokePath, strokePaint);
+            canvas.drawPath(outerStrokePath, strokePaint);
         }
     }
 }
