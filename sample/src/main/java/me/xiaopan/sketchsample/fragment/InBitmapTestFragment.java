@@ -36,18 +36,17 @@ public class InBitmapTestFragment extends MyFragment {
             "bizhi1.jpg",
             "bizhi2.jpg",
             "bizhi3.jpg",
-    };
+            "liuyifei_small.bmp",
+            "zhuomian.webp",
 
-    // TODO: 2016/12/23 增加inSampleSize为2时的测试
+            // todo 再找一张png的图和gif的图
+    };
 
     @InjectView(R.id.image_inBitmapTestFragment)
     ImageView imageView;
 
     @InjectView(R.id.text_inBitmapTestFragment)
     TextView textView;
-
-    @InjectView(R.id.button_inBitmapTestFragment_loop)
-    Button loopButton;
 
     @InjectView(R.id.button_inBitmapTestFragment_sizeSame)
     Button sizeSameButton;
@@ -58,13 +57,24 @@ public class InBitmapTestFragment extends MyFragment {
     @InjectView(R.id.button_inBitmapTestFragment_sizeNoSame)
     Button sizeNoSameButton;
 
-    @InjectView(R.id.button_inBitmapTestFragment_otherFormat)
-    Button otherFormatButton;
+    @InjectView(R.id.button_inBitmapTestFragment_inSampleSize)
+    Button inSampleSizeButton;
 
-    int index = -1;
+    @InjectView(R.id.view_inBitmapTestFragment_pageNumber)
+    TextView pageNumberTextView;
+
+    @InjectView(R.id.view_inBitmapTestFragment_last)
+    View lastView;
+
+    @InjectView(R.id.view_inBitmapTestFragment_next)
+    View nextView;
+
+    int index = 0;
 
     Configuration configuration;
     AssetManager assetManager;
+
+    private View currentMode;
 
     private static Bitmap decodeImage(AssetManager manager, String fileName, BitmapFactory.Options options) {
         InputStream inputStream;
@@ -106,11 +116,22 @@ public class InBitmapTestFragment extends MyFragment {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loopButton.setOnClickListener(new View.OnClickListener() {
+        lastView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                index++;
-                loop();
+                --index;
+                if (index < 0) {
+                    index = images.length - Math.abs(index);
+                }
+                currentMode.performClick();
+            }
+        });
+
+        nextView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                index = ++index % images.length;
+                currentMode.performClick();
             }
         });
 
@@ -118,6 +139,7 @@ public class InBitmapTestFragment extends MyFragment {
             @Override
             public void onClick(View v) {
                 testSizeSame();
+                updateCheckedStatus(v);
             }
         });
 
@@ -125,6 +147,7 @@ public class InBitmapTestFragment extends MyFragment {
             @Override
             public void onClick(View v) {
                 testLargeSize();
+                updateCheckedStatus(v);
             }
         });
 
@@ -132,33 +155,30 @@ public class InBitmapTestFragment extends MyFragment {
             @Override
             public void onClick(View v) {
                 testSizeNoSame();
+                updateCheckedStatus(v);
             }
         });
 
-        otherFormatButton.setOnClickListener(new View.OnClickListener() {
+        inSampleSizeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                testOtherFormat();
+                inSampleSize();
+                updateCheckedStatus(v);
             }
         });
 
-        loopButton.post(new Runnable() {
-            @Override
-            public void run() {
-                loopButton.performClick();
-            }
-        });
+        sizeSameButton.performClick();
     }
 
-    private void loop() {
-        new TestTask() {
-            @Override
-            protected void configOptions(BitmapFactory.Options options) {
-                if (SketchUtils.sdkSupportInBitmap()) {
-                    SketchUtils.setInBitmapFromPool(options, configuration.getBitmapPool());
-                }
-            }
-        }.execute(images[index % images.length]);
+    private void updateCheckedStatus(View newView) {
+        if (currentMode != null) {
+            currentMode.setEnabled(true);
+        }
+
+        newView.setEnabled(false);
+        currentMode = newView;
+
+        pageNumberTextView.setText(String.format("%d/%d", index + 1, images.length));
     }
 
     private void testSizeSame() {
@@ -179,7 +199,7 @@ public class InBitmapTestFragment extends MyFragment {
             @Override
             protected void configOptions(BitmapFactory.Options options) {
                 if (SketchUtils.sdkSupportInBitmap()) {
-                    options.inBitmap = Bitmap.createBitmap(options.outWidth + 1, options.outHeight, options.inPreferredConfig);
+                    options.inBitmap = Bitmap.createBitmap(options.outWidth + 10, options.outHeight + 5, options.inPreferredConfig);
                     options.inMutable = true;
                 }
                 super.configOptions(options);
@@ -200,8 +220,20 @@ public class InBitmapTestFragment extends MyFragment {
         }.execute(images[index % images.length]);
     }
 
-    private void testOtherFormat() {
-
+    private void inSampleSize() {
+        new TestTask() {
+            @Override
+            protected void configOptions(BitmapFactory.Options options) {
+                if (SketchUtils.sdkSupportInBitmap()) {
+                    options.inSampleSize = 2;
+                    int finalWidth = SketchUtils.ceil(options.outWidth, options.inSampleSize);
+                    int finalHeight = SketchUtils.ceil(options.outHeight, options.inSampleSize);
+                    options.inBitmap = Bitmap.createBitmap(finalWidth, finalHeight, options.inPreferredConfig);
+                    options.inMutable = true;
+                }
+                super.configOptions(options);
+            }
+        }.execute(images[index % images.length]);
     }
 
     private class TestTask extends AsyncTask<String, Integer, Bitmap> {
@@ -224,12 +256,12 @@ public class InBitmapTestFragment extends MyFragment {
             configOptions(options);
 
             builder.append("fileName: ").append(fileName);
-            builder.append("\n").append("imageSize: ").append(options.outWidth).append("x").append(options.outHeight);
-            builder.append("\n").append("inPreferredConfig: ").append(options.inPreferredConfig);
-            builder.append("\n").append("inSampleSize: ").append(options.inSampleSize);
 
             int sizeInBytes = SketchUtils.getBitmapByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
-            builder.append("\n").append("sizeInBytes: ").append(sizeInBytes);
+            builder.append("\n").append("imageSize: ").append(options.outWidth).append("x").append(options.outHeight).append(", ").append(sizeInBytes);
+
+            builder.append("\n").append("inPreferredConfig: ").append(options.inPreferredConfig);
+            builder.append("\n").append("inSampleSize: ").append(options.inSampleSize);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                 if (options.inBitmap != null) {

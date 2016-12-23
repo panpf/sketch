@@ -9,21 +9,69 @@
     <ImageView
         android:id="@+id/image_inBitmapTestFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginBottom="100dp" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <View
+            android:id="@+id/view_inBitmapTestFragment_last"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+
+        <View
+            android:id="@+id/view_inBitmapTestFragment_next"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1" />
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:orientation="vertical"
-        android:background="#88000000">
+        android:background="#88000000"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:padding="4dp"
+                android:src="@drawable/ic_action_previous_item" />
+
+            <TextView
+                android:id="@+id/view_inBitmapTestFragment_pageNumber"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="2/5" />
+
+            <ImageView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:padding="4dp"
+                android:src="@drawable/ic_action_next_item" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/text_inBitmapTestFragment"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
             android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
             tools:text="信息" />
 
         <HorizontalScrollView
@@ -35,13 +83,6 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content">
-
-                <Button
-                    android:id="@+id/button_inBitmapTestFragment_loop"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:text="循环切换" />
 
                 <Button
                     android:id="@+id/button_inBitmapTestFragment_sizeSame"
@@ -65,11 +106,11 @@
                     android:text="宽高互换" />
 
                 <Button
-                    android:id="@+id/button_inBitmapTestFragment_otherFormat"
+                    android:id="@+id/button_inBitmapTestFragment_inSampleSize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
-                    android:text="其它格式" />
+                    android:text="IN_SAMPLE_SIZE为2" />
 
             </LinearLayout>
         </HorizontalScrollView>
