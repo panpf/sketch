@@ -48,7 +48,7 @@ public class ClickRetryFunction extends SketchImageView.Function implements View
     }
 
     @Override
-    public boolean onDisplay(UriScheme uriScheme) {
+    public boolean onReadyDisplay(UriScheme uriScheme) {
         // 重新走了一遍显示流程，这些要重置
         displayError = false;
         pauseDownload = false;

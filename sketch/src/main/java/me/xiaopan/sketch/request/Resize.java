@@ -23,13 +23,15 @@ import me.xiaopan.sketch.Identifier;
 
 /**
  * 将图片加载到内存中之后根据resize进行修正
- *
- * <p/>修正的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸小于等于resize，如果需要必须同resize一致可以设置 {@link LoadOptions#forceUseResize}
+ * <br/>修正的原则就是最终返回的图片的比例一定是跟resize一样的，但尺寸小于等于resize，如果需要必须同resize一致可以设置 {@link LoadOptions#forceUseResize}
  */
 public class Resize implements Identifier {
     private int width;
     private int height;
 
+    /**
+     * 裁剪图片时scaleType将决定如何裁剪，原理同ImageView的scaleType相同
+     */
     private ImageView.ScaleType scaleType = ImageView.ScaleType.CENTER_CROP;
 
     public Resize(Resize sourceResize) {

@@ -24,9 +24,9 @@ import android.widget.ImageView;
 
 public interface ImageViewInterface {
     /**
-     * 显示图片
+     * 准备显示图片
      */
-    void onDisplay(UriScheme uriScheme);
+    void onReadyDisplay(UriScheme uriScheme);
 
     /**
      * 获取Drawable

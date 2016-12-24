@@ -65,7 +65,7 @@ public class RecyclerCompatFunction extends SketchImageView.Function {
     }
 
     @Override
-    public boolean onDisplay(UriScheme uriScheme) {
+    public boolean onReadyDisplay(UriScheme uriScheme) {
         isSetImage = true;
         return false;
     }

@@ -39,6 +39,9 @@ import me.xiaopan.sketch.state.StateImage;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketch.util.Stopwatch;
 
+/**
+ * 显示Helper，负责组织、收集、初始化显示参数，最后执行commit()提交请求
+ */
 public class DisplayHelper {
     protected String logName = "DisplayHelper";
 
@@ -52,18 +55,6 @@ public class DisplayHelper {
     protected ViewInfo viewInfo = new ViewInfo();
     protected ImageViewInterface imageViewInterface;
 
-    /**
-     * 支持以下几种图片Uri
-     * <blockQuote>"http://site.com/image.png"; // from Web
-     * <br>"https://site.com/image.png"; // from Web
-     * <br>"file:///mnt/sdcard/image.png"; // from SD card
-     * <br>"/mnt/sdcard/image.png"; // from SD card
-     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     * <br>"content://media/external/audio/albumart/13"; // from content provider
-     * <br>"asset://image.png"; // from assets
-     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     * </blockQuote>
-     */
     public DisplayHelper(Sketch sketch, String uri, ImageViewInterface imageViewInterface) {
         init(sketch, uri, imageViewInterface);
     }
@@ -84,7 +75,7 @@ public class DisplayHelper {
         }
 
         // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
-        this.imageViewInterface.onDisplay(displayInfo.getUriScheme());
+        this.imageViewInterface.onReadyDisplay(displayInfo.getUriScheme());
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("onDisplay");
         }
@@ -114,7 +105,7 @@ public class DisplayHelper {
         }
 
         // onDisplay一定要在最前面执行，因为在onDisplay中会设置一些属性，这些属性会影响到后续一些get方法返回的结果
-        this.imageViewInterface.onDisplay(displayInfo.getUriScheme());
+        this.imageViewInterface.onReadyDisplay(displayInfo.getUriScheme());
         if (Sketch.isDebugMode()) {
             Stopwatch.with().record("onDisplay");
         }
@@ -673,61 +664,57 @@ public class DisplayHelper {
     }
 
     private boolean checkMemoryCache() {
-        if (displayOptions.isCacheInMemoryDisabled()) {
-            return true;
-        }
+        if (!displayOptions.isCacheInMemoryDisabled()) {
+            RefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(displayInfo.getMemoryCacheKey());
+            if (cachedRefBitmap != null) {
+                if (!cachedRefBitmap.isRecycled()) {
+                    // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
+                    cachedRefBitmap.setIsWaitingUse(logName + ":waitingUse:fromMemory", true);
 
-        RefBitmap cachedRefBitmap = sketch.getConfiguration().getMemoryCache().get(displayInfo.getMemoryCacheKey());
-        if (cachedRefBitmap == null) {
-            return true;
-        }
+                    if (Sketch.isDebugMode()) {
+                        Log.i(Sketch.TAG, SketchUtils.concat(logName,
+                                ". image display completed",
+                                ". ", ImageFrom.MEMORY_CACHE.name(),
+                                ". ", cachedRefBitmap.getInfo(),
+                                ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode())));
+                    }
 
-        if (cachedRefBitmap.isRecycled()) {
-            sketch.getConfiguration().getMemoryCache().remove(displayInfo.getMemoryCacheKey());
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                        ". ", "memory cache drawable recycled",
-                        ". ", cachedRefBitmap.getInfo(),
-                        ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode())));
+                    RefBitmapDrawable refBitmapDrawable = new RefBitmapDrawable(cachedRefBitmap);
+                    refBitmapDrawable.setImageFrom(ImageFrom.MEMORY_CACHE);
+
+                    Drawable finalDrawable;
+                    if (displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null) {
+                        finalDrawable = new ShapeBitmapDrawable(refBitmapDrawable,
+                                displayOptions.getShapeSize(), displayOptions.getImageShaper());
+                    } else {
+                        finalDrawable = refBitmapDrawable;
+                    }
+
+                    ImageDisplayer imageDisplayer = displayOptions.getImageDisplayer();
+                    if (imageDisplayer != null && imageDisplayer.isAlwaysUse()) {
+                        imageDisplayer.display(imageViewInterface, finalDrawable);
+                    } else {
+                        imageViewInterface.setImageDrawable(finalDrawable);
+                    }
+                    if (displayListener != null) {
+                        displayListener.onCompleted(ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
+                    }
+
+                    cachedRefBitmap.setIsWaitingUse(logName + ":waitingUse:finish", false);
+                    return false;
+                } else {
+                    sketch.getConfiguration().getMemoryCache().remove(displayInfo.getMemoryCacheKey());
+                    if (Sketch.isDebugMode()) {
+                        Log.e(Sketch.TAG, SketchUtils.concat(logName,
+                                ". ", "memory cache drawable recycled",
+                                ". ", cachedRefBitmap.getInfo(),
+                                ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode())));
+                    }
+                }
             }
-            return true;
         }
 
-        // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
-        cachedRefBitmap.setIsWaitingUse(logName + ":waitingUse:fromMemory", true);
-
-        if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(logName,
-                    ". image display completed",
-                    ". ", ImageFrom.MEMORY_CACHE.name(),
-                    ". ", cachedRefBitmap.getInfo(),
-                    ". viewHashCode=", Integer.toHexString(imageViewInterface.hashCode())));
-        }
-
-        RefBitmapDrawable refBitmapDrawable = new RefBitmapDrawable(cachedRefBitmap);
-        refBitmapDrawable.setImageFrom(ImageFrom.MEMORY_CACHE);
-
-        Drawable finalDrawable;
-        if (displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null) {
-            finalDrawable = new ShapeBitmapDrawable(refBitmapDrawable,
-                    displayOptions.getShapeSize(), displayOptions.getImageShaper());
-        } else {
-            finalDrawable = refBitmapDrawable;
-        }
-
-        ImageDisplayer imageDisplayer = displayOptions.getImageDisplayer();
-        if (imageDisplayer != null && imageDisplayer.isAlwaysUse()) {
-            imageDisplayer.display(imageViewInterface, finalDrawable);
-        } else {
-            imageViewInterface.setImageDrawable(finalDrawable);
-        }
-        if (displayListener != null) {
-            displayListener.onCompleted(ImageFrom.MEMORY_CACHE, cachedRefBitmap.getMimeType());
-        }
-
-        cachedRefBitmap.setIsWaitingUse(logName + ":waitingUse:finish", false);
-
-        return false;
+        return true;
     }
 
     private boolean checkRequestLevel() {

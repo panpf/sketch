@@ -19,8 +19,12 @@ package me.xiaopan.sketch.request;
 import android.util.Log;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
+/**
+ * 下载Helper，负责组织、收集、初始化下载参数，最后执行commit()提交请求
+ */
 public class DownloadHelper {
     protected String logName = "DownloadHelper";
 
@@ -32,12 +36,6 @@ public class DownloadHelper {
     protected DownloadListener downloadListener;
     protected DownloadProgressListener downloadProgressListener;
 
-    /**
-     * 图片Uri，支持以下几种
-     * <blockQuote>“http://site.com/image.png“  // from Web
-     * <br>“https://site.com/image.png“ // from Web
-     * </blockQuote>
-     */
     public DownloadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
         this.downloadInfo.reset(uri);
@@ -111,7 +109,7 @@ public class DownloadHelper {
      * 提交
      */
     public DownloadRequest commit() {
-        if(sync && SketchUtils.isMainThread()){
+        if (sync && SketchUtils.isMainThread()) {
             throw new IllegalStateException("Cannot sync perform the download in the UI thread ");
         }
 
@@ -123,7 +121,7 @@ public class DownloadHelper {
             return null;
         }
 
-        if (!checkUriScheme()) {
+        if (!checkDiskCache()) {
             return null;
         }
 
@@ -151,10 +149,6 @@ public class DownloadHelper {
             return false;
         }
 
-        return true;
-    }
-
-    private boolean checkUriScheme() {
         if (downloadInfo.getUriScheme() == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri scheme", ". ", downloadInfo.getId()));
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
@@ -172,9 +166,29 @@ public class DownloadHelper {
         return true;
     }
 
+    private boolean checkDiskCache() {
+        if (!downloadOptions.isCacheInDiskDisabled()) {
+            DiskCache diskCache = sketch.getConfiguration().getDiskCache();
+            DiskCache.Entry diskCacheEntry = diskCache.get(downloadInfo.getDiskCacheKey());
+            if (diskCacheEntry != null) {
+                if (Sketch.isDebugMode()) {
+                    Log.i(Sketch.TAG, SketchUtils.concat(logName, ". image download completed", ". ", downloadInfo.getId()));
+                }
+                if (downloadListener != null) {
+                    DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
+                    downloadListener.onCompleted(result);
+                }
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     private DownloadRequest submitRequest() {
         RequestFactory requestFactory = sketch.getConfiguration().getRequestFactory();
-        DownloadRequest request = requestFactory.newDownloadRequest(sketch, downloadInfo, downloadOptions, downloadListener, downloadProgressListener);
+        DownloadRequest request = requestFactory.newDownloadRequest(sketch, downloadInfo,
+                downloadOptions, downloadListener, downloadProgressListener);
         request.setSync(sync);
         request.submit();
         return request;

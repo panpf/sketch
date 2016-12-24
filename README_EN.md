@@ -16,7 +16,7 @@ Sketch is a powerful and comprehensive image loader on Android, with support for
 >* ``Multiple URL support``. Support for ``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``7 kinds of URI
 >* ``Support gif``. Integrated [android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable) can be easily displayed gif pictures, thanks koral--
 >* ``Exclusive gesture zoom and super large image support``. Exclusive built-in gesture zoom and block display super large image features, and the combination of better
->* ``Secondary cache``. Using LRU algorithm in the local and memory cache pictures, improve picture utilization and display speed
+>* ``Level 3 cache support``. Through the LruMemoryCache, LruDiskCache multiplexing pictures to speed up the display time; through the LruBitmapPool reuse Bitmap, to reduce the Caton caused by GC
 >* ``Various list support``. Can be used in a variety of lists (ListView, RecyclerView), and does not occupy the setTag () method
 >* ``Automatically prevents excessive loading Bitmap`` Can be controlled by maxSize to load the size of the image memory, the default for the ImageView layout_width and layout_height or screen size
 >* ``Exclusive TransitionDrawable support``. Exclusive support for any size of the two images using TransitionDrawable transition display, to ensure that no deformation
@@ -24,7 +24,7 @@ Sketch is a powerful and comprehensive image loader on Android, with support for
 >* ``Support reading APK icon``. Support to directly read the local APK file icon or according to the package name and version number to read the icon has been installed APP
 >* ``Paused download on mobile network``. Built-in mobile network to download pictures under the suspended function, you can simply open
 >* ``Automatically select the appropriate Bitmap.Config``. According to the picture MimeType automatically select the appropriate Bitmap.Config, reduce memory waste, for example, for JPEG format images will use Bitmap.Config.RGB_565 decoding
->* ``Special file preprocessing``. Provide Image Preprocessor, can be on the local special files (such as multimedia files) for pretreatment, Sketch can directly display its cover, read the APK file icon is achieved through this function
+>* ``Special file preprocessing``. Through the ImagePreprocessor can be special files (such as multimedia files) for pretreatment, extract the images it contains, read the APK file icon is achieved through this function
 >* ``Powerful and flexible customization``. Can be customized to download, cache, decoding, processing, display, placeholder and other links
 
 ### Example APP
@@ -96,7 +96,7 @@ Minimum support for `Android2.2 API 7`
 
 |Type|Scheme|jpeg|png|webp|gif|apk icon|
 |:---|:---|:---|:---|:---|:---|:---|
-|File in network|http://, http:// |YES|YES|YES（Android4.0 above）|YES|NO|
+|File in network|http://, https:// |YES|YES|YES（Android4.0 above）|YES|NO|
 |File in SDCard|/, file:// |YES|YES|YES（Android4.0 above）|YES|YES|
 |Content Provider|content:// |YES|YES|YES（Android4.0 above）|YES|NO|
 |Asset in app|asset:// |YES|YES|YES（Android4.0 above）|YES|NO|

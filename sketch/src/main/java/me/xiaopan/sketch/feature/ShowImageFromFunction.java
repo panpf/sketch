@@ -55,7 +55,7 @@ public class ShowImageFromFunction extends SketchImageView.Function {
     }
 
     @Override
-    public boolean onDisplay(UriScheme uriScheme) {
+    public boolean onReadyDisplay(UriScheme uriScheme) {
         imageFrom = null;
         return true;
     }

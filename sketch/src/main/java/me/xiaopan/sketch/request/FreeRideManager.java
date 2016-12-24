@@ -25,10 +25,10 @@ import java.util.WeakHashMap;
 import me.xiaopan.sketch.Sketch;
 
 /**
- * 顺风车管理器
+ * 顺风车管理器，主要用于解决重复下载、重复加载
  * <p/>
  * 对于相同的请求（不同类型条件不一样），只要第一个请求执行完毕了，后续请求可以直接使用第一个请求的结果，那么我们可以将所有后续的请求都绑定在第一个请求上，
- * 等第一个请求执行完毕后直接将结果交给后续请求处理即可，对于这样的情况我们称之为顺风车，主要用于解决重复下载、重复加载的情况
+ * 等第一个请求执行完毕后直接将结果交给后续请求处理即可，对于这样的情况我们称之为顺风车
  */
 public class FreeRideManager {
     private static final String LOG_NAME = "FreeRideManager";

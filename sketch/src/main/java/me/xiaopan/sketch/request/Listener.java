@@ -16,6 +16,9 @@
 
 package me.xiaopan.sketch.request;
 
+/**
+ * 请求监听器，可监听开始、失败、取消
+ */
 public interface Listener {
     /**
      * 已开始

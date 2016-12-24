@@ -25,6 +25,9 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
+/**
+ * 加载Helper，负责组织、收集、初始化加载参数，最后执行commit()提交请求
+ */
 public class LoadHelper {
     protected String logName = "LoadHelper";
 
@@ -36,18 +39,6 @@ public class LoadHelper {
     protected LoadListener loadListener;
     protected DownloadProgressListener downloadProgressListener;
 
-    /**
-     * 支持以下几种图片Uri
-     * <blockQuote>"http://site.com/image.png"; // from Web
-     * <br>"https://site.com/image.png"; // from Web
-     * <br>"file:///mnt/sdcard/image.png"; // from SD card
-     * <br>"/mnt/sdcard/image.png"; // from SD card
-     * <br>"/mnt/sdcard/app.apk"; // from SD card apk file
-     * <br>"content://media/external/audio/albumart/13"; // from content provider
-     * <br>"asset://image.png"; // from assets
-     * <br>"drawable://" + R.drawable.image; // from drawables (only images, non-9patch)
-     * </blockQuote>
-     */
     public LoadHelper(Sketch sketch, String uri) {
         this.sketch = sketch;
         this.loadInfo.reset(uri);
@@ -192,6 +183,7 @@ public class LoadHelper {
      * 批量设置加载参数，你只需要提前将LoadOptions通过Sketch.putLoadOptions()方法存起来，
      * 然后在这里指定其名称即可，另外这会是一个合并的过程，并不会完全覆盖
      */
+    @SuppressWarnings("unused")
     public LoadHelper optionsByName(Enum<?> optionsName) {
         return options(Sketch.getLoadOptions(optionsName));
     }
@@ -235,10 +227,6 @@ public class LoadHelper {
         preProcess();
 
         if (!checkUri()) {
-            return null;
-        }
-
-        if (!checkUriScheme()) {
             return null;
         }
 
@@ -312,10 +300,6 @@ public class LoadHelper {
             return false;
         }
 
-        return true;
-    }
-
-    private boolean checkUriScheme() {
         if (loadInfo.getUriScheme() == null) {
             Log.e(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri scheme", ". ", loadInfo.getId()));
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
@@ -341,7 +325,6 @@ public class LoadHelper {
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;
             CallbackHandler.postCallbackCanceled(loadListener, cancelCause, sync);
-
             return false;
         }
 

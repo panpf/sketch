@@ -22,7 +22,7 @@ import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.request.ImageViewInterface;
 
 /**
- * 图片显示器
+ * 图片显示器，用来在加载完成后显示图片
  */
 public interface ImageDisplayer extends Identifier {
     int DEFAULT_ANIMATION_DURATION = 400;

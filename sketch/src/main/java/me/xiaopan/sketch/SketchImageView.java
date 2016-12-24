@@ -52,13 +52,13 @@ import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.UriScheme;
 
 /**
- * 用来替代ImageView
+ * 用来替代ImageView，另外还支持手势缩放和分块显示超大图，详细文档请参考 docs/wiki/sketch_image_view.md
  */
 public class SketchImageView extends ImageView implements ImageViewInterface {
     private DisplayListener wrapperDisplayListener;
     private DownloadProgressListener wrapperDownloadProgressListener;
-    private MyDisplayListener displayListener;
-    private MyProgressListener downloadProgressListener;
+    private PrivateDisplayListener displayListener;
+    private PrivateProgressListener downloadProgressListener;
 
     private RequestFunction requestFunction;
     private RecyclerCompatFunction recyclerCompatFunction;
@@ -94,8 +94,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         imageShapeFunction = new ImageShapeFunction(this);
         clickRetryFunction = new ClickRetryFunction(this, requestFunction, this);
 
-        displayListener = new MyDisplayListener(this);
-        downloadProgressListener = new MyProgressListener(this);
+        displayListener = new PrivateDisplayListener(this);
+        downloadProgressListener = new PrivateProgressListener(this);
 
         super.setOnClickListener(clickRetryFunction);
 
@@ -379,39 +379,39 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     @Override
-    public void onDisplay(UriScheme uriScheme) {
+    public void onReadyDisplay(UriScheme uriScheme) {
         boolean needInvokeInvalidate = false;
 
         if (requestFunction != null) {
             //noinspection ConstantConditions
-            needInvokeInvalidate |= requestFunction.onDisplay(uriScheme);
+            needInvokeInvalidate |= requestFunction.onReadyDisplay(uriScheme);
         }
         if (recyclerCompatFunction != null) {
-            needInvokeInvalidate |= recyclerCompatFunction.onDisplay(uriScheme);
+            needInvokeInvalidate |= recyclerCompatFunction.onReadyDisplay(uriScheme);
         }
         if (showPressedFunction != null) {
-            needInvokeInvalidate |= showPressedFunction.onDisplay(uriScheme);
+            needInvokeInvalidate |= showPressedFunction.onReadyDisplay(uriScheme);
         }
         if (showProgressFunction != null) {
-            needInvokeInvalidate |= showProgressFunction.onDisplay(uriScheme);
+            needInvokeInvalidate |= showProgressFunction.onReadyDisplay(uriScheme);
         }
         if (showGifFlagFunction != null) {
-            needInvokeInvalidate |= showGifFlagFunction.onDisplay(uriScheme);
+            needInvokeInvalidate |= showGifFlagFunction.onReadyDisplay(uriScheme);
         }
         if (showImageFromFunction != null) {
-            needInvokeInvalidate |= showImageFromFunction.onDisplay(uriScheme);
+            needInvokeInvalidate |= showImageFromFunction.onReadyDisplay(uriScheme);
         }
         if (imageShapeFunction != null) {
-            needInvokeInvalidate |= imageShapeFunction.onDisplay(uriScheme);
+            needInvokeInvalidate |= imageShapeFunction.onReadyDisplay(uriScheme);
         }
         if (clickRetryFunction != null) {
-            needInvokeInvalidate |= clickRetryFunction.onDisplay(uriScheme);
+            needInvokeInvalidate |= clickRetryFunction.onReadyDisplay(uriScheme);
         }
         if (zoomFunction != null) {
-            needInvokeInvalidate |= zoomFunction.onDisplay(uriScheme);
+            needInvokeInvalidate |= zoomFunction.onReadyDisplay(uriScheme);
         }
         if (largeImageFunction != null) {
-            needInvokeInvalidate |= largeImageFunction.onDisplay(uriScheme);
+            needInvokeInvalidate |= largeImageFunction.onReadyDisplay(uriScheme);
         }
 
         if (needInvokeInvalidate) {
@@ -842,30 +842,56 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     public static abstract class Function {
+        /**
+         * 依附到Window
+         */
         public void onAttachedToWindow() {
 
         }
 
         /**
-         * @return 是否拦截事件
+         * 发生触摸事件
+         *
+         * @return 拦截事件
          */
         public boolean onTouchEvent(MotionEvent event) {
             return false;
         }
 
+        /**
+         * 布局
+         *
+         * @param changed 位置是否改变
+         * @param left    左边位置
+         * @param top     顶部位置
+         * @param right   右边位置
+         * @param bottom  底部位置
+         */
         public void onLayout(boolean changed, int left, int top, int right, int bottom) {
 
         }
 
+        /**
+         * 设置ScaleType
+         *
+         * @param scaleType ScaleType
+         */
         public void setScaleType(ScaleType scaleType) {
 
         }
 
+        /**
+         * 绘制
+         *
+         * @param canvas Canvas
+         */
         public void onDraw(Canvas canvas) {
 
         }
 
         /**
+         * 从Window脱离
+         *
          * @return true：是否需要调用父setImageDrawable清空图片
          */
         public boolean onDetachedFromWindow() {
@@ -873,6 +899,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
 
         /**
+         * drawable改变
+         *
          * @return 是否需要调用invalidate()刷新ImageView
          */
         public boolean onDrawableChanged(String callPosition, Drawable oldDrawable, Drawable newDrawable) {
@@ -881,13 +909,17 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
 
 
         /**
+         * 准备显示图片
+         *
          * @return 是否需要调用invalidate()刷新ImageView
          */
-        public boolean onDisplay(UriScheme uriScheme) {
+        public boolean onReadyDisplay(UriScheme uriScheme) {
             return false;
         }
 
         /**
+         * 开始显示图片
+         *
          * @return 是否需要调用invalidate()刷新ImageView
          */
         public boolean onDisplayStarted() {
@@ -895,6 +927,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
 
         /**
+         * 更新下载进度
+         *
+         * @param totalLength     总长度
+         * @param completedLength 已完成长度
          * @return 是否需要调用invalidate()刷新ImageView
          */
         public boolean onUpdateDownloadProgress(int totalLength, int completedLength) {
@@ -902,6 +938,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
 
         /**
+         * 显示完成
+         *
          * @return 是否需要调用invalidate()刷新ImageView
          */
         public boolean onDisplayCompleted(ImageFrom imageFrom, String mimeType) {
@@ -909,6 +947,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
 
         /**
+         * 显示失败
+         *
          * @return 是否需要调用invalidate()刷新ImageView
          */
         public boolean onDisplayError(ErrorCause errorCause) {
@@ -916,20 +956,31 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
 
         /**
+         * 显示取消
+         *
          * @return 是否需要调用invalidate()刷新ImageView
          */
         public boolean onDisplayCanceled(CancelCause cancelCause) {
             return false;
         }
 
+        /**
+         * size变化
+         *
+         * @param left   左边位置
+         * @param top    顶部位置
+         * @param right  右边位置
+         * @param bottom 底部位置
+         */
         public void onSizeChanged(int left, int top, int right, int bottom) {
+
         }
     }
 
-    private static class MyDisplayListener implements DisplayListener {
+    private static class PrivateDisplayListener implements DisplayListener {
         private WeakReference<SketchImageView> viewWeakReference;
 
-        public MyDisplayListener(SketchImageView view) {
+        public PrivateDisplayListener(SketchImageView view) {
             this.viewWeakReference = new WeakReference<SketchImageView>(view);
         }
 
@@ -1130,10 +1181,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
     }
 
-    private static class MyProgressListener implements DownloadProgressListener {
+    private static class PrivateProgressListener implements DownloadProgressListener {
         private WeakReference<SketchImageView> viewWeakReference;
 
-        public MyProgressListener(SketchImageView view) {
+        public PrivateProgressListener(SketchImageView view) {
             this.viewWeakReference = new WeakReference<SketchImageView>(view);
         }
 

@@ -1302,8 +1302,6 @@ public class SketchUtils {
         return success;
     }
 
-    // TODO: 2016/12/17 充分在不同版本上测试，以及不同格式特别是19以下只支持jpg和png
-
     /**
      * 从bitmap poo中取出可复用的Bitmap设置到inBitmap上，适用于BitmapRegionDecoder
      *

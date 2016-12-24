@@ -50,7 +50,7 @@ public class ShowProgressFunction extends SketchImageView.Function {
     }
 
     @Override
-    public boolean onDisplay(UriScheme uriScheme) {
+    public boolean onReadyDisplay(UriScheme uriScheme) {
         progress = uriScheme == UriScheme.NET ? 0 : NONE;
         return true;
     }

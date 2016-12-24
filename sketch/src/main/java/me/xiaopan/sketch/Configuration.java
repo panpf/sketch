@@ -36,7 +36,7 @@ import me.xiaopan.sketch.display.ImageDisplayer;
 import me.xiaopan.sketch.feature.HelperFactory;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
-import me.xiaopan.sketch.feature.MobileNetworkGlobalPauseDownload;
+import me.xiaopan.sketch.feature.MobileNetworkGlobalPauseDownloadController;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.http.HttpClientStack;
 import me.xiaopan.sketch.http.HttpStack;
@@ -48,47 +48,50 @@ import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.request.RequestFactory;
 import me.xiaopan.sketch.util.SketchUtils;
 
-public class Configuration {
+/**
+ * Sketch唯一配置类
+ */
+public final class Configuration {
     protected String logName = "Configuration";
+    private Context context;
+    private DiskCache diskCache;
+    private BitmapPool bitmapPool;
+    private MemoryCache memoryCache;
 
-    private Context context;    // 上下文
-    private DiskCache diskCache;    // 磁盘缓存
-    private HttpStack httpStack;    // 网络
-    private BitmapPool bitmapPool;  // Bitmap缓存
-    private MemoryCache memoryCache;    //图片内存缓存
-    private ImageDecoder imageDecoder;    //图片解码器
-    private SketchMonitor monitor;    // 监控
-    private HelperFactory helperFactory;    // 协助器工厂
-    private ImageDisplayer defaultImageDisplayer;   // 默认的图片显示器，当DisplayRequest中没有指定显示器的时候就会用到
-    private ImageProcessor resizeImageProcessor;    // Resize图片处理器
-    private RequestFactory requestFactory;  // 请求工厂
-    private RequestExecutor requestExecutor;    //请求执行器
-    private ResizeCalculator resizeCalculator;  // resize计算器
-    private ImagePreprocessor imagePreprocessor;    // 本地图片预处理器
-    private ImageSizeCalculator imageSizeCalculator; // 图片尺寸计算器
+    private HttpStack httpStack;
+    private ImageDecoder imageDecoder;
+    private ImageDisplayer defaultImageDisplayer;
+    private ImageProcessor resizeImageProcessor;
+    private FreeRideManager freeRideManager;
+    private RequestExecutor requestExecutor;
+    private ResizeCalculator resizeCalculator;
+    private ImagePreprocessor imagePreprocessor;
+    private ImageSizeCalculator imageSizeCalculator;
+
+    private HelperFactory helperFactory;
+    private RequestFactory requestFactory;
+
+    private SketchMonitor monitor;
 
     private boolean globalPauseLoad;   // 全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
     private boolean globalPauseDownload;   // 全局暂停下载新图片，开启后将不再从网络下载新图片，只影响display请求
     private boolean globalLowQualityImage; // 全局使用低质量的图片
-    private boolean globalInPreferQualityOverSpeed;   // false:解码时优先考虑速度;true:解码时优先考虑质量 (默认false)
-    private MobileNetworkGlobalPauseDownload mobileNetworkGlobalPauseDownload;
+    private boolean globalInPreferQualityOverSpeed;   // false:全局解码时优先考虑速度；true:全局解码时优先考虑质量
+    private MobileNetworkGlobalPauseDownloadController mobileNetworkGlobalPauseDownloadController;
 
-    private FreeRideManager freeRideManager;
-
-    public Configuration(Context context) {
+    Configuration(Context context) {
         context = context.getApplicationContext();
         this.context = context;
 
         MemorySizeCalculator memorySizeCalculator = new MemorySizeCalculator(context);
 
-        this.monitor = new SketchMonitor(context);
-        this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
         this.diskCache = new LruDiskCache(context, this, 1, DiskCache.DISK_CACHE_MAX_SIZE);
         this.bitmapPool = new LruBitmapPool(context, memorySizeCalculator.getBitmapPoolSize());
         this.memoryCache = new LruMemoryCache(context, memorySizeCalculator.getMemoryCacheSize());
+
+        this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
         this.imageDecoder = new DefaultImageDecoder();
-        this.helperFactory = new HelperFactory();
-        this.requestFactory = new RequestFactory();
+        this.freeRideManager = new FreeRideManager();
         this.requestExecutor = new RequestExecutor();
         this.resizeCalculator = new ResizeCalculator();
         this.imagePreprocessor = new ImagePreprocessor();
@@ -96,7 +99,10 @@ public class Configuration {
         this.resizeImageProcessor = new ResizeImageProcessor();
         this.defaultImageDisplayer = new DefaultImageDisplayer();
 
-        this.freeRideManager = new FreeRideManager();
+        this.helperFactory = new HelperFactory();
+        this.requestFactory = new RequestFactory();
+
+        this.monitor = new SketchMonitor(context);
 
         if (Sketch.isDebugMode()) {
             Log.d(Sketch.TAG, getInfo());
@@ -108,7 +114,9 @@ public class Configuration {
     }
 
     /**
-     * 获取上下文
+     * 获取Context
+     *
+     * @return Context
      */
     public Context getContext() {
         return context;
@@ -116,6 +124,8 @@ public class Configuration {
 
     /**
      * 获取请求执行器
+     *
+     * @return RequestExecutor
      */
     public RequestExecutor getRequestExecutor() {
         return requestExecutor;
@@ -123,6 +133,8 @@ public class Configuration {
 
     /**
      * 设置请求执行器
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
     public Configuration setRequestExecutor(RequestExecutor newRequestExecutor) {
@@ -141,6 +153,8 @@ public class Configuration {
 
     /**
      * 获取磁盘缓存器
+     *
+     * @return DiskCache
      */
     public DiskCache getDiskCache() {
         return diskCache;
@@ -148,6 +162,8 @@ public class Configuration {
 
     /**
      * 设置磁盘缓存器
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
     public Configuration setDiskCache(DiskCache newDiskCache) {
@@ -166,6 +182,8 @@ public class Configuration {
 
     /**
      * 获取Bitmap缓存器
+     *
+     * @return BitmapPool
      */
     @SuppressWarnings("unused")
     public BitmapPool getBitmapPool() {
@@ -174,9 +192,11 @@ public class Configuration {
 
     /**
      * 设置Bitmap缓存器
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public void setBitmapPool(BitmapPool newBitmapPool) {
+    public Configuration setBitmapPool(BitmapPool newBitmapPool) {
         if (newBitmapPool != null) {
             BitmapPool oldBitmapPool = this.bitmapPool;
             this.bitmapPool = newBitmapPool;
@@ -187,10 +207,13 @@ public class Configuration {
                 Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setBitmapPool", ". ", bitmapPool.getIdentifier()));
             }
         }
+        return this;
     }
 
     /**
      * 获取内存缓存器
+     *
+     * @return MemoryCache
      */
     public MemoryCache getMemoryCache() {
         return memoryCache;
@@ -198,6 +221,8 @@ public class Configuration {
 
     /**
      * 设置内存缓存器
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
     public Configuration setMemoryCache(MemoryCache memoryCache) {
@@ -216,6 +241,8 @@ public class Configuration {
 
     /**
      * 获取图片解码器
+     *
+     * @return ImageDecoder
      */
     public ImageDecoder getImageDecoder() {
         return imageDecoder;
@@ -223,6 +250,8 @@ public class Configuration {
 
     /**
      * 设置图片解码器
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
     public Configuration setImageDecoder(ImageDecoder imageDecoder) {
@@ -237,6 +266,8 @@ public class Configuration {
 
     /**
      * 获取图片下载器
+     *
+     * @return HttpStack
      */
     public HttpStack getHttpStack() {
         return httpStack;
@@ -244,6 +275,8 @@ public class Configuration {
 
     /**
      * 设置图片下载器
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
     public Configuration setHttpStack(HttpStack httpStack) {
@@ -258,6 +291,8 @@ public class Configuration {
 
     /**
      * 获取图片尺寸计算器
+     *
+     * @return ImageSizeCalculator
      */
     public ImageSizeCalculator getImageSizeCalculator() {
         return imageSizeCalculator;
@@ -265,6 +300,8 @@ public class Configuration {
 
     /**
      * 获取图片尺寸计算器
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
     public Configuration setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
@@ -279,6 +316,8 @@ public class Configuration {
 
     /**
      * 获取默认的图片显示器
+     *
+     * @return ImageDisplayer
      */
     public ImageDisplayer getDefaultImageDisplayer() {
         return defaultImageDisplayer;
@@ -286,6 +325,8 @@ public class Configuration {
 
     /**
      * 设置默认的图片处理器
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
     public Configuration setDefaultImageDisplayer(ImageDisplayer defaultImageDisplayer) {
@@ -300,6 +341,8 @@ public class Configuration {
 
     /**
      * 获取Resize图片处理器
+     *
+     * @return ImageProcessor
      */
     public ImageProcessor getResizeImageProcessor() {
         return resizeImageProcessor;
@@ -307,6 +350,8 @@ public class Configuration {
 
     /**
      * 设置Resize图片处理器
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
     public Configuration setResizeImageProcessor(ImageProcessor resizeImageProcessor) {
@@ -321,6 +366,8 @@ public class Configuration {
 
     /**
      * 获取协助器工厂
+     *
+     * @return HelperFactory
      */
     public HelperFactory getHelperFactory() {
         return helperFactory;
@@ -328,6 +375,8 @@ public class Configuration {
 
     /**
      * 设置协助器工厂
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
     public Configuration setHelperFactory(HelperFactory helperFactory) {
@@ -342,6 +391,8 @@ public class Configuration {
 
     /**
      * 获取请求工厂
+     *
+     * @return RequestFactory
      */
     public RequestFactory getRequestFactory() {
         return requestFactory;
@@ -349,6 +400,8 @@ public class Configuration {
 
     /**
      * 设置请求工厂
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
     public Configuration setRequestFactory(RequestFactory requestFactory) {
@@ -363,6 +416,8 @@ public class Configuration {
 
     /**
      * 获取Resize计算器
+     *
+     * @return ResizeCalculator
      */
     public ResizeCalculator getResizeCalculator() {
         return resizeCalculator;
@@ -370,6 +425,8 @@ public class Configuration {
 
     /**
      * 设置Resize计算器
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
     public Configuration setResizeCalculator(ResizeCalculator resizeCalculator) {
@@ -391,6 +448,8 @@ public class Configuration {
 
     /**
      * 设置全局暂停加载新图片，开启后将只从内存缓存中找寻图片，只影响display请求
+     *
+     * @return Configuration. Convenient chain calls
      */
     public Configuration setGlobalPauseLoad(boolean globalPauseLoad) {
         if (this.globalPauseLoad != globalPauseLoad) {
@@ -411,6 +470,8 @@ public class Configuration {
 
     /**
      * 设置全局暂停下载图片，开启后将不再从网络下载图片，只影响display请求和load请求
+     *
+     * @return Configuration. Convenient chain calls
      */
     public Configuration setGlobalPauseDownload(boolean globalPauseDownload) {
         if (this.globalPauseDownload != globalPauseDownload) {
@@ -427,22 +488,24 @@ public class Configuration {
      */
     @SuppressWarnings("unused")
     public boolean isMobileNetworkGlobalPauseDownload() {
-        return mobileNetworkGlobalPauseDownload != null && mobileNetworkGlobalPauseDownload.isOpened();
+        return mobileNetworkGlobalPauseDownloadController != null && mobileNetworkGlobalPauseDownloadController.isOpened();
     }
 
     /**
      * 设置开启移动网络下暂停下载的功能，只影响display请求和load请求
+     *
+     * @return Configuration. Convenient chain calls
      */
     public Configuration setMobileNetworkGlobalPauseDownload(boolean mobileNetworkGlobalPauseDownload) {
         if (isMobileNetworkGlobalPauseDownload() != mobileNetworkGlobalPauseDownload) {
             if (mobileNetworkGlobalPauseDownload) {
-                if (this.mobileNetworkGlobalPauseDownload == null) {
-                    this.mobileNetworkGlobalPauseDownload = new MobileNetworkGlobalPauseDownload(context);
+                if (this.mobileNetworkGlobalPauseDownloadController == null) {
+                    this.mobileNetworkGlobalPauseDownloadController = new MobileNetworkGlobalPauseDownloadController(context);
                 }
-                this.mobileNetworkGlobalPauseDownload.setOpened(true);
+                this.mobileNetworkGlobalPauseDownloadController.setOpened(true);
             } else {
-                if (this.mobileNetworkGlobalPauseDownload != null) {
-                    this.mobileNetworkGlobalPauseDownload.setOpened(false);
+                if (this.mobileNetworkGlobalPauseDownloadController != null) {
+                    this.mobileNetworkGlobalPauseDownloadController.setOpened(false);
                 }
             }
 
@@ -462,6 +525,8 @@ public class Configuration {
 
     /**
      * 设置全局使用低质量的图片
+     *
+     * @return Configuration. Convenient chain calls
      */
     public Configuration setGlobalLowQualityImage(boolean globalLowQualityImage) {
         if (this.globalLowQualityImage != globalLowQualityImage) {
@@ -486,6 +551,7 @@ public class Configuration {
      * 设置全局解码时优先考虑速度还是质量 (默认优先考虑速度)
      *
      * @param globalInPreferQualityOverSpeed true：质量；false：速度
+     * @return Configuration. Convenient chain calls
      */
     public Configuration setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
         if (this.globalInPreferQualityOverSpeed != globalInPreferQualityOverSpeed) {
@@ -499,6 +565,8 @@ public class Configuration {
 
     /**
      * 获取图片预处理器
+     *
+     * @return ImagePreprocessor
      */
     public ImagePreprocessor getImagePreprocessor() {
         return imagePreprocessor;
@@ -506,6 +574,8 @@ public class Configuration {
 
     /**
      * 设置图片预处理器
+     *
+     * @return Configuration. Convenient chain calls
      */
     public Configuration setImagePreprocessor(ImagePreprocessor imagePreprocessor) {
         if (imagePreprocessor != null) {
@@ -519,6 +589,8 @@ public class Configuration {
 
     /**
      * 获取监控器
+     *
+     * @return SketchMonitor
      */
     @SuppressWarnings("unused")
     public SketchMonitor getMonitor() {
@@ -527,19 +599,24 @@ public class Configuration {
 
     /**
      * 设置监控器
+     *
+     * @return Configuration. Convenient chain calls
      */
     @SuppressWarnings("unused")
-    public void setMonitor(SketchMonitor monitor) {
+    public Configuration setMonitor(SketchMonitor monitor) {
         if (monitor != null) {
             this.monitor = monitor;
             if (Sketch.isDebugMode()) {
                 Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setMonitor", ". ", monitor.getIdentifier()));
             }
         }
+        return this;
     }
 
     /**
      * 获取顺风车管理器
+     *
+     * @return FreeRideManager
      */
     public FreeRideManager getFreeRideManager() {
         return freeRideManager;

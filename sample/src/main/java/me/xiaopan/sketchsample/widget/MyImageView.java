@@ -33,8 +33,8 @@ public class MyImageView extends SketchImageView {
     }
 
     @Override
-    public void onDisplay(UriScheme uriScheme) {
-        super.onDisplay(uriScheme);
+    public void onReadyDisplay(UriScheme uriScheme) {
+        super.onReadyDisplay(uriScheme);
 
         onGlobalAttrChanged(Settings.PREFERENCE_SHOW_IMAGE_FROM_FLAG);
         onGlobalAttrChanged(Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS);
