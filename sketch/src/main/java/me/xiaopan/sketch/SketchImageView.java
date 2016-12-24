@@ -16,17 +16,17 @@
 
 package me.xiaopan.sketch;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+
+import java.lang.ref.WeakReference;
 
 import me.xiaopan.sketch.feature.ClickRetryFunction;
 import me.xiaopan.sketch.feature.ImageShapeFunction;
@@ -51,6 +51,9 @@ import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.UriScheme;
 
+/**
+ * 用来替代ImageView
+ */
 public class SketchImageView extends ImageView implements ImageViewInterface {
     private DisplayListener wrapperDisplayListener;
     private DownloadProgressListener wrapperDownloadProgressListener;
@@ -91,8 +94,8 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         imageShapeFunction = new ImageShapeFunction(this);
         clickRetryFunction = new ClickRetryFunction(this, requestFunction, this);
 
-        displayListener = new MyDisplayListener();
-        downloadProgressListener = new MyProgressListener();
+        displayListener = new MyDisplayListener(this);
+        downloadProgressListener = new MyProgressListener(this);
 
         super.setOnClickListener(clickRetryFunction);
 
@@ -649,6 +652,14 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
+     * 设置GIF标识图片
+     */
+    public void setShowGifFlag(int gifFlagDrawableResId) {
+        //noinspection deprecation
+        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
+    }
+
+    /**
      * 设置是否显示GIF标识
      */
     @SuppressWarnings("unused")
@@ -660,14 +671,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             showGifFlagFunction = null;
         }
         invalidate();
-    }
-
-    /**
-     * 设置GIF标识图片
-     */
-    public void setShowGifFlag(int gifFlagDrawableResId) {
-        //noinspection deprecation
-        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
     }
 
     /**
@@ -698,9 +701,10 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     /**
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
-    public void setImageShapeCornerRadius(float radius) {
+    @SuppressWarnings("unused")
+    public void setImageShapeCornerRadius(float[] radiis) {
         if (imageShapeFunction != null) {
-            imageShapeFunction.setCornerRadius(radius);
+            imageShapeFunction.setCornerRadius(radiis);
         }
     }
 
@@ -708,9 +712,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
     @SuppressWarnings("unused")
-    public void setImageShapeCornerRadius(float[] radiis) {
+    public void setImageShapeCornerRadius(float radius) {
         if (imageShapeFunction != null) {
-            imageShapeFunction.setCornerRadius(radiis);
+            imageShapeFunction.setCornerRadius(radius);
         }
     }
 
@@ -784,7 +788,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     /**
      * 设置是否支持大图片
      */
-    @TargetApi(Build.VERSION_CODES.GINGERBREAD_MR1)
     public void setSupportLargeImage(boolean supportLargeImage) {
         if (supportLargeImage == isSupportLargeImage()) {
             return;
@@ -923,227 +926,263 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
         }
     }
 
-    private class MyDisplayListener implements DisplayListener {
+    private static class MyDisplayListener implements DisplayListener {
+        private WeakReference<SketchImageView> viewWeakReference;
+
+        public MyDisplayListener(SketchImageView view) {
+            this.viewWeakReference = new WeakReference<SketchImageView>(view);
+        }
+
         @Override
         public void onStarted() {
+            SketchImageView imageView = viewWeakReference.get();
+            if (imageView == null) {
+                return;
+            }
+
             boolean needInvokeInvalidate = false;
-            if (showImageFromFunction != null) {
+            if (imageView.showImageFromFunction != null) {
                 //noinspection ConstantConditions
-                needInvokeInvalidate |= showImageFromFunction.onDisplayStarted();
+                needInvokeInvalidate |= imageView.showImageFromFunction.onDisplayStarted();
             }
-            if (showProgressFunction != null) {
-                needInvokeInvalidate |= showProgressFunction.onDisplayStarted();
+            if (imageView.showProgressFunction != null) {
+                needInvokeInvalidate |= imageView.showProgressFunction.onDisplayStarted();
             }
-            if (showGifFlagFunction != null) {
-                needInvokeInvalidate |= showGifFlagFunction.onDisplayStarted();
+            if (imageView.showGifFlagFunction != null) {
+                needInvokeInvalidate |= imageView.showGifFlagFunction.onDisplayStarted();
             }
-            if (showPressedFunction != null) {
-                needInvokeInvalidate |= showPressedFunction.onDisplayStarted();
+            if (imageView.showPressedFunction != null) {
+                needInvokeInvalidate |= imageView.showPressedFunction.onDisplayStarted();
             }
-            if (imageShapeFunction != null) {
-                needInvokeInvalidate |= imageShapeFunction.onDisplayStarted();
+            if (imageView.imageShapeFunction != null) {
+                needInvokeInvalidate |= imageView.imageShapeFunction.onDisplayStarted();
             }
-            if (clickRetryFunction != null) {
-                needInvokeInvalidate |= clickRetryFunction.onDisplayStarted();
+            if (imageView.clickRetryFunction != null) {
+                needInvokeInvalidate |= imageView.clickRetryFunction.onDisplayStarted();
             }
-            if (requestFunction != null) {
-                needInvokeInvalidate |= requestFunction.onDisplayStarted();
+            if (imageView.requestFunction != null) {
+                needInvokeInvalidate |= imageView.requestFunction.onDisplayStarted();
             }
-            if (recyclerCompatFunction != null) {
-                needInvokeInvalidate |= recyclerCompatFunction.onDisplayStarted();
+            if (imageView.recyclerCompatFunction != null) {
+                needInvokeInvalidate |= imageView.recyclerCompatFunction.onDisplayStarted();
             }
-            if (zoomFunction != null) {
-                needInvokeInvalidate |= zoomFunction.onDisplayStarted();
+            if (imageView.zoomFunction != null) {
+                needInvokeInvalidate |= imageView.zoomFunction.onDisplayStarted();
             }
-            if (largeImageFunction != null) {
-                needInvokeInvalidate |= largeImageFunction.onDisplayStarted();
+            if (imageView.largeImageFunction != null) {
+                needInvokeInvalidate |= imageView.largeImageFunction.onDisplayStarted();
             }
 
             if (needInvokeInvalidate) {
-                invalidate();
+                imageView.invalidate();
             }
 
-            if (wrapperDisplayListener != null) {
-                wrapperDisplayListener.onStarted();
+            if (imageView.wrapperDisplayListener != null) {
+                imageView.wrapperDisplayListener.onStarted();
             }
         }
 
         @Override
         public void onCompleted(ImageFrom imageFrom, String mimeType) {
+            SketchImageView imageView = viewWeakReference.get();
+            if (imageView == null) {
+                return;
+            }
+
             boolean needInvokeInvalidate = false;
-            if (showImageFromFunction != null) {
+            if (imageView.showImageFromFunction != null) {
                 //noinspection ConstantConditions
-                needInvokeInvalidate |= showImageFromFunction.onDisplayCompleted(imageFrom, mimeType);
+                needInvokeInvalidate |= imageView.showImageFromFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (showProgressFunction != null) {
-                needInvokeInvalidate |= showProgressFunction.onDisplayCompleted(imageFrom, mimeType);
+            if (imageView.showProgressFunction != null) {
+                needInvokeInvalidate |= imageView.showProgressFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (showGifFlagFunction != null) {
-                needInvokeInvalidate |= showGifFlagFunction.onDisplayCompleted(imageFrom, mimeType);
+            if (imageView.showGifFlagFunction != null) {
+                needInvokeInvalidate |= imageView.showGifFlagFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (showPressedFunction != null) {
-                needInvokeInvalidate |= showPressedFunction.onDisplayCompleted(imageFrom, mimeType);
+            if (imageView.showPressedFunction != null) {
+                needInvokeInvalidate |= imageView.showPressedFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (imageShapeFunction != null) {
-                needInvokeInvalidate |= imageShapeFunction.onDisplayCompleted(imageFrom, mimeType);
+            if (imageView.imageShapeFunction != null) {
+                needInvokeInvalidate |= imageView.imageShapeFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (clickRetryFunction != null) {
-                needInvokeInvalidate |= clickRetryFunction.onDisplayCompleted(imageFrom, mimeType);
+            if (imageView.clickRetryFunction != null) {
+                needInvokeInvalidate |= imageView.clickRetryFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (requestFunction != null) {
-                needInvokeInvalidate |= requestFunction.onDisplayCompleted(imageFrom, mimeType);
+            if (imageView.requestFunction != null) {
+                needInvokeInvalidate |= imageView.requestFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (recyclerCompatFunction != null) {
-                needInvokeInvalidate |= recyclerCompatFunction.onDisplayCompleted(imageFrom, mimeType);
+            if (imageView.recyclerCompatFunction != null) {
+                needInvokeInvalidate |= imageView.recyclerCompatFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (zoomFunction != null) {
-                needInvokeInvalidate |= zoomFunction.onDisplayCompleted(imageFrom, mimeType);
+            if (imageView.zoomFunction != null) {
+                needInvokeInvalidate |= imageView.zoomFunction.onDisplayCompleted(imageFrom, mimeType);
             }
-            if (largeImageFunction != null) {
-                needInvokeInvalidate |= largeImageFunction.onDisplayCompleted(imageFrom, mimeType);
+            if (imageView.largeImageFunction != null) {
+                needInvokeInvalidate |= imageView.largeImageFunction.onDisplayCompleted(imageFrom, mimeType);
             }
 
             if (needInvokeInvalidate) {
-                invalidate();
+                imageView.invalidate();
             }
 
-            if (wrapperDisplayListener != null) {
-                wrapperDisplayListener.onCompleted(imageFrom, mimeType);
+            if (imageView.wrapperDisplayListener != null) {
+                imageView.wrapperDisplayListener.onCompleted(imageFrom, mimeType);
             }
         }
 
         @Override
         public void onError(ErrorCause errorCause) {
+            SketchImageView imageView = viewWeakReference.get();
+            if (imageView == null) {
+                return;
+            }
+
             boolean needInvokeInvalidate = false;
-            if (showImageFromFunction != null) {
+            if (imageView.showImageFromFunction != null) {
                 //noinspection ConstantConditions
-                needInvokeInvalidate |= showImageFromFunction.onDisplayError(errorCause);
+                needInvokeInvalidate |= imageView.showImageFromFunction.onDisplayError(errorCause);
             }
-            if (showProgressFunction != null) {
-                needInvokeInvalidate |= showProgressFunction.onDisplayError(errorCause);
+            if (imageView.showProgressFunction != null) {
+                needInvokeInvalidate |= imageView.showProgressFunction.onDisplayError(errorCause);
             }
-            if (showGifFlagFunction != null) {
-                needInvokeInvalidate |= showGifFlagFunction.onDisplayError(errorCause);
+            if (imageView.showGifFlagFunction != null) {
+                needInvokeInvalidate |= imageView.showGifFlagFunction.onDisplayError(errorCause);
             }
-            if (showPressedFunction != null) {
-                needInvokeInvalidate |= showPressedFunction.onDisplayError(errorCause);
+            if (imageView.showPressedFunction != null) {
+                needInvokeInvalidate |= imageView.showPressedFunction.onDisplayError(errorCause);
             }
-            if (imageShapeFunction != null) {
-                needInvokeInvalidate |= imageShapeFunction.onDisplayError(errorCause);
+            if (imageView.imageShapeFunction != null) {
+                needInvokeInvalidate |= imageView.imageShapeFunction.onDisplayError(errorCause);
             }
-            if (clickRetryFunction != null) {
-                needInvokeInvalidate |= clickRetryFunction.onDisplayError(errorCause);
+            if (imageView.clickRetryFunction != null) {
+                needInvokeInvalidate |= imageView.clickRetryFunction.onDisplayError(errorCause);
             }
-            if (requestFunction != null) {
-                needInvokeInvalidate |= requestFunction.onDisplayError(errorCause);
+            if (imageView.requestFunction != null) {
+                needInvokeInvalidate |= imageView.requestFunction.onDisplayError(errorCause);
             }
-            if (recyclerCompatFunction != null) {
-                needInvokeInvalidate |= recyclerCompatFunction.onDisplayError(errorCause);
+            if (imageView.recyclerCompatFunction != null) {
+                needInvokeInvalidate |= imageView.recyclerCompatFunction.onDisplayError(errorCause);
             }
-            if (zoomFunction != null) {
-                needInvokeInvalidate |= zoomFunction.onDisplayError(errorCause);
+            if (imageView.zoomFunction != null) {
+                needInvokeInvalidate |= imageView.zoomFunction.onDisplayError(errorCause);
             }
-            if (largeImageFunction != null) {
-                needInvokeInvalidate |= largeImageFunction.onDisplayError(errorCause);
+            if (imageView.largeImageFunction != null) {
+                needInvokeInvalidate |= imageView.largeImageFunction.onDisplayError(errorCause);
             }
 
             if (needInvokeInvalidate) {
-                invalidate();
+                imageView.invalidate();
             }
 
-            if (wrapperDisplayListener != null) {
-                wrapperDisplayListener.onError(errorCause);
+            if (imageView.wrapperDisplayListener != null) {
+                imageView.wrapperDisplayListener.onError(errorCause);
             }
         }
 
         @Override
         public void onCanceled(CancelCause cancelCause) {
+            SketchImageView imageView = viewWeakReference.get();
+            if (imageView == null) {
+                return;
+            }
+
             boolean needInvokeInvalidate = false;
-            if (showImageFromFunction != null) {
+            if (imageView.showImageFromFunction != null) {
                 //noinspection ConstantConditions
-                needInvokeInvalidate |= showImageFromFunction.onDisplayCanceled(cancelCause);
+                needInvokeInvalidate |= imageView.showImageFromFunction.onDisplayCanceled(cancelCause);
             }
-            if (showProgressFunction != null) {
-                needInvokeInvalidate |= showProgressFunction.onDisplayCanceled(cancelCause);
+            if (imageView.showProgressFunction != null) {
+                needInvokeInvalidate |= imageView.showProgressFunction.onDisplayCanceled(cancelCause);
             }
-            if (showGifFlagFunction != null) {
-                needInvokeInvalidate |= showGifFlagFunction.onDisplayCanceled(cancelCause);
+            if (imageView.showGifFlagFunction != null) {
+                needInvokeInvalidate |= imageView.showGifFlagFunction.onDisplayCanceled(cancelCause);
             }
-            if (showPressedFunction != null) {
-                needInvokeInvalidate |= showPressedFunction.onDisplayCanceled(cancelCause);
+            if (imageView.showPressedFunction != null) {
+                needInvokeInvalidate |= imageView.showPressedFunction.onDisplayCanceled(cancelCause);
             }
-            if (imageShapeFunction != null) {
-                needInvokeInvalidate |= imageShapeFunction.onDisplayCanceled(cancelCause);
+            if (imageView.imageShapeFunction != null) {
+                needInvokeInvalidate |= imageView.imageShapeFunction.onDisplayCanceled(cancelCause);
             }
-            if (clickRetryFunction != null) {
-                needInvokeInvalidate |= clickRetryFunction.onDisplayCanceled(cancelCause);
+            if (imageView.clickRetryFunction != null) {
+                needInvokeInvalidate |= imageView.clickRetryFunction.onDisplayCanceled(cancelCause);
             }
-            if (requestFunction != null) {
-                needInvokeInvalidate |= requestFunction.onDisplayCanceled(cancelCause);
+            if (imageView.requestFunction != null) {
+                needInvokeInvalidate |= imageView.requestFunction.onDisplayCanceled(cancelCause);
             }
-            if (recyclerCompatFunction != null) {
-                needInvokeInvalidate |= recyclerCompatFunction.onDisplayCanceled(cancelCause);
+            if (imageView.recyclerCompatFunction != null) {
+                needInvokeInvalidate |= imageView.recyclerCompatFunction.onDisplayCanceled(cancelCause);
             }
-            if (zoomFunction != null) {
-                needInvokeInvalidate |= zoomFunction.onDisplayCanceled(cancelCause);
+            if (imageView.zoomFunction != null) {
+                needInvokeInvalidate |= imageView.zoomFunction.onDisplayCanceled(cancelCause);
             }
-            if (largeImageFunction != null) {
-                needInvokeInvalidate |= largeImageFunction.onDisplayCanceled(cancelCause);
+            if (imageView.largeImageFunction != null) {
+                needInvokeInvalidate |= imageView.largeImageFunction.onDisplayCanceled(cancelCause);
             }
 
             if (needInvokeInvalidate) {
-                invalidate();
+                imageView.invalidate();
             }
 
-            if (wrapperDisplayListener != null) {
-                wrapperDisplayListener.onCanceled(cancelCause);
+            if (imageView.wrapperDisplayListener != null) {
+                imageView.wrapperDisplayListener.onCanceled(cancelCause);
             }
         }
     }
 
-    private class MyProgressListener implements DownloadProgressListener {
+    private static class MyProgressListener implements DownloadProgressListener {
+        private WeakReference<SketchImageView> viewWeakReference;
+
+        public MyProgressListener(SketchImageView view) {
+            this.viewWeakReference = new WeakReference<SketchImageView>(view);
+        }
 
         @Override
         public void onUpdateDownloadProgress(int totalLength, int completedLength) {
+            SketchImageView imageView = viewWeakReference.get();
+            if (imageView == null) {
+                return;
+            }
+
             boolean needInvokeInvalidate = false;
-            if (showImageFromFunction != null) {
+            if (imageView.showImageFromFunction != null) {
                 //noinspection ConstantConditions
-                needInvokeInvalidate |= showImageFromFunction.onUpdateDownloadProgress(totalLength, completedLength);
+                needInvokeInvalidate |= imageView.showImageFromFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if (showProgressFunction != null) {
-                needInvokeInvalidate |= showProgressFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            if (imageView.showProgressFunction != null) {
+                needInvokeInvalidate |= imageView.showProgressFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if (showPressedFunction != null) {
-                needInvokeInvalidate |= showPressedFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            if (imageView.showPressedFunction != null) {
+                needInvokeInvalidate |= imageView.showPressedFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if (showGifFlagFunction != null) {
-                needInvokeInvalidate |= showGifFlagFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            if (imageView.showGifFlagFunction != null) {
+                needInvokeInvalidate |= imageView.showGifFlagFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if (imageShapeFunction != null) {
-                needInvokeInvalidate |= imageShapeFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            if (imageView.imageShapeFunction != null) {
+                needInvokeInvalidate |= imageView.imageShapeFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if (clickRetryFunction != null) {
-                needInvokeInvalidate |= clickRetryFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            if (imageView.clickRetryFunction != null) {
+                needInvokeInvalidate |= imageView.clickRetryFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if (requestFunction != null) {
-                needInvokeInvalidate |= requestFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            if (imageView.requestFunction != null) {
+                needInvokeInvalidate |= imageView.requestFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if (recyclerCompatFunction != null) {
-                needInvokeInvalidate |= recyclerCompatFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            if (imageView.recyclerCompatFunction != null) {
+                needInvokeInvalidate |= imageView.recyclerCompatFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if (zoomFunction != null) {
-                needInvokeInvalidate |= zoomFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            if (imageView.zoomFunction != null) {
+                needInvokeInvalidate |= imageView.zoomFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
-            if (largeImageFunction != null) {
-                needInvokeInvalidate |= largeImageFunction.onUpdateDownloadProgress(totalLength, completedLength);
+            if (imageView.largeImageFunction != null) {
+                needInvokeInvalidate |= imageView.largeImageFunction.onUpdateDownloadProgress(totalLength, completedLength);
             }
 
             if (needInvokeInvalidate) {
-                invalidate();
+                imageView.invalidate();
             }
 
-            if (wrapperDownloadProgressListener != null) {
-                wrapperDownloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
+            if (imageView.wrapperDownloadProgressListener != null) {
+                imageView.wrapperDownloadProgressListener.onUpdateDownloadProgress(totalLength, completedLength);
             }
         }
     }
