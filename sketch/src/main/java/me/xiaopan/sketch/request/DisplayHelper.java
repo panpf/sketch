@@ -492,21 +492,12 @@ public class DisplayHelper {
     protected void preProcess() {
         Configuration configuration = sketch.getConfiguration();
         ImageSizeCalculator imageSizeCalculator = sketch.getConfiguration().getImageSizeCalculator();
+        FixedSize fixedSize = viewInfo.getFixedSize();
 
-        // 用ImageVie的固定宽高作为resize
-        if (displayOptions.isResizeByFixedSize()) {
-            FixedSize fixedSize = viewInfo.getFixedSize();
-            if (fixedSize != null) {
-                displayOptions.setResize(fixedSize.getWidth(), fixedSize.getHeight());
-            } else {
-                throw new IllegalStateException("ImageView's width and height are not fixed," +
-                        " can not be applied with the resizeByFixedSize function");
-            }
-        }
 
         // 用ImageVie的固定宽高作为shape size
-        if (displayOptions.isShapeSizeByFixedSize()) {
-            FixedSize fixedSize = viewInfo.getFixedSize();
+        ShapeSize shapeSize = displayOptions.getShapeSize();
+        if (shapeSize == null && displayOptions.isShapeSizeByFixedSize()) {
             if (fixedSize != null) {
                 displayOptions.setShapeSize(fixedSize.getWidth(), fixedSize.getHeight());
             } else {
@@ -516,20 +507,37 @@ public class DisplayHelper {
         }
 
         // 如果没有设置ScaleType的话就从ImageView身上取
-        Resize resize = displayOptions.getResize();
-        if (resize != null && resize.getScaleType() == null && imageViewInterface != null) {
-            resize.setScaleType(viewInfo.getScaleType());
+        if (shapeSize != null && shapeSize.getScaleType() == null && imageViewInterface != null) {
+            shapeSize.setScaleType(viewInfo.getScaleType());
         }
 
-        // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
-        if (resize != null && displayOptions.getImageProcessor() == null) {
-            displayOptions.setImageProcessor(configuration.getResizeImageProcessor());
+        // 检查Resize的宽高都必须大于0
+        if (shapeSize != null && (shapeSize.getWidth() == 0 || shapeSize.getHeight() == 0)) {
+            throw new IllegalArgumentException("ShapeSize width and height must be > 0");
+        }
+
+
+        // 用ImageVie的固定宽高作为resize
+        Resize resize = displayOptions.getResize();
+        if (resize == null && displayOptions.isResizeByFixedSize()) {
+            if (fixedSize != null) {
+                displayOptions.setResize(fixedSize.getWidth(), fixedSize.getHeight());
+            } else {
+                throw new IllegalStateException("ImageView's width and height are not fixed," +
+                        " can not be applied with the resizeByFixedSize function");
+            }
+        }
+
+        // 如果没有设置ScaleType的话就从ImageView身上取
+        if (resize != null && resize.getScaleType() == null && imageViewInterface != null) {
+            resize.setScaleType(viewInfo.getScaleType());
         }
 
         // 检查Resize的宽高都必须大于0
         if (resize != null && (resize.getWidth() == 0 || resize.getHeight() == 0)) {
             throw new IllegalArgumentException("Resize width and height must be > 0");
         }
+
 
         // 没有设置maxSize的话，如果ImageView的宽高是的固定的就根据ImageView的宽高来作为maxSize，否则就用默认的maxSize
         if (displayOptions.getMaxSize() == null) {
@@ -545,6 +553,13 @@ public class DisplayHelper {
         if (maxSize != null && maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
             throw new IllegalArgumentException("MaxSize width or height must be > 0");
         }
+
+
+        // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
+        if (displayOptions.getImageProcessor() == null && resize != null) {
+            displayOptions.setImageProcessor(configuration.getResizeImageProcessor());
+        }
+
 
         // 如果设置了全局使用低质量图片的话就强制使用低质量的图片
         if (configuration.isGlobalLowQualityImage()) {
@@ -577,7 +592,6 @@ public class DisplayHelper {
         // 使用过渡图片显示器的时候，如果使用了loadingImage的话就必须配合ShapeSize才行，如果没有ShapeSize就取ImageView的宽高作为ShapeSize
         if (displayOptions.getImageDisplayer() instanceof TransitionImageDisplayer
                 && displayOptions.getLoadingImage() != null && displayOptions.getShapeSize() == null) {
-            FixedSize fixedSize = viewInfo.getFixedSize();
             if (fixedSize != null) {
                 displayOptions.setShapeSize(fixedSize.getWidth(), fixedSize.getHeight());
             } else {
@@ -684,7 +698,7 @@ public class DisplayHelper {
 
                     Drawable finalDrawable;
                     if (displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null) {
-                        finalDrawable = new ShapeBitmapDrawable(refBitmapDrawable,
+                        finalDrawable = new ShapeBitmapDrawable(sketch.getConfiguration().getContext(), refBitmapDrawable,
                                 displayOptions.getShapeSize(), displayOptions.getImageShaper());
                     } else {
                         finalDrawable = refBitmapDrawable;

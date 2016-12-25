@@ -61,9 +61,9 @@ public class OldStateImage implements StateImage {
             ImageShaper imageShaper = displayOptions.getImageShaper();
             if (shapeSize != null || imageShaper != null) {
                 if (drawable instanceof ShapeBitmapDrawable) {
-                    drawable = new ShapeBitmapDrawable(((ShapeBitmapDrawable) drawable).getBitmapDrawable(), shapeSize, imageShaper);
+                    drawable = new ShapeBitmapDrawable(context, ((ShapeBitmapDrawable) drawable).getBitmapDrawable(), shapeSize, imageShaper);
                 } else if (drawable instanceof BitmapDrawable) {
-                    drawable = new ShapeBitmapDrawable((BitmapDrawable) drawable, shapeSize, imageShaper);
+                    drawable = new ShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
                 }
             }
         }

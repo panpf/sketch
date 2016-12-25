@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.request;
 
 import android.text.TextUtils;
+import android.widget.ImageView;
 
 import me.xiaopan.sketch.Identifier;
 
@@ -32,10 +33,17 @@ import me.xiaopan.sketch.Identifier;
 public class ShapeSize implements Identifier {
     private int width;
     private int height;
+    private ImageView.ScaleType scaleType;
 
     public ShapeSize(int width, int height) {
         this.width = width;
         this.height = height;
+    }
+
+    public ShapeSize(int width, int height, ImageView.ScaleType scaleType) {
+        this.width = width;
+        this.height = height;
+        this.scaleType = scaleType;
     }
 
     public int getWidth() {
@@ -44,6 +52,14 @@ public class ShapeSize implements Identifier {
 
     public int getHeight() {
         return height;
+    }
+
+    public ImageView.ScaleType getScaleType() {
+        return scaleType;
+    }
+
+    public void setScaleType(ImageView.ScaleType scaleType) {
+        this.scaleType = scaleType;
     }
 
     @Override

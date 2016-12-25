@@ -16,6 +16,7 @@
 
 package me.xiaopan.sketch.drawable;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
@@ -27,11 +28,13 @@ import android.graphics.Rect;
 import android.graphics.Shader;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.widget.ImageView;
 
+import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketch.shaper.ImageShaper;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 可以改变BitmapDrawable的形状和尺寸
@@ -56,7 +59,9 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
     private RefDrawable refDrawable;
     private SketchDrawable sketchDrawable;
 
-    public ShapeBitmapDrawable(BitmapDrawable bitmapDrawable, ShapeSize shapeSize, ImageShaper imageShaper) {
+    private ResizeCalculator resizeCalculator;
+
+    public ShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ShapeSize shapeSize, ImageShaper imageShaper) {
         Bitmap bitmap = bitmapDrawable.getBitmap();
         if (bitmap == null || bitmap.isRecycled()) {
             throw new IllegalArgumentException(bitmap == null ? "bitmap is null" : "bitmap recycled");
@@ -69,6 +74,7 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
         this.bitmapDrawable = bitmapDrawable;
         this.paint = new Paint(DEFAULT_PAINT_FLAGS);
         this.srcRect = new Rect();
+        this.resizeCalculator = Sketch.with(context).getConfiguration().getResizeCalculator();
 
         setShapeSize(shapeSize);
         setImageShaper(imageShaper);
@@ -87,13 +93,13 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
     }
 
     @SuppressWarnings("unused")
-    public ShapeBitmapDrawable(BitmapDrawable bitmapDrawable, ShapeSize shapeSize) {
-        this(bitmapDrawable, shapeSize, null);
+    public ShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ShapeSize shapeSize) {
+        this(context, bitmapDrawable, shapeSize, null);
     }
 
     @SuppressWarnings("unused")
-    public ShapeBitmapDrawable(BitmapDrawable bitmapDrawable, ImageShaper imageShaper) {
-        this(bitmapDrawable, null, imageShaper);
+    public ShapeBitmapDrawable(Context context, BitmapDrawable bitmapDrawable, ImageShaper imageShaper) {
+        this(context, bitmapDrawable, null, imageShaper);
     }
 
     @Override
@@ -178,7 +184,9 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
         } else if ((float) bitmapWidth / (float) bitmapHeight == (float) boundsWidth / (float) boundsHeight) {
             srcRect.set(0, 0, bitmapWidth, bitmapHeight);
         } else {
-            SketchUtils.mapping(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, srcRect);
+            ImageView.ScaleType scaleType = shapeSize != null ? shapeSize.getScaleType() : ImageView.ScaleType.FIT_CENTER;
+            ResizeCalculator.Result result = resizeCalculator.calculator(bitmapWidth, bitmapHeight, boundsWidth, boundsHeight, scaleType, true);
+            srcRect.set(result.srcRect);
         }
 
         if (imageShaper != null && bitmapShader != null) {

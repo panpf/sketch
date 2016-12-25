@@ -243,16 +243,12 @@ public class LoadHelper {
     protected void preProcess() {
         Configuration configuration = sketch.getConfiguration();
 
-        // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
-        Resize resize = loadOptions.getResize();
-        if (resize != null && loadOptions.getImageProcessor() == null) {
-            loadOptions.setImageProcessor(configuration.getResizeImageProcessor());
-        }
-
         // 检查Resize的宽高都必须大于0
+        Resize resize = loadOptions.getResize();
         if (resize != null && (resize.getWidth() == 0 || resize.getHeight() == 0)) {
             throw new IllegalArgumentException("Resize width and height must be > 0");
         }
+
 
         // 没有设置maxSize的话，就用默认的maxSize
         if (loadOptions.getMaxSize() == null) {
@@ -264,6 +260,13 @@ public class LoadHelper {
         if (maxSize != null && maxSize.getWidth() <= 0 && maxSize.getHeight() <= 0) {
             throw new IllegalArgumentException("MaxSize width or height must be > 0");
         }
+
+
+        // 没有ImageProcessor但有resize的话就需要设置一个默认的图片裁剪处理器
+        if (loadOptions.getImageProcessor() == null && resize != null) {
+            loadOptions.setImageProcessor(configuration.getResizeImageProcessor());
+        }
+
 
         // 如果设置了全局使用低质量图片的话就强制使用低质量的图片
         if (configuration.isGlobalLowQualityImage()) {

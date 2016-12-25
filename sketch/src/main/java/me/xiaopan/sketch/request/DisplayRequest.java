@@ -293,7 +293,7 @@ public class DisplayRequest extends LoadRequest {
         // 显示图片
         if ((displayOptions.getShapeSize() != null || displayOptions.getImageShaper() != null)
                 && drawable instanceof BitmapDrawable) {
-            drawable = new ShapeBitmapDrawable((BitmapDrawable) drawable,
+            drawable = new ShapeBitmapDrawable(getSketch().getConfiguration().getContext(), (BitmapDrawable) drawable,
                     displayOptions.getShapeSize(), displayOptions.getImageShaper());
         }
 

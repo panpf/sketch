@@ -54,7 +54,7 @@ public class MemoryCacheStateImage implements StateImage {
                 ShapeSize shapeSize = displayOptions.getShapeSize();
                 ImageShaper imageShaper = displayOptions.getImageShaper();
                 if (shapeSize != null || imageShaper != null) {
-                    return new ShapeBitmapDrawable(bitmapDrawable, shapeSize, imageShaper);
+                    return new ShapeBitmapDrawable(context, bitmapDrawable, shapeSize, imageShaper);
                 } else {
                     return bitmapDrawable;
                 }

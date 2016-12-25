@@ -62,7 +62,7 @@ public class MakerStateImage implements StateImage {
         ImageShaper imageShaper = displayOptions.getImageShaper();
         if ((shapeSize != null || imageShaper != null) && drawable != null
                 && drawable instanceof BitmapDrawable) {
-            drawable = new ShapeBitmapDrawable((BitmapDrawable) drawable, shapeSize, imageShaper);
+            drawable = new ShapeBitmapDrawable(context, (BitmapDrawable) drawable, shapeSize, imageShaper);
         }
 
         return drawable;
