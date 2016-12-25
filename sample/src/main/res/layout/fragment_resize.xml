@@ -64,4 +64,72 @@
             android:layout_height="wrap_content"
             android:gravity="right" />
     </LinearLayout>
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:clipChildren="false"
+            android:padding="4dp">
+
+            <Button
+                android:id="@+id/button_resizeFragment_fixStart"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="FIX_START" />
+
+            <Button
+                android:id="@+id/button_resizeFragment_fixCenter"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="FIX_CENTER" />
+
+            <Button
+                android:id="@+id/button_resizeFragment_fixEnd"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="FIX_END" />
+
+            <Button
+                android:id="@+id/button_resizeFragment_fixXY"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="FIX_XY" />
+
+            <Button
+                android:id="@+id/button_resizeFragment_center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="CENTER" />
+
+            <Button
+                android:id="@+id/button_resizeFragment_centerCrop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="CENTER_CROP" />
+
+            <Button
+                android:id="@+id/button_resizeFragment_centerInside"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="CENTER_INSIDE" />
+
+            <Button
+                android:id="@+id/button_resizeFragment_matrix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="4dp"
+                android:text="MATRIX" />
+        </LinearLayout>
+    </HorizontalScrollView>
 </LinearLayout>

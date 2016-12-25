@@ -2,21 +2,19 @@ package me.xiaopan.sketchsample.fragment;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
-import me.xiaopan.sketch.request.Resize;
 import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 @InjectContentView(R.layout.fragment_resize)
-public class ResizeTestFragment extends MyFragment {
+public class ShapeSizeTestFragment extends MyFragment {
     @InjectView(R.id.image_resizeFragment)
     MyImageView imageView;
 
@@ -32,34 +30,8 @@ public class ResizeTestFragment extends MyFragment {
     @InjectView(R.id.text_resizeFragment_height)
     TextView heightProgressTextView;
 
-    @InjectView(R.id.button_resizeFragment_fixStart)
-    View fixStartButton;
-
-    @InjectView(R.id.button_resizeFragment_fixCenter)
-    View fixCenterButton;
-
-    @InjectView(R.id.button_resizeFragment_fixEnd)
-    View fixEndButton;
-
-    @InjectView(R.id.button_resizeFragment_fixXY)
-    View fixXYButton;
-
-    @InjectView(R.id.button_resizeFragment_center)
-    View centerButton;
-
-    @InjectView(R.id.button_resizeFragment_centerCrop)
-    View centerCropButton;
-
-    @InjectView(R.id.button_resizeFragment_centerInside)
-    View centerInsideButton;
-
-    @InjectView(R.id.button_resizeFragment_matrix)
-    View matrixButton;
-
     private int widthProgress = 50;
     private int heightProgress = 50;
-    private ImageView.ScaleType scaleType = ImageView.ScaleType.FIT_CENTER;
-    private View currentCheckedButton;
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
@@ -88,7 +60,7 @@ public class ResizeTestFragment extends MyFragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 widthProgress = widthSeekBar.getProgress();
-                apply(currentCheckedButton);
+                apply();
             }
         });
         widthSeekBar.setProgress(widthProgress);
@@ -113,53 +85,19 @@ public class ResizeTestFragment extends MyFragment {
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) {
                 heightProgress = heightSeekBar.getProgress();
-                apply(currentCheckedButton);
+                apply();
             }
         });
         heightSeekBar.setProgress(heightProgress);
 
-        fixStartButton.setTag(ImageView.ScaleType.FIT_START);
-        fixCenterButton.setTag(ImageView.ScaleType.FIT_CENTER);
-        fixEndButton.setTag(ImageView.ScaleType.FIT_END);
-        fixXYButton.setTag(ImageView.ScaleType.FIT_XY);
-        centerButton.setTag(ImageView.ScaleType.CENTER);
-        centerCropButton.setTag(ImageView.ScaleType.CENTER_CROP);
-        centerInsideButton.setTag(ImageView.ScaleType.CENTER_INSIDE);
-        matrixButton.setTag(ImageView.ScaleType.MATRIX);
-
-        View.OnClickListener buttonOnClickListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scaleType = (ImageView.ScaleType) v.getTag();
-                apply(v);
-            }
-        };
-        fixStartButton.setOnClickListener(buttonOnClickListener);
-        fixCenterButton.setOnClickListener(buttonOnClickListener);
-        fixEndButton.setOnClickListener(buttonOnClickListener);
-        fixXYButton.setOnClickListener(buttonOnClickListener);
-        centerButton.setOnClickListener(buttonOnClickListener);
-        centerCropButton.setOnClickListener(buttonOnClickListener);
-        centerInsideButton.setOnClickListener(buttonOnClickListener);
-        matrixButton.setOnClickListener(buttonOnClickListener);
-
-        if (currentCheckedButton == null) {
-            currentCheckedButton = fixCenterButton;
-        }
-        apply(currentCheckedButton);
+        apply();
     }
 
-    private void apply(View button) {
+    private void apply() {
         int width = (int) ((widthProgress / 100f) * 1000);
         int height = (int) ((heightProgress / 100f) * 1000);
 
-        imageView.getOptions().setResize(new Resize(width, height, scaleType));
+        imageView.getOptions().setShapeSize(width, height);
         imageView.displayAssetImage(AssetImage.MEI_NV);
-
-        if (currentCheckedButton != null) {
-            currentCheckedButton.setEnabled(true);
-        }
-        button.setEnabled(false);
-        currentCheckedButton = button;
     }
 }

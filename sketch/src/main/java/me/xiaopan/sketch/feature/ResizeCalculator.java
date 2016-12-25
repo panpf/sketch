@@ -22,71 +22,11 @@ import android.widget.ImageView;
 
 import me.xiaopan.sketch.Identifier;
 
+/**
+ * 用来计算resize
+ */
 public class ResizeCalculator implements Identifier {
     protected String logName = "ResizeCalculator";
-
-    @Override
-    public String getIdentifier() {
-        return logName;
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName);
-    }
-
-    public Result calculator(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight, ImageView.ScaleType scaleType, boolean forceUseResize) {
-        if (originalImageWidth == targetImageWidth && originalImageHeight == targetImageHeight) {
-            Result result = new Result();
-            result.imageWidth = originalImageWidth;
-            result.imageHeight = originalImageHeight;
-            result.srcRect = new Rect(0, 0, originalImageWidth, originalImageHeight);
-            result.destRect = result.srcRect;
-            return result;
-        }
-
-        if (scaleType == null) {
-            scaleType = ImageView.ScaleType.FIT_CENTER;
-        }
-
-        int newImageWidth;
-        int newImageHeight;
-        if (forceUseResize) {
-            newImageWidth = targetImageWidth;
-            newImageHeight = targetImageHeight;
-        } else {
-            int[] finalImageSize = scaleTargetSize(originalImageWidth, originalImageHeight, targetImageWidth, targetImageHeight);
-            newImageWidth = finalImageSize[0];
-            newImageHeight = finalImageSize[1];
-        }
-        Rect srcRect;
-        Rect destRect = new Rect(0, 0, newImageWidth, newImageHeight);
-        if (scaleType == ImageView.ScaleType.CENTER || scaleType == ImageView.ScaleType.CENTER_CROP || scaleType == ImageView.ScaleType.CENTER_INSIDE) {
-            srcRect = srcMappingCenterRect(originalImageWidth, originalImageHeight, newImageWidth, newImageHeight);
-        } else if (scaleType == ImageView.ScaleType.FIT_START) {
-            srcRect = srcMappingStartRect(originalImageWidth, originalImageHeight, newImageWidth, newImageHeight);
-        } else if (scaleType == ImageView.ScaleType.FIT_CENTER) {
-            srcRect = srcMappingCenterRect(originalImageWidth, originalImageHeight, newImageWidth, newImageHeight);
-        } else if (scaleType == ImageView.ScaleType.FIT_END) {
-            srcRect = srcMappingEndRect(originalImageWidth, originalImageHeight, newImageWidth, newImageHeight);
-        } else if (scaleType == ImageView.ScaleType.FIT_XY) {
-            srcRect = new Rect(0, 0, originalImageWidth, originalImageHeight);
-        } else if (scaleType == ImageView.ScaleType.MATRIX) {
-            srcRect = srcMatrixRect(originalImageWidth, originalImageHeight, newImageWidth, newImageHeight);
-        } else {
-            srcRect = srcMappingCenterRect(originalImageWidth, originalImageHeight, newImageWidth, newImageHeight);
-        }
-
-        Result result = new Result();
-        result.imageWidth = newImageWidth;
-        result.imageHeight = newImageHeight;
-        result.srcRect = srcRect;
-        result.destRect = destRect;
-        return result;
-    }
 
     public static Rect srcMappingStartRect(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
         float widthScale = (float) originalImageWidth / targetImageWidth;
@@ -129,17 +69,6 @@ public class ResizeCalculator implements Identifier {
         return new Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight);
     }
 
-    public static int[] scaleTargetSize(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
-        if (targetImageWidth > originalImageWidth || targetImageHeight > originalImageHeight) {
-            float scale = Math.abs(targetImageWidth - originalImageWidth) < Math.abs(targetImageHeight - originalImageHeight)
-                    ? (float) targetImageWidth / originalImageWidth : (float) targetImageHeight / originalImageHeight;
-            targetImageWidth = Math.round(targetImageWidth / scale);
-            targetImageHeight = Math.round(targetImageHeight / scale);
-        }
-
-        return new int[]{targetImageWidth, targetImageHeight};
-    }
-
     public static Rect srcMatrixRect(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
         if (originalImageWidth > targetImageWidth && originalImageHeight > targetImageHeight) {
             return new Rect(0, 0, targetImageWidth, targetImageHeight);
@@ -151,6 +80,93 @@ public class ResizeCalculator implements Identifier {
             int srcTop = 0;
             return new Rect(srcLeft, srcTop, srcLeft + srcWidth, srcTop + srcHeight);
         }
+    }
+
+    public static int[] scaleTargetSize(int originalImageWidth, int originalImageHeight, int targetImageWidth, int targetImageHeight) {
+        if (targetImageWidth > originalImageWidth || targetImageHeight > originalImageHeight) {
+            float scale = Math.abs(targetImageWidth - originalImageWidth) < Math.abs(targetImageHeight - originalImageHeight)
+                    ? (float) targetImageWidth / originalImageWidth : (float) targetImageHeight / originalImageHeight;
+            targetImageWidth = Math.round(targetImageWidth / scale);
+            targetImageHeight = Math.round(targetImageHeight / scale);
+        }
+
+        return new int[]{targetImageWidth, targetImageHeight};
+    }
+
+    @Override
+    public String getIdentifier() {
+        return logName;
+    }
+
+    @Override
+    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+        if (!TextUtils.isEmpty(join)) {
+            builder.append(join);
+        }
+        return builder.append(logName);
+    }
+
+    /**
+     * 计算
+     *
+     * @param imageWidth     图片原始宽
+     * @param imageHeight    图片原始高
+     * @param resizeWidth    目标宽
+     * @param resizeHeight   目标高
+     * @param scaleType      缩放类型
+     * @param forceUseResize 强制使用resize
+     * @return 计算结果
+     */
+    public Result calculator(int imageWidth, int imageHeight,
+                             int resizeWidth, int resizeHeight,
+                             ImageView.ScaleType scaleType, boolean forceUseResize) {
+        if (imageWidth == resizeWidth && imageHeight == resizeHeight) {
+            Result result = new Result();
+            result.imageWidth = imageWidth;
+            result.imageHeight = imageHeight;
+            result.srcRect = new Rect(0, 0, imageWidth, imageHeight);
+            result.destRect = result.srcRect;
+            return result;
+        }
+
+        if (scaleType == null) {
+            scaleType = ImageView.ScaleType.FIT_CENTER;
+        }
+
+        int newImageWidth;
+        int newImageHeight;
+        if (forceUseResize) {
+            newImageWidth = resizeWidth;
+            newImageHeight = resizeHeight;
+        } else {
+            int[] finalImageSize = scaleTargetSize(imageWidth, imageHeight, resizeWidth, resizeHeight);
+            newImageWidth = finalImageSize[0];
+            newImageHeight = finalImageSize[1];
+        }
+        Rect srcRect;
+        Rect destRect = new Rect(0, 0, newImageWidth, newImageHeight);
+        if (scaleType == ImageView.ScaleType.CENTER || scaleType == ImageView.ScaleType.CENTER_CROP || scaleType == ImageView.ScaleType.CENTER_INSIDE) {
+            srcRect = srcMappingCenterRect(imageWidth, imageHeight, newImageWidth, newImageHeight);
+        } else if (scaleType == ImageView.ScaleType.FIT_START) {
+            srcRect = srcMappingStartRect(imageWidth, imageHeight, newImageWidth, newImageHeight);
+        } else if (scaleType == ImageView.ScaleType.FIT_CENTER) {
+            srcRect = srcMappingCenterRect(imageWidth, imageHeight, newImageWidth, newImageHeight);
+        } else if (scaleType == ImageView.ScaleType.FIT_END) {
+            srcRect = srcMappingEndRect(imageWidth, imageHeight, newImageWidth, newImageHeight);
+        } else if (scaleType == ImageView.ScaleType.FIT_XY) {
+            srcRect = new Rect(0, 0, imageWidth, imageHeight);
+        } else if (scaleType == ImageView.ScaleType.MATRIX) {
+            srcRect = srcMatrixRect(imageWidth, imageHeight, newImageWidth, newImageHeight);
+        } else {
+            srcRect = srcMappingCenterRect(imageWidth, imageHeight, newImageWidth, newImageHeight);
+        }
+
+        Result result = new Result();
+        result.imageWidth = newImageWidth;
+        result.imageHeight = newImageHeight;
+        result.srcRect = srcRect;
+        result.destRect = destRect;
+        return result;
     }
 
     public static class Result {
