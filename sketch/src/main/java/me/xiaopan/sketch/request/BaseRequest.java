@@ -16,14 +16,13 @@
 
 package me.xiaopan.sketch.request;
 
-import android.util.Log;
-
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 
 abstract class BaseRequest {
-    private Sketch sketch;
     protected BaseInfo info;
-
+    private Sketch sketch;
     private String logName = "Request";
     private Status status;
     private ErrorCause errorCause;
@@ -93,7 +92,7 @@ abstract class BaseRequest {
      */
     void setStatus(Status status) {
         this.status = status;
-        if (Sketch.isDebugMode()) {
+        if (LogType.BASE.isEnabled()) {
             if (status == Status.FAILED) {
                 printLogW("new status", status.getLog(), errorCause != null ? errorCause.name() : null);
             } else if (status == Status.CANCELED) {
@@ -183,11 +182,12 @@ abstract class BaseRequest {
 
     private void printLog(int level, Object... items) {
         StringBuilder builder = new StringBuilder();
-        builder.append(getLogName());
-
         if (items != null && items.length > 0) {
             for (Object item : items) {
-                builder.append(". ").append(item);
+                if (builder.length() > 0) {
+                    builder.append(". ");
+                }
+                builder.append(item);
             }
         }
 
@@ -195,13 +195,13 @@ abstract class BaseRequest {
         builder.append(". ").append(getId());
 
         if (level == 0) {
-            Log.d(Sketch.TAG, builder.toString());
+            SLog.d(LogType.REQUEST, getLogName(), builder.toString());
         } else if (level == 1) {
-            Log.i(Sketch.TAG, builder.toString());
+            SLog.i(LogType.REQUEST, getLogName(), builder.toString());
         } else if (level == 2) {
-            Log.w(Sketch.TAG, builder.toString());
+            SLog.w(LogType.REQUEST, getLogName(), builder.toString());
         } else if (level == 3) {
-            Log.e(Sketch.TAG, builder.toString());
+            SLog.e(LogType.REQUEST, getLogName(), builder.toString());
         }
     }
 
@@ -331,8 +331,7 @@ abstract class BaseRequest {
         /**
          * 已取消
          */
-        CANCELED("canceled"),
-        ;
+        CANCELED("canceled"),;
 
         private String log;
 

@@ -24,12 +24,12 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.os.Looper;
-import android.util.Log;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.SketchUtils;
 
 class ScrollBar {
@@ -65,8 +65,8 @@ class ScrollBar {
 
     void drawScrollBar(Canvas canvas) {
         if (!imageZoomer.isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. drawScrollBar");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. drawScrollBar");
             }
             return;
         }
@@ -74,8 +74,8 @@ class ScrollBar {
         final RectF drawRectF = tempDisplayRectF;
         imageZoomer.getDrawRect(drawRectF);
         if (drawRectF.isEmpty()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". displayRectF is empty. drawScrollBar. drawRectF=" + drawRectF.toString());
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "displayRectF is empty. drawScrollBar. drawRectF=%s", drawRectF.toString());
             }
             return;
         }
@@ -87,8 +87,8 @@ class ScrollBar {
         final float displayHeight = drawRectF.height();
 
         if (viewWidth <= 0 || viewHeight <= 0 || displayWidth == 0 || displayHeight == 0) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". size is 0. drawScrollBar" +
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "size is 0. drawScrollBar" +
                         ". viewSize=" + viewWidth + "x" + viewHeight +
                         ", displaySize=" + displayWidth + "x" + displayHeight);
             }

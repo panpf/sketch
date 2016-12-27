@@ -19,11 +19,11 @@ package me.xiaopan.sketch.feature.large;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**
@@ -70,16 +70,16 @@ class InitHandler extends Handler {
 
     private void init(TileExecutor decodeExecutor, String imageUri, int key, KeyCounter keyCounter) {
         if (decodeExecutor == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. key: " + key + ", imageUri: " + imageUri);
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
             }
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". init key expired. before init. key: " + key + ", newKey: " + newKey + ", imageUri: " + imageUri);
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "init key expired. before init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             }
             return;
         }
@@ -100,8 +100,8 @@ class InitHandler extends Handler {
 
         newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". init key expired. after init. key: " + key + ", newKey: " + newKey + ", imageUri: " + imageUri);
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "init key expired. after init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             }
             decoder.recycle();
             return;
@@ -111,8 +111,8 @@ class InitHandler extends Handler {
     }
 
     public void clean(String why) {
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". clean. " + why);
+        if (LogType.BASE.isEnabled()) {
+            SLog.w(LogType.BASE, NAME, "clean. %s", why);
         }
 
         removeMessages(WHAT_INIT);

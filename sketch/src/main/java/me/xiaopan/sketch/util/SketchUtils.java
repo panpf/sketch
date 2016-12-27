@@ -67,7 +67,8 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageFormat;
@@ -91,8 +92,8 @@ public class SketchUtils {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". get packageInfo is null", ". ", apkFilePath));
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, logName, "get packageInfo is null. %s", apkFilePath);
             }
             return null;
         }
@@ -107,8 +108,8 @@ public class SketchUtils {
             e.printStackTrace();
         }
         if (drawable == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". app icon is null", ". ", apkFilePath));
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, logName, "app icon is null. %s", apkFilePath);
             }
             return null;
         }
@@ -124,8 +125,8 @@ public class SketchUtils {
 //            }
 //            if (defaultActivityIcon instanceof BitmapDrawable
 //                    && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) defaultActivityIcon).getBitmap()) {
-//                if (Sketch.isDebugMode()) {
-//                    Log.w(Sketch.TAG, SketchUtils.concat(logName, ". icon not found", ". ", apkFilePath));
+//                if (LogType.BASE.isEnabled()) {
+//                    SketchLog.w(LogType.BASE, SketchUtils.concat(logName, ". icon not found", ". ", apkFilePath));
 //                }
 //                return null;
 //            }
@@ -1255,11 +1256,11 @@ public class SketchUtils {
             inBitmap = bitmapPool.get(options.outWidth, options.outHeight, options.inPreferredConfig);
         }
 
-        if (inBitmap != null && Sketch.isDebugMode()) {
+        if (inBitmap != null && LogType.REQUEST.isEnabled()) {
             int sizeInBytes = SketchUtils.getBitmapByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
-            Log.d(Sketch.TAG, String.format("setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+            SLog.d(LogType.REQUEST, "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                     options.outWidth, options.outHeight, options.inPreferredConfig, inSampleSize, sizeInBytes,
-                    Integer.toHexString(inBitmap.hashCode()), SketchUtils.getBitmapByteSize(inBitmap)));
+                    Integer.toHexString(inBitmap.hashCode()), SketchUtils.getBitmapByteSize(inBitmap));
         }
 
         options.inBitmap = inBitmap;
@@ -1323,11 +1324,11 @@ public class SketchUtils {
         Bitmap inBitmap = bitmapPool.get(finalWidth, finalHeight, config);
 
         if (inBitmap != null) {
-            if (Sketch.isDebugMode()) {
+            if (LogType.REQUEST.isEnabled()) {
                 int sizeInBytes = SketchUtils.getBitmapByteSize(finalWidth, finalHeight, config);
-                Log.d(Sketch.TAG, String.format("setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+                SLog.d(LogType.REQUEST, "setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                         finalWidth, finalHeight, config, inSampleSize, sizeInBytes,
-                        Integer.toHexString(inBitmap.hashCode()), SketchUtils.getBitmapByteSize(inBitmap)));
+                        Integer.toHexString(inBitmap.hashCode()), SketchUtils.getBitmapByteSize(inBitmap));
             }
         } else {
             // 由于BitmapRegionDecoder不支持inMutable所以就自己创建Bitmap

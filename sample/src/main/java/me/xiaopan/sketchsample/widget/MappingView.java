@@ -24,13 +24,13 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.large.Tile;
@@ -171,11 +171,9 @@ public class MappingView extends SketchImageView {
 
     public void update(Point newDrawableSize, Rect newVisibleRect) {
         if (newDrawableSize.x == 0 || newDrawableSize.y == 0 || newVisibleRect.isEmpty()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty" +
-                        ". " + getImageUri() + "" +
-                        ". drawableSize=" + newDrawableSize.toString() + "" +
-                        ", newVisibleRect=" + newVisibleRect.toShortString());
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
+                        getImageUri(), newDrawableSize.toString(), newVisibleRect.toShortString());
             }
 
             drawableSize.set(0, 0);
@@ -192,8 +190,8 @@ public class MappingView extends SketchImageView {
         visibleRect.set(newVisibleRect);
 
         if (!isUsableDrawable() || getWidth() == 0 || getHeight() == 0) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, "MappingView. update. view size is 0 or getDrawable() is null. " + getImageUri());
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, "MappingView. update. view size is 0 or getDrawable() is null. %s", getImageUri());
             }
 
             if (!visibleMappingRect.isEmpty()) {

@@ -16,13 +16,12 @@
 
 package me.xiaopan.sketch.request;
 
-import android.util.Log;
-
 import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 
 /**
  * 顺风车管理器，主要用于解决重复下载、重复加载
@@ -57,10 +56,8 @@ public class FreeRideManager {
 
             displayFreeRideProviderMap.put(provider.getDisplayFreeRideKey(), provider);
 
-            if (Sketch.isDebugMode()) {
-                Log.v(Sketch.TAG, String.format("%s. display. register free ride provider. %s",
-                        LOG_NAME, provider.getDisplayFreeRideLog()));
-            }
+            SLog.v(LogType.BASE, LOG_NAME, "display. register free ride provider. %s",
+                    provider.getDisplayFreeRideLog());
         }
     }
 
@@ -77,9 +74,9 @@ public class FreeRideManager {
         synchronized (displayFreeRideProviderMapLock) {
             if (displayFreeRideProviderMap != null) {
                 freeRideProvider = displayFreeRideProviderMap.remove(provider.getDisplayFreeRideKey());
-                if (freeRideProvider != null && Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, String.format("%s. display. unregister free ride provider. %s",
-                            LOG_NAME, freeRideProvider.getDisplayFreeRideLog()));
+                if (freeRideProvider != null) {
+                    SLog.w(LogType.BASE, LOG_NAME, "display. unregister free ride provider. %s",
+                            freeRideProvider.getDisplayFreeRideLog());
                 }
             }
         }
@@ -94,12 +91,8 @@ public class FreeRideManager {
             String providerId = freeRideProvider.getDisplayFreeRideLog();
             for (DisplayFreeRide childFreeRide : freeRideSet) {
                 boolean success = childFreeRide.processDisplayFreeRide();
-
-                if (Sketch.isDebugMode()) {
-                    String result = success ? "success" : "failed";
-                    Log.d(Sketch.TAG, String.format("%s. display. callback free ride. %s. %s  <------  %s",
-                            LOG_NAME, result, childFreeRide.getDisplayFreeRideLog(), providerId));
-                }
+                SLog.d(LogType.BASE, LOG_NAME, "display. callback free ride. %s. %s  <------  %s",
+                        success ? "success" : "failed", childFreeRide.getDisplayFreeRideLog(), providerId);
             }
             freeRideSet.clear();
         }
@@ -127,10 +120,8 @@ public class FreeRideManager {
 
             freeRideProvider.byDisplayFreeRide(childFreeRide);
 
-            if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, String.format("%s. display. by free ride. %s  ------>  %s",
-                        LOG_NAME, childFreeRide.getDisplayFreeRideLog(), freeRideProvider.getDisplayFreeRideLog()));
-            }
+            SLog.i(LogType.BASE, LOG_NAME, "display. by free ride. %s  ------>  %s",
+                    childFreeRide.getDisplayFreeRideLog(), freeRideProvider.getDisplayFreeRideLog());
             return true;
         }
     }
@@ -154,10 +145,8 @@ public class FreeRideManager {
 
             downloadFreeRideProviderMap.put(provider.getDownloadFreeRideKey(), provider);
 
-            if (Sketch.isDebugMode()) {
-                Log.v(Sketch.TAG, String.format("%s. download. register free ride provider. %s",
-                        LOG_NAME, provider.getDownloadFreeRideLog()));
-            }
+            SLog.v(LogType.BASE, LOG_NAME, "download. register free ride provider. %s",
+                    provider.getDownloadFreeRideLog());
         }
     }
 
@@ -174,9 +163,9 @@ public class FreeRideManager {
         synchronized (downloadFreeRideProviderMapLock) {
             if (downloadFreeRideProviderMap != null) {
                 freeRideProvider = downloadFreeRideProviderMap.remove(provider.getDownloadFreeRideKey());
-                if (freeRideProvider != null && Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, String.format("%s. download. unregister free ride provider. %s",
-                            LOG_NAME, freeRideProvider.getDownloadFreeRideLog()));
+                if (freeRideProvider != null) {
+                    SLog.w(LogType.BASE, LOG_NAME, "download. unregister free ride provider. %s",
+                            freeRideProvider.getDownloadFreeRideLog());
                 }
             }
         }
@@ -191,12 +180,8 @@ public class FreeRideManager {
             String providerId = freeRideProvider.getDownloadFreeRideLog();
             for (DownloadFreeRide childFreeRide : freeRideSet) {
                 boolean success = childFreeRide.processDownloadFreeRide();
-
-                if (Sketch.isDebugMode()) {
-                    String result = success ? "success" : "failed";
-                    Log.d(Sketch.TAG, String.format("%s. download. callback free ride. %s. %s  <------  %s",
-                            LOG_NAME, result, childFreeRide.getDownloadFreeRideLog(), providerId));
-                }
+                SLog.d(LogType.BASE, LOG_NAME, "download. callback free ride. %s. %s  <------  %s",
+                        success ? "success" : "failed", childFreeRide.getDownloadFreeRideLog(), providerId);
             }
             freeRideSet.clear();
         }
@@ -224,10 +209,8 @@ public class FreeRideManager {
 
             freeRideProvider.byDownloadFreeRide(childFreeRide);
 
-            if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, String.format("%s. download. by free ride. %s  ------>  %s",
-                        LOG_NAME, childFreeRide.getDownloadFreeRideLog(), freeRideProvider.getDownloadFreeRideLog()));
-            }
+            SLog.i(LogType.BASE, LOG_NAME, "download. by free ride. %s  ------>  %s",
+                    childFreeRide.getDownloadFreeRideLog(), freeRideProvider.getDownloadFreeRideLog());
             return true;
         }
     }

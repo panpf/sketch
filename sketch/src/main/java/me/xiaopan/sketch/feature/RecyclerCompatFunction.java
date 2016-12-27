@@ -17,10 +17,11 @@
 package me.xiaopan.sketch.feature;
 
 import android.content.Context;
-import android.util.Log;
 
+import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.UriScheme;
@@ -55,10 +56,8 @@ public class RecyclerCompatFunction extends SketchImageView.Function {
 
         DisplayParams displayParams = requestFunction.getDisplayParams();
         if (displayParams != null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        ". restore image on attached to window",
-                        ". ", displayParams.info.getUri()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, logName, "restore image on attached to window. %s", displayParams.info.getUri());
             }
             Sketch.with(context).display(displayParams, imageViewInterface).commit();
         }

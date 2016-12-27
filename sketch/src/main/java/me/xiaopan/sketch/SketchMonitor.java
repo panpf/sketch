@@ -7,7 +7,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
 
 import java.io.File;
 import java.util.Arrays;
@@ -40,14 +39,8 @@ public class SketchMonitor implements Identifier {
      * @param cacheDir 默认的缓存目录
      */
     public void onInstallDiskCacheError(Exception e, File cacheDir) {
-        //noinspection StringBufferReplaceableByString
-        StringBuilder builder = new StringBuilder();
-        builder.append(logName);
-        builder.append(". onInstallDiskCacheError");
-        builder.append(". ").append(e.getClass().getSimpleName()).append(": ").append(e.getMessage());
-        builder.append(". SDCardState: ").append(Environment.getExternalStorageState());
-        builder.append(". cacheDir: ").append(cacheDir.getPath());
-        Log.e(Sketch.TAG, builder.toString());
+        SLog.e(logName, "onInstallDiskCacheError. %s: %s. SDCardState: %s. cacheDir: %s",
+                e.getClass().getSimpleName(), e.getMessage(), Environment.getExternalStorageState(), cacheDir.getPath());
     }
 
     /**
@@ -61,24 +54,19 @@ public class SketchMonitor implements Identifier {
      */
     public void onDecodeGifImageError(Throwable throwable, LoadRequest request, int outWidth, int outHeight, String outMimeType) {
         if (throwable instanceof UnsatisfiedLinkError || throwable instanceof ExceptionInInitializerError) {
-            Log.e(Sketch.TAG, "Didn't find “libpl_droidsonroids_gif.so” file, " +
+            SLog.e("Didn't find “libpl_droidsonroids_gif.so” file, " +
                     "unable to process the GIF images. If you need to decode the GIF figure " +
                     "please go to “https://github.com/xiaopansky/sketch” " +
                     "download “libpl_droidsonroids_gif.so” file and put in your project");
-            String abiInfo;
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                abiInfo = String.format("abis=%s", Arrays.toString(Build.SUPPORTED_ABIS));
+                SLog.e("abis=%s", Arrays.toString(Build.SUPPORTED_ABIS));
             } else {
-                //noinspection deprecation
-                abiInfo = String.format("abi1=%s, abi2%s", Build.CPU_ABI, Build.CPU_ABI2);
+                SLog.e("abi1=%s, abi2=%s", Build.CPU_ABI, Build.CPU_ABI2);
             }
-            Log.e(Sketch.TAG, SketchUtils.concat("Didn't find libpl_droidsonroids_gif.so. ", abiInfo));
         }
 
-        Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                ". onDecodeGifImageError",
-                ". outWidth", "=", outWidth, ", ", "outHeight", "=", outHeight, ", ", "outMimeType", "=", outMimeType,
-                ". ", request.getId()));
+        SLog.e(logName, "onDecodeGifImageError. outWidth=%d, outHeight=%d + outMimeType=%s. %s",
+                outWidth, outHeight, outMimeType, request.getId());
     }
 
     /**
@@ -98,17 +86,12 @@ public class SketchMonitor implements Identifier {
             String maxMemoryFormatted = Formatter.formatFileSize(context, maxMemory);
             String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
             String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
-            Log.d(Sketch.TAG, SketchUtils.concat("OutOfMemoryError" +
-                            ". appMemoryInfo: ",
-                    "maxMemory", "=", maxMemoryFormatted,
-                    ", freeMemory", "=", freeMemoryFormatted,
-                    ", totalMemory", "=", totalMemoryFormatted));
+            SLog.e(logName, "OutOfMemoryError. appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
+                    maxMemoryFormatted, freeMemoryFormatted, totalMemoryFormatted);
         }
 
-        Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                ". onDecodeNormalImageError",
-                ". outWidth", "=", outWidth, ", ", "outHeight", "=", outHeight, ", ", "outMimeType", "=", outMimeType,
-                ". ", request.getId()));
+        SLog.e(logName, "onDecodeNormalImageError. outWidth=%d, outHeight=%d, outMimeType=%s. %s",
+                outWidth, outHeight, outMimeType, request.getId());
     }
 
     /**
@@ -126,16 +109,12 @@ public class SketchMonitor implements Identifier {
             String maxMemoryFormatted = Formatter.formatFileSize(context, maxMemory);
             String freeMemoryFormatted = Formatter.formatFileSize(context, freeMemory);
             String totalMemoryFormatted = Formatter.formatFileSize(context, totalMemory);
-            Log.d(Sketch.TAG, SketchUtils.concat("OutOfMemoryError. appMemoryInfo: ",
-                    "maxMemory", "=", maxMemoryFormatted,
-                    ", freeMemory", "=", freeMemoryFormatted,
-                    ", totalMemory", "=", totalMemoryFormatted));
+            SLog.d("OutOfMemoryError. appMemoryInfo: maxMemory=%s, freeMemory=%s, totalMemory=%s",
+                    maxMemoryFormatted, freeMemoryFormatted, totalMemoryFormatted);
         }
 
-        Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                ". onProcessImageError",
-                ". imageUri", ": ", imageUri,
-                ". processor", ": ", processor.getIdentifier()));
+        SLog.e(logName, "onProcessImageError. imageUri: %s. processor: %s",
+                imageUri, processor.getIdentifier());
     }
 
     /**
@@ -157,16 +136,16 @@ public class SketchMonitor implements Identifier {
      * @param useLegacyMergeSort 当前是否使用旧的排序算法
      */
     public void onTileSortError(@SuppressWarnings("UnusedParameters") IllegalArgumentException e, List<Tile> tileList, @SuppressWarnings("UnusedParameters") boolean useLegacyMergeSort) {
-        Log.w(Sketch.TAG, String.format("%s. onTileSortError. %s%s",
-                logName, useLegacyMergeSort ? "useLegacyMergeSort. " : "", SketchUtils.tileListToString(tileList)));
+        String legacy = useLegacyMergeSort ? "useLegacyMergeSort. " : "";
+        SLog.w(logName, "onTileSortError. %s%s", legacy, SketchUtils.tileListToString(tileList));
     }
 
     /**
      * 在即将显示时发现Bitmap被回收
      */
     public void onBitmapRecycledOnDisplay(DisplayRequest request, RefDrawable refDrawable) {
-        Log.w(Sketch.TAG, String.format("%s. onBitmapRecycledOnDisplay. imageUri=%s, drawable=%s",
-                logName, request.getUri(), refDrawable.getInfo()));
+        SLog.w(logName, "onBitmapRecycledOnDisplay. imageUri=%s, drawable=%s",
+                request.getUri(), refDrawable.getInfo());
     }
 
     /**
@@ -180,8 +159,8 @@ public class SketchMonitor implements Identifier {
      * @param inBitmap     复用的inBitmap
      */
     public void onInBitmapExceptionForRegionDecoder(String imageUri, int imageWidth, int imageHeight, Rect srcRect, int inSampleSize, Bitmap inBitmap) {
-        Log.w(Sketch.TAG, String.format("%s. onInBitmapExceptionForRegionDecoder. imageUri=%s, imageSize=%dx%d, srcRect=%s, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
-                logName, imageUri, imageWidth, imageHeight, srcRect.toString(), inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getBitmapByteSize(inBitmap)));
+        SLog.w(logName, "onInBitmapExceptionForRegionDecoder. imageUri=%s, imageSize=%dx%d, srcRect=%s, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
+                imageUri, imageWidth, imageHeight, srcRect.toString(), inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getBitmapByteSize(inBitmap));
     }
 
     /**
@@ -194,8 +173,8 @@ public class SketchMonitor implements Identifier {
      * @param inBitmap     复用的inBitmap
      */
     public void onInBitmapException(String imageUri, int imageWidth, int imageHeight, int inSampleSize, Bitmap inBitmap) {
-        Log.w(Sketch.TAG, String.format("%s. onInBitmapException. imageUri=%s, imageSize=%dx%d, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
-                logName, imageUri, imageWidth, imageHeight, inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getBitmapByteSize(inBitmap)));
+        SLog.w(logName, "onInBitmapException. imageUri=%s, imageSize=%dx%d, inSampleSize=%d, inBitmapSize=%dx%d, inBitmapByteCount=%d",
+                imageUri, imageWidth, imageHeight, inSampleSize, inBitmap.getWidth(), inBitmap.getHeight(), SketchUtils.getBitmapByteSize(inBitmap));
     }
 
     @Override

@@ -22,11 +22,12 @@ import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
+import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageFormat;
@@ -79,8 +80,8 @@ class DecodeHandler extends Handler {
 
     private void decode(TileExecutor executor, int key, Tile tile) {
         if (executor == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. key: " + key + ", tile=" + tile.getInfo());
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "weak reference break. key: %d, tile=%s", key, tile.getInfo());
             }
             return;
         }
@@ -162,8 +163,8 @@ class DecodeHandler extends Handler {
     }
 
     public void clean(String why) {
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". clean. " + why);
+        if (LogType.BASE.isEnabled()) {
+            SLog.w(LogType.BASE, NAME, "clean. %s" + why);
         }
 
         removeMessages(WHAT_DECODE);

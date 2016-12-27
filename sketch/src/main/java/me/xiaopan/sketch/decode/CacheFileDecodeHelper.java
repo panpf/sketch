@@ -21,13 +21,13 @@ import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
 import android.graphics.Rect;
 import android.os.Build;
-import android.util.Log;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.RandomAccessFile;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
@@ -94,39 +94,30 @@ public class CacheFileDecodeHelper implements DecodeHelper {
 
     @Override
     public void onDecodeSuccess(Bitmap bitmap, int outWidth, int outHeight, String outMimeType, int inSampleSize) {
-        if (Sketch.isDebugMode()) {
-            StringBuilder builder = new StringBuilder(logName)
-                    .append(". decodeSuccess");
+        if (LogType.BASE.isEnabled()) {
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
                 ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
-                builder.append(". originalSize=").append(outWidth).append("x").append(outHeight);
-                builder.append(", targetSize=").append(maxSize.getWidth()).append("x").append(maxSize.getHeight());
-                builder.append(", targetSizeScale=").append(sizeCalculator.getTargetSizeScale());
-                builder.append(", inSampleSize=").append(inSampleSize);
-                builder.append(", finalSize=").append(bitmap.getWidth()).append("x").append(bitmap.getHeight());
+                SLog.d(LogType.BASE, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
+                                "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
+                        outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
+                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getId());
             } else {
-                builder.append(". unchanged");
+                SLog.d(LogType.BASE, logName, "decodeSuccess. unchanged. %s", loadRequest.getId());
             }
-            builder.append(". ").append(loadRequest.getId());
-            Log.d(Sketch.TAG, builder.toString());
         }
     }
 
     @Override
     public void onDecodeError() {
-        if (Sketch.isDebugMode()) {
-            Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                    ". decode failed",
-                    ". diskCacheKey=", diskCacheEntry.getUri(),
-                    ". ", loadRequest.getId()));
+        if (LogType.BASE.isEnabled()) {
+            SLog.e(LogType.BASE, logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getId());
         }
+
         if (!diskCacheEntry.delete()) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                        ". delete damaged disk cache file failed",
-                        ". diskCacheKey", "=", diskCacheEntry.getUri(),
-                        ". ", loadRequest.getId()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.e(LogType.BASE, logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
+                        diskCacheEntry.getUri(), loadRequest.getId());
             }
         }
     }

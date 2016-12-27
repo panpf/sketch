@@ -20,7 +20,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.util.Log;
 
 import java.util.Collections;
 import java.util.Comparator;
@@ -29,9 +28,11 @@ import java.util.LinkedList;
 import java.util.List;
 
 import me.xiaopan.sketch.Configuration;
+import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.util.ObjectPool;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -42,23 +43,17 @@ import me.xiaopan.sketch.util.SketchUtils;
 // TODO: 2016/12/17 优化碎片计算规则，尽量保证每块碎片的尺寸都是一样的，这样就能充分利用inBitmap功能减少内存分配提高流畅度
 class TileManager {
     private static final String NAME = "TileManager";
-
-    private Context context;
-    private BitmapPool bitmapPool;
-    private LargeImageViewer largeImageViewer;
-
     int tiles = 3;  // 碎片基数，例如碎片基数是3时，就将绘制区域分割成一个(3+1)x(3+1)=16个方块
-
     Rect visibleRect = new Rect();  // 可见区域，当前用户真正能看见的区域
     Rect drawRect = new Rect(); // 绘制区域，可见区域加大一圈就是绘制区域，为的是提前将四周加载出来，用户缓慢滑动时可直接看到
     Rect decodeRect = new Rect();   // 解码区域，真正需要解码的区域，是以绘制区域为基础，滑动时哪边不够了就在扩展哪边，解码区域一定比绘制区域大
-
     Rect drawSrcRect = new Rect();
     Rect decodeSrcRect = new Rect();
-
     List<Tile> tileList = new LinkedList<Tile>();
     LargeImageViewer.OnTileChangedListener onTileChangedListener;
-
+    private Context context;
+    private BitmapPool bitmapPool;
+    private LargeImageViewer largeImageViewer;
     private ObjectPool<Tile> tilePool = new ObjectPool<Tile>(new ObjectPool.ObjectFactory<Tile>() {
         @Override
         public Tile newObject() {
@@ -81,18 +76,15 @@ class TileManager {
 
     void update(Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, Point imageSize, boolean zooming) {
         if (zooming) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". zooming. newVisibleRect=" + newVisibleRect.toShortString() + ", tiles=" + tileList.size());
-            }
+            SLog.w(LogType.BASE, NAME, "zooming. newVisibleRect=%s, tiles=%d",
+                    newVisibleRect.toShortString(), tileList.size());
             return;
         }
 
         // 过滤掉重复的刷新
         if (visibleRect.equals(newVisibleRect)) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". visible rect no changed. update. newVisibleRect=" + newVisibleRect.toShortString() +
-                        ", oldVisibleRect=" + visibleRect.toShortString());
-            }
+            SLog.w(LogType.BASE, NAME, "visible rect no changed. update. newVisibleRect=%s, oldVisibleRect=%s",
+                    newVisibleRect.toShortString(), visibleRect.toShortString());
             return;
         }
         visibleRect.set(newVisibleRect);
@@ -121,9 +113,7 @@ class TileManager {
         newDrawRect.bottom = Math.min(previewImageHeight, newVisibleRect.bottom + drawHeightAdd);
 
         if (newDrawRect.isEmpty()) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, NAME + ". newDrawRect is empty. " + newDrawRect.toShortString());
-            }
+            SLog.e(LogType.BASE, NAME, "newDrawRect is empty. %s", newDrawRect.toShortString());
             return;
         }
 
@@ -133,9 +123,7 @@ class TileManager {
         final int tileHeight = newDrawRect.height() / finalTiles;
 
         if (tileWidth <= 0 || tileHeight <= 0) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, NAME + ". tileWidth or tileHeight exception. " + tileWidth + "x" + tileHeight);
-            }
+            SLog.e(LogType.BASE, NAME, "tileWidth or tileHeight exception. %dx%d", tileWidth, tileHeight);
             return;
         }
 
@@ -155,16 +143,9 @@ class TileManager {
         calculateSrcRect(newDrawSrcRect, newDrawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
         int inSampleSize = calculateInSampleSize(newDrawSrcRect.width(), newDrawSrcRect.height(), viewWidth, viewHeight);
 
-        if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, NAME + ". update start" +
-                    ". newVisibleRect=" + newVisibleRect.toShortString() +
-                    ", newDrawRect=" + newDrawRect.toShortString() +
-                    ", oldDecodeRect=" + decodeRect.toShortString() +
-                    ", inSampleSize=" + inSampleSize +
-                    ", scale=" + largeImageViewer.getZoomScale() +
-                    ", lastScale=" + largeImageViewer.getLastZoomScale() +
-                    ", tiles=" + tileList.size());
-        }
+        SLog.i(LogType.BASE, NAME, "update start. newVisibleRect=%s, newDrawRect=%s, oldDecodeRect=%s, inSampleSize=%d, scale=%s, lastScale=%s, tiles=%d",
+                newVisibleRect.toShortString(), newDrawRect.toShortString(), decodeRect.toShortString(),
+                inSampleSize, largeImageViewer.getZoomScale(), largeImageViewer.getLastZoomScale(), tileList.size());
 
         // 根据上一次绘制区域的和新绘制区域的差异计算出最终的绘制区域
         Rect newDecodeRect = rectPool.get();
@@ -188,29 +169,21 @@ class TileManager {
                     loadTiles(emptyRectList, tileWidth, tileHeight, imageWidth, imageHeight,
                             originWidthScale, originHeightScale, inSampleSize, newDecodeRect);
                 } else {
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". not found empty rect");
-                    }
+                    SLog.d(LogType.BASE, NAME, "not found empty rect");
                 }
 
                 if (onTileChangedListener != null) {
                     onTileChangedListener.onTileChanged(largeImageViewer);
                 }
 
-                if (Sketch.isDebugMode()) {
-                    Log.e(Sketch.TAG, NAME + ". update finished" +
-                            ", newDecodeRect=" + newDecodeRect.toShortString() +
-                            ", tiles=" + tileList.size());
-                }
+                SLog.e(LogType.BASE, NAME, "update finished, newDecodeRect=%s, tiles=%d",
+                        newDecodeRect.toShortString(), tileList.size());
             } else {
-                if (Sketch.isDebugMode()) {
-                    Log.e(Sketch.TAG, NAME + ". update finished draw rect no change");
-                }
+                SLog.e(LogType.BASE, NAME, "update finished draw rect no change");
             }
         } else {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, NAME + ". update finished. final draw rect is empty. newDecodeRect=" + newDecodeRect.toShortString());
-            }
+            SLog.e(LogType.BASE, NAME, "update finished. final draw rect is empty. newDecodeRect=%s",
+                    newDecodeRect.toShortString());
         }
 
         drawRect.set(newDrawRect);
@@ -282,16 +255,17 @@ class TileManager {
             if (newDrawRect.left == 0) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.left = 0;
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". decode rect left to 0" + ", newDecodeRect=" + newDecodeRect.toShortString());
+                if (LogType.BASE.isEnabled()) {
+                    SLog.d(LogType.BASE, NAME, "decode rect left to 0, newDecodeRect=%s", newDecodeRect.toShortString());
                 }
             } else if (leftSpace > leftAndRightEdge || newDecodeRect.left - drawTileWidth <= 0) {
                 // 如果间距比较大或者再加一个碎片的宽度就到边了就扩展
                 // 由于间距可能会大于一个碎片的宽度，因此要循环不停的加
                 while (newDecodeRect.left > newDrawRect.left) {
                     newDecodeRect.left = Math.max(0, newDecodeRect.left - drawTileWidth);
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". decode rect left expand " + drawTileWidth + ", newDecodeRect=" + newDecodeRect.toShortString());
+                    if (LogType.BASE.isEnabled()) {
+                        SLog.d(LogType.BASE, NAME, "decode rect left expand %d, newDecodeRect=%s",
+                                drawTileWidth, newDecodeRect.toShortString());
                     }
                 }
             }
@@ -302,16 +276,17 @@ class TileManager {
             if (newDrawRect.top == 0) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.top = 0;
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". decode rect top to 0" + ", newDecodeRect=" + newDecodeRect.toShortString());
+                if (LogType.BASE.isEnabled()) {
+                    SLog.d(LogType.BASE, NAME, "decode rect top to 0, newDecodeRect=%s", newDecodeRect.toShortString());
                 }
             } else if (topSpace > topAndBottomEdge || newDecodeRect.top - drawTileHeight <= 0) {
                 // 如果间距比较大或者再加一个碎片的高度就到边了就扩展
                 // 由于间距可能会大于一个碎片的高度，因此要循环不停的加
                 while (newDecodeRect.top > newDrawRect.top) {
                     newDecodeRect.top = Math.max(0, newDecodeRect.top - drawTileHeight);
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". decode rect top expand " + drawTileHeight + ", newDecodeRect=" + newDecodeRect.toShortString());
+                    if (LogType.BASE.isEnabled()) {
+                        SLog.d(LogType.BASE, NAME, "decode rect top expand %d, newDecodeRect=%s",
+                                drawTileHeight, newDecodeRect.toShortString());
                     }
                 }
             }
@@ -323,16 +298,18 @@ class TileManager {
             if (newDrawRect.right == maxDrawWidth) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.right = maxDrawWidth;
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". decode rect right to " + maxDrawWidth + ", newDecodeRect=" + newDecodeRect.toShortString());
+                if (LogType.BASE.isEnabled()) {
+                    SLog.d(LogType.BASE, NAME, "decode rect right to %d, newDecodeRect=%s",
+                            maxDrawWidth, newDecodeRect.toShortString());
                 }
             } else if (rightSpace > leftAndRightEdge || newDecodeRect.right + drawTileWidth >= maxDrawWidth) {
                 // 如果间距比较大或者再加一个碎片的宽度就到边了就扩展
                 // 由于间距可能会大于一个碎片的宽度，因此要循环不停的加
                 while (newDecodeRect.right < newDrawRect.right) {
                     newDecodeRect.right = Math.min(maxDrawWidth, newDecodeRect.right + drawTileWidth);
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". decode rect right expand " + drawTileWidth + ", newDecodeRect=" + newDecodeRect.toShortString());
+                    if (LogType.BASE.isEnabled()) {
+                        SLog.d(LogType.BASE, NAME, "decode rect right expand %d, newDecodeRect=%s",
+                                drawTileWidth, newDecodeRect.toShortString());
                     }
                 }
             }
@@ -343,16 +320,18 @@ class TileManager {
             if (newDrawRect.bottom > maxDrawHeight) {
                 // 如果已经到边了，管它还差多少，直接顶到边
                 newDecodeRect.bottom = maxDrawHeight;
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". decode rect bottom to " + maxDrawHeight + ", newDecodeRect=" + newDecodeRect.toShortString());
+                if (LogType.BASE.isEnabled()) {
+                    SLog.d(LogType.BASE, NAME, "decode rect bottom to %d, newDecodeRect=%s",
+                            maxDrawHeight, newDecodeRect.toShortString());
                 }
             } else if (bottomSpace > topAndBottomEdge || newDecodeRect.bottom + drawTileHeight >= maxDrawHeight) {
                 // 如果间距比较大或者再加一个碎片的高度就到边了就扩展
                 // 由于间距可能会大于一个碎片的高度，因此要循环不停的加
                 while (newDecodeRect.bottom < newDrawRect.bottom) {
                     newDecodeRect.bottom = Math.min(maxDrawHeight, newDecodeRect.bottom + drawTileHeight);
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". decode rect bottom expand " + drawTileHeight + ", newDecodeRect=" + newDecodeRect.toShortString());
+                    if (LogType.BASE.isEnabled()) {
+                        SLog.d(LogType.BASE, NAME, "decode rect bottom expand %d, newDecodeRect=%s",
+                                drawTileHeight, newDecodeRect.toShortString());
                     }
                 }
             }
@@ -365,26 +344,30 @@ class TileManager {
                 newDecodeRect.bottom - drawTileHeight > newDrawRect.bottom) {
             if (newDecodeRect.left + drawTileWidth < newDrawRect.left) {
                 newDecodeRect.left += drawTileWidth;
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". decode rect left reduced " + drawTileWidth + ", newDecodeRect=" + newDecodeRect.toShortString());
+                if (LogType.BASE.isEnabled()) {
+                    SLog.d(LogType.BASE, NAME, "decode rect left reduced %d, newDecodeRect=%s",
+                            drawTileWidth, newDecodeRect.toShortString());
                 }
             }
             if (newDecodeRect.top + drawTileHeight < newDrawRect.top) {
                 newDecodeRect.top += drawTileHeight;
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". decode rect top reduced " + drawTileHeight + ", newDecodeRect=" + newDecodeRect.toShortString());
+                if (LogType.BASE.isEnabled()) {
+                    SLog.d(LogType.BASE, NAME, "decode rect top reduced %d, newDecodeRect=%s",
+                            drawTileHeight, newDecodeRect.toShortString());
                 }
             }
             if (newDecodeRect.right - drawTileWidth > newDrawRect.right) {
                 newDecodeRect.right -= drawTileWidth;
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". decode rect right reduced " + drawTileWidth + ", newDecodeRect=" + newDecodeRect.toShortString());
+                if (LogType.BASE.isEnabled()) {
+                    SLog.d(LogType.BASE, NAME, "decode rect right reduced %d, newDecodeRect=%s",
+                            drawTileWidth, newDecodeRect.toShortString());
                 }
             }
             if (newDecodeRect.bottom - drawTileHeight > newDrawRect.bottom) {
                 newDecodeRect.bottom -= drawTileHeight;
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". decode rect bottom reduced " + drawTileHeight + ", newDecodeRect=" + newDecodeRect.toShortString());
+                if (LogType.BASE.isEnabled()) {
+                    SLog.d(LogType.BASE, NAME, "decode rect bottom reduced %d, newDecodeRect=%s",
+                            drawTileHeight, newDecodeRect.toShortString());
                 }
             }
         }
@@ -577,15 +560,15 @@ class TileManager {
             // 缩放比例已经变了或者这个碎片已经跟当前显示区域毫无交集，那么就可以回收这个碎片了
             if (largeImageViewer.getZoomScale() != tile.scale || !SketchUtils.isCross(tile.drawRect, drawRect)) {
                 if (!tile.isEmpty()) {
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". recycle tile. tile=" + tile.getInfo());
+                    if (LogType.BASE.isEnabled()) {
+                        SLog.d(LogType.BASE, NAME, "recycle tile. tile=%s", tile.getInfo());
                     }
                     tileIterator.remove();
                     tile.clean(bitmapPool);
                     tilePool.put(tile);
                 } else {
-                    if (Sketch.isDebugMode()) {
-                        Log.w(Sketch.TAG, NAME + ". recycle loading tile and refresh key. tile=" + tile.getInfo());
+                    if (LogType.BASE.isEnabled()) {
+                        SLog.w(LogType.BASE, NAME, "recycle loading tile and refresh key. tile=%s", tile.getInfo());
                     }
                     tile.refreshKey();
                     tileIterator.remove();
@@ -598,8 +581,8 @@ class TileManager {
                            int imageWidth, int imageHeight, float originWidthScale, float originHeightScale,
                            int inSampleSize, Rect newDecodeRect) {
         for (Rect emptyRect : emptyRectList) {
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, NAME + ". load emptyRect=" + emptyRect.toShortString());
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, NAME, "load emptyRect=%s", emptyRect.toShortString());
             }
 
             int tileLeft = emptyRect.left, tileTop = emptyRect.top, tileRight = 0, tileBottom = 0;
@@ -616,18 +599,17 @@ class TileManager {
                     calculateSrcRect(loadTile.srcRect, loadTile.drawRect, imageWidth, imageHeight, originWidthScale, originHeightScale);
 
                     tileList.add(loadTile);
-                    if (Sketch.isDebugMode()) {
-                        Log.d(Sketch.TAG, NAME + ". submit and refresh key" +
-                                ". newDecodeRect=" + newDecodeRect.toShortString() + ", tile=" + loadTile.getInfo());
+                    if (LogType.BASE.isEnabled()) {
+                        SLog.d(LogType.BASE, NAME, "submit and refresh key. newDecodeRect=%s, tile=%s",
+                                newDecodeRect.toShortString(), loadTile.getInfo());
                     }
 
                     loadTile.refreshKey();
                     largeImageViewer.getTileDecoder().decodeTile(loadTile);
                 } else {
-                    if (Sketch.isDebugMode()) {
-                        Log.w(Sketch.TAG, NAME + ". repeated tile. tileDrawRect=" +
-                                Math.round(tileLeft) + ", " + Math.round(tileTop) + ", " +
-                                Math.round(tileRight) + ", " + Math.round(tileBottom));
+                    if (LogType.BASE.isEnabled()) {
+                        SLog.w(LogType.BASE, NAME, "repeated tile. tileDrawRect=%d, %d, %d, %d",
+                                Math.round(tileLeft), Math.round(tileTop), Math.round(tileRight), Math.round(tileBottom));
                     }
                 }
 
@@ -645,13 +627,10 @@ class TileManager {
     }
 
     void decodeCompleted(Tile tile, Bitmap bitmap, int useTime) {
-        if (Sketch.isDebugMode()) {
+        if (LogType.BASE.isEnabled()) {
             String bitmapConfig = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
-            Log.i(Sketch.TAG, NAME + ". decode completed" +
-                    ". useTime=" + useTime + "ms" +
-                    ", tile=" + tile.getInfo() +
-                    ", bitmap=" + bitmap.getWidth() + "x" + bitmap.getHeight() + "(" + bitmapConfig + ")" +
-                    ", tiles=" + tileList.size());
+            SLog.i(LogType.BASE, NAME, "decode completed. useTime=%dms, tile=%s, bitmap=%dx%d(%s), tiles=%d",
+                    useTime, tile.getInfo(), bitmap.getWidth(), bitmap.getHeight(), bitmapConfig, tileList.size());
         }
 
         tile.bitmap = bitmap;
@@ -666,10 +645,9 @@ class TileManager {
     }
 
     void decodeError(Tile tile, DecodeHandler.DecodeErrorException exception) {
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". decode failed. " + exception.getCauseMessage() + "" +
-                    ". tile=" + tile.getInfo() + "" +
-                    ", tiles=" + tileList.size());
+        if (LogType.BASE.isEnabled()) {
+            SLog.w(LogType.BASE, NAME, "decode failed. %s. tile=%s, tiles=%d",
+                    exception.getCauseMessage(), tile.getInfo(), tileList.size());
         }
 
         tileList.remove(tile);
@@ -683,8 +661,8 @@ class TileManager {
             tile.refreshKey();
             tile.clean(bitmapPool);
             tilePool.put(tile);
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". clean tile and refresh key. " + why + ". tile=" + tile.getInfo());
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "clean tile and refresh key. %s. tile=%s", why, tile.getInfo());
             }
         }
         tileList.clear();

@@ -17,11 +17,12 @@
 package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.Configuration;
+import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -296,15 +297,15 @@ public class LoadHelper {
 
     private boolean checkUri() {
         if (loadInfo.getUri() == null || "".equals(loadInfo.getUri().trim())) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName, ". uri is null or empty"));
+            if (LogType.BASE.isEnabled()) {
+                SLog.e(LogType.BASE, logName, "uri is null or empty");
             }
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
         if (loadInfo.getUriScheme() == null) {
-            Log.e(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri scheme", ". ", loadInfo.getId()));
+            SLog.e(LogType.BASE, logName, "unknown uri scheme. %s", loadInfo.getId());
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -319,11 +320,9 @@ public class LoadHelper {
                 && !sketch.getConfiguration().getDiskCache().exist(loadInfo.getDiskCacheKey())) {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        ". canceled",
-                        ". ", isPauseDownload ? "pause download" : "requestLevel is local",
-                        ". ", loadInfo.getId()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, logName, "canceled. %s. %s",
+                        isPauseDownload ? "pause download" : "requestLevel is local", loadInfo.getId());
             }
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;

@@ -1,7 +1,5 @@
 package me.xiaopan.sketchsample.util;
 
-import android.util.Log;
-
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -13,7 +11,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.PreProcessResult;
@@ -90,10 +89,8 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         InputStream inputStream;
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        ". not found icon.png in ",
-                        ". ", loadRequest.getId()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, logName, "not found icon.png in. %s", loadRequest.getId());
             }
             return null;
         }
@@ -162,10 +159,8 @@ public class MyImagePreprocessor extends ImagePreprocessor {
             if (xpkIconDiskCacheEntry != null) {
                 return new PreProcessResult(xpkIconDiskCacheEntry, ImageFrom.LOCAL);
             } else {
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                            ". not found xpk icon cache file",
-                            ". ", loadRequest.getId()));
+                if (LogType.BASE.isEnabled()) {
+                    SLog.w(LogType.BASE, logName, "not found xpk icon cache file. %s", loadRequest.getId());
                 }
                 return null;
             }

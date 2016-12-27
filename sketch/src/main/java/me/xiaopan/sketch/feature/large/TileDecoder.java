@@ -17,9 +17,9 @@
 package me.xiaopan.sketch.feature.large;
 
 import android.text.TextUtils;
-import android.util.Log;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.KeyCounter;
 
 /**
@@ -64,8 +64,8 @@ class TileDecoder {
      */
     void decodeTile(Tile tile) {
         if (!isReady()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". not ready. decodeTile. " + tile.getInfo());
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "not ready. decodeTile. %s", tile.getInfo());
             }
             return;
         }
@@ -75,16 +75,16 @@ class TileDecoder {
     }
 
     void clean(String why) {
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". clean. " + why);
+        if (LogType.BASE.isEnabled()) {
+            SLog.w(LogType.BASE, NAME, "clean. %s", why);
         }
 
         initKeyCounter.refresh();
     }
 
     void recycle(String why) {
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". recycle. " + why);
+        if (LogType.BASE.isEnabled()) {
+            SLog.w(LogType.BASE, NAME, "recycle. %s", why);
         }
 
         if (decoder != null) {
@@ -93,8 +93,8 @@ class TileDecoder {
     }
 
     void initCompleted(String imageUri, ImageRegionDecoder decoder) {
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, NAME + ". init completed. " + imageUri);
+        if (LogType.BASE.isEnabled()) {
+            SLog.d(LogType.BASE, NAME, "init completed. %s", imageUri);
         }
 
         initializing = false;
@@ -102,8 +102,8 @@ class TileDecoder {
     }
 
     void initError(String imageUri, Exception e) {
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, NAME + ". init failed. " + e.getMessage() + ". " + imageUri);
+        if (LogType.BASE.isEnabled()) {
+            SLog.d(LogType.BASE, NAME, "init failed. %s. %s", e.getMessage(), imageUri);
         }
 
         initializing = false;

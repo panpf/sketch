@@ -25,7 +25,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -39,7 +38,9 @@ import android.widget.ImageView.ScaleType;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
@@ -155,8 +156,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         // 定位操作不能被打断
         if (locationRunner != null) {
             if (locationRunner.isRunning()) {
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. location running");
+                if (LogType.BASE.isEnabled()) {
+                    SLog.w(LogType.BASE, NAME, "disallow parent intercept touch event. location running");
                 }
                 requestDisallowInterceptTouchEvent(true);
                 return true;
@@ -187,8 +188,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         tempLastScaleFocusY = 0;
 
         // 上来就禁止父View拦截事件
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. action down");
+        if (LogType.BASE.isEnabled()) {
+            SLog.w(LogType.BASE, NAME, "disallow parent intercept touch event. action down");
         }
         requestDisallowInterceptTouchEvent(true);
 
@@ -231,19 +232,17 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
             return;
         }
 
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, NAME + ". " + String.format("drag. dx: %s, dy: %s", dx, dy));
+        if (LogType.BASE.isEnabled()) {
+            SLog.d(LogType.BASE, NAME, "drag. dx: %s, dy: %s", dx, dy);
         }
 
         supportMatrix.postTranslate(dx, dy);
         checkAndApplyMatrix();
 
         if (!allowParentInterceptOnEdge || scaleDragGestureDetector.isScaling() || disallowParentInterceptTouchEvent) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. onDrag"
-                        + ". allowParentInterceptOnEdge=" + allowParentInterceptOnEdge
-                        + ", scaling=" + scaleDragGestureDetector.isScaling()
-                        + ", tempDisallowParentInterceptTouchEvent=" + disallowParentInterceptTouchEvent);
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "disallow parent intercept touch event. onDrag. allowParentInterceptOnEdge=%s, scaling=%s, tempDisallowParentInterceptTouchEvent=%s",
+                        allowParentInterceptOnEdge, scaleDragGestureDetector.isScaling(), disallowParentInterceptTouchEvent);
             }
             requestDisallowInterceptTouchEvent(true);
             return;
@@ -253,15 +252,13 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 //        if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)
 //                    || verScrollEdge == EDGE_BOTH || (verScrollEdge == EDGE_START && dy >= 1f) || (verScrollEdge == EDGE_END && dy <= -1f)) {
         if (horScrollEdge == EDGE_BOTH || (horScrollEdge == EDGE_START && dx >= 1f) || (horScrollEdge == EDGE_END && dx <= -1f)) {
-            if (Sketch.isDebugMode()) {
-                String scrollEdgeName = String.format("%s-%s", getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
-                Log.i(Sketch.TAG, NAME + ". allow parent intercept touch event. onDrag. scrollEdge=" + scrollEdgeName);
-            }
+            SLog.i(LogType.BASE, NAME, "allow parent intercept touch event. onDrag. scrollEdge=%s-%s",
+                    getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             requestDisallowInterceptTouchEvent(false);
         } else {
-            if (Sketch.isDebugMode()) {
-                String scrollEdgeName = String.format("%s_%s", getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
-                Log.w(Sketch.TAG, NAME + ". disallow parent intercept touch event. onDrag. scrollEdge=" + scrollEdgeName);
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "disallow parent intercept touch event. onDrag. scrollEdge=%s-%s",
+                        getScrollEdgeName(horScrollEdge), getScrollEdgeName(verScrollEdge));
             }
             requestDisallowInterceptTouchEvent(true);
         }
@@ -279,8 +276,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     @Override
     public void onScale(float scaleFactor, float focusX, float focusY) {
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, NAME + ". " + String.format("scale. scaleFactor: %s, dx: %s, dy: %s", scaleFactor, focusX, focusY));
+        if (LogType.BASE.isEnabled()) {
+            SLog.d(LogType.BASE, NAME, "scale. scaleFactor: %s, dx: %s, dy: %s", scaleFactor, focusX, focusY);
         }
 
         tempLastScaleFocusX = focusX;
@@ -321,8 +318,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     @Override
     public boolean onScaleBegin() {
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, NAME + ". " + "scale begin");
+        if (LogType.BASE.isEnabled()) {
+            SLog.d(LogType.BASE, NAME, "scale begin");
         }
 
         setZooming(true);
@@ -331,8 +328,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
     @Override
     public void onScaleEnd() {
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, NAME + ". " + "scale end");
+        if (LogType.BASE.isEnabled()) {
+            SLog.d(LogType.BASE, NAME, "scale end");
         }
 
         float currentScale = SketchUtils.formatFloat(getZoomScale(), 2);
@@ -439,8 +436,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         doubleClickZoomScales = DEFAULT_DOUBLE_CLICK_ZOOM_SCALES;
 
         if (!isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. resetZoomScales");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. resetZoomScales");
             }
             return;
         }
@@ -526,8 +523,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         baseMatrix.reset();
 
         if (!isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. resetBaseMatrix");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. resetBaseMatrix");
             }
             return;
         }
@@ -607,8 +604,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     private boolean checkMatrixBounds() {
         if (!isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. checkMatrixBounds");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. checkMatrixBounds");
             }
             horScrollEdge = EDGE_NONE;
             verScrollEdge = EDGE_NONE;
@@ -851,7 +848,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
 
         ImageView imageView = viewReference.get();
         if (imageView == null) {
-            Log.w(Sketch.TAG, NAME + ". ImageView no longer exists. You should not use this ImageZoomer any more.");
+            SLog.w(LogType.BASE, NAME, "ImageView no longer exists. You should not use this ImageZoomer any more");
             cleanup();
         }
 
@@ -907,8 +904,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     public void getDrawRect(RectF rectF) {
         if (!isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. getDrawRect");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. getDrawRect");
             }
             rectF.setEmpty();
             return;
@@ -925,8 +922,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     public void getVisibleRect(Rect rect) {
         if (!isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. getVisibleRect");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. getVisibleRect");
             }
             rect.setEmpty();
             return;
@@ -1063,8 +1060,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     @SuppressWarnings("unused")
     public boolean location(float x, float y, boolean animate) {
         if (!isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. location");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. location");
             }
             return false;
         }
@@ -1116,8 +1113,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         //noinspection UnnecessaryLocalVariable
         final int endY = trimCenterLocationY;
 
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, ImageZoomer.NAME + ". location. start=" + startX + "x" + startY + ", end=" + endX + "x" + endY);
+        if (LogType.BASE.isEnabled()) {
+            SLog.d(LogType.BASE, ImageZoomer.NAME, "location. start=%dx%d, end=%dx%d", startX, startY, endX, endY);
         }
 
         if (animate) {
@@ -1150,14 +1147,15 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     public boolean zoom(float scale, float focalX, float focalY, boolean animate) {
         if (!isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. zoom");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. zoom");
             }
             return false;
         }
 
         if (scale < minZoomScale || scale > maxZoomScale) {
-            Log.w(Sketch.TAG, NAME + ". Scale must be within the range of " + minZoomScale + "(minScale) and " + maxZoomScale + "(maxScale). " + scale);
+            SLog.w(LogType.BASE, NAME, "Scale must be within the range of %s(minScale) and %s(maxScale). %s",
+                    minZoomScale, maxZoomScale, scale);
             return false;
         }
 
@@ -1179,8 +1177,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
      */
     public boolean zoom(float scale, boolean animate) {
         if (!isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. zoom");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. zoom");
             }
             return false;
         }
@@ -1206,14 +1204,14 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     // TODO: 16/10/19 研究任意角度旋转和旋转时不清空位移以及缩放信息
     public boolean rotateTo(int degrees) {
         if (!isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. rotateTo");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. rotateTo");
             }
             return false;
         }
 
         if (degrees % 90 != 0) {
-            Log.w(Sketch.TAG, NAME + ". rotate degrees must be in multiples of 90");
+            SLog.w(LogType.BASE, NAME, "rotate degrees must be in multiples of 90");
             return false;
         }
         degrees %= 360;

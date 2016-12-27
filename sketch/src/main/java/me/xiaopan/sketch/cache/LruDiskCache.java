@@ -19,7 +19,6 @@ package me.xiaopan.sketch.cache;
 import android.content.Context;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +31,8 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.NoSpaceException;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -110,9 +110,7 @@ public class LruDiskCache implements DiskCache {
             return;
         }
 
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, logName + ". diskCacheDir: " + cacheDir.getPath());
-        }
+        SLog.d(LogType.BASE, logName, "diskCacheDir: %s", cacheDir.getPath());
 
         try {
             cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
@@ -130,9 +128,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Disabled. Unable judge exist, uri=" + uri);
-            }
+            SLog.w(LogType.BASE, logName, "Disabled. Unable judge exist, uri=%s", uri);
             return false;
         }
 
@@ -162,9 +158,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Disabled. Unable get, uri=" + uri);
-            }
+            SLog.w(LogType.BASE, logName, "Disabled. Unable get, uri=%s", uri);
             return null;
         }
 
@@ -193,9 +187,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Disabled. Unable edit, uri=" + uri);
-            }
+            SLog.w(LogType.BASE, logName, "Disabled. Unable edit, uri=%s", uri);
             return null;
         }
 
@@ -290,12 +282,10 @@ public class LruDiskCache implements DiskCache {
     @Override
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
-        if (Sketch.isDebugMode()) {
-            if (disabled) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + true));
-            } else {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + false));
-            }
+        if (disabled) {
+            SLog.w(LogType.BASE, logName, "setDisabled. %s", true);
+        } else {
+            SLog.i(LogType.BASE, logName, "setDisabled. %s", false);
         }
     }
 

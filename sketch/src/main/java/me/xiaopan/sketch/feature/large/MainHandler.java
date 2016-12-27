@@ -20,11 +20,12 @@ import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.util.Log;
 
 import java.lang.ref.WeakReference;
 
+import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.util.KeyCounter;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -135,8 +136,8 @@ class MainHandler extends Handler {
     private void initCompleted(ImageRegionDecoder decoder, String imageUri, int key, KeyCounter keyCounter) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. initCompleted. key: " + key + ", imageUri: " + decoder.getImageUri());
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "weak reference break. initCompleted. key: %d, imageUri: %s", key, decoder.getImageUri());
             }
             decoder.recycle();
             return;
@@ -144,8 +145,8 @@ class MainHandler extends Handler {
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". init key expired. initCompleted. key: " + key + ". newKey: " + newKey + ", imageUri: " + decoder.getImageUri());
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "init key expired. initCompleted. key: %d. newKey: %d, imageUri: %s", key, newKey, decoder.getImageUri());
             }
             decoder.recycle();
             return;
@@ -157,16 +158,16 @@ class MainHandler extends Handler {
     private void initError(Exception exception, String imageUri, int key, KeyCounter keyCounter) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. initError. key: " + key + ", imageUri: " + imageUri);
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "weak reference break. initError. key: %d, imageUri: %s", key, imageUri);
             }
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". key expire. initError. key: " + key + ". newKey: " + newKey + ", imageUri: " + imageUri);
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "key expire. initError. key: %d. newKey: %d, imageUri: %s", key, newKey, imageUri);
             }
             return;
         }
@@ -177,8 +178,8 @@ class MainHandler extends Handler {
     private void decodeCompleted(int key, Tile tile, Bitmap bitmap, int useTime) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeCompleted. key: " + key +", tile=" + tile.getInfo());
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "weak reference break. decodeCompleted. key: %d, tile=%s", key, tile.getInfo());
             }
             SketchUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
             return;
@@ -196,8 +197,8 @@ class MainHandler extends Handler {
     private void decodeError(int key, Tile tile, DecodeHandler.DecodeErrorException exception) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". weak reference break. decodeError. key: " + key +", tile=" + tile.getInfo());
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "weak reference break. decodeError. key: %d, tile=%s", key, tile.getInfo());
             }
             return;
         }

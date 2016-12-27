@@ -15,7 +15,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.recycle.AttributeStrategy;
 import me.xiaopan.sketch.cache.recycle.LruPoolStrategy;
 import me.xiaopan.sketch.cache.recycle.SizeConfigStrategy;
@@ -105,9 +106,7 @@ public class LruBitmapPool implements BitmapPool {
         }
 
         if (disabled) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Disabled. Unable put, bitmap=" + strategy.logBitmap(bitmap));
-            }
+            SLog.w(LogType.BASE, logName, "Disabled. Unable put, bitmap=%s", strategy.logBitmap(bitmap));
             return false;
         }
 
@@ -115,12 +114,8 @@ public class LruBitmapPool implements BitmapPool {
             throw new NullPointerException("Bitmap must not be null");
         }
         if (!bitmap.isMutable() || strategy.getSize(bitmap) > maxSize || !allowedConfigs.contains(bitmap.getConfig())) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Reject bitmap from pool"
-                        + ", bitmap: " + strategy.logBitmap(bitmap)
-                        + ", is mutable: " + bitmap.isMutable()
-                        + ", is allowed config: " + allowedConfigs.contains(bitmap.getConfig()));
-            }
+            SLog.w(LogType.BASE, logName, "Reject bitmap from pool, bitmap: %s, is mutable: %s, is allowed config: %s",
+                    strategy.logBitmap(bitmap), bitmap.isMutable(), allowedConfigs.contains(bitmap.getConfig()));
             return false;
         }
 
@@ -131,9 +126,7 @@ public class LruBitmapPool implements BitmapPool {
         puts++;
         currentSize += size;
 
-        if (Sketch.isDebugMode()) {
-            Log.v(Sketch.TAG, logName + ". Put bitmap in pool=" + strategy.logBitmap(bitmap));
-        }
+        SLog.v(LogType.BASE, logName, "Put bitmap in pool=%s", strategy.logBitmap(bitmap));
         dump();
 
         evict();
@@ -148,9 +141,7 @@ public class LruBitmapPool implements BitmapPool {
         }
 
         if (disabled) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Disabled. Unable get, bitmap=" + strategy.logBitmap(width, height, config));
-            }
+            SLog.w(LogType.BASE, logName, "Disabled. Unable get, bitmap=%s", strategy.logBitmap(width, height, config));
             return null;
         }
 
@@ -158,14 +149,10 @@ public class LruBitmapPool implements BitmapPool {
         // null as the requested config here. See issue #194.
         final Bitmap result = strategy.get(width, height, config != null ? config : DEFAULT_CONFIG);
         if (result == null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Missing bitmap=" + strategy.logBitmap(width, height, config));
-            }
+            SLog.w(LogType.BASE, logName, "Missing bitmap=%s", strategy.logBitmap(width, height, config));
             misses++;
         } else {
-            if (Sketch.isDebugMode()) {
-                Log.i(Sketch.TAG, logName + ". Get bitmap=" + strategy.logBitmap(width, height, config));
-            }
+            SLog.i(LogType.BASE, logName, "Get bitmap=%s", strategy.logBitmap(width, height, config));
             hits++;
             currentSize -= strategy.getSize(result);
             tracker.remove(result);
@@ -237,12 +224,10 @@ public class LruBitmapPool implements BitmapPool {
     @Override
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
-        if (Sketch.isDebugMode()) {
-            if (disabled) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + true));
-            } else {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + false));
-            }
+        if (disabled) {
+            SLog.w(LogType.BASE, logName, "setDisabled. %s", true);
+        } else {
+            SLog.i(LogType.BASE, logName, "setDisabled. %s", false);
         }
     }
 
@@ -257,21 +242,17 @@ public class LruBitmapPool implements BitmapPool {
             trimToSize(maxSize / 2);
         }
 
-        long releasedSize = size - getSize();
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                    ". trimMemory",
-                    ". level=", SketchUtils.getTrimLevelName(level),
-                    ", released: ", Formatter.formatFileSize(context, releasedSize)));
+        if (LogType.BASE.isEnabled()) {
+            String releasedSize = Formatter.formatFileSize(context, size - getSize());
+            SLog.w(LogType.BASE, logName, "trimMemory. level=%s, released: %s",
+                    SketchUtils.getTrimLevelName(level), releasedSize);
         }
     }
 
     @Override
     public synchronized void clear() {
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                    ". clear",
-                    ". before clean memoryCacheSize: ", Formatter.formatFileSize(context, getSize())));
+        if (LogType.BASE.isEnabled()) {
+            SLog.w(LogType.BASE, logName, "clear. before size %s", Formatter.formatFileSize(context, getSize()));
         }
 
         trimToSize(0);
@@ -296,17 +277,13 @@ public class LruBitmapPool implements BitmapPool {
         while (currentSize > size) {
             final Bitmap removed = strategy.removeLast();
             if (removed == null) {
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, logName + ". Size mismatch, resetting");
-                    dumpUnchecked();
-                }
+                SLog.w(LogType.BASE, logName, "Size mismatch, resetting");
+                dumpUnchecked();
                 currentSize = 0;
                 return;
             }
 
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, logName + ". Evicting bitmap=" + strategy.logBitmap(removed));
-            }
+            SLog.e(LogType.BASE, logName, "Evicting bitmap=%s", strategy.logBitmap(removed));
             tracker.remove(removed);
             currentSize -= strategy.getSize(removed);
             removed.recycle();
@@ -322,15 +299,9 @@ public class LruBitmapPool implements BitmapPool {
     }
 
     private void dumpUnchecked() {
-        if (Sketch.isDebugMode()) {
-            Log.v(Sketch.TAG, logName + ". Hits=" + hits
-                    + ", misses=" + misses
-                    + ", puts=" + puts
-                    + ", evictions=" + evictions
-                    + ", currentSize=" + currentSize
-                    + ", maxSize=" + maxSize
-                    + "\nStrategy=" + strategy);
-        }
+        SLog.v(LogType.BASE, logName,
+                "Hits=%d, misses=%d, puts=%d, evictions=%d, currentSize=%d, maxSize=%d, Strategy=%s",
+                hits, misses, puts, evictions, currentSize, maxSize, strategy);
     }
 
     @Override

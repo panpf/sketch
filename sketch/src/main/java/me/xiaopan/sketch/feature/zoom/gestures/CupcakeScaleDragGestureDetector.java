@@ -17,12 +17,12 @@
 package me.xiaopan.sketch.feature.zoom.gestures;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 
 public class CupcakeScaleDragGestureDetector implements ScaleDragGestureDetector {
     private static final String NAME = "CupcakeGestureDetector";
@@ -77,7 +77,7 @@ public class CupcakeScaleDragGestureDetector implements ScaleDragGestureDetector
                 if (null != mVelocityTracker) {
                     mVelocityTracker.addMovement(ev);
                 } else {
-                    Log.w(Sketch.TAG, NAME + ". Velocity tracker is null");
+                    SLog.w(LogType.BASE, NAME, "Velocity tracker is null");
                 }
 
                 mLastTouchX = getActiveX(ev);

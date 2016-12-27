@@ -20,7 +20,6 @@ import android.app.Application;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -54,13 +53,12 @@ public class Sketch {
     public static final String TAG = "Sketch";
 
     private static Sketch instance;
-    private static boolean debugMode;    //调试模式，在控制台输出日志
     private static Map<Enum<?>, Object> optionsMap;
 
     private Configuration configuration;
 
     private Sketch(Context context) {
-        Log.i(TAG, String.format("Version %s %s(%d)", BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
+        SLog.i(String.format("Version %s %s(%d)", BuildConfig.BUILD_TYPE, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE));
         this.configuration = new Configuration(context);
     }
 
@@ -274,8 +272,8 @@ public class Sketch {
             }
         }
 
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, String.format("Trim of memory, level= %s", SketchUtils.getTrimLevelName(level)));
+        if (LogType.BASE.isEnabled()) {
+            SLog.w(LogType.BASE, "Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
         }
 
         configuration.getMemoryCache().trimMemory(level);
@@ -294,8 +292,8 @@ public class Sketch {
             }
         }
 
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, "Memory is very low, clean memory cache and bitmap pool");
+        if (LogType.BASE.isEnabled()) {
+            SLog.w(LogType.BASE, "Memory is very low, clean memory cache and bitmap pool");
         }
 
         configuration.getMemoryCache().clear();
@@ -392,21 +390,5 @@ public class Sketch {
      */
     public static DisplayOptions getDisplayOptions(Enum<?> optionsName) {
         return optionsMap != null ? (DisplayOptions) optionsMap.get(optionsName) : null;
-    }
-
-    /**
-     * 是否开启调试模式，开启调试模式后会在控制台输出LOG
-     */
-    public static boolean isDebugMode() {
-        return debugMode;
-    }
-
-    /**
-     * 设置是否开启调试模式，开启调试模式后会在控制台输出LOG
-     *
-     * @param debugMode 调试模式
-     */
-    public static void setDebugMode(boolean debugMode) {
-        Sketch.debugMode = debugMode;
     }
 }

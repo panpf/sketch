@@ -21,7 +21,6 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
@@ -748,7 +747,7 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      */
     public void setSupportZoom(boolean supportZoom) {
         if (!supportZoom && isSupportLargeImage()) {
-            Log.w(Sketch.TAG, "You can't close the zoom function, because of large image function need it");
+            SLog.w("You can't close the zoom function, because of large image function need it");
             return;
         }
 

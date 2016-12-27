@@ -16,9 +16,10 @@
 
 package me.xiaopan.sketch.util;
 
-import android.util.Log;
-
 import java.text.DecimalFormat;
+
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 
 public class Stopwatch {
     private static Stopwatch instance;
@@ -27,7 +28,6 @@ public class Stopwatch {
     private long decodeCount;
     private long useTimeCount;
     private StringBuilder builder;
-    private String logTag;
     private String logName;
     private DecimalFormat decimalFormat = new DecimalFormat("#.##");
 
@@ -42,8 +42,7 @@ public class Stopwatch {
         return instance;
     }
 
-    public void start(String logTag, String logName) {
-        this.logTag = logTag;
+    public void start(String logName) {
         this.logName = logName;
         startTime = System.currentTimeMillis();
         lastTime = startTime;
@@ -80,10 +79,8 @@ public class Stopwatch {
             decodeCount++;
             useTimeCount += totalTime;
 
-            Log.d(logTag, SketchUtils.concat(logName,
-                    ". ", builder.toString(),
-                    ", ", "average", "=", decimalFormat.format((double) useTimeCount / decodeCount), "ms",
-                    ". ", requestId));
+            SLog.d(LogType.TIME, logName, "%s, average=%sms. %s",
+                    builder.toString(), decimalFormat.format((double) useTimeCount / decodeCount), requestId);
             builder = null;
         }
     }

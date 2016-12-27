@@ -19,10 +19,10 @@ package me.xiaopan.sketch.feature.zoom;
 import android.content.Context;
 import android.graphics.Point;
 import android.graphics.RectF;
-import android.util.Log;
 import android.widget.ImageView;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.feature.zoom.scrollerproxy.ScrollerProxy;
 
 class FlingTranslateRunner implements Runnable {
@@ -37,8 +37,8 @@ class FlingTranslateRunner implements Runnable {
 
     void fling(int velocityX, int velocityY) {
         if (!imageZoomer.isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. fling");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. fling");
             }
             return;
         }
@@ -70,11 +70,9 @@ class FlingTranslateRunner implements Runnable {
             minY = maxY = startY;
         }
 
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, ImageZoomer.NAME + ". fling" +
-                    ". start=" + startX + "x " + startY +
-                    ", min=" + minX + "x" + minY +
-                    ", max=" + maxX + "x" + maxY);
+        if (LogType.BASE.isEnabled()) {
+            SLog.d(LogType.BASE, ImageZoomer.NAME, "fling. start=%dx %d, min=%dx%d, max=%dx%d",
+                    startX, startY, minX, minY, maxX, maxY);
         }
 
         // If we actually can move, fling the scroller
@@ -94,22 +92,22 @@ class FlingTranslateRunner implements Runnable {
     public void run() {
         // remaining post that should not be handled
         if (mScroller.isFinished()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". finished. fling run");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "finished. fling run");
             }
             return;
         }
 
         if (!imageZoomer.isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. fling run");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. fling run");
             }
             return;
         }
 
         if (!mScroller.computeScrollOffset()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". scroll finished. fling run");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "scroll finished. fling run");
             }
             return;
         }
@@ -126,8 +124,8 @@ class FlingTranslateRunner implements Runnable {
 
     @SuppressWarnings("WeakerAccess")
     public void cancelFling() {
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, ImageZoomer.NAME + ". cancel fling");
+        if (LogType.BASE.isEnabled()) {
+            SLog.d(LogType.BASE, ImageZoomer.NAME, "cancel fling");
         }
 
         if (mScroller != null) {

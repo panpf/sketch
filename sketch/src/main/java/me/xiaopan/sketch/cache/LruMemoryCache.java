@@ -19,9 +19,9 @@ package me.xiaopan.sketch.cache;
 import android.content.Context;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.util.LruCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -46,32 +46,23 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Disabled. Unable put, key=" + key);
-            }
+            SLog.w(LogType.BASE, logName, "Disabled. Unable put, key=%s", key);
             return;
         }
 
         if (cache.get(key) != null) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Exist. key=" + key);
-            }
+            SLog.w(LogType.BASE, logName, String.format("Exist. key=%s", key));
             return;
         }
 
         int oldCacheSize = 0;
-        if (Sketch.isDebugMode()) {
+        if (LogType.BASE.isEnabled()) {
             oldCacheSize = cache.size();
         }
         cache.put(key, refBitmap);
-        if (Sketch.isDebugMode()) {
-            int newCacheSize = cache.size();
-            Log.i(Sketch.TAG, SketchUtils.concat(logName,
-                    ". put",
-                    ". beforeCacheSize=", Formatter.formatFileSize(context, oldCacheSize),
-                    ". ", refBitmap.getInfo(),
-                    ". afterCacheSize=", Formatter.formatFileSize(context, newCacheSize)));
-        }
+        SLog.i(LogType.BASE, logName, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
+                Formatter.formatFileSize(context, oldCacheSize), refBitmap.getInfo(),
+                Formatter.formatFileSize(context, cache.size()));
     }
 
     @Override
@@ -81,9 +72,7 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Disabled. Unable get, key=" + key);
-            }
+            SLog.w(LogType.BASE, logName, "Disabled. Unable get, key=%s", key);
             return null;
         }
 
@@ -97,18 +86,13 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, logName + ". Disabled. Unable remove, key=" + key);
-            }
+            SLog.w(LogType.BASE, logName, "Disabled. Unable remove, key=%s", key);
             return null;
         }
 
         RefBitmap refBitmap = cache.remove(key);
-        if (Sketch.isDebugMode()) {
-            Log.i(Sketch.TAG, SketchUtils.concat(logName,
-                    ". remove",
-                    ". memoryCacheSize: ", Formatter.formatFileSize(context, cache.size())));
-        }
+        SLog.i(LogType.BASE, logName, "remove. memoryCacheSize: %s",
+                Formatter.formatFileSize(context, cache.size()));
         return refBitmap;
     }
 
@@ -141,12 +125,8 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         long releasedSize = memoryCacheSize - getSize();
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                    ". trimMemory",
-                    ". level=", SketchUtils.getTrimLevelName(level),
-                    ", released: ", Formatter.formatFileSize(context, releasedSize)));
-        }
+        SLog.w(LogType.BASE, logName, "trimMemory. level=%s, released: %s",
+                SketchUtils.getTrimLevelName(level), Formatter.formatFileSize(context, releasedSize));
     }
 
     @Override
@@ -157,12 +137,10 @@ public class LruMemoryCache implements MemoryCache {
     @Override
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
-        if (Sketch.isDebugMode()) {
-            if (disabled) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + true));
-            } else {
-                Log.i(Sketch.TAG, SketchUtils.concat(logName, ". setDisabled. " + false));
-            }
+        if (disabled) {
+            SLog.w(LogType.BASE, logName, "setDisabled. %s", true);
+        } else {
+            SLog.i(LogType.BASE, logName, "setDisabled. %s", false);
         }
     }
 
@@ -172,11 +150,8 @@ public class LruMemoryCache implements MemoryCache {
             return;
         }
 
-        if (Sketch.isDebugMode()) {
-            Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                    ". clear",
-                    ". before clean memoryCacheSize: ", Formatter.formatFileSize(context, cache.size())));
-        }
+        SLog.w(LogType.BASE, logName, "clear. before size: %s",
+                Formatter.formatFileSize(context, cache.size()));
         cache.evictAll();
     }
 

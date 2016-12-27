@@ -16,9 +16,9 @@
 
 package me.xiaopan.sketch.request;
 
-import android.util.Log;
-
+import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.SketchUtils;
 
@@ -142,22 +142,22 @@ public class DownloadHelper {
 
     private boolean checkUri() {
         if (downloadInfo.getUri() == null || "".equals(downloadInfo.getUri().trim())) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName, ". uri is null or empty"));
+            if (LogType.BASE.isEnabled()) {
+                SLog.e(LogType.BASE, logName, "uri is null or empty");
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
         if (downloadInfo.getUriScheme() == null) {
-            Log.e(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri scheme", ". ", downloadInfo.getId()));
+            SLog.e(LogType.BASE, logName, "unknown uri scheme. %s", downloadInfo.getId());
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
         if (downloadInfo.getUriScheme() != UriScheme.NET) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName, ". only support http ot https", ". ", downloadInfo.getId()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.e(LogType.BASE, logName, "only support http ot https. %s", downloadInfo.getId());
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
@@ -171,8 +171,8 @@ public class DownloadHelper {
             DiskCache diskCache = sketch.getConfiguration().getDiskCache();
             DiskCache.Entry diskCacheEntry = diskCache.get(downloadInfo.getDiskCacheKey());
             if (diskCacheEntry != null) {
-                if (Sketch.isDebugMode()) {
-                    Log.i(Sketch.TAG, SketchUtils.concat(logName, ". image download completed", ". ", downloadInfo.getId()));
+                if (LogType.BASE.isEnabled()) {
+                    SLog.i(LogType.BASE, logName, "image download completed. %s", downloadInfo.getId());
                 }
                 if (downloadListener != null) {
                     DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);

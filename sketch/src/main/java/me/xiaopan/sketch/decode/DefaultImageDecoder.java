@@ -21,12 +21,12 @@ import android.graphics.BitmapFactory.Options;
 import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 
 import java.io.File;
 import java.text.DecimalFormat;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
@@ -55,7 +55,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     @Override
     public DecodeResult decode(LoadRequest request) {
         long startTime = 0;
-        if (Sketch.isDebugMode()) {
+        if (LogType.BASE.isEnabled()) {
             startTime = System.currentTimeMillis();
         }
 
@@ -73,13 +73,13 @@ public class DefaultImageDecoder implements ImageDecoder {
             } else if (uriScheme == UriScheme.DRAWABLE) {
                 result = decodeDrawable(request);
             } else {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri is ", request.getUri()));
+                SLog.w(LogType.BASE, logName, "unknown uri is %s", request.getUri());
             }
         } catch (Throwable e) {
             e.printStackTrace();
         }
 
-        if (Sketch.isDebugMode()) {
+        if (LogType.TIME.isEnabled()) {
             long useTime = System.currentTimeMillis() - startTime;
             synchronized (DefaultImageDecoder.this) {
                 if ((Long.MAX_VALUE - decodeCount) < 1 || (Long.MAX_VALUE - useTimeCount) < useTime) {
@@ -91,10 +91,8 @@ public class DefaultImageDecoder implements ImageDecoder {
                 if (decimalFormat == null) {
                     decimalFormat = new DecimalFormat("#.##");
                 }
-                Log.d(Sketch.TAG, SketchUtils.concat(logName,
-                        ". decode use time ", useTime, "ms",
-                        ", average ", decimalFormat.format((double) useTimeCount / decodeCount), "ms",
-                        ". ", request.getId()));
+                SLog.d(LogType.BASE, logName, "decode use time %dms, average %sms. %s",
+                        useTime, decimalFormat.format((double) useTimeCount / decodeCount), request.getId());
             }
         }
 
@@ -121,7 +119,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             } else if (uriScheme == UriScheme.DRAWABLE) {
                 decodeHelper = new DrawableDecodeHelper(Integer.valueOf(request.getRealUri()), request);
             } else {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName, ". unknown uri is ", request.getUri()));
+                SLog.w(LogType.BASE, logName, "unknown uri is %s", request.getUri());
             }
 
             if (decodeHelper != null) {
@@ -144,11 +142,9 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 过滤掉原图宽高小于等于1的图片
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            if (Sketch.isDebugMode()) {
-                Log.e(Sketch.TAG, SketchUtils.concat(logName,
-                        ". image width or height less than or equal to 1px",
-                        ". imageSize: ", boundOptions.outWidth, "x", boundOptions.outHeight,
-                        ". ", request.getId()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.e(LogType.BASE, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
+                        boundOptions.outWidth, boundOptions.outHeight, request.getId());
             }
             decodeHelper.onDecodeError();
             return null;
@@ -228,7 +224,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 || !SketchUtils.sdkSupportBitmapRegionDecoder()
                 || !SketchUtils.formatSupportBitmapRegionDecoder(imageFormat)) {
             if (loadOptions.isThumbnailMode() && loadOptions.getResize() == null) {
-                Log.e(Sketch.TAG, "thumbnailMode need resize ");
+                SLog.e(logName, "thumbnailMode need resize ");
             }
             return null;
         }
@@ -301,12 +297,9 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        ". image width or height less than or equal to 1px",
-                        ". imageSize: ", boundOptions.outWidth, "x", boundOptions.outHeight,
-                        ". bitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
-                        ". ", request.getId()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
+                        boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getId());
             }
             bitmap.recycle();
             decodeHelper.onDecodeError();
@@ -380,12 +373,9 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, SketchUtils.concat(logName,
-                        ". image width or height less than or equal to 1px",
-                        ". imageSize: ", boundOptions.outWidth, "x", boundOptions.outHeight,
-                        ". bitmapSize: ", bitmap.getWidth(), "x", bitmap.getHeight(),
-                        ". ", request.getId()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
+                        boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getId());
             }
             bitmap.recycle();
             decodeHelper.onDecodeError();

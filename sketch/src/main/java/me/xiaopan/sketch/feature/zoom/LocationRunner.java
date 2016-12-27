@@ -17,12 +17,12 @@
 package me.xiaopan.sketch.feature.zoom;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 
 /**
  * 定位执行器
@@ -56,23 +56,23 @@ class LocationRunner implements Runnable {
     public void run() {
         // remaining post that should not be handled
         if (mScroller.isFinished()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". finished. location run");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "finished. location run");
             }
             return;
         }
 
         if (!imageZoomer.isWorking()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". not working. location run");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. location run");
             }
             mScroller.forceFinished(true);
             return;
         }
 
         if (!mScroller.computeScrollOffset()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, ImageZoomer.NAME + ". scroll finished. location run");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, ImageZoomer.NAME, "scroll finished. location run");
             }
             return;
         }

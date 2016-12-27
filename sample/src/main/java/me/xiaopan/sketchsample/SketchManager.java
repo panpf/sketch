@@ -8,6 +8,7 @@ import com.tencent.bugly.crashreport.CrashReport;
 import java.util.List;
 
 import me.xiaopan.sketch.Configuration;
+import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.SketchMonitor;
@@ -30,7 +31,7 @@ public class SketchManager {
     }
 
     public void initConfig() {
-        Sketch.setDebugMode(BuildConfig.DEBUG);
+        LogType.BASE.setEnabled(BuildConfig.DEBUG);
         Configuration sketchConfiguration = Sketch.with(context).getConfiguration();
         sketchConfiguration.setMobileNetworkGlobalPauseDownload(Settings.getBoolean(context, Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD));
         sketchConfiguration.setGlobalLowQualityImage(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE));

@@ -20,7 +20,6 @@ import android.annotation.TargetApi;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
@@ -46,7 +45,6 @@ import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.FreeRideManager;
 import me.xiaopan.sketch.request.RequestExecutor;
 import me.xiaopan.sketch.request.RequestFactory;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * Sketch唯一配置类
@@ -104,8 +102,8 @@ public final class Configuration {
 
         this.monitor = new SketchMonitor(context);
 
-        if (Sketch.isDebugMode()) {
-            Log.d(Sketch.TAG, getInfo());
+        if (LogType.BASE.isEnabled()) {
+            SLog.d(LogType.BASE, getInfo());
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
@@ -144,8 +142,8 @@ public final class Configuration {
             if (oldRequestExecutor != null) {
                 oldRequestExecutor.shutdown();
             }
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setRequestExecutor", ". ", requestExecutor.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setRequestExecutor. %s", requestExecutor.getIdentifier());
             }
         }
         return this;
@@ -173,8 +171,8 @@ public final class Configuration {
             if (oldDiskCache != null) {
                 oldDiskCache.close();
             }
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setDiskCache", ". ", diskCache.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setDiskCache. %s", diskCache.getIdentifier());
             }
         }
         return this;
@@ -203,8 +201,8 @@ public final class Configuration {
             if (oldBitmapPool != null) {
                 oldBitmapPool.close();
             }
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setBitmapPool", ". ", bitmapPool.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setBitmapPool. %s", bitmapPool.getIdentifier());
             }
         }
         return this;
@@ -232,8 +230,8 @@ public final class Configuration {
             if (oldMemoryCache != null) {
                 oldMemoryCache.close();
             }
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setMemoryCache", ". ", memoryCache.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setMemoryCache. %s", memoryCache.getIdentifier());
             }
         }
         return this;
@@ -257,8 +255,8 @@ public final class Configuration {
     public Configuration setImageDecoder(ImageDecoder imageDecoder) {
         if (imageDecoder != null) {
             this.imageDecoder = imageDecoder;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setImageDecoder", ". ", imageDecoder.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setImageDecoder. %s", imageDecoder.getIdentifier());
             }
         }
         return this;
@@ -282,8 +280,8 @@ public final class Configuration {
     public Configuration setHttpStack(HttpStack httpStack) {
         if (httpStack != null) {
             this.httpStack = httpStack;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setHttpStack", ". ", httpStack.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setHttpStack. %s", httpStack.getIdentifier());
             }
         }
         return this;
@@ -307,8 +305,8 @@ public final class Configuration {
     public Configuration setImageSizeCalculator(ImageSizeCalculator imageSizeCalculator) {
         if (imageSizeCalculator != null) {
             this.imageSizeCalculator = imageSizeCalculator;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setImageSizeCalculator", ". ", imageSizeCalculator.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setImageSizeCalculator. %s", imageSizeCalculator.getIdentifier());
             }
         }
         return this;
@@ -332,8 +330,8 @@ public final class Configuration {
     public Configuration setDefaultImageDisplayer(ImageDisplayer defaultImageDisplayer) {
         if (defaultImageDisplayer != null) {
             this.defaultImageDisplayer = defaultImageDisplayer;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setDefaultImageDisplayer", ". ", defaultImageDisplayer.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setDefaultImageDisplayer. %s", defaultImageDisplayer.getIdentifier());
             }
         }
         return this;
@@ -357,8 +355,8 @@ public final class Configuration {
     public Configuration setResizeImageProcessor(ImageProcessor resizeImageProcessor) {
         if (resizeImageProcessor != null) {
             this.resizeImageProcessor = resizeImageProcessor;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setResizeImageProcessor", ". ", resizeImageProcessor.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setResizeImageProcessor. %s", resizeImageProcessor.getIdentifier());
             }
         }
         return this;
@@ -382,8 +380,8 @@ public final class Configuration {
     public Configuration setHelperFactory(HelperFactory helperFactory) {
         if (helperFactory != null) {
             this.helperFactory = helperFactory;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setHelperFactory", ". ", helperFactory.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setHelperFactory. %s", helperFactory.getIdentifier());
             }
         }
         return this;
@@ -407,8 +405,8 @@ public final class Configuration {
     public Configuration setRequestFactory(RequestFactory requestFactory) {
         if (requestFactory != null) {
             this.requestFactory = requestFactory;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setRequestFactory", ". ", requestFactory.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setRequestFactory. %s", requestFactory.getIdentifier());
             }
         }
         return this;
@@ -432,8 +430,8 @@ public final class Configuration {
     public Configuration setResizeCalculator(ResizeCalculator resizeCalculator) {
         if (resizeCalculator != null) {
             this.resizeCalculator = resizeCalculator;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setResizeCalculator", ". ", resizeCalculator.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setResizeCalculator. %s", resizeCalculator.getIdentifier());
             }
         }
         return this;
@@ -454,8 +452,8 @@ public final class Configuration {
     public Configuration setGlobalPauseLoad(boolean globalPauseLoad) {
         if (this.globalPauseLoad != globalPauseLoad) {
             this.globalPauseLoad = globalPauseLoad;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalPauseLoad", ". ", globalPauseLoad));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setGlobalPauseLoad. %s", globalPauseLoad);
             }
         }
         return this;
@@ -476,8 +474,8 @@ public final class Configuration {
     public Configuration setGlobalPauseDownload(boolean globalPauseDownload) {
         if (this.globalPauseDownload != globalPauseDownload) {
             this.globalPauseDownload = globalPauseDownload;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalPauseDownload", ". ", globalPauseDownload));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setGlobalPauseDownload. %s", globalPauseDownload);
             }
         }
         return this;
@@ -509,8 +507,8 @@ public final class Configuration {
                 }
             }
 
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setMobileNetworkGlobalPauseDownload", ". ", isMobileNetworkGlobalPauseDownload()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setMobileNetworkGlobalPauseDownload. %s", isMobileNetworkGlobalPauseDownload());
             }
         }
         return this;
@@ -531,8 +529,8 @@ public final class Configuration {
     public Configuration setGlobalLowQualityImage(boolean globalLowQualityImage) {
         if (this.globalLowQualityImage != globalLowQualityImage) {
             this.globalLowQualityImage = globalLowQualityImage;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalLowQualityImage", ". ", globalLowQualityImage));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setGlobalLowQualityImage. %s", globalLowQualityImage);
             }
         }
         return this;
@@ -556,8 +554,8 @@ public final class Configuration {
     public Configuration setGlobalInPreferQualityOverSpeed(boolean globalInPreferQualityOverSpeed) {
         if (this.globalInPreferQualityOverSpeed != globalInPreferQualityOverSpeed) {
             this.globalInPreferQualityOverSpeed = globalInPreferQualityOverSpeed;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setGlobalInPreferQualityOverSpeed", ". ", globalInPreferQualityOverSpeed));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setGlobalInPreferQualityOverSpeed. %s", globalInPreferQualityOverSpeed);
             }
         }
         return this;
@@ -580,8 +578,8 @@ public final class Configuration {
     public Configuration setImagePreprocessor(ImagePreprocessor imagePreprocessor) {
         if (imagePreprocessor != null) {
             this.imagePreprocessor = imagePreprocessor;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setImagePreprocessor", ". ", imagePreprocessor.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setImagePreprocessor. %s", imagePreprocessor.getIdentifier());
             }
         }
         return this;
@@ -606,8 +604,8 @@ public final class Configuration {
     public Configuration setMonitor(SketchMonitor monitor) {
         if (monitor != null) {
             this.monitor = monitor;
-            if (Sketch.isDebugMode()) {
-                Log.d(Sketch.TAG, SketchUtils.concat(logName, ". setMonitor", ". ", monitor.getIdentifier()));
+            if (LogType.BASE.isEnabled()) {
+                SLog.d(LogType.BASE, logName, "setMonitor. %s", monitor.getIdentifier());
             }
         }
         return this;

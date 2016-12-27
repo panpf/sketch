@@ -20,10 +20,10 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 
-import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.SketchImageView;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
@@ -61,8 +61,8 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         imageZoomer.update();
 
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". large image function the minimum support to GINGERBREAD_MR1");
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "large image function the minimum support to GINGERBREAD_MR1");
             }
         }
     }
@@ -114,15 +114,15 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         }
 
         if (!largeImageViewer.isReady() && !largeImageViewer.isInitializing()) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". largeImageViewer not available. onMatrixChanged. " + imageUri);
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
             }
             return;
         }
 
         if (imageZoomer.getRotateDegrees() % 90 != 0) {
-            if (Sketch.isDebugMode()) {
-                Log.w(Sketch.TAG, NAME + ". rotate degrees must be in multiples of 90. " + imageUri);
+            if (LogType.BASE.isEnabled()) {
+                SLog.w(LogType.BASE, NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
             }
             return;
         }
@@ -161,20 +161,14 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             drawableQualified &= SketchUtils.formatSupportBitmapRegionDecoder(ImageFormat.valueOfMimeType(sketchDrawable.getMimeType()));
 
             if (drawableQualified) {
-                if (Sketch.isDebugMode()) {
-                    Log.d(Sketch.TAG, NAME + ". Use large image function" +
-                            ". previewDrawableSize: " + previewWidth + "x" + previewHeight +
-                            ", imageSize: " + imageWidth + "x" + imageHeight +
-                            ", mimeType: " + sketchDrawable.getMimeType() +
-                            ". " + sketchDrawable.getImageId());
+                if (LogType.BASE.isEnabled()) {
+                    SLog.d(LogType.BASE, NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                            previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getImageId());
                 }
             } else {
-                if (Sketch.isDebugMode()) {
-                    Log.w(Sketch.TAG, NAME + ". Don't need to use large image function" +
-                            ". previewDrawableSize: " + previewWidth + "x" + previewHeight +
-                            ", imageSize: " + imageWidth + "x" + imageHeight +
-                            ", mimeType: " + sketchDrawable.getMimeType() +
-                            ". " + sketchDrawable.getImageId());
+                if (LogType.BASE.isEnabled()) {
+                    SLog.w(LogType.BASE, NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                            previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getImageId());
                 }
             }
         }
