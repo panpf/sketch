@@ -41,7 +41,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
     }
 
     public TransitionImageDisplayer() {
-        this(400);
+        this(4000);
     }
 
     @Override
@@ -63,6 +63,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
             TransitionDrawable transitionDrawable = new TransitionDrawable(new Drawable[]{oldDrawable, newDrawable});
             imageViewInterface.clearAnimation();
             imageViewInterface.setImageDrawable(transitionDrawable);
+            transitionDrawable.setCrossFadeEnabled(true);
             transitionDrawable.startTransition(duration);
         }
     }
