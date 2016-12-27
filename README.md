@@ -62,8 +62,9 @@ sketchImageView.displayURIImage(uri);
 
 ### 使用指南
 
-#### 从JCenter导入
+#### 导入
 
+1.在app的build.gradle文件的dependencies节点中加入依赖
 ```groovy
 dependencies{
 	compile 'me.xiaopan:sketch:lastVersionName'
@@ -71,14 +72,38 @@ dependencies{
 ```
 `lastVersionName`：[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)`（不带v）`
 
-添加以下权限
+2.添加以下权限
 ```xml
 <uses-permission android:name="android.permission.INTERNET"/>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 ```
 
-最低支持`Android2.2 API 7`
+3.在Application中调用释放缓存的方法（ICE_CREAM_SANDWICH以上版本能直接通过Context注册并回调）
+```java
+public class MyApplication extends Application {    
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            Sketch.with(getBaseContext()).onTrimMemory(level);
+        }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            Sketch.with(getBaseContext()).onLowMemory();
+        }
+    }
+}
+```
+
+最低支持`Android2.3 API 9`
 
 #### 支持的URI
 |Type|Scheme|Method|
@@ -178,6 +203,8 @@ load()和download()还支持同步执行，详情请参考[同步执行load和do
 [koral](https://github.com/koral--) - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
 
 [chrisbanes](https://github.com/chrisbanes) - [PhotoView](https://github.com/chrisbanes/PhotoView)
+
+[bumptech](https://github.com/bumptech/glide) - [glide](https://github.com/bumptech/glide) （BitmapPool）
 
 ### License
     Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>

@@ -62,10 +62,11 @@ sketchImageView.displayURIImage(uri);
 
 [SketchImageView Detailed Instructions.md](docs/wiki/sketch_image_view.md)
 
-### User's guidance
+### Guide
 
-#### Import from JCenter
+#### Import
 
+1.Add dependencies to the dependencies node of the app's build.gradle file
 ```groovy
 dependencies{
 	compile 'me.xiaopan:sketch:lastVersionName'
@@ -73,14 +74,38 @@ dependencies{
 ```
 `lastVersionName`：[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)`（not With v）`
 
-Add the following permissions
+2.Add the following permissions
 ```xml
 <uses-permission android:name="android.permission.INTERNET"/>
 <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 ```
 
-Minimum support for `Android2.2 API 7`
+3.In Application release of cache (ICE_CREAM_SANDWICH above version can be registered directly through the Context and callback)
+```java
+public class MyApplication extends Application {    
+
+    @Override
+    public void onTrimMemory(int level) {
+        super.onTrimMemory(level);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            Sketch.with(getBaseContext()).onTrimMemory(level);
+        }
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+            Sketch.with(getBaseContext()).onLowMemory();
+        }
+    }
+}
+```
+
+Minimum support for `Android2.3 API 9`
 
 #### Supported URIs
 
@@ -184,6 +209,8 @@ More:
 [koral](https://github.com/koral--) - [android-gif-drawable](https://github.com/koral--/android-gif-drawable)
 
 [chrisbanes](https://github.com/chrisbanes) - [PhotoView](https://github.com/chrisbanes/PhotoView)
+
+[bumptech](https://github.com/bumptech/glide) - [glide](https://github.com/bumptech/glide) （BitmapPool）
 
 ### License
     Copyright (C) 2013 Peng fei Pan <sky@xiaopan.me>

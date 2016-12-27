@@ -1,22 +1,24 @@
-Sketch:
+缓存：
+>* :sparkles: Sketch类中新增onLowMemory()和onTrimMemory(int)方法，用于在内存较低时释放缓存，需要在Application中回调，具体请查看README或参考demo app
+>* :fire: 去掉stateImageMemoryCache，共用一个内存缓存器
+>* :sparkles: `bitmap pool` 增加bitmap pool，减少内存分配，降低因GC回收造成的卡顿
 
->* `MemoryCache` Sketch类新增onLowMemory()和onTrimMemory(int)，需要在readme中说明
->* `stateImageMemoryCache` 去掉stateImageMemoryCache，共用一个内存缓存器
->* `minSdkVersion` 最低支持版本升到9
->* `bitmap pool` 增加bitmap pool，减少内存分配，减少GC回收造成的卡顿
->* `ExceptionMonitor` ExceptionMonitor改名为SketchMonitor并挪到顶级目录
->* :bug: `GIF` onDetachedFromWindow时主动回收GifDrawable
->* :sparkles: `bitmapPoolDisabled` LoadOptions、LoadHelper、DisplayOptions、DisplayHelper增加disableBitmapPool属性
->* disableCacheInDisk和disableCacheInMemory属性改名为cacheInDiskDisabled和cacheInMemoryDisabled
->* `Lock` 移除内存缓存编辑锁
->* :bug: 修复同一内存缓存ID可以出现多个请求同时执行的BUG
->* :bug: 修复由于同一内存缓存ID可以出现多个请求，导致会出现同一个内存缓存ID会连续存入多个缓存对象，
+GIF：
+>* :bug: onDetachedFromWindow时主动回收GifDrawable
+
+请求：
+>* :art: `Attribute` disableCacheInDisk和disableCacheInMemory属性改名为cacheInDiskDisabled和cacheInMemoryDisabled
+>* :sparkles: `Attribute` LoadOptions、LoadHelper、DisplayOptions、DisplayHelper增加disableBitmapPool属性
+>* :fire: `Lock` 移除内存缓存编辑锁
+>* :bug: `Filter repeat` 修复同一内存缓存ID可以出现多个请求同时执行的BUG
+>* :bug: `Filter repeat` 修复由于同一内存缓存ID可以出现多个请求，导致会出现同一个内存缓存ID会连续存入多个缓存对象，
 那么新存入的缓存对象就会挤掉旧的缓存对象，如果旧的缓存对象只有缓存引用，那么旧的缓存对象会被直接回收
 >* :zap: `FreeRide` 新增FreeRide机制避免重复下载和加载
+>* :bug: `TransitonImageDisplayer` 修复从ImageView上取当前图片作为过渡图片时没有过滤LayerDrawable，导致可能会越套越深的BUG
 
-Sample APP
-
->* 本地相册调整成每行四个，并去掉圆角
+其它：
+>* :arrow_up: `minSdkVersion` 最低支持版本升到9
+>* :art: `ExceptionMonitor` ExceptionMonitor改名为SketchMonitor并挪到顶级目录
 
 待办：
 >* 完善bitmap pool的文档
