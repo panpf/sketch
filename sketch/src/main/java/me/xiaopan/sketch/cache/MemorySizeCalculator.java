@@ -9,7 +9,6 @@ import android.util.DisplayMetrics;
 
 import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * A calculator that tries to intelligently determine cache sizes for a given device based on some constants and the
@@ -54,15 +53,15 @@ public class MemorySizeCalculator {
 
         if (targetMemoryCacheSize + targetPoolSize <= maxSize) {
             memoryCacheSize = targetMemoryCacheSize;
-            bitmapPoolSize = SketchUtils.sdkSupportInBitmap() ? targetPoolSize : 0;
+            bitmapPoolSize = BitmapPoolUtils.sdkSupportInBitmap() ? targetPoolSize : 0;
         } else {
             int part = Math.round((float) maxSize / (BITMAP_POOL_TARGET_SCREENS + MEMORY_CACHE_TARGET_SCREENS));
             memoryCacheSize = part * MEMORY_CACHE_TARGET_SCREENS;
-            bitmapPoolSize = SketchUtils.sdkSupportInBitmap() ? part * BITMAP_POOL_TARGET_SCREENS : 0;
+            bitmapPoolSize = BitmapPoolUtils.sdkSupportInBitmap() ? part * BITMAP_POOL_TARGET_SCREENS : 0;
         }
 
-        if (LogType.BASE.isEnabled()) {
-            SLog.d(LogType.BASE, LOG_NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
+        if (LogType.CACHE.isEnabled()) {
+            SLog.d(LogType.CACHE, LOG_NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
                     toMb(memoryCacheSize), toMb(bitmapPoolSize), targetMemoryCacheSize + targetPoolSize > maxSize, toMb(maxSize), activityManager.getMemoryClass(), isLowMemoryDevice(activityManager));
         }
     }

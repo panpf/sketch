@@ -29,9 +29,9 @@ import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageFormat;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 解码处理器，运行在解码线程中，负责解码
@@ -80,8 +80,8 @@ class DecodeHandler extends Handler {
 
     private void decode(TileExecutor executor, int key, Tile tile) {
         if (executor == null) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "weak reference break. key: %d, tile=%s", key, tile.getInfo());
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "weak reference break. key: %d, tile=%s", key, tile.getInfo());
             }
             return;
         }
@@ -112,8 +112,8 @@ class DecodeHandler extends Handler {
             options.inPreferredConfig = imageFormat.getConfig(false);
         }
 
-        if (!disableInBitmap && SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
-            SketchUtils.setInBitmapFromPoolForRegionDecoder(options, srcRect, bitmapPool);
+        if (!disableInBitmap && BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
+            BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder(options, srcRect, bitmapPool);
         }
 
         long time = System.currentTimeMillis();
@@ -123,10 +123,10 @@ class DecodeHandler extends Handler {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
-            if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+            if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
                 // 不再使用inBitmap功能
                 if (!disableInBitmap) {
-                    if (SketchUtils.inBitmapThrowForRegionDecoder(e, options, monitor, bitmapPool,
+                    if (BitmapPoolUtils.inBitmapThrowForRegionDecoder(e, options, monitor, bitmapPool,
                             regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, srcRect)) {
                         disableInBitmap = true;
                     }
@@ -154,7 +154,7 @@ class DecodeHandler extends Handler {
         }
 
         if (tile.isExpired(key)) {
-            SketchUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool());
+            BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(executor.callback.getContext()).getConfiguration().getBitmapPool());
             executor.mainHandler.postDecodeError(key, tile, new DecodeErrorException(DecodeErrorException.CAUSE_AFTER_KEY_EXPIRED));
             return;
         }
@@ -163,8 +163,8 @@ class DecodeHandler extends Handler {
     }
 
     public void clean(String why) {
-        if (LogType.BASE.isEnabled()) {
-            SLog.w(LogType.BASE, NAME, "clean. %s" + why);
+        if (LogType.LARGE.isEnabled()) {
+            SLog.w(LogType.LARGE, NAME, "clean. %s" + why);
         }
 
         removeMessages(WHAT_DECODE);

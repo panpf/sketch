@@ -92,7 +92,7 @@ abstract class BaseRequest {
      */
     void setStatus(Status status) {
         this.status = status;
-        if (LogType.BASE.isEnabled()) {
+        if (LogType.REQUEST.isEnabled()) {
             if (status == Status.FAILED) {
                 printLogW("new status", status.getLog(), errorCause != null ? errorCause.name() : null);
             } else if (status == Status.CANCELED) {

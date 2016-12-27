@@ -40,8 +40,8 @@ class ZoomRunner implements Runnable {
     @Override
     public void run() {
         if (!imageZoomer.isWorking()) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, ImageZoomer.NAME, "not working. zoom run");
+            if (LogType.ZOOM.isEnabled()) {
+                SLog.w(LogType.ZOOM, ImageZoomer.NAME, "not working. zoom run");
             }
             return;
         }
@@ -58,8 +58,8 @@ class ZoomRunner implements Runnable {
         if (continueZoom) {
             CompatUtils.postOnAnimation(imageZoomer.getImageView(), this);
         } else {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, ImageZoomer.NAME, "finished. zoom run");
+            if (LogType.ZOOM.isEnabled()) {
+                SLog.w(LogType.ZOOM, ImageZoomer.NAME, "finished. zoom run");
             }
         }
     }

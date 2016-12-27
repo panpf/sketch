@@ -387,6 +387,15 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             }
         }, menuClickListener));
 
+        menuList.add("日志");
+
+        menuList.add(new CheckMenu(this, "请求日志", Settings.PREFERENCE_LOG_REQUEST, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "缓存日志", Settings.PREFERENCE_LOG_CACHE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "手势缩放日志", Settings.PREFERENCE_LOG_ZOOM, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "分块显示超大图日志", Settings.PREFERENCE_LOG_LARGE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "时间日志", Settings.PREFERENCE_LOG_TIME, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "其它日志", Settings.PREFERENCE_LOG_BASE, null, menuClickListener));
+
         AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(menuList);
         adapter.addItemFactory(new MenuTitleItemFactory());
         adapter.addItemFactory(new PageMenuItemFactory(new PageMenuItemFactory.OnClickItemListener() {

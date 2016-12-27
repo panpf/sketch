@@ -35,6 +35,7 @@ import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
@@ -140,8 +141,8 @@ public class ImagePreprocessor implements Identifier {
             return null;
         }
         if (iconBitmap.isRecycled()) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, logName, "apk icon bitmap recycled. %s", loadRequest.getId());
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.w(LogType.REQUEST, logName, "apk icon bitmap recycled. %s", loadRequest.getId());
             }
             return null;
         }
@@ -153,7 +154,7 @@ public class ImagePreprocessor implements Identifier {
                 outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
             } catch (IOException e) {
                 e.printStackTrace();
-                SketchUtils.freeBitmapToPool(iconBitmap, bitmapPool);
+                BitmapPoolUtils.freeBitmapToPool(iconBitmap, bitmapPool);
                 diskCacheEditor.abort();
                 return null;
             }
@@ -184,7 +185,7 @@ public class ImagePreprocessor implements Identifier {
             diskCacheEditor.abort();
             return null;
         } finally {
-            SketchUtils.freeBitmapToPool(iconBitmap, bitmapPool);
+            BitmapPoolUtils.freeBitmapToPool(iconBitmap, bitmapPool);
             SketchUtils.close(outputStream);
         }
 
@@ -193,8 +194,8 @@ public class ImagePreprocessor implements Identifier {
             if (apkIconDiskCacheEntry != null) {
                 return new PreProcessResult(apkIconDiskCacheEntry, ImageFrom.LOCAL);
             } else {
-                if (LogType.BASE.isEnabled()) {
-                    SLog.w(LogType.BASE, logName, "not found apk icon cache file. %s", loadRequest.getId());
+                if (LogType.REQUEST.isEnabled()) {
+                    SLog.w(LogType.REQUEST, logName, "not found apk icon cache file. %s", loadRequest.getId());
                 }
                 return null;
             }
@@ -251,8 +252,8 @@ public class ImagePreprocessor implements Identifier {
         }
 
         if (iconBitmap.isRecycled()) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, logName, "apk icon bitmap recycled. %s", loadRequest.getId());
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.w(LogType.REQUEST, logName, "apk icon bitmap recycled. %s", loadRequest.getId());
             }
             return null;
         }
@@ -264,7 +265,7 @@ public class ImagePreprocessor implements Identifier {
                 outputStream = new BufferedOutputStream(diskCacheEditor.newOutputStream(), 8 * 1024);
             } catch (IOException e) {
                 e.printStackTrace();
-                SketchUtils.freeBitmapToPool(iconBitmap, bitmapPool);
+                BitmapPoolUtils.freeBitmapToPool(iconBitmap, bitmapPool);
                 diskCacheEditor.abort();
                 return null;
             }
@@ -295,7 +296,7 @@ public class ImagePreprocessor implements Identifier {
             diskCacheEditor.abort();
             return null;
         } finally {
-            SketchUtils.freeBitmapToPool(iconBitmap, bitmapPool);
+            BitmapPoolUtils.freeBitmapToPool(iconBitmap, bitmapPool);
             SketchUtils.close(outputStream);
         }
 
@@ -304,8 +305,8 @@ public class ImagePreprocessor implements Identifier {
             if (appIconDiskCacheEntry != null) {
                 return new PreProcessResult(appIconDiskCacheEntry, ImageFrom.LOCAL);
             } else {
-                if (LogType.BASE.isEnabled()) {
-                    SLog.w(LogType.BASE, logName, "not found apk icon cache file. %s", loadRequest.getId());
+                if (LogType.REQUEST.isEnabled()) {
+                    SLog.w(LogType.REQUEST, logName, "not found apk icon cache file. %s", loadRequest.getId());
                 }
                 return null;
             }

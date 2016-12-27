@@ -34,8 +34,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * A {@link Drawable} which can be used to hold GIF images, especially animations.
@@ -377,7 +377,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
     public void recycle() {
         shutdown();
         if (mBitmapPool != null) {
-            SketchUtils.freeBitmapToPool(mBuffer, mBitmapPool);
+            BitmapPoolUtils.freeBitmapToPool(mBuffer, mBitmapPool);
         } else {
             mBuffer.recycle();
         }

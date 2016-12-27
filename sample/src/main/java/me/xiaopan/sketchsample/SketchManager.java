@@ -31,7 +31,12 @@ public class SketchManager {
     }
 
     public void initConfig() {
-        LogType.BASE.setEnabled(BuildConfig.DEBUG);
+        LogType.BASE.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_BASE));
+        LogType.TIME.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_TIME));
+        LogType.REQUEST.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_REQUEST));
+        LogType.CACHE.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_CACHE));
+        LogType.ZOOM.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_ZOOM));
+        LogType.LARGE.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_LARGE));
         Configuration sketchConfiguration = Sketch.with(context).getConfiguration();
         sketchConfiguration.setMobileNetworkGlobalPauseDownload(Settings.getBoolean(context, Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD));
         sketchConfiguration.setGlobalLowQualityImage(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE));

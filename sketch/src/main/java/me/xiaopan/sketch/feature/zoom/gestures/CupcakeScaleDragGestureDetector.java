@@ -77,7 +77,7 @@ public class CupcakeScaleDragGestureDetector implements ScaleDragGestureDetector
                 if (null != mVelocityTracker) {
                     mVelocityTracker.addMovement(ev);
                 } else {
-                    SLog.w(LogType.BASE, NAME, "Velocity tracker is null");
+                    SLog.w(LogType.ZOOM, NAME, "Velocity tracker is null");
                 }
 
                 mLastTouchX = getActiveX(ev);

@@ -94,29 +94,29 @@ public class CacheFileDecodeHelper implements DecodeHelper {
 
     @Override
     public void onDecodeSuccess(Bitmap bitmap, int outWidth, int outHeight, String outMimeType, int inSampleSize) {
-        if (LogType.BASE.isEnabled()) {
+        if (LogType.REQUEST.isEnabled()) {
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
                 ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
-                SLog.d(LogType.BASE, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
+                SLog.d(LogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
                                 "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
                         outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
                         sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getId());
             } else {
-                SLog.d(LogType.BASE, logName, "decodeSuccess. unchanged. %s", loadRequest.getId());
+                SLog.d(LogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getId());
             }
         }
     }
 
     @Override
     public void onDecodeError() {
-        if (LogType.BASE.isEnabled()) {
-            SLog.e(LogType.BASE, logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getId());
+        if (LogType.REQUEST.isEnabled()) {
+            SLog.e(LogType.REQUEST, logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getId());
         }
 
         if (!diskCacheEntry.delete()) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.e(LogType.BASE, logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.e(LogType.REQUEST, logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
                         diskCacheEntry.getUri(), loadRequest.getId());
             }
         }

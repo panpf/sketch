@@ -110,7 +110,7 @@ public class LruDiskCache implements DiskCache {
             return;
         }
 
-        SLog.d(LogType.BASE, logName, "diskCacheDir: %s", cacheDir.getPath());
+        SLog.d(LogType.CACHE, logName, "diskCacheDir: %s", cacheDir.getPath());
 
         try {
             cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
@@ -128,7 +128,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.BASE, logName, "Disabled. Unable judge exist, uri=%s", uri);
+            SLog.w(LogType.CACHE, logName, "Disabled. Unable judge exist, uri=%s", uri);
             return false;
         }
 
@@ -158,7 +158,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.BASE, logName, "Disabled. Unable get, uri=%s", uri);
+            SLog.w(LogType.CACHE, logName, "Disabled. Unable get, uri=%s", uri);
             return null;
         }
 
@@ -187,7 +187,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.BASE, logName, "Disabled. Unable edit, uri=%s", uri);
+            SLog.w(LogType.CACHE, logName, "Disabled. Unable edit, uri=%s", uri);
             return null;
         }
 
@@ -283,9 +283,9 @@ public class LruDiskCache implements DiskCache {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
         if (disabled) {
-            SLog.w(LogType.BASE, logName, "setDisabled. %s", true);
+            SLog.w(LogType.CACHE, logName, "setDisabled. %s", true);
         } else {
-            SLog.i(LogType.BASE, logName, "setDisabled. %s", false);
+            SLog.i(LogType.CACHE, logName, "setDisabled. %s", false);
         }
     }
 

@@ -46,21 +46,21 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.BASE, logName, "Disabled. Unable put, key=%s", key);
+            SLog.w(LogType.CACHE, logName, "Disabled. Unable put, key=%s", key);
             return;
         }
 
         if (cache.get(key) != null) {
-            SLog.w(LogType.BASE, logName, String.format("Exist. key=%s", key));
+            SLog.w(LogType.CACHE, logName, String.format("Exist. key=%s", key));
             return;
         }
 
         int oldCacheSize = 0;
-        if (LogType.BASE.isEnabled()) {
+        if (LogType.CACHE.isEnabled()) {
             oldCacheSize = cache.size();
         }
         cache.put(key, refBitmap);
-        SLog.i(LogType.BASE, logName, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
+        SLog.i(LogType.CACHE, logName, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
                 Formatter.formatFileSize(context, oldCacheSize), refBitmap.getInfo(),
                 Formatter.formatFileSize(context, cache.size()));
     }
@@ -72,7 +72,7 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.BASE, logName, "Disabled. Unable get, key=%s", key);
+            SLog.w(LogType.CACHE, logName, "Disabled. Unable get, key=%s", key);
             return null;
         }
 
@@ -86,12 +86,12 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.BASE, logName, "Disabled. Unable remove, key=%s", key);
+            SLog.w(LogType.CACHE, logName, "Disabled. Unable remove, key=%s", key);
             return null;
         }
 
         RefBitmap refBitmap = cache.remove(key);
-        SLog.i(LogType.BASE, logName, "remove. memoryCacheSize: %s",
+        SLog.i(LogType.CACHE, logName, "remove. memoryCacheSize: %s",
                 Formatter.formatFileSize(context, cache.size()));
         return refBitmap;
     }
@@ -125,7 +125,7 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         long releasedSize = memoryCacheSize - getSize();
-        SLog.w(LogType.BASE, logName, "trimMemory. level=%s, released: %s",
+        SLog.w(LogType.CACHE, logName, "trimMemory. level=%s, released: %s",
                 SketchUtils.getTrimLevelName(level), Formatter.formatFileSize(context, releasedSize));
     }
 
@@ -138,9 +138,9 @@ public class LruMemoryCache implements MemoryCache {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
         if (disabled) {
-            SLog.w(LogType.BASE, logName, "setDisabled. %s", true);
+            SLog.w(LogType.CACHE, logName, "setDisabled. %s", true);
         } else {
-            SLog.i(LogType.BASE, logName, "setDisabled. %s", false);
+            SLog.i(LogType.CACHE, logName, "setDisabled. %s", false);
         }
     }
 
@@ -150,7 +150,7 @@ public class LruMemoryCache implements MemoryCache {
             return;
         }
 
-        SLog.w(LogType.BASE, logName, "clear. before size: %s",
+        SLog.w(LogType.CACHE, logName, "clear. before size: %s",
                 Formatter.formatFileSize(context, cache.size()));
         cache.evictAll();
     }

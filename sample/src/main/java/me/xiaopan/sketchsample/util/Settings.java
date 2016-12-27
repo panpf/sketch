@@ -9,6 +9,7 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
 
 public class Settings {
@@ -33,6 +34,12 @@ public class Settings {
     public static final String PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE = "PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE";
     public static final String PREFERENCE_PLAY_GIF_ON_LIST = "PREFERENCE_PLAY_GIF_ON_LIST";
     public static final String PREFERENCE_SHOW_GIF_FLAG = "PREFERENCE_SHOW_GIF_FLAG";
+    public static final String PREFERENCE_LOG_BASE = "PREFERENCE_LOG_BASE";
+    public static final String PREFERENCE_LOG_REQUEST = "PREFERENCE_LOG_REQUEST";
+    public static final String PREFERENCE_LOG_CACHE = "PREFERENCE_LOG_CACHE";
+    public static final String PREFERENCE_LOG_ZOOM = "PREFERENCE_LOG_ZOOM";
+    public static final String PREFERENCE_LOG_LARGE = "PREFERENCE_LOG_LARGE";
+    public static final String PREFERENCE_LOG_TIME = "PREFERENCE_LOG_TIME";
 
     public static boolean getBoolean(Context context, @Key String key) {
         boolean defaultValue = false;
@@ -49,6 +56,7 @@ public class Settings {
                 || PREFERENCE_SUPPORT_LARGE_IMAGE.equals(key)
                 || PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE.equals(key)
                 || PREFERENCE_SHOW_GIF_FLAG.equals(key)
+                || PREFERENCE_LOG_REQUEST.equals(key)
                 ) {
             defaultValue = true;
         }
@@ -76,6 +84,18 @@ public class Settings {
             Sketch.with(context).getConfiguration().setGlobalLowQualityImage(newValue);
         } else if (PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)) {
             Sketch.with(context).getConfiguration().setGlobalInPreferQualityOverSpeed(newValue);
+        } else if (PREFERENCE_LOG_BASE.equals(key)) {
+            LogType.BASE.setEnabled(newValue);
+        } else if (PREFERENCE_LOG_REQUEST.equals(key)) {
+            LogType.REQUEST.setEnabled(newValue);
+        } else if (PREFERENCE_LOG_TIME.equals(key)) {
+            LogType.TIME.setEnabled(newValue);
+        } else if (PREFERENCE_LOG_CACHE.equals(key)) {
+            LogType.CACHE.setEnabled(newValue);
+        } else if (PREFERENCE_LOG_ZOOM.equals(key)) {
+            LogType.ZOOM.setEnabled(newValue);
+        } else if (PREFERENCE_LOG_LARGE.equals(key)) {
+            LogType.LARGE.setEnabled(newValue);
         }
     }
 
@@ -102,6 +122,12 @@ public class Settings {
             PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE,
             PREFERENCE_PLAY_GIF_ON_LIST,
             PREFERENCE_SHOW_GIF_FLAG,
+            PREFERENCE_LOG_BASE,
+            PREFERENCE_LOG_REQUEST,
+            PREFERENCE_LOG_CACHE,
+            PREFERENCE_LOG_ZOOM,
+            PREFERENCE_LOG_LARGE,
+            PREFERENCE_LOG_TIME,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Key {

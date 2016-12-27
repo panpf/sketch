@@ -103,7 +103,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
         DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
 
         if (diskCacheEntry != null) {
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogD("from diskCache", "processDownloadFreeRide");
             }
             downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);

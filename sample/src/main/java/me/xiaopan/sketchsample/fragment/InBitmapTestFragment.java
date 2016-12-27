@@ -23,6 +23,7 @@ import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
@@ -174,7 +175,7 @@ public class InBitmapTestFragment extends MyFragment {
         new TestTask() {
             @Override
             protected void configOptions(BitmapFactory.Options options) {
-                if (SketchUtils.sdkSupportInBitmap()) {
+                if (BitmapPoolUtils.sdkSupportInBitmap()) {
                     options.inBitmap = Bitmap.createBitmap(options.outWidth, options.outHeight, options.inPreferredConfig);
                     options.inMutable = true;
                 }
@@ -187,7 +188,7 @@ public class InBitmapTestFragment extends MyFragment {
         new TestTask() {
             @Override
             protected void configOptions(BitmapFactory.Options options) {
-                if (SketchUtils.sdkSupportInBitmap()) {
+                if (BitmapPoolUtils.sdkSupportInBitmap()) {
                     options.inBitmap = Bitmap.createBitmap(options.outWidth + 10, options.outHeight + 5, options.inPreferredConfig);
                     options.inMutable = true;
                 }
@@ -200,7 +201,7 @@ public class InBitmapTestFragment extends MyFragment {
         new TestTask() {
             @Override
             protected void configOptions(BitmapFactory.Options options) {
-                if (SketchUtils.sdkSupportInBitmap()) {
+                if (BitmapPoolUtils.sdkSupportInBitmap()) {
                     options.inBitmap = Bitmap.createBitmap(options.outHeight, options.outWidth, options.inPreferredConfig);
                     options.inMutable = true;
                 }
@@ -213,7 +214,7 @@ public class InBitmapTestFragment extends MyFragment {
         new TestTask() {
             @Override
             protected void configOptions(BitmapFactory.Options options) {
-                if (SketchUtils.sdkSupportInBitmap()) {
+                if (BitmapPoolUtils.sdkSupportInBitmap()) {
                     options.inSampleSize = 2;
                     int finalWidth = SketchUtils.ceil(options.outWidth, options.inSampleSize);
                     int finalHeight = SketchUtils.ceil(options.outHeight, options.inSampleSize);
@@ -275,7 +276,7 @@ public class InBitmapTestFragment extends MyFragment {
                 e.printStackTrace();
 
                 SketchMonitor monitor = Sketch.with(getActivity()).getConfiguration().getMonitor();
-                SketchUtils.inBitmapThrow(e, options, monitor, configuration.getBitmapPool(), fileName, 0, 0);
+                BitmapPoolUtils.inBitmapThrow(e, options, monitor, configuration.getBitmapPool(), fileName, 0, 0);
             }
 
             if (newBitmap != null) {
@@ -307,7 +308,7 @@ public class InBitmapTestFragment extends MyFragment {
             imageView.setImageBitmap(bitmap);
             textView.setText(builder.toString());
 
-            if (!SketchUtils.freeBitmapToPool(oldBitmap, configuration.getBitmapPool())) {
+            if (!BitmapPoolUtils.freeBitmapToPool(oldBitmap, configuration.getBitmapPool())) {
                 Log.w("BitmapPoolTest", "recycle");
             }
         }

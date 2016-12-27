@@ -48,7 +48,6 @@ import me.xiaopan.sketch.util.SketchUtils;
  * <li>download()：下载图片到磁盘上</li>
  * </ul>
  */
-// TODO: 2016/12/21 日志分类控制
 public class Sketch {
     public static final String TAG = "Sketch";
 

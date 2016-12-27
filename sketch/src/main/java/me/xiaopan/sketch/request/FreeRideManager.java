@@ -56,7 +56,7 @@ public class FreeRideManager {
 
             displayFreeRideProviderMap.put(provider.getDisplayFreeRideKey(), provider);
 
-            SLog.v(LogType.BASE, LOG_NAME, "display. register free ride provider. %s",
+            SLog.v(LogType.REQUEST, LOG_NAME, "display. register free ride provider. %s",
                     provider.getDisplayFreeRideLog());
         }
     }
@@ -75,7 +75,7 @@ public class FreeRideManager {
             if (displayFreeRideProviderMap != null) {
                 freeRideProvider = displayFreeRideProviderMap.remove(provider.getDisplayFreeRideKey());
                 if (freeRideProvider != null) {
-                    SLog.w(LogType.BASE, LOG_NAME, "display. unregister free ride provider. %s",
+                    SLog.w(LogType.REQUEST, LOG_NAME, "display. unregister free ride provider. %s",
                             freeRideProvider.getDisplayFreeRideLog());
                 }
             }
@@ -91,7 +91,7 @@ public class FreeRideManager {
             String providerId = freeRideProvider.getDisplayFreeRideLog();
             for (DisplayFreeRide childFreeRide : freeRideSet) {
                 boolean success = childFreeRide.processDisplayFreeRide();
-                SLog.d(LogType.BASE, LOG_NAME, "display. callback free ride. %s. %s  <------  %s",
+                SLog.d(LogType.REQUEST, LOG_NAME, "display. callback free ride. %s. %s  <------  %s",
                         success ? "success" : "failed", childFreeRide.getDisplayFreeRideLog(), providerId);
             }
             freeRideSet.clear();
@@ -120,7 +120,7 @@ public class FreeRideManager {
 
             freeRideProvider.byDisplayFreeRide(childFreeRide);
 
-            SLog.i(LogType.BASE, LOG_NAME, "display. by free ride. %s  ------>  %s",
+            SLog.i(LogType.REQUEST, LOG_NAME, "display. by free ride. %s  ------>  %s",
                     childFreeRide.getDisplayFreeRideLog(), freeRideProvider.getDisplayFreeRideLog());
             return true;
         }
@@ -145,7 +145,7 @@ public class FreeRideManager {
 
             downloadFreeRideProviderMap.put(provider.getDownloadFreeRideKey(), provider);
 
-            SLog.v(LogType.BASE, LOG_NAME, "download. register free ride provider. %s",
+            SLog.v(LogType.REQUEST, LOG_NAME, "download. register free ride provider. %s",
                     provider.getDownloadFreeRideLog());
         }
     }
@@ -164,7 +164,7 @@ public class FreeRideManager {
             if (downloadFreeRideProviderMap != null) {
                 freeRideProvider = downloadFreeRideProviderMap.remove(provider.getDownloadFreeRideKey());
                 if (freeRideProvider != null) {
-                    SLog.w(LogType.BASE, LOG_NAME, "download. unregister free ride provider. %s",
+                    SLog.w(LogType.REQUEST, LOG_NAME, "download. unregister free ride provider. %s",
                             freeRideProvider.getDownloadFreeRideLog());
                 }
             }
@@ -180,7 +180,7 @@ public class FreeRideManager {
             String providerId = freeRideProvider.getDownloadFreeRideLog();
             for (DownloadFreeRide childFreeRide : freeRideSet) {
                 boolean success = childFreeRide.processDownloadFreeRide();
-                SLog.d(LogType.BASE, LOG_NAME, "download. callback free ride. %s. %s  <------  %s",
+                SLog.d(LogType.REQUEST, LOG_NAME, "download. callback free ride. %s. %s  <------  %s",
                         success ? "success" : "failed", childFreeRide.getDownloadFreeRideLog(), providerId);
             }
             freeRideSet.clear();
@@ -209,7 +209,7 @@ public class FreeRideManager {
 
             freeRideProvider.byDownloadFreeRide(childFreeRide);
 
-            SLog.i(LogType.BASE, LOG_NAME, "download. by free ride. %s  ------>  %s",
+            SLog.i(LogType.REQUEST, LOG_NAME, "download. by free ride. %s  ------>  %s",
                     childFreeRide.getDownloadFreeRideLog(), freeRideProvider.getDownloadFreeRideLog());
             return true;
         }

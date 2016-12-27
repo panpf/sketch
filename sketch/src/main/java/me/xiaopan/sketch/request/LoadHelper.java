@@ -297,15 +297,15 @@ public class LoadHelper {
 
     private boolean checkUri() {
         if (loadInfo.getUri() == null || "".equals(loadInfo.getUri().trim())) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.e(LogType.BASE, logName, "uri is null or empty");
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.e(LogType.REQUEST, logName, "uri is null or empty");
             }
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
         if (loadInfo.getUriScheme() == null) {
-            SLog.e(LogType.BASE, logName, "unknown uri scheme. %s", loadInfo.getId());
+            SLog.e(LogType.REQUEST, logName, "unknown uri scheme. %s", loadInfo.getId());
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -320,8 +320,8 @@ public class LoadHelper {
                 && !sketch.getConfiguration().getDiskCache().exist(loadInfo.getDiskCacheKey())) {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, logName, "canceled. %s. %s",
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.w(LogType.REQUEST, logName, "canceled. %s. %s",
                         isPauseDownload ? "pause download" : "requestLevel is local", loadInfo.getId());
             }
 

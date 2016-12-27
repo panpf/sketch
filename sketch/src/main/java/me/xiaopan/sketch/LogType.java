@@ -17,10 +17,34 @@
 package me.xiaopan.sketch;
 
 public enum LogType {
+    /**
+     * 其它
+     */
     BASE,
+
+    /**
+     * 内存缓存、bitmap pool、磁盘缓存
+     */
+    CACHE,
+
+    /**
+     * 请求流程
+     */
     REQUEST,
+
+    /**
+     * DisplayHelper.commit()执行时间和解码耗时
+     */
     TIME,
-    SCALING,
+
+    /**
+     * 手势缩放
+     */
+    ZOOM,
+
+    /**
+     * 分块显示超大图
+     */
     LARGE,
     ;
 

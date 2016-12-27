@@ -28,6 +28,7 @@ import java.text.DecimalFormat;
 import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
@@ -55,7 +56,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     @Override
     public DecodeResult decode(LoadRequest request) {
         long startTime = 0;
-        if (LogType.BASE.isEnabled()) {
+        if (LogType.REQUEST.isEnabled()) {
             startTime = System.currentTimeMillis();
         }
 
@@ -73,7 +74,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             } else if (uriScheme == UriScheme.DRAWABLE) {
                 result = decodeDrawable(request);
             } else {
-                SLog.w(LogType.BASE, logName, "unknown uri is %s", request.getUri());
+                SLog.w(LogType.REQUEST, logName, "unknown uri is %s", request.getUri());
             }
         } catch (Throwable e) {
             e.printStackTrace();
@@ -91,7 +92,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 if (decimalFormat == null) {
                     decimalFormat = new DecimalFormat("#.##");
                 }
-                SLog.d(LogType.BASE, logName, "decode use time %dms, average %sms. %s",
+                SLog.d(LogType.REQUEST, logName, "decode use time %dms, average %sms. %s",
                         useTime, decimalFormat.format((double) useTimeCount / decodeCount), request.getId());
             }
         }
@@ -119,7 +120,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             } else if (uriScheme == UriScheme.DRAWABLE) {
                 decodeHelper = new DrawableDecodeHelper(Integer.valueOf(request.getRealUri()), request);
             } else {
-                SLog.w(LogType.BASE, logName, "unknown uri is %s", request.getUri());
+                SLog.w(LogType.REQUEST, logName, "unknown uri is %s", request.getUri());
             }
 
             if (decodeHelper != null) {
@@ -142,8 +143,8 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 过滤掉原图宽高小于等于1的图片
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.e(LogType.BASE, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.e(LogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
                         boundOptions.outWidth, boundOptions.outHeight, request.getId());
             }
             decodeHelper.onDecodeError();
@@ -252,9 +253,9 @@ public class DefaultImageDecoder implements ImageDecoder {
         decodeOptions.inSampleSize = sizeCalculator.calculateInSampleSize(result.srcRect.width(), result.srcRect.height(),
                 resize.getWidth(), resize.getHeight(), supportLargeImage);
 
-        if (!loadOptions.isBitmapPoolDisabled() && SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+        if (!loadOptions.isBitmapPoolDisabled() && BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
             BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
-            SketchUtils.setInBitmapFromPoolForRegionDecoder(decodeOptions, result.srcRect, bitmapPool);
+            BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder(decodeOptions, result.srcRect, bitmapPool);
         }
 
         Bitmap bitmap = null;
@@ -263,11 +264,11 @@ public class DefaultImageDecoder implements ImageDecoder {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
-            if (SketchUtils.sdkSupportInBitmapForRegionDecoder()) {
+            if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
                 if (!loadOptions.isBitmapPoolDisabled()) {
                     BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
                     SketchMonitor monitor = request.getSketch().getConfiguration().getMonitor();
-                    SketchUtils.inBitmapThrowForRegionDecoder(e, decodeOptions, monitor, bitmapPool,
+                    BitmapPoolUtils.inBitmapThrowForRegionDecoder(e, decodeOptions, monitor, bitmapPool,
                             request.getUri(), boundOptions.outWidth, boundOptions.outHeight, result.srcRect);
                 }
 
@@ -297,8 +298,8 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.w(LogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
                         boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getId());
             }
             bitmap.recycle();
@@ -329,9 +330,9 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         // Set inBitmap from bitmap pool
-        if (!request.getOptions().isBitmapPoolDisabled() && SketchUtils.sdkSupportInBitmap()) {
+        if (!request.getOptions().isBitmapPoolDisabled() && BitmapPoolUtils.sdkSupportInBitmap()) {
             BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
-            SketchUtils.setInBitmapFromPool(decodeOptions, bitmapPool);
+            BitmapPoolUtils.setInBitmapFromPool(decodeOptions, bitmapPool);
         }
 
         Bitmap bitmap = null;
@@ -340,11 +341,11 @@ public class DefaultImageDecoder implements ImageDecoder {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
-            if (SketchUtils.sdkSupportInBitmap()) {
+            if (BitmapPoolUtils.sdkSupportInBitmap()) {
                 if (!request.getOptions().isBitmapPoolDisabled()) {
                     SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
                     BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
-                    SketchUtils.inBitmapThrow(e, decodeOptions, sketchMonitor, bitmapPool, request.getUri(), boundOptions.outWidth, boundOptions.outHeight);
+                    BitmapPoolUtils.inBitmapThrow(e, decodeOptions, sketchMonitor, bitmapPool, request.getUri(), boundOptions.outWidth, boundOptions.outHeight);
                 }
 
                 // 要是因为inBitmap而解码失败就再此尝试
@@ -373,8 +374,8 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.w(LogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
                         boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getId());
             }
             bitmap.recycle();

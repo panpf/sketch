@@ -142,22 +142,22 @@ public class DownloadHelper {
 
     private boolean checkUri() {
         if (downloadInfo.getUri() == null || "".equals(downloadInfo.getUri().trim())) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.e(LogType.BASE, logName, "uri is null or empty");
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.e(LogType.REQUEST, logName, "uri is null or empty");
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
         if (downloadInfo.getUriScheme() == null) {
-            SLog.e(LogType.BASE, logName, "unknown uri scheme. %s", downloadInfo.getId());
+            SLog.e(LogType.REQUEST, logName, "unknown uri scheme. %s", downloadInfo.getId());
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
         if (downloadInfo.getUriScheme() != UriScheme.NET) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.e(LogType.BASE, logName, "only support http ot https. %s", downloadInfo.getId());
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.e(LogType.REQUEST, logName, "only support http ot https. %s", downloadInfo.getId());
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
@@ -171,8 +171,8 @@ public class DownloadHelper {
             DiskCache diskCache = sketch.getConfiguration().getDiskCache();
             DiskCache.Entry diskCacheEntry = diskCache.get(downloadInfo.getDiskCacheKey());
             if (diskCacheEntry != null) {
-                if (LogType.BASE.isEnabled()) {
-                    SLog.i(LogType.BASE, logName, "image download completed. %s", downloadInfo.getId());
+                if (LogType.REQUEST.isEnabled()) {
+                    SLog.i(LogType.REQUEST, logName, "image download completed. %s", downloadInfo.getId());
                 }
                 if (downloadListener != null) {
                     DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);

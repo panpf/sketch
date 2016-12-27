@@ -26,9 +26,9 @@ import java.lang.ref.WeakReference;
 import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.util.KeyCounter;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 运行在主线程，负责将执行器的结果发送到主线程
@@ -136,8 +136,8 @@ class MainHandler extends Handler {
     private void initCompleted(ImageRegionDecoder decoder, String imageUri, int key, KeyCounter keyCounter) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "weak reference break. initCompleted. key: %d, imageUri: %s", key, decoder.getImageUri());
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "weak reference break. initCompleted. key: %d, imageUri: %s", key, decoder.getImageUri());
             }
             decoder.recycle();
             return;
@@ -145,8 +145,8 @@ class MainHandler extends Handler {
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "init key expired. initCompleted. key: %d. newKey: %d, imageUri: %s", key, newKey, decoder.getImageUri());
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "init key expired. initCompleted. key: %d. newKey: %d, imageUri: %s", key, newKey, decoder.getImageUri());
             }
             decoder.recycle();
             return;
@@ -158,16 +158,16 @@ class MainHandler extends Handler {
     private void initError(Exception exception, String imageUri, int key, KeyCounter keyCounter) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "weak reference break. initError. key: %d, imageUri: %s", key, imageUri);
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "weak reference break. initError. key: %d, imageUri: %s", key, imageUri);
             }
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "key expire. initError. key: %d. newKey: %d, imageUri: %s", key, newKey, imageUri);
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "key expire. initError. key: %d. newKey: %d, imageUri: %s", key, newKey, imageUri);
             }
             return;
         }
@@ -178,17 +178,17 @@ class MainHandler extends Handler {
     private void decodeCompleted(int key, Tile tile, Bitmap bitmap, int useTime) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "weak reference break. decodeCompleted. key: %d, tile=%s", key, tile.getInfo());
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "weak reference break. decodeCompleted. key: %d, tile=%s", key, tile.getInfo());
             }
-            SketchUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
+            BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
             return;
         }
 
         if (!tile.isExpired(key)) {
             executor.callback.onDecodeCompleted(tile, bitmap, useTime);
         } else {
-            SketchUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
+            BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, bitmapPool);
             executor.callback.onDecodeError(tile,
                     new DecodeHandler.DecodeErrorException(DecodeHandler.DecodeErrorException.CAUSE_CALLBACK_KEY_EXPIRED));
         }
@@ -197,8 +197,8 @@ class MainHandler extends Handler {
     private void decodeError(int key, Tile tile, DecodeHandler.DecodeErrorException exception) {
         TileExecutor executor = executorReference.get();
         if (executor == null) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "weak reference break. decodeError. key: %d, tile=%s", key, tile.getInfo());
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "weak reference break. decodeError. key: %d, tile=%s", key, tile.getInfo());
             }
             return;
         }

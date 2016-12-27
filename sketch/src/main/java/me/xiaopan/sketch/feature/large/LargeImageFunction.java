@@ -61,8 +61,8 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         imageZoomer.update();
 
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "large image function the minimum support to GINGERBREAD_MR1");
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "large image function the minimum support to GINGERBREAD_MR1");
             }
         }
     }
@@ -114,15 +114,15 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         }
 
         if (!largeImageViewer.isReady() && !largeImageViewer.isInitializing()) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
             }
             return;
         }
 
         if (imageZoomer.getRotateDegrees() % 90 != 0) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
             }
             return;
         }
@@ -161,13 +161,13 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             drawableQualified &= SketchUtils.formatSupportBitmapRegionDecoder(ImageFormat.valueOfMimeType(sketchDrawable.getMimeType()));
 
             if (drawableQualified) {
-                if (LogType.BASE.isEnabled()) {
-                    SLog.d(LogType.BASE, NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                if (LogType.LARGE.isEnabled()) {
+                    SLog.d(LogType.LARGE, NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getImageId());
                 }
             } else {
-                if (LogType.BASE.isEnabled()) {
-                    SLog.w(LogType.BASE, NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                if (LogType.LARGE.isEnabled()) {
+                    SLog.w(LogType.LARGE, NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getImageId());
                 }
             }

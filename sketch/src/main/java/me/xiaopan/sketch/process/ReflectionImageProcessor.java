@@ -27,9 +27,9 @@ import android.graphics.Shader.TileMode;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.request.Resize;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 倒影图片处理器
@@ -110,7 +110,7 @@ public class ReflectionImageProcessor extends ResizeImageProcessor {
         canvas.drawRect(0, reflectionTop, newBitmap.getWidth(), newBitmap.getHeight(), paint);
 
         if (srcBitmap != bitmap) {
-            SketchUtils.freeBitmapToPool(srcBitmap, bitmapPool);
+            BitmapPoolUtils.freeBitmapToPool(srcBitmap, bitmapPool);
         }
 
         return newBitmap;

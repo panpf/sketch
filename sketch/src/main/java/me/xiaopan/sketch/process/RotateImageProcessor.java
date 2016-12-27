@@ -25,9 +25,9 @@ import android.graphics.RectF;
 import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.request.Resize;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 旋转图片处理器
@@ -83,7 +83,7 @@ public class RotateImageProcessor extends ResizeImageProcessor {
         canvas.setBitmap(null);
 
         if (resizeBitmap != bitmap) {
-            SketchUtils.freeBitmapToPool(resizeBitmap, sketch.getConfiguration().getBitmapPool());
+            BitmapPoolUtils.freeBitmapToPool(resizeBitmap, sketch.getConfiguration().getBitmapPool());
         }
 
         return rotateBitmap;

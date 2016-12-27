@@ -23,6 +23,7 @@ import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.drawable.RefBitmap;
@@ -125,7 +126,7 @@ public class MakerStateImage implements StateImage {
             SketchMonitor sketchMonitor = sketch.getConfiguration().getMonitor();
             sketchMonitor.onProcessImageError(e, UriScheme.DRAWABLE.createUri(String.valueOf(resId)), processor);
             if (allowRecycle) {
-                SketchUtils.freeBitmapToPool(bitmap, bitmapPool);
+                BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
             }
             return null;
         }
@@ -133,7 +134,7 @@ public class MakerStateImage implements StateImage {
         // bitmap变化了，说明创建了一张全新的图片，那么就要回收掉旧的图片
         if (newBitmap != bitmap) {
             if (allowRecycle) {
-                SketchUtils.freeBitmapToPool(bitmap, bitmapPool);
+                BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
             }
 
             // 新图片不能用说你处理部分出现异常了，直接返回null即可

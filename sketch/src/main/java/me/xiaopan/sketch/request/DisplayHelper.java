@@ -404,7 +404,7 @@ public class DisplayHelper {
      */
     public DisplayRequest commit() {
         if (!SketchUtils.isMainThread()) {
-            SLog.w(LogType.BASE, logName, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
+            SLog.w(LogType.REQUEST, logName, "Please perform a commit in the UI thread. viewHashCode=%s. %s",
                     Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getUri());
             if (LogType.TIME.isEnabled()) {
                 Stopwatch.with().print(displayInfo.getUri());
@@ -601,8 +601,8 @@ public class DisplayHelper {
                                 "You must be setup ShapeSize or imageView width and height must be fixed",
                         ". width=", SketchUtils.viewLayoutFormatted(layoutParams.width),
                         ", height=", SketchUtils.viewLayoutFormatted(layoutParams.height));
-                if (LogType.BASE.isEnabled()) {
-                    SLog.d(LogType.BASE, logName, "%s. viewHashCode=%s. %s",
+                if (LogType.REQUEST.isEnabled()) {
+                    SLog.d(LogType.REQUEST, logName, "%s. viewHashCode=%s. %s",
                             errorInfo, Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getId());
                 }
                 throw new IllegalArgumentException(errorInfo);
@@ -631,8 +631,8 @@ public class DisplayHelper {
 
     private boolean checkUri() {
         if (displayInfo.getUri() == null || "".equals(displayInfo.getUri().trim())) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.e(LogType.BASE, logName, "uri is null or empty. viewHashCode=%s",
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.e(LogType.REQUEST, logName, "uri is null or empty. viewHashCode=%s",
                         Integer.toHexString(imageViewInterface.hashCode()));
             }
 
@@ -652,7 +652,7 @@ public class DisplayHelper {
 
         if (displayInfo.getUriScheme() == null) {
             String viewCode = Integer.toHexString(imageViewInterface.hashCode());
-            SLog.e(LogType.BASE, logName, "unknown uri scheme: %s. viewHashCode=%s. %s",
+            SLog.e(LogType.REQUEST, logName, "unknown uri scheme: %s. viewHashCode=%s. %s",
                     displayInfo.getUri(), viewCode, displayInfo.getId());
 
             Drawable drawable = null;
@@ -680,9 +680,9 @@ public class DisplayHelper {
                     // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
                     cachedRefBitmap.setIsWaitingUse(logName + ":waitingUse:fromMemory", true);
 
-                    if (LogType.BASE.isEnabled()) {
+                    if (LogType.REQUEST.isEnabled()) {
                         String viewCode = Integer.toHexString(imageViewInterface.hashCode());
-                        SLog.i(LogType.BASE, logName, "image display completed. %s. %s. viewHashCode=%s",
+                        SLog.i(LogType.REQUEST, logName, "image display completed. %s. %s. viewHashCode=%s",
                                 ImageFrom.MEMORY_CACHE.name(), cachedRefBitmap.getInfo(), viewCode);
                     }
 
@@ -711,9 +711,9 @@ public class DisplayHelper {
                     return false;
                 } else {
                     sketch.getConfiguration().getMemoryCache().remove(displayInfo.getMemoryCacheKey());
-                    if (LogType.BASE.isEnabled()) {
+                    if (LogType.REQUEST.isEnabled()) {
                         String viewCode = Integer.toHexString(imageViewInterface.hashCode());
-                        SLog.e(LogType.BASE, logName, "memory cache drawable recycled. %s. viewHashCode=%s",
+                        SLog.e(LogType.REQUEST, logName, "memory cache drawable recycled. %s. viewHashCode=%s",
                                 cachedRefBitmap.getInfo(), viewCode);
                     }
                 }
@@ -728,8 +728,8 @@ public class DisplayHelper {
         if (displayOptions.getRequestLevel() == RequestLevel.MEMORY) {
             boolean isPauseLoad = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_LOAD;
 
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, logName,
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.w(LogType.REQUEST, logName,
                         "canceled. %s. viewHashCode=%s. %s", isPauseLoad ? "pause load" : "requestLevel is memory",
                         Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getId());
             }
@@ -753,8 +753,8 @@ public class DisplayHelper {
                 && !sketch.getConfiguration().getDiskCache().exist(displayInfo.getDiskCacheKey())) {
             boolean isPauseDownload = displayOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
-            if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName,
+            if (LogType.REQUEST.isEnabled()) {
+                SLog.d(LogType.REQUEST, logName,
                         "canceled. %s. viewHashCode=%s. %s", isPauseDownload ? "pause download" : "requestLevel is local",
                         Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getId());
             }
@@ -769,8 +769,8 @@ public class DisplayHelper {
                 Context context = sketch.getConfiguration().getContext();
                 drawable = displayOptions.getLoadingImage().getDrawable(context, imageViewInterface, displayOptions);
             } else {
-                if (LogType.BASE.isEnabled()) {
-                    SLog.w(LogType.BASE, logName, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
+                if (LogType.REQUEST.isEnabled()) {
+                    SLog.w(LogType.REQUEST, logName, "pauseDownloadDrawable is null. viewHashCode=%s. %s",
                             Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getId());
                 }
             }
@@ -793,14 +793,14 @@ public class DisplayHelper {
         DisplayRequest potentialRequest = SketchUtils.findDisplayRequest(imageViewInterface);
         if (potentialRequest != null && !potentialRequest.isFinished()) {
             if (displayInfo.getId().equals(potentialRequest.getId())) {
-                if (LogType.BASE.isEnabled()) {
-                    SLog.d(LogType.BASE, logName, "repeat request. newId=%s. viewHashCode=%s",
+                if (LogType.REQUEST.isEnabled()) {
+                    SLog.d(LogType.REQUEST, logName, "repeat request. newId=%s. viewHashCode=%s",
                             displayInfo.getId(), Integer.toHexString(imageViewInterface.hashCode()));
                 }
                 return potentialRequest;
             } else {
-                if (LogType.BASE.isEnabled()) {
-                    SLog.w(LogType.BASE, logName, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
+                if (LogType.REQUEST.isEnabled()) {
+                    SLog.w(LogType.REQUEST, logName, "cancel old request. newId=%s. oldId=%s. viewHashCode=%s",
                             displayInfo.getId(), potentialRequest.getId(), Integer.toHexString(imageViewInterface.hashCode()));
                 }
                 potentialRequest.cancel(CancelCause.BE_REPLACED_ON_HELPER);
@@ -838,8 +838,8 @@ public class DisplayHelper {
             Stopwatch.with().record("setLoadingImage");
         }
 
-        if (LogType.BASE.isEnabled()) {
-            SLog.d(LogType.BASE, logName, "submit request. viewHashCode=%s. %s",
+        if (LogType.REQUEST.isEnabled()) {
+            SLog.d(LogType.REQUEST, logName, "submit request. viewHashCode=%s. %s",
                     Integer.toHexString(imageViewInterface.hashCode()), displayInfo.getId());
         }
 

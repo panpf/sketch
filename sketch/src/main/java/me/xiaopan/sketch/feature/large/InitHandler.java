@@ -70,16 +70,16 @@ class InitHandler extends Handler {
 
     private void init(TileExecutor decodeExecutor, String imageUri, int key, KeyCounter keyCounter) {
         if (decodeExecutor == null) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
             }
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "init key expired. before init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "init key expired. before init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             }
             return;
         }
@@ -100,8 +100,8 @@ class InitHandler extends Handler {
 
         newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, NAME, "init key expired. after init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
+            if (LogType.LARGE.isEnabled()) {
+                SLog.w(LogType.LARGE, NAME, "init key expired. after init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             }
             decoder.recycle();
             return;
@@ -111,8 +111,8 @@ class InitHandler extends Handler {
     }
 
     public void clean(String why) {
-        if (LogType.BASE.isEnabled()) {
-            SLog.w(LogType.BASE, NAME, "clean. %s", why);
+        if (LogType.LARGE.isEnabled()) {
+            SLog.w(LogType.LARGE, NAME, "clean. %s", why);
         }
 
         removeMessages(WHAT_INIT);

@@ -115,7 +115,7 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runDispatch() {
         if (isCanceled()) {
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runDispatch", "download request just start");
             }
             return;
@@ -128,7 +128,7 @@ public class DownloadRequest extends AsyncRequest {
             DiskCache diskCache = getSketch().getConfiguration().getDiskCache();
             DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
             if (diskCacheEntry != null) {
-                if (LogType.BASE.isEnabled()) {
+                if (LogType.REQUEST.isEnabled()) {
                     printLogD("from diskCache", "runDispatch");
                 }
                 downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);
@@ -144,7 +144,7 @@ public class DownloadRequest extends AsyncRequest {
         }
 
         // 下载
-        if (LogType.BASE.isEnabled()) {
+        if (LogType.REQUEST.isEnabled()) {
             printLogD("download", "runDispatch");
         }
         submitRunDownload();
@@ -155,7 +155,7 @@ public class DownloadRequest extends AsyncRequest {
      */
     void requestLevelIsLocal() {
         boolean isPauseDownload = options.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
-        if (LogType.BASE.isEnabled()) {
+        if (LogType.REQUEST.isEnabled()) {
             printLogW("canceled", "runDispatch", isPauseDownload ? "pause download" : "requestLevel is local");
         }
         canceled(isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL);
@@ -164,7 +164,7 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runDownload() {
         if (isCanceled()) {
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runDownload", "start download");
             }
             return;
@@ -191,7 +191,7 @@ public class DownloadRequest extends AsyncRequest {
         }
 
         if (isCanceled()) {
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runDownload", "download after");
             }
             return;
@@ -203,7 +203,7 @@ public class DownloadRequest extends AsyncRequest {
 
     private DownloadResult download(DiskCache diskCache, String diskCacheKey) {
         if (isCanceled()) {
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runDownload", "get disk cache edit lock after");
             }
             return null;
@@ -233,7 +233,7 @@ public class DownloadRequest extends AsyncRequest {
                 getSketch().getConfiguration().getMonitor().onDownloadError(this, e);
 
                 if (isCanceled()) {
-                    if (LogType.BASE.isEnabled()) {
+                    if (LogType.REQUEST.isEnabled()) {
                         printLogW("canceled", "runDownload", "download failed");
                     }
                     break;
@@ -241,11 +241,11 @@ public class DownloadRequest extends AsyncRequest {
 
                 if (httpStack.canRetry(e) && retryCount < maxRetryCount) {
                     retryCount++;
-                    if (LogType.BASE.isEnabled()) {
+                    if (LogType.REQUEST.isEnabled()) {
                         printLogW("download failed", "runDownload", "retry");
                     }
                 } else {
-                    if (LogType.BASE.isEnabled()) {
+                    if (LogType.REQUEST.isEnabled()) {
                         printLogE("download failed", "runDownload", "end");
                     }
                     break;
@@ -262,7 +262,7 @@ public class DownloadRequest extends AsyncRequest {
         HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getRealUri());
         if (isCanceled()) {
             httpResponse.releaseConnection();
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runDownload", "connect after");
             }
             return null;
@@ -277,14 +277,14 @@ public class DownloadRequest extends AsyncRequest {
         } catch (IOException e) {
             e.printStackTrace();
             httpResponse.releaseConnection();
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogE("get response code failed", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
             }
             return null;
         }
         if (responseCode != 200) {
             httpResponse.releaseConnection();
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogE("response code exception", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
             }
             return null;
@@ -294,7 +294,7 @@ public class DownloadRequest extends AsyncRequest {
         long contentLength = httpResponse.getContentLength();
         if (contentLength <= 0) {
             httpResponse.releaseConnection();
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogE("content length exception", "runDownload", "contentLength: " + contentLength, "responseHeaders: " + httpResponse.getResponseHeadersString());
             }
             return null;
@@ -306,7 +306,7 @@ public class DownloadRequest extends AsyncRequest {
         InputStream inputStream = httpResponse.getContent();
         if (isCanceled()) {
             SketchUtils.close(inputStream);
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runDownload", "get input stream after");
             }
             return null;
@@ -363,13 +363,13 @@ public class DownloadRequest extends AsyncRequest {
         }
 
         if (isCanceled()) {
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runDownload", "read data after", readFully ? "read fully" : "not read fully");
             }
             return null;
         }
 
-        if (LogType.BASE.isEnabled()) {
+        if (LogType.REQUEST.isEnabled()) {
             printLogI("download success", "runDownload", "fileLength: " + completedLength + "/" + contentLength);
         }
 
@@ -379,7 +379,7 @@ public class DownloadRequest extends AsyncRequest {
             if (diskCacheEntry != null) {
                 return new DownloadResult(diskCacheEntry, ImageFrom.NETWORK);
             } else {
-                if (LogType.BASE.isEnabled()) {
+                if (LogType.REQUEST.isEnabled()) {
                     printLogW("not found disk cache", "runDownload", "download after");
                 }
                 return null;
@@ -448,7 +448,7 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runUpdateProgressInMainThread(int totalLength, int completedLength) {
         if (isFinished()) {
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogW("finished", "runUpdateProgressInMainThread");
             }
             return;
@@ -462,7 +462,7 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runCompletedInMainThread() {
         if (isCanceled()) {
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runCompletedInMainThread");
             }
             return;
@@ -478,7 +478,7 @@ public class DownloadRequest extends AsyncRequest {
     @Override
     protected void runErrorInMainThread() {
         if (isCanceled()) {
-            if (LogType.BASE.isEnabled()) {
+            if (LogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runErrorInMainThread");
             }
             return;
