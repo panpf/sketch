@@ -20,62 +20,62 @@ import me.xiaopan.gohttp.requestobject.URL;
 @URL("http://image.baidu.com/search/acjson")
 @Method(MethodType.GET)
 public class SearchImageRequest implements Request {
-    @Param
+    @Param("queryWord")
     String queryWord = "";
-    @Param
+    @Param("word")
     String word = "";
     @Param("rn")
     private int size = 60;
     @Param("pn")
     private int start = 0;
 
-    @Param
+    @Param("tn")
     String tn = "resultjson_com";
-    @Param
+    @Param("ipn")
     String ipn = "rj";
-    @Param
+    @Param("ct")
     String ct = "201326592";
-    @Param
+    @Param("is")
     String is = "";
-    @Param
+    @Param("fp")
     String fp = "result";
-    @Param
+    @Param("cl")
     String cl = "2";
-    @Param
+    @Param("lm")
     String lm = "-1";
-    @Param
+    @Param("ie")
     String ie = "utf-8";
-    @Param
+    @Param("oe")
     String oe = "utf-8";
-    @Param
+    @Param("adpicid")
     String adpicid = "";
-    @Param
+    @Param("st")
     String st = "-1";
-    @Param
+    @Param("z")
     String z = "";
-    @Param
+    @Param("ic")
     String ic = "0";
-    @Param
+    @Param("s")
     String s = "";
-    @Param
+    @Param("se")
     String se = "";
-    @Param
+    @Param("tab")
     String tab = "";
-    @Param
+    @Param("width")
     String width = "";
-    @Param
+    @Param("height")
     String height = "";
-    @Param
+    @Param("face")
     String face = "0";
-    @Param
+    @Param("istype")
     String istype = "2";
-    @Param
+    @Param("qc")
     String qc = "";
-    @Param
+    @Param("nc")
     String nc = "1";
-    @Param
+    @Param("fr")
     String fr = "";
-    @Param
+    @Param("gsm")
     String gsm = "3c";
     @Param("1437824884073")
     String temp = "";

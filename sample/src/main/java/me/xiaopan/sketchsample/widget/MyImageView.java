@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 
 import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.EventBusException;
 import org.greenrobot.eventbus.Subscribe;
 
 import me.xiaopan.sketch.SketchImageView;
@@ -25,7 +26,11 @@ public class MyImageView extends SketchImageView {
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        EventBus.getDefault().register(this);
+        try {
+            EventBus.getDefault().register(this);
+        } catch (EventBusException e) {
+            e.printStackTrace();
+        }
 
         if (!isInEditMode()) {
             onGlobalAttrChanged(Settings.PREFERENCE_SHOW_GIF_FLAG);

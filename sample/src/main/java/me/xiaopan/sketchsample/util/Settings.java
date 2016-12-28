@@ -9,6 +9,7 @@ import android.support.annotation.StringDef;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+import me.xiaopan.sketch.BuildConfig;
 import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
 
@@ -55,10 +56,10 @@ public class Settings {
                 || PREFERENCE_READ_MODE.equals(key)
                 || PREFERENCE_SUPPORT_LARGE_IMAGE.equals(key)
                 || PREFERENCE_PAGE_VISIBLE_TO_USER_DECODE_LARGE_IMAGE.equals(key)
-                || PREFERENCE_SHOW_GIF_FLAG.equals(key)
-                || PREFERENCE_LOG_REQUEST.equals(key)
-                ) {
+                || PREFERENCE_SHOW_GIF_FLAG.equals(key)) {
             defaultValue = true;
+        } else if(PREFERENCE_LOG_REQUEST.equals(key)){
+            defaultValue = BuildConfig.DEBUG;
         }
         return PreferenceManager.getDefaultSharedPreferences(context).getBoolean(key, defaultValue);
     }

@@ -539,7 +539,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         APP_LIST("本地APP", AppListFragment.class, false, false),
         ABOUT("关于", AboutFragment.class, false, false),
 
-        LARGE_IMAGE("分块显示超大图片测试", LargeImageTestFragment.class, true, false),
+        LARGE_IMAGE("超大图片测试", LargeImageTestFragment.class, true, false),
         IMAGE_PROCESSOR_TEST("ImageProcessor测试", ImageProcessorTestFragment.class, true, false),
         IMAGE_SHAPER_TESt("ImageShaper测试", ImageShaperTestFragment.class, true, false),
         REPEAT_LOAD_OR_DOWNLOAD_TEST("重复加载/下载测试", RepeatLoadOrDownloadTestFragment.class, true, false),
