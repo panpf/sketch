@@ -41,7 +41,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
     }
 
     public TransitionImageDisplayer() {
-        this(4000);
+        this(400);
     }
 
     @Override
