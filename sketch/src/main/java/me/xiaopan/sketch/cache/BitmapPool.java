@@ -23,10 +23,8 @@ public interface BitmapPool extends Identifier {
      * Multiplies the initial size of the pool by the given multipler to dynamically and synchronously allow users to
      * adjust the size of the pool.
      * <p>
-     * <p>
      * If the current total size of the pool is larger than the max size after the given multiplier is applied,
      * {@link Bitmap}s should be evicted until the pool is smaller than the new max size.
-     * </p>
      *
      * @param sizeMultiplier The size multiplier to apply between 0 and 1.
      */
@@ -122,7 +120,7 @@ public interface BitmapPool extends Identifier {
      * bitmap.eraseColor(Color.TRANSPARENT);
      * }
      * </pre>
-     * <p/>
+     * <p>
      * If you can not find reusable to create a new bitmap
      *
      * @param width  The width in pixels of the desired {@link android.graphics.Bitmap}.
