@@ -1,10 +1,10 @@
-从Android 3.0 开始Bitmap包含的像素数据就从native memory挪到了JVM堆中，同时BitmapFactory.Options也增加了inBitmap属性用来复用bitmap
+从Android 3.0 开始Bitmap包含的像素数据就从native memory挪到了JVM堆中，同时BitmapFactory.Options也增加了inBitmap属性用来复用Bitmap
 
-### 复用bitmap有什么好处？
+### 复用Bitmap有什么好处？
 
-由于bitmap通常占用内存比较大，因此频繁的创建新的bitmap就会频繁的触发GC，频繁的GC就会导致程序卡顿，最终影响用户体验
+由于Bitmap通常占用内存比较大，因此频繁的创建新的Bitmap就会频繁的触发GC，频繁的GC就会导致程序卡顿，最终影响用户体验
 
-通过inBitmap可以利用已经存在内存中的bitmap去存储新图片的像素数据，这样就不用创建新bitmap了，没有创建新的bitmap就不会轻易触发GC，最终也就减少了卡顿
+通过inBitmap可以利用已经存在内存中的Bitmap去存储新图片的像素数据，这样就不用创建新Bitmap了，没有创建新的Bitmap就不会轻易触发GC，最终也就减少了卡顿
 
 ### inBitmap使用条件
 
@@ -38,7 +38,7 @@ BitmapPool的默认实现是LruBitmapPool（`来自Glide`），默认最大容�
 
 ### 使用BitmapPool
 
-你可以通过Configuration得到BitmapPool，如下：
+你可以通过Configuration拿到BitmapPool，如下：
 ```java
 Context context = ...;
 BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
@@ -49,8 +49,8 @@ BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
 Bitmap bitmap = bitmapPool.get(100, 100, Bitmap.Config.ARGB_8888);
 ```
 
-bitmap使用完毕后通过BitmapPoolUtils.freeBitmapToPool(Bitmap, BitmapPool)方法处理bitmap
+Bitmap使用完毕后通过BitmapPoolUtils.freeBitmapToPool(Bitmap, BitmapPool)方法处理Bitmap
 ```java
 BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
 ```
-BitmapPoolUtils会先尝试将bitmap放进BitmapPool中，如果BitmapPool已经满了或bitmap不可复用的话就会执行recycle()回收掉bitmap
+BitmapPoolUtils会先尝试将Bitmap放进BitmapPool中，如果BitmapPool已经满了或Bitmap不可复用的话就会执行recycle()回收掉Bitmap
