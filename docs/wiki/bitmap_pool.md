@@ -1,6 +1,6 @@
-从Android 3.0 开始Bitmap包含的像素数据就从native memory挪到了JVM堆中，同时BitmapFactory.Options也就增加了一个属性inBitmap用来重复利用bitmap
+从Android 3.0 开始Bitmap包含的像素数据就从native memory挪到了JVM堆中，同时BitmapFactory.Options也增加了inBitmap属性用来复用bitmap
 
-### 重复利用bitmap有什么好处？
+### 复用bitmap有什么好处？
 
 由于bitmap通常占用内存比较大，因此频繁的创建新的bitmap就会频繁的触发GC，频繁的GC就会导致程序卡顿，最终影响用户体验
 
@@ -17,18 +17,40 @@
 >* inBitmap.isMutable() == true
 
 \>= 4.4
->* inBitmap的字节数大于等于新图片除以inSampleSize后所占的字节数
+>* inBitmap的字节数大于等于新图片除以inSampleSize后所占的字节数即可
 >* inBitmap的config同新的Options.inPreferredConfig最好一样，如果不一样将以inBitmap的config为准
 >* inBitmap.isMutable() == true
 
 #### 在BitmapRegionDecoder中使用
 
 \>= 4.1
->* inBitmap的字节数大于等于新图片除以inSampleSize后所占的字节数
+>* inBitmap的字节数大于等于新图片除以inSampleSize后所占的字节数即可
 >* inBitmap的config同新的Options.inPreferredConfig最好一样，如果不一样将以inBitmap的config为准
 >* inBitmap.isMutable() == true
 
 `如果inBitmap不为空的时候解码失败或inBitmap不满足使用条件都将抛出IllegalArgumentException异常`
 
-### Bitmap Pool
-你可以通过Sketch.with(context).getConfiguration().getBitmapPool()得到BitmapPool
+### BitmapPool
+
+BitmapPool用来存储已经不再使用的Bitmap，Sketch在解码之前会根据width、height、Bitmap.Config从BitmapPool中寻找可复用的Bitmap并设置给Options.inBitmap
+
+BitmapPool的默认实现是LruBitmapPool（`来自Glide`），默认最大容量是3个屏幕大小
+
+### 使用BitmapPool
+
+你可以通过Configuration得到BitmapPool，如下：
+```java
+Context context = ...;
+BitmapPool bitmapPool = Sketch.with(context).getConfiguration().getBitmapPool();
+```
+
+然后根据宽、高、Bitmap.Config寻找可复用的Bitmap
+```java
+Bitmap bitmap = bitmapPool.get(100, 100, Bitmap.Config.ARGB_8888);
+```
+
+bitmap使用完毕后通过BitmapPoolUtils.freeBitmapToPool(Bitmap, BitmapPool)方法处理bitmap
+```java
+BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
+```
+BitmapPoolUtils会先尝试将bitmap放进BitmapPool中，如果BitmapPool已经满了或bitmap不可复用的话就会执行recycle()回收掉bitmap
