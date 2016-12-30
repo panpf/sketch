@@ -17,7 +17,7 @@
 package me.xiaopan.sketch.request;
 
 public abstract class BaseInfo {
-    private String id;
+    private String id;  // TODO 改名内存缓存
     private String uri;
     private String realUri;    // 真正的图片地址，例如原图片uri是asset://test.png的，realUri就是test.png
     private UriScheme uriScheme;    // Uri协议类型

@@ -22,10 +22,8 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
-import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.request.Resize;
 
@@ -33,32 +31,31 @@ import me.xiaopan.sketch.request.Resize;
  * 旋转图片处理器
  */
 @SuppressWarnings("unused")
-public class RotateImageProcessor extends ResizeImageProcessor {
+public class RotateImageProcessor extends WrapableImageProcessor {
     protected String logName = "RotateImageProcessor";
 
     private int degrees;
 
-    public RotateImageProcessor(int degrees) {
+    public RotateImageProcessor(int degrees, WrapableImageProcessor wrapableImageProcessor) {
+        super(wrapableImageProcessor);
         this.degrees = degrees;
     }
 
+    public RotateImageProcessor(int degrees) {
+        this(degrees, null);
+    }
+
     @Override
-    public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        if (bitmap == null || bitmap.isRecycled()) {
-            return null;
-        }
-
-        Bitmap resizeBitmap = super.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
-
-        if (degrees == 0) {
-            return resizeBitmap;
+    public Bitmap onProcess(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+        if (bitmap == null || bitmap.isRecycled() || degrees % 360 == 0) {
+            return bitmap;
         }
 
         Matrix matrix = new Matrix();
         matrix.setRotate(degrees);
 
         // 根据旋转角度计算新的图片的尺寸
-        RectF dstR = new RectF(0, 0, resizeBitmap.getWidth(), resizeBitmap.getHeight());
+        RectF dstR = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
         RectF deviceR = new RectF();
         matrix.mapRect(deviceR, dstR);
         int newWidth = (int) deviceR.width();
@@ -66,10 +63,11 @@ public class RotateImageProcessor extends ResizeImageProcessor {
 
         // 创建新图片
         BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
-        Bitmap.Config config = resizeBitmap.getConfig() != null ? resizeBitmap.getConfig() : null;
+        Bitmap.Config config = bitmap.getConfig() != null ? bitmap.getConfig() : null;
         if (degrees % 90 != 0 && config != Bitmap.Config.ARGB_8888) {   // 角度不能整除90°时新图片会是斜的，因此要支持透明度，这样倾斜导致露出的部分就不会是黑的
             config = Bitmap.Config.ARGB_8888;
         }
+
         Bitmap rotateBitmap = bitmapPool.getOrMake(newWidth, newHeight, config);
 
         // 绘制
@@ -78,35 +76,20 @@ public class RotateImageProcessor extends ResizeImageProcessor {
         canvas.concat(matrix);
         Paint paint = new Paint();
 
-        Rect srcR = new Rect(0, 0, resizeBitmap.getWidth(), resizeBitmap.getHeight());
-        canvas.drawBitmap(resizeBitmap, srcR, dstR, paint);
+        Rect srcR = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
+        canvas.drawBitmap(bitmap, srcR, dstR, paint);
         canvas.setBitmap(null);
-
-        if (resizeBitmap != bitmap) {
-            BitmapPoolUtils.freeBitmapToPool(resizeBitmap, sketch.getConfiguration().getBitmapPool());
-        }
 
         return rotateBitmap;
     }
 
     @Override
-    public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
+    public String onGetIdentifier() {
         // 0度或360度时不加标识，这样做是为了避免浪费合适的内存缓存
         if (degrees % 360 == 0) {
-            return builder;
+            return null;
+        } else {
+            return String.format("%s(degrees=%d)", logName, degrees);
         }
-
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName)
-                .append("(")
-                .append("degrees=").append(degrees)
-                .append(")");
     }
 }

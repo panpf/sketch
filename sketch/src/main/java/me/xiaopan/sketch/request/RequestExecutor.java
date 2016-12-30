@@ -20,7 +20,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
-import android.text.TextUtils;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -139,18 +138,7 @@ public class RequestExecutor implements Identifier {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        if (TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName).append("(").append(shutdown ? "shutdown" : "running)");
+        return String.format("%s(%s", logName, shutdown ? "shutdown" : "running)");
     }
 
     public void shutdown() {

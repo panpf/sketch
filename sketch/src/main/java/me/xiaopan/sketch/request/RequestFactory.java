@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch.request;
 
-import android.text.TextUtils;
-
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.Sketch;
 
@@ -53,13 +51,5 @@ public class RequestFactory implements Identifier {
     @Override
     public String getIdentifier() {
         return logName;
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName);
     }
 }

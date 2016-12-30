@@ -1,6 +1,7 @@
 package me.xiaopan.sketchsample.fragment;
 
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -22,6 +23,10 @@ public class CircleImageProcessorTestFragment extends MyFragment{
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        // 缩小图片，处理速度更快，更少的内存消耗
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
+        imageView.getOptions().setMaxSize(metrics.widthPixels / 2, metrics.heightPixels / 2);
 
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) imageView.getLayoutParams();
         layoutParams.leftMargin = layoutParams.topMargin = layoutParams.rightMargin = layoutParams.bottomMargin = SketchUtils.dp2px(getActivity(), 16);

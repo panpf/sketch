@@ -21,7 +21,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.text.TextUtils;
 
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayOutputStream;
@@ -33,10 +32,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Identifier;
 import me.xiaopan.sketch.LogType;
-import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SLog;
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.request.ImageFrom;
 import me.xiaopan.sketch.request.LoadRequest;
@@ -84,14 +83,6 @@ public class ImagePreprocessor implements Identifier {
     @Override
     public String getIdentifier() {
         return logName;
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName);
     }
 
     private boolean isApkFile(LoadRequest loadRequest) {

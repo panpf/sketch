@@ -1,0 +1,3 @@
+>* 增加MaskImageProcessor可以给任意形状的PNG图片加上一层遮罩颜色
+>* 增加WrappedImageProcessor可以将任意不同的ImageProcessor组合在一起使用
+修复GaussianBlurImageProcessor生成的key无法区分不同的darkColor的Bug

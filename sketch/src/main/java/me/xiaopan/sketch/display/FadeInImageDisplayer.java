@@ -1,7 +1,6 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.DecelerateInterpolator;
 
@@ -16,12 +15,21 @@ public class FadeInImageDisplayer implements ImageDisplayer {
     private int duration;
     private boolean alwaysUse;
 
-    public FadeInImageDisplayer(int duration) {
+    public FadeInImageDisplayer(int duration, boolean alwaysUse) {
         this.duration = duration;
+        this.alwaysUse = alwaysUse;
+    }
+
+    public FadeInImageDisplayer(int duration) {
+        this(duration, false);
+    }
+
+    public FadeInImageDisplayer(boolean alwaysUse) {
+        this(DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
     public FadeInImageDisplayer() {
-        this(400);
+        this(DEFAULT_ANIMATION_DURATION, false);
     }
 
     @Override
@@ -37,9 +45,9 @@ public class FadeInImageDisplayer implements ImageDisplayer {
         imageViewInterface.startAnimation(animation);
     }
 
-    public FadeInImageDisplayer setAlwaysUse(boolean alwaysUse) {
-        this.alwaysUse = alwaysUse;
-        return this;
+    @Override
+    public int getDuration() {
+        return duration;
     }
 
     @Override
@@ -49,18 +57,6 @@ public class FadeInImageDisplayer implements ImageDisplayer {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append("FadeInImageDisplayer")
-                .append("(")
-                .append("duration=").append(duration)
-                .append(", alwaysUse=").append(alwaysUse)
-                .append(")");
+        return String.format("FadeInImageDisplayer(duration=%d, alwaysUse=%s)", duration, alwaysUse);
     }
 }

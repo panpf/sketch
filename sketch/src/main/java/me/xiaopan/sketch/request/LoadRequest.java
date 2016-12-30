@@ -280,6 +280,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
                         if (LogType.REQUEST.isEnabled()) {
                             printLogW("process new bitmap", "runLoad", "bitmapInfo: " + SketchUtils.makeImageInfo(null, newBitmap, decodeResult.getMimeType()));
                         }
+
                         BitmapPoolUtils.freeBitmapToPool(bitmap, getSketch().getConfiguration().getBitmapPool());
                         bitmap = newBitmap;
                         canCacheInDiskCache |= true;

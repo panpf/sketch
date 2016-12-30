@@ -18,7 +18,6 @@ package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -29,24 +28,17 @@ public class ResizeImageProcessor implements ImageProcessor {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append("ResizeImageProcessor");
+        return "ResizeImageProcessor";
     }
 
     @Override
     public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
         if (bitmap == null || bitmap.isRecycled()) {
-            return null;
+            return bitmap;
         }
 
-        if (resize == null || resize.getWidth() == 0 || resize.getHeight() == 0 || (bitmap.getWidth() == resize.getWidth() && bitmap.getHeight() == resize.getHeight())) {
+        if (resize == null || resize.getWidth() == 0 || resize.getHeight() == 0 ||
+                (bitmap.getWidth() == resize.getWidth() && bitmap.getHeight() == resize.getHeight())) {
             return bitmap;
         }
 
@@ -57,14 +49,17 @@ public class ResizeImageProcessor implements ImageProcessor {
             return bitmap;
         }
 
-        Bitmap.Config newBitmapConfig = bitmap.getConfig();
-        if (newBitmapConfig == null) {
-            newBitmapConfig = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
+        Bitmap.Config config = bitmap.getConfig();
+        if (config == null) {
+            config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
         }
         BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
-        Bitmap newBitmap = bitmapPool.getOrMake(result.imageWidth, result.imageHeight, newBitmapConfig);
-        Canvas canvas = new Canvas(newBitmap);
+
+        Bitmap resizeBitmap = bitmapPool.getOrMake(result.imageWidth, result.imageHeight, config);
+
+        Canvas canvas = new Canvas(resizeBitmap);
         canvas.drawBitmap(bitmap, result.srcRect, result.destRect, null);
-        return newBitmap;
+
+        return resizeBitmap;
     }
 }

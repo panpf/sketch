@@ -20,7 +20,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory.Options;
 import android.net.Uri;
 import android.os.Build;
-import android.text.TextUtils;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -28,8 +27,8 @@ import java.text.DecimalFormat;
 import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchMonitor;
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
@@ -495,13 +494,5 @@ public class DefaultImageDecoder implements ImageDecoder {
     @Override
     public String getIdentifier() {
         return logName;
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName);
     }
 }

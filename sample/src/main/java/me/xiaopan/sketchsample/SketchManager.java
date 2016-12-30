@@ -10,8 +10,8 @@ import java.util.List;
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.SketchMonitor;
+import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -75,12 +75,12 @@ public class SketchManager {
 
         Sketch.putOptions(ImageOptions.WINDOW_BACKGROUND, new DisplayOptions()
                 .setLoadingImage(new OldStateImage(new DrawableStateImage(R.drawable.shape_window_background)))
-                .setImageProcessor(new GaussianBlurImageProcessor(true).setDarkColor(Color.parseColor("#88000000")))
+                .setImageProcessor(GaussianBlurImageProcessor.makeLayerColor(Color.parseColor("#88000000")))
                 .setCacheProcessedImageInDisk(true)
                 .setShapeSizeByFixedSize(true)
                 .setMaxSize(context.getResources().getDisplayMetrics().widthPixels / 4,
                         context.getResources().getDisplayMetrics().heightPixels / 4)
-                .setImageDisplayer(new TransitionImageDisplayer().setAlwaysUse(true)));
+                .setImageDisplayer(new TransitionImageDisplayer(true)));
     }
 
     private static class MySketchMonitor extends SketchMonitor {

@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Environment;
-import android.text.TextUtils;
 import android.text.format.Formatter;
 
 import java.io.File;
@@ -180,13 +179,5 @@ public class SketchMonitor implements Identifier {
     @Override
     public String getIdentifier() {
         return logName;
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName);
     }
 }

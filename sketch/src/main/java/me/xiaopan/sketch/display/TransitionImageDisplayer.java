@@ -21,7 +21,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
-import android.text.TextUtils;
 
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -36,12 +35,21 @@ public class TransitionImageDisplayer implements ImageDisplayer {
     private int duration;
     private boolean alwaysUse;
 
-    public TransitionImageDisplayer(int duration) {
+    public TransitionImageDisplayer(int duration, boolean alwaysUse) {
         this.duration = duration;
+        this.alwaysUse = alwaysUse;
+    }
+
+    public TransitionImageDisplayer(int duration) {
+        this(duration, false);
+    }
+
+    public TransitionImageDisplayer(boolean alwaysUse) {
+        this(DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
     public TransitionImageDisplayer() {
-        this(400);
+        this(DEFAULT_ANIMATION_DURATION, false);
     }
 
     @Override
@@ -68,39 +76,20 @@ public class TransitionImageDisplayer implements ImageDisplayer {
         }
     }
 
-    @SuppressWarnings("unused")
-    public TransitionImageDisplayer setAlwaysUse(boolean alwaysUse) {
-        this.alwaysUse = alwaysUse;
-        return this;
-    }
-
     @Override
     public boolean isAlwaysUse() {
         return alwaysUse;
     }
 
-    @Override
-    public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName)
-                .append("(")
-                .append("duration=").append(duration)
-                .append(", alwaysUse=").append(alwaysUse)
-                .append(")");
-    }
-
+    /**
+     * 获取持续时间，单位毫秒
+     */
     public int getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
+    @Override
+    public String getIdentifier() {
+        return String.format("%s(duration=%d, alwaysUse=%s)", logName, duration, alwaysUse);
     }
 }

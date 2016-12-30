@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
@@ -30,6 +29,8 @@ import me.xiaopan.sketch.request.ImageViewInterface;
  */
 @SuppressWarnings("unused")
 public class ZoomInImageDisplayer implements ImageDisplayer {
+    private static final float DEFAULT_FROM = 0.5f;
+
     protected String logName = "ZoomInImageDisplayer";
 
     private int duration;
@@ -38,31 +39,56 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
     private Interpolator interpolator;
     private boolean alwaysUse;
 
-    public ZoomInImageDisplayer(float fromX, float fromY, Interpolator interpolator, int duration) {
+    public ZoomInImageDisplayer(float fromX, float fromY, Interpolator interpolator, int duration, boolean alwaysUse) {
         this.duration = duration;
         this.fromY = fromY;
         this.fromX = fromX;
         this.interpolator = interpolator;
+        this.alwaysUse = alwaysUse;
+    }
+
+    public ZoomInImageDisplayer(float fromX, float fromY, Interpolator interpolator, int duration) {
+        this(fromX, fromY, interpolator, duration, false);
+    }
+
+    public ZoomInImageDisplayer(float fromX, float fromY, Interpolator interpolator, boolean alwaysUse) {
+        this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
     public ZoomInImageDisplayer(float fromX, float fromY, Interpolator interpolator) {
-        this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION);
+        this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION, false);
+    }
+
+    public ZoomInImageDisplayer(float fromX, float fromY, boolean alwaysUse) {
+        this(fromX, fromY, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
     public ZoomInImageDisplayer(float fromX, float fromY) {
-        this(fromX, fromY, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION);
+        this(fromX, fromY, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, false);
+    }
+
+    public ZoomInImageDisplayer(Interpolator interpolator, boolean alwaysUse) {
+        this(DEFAULT_FROM, DEFAULT_FROM, interpolator, DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
     public ZoomInImageDisplayer(Interpolator interpolator) {
-        this(0.5f, 0.5f, interpolator, DEFAULT_ANIMATION_DURATION);
+        this(DEFAULT_FROM, DEFAULT_FROM, interpolator, DEFAULT_ANIMATION_DURATION, false);
+    }
+
+    public ZoomInImageDisplayer(int duration, boolean alwaysUse) {
+        this(DEFAULT_FROM, DEFAULT_FROM, new AccelerateDecelerateInterpolator(), duration, alwaysUse);
     }
 
     public ZoomInImageDisplayer(int duration) {
-        this(0.5f, 0.5f, new AccelerateDecelerateInterpolator(), duration);
+        this(DEFAULT_FROM, DEFAULT_FROM, new AccelerateDecelerateInterpolator(), duration, false);
+    }
+
+    public ZoomInImageDisplayer(boolean alwaysUse) {
+        this(DEFAULT_FROM, DEFAULT_FROM, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
     public ZoomInImageDisplayer() {
-        this(0.5f, 0.5f, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION);
+        this(DEFAULT_FROM, DEFAULT_FROM, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, false);
     }
 
     @Override
@@ -78,9 +104,10 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
         imageViewInterface.startAnimation(scaleAnimation);
     }
 
-    public ZoomInImageDisplayer setAlwaysUse(boolean alwaysUse) {
-        this.alwaysUse = alwaysUse;
-        return this;
+    @Override
+    public String getIdentifier() {
+        return String.format("%s(duration=%d, fromX=%s, fromY=%s, interpolator=%s, alwaysUse=%s)",
+                logName, duration, fromX, fromY, interpolator != null ? interpolator.getClass().getSimpleName() : null, alwaysUse);
     }
 
     @Override
@@ -89,55 +116,19 @@ public class ZoomInImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        builder.append(logName)
-                .append("(")
-                .append("duration=").append(duration)
-                .append(", fromX=").append(fromX)
-                .append(", fromY=").append(fromY)
-                .append(", interpolator=").append(interpolator != null ? interpolator.getClass().getSimpleName() : null)
-                .append(", alwaysUse=").append(alwaysUse)
-                .append(")");
-        return builder;
-    }
-
     public int getDuration() {
         return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
     }
 
     public float getFromX() {
         return fromX;
     }
 
-    public void setFromX(float fromX) {
-        this.fromX = fromX;
-    }
-
     public float getFromY() {
         return fromY;
     }
 
-    public void setFromY(float fromY) {
-        this.fromY = fromY;
-    }
-
     public Interpolator getInterpolator() {
         return interpolator;
-    }
-
-    public void setInterpolator(Interpolator interpolator) {
-        this.interpolator = interpolator;
     }
 }

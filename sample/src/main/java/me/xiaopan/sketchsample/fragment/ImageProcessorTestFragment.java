@@ -31,6 +31,8 @@ public class ImageProcessorTestFragment extends MyFragment {
                 new RoundRectImageProcessorTestFragment(),
                 new CircleImageProcessorTestFragment(),
                 new ResizeTestFragment(),
+                new MaskImageProcessorTestFragment(),
+                new WrappedTestFragment(),
         }));
 
         tabStrip.setTabViewFactory(new MainActivity.TitleTabFactory(new String[]{
@@ -40,6 +42,8 @@ public class ImageProcessorTestFragment extends MyFragment {
                 "ROUND_RECT",
                 "CIRCLE",
                 "RESIZE",
+                "MASK",
+                "WRAPPED",
         }, getActivity()));
         tabStrip.setViewPager(viewPager);
     }

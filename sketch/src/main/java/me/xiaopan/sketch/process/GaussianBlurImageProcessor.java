@@ -2,103 +2,116 @@ package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
-import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.request.Resize;
 
 /**
  * 高斯模糊图片处理器
  */
-public class GaussianBlurImageProcessor extends ResizeImageProcessor {
+public class GaussianBlurImageProcessor extends WrapableImageProcessor {
+    private static final int NO_LAYER_COLOR = -1;
+    private static final int DEFAULT_RADIUS = 15;
+
     protected String logName = "GaussianBlurImageProcessor";
 
-    private int radius = 15;
-    private boolean darkHandle;
-    private int darkColor;
+    private int radius; // 模糊半径，取值为0到100
+    private int layerColor; // 图层颜色，在模糊后的图片上加一层颜色
 
-    /**
-     * @param radius       模糊半径，取值为0到100，默认为15
-     * @param darkHandle 是否让模糊后的图片看起来更暗一些，实现原理就是加上一层#55000000。常用于页面背景，因为太亮的背景会影响页面上展示的内容，默认为false
-     */
-    @SuppressWarnings("unused")
-    public GaussianBlurImageProcessor(int radius, boolean darkHandle) {
+    private GaussianBlurImageProcessor(int radius, int layerColor, WrapableImageProcessor wrapableImageProcessor) {
+        super(wrapableImageProcessor);
         this.radius = radius;
-        this.darkHandle = darkHandle;
-        if (darkHandle) {
-            darkColor = Color.parseColor("#55000000");
-        }
+        this.layerColor = layerColor;
     }
 
     /**
-     * @param radius 模糊半径，取值为0到100，默认为15
+     * 创建一个指定半径和图层颜色的高斯模糊图片处理器
+     *
+     * @param radius                 模糊半径，取值为0到100
+     * @param layerColor             图层颜色，在模糊后的图片上加一层颜色
+     * @param wrapableImageProcessor 嵌套一个图片处理器
+     * @return GaussianBlurImageProcessor
      */
     @SuppressWarnings("unused")
-    public GaussianBlurImageProcessor(int radius) {
-        this.radius = radius;
+    public static GaussianBlurImageProcessor make(int radius, int layerColor, WrapableImageProcessor wrapableImageProcessor) {
+        return new GaussianBlurImageProcessor(radius, layerColor, wrapableImageProcessor);
     }
 
     /**
-     * @param darkHandle 是否让模糊后的图片看起来更暗一些，实现原理就是加上一层#55000000。常用于页面背景，因为太亮的背景会影响页面上展示的内容，默认为false
+     * 创建一个指定半径和图层颜色的高斯模糊图片处理器
+     *
+     * @param radius     模糊半径，取值为0到100
+     * @param layerColor 图层颜色，在模糊后的图片上加一层颜色
+     * @return GaussianBlurImageProcessor
      */
-    public GaussianBlurImageProcessor(boolean darkHandle) {
-        this.darkHandle = darkHandle;
-        if (darkHandle) {
-            darkColor = Color.parseColor("#55000000");
-        }
-    }
-
     @SuppressWarnings("unused")
-    public GaussianBlurImageProcessor() {
+    public static GaussianBlurImageProcessor make(int radius, int layerColor) {
+        return new GaussianBlurImageProcessor(radius, layerColor, null);
     }
 
+    /**
+     * 创建一个图层颜色的高斯模糊图片处理器
+     *
+     * @param layerColor             图层颜色，在模糊后的图片上加一层颜色
+     * @param wrapableImageProcessor 嵌套一个图片处理器
+     * @return GaussianBlurImageProcessor
+     */
+    public static GaussianBlurImageProcessor makeLayerColor(int layerColor, WrapableImageProcessor wrapableImageProcessor) {
+        return new GaussianBlurImageProcessor(DEFAULT_RADIUS, layerColor, wrapableImageProcessor);
+    }
+
+    /**
+     * 创建一个图层颜色的高斯模糊图片处理器
+     *
+     * @param layerColor 图层颜色，在模糊后的图片上加一层颜色
+     * @return GaussianBlurImageProcessor
+     */
+    public static GaussianBlurImageProcessor makeLayerColor(int layerColor) {
+        return new GaussianBlurImageProcessor(DEFAULT_RADIUS, layerColor, null);
+    }
+
+    /**
+     * 创建一个指定半径的高斯模糊图片处理器
+     *
+     * @param radius                 模糊半径，取值为0到100
+     * @param wrapableImageProcessor 嵌套一个图片处理器
+     * @return GaussianBlurImageProcessor
+     */
     @SuppressWarnings("unused")
-    public GaussianBlurImageProcessor setDarkColor(int darkColor) {
-        this.darkColor = darkColor;
-        return this;
+    public static GaussianBlurImageProcessor makeRadius(int radius, WrapableImageProcessor wrapableImageProcessor) {
+        return new GaussianBlurImageProcessor(radius, NO_LAYER_COLOR, wrapableImageProcessor);
     }
 
-    @Override
-    public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
+    /**
+     * 创建一个指定半径的高斯模糊图片处理器
+     *
+     * @param radius 模糊半径，取值为0到100
+     * @return GaussianBlurImageProcessor
+     */
+    @SuppressWarnings("unused")
+    public static GaussianBlurImageProcessor makeRadius(int radius) {
+        return new GaussianBlurImageProcessor(radius, NO_LAYER_COLOR, null);
     }
 
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName)
-                .append("(")
-                .append("radius=").append(radius)
-                .append(",")
-                .append("isDarkHandle=").append(darkHandle)
-                .append(")");
+    /**
+     * 创建一个半径为15的高斯模糊图片处理器
+     *
+     * @param wrapableImageProcessor 嵌套一个图片处理器
+     * @return GaussianBlurImageProcessor
+     */
+    @SuppressWarnings("unused")
+    public static GaussianBlurImageProcessor make(WrapableImageProcessor wrapableImageProcessor) {
+        return new GaussianBlurImageProcessor(DEFAULT_RADIUS, NO_LAYER_COLOR, wrapableImageProcessor);
     }
 
-    @Override
-    public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
-        // resize handle
-        Bitmap resizeBitmap = super.process(sketch, bitmap, resize, forceUseResize, lowQualityImage);
-        if (resizeBitmap == null) {
-            return null;
-        }
-
-        // blur handle
-        Bitmap blurBitmap = fastGaussianBlur(resizeBitmap, radius, resizeBitmap.isMutable());
-        if (resizeBitmap != bitmap) {
-            BitmapPoolUtils.freeBitmapToPool(resizeBitmap, sketch.getConfiguration().getBitmapPool());
-        }
-
-        // dark handle
-        if (blurBitmap != null && darkHandle) {
-            Canvas canvas = new Canvas(blurBitmap);
-            canvas.drawColor(darkColor);
-        }
-
-        return blurBitmap;
+    /**
+     * 创建一个半径为15的高斯模糊图片处理器
+     *
+     * @return GaussianBlurImageProcessor
+     */
+    @SuppressWarnings("unused")
+    public static GaussianBlurImageProcessor make() {
+        return new GaussianBlurImageProcessor(DEFAULT_RADIUS, NO_LAYER_COLOR, null);
     }
 
     /**
@@ -109,7 +122,7 @@ public class GaussianBlurImageProcessor extends ResizeImageProcessor {
         if (canReuseInBitmap) {
             bitmap = sentBitmap;
         } else {
-            bitmap = sentBitmap.copy(Bitmap.Config.ARGB_8888, true);
+            bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
         }
 
         try {
@@ -316,5 +329,44 @@ public class GaussianBlurImageProcessor extends ResizeImageProcessor {
             }
             return null;
         }
+    }
+
+    /**
+     * 获取模糊半径
+     */
+    @SuppressWarnings("unused")
+    public int getRadius() {
+        return radius;
+    }
+
+    /**
+     * 获取图层颜色
+     */
+    @SuppressWarnings("unused")
+    public int getLayerColor() {
+        return layerColor;
+    }
+
+    @Override
+    public String onGetIdentifier() {
+        return String.format("%s(radius=%d,maskColor=%d)", logName, radius, layerColor);
+    }
+
+    @Override
+    public Bitmap onProcess(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+        if (bitmap == null || bitmap.isRecycled()) {
+            return bitmap;
+        }
+
+        // blur handle
+        Bitmap blurBitmap = fastGaussianBlur(bitmap, radius, bitmap.isMutable());
+
+        // layer color handle
+        if (blurBitmap != null && layerColor != NO_LAYER_COLOR) {
+            Canvas canvas = new Canvas(blurBitmap);
+            canvas.drawColor(layerColor);
+        }
+
+        return blurBitmap;
     }
 }

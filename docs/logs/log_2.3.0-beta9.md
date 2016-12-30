@@ -22,6 +22,3 @@ ImageShaper：
 >* :arrow_up: `minSdkVersion` 最低支持版本升到9
 >* :art: `ExceptionMonitor` ExceptionMonitor改名为SketchMonitor并挪到顶级目录
 >* :zap: `Log` 日志分不同的类型分别提供开关控制，详见LogType
-
-待办：
->* 完善bitmap pool的文档

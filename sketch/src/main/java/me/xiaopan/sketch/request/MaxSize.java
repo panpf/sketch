@@ -16,8 +16,6 @@
 
 package me.xiaopan.sketch.request;
 
-import android.text.TextUtils;
-
 import me.xiaopan.sketch.Identifier;
 
 /**
@@ -57,19 +55,6 @@ public class MaxSize implements Identifier {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        builder.append("MaxSize(");
-        builder.append(width);
-        builder.append("x");
-        builder.append(height);
-        builder.append(")");
-        return builder;
+        return String.format("MaxSize(%dx%d)", width, height);
     }
 }

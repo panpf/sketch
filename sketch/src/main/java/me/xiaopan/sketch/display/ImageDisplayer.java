@@ -33,6 +33,11 @@ public interface ImageDisplayer extends Identifier {
     void display(ImageViewInterface imageViewInterface, Drawable newDrawable);
 
     /**
+     * 获取持续时间，单位毫秒
+     */
+    int getDuration();
+
+    /**
      * 只要涉及到显示图片就得使用ImageDisplayer（显示从内存里取出的缓存图片时也不例外）
      */
     boolean isAlwaysUse();

@@ -16,7 +16,6 @@
 
 package me.xiaopan.sketch.request;
 
-import android.text.TextUtils;
 import android.widget.ImageView;
 
 import me.xiaopan.sketch.Identifier;
@@ -77,19 +76,6 @@ public class ShapeSize implements Identifier {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        builder.append("ShapeSize(");
-        builder.append(width);
-        builder.append("x");
-        builder.append(height);
-        builder.append(")");
-        return builder;
+        return String.format("ShapeSize(%dx%d)", width, height);
     }
 }

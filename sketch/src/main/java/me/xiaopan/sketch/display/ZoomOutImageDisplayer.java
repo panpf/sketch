@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.Interpolator;
@@ -38,31 +37,56 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
     private Interpolator interpolator;
     private boolean alwaysUse;
 
-    public ZoomOutImageDisplayer(float fromX, float fromY, Interpolator interpolator, int duration) {
+    public ZoomOutImageDisplayer(float fromX, float fromY, Interpolator interpolator, int duration, boolean alwaysUse) {
         this.duration = duration;
         this.fromX = fromX;
         this.fromY = fromY;
         this.interpolator = interpolator;
+        this.alwaysUse = alwaysUse;
+    }
+
+    public ZoomOutImageDisplayer(float fromX, float fromY, Interpolator interpolator, int duration) {
+        this(fromX, fromY, interpolator, duration, false);
+    }
+
+    public ZoomOutImageDisplayer(float fromX, float fromY, Interpolator interpolator, boolean alwaysUse) {
+        this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
     public ZoomOutImageDisplayer(float fromX, float fromY, Interpolator interpolator) {
-        this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION);
+        this(fromX, fromY, interpolator, DEFAULT_ANIMATION_DURATION, false);
+    }
+
+    public ZoomOutImageDisplayer(float fromX, float fromY, boolean alwaysUse) {
+        this(fromX, fromY, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
     public ZoomOutImageDisplayer(float fromX, float fromY) {
-        this(fromX, fromY, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION);
+        this(fromX, fromY, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, false);
+    }
+
+    public ZoomOutImageDisplayer(Interpolator interpolator, boolean alwaysUse) {
+        this(1.5f, 1.5f, interpolator, DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
     public ZoomOutImageDisplayer(Interpolator interpolator) {
-        this(1.5f, 1.5f, interpolator, DEFAULT_ANIMATION_DURATION);
+        this(1.5f, 1.5f, interpolator, DEFAULT_ANIMATION_DURATION, false);
+    }
+
+    public ZoomOutImageDisplayer(int duration, boolean alwaysUse) {
+        this(1.5f, 1.5f, new AccelerateDecelerateInterpolator(), duration, alwaysUse);
     }
 
     public ZoomOutImageDisplayer(int duration) {
-        this(1.5f, 1.5f, new AccelerateDecelerateInterpolator(), duration);
+        this(1.5f, 1.5f, new AccelerateDecelerateInterpolator(), duration, false);
+    }
+
+    public ZoomOutImageDisplayer(boolean alwaysUse) {
+        this(1.5f, 1.5f, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, alwaysUse);
     }
 
     public ZoomOutImageDisplayer() {
-        this(1.5f, 1.5f, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION);
+        this(1.5f, 1.5f, new AccelerateDecelerateInterpolator(), DEFAULT_ANIMATION_DURATION, false);
     }
 
     @Override
@@ -78,9 +102,10 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
         imageViewInterface.startAnimation(scaleAnimation);
     }
 
-    public ZoomOutImageDisplayer setAlwaysUse(boolean alwaysUse) {
-        this.alwaysUse = alwaysUse;
-        return this;
+    @Override
+    public String getIdentifier() {
+        return String.format("%s(duration=%d, fromX=%s, fromY=%s, interpolator=%s, alwaysUse=%s)",
+                logName, duration, fromX, fromY, interpolator != null ? interpolator.getClass().getSimpleName() : null, alwaysUse);
     }
 
     @Override
@@ -89,54 +114,19 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName)
-                .append("(")
-                .append("duration=").append(duration)
-                .append(", fromX=").append(fromX)
-                .append(", fromY=").append(fromY)
-                .append(", interpolator=").append(interpolator != null ? interpolator.getClass().getSimpleName() : null)
-                .append(", alwaysUse=").append(alwaysUse)
-                .append(")");
-    }
-
     public int getDuration() {
         return duration;
-    }
-
-    public void setDuration(int duration) {
-        this.duration = duration;
     }
 
     public float getFromX() {
         return fromX;
     }
 
-    public void setFromX(float fromX) {
-        this.fromX = fromX;
-    }
-
     public float getFromY() {
         return fromY;
     }
 
-    public void setFromY(float fromY) {
-        this.fromY = fromY;
-    }
-
     public Interpolator getInterpolator() {
         return interpolator;
-    }
-
-    public void setInterpolator(Interpolator interpolator) {
-        this.interpolator = interpolator;
     }
 }

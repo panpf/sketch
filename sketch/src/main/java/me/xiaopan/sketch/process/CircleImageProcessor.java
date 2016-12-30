@@ -21,7 +21,6 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
-import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -32,8 +31,16 @@ import me.xiaopan.sketch.request.Resize;
  * 圆形图片处理器
  */
 @SuppressWarnings("unused")
-public class CircleImageProcessor implements ImageProcessor {
+public class CircleImageProcessor extends WrapableImageProcessor {
     private static CircleImageProcessor instance;
+
+    public CircleImageProcessor(WrapableImageProcessor wrappedProcessor) {
+        super(wrappedProcessor);
+    }
+
+    private CircleImageProcessor() {
+        this(null);
+    }
 
     public static CircleImageProcessor getInstance() {
         if (instance == null) {
@@ -46,25 +53,18 @@ public class CircleImageProcessor implements ImageProcessor {
         return instance;
     }
 
-    private CircleImageProcessor() {
-
+    @Override
+    public String onGetIdentifier() {
+        return "CircleImageProcessor";
     }
 
     @Override
-    public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
+    protected boolean isInterceptResize() {
+        return true;
     }
 
     @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append("CircleImageProcessor");
-    }
-
-    @Override
-    public Bitmap process(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
+    public Bitmap onProcess(Sketch sketch, Bitmap bitmap, Resize resize, boolean forceUseResize, boolean lowQualityImage) {
         if (bitmap == null || bitmap.isRecycled()) {
             return null;
         }
@@ -81,11 +81,12 @@ public class CircleImageProcessor implements ImageProcessor {
             return bitmap;
         }
 
-        // 创建新图片
+        Bitmap.Config config = lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888;
         BitmapPool bitmapPool = sketch.getConfiguration().getBitmapPool();
-        Bitmap output = bitmapPool.getOrMake(result.imageWidth, result.imageHeight,
-                lowQualityImage ? Bitmap.Config.ARGB_4444 : Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(output);
+
+        Bitmap circleBitmap = bitmapPool.getOrMake(result.imageWidth, result.imageHeight, config);
+
+        Canvas canvas = new Canvas(circleBitmap);
         Paint paint = new Paint();
         paint.setAntiAlias(true);
         canvas.drawARGB(0, 0, 0, 0);
@@ -99,6 +100,6 @@ public class CircleImageProcessor implements ImageProcessor {
         paint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC_IN));
         canvas.drawBitmap(bitmap, result.srcRect, result.destRect, paint);
 
-        return output;
+        return circleBitmap;
     }
 }

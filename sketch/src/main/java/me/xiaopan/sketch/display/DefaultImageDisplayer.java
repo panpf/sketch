@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.display;
 
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 
 import me.xiaopan.sketch.request.ImageViewInterface;
 
@@ -26,7 +25,9 @@ import me.xiaopan.sketch.request.ImageViewInterface;
  */
 public class DefaultImageDisplayer implements ImageDisplayer {
     protected String logName = "DefaultImageDisplayer";
-    private boolean alwaysUse;
+
+    public DefaultImageDisplayer() {
+    }
 
     @Override
     public void display(ImageViewInterface imageViewInterface, Drawable newDrawable) {
@@ -37,27 +38,18 @@ public class DefaultImageDisplayer implements ImageDisplayer {
         imageViewInterface.setImageDrawable(newDrawable);
     }
 
-    @SuppressWarnings("unused")
-    public DefaultImageDisplayer setAlwaysUse(boolean alwaysUse) {
-        this.alwaysUse = alwaysUse;
-        return this;
+    @Override
+    public int getDuration() {
+        return 0;
     }
 
     @Override
     public boolean isAlwaysUse() {
-        return alwaysUse;
+        return false;
     }
 
     @Override
     public String getIdentifier() {
         return logName;
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName).append("(alwaysUse=").append(alwaysUse).append(")");
     }
 }

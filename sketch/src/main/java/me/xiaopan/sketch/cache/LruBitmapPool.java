@@ -6,7 +6,6 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
-import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 
@@ -106,16 +105,18 @@ public class LruBitmapPool implements BitmapPool {
         }
 
         if (disabled) {
-            SLog.w(LogType.CACHE, logName, "Disabled. Unable put, bitmap=%s", strategy.logBitmap(bitmap));
+            SLog.w(LogType.CACHE, logName, "Disabled. Unable put, bitmap=%s,%s",
+                    strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
             return false;
         }
 
         if (bitmap == null) {
             throw new NullPointerException("Bitmap must not be null");
         }
-        if (!bitmap.isMutable() || strategy.getSize(bitmap) > maxSize || !allowedConfigs.contains(bitmap.getConfig())) {
-            SLog.w(LogType.CACHE, logName, "Reject bitmap from pool, bitmap: %s, is mutable: %s, is allowed config: %s",
-                    strategy.logBitmap(bitmap), bitmap.isMutable(), allowedConfigs.contains(bitmap.getConfig()));
+        if (bitmap.isRecycled() || !bitmap.isMutable() || strategy.getSize(bitmap) > maxSize || !allowedConfigs.contains(bitmap.getConfig())) {
+            SLog.w(LogType.CACHE, logName, "Reject bitmap from pool, bitmap: %s, is recycled: %s, is mutable: %s, is allowed config: %s, %s",
+                    strategy.logBitmap(bitmap), bitmap.isRecycled(), bitmap.isMutable(),
+                    allowedConfigs.contains(bitmap.getConfig()), SketchUtils.toHexString(bitmap));
             return false;
         }
 
@@ -126,7 +127,8 @@ public class LruBitmapPool implements BitmapPool {
         puts++;
         currentSize += size;
 
-        SLog.v(LogType.CACHE, logName, "Put bitmap in pool=%s", strategy.logBitmap(bitmap));
+        SLog.v(LogType.CACHE, logName, "Put bitmap in pool=%s,%s",
+                strategy.logBitmap(bitmap), SketchUtils.toHexString(bitmap));
         dump();
 
         evict();
@@ -141,7 +143,8 @@ public class LruBitmapPool implements BitmapPool {
         }
 
         if (disabled) {
-            SLog.w(LogType.CACHE, logName, "Disabled. Unable get, bitmap=%s", strategy.logBitmap(width, height, config));
+            SLog.w(LogType.CACHE, logName, "Disabled. Unable get, bitmap=%s,%s",
+                    strategy.logBitmap(width, height, config));
             return null;
         }
 
@@ -152,7 +155,7 @@ public class LruBitmapPool implements BitmapPool {
             SLog.w(LogType.CACHE, logName, "Missing bitmap=%s", strategy.logBitmap(width, height, config));
             misses++;
         } else {
-            SLog.i(LogType.CACHE, logName, "Get bitmap=%s", strategy.logBitmap(width, height, config));
+            SLog.i(LogType.CACHE, logName, "Get bitmap=%s,%s", strategy.logBitmap(width, height, config), SketchUtils.toHexString(result));
             hits++;
             currentSize -= strategy.getSize(result);
             tracker.remove(result);
@@ -183,6 +186,13 @@ public class LruBitmapPool implements BitmapPool {
         Bitmap result = get(width, height, config);
         if (result == null) {
             result = Bitmap.createBitmap(width, height, config);
+            if (LogType.CACHE.isEnabled()) {
+                StackTraceElement[] elements = new Exception().getStackTrace();
+                StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
+                SLog.i(LogType.CACHE, String.format("Make bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                        result.getWidth(), result.getHeight(), result.getConfig(), SketchUtils.toHexString(result),
+                        element.getClassName(), element.getMethodName(), element.getLineNumber()));
+            }
         }
 
         return result;
@@ -283,7 +293,8 @@ public class LruBitmapPool implements BitmapPool {
                 return;
             }
 
-            SLog.e(LogType.CACHE, logName, "Evicting bitmap=%s", strategy.logBitmap(removed));
+            SLog.e(LogType.CACHE, logName, "Evicting bitmap=%s,%s",
+                    strategy.logBitmap(removed), SketchUtils.toHexString(removed));
             tracker.remove(removed);
             currentSize -= strategy.getSize(removed);
             removed.recycle();
@@ -306,18 +317,7 @@ public class LruBitmapPool implements BitmapPool {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName)
-                .append("(")
-                .append("maxSize=").append(Formatter.formatFileSize(context, getMaxSize()))
-                .append(")");
+        return String.format("%s(maxSize=%s)", logName, Formatter.formatFileSize(context, getMaxSize()));
     }
 
     private interface BitmapTracker {

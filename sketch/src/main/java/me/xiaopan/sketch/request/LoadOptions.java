@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 
 import me.xiaopan.sketch.process.ImageProcessor;
 
@@ -455,10 +456,10 @@ public class LoadOptions extends DownloadOptions {
         super.makeId(builder);
 
         if (maxSize != null) {
-            maxSize.appendIdentifier("_", builder);
+            builder.append("_").append(maxSize.getIdentifier());
         }
         if (resize != null) {
-            resize.appendIdentifier("_", builder);
+            builder.append("_").append(resize.getIdentifier());
             if (forceUseResize) {
                 builder.append("_").append("forceUseResize");
             }
@@ -479,7 +480,11 @@ public class LoadOptions extends DownloadOptions {
             builder.append("_").append(bitmapConfig.name());
         }
         if (imageProcessor != null) {
-            imageProcessor.appendIdentifier("_", builder);
+            // 旋转图片处理器在旋转0度或360度时不用旋转处理，因此也不会返回key，因此这里过滤一下
+            String processorKey = imageProcessor.getIdentifier();
+            if (!TextUtils.isEmpty(processorKey)) {
+                builder.append("_").append(processorKey);
+            }
         }
         return builder;
     }
@@ -489,7 +494,7 @@ public class LoadOptions extends DownloadOptions {
         super.makeId(builder);
 
         if (resize != null) {
-            resize.appendIdentifier("_", builder);
+            builder.append("_").append(resize.getIdentifier());
             if (forceUseResize) {
                 builder.append("_").append("forceUseResize");
             }
@@ -498,7 +503,11 @@ public class LoadOptions extends DownloadOptions {
             builder.append("_").append("lowQualityImage");
         }
         if (imageProcessor != null) {
-            imageProcessor.appendIdentifier("_", builder);
+            // 旋转图片处理器在旋转0度或360度时不用旋转处理，因此也不会返回key，因此这里过滤一下
+            String processorKey = imageProcessor.getIdentifier();
+            if (!TextUtils.isEmpty(processorKey)) {
+                builder.append("_").append(processorKey);
+            }
         }
         return builder;
     }

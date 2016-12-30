@@ -621,108 +621,26 @@ public final class Configuration {
     }
 
     public String getInfo() {
-        StringBuilder builder = new StringBuilder();
-        builder.append(logName).append(": ");
-
-        if (diskCache != null) {
-            if (builder.length() > 0) builder.append("\n");
-            diskCache.appendIdentifier("diskCache：", builder);
-        }
-
-        if (bitmapPool != null) {
-            if (builder.length() > 0) builder.append("\n");
-            bitmapPool.appendIdentifier("bitmapPool：", builder);
-        }
-
-        if (memoryCache != null) {
-            if (builder.length() > 0) builder.append("\n");
-            memoryCache.appendIdentifier("memoryCache：", builder);
-        }
-
-        if (imageDecoder != null) {
-            if (builder.length() > 0) builder.append("\n");
-            imageDecoder.appendIdentifier("imageDecoder：", builder);
-        }
-
-        if (helperFactory != null) {
-            if (builder.length() > 0) builder.append("\n");
-            helperFactory.appendIdentifier("helperFactory：", builder);
-        }
-
-        if (defaultImageDisplayer != null) {
-            if (builder.length() > 0) builder.append("\n");
-            defaultImageDisplayer.appendIdentifier("defaultImageDisplayer：", builder);
-        }
-
-        if (resizeImageProcessor != null) {
-            if (builder.length() > 0) builder.append("\n");
-            resizeImageProcessor.appendIdentifier("resizeImageProcessor：", builder);
-        }
-
-        if (requestFactory != null) {
-            if (builder.length() > 0) builder.append("\n");
-            requestFactory.appendIdentifier("requestFactory：", builder);
-        }
-
-        if (httpStack != null) {
-            if (builder.length() > 0) builder.append("\n");
-            httpStack.appendIdentifier("httpStack：", builder);
-        }
-
-        if (requestExecutor != null) {
-            if (builder.length() > 0) builder.append("\n");
-            requestExecutor.appendIdentifier("requestExecutor：", builder);
-        }
-
-        if (imageSizeCalculator != null) {
-            if (builder.length() > 0) builder.append("\n");
-            imageSizeCalculator.appendIdentifier("imageSizeCalculator：", builder);
-        }
-
-        if (resizeCalculator != null) {
-            if (builder.length() > 0) builder.append("\n");
-            builder.append("resizeCalculator");
-            resizeCalculator.appendIdentifier("：", builder);
-        }
-
-        if (imagePreprocessor != null) {
-            if (builder.length() > 0) builder.append("\n");
-            builder.append("imagePreprocessor");
-            imagePreprocessor.appendIdentifier("：", builder);
-        }
-
-        if (monitor != null) {
-            if (builder.length() > 0) builder.append("\n");
-            builder.append("errorCallback");
-            monitor.appendIdentifier("：", builder);
-        }
-
-        if (builder.length() > 0) builder.append("\n");
-        builder.append("globalPauseLoad");
-        builder.append("：");
-        builder.append(globalPauseLoad);
-
-        if (builder.length() > 0) builder.append("\n");
-        builder.append("globalPauseDownload");
-        builder.append("：");
-        builder.append(globalPauseDownload);
-
-        if (builder.length() > 0) builder.append("\n");
-        builder.append("globalLowQualityImage");
-        builder.append("：");
-        builder.append(globalLowQualityImage);
-
-        if (builder.length() > 0) builder.append("\n");
-        builder.append("globalInPreferQualityOverSpeed");
-        builder.append("：");
-        builder.append(globalInPreferQualityOverSpeed);
-
-        if (builder.length() > 0) builder.append("\n");
-        builder.append("mobileNetworkGlobalPauseDownload");
-        builder.append("：");
-        builder.append(isMobileNetworkGlobalPauseDownload());
-
-        return builder.toString();
+        return logName + ": " +
+                "\n" + "diskCache：" + diskCache.getIdentifier() +
+                "\n" + "bitmapPool：" + bitmapPool.getIdentifier() +
+                "\n" + "memoryCache：" + memoryCache.getIdentifier() +
+                "\n" + "imageDecoder：" + imageDecoder.getIdentifier() +
+                "\n" + "helperFactory：" + helperFactory.getIdentifier() +
+                "\n" + "defaultImageDisplayer：" + defaultImageDisplayer.getIdentifier() +
+                "\n" + "resizeImageProcessor：" + resizeImageProcessor.getIdentifier() +
+                "\n" + "requestFactory：" + requestFactory.getIdentifier() +
+                "\n" + "httpStack：" + httpStack.getIdentifier() +
+                "\n" + "requestExecutor：" + requestExecutor.getIdentifier() +
+                "\n" + "imageSizeCalculator：" + imageSizeCalculator.getIdentifier() +
+                "\n" + "resizeCalculator：" + resizeCalculator.getIdentifier() +
+                "\n" + "imagePreprocessor：" + imagePreprocessor.getIdentifier() +
+                "\n" + "errorCallback：" + monitor.getIdentifier() +
+                "\n" + "globalPauseLoad：" + globalPauseLoad +
+                "\n" + "globalPauseDownload：" + globalPauseDownload +
+                "\n" + "globalLowQualityImage：" + globalLowQualityImage +
+                "\n" + "globalInPreferQualityOverSpeed：" + globalInPreferQualityOverSpeed +
+                "\n" + "mobileNetworkGlobalPauseDownload：" + isMobileNetworkGlobalPauseDownload();
     }
 
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)

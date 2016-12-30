@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.cache;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.text.format.Formatter;
 
 import me.xiaopan.sketch.LogType;
@@ -172,18 +171,7 @@ public class LruMemoryCache implements MemoryCache {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName)
-                .append("(")
-                .append("maxSize=").append(Formatter.formatFileSize(context, getMaxSize()))
-                .append(")");
+        return String.format("%s(maxSize=%s)", logName, Formatter.formatFileSize(context, getMaxSize()));
     }
 
     private static class RefBitmapLruCache extends LruCache<String, RefBitmap> {

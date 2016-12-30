@@ -17,7 +17,6 @@
 package me.xiaopan.sketch.http;
 
 import android.os.Build;
-import android.text.TextUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -112,24 +111,8 @@ public class HurlStack implements HttpStack {
 
     @Override
     public String getIdentifier() {
-        return appendIdentifier(null, new StringBuilder()).toString();
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName)
-                .append("(")
-                .append("maxRetryCount=").append(maxRetryCount)
-                .append(",")
-                .append("connectTimeout=").append(connectTimeout)
-                .append(",")
-                .append("readTimeout=").append(readTimeout)
-                .append(",")
-                .append("userAgent=").append(userAgent)
-                .append(")");
+        return String.format("%s(maxRetryCount=%d,connectTimeout=%d,readTimeout=%d,userAgent=%s)",
+                logName, maxRetryCount, connectTimeout, readTimeout, userAgent);
     }
 
     @Override

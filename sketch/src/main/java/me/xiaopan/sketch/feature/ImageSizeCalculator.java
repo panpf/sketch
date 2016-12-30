@@ -18,7 +18,6 @@
 package me.xiaopan.sketch.feature;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.ViewGroup;
@@ -343,17 +342,5 @@ public class ImageSizeCalculator implements Identifier {
     @Override
     public String getIdentifier() {
         return logName;
-    }
-
-    @Override
-    public StringBuilder appendIdentifier(String join, StringBuilder builder) {
-        if (!TextUtils.isEmpty(join)) {
-            builder.append(join);
-        }
-        return builder.append(logName)
-                .append("(")
-                .append("targetSizeScale=").append(targetSizeScale)
-                .append(", openGLMaxTextureSize=").append(getOpenGLMaxTextureSize())
-                .append(")");
     }
 }

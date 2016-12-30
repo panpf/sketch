@@ -7,12 +7,13 @@ public class AssetImage {
     public static final String SAMPLE_WEBP = "sample.webp";
     public static final String SAMPLE_BMP = "sample.bmp";
 
-    public static final String MEI_NV = "mei_nv.jpg";
-
     public static final String LARGE_CHANG_WEI_BO = "large_chang_wei_bo.jpg";
     public static final String LARGE_QMSHT = "large_qing_ming_shang_he_tu.jpg";
     public static final String LARGE_CARD = "large_card.png";
     public static final String LARGE_WORLD_MAP = "large_world_map.jpg";
+
+    public static final String MEI_NV = "mei_nv.jpg";
+    public static final String MASK = "mask.png";
 
     public static final String[] SAMPLES = new String[]{
             SAMPLE_JPG,
@@ -36,11 +37,12 @@ public class AssetImage {
             SAMPLE_WEBP,
             SAMPLE_BMP,
 
-            MEI_NV,
-
             LARGE_WORLD_MAP,
             LARGE_QMSHT,
             LARGE_CHANG_WEI_BO,
             LARGE_CARD,
+
+            MEI_NV,
+            MASK,
     };
 }

@@ -19,12 +19,23 @@
         android:paddingBottom="16dp"
         android:paddingTop="16dp" />
 
-    <TextView
-        android:id="@+id/text_gaussianBlurFragment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginLeft="16dp"
-        android:layout_marginRight="16dp"
-        android:gravity="right" />
+        android:layout_marginRight="16dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="模糊半径"/>
+
+        <TextView
+            android:id="@+id/text_gaussianBlurFragment"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="right" />
+    </LinearLayout>
 </LinearLayout>
