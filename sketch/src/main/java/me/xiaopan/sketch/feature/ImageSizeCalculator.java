@@ -246,6 +246,15 @@ public class ImageSizeCalculator implements Identifier {
         targetWidth *= targetSizeScale;
         targetHeight *= targetSizeScale;
 
+        // 限制target宽高不能大于OpenGL所允许的最大尺寸
+        int maxSize = getOpenGLMaxTextureSize();
+        if (targetWidth > maxSize) {
+            targetWidth = maxSize;
+        }
+        if (targetHeight > maxSize) {
+            targetHeight = maxSize;
+        }
+
         int inSampleSize = 1;
 
         // 如果目标宽高都小于等于0，就别计算了
@@ -276,7 +285,6 @@ public class ImageSizeCalculator implements Identifier {
             }
 
             // 然后限制宽高不能大于OpenGL所允许的最大尺寸
-            int maxSize = getOpenGLMaxTextureSize();
             while (SketchUtils.ceil(outWidth, inSampleSize) > maxSize || SketchUtils.ceil(outHeight, inSampleSize) > maxSize) {
                 inSampleSize *= 2;
             }
