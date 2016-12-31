@@ -67,7 +67,7 @@ public class HotStarTwoItemFactory extends AssemblyRecyclerItemFactory<HotStarTw
             });
 
             if (marginBorder == 0) {
-                marginBorder = (int) context.getResources().getDimension(R.dimen.home_category_margin_border);
+                marginBorder = (int) context.getResources().getDimension(R.dimen.home_category_margin_border_2);
                 availableScreenWidth = context.getResources().getDisplayMetrics().widthPixels - (marginBorder * 2);
             }
 

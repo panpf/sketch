@@ -29,6 +29,6 @@ public class LoadInfo extends DownloadInfo {
      * 获取处理过的图片的磁盘缓存key
      */
     public String getProcessedImageDiskCacheKey() {
-        return getId();
+        return getKey();
     }
 }

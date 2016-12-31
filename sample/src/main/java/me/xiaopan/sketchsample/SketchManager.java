@@ -75,7 +75,7 @@ public class SketchManager {
 
         Sketch.putOptions(ImageOptions.WINDOW_BACKGROUND, new DisplayOptions()
                 .setLoadingImage(new OldStateImage(new DrawableStateImage(R.drawable.shape_window_background)))
-                .setImageProcessor(GaussianBlurImageProcessor.makeLayerColor(Color.parseColor("#88000000")))
+                .setImageProcessor(GaussianBlurImageProcessor.makeLayerColor(Color.parseColor("#66000000")))
                 .setCacheProcessedImageInDisk(true)
                 .setShapeSizeByFixedSize(true)
                 .setMaxSize(context.getResources().getDisplayMetrics().widthPixels / 4,

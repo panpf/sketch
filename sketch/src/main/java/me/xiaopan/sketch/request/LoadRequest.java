@@ -272,7 +272,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
                     } catch (OutOfMemoryError e) {
                         e.printStackTrace();
                         SketchMonitor sketchMonitor = getSketch().getConfiguration().getMonitor();
-                        sketchMonitor.onProcessImageError(e, getId(), imageProcessor);
+                        sketchMonitor.onProcessImageError(e, getKey(), imageProcessor);
                     }
 
                     // 确实是一张新图片，就替换掉旧图片

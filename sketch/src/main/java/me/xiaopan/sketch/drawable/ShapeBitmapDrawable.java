@@ -248,23 +248,23 @@ public class ShapeBitmapDrawable extends Drawable implements RefDrawable {
     }
 
     @Override
-    public String getImageId() {
-        return sketchDrawable != null ? sketchDrawable.getImageId() : null;
+    public String getKey() {
+        return sketchDrawable != null ? sketchDrawable.getKey() : null;
     }
 
     @Override
-    public String getImageUri() {
-        return sketchDrawable != null ? sketchDrawable.getImageUri() : null;
+    public String getUri() {
+        return sketchDrawable != null ? sketchDrawable.getUri() : null;
     }
 
     @Override
-    public int getImageWidth() {
-        return sketchDrawable != null ? sketchDrawable.getImageWidth() : 0;
+    public int getOriginWidth() {
+        return sketchDrawable != null ? sketchDrawable.getOriginWidth() : 0;
     }
 
     @Override
-    public int getImageHeight() {
-        return sketchDrawable != null ? sketchDrawable.getImageHeight() : 0;
+    public int getOriginHeight() {
+        return sketchDrawable != null ? sketchDrawable.getOriginHeight() : 0;
     }
 
     @Override

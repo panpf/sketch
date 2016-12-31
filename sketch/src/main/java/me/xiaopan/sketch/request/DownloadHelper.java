@@ -134,9 +134,9 @@ public class DownloadHelper {
     protected void preProcess() {
         // 暂停下载对于下载请求并不起作用，就相当于暂停加载对加载请求并不起作用一样，因此这里不予处理
 
-        // 根据URI和下载选项生成请求ID
-        if (downloadInfo.getId() == null) {
-            downloadInfo.setId(SketchUtils.makeRequestId(downloadInfo.getUri(), downloadOptions));
+        // 根据URI和下载选项生成请求key
+        if (downloadInfo.getKey() == null) {
+            downloadInfo.setKey(SketchUtils.makeRequestKey(downloadInfo.getUri(), downloadOptions));
         }
     }
 
@@ -150,14 +150,14 @@ public class DownloadHelper {
         }
 
         if (downloadInfo.getUriScheme() == null) {
-            SLog.e(LogType.REQUEST, logName, "unknown uri scheme. %s", downloadInfo.getId());
+            SLog.e(LogType.REQUEST, logName, "unknown uri scheme. %s", downloadInfo.getUri());
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
 
         if (downloadInfo.getUriScheme() != UriScheme.NET) {
             if (LogType.REQUEST.isEnabled()) {
-                SLog.e(LogType.REQUEST, logName, "only support http ot https. %s", downloadInfo.getId());
+                SLog.e(LogType.REQUEST, logName, "only support http ot https. %s", downloadInfo.getUri());
             }
             CallbackHandler.postCallbackError(downloadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
@@ -172,7 +172,7 @@ public class DownloadHelper {
             DiskCache.Entry diskCacheEntry = diskCache.get(downloadInfo.getDiskCacheKey());
             if (diskCacheEntry != null) {
                 if (LogType.REQUEST.isEnabled()) {
-                    SLog.i(LogType.REQUEST, logName, "image download completed. %s", downloadInfo.getId());
+                    SLog.i(LogType.REQUEST, logName, "image download completed. %s", downloadInfo.getKey());
                 }
                 if (downloadListener != null) {
                     DownloadResult result = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);

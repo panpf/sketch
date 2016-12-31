@@ -159,7 +159,7 @@ public class SearchFragment extends MyFragment implements StaggeredImageItemFact
 
         recyclerView.setOnScrollListener(new ScrollingPauseLoadManager(view.getContext()));
         recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        int padding  = SketchUtils.dp2px(getActivity(), 4);
+        int padding  = SketchUtils.dp2px(getActivity(), 2);
         recyclerView.setPadding(padding, padding, padding, padding);
         recyclerView.setClipToPadding(false);
 

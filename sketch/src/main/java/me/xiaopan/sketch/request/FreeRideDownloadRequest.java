@@ -42,7 +42,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
 
     @Override
     public String getDownloadFreeRideLog() {
-        return String.format("%s@%s", SketchUtils.toHexString(this), getId());
+        return String.format("%s@%s", SketchUtils.toHexString(this), getKey());
     }
 
     @Override

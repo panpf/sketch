@@ -90,7 +90,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
             if (LogType.REQUEST.isEnabled()) {
-                SLog.w(LogType.REQUEST, logName, "not found icon.png in. %s", loadRequest.getId());
+                SLog.w(LogType.REQUEST, logName, "not found icon.png in. %s", loadRequest.getKey());
             }
             return null;
         }
@@ -160,7 +160,7 @@ public class MyImagePreprocessor extends ImagePreprocessor {
                 return new PreProcessResult(xpkIconDiskCacheEntry, ImageFrom.LOCAL);
             } else {
                 if (LogType.REQUEST.isEnabled()) {
-                    SLog.w(LogType.REQUEST, logName, "not found xpk icon cache file. %s", loadRequest.getId());
+                    SLog.w(LogType.REQUEST, logName, "not found xpk icon cache file. %s", loadRequest.getKey());
                 }
                 return null;
             }

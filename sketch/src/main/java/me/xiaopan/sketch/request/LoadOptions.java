@@ -452,8 +452,8 @@ public class LoadOptions extends DownloadOptions {
     }
 
     @Override
-    public StringBuilder makeId(StringBuilder builder) {
-        super.makeId(builder);
+    public StringBuilder makeKey(StringBuilder builder) {
+        super.makeKey(builder);
 
         if (maxSize != null) {
             builder.append("_").append(maxSize.getKey());
@@ -490,8 +490,8 @@ public class LoadOptions extends DownloadOptions {
     }
 
     @Override
-    public StringBuilder makeStateImageId(StringBuilder builder) {
-        super.makeId(builder);
+    public StringBuilder makeStateImageKey(StringBuilder builder) {
+        super.makeKey(builder);
 
         if (resize != null) {
             builder.append("_").append(resize.getKey());

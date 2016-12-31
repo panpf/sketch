@@ -8,20 +8,20 @@ public abstract class SketchBitmap {
 
     protected Bitmap bitmap;
 
-    private String imageId;
-    private String imageUri;
+    private String key;
+    private String uri;
     private int originWidth;
     private int originHeight;
     private String mimeType;
 
-    protected SketchBitmap(Bitmap bitmap, String imageId, String imageUri, int originWidth, int originHeight, String mimeType) {
+    protected SketchBitmap(Bitmap bitmap, String key, String uri, int originWidth, int originHeight, String mimeType) {
         if (bitmap == null || bitmap.isRecycled()) {
             throw new IllegalArgumentException("bitmap is null or recycled");
         }
 
         this.bitmap = bitmap;
-        this.imageId = imageId;
-        this.imageUri = imageUri;
+        this.key = key;
+        this.uri = uri;
         this.originWidth = originWidth;
         this.originHeight = originHeight;
         this.mimeType = mimeType;
@@ -31,12 +31,12 @@ public abstract class SketchBitmap {
         return bitmap;
     }
 
-    public String getImageId() {
-        return imageId;
+    public String getKey() {
+        return key;
     }
 
-    public String getImageUri() {
-        return imageUri;
+    public String getUri() {
+        return uri;
     }
 
     public int getOriginWidth() {

@@ -24,22 +24,22 @@ public interface SketchDrawable {
     /**
      * 获取图片ID
      */
-    String getImageId();
+    String getKey();
 
     /**
      * 获取图片URI
      */
-    String getImageUri();
+    String getUri();
 
     /**
      * 获取图片原始宽
      */
-    int getImageWidth();
+    int getOriginWidth();
 
     /**
      * 获取图片原始高
      */
-    int getImageHeight();
+    int getOriginHeight();
 
     /**
      * 获取图片类型

@@ -453,8 +453,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         if (finalDrawable instanceof SketchDrawable && imageView instanceof ImageViewInterface &&
                 ((ImageViewInterface) imageView).isSupportLargeImage()) {
             SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
-            imageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getImageWidth() : sketchDrawable.getImageHeight();
-            imageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getImageHeight() : sketchDrawable.getImageWidth();
+            imageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginWidth() : sketchDrawable.getOriginHeight();
+            imageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginHeight() : sketchDrawable.getOriginWidth();
         } else {
             imageWidth = previewWidth;
             imageHeight = previewHeight;
@@ -540,8 +540,8 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         if (finalDrawable instanceof SketchDrawable && imageView instanceof ImageViewInterface &&
                 ((ImageViewInterface) imageView).isSupportLargeImage()) {
             SketchDrawable sketchDrawable = (SketchDrawable) finalDrawable;
-            imageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getImageWidth() : sketchDrawable.getImageHeight();
-            imageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getImageHeight() : sketchDrawable.getImageWidth();
+            imageWidth = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginWidth() : sketchDrawable.getOriginHeight();
+            imageHeight = rotateDegrees % 180 == 0 ? sketchDrawable.getOriginHeight() : sketchDrawable.getOriginWidth();
         } else {
             imageWidth = previewWidth;
             imageHeight = previewHeight;

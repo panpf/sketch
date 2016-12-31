@@ -3,5 +3,5 @@
     android:id="@+id/image_headImageItem"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
+    android:layout_margin="2dp"
     android:scaleType="centerCrop" />

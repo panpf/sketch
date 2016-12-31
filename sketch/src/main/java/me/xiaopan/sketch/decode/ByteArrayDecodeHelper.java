@@ -76,9 +76,9 @@ public class ByteArrayDecodeHelper implements DecodeHelper {
                 SLog.d(LogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
                         "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
                         outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
-                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getId());
+                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
             } else {
-                SLog.d(LogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getId());
+                SLog.d(LogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
             }
         }
     }
@@ -86,7 +86,7 @@ public class ByteArrayDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeError() {
         if (LogType.REQUEST.isEnabled()) {
-            SLog.e(LogType.REQUEST, logName, "decode failed. %s", loadRequest.getId());
+            SLog.e(LogType.REQUEST, logName, "decode failed. %s", loadRequest.getKey());
         }
     }
 

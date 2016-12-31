@@ -2,7 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:layout_margin="@dimen/home_category_margin_border_2">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="@dimen/home_category_margin_border_2">
 
             <me.xiaopan.sketchsample.widget.MyImageView
                 android:id="@+id/image_hotStarThreeRightItem_two"
@@ -54,7 +54,7 @@
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp">
+        android:layout_marginLeft="@dimen/home_category_margin_border_2">
 
         <me.xiaopan.sketchsample.widget.MyImageView
             android:id="@+id/image_hotStarThreeRightItem_three"

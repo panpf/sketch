@@ -651,14 +651,6 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
-     * 设置GIF标识图片
-     */
-    public void setShowGifFlag(int gifFlagDrawableResId) {
-        //noinspection deprecation
-        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
-    }
-
-    /**
      * 设置是否显示GIF标识
      */
     @SuppressWarnings("unused")
@@ -670,6 +662,14 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             showGifFlagFunction = null;
         }
         invalidate();
+    }
+
+    /**
+     * 设置GIF标识图片
+     */
+    public void setShowGifFlag(int gifFlagDrawableResId) {
+        //noinspection deprecation
+        setShowGifFlag(getResources().getDrawable(gifFlagDrawableResId));
     }
 
     /**
@@ -701,9 +701,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
     @SuppressWarnings("unused")
-    public void setImageShapeCornerRadius(float[] radiis) {
+    public void setImageShapeCornerRadius(float radius) {
         if (imageShapeFunction != null) {
-            imageShapeFunction.setCornerRadius(radiis);
+            imageShapeFunction.setCornerRadius(radius);
         }
     }
 
@@ -711,9 +711,9 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
      * 设置图片形状的圆角角度，只有图片形状是ROUNDED_RECT的时候此参数才有用
      */
     @SuppressWarnings("unused")
-    public void setImageShapeCornerRadius(float radius) {
+    public void setImageShapeCornerRadius(float[] radiis) {
         if (imageShapeFunction != null) {
-            imageShapeFunction.setCornerRadius(radius);
+            imageShapeFunction.setCornerRadius(radiis);
         }
     }
 
@@ -820,14 +820,16 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
     }
 
     /**
-     * 获取选项ID，可用于组装缓存ID
+     * 获取选项KEY，可用于组装缓存KEY
+     *
+     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, String)
      */
-    public String getOptionsId() {
+    public String getOptionsKey() {
         DisplayParams displayParams = getDisplayParams();
         if (displayParams != null) {
-            return displayParams.options.makeId(new StringBuilder()).toString();
+            return displayParams.options.makeKey(new StringBuilder()).toString();
         } else {
-            return getOptions().makeId(new StringBuilder()).toString();
+            return getOptions().makeKey(new StringBuilder()).toString();
         }
     }
 

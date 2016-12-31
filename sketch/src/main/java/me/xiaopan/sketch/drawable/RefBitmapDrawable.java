@@ -47,22 +47,22 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
     }
 
     @Override
-    public String getImageId() {
-        return refBitmap.getImageId();
+    public String getKey() {
+        return refBitmap.getKey();
     }
 
     @Override
-    public String getImageUri() {
-        return refBitmap.getImageUri();
+    public String getUri() {
+        return refBitmap.getUri();
     }
 
     @Override
-    public int getImageWidth() {
+    public int getOriginWidth() {
         return refBitmap.getOriginWidth();
     }
 
     @Override
-    public int getImageHeight() {
+    public int getOriginHeight() {
         return refBitmap.getOriginHeight();
     }
 

@@ -69,7 +69,7 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
     }
 
     @Override
-    public String getImageId() {
+    public String getKey() {
         return imageId;
     }
 
@@ -78,7 +78,7 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
     }
 
     @Override
-    public String getImageUri() {
+    public String getUri() {
         return imageUri;
     }
 
@@ -87,7 +87,7 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
     }
 
     @Override
-    public int getImageWidth() {
+    public int getOriginWidth() {
         return originWidth;
     }
 
@@ -96,7 +96,7 @@ public class SketchGifDrawable extends GifDrawable implements SketchDrawable {
     }
 
     @Override
-    public int getImageHeight() {
+    public int getOriginHeight() {
         return originHeight;
     }
 

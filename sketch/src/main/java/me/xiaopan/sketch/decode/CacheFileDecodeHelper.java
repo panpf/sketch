@@ -101,9 +101,9 @@ public class CacheFileDecodeHelper implements DecodeHelper {
                 SLog.d(LogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
                                 "targetSizeScale=%s, inSampleSize=%d, finalSize=%dx%d. %s",
                         outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
-                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getId());
+                        sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
             } else {
-                SLog.d(LogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getId());
+                SLog.d(LogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
             }
         }
     }
@@ -111,13 +111,13 @@ public class CacheFileDecodeHelper implements DecodeHelper {
     @Override
     public void onDecodeError() {
         if (LogType.REQUEST.isEnabled()) {
-            SLog.e(LogType.REQUEST, logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getId());
+            SLog.e(LogType.REQUEST, logName, "decode failed. diskCacheKey=%s. %s", diskCacheEntry.getUri(), loadRequest.getKey());
         }
 
         if (!diskCacheEntry.delete()) {
             if (LogType.REQUEST.isEnabled()) {
                 SLog.e(LogType.REQUEST, logName, "delete image disk cache file failed. diskCacheKey=%s. %s",
-                        diskCacheEntry.getUri(), loadRequest.getId());
+                        diskCacheEntry.getUri(), loadRequest.getKey());
             }
         }
     }

@@ -53,6 +53,10 @@ public abstract class WrapableImageProcessor extends ResizeImageProcessor {
         }
     }
 
+    public WrapableImageProcessor getWrappedProcessor() {
+        return wrappedProcessor;
+    }
+
     public abstract String onGetKey();
 
     protected boolean isInterceptResize() {

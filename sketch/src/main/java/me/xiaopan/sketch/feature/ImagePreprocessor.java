@@ -133,7 +133,7 @@ public class ImagePreprocessor implements Identifier {
         }
         if (iconBitmap.isRecycled()) {
             if (LogType.REQUEST.isEnabled()) {
-                SLog.w(LogType.REQUEST, logName, "apk icon bitmap recycled. %s", loadRequest.getId());
+                SLog.w(LogType.REQUEST, logName, "apk icon bitmap recycled. %s", loadRequest.getKey());
             }
             return null;
         }
@@ -186,7 +186,7 @@ public class ImagePreprocessor implements Identifier {
                 return new PreProcessResult(apkIconDiskCacheEntry, ImageFrom.LOCAL);
             } else {
                 if (LogType.REQUEST.isEnabled()) {
-                    SLog.w(LogType.REQUEST, logName, "not found apk icon cache file. %s", loadRequest.getId());
+                    SLog.w(LogType.REQUEST, logName, "not found apk icon cache file. %s", loadRequest.getKey());
                 }
                 return null;
             }
@@ -244,7 +244,7 @@ public class ImagePreprocessor implements Identifier {
 
         if (iconBitmap.isRecycled()) {
             if (LogType.REQUEST.isEnabled()) {
-                SLog.w(LogType.REQUEST, logName, "apk icon bitmap recycled. %s", loadRequest.getId());
+                SLog.w(LogType.REQUEST, logName, "apk icon bitmap recycled. %s", loadRequest.getKey());
             }
             return null;
         }
@@ -297,7 +297,7 @@ public class ImagePreprocessor implements Identifier {
                 return new PreProcessResult(appIconDiskCacheEntry, ImageFrom.LOCAL);
             } else {
                 if (LogType.REQUEST.isEnabled()) {
-                    SLog.w(LogType.REQUEST, logName, "not found apk icon cache file. %s", loadRequest.getId());
+                    SLog.w(LogType.REQUEST, logName, "not found apk icon cache file. %s", loadRequest.getKey());
                 }
                 return null;
             }

@@ -6,4 +6,4 @@
     android:textSize="20sp"
     android:paddingTop="16dp"
     android:textStyle="bold"
-    android:layout_margin="8dp" />
+    android:layout_margin="@dimen/home_category_margin_border_2" />

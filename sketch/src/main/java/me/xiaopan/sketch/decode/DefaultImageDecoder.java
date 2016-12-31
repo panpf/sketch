@@ -92,7 +92,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                     decimalFormat = new DecimalFormat("#.##");
                 }
                 SLog.d(LogType.REQUEST, logName, "decode use time %dms, average %sms. %s",
-                        useTime, decimalFormat.format((double) useTimeCount / decodeCount), request.getId());
+                        useTime, decimalFormat.format((double) useTimeCount / decodeCount), request.getKey());
             }
         }
 
@@ -144,7 +144,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
             if (LogType.REQUEST.isEnabled()) {
                 SLog.e(LogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
-                        boundOptions.outWidth, boundOptions.outHeight, request.getId());
+                        boundOptions.outWidth, boundOptions.outHeight, request.getKey());
             }
             decodeHelper.onDecodeError();
             return null;
@@ -198,7 +198,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 return null;
             }
 
-            gifDrawable.setImageId(request.getId());
+            gifDrawable.setImageId(request.getKey());
             gifDrawable.setImageUri(request.getUri());
             gifDrawable.setOriginWidth(boundOptions.outWidth);
             gifDrawable.setOriginHeight(boundOptions.outHeight);
@@ -299,7 +299,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
             if (LogType.REQUEST.isEnabled()) {
                 SLog.w(LogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
-                        boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getId());
+                        boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
             }
             bitmap.recycle();
             decodeHelper.onDecodeError();
@@ -375,7 +375,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
             if (LogType.REQUEST.isEnabled()) {
                 SLog.w(LogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
-                        boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getId());
+                        boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
             }
             bitmap.recycle();
             decodeHelper.onDecodeError();

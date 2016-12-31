@@ -65,7 +65,7 @@ public class SketchMonitor implements Identifier {
         }
 
         SLog.e(logName, "onDecodeGifImageError. outWidth=%d, outHeight=%d + outMimeType=%s. %s",
-                outWidth, outHeight, outMimeType, request.getId());
+                outWidth, outHeight, outMimeType, request.getKey());
     }
 
     /**
@@ -90,7 +90,7 @@ public class SketchMonitor implements Identifier {
         }
 
         SLog.e(logName, "onDecodeNormalImageError. outWidth=%d, outHeight=%d, outMimeType=%s. %s",
-                outWidth, outHeight, outMimeType, request.getId());
+                outWidth, outHeight, outMimeType, request.getKey());
     }
 
     /**

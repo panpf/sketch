@@ -25,10 +25,11 @@ import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.Resize;
 
 public class ResizeImageProcessor implements ImageProcessor {
+    private String logName = "ResizeImageProcessor";
 
     @Override
     public String getKey() {
-        return "ResizeImageProcessor";
+        return logName;
     }
 
     @Override

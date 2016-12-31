@@ -205,7 +205,7 @@ public class DisplayRequest extends LoadRequest {
             }
 
             BitmapPool bitmapPool = getSketch().getConfiguration().getBitmapPool();
-            RefBitmap refBitmap = new RefBitmap(bitmap, bitmapPool, getId(), getUri(),
+            RefBitmap refBitmap = new RefBitmap(bitmap, bitmapPool, getKey(), getUri(),
                     loadResult.getOriginWidth(), loadResult.getOriginHeight(), loadResult.getMimeType());
 
             // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉

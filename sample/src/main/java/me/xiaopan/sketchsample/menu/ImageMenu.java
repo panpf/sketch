@@ -167,18 +167,18 @@ public class ImageMenu {
             SketchDrawable sketchDrawable = (SketchDrawable) drawable;
 
             StringBuilder messageBuilder = new StringBuilder();
-            messageBuilder.append("URI：").append(sketchDrawable.getImageUri());
+            messageBuilder.append("URI：").append(sketchDrawable.getUri());
             messageBuilder.append("\n");
             messageBuilder.append("类型：").append(sketchDrawable.getMimeType());
             messageBuilder.append("\n");
-            messageBuilder.append("尺寸：").append(sketchDrawable.getImageWidth()).append("x").append(sketchDrawable.getImageHeight());
+            messageBuilder.append("尺寸：").append(sketchDrawable.getOriginWidth()).append("x").append(sketchDrawable.getOriginHeight());
 
             File image = null;
-            UriScheme uriScheme = UriScheme.valueOfUri(sketchDrawable.getImageUri());
+            UriScheme uriScheme = UriScheme.valueOfUri(sketchDrawable.getUri());
             if (uriScheme == UriScheme.FILE) {
-                image = new File(UriScheme.FILE.crop(sketchDrawable.getImageUri()));
+                image = new File(UriScheme.FILE.crop(sketchDrawable.getUri()));
             } else if (uriScheme == UriScheme.NET) {
-                DiskCache.Entry diskCacheEntry = Sketch.with(activity).getConfiguration().getDiskCache().get(sketchDrawable.getImageUri());
+                DiskCache.Entry diskCacheEntry = Sketch.with(activity).getConfiguration().getDiskCache().get(sketchDrawable.getUri());
                 if (diskCacheEntry != null) {
                     image = diskCacheEntry.getFile();
                 }
@@ -192,7 +192,7 @@ public class ImageMenu {
 
             int previewDrawableByteCount = sketchDrawable.getByteCount();
             int pixelByteCount = previewDrawableByteCount / drawable.getIntrinsicWidth() / drawable.getIntrinsicHeight();
-            int originImageByteCount = sketchDrawable.getImageWidth() * sketchDrawable.getImageHeight() * pixelByteCount;
+            int originImageByteCount = sketchDrawable.getOriginWidth() * sketchDrawable.getOriginHeight() * pixelByteCount;
             messageBuilder.append("\n");
             messageBuilder.append("占用内存：").append(Formatter.formatFileSize(activity, originImageByteCount));
 

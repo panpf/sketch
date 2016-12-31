@@ -290,8 +290,8 @@ public class LoadHelper {
         }
 
         // 根据URI和加载选项生成请求ID
-        if (loadInfo.getId() == null) {
-            loadInfo.setId(SketchUtils.makeRequestId(loadInfo.getUri(), loadOptions));
+        if (loadInfo.getKey() == null) {
+            loadInfo.setKey(SketchUtils.makeRequestKey(loadInfo.getUri(), loadOptions));
         }
     }
 
@@ -305,7 +305,7 @@ public class LoadHelper {
         }
 
         if (loadInfo.getUriScheme() == null) {
-            SLog.e(LogType.REQUEST, logName, "unknown uri scheme. %s", loadInfo.getId());
+            SLog.e(LogType.REQUEST, logName, "unknown uri scheme. %s", loadInfo.getUri());
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -322,7 +322,7 @@ public class LoadHelper {
 
             if (LogType.REQUEST.isEnabled()) {
                 SLog.w(LogType.REQUEST, logName, "canceled. %s. %s",
-                        isPauseDownload ? "pause download" : "requestLevel is local", loadInfo.getId());
+                        isPauseDownload ? "pause download" : "requestLevel is local", loadInfo.getKey());
             }
 
             CancelCause cancelCause = isPauseDownload ? CancelCause.PAUSE_DOWNLOAD : CancelCause.REQUEST_LEVEL_IS_LOCAL;

@@ -38,10 +38,10 @@ abstract class BaseRequest {
     }
 
     /**
-     * 获取ID
+     * 获取KEY
      */
-    public String getId() {
-        return info.getId();
+    public String getKey() {
+        return info.getKey();
     }
 
     /**
@@ -192,7 +192,7 @@ abstract class BaseRequest {
         }
 
         builder.append(". ").append(getThreadName());
-        builder.append(". ").append(getId());
+        builder.append(". ").append(getKey());
 
         if (level == 0) {
             SLog.d(LogType.REQUEST, getLogName(), builder.toString());

@@ -1042,47 +1042,48 @@ public class SketchUtils {
     }
 
     /**
-     * 根据图片地址和选项生成请求ID
+     * 生成请求KEY
      *
      * @param imageUri 图片地址
      * @param options  选项
      */
-    public static String makeRequestId(String imageUri, DownloadOptions options) {
+    public static String makeRequestKey(String imageUri, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
         if (options != null) {
-            options.makeId(builder);
+            options.makeKey(builder);
         }
         return builder.toString();
     }
 
     /**
-     * 根据图片地址和选项ID生成请求ID
+     * 生成请求KEY
      *
-     * @param imageUri  图片地址
-     * @param optionsId 选项ID
+     * @param imageUri   图片地址
+     * @param optionsKey 选项KEY
+     * @see me.xiaopan.sketch.SketchImageView#getOptionsKey()
      */
     @SuppressWarnings("unused")
-    public static String makeRequestId(String imageUri, String optionsId) {
+    public static String makeRequestKey(String imageUri, String optionsKey) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
-        if (!TextUtils.isEmpty(optionsId)) {
-            builder.append(optionsId);
+        if (!TextUtils.isEmpty(optionsKey)) {
+            builder.append(optionsKey);
         }
         return builder.toString();
     }
 
     /**
-     * 创建状态图片的请求ID
+     * 生成状态图片用的内存缓存KEY
      *
      * @param imageUri 图片地址
      * @param options  配置
      */
-    public static String makeStateImageRequestId(String imageUri, DownloadOptions options) {
+    public static String makeStateImageMemoryCacheKey(String imageUri, DownloadOptions options) {
         StringBuilder builder = new StringBuilder();
         builder.append(imageUri);
         if (options != null) {
-            options.makeStateImageId(builder);
+            options.makeStateImageKey(builder);
         }
         return builder.toString();
     }
@@ -1209,7 +1210,7 @@ public class SketchUtils {
         return Integer.toHexString(object.hashCode());
     }
 
-    public static int ceil(int value1, float value2){
+    public static int ceil(int value1, float value2) {
         return (int) Math.ceil(value1 / value2);
     }
 }

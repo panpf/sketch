@@ -158,21 +158,21 @@ public class DownloadOptions {
     }
 
     /**
-     * 生成ID，用于组装请求ID和内存缓存ID
+     * 生成选项KEY，用于组装请求或内存缓存key
      *
-     * @see SketchImageView#getOptionsId()
-     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestId(String, DownloadOptions)
+     * @see SketchImageView#getOptionsKey()
+     * @see me.xiaopan.sketch.util.SketchUtils#makeRequestKey(String, DownloadOptions)
      */
-    public StringBuilder makeId(StringBuilder builder) {
+    public StringBuilder makeKey(StringBuilder builder) {
         return builder;
     }
 
     /**
-     * 生成StateImage用的ID，用于组装StateImage的内存缓存ID
+     * 生成StateImage用的选项KEY，用于组装StateImage的内存缓存KEY
      *
-     * @see me.xiaopan.sketch.util.SketchUtils#makeStateImageRequestId(String, DownloadOptions)
+     * @see me.xiaopan.sketch.util.SketchUtils#makeStateImageMemoryCacheKey(String, DownloadOptions)
      */
-    public StringBuilder makeStateImageId(StringBuilder builder) {
+    public StringBuilder makeStateImageKey(StringBuilder builder) {
         return builder;
     }
 }

@@ -43,7 +43,7 @@ public class RefBitmap extends SketchBitmap {
 
     public String getBitmapInfo() {
         if (isRecycled()) {
-            return String.format("Recycled,%s", getImageId());
+            return String.format("%s,%s", LOG_NAME, getKey());
         }
         return String.format("%s,%dx%d,%s,%s,%d,%s",
                 Integer.toHexString(bitmap.hashCode()),
@@ -51,13 +51,13 @@ public class RefBitmap extends SketchBitmap {
                 getMimeType(),
                 bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
                 SketchUtils.getBitmapByteSize(bitmap),
-                getImageId());
+                getKey());
     }
 
     @Override
     public String getInfo() {
         if (isRecycled()) {
-            return String.format("%s(Recycled,%s)", LOG_NAME, getImageId());
+            return String.format("%s(Recycled,%s)", LOG_NAME, getKey());
         }
         return String.format("%s(%s,%dx%d,%s,%s,%d,%s)",
                 LOG_NAME,
@@ -66,7 +66,7 @@ public class RefBitmap extends SketchBitmap {
                 getMimeType(),
                 bitmap.getConfig() != null ? bitmap.getConfig().name() : null,
                 SketchUtils.getBitmapByteSize(bitmap),
-                getImageId());
+                getKey());
     }
 
     /**
@@ -132,7 +132,7 @@ public class RefBitmap extends SketchBitmap {
     private void referenceChanged(String callingStation) {
         if (isRecycled()) {
             if (LogType.CACHE.isEnabled()) {
-                SLog.e(LogType.CACHE, LOG_NAME, "Recycled. %s. %s", callingStation, getImageId());
+                SLog.e(LogType.CACHE, LOG_NAME, "Recycled. %s. %s", callingStation, getKey());
             }
             return;
         }

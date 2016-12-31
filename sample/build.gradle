@@ -46,6 +46,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            signingConfig signingConfigs.release
+        }
+
         release {
             minifyEnabled true
             shrinkResources true
@@ -82,7 +86,7 @@ dependencies {
     compile 'me.xiaopan:pullrefreshlayout:1.4.0'
 //    compile 'me.xiaopan:assemblyadapter:2.2.0'
 
-    compile(name:'assemblyadapter-release', ext:'aar')
+    compile(name: 'assemblyadapter-release', ext: 'aar')
 
     // ButterKnifeView绑定
     compile 'com.jakewharton:butterknife:8.4.0'

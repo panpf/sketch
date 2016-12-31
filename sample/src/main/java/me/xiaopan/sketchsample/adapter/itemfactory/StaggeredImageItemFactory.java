@@ -50,7 +50,7 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
                 @Override
                 public void onClick(View v) {
                     if (onItemClickListener != null) {
-                        onItemClickListener.onItemClick(getAdapterPosition(), getData(), imageView.getOptionsId());
+                        onItemClickListener.onItemClick(getAdapterPosition(), getData(), imageView.getOptionsKey());
                     }
                 }
             });
@@ -61,7 +61,7 @@ public class StaggeredImageItemFactory extends AssemblyRecyclerItemFactory<Stagg
         protected void onSetData(int i, StarImageRequest.Image image) {
             if (itemWidth == 0) {
                 int screenWidth = imageView.getContext().getResources().getDisplayMetrics().widthPixels;
-                itemWidth = (screenWidth - (SketchUtils.dp2px(imageView.getContext(), 8) * 3)) / 2;
+                itemWidth = (screenWidth - (SketchUtils.dp2px(imageView.getContext(), 4) * 3)) / 2;
             }
 
             ViewGroup.LayoutParams headParams = imageView.getLayoutParams();

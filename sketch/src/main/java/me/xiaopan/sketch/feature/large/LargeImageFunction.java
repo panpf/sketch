@@ -153,8 +153,8 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             SketchDrawable sketchDrawable = (SketchDrawable) previewDrawable;
             final int previewWidth = previewDrawable.getIntrinsicWidth();
             final int previewHeight = previewDrawable.getIntrinsicHeight();
-            final int imageWidth = sketchDrawable.getImageWidth();
-            final int imageHeight = sketchDrawable.getImageHeight();
+            final int imageWidth = sketchDrawable.getOriginWidth();
+            final int imageHeight = sketchDrawable.getOriginHeight();
 
             drawableQualified = previewWidth < imageWidth || previewHeight < imageHeight;
             drawableQualified &= SketchUtils.sdkSupportBitmapRegionDecoder();
@@ -163,18 +163,18 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             if (drawableQualified) {
                 if (LogType.LARGE.isEnabled()) {
                     SLog.d(LogType.LARGE, NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
-                            previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getImageId());
+                            previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             } else {
                 if (LogType.LARGE.isEnabled()) {
                     SLog.w(LogType.LARGE, NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
-                            previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getImageId());
+                            previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             }
         }
 
         if (drawableQualified) {
-            imageUri = ((SketchDrawable) previewDrawable).getImageUri();
+            imageUri = ((SketchDrawable) previewDrawable).getUri();
             largeImageViewer.setImage(imageUri);
         } else {
             imageUri = null;

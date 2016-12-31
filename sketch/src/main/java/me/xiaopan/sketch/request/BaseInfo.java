@@ -17,10 +17,11 @@
 package me.xiaopan.sketch.request;
 
 public abstract class BaseInfo {
-    private String id;  // TODO 改名内存缓存
     private String uri;
     private String realUri;    // 真正的图片地址，例如原图片uri是asset://test.png的，realUri就是test.png
     private UriScheme uriScheme;    // Uri协议类型
+
+    private String key; // key是由uri和选项组成的
 
     public BaseInfo(BaseInfo info) {
         copy(info);
@@ -32,31 +33,34 @@ public abstract class BaseInfo {
 
     void reset(String uri) {
         if (uri != null) {
-            this.id = null;
             this.uri = uri;
             this.uriScheme = UriScheme.valueOfUri(uri);
             this.realUri = uriScheme != null ? uriScheme.crop(uri) : null;
+
+            this.key = null;
         } else {
-            this.id = null;
             this.uri = null;
             this.uriScheme = null;
             this.realUri = null;
+
+            this.key = null;
         }
     }
 
     void copy(BaseInfo info) {
-        this.id = info.id;
         this.uri = info.uri;
         this.realUri = info.realUri;
         this.uriScheme = info.uriScheme;
+
+        this.key = info.key;
     }
 
-    public String getId() {
-        return id;
+    public String getKey() {
+        return key;
     }
 
-    void setId(String id) {
-        this.id = id;
+    void setKey(String key) {
+        this.key = key;
     }
 
     public String getUri() {

@@ -29,6 +29,6 @@ public class DisplayInfo extends LoadInfo {
      * 获取内存缓存key
      */
     public String getMemoryCacheKey() {
-        return getId();
+        return getKey();
     }
 }

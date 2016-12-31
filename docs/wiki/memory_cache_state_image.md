@@ -6,7 +6,7 @@
 
 现在通过MemoryCacheStateImage就可以轻松实现这样的效果，首先MemoryCacheStateImage需要一个内存缓存key，就能从内存缓存中取出图片，然后用这张图片作为loading占位图显示，所以这里的关键就是怎么才能知道上一个页面中那些图片的内存缓存key呢？
 
-首先我们需要知道内存缓存key的构成，其实内存缓存key就是请求ID
+首先我们需要知道内存缓存key的构成，其实内存缓存key就是请求key
 ```java
 public class DisplayInfo extends LoadInfo {
 
@@ -21,63 +21,63 @@ public class DisplayInfo extends LoadInfo {
      * 获取内存缓存key
      */
     public String getMemoryCacheKey() {
-        return getId();
+        return getKey();
     }
 }
 ```
 
-请求ID是由uri和显示选项构成的
+请求key是由uri和显示选项构成的
 ```
 public class DisplayHelper {
     protected void preProcess() {
         ....
 
-        // 根据URI和显示选项生成请求ID
-        if (displayInfo.getId() == null) {
-            displayInfo.setId(SketchUtils.makeRequestId(displayInfo.getUri(), displayOptions));
+        // 根据URI和显示选项生成请求Key
+        if (displayInfo.getKey() == null) {
+            displayInfo.setKey(SketchUtils.makeRequestKey(displayInfo.getUri(), displayOptions));
         }
     }
 }
 ```
-可以看到最终是由SketchUtils的makeRequestId()方法生成的请求ID
+可以看到最终是由SketchUtils的makeRequestKey()方法生成的请求KEY
 ```java
-public static String makeRequestId(String imageUri, DownloadOptions options) {
+public static String makeRequestKey(String imageUri, DownloadOptions options) {
     StringBuilder builder = new StringBuilder();
     builder.append(imageUri);
     if (options != null) {
-        options.makeId(builder);
+        options.makeKey(builder);
     }
     return builder.toString();
 }
 ```
 
-从上面我们可以看到内存缓存key就是由uri和显示选项构成，因此我们可以拿到上一个页面ImageView的Options Id，然后在图片详情页将uri和Options Id拼接一下就能得到内存缓存key了
+从上面我们可以看到内存缓存key就是由uri和显示选项构成，因此我们可以拿到上一个页面ImageView的Options Key，然后在图片详情页将uri和Options Key拼接一下就能得到内存缓存key了
 
-第一步，在图片列表页点击图片跳转的时候取出Options Id并传到图片详情页
+第一步，在图片列表页点击图片跳转的时候取出Options Key并传到图片详情页
 ```java
 public void onClick(View v) {
     SketchImageView sketchImageView = (SketchImageView) v;
-    String optionsId = sketchImageView.getOptionsId();
+    String optionsKey = sketchImageView.getOptionsKey();
 
     Intent intent = new Intent(context, ImageDetailActivity.class);
-    intent.put("optionsId", optionsId);
+    intent.put("optionsKey", optionsKey);
     intent.put("imageUrls", ....);
     startActivity(intent);
 }
 ```
-`一定要通过SketchImageView的getOptionsId()方法获取Options ID，因为在commit方法里会对Options进行补充处理，所以通过getOptionsId()得到的才是才是最终有效的Options Id`
+`一定要通过SketchImageView的getOptionsKey()方法获取Options Key，因为在commit方法里会对Options进行补充处理，所以通过getOptionsKey()得到的才是才是最终有效的Options Key`
 
-第二步，假如ImageDetailActivity里面是一个ViewPager，然后又把Options Id和图片uri，传到了最终的ImageFragment中，那么就在ImageFragment中拼装内存缓存key
+第二步，假如ImageDetailActivity里面是一个ViewPager，然后又把Options Key和图片uri，传到了最终的ImageFragment中，那么就在ImageFragment中拼装内存缓存key
 ```java
 public class ImageFragment extends Fragment {
-    String optionsId;
+    String optionsKey;
     String imageUri;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);  
 
-        optionsId = getArguments().getString("optionsId");
+        optionsKey = getArguments().getString("optionsKey");
         imageUri = getArguments().getString("imageUri");
     }
 
@@ -86,7 +86,7 @@ public class ImageFragment extends Fragment {
         SketchImageView sketchImageView = view.findViewById(R.id.iamge);
         DisplayOptions options = sketchImageView.getOptions();
 
-        String loadingImageMemoryCacheKey = SketchUtils.makeRequestId(imageUri, optionsId);       
+        String loadingImageMemoryCacheKey = SketchUtils.makeRequestKey(imageUri, optionsKey);       
         options.setLoadingImage(new MemoryCacheStateImage(loadingImageMemoryCacheKey));
 
         options.set....;
@@ -94,6 +94,6 @@ public class ImageFragment extends Fragment {
     }
 }
 ```
-`SketchUtils还有一个重载的makeRequestId(String, String)方法可用来生成请求ID`
+`SketchUtils还有一个重载的makeRequestKey(String, String)方法可用来生成请求Key`
 
 更详细的实现细节请参考示例app

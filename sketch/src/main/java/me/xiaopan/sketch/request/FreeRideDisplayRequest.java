@@ -42,16 +42,16 @@ public class FreeRideDisplayRequest extends DisplayRequest implements FreeRideMa
 
     @Override
     public String getDisplayFreeRideLog() {
-        return String.format("%s@%s", SketchUtils.toHexString(this), getId());
+        return String.format("%s@%s", SketchUtils.toHexString(this), getKey());
     }
 
     @Override
     public String getDisplayFreeRideKey() {
-        return getId();
+        return getKey();
     }
 
     /**
-     * 可以坐顺风车？条件是内存缓存ID一样并且内存缓存可以用，没有单独关闭内存缓存，不解码GIF图片的请求，没有开同步执行，请求执行器可以用
+     * 可以坐顺风车？条件是内存缓存key一样并且内存缓存可以用，没有单独关闭内存缓存，不解码GIF图片的请求，没有开同步执行，请求执行器可以用
      */
     @Override
     public boolean canByDisplayFreeRide() {
