@@ -54,7 +54,7 @@ public class FixedSize implements Identifier {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return String.format("FixedSize(%dx%d)", width, height);
     }
 }

@@ -168,7 +168,7 @@ public class HttpClientStack implements HttpStack {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return String.format("%s(maxRetryCount=%d,connectTimeout=%d,readTimeout=%d,userAgent=%s)",
                 logName, maxRetryCount, connectTimeout, readTimeout, userAgent);
     }

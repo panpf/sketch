@@ -93,7 +93,7 @@ public class ResizeCalculator implements Identifier {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return logName;
     }
 

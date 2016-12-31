@@ -75,7 +75,7 @@ public class ShapeSize implements Identifier {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return String.format("ShapeSize(%dx%d)", width, height);
     }
 }

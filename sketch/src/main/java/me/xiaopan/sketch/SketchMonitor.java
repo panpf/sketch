@@ -113,7 +113,7 @@ public class SketchMonitor implements Identifier {
         }
 
         SLog.e(logName, "onProcessImageError. imageUri: %s. processor: %s",
-                imageUri, processor.getIdentifier());
+                imageUri, processor.getKey());
     }
 
     /**
@@ -177,7 +177,7 @@ public class SketchMonitor implements Identifier {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return logName;
     }
 }

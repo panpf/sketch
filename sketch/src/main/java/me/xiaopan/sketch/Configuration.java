@@ -143,7 +143,7 @@ public final class Configuration {
                 oldRequestExecutor.shutdown();
             }
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setRequestExecutor. %s", requestExecutor.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setRequestExecutor. %s", requestExecutor.getKey());
             }
         }
         return this;
@@ -172,7 +172,7 @@ public final class Configuration {
                 oldDiskCache.close();
             }
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setDiskCache. %s", diskCache.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setDiskCache. %s", diskCache.getKey());
             }
         }
         return this;
@@ -202,7 +202,7 @@ public final class Configuration {
                 oldBitmapPool.close();
             }
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setBitmapPool. %s", bitmapPool.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setBitmapPool. %s", bitmapPool.getKey());
             }
         }
         return this;
@@ -231,7 +231,7 @@ public final class Configuration {
                 oldMemoryCache.close();
             }
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setMemoryCache. %s", memoryCache.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setMemoryCache. %s", memoryCache.getKey());
             }
         }
         return this;
@@ -256,7 +256,7 @@ public final class Configuration {
         if (imageDecoder != null) {
             this.imageDecoder = imageDecoder;
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setImageDecoder. %s", imageDecoder.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setImageDecoder. %s", imageDecoder.getKey());
             }
         }
         return this;
@@ -281,7 +281,7 @@ public final class Configuration {
         if (httpStack != null) {
             this.httpStack = httpStack;
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setHttpStack. %s", httpStack.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setHttpStack. %s", httpStack.getKey());
             }
         }
         return this;
@@ -306,7 +306,7 @@ public final class Configuration {
         if (imageSizeCalculator != null) {
             this.imageSizeCalculator = imageSizeCalculator;
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setImageSizeCalculator. %s", imageSizeCalculator.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setImageSizeCalculator. %s", imageSizeCalculator.getKey());
             }
         }
         return this;
@@ -331,7 +331,7 @@ public final class Configuration {
         if (defaultImageDisplayer != null) {
             this.defaultImageDisplayer = defaultImageDisplayer;
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setDefaultImageDisplayer. %s", defaultImageDisplayer.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setDefaultImageDisplayer. %s", defaultImageDisplayer.getKey());
             }
         }
         return this;
@@ -356,7 +356,7 @@ public final class Configuration {
         if (resizeImageProcessor != null) {
             this.resizeImageProcessor = resizeImageProcessor;
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setResizeImageProcessor. %s", resizeImageProcessor.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setResizeImageProcessor. %s", resizeImageProcessor.getKey());
             }
         }
         return this;
@@ -381,7 +381,7 @@ public final class Configuration {
         if (helperFactory != null) {
             this.helperFactory = helperFactory;
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setHelperFactory. %s", helperFactory.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setHelperFactory. %s", helperFactory.getKey());
             }
         }
         return this;
@@ -406,7 +406,7 @@ public final class Configuration {
         if (requestFactory != null) {
             this.requestFactory = requestFactory;
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setRequestFactory. %s", requestFactory.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setRequestFactory. %s", requestFactory.getKey());
             }
         }
         return this;
@@ -431,7 +431,7 @@ public final class Configuration {
         if (resizeCalculator != null) {
             this.resizeCalculator = resizeCalculator;
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setResizeCalculator. %s", resizeCalculator.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setResizeCalculator. %s", resizeCalculator.getKey());
             }
         }
         return this;
@@ -579,7 +579,7 @@ public final class Configuration {
         if (imagePreprocessor != null) {
             this.imagePreprocessor = imagePreprocessor;
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setImagePreprocessor. %s", imagePreprocessor.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setImagePreprocessor. %s", imagePreprocessor.getKey());
             }
         }
         return this;
@@ -605,7 +605,7 @@ public final class Configuration {
         if (monitor != null) {
             this.monitor = monitor;
             if (LogType.BASE.isEnabled()) {
-                SLog.d(LogType.BASE, logName, "setMonitor. %s", monitor.getIdentifier());
+                SLog.d(LogType.BASE, logName, "setMonitor. %s", monitor.getKey());
             }
         }
         return this;
@@ -622,20 +622,20 @@ public final class Configuration {
 
     public String getInfo() {
         return logName + ": " +
-                "\n" + "diskCache：" + diskCache.getIdentifier() +
-                "\n" + "bitmapPool：" + bitmapPool.getIdentifier() +
-                "\n" + "memoryCache：" + memoryCache.getIdentifier() +
-                "\n" + "imageDecoder：" + imageDecoder.getIdentifier() +
-                "\n" + "helperFactory：" + helperFactory.getIdentifier() +
-                "\n" + "defaultImageDisplayer：" + defaultImageDisplayer.getIdentifier() +
-                "\n" + "resizeImageProcessor：" + resizeImageProcessor.getIdentifier() +
-                "\n" + "requestFactory：" + requestFactory.getIdentifier() +
-                "\n" + "httpStack：" + httpStack.getIdentifier() +
-                "\n" + "requestExecutor：" + requestExecutor.getIdentifier() +
-                "\n" + "imageSizeCalculator：" + imageSizeCalculator.getIdentifier() +
-                "\n" + "resizeCalculator：" + resizeCalculator.getIdentifier() +
-                "\n" + "imagePreprocessor：" + imagePreprocessor.getIdentifier() +
-                "\n" + "errorCallback：" + monitor.getIdentifier() +
+                "\n" + "diskCache：" + diskCache.getKey() +
+                "\n" + "bitmapPool：" + bitmapPool.getKey() +
+                "\n" + "memoryCache：" + memoryCache.getKey() +
+                "\n" + "imageDecoder：" + imageDecoder.getKey() +
+                "\n" + "helperFactory：" + helperFactory.getKey() +
+                "\n" + "defaultImageDisplayer：" + defaultImageDisplayer.getKey() +
+                "\n" + "resizeImageProcessor：" + resizeImageProcessor.getKey() +
+                "\n" + "requestFactory：" + requestFactory.getKey() +
+                "\n" + "httpStack：" + httpStack.getKey() +
+                "\n" + "requestExecutor：" + requestExecutor.getKey() +
+                "\n" + "imageSizeCalculator：" + imageSizeCalculator.getKey() +
+                "\n" + "resizeCalculator：" + resizeCalculator.getKey() +
+                "\n" + "imagePreprocessor：" + imagePreprocessor.getKey() +
+                "\n" + "errorCallback：" + monitor.getKey() +
                 "\n" + "globalPauseLoad：" + globalPauseLoad +
                 "\n" + "globalPauseDownload：" + globalPauseDownload +
                 "\n" + "globalLowQualityImage：" + globalLowQualityImage +

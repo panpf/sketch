@@ -27,7 +27,7 @@ import me.xiaopan.sketch.request.Resize;
 public class ResizeImageProcessor implements ImageProcessor {
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return "ResizeImageProcessor";
     }
 

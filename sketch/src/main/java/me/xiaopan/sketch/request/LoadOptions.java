@@ -456,10 +456,10 @@ public class LoadOptions extends DownloadOptions {
         super.makeId(builder);
 
         if (maxSize != null) {
-            builder.append("_").append(maxSize.getIdentifier());
+            builder.append("_").append(maxSize.getKey());
         }
         if (resize != null) {
-            builder.append("_").append(resize.getIdentifier());
+            builder.append("_").append(resize.getKey());
             if (forceUseResize) {
                 builder.append("_").append("forceUseResize");
             }
@@ -481,7 +481,7 @@ public class LoadOptions extends DownloadOptions {
         }
         if (imageProcessor != null) {
             // 旋转图片处理器在旋转0度或360度时不用旋转处理，因此也不会返回key，因此这里过滤一下
-            String processorKey = imageProcessor.getIdentifier();
+            String processorKey = imageProcessor.getKey();
             if (!TextUtils.isEmpty(processorKey)) {
                 builder.append("_").append(processorKey);
             }
@@ -494,7 +494,7 @@ public class LoadOptions extends DownloadOptions {
         super.makeId(builder);
 
         if (resize != null) {
-            builder.append("_").append(resize.getIdentifier());
+            builder.append("_").append(resize.getKey());
             if (forceUseResize) {
                 builder.append("_").append("forceUseResize");
             }
@@ -504,7 +504,7 @@ public class LoadOptions extends DownloadOptions {
         }
         if (imageProcessor != null) {
             // 旋转图片处理器在旋转0度或360度时不用旋转处理，因此也不会返回key，因此这里过滤一下
-            String processorKey = imageProcessor.getIdentifier();
+            String processorKey = imageProcessor.getKey();
             if (!TextUtils.isEmpty(processorKey)) {
                 builder.append("_").append(processorKey);
             }

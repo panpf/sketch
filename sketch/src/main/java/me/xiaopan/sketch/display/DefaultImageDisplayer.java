@@ -49,7 +49,7 @@ public class DefaultImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return logName;
     }
 }

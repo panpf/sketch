@@ -340,7 +340,7 @@ public class ImageSizeCalculator implements Identifier {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return logName;
     }
 }

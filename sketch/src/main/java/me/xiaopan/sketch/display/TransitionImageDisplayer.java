@@ -89,7 +89,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return String.format("%s(duration=%d, alwaysUse=%s)", logName, duration, alwaysUse);
     }
 }

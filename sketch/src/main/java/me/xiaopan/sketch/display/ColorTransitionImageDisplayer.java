@@ -64,7 +64,7 @@ public class ColorTransitionImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return String.format("%s(duration=%d, color=%d, alwaysUse=%s)", logName, duration, color, alwaysUse);
     }
 

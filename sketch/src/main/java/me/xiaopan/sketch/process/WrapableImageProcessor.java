@@ -17,6 +17,7 @@
 package me.xiaopan.sketch.process;
 
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -34,11 +35,21 @@ public abstract class WrapableImageProcessor extends ResizeImageProcessor {
     }
 
     @Override
-    public final String getIdentifier() {
-        if (wrappedProcessor != null) {
-            return onGetIdentifier() + "&" + wrappedProcessor.getIdentifier();
+    public final String getKey() {
+        String selfKey = onGetIdentifier();
+        String wrappedKey = wrappedProcessor != null ? wrappedProcessor.getKey() : null;
+        if (!TextUtils.isEmpty(selfKey)) {
+            if (!TextUtils.isEmpty(wrappedKey)) {
+                return String.format("%s&%s", selfKey, wrappedKey);
+            } else {
+                return selfKey;
+            }
         } else {
-            return onGetIdentifier();
+            if (!TextUtils.isEmpty(wrappedKey)) {
+                return wrappedKey;
+            } else {
+                return null;
+            }
         }
     }
 

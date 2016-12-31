@@ -49,7 +49,7 @@ public class RequestFactory implements Identifier {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return logName;
     }
 }

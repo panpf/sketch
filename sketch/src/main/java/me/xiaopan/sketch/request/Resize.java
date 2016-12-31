@@ -82,7 +82,7 @@ public class Resize implements Identifier {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return String.format("Resize(%dx%d-%s)", width, height, scaleType != null ? scaleType.name() : "null");
     }
 }

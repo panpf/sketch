@@ -348,7 +348,7 @@ public class LruDiskCache implements DiskCache {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return String.format("%s(maxSize=%s,appVersionCode=%d,cacheDir=%s)",
                 logName, Formatter.formatFileSize(context, maxSize), appVersionCode, cacheDir.getPath());
     }

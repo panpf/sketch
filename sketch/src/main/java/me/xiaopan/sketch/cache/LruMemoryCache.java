@@ -170,7 +170,7 @@ public class LruMemoryCache implements MemoryCache {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return String.format("%s(maxSize=%s)", logName, Formatter.formatFileSize(context, getMaxSize()));
     }
 

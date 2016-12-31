@@ -492,7 +492,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return logName;
     }
 }

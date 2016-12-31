@@ -103,7 +103,7 @@ public class ZoomOutImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return String.format("%s(duration=%d, fromX=%s, fromY=%s, interpolator=%s, alwaysUse=%s)",
                 logName, duration, fromX, fromY, interpolator != null ? interpolator.getClass().getSimpleName() : null, alwaysUse);
     }

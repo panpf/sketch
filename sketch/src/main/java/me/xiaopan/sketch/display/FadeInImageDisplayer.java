@@ -56,7 +56,7 @@ public class FadeInImageDisplayer implements ImageDisplayer {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return String.format("FadeInImageDisplayer(duration=%d, alwaysUse=%s)", duration, alwaysUse);
     }
 }

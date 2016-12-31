@@ -137,7 +137,7 @@ public class RequestExecutor implements Identifier {
     }
 
     @Override
-    public String getIdentifier() {
+    public String getKey() {
         return String.format("%s(%s", logName, shutdown ? "shutdown" : "running)");
     }
 
