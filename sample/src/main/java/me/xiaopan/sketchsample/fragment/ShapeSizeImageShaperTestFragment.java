@@ -9,14 +9,14 @@ import android.widget.TextView;
 import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
-import me.xiaopan.sketch.request.Resize;
+import me.xiaopan.sketch.request.ShapeSize;
 import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 @InjectContentView(R.layout.fragment_resize)
-public class ResizeTestFragment extends MyFragment {
+public class ShapeSizeImageShaperTestFragment extends MyFragment {
     @InjectView(R.id.image_resizeFragment)
     MyImageView imageView;
 
@@ -153,7 +153,7 @@ public class ResizeTestFragment extends MyFragment {
         int width = (int) ((widthProgress / 100f) * 1000);
         int height = (int) ((heightProgress / 100f) * 1000);
 
-        imageView.getOptions().setResize(new Resize(width, height, scaleType));
+        imageView.getOptions().setShapeSize(new ShapeSize(width, height, scaleType));
         imageView.displayAssetImage(AssetImage.MEI_NV);
 
         if (currentCheckedButton != null) {

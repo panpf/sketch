@@ -348,7 +348,7 @@ public class GaussianBlurImageProcessor extends WrapableImageProcessor {
     }
 
     @Override
-    public String onGetIdentifier() {
+    public String onGetKey() {
         return String.format("%s(radius=%d,maskColor=%d)", logName, radius, layerColor);
     }
 

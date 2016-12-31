@@ -73,7 +73,7 @@ public class ReflectionImageProcessor extends WrapableImageProcessor {
     }
 
     @Override
-    public String onGetIdentifier() {
+    public String onGetKey() {
         return String.format("%s(scale=%s,spacing=%d)", logName, reflectionScale, reflectionSpacing);
     }
 

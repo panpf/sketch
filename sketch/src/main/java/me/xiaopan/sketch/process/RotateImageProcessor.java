@@ -84,7 +84,7 @@ public class RotateImageProcessor extends WrapableImageProcessor {
     }
 
     @Override
-    public String onGetIdentifier() {
+    public String onGetKey() {
         // 0度或360度时不加标识，这样做是为了避免浪费合适的内存缓存
         if (degrees % 360 == 0) {
             return null;

@@ -36,7 +36,7 @@ public abstract class WrapableImageProcessor extends ResizeImageProcessor {
 
     @Override
     public final String getKey() {
-        String selfKey = onGetIdentifier();
+        String selfKey = onGetKey();
         String wrappedKey = wrappedProcessor != null ? wrappedProcessor.getKey() : null;
         if (!TextUtils.isEmpty(selfKey)) {
             if (!TextUtils.isEmpty(wrappedKey)) {
@@ -53,7 +53,7 @@ public abstract class WrapableImageProcessor extends ResizeImageProcessor {
         }
     }
 
-    public abstract String onGetIdentifier();
+    public abstract String onGetKey();
 
     protected boolean isInterceptResize() {
         return false;

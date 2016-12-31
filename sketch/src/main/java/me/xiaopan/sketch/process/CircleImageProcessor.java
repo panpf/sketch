@@ -54,7 +54,7 @@ public class CircleImageProcessor extends WrapableImageProcessor {
     }
 
     @Override
-    public String onGetIdentifier() {
+    public String onGetKey() {
         return "CircleImageProcessor";
     }
 

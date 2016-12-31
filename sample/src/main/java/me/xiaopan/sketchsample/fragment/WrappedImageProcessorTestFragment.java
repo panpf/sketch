@@ -19,7 +19,7 @@ import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.widget.MyImageView;
 
 @InjectContentView(R.layout.fragment_wrapped)
-public class WrappedTestFragment extends MyFragment {
+public class WrappedImageProcessorTestFragment extends MyFragment {
     @InjectView(R.id.image_wrappedFragment)
     MyImageView imageView;
 

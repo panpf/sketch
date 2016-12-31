@@ -38,7 +38,7 @@ public class MaskImageProcessor extends WrapableImageProcessor {
     }
 
     @Override
-    public String onGetIdentifier() {
+    public String onGetKey() {
         return String.format("%s(maskColor=%d)", logName, maskColor);
     }
 

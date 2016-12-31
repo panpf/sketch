@@ -59,7 +59,7 @@ public class RoundRectImageProcessor extends WrapableImageProcessor {
     }
 
     @Override
-    public String onGetIdentifier() {
+    public String onGetKey() {
         if (cornerRadius != null) {
             return String.format("%s(cornerRadius=[%sx%s,%sx%s,%sx%s,%sx%s])",
                     logName, cornerRadius[0], cornerRadius[1], cornerRadius[2], cornerRadius[3],
@@ -67,6 +67,11 @@ public class RoundRectImageProcessor extends WrapableImageProcessor {
         } else {
             return logName;
         }
+    }
+
+    @Override
+    protected boolean isInterceptResize() {
+        return true;
     }
 
     @Override
