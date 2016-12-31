@@ -30,9 +30,9 @@ public class ImageProcessorTestFragment extends MyFragment {
                 new RotateImageProcessorTestFragment(),
                 new RoundRectImageProcessorTestFragment(),
                 new CircleImageProcessorTestFragment(),
-                new ResizeTestFragment(),
+                new ResizeImageProcessorTestFragment(),
                 new MaskImageProcessorTestFragment(),
-                new WrappedTestFragment(),
+                new WrappedImageProcessorTestFragment(),
         }));
 
         tabStrip.setTabViewFactory(new MainActivity.TitleTabFactory(new String[]{

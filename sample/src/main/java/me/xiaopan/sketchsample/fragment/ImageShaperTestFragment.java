@@ -27,7 +27,7 @@ public class ImageShaperTestFragment extends MyFragment {
         viewPager.setAdapter(new FragmentArrayPagerAdapter(getChildFragmentManager(), new Fragment[]{
                 new RoundRectImageShaperTestFragment(),
                 new CircleImageShaperTestFragment(),
-                new ShapeSizeTestFragment(),
+                new ShapeSizeImageShaperTestFragment(),
         }));
 
         tabStrip.setTabViewFactory(new MainActivity.TitleTabFactory(new String[]{
