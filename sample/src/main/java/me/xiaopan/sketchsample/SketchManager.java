@@ -1,6 +1,7 @@
 package me.xiaopan.sketchsample;
 
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import com.tencent.bugly.crashreport.CrashReport;
@@ -77,6 +78,7 @@ public class SketchManager {
                 .setLoadingImage(new OldStateImage(new DrawableStateImage(R.drawable.shape_window_background)))
                 .setImageProcessor(GaussianBlurImageProcessor.makeLayerColor(Color.parseColor("#66000000")))
                 .setCacheProcessedImageInDisk(true)
+                .setBitmapConfig(Bitmap.Config.ARGB_8888)   // 效果比较重要
                 .setShapeSizeByFixedSize(true)
                 .setMaxSize(context.getResources().getDisplayMetrics().widthPixels / 4,
                         context.getResources().getDisplayMetrics().heightPixels / 4)
