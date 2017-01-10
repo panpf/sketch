@@ -800,13 +800,23 @@ public class SketchImageView extends ImageView implements ImageViewInterface {
             }
 
             largeImageFunction = new LargeImageFunction(this);
+            largeImageFunction.bindImageZoomer(getImageZoomer());
+
+            // 大图功能开启后对ImageZoomer计算缩放比例有影响，因此要重置一下
+            zoomFunction.onDrawableChanged("setSupportLargeImage", null, getDrawable());
+
             largeImageFunction.onDrawableChanged("setSupportLargeImage", null, getDrawable());
         } else {
             largeImageFunction.recycle("setSupportLargeImage");
             largeImageFunction = null;
 
-            if (isSupportZoom() && zoomFunction.isFromLargeImageFunction()) {
-                setSupportZoom(false);
+            if (isSupportZoom()) {
+                // 大图功能关闭后对ImageZoomer计算缩放比例有影响，因此要重置一下
+                zoomFunction.onDrawableChanged("setSupportLargeImage", null, getDrawable());
+
+                if (zoomFunction.isFromLargeImageFunction()) {
+                    setSupportZoom(false);
+                }
             }
         }
     }

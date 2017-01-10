@@ -22,8 +22,8 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.LogType;
-import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
 import me.xiaopan.sketch.drawable.SketchDrawable;
@@ -48,23 +48,26 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         this.imageView = imageView;
         this.largeImageViewer = new LargeImageViewer(imageView.getContext(), this);
 
-        // 要想使用大图功能就必须开启缩放功能
-        if (!imageView.isSupportZoom()) {
-            throw new IllegalStateException("Use large image function must be open before the zoom function");
-        }
-
-        // 当缩放功能产生变化时回调大图功能
-        ImageZoomer imageZoomer = imageView.getImageZoomer();
-        imageZoomer.addOnMatrixChangeListener(this);
-
-        // 大图功能的开关对缩放功能的缩放比例的计算有影响，因此需要更新一下缩放功能
-        imageZoomer.update();
-
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
             if (LogType.LARGE.isEnabled()) {
                 SLog.w(LogType.LARGE, NAME, "large image function the minimum support to GINGERBREAD_MR1");
             }
         }
+    }
+
+    /**
+     * 绑定图片缩放器
+     */
+    public void bindImageZoomer(ImageZoomer imageZoomer) {
+        if (imageZoomer == null) {
+            throw new IllegalStateException("imageZoomer is null");
+        }
+
+        // 当缩放功能产生变化时回调大图功能
+        imageZoomer.addOnMatrixChangeListener(this);
+
+        // 大图功能的开关对缩放功能的缩放比例的计算有影响，因此需要更新一下缩放功能
+        imageZoomer.update();
     }
 
     @Override
