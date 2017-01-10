@@ -122,7 +122,7 @@ public class GaussianBlurImageProcessor extends WrapableImageProcessor {
         if (canReuseInBitmap) {
             bitmap = sentBitmap;
         } else {
-            bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
+            bitmap = sentBitmap.copy(sentBitmap.getConfig() != null ? sentBitmap.getConfig() : Bitmap.Config.ARGB_8888, true);
         }
 
         try {
@@ -359,7 +359,7 @@ public class GaussianBlurImageProcessor extends WrapableImageProcessor {
         }
 
         // blur handle
-        Bitmap blurBitmap = fastGaussianBlur(bitmap, radius, bitmap.isMutable());
+        Bitmap blurBitmap = fastGaussianBlur(bitmap, radius, bitmap.getConfig() != null && bitmap.isMutable());
 
         // layer color handle
         if (blurBitmap != null && layerColor != NO_LAYER_COLOR) {
