@@ -283,7 +283,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         tempLastScaleFocusX = focusX;
         tempLastScaleFocusY = focusY;
 
-        float oldSuppScale = SketchUtils.getMatrixScale(supportMatrix);
+        float oldSuppScale = getSupportZoomScale();
         float newSuppScale = oldSuppScale * scaleFactor;
 
         if (scaleFactor > 1.0f) {
@@ -991,6 +991,20 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
     }
 
     /**
+     * 获取Base缩放比例
+     */
+    public float getBaseZoomScale() {
+        return SketchUtils.getMatrixScale(baseMatrix);
+    }
+
+    /**
+     * 获取support缩放比例
+     */
+    public float getSupportZoomScale() {
+        return SketchUtils.getMatrixScale(supportMatrix);
+    }
+
+    /**
      * 获取能够让图片完整显示的缩放比例
      */
     @SuppressWarnings("unused")
@@ -1086,7 +1100,7 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         final float fullZoomScale = SketchUtils.formatFloat(getFullZoomScale(), 2);
         if (scale == fullZoomScale) {
             float[] zoomScales = getDoubleClickZoomScales();
-            zoom(zoomScales[zoomScales.length - 1], false);
+            zoom(zoomScales[zoomScales.length - 1], x, y, false);
         }
 
         RectF drawRectF = new RectF();
@@ -1162,9 +1176,10 @@ public class ImageZoomer implements View.OnTouchListener, OnScaleDragGestureList
         if (animate) {
             new ZoomRunner(this, getZoomScale(), scale, focalX, focalY).zoom();
         } else {
-            scale /= SketchUtils.getMatrixScale(baseMatrix);
-            float currentZoomScale = getZoomScale();
-            float addScale = scale - currentZoomScale;
+            float baseScale = getBaseZoomScale();
+            float supportZoomScale = getSupportZoomScale();
+            float finalScale = scale / baseScale;
+            float addScale = finalScale / supportZoomScale;
             supportMatrix.postScale(addScale, addScale, focalX, focalY);
             checkAndApplyMatrix();
         }
