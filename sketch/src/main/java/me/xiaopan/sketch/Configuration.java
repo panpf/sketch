@@ -37,7 +37,6 @@ import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.MobileNetworkGlobalPauseDownloadController;
 import me.xiaopan.sketch.feature.ResizeCalculator;
-import me.xiaopan.sketch.http.HttpClientStack;
 import me.xiaopan.sketch.http.HttpStack;
 import me.xiaopan.sketch.http.HurlStack;
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -87,7 +86,7 @@ public final class Configuration {
         this.bitmapPool = new LruBitmapPool(context, memorySizeCalculator.getBitmapPoolSize());
         this.memoryCache = new LruMemoryCache(context, memorySizeCalculator.getMemoryCacheSize());
 
-        this.httpStack = Build.VERSION.SDK_INT >= 9 ? new HurlStack() : new HttpClientStack();
+        this.httpStack = new HurlStack();
         this.imageDecoder = new DefaultImageDecoder();
         this.freeRideManager = new FreeRideManager();
         this.requestExecutor = new RequestExecutor();
