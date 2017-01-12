@@ -34,6 +34,6 @@ public class CircleImageProcessorTestFragment extends MyFragment{
 
         imageView.getOptions().setImageProcessor(CircleImageProcessor.getInstance());
         imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
-        imageView.displayAssetImage(AssetImage.MEI_NV);
+        imageView.displayImage(AssetImage.MEI_NV);
     }
 }

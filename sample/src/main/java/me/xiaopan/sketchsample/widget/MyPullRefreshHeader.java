@@ -1,7 +1,11 @@
 package me.xiaopan.sketchsample.widget;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.ColorMatrix;
+import android.graphics.ColorMatrixColorFilter;
 import android.graphics.Matrix;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.ImageView;
@@ -43,6 +47,11 @@ public class MyPullRefreshHeader extends LinearLayout implements PullRefreshLayo
         status = Status.NORMAL;
 
         onToNormal();
+
+        Drawable arrayDrawable = context.getResources().getDrawable(R.drawable.ic_pull_down);
+        arrayDrawable = arrayDrawable.mutate();
+        arrayDrawable.setColorFilter(makeResetColorFilter(context.getResources().getColor(R.color.default_text_color_normal)));
+        arrowImageView.setImageDrawable(arrayDrawable);
     }
 
     @Override
@@ -135,5 +144,25 @@ public class MyPullRefreshHeader extends LinearLayout implements PullRefreshLayo
             }
         }
         arrowImageView.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom);
+    }
+
+    /**
+     * 创建一个可以改变颜色的ColorFilter
+     *
+     * @param color 透明度是没有用的
+     * @return ColorMatrixColorFilter
+     */
+    public static ColorMatrixColorFilter makeResetColorFilter(int color) {
+        float mRed = Color.red(color);
+        float mGreen = Color.green(color);
+        float mBlue = Color.blue(color);
+        float[] src = new float[]{
+                0, 0, 0, 0, mRed,
+                0, 0, 0, 0, mGreen,
+                0, 0, 0, 0, mBlue,
+                0, 0, 0, 1, 0};
+        ColorMatrix matrix = new ColorMatrix();
+        matrix.set(src);
+        return new ColorMatrixColorFilter(src);
     }
 }

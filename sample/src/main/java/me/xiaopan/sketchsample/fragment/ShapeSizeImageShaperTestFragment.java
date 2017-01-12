@@ -154,7 +154,7 @@ public class ShapeSizeImageShaperTestFragment extends MyFragment {
         int height = (int) ((heightProgress / 100f) * 1000);
 
         imageView.getOptions().setShapeSize(new ShapeSize(width, height, scaleType));
-        imageView.displayAssetImage(AssetImage.MEI_NV);
+        imageView.displayImage(AssetImage.MEI_NV);
 
         if (currentCheckedButton != null) {
             currentCheckedButton.setEnabled(true);

@@ -41,7 +41,6 @@ import me.xiaopan.androidinjector.InjectContentView;
 import me.xiaopan.androidinjector.InjectView;
 import me.xiaopan.assemblyadapter.AssemblyRecyclerAdapter;
 import me.xiaopan.prl.PullRefreshLayout;
-import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
@@ -163,7 +162,7 @@ public class PhotoAlbumFragment extends MyFragment implements PhotoAlbumItemFact
 
             List<String> imagePathList = new ArrayList<String>(mCursor.getCount() + 2);
             for(String assetImageName : AssetImage.ALL){
-                imagePathList.add(UriScheme.ASSET.createUri(assetImageName));
+                imagePathList.add(assetImageName);
             }
             while (mCursor.moveToNext()) {
                 //获取图片的路径

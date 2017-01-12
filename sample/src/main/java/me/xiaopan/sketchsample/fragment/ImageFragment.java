@@ -42,8 +42,9 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 
 @InjectContentView(R.layout.fragment_image)
 public class ImageFragment extends MyFragment {
-    public static final String PARAM_REQUIRED_IMAGE_URI = "PARAM_REQUIRED_IMAGE_URI";
-    public static final String PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_ID = "PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_ID";
+    public static final String PARAM_REQUIRED_STRING_IMAGE_URI = "PARAM_REQUIRED_STRING_IMAGE_URI";
+    public static final String PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY = "PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY";
+    public static final String PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS = "PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS";
 
     @InjectView(R.id.image_imageFragment_image)
     private MyImageView imageView;
@@ -60,20 +61,24 @@ public class ImageFragment extends MyFragment {
     @InjectView(R.id.layout_imageFragment_settings)
     private View settingsView;
 
-    @InjectExtra(PARAM_REQUIRED_IMAGE_URI)
+    @InjectExtra(PARAM_REQUIRED_STRING_IMAGE_URI)
     private String imageUri;
 
-    @InjectExtra(PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_ID)
+    @InjectExtra(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY)
     private String loadingImageOptionsId;
+
+    @InjectExtra(PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS)
+    private boolean showTools;
 
     private ApplyBackgroundCallback applyBackgroundCallback;
 
     private ImageMenu imageMenu;
 
-    public static ImageFragment build(String imageUri, String loadingImageOptionsId) {
+    public static ImageFragment build(String imageUri, String loadingImageOptionsId, boolean showTools) {
         Bundle bundle = new Bundle();
-        bundle.putString(PARAM_REQUIRED_IMAGE_URI, imageUri);
-        bundle.putString(PARAM_REQUIRED_LOADING_IMAGE_OPTIONS_ID, loadingImageOptionsId);
+        bundle.putString(PARAM_REQUIRED_STRING_IMAGE_URI, imageUri);
+        bundle.putString(PARAM_REQUIRED_STRING_LOADING_IMAGE_OPTIONS_KEY, loadingImageOptionsId);
+        bundle.putBoolean(PARAM_REQUIRED_BOOLEAN_SHOW_TOOLS, showTools);
         ImageFragment fragment = new ImageFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -132,6 +137,16 @@ public class ImageFragment extends MyFragment {
                 if (applyBackgroundCallback != null && isVisibleToUser()) {
                     applyBackgroundCallback.onApplyBackground(imageUri);
                 }
+
+//                final Drawable drawable = imageView.getDrawable();
+//                if (drawable != null && !(drawable instanceof LoadingDrawable)) {
+//                    hintView.post(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            location(drawable.getIntrinsicWidth()  * 0.4f, drawable.getIntrinsicHeight() * 0.4f, false);
+//                        }
+//                    });
+//                }
             }
 
             @Override
@@ -207,7 +222,26 @@ public class ImageFragment extends MyFragment {
         mappingView.setOnSingleClickListener(new MappingView.OnSingleClickListener() {
             @Override
             public boolean onSingleClick(float x, float y) {
-                return location(x, y);
+                Drawable drawable = imageView.getDrawable();
+                if (drawable == null) {
+                    return false;
+                }
+
+                if (drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0) {
+                    return false;
+                }
+
+                if (mappingView.getWidth() == 0 || mappingView.getHeight() == 0) {
+                    return false;
+                }
+
+                final float widthScale = (float) drawable.getIntrinsicWidth() / mappingView.getWidth();
+                final float heightScale = (float) drawable.getIntrinsicHeight() / mappingView.getHeight();
+                final float realX = x * widthScale;
+                final float realY = y * heightScale;
+
+                boolean showLocationAnimation = Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_LOCATION_ANIMATE);
+                return location(realX, realY, showLocationAnimation);
             }
         });
 
@@ -224,6 +258,9 @@ public class ImageFragment extends MyFragment {
                 }
             }
         });
+
+        mappingView.setVisibility(showTools ? View.VISIBLE : View.GONE);
+        settingsView.setVisibility(showTools ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -251,22 +288,12 @@ public class ImageFragment extends MyFragment {
         }
     }
 
-    private boolean location(float x, float y) {
+    private boolean location(float x, float y, boolean animate) {
         if (!imageView.isSupportZoom()) {
             return false;
         }
 
-        Drawable drawable = imageView.getDrawable();
-        if (drawable == null ||
-                drawable.getIntrinsicWidth() == 0 || drawable.getIntrinsicHeight() == 0 ||
-                mappingView.getWidth() == 0 || mappingView.getHeight() == 0) {
-            return false;
-        }
-
-        final float widthScale = (float) drawable.getIntrinsicWidth() / mappingView.getWidth();
-        final float heightScale = (float) drawable.getIntrinsicHeight() / mappingView.getHeight();
-
-        imageView.getImageZoomer().location(x * widthScale, y * heightScale, Settings.getBoolean(imageView.getContext(), Settings.PREFERENCE_LOCATION_ANIMATE));
+        imageView.getImageZoomer().location(x, y, animate);
         return true;
     }
 

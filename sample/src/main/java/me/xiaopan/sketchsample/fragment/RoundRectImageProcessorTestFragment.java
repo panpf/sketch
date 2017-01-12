@@ -64,6 +64,6 @@ public class RoundRectImageProcessorTestFragment extends MyFragment{
 
     private void apply() {
         imageView.getOptions().setImageProcessor(new RoundRectImageProcessor(progress));
-        imageView.displayAssetImage(AssetImage.MEI_NV);
+        imageView.displayImage(AssetImage.MEI_NV);
     }
 }

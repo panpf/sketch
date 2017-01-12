@@ -64,6 +64,6 @@ public class GaussianBlurImageProcessorTestFragment extends MyFragment {
 
     private void apply() {
         imageView.getOptions().setImageProcessor(GaussianBlurImageProcessor.makeRadius(progress));
-        imageView.displayAssetImage(AssetImage.MEI_NV);
+        imageView.displayImage(AssetImage.MEI_NV);
     }
 }

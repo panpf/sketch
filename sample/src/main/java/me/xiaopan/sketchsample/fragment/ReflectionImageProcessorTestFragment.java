@@ -28,6 +28,6 @@ public class ReflectionImageProcessorTestFragment extends MyFragment{
 
         imageView.getOptions().setImageProcessor(new ReflectionImageProcessor());
         imageView.getOptions().setImageDisplayer(new TransitionImageDisplayer());
-        imageView.displayAssetImage(AssetImage.MEI_NV);
+        imageView.displayImage(AssetImage.MEI_NV);
     }
 }

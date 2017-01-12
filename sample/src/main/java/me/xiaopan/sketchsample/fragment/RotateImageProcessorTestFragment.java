@@ -47,6 +47,6 @@ public class RotateImageProcessorTestFragment extends MyFragment {
 
     private void apply(){
         imageView.getOptions().setImageProcessor(new RotateImageProcessor(degrees));
-        imageView.displayAssetImage(AssetImage.MEI_NV);
+        imageView.displayImage(AssetImage.MEI_NV);
     }
 }

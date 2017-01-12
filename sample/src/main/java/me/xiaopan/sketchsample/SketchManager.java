@@ -4,16 +4,10 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 
-import com.tencent.bugly.crashreport.CrashReport;
-
-import java.util.List;
-
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.LogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
-import me.xiaopan.sketch.feature.large.Tile;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
 import me.xiaopan.sketch.shaper.CircleImageShaper;
@@ -46,7 +40,7 @@ public class SketchManager {
         sketchConfiguration.getBitmapPool().setDisabled(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_BITMAP_POOL));
         sketchConfiguration.getMemoryCache().setDisabled(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_DISABLE_CACHE_IN_MEMORY));
         sketchConfiguration.setImagePreprocessor(new MyImagePreprocessor());
-        sketchConfiguration.setMonitor(new MySketchMonitor(context));
+        sketchConfiguration.setMonitor(new SampleSketchMonitor(context));
     }
 
     public void initDisplayOptions() {
@@ -85,19 +79,4 @@ public class SketchManager {
                 .setImageDisplayer(new TransitionImageDisplayer(true)));
     }
 
-    private static class MySketchMonitor extends SketchMonitor {
-
-        public MySketchMonitor(Context context) {
-            super(context);
-            logName = "MySketchMonitor";
-        }
-
-        @Override
-        public void onTileSortError(@SuppressWarnings("UnusedParameters") IllegalArgumentException e,
-                                    List<Tile> tileList, @SuppressWarnings("UnusedParameters") boolean useLegacyMergeSort) {
-            super.onTileSortError(e, tileList, useLegacyMergeSort);
-            String message = (useLegacyMergeSort ? "useLegacyMergeSort. " : "") + SketchUtils.tileListToString(tileList);
-            CrashReport.postCatchedException(new Exception(message, e));
-        }
-    }
 }

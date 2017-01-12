@@ -1,6 +1,7 @@
 package me.xiaopan.sketchsample.fragment;
 
-import android.content.res.AssetManager;
+import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
@@ -24,6 +25,7 @@ import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.request.UriScheme;
 import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.AssetImage;
 import me.xiaopan.sketchsample.MyFragment;
@@ -62,26 +64,39 @@ public class InBitmapTestFragment extends MyFragment {
     int index = 0;
 
     Configuration configuration;
-    AssetManager assetManager;
 
     private View currentMode;
 
-    private static Bitmap decodeImage(AssetManager manager, String fileName, BitmapFactory.Options options) {
+    private static Bitmap decodeImage(Context context, String imageUri, BitmapFactory.Options options) {
+        UriScheme uriScheme = UriScheme.valueOfUri(imageUri);
+        if (uriScheme == null) {
+            return null;
+        }
+
         InputStream inputStream;
-        if (fileName.startsWith("/")) {
+        if (uriScheme == UriScheme.FILE) {
             try {
-                inputStream = new FileInputStream(fileName);
+                inputStream = new FileInputStream(imageUri);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
                 return null;
             }
-        } else {
+        } else if (uriScheme == UriScheme.ASSET) {
             try {
-                inputStream = manager.open(fileName);
+                inputStream = context.getAssets().open(UriScheme.ASSET.crop(imageUri));
             } catch (IOException e) {
                 e.printStackTrace();
                 return null;
             }
+        } else if (uriScheme == UriScheme.DRAWABLE) {
+            try {
+                inputStream = context.getResources().openRawResource(Integer.valueOf(UriScheme.DRAWABLE.crop(imageUri)));
+            } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
+                return null;
+            }
+        } else {
+            return null;
         }
 
         Bitmap bitmap;
@@ -99,7 +114,6 @@ public class InBitmapTestFragment extends MyFragment {
         super.onCreate(savedInstanceState);
 
         configuration = Sketch.with(getActivity()).getConfiguration();
-        assetManager = getActivity().getAssets();
     }
 
     @Override
@@ -111,7 +125,7 @@ public class InBitmapTestFragment extends MyFragment {
             public void onClick(View v) {
                 --index;
                 if (index < 0) {
-                    index = AssetImage.SAMPLES.length - Math.abs(index);
+                    index = AssetImage.IN_BITMAP_SAMPLES.length - Math.abs(index);
                 }
                 currentMode.performClick();
             }
@@ -120,7 +134,7 @@ public class InBitmapTestFragment extends MyFragment {
         nextView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                index = ++index % AssetImage.SAMPLES.length;
+                index = ++index % AssetImage.IN_BITMAP_SAMPLES.length;
                 currentMode.performClick();
             }
         });
@@ -168,11 +182,11 @@ public class InBitmapTestFragment extends MyFragment {
         newView.setEnabled(false);
         currentMode = newView;
 
-        pageNumberTextView.setText(String.format("%d/%d", index + 1, AssetImage.SAMPLES.length));
+        pageNumberTextView.setText(String.format("%d/%d", index + 1, AssetImage.IN_BITMAP_SAMPLES.length));
     }
 
     private void testSizeSame() {
-        new TestTask() {
+        new TestTask(getActivity()) {
             @Override
             protected void configOptions(BitmapFactory.Options options) {
                 if (BitmapPoolUtils.sdkSupportInBitmap()) {
@@ -181,11 +195,11 @@ public class InBitmapTestFragment extends MyFragment {
                 }
                 super.configOptions(options);
             }
-        }.execute(AssetImage.SAMPLES[index % AssetImage.SAMPLES.length]);
+        }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.length]);
     }
 
     private void testLargeSize() {
-        new TestTask() {
+        new TestTask(getActivity()) {
             @Override
             protected void configOptions(BitmapFactory.Options options) {
                 if (BitmapPoolUtils.sdkSupportInBitmap()) {
@@ -194,11 +208,11 @@ public class InBitmapTestFragment extends MyFragment {
                 }
                 super.configOptions(options);
             }
-        }.execute(AssetImage.SAMPLES[index % AssetImage.SAMPLES.length]);
+        }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.length]);
     }
 
     private void testSizeNoSame() {
-        new TestTask() {
+        new TestTask(getActivity()) {
             @Override
             protected void configOptions(BitmapFactory.Options options) {
                 if (BitmapPoolUtils.sdkSupportInBitmap()) {
@@ -207,11 +221,11 @@ public class InBitmapTestFragment extends MyFragment {
                 }
                 super.configOptions(options);
             }
-        }.execute(AssetImage.SAMPLES[index % AssetImage.SAMPLES.length]);
+        }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.length]);
     }
 
     private void inSampleSize() {
-        new TestTask() {
+        new TestTask(getActivity()) {
             @Override
             protected void configOptions(BitmapFactory.Options options) {
                 if (BitmapPoolUtils.sdkSupportInBitmap()) {
@@ -223,20 +237,25 @@ public class InBitmapTestFragment extends MyFragment {
                 }
                 super.configOptions(options);
             }
-        }.execute(AssetImage.SAMPLES[index % AssetImage.SAMPLES.length]);
+        }.execute(AssetImage.IN_BITMAP_SAMPLES[index % AssetImage.IN_BITMAP_SAMPLES.length]);
     }
 
     private class TestTask extends AsyncTask<String, Integer, Bitmap> {
         protected StringBuilder builder = new StringBuilder();
+        private Context context;
+
+        public TestTask(Context context) {
+            this.context = context.getApplicationContext();
+        }
 
         @Override
         protected Bitmap doInBackground(String... params) {
-            String fileName = params[0];
+            String imageUri = params[0];
 
             BitmapFactory.Options options = new BitmapFactory.Options();
 
             options.inJustDecodeBounds = true;
-            decodeImage(assetManager, fileName, options);
+            decodeImage(context, imageUri, options);
 
             if (options.outWidth <= 1 || options.outHeight <= 1) {
                 return null;
@@ -245,7 +264,7 @@ public class InBitmapTestFragment extends MyFragment {
             options.inSampleSize = 1;   // 这很重要4.4以下必须得是1
             configOptions(options);
 
-            builder.append("fileName: ").append(fileName);
+            builder.append("imageUri: ").append(imageUri);
 
             int sizeInBytes = SketchUtils.getBitmapByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
             builder.append("\n").append("image: ")
@@ -271,12 +290,12 @@ public class InBitmapTestFragment extends MyFragment {
             Bitmap newBitmap = null;
             try {
                 options.inJustDecodeBounds = false;
-                newBitmap = decodeImage(assetManager, fileName, options);
+                newBitmap = decodeImage(context, imageUri, options);
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
 
                 SketchMonitor monitor = Sketch.with(getActivity()).getConfiguration().getMonitor();
-                BitmapPoolUtils.inBitmapThrow(e, options, monitor, configuration.getBitmapPool(), fileName, 0, 0);
+                BitmapPoolUtils.inBitmapThrow(e, options, monitor, configuration.getBitmapPool(), imageUri, 0, 0);
             }
 
             if (newBitmap != null) {

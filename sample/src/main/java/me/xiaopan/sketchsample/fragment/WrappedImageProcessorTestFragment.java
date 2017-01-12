@@ -122,6 +122,6 @@ public class WrappedImageProcessorTestFragment extends MyFragment {
         int maskColor = Color.argb(alpha, 0, 0, 0);
 
         imageView.getOptions().setImageProcessor(new MaskImageProcessor(maskColor, rotateImageProcessor));
-        imageView.displayAssetImage(AssetImage.MEI_NV);
+        imageView.displayImage(AssetImage.MEI_NV);
     }
 }

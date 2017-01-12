@@ -86,13 +86,11 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 @InjectParentMember
 @InjectContentView(R.layout.activity_main)
 public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener,
-        AppListFragment.GetAppListTagStripListener, LargeImageTestFragment.GetLargeTagStripListener,
-        AboutFragment.TogglePageListener, ApplyBackgroundCallback {
+        AppListFragment.GetAppListTagStripListener, AboutFragment.TogglePageListener, ApplyBackgroundCallback {
 
     @InjectView(R.id.layout_main_content) private View contentView;
     @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
     @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
-    @InjectView(R.id.tabStrip_main_large) private PagerSlidingTabStrip largeTabStrip;
     @InjectView(R.id.drawer_main_content) private DrawerLayout drawerLayout;
     @InjectView(R.id.recycler_main_menu) private RecyclerView menuRecyclerView;
     @InjectView(R.id.layout_main_leftMenu) private ViewGroup leftMenuView;
@@ -144,7 +142,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         starTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"最热", "名录"}, getBaseContext()));
         appListTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"已安装", "安装包"}, getBaseContext()));
-        largeTabStrip.setTabViewFactory(new TitleTabFactory(new String[]{"WORLD", "QMSHT", "CWB", "CARD"}, getBaseContext()));
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             int statusBarHeight = DeviceUtils.getStatusBarHeight(getResources());
@@ -338,6 +335,13 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
 
         menuList.add("其它");
 
+        menuList.add(new CheckMenu(this, "图片详情页面显示缩略图和设置按钮", Settings.PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL, new CheckMenu.OnCheckedChangedListener() {
+            @Override
+            public void onCheckedChanged(boolean checked) {
+                EventBus.getDefault().post(Settings.PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL);
+            }
+        }, menuClickListener));
+
         menuList.add(new CheckMenu(this, "显示按下状态", Settings.PREFERENCE_CLICK_SHOW_PRESSED_STATUS, new CheckMenu.OnCheckedChangedListener() {
             @Override
             public void onCheckedChanged(boolean checked) {
@@ -448,11 +452,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         } else {
             AnimationUtils.invisibleViewByAlpha(appListTabStrip);
         }
-        if (page == Page.LARGE_IMAGE) {
-            AnimationUtils.visibleViewByAlpha(largeTabStrip);
-        } else {
-            AnimationUtils.invisibleViewByAlpha(largeTabStrip);
-        }
 
         getSupportActionBar().setTitle(page.getName());
         getSupportFragmentManager().beginTransaction()
@@ -519,11 +518,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         }
 
         return result;
-    }
-
-    @Override
-    public PagerSlidingTabStrip onGetLargeTabStrip() {
-        return largeTabStrip;
     }
 
     @Override

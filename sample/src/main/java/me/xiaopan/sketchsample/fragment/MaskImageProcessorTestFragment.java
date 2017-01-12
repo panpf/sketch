@@ -67,6 +67,6 @@ public class MaskImageProcessorTestFragment extends MyFragment {
         int alpha = (int) (((float) progress / 100) * 255);
         int maskColor = Color.argb(alpha, 0, 0, 0);
         imageView.getOptions().setImageProcessor(new MaskImageProcessor(maskColor));
-        imageView.displayAssetImage(AssetImage.MASK);
+        imageView.displayImage(AssetImage.MASK);
     }
 }

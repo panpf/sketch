@@ -137,7 +137,7 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
 
         if (uris != null) {
             AssemblyFragmentStatePagerAdapter pagerAdapter = new AssemblyFragmentStatePagerAdapter(getChildFragmentManager(), uris);
-            pagerAdapter.addItemFactory(new ImageFragmentItemFactory(loadingImageOptionsInfo));
+            pagerAdapter.addItemFactory(new ImageFragmentItemFactory(getActivity(), loadingImageOptionsInfo));
             viewPager.setAdapter(pagerAdapter);
             viewPager.setCurrentItem(position);
             currentItemTextView.setText(position + 1 + "");

@@ -41,6 +41,7 @@ public class Settings {
     public static final String PREFERENCE_LOG_ZOOM = "PREFERENCE_LOG_ZOOM";
     public static final String PREFERENCE_LOG_LARGE = "PREFERENCE_LOG_LARGE";
     public static final String PREFERENCE_LOG_TIME = "PREFERENCE_LOG_TIME";
+    public static final String PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL = "PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL";
 
     public static boolean getBoolean(Context context, @Key String key) {
         boolean defaultValue = false;
@@ -129,6 +130,7 @@ public class Settings {
             PREFERENCE_LOG_ZOOM,
             PREFERENCE_LOG_LARGE,
             PREFERENCE_LOG_TIME,
+            PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Key {
