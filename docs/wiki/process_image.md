@@ -18,8 +18,9 @@ ImageProcessor的职责不仅要将图片处理成各种效果的还要负责根
 #### 自定义
 自定义ImageProcessor有以下几点需要注意：
 
-1. 通过ImageProcessor的process()方法传进去的Bitmap在你处理完之后你无需回收它，Sketch会去处理
-2. 在处理的过程中如果你多次创建了新的Bitmap，那么你新创建的Bitmap在你用完之后一定要记得回收掉
-3. 你需要处理resize，你可以调用sketch.getConfiguration().getResizeCalculator().calculator(bitmap.getWidth(), bitmap.getHeight(), resize.getWidth(), resize.getHeight(), resize.getScaleType(), forceUseResize)来计算新图的大小、srcRect、destRect等，然后根据返回的ResizeCalculator.Result来创建新的图片
+1. 你需要处理resize，你可以调用sketch.getConfiguration().getResizeCalculator().calculator(bitmap.getWidth(), bitmap.getHeight(), resize.getWidth(), resize.getHeight(), resize.getScaleType(), forceUseResize)来计算新图的大小、srcRect、destRect等，然后根据返回的ResizeCalculator.Result来创建新的图片
+2. 通过ImageProcessor的process()方法传进去的Bitmap在你处理完之后你无需回收它，Sketch会去处理
+3. 创建新的bitmap之前，先从BitmapPool中查找可复用bitmap，是在没有再创建新的bitmap
+4. 在处理的过程中产生的过渡Bitmap在用完之后一定要调用BitmapPoolUtils.freeBitmapToPool(Bitmap, BitmapPool)回收掉
 
 自定义完后调用LoadOptions、DisplayOptions.setImageProcessor(ImageProcessor)方法或LoadHelper、DisplayHelper的processor(ImageProcessor)方法设置即可
