@@ -256,7 +256,8 @@ public class DownloadRequest extends AsyncRequest {
         return justDownloadResult;
     }
 
-    private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey) throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException {
+    private DownloadResult realDownload(HttpStack httpStack, DiskCache diskCache, String diskCacheKey)
+            throws IOException, DiskLruCache.EditorChangedException, DiskLruCache.ClosedException, DiskLruCache.FileNotExistException {
         setStatus(Status.CONNECTING);
 
         HttpStack.ImageHttpResponse httpResponse = httpStack.getHttpResponse(getRealUri());
@@ -280,14 +281,14 @@ public class DownloadRequest extends AsyncRequest {
             if (LogType.REQUEST.isEnabled()) {
                 printLogE("get response code failed", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
             }
-            return null;
+            throw new IllegalStateException("get response code exception", e);
         }
         if (responseCode != 200) {
             httpResponse.releaseConnection();
             if (LogType.REQUEST.isEnabled()) {
                 printLogE("response code exception", "runDownload", "responseHeaders: " + httpResponse.getResponseHeadersString());
             }
-            return null;
+            throw new IllegalStateException("response code exception: " + responseCode);
         }
 
         // 检查内容长度
@@ -297,7 +298,7 @@ public class DownloadRequest extends AsyncRequest {
             if (LogType.REQUEST.isEnabled()) {
                 printLogE("content length exception", "runDownload", "contentLength: " + contentLength, "responseHeaders: " + httpResponse.getResponseHeadersString());
             }
-            return null;
+            throw new IllegalStateException("contentLength exception: " + contentLength + "responseHeaders: " + httpResponse.getResponseHeadersString());
         }
 
         setStatus(Status.READ_DATA);
@@ -382,7 +383,7 @@ public class DownloadRequest extends AsyncRequest {
                 if (LogType.REQUEST.isEnabled()) {
                     printLogW("not found disk cache", "runDownload", "download after");
                 }
-                return null;
+                throw new IllegalStateException("not found disk cache entry, key is " + diskCacheKey);
             }
         } else {
             return new DownloadResult(((ByteArrayOutputStream) outputStream).toByteArray(), ImageFrom.NETWORK);
