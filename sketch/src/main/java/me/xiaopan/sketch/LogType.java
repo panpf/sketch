@@ -58,6 +58,7 @@ public enum LogType {
         this.enabled = enabled;
     }
 
+    @SuppressWarnings("unused")
     public void setAllEnabled(boolean enabled) {
         for(LogType type : values()){
             type.setEnabled(enabled);

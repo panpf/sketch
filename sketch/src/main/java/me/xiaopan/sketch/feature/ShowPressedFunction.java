@@ -19,13 +19,13 @@ package me.xiaopan.sketch.feature;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.os.Build;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Scroller;
 
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchImageView;
 
 /**
@@ -80,7 +80,7 @@ public class ShowPressedFunction extends SketchImageView.Function {
                 try {
                     canvas.clipPath(imageShapeFunction.getClipPath());
                 } catch (UnsupportedOperationException e) {
-                    Log.e(logName, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
+                    SLog.e(logName, "The current environment doesn't support clipPath has shut down automatically hardware acceleration");
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
                         view.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
                     }

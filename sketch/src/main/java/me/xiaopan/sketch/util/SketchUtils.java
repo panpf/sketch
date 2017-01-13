@@ -43,7 +43,6 @@ import android.os.StatFs;
 import android.os.storage.StorageManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.ViewGroup;
 
 import java.io.Closeable;
@@ -231,6 +230,8 @@ public class SketchUtils {
         return builder.toString();
     }
 
+    @SuppressWarnings("unused")
+    @Deprecated
     public static void mapping(int sourceWidth, int sourceHeight, int targetWidth, int targetHeight, Rect rect) {
         float widthScale = (float) sourceWidth / targetWidth;
         float heightScale = (float) sourceHeight / targetHeight;
@@ -411,7 +412,7 @@ public class SketchUtils {
         try {
             getVolumePathsMethod = StorageManager.class.getMethod("getVolumePaths");
         } catch (NoSuchMethodException e) {
-            Log.e("getAllAvailableSdcardPath", "not found StorageManager.getVolumePaths() method");
+            SLog.e("getAllAvailableSdcardPath", "not found StorageManager.getVolumePaths() method");
             if (Environment.MEDIA_MOUNTED.equals(Environment.getExternalStorageState())) {
                 return new String[]{Environment.getExternalStorageDirectory().getPath()};
             } else {

@@ -25,6 +25,17 @@ import android.util.Log;
 public class SLog {
     private static final String TAG_NAME = "%s-%s";
     private static final String DEFAULT_FORMAL = "%s";
+    private static SLogTracker logTracker;
+
+    @SuppressWarnings("unused")
+    public static SLogTracker getLogTracker() {
+        return logTracker;
+    }
+
+    @SuppressWarnings("unused")
+    public static void setLogTracker(SLogTracker logTracker) {
+        SLog.logTracker = logTracker;
+    }
 
     public static void v(LogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
@@ -40,7 +51,12 @@ public class SLog {
             format = DEFAULT_FORMAL;
         }
 
-        Log.v(tag, String.format(format, args));
+        String msg = String.format(format, args);
+        Log.v(tag, msg);
+
+        if (logTracker != null) {
+            logTracker.v(tag, msg);
+        }
     }
 
     public static void v(LogType type, String format, Object... args) {
@@ -51,7 +67,7 @@ public class SLog {
         v(null, name, format, args);
     }
 
-    public static void v(LogType type, String name, String text) {
+    public static void v(LogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -61,7 +77,11 @@ public class SLog {
             tag = String.format(TAG_NAME, Sketch.TAG, name);
         }
 
-        Log.v(tag, text);
+        Log.v(tag, msg);
+
+        if (logTracker != null) {
+            logTracker.v(tag, msg);
+        }
     }
 
     public static void v(LogType type, String text) {
@@ -71,7 +91,6 @@ public class SLog {
     public static void v(String text) {
         v(null, null, text);
     }
-
 
 
     public static void i(LogType type, String name, String format, Object... args) {
@@ -88,7 +107,12 @@ public class SLog {
             format = DEFAULT_FORMAL;
         }
 
-        Log.i(tag, String.format(format, args));
+        String msg = String.format(format, args);
+        Log.i(tag, msg);
+
+        if (logTracker != null) {
+            logTracker.i(tag, msg);
+        }
     }
 
     public static void i(LogType type, String format, Object... args) {
@@ -99,7 +123,7 @@ public class SLog {
         i(null, name, format, args);
     }
 
-    public static void i(LogType type, String name, String text) {
+    public static void i(LogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -109,7 +133,11 @@ public class SLog {
             tag = String.format(TAG_NAME, Sketch.TAG, name);
         }
 
-        Log.i(tag, text);
+        Log.i(tag, msg);
+
+        if (logTracker != null) {
+            logTracker.i(tag, msg);
+        }
     }
 
     public static void i(LogType type, String text) {
@@ -119,7 +147,6 @@ public class SLog {
     public static void i(String text) {
         i(null, null, text);
     }
-
 
 
     public static void d(LogType type, String name, String format, Object... args) {
@@ -136,7 +163,12 @@ public class SLog {
             format = DEFAULT_FORMAL;
         }
 
-        Log.d(tag, String.format(format, args));
+        String msg = String.format(format, args);
+        Log.d(tag, msg);
+
+        if (logTracker != null) {
+            logTracker.d(tag, msg);
+        }
     }
 
     public static void d(LogType type, String format, Object... args) {
@@ -147,7 +179,7 @@ public class SLog {
         d(null, name, format, args);
     }
 
-    public static void d(LogType type, String name, String text) {
+    public static void d(LogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -157,7 +189,11 @@ public class SLog {
             tag = String.format(TAG_NAME, Sketch.TAG, name);
         }
 
-        Log.d(tag, text);
+        Log.d(tag, msg);
+
+        if (logTracker != null) {
+            logTracker.d(tag, msg);
+        }
     }
 
     public static void d(LogType type, String text) {
@@ -167,7 +203,6 @@ public class SLog {
     public static void d(String text) {
         d(null, null, text);
     }
-
 
 
     public static void w(LogType type, String name, String format, Object... args) {
@@ -184,7 +219,12 @@ public class SLog {
             format = DEFAULT_FORMAL;
         }
 
-        Log.w(tag, String.format(format, args));
+        String msg = String.format(format, args);
+        Log.w(tag, msg);
+
+        if (logTracker != null) {
+            logTracker.w(tag, msg);
+        }
     }
 
     public static void w(LogType type, String format, Object... args) {
@@ -195,7 +235,7 @@ public class SLog {
         w(null, name, format, args);
     }
 
-    public static void w(LogType type, String name, String text) {
+    public static void w(LogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -205,7 +245,11 @@ public class SLog {
             tag = String.format(TAG_NAME, Sketch.TAG, name);
         }
 
-        Log.w(tag, text);
+        Log.w(tag, msg);
+
+        if (logTracker != null) {
+            logTracker.w(tag, msg);
+        }
     }
 
     public static void w(LogType type, String text) {
@@ -215,7 +259,6 @@ public class SLog {
     public static void w(String text) {
         w(null, null, text);
     }
-
 
 
     public static void e(LogType type, String name, String format, Object... args) {
@@ -232,7 +275,12 @@ public class SLog {
             format = DEFAULT_FORMAL;
         }
 
-        Log.e(tag, String.format(format, args));
+        String msg = String.format(format, args);
+        Log.e(tag, msg);
+
+        if (logTracker != null) {
+            logTracker.e(tag, msg);
+        }
     }
 
     public static void e(LogType type, String format, Object... args) {
@@ -243,7 +291,7 @@ public class SLog {
         e(null, name, format, args);
     }
 
-    public static void e(LogType type, String name, String text) {
+    public static void e(LogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -253,7 +301,11 @@ public class SLog {
             tag = String.format(TAG_NAME, Sketch.TAG, name);
         }
 
-        Log.e(tag, text);
+        Log.e(tag, msg);
+
+        if (logTracker != null) {
+            logTracker.e(tag, msg);
+        }
     }
 
     public static void e(LogType type, String text) {
