@@ -78,10 +78,13 @@
 >* :sparkles: 新增`onInBitmapExceptionForRegionDecoder(String, int, int, Rect, int, Bitmap)`用来监控在BitmapRegionDecoder中使用inBitmap时发生的异常
 >* :sparkles: 新增`onInBitmapException(String, int, int imageHeight, int, Bitmap)`用来监控在BitmapFactory中使用inBitmap时发生的异常
 
+##### Log
+>* :hammer: `Log` 日志分不同的类型分别提供开关控制，详见LogType
+>* :sparkles: `SLogTracker` 新增SLogTracker用于收集Sketch的日志，详情可参看示例APP中的[SampleLogTracker](../../sample/src/java/me/xiaopan/sketchsample/SampleLogTracker.java)
+
 ##### 其它
 >* :arrow_up: `minSdkVersion` 最低支持版本升到9
 >* :hammer: `Rename`. 所有跟Failed相关的名字全改成了Error
->* :hammer: `Log` 日志分不同的类型分别提供开关控制，详见LogType
 
 #### 全新功能
 >* :sparkles: `Gesture Zoom`. 新增[手势缩放](../wiki/zoom.md)功能，参照PhotoVie，SketchImageView内置了手势缩放功能，比PhotoView功能更强大，体验更好，新增了定位、阅读模式等特色功能
