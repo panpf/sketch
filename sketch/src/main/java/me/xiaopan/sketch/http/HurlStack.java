@@ -174,7 +174,7 @@ public class HurlStack implements HttpStack {
 
         @Override
         public long getContentLength() {
-            return connection.getHeaderFieldInt("Content-Length", -1);
+            return connection.getContentLength();
         }
 
         @Override
@@ -223,6 +223,15 @@ public class HurlStack implements HttpStack {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+
+        @Override
+        public boolean isContentChunked() {
+            String transferEncodingValue = connection.getHeaderField("Transfer-Encoding");
+            if (transferEncodingValue != null) {
+                transferEncodingValue = transferEncodingValue.trim();
+            }
+            return transferEncodingValue != null && "chunked".equalsIgnoreCase(transferEncodingValue);
         }
     }
 }

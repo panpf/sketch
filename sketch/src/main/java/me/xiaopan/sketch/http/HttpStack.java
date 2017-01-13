@@ -109,17 +109,46 @@ public interface HttpStack extends Identifier {
     boolean canRetry(Throwable throwable);
 
     interface ImageHttpResponse {
+        /**
+         * 获取响应状态码
+         *
+         * @throws IOException
+         */
         int getResponseCode() throws IOException;
 
+        /**
+         * 获取响应消息
+         *
+         * @throws IOException
+         */
         @SuppressWarnings("unused")
         String getResponseMessage() throws IOException;
 
+        /**
+         * 获取内容长度
+         */
         long getContentLength();
 
+        /**
+         * 内容是否是分块的？
+         */
+        boolean isContentChunked();
+
+        /**
+         * 获取所有的响应头
+         */
         String getResponseHeadersString();
 
+        /**
+         * 获取内容输入流
+         *
+         * @throws IOException
+         */
         InputStream getContent() throws IOException;
 
+        /**
+         * 释放连接
+         */
         void releaseConnection();
     }
 }

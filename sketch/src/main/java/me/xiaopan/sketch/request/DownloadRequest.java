@@ -35,11 +35,11 @@ import me.xiaopan.sketch.util.SketchUtils;
  * 下载请求
  */
 public class DownloadRequest extends AsyncRequest {
+    protected DownloadResult downloadResult;
+
     private DownloadOptions options;
     private DownloadListener downloadListener;
     private DownloadProgressListener downloadProgressListener;
-
-    protected DownloadResult downloadResult;
 
     public DownloadRequest(
             Sketch sketch, DownloadInfo info,
@@ -57,7 +57,7 @@ public class DownloadRequest extends AsyncRequest {
     /**
      * 获取磁盘缓存key
      */
-    public String getDiskCacheKey(){
+    public String getDiskCacheKey() {
         return ((DownloadInfo) info).getDiskCacheKey();
     }
 
@@ -292,7 +292,7 @@ public class DownloadRequest extends AsyncRequest {
 
         // 检查内容长度
         long contentLength = httpResponse.getContentLength();
-        if (contentLength <= 0) {
+        if (contentLength <= 0 && !httpResponse.isContentChunked()) {
             httpResponse.releaseConnection();
             if (LogType.REQUEST.isEnabled()) {
                 printLogE("content length exception", "runDownload", "contentLength: " + contentLength, "responseHeaders: " + httpResponse.getResponseHeadersString());
@@ -335,7 +335,7 @@ public class DownloadRequest extends AsyncRequest {
         try {
             completedLength = readData(inputStream, outputStream, (int) contentLength);
 
-            readFully = completedLength == contentLength;
+            readFully = contentLength <= 0 || completedLength == contentLength;
             if (diskCacheEditor != null) {
                 if (readFully) {
                     diskCacheEditor.commit();
@@ -429,7 +429,7 @@ public class DownloadRequest extends AsyncRequest {
      * 更新进度
      */
     private void updateProgress(int totalLength, int completedLength) {
-        if (downloadProgressListener != null) {
+        if (downloadProgressListener != null && totalLength > 0) {
             postRunUpdateProgress(totalLength, completedLength);
         }
     }
