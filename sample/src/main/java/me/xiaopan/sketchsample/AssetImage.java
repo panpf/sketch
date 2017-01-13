@@ -15,6 +15,9 @@ public class AssetImage {
     public static final String MEI_NV = "asset://mei_nv.jpg";
     public static final String MASK = "asset://mask.png";
 
+    public static final String CHUNK = "http://nbachina.qq.com/media/img/players/head/260x190/201935.png";
+    public static final String CHUNK2 = "http://static.yingyonghui.com/is/4398/4398642/256i.webp";
+
     public static final String[] IN_BITMAP_SAMPLES = new String[]{
             SAMPLE_JPG,
             SAMPLE_PNG,
@@ -44,5 +47,7 @@ public class AssetImage {
 
             MEI_NV,
             MASK,
+            CHUNK,
+            CHUNK2,
     };
 }
