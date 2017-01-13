@@ -34,7 +34,13 @@ public class SLog {
 
     @SuppressWarnings("unused")
     public static void setLogTracker(SLogTracker logTracker) {
-        SLog.logTracker = logTracker;
+        if (SLog.logTracker != logTracker) {
+            if (SLog.logTracker != null) {
+                SLog.logTracker.close();
+            }
+
+            SLog.logTracker = logTracker;
+        }
     }
 
     public static void v(LogType type, String name, String format, Object... args) {
