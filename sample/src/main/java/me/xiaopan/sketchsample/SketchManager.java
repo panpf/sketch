@@ -6,6 +6,7 @@ import android.graphics.Color;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
 import me.xiaopan.sketch.process.GaussianBlurImageProcessor;
@@ -25,7 +26,9 @@ public class SketchManager {
         this.context = context.getApplicationContext();
     }
 
-    public void initConfig() {
+    public void initConfig(Context context) {
+        SLog.setLogTracker(Settings.getBoolean(context, Settings.PREFERENCE_OUT_LOG_2_SDCARD) ? new SampleLogTracker(context) : null);
+
         LogType.BASE.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_BASE));
         LogType.TIME.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_TIME));
         LogType.REQUEST.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_REQUEST));

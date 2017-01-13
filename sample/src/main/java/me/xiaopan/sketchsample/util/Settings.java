@@ -11,7 +11,9 @@ import java.lang.annotation.RetentionPolicy;
 
 import me.xiaopan.sketch.BuildConfig;
 import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
+import me.xiaopan.sketchsample.SampleLogTracker;
 
 public class Settings {
     public static final String PREFERENCE_SCROLLING_PAUSE_LOAD = "PREFERENCE_SCROLLING_PAUSE_LOAD";
@@ -42,6 +44,7 @@ public class Settings {
     public static final String PREFERENCE_LOG_LARGE = "PREFERENCE_LOG_LARGE";
     public static final String PREFERENCE_LOG_TIME = "PREFERENCE_LOG_TIME";
     public static final String PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL = "PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL";
+    public static final String PREFERENCE_OUT_LOG_2_SDCARD = "PREFERENCE_OUT_LOG_2_SDCARD";
 
     public static boolean getBoolean(Context context, @Key String key) {
         boolean defaultValue = false;
@@ -98,6 +101,8 @@ public class Settings {
             LogType.ZOOM.setEnabled(newValue);
         } else if (PREFERENCE_LOG_LARGE.equals(key)) {
             LogType.LARGE.setEnabled(newValue);
+        } else if (PREFERENCE_OUT_LOG_2_SDCARD.equals(key)) {
+            SLog.setLogTracker(newValue ? new SampleLogTracker(context) : null);
         }
     }
 
@@ -131,6 +136,7 @@ public class Settings {
             PREFERENCE_LOG_LARGE,
             PREFERENCE_LOG_TIME,
             PREFERENCE_SHOW_TOOLS_IN_IMAGE_DETAIL,
+            PREFERENCE_OUT_LOG_2_SDCARD,
     })
     @Retention(RetentionPolicy.SOURCE)
     public @interface Key {

@@ -66,15 +66,15 @@ import me.xiaopan.sketchsample.bean.CheckMenu;
 import me.xiaopan.sketchsample.bean.InfoMenu;
 import me.xiaopan.sketchsample.fragment.AboutFragment;
 import me.xiaopan.sketchsample.fragment.AppListFragment;
-import me.xiaopan.sketchsample.fragment.InBitmapTestFragment;
-import me.xiaopan.sketchsample.fragment.ImageShaperTestFragment;
-import me.xiaopan.sketchsample.fragment.LargeImageTestFragment;
-import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
 import me.xiaopan.sketchsample.fragment.ImageProcessorTestFragment;
+import me.xiaopan.sketchsample.fragment.ImageShaperTestFragment;
+import me.xiaopan.sketchsample.fragment.InBitmapTestFragment;
+import me.xiaopan.sketchsample.fragment.LargeImageTestFragment;
+import me.xiaopan.sketchsample.fragment.OtherTestFragment;
+import me.xiaopan.sketchsample.fragment.PhotoAlbumFragment;
+import me.xiaopan.sketchsample.fragment.RepeatLoadOrDownloadTestFragment;
 import me.xiaopan.sketchsample.fragment.SearchFragment;
 import me.xiaopan.sketchsample.fragment.StarIndexFragment;
-import me.xiaopan.sketchsample.fragment.OtherTestFragment;
-import me.xiaopan.sketchsample.fragment.RepeatLoadOrDownloadTestFragment;
 import me.xiaopan.sketchsample.util.AnimationUtils;
 import me.xiaopan.sketchsample.util.DeviceUtils;
 import me.xiaopan.sketchsample.util.Settings;
@@ -88,14 +88,22 @@ import me.xiaopan.sketchsample.widget.MyImageView;
 public class MainActivity extends MyBaseActivity implements StarIndexFragment.GetStarTagStripListener,
         AppListFragment.GetAppListTagStripListener, AboutFragment.TogglePageListener, ApplyBackgroundCallback {
 
-    @InjectView(R.id.layout_main_content) private View contentView;
-    @InjectView(R.id.tabStrip_main_star) private PagerSlidingTabStrip starTabStrip;
-    @InjectView(R.id.tabStrip_main_appList) private PagerSlidingTabStrip appListTabStrip;
-    @InjectView(R.id.drawer_main_content) private DrawerLayout drawerLayout;
-    @InjectView(R.id.recycler_main_menu) private RecyclerView menuRecyclerView;
-    @InjectView(R.id.layout_main_leftMenu) private ViewGroup leftMenuView;
-    @InjectView(R.id.image_main_background) private MyImageView backgroundImageView;
-    @InjectView(R.id.image_main_menuBackground) private MyImageView menuBackgroundImageView;
+    @InjectView(R.id.layout_main_content)
+    private View contentView;
+    @InjectView(R.id.tabStrip_main_star)
+    private PagerSlidingTabStrip starTabStrip;
+    @InjectView(R.id.tabStrip_main_appList)
+    private PagerSlidingTabStrip appListTabStrip;
+    @InjectView(R.id.drawer_main_content)
+    private DrawerLayout drawerLayout;
+    @InjectView(R.id.recycler_main_menu)
+    private RecyclerView menuRecyclerView;
+    @InjectView(R.id.layout_main_leftMenu)
+    private ViewGroup leftMenuView;
+    @InjectView(R.id.image_main_background)
+    private MyImageView backgroundImageView;
+    @InjectView(R.id.image_main_menuBackground)
+    private MyImageView menuBackgroundImageView;
 
     private long lastClickBackTime;
     private Page page;
@@ -399,6 +407,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         menuList.add(new CheckMenu(this, "分块显示超大图日志", Settings.PREFERENCE_LOG_LARGE, null, menuClickListener));
         menuList.add(new CheckMenu(this, "时间日志", Settings.PREFERENCE_LOG_TIME, null, menuClickListener));
         menuList.add(new CheckMenu(this, "其它日志", Settings.PREFERENCE_LOG_BASE, null, menuClickListener));
+        menuList.add(new CheckMenu(this, "同步输出日志到cache/sketch_log目录下", Settings.PREFERENCE_OUT_LOG_2_SDCARD, null, menuClickListener));
 
         AssemblyRecyclerAdapter adapter = new AssemblyRecyclerAdapter(menuList);
         adapter.addItemFactory(new MenuTitleItemFactory());
@@ -538,9 +547,7 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
         IMAGE_SHAPER_TESt("ImageShaper测试", ImageShaperTestFragment.class, true, false),
         REPEAT_LOAD_OR_DOWNLOAD_TEST("重复加载/下载测试", RepeatLoadOrDownloadTestFragment.class, true, false),
         IN_BITMAP_TESt("inBitmap测试", InBitmapTestFragment.class, true, false),
-        OTHER_TEST("其它测试", OtherTestFragment.class, true, !BuildConfig.DEBUG),
-
-        ;
+        OTHER_TEST("其它测试", OtherTestFragment.class, true, !BuildConfig.DEBUG),;
 
         private String name;
         private Class<? extends Fragment> fragmentClass;
@@ -552,6 +559,26 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
             this.fragmentClass = fragmentClass;
             this.disable = disable;
             this.test = test;
+        }
+
+        public static Page[] getNormalPage() {
+            List<Page> normalPageList = new LinkedList<Page>();
+            for (Page page : values()) {
+                if (!page.test) {
+                    normalPageList.add(page);
+                }
+            }
+            return normalPageList.toArray(new Page[normalPageList.size()]);
+        }
+
+        public static Page[] getTestPage() {
+            List<Page> testPageList = new LinkedList<Page>();
+            for (Page page : values()) {
+                if (page.test) {
+                    testPageList.add(page);
+                }
+            }
+            return testPageList.toArray(new Page[testPageList.size()]);
         }
 
         public String getName() {
@@ -568,26 +595,6 @@ public class MainActivity extends MyBaseActivity implements StarIndexFragment.Ge
                 e.printStackTrace();
                 return null;
             }
-        }
-
-        public static Page[] getNormalPage(){
-            List<Page> normalPageList = new LinkedList<Page>();
-            for(Page page : values()){
-                if(!page.test){
-                    normalPageList.add(page);
-                }
-            }
-            return normalPageList.toArray(new Page[normalPageList.size()]);
-        }
-
-        public static Page[] getTestPage(){
-            List<Page> testPageList = new LinkedList<Page>();
-            for(Page page : values()){
-                if(page.test){
-                    testPageList.add(page);
-                }
-            }
-            return testPageList.toArray(new Page[testPageList.size()]);
         }
 
         public boolean isDisable() {

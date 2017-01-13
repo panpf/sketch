@@ -35,7 +35,7 @@ public class MyApplication extends Application {
         GoHttp.with(getBaseContext()).setDebugMode(BuildConfig.DEBUG);
 
         SketchManager sketchManager = new SketchManager(getBaseContext());
-        sketchManager.initConfig();
+        sketchManager.initConfig(getBaseContext());
         sketchManager.initDisplayOptions();
 
         if (!LeakCanary.isInAnalyzerProcess(this)) {
