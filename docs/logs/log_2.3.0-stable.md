@@ -4,6 +4,9 @@
 
 `升级：不能平滑升级，因为有些许重命名和重构`
 
+##### 下载
+>* :bug: 支持下载那些服务端无法确定文件大小导致响应头里只有Transfer-Encoding: chunked没有Content-Length的图片
+
 ##### 缓存
 >* :bug: [#4](https://github.com/xiaopansky/Sketch/issues/4) 修复由于在内存中缓存了Drawable，导致同一个缓存Drawable在两个不同的地方使用时bounds被改变从而图片大小显示异常，常见的表现为点击图片进入图片详情页后再回来发现图片变小了
 >* :bug: [#11](https://github.com/xiaopansky/Sketch/issues/11) 修复最后一条磁盘缓存无效的BUG，这是DiskLruCache的BUG，因为在commit的时候没有持久化操作记录导致的
