@@ -39,6 +39,7 @@ import me.xiaopan.sketchsample.util.Settings;
 import me.xiaopan.sketchsample.widget.HintView;
 import me.xiaopan.sketchsample.widget.MappingView;
 import me.xiaopan.sketchsample.widget.MyImageView;
+import pl.droidsonroids.gif.GifDrawable;
 
 @InjectContentView(R.layout.fragment_image)
 public class ImageFragment extends MyFragment {
@@ -137,6 +138,8 @@ public class ImageFragment extends MyFragment {
                 if (applyBackgroundCallback != null && isVisibleToUser()) {
                     applyBackgroundCallback.onApplyBackground(imageUri);
                 }
+
+                resetGifDrawable(imageView != null ? imageView.getDrawable() : null, isVisibleToUser(), true);
 
 //                final Drawable drawable = imageView.getDrawable();
 //                if (drawable != null && !(drawable instanceof LoadingDrawable)) {
@@ -286,6 +289,8 @@ public class ImageFragment extends MyFragment {
                 imageView.getLargeImageViewer().setPause(false);
             }
         }
+
+        resetGifDrawable(imageView != null ? imageView.getDrawable() : null, isVisibleToUser, false);
     }
 
     private boolean location(float x, float y, boolean animate) {
@@ -295,6 +300,26 @@ public class ImageFragment extends MyFragment {
 
         imageView.getImageZoomer().location(x, y, animate);
         return true;
+    }
+
+    private void resetGifDrawable(Drawable drawable, boolean userVisible, boolean fromCompleted) {
+        drawable = SketchUtils.getLastDrawable(drawable);
+        if (drawable == null || !(drawable instanceof GifDrawable)) {
+            return;
+        }
+
+        GifDrawable gifDrawable = (GifDrawable) drawable;
+        if (userVisible) {
+            gifDrawable.start();
+        } else {
+            if (fromCompleted) {
+                // 图片加载完了，但是页面还不可见的时候就停留着在第一帧
+                gifDrawable.seekToFrame(0);
+                gifDrawable.stop();
+            } else {
+                gifDrawable.stop();
+            }
+        }
     }
 
     @SuppressWarnings("unused")
