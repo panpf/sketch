@@ -9,6 +9,7 @@
 >* 支持一次设置两张图地址 分大图小图 WiFi下可直接大图
 >* 再次考虑Drawable.setVisible
 >* 通过ExifInterface读取图片方向信息，实现自动旋转方向不正的图片，新的ExifInterface支持库 http://developers.googleblog.cn/2017/01/exifinterface.html compile "com.android.support:exifinterface:25.1.0"
+>* 4.3上模糊失效
 
 其它：
 >* 参考Glide、Fresco和Picasso

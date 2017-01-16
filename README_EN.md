@@ -1,8 +1,10 @@
 # ![Logo](docs/res/logo.png) Sketch
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Sketch-green.svg?style=true)](https://android-arsenal.com/details/1/4165)
+[![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
 [![Released Version](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg)](https://bintray.com/xiaopansky/maven/Sketch)
-![QQ Group](https://img.shields.io/badge/QQ%20Group-529630740-red.svg)
+[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion)
+![QQ Group](https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg)
 
 [Chinese version of the README.md](README_EN.md)
 
