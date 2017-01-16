@@ -23,8 +23,8 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -58,11 +58,13 @@ public class BitmapPoolUtils {
         }
 
         if (options.outWidth == 0 || options.outHeight == 0) {
-            throw new IllegalArgumentException("outWidth or ourHeight is 0");
+            SLog.e(SLogType.REQUEST, "outWidth or ourHeight is 0");
+            return false;
         }
 
         if (TextUtils.isEmpty(options.outMimeType)) {
-            throw new IllegalArgumentException("outMimeType is empty");
+            SLog.e(SLogType.REQUEST, "outMimeType is empty");
+            return false;
         }
 
         // 使用inBitmap时4.4以下inSampleSize不能为0，最小也得是1

@@ -25,12 +25,12 @@ import android.os.Message;
 
 import java.lang.ref.WeakReference;
 
+import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchMonitor;
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.decode.ImageFormat;
 
 /**
@@ -112,7 +112,7 @@ class DecodeHandler extends Handler {
             options.inPreferredConfig = imageFormat.getConfig(false);
         }
 
-        if (!disableInBitmap && BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
+        if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder() && !disableInBitmap) {
             BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder(options, srcRect, bitmapPool);
         }
 
@@ -123,17 +123,12 @@ class DecodeHandler extends Handler {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
+            // 要是因为inBitmap而解码失败就停止继续使用并再此尝试
             if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
-                // 不再使用inBitmap功能
-                if (!disableInBitmap) {
-                    if (BitmapPoolUtils.inBitmapThrowForRegionDecoder(e, options, monitor, bitmapPool,
-                            regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, srcRect)) {
-                        disableInBitmap = true;
-                    }
-                }
+                if (!disableInBitmap && options.inBitmap != null) {
+                    disableInBitmap = BitmapPoolUtils.inBitmapThrowForRegionDecoder(e, options, monitor, bitmapPool,
+                            regionDecoder.getImageUri(), regionDecoder.getImageSize().x, regionDecoder.getImageSize().y, srcRect);
 
-                // 要是因为inBitmap而解码失败就再此尝试
-                if (options.inBitmap != null) {
                     options.inBitmap = null;
                     try {
                         bitmap = regionDecoder.decodeRegion(srcRect, options);

@@ -94,4 +94,5 @@
 #### 相对于2.3.0-beta10：
 >* :bug: 修复反复开启、关闭超大图功能会导致手势缩放比例异常的BGU
 >* :bug: 修复GaussianBlurImageProcessor无法对config为null的bitmap执行模糊的BUG
+>* :bug: 修复在Android4.3上取不到webp图片的outMimeType时，无法显示图片的BUG
 >* :lipstick: 优化Sample App

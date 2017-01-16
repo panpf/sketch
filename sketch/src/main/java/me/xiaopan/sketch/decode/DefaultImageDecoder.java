@@ -24,8 +24,8 @@ import android.os.Build;
 import java.io.File;
 import java.text.DecimalFormat;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
@@ -244,7 +244,8 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 计算resize区域在原图中的对应区域
         ResizeCalculator resizeCalculator = request.getSketch().getConfiguration().getResizeCalculator();
-        ResizeCalculator.Result result = resizeCalculator.calculator(boundOptions.outWidth, boundOptions.outHeight, resize.getWidth(), resize.getHeight(), resize.getScaleType(), false);
+        ResizeCalculator.Result result = resizeCalculator.calculator(boundOptions.outWidth, boundOptions.outHeight,
+                resize.getWidth(), resize.getHeight(), resize.getScaleType(), false);
 
         boolean supportLargeImage = SketchUtils.supportLargeImage(request, imageFormat);
 
@@ -252,7 +253,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         decodeOptions.inSampleSize = sizeCalculator.calculateInSampleSize(result.srcRect.width(), result.srcRect.height(),
                 resize.getWidth(), resize.getHeight(), supportLargeImage);
 
-        if (!loadOptions.isBitmapPoolDisabled() && BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
+        if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder() && !loadOptions.isBitmapPoolDisabled()) {
             BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
             BitmapPoolUtils.setInBitmapFromPoolForRegionDecoder(decodeOptions, result.srcRect, bitmapPool);
         }
@@ -263,23 +264,22 @@ public class DefaultImageDecoder implements ImageDecoder {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
+            // 要是因为inBitmap而解码失败就记录日志并再此尝试
             if (BitmapPoolUtils.sdkSupportInBitmapForRegionDecoder()) {
-                if (!loadOptions.isBitmapPoolDisabled()) {
+                if (!loadOptions.isBitmapPoolDisabled() && decodeOptions.inBitmap != null) {
                     BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
-                    SketchMonitor monitor = request.getSketch().getConfiguration().getMonitor();
-                    BitmapPoolUtils.inBitmapThrowForRegionDecoder(e, decodeOptions, monitor, bitmapPool,
-                            request.getUri(), boundOptions.outWidth, boundOptions.outHeight, result.srcRect);
-                }
+                    SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
 
-                // 要是因为inBitmap而解码失败就再此尝试
-                if (decodeOptions.inBitmap != null) {
+                    BitmapPoolUtils.inBitmapThrowForRegionDecoder(e, decodeOptions, sketchMonitor, bitmapPool,
+                            request.getUri(), boundOptions.outWidth, boundOptions.outHeight, result.srcRect);
+
                     decodeOptions.inBitmap = null;
                     try {
                         bitmap = decodeHelper.decodeRegion(result.srcRect, decodeOptions);
                     } catch (Throwable error) {
                         error.printStackTrace();
-                        SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
-                        sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
+                        sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth,
+                                boundOptions.outHeight, boundOptions.outMimeType);
                     }
                 }
             }
@@ -329,7 +329,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         }
 
         // Set inBitmap from bitmap pool
-        if (!request.getOptions().isBitmapPoolDisabled() && BitmapPoolUtils.sdkSupportInBitmap()) {
+        if (BitmapPoolUtils.sdkSupportInBitmap() && !request.getOptions().isBitmapPoolDisabled()) {
             BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
             BitmapPoolUtils.setInBitmapFromPool(decodeOptions, bitmapPool);
         }
@@ -340,21 +340,19 @@ public class DefaultImageDecoder implements ImageDecoder {
         } catch (IllegalArgumentException e) {
             e.printStackTrace();
 
+            // 要是因为inBitmap而解码失败就记录日志并再此尝试
             if (BitmapPoolUtils.sdkSupportInBitmap()) {
-                if (!request.getOptions().isBitmapPoolDisabled()) {
+                if (!request.getOptions().isBitmapPoolDisabled() && decodeOptions.inBitmap != null) {
                     SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
+
                     BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
                     BitmapPoolUtils.inBitmapThrow(e, decodeOptions, sketchMonitor, bitmapPool, request.getUri(), boundOptions.outWidth, boundOptions.outHeight);
-                }
 
-                // 要是因为inBitmap而解码失败就再此尝试
-                if (decodeOptions.inBitmap != null) {
                     decodeOptions.inBitmap = null;
                     try {
                         bitmap = decodeHelper.decode(decodeOptions);
                     } catch (Throwable error) {
                         error.printStackTrace();
-                        SketchMonitor sketchMonitor = request.getSketch().getConfiguration().getMonitor();
                         sketchMonitor.onDecodeNormalImageError(error, request, boundOptions.outWidth, boundOptions.outHeight, boundOptions.outMimeType);
                     }
                 }
