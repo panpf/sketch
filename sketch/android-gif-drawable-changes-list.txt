@@ -7,3 +7,4 @@
 3. GifDrawable增加getBitmap()方法
 4. SketchImageView中集成的相关类和方法改成了public的
 5. Compatible with jdk 1.6
+6. 支持bitmap pool
