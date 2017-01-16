@@ -72,7 +72,7 @@ dependencies{
 	compile 'me.xiaopan:sketch:lastVersionName'
 }
 ```
-`lastVersionName`：[![Released Version](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg)](https://bintray.com/xiaopansky/maven/Sketch)`（不带v）`
+`lastVersionName`：[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion)`（不带v）`
 
 2.添加以下权限
 ```xml

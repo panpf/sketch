@@ -74,7 +74,7 @@ dependencies{
 	compile 'me.xiaopan:sketch:lastVersionName'
 }
 ```
-`lastVersionName`：[![Released Version](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg)](https://bintray.com/xiaopansky/maven/Sketch)`（not With v）`
+`lastVersionName`：[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion)`（not With v）`
 
 2.Add the following permissions
 ```xml
