@@ -1,7 +1,7 @@
 # ![Logo](docs/res/logo.png) Sketch
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Sketch-green.svg?style=true)](https://android-arsenal.com/details/1/4165)
-[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)
+[![Released Version](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg)](https://bintray.com/xiaopansky/maven/Sketch)
 ![QQ Group](https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg)
 
 [English version of the README.md](README_EN.md)
@@ -70,7 +70,7 @@ dependencies{
 	compile 'me.xiaopan:sketch:lastVersionName'
 }
 ```
-`lastVersionName`：[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)`（不带v）`
+`lastVersionName`：[![Released Version](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg)](https://bintray.com/xiaopansky/maven/Sketch)`（不带v）`
 
 2.添加以下权限
 ```xml
@@ -79,7 +79,7 @@ dependencies{
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 ```
 
-3.在Application中调用释放缓存的方法（ICE_CREAM_SANDWICH以上版本能直接通过Context注册并回调）
+3.Android 4.0以下需要在Application中调用释放缓存的方法（Android 4.0以上能直接通过Context注册并回调）
 ```java
 public class MyApplication extends Application {    
 

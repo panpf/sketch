@@ -1,7 +1,7 @@
 # ![Logo](docs/res/logo.png) Sketch
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Sketch-green.svg?style=true)](https://android-arsenal.com/details/1/4165)
-[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)
+[![Released Version](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg)](https://bintray.com/xiaopansky/maven/Sketch)
 ![QQ Group](https://img.shields.io/badge/QQ%20Group-529630740-red.svg)
 
 [Chinese version of the README.md](README_EN.md)
@@ -72,7 +72,7 @@ dependencies{
 	compile 'me.xiaopan:sketch:lastVersionName'
 }
 ```
-`lastVersionName`：[![Release Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)`（not With v）`
+`lastVersionName`：[![Released Version](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg)](https://bintray.com/xiaopansky/maven/Sketch)`（not With v）`
 
 2.Add the following permissions
 ```xml
@@ -81,7 +81,7 @@ dependencies{
 <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
 ```
 
-3.In Application release of cache (ICE_CREAM_SANDWICH above version can be registered directly through the Context and callback)
+3.Android 4.0 the following need release of the cache in the Application (Android 4.0 above can be registered directly through the Context and callback)
 ```java
 public class MyApplication extends Application {    
 
