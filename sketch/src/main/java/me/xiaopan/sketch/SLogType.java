@@ -16,7 +16,7 @@
 
 package me.xiaopan.sketch;
 
-public enum LogType {
+public enum SLogType {
     /**
      * 其它
      */
@@ -60,7 +60,7 @@ public enum LogType {
 
     @SuppressWarnings("unused")
     public void setAllEnabled(boolean enabled) {
-        for(LogType type : values()){
+        for(SLogType type : values()){
             type.setEnabled(enabled);
         }
     }

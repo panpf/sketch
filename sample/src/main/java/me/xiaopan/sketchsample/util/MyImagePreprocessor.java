@@ -11,7 +11,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
@@ -89,8 +89,8 @@ public class MyImagePreprocessor extends ImagePreprocessor {
         InputStream inputStream;
         ZipEntry zipEntry = zipFile.getEntry("icon.png");
         if (zipEntry == null) {
-            if (LogType.REQUEST.isEnabled()) {
-                SLog.w(LogType.REQUEST, logName, "not found icon.png in. %s", loadRequest.getKey());
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.w(SLogType.REQUEST, logName, "not found icon.png in. %s", loadRequest.getKey());
             }
             return null;
         }
@@ -159,8 +159,8 @@ public class MyImagePreprocessor extends ImagePreprocessor {
             if (xpkIconDiskCacheEntry != null) {
                 return new PreProcessResult(xpkIconDiskCacheEntry, ImageFrom.LOCAL);
             } else {
-                if (LogType.REQUEST.isEnabled()) {
-                    SLog.w(LogType.REQUEST, logName, "not found xpk icon cache file. %s", loadRequest.getKey());
+                if (SLogType.REQUEST.isEnabled()) {
+                    SLog.w(SLogType.REQUEST, logName, "not found xpk icon cache file. %s", loadRequest.getKey());
                 }
                 return null;
             }

@@ -21,7 +21,7 @@ import android.graphics.Point;
 import android.graphics.RectF;
 import android.widget.ImageView;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.feature.zoom.scrollerproxy.ScrollerProxy;
 
@@ -37,8 +37,8 @@ class FlingTranslateRunner implements Runnable {
 
     void fling(int velocityX, int velocityY) {
         if (!imageZoomer.isWorking()) {
-            if (LogType.ZOOM.isEnabled()) {
-                SLog.w(LogType.ZOOM, ImageZoomer.NAME, "not working. fling");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "not working. fling");
             }
             return;
         }
@@ -70,8 +70,8 @@ class FlingTranslateRunner implements Runnable {
             minY = maxY = startY;
         }
 
-        if (LogType.ZOOM.isEnabled()) {
-            SLog.d(LogType.ZOOM, ImageZoomer.NAME, "fling. start=%dx %d, min=%dx%d, max=%dx%d",
+        if (SLogType.ZOOM.isEnabled()) {
+            SLog.d(SLogType.ZOOM, ImageZoomer.NAME, "fling. start=%dx %d, min=%dx%d, max=%dx%d",
                     startX, startY, minX, minY, maxX, maxY);
         }
 
@@ -92,22 +92,22 @@ class FlingTranslateRunner implements Runnable {
     public void run() {
         // remaining post that should not be handled
         if (mScroller.isFinished()) {
-            if (LogType.ZOOM.isEnabled()) {
-                SLog.w(LogType.ZOOM, ImageZoomer.NAME, "finished. fling run");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "finished. fling run");
             }
             return;
         }
 
         if (!imageZoomer.isWorking()) {
-            if (LogType.ZOOM.isEnabled()) {
-                SLog.w(LogType.ZOOM, ImageZoomer.NAME, "not working. fling run");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "not working. fling run");
             }
             return;
         }
 
         if (!mScroller.computeScrollOffset()) {
-            if (LogType.ZOOM.isEnabled()) {
-                SLog.w(LogType.ZOOM, ImageZoomer.NAME, "scroll finished. fling run");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "scroll finished. fling run");
             }
             return;
         }
@@ -124,8 +124,8 @@ class FlingTranslateRunner implements Runnable {
 
     @SuppressWarnings("WeakerAccess")
     public void cancelFling() {
-        if (LogType.ZOOM.isEnabled()) {
-            SLog.d(LogType.ZOOM, ImageZoomer.NAME, "cancel fling");
+        if (SLogType.ZOOM.isEnabled()) {
+            SLog.d(SLogType.ZOOM, ImageZoomer.NAME, "cancel fling");
         }
 
         if (mScroller != null) {

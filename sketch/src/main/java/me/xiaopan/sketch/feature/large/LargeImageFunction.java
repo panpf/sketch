@@ -21,7 +21,7 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.decode.ImageFormat;
@@ -49,8 +49,8 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         this.largeImageViewer = new LargeImageViewer(imageView.getContext(), this);
 
         if (!SketchUtils.sdkSupportBitmapRegionDecoder()) {
-            if (LogType.LARGE.isEnabled()) {
-                SLog.w(LogType.LARGE, NAME, "large image function the minimum support to GINGERBREAD_MR1");
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.w(SLogType.LARGE, NAME, "large image function the minimum support to GINGERBREAD_MR1");
             }
         }
     }
@@ -117,15 +117,15 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
         }
 
         if (!largeImageViewer.isReady() && !largeImageViewer.isInitializing()) {
-            if (LogType.LARGE.isEnabled()) {
-                SLog.w(LogType.LARGE, NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.w(SLogType.LARGE, NAME, "largeImageViewer not available. onMatrixChanged. %s", imageUri);
             }
             return;
         }
 
         if (imageZoomer.getRotateDegrees() % 90 != 0) {
-            if (LogType.LARGE.isEnabled()) {
-                SLog.w(LogType.LARGE, NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.w(SLogType.LARGE, NAME, "rotate degrees must be in multiples of 90. %s", imageUri);
             }
             return;
         }
@@ -164,13 +164,13 @@ public class LargeImageFunction extends SketchImageView.Function implements Imag
             drawableQualified &= SketchUtils.formatSupportBitmapRegionDecoder(ImageFormat.valueOfMimeType(sketchDrawable.getMimeType()));
 
             if (drawableQualified) {
-                if (LogType.LARGE.isEnabled()) {
-                    SLog.d(LogType.LARGE, NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                if (SLogType.LARGE.isEnabled()) {
+                    SLog.d(SLogType.LARGE, NAME, "Use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             } else {
-                if (LogType.LARGE.isEnabled()) {
-                    SLog.w(LogType.LARGE, NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
+                if (SLogType.LARGE.isEnabled()) {
+                    SLog.w(SLogType.LARGE, NAME, "Don't need to use large image function. previewDrawableSize: %dx%d, imageSize: %dx%d, mimeType: %s. %s",
                             previewWidth, previewHeight, imageWidth, imageHeight, sketchDrawable.getMimeType(), sketchDrawable.getKey());
                 }
             }

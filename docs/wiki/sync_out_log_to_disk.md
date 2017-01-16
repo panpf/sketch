@@ -4,4 +4,4 @@
 
 然后通过SLog.setLogTracker(SLogTracker)方法应用即可
 
-你还可以通过LogType类控制只输出不同类型的日志，方便只看需要的日志
+你还可以通过[SLogType](../../sample/src/java/me/xiaopan/sketchsample/SLogType.java)类控制只输出不同类型的日志，方便只看需要的日志

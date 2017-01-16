@@ -18,14 +18,13 @@ package me.xiaopan.sketch.feature;
 
 import android.content.Context;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.request.DisplayParams;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.UriScheme;
-import me.xiaopan.sketch.util.SketchUtils;
 
 /**
  * 由于RecyclerView在往回滚动的时候遇到可以直接使用的ItemView（位置没有变）会不走onBindViewHolder而直接走onAttachedToWindow然后显示，
@@ -56,8 +55,8 @@ public class RecyclerCompatFunction extends SketchImageView.Function {
 
         DisplayParams displayParams = requestFunction.getDisplayParams();
         if (displayParams != null) {
-            if (LogType.BASE.isEnabled()) {
-                SLog.w(LogType.BASE, logName, "restore image on attached to window. %s", displayParams.info.getUri());
+            if (SLogType.BASE.isEnabled()) {
+                SLog.w(SLogType.BASE, logName, "restore image on attached to window. %s", displayParams.info.getUri());
             }
             Sketch.with(context).display(displayParams, imageViewInterface).commit();
         }

@@ -28,7 +28,7 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SketchImageView;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
@@ -171,8 +171,8 @@ public class MappingView extends SketchImageView {
 
     public void update(Point newDrawableSize, Rect newVisibleRect) {
         if (newDrawableSize.x == 0 || newDrawableSize.y == 0 || newVisibleRect.isEmpty()) {
-            if (LogType.ZOOM.isEnabled()) {
-                SLog.w(LogType.ZOOM, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.w(SLogType.ZOOM, "MappingView. update. drawableWidth is 0 or newVisibleRect is empty. %s. drawableSize=%s, newVisibleRect=%s",
                         getImageUri(), newDrawableSize.toString(), newVisibleRect.toShortString());
             }
 
@@ -190,8 +190,8 @@ public class MappingView extends SketchImageView {
         visibleRect.set(newVisibleRect);
 
         if (!isUsableDrawable() || getWidth() == 0 || getHeight() == 0) {
-            if (LogType.ZOOM.isEnabled()) {
-                SLog.w(LogType.ZOOM, "MappingView. update. view size is 0 or getDrawable() is null. %s", getImageUri());
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.w(SLogType.ZOOM, "MappingView. update. view size is 0 or getDrawable() is null. %s", getImageUri());
             }
 
             if (!visibleMappingRect.isEmpty()) {

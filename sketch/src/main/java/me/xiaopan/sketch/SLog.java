@@ -43,7 +43,7 @@ public class SLog {
         }
     }
 
-    public static void v(LogType type, String name, String format, Object... args) {
+    public static void v(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -65,7 +65,7 @@ public class SLog {
         }
     }
 
-    public static void v(LogType type, String format, Object... args) {
+    public static void v(SLogType type, String format, Object... args) {
         v(type, null, format, args);
     }
 
@@ -73,7 +73,7 @@ public class SLog {
         v(null, name, format, args);
     }
 
-    public static void v(LogType type, String name, String msg) {
+    public static void v(SLogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -90,7 +90,7 @@ public class SLog {
         }
     }
 
-    public static void v(LogType type, String text) {
+    public static void v(SLogType type, String text) {
         v(type, null, text);
     }
 
@@ -99,7 +99,7 @@ public class SLog {
     }
 
 
-    public static void i(LogType type, String name, String format, Object... args) {
+    public static void i(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -121,7 +121,7 @@ public class SLog {
         }
     }
 
-    public static void i(LogType type, String format, Object... args) {
+    public static void i(SLogType type, String format, Object... args) {
         i(type, null, format, args);
     }
 
@@ -129,7 +129,7 @@ public class SLog {
         i(null, name, format, args);
     }
 
-    public static void i(LogType type, String name, String msg) {
+    public static void i(SLogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -146,7 +146,7 @@ public class SLog {
         }
     }
 
-    public static void i(LogType type, String text) {
+    public static void i(SLogType type, String text) {
         i(type, null, text);
     }
 
@@ -155,7 +155,7 @@ public class SLog {
     }
 
 
-    public static void d(LogType type, String name, String format, Object... args) {
+    public static void d(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -177,7 +177,7 @@ public class SLog {
         }
     }
 
-    public static void d(LogType type, String format, Object... args) {
+    public static void d(SLogType type, String format, Object... args) {
         d(type, null, format, args);
     }
 
@@ -185,7 +185,7 @@ public class SLog {
         d(null, name, format, args);
     }
 
-    public static void d(LogType type, String name, String msg) {
+    public static void d(SLogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -202,7 +202,7 @@ public class SLog {
         }
     }
 
-    public static void d(LogType type, String text) {
+    public static void d(SLogType type, String text) {
         d(type, null, text);
     }
 
@@ -211,7 +211,7 @@ public class SLog {
     }
 
 
-    public static void w(LogType type, String name, String format, Object... args) {
+    public static void w(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -233,7 +233,7 @@ public class SLog {
         }
     }
 
-    public static void w(LogType type, String format, Object... args) {
+    public static void w(SLogType type, String format, Object... args) {
         w(type, null, format, args);
     }
 
@@ -241,7 +241,7 @@ public class SLog {
         w(null, name, format, args);
     }
 
-    public static void w(LogType type, String name, String msg) {
+    public static void w(SLogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -258,7 +258,7 @@ public class SLog {
         }
     }
 
-    public static void w(LogType type, String text) {
+    public static void w(SLogType type, String text) {
         w(type, null, text);
     }
 
@@ -267,7 +267,7 @@ public class SLog {
     }
 
 
-    public static void e(LogType type, String name, String format, Object... args) {
+    public static void e(SLogType type, String name, String format, Object... args) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -289,7 +289,7 @@ public class SLog {
         }
     }
 
-    public static void e(LogType type, String format, Object... args) {
+    public static void e(SLogType type, String format, Object... args) {
         e(type, null, format, args);
     }
 
@@ -297,7 +297,7 @@ public class SLog {
         e(null, name, format, args);
     }
 
-    public static void e(LogType type, String name, String msg) {
+    public static void e(SLogType type, String name, String msg) {
         if (type != null && !type.isEnabled()) {
             return;
         }
@@ -314,7 +314,7 @@ public class SLog {
         }
     }
 
-    public static void e(LogType type, String text) {
+    public static void e(SLogType type, String text) {
         e(type, null, text);
     }
 

@@ -20,7 +20,7 @@ import android.graphics.Bitmap;
 import android.widget.ImageView.ScaleType;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -297,15 +297,15 @@ public class LoadHelper {
 
     private boolean checkUri() {
         if (loadInfo.getUri() == null || "".equals(loadInfo.getUri().trim())) {
-            if (LogType.REQUEST.isEnabled()) {
-                SLog.e(LogType.REQUEST, logName, "uri is null or empty");
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.e(SLogType.REQUEST, logName, "uri is null or empty");
             }
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NULL_OR_EMPTY, sync);
             return false;
         }
 
         if (loadInfo.getUriScheme() == null) {
-            SLog.e(LogType.REQUEST, logName, "unknown uri scheme. %s", loadInfo.getUri());
+            SLog.e(SLogType.REQUEST, logName, "unknown uri scheme. %s", loadInfo.getUri());
             CallbackHandler.postCallbackError(loadListener, ErrorCause.URI_NO_SUPPORT, sync);
             return false;
         }
@@ -320,8 +320,8 @@ public class LoadHelper {
                 && !sketch.getConfiguration().getDiskCache().exist(loadInfo.getDiskCacheKey())) {
             boolean isPauseDownload = loadOptions.getRequestLevelFrom() == RequestLevelFrom.PAUSE_DOWNLOAD;
 
-            if (LogType.REQUEST.isEnabled()) {
-                SLog.w(LogType.REQUEST, logName, "canceled. %s. %s",
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.w(SLogType.REQUEST, logName, "canceled. %s. %s",
                         isPauseDownload ? "pause download" : "requestLevel is local", loadInfo.getKey());
             }
 

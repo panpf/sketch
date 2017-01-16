@@ -19,7 +19,7 @@ package me.xiaopan.sketch.cache;
 import android.content.Context;
 import android.text.format.Formatter;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.util.LruCache;
@@ -45,21 +45,21 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.CACHE, logName, "Disabled. Unable put, key=%s", key);
+            SLog.w(SLogType.CACHE, logName, "Disabled. Unable put, key=%s", key);
             return;
         }
 
         if (cache.get(key) != null) {
-            SLog.w(LogType.CACHE, logName, String.format("Exist. key=%s", key));
+            SLog.w(SLogType.CACHE, logName, String.format("Exist. key=%s", key));
             return;
         }
 
         int oldCacheSize = 0;
-        if (LogType.CACHE.isEnabled()) {
+        if (SLogType.CACHE.isEnabled()) {
             oldCacheSize = cache.size();
         }
         cache.put(key, refBitmap);
-        SLog.i(LogType.CACHE, logName, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
+        SLog.i(SLogType.CACHE, logName, "put. beforeCacheSize=%s. %s. afterCacheSize=%s",
                 Formatter.formatFileSize(context, oldCacheSize), refBitmap.getInfo(),
                 Formatter.formatFileSize(context, cache.size()));
     }
@@ -71,7 +71,7 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.CACHE, logName, "Disabled. Unable get, key=%s", key);
+            SLog.w(SLogType.CACHE, logName, "Disabled. Unable get, key=%s", key);
             return null;
         }
 
@@ -85,12 +85,12 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.CACHE, logName, "Disabled. Unable remove, key=%s", key);
+            SLog.w(SLogType.CACHE, logName, "Disabled. Unable remove, key=%s", key);
             return null;
         }
 
         RefBitmap refBitmap = cache.remove(key);
-        SLog.i(LogType.CACHE, logName, "remove. memoryCacheSize: %s",
+        SLog.i(SLogType.CACHE, logName, "remove. memoryCacheSize: %s",
                 Formatter.formatFileSize(context, cache.size()));
         return refBitmap;
     }
@@ -124,7 +124,7 @@ public class LruMemoryCache implements MemoryCache {
         }
 
         long releasedSize = memoryCacheSize - getSize();
-        SLog.w(LogType.CACHE, logName, "trimMemory. level=%s, released: %s",
+        SLog.w(SLogType.CACHE, logName, "trimMemory. level=%s, released: %s",
                 SketchUtils.getTrimLevelName(level), Formatter.formatFileSize(context, releasedSize));
     }
 
@@ -137,9 +137,9 @@ public class LruMemoryCache implements MemoryCache {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
         if (disabled) {
-            SLog.w(LogType.CACHE, logName, "setDisabled. %s", true);
+            SLog.w(SLogType.CACHE, logName, "setDisabled. %s", true);
         } else {
-            SLog.i(LogType.CACHE, logName, "setDisabled. %s", false);
+            SLog.i(SLogType.CACHE, logName, "setDisabled. %s", false);
         }
     }
 
@@ -149,7 +149,7 @@ public class LruMemoryCache implements MemoryCache {
             return;
         }
 
-        SLog.w(LogType.CACHE, logName, "clear. before size: %s",
+        SLog.w(SLogType.CACHE, logName, "clear. before size: %s",
                 Formatter.formatFileSize(context, cache.size()));
         cache.evictAll();
     }

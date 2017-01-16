@@ -24,7 +24,7 @@ import android.os.Build;
 import java.io.File;
 import java.text.DecimalFormat;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -55,7 +55,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     @Override
     public DecodeResult decode(LoadRequest request) {
         long startTime = 0;
-        if (LogType.REQUEST.isEnabled()) {
+        if (SLogType.REQUEST.isEnabled()) {
             startTime = System.currentTimeMillis();
         }
 
@@ -73,13 +73,13 @@ public class DefaultImageDecoder implements ImageDecoder {
             } else if (uriScheme == UriScheme.DRAWABLE) {
                 result = decodeDrawable(request);
             } else {
-                SLog.w(LogType.REQUEST, logName, "unknown uri is %s", request.getUri());
+                SLog.w(SLogType.REQUEST, logName, "unknown uri is %s", request.getUri());
             }
         } catch (Throwable e) {
             e.printStackTrace();
         }
 
-        if (LogType.TIME.isEnabled()) {
+        if (SLogType.TIME.isEnabled()) {
             long useTime = System.currentTimeMillis() - startTime;
             synchronized (DefaultImageDecoder.this) {
                 if ((Long.MAX_VALUE - decodeCount) < 1 || (Long.MAX_VALUE - useTimeCount) < useTime) {
@@ -91,7 +91,7 @@ public class DefaultImageDecoder implements ImageDecoder {
                 if (decimalFormat == null) {
                     decimalFormat = new DecimalFormat("#.##");
                 }
-                SLog.d(LogType.REQUEST, logName, "decode use time %dms, average %sms. %s",
+                SLog.d(SLogType.REQUEST, logName, "decode use time %dms, average %sms. %s",
                         useTime, decimalFormat.format((double) useTimeCount / decodeCount), request.getKey());
             }
         }
@@ -119,7 +119,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             } else if (uriScheme == UriScheme.DRAWABLE) {
                 decodeHelper = new DrawableDecodeHelper(Integer.valueOf(request.getRealUri()), request);
             } else {
-                SLog.w(LogType.REQUEST, logName, "unknown uri is %s", request.getUri());
+                SLog.w(SLogType.REQUEST, logName, "unknown uri is %s", request.getUri());
             }
 
             if (decodeHelper != null) {
@@ -142,8 +142,8 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 过滤掉原图宽高小于等于1的图片
         if (boundOptions.outWidth <= 1 || boundOptions.outHeight <= 1) {
-            if (LogType.REQUEST.isEnabled()) {
-                SLog.e(LogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.e(SLogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. %s",
                         boundOptions.outWidth, boundOptions.outHeight, request.getKey());
             }
             decodeHelper.onDecodeError();
@@ -297,8 +297,8 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            if (LogType.REQUEST.isEnabled()) {
-                SLog.w(LogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.w(SLogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
                         boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
             }
             bitmap.recycle();
@@ -373,8 +373,8 @@ public class DefaultImageDecoder implements ImageDecoder {
 
         // 过滤宽高小于等于1的图片
         if (bitmap.getWidth() <= 1 || bitmap.getHeight() <= 1) {
-            if (LogType.REQUEST.isEnabled()) {
-                SLog.w(LogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.w(SLogType.REQUEST, logName, "image width or height less than or equal to 1px. imageSize: %dx%d. bitmapSize: %dx%d. %s",
                         boundOptions.outWidth, boundOptions.outHeight, bitmap.getWidth(), bitmap.getHeight(), request.getKey());
             }
             bitmap.recycle();

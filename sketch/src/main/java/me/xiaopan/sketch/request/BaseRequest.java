@@ -16,7 +16,7 @@
 
 package me.xiaopan.sketch.request;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 
@@ -92,7 +92,7 @@ abstract class BaseRequest {
      */
     void setStatus(Status status) {
         this.status = status;
-        if (LogType.REQUEST.isEnabled()) {
+        if (SLogType.REQUEST.isEnabled()) {
             if (status == Status.FAILED) {
                 printLogW("new status", status.getLog(), errorCause != null ? errorCause.name() : null);
             } else if (status == Status.CANCELED) {
@@ -195,13 +195,13 @@ abstract class BaseRequest {
         builder.append(". ").append(getKey());
 
         if (level == 0) {
-            SLog.d(LogType.REQUEST, getLogName(), builder.toString());
+            SLog.d(SLogType.REQUEST, getLogName(), builder.toString());
         } else if (level == 1) {
-            SLog.i(LogType.REQUEST, getLogName(), builder.toString());
+            SLog.i(SLogType.REQUEST, getLogName(), builder.toString());
         } else if (level == 2) {
-            SLog.w(LogType.REQUEST, getLogName(), builder.toString());
+            SLog.w(SLogType.REQUEST, getLogName(), builder.toString());
         } else if (level == 3) {
-            SLog.e(LogType.REQUEST, getLogName(), builder.toString());
+            SLog.e(SLogType.REQUEST, getLogName(), builder.toString());
         }
     }
 

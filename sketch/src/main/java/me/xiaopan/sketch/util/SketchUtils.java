@@ -65,7 +65,7 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageFormat;
@@ -89,8 +89,8 @@ public class SketchUtils {
         PackageManager packageManager = context.getPackageManager();
         PackageInfo packageInfo = packageManager.getPackageArchiveInfo(apkFilePath, PackageManager.GET_ACTIVITIES);
         if (packageInfo == null) {
-            if (LogType.REQUEST.isEnabled()) {
-                SLog.w(LogType.REQUEST, logName, "get packageInfo is null. %s", apkFilePath);
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.w(SLogType.REQUEST, logName, "get packageInfo is null. %s", apkFilePath);
             }
             return null;
         }
@@ -105,29 +105,11 @@ public class SketchUtils {
             e.printStackTrace();
         }
         if (drawable == null) {
-            if (LogType.REQUEST.isEnabled()) {
-                SLog.w(LogType.REQUEST, logName, "app icon is null. %s", apkFilePath);
+            if (SLogType.REQUEST.isEnabled()) {
+                SLog.w(SLogType.REQUEST, logName, "app icon is null. %s", apkFilePath);
             }
             return null;
         }
-
-        // 不过滤系统默认app icon了，艹，谁他妈想到三星A5上packageManager.getDefaultActivityIcon()还会返回NinePathDrawable
-//        if (drawable instanceof BitmapDrawable) {
-//            Drawable defaultActivityIcon = packageManager.getDefaultActivityIcon();
-//            if (defaultActivityIcon == null) {
-//                if (errorCallback != null) {
-//                    errorCallback.onNotFoundDefaultActivityIcon();
-//                }
-//                return null;
-//            }
-//            if (defaultActivityIcon instanceof BitmapDrawable
-//                    && ((BitmapDrawable) drawable).getBitmap() == ((BitmapDrawable) defaultActivityIcon).getBitmap()) {
-//                if (LogType.BASE.isEnabled()) {
-//                    SketchLog.w(LogType.BASE, SketchUtils.concat(logName, ". icon not found", ". ", apkFilePath));
-//                }
-//                return null;
-//            }
-//        }
 
         return drawableToBitmap(drawable, lowQualityImage, bitmapPool);
     }

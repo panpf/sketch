@@ -21,7 +21,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.Scroller;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 
 /**
@@ -56,23 +56,23 @@ class LocationRunner implements Runnable {
     public void run() {
         // remaining post that should not be handled
         if (mScroller.isFinished()) {
-            if (LogType.ZOOM.isEnabled()) {
-                SLog.w(LogType.ZOOM, ImageZoomer.NAME, "finished. location run");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "finished. location run");
             }
             return;
         }
 
         if (!imageZoomer.isWorking()) {
-            if (LogType.ZOOM.isEnabled()) {
-                SLog.w(LogType.ZOOM, ImageZoomer.NAME, "not working. location run");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "not working. location run");
             }
             mScroller.forceFinished(true);
             return;
         }
 
         if (!mScroller.computeScrollOffset()) {
-            if (LogType.ZOOM.isEnabled()) {
-                SLog.w(LogType.ZOOM, ImageZoomer.NAME, "scroll finished. location run");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "scroll finished. location run");
             }
             return;
         }

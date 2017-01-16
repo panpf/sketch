@@ -22,7 +22,7 @@ import android.os.Message;
 
 import java.lang.ref.WeakReference;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.KeyCounter;
 
@@ -70,16 +70,16 @@ class InitHandler extends Handler {
 
     private void init(TileExecutor decodeExecutor, String imageUri, int key, KeyCounter keyCounter) {
         if (decodeExecutor == null) {
-            if (LogType.LARGE.isEnabled()) {
-                SLog.w(LogType.LARGE, NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.w(SLogType.LARGE, NAME, "weak reference break. key: %d, imageUri: %s", key, imageUri);
             }
             return;
         }
 
         int newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (LogType.LARGE.isEnabled()) {
-                SLog.w(LogType.LARGE, NAME, "init key expired. before init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.w(SLogType.LARGE, NAME, "init key expired. before init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             }
             return;
         }
@@ -100,8 +100,8 @@ class InitHandler extends Handler {
 
         newKey = keyCounter.getKey();
         if (key != newKey) {
-            if (LogType.LARGE.isEnabled()) {
-                SLog.w(LogType.LARGE, NAME, "init key expired. after init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.w(SLogType.LARGE, NAME, "init key expired. after init. key: %d, newKey: %d, imageUri: %s", key, newKey, imageUri);
             }
             decoder.recycle();
             return;
@@ -111,8 +111,8 @@ class InitHandler extends Handler {
     }
 
     public void clean(String why) {
-        if (LogType.LARGE.isEnabled()) {
-            SLog.w(LogType.LARGE, NAME, "clean. %s", why);
+        if (SLogType.LARGE.isEnabled()) {
+            SLog.w(SLogType.LARGE, NAME, "clean. %s", why);
         }
 
         removeMessages(WHAT_INIT);

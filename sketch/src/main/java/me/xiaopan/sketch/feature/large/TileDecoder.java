@@ -18,7 +18,7 @@ package me.xiaopan.sketch.feature.large;
 
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.KeyCounter;
 
@@ -64,8 +64,8 @@ class TileDecoder {
      */
     void decodeTile(Tile tile) {
         if (!isReady()) {
-            if (LogType.LARGE.isEnabled()) {
-                SLog.w(LogType.LARGE, NAME, "not ready. decodeTile. %s", tile.getInfo());
+            if (SLogType.LARGE.isEnabled()) {
+                SLog.w(SLogType.LARGE, NAME, "not ready. decodeTile. %s", tile.getInfo());
             }
             return;
         }
@@ -75,16 +75,16 @@ class TileDecoder {
     }
 
     void clean(String why) {
-        if (LogType.LARGE.isEnabled()) {
-            SLog.w(LogType.LARGE, NAME, "clean. %s", why);
+        if (SLogType.LARGE.isEnabled()) {
+            SLog.w(SLogType.LARGE, NAME, "clean. %s", why);
         }
 
         initKeyCounter.refresh();
     }
 
     void recycle(String why) {
-        if (LogType.LARGE.isEnabled()) {
-            SLog.w(LogType.LARGE, NAME, "recycle. %s", why);
+        if (SLogType.LARGE.isEnabled()) {
+            SLog.w(SLogType.LARGE, NAME, "recycle. %s", why);
         }
 
         if (decoder != null) {
@@ -93,8 +93,8 @@ class TileDecoder {
     }
 
     void initCompleted(String imageUri, ImageRegionDecoder decoder) {
-        if (LogType.LARGE.isEnabled()) {
-            SLog.d(LogType.LARGE, NAME, "init completed. %s", imageUri);
+        if (SLogType.LARGE.isEnabled()) {
+            SLog.d(SLogType.LARGE, NAME, "init completed. %s", imageUri);
         }
 
         initializing = false;
@@ -102,8 +102,8 @@ class TileDecoder {
     }
 
     void initError(String imageUri, Exception e) {
-        if (LogType.LARGE.isEnabled()) {
-            SLog.d(LogType.LARGE, NAME, "init failed. %s. %s", e.getMessage(), imageUri);
+        if (SLogType.LARGE.isEnabled()) {
+            SLog.d(SLogType.LARGE, NAME, "init failed. %s. %s", e.getMessage(), imageUri);
         }
 
         initializing = false;

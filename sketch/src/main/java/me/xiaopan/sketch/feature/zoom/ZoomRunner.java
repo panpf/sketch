@@ -16,7 +16,7 @@
 
 package me.xiaopan.sketch.feature.zoom;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 
 class ZoomRunner implements Runnable {
@@ -40,8 +40,8 @@ class ZoomRunner implements Runnable {
     @Override
     public void run() {
         if (!imageZoomer.isWorking()) {
-            if (LogType.ZOOM.isEnabled()) {
-                SLog.w(LogType.ZOOM, ImageZoomer.NAME, "not working. zoom run");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "not working. zoom run");
             }
             return;
         }
@@ -58,8 +58,8 @@ class ZoomRunner implements Runnable {
         if (continueZoom) {
             CompatUtils.postOnAnimation(imageZoomer.getImageView(), this);
         } else {
-            if (LogType.ZOOM.isEnabled()) {
-                SLog.w(LogType.ZOOM, ImageZoomer.NAME, "finished. zoom run");
+            if (SLogType.ZOOM.isEnabled()) {
+                SLog.w(SLogType.ZOOM, ImageZoomer.NAME, "finished. zoom run");
             }
         }
     }

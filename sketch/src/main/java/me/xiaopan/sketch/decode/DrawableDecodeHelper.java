@@ -27,7 +27,7 @@ import android.os.Build;
 import java.io.IOException;
 import java.io.InputStream;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.drawable.SketchGifDrawable;
@@ -86,24 +86,24 @@ public class DrawableDecodeHelper implements DecodeHelper {
 
     @Override
     public void onDecodeSuccess(Bitmap bitmap, int outWidth, int outHeight, String outMimeType, int inSampleSize) {
-        if (LogType.REQUEST.isEnabled()) {
+        if (SLogType.REQUEST.isEnabled()) {
             if (bitmap != null && loadRequest.getOptions().getMaxSize() != null) {
                 MaxSize maxSize = loadRequest.getOptions().getMaxSize();
                 ImageSizeCalculator sizeCalculator = loadRequest.getSketch().getConfiguration().getImageSizeCalculator();
-                SLog.d(LogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
+                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. originalSize=%dx%d, targetSize=%dx%d, " +
                         "targetSizeScale=%s,  inSampleSize=%d,  finalSize=%dx%d. %s",
                         outWidth, outHeight, maxSize.getWidth(), maxSize.getHeight(),
                         sizeCalculator.getTargetSizeScale(), inSampleSize, bitmap.getWidth(), bitmap.getHeight(), loadRequest.getKey());
             } else {
-                SLog.d(LogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
+                SLog.d(SLogType.REQUEST, logName, "decodeSuccess. unchanged. %s", loadRequest.getKey());
             }
         }
     }
 
     @Override
     public void onDecodeError() {
-        if (LogType.REQUEST.isEnabled()) {
-            SLog.e(LogType.REQUEST, logName, "decode failed. %s", String.valueOf(drawableId));
+        if (SLogType.REQUEST.isEnabled()) {
+            SLog.e(SLogType.REQUEST, logName, "decode failed. %s", String.valueOf(drawableId));
         }
     }
 

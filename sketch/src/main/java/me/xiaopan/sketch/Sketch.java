@@ -271,8 +271,8 @@ public class Sketch {
             }
         }
 
-        if (LogType.BASE.isEnabled()) {
-            SLog.w(LogType.BASE, "Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
+        if (SLogType.BASE.isEnabled()) {
+            SLog.w(SLogType.BASE, "Trim of memory, level= %s", SketchUtils.getTrimLevelName(level));
         }
 
         configuration.getMemoryCache().trimMemory(level);
@@ -291,8 +291,8 @@ public class Sketch {
             }
         }
 
-        if (LogType.BASE.isEnabled()) {
-            SLog.w(LogType.BASE, "Memory is very low, clean memory cache and bitmap pool");
+        if (SLogType.BASE.isEnabled()) {
+            SLog.w(SLogType.BASE, "Memory is very low, clean memory cache and bitmap pool");
         }
 
         configuration.getMemoryCache().clear();

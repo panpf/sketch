@@ -30,7 +30,7 @@ import java.util.WeakHashMap;
 import java.util.concurrent.locks.ReentrantLock;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.util.DiskLruCache;
 import me.xiaopan.sketch.util.NoSpaceException;
@@ -109,7 +109,7 @@ public class LruDiskCache implements DiskCache {
             return;
         }
 
-        SLog.d(LogType.CACHE, logName, "diskCacheDir: %s", cacheDir.getPath());
+        SLog.d(SLogType.CACHE, logName, "diskCacheDir: %s", cacheDir.getPath());
 
         try {
             cache = DiskLruCache.open(cacheDir, appVersionCode, 1, maxSize);
@@ -127,7 +127,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.CACHE, logName, "Disabled. Unable judge exist, uri=%s", uri);
+            SLog.w(SLogType.CACHE, logName, "Disabled. Unable judge exist, uri=%s", uri);
             return false;
         }
 
@@ -157,7 +157,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.CACHE, logName, "Disabled. Unable get, uri=%s", uri);
+            SLog.w(SLogType.CACHE, logName, "Disabled. Unable get, uri=%s", uri);
             return null;
         }
 
@@ -186,7 +186,7 @@ public class LruDiskCache implements DiskCache {
         }
 
         if (disabled) {
-            SLog.w(LogType.CACHE, logName, "Disabled. Unable edit, uri=%s", uri);
+            SLog.w(SLogType.CACHE, logName, "Disabled. Unable edit, uri=%s", uri);
             return null;
         }
 
@@ -282,9 +282,9 @@ public class LruDiskCache implements DiskCache {
     public void setDisabled(boolean disabled) {
         this.disabled = disabled;
         if (disabled) {
-            SLog.w(LogType.CACHE, logName, "setDisabled. %s", true);
+            SLog.w(SLogType.CACHE, logName, "setDisabled. %s", true);
         } else {
-            SLog.i(LogType.CACHE, logName, "setDisabled. %s", false);
+            SLog.i(SLogType.CACHE, logName, "setDisabled. %s", false);
         }
     }
 

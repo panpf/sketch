@@ -18,7 +18,7 @@ package me.xiaopan.sketch.drawable;
 
 import android.graphics.Bitmap;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -131,22 +131,22 @@ public class RefBitmap extends SketchBitmap {
      */
     private void referenceChanged(String callingStation) {
         if (isRecycled()) {
-            if (LogType.CACHE.isEnabled()) {
-                SLog.e(LogType.CACHE, LOG_NAME, "Recycled. %s. %s", callingStation, getKey());
+            if (SLogType.CACHE.isEnabled()) {
+                SLog.e(SLogType.CACHE, LOG_NAME, "Recycled. %s. %s", callingStation, getKey());
             }
             return;
         }
 
         if (memoryCacheRefCount == 0 && displayRefCount == 0 && waitingUseRefCount == 0) {
-            if (LogType.CACHE.isEnabled()) {
-                SLog.w(LogType.CACHE, LOG_NAME, "Free. %s. bitmap(%s)", callingStation, getBitmapInfo());
+            if (SLogType.CACHE.isEnabled()) {
+                SLog.w(SLogType.CACHE, LOG_NAME, "Free. %s. bitmap(%s)", callingStation, getBitmapInfo());
             }
 
             BitmapPoolUtils.freeBitmapToPool(bitmap, bitmapPool);
             bitmap = null;
         } else {
-            if (LogType.CACHE.isEnabled()) {
-                SLog.d(LogType.CACHE, LOG_NAME, "Can't free. %s. references(%d,%d,%d). bitmap(%s)",
+            if (SLogType.CACHE.isEnabled()) {
+                SLog.d(SLogType.CACHE, LOG_NAME, "Can't free. %s. references(%d,%d,%d). bitmap(%s)",
                         callingStation, memoryCacheRefCount, displayRefCount, waitingUseRefCount, getBitmapInfo());
             }
         }

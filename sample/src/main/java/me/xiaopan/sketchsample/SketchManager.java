@@ -5,7 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 
 import me.xiaopan.sketch.Configuration;
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.display.TransitionImageDisplayer;
@@ -29,12 +29,12 @@ public class SketchManager {
     public void initConfig(Context context) {
         SLog.setLogTracker(Settings.getBoolean(context, Settings.PREFERENCE_OUT_LOG_2_SDCARD) ? new SampleLogTracker(context) : null);
 
-        LogType.BASE.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_BASE));
-        LogType.TIME.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_TIME));
-        LogType.REQUEST.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_REQUEST));
-        LogType.CACHE.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_CACHE));
-        LogType.ZOOM.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_ZOOM));
-        LogType.LARGE.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_LARGE));
+        SLogType.BASE.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_BASE));
+        SLogType.TIME.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_TIME));
+        SLogType.REQUEST.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_REQUEST));
+        SLogType.CACHE.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_CACHE));
+        SLogType.ZOOM.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_ZOOM));
+        SLogType.LARGE.setEnabled(Settings.getBoolean(context, Settings.PREFERENCE_LOG_LARGE));
         Configuration sketchConfiguration = Sketch.with(context).getConfiguration();
         sketchConfiguration.setMobileNetworkGlobalPauseDownload(Settings.getBoolean(context, Settings.PREFERENCE_MOBILE_NETWORK_PAUSE_DOWNLOAD));
         sketchConfiguration.setGlobalLowQualityImage(Settings.getBoolean(context, Settings.PREFERENCE_GLOBAL_LOW_QUALITY_IMAGE));

@@ -24,7 +24,7 @@ import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.util.concurrent.locks.ReentrantLock;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
@@ -131,7 +131,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
     @Override
     protected void runDispatch() {
         if (isCanceled()) {
-            if (LogType.REQUEST.isEnabled()) {
+            if (SLogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runDispatch", "load request just start");
             }
             return;
@@ -141,7 +141,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
         if (getUriScheme() != UriScheme.NET) {
             // 本地请求直接执行加载
-            if (LogType.REQUEST.isEnabled()) {
+            if (SLogType.REQUEST.isEnabled()) {
                 printLogD("local thread", "local image", "runDispatch");
             }
             submitRunLoad();
@@ -149,7 +149,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
         } else {
             // 是网络图片但是本地已经有缓存好的且经过处理的缓存图片可以直接用
             if (canUseCacheProcessedImageFunction() && existProcessedImageDiskCache()) {
-                if (LogType.REQUEST.isEnabled()) {
+                if (SLogType.REQUEST.isEnabled()) {
                     printLogD("local thread", "disk cache image", "runDispatch");
                 }
                 submitRunLoad();
@@ -181,7 +181,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             dataSource = new DataSource(downloadResult.getImageData(), downloadResult.getImageFrom());
             submitRunLoad();
         } else {
-            if (LogType.REQUEST.isEnabled()) {
+            if (SLogType.REQUEST.isEnabled()) {
                 printLogE("are all null", "downloadCompleted");
             }
             error(ErrorCause.DOWNLOAD_FAIL);
@@ -191,7 +191,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
     @Override
     protected void runLoad() {
         if (isCanceled()) {
-            if (LogType.REQUEST.isEnabled()) {
+            if (SLogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runLoad", "load request just start");
             }
             return;
@@ -236,19 +236,19 @@ public class LoadRequest extends FreeRideDownloadRequest {
             Bitmap bitmap = decodeResult.getBitmap();
 
             if (bitmap.isRecycled()) {
-                if (LogType.REQUEST.isEnabled()) {
+                if (SLogType.REQUEST.isEnabled()) {
                     printLogE("decode failed", "runLoad", "bitmap recycled", "bitmapInfo: " + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getMimeType()));
                 }
                 error(ErrorCause.BITMAP_RECYCLED);
                 return;
             }
 
-            if (LogType.REQUEST.isEnabled()) {
+            if (SLogType.REQUEST.isEnabled()) {
                 printLogI("decode success", "runLoad", "bitmapInfo: " + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getMimeType()));
             }
 
             if (isCanceled()) {
-                if (LogType.REQUEST.isEnabled()) {
+                if (SLogType.REQUEST.isEnabled()) {
                     printLogW("canceled", "runLoad", "decode after", "bitmapInfo: " + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getMimeType()));
                 }
                 BitmapPoolUtils.freeBitmapToPool(bitmap, getSketch().getConfiguration().getBitmapPool());
@@ -277,7 +277,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
 
                     // 确实是一张新图片，就替换掉旧图片
                     if (newBitmap != null && !newBitmap.isRecycled() && newBitmap != bitmap) {
-                        if (LogType.REQUEST.isEnabled()) {
+                        if (SLogType.REQUEST.isEnabled()) {
                             printLogW("process new bitmap", "runLoad", "bitmapInfo: " + SketchUtils.makeImageInfo(null, newBitmap, decodeResult.getMimeType()));
                         }
 
@@ -293,7 +293,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
                     }
 
                     if (isCanceled()) {
-                        if (LogType.REQUEST.isEnabled()) {
+                        if (SLogType.REQUEST.isEnabled()) {
                             printLogW("canceled", "runLoad", "process after", "bitmapInfo: " + SketchUtils.makeImageInfo(null, bitmap, decodeResult.getMimeType()));
                         }
                         BitmapPoolUtils.freeBitmapToPool(bitmap, getSketch().getConfiguration().getBitmapPool());
@@ -313,19 +313,19 @@ public class LoadRequest extends FreeRideDownloadRequest {
             SketchGifDrawable gifDrawable = decodeResult.getGifDrawable();
 
             if (gifDrawable.isRecycled()) {
-                if (LogType.REQUEST.isEnabled()) {
+                if (SLogType.REQUEST.isEnabled()) {
                     printLogE("decode failed", "runLoad", "gif drawable recycled", "gifInfo: " + SketchUtils.makeGifImageInfo(gifDrawable));
                 }
                 error(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
-            if (LogType.REQUEST.isEnabled()) {
+            if (SLogType.REQUEST.isEnabled()) {
                 printLogI("decode gif success", "runLoad", "gifInfo: " + SketchUtils.makeGifImageInfo(gifDrawable));
             }
 
             if (isCanceled()) {
-                if (LogType.REQUEST.isEnabled()) {
+                if (SLogType.REQUEST.isEnabled()) {
                     printLogW("runLoad", "runLoad", "decode after", "gifInfo: " + SketchUtils.makeGifImageInfo(gifDrawable));
                 }
                 gifDrawable.recycle();
@@ -335,7 +335,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             loadResult = new LoadResult(gifDrawable, decodeResult);
             loadCompleted();
         } else {
-            if (LogType.REQUEST.isEnabled()) {
+            if (SLogType.REQUEST.isEnabled()) {
                 printLogE("are all null", "runLoad");
             }
             error(ErrorCause.DECODE_FAIL);
@@ -420,7 +420,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
                     loadResult.getGifDrawable().recycle();
                 }
             }
-            if (LogType.REQUEST.isEnabled()) {
+            if (SLogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runCompletedInMainThread");
             }
             return;
@@ -436,7 +436,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
     @Override
     protected void runErrorInMainThread() {
         if (isCanceled()) {
-            if (LogType.REQUEST.isEnabled()) {
+            if (SLogType.REQUEST.isEnabled()) {
                 printLogW("canceled", "runErrorInMainThread");
             }
             return;

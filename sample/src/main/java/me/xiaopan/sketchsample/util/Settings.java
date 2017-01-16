@@ -10,7 +10,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import me.xiaopan.sketch.BuildConfig;
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketchsample.SampleLogTracker;
@@ -90,17 +90,17 @@ public class Settings {
         } else if (PREFERENCE_GLOBAL_IN_PREFER_QUALITY_OVER_SPEED.equals(key)) {
             Sketch.with(context).getConfiguration().setGlobalInPreferQualityOverSpeed(newValue);
         } else if (PREFERENCE_LOG_BASE.equals(key)) {
-            LogType.BASE.setEnabled(newValue);
+            SLogType.BASE.setEnabled(newValue);
         } else if (PREFERENCE_LOG_REQUEST.equals(key)) {
-            LogType.REQUEST.setEnabled(newValue);
+            SLogType.REQUEST.setEnabled(newValue);
         } else if (PREFERENCE_LOG_TIME.equals(key)) {
-            LogType.TIME.setEnabled(newValue);
+            SLogType.TIME.setEnabled(newValue);
         } else if (PREFERENCE_LOG_CACHE.equals(key)) {
-            LogType.CACHE.setEnabled(newValue);
+            SLogType.CACHE.setEnabled(newValue);
         } else if (PREFERENCE_LOG_ZOOM.equals(key)) {
-            LogType.ZOOM.setEnabled(newValue);
+            SLogType.ZOOM.setEnabled(newValue);
         } else if (PREFERENCE_LOG_LARGE.equals(key)) {
-            LogType.LARGE.setEnabled(newValue);
+            SLogType.LARGE.setEnabled(newValue);
         } else if (PREFERENCE_OUT_LOG_2_SDCARD.equals(key)) {
             SLog.setLogTracker(newValue ? new SampleLogTracker(context) : null);
         }

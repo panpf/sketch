@@ -28,7 +28,7 @@ import android.text.TextUtils;
 
 import java.util.List;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
@@ -120,19 +120,19 @@ public class LargeImageViewer {
     void update(Matrix drawMatrix, Rect newVisibleRect, Point previewDrawableSize, Point imageViewSize, boolean zooming) {
         // 没有准备好就不往下走了
         if (!isReady()) {
-            SLog.w(LogType.LARGE, NAME, "not ready. %s", imageUri);
+            SLog.w(SLogType.LARGE, NAME, "not ready. %s", imageUri);
             return;
         }
 
         // 暂停中也不走了
         if (paused) {
-            SLog.w(LogType.LARGE, NAME, "not resuming. %s", imageUri);
+            SLog.w(SLogType.LARGE, NAME, "not resuming. %s", imageUri);
             return;
         }
 
         // 传进来的参数不能用就什么也不显示
         if (newVisibleRect.isEmpty() || previewDrawableSize.x == 0 || previewDrawableSize.y == 0 || imageViewSize.x == 0 || imageViewSize.y == 0) {
-            SLog.w(LogType.LARGE, NAME, "update params is empty. update. newVisibleRect=%s, previewDrawableSize=%dx%d, imageViewSize=%dx%d. %s",
+            SLog.w(SLogType.LARGE, NAME, "update params is empty. update. newVisibleRect=%s, previewDrawableSize=%dx%d, imageViewSize=%dx%d. %s",
                     newVisibleRect.toShortString(), previewDrawableSize.x, previewDrawableSize.y, imageViewSize.x, imageViewSize.y, imageUri);
             clean("update param is empty");
             return;
@@ -140,7 +140,7 @@ public class LargeImageViewer {
 
         // 如果当前完整显示预览图的话就清空什么也不显示
         if (newVisibleRect.width() == previewDrawableSize.x && newVisibleRect.height() == previewDrawableSize.y) {
-            SLog.d(LogType.LARGE, NAME, "full display. update. newVisibleRect=%s. %s",
+            SLog.d(SLogType.LARGE, NAME, "full display. update. newVisibleRect=%s. %s",
                     newVisibleRect.toShortString(), imageUri);
             clean("full display");
             return;
@@ -204,13 +204,13 @@ public class LargeImageViewer {
         paused = pause;
 
         if (paused) {
-            SLog.w(LogType.LARGE, NAME, "pause. %s", imageUri);
+            SLog.w(SLogType.LARGE, NAME, "pause. %s", imageUri);
 
             if (running) {
                 clean("pause");
             }
         } else {
-            SLog.i(LogType.LARGE, NAME, "resume. %s", imageUri);
+            SLog.i(SLogType.LARGE, NAME, "resume. %s", imageUri);
 
             if (running) {
                 callback.updateMatrix();
@@ -393,7 +393,7 @@ public class LargeImageViewer {
         @Override
         public void onInitCompleted(String imageUri, ImageRegionDecoder decoder) {
             if (!running) {
-                SLog.w(LogType.LARGE, NAME, "stop running. initCompleted. %s", imageUri);
+                SLog.w(SLogType.LARGE, NAME, "stop running. initCompleted. %s", imageUri);
                 return;
             }
 
@@ -405,7 +405,7 @@ public class LargeImageViewer {
         @Override
         public void onInitError(String imageUri, Exception e) {
             if (!running) {
-                SLog.w(LogType.LARGE, NAME, "stop running. initError. %s", imageUri);
+                SLog.w(SLogType.LARGE, NAME, "stop running. initError. %s", imageUri);
                 return;
             }
 
@@ -415,7 +415,7 @@ public class LargeImageViewer {
         @Override
         public void onDecodeCompleted(Tile tile, Bitmap bitmap, int useTime) {
             if (!running) {
-                SLog.w(LogType.LARGE, NAME, "stop running. decodeCompleted. tile=%s", tile.getInfo());
+                SLog.w(SLogType.LARGE, NAME, "stop running. decodeCompleted. tile=%s", tile.getInfo());
                 BitmapPoolUtils.freeBitmapToPoolForRegionDecoder(bitmap, Sketch.with(context).getConfiguration().getBitmapPool());
                 return;
             }
@@ -426,7 +426,7 @@ public class LargeImageViewer {
         @Override
         public void onDecodeError(Tile tile, DecodeHandler.DecodeErrorException exception) {
             if (!running) {
-                SLog.w(LogType.LARGE, NAME, "stop running. decodeError. tile=%s", tile.getInfo());
+                SLog.w(SLogType.LARGE, NAME, "stop running. decodeError. tile=%s", tile.getInfo());
                 return;
             }
 

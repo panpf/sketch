@@ -19,7 +19,7 @@ package me.xiaopan.sketch.request;
 import java.util.HashSet;
 import java.util.Set;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.util.SketchUtils;
@@ -103,7 +103,7 @@ public class FreeRideDownloadRequest extends DownloadRequest implements FreeRide
         DiskCache.Entry diskCacheEntry = diskCache.get(getDiskCacheKey());
 
         if (diskCacheEntry != null) {
-            if (LogType.REQUEST.isEnabled()) {
+            if (SLogType.REQUEST.isEnabled()) {
                 printLogD("from diskCache", "processDownloadFreeRide");
             }
             downloadResult = new DownloadResult(diskCacheEntry, ImageFrom.DISK_CACHE);

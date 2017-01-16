@@ -18,7 +18,7 @@ package me.xiaopan.sketch.util;
 
 import java.text.DecimalFormat;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 
 public class Stopwatch {
@@ -79,7 +79,7 @@ public class Stopwatch {
             decodeCount++;
             useTimeCount += totalTime;
 
-            SLog.d(LogType.TIME, logName, "%s, average=%sms. %s",
+            SLog.d(SLogType.TIME, logName, "%s, average=%sms. %s",
                     builder.toString(), decimalFormat.format((double) useTimeCount / decodeCount), requestId);
             builder = null;
         }

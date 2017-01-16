@@ -23,7 +23,7 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.text.TextUtils;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.decode.ImageFormat;
@@ -83,9 +83,9 @@ public class BitmapPoolUtils {
             inBitmap = bitmapPool.get(options.outWidth, options.outHeight, options.inPreferredConfig);
         }
 
-        if (inBitmap != null && LogType.CACHE.isEnabled()) {
+        if (inBitmap != null && SLogType.CACHE.isEnabled()) {
             int sizeInBytes = SketchUtils.getBitmapByteSize(options.outWidth, options.outHeight, options.inPreferredConfig);
-            SLog.d(LogType.CACHE, "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+            SLog.d(SLogType.CACHE, "setInBitmapFromPool. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                     options.outWidth, options.outHeight, options.inPreferredConfig, inSampleSize, sizeInBytes,
                     Integer.toHexString(inBitmap.hashCode()), SketchUtils.getBitmapByteSize(inBitmap));
         }
@@ -125,19 +125,19 @@ public class BitmapPoolUtils {
 
         boolean success = bitmapPool.put(bitmap);
         if (!success) {
-            if (LogType.CACHE.isEnabled()) {
+            if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.w(LogType.CACHE, String.format("Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.w(SLogType.CACHE, String.format("Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
                         element.getClassName(), element.getMethodName(), element.getLineNumber()));
             }
             bitmap.recycle();
         } else {
-            if (LogType.CACHE.isEnabled()) {
+            if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.d(LogType.CACHE, String.format("Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.d(SLogType.CACHE, String.format("Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
                         element.getClassName(), element.getMethodName(), element.getLineNumber()));
             }
@@ -166,9 +166,9 @@ public class BitmapPoolUtils {
         Bitmap inBitmap = bitmapPool.get(finalWidth, finalHeight, config);
 
         if (inBitmap != null) {
-            if (LogType.CACHE.isEnabled()) {
+            if (SLogType.CACHE.isEnabled()) {
                 int sizeInBytes = SketchUtils.getBitmapByteSize(finalWidth, finalHeight, config);
-                SLog.d(LogType.CACHE, "setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
+                SLog.d(SLogType.CACHE, "setInBitmapFromPoolForRegionDecoder. options=%dx%d,%s,%d,%d. inBitmap=%s,%d",
                         finalWidth, finalHeight, config, inSampleSize, sizeInBytes,
                         Integer.toHexString(inBitmap.hashCode()), SketchUtils.getBitmapByteSize(inBitmap));
             }
@@ -213,19 +213,19 @@ public class BitmapPoolUtils {
 
         boolean success = sdkSupportInBitmapForRegionDecoder() && bitmapPool.put(bitmap);
         if (!success) {
-            if (LogType.CACHE.isEnabled()) {
+            if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.w(LogType.CACHE, String.format("Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.w(SLogType.CACHE, String.format("Recycle bitmap. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
                         element.getClassName(), element.getMethodName(), element.getLineNumber()));
             }
             bitmap.recycle();
         } else {
-            if (LogType.CACHE.isEnabled()) {
+            if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.d(LogType.CACHE, String.format("Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
+                SLog.d(SLogType.CACHE, String.format("Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
                         bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
                         element.getClassName(), element.getMethodName(), element.getLineNumber()));
             }

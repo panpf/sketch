@@ -7,7 +7,7 @@ import android.os.Build;
 import android.text.format.Formatter;
 import android.util.DisplayMetrics;
 
-import me.xiaopan.sketch.LogType;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
 
 /**
@@ -60,8 +60,8 @@ public class MemorySizeCalculator {
             bitmapPoolSize = BitmapPoolUtils.sdkSupportInBitmap() ? part * BITMAP_POOL_TARGET_SCREENS : 0;
         }
 
-        if (LogType.CACHE.isEnabled()) {
-            SLog.d(LogType.CACHE, LOG_NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
+        if (SLogType.CACHE.isEnabled()) {
+            SLog.d(SLogType.CACHE, LOG_NAME, "Calculated memory cache size: %s pool size: %s memory class limited? %s max size: %s memoryClass: %d isLowMemoryDevice: %s",
                     toMb(memoryCacheSize), toMb(bitmapPoolSize), targetMemoryCacheSize + targetPoolSize > maxSize, toMb(maxSize), activityManager.getMemoryClass(), isLowMemoryDevice(activityManager));
         }
     }
