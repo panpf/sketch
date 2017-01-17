@@ -56,7 +56,7 @@ class ScrollBar {
         scrollBarPaint.setAlpha(scrollBarAlpha);
         scrollBarSize = SketchUtils.dp2px(context, 3);
         scrollBarMargin = SketchUtils.dp2px(context, 3);
-        scrollBarRadius = SketchUtils.dp2px(context, 20);
+        scrollBarRadius = Math.round(scrollBarSize / 2);
 
         handler = new Handler(Looper.getMainLooper());
         hiddenScrollBarRunner = new HiddenScrollBarRunner();
