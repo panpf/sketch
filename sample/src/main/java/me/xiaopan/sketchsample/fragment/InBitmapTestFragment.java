@@ -291,6 +291,8 @@ public class InBitmapTestFragment extends MyFragment {
             try {
                 options.inJustDecodeBounds = false;
                 newBitmap = decodeImage(context, imageUri, options);
+            } catch (OutOfMemoryError e) {
+                e.printStackTrace();
             } catch (IllegalArgumentException e) {
                 e.printStackTrace();
 

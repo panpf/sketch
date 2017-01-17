@@ -19,6 +19,7 @@ package me.xiaopan.sketchsample.fragment;
 import android.content.Intent;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
@@ -37,6 +38,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.UriScheme;
+import me.xiaopan.sketch.util.SketchUtils;
 import me.xiaopan.sketchsample.MyFragment;
 import me.xiaopan.sketchsample.R;
 import me.xiaopan.sketchsample.adapter.itemfactory.ImageFragmentItemFactory;
@@ -50,6 +52,7 @@ import me.xiaopan.sketchsample.util.SaveImageAsyncTask;
 import me.xiaopan.sketchsample.util.SaveResImageAsyncTask;
 import me.xiaopan.sketchsample.util.ViewPagerPlayer;
 import me.xiaopan.sketchsample.widget.DepthPageTransformer;
+import me.xiaopan.sketchsample.widget.ZoomOutPageTransformer;
 
 /**
  * 图片详情页面
@@ -128,7 +131,16 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
                 shareButton, applyWallpaperButton, playButton, saveButton);
         viewPagerPlayer = new ViewPagerPlayer(viewPager);
         new PageNumberSetter(currentItemTextView, viewPager);
-        viewPager.setPageTransformer(true, new DepthPageTransformer());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                // 4.0上使用
+                viewPager.setPageTransformer(true, new DepthPageTransformer());
+            } else {
+                viewPager.setPageTransformer(true, new ZoomOutPageTransformer());
+            }
+        } else {
+            viewPager.setPageMargin(SketchUtils.dp2px(getActivity(), 8));
+        }
 
         shareButton.setOnClickListener(this);
         applyWallpaperButton.setOnClickListener(this);
@@ -247,11 +259,11 @@ public class DetailFragment extends MyFragment implements View.OnClickListener, 
                         } else {
                             Toast.makeText(getActivity(), "图片还没有下载好哦，再等一会儿吧！", Toast.LENGTH_LONG).show();
                         }
-                    } else if(uriScheme == UriScheme.ASSET){
+                    } else if (uriScheme == UriScheme.ASSET) {
                         new SaveAssetImageAsyncTask(getActivity(), UriScheme.ASSET.crop(currentUri)).execute("");
-                    } else if(uriScheme == UriScheme.CONTENT){
+                    } else if (uriScheme == UriScheme.CONTENT) {
                         new SaveContentImageAsyncTask(getActivity(), Uri.parse(currentUri)).execute("");
-                    } else if(uriScheme == UriScheme.DRAWABLE){
+                    } else if (uriScheme == UriScheme.DRAWABLE) {
                         new SaveResImageAsyncTask(getActivity(), Integer.valueOf(UriScheme.DRAWABLE.crop(currentUri))).execute("");
                     } else if (uriScheme == UriScheme.FILE) {
                         Toast.makeText(getActivity(), "当前图片本就是本地的无需保存", Toast.LENGTH_LONG).show();

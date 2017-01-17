@@ -1,13 +1,14 @@
 package me.xiaopan.sketchsample.widget;
 
-import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class DepthPageTransformer implements ViewPager.PageTransformer {
     private static float MIN_SCALE = 0.75f;
 
-    @SuppressLint("NewApi")
     @Override
     public void transformPage(View view, float position) {
         int pageWidth = view.getWidth();
