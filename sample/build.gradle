@@ -24,6 +24,7 @@ def loadProperties(String fileName) {
 // 加载签名配置文件
 String projectPath = projectDir;
 loadProperties projectPath + '/local.properties'
+File jksFile = file(property("sample.storeFile"))
 
 android {
     compileSdkVersion SAMPLE_COMPILE_SDK_VERSION.toInteger()
@@ -38,7 +39,7 @@ android {
 
     signingConfigs {
         release {
-            storeFile file(property("sample.storeFile"))
+            storeFile jksFile
             storePassword property('sample.storePassword')
             keyAlias property('sample.keyAlias')
             keyPassword property('sample.keyPassword')
@@ -47,7 +48,7 @@ android {
 
     buildTypes {
         debug {
-            signingConfig signingConfigs.release
+            signingConfig jksFile != null && jksFile.exists() ? signingConfigs.release : signingConfig
         }
 
         release {
