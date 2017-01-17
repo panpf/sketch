@@ -78,7 +78,6 @@ public class RotateImageProcessor extends WrapableImageProcessor {
 
         Rect srcR = new Rect(0, 0, bitmap.getWidth(), bitmap.getHeight());
         canvas.drawBitmap(bitmap, srcR, dstR, paint);
-        canvas.setBitmap(null);
 
         return rotateBitmap;
     }
