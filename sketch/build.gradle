@@ -28,3 +28,7 @@ android {
 }
 
 apply from: "bintrayUpload.gradle"
+
+dependencies{
+    compile project(':sketch-gif')
+}
