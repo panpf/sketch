@@ -65,8 +65,8 @@ import javax.microedition.khronos.egl.EGLContext;
 import javax.microedition.khronos.egl.EGLDisplay;
 import javax.microedition.khronos.egl.EGLSurface;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.decode.ImageFormat;
 import me.xiaopan.sketch.drawable.LoadingDrawable;
@@ -76,7 +76,6 @@ import me.xiaopan.sketch.request.DisplayRequest;
 import me.xiaopan.sketch.request.DownloadOptions;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.request.LoadRequest;
-import pl.droidsonroids.gif.GifDrawable;
 
 public class SketchUtils {
 
@@ -641,12 +640,10 @@ public class SketchUtils {
             if (TextUtils.isEmpty(type)) {
                 type = "Bitmap";
             }
-            return SketchUtils.concat(type
-                    , "(", "mimeType=", mimeType
-                    , "; ", "hashCode=", Integer.toHexString(bitmap.hashCode())
-                    , "; ", "size=", bitmap.getWidth(), "x", bitmap.getHeight()
-                    , "; ", "config=", bitmap.getConfig() != null ? bitmap.getConfig().name() : null
-                    , "; ", "byteCount=", byteCount, ")");
+            String hashCode = Integer.toHexString(bitmap.hashCode());
+            String config = bitmap.getConfig() != null ? bitmap.getConfig().name() : null;
+            return String.format("%s(mimeType=%s; hashCode=%s; size=%dx%d; config=%s; byteCount=%d)",
+                    type, mimeType, hashCode, bitmap.getWidth(), bitmap.getHeight(), config, byteCount);
         } else {
             return null;
         }
@@ -661,16 +658,6 @@ public class SketchUtils {
      */
     public static String makeImageInfo(String type, Bitmap bitmap, String mimeType) {
         return makeImageInfo(type, bitmap, mimeType, getBitmapByteSize(bitmap));
-    }
-
-    /**
-     * 从GifDrawable中获取信息，生成最终的图片信息
-     *
-     * @param gifDrawable GifDrawable
-     */
-    public static String makeGifImageInfo(GifDrawable gifDrawable) {
-        Bitmap bitmap = gifDrawable.getBitmap();
-        return makeImageInfo("GifDrawable", bitmap, "image/gif", (int) gifDrawable.getAllocationByteCount());
     }
 
     /**
@@ -1195,5 +1182,20 @@ public class SketchUtils {
 
     public static int ceil(int value1, float value2) {
         return (int) Math.ceil(value1 / value2);
+    }
+
+    private static int supportGif = 0;
+
+    public synchronized static boolean isSupportGif() {
+        if (supportGif == 0) {
+            try {
+                Class.forName("pl.droidsonroids.gif.GifDrawable");
+                supportGif = 1;
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+                supportGif = -1;
+            }
+        }
+        return supportGif > 0;
     }
 }

@@ -25,10 +25,11 @@ import android.os.Build;
 import java.io.File;
 import java.io.IOException;
 
-import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.SLog;
+import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
-import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.drawable.ImageInfo;
+import me.xiaopan.sketch.drawable.SketchGifDrawableImpl;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
@@ -93,9 +94,9 @@ public class FileDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public SketchGifDrawable getGifDrawable(BitmapPool bitmapPool) {
+    public SketchGifDrawableImpl makeGifDrawable(ImageInfo imageInfo, BitmapPool bitmapPool) {
         try {
-            return new SketchGifDrawable(bitmapPool, file);
+            return new SketchGifDrawableImpl(imageInfo, bitmapPool, file);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

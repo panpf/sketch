@@ -66,7 +66,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 	/**
 	 * Frame buffer, holds current frame.
 	 */
-	final Bitmap mBuffer;
+	protected final Bitmap mBuffer;
 	final GifInfoHandle mNativeInfoHandle;
 	final ConcurrentLinkedQueue<AnimationListener> mListeners = new ConcurrentLinkedQueue<>();
 	private ColorStateList mTint;
@@ -226,7 +226,7 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 		}
 
 		if (oldBitmap == null) {
-			mBuffer = Bitmap.createBitmap(mNativeInfoHandle.getWidth(), mNativeInfoHandle.getHeight(), Bitmap.Config.ARGB_8888);
+			mBuffer = makeBitmap(mNativeInfoHandle.getWidth(), mNativeInfoHandle.getHeight(), Bitmap.Config.ARGB_8888);
 		} else {
 			mBuffer = oldBitmap;
 		}
@@ -240,6 +240,10 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 		mScaledHeight = mNativeInfoHandle.getHeight();
 	}
 
+	protected Bitmap makeBitmap(int width, int height, Bitmap.Config config) {
+		return Bitmap.createBitmap(width, height, config);
+	}
+
 	/**
 	 * Frees any memory allocated native way.
 	 * Operation is irreversible. After this call, nothing will be drawn.
@@ -249,7 +253,13 @@ public class GifDrawable extends Drawable implements Animatable, MediaPlayerCont
 	 */
 	public void recycle() {
 		shutdown();
-		mBuffer.recycle();
+		recycleBitmap();
+	}
+
+	protected void recycleBitmap() {
+		if (mBuffer != null) {
+			mBuffer.recycle();
+		}
 	}
 
 	private void shutdown() {

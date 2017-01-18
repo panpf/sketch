@@ -37,13 +37,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="3. 支持GIF图. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示GIF图片，感谢koral--" />
+                android:text="3. 支持GIF图. 集成了[android-gif-drawable 1.2.4](https://github.com/koral--/android-gif-drawable)可以方便的显示GIF图片，感谢koral--" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="4. 两级缓存. 采用LRU算法在本地和内存中缓存图片，提高图片利用率和显示速度" />
+                android:text="4. 三级缓存支持. 通过LruMemoryCache、LruDiskCache复用图片，加快显示时间；通过LruBitmapPool复用Bitmap，减少因GC而造成的卡顿" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="11. 自动选择合适的Bimtap.Config. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，例如对于JPEG格式的图片就会使用Bitmap.Config.RGB_565解码" />
+                android:text="11. 自动选择合适的Bitmap.Config. 根据图片的MimeType自动选择合适的Bitmap.Config，减少内存浪费，例如对于JPEG格式的图片就会使用Bitmap.Config.RGB_565解码" />
 
             <TextView
                 android:layout_width="wrap_content"

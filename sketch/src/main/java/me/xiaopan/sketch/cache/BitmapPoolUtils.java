@@ -126,7 +126,15 @@ public class BitmapPoolUtils {
         }
 
         boolean success = bitmapPool.put(bitmap);
-        if (!success) {
+        if (success) {
+            if (SLogType.CACHE.isEnabled()) {
+                StackTraceElement[] elements = new Exception().getStackTrace();
+                StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
+                SLog.d(SLogType.CACHE, String.format("Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
+                        bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
+                        element.getClassName(), element.getMethodName(), element.getLineNumber()));
+            }
+        } else {
             if (SLogType.CACHE.isEnabled()) {
                 StackTraceElement[] elements = new Exception().getStackTrace();
                 StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
@@ -135,14 +143,6 @@ public class BitmapPoolUtils {
                         element.getClassName(), element.getMethodName(), element.getLineNumber()));
             }
             bitmap.recycle();
-        } else {
-            if (SLogType.CACHE.isEnabled()) {
-                StackTraceElement[] elements = new Exception().getStackTrace();
-                StackTraceElement element = elements.length > 1 ? elements[1] : elements[0];
-                SLog.d(SLogType.CACHE, String.format("Put to bitmap pool. info:%dx%d,%s,%s - %s.%s:%d",
-                        bitmap.getWidth(), bitmap.getHeight(), bitmap.getConfig(), SketchUtils.toHexString(bitmap),
-                        element.getClassName(), element.getMethodName(), element.getLineNumber()));
-            }
         }
         return success;
     }

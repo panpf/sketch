@@ -1,4 +1,4 @@
-Sketch集成了android-gif-drawable 1.1.7，可以无障碍的播放gif图片
+Sketch集成了android-gif-drawable 1.2.4，可以无障碍的播放gif图片
 
 #### 配置解码GIF图
 Sketch默认不解码gif图，只会通过BitmapFactory读取其第一帧作为一个普通的图片

@@ -22,9 +22,9 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.graphics.drawable.TransitionDrawable;
 
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.request.ImageViewInterface;
 import me.xiaopan.sketch.util.SketchUtils;
-import pl.droidsonroids.gif.GifDrawable;
 
 /**
  * 过渡效果的图片显示器
@@ -57,7 +57,7 @@ public class TransitionImageDisplayer implements ImageDisplayer {
         if (newDrawable == null) {
             return;
         }
-        if (newDrawable instanceof GifDrawable) {
+        if (newDrawable instanceof SketchGifDrawable) {
             imageViewInterface.clearAnimation();
             imageViewInterface.setImageDrawable(newDrawable);
         } else {

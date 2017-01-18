@@ -30,7 +30,7 @@ import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.DecodeResult;
-import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.drawable.SketchGifDrawableImpl;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -310,23 +310,23 @@ public class LoadRequest extends FreeRideDownloadRequest {
             loadResult = new LoadResult(bitmap, decodeResult);
             loadCompleted();
         } else if (decodeResult != null && decodeResult.getGifDrawable() != null) {
-            SketchGifDrawable gifDrawable = decodeResult.getGifDrawable();
+            SketchGifDrawableImpl gifDrawable = decodeResult.getGifDrawable();
 
             if (gifDrawable.isRecycled()) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    printLogE("decode failed", "runLoad", "gif drawable recycled", "gifInfo: " + SketchUtils.makeGifImageInfo(gifDrawable));
+                    printLogE("decode failed", "runLoad", "gif drawable recycled", "gifInfo: " + gifDrawable.getInfo());
                 }
                 error(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;
             }
 
             if (SLogType.REQUEST.isEnabled()) {
-                printLogI("decode gif success", "runLoad", "gifInfo: " + SketchUtils.makeGifImageInfo(gifDrawable));
+                printLogI("decode gif success", "runLoad", "gifInfo: " + gifDrawable.getInfo());
             }
 
             if (isCanceled()) {
                 if (SLogType.REQUEST.isEnabled()) {
-                    printLogW("runLoad", "runLoad", "decode after", "gifInfo: " + SketchUtils.makeGifImageInfo(gifDrawable));
+                    printLogW("runLoad", "runLoad", "decode after", "gifInfo: " + gifDrawable.getInfo());
                 }
                 gifDrawable.recycle();
                 return;
@@ -416,8 +416,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
                 if (loadResult.getBitmap() != null) {
                     BitmapPoolUtils.freeBitmapToPool(loadResult.getBitmap(), getSketch().getConfiguration().getBitmapPool());
                 }
-                if (loadResult.getGifDrawable() != null) {
-                    loadResult.getGifDrawable().recycle();
+                if (loadResult.getDrawable() != null) {
+                    loadResult.getDrawable().recycle();
                 }
             }
             if (SLogType.REQUEST.isEnabled()) {

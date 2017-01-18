@@ -18,18 +18,20 @@ package me.xiaopan.sketch.state;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.Configuration;
 import me.xiaopan.sketch.Sketch;
-import me.xiaopan.sketch.cache.BitmapPoolUtils;
+import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
+import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.MemoryCache;
+import me.xiaopan.sketch.drawable.ImageInfo;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.drawable.ShapeBitmapDrawable;
-import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.process.ImageProcessor;
 import me.xiaopan.sketch.process.ResizeImageProcessor;
 import me.xiaopan.sketch.request.DisplayOptions;
@@ -148,8 +150,14 @@ public class MakerStateImage implements StateImage {
 
         // 允许回收说明是创建了一张新的图片，不能回收说明还是从res中获取的BitmapDrawable可以直接使用
         if (allowRecycle) {
-            RefBitmap newRefBitmap = new RefBitmap(bitmap, bitmapPool, memoryCacheKey,
-                    String.valueOf(resId), bitmap.getWidth(), bitmap.getHeight(), null);
+            BitmapFactory.Options options = new BitmapFactory.Options();
+            options.inJustDecodeBounds = true;
+            BitmapFactory.decodeResource(configuration.getContext().getResources(), resId, options);
+
+            String uri = UriScheme.DRAWABLE.createUri(String.valueOf(resId));
+            ImageInfo imageInfo = new ImageInfo(memoryCacheKey, uri, options.outMimeType, options.outWidth, options.outHeight);
+
+            RefBitmap newRefBitmap = new RefBitmap(bitmap, imageInfo, bitmapPool);
             memoryCache.put(memoryCacheKey, newRefBitmap);
             return new RefBitmapDrawable(newRefBitmap);
         } else {

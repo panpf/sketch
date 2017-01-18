@@ -18,12 +18,12 @@ package me.xiaopan.sketch.decode;
 
 import android.graphics.Bitmap;
 
-import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.drawable.SketchGifDrawableImpl;
 import me.xiaopan.sketch.request.ImageFrom;
 
 public class DecodeResult {
     private Bitmap bitmap;
-    private SketchGifDrawable gifDrawable;
+    private SketchGifDrawableImpl gifDrawable;
 
     private String mimeType;
     private int originWidth;
@@ -32,7 +32,7 @@ public class DecodeResult {
     private ImageFrom imageFrom;
     private boolean canCacheInDiskCache;
 
-    public DecodeResult(int originWidth, int originHeight, String mimeType, SketchGifDrawable gifDrawable) {
+    public DecodeResult(int originWidth, int originHeight, String mimeType, SketchGifDrawableImpl gifDrawable) {
         this.originWidth = originWidth;
         this.originHeight = originHeight;
         this.mimeType = mimeType;
@@ -66,7 +66,7 @@ public class DecodeResult {
         return bitmap;
     }
 
-    public SketchGifDrawable getGifDrawable() {
+    public SketchGifDrawableImpl getGifDrawable() {
         return gifDrawable;
     }
 

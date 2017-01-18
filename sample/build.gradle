@@ -78,16 +78,16 @@ android {
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile project(':sketch')
+//    compile project(':sketch')
     compile 'com.android.support:appcompat-v7:22.2.0'
     compile 'com.android.support:recyclerview-v7:22.2.0'
     compile 'me.xiaopan:gohttp:1.2.0'
     compile 'me.xiaopan:androidinjector:1.5.0'
     compile 'me.xiaopan:pagerslidingtabstrip:1.6.0'
     compile 'me.xiaopan:pullrefreshlayout:1.4.0'
-//    compile 'me.xiaopan:assemblyadapter:2.2.0'
+    compile 'me.xiaopan:assemblyadapter:2.3.0'
 
-    compile(name: 'assemblyadapter-release', ext: 'aar')
+    compile(name: 'sketch-release', ext: 'aar')
 
     // ButterKnifeView绑定
     compile 'com.jakewharton:butterknife:8.4.0'

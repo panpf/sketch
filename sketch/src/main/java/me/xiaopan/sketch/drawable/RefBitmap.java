@@ -36,8 +36,8 @@ public class RefBitmap extends SketchBitmap {
 
     private BitmapPool bitmapPool;
 
-    public RefBitmap(Bitmap bitmap, BitmapPool bitmapPool, String imageId, String imageUri, int originWidth, int originHeight, String mimeType) {
-        super(bitmap, imageId, imageUri, originWidth, originHeight, mimeType);
+    public RefBitmap(Bitmap bitmap, ImageInfo imageInfo, BitmapPool bitmapPool) {
+        super(bitmap, imageInfo);
         this.bitmapPool = bitmapPool;
     }
 

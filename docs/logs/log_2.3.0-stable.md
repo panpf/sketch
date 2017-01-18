@@ -63,6 +63,8 @@
 ##### GIF
 >* :bug: `GIF` 修复当反复切换LoadOptions.decodeGifImage的值后再刷新页面，需要播放GIF时却依然显示静态的GIF第一帧的BUG
 >* :bug: onDetachedFromWindow时主动回收GifDrawable
+>* :arrow_up: 升级android-gif-drawable版本到1.2.4
+>* :hammer: 拆分gif模块，现在作为一个单独的library对外提供
 
 ##### SketchImageView
 >* :bug: `Gif Flag` 修复SketchImageView.setShowGifFlag()反复调用时无效的bug

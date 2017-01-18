@@ -42,7 +42,7 @@ public class RefBitmapDrawable extends BitmapDrawable implements RefDrawable {
         setTargetDensity(refBitmap.getBitmap().getDensity());
     }
 
-    void setLogName(String logName) {
+    protected void setLogName(String logName) {
         this.logName = logName;
     }
 

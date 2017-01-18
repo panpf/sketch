@@ -26,6 +26,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.MemoryCache;
+import me.xiaopan.sketch.drawable.ImageInfo;
 import me.xiaopan.sketch.drawable.RefBitmap;
 import me.xiaopan.sketch.drawable.RefBitmapDrawable;
 import me.xiaopan.sketch.drawable.RefDrawable;
@@ -204,9 +205,10 @@ public class DisplayRequest extends LoadRequest {
                 return;
             }
 
+            ImageInfo imageInfo = new ImageInfo(getKey(), getUri(), loadResult.getMimeType(),
+                    loadResult.getOriginWidth(), loadResult.getOriginHeight());
             BitmapPool bitmapPool = getSketch().getConfiguration().getBitmapPool();
-            RefBitmap refBitmap = new RefBitmap(bitmap, bitmapPool, getKey(), getUri(),
-                    loadResult.getOriginWidth(), loadResult.getOriginHeight(), loadResult.getMimeType());
+            RefBitmap refBitmap = new RefBitmap(bitmap, imageInfo, bitmapPool);
 
             // 立马标记等待使用，防止刚放入内存缓存就被挤出去回收掉
             refBitmap.setIsWaitingUse(getLogName() + ":waitingUse:new", true);
@@ -219,13 +221,13 @@ public class DisplayRequest extends LoadRequest {
             Drawable drawable = new RefBitmapDrawable(refBitmap);
             displayResult = new DisplayResult(drawable, loadResult.getImageFrom(), loadResult.getMimeType());
             displayCompleted();
-        } else if (loadResult != null && loadResult.getGifDrawable() != null) {
-            SketchGifDrawable gifDrawable = loadResult.getGifDrawable();
+        } else if (loadResult != null && loadResult.getDrawable() != null) {
+            SketchGifDrawable gifDrawable = loadResult.getDrawable();
 
             if (gifDrawable.isRecycled()) {
                 if (SLogType.REQUEST.isEnabled()) {
                     printLogE("decode failed", "loadCompleted", "gif drawable recycled",
-                            "gifInfo=", SketchUtils.makeGifImageInfo(gifDrawable), loadResult.getImageFrom());
+                            "gifInfo=", gifDrawable.getInfo());
                 }
                 error(ErrorCause.GIF_DRAWABLE_RECYCLED);
                 return;

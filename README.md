@@ -14,7 +14,7 @@ Sketch是Android上一个强大且全面的图片加载器，支持GIF，手势�
 
 ### 特点
 >* ``多种URI支持``. 支持``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``等7种URI
->* ``支持gif图``. 集成了[android-gif-drawable 1.1.7](https://github.com/koral--/android-gif-drawable)可以方便的显示gif图片，感谢koral--
+>* ``支持gif图``. 集成了[android-gif-drawable 1.2.4](https://github.com/koral--/android-gif-drawable)可以方便的显示gif图片，感谢koral--
 >* ``独家手势缩放和超大图支持``. 独家内置了手势缩放和分块显示超大图功能，并且结合的更好
 >* ``三级缓存支持``. 通过LruMemoryCache、LruDiskCache复用图片，加快显示时间；通过LruBitmapPool复用Bitmap，减少因GC而造成的卡顿
 >* ``各种列表支持``. 在各种列表（ListView、RecyclerView）中循环使用不错位，并且不占用setTag()方法
@@ -67,12 +67,22 @@ sketchImageView.displayURIImage(uri);
 #### 导入
 
 1.在app的build.gradle文件的dependencies节点中加入依赖
+
+`sketch-version`：[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
 ```groovy
 dependencies{
-	compile 'me.xiaopan:sketch:lastVersionName'
+	compile 'me.xiaopan:sketch:sketch-version'
 }
 ```
-`lastVersionName`：[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
+
+如果需要播放GIF就添加sketch-gif的依赖
+
+`sketch-gif-version`：[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch-GIF/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch-GIF/_latestVersion#files)
+```groovy
+dependencies{
+	compile 'me.xiaopan:sketch-gif:sketch-gif-version'
+}
+```
 
 2.添加以下权限
 ```xml
