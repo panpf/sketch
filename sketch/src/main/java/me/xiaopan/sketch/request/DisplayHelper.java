@@ -520,6 +520,7 @@ public class DisplayHelper {
         Resize resize = displayOptions.getResize();
         if (resize == null && displayOptions.isResizeByFixedSize()) {
             if (fixedSize != null) {
+                // TODO: 2017/1/20 加上scaleType
                 displayOptions.setResize(fixedSize.getWidth(), fixedSize.getHeight());
             } else {
                 throw new IllegalStateException("ImageView's width and height are not fixed," +
