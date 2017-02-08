@@ -6,7 +6,7 @@
 [![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
 ![QQ Group](https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg)
 
-[Chinese version of the README.md](README_EN.md)
+[Chinese version of the README.md](README.md)
 
 `by Google Translate`
 
