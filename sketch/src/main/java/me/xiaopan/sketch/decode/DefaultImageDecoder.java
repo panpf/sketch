@@ -245,7 +245,7 @@ public class DefaultImageDecoder implements ImageDecoder {
         // 计算resize区域在原图中的对应区域
         ResizeCalculator resizeCalculator = request.getSketch().getConfiguration().getResizeCalculator();
         ResizeCalculator.Result result = resizeCalculator.calculator(boundOptions.outWidth, boundOptions.outHeight,
-                resize.getWidth(), resize.getHeight(), resize.getSafeScaleType(), false);
+                resize.getWidth(), resize.getHeight(), resize.getScaleType(), false);
 
         boolean supportLargeImage = SketchUtils.supportLargeImage(request, imageFormat);
 

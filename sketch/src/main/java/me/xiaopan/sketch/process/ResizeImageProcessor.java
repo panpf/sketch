@@ -45,7 +45,7 @@ public class ResizeImageProcessor implements ImageProcessor {
 
         ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
         ResizeCalculator.Result result = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
-                resize.getWidth(), resize.getHeight(), resize.getSafeScaleType(), forceUseResize);
+                resize.getWidth(), resize.getHeight(), resize.getScaleType(), forceUseResize);
         if (result == null) {
             return bitmap;
         }

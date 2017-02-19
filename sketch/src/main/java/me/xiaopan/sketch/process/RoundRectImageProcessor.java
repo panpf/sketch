@@ -84,7 +84,7 @@ public class RoundRectImageProcessor extends WrapableImageProcessor {
         ResizeCalculator.Result result = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
                 resize != null ? resize.getWidth() : bitmap.getWidth(),
                 resize != null ? resize.getHeight() : bitmap.getHeight(),
-                resize != null ? resize.getSafeScaleType() : null, forceUseResize);
+                resize != null ? resize.getScaleType() : null, forceUseResize);
         if (result == null) {
             return bitmap;
         }

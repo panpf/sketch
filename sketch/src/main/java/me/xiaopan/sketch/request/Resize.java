@@ -54,10 +54,6 @@ public class Resize implements Identifier {
         return scaleType;
     }
 
-    public ImageView.ScaleType getSafeScaleType() {
-        return scaleType != null ? scaleType : ImageView.ScaleType.FIT_CENTER;
-    }
-
     public void setScaleType(ImageView.ScaleType scaleType) {
         this.scaleType = scaleType;
     }
