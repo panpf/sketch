@@ -78,7 +78,7 @@ public class CircleImageProcessor extends WrapableImageProcessor {
         ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
         ResizeCalculator.Result result = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
                 newBitmapSize, newBitmapSize,
-                resize != null ? resize.getScaleType() : null, forceUseResize);
+                resize != null ? resize.getSafeScaleType() : null, forceUseResize);
         if (result == null) {
             return bitmap;
         }
