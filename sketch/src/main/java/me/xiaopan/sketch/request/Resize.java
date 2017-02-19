@@ -32,7 +32,7 @@ public class Resize implements Identifier {
     /**
      * 裁剪图片时scaleType将决定如何裁剪，原理同ImageView的scaleType相同
      */
-    private ImageView.ScaleType scaleType = ImageView.ScaleType.CENTER_CROP;
+    private ImageView.ScaleType scaleType;
 
     public Resize(Resize sourceResize) {
         this.width = sourceResize.width;
@@ -52,6 +52,10 @@ public class Resize implements Identifier {
 
     public ImageView.ScaleType getScaleType() {
         return scaleType;
+    }
+
+    public ImageView.ScaleType getSafeScaleType() {
+        return scaleType != null ? scaleType : ImageView.ScaleType.FIT_CENTER;
     }
 
     public void setScaleType(ImageView.ScaleType scaleType) {
