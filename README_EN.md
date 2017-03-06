@@ -6,7 +6,7 @@
 [![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
 ![QQ Group](https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg)
 
-[Chinese version of the README.md](README_EN.md)
+[Chinese version of the README.md](README.md)
 
 `by Google Translate`
 
@@ -70,21 +70,23 @@ sketchImageView.displayURIImage(uri);
 
 1.Add dependencies to the dependencies node of the app's build.gradle file
 
-`sketch-version`：[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
 ```groovy
-dependencies{
-	compile 'me.xiaopan:sketch:sketch-version'
+dependencies {
+	compile 'me.xiaopan:sketch:SKETCH_LAST_VERSION_NAME'
 }
 ```
+
+Replace `SKETCH_LAST_VERSION_NAME` with the latest version [![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files) `(Ignore “Download”)`
 
 If you need to play GIF add sketch-gif dependencies
 
-`sketch-gif-version`：[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch-GIF/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch-GIF/_latestVersion#files)
 ```groovy
 dependencies{
-	compile 'me.xiaopan:sketch-gif:sketch-gif-version'
+	compile 'me.xiaopan:sketch-gif:SKETCH_GIF_LAST_VERSION_NAME'
 }
 ```
+
+Replace `SKETCH_GIF_LAST_VERSION_NAME` with the latest version [![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch-GIF/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch-GIF/_latestVersion#files) `(Ignore “Download”)`
 
 2.Add the following permissions
 ```xml

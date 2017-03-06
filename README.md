@@ -68,21 +68,23 @@ sketchImageView.displayURIImage(uri);
 
 1.在app的build.gradle文件的dependencies节点中加入依赖
 
-`sketch-version`：[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
 ```groovy
-dependencies{
-	compile 'me.xiaopan:sketch:sketch-version'
+dependencies {
+	compile 'me.xiaopan:sketch:SKETCH_LAST_VERSION_NAME'
 }
 ```
+
+请自行替换 `SKETCH_LAST_VERSION_NAME` 为最新的版本 [![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files) `(忽略“Download”)`
 
 如果需要播放GIF就添加sketch-gif的依赖
 
-`sketch-gif-version`：[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch-GIF/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch-GIF/_latestVersion#files)
 ```groovy
 dependencies{
-	compile 'me.xiaopan:sketch-gif:sketch-gif-version'
+	compile 'me.xiaopan:sketch-gif:SKETCH_GIF_LAST_VERSION_NAME'
 }
 ```
+
+请自行替换`SKETCH_GIF_LAST_VERSION_NAME` 为最新的版本[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch-GIF/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch-GIF/_latestVersion#files) `(忽略“Download”)`
 
 2.添加以下权限
 ```xml
