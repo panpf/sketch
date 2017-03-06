@@ -69,12 +69,14 @@ sketchImageView.displayURIImage(uri);
 #### Import
 
 1.Add dependencies to the dependencies node of the app's build.gradle file
+
 ```groovy
-dependencies{
-	compile 'me.xiaopan:sketch:lastVersionName'
+dependencies {
+	compile 'me.xiaopan:sketch:LAST_VERSION_NAME'
 }
 ```
-`lastVersionName`：[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
+
+Replace `LAST_VERSION_NAME` with the latest version [![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files) `(Ignore “Download”)`
 
 2.Add the following permissions
 ```xml
