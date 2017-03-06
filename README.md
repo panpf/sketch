@@ -67,12 +67,14 @@ sketchImageView.displayURIImage(uri);
 #### 导入
 
 1.在app的build.gradle文件的dependencies节点中加入依赖
+
 ```groovy
-dependencies{
-	compile 'me.xiaopan:sketch:lastVersionName'
+dependencies {
+	compile 'me.xiaopan:sketch:LAST_VERSION_NAME'
 }
 ```
-`lastVersionName`：[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
+
+请自行替换 `LAST_VERSION_NAME` 为最新的版本 [![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files) `(忽略“Download”)`
 
 2.添加以下权限
 ```xml

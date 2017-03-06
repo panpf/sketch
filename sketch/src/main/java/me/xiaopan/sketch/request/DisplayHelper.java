@@ -498,7 +498,8 @@ public class DisplayHelper {
         ShapeSize shapeSize = displayOptions.getShapeSize();
         if (shapeSize == null && displayOptions.isShapeSizeByFixedSize()) {
             if (fixedSize != null) {
-                displayOptions.setShapeSize(fixedSize.getWidth(), fixedSize.getHeight());
+                shapeSize = new ShapeSize(fixedSize.getWidth(), fixedSize.getHeight(), viewInfo.getScaleType());
+                displayOptions.setShapeSize(shapeSize);
             } else {
                 throw new IllegalStateException("ImageView's width and height are not fixed," +
                         " can not be applied with the shapeSizeByFixedSize function");
@@ -520,7 +521,8 @@ public class DisplayHelper {
         Resize resize = displayOptions.getResize();
         if (resize == null && displayOptions.isResizeByFixedSize()) {
             if (fixedSize != null) {
-                displayOptions.setResize(fixedSize.getWidth(), fixedSize.getHeight());
+                resize = new Resize(fixedSize.getWidth(), fixedSize.getHeight(), viewInfo.getScaleType());
+                displayOptions.setResize(resize);
             } else {
                 throw new IllegalStateException("ImageView's width and height are not fixed," +
                         " can not be applied with the resizeByFixedSize function");

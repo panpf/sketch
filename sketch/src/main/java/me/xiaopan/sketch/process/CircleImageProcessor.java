@@ -21,6 +21,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
+import android.widget.ImageView;
 
 import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.BitmapPool;
@@ -74,11 +75,11 @@ public class CircleImageProcessor extends WrapableImageProcessor {
         int targetWidth = resize != null ? resize.getWidth() : bitmap.getWidth();
         int targetHeight = resize != null ? resize.getHeight() : bitmap.getHeight();
         int newBitmapSize = targetWidth < targetHeight ? targetWidth : targetHeight;
+        ImageView.ScaleType scaleType = resize != null ? resize.getScaleType() : ImageView.ScaleType.FIT_CENTER;
 
         ResizeCalculator resizeCalculator = sketch.getConfiguration().getResizeCalculator();
         ResizeCalculator.Result result = resizeCalculator.calculator(bitmap.getWidth(), bitmap.getHeight(),
-                newBitmapSize, newBitmapSize,
-                resize != null ? resize.getScaleType() : null, forceUseResize);
+                newBitmapSize, newBitmapSize, scaleType, forceUseResize);
         if (result == null) {
             return bitmap;
         }
