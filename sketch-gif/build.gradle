@@ -1,14 +1,16 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion COMPILE_SDK_VERSION.toInteger()
+    buildToolsVersion "${BUILD_TOOLS_VERSION}"
 
     defaultConfig {
-        minSdkVersion 9
-        targetSdkVersion 25
-        versionCode VERSION_CODE.toInteger()
-        versionName "${VERSION_NAME}"
+        minSdkVersion MIN_SDK_VERSION.toInteger()
+        targetSdkVersion TARGET_SDK_VERSION_LIBRARY.toInteger()
+        versionCode VERSION_CODE_GIF.toInteger()
+        versionName "${VERSION_NAME_GIF}"
+
+        consumerProguardFiles 'proguard-rules.pro'
     }
 
     buildTypes {
@@ -19,6 +21,8 @@ android {
     }
 }
 
-dependencies{
-    provided 'com.android.support:support-annotations:25.1.0'
+apply from: "bintrayUpload.gradle"
+
+dependencies {
+    provided 'com.android.support:support-annotations:25.2.0'
 }

@@ -17,3 +17,7 @@
 #}
 
 -keep public class pl.droidsonroids.gif.GifIOException{<init>(int, java.lang.String);}
+
+# sketch就以这两个类是否存在判断是否可以使用gif
+-keep class me.xiaopan.sketch.gif.BuildConfig
+-keep class pl.droidsonroids.gif.GifDrawable
