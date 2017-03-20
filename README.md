@@ -85,7 +85,7 @@ dependencies {
 }
 ```
 
-请自行替换`SKETCH_GIF_LAST_VERSION_NAME` 为最新的版本[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch-GIF/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch-GIF/_latestVersion#files) `(忽略“Download”)`
+请自行替换`SKETCH_GIF_LAST_VERSION_NAME` 为最新的版本[![Download](https://api.bintray.com/packages/xiaopansky/maven/sketch-gif/images/download.svg)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(忽略“Download”)`
 
 [点击了解混淆配置](docs/wiki/proguard_config.md)
 

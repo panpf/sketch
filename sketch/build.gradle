@@ -29,7 +29,7 @@ android {
     }
 }
 
-apply from: "bintrayUpload.gradle"
+apply from: "../bintrayUpload.gradle"
 
 dependencies {
     provided project(':sketch-gif')

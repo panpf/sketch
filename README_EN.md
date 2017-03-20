@@ -87,7 +87,7 @@ dependencies {
 }
 ```
 
-Replace `SKETCH_GIF_LAST_VERSION_NAME` with the latest version [![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch-GIF/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch-GIF/_latestVersion#files) `(Ignore “Download”)`
+Replace `SKETCH_GIF_LAST_VERSION_NAME` with the latest version [![Download](https://api.bintray.com/packages/xiaopansky/maven/sketch-gif/images/download.svg)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(Ignore “Download”)`
 
 [Click to understand the proguard configuration](docs/wiki/proguard_config.md)
 
