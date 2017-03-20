@@ -30,7 +30,7 @@ import me.xiaopan.sketch.SketchMonitor;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.decode.DecodeResult;
-import me.xiaopan.sketch.drawable.SketchGifDrawableImpl;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.ImagePreprocessor;
 import me.xiaopan.sketch.feature.PreProcessResult;
 import me.xiaopan.sketch.process.ImageProcessor;
@@ -310,7 +310,7 @@ public class LoadRequest extends FreeRideDownloadRequest {
             loadResult = new LoadResult(bitmap, decodeResult);
             loadCompleted();
         } else if (decodeResult != null && decodeResult.getGifDrawable() != null) {
-            SketchGifDrawableImpl gifDrawable = decodeResult.getGifDrawable();
+            SketchGifDrawable gifDrawable = decodeResult.getGifDrawable();
 
             if (gifDrawable.isRecycled()) {
                 if (SLogType.REQUEST.isEnabled()) {
@@ -416,8 +416,8 @@ public class LoadRequest extends FreeRideDownloadRequest {
                 if (loadResult.getBitmap() != null) {
                     BitmapPoolUtils.freeBitmapToPool(loadResult.getBitmap(), getSketch().getConfiguration().getBitmapPool());
                 }
-                if (loadResult.getDrawable() != null) {
-                    loadResult.getDrawable().recycle();
+                if (loadResult.getGifDrawable() != null) {
+                    loadResult.getGifDrawable().recycle();
                 }
             }
             if (SLogType.REQUEST.isEnabled()) {

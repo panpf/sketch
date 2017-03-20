@@ -17,13 +17,13 @@
 package me.xiaopan.sketch.request;
 
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 
 import me.xiaopan.sketch.decode.DecodeResult;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
 
 public class LoadResult {
     private Bitmap bitmap;
-    private Drawable drawable;
+    private SketchGifDrawable gifDrawable;
     private String mimeType;
     private ImageFrom imageFrom;
     private int originWidth;
@@ -38,8 +38,8 @@ public class LoadResult {
         this.mimeType = decodeResult.getMimeType();
     }
 
-    public LoadResult(Drawable drawable, DecodeResult decodeResult) {
-        this.drawable = drawable;
+    public LoadResult(SketchGifDrawable gifDrawable, DecodeResult decodeResult) {
+        this.gifDrawable = gifDrawable;
 
         this.originWidth = decodeResult.getOriginWidth();
         this.originHeight = decodeResult.getOriginHeight();
@@ -51,8 +51,8 @@ public class LoadResult {
         return bitmap;
     }
 
-    public Drawable getDrawable() {
-        return drawable;
+    public SketchGifDrawable getGifDrawable() {
+        return gifDrawable;
     }
 
     public ImageFrom getImageFrom() {

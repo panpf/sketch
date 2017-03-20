@@ -17,7 +17,7 @@ Sketch is a powerful and comprehensive image loader on Android, with support for
 
 ### Features
 >* ``Multiple URL support``. Support for ``http://``、``https://``、``asset://``、``content://``、``file:///sdcard/sample.png``、``/sdcard/sample.jpg``、``drawable://``7 kinds of URI
->* ``Support gif``. Integrated [android-gif-drawable 1.2.4](https://github.com/koral--/android-gif-drawable) can be easily displayed gif pictures, thanks koral--
+>* ``Support gif``. Integrated [android-gif-drawable 1.2.6](https://github.com/koral--/android-gif-drawable) can be easily displayed gif pictures, thanks koral--
 >* ``Exclusive gesture zoom and super large image support``. Exclusive built-in gesture zoom and block display super large image features, and the combination of better
 >* ``Level 3 cache support``. Through the LruMemoryCache, LruDiskCache multiplexing pictures to speed up the display time; through the LruBitmapPool reuse Bitmap, to reduce the Caton caused by GC
 >* ``Various list support``. Can be used in a variety of lists (ListView, RecyclerView), and does not occupy the setTag () method
@@ -82,12 +82,14 @@ Replace `SKETCH_LAST_VERSION_NAME` with the latest version [![Download](https://
 If you need to play GIF add sketch-gif dependencies
 
 ```groovy
-dependencies{
+dependencies {
 	compile 'me.xiaopan:sketch-gif:SKETCH_GIF_LAST_VERSION_NAME'
 }
 ```
 
 Replace `SKETCH_GIF_LAST_VERSION_NAME` with the latest version [![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch-GIF/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch-GIF/_latestVersion#files) `(Ignore “Download”)`
+
+[Click to understand the proguard configuration](docs/wiki/proguard_config.md)
 
 2.Add the following permissions
 ```xml

@@ -1,3 +1,19 @@
+/*
+ * Copyright (C) 2017 Peng fei Pan <sky@xiaopan.me>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package me.xiaopan.sketch.drawable;
 
 import android.graphics.Bitmap;
@@ -54,7 +70,7 @@ public interface SketchGifDrawable extends SketchDrawable{
 
     /**
      * Sets new animation speed factor.<br>
-     * Note: If animation is in progress ({@link # Drawable.draw(Canvas)}) was already called)
+     * Note: If animation is in progress was already called)
      * then effects will be visible starting from the next frame. Duration of the currently rendered
      * frame is not affected.
      *
@@ -64,7 +80,7 @@ public interface SketchGifDrawable extends SketchDrawable{
     void setSpeed(@FloatRange(from = 0, fromInclusive = false) final float factor);
 
     /**
-     * Like {@link # seekTo(int)} but uses index of the frame instead of time.
+     * Like but uses index of the frame instead of time.
      * If <code>frameIndex</code> exceeds number of frames, seek stops at the end, no exception is thrown.
      *
      * @param frameIndex index of the frame to seek to (zero based)
@@ -82,7 +98,7 @@ public interface SketchGifDrawable extends SketchDrawable{
     Bitmap seekToFrameAndGet(@IntRange(from = 0, to = Integer.MAX_VALUE) final int frameIndex);
 
     /**
-     * Like {@link # seekTo(int)} but performs operation synchronously and returns that frame.
+     * Like but performs operation synchronously and returns that frame.
      *
      * @param position position to seek to in milliseconds
      * @return frame at desired position

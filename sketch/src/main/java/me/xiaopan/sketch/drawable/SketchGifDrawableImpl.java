@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2016 Peng fei Pan <sky@xiaopan.me>
+ * Copyright (C) 2017 Peng fei Pan <sky@xiaopan.me>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,6 +41,7 @@ import pl.droidsonroids.gif.GifDrawable;
 /**
  * 增加了从BitmapPool中寻找可复用Bitmap的功能以及图片的信息
  */
+// SketchGifDrawableImpl类配置了混淆时忽略警告，以后内部类有变化时需要同步调整混淆配置，并打包验证
 public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawable {
     protected String logName = "SketchGifDrawable";
 
@@ -51,61 +52,61 @@ public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawa
 
     private Map<AnimationListener, pl.droidsonroids.gif.AnimationListener> listenerMap;
 
-    public SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, AssetFileDescriptor afd) throws IOException {
+    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, AssetFileDescriptor afd) throws IOException {
         super(afd);
         this.imageInfo = imageInfo;
         this.bitmapPool = bitmapPool;
     }
 
-    public SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, AssetManager assets, String assetName) throws IOException {
+    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, AssetManager assets, String assetName) throws IOException {
         super(assets, assetName);
         this.imageInfo = imageInfo;
         this.bitmapPool = bitmapPool;
     }
 
-    public SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, ByteBuffer buffer) throws IOException {
+    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, ByteBuffer buffer) throws IOException {
         super(buffer);
         this.imageInfo = imageInfo;
         this.bitmapPool = bitmapPool;
     }
 
-    public SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, byte[] bytes) throws IOException {
+    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, byte[] bytes) throws IOException {
         super(bytes);
         this.imageInfo = imageInfo;
         this.bitmapPool = bitmapPool;
     }
 
-    public SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, FileDescriptor fd) throws IOException {
+    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, FileDescriptor fd) throws IOException {
         super(fd);
         this.imageInfo = imageInfo;
         this.bitmapPool = bitmapPool;
     }
 
-    public SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, File file) throws IOException {
+    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, File file) throws IOException {
         super(file);
         this.imageInfo = imageInfo;
         this.bitmapPool = bitmapPool;
     }
 
-    public SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, String filePath) throws IOException {
+    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, String filePath) throws IOException {
         super(filePath);
         this.imageInfo = imageInfo;
         this.bitmapPool = bitmapPool;
     }
 
-    public SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, Resources res, int id) throws Resources.NotFoundException, IOException {
+    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, Resources res, int id) throws Resources.NotFoundException, IOException {
         super(res, id);
         this.imageInfo = imageInfo;
         this.bitmapPool = bitmapPool;
     }
 
-    public SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, ContentResolver resolver, Uri uri) throws IOException {
+    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, ContentResolver resolver, Uri uri) throws IOException {
         super(resolver, uri);
         this.imageInfo = imageInfo;
         this.bitmapPool = bitmapPool;
     }
 
-    public SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, InputStream stream) throws IOException {
+    SketchGifDrawableImpl(ImageInfo imageInfo, BitmapPool bitmapPool, InputStream stream) throws IOException {
         super(stream);
         this.imageInfo = imageInfo;
         this.bitmapPool = bitmapPool;
@@ -188,6 +189,7 @@ public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawa
             listenerMap = new HashMap<AnimationListener, pl.droidsonroids.gif.AnimationListener>();
         }
 
+        // 这个内部类配置了混淆时忽略警告，以后有变化时需要同步调整混淆配置，并打包验证
         pl.droidsonroids.gif.AnimationListener animationListener = new pl.droidsonroids.gif.AnimationListener() {
             @Override
             public void onAnimationCompleted(int loopNumber) {

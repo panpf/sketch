@@ -31,7 +31,8 @@ import me.xiaopan.sketch.SLog;
 import me.xiaopan.sketch.SLogType;
 import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.drawable.ImageInfo;
-import me.xiaopan.sketch.drawable.SketchGifDrawableImpl;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.request.LoadRequest;
 import me.xiaopan.sketch.request.MaxSize;
@@ -119,10 +120,10 @@ public class AssetsDecodeHelper implements DecodeHelper {
     }
 
     @Override
-    public SketchGifDrawableImpl makeGifDrawable(ImageInfo imageInfo, BitmapPool bitmapPool) {
+    public SketchGifDrawable makeGifDrawable(ImageInfo imageInfo, BitmapPool bitmapPool) {
         AssetManager assetManager = loadRequest.getSketch().getConfiguration().getContext().getAssets();
         try {
-            return new SketchGifDrawableImpl(imageInfo, bitmapPool, assetManager, assetsFilePath);
+            return SketchGifFactory.createGifDrawable(imageInfo, bitmapPool, assetManager, assetsFilePath);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

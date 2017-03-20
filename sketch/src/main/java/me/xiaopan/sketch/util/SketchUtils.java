@@ -1183,19 +1183,4 @@ public class SketchUtils {
     public static int ceil(int value1, float value2) {
         return (int) Math.ceil(value1 / value2);
     }
-
-    private static int supportGif = 0;
-
-    public synchronized static boolean isSupportGif() {
-        if (supportGif == 0) {
-            try {
-                Class.forName("pl.droidsonroids.gif.GifDrawable");
-                supportGif = 1;
-            } catch (ClassNotFoundException e) {
-                e.printStackTrace();
-                supportGif = -1;
-            }
-        }
-        return supportGif > 0;
-    }
 }

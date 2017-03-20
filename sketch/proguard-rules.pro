@@ -16,10 +16,6 @@
 #   public *;
 #}
 
-# Keep native methods
--keepclassmembers class * {
-    native <methods>;
-}
-
--keep public class pl.droidsonroids.gif.GifIOException{<init>(int);}
--keep class pl.droidsonroids.gif.GifInfoHandle{<init>(long,int,int,int);}
+# 只有SketchGifDrawableImpl类与sketch-gif有联系，因此当缺失sketch-gif时SketchGifDrawableImpl类在混淆时会发出警告
+-dontwarn me.xiaopan.sketch.drawable.SketchGifDrawableImpl
+-dontwarn me.xiaopan.sketch.drawable.SketchGifDrawableImpl$1

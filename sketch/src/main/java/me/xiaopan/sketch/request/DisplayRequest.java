@@ -221,8 +221,8 @@ public class DisplayRequest extends LoadRequest {
             Drawable drawable = new RefBitmapDrawable(refBitmap);
             displayResult = new DisplayResult(drawable, loadResult.getImageFrom(), loadResult.getMimeType());
             displayCompleted();
-        } else if (loadResult != null && loadResult.getDrawable() != null) {
-            SketchGifDrawable gifDrawable = loadResult.getDrawable();
+        } else if (loadResult != null && loadResult.getGifDrawable() != null) {
+            SketchGifDrawable gifDrawable = loadResult.getGifDrawable();
 
             if (gifDrawable.isRecycled()) {
                 if (SLogType.REQUEST.isEnabled()) {
@@ -236,7 +236,7 @@ public class DisplayRequest extends LoadRequest {
             // GifDrawable不能放入内存缓存中，因为GifDrawable需要依赖Callback才能播放，
             // 如果缓存的话就会出现一个GifDrawable被显示在多个ImageView上的情况，这时候就只有最后一个能正常播放
 
-            displayResult = new DisplayResult(gifDrawable, loadResult.getImageFrom(), loadResult.getMimeType());
+            displayResult = new DisplayResult((Drawable) gifDrawable, loadResult.getImageFrom(), loadResult.getMimeType());
             displayCompleted();
         } else {
             if (SLogType.REQUEST.isEnabled()) {

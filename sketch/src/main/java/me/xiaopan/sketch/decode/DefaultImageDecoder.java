@@ -31,7 +31,8 @@ import me.xiaopan.sketch.cache.BitmapPool;
 import me.xiaopan.sketch.cache.BitmapPoolUtils;
 import me.xiaopan.sketch.cache.DiskCache;
 import me.xiaopan.sketch.drawable.ImageInfo;
-import me.xiaopan.sketch.drawable.SketchGifDrawableImpl;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
+import me.xiaopan.sketch.drawable.SketchGifFactory;
 import me.xiaopan.sketch.feature.ImageSizeCalculator;
 import me.xiaopan.sketch.feature.ResizeCalculator;
 import me.xiaopan.sketch.request.DataSource;
@@ -188,7 +189,7 @@ public class DefaultImageDecoder implements ImageDecoder {
     }
 
     private DecodeResult gifImage(LoadRequest request, DecodeHelper decodeHelper, Options boundOptions, ImageFormat imageFormat) {
-        if (!SketchUtils.isSupportGif() || imageFormat == null || imageFormat != ImageFormat.GIF || !request.getOptions().isDecodeGifImage()) {
+        if (!SketchGifFactory.isExistGifLibrary() || imageFormat == null || imageFormat != ImageFormat.GIF || !request.getOptions().isDecodeGifImage()) {
             return null;
         }
 
@@ -196,7 +197,7 @@ public class DefaultImageDecoder implements ImageDecoder {
             ImageInfo imageInfo = new ImageInfo(request.getKey(), request.getUri(), boundOptions.outMimeType, boundOptions.outWidth, boundOptions.outHeight);
             BitmapPool bitmapPool = request.getSketch().getConfiguration().getBitmapPool();
 
-            SketchGifDrawableImpl gifDrawable = decodeHelper.makeGifDrawable(imageInfo, bitmapPool);
+            SketchGifDrawable gifDrawable = decodeHelper.makeGifDrawable(imageInfo, bitmapPool);
             if (gifDrawable == null) {
                 return null;
             }
