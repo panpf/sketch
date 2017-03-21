@@ -19,14 +19,16 @@ package me.xiaopan.sketch.drawable;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.drawable.Animatable;
 import android.support.annotation.FloatRange;
 import android.support.annotation.IntRange;
 import android.support.annotation.NonNull;
+import android.widget.MediaController;
 
 import java.io.InputStream;
 import java.nio.ByteBuffer;
 
-public interface SketchGifDrawable extends SketchDrawable{
+public interface SketchGifDrawable extends SketchDrawable, Animatable, MediaController.MediaPlayerControl {
     /**
      * Frees any memory allocated native way.
      * Operation is irreversible. After this call, nothing will be drawn.
@@ -47,6 +49,13 @@ public interface SketchGifDrawable extends SketchDrawable{
      * This method is thread-safe.
      */
     void reset();
+
+    /**
+     * Returns GIF comment
+     *
+     * @return comment or null if there is no one defined in file
+     */
+    String getComment();
 
     /**
      * Returns loop count previously read from GIF's application extension block.
@@ -225,6 +234,14 @@ public interface SketchGifDrawable extends SketchDrawable{
      * @throws IndexOutOfBoundsException if index &lt; 0 or index &gt;= number of frames
      */
     int getFrameDuration(@IntRange(from = 0) final int index);
+
+    /**
+     * 跟随页面是否可见停止或播放gif
+     *
+     * @param userVisible          页面是否可见
+     * @param fromDisplayCompleted 当图片加载完毕，但是页面不可见时需要停留在第一帧
+     */
+    void followPageVisible(boolean userVisible, boolean fromDisplayCompleted);
 
     /**
      * Interface which can be used to run some code when particular animation event occurs.

@@ -21,6 +21,7 @@ import me.xiaopan.sketch.Sketch;
 import me.xiaopan.sketch.cache.MemoryCache;
 import me.xiaopan.sketch.display.FadeInImageDisplayer;
 import me.xiaopan.sketch.drawable.RefBitmap;
+import me.xiaopan.sketch.drawable.SketchGifDrawable;
 import me.xiaopan.sketch.feature.large.LargeImageViewer;
 import me.xiaopan.sketch.feature.zoom.ImageZoomer;
 import me.xiaopan.sketch.request.CancelCause;
@@ -138,7 +139,7 @@ public class ImageFragment extends MyFragment {
                     applyBackgroundCallback.onApplyBackground(imageUri);
                 }
 
-                resetGifDrawable(imageView != null ? imageView.getDrawable() : null, isVisibleToUser(), true);
+                followPageVisible(imageView != null ? imageView.getDrawable() : null, isVisibleToUser(), true);
 
 //                final Drawable drawable = imageView.getDrawable();
 //                if (drawable != null && !(drawable instanceof LoadingDrawable)) {
@@ -289,7 +290,7 @@ public class ImageFragment extends MyFragment {
             }
         }
 
-        resetGifDrawable(imageView != null ? imageView.getDrawable() : null, isVisibleToUser, false);
+        followPageVisible(imageView != null ? imageView.getDrawable() : null, isVisibleToUser, false);
     }
 
     private boolean location(float x, float y, boolean animate) {
@@ -301,24 +302,11 @@ public class ImageFragment extends MyFragment {
         return true;
     }
 
-    private void resetGifDrawable(Drawable drawable, boolean userVisible, boolean fromCompleted) {
-//        drawable = SketchUtils.getLastDrawable(drawable);
-//        if (drawable == null || !(drawable instanceof SketchGifDrawable)) {
-//            return;
-//        }
-//
-//        SketchGifDrawable gifDrawable = (SketchGifDrawable) drawable;
-//        if (userVisible) {
-//            gifDrawable.start();
-//        } else {
-//            if (fromCompleted) {
-//                // 图片加载完了，但是页面还不可见的时候就停留着在第一帧
-//                gifDrawable.seekToFrame(0);
-//                gifDrawable.stop();
-//            } else {
-//                gifDrawable.stop();
-//            }
-//        }
+    private void followPageVisible(Drawable drawable, boolean userVisible, boolean fromCompleted) {
+        Drawable lastDrawable = SketchUtils.getLastDrawable(drawable);
+        if (lastDrawable != null && (lastDrawable instanceof SketchGifDrawable)) {
+            ((SketchGifDrawable) lastDrawable).followPageVisible(userVisible, fromCompleted);
+        }
     }
 
     @SuppressWarnings("unused")

@@ -209,4 +209,19 @@ public class SketchGifDrawableImpl extends GifDrawable implements SketchGifDrawa
         pl.droidsonroids.gif.AnimationListener animationListener = listenerMap.remove(listener);
         return animationListener != null && removeAnimationListener(animationListener);
     }
+
+    @Override
+    public void followPageVisible(boolean userVisible, boolean fromDisplayCompleted) {
+        if (userVisible) {
+            start();
+        } else {
+            if (fromDisplayCompleted) {
+                // 图片加载完了，但是页面还不可见的时候就停留着在第一帧
+                seekToFrame(0);
+                stop();
+            } else {
+                stop();
+            }
+        }
+    }
 }
