@@ -2,10 +2,11 @@
 
 [![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-Sketch-green.svg?style=true)](https://android-arsenal.com/details/1/4165)
 [![License](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://www.apache.org/licenses/LICENSE-2.0)
-[![Released Version](https://img.shields.io/github/release/xiaopansky/Sketch.svg)](https://github.com/xiaopansky/Sketch/releases)
-[![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
-[![API](https://img.shields.io/badge/API-9%2B-blue.svg?style=flat)](https://android-arsenal.com/api?level=9)
-![QQ Group](https://img.shields.io/badge/QQ%E4%BA%A4%E6%B5%81%E7%BE%A4-529630740-red.svg)
+[![Logs](https://img.shields.io/github/release/xiaopansky/Sketch.svg?label=Logs)](https://github.com/xiaopansky/Sketch/releases)
+[![Sketch](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg?label=sketch)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files)
+[![Sketch GIF](https://img.shields.io/bintray/v/xiaopansky/maven/sketch-gif.svg?label=sketch-gif)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files)
+[![API](https://img.shields.io/badge/API-9%2B-red.svg)](https://android-arsenal.com/api?level=9)
+![QQ Group](https://img.shields.io/badge/QQ%20Gruop-529630740-orange.svg)
 
 [Chinese version of the README.md](README.md)
 
@@ -73,21 +74,21 @@ sketchImageView.displayURIImage(uri);
 
 ```groovy
 dependencies {
-	compile 'me.xiaopan:sketch:SKETCH_LAST_VERSION_NAME'
+	compile 'me.xiaopan:sketch:<SKETCH_LAST_VERSION_NAME>'
 }
 ```
 
-Replace `SKETCH_LAST_VERSION_NAME` with the latest version [![Download](https://api.bintray.com/packages/xiaopansky/maven/Sketch/images/download.svg)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files) `(Ignore “Download”)`
+Replace `<SKETCH_LAST_VERSION_NAME>` with the latest version [![Sketch GIF](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg?label=%3CSKETCH_LAST_VERSION_NAME%3E)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files) `(Do not "v")`
 
 If you need to play GIF add sketch-gif dependencies
 
 ```groovy
 dependencies {
-	compile 'me.xiaopan:sketch-gif:SKETCH_GIF_LAST_VERSION_NAME'
+	compile 'me.xiaopan:sketch-gif:<SKETCH_GIF_LAST_VERSION_NAME>'
 }
 ```
 
-Replace `SKETCH_GIF_LAST_VERSION_NAME` with the latest version [![Download](https://api.bintray.com/packages/xiaopansky/maven/sketch-gif/images/download.svg)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(Ignore “Download”)`
+Replace `<SKETCH_GIF_LAST_VERSION_NAME>` with the latest version [![Sketch GIF](https://img.shields.io/bintray/v/xiaopansky/maven/sketch-gif.svg?label=%3CSKETCH_GIF_LAST_VERSION_NAME%3E)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(Do not "v")`
 
 [Click to understand the proguard configuration](docs/wiki/proguard_config.md)
 
