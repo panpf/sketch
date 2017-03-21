@@ -78,7 +78,7 @@ dependencies {
 }
 ```
 
-Replace `<SKETCH_LAST_VERSION_NAME>` with the latest version [![Sketch GIF](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg?label=%3CSKETCH_LAST_VERSION_NAME%3E)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files) `(Do not "v")`
+Replace `<SKETCH_LAST_VERSION_NAME>` with the latest version [![Sketch GIF](https://img.shields.io/bintray/v/xiaopansky/maven/Sketch.svg?label=sketch)](https://bintray.com/xiaopansky/maven/Sketch/_latestVersion#files) `(Do not "v")`
 
 If you need to play GIF add sketch-gif dependencies
 
@@ -88,7 +88,7 @@ dependencies {
 }
 ```
 
-Replace `<SKETCH_GIF_LAST_VERSION_NAME>` with the latest version [![Sketch GIF](https://img.shields.io/bintray/v/xiaopansky/maven/sketch-gif.svg?label=%3CSKETCH_GIF_LAST_VERSION_NAME%3E)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(Do not "v")`
+Replace `<SKETCH_GIF_LAST_VERSION_NAME>` with the latest version [![Sketch GIF](https://img.shields.io/bintray/v/xiaopansky/maven/sketch-gif.svg?label=sketch-gif)](https://bintray.com/xiaopansky/maven/sketch-gif/_latestVersion#files) `(Do not "v")`
 
 [Click to understand the proguard configuration](docs/wiki/proguard_config.md)
 
