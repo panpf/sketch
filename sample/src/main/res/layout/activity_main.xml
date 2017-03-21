@@ -54,7 +54,6 @@
                 android:id="@+id/image_main_menuBackground"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="fitXY"
                 android:src="@drawable/shape_window_background" />
 
             <android.support.v7.widget.RecyclerView
