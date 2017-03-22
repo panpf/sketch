@@ -10,25 +10,9 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
-def loadProperties(String fileName) {
-    File file = new File(fileName)
-    if (!file.exists()) {
-        return
-    }
-    FileInputStream inputStream = new FileInputStream()
-    Properties properties = new Properties()
-    properties.load(inputStream)
-    inputStream.close()
-    for (Map.Entry property in properties) {
-        ext[property.key] = property.value
-        println(property.key + "=" + property.value)
-    }
-}
-
-// 加载签名配置文件
-String projectPath = projectDir;
-loadProperties projectPath + '/local.properties'
-File jksFile = file(property("sample.storeFile"))
+Properties localProperties = openProperties("local.properties")
+String jksFileName = localProperties.getProperty("sample.storeFile")
+File jksFile = jksFileName != null && "" != jksFileName.trim() ? file(jksFileName) : null
 
 android {
     compileSdkVersion COMPILE_SDK_VERSION.toInteger()
@@ -45,9 +29,9 @@ android {
     signingConfigs {
         release {
             storeFile jksFile
-            storePassword property('sample.storePassword')
-            keyAlias property('sample.keyAlias')
-            keyPassword property('sample.keyPassword')
+            storePassword localProperties.getProperty('sample.storePassword')
+            keyAlias localProperties.getProperty('sample.keyAlias')
+            keyPassword localProperties.getProperty('sample.keyPassword')
         }
     }
 
@@ -117,4 +101,16 @@ repositories {
         dirs 'libs'
     }
     mavenCentral()
+}
+
+def Properties openProperties(String fileName) {
+    File propertiesFile = new File(projectDir, fileName)
+    if (!propertiesFile.exists()) {
+        return new Properties()
+    }
+    FileInputStream inputStream = new FileInputStream(propertiesFile)
+    Properties properties = new Properties()
+    properties.load(inputStream)
+    inputStream.close()
+    return properties
 }
