@@ -11,7 +11,11 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.neenbedankt.android-apt'
 
 def loadProperties(String fileName) {
-    FileInputStream inputStream = new FileInputStream(new File(fileName))
+    File file = new File(fileName)
+    if (!file.exists()) {
+        return
+    }
+    FileInputStream inputStream = new FileInputStream()
     Properties properties = new Properties()
     properties.load(inputStream)
     inputStream.close()
