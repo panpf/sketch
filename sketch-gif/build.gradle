@@ -7,8 +7,8 @@ android {
     defaultConfig {
         minSdkVersion MIN_SDK_VERSION.toInteger()
         targetSdkVersion TARGET_SDK_VERSION_LIBRARY.toInteger()
-        versionCode VERSION_CODE_GIF.toInteger()
-        versionName "${VERSION_NAME_GIF}"
+        versionCode VERSION_CODE.toInteger()
+        versionName "${VERSION_NAME}"
 
         consumerProguardFiles 'proguard-rules.pro'
     }
